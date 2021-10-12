@@ -10,6 +10,7 @@ import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import * as _ from 'lodash'
 import { ToggleButtonGroup } from '../../basic-lib';
+import { useSettings } from '../../../stores'
 import styled from '@emotion/styled'
 
 const FeeTokenItemWrapper = styled(Box)`
@@ -59,10 +60,11 @@ export const TransferWrapNew = <T extends IBData<I>,
     const [feeToken, setFeeToken] = React.useState('')
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
+    const { feeChargeOrder } = useSettings()
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
     
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee, __raw__, }) => ({
+    const toggleData: any[] = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__, }) => ({
         key: belong,
         value: belong,
         fee,

@@ -11,6 +11,7 @@ import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { ToggleButtonGroup } from '../../basic-lib';
 import styled from '@emotion/styled'
+import { useSettings } from '../../../stores'
 import * as _ from 'lodash'
 
 const FeeTokenItemWrapper = styled(Box)`
@@ -48,10 +49,11 @@ export const WithdrawWrapNew = <T extends IBData<I>,
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
     const [feeToken, setFeeToken] = React.useState('')
+    const { feeChargeOrder } = useSettings()
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-withdraw`});
 
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee, __raw__}) => ({
+    const toggleData: any[] = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__}) => ({
         key: belong,
         value: belong,
         fee,
