@@ -104,6 +104,14 @@ export const Popover: React.FC<PopoverWrapProps> = ({
             top:initial;
           }
         }
+        &.arrow-none {
+          &:before {
+            display: none;
+          }
+          &:after {
+            display: none;
+          }
+        }
       
     }` as React.ElementType<PopoverProps>
 
