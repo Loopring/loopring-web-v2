@@ -44,7 +44,7 @@ export const TransferPanelNew = withTranslation('common', {withRef: true})(<T ex
             element: React.useMemo(() => <TransferWrapNew<T, I> key={"transfer"}
                                                              {...{
                                                                  ...rest,
-                                                                 chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
+                                                                 chargeFeeTokenList: chargeFeeTokenList || [],
                                                                  tradeData: switchData.tradeData,
                                                                  onChangeEvent,
                                                                  disabled: !!rest.disabled,
