@@ -12,6 +12,7 @@ import { useSocket } from 'stores/socket';
 import { useWalletLayer2Socket } from 'services/socket';
 import { useSystem } from 'stores/system'
 import BigNumber from 'bignumber.js'
+import { useTokenPrices } from 'stores/tokenPrices'
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -49,7 +50,7 @@ export const useGetAssets = () => {
     const {account} = useAccount();
     const {sendSocketTopic, socketEnd} = useSocket();
     const {forex} = useSystem()
-    const {tokenPrices} = store.getState().tokenPrices
+    const { tokenPrices } = useTokenPrices()
     const { ammMap } = store.getState().amm.ammMap
 
     const {marketArray, tokenMap} = store.getState().tokenMap
@@ -80,12 +81,12 @@ export const useGetAssets = () => {
     }, [])
     useWalletLayer2Socket({walletLayer2Callback})
 
-    const {faitPrices} = store.getState().system
+    // const {faitPrices} = store.getState().system
 
-    const tokenPriceList = faitPrices ? Object.entries(faitPrices).map(o => ({
+    const tokenPriceList = tokenPrices ? Object.entries(tokenPrices).map(o => ({
         token: o[ 0 ],
         detail: o[ 1 ]
-    })) as ITokenInfoItem[] : []
+    })) : []
 
     const getAssetsRawData = React.useCallback(() => {
         if (tokenMap && !!Object.keys(tokenMap).length && !!Object.keys(assetsMap).length && !!tokenPriceList.length) {
@@ -103,14 +104,14 @@ export const useGetAssets = () => {
                     if (!isLpToken) {
                         const tokenPriceUSDT = tokenInfo.token === 'DAI'
                             ? 1
-                            : Number(tokenPriceList.find(o => o.token === tokenInfo.token) ? tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
+                            : Number(tokenPriceList.find(o => o.token === tokenInfo.token) ? tokenPriceList.find(o => o.token === tokenInfo.token)?.detail : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail)
                         // const rawData = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total)) * tokenPriceUSDT
                         const rawData = (totalAmount as BigNumber).times(tokenPriceUSDT)
                         tokenValueDollar = rawData?.toNumber() || 0
                     } else {
                         // const formattedBalance = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total))
                         // const price = getLpTokenPrice(tokenInfo.token)
-                        const price = tokenPrices[tokenInfo.token]
+                        const price = tokenPrices?.[tokenInfo.token] || 0
                         if (totalAmount && price) {
                             tokenValueDollar = totalAmount.times(price).toNumber()
                         }
