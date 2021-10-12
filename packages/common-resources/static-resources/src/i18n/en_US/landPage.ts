@@ -7,6 +7,12 @@ export default {
     labelTradeUser:'Trade \n User',
     labelTradeTVL:'TVL',
     labelTradeNofTrades:'Number \n of Trades',
-    labelZeroKpt:'Zero-knowledge proof technology'
-
+    labelZeroKpt:'Zero-knowledge proof technology',
+    labelSafety:'Safety',
+    labelLowCost:'Low Cost',
+    labelFastTransfer:'Fast Transfer',
+    labelSuperpowers :'Superpowers for DeFi developers.',
+    describeLowCost:'Low Cost',
+    describeFastTransfer:'Fast Transfer',
+    describeSuperpowers :'Superpowers for DeFi developers.',
 }

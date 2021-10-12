@@ -24,7 +24,19 @@ yarn install
 yarn up
 cd ./packages/webapp
 npm run dev
-```
+
+// how to run storybook 
+yarn instsll 
+yarn up 
+cd ./packages/component-lib
+npm run storybook
+``` 
+- Welcome to improve or create feature or loopring layer2 website, please follow and use the basic UI-Components,
+see it on component-lib.
+- Project separate a lib call web3-provider, it's a third-part ETH web3 wallet provider service (wallectConnect & metamask), 
+- Welcome to reuse it or support your provider service for our website. 
+- Suggestions and idea are welcome.
+
 
 ##Framwork Design
 
