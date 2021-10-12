@@ -120,7 +120,6 @@ const StyledCoinItem = styled(ListItem)`
     justify-content: center;
     justify-items: center;
     align-items: center;
-
     .MuiAvatar-root {
       transform-origin: center;
     }
