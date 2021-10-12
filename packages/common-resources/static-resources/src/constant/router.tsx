@@ -140,18 +140,18 @@ export const subMenuLayer2 = {
         label: {
             id: 'order', i18nKey: 'labelOrder'
         }
-    }, {
-        icon: RewardIcon,
-        router: {path: '/layer2/rewards'},
-        label: {
-            id: 'reward', i18nKey: 'labelReward',
-        },
-    }, {
-        icon: RedPockIcon,
-        router: {path: '/layer2/redpock'},
-        label: {
-            id: 'redpock', i18nKey: 'labelRedPock',
-        },
+    // }, {
+    //     icon: RewardIcon,
+    //     router: {path: '/layer2/rewards'},
+    //     label: {
+    //         id: 'reward', i18nKey: 'labelReward',
+    //     },
+    // }, {
+    //     icon: RedPockIcon,
+    //     router: {path: '/layer2/redpock'},
+    //     label: {
+    //         id: 'redpock', i18nKey: 'labelRedPock',
+    //     },
     }
     ],
     settingGroup: [{
