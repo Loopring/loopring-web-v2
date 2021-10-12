@@ -110,7 +110,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
 
     const getMarketPrecision = React.useCallback((market: string) => {
         if (marketMap) {
-            return marketMap[ market ].precisionForPrice
+            return marketMap[ market ]?.precisionForPrice
         }
         return undefined
     }, [marketMap])
