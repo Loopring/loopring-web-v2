@@ -244,8 +244,8 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                     {/*<Button variant={'text'} size={'small'} to={'https:v1.loopring.io'}>*/}
                     {/*   <Typography variant={'body1'}>Switch to V1</Typography>*/}
                     {/*</Button>*/}
-                    <LinkStyle variant={'body2'} href={'https://v1.loopring.io/'}>
-                        Switch to V1
+                    <LinkStyle variant={'body2'} href={'https://legacy.loopring.io/'}>
+                        Switch to Legacy
                         {/*<Typography  color={'text.Secondary'}></Typography>*/}
                     </LinkStyle>
                     {getMenuButtons({toolbarList: headerToolBarData, i18n, ...rest})}
