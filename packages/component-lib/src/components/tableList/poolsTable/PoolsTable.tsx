@@ -90,8 +90,8 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
         return <BoxStyled />
     }
     const {coinAInfo, coinBInfo, isNew, isActivity} = row;
-    const coinAIcon: any = coinJson[ coinAInfo.simpleName ];
-    const coinBIcon: any = coinJson[ coinBInfo.simpleName ];
+    const coinAIcon: any = coinJson[ coinAInfo?.simpleName ];
+    const coinBIcon: any = coinJson[ coinBInfo?.simpleName ];
     return <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
 
         <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
@@ -290,8 +290,8 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             // typeof priceDollar === 'undefined' ? EmptyValueTag :
             //     currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
             const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
-            const totalAmountDollar = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0)
-            const totalAmountYuan = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0) * (forex || 6.5)
+            const totalAmountDollar = (Number(volume) || 0) * (tokenPrices[row.coinAInfo?.simpleName] || 0)
+            const totalAmountYuan = (Number(volume) || 0) * (tokenPrices[row.coinAInfo?.simpleName] || 0) * (forex || 6.5)
             const renderValue = currency === Currency.usd ? totalAmountDollar : totalAmountYuan
             const renderUnit = currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan
             return <Box className={'textAlignRight'}>
