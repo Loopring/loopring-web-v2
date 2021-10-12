@@ -7,6 +7,7 @@ import { DropDownIcon, getValuePrecisionThousand } from '@loopring-web/common-re
 import { Button, ToggleButtonGroup } from '../../basic-lib';
 import { ResetViewProps } from './Interface';
 import { TypographyStrong } from '../../../index';
+import { useSettings } from '../../../stores'; 
 
 const FeeTokenItemWrapper = styled(Box)`
     background-color: var(--color-global-bg);
@@ -32,8 +33,9 @@ export const ResetWrap = <T extends object>({
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
     const [feeToken, setFeeToken] = React.useState('')
     const inputBtnRef = React.useRef();
+    const { feeChargeOrder } = useSettings()
 
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee, __raw__, }) => ({
+    const toggleData: any[] = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__, }) => ({
         key: belong,
         value: belong,
         fee,

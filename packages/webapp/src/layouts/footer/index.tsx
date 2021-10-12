@@ -52,7 +52,7 @@ const Footer = withTranslation('layout')(({t}:WithTranslation) => {
                
                 <Typography component={'p'}  variant={'body2'} paddingTop={2} textAlign={'center'}>
                     <Typography style={{fontSize:'9px'}} component={'span'}>Copyright (c) 2017-{new Date().getFullYear()}.</Typography>
-                    <Typography style={{fontSize:'9px'}} component={'span'}>All Rights Reversed by Loopring.</Typography>
+                    <Typography style={{fontSize:'9px'}} component={'span'}>All rights reserved.</Typography>
                 </Typography>
                 <Typography component={'p'}  variant={'body2'} paddingTop={1} paddingBottom={2}  textAlign={'center'}>
                     <Link target={'_blank'} href={'https://github.com/Loopring/loopring-web-v2/issues/new'}> let me report issue ^. ^</Link>
