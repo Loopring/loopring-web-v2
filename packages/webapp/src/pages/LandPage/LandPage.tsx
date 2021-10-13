@@ -450,7 +450,6 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
         {/*<Box>*/}
         {/*    <Container>*/}
         {/*     */}
-
         {/*    </Container>*/}
         {/*</Box>*/}
     </ContainerStyle>
