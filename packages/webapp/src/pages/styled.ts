@@ -37,7 +37,6 @@ export const StylePaper = styled(Box)`
   }
 ` as typeof Box;
 
-
 export const TableWrapStyled = styled(Box)`
  
   &{
@@ -114,7 +113,6 @@ export const TableProWrapStyled = styled(Box)`
   }
   
 ` as typeof Grid
-
 export const FixedStyle = styled(Box)`
   @media only screen and (min-height: 784px ) and (min-width: 1024px) {
     position: fixed;

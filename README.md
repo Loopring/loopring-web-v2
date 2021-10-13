@@ -38,6 +38,6 @@ see it on component-lib.
 - Suggestions and idea are welcome.
 
 
-##Framwork Design
+## Framwork Design
 
-![](docs/Loopring framwork.png)
+![](https://raw.githubusercontent.com/Loopring/loopring-web-v2/alpha-v2/docs/Loopring%20framwork.png)
