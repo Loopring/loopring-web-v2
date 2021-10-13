@@ -1,7 +1,7 @@
 import * as sdk from 'loopring-sdk';
-import { MarketType, TradeCalcProData } from '@loopring-web/common-resources';
+import { DepthViewData, MarketType, TradeCalcProData } from '@loopring-web/common-resources';
 import { Ticker } from '../../ticker';
-import { RawDataTradeItem, TradeProType } from '@loopring-web/component-lib';
+import { DepthType, RawDataTradeItem, TradeProType } from '@loopring-web/component-lib';
 
 export type marketCalcParams = {
     exceedDepth: boolean;
@@ -52,7 +52,7 @@ export type PageTradePro<C> = {
         priceLevel: number | string,
     } | null | undefined,
     tradeType:TradeProType
-    defaultPrice?:number,
+    chooseDepth?: DepthViewData & {type: DepthType|'close'} | null,
     precisionLevels?: { value: number,label:string }[],
     depth?: sdk.DepthData | undefined,
     depthForCalc?: sdk.DepthData | undefined,

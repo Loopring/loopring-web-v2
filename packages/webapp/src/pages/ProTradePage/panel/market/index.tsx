@@ -92,7 +92,8 @@ export const MarketView = withTranslation('common')(({
                                                          tableLength,
                                                          breakpoint,
                                                          main,
-                                                         t, market, ...rest
+                                                         t, market,
+                                                         ...rest
                                                      }: {
     market: MarketType;
     main: keyof typeof TabMarketIndex;
@@ -187,7 +188,7 @@ export const MarketView = withTranslation('common')(({
         close = (close ? close.toFixed(marketMap[ market ]?.precisionForPrice) : undefined)
         return <Typography color={'var(--color-text-third)'} variant={'body2'} component={'p'} display={'inline-flex'}
                            textAlign={'center'} alignItems={'baseline'} onClick={(event: any) => {
-            priceClick(event, close as any)
+            priceClick(event, {price: close } as any,'close')
         }}>
             {close ? <>
                     <Typography lineHeight={1} color={priceColor} component={'span'} paddingRight={1} alignItems={'center'}
@@ -243,8 +244,8 @@ export const MarketView = withTranslation('common')(({
         </>
     }, [tableLength, market, pageTradePro.tradeArray, pageTradePro.depthLevel])
 
-    const priceClick = React.useCallback((event, price) => {
-        updatePageTradePro({market, defaultPrice: price})
+    const priceClick = React.useCallback((event, chooseDepth, type) => {
+        updatePageTradePro({market, chooseDepth:{...chooseDepth,type}})
     }, [updatePageTradePro, market])
     React.useEffect(() => {
         if (pageTradePro.depth?.symbol === market && rowLength) {

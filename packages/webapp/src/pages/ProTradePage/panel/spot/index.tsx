@@ -44,7 +44,8 @@ export const SpotView = withTranslation('common')(({
     //@ts-ignore 
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const {
-        toastOpen: toastOpenL, closeToast: closeToastL, limitTradeData, onChangeLimitEvent,
+        toastOpen: toastOpenL, closeToast: closeToastL,
+        limitTradeData, onChangeLimitEvent,
         tradeLimitI18nKey,
         tradeLimitBtnStatus,
         tradeLimitBtnStyle,
