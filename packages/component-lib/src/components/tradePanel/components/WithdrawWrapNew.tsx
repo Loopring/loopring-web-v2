@@ -6,11 +6,12 @@ import { FormControlLabel, Grid, Radio, RadioGroup, Typography, Box, IconProps }
 import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes, HelpIcon } from '@loopring-web/common-resources';
 import { PopoverPure } from '../..'
 import { TradeBtnStatus } from '../Interface';
-import { Button, IconClearStyled, TextField,TypographyGood, TypographyStrong } from '../../../index';
+import { Button, IconClearStyled, TextField} from '../../../index';
 import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { ToggleButtonGroup } from '../../basic-lib';
 import styled from '@emotion/styled'
+import { useSettings } from '../../../stores'
 import * as _ from 'lodash'
 
 const FeeTokenItemWrapper = styled(Box)`
@@ -48,10 +49,11 @@ export const WithdrawWrapNew = <T extends IBData<I>,
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
     const [feeToken, setFeeToken] = React.useState('')
+    const { feeChargeOrder } = useSettings()
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-withdraw`});
 
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee, __raw__}) => ({
+    const toggleData: any[] = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__}) => ({
         key: belong,
         value: belong,
         fee,
@@ -169,11 +171,11 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={2} maxWidth={490}>
+                <Typography padding={2} maxWidth={490} variant={'body2'} whiteSpace={'pre-line'}>
                     <Trans i18nKey="withdrawDescription">
                         Your withdrawal will be processed in the next batch, which usually takes 30 minutes to 2 hours. (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）
                     </Trans>
-                </Box>
+                </Typography>
             </PopoverPure>
         </Grid>
         <Grid item /* marginTop={2} */ alignSelf={"stretch"}>

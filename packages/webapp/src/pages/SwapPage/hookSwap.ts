@@ -382,7 +382,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
             const formattedTradeArray = _myTradeArray.map(o => {
                 return {
                     ...o,
-                    precision: marketMap ? marketMap[market].precisionForPrice : undefined
+                    precision: marketMap ? marketMap[market]?.precisionForPrice : undefined
                 }
             }) as RawDataTradeItem[]
             // setMyTradeArray(_myTradeArray ? _myTradeArray : [])
@@ -405,7 +405,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
             const _tradeArray = makeMarketArray(market, marketTrades)
             const formattedTradArray = _tradeArray.map(o => ({
                 ...o,
-                precision: marketMap ? marketMap[market].precisionForPrice : undefined
+                precision: marketMap ? marketMap[market]?.precisionForPrice : undefined
             })) as RawDataTradeItem[]
             // setTradeArray(_tradeArray as RawDataTradeItem[])
             setTradeArray(formattedTradArray as RawDataTradeItem[])

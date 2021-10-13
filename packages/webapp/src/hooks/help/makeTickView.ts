@@ -19,7 +19,8 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             priceDollar: 0,
             floatTag,
             reward: 0,
-            close: (tick.close ?? 0) ? Number(tick.close?.toFixed(6)) : undefined,
+            // close: (tick.close ?? 0) ? Number(tick.close?.toFixed(6)) : undefined,
+            close: isNaN(tick.close || 0) ? undefined : tick.close,
             high: tick.high === 0 ? undefined : tick.high,
             low: tick.low === 0 ? undefined : tick.low,
 

@@ -1,17 +1,21 @@
 import React from 'react';
 import { TFunction, withTranslation } from 'react-i18next';
+import * as _ from 'lodash'
 import {
     CoinInfo,
     DropDownIcon, EmptyValueTag,
     getValuePrecisionThousand, layoutConfigs,
     MarketType,
     PriceTag,
-    SagaStatus
+    SagaStatus,
+    UpIcon
 } from '@loopring-web/common-resources';
-import { Button, MarketBlockProps, useSettings } from '@loopring-web/component-lib';
+import { Button, MarketBlockProps, useSettings, PopoverPure, QuoteTable, InputSearch, QuoteTableRawDataItem } from '@loopring-web/component-lib';
 import { useTicker } from 'stores/ticker';
 import { useTokenMap } from 'stores/token';
-import { Box, Grid, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, Grid, MenuItem, TextField, Typography, ClickAwayListener, Tabs, Tab, Container, Divider } from '@mui/material';
+import { usePopupState, bindPopper } from 'material-ui-popup-state/hooks';
+import { bindTrigger } from 'material-ui-popup-state/es';
 import { usePageTradePro } from 'stores/router';
 import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
@@ -19,6 +23,10 @@ import { Currency } from 'loopring-sdk';
 import { Layout, Layouts } from 'react-grid-layout';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
+import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
+import { TableProWrapStyled } from 'pages/styled'
+import { useQuote } from 'pages/QuotePage/hook'
+import { useToolbar } from './hook'
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -28,6 +36,17 @@ const PriceTitleStyled = styled(Typography)`
 const PriceValueStyled = styled(Typography)`
   font-size: 1.2rem;
 `
+
+const InputSearchWrapperStyled = styled(Box)`
+    padding: ${({theme}) => theme.unit * 2}px;
+    padding-bottom: 0;
+`
+
+export enum TableFilterParams {
+    all = 'all',
+    favourite = 'favourite',
+    ranking = 'ranking'
+}
 
 export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: any }>({
                                                                                           market,
@@ -47,6 +66,13 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
     const {coinMap, marketArray, marketMap, tokenMap} = useTokenMap();
     const {tickerMap, status: tickerStatus} = useTicker();
+    const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
+    const { ammPoolBalances } = useToolbar()
+    const {tickList} = useQuote()
+    const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
+    const [searchValue, setSearchValue] = React.useState<string>('')
+    const [tableTabValue, setTableTabValue] = React.useState('all')
+    const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
     const [marketTicker,setMarketTicker] = React.useState<MarketBlockProps<C> & any | undefined>({
         coinAInfo: coinMap[ coinA ] as CoinInfo<C>,
         coinBInfo: coinMap[ coinB ] as CoinInfo<C>,
@@ -84,7 +110,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
 
     const getMarketPrecision = React.useCallback((market: string) => {
         if (marketMap) {
-            return marketMap[ market ].precisionForPrice
+            return marketMap[ market ]?.precisionForPrice
         }
         return undefined
     }, [marketMap])
@@ -127,12 +153,90 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         }
 
     }, [tickerMap, market])
-    const _handleOnMarketChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
-        handleOnMarketChange(event.target.value as MarketType)
-    }, [])
+    // const _handleOnMarketChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
+    //     handleOnMarketChange(event.target.value as MarketType)
+    // }, [])
+
+    // prevent amm risky pair
+    const getFilteredTickList = React.useCallback(() => {
+        if (!!ammPoolBalances.length && tickList && !!tickList.length) {
+            return tickList.filter((o: any) => {
+                const pair = `${o.pair.coinA}-${o.pair.coinB}`
+                if (ammPoolBalances.find(o => o.poolName === pair)) {
+                    return !ammPoolBalances.find(o => o.poolName === pair).risky
+                }
+                return true
+            })
+        }
+        return []
+    }, [tickList, ammPoolBalances])
+
+    const resetTableData = React.useCallback((tableData)=>{
+        setFilteredData(tableData)
+        // setTableHeight(RowConfig.rowHeaderHeight + tableData.length * RowConfig.rowHeight )
+    },[setFilteredData])
+
+    React.useEffect(() => {
+        const data = getFilteredTickList()
+        resetTableData(data)
+    }, [getFilteredTickList, resetTableData])
+
+    const handleTableFilterChange = React.useCallback(({type = TableFilterParams.all, keyword = ''}: {
+        type?: TableFilterParams;
+        keyword?: string;
+    }) => {
+        let data = _.cloneDeep(tickList)
+        if (type === TableFilterParams.favourite) {
+            data = data.filter((o: any) => {
+                const pair = `${o.pair.coinA}-${o.pair.coinB}`
+                return favoriteMarket?.includes(pair)
+            })
+        }
+        // if (type === TableFilterParams.ranking) {
+        //     data = data.filter((o: any) => {
+        //         const pair = `${o.pair.coinA}-${o.pair.coinB}`
+        //         return swapRankingList.find(o => o.market === pair)
+        //     })
+        // }
+        data = data.filter((o: any) => {
+            const formattedKeyword = keyword?.toLocaleLowerCase()
+            const coinA = o.pair.coinA.toLowerCase()
+            const coinB = o.pair.coinB.toLowerCase()
+            if (keyword === '') {
+                return true
+            }
+            return coinA?.includes(formattedKeyword) || coinB?.includes(formattedKeyword)
+        })
+        if (type === TableFilterParams.all && !keyword) {
+            data = getFilteredTickList()
+        }
+        resetTableData(data)
+    }, [tickList, resetTableData, favoriteMarket, getFilteredTickList])
+
+    const handleTabChange = React.useCallback((_event: any, newValue: string) => {
+        setTableTabValue(newValue)
+        handleTableFilterChange({
+            type: newValue === 'favourite' ? TableFilterParams.favourite : newValue === 'tradeRanking' ? TableFilterParams.ranking : TableFilterParams.all,
+            keyword: searchValue
+        })
+    }, [handleTableFilterChange, searchValue])
+
+    const handleSearchChange = React.useCallback((value) => {
+        setSearchValue(value)
+        const type = tableTabValue === 'favourite' ? TableFilterParams.favourite : tableTabValue === 'tradeRanking' ? TableFilterParams.ranking : TableFilterParams.all
+        handleTableFilterChange({keyword: value, type: type})
+    }, [handleTableFilterChange, tableTabValue])
+
+    const popState = usePopupState({variant: 'popover', popupId: `popup-pro-toolbar-markets`})
+
+    // const MakretChosenStyled = styled(Box)`
+    //     width: auto;
+    //     cursor: pointer;
+    // `
+
     return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2} justifyContent={'space-between'}>
         <Box alignItems={'center'} display={'flex'}>
-            <TextField
+            {/* <TextField
                 id="outlined-select-level"
                 select
                 size={'small'}
@@ -143,12 +247,68 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             >
                 {marketArray && !!marketArray.length && (marketArray.slice().sort((a, b) => a.localeCompare(b))).map((item) =>
                     <MenuItem key={item} value={item}>{item}</MenuItem>)}
-            </TextField>
+            </TextField> */}
+            <Box display={'flex'} alignItems={'center'} fontSize={'1.6rem'} {...bindTrigger(popState)} onClick={(e: any) => {
+                    bindTrigger(popState).onClick(e);
+                    setIsDropdownOpen(true);
+                    if (tableTabValue === 'favourite') {
+                        handleTabChange(_, 'favourite');
+                    }
+                }} width={'min-content'} style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                    {market}
+                    <DropDownIcon htmlColor={'var(--color-text-third)'} style={{ marginBottom: 2, transform: isDropdownOpen ? 'rotate(0.5turn)' : 'rotate(0)' }} />
+            </Box>
+                
+            <PopoverPure
+                className={'arrow-center no-arrow'}
+                {...bindPopper(popState)}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}>
+                <ClickAwayListener onClickAway={() => {popState.setOpen(false); setIsDropdownOpen(false);}}>
+                    <Box>
+                        <InputSearchWrapperStyled>
+                            <InputSearch fullWidth value={searchValue} onChange={handleSearchChange} />
+                        </InputSearchWrapperStyled>
+                        <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                            <Tabs
+                                value={tableTabValue}
+                                onChange={handleTabChange}
+                                aria-label="disabled tabs example"
+                            >
+                                <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
+                                <Tab label={t('labelAll')} value="all"/>
+                                {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
+                            </Tabs>
+                        </Box>
+                        <Divider style={{marginTop:'-1px'}}/>
+                        <TableProWrapStyled width={'580px'}>
+                            <QuoteTable
+                                isPro
+                                rawData={filteredData}
+                                favoriteMarket={favoriteMarket}
+                                addFavoriteMarket={addMarket}
+                                removeFavoriteMarket={removeMarket}
+                                onRowClick={(_, row) => {
+                                    handleOnMarketChange(`${row.pair.coinA}-${row.pair.coinB}` as MarketType);
+                                    popState.setOpen(false);
+                                    setIsDropdownOpen(false);
+                                }}
+                            />
+                        </TableProWrapStyled>
+                    </Box>
+                </ClickAwayListener>
+            </PopoverPure>
             <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
                 <Grid item>
                     <Typography fontWeight={500}
                                 color={!marketTicker?.tradeFloat?.close ? 'var(--color-text-primary)' : marketTicker.isRise ? 'var(--color-success)' : 'var(--color-error)'}>
-                        {marketTicker?.tradeFloat?.close??EmptyValueTag}</Typography>
+                        {marketTicker?.tradeFloat?.close ?? EmptyValueTag}</Typography>
                     <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? marketTicker.basePriceDollar : marketTicker.basePriceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>

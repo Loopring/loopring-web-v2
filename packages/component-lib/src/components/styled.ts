@@ -136,7 +136,6 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
     .react-swipeable-view-container > div {
       background: var(--opacity);
     }
-
     .container {
       padding-bottom: 0;
 

@@ -26,6 +26,8 @@ export default {
     labelTrades: 'Trade History',
     labelHistory: 'Transactions',
     labelOrder: 'Orders',
+    labelReward:'Reward',
+    labelRedPock:'RedPock',
     labelAmmRecords: 'AMM records',
     labelAmmRecordsDes: '(Add & Remove)',
     rewards: 'Rewards',

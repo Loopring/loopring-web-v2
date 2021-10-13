@@ -3,13 +3,14 @@ import React, { ChangeEvent } from 'react';
 import { Grid, Typography, Box, IconProps } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
+import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import * as _ from 'lodash'
 import { ToggleButtonGroup } from '../../basic-lib';
+import { useSettings } from '../../../stores'
 import styled from '@emotion/styled'
 
 const FeeTokenItemWrapper = styled(Box)`
@@ -59,10 +60,11 @@ export const TransferWrapNew = <T extends IBData<I>,
     const [feeToken, setFeeToken] = React.useState('')
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
+    const { feeChargeOrder } = useSettings()
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
     
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee, __raw__, }) => ({
+    const toggleData: any[] = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__, }) => ({
         key: belong,
         value: belong,
         fee,
@@ -166,13 +168,13 @@ export const TransferWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={2} maxWidth={450} fontSize={14}>
+                <Typography  padding={2} maxWidth={450} fontSize={14} variant={'body2'} whiteSpace={'pre-line'}>
                     <Trans i18nKey="transferDescription">
                         Transfer to any valid Ethereum addresses instantly. Please make
                         sure the recipient address accepts Loopring
                         layer-2 payments before you proceed.
                     </Trans>
-                </Box>
+                </Typography>
             </PopoverPure>
             {/* <Typography component={'p'} variant="body1">
                 <Trans i18nKey="transferDescription">

@@ -1,6 +1,6 @@
 import { Route, Switch } from 'react-router-dom'
 import React from 'react';
-import { Container, Box } from '@mui/material'
+import { Box, Container } from '@mui/material'
 import Header from 'layouts/header'
 import Footer from '../layouts/footer';
 import { ModalGroup } from '../modal';
@@ -14,16 +14,16 @@ import { OrderbookPage } from 'pages/ProTradePage';
 import { useTicker } from '../stores/ticker';
 import { useSystem } from '../stores/system';
 import { LoadingPage } from '../pages/LoadingPage';
+import { LandPage } from '../pages/LandPage/LandPage';
 
 
-
-const ContentWrap = ({ children }: React.PropsWithChildren<any>) => {
+const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
     return <> <Header isHideOnScroll={false}/><Container maxWidth="lg"
-        style={{
-            minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
+                                                         style={{
+                                                             minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                                                             display: 'flex',
+                                                             flexDirection: 'column'
+                                                         }}>
         <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
             {children}
         </Box>
@@ -50,14 +50,18 @@ const RouterView = () => {
     const {allowTrade} = useSystem();
 
     return <>
-
         <Switch>
-            {/*<Route exact component={LandPage} path='/landing-page'/>*/}
             <Route exact path='/landing-page'>
-                <ContentWrap>
-                    {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>}
-                </ContentWrap>
+                <Header isHideOnScroll={true}/>
+                <LandPage/>
             </Route>
+
+
+            {/*<Route exact path='/landing-page'>*/}
+            {/*    <ContentWrap>*/}
+            {/*        {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>}*/}
+            {/*    </ContentWrap>*/}
+            {/*</Route>*/}
             <Route exact path='/'><ContentWrap>
                 {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>}
             </ContentWrap></Route>
@@ -76,13 +80,14 @@ const RouterView = () => {
             <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
             <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>
             <Route exact path='/layer2'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/assets'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/my-liquidity'><ContentWrap><Layer2Page/></ContentWrap> </Route>
-            <Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/rewards'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/security'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/vip'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/*'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            {/*<Route exact path='/layer2/my-liquidity'><ContentWrap><Layer2Page/></ContentWrap> </Route>*/}
+            {/*<Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+            {/*<Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+            {/*<Route exact path='/layer2/rewards'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+            {/*<Route exact path='/layer2/redpock'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+            {/*<Route exact path='/layer2/security'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+            {/*<Route exact path='/layer2/vip'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
             <Route exact path='/liquidity'> <ContentWrap><LiquidityPage/></ContentWrap></Route>
             <Route exact path='/liquidity/pools/*'><ContentWrap><LiquidityPage/></ContentWrap></Route>
             <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>

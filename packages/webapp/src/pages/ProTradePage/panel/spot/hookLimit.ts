@@ -2,6 +2,8 @@ import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { AccountStatus, getValuePrecisionThousand, IBData, MarketType, myLog, } from '@loopring-web/common-resources';
 import {
+    account,
+    DepthType,
     LimitTradeData,
     TradeBaseType,
     TradeBtnStatus,
@@ -81,26 +83,62 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
         ])
 
     React.useEffect(() => {
-        if (pageTradePro.defaultPrice) {
-           const tradePrice = pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
-           let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
+        if (pageTradePro.chooseDepth) {
+            //@ts-ignore
+            const [, baseSymbol, quoteSymbol] = pageTradePro.market.match(/(\w+)-(\w+)/i);
+            const {decimals: baseDecimal,precision:basePrecision} = tokenMap[ baseSymbol ];
+            const tradePrice = pageTradePro.chooseDepth ? pageTradePro.chooseDepth.price : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
+            let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
             if (balance && currency === sdk.Currency.cny) {
                 balance = Number(balance) / forex;
             }
+           if((pageTradePro.tradeType === TradeProType.buy && pageTradePro.chooseDepth.type === DepthType.ask)
+               ||( pageTradePro.tradeType === TradeProType.sell && pageTradePro.chooseDepth.type === DepthType.bid )
+           ){
+               const amount = getValuePrecisionThousand(
+                   sdk.toBig(pageTradePro.chooseDepth.amtTotal).div('1e' + baseDecimal),
+                   undefined, undefined,
+                   basePrecision, true).replace(',','')
+               onChangeLimitEvent({
+                   ...limitTradeData,
+                   base:{
+                       ...limitTradeData.base,
+                       tradeValue: Number(amount),
+                   },
+                   price: {
+                       ...limitTradeData.price,
+                       tradeValue: Number(tradePrice),
+                       balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
+
+                   }},TradeBaseType.price)
+               // if(account.readyState === 'ACTIVATED'){
+               //
+               // }else{
+               //
+               //
+               //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
+               //
+               // }
+           }else{
+               onChangeLimitEvent({
+                   ...limitTradeData,
+                   price: {
+                       ...limitTradeData.price,
+                       tradeValue: Number(tradePrice),
+                       balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
+
+                   }},TradeBaseType.price)
+           }
+
+
+
             // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
 
-            onChangeLimitEvent({
-                ...limitTradeData,
-                price: {
-                    ...limitTradeData.price,
-                    tradeValue: Number(tradePrice),
-                    balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
 
-                }},TradeBaseType.price)
         }
 
 
-    }, [pageTradePro.defaultPrice, currency, forex])
+    }, [pageTradePro.chooseDepth, currency, forex])
 
     const resetTradeData = React.useCallback((type?: TradeProType) => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
@@ -141,7 +179,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
             request: null,
             calcTradeParams: null,
             limitCalcTradeParams: null,
-            defaultPrice: undefined,
+            chooseDepth: null,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
                 // walletMap:walletMap as any,
@@ -262,6 +300,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
             let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
 
             if (formType === TradeBaseType.price) {
+                debugger
                 amountBase = tradeData.base.tradeValue !== undefined ? tradeData.base.tradeValue : undefined
                 amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue !== undefined ? tradeData.quote.tradeValue : undefined
             }
