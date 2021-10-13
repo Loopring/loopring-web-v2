@@ -62,9 +62,13 @@ const RouterView = () => {
             {/*        {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>}*/}
             {/*    </ContentWrap>*/}
             {/*</Route>*/}
-            <Route exact path='/'><ContentWrap>
-                {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>}
-            </ContentWrap></Route>
+            <Route exact path='/'>
+                {/* <ContentWrap> */}
+                {/* {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>} */}
+                {/* </ContentWrap> */}
+                <Header isHideOnScroll={true}/>
+                <LandPage/>
+            </Route>
             <Route path='/trade/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
             <Route path='/trade/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
 
