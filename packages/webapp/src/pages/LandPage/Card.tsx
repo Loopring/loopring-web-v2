@@ -79,7 +79,7 @@ export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
             zoom: 1,
             zIndex: 99,
             border: '0px solid #fff' ,
-            boxShadow:   'inset 0px -20px 0px var(--border-card-hover), inset 0px 20px 0px var(--border-card-hover)',
+            boxShadow:   'inset 0px -16px 0px var(--border-card-hover), inset 0px 16px 0px var(--border-card-hover)',
             background: 'var(--box-card-background-hover)'
         })}
         className={'card'}
@@ -111,7 +111,7 @@ export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
             >{t(title)}</Typography>
         </Typography>
         <Typography component={'p'} textAlign={'center'} marginTop={3}
-                    variant={'h5'} whiteSpace={'pre-line'}  color={'var(--text-secondary)'} fontWeight={500}
+                    variant={'h5'} whiteSpace={'pre-line'}  color={'var(--text-secondary)'} fontWeight={400}
                     width={306}>
             {t(describe)}
         </Typography>

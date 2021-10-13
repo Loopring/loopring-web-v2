@@ -2,7 +2,7 @@ import {
     AssetsIcon,
     L2HistoryIcon,
     L2MyLiquidityIcon,
-    L2OrderIcon, RedPockIcon, RewardIcon,
+    L2OrderIcon,
     // RedPockIcon,
     // RewardIcon,
     SecurityIcon,
@@ -85,7 +85,7 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
     },
     {
         label: {
-            id: 'Trading', i18nKey: 'labelTrade',
+            id: 'Trade', i18nKey: 'labelTrade',
         },
         status: HeaderMenuTabStatus.default,
         child: layer2ItemData,
@@ -214,4 +214,4 @@ export const subMenuLayer2 = {
 //     // }
 //     // ]
 // }
-export const headerRoot = 'Trading'
+export const headerRoot = 'Landing-page'
