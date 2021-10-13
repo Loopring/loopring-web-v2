@@ -7,6 +7,14 @@ export default {
     labelTradeUser:'注册 \n 用户',
     labelTradeTVL:'流动性',
     labelTradeNofTrades:'成交 \n 量',
-    labelZeroKpt:'零知识证明技术'
-
+    labelZeroKpt:'零知识证明技术',
+    labelSafety:'',
+    labelLowCost:'',
+    labelFastTransfer:'',
+    labelSuperpowers :'',
+    describeSafety:'',
+    describeLowCost:'',
+    describeFastTransfer:'',
+    describeSuperpowers :'',
+    labelBtnStart:''
 }

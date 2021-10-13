@@ -48,7 +48,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 tradeArray,
                 totalFee,
                 takerRate,
-                defaultPrice,
+                chooseDepth,
                 sellUserOrderInfo,
                 buyUserOrderInfo,
                 minOrderInfo,
@@ -72,7 +72,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     totalFee,
                     takerRate,
                     tradeArray,
-                    defaultPrice,
+                    chooseDepth,
                     precisionLevels,
                     depthLevel,
                     sellUserOrderInfo,
@@ -88,8 +88,8 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if(precisionLevels){
                     state.pageTradePro.precisionLevels = precisionLevels
                 }
-                if(defaultPrice){
-                    state.pageTradePro.defaultPrice = defaultPrice
+                if(chooseDepth !== undefined){
+                    state.pageTradePro.chooseDepth = chooseDepth;
                 }
                 if(depthLevel){
                     state.pageTradePro.depthLevel = depthLevel

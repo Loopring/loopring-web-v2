@@ -94,7 +94,7 @@ const ActionMemo = React.memo(({
     const popoverProps: PopoverWrapProps = {
         type: PopoverType.click,
         popupId: 'testPopup',
-        className: 'arrow-right',
+        className: 'arrow-none',
         children: <MoreIcon cursor={'pointer'}/>,
         popoverContent: <ActionPopContent {...{isLp, market, getMarketArrayListCallback,allowTrade, t}} />,
         anchorOrigin: {
