@@ -300,6 +300,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
             let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
 
             if (formType === TradeBaseType.price) {
+                debugger
                 amountBase = tradeData.base.tradeValue !== undefined ? tradeData.base.tradeValue : undefined
                 amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue !== undefined ? tradeData.quote.tradeValue : undefined
             }
