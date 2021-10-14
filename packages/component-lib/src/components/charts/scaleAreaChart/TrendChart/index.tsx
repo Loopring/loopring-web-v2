@@ -131,7 +131,7 @@ const TrendChart = ({
     }
 
     return (
-        <ResponsiveContainer debounce={100} width={'95%'}>
+        <ResponsiveContainer debounce={100} width={'99%'}>
             <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}
                         onMouseLeave={showTooltip && handleMouseLeave}>
                 <defs>
