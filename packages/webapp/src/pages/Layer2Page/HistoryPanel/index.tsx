@@ -5,6 +5,7 @@ import { AmmTable, TradeTable, TransactionTable } from '@loopring-web/component-
 import { StylePaper } from '../../styled'
 import { useGetAmmRecord, useGetTrades, useGetTxs } from './hooks';
 import { useSystem } from 'stores/system'
+import { useAccount } from 'stores/account'
 import store from 'stores'
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
@@ -15,6 +16,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     const {userTrades, getUserTradeList, userTradesTotal, showLoading: showTradeLoading} = useGetTrades()
     const {ammRecordList, showLoading: ammLoading, getAmmpoolList} = useGetAmmRecord()
     const {tokenMap, marketMap} = store.getState().tokenMap
+    const { account: {accAddress} } = useAccount()
 
     const {t} = rest
     const container = React.useRef(null);
@@ -78,6 +80,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         showFilter: true,
                         showloading: showTxsLoading,
                         getTxnList: getUserTxnList,
+                        accAddress,
                         ...rest
                     }} />
                 ) : currentTab === 'trades' ? (

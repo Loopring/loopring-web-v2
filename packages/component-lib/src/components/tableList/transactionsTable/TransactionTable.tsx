@@ -50,8 +50,8 @@ const TYPE_COLOR_MAPPING = [
     {type: TransactionStatus.failed, color: 'error'},
 ]
 
-const CellStatus = ({row, column}: any) => {
-    const status = row[ column.key ]
+const CellStatus = ({row}: any) => {
+    const status = row['status']
     // const popupId = `${column.key}-${rowIdx}`
     // const popoverContent = <div style={{padding: 12}}>
     //     Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the
@@ -73,34 +73,22 @@ const CellStatus = ({row, column}: any) => {
         : status === 'processing' || status === 'received'
             ? <WaitingIcon /> 
             : <WarningIcon />
-    const RenderValueWrapper =
+    const RenderValueWrapper = (
         <RenderValue>
             {/* {svg}{status} */}
             {svg}
         </RenderValue>
-
-    return <Box className="rdg-cell-value rdgCellCenter">
-        {/* <Popover
-            type={PopoverType.hover}
-            popupId={popupId}
-            popoverContent={popoverContent}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            arrowHorizon={{
-                right: 10
-            }}
-        >
-            {RenderValueWrapper}
-        </Popover> */}
-        {RenderValueWrapper}
-    </Box>
+    )
+    return RenderValueWrapper
 }
+
+const MemoCellStyled = styled(Box)`
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+`
 
 const TableStyled = styled(Box)`
     display: flex;
@@ -117,7 +105,7 @@ const TableStyled = styled(Box)`
         // }
         .rdgCellCenter {
             height: 100%;
-            display: flex;
+            // display: flex;
             justify-content: center;
             align-items: center;
         }
@@ -146,10 +134,11 @@ export interface TransactionTableProps {
     getTxnList: ({ tokenSymbol, start, end, limit, offset, types }: TxsFilterProps) => Promise<void>;
     showFilter?: boolean;
     showloading: boolean;
+    accAddress?: string;
 }
 
 export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
-    const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl } = props
+    const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl, accAddress } = props
     const [page, setPage] = React.useState(1)
     // const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
@@ -265,10 +254,16 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             formatter: ({row}) => {
                 const {unit, value} = row[ 'amount' ]
                 const hasValue = Number.isFinite(value)
+                const hasSymbol = row['side'] === 'TRANSFER' 
+                    ? row['receiverAddress'] === accAddress 
+                        ? '+' 
+                        : '-'
+                    : ''
+                myLog({row})
                 const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, undefined, false, { isTrade: true })}` : EmptyValueTag
                 return (
                     <Box className="rdg-cell-value textAlignRight">
-                        {renderValue} {unit || ''}
+                        {hasSymbol}{renderValue} {unit || ''}
                     </Box>
                 )
             },
@@ -336,23 +331,26 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     etherscanBaseUrl,
                 }
                 return (
-                    <div className="rdg-cell-value textAlignRight">
+                    <Box className="rdg-cell-value textAlignRight" display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                         {path ? <Link href={path}>
                                 <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
                             </Link> :
                             <RenderValue onClick={() => handleTxnDetail(formattedDetail)} title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
-                    </div>
+                        <Box marginLeft={1}>
+                            <CellStatus {...{row}} />
+                        </Box>
+                    </Box>
                 )
             }
         },
         {
             key: 'status',
-            name: t('labelTxStatus'),
-            headerCellClass: 'textAlingCenter',
-            formatter: ({row, column, rowIdx}) => (
-                // <Box component={'div'} className="rdg-cell-value rdgCellCenter">
-                    <CellStatus {...{row, column, rowIdx}} />
-                // </Box>
+            name: t('labelTxMemo'),
+            headerCellClass: 'textAlignRight',
+            formatter: ({row}) => (
+                <MemoCellStyled title={row['memo']} className="rdg-cell-value rdgCellCenter" >
+                    {row['memo'] || EmptyValueTag}
+                </MemoCellStyled>
             )
         },
         {
