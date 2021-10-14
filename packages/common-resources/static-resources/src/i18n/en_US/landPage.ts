@@ -4,7 +4,7 @@ export default {
     labelStartTrade:'start trading',
     labelTitleDEX:'Loopring Dex',
     labelTradeVolume:'Trading \n Volume',
-    labelTradeUser:'Total \n User',
+    labelTradeUser:'Total \n Users',
     labelTradeTVL:'TVL',//Total Value Locked
     labelTradeNofTrades:'Number \n of Trades',
     labelZeroKpt:'Zero-knowledge proof technology',
