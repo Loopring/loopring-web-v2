@@ -18,7 +18,7 @@ max-width: initial;
 background:  var(--opacity);
 }
 a{
-color:var(--color-text-secondary) 
+color:var(--color-global-bg) 
 }
 }
 `
@@ -32,11 +32,16 @@ myLog(mode)
 return <FooterDiv component={'footer'}  fontSize={'body1'}>
 <Container>
 <Grid container direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-    <Grid justifyContent="flex-start" item xs={12} md={1} lg={1}>    
+    <Grid justifyContent="flex-start" item xs={12} md={2} lg={2}>    
     <Box>
-        {mode === 'light' ? 
-        <Link color="textSecondary" paddingX={0.5} target={'_blank'} href="https://medium.com/loopring-protocol"><LoopringLightFooterIcon style={{transform: 'scale(11)'}}/></Link> : <Link color="textSecondary" paddingX={0.5} target={'_blank'} href="https://medium.com/loopring-protocol"><LoopringDarkFooterIcon style={{transform: 'scale(11)'}}/></Link> 
-        }             
+    <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
+        {
+        mode === 'light' ? 
+        <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/> 
+        : 
+        <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
+        }
+    </Link>             
     </Box>
     </Grid>
     <Grid item xs={12} md={7} lg={7} container direction="row" justifyContent="space-around" alignItems="flex-start" spacing={1}>
