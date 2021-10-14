@@ -52,7 +52,7 @@ const handleLinkClick = React.useCallback((href: string) => {
     window.open(href)
 }, [])
 
-return <FooterDiv component={'footer'}  fontSize={'body1'}>
+return <FooterDiv style={{ backgroundColor: mode === 'dark' ? '#0A0B2F' : '#fff' }} component={'footer'} fontSize={'body1'}>
 <Container >
 <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'} height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
 <Grid justifyContent="flex-start" item lg={2}>
