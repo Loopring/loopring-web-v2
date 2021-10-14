@@ -48,7 +48,9 @@ React.useLayoutEffect(() => {
     return () => window.removeEventListener('resize', updateSize);
 }, []);
 
-myLog(mode)
+const handleLinkClick = React.useCallback((href: string) => {
+    window.open(href)
+}, [])
 
 return <FooterDiv component={'footer'}  fontSize={'body1'}>
 <Container >
@@ -222,7 +224,7 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
             }      
         ].map((o, index) => (
                 <ListItem key={`${o.linkName}-${index}`}>
-                <Link paddingX={0.5} fontSize={12} href={o.linkHref}>{o.linkName}</Link>            
+                <Link paddingX={0.5} fontSize={12} onClick={() => handleLinkClick(o.linkHref)}>{o.linkName}</Link>            
                 </ListItem>
         ))
         }  
