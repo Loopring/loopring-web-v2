@@ -309,7 +309,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                                         margin={4}>{t('labelTradeUser')}</Typography>
                             <Typography component={'span'} marginLeft={4}
                                         style={{fontSize: 90, fontWeight: 700}}>
-                                ${value && getValuePrecisionThousand(
+                                {value && getValuePrecisionThousand(
                                 value.totalUserNum, 1, 1, 1, true, {abbreviate: 3, isAbbreviate: true}
                             )}</Typography>
                         </BoxCard>
@@ -325,7 +325,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             <Typography whiteSpace={'pre-line'} component={'h4'}
                                         margin={4}>{t('labelTradeNofTrades')}</Typography>
                             <Typography component={'span'} marginLeft={4}
-                                        style={{fontSize: 100, fontWeight: 700}}>${value && getValuePrecisionThousand(
+                                        style={{fontSize: 120, fontWeight: 700}}>{value && getValuePrecisionThousand(
                                 value.tradeNum, 1, 1, 1, true, {abbreviate: 3, isAbbreviate: true}
                             )}</Typography>
                         </BoxCard>

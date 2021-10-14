@@ -33,6 +33,7 @@ import _ from 'lodash'
 import { getTimestampDaysLater } from "utils/dt_tools";
 import { DAYS } from "defs/common_defs";
 import { useSystem } from '../../../stores/system';
+import { useCoinPair } from '../CoinPairPanel/hooks'
 
 // ----------calc hook -------
 
@@ -69,6 +70,7 @@ export const useAmmJoin = ({
     const {allowTrade} = useSystem();
     const {ammMap} = useAmmMap();
     const {account, status: accountStatus} = useAccount();
+    const { getUserAmmPoolTxs } = useCoinPair()
 
     const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
     const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
@@ -282,7 +284,6 @@ export const useAmmJoin = ({
                 slippage,
             }
         })
-
     }, [])
 
     const handleAmmPoolEvent = (data: AmmJoinData<IBData<any>>, _type: 'coinA' | 'coinB') => {
@@ -362,8 +363,9 @@ export const useAmmJoin = ({
                 setToastOpen({open: true, type: 'error', content: t('labelJoinAmmFailed')})
             } finally {
                 setIsLoading(false)
-                updateJoinFee()
                 walletLayer2Service.sendUserUpdate()
+                await updateJoinFee()
+                getUserAmmPoolTxs({ limit: 14 })
             }
 
             if (props.__cache__) {
