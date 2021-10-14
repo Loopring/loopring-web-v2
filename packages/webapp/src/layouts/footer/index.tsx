@@ -79,11 +79,11 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
                 },
                 {
                     linkName: 'Terms',
-                    linkHref: "https://loopring.pro/#/legal/terms/en"
+                    linkHref: "https://loopring.io/#/legal/terms/en"
                 },
                 {
                     linkName: 'Privacy',
-                    linkHref: "https://loopring.pro/#/legal/privacy/en"
+                    linkHref: "https://loopring.io/#/legal/privacy/en"
                 },
                 {
                     linkName: 'News',
@@ -91,7 +91,7 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
                 },
                 {
                     linkName: 'Risk',
-                    linkHref: "https://loopring.pro/#/legal/risks/en"
+                    linkHref: "https://loopring.io/#/legal/risks/en"
                 },
                 
             ].map((o, index) => (
@@ -109,7 +109,7 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
             [
                 {
                     linkName: 'Fees',
-                    linkHref: "https://loopring.pro/#/embed/wallet_fees_en"
+                    linkHref: "https://loopring.io/#/embed/wallet_fees_en"
                 },
                 {
                     linkName: 'VIP',
@@ -173,7 +173,7 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
             [
                 {
                     linkName: 'Smart Contract',
-                    linkHref: "https://loopring.pro/#/legal/contracts/en"
+                    linkHref: "https://loopring.io/#/legal/contracts/en"
                 },
                 {
                     linkName: 'Loopring App',
