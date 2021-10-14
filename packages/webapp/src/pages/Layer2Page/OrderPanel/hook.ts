@@ -8,6 +8,7 @@ import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
 import BigNumber from 'bignumber.js';
 import {TFunction} from 'react-i18next'
+import {useWalletLayer2} from 'stores/walletLayer2'
 
 export const useOrderList = () => {
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
@@ -20,6 +21,7 @@ export const useOrderList = () => {
     const {tokenMap: {marketArray, tokenMap, marketMap}} = store.getState()
     const {ammMap: {ammMap}} = store.getState().amm
     const {sk: privateKey} = store.getState().account.eddsaKey
+    const { updateWalletLayer2 } = useWalletLayer2()
 
     const ammPairList = ammMap
         ? Object.keys(ammMap)
@@ -134,7 +136,8 @@ export const useOrderList = () => {
                 getOrderList({
                     status: 'processing'
                 })
-            }, 500)
+            }, 100)
+            updateWalletLayer2()
             // setShowLoading(false)
         }
     }, [accountId, apiKey, privateKey])
