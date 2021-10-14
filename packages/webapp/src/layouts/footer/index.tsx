@@ -1,8 +1,17 @@
 import styled from '@emotion/styled/macro'
 import { Box, Button, Container, Grid, Link, List, ListItem, Typography } from '@mui/material';
+import React from 'react';
 import { LoopringDarkFooterIcon, LoopringLightFooterIcon,YoutubeIcon,TwitterIcon,MediumIcon,DiscordIcon, myLog } from '@loopring-web/common-resources';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
+
+
+const HeightConfig = {
+    headerHeight: 24,
+    whiteHeight: 12,
+    maxHeight: 253,
+    minHeight: 230,
+}
 
 const FooterDiv = styled(Box)`
 @media screen and (max-width: 1280px) {
@@ -12,7 +21,7 @@ const FooterDiv = styled(Box)`
 font-size: 1.4rem;
 .MuiListItem-root{
 padding: 0;
-width: auto;
+width: 1080;
 max-width: initial;
 :hover{
 background:  var(--opacity);
@@ -27,12 +36,24 @@ color:var(--color-global-bg)
 
 const Footer = withTranslation(['layout'])(({t}: any) => {
 const {mode} = useTheme()
+const [size, setSize] = React.useState<[number, number]>([1200, 0]);
+React.useLayoutEffect(() => {
+    function updateSize() {
+        setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
+
+    }
+
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+}, []);
+
 myLog(mode)
 
 return <FooterDiv component={'footer'}  fontSize={'body1'}>
-<Container>
-<Grid container direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-    <Grid justifyContent="flex-start" item xs={12} md={2} lg={2}>    
+<Container >
+<Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'} height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
+<Grid justifyContent="flex-start" item lg={2}>
     <Box>
     <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
         {
@@ -44,7 +65,7 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
     </Link>             
     </Box>
     </Grid>
-    <Grid item xs={12} md={7} lg={7} container direction="row" justifyContent="space-around" alignItems="flex-start" spacing={1}>
+    <Grid item lg={7} container direction="row" justifyContent="space-around" alignItems="flex-start" spacing={1}>
     <Grid>
     <List>
     <Typography color={'var(--color-text-third)'} sx={{ mt: 4, mb: 2 }} fontSize='12px' variant="h6" component="div"> {t('Loopring')} </Typography>
@@ -174,7 +195,7 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
     </List>
     </Grid>    
     </Grid>
-    <Grid justifyContent="flex-end"     item xs={12} md={1} lg={1}>
+    <Grid justifyContent="flex-end" item lg={2}>
     <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" item xs={12} md={12} lg={12}>
     <Grid item xs={12} md={12} lg={12}>
     <Typography color="textThird"  variant="h6" component="div"> Follow us </Typography>
@@ -215,9 +236,7 @@ return <FooterDiv component={'footer'}  fontSize={'body1'}>
         <Typography style={{fontSize:'9px'}} component={'span'}>Copyright (c) 2017-{new Date().getFullYear()}.</Typography>
         <Typography style={{fontSize:'9px'}} component={'span'}>All rights reserved.</Typography>
     </Typography>
-    {/* <Typography component={'p'}  variant={'body2'} paddingTop={1} paddingBottom={2}  textAlign={'center'}> */}
-        {/* <Link target={'_blank'} href={'https://github.com/Loopring/loopring-web-v2/issues/new'}> let me report issue ^. ^</Link> */}
-    {/* </Typography> */}
+    <Typography component={'p'}  variant={'body2'} paddingTop={1} paddingBottom={2}  textAlign={'center'}></Typography>
 </Container>
 </FooterDiv>
 })
