@@ -30,7 +30,7 @@ const TradePanel = withTranslation('common')(
     (
         {tradeArray, myTradeArray, t}:
             { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] } & WithTranslation & RouteComponentProps) => {
-        const [value, setValue] = useState(1)
+        const [value, setValue] = useState(0)
         // const [tableHeight, setTableHeight] = useState(0);
         const handleChange = (event: any, newValue: any) => {
             setValue(newValue)
@@ -46,22 +46,21 @@ const TradePanel = withTranslation('common')(
                     <Tab label={t('labelMyTrade')} {...applyProps(1)} />
                 </TabsStyled>
                 <Divider style={{marginTop:'-1px'}}/>
-                {value === 1?
-                    <TradeTable
+                {value === 0
+                    ? (<TradeTable
+                        rowHeight={RowConfig.rowHeight}
+                        headerRowHeight={RowConfig.rowHeaderHeight}
+                        rawData={tradeArray}
+                        tokenMap={tokenMap}
+                        currentheight={tableHeight}/>)
+                    : (<TradeTable
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.rowHeaderHeight}
                         rawData={myTradeArray}
                         pagination={{pageSize:14,total:14}}
                         tokenMap={tokenMap}
-                        currentheight={tableHeight - RowConfig.rowHeight}/>:
-                    <TradeTable
-                        rowHeight={RowConfig.rowHeight}
-                        headerRowHeight={RowConfig.rowHeaderHeight}
-                        rawData={tradeArray}
-                        tokenMap={tokenMap}
-                        currentheight={tableHeight}/>
+                        currentheight={tableHeight - RowConfig.rowHeight}/>)
                 }
-
             </TableWrapStyled>
         )
     }

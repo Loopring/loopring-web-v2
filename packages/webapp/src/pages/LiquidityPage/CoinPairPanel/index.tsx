@@ -80,7 +80,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         stob,
         btos,
     } = useCoinPair();
-    const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
+    const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
 
     const {coinJson} = useSettings();

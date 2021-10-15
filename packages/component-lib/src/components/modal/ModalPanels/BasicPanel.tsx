@@ -121,7 +121,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
         </Box>}
 
         {describe2 && <Box flex={1} display={'flex'} marginTop={0} alignItems={'flex-center'}>
-            <Typography whiteSpace={'pre-line'} variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
+            <Typography marginX={3} whiteSpace={'pre-line'} variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
                 paddingX={1}>
                 {describe2}
             </Typography>
