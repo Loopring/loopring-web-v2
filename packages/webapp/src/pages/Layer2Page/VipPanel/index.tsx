@@ -27,7 +27,7 @@ const vipDefault: string[][] = [
 export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
     const {account: {level}} = useAccount()
     const getImagePath = React.useCallback(() => {
-        const path = SoursURL + `images/vips/${level.toUpperCase().replace('_','')}.png`
+        const path = SoursURL + `/images/vips/${level.toUpperCase().replace('_','')}.png`
         return path
     }, [level])
     const [vipTable,setVipTable] =React.useState<string[][]>(vipDefault);
