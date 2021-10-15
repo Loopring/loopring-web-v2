@@ -8,11 +8,10 @@ import {
 import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Interface';
 import { TFunction, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
-import { BackIcon, CloseIcon, QRIcon } from '@loopring-web/common-resources';
+import { BackIcon, CloseIcon, QRIcon, SoursURL } from '@loopring-web/common-resources';
 import { Link } from '@mui/material';
 import React from 'react';
-
+const loadingSvg = SoursURL+'/svg/loading.svg'
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     &.MuiButton-root.Mui-disabled {
@@ -193,9 +192,9 @@ const QRStyle = styled(Box)`
       //z-index: -1;
       background-image:${({theme})=> {
         if(theme.mode === 'dark') {
-          return  `url('./static/images/qr_code_dark.png')`;
+          return  `url('http://static.loopring.io/assets/images/qr_code_dark.png')`;
         }else{
-          return `url('./static/images/qr_code_light.png')`;
+          return `url('http://static.loopring.io/assets/images/qr_code_light.png')`;
         }
       }};
     }

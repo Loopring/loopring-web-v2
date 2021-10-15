@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, Link, Modal, Typography } from '@mui/material'
+import { Box, Link, Modal } from '@mui/material'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { Column, Table, TablePagination } from '../../basic-lib'
@@ -12,6 +12,7 @@ import {
     WarningIcon,
     CompleteIcon,
     getValuePrecisionThousand,
+    myLog,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TxnDetailPanel, TxnDetailProps } from './components/modal'
@@ -253,19 +254,16 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             formatter: ({row}) => {
                 const {unit, value} = row[ 'amount' ]
                 const hasValue = Number.isFinite(value)
-                const hasSymbol = row['side'] === 'TRANSFER'
-                    ? row['receiverAddress'].toUpperCase() === accAddress?.toUpperCase()
+                const hasSymbol = row['side'] === 'TRANSFER' 
+                    ? row['receiverAddress'] === accAddress 
                         ? '+' 
                         : '-'
                     : ''
+                myLog({row})
                 const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, undefined, false, { isTrade: true })}` : EmptyValueTag
                 return (
                     <Box className="rdg-cell-value textAlignRight">
-                        <Typography component={"span"} color={row['side'] === 'TRANSFER' 
-                            ? hasSymbol === '+'
-                                ? 'var(--color-success)' 
-                                : 'var(--color-error)'
-                            : 'var(--color-text-primary)' }>{hasSymbol}{renderValue} {unit || ''} </Typography>
+                        {hasSymbol}{renderValue} {unit || ''}
                     </Box>
                 )
             },

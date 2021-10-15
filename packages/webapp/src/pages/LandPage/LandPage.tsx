@@ -50,7 +50,7 @@ const ContainerStyle = styled(Box)`
 
   ${({theme}) => {
     let result = `
-       --img-banner-url: url("./static/images/landPage/img_home_banner_${theme.mode}@2x.png");
+       --img-banner-url: url("http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png");
       `
     if (theme.mode === ThemeType.dark) {
       result += `
@@ -103,10 +103,10 @@ const GridBg = styled(Grid)`
 
   ${({theme}) => {
     return `
-     background-image: image-set(url("./static/images/landPage/img_home_banner_${theme.mode}@1x.webp") 1x,
-      url("./static/images/landPage/img_home_banner_${theme.mode}@1x.png") 1x);
+     background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp") 1x,
+      url("http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png") 1x);
         `
-  }} //background-image: url("./static/images/landPage/img_home_banner_dark@2x.png");
+  }} //background-image: url("http://static.loopring.io/assets/images/landPage/img_home_banner_dark@2x.png");
 
 ` as typeof Grid
 
@@ -116,8 +116,8 @@ const BottomBanner = styled(Box)`
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: cover;
-  background-image: image-set(url("./static/images/landPage/img_home_agreement@1x.webp") 1x,
-  url("./static/images/landPage/img_home_agreement@1x.png") 1x);
+  background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_home_agreement@1x.webp") 1x,
+  url("http://static.loopring.io/assets/images/landPage/img_home_agreement@1x.png") 1x);
   //mask-image: linear-gradient(rgba(0, 0, 0, 1.0), transparent);
 ` as typeof Box
 
@@ -240,15 +240,15 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                         height={size[ 1 ]}>
                     {/*<picture style={{'absolute'}}  >*/}
                     {/*    <source*/}
-                    {/*        srcSet={`./static/images/landPage/img_home_banner_${theme.mode}@1x.webp 1x,*/}
-                    {/*             ./static/images/landPage/img_home_banner_${theme.mode}@2x.webp 2x`}*/}
+                    {/*        srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp 1x,*/}
+                    {/*             http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.webp 2x`}*/}
                     {/*        type="image/webp"/>*/}
                     {/*    <source*/}
-                    {/*        srcSet={`./static/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
-                    {/*             ./static/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
+                    {/*        srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
+                    {/*             http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
                     {/*    />*/}
-                    {/*    <img srcSet={`./static/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
-                    {/*             ./static/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
+                    {/*    <img srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
+                    {/*             http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
                     {/*         alt="img-banner"/>*/}
                     {/*</picture>*/}
                     <Box position={'absolute'} left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}>

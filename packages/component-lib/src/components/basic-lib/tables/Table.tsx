@@ -7,7 +7,6 @@ import { WithT } from "i18next";
 import React from "react";
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
 import { EmptyDefault } from '../empty';
-// import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { LoadingIcon } from '@loopring-web/common-resources'
 import { Box, IconButton } from '@mui/material';
 import { css } from '@emotion/react';

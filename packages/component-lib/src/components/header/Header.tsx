@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger } from '@mui/material';
 import { Link as RouterLink } from "react-router-dom";
-import logoSVG from '@loopring-web/common-resources/assets/svg/logo.svg'
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { HeaderMenuSub, HeadMenuItem, Layer2Item, TabItemPlus } from '../basic-lib';
 import { HeaderProps, HeaderToolBarInterface } from './Interface';
@@ -9,14 +8,13 @@ import {
     // ammDisableList,
     ButtonComponentsMap,
     HeaderMenuItemInterface,
-    HeaderMenuTabStatus,
+    HeaderMenuTabStatus, SoursURL,
     // orderDisableList,
     ToolBarAvailableItem
 } from '@loopring-web/common-resources';
 import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
-// import { useSettings } from '../../stores';
-
+const logoSVG = SoursURL+'/svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
   && {
     display: flex;
