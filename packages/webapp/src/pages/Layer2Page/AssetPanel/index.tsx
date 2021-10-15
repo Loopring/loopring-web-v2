@@ -42,7 +42,7 @@ const StyleTitlePaper = styled(Box)`
 
 
 const ChartWrapper = styled(Box)`
-    background-image: url('./static/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
+    background-image: url('http://static.loopring.io/assets/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
     background-repeat: no-repeat;
 ` as any
 

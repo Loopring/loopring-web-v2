@@ -10,7 +10,6 @@ import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import mySaga from './rootSaga';
 import { updateVersion } from './global/actions'
 import createSagaMiddleware from 'redux-saga'
-import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { reduxBatch } from '@manaflair/redux-batch'
 import accountSlice from './account/reducer'
 import { modalsSlice, setCoinJson, setLanguage, settingsSlice, SettingsState, } from '@loopring-web/component-lib';
@@ -29,9 +28,7 @@ import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
 import { amountMapSlice } from './amount';
-import { pageTradeLiteSlice, pageAmmPoolSlice, modalDataSlice,
-    pageTradeProSlice,
-} from './router';
+import { modalDataSlice, pageAmmPoolSlice, pageTradeLiteSlice, pageTradeProSlice, } from './router';
 import { tokenPricesSlice } from './tokenPrices';
 
 const sagaMiddleware = createSagaMiddleware()
@@ -110,8 +107,18 @@ const store = configureStore({
 store.dispatch(updateVersion())
 
 store.dispatch(setLanguage(store.getState().settings.language))
+fetch(`https://static.loopring.io/assets/images/coin/loopring.json`)
+    .then(results => results.json()).then(imgConfig=>{
 
-store.dispatch(setCoinJson(imgConfig.frames))
+    store.dispatch(setCoinJson(imgConfig.frames))
+
+})
+// async function imageConfig() {
+//     const imgConfig = (await .json();
+//
+//
+
+// imageConfig()
 
 // @ts-ignore
 sagaMiddleware.run(mySaga, store.dispatch);
