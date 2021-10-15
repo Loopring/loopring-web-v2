@@ -8,7 +8,7 @@ import {
     getValuePrecisionThousand,
     IBData,
     myLog,
-    SlippageTolerance
+    SlippageTolerance, SoursURL
 } from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
