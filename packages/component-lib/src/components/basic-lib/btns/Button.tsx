@@ -11,7 +11,7 @@ import styled from "@emotion/styled";
 import { BackIcon, CloseIcon, QRIcon, SoursURL } from '@loopring-web/common-resources';
 import { Link } from '@mui/material';
 import React from 'react';
-const loadingSvg = SoursURL+'/svg/loading.svg'
+const loadingSvg = SoursURL+'svg/loading.svg'
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     &.MuiButton-root.Mui-disabled {

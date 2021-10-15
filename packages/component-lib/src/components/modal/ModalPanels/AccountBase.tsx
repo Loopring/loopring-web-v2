@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material';
-import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
+import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, SoursURL, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { AccountBaseProps } from './Interface';
@@ -46,7 +46,7 @@ export const AccountBasePanel = ({
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
 
     const getImagePath = React.useMemo(() => {
-        return `static/images/vips/${level.toUpperCase().replace('_','')}`
+        return SoursURL + `/images/vips/${level.toUpperCase().replace('_','')}`
 
     }, [level])
 

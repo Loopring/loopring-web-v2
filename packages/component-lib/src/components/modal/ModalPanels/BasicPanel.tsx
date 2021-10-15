@@ -3,7 +3,7 @@ import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
-    DoneIcon, FailedIcon, RefuseIcon, SubmitIcon, LinkIcon,
+    DoneIcon, FailedIcon, RefuseIcon, SubmitIcon, LinkIcon, SoursURL,
 } from '@loopring-web/common-resources';
 import React from 'react';
 
@@ -90,7 +90,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
                         Please click approve button on MetaMask popup window.
                         When MetaMask dialog is dismiss,
                         please manually click <img alt="MetaMask" style={{ verticalAlign: 'text-bottom' }}
-                            src={'static/images/MetaMaskPlugIn.png'} /> on your browser toolbar.
+                            src={SoursURL+'images/MetaMaskPlugIn.png'} /> on your browser toolbar.
                     </Trans>
                 case ConnectProviders.WalletConnect:
                     return <Trans i18nKey={'labelWalletConnectProcessDescribe2'}>
