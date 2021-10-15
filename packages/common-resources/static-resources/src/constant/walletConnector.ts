@@ -5,11 +5,11 @@ import { SoursURL } from './router';
 export const gatewayList: GatewayItem[] = [
     {
         key: ConnectProviders.MetaMask,
-        imgSrc: SoursURL+'/svg/meta-mask.svg',
+        imgSrc: SoursURL+'svg/meta-mask.svg',
     },
     {
         key: ConnectProviders.WalletConnect,
-        imgSrc: SoursURL+'/svg/wallet-connect.svg',
+        imgSrc: SoursURL+'svg/wallet-connect.svg',
     },
     // {
     //     key: 'Ledger',

@@ -6,6 +6,7 @@ import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useAccount } from '../../../stores/account';
 import { LoopringAPI } from '../../../api_wrapper';
 import { VipFeeRateInfoMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { SoursURL } from '@loopring-web/common-resources';
 
 const StylePaper = styled(Grid)`
   width: 100%;
@@ -26,7 +27,7 @@ const vipDefault: string[][] = [
 export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
     const {account: {level}} = useAccount()
     const getImagePath = React.useCallback(() => {
-        const path = `static/images/vips/${level.toUpperCase().replace('_','')}.png`
+        const path = SoursURL + `/images/vips/${level.toUpperCase().replace('_','')}.png`
         return path
     }, [level])
     const [vipTable,setVipTable] =React.useState<string[][]>(vipDefault);

@@ -3,7 +3,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
-    DoneIcon, FailedIcon, RefuseIcon,
+    DoneIcon, FailedIcon, RefuseIcon, SoursURL,
 } from '@loopring-web/common-resources';
 import React from 'react';
 import { useTheme } from '@emotion/react';
@@ -22,7 +22,7 @@ export const InProgressBasic = ({
                     Please click approve button on MetaMask popup window.
                     When MetaMask dialog is dismiss,
                     please manually click <img alt="MetaMask" style={{verticalAlign: 'text-bottom'}}
-                                               src={'static/images/MetaMaskPlugIn.png'}/> on your browser toolbar.
+                                               src={SoursURL+'images/MetaMaskPlugIn.png'}/> on your browser toolbar.
                 </Trans>
             case  ConnectProviders.WalletConnect:
                 return <Trans i18nKey={'labelWalletConnectProcessDescribe2'}>

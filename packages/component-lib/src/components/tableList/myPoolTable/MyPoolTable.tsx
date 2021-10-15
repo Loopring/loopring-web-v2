@@ -141,7 +141,7 @@ const columnMode = ({
                                                     height: 'var(--list-menu-coin-size))',
                                                     width: 'var(--list-menu-coin-size)'
                                                 }}
-                                                src={'static/images/icon-default.png'} />
+                                                src={SoursURL+'images/icon-default.png'} />
                                         }
                                         <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
                                             height={20}
@@ -174,7 +174,7 @@ const columnMode = ({
                                                     height: 'var(--list-menu-coin-size)',
                                                     width: 'var(--list-menu-coin-size)'
                                                 }}
-                                                src={'static/images/icon-default.png'} />}
+                                                src={SoursURL+'images/icon-default.png'} />}
                                         <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
                                             height={20}
                                             lineHeight={'20px'}>

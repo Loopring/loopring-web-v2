@@ -9,7 +9,7 @@ import {
     EmptyValueTag,
     getValuePrecisionThousand,
     myLog,
-    PriceTag,
+    PriceTag, SoursURL,
 } from '@loopring-web/common-resources';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { PopoverPure } from '../basic-lib'
@@ -185,7 +185,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                     width: 'var(--chart-title-coin-size)'
                                 }}
                                     // src={sellData?.icon}
-                                          src={'static/images/icon-default.png'}/>
+                                          src={SoursURL+'images/icon-default.png'}/>
                             }</Box>
 
                         <Box className={'logo-icon'} display={'flex'} height={'var(--chart-title-coin-size)'} position={'relative'}
@@ -202,7 +202,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                 width: 'var(--chart-title-coin-size)'
                             }}
                                 // src={sellData?.icon}
-                                      src={'static/images/icon-default.png'}/>} </Box>
+                                      src={SoursURL+'images/icon-default.png'}/>} </Box>
                         {/* <Typography display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}>
                             <Typography variant={'body1'} component={'h3'} color={'textPrimary'} title={'sell'}>
                                 <Typography component={'span'} className={'next-coin'}>
@@ -298,7 +298,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                         height: 'var(--list-menu-coin-size))',
                                                         width: 'var(--list-menu-coin-size)'
                                                     }}
-                                                    src={'static/images/icon-default.png'} />
+                                                    src={SoursURL+'images/icon-default.png'} />
                                             }
                                             <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
                                                 height={20}
@@ -331,7 +331,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                         height: 'var(--list-menu-coin-size)',
                                                         width: 'var(--list-menu-coin-size)'
                                                     }}
-                                                    src={'static/images/icon-default.png'} />}
+                                                    src={SoursURL+'images/icon-default.png'} />}
                                             <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
                                                 height={20}
                                                 lineHeight={'20px'}>
@@ -416,7 +416,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                     height: 'var(--list-menu-coin-size))',
                                                     width: 'var(--list-menu-coin-size)'
                                                 }}
-                                                src={'static/images/icon-default.png'} />
+                                                src={SoursURL+'images/icon-default.png'} />
                                         }
                                         <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
                                             height={20}
@@ -459,7 +459,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                         height: 'var(--list-menu-coin-size)',
                                                         width: 'var(--list-menu-coin-size)'
                                                     }}
-                                                    src={'static/images/icon-default.png'} />}
+                                                    src={SoursURL+'images/icon-default.png'} />}
                                             <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
                                                 height={20}
                                                 lineHeight={'20px'}>
@@ -527,7 +527,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                     height: 'var(--list-menu-coin-size))',
                                                     width: 'var(--list-menu-coin-size)'
                                                 }}
-                                                src={'static/images/icon-default.png'} />
+                                                src={SoursURL+'images/icon-default.png'} />
                                         }
                                         <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
                                             height={20}
@@ -559,7 +559,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                         height: 'var(--list-menu-coin-size)',
                                                         width: 'var(--list-menu-coin-size)'
                                                     }}
-                                                    src={'static/images/icon-default.png'} />}
+                                                    src={SoursURL+'images/icon-default.png'} />}
                                             <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
                                                 height={20}
                                                 lineHeight={'20px'}>
