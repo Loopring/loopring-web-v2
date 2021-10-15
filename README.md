@@ -40,4 +40,4 @@ see it on component-lib.
 
 ## Framwork Design
 
-![](https://raw.githubusercontent.com/Loopring/loopring-web-v2/alpha-v2/reference/Loopring%20framwork.png)
+![](https://raw.githubusercontent.com/Loopring/loopring-web-v2/master/static/Loopring%20framwork.png)
