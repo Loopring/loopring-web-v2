@@ -8,7 +8,7 @@ import {
     i18n,
     LockIcon,
     MarketType,
-    SagaStatus
+    SagaStatus, SoursURL
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
 import { Button, useSettings } from '@loopring-web/component-lib';

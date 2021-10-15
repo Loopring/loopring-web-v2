@@ -7,7 +7,7 @@ import {
     getValuePrecisionThousand,
     PriceTag,
     abbreviateNumber,
-    RowConfig,
+    RowConfig, SoursURL,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
 import { AmmPanelView } from '../AmmPanel';
