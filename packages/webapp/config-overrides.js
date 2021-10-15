@@ -92,11 +92,11 @@ module.exports = override(
   ),
   */
 
-  addWebpackPlugin(
-    new CopyWebpackPlugin({
-      patterns: [{ from: path.resolve(__dirname, '..', "common-resources", "assets"), to: './static',toType: "dir" }],
-    }
-  )),
+  // addWebpackPlugin(
+  //   new CopyWebpackPlugin({
+  //     patterns: [{ from: path.resolve(__dirname, '..', "common-resources", "assets"), to: './static',toType: "dir" }],
+  //   }
+  // )),
   addWebpackPlugin(
     new webpack.DefinePlugin({
       'process.env.COMMITHASH': JSON.stringify(getCommitHash()),

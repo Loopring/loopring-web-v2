@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 
 const StyleBox = styled(Box)`
-  background-image: url('./static/images/error_bg.png');
+  background-image: url('http://static.loopring.io/assets/images/error_bg.png');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: bottom
