@@ -11,7 +11,6 @@ import {
     UpColor
 } from '@loopring-web/common-resources';
 import moment from 'moment';
-import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { Slice } from '@reduxjs/toolkit/src/createSlice';
 import { Currency } from 'loopring-sdk';
 import { Layouts } from 'react-grid-layout';
@@ -22,7 +21,7 @@ const initialState: SettingsState = {
     platform: PlatFormType.desktop,
     currency: Currency.usd,//localStore.getItem('Currency')?localStore.getItem('Currency') as keyof typeof Currency: Currency.usd,
     upColor: UpColor.green,//localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
-    coinJson: imgConfig.frames,
+    coinJson: {},
     slippage: 'N',
     feeChargeOrder:FeeChargeOrderDefault,
     hideL2Assets: false,
