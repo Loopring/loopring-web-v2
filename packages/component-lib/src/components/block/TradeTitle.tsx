@@ -5,7 +5,7 @@ import {
     FloatTag,
     getValuePrecisionThousand,
     myLog,
-    PriceTag,
+    PriceTag, SoursURL,
     TradeFloat
 } from '@loopring-web/common-resources';
 import { Box, Grid } from '@mui/material';
@@ -79,7 +79,7 @@ export const TradeTitle = <I extends object>({
                                 width: 'var(--chart-title-coin-size)'
                             }}
                                 // src={sellData?.icon}
-                                src={'static/images/icon-default.png'} />
+                                src={SoursURL+'images/icon-default.png'} />
                         }</Box>
 
                     <Box className={'logo-icon'} display={'flex'} height={'var(--chart-title-coin-size)'} position={'relative'}
@@ -96,7 +96,7 @@ export const TradeTitle = <I extends object>({
                                 width: 'var(--chart-title-coin-size)'
                             }}
                                 // src={sellData?.icon}
-                                src={'static/images/icon-default.png'} />} </Box>
+                                src={SoursURL+'images/icon-default.png'} />} </Box>
                     <Typography variant={'h4'} component={'h3'} paddingRight={1}>
                         <Typography component={'span'} title={'sell'} className={'next-coin'}>
                             {baseShow}

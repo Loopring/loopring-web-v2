@@ -10,7 +10,7 @@ import {
     EmptyValueTag,
     getValuePrecisionThousand,
     globalSetup,
-    PriceTag,
+    PriceTag, SoursURL,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Typography } from '@mui/material';
 import { PoolTableProps, Row } from './Interface';
@@ -109,7 +109,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                         width: 'var(--list-menu-coin-size)'
                     }}
                         // src={sellData?.icon}
-                              src={'static/images/icon-default.png'}/>
+                              src={SoursURL+'images/icon-default.png'}/>
                 }</Box>
 
             <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
@@ -125,7 +125,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                     width: 'var(--list-menu-coin-size)'
                 }}
                     // src={sellData?.icon}
-                          src={'static/images/icon-default.png'}/>} </Box>
+                          src={SoursURL+'images/icon-default.png'}/>} </Box>
             <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}
                         paddingRight={1}>
                 <Typography component={'h3'} color={'textPrimary'} title={'sell'}>
@@ -224,7 +224,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                                     height: 'var(--list-menu-coin-size))',
                                                     width: 'var(--list-menu-coin-size)'
                                                 }}
-                                                src={'static/images/icon-default.png'} />
+                                                src={SoursURL+'images/icon-default.png'} />
                                         }
                                         <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
                                             height={20}
@@ -257,7 +257,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                                     height: 'var(--list-menu-coin-size)',
                                                     width: 'var(--list-menu-coin-size)'
                                                 }}
-                                                src={'static/images/icon-default.png'} />}
+                                                src={SoursURL+'images/icon-default.png'} />}
                                         <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
                                             height={20}
                                             lineHeight={'20px'}>
