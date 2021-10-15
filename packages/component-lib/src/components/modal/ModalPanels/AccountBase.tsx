@@ -46,7 +46,7 @@ export const AccountBasePanel = ({
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
 
     const getImagePath = React.useMemo(() => {
-        return `static/images/vips/${level.toUpperCase()}`
+        return `static/images/vips/${level.toUpperCase().replace('_','')}`
 
     }, [level])
 
