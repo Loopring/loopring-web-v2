@@ -2,14 +2,13 @@
 import RouterView from './routers'
 import { GlobalStyles } from '@mui/material';
 import { css, Theme, useTheme } from '@emotion/react';
-import { globalCss } from '@loopring-web/common-resources';
-import { setLanguage } from '@loopring-web/component-lib'
-import { useInit } from './hook';
-import store from './stores';
+import { globalCss } from '@loopring-web/common-resources/static-resources/src/themes';
+import { setLanguage } from '@loopring-web/component-lib/src/stores/reducer/settings'
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { HashRouter as Router, useLocation } from 'react-router-dom'
+import store from './stores';
 
 const ScrollToTop = () => {
     const {pathname} = useLocation();
@@ -32,8 +31,6 @@ const App = () => {
         }
     }, [])
 
-    const {state} = useInit();
-
 
     return <><GlobalStyles styles={css`
       ${globalCss({theme})};
@@ -53,7 +50,7 @@ const App = () => {
 
         <Router>
             <ScrollToTop/>
-            <RouterView state={state}/>
+            <RouterView/>
         </Router>
 
     </>
