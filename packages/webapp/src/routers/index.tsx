@@ -2,7 +2,7 @@ import { Route, Switch } from 'react-router-dom'
 import React from 'react';
 import { Box, Container } from '@mui/material'
 import Header from 'layouts/header'
-import Footer from '../layouts/footer';
+// import Footer from '../layouts/footer';
 import { ModalGroup } from '../modal';
 import { LAYOUT } from '../defs/common_defs';
 import { QuotePage } from 'pages/QuotePage'
@@ -12,10 +12,11 @@ import { LiquidityPage } from 'pages/LiquidityPage'
 import { MiningPage } from 'pages/MiningPage'
 import { OrderbookPage } from 'pages/ProTradePage';
 import { useTicker } from '../stores/ticker';
-import { useSystem } from '../stores/system';
 import { LoadingPage } from '../pages/LoadingPage';
 import { LandPage } from '../pages/LandPage/LandPage';
-
+import { ErrorMap, SagaStatus } from '@loopring-web/common-resources';
+import { ErrorPage } from '../pages/ErrorPage';
+import { Footer } from '@loopring-web/component-lib';
 
 const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
     return <> <Header isHideOnScroll={false}/><Container maxWidth="lg"
@@ -30,7 +31,7 @@ const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
     </Container></>
 }
 
-const RouterView = () => {
+const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
 
     // const location = useLocation()
 
@@ -47,7 +48,7 @@ const RouterView = () => {
     // }, [location?.pathname])
     const proFlag = (process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === 'true')
     const {tickerMap} = useTicker();
-    const {allowTrade} = useSystem();
+    // const {allowTrade} = useSystem();
 
     return <>
         <Switch>
@@ -69,34 +70,40 @@ const RouterView = () => {
                 <Header isHideOnScroll={true}/>
                 <LandPage/>
             </Route>
-            <Route path='/trade/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
-            <Route path='/trade/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
+            {state === 'PENDING' ?
+                <LoadingPage/>
+                : state === 'ERROR' ? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR} /> : <>
 
-            {
-                proFlag && tickerMap && <Route path='/trade/pro'>
-                  <Header isHideOnScroll={true}/>
-                  <OrderbookPage/></Route>
-            }
-            {
-                proFlag && tickerMap && <Route path='/trade/pro(/:symbol)'><OrderbookPage/></Route>
-            }
-            <Route exact path='/loading'><LoadingPage/> </Route>
-            <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
-            <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>
-            <Route exact path='/layer2'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/*'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            {/*<Route exact path='/layer2/my-liquidity'><ContentWrap><Layer2Page/></ContentWrap> </Route>*/}
-            {/*<Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
-            {/*<Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
-            {/*<Route exact path='/layer2/rewards'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
-            {/*<Route exact path='/layer2/redpock'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
-            {/*<Route exact path='/layer2/security'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
-            {/*<Route exact path='/layer2/vip'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
-            <Route exact path='/liquidity'> <ContentWrap><LiquidityPage/></ContentWrap></Route>
-            <Route exact path='/liquidity/pools/*'><ContentWrap><LiquidityPage/></ContentWrap></Route>
-            <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
-            <Route exact path='/liquidity/amm-mining'><ContentWrap><LiquidityPage/></ContentWrap> </Route>
-            <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+                    <Route path='/trade/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
+                    <Route path='/trade/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
+
+                    {
+                        proFlag && tickerMap && <Route path='/trade/pro'>
+                          <Header isHideOnScroll={true}/>
+                          <OrderbookPage/></Route>
+                    }
+                    {
+                        proFlag && tickerMap && <Route path='/trade/pro(/:symbol)'><OrderbookPage/></Route>
+                    }
+                    <Route exact path='/loading'><LoadingPage/> </Route>
+                    <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
+                    <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>
+                    <Route exact path='/layer2'><ContentWrap><Layer2Page/></ContentWrap></Route>
+                    <Route exact path='/layer2/*'><ContentWrap><Layer2Page/></ContentWrap></Route>
+                    {/*<Route exact path='/layer2/my-liquidity'><ContentWrap><Layer2Page/></ContentWrap> </Route>*/}
+                    {/*<Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+                    {/*<Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+                    {/*<Route exact path='/layer2/rewards'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+                    {/*<Route exact path='/layer2/redpock'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+                    {/*<Route exact path='/layer2/security'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+                    {/*<Route exact path='/layer2/vip'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
+                    <Route exact path='/liquidity'> <ContentWrap><LiquidityPage/></ContentWrap></Route>
+                    <Route exact path='/liquidity/pools/*'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+                    <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+                    <Route exact path='/liquidity/amm-mining'><ContentWrap><LiquidityPage/></ContentWrap> </Route>
+                    <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+
+                </>}
 
         </Switch>
         <ModalGroup/>

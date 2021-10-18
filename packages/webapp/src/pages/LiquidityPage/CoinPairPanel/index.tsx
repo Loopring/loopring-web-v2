@@ -7,7 +7,7 @@ import {
     getValuePrecisionThousand,
     PriceTag,
     abbreviateNumber,
-    RowConfig,
+    RowConfig, SoursURL,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
 import { AmmPanelView } from '../AmmPanel';
@@ -173,7 +173,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                                         width: 'var(--list-menu-coin-size)'
                                                     }}
                                                 // src={sellData?.icon}
-                                                    src={'static/images/icon-default.png'}/>
+                                                    src={SoursURL+'images/icon-default.png'}/>
                                         }</Box>
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography component={'span'} alignSelf={'right'} variant={'h5'} height={24}
@@ -197,7 +197,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     {/*    */}
                                     {/*    /!*<Avatar variant="square" sizes={'small'} alt={'coinLogo'}*!/*/}
                                     {/*    /!*    // src={coinBInfo?.icon}*!/*/}
-                                    {/*    /!*        src={buyIconHasLoaded ? coinPairInfo?.myCoinB?.icon : 'static/images/icon-default.png'}/>*!/*/}
+                                    {/*    /!*        src={buyIconHasLoaded ? coinPairInfo?.myCoinB?.icon : SoursURL+'images/icon-default.png'}/>*!/*/}
                                     {/*</Typography>*/}
                                     <Box component={'span'} className={'logo-icon'} display={'flex'}
                                          height={'var(--list-menu-coin-size)'}
@@ -215,7 +215,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                                       height: 'var(--list-menu-coin-size)',
                                                       width: 'var(--list-menu-coin-size)'
                                                   }}
-                                                  src={'static/images/icon-default.png'}/>}</Box>
+                                                  src={SoursURL+'images/icon-default.png'}/>}</Box>
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography variant={'h5'} component={'span'} alignSelf={'right'} height={24}
                                                     lineHeight={'24px'}>

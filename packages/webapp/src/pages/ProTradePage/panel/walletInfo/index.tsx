@@ -8,7 +8,7 @@ import {
     i18n,
     LockIcon,
     MarketType,
-    SagaStatus
+    SagaStatus, SoursURL
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
 import { Button, useSettings } from '@loopring-web/component-lib';
@@ -187,7 +187,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                                       width: 'var(--withdraw-coin-size)',
                                       height: 'var(--withdraw-coin-size)',
                                   }}
-                                  src={'static/images/icon-default.png'}/>
+                                  src={SoursURL+'images/icon-default.png'}/>
                     }
                     <Typography variant={'body1'}>{coinA}</Typography>
                 </Box>
@@ -211,7 +211,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                                       width: 'var(--withdraw-coin-size)',
                                       height: 'var(--withdraw-coin-size)',
                                   }}
-                                  src={'static/images/icon-default.png'}/>
+                                  src={SoursURL+'images/icon-default.png'}/>
                     }
                     <Typography variant={'body1'}>{coinB}</Typography>
                 </Box>

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Avatar, Box, FormControlLabel as MuFormControlLabel, TextField as MuTextField } from '@mui/material';
-import { AvatarCoinStyled, LPTokenType, MarketType } from '@loopring-web/common-resources';
+import { AvatarCoinStyled, LPTokenType, MarketType, SoursURL } from '@loopring-web/common-resources';
 import { useSettings } from '../../../../stores';
 
 // ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1/2})};
@@ -64,7 +64,7 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({symbol,lp
                 : <Avatar variant="circular" alt={symbol} style={{
                     height: 'var(--list-menu-coin-size)',
                     width: 'var(--list-menu-coin-size)'
-                }} src={'static/images/icon-default.png'}/>}
+                }} src={SoursURL+'images/icon-default.png'}/>}
             </Box>
             <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'} position={'relative'}
                  zIndex={18} left={-8}
@@ -77,7 +77,7 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({symbol,lp
                 : <Avatar variant="circular" alt={symbol} style={{
                     height: 'var(--list-menu-coin-size)',
                     width: 'var(--list-menu-coin-size)'
-                }} src={'static/images/icon-default.png'}/>}
+                }} src={SoursURL+'images/icon-default.png'}/>}
             </Box>
         </Box>
     } else {
@@ -93,7 +93,7 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({symbol,lp
                 width: 'var(--list-menu-coin-size)'
             }}
                 // src={sellData?.icon}
-                      src={'static/images/icon-default.png'}/>}
+                      src={SoursURL+'images/icon-default.png'}/>}
         </>
     }
 

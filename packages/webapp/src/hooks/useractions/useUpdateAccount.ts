@@ -26,7 +26,7 @@ import { checkErrorInfo } from 'hooks/useractions/utils'
 
 export function useUpdateAccout() {
 
-    const { walletInfo, updateDepositHashWrapper, checkHWAddr, } = useWalletInfo()
+    const { walletInfo, updateHW, checkHWAddr, } = useWalletInfo()
 
     const { setShowAccount, } = useOpenModals()
 
@@ -87,7 +87,7 @@ export function useUpdateAccout() {
                             myLog('After connect >>, get apiKey', apiKey)
 
                             if (!isFirstTime && isHWAddr) {
-                                updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr, })
+                                updateHW({ wallet: account.accAddress, isHWAddr, })
                             }
 
                             accountServices.sendAccountSigned({ accountId: accInfo.accountId, nonce: accInfo.nonce, apiKey, eddsaKey, isReset, })

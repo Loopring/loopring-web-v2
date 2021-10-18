@@ -22,9 +22,8 @@ import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
-import { myLog } from "@loopring-web/common-resources";
+import { ChainHashInfos, myLog } from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from './localStore/favoriteMarket'
-import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
 import { amountMapSlice } from './amount';
@@ -61,7 +60,7 @@ const persistedSettingReducer = persistReducer<SettingsState>(persistSettingConf
 
 const persistedLocalStoreReducer = persistReducer<CombinedState<{
     favoriteMarket: FavoriteMarketStates,
-    onchainHashInfo: OnchainHashInfo,
+    chainHashInfos: ChainHashInfos,
     confirmation: Confirmation,
     walletInfo: WalletInfo,
 }>>(persistLocalStoreConfig, localStoreReducer)

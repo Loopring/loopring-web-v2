@@ -382,5 +382,6 @@ export default {
     depositLimit:'Limit orders \n set the maximum or minimum price \n at which you are willing to buy or sell.',
     depositMarket:'Market orders \n are transactions meant to execute \n as quickly as possible at the current market price.',
     labelTransactions:'Transactions',
-    labelMyRewards:'My Rewards'
+    labelMyRewards:'My Rewards',
+    labelDepositHash:'Deposit Transaction Hash'
 }

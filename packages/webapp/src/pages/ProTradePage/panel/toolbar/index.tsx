@@ -135,6 +135,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             const base:string =  ticker.__rawTicker__?.base??'';
             const quote:string =  ticker.__rawTicker__?.quote??'';
             const baseVol = volumeToCount(base, ticker.__rawTicker__?.base_token_volume || 0)
+            const quoteVol = volumeToCount(quote, ticker.__rawTicker__?.quote_token_volume || 0)
             const isRise = ticker.floatTag === 'increase'
             const basePriceDollar = tokenPrices ? tokenPrices[base] : 0
             const basePriceYuan = basePriceDollar * forex
@@ -146,6 +147,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                     quote,
                     isRise,
                     baseVol,
+                    quoteVol,
                     basePriceDollar,
                     basePriceYuan
                 }

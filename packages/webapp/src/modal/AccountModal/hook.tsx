@@ -64,11 +64,13 @@ import { useGetAssets } from '../../pages/Layer2Page/AssetPanel/hook'
 import { useUpdateAccout } from 'hooks/useractions/useUpdateAccount';
 import { useReset } from 'hooks/useractions/useReset';
 import { useExportAccount } from 'hooks/useractions/useExportAccount';
+import { useOnChainInfo } from 'stores/localStore/onchainHashInfo';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
 
-    const { goUpdateAccount } = useUpdateAccout()
+    const { goUpdateAccount } = useUpdateAccout();
+    const { chainInfos,updateDepositHash} = useOnChainInfo();
 
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
@@ -285,6 +287,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             [ AccountStep.NoAccount ]: {
                 view: <NoAccount {...{
                     goDeposit,
+                    chainInfos,
+                    updateDepositHash,
                     ...account,
                     etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
@@ -302,6 +306,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             [ AccountStep.HadAccount ]: {
                 view: <HadAccount {...{
                     ...account,
+                    chainInfos,
+                    updateDepositHash,
                     onSwitch, onCopy,
                     etherscanUrl:etherscanBaseUrl,
 
@@ -339,6 +345,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             },
             [ AccountStep.Deposit_Approve_Submit ]: {
                 view: <Deposit_Approve_Submit btnInfo={closeBtnInfo} {...{
+
                     ...rest, t
                 }} />, onBack: () => {
                     setShowAccount({isShow: false})
@@ -348,6 +355,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             },
             [ AccountStep.Deposit_WaitForAuth ]: {
                 view: <Deposit_WaitForAuth
+                    chainInfos={chainInfos}
+                    updateDepositHash={updateDepositHash}
                     providerName={account.connectName} {...{
                     ...rest, t
                 }} />, onBack: () => {
@@ -632,7 +641,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             },
 
         })
-    }, [addressShort, account, depositProps, etherscanBaseUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
+    }, [addressShort,chainInfos, account, depositProps, etherscanBaseUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     const currentModal = accountList[ isShowAccount.step ]
 

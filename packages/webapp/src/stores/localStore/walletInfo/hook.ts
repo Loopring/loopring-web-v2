@@ -13,7 +13,7 @@ export const useWalletInfo = () => {
         dispatch(clearAll(undefined))
     }, [dispatch])
 
-    const updateDepositHashWrapper = React.useCallback(({
+    const updateHW = React.useCallback(({
                                                             wallet,
                                                             isHWAddr,
                                                         }: { wallet: string, isHWAddr: boolean, }) => {
@@ -32,7 +32,7 @@ export const useWalletInfo = () => {
         checkHWAddr,
         walletInfo,
         clearAllWrapper,
-        updateDepositHashWrapper,
+        updateHW,
     }
 
 }
