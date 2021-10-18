@@ -19,6 +19,7 @@ import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { checkAddr } from 'utils/web3_tools';
 import { isPosIntNum } from 'utils/formatter_tool';
+import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -32,7 +33,8 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { modals: { isShowDeposit: { symbol, isShow } } } = useOpenModals()
 
     const { walletLayer1 } = useWalletLayer1()
-    const { setShowDeposit, setShowAccount } = useOpenModals()
+    const { setShowDeposit, setShowAccount } = useOpenModals();
+    const { updateDepositHash }= useOnChainInfo();
     const { t } = useTranslation('common')
 
     const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo, } = useBtnStatus()
@@ -259,12 +261,13 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     realGasPrice, gasLimit, realChainId, nonce, isMetaMask)
 
                 myLog('response:', response)
-
-                result.data = response
+                // updateDepositHash({response.result})
+                // result.data = response
 
                 if (response) {
 
                     setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
+                    updateDepositHash(response.result,account.accAddress);
 
                 } else {
                     // deposit failed

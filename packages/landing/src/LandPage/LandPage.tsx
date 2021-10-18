@@ -5,7 +5,8 @@ import { DropDownIcon, getValuePrecisionThousand, ThemeType } from '@loopring-we
 import { withTranslation } from 'react-i18next';
 import { Card } from './Card';
 import { useHistory } from 'react-router-dom';
-import { LoopringAPI } from '../../api_wrapper';
+import { ChainId, ExchangeAPI } from 'loopring-sdk';
+// import { LoopringAPI } from '@loopring-web/webapp/src/api_wrapper';
 
 
 const HeightConfig = {
@@ -197,14 +198,16 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
     }, []);
 
     const result = React.useCallback(async () => {
-        if (LoopringAPI.exchangeAPI) {
+        const baseUrl =  'https://api3.loopring.io'
+        const exchangeAPI = new ExchangeAPI({baseUrl})
+        if (exchangeAPI) {
             const {
                 timestamp,
                 tradeVolume,
                 totalUserNum,
                 tradeNum,
                 layerTwoLockedVolume
-            } = await LoopringAPI.exchangeAPI.getProtocolPortrait()
+            } = await exchangeAPI.getProtocolPortrait()
             setValue({
                 timestamp,
                 tradeVolume,

@@ -1,17 +1,17 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { OnchainHashInfo } from './interface'
+import { ChainHashInfos, TxInfo } from'@loopring-web/common-resources';
 import { clearAll, clearDepositHash, updateDepositHash } from './reducer'
 
-export const useOnchainInfo = (): {
-    onchainInfo: OnchainHashInfo,
+export const useOnChainInfo = (): {
+    chainInfos: ChainHashInfos,
     clearAllWrapper: () => void,
     clearDepositHashWrapper: () => void,
-    updateDepositHashWrapper: (depositHash: string) => void,
+    updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
 } => {
-    const onchainInfo: OnchainHashInfo = useSelector((state: any) => state.favoriteMarket)
+    const chainInfos: ChainHashInfos = useSelector((state: any) => state.localStore.chainHashInfos)
     const dispatch = useDispatch()
-
+    
     const clearAllWrapper = React.useCallback(() => {
         dispatch(clearAll(undefined))
     }, [dispatch])
@@ -20,14 +20,22 @@ export const useOnchainInfo = (): {
         dispatch(clearDepositHash(undefined))
     }, [dispatch])
 
-    const updateDepositHashWrapper = React.useCallback((depositHash: string) => {
-        dispatch(updateDepositHash(depositHash))
+    const _updateDepositHash = React.useCallback((depositHash: string,accountAddress:string,status?:'success'|'failed') => {
+        // accountAddress
+        const props:{txInfo: TxInfo,accountAddress:string } = {
+            txInfo: {
+                hash: depositHash,
+                status,
+                // reason:'activeAccount'|'regular'|'reset'
+            }, accountAddress,
+        }
+        dispatch(updateDepositHash(props))
     }, [dispatch])
 
     return {
-        onchainInfo,
+        chainInfos,
         clearAllWrapper,
         clearDepositHashWrapper,
-        updateDepositHashWrapper,
+        updateDepositHash:_updateDepositHash,
     }
 }

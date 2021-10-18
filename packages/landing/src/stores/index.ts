@@ -40,7 +40,7 @@ const persistedSettingReducer = persistReducer<SettingsState>(persistSettingConf
 
 // const persistedLocalStoreReducer = persistReducer<CombinedState<{
 //     favoriteMarket: FavoriteMarketStates,
-//     onchainHashInfo: OnchainHashInfo,
+//     ChainHashInfos: ChainHashInfos,
 //     confirmation: Confirmation,
 //     walletInfo: WalletInfo,
 // }>>(persistLocalStoreConfig, localStoreReducer)
