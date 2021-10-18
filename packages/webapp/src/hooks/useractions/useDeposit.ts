@@ -16,7 +16,6 @@ import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useAllowances } from 'hooks/common/useAllowances';
 import { useModalData } from 'stores/router';
-import { isAccActivated } from './checkAccStatus';
 import { checkAddr } from 'utils/web3_tools';
 import { isPosIntNum } from 'utils/formatter_tool';
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo';
@@ -344,7 +343,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     }, [])
 
     const depositProps = React.useMemo(() => {
-        const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
+        const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT;
         const title = account.readyState === AccountStatus.NO_ACCOUNT ? t('labelCreateLayer2Title') : t('depositTitle');
         return {
             btnInfo,

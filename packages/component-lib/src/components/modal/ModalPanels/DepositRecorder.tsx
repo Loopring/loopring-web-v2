@@ -4,9 +4,12 @@ import React from 'react';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { WithTranslation } from 'react-i18next';
 import {
-    ChainHashInfos, CompleteIcon, EmptyIcon,
+    ChainHashInfos,
+    CompleteIcon,
+    EmptyIcon,
     getFormattedHash,
-    WaitingIcon, WarningIcon
+    WaitingIcon,
+    WarningIcon
 } from '@loopring-web/common-resources';
 
 const BoxStyled = styled(Box)`
@@ -22,7 +25,7 @@ const BoxStyled = styled(Box)`
     right: 0;
     width: 100%;
     height: 1px;
-    box-shadow: ${({theme}) => theme.colorBase.shadow};
+    box-shadow: ${({theme}) => theme.colorBase.shadowHeader};
   }
 ` as typeof Box
 
@@ -41,10 +44,11 @@ export const DepositRecorder = ({
     }) => {
 
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-
+    // const [flag,setFlag] = React.useState(false)
 
     const updateDepositStatus = React.useCallback(async () => {
-        if (chainInfos && chainInfos.depositHashes
+        if (chainInfos
+            && chainInfos.depositHashes
             && chainInfos.depositHashes[ accAddress ]
             && connectProvides
         ) {
@@ -54,20 +58,26 @@ export const DepositRecorder = ({
             depositList.forEach((txInfo) => {
                 if (txInfo.status === 'pending' && connectProvides?.usedWeb3?.eth?.getTransactionReceipt) {
                     connectProvides.usedWeb3.eth.getTransactionReceipt(txInfo.hash).then((result) => {
-                        if(result){
+                        if (result) {
+                            // txInfo.status = result.status ? 'success' : 'failed'
                             updateDepositHash(txInfo.hash, accAddress, result.status ? 'success' : 'failed')
                         }
                     })
                     flag = true;
                 }
             })
+            if (nodeTimer.current !== -1) {
+                clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+            }
             if (flag) {
-                setTimeout(() => {
-                    updateDepositStatus()
+                nodeTimer.current = setTimeout(() => {
+                    updateDepositStatus();
                 }, 30000)
             }
+
+
         }
-    }, [chainInfos?.depositHashes])
+    }, [chainInfos?.depositHashes[ accAddress ]])
     // if (connectProvides.usedProvide && connectProvides.usedWeb3) {
     //
     //     // @ts-ignore
@@ -88,22 +98,33 @@ export const DepositRecorder = ({
     }, [])
     const depositView = React.useMemo(() => {
         return <>{
-            (chainInfos && chainInfos?.depositHashes && chainInfos?.depositHashes[ accAddress ]) ? chainInfos?.depositHashes[ accAddress ].map((txInfo) => {
-                return <Typography key={txInfo.hash} display={'inline-flex'} justifyContent={'space-between'}
-                                   fontSize={'h5'} paddingY={1/2}>
-                    {/*{depoistView}*/}
-                    <Link fontSize={'inherit'}  textAlign={'center'}
-                          onClick={() => window.open(`${etherscanUrl}tx/${txInfo.hash}`)}>
-                        {getFormattedHash(txInfo.hash)}
-                    </Link>
-                    <Typography fontSize={'inherit'} component={'span'}>{
-                        txInfo.status === 'pending' ?
-                            <WaitingIcon  fontSize={'large'}/> : txInfo.status === 'success' ?
-                            <CompleteIcon fontSize={'large'}/> : <WarningIcon fontSize={'large'}/>
-                    }</Typography>
+            (chainInfos && chainInfos?.depositHashes && chainInfos?.depositHashes[ accAddress ]) ? <>
+                <Typography component={'h6'} variant={'body2'} color={'text.secondary'}
+                            paddingBottom={1}>
+                    {t('labelDepositHash')}
                 </Typography>
-            }) : <Typography  display={'flex'} flex={1}  alignItems={'center'} justifyContent={'center'}>
-                <EmptyIcon htmlColor={'var(--color-text-third)'} style={{height:'36px',width:'36px'}} /> </Typography>
+                {chainInfos?.depositHashes[ accAddress ].map((txInfo) => {
+                    return <Typography key={txInfo.hash} display={'inline-flex'} justifyContent={'space-between'}
+                                       fontSize={'h5'} paddingY={1 / 2}>
+                        {/*{depoistView}*/}
+                        <Link fontSize={'inherit'} textAlign={'center'}
+                              onClick={() => window.open(`${etherscanUrl}tx/${txInfo.hash}`)}>
+                            {getFormattedHash(txInfo.hash)}
+                        </Link>
+                        <Typography fontSize={'inherit'} component={'span'}>{
+                            txInfo.status === 'pending' ?
+                                <WaitingIcon fontSize={'large'}/> : txInfo.status === 'success' ?
+                                    <CompleteIcon fontSize={'large'}/> : <WarningIcon fontSize={'large'}/>
+                        }</Typography>
+                    </Typography>
+                })}
+            </> : <Typography display={'flex'} flex={1} alignItems={'center'} justifyContent={'center'}
+                              flexDirection={'column'}>
+                <EmptyIcon htmlColor={'var(--color-text-third)'} style={{height: '42px', width: '42px'}}/>
+                <Typography component={'h6'} variant={'body2'} textAlign={'center'} color={'text.secondary'}>
+                    {t('labelDepositHash')}
+                </Typography>
+            </Typography>
         } </>
     }, [chainInfos?.depositHashes[ accAddress ]])
 
@@ -114,11 +135,9 @@ export const DepositRecorder = ({
                       component={'div'} display={'flex'}
                       paddingX={5}
                       paddingY={1} flex={1}
-                      
+
                       flexDirection={'column'} alignSelf={'flex-end'}>
-        <Typography component={'h6'} variant={'body1'} color={'text.secondary'} paddingBottom={1}>
-            {t('labelDepositHash')}
-        </Typography>
+
         {depositView}
     </BoxStyled>
 
