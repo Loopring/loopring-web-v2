@@ -50,7 +50,7 @@ const FooterDiv = styled(Box)`
   }
 `
 const linkListMap = {
-    loopring: [
+    Loopring: [
         {
             linkName: 'About',
             linkHref: "https://loopring.org/#/home"
@@ -73,74 +73,69 @@ const linkListMap = {
         },
 
     ],
-    service: [
+    Service: [
         {
-            linkName: 'About',
-            linkHref: "https://loopring.org/#/home"
+            linkName: 'Fees',
+            linkHref: "https://loopring.io/#/embed/wallet_fees_en"
         },
         {
-            linkName: 'Terms',
-            linkHref: "https://loopring.io/#/legal/terms/en"
+            linkName: 'VIP',
+            linkHref: "https://medium.com/loopring-protocol"
         },
         {
-            linkName: 'Privacy',
-            linkHref: "https://loopring.io/#/legal/privacy/en"
+            linkName: 'Referral',
+            linkHref: "https://medium.com/loopring-protocol"
         },
         {
-            linkName: 'News',
-            linkHref: "https://loopring.org/#/blog"
+            linkName: 'ListingApplication',
+            linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
         },
         {
-            linkName: 'Risk',
-            linkHref: "https://loopring.io/#/legal/risks/en"
+            linkName: 'CreatorGrants',
+            linkHref: "https://www.loopringgrants.org/"
         },
-
+        
     ],
-    aaa: [
+    Support: [
         {
-            linkName: 'About',
-            linkHref: "https://loopring.org/#/home"
+            linkName: 'Feedback',
+            linkHref: 'https://github.com/Loopring/loopring-web-v2/issues/new'
         },
         {
-            linkName: 'Terms',
-            linkHref: "https://loopring.io/#/legal/terms/en"
+            linkName: 'LoopringTutorial',
+            linkHref: "https://loopring-org.gitbook.io/en/"
         },
         {
-            linkName: 'Privacy',
-            linkHref: "https://loopring.io/#/legal/privacy/en"
+            linkName: 'CommunityDocs',
+            linkHref: "https://loopring-org.gitbook.io/loopring-doc/"
         },
         {
-            linkName: 'News',
-            linkHref: "https://loopring.org/#/blog"
+            linkName: 'SupportCenter',
+            linkHref: "https://discord.gg/RCus8aNB"
         },
-        {
-            linkName: 'Risk',
-            linkHref: "https://loopring.io/#/legal/risks/en"
-        },
-
+        
     ],
-    bbb: [
+    Product: [
         {
-            linkName: 'About',
-            linkHref: "https://loopring.org/#/home"
+            linkName: 'SmartContract',
+            linkHref: "https://loopring.io/#/legal/contracts/en"
         },
         {
-            linkName: 'Terms',
-            linkHref: "https://loopring.io/#/legal/terms/en"
+            linkName: 'LoopringApp',
+            linkHref: "https://app.loopring.io/"
         },
         {
-            linkName: 'Privacy',
-            linkHref: "https://loopring.io/#/legal/privacy/en"
+            linkName: 'LoopringSmartWallet',
+            linkHref: "https://loopring.io/#/"
         },
         {
-            linkName: 'News',
-            linkHref: "https://loopring.org/#/blog"
+            linkName: 'APIDocumentation',
+            linkHref: "https://docs.loopring.io/en/"
         },
-        {
-            linkName: 'Risk',
-            linkHref: "https://loopring.io/#/legal/risks/en"
-        },
-
+        // {
+        //     linkName: 'ReportIssue',
+        //     linkHref: "'https://github.com/Loopring/loopring-web-v2/issues/new'"
+        // },
     ],
 }
 
@@ -160,12 +155,12 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
     const linkListMapRender = React.useMemo(() => {
 
         return Reflect.ownKeys(linkListMap).map((key) => {
-            return <Box key={key.toString()} display={'flex'} flexDirection={'column'} padding={3}>
+            return <Box key={key.toString()} display={'flex'} flexDirection={'column'} justifyContent={'center'} /* padding={3} */>
                 <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'
                             variant="h6" component="div"> {t('labelFooter' + key.toString())} </Typography>
-                <Box display={'flex'} flexDirection={'column'}>
+                <Box display={'flex'} flexDirection={'column'} height={'100%'} justifyContent={'flex-start'}>
                     {linkListMap[ key ].map((item: any) => {
-                        return <LinkStyle href={item.linkHref}>
+                        return <LinkStyle /* href={item.linkHref} */ onClick={() => handleLinkClick(item.linkHref)}>
                             {t('label' + 'key' + item.linkName)}
                         </LinkStyle>
                     })}
@@ -196,7 +191,9 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                         </Link>
                     </Box>
                 </Grid>
-                {linkListMapRender}
+                <Grid justifyContent="space-between" display={'flex'} item lg={7}>
+                    {linkListMapRender}
+                </Grid>
                 {/*<Grid item lg={7} container direction="row" justifyContent="space-around" alignItems="flex-start"*/}
                 {/*      spacing={1}>*/}
                 {/*    <Grid>*/}
@@ -342,9 +339,9 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                 </Grid>
             </Grid>
 
-            <Typography component={'p'} variant={'body2'} paddingTop={2} textAlign={'center'}>
+            <Typography component={'p'} variant={'body2'} marginTop={2} paddingBottom={1} textAlign={'center'}>
                 <Typography style={{fontSize: '9px'}} component={'span'}>Copyright (c)
-                    2017-{new Date().getFullYear()}.</Typography>
+                    2017-{new Date().getFullYear()}. </Typography>
                 <Typography style={{fontSize: '9px'}} component={'span'}>All rights reserved.</Typography>
             </Typography>
             {/*<Typography component={'p'} variant={'body2'} paddingTop={1} paddingBottom={2}*/}
@@ -352,213 +349,3 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
         </Container>
     </FooterDiv>
 })
-
-// const TestStyled = styled(Link)`color: ${({theme}) => theme.colorBase.textThird}`;
-
-// const Footer = withTranslation(['layout'])(({t}: any) => {
-//     const {mode} = useTheme()
-//     const [size, setSize] = React.useState<[number, number]>([1200, 0]);
-//     React.useLayoutEffect(() => {
-//         function updateSize() {
-//             setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
-//
-//         }
-//
-//         window.addEventListener('resize', updateSize);
-//         updateSize();
-//         return () => window.removeEventListener('resize', updateSize);
-//     }, []);
-//
-//     // {
-//     //     .map((o, index) => (
-//     //         <ListItem key={`${o.linkName}-${index}`}>
-//     //             <Link style={{color: 'var(--color-text-secondary)'}} fontSize={12}
-//     //                   href={o.linkHref}>{o.linkName}</Link>
-//     //         </ListItem>
-//     //     ))
-//     // }
-//
-//     <List>
-//         <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'
-//                     variant="h6" component="div"> {t('Loopring')} </Typography>
-//
-//     </List>
-//     const handleLinkClick = React.useCallback((href: string) => {
-//         window.open(href)
-//     }, [])
-//
-//     return <FooterDiv style={{backgroundColor: mode === 'dark' ? '#0A0B2F' : '#fff'}} component={'footer'}
-//                       fontSize={'body1'}>
-//         <Container>
-//             <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'}
-//                   height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center"
-//                   spacing={1}>
-//                 <Grid justifyContent="flex-start" item lg={2}>
-//                     <Box>
-//                         <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
-//                             {
-//                                 mode === 'light' ?
-//                                     <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
-//                                     :
-//                                     <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
-//                             }
-//                         </Link>
-//                     </Box>
-//                 </Grid>
-//                 <Grid item lg={7} container direction="row" justifyContent="space-around" alignItems="flex-start"
-//                       spacing={1}>
-//                     <Grid>
-//
-//                     </Grid>
-//                     <Grid>
-//                         <List>
-//                             <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'
-//                                         variant="h6" component="div"> {t('Service')} </Typography>
-//                             {
-//                                 [
-//                                     {
-//                                         linkName: 'Fees',
-//                                         linkHref: "https://loopring.io/#/embed/wallet_fees_en"
-//                                     },
-//                                     {
-//                                         linkName: 'VIP',
-//                                         linkHref: "https://medium.com/loopring-protocol"
-//                                     },
-//                                     {
-//                                         linkName: 'Referral',
-//                                         linkHref: "https://medium.com/loopring-protocol"
-//                                     },
-//                                     {
-//                                         linkName: 'Listing Application',
-//                                         linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
-//                                     },
-//                                     {
-//                                         linkName: 'Creator Grants',
-//                                         linkHref: "https://www.loopringgrants.org/"
-//                                     },
-//
-//                                 ].map((o, index) => (
-//                                     <ListItem key={`${o.linkName}-${index}`}>
-//                                         <Link style={{color: 'var(--color-text-secondary)'}} fontSize={12}
-//                                               href={o.linkHref}>{o.linkName}</Link>
-//                                     </ListItem>
-//                                 ))
-//                             }
-//                         </List>
-//                     </Grid>
-//                     <Grid>
-//                         <List>
-//                             <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'
-//                                         variant="h6" component="div"> {t('Support')} </Typography>
-//                             {
-//                                 [
-//                                     {
-//                                         linkName: 'Feedback',
-//                                         linkHref: 'https://github.com/Loopring/loopring-web-v2/issues/new'
-//                                     },
-//                                     {
-//                                         linkName: 'Loopring Tutorial',
-//                                         linkHref: "https://loopring-org.gitbook.io/en/"
-//                                     },
-//                                     {
-//                                         linkName: 'Community Docs',
-//                                         linkHref: "https://loopring-org.gitbook.io/loopring-doc/"
-//                                     },
-//                                     {
-//                                         linkName: 'Support Center',
-//                                         linkHref: "https://discord.gg/RCus8aNB"
-//                                     },
-//
-//                                 ].map((o, index) => (
-//                                     <ListItem key={`${o.linkName}-${index}`}>
-//                                         <Link style={{color: 'var(--color-text-secondary)'}} fontSize={12}
-//                                               href={o.linkHref}>{o.linkName}</Link>
-//                                     </ListItem>
-//                                 ))
-//                             }
-//                         </List>
-//                     </Grid>
-//                     <Grid>
-//                         <List>
-//                             <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'
-//                                         variant="h6" component="div"> {t('Product')} </Typography>
-//                             {
-//                                 [
-//                                     {
-//                                         linkName: 'Smart Contract',
-//                                         linkHref: "https://loopring.io/#/legal/contracts/en"
-//                                     },
-//                                     {
-//                                         linkName: 'Loopring App',
-//                                         linkHref: "https://app.loopring.io/"
-//                                     },
-//                                     {
-//                                         linkName: 'Loopring Smart Wallet',
-//                                         linkHref: "https://loopring.io/#/"
-//                                     },
-//                                     {
-//                                         linkName: 'API Documentation',
-//                                         linkHref: "https://docs.loopring.io/en/"
-//                                     },
-//
-//                                 ].map((o, index) => (
-//                                     <ListItem key={`${o.linkName}-${index}`}>
-//                                         <Link style={{color: 'var(--color-text-secondary)'}} fontSize={12}
-//                                               href={o.linkHref}>{o.linkName}</Link>
-//                                     </ListItem>
-//                                 ))
-//                             }
-//                         </List>
-//                     </Grid>
-//                 </Grid>
-//                 <Grid justifyContent="flex-end" item lg={2}>
-//                     <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" item xs={12}
-//                           md={12} lg={12}>
-//                         <Grid item xs={12} md={12} lg={12}>
-//                             <Typography color="textThird" variant="h6" component="div"> Follow us </Typography>
-//                         </Grid>
-//                         <Grid item xs={12} md={12} lg={12}>
-//                             <List style={{display: 'flex', alignItems: 'flex-start'}}>
-//                                 {
-//                                     [
-//                                         {
-//                                             linkName: <DiscordIcon style={{transform: 'scale(1.2)'}}/>,
-//                                             linkHref: "https://discord.com/invite/KkYccYp"
-//                                         },
-//                                         {
-//                                             linkName: <TwitterIcon style={{transform: 'scale(1.2)'}}/>,
-//                                             linkHref: "https://twitter.com/loopringorg"
-//                                         },
-//                                         {
-//                                             linkName: <YoutubeIcon style={{transform: 'scale(1.2)'}}/>,
-//                                             linkHref: "https://www.youtube.com/c/Loopring"
-//                                         },
-//                                         {
-//                                             linkName: <MediumIcon style={{transform: 'scale(1.2)'}}/>,
-//                                             linkHref: "https://medium.com/loopring-protocol"
-//                                         }
-//                                     ].map((o, index) => (
-//                                         <ListItem key={`${o.linkName}-${index}`}>
-//                                             <Link paddingX={0.5} fontSize={12}
-//                                                   onClick={() => handleLinkClick(o.linkHref)}>{o.linkName}</Link>
-//                                         </ListItem>
-//                                     ))
-//                                 }
-//                             </List>
-//                         </Grid>
-//                     </Grid>
-//                 </Grid>
-//             </Grid>
-//
-//             <Typography component={'p'} variant={'body2'} paddingTop={2} textAlign={'center'}>
-//                 <Typography style={{fontSize: '9px'}} component={'span'}>Copyright (c)
-//                     2017-{new Date().getFullYear()}.</Typography>
-//                 <Typography style={{fontSize: '9px'}} component={'span'}>All rights reserved.</Typography>
-//             </Typography>
-//             <Typography component={'p'} variant={'body2'} paddingTop={1} paddingBottom={2}
-//                         textAlign={'center'}></Typography>
-//         </Container>
-//     </FooterDiv>
-// })
-
-// export default Footer
