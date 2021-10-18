@@ -23,6 +23,7 @@ const HeightConfig = {
 const LinkStyle = styled(Link)`
   color: var(--color-text-secondary);
   line-height: 20px;
+  font-size: 12px;
 
   :hover {
     color: var(--color-text-hover);
