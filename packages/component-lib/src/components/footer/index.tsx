@@ -156,8 +156,8 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
 
         return Reflect.ownKeys(linkListMap).map((key) => {
             return <Box key={key.toString()} display={'flex'} flexDirection={'column'} justifyContent={'center'} /* padding={3} */>
-                <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'
-                            variant="h6" component="div"> {t('labelFooter' + key.toString())} </Typography>
+                <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}}
+                            variant="body2" component="div"> {t('labelFooter' + key.toString())} </Typography>
                 <Box display={'flex'} flexDirection={'column'} height={'100%'} justifyContent={'flex-start'}>
                     {linkListMap[ key ].map((item: any) => {
                         return <LinkStyle /* href={item.linkHref} */ onClick={() => handleLinkClick(item.linkHref)}>
@@ -194,120 +194,14 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                 <Grid justifyContent="space-between" display={'flex'} item lg={7}>
                     {linkListMapRender}
                 </Grid>
-                {/*<Grid item lg={7} container direction="row" justifyContent="space-around" alignItems="flex-start"*/}
-                {/*      spacing={1}>*/}
-                {/*    <Grid>*/}
-
-                {/*    </Grid>*/}
-                {/*    <Grid>*/}
-                {/*        <List>*/}
-                {/*            <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'*/}
-                {/*                        variant="h6" component="div"> {t('Service')} </Typography>*/}
-                {/*            {*/}
-                {/*                [*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Fees',*/}
-                {/*                        linkHref: "https://loopring.io/#/embed/wallet_fees_en"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'VIP',*/}
-                {/*                        linkHref: "https://medium.com/loopring-protocol"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Referral',*/}
-                {/*                        linkHref: "https://medium.com/loopring-protocol"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Listing Application',*/}
-                {/*                        linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Creator Grants',*/}
-                {/*                        linkHref: "https://www.loopringgrants.org/"*/}
-                {/*                    },*/}
-
-                {/*                ].map((o, index) => (*/}
-                {/*                    <ListItem key={`${o.linkName}-${index}`}>*/}
-                {/*                        <Link style={{color: 'var(--color-text-secondary)'}} fontSize={12}*/}
-                {/*                              href={o.linkHref}>{o.linkName}</Link>*/}
-                {/*                    </ListItem>*/}
-                {/*                ))*/}
-                {/*            }*/}
-                {/*        </List>*/}
-                {/*    </Grid>*/}
-                {/*    <Grid>*/}
-                {/*        <List>*/}
-                {/*            <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'*/}
-                {/*                        variant="h6" component="div"> {t('Support')} </Typography>*/}
-                {/*            {*/}
-                {/*                [*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Feedback',*/}
-                {/*                        linkHref: 'https://github.com/Loopring/loopring-web-v2/issues/new'*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Loopring Tutorial',*/}
-                {/*                        linkHref: "https://loopring-org.gitbook.io/en/"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Community Docs',*/}
-                {/*                        linkHref: "https://loopring-org.gitbook.io/loopring-doc/"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Support Center',*/}
-                {/*                        linkHref: "https://discord.gg/RCus8aNB"*/}
-                {/*                    },*/}
-
-                {/*                ].map((o, index) => (*/}
-                {/*                    <ListItem key={`${o.linkName}-${index}`}>*/}
-                {/*                        <Link style={{color: 'var(--color-text-secondary)'}} fontSize={12}*/}
-                {/*                              href={o.linkHref}>{o.linkName}</Link>*/}
-                {/*                    </ListItem>*/}
-                {/*                ))*/}
-                {/*            }*/}
-                {/*        </List>*/}
-                {/*    </Grid>*/}
-                {/*    <Grid>*/}
-                {/*        <List>*/}
-                {/*            <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}} fontSize='12px'*/}
-                {/*                        variant="h6" component="div"> {t('Product')} </Typography>*/}
-                {/*            {*/}
-                {/*                [*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Smart Contract',*/}
-                {/*                        linkHref: "https://loopring.io/#/legal/contracts/en"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Loopring App',*/}
-                {/*                        linkHref: "https://app.loopring.io/"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'Loopring Smart Wallet',*/}
-                {/*                        linkHref: "https://loopring.io/#/"*/}
-                {/*                    },*/}
-                {/*                    {*/}
-                {/*                        linkName: 'API Documentation',*/}
-                {/*                        linkHref: "https://docs.loopring.io/en/"*/}
-                {/*                    },*/}
-
-                {/*                ].map((o, index) => (*/}
-                {/*                    <ListItem key={`${o.linkName}-${index}`}>*/}
-                {/*                        <Link style={{color: 'var(--color-text-secondary)'}} fontSize={12}*/}
-                {/*                              href={o.linkHref}>{o.linkName}</Link>*/}
-                {/*                    </ListItem>*/}
-                {/*                ))*/}
-                {/*            }*/}
-                {/*        </List>*/}
-                {/*    </Grid>*/}
-                {/*</Grid>*/}
-                <Grid justifyContent="flex-end" item lg={2}>
+                <Grid /* justifyContent="flex-end" */ item lg={2}>
                     <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" item xs={12}
                           md={12} lg={12}>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <Typography color="textThird" variant="h6" component="div"> Follow us </Typography>
+                        <Grid item marginTop={3.5} marginBottom={2} xs={12} md={12} lg={12}>
+                            <Typography color="var(--color-text-third)" variant="body2" component="div">Follow us</Typography>
                         </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <List style={{display: 'flex', alignItems: 'flex-start'}}>
+                        <Grid item xs={12} md={12} lg={12} height={'100px'}>
+                            <List style={{display: 'flex', alignItems: 'flex-start', paddingTop: 0, paddingBottom: 0}}>
                                 {
                                     [
                                         {
@@ -328,7 +222,7 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                                         }
                                     ].map((o, index) => (
                                         <ListItem key={`${o.linkName}-${index}`}>
-                                            <Link paddingX={0.5} fontSize={12}
+                                            <Link fontSize={12}
                                                   onClick={() => handleLinkClick(o.linkHref)}>{o.linkName}</Link>
                                         </ListItem>
                                     ))
