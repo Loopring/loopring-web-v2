@@ -1,7 +1,7 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import React from 'react';
 import styled from '@emotion/styled/';
-import { DropDownIcon, getValuePrecisionThousand, ThemeType } from '@loopring-web/common-resources';
+import { DropDownIcon, getValuePrecisionThousand, myLog, ThemeType } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { Card } from './Card';
 import { useHistory } from 'react-router-dom';
@@ -205,6 +205,11 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                 tradeNum,
                 layerTwoLockedVolume
             } = await LoopringAPI.exchangeAPI.getProtocolPortrait()
+            myLog({ timestamp,
+                tradeVolume,
+                totalUserNum,
+                tradeNum,
+                layerTwoLockedVolume })
             setValue({
                 timestamp,
                 tradeVolume,
@@ -228,7 +233,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
     }, [])
     React.useEffect(() => {
         result()
-    }, [])
+    }, [result, LoopringAPI.exchangeAPI])
 
     return <ContainerStyle>
         <Box>
