@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material';
 import { AnimationArrow, Button } from '../../../index';
 import { AccountBasePanel,AccountBaseProps, } from './index';
 import { DepositRecorder } from './DepositRecorder';
-import { ChainHashInfos } from '@loopring-web/common-resources';
+import { AccountHashInfo } from '@loopring-web/common-resources';
 
 export const UpdateAccount = ({
     t,
@@ -12,8 +12,9 @@ export const UpdateAccount = ({
     ...props
 }: WithTranslation & AccountBaseProps & {
     goUpdateAccount?: () => void ,
-    updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
-    chainInfos:ChainHashInfos}) => {
+    clearDepositHash: () => void ,
+    // updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
+    chainInfos:AccountHashInfo}) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}
         alignItems={'center'}>
         <Box display={'flex'} flex={1} marginBottom={5} justifyContent={'center'} alignItems={'center'}>
@@ -31,7 +32,7 @@ export const UpdateAccount = ({
             }}>{t('labelActivateAccount')} </Button>
         </Box>
         <Box display={'flex'} marginX={0}  marginTop={3} marginBottom={-5} alignSelf={'stretch'} paddingX={5} padding={0} >
-            <DepositRecorder  {...props} t={t}/>
+            <DepositRecorder  {...props} clear={props.clearDepositHash} t={t}/>
         </Box>
 
     </Box>

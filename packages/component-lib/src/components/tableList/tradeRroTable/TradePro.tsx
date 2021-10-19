@@ -2,12 +2,12 @@ import { Box, BoxProps, Typography } from '@mui/material'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Column, Table } from '../../basic-lib'
-import { EmptyValueTag, MarketRowHeight, myLog, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources';
+import { EmptyValueTag, MarketRowHeight, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { RawDataTradeItem } from '../tradeTable';
 import { useSettings } from '../../../stores';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
-import { MarketInfo } from 'loopring-sdk/dist/defs';
+import { MarketInfo } from 'loopring-sdk/dist';
 import { Currency } from 'loopring-sdk';
 // export type RawDataTradeItem = {
 //     side: keyof typeof TradeTypes;

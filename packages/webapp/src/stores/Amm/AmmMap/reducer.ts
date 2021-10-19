@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { AmmMapStates, GetAmmMapParams } from './interface';
 import { SagaStatus } from '@loopring-web/common-resources';
-import { AmmPoolInfoV3, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmPoolInfoV3, LoopringMap } from 'loopring-sdk/dist';
 
 
 const initialState: Required<AmmMapStates<object, object>> = {

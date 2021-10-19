@@ -6,7 +6,7 @@ import { fontDefault } from '../css/global';
 export const unit = 8;
 export const radius = 4;
 export const checkBoxSize = 18;
-const hr = ({colorBase}: any) => {
+export const hr = ({colorBase}: any) => {
     return {
         borderRadius: `${radius}px`,
         content: '\"\"',
