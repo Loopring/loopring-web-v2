@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Avatar } from '@mui/material';
 import { AvatarCoinProps } from './interface';
+import { hr } from './overrides/overrides-mui';
 
 export * from "./overrides/muTheme"
 export * from "./css/global"
@@ -8,7 +9,7 @@ export * from "./css/global"
 export * from "./interface"
 export * from "./globalSetup"
 //transform-origin: top left;
-
+export { hr };
 export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
       &.MuiAvatar-root{  
         height: 36px;
