@@ -162,7 +162,7 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
             {/*/!*        srcSet={`${coinInfo.icon},./images/icon-default.png`}/>*!/*/}
             {/*/!*<Avatar variant="square" alt={coinInfo?.simpleName}*!/*/}
             {/*/!*    // src={sellData?.icon}*!/*/}
-            {/*/!*        src={hasLoaded ? coinInfo.icon : 'static/images/icon-default.png'}/>*!/*/}
+            {/*/!*        src={hasLoaded ? coinInfo.icon : SoursURL+'images/icon-default.png'}/>*!/*/}
             {/*{coinIcon ?*/}
             {/*    <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}*/}
             {/*                      imgwidth={coinIcon.width}*/}
@@ -174,7 +174,7 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
             {/*        width: 'var(--list-menu-coin-size)'*/}
             {/*    }}*/}
             {/*        // src={sellData?.icon}*/}
-            {/*              src={'static/images/icon-default.png'}/>}*/}
+            {/*              src={SoursURL+'images/icon-default.png'}/>}*/}
         </ListItemIcon>
         <ListItemText primary={simpleName} secondary={
             <>

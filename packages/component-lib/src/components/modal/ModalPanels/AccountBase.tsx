@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material';
-import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
+import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, SoursURL, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { AccountBaseProps } from './Interface';
@@ -33,21 +33,24 @@ const BoxStyled = styled(Box)`
 ` as typeof Box
 
 export const AccountBasePanel = ({
-                                onDisconnect,
-                                accAddress,
-                                level,
-                                connectName,
-                                etherscanUrl,
-                                onCopy,
-                                t,
-                            }:AccountBaseProps & WithTranslation) => {
+                                     onDisconnect,
+                                     accAddress,
+                                     level,
+                                     connectName,
+                                     etherscanUrl,
+                                     onCopy,
+                                     t,
+                                 }: AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + 'address/' + accAddress;
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
 
     const getImagePath = React.useMemo(() => {
-        return `static/images/vips/${level.toUpperCase().replace('_','')}`
-
+        const path = SoursURL + `images/vips/${level.toUpperCase().replace('_', '')}`
+        return <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
+                    src={`${path}.webp`}
+            // srcSet={`${path}.webp 1x, ${path}.png 1x`}
+        />
     }, [level])
 
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
@@ -57,13 +60,9 @@ export const AccountBasePanel = ({
             </Trans>
         </Typography>
         <Typography marginTop={1} display={'flex'} alignItems={'center'}
-                     justifyContent={'flex-start'}>
+                    justifyContent={'flex-start'}>
             <Typography paddingRight={1} component={'span'} fontSize={'3rem'}>{addressShort}</Typography>
-            {level && <picture>
-                <source  srcSet={`${getImagePath}.webp`} type="image/webp" />
-                <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
-                   src={`${getImagePath}.png`}/>
-            </picture>}
+            {level && getImagePath}
 
         </Typography>
 

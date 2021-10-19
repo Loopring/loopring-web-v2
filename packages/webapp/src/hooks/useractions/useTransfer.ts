@@ -142,7 +142,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     }, [setAddress, isShow, transferValue.address, accountStatus, account.readyState])
 
-    const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
+    const { checkHWAddr, updateHW, } = useWalletInfo()
 
     const [lastRequest, setLastRequest] = React.useState<any>({})
 
@@ -193,7 +193,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                         setShowAccount({ isShow: true, step: AccountStep.Transfer_Success })
                         if (isHWAddr) {
                             myLog('......try to set isHWAddr', isHWAddr)
-                            updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
+                            updateHW({ wallet: account.accAddress, isHWAddr })
                         }
                         walletLayer2Service.sendUserUpdate()
 
@@ -222,7 +222,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             }
 
         }
-    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account,])
+    }, [setLastRequest, setShowAccount, updateHW, account,])
 
     const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
         const { accountId, accAddress, readyState, apiKey, eddsaKey } = account

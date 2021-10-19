@@ -8,7 +8,7 @@ import {
     getValuePrecisionThousand,
     IBData,
     myLog,
-    SlippageTolerance
+    SlippageTolerance, SoursURL
 } from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
@@ -245,7 +245,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                     width: 'var(--withdraw-coin-size)',
                                     height: 'var(--withdraw-coin-size)',
                                 }}
-                                src={'static/images/icon-default.png'} />
+                                src={SoursURL+'images/icon-default.png'} />
                         }
                         <Typography variant={'body1'}>{ammData?.coinA?.belong}</Typography>
                     </Box>
@@ -270,7 +270,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                     height: 'var(--withdraw-coin-size)',
                                 }}
                                 // src={sellData?.icon}
-                                src={'static/images/icon-default.png'} />
+                                src={SoursURL+'images/icon-default.png'} />
                         }
                         <Typography variant={'body1'}>{ammData?.coinB?.belong}</Typography>
                     </Box>

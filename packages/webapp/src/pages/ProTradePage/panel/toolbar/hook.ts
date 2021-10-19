@@ -17,7 +17,7 @@ export const useToolbar = () => {
 
     React.useEffect(() => {
         getAmmPoolBalances()
-    }, [getAmmPoolBalances])
+    }, [])
     
     return {
         ammPoolBalances,

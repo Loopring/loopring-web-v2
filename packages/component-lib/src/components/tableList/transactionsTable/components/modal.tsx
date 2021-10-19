@@ -4,7 +4,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import moment from 'moment'
 import { EmptyValueTag } from '@loopring-web/common-resources';
 import { TxType } from 'loopring-sdk';
-import { getValuePrecisionThousand } from '@loopring-web/common-resources';
+// import { getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 export enum TxnDetailStatus {
     processed = 'PROCESSED',

@@ -14,7 +14,7 @@ import {
 } from '@loopring-web/common-resources';
 import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
-const logoSVG = SoursURL+'/svg/logo.svg'
+const logoSVG = SoursURL+'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
   && {
     display: flex;

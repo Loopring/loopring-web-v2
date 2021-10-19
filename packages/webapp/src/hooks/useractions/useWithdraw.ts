@@ -68,7 +68,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
     const [isExceedMax, setIsExceedMax] = React.useState(false)
-    const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
+    const { checkHWAddr, updateHW, } = useWalletInfo()
 
     const [lastRequest, setLastRequest] = React.useState<any>({})
 
@@ -280,7 +280,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         setShowAccount({ isShow: true, step: AccountStep.Withdraw_Success })
                         if (isHWAddr) {
                             myLog('......try to set isHWAddr', isHWAddr)
-                            updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
+                            updateHW({ wallet: account.accAddress, isHWAddr })
                         }
 
                         resetWithdrawData()
@@ -311,7 +311,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             }
         }
 
-    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
+    }, [setLastRequest, setShowAccount, updateHW, account])
 
     const handleWithdraw = React.useCallback(async (inputValue: any, address, isFirstTime: boolean = true) => {
 

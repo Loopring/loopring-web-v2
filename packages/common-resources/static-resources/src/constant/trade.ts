@@ -35,6 +35,24 @@ export enum TradeStatus {
     Waiting = 'waiting'
 }
 
+export interface TxInfo {
+    hash: string,
+    timestamp?:number |undefined,
+    status?:'pending'|'success'|'failed'|undefined,
+    // reason:'activeAccount'|'regular'|'reset'
+}
+// export interface accountHashInfo {
+//     depositHashes: TxInfo[]
+//     withdrawHashes: TxInfo[]
+// }
+// export type Address = string
+export interface ChainHashInfos {
+    depositHashes:{[key:string]:TxInfo[]},
+    // withdrawHashes:{[key:string]:TxInfo[]},
+}
+
+
 export const EmptyValueTag = '--'
+
 
 

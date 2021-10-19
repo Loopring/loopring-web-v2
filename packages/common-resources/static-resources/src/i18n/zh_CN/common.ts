@@ -381,4 +381,6 @@ export default {
     labelQueryFeeOK: '',
     depositLimit:'',
     depositMarket:'',
+    labelDepositHash:'.'
+
 }

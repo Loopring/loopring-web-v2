@@ -1,11 +1,10 @@
 import styled from '@emotion/styled';
 import { Box, Grid, Typography } from '@mui/material';
-import React, { useMemo } from 'react';
-import { VipPanel as VipView } from '@loopring-web/component-lib';
+import React from 'react';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
-import { useAccount } from '../../../stores/account';
+import { useAccount } from 'stores/account';
 import { LoopringAPI } from '../../../api_wrapper';
-import { VipFeeRateInfoMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { SoursURL } from '@loopring-web/common-resources';
 
 const StylePaper = styled(Grid)`
   width: 100%;
@@ -25,34 +24,48 @@ const vipDefault: string[][] = [
 ];
 export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
     const {account: {level}} = useAccount()
-    const getImagePath = React.useCallback(() => {
-        const path = `static/images/vips/${level.toUpperCase().replace('_','')}.png`
-        return path
-    }, [level])
-    const [vipTable,setVipTable] =React.useState<string[][]>(vipDefault);
-    const [userFee,setUserFee] =React.useState<{
+
+    const [vipTable, setVipTable] = React.useState<string[][]>(vipDefault);
+    const [userFee, setUserFee] = React.useState<{
         maker: string,
         taker: string
     }>({
         maker: '0',
         taker: '0.0025%'
     })
-    const result = React.useCallback(async ()=>{
-        if(LoopringAPI.exchangeAPI){
-            const {orderbookTradingFeesStablecoin,
+    const getImagePath = React.useMemo(() => {
+        const path = SoursURL + `images/vips/${level.toUpperCase().replace('_', '')}`
+        return <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
+                    src={`${path}.webp`}
+            // srcSet={`${path}.webp 1x, ${path}.png 1x`}
+        />
+        // <>
+        //     <picture>
+        //     <source srcSet={path+'.webp'} type="image/webp"/>
+        //     <source srcSet={path+'.png'} />
+        //     <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
+        //          src={'https://static.loopring.io/assets/images/vips/VIP4.png'}/>
+        // </picture>
+        //
+        // </>
+    }, [level])
+    const result = React.useCallback(async () => {
+        if (LoopringAPI.exchangeAPI) {
+            const {
+                // orderbookTradingFeesStablecoin,
                 orderbookTradingFees,
-                ammTradingFees,
-                otherFees,
+                // ammTradingFees,
+                // otherFees,
             } = await LoopringAPI.exchangeAPI.getExchangeFeeInfo();
             // debugger
             // if() {
             //     level = 'vip_4'
             // }
-            const  _level = level === 'super_vip'?'vip_4':level === ''? 'default': level;
-            if(orderbookTradingFees[_level]){
+            const _level = level === 'super_vip' ? 'vip_4' : level === '' ? 'default' : level;
+            if (orderbookTradingFees[ _level ]) {
                 setUserFee({
-                    maker: (orderbookTradingFees[_level].makerRate/10000).toString()+'%' ,
-                    taker: (orderbookTradingFees[_level].takerRate/10000).toString()+'%' ,
+                    maker: (orderbookTradingFees[ _level ].makerRate / 10000).toString() + '%',
+                    taker: (orderbookTradingFees[ _level ].takerRate / 10000).toString() + '%',
                 })
             }
 
@@ -90,9 +103,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                         <Typography variant={'body1'} component={'span'} display={'flex'} flexDirection={'row'}
                                     alignItems={'center'} paddingRight={1}>
                             <Typography component={'span'} variant={'body1'}>
-                                {level ?
-                                    <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
-                                         src={getImagePath()}/> : 'Basic'}
+                                {level ? getImagePath : 'Basic'}
                             </Typography>
                         </Typography>
                     </Typography>
