@@ -1,7 +1,7 @@
 import { Box, Link, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import React from 'react';
-import { connectProvides } from '@loopring-web/web3-provider';
+// import { connectProvides } from '@loopring-web/web3-provider';
 import { WithTranslation } from 'react-i18next';
 import {
     ChainHashInfos,
@@ -34,68 +34,15 @@ export const DepositRecorder = ({
                                     accAddress,
                                     chainInfos,
                                     etherscanUrl,
-                                    updateDepositHash
+                                    // updateDepositHash
                                 }: WithTranslation &
     {
         accAddress: string,
         etherscanUrl: string,
         chainInfos: ChainHashInfos,
-        updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
+        // updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
     }) => {
 
-    const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-    // const [flag,setFlag] = React.useState(false)
-
-    const updateDepositStatus = React.useCallback(async () => {
-        if (chainInfos
-            && chainInfos.depositHashes
-            && chainInfos.depositHashes[ accAddress ]
-            && connectProvides
-        ) {
-
-            let depositList = chainInfos.depositHashes[ accAddress ];
-            let flag = false;
-            depositList.forEach((txInfo) => {
-                if (txInfo.status === 'pending' && connectProvides?.usedWeb3?.eth?.getTransactionReceipt) {
-                    connectProvides.usedWeb3.eth.getTransactionReceipt(txInfo.hash).then((result) => {
-                        if (result) {
-                            // txInfo.status = result.status ? 'success' : 'failed'
-                            updateDepositHash(txInfo.hash, accAddress, result.status ? 'success' : 'failed')
-                        }
-                    })
-                    flag = true;
-                }
-            })
-            if (nodeTimer.current !== -1) {
-                clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
-            }
-            if (flag) {
-                nodeTimer.current = setTimeout(() => {
-                    updateDepositStatus();
-                }, 30000)
-            }
-
-
-        }
-    }, [chainInfos?.depositHashes[ accAddress ]])
-    // if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-    //
-    //     // @ts-ignore
-    //     let chainId = Number(connectProvides.usedProvide?.connector?.chainId) ?? Number(await connectProvides.usedWeb3.eth.getChainId())
-    //     if (ChainId[ chainId ] === undefined) {
-    //         chainId = account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
-    //     }
-    //
-    //     updateSystem({chainId: chainId as any})
-    //     return
-    // }
-
-    React.useEffect(() => {
-        updateDepositStatus();
-        return () => {
-            clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
-        }
-    }, [])
     const depositView = React.useMemo(() => {
         return <>{
             (chainInfos && chainInfos?.depositHashes && chainInfos?.depositHashes[ accAddress ]) ? <>

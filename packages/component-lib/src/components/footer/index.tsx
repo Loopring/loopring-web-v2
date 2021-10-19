@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro'
-import { Box, Container, Grid, Link, List, ListItem, Typography } from '@mui/material';
+import { Box, Container, Divider, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import React from 'react';
 import {
     DiscordIcon,
@@ -11,6 +11,7 @@ import {
 } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
+import { hr } from '@loopring-web/common-resources';
 
 
 const HeightConfig = {
@@ -25,11 +26,13 @@ const LinkStyle = styled(Link)`
   line-height: 20px;
   font-size: 12px;
 
-  :hover {
+  &:hover {
     color: var(--color-text-hover);
   }
 ` as typeof Link;
 const FooterDiv = styled(Box)`
+  background: var(--color-global-bg);
+  //style={{backgroundColor: mode === 'dark' ? '#0A0B2F' : '#fff'}}
   @media screen and (max-width: 1280px) {
 
 
@@ -174,8 +177,9 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
         window.open(href)
     }, [])
 
-    return <FooterDiv style={{backgroundColor: mode === 'dark' ? '#0A0B2F' : '#fff'}} component={'footer'}
+    return <FooterDiv  component={'footer'}
                       fontSize={'body1'}>
+        {/*<Divider />*/}
         <Container>
             <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'}
                   height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center"

@@ -35,7 +35,7 @@ export const useOnChainInfo = (): {
         }
         if (status === 'success'
             && walletLayer1.status !== SagaStatus.PENDING
-            && chainInfos.depositHashes[ accountAddress ].find(ele => ele.hash === depositHash && ele.status == 'pending')
+            // && chainInfos.depositHashes[ accountAddress ].find(ele => ele.hash === depositHash && ele.status == 'pending')
         ) {
             dispatch(updateWalletLayer1(undefined))
             dispatch(updateWalletLayer2(undefined))
