@@ -7,6 +7,7 @@ import { ChainHashInfos } from '@loopring-web/common-resources';
 
 export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: WithTranslation &
     AccountBaseProps & {
+    clearDepositHash: () => void ,
     // updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
     chainInfos:ChainHashInfos}) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
@@ -24,7 +25,7 @@ export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: Wi
         </Box>
 
         <Box display={'flex'} marginX={0}  marginTop={3} marginBottom={-5} alignSelf={'stretch'} paddingX={5} padding={0} >
-            <DepositRecorder  {...props} t={t}/>
+            <DepositRecorder  {...props} clear={props.clearDepositHash} t={t}/>
         </Box>
 
     </Box>

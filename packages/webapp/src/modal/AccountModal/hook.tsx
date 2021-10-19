@@ -71,7 +71,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
 
     const { goUpdateAccount } = useUpdateAccout();
-    const { chainInfos,updateDepositHash} = useOnChainInfo();
+    const { chainInfos,updateDepositHash,clearDepositHash} = useOnChainInfo();
 
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
@@ -282,6 +282,9 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         }
     }, [])
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+    const clearDeposit = React.useCallback(()=>{
+        clearDepositHash(account.accAddress)
+    },[clearDepositHash,account])
     const updateDepositStatus = React.useCallback(async () => {
         const chainInfos = store.getState().localStore.chainHashInfos
         const {accAddress} = account
@@ -326,6 +329,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                     goDeposit,
                     chainInfos,
                     updateDepositHash,
+                    clearDepositHash:clearDeposit,
                     ...account,
                     etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
@@ -343,6 +347,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             [ AccountStep.HadAccount ]: {
                 view: <HadAccount {...{
                     ...account,
+                    clearDepositHash:clearDeposit,
                     chainInfos,
                     updateDepositHash,
                     onSwitch, onCopy,
@@ -546,6 +551,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             [ AccountStep.UpdateAccount ]: {
                 view: <UpdateAccount {...{
                     ...account,
+                    clearDepositHash:clearDeposit,
                     etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
                     onViewQRCode, onDisconnect, addressShort,

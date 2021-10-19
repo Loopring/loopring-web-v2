@@ -381,6 +381,9 @@ export default {
     labelQueryFeeOK: '',
     depositLimit:'',
     depositMarket:'',
-    labelDepositHash:'.'
+    labelDepositHash:'.',
+    labelDepositHashEmpty:'.',
+    labelDepositRecord:'',
+    labelClearAll:'Clear All',
 
 }

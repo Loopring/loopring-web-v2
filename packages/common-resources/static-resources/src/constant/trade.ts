@@ -35,12 +35,13 @@ export enum TradeStatus {
     Waiting = 'waiting'
 }
 
-export interface TxInfo {
+export type TxInfo  = {
     hash: string,
     timestamp?:number |undefined,
     status?:'pending'|'success'|'failed'|undefined,
+
     // reason:'activeAccount'|'regular'|'reset'
-}
+}  & {[key:string]:any}
 // export interface accountHashInfo {
 //     depositHashes: TxInfo[]
 //     withdrawHashes: TxInfo[]

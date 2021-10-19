@@ -6,8 +6,8 @@ import { WithTranslation } from 'react-i18next';
 import {
     ChainHashInfos,
     CompleteIcon,
-    EmptyIcon,
-    getFormattedHash,
+    // EmptyIcon,
+    getFormattedHash, LinkIcon,
     WaitingIcon,
     WarningIcon
 } from '@loopring-web/common-resources';
@@ -34,49 +34,65 @@ export const DepositRecorder = ({
                                     accAddress,
                                     chainInfos,
                                     etherscanUrl,
+                                    clear,
                                     // updateDepositHash
                                 }: WithTranslation &
     {
         accAddress: string,
         etherscanUrl: string,
         chainInfos: ChainHashInfos,
+        clear:()=>void,
         // updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
     }) => {
 
     const depositView = React.useMemo(() => {
         return <>{
-            (chainInfos && chainInfos?.depositHashes && chainInfos?.depositHashes[ accAddress ]) ? <>
-                <Typography component={'h6'} variant={'body2'} color={'text.secondary'}
-                            paddingBottom={1}>
-                    {t('labelDepositHash')}
+            (chainInfos && chainInfos?.depositHashes && chainInfos?.depositHashes[ accAddress ] && chainInfos?.depositHashes[ accAddress ].length) ? <>
+                <Typography display={'inline-flex'} justifyContent={'space-between'}
+                            paddingY={1 / 2} >
+                    <Typography component={'h6'} variant={'body2'} color={'text.primary'}
+                                paddingBottom={1}>
+                        {t('labelDepositHash')}
+                    </Typography>
+                    <Link  variant={'body2'}
+                                paddingBottom={1} onClick={()=> {clear()}}>
+                        {t('labelClearAll')}
+                    </Link>
                 </Typography>
                 {chainInfos?.depositHashes[ accAddress ].map((txInfo) => {
                     return <Typography key={txInfo.hash} display={'inline-flex'} justifyContent={'space-between'}
-                                       fontSize={'h5'} paddingY={1 / 2}>
+                                       fontSize={'h5'} paddingY={1 / 2} >
                         {/*{depoistView}*/}
-                        <Link fontSize={'inherit'} textAlign={'center'}
+                        <Link fontSize={'inherit'} alignItems={'center'}  display={'inline-flex'}
                               onClick={() => window.open(`${etherscanUrl}tx/${txInfo.hash}`)}>
-                            {getFormattedHash(txInfo.hash)}
+                            {txInfo.symbol ?
+                                <Typography component={'span'} color={'text.secondary'}>
+                                    {t('labelDepositRecord', {
+                                        symbol: txInfo.symbol,
+                                        value: txInfo.value
+                                    })}  </Typography>
+                                : getFormattedHash(txInfo.hash)}
+                            <LinkIcon style={{marginLeft:'8px'}}fontSize={'small'}/>
                         </Link>
                         <Typography fontSize={'inherit'} component={'span'}>{
                             txInfo.status === 'pending' ?
                                 <WaitingIcon fontSize={'large'}/> : txInfo.status === 'success' ?
-                                    <CompleteIcon fontSize={'large'}/> : <WarningIcon fontSize={'large'}/>
+                                <CompleteIcon fontSize={'large'}/> : <WarningIcon fontSize={'large'}/>
                         }</Typography>
                     </Typography>
                 })}
-            </> : <Typography display={'flex'} flex={1} alignItems={'center'} justifyContent={'center'}
+            </> : <Typography display={'flex'} flex={1}  justifyContent={'center'}
                               flexDirection={'column'}>
-                <EmptyIcon htmlColor={'var(--color-text-third)'} style={{height: '42px', width: '42px'}}/>
-                <Typography component={'h6'} variant={'body2'} textAlign={'center'} color={'text.secondary'}>
-                    {t('labelDepositHash')}
+                {/*<EmptyIcon htmlColor={'var(--color-text-third)'} style={{height: '42px', width: '42px'}}/>*/}
+                <Typography component={'h6'} variant={'h4'}  color={'text.secondary'}>
+                    {t('labelDepositHashEmpty')}
                 </Typography>
             </Typography>
         } </>
     }, [chainInfos?.depositHashes[ accAddress ]])
 
 
-    return <BoxStyled minHeight={80}
+    return <BoxStyled minHeight={60}
                       maxHeight={180}
                       overflow={'scroll'}
                       component={'div'} display={'flex'}

@@ -14,8 +14,14 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<ChainHashInfos, 
         clearAll(state: ChainHashInfos, action: PayloadAction<undefined>) {
             state = initialState
         },
-        clearDepositHash(state: ChainHashInfos) {
-            // state.depositHashes = {}
+        clearDepositHash(state: ChainHashInfos,action:PayloadAction<{accountAddress?:string }>) {
+            const {accountAddress} = action.payload;
+            if(accountAddress && state.depositHashes){
+                state.depositHashes[accountAddress] = []
+            }else{
+                state.depositHashes = {}
+            }
+
         },
         clearWithdrawHash(state: ChainHashInfos) {
             // state.withdrawHashes = {}
@@ -24,7 +30,7 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<ChainHashInfos, 
             const {txInfo,accountAddress} = action.payload;
             if(accountAddress && txInfo){
                 if(!txInfo.status){
-                    txInfo.status= 'pending';
+                    txInfo.status = 'pending';
                     txInfo.timestamp = Date.now();
                     state.depositHashes = {
                         [accountAddress]:state.depositHashes[accountAddress]?

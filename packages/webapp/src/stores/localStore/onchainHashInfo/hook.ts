@@ -8,8 +8,10 @@ import { updateWalletLayer2 } from '../../walletLayer2';
 export const useOnChainInfo = (): {
     chainInfos: ChainHashInfos,
     clearAllWrapper: () => void,
-    clearDepositHashWrapper: () => void,
-    updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void,
+    clearDepositHash: (accountAddress?: string) => void,
+    updateDepositHash: (depositHash: string, accountAddress: string,
+                        status?: 'success' | 'failed',
+                        args?:{[key:string]:any}) => void,
 } => {
     const chainInfos: ChainHashInfos = useSelector((state: any) => state.localStore.chainHashInfos)
     const walletLayer1: WalletLayer1States = useSelector((state: any) => state.walletLayer1)
@@ -20,16 +22,17 @@ export const useOnChainInfo = (): {
         dispatch(clearAll(undefined))
     }, [dispatch])
 
-    const clearDepositHashWrapper = React.useCallback(() => {
-        dispatch(clearDepositHash(undefined))
+    const _clearDepositHash = React.useCallback((accountAddress?: string) => {
+        dispatch(clearDepositHash({accountAddress}))
     }, [dispatch])
 
-    const _updateDepositHash = React.useCallback((depositHash: string,accountAddress:string,status?:'success'|'failed') => {
+    const _updateDepositHash = React.useCallback((depositHash: string,accountAddress:string,status?:'success'|'failed',args?:{[key:string]:any}) => {
         // accountAddress
         const props: { txInfo: TxInfo, accountAddress: string } = {
             txInfo: {
                 hash: depositHash,
                 status,
+                ...args,
                 // reason:'activeAccount'|'regular'|'reset'
             }, accountAddress,
         }
@@ -46,7 +49,7 @@ export const useOnChainInfo = (): {
     return {
         chainInfos,
         clearAllWrapper,
-        clearDepositHashWrapper,
+        clearDepositHash:_clearDepositHash,
         updateDepositHash:_updateDepositHash,
     }
 }
