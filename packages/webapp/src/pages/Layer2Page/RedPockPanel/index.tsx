@@ -1,11 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, Grid, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
-import { VipPanel as VipView } from '@loopring-web/component-lib';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
-import { useAccount } from '../../../stores/account';
-import { LoopringAPI } from '../../../api_wrapper';
-import { VipFeeRateInfoMap } from 'loopring-sdk/dist/defs/loopring_defs';
 
 const StylePaper = styled(Grid)`
   width: 100%;

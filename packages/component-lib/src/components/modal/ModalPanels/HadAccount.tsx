@@ -3,12 +3,13 @@ import { AccountBasePanel } from './AccountBase'
 import { Box } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { DepositRecorder } from './DepositRecorder';
-import { ChainHashInfos } from '@loopring-web/common-resources';
+import { AccountHashInfo } from '@loopring-web/common-resources';
 
 export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: WithTranslation &
     AccountBaseProps & {
-    updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
-    chainInfos:ChainHashInfos}) => {
+    clearDepositHash: () => void ,
+    // updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
+    chainInfos:AccountHashInfo}) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
         <Box display={'flex'} flex={1}  justifyContent={'center'} alignItems={'center'}>
             <AccountBasePanel {...props} t={t}/>
@@ -24,7 +25,7 @@ export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: Wi
         </Box>
 
         <Box display={'flex'} marginX={0}  marginTop={3} marginBottom={-5} alignSelf={'stretch'} paddingX={5} padding={0} >
-            <DepositRecorder  {...props} t={t}/>
+            <DepositRecorder  {...props} clear={props.clearDepositHash} t={t}/>
         </Box>
 
     </Box>

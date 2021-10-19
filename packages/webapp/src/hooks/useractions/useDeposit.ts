@@ -266,7 +266,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 if (response) {
 
                     setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
-                    updateDepositHash(response.result,account.accAddress);
+                    updateDepositHash(response.result,account.accAddress,undefined,
+                        {symbol:tokenInfo.symbol,
+                            type:'Deposit',
+                            value:inputValue.tradeValue});
 
                 } else {
                     // deposit failed

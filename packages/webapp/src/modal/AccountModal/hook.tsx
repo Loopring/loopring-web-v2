@@ -48,7 +48,7 @@ import {
     ExportAccount_Success,
     ExportAccount_Failed,
 } from '@loopring-web/component-lib';
-import { walletServices } from '@loopring-web/web3-provider';
+import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 
 import React, { useState } from 'react';
 import { copyToClipBoard } from '@loopring-web/common-resources';
@@ -65,17 +65,22 @@ import { useUpdateAccout } from 'hooks/useractions/useUpdateAccount';
 import { useReset } from 'hooks/useractions/useReset';
 import { useExportAccount } from 'hooks/useractions/useExportAccount';
 import { useOnChainInfo } from 'stores/localStore/onchainHashInfo';
+import store from '../../stores';
+import { useSelector } from 'react-redux';
+import { useSystem } from '../../stores/system';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
 
     const { goUpdateAccount } = useUpdateAccout();
-    const { chainInfos,updateDepositHash} = useOnChainInfo();
+    const { chainInfos,updateDepositHash,clearDepositHash} = useOnChainInfo();
 
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
         setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount,
     } = useOpenModals()
+
+    const {chainId} = useSystem();
 
     const {
         account,
@@ -182,7 +187,6 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         }
     }, [account])
 
-    const title = t("labelCreateLayer2Title")
 
     const backToDepositBtnInfo = React.useMemo(() => {
         return {
@@ -281,6 +285,46 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             }
         }
     }, [])
+    const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+    const clearDeposit = React.useCallback(()=>{
+        clearDepositHash(account.accAddress)
+    },[clearDepositHash,account])
+    const updateDepositStatus = React.useCallback(async () => {
+        const chainInfos = store.getState().localStore.chainHashInfos[chainId]
+        const {accAddress} = account
+        if (chainInfos
+            && chainInfos.depositHashes
+            && chainInfos.depositHashes[ accAddress ]
+            && connectProvides
+        ) {
+            const depositList = chainInfos.depositHashes[ accAddress ];
+            let flag = false;
+            depositList.forEach((txInfo) => {
+                if (txInfo.status === 'pending' && connectProvides?.usedWeb3?.eth?.getTransactionReceipt) {
+                    connectProvides.usedWeb3.eth.getTransactionReceipt(txInfo.hash).then((result) => {
+                        if (result) {
+                            updateDepositHash(txInfo.hash, accAddress, result.status ? 'success' : 'failed')
+                        }
+                    })
+                    flag = true;
+                }
+            })
+            if (nodeTimer.current !== -1) {
+                clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+            }
+            if (flag) {
+                nodeTimer.current = setTimeout(() => {
+                    updateDepositStatus();
+                }, 30000)
+            }
+        }
+    }, [account,chainId])
+    React.useEffect(() => {
+        updateDepositStatus();
+        return () => {
+            clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+        }
+    }, [chainInfos?.depositHashes[ account.accAddress ]])
 
     const accountList = React.useMemo(() => {
         return Object.values({
@@ -289,6 +333,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                     goDeposit,
                     chainInfos,
                     updateDepositHash,
+                    clearDepositHash:clearDeposit,
                     ...account,
                     etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
@@ -306,6 +351,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             [ AccountStep.HadAccount ]: {
                 view: <HadAccount {...{
                     ...account,
+                    clearDepositHash:clearDeposit,
                     chainInfos,
                     updateDepositHash,
                     onSwitch, onCopy,
@@ -509,6 +555,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             [ AccountStep.UpdateAccount ]: {
                 view: <UpdateAccount {...{
                     ...account,
+                    clearDepositHash:clearDeposit,
                     etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
                     onViewQRCode, onDisconnect, addressShort,
@@ -644,6 +691,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
     }, [addressShort,chainInfos, account, depositProps, etherscanBaseUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     const currentModal = accountList[ isShowAccount.step ]
+
+
 
     return {
         withdrawAlertText,
