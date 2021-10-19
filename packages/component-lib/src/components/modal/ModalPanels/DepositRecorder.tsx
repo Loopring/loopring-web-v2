@@ -129,7 +129,7 @@ export const DepositRecorder = ({
     }, [chainInfos?.depositHashes[ accAddress ]])
 
 
-    return <BoxStyled minHeight={100}
+    return <BoxStyled minHeight={80}
                       maxHeight={180}
                       overflow={'scroll'}
                       component={'div'} display={'flex'}
