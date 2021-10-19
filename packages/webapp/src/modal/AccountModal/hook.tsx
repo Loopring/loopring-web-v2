@@ -66,6 +66,8 @@ import { useReset } from 'hooks/useractions/useReset';
 import { useExportAccount } from 'hooks/useractions/useExportAccount';
 import { useOnChainInfo } from 'stores/localStore/onchainHashInfo';
 import store from '../../stores';
+import { useSelector } from 'react-redux';
+import { useSystem } from '../../stores/system';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
@@ -77,6 +79,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         modals: {isShowAccount}, setShowConnect, setShowAccount,
         setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount,
     } = useOpenModals()
+
+    const {chainId} = useSystem();
 
     const {
         account,
@@ -286,7 +290,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         clearDepositHash(account.accAddress)
     },[clearDepositHash,account])
     const updateDepositStatus = React.useCallback(async () => {
-        const chainInfos = store.getState().localStore.chainHashInfos
+        const chainInfos = store.getState().localStore.chainHashInfos[chainId]
         const {accAddress} = account
         if (chainInfos
             && chainInfos.depositHashes
@@ -314,7 +318,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                 }, 30000)
             }
         }
-    }, [account])
+    }, [account,chainId])
     React.useEffect(() => {
         updateDepositStatus();
         return () => {

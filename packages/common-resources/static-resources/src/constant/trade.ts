@@ -1,3 +1,5 @@
+import { ChainId } from 'loopring-sdk/dist';
+
 export enum WithdrawType {
     Fast = 'Fast',
     Standard = 'Standard',
@@ -47,10 +49,13 @@ export type TxInfo  = {
 //     withdrawHashes: TxInfo[]
 // }
 // export type Address = string
-export interface ChainHashInfos {
-    depositHashes:{[key:string]:TxInfo[]},
-    // withdrawHashes:{[key:string]:TxInfo[]},
-}
+export interface AccountHashInfo {
+    depositHashes: { [ key: string ]: TxInfo[]; };
+};
+// export type Address = string
+export type ChainHashInfos = {
+    [key in ChainId extends string?string:string]: AccountHashInfo
+};
 
 
 export const EmptyValueTag = '--'

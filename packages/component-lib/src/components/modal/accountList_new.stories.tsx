@@ -107,14 +107,22 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
         const accountMap = {
             [AccountStep.NoAccount]: {
                 view: <NoAccount {...{
+                    chainInfos:{depositHashes:{}},
                     ...accountInfoProps, goDeposit: () => {
                     }
                 }} />,
             },
             [AccountStep.UpdateAccount]: {
-                view: <UpdateAccount  {...{ ...accountInfoProps, ...rest}} goUpdateAccount={() => undefined} />,
+                view: <UpdateAccount
+                    {...{ ...accountInfoProps,
+                        chainInfos:{depositHashes:{}},
+                        ...rest}} goUpdateAccount={() => undefined} />,
             },
-            [AccountStep.HadAccount]: { view: <HadAccount mainBtn={mainBtn} {...accountInfoProps} />, },
+            [AccountStep.HadAccount]: { view: <HadAccount mainBtn={mainBtn} {...{
+                    ...accountInfoProps,
+                    chainInfos:{depositHashes:{}}
+
+                }} />, },
         }
 
         return { nameList0: Object.keys(accountMap), accountList0: Object.values(accountMap) }
@@ -469,10 +477,10 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
                     </Box>
                     <Grid container spacing={0}>
 
-                        {accountList0.map((panel, index) => {
+                        {accountList0.map((panel:any, index:number) => {
                             return (<>
                                 <Box key={index} display={'flex'} flexDirection={'column'} width={w} height={h} padding={2}
-                                    justifyContent={'center'} alignItems={'stretch'}>
+                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList0[index]]}</Typography>
 
                                     {panel.view}

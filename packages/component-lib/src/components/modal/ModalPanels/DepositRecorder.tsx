@@ -4,7 +4,7 @@ import React from 'react';
 // import { connectProvides } from '@loopring-web/web3-provider';
 import { WithTranslation } from 'react-i18next';
 import {
-    ChainHashInfos,
+    AccountHashInfo,
     CompleteIcon,
     // EmptyIcon,
     getFormattedHash, LinkIcon,
@@ -40,7 +40,7 @@ export const DepositRecorder = ({
     {
         accAddress: string,
         etherscanUrl: string,
-        chainInfos: ChainHashInfos,
+        chainInfos: AccountHashInfo,
         clear:()=>void,
         // updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
     }) => {

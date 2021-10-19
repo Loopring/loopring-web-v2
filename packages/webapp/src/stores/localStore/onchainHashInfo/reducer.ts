@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
 import { ChainHashInfos, TxInfo } from '@loopring-web/common-resources';
+import { ChainId } from 'loopring-sdk/dist';
 
 const initialState: ChainHashInfos = {
-    depositHashes:{},
-    // withdrawHashes:{},
+    [ChainId.GOERLI]: {depositHashes: {}},
+    [ChainId.MAINNET]:{depositHashes:{}}
+// withdrawHashes:{},
 }
 
 const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<ChainHashInfos, SliceCaseReducers<ChainHashInfos>, 'chainHashInfos'>({
@@ -14,59 +16,51 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<ChainHashInfos, 
         clearAll(state: ChainHashInfos, action: PayloadAction<undefined>) {
             state = initialState
         },
-        clearDepositHash(state: ChainHashInfos,action:PayloadAction<{accountAddress?:string }>) {
-            const {accountAddress} = action.payload;
-            if(accountAddress && state.depositHashes){
-                state.depositHashes[accountAddress] = []
+        clearDepositHash(state: ChainHashInfos,action:PayloadAction<{accountAddress?:string,chainId:ChainId }>) {
+            const {accountAddress,chainId} = action.payload;
+            if(accountAddress && state[chainId].depositHashes){
+                state[chainId].depositHashes[accountAddress] = []
             }else{
-                state.depositHashes = {}
+                state[chainId].depositHashes = {}
             }
 
         },
         clearWithdrawHash(state: ChainHashInfos) {
-            // state.withdrawHashes = {}
+            // state[chainId].withdrawHashes = {}
         },
-        updateDepositHash(state: ChainHashInfos, action: PayloadAction<{txInfo: TxInfo,accountAddress:string }>) {
-            const {txInfo,accountAddress} = action.payload;
+        updateDepositHash(state: ChainHashInfos, action: PayloadAction<{txInfo: TxInfo,accountAddress:string, chainId:ChainId }>) {
+            const {txInfo,accountAddress,chainId} = action.payload;
+            if(!state[chainId] || !state[chainId].depositHashes){
+                state[chainId] = {...state[chainId],depositHashes:{},}
+            }
             if(accountAddress && txInfo){
                 if(!txInfo.status){
                     txInfo.status = 'pending';
                     txInfo.timestamp = Date.now();
-                    state.depositHashes = {
-                        [accountAddress]:state.depositHashes[accountAddress]?
+                    state[chainId].depositHashes = {
+                        [accountAddress]:state[chainId].depositHashes[accountAddress]?
                             [
                                 ...[txInfo],
-                                ...state.depositHashes[accountAddress]] : [txInfo]
+                                ...state[chainId].depositHashes[accountAddress]] : [txInfo]
                     }
-                }else if(state.depositHashes[accountAddress]){
-                    const index =  state.depositHashes[accountAddress].findIndex(item=>item.hash === txInfo.hash);
+                }else if(state[chainId].depositHashes[accountAddress]){
+                    const index =  state[chainId].depositHashes[accountAddress].findIndex(item=>item.hash === txInfo.hash);
                     if(index !==-1){
-                        state.depositHashes[accountAddress][index] = {
-                            ...state.depositHashes[accountAddress][index],
+                        state[chainId].depositHashes[accountAddress][index] = {
+                            ...state[chainId].depositHashes[accountAddress][index],
                             status:txInfo.status
                         }
                     }
                 }
 
-                if(state.depositHashes[accountAddress].length > 5) {
-                    state.depositHashes[accountAddress].length = 5
+                if(state[chainId].depositHashes[accountAddress].length > 5) {
+                    state[chainId].depositHashes[accountAddress].length = 5
                 }
-                //  = {
-                //     ...state.depositHashes[accountAddress],
-                //     [txInfo.timestamp]: txInfo
-                // }
-                // Reflect.ownKeys( state.depositHashes[accountAddress]).reduce(()=>{
-                //
-                // },[])
-                // Object.keys()
+
 
             }
-            // state.depositHashes[ txInfo.hash ] = txInfo
         },
-        // updateWithdrawHash(state: ChainHashInfos, action: PayloadAction<TxInfo>) {
-        //     const txInfo = action.payload
-        //     state.withdrawHashes[ txInfo.hash ] = txInfo
-        // }
+
     },
 })
 

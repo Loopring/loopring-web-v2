@@ -3,13 +3,13 @@ import { AccountBasePanel } from './AccountBase'
 import { Box } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { DepositRecorder } from './DepositRecorder';
-import { ChainHashInfos } from '@loopring-web/common-resources';
+import { AccountHashInfo } from '@loopring-web/common-resources';
 
 export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: WithTranslation &
     AccountBaseProps & {
     clearDepositHash: () => void ,
     // updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
-    chainInfos:ChainHashInfos}) => {
+    chainInfos:AccountHashInfo}) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
         <Box display={'flex'} flex={1}  justifyContent={'center'} alignItems={'center'}>
             <AccountBasePanel {...props} t={t}/>
