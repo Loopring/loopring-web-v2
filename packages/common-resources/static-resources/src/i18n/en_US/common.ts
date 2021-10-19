@@ -131,7 +131,7 @@ export default {
     labelMyLPBToken: 'My {{symbol}}',
     labelMyLPAmountFor: 'My Ratio',
     labelTrade: 'Trade',
-    labelAmmList: 'AMM List', 
+    labelAmmList: 'AMM List',
     labelMyPoolShare: 'My Pool Share',
     labelFee: 'Fee',
     labelLPTotal: 'Total ',
@@ -383,5 +383,8 @@ export default {
     depositMarket:'Market orders \n are transactions meant to execute \n as quickly as possible at the current market price.',
     labelTransactions:'Transactions',
     labelMyRewards:'My Rewards',
-    labelDepositHash:'Deposit Transaction Hash'
+    labelDepositHash:'Deposit Transaction Hash',
+    labelDepositHashEmpty:'Deposit transaction will show here...',
+    labelDepositRecord:'Deposit {{value}} {{symbol}}',
+    labelClearAll:'Clear All',
 }
