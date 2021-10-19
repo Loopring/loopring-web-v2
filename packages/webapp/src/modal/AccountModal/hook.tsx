@@ -317,7 +317,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return () => {
             clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
         }
-    }, [])
+    }, [chainInfos?.depositHashes[ account.accAddress ]])
 
     const accountList = React.useMemo(() => {
         return Object.values({

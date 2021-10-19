@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro'
-import { Box, Container, Divider, Grid, Link, List, ListItem, Typography } from '@mui/material';
+import { Box, Container, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import React from 'react';
 import {
 DiscordIcon,
