@@ -199,7 +199,7 @@ return <FooterDiv style={{backgroundColor: mode === 'dark' ? '#0A0B2F' : '#fff'}
         <Grid justifyContent="flex-end" item lg={2}>
         
                 <Grid item xs={12} md={12} lg={12}>
-                    <Typography color="textThird" variant="h6" component="div"> Follow us </Typography>
+                    <Typography color="var(--color-text-third)" variant="h6" component="div"> Follow us </Typography>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <List style={{display: 'flex', alignItems: 'flex-start'}}>
