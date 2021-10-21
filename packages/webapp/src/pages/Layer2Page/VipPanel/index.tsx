@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Link, Typography, LinearProgress } from '@mui/material';
 import React from 'react';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from '../../../api_wrapper';
 import { SoursURL } from '@loopring-web/common-resources';
@@ -61,7 +62,7 @@ const rawData = [
 
 export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
     const {account: {level}} = useAccount()
-
+    const history = useHistory()
     const [vipTable, setVipTable] = React.useState<string[][]>([]);
     const [userFee, setUserFee] = React.useState<{
         maker: string,
@@ -127,6 +128,12 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         result()
     },[])
 
+    const handleTradeLinkClick = React.useCallback(() => {
+        if (history) {
+            history.push('/trade/lite/LRC-ETH')
+        }
+    }, [history])
+
     return <>
         <StylePaper flex={1} container className={'MuiPaper-elevation2'} padding={4} marginBottom={1}>
             <Grid item xs={12}>
@@ -160,15 +167,30 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                         <Typography variant={'h4'} component={'p'} marginTop={0.5}>
                             Currently {} ETH
                         </Typography>
-
+                        <Box width={'90%'} marginY={1.5}>
+                            <LinearProgress variant="determinate" value={50} />
+                            <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
+                                <Typography fontWeight={400} color={'var(--color-star)'}>VIP 0</Typography>
+                                <Typography fontWeight={400} color={'var(--color-text-secondary)'}>VIP 1</Typography>
+                            </Box>
+                        </Box>
+                        <Link onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Trade Spot</Link>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography fontWeight={400} variant={'h6'} component={'p'} color={'var(--color-text-secondary)'}>
                             LRC Balance
                         </Typography>
-                        <Typography variant={'h4'} component={'p'} marginTop={0.5}>
+                        <Typography variant={'h4'} component={'p'} marginY={0.5}>
                             Currently {} LRC
                         </Typography>
+                        <Box width={'90%'} marginY={1.5}>
+                            <LinearProgress variant="determinate" value={50} />
+                            <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
+                                <Typography fontWeight={400} color={'var(--color-star)'}>VIP 0</Typography>
+                                <Typography fontWeight={400} color={'var(--color-text-secondary)'}>VIP 1</Typography>
+                            </Box>
+                        </Box>
+                        <Link onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Buy LRC</Link>
                     </Grid>
                 </Grid>
             </Grid>
