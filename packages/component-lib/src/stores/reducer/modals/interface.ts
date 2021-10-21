@@ -26,4 +26,6 @@ export interface ModalState {
     isShowConnect: ModalStatePlayLoad & { step: number },
     isShowAccount: ModalStatePlayLoad & { step: number },
     isShowFeeSetting: ModalStatePlayLoad,
+    isShowIFrame: ModalStatePlayLoad & { url: string },
+
 }

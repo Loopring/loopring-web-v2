@@ -1,4 +1,4 @@
-import styled from '@emotion/styled/macro'
+import styled from '@emotion/styled'
 import { Box, Container, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import React from 'react';
 import {

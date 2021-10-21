@@ -12,13 +12,21 @@ const initialState: ModalState = {
     isShowConnect: {isShow: false, step: 0},
     isShowAccount: {isShow: false, step: 0},
     isShowSupport: {isShow: false},
-    isShowFeeSetting : {isShow: false}
+    isShowFeeSetting : {isShow: false},
+    isShowIFrame:  {isShow: false,url:''},
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
     name: 'settings',
     initialState,
     reducers: {
+        setShowIFrame(state, action: PayloadAction<{ isShow: boolean, url: string }>) {
+            const {isShow, url} = action.payload;
+            state.isShowIFrame = {
+                isShow,
+                url
+            };
+        },
         setShowSupport(state, action: PayloadAction<ModalStatePlayLoad>) {
             const {isShow} = action.payload;
             state.isShowSupport.isShow = isShow;
@@ -98,5 +106,6 @@ export const {
     setShowAccount,
     setShowSupport,
     setShowFeeSetting,
+    setShowIFrame,
 } = modalsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

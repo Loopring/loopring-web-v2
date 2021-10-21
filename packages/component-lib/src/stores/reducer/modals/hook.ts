@@ -12,6 +12,7 @@ import {
     setShowExportAccount,
     setShowSupport,
     setShowFeeSetting,
+    setShowIFrame,
 } from './reducer';
 
 import React from 'react';
@@ -31,6 +32,7 @@ export const useOpenModals = () => {
         setShowSwap: React.useCallback((state: ModalStatePlayLoad ) => dispatch(setShowSwap(state)), [dispatch]),
         setShowAccount: React.useCallback((state: ModalStatePlayLoad & { step?: number }) => dispatch(setShowAccount(state)), [dispatch]),
         setShowConnect: React.useCallback((state: ModalStatePlayLoad & { step?: number }) => dispatch(setShowConnect(state)), [dispatch]),
+        setShowIFrame: React.useCallback((state: ModalStatePlayLoad & { url: string }) => dispatch(setShowIFrame(state)), [dispatch]),
         setShowExportAccount: React.useCallback((state: ModalStatePlayLoad) => dispatch(setShowExportAccount(state)), [dispatch]),
         setShowFeeSetting: React.useCallback((state: ModalStatePlayLoad ) => dispatch(setShowFeeSetting(state)), [dispatch]),
 

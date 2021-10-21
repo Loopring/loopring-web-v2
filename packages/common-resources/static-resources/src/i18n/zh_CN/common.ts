@@ -385,5 +385,16 @@ export default {
     labelDepositHashEmpty:'.',
     labelDepositRecord:'',
     labelClearAll:'Clear All',
+    labelProviderAgree:'',
+    labelNFTName:'NFT Name:',
+    labelNFTDetail:'Detail:',
+    labelNFTContractAddress:'Contract Address:',
+    labelNFTTokenStandard:'Token Standard:',
+    labelNFTTokenMinted:'Token Minted:',
+    labelNFTDate:'Date:',
+    labelNFTTransfer:'Transfer',
+    labelNFTWithdraw:'Withdraw',
+    labelNFTMyNFT:'My NFT',
+    labelNFTTitleMyNFT:'My NFT',
 
 }
