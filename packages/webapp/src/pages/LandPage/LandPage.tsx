@@ -434,15 +434,15 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                         <Typography marginTop={3} width={480} color={'var(--text-third)'}>
                             {t('describeSuperpowers')}
                         </Typography>
-                        <Typography marginTop={8} width={260}>
-                            <Button onClick={() => history.push('/layer2')} fullWidth={true} size={'large'}
+                        <Typography marginTop={8} width={350}>
+                            <Button onClick={() => window.open('https://docs.loopring.io/en/')} fullWidth={true} size={'large'}
                                     variant={'contained'}
                                     style={{
                                         height: 64,
                                         justifyContent: 'space-around',
                                         borderRadius: '0', textTransform: 'uppercase'
                                     }}>
-                                {t('labelBtnStart')}
+                                {t('labelBtnDeveloper')}
                                 <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>
                             </Button>
                         </Typography>
