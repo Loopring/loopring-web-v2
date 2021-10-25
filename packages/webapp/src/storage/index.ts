@@ -1,4 +1,4 @@
-import { TxStatus } from 'loopring-sdk';
+import { TxStatus } from '@loopring-web/loopring-sdk';
 import { myLog } from "@loopring-web/common-resources";
 import { Account } from "@loopring-web/common-resources";
 

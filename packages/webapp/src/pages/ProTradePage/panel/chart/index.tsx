@@ -6,7 +6,7 @@ import { Divider, Box, Typography, Grid, MenuItem, Checkbox, ClickAwayListener }
 import { ScaleAreaChart, ChartType, SubIndicator, PopoverPure } from '@loopring-web/component-lib'
 import { KLineFeaturesIcon, DepthViewData, MarketType, depth2ViewData } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
-import { TradingInterval } from 'loopring-sdk'
+import { TradingInterval } from '@loopring-web/loopring-sdk'
 import { usePageTradePro } from 'stores/router';
 import { useTokenMap } from 'stores/token'
 import { useKlineChart } from './hook';

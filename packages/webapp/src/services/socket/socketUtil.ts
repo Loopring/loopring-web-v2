@@ -11,7 +11,7 @@ import {
     MarketTradeInfo,
     OrderDetail,
     toBig,
-} from 'loopring-sdk';
+} from '@loopring-web/loopring-sdk';
 import { walletLayer2Service } from './services/walletLayer2Service';
 import { tickerService } from './services/tickerService';
 import { ammPoolService } from './services/ammPoolService';

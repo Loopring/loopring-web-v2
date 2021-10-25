@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { testKlineData } from './data_min'
 import { MainIndicator, SubIndicator } from '.';
-import { TradingInterval } from 'loopring-sdk';
+import { TradingInterval } from '@loopring-web/loopring-sdk';
 
 const Styled = styled.div`
   flex: 1;

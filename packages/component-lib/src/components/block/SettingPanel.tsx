@@ -22,7 +22,7 @@ import {
 import { OutlineSelect, OutlineSelectItem } from '../basic-lib';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useSettings } from '../../stores';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 
 const StyledSwitch = styled(Switch)`

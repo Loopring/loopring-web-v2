@@ -1,4 +1,4 @@
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
+import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk';
 import React from 'react';
 import { AmmRecordRow, MyPoolRow } from '@loopring-web/component-lib';
 import { makeWalletLayer2 } from 'hooks/help/makeWallet';

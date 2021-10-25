@@ -1,4 +1,4 @@
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { MarketType } from '@loopring-web/common-resources';
 import { Ticker, } from '../../ticker';
 import { OrderInfoPatch, } from '../tradePro'

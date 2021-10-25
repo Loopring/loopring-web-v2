@@ -16,7 +16,7 @@ import { useCoinPair } from './hooks';
 import { StylePaper } from 'pages/styled';
 import store from 'stores'
 import { Link as RouterLink } from 'react-router-dom';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 
 //******************** page code ************************//

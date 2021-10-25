@@ -1,5 +1,5 @@
 import { FloatTag, TradeStatus, TradeTypes } from '../constant';
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;

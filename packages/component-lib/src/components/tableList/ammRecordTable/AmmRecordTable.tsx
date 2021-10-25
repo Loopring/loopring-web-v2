@@ -14,7 +14,7 @@ import { AmmRecordRow as Row, AmmRecordTableProps, AmmTradeType } from './Interf
 import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 // enum ActionType {
 //     // filter = 'filter',
