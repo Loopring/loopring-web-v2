@@ -114,7 +114,7 @@ Support: [
     },
     {
         linkName: 'SupportCenter',
-        linkHref: "https://discord.gg/RCus8aNB"
+        linkHref: "https://discord.com/invite/KkYccYp"
     },
 
 ],
