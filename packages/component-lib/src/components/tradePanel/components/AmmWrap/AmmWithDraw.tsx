@@ -57,8 +57,8 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
     const { coinJson, slippage } = useSettings();
     const coinLPRef = React.useRef();
-    const tokenAIcon: any = coinJson[ammCalcData?.lpCoinA.belong];
-    const tokenBIcon: any = coinJson[ammCalcData?.lpCoinB.belong];
+    const tokenAIcon: any = coinJson[ammCalcData?.lpCoinA?.belong];
+    const tokenBIcon: any = coinJson[ammCalcData?.lpCoinB?.belong];
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
     const [isPercentage, setIsPercentage] = React.useState(true);
 
@@ -238,9 +238,9 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                 imgwidth={tokenAIcon.width} size={16}
                                 variant="circular"
                                 style={{ marginLeft: '-8px' }}
-                                alt={ammCalcData?.lpCoinA.belong as string}
+                                alt={ammCalcData?.lpCoinA?.belong as string}
                                 src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
-                            : <Avatar variant="circular" alt={ammCalcData?.lpCoinA.belong as string}
+                            : <Avatar variant="circular" alt={ammCalcData?.lpCoinA?.belong as string}
                                 style={{
                                     width: 'var(--withdraw-coin-size)',
                                     height: 'var(--withdraw-coin-size)',
@@ -262,9 +262,9 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                 imgwidth={tokenBIcon.width} size={16}
                                 variant="circular"
                                 style={{ marginLeft: '-8px' }}
-                                alt={ammCalcData?.lpCoinB.belong as string}
+                                alt={ammCalcData?.lpCoinB?.belong as string}
                                 src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
-                            : <Avatar variant="circular" alt={ammCalcData?.lpCoinB.belong as string}
+                            : <Avatar variant="circular" alt={ammCalcData?.lpCoinB?.belong as string}
                                 style={{
                                     width: 'var(--withdraw-coin-size)',
                                     height: 'var(--withdraw-coin-size)',
