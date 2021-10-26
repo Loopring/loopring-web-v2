@@ -1,5 +1,7 @@
 export default {
     labelH1Title:'The first Layer2 \n Decentralized trading \n Platform',
+    labelH1TitleWallet:'Loopring Wallet',
+    labelH2TitleWallet: 'FREEDOM AT YOUR FINGERTIPS',
     labelProtocol :'loopring protocol 3.6',
     labelStartTrade:'start trading',
     labelTitleDEX:'Loopring Dex',
@@ -18,4 +20,10 @@ export default {
     describeSuperpowers :'Build DApps and tools on one of the largest crypto projects on Ethereum. Get started with quick-start guides, protocol documentation, a Javascript SDK, and fully open source code.',
     labelBtnStart:'Start Layer2 app',
     labelBtnDeveloper: 'Developer Documentation',
+    labelFirstWallet: 'First Ethereum L2 Smart Wallet',
+    labelFirstWalletDetail: "Loopring Smart Wallet is the world's first Ethereum L2 smart wallet with zkRollup-based trading, transfers & \n AMMs. Compared with traditional wallets, Loopring Smart Wallet provides a fast and cheap user experience \n with 100% Ethereum-level security guarantees.",
+    labelWalletSecureDetail: 'Completely self-custodial, only you control your assets. You can choose people, \n institutions, and hardware that you trust as the guardians of your wallet.  You can \n also set limits on daily transfers, and lock it down if ever needed.',
+    labelWalletIdentityH1: 'OWN YOUR IDENTITY',
+    labelWalletIdentityH2: 'A continuous identity on Ethereum',
+    labelWalletIdentityDetail: 'Loopring Wallet decouples identity and security: you can choose your wallet name \n and address, and maintain this identity forever. ',
 }

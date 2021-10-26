@@ -199,10 +199,10 @@ export const SettingPanel = withTranslation(['common', 'layout'], {withRef: true
                 <RadioGroupStyle row={false} aria-label="withdraw" name="withdraw" value={upColor}
                                  onChange={handleColorChange}>
                     {Object.keys(UpColor).map((key) => {
-                        return <>
-                            <FormControlLabel key={key} value={key} control={<Radio/>}
+                        return <React.Fragment key={key}>
+                            <FormControlLabel value={key} control={<Radio/>}
                                               label={updown({key})}/>
-                        </>
+                        </React.Fragment>
 
                     })}
                 </RadioGroupStyle>

@@ -162,7 +162,7 @@ const linkListMapRender = React.useMemo(() => {
                         variant="body2" component="div"> {t('labelFooter' + key.toString())} </Typography>
             <Box display={'flex'} flexDirection={'column'} height={'100%'} justifyContent={'flex-start'}>
                 {linkListMap[ key ].map((item: any) => {
-                    return <LinkStyle /* href={item.linkHref} */ onClick={() => handleLinkClick(item.linkHref)}>
+                    return <LinkStyle /* href={item.linkHref} */ key={item.linkName} onClick={() => handleLinkClick(item.linkHref)}>
                         {t('label' + 'key' + item.linkName)}
                     </LinkStyle>
                 })}

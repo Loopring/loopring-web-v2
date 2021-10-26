@@ -26,6 +26,7 @@ const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll 
     return (<>
         {isHideOnScroll ?< HideOnScroll window={undefined}>
             <HeaderUI isWrap={false} {...rest}
+                    isLandPage={true}
                       allowTrade={allowTrade}
                       headerMenuData={headerMenuData}
                       headerToolBarData={headerToolBarData}
