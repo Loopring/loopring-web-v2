@@ -2,7 +2,7 @@ import React from 'react';
 import { setShowAccount, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { ErrorType, ProcessingType, useConnectHook, walletServices } from '@loopring-web/web3-provider';
 import { SagaStatus } from '@loopring-web/common-resources';
-import { ChainId, sleep } from 'loopring-sdk';
+import { ChainId, sleep } from '@loopring-web/loopring-sdk';
 
 import { updateAccountStatus, useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';

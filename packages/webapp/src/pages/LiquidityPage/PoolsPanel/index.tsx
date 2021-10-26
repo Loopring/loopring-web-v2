@@ -9,7 +9,7 @@ import { PoolsTable, InputSearch } from '@loopring-web/component-lib';
 import { SearchIcon } from '@loopring-web/common-resources'
 import { useSettings } from '@loopring-web/component-lib';
 import { useSystem } from 'stores/system';
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
+import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk';
 import store from 'stores'
 
 const WrapperStyled = styled(Box)`

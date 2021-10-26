@@ -13,7 +13,7 @@ import { volumeToCountAsBigNumber } from 'hooks/help';
 import BigNumber from 'bignumber.js';
 import { Ticker, updateTicker } from 'stores/ticker';
 import { SwapTradeData } from '@loopring-web/component-lib';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 
 export const swapDependAsync = (market: MarketType,level?:number,limit?:number): Promise<{
     ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,

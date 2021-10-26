@@ -1,5 +1,5 @@
 import { StateBase } from '@loopring-web/common-resources';
-import * as loopring_defs from 'loopring-sdk';
+import * as loopring_defs from '@loopring-web/loopring-sdk';
 export type TokenPrices<R extends { [ key: string ]: any }> = {
     [key in keyof R]:number
 }

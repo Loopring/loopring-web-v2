@@ -1,4 +1,4 @@
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import {
     dumpError400,
     GetOffchainFeeAmtRequest,
@@ -6,7 +6,7 @@ import {
     OffchainFeeReqType,
     toBig,
     TokenInfo
-} from 'loopring-sdk';
+} from '@loopring-web/loopring-sdk';
 import { useAccount } from 'stores/account';
 import React, { useState } from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';

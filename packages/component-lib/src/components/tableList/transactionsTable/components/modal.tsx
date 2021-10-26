@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material';
 import moment from 'moment'
 import { EmptyValueTag } from '@loopring-web/common-resources';
-import { TxType } from 'loopring-sdk';
+import { TxType } from '@loopring-web/loopring-sdk';
 // import { getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 export enum TxnDetailStatus {

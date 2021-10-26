@@ -1,5 +1,5 @@
 import { AmmCardProps } from '@loopring-web/common-resources';
-import { AmmPoolActivityRule, AmmPoolActivityStatus, LoopringMap } from 'loopring-sdk';
+import { AmmPoolActivityRule, AmmPoolActivityStatus, LoopringMap } from '@loopring-web/loopring-sdk';
 import React from 'react';
 import { makeUIAmmActivityMap } from 'hooks/help';
 

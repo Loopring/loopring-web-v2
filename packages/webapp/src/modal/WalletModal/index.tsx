@@ -12,7 +12,7 @@ import {
     WalletConnectQRCode,
     WalletConnectStep,
 } from '@loopring-web/component-lib';
-import { ChainId } from 'loopring-sdk'
+import { ChainId } from '@loopring-web/loopring-sdk'
 import React, { useEffect, useState } from 'react';
 import {
     ConnectProviders,

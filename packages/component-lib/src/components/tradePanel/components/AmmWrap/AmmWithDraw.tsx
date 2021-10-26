@@ -28,13 +28,13 @@ import { SlippagePanel } from '../tool';
 import { useSettings } from '../../../../stores';
 import { Box, Link } from '@mui/material';
 import { SvgStyled } from './styled';
-import { toBig } from 'loopring-sdk';
+import { toBig } from '@loopring-web/loopring-sdk';
 
 import { useAmmViewData } from './ammViewHook';
 
 import _ from 'lodash'
 
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useSelector } from "react-redux"
 
 import { useCustomDCEffect } from "hooks/common/useCustomDCEffect"
-import { getExistedMarket, toBig } from 'loopring-sdk'
+import { getExistedMarket, toBig } from '@loopring-web/loopring-sdk'
 import store, { RootState } from "stores"
 
 export function formatedVal(rawData: string, base: string, quote: string) {

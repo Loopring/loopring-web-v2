@@ -6,7 +6,7 @@ import {
 } from '@loopring-web/common-resources';
 import { useTokenMap, } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { useAccount } from '../../../stores/account/hook';
 import { LoopringAPI } from "api_wrapper";
 import { myLog } from "@loopring-web/common-resources";

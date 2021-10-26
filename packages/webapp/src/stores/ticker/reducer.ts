@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { TickerStates } from './interface';
 import { CoinKey, SagaStatus } from '@loopring-web/common-resources';
-import { LoopringMap, TickerData } from 'loopring-sdk';
+import { LoopringMap, TickerData } from '@loopring-web/loopring-sdk';
 
 const initialState: Required<TickerStates> = {
     tickerMap: {},

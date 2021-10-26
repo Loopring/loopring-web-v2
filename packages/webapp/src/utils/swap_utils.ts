@@ -1,6 +1,6 @@
 import { utils } from 'ethers'
 
-import { TokenInfo, } from 'loopring-sdk'
+import { TokenInfo, } from '@loopring-web/loopring-sdk'
 
 import { CoinInfo, } from '@loopring-web/common-resources'
 

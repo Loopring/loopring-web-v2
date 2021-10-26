@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { reset, socketUpdateBalance, statusUnset, updateWalletLayer2 } from './reducer';
 import { WalletLayer2States } from './interface';
 import React from 'react';
-import * as loopring_defs from 'loopring-sdk';
+import * as loopring_defs from '@loopring-web/loopring-sdk';
 
 export function useWalletLayer2(): WalletLayer2States & {
     updateWalletLayer2: () => void,

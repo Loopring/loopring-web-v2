@@ -21,7 +21,7 @@ import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
 // import store from '@loopring-web/webapp/src/stores';
 import { useSettings } from '../../../stores';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 
 // export enum TradeTypes {

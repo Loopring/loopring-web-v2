@@ -1,4 +1,4 @@
-import { ChainId } from 'loopring-sdk/dist';
+import { ChainId } from '@loopring-web/loopring-sdk/dist';
 
 export enum WithdrawType {
     Fast = 'Fast',

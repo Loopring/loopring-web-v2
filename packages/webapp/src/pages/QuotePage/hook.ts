@@ -2,7 +2,7 @@ import React, { useCallback, } from "react"
 import store from 'stores';
 import { MarketBlockProps, QuoteTableRawDataItem, } from '@loopring-web/component-lib';
 import { useSocket } from 'stores/socket';
-import { TradingInterval, WsTopicType } from 'loopring-sdk';
+import { TradingInterval, WsTopicType } from '@loopring-web/loopring-sdk';
 import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from 'services/socket';
 import { myError, SagaStatus, } from "@loopring-web/common-resources";
