@@ -50,6 +50,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
     const {tickerMap} = useTicker();
     // const {allowTrade} = useSystem();
 
+
     return <>
         <Switch>
             <Route exact path='/landing-page'>
