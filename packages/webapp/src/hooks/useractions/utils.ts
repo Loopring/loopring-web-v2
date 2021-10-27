@@ -1,4 +1,4 @@
-import { ConnectorError } from "loopring-sdk"
+import { ConnectorError } from "@loopring-web/loopring-sdk"
 
 export const checkErrorInfo = (errorInfo: any, isFirstTime: boolean) => {
 

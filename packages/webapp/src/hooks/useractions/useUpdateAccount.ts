@@ -20,7 +20,7 @@ import { accountServices } from '../../services/account/accountServices'
 
 import store from 'stores'
 
-import { ConnectorError, sleep } from 'loopring-sdk'
+import { ConnectorError, sleep } from '@loopring-web/loopring-sdk'
 
 import { checkErrorInfo } from 'hooks/useractions/utils'
 

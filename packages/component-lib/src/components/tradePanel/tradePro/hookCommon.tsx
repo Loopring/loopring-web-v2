@@ -5,7 +5,7 @@ import { WithTranslation } from 'react-i18next';
 import { LimitTradeData, MarketTradeData } from '../Interface';
 import { InputSize } from '../../basic-lib';
 import _ from 'lodash';
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     T extends IBData<I>,

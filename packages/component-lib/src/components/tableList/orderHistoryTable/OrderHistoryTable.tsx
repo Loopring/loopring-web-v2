@@ -14,7 +14,7 @@ import { Filter, FilterOrderTypes } from './components/Filter'
 import { OrderDetailPanel } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 // import { useSettings } from '../../../stores';
-import { GetOrdersRequest, Side, OrderType } from 'loopring-sdk'
+import { GetOrdersRequest, Side, OrderType } from '@loopring-web/loopring-sdk'
 
 const CancelColHeaderStyled = styled(Typography)`
     display: flex;

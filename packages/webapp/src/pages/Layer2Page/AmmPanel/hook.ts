@@ -1,7 +1,7 @@
 import React from 'react'
 import { AmmSideTypes, RawDataAmmItem } from '@loopring-web/component-lib'
 import { LoopringAPI } from 'api_wrapper'
-import { AmmTxType } from 'loopring-sdk'
+import { AmmTxType } from '@loopring-web/loopring-sdk'
 import { volumeToCount } from 'hooks/help';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';

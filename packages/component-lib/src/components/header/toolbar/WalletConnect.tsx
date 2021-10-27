@@ -5,7 +5,7 @@ import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, Circ
 import { Typography } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
-import { ChainId } from 'loopring-sdk';
+import { ChainId } from '@loopring-web/loopring-sdk';
 import styled from '@emotion/styled';
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;

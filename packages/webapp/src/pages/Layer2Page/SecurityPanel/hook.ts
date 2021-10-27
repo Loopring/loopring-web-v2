@@ -5,7 +5,7 @@ import React from 'react'
 
 import { AccountStep, useOpenModals, } from '@loopring-web/component-lib'
 import store from 'stores'
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { myLog } from '@loopring-web/common-resources'
 import { LoopringAPI } from 'api_wrapper'
 

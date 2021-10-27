@@ -3,7 +3,7 @@ import { getWalletLayer1Status, updateWalletLayer1 } from './reducer';
 import { CoinKey, PairKey, WalletCoin } from '@loopring-web/common-resources';
 import { LoopringAPI } from 'api_wrapper';
 import store from '../index';
-import { fromWEI } from 'loopring-sdk';
+import { fromWEI } from '@loopring-web/loopring-sdk';
 
 type WalletLayer1Map<R extends { [ key: string ]: any }> = {
     [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>
