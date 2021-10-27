@@ -13,7 +13,9 @@ import { MiningPage } from 'pages/MiningPage'
 import { OrderbookPage } from 'pages/ProTradePage';
 import { useTicker } from '../stores/ticker';
 import { LoadingPage } from '../pages/LoadingPage';
-import { LandPage } from '../pages/LandPage/LandPage';
+import { LandPage, WalletPage } from '../pages/LandPage'
+// import { LandPage } from '../pages/LandPage/LandPage';
+// import { WalletPage } from '../pages/LandPage/WalletPage'
 import { ErrorMap, SagaStatus } from '@loopring-web/common-resources';
 import { ErrorPage } from '../pages/ErrorPage';
 import { Footer } from '@loopring-web/component-lib';
@@ -54,9 +56,13 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
         <Switch>
             <Route exact path='/landing-page'>
                 <Header isHideOnScroll={true}/>
-                <LandPage/>
+                <LandPage />
             </Route>
 
+            <Route exact path='/landing-page/wallet'>
+                <Header isHideOnScroll={true}/>
+                <WalletPage />
+            </Route>
 
             {/*<Route exact path='/landing-page'>*/}
             {/*    <ContentWrap>*/}
