@@ -20,7 +20,7 @@ export type NftData = string
 
 export class LoopringAPI {
 
-    public static userAPI: UserAPI | undefined = undefined
+    public static userAPI: UserAPI & {getNFToffChainFee:( params:{accountId:string,requestType:9|10|11,tokenAddress:string,amount:number},ApiKey:string)=>any}
     public static exchangeAPI: ExchangeAPI | undefined = undefined
     public static ammpoolAPI: AmmpoolAPI | undefined = undefined
     public static walletAPI: WalletAPI | undefined = undefined
@@ -135,14 +135,24 @@ export class LoopringAPI {
         }
 
         }
+        // UserAPI.Pro.getNFToffChainFee = function ( params:{accountId:string,requestType:9|10|11,tokenAddress:string,amount:number},ApiKey:string) {
+        //
+        // }
 
-        LoopringAPI.userAPI = new UserAPI({baseUrl})
+
+        LoopringAPI.userAPI = new UserAPI({baseUrl})  as any ;
         LoopringAPI.exchangeAPI = new ExchangeAPI({baseUrl})
         LoopringAPI.ammpoolAPI = new AmmpoolAPI({baseUrl})
         LoopringAPI.walletAPI = new WalletAPI({baseUrl})
         LoopringAPI.wsAPI = new WsAPI({baseUrl})
         LoopringAPI.contract = Object.create(Contract({baseUrl}))
         LoopringAPI.nftInfo = Object.create(NFTInfo({baseUrl}))
+        LoopringAPI.userAPI.getNFToffChainFee =   async ({accountId,requestType,tokenAddress}:{accountId:string,requestType:9|10|11,tokenAddress:string,amount:number},ApiKey:string) => {
+            const url = baseUrl + '/api/v3/user/nft/offchainFee?' +  `accountId=${accountId}&requestType=${requestType}&tokenAddress=${tokenAddress}`;
+            const arrayResult = await(fetch(url).then(response => response.json()))
+            return arrayResult
+        }
+
     }
 
 }

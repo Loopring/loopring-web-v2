@@ -86,7 +86,7 @@ export const MyNFTPanel = withTranslation(['common', 'layout'])(({t, ...rest}: &
         return popItem && <>
           <BoxNFT display={'flex'} width={570} height={570} margin={1} marginTop={-4} alignItems={'center'}
                   justifyContent={'center'}>
-            <img width={'100%'} height={'100%'} src={popItem.image}/>
+            <img alt={'NFT'} width={'100%'} height={'100%'} src={popItem.image}/>
           </BoxNFT>
           <Box flex={1} marginLeft={2} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
             <Box marginBottom={3}>
@@ -238,12 +238,12 @@ export const MyNFTPanel = withTranslation(['common', 'layout'])(({t, ...rest}: &
                         <Box flex={1} style={{background: "var(--field-opacity)"}} display={'flex'}
                              alignItems={'center'}
                              justifyContent={'center'}>
-                            <img width={'100%'} height={'100%'} src={item.image}/></Box>
+                            <img alt={'NFT'} width={'100%'} height={'100%'} src={item.image}/></Box>
                         <Box padding={2} height={80}>
                             <Typography
                                 color={'text.secondary'}
                                 component={'h6'}>{item.name}</Typography>
-                            <Typography color={'--color-text-primary'} component={'p'} title={item.nftId}>
+                            <Typography color={'--color-text-primary'} component={'p'} paddingTop={1} title={item.nftId}>
                                 {t('labelNFTTokenID')} #{item.tokenId}
                                 {/*#{item.nftId.length > 10 ? getFormattedHash(item.nftId) : item.nftId}*/}
                             </Typography>
