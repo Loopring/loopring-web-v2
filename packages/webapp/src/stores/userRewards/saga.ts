@@ -3,8 +3,6 @@ import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reduce
 
 import store from '../index';
 import { LoopringAPI } from 'api_wrapper';
-import { AmmPoolStat } from '@loopring-web/loopring-sdk';
-import { updateRealTimeAmmMap } from '../Amm/AmmMap';
 
 const getUserRewardsApi = async <R extends { [ key: string ]: any }>(list: Array<keyof R>) => {
 
@@ -28,7 +26,7 @@ const getUserRewardsApi = async <R extends { [ key: string ]: any }>(list: Array
             }
             return setInterval(async () => {
                 store.dispatch(getUserRewards(undefined))
-            }, 300000 * 4)    //15*60*1000 //900000
+            }, 300000 * 4)
         })(__timer__)
 
         // })(__timer__);
