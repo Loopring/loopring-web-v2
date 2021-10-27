@@ -1,6 +1,6 @@
 import { useRouteMatch } from 'react-router-dom'
 import { useTokenMap } from 'stores/token'
-import { getExistedMarket } from 'loopring-sdk'
+import { getExistedMarket } from '@loopring-web/loopring-sdk'
 import { MarketType,
     // myLog
 } from '@loopring-web/common-resources';

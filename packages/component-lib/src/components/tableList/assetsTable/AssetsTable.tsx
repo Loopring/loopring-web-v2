@@ -13,7 +13,7 @@ import { getValuePrecisionThousand, MarketType, PriceTag } from '@loopring-web/c
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons';
 import ActionMemo from './components/ActionMemo';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 
 

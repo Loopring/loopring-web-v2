@@ -2,7 +2,7 @@ import { AccountStatus, getValuePrecisionThousand, IBData, MarketType, myLog } f
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
 import {
     MarketTradeData,

@@ -17,9 +17,17 @@ const getUserRewardsApi = async <R extends { [ key: string ]: any }>(list: Array
         if (__timer__ && __timer__ !== -1) {
             clearInterval(__timer__);
         }
-        setInterval(async () => {
-            store.dispatch(getUserRewards(undefined))
-        }, 300000 * 4)   //
+        // setInterval(async () => {
+        //     store.dispatch(getUserRewards(undefined))
+        // }, 300000 * 4)   //
+        __timer__ = ((__timer__) => {
+            if (__timer__ && __timer__ !== -1) {
+                clearInterval(__timer__)
+            }
+            return setInterval(async () => {
+                store.dispatch(getUserRewards(undefined))
+            }, 300000 * 4)
+        })(__timer__)
 
         // })(__timer__);
         return LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({owner: accountId}).then(({ammUserRewardMap}) => {

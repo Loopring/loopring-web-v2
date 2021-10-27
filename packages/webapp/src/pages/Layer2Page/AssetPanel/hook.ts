@@ -7,7 +7,7 @@ import {
 } from '@loopring-web/common-resources'
 import { useAccount } from 'stores/account';
 import { makeWalletLayer2, volumeToCountAsBigNumber } from 'hooks/help'
-import { WsTopicType } from 'loopring-sdk'
+import { WsTopicType } from '@loopring-web/loopring-sdk'
 import { useSocket } from 'stores/socket';
 import { useWalletLayer2Socket } from 'services/socket';
 import { useSystem } from 'stores/system'

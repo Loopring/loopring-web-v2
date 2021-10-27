@@ -1,5 +1,5 @@
 import { AmmDetailStore } from '../../stores/Amm/AmmMap';
-import { AmmPoolSnapshot, AmmUserRewardMap } from 'loopring-sdk';
+import { AmmPoolSnapshot, AmmUserRewardMap } from '@loopring-web/loopring-sdk';
 import { makeMyAmmWithSnapshot, makeMyAmmWithStat } from './makeUIAmmActivityMap';
 import { WalletMapExtend } from './makeWallet';
 

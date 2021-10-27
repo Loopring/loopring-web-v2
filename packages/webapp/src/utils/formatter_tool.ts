@@ -1,6 +1,6 @@
 import store from 'stores'
 
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import {  TradeTypes } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from 'hooks/help'
 import { getValuePrecisionThousand } from '@loopring-web/common-resources'

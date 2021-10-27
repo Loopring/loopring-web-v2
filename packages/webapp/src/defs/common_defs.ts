@@ -1,4 +1,4 @@
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export enum ActionResultCode {
     NoError,

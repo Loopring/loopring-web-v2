@@ -1,5 +1,5 @@
 import store from 'stores';
-import { toBig } from 'loopring-sdk';
+import { toBig } from '@loopring-web/loopring-sdk';
 import BigNumber from 'bignumber.js';
 
 export const volumeToCount = (symbol: string, volumn: string | number | BigNumber, tokenMap = store.getState().tokenMap.tokenMap): number | undefined => {

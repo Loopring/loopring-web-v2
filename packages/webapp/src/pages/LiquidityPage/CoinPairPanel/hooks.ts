@@ -19,7 +19,7 @@ import {
     getExistedMarket,
     TickerData,
     TradingInterval
-} from 'loopring-sdk';
+} from '@loopring-web/loopring-sdk';
 import { AmmRecordRow } from '@loopring-web/component-lib';
 import { useUserRewards } from 'stores/userRewards';
 import { LoopringAPI } from 'api_wrapper';

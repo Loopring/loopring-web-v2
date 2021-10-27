@@ -12,7 +12,7 @@ import { useSocket } from 'stores/socket';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { SocketMap } from 'stores/socket/interface';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { LoopringAPI } from 'api_wrapper';
 import { swapDependAsync } from '../SwapPage/help';
 import { useAmmMap } from 'stores/Amm/AmmMap';
