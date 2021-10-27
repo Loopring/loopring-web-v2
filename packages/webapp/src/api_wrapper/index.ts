@@ -1,5 +1,6 @@
 import { AmmpoolAPI, ChainId, ExchangeAPI, UserAPI, WalletAPI, WsAPI } from '@loopring-web/loopring-sdk';
 import store from 'stores'
+import { UserNFTBalanceInfo } from '@loopring-web/loopring-sdk/dist/defs/loopring_defs';
 
 export function getChainId() {
     const chainId = store.getState().system.chainId as ChainId
@@ -15,6 +16,7 @@ export type NFTTokenInfo = {
     creatorFeeBips: 0,
     status: boolean
 }
+export type NFTWholeINFO = NFTTokenInfo  & UserNFTBalanceInfo  & {image:string,name:string,description:string}
 export type NftData = string
 
 

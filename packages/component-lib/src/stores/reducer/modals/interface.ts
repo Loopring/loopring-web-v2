@@ -1,3 +1,4 @@
+import { NFTType } from '@loopring-web/common-resources';
 
 export enum ModalType {
     transfer = 'transfer',
@@ -13,12 +14,19 @@ export type ModalStatePlayLoad = {
 export type Transaction = {
     symbol?: undefined|string,
 }
+export type TransactionNFT = {
+    nftData?: undefined|string,
+    nftType?:NFTType|undefined,
+}
 
 export interface ModalState {
     isShowSupport: ModalStatePlayLoad,
     isShowTransfer: ModalStatePlayLoad & Transaction,
     isShowWithdraw: ModalStatePlayLoad & Transaction,
     isShowDeposit: ModalStatePlayLoad & Transaction,
+    isShowNFTTransfer: ModalStatePlayLoad & TransactionNFT,
+    isShowNFTWithdraw: ModalStatePlayLoad & TransactionNFT,
+    isShowNFTDeposit: ModalStatePlayLoad & TransactionNFT,
     isShowResetAccount: ModalStatePlayLoad,
     isShowExportAccount: ModalStatePlayLoad,
     isShowSwap: ModalStatePlayLoad,

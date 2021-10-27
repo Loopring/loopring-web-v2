@@ -15,11 +15,13 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
 
         // walletMap,
         // coinMap,
+        type='TOKEN',
         chargeFeeTokenList,
         onTransferClick,
         transferBtnStatus,
+        assetsData,
         ...rest
-    }: TransferProps<T, I> & WithTranslation) => {
+    }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
 
     // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
     //     to: 'button',
@@ -42,15 +44,15 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
             key: "trade",
             element: React.useMemo(() => <TransferWrap<T, I> key={"transfer"}
                                                              {...{
-                                                                 ...rest,
-                                                                 chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
+                                                                 ...rest,  type,
+                                                                 chargeFeeTokenList: chargeFeeTokenList || [],
                                                                  tradeData: switchData.tradeData,
                                                                  onChangeEvent,
                                                                  disabled: !!rest.disabled,
                                                                  onTransferClick,
                                                                  transferBtnStatus,
-
-                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus]),
+                                                                 assetsData,
+                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus, assetsData]),
             toolBarItem: undefined
         },
             {

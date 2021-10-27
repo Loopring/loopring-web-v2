@@ -3,7 +3,7 @@ import {
     AmmPanel,
     AmmProps,
     // DepositPanel,
-    DepositPanelNew,
+    DepositPanel,
     DepositProps,
     ModalCloseButton,
     ModalPanelProps,
@@ -13,12 +13,10 @@ import {
     SwapPanel,
     SwapProps,
     SwitchPanelStyled,
-    // TransferPanel,
-    TransferPanelNew,
+    TransferPanel,
     TransferProps,
     useOpenModals,
-    // WithdrawPanel,
-    WithdrawPanelNew,
+    WithdrawPanel,
     WithdrawProps,
 } from '../..';
 import { IBData } from '@loopring-web/common-resources';
@@ -73,6 +71,9 @@ export const ModalPanel = <T extends IBData<I>, I>({
                                                        transferProps,
                                                        withDrawProps,
                                                        depositProps,
+                                                       transferNFTProps,
+                                                       withDrawNFTProps,
+                                                       depositNFTProps,
                                                        resetProps,
                                                        ammProps,
                                                        swapProps,
@@ -84,6 +85,9 @@ export const ModalPanel = <T extends IBData<I>, I>({
     transferProps: TransferProps<T, I>,
     withDrawProps: WithdrawProps<T, I>,
     depositProps: DepositProps<T, I>,
+    transferNFTProps: TransferProps<T, I>,
+    withDrawNFTProps: WithdrawProps<T, I>,
+    depositNFTProps: DepositProps<T, I>,
     resetProps: ResetProps<I>,
     ammProps: AmmProps<any, any, T, any>,
     swapProps: SwapProps<T, I, any>,
@@ -100,6 +104,9 @@ export const ModalPanel = <T extends IBData<I>, I>({
         setShowWithdraw,
         setShowResetAccount,
         setShowExportAccount,
+        setShowNFTTransfer,
+        setShowNFTWithdraw,
+        setShowNFTDeposit,
     } = useOpenModals()
     const {
         isShowTransfer,
@@ -108,26 +115,46 @@ export const ModalPanel = <T extends IBData<I>, I>({
         isShowResetAccount,
         isShowExportAccount,
         isShowAmm,
-        isShowSwap
+        isShowSwap,
+        isShowNFTTransfer,
+        isShowNFTWithdraw,
+        isShowNFTDeposit,
     } = modals;
     const theme = useTheme();
     return <>
-        <Modal open={isShowTransfer.isShow} onClose={() => setShowTransfer({isShow: false})}
-               content={<TransferPanelNew<any, any> {...{
+        <Modal open={isShowNFTTransfer.isShow} onClose={() => setShowNFTTransfer({isShow: false})}
+               content={<TransferPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
+                   type:'NFT',
                    _height: DEFAULT_TRANSFER_HEIGHT, ...transferProps, assetsData,
-               }}> </TransferPanelNew>}/>
-        <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
-               content={<WithdrawPanelNew<any, any> {...{
+               }}> </TransferPanel>}/>
+        <Modal open={isShowNFTWithdraw.isShow} onClose={() => setShowNFTWithdraw({isShow: false})}
+               content={<WithdrawPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
+                   type:'NFT',
                    _height: DEFAULT_WITHDRAW_HEIGHT, ...withDrawProps, assetsData,
-               }}  > </WithdrawPanelNew>}/>
-        <Modal open={isShowDeposit.isShow}
-               onClose={() => setShowDeposit({isShow: false})}
-               content={<DepositPanelNew<any, any> {...{
+               }}  > </WithdrawPanel>}/>
+        <Modal open={isShowNFTDeposit.isShow} onClose={() => setShowNFTDeposit({isShow: false})}
+               content={<DepositPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
                    _height: DEFAULT_DEPOSIT_HEIGHT, ...depositProps,
-               }} > </DepositPanelNew>}/>
+               }} > </DepositPanel>}/>
+        <Modal open={isShowTransfer.isShow} onClose={() => setShowTransfer({isShow: false})}
+               content={<TransferPanel<any, any> {...{
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
+                   _height: DEFAULT_TRANSFER_HEIGHT, ...transferProps, assetsData,
+               }}> </TransferPanel>}/>
+        <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
+               content={<WithdrawPanel<any, any> {...{
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
+                   _height: DEFAULT_WITHDRAW_HEIGHT, ...withDrawProps, assetsData,
+               }}  > </WithdrawPanel>}/>
+        <Modal open={isShowDeposit.isShow}
+               onClose={() => setShowDeposit({isShow: false})}
+               content={<DepositPanel<any, any> {...{
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
+                   _height: DEFAULT_DEPOSIT_HEIGHT, ...depositProps,
+               }} > </DepositPanel>}/>
         <Modal open={isShowResetAccount.isShow}
                onClose={() => setShowResetAccount({...isShowResetAccount, isShow: false})}
                content={<ResetPanel<any, any> {...{

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { ModalState, ModalStatePlayLoad, Transaction } from './interface';
+import { ModalState, ModalStatePlayLoad, Transaction, TransactionNFT } from './interface';
 import {
     setShowAccount,
     setShowAmm,
@@ -12,7 +12,7 @@ import {
     setShowExportAccount,
     setShowSupport,
     setShowFeeSetting,
-    setShowIFrame,
+    setShowIFrame, setShowNFTTransfer, setShowNFTDeposit, setShowNFTWithdraw,
 } from './reducer';
 
 import React from 'react';
@@ -25,6 +25,10 @@ export const useOpenModals = () => {
         setShowTransfer: React.useCallback((state: ModalStatePlayLoad & Transaction) => dispatch(setShowTransfer(state)), [dispatch]),
         setShowDeposit: React.useCallback((state: ModalStatePlayLoad & Transaction ) => dispatch(setShowDeposit(state)), [dispatch]),
         setShowWithdraw: React.useCallback((state: ModalStatePlayLoad & Transaction) => dispatch(setShowWithdraw(state)), [dispatch]),
+        setShowNFTTransfer: React.useCallback((state: ModalStatePlayLoad & TransactionNFT) => dispatch(setShowNFTTransfer(state)), [dispatch]),
+        setShowNFTDeposit: React.useCallback((state: ModalStatePlayLoad & TransactionNFT ) => dispatch(setShowNFTDeposit(state)), [dispatch]),
+        setShowNFTWithdraw: React.useCallback((state: ModalStatePlayLoad & TransactionNFT) => dispatch(setShowNFTWithdraw(state)), [dispatch]),
+
         setShowResetAccount: React.useCallback((state: ModalStatePlayLoad ) => {
             dispatch(setShowResetAccount(state))
         }, [dispatch]),

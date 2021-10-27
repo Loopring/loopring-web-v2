@@ -33,7 +33,7 @@ import {
 
 import {
     DepositPanel,
-    TransferPanel,
+    TransferPanell,
     WithdrawPanel,
 } from '../modal'
 
@@ -203,14 +203,14 @@ let _ammProps: AmmProps<AmmJoinData<IBData<any>>, AmmExitData<IBData<any>>, any,
     }
 }
 
-const WrapTransferPanel = (rest: any) => {
+const WrapTransferPanell = (rest: any) => {
     const dispatch = useDispatch();
     dispatch(setShowTransfer({isShow: false}));
     return <> <Grid item sm={6}>
-        <TransferPanel {...transferProps} {...rest}> </TransferPanel>
+        <TransferPanell {...transferProps} {...rest}> </TransferPanell>
     </Grid>
         <Grid item sm={6}>
-            <TransferPanel  {...rest}> </TransferPanel>
+            <TransferPanell  {...rest}> </TransferPanell>
         </Grid>
         <Grid item sm={12}>
 
@@ -361,7 +361,8 @@ const WrapAmmPanel = (rest: any) => {
 }
 
 const ModalPanelWrap = () => {
-    return <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} depositProps={depositProps}
+    return <ModalPanel transferProps={transferProps} withDrawProps={transferProps} depositProps={depositProps}
+                       transferNFTProps={transferProps} withDrawNFTProps={transferProps} depositNFTProps={depositProps}
                        resetProps={resetProps} ammProps={_ammProps} swapProps={swapProps}/>
 }
 
@@ -394,9 +395,9 @@ const Template: Story<any> = () => {
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
                 <WrapResetPanel/>
             </Grid>
-            <h4>TransferPanel</h4>
+            <h4>TransferPanell</h4>
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
-                <WrapTransferPanel/>
+                <WrapTransferPanell/>
             </Grid>
             <h4>WithdrawPanel</h4>
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>

@@ -366,7 +366,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             // new 
             // deposit
             // [ AccountStep.Deposit ]: {
-            //     view: <DepositPanelNew title={title} {...{
+            //     view: <DepositPanel title={title} {...{
             //         ...rest,
             //         _height: 'var(--modal-height)',
             //         _width: 'var(--modal-width)',

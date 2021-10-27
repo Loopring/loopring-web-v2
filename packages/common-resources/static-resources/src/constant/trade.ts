@@ -56,6 +56,10 @@ export interface AccountHashInfo {
 export type ChainHashInfos = {
     [key in ChainId extends string?string:string]: AccountHashInfo
 };
+export enum NFTType  {
+    EIP1155,
+    EIP712
+}
 
 
 export const EmptyValueTag = '--'

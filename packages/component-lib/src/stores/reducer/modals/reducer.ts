@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { ModalState, ModalStatePlayLoad, Transaction } from './interface';
+import { ModalState, ModalStatePlayLoad, Transaction, TransactionNFT } from './interface';
 
 const initialState: ModalState = {
     isShowTransfer: {isShow: false,symbol:undefined},
@@ -14,6 +14,9 @@ const initialState: ModalState = {
     isShowSupport: {isShow: false},
     isShowFeeSetting : {isShow: false},
     isShowIFrame:  {isShow: false,url:''},
+    isShowNFTTransfer: {isShow: false, nftData: undefined,nftType : undefined},
+    isShowNFTWithdraw: {isShow: false, nftData: undefined,nftType : undefined},
+    isShowNFTDeposit: {isShow: false, nftData: undefined,nftType : undefined},
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -41,6 +44,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
             const {isShow} = action.payload;
             state.isShowSwap.isShow = isShow;
 
+        },
+        setShowNFTTransfer(state, action: PayloadAction<ModalStatePlayLoad & TransactionNFT>) {
+            const {isShow,nftData,nftType} = action.payload;
+            state.isShowNFTTransfer= {
+                isShow,
+                nftData,
+                nftType
+            };
+        },
+        setShowNFTDeposit(state, action: PayloadAction<ModalStatePlayLoad & TransactionNFT>) {
+            const {isShow,nftData,nftType} = action.payload;
+            state.isShowNFTDeposit= {
+                isShow,
+                nftData,
+                nftType
+            };
+        },
+        setShowNFTWithdraw(state, action: PayloadAction<ModalStatePlayLoad & TransactionNFT>) {
+            const {isShow,nftData,nftType} = action.payload;
+            state.isShowNFTWithdraw= {
+                isShow,
+                nftData,
+                nftType
+            };
         },
         setShowTransfer(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
             const {isShow,symbol} = action.payload;
@@ -95,6 +122,9 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
 })
 export const {
+    setShowNFTTransfer,
+    setShowNFTDeposit,
+    setShowNFTWithdraw,
     setShowTransfer,
     setShowWithdraw,
     setShowDeposit,

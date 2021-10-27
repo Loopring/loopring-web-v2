@@ -5,7 +5,7 @@ import {
     getValuePrecisionThousand,
     // getValuePrecisionThousand,
     IBData,
-    myLog
+    // myLog
 } from '@loopring-web/common-resources';
 import { InputCoinProps, InputSize } from "./Interface";
 import React from "react";

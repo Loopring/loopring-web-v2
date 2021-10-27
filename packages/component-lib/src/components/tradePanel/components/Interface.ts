@@ -1,4 +1,4 @@
-import { InputButtonProps } from '../../basic-lib/form';
+import { InputButtonProps, InputCoinProps } from '../../basic-lib/form';
 import {
     CoinInfo,
     CoinKey,
@@ -124,6 +124,7 @@ export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
     & WithdrawExtendProps<T, I, C>
 
 
+export type inputNFTProps<T, I, C = CoinInfo<I>>  = RequireOne<InputCoinProps<T, I, C>, 'label'>
 export type inputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<InputButtonProps<T, I, C>, 'label'>
 //     {
 //     inputData?: IBData<R> | undefined,
@@ -146,6 +147,7 @@ export type DefaultProps<T, I> = {
     disabled?: boolean,
     coinMap: CoinMap<I, CoinInfo<I>>,
     walletMap: WalletMap<I, WalletCoin<I>>,
+    type?:'TOKEN'|'NFT'
 }
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I> & {
@@ -158,9 +160,16 @@ export type  BasicACoinTradeViewProps<T, I> = Required<DefaultWithMethodProps<T,
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, 'handleError'>
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
+    type?:'TOKEN'|'NFT',
     inputBtnRef: React.Ref<any>,
     inputButtonProps?: inputButtonDefaultProps<I, CoinInfo<I>>,
     inputButtonDefaultProps: inputButtonDefaultProps<I, CoinInfo<I>>
+}
+export type BasicANFTTradeProps<T, I> = Omit<BasicACoinTradeViewProps<T, I>,'coinMap'> & {
+    type?:'TOKEN'|'NFT',
+    inputNFTRef: React.Ref<any>,
+    inputNFTProps?: inputNFTProps<I, CoinInfo<I>>,
+    inputNFTDefaultProps: inputNFTProps<I, CoinInfo<I>>
 }
 
 export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
