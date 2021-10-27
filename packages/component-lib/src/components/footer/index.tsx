@@ -2,17 +2,16 @@ import styled from '@emotion/styled/macro'
 import { Box, Container, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import React from 'react';
 import {
-    DiscordIcon,
-    LoopringDarkFooterIcon,
-    LoopringLightFooterIcon,
-    MediumIcon,
-    TwitterIcon,
-    YoutubeIcon,
-    LoopringIcon,
+DiscordIcon,
+LoopringDarkFooterIcon,
+LoopringLightFooterIcon,
+MediumIcon,
+TwitterIcon,
+YoutubeIcon
 } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
-import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const HeightConfig = {
 headerHeight: 24,
@@ -61,7 +60,7 @@ Loopring: [
     },
     {
         linkName: 'Terms',
-        linkHref: "https://www.iubenda.com/terms-and-conditions/74969935"
+        linkHref: "https://loopring.io/#/legal/terms/en"
     },
     {
         linkName: 'Privacy',
@@ -146,9 +145,8 @@ Product: [
 export const Footer = withTranslation(['layout'])(({t}: any) => {
 const {mode} = useTheme()
 const [size, setSize] = React.useState<[number, number]>([1200, 0]);
-const location = useLocation()
-const isLandingPage = location.pathname === '/' || location.pathname === '/wallet'
-const isWallet = location.pathname === '/wallet'
+const history = useHistory()
+const isLandingPage = history.location.pathname === '/landing-page' || history.location.pathname === '/landing-page/wallet'
 React.useLayoutEffect(() => {
     function updateSize() {
         setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
@@ -184,12 +182,15 @@ const handleLinkClick = React.useCallback((href: string) => {
                        fontSize={'body1'}>
         {/*<Divider />*/}
     <Container>
-        {!isLandingPage ? (
+        {isLandingPage ? (
             <Box width={'100%'} height={'130px'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Box display={'flex'} width={'auto'} justifyContent={'space-between'} alignItems={'center'}>
                     <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
                         {
-                            <LoopringIcon htmlColor={mode === 'light' ? '#3B5AF4' : '#FCFDFD'} style={{transform: 'scale(8)'}} />
+                            mode === 'light' ?
+                                <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
+                                :
+                                <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
                         }
                     </Link>
                 
@@ -228,24 +229,24 @@ const handleLinkClick = React.useCallback((href: string) => {
             <>
                 <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'}
                     height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center"
-                    spacing={1} width={'100%'}>
+                    spacing={1} width={isLandingPage ? '430px' : '100%'}>
                 <Grid justifyContent="flex-start" item lg={2}>
                     <Box>
                         <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
                             {
-                                isWallet
-                                    ? mode === 'light' ?
-                                        <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
-                                        :
-                                        <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
-                                    : <LoopringIcon htmlColor={mode === 'light' ? '#3B5AF4' : '#FCFDFD'} style={{transform: 'scale(8)'}} />
+                                mode === 'light' ?
+                                    <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
+                                    :
+                                    <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
                             }
                         </Link>
                     </Box>
                 </Grid>
-                <Grid justifyContent="space-between" display={'flex'} item lg={7}>
-                    {linkListMapRender}
-                </Grid>
+                {!isLandingPage && (
+                    <Grid justifyContent="space-between" display={'flex'} item lg={7}>
+                        {linkListMapRender}
+                    </Grid>
+                )}
                 <Grid item lg={2}>
                     <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" item xs={12}
                             md={12} lg={12}>

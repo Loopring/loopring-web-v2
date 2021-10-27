@@ -1,5 +1,5 @@
 import { StateBase } from '@loopring-web/common-resources';
-import * as loopring_defs from '@loopring-web/loopring-sdk';
+import * as loopring_defs from '@loopring-web/loopring-sdk/dist/defs/loopring_defs';
 
 //key is market or AMM-${market}
 export type Amount = {[key:string]:loopring_defs.LoopringMap<loopring_defs.TokenAmount>};

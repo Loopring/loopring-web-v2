@@ -109,17 +109,18 @@ const ContainerStyle = styled(Box)`
 
 `
 const GridBg = styled(Grid)`
-    background-size: 150%;
-    background-repeat: no-repeat;
-    background-position: -250px;
-    //background-image: var(--img-banner-url);
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: 120px calc(50% - -40px);
+  //background-image: var(--img-banner-url);
 
-    ${({theme}) => {
-        return `
-        background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.webp") 1x,
-        url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.png") 1x);
-            `
-    }}
+
+  ${({theme}) => {
+    return `
+     background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.webp") 1x,
+      url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.png") 1x);
+        `
+  }} //background-image: url("http://static.loopring.io/assets/images/landPage/img_home_banner_dark@2x.png");
 
 ` as typeof Grid
 
@@ -275,9 +276,9 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
             <Container>
                 <GridBg item xs={12}
                         maxHeight={HeightConfig.maxHeight}
-                        // minHeight={HeightConfig.minHeight}
+                        minHeight={HeightConfig.minHeight}
                         position={'relative'}
-                        height={624}>
+                        height={size[ 1 ]}>
                     {/*<picture style={{'absolute'}}  >*/}
                     {/*    <source*/}
                     {/*        srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp 1x,*/}
@@ -300,20 +301,20 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                                     lineHeight={'46px'}>
                             {t('labelH2TitleWallet')}
                         </Typography>
-                        <Grid container width={'450px'} marginTop={10}>
+                        <Grid container width={'450px'} spacing={3} marginTop={10}>
                             <Grid item xs={6}>
                                 <Link href="https://play.google.com/store/apps/details?id=loopring.defi.wallet">
-                                    <img style={{ width: '100%' }} src={`${SoursURL}images/landPage/appGooglePlay.webp`} alt={'Android'} />
+                                    <img src={`${SoursURL}images/landPage/appGooglePlay.webp`} alt={'Android'} />
                                 </Link>
                             </Grid>
                             <Grid item xs={6}>
                                 <Link href="https://download.loopring.io/LoopringWallet.apk">
-                                    <img style={{ width: '100%' }} src={`${SoursURL}images/landPage/appAndroid.webp`} alt={'GooglePlay'} />
+                                    <img src={`${SoursURL}images/landPage/appAndroid.webp`} alt={'GooglePlay'} />
                                 </Link>
                             </Grid>
                             <Grid item xs={6}>
                                 <Link href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126">
-                                    <img style={{ width: '100%' }} src={`${SoursURL}images/landPage/appAppleStore.webp`} alt={'AppStore'} />
+                                    <img src={`${SoursURL}images/landPage/appAppleStore.webp`} alt={'AppStore'} />
                                 </Link>
                             </Grid>
                         </Grid>
@@ -356,7 +357,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <Typography whiteSpace={'pre-line'} variant={'h5'} color={'var(--color-text-secondary)'} marginTop={5}>{t('labelWalletSecureDetail')}</Typography>
                     </Box>
                     <ImgWrapperRightStyled>
-                        <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_guardians@1x.webp`} alt={'secure'} />
+                        <img src={`${SoursURL}images/landPage/img_wallet_guardians@1x.webp`} alt={'secure'} />
                     </ImgWrapperRightStyled>
                 </Grid>
             </Container>
@@ -379,7 +380,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <Typography whiteSpace={'pre-line'} textAlign={'right'} variant={'h5'} color={'var(--color-text-secondary)'} marginTop={5}>{t('labelWalletIdentityDetail')}</Typography>
                     </Box>
                     <ImgWrapperLeftStyled>
-                        <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_address@1x.webp`} alt={'identity'} />
+                        <img src={`${SoursURL}images/landPage/img_wallet_address@1x.webp`} alt={'identity'} />
                     </ImgWrapperLeftStyled>
                 </Grid>
             </Container>
@@ -401,7 +402,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <Typography whiteSpace={'pre-line'} variant={'h5'} color={'var(--color-text-secondary)'} marginTop={5}>{t('labelWalletUsageDetail')}</Typography>
                     </Box>
                     <ImgWrapperRightStyled>
-                        <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_operation@1x.webp`} alt={'performance'} />
+                        <img src={`${SoursURL}images/landPage/img_wallet_operation@1x.webp`} alt={'performance'} />
                     </ImgWrapperRightStyled>
                 </Grid>
             </Container>
@@ -424,7 +425,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <Typography whiteSpace={'pre-line'} textAlign={'right'} variant={'h5'} color={'var(--color-text-secondary)'} marginTop={5}>{t('labelWalletFutureDetail')}</Typography>
                     </Box>
                     <ImgWrapperLeftStyled>
-                        <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_income@1x.webp`} alt={'future'} />
+                        <img src={`${SoursURL}images/landPage/img_wallet_income@1x.webp`} alt={'future'} />
                     </ImgWrapperLeftStyled>
                 </Grid>
             </Container>

@@ -14,24 +14,6 @@ import {
 } from '@loopring-web/common-resources';
 import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
-
-const landingMenuData: Array<HeaderMenuItemInterface> = [
-    {
-        label: {
-            id: 'Layer2', i18nKey: 'labelLayer2',
-        },
-        router: {path: '/layer2'},
-        status: HeaderMenuTabStatus.default,
-    },
-    {
-        label: {
-            id: 'Wallet', i18nKey: 'labelWallet',
-        },
-        router: {path: '/wallet'},
-        status: HeaderMenuTabStatus.default,
-    },
-]
-
 const logoSVG = SoursURL+'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
   && {
@@ -116,7 +98,7 @@ export const LoopringLogo = React.memo(() => {
     // const history = useHistory();
     // const url = history.push('/main').
     return <LogoStyle variant="h6" component="h1" marginRight={4}>
-        <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/'} color={"inherit"}>
+        <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/landing-page'} color={"inherit"}>
             Loopring 路印
             loopring protocol 3.6
             The first Layer2 Decentralized trading Platform
@@ -184,7 +166,9 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
 
-    const getMenuButtons = React.useCallback(({
+    const history = useHistory()
+
+    const getMenuButtons = ({
                                 toolbarList,
                                 ...rest
                             }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
@@ -192,16 +176,9 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
             return <ToolBarItem {...{...toolbarList[ index ], ...rest}} key={index}/>
         })
         // toolbarList.map((item, index) =>);
-    }, [])
+    };
 
-    const getSettingsButton = ({
-        toolbarList,
-        ...rest
-    }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
-        return <ToolBarItem {...{...toolbarList[2], ...rest}} />
-    }
-
-    const getDrawerChoices = React.useCallback(({
+    const getDrawerChoices = ({
                                   menuList,
                                   layer = 0,
                                   ...rest
@@ -253,8 +230,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 }
             }
         });
-    }, [allowTrade, selected])
-
+    };
     const displayDesktop = React.useMemo(() => {
         return (
             <ToolBarStyled>
@@ -265,12 +241,13 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 </Box>
                 <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
                      color={'textColorSecondary'}>
+                    {/*<Button variant={'text'} size={'small'} to={'https:v1.loopring.io'}>*/}
+                    {/*   <Typography variant={'body1'}>Switch to V1</Typography>*/}
+                    {/*</Button>*/}
                     {isLandPage ? (
                         <>
-                            <Box marginRight={1}>
-                                {getSettingsButton({toolbarList: headerToolBarData, i18n, ...rest})}
-                            </Box>
-                            {getDrawerChoices({menuList: landingMenuData, i18n, ...rest})}
+                            <LinkStyle variant={'body1'} onClick={() => history.push('/layer2')}>Layer2</LinkStyle>
+                            <LinkStyle marginLeft={5} variant={'body1'} onClick={() => history.push(history.location.pathname === '/landing-page' ? '/landing-page/wallet' : '/landing-page')}>{history.location.pathname === '/landing-page' ? 'Wallet' : 'Dex'}</LinkStyle>
                         </>
                     ) : (
                         <>
@@ -287,11 +264,9 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
 
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
-            {isWrap
-                ? <Container className={'wrap'} maxWidth='lg'>
-                    {displayDesktop}
-                    </Container>
-                : <Box marginX={2}>{displayDesktop}</Box>
+            {isWrap ? <Container className={'wrap'} maxWidth='lg'>
+                {displayDesktop}
+            </Container> : <Container className={'wrap'} maxWidth='lg'> {displayDesktop}</Container>
             }
         </HeaderStyled>
 

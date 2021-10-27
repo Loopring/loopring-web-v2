@@ -1,4 +1,4 @@
-import { ChainId, NFTTokenInfo, UserNFTBalanceInfo } from '@loopring-web/loopring-sdk';
+import { ChainId } from '@loopring-web/loopring-sdk/dist';
 
 export enum WithdrawType {
     Fast = 'Fast',
@@ -56,15 +56,7 @@ export interface AccountHashInfo {
 export type ChainHashInfos = {
     [key in ChainId extends string?string:string]: AccountHashInfo
 };
-export enum NFTType  {
-    EIP1155,
-    EIP712
-}
-export type NFTWholeINFO = NFTTokenInfo
-    & UserNFTBalanceInfo
-    & {image:string,name:string,description:string,nftBalance:number,etherscanBaseUrl:string}
 
-export const TOAST_TIME = 3000
 
 export const EmptyValueTag = '--'
 

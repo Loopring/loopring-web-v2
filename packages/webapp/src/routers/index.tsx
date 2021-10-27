@@ -52,16 +52,15 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
     const {tickerMap} = useTicker();
     // const {allowTrade} = useSystem();
 
-
     return <>
         <Switch>
-            {/* <Route exact path='/landing-page'>
+            <Route exact path='/landing-page'>
                 <Header isHideOnScroll={true}/>
                 <LandPage />
-            </Route> */}
+            </Route>
 
-            <Route exact path='/wallet'>
-                <Header isHideOnScroll={true} isLandPage />
+            <Route exact path='/landing-page/wallet'>
+                <Header isHideOnScroll={true}/>
                 <WalletPage />
             </Route>
 
@@ -74,7 +73,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                 {/* <ContentWrap> */}
                 {/* {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>} */}
                 {/* </ContentWrap> */}
-                <Header isHideOnScroll={true} isLandPage />
+                <Header isHideOnScroll={true}/>
                 <LandPage/>
             </Route>
             {state === 'PENDING' ?
