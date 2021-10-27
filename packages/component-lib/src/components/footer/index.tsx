@@ -11,6 +11,7 @@ YoutubeIcon
 } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
+import { useHistory } from 'react-router-dom';
 
 const HeightConfig = {
 headerHeight: 24,
@@ -144,6 +145,8 @@ Product: [
 export const Footer = withTranslation(['layout'])(({t}: any) => {
 const {mode} = useTheme()
 const [size, setSize] = React.useState<[number, number]>([1200, 0]);
+const history = useHistory()
+const isLandingPage = history.location.pathname === '/landing-page' || history.location.pathname === '/landing-page/wallet'
 React.useLayoutEffect(() => {
     function updateSize() {
         setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
@@ -179,11 +182,9 @@ const handleLinkClick = React.useCallback((href: string) => {
                        fontSize={'body1'}>
         {/*<Divider />*/}
     <Container>
-        <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'}
-                height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center"
-                spacing={1}>
-            <Grid justifyContent="flex-start" item lg={2}>
-                <Box>
+        {isLandingPage ? (
+            <Box width={'100%'} height={'130px'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Box display={'flex'} width={'auto'} justifyContent={'space-between'} alignItems={'center'}>
                     <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
                         {
                             mode === 'light' ?
@@ -192,49 +193,101 @@ const handleLinkClick = React.useCallback((href: string) => {
                                 <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
                         }
                     </Link>
-                </Box>
-            </Grid>
-            <Grid justifyContent="space-between" display={'flex'} item lg={7}>
-                {linkListMapRender}
-            </Grid>
-            <Grid /* justifyContent="flex-end" */ item lg={2}>
-                <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" item xs={12}
-                        md={12} lg={12}>
-                    <Grid item marginTop={3.5} marginBottom={2} xs={12} md={12} lg={12}>
-                        <Typography color="var(--color-text-third)" variant="body2" component="p">Follow us</Typography>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={12} height={'100px'}>
-                        <List style={{display: 'flex', alignItems: 'flex-start', paddingTop: 0, paddingBottom: 0}}>
-                            {
-                                [
-                                    {
-                                        linkName: <DiscordIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
-                                        linkHref: "https://discord.com/invite/KkYccYp"
-                                    },
-                                    {
-                                        linkName: <TwitterIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
-                                        linkHref: "https://twitter.com/loopringorg"
-                                    },
-                                    {
-                                        linkName: <YoutubeIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
-                                        linkHref: "https://www.youtube.com/c/Loopring"
-                                    },
-                                    {
-                                        linkName: <MediumIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
-                                        linkHref: "https://medium.com/loopring-protocol"
-                                    }
-                                ].map((o, index) => (
+                
+                    <Grid container spacing={2} width={'auto'} marginLeft={14}>
+                        {
+                            [
+                                {
+                                    linkName: <DiscordIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                    linkHref: "https://discord.com/invite/KkYccYp"
+                                },
+                                {
+                                    linkName: <TwitterIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                    linkHref: "https://twitter.com/loopringorg"
+                                },
+                                {
+                                    linkName: <YoutubeIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                    linkHref: "https://www.youtube.com/c/Loopring"
+                                },
+                                {
+                                    linkName: <MediumIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                    linkHref: "https://medium.com/loopring-protocol"
+                                }
+                            ].map((o, index) => (
+                                <Grid item style={{ cursor: 'pointer' }} key={`${o.linkName}-${index}`} onClick={() => window.open(o.linkHref)}>
                                     <ListItem key={`${o.linkName}-${index}`}>
-                                        <Link fontSize={12}
-                                                onClick={() => handleLinkClick(o.linkHref)}>{o.linkName}</Link>
-                                    </ListItem>
-                                ))
+                                            <Link fontSize={12}
+                                                    onClick={() => handleLinkClick(o.linkHref)}>{o.linkName}</Link>
+                                        </ListItem>
+                                </Grid>
+                            ))
+                        }
+                    </Grid>
+                </Box>
+            </Box>
+        ) : (
+            <>
+                <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'}
+                    height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center"
+                    spacing={1} width={isLandingPage ? '430px' : '100%'}>
+                <Grid justifyContent="flex-start" item lg={2}>
+                    <Box>
+                        <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
+                            {
+                                mode === 'light' ?
+                                    <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
+                                    :
+                                    <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
                             }
-                        </List>
+                        </Link>
+                    </Box>
+                </Grid>
+                {!isLandingPage && (
+                    <Grid justifyContent="space-between" display={'flex'} item lg={7}>
+                        {linkListMapRender}
+                    </Grid>
+                )}
+                <Grid item lg={2}>
+                    <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" item xs={12}
+                            md={12} lg={12}>
+                        <Grid item marginTop={3.5} marginBottom={2} xs={12} md={12} lg={12}>
+                            <Typography color="var(--color-text-third)" variant="body2" component="p">Follow us</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={12} lg={12} height={'100px'}>
+                            <List style={{display: 'flex', alignItems: 'flex-start', paddingTop: 0, paddingBottom: 0}}>
+                                {
+                                    [
+                                        {
+                                            linkName: <DiscordIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                            linkHref: "https://discord.com/invite/KkYccYp"
+                                        },
+                                        {
+                                            linkName: <TwitterIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                            linkHref: "https://twitter.com/loopringorg"
+                                        },
+                                        {
+                                            linkName: <YoutubeIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                            linkHref: "https://www.youtube.com/c/Loopring"
+                                        },
+                                        {
+                                            linkName: <MediumIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                            linkHref: "https://medium.com/loopring-protocol"
+                                        }
+                                    ].map((o, index) => (
+                                        <ListItem key={`${o.linkName}-${index}`}>
+                                            <Link fontSize={12}
+                                                    onClick={() => handleLinkClick(o.linkHref)}>{o.linkName}</Link>
+                                        </ListItem>
+                                    ))
+                                }
+                            </List>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+            </>
+        )}
+        
 
         <Typography component={'p'} variant={'body2'} marginTop={2} paddingBottom={1} textAlign={'center'}>
             <Typography style={{fontSize: '9px'}} component={'span'}>Copyright (c)
