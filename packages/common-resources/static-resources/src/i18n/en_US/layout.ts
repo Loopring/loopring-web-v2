@@ -46,6 +46,7 @@ labelLoopringDescribe:'zkRollup Exchange and Payment Protocol',
 labelWrongNetwork: 'Wrong network',
 labelYoutube:'Youtube',
 labelWeibo:'Weibo',
+// Footer
 labelFooterLoopring :'Loopring',
 labelkeyAbout: 'About',
 labelkeyTerms: 'Terms',

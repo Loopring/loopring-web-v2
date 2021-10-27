@@ -17,6 +17,7 @@ const BoxStyled = styled(Box)`
 export const AssetTitle = withTranslation('common')(({
                                                          t,
                                                          assetInfo,
+                                                         accountId,
                                                          onShowWithdraw,
                                                          onShowTransfer,
                                                          onShowDeposit,
@@ -26,7 +27,6 @@ export const AssetTitle = withTranslation('common')(({
                                                          hideL2Assets,
                                                          setHideL2Assets,
                                                      }: AssetTitleProps & WithTranslation) => {
-
     // const [isShow, setIsShow] = React.useState<boolean>(assetInfo.isShow ? assetInfo.isShow : true);
     return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
         <Grid item xs={7} display={'flex'} flexDirection={'column'}>
@@ -34,7 +34,7 @@ export const AssetTitle = withTranslation('common')(({
                         marginBottom={'16px'}>
                 <Typography component={'span'} variant={'body1'} paddingRight={3} color={'textSecondary'}>
                     {t('labelAssetTitle')}
-                    {' '}
+                    {` (UID: ${accountId})`}
                     <IconButton
                         size={'small'}
                         // color={'secondary'}

@@ -3,7 +3,7 @@ import { getAmount, getAmountStatus, resetAmount } from './reducer'
 
 import store from '../index';
 import { LoopringAPI } from 'api_wrapper';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 
 const getAmountApi = async <R extends { [ key: string ]: any }>(market: string): Promise<{
     newAmountMap: object | undefined,

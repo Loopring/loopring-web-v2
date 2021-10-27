@@ -5,7 +5,7 @@ import { DropDownIcon, getValuePrecisionThousand, ThemeType } from '@loopring-we
 import { withTranslation } from 'react-i18next';
 import { Card } from './Card';
 import { useHistory } from 'react-router-dom';
-import { ChainId, ExchangeAPI } from 'loopring-sdk';
+import { ChainId, ExchangeAPI } from '@loopring-web/loopring-sdk';
 // import { LoopringAPI } from '@loopring-web/webapp/src/api_wrapper';
 
 

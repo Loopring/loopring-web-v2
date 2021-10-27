@@ -12,7 +12,6 @@ YoutubeIcon
 import { withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
 
-
 const HeightConfig = {
 headerHeight: 24,
 whiteHeight: 12,
@@ -114,7 +113,7 @@ Support: [
     },
     {
         linkName: 'SupportCenter',
-        linkHref: "https://discord.gg/RCus8aNB"
+        linkHref: "https://discord.com/invite/KkYccYp"
     },
 
 ],
@@ -209,19 +208,19 @@ const handleLinkClick = React.useCallback((href: string) => {
                             {
                                 [
                                     {
-                                        linkName: <DiscordIcon fontSize={'large'}/>,
+                                        linkName: <DiscordIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
                                         linkHref: "https://discord.com/invite/KkYccYp"
                                     },
                                     {
-                                        linkName: <TwitterIcon fontSize={'large'}/>,
+                                        linkName: <TwitterIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
                                         linkHref: "https://twitter.com/loopringorg"
                                     },
                                     {
-                                        linkName: <YoutubeIcon fontSize={'large'}/>,
+                                        linkName: <YoutubeIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
                                         linkHref: "https://www.youtube.com/c/Loopring"
                                     },
                                     {
-                                        linkName: <MediumIcon fontSize={'large'}/>,
+                                        linkName: <MediumIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
                                         linkHref: "https://medium.com/loopring-protocol"
                                     }
                                 ].map((o, index) => (

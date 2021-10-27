@@ -14,7 +14,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { baseTitleCss, useSettings } from '../../index';
 import { NewTagIcon } from '../basic-lib/Tags';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 type StyledProps = {
     custom: any

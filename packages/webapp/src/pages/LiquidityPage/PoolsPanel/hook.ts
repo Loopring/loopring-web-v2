@@ -13,7 +13,7 @@ import { useTokenMap } from 'stores/token';
 import { useSocket } from 'stores/socket';
 import { useTicker } from 'stores/ticker';
 import { tickerService } from 'services/socket';
-import { WsTopicType } from 'loopring-sdk';
+import { WsTopicType } from '@loopring-web/loopring-sdk';
 import { makeTickView } from 'hooks/help';
 
 

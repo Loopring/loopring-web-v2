@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { toBig } from 'loopring-sdk'
+import { toBig } from '@loopring-web/loopring-sdk'
 
 export function abbreviateNumber(value: number) {
     let newValue = value, result: string;

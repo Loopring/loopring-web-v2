@@ -2,7 +2,7 @@ import { LoopringAPI } from 'api_wrapper'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useTokenMap } from 'stores/token/hook'
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { myLog } from "@loopring-web/common-resources";
 
 export function useAllowances({ owner, symbol, }: {owner: string, symbol: string, }) {

@@ -19,7 +19,7 @@ import { bindTrigger } from 'material-ui-popup-state/es';
 import { usePageTradePro } from 'stores/router';
 import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 import { Layout, Layouts } from 'react-grid-layout';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';

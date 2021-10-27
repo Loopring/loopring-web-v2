@@ -2,7 +2,7 @@ import React from 'react'
 import { useAccount } from 'stores/account/hook'
 import { RawDataTradeItem } from '@loopring-web/component-lib'
 
-import { Side, toBig } from 'loopring-sdk'
+import { Side, toBig } from '@loopring-web/loopring-sdk'
 import { LoopringAPI } from 'api_wrapper'
 import store from 'stores'
 import { TradeTypes } from '@loopring-web/common-resources'

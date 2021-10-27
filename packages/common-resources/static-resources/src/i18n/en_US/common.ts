@@ -74,7 +74,7 @@ export default {
     labelViewEth: 'View on Etherscan',
     labelQRCode: 'View QR Code',
     labelShowAccountInfo: 'Show account information',
-    labelAssetTitle: 'Total Assets (Layer2 Account)',
+    labelAssetTitle: 'Layer2 Total Assets',
     labelShowAccount: 'Show or Hide Assets',
     labelBtnDeposit: 'Deposit',
     labelBtnTransfer: 'Transfer',
