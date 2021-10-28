@@ -90,41 +90,9 @@ export const NFTDetail = withTranslation('common')(({popItem,etherscanBaseUrl,t}
                 {/*  <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTDate')} </Typography>*/}
                 {/*  <Typography>{moment(popItem?.timestamp).format('YYYY-MM-DD HH:mm:ss')}</Typography>*/}
                 {/*</Typography>*/}
-                <Typography style={{display: 'inline-flex', alignItems: 'flex-start'}} marginTop={2}>
-                    {
-                        [
-                            {
-                                linkName: <DiscordIcon color={'inherit'} fontSize={'large'}/>,
-                                linkHref: "https://discord.com/invite/KkYccYp"
-                            },
-                            {
-                                linkName: <TwitterIcon color={'inherit'} fontSize={'large'}/>,
-                                linkHref: "https://twitter.com/loopringorg"
-                            },
-                            {
-                                linkName: <YoutubeIcon color={'inherit'} fontSize={'large'}/>,
-                                linkHref: "https://www.youtube.com/c/Loopring"
-                            },
-                            {
-                                linkName: <MediumIcon color={'inherit'} fontSize={'large'}/>,
-                                linkHref: "https://medium.com/loopring-protocol"
-                            }
-                        ].map((o, index) => (
-                            <Link paddingX={0.5} fontSize={12} key={`${o.linkName}-${index}`}
-                                  onClick={() => window.open(o.linkHref)}>{o.linkName}</Link>
 
-                        ))
-                    }
-                </Typography>
-                <Typography display={'inline-flex'} variant={'body1'} marginTop={3}>
-                    <Typography minWidth={100}>
-                        <Button variant={'contained'} size={'small'} color={'primary'} fullWidth
-                                onClick={() => showNFTTransfer({
-                                    isShow: true,
-                                    ...popItem
-                                })}>{t('labelNFTTransfer')}</Button>
-                        {/*() => onShowTransfer(tokenValue) isNFT:'ntf'*/}
-                    </Typography>
+                <Typography display={'inline-flex'} alignItems={'center'} variant={'body1'} marginTop={3}  justifyContent={'space-between'} >
+
                     {/*<Typography marginLeft={3} minWidth={100}>*/}
                     {/*    <Button variant={'outlined'} size={'medium'} fullWidth*/}
                     {/*            onClick={() => showWithdraw({*/}
@@ -133,7 +101,40 @@ export const NFTDetail = withTranslation('common')(({popItem,etherscanBaseUrl,t}
                     {/*            })}>{t('labelNFTWithdraw')}</Button>*/}
 
                     {/*</Typography>*/}
+                    <Typography display={'inline-flex'} alignItems={'center'} >
+                        {
+                            [
+                                {
+                                    linkName: <DiscordIcon color={'inherit'} fontSize={'large'}/>,
+                                    linkHref: "https://discord.com/invite/KkYccYp"
+                                },
+                                {
+                                    linkName: <TwitterIcon color={'inherit'} fontSize={'large'}/>,
+                                    linkHref: "https://twitter.com/loopringorg"
+                                },
+                                {
+                                    linkName: <YoutubeIcon color={'inherit'} fontSize={'large'}/>,
+                                    linkHref: "https://www.youtube.com/c/Loopring"
+                                },
+                                {
+                                    linkName: <MediumIcon color={'inherit'} fontSize={'large'}/>,
+                                    linkHref: "https://medium.com/loopring-protocol"
+                                }
+                            ].map((o, index) => (
+                                <Link paddingX={0.5} fontSize={12} key={`${o.linkName}-${index}`}
+                                      onClick={() => window.open(o.linkHref)}>{o.linkName}</Link>
 
+                            ))
+                        }
+                    </Typography>
+                    <Typography minWidth={100}>
+                        <Button variant={'contained'} size={'small'} color={'primary'} fullWidth
+                                onClick={() => showNFTTransfer({
+                                    isShow: true,
+                                    ...popItem
+                                })}>{t('labelNFTTransfer')}</Button>
+                        {/*() => onShowTransfer(tokenValue) isNFT:'ntf'*/}
+                    </Typography>
                 </Typography>
 
             </Box>
