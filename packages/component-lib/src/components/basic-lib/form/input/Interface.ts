@@ -42,6 +42,7 @@ export type InputCoinProps<T, R, I> = {
     decimalsLimit?:number
     disabled?: boolean,
     logoColor?: string,
+    noBalance?:string,
     wait?: number,
     isHideError?:boolean,
     handleCountChange?: (ibData: T,name:string, ref: React.ForwardedRef<any>) => void,

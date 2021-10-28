@@ -4,7 +4,13 @@ import * as sdk from '@loopring-web/loopring-sdk'
 
 import { connectProvides } from '@loopring-web/web3-provider';
 
-import { AccountStep, SwitchData, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
+import {
+    AccountStep,
+    setShowNFTTransfer,
+    SwitchData,
+    TransferProps,
+    useOpenModals,
+} from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, FeeInfo, IBData, SagaStatus, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
@@ -28,32 +34,32 @@ import { getFloatValue } from 'utils/formatter_tool';
 import { UserNFTBalanceInfo } from '@loopring-web/loopring-sdk/dist/defs/loopring_defs';
 
 export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>,T>(): {
-    transferToastOpen: boolean,
-    transferAlertText: any,
-    setTransferToastOpen: any,
-    transferProps: TransferProps<R, T>,
-    processRequest: any,
-    lastRequest: any,
+    nftTransferToastOpen: boolean,
+    nftTransferAlertText: any,
+    setNFTTransferToastOpen: any,
+    nftTransferProps: TransferProps<R, T>,
+    processRequestNFT: any,
+    lastNFTRequest: any,
 } => {
 
-    const { setShowAccount, setShowTransfer, } = useOpenModals()
+    const { setShowAccount, setShowNFTTransfer, } = useOpenModals()
 
-    const [transferToastOpen, setTransferToastOpen] = React.useState<boolean>(false)
+    const [nftTransferToastOpen, setNFTTransferToastOpen] = React.useState<boolean>(false)
 
-    const [transferAlertText, setTransferAlertText] = React.useState<string>()
+    const [nftTransferAlertText, setNFTTransferAlertText] = React.useState<string>()
 
-    const { modals: { isShowTransfer: { symbol, isShow } } } = useOpenModals()
+    const { modals: { isShowNFTTransfer: {  isShow, nftData, nftBalance,...nftRest } } } = useOpenModals()
 
     const { tokenMap, totalCoinMap, } = useTokenMap();
     const { account, status: accountStatus, } = useAccount()
     const { exchangeInfo, chainId } = useSystem();
 
-    const { nftTransferValue, updateNFTTransferData, resetTransferData, } = useModalData()
+    const { nftTransferValue, updateNFTTransferData, resetNFTTransferData, } = useModalData()
 
     const [walletMap, setWalletMap] = React.useState(makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>);
     const { chargeFeeList } = useChargeFees({tokenSymbol: nftTransferValue.belong, requestType: sdk.OffchainFeeReqType.TRANSFER, tokenMap})
 
-    const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
+    const [nftTransferFeeInfo, setNFTTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
 
     const {
@@ -67,7 +73,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
     const checkBtnStatus = React.useCallback(() => {
 
-        if (!tokenMap || !tranferFeeInfo?.belong || !nftTransferValue?.belong || !address) {
+        if (!tokenMap || !nftTransferFeeInfo?.belong || !nftTransferValue?.belong || !address) {
             disableBtn()
             return
         }
@@ -83,13 +89,13 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
             disableBtn()
         }
 
-    }, [enableBtn, disableBtn, tokenMap, address, addrStatus, chargeFeeList, tranferFeeInfo, nftTransferValue, isExceedMax, ])
+    }, [enableBtn, disableBtn, tokenMap, address, addrStatus, chargeFeeList, nftTransferFeeInfo, nftTransferValue, isExceedMax, ])
 
     React.useEffect(() => {
         
         checkBtnStatus()
 
-    }, [tokenMap, chargeFeeList, address, addrStatus, tranferFeeInfo?.belong, nftTransferValue?.belong, nftTransferValue?.tradeValue, isExceedMax, ])
+    }, [tokenMap, chargeFeeList, address, addrStatus, nftTransferFeeInfo?.belong, nftTransferValue?.belong, nftTransferValue?.tradeValue, isExceedMax, ])
 
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>
@@ -99,27 +105,33 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
     useWalletLayer2Socket({ walletLayer2Callback })
 
     const resetDefault = React.useCallback(() => {
-        updateNFTTransferData({
-            accountId: 0,
-            description: '',
-            image: '',
-            pending: {deposit: '', withdraw: ''}, total: '',
-            status: false,
-            locked: '',
-            memo: undefined,
-            nftType: '',
-            minter: '',
-            name: '',
-            tokenId: 0,
-            creatorFeeBips: 0,
-            nftData: '',
-            nftId: '',
-            tokenAddress: '',
-            belong: symbol as any,
-            balance:  Number(nftTransferValue?.total),
-            tradeValue: undefined,
-            address: "*"
-        })
+       
+        if (nftData) {
+            updateNFTTransferData({
+                accountId: 0,
+                description: '',
+                image: '',
+                pending: {deposit: '', withdraw: ''}, total: '',
+                status: false,
+                locked: '',
+                memo: undefined,
+                nftType: '',
+                minter: '',
+                name: '',
+                tokenId: 0,
+                creatorFeeBips: 0,
+                nftData: '',
+                nftId: '',
+                tokenAddress: '',
+                belong: nftData as any,
+                balance:  nftBalance,
+                tradeValue: undefined,
+                address: "*",
+                ...nftRest,
+            })
+        } else {
+            setShowNFTTransfer({isShow:false}) 
+        }
         // if (symbol && walletMap) {
         //     myLog('resetDefault symbol:', symbol)
         //     updateTransferData({
@@ -147,7 +159,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
         //     }
         //
         // }
-    }, [symbol, walletMap, updateNFTTransferData, nftTransferValue])
+    }, [nftData,nftBalance, walletMap, updateNFTTransferData, nftTransferValue])
 
     React.useEffect(() => {
         if (isShow) {
@@ -166,9 +178,9 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
     const { checkHWAddr, updateHW, } = useWalletInfo()
 
-    const [lastRequest, setLastRequest] = React.useState<any>({})
+    const [lastNFTRequest, setLastNFTRequest] = React.useState<any>({})
 
-    const processRequest = React.useCallback(async (request: sdk.OriginTransferRequestV3, isFirstTime: boolean) => {
+    const processRequestNFT = React.useCallback(async (request: sdk.OriginTransferRequestV3, isFirstTime: boolean) => {
 
         const { apiKey, connectName, eddsaKey } = account
 
@@ -201,7 +213,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
                         if (code === sdk.ConnectorError.USER_DENIED) {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
                         } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                            setLastRequest({ request })
+                            setLastNFTRequest({ request })
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_First_Method_Denied })
                         } else {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
@@ -219,11 +231,11 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
                         }
                         walletLayer2Service.sendUserUpdate()
 
-                        resetTransferData()
+                        resetNFTTransferData()
                     }
                 } else {
 
-                    resetTransferData()
+                    resetNFTTransferData()
                 }
 
 
@@ -236,7 +248,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
                 if (code === sdk.ConnectorError.USER_DENIED) {
                     setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
                 } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                    setLastRequest({ request })
+                    setLastNFTRequest({ request })
                     setShowAccount({ isShow: true, step: AccountStep.Transfer_First_Method_Denied })
                 } else {
                     setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
@@ -244,29 +256,29 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
             }
 
         }
-    }, [setLastRequest, setShowAccount, updateHW, account,])
+    }, [setLastNFTRequest, setShowAccount, updateHW, account,])
 
     const onTransferClick = useCallback(async (nftTransferValue, isFirstTime: boolean = true) => {
         const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
 
         if (readyState === AccountStatus.ACTIVATED && tokenMap && LoopringAPI.userAPI
             && exchangeInfo && connectProvides.usedWeb3
-            && nftTransferValue?.belong && tranferFeeInfo?.belong && eddsaKey?.sk) {
+            && nftTransferValue?.belong && nftTransferFeeInfo?.belong && eddsaKey?.sk) {
 
             try {
 
-                setShowTransfer({ isShow: false })
+                setShowNFTTransfer({ isShow: false })
                 setShowAccount({ isShow: true, step: AccountStep.Transfer_WaitForAuth })
 
                 const sellToken = tokenMap[nftTransferValue.belong as string]
-                const feeToken = tokenMap[tranferFeeInfo.belong]
+                const feeToken = tokenMap[nftTransferFeeInfo.belong]
 
-                const fee = sdk.toBig(tranferFeeInfo.__raw__.feeRaw ?? 0)
+                const fee = sdk.toBig(nftTransferFeeInfo.__raw__.feeRaw ?? 0)
                 const balance = sdk.toBig(nftTransferValue.balance ?? 0).times('1e' + sellToken.decimals)
                 const tradeValue = sdk.toBig(nftTransferValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
                 const isExceedBalance = feeToken.tokenId === sellToken.tokenId && tradeValue.plus(fee).gt(balance)
                 const finalVol = isExceedBalance ?  balance.minus(fee) : tradeValue
-                const transferVol = finalVol.toFixed(0, 0)
+                const nftTransferVol = finalVol.toFixed(0, 0)
 
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId,
@@ -281,7 +293,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
                     storageId: storageId?.offchainId,
                     token: {
                         tokenId: sellToken.tokenId,
-                        volume: transferVol,
+                        volume: nftTransferVol,
                     },
                     maxFee: {
                         tokenId: feeToken.tokenId,
@@ -291,13 +303,13 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
                     memo: nftTransferValue.memo,
                 }
 
-                myLog('transfer req:', req)
+                myLog('nftTransfer req:', req)
 
-                processRequest(req, isFirstTime)
+                processRequestNFT(req, isFirstTime)
 
             } catch (e) {
                 sdk.dumpError400(e)
-                // transfer failed
+                // nftTransfer failed
                 setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
             }
 
@@ -305,7 +317,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
             return false
         }
 
-    }, [processRequest, account, tokenMap, tranferFeeInfo?.belong, nftTransferValue, address])
+    }, [processRequestNFT, account, tokenMap, nftTransferFeeInfo?.belong, nftTransferValue, address])
 
     const handlePanelEvent = useCallback(async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
@@ -333,18 +345,18 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
     }, [updateNFTTransferData, nftTransferValue])
 
     const handleFeeChange = useCallback((value: FeeInfo): void => {
-        setTransferFeeInfo(value)
-    }, [setTransferFeeInfo])
+        setNFTTransferFeeInfo(value)
+    }, [setNFTTransferFeeInfo])
 
     const { t } = useTranslation()
 
-    const transferProps = {
+    const nftTransferProps = {
         addressDefault: address,
         realAddr,
         tradeData: nftTransferValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap as WalletMap<T>,
-        transferBtnStatus: btnStatus,
+        nftTransferBtnStatus: btnStatus,
         onTransferClick,
         handleFeeChange,
         handlePanelEvent,
@@ -370,11 +382,11 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
     }
 
     return {
-        transferToastOpen,
-        transferAlertText,
-        setTransferToastOpen,
-        transferProps,
-        processRequest,
-        lastRequest,
+        nftTransferToastOpen,
+        nftTransferAlertText,
+        setNFTTransferToastOpen,
+        nftTransferProps,
+        processRequestNFT,
+        lastNFTRequest,
     }
 }

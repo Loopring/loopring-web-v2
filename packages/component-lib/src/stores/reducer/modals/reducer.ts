@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { ModalState, ModalStatePlayLoad, Transaction, TransactionNFT } from './interface';
+import { ModalState, ModalStatePlayLoad, Transaction } from './interface';
+import { NFTWholeINFO } from '@loopring-web/webapp/src/api_wrapper';
 
 const initialState: ModalState = {
     isShowTransfer: {isShow: false,symbol:undefined},
@@ -14,9 +15,9 @@ const initialState: ModalState = {
     isShowSupport: {isShow: false},
     isShowFeeSetting : {isShow: false},
     isShowIFrame:  {isShow: false,url:''},
-    isShowNFTTransfer: {isShow: false, nftData: undefined,nftType : undefined},
-    isShowNFTWithdraw: {isShow: false, nftData: undefined,nftType : undefined},
-    isShowNFTDeposit: {isShow: false, nftData: undefined,nftType : undefined},
+    isShowNFTTransfer: {isShow: false} ,
+    isShowNFTWithdraw: {isShow: false},
+    isShowNFTDeposit: {isShow: false,} ,
 }
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -45,28 +46,31 @@ export const modalsSlice: Slice<ModalState> = createSlice({
             state.isShowSwap.isShow = isShow;
 
         },
-        setShowNFTTransfer(state, action: PayloadAction<ModalStatePlayLoad & TransactionNFT>) {
-            const {isShow,nftData,nftType} = action.payload;
+        setShowNFTTransfer(state, action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>) {
+            const {isShow,nftData,nftType,...rest} = action.payload;
             state.isShowNFTTransfer= {
                 isShow,
                 nftData,
-                nftType
+                nftType,
+                ...rest
             };
         },
-        setShowNFTDeposit(state, action: PayloadAction<ModalStatePlayLoad & TransactionNFT>) {
-            const {isShow,nftData,nftType} = action.payload;
+        setShowNFTDeposit(state, action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>) {
+            const {isShow,nftData,nftType,...rest} = action.payload;
             state.isShowNFTDeposit= {
                 isShow,
                 nftData,
-                nftType
+                nftType,
+                ...rest
             };
         },
-        setShowNFTWithdraw(state, action: PayloadAction<ModalStatePlayLoad & TransactionNFT>) {
-            const {isShow,nftData,nftType} = action.payload;
+        setShowNFTWithdraw(state, action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>) {
+            const {isShow,nftData,nftType,...rest} = action.payload;
             state.isShowNFTWithdraw= {
                 isShow,
                 nftData,
-                nftType
+                nftType,
+                ...rest
             };
         },
         setShowTransfer(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {

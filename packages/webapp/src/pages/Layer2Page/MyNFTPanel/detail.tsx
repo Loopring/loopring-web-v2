@@ -1,0 +1,143 @@
+import { Box, Link, Typography } from '@mui/material';
+import { DiscordIcon, getFormattedHash, MediumIcon, TwitterIcon, YoutubeIcon } from '@loopring-web/common-resources';
+import { Button } from '@loopring-web/component-lib';
+import React from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
+import styled from '@emotion/styled';
+import { NFTWholeINFO } from '../../../api_wrapper';
+import { useModals } from '../../../hooks/useractions/useModals';
+const BoxNFT = styled(Box)`
+  background: var(--color-global-bg);
+
+  img {
+    object-fit: contain
+  }
+` as typeof Box
+export const NFTDetail = withTranslation('common')(({popItem,etherscanBaseUrl,t}:{popItem:NFTWholeINFO,etherscanBaseUrl:string} & WithTranslation)=>{
+    const {
+        // showDeposit,,
+        // showWithdraw,
+        showNFTTransfer,
+    } = useModals()
+    return <>
+        <BoxNFT display={'flex'} width={570} height={570} margin={1} marginTop={-4} alignItems={'center'}
+                justifyContent={'center'}>
+            <img alt={'NFT'} width={'100%'} height={'100%'} src={popItem.image}/>
+        </BoxNFT>
+        <Box flex={1} marginLeft={2} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} whiteSpace={'break-spaces'}>
+            <Box marginBottom={3}>
+                <Typography color={'text.secondary'}>{t('labelNFTTokenID')}</Typography>
+                <Typography color={'text.primary'} variant={'h2'} marginTop={2}>#{popItem?.tokenId}</Typography>
+
+            </Box>
+            <Box display={'flex'} flexDirection={'column'} marginBottom={4} paddingRight={3}>
+                <Typography component={'h6'} color={'text.primary'} variant={'h4'}>{t('labelNFTDetail')}</Typography>
+                <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                    <Typography color={'var(--color-text-third)'} width={160}> {t('labelNFTName')}</Typography>
+                    <Typography color={'var(--color-text-third)'}
+                                title={popItem?.name}>  {popItem?.name}</Typography>
+                </Typography>
+
+                <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                    <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTID')} </Typography>
+                    <Typography color={'var(--color-text-third)'} maxWidth={300}
+                                whiteSpace={'break-spaces'} style={{wordBreak:'break-all'}}
+                                title={popItem?.nftId}>{parseInt(popItem?.nftId)}</Typography>
+                </Typography>
+                <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                    <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTTYPE')} </Typography>
+                    <Typography color={'var(--color-text-third)'}
+                                title={popItem?.nftType}>{popItem.nftType}</Typography>
+                </Typography>
+                <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                    <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTContractAddress')}</Typography>
+                    <Link fontSize={'inherit'}   whiteSpace={'break-spaces'} style={{wordBreak:'break-all'}}
+                          onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.tokenAddress}`)}>
+                        {popItem.tokenAddress}</Link>
+                </Typography>
+                <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
+                    <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTMinter')} </Typography>
+
+                    <Link fontSize={'inherit'}  maxWidth={300}
+                          onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.minter}`)}>
+                       {popItem.minter}</Link>
+
+                </Typography>
+
+                {/*<Typography display={'inline-flex'} variant={'body1'} marginTop={2}>*/}
+                {/*  <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTTokenStandard')} </Typography>*/}
+                {/*  <Typography>{popItem.created_by}</Typography>*/}
+                {/*</Typography>*/}
+                {/*<Typography display={'inline-flex'}  variant={'body1'} marginTop={1}>*/}
+                {/*  <Typography  color={'var(--color-text-third)'} width={160}>{t('labelNFTTokenBlockChain')} </Typography>*/}
+                {/*  <Typography></Typography>*/}
+                {/*</Typography>*/}
+                {/*<Typography display={'inline-flex'} variant={'body1'} marginTop={2}>*/}
+                {/*  <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTTokenMinted')} </Typography>*/}
+                {/*  <Link fontSize={'inherit'}*/}
+                {/*        onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.tokenAddress}`)}> {getFormattedHash(popItem.tokenAddress)}</Link>*/}
+                {/*</Typography>*/}
+                <Typography display={'inline-flex'} variant={'body1'} marginTop={2} flex={1}>
+                    <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTDescription')} </Typography>
+                    <Typography color={'var(--color-text-third)'} component={'span'}
+                                whiteSpace={'break-spaces'} style={{wordBreak:'break-all'}}
+                                title={popItem?.description}>
+                    {popItem.description} </Typography>
+
+                {/*<Typography>{moment(popItem?.timestamp).format('YYYY-MM-DD HH:mm:ss')}</Typography>*/}
+                </Typography>
+                {/*<Typography display={'inline-flex'} variant={'body1'} marginTop={2}>*/}
+                {/*  <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTDate')} </Typography>*/}
+                {/*  <Typography>{moment(popItem?.timestamp).format('YYYY-MM-DD HH:mm:ss')}</Typography>*/}
+                {/*</Typography>*/}
+                <Typography style={{display: 'inline-flex', alignItems: 'flex-start'}} marginTop={2}>
+                    {
+                        [
+                            {
+                                linkName: <DiscordIcon color={'inherit'} fontSize={'large'}/>,
+                                linkHref: "https://discord.com/invite/KkYccYp"
+                            },
+                            {
+                                linkName: <TwitterIcon color={'inherit'} fontSize={'large'}/>,
+                                linkHref: "https://twitter.com/loopringorg"
+                            },
+                            {
+                                linkName: <YoutubeIcon color={'inherit'} fontSize={'large'}/>,
+                                linkHref: "https://www.youtube.com/c/Loopring"
+                            },
+                            {
+                                linkName: <MediumIcon color={'inherit'} fontSize={'large'}/>,
+                                linkHref: "https://medium.com/loopring-protocol"
+                            }
+                        ].map((o, index) => (
+                            <Link paddingX={0.5} fontSize={12} key={`${o.linkName}-${index}`}
+                                  onClick={() => window.open(o.linkHref)}>{o.linkName}</Link>
+
+                        ))
+                    }
+                </Typography>
+                <Typography display={'inline-flex'} variant={'body1'} marginTop={3}>
+                    <Typography minWidth={100}>
+                        <Button variant={'contained'} size={'small'} color={'primary'} fullWidth
+                                onClick={() => showNFTTransfer({
+                                    isShow: true,
+                                    ...popItem
+                                })}>{t('labelNFTTransfer')}</Button>
+                        {/*() => onShowTransfer(tokenValue) isNFT:'ntf'*/}
+                    </Typography>
+                    {/*<Typography marginLeft={3} minWidth={100}>*/}
+                    {/*    <Button variant={'outlined'} size={'medium'} fullWidth*/}
+                    {/*            onClick={() => showWithdraw({*/}
+                    {/*                isShow: true,*/}
+                    {/*                symbol: popItem.id*/}
+                    {/*            })}>{t('labelNFTWithdraw')}</Button>*/}
+
+                    {/*</Typography>*/}
+
+                </Typography>
+
+            </Box>
+
+        </Box>
+    </>
+})

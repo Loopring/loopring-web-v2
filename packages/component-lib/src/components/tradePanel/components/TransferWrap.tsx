@@ -1,6 +1,6 @@
 import { Trans, WithTranslation } from 'react-i18next';
-import React, { ChangeEvent } from 'react';
-import { Grid, Typography, Box, IconProps } from '@mui/material';
+import React, { ChangeEvent, useState } from 'react';
+import { Grid, Typography, Box, IconProps, Link } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import {
@@ -10,9 +10,9 @@ import {
     IBData,
     HelpIcon,
     getValuePrecisionThousand,
-   getFormattedHash
+    getFormattedHash, copyToClipBoard
 } from '@loopring-web/common-resources';
-import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
+import { Button, IconClearStyled, TextField, Toast, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
@@ -20,9 +20,9 @@ import * as _ from 'lodash'
 import { ToggleButtonGroup } from '../../basic-lib';
 import { useSettings } from '../../../stores'
 import styled from '@emotion/styled'
-import { NFTTokenInfo } from '@loopring-web/webapp/src/api_wrapper';
+import {  NFTWholeINFO } from '@loopring-web/webapp/src/api_wrapper';
 import { BasicANFTTrade } from './BasicANFTTrade';
-import { UserNFTBalanceInfo } from '@loopring-web/loopring-sdk/dist/defs/loopring_defs';
+import { TOAST_TIME } from '@loopring-web/webapp/src/defs/common_defs';
 
 const FeeTokenItemWrapper = styled(Box)`
     background-color: var(--color-global-bg);
@@ -30,7 +30,7 @@ const FeeTokenItemWrapper = styled(Box)`
 
 const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
     transform: rotate(${({status}: any) => {
-    return status === 'down' ? '0deg': '180deg'
+    return status === 'down' ? '0deg': '180deg';                                                                                     
 }});
 ` as (props:IconProps& {status:string})=>JSX.Element
 
@@ -50,7 +50,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
            realAddr,
            ...rest
        }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
-    
+
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough) {
@@ -66,7 +66,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
 
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
-    
+
     const [memo, setMemo] = React.useState('');
     const [feeToken, setFeeToken] = React.useState('')
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
@@ -74,7 +74,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
     const { feeChargeOrder } = useSettings()
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
-    
+
     const toggleData: any[] = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__, }) => ({
         key: belong,
         value: belong,
@@ -87,7 +87,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
         // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
         return getValuePrecisionThousand(raw, undefined, undefined, undefined, false, { isTrade: true, floor: false })
     }, [toggleData])
-    
+
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
@@ -138,6 +138,11 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
         return tokenAssets && Number(tokenAssets) > fee
     }, [assetsData])
 
+    const [copyToastOpen, setCopyToastOpen] = useState(false);
+    const onCopy = React.useCallback(async (content:string) => {
+        copyToClipBoard(content);
+        setCopyToastOpen(true)
+    }, [ setCopyToastOpen,])
     const handleToggleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
         const currFeeRaw = toggleData.find(o => o.key === value)?.__raw__ || '--'
@@ -196,34 +201,57 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             </Typography> */}
         </Grid>
         <Grid item /* marginTop={3} */ alignSelf={"stretch"}>
-            {type === 'NFT' &&  tradeData.image ?<Box display={'inline-flex'} alignItems={'center'} justifyContent={'space-between'} height={48}>
-                <Box display={'flex'} flexDirection={'row'} >
-                    {/*<img alt={'NFT'} width={'100%'} height={'100%'} src={popItem.image}/>*/}
-                    <Box height={48} width={48} flex={1}
-                         borderRadius={1/2}
-                         style={{background: "var(--field-opacity)"}} display={'flex'}
-                         alignItems={'center'}
-                         justifyContent={'center'}>
-                        <img alt={'NFT'} width={'100%'} height={'100%'} src={tradeData?.image}/></Box>
-                    <Box>
-                      <Typography variant={'h5'} color={'text.secondary'} >{
-                          ( tradeData?.name && tradeData.name.length > 8)?getFormattedHash(tradeData.name):tradeData.name}</Typography>
-                      <Typography variant={'body1'} >{getFormattedHash(tradeData.tokenAddress)} / {getFormattedHash(tradeData.nftId)}</Typography>
-                  </Box>
-                </Box>
-                <BasicANFTTrade {...{
-                    ...rest,
+            {type === 'NFT'  ?<Box display={'inline-flex'}
+                                   alignItems={'center'}
+                                   justifyContent={'space-between'} height={80} width={'100%'}>
+                <Box display={'flex'}  flexDirection={'column'}>
+                    <Typography  variant={'body1'}
+                                color={'var(--color-text-secondary)'} className={'main-label'} paddingBottom={1/2}>
+                        {t('labelNFTName')} {tradeData.name}</Typography>
+                    <Box display={'flex'} marginTop={1/2} flexDirection={'row'} alignItems={'center'} >
+                        {/*<img alt={'NFT'} width={'100%'} height={'100%'} src={popItem.image}/>*/}
 
-                    type,
-                    t,
-                    disabled,
-                    walletMap,
-                    tradeData,
-                    // coinMap,
-                    inputNFTDefaultProps: {label:''},
-                    // inputButtonDefaultProps,
-                    inputNFTRef: inputBtnRef,
-                }}  />
+                        <Box height={48} minWidth={48}
+                             borderRadius={1/2}
+                             style={{background: "var(--field-opacity)"}} display={'flex-inline'}
+                             alignItems={'center'}
+                             justifyContent={'center'}>
+                            <img alt={'NFT'} width={'100%'} height={'100%'} src={tradeData?.image}/>
+                        </Box>
+                        <Box marginLeft={1}>
+                            <Link variant={'h5'}
+                                  onClick={() => window.open(`${tradeData.etherscanBaseUrl}tx/${tradeData.tokenAddress}`)}>
+                                {getFormattedHash(tradeData.tokenAddress)}
+                            </Link>
+                            <Typography variant={'body1'} onClick={()=>onCopy(tradeData.nftId as string)}>
+                                <Typography component={'span'} color={'text.secondary'} >ID: </Typography>
+                                <Typography component={'span'} color={'text.secondary'}  title={tradeData.nftId}>
+                                    {tradeData.nftId && parseInt(tradeData.nftId).toString().length>16?getFormattedHash(parseInt(tradeData.nftId).toString())
+                                        :  parseInt(tradeData?.nftId??'').toString() } </Typography>
+                            </Typography>                     {/*<Typography variant={'h5'} color={'text.secondary'} >*/}
+                            {/*    {( tradeData?.name && tradeData.name.length > 8)?getFormattedHash(tradeData.name):tradeData.name}*/}
+                            {/*</Typography>*/}
+
+
+
+                        </Box>
+                    </Box>
+                </Box>
+                <Box maxWidth={120} marginLeft={1}>
+                    <BasicANFTTrade {...{
+                        ...rest,
+
+                        type,
+                        t,
+                        disabled,
+                        walletMap,
+                        tradeData,
+                        // coinMap,
+                        inputNFTDefaultProps: {label: ''},
+                        // inputButtonDefaultProps,
+                        inputNFTRef: inputBtnRef,
+                    }}  />
+                </Box>
             </Box>:  <BasicACoinTrade {...{
                 ...rest,
                 type,
@@ -234,7 +262,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
                 coinMap,
                 inputButtonDefaultProps,
                 inputBtnRef: inputBtnRef,
-                
+
             }} />  }
         </Grid>
         <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
@@ -258,7 +286,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
                     <CloseIcon  />
                 </IconClearStyled> : ''}
         </Grid>
-        
+
         {realAddr && <Grid item alignSelf={"stretch"} position={'relative'}>
             {realAddr}
         </Grid>}
@@ -303,5 +331,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             >{t(transferI18nKey ?? `transferLabelBtn`)}
             </Button>
         </Grid>
+        <Toast alertText={t('labelCopyAddClip')} open={copyToastOpen}
+               autoHideDuration={TOAST_TIME} onClose={() => {
+            setCopyToastOpen(false)
+        }} severity={"success"}/>
     </Grid>;
 }

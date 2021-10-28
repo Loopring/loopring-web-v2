@@ -46,7 +46,7 @@ import {
     ExportAccount_Approve_WaitForAuth,
     ExportAccount_User_Denied,
     ExportAccount_Success,
-    ExportAccount_Failed,
+    ExportAccount_Failed, WithdrawProps,
 } from '@loopring-web/component-lib';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 
@@ -66,8 +66,10 @@ import { useReset } from 'hooks/useractions/useReset';
 import { useExportAccount } from 'hooks/useractions/useExportAccount';
 import { useOnChainInfo } from 'stores/localStore/onchainHashInfo';
 import store from '../../stores';
-import { useSelector } from 'react-redux';
 import { useSystem } from '../../stores/system';
+import { useNFTWithdraw } from '../../hooks/useractions/useNFTWithdraw';
+import { useNFTTransfer } from '../../hooks/useractions/useNFTTransfer';
+import { useNFTDeposit } from '../../hooks/useractions/useNFTDeposit';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
@@ -99,6 +101,14 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         processRequest,
         lastRequest,
     } = useWithdraw()
+    const {
+        nftWithdrawAlertText,
+        nftWithdrawToastOpen,
+        setNFTWithdrawToastOpen,
+        nftWithdrawProps,
+        processRequestNFT:withdrawProcessRequestNFT,
+        lastNFTRequest: withdrawNFTRequest,
+    } = useNFTWithdraw()
 
     const {
         exportAccountAlertText,
@@ -107,6 +117,9 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
     } = useExportAccount()
 
     const {depositProps} = useDeposit()
+    const {
+        nftDepositProps
+    } = useNFTDeposit()
 
     const {assetsRawData} = useGetAssets()
 
@@ -118,7 +131,16 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         lastRequest: transferLastRequest,
         processRequest: transferProcessRequest,
     } = useTransfer()
+    const {
+        nftTransferToastOpen,
+        nftTransferAlertText,
+        setNFTTransferToastOpen,
+        nftTransferProps,
+        processRequestNFT:transferProcessRequestNFT,
+        lastNFTRequest: transferNFTRequest,
+    } = useNFTTransfer()
 
+        
     const { resetProps, } = useReset()
 
     const { exportAccountProps } = useExportAccount()
@@ -695,8 +717,21 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
 
 
     return {
+        nftTransferToastOpen,
+        nftTransferAlertText,
+        setNFTTransferToastOpen,
+        nftTransferProps,
+        transferProcessRequestNFT,
+        transferNFTRequest,
+        nftWithdrawToastOpen,
+        nftWithdrawAlertText,
+        setNFTWithdrawToastOpen,
+        nftWithdrawProps,
+        withdrawProcessRequestNFT,
+        withdrawNFTRequest,
         withdrawAlertText,
         withdrawToastOpen,
+        nftDepositProps,
         setWithdrawToastOpen,
         transferProps,
         withdrawProps,

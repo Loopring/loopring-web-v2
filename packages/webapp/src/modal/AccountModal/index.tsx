@@ -30,6 +30,9 @@ export const ModalAccountInfo = withTranslation('common')(({
         transferProps,
         withdrawProps,
         depositProps,
+        nftTransferProps,
+        nftWithdrawProps,
+        nftDepositProps,
         resetProps,
         exportAccountProps,
         assetsRawData,
@@ -62,11 +65,11 @@ export const ModalAccountInfo = withTranslation('common')(({
         }} severity={"success"}/>
 
         <ModalPanel transferProps={transferProps}
-                    withDrawProps={withdrawProps}
+                    withdrawProps={withdrawProps}
                     depositProps={depositProps}
-                    transferNFTProps={transferProps}
-                    withDrawNFTProps={withdrawProps}
-                    depositNFTProps={depositProps}
+                    nftTransferProps={nftTransferProps}
+                    nftDepositProps={nftDepositProps}
+                    nftWithdrawProps={nftWithdrawProps}
                     resetProps={resetProps}
                     exportAccountProps={exportAccountProps}
                     ammProps={{} as any}

@@ -1,12 +1,5 @@
 import { FormHelperText, Grid, Typography } from '@mui/material';
-import {
-    CoinInfo,
-    FORMAT_STRING_LEN,
-    getValuePrecisionThousand,
-    // getValuePrecisionThousand,
-    IBData,
-    // myLog
-} from '@loopring-web/common-resources';
+import { CoinInfo, FORMAT_STRING_LEN, getValuePrecisionThousand, IBData, } from '@loopring-web/common-resources';
 import { InputCoinProps, InputSize } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
@@ -28,6 +21,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
+    noBalance='0.00',
                                                                        decimalsLimit = 8,
                                                                        size = InputSize.middle,
                                                                        isHideError = false,
@@ -112,7 +106,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{subLabel}</span>
-                    <span>{(balance ? formattedBalance : '0.00')}</span>
+                    <span>{(balance ? formattedBalance : noBalance)}</span>
                 </Typography> : null}</Grid>
         </Grid>
 

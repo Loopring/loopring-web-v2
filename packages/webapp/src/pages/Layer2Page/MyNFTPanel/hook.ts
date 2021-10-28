@@ -1,15 +1,17 @@
-import { AccountStatus, SagaStatus } from '@loopring-web/common-resources'
+import { AccountStatus, NFTInfo, SagaStatus } from '@loopring-web/common-resources'
 import { useAccount } from '../../../stores/account'
 import React from 'react'
-import { LoopringAPI } from 'api_wrapper'
+import { LoopringAPI, NFTWholeINFO } from 'api_wrapper'
 import { connectProvides } from '@loopring-web/web3-provider';
 import { sleep } from '@loopring-web/loopring-sdk';
+import { useSystem } from '../../../stores/system';
 
 export const useMyNFT = () => {
     const [NFTList, setNFTList] = React.useState<any[]>([])
     const {account, status: accountStatus} = useAccount();
     const [isShow, setIsShow] = React.useState(false);
-    const [popItem, setPopItem] = React.useState<any | undefined>(undefined);
+    const [popItem, setPopItem] = React.useState<NFTWholeINFO | undefined>(undefined);
+    const {etherscanBaseUrl} = useSystem();
 
     const onDetailClose = React.useCallback(() => setIsShow(false), [])
 
@@ -33,9 +35,11 @@ export const useMyNFT = () => {
     }, [accountStatus]);
     const initNFT = React.useCallback(async () => {
             // LoopringAPI.getContractNFTMeta
+            let userNFTBalances:any[]  = []
             if(LoopringAPI.userAPI) {
-              const {userNFTBalances} =  await LoopringAPI.userAPI.getUserNFTBalances({accountId: account.accountId}, account.apiKey)
-              console.log('NFTBalances',userNFTBalances)
+                userNFTBalances =  (await LoopringAPI.userAPI
+                    .getUserNFTBalances({accountId: account.accountId}, account.apiKey)).userNFTBalances
+                console.log('NFTBalances',userNFTBalances)
             }
             await sleep(1000);
             let mediaPromise: any[] = [];
@@ -43,31 +47,31 @@ export const useMyNFT = () => {
             //     {"nftId": "1", tokenAddress: '0xa8cf067c340b1b1851737f85bf04baea3156c870'},
             //     {"nftId": "122", tokenAddress: '0x942c4199312902b45e8032051ebad08be34a318c'}
             // ]
-            const demo = [{
-                "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-                tokenId: 32769,
-                "nftData": "0x25111f604bef74ff6e7094e408783d0b232a4df5200d8a671157911086443ef0",
-                "nftId": "139414297126165134441448130901307428303546258629632697827333",
-                "amount": "1"
-            }, {
-                "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-                tokenId: 32729,
-                "nftData": "0x1928118fb21747b59e42af46bfab9c8d47fdbd391f231fa1fb6050d4ddbcb942",
-                "nftId": "139414297126165134441448130901307428303546258629632697827335",
-                "amount": "1"
-            }, {
-                "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-                tokenId: 32799,
-                "nftData": "0x11a9e3ccd80414c44a3a4c91beeb7b1a1a3de3c68a4d901fcf31a00c95f245c2",
-                "nftId": "139414297126165134441448130901307428303546258629632697827332",
-                "amount": "1"
-            }, {
-                "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-                tokenId: 31799,
-                "nftData": "0xa0a3ab833753edfcec952494f49f9cafc474eb500e2fcd854d804a6ba342563",
-                "nftId": "139414297126165134441448130901307428303546258629632697827331",
-                "amount": "1"
-            }]
+            // const demo = [{
+            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
+            //     tokenId: 32769,
+            //     "nftData": "0x25111f604bef74ff6e7094e408783d0b232a4df5200d8a671157911086443ef0",
+            //     "nftId": "139414297126165134441448130901307428303546258629632697827333",
+            //     "total": "1"
+            // }, {
+            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
+            //     tokenId: 32729,
+            //     "nftData": "0x1928118fb21747b59e42af46bfab9c8d47fdbd391f231fa1fb6050d4ddbcb942",
+            //     "nftId": "139414297126165134441448130901307428303546258629632697827335",
+            //     "total": "1"
+            // }, {
+            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
+            //     tokenId: 32799,
+            //     "nftData": "0x11a9e3ccd80414c44a3a4c91beeb7b1a1a3de3c68a4d901fcf31a00c95f245c2",
+            //     "nftId": "139414297126165134441448130901307428303546258629632697827332",
+            //     "total": "1"
+            // }, {
+            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
+            //     tokenId: 31799,
+            //     "nftData": "0xa0a3ab833753edfcec952494f49f9cafc474eb500e2fcd854d804a6ba342563",
+            //     "nftId": "139414297126165134441448130901307428303546258629632697827331",
+            //     "amount": "1"
+            // }]
             // {
             //     "totalNum" : 1,
             //     "data" : [
@@ -86,9 +90,9 @@ export const useMyNFT = () => {
             //         }
             //     ]
             // }
-            demo.forEach(async ({nftId, tokenAddress}) => {
+            userNFTBalances.forEach(async ({nftId, tokenAddress}) => {
                 mediaPromise.push(LoopringAPI?.contract.getContractNFTMeta({
-                    _id: nftId,
+                    _id: parseInt(nftId).toString(),
                     web3: connectProvides.usedWeb3,
                     contractAddress: tokenAddress
                 }))
@@ -98,8 +102,8 @@ export const useMyNFT = () => {
             // console.log(meta)
             // debugger
 
-            setNFTList(demo.map((item, index) => {
-                return {...item, ...meta[ index ]}
+            setNFTList(userNFTBalances.map((item, index) => {
+                return {...item, ...meta[ index ],etherscanBaseUrl}
             }))
             // setNFTList()
         }
@@ -157,6 +161,7 @@ export const useMyNFT = () => {
         isShow,
         popItem,
         onDetail,
+        etherscanBaseUrl,
         onDetailClose,
     }
 

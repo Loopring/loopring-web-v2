@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import {
     ModalStatePlayLoad,
-    setShowDeposit,
+    setShowDeposit, setShowNFTDeposit, setShowNFTTransfer, setShowNFTWithdraw,
     setShowResetAccount,
     setShowTransfer,
     setShowWithdraw,
@@ -12,6 +12,7 @@ import {
 } from '@loopring-web/component-lib'
 
 import { useAccount } from 'stores/account'
+import { NFTWholeINFO } from '../../api_wrapper';
 
 export function useModals() {
     const dispatch = useDispatch()
@@ -38,11 +39,24 @@ export function useModals() {
     const showResetAccount = React.useCallback((isShow: boolean) => dispatch(setShowResetAccount({
         isShow
     })), [dispatch])
+    const showNFTTransfer = React.useCallback(({isShow,...rest}:ModalStatePlayLoad & Partial<NFTWholeINFO>) => dispatch(
+        setShowNFTTransfer({isShow,...rest})
+    ), [dispatch])
+    const showNFTDeposit = React.useCallback(({isShow,...rest}:ModalStatePlayLoad & Partial<NFTWholeINFO>) => dispatch(
+        setShowNFTDeposit({isShow,...rest})
+    ), [dispatch])
+    const showNFTWithdraw = React.useCallback(({isShow,...rest}:ModalStatePlayLoad & Partial<NFTWholeINFO>) => dispatch(
+        setShowNFTWithdraw({isShow,...rest})
+    ), [dispatch])
 
     return {
         showDeposit,
         showTransfer,
         showWithdraw,
+        showResetAccount,
+        showNFTTransfer,
+        showNFTDeposit,
+        showNFTWithdraw,
         // ShowResetAccount,
     }
 }

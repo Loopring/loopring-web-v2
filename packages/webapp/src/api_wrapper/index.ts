@@ -16,7 +16,7 @@ export type NFTTokenInfo = {
     creatorFeeBips: 0,
     status: boolean
 }
-export type NFTWholeINFO = NFTTokenInfo  & UserNFTBalanceInfo  & {image:string,name:string,description:string}
+export type NFTWholeINFO = NFTTokenInfo  & UserNFTBalanceInfo  & {image:string,name:string,description:string,nftBalance:number,etherscanBaseUrl:string}
 export type NftData = string
 
 

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { AccountStep, DepositProps, SwitchData, useOpenModals, } from '@loopring-web/component-lib';
-import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
+import { AccountStatus, CoinMap, IBData } from '@loopring-web/common-resources';
 import * as sdk from '@loopring-web/loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
@@ -20,7 +20,7 @@ import { isPosIntNum } from 'utils/formatter_tool';
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo';
 
 export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): {
-    depositNFTProps: DepositProps<R, T>
+    nftDepositProps: DepositProps<R, T>
 } => {
     const { tokenMap, totalCoinMap, } = useTokenMap()
     const { account } = useAccount()
@@ -28,10 +28,10 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
     const { nftDepositValue, updateNFTDepositData, resetNFTDepositData, } = useModalData()
 
-    const { modals: { isShowDeposit: { symbol, isShow } } } = useOpenModals()
+    const { modals: { isShowNFTDeposit: { nftData,nftBalance,isShow ,...nftRest} } } = useOpenModals()
 
     // const { walletLayer1 } = useWalletLayer1()
-    const { setShowDeposit, setShowAccount } = useOpenModals();
+    const { setShowNFTDeposit, setShowAccount } = useOpenModals();
     const { updateDepositHash }= useOnChainInfo();
     const { t } = useTranslation('common')
 
@@ -63,44 +63,47 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
         updateBtnStatus()
     }, [nftDepositValue?.belong, nftDepositValue?.tradeValue, nftDepositValue?.balance, allowanceInfo?.tokenInfo.symbol])
 
-    // const walletLayer1Callback = React.useCallback(() => {
-    //
-    //     if (symbol && walletLayer1) {
-    //
-    //         updateNFTDepositData({
-    //             belong: symbol as any,
-    //             balance: walletLayer1[symbol]?.count,
-    //             tradeValue: undefined,
-    //         })
-    //
-    //     } else {
-    //         if (!nftDepositValue.belong && walletLayer1) {
-    //             const keys = Reflect.ownKeys(walletLayer1)
-    //             for (var key in keys) {
-    //                 const keyVal = keys[key] as any
-    //                 const walletInfo = walletLayer1[keyVal]
-    //                 if (sdk.toBig(walletInfo.count).gt(0)) {
-    //
-    //                     updateDepositData({
-    //                         belong: keyVal as any,
-    //                         tradeValue: 0,
-    //                         balance: walletInfo.count,
-    //                     })
-    //
-    //                     return
-    //                 }
-    //             }
-    //         }
-    //
-    //     }
-    // }, [walletLayer1, symbol, updateDepositData, nftDepositValue])
+    const walletLayer1Callback = React.useCallback(() => {
 
-    // React.useEffect(() => {
-    //     myLog('isShow:', isShow)
-    //     if (isShow) {
-    //         walletLayer1Callback()
-    //     }
-    // }, [isShow])
+        if (nftData ) {
+
+            updateNFTDepositData({
+                belong: nftData as any,
+                balance: nftBalance,
+                tradeValue: undefined,
+                ...nftRest,
+            })
+
+        } else {
+            setShowNFTDeposit({isShow:false})
+            // updateNFTDepositData({
+            //     belong: keyVal as any,
+            //     tradeValue: 0,
+            //     balance: walletInfo.count,
+            // })
+            // if (!nftDepositValue.belong && walletLayer1) {
+            //     const keys = Reflect.ownKeys(walletLayer1)
+            //     for (var key in keys) {
+            //         const keyVal = keys[key] as any
+            //         const walletInfo = walletLayer1[keyVal]
+            //         if (sdk.toBig(walletInfo.count).gt(0)) {
+            //
+            //
+            //
+            //             return
+            //         }
+            //     }
+            // }
+
+        }
+    }, [ nftData,nftBalance, updateNFTDepositData, nftDepositValue])
+
+    React.useEffect(() => {
+        // myLog('isShow:', isShow)
+        if (isShow) {
+            walletLayer1Callback()
+        }
+    }, [isShow])
 
     const setReffer = React.useCallback(async (inputValue: any) => {
 
@@ -310,13 +313,13 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
     const onDepositClick = useCallback(async (nftDepositValue) => {
         myLog('onDepositClick nftDepositValue:', nftDepositValue)
-        setShowDeposit({ isShow: false })
+        setShowNFTDeposit({ isShow: false })
 
         if (nftDepositValue && nftDepositValue.belong) {
             await handleDeposit(nftDepositValue as R)
         }
 
-    }, [nftDepositValue, handleDeposit, setShowDeposit, setShowAccount])
+    }, [nftDepositValue, handleDeposit, setShowNFTDeposit, setShowAccount])
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
@@ -346,7 +349,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
         return undefined
     }, [])
 
-    const depositNFTProps:DepositProps<R, T> = React.useMemo(() => {
+    const nftDepositProps:DepositProps<R, T> = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT;
         const title = account.readyState === AccountStatus.NO_ACCOUNT ? t('labelCreateLayer2Title') : t('depositTitle');
         return {
@@ -364,6 +367,6 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
     }, [account.readyState, btnInfo, totalCoinMap, onDepositClick])
 
     return {
-        depositNFTProps ,
+        nftDepositProps,
     }
 }

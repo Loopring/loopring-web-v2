@@ -161,8 +161,8 @@ const linkListMapRender = React.useMemo(() => {
             <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}}
                         variant="body2" component="div"> {t('labelFooter' + key.toString())} </Typography>
             <Box display={'flex'} flexDirection={'column'} height={'100%'} justifyContent={'flex-start'}>
-                {linkListMap[ key ].map((item: any) => {
-                    return <LinkStyle /* href={item.linkHref} */ onClick={() => handleLinkClick(item.linkHref)}>
+                {linkListMap[ key ].map((item: any,index:number) => {
+                    return <LinkStyle /* href={item.linkHref} */ key={index} onClick={() => handleLinkClick(item.linkHref)}>
                         {t('label' + 'key' + item.linkName)}
                     </LinkStyle>
                 })}

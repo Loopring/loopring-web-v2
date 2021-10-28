@@ -33,7 +33,7 @@ import {
 
 import {
     DepositPanel,
-    TransferPanell,
+    TransferPanel,
     WithdrawPanel,
 } from '../modal'
 
@@ -149,14 +149,14 @@ let resetProps: ResetProps<any> = {
     coinMap,
     walletMap,
     resetBtnStatus: TradeBtnStatus.AVAILABLE,
-    onResetClick: (tradeData: SwapTradeData<CoinType>) => {
-        console.log('Swap button click', tradeData);
-    },
+    // onResetClick: (tradeData: SwapTradeData<CoinType>) => {
+    //     console.log('Swap button click', tradeData);
+    // },
     handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise((res) => {
             setTimeout(() => {
                 console.log('wait 100, with props', props, switchType);
-                res();
+                // res();
             }, 500)
         })
     },
@@ -361,8 +361,12 @@ const WrapAmmPanel = (rest: any) => {
 }
 
 const ModalPanelWrap = () => {
-    return <ModalPanel transferProps={transferProps} withDrawProps={transferProps} depositProps={depositProps}
-                       transferNFTProps={transferProps} withDrawNFTProps={transferProps} depositNFTProps={depositProps}
+    return <ModalPanel transferProps={transferProps}
+                       depositProps={depositProps}
+                       withdrawProps={withdrawProps}
+                       nftTransferProps={transferProps}
+                       nftDepositProps={depositProps}
+                       nftWithdrawProps={withdrawProps}
                        resetProps={resetProps} ammProps={_ammProps} swapProps={swapProps}/>
 }
 
