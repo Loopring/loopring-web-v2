@@ -35,7 +35,6 @@ export class LoopringAPI {
         function Contract({baseUrl}: { baseUrl: string }): {
             getContractNFTMeta: (props: { contractAddress: string, _id: string, web3: any }) => Promise<any>
         } {
-            let test_id: number = 1;
             const abiStr: any[] = [
                 {
                     "inputs": [
@@ -72,16 +71,7 @@ export class LoopringAPI {
                         // const methodName='uri';
                         const result = await contract.methods[ 'uri' ](_id).call();
                         if (result && chainId === ChainId.GOERLI) {
-                            const gameStopMeta = await (fetch(
-                                'https://ipfs.nft.gstop-sandbox.com/ipfs/QmPBvug4pYykDWosLUC7ReQo4vv1F9knd5fkTJr3bzPURp/{id}.json'
-                                    .replace('{id}', (test_id++).toString())).then(response => response.json()))
-                            const detail = gameStopMeta.properties.collectionGrouping[ 0 ];
-                            return {
-                                ...gameStopMeta,
-                                _image: gameStopMeta.image,
-                                detail: detail,
-                                image: detail.ipfsGateway + '/' + gameStopMeta.image.replace('ipfs://', '')
-                            }
+
                         } else {
                             return await (fetch(result.replace('{id}', _id)).then(response => response.json()))
                         }
@@ -112,23 +102,6 @@ export class LoopringAPI {
                         prev[item.nftData]= item;
                         return prev
                     },{});
-
-                    // const methodName='uri';
-                    // const result = await contract.methods[ 'uri' ](_id).call();
-                    // if (result && chainId === ChainId.GOERLI) {
-                    //     const gameStopMeta = await(fetch(
-                    //         'https://ipfs.nft.gstop-sandbox.com/ipfs/QmPBvug4pYykDWosLUC7ReQo4vv1F9knd5fkTJr3bzPURp/{id}.json'
-                    //             .replace('{id}', (test_id++).toString())).then(response => response.json()))
-                    //     const detail = gameStopMeta.properties.collectionGrouping[ 0 ];
-                    //     return {
-                    //         ...gameStopMeta,
-                    //         _image: gameStopMeta.image,
-                    //         detail: detail,
-                    //         image: detail.ipfsGateway + '/' + gameStopMeta.image.replace('ipfs://', '')
-                    //     }
-                    // } else {
-                    // }
-                    // return undefined
                 } catch (error) {
                     return undefined
                 }
