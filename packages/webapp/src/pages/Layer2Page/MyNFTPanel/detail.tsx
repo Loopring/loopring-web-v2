@@ -33,7 +33,7 @@ export const NFTDetail = withTranslation('common')(({popItem,etherscanBaseUrl,t}
             <Box display={'flex'} flexDirection={'column'} marginBottom={4} paddingRight={3}>
                 <Typography component={'h6'} color={'text.primary'} variant={'h4'}>{t('labelNFTDetail')}</Typography>
                 <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
-                    <Typography color={'var(--color-text-third)'} width={160}> {t('labelNFTName')}</Typography>
+                    <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTName')}</Typography>
                     <Typography color={'var(--color-text-third)'}
                                 title={popItem?.name}>  {popItem?.name}</Typography>
                 </Typography>
