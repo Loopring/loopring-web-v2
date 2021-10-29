@@ -54,12 +54,12 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
 
     return <>
         <Switch>
-            <Route exact path='/landing-page'>
+            {/* <Route exact path='/landing-page'>
                 <Header isHideOnScroll={true}/>
                 <LandPage />
-            </Route>
+            </Route> */}
 
-            <Route exact path='/landing-page/wallet'>
+            <Route exact path='/wallet'>
                 <Header isHideOnScroll={true}/>
                 <WalletPage />
             </Route>

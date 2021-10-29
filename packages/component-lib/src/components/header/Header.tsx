@@ -98,7 +98,7 @@ export const LoopringLogo = React.memo(() => {
     // const history = useHistory();
     // const url = history.push('/main').
     return <LogoStyle variant="h6" component="h1" marginRight={4}>
-        <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/landing-page'} color={"inherit"}>
+        <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/'} color={"inherit"}>
             Loopring 路印
             loopring protocol 3.6
             The first Layer2 Decentralized trading Platform
@@ -247,7 +247,8 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                     {isLandPage ? (
                         <>
                             <LinkStyle variant={'body1'} onClick={() => history.push('/layer2')}>Layer2</LinkStyle>
-                            <LinkStyle marginLeft={5} variant={'body1'} onClick={() => history.push(history.location.pathname === '/landing-page' ? '/landing-page/wallet' : '/landing-page')}>{history.location.pathname === '/landing-page' ? 'Wallet' : 'Dex'}</LinkStyle>
+                            <LinkStyle marginLeft={5} variant={'body1'} onClick={() => history.push('/wallet')}>
+                                Wallet</LinkStyle>
                         </>
                     ) : (
                         <>
