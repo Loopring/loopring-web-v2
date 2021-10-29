@@ -1,5 +1,5 @@
 import { AmmDetail, MyAmmLP } from '@loopring-web/common-resources';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 export type MyPoolRow<R> = MyAmmLP<R> & {
     ammDetail: AmmDetail<R>

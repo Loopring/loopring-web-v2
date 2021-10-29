@@ -1,6 +1,6 @@
 import React from 'react'
 
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, MAPFEEBIPS } from 'defs/common_defs';

@@ -1,4 +1,4 @@
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import React from 'react';
 import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useSocket } from 'stores/socket';

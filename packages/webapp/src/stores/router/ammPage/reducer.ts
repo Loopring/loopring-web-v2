@@ -3,7 +3,7 @@ import { TradeBtnStatus } from '@loopring-web/component-lib'
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageAmmCommon } from '.'
 import { PageAmmJoin, PageAmmExit, PageAmmPoolStatus } from './interface'
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { BIGO } from 'defs/common_defs'
 
 export const initSlippage = 0.5

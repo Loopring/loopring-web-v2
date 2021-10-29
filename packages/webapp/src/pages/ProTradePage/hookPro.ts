@@ -17,7 +17,7 @@ import {
 import { usePageTradePro } from 'stores/router';
 import { marketInitCheck } from '../SwapPage/help';
 import { makeWalletLayer2 } from 'hooks/help';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import { useOrderList } from './panel/orderTable/hookTable'
 import { useProSocket, useSocketProService } from './proService';

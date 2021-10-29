@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
-import { ChainId, } from 'loopring-sdk'
+import { ChainId, } from '@loopring-web/loopring-sdk'
 
 import ms from 'ms.macro'
 

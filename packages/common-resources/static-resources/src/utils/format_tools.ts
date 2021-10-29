@@ -1,7 +1,7 @@
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import BigNumber from 'bignumber.js'
 import { getValuePrecisionThousand } from './util';
-import { ABInfo } from 'loopring-sdk';
+import { ABInfo } from '@loopring-web/loopring-sdk';
 import { myLog, myError } from './log_tools';
 
 export function getShowStr(rawVal: string | number | undefined, fixed: number = 2, precision: number = 4) {

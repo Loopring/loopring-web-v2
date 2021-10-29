@@ -1,5 +1,5 @@
 import { StateBase } from '@loopring-web/common-resources';
-import { AmmUserRewardMap } from 'loopring-sdk';
+import { AmmUserRewardMap } from '@loopring-web/loopring-sdk';
 
 export type UserRewards = AmmUserRewardMap;
 export type UserRewardsStates = {

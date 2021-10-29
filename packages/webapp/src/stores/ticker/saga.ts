@@ -5,7 +5,7 @@ import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources'
 import { LoopringAPI } from "api_wrapper"
 import { makeTickerMap } from 'hooks/help';
 import store from '../index';
-import { LoopringMap, TickerData } from 'loopring-sdk';
+import { LoopringMap, TickerData } from '@loopring-web/loopring-sdk';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 const getTickersApi = async <R extends { [ key: string ]: any }>(list: Array<keyof R>): Promise<{

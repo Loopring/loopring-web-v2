@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { AccountStep, DepositProps, SwitchData, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';

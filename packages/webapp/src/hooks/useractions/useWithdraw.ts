@@ -15,7 +15,7 @@ import {
     WithdrawTypes
 } from '@loopring-web/common-resources';
 
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';

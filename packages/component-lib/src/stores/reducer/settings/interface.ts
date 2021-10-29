@@ -1,5 +1,5 @@
 import { LanguageKeys, ThemeKeys, UpColor } from '@loopring-web/common-resources';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 import {  Layouts } from 'react-grid-layout';
 
 export enum PlatFormType {

@@ -18,4 +18,5 @@ export interface HeaderProps {
     isWrap?: boolean,
     selected: string,
     className?: string,
+    isLandPage?: boolean,
 }

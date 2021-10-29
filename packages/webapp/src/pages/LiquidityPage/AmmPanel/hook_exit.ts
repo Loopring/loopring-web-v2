@@ -19,7 +19,7 @@ import {
     makeCache,
     makeWalletLayer2
 } from '../../../hooks/help';
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 import { useAccount } from '../../../stores/account';
 import store from "stores";

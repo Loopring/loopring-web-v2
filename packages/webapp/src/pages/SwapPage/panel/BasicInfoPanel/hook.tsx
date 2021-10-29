@@ -9,7 +9,7 @@ import {
     GetDepthRequest,
     getExistedMarket,
     TradingInterval
-} from 'loopring-sdk'
+} from '@loopring-web/loopring-sdk'
 
 import { ChartUnit } from '@loopring-web/common-resources'
 
