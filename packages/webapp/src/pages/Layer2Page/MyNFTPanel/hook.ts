@@ -5,12 +5,15 @@ import { LoopringAPI, NFTWholeINFO } from 'api_wrapper'
 import { connectProvides } from '@loopring-web/web3-provider';
 import { sleep } from '@loopring-web/loopring-sdk';
 import { useSystem } from '../../../stores/system';
+import { useWalletLayer2 } from '../../../stores/walletLayer2';
 
 export const useMyNFT = () => {
     const [NFTList, setNFTList] = React.useState<any[]>([])
     const {account, status: accountStatus} = useAccount();
     const [isShow, setIsShow] = React.useState(false);
     const [popItem, setPopItem] = React.useState<NFTWholeINFO | undefined>(undefined);
+    const { status: walletLayer2Status, nftLayer2 } = useWalletLayer2();
+
     const {etherscanBaseUrl} = useSystem();
 
     const onDetailClose = React.useCallback(() => setIsShow(false), [])
@@ -29,80 +32,29 @@ export const useMyNFT = () => {
     }, [setIsShow])
 
     React.useEffect(() => {
-        if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+        if (account.readyState === AccountStatus.ACTIVATED
+            && walletLayer2Status == SagaStatus.UNSET) {
             initNFT()
         }
-    }, [accountStatus]);
+    }, [walletLayer2Status]);
     const initNFT = React.useCallback(async () => {
-            // LoopringAPI.getContractNFTMeta
-            let userNFTBalances:any[]  = []
-            if(LoopringAPI.userAPI) {
-                userNFTBalances =  (await LoopringAPI.userAPI
-                    .getUserNFTBalances({accountId: account.accountId}, account.apiKey)).userNFTBalances
-                console.log('NFTBalances',userNFTBalances)
-            }
-            await sleep(1000);
             let mediaPromise: any[] = [];
-            // const demo = [{"nftId": "1", tokenAddress: '0x46f101f3b08a6156e8f3553945500e1f62e72a37'},
-            //     {"nftId": "1", tokenAddress: '0xa8cf067c340b1b1851737f85bf04baea3156c870'},
-            //     {"nftId": "122", tokenAddress: '0x942c4199312902b45e8032051ebad08be34a318c'}
-            // ]
-            // const demo = [{
-            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-            //     tokenId: 32769,
-            //     "nftData": "0x25111f604bef74ff6e7094e408783d0b232a4df5200d8a671157911086443ef0",
-            //     "nftId": "139414297126165134441448130901307428303546258629632697827333",
-            //     "total": "1"
-            // }, {
-            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-            //     tokenId: 32729,
-            //     "nftData": "0x1928118fb21747b59e42af46bfab9c8d47fdbd391f231fa1fb6050d4ddbcb942",
-            //     "nftId": "139414297126165134441448130901307428303546258629632697827335",
-            //     "total": "1"
-            // }, {
-            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-            //     tokenId: 32799,
-            //     "nftData": "0x11a9e3ccd80414c44a3a4c91beeb7b1a1a3de3c68a4d901fcf31a00c95f245c2",
-            //     "nftId": "139414297126165134441448130901307428303546258629632697827332",
-            //     "total": "1"
-            // }, {
-            //     "tokenAddress": "0x64d9317f43b816c905ea09e4198b4f92ce89dc8c",
-            //     tokenId: 31799,
-            //     "nftData": "0xa0a3ab833753edfcec952494f49f9cafc474eb500e2fcd854d804a6ba342563",
-            //     "nftId": "139414297126165134441448130901307428303546258629632697827331",
-            //     "amount": "1"
-            // }]
-            // {
-            //     "totalNum" : 1,
-            //     "data" : [
-            //         {
-            //             "accountId" : 10,
-            //             "tokenId" : 10,
-            //             "nftData" : "100",
-            //             "tokenAddress" : "100",
-            //             "nftId" : "100",
-            //             "total" : "100",
-            //             "locked" : "100",
-            //             "pending" : {
-            //                 "withdraw" : "1",
-            //                 "deposit" : "1"
-            //             }
-            //         }
-            //     ]
-            // }
-            userNFTBalances.forEach(async ({nftId, tokenAddress}) => {
-                mediaPromise.push(LoopringAPI?.contract.getContractNFTMeta({
-                    _id: parseInt(nftId).toString(),
-                    web3: connectProvides.usedWeb3,
-                    contractAddress: tokenAddress
-                }))
+            console.log('NFTBalances',nftLayer2)
+            for (const {nftId, tokenAddress} of nftLayer2) {
+                if( tokenAddress ){
+                    mediaPromise.push(LoopringAPI?.contract.getContractNFTMeta({
+                        _id: parseInt(nftId??'').toString(),
+                        web3: connectProvides.usedWeb3,
+                        contractAddress: tokenAddress
+                    }))
+                }
+
                 // LoopringAPI?.contract.getContractNFTMeta({_id: nftId, web3:connectProvides.usedWeb3,contractAddress: tokenAddress})
-            })
+            }
             const meta: any[] = await Promise.all(mediaPromise);
             // console.log(meta)
-            // debugger
-
-            setNFTList(userNFTBalances.map((item, index) => {
+        debugger
+            setNFTList(nftLayer2.map((item, index) => {
                 return {...item, ...meta[ index ],etherscanBaseUrl}
             }))
             // setNFTList()
@@ -154,7 +106,7 @@ export const useMyNFT = () => {
         //                contractAddress: 'xssssaaaaxx'
         //            }
         //        ]
-        , [])
+        , [nftLayer2])
 
     return {
         NFTList,

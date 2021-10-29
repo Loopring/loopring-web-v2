@@ -6,6 +6,7 @@ import * as loopring_defs from '@loopring-web/loopring-sdk';
 
 const initialState: WalletLayer2States = {
     walletLayer2: undefined,
+    nftLayer2:[],
     status: 'DONE',
     errorMessage: null,
 }
@@ -23,7 +24,7 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
         socketUpdateBalance(state, action: PayloadAction<{ [ key: string ]: loopring_defs.UserBalanceInfo }>) {
             state.status = SagaStatus.PENDING;
         },
-        getWalletLayer2Status(state, action: PayloadAction<{ walletLayer2: WalletLayer2Map<object> }>) {
+        getWalletLayer2Status(state, action: PayloadAction<{ walletLayer2: WalletLayer2Map<object>,nftLayer2:loopring_defs.UserNFTBalanceInfo[] }>) {
             // @ts-ignore
             if (action.error) {
                 state.status = SagaStatus.ERROR
@@ -31,6 +32,7 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
                 state.errorMessage = action.error
             }
             state.walletLayer2 = {...action.payload.walletLayer2};
+            state.nftLayer2 =  [...action.payload.nftLayer2];
             state.status = SagaStatus.DONE
         },
         statusUnset: state => {

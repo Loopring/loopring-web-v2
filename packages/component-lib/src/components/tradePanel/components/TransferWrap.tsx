@@ -10,7 +10,7 @@ import {
     IBData,
     HelpIcon,
     getValuePrecisionThousand,
-    getFormattedHash, copyToClipBoard
+    getFormattedHash, copyToClipBoard, FeeChargeOrderDefault
 } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, TextField, Toast, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
@@ -71,11 +71,12 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
     const [feeToken, setFeeToken] = React.useState('')
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
-    const { feeChargeOrder } = useSettings()
-
+    let { feeChargeOrder } = useSettings()
+    feeChargeOrder = feeChargeOrder??FeeChargeOrderDefault;
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
-
-    const toggleData: any[] = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__, }) => ({
+    const toggleData: any[] = chargeFeeTokenList.sort((a, b) =>
+        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__, }
+    ) => ({
         key: belong,
         value: belong,
         fee,

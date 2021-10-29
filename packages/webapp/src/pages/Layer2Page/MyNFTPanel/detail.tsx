@@ -58,9 +58,8 @@ export const NFTDetail = withTranslation('common')(({popItem,etherscanBaseUrl,t}
                 <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
                     <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTMinter')} </Typography>
 
-                    <Link fontSize={'inherit'}  maxWidth={300}
-                          onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.minter}`)}>
-                       {popItem.minter}</Link>
+                    <Link fontSize={'inherit'}  maxWidth={300}  whiteSpace={'break-spaces'} style={{wordBreak:'break-all'}}
+                          onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.minter}`)}>{popItem.minter}</Link>
 
                 </Typography>
 
@@ -81,8 +80,7 @@ export const NFTDetail = withTranslation('common')(({popItem,etherscanBaseUrl,t}
                     <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTDescription')} </Typography>
                     <Typography color={'var(--color-text-third)'} component={'span'}
                                 whiteSpace={'break-spaces'} style={{wordBreak:'break-all'}}
-                                title={popItem?.description}>
-                    {popItem.description} </Typography>
+                                title={popItem?.description}>{popItem.description} </Typography>
 
                 {/*<Typography>{moment(popItem?.timestamp).format('YYYY-MM-DD HH:mm:ss')}</Typography>*/}
                 </Typography>

@@ -1,12 +1,10 @@
 import styled from '@emotion/styled';
-import { Box, Card, Grid, Link, Modal as MuiModal, Typography } from '@mui/material';
+import { Box, Card, Grid, Modal as MuiModal, Typography } from '@mui/material';
 import React from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import {  ModalCloseButton, SwitchPanelStyled } from '@loopring-web/component-lib';
-import { useSystem } from '../../../stores/system';
+import { EmptyDefault, ModalCloseButton, SwitchPanelStyled } from '@loopring-web/component-lib';
 import { useMyNFT } from './hook';
 import { NFTDetail } from './detail';
-import { getFormattedHash } from '@loopring-web/common-resources';
 
 
 const StyledPaper = styled(Box)`
@@ -74,7 +72,7 @@ export const MyNFTPanel = withTranslation('common')(({t, ...rest}: & WithTransla
 
     const modalContent = React.useMemo(() => {
 
-        return popItem &&  <NFTDetail etherscanBaseUrl={etherscanBaseUrl} popItem={popItem}/>
+        return popItem && <NFTDetail etherscanBaseUrl={etherscanBaseUrl} popItem={popItem}/>
     }, [popItem, etherscanBaseUrl])
     return <StyledPaper flex={1} className={'MuiPaper-elevation2'} marginTop={0} marginBottom={2}>
         <MuiModal
@@ -104,9 +102,9 @@ export const MyNFTPanel = withTranslation('common')(({t, ...rest}: & WithTransla
         </MuiModal>
         <Typography paddingX={3} paddingY={3} component={'h3'}
                     variant={'h5'}>{t('labelNFTMyNFT', {num: 0})}</Typography>
-        <Grid container spacing={2} paddingX={3} paddingBottom={3}>
-            {NFTList.map((item, index) => <Grid item xs={12} md={6} lg={4} flex={'1 1 120%'}>
-                <CardStyle sx={{maxWidth: 345}} key={item.nftId + index} onClick={() => {
+        {NFTList && NFTList.length ? <Grid container spacing={2} paddingX={3} paddingBottom={3}>
+            {NFTList.map((item, index) => <Grid key={item.nftId + index} item xs={12} md={6} lg={4} flex={'1 1 120%'}>
+                <CardStyle sx={{maxWidth: 345}} onClick={() => {
                     onDetail(item)
                 }}>
                     <Box position={'absolute'}
@@ -120,7 +118,8 @@ export const MyNFTPanel = withTranslation('common')(({t, ...rest}: & WithTransla
                             <Typography
                                 color={'text.secondary'}
                                 component={'h6'}>{item.name}</Typography>
-                            <Typography color={'--color-text-primary'} component={'p'} paddingTop={1} title={item.tokenId}>
+                            <Typography color={'--color-text-primary'} component={'p'} paddingTop={1}
+                                        title={item.tokenId}>
                                 {t('labelNFTTokenID')} #{item.tokenId}
                                 {/*#{item.nftId.length > 10 ? getFormattedHash(item.nftId) : item.nftId}*/}
                             </Typography>
@@ -128,7 +127,8 @@ export const MyNFTPanel = withTranslation('common')(({t, ...rest}: & WithTransla
                     </Box>
                 </CardStyle>
             </Grid>)}
-        </Grid>
+        </Grid> : <EmptyDefault message={() =>
+            <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>No NFT</Box>}/>}
 
         {/*<Typography variant={'h5'} component={'h3'} paddingLeft={2}>{t('labelNFTTitleMyNFT')}</Typography>*/}
         {/*<Modal>*/}

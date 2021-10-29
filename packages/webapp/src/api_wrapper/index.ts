@@ -56,7 +56,7 @@ export class LoopringAPI {
                     "type": "function"
                 }
             ]
-            // =
+
             return {
                 getContractNFTMeta: async ({
                                                contractAddress,
@@ -71,7 +71,7 @@ export class LoopringAPI {
                         // const methodName='uri';
                         const result = await contract.methods[ 'uri' ](_id).call();
                         if (result && chainId === ChainId.GOERLI) {
-
+                            return await (fetch(result.replace('{id}', _id) + '.json').then(response => response.json()))
                         } else {
                             return await (fetch(result.replace('{id}', _id)).then(response => response.json()))
                         }
