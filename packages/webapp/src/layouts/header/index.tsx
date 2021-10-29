@@ -8,8 +8,8 @@ import { useConfirmation } from 'stores/localStore/confirmation'
 import { withTranslation } from 'react-i18next'
 
 import { BottomRule, Header as HeaderUI, HideOnScroll, } from '@loopring-web/component-lib'
-import { withRouter } from 'react-router-dom'
-import { RouteComponentProps } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router';
 import React from 'react';
 import { useSystem } from '../../stores/system';
 
@@ -19,13 +19,15 @@ const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll 
         headerToolBarData,
         headerMenuData,                                                     
     } = useHeader()
-
+    
     const {confirmWrapper, confirmation} = useConfirmation()
     const {allowTrade} = useSystem()
+    const history = useHistory()
 
     return (<>
         {isHideOnScroll ?< HideOnScroll window={undefined}>
             <HeaderUI isWrap={false} {...rest}
+                    isLandPage={true}
                       allowTrade={allowTrade}
                       headerMenuData={headerMenuData}
                       headerToolBarData={headerToolBarData}
