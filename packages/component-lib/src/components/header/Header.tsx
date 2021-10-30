@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger } from '@mui/material';
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { HeaderMenuSub, HeadMenuItem, Layer2Item, TabItemPlus } from '../basic-lib';
 import { HeaderProps, HeaderToolBarInterface } from './Interface';
@@ -98,7 +98,7 @@ export const LoopringLogo = React.memo(() => {
     // const history = useHistory();
     // const url = history.push('/main').
     return <LogoStyle variant="h6" component="h1" marginRight={4}>
-        <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/landing-page'} color={"inherit"}>
+        <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/'} color={"inherit"}>
             Loopring 路印
             loopring protocol 3.6
             The first Layer2 Decentralized trading Platform
@@ -161,10 +161,12 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    allowTrade,
                                                                                                    selected,
                                                                                                    isWrap = true,
+                                                                                                   isLandPage = false,
                                                                                                    i18n,
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
 
+    const history = useHistory()
 
     const getMenuButtons = ({
                                 toolbarList,
@@ -235,28 +237,37 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 <Box display="flex" alignContent="center" justifyContent={"flex-start"}
                      alignItems={"stretch"}>
                     <LoopringLogo/>
-                    {getDrawerChoices({menuList: headerMenuData, i18n, ...rest})}
+                    {!isLandPage && getDrawerChoices({menuList: headerMenuData, i18n, ...rest})}
                 </Box>
                 <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
                      color={'textColorSecondary'}>
                     {/*<Button variant={'text'} size={'small'} to={'https:v1.loopring.io'}>*/}
                     {/*   <Typography variant={'body1'}>Switch to V1</Typography>*/}
                     {/*</Button>*/}
-                    <LinkStyle variant={'body2'} href={'https://legacy.loopring.io/'}>
-                        Switch to Legacy
-                        {/*<Typography  color={'text.Secondary'}></Typography>*/}
-                    </LinkStyle>
-                    {getMenuButtons({toolbarList: headerToolBarData, i18n, ...rest})}
+                    {isLandPage ? (
+                        <>
+                            <LinkStyle variant={'body1'} onClick={() => history.push('/layer2')}>Layer2</LinkStyle>
+                            <LinkStyle marginLeft={5} variant={'body1'} onClick={() => history.push('/wallet')}>
+                                Wallet</LinkStyle>
+                        </>
+                    ) : (
+                        <>
+                            <LinkStyle variant={'body2'} href={'https://legacy.loopring.io/'}>
+                                Switch to Legacy
+                            </LinkStyle>
+                            {getMenuButtons({toolbarList: headerToolBarData, i18n, ...rest})}
+                        </>
+                    )}
                 </Box>
             </ToolBarStyled>
         );
-    }, [headerToolBarData, headerMenuData, getDrawerChoices, getMenuButtons, i18n, rest]);
+    }, [headerToolBarData, headerMenuData, getDrawerChoices, getMenuButtons, i18n, rest, isLandPage]);
 
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
             {isWrap ? <Container className={'wrap'} maxWidth='lg'>
                 {displayDesktop}
-            </Container> : <Box marginX={2}> {displayDesktop}</Box>
+            </Container> : displayDesktop
             }
         </HeaderStyled>
 

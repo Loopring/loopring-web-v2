@@ -5,7 +5,7 @@ import { accountServices } from './accountServices';
 import { myLog } from "@loopring-web/common-resources";
 import { checkErrorInfo } from 'hooks/useractions/utils';
 
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 
 export async function unlockAccount() {
     const account = store.getState().account;

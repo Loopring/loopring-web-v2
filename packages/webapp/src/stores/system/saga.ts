@@ -11,7 +11,7 @@ import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from 'services/socket';
 import { statusUnset as accountStatusUnset } from '../account';
-import { ChainId, FiatPriceInfo, LoopringMap } from 'loopring-sdk';
+import { ChainId, FiatPriceInfo, LoopringMap } from '@loopring-web/loopring-sdk';
 import { getTokenPrices } from '../tokenPrices';
 import { getTickers, } from '../ticker';
 

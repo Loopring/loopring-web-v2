@@ -19,6 +19,7 @@ export type AssetTitleProps = {
         priceTag: typeof PriceTag[keyof typeof PriceTag],
         [ key: string ]: any,
     },
+    accountId: number;
     onShowWithdraw: (token?:string)=>void,
     onShowTransfer:(token?:string)=>void,
     onShowDeposit: (token?:string)=>void,

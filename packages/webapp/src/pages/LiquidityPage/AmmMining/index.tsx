@@ -5,7 +5,7 @@ import { AmmCardProps, AmmInData, AmmJoinData, AmmExitData, IBData } from '@loop
 import { Box, Grid, Tabs,Tab } from '@mui/material';
 import { useAmmMiningUI } from './hook';
 import { Trans, withTranslation } from 'react-i18next';
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
+import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk';
 
 type ClickHandler = {
     handleClick: (pair: string) => void

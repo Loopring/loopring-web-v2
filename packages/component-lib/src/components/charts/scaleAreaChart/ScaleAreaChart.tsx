@@ -7,8 +7,8 @@ import { ChartType } from '../';
 
 import { WrapperedKlineChart, IndicatorProps } from './KlineChart'
 
-import * as sdk from 'loopring-sdk'
-import { TradingInterval } from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk'
+import { TradingInterval } from '@loopring-web/loopring-sdk';
 import { useSettings } from '../../../stores'
 import { getTheme, myLog } from '@loopring-web/common-resources'
 

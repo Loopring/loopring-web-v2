@@ -16,7 +16,7 @@ import { PopoverPure } from '../basic-lib'
 import { bindHover } from 'material-ui-popup-state/es';
 import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
-import { Currency } from 'loopring-sdk'
+import { Currency } from '@loopring-web/loopring-sdk'
 
 export interface Reward {
     startAt: number;

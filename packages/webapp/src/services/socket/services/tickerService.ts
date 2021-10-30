@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { LoopringMap, TickerData } from 'loopring-sdk';
+import { LoopringMap, TickerData } from '@loopring-web/loopring-sdk';
 import { makeTickerMap } from 'hooks/help';
 import { TickerMap, updateTicker } from 'stores/ticker';
 

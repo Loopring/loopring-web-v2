@@ -7,7 +7,7 @@ import {
     LoopringMap,
     TickerData,
     toBig,
-} from 'loopring-sdk';
+} from '@loopring-web/loopring-sdk';
 import { AmmActivity, AmmCardProps, MyAmmLP, myLog } from '@loopring-web/common-resources';
 import store from 'stores';
 import BigNumber from 'bignumber.js';

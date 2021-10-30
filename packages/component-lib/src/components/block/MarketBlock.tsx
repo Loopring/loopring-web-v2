@@ -7,7 +7,7 @@ import React from 'react';
 import { floatTag, MarketBlockProps, useSettings } from './../../index';
 import { ScaleAreaChart } from '../charts'
 import { ChartType } from '../charts'
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 type StyledProps = {
     custom: any

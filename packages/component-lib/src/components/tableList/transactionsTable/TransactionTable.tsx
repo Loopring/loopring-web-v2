@@ -19,7 +19,7 @@ import { TxnDetailPanel, TxnDetailProps } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
 import { DateRange } from '@mui/lab'
-import { TxType, UserTxTypes } from 'loopring-sdk'
+import { TxType, UserTxTypes } from '@loopring-web/loopring-sdk'
 
 export type TxsFilterProps = {
     // accountId: number;

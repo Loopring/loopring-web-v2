@@ -1,4 +1,4 @@
-import { LoopringMap, TickerData, toBig } from 'loopring-sdk';
+import { LoopringMap, TickerData, toBig } from '@loopring-web/loopring-sdk';
 import store from '../../stores';
 import { FloatTag, TradeFloat } from '@loopring-web/common-resources';
 import { volumeToCount } from './volumeToCount';

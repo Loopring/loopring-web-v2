@@ -12,7 +12,7 @@ import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
 import { AmmSideTypes } from './interface'
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 // interface Row {
 //     side: TradeTypes;

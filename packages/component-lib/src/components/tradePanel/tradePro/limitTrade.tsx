@@ -16,7 +16,7 @@ import { ButtonStyle, TabsStyle } from '../components/Styled';
 import { useCommon } from './hookCommon';
 import React from 'react';
 import { useSettings } from '../../../stores';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 // const tradeDataInit:LimitTradeData<IBData<any>> = {
 //     quote: {belong:'',tradeValue:undefined,balance} as IBData<any>,
