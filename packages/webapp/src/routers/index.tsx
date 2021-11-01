@@ -60,7 +60,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
             </Route> */}
 
             <Route exact path='/wallet'>
-                <Header isHideOnScroll={true}/>
+                <Header isHideOnScroll={true} isLandPage />
                 <WalletPage />
             </Route>
 
@@ -73,7 +73,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                 {/* <ContentWrap> */}
                 {/* {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>} */}
                 {/* </ContentWrap> */}
-                <Header isHideOnScroll={true}/>
+                <Header isHideOnScroll={true} isLandPage />
                 <LandPage/>
             </Route>
             {state === 'PENDING' ?

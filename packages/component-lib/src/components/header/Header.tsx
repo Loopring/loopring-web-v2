@@ -178,6 +178,13 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         // toolbarList.map((item, index) =>);
     };
 
+    const getSettingsButton = ({
+        toolbarList,
+        ...rest
+    }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
+        return <ToolBarItem {...{...toolbarList[2], ...rest}} />
+    }
+
     const getDrawerChoices = ({
                                   menuList,
                                   layer = 0,
@@ -246,8 +253,9 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                     {/*</Button>*/}
                     {isLandPage ? (
                         <>
-                            <LinkStyle variant={'body1'} onClick={() => history.push('/layer2')}>Layer2</LinkStyle>
-                            <LinkStyle marginLeft={5} variant={'body1'} onClick={() => history.push('/wallet')}>
+                            {getSettingsButton({toolbarList: headerToolBarData, i18n, ...rest})}
+                            <LinkStyle marginLeft={3} variant={'body1'} onClick={() => history.push('/layer2')}>Layer2</LinkStyle>
+                            <LinkStyle marginLeft={3} variant={'body1'} onClick={() => history.push('/wallet')}>
                                 Wallet</LinkStyle>
                         </>
                     ) : (
@@ -265,9 +273,11 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
 
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
-            {isWrap ? <Container className={'wrap'} maxWidth='lg'>
-                {displayDesktop}
-            </Container> : <Container className={'wrap'} maxWidth='lg'> {displayDesktop}</Container>
+            {isWrap
+                ? <Container className={'wrap'} maxWidth='lg'>
+                    {displayDesktop}
+                    </Container>
+                : <Box marginX={2}>{displayDesktop}</Box>
             }
         </HeaderStyled>
 
