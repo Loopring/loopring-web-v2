@@ -180,7 +180,7 @@ export const OrderbookPage = withTranslation('common')(() => {
         if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
-        myLog('currentBreakpoint', configLayout.currentBreakpoint, layout)
+        // myLog('currentBreakpoint', configLayout.currentBreakpoint, layout)
         setLayouts({[ configLayout.currentBreakpoint ]: layout})
     }, [configLayout, setRowLength])
     const handleLayoutChange = React.useCallback((currentLayout: Layout[], allLayouts?: Layouts, defaultlayouts?: Layouts) => {
