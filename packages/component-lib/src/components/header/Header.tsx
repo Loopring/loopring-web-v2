@@ -265,9 +265,11 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
 
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
-            {isWrap ? <Container className={'wrap'} maxWidth='lg'>
-                {displayDesktop}
-            </Container> : displayDesktop
+            {isWrap
+                ? <Container className={'wrap'} maxWidth='lg'>
+                    {displayDesktop}
+                    </Container>
+                : <Box marginX={2}>{displayDesktop}</Box>
             }
         </HeaderStyled>
 
