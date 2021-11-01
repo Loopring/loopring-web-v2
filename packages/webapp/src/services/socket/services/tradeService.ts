@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import {  MarketTradeInfo } from 'loopring-sdk';
+import {  MarketTradeInfo } from '@loopring-web/loopring-sdk';
 
 const subject = new Subject<{ trades:MarketTradeInfo[] } >();
 

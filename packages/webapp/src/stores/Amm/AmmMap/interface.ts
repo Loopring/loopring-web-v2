@@ -1,5 +1,5 @@
 import { AmmDetailBase, CoinKey, StateBase, TradeFloat } from '@loopring-web/common-resources';
-import { AmmPoolInfoV3, LoopringMap } from 'loopring-sdk';
+import { AmmPoolInfoV3, LoopringMap } from '@loopring-web/loopring-sdk';
 
 
 export  type GetAmmMapParams = { ammpools: LoopringMap<AmmPoolInfoV3> }

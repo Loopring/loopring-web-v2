@@ -15,7 +15,7 @@ import { TablePaddingX } from '../../styled'
 import { IconButton, Typography } from '@mui/material';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 const TableWrapperStyled = styled(Box)`
     display: flex;

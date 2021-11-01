@@ -7,8 +7,8 @@ import { RawDataTradeItem } from '../tradeTable';
 import { useSettings } from '../../../stores';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
-import { MarketInfo } from 'loopring-sdk/dist';
-import { Currency } from 'loopring-sdk';
+import { MarketInfo } from '@loopring-web/loopring-sdk/dist';
+import { Currency } from '@loopring-web/loopring-sdk';
 // export type RawDataTradeItem = {
 //     side: keyof typeof TradeTypes;
 //     amount: {

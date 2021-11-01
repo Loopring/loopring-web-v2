@@ -18,7 +18,7 @@ import { IconColumn } from '../poolsTable';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover } from 'material-ui-popup-state/es';
 import { useSettings } from '../../../stores';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 export enum PoolTradeType {
     add = 'add',

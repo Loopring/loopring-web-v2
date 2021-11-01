@@ -1,6 +1,6 @@
 import store from '../../stores';
 import { CoinKey, myLog, WalletCoin } from '@loopring-web/common-resources';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { BIGO } from 'defs/common_defs';
 
 export type WalletMapExtend<C> = {

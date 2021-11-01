@@ -1,4 +1,4 @@
-import { TradingInterval } from 'loopring-sdk'
+import { TradingInterval } from '@loopring-web/loopring-sdk'
 import { MainIndicator, SubIndicator } from '@loopring-web/component-lib'
 
 export const timeIntervalData = [

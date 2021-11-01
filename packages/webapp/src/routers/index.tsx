@@ -13,7 +13,9 @@ import { MiningPage } from 'pages/MiningPage'
 import { OrderbookPage } from 'pages/ProTradePage';
 import { useTicker } from '../stores/ticker';
 import { LoadingPage } from '../pages/LoadingPage';
-import { LandPage } from '../pages/LandPage/LandPage';
+import { LandPage, WalletPage } from '../pages/LandPage'
+// import { LandPage } from '../pages/LandPage/LandPage';
+// import { WalletPage } from '../pages/LandPage/WalletPage'
 import { ErrorMap, SagaStatus } from '@loopring-web/common-resources';
 import { ErrorPage } from '../pages/ErrorPage';
 import { Footer } from '@loopring-web/component-lib';
@@ -52,11 +54,15 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
 
     return <>
         <Switch>
-            <Route exact path='/landing-page'>
+            {/* <Route exact path='/landing-page'>
                 <Header isHideOnScroll={true}/>
-                <LandPage/>
-            </Route>
+                <LandPage />
+            </Route> */}
 
+            <Route exact path='/wallet'>
+                <Header isHideOnScroll={true} isLandPage />
+                <WalletPage />
+            </Route>
 
             {/*<Route exact path='/landing-page'>*/}
             {/*    <ContentWrap>*/}
@@ -67,7 +73,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                 {/* <ContentWrap> */}
                 {/* {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>} */}
                 {/* </ContentWrap> */}
-                <Header isHideOnScroll={true}/>
+                <Header isHideOnScroll={true} isLandPage />
                 <LandPage/>
             </Route>
             {state === 'PENDING' ?

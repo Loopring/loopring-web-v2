@@ -5,7 +5,7 @@ import { DropDownIcon, getValuePrecisionThousand, ThemeType } from '@loopring-we
 import { withTranslation } from 'react-i18next';
 import { Card } from './Card';
 import { useHistory } from 'react-router-dom';
-import { ChainId, ExchangeAPI } from 'loopring-sdk';
+import { ChainId, ExchangeAPI } from '@loopring-web/loopring-sdk';
 // import { LoopringAPI } from '@loopring-web/webapp/src/api_wrapper';
 
 
@@ -267,6 +267,9 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                         <Typography component={'h1'} fontSize={80} marginTop={4} whiteSpace={'pre-line'}
                                     lineHeight={'96px'}>
                             {t('labelH1Title')}
+                        </Typography>
+                        <Typography component={'h2'} fontSize={38} marginTop={3}>
+                            {t('labelH1TitleDetail')}
                         </Typography>
                         <Typography marginTop={10} width={260}>
                             <Button onClick={() => history.push('/layer2')} fullWidth={true} size={'large'}

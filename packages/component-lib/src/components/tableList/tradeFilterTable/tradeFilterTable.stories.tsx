@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { FloatTag } from '@loopring-web/common-resources'
 import { TradeFilterTable } from './TradeFilterTable';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 const Style = styled.div`
   background: var(--color-global-bg);

@@ -6,7 +6,7 @@ import { LoopringAPI } from 'api_wrapper';
 import { myLog } from "@loopring-web/common-resources";
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import _ from 'lodash'
 import { unlockAccount } from './unlockAccount';
 import { resetLayer12Data, resetLayer2Data } from './resetAccount';

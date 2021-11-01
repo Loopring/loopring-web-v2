@@ -7,7 +7,7 @@ import {  FloatTag, PriceTag } from '@loopring-web/common-resources';
 import { HeaderCell } from './componnents/HeaderCell';
 import React from 'react';
 import styled from '@emotion/styled';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 interface Row {
     sellData: string,

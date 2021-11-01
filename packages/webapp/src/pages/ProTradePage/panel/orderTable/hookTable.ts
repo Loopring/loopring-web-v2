@@ -5,7 +5,7 @@ import { useAccount } from 'stores/account';
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { LoopringAPI } from 'api_wrapper'
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
-import { GetOrdersRequest, Side } from 'loopring-sdk'
+import { GetOrdersRequest, Side } from '@loopring-web/loopring-sdk'
 import store from 'stores'
 import BigNumber from 'bignumber.js';
 import { TFunction } from 'react-i18next'

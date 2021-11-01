@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { DepthData, getMidPrice } from 'loopring-sdk';
+import { DepthData, getMidPrice } from '@loopring-web/loopring-sdk';
 
 const subject = new Subject<{ mixorderMap: MixorderMap<{ [ key: string ]: any }> }>();
 

@@ -15,7 +15,7 @@ import { RowConfig } from '@loopring-web/common-resources'
 import { Box, Container, Divider, Grid, Tab, Tabs } from '@mui/material'
 import { useQuote } from './hook'
 import { LoopringAPI } from 'api_wrapper'
-import { AmmPoolActivityRule, TradingInterval } from 'loopring-sdk'
+import { AmmPoolActivityRule, TradingInterval } from '@loopring-web/loopring-sdk'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
 import { LAYOUT } from '../../defs/common_defs';

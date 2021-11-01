@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
-import { ChainId } from 'loopring-sdk';
+import { ChainId } from '@loopring-web/loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';

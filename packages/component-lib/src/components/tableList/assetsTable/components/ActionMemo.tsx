@@ -120,7 +120,7 @@ const ActionMemo = React.memo(({
             <Button variant={'text'} size={'medium'} color={'primary'}
                     onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
         </Grid>
-        {!isLp &&  allowTrade.order.enable &&
+        {!isLp &&  allowTrade?.order?.enable &&
         <Grid item marginTop={1}>
           <Popover {...{...popoverProps}}/>
         </Grid>}
