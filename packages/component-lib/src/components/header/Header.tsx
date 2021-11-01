@@ -14,6 +14,24 @@ import {
 } from '@loopring-web/common-resources';
 import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
+
+const landingMenuData: Array<HeaderMenuItemInterface> = [
+    {
+        label: {
+            id: 'Layer2', i18nKey: 'labelLayer2',
+        },
+        router: {path: '/layer2'},
+        status: HeaderMenuTabStatus.default,
+    },
+    {
+        label: {
+            id: 'Wallet', i18nKey: 'labelWallet',
+        },
+        router: {path: '/wallet'},
+        status: HeaderMenuTabStatus.default,
+    },
+]
+
 const logoSVG = SoursURL+'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
   && {
@@ -166,9 +184,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
 
-    const history = useHistory()
-
-    const getMenuButtons = ({
+    const getMenuButtons = React.useCallback(({
                                 toolbarList,
                                 ...rest
                             }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
@@ -176,7 +192,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
             return <ToolBarItem {...{...toolbarList[ index ], ...rest}} key={index}/>
         })
         // toolbarList.map((item, index) =>);
-    };
+    }, [])
 
     const getSettingsButton = ({
         toolbarList,
@@ -185,7 +201,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         return <ToolBarItem {...{...toolbarList[2], ...rest}} />
     }
 
-    const getDrawerChoices = ({
+    const getDrawerChoices = React.useCallback(({
                                   menuList,
                                   layer = 0,
                                   ...rest
@@ -237,7 +253,8 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 }
             }
         });
-    };
+    }, [allowTrade, selected])
+
     const displayDesktop = React.useMemo(() => {
         return (
             <ToolBarStyled>
@@ -248,15 +265,12 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 </Box>
                 <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
                      color={'textColorSecondary'}>
-                    {/*<Button variant={'text'} size={'small'} to={'https:v1.loopring.io'}>*/}
-                    {/*   <Typography variant={'body1'}>Switch to V1</Typography>*/}
-                    {/*</Button>*/}
                     {isLandPage ? (
                         <>
-                            {getSettingsButton({toolbarList: headerToolBarData, i18n, ...rest})}
-                            <LinkStyle marginLeft={3} variant={'body1'} onClick={() => history.push('/layer2')}>Layer2</LinkStyle>
-                            <LinkStyle marginLeft={3} variant={'body1'} onClick={() => history.push('/wallet')}>
-                                Wallet</LinkStyle>
+                            <Box marginRight={1}>
+                                {getSettingsButton({toolbarList: headerToolBarData, i18n, ...rest})}
+                            </Box>
+                            {getDrawerChoices({menuList: landingMenuData, i18n, ...rest})}
                         </>
                     ) : (
                         <>
