@@ -2,16 +2,17 @@ import styled from '@emotion/styled/macro'
 import { Box, Container, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import React from 'react';
 import {
-DiscordIcon,
-LoopringDarkFooterIcon,
-LoopringLightFooterIcon,
-MediumIcon,
-TwitterIcon,
-YoutubeIcon
+    DiscordIcon,
+    LoopringDarkFooterIcon,
+    LoopringLightFooterIcon,
+    MediumIcon,
+    TwitterIcon,
+    YoutubeIcon,
+    LoopringIcon,
 } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
-import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const HeightConfig = {
 headerHeight: 24,
@@ -145,8 +146,9 @@ Product: [
 export const Footer = withTranslation(['layout'])(({t}: any) => {
 const {mode} = useTheme()
 const [size, setSize] = React.useState<[number, number]>([1200, 0]);
-const history = useHistory()
-const isLandingPage = history.location.pathname === '/' || history.location.pathname === '/wallet'
+const location = useLocation()
+const isLandingPage = location.pathname === '/' || location.pathname === '/wallet'
+const isWallet = location.pathname === '/wallet'
 React.useLayoutEffect(() => {
     function updateSize() {
         setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
@@ -187,10 +189,7 @@ const handleLinkClick = React.useCallback((href: string) => {
                 <Box display={'flex'} width={'auto'} justifyContent={'space-between'} alignItems={'center'}>
                     <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
                         {
-                            mode === 'light' ?
-                                <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
-                                :
-                                <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
+                            <LoopringIcon htmlColor={mode === 'light' ? '#3B5AF4' : '#FCFDFD'} style={{transform: 'scale(8)'}} />
                         }
                     </Link>
                 
@@ -234,10 +233,12 @@ const handleLinkClick = React.useCallback((href: string) => {
                     <Box>
                         <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
                             {
-                                mode === 'light' ?
-                                    <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
-                                    :
-                                    <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
+                                isWallet
+                                    ? mode === 'light' ?
+                                        <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
+                                        :
+                                        <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
+                                    : <LoopringIcon htmlColor={mode === 'light' ? '#3B5AF4' : '#FCFDFD'} style={{transform: 'scale(8)'}} />
                             }
                         </Link>
                     </Box>
