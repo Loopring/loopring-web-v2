@@ -13,7 +13,7 @@ import { RouteComponentProps } from 'react-router';
 import React from 'react';
 import { useSystem } from '../../stores/system';
 
-const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll = false,...rest}: any & RouteComponentProps) => {
+const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll = false, isLandPage = false, ...rest}: any & RouteComponentProps) => {
 
     const {
         headerToolBarData,
@@ -26,8 +26,8 @@ const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll 
 
     return (<>
         {isHideOnScroll ?< HideOnScroll window={undefined}>
-            <HeaderUI isWrap={false} {...rest}
-                    isLandPage={true}
+            <HeaderUI isWrap={isLandPage} {...rest}
+                    isLandPage={isLandPage}
                       allowTrade={allowTrade}
                       headerMenuData={headerMenuData}
                       headerToolBarData={headerToolBarData}

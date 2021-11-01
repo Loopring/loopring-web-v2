@@ -109,18 +109,17 @@ const ContainerStyle = styled(Box)`
 
 `
 const GridBg = styled(Grid)`
-  background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: 120px calc(50% - -40px);
-  //background-image: var(--img-banner-url);
+    background-size: 150%;
+    background-repeat: no-repeat;
+    background-position: -250px;
+    //background-image: var(--img-banner-url);
 
-
-  ${({theme}) => {
-    return `
-     background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.webp") 1x,
-      url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.png") 1x);
-        `
-  }} //background-image: url("http://static.loopring.io/assets/images/landPage/img_home_banner_dark@2x.png");
+    ${({theme}) => {
+        return `
+        background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.webp") 1x,
+        url("http://static.loopring.io/assets/images/landPage/img_wallet_app_${theme.mode}.png") 1x);
+            `
+    }}
 
 ` as typeof Grid
 
@@ -276,9 +275,9 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
             <Container>
                 <GridBg item xs={12}
                         maxHeight={HeightConfig.maxHeight}
-                        minHeight={HeightConfig.minHeight}
+                        // minHeight={HeightConfig.minHeight}
                         position={'relative'}
-                        height={size[ 1 ]}>
+                        height={624}>
                     {/*<picture style={{'absolute'}}  >*/}
                     {/*    <source*/}
                     {/*        srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp 1x,*/}
@@ -301,7 +300,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                                     lineHeight={'46px'}>
                             {t('labelH2TitleWallet')}
                         </Typography>
-                        <Grid container width={'450px'} spacing={3} marginTop={10}>
+                        <Grid container width={'450px'} marginTop={10}>
                             <Grid item xs={6}>
                                 <Link href="https://play.google.com/store/apps/details?id=loopring.defi.wallet">
                                     <img src={`${SoursURL}images/landPage/appGooglePlay.webp`} alt={'Android'} />
