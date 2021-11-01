@@ -7,6 +7,7 @@ import { useAccount } from 'stores/account';
 import { LoopringAPI } from '../../../api_wrapper';
 import { SoursURL } from '@loopring-web/common-resources';
 import { VipPanel as VipView } from '@loopring-web/component-lib'
+import { useGetVIPInfo } from './hooks'
 
 const StylePaper = styled(Grid)`
   width: 100%;
@@ -64,6 +65,9 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
     const {account: {level}} = useAccount()
     const history = useHistory()
     const [vipTable, setVipTable] = React.useState<string[][]>([]);
+    const { getUserTradeAmount, tradeAmountInfo, userVIPInfo, getUserVIPInfo, userAssets, getUserAssets } = useGetVIPInfo()
+
+    // const [vipTable, setVipTable] = React.useState<string[][]>(vipDefault);
     const [userFee, setUserFee] = React.useState<{
         maker: string,
         taker: string
@@ -71,6 +75,14 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         maker: '0',
         taker: '0.0025%'
     })
+
+    React.useEffect(() => {
+        getUserTradeAmount()
+        getUserVIPInfo()
+        getUserAssets()
+    }, [getUserTradeAmount, getUserVIPInfo, getUserAssets])
+
+    console.log({userAssets})
 
     const getImagePath = React.useMemo(() => {
         const path = SoursURL + `images/vips/${level.toUpperCase().replace('_', '')}`
