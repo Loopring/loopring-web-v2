@@ -30,7 +30,7 @@ import { Header } from '../header';
 import React from 'react';
 import { AmmPanelType, AmmProps } from '../tradePanel';
 import { AmmPanel } from '../tradePanel';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 
 const Style = styled.div`

@@ -4,7 +4,7 @@ import { ResetProps, useOpenModals } from '@loopring-web/component-lib';
 import { FeeInfo } from '@loopring-web/common-resources';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useChargeFees } from 'hooks/common/useChargeFees';
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { useTokenMap } from 'stores/token';
 import { useUpdateAccout } from './useUpdateAccount';
 

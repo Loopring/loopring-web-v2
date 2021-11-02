@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 
-import * as loopring_defs from 'loopring-sdk';
+import * as loopring_defs from '@loopring-web/loopring-sdk';
 import store from '../../../stores';
 // import { CoinKey } from '@loopring-web/common-resources';
 //CoinKey<any>

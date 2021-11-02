@@ -1,6 +1,6 @@
 import { LoopringAPI } from 'api_wrapper'
 import React from 'react'
-import * as sdk from 'loopring-sdk'
+import * as sdk from '@loopring-web/loopring-sdk'
 import { IOHLCData } from '@loopring-web/component-lib'
 import { useTokenMap } from 'stores/token'
 

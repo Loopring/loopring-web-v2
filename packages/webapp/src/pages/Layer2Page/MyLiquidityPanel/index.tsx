@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 import { MyPoolTable, useSettings } from '@loopring-web/component-lib'
 import {  EmptyValueTag, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
 
-import { AmmPoolActivityRule, LoopringMap, Currency } from 'loopring-sdk';
+import { AmmPoolActivityRule, LoopringMap, Currency } from '@loopring-web/loopring-sdk';
 import { useOverview } from './hook';
 import { useSystem } from 'stores/system'
 import { TableWrapStyled } from 'pages/styled'

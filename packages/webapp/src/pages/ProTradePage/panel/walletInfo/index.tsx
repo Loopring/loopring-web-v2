@@ -18,7 +18,7 @@ import _ from 'lodash';
 import { accountStaticCallBack, btnClickMap, btnLabel } from 'layouts/connectStatusCallback';
 import { useAccount } from 'stores/account';
 import { HeaderHeight } from '../../index';
-import * as sdk from 'loopring-sdk';
+import * as sdk from '@loopring-web/loopring-sdk';
 import { useTokenMap } from '../../../../stores/token';
 import { volumeToCount, volumeToCountAsBigNumber } from '../../../../hooks/help';
 

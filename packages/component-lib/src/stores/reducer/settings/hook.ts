@@ -15,7 +15,7 @@ import {
 import { PlatFormType, SettingsState } from "./interface";
 import { LanguageKeys, LanguageType, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import React from 'react';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 import { Layouts } from 'react-grid-layout';
 
 export function useSettings(): SettingsState & {

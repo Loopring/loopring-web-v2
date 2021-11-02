@@ -4,7 +4,7 @@ import { useTokenMap, } from 'stores/token'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { volumeToCount } from 'hooks/help'
 import store from 'stores'
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 export const useAmmTotalValue = () => {
     const {addressIndex} = useTokenMap();

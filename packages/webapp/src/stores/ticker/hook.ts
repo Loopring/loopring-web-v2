@@ -3,7 +3,7 @@ import { getTickers, statusUnset, updateTicker } from './reducer';
 import {  TickerStates } from './interface';
 import { CoinKey } from '@loopring-web/common-resources';
 import React from 'react';
-import { LoopringMap, TickerData } from 'loopring-sdk';
+import { LoopringMap, TickerData } from '@loopring-web/loopring-sdk';
 
 export function useTicker(): TickerStates & {
     updateTickers: (tickerKeys: Array<CoinKey<any>>) => void,

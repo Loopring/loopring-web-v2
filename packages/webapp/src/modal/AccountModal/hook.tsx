@@ -68,13 +68,13 @@ import { useOnChainInfo } from 'stores/localStore/onchainHashInfo';
 import store from '../../stores';
 import { useSelector } from 'react-redux';
 import { useSystem } from '../../stores/system';
+import { isContract } from 'utils/web3_tools';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
 
     const { goUpdateAccount } = useUpdateAccout();
     const { chainInfos,updateDepositHash,clearDepositHash} = useOnChainInfo();
-
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
         setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount,
@@ -119,13 +119,15 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         processRequest: transferProcessRequest,
     } = useTransfer()
 
-    const { resetProps, } = useReset()
+    const {resetProps,} = useReset()
 
-    const { exportAccountProps } = useExportAccount()
+    const {exportAccountProps} = useExportAccount()
 
     const [openQRCode, setOpenQRCode] = useState(false)
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
+
+    const [isSupport, setIsSupport] = React.useState<boolean>(false)
 
     const onSwitch = React.useCallback(() => {
         setShowAccount({isShow: false})
@@ -318,22 +320,32 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                 }, 30000)
             }
         }
-    }, [account,chainId])
+    }, [account, chainId])
     React.useEffect(() => {
         updateDepositStatus();
         return () => {
             clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
         }
     }, [chainInfos?.depositHashes[ account.accAddress ]])
+    React.useEffect(() => {
+        if (connectProvides && connectProvides.usedWeb3 && account.accAddress) {
+            isSupportCallback()
+        }
+    }, [account.accAddress, connectProvides?.usedWeb3])
+    const isSupportCallback = React.useCallback(async () => {
 
+        const isSupport = await isContract(connectProvides.usedWeb3, account.accAddress)
+        setIsSupport(!isSupport)
+    }, [account, connectProvides])
     const accountList = React.useMemo(() => {
         return Object.values({
             [ AccountStep.NoAccount ]: {
                 view: <NoAccount {...{
                     goDeposit,
                     chainInfos,
+                    isSupport,
                     updateDepositHash,
-                    clearDepositHash:clearDeposit,
+                    clearDepositHash: clearDeposit,
                     ...account,
                     etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,

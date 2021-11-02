@@ -1,5 +1,5 @@
 import { StateBase } from '@loopring-web/common-resources';
-import { ChainId, ExchangeInfo } from 'loopring-sdk';
+import { ChainId, ExchangeInfo } from '@loopring-web/loopring-sdk';
 
 export enum ENV {
     DEV = 'DEV',

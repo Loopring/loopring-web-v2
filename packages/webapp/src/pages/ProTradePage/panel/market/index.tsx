@@ -29,7 +29,7 @@ import { useTokenMap } from 'stores/token';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import styled from '@emotion/styled/';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 
 export enum TabMarketIndex {

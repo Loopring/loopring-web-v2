@@ -10,7 +10,7 @@ import { Filter, FilterTradeTypes } from './components/Filter'
 import { EmptyValueTag, getValuePrecisionThousand, TableType } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { DateRange } from '@mui/lab'
-import { Currency } from 'loopring-sdk'
+import { Currency } from '@loopring-web/loopring-sdk'
 
 export enum TradeItemRole {
     maker = 'Maker',

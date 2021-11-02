@@ -7,7 +7,7 @@ import styled from '@emotion/styled'
 import { useAmmMiningUI, RewardListItem } from './hook';
 import { useAmmPool } from '../LiquidityPage/hook'
 import { Trans, withTranslation } from 'react-i18next';
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
+import { AmmPoolActivityRule, LoopringMap } from '@loopring-web/loopring-sdk';
 import { getMiningLinkList } from '@loopring-web/common-resources'
 import store from 'stores'
 

@@ -22,7 +22,7 @@ import {
 import { OutlineSelect, OutlineSelectItem } from '../basic-lib';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useSettings } from '../../stores';
-import { Currency } from 'loopring-sdk';
+import { Currency } from '@loopring-web/loopring-sdk';
 
 
 const StyledSwitch = styled(Switch)`
@@ -199,10 +199,10 @@ export const SettingPanel = withTranslation(['common', 'layout'], {withRef: true
                 <RadioGroupStyle row={false} aria-label="withdraw" name="withdraw" value={upColor}
                                  onChange={handleColorChange}>
                     {Object.keys(UpColor).map((key) => {
-                        return <>
-                            <FormControlLabel key={key} value={key} control={<Radio/>}
+                        return <React.Fragment key={key}>
+                            <FormControlLabel value={key} control={<Radio/>}
                                               label={updown({key})}/>
-                        </>
+                        </React.Fragment>
 
                     })}
                 </RadioGroupStyle>

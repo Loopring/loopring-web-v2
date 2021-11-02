@@ -2,7 +2,7 @@ import React from 'react';
 import { walletServices } from './walletServices';
 import { Commands, ErrorType, ProcessingType } from './command';
 import { provider } from 'web3-core';
-import { ChainId } from 'loopring-sdk';
+import { ChainId } from '@loopring-web/loopring-sdk';
 
 export function useConnectHook(
     {
