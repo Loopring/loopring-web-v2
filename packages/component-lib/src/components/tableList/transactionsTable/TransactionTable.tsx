@@ -259,7 +259,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                         ? '+' 
                         : '-'
                     : ''
-                myLog({row})
+                myLog(row['receiverAddress'], accAddress)
                 const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, undefined, false, { isTrade: true })}` : EmptyValueTag
                 return (
                     <Box className="rdg-cell-value textAlignRight">
