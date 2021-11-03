@@ -8,7 +8,8 @@ import {
     Table
 } from '../basic-lib';
 import {  WithTranslation, withTranslation, TFunction } from 'react-i18next';
-import {  Typography } from '@mui/material';
+import {  Typography, Box } from '@mui/material';
+import { CheckIcon, myLog } from '@loopring-web/common-resources'
 import styled from '@emotion/styled';
 
 interface Row {
@@ -41,10 +42,27 @@ const TableStyle = styled(Table)`
     }
 `as typeof Table
 
-export const VipPanel = withTranslation(['tables'])(({t, rawData,...rest}: & WithTranslation & { rawData: Row[] }) => {
+export const VipPanel = withTranslation(['tables'])(({t, rawData, currentLevel, ...rest}: & WithTranslation & { rawData: Row[], currentLevel: number }) => {
     const getColumnModeTransaction = React.useCallback(({t}: WithTranslation): Column<any, unknown>[] => [
         {
-            key: 'level', name: t('labelVipTableLevel'),
+            key: 'level', 
+            name: t('labelVipTableLevel'),
+            formatter: ({row}) => {
+              const [_, level] = row.level.split(' ')
+              return (
+                <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                  {String(currentLevel) === String(level) && (
+                    <Box>
+                      <CheckIcon style={{ marginBottom: -3 }} htmlColor={'var(--color-logo)'} />
+                    </Box>
+                  )}
+                  <Box>
+                    <Typography marginLeft={1} variant={'body1'} component={'span'}>{row.level}</Typography>
+                  </Box>
+                </Box>
+              )
+            }
+            
             // headerRenderer: (props: SortableHeaderCellProps<Row>) => <SortableHeaderCell {...props}
             //                                                                              children={<Typography
             //                                                                                  variant={'body1'}
@@ -58,7 +76,7 @@ export const VipPanel = withTranslation(['tables'])(({t, rawData,...rest}: & Wit
         {key: 'balance', name: t('labelVipTableBalance')},
         {key: 'maker', name: t('labelVipTableMaker')},
         {key: 'taker', name: t('labelVipTableTaker')}
-    ], [])
+    ], [currentLevel])
 
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction({t, ...rest}),

@@ -33,6 +33,7 @@ import {
     MuiAlert,
     MuiSnackbar,
     radius, MuiFormLabel, MuiBreadcrumbs, MuiDialogTitle, MuiDialog,
+    MuiLinearProgress,
 } from "./overrides-mui";
 import { MuPickDate } from './overrides-date-pick';
 import { fontDefault } from "../css/global";
@@ -191,6 +192,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiSnackbar: MuiSnackbar(),
             MuiDialogTitle:MuiDialogTitle({colorBase}),
             MuiDialog:MuiDialog({colorBase}),
+            MuiLinearProgress: MuiLinearProgress({colorBase}),
             ...MuPickDate({colorBase, themeMode})
         },
         shape: {borderRadius: radius}
