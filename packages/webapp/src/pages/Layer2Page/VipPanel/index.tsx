@@ -16,6 +16,25 @@ const StylePaper = styled(Grid)`
   border-radius: ${({theme}) => theme.unit}px;
 `
 
+const feeRate = {
+    vip1: {
+        eth: 75,
+        lrc: 25000,
+    },
+    vip2: {
+        eth: 750,
+        lrc: 50000,
+    },
+    vip3: {
+        eth: 3750,
+        lrc: 125000,
+    },
+    vip4: {
+        eth: 7500,
+        lrc: 250000,
+    }
+}
+
 const rawData = [
     {
         level: 'VIP 0',
@@ -67,6 +86,50 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
     const [vipTable, setVipTable] = React.useState<string[][]>([]);
     const { getUserTradeAmount, tradeAmountInfo, userVIPInfo, getUserVIPInfo, userAssets, getUserAssets } = useGetVIPInfo()
 
+    const getVIPLevel = React.useCallback(() => {
+        if (userVIPInfo && userVIPInfo.vipInfo && userVIPInfo.vipInfo.vipTag) {
+            if (userVIPInfo.vipInfo.vipTag === 'spam') {
+                return 'vip_0'
+            }
+            return userVIPInfo.vipInfo.vipTag
+        }
+        return 'vip_0'
+    }, [userVIPInfo])
+
+    const getNextVIPlevel = React.useCallback(() => {
+        if (getVIPLevel() === 'super_vip' || getVIPLevel() === 'vip_4') {
+            return getVIPLevel()
+        }
+        let [_, number] = getVIPLevel().toUpperCase().replace('_', ',').split(',')
+        return `${++number}`
+    }, [getVIPLevel])
+
+    const getViewTableLevel = React.useCallback(() => {
+        if (!getVIPLevel()){
+            return 0
+        }
+        if (getVIPLevel() === 'super_vip' || getVIPLevel() === 'vip_4') {
+            return 4
+        }
+        let [_, number] = getVIPLevel().toUpperCase().replace('_', ',').split(',')
+        return number
+    }, [getVIPLevel])
+
+    const getCurrentETHTradeAmount = React.useCallback(() => {
+        if (tradeAmountInfo && !!tradeAmountInfo.raw_data.data.length) {
+            const sum: number[] = tradeAmountInfo.raw_data.data.map((o: any) => Number(o.ethValue))
+            return sum.reduce((prev, next) => prev + next, 0).toFixed(7 )
+        }
+        return 0
+    }, [tradeAmountInfo])
+
+    const getCurrentBalanceLRC = React.useCallback(() => {
+        if (userAssets && !!userAssets.raw_data.data.length) {
+            return Number(userAssets.raw_data.data[userAssets.raw_data.data.length - 1].lrcValue).toFixed(3)
+        }
+        return 0
+    }, [userAssets])
+
     // const [vipTable, setVipTable] = React.useState<string[][]>(vipDefault);
     const [userFee, setUserFee] = React.useState<{
         maker: string,
@@ -82,19 +145,14 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         getUserAssets()
     }, [getUserTradeAmount, getUserVIPInfo, getUserAssets])
 
-    const getVIPLevel = React.useCallback(() => {
-        // return 'vip_4'
-        if (userVIPInfo && userVIPInfo.vipInfo && userVIPInfo.vipInfo.vipTag) {
-            if (userVIPInfo.vipInfo.vipTag === 'spam') {
-                return 'vip_0'
-            }
-            return userVIPInfo.vipInfo.vipTag
-        }
-        return 'vip_0'
-    }, [userVIPInfo])
-
     const isVIP4 = getVIPLevel() === 'vip_4'
     const isSVIP = getVIPLevel() === 'super_vip'
+
+    const getNextLevelAmount = React.useCallback((type: 'lrc' | 'eth', currLevel: number) => {
+        const isLrc = type === 'lrc'
+        const amount = Math.round(feeRate[`vip${currLevel}`][type] - (isLrc ? Number(getCurrentBalanceLRC()) : Number(getCurrentETHTradeAmount())))
+        return amount < 0 ? 0 : amount
+    }, [getCurrentBalanceLRC, getCurrentETHTradeAmount])
 
     const getImagePath = React.useMemo(() => {
         const path = SoursURL + `images/vips/${getVIPLevel().toUpperCase().replace('_', '')}`
@@ -165,8 +223,9 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         if (isVIP4) {
             return 100
         }
-        return 0
-    }, [isVIP4, isSVIP])
+        const rate = (Number(getCurrentETHTradeAmount()) / feeRate[`vip${getNextVIPlevel()}`]['eth']) * 100
+        return rate > 100 ? 100 : rate
+    }, [isVIP4, isSVIP, getCurrentETHTradeAmount, getNextVIPlevel])
 
     const getBalanceLRC = React.useCallback(() => {
         if (isSVIP) {
@@ -175,10 +234,20 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         if (isVIP4) {
             return 100
         }
-        return 0
-    }, [isSVIP, isVIP4])
+        const rate = (Number(getCurrentBalanceLRC()) / feeRate[`vip${getNextVIPlevel()}`]['lrc']) * 100
+        return rate > 100 ? 100 : rate
+    }, [getCurrentBalanceLRC, getNextVIPlevel, isSVIP, isVIP4])
 
     const getCurrVIPLevel = React.useCallback((direction: 'left' | 'right') => {
+        const isLeft = direction === 'left'
+        const isRight = direction === 'right'
+        if (getVIPLevel() !== 'super_vip' && getVIPLevel() !== 'vip_4' && isLeft) {
+            return getVIPLevel().toUpperCase().replace('_', ' ')
+        }
+        if (getVIPLevel() !== 'super_vip' && getVIPLevel() !== 'vip_4' && isRight) {
+            let [vip, number] = getVIPLevel().toUpperCase().replace('_', ',').split(',')
+            return `${vip} ${++number}`
+        }
         if (isSVIP && direction === 'left') {
             return 'Super VIP'
         }
@@ -189,7 +258,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
             return direction === 'left' ? 'VIP 3' : 'VIP 4'
         }
         return ''
-    }, [isSVIP, isVIP4])
+    }, [isSVIP, isVIP4, getVIPLevel])
 
     return <>
         <StylePaper flex={1} container className={'MuiPaper-elevation2'} padding={4} marginBottom={1}>
@@ -205,7 +274,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                         <Typography variant={'body1'} component={'span'} display={'flex'} flexDirection={'row'}
                                     alignItems={'center'}>
                             <Typography component={'span'} variant={'body1'}>
-                                {level ? getImagePath : 'Basic'}
+                                {level && userVIPInfo && userVIPInfo.vipInfo.vipTag ? getImagePath : ''}
                             </Typography>
                         </Typography>
                     </Typography>
@@ -214,7 +283,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             ? 'Congratulations you have reached the highest level' 
                             : isSVIP 
                                 ? 'Congratulations! You are already a super VIP, enjoying the highest discount privileges, and will not be affected by balance and trading volume.' 
-                                : `Upgrade to VIP 1 by either trading ${10} ETH on our spot exchange and/or increase your LRC holdings by ${100} LRC`
+                                : `Upgrade to VIP ${getNextVIPlevel()} by either trading ${getNextLevelAmount('eth', getNextVIPlevel())} ETH on our spot exchange and/or increase your LRC holdings by ${getNextLevelAmount('lrc', getNextVIPlevel())} LRC`
                         }
                     </Typography>
                 </Typography>
@@ -227,7 +296,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             Spot Trade Volume (30d in ETH)
                         </Typography>
                         <Typography variant={'h4'} component={'p'} marginTop={0.5}>
-                            Currently {} ETH
+                            Currently {getCurrentETHTradeAmount()} ETH
                         </Typography>
                         <Box width={'90%'} marginY={1.5}>
                             <LinearProgress variant="determinate" value={getTradeVolETH()} />
@@ -243,7 +312,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             LRC Balance
                         </Typography>
                         <Typography variant={'h4'} component={'p'} marginY={0.5}>
-                            Currently {} LRC
+                            Currently {getCurrentBalanceLRC()} LRC
                         </Typography>
                         <Box width={'90%'} marginY={1.5}>
                             <LinearProgress variant="determinate" value={getBalanceLRC()} />
@@ -293,7 +362,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                 {/* <Box marginTop={2} flex={1}> */}
                 <Typography component={'h3'} variant={'h4'} color={'text.secondary'}>Fee List</Typography>
                 <Box marginTop={3} flex={1}>
-                    <VipView rawData={rawData}/>
+                    <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
                 </Box>
                 
                     {/* <Typography component={'h6'} variant={'h1'} padding={3} textAlign={'center'}>
