@@ -16,8 +16,5 @@ export * from './ModalAccount'
 export * from './Connect'
 
 export * from './DepositPanel'
-export * from './DepositPanelNew'
 export * from './TransferPanel'
-export * from './TransferPanelNew'
 export * from './WithdrawPanel'
-export * from './WithdrawPanelNew'

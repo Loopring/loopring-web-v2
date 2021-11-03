@@ -7,6 +7,7 @@ import React from 'react';
 
 export const DepositPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
     {
+        type='TOKEN',
         onDepositClick,
         depositBtnStatus,
         ...rest
@@ -18,15 +19,15 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
         index,
         switchData
 
-    } = useBasicTrade({ ...rest });
+    } = useBasicTrade({ ...rest,type });
 
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
         panelList: [{
             key: "trade",
             element:React.useMemo(() => <DepositWrap<T, I> key={"transfer"}
-                                              {...{
-                                                  ...rest,
+                                                           {...{
+                                                  ...rest, type,
                                                   tradeData: switchData.tradeData,
                                                   onChangeEvent,
                                                   disabled: !!rest.disabled,

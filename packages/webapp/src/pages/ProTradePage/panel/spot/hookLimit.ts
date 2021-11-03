@@ -333,7 +333,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
                 limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,
-                    fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips.toString() : undefined,
+                    fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips?.toString() : undefined,
                 }
             })
             setLimitTradeData((state) => {
@@ -394,8 +394,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
         setIsLimitLoading(true);
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const {priceLevel} = getPriceImpactInfo(pageTradePro.limitCalcTradeParams, false)
-
-        if (!allowTrade.order.enable) {
+        if (!(allowTrade?.order?.enable)) {
             setShowSupport({isShow: true})
             setIsLimitLoading(false)
         } else {

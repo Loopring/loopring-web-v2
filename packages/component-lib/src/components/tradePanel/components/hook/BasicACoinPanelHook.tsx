@@ -1,12 +1,12 @@
-import { IBData } from '@loopring-web/common-resources';
+import { IBData, NFTWholeINFO } from '@loopring-web/common-resources';
 import { BasicACoinTradeHookProps } from '../Interface';
 import React from 'react';
 import { SwitchData } from '../../Interface';
 import { useDeepCompareEffect } from 'react-use';
 import { ToolBarItemBack } from '../tool';
 
-export const useBasicTrade = <T extends IBData<I>,
-    I>({tradeData, handlePanelEvent, walletMap, coinMap, ...rest}: BasicACoinTradeHookProps<T, I>) => {
+export const useBasicTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
+    I>({tradeData, handlePanelEvent, walletMap, coinMap, type='TOKEN', ...rest}: BasicACoinTradeHookProps<T, I>) => {
     tradeData = tradeData ? tradeData : {} as T;
     // data used on trade input btn click to menu list and back to the input data transfer
     const [switchData, setSwitchData] = React.useState<SwitchData<T>>({
@@ -29,8 +29,11 @@ export const useBasicTrade = <T extends IBData<I>,
         } else {
             if (to === 'menu') {
                 setSwitchData({tradeData, to});
-            } else if (to === 'button') {
+            } else if (to === 'button' && type ==='TOKEN') {
                 const count = tradeData.belong ? walletMap[ tradeData.belong ]?.count : 0;
+                setSwitchData({tradeData: {...tradeData, balance: count}, to});
+            }else if (to === 'button' && type ==='NFT'){
+                const count = tradeData.nftBalance
                 setSwitchData({tradeData: {...tradeData, balance: count}, to});
             }
         }

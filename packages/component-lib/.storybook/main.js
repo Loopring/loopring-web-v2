@@ -103,13 +103,13 @@ module.exports = {
       ...config,
       plugins: [
         ...config.plugins,
-        new CopyWebpackPlugin({
-          patterns: [{
-            from: path.resolve(__dirname, '..', '..', 'common-resources', "assets"),
-            to: './static',
-            toType: "dir"
-          }],
-        })
+        // new CopyWebpackPlugin({
+        //   patterns: [{
+        //     from: path.resolve(__dirname, '..', '..', 'common-resources', "assets"),
+        //     to: './static',
+        //     toType: "dir"
+        //   }],
+        // })
       ],
       resolve: {
         ...config.resolve,
