@@ -11,11 +11,8 @@ const RouterView = () => {
 
     return <>
         <Switch>
-            <Route exact path='/landing-page'>
-                <Redirect to="/"/>
-            </Route>
             <Route exact path='/'>
-                <Header isHideOnScroll={true}/>
+                <Header isHideOnScroll={true} isLandPage />
                 <LandPage/>
             </Route>
         </Switch>
