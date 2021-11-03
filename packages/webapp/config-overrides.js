@@ -1,14 +1,16 @@
 const webpack = require('webpack')
 const {
   override,
+  addWebpackModuleRule,
   addWebpackPlugin,
-  fixBabelImports,
+  fixBabelImports,                                                                           
   setWebpackOptimizationSplitChunks,
   addWebpackAlias,
 } = require('customize-cra')
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
+  
 // Try the environment variable, otherwise use root
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 // const rewireLess = require('react-app-rewire-less')
@@ -37,47 +39,6 @@ function getCommitHash() {
   }
 }
 
-const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin')
-
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent') // 直接这么引入就可以，他在create-app-react包里 这个就是getLocalIdent属性要设置的值
-
-const getStyleLoaders = (cssOptions, preProcessor, lessOptions) => {
-  const loaders = [
-    require.resolve('style-loader'),
-    {
-      loader: require.resolve('css-loader'),
-      options: cssOptions,
-    },
-    {
-      // Options for PostCSS as we reference these options twice
-      // Adds vendor prefixing based on your specified browser support in
-      // package.json
-      loader: require.resolve('postcss-loader'),
-      options: {
-        ident: 'postcss',
-        plugins: () => [
-          require('postcss-flexbugs-fixes'),
-          require('postcss-preset-env')({
-            autoprefixer: {
-              flexbox: 'no-2009',
-            },
-            stage: 3,
-          }),
-        ],
-      },
-    },
-  ]
-  if (preProcessor) {
-    loaders.push({
-      loader: require.resolve(preProcessor),
-      options: lessOptions,
-    })
-  }
-
-  console.log('init loaders:', loaders)
-
-  return loaders
-}
 
 module.exports = override(
   addWebpackAlias({}),
@@ -106,6 +67,11 @@ module.exports = override(
         '/SH"',
     }),
   ),
+  // addWebpackPlugin(
+  //   new HtmlWebpackPlugin({
+  //     template: 'html!src/index.html',
+  //   }),
+  // ),
   fixBabelImports('import', {
     libraryName: 'antd',
     libraryDirectory: 'es',
@@ -118,15 +84,17 @@ module.exports = override(
     maxAsyncRequests: 8,
     maxInitialRequests: 6,
   }),
-  /*
-  addLessLoader({
-    lessOptions: {
-      javascriptEnabled: true,
-      modifyVars: { '@primary-color': '#1DA57A' },
-      sourceMap: false,
-    },
+  addWebpackModuleRule({
+    test: /\.html$/i,
+    exclude: /index.html/i,
+    loader: "html-loader",
+    options: {
+      attrs: [':data-src'],
+      minimize: true,
+      removeComments: false,
+      collapseWhitespace: false
+    }
   }),
-  */
   (config) => {
     config.output.publicPath = ASSET_PATH;
     // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
@@ -136,11 +104,12 @@ module.exports = override(
     const setConfig = (index) => {
       console.log('-----> enter setConfig!!!!!!! index:', index)
       let babelLoader = config.module.rules[1].oneOf[index];
+      // debugger
       babelLoader.include = babelLoader.include.replace('/webapp/src', '');
       config.module.rules[1].oneOf[index] = babelLoader;
     }
 
-    setConfig(2)
+    setConfig(3)
 
     // addCompression()
 
