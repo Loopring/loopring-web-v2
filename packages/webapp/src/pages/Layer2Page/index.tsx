@@ -1,4 +1,4 @@
-import { useRouteMatch } from 'react-router'
+import { useRouteMatch } from 'react-router-dom'
 
 import { Box, Typography } from '@mui/material'
 import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '@loopring-web/component-lib'
@@ -17,6 +17,7 @@ import { SecurityPanel } from './SecurityPanel';
 import { VipPanel } from './VipPanel';
 import { RewardPanel } from './RewardPanel';
 import { RedPockPanel } from './RedPockPanel';
+import { MyNFTPanel } from './MyNFTPanel';
 
 
 export const subMenu = subMenuLayer2
@@ -75,6 +76,8 @@ export const Layer2Page = () => {
                 return <AssetPanel/>
             case 'my-liquidity' :
                 return <MyLiqudityPanel/>
+            case 'my-nft' :
+                return <MyNFTPanel/>
             case 'history' :
                 return <HistoryPanel/>
             case 'order' :

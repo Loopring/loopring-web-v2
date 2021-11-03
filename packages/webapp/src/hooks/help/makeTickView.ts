@@ -59,7 +59,6 @@ export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: {
             // faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price
             // const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
             const volume = volumeToCount(item.symbol.split('-')[ 1 ], item.quote_token_volume)
-            //FIX: DIE is not in faitPrices
             const priceDollar = toBig(volume ? volume : 0).times(price);
             const priceYuan = priceDollar?.times(forex);
             const change = item.change && item.change !== 0 ? item.change * 100 : undefined;

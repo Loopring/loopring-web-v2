@@ -17,6 +17,13 @@ export interface CoinInfo<R> {
     description?: string,
     company: string
 }
+export interface NFTInfo<R> {
+    icon?: string,
+    name: string,
+    simpleName: CoinKey<R>,
+    description?: string,
+    company: string
+}
 
 export interface WalletCoin<R> {
     belong: CoinKey<R>,

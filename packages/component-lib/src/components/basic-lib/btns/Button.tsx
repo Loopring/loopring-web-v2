@@ -164,10 +164,11 @@ export const ModalCloseButton = ({onClose, t}: {
         </IconButton>
     </Box>
 }
-export const ModalBackButton = ({onBack, t}: {
-    onBack?: () => void
+export const ModalBackButton = ({onBack, t, marginTop=-3}: {
+    onBack?: () => void,
+    marginTop?:number
 } & WithTranslation) => {
-    return <Box alignSelf={'flex-start'} marginTop={-3} marginLeft={1.5}>
+    return <Box alignSelf={'flex-start'} marginTop={marginTop} marginLeft={1.5}>
         <IconButton size={'large'} color={'inherit'} aria-label={t('labelBack')} onClick={() => {
             onBack && onBack()
         }}>

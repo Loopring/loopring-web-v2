@@ -22,6 +22,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          maxAllow,
                                                                          disabled,
                                                                          decimalsLimit = 8,
+                                                                         allowDecimals=true,
                                                                          emptyText = 'tokenSelectToken',
                                                                          placeholderText = '0.00',
                                                                          inputData,
@@ -156,6 +157,8 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label}
                         decimalsLimit={decimalsLimit}
+                        allowDecimals={allowDecimals}
+
                 />
                 <label/>
             </Grid>

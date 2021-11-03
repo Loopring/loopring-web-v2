@@ -357,7 +357,7 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                 </Container>
 
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */
-                    onRowClick={(index, row, col) => handleRowClick(row)}
+                    onRowClick={(index:any, row:any, col:any) => handleRowClick(row)}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}

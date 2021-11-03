@@ -8,7 +8,7 @@ import {
     TradeFloat
 } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
-import { useLocation, useRouteMatch } from 'react-router';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from 'stores/Amm/AmmMap';
 import { useWalletLayer2 } from 'stores/walletLayer2';
