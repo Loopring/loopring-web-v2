@@ -19,6 +19,8 @@ import { LandPage, WalletPage } from '../pages/LandPage'
 import { ErrorMap, SagaStatus } from '@loopring-web/common-resources';
 import { ErrorPage } from '../pages/ErrorPage';
 import { Footer } from '@loopring-web/component-lib';
+import { ReportPage } from 'pages/ReportPage';
+import { MarkDonwPage } from '../pages/MarkdownPage';
 
 const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
     return <> <Header isHideOnScroll={false}/><Container maxWidth="lg"
@@ -97,6 +99,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                     <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>
                     <Route exact path='/layer2'><ContentWrap><Layer2Page/></ContentWrap></Route>
                     <Route exact path='/layer2/*'><ContentWrap><Layer2Page/></ContentWrap></Route>
+
                     {/*<Route exact path='/layer2/my-liquidity'><ContentWrap><Layer2Page/></ContentWrap> </Route>*/}
                     {/*<Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
                     {/*<Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>*/}
@@ -109,6 +112,9 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                     <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
                     <Route exact path='/liquidity/amm-mining'><ContentWrap><LiquidityPage/></ContentWrap> </Route>
                     <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+                    <Route exact path='/report'><ContentWrap><ReportPage/></ContentWrap></Route>
+                    <Route exact path='/document'><ContentWrap><MarkDonwPage/></ContentWrap></Route>
+                    <Route exact path='/document/:path'><ContentWrap><MarkDonwPage/></ContentWrap></Route>
 
                 </>}
 
