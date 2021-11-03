@@ -1,12 +1,15 @@
 import React from 'react'
 import { LoopringAPI } from "api_wrapper";
 import { useAccount } from 'stores/account'
+import { useTokenMap } from 'stores/token'
 
 export function useGetVIPInfo() {
     const {account: {accountId, accAddress, apiKey}} = useAccount()
     const [tradeAmountInfo, setTraeAmountInfo] = React.useState<any>(null)
     const [userVIPInfo, setUserVIPInfo] = React.useState<any>(null)
     const [userAssets, setUserAssets] = React.useState<any>(null)
+
+    const { tokenMap } = useTokenMap()
 
     const getUserTradeAmount = React.useCallback(async (markets: string = '', limit: number = 30) => {
         if (LoopringAPI && LoopringAPI.walletAPI && accountId) {
@@ -29,15 +32,16 @@ export function useGetVIPInfo() {
     }, [accAddress, accountId, apiKey])
 
     const getUserAssets = React.useCallback(async () => {
-        if (LoopringAPI && LoopringAPI.userAPI) { 
+        if (LoopringAPI && LoopringAPI.userAPI && tokenMap) { 
+            const lrcAddress = tokenMap['LRC'].address
             const data = await LoopringAPI.userAPI.getUserVIPAssets({
                 address: accAddress,
                 assetTypes: 'DEX',
-                token: '0xfc28028d9b1f6966fe74710653232972f50673be',
+                token: lrcAddress,
             })
             setUserAssets(data)
         }
-    }, [accAddress])
+    }, [accAddress, tokenMap])
 
     return {
         tradeAmountInfo,
