@@ -5,8 +5,9 @@ import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from '../../../api_wrapper';
-import { SoursURL } from '@loopring-web/common-resources';
+import { myLog, SoursURL } from '@loopring-web/common-resources';
 import { VipPanel as VipView } from '@loopring-web/component-lib'
+import { useGetVIPInfo } from './hooks'
 
 const StylePaper = styled(Grid)`
   width: 100%;
@@ -64,6 +65,9 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
     const {account: {level}} = useAccount()
     const history = useHistory()
     const [vipTable, setVipTable] = React.useState<string[][]>([]);
+    const { getUserTradeAmount, tradeAmountInfo, userVIPInfo, getUserVIPInfo, userAssets, getUserAssets } = useGetVIPInfo()
+
+    // const [vipTable, setVipTable] = React.useState<string[][]>(vipDefault);
     const [userFee, setUserFee] = React.useState<{
         maker: string,
         taker: string
@@ -72,8 +76,28 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         taker: '0.0025%'
     })
 
+    React.useEffect(() => {
+        getUserTradeAmount()
+        getUserVIPInfo()
+        getUserAssets()
+    }, [getUserTradeAmount, getUserVIPInfo, getUserAssets])
+
+    const getVIPLevel = React.useCallback(() => {
+        // return 'vip_4'
+        if (userVIPInfo && userVIPInfo.vipInfo && userVIPInfo.vipInfo.vipTag) {
+            if (userVIPInfo.vipInfo.vipTag === 'spam') {
+                return 'vip_0'
+            }
+            return userVIPInfo.vipInfo.vipTag
+        }
+        return 'vip_0'
+    }, [userVIPInfo])
+
+    const isVIP4 = getVIPLevel() === 'vip_4'
+    const isSVIP = getVIPLevel() === 'super_vip'
+
     const getImagePath = React.useMemo(() => {
-        const path = SoursURL + `images/vips/${level.toUpperCase().replace('_', '')}`
+        const path = SoursURL + `images/vips/${getVIPLevel().toUpperCase().replace('_', '')}`
         return <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
                     src={`${path}.webp`}
             // srcSet={`${path}.webp 1x, ${path}.png 1x`}
@@ -87,7 +111,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         // </picture>
         //
         // </>
-    }, [level])
+    }, [getVIPLevel])
     const result = React.useCallback(async () => {
         if (LoopringAPI.exchangeAPI) {
             const {
@@ -134,6 +158,39 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         }
     }, [history])
 
+    const getTradeVolETH = React.useCallback(() => {
+        if (isSVIP) {
+            return 0
+        }
+        if (isVIP4) {
+            return 100
+        }
+        return 0
+    }, [isVIP4, isSVIP])
+
+    const getBalanceLRC = React.useCallback(() => {
+        if (isSVIP) {
+            return 0
+        }
+        if (isVIP4) {
+            return 100
+        }
+        return 0
+    }, [isSVIP, isVIP4])
+
+    const getCurrVIPLevel = React.useCallback((direction: 'left' | 'right') => {
+        if (isSVIP && direction === 'left') {
+            return 'Super VIP'
+        }
+        if (isSVIP && direction === 'right') {
+            return ''
+        }
+        if (isVIP4) {
+            return direction === 'left' ? 'VIP 3' : 'VIP 4'
+        }
+        return ''
+    }, [isSVIP, isVIP4])
+
     return <>
         <StylePaper flex={1} container className={'MuiPaper-elevation2'} padding={4} marginBottom={1}>
             <Grid item xs={12}>
@@ -153,13 +210,18 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                         </Typography>
                     </Typography>
                     <Typography variant={'h5'} component={'p'} color={'var(--color-text-secondary)'} marginTop={2}>
-                        Upgrade to VIP 1 by either trading {10} ETH on our spot exchange and/or increase your LRC holdings by {100} LRC
+                        {isVIP4 
+                            ? 'Congratulations you have reached the highest level' 
+                            : isSVIP 
+                                ? 'Congratulations! You are already a super VIP, enjoying the highest discount privileges, and will not be affected by balance and trading volume.' 
+                                : `Upgrade to VIP 1 by either trading ${10} ETH on our spot exchange and/or increase your LRC holdings by ${100} LRC`
+                        }
                     </Typography>
                 </Typography>
             </Grid>
 
             <Grid item xs={12}>
-                <Grid container>
+                <Grid container marginY={2.5}>
                     <Grid item xs={6}>
                         <Typography fontWeight={400} variant={'h6'} component={'p'} color={'var(--color-text-secondary)'}>
                             Spot Trade Volume (30d in ETH)
@@ -168,10 +230,10 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             Currently {} ETH
                         </Typography>
                         <Box width={'90%'} marginY={1.5}>
-                            <LinearProgress variant="determinate" value={50} />
+                            <LinearProgress variant="determinate" value={getTradeVolETH()} />
                             <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
-                                <Typography fontWeight={400} color={'var(--color-star)'}>VIP 0</Typography>
-                                <Typography fontWeight={400} color={'var(--color-text-secondary)'}>VIP 1</Typography>
+                                <Typography fontWeight={400} color={isVIP4 ? 'var(--color-text-secondary)' : 'var(--color-star)'}>{getCurrVIPLevel('left')}</Typography>
+                                <Typography fontWeight={400} color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}>{getCurrVIPLevel('right')}</Typography>
                             </Box>
                         </Box>
                         <Link onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Trade Spot</Link>
@@ -184,10 +246,10 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             Currently {} LRC
                         </Typography>
                         <Box width={'90%'} marginY={1.5}>
-                            <LinearProgress variant="determinate" value={50} />
+                            <LinearProgress variant="determinate" value={getBalanceLRC()} />
                             <Box marginTop={1} display={'flex'} justifyContent={'space-between'}>
-                                <Typography fontWeight={400} color={'var(--color-star)'}>VIP 0</Typography>
-                                <Typography fontWeight={400} color={'var(--color-text-secondary)'}>VIP 1</Typography>
+                                <Typography fontWeight={400} color={isVIP4 ? 'var(--color-text-secondary)' : 'var(--color-star)'}>{getCurrVIPLevel('left')}</Typography>
+                                <Typography fontWeight={400} color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}>{getCurrVIPLevel('right')}</Typography>
                             </Box>
                         </Box>
                         <Link onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Buy LRC</Link>

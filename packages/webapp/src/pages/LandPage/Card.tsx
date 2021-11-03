@@ -105,16 +105,18 @@ export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
                 (s,
                  z) => s * z),
         }}>
-        <Box marginTop={10} >{icon}</Box>
-        <Typography component={'h3'} marginTop={10} >
-            <Typography whiteSpace={'pre-line'} fontWeight={500} component={'h5'}  variant={'h3'}
-            >{t(title)}</Typography>
-        </Typography>
-        <Typography component={'p'} textAlign={'center'} marginTop={3}
-                    variant={'h5'} whiteSpace={'pre-line'}  color={'var(--text-secondary)'} fontWeight={400}
-                    width={306}>
-            {t(describe)}
-        </Typography>
+        <Box marginTop={10}>{icon}</Box>
+        <Box position={'absolute'} top={'40%'} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+            <Typography component={'h3'} marginTop={10}>
+                <Typography whiteSpace={'pre-line'} fontWeight={500} component={'h5'}  variant={'h3'}
+                >{t(title)}</Typography>
+            </Typography>
+            <Typography component={'p'} textAlign={'center'} marginTop={3}
+                        variant={'h5'} whiteSpace={'pre-line'}  color={'var(--text-secondary)'} fontWeight={400}
+                        width={306}>
+                {t(describe)}
+            </Typography>
+        </Box>
         {/*<animated.div*/}
         {/*    style={{ transform: y.interpolate(v => `translateY(${v}%`) }}*/}
         {/*    className="glance"*/}
