@@ -1,20 +1,24 @@
 import { CloseIcon, globalSetup, IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
+import { bindHover } from 'material-ui-popup-state/es';
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import React, { ChangeEvent } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { Button, IconClearStyled, TextField, TypographyGood } from '../../../index';
+import { Box, Grid, Typography } from '@mui/material';
+import { PopoverPure } from '../../'
+import { Button, IconClearStyled, TextField } from '../../../index';
 import { DepositViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import * as _ from 'lodash'
-
+import { HelpIcon,NFTWholeINFO } from '@loopring-web/common-resources'
+import { BasicANFTTrade } from './BasicANFTTrade';
 
 //SelectReceiveCoin
-export const DepositWrap = <T extends IBData<I>,
+export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
     I>({
            t, disabled, walletMap, tradeData, coinMap,
-           //  onTransferClick,
-           title, description,
+           title, description, type,
+           btnInfo,
            depositBtnStatus,
            onDepositClick,
            isNewAccount,
@@ -26,6 +30,7 @@ export const DepositWrap = <T extends IBData<I>,
            ...rest
        }: DepositViewProps<T, I> & WithTranslation) => {
     const inputBtnRef = React.useRef();
+    const popupState = usePopupState({variant: 'popover', popupId: `popupId-deposit`});
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined) {
             return true
@@ -60,37 +65,71 @@ export const DepositWrap = <T extends IBData<I>,
         setAddress(address);
         debounceAddress({address})
     }
+    
     const inputButtonDefaultProps = {
         label: t('depositLabelEnterToken'),
     }
-
-    console.log('redender old!!!!!!!')
 
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
         <Grid item>
-            <Typography component={'h4'} textAlign={'center'} variant={'h3'} marginBottom={2}>
-                {title ? title : t('depositTitle')}
-            </Typography>
-            <Typography component={'p'} variant={'body1'} whiteSpace={'pre-line'}>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} /* textAlign={'center'} */ marginBottom={2}>
+                <Typography component={'h4'} variant={'h3'} marginRight={1}>{title ? title : t('depositTitle')}</Typography>
+                <HelpIcon {...bindHover(popupState)} fontSize={'large'} htmlColor={'var(--color-text-third)'} />
+            </Box>
+            {/* <Typography component={'p'} variant="body1">
                 <Trans i18nKey={description ? description : 'depositDescription'}>
                     Once your deposit is <TypographyGood component={'span'}>confirmed on Ethereum</TypographyGood>, it
                     will be added to your balance within <TypographyGood component={'span'}>2 minutes</TypographyGood>.
                 </Trans>
-            </Typography>
+            </Typography> */}
+            <PopoverPure
+                className={'arrow-center'}
+                {...bindPopper(popupState)}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Typography padding={2} component={'p'} variant={'body2'} whiteSpace={'pre-line'}>
+                    <Trans i18nKey={description ? description : 'depositDescription'}>
+                        Once your deposit is confirmed on Ethereum, it
+                        will be added to your balance within 2 minutes.
+                    </Trans>
+                </Typography>
+            </PopoverPure>
         </Grid>
         <Grid item marginTop={2} alignSelf={"stretch"}>
-            <BasicACoinTrade {...{
+            {type === 'NFT'?<Box display={'inline-flex'} alignItems={'center'} justifyContent={'space-between'}>
+                <BasicANFTTrade
+                   {...{
+                    ...rest,
+                    type,
+                    t,
+                    disabled,
+                    walletMap,
+                    tradeData,
+                    // coinMap,
+                    inputNFTDefaultProps:  {label:''},
+                    // inputButtonDefaultProps,
+                    inputNFTRef: inputBtnRef,
+                }}                />
+            </Box>: < BasicACoinTrade  {...{
                 ...rest,
                 t,
+                type,
                 disabled,
                 walletMap,
                 tradeData,
                 coinMap,
                 inputButtonDefaultProps,
                 inputBtnRef: inputBtnRef,
-            }} />
+            }} />}
         </Grid>
         {isNewAccount ? <Grid item marginTop={2} alignSelf={"stretch"} position={'relative'}>
             <TextField
@@ -119,10 +158,9 @@ export const DepositWrap = <T extends IBData<I>,
                 // style={{width: '200px'}}
                     loading={!getDisabled() && depositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || depositBtnStatus === TradeBtnStatus.DISABLED || depositBtnStatus === TradeBtnStatus.LOADING ? true : false}
-            >{t(`depositLabelBtn`)}
+            >{ btnInfo ? t(btnInfo.label, btnInfo.params) : t(`depositLabelBtn`) }
             </Button>
 
         </Grid>
     </Grid>
 }
-

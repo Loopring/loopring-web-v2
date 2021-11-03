@@ -135,7 +135,6 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             return (coinMap && coinMap[ coinA ] && coinMap[ coinB ])
         })
 
-        //FIX: fix in uat env not enough pair_recommendations
         if (_recommendationsFloat.length < 4) {
             const filteredFloat = defaultRecommendationsFloat.filter(o => {
                 const pair = `${o.pair.coinA}-${o.pair.coinB}`

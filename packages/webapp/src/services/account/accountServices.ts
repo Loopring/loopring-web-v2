@@ -142,7 +142,7 @@ export const accountServices = {
     },
     sendNeedUpdateAccount: async (accInfo: sdk.AccountInfo) => {
         myLog('sendNeedUpdateAccount accInfo:', accInfo)
-        store.dispatch(updateAccountStatus({readyState: AccountStatus.DEPOSITING,}))
+        store.dispatch(updateAccountStatus({readyState: AccountStatus.NOT_ACTIVE}))
         subject.next({
             status: Commands.SignAccount,
             data: accInfo

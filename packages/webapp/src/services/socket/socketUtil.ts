@@ -347,7 +347,6 @@ export class LoopringSocket {
                     }
                     break
                 case  SocketEventType.candlestick:
-                    //FIX:
                     const candlestickSocket = socket[ SocketEventType.candlestick ];
                     if (candlestickSocket) {
                         list = candlestickSocket.map(key => getCandlestickArg(key))

@@ -258,6 +258,7 @@ export const globalCss = ({theme}: any) => css`
     --row-height:44px;
     --row-header-height:44px;
     --chart-height:396px;
+    --nft-height:396px;
   }
 
   //div {

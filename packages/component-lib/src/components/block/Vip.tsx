@@ -1,3 +1,4 @@
+import React from 'react'
 import {
     Column,
     generateColumns,
@@ -6,24 +7,27 @@ import {
     SortableHeaderCellProps,
     Table
 } from '../basic-lib';
-import {  WithTranslation, withTranslation } from 'react-i18next';
-import {  Typography } from '@mui/material';
+import {  WithTranslation, withTranslation, TFunction } from 'react-i18next';
+import {  Typography, Box } from '@mui/material';
+import { CheckIcon, myLog } from '@loopring-web/common-resources'
 import styled from '@emotion/styled';
 
 interface Row {
     level: string;
-    orderBook: string;
-    AMM: string;
-    deposit: string;
-    withdraw: string;
-    setPublicKey: string;
+    tradeVolume: string;
+    rule: string;
+    balance: string;
+    maker: string;
+    taker: string;
 }
 const TableStyle = styled(Table)`
     &.rdg{
       border-top: 1px solid var(--color-divide);
       text-align: center;
+      min-height: 300px;
+      
       .rdg-header-row{
-        background:var(--color-table-header-bg);
+        // background:var(--color-table-header-bg);
       }
       .rdg-row, .rdg-header-row {
         border-right: 1px solid var(--color-divide);
@@ -36,37 +40,50 @@ const TableStyle = styled(Table)`
         border-bottom-color: var(--color-divide);
       }
     }
-`as typeof  Table
+`as typeof Table
 
-
-
-
-export const VipPanel = withTranslation(['common', 'layout'])(({t, rawData,...rest}: & WithTranslation & { rawData:string[][] }) => {
-    const columnModeDefault: readonly Column<Row, unknown>[] = [
+export const VipPanel = withTranslation(['tables'])(({t, rawData, currentLevel, ...rest}: & WithTranslation & { rawData: Row[], currentLevel: number }) => {
+    const getColumnModeTransaction = React.useCallback(({t}: WithTranslation): Column<any, unknown>[] => [
         {
-            key: 'level', name: 'labelLevel',
-            headerRenderer: (props: SortableHeaderCellProps<Row>) => <SortableHeaderCell {...props}
-                                                                                         children={<Typography
-                                                                                             variant={'body1'}
-                                                                                             paddingLeft={2}
-                                                                                             component={'span'}>{t('labelLevel')}</Typography>}/>,
-            formatter: ({row}) => <Typography variant={'body1'} 
-                                              component={'span'}>{row.level}</Typography>
+            key: 'level', 
+            name: t('labelVipTableLevel'),
+            formatter: ({row}) => {
+              const [_, level] = row.level.split(' ')
+              return (
+                <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                  {String(currentLevel) === String(level) && (
+                    <Box>
+                      <CheckIcon style={{ marginBottom: -3 }} htmlColor={'var(--color-logo)'} />
+                    </Box>
+                  )}
+                  <Box>
+                    <Typography marginLeft={1} variant={'body1'} component={'span'}>{row.level}</Typography>
+                  </Box>
+                </Box>
+              )
+            }
+            
+            // headerRenderer: (props: SortableHeaderCellProps<Row>) => <SortableHeaderCell {...props}
+            //                                                                              children={<Typography
+            //                                                                                  variant={'body1'}
+            //                                                                                  paddingLeft={2}
+            //                                                                                  component={'span'}>{t('labelLevel')}</Typography>}/>,
+            // formatter: ({row}) => <Typography variant={'body1'}
+            //                                   component={'span'}>{row.level}</Typography>
         },
-        {key: 'orderBook', name: 'labelOrderbook'},
-        {key: 'AMM', name: 'AMM'},
-        {key: 'deposit', name: 'labelDeposit'},
-        {key: 'withdraw', name: 'labelWithdraw'},
-        {key: 'setPublicKey', name: 'labelSetPublicKey'}
-    ];
+        {key: 'tradeVolume', name: t('labelVipTable30dTradeVolume')},
+        {key: 'rule', name: t('labelVipTableRule')},
+        {key: 'balance', name: t('labelVipTableBalance')},
+        {key: 'maker', name: t('labelVipTableMaker')},
+        {key: 'taker', name: t('labelVipTableTaker')}
+    ], [currentLevel])
 
+    const defaultArgs: any = {
+      columnMode: getColumnModeTransaction({t, ...rest}),
+      generateRows: (rawData: any) => rawData,
+      generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
+    }
 
-    const vipTableArgs = {
-        rawData: rawData,
-        columnMode: columnModeDefault,
-        generateRows: generateRows,
-        generateColumns: generateColumns,
-    };
-    return <TableStyle<Row, unknown> {...{...vipTableArgs, t, ...rest}}  />
+    return <TableStyle<Row, unknown> {...{...defaultArgs, t, ...rest, rawData}}  />
 
 })

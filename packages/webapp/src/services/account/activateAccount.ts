@@ -17,7 +17,7 @@ export async function activeAccount({reason, shouldShow}: { reason: any, shouldS
         myLog('SignAccount')
         store.dispatch(setShowConnect({isShow: false}));
         store.dispatch(setShowAccount({isShow: true, step: AccountStep.UpdateAccount}));
-        store.dispatch(updateAccountStatus({readyState: AccountStatus.DEPOSITING}));
+        store.dispatch(updateAccountStatus({readyState: AccountStatus.NOT_ACTIVE}));
 
     } else {
         // need to deposit.
