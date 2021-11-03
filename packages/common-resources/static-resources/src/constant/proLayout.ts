@@ -50,7 +50,7 @@ const basicLayout = {
         'sm': [
             {i: 'toolbar', x: 0, y: 0, w: 12, h: 9, minW: 12, minH: 9},
             {i: 'walletInfo', x: 0, y: 75, w: 3, h: 28, minW: 3, minH: 22},
-            {i: 'spot', x: 0, y: 14, w: 3, h: 70, minW: 3, minH: 66},
+            {i: 'spot', x: 0, y: 14, w: 3, h: 66, minW: 3, minH: 66},
             {i: 'market', x: 3, y: 10, w: 3, h: 58, minW: 3, minH: 58},
             {i: 'market2', x: 0, y: 0, w: 0, h: 0, minW: 0, minH: 0},
             {i: 'chart', x: 6, y: 10, w: 6, h: 58, minW: 6, minH: 32},
@@ -59,7 +59,7 @@ const basicLayout = {
         'xs': [
             {i:'toolbar',   x:0,y:0,w:12,h:9, minW:12,minH:9},
             {i:'walletInfo',x:0,y:75,w:4,h:28,minW:3, minH:22},
-            {i:'spot',      x:0,y:14,w:4,h:70,minW:3, minH:66},
+            {i:'spot',      x:0,y:14,w:4,h:66,minW:3, minH:66},
             {i:'market',    x:4,y:10,w:3,h:58,minW:3,minH:58},
             {i:'market2',   x:0,y:0, w:0,h:0, minW:0,minH:0},
             {i:'chart',     x:7,y:10,w:5,h:58,minW:6,minH:32},

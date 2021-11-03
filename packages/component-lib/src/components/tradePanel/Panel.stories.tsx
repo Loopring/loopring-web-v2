@@ -33,7 +33,6 @@ import {
 
 import {
     DepositPanel,
-    TransferPanel,
     WithdrawPanel,
 } from '../modal'
 
@@ -144,19 +143,20 @@ let transferProps: TransferProps<any, any> = {
         return {error: true, message: 'any error'}
     }
 }
+// @ts-ignore
 let resetProps: ResetProps<any> = {
     tradeData,
     coinMap,
     walletMap,
     resetBtnStatus: TradeBtnStatus.AVAILABLE,
-    onResetClick: (tradeData: SwapTradeData<CoinType>) => {
-        console.log('Swap button click', tradeData);
-    },
+    // onResetClick: (tradeData: SwapTradeData<CoinType>) => {
+    //     console.log('Swap button click', tradeData);
+    // },
     handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise((res) => {
             setTimeout(() => {
                 console.log('wait 100, with props', props, switchType);
-                res();
+                // res();
             }, 500)
         })
     },
@@ -203,14 +203,14 @@ let _ammProps: AmmProps<AmmJoinData<IBData<any>>, AmmExitData<IBData<any>>, any,
     }
 }
 
-const WrapTransferPanel = (rest: any) => {
+const WrapTransferPanell = (rest: any) => {
     const dispatch = useDispatch();
     dispatch(setShowTransfer({isShow: false}));
     return <> <Grid item sm={6}>
-        <TransferPanel {...transferProps} {...rest}> </TransferPanel>
+        <TransferPanell {...transferProps} {...rest}> </TransferPanell>
     </Grid>
         <Grid item sm={6}>
-            <TransferPanel  {...rest}> </TransferPanel>
+            <TransferPanell  {...rest}> </TransferPanell>
         </Grid>
         <Grid item sm={12}>
 
@@ -361,7 +361,12 @@ const WrapAmmPanel = (rest: any) => {
 }
 
 const ModalPanelWrap = () => {
-    return <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} depositProps={depositProps}
+    return <ModalPanel transferProps={transferProps}
+                       depositProps={depositProps}
+                       withdrawProps={withdrawProps}
+                       nftTransferProps={transferProps}
+                       nftDepositProps={depositProps}
+                       nftWithdrawProps={withdrawProps}
                        resetProps={resetProps} ammProps={_ammProps} swapProps={swapProps}/>
 }
 
@@ -394,9 +399,9 @@ const Template: Story<any> = () => {
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
                 <WrapResetPanel/>
             </Grid>
-            <h4>TransferPanel</h4>
+            <h4>TransferPanell</h4>
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
-                <WrapTransferPanel/>
+                <WrapTransferPanell/>
             </Grid>
             <h4>WithdrawPanel</h4>
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>

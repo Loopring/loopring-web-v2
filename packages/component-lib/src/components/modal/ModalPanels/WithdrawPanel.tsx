@@ -2,7 +2,7 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { WithdrawProps } from '../../tradePanel/Interface';
 import { IBData } from '@loopring-web/common-resources';
-import { TradeMenuList, useBasicTrade, WithdrawWrap } from '../../tradePanel/components';
+import { TradeMenuList, useBasicTrade, /* WithdrawWrap */ WithdrawWrap } from '../../tradePanel/components';
 import React from 'react';
 
 export const WithdrawPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
@@ -15,11 +15,13 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
 
         // walletMap,
         // coinMap,
+        type='TOKEN',
         chargeFeeTokenList,
         onWithdrawClick,
         withdrawBtnStatus,
+        assetsData,
         ...rest
-    }: WithdrawProps<T, I> & WithTranslation) => {
+    }: WithdrawProps<T, I> & WithTranslation & { assetsData: any[] }) => {
 
     // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
     //     to: 'button',
@@ -34,23 +36,23 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
         index,
         switchData
 
-    } = useBasicTrade({...rest});
+    } = useBasicTrade({...rest,type});
 
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
         panelList: [{
             key: "trade",
             element: React.useMemo( () => <WithdrawWrap<T, I> key={"transfer"}
-                                               {...{
-                                                   ...rest,
+                                                              {...{
+                                                   ...rest, type,
                                                    chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
                                                    tradeData: switchData.tradeData,
                                                    onChangeEvent,
                                                    disabled: !!rest.disabled,
                                                    onWithdrawClick,
                                                    withdrawBtnStatus,
-
-                                               }} />,[onChangeEvent,chargeFeeTokenList,rest,switchData,onWithdrawClick,withdrawBtnStatus]),
+                                                   assetsData,
+                                               }} />,[onChangeEvent,chargeFeeTokenList,rest,switchData,onWithdrawClick,withdrawBtnStatus, assetsData]),
             toolBarItem: undefined
         },
             {

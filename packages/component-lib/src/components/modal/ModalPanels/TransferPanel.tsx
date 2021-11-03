@@ -15,11 +15,14 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
 
         // walletMap,
         // coinMap,
+        isThumb = true,
+        type='TOKEN',
         chargeFeeTokenList,
         onTransferClick,
         transferBtnStatus,
+        assetsData,
         ...rest
-    }: TransferProps<T, I> & WithTranslation) => {
+    }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
 
     // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
     //     to: 'button',
@@ -34,7 +37,7 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
         index,
         switchData
 
-    } = useBasicTrade({...rest});
+    } = useBasicTrade({...rest,type});
 
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
@@ -42,15 +45,16 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
             key: "trade",
             element: React.useMemo(() => <TransferWrap<T, I> key={"transfer"}
                                                              {...{
-                                                                 ...rest,
-                                                                 chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
+                                                                 ...rest,  type,
+                                                                 chargeFeeTokenList: chargeFeeTokenList || [],
                                                                  tradeData: switchData.tradeData,
                                                                  onChangeEvent,
+                                                                 isThumb,
                                                                  disabled: !!rest.disabled,
                                                                  onTransferClick,
                                                                  transferBtnStatus,
-
-                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus]),
+                                                                 assetsData,
+                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus, assetsData]),
             toolBarItem: undefined
         },
             {

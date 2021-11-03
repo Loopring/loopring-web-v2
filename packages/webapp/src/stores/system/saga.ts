@@ -100,8 +100,9 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             const etherscanBaseUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
             let allowTrade;
             try{
-               allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
 
+               allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
+              
             } catch {
                 allowTrade =  {register: {enable:false},
                     order: {enable:false},

@@ -134,5 +134,10 @@ export default {
     labelOrderCancel: 'Cancel',
     labelTradeProPrice: 'Price ({{symbol}})',
     labelTradeProAmount: 'Amount ({{symbol}})',
-
+    labelVipTableLevel: 'Level',
+    labelVipTable30dTradeVolume: '30d Trade Volume',
+    labelVipTableRule: 'and / or',
+    labelVipTableBalance: 'LRC Balance',
+    labelVipTableMaker: 'Maker',
+    labelVipTableTaker: 'Taker',
 }

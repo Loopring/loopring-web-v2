@@ -29,6 +29,9 @@ export function usePairMatch<C extends { [ key: string ]: any }>(path: string): 
 
     let realMarket: MarketType | undefined = `${coinA}-${coinB}`
 
+    let coinAInfo = coinMap[ coinA ]
+    let coinBInfo = coinMap[ coinB ]
+
     if (market) {
 
         const matchRes = market.match(/(\w+)-(\w+)/i)
@@ -38,13 +41,17 @@ export function usePairMatch<C extends { [ key: string ]: any }>(path: string): 
             coinB = matchRes[ 2 ]
         }
 
-        const {market: marketTemp} = getExistedMarket(marketArray, coinA, coinB)
-        realMarket = marketTemp
+        const marketTemp = getExistedMarket(marketArray, coinA, coinB).market
+        if(marketTemp){
+            realMarket = marketTemp;
+            coinAInfo = coinMap[ coinA ]
+            coinBInfo = coinMap[ coinB ]
+        }
 
     }
 
-    const coinAInfo = coinMap[ coinA ]
-    const coinBInfo = coinMap[ coinB ]
+
+
 
     // setPair({ coinAInfo, coinBInfo, })
     // setRealMarket(realMarket)

@@ -188,7 +188,7 @@ let ammProps: AmmProps<AmmExitData<IBData<any>>, any, AmmInData<any>, any> = {
 }
 
 const ModalPanelWrap = () => {
-    return <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} depositProps={depositProps}
+    return <ModalPanel transferProps={transferProps} withdrawProps={withdrawProps} depositProps={depositProps}
                        resetProps={resetProps}
                        ammProps={ammProps as AmmProps<any, any, any, any>}
                        swapProps={swapProps} assetsData={resetProps as any}
