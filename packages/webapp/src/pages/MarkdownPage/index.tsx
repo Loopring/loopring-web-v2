@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, } from '@mui/material';
 import { useRouteMatch } from 'react-router-dom';
 import React from 'react';
 import { EmptyDefault } from '@loopring-web/component-lib';
