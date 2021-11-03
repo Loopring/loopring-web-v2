@@ -14,12 +14,12 @@ import cssStyle from 'github-markdown-css/github-markdown.css';
 // //@ts-ignore
 // import cssLightStyle from  'github-markdown-css/github-markdown-light.css'
 // ${theme.mode === 'dark'?cssDarkStyle:cssLightStyle}
-// const url_path = 'https://static.loopring.io/documents'
-const url_path = 'https://raw.githubusercontent.com/Loopring/website/update_app_download_url/loopring.io/public/'
+const url_path = 'https://static.loopring.io/documents'
 const style = css`${cssStyle}`
 const BoxStyle = styled(Grid)`
   ${({theme}) => `
       .markdown-body{
+      
         border-radius: ${theme.unit / 2}px;
         max-width:1200px;
       }
