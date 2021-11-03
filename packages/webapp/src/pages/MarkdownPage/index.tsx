@@ -106,12 +106,12 @@ export const MarkDonwPage = () => {
     }, [path]);
     const theme = useTheme()
 
-    return <BoxStyle container  flex={1}
+    return <BoxStyle container minHeight={'calc(100% - 260px)'}  flex={1}  
                      marginTop={0} marginBottom={2}>
         <Grid item xs={12}>
-            {input ? <Box padding={3} boxSizing={'border-box'}
+            {input ? <Box flex={1} padding={3} boxSizing={'border-box'}
                           className={`day night ${theme.mode}-scheme markdown-body MuiPaper-elevation2`}>
-                <ReactMarkdown plugins={[gfm]} children={input}/></Box> : <EmptyDefault message={() =>
+                <ReactMarkdown plugins={[gfm]} children={input}/></Box> : <EmptyDefault height={'100%'}  message={() =>
                 <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>No Content</Box>}/>
             }
         </Grid>

@@ -112,9 +112,18 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                     <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
                     <Route exact path='/liquidity/amm-mining'><ContentWrap><LiquidityPage/></ContentWrap> </Route>
                     <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
-                    <Route exact path='/report'><ContentWrap><ReportPage/></ContentWrap></Route>
-                    <Route exact path='/document'><ContentWrap><MarkDonwPage/></ContentWrap></Route>
-                    <Route exact path='/document/:path'><ContentWrap><MarkDonwPage/></ContentWrap></Route>
+                    <Route exact path='/report'>
+                        <Header isHideOnScroll={true} isLandPage />
+                        <ReportPage/>
+                    </Route>
+                    <Route exact path='/document'>
+                        <Header isHideOnScroll={true} isLandPage />
+                        <MarkDonwPage/>
+                    </Route>
+                    <Route exact path='/document/:path'>
+                        <Header isHideOnScroll={true} isLandPage />
+                        <MarkDonwPage/>
+                    </Route>
 
                 </>}
 
