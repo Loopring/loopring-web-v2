@@ -1,13 +1,4 @@
-import {
-    AssetsIcon,
-    L2HistoryIcon,
-    L2MyLiquidityIcon,
-    L2OrderIcon,
-    // RedPockIcon,
-    // RewardIcon,
-    SecurityIcon,
-    VipIcon,
-} from '../svg';
+import { AssetsIcon, L2HistoryIcon, L2MyLiquidityIcon, L2OrderIcon, SecurityIcon, VipIcon, } from '../svg';
 
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
 
@@ -46,16 +37,16 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [{
         id: 'Classic', i18nKey: 'labelClassic',
         description: 'labelClassicDescription',
     },
-     router: {path: '/trade/lite/LRC-ETH'},
+    router: {path: '/trade/lite/LRC-ETH'},
 },
-{
-    label: {
-        id: 'Advanced', i18nKey: 'labelAdvanced',
-        //TODO: translate id
-        description: 'labelAdvancedDescription',
+    {
+        label: {
+            id: 'Advanced', i18nKey: 'labelAdvanced',
+            //TODO: translate id
+            description: 'labelAdvancedDescription',
+        },
+        router: {path: '/trade/pro/LRC-ETH'},
     },
-    router: { path: '/trade/pro/LRC-ETH' },
-},
 ]
 
 
@@ -72,8 +63,9 @@ export enum NavListIndex {
     liquidity,
     layer2
 }
-export const orderDisableList = [ 'Liquidity', 'Markets','Trading' ,'Mining' ]
-export const ammDisableList = [ 'Liquidity' ]
+
+export const orderDisableList = ['Liquidity', 'Markets', 'Trading', 'Mining']
+export const ammDisableList = ['Liquidity']
 
 export let headerMenuData: Array<HeaderMenuItemInterface> = [
     {
@@ -121,6 +113,12 @@ export const subMenuLayer2 = {
         label: {
             id: 'assets', i18nKey: 'labelAssets',
         },
+    // }, {
+    //     icon: L2MyLiquidityIcon,
+    //     router: {path: '/layer2/my-nft'},
+    //     label: {
+    //         id: 'my-nft', i18nKey: 'labelMyNFT',
+    //     }
     }, {
         icon: L2MyLiquidityIcon,
         router: {path: '/layer2/my-liquidity'},
@@ -140,18 +138,18 @@ export const subMenuLayer2 = {
         label: {
             id: 'order', i18nKey: 'labelOrder'
         }
-    // }, {
-    //     icon: RewardIcon,
-    //     router: {path: '/layer2/rewards'},
-    //     label: {
-    //         id: 'reward', i18nKey: 'labelReward',
-    //     },
-    // }, {
-    //     icon: RedPockIcon,
-    //     router: {path: '/layer2/redpock'},
-    //     label: {
-    //         id: 'redpock', i18nKey: 'labelRedPock',
-    //     },
+        // }, {
+        //     icon: RewardIcon,
+        //     router: {path: '/layer2/rewards'},
+        //     label: {
+        //         id: 'reward', i18nKey: 'labelReward',
+        //     },
+        // }, {
+        //     icon: RedPockIcon,
+        //     router: {path: '/layer2/redpock'},
+        //     label: {
+        //         id: 'redpock', i18nKey: 'labelRedPock',
+        //     },
     }
     ],
     settingGroup: [{
@@ -161,15 +159,15 @@ export const subMenuLayer2 = {
             id: 'security',
             i18nKey: 'labelSecurity',
         }
-    }, 
-    {
-        icon: VipIcon,
-        router: {path: '/layer2/vip'},
-        label: {
-            id: 'vipPanel',
-            i18nKey: 'labelVipPanel',
-        },
-    }]
+    },
+        {
+            icon: VipIcon,
+            router: {path: '/layer2/vip'},
+            label: {
+                id: 'vipPanel',
+                i18nKey: 'labelVipPanel',
+            },
+        }]
 }
 
 
@@ -208,7 +206,7 @@ export const subMenuLayer2 = {
 //     //     icon: MakerRebatesIcon,
 //     //     router: {path: '/liquidity/maker-rebates'},
 //     //     label: {
-//     //         id: 'maker-rebates',
+//     //         id: 'maker-rebates',                                             a
 //     //         i18nKey: 'labelMakerRebates',
 //     //     },
 //     // }

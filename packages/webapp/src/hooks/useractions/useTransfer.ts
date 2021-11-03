@@ -229,6 +229,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
         if (readyState === AccountStatus.ACTIVATED && tokenMap && LoopringAPI.userAPI
             && exchangeInfo && connectProvides.usedWeb3
+            && transferValue.address !== '*'
             && transferValue?.belong && tranferFeeInfo?.belong && eddsaKey?.sk) {
 
             try {
@@ -283,7 +284,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             return false
         }
 
-    }, [processRequest, account, tokenMap, tranferFeeInfo?.belong, transferValue, address])
+    }, [processRequest, account, tokenMap, tranferFeeInfo?.belong, transferValue, address,realAddr])
 
     const handlePanelEvent = useCallback(async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {

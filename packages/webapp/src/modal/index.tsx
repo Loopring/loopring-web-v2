@@ -1,4 +1,10 @@
-import { AlertNotSupport, ModalSettingFee, useOpenModals } from '@loopring-web/component-lib';
+import {
+    AlertNotSupport,
+    ModalCloseButton,
+    ModalSettingFee,
+    SwitchPanelStyled,
+    useOpenModals
+} from '@loopring-web/component-lib';
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
@@ -7,6 +13,7 @@ import { useAccountModal } from 'hooks/useractions/useAccountModal';
 import React from 'react'
 import { useAccount } from 'stores/account';
 import { AccountStatus } from '@loopring-web/common-resources';
+import { Box, Modal as MuiModal, Modal } from '@mui/material';
 
 export const ModalGroup = withTranslation('common', {
     withRef: true,
@@ -21,7 +28,7 @@ export const ModalGroup = withTranslation('common', {
         onAccountInfoPanelClose?: (event: MouseEvent) => void
     }) => {
     const {etherscanBaseUrl} = useSystem();
-    const {modals: {isShowFeeSetting}, setShowFeeSetting} = useOpenModals();
+    const {modals: {isShowFeeSetting,isShowIFrame}, setShowFeeSetting,setShowIFrame} = useOpenModals();
 
     useAccountModal()
 
@@ -65,6 +72,22 @@ export const ModalGroup = withTranslation('common', {
         ></ModalAccountInfo>
         <ModalSettingFee open={isShowFeeSetting.isShow}
             onClose={() => setShowFeeSetting({isShow: false})}/>
+        <MuiModal
+            open={isShowIFrame.isShow}
+            onClose={() => setShowIFrame({isShow: false,url:''})}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <SwitchPanelStyled width={'80%'} position={'relative'}
+                               style={{alignItems:'stretch'}}>
+                <Box display={'flex'} width={"100%"} flexDirection={'column'}>
+                    <ModalCloseButton onClose={() => setShowIFrame({isShow: false,url:''})}  {...rest} />
+                    {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
+                </Box>
+                <iframe src={isShowIFrame.url}/>
+
+            </SwitchPanelStyled>
+        </MuiModal>
     </>
 
 })

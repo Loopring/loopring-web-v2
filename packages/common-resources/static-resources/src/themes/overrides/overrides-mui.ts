@@ -967,3 +967,21 @@ export const MuiSnackbar = () => {
         }
     }
 }
+
+export const MuiLinearProgress = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            root: {
+                height: '0.8rem',
+            },
+            barColorPrimary: {
+                backgroundColor: colorBase.star,
+                borderRadius: '28px',
+            },
+            determinate: {
+                backgroundColor: colorBase.borderHover,
+                borderRadius: '28px',
+            }
+        }
+    }
+}

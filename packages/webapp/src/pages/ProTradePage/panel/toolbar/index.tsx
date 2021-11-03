@@ -296,7 +296,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                                 favoriteMarket={favoriteMarket}
                                 addFavoriteMarket={addMarket}
                                 removeFavoriteMarket={removeMarket}
-                                onRowClick={(_, row) => {
+                                onRowClick={(_:any, row:any) => {
                                     handleOnMarketChange(`${row.pair.coinA}-${row.pair.coinB}` as MarketType);
                                     popState.setOpen(false);
                                     setIsDropdownOpen(false);

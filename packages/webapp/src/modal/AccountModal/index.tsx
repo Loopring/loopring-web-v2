@@ -30,6 +30,9 @@ export const ModalAccountInfo = withTranslation('common')(({
         transferProps,
         withdrawProps,
         depositProps,
+        nftTransferProps,
+        nftWithdrawProps,
+        nftDepositProps,
         resetProps,
         exportAccountProps,
         assetsRawData,
@@ -51,10 +54,10 @@ export const ModalAccountInfo = withTranslation('common')(({
             setWithdrawToastOpen(false)
         }}/>
 
-        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
-               autoHideDuration={TOAST_TIME} onClose={() => {
-            setWithdrawToastOpen(false)
-        }}/>
+        {/*<Toast alertText={transferAlertText as string} open={transferToastOpen}*/}
+        {/*       autoHideDuration={TOAST_TIME} onClose={() => {*/}
+        {/*    setWithdrawToastOpen(false)*/}
+        {/*}}/>*/}
 
         <Toast alertText={exportAccountAlertText as string} open={exportAccountToastOpen}
             autoHideDuration={TOAST_TIME} onClose={() => {
@@ -62,8 +65,11 @@ export const ModalAccountInfo = withTranslation('common')(({
         }} severity={"success"}/>
 
         <ModalPanel transferProps={transferProps}
-                    withDrawProps={withdrawProps}
+                    withdrawProps={withdrawProps}
                     depositProps={depositProps}
+                    nftTransferProps={nftTransferProps}
+                    nftDepositProps={nftDepositProps}
+                    nftWithdrawProps={nftWithdrawProps}
                     resetProps={resetProps}
                     exportAccountProps={exportAccountProps}
                     ammProps={{} as any}

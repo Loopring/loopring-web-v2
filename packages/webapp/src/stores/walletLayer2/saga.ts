@@ -15,10 +15,11 @@ const getWalletLayer2Balance = async <R extends { [ key: string ]: any }>() => {
     // const exchangeApi = exchangeAPI();
     const {accountId, apiKey} = store.getState().account;
     const {tokenMap, idIndex, marketCoins} = store.getState().tokenMap;
-    let walletLayer2;
+    let walletLayer2,userNFTBalances;
     if (apiKey && accountId && LoopringAPI.userAPI) {
         // @ts-ignore
         const {userBalances} = await LoopringAPI.userAPI.getUserBalances({accountId: accountId, tokens: ''}, apiKey)
+        userNFTBalances =  (await LoopringAPI.userAPI.getUserNFTBalances({accountId: accountId}, apiKey)).userNFTBalances;
         if (userBalances) {
             // tokenId: number;
             // total: string;
@@ -32,16 +33,22 @@ const getWalletLayer2Balance = async <R extends { [ key: string ]: any }>() => {
                 return {...prev, [ idIndex[ item ] ]: userBalances[ Number(item) ]}
             }, {} as WalletLayer2Map<R>)
         }
+        // if(userNFTBalances){
+        //     nftLayer = Reflect.ownKeys(userNFTBalances).reduce((prev, item) => {
+        //         // @ts-ignore
+        //         return {...prev, [ idIndex[ item ] ]: userBalances[ Number(item) ]}
+        //     }, {} as WalletLayer2Map<R>)
+        // }
     }
 
-    return {walletLayer2}
+    return {walletLayer2,nftLayer2:userNFTBalances??[]}
 };
 
 export function* getPostsSaga() {
     try {
         //
-        const {walletLayer2} = yield call(getWalletLayer2Balance);
-        yield put(getWalletLayer2Status({walletLayer2}));
+        const {walletLayer2,nftLayer2} = yield call(getWalletLayer2Balance);
+        yield put(getWalletLayer2Status({walletLayer2,nftLayer2}));
     } catch (err) {
         yield put(getWalletLayer2Status(err));
     }

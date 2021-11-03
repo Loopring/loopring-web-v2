@@ -14,7 +14,8 @@ export type InputButtonProps<T, R, I> = {
     emptyText: string,
     coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>,
     placeholderText?: string,
-    decimalsLimit?:number
+    decimalsLimit?:number,
+    allowDecimals?:boolean,
     isAllowBalanceClick?: boolean,
     maxAllow?: boolean,
     disabled?: boolean,
@@ -38,10 +39,12 @@ export type InputCoinProps<T, R, I> = {
     subLabel?: string,
     coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>,
     placeholderText?: string,
+    allowDecimals?:boolean
     maxAllow?: boolean,
     decimalsLimit?:number
     disabled?: boolean,
     logoColor?: string,
+    noBalance?:string,
     wait?: number,
     isHideError?:boolean,
     handleCountChange?: (ibData: T,name:string, ref: React.ForwardedRef<any>) => void,
