@@ -61,7 +61,7 @@ Loopring: [
     },
     {
         linkName: 'Terms',
-        linkHref: "https://loopring.io/#/legal/terms/en"
+        linkHref: "https://www.iubenda.com/terms-and-conditions/74969935"
     },
     {
         linkName: 'Privacy',
