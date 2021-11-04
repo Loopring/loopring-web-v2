@@ -26,6 +26,6 @@ export function getTimestampDaysLater(days: number, date: Date = new Date()) {
 }
 
 export function getContactInfo(subject: string = 'report to loopring website', body: string = 'Body Content') {
-    const email = process.env.CONTACT_US_EMAIL ?? 'contact@loopring.io'
-    return `mailto:${email}?subject=${subject}&body=${body}`
+    // const email = process.env.CONTACT_US_EMAIL ?? 'contact@loopring.io'
+    return `https://loopring.io/#/report`
 }
