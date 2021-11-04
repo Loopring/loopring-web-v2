@@ -5,8 +5,9 @@ import * as mailTemplate from '@loopring-web/common-resources/mail.html'
 import React from 'react';
 
 const StyleBox= styled(Box)`
+  background-color: var(--color-box);
   #zohoSupportWebToCase textarea, #zohoSupportWebToCase input[type='text'], #zohoSupportWebToCase select, .wb_common {
-      width: 280px;
+      width: 100%;
   }
 
   #zohoSupportWebToCase td {
@@ -14,12 +15,33 @@ const StyleBox= styled(Box)`
   }
 
   #zohoSupportWebToCase textarea, #zohoSupportWebToCase input[type='text'], #zohoSupportWebToCase select {
-      border: 1px solid #ddd;
-      padding: 3px 0;
-      border-radius: 3px;
-      text-indent: .5em;
+      //border: 1px solid #ddd;
+      //padding: 3px 0;
+      //border-radius: 3px;
+    text-indent: .5em;
+    border-radius:4px;
+    border-color: var(--opacity);
+    background: var(--field-opacity);
+    padding:0.3rem 0.3rem 0.3rem 0.8rem;
+    font-size: 14px;
+    letter-spacing: inherit;
+    color: currentcolor;
+    border: 0px;
+    box-sizing: content-box;
+    height: 2em;
+    margin: 0px;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+    min-width: 0px;
+    width: 100%;
+    animation-name: mui-auto-fill-cancel;
+    animation-duration: 10ms;
   }
 
+  #zohoSupportWebToCase textarea:focus-visible, #zohoSupportWebToCase input[type='text']:focus-visible, #zohoSupportWebToCase select:focus-visible{
+    outline: 1px solid;
+  }
+  
   #zohoSupportWebToCase select {
       box-sizing: unset
   }
@@ -31,7 +53,21 @@ const StyleBox= styled(Box)`
   #zohoSupportWebToCase input.wb_cusInput {
       width: 108px
   }
-
+  .inline-flex{
+     display: flex;
+     flex-direction: column;
+     max-width: 300px;
+     margin: 0 auto;
+  }
+  .inline-flex label{
+    margin-top: 16px;
+    padding-bottom: 8px;
+  }
+  .zsCaptchablock{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   .wb_FtCon {
       display: flex;
       align-items: center;
@@ -52,7 +88,7 @@ const StyleBox= styled(Box)`
 
   .zsFormClass {
       //background-color: #FFFFFF;
-      width: 600px
+      //width: 600px
   
   }
   .zsFontClass {
@@ -205,7 +241,8 @@ export const ReportPage = ()=>{
             // ref.current.removeEventListener('readystatechange',renderCall)
         }
     },[ref.current])
-    return <StyleBox display={'flex'} flexDirection={'column'} flex={1}  marginTop={3} >
+    return <StyleBox display={'flex'} className={'MuiPaper-elevation2'}
+                     flexDirection={'column'} flex={1}  marginTop={3} padding={3} borderRadius={1}>
         <div ref={ref} dangerouslySetInnerHTML={{__html: mailTemplate}}/>
     </StyleBox>
 }
