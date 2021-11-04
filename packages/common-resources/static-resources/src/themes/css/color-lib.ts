@@ -41,6 +41,7 @@ export const ColorDarkDefault = Object.freeze({
 
     boxLinear: 'linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%)',
     globalBg: '#1F2034',
+    globalBgOpacity: `${hexToRGB('#1F2034', '0.5')}`,
     fieldOpacity:`${hexToRGB('#ffffff', '0.1')}`,
     divide: '#444C75',
     boxSecondary: '#687295',
@@ -99,6 +100,7 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
 
     boxLinear: '#FFFFFF',
     globalBg: '#F6F7FB',
+    globalBgOpacity: `${hexToRGB('#F6F7FB', '0.5')}`,
     fieldOpacity:'#EEF1FA',
     divide: '#E9EAF2',
     boxSecondary: '#A3A8CA',

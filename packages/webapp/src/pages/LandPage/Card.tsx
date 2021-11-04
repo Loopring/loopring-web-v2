@@ -11,6 +11,7 @@ export type CardProps = {
 
 }
 const BoxStyle = styled(animated.div)`
+    width: 400px !important;
     svg{
       fill: ${({theme}: any) => theme.colorBase.textPrimary};
       .svg-high{
@@ -95,8 +96,8 @@ export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
         }}
         style={{
             transform: 'perspective(600px)',
-            height: 640,
-            width: 400,
+            height: 480,
+            // width: '400px !important',
             zIndex:to([zIndex],(zIndex)=>zIndex),
             background:to([background],(background)=>background),
             boxShadow:to([boxShadow],(boxShadow)=>boxShadow),
@@ -104,10 +105,11 @@ export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
             scale: to([scale, zoom],
                 (s,
                  z) => s * z),
-        }}>
-        <Box marginTop={10}>{icon}</Box>
+        }}
+        >
+        <Box marginTop={4}>{icon}</Box>
         <Box position={'absolute'} top={'40%'} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-            <Typography component={'h3'} marginTop={10}>
+            <Typography component={'h3'} marginTop={4}>
                 <Typography whiteSpace={'pre-line'} fontWeight={500} component={'h5'}  variant={'h3'}
                 >{t(title)}</Typography>
             </Typography>

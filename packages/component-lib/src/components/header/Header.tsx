@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger } from '@mui/material';
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger, Switch } from '@mui/material';
+import { Link as RouterLink } from "react-router-dom";
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { HeaderMenuSub, HeadMenuItem, Layer2Item, TabItemPlus } from '../basic-lib';
 import { HeaderProps, HeaderToolBarInterface } from './Interface';
@@ -10,22 +10,24 @@ import {
     HeaderMenuItemInterface,
     HeaderMenuTabStatus, SoursURL,
     // orderDisableList,
-    ToolBarAvailableItem
+    ToolBarAvailableItem,
+    ThemeType,
 } from '@loopring-web/common-resources';
 import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
+import { useSettings } from '../../stores/reducer/settings';
 
 const landingMenuData: Array<HeaderMenuItemInterface> = [
     {
         label: {
-            id: 'Layer2', i18nKey: 'labelLayer2',
+            id: 'layer2', i18nKey: 'zkRollup Layer2',
         },
         router: {path: '/layer2'},
         status: HeaderMenuTabStatus.default,
     },
     {
         label: {
-            id: 'Wallet', i18nKey: 'labelWallet',
+            id: 'wallet', i18nKey: 'labelSmartWallet',
         },
         router: {path: '/wallet'},
         status: HeaderMenuTabStatus.default,
@@ -82,9 +84,13 @@ const LogoStyle = styled(Typography)`
     color: var(--color-logo);
     display: block;
     font-size: 1rem;
-    right: -16px;
-    top: 16px;
+    line-height: 0.8rem;
+    right: -24px;
+    top: 14px;
     font-weight: 200;
+    border: 0.05rem solid var(--color-logo);
+    border-radius: 2px;
+    padding: 3px 2px;
   }
 
   a.MuiButtonBase-root {
@@ -183,7 +189,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    i18n,
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
-
+    const { themeMode, setTheme } = useSettings()
     const getMenuButtons = React.useCallback(({
                                 toolbarList,
                                 ...rest
@@ -194,12 +200,12 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         // toolbarList.map((item, index) =>);
     }, [])
 
-    const getSettingsButton = ({
-        toolbarList,
-        ...rest
-    }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
-        return <ToolBarItem {...{...toolbarList[2], ...rest}} />
-    }
+    // const getSettingsButton = ({
+    //     toolbarList,
+    //     ...rest
+    // }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
+    //     return <ToolBarItem {...{...toolbarList[2], ...rest}} />
+    // }
 
     const getDrawerChoices = React.useCallback(({
                                   menuList,
@@ -255,6 +261,14 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         });
     }, [allowTrade, selected])
 
+    const handleThemeClick = React.useCallback((e: any) => {
+        if (e.target.checked) {
+            setTheme(ThemeType.dark);
+        } else {
+            setTheme(ThemeType.light);
+        }
+    }, [setTheme])
+
     const displayDesktop = React.useMemo(() => {
         return (
             <ToolBarStyled>
@@ -267,10 +281,10 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                      color={'textColorSecondary'}>
                     {isLandPage ? (
                         <>
-                            <Box marginRight={1}>
-                                {getSettingsButton({toolbarList: headerToolBarData, i18n, ...rest})}
-                            </Box>
                             {getDrawerChoices({menuList: landingMenuData, i18n, ...rest})}
+                            <Switch aria-label={'change theme'}
+                                onClick={handleThemeClick} />
+                            {/* {getSettingsButton({toolbarList: headerToolBarData, i18n, ...rest})} */}
                         </>
                     ) : (
                         <>
@@ -288,7 +302,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
             {isWrap
-                ? <Container className={'wrap'} maxWidth='lg'>
+                ? <Container style={{ padding: 0 }} className={'wrap'} maxWidth='lg'>
                     {displayDesktop}
                     </Container>
                 : <Box marginX={2}>{displayDesktop}</Box>
@@ -297,4 +311,3 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
 
     );
 }));
-
