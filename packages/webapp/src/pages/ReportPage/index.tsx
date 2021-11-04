@@ -205,7 +205,7 @@ export const ReportPage = ()=>{
             // ref.current.removeEventListener('readystatechange',renderCall)
         }
     },[ref.current])
-    return <StyleBox display={'flex'} flexDirection={'column'} flex={1}>
+    return <StyleBox display={'flex'} flexDirection={'column'} flex={1}  marginTop={3} >
         <div ref={ref} dangerouslySetInnerHTML={{__html: mailTemplate}}/>
     </StyleBox>
 }

@@ -114,15 +114,31 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                     <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
                     <Route exact path='/report'>
                         <Header isHideOnScroll={true} isLandPage />
-                        <ReportPage/>
+                        <Container maxWidth="lg"
+                                   style={{
+                                       minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                                       display: 'flex',
+                                       flexDirection: 'column'
+                                   }}>
+                            <ReportPage/> </Container>
                     </Route>
                     <Route exact path='/document'>
                         <Header isHideOnScroll={true} isLandPage />
-                        <MarkDonwPage/>
+                        <Container maxWidth="lg"
+                                   style={{
+                                       minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                                       display: 'flex',
+                                       flexDirection: 'column'
+                                   }}> <MarkDonwPage/> </Container>
                     </Route>
                     <Route exact path='/document/:path'>
                         <Header isHideOnScroll={true} isLandPage />
-                        <MarkDonwPage/>
+                        <Container maxWidth="lg"
+                                   style={{
+                                       minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                                       display: 'flex',
+                                       flexDirection: 'column'
+                                   }}><MarkDonwPage/>     </Container>
                     </Route>
 
                 </>}
