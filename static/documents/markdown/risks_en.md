@@ -53,7 +53,7 @@ Untimely deposit of the basic token network is also a Risk shared by all the sec
 
 ## 3. OTHER RISKS
 
-In addition to the Risks described above, there are other known and unknown Risks associated with the use of the Loopring Applications.  If you have any questions, comments, or suggestions, please contact us via email: [wallet@loopring.io](mailto:wallet@loopring.io).
+In addition to the Risks described above, there are other known and unknown Risks associated with the use of the Loopring Applications.  If you have any questions, comments, or suggestions, please [contact us](https://loopring.io/#/report?noheader&nofooter).
 
 
 ---

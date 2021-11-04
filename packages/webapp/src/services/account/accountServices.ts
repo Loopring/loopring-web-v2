@@ -22,22 +22,6 @@ export const accountServices = {
             status: Commands.ProcessSign,
             data: undefined,
         })
-        // if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
-        //     const eddsaKey = await generateKeyPair(
-        //         connectProvides.usedWeb3,
-        //         account.accAddress,
-        //         exchangeInfo.exchangeAddress,
-        //         account.nonce - 1,
-        //         account.connectName as any,
-        //     )
-        //     const sk = toHex(toBig(eddsaKey.keyPair.secretKey))
-        //     const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
-        //         accountId: account.accountId
-        //     }, sk))
-        //
-        //     walletLayer2Services.sendAccountSigned(apiKey, eddsaKey)
-        //
-        // }
     },
     sendSignDeniedByUser: () => {
         subject.next({
@@ -148,7 +132,6 @@ export const accountServices = {
             data: accInfo
         })
     },
-
     sendCheckAcc: async () => {
         myLog('-------sendCheckAcc enter!')
         if (store) {

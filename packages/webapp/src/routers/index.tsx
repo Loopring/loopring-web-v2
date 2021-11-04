@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, useLocation } from 'react-router-dom'
 import React from 'react';
 import { Box, Container } from '@mui/material'
 import Header from 'layouts/header'
@@ -16,9 +16,9 @@ import { LoadingPage } from '../pages/LoadingPage';
 import { LandPage, WalletPage } from '../pages/LandPage'
 // import { LandPage } from '../pages/LandPage/LandPage';
 // import { WalletPage } from '../pages/LandPage/WalletPage'
-import { ErrorMap, SagaStatus } from '@loopring-web/common-resources';
+import { ErrorMap, SagaStatus, ThemeType } from '@loopring-web/common-resources';
 import { ErrorPage } from '../pages/ErrorPage';
-import { Footer } from '@loopring-web/component-lib';
+import { Footer, useSettings } from '@loopring-web/component-lib';
 import { ReportPage } from 'pages/ReportPage';
 import { MarkDonwPage } from '../pages/MarkdownPage';
 
@@ -52,8 +52,15 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
     // }, [location?.pathname])
     const proFlag = (process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === 'true')
     const {tickerMap} = useTicker();
-    // const {allowTrade} = useSystem();
-
+    const {setTheme} = useSettings();
+    const location = useLocation()
+    const query = new URLSearchParams(location.search);
+    React.useEffect(()=>{
+          if(query.has('theme')){
+              query.get('theme')===ThemeType.dark?setTheme('dark'):setTheme('light')
+          }
+    },[location.search])
+    // console.log(query)
     return <>
         <Switch>
             {/* <Route exact path='/landing-page'>
@@ -62,7 +69,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
             </Route> */}
 
             <Route exact path='/wallet'>
-                <Header isHideOnScroll={true} isLandPage />
+                {query && query.has('noheader')? <></>:<Header isHideOnScroll={true} isLandPage />}
                 <WalletPage />
             </Route>
 
@@ -75,8 +82,36 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                 {/* <ContentWrap> */}
                 {/* {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>} */}
                 {/* </ContentWrap> */}
-                <Header isHideOnScroll={true} isLandPage />
+                {query && query.has('noheader')? <></>:<Header isHideOnScroll={true} isLandPage />}
                 <LandPage/>
+            </Route>
+            <Route exact path='/report'>
+                {query && query.has('noheader')? <></>:<Header isHideOnScroll={true} isLandPage />}
+                <Container maxWidth="lg"
+                           style={{
+                               minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                               display: 'flex',
+                               flexDirection: 'column'
+                           }}>
+                    <ReportPage/> </Container>
+            </Route>
+            <Route exact path='/document'>
+                {query && query.has('noheader')? <></>:<Header isHideOnScroll={true} isLandPage />}
+                <Container maxWidth="lg"
+                           style={{
+                               minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                               display: 'flex',
+                               flexDirection: 'column'
+                           }}> <MarkDonwPage/> </Container>
+            </Route>
+            <Route exact path='/document/:path'>
+                {query && query.has('noheader')? <></>:<Header isHideOnScroll={true} isLandPage />}
+                <Container maxWidth="lg"
+                           style={{
+                               minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                               display: 'flex',
+                               flexDirection: 'column'
+                           }}><MarkDonwPage/>     </Container>
             </Route>
             {state === 'PENDING' ?
                 <LoadingPage/>
@@ -87,7 +122,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
 
                     {
                         proFlag && tickerMap && <Route path='/trade/pro'>
-                          <Header isHideOnScroll={true}/>
+                            {query && query.has('noheader')? <></>:<Header isHideOnScroll={true}/>}
                           <OrderbookPage/></Route>
                     }
                     {
@@ -111,40 +146,13 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                     <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
                     <Route exact path='/liquidity/amm-mining'><ContentWrap><LiquidityPage/></ContentWrap> </Route>
                     <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
-                    <Route exact path='/report'>
-                        <Header isHideOnScroll={true} isLandPage />
-                        <Container maxWidth="lg"
-                                   style={{
-                                       minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-                                       display: 'flex',
-                                       flexDirection: 'column'
-                                   }}>
-                            <ReportPage/> </Container>
-                    </Route>
-                    <Route exact path='/document'>
-                        <Header isHideOnScroll={true} isLandPage />
-                        <Container maxWidth="lg"
-                                   style={{
-                                       minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-                                       display: 'flex',
-                                       flexDirection: 'column'
-                                   }}> <MarkDonwPage/> </Container>
-                    </Route>
-                    <Route exact path='/document/:path'>
-                        <Header isHideOnScroll={true} isLandPage />
-                        <Container maxWidth="lg"
-                                   style={{
-                                       minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-                                       display: 'flex',
-                                       flexDirection: 'column'
-                                   }}><MarkDonwPage/>     </Container>
-                    </Route>
+
 
                 </>}
 
         </Switch>
         <ModalGroup/>
-        <Footer/>
+        {query && query.has('nofooter')? <></>:<Footer/>}
     </>
 }
 
