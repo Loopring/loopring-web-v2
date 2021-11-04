@@ -53,7 +53,7 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<ChainHashInfos, 
                     }
                 }
 
-                if(state[chainId].depositHashes[accountAddress].length > 5) {
+                if(state[chainId].depositHashes[accountAddress] && state[chainId].depositHashes[accountAddress].length > 5) {
                     state[chainId].depositHashes[accountAddress].length = 5
                 }
 
