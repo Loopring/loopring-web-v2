@@ -162,7 +162,7 @@ React.useLayoutEffect(() => {
 const linkListMapRender = React.useMemo(() => {
 
     return Reflect.ownKeys(linkListMap).map((key) => {
-        return <Box key={key.toString()} display={'flex'} flexDirection={'column'} justifyContent={'center'} /* padding={3} */>
+        return <Box key={key.toString()} minWidth={140} display={'flex'} flexDirection={'column'} justifyContent={'center'} /* padding={3} */>
             <Typography color={'var(--color-text-third)'} sx={{mt: 4, mb: 2}}
                         variant="body2" component="div"> {t('labelFooter' + key.toString())} </Typography>
             <Box display={'flex'} flexDirection={'column'} height={'100%'} justifyContent={'flex-start'}>
