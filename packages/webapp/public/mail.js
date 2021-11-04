@@ -481,9 +481,9 @@ function zsResetWebForm(webFormId) {
 
 window.__renderReportCall__ = function (){
   // function () {
-    if (document.readyState === 'complete' && window.zsRegenerateCaptcha) {
-      zsRegenerateCaptcha();
-    }
+  //   if (document.readyState === 'complete' && window.zsRegenerateCaptcha) {
+    zsRegenerateCaptcha();
+    // }
     setAllDependancyFieldsMapping();
     document.getElementById('zsSubmitButton_638510000000180873').removeAttribute('disabled');
     zsAttachedAttachmentsCount = 0;
