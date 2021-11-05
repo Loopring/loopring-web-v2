@@ -635,6 +635,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
 
             let { market: market } = sdk.getExistedMarket(marketArray, coinA, coinB);
             setMarket(market);
+            history.push('/trade/lite/'+_market);
             updatePageTradeLite({ market, tradePair })
 
             myLog('Market change getAmount', market)
