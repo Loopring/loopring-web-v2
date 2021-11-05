@@ -95,9 +95,9 @@ const ContainerStyle = styled(Box)`
 
 `
 const GridBg = styled(Grid)`
-  background-size: 100%;
+  background-size: 90%;
   background-repeat: no-repeat;
-  background-position: 120px calc(50% - -40px);
+  background-position: 120px calc(48%);
   //background-image: var(--img-banner-url);
 
 
@@ -289,7 +289,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             {t('labelH1TitleDetail')}
                         </Typography>
                         <Typography marginTop={8.5} width={260}>
-                            <Button onClick={() => history.push('/')} fullWidth={true} size={'large'}
+                            <Button onClick={() => history.push('/trade/lite/LRC-ETH')} fullWidth={true} size={'large'}
                                     variant={'contained'}
                                     style={{
                                         height: 64,
@@ -352,13 +352,13 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                 </Grid>
             </ContainerStyled>
         </Box>
-        <Box marginBottom={10}>
+        <Box marginBottom={12.5}>
             <ContainerStyled>
-                <Grid item xs={12} height={822}>
-                    <TitleTypography component={'h3'} marginTop={10} marginBottom={11}>
+                <Grid item xs={12}>
+                    <TitleTypography component={'h3'} marginTop={10} marginBottom={10}>
                         {t('labelZeroKpt')}
                     </TitleTypography>
-                    <CardBox /* height={640} */ position={'relative'}>
+                    <CardBox /* height={640} */ marginLeft={-1} position={'relative'}>
                         <Card
                             title={'labelSafety'}
                             describe={'describeSafety'}
@@ -451,7 +451,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             </Typography>
                             <Typography variant={'h3'} marginTop={2}>{t('labelH2TitleWallet')}</Typography>
                             <Typography marginTop={8} width={260}>
-                                <Button onClick={() => history.push('/layer2')} fullWidth={true} size={'large'}
+                                <Button onClick={() => history.push('/wallet')} fullWidth={true} size={'large'}
                                         variant={'contained'}
                                         style={{
                                             height: 64,
@@ -484,9 +484,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             {t('describeSuperpowers')}
                         </Typography>
                         <Typography marginTop={9} width={300}>
-                            <Button onClick={() => history.push({
-                                pathname: '/wallet'
-                            })} fullWidth={true} size={'large'}
+                            <Button onClick={() => window.open('https://docs.loopring.io/en/')} fullWidth={true} size={'large'}
                                     variant={'contained'}
                                     style={{
                                         height: 64,
