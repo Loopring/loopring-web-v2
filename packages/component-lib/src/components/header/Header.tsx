@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger, Switch, Grid } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger, Grid } from '@mui/material';
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { HeaderMenuSub, HeadMenuItem, Layer2Item, TabItemPlus } from '../basic-lib';
@@ -19,22 +19,15 @@ import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './to
 import React from 'react';
 import { useSettings } from '../../stores/reducer/settings';
 
-const landingMenuData: Array<HeaderMenuItemInterface> = [
-    {
-        label: {
-            id: 'layer2', i18nKey: 'zkRollup Layer2',
-        },
-        router: {path: '/layer2'},
-        status: HeaderMenuTabStatus.default,
-    },
-    {
-        label: {
-            id: 'wallet', i18nKey: 'labelSmartWallet',
-        },
-        router: {path: '/wallet'},
-        status: HeaderMenuTabStatus.default,
-    },
-]
+
+const GridStyled = styled(Grid)`
+    color: ${({iscurrentroute}: any) => iscurrentroute === 'true' ? 'var(--color-text-button-select)' : 'var(--color-text-secondary)' } ; 
+    &:hover {
+        color: var(--color-text-button-select);
+    };
+    font-size: 1.4rem;
+    cursor: pointer;
+` as any
 
 const GridStyled = styled(Grid)`
     color: ${({iscurrentroute}: any) => iscurrentroute === 'true' ? 'var(--color-text-button-select)' : 'var(--color-text-secondary)' } ; 
