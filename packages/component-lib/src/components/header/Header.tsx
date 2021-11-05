@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger, Switch } from '@mui/material';
-import { Link as RouterLink } from "react-router-dom";
+import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger, Grid } from '@mui/material';
+import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { HeaderMenuSub, HeadMenuItem, Layer2Item, TabItemPlus } from '../basic-lib';
 import { HeaderProps, HeaderToolBarInterface } from './Interface';
@@ -12,27 +12,22 @@ import {
     // orderDisableList,
     ToolBarAvailableItem,
     ThemeType,
+    LightIcon,
+    DarkIcon,
 } from '@loopring-web/common-resources';
 import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
 import { useSettings } from '../../stores/reducer/settings';
 
-const landingMenuData: Array<HeaderMenuItemInterface> = [
-    {
-        label: {
-            id: 'layer2', i18nKey: 'zkRollup Layer2',
-        },
-        router: {path: '/layer2'},
-        status: HeaderMenuTabStatus.default,
-    },
-    {
-        label: {
-            id: 'wallet', i18nKey: 'labelSmartWallet',
-        },
-        router: {path: '/wallet'},
-        status: HeaderMenuTabStatus.default,
-    },
-]
+
+const GridStyled = styled(Grid)`
+    color: ${({iscurrentroute}: any) => iscurrentroute === 'true' ? 'var(--color-text-button-select)' : 'var(--color-text-secondary)' } ; 
+    &:hover {
+        color: var(--color-text-button-select);
+    };
+    font-size: 1.4rem;
+    cursor: pointer;
+` as any
 
 const logoSVG = SoursURL+'svg/logo.svg'
 const ToolBarStyled = styled(Toolbar)`
@@ -190,6 +185,8 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
     const { themeMode, setTheme } = useSettings()
+    const history = useHistory()
+    const location = useLocation()
     const getMenuButtons = React.useCallback(({
                                 toolbarList,
                                 ...rest
@@ -261,13 +258,9 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         });
     }, [allowTrade, selected])
 
-    const handleThemeClick = React.useCallback((e: any) => {
-        if (e.target.checked) {
-            setTheme(ThemeType.dark);
-        } else {
-            setTheme(ThemeType.light);
-        }
-    }, [setTheme])
+    const handleThemeClick = React.useCallback(() => {
+        setTheme(themeMode === 'light' ? ThemeType.dark : ThemeType.light);
+    }, [themeMode, setTheme])
 
     const displayDesktop = React.useMemo(() => {
         return (
@@ -281,10 +274,17 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                      color={'textColorSecondary'}>
                     {isLandPage ? (
                         <>
-                            {getDrawerChoices({menuList: landingMenuData, i18n, ...rest})}
-                            <Switch aria-label={'change theme'}
-                                onClick={handleThemeClick} />
-                            {/* {getSettingsButton({toolbarList: headerToolBarData, i18n, ...rest})} */}
+                            {/* {getDrawerChoices({menuList: landingMenuData, i18n, ...rest})} */}
+                            <Grid container spacing={4}>
+                                <GridStyled 
+                                    iscurrentroute={location.pathname === '/' ? 'true' : 'false'}
+                                    item
+                                    onClick={() => history.push('/')}>zkRollup Layer2</GridStyled>
+                                <GridStyled iscurrentroute={location.pathname === '/wallet' ? 'true' : 'false'} item onClick={() => history.push('/wallet')}>Smart Wallet</GridStyled>
+                            </Grid>
+                            <Box marginLeft={4} style={{ cursor: 'pointer' }} onClick={handleThemeClick}>
+                                {themeMode === 'dark' ? <LightIcon /> : <DarkIcon />}
+                            </Box>
                         </>
                     ) : (
                         <>
@@ -299,15 +299,21 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         );
     }, [headerToolBarData, headerMenuData, getDrawerChoices, getMenuButtons, i18n, rest, isLandPage]);
 
+    const paddingStyle = {
+        paddingTop: 0,
+        paddingRight: isLandPage ? 0 : 24,
+        paddingBottom: 0,
+        paddingLeft: isLandPage ? 0 : 24,
+    }
+
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
             {isWrap
-                ? <Container style={{ padding: 0 }} className={'wrap'} maxWidth='lg'>
+                ? <Container style={paddingStyle} className={'wrap'} maxWidth='lg'>
                     {displayDesktop}
                     </Container>
                 : <Box marginX={2}>{displayDesktop}</Box>
             }
         </HeaderStyled>
-
     );
 }));
