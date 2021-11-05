@@ -8,7 +8,7 @@ import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 export const makeTickView = (tick: Partial<TickerData>) => {
     // const {forex} = store.getState().system;
 
-    const {faitPrices, forex} = store.getState().system;
+    const {fiatPrices, forex} = store.getState().system;
     if (tick) {
         const floatTag = ((tick.close ?? 0) || (tick.open ?? 0)) || tick.open === tick.close ? FloatTag.none :
             tick.close > tick.open ? FloatTag.increase : FloatTag.decrease
@@ -26,12 +26,12 @@ export const makeTickView = (tick: Partial<TickerData>) => {
 
             // APR: 0,
         }
-        if (faitPrices && forex && tick.close) {
+        if (fiatPrices && forex && tick.close) {
             const volume = VolToNumberWithPrecision((tick.base_token_volume ?? 0), tick.base as string)
-            // const priceDollar = toBig(tiem).times(faitPrices[ tick.base as string ] ? faitPrices[ tick.base as string ].price : 0);
+            // const priceDollar = toBig(tiem).times(fiatPrices[ tick.base as string ] ? fiatPrices[ tick.base as string ].price : 0);
             // const priceYuan = priceDollar.times(forex);
 
-            const qPrice = tick.quote === 'DAI' ? 1 : faitPrices[ tick.quote as string ]?.price ? faitPrices[ tick.quote as string ].price : 0;
+            const qPrice = tick.quote === 'DAI' ? 1 : fiatPrices[ tick.quote as string ]?.price ? fiatPrices[ tick.quote as string ].price : 0;
             const closeDollar = toBig(tick.close).times(qPrice);
             const closeYuan = closeDollar.times(forex);
 
@@ -49,14 +49,14 @@ export const makeTickView = (tick: Partial<TickerData>) => {
 
 }
 export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: { tickerMap: LoopringMap<TickerData> }): TickerMap<{ [ key: string ]: any }> => {
-    const {faitPrices, forex} = store.getState().system;
+    const {fiatPrices, forex} = store.getState().system;
     const {tokenPrices} = store.getState().tokenPrices;
 
     return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
         const item: TickerData = tickerMap[ key as any ];
-        if (item && item.base && forex && faitPrices && (faitPrices[ item.base ] || tokenPrices[ item.base ]  || faitPrices[ 'USDT' ])) {
-            const price = tokenPrices[ item.base ] ? tokenPrices[ item.base ]: faitPrices[ item.base ]?faitPrices[ item.base ].price:faitPrices[ 'USDT' ].price;
-            // faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price
+        if (item && item.base && forex && fiatPrices && (fiatPrices[ item.base ] || tokenPrices[ item.base ]  || fiatPrices[ 'USDT' ])) {
+            const price = tokenPrices[ item.base ] ? tokenPrices[ item.base ]: fiatPrices[ item.base ]?fiatPrices[ item.base ].price:fiatPrices[ 'USDT' ].price;
+            // fiatPrices[ item.base ] ? fiatPrices[ item.base ].price : fiatPrices[ 'USDT' ].price
             // const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
             const volume = volumeToCount(item.symbol.split('-')[ 1 ], item.quote_token_volume)
             const priceDollar = toBig(volume ? volume : 0).times(price);

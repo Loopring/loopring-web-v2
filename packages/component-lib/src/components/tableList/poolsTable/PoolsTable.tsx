@@ -175,9 +175,9 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
 
             const coinAIcon: any = coinJson[coinA];
             const coinBIcon: any = coinJson[coinB];
-            // const priceADollar = faitPrices[coinA]?.price || 0
+            // const priceADollar = fiatPrices[coinA]?.price || 0
             // const priceAYuan = priceADollar * (forex || 6.5)
-            // const priceBDollar = faitPrices[coinB]?.price || 0
+            // const priceBDollar = fiatPrices[coinB]?.price || 0
             // const priceBYuan = priceBDollar * (forex || 6.5)
             const liquidityLpToken = currency === Currency.usd ? amountDollar : amountYuan
             return(

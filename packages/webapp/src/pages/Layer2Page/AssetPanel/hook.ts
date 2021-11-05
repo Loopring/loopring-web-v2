@@ -81,7 +81,7 @@ export const useGetAssets = () => {
     }, [])
     useWalletLayer2Socket({walletLayer2Callback})
 
-    // const {faitPrices} = store.getState().system
+    // const {fiatPrices} = store.getState().system
 
     const tokenPriceList = tokenPrices ? Object.entries(tokenPrices).map(o => ({
         token: o[ 0 ],
