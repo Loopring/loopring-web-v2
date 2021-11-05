@@ -107,26 +107,31 @@ const ActionMemo = React.memo(({
         },
     } as PopoverWrapProps
 
-    return <GridStyled container spacing={1} justifyContent={'flex-start'} alignItems={'center'}>
-        <Grid item>
-            <Button variant={'text'} size={'medium'} color={'primary'}
-                    onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
-        </Grid>
-        <Grid item>
-            <Button variant={'text'} size={'medium'} color={'primary'}
-                    onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
-        </Grid>
-        <Grid item>
-            <Button variant={'text'} size={'medium'} color={'primary'}
-                    onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
-        </Grid>
-        {!isLp &&  allowTrade?.order?.enable &&
-        <Grid item marginTop={1}>
-          <Popover {...{...popoverProps}}/>
-        </Grid>}
-        {isLp && <Grid item marginTop={1}>
-          <Popover {...{...popoverProps}}/>
-        </Grid>}
+    return <GridStyled container spacing={1} justifyContent={'space-between'} alignItems={'center'}>
+        <Box display={'flex'}>
+            <Grid item>
+                <Button variant={'text'} size={'medium'} color={'primary'}
+                        onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
+            </Grid>
+            <Grid item>
+                <Button variant={'text'} size={'medium'} color={'primary'}
+                        onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
+            </Grid>
+            {!isLp && <Grid item>
+                <Button variant={'text'} size={'medium'} color={'primary'}
+                        onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
+            </Grid>}
+        </Box>
+        <>
+            {!isLp && allowTrade?.order?.enable &&
+            <Grid item marginTop={1}>
+            <Popover {...{...popoverProps}}/>
+            </Grid>}
+            {isLp && <Grid item marginTop={1}>
+            <Popover {...{...popoverProps}}/>
+            </Grid>}
+        </>
+        
     </GridStyled>
 })
 export default ActionMemo;

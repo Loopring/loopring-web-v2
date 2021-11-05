@@ -19,16 +19,6 @@ import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './to
 import React from 'react';
 import { useSettings } from '../../stores/reducer/settings';
 
-
-const GridStyled = styled(Grid)`
-    color: ${({iscurrentroute}: any) => iscurrentroute === 'true' ? 'var(--color-text-button-select)' : 'var(--color-text-secondary)' } ; 
-    &:hover {
-        color: var(--color-text-button-select);
-    };
-    font-size: 1.4rem;
-    cursor: pointer;
-` as any
-
 const GridStyled = styled(Grid)`
     color: ${({iscurrentroute}: any) => iscurrentroute === 'true' ? 'var(--color-text-button-select)' : 'var(--color-text-secondary)' } ; 
     &:hover {
