@@ -9,7 +9,7 @@ const initialState: SystemStatus = {
     baseURL: '',
     socketURL: '',
     etherscanBaseUrl: '',
-    faitPrices: {},
+    fiatPrices: {},
     gasPrice: -1,
     forex: 6.5,
     __timer__: -1,
@@ -38,13 +38,13 @@ const systemSlice: Slice<SystemStatus> = createSlice({
         // updateSocketURL(state, action:PayloadAction<{socketURL:string}>) {
         //     state.socketURL =  action.payload.socketURL;
         // },
-        updateRealTimeObj(state, action: PayloadAction<Partial<{ faitPrices: any, gasPrice: number, forex: number }>>) {
-            const {forex, faitPrices, gasPrice} = action.payload;
+        updateRealTimeObj(state, action: PayloadAction<Partial<{ fiatPrices: any, gasPrice: number, forex: number }>>) {
+            const {forex, fiatPrices, gasPrice} = action.payload;
             if (forex) {
                 state.forex = forex
             }
-            if (faitPrices) {
-                state.faitPrices = faitPrices
+            if (fiatPrices) {
+                state.fiatPrices = fiatPrices
             }
             if (gasPrice) {
                 state.gasPrice = gasPrice
@@ -54,7 +54,7 @@ const systemSlice: Slice<SystemStatus> = createSlice({
             // state = {
             //     ...state.system,
             //     forex: forex?,
-            //     faitPrices: action.payload.faitPrices ? action.payload.faitPrices : state.system.faitPrices,
+            //     fiatPrices: action.payload.fiatPrices ? action.payload.fiatPrices : state.system.fiatPrices,
             //     gasPrice: action.payload.gasPrice ? action.payload.gasPrice : state.system.gasPrice,
             // };
 
@@ -71,7 +71,7 @@ const systemSlice: Slice<SystemStatus> = createSlice({
                 env,
                 baseURL,
                 socketURL,
-                faitPrices,
+                fiatPrices,
                 gasPrice,
                 forex,
                 allowTrade,
@@ -91,8 +91,8 @@ const systemSlice: Slice<SystemStatus> = createSlice({
             if (baseURL) {
                 state.baseURL = baseURL
             }
-            if (faitPrices) {
-                state.faitPrices = faitPrices
+            if (fiatPrices) {
+                state.fiatPrices = fiatPrices
             }
             if (gasPrice) {
                 state.gasPrice = gasPrice

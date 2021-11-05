@@ -70,7 +70,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             }
             return
         }
-    }, []);
+    }, [_chainId]);
     const walletConnectCallback = React.useCallback(async () => {
         updateAccount({connectName: ConnectProviders.WalletConnect});
         await connectProvides.WalletConnect();
@@ -84,7 +84,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             }
             return
         }
-    }, []);
+    }, [_chainId]);
     const _onClose = React.useCallback(async (e: any) => {
         setShouldShow(false);
         setShowConnect({isShow: false});

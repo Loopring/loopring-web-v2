@@ -10,6 +10,7 @@ import { css, useTheme } from '@emotion/react';
 //@ts-ignore
 import cssStyle from 'github-markdown-css/github-markdown.css';
 import { ThemeType } from '@loopring-web/common-resources';
+import { LoadingBlock } from '../LoadingPage';
 // //@ts-ignore
 // import cssDarkStyle from  'github-markdown-css/github-markdown-dark.css'
 // //@ts-ignore
@@ -205,9 +206,10 @@ export const MarkDonwPage = () => {
     return <BoxStyle container minHeight={'calc(100% - 260px)'} flex={1}
                      marginTop={3} marginBottom={2}>
         <Grid item xs={12}>
-            {input ? <Box flex={1} padding={3} boxSizing={'border-box'}
+            {path ? input?<Box flex={1} padding={3} boxSizing={'border-box'}
                           className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2`}>
-                <ReactMarkdown plugins={[gfm]} children={input}/></Box> : <EmptyDefault height={'100%'} message={() =>
+                <ReactMarkdown plugins={[gfm]} children={input}/></Box>
+                : <LoadingBlock/> : <EmptyDefault height={'100%'} message={() =>
                 <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>No Content</Box>}/>
             }
         </Grid>

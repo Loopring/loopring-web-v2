@@ -1,10 +1,10 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import React from 'react';
 import styled from '@emotion/styled/';
-import { DropDownIcon, getValuePrecisionThousand, myLog, ThemeType } from '@loopring-web/common-resources';
+import { DropDownIcon, getValuePrecisionThousand, ThemeType, SoursURL } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { Card } from './Card';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { LoopringAPI } from '../../api_wrapper';
 
 
@@ -95,16 +95,16 @@ const ContainerStyle = styled(Box)`
 
 `
 const GridBg = styled(Grid)`
-  background-size: 100%;
+  background-size: 90%;
   background-repeat: no-repeat;
-  background-position: 120px calc(50% - -40px);
+  background-position: 120px calc(48%);
   //background-image: var(--img-banner-url);
 
 
   ${({theme}) => {
     return `
-     background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp") 1x,
-      url("http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png") 1x);
+     background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_home_banner@1x.webp") 1x,
+      url("http://static.loopring.io/assets/images/landPage/img_home_banner@1x.png") 1x);
         `
   }} //background-image: url("http://static.loopring.io/assets/images/landPage/img_home_banner_dark@2x.png");
 
@@ -124,16 +124,16 @@ const BottomBanner = styled(Box)`
 
 const TitleTypography = styled(Typography)`
   text-transform: uppercase;
-  font-size: 5.6rem;
+  font-size: 4rem;
   font-weight: 700;
   white-space: pre-line;
-  line-height: 9.6rem;
+  line-height: 5.6rem;
   position: relative;
 
   &:before {
     content: '';
     position: absolute;
-    top: 0;
+    top: -30px;
     left: 0;
     height: 6px;
     width: 96px;
@@ -171,6 +171,24 @@ const BoxCard = styled(Box)`
   }
 ` as typeof Box
 
+const TradeInfoStyled = styled(Typography)`
+    font-size: 6.4rem;
+    font-weight: 700;
+    line-height: 8.8rem;
+    margin-bottom: 2.5rem;
+    margin-left: 3.2rem;
+` as any
+
+const ContainerStyled = styled(Container)`
+    padding: 0 !important;
+`
+
+const ImgWrapperStyled = styled(Box)`
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+`
 
 export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
     // const value = {}
@@ -185,6 +203,8 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
     } | undefined>();
     // const theme = useTheme();
     const history = useHistory()
+    const location = useLocation()
+
     React.useLayoutEffect(() => {
         function updateSize() {
             setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
@@ -205,11 +225,6 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                 tradeNum,
                 layerTwoLockedVolume
             } = await LoopringAPI.exchangeAPI.getProtocolPortrait()
-            myLog({ timestamp,
-                tradeVolume,
-                totalUserNum,
-                tradeNum,
-                layerTwoLockedVolume })
             setValue({
                 timestamp,
                 tradeVolume,
@@ -237,7 +252,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
 
     return <ContainerStyle>
         <Box>
-            <Container>
+            <ContainerStyled>
                 <GridBg item xs={12}
                         maxHeight={HeightConfig.maxHeight}
                         minHeight={HeightConfig.minHeight}
@@ -266,15 +281,15 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                                     }}>
                             {t('labelProtocol')}
                         </Typography>
-                        <Typography component={'h1'} fontSize={80} marginTop={2} whiteSpace={'pre-line'}
-                                    lineHeight={'96px'}>
+                        <Typography component={'h1'} fontWeight={700} fontSize={80} marginTop={2} whiteSpace={'pre-line'}
+                                    lineHeight={'100px'}>
                             {t('labelH1Title')}
                         </Typography>
-                        <Typography component={'h2'} fontSize={38} marginTop={3}>
+                        <Typography component={'h2'} fontSize={38} lineHeight={'46px'} marginTop={2.5}>
                             {t('labelH1TitleDetail')}
                         </Typography>
-                        <Typography marginTop={7} width={260}>
-                            <Button onClick={() => history.push('/layer2')} fullWidth={true} size={'large'}
+                        <Typography marginTop={8.5} width={260}>
+                            <Button onClick={() => history.push('/trade/lite/LRC-ETH')} fullWidth={true} size={'large'}
                                     variant={'contained'}
                                     style={{
                                         height: 64,
@@ -289,65 +304,61 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
 
                 </GridBg>
 
-            </Container>
+            </ContainerStyled>
         </Box>
         <Box style={{background: 'var(--layer-2)'}}>
-            <Container>
+            <ContainerStyled>
                 <Grid item xs={12}
-                      maxHeight={HeightConfig.maxHeight}
-                      minHeight={HeightConfig.minHeight}
+                    //   maxHeight={HeightConfig.maxHeight}
+                    //   minHeight={HeightConfig.minHeight}
                       position={'relative'}
-                      height={size[ 1 ]}>
-                    <Box position={'absolute'} width={'100%'} height={768} zIndex={33}
+                      height={734}>
+                    <Box position={'absolute'} width={'100%'} height={'100%'} zIndex={33}
                          left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}>
-                        <TitleTypography position={'absolute'} component={'h3'} zIndex={44}>
+                        <TitleTypography marginTop={11} position={'absolute'} component={'h3'} zIndex={44}>
                             {t('labelTitleDEX')}
                         </TitleTypography>
-                        <BoxCard width={320} height={320} top={150} zIndex={44}>
+                        <BoxCard width={320} height={256} top={196} zIndex={44}>
                             <Typography whiteSpace={'pre-line'} component={'h4'}
                                         margin={4}>{t('labelTradeVolume')}</Typography>
-                            <Typography component={'span'} marginLeft={4}
-                                        style={{fontSize: 72, fontWeight: 700}}>
+                            <TradeInfoStyled component={'span'}>
                                 ${value && getValuePrecisionThousand(
                                 value.tradeVolume, 1, 1, 1, false, {abbreviate: 3, isAbbreviate: true}
-                            )}</Typography>
+                            )}</TradeInfoStyled>
                         </BoxCard>
-                        <BoxCard width={340} height={340} top={214} left={394} zIndex={44}>
+                        <BoxCard width={340} height={272} top={247} left={394} zIndex={44}>
                             <Typography whiteSpace={'pre-line'} component={'h4'}
                                         margin={4}>{t('labelTradeUser')}</Typography>
-                            <Typography component={'span'} marginLeft={4}
-                                        style={{fontSize: 90, fontWeight: 700}}>
+                            <TradeInfoStyled component={'span'} style={{ fontSize: 88, lineHeigh: 121 }}>
                                 {value && getValuePrecisionThousand(
                                 value.totalUserNum, 1, 1, 1, true, {abbreviate: 3, isAbbreviate: true}
-                            )}</Typography>
+                            )}</TradeInfoStyled>
                         </BoxCard>
-                        <BoxCard width={264} height={264} top={32} left={798} zIndex={44}>
+                        <BoxCard width={262} height={210} top={102} left={798} zIndex={44}>
                             <Typography whiteSpace={'pre-line'} component={'h4'}
                                         margin={4}>{t('labelTradeTVL')}</Typography>
-                            <Typography component={'span'} marginLeft={4}
-                                        style={{fontSize: 64, fontWeight: 700}}> ${value && getValuePrecisionThousand(
+                            <TradeInfoStyled component={'span'}> ${value && getValuePrecisionThousand(
                                 value.layerTwoLockedVolume, 1, 1, 1, true, {abbreviate: 3, isAbbreviate: true}
-                            )}</Typography>
+                            )}</TradeInfoStyled>
                         </BoxCard>
-                        <BoxCard width={400} height={400} top={363} left={798} zIndex={44}>
+                        <BoxCard width={399} height={319} top={351} left={798} zIndex={44}>
                             <Typography whiteSpace={'pre-line'} component={'h4'}
                                         margin={4}>{t('labelTradeNofTrades')}</Typography>
-                            <Typography component={'span'} marginLeft={4}
-                                        style={{fontSize: 120, fontWeight: 700}}>{value && getValuePrecisionThousand(
+                            <TradeInfoStyled component={'span'} style={{ fontSize: 120, lineHeigh: 165, marginBottom: 32 }}>{value && getValuePrecisionThousand(
                                 value.tradeNum, 1, 1, 1, true, {abbreviate: 3, isAbbreviate: true}
-                            )}</Typography>
+                            )}</TradeInfoStyled>
                         </BoxCard>
                     </Box>
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </Box>
-        <Box marginBottom={10}>
-            <Container>
+        <Box marginBottom={12.5}>
+            <ContainerStyled>
                 <Grid item xs={12}>
-                    <TitleTypography component={'h3'} marginTop={10} marginBottom={6}>
+                    <TitleTypography component={'h3'} marginTop={10} marginBottom={10}>
                         {t('labelZeroKpt')}
                     </TitleTypography>
-                    <CardBox height={640} position={'relative'}>
+                    <CardBox /* height={640} */ marginLeft={-1} position={'relative'}>
                         <Card
                             title={'labelSafety'}
                             describe={'describeSafety'}
@@ -420,30 +431,65 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                     </CardBox>
 
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </Box>
-        <BottomBanner height={400}>
-            <Container>
-                <Grid item xs={12} position={'relative'} height={400}>
+        <Box style={{background: 'var(--layer-2)'}}>
+            <ContainerStyled>
+                <Grid item xs={12}
+                    //   maxHeight={HeightConfig.maxHeight}
+                    //   minHeight={HeightConfig.minHeight}
+                      position={'relative'}
+                      height={734}>
+                    <Box position={'absolute'} width={'100%'} height={'100%'} zIndex={33}
+                         left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}>
+                        <ImgWrapperStyled>
+                            <img style={{ width: 735 }} src={`${SoursURL}images/landPage/img_home_to_wallet.webp`} alt={'wallet'} />
+                        </ImgWrapperStyled>
+                        <Box width={'100%'} height={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'flex-end'}>
+                            <Typography component={'h1'} fontSize={40} lineHeight={'56px'}>
+                                {t('labelLoopringWallet')}
+                            </Typography>
+                            <Typography variant={'h3'} marginTop={2}>{t('labelH2TitleWallet')}</Typography>
+                            <Typography marginTop={8} width={260}>
+                                <Button onClick={() => history.push('/wallet')} fullWidth={true} size={'large'}
+                                        variant={'contained'}
+                                        style={{
+                                            height: 64,
+                                            justifyContent: 'space-around',
+                                            borderRadius: '0', textTransform: 'uppercase',
+                                        }}>
+                                    {t('labelBtnLearnMore')}
+                                    <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>
+                                </Button>
+                            </Typography>
+                        </Box>
+                    </Box>
+                </Grid>
+            </ContainerStyled>
+        </Box>
+        <BottomBanner height={500}>
+            <ContainerStyled>
+                <Grid item xs={12} position={'relative'} height={500}>
                     <Box position={'absolute'} left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}>
                         <Typography
-                            color={'var(--text-highlight)'}
+                            color={'#4169FF'}
                             component={'h4'}
-                            marginTop={4} whiteSpace={'pre-line'}
-                            variant={'h3'}>
+                            whiteSpace={'pre-line'}
+                            lineHeight={'46px'}
+                            variant={'h1'}>
                             {t('labelSuperpowers')}
                         </Typography>
 
-                        <Typography marginTop={3} width={480} color={'var(--text-third)'}>
+                        <Typography marginTop={3} fontSize={20} lineHeight={'28px'} width={650} color={'#fff'}>
                             {t('describeSuperpowers')}
                         </Typography>
-                        <Typography marginTop={8} width={350}>
+                        <Typography marginTop={9} width={300}>
                             <Button onClick={() => window.open('https://docs.loopring.io/en/')} fullWidth={true} size={'large'}
                                     variant={'contained'}
                                     style={{
                                         height: 64,
                                         justifyContent: 'space-around',
-                                        borderRadius: '0', textTransform: 'uppercase'
+                                        borderRadius: '0',
                                     }}>
                                 {t('labelBtnDeveloper')}
                                 <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>
@@ -453,7 +499,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                     </Box>
 
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </BottomBanner>
         {/*<Box>*/}
         {/*    <Container>*/}

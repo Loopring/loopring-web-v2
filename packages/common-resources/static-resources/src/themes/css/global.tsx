@@ -52,6 +52,7 @@ export const colorBase = ({theme}: any) => css`
 
     --color-box-linear: ${theme.colorBase.boxLinear};
     --color-global-bg: ${theme.colorBase.globalBg};
+    --color-global-bg-opacity: ${theme.colorBase.globalBgOpacity};
     --field-opacity: ${theme.colorBase.fieldOpacity};
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
