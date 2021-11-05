@@ -348,11 +348,11 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         display={'flex'} justifyContent={'center'} alignItems={'center'}
                         >
                             <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-                                <Typography component={'h1'} fontSize={40} marginTop={0} whiteSpace={'pre-line'}
+                                <Typography component={'h1'} fontSize={40} fontWeight={500} marginTop={0} whiteSpace={'pre-line'}
                                         lineHeight={'68px'}>
                                     {t('labelFirstWallet')}
                                 </Typography>
-                                <Typography component={'h2'} variant={'h3'} marginTop={9}>
+                                <Typography component={'h2'} variant={'h3'} fontWeight={400} marginTop={9} textAlign={'center'}>
                                     {t('labelFirstWalletDetail')}
                                 </Typography>
                             </Box>

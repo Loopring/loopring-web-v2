@@ -229,18 +229,9 @@ const handleLinkClick = React.useCallback((href: string) => {
                 <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'}
                     height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center"
                     spacing={1} width={'100%'}>
-                <Grid justifyContent="flex-start" item lg={2} marginBottom={6}>
-                    <Box>
-                        <Link paddingX={4} target={'_blank'} href="https://medium.com/loopring-protocol">
-                            {
-                                /* isWallet
-                                    ? mode === 'light' ?
-                                        <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
-                                        :
-                                        <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
-                                    :  */<LoopringIcon htmlColor={mode === 'light' ? '#3B5AF4' : '#FCFDFD'} style={{transform: 'scale(8)'}} />
-                            }
-                        </Link>
+                <Grid justifyContent="flex-start" item lg={2} marginBottom={7}>
+                    <Box paddingLeft={4}>
+                        <LoopringIcon htmlColor={'var(--color-text-third)'} style={{transform: 'scale(8)'}} />
                     </Box>
                 </Grid>
                 <Grid justifyContent="space-between" display={'flex'} item lg={7}>
@@ -286,10 +277,6 @@ const handleLinkClick = React.useCallback((href: string) => {
             </Grid>
             </>
         )}
-        
-        
-        {/*<Typography component={'p'} variant={'body2'} paddingTop={1} paddingBottom={2}*/}
-        {/*            textAlign={'center'}></Typography>*/}
     </Container>
     <Box height={48} display={'flex'} justifyContent={'center'} alignItems={'center'} width={'100%'} style={{ backgroundColor: mode === 'light' ? 'rgba(59, 90, 244, 0.05)' : 'rgba(255, 255, 255, 0.05)' }}>
         {isLandingPage ? (
