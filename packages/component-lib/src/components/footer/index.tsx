@@ -91,7 +91,7 @@ Service: [
         linkHref: "https://medium.com/loopring-protocol"
     },
     {
-        linkName: 'ListingApplication',
+        linkName: 'TokenListing',
         linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
     },
     {
@@ -113,10 +113,10 @@ Support: [
         linkName: 'CommunityDocs',
         linkHref: "https://loopring-org.gitbook.io/loopring-doc/"
     },
-    {
-        linkName: 'SupportCenter',
-        linkHref: "https://discord.com/invite/KkYccYp"
-    },
+    // {
+    //     linkName: 'SupportCenter',
+    //     linkHref: "https://discord.com/invite/KkYccYp"
+    // },
 
 ],
 Product: [
@@ -124,14 +124,14 @@ Product: [
         linkName: 'SmartContract',
         linkHref: "https://loopring.io/#/legal/contracts/en"
     },
-    {
-        linkName: 'LoopringApp',
-        linkHref: "https://app.loopring.io/"
-    },
-    {
-        linkName: 'LoopringSmartWallet',
-        linkHref: "https://loopring.io/#/"
-    },
+    // {
+    //     linkName: 'LoopringApp',
+    //     linkHref: "https://app.loopring.io/"
+    // },
+    // {
+    //     linkName: 'LoopringSmartWallet',
+    //     linkHref: "https://loopring.io/#/"
+    // },
     {
         linkName: 'APIDocumentation',
         linkHref: "https://docs.loopring.io/en/"
@@ -184,7 +184,7 @@ const handleLinkClick = React.useCallback((href: string) => {
                        fontSize={'body1'}>
         {/*<Divider />*/}
     <Container>
-        {!isLandingPage ? (
+        {isLandingPage &&/*  (
             <Box width={'100%'} height={'130px'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Box display={'flex'} width={'auto'} justifyContent={'space-between'} alignItems={'center'}>
                     <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
@@ -224,21 +224,21 @@ const handleLinkClick = React.useCallback((href: string) => {
                     </Grid>
                 </Box>
             </Box>
-        ) : (
+        ) : */ (
             <>
                 <Grid maxHeight={HeightConfig.maxHeight} minHeight={HeightConfig.minHeight} position={'relative'}
                     height={size[ 1 ]} container direction="row" justifyContent="space-between" alignItems="center"
                     spacing={1} width={'100%'}>
-                <Grid justifyContent="flex-start" item lg={2}>
+                <Grid justifyContent="flex-start" item lg={2} marginBottom={6}>
                     <Box>
-                        <Link paddingX={10} target={'_blank'} href="https://medium.com/loopring-protocol">
+                        <Link paddingX={4} target={'_blank'} href="https://medium.com/loopring-protocol">
                             {
-                                isWallet
+                                /* isWallet
                                     ? mode === 'light' ?
                                         <LoopringLightFooterIcon style={{transform: 'scale(10)'}}/>
                                         :
                                         <LoopringDarkFooterIcon style={{transform: 'scale(10)'}}/>
-                                    : <LoopringIcon htmlColor={mode === 'light' ? '#3B5AF4' : '#FCFDFD'} style={{transform: 'scale(8)'}} />
+                                    :  */<LoopringIcon htmlColor={mode === 'light' ? '#3B5AF4' : '#FCFDFD'} style={{transform: 'scale(8)'}} />
                             }
                         </Link>
                     </Box>
@@ -287,14 +287,48 @@ const handleLinkClick = React.useCallback((href: string) => {
             </>
         )}
         
-
-        <Typography component={'p'} variant={'body2'} marginTop={2} paddingBottom={1} textAlign={'center'}>
-            <Typography style={{fontSize: '9px'}} component={'span'}>Copyright (c)
-                2017-{new Date().getFullYear()}. </Typography>
-            <Typography style={{fontSize: '9px'}} component={'span'}>All rights reserved.</Typography>
-        </Typography>
+        
         {/*<Typography component={'p'} variant={'body2'} paddingTop={1} paddingBottom={2}*/}
         {/*            textAlign={'center'}></Typography>*/}
     </Container>
+    <Box height={48} display={'flex'} justifyContent={'center'} alignItems={'center'} width={'100%'} style={{ backgroundColor: mode === 'light' ? 'rgba(59, 90, 244, 0.05)' : 'rgba(255, 255, 255, 0.05)' }}>
+        {isLandingPage ? (
+            <Typography fontSize={9} component={'span'} color={'var(--color-text-third)'}>Copyright (c)
+            2017-{new Date().getFullYear()}. All rights reserved.</Typography>
+        ) : (
+            <Box display={'flex'} width={'100%'} paddingX={45} justifyContent={'space-between'} alignItems={'center'}>
+                <Typography fontSize={9} component={'span'} color={'var(--color-text-third)'}>Copyright (c)
+                    2017-{new Date().getFullYear()}. All rights reserved.</Typography>
+                <List style={{display: 'flex', alignItems: 'flex-start', paddingTop: 0, paddingBottom: 0}}>
+                    {
+                        [
+                            {
+                                linkName: <DiscordIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                linkHref: "https://discord.com/invite/KkYccYp"
+                            },
+                            {
+                                linkName: <TwitterIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                linkHref: "https://twitter.com/loopringorg"
+                            },
+                            {
+                                linkName: <YoutubeIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                linkHref: "https://www.youtube.com/c/Loopring"
+                            },
+                            {
+                                linkName: <MediumIcon htmlColor={'var(--color-text-third)'} fontSize={'large'}/>,
+                                linkHref: "https://medium.com/loopring-protocol"
+                            }
+                        ].map((o, index) => (
+                            <ListItem key={`${o.linkName}-${index}`} style={{ marginLeft: 16 }}>
+                                <Link fontSize={12}
+                                        onClick={() => handleLinkClick(o.linkHref)}>{o.linkName}</Link>
+                            </ListItem>
+                        ))
+                    }
+                </List>
+            </Box>
+        )}
+        
+    </Box>
 </FooterDiv>
 })

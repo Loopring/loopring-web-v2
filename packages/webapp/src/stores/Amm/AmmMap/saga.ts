@@ -13,8 +13,8 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
     const {idIndex} = store.getState().tokenMap
     // @ts-ignore
     const [, coinA, coinB] = keyPair.match(/(\w+)-(\w+)/i);
-    const {forex, faitPrices} = store.getState().system;
-    if (idIndex && coinA && coinB && faitPrices && forex) {
+    const {forex, fiatPrices} = store.getState().system;
+    if (idIndex && coinA && coinB && fiatPrices && forex) {
         let result = {
             amountDollar: parseFloat(ammPoolState?.liquidityUSD || ''),
             amountYuan: (parseFloat(ammPoolState?.liquidityUSD || '') * (forex ? forex : 6.5)),
@@ -29,8 +29,8 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
 
         const feeA = volumeToCountAsBigNumber(coinA, ammPoolState.fees[ 0 ]);//parseInt(ammPoolState.fees[ 0 ]),
         const feeB = volumeToCountAsBigNumber(coinB, ammPoolState.fees[ 1 ]);//parseInt(ammPoolState.fees[ 1 ]),
-        const feeDollar = faitPrices[ coinA ] && faitPrices[ coinB ] ?
-            toBig(feeA || 0).times(faitPrices[ coinA ].price).plus(toBig(feeB || 0).times(faitPrices[ coinB ].price)) : undefined
+        const feeDollar = fiatPrices[ coinA ] && fiatPrices[ coinB ] ?
+            toBig(feeA || 0).times(fiatPrices[ coinA ].price).plus(toBig(feeB || 0).times(fiatPrices[ coinB ].price)) : undefined
         const feeYuan = feeDollar ? feeDollar.times(forex) : undefined;
 
         return {
@@ -80,7 +80,7 @@ const getAmmMapApi = async <R extends { [ key: string ]: any }>({ammpools}: GetA
     })()
     const {tokenMap: {coinMap, idIndex}} = store.getState();
 
-    // const forex = faitPrices.prices['USDC']
+    // const forex = fiatPrices.prices['USDC']
 
 
     Reflect.ownKeys(ammpools).forEach(async (key) => {

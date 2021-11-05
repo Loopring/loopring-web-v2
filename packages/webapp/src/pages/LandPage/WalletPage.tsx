@@ -15,6 +15,16 @@ const HeightConfig = {
     minHeight: 800,
 }
 
+const LinkStyle = styled(Link)`
+    color: var(--color-button-select);
+    text-decoration: underline;
+    margin-bottom: 2px;
+    //&.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
+    //  //background: var(--color-global-bg);
+    //  //box-shadow: var(--shadow);
+    //}
+` as typeof Link
+
 const CardBox = styled(Box)`
   display: flex;
   flex-direction: row;
@@ -111,7 +121,7 @@ const ContainerStyle = styled(Box)`
 const GridBg = styled(Grid)`
     background-size: 150%;
     background-repeat: no-repeat;
-    background-position: -250px;
+    background-position: -330px;
     //background-image: var(--img-banner-url);
 
     ${({theme}) => {
@@ -137,10 +147,10 @@ const BottomBanner = styled(Box)`
 
 const TitleTypography = styled(Typography)`
   text-transform: uppercase;
-  font-size: 5.6rem;
+  font-size: 4rem;
   font-weight: 700;
   white-space: pre-line;
-  line-height: 6.7rem;
+  line-height: 5.6rem;
   position: relative;
 
   &:before {
@@ -157,10 +167,10 @@ const TitleTypography = styled(Typography)`
 
 const TitleTypographyRight = styled(Typography)`
   text-transform: uppercase;
-  font-size: 5.6rem;
+  font-size: 4rem;
   font-weight: 700;
   white-space: pre-line;
-  line-height: 6.7rem;
+  line-height: 5.6rem;
   position: relative;
 
   &:before {
@@ -218,7 +228,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
         layerTwoLockedVolume: string
     } | undefined>();
     // const theme = useTheme();
-    const history = useHistory()
+    // const history = useHistory()
     
     React.useLayoutEffect(() => {
         function updateSize() {
@@ -300,40 +310,45 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                                     lineHeight={'46px'}>
                             {t('labelH2TitleWallet')}
                         </Typography>
-                        <Grid container width={'450px'} marginTop={10}>
-                            <Grid item xs={6}>
+                        <Grid container width={'600px'} marginTop={8} marginLeft={-2}>
+                            <Grid item xs={4}>
                                 <Link href="https://play.google.com/store/apps/details?id=loopring.defi.wallet">
                                     <img style={{ width: '100%' }} src={`${SoursURL}images/landPage/appGooglePlay.webp`} alt={'Android'} />
                                 </Link>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={4}>
                                 <Link href="https://download.loopring.io/LoopringWallet.apk">
                                     <img style={{ width: '100%' }} src={`${SoursURL}images/landPage/appAndroid.webp`} alt={'GooglePlay'} />
                                 </Link>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={4}>
                                 <Link href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126">
                                     <img style={{ width: '100%' }} src={`${SoursURL}images/landPage/appAppleStore.webp`} alt={'AppStore'} />
                                 </Link>
                             </Grid>
                         </Grid>
+                        <Box display={'flex'} alignItems={'center'}>
+                            <Typography variant={'h5'} color={'var(--color-text-third)'} marginRight={1.5}>Already has a wallet?</Typography>
+                            <LinkStyle href={'https://security.loopring.io'}>Manage Security</LinkStyle>
+                        </Box>
+                        
                     </Box>
                 </GridBg>
             </Container>
         </Box>
-        <Box style={{background: 'var(--layer-2)'}}>
+        <Box style={{background: 'var(--color-global-bg-opacity)'}}>
             <Container>
                 <Grid item xs={12}
-                      maxHeight={HeightConfig.maxHeight}
-                      minHeight={HeightConfig.minHeight}
-                      position={'relative'}
-                      height={size[ 1 ]}>
+                    //   maxHeight={HeightConfig.maxHeight}
+                    //   minHeight={HeightConfig.minHeight}
+                    position={'relative'}
+                    height={624}>
                     <Box position={'absolute'} width={'100%'} height={624} zIndex={33}
                         left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}
                         display={'flex'} justifyContent={'center'} alignItems={'center'}
                         >
                             <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-                                <Typography component={'h1'} fontSize={56} marginTop={0} whiteSpace={'pre-line'}
+                                <Typography component={'h1'} fontSize={40} marginTop={0} whiteSpace={'pre-line'}
                                         lineHeight={'68px'}>
                                     {t('labelFirstWallet')}
                                 </Typography>
@@ -361,11 +376,11 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                 </Grid>
             </Container>
         </Box>
-        <Box style={{background: 'var(--layer-2)'}}>
+        <Box style={{background: 'var(--color-global-bg-opacity'}}>
             <Container>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
-                    minHeight={HeightConfig.minHeight}
+                    // minHeight={HeightConfig.minHeight}
                     position={'relative'}
                     height={624}
                     display={'flex'}
@@ -388,7 +403,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
             <Container>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
-                    minHeight={HeightConfig.minHeight}
+                    // minHeight={HeightConfig.minHeight}
                     position={'relative'}
                     height={624}
                     display={'flex'}
@@ -406,11 +421,11 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                 </Grid>
             </Container>
         </Box>
-        <Box style={{background: 'var(--layer-2)'}}>
+        <Box style={{background: 'var(--color-global-bg-opacity'}}>
             <Container>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
-                    minHeight={HeightConfig.minHeight}
+                    // minHeight={HeightConfig.minHeight}
                     position={'relative'}
                     height={624}
                     display={'flex'}
@@ -432,8 +447,8 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
         <BottomBanner height={400}>
             <Container>
                 <Grid item xs={12} height={400} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-                    <Typography color={'#fff'} fontSize={'56px'}>{t('labelWalletUnleashed')}</Typography>
-                    <Typography color={'#fff'} variant={'h3'} marginTop={2.5}>{t('labelWalletUnleashedDetail')}</Typography>
+                    <Typography color={'#fff'} fontSize={40} lineHeight={'56px'}>{t('labelWalletUnleashed')}</Typography>
+                    <Typography color={'#fff'} variant={'h3'} marginTop={3}>{t('labelWalletUnleashedDetail')}</Typography>
                 </Grid>
             </Container>
         </BottomBanner>
