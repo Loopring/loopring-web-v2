@@ -80,6 +80,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             enableBtn()
         } else {
             disableBtn()
+
         }
 
     }, [enableBtn, disableBtn, tokenMap, address, addrStatus, chargeFeeList, tranferFeeInfo, transferValue, isExceedMax, ])
