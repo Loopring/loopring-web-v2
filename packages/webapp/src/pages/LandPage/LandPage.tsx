@@ -254,10 +254,10 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
         <Box>
             <ContainerStyled>
                 <GridBg item xs={12}
-                        maxHeight={HeightConfig.maxHeight}
-                        minHeight={HeightConfig.minHeight}
+                        // maxHeight={HeightConfig.maxHeight}
+                        // minHeight={HeightConfig.minHeight}
                         position={'relative'}
-                        height={size[ 1 ]}>
+                        height={734}>
                     {/*<picture style={{'absolute'}}  >*/}
                     {/*    <source*/}
                     {/*        srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp 1x,*/}
