@@ -329,7 +329,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         </Grid>
                         <Box display={'flex'} alignItems={'center'}>
                             <Typography variant={'h5'} color={'var(--color-text-third)'} marginRight={1.5}>Already has a wallet?</Typography>
-                            <LinkStyle href={'https://security.loopring.io'}>Manage Security</LinkStyle>
+                            <LinkStyle href={'https://security.loopring.io'} variant={'body1'}>Manage Security</LinkStyle>
                         </Box>
                         
                     </Box>

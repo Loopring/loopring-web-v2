@@ -82,7 +82,9 @@ const LogoStyle = styled(Typography)`
     right: -24px;
     top: 14px;
     font-weight: 200;
-    border: 0.05rem solid var(--color-logo);
+    opacity: .6;
+    box-shadow: 0px 0px 1px 0px  var(--color-logo);
+    //border: 1px solid ;
     border-radius: 2px;
     padding: 3px 2px;
   }
