@@ -264,8 +264,8 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         <StylePaper flex={1} container className={'MuiPaper-elevation2'} padding={4} marginBottom={1}>
             <Grid item xs={12}>
                 <Typography variant={'h5'} component={'h3'} marginY={1} display={'flex'} flexDirection={'column'}>
-                    <Typography component={'p'} flexDirection={'row'} display={'flex'} alignSelf={'flex-start'}>
-                        <Typography component={'h3'} variant={'h4'} color={'text.primary'} paddingRight={1}>
+                    <Typography flexDirection={'row'} display={'flex'} alignSelf={'flex-start'}>
+                        <Typography variant={'h4'} color={'text.primary'} paddingRight={1}>
                             {t('labelTradeFeeLevel')}
                         </Typography>
 
