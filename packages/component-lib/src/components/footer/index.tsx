@@ -29,7 +29,7 @@ const linkListMap = {
     About: [
         {
             linkName: 'Org',  // loopring.org
-            linkHref: "https://loopring.io"
+            linkHref: "https://loopring.org"
         },
         {
             linkName: 'Terms', //Terms of service
@@ -173,9 +173,9 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                          alignItems="center"
                          width={'100%'} paddingBottom={4}>
                         <Box display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} >
-                            <Box  minWidth={100}  alignSelf={'center'}
+                            <Box marginTop={4} marginLeft={-3} minWidth={100} alignSelf={'flex-start'}
                                  justifySelf={'center'} display={'inline-flex'} alignItems={'center'}>
-                                <LoopringIcon color={'inherit'} style={{height:'40px',width:'120px'}}/>
+                                <LoopringIcon htmlColor={'var(--color-text-third)'} style={{height:'40px',width:'120px'}}/>
                             </Box>
                             {linkListMapRender}
                             <Box display={'flex'} flexDirection={'column'} width={168}>

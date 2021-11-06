@@ -433,7 +433,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                 </Grid>
             </ContainerStyled>
         </Box>
-        <Box style={{background: 'var(--layer-2)'}}>
+        {/* <Box style={{background: 'var(--layer-2)'}}>
             <ContainerStyled>
                 <Grid item xs={12}
                     //   maxHeight={HeightConfig.maxHeight}
@@ -450,7 +450,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                                 {t('labelLoopringWallet')}
                             </Typography>
                             <Typography variant={'h3'} marginTop={2}>{t('labelH2TitleWallet')}</Typography>
-                            <Typography marginTop={8} width={260}>
+                            <Typography marginTop={8} width={200}>
                                 <Button onClick={() => history.push('/wallet')} fullWidth={true} size={'large'}
                                         variant={'contained'}
                                         style={{
@@ -466,7 +466,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                     </Box>
                 </Grid>
             </ContainerStyled>
-        </Box>
+        </Box> */}
         <BottomBanner height={500}>
             <ContainerStyled>
                 <Grid item xs={12} position={'relative'} height={500}>
