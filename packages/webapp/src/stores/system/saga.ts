@@ -23,8 +23,8 @@ const initConfig = function* <R extends { [ key: string ]: any }>(chainId: Chain
         call(async ()=> LoopringAPI.exchangeAPI?.getMixMarkets())])
     store.dispatch(getTokenMap({tokensMap, marketMap: markets, pairs, marketArr, tokenArr}))
     store.dispatch(initAmmMap({ammpools}))
-    store.dispatch(getTokenPrices(undefined));
     yield take('tokenMap/getTokenMapStatus');
+    store.dispatch(getTokenPrices(undefined));
     yield take('tokenPrices/getTokenPricesStatus');
     store.dispatch(getTickers({tickerKeys:marketArr}))
     store.dispatch(getAmmMap({ammpools}))
@@ -63,6 +63,7 @@ const should15MinutesUpdateDataGroup = async (): Promise<{
             .then((results)=>{
             return [results[0].fiatPrices,results[1].fiatPrices,results[2].gasPrice / 1e+9]
         })
+        
         // const  = (await ).fiatPrices
         // const  = (await ).fiatPrices
         // const tokenPrices = (await LoopringAPI.walletAPI.getLatestTokenPrices()).tokenPrices;
