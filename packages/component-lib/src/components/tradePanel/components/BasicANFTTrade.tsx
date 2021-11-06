@@ -4,8 +4,14 @@ import React from 'react';
 import {  BasicANFTTradeProps } from './Interface';
 import { InputCoin, InputSize, } from '../../basic-lib';
 import { Box, Link, Typography } from '@mui/material';
+import styled from '@emotion/styled';
 
-
+const BoxInput  = styled(Box)`
+  & .main-label{
+    color: var(--color-text-secondary);
+    font-size: ${({theme})=>theme.fontDefault.body1};
+  }
+` as typeof Box
 export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
     I>({
            t, tradeData, onChangeEvent, disabled,
@@ -42,7 +48,6 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
 
     const inputCoinProps = {
 
-        // label: t('labelTokenAmount'),
         subLabel: t('labelAvailable'),
         placeholderText: '0',
         decimalsLimit : 0,
@@ -131,7 +136,7 @@ export const NFTInput = React.memo(<T extends IBData<I> & Partial<NFTWholeINFO>,
                     inputNFTRef,
                 }}  />
             </Box>
-        </Box> :<BasicANFTTrade {...{
+        </Box> :<BoxInput><BasicANFTTrade {...{
             ...rest,
             type,
             t,
@@ -140,11 +145,12 @@ export const NFTInput = React.memo(<T extends IBData<I> & Partial<NFTWholeINFO>,
             tradeData,
             inputNFTDefaultProps: {
                 size:InputSize.small,
-
-                label: '' + tradeData?.name},
+                label: t('labelTokenAmount'),
+                // label: '' + tradeData?.name
+            },
             // inputButtonDefaultProps,
             inputNFTRef,
-        }}  /> }
+        }}  /> </BoxInput>}
     </>
 })  as <T extends IBData<I> & Partial<NFTWholeINFO>,
     I>(props: BasicANFTTradeProps<T, I>
