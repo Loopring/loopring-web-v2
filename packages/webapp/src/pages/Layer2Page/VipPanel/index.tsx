@@ -293,7 +293,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                 <Grid container marginY={2.5}>
                     <Grid item xs={6}>
                         <Typography fontWeight={400} variant={'h6'} component={'p'} color={'var(--color-text-secondary)'}>
-                            Spot Trade Volume (30d in ETH)
+                            Spot Trading Volume (30d in ETH)
                         </Typography>
                         <Typography variant={'h4'} component={'p'} marginTop={0.5}>
                             Currently {getCurrentETHTradeAmount()} ETH
