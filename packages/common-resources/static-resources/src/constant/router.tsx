@@ -10,7 +10,7 @@ export enum ButtonComponentsMap {
 }
 
 export const ToolBarAvailableItem = [
-    ButtonComponentsMap.Download,
+    // ButtonComponentsMap.Download,
     // ButtonComponentsMap.Notification,
     ButtonComponentsMap.Setting,
     ButtonComponentsMap.WalletConnect

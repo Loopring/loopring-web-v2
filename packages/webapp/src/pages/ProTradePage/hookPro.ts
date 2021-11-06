@@ -22,6 +22,7 @@ import { useWalletLayer2 } from 'stores/walletLayer2';
 import { useOrderList } from './panel/orderTable/hookTable'
 import { useProSocket, useSocketProService } from './proService';
 import store from '../../stores';
+import { useHistory, useLocation } from 'react-router-dom';
 
 
 export const usePro = <C extends { [ key: string ]: any }>(): {
@@ -34,7 +35,8 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     let {realMarket} = usePairMatch('/trade/pro');
     // myLog('router',realMarket)
     // realMarket = 'ETH-USDT'              
-
+    const history = useHistory()
+    // const location = useLocation()
     //basic info from redux
     const {
         // pageTradePro,
@@ -109,7 +111,8 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     const handleOnMarketChange = React.useCallback(async (newMarket: MarketType) => {
         // resetTradeCalcData({ market:newMarket})
         // precisionList(newMarket)
-        setMarket(newMarket)
+        setMarket(newMarket);
+        history.push('/trade/pro/'+newMarket);
     }, [])
 
     const precisionList = React.useCallback((market: MarketType) => {
@@ -141,6 +144,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
             let {market:_market} = sdk.getExistedMarket(marketArray, coinA, coinB);
             if(_market!==market){
                 setMarket(_market);
+                history.push('/trade/pro/'+_market);
             }
             // @ts-ignore
             [, coinA, coinB] = _market.match(/([\w]+)-([\w]+)/i);
