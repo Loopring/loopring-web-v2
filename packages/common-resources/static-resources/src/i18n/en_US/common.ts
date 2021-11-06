@@ -140,7 +140,7 @@ export default {
     labelDate: 'Date',
     labelBack: 'Back',
     labelAPR: 'APR',
-    label24Volume: '24h Trade Volume',
+    label24Volume: '24h Volume',
     labelTVL: 'Total Volume Locked',
     labelAmmTotalToken: 'Tokens in AMM',
     labelNoActiveEvent: 'No event',
