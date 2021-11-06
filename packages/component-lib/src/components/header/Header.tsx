@@ -282,7 +282,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                 <GridStyled iscurrentroute={location.pathname === '/wallet' ? 'true' : 'false'} item onClick={() => history.push('/wallet')}>Smart Wallet</GridStyled>
                             </Grid>
                             <Box marginLeft={4} style={{ cursor: 'pointer' }} onClick={handleThemeClick}>
-                                {themeMode === 'dark' ? <LightIcon /> : <DarkIcon />}
+                                {themeMode === 'dark' ?  <DarkIcon /> : <LightIcon />}
                             </Box>
                         </>
                     ) : (
