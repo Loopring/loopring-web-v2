@@ -1,6 +1,6 @@
 export default {
     labelH1Title:'Ethereum’s First \n zkRollup Layer2',
-    labelH1TitleDetail: 'Fast, Cheap, & Secure',
+    labelH1TitleDetail: 'Fast, Cheap, and Secure',
     labelH1TitleWallet:'Loopring Wallet',
     labelH2TitleWallet: 'FREEDOM AT YOUR FINGERTIPS',
     labelProtocol :'loopring protocol 3.6',
