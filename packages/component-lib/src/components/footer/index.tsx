@@ -29,7 +29,7 @@ const linkListMap = {
     About: [
         {
             linkName: 'Org',  // loopring.org
-            linkHref: "https://loopring.io"
+            linkHref: "https://loopring.org"
         },
         {
             linkName: 'Terms', //Terms of service
@@ -56,7 +56,7 @@ const linkListMap = {
         },
         {
             linkName: 'Referrals', //Referrals
-            linkHref: "https://medium.com/loopring-protocol"
+            linkHref: "https://medium.com/loopring-protocol/loopring-exchange-launches-referral-program-c61777f072d1"
         },
         {
             linkName: 'TokenListing',
