@@ -178,7 +178,7 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                                 <LoopringIcon color={'inherit'} style={{height:'40px',width:'120px'}}/>
                             </Box>
                             {linkListMapRender}
-                            <Box display={'flex'} flexDirection={'column'} width={80}>
+                            <Box display={'flex'} flexDirection={'column'} width={168}>
                                 <Typography color="var(--color-text-third)"
                                             variant="body2" component="p" sx={{mt: 4, mb: 2}}>Follow us</Typography>
                                 <Box>
