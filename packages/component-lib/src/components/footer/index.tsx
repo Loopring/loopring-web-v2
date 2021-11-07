@@ -28,7 +28,7 @@ const FooterDiv = styled(Box)`
 const linkListMap = {
     About: [
         {
-            linkName: 'Loopring.org',  // loopring.org
+            linkName: 'Org',  // loopring.org
             linkHref: "https://loopring.org"
         },
         {
