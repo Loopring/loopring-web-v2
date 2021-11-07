@@ -1,10 +1,8 @@
-import { Box, Button, Container, Grid, Typography, Link } from '@mui/material';
+import { Box, Container, Grid, Typography, Link } from '@mui/material';
 import React from 'react';
 import styled from '@emotion/styled/';
-import { DropDownIcon, getValuePrecisionThousand, myLog, ThemeType, SoursURL } from '@loopring-web/common-resources';
+import { myLog, ThemeType, SoursURL } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
-import { Card } from './Card';
-import { useHistory } from 'react-router-dom';
 import { LoopringAPI } from '../../api_wrapper';
 
 
@@ -332,7 +330,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                             </Grid>
                         </Grid>
                         <Box display={'flex'} alignItems={'center'}>
-                            <Typography variant={'h5'} color={'var(--color-text-third)'} marginRight={1.5}>Already has a wallet?</Typography>
+                            <Typography variant={'h5'} color={'var(--color-text-third)'} marginRight={1.5}>Already have a wallet?</Typography>
                             <LinkStyle href={'https://security.loopring.io'} variant={'body1'}>Manage Security</LinkStyle>
                         </Box>
                         

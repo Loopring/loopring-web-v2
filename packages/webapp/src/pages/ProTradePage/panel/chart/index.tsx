@@ -20,7 +20,7 @@ const ChartWrapperStyled = styled(Box)`
 `
 
 const ChartItemStyled = styled(Typography)`
-    font-size: 1.2em;
+    //font-size: 1.2em;
     cursor: pointer;
     margin-top: 1px;
 `
@@ -116,15 +116,16 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
             </Box>
             <Divider style={{marginTop: '-1px'}}/>
             <Box width={'100%'} height={'36px'} paddingX={1} paddingY={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Box display={'flex'} alignItems={'center'}>
+                <Box display={'flex'} alignItems={'center'} style={{overflowX:'scroll'}}>
                     {isKline && (
-                        <Grid container spacing={1} marginRight={1}>
+                        <Grid container spacing={1} marginRight={1} minWidth={296} >
                         {timeIntervalData.map(item => {
                             const { id, i18nKey } = item
                             const isSelected = id === timeInterval
                             return (
-                                <Grid key={id} item>
+                                <Grid key={id} item >
                                     <ChartItemStyled
+                                        variant={'body2'}
                                         color={isSelected ? 'var(--color-text-primary)' : 'var(--color-text-third)'}
                                         onClick={() => handleTimeIntervalChange(id)}
                                     >
@@ -171,8 +172,8 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
                         </Grid>
                     </Grid>)}
                 </Box>
-                <Box>
-                    <Grid container spacing={2}>
+                <Box style={{overflowX:'scroll'}}>
+                    <Grid container spacing={2} minWidth={160}>
                         <Grid item onClick={() => handleChartTypeChange(ChartType.Kline)}>
                             <ChartItemStyled style={{ fontSize: 14 }} color={isKline ? 'var(--color-text-primary)' : 'var(--color-text-third)'}>
                                 {t('labelProChartTradingView')}

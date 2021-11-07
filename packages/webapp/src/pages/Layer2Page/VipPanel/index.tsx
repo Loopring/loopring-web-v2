@@ -305,7 +305,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                                 <Typography fontWeight={400} color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}>{getCurrVIPLevel('right')}</Typography>
                             </Box>
                         </Box>
-                        <Link onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Trade Spot</Link>
+                        <Link variant={'body1'} onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Trade Spot</Link>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography fontWeight={400} variant={'h6'} component={'p'} color={'var(--color-text-secondary)'}>
@@ -321,7 +321,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                                 <Typography fontWeight={400} color={isSVIP || isVIP4 ? 'var(--color-star)' : 'var(--color-text-secondary)'}>{getCurrVIPLevel('right')}</Typography>
                             </Box>
                         </Box>
-                        <Link onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Buy LRC</Link>
+                        <Link variant={'body1'} onClick={handleTradeLinkClick} style={{ textDecoration: 'underline', color: 'var(--color-text-secondary)' }}>Buy LRC</Link>
                     </Grid>
                 </Grid>
             </Grid>
