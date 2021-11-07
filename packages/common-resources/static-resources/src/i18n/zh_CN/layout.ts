@@ -5,6 +5,8 @@ export default {
     labelMining: '挖矿',
     labelLayer2: '二层账号',
     labelWallet: '钱包',
+    labelZkRollupLayer2: 'zkRollup Layer2',
+    labelSmartWallet: 'Smart Wallet',
     loopringDomain: '路印二层应用',
     labelClassic: '简洁版',
     labelClassicDescription: '快捷交易平台',

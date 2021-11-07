@@ -1,10 +1,8 @@
-import { Box, Button, Container, Grid, Typography, Link } from '@mui/material';
+import { Box, Container, Grid, Typography, Link } from '@mui/material';
 import React from 'react';
 import styled from '@emotion/styled/';
-import { DropDownIcon, getValuePrecisionThousand, myLog, ThemeType, SoursURL } from '@loopring-web/common-resources';
+import { myLog, ThemeType, SoursURL } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
-import { Card } from './Card';
-import { useHistory } from 'react-router-dom';
 import { LoopringAPI } from '../../api_wrapper';
 
 

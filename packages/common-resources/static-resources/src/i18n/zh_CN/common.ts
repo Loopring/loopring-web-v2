@@ -382,6 +382,8 @@ export default {
     labelQueryFeeOK: '',
     depositLimit:'',
     depositMarket:'',
+    labelTransactions:'Transactions',
+    labelMyRewards:'My Rewards',
     labelDepositHash:'.',
     labelDepositHashEmpty:'.',
     labelDepositRecord:'',
@@ -403,5 +405,4 @@ export default {
     labelNFTMinter:'NFT Minter:',
     labelNFTTitleMyNFT:'My NFT',
     labelNFTTOTAL:'Count'
-
 }
