@@ -13,6 +13,10 @@ const HeightConfig = {
     minHeight: 800,
 }
 
+const ContainerStyled = styled(Container)`
+    padding: 0 !important;
+`
+
 const LinkStyle = styled(Link)`
     color: var(--color-button-select);
     text-decoration: underline;
@@ -280,7 +284,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
 
     return <ContainerStyle>
         <Box>
-            <Container>
+            <ContainerStyled>
                 <GridBg item xs={12}
                         maxHeight={HeightConfig.maxHeight}
                         // minHeight={HeightConfig.minHeight}
@@ -332,10 +336,10 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         
                     </Box>
                 </GridBg>
-            </Container>
+            </ContainerStyled>
         </Box>
         <Box style={{background: 'var(--color-global-bg-opacity)'}}>
-            <Container>
+            <ContainerStyled>
                 <Grid item xs={12}
                     //   maxHeight={HeightConfig.maxHeight}
                     //   minHeight={HeightConfig.minHeight}
@@ -356,10 +360,10 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                             </Box>
                     </Box>
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </Box>
         <Box>
-            <Container>
+            <ContainerStyled>
                 <Grid item xs={12} height={624} position={'relative'}>
                     <Box width={'100%'} height={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'}>
                         <TitleTypography component={'h3'} paddingTop={4}>
@@ -372,10 +376,10 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_guardians@1x.webp`} alt={'secure'} />
                     </ImgWrapperRightStyled>
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </Box>
         <Box style={{background: 'var(--color-global-bg-opacity'}}>
-            <Container>
+            <ContainerStyled>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
                     // minHeight={HeightConfig.minHeight}
@@ -395,10 +399,10 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_address@1x.webp`} alt={'identity'} />
                     </ImgWrapperLeftStyled>
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </Box>
         <Box style={{background: 'var(--layer-1)'}}>
-            <Container>
+            <ContainerStyled>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
                     // minHeight={HeightConfig.minHeight}
@@ -417,10 +421,10 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_operation@1x.webp`} alt={'performance'} />
                     </ImgWrapperRightStyled>
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </Box>
         <Box style={{background: 'var(--color-global-bg-opacity'}}>
-            <Container>
+            <ContainerStyled>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
                     // minHeight={HeightConfig.minHeight}
@@ -440,15 +444,15 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         <img style={{ width: 500 }} src={`${SoursURL}images/landPage/img_wallet_income@1x.webp`} alt={'future'} />
                     </ImgWrapperLeftStyled>
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </Box>
         <BottomBanner height={400}>
-            <Container>
+            <ContainerStyled>
                 <Grid item xs={12} height={400} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
                     <Typography color={'#fff'} fontSize={40} lineHeight={'56px'}>{t('labelWalletUnleashed')}</Typography>
                     <Typography color={'#fff'} variant={'h3'} marginTop={3}>{t('labelWalletUnleashedDetail')}</Typography>
                 </Grid>
-            </Container>
+            </ContainerStyled>
         </BottomBanner>
         {/*<Box>*/}
         {/*    <Container>*/}

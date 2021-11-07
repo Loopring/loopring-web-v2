@@ -5,6 +5,7 @@ import { OrderHistoryTable } from '@loopring-web/component-lib'
 import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources';
 import { useOrderList } from './hookTable'
 import { useAccount } from 'stores/account'
+import { useTradeProSettings } from 'stores/localStore/tradeProSettings'
 import styled from '@emotion/styled'
 
 const CheckboxStyled = styled(Box)`
@@ -36,13 +37,14 @@ export const OrderTableView = withTranslation('common')(
             showDetailLoading,
         } = useOrderList()
         const [tabValue, setTabValue] = React.useState(0)
-        const [hideOtherPairs, setHideOtherPairs] = React.useState(true)
+        // const [hideOtherPairs, setHideOtherPairs] = React.useState(true)
         const {account: {readyState}} = useAccount()
         const isShowHidePairsOption = readyState === 'ACTIVATED'
+        const { tradeProSettings, updateIsHideOtherPairs } = useTradeProSettings()
 
         const getFilteredData = React.useCallback(() => {
-            return hideOtherPairs ? rawData.filter(o => o.market === market) : rawData
-        }, [hideOtherPairs, market, rawData])
+            return tradeProSettings?.hideOtherTradingPairs ? rawData.filter(o => o.market === market) : rawData
+        }, [tradeProSettings, market, rawData])
 
         const updateOrderList = React.useCallback(async (currentTabIndex: number) => {
             const data = await getOrderList({
@@ -59,8 +61,11 @@ export const OrderTableView = withTranslation('common')(
         }, [clearRawData, updateOrderList])
 
         const handleCheckBoxChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-            setHideOtherPairs(event.target.checked)
-        }, [])
+            // setHideOtherPairs(event.target.checked)
+            updateIsHideOtherPairs({
+                isHide: event.target.checked
+            })
+        }, [updateIsHideOtherPairs])
 
         return <>
             <Box padding={2} paddingTop={0} paddingBottom={0} style={{position: 'relative'}}>
@@ -75,7 +80,7 @@ export const OrderTableView = withTranslation('common')(
                 {isShowHidePairsOption && (
                     <CheckboxStyled>
                         <FormControlLabel style={{marginRight: 0}}
-                                          control={<Checkbox checked={hideOtherPairs} checkedIcon={<CheckedIcon/>}
+                                          control={<Checkbox checked={tradeProSettings?.hideOtherTradingPairs} checkedIcon={<CheckedIcon/>}
                                                              icon={<CheckBoxIcon/>}
                                                              color="default" onChange={handleCheckBoxChange}/>}
                                           label={t('labelTradeProHideOtherPairs')}

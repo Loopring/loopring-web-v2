@@ -29,6 +29,7 @@ import { WalletInfo } from './localStore/walletInfo'
 import { amountMapSlice } from './amount';
 import { modalDataSlice, pageAmmPoolSlice, pageTradeLiteSlice, pageTradeProSlice, } from './router';
 import { tokenPricesSlice } from './tokenPrices';
+import { TradeProSettings } from './localStore/tradeProSettings'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -63,6 +64,7 @@ const persistedLocalStoreReducer = persistReducer<CombinedState<{
     chainHashInfos: ChainHashInfos,
     confirmation: Confirmation,
     walletInfo: WalletInfo,
+    tradeProSettings: TradeProSettings,
 }>>(persistLocalStoreConfig, localStoreReducer)
 
 const reducer = combineReducers({

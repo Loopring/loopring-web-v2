@@ -255,11 +255,12 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                 const {unit, value} = row[ 'amount' ]
                 const hasValue = Number.isFinite(value)
                 const hasSymbol = row['side'] === 'TRANSFER' 
-                    ? row['receiverAddress'] === accAddress 
+                    ? row['receiverAddress']?.toUpperCase() === accAddress?.toUpperCase()
                         ? '+' 
                         : '-'
-                    : ''
-                myLog(row['receiverAddress'], accAddress)
+                    : row['side'] === 'DEPOSIT'
+                        ? '+' 
+                        : row['side'] === 'OFFCHAIN_WITHDRAWAL' ? '-' : ''
                 const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, undefined, false, { isTrade: true })}` : EmptyValueTag
                 return (
                     <Box className="rdg-cell-value textAlignRight">
