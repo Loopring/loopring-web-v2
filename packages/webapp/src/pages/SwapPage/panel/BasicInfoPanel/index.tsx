@@ -1,11 +1,17 @@
 import { myLog, UpColor } from '@loopring-web/common-resources'
 import { ChartType, ScaleAreaChart, ToggleButtonGroup, TradeTitle, useSettings } from '@loopring-web/component-lib'
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, styled } from '@mui/material'
 import { WithTranslation } from 'react-i18next'
 import { useBasicInfo } from './hook'
 import { VolToNumberWithPrecision } from 'utils/formatter_tool'
 import { useTokenMap } from 'stores/token'
 
+const  BoxStyle = styled(Box)`
+  .recharts-responsive-container{
+    flex:1;
+    height: 100%;
+  }
+` as typeof Box
 const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t, ...rest}: any & WithTranslation) => {
 
     const {
@@ -42,7 +48,7 @@ const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t
                                onChange={handleChange} size={'medium'}/>
         </Box>
         {/*<Box flex={1} alignItems={'stretch'} flexDirection="row" marginTop={3} position={'relative'}>*/}
-        <Box flex={1} display={'flex'} flexDirection={'column'} minHeight={'var(--chart-height)'} height={'var(--chart-height)'} maxHeight={420}
+        <BoxStyle flex={1} display={'flex'} flexDirection={'column'} minHeight={'var(--chart-height)'} height={'var(--chart-height)'} maxHeight={420}
              // style={{height: '100%', width: '101%'}}
         >
             <ScaleAreaChart
@@ -55,7 +61,7 @@ const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t
                 showXAxis
                 marketPrecision={marketPrecision}
             />
-        </Box>
+        </BoxStyle>
 
         {/*</Box>*/}
     </Box>

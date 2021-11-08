@@ -358,7 +358,7 @@ export default {
     labelProOrderTotalAmount: 'Accumulative Amount',
 
     labelSwapCancelled: 'Swap is cancelled.',
-    labelSuccessfully: 'Successfully',
+    labelSuccessfully: 'Successful',
     labelWarning: 'Warning',
     labelFailure: 'Failure',
     labelPrompt: 'Prompt',
