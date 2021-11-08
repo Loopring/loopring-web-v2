@@ -85,6 +85,14 @@ const linkListMap = {
             linkName: 'APIs',  //APIs
             linkHref: "https://docs.loopring.io/en/"
         },
+        {
+            linkName: 'L2Explorer',  //Layer2 Explorer
+            linkHref: "https://explorer.loopring.io"
+        },
+        {
+            linkName: 'Subgraph',  //Subgraph
+            linkHref: "https://thegraph.com/hosted-service/subgraph/loopring/loopring"
+        },
     ],
 }
 
