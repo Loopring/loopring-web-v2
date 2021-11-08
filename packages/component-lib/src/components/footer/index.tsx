@@ -195,8 +195,7 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
 
                     </Box>
                     <Typography fontSize={12}  component={'p'} textAlign={'center'}  paddingBottom={2}
-                                color={'var(--color-text-third)'}>Copyright (c)
-                        2017-{new Date().getFullYear()}. All rights reserved.</Typography>
+                                color={'var(--color-text-third)'}>© 2017 Loopring Technology Limited. All rights reserved.</Typography>
                 </>
             )}
         </Container>
@@ -205,8 +204,7 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
              style={{backgroundColor: mode === 'light' ? 'rgba(59, 90, 244, 0.05)' : 'rgba(255, 255, 255, 0.05)'}}>
           <Container> <Box display={'flex'} flex={1} width={'100%'} justifyContent={'space-between'}
                                      alignItems={'center'}>
-              <Typography fontSize={12} component={'span'} color={'var(--color-text-third)'} paddingLeft={2}>Copyright (c)
-                2017-{new Date().getFullYear()}. All rights reserved.</Typography>
+              <Typography fontSize={12} component={'span'} color={'var(--color-text-third)'} paddingLeft={2}>© 2017 Loopring Technology Limited. All rights reserved.</Typography>
               <Box>
                   {medias}
               </Box>
