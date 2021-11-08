@@ -176,7 +176,7 @@ export default {
     labelExitAmmFailed: 'Remove AMM Pool failed!',
     labelConnectBy: 'Connected with <1>{{connectBy}}</1>',
     labelWrongNetwork: 'Wrong network',
-    labelActivatedAccountDeposit: 'Please deposit to activate Layer2 account',
+    labelActivatedAccountDeposit: 'Please deposit to activate your Layer2 account',
     labelActivatedAccountNotSupport: 'We are apologize, Loopring app not support your address current now.',
     labelProcessing: 'Processing',
     labelMetaMaskProcessing: 'Connect Wallet with MetaMask...',

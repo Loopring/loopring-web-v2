@@ -242,7 +242,7 @@ export const ReportPage = ()=>{
         }
     },[ref.current])
     return <StyleBox display={'flex'} className={'MuiPaper-elevation2'}
-                     flexDirection={'column'} flex={1}  marginTop={3} padding={3} borderRadius={1}>
+          flexDirection={'column'} flex={1}  marginY={3} padding={3} borderRadius={1}>
         <div ref={ref} dangerouslySetInnerHTML={{__html: mailTemplate}}/>
     </StyleBox>
 }
