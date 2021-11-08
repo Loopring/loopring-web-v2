@@ -58,12 +58,6 @@ const linkListMap = {
             linkName: 'Referrals', //Referrals
             linkHref: "https://medium.com/loopring-protocol/loopring-exchange-launches-referral-program-c61777f072d1"
         },
-        {
-            linkName: 'TokenListing',
-            linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
-        },
-
-
     ],
     Support: [
         {
@@ -73,6 +67,10 @@ const linkListMap = {
         {
             linkName: 'CreatorGrants', // Creator Grants
             linkHref: "https://www.loopringgrants.org/"
+        },
+             {
+            linkName: 'TokenListing',
+            linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
         },
     ],
     Developers: [
