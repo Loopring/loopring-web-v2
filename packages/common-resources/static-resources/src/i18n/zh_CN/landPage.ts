@@ -19,7 +19,7 @@ export default {
     labelSuperpowers :'Ready for Developers',
     describeSafety:'Assets on Loopring layer2\nare equaly secure as they are\non the Ethereum mainnet.',
     describeLowCost:'Transaction fees are reduced\n to 1/30 - 1/100 of the fees \non the Ethereum mainnet.',
-    describeFastTransfer:'Loopring layer2 can settle\n~2000 transactions per second\nwith near instant finility.',
+    describeFastTransfer:'Loopring layer2 can settle\n~2000 transactions per second\nwith near instant finality.',
     describeSuperpowers :'Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring\'s time-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.',
     labelBtnStart:'LAUNCH LAYER2 APP',
     labelBtnDeveloper: 'Developer Documentation',
