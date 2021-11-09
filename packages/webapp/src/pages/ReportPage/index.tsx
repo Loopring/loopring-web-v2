@@ -34,8 +34,20 @@ const StyleBox= styled(Box)`
     display: block;
     min-width: 0px;
     width: 100%;
-    animation-name: mui-auto-fill-cancel;
+    animation-name: mui-auto-fill-cancel;                             
     animation-duration: 10ms;
+    
+
+  }
+  #zohoSupportWebToCase select {
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  #zohoSupportWebToCase  select option{
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--color-pop-bg);
+    color: var(--color-primary);
   }
 
   #zohoSupportWebToCase textarea:focus-visible, #zohoSupportWebToCase input[type='text']:focus-visible, #zohoSupportWebToCase select:focus-visible{
