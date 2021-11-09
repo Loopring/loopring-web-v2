@@ -213,13 +213,13 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
                                     variant="body2" color={'textPrimary'}>
                             {minimumReceived !== EmptyValueTag ? minimumReceived : EmptyValueTag} </Typography>
                     </Grid>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
+                    {/* <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           marginTop={1 / 2}>
                         <Typography component={'p'} variant="body2"
                                     color={'textSecondary'}> {t('swapFee')} </Typography>
                         <Typography component={'p'}
                                     variant="body2" color={'textPrimary'}>{fee}</Typography>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Grid>
         </Box>

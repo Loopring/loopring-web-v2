@@ -20,11 +20,8 @@ const ContainerStyled = styled(Container)`
 const LinkStyle = styled(Link)`
     color: var(--color-button-select);
     text-decoration: underline;
-    margin-bottom: 2px;
-    //&.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
-    //  //background: var(--color-global-bg);
-    //  //box-shadow: var(--shadow);
-    //}
+    font-size: 1.6rem;
+    line-height: 2.4rem;
 ` as typeof Link
 
 const CardBox = styled(Box)`
@@ -82,7 +79,7 @@ const ContainerStyle = styled(Box)`
       result += `
             --main-page-bg: #04092E;
             --color-primary: #4169FF;
-            --layer-2:#1F2034;
+            --layer-2: rgba(31, 32, 52, 0.5);
             --box-card-decorate:rgba(255, 255, 255, 0.1);
             --box-card-background:#2D2F4B;
             --box-card-background-hover:#4169FF;
@@ -97,7 +94,7 @@ const ContainerStyle = styled(Box)`
       result += `
             --main-page-bg: #ffffff;
             --color-primary: #3B5AF4;
-            --layer-2:#F6F7FB;
+            --layer-2: rgba(59, 90, 244, 1);
             --box-card-decorate:rgba(255, 255, 255, 0);
             --box-card-background:#ffffff;
             --box-card-background-hover:#3B5AF4;
@@ -137,12 +134,14 @@ const GridBg = styled(Grid)`
 
 
 const BottomBanner = styled(Box)`
+    background: #0A0B2F;
+
   //background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: cover;
-  background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_wallet_bottom@1x.webp") 1x,
-  url("http://static.loopring.io/assets/images/landPage/img_wallet_bottom@1x.png") 1x);
+//   background-repeat: no-repeat;
+//   background-position: 0 100%;
+//   background-size: cover;
+//   background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_wallet_bottom@1x.webp") 1x,
+//   url("http://static.loopring.io/assets/images/landPage/img_wallet_bottom@1x.png") 1x);
   //mask-image: linear-gradient(rgba(0, 0, 0, 1.0), transparent);
 ` as typeof Box
 
@@ -338,7 +337,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                 </GridBg>
             </ContainerStyled>
         </Box>
-        <Box style={{background: 'var(--color-global-bg-opacity)'}}>
+        <Box style={{background: 'var(--layer-2)'}}>
             <ContainerStyled>
                 <Grid item xs={12}
                     //   maxHeight={HeightConfig.maxHeight}
@@ -351,10 +350,10 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                         >
                             <Box display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
                                 <Typography component={'h1'} fontSize={40} fontWeight={500} marginTop={0} whiteSpace={'pre-line'}
-                                        lineHeight={'68px'}>
+                                        lineHeight={'68px'} color={'var(--text-third)'}>
                                     {t('labelFirstWallet')}
                                 </Typography>
-                                <Typography component={'h2'} variant={'h3'} fontWeight={400} marginTop={9} textAlign={'center'}>
+                                <Typography component={'h2'} variant={'h5'} fontWeight={400} marginTop={2} textAlign={'center'} whiteSpace={'pre-line'} color={'var(--text-third)'}>
                                     {t('labelFirstWalletDetail')}
                                 </Typography>
                             </Box>

@@ -60,10 +60,6 @@ export function useKlineChart(market: string | undefined) {
 
     }, [tokenMap])
 
-    React.useEffect(() => {
-        genCandlestickData({market})
-    }, [market, genCandlestickData])
-
     return {
         market,
         candlestickViewData,
