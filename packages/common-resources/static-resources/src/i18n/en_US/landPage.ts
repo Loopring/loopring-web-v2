@@ -24,7 +24,7 @@ export default {
     labelBtnStart:'LAUNCH LAYER2 APP',
     labelBtnDeveloper: 'Developer Documentation',
     labelFirstWallet: 'BETTER THAN BEING SMART',
-    labelFirstWalletDetail: "Smart wallets enable limitless extensibility over EOA wallets,\nbut Loopring Wallet takes one step further with native zkRollup layer2 integration.\nNow you can transact directly on Loopring layer2, faster and cheaper.",
+    labelFirstWalletDetail: "Smart wallets enable limitless extensibility over EOA wallets, but Loopring Wallet takes one step further with native zkRollup layer2 integration. \n Now you can transact directly on Loopring layer2, faster and cheaper.",
     labelWalletSecureH1: 'SECURE, at its core',
     labelWalletSecureH2: 'With social-recovery and guardians',
     labelWalletSecureDetail: 'Completely self-custodial, only you control your assets. You can choose people, \n institutions, and hardware that you trust as the guardians of your wallet.  You can \n also set quota for daily transfers, and lock it down if ever needed.',

@@ -225,9 +225,13 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
 
     const handleSearchChange = React.useCallback((value) => {
         setSearchValue(value)
+    }, [])
+
+    // update list when searchValue change
+    React.useEffect(() => {
         const type = tableTabValue === 'favourite' ? TableFilterParams.favourite : tableTabValue === 'tradeRanking' ? TableFilterParams.ranking : TableFilterParams.all
-        handleTableFilterChange({keyword: value, type: type})
-    }, [handleTableFilterChange, tableTabValue])
+        handleTableFilterChange({keyword: searchValue, type: type})
+    }, [searchValue, handleSearchChange, tableTabValue, handleTableFilterChange])
 
     const popState = usePopupState({variant: 'popover', popupId: `popup-pro-toolbar-markets`})
 
@@ -235,6 +239,12 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     //     width: auto;
     //     cursor: pointer;
     // `
+
+    const handleClickAway = React.useCallback(() => {
+        popState.setOpen(false)
+        setIsDropdownOpen(false)
+        setSearchValue('')
+    }, [popState])
 
     return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2} justifyContent={'space-between'}>
         <Box alignItems={'center'} display={'flex'}>
@@ -272,7 +282,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                     vertical: 'top',
                     horizontal: 'center',
                 }}>
-                <ClickAwayListener onClickAway={() => {popState.setOpen(false); setIsDropdownOpen(false);}}>
+                <ClickAwayListener onClickAway={handleClickAway}>
                     <Box>
                         <InputSearchWrapperStyled>
                             <InputSearch fullWidth value={searchValue} onChange={handleSearchChange} />
@@ -300,6 +310,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                                     handleOnMarketChange(`${row.pair.coinA}-${row.pair.coinB}` as MarketType);
                                     popState.setOpen(false);
                                     setIsDropdownOpen(false);
+                                    setSearchValue('');
                                 }}
                             />
                         </TableProWrapStyled>
