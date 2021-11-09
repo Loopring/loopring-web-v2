@@ -20,11 +20,8 @@ const ContainerStyled = styled(Container)`
 const LinkStyle = styled(Link)`
     color: var(--color-button-select);
     text-decoration: underline;
-    margin-bottom: 2px;
-    //&.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
-    //  //background: var(--color-global-bg);
-    //  //box-shadow: var(--shadow);
-    //}
+    font-size: 1.6rem;
+    line-height: 2.4rem;
 ` as typeof Link
 
 const CardBox = styled(Box)`
