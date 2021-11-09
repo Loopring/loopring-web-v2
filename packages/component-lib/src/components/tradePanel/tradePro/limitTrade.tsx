@@ -159,13 +159,13 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         </Box>
         <Box className={'info-panel'} paddingX={2} paddingTop={2}>
 
-        <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
+        {/* <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
               marginTop={1 / 2} >
             <Typography component={'p'} variant="body2"
                         color={'textSecondary'}> {t('swapFee')} </Typography>
             <Typography component={'p'}
                         variant="body2" color={'textPrimary'}>{fee}</Typography>
-        </Grid>
+        </Grid> */}
         </Box>
         <Box paddingX={2} paddingTop={2}>
             {/*{getDisabled()} {tradeBtnBaseStatus}*/}

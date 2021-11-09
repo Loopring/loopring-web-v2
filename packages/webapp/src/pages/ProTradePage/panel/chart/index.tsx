@@ -51,6 +51,10 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
     const isKline = chosenChart === ChartType.Kline
     const precisionForPrice = marketMap[ (market || '') ]?.precisionForPrice
 
+    React.useEffect(() => {
+        genCandlestickData({market, timeInterval})
+    }, [market, genCandlestickData, timeInterval])
+
     const rebuildList = React.useCallback(() => {
         const depth = pageTradePro.depth;
         if (depth && (depth.bids.length || depth.asks.length)) {
@@ -96,8 +100,7 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
 
     const handleTimeIntervalChange = React.useCallback((timeInterval: TradingInterval) => {
         setTimeInterval(timeInterval)
-        genCandlestickData({market, timeInterval})
-    }, [genCandlestickData, market])
+    }, [])
 
     const handleSubChartFeatureClick = React.useCallback((sub: SubIndicator) => {
         setSubChart(sub)

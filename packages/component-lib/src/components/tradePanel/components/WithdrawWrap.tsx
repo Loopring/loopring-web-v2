@@ -56,7 +56,7 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-withdraw`});
 
     React.useEffect(() => {
-        if (!!chargeFeeTokenList.length) {
+        if (!!chargeFeeTokenList.length && feeChargeOrder) {
             const list = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__}) => ({
                 key: belong,
                 value: belong,

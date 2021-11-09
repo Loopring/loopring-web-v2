@@ -4,6 +4,7 @@ import { WithdrawProps } from '../../tradePanel/Interface';
 import { IBData } from '@loopring-web/common-resources';
 import { TradeMenuList, useBasicTrade, WithdrawWrap } from '../../tradePanel/components';
 import React from 'react';
+import { cloneDeep } from 'lodash';
 
 export const WithdrawPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
     {
@@ -20,6 +21,7 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
         onWithdrawClick,
         withdrawBtnStatus,
         assetsData,
+        walletMap,
         ...rest
     }: WithdrawProps<T, I> & WithTranslation & { assetsData: any[] }) => {
 
@@ -34,9 +36,21 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
         //Data, panel and function
         onChangeEvent,
         index,
-        switchData
+        switchData,
+    } = useBasicTrade({...rest, type, walletMap});
 
-    } = useBasicTrade({...rest,type});
+    // LP token should not exist in withdraw panel for now
+    const getWalletMapWithoutLP = React.useCallback(() => {
+        const clonedWalletMap = cloneDeep(walletMap)
+        const keyList = Object.keys(clonedWalletMap)
+        keyList.forEach(key => {
+            const [first] = key.split('-')
+            if (first === 'LP') {
+                delete clonedWalletMap[key]
+            }
+        })
+        return clonedWalletMap
+    }, [walletMap])
 
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
@@ -52,7 +66,8 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
                                                    onWithdrawClick,
                                                    withdrawBtnStatus,
                                                    assetsData,
-                                               }} />,[onChangeEvent,chargeFeeTokenList,rest,switchData,onWithdrawClick,withdrawBtnStatus, assetsData]),
+                                                   walletMap,
+                                               }} />,[onChangeEvent,chargeFeeTokenList,rest,switchData,onWithdrawClick,withdrawBtnStatus, assetsData, walletMap]),
             toolBarItem: undefined
         },
             {
@@ -65,8 +80,9 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
                     //rest.walletMap,
                     selected: switchData.tradeData.belong,
                     tradeData: switchData.tradeData,
+                    walletMap: getWalletMapWithoutLP()
                     //oinMap
-                }}/>,[switchData,rest,onChangeEvent]),
+                }}/>,[switchData,rest,onChangeEvent, getWalletMapWithoutLP]),
                 toolBarItem: undefined
             },]
     }
