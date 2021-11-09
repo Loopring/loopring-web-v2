@@ -58,12 +58,6 @@ const linkListMap = {
             linkName: 'Referrals', //Referrals
             linkHref: "https://medium.com/loopring-protocol/loopring-exchange-launches-referral-program-c61777f072d1"
         },
-        {
-            linkName: 'TokenListing',
-            linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
-        },
-
-
     ],
     Support: [
         {
@@ -73,6 +67,10 @@ const linkListMap = {
         {
             linkName: 'CreatorGrants', // Creator Grants
             linkHref: "https://www.loopringgrants.org/"
+        },
+             {
+            linkName: 'TokenListing',
+            linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
         },
     ],
     Developers: [
@@ -84,6 +82,14 @@ const linkListMap = {
         {
             linkName: 'APIs',  //APIs
             linkHref: "https://docs.loopring.io/en/"
+        },
+        {
+            linkName: 'L2Explorer',  //Layer2 Explorer
+            linkHref: "https://explorer.loopring.io"
+        },
+        {
+            linkName: 'Subgraph',  //Subgraph
+            linkHref: "https://thegraph.com/hosted-service/subgraph/loopring/loopring"
         },
     ],
 }
@@ -173,9 +179,9 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                          alignItems="center"
                          width={'100%'} paddingBottom={4}>
                         <Box display={'flex'} justifyContent={'space-between'} alignItems={'flex-start'} >
-                            <Box  minWidth={100}  alignSelf={'center'}
+                            <Box marginTop={4} marginLeft={-3} minWidth={100} alignSelf={'flex-start'}
                                  justifySelf={'center'} display={'inline-flex'} alignItems={'center'}>
-                                <LoopringIcon color={'inherit'} style={{height:'40px',width:'120px'}}/>
+                                <LoopringIcon htmlColor={'var(--color-text-third)'} style={{height:'40px',width:'120px'}}/>
                             </Box>
                             {linkListMapRender}
                             <Box display={'flex'} flexDirection={'column'} width={168}>
@@ -189,8 +195,7 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
 
                     </Box>
                     <Typography fontSize={12}  component={'p'} textAlign={'center'}  paddingBottom={2}
-                                color={'var(--color-text-third)'}>Copyright (c)
-                        2017-{new Date().getFullYear()}. All rights reserved.</Typography>
+                                color={'var(--color-text-third)'}>© 2017 Loopring Technology Limited. All rights reserved.</Typography>
                 </>
             )}
         </Container>
@@ -199,8 +204,7 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
              style={{backgroundColor: mode === 'light' ? 'rgba(59, 90, 244, 0.05)' : 'rgba(255, 255, 255, 0.05)'}}>
           <Container> <Box display={'flex'} flex={1} width={'100%'} justifyContent={'space-between'}
                                      alignItems={'center'}>
-              <Typography fontSize={12} component={'span'} color={'var(--color-text-third)'} paddingLeft={2}>Copyright (c)
-                2017-{new Date().getFullYear()}. All rights reserved.</Typography>
+              <Typography fontSize={12} component={'span'} color={'var(--color-text-third)'} paddingLeft={2}>© 2017 Loopring Technology Limited. All rights reserved.</Typography>
               <Box>
                   {medias}
               </Box>

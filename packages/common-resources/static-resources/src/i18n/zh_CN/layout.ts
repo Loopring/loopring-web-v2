@@ -63,6 +63,8 @@ export default {
     labelkeyReferrals: 'Referrals',
     labelkeyTokenListing: 'Token Listing',
     labelkeyCreatorGrants: 'Creator Grants',
+    labelkeyL2Explorer: 'Layer2 Explorer',
+    labelkeySubgraph: 'Subgraph',
     labelFooterSupport:'Support' ,
     labelkeyFeedback: '❤️ Submit a Request',
     labelkeyLoopringTutorial: 'Loopring Tutorial',
