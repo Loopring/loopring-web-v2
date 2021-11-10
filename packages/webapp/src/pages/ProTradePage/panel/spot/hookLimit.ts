@@ -90,7 +90,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
             const tradePrice = pageTradePro.chooseDepth ? pageTradePro.chooseDepth.price : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
             let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
             if (balance && currency === sdk.Currency.cny) {
-                balance = Number(balance) / forex;
+                balance = Number(balance) * forex;
             }
            if((pageTradePro.tradeType === TradeProType.buy && pageTradePro.chooseDepth.type === DepthType.ask)
                ||( pageTradePro.tradeType === TradeProType.sell && pageTradePro.chooseDepth.type === DepthType.bid )
@@ -150,7 +150,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
                 pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0
             let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
             if (balance && currency === sdk.Currency.cny) {
-                balance = Number(balance) / forex;
+                balance = Number(balance) * forex;
             }
             return {
                 ...state,
@@ -340,7 +340,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
                 const tradePrice = tradeData.price.tradeValue;
                 let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
                 if (balance && currency === sdk.Currency.cny) {
-                    balance = Number(balance) / forex;
+                    balance = Number(balance) * forex;
                 }
                 return {
                     ...state,

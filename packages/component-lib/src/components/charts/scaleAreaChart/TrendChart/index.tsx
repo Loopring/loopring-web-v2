@@ -7,10 +7,12 @@ import { getRenderData } from '../data'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
+import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 
 const DEFAULT_YAXIS_DOMAIN = 0.05
 const UP_COLOR = '#00BBA8'
 const DOWN_COLOR = '#fb3838'
+const DAILY_TREND_COLOR = '#4169ff'
 
 const TooltipStyled = styled(Box)`
   background: var(--color-pop-bg);
@@ -35,6 +37,7 @@ const TrendChart = ({
                         extraInfo,
                         showXAxis = false,
                         isHeadTailCompare = false,
+                        isDailyTrend = false,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor : 'green'
@@ -43,7 +46,7 @@ const TrendChart = ({
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
 
-    const trendColor =
+    const trendColor = isDailyTrend ? DAILY_TREND_COLOR :
         upColor === 'green'
             ? priceTrend === 'up'
                 ? UP_COLOR
@@ -130,9 +133,14 @@ const TrendChart = ({
         )
     }
 
+    const customYAxisTick = (value: any) => {
+        const formattedValue = getValuePrecisionThousand(value)
+        return formattedValue ?? '0.00'
+    }
+
     return (
         <ResponsiveContainer debounce={100} width={'99%'}>
-            <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}
+            <ComposedChart margin={{ left: -20, right: 10 }} data={renderData} onMouseMove={showTooltip && handleMousemove}
                         onMouseLeave={showTooltip && handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -150,15 +158,16 @@ const TrendChart = ({
                     </linearGradient>
                 </defs>
                 <XAxis
-                    hide={!showXAxis}
-                    dataKey="date" /* tickFormatter={convertDate} */
-                    interval={8}
-                    axisLine={false}
-                    tickLine={false}
+                    hide={!showXAxis && !isDailyTrend}
+                    dataKey="timeStamp" /* tickFormatter={convertDate} */
+                    interval={isDailyTrend ? 10 : 8}
+                    axisLine={isDailyTrend}
+                    tickLine={isDailyTrend}
                     tick={customTick}
                 />
                 <YAxis
-                    hide={true}
+                    hide={!isDailyTrend}
+                    tickFormatter={isDailyTrend ? customYAxisTick : undefined}
                     domain={[
                         (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
                         (dataMax: number) => dataMax * (1 + yAxisDomainPercent),
@@ -178,7 +187,7 @@ const TrendChart = ({
                     strokeWidth={2}
                     dataKey="close"
                     stroke={trendColor}
-                    dot={false}
+                    dot={isDailyTrend}
                     legendType="none"
                     isAnimationActive={false}
                 />

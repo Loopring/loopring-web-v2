@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { PriceTag } from '@loopring-web/common-resources'
 import { Box, Grid, Typography } from '@mui/material'
@@ -11,6 +11,8 @@ import {
     DoughnutChart,
     LpTokenAction,
     useSettings,
+    ScaleAreaChart,
+    ChartType,
 } from '@loopring-web/component-lib'
 
 import { useModals } from 'hooks/useractions/useModals'
@@ -80,7 +82,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     // const [chartPeriod, setChartPeriod] = useState('week')
     const {allowTrade} = useSystem();
     const { account: { accountId } } = useAccount();
-    const {marketArray, assetsRawData} = useGetAssets()
+    const {marketArray, assetsRawData, userAssets, getUserAssets} = useGetAssets()
     const {currency, themeMode, setHideL2Assets, setHideLpToken, setHideSmallBalances} = useSettings()
     const {walletLayer2} = store.getState().walletLayer2;
     const { hideL2Assets, hideLpToken, hideSmallBalances } = store.getState().settings
@@ -105,6 +107,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const formattedDoughnutData = percentList.filter(o => o.token.value.split('-')[ 0 ] === 'LP').length > 0
         ? [...percentList.filter(o => o.token.value.split('-')[ 0 ] !== 'LP'), lpTotalData]
         : percentList
+
+    // get user daily eth assets
+    useEffect(() => {
+        getUserAssets()
+    }, [])
+
+    console.log(userAssets)
 
     // useEffect(() => {
     //     // @ts-ignore
@@ -186,7 +195,18 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                      className={'MuiPaper-elevation2'}>
                     <Typography component="span" color="textSecondary"
                                 variant="body1">{t('labelTotalAssets')}</Typography>
-                    <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
+                    <Box>
+                        <Typography component={'span'}>{123} ETH </Typography>
+                        <Typography component={'span'}>&#8776; {currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan}</Typography>
+                    </Box>
+                    {!!userAssets.length ? (
+                        <ScaleAreaChart type={ChartType.Trend} isDailyTrend showArea={false} data={userAssets.map(o => ({
+                            close: o.close,
+                            timeStamp: o.timeStamp,
+                        }))} />
+                    ) : (
+                        <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
+                    )}
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
