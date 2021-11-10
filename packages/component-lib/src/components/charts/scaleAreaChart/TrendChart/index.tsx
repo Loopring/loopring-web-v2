@@ -38,6 +38,7 @@ const TrendChart = ({
                         showXAxis = false,
                         isHeadTailCompare = false,
                         isDailyTrend = false,
+                        handleMoveOut = undefined,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor : 'green'
@@ -46,8 +47,7 @@ const TrendChart = ({
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
 
-    const trendColor = isDailyTrend ? DAILY_TREND_COLOR :
-        upColor === 'green'
+    const trendColor = upColor === 'green'
             ? priceTrend === 'up'
                 ? UP_COLOR
                 : DOWN_COLOR
@@ -91,22 +91,52 @@ const TrendChart = ({
             !props.payload[ 0 ].payload.timeStamp
         )
             return <span></span>
-        const {timeStamp, close} = props.payload[ 0 ].payload
-        return (
-            <TooltipStyled>
-                {extraInfo && (
-                    <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
-                )}
-                <Typography component={'div'} fontSize={12}>
-                    {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
-                </Typography>
-            </TooltipStyled>
-        )
+        const {timeStamp, close, sign} = props.payload[ 0 ].payload
+        if (isDailyTrend) {
+            const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
+            const change = index === 0 ? '--' : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
+            return (
+                <TooltipStyled>
+                    {/* {extraInfo && (
+                        <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                    )} */}
+                    <Typography component={'div'} variant={'body1'}>
+                        {moment(timeStamp).format('MMM DD [UTC]Z')}
+                    </Typography>
+                    <Box display={'flex'} >
+                        <Typography component={'span'} variant={'body1'}>
+                            Change: 
+                        </Typography>
+                        <Typography color={sign !== 1 
+                            ? upColor === 'green' 
+                                ? DOWN_COLOR 
+                                : UP_COLOR 
+                            : upColor === 'green' 
+                                ? UP_COLOR
+                                : DOWN_COLOR }>&nbsp;{change} %</Typography>
+                    </Box>
+                </TooltipStyled>
+            )
+        } else {
+            return (
+                <TooltipStyled>
+                    {extraInfo && (
+                        <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                    )}
+                    <Typography component={'div'} fontSize={12}>
+                        {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
+                    </Typography>
+                </TooltipStyled>
+            )
+        }
     }, [hasData, extraInfo])
 
     const handleMouseLeave = useCallback(() => {
+        if (handleMoveOut) {
+            handleMoveOut()
+        }
         setPriceTrend(renderData[ renderData.length - 1 ]?.sign === 1 ? 'up' : 'down')
-    }, [renderData])
+    }, [renderData, handleMoveOut])
 
     useDeepCompareEffect(() => {
         if (!isHeadTailCompare && renderData && !!renderData.length) {
@@ -186,7 +216,7 @@ const TrendChart = ({
                     strokeLinecap="round"
                     strokeWidth={2}
                     dataKey="close"
-                    stroke={trendColor}
+                    stroke={isDailyTrend ? DAILY_TREND_COLOR : trendColor}
                     dot={isDailyTrend}
                     legendType="none"
                     isAnimationActive={false}
