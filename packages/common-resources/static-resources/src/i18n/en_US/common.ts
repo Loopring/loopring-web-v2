@@ -242,6 +242,7 @@ export default {
     labelCookiesAgree: 'Agree',
     labelLimitMin:'Minimum of {{arg}}',
     labelLimitMax:'Maximum of {{arg}}',
+    labelOrderSmall:'Order too small (>= 100.5LRC)',
     labelEnterAmount:'Enter amount',
     labelAgreeLoopringTxt: 'Allow Loopring to use Cookies.',
     labelLayer2HistoryTransactions: 'Transactions',
