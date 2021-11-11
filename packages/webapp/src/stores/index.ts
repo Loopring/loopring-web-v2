@@ -108,7 +108,8 @@ const store = configureStore({
 store.dispatch(updateVersion())
 
 store.dispatch(setLanguage(store.getState().settings.language))
-fetch(`https://static.loopring.io/assets/images/coin/loopring.json`)
+//https://static.loopring.io/assets/images/coin/loopring.json
+fetch(`./static/coin/loopring.json`)
     .then(results => results.json()).then(imgConfig=>{
 
     store.dispatch(setCoinJson(imgConfig.frames))
