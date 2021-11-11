@@ -26,6 +26,8 @@ export interface ScaleAreaChartProps {
     showXAxis?: boolean
     isHeadTailCompare?: boolean
     marketPrecision?: number
+    isDailyTrend?: boolean
+    handleMoveOut?: () => void
 }
 
 export const ScaleAreaChart = ({type, interval, indicator, data, marketPrecision, ...rest}: ScaleAreaChartProps) => {

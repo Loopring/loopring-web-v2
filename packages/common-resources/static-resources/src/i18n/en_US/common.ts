@@ -163,7 +163,7 @@ export default {
     labelEmptyDefault: 'Empty',
     labelUnlockAccount:'Unlock Account',
     labelAssetsDistribution: 'Assets Distribution',
-    labelTotalAssets: 'Total Assets',
+    labelTotalAssets: 'Assets Trend',
     labelTxnPageTitle: 'Deposit/Withdraw',
     labelTradePageTitle: 'Trade History',
     labelAmmPageTitle: 'AMM Records',
