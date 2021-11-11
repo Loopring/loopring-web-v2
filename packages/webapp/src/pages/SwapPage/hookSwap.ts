@@ -306,9 +306,14 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                     return `labelLimitMax| ${maxOrderSize}`;
                 } else if (!validAmt) {
                     const sellSymbol = tradeData?.sell.belong;
-                    const minOrderSize = VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any) + ' ' + sellSymbol;
+                    //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
+                    const minOrderSize =  VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any);
                     setSwapBtnStatus(TradeBtnStatus.DISABLED)
-                    return `labelLimitMin| ${minOrderSize}`
+                    if(isNaN(Number(minOrderSize))){
+                        return `labelOrderSmall`;
+                    }else{
+                        return `labelLimitMin| ${minOrderSize+ ' ' + sellSymbol}`
+                    }
                 } else {
                     setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
                     return undefined

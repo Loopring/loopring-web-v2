@@ -53,11 +53,11 @@ module.exports = override(
   ),
   */
 
-  // addWebpackPlugin(
-  //   new CopyWebpackPlugin({
-  //     patterns: [{ from: path.resolve(__dirname, '..', "common-resources", "assets"), to: './static',toType: "dir" }],
-  //   }
-  // )),
+  addWebpackPlugin(
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.resolve(__dirname, '..', "common-resources", "assets"), to: './static',toType: "dir" }],
+    }
+  )),
   addWebpackPlugin(
     new webpack.DefinePlugin({
       'process.env.COMMITHASH': JSON.stringify(getCommitHash()),
@@ -103,7 +103,7 @@ module.exports = override(
   (config) => {
     config.output.publicPath = ASSET_PATH;
     // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
-     //console.log(path.resolve(__dirname, "..", "assets/"))
+     console.log(path.resolve(__dirname, "..", "assets/"))
     console.log('-----> enter config!!!!!!!')
 
     const setConfig = (index) => {

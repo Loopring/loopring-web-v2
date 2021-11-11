@@ -154,6 +154,10 @@ export const DataGridStyled = styled(DataGrid)`
       border-bottom: rgba(0, 0, 0, 0) 2px solid;
       box-sizing: border-box;
       height: 100%;
+
+      & > span, div {
+        user-select: text;
+      }
     }
 
     .rdg-cell[aria-selected=true] {

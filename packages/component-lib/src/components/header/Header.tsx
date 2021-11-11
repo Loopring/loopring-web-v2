@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger, Grid } from '@mui/material';
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { HeaderMenuSub, HeadMenuItem, Layer2Item, TabItemPlus } from '../basic-lib';
+import { HeaderMenuSub, HeadMenuItem, Layer2Item, TabItemPlus, Button } from '../basic-lib';
 import { HeaderProps, HeaderToolBarInterface } from './Interface';
 import {
     // ammDisableList,
@@ -18,6 +18,13 @@ import {
 import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
 import { useSettings } from '../../stores/reducer/settings';
+
+const ButtonStyled = styled(Button)`
+    background: linear-gradient(94.92deg, #4169FF 0.91%, #A016C2 103.55%);
+    width: 10.7rem;
+    height: 3.4rem;
+    fontSize: 1.4rem;
+`
 
 const GridStyled = styled(Grid)`
     color: ${({iscurrentroute}: any) => iscurrentroute === 'true' ? 'var(--color-text-button-select)' : 'var(--color-text-secondary)' } ; 
@@ -183,6 +190,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    isWrap = true,
                                                                                                    isLandPage = false,
                                                                                                    i18n,
+                                                                                                   t,
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
     const { themeMode, setTheme } = useSettings()
@@ -269,30 +277,40 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 <Box display="flex" alignContent="center" justifyContent={"flex-start"}
                      alignItems={"stretch"}>
                     <LoopringLogo/>
-                    {!isLandPage && getDrawerChoices({menuList: headerMenuData, i18n, ...rest})}
+                    {!isLandPage && getDrawerChoices({menuList: headerMenuData, i18n, t, ...rest})}
                 </Box>
                 <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
                      color={'textColorSecondary'}>
                     {isLandPage ? (
                         <>
                             {/* {getDrawerChoices({menuList: landingMenuData, i18n, ...rest})} */}
-                            <Grid container spacing={4}>
+                            <Grid container spacing={4} display={'flex'} alignItems={'center'}>
                                 <GridStyled 
                                     iscurrentroute={location.pathname === '/' ? 'true' : 'false'}
                                     item
                                     onClick={() => history.push('/')}>zkRollup Layer2</GridStyled>
                                 <GridStyled iscurrentroute={location.pathname === '/wallet' ? 'true' : 'false'} item onClick={() => history.push('/wallet')}>Smart Wallet</GridStyled>
+                                <Grid item>
+                                    <Box style={{ cursor: 'pointer' }} onClick={handleThemeClick}>
+                                        {themeMode === 'dark' ?  <DarkIcon /> : <LightIcon />}
+                                    </Box>
+                                </Grid>
+                                <Grid item>
+                                    <ButtonStyled
+                                        variant={'contained'} 
+                                        onClick={() => history.push('/trade/lite/LRC-ETH')}
+                                    >
+                                        {t('labelLaunchApp')}
+                                    </ButtonStyled>
+                                </Grid>
                             </Grid>
-                            <Box marginLeft={4} style={{ cursor: 'pointer' }} onClick={handleThemeClick}>
-                                {themeMode === 'dark' ?  <DarkIcon /> : <LightIcon />}
-                            </Box>
                         </>
                     ) : (
                         <>
                             <LinkStyle variant={'body2'} href={'https://legacy.loopring.io/'}>
                                 Use Legacy UI
                             </LinkStyle>
-                            {getMenuButtons({toolbarList: headerToolBarData, i18n, ...rest})}
+                            {getMenuButtons({toolbarList: headerToolBarData, i18n, t, ...rest})}
                         </>
                     )}
                 </Box>

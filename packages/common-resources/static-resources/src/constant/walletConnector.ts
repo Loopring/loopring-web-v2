@@ -13,10 +13,10 @@ export const gatewayList: GatewayItem[] = [
     },
     // {
     //     key: 'Ledger',
-    //     imgSrc: 'http://static.loopring.io/assets/svg/ledger.svg',
+    //     imgSrc: 'https://static.loopring.io/assets/svg/ledger.svg',
     // },
     // {
     //     key: 'Trezor',
-    //     imgSrc: 'http://static.loopring.io/assets/svg/trezor.svg',
+    //     imgSrc: 'https://static.loopring.io/assets/svg/trezor.svg',
     // },
 ]
