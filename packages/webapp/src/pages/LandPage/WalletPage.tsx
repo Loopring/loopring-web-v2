@@ -77,9 +77,10 @@ const ContainerStyle = styled(Box)`
       `
     if (theme.mode === ThemeType.dark) {
       result += `
-            --main-page-bg: #04092E;
+            --main-page-bg: #060D42;
             --color-primary: #4169FF;
-            --layer-2: rgba(31, 32, 52, 0.5);
+            --layer-2: #1A32A2;
+            --second-bg: #0D1655;
             --box-card-decorate:rgba(255, 255, 255, 0.1);
             --box-card-background:#2D2F4B;
             --box-card-background-hover:#4169FF;
@@ -94,7 +95,8 @@ const ContainerStyle = styled(Box)`
       result += `
             --main-page-bg: #ffffff;
             --color-primary: #3B5AF4;
-            --layer-2: rgba(59, 90, 244, 1);
+            --layer-2: #4169FF;
+            --second-bg: #F6F7FB;
             --box-card-decorate:rgba(255, 255, 255, 0);
             --box-card-background:#ffffff;
             --box-card-background-hover:#3B5AF4;
@@ -118,9 +120,9 @@ const ContainerStyle = styled(Box)`
 
 `
 const GridBg = styled(Grid)`
-    background-size: 150%;
+    background-size: 160%;
     background-repeat: no-repeat;
-    background-position: -330px;
+    background-position: -360px -110px;
     //background-image: var(--img-banner-url);
 
     ${({theme}) => {
@@ -134,7 +136,7 @@ const GridBg = styled(Grid)`
 
 
 const BottomBanner = styled(Box)`
-    background: #0A0B2F;
+    background: var(--layer-2);
 
   //background-size: 100%;
 //   background-repeat: no-repeat;
@@ -186,35 +188,35 @@ const TitleTypographyRight = styled(Typography)`
   }
 ` as typeof Typography
 
-const BoxCard = styled(Box)`
-  position: absolute;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background: var(--box-card-background);
-  box-shadow: var(--box-card-shadow);
+// const BoxCard = styled(Box)`
+//   position: absolute;
+//   border-radius: 4px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   background: var(--box-card-background);
+//   box-shadow: var(--box-card-shadow);
 
-  h4 {
-    text-transform: uppercase;
-    font-size: 30px;
-    font-weight: 500;
-  }
+//   h4 {
+//     text-transform: uppercase;
+//     font-size: 30px;
+//     font-weight: 500;
+//   }
 
-  :before {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    display: block;
-    border-start-end-radius: 4px;
-    border-end-end-radius: 4px;
+//   :before {
+//     content: '';
+//     position: absolute;
+//     right: 0;
+//     top: 0;
+//     bottom: 0;
+//     width: 10px;
+//     display: block;
+//     border-start-end-radius: 4px;
+//     border-end-end-radius: 4px;
 
-    background: var(--box-card-decorate);
-  }
-` as typeof Box
+//     background: var(--box-card-decorate);
+//   }
+// ` as typeof Box
 
 
 export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => {
@@ -377,7 +379,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                 </Grid>
             </ContainerStyled>
         </Box>
-        <Box style={{background: 'var(--color-global-bg-opacity'}}>
+        <Box style={{background: 'var(--second-bg)'}}>
             <ContainerStyled>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
@@ -422,7 +424,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                 </Grid>
             </ContainerStyled>
         </Box>
-        <Box style={{background: 'var(--color-global-bg-opacity'}}>
+        <Box style={{background: 'var(--second-bg)'}}>
             <ContainerStyled>
                 <Grid item xs={12}
                     // maxHeight={HeightConfig.maxHeight}
