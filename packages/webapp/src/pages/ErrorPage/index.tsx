@@ -5,7 +5,7 @@ import { ErrorObject } from '@loopring-web/common-resources';
 import { getContactInfo } from '../../utils/dt_tools';
 
 const StyleBox = styled(Box)`
-  background-image: url('http://static.loopring.io/assets/images/error_bg.png');
+  background-image: url('https://static.loopring.io/assets/images/error_bg.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: bottom;
