@@ -213,4 +213,4 @@ export const subMenuLayer2 = {
 //     // ]
 // }
 export const headerRoot = 'Landing-page'
-export const SoursURL = 'http://static.loopring.io/assets/'
+export const SoursURL = 'https://static.loopring.io/assets/'

@@ -193,9 +193,9 @@ const QRStyle = styled(Box)`
       //z-index: -1;
       background-image:${({theme})=> {
         if(theme.mode === 'dark') {
-          return  `url('http://static.loopring.io/assets/images/qr_code_dark.png')`;
+          return  `url('https://static.loopring.io/assets/images/qr_code_dark.png')`;
         }else{
-          return `url('http://static.loopring.io/assets/images/qr_code_light.png')`;
+          return `url('https://static.loopring.io/assets/images/qr_code_light.png')`;
         }
       }};
     }
