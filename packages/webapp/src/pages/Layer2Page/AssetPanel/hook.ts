@@ -13,6 +13,8 @@ import { useWalletLayer2Socket } from 'services/socket';
 import { useSystem } from 'stores/system'
 import BigNumber from 'bignumber.js'
 import { useTokenPrices } from 'stores/tokenPrices'
+import { LoopringAPI } from 'api_wrapper'
+import moment from 'moment'
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -46,6 +48,7 @@ export const useGetAssets = () => {
     // const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
     const [assetsMap, setAssetsMap] = React.useState<{ [ key: string ]: any }>({})
     const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
+    const [userAssets, setUserAssets] = React.useState<any[]>([])
     // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
     const {account} = useAccount();
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -87,6 +90,29 @@ export const useGetAssets = () => {
         token: o[ 0 ],
         detail: o[ 1 ]
     })) : []
+
+    const getUserAssets = React.useCallback(async () => {
+        if (LoopringAPI && LoopringAPI.userAPI && tokenMap) { 
+            const ethAddress = tokenMap['ETH'].address
+            const { accAddress } = account
+            const res = await LoopringAPI.userAPI.getUserVIPAssets({
+                address: accAddress,
+                assetTypes: 'DEX',
+                token: ethAddress,
+            })
+            if (res.raw_data && res.raw_data.data) {
+                const ethValueList = res.raw_data.data.map((o: any) => ({
+                    timeStamp: moment(o.createdAt).format('YYYY-MM-DD'),
+                    close: o.ethValue,
+                }))
+                setUserAssets(ethValueList)
+                return
+            }
+            setUserAssets([])
+            return
+        }
+        setUserAssets([])
+    }, [account, tokenMap])
 
     const getAssetsRawData = React.useCallback(() => {
         if (tokenMap && !!Object.keys(tokenMap).length && !!Object.keys(assetsMap).length && !!tokenPriceList.length) {
@@ -197,5 +223,7 @@ export const useGetAssets = () => {
         // formattedDoughnutData,
         assetsRawData,
         marketArray,
+        userAssets,
+        getUserAssets,
     }
 }

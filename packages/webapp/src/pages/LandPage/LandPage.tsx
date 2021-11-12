@@ -7,13 +7,21 @@ import { Card } from './Card';
 import { useHistory, useLocation } from 'react-router-dom';
 import { LoopringAPI } from '../../api_wrapper';
 
-
 const HeightConfig = {
     headerHeight: 64,
     whiteHeight: 32,
     maxHeight: 836,
     minHeight: 800,
 }
+
+const ButtonStyled = styled(Button)`
+    display: flex;
+    justify-content: space-around;
+    background: linear-gradient(94.92deg, #4169FF 0.91%, #A016C2 103.55%);
+    padding-left: 4rem;
+    height: 6.4rem;
+    fontSize: 1.4rem;
+`
 
 const CardBox = styled(Box)`
   display: flex;
@@ -50,25 +58,28 @@ const ContainerStyle = styled(Box)`
 
   ${({theme}) => {
     let result = `
-       --img-banner-url: url("http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png");
+       --img-banner-url: url("https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png");
       `
     if (theme.mode === ThemeType.dark) {
-      result += `
-            --main-page-bg: #04092E;
+        result += `
+            // --main-page-bg: #04092E;
+            --main-page-bg: #060D42;
             --color-primary: #4169FF;
-            --layer-2:#1F2034;
+            --layer-2: #0D1655;
             --box-card-decorate:rgba(255, 255, 255, 0.1);
-            --box-card-background:#2D2F4B;
+            // --box-card-background:#2D2F4B;
+            --box-card-background: #283485;
             --box-card-background-hover:#4169FF;
             --box-card-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15); 
             --text-secondary: #687295;
             --border-card:1px solid #49527D;
             --border-card-hover: rgba(255, 255, 255, 0.1);
             --text-highlight:#4169FF;
-            --text-third:#ffffff; 
-          `
+            --text-third:#ffffff;
+            --bg-bottom: #1A32A1;
+        `
     } else {
-      result += `
+        result += `
             --main-page-bg: #ffffff;
             --color-primary: #3B5AF4;
             --layer-2:#F6F7FB;
@@ -79,11 +90,10 @@ const ContainerStyle = styled(Box)`
             --text-secondary: #A3A8CA;
             --border-card:1px solid #E9EAF2;
             --border-card-hover: rgba(255, 255, 255, 0.1);
-             --text-highlight:#4169FF;
-             --text-third:#ffffff;
-
-
-            `
+            --text-highlight:#4169FF;
+            --text-third:#ffffff;
+            --bg-bottom: #4169FF;
+        `
     }
     return result;
   }};
@@ -95,29 +105,28 @@ const ContainerStyle = styled(Box)`
 
 `
 const GridBg = styled(Grid)`
-  background-size: 90%;
-  background-repeat: no-repeat;
-  background-position: 120px calc(48%);
-  //background-image: var(--img-banner-url);
-
-
-  ${({theme}) => {
-    return `
-     background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_home_banner@1x.webp") 1x,
-      url("http://static.loopring.io/assets/images/landPage/img_home_banner@1x.png") 1x);
-        `
-  }} //background-image: url("http://static.loopring.io/assets/images/landPage/img_home_banner_dark@2x.png");
-
+    background-color: 
+    // background-size: 90%;
+    // background-repeat: no-repeat;
+    // background-position: 120px calc(48%);
 ` as typeof Grid
+
+// ${({theme}) => {
+//     return `
+//      background-image: image-set(url("https://static.loopring.io/assets/images/landPage/img_home_banner@1x.webp") 1x,
+//       url("https://static.loopring.io/assets/images/landPage/img_home_banner@1x.png") 1x);
+//         `
+//   }} //background-image: url("https://static.loopring.io/assets/images/landPage/img_home_banner_dark@2x.png");
 
 
 const BottomBanner = styled(Box)`
+    background-color: var(--bg-bottom);
   //background-size: 100%;
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: cover;
-  background-image: image-set(url("http://static.loopring.io/assets/images/landPage/img_home_agreement@1x.webp") 1x,
-  url("http://static.loopring.io/assets/images/landPage/img_home_agreement@1x.png") 1x);
+//   background-repeat: no-repeat;
+//   background-position: 0 100%;
+//   background-size: cover;
+//   background-image: image-set(url("https://static.loopring.io/assets/images/landPage/img_home_agreement@1x.webp") 1x,
+//   url("https://static.loopring.io/assets/images/landPage/img_home_agreement@1x.png") 1x);
   //mask-image: linear-gradient(rgba(0, 0, 0, 1.0), transparent);
 ` as typeof Box
 
@@ -260,18 +269,19 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                         height={734}>
                     {/*<picture style={{'absolute'}}  >*/}
                     {/*    <source*/}
-                    {/*        srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp 1x,*/}
-                    {/*             http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.webp 2x`}*/}
+                    {/*        srcSet={`https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.webp 1x,*/}
+                    {/*             https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.webp 2x`}*/}
                     {/*        type="image/webp"/>*/}
                     {/*    <source*/}
-                    {/*        srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
-                    {/*             http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
+                    {/*        srcSet={`https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
+                    {/*             https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
                     {/*    />*/}
-                    {/*    <img srcSet={`http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
-                    {/*             http://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
+                    {/*    <img srcSet={`https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@1x.png 1x,*/}
+                    {/*             https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png 2x`}*/}
                     {/*         alt="img-banner"/>*/}
                     {/*</picture>*/}
-                    <Box position={'absolute'} left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}>
+                    {/* <Box position={'absolute'} left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}> */}
+                    <Box height={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
 
                         <Typography component={'h2'}
                                     color={'var(--color-primary)'}
@@ -281,15 +291,24 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                                     }}>
                             {t('labelProtocol')}
                         </Typography>
-                        <Typography component={'h1'} fontWeight={700} fontSize={80} marginTop={2} whiteSpace={'pre-line'}
+                        <Typography component={'h1'} fontWeight={700} fontSize={64} marginTop={3} whiteSpace={'pre-line'}
                                     lineHeight={'100px'}>
                             {t('labelH1Title')}
                         </Typography>
-                        <Typography component={'h2'} fontSize={38} lineHeight={'46px'} marginTop={2.5}>
+                        <Typography component={'h2'} fontSize={38} lineHeight={'46px'} marginTop={1}>
                             {t('labelH1TitleDetail')}
                         </Typography>
                         <Typography marginTop={8.5} width={260}>
-                            <Button onClick={() => history.push('/trade/lite/LRC-ETH')} fullWidth={true} size={'large'}
+                            <ButtonStyled
+                                variant={'contained'} 
+                                fullWidth={true}
+                                size={'large'}
+                                onClick={() => history.push('/trade/lite/LRC-ETH')}
+                            >
+                                {t('labelLaunchApp')}
+                                <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>
+                            </ButtonStyled>
+                            {/* <Button onClick={() => history.push('/trade/lite/LRC-ETH')} fullWidth={true} size={'large'}
                                     variant={'contained'}
                                     style={{
                                         height: 64,
@@ -298,7 +317,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                                     }}>
                                 {t('labelBtnStart')}
                                 <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>
-                            </Button>
+                            </Button> */}
                         </Typography>
                     </Box>
 
@@ -470,26 +489,30 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
         <BottomBanner height={500}>
             <ContainerStyled>
                 <Grid item xs={12} position={'relative'} height={500}>
-                    <Box position={'absolute'} left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}>
+                    {/* <Box position={'absolute'} left={0} top={'50%'} style={{transform: 'translateY(-50%)'}}> */}
+                    <Box height={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
                         <Typography
-                            color={'#4169FF'}
+                            color={'#fff'}
                             component={'h4'}
                             whiteSpace={'pre-line'}
-                            lineHeight={'46px'}
-                            variant={'h1'}>
+                            lineHeight={'56px'}
+                            fontSize={40}
+                            >
                             {t('labelSuperpowers')}
                         </Typography>
 
-                        <Typography marginTop={3} fontSize={20} lineHeight={'28px'} width={650} color={'#fff'}>
+                        <Typography marginTop={1.5} fontSize={16} lineHeight={'24px'} whiteSpace={'pre-line'} textAlign={'center'} color={'#F0F6FF'}>
                             {t('describeSuperpowers')}
                         </Typography>
-                        <Typography marginTop={9} width={300}>
+                        <Typography marginTop={8} width={292}>
                             <Button onClick={() => window.open('https://docs.loopring.io/en/')} fullWidth={true} size={'large'}
                                     variant={'contained'}
                                     style={{
                                         height: 64,
                                         justifyContent: 'space-around',
-                                        borderRadius: '0',
+                                        // borderRadius: '0',
+                                        backgroundColor: 'var(--bg-bottom)',
+                                        border: '1px solid #FFF'
                                     }}>
                                 {t('labelBtnDeveloper')}
                                 <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>

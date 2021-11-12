@@ -1,6 +1,7 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect, useState } from 'react'
+import { useDeepCompareEffect } from 'react-use';
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { PriceTag } from '@loopring-web/common-resources'
+import { getValuePrecisionThousand, myLog, PriceTag } from '@loopring-web/common-resources'
 import { Box, Grid, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
@@ -11,6 +12,8 @@ import {
     DoughnutChart,
     LpTokenAction,
     useSettings,
+    ScaleAreaChart,
+    ChartType,
 } from '@loopring-web/component-lib'
 
 import { useModals } from 'hooks/useractions/useModals'
@@ -21,6 +24,7 @@ import { useGetAssets } from './hook'
 import { Currency } from '@loopring-web/loopring-sdk';
 import { useSystem } from 'stores/system';
 import { useAccount } from 'stores/account';
+import { useTokenPrices } from 'stores/tokenPrices'
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -43,7 +47,7 @@ const StyleTitlePaper = styled(Box)`
 
 
 const ChartWrapper = styled(Box)`
-    background-image: url('http://static.loopring.io/assets/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
+    background-image: url('https://static.loopring.io/assets/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
     background-repeat: no-repeat;
 ` as any
 
@@ -78,19 +82,28 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const container = useRef(null);
     // const [pageSize, setPageSize] = useState(10);
     // const [chartPeriod, setChartPeriod] = useState('week')
-    const {allowTrade} = useSystem();
+    const {allowTrade, forex} = useSystem();
     const { account: { accountId } } = useAccount();
-    const {marketArray, assetsRawData} = useGetAssets()
+    const { tokenPrices } = useTokenPrices()
+    const {marketArray, assetsRawData, userAssets, getUserAssets} = useGetAssets()
     const {currency, themeMode, setHideL2Assets, setHideLpToken, setHideSmallBalances} = useSettings()
     const {walletLayer2} = store.getState().walletLayer2;
     const { hideL2Assets, hideLpToken, hideSmallBalances } = store.getState().settings
-
+    const [currAssetsEth, setCurrAssetsEth] = useState(0)
+    
+    
     const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
     
     const percentList = assetsRawData.map(o => ({
         ...o,
         value: (o.tokenValueDollar && total) ? o.tokenValueDollar / total : 0,
     }))
+
+    useDeepCompareEffect(() => {
+        if (!!userAssets.length) {
+            setCurrAssetsEth(userAssets[userAssets.length - 1].close)
+        }
+    }, [userAssets])
 
     const lpTotalData = percentList
         .filter(o => o.token.value.split('-')[ 0 ] === 'LP')
@@ -105,6 +118,11 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const formattedDoughnutData = percentList.filter(o => o.token.value.split('-')[ 0 ] === 'LP').length > 0
         ? [...percentList.filter(o => o.token.value.split('-')[ 0 ] !== 'LP'), lpTotalData]
         : percentList
+
+    // get user daily eth assets
+    useEffect(() => {
+        getUserAssets()
+    }, [])
 
     // useEffect(() => {
     //     // @ts-ignore
@@ -163,6 +181,23 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         setHideL2Assets,
     }
 
+    const ethFaitPriceDollar = tokenPrices ? tokenPrices['ETH'] : 0
+    const ethFaitPriceYuan = ethFaitPriceDollar * forex
+    const currAssetsEthDollar = getValuePrecisionThousand((ethFaitPriceDollar || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
+    const currAssetsEthYuan = getValuePrecisionThousand((ethFaitPriceYuan || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
+
+    const handleAssetsTrendMove = useCallback(({close}) => {
+        setCurrAssetsEth(close)
+    }, [])
+
+    const handleAssetsTrendMoveOut = useCallback(() => {
+        if (!!userAssets.length) {
+            setCurrAssetsEth(userAssets[userAssets.length - 1].close)
+        } else {
+            setCurrAssetsEth(0)
+        }
+    }, [userAssets])
+    
     return (
         <>
             <StyleTitlePaper paddingX={3} paddingY={5/2} className={'MuiPaper-elevation2'} >
@@ -186,7 +221,24 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                      className={'MuiPaper-elevation2'}>
                     <Typography component="span" color="textSecondary"
                                 variant="body1">{t('labelTotalAssets')}</Typography>
-                    <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
+                    <Box display={'flex'} alignItems={'center'}>
+                        <Typography component={'span'} variant={'h5'}>{currAssetsEth} ETH </Typography>
+                        <Typography component={'span'} variant={'body2'} color={'var(--color-text-third)'}>&nbsp;&#8776;&nbsp;{currency === Currency.usd ? PriceTag.Dollar + currAssetsEthDollar : PriceTag.Yuan + currAssetsEthYuan}</Typography>
+                    </Box>
+                    {!!userAssets.length ? (
+                        <ScaleAreaChart 
+                        type={ChartType.Trend} 
+                        isDailyTrend 
+                        showArea={false} 
+                        handleMove={handleAssetsTrendMove} 
+                        handleMoveOut={handleAssetsTrendMoveOut}
+                        data={userAssets.map(o => ({
+                            close: o.close,
+                            timeStamp: o.timeStamp,
+                        }))} />
+                    ) : (
+                        <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
+                    )}
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>

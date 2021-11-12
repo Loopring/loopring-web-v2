@@ -7,10 +7,12 @@ import { getRenderData } from '../data'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
+import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 
 const DEFAULT_YAXIS_DOMAIN = 0.05
 const UP_COLOR = '#00BBA8'
 const DOWN_COLOR = '#fb3838'
+const DAILY_TREND_COLOR = '#4169ff'
 
 const TooltipStyled = styled(Box)`
   background: var(--color-pop-bg);
@@ -35,6 +37,8 @@ const TrendChart = ({
                         extraInfo,
                         showXAxis = false,
                         isHeadTailCompare = false,
+                        isDailyTrend = false,
+                        handleMoveOut = undefined,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor : 'green'
@@ -43,8 +47,7 @@ const TrendChart = ({
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
 
-    const trendColor =
-        upColor === 'green'
+    const trendColor = upColor === 'green'
             ? priceTrend === 'up'
                 ? UP_COLOR
                 : DOWN_COLOR
@@ -88,22 +91,52 @@ const TrendChart = ({
             !props.payload[ 0 ].payload.timeStamp
         )
             return <span></span>
-        const {timeStamp, close} = props.payload[ 0 ].payload
-        return (
-            <TooltipStyled>
-                {extraInfo && (
-                    <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
-                )}
-                <Typography component={'div'} fontSize={12}>
-                    {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
-                </Typography>
-            </TooltipStyled>
-        )
+        const {timeStamp, close, sign} = props.payload[ 0 ].payload
+        if (isDailyTrend) {
+            const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
+            const change = index === 0 ? '--' : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
+            return (
+                <TooltipStyled>
+                    {/* {extraInfo && (
+                        <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                    )} */}
+                    <Typography component={'div'} variant={'body1'}>
+                        {moment(timeStamp).format('MMM DD [UTC]Z')}
+                    </Typography>
+                    <Box display={'flex'} >
+                        <Typography component={'span'} variant={'body1'}>
+                            Change: 
+                        </Typography>
+                        <Typography color={sign !== 1 
+                            ? upColor === 'green' 
+                                ? DOWN_COLOR 
+                                : UP_COLOR 
+                            : upColor === 'green' 
+                                ? UP_COLOR
+                                : DOWN_COLOR }>&nbsp;{change} %</Typography>
+                    </Box>
+                </TooltipStyled>
+            )
+        } else {
+            return (
+                <TooltipStyled>
+                    {extraInfo && (
+                        <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                    )}
+                    <Typography component={'div'} fontSize={12}>
+                        {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
+                    </Typography>
+                </TooltipStyled>
+            )
+        }
     }, [hasData, extraInfo])
 
     const handleMouseLeave = useCallback(() => {
+        if (handleMoveOut) {
+            handleMoveOut()
+        }
         setPriceTrend(renderData[ renderData.length - 1 ]?.sign === 1 ? 'up' : 'down')
-    }, [renderData])
+    }, [renderData, handleMoveOut])
 
     useDeepCompareEffect(() => {
         if (!isHeadTailCompare && renderData && !!renderData.length) {
@@ -130,9 +163,14 @@ const TrendChart = ({
         )
     }
 
+    const customYAxisTick = (value: any) => {
+        const formattedValue = getValuePrecisionThousand(value)
+        return formattedValue ?? '0.00'
+    }
+
     return (
         <ResponsiveContainer debounce={100} width={'99%'}>
-            <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}
+            <ComposedChart margin={{ left: -20, right: 10 }} data={renderData} onMouseMove={showTooltip && handleMousemove}
                         onMouseLeave={showTooltip && handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -150,15 +188,16 @@ const TrendChart = ({
                     </linearGradient>
                 </defs>
                 <XAxis
-                    hide={!showXAxis}
-                    dataKey="date" /* tickFormatter={convertDate} */
-                    interval={8}
-                    axisLine={false}
-                    tickLine={false}
+                    hide={!showXAxis && !isDailyTrend}
+                    dataKey="timeStamp" /* tickFormatter={convertDate} */
+                    interval={isDailyTrend ? 10 : 8}
+                    axisLine={isDailyTrend}
+                    tickLine={isDailyTrend}
                     tick={customTick}
                 />
                 <YAxis
-                    hide={true}
+                    hide={!isDailyTrend}
+                    tickFormatter={isDailyTrend ? customYAxisTick : undefined}
                     domain={[
                         (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
                         (dataMax: number) => dataMax * (1 + yAxisDomainPercent),
@@ -177,8 +216,8 @@ const TrendChart = ({
                     strokeLinecap="round"
                     strokeWidth={2}
                     dataKey="close"
-                    stroke={trendColor}
-                    dot={false}
+                    stroke={isDailyTrend ? DAILY_TREND_COLOR : trendColor}
+                    dot={isDailyTrend}
                     legendType="none"
                     isAnimationActive={false}
                 />
