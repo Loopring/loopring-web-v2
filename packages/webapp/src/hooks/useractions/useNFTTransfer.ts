@@ -23,7 +23,7 @@ import {
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
-import { useChargeFees } from '../common/useChargeFees';
+// import { useChargeFees } from '../common/useChargeFees';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from "@loopring-web/common-resources";
@@ -71,7 +71,8 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
     const [walletMap, setWalletMap] = React.useState(makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>);
     const { chargeFeeList } = useChargeNFTFees({
-        tokenAddress: nftTransferValue.tokenAddress, requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER, tokenMap})
+        tokenAddress: nftTransferValue.tokenAddress, requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER, tokenMap,
+        needRefresh:true})
 
     const [nftTransferFeeInfo, setNFTTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
@@ -284,7 +285,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
                 setShowNFTTransfer({ isShow: false })
                 setShowAccount({ isShow: true, step: AccountStep.Transfer_WaitForAuth })
-                const sellTokenID = nftTransferValue.tokenId
+                // const sellTokenID = nftTransferValue.tokenId
 
                 // const sellToken = tokenMap[nftTransferValue.belong as string]
                 const feeToken = tokenMap[nftTransferFeeInfo.belong]
@@ -379,7 +380,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
         onTransferClick,
         handleFeeChange,
         handlePanelEvent,
-        chargeFeeToken: nftTransferValue.belong,
+        chargeFeeToken: nftTransferFeeInfo?.belong,
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
         },

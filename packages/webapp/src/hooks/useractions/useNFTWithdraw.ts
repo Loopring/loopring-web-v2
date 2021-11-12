@@ -34,10 +34,13 @@ import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
-import { UserNFTBalanceInfo } from '@loopring-web/loopring-sdk';
+import { OffchainFeeReqType, OffchainNFTFeeReqType, UserNFTBalanceInfo } from '@loopring-web/loopring-sdk';
 import { NFTTokenInfo } from '@loopring-web/loopring-sdk';
+import { useChargeNFTFees } from '../common/useChargeNFTFees';
 
-export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>,T>(): {
+export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>,T>(
+    {isLocalShow = false,doWithdrawDone}: { isLocalShow?: boolean, doWithdrawDone?:()=>void }
+): {
     nftWithdrawAlertText: string | undefined,
     nftWithdrawToastOpen: boolean,
     setNFTWithdrawToastOpen: any,
@@ -65,10 +68,13 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
     const [nftWithdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
-    const nftWithdrawType2 = nftWithdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-    const { chargeFeeList } = useChargeFees({tokenSymbol: nftWithdrawValue.belong, requestType: nftWithdrawType, tokenMap, amount: nftWithdrawValue.tradeValue})
+    // const nftWithdrawType2 = nftWithdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
+    const { chargeFeeList } = useChargeNFTFees({tokenAddress: nftWithdrawValue.tokenAddress,
+        requestType:OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+        tokenMap, amount: nftWithdrawValue.tradeValue,needRefresh:true})
 
-    const [nftWithdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
+    //const [, setWithdrawTypes] = React.useState<any>({ 'Standard': '' })
+    const nftWithdrawTypes =  { Standard: '' };
     const [isExceedMax, setIsExceedMax] = React.useState(false)
     const { checkHWAddr, updateHW, } = useWalletInfo()
 
@@ -84,86 +90,91 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
     } = useAddressCheck()
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
-
+    //TODO NO pop is pop add isShow
+    React.useEffect(() => {
+        if ( isLocalShow) {
+            resetDefault()
+        }
+    }, [isLocalShow])
     const checkBtnStatus = React.useCallback(() => {
 
-        if (!tokenMap || !nftWithdrawFeeInfo?.belong || !nftWithdrawValue?.belong || !address) {
+        if (!tokenMap || !nftWithdrawFeeInfo?.belong || !nftWithdrawValue?.tradeValue || !address) {
             disableBtn()
             return
         }
 
-        const nftWithdrawT = tokenMap[nftWithdrawValue.belong as string]
+        // const nftWithdrawT = tokenMap[nftWithdrawValue.belong as string]
 
-        const tradeValue = sdk.toBig(nftWithdrawValue.tradeValue ?? 0).times('1e' + nftWithdrawT.decimals)
+        // const tradeValue = sdk.toBig(nftWithdrawValue.tradeValue ?? 0).times('1e' + nftWithdrawT.decimals)
 
-        const exceedPoolLimit = nftWithdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(nftWithdrawT.fastWithdrawLimit))
-        
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue.gt(BIGO)
-            && addrStatus === AddressError.NoError && !isExceedMax && !exceedPoolLimit) {
+        // const exceedPoolLimit = nftWithdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(nftWithdrawT.fastWithdrawLimit))
+        const tradeValue =  sdk.toBig(nftWithdrawValue.tradeValue ?? 0)
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address &&  tradeValue.gt(BIGO)
+            && tradeValue.lte(nftWithdrawValue.nftBalance??0)
+            && addrStatus === AddressError.NoError && !isExceedMax ) {
             enableBtn()
         } else {
             disableBtn()
         }
 
-        if (exceedPoolLimit) {
-            setWithdrawI18nKey('nftWithdrawLabelBtnExceed')
-        } else {
-            setWithdrawI18nKey(undefined)
-        }
+        // if (exceedPoolLimit) {
+        //     setWithdrawI18nKey('nf tWithdrawLabelBtnExceed')
+        // } else {
+        //     setWithdrawI18nKey(undefined)
+        // }
 
         // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, nftWithdrawFeeInfo)
 
-    }, [nftWithdrawType2, enableBtn, disableBtn, tokenMap, address, addrStatus, 
+    }, [ enableBtn, disableBtn, tokenMap, address, addrStatus,
         chargeFeeList, nftWithdrawFeeInfo, nftWithdrawValue, isExceedMax, ])
 
     React.useEffect(() => {
         
         checkBtnStatus()
+    }, [ address, addrStatus, nftWithdrawFeeInfo?.belong, nftWithdrawFeeInfo?.fee,
+        nftWithdrawFeeInfo?.belong, nftWithdrawValue?.tradeValue, isExceedMax, ])
 
-    }, [nftWithdrawType2, address, addrStatus, nftWithdrawFeeInfo?.belong, nftWithdrawFeeInfo?.fee,
-        nftWithdrawFeeInfo?.belong, nftWithdrawValue?.belong, nftWithdrawValue?.tradeValue, isExceedMax, ])
+    // const updateWithdrawTypes = React.useCallback(async () => {
+    //     //
+    //     // if (nftWithdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
+    //     //
+    //     //     const tokenInfo = tokenMap[nftWithdrawValue.belong]
+    //     //
+    //     //     const req: sdk.GetWithdrawalAgentsRequest = {
+    //     //         tokenId: tokenInfo.tokenId,
+    //     //         amount: sdk.toBig('1e' + tokenInfo.decimals).toString(),
+    //     //     }
+    //     //
+    //     //     const agent = await LoopringAPI.exchangeAPI.getWithdrawalAgents(req)
+    //     //
+    //     //     if (agent.supportTokenMap[nftWithdrawValue.belong]) {
+    //     //         myLog('------- have agent!')
+    //     //         setWithdrawTypes(WithdrawTypes)
+    //     //     } else {
+    //     //         myLog('------- have NO agent!')
+    //     //         setWithdrawTypes({ 'Standard': '' })
+    //     //     }
+    //     // }
+    //
+    // }, [nftWithdrawValue, tokenMap,])
 
-    const updateWithdrawTypes = React.useCallback(async () => {
+    // const updateWithdrawType = React.useCallback(() => {
+    //     // myLog('nftWithdrawTypes:', nftWithdrawTypes, ' nftWithdrawType2:', nftWithdrawType2)
+    //     if (!nftWithdrawTypes['Fast']) {
+    //         // myLog('try to reset setWithdrawType!')
+    //         setWithdrawType(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+    //     }
+    // }, [nftWithdrawTypes, setWithdrawType])
 
-        if (nftWithdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
+    // React.useEffect(() => {
+    //     updateWithdrawType()
+    // }, [nftWithdrawTypes])
 
-            const tokenInfo = tokenMap[nftWithdrawValue.belong]
-
-            const req: sdk.GetWithdrawalAgentsRequest = {
-                tokenId: tokenInfo.tokenId,
-                amount: sdk.toBig('1e' + tokenInfo.decimals).toString(),
-            }
-
-            const agent = await LoopringAPI.exchangeAPI.getWithdrawalAgents(req)
-
-            if (agent.supportTokenMap[nftWithdrawValue.belong]) {
-                myLog('------- have agent!')
-                setWithdrawTypes(WithdrawTypes)
-            } else {
-                myLog('------- have NO agent!')
-                setWithdrawTypes({ 'Standard': '' })
-            }
-        }
-
-    }, [nftWithdrawValue, tokenMap,])
-
-    const updateWithdrawType = React.useCallback(() => {
-        // myLog('nftWithdrawTypes:', nftWithdrawTypes, ' nftWithdrawType2:', nftWithdrawType2)
-        if (!nftWithdrawTypes['Fast']) {
-            // myLog('try to reset setWithdrawType!')
-            setWithdrawType(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
-        }
-    }, [nftWithdrawTypes, setWithdrawType])
-
-    React.useEffect(() => {
-        updateWithdrawType()
-    }, [nftWithdrawTypes, updateWithdrawType])
-
-    React.useEffect(() => {
-
-        updateWithdrawTypes()
-
-    }, [nftWithdrawValue.belong, tokenMap,])
+    // React.useEffect(() => {
+    //
+    //     updateWithdrawTypes()
+    //
+    // }, [nftWithdrawValue.belong, tokenMap,])
 
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>
@@ -174,31 +185,20 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
         if (nftData) {
             updateNFTWithdrawData({
                 belong: nftData as any,
-                balance: nftBalance,
+                balance:  nftBalance,
                 tradeValue: undefined,
-                address: '*',
                 ...nftRest,
+                address: address? address:"*",
             })
 
         } else {
-            if (!nftWithdrawValue.belong && walletMap2) {
-                const keys = Reflect.ownKeys(walletMap2)
-                for (var key in keys) {
-                    const keyVal = keys[key]
-                    const walletInfo = walletMap2[keyVal]
-                    if (sdk.toBig(walletInfo.count).gt(0)) {
-                        updateNFTWithdrawData({
-                            belong: keyVal as any,
-                            tradeValue: 0,
-                            balance: walletInfo.count,
-                            address: '*',
-                        })
-                        break
-                    }
-                }
-
-
-            }
+            updateNFTWithdrawData({
+                belong: '',
+                balance:  0,
+                tradeValue: 0,
+                address: "*",
+            })
+            setShowNFTWithdraw({isShow:false})
         }
     }, [nftData, walletMap2, updateNFTWithdrawData, nftWithdrawValue])
 
@@ -217,7 +217,7 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
     React.useEffect(() => {
 
-        if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+        if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
             if (nftWithdrawValue.address) {
                 myLog('addr 1')
                 setAddress(nftWithdrawValue.address)
@@ -235,7 +235,7 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
     useWalletLayer2Socket({ walletLayer2Callback })
 
-    const processRequestNFT = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
+    const processRequestNFT = React.useCallback(async (request: sdk.NFTWithdrawRequestV3, isFirstTime: boolean) => {
 
         const { apiKey, connectName, eddsaKey } = account
 
@@ -247,8 +247,8 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
                 isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
 
                 myLog('nftWithdraw processRequestNFT:', isHWAddr, isFirstTime)
-
-                const response = await LoopringAPI.userAPI.submitOffchainWithdraw({
+                debugger
+                const response = await LoopringAPI.userAPI.submitNFTWithdraw({
                     request,
                     web3: connectProvides.usedWeb3,
                     chainId: chainId === 'unknown' ? 1 : chainId,
@@ -283,7 +283,9 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
                             myLog('......try to set isHWAddr', isHWAddr)
                             updateHW({ wallet: account.accAddress, isHWAddr })
                         }
-
+                        if(doWithdrawDone){
+                            doWithdrawDone()
+                        }
                         resetNFTWithdrawData()
                     }
 
@@ -314,7 +316,7 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
     }, [setLastNFTRequest, setShowAccount, updateHW, account])
 
-    const handleNFTWithdraw = React.useCallback(async (inputValue: any, address, isFirstTime: boolean = true) => {
+    const handleNFTWithdraw = React.useCallback(async (nftWithdrawToken: any, address, isFirstTime: boolean = true) => {
 
         const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
 
@@ -326,22 +328,25 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
                 setShowNFTWithdraw({ isShow: false, })
                 setShowAccount({ isShow: true, step: AccountStep.Withdraw_WaitForAuth, })
 
-                const nftWithdrawToken = tokenMap[inputValue.belong as string]
+                // const nftWithdrawValue = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[nftWithdrawFeeInfo.belong]
-
                 const fee = sdk.toBig(nftWithdrawFeeInfo?.__raw__?.feeRaw ?? 0)
-                const balance = sdk.toBig(inputValue.balance ?? 0).times('1e' + nftWithdrawToken.decimals)
-                const tradeValue = sdk.toBig(inputValue.tradeValue ?? 0).times('1e' + nftWithdrawToken.decimals)
-                const isExceedBalance = feeToken.tokenId === nftWithdrawToken.tokenId && tradeValue.plus(fee).gt(balance)
-                const finalVol = isExceedBalance ?  balance.minus(fee) : tradeValue
-                const nftWithdrawVol = finalVol.toFixed(0, 0)
+                // const balance = sdk.toBig(nftWithdrawValue.balance ?? 0).times('1e' + nftWithdrawValue.decimals)
+                // const tradeValue = sdk.toBig(nftWithdrawValue.tradeValue ?? 0).times('1e' + nftWithdrawValue.decimals)
+                const tradeValue = nftWithdrawToken.tradeValue;
+                // const balance = nftWithdrawValue.nftBalance;
+                // const isExceedBalance = feeToken.tokenId === nftWithdrawValue.tokenId && tradeValue.plus(fee).gt(balance)
+                // const isExceedBalance =  sdk.toBig(tradeValue).gt(balance)
+
+                // const finalVol = isExceedBalance ?  balance.minus(fee) : tradeValue
+                // const nftWithdrawVol = finalVol.toFixed(0, 0)
 
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId: accountId,
                     sellTokenId: nftWithdrawToken.tokenId
                 }, apiKey)
-
-                const request: sdk.OffChainWithdrawalRequestV3 = {
+                
+                const request: sdk.NFTWithdrawRequestV3 = {
                     exchange: exchangeInfo.exchangeAddress,
                     owner: accAddress,
                     to: address,
@@ -349,13 +354,14 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
                     storageId: storageId?.offchainId,
                     token: {
                         tokenId: nftWithdrawToken.tokenId,
-                        volume: nftWithdrawVol,
+                        nftData: nftWithdrawToken.nftData,
+                        amount: tradeValue.toString(),
                     },
                     maxFee: {
                         tokenId: feeToken.tokenId,
-                        volume: fee.toString(),
+                        amount: fee.toString(),
                     },
-                    fastWithdrawalMode: nftWithdrawType2 === WithdrawType.Fast,
+                    // fastWithdrawalMode: nftWithdrawType2 === WithdrawType.Fast,
                     extraData: '',
                     minGas: 0,
                     validUntil: getTimestampDaysLater(DAYS),
@@ -376,24 +382,27 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
             return false
         }
 
-    }, [account, tokenMap, exchangeInfo, nftWithdrawType2, nftWithdrawFeeInfo, nftWithdrawValue, setShowAccount])
+    }, [account, tokenMap, exchangeInfo, nftWithdrawType, nftWithdrawFeeInfo, nftWithdrawValue, setShowAccount])
 
     const handleFeeChange = React.useCallback((value: FeeInfo): void => {
         setNFTWithdrawFeeInfo(value)
     }, [setNFTWithdrawFeeInfo])
 
     const nftWithdrawProps: any = {
-        nftWithdrawI18nKey,
+        withdrawI18nKey:nftWithdrawI18nKey,
         addressDefault: address,
         realAddr,
         tradeData: nftWithdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
-        nftWithdrawBtnStatus: btnStatus,
-        nftWithdrawType: nftWithdrawType2,
-        nftWithdrawTypes,
+        // nftWithdrawBtnStatus: btnStatus,
+        // nftWithdrawType: nftWithdrawType,
+        // nftWithdrawTypes:withdrawTypes,
+        withdrawBtnStatus: btnStatus,
+        withdrawType: nftWithdrawType,
+        withdrawTypes: nftWithdrawTypes,
         onWithdrawClick: () => {
-            if (nftWithdrawValue && nftWithdrawValue.belong) {
+            if (nftWithdrawValue && nftWithdrawValue.tradeValue) {
                 handleNFTWithdraw(nftWithdrawValue, realAddr ? realAddr : address)
             }
             setShowNFTWithdraw({ isShow: false })
@@ -408,21 +417,18 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
             return new Promise((res: any) => {
 
                 if (data.to === 'button') {
-                    if (walletMap2 && data?.tradeData?.belong) {
-                        const walletInfo = walletMap2[data?.tradeData?.belong as string]
+                    if (data.tradeData.belong) {
                         updateNFTWithdrawData({
-                            belong: data.tradeData?.belong,
                             tradeValue: data.tradeData?.tradeValue,
-                            balance: walletInfo.count,
+                            balance: data.tradeData.nftBalance,
                             address: '*',
                         })
                     } else {
-                        updateNFTWithdrawData({ 
-                            belong: undefined, 
-                            tradeValue: undefined, 
+                        updateNFTWithdrawData({
+                            belong: undefined,
+                            tradeValue: undefined,
                             balance: undefined,
-                            address: '*', 
-                        })
+                            address: '*', })
                     }
                 }
 

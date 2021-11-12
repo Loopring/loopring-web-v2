@@ -108,7 +108,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         nftWithdrawProps,
         processRequestNFT:withdrawProcessRequestNFT,
         lastNFTRequest: withdrawNFTRequest,
-    } = useNFTWithdraw()
+    } = useNFTWithdraw({})
 
     const {
         exportAccountAlertText,

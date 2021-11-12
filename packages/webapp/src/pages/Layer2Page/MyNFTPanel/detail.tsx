@@ -1,6 +1,6 @@
 import { Box, Link, Typography } from '@mui/material';
 import { DiscordIcon, MediumIcon, NFTWholeINFO, TwitterIcon, YoutubeIcon } from '@loopring-web/common-resources';
-import { Button, ModalBackButton, TransferPanel } from '@loopring-web/component-lib';
+import { Button, ModalBackButton, TransferPanel, WithdrawPanel } from '@loopring-web/component-lib';
 import React from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
@@ -24,18 +24,21 @@ const BoxStyle = styled(Box)`
         word-break: break-all;
         white-space: break-spaces;
       }
-    } 
-    .transfer-wrap{
+    }
+
+    .transfer-wrap {
       padding-left: 0;
       padding-right: 0;
     }
   }
-  
+
 ` as typeof Box
-export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl,onDetailClose, t, ...rest}:
-                                                        {     onDetailClose: ()=>void
+export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl, onDetailClose, t, ...rest}:
+                                                        {
+                                                            onDetailClose: () => void
                                                             popItem: Partial<NFTWholeINFO>,
-                                                            etherscanBaseUrl: string } & WithTranslation) => {
+                                                            etherscanBaseUrl: string
+                                                        } & WithTranslation) => {
     const {assetsRawData} = useGetAssets()
 
 
@@ -51,9 +54,19 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl,o
         nftTransferProps,
         // processRequestNFT,
         // lastNFTRequest,
-    } = useNFTTransfer({isLocalShow:viewPage === 1,doTransferDone:onDetailClose})
+    } = useNFTTransfer({isLocalShow: viewPage === 1, doTransferDone: onDetailClose})
+    //TODO: finished feature with draw
+    // const {
+    //     // nftTransferToastOpen,
+    //     // nftTransferAlertText,
+    //     // setNFTTransferToastOpen,
+    //     nftWithdrawProps,
+    //     // processRequestNFT,
+    //     // lastNFTRequest,
+    // } = useNFTWithdraw({isLocalShow:viewPage === 2,doWithdrawDone:onDetailClose})
+
     const detailView = React.useMemo(() => {
-        return <Box flexDirection={'column'} display={'flex'} >
+        return <Box flexDirection={'column'} display={'flex'}>
             <Box marginBottom={3}>
                 <Typography color={'text.secondary'}>{t('labelNFTTokenID')}</Typography>
                 <Typography color={'text.primary'} variant={'h2'} marginTop={2}>#{popItem?.tokenId} </Typography>
@@ -105,35 +118,17 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl,o
 
                 </Typography>
 
-                {/*<Typography display={'inline-flex'} variant={'body1'} marginTop={2}>*/}
-                {/*  <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTTokenStandard')} </Typography>*/}
-                {/*  <Typography>{popItem.created_by}</Typography>*/}
-                {/*</Typography>*/}
-                {/*<Typography display={'inline-flex'}  variant={'body1'} marginTop={1}>*/}
-                {/*  <Typography  color={'var(--color-text-third)'} width={160}>{t('labelNFTTokenBlockChain')} </Typography>*/}
-                {/*  <Typography></Typography>*/}
-                {/*</Typography>*/}
-                {/*<Typography display={'inline-flex'} variant={'body1'} marginTop={2}>*/}
-                {/*  <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTTokenMinted')} </Typography>*/}
-                {/*  <Link fontSize={'inherit'}*/}
-                {/*        onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.tokenAddress}`)}> {getFormattedHash(popItem.tokenAddress)}</Link>*/}
-                {/*</Typography>*/}
                 <Typography display={'inline-flex'} variant={'body1'} marginTop={2} flex={1}>
                     <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTDescription')} </Typography>
                     <Typography color={'var(--color-text-third)'} component={'span'}
                                 whiteSpace={'break-spaces'} style={{wordBreak: 'break-all'}}
                                 title={popItem?.description}>{popItem.description} </Typography>
 
-                    {/*<Typography>{moment(popItem?.timestamp).format('YYYY-MM-DD HH:mm:ss')}</Typography>*/}
                 </Typography>
-                {/*<Typography display={'inline-flex'} variant={'body1'} marginTop={2}>*/}
-                {/*  <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTDate')} </Typography>*/}
-                {/*  <Typography>{moment(popItem?.timestamp).format('YYYY-MM-DD HH:mm:ss')}</Typography>*/}
-                {/*</Typography>*/}
 
                 <Typography display={'inline-flex'} alignItems={'center'} variant={'body1'} marginTop={3}
                             justifyContent={'space-between'}>
-
+                    {/*TODO: finished feature withdraw*/}
                     {/*<Typography marginLeft={3} minWidth={100}>*/}
                     {/*    <Button variant={'outlined'} size={'medium'} fullWidth*/}
                     {/*            onClick={() => showWithdraw({*/}
@@ -168,11 +163,19 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl,o
                             ))
                         }
                     </Typography>
-                    <Typography minWidth={100}>
-                        <Button variant={'contained'} size={'small'} color={'primary'} fullWidth
-                                onClick={() => handleChangeIndex(1)}>{t('labelNFTTransfer')}</Button>
-                        {/*() => onShowTransfer(tokenValue) isNFT:'ntf'*/}
-                    </Typography>
+                    <Box display={'flex'} flexDirection={'row'}>
+                        <Typography minWidth={100} marginRight={2}>
+                            {/*<Button variant={'outlined'} size={'medium'} fullWidth*/}
+                            {/*        onClick={() => handleChangeIndex(2)}> {t('labelNFTWithdraw')}</Button>*/}
+                        </Typography>
+                        <Typography minWidth={100}>
+
+                            <Button variant={'contained'} size={'small'} color={'primary'} fullWidth
+                                    onClick={() => handleChangeIndex(1)}>{t('labelNFTTransfer')}</Button>
+
+                        </Typography>
+                    </Box>
+
                 </Typography>
 
             </Box>
@@ -186,31 +189,48 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl,o
             <img alt={'NFT'} width={'100%'} height={'100%'} src={popItem.image}/>
         </BoxNFT>
         <BoxStyle marginLeft={2}
-                  display={'flex'} flex={1} flexDirection={'column'}  alignItems={'center'}
+                  display={'flex'} flex={1} flexDirection={'column'} alignItems={'center'}
                   className={'nft-detail'} whiteSpace={'break-spaces'} style={{wordBreak: 'break-all'}}
         >
-            {viewPage !== 0 && <ModalBackButton marginTop={-3.5} onBack={() => handleChangeIndex(0)}  {...{...rest, t}}/>}
+            {viewPage !== 0 &&
+            <ModalBackButton marginTop={-3.5} onBack={() => handleChangeIndex(0)}  {...{...rest, t}}/>}
 
             {viewPage === 0 && detailView}
-            {viewPage === 1 &&
-                    <TransferPanel<any, any>  {...{
-                        _width: 400,
-                        type: 'NFT',
-                        _height: 540,
-                        isThumb:false,
+            {viewPage === 1 && <TransferPanel<any, any> {...{
+                _width: 416,
+                type: 'NFT',
+                _height: 540,
+                isThumb: false,
 
-                        ...{
-                            ...nftTransferProps,
-                            tradeData: {
-                                ...popItem,
-                                belong: popItem.nftData,
-                                balance:Number(popItem?.nftBalance)}
-                        },
-                        assetsData: assetsRawData,
-                    }}/>
-            }
-            {/*</SwipeableViews>*/}
-            {/*</Box>*/}
+                ...{
+                    ...nftTransferProps,
+                    tradeData: {
+                        ...popItem,
+                        belong: popItem.nftData,
+                        balance: Number(popItem?.nftBalance)
+                    }
+                },
+                assetsData: assetsRawData,
+            }}/>}
+            {/*TODO: finished feature withdraw*/}
+            {/*{viewPage === 2 && <WithdrawPanel<any, any> {...{*/}
+            {/*    _width: 400,*/}
+            {/*    type: 'NFT',*/}
+            {/*    _height: 540,*/}
+            {/*    isThumb: false,*/}
+
+            {/*    ...{*/}
+            {/*        ...nftWithdrawProps,*/}
+            {/*        tradeData: {*/}
+            {/*            ...popItem,*/}
+            {/*            belong: popItem.nftData,*/}
+            {/*            balance: Number(popItem?.nftBalance)*/}
+            {/*        }*/}
+            {/*    },*/}
+            {/*    assetsData: assetsRawData,*/}
+            {/*}}/>*/}
+            {/*}*/}
+
         </BoxStyle>
     </>
 
