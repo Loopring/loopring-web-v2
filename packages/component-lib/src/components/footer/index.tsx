@@ -62,7 +62,7 @@ const linkListMap = {
     Support: [
         {
             linkName: 'Feedback', //❤️ Submit a Request
-            linkHref: 'https://loopring.io/#/report'
+            linkHref: 'https://loopring.io/#/newticket'
         },
         {
             linkName: 'CreatorGrants', // Creator Grants
