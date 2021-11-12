@@ -3,6 +3,7 @@ import {
     AccountStep,
     ConnectFailed,
     ConnectSuccess,
+    InformationForCoinBase,
     MetaMaskConnectInProgress,
     ModalWalletConnect,
     ProviderMenu,
@@ -16,15 +17,16 @@ import { ChainId } from '@loopring-web/loopring-sdk'
 import React, { useEffect, useState } from 'react';
 import {
     ConnectProviders,
+    copyToClipBoard,
     GatewayItem,
     gatewayList as DefaultGatewayList,
     globalSetup,
+    myLog,
     SagaStatus
 } from '@loopring-web/common-resources';
 import { useAccount } from 'stores/account';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useSystem } from 'stores/system';
-import { myLog, copyToClipBoard, } from "@loopring-web/common-resources";
 import { TOAST_TIME } from '../../defs/common_defs';
 import { useSelector } from 'react-redux';
 import { RootState } from 'stores';
@@ -95,6 +97,11 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             onClose(e);
         }
     }, [])
+    const [isOpen, setIsOpen] = React.useState(false);
+    const handleCloseDialog = React.useCallback((_event: any, state?: boolean) => {
+        setIsOpen(false)
+        localStorage.setItem('useKnowCoinBaseWalletInstall', String(state ? true : false))
+    }, [])
     const [processingCallback, setProcessingCallback] = React.useState<{ callback: () => Promise<void> } | undefined>(undefined)
     useEffect(() => {
         if (stateCheck === true && [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus) !== -1) {
@@ -114,10 +121,17 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                 if (!flag && account.connectName === DefaultGatewayList[ 0 ].key) {
                     setShowConnect({isShow: false});
                 } else {
+                    const isKnow = localStorage.getItem('useKnowCoinBaseWalletInstall')
+
+                    //@ts-ignore
+                    if (!(window?.ethereum?._metamask && window?.ethereum?._metamask.requestBatch) && !(isKnow === 'true')) {
+                        setIsOpen(true)
+                    }
                     walletServices.sendDisconnect('', 'should new provider')
                     setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
                     setProcessingCallback({callback: metaMaskCallback});
-                    setStateCheck(true)
+                    setStateCheck(true);
+
                 }
 
             }, [account])
@@ -170,7 +184,8 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     const walletList = React.useMemo(() => {
         return Object.values({
             [ WalletConnectStep.Provider ]: {
-                view: <ProviderMenu termUrl={'https://www.iubenda.com/terms-and-conditions/74969935'} gatewayList={gatewayList}
+                view: <ProviderMenu termUrl={'https://www.iubenda.com/terms-and-conditions/74969935'}
+                                    gatewayList={gatewayList}
                                     providerName={account.connectName} {...{t, ...rest}} />,
                 onBack: providerBack
             },
@@ -200,12 +215,14 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         })
     }, [qrCodeUrl, account, t, rest, onClose])
     return <>
+        <InformationForCoinBase open={isOpen} handleClose={handleCloseDialog}/>
         <ModalWalletConnect open={isShowConnect.isShow} onClose={_onClose} panelList={walletList}
                             onBack={walletList[ isShowConnect.step ].onBack} step={isShowConnect.step}/>
         <Toast alertText={t('labelCopyAddClip')} open={copyToastOpen}
                autoHideDuration={TOAST_TIME} onClose={() => {
             setCopyToastOpen(false)
         }} severity={"success"}/>
+
     </>
 })
 

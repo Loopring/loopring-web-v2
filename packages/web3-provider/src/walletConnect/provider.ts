@@ -2,7 +2,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from "web3";
 import { walletServices } from '../walletServices';
 import { ErrorType } from '../command';
-import { ConnectProviders, myLog } from '@loopring-web/common-resources';
+import { ConnectProviders } from '@loopring-web/common-resources';
 
 // const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
 
@@ -17,11 +17,12 @@ const POLLING_INTERVAL = 12000
 
 export const WalletConnectProvide = async (account?: string): Promise<{ provider?: WalletConnectProvider, web3?: Web3, } | undefined> => {
     try {
-        const BRIDGE_URL = await (fetch('https://wcbridge.loopring.network/hello').then(({status})=>{
-           return status === 200? process.env.REACT_APP_WALLET_CONNECT_BRIDGE:'https://bridge.walletconnect.org'
-        }).catch(()=>{
-            return  'https://bridge.walletconnect.org';
+        const BRIDGE_URL = await (fetch('https://wcbridge.loopring.network/hello').then(({status}) => {
+            return status === 200 ? process.env.REACT_APP_WALLET_CONNECT_BRIDGE : 'https://bridge.walletconnect.org'
+        }).catch(() => {
+            return 'https://bridge.walletconnect.org';
         }))
+
         const provider: WalletConnectProvider = new WalletConnectProvider({
             rpc: RPC_URLS,
             bridge: BRIDGE_URL,
@@ -29,23 +30,29 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
             qrcode: false,
         });
         const {connector} = provider;
-        let web3: Web3|undefined
+        let web3: Web3 | undefined;
+
         if (!connector.connected && account === undefined) {
             await connector.createSession();
             const uri = connector.uri;
-            walletServices.sendProcess('nextStep', {qrCodeUrl: uri});
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (isMobile) {
+
+            } else {
+                walletServices.sendProcess('nextStep', {qrCodeUrl: uri});
+            }
             await provider.enable();
             web3 = new Web3(provider as any);
             walletServices.sendConnect(web3, provider);
 
         } else if (!connector.connected && account !== undefined) {
-            console.log('WalletConnect reconnect connected is failed',account,provider)
+            console.log('WalletConnect reconnect connected is failed', account, provider)
             // WalletConnectUnsubscribe(provider);
             // walletServices.sendDisconnect('', 'walletConnect not connect');
-            web3=undefined
+            web3 = undefined
             throw new Error('walletConnect not connect');
         } else if (account && provider.isWalletConnect) {
-            console.log('WalletConnect reconnect connected is true',account, provider, connector.session)
+            console.log('WalletConnect reconnect connected is true', account, provider, connector.session)
             await provider.enable();
             web3 = new Web3(provider as any);
             walletServices.sendConnect(web3, provider)
@@ -91,7 +98,7 @@ export const WalletConnectSubscribe = (provider: any, web3: Web3, account?: stri
     }
 }
 
-export const WalletConnectUnsubscribe = async  (provider: any) => {
+export const WalletConnectUnsubscribe = async (provider: any) => {
     if (provider && provider.connector) {
         const {connector} = provider;
         console.log('WalletConnect on Unsubscribe')
