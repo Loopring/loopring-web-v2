@@ -247,7 +247,6 @@ export const useNFTWithdraw = <R extends IBData<T> & Partial<NFTTokenInfo & User
                 isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
 
                 myLog('nftWithdraw processRequestNFT:', isHWAddr, isFirstTime)
-                debugger
                 const response = await LoopringAPI.userAPI.submitNFTWithdraw({
                     request,
                     web3: connectProvides.usedWeb3,
