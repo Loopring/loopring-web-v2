@@ -132,6 +132,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     //     }
     // }, [container, pageSize]);
 
+    const getCurrAssetsEth = useCallback(() => {
+        if (currAssetsEth) {
+            return getValuePrecisionThousand((Number.isFinite(currAssetsEth) ? currAssetsEth : Number(currAssetsEth || 0)).toFixed(7), undefined, undefined, 7, true, { floor: true })
+        }
+        return 0
+    }, [currAssetsEth])
+
     const getTokenRelatedMarketArray = useCallback((token: string) => {
         if (!marketArray) return []
         return marketArray.filter(market => {
@@ -222,7 +229,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                     <Typography component="span" color="textSecondary"
                                 variant="body1">{t('labelTotalAssets')}</Typography>
                     <Box display={'flex'} alignItems={'center'}>
-                        <Typography component={'span'} variant={'h5'}>{currAssetsEth} ETH </Typography>
+                        <Typography component={'span'} variant={'h5'}>{getCurrAssetsEth()} ETH </Typography>
                         <Typography component={'span'} variant={'body2'} color={'var(--color-text-third)'}>&nbsp;&#8776;&nbsp;{currency === Currency.usd ? PriceTag.Dollar + currAssetsEthDollar : PriceTag.Yuan + currAssetsEthYuan}</Typography>
                     </Box>
                     {!!userAssets.length ? (
