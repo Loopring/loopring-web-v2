@@ -109,7 +109,7 @@ export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
         >
         <Box marginTop={4}>{icon}</Box>
         <Box position={'absolute'} top={'40%'} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-            <Typography component={'h3'} marginTop={4}>
+            <Typography component={'div'} marginTop={4}>
                 <Typography whiteSpace={'pre-line'} fontWeight={500} component={'h5'}  variant={'h3'}
                 >{t(title)}</Typography>
             </Typography>

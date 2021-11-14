@@ -93,12 +93,12 @@ export const useGetAssets = () => {
 
     const getUserAssets = React.useCallback(async () => {
         if (LoopringAPI && LoopringAPI.userAPI && tokenMap) { 
-            const ethAddress = tokenMap['ETH'].address
+            // const ethAddress = tokenMap['ETH'].address
             const { accAddress } = account
             const res = await LoopringAPI.userAPI.getUserVIPAssets({
                 address: accAddress,
                 assetTypes: 'DEX',
-                token: ethAddress,
+                // token: ethAddress,
             })
             if (res.raw_data && res.raw_data.data) {
                 const ethValueList = res.raw_data.data.map((o: any) => ({
