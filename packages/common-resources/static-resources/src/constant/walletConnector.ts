@@ -5,18 +5,22 @@ import { SoursURL } from './router';
 export const gatewayList: GatewayItem[] = [
     {
         key: ConnectProviders.MetaMask,
-        imgSrc: SoursURL+'svg/meta-mask.svg',
+        imgSrc: SoursURL + 'svg/meta-mask.svg',
     },
     {
         key: ConnectProviders.WalletConnect,
-        imgSrc: SoursURL+'svg/wallet-connect.svg',
+        imgSrc: SoursURL + 'svg/wallet-connect.svg',
     },
     // {
+    //     key: ConnectProviders.WalletLink,
+    //     imgSrc: SoursURL+'svg/coinbase-wallet.svg',
+    // },
+    // {
     //     key: 'Ledger',
-    //     imgSrc: 'http://static.loopring.io/assets/svg/ledger.svg',
+    //     imgSrc: 'https://static.loopring.io/assets/svg/ledger.svg',
     // },
     // {
     //     key: 'Trezor',
-    //     imgSrc: 'http://static.loopring.io/assets/svg/trezor.svg',
+    //     imgSrc: 'https://static.loopring.io/assets/svg/trezor.svg',
     // },
 ]

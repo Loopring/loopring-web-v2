@@ -1,4 +1,4 @@
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Route, Switch, useLocation, Redirect } from 'react-router-dom'
 import React from 'react';
 import { Box, Container } from '@mui/material'
 import Header from 'layouts/header'
@@ -87,8 +87,19 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                 <LandPage/>
             </Route>
             <Route exact path='/report'>
-                {query && query.has('noheader') ? <></> : <Header isHideOnScroll={true} isLandPage/>}
+                <Redirect to="/newticket" />
+                {/* {query && query.has('noheader') ? <></> : <Header isHideOnScroll={true} isLandPage/>}
                 <Container maxWidth="lg"
+                           style={{
+                               minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                               display: 'flex',
+                               flexDirection: 'column'
+                           }}>
+                    <ReportPage/> </Container> */}
+            </Route>
+            <Route exact path='/newticket'>
+                {query && query.has('noheader') ? <></> : <Header isHideOnScroll={true} isLandPage/>}
+                    <Container maxWidth="lg"
                            style={{
                                minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
                                display: 'flex',

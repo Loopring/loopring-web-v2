@@ -10,11 +10,12 @@ export * from "./interface"
 export * from "./globalSetup"
 //transform-origin: top left;
 export { hr };
+//https://static.loopring.io/assets/images/coin/loopring.png
 export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
       &.MuiAvatar-root{  
         height: 36px;
         width: 36px;
-        background-image: url("http://static.loopring.io/assets/images/coin/loopring.png") ;
+        background-image: url("./static/coin/loopring.png") ;
         ${({imgx,imgy,imgheight=36,imgwidth=36,size=24}:AvatarCoinProps)=>{
             return `
              background-position-x: -${imgx}px ;

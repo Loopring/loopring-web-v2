@@ -22,14 +22,23 @@ export const walletServices = {
     },
     sendConnect: async (web3: Web3, provider: any) => {
         try {
-            const accounts = provider.accounts?? await web3.eth.getAccounts();
-            let chainId = provider.chainId ?? await web3.eth.getChainId();
+            let accounts, chainId: number;
+            // if(provider.isWalletLink){
+            //     accounts = provider._eth_accounts();
+            //     chainId = provider.getChainId()
+            // }else{
+            accounts = provider.accounts ?? await web3.eth.getAccounts();
+            chainId = provider.chainId ?? await web3.eth.getChainId();
+            // }
 
             // console.log('wallet connect:', accounts, chainId);
 
-            subject.next({status: 'ConnectWallet', data: {provider, accounts,
-                    chainId: AvaiableNetwork.findIndex((i)=>i == Number(chainId))!==-1?  Number(chainId) :'unknown'
-            }});
+            subject.next({
+                status: 'ConnectWallet', data: {
+                    provider, accounts,
+                    chainId: AvaiableNetwork.findIndex((i) => i == Number(chainId)) !== -1 ? Number(chainId) : 'unknown'
+                }
+            });
         } catch (error) {
             subject.next({status: 'Error', data: {error}});
         }

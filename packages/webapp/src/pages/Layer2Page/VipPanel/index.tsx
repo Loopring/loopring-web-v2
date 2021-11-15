@@ -5,7 +5,7 @@ import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from '../../../api_wrapper';
-import { myLog, SoursURL } from '@loopring-web/common-resources';
+import { myLog, SoursURL, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { VipPanel as VipView } from '@loopring-web/component-lib'
 import { useGetVIPInfo } from './hooks'
 
@@ -263,9 +263,9 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
     return <>
         <StylePaper flex={1} container className={'MuiPaper-elevation2'} padding={4} marginBottom={1}>
             <Grid item xs={12}>
-                <Typography variant={'h5'} component={'h3'} marginY={1} display={'flex'} flexDirection={'column'}>
-                    <Typography flexDirection={'row'} display={'flex'} alignSelf={'flex-start'}>
-                        <Typography variant={'h4'} color={'text.primary'} paddingRight={1}>
+                <Typography variant={'h5'} component={'h2'} marginY={1} display={'flex'} flexDirection={'column'}>
+                    <Typography component={'div'} flexDirection={'row'} display={'flex'} alignSelf={'flex-start'}>
+                        <Typography component={'p'} variant={'h4'} color={'text.primary'} paddingRight={1}>
                             {t('labelTradeFeeLevel')}
                         </Typography>
 
@@ -283,7 +283,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             ? 'Congratulations you have reached the highest level' 
                             : isSVIP 
                                 ? 'Congratulations! You are already a super VIP, enjoying the highest discount privileges, and will not be affected by balance and trading volume.' 
-                                : `Upgrade to VIP ${getNextVIPlevel()} by either trading ${getNextLevelAmount('eth', getNextVIPlevel())} ETH on our spot exchange and/or increase your LRC holdings by ${getNextLevelAmount('lrc', getNextVIPlevel())} LRC`
+                                : `Upgrade to VIP ${getNextVIPlevel()} by either trading ${getValuePrecisionThousand(getNextLevelAmount('eth', getNextVIPlevel()))} ETH on our spot exchange and/or increase your LRC holdings by ${getValuePrecisionThousand(getNextLevelAmount('lrc', getNextVIPlevel()))} LRC`
                         }
                     </Typography>
                 </Typography>
@@ -296,7 +296,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             Spot Trading Volume (30d in ETH)
                         </Typography>
                         <Typography variant={'h4'} component={'p'} marginTop={0.5}>
-                            Currently {getCurrentETHTradeAmount()} ETH
+                            Currently {getValuePrecisionThousand(getCurrentETHTradeAmount())} ETH
                         </Typography>
                         <Box width={'90%'} marginY={1.5}>
                             <LinearProgress variant="determinate" value={getTradeVolETH()} />
@@ -312,7 +312,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                             LRC Balance
                         </Typography>
                         <Typography variant={'h4'} component={'p'} marginY={0.5}>
-                            Currently {getCurrentBalanceLRC()} LRC
+                            Currently {getValuePrecisionThousand(getCurrentBalanceLRC())} LRC
                         </Typography>
                         <Box width={'90%'} marginY={1.5}>
                             <LinearProgress variant="determinate" value={getBalanceLRC()} />

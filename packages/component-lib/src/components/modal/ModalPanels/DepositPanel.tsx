@@ -1,15 +1,18 @@
 import { DepositProps } from '../../tradePanel/Interface';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { IBData } from '@loopring-web/common-resources';
+import { CoinInfo, CoinMap, IBData } from '@loopring-web/common-resources';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { DepositWrap, TradeMenuList, useBasicTrade } from '../../tradePanel/components';
 import React from 'react';
+import { cloneDeep } from 'lodash';
 
 export const DepositPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
     {
         type='TOKEN',
         onDepositClick,
         depositBtnStatus,
+        walletMap,
+        coinMap,
         ...rest
     }: DepositProps<T, I> & WithTranslation) => {
 
@@ -19,7 +22,34 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
         index,
         switchData
 
-    } = useBasicTrade({ ...rest,type });
+    } = useBasicTrade({ ...rest,type, walletMap, coinMap });
+    
+    const getFiltedWalletMap = React.useCallback(() => {
+        if (walletMap) {
+            const clonedWalletMap = cloneDeep(walletMap)
+            Object.values(clonedWalletMap).forEach((o: any) => {
+                if (o.belong && o.count && Number(o.count) === 0) {
+                    delete clonedWalletMap[o.belong]
+                }
+            })
+            return clonedWalletMap
+        }
+        return {}
+    }, [walletMap])
+
+    const getFilteredCoinMap: any = React.useCallback(() => {
+        if (coinMap && getFiltedWalletMap()) {
+            const clonedCoinMap = cloneDeep(coinMap)
+            const remainList = {}
+            Object.keys(getFiltedWalletMap()).forEach(token => {
+                if (clonedCoinMap[token]) {
+                    remainList[token] = clonedCoinMap[token]
+                }
+            })
+            return remainList
+        }
+        return {}
+    }, [coinMap, getFiltedWalletMap])
 
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
@@ -33,7 +63,9 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
                                                   disabled: !!rest.disabled,
                                                   onDepositClick,
                                                   depositBtnStatus,
-                                              }} />,[onChangeEvent,onDepositClick,rest,switchData,depositBtnStatus,rest]),
+                                                  walletMap,
+                                                  coinMap,
+                                              }} />,[rest, switchData.tradeData, onChangeEvent, onDepositClick, depositBtnStatus, walletMap, coinMap]),
             toolBarItem: undefined
         },
             {
@@ -46,8 +78,10 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
                     //rest.walletMap,
                     selected: switchData.tradeData.belong,
                     tradeData: switchData.tradeData,
+                    walletMap: getFiltedWalletMap(),
+                    coinMap: getFilteredCoinMap() as CoinMap<I, CoinInfo<I>>,
                     //oinMap
-                }}/>,[switchData,rest,onChangeEvent]),
+                }}/>,[rest, onChangeEvent, switchData.tradeData, getFiltedWalletMap, getFilteredCoinMap]),
                 toolBarItem: undefined
                 // toolBarItem: toolBarItemBack
             },]

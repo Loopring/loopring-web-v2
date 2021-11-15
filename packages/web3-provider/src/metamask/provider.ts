@@ -7,9 +7,11 @@ import { ConnectProviders } from '@loopring-web/common-resources';
 
 export const MetaMaskProvide = async (): Promise<{ provider: IpcProvider, web3: Web3 } | undefined> => {
     try {
-        const provider: any = await detectEthereumProvider();
+        const provider: any = await detectEthereumProvider({mustBeMetaMask: true});
         const ethereum: any = window.ethereum;
-        if (provider && ethereum) {
+
+        if (provider && ethereum && ethereum.isMetaMask) {
+            // const metamaskProvider:IpcProvider = ethereum.find((provider:IpcProvider & {isMetaMask:boolean}) => provider.isMetaMask);
             const web3 = new Web3(provider as any);
             await ethereum.request({method: 'eth_requestAccounts'});
             walletServices.sendConnect(web3, provider);

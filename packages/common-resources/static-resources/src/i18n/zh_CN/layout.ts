@@ -77,4 +77,5 @@ export default {
     labelkeyAPIs: 'APIs',
     labelkeyReportIssue:'Report Issue',
     labelMyNFT: 'My NFT',
+    labelLaunchApp: 'Launch App',
 }

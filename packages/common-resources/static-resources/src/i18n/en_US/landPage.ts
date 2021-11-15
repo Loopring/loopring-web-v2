@@ -1,5 +1,5 @@
 export default {
-    labelH1Title:'Ethereum’s First \n zkRollup Layer2',
+    labelH1Title:'Ethereum’s First zkRollup Layer2',
     labelH1TitleDetail: 'Secure, Fast, and Cheap',
     labelH1TitleWallet:'Loopring Wallet',
     labelH2TitleWallet: 'FREEDOM AT YOUR FINGERTIPS',
@@ -20,7 +20,7 @@ export default {
     describeSafety:'Assets on Loopring layer2\nare equally secure as they are\non the Ethereum mainnet.',
     describeLowCost:'Transaction fees are reduced\n to 1/30 - 1/100 of the fees \non the Ethereum mainnet.',
     describeFastTransfer:'Loopring layer2 can settle\n~2000 transactions per second\nwith near instant finality.',
-    describeSuperpowers :'Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring\'s time-tested zkRollup technology. Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.',
+    describeSuperpowers :'Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring\'s time-tested zkRollup technology. \n Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.',
     labelBtnStart:'LAUNCH LAYER2 APP',
     labelBtnDeveloper: 'Developer Documentation',
     labelFirstWallet: 'BETTER THAN BEING SMART',
@@ -39,4 +39,5 @@ export default {
     labelWalletFutureDetail: 'Based on smart contracts, Loopring Wallet adopts a pluggable,\n modular design, which can be continuously upgraded under your\n authorization to use future standards and new technologies.',
     labelWalletUnleashed: 'ETHEREUM UNLEASHED',
     labelWalletUnleashedDetail: 'Your mobile gateway to Ethereum DeFi, collectables, and more.',
+    labelLaunchApp: 'LAUNCH APP',
 }

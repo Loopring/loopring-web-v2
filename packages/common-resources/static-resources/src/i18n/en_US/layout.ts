@@ -76,4 +76,5 @@ labelkeyLoopringSmartWallet: 'Loopring Smart Wallet',
 labelkeyAPIs: 'APIs',
 labelkeyReportIssue:'Report Issue',
 labelMyNFT: 'My NFT',
+labelLaunchApp: 'Launch App',
 }
