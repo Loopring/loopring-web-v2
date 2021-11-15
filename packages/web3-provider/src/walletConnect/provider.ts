@@ -17,7 +17,7 @@ const POLLING_INTERVAL = 12000
 
 export const WalletConnectProvide = async (account?: string): Promise<{ provider?: WalletConnectProvider, web3?: Web3, } | undefined> => {
     try {
-        const BRIDGE_URL = await (fetch('https://wcbridge.loopring.network/hello').then(({status}) => {
+        const BRIDGE_URL = await (fetch('https://connect.loopring.io/hello').then(({status}) => {
             return status === 200 ? process.env.REACT_APP_WALLET_CONNECT_BRIDGE : 'https://bridge.walletconnect.org'
         }).catch(() => {
             return 'https://bridge.walletconnect.org';
