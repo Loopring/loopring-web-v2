@@ -47,8 +47,6 @@ const TrendChart = ({
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
 
-    myLog({data})
-
     const trendColor = upColor === 'green'
             ? priceTrend === 'up'
                 ? UP_COLOR
