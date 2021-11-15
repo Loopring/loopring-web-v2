@@ -189,8 +189,8 @@ const TrendChart = ({
                 </defs>
                 <XAxis
                     hide={!showXAxis && !isDailyTrend}
-                    dataKey="timeStamp" /* tickFormatter={convertDate} */
-                    interval={isDailyTrend ? 10 : 8}
+                    dataKey={isDailyTrend ? 'timeStamp' : 'date'} /* tickFormatter={convertDate} */
+                    interval={isDailyTrend ? 5 : 8}
                     axisLine={isDailyTrend}
                     tickLine={isDailyTrend}
                     tick={customTick}
