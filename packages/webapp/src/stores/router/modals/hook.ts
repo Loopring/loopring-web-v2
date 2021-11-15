@@ -23,7 +23,8 @@ export function useModalData(): {
     nftDepositValue: DepositData & Partial<NFTWholeINFO>;
     updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
     updateNFTTransferData: (nftTransferData: RequireOne<TransferData & NFTWholeINFO, never>) => void;
-    resetTransferData: () => void; nftWithdrawValue: WithdrawData & Partial<NFTWholeINFO>;
+    resetTransferData: () => void;
+    nftWithdrawValue: WithdrawData & Partial<NFTWholeINFO>;
     transferValue: TransferData;
     updateNFTDepositData: (nftDepositData: RequireOne<DepositData & NFTWholeINFO, never>) => void;
     nftTransferValue: TransferData & Partial<NFTWholeINFO>;

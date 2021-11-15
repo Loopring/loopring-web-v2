@@ -67,11 +67,10 @@ export function useChargeNFTFees({ tokenAddress,tokenMap, requestType, amount, n
             } catch (reason) {
                 dumpError400(reason)
             }
-
-            setChargeFeeList(chargeFeeList)
-        }
-            , globalSetup.wait)
-        , [])
+            setChargeFeeList((stats)=> {
+              return   chargeFeeList
+            })
+        }, globalSetup.wait), [])
 
     React.useEffect(() => {
         getFeeList(account.accountId, account.apiKey, tokenAddress, requestType, tokenMap, amount)

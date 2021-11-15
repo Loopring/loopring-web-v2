@@ -16,7 +16,7 @@ export const useMyNFT = () => {
     const [isShow, setIsShow] = React.useState(false);
     const [popItem, setPopItem] = React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
     const { status: walletLayer2Status, nftLayer2 } = useWalletLayer2();
-    const { updateNFTTransferData }  = useModalData()
+    const { updateNFTTransferData, updateNFTWithdrawData }  = useModalData()
     const { setShowNFTTransfer} = useOpenModals()
     const {etherscanBaseUrl} = useSystem();
 
@@ -33,6 +33,7 @@ export const useMyNFT = () => {
         tokenInfo =  {...tokenInfo, nftBalance:tokenInfo.total?Number(tokenInfo.total):0}
         setPopItem(tokenInfo)
         updateNFTTransferData(tokenInfo)
+        updateNFTWithdrawData(tokenInfo)
         setShowNFTTransfer({isShow:false,...tokenInfo})
         setIsShow(true)
     }, [setIsShow])
@@ -48,7 +49,6 @@ export const useMyNFT = () => {
             // console.log('NFTBalances',nftLayer2)
             for (const {nftId, tokenAddress} of nftLayer2) {
                 if( tokenAddress ){
-                    console.log(tokenAddress,parseInt(nftId??'').toString())
                     mediaPromise.push(LoopringAPI?.nftAPI?.getContractNFTMeta({
                         _id: parseInt(nftId??'').toString(),
                         web3: connectProvides.usedWeb3,

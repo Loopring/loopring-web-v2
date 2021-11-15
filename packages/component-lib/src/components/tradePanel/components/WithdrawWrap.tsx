@@ -1,12 +1,21 @@
 import { Trans, WithTranslation } from 'react-i18next';
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { FormControlLabel, Grid, Radio, RadioGroup, Typography, Box, IconProps } from '@mui/material';
-import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes, HelpIcon } from '@loopring-web/common-resources';
-import { PopoverPure } from '../..'
+import { Box, FormControlLabel, Grid, IconProps, Radio, RadioGroup, Typography } from '@mui/material';
+import {
+    CloseIcon,
+    copyToClipBoard,
+    DropDownIcon,
+    globalSetup,
+    HelpIcon,
+    IBData,
+    TOAST_TIME,
+    WithdrawTypes
+} from '@loopring-web/common-resources';
+import { PopoverPure, Toast } from '../..'
 import { TradeBtnStatus } from '../Interface';
-import { Button, IconClearStyled, TextField} from '../../../index';
+import { Button, IconClearStyled, TextField } from '../../../index';
 import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { ToggleButtonGroup } from '../../basic-lib';
@@ -14,20 +23,21 @@ import styled from '@emotion/styled'
 import { useSettings } from '../../../stores'
 import * as _ from 'lodash'
 import { NFTTokenInfo } from '@loopring-web/loopring-sdk';
+import { NFTInput } from './BasicANFTTrade';
 
 const FeeTokenItemWrapper = styled(Box)`
-    background-color: var(--color-global-bg);
+  background-color: var(--color-global-bg);
 `
 
 const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
   transform: rotate(${({status}: any) => {
-    return status === 'down' ? '0deg': '180deg'
+    return status === 'down' ? '0deg' : '180deg'
   }});
-` as (props:IconProps& {status:string})=>JSX.Element
+` as (props: IconProps & { status: string }) => JSX.Element
 
 export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
     I>({
-           t, disabled, walletMap, tradeData, coinMap,  type,
+           t, disabled, walletMap, tradeData, coinMap, type,
            withdrawI18nKey,
            addressDefault,
            withdrawTypes = WithdrawTypes,
@@ -40,8 +50,10 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
            handleWithdrawTypeChange,
            handleOnAddressChange, handleAddressError,
            wait = globalSetup.wait,
-           assetsData,
+           assetsData = [],
            realAddr,
+           isThumb,
+
            ...rest
        }: WithdrawViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(withdrawType);
@@ -50,19 +62,25 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
     const [feeToken, setFeeToken] = React.useState('')
-    const [toggleData, setToggleData] = React.useState<any[]>([]) 
-    const { feeChargeOrder } = useSettings()
+    const [toggleData, setToggleData] = React.useState<any[]>([])
+    const {feeChargeOrder} = useSettings()
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-withdraw`});
 
     React.useEffect(() => {
-        if (!!chargeFeeTokenList.length && feeChargeOrder) {
-            const list = chargeFeeTokenList.sort((a, b) => feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(({belong, fee, __raw__}) => ({
-                key: belong,
-                value: belong,
-                fee,
-                __raw__
-            })) as any[]
+        if (!!chargeFeeTokenList.length && feeChargeOrder && assetsData) {
+            const list = chargeFeeTokenList.sort((a, b) =>
+                feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)).map(
+                ({
+                     belong,
+                     fee,
+                     __raw__
+                 }) => ({
+                    key: belong,
+                    value: belong,
+                    fee,
+                    __raw__
+                })) as any[]
             setToggleData(list)
             const currFee = list.find(o => o.key === feeToken)?.fee || '--'
             const currFeeRaw = list.find(o => o.key === feeToken)?.__raw__ || '--'
@@ -73,7 +91,11 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
             })
         }
     }, [chargeFeeTokenList, feeChargeOrder, feeToken, handleFeeChange])
-
+    const [copyToastOpen, setCopyToastOpen] = useState(false);
+    const onCopy = React.useCallback(async (content: string) => {
+        copyToClipBoard(content);
+        setCopyToastOpen(true)
+    }, [setCopyToastOpen,])
     const getTokenFee = React.useCallback((token: string) => {
         return toggleData.find(o => o.key === token)?.fee || 0
     }, [toggleData])
@@ -136,12 +158,12 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
         }
     }, [handleWithdrawTypeChange])
 
-    const debounceAddress = React.useCallback(_.debounce(({address,handleOnAddressChange}: any) => {
+    const debounceAddress = React.useCallback(_.debounce(({address, handleOnAddressChange}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
     }, wait), [])
-    const _handleOnAddressChange = (event:ChangeEvent<HTMLInputElement>) => {
+    const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
         const address = event.target.value;
         if (handleAddressError) {
             const error = handleAddressError(address)
@@ -167,11 +189,12 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} /* minHeight={540} */
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}
-                  flexWrap={'nowrap'}>
+                 flexWrap={'nowrap'}>
         <Grid item>
-            <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} /* marginBottom={2} */>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'center'}
+                 alignItems={'center'} /* marginBottom={2} */>
                 <Typography component={'h4'} variant={'h3'} marginRight={1}>{t('withdrawTitle')}</Typography>
-                <HelpIcon {...bindHover(popupState)} fontSize={'large'} htmlColor={'var(--color-text-third)'} />
+                <HelpIcon {...bindHover(popupState)} fontSize={'large'} htmlColor={'var(--color-text-third)'}/>
             </Box>
             <PopoverPure
                 className={'arrow-center'}
@@ -187,24 +210,41 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
             >
                 <Typography padding={2} maxWidth={490} variant={'body2'} whiteSpace={'pre-line'}>
                     <Trans i18nKey="withdrawDescription">
-                        Your withdrawal will be processed in the next batch, which usually takes 30 minutes to 2 hours. (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）
+                        Your withdrawal will be processed in the next batch, which usually takes 30 minutes to 2 hours.
+                        (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）
                     </Trans>
                 </Typography>
             </PopoverPure>
         </Grid>
-        <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
-            {type === 'NFT'?<></>:  <BasicACoinTrade {...{
+        <Grid item /* marginTop={3} */ alignSelf={"stretch"}>
+            {type === 'NFT' ? <NFTInput
+                {...{
+                    ...rest,
+                    isThumb,
+                    type,
+                    onCopy,
+                    t,
+                    disabled,
+                    walletMap,
+                    tradeData,
+                    coinMap,
+                    inputNFTDefaultProps: {label: ''},
+                    inputNFTRef: inputBtnRef,
+                }}
+            /> : <BasicACoinTrade {...{
                 ...rest,
-                t,
                 type,
+                t,
                 disabled,
                 walletMap,
                 tradeData,
                 coinMap,
                 inputButtonDefaultProps,
                 inputBtnRef: inputBtnRef,
-            }} /> }
+
+            }} />}
         </Grid>
+
         <Grid item /* marginTop={2} */ alignSelf={"stretch"} position={'relative'}>
             <TextField
                 value={address}
@@ -219,46 +259,59 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
                                         variant={'body2'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
-            {address !== '' ? <IconClearStyled size={'small'} color={'inherit'}  style={{top:'28px'}} aria-label="Clear" onClick={handleClear}>
-                <CloseIcon />
+            {address !== '' ? <IconClearStyled size={'small'} color={'inherit'} style={{top: '28px'}} aria-label="Clear"
+                                               onClick={handleClear}>
+                <CloseIcon/>
             </IconClearStyled> : ''}
         </Grid>
-        
+
         {realAddr && <Grid item alignSelf={"stretch"} position={'relative'}>
             {realAddr}
         </Grid>}
 
         {/* TODO: check whether there's a need to show deposit fee */}
         <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
-            <Typography component={'span'} display={'flex'} alignItems={'center'} variant={'body1'} color={'var(--color-text-secondary)'} marginBottom={1}>
-                {t('transferLabelFee')}：
-                <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
-                    {getTokenFee(feeToken) || '--'} {feeToken}
-                    <Typography marginLeft={1} color={'var(--color-text-secondary)'}>{t(`withdrawLabel${_withdrawType === 'Fast' ? 'Fast' : 'Standard' }`)}</Typography>
-                    <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                        {isFeeNotEnough && t('transferLabelFeeNotEnough')}
+            {!toggleData?.length ?
+                <Typography >{t('labelCalculating')}</Typography>  :
+                    <>
+                    <Typography component={'span'} display={'flex'}  flexWrap={'wrap'} alignItems={'center'} variant={'body1'}
+                                color={'var(--color-text-secondary)'} marginBottom={1}>
+                        <Typography component={'span'}  color={'inherit'} minWidth={28}>{t('transferLabelFee')}：</Typography>
+                        <Box component={'span'} display={'flex'} overflow={'hidden'} alignItems={'center'} style={{cursor: 'pointer'}}
+                             onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')} >
+                            {getTokenFee(feeToken) || '--'} {feeToken}
+                            <Typography marginLeft={1}
+                                        color={'var(--color-text-secondary)'}>{t(`withdrawLabel${_withdrawType === 'Fast' ? 'Fast' : 'Standard'}`)}</Typography>
+                            <DropdownIconStyled status={dropdownStatus} fontSize={'medium'}/>
+                            <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
+                                {isFeeNotEnough && t('transferLabelFeeNotEnough')}
+                            </Typography>
+                        </Box>
                     </Typography>
-                </Box>
-            </Typography>
-            {dropdownStatus === 'up' && (
-                <FeeTokenItemWrapper padding={2}>
-                    <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>{t('transferLabelFeeChoose')}</Typography>
-                    <ToggleButtonGroup exclusive size={'small'} {...{data: toggleData, value: feeToken, t, ...rest}} onChange={handleToggleChange} />
-                    <Box marginTop={1}>
-                        <RadioGroup aria-label="withdraw" name="withdraw" value={_withdrawType}
-                            onChange={(e) => {
-                                _handleWithdrawTypeChange(e);
-                            }
-                            }>
-                            {Object.keys(withdrawTypes).map((key) => {
-                                return <FormControlLabel key={key} value={key} control={<Radio/>}
-                                                        label={`${t('withdrawTypeLabel' + key)}`}/>
-                            })}
-                        </RadioGroup>
-                    </Box>
-                </FeeTokenItemWrapper>
-            )}
+                    {dropdownStatus === 'up' && (
+                        <FeeTokenItemWrapper padding={2}>
+                            <Typography variant={'body2'} color={'var(--color-text-third)'}
+                                        marginBottom={1}>{t('transferLabelFeeChoose')}</Typography>
+                            <ToggleButtonGroup exclusive size={'small'} {...{
+                                data: toggleData,
+                                value: feeToken,
+                                t, ...rest
+                            }} onChange={handleToggleChange}/>
+                            <Box marginTop={1}>
+                                <RadioGroup aria-label="withdraw" name="withdraw" value={_withdrawType}
+                                            onChange={(e) => {
+                                                _handleWithdrawTypeChange(e);
+                                            }
+                                            }>
+                                    {Object.keys(withdrawTypes).map((key) => {
+                                        return <FormControlLabel key={key} value={key} control={<Radio/>}
+                                                                 label={`${t('withdrawTypeLabel' + key)}`}/>
+                                    })}
+                                </RadioGroup>
+                            </Box>
+                        </FeeTokenItemWrapper>
+                    )}
+                </>}
         </Grid>
         <Grid item /* marginTop={2} */ alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
@@ -269,5 +322,9 @@ export const WithdrawWrap = <T extends IBData<I> | NFTTokenInfo & IBData<I>,
             >{t(withdrawI18nKey ?? `withdrawLabelBtn`)}
             </Button>
         </Grid>
+        <Toast alertText={t('labelCopyAddClip')} open={copyToastOpen}
+               autoHideDuration={TOAST_TIME} onClose={() => {
+            setCopyToastOpen(false)
+        }} severity={"success"}/>
     </Grid>
 }
