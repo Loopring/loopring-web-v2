@@ -113,7 +113,7 @@ const TrendChart = ({
                                 : UP_COLOR 
                             : upColor === 'green' 
                                 ? UP_COLOR
-                                : DOWN_COLOR }>&nbsp;{change} %</Typography>
+                                : DOWN_COLOR }>&nbsp;{Number(change || 0) > 0 ? `+${change}` : change} %</Typography>
                     </Box>
                 </TooltipStyled>
             )
@@ -129,7 +129,7 @@ const TrendChart = ({
                 </TooltipStyled>
             )
         }
-    }, [hasData, extraInfo])
+    }, [hasData, isDailyTrend, data, upColor, extraInfo])
 
     const handleMouseLeave = useCallback(() => {
         if (handleMoveOut) {
