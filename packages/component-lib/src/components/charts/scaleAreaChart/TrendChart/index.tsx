@@ -47,6 +47,8 @@ const TrendChart = ({
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
 
+    myLog({data})
+
     const trendColor = upColor === 'green'
             ? priceTrend === 'up'
                 ? UP_COLOR
@@ -189,8 +191,8 @@ const TrendChart = ({
                 </defs>
                 <XAxis
                     hide={!showXAxis && !isDailyTrend}
-                    dataKey="timeStamp" /* tickFormatter={convertDate} */
-                    interval={isDailyTrend ? 10 : 8}
+                    dataKey={isDailyTrend ? 'timeStamp' : 'date'} /* tickFormatter={convertDate} */
+                    interval={isDailyTrend ? 5 : 8}
                     axisLine={isDailyTrend}
                     tickLine={isDailyTrend}
                     tick={customTick}
