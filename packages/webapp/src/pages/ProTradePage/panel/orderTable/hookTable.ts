@@ -176,8 +176,9 @@ export const useOrderList = () => {
                 accountId,
                 orderHash: orderHashList,
             }, privateKey, apiKey)
+            updateWalletLayer2()
         }
-    }, [accountId, apiKey, privateKey])
+    }, [accountId, apiKey, privateKey, updateWalletLayer2])
 
     const getOrderDetail = React.useCallback(async (orderHash: string, t: TFunction) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
