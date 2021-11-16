@@ -166,7 +166,8 @@ export interface OrderHistoryTableProps {
     getOrderDetail: (orderHash: string, t: TFunction) => Promise<any>;
     orderDetailList: OrderHistoryTableDetailItem[];
     isOpenOrder?: boolean;
-    cancelOrder: ({orderHash, clientOrderId}: any) => Promise<void>
+    cancelOrder: ({orderHash, clientOrderId}: any) => Promise<void>;
+    cancelOrderByHashList?: (orderHashList: string) => Promise<void>;
     isScroll?: boolean;
     isPro?: boolean;
     handleScroll?: (event: React.UIEvent<HTMLDivElement>, isOpen?: boolean) => Promise<void>;
@@ -174,7 +175,7 @@ export interface OrderHistoryTableProps {
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false, clearOrderDetail } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false, clearOrderDetail, cancelOrderByHashList } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -630,15 +631,15 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     }
 
     const handleCancelAll = useCallback(async () => {
-        const openOrdresList = rawData.filter(o => o.status === 'processing').map(o => ({
-            hash: o.hash,
-            orderId: o.orderId
-        }))
-        const promises = openOrdresList.forEach(o => {
-            cancelOrder({orderHash:o.hash, clientOrderId: o.orderId})
-        })
-        await Promise.all([promises])
-    }, [rawData, cancelOrder])
+        const openOrdresList = rawData.filter(o => o.status === 'processing').map(o => o.hash).join(',')
+        // const promises = openOrdresList.forEach(o => {
+        //     cancelOrder({orderHash:o.hash, clientOrderId: o.orderId})
+        // })
+        // await Promise.all([promises])
+        if (cancelOrderByHashList) {
+            cancelOrderByHashList(openOrdresList)
+        }
+    }, [rawData, cancelOrderByHashList])
 
     return <TableStyled isopen={isOpenOrder ? 'open' : 'history'} ispro={isPro ? 'pro' : 'lite'}>
         {showFilter && (
