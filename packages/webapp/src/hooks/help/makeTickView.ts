@@ -8,7 +8,9 @@ import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 export const makeTickView = (tick: Partial<TickerData>) => {
     // const {forex} = store.getState().system;
 
-    const {fiatPrices, forex} = store.getState().system;
+    const { forex } = store.getState().system;
+    const { tokenPrices } = store.getState().tokenPrices;
+
     if (tick) {
         const floatTag = ((tick.close ?? 0) || (tick.open ?? 0)) || tick.open === tick.close ? FloatTag.none :
             tick.close > tick.open ? FloatTag.increase : FloatTag.decrease
@@ -26,12 +28,13 @@ export const makeTickView = (tick: Partial<TickerData>) => {
 
             // APR: 0,
         }
-        if (fiatPrices && forex && tick.close) {
+        if (forex && tick.close && tokenPrices) {
             const volume = VolToNumberWithPrecision((tick.base_token_volume ?? 0), tick.base as string)
             // const priceDollar = toBig(tiem).times(fiatPrices[ tick.base as string ] ? fiatPrices[ tick.base as string ].price : 0);
             // const priceYuan = priceDollar.times(forex);
 
-            const qPrice = tick.quote === 'DAI' ? 1 : fiatPrices[ tick.quote as string ]?.price ? fiatPrices[ tick.quote as string ].price : 0;
+            // const qPrice = tick.quote === 'DAI' ? 1 : fiatPrices[ tick.quote as string ]?.price ? fiatPrices[ tick.quote as string ].price : 0;
+            const qPrice = tick.quote === 'DAI' ? 1 : (tokenPrices[ tick.quote as string ] || 0);
             const closeDollar = toBig(tick.close).times(qPrice);
             const closeYuan = closeDollar.times(forex);
 
