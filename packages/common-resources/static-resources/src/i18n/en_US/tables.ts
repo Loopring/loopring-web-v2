@@ -101,7 +101,7 @@ export default {
     labelAmmFilterExit: 'Exit',
     labelPoolTableAddLiqudity: 'Add',
     labelPoolTableRemoveLiqudity: 'Remove',
-    labelEmptyDefault: 'Empty',
+    labelEmptyDefault: 'No data to display',
     labelAmmTableType: 'Type',
     labelOrderDetailTaker: 'Taker',
     labelOrderDetailMaker: 'Maker',

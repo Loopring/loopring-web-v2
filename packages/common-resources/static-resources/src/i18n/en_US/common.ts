@@ -160,7 +160,7 @@ export default {
     labelLiquidityValue: 'Liquidity Value',
     labelCopyAddClip: 'Address Copied to Clipboard!',
     labelPleaseInputWalletAddress: 'Please Input Address',
-    labelEmptyDefault: 'Empty',
+    labelEmptyDefault: 'No data to display',
     labelUnlockAccount: 'Unlock Account',
     labelAssetsDistribution: 'Assets Distribution',
     labelTotalAssets: 'Assets Trend',
