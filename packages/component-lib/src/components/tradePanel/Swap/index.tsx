@@ -8,6 +8,7 @@ import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';
 import { CountDownIcon } from '../components/tool/Refresh';
 import * as _ from 'lodash'
 import { IconButtonStyled } from '../components/Styled';
+import { debounceTime, Subject } from 'rxjs';
 
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
     I,
@@ -82,11 +83,23 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
             setSwapData(swapData)
         }
     }, [rest.tradeData, swapData])
-    const onChangeEvent = React.useCallback(async (_index: 0 | 1, {
-        to,
-        tradeData,
-        type
-    }: SwapData<SwapTradeData<T>>) => {
+    // const onChangeEvent = React.useCallback(async (_index: 0 | 1, {
+    //     to,
+    //     tradeData,
+    //     type
+    // }: SwapData<SwapTradeData<T>>) =>
+
+    const panelEventSubject = new Subject<{ _index: 0 | 1, swapData: SwapData<SwapTradeData<T>> } | undefined>();
+
+    const onChangeEvent = (_index: 0 | 1, swapData: SwapData<SwapTradeData<T>>) => {
+        panelEventSubject.next({_index, swapData})
+    };
+    const panelEventNext = React.useCallback(async ({
+                                                        _index,
+                                                        swapData: { to,
+                                                            tradeData,
+                                                            type}
+                                                    }: { _index: 0 | 1, swapData: SwapData<SwapTradeData<T>> }) => {
         await handleSwapPanelEvent && handleSwapPanelEvent({
             to,
             tradeData,
@@ -125,6 +138,16 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         }
 
     }, [handleSwapPanelEvent, tradeCalcData, rest, index, swapData]);
+    React.useEffect(() => {
+        panelEventSubject.pipe(debounceTime(200)).subscribe(result => {
+            if (result) {
+                panelEventNext(result)
+            }
+        })
+        return () => {
+            panelEventSubject.unsubscribe()
+        }
+    }, [panelEventSubject])
 
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
@@ -154,7 +177,8 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenBuyProps,
                     handleError]),
                 toolBarItem: React.useMemo(() => <>
-                    <Typography marginTop={1} height={'100%'} display={'inline-flex'} variant={'h5'} alignItems={'center'} alignSelf={'self-start'}>{rest.t('swapTitle')}</Typography>
+                    <Typography marginTop={1} height={'100%'} display={'inline-flex'} variant={'h5'}
+                                alignItems={'center'} alignSelf={'self-start'}>{rest.t('swapTitle')}</Typography>
                     <Box alignSelf={'flex-end'} display={'flex'}>
                         <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
                         <Typography display={'inline-block'} marginLeft={2}>
