@@ -32,6 +32,13 @@ const App = () => {
         }
     }, [])
 
+    React.useEffect(() => {
+        if (window.location.protocol !== 'https:') {
+            console.log('current protocal', window.location.protocol)
+            window.location.replace(`https:${window.location.href.substring(window.location.protocol.length)}`);
+        }
+    }, [])
+
     const {state} = useInit();
 
 
