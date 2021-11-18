@@ -4,6 +4,7 @@ import React from 'react';
 import { SwitchData } from '../../Interface';
 import { useDeepCompareEffect } from 'react-use';
 import { ToolBarItemBack } from '../tool';
+import { debounceTime, Subject } from 'rxjs';
 
 export const useBasicTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
     I>({tradeData, handlePanelEvent, walletMap, coinMap, type='TOKEN', ...rest}: BasicACoinTradeHookProps<T, I>) => {
@@ -20,7 +21,13 @@ export const useBasicTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
             setSwitchData({...switchData, tradeData: tradeData});
         }
     }, [tradeData]);
-    const onChangeEvent = React.useCallback(async (_index: 0 | 1, {to, tradeData}: SwitchData<T>) => {
+
+    const panelEventSubject = new Subject<{_index: 0 | 1,switchData:  SwitchData<T> } | undefined>();
+
+    const onChangeEvent =(_index: 0 | 1, {to, tradeData}: SwitchData<T>) => {
+        panelEventSubject.next({_index:_index,switchData:{to, tradeData}})
+    };
+    const panelEventNext = React.useCallback(async ({_index,switchData:{to, tradeData}}:{_index: 0 | 1,switchData:  SwitchData<T> } ) => {
         if (handlePanelEvent) {
             await handlePanelEvent({to, tradeData}, `To${to}` as any);
         }
@@ -40,7 +47,18 @@ export const useBasicTrade = <T extends IBData<I> & Partial<NFTWholeINFO>,
         if (_index !== index) {
             setIndex(_index);
         }
-    }, [handlePanelEvent, tradeData, walletMap, coinMap, rest, index]);
+    }, [handlePanelEvent, tradeData, walletMap, coinMap, rest, index])
+
+    React.useEffect(()=>{
+        panelEventSubject.pipe(debounceTime(200)).subscribe(result =>{
+            if(result){
+                panelEventNext(result)
+            }
+        })
+        return ()=>{
+            panelEventSubject.unsubscribe()
+        }
+    },[panelEventSubject])
 
     const toolBarItemBack = React.useMemo(() => <ToolBarItemBack onChangeEvent={onChangeEvent}
                                                                  tradeData={tradeData}/>, [tradeData, onChangeEvent])

@@ -6,7 +6,7 @@ import { IconButtonStyled } from '../Styled';
 export const ToolBarItemBack = <T extends any>({
                                                    onChangeEvent,
                                                    tradeData
-                                               }: { tradeData: T, onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => Promise<void> }) => {
+                                               }: { tradeData: T, onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => Promise<void>|void }) => {
     return <Grid container justifyContent={'flex-start'}>
         <IconButtonStyled edge="start" sx={{transform: 'rotate(90deg)', transformOrigin: '50%'}}
                           className={'switch'}
