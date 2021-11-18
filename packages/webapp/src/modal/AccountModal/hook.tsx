@@ -434,6 +434,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             },
             [ AccountStep.Deposit_WaitForAuth ]: {
                 view: <Deposit_WaitForAuth
+                    symbol={depositProps.tradeData.belong}
+                    value={depositProps.tradeData.tradeValue}
                     chainInfos={chainInfos}
                     updateDepositHash={updateDepositHash}
                     providerName={account.connectName} {...{

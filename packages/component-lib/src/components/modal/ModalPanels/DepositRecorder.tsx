@@ -84,7 +84,7 @@ export const DepositRecorder = ({
             </> : <Typography display={'flex'} flex={1}  justifyContent={'center'}
                               flexDirection={'column'}>
                 {/*<EmptyIcon htmlColor={'var(--color-text-third)'} style={{height: '42px', width: '42px'}}/>*/}
-                <Typography component={'h6'} variant={'h5'}  color={'text.secondary'}>
+                <Typography component={'h6'} variant={'body1'}  color={'text.secondary'}>
                     {t('labelDepositHashEmpty')}
                 </Typography>
             </Typography>

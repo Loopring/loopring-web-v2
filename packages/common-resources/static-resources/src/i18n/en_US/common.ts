@@ -279,7 +279,7 @@ export default {
     labelWaitForAuth: 'Waiting for signature',
     labelSignDenied: 'Signature request rejected!',
     labelFirstSignDenied: 'Your wallet doesn\'t support this signature method',
-    labelDepositWaitForAuth: 'Please Confirm to Deposit {{value}} {{symbol}}.',
+    labelDepositWaitForAuth: 'Please confirm to deposit {{value}} {{symbol}}.',
     labelDepositDenied: 'You refuse to deposit {{value}} {{symbol}}.',
     labelDepositFailed: 'Deposit {{value}} {{symbol}} failed!',
     labelDepositSubmit: 'Deposit {{value}} {{symbol}} submitted.',

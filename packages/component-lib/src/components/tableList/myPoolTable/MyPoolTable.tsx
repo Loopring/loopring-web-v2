@@ -8,7 +8,7 @@ import {
     EmptyValueTag,
     getValuePrecisionThousand,
     globalSetup,
-    PriceTag, SoursURL
+    PriceTag, SoursURL,
 } from '@loopring-web/common-resources'
 import { Method, MyPoolRow as Row, MyPoolTableProps } from './Interface'
 import { FormatterProps } from 'react-data-grid';
@@ -35,16 +35,20 @@ const rowHeight = 44;
 
 const TableStyled = styled(Box)`
     .rdg {
-    --template-columns: 200px auto 300px 250px !important;
-    height: calc(86px * 5 + var(--header-row-height));
-    .rdg-cell.action {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+        --template-columns: 200px auto 300px auto !important;
+        height: calc(86px * 5 + var(--header-row-height));
+        .rdg-cell.action {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
     .textAlignRight{
         text-align: right;
+    }
+    .textAlignRightSortable {
+        display: flex;
+        justify-content: flex-end;
     }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
@@ -86,9 +90,9 @@ const columnMode = ({
 
     {
         key: 'liquidity',
-        sortable: false,
+        sortable: true,
         width: 'auto',
-        headerCellClass: 'textAlignRight',
+        headerCellClass: 'textAlignRightSortable',
         name: t('labelLiquidity'),
         formatter: ({row, rowIdx}: FormatterProps<Row<any>, unknown>) => {
             const popState = getPopoverState(rowIdx)
@@ -285,6 +289,30 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
         columnMode: columnMode({t, i18n, tReady, handleWithdraw, handleDeposit,allowTrade}, currency, getPopoverState, coinJson),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
+        sortMethod: (sortedRows: MyPoolTableProps<T>[], sortColumn: string) => {
+            switch (sortColumn) {
+                case 'liquidity':
+                    sortedRows = sortedRows.sort((a, b) => {
+                        const valueA = a[ 'liquidity' ]
+                        const valueB = b[ 'liquidity' ]
+                        if (valueA && valueB) {
+                            return valueB - valueA
+                        }
+                        if (valueA && !valueB) {
+                            return -1
+                        }
+                        if (!valueA && valueB) {
+                            return 1
+                        }
+                        return 0
+                    })
+                    break;
+                default:
+                    return sortedRows
+            }
+            return sortedRows;
+        },
+        sortDefaultKey: 'liquidity'
     }
 
 
