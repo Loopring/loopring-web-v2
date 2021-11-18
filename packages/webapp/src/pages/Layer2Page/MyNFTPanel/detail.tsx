@@ -6,6 +6,7 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { useNFTTransfer } from 'hooks/useractions/useNFTTransfer';
 import { useGetAssets } from '../AssetPanel/hook';
+import { useNFTWithdraw } from '../../../hooks/useractions/useNFTWithdraw';
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -56,14 +57,14 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl, 
         // lastNFTRequest,
     } = useNFTTransfer({isLocalShow: viewPage === 1, doTransferDone: onDetailClose})
     //TODO: finished feature with draw
-    // const {
-    //     // nftTransferToastOpen,
-    //     // nftTransferAlertText,
-    //     // setNFTTransferToastOpen,
-    //     nftWithdrawProps,
-    //     // processRequestNFT,
-    //     // lastNFTRequest,
-    // } = useNFTWithdraw({isLocalShow:viewPage === 2,doWithdrawDone:onDetailClose})
+    const {
+        // nftTransferToastOpen,
+        // nftTransferAlertText,
+        // setNFTTransferToastOpen,
+        nftWithdrawProps,
+        // processRequestNFT,
+        // lastNFTRequest,
+    } = useNFTWithdraw({isLocalShow:viewPage === 2,doWithdrawDone:onDetailClose})
 
     const detailView = React.useMemo(() => {
         return <Box flexDirection={'column'} display={'flex'}>
@@ -106,7 +107,7 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl, 
                     <Typography color={'var(--color-text-third)'}
                                 width={160}>{t('labelNFTContractAddress')}</Typography>
                     <Link fontSize={'inherit'} whiteSpace={'break-spaces'} style={{wordBreak: 'break-all'}}
-                          onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.tokenAddress}`)}>
+                          onClick={() => window.open(`${etherscanBaseUrl}address/${popItem.tokenAddress}`)}>
                         {popItem.tokenAddress}</Link>
                 </Typography>
                 <Typography display={'inline-flex'} variant={'body1'} marginTop={2}>
@@ -114,7 +115,7 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl, 
 
                     <Link fontSize={'inherit'} maxWidth={300} whiteSpace={'break-spaces'}
                           style={{wordBreak: 'break-all'}}
-                          onClick={() => window.open(`${etherscanBaseUrl}tx/${popItem.minter}`)}>{popItem.minter}</Link>
+                          onClick={() => window.open(`${etherscanBaseUrl}address/${popItem.minter}`)}>{popItem.minter}</Link>
 
                 </Typography>
 
@@ -128,15 +129,6 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl, 
 
                 <Typography display={'inline-flex'} alignItems={'center'} variant={'body1'} marginTop={3}
                             justifyContent={'space-between'}>
-                    {/*TODO: finished feature withdraw*/}
-                    {/*<Typography marginLeft={3} minWidth={100}>*/}
-                    {/*    <Button variant={'outlined'} size={'medium'} fullWidth*/}
-                    {/*            onClick={() => showWithdraw({*/}
-                    {/*                isShow: true,*/}
-                    {/*                symbol: popItem.id*/}
-                    {/*            })}>{t('labelNFTWithdraw')}</Button>*/}
-
-                    {/*</Typography>*/}
                     <Typography display={'inline-flex'} alignItems={'center'}>
                         {
                             [
@@ -213,23 +205,23 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl, 
                 assetsData: assetsRawData,
             }}/>}
             {/*TODO: finished feature withdraw*/}
-            {/*{viewPage === 2 && <WithdrawPanel<any, any> {...{*/}
-            {/*    _width: 400,*/}
-            {/*    type: 'NFT',*/}
-            {/*    _height: 540,*/}
-            {/*    isThumb: false,*/}
+            {viewPage === 2 && <WithdrawPanel<any, any> {...{
+                _width: 400,
+                type: 'NFT',
+                _height: 540,
+                isThumb: false,
 
-            {/*    ...{*/}
-            {/*        ...nftWithdrawProps,*/}
-            {/*        tradeData: {*/}
-            {/*            ...popItem,*/}
-            {/*            belong: popItem.nftData,*/}
-            {/*            balance: Number(popItem?.nftBalance)*/}
-            {/*        }*/}
-            {/*    },*/}
-            {/*    assetsData: assetsRawData,*/}
-            {/*}}/>*/}
-            {/*}*/}
+                ...{
+                    ...nftWithdrawProps,
+                    tradeData: {
+                        ...popItem,
+                        belong: popItem.nftData,
+                        balance: Number(popItem?.nftBalance)
+                    }
+                },
+                assetsData: assetsRawData,
+            }}/>
+            }
 
         </BoxStyle>
     </>
