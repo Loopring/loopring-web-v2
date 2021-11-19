@@ -125,7 +125,7 @@ export const useAmmJoin = ({
                 } else {
                     return {
                         btnStatus: TradeBtnStatus.DISABLED,
-                        btnI18nKey: `labelLimitMin ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                        btnI18nKey: `labelLimitMin| ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
                     }
                 }
 
@@ -409,5 +409,6 @@ export const useAmmJoin = ({
         onAmmClick,
         btnI18nKey,
         updateJoinFee,
+        updatePageAmmJoin,
     }
 }

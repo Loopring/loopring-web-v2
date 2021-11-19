@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AmmPanel, AmmPanelType, CoinIcon, Toast } from '@loopring-web/component-lib';
 import {
     AmmInData,
@@ -18,6 +18,8 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import store from 'stores'
 import { useTokenMap } from 'stores/token';
+import { initSlippage } from 'stores/router'
+import { useDeepCompareEffect } from 'react-use';
 
 const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
                                                      { ammCalcData: AmmInData<any> } & WithTranslation) => {
@@ -124,7 +126,8 @@ export const AmmPanelView = ({
         onAmmClick: onAmmAddClick,
         btnStatus: addBtnStatus,
         btnI18nKey: ammDepositBtnI18nKey,
-        updateJoinFee
+        updateJoinFee,
+        updatePageAmmJoin
 
     } = useAmmJoin({
         getFee,
@@ -134,8 +137,23 @@ export const AmmPanelView = ({
         btos,
         stob,
     })
+    // const [currAmmData, setCurrAmmData] = React.useState<any>(null)
 
-    // myLog({ammCalcDataDeposit})
+    // clear data when changing pair
+    useDeepCompareEffect(() => {
+        if (pair && !pair.coinAInfo && !pair.coinBInfo) {
+            if (ammCalcDataDeposit) {
+                const newAmmData = {
+                    coinA: {...ammCalcDataDeposit.myCoinA, tradeValue: undefined},
+                    coinB: {...ammCalcDataDeposit.myCoinB, tradeValue: undefined},
+                    slippage: initSlippage,
+                }
+                updatePageAmmJoin({
+                    ammData: newAmmData
+                })
+            }
+        }
+    }, [pair, ammJoinData, updatePageAmmJoin, ammCalcDataDeposit])
 
     const {
 
