@@ -13,12 +13,7 @@ export type ModalStatePlayLoad = {
 }
 export type Transaction = {
     symbol?: undefined|string,
-}
-// export type TransactionNFT =  NFTWholeINFO
-//     {
-//     nftData?: undefined|string,
-//     nftType?:NFTType|undefined,
-// }
+}                        
 
 export interface ModalState {
     isShowSupport: ModalStatePlayLoad,
