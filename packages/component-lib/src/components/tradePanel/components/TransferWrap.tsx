@@ -260,6 +260,12 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             {realAddr}
         </Grid>}
 
+        {address && addressError && addressError.error && (
+            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1}>
+                {'Invalid address or ENS'}
+            </Grid>
+        )}
+
         <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
             <TextField
                 value={memo}
