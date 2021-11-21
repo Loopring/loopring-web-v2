@@ -3,10 +3,10 @@
 </p>
 
 
-<h1 align="center">Loopring Exchange</h1>
+<h1 align="center">Loopring Application</h1>
 <div align="center">
-
-A layer2 walllet in ETH 
+<h2>Ethereum’s First zkRollup Layer2</h2>
+<p>Secure, Fast, and Cheap</p>
 
 [![license](https://img.shields.io/badge/license-GPL-blue)](https://github.com/Loopring/loopring-web-v2/master/LICENSE)
 
