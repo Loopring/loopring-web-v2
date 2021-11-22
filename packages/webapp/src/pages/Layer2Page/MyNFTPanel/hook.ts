@@ -52,7 +52,7 @@ export const useMyNFT = () => {
                     mediaPromise.push(LoopringAPI?.nftAPI?.getContractNFTMeta({
                         _id: parseInt(nftId??'').toString(),
                         web3: connectProvides.usedWeb3,
-                        contractAddress: tokenAddress
+                        tokenAddress,
                     }))
                 }
 
