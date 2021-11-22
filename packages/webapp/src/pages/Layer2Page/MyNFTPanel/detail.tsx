@@ -157,8 +157,8 @@ export const NFTDetail = withTranslation('common')(({popItem, etherscanBaseUrl, 
                     </Typography>
                     <Box display={'flex'} flexDirection={'row'}>
                         <Typography minWidth={100} marginRight={2}>
-                            <Button variant={'outlined'} size={'medium'} fullWidth
-                                    onClick={() => handleChangeIndex(2)}> {t('labelNFTWithdraw')}</Button>
+                            {/*<Button variant={'outlined'} size={'medium'} fullWidth*/}
+                            {/*        onClick={() => handleChangeIndex(2)}> {t('labelNFTWithdraw')}</Button>*/}
                         </Typography>
                         <Typography minWidth={100}>
 
