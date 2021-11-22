@@ -35,6 +35,7 @@ export const OrderTableView = withTranslation('common')(
             handleScroll,
             clearOrderDetail,
             showDetailLoading,
+            cancelOrderByHashList,
         } = useOrderList()
         const [tabValue, setTabValue] = React.useState(0)
         // const [hideOtherPairs, setHideOtherPairs] = React.useState(true)
@@ -96,6 +97,7 @@ export const OrderTableView = withTranslation('common')(
                     getOrderDetail,
                     orderDetailList,
                     cancelOrder,
+                    cancelOrderByHashList,
                     showLoading,
                     isOpenOrder: tabValue === 0,
                     isPro: true,

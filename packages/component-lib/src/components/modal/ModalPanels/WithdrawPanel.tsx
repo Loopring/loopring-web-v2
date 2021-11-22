@@ -51,7 +51,6 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
         })
         return clonedWalletMap
     }, [walletMap])
-
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
         panelList: [{

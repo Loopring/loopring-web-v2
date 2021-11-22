@@ -241,7 +241,7 @@ export const InformationForCoinBase = withTranslation('common', {withRef: true})
                 </Trans>
                 <Link target={'_top'} onClick={() => {
                     // handleClose();
-                    window.open('./#/document/plugin_guid.md');
+                    window.open('./#/document/plugin_guide.md');
                 }}>{t('labelGuid')}</Link>
 
             </DialogContentText>

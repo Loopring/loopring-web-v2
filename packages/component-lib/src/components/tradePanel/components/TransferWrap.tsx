@@ -50,7 +50,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
            handleOnAddressChange,
            handleAddressError,
            wait = globalSetup.wait,
-           assetsData,
+           assetsData = [],
            realAddr,
            ...rest
        }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
@@ -272,26 +272,31 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
         </Grid>
 
         <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
-            <Typography component={'span'} display={'flex'} alignItems={'center'} variant={'body1'}
-                        color={'var(--color-text-secondary)'} marginBottom={1}>
-                {t('transferLabelFee')}：
-                <Box component={'span'} display={'flex'} alignItems={'center'} style={{cursor: 'pointer'}}
-                     onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
-                    {getTokenFee(feeToken) || '--'} {feeToken}
-                    <DropdownIconStyled status={dropdownStatus} fontSize={'medium'}/>
-                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
-                        {isFeeNotEnough && t('transferLabelFeeNotEnough')}
+            {!toggleData?.length ?
+                <Typography>{t('labelCalculating')}</Typography> :
+                <>
+                    <Typography component={'span'} display={'flex'}  flexWrap={'wrap'} alignItems={'center'} variant={'body1'}
+                                color={'var(--color-text-secondary)'} marginBottom={1}>
+                        <Typography component={'span'}  color={'inherit'} minWidth={28}>{t('transferLabelFee')}：</Typography>
+                        <Box component={'span'} display={'flex'} alignItems={'center'} style={{cursor: 'pointer'}}
+                             onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
+                            {getTokenFee(feeToken) || '--'} {feeToken}
+                            <DropdownIconStyled status={dropdownStatus} fontSize={'medium'}/>
+                            <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
+                                {isFeeNotEnough && t('transferLabelFeeNotEnough')}
+                            </Typography>
+                        </Box>
                     </Typography>
-                </Box>
-            </Typography>
-            {dropdownStatus === 'up' && (
-                <FeeTokenItemWrapper padding={2}>
-                    <Typography variant={'body2'} color={'var(--color-text-third)'}
-                                marginBottom={1}>{t('transferLabelFeeChoose')}</Typography>
-                    <ToggleButtonGroup exclusive size={'small'} {...{data: toggleData, value: feeToken, t, ...rest}}
-                                       onChange={handleToggleChange}/>
-                </FeeTokenItemWrapper>
-            )}
+                    {dropdownStatus === 'up' && (
+                        <FeeTokenItemWrapper padding={2}>
+                            <Typography variant={'body2'} color={'var(--color-text-third)'}
+                                        marginBottom={1}>{t('transferLabelFeeChoose')}</Typography>
+                            <ToggleButtonGroup exclusive size={'small'} {...{data: toggleData, value: feeToken, t, ...rest}}
+                                               onChange={handleToggleChange}/>
+                        </FeeTokenItemWrapper>
+                    )}
+                </>
+            }
         </Grid>
         <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {

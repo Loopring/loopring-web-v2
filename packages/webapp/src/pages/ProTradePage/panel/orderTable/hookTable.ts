@@ -170,6 +170,16 @@ export const useOrderList = () => {
         }
     }, [accountId, apiKey, privateKey, updateWalletLayer2])
 
+    const cancelOrderByHashList = React.useCallback(async (orderHashList: string) => {
+        if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
+            await LoopringAPI.userAPI.cancelMultiOrdersByHash({
+                accountId,
+                orderHash: orderHashList,
+            }, privateKey, apiKey)
+            updateWalletLayer2()
+        }
+    }, [accountId, apiKey, privateKey, updateWalletLayer2])
+
     const getOrderDetail = React.useCallback(async (orderHash: string, t: TFunction) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
             setShowDetailLoading(true)
@@ -262,5 +272,6 @@ export const useOrderList = () => {
         cancelOrder,
         handleScroll,
         clearOrderDetail,
+        cancelOrderByHashList,
     }
 }
