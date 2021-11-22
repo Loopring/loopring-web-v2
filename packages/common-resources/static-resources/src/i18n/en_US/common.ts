@@ -202,7 +202,6 @@ export default {
     labelSuccessTokenAccess: 'Congratulations, you have {{symbol}} access!',
     labelSuccessUnlockDescribe: 'Congratulations, Successfully Unlocked!',
     labelSuccessUnlock: 'Unlock Successfully!',
-    // labelDepositApproveSuccess: 'Congratulations, deposit is completed! Please click button to activate your account.',
     labelDepositApproveSuccess: 'Activate your Loopring Layer2 account and start trading',
     labelActivateAccount: 'Activate Account',
     labelClose: 'Close',
