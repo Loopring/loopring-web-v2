@@ -411,4 +411,6 @@ export default {
     labelGuid: 'Go to Guid',
     labelIKnow: 'I know',
     labelAgreeConfirmNotShowAgain: 'I know & not show again',
+    labelTransferInvalidAddress: 'Invalid address or ENS',
+    labelTransferAddressNotLoopring: 'This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.',
 }

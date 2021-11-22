@@ -30,7 +30,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     transferToastOpen: boolean,
     transferAlertText: any,
     setTransferToastOpen: any,
-    transferProps: TransferProps<R, T>,
+    transferProps: TransferProps<R, T> & { isLoopringAddress: boolean },
     processRequest: any,
     lastRequest: any,
 } => {
@@ -54,6 +54,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
+    const [isLoopringAddress, setIsLoopringAddress] = React.useState(false)
 
     const {
         address,
@@ -63,6 +64,20 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     } = useAddressCheck()
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
+
+    // check whether the address belongs to loopring layer2
+    React.useEffect(() => {
+        if (address && LoopringAPI && LoopringAPI.exchangeAPI && addrStatus === AddressError.NoError) {
+            (async function checkAddress () {
+                const res = await LoopringAPI.exchangeAPI?.getAccount({ owner: address })
+                if (res && !res.error) {
+                    setIsLoopringAddress(true)
+                } else {
+                    setIsLoopringAddress(false)
+                }
+            })()
+        }
+    }, [addrStatus, address])
 
     const checkBtnStatus = React.useCallback(() => {
 
@@ -330,6 +345,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         handlePanelEvent,
         chargeFeeToken: transferValue.belong,
         chargeFeeTokenList: chargeFeeList,
+        isLoopringAddress,
         handleOnAddressChange: (value: any) => {
         },
         handleError: ({ belong, balance, tradeValue }: any) => {

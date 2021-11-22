@@ -52,8 +52,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
            wait = globalSetup.wait,
            assetsData = [],
            realAddr,
+           isLoopringAddress,
            ...rest
-       }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
+       }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[], isLoopringAddress?: boolean }) => {
 
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
@@ -260,9 +261,15 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             {realAddr}
         </Grid>}
 
-        {address && addressError && addressError.error && (
+        {address && !realAddr && (
             <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1}>
-                {'Invalid address or ENS'}
+                {t('labelTransferInvalidAddress')}
+            </Grid>
+        )}
+
+        {address && !isLoopringAddress && (
+            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1}>
+                {t('labelTransferAddressNotLoopring')}
             </Grid>
         )}
 

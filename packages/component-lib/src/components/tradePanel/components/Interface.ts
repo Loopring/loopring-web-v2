@@ -47,6 +47,7 @@ export type TransferExtendProps<T, I, C> = {
     isThumb?:boolean;
     addressDefault?: string;
     realAddr?: string,
+    isLoopringAddress?: boolean;
     onTransferClick: (data: T) => void,
     handleFeeChange: (value: FeeInfo) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
