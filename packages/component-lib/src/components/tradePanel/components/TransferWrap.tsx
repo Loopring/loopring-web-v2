@@ -13,6 +13,7 @@ import {
     globalSetup,
     HelpIcon,
     IBData,
+    myLog,
     NFTWholeINFO,
     TOAST_TIME
 } from '@loopring-web/common-resources';
@@ -25,6 +26,7 @@ import { ToggleButtonGroup } from '../../basic-lib';
 import { useSettings } from '../../../stores'
 import styled from '@emotion/styled'
 import {  NFTInput } from './BasicANFTTrade';
+import { AddressError } from './Interface'
 
 const FeeTokenItemWrapper = styled(Box)`
   background-color: var(--color-global-bg);
@@ -53,9 +55,12 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
            assetsData = [],
            realAddr,
            isLoopringAddress,
+           addrStatus,
            ...rest
-       }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[], isLoopringAddress?: boolean }) => {
+       }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[], isLoopringAddress?: boolean, addrStatus?: AddressError }) => {
 
+
+        // myLog({addrStatus})
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough) {
@@ -124,6 +129,25 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             }
         }
     }, [setAddress, handleAddressError, setAddressError])
+
+    // const getAddressStatus = React.useCallback(() => {
+    //     if (addrStatus) {
+    //         myLog({addrStatus})
+    //         switch (addrStatus) {
+    //             // case AddressError.NoError:
+    //             //     return 'success'
+    //             case AddressError.EmptyAddr:
+    //                 return 'empty'
+    //             case AddressError.ENSResolveFailed:
+    //                 return 'ensFailed'
+    //             case AddressError.InvalidAddr:
+    //                 return 'invalidAddress'
+    //             default: 
+    //                 return 'success'
+    //         }
+    //     }
+    //     return 'invalidAddress'
+    // }, [addrStatus])
 
     React.useEffect(() => {
         if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
@@ -261,14 +285,14 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             {realAddr}
         </Grid>}
 
-        {address && !realAddr && (
-            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1}>
+        {address && addrStatus === AddressError.InvalidAddr && (
+            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1} marginLeft={1 / 2}>
                 {t('labelTransferInvalidAddress')}
             </Grid>
         )}
 
-        {address && !isLoopringAddress && (
-            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1}>
+        {address && addrStatus === AddressError.NoError && !isLoopringAddress && (
+            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1} marginLeft={1 / 2}>
                 {t('labelTransferAddressNotLoopring')}
             </Grid>
         )}

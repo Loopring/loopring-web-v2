@@ -21,6 +21,7 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
         onTransferClick,
         transferBtnStatus,
         assetsData,
+        addrStatus,
         ...rest
     }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
 
@@ -54,7 +55,8 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
                                                                  onTransferClick,
                                                                  transferBtnStatus,
                                                                  assetsData,
-                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus, assetsData]),
+                                                                 addrStatus,
+                                                             }} />, [rest, type, chargeFeeTokenList, switchData.tradeData, onChangeEvent, isThumb, onTransferClick, transferBtnStatus, assetsData, addrStatus]),
             toolBarItem: undefined
         },
             {
