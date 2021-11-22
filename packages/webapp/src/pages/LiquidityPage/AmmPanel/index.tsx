@@ -142,18 +142,16 @@ export const AmmPanelView = ({
     // clear data when changing pair
     useDeepCompareEffect(() => {
         if (pair && !pair.coinAInfo && !pair.coinBInfo) {
-            if (ammCalcDataDeposit) {
-                const newAmmData = {
-                    coinA: {...ammCalcDataDeposit.myCoinA, tradeValue: undefined},
-                    coinB: {...ammCalcDataDeposit.myCoinB, tradeValue: undefined},
-                    slippage: initSlippage,
-                }
-                updatePageAmmJoin({
-                    ammData: newAmmData
-                })
+            const newAmmData = {
+                coinA: {belong: '' as any, tradeValue: undefined, balance: 0},
+                coinB: {belong: '' as any, tradeValue: undefined, balance: 0},
+                slippage: initSlippage,
             }
+            updatePageAmmJoin({
+                ammData: newAmmData
+            })
         }
-    }, [pair, ammJoinData, updatePageAmmJoin, ammCalcDataDeposit])
+    }, [pair, ammJoinData, updatePageAmmJoin])
 
     const {
 
