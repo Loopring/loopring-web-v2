@@ -30,7 +30,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     transferToastOpen: boolean,
     transferAlertText: any,
     setTransferToastOpen: any,
-    transferProps: TransferProps<R, T> & { isLoopringAddress: boolean },
+    transferProps: TransferProps<R, T>,
     processRequest: any,
     lastRequest: any,
 } => {
@@ -55,6 +55,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
     const [isLoopringAddress, setIsLoopringAddress] = React.useState(true)
+    const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
 
     const {
         address,
@@ -69,12 +70,14 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
         if (address && LoopringAPI && LoopringAPI.exchangeAPI && addrStatus === AddressError.NoError) {
             (async function checkAddress () {
+                setIsAddressCheckLoading(true)
                 const res = await LoopringAPI.exchangeAPI?.getAccount({ owner: address })
                 if (res && !res.error) {
-                    setIsLoopringAddress(false)
-                } else {
                     setIsLoopringAddress(true)
+                } if (res && res.error){
+                    setIsLoopringAddress(false)
                 }
+                setIsAddressCheckLoading(false)
             })()
         }
     }, [addrStatus, address])
@@ -346,6 +349,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         chargeFeeToken: transferValue.belong,
         chargeFeeTokenList: chargeFeeList,
         isLoopringAddress,
+        isAddressCheckLoading,
         addrStatus,
         handleOnAddressChange: (value: any) => {
         },
