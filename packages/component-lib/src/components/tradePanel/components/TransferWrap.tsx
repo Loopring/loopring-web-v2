@@ -13,8 +13,9 @@ import {
     globalSetup,
     HelpIcon,
     IBData,
+    myLog,
     NFTWholeINFO,
-    TOAST_TIME
+    TOAST_TIME,
 } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, TextField, Toast, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
@@ -25,6 +26,7 @@ import { ToggleButtonGroup } from '../../basic-lib';
 import { useSettings } from '../../../stores'
 import styled from '@emotion/styled'
 import {  NFTInput } from './BasicANFTTrade';
+import { AddressError } from './Interface'
 
 const FeeTokenItemWrapper = styled(Box)`
   background-color: var(--color-global-bg);
@@ -35,6 +37,39 @@ const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
     return status === 'down' ? '0deg' : '180deg';
   }});
 ` as (props: IconProps & { status: string }) => JSX.Element
+
+const OriginBoxStyled = styled(Box)`
+    background-color: var(--field-opacity);
+    width: 100%;
+    height: ${({theme}: any) => theme.unit * 4 }px;
+    border-radius: ${({theme}: any) => theme.unit / 2 }px;
+    cursor: pointer;
+    color: var(--color-text-primary);
+    padding: 0.3rem;
+    padding-left: 1.6rem;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--field-opacity);
+
+    &:hover {
+        border-color: var(--color-text-primary);
+    }
+`
+
+const OriginDropdownStyled = styled(Box)`
+    background-color: var(--color-disable);
+    width: 100%;
+    border-radius: ${({theme}: any) => theme.unit / 2 }px;
+    color: var(--color-text-primary);
+    padding: 1.6rem;
+`
+
+const UpIconWrapper = styled(Box)`
+    position: absolute;
+    right: 1.6rem;
+    top: 28px;
+    transform: translateY(30%);
+`
 
 export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
     I>({
@@ -52,9 +87,13 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
            wait = globalSetup.wait,
            assetsData = [],
            realAddr,
+           isLoopringAddress,
+           addrStatus,
            ...rest
-       }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
+       }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[], isLoopringAddress?: boolean, addrStatus?: AddressError }) => {
 
+
+        // myLog({addrStatus})
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough) {
@@ -75,6 +114,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
     const [feeToken, setFeeToken] = React.useState('')
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
     const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
+    const [addressOrigin, setAddressOrigin] = React.useState('')
+    const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] = React.useState<'up' | 'down'>('up')
+
     let {feeChargeOrder} = useSettings()
     feeChargeOrder = feeChargeOrder ?? FeeChargeOrderDefault;
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
@@ -123,6 +165,25 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             }
         }
     }, [setAddress, handleAddressError, setAddressError])
+
+    // const getAddressStatus = React.useCallback(() => {
+    //     if (addrStatus) {
+    //         myLog({addrStatus})
+    //         switch (addrStatus) {
+    //             // case AddressError.NoError:
+    //             //     return 'success'
+    //             case AddressError.EmptyAddr:
+    //                 return 'empty'
+    //             case AddressError.ENSResolveFailed:
+    //                 return 'ensFailed'
+    //             case AddressError.InvalidAddr:
+    //                 return 'invalidAddress'
+    //             default: 
+    //                 return 'success'
+    //         }
+    //     }
+    //     return 'invalidAddress'
+    // }, [addrStatus])
 
     React.useEffect(() => {
         if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
@@ -260,6 +321,51 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             {realAddr}
         </Grid>}
 
+        {address && addrStatus === AddressError.InvalidAddr && (
+            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1} marginLeft={1 / 2}>
+                {t('labelTransferInvalidAddress')}
+            </Grid>
+        )}
+
+        {address && addrStatus === AddressError.NoError && !isLoopringAddress && (
+            <Grid item color={'var(--color-error)'} fontSize={'1.4rem'} alignSelf={"stretch"} position={'relative'} marginTop={-1} marginLeft={1 / 2}>
+                {t('labelTransferAddressNotLoopring')}
+            </Grid>
+        )}
+
+        <Grid item color={'var(--color-error)'} alignSelf={"stretch"} position={'relative'}>
+            <Typography marginBottom={1 / 2} color={'var(--color-text-secondary)'}>{t('labelTransferAddressOrigin')}</Typography>
+            <Box onClick={() => setAddressOriginDropdownStatus(prev => prev === 'down' ? 'up' : 'down')}>
+                <UpIconWrapper>
+                    {<DropDownIcon htmlColor={'var(--color-text-secondary)'} style={{
+                        cursor: 'pointer',
+                        transform: (addressOriginDropdownStatus === 'up' ? '' : 'rotate(-180deg)')
+                    }}/>}
+                </UpIconWrapper>
+                <OriginBoxStyled fontSize={14}>{addressOrigin}</OriginBoxStyled>
+            </Box>
+            <OriginDropdownStyled fontSize={14} style={{ display: addressOriginDropdownStatus === 'down' ? 'block' : 'none' }}>
+                <Typography variant={'body2'} color={'var(--color-text-secondary)'}>{t('labelTransferOriginDesc')}</Typography>
+                <Grid container marginTop={1} spacing={1}>
+                    <Grid item xs={6}>
+                        <Button fullWidth disabled variant={'outlined'}>{t('labelTransferOriginBtnExchange')}</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button 
+                            style={{ 
+                                borderColor: addressOrigin === 'Wallet' ? 'var(--color-text-primary)' : 'undefined',
+                                color: addressOrigin === 'Wallet' ? 'var(--color-text-primary)' : 'undefined',
+                            }}
+                            onClick={() => setAddressOrigin('Wallet')} 
+                            fullWidth 
+                            variant={'outlined'}>{t('labelTransferOriginBtnWallet')}</Button>
+                    </Grid>
+                </Grid>
+            </OriginDropdownStyled>
+        </Grid>
+
+        
+
         <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
             <TextField
                 value={memo}
@@ -305,7 +411,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
                 onTransferClick(tradeDataWithMemo)
             }}
                     loading={!getDisabled() && transferBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                    disabled={getDisabled() || transferBtnStatus === TradeBtnStatus.DISABLED || transferBtnStatus === TradeBtnStatus.LOADING ? true : false}
+                    disabled={getDisabled() || transferBtnStatus === TradeBtnStatus.DISABLED || transferBtnStatus === TradeBtnStatus.LOADING ? true : false || !addressOrigin}
             >{t(transferI18nKey ?? `transferLabelBtn`)}
             </Button>
         </Grid>

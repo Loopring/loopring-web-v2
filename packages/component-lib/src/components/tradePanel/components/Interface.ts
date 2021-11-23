@@ -8,7 +8,7 @@ import {
     WalletCoin,
     WalletMap,
     WithdrawType,
-    WithdrawTypes
+    WithdrawTypes,
 } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import React from 'react';
@@ -43,10 +43,19 @@ export type TransferInfoProps<C> = {
     chargeFeeToken?: C | string,
 }
 
+export enum AddressError {
+    NoError,
+    EmptyAddr,
+    InvalidAddr,
+    ENSResolveFailed,
+}
+
 export type TransferExtendProps<T, I, C> = {
     isThumb?:boolean;
     addressDefault?: string;
     realAddr?: string,
+    isLoopringAddress?: boolean;
+    addrStatus?: AddressError;
     onTransferClick: (data: T) => void,
     handleFeeChange: (value: FeeInfo) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,

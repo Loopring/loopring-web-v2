@@ -142,7 +142,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
         <Modal open={isShowTransfer.isShow} onClose={() => setShowTransfer({isShow: false})}
                content={<TransferPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: DEFAULT_TRANSFER_HEIGHT, ...transferProps, assetsData,
+                   _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
                }}> </TransferPanel>}/>
         <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
                content={<WithdrawPanel<any, any> {...{
