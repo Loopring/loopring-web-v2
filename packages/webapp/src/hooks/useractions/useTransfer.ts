@@ -159,7 +159,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
 
         if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-            myLog('useEffect transferValue.address:', transferValue.address)
+            // myLog('useEffect transferValue.address:', transferValue.address)
+            if (!transferValue.address) {
+                setAddress('')
+            }
             // setAddress(transferValue.address ? transferValue.address : '')
         }
 
