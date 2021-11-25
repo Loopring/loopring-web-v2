@@ -28,5 +28,4 @@ export type AssetTitleProps = {
     btnShowWithdrawStatus?: keyof typeof TradeBtnStatus,
     hideL2Assets: boolean,
     setHideL2Assets: (value: boolean) => void, 
-    showRamp: () => void,
 }
