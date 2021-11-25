@@ -386,7 +386,7 @@ export default {
     labelTransactions: 'Transactions',
     labelMyRewards: 'My Rewards',
     labelDepositHash: 'Deposit Transaction Hash',
-    labelDepositHashEmpty: 'Deposit transaction will show here...',
+    labelDepositHashEmpty: 'Deposit transactions will show up here.',
     labelDepositRecord: 'Deposit {{value}} {{symbol}}',
     labelClearAll: 'Clear All',
     labelProviderAgree: 'I have read, understand, and agree to the <1> Terms of Service </1>.',
