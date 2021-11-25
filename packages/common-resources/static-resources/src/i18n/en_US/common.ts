@@ -417,4 +417,8 @@ export default {
     labelTransferOriginDesc: 'Please select the address source: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huoboi, Okex….)',
     labelTransferOriginBtnExchange: 'Exchange',
     labelTransferOriginBtnWallet: 'Wallet',
+    labelTransferConfirm: 'Confirm',
+    labelTransferTokenAmount: 'Token Amount',
+    labelTransferAddress: 'Transfer Address',
+    labelTransferMemo: 'Memo',
 }

@@ -163,14 +163,14 @@ const TrendChart = ({
         )
     }
 
-    const customYAxisTick = (value: any) => {
-        const formattedValue = getValuePrecisionThousand((Number.isFinite(value) ? value : Number(value || 0)).toFixed(2), undefined, undefined, 2)
-        return formattedValue ?? '0.00'
-    }
+    // const customYAxisTick = (value: any) => {
+    //     const formattedValue = getValuePrecisionThousand((Number.isFinite(value) ? value : Number(value || 0)).toFixed(2), undefined, undefined, 2)
+    //     return formattedValue ?? '0.00'
+    // }
 
     return (
         <ResponsiveContainer debounce={100} width={'99%'}>
-            <ComposedChart margin={{ left: -35, right: 10 }} data={renderData} onMouseMove={showTooltip && handleMousemove}
+            <ComposedChart margin={{ left: 5, right: 10 }} data={renderData} onMouseMove={showTooltip && handleMousemove}
                         onMouseLeave={showTooltip && handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -197,8 +197,8 @@ const TrendChart = ({
                     stroke={'var(--color-text-secondary)'}
                 />
                 <YAxis
-                    hide={!isDailyTrend}
-                    tickFormatter={isDailyTrend ? customYAxisTick : undefined}
+                    hide={true}
+                    tickFormatter={undefined}
                     domain={[
                         (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
                         (dataMax: number) => dataMax * (1 + yAxisDomainPercent),
