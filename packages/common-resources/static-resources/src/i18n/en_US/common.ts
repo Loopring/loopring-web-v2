@@ -50,7 +50,7 @@ export default {
     transferLabelBtn: 'Transfer',
     transferLabelAddress: 'Recipient',
     transferLabelAddressInput: 'Please input the address',
-    transferLabelMemo: 'Memo (Options)',
+    transferLabelMemo: 'Memo (Optional)',
     transferLabelMemoPlaceholder: 'Please input the memo',
     transferLabelFeeChoose: 'Select payment token',
     transferLabelFee: 'Fee',
