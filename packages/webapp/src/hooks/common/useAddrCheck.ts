@@ -4,7 +4,6 @@ import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError } from 'defs/common_defs'
 import { checkAddr } from 'utils/web3_tools'
 import { LoopringAPI } from 'api_wrapper'
-import { debounce } from 'lodash'
 
 export const useAddressCheck = () => {
 
@@ -26,14 +25,19 @@ export const useAddressCheck = () => {
 
         setAddrStatus(addressErr)
 
+        return {
+            lastAddress: realAddr || address,
+            addressErr,
+        }
+
     }, [setRealAddr, setAddrStatus, ])
 
     const debounceCheck = async() => {
         setIsAddressCheckLoading(true)
-        await check(address, connectProvides.usedWeb3)
+        const {addressErr, lastAddress} = await check(address, connectProvides.usedWeb3)
         // check whether the address belongs to loopring layer2
-        if (LoopringAPI && LoopringAPI.exchangeAPI) {
-            const res = await LoopringAPI.exchangeAPI?.getAccount({ owner: realAddr || address }) // ENS or address
+        if (LoopringAPI && LoopringAPI.exchangeAPI && addressErr === AddressError.NoError && lastAddress) {
+            const res = await LoopringAPI.exchangeAPI?.getAccount({ owner: lastAddress }) // ENS or address
             if (res && !res.error) {
                 setIsLoopringAddress(true)
             } else {
@@ -45,7 +49,7 @@ export const useAddressCheck = () => {
 
     React.useEffect(() => {
         debounceCheck()
-    }, [address, connectProvides.usedWeb3, setAddrStatus, realAddr])
+    }, [address, connectProvides.usedWeb3, ])
 
     return {
         address,
