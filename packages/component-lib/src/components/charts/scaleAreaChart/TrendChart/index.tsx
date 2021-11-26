@@ -7,7 +7,7 @@ import { getRenderData } from '../data'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
-import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
+// import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 
 const DEFAULT_YAXIS_DOMAIN = 0.05
 const UP_COLOR = '#00BBA8'
@@ -172,6 +172,28 @@ const TrendChart = ({
         )
     }
 
+    const getDynamicYAxisDomain = useCallback(() => {
+        const valueList = renderData.map(o => o.close)
+        const min = Math.min(...valueList)
+        const max = Math.max(...valueList)
+        if (min / max < 0.1) {
+            return [
+                (dataMin: number) => dataMin * 0.1,
+                (dataMax: number) => dataMax * 2.5,
+            ]
+        }
+        if (min / max < 0.5) {
+            return [
+                (dataMin: number) => dataMin * 0.5,
+                (dataMax: number) => dataMax * 1.2,
+            ]
+        }
+        return [
+            (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
+            (dataMax: number) => dataMax * (1 + yAxisDomainPercent)
+        ]
+    }, [renderData, yAxisDomainPercent])
+
     // const customYAxisTick = (value: any) => {
     //     const formattedValue = getValuePrecisionThousand((Number.isFinite(value) ? value : Number(value || 0)).toFixed(2), undefined, undefined, 2)
     //     return formattedValue ?? '0.00'
@@ -208,10 +230,11 @@ const TrendChart = ({
                 <YAxis
                     hide={true}
                     tickFormatter={undefined}
-                    domain={[
+                    domain={isDailyTrend ? getDynamicYAxisDomain() as any : [
                         (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
                         (dataMax: number) => dataMax * (1 + yAxisDomainPercent),
-                    ]} /* tickFormatter={convertValue} */
+                    ]}
+                     /* tickFormatter={convertValue} */
                     stroke={'var(--color-text-secondary)'}
                 />
                 {hasData && showTooltip && (
