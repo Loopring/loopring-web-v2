@@ -226,10 +226,10 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
 
     const getTransferConfirmTemplate = React.useCallback((label: string, content: string) => {
         return (
-            <Box>
+            <>
                 <Typography fontSize={16} lineHeight={'24px'} color={'var(--color-text-third)'}>{label}</Typography>
                 <Typography fontSize={16} lineHeight={'24px'}>{content}</Typography>
-            </Box>
+            </>
         )
     }, [])
 
@@ -298,7 +298,12 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             }} />}
         </Grid>
         <Grid item marginTop={ITEM_MARGIN} alignSelf={"stretch"} position={'relative'}>
-            {isConfirmTransfer ? (getTransferConfirmTemplate(t('labelTransferAddress'), tradeData['address'])) : (
+            {isConfirmTransfer 
+                ? <>
+                    {getTransferConfirmTemplate(t('labelTransferAddress'), tradeData['address'])}
+                    {realAddr && <Typography fontSize={14} color={'var(--color-text-secondary)'}>{realAddr}</Typography>}
+                </>
+                : (
                 <>
                     <TextField
                         value={address}
