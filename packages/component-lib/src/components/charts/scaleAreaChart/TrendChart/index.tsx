@@ -92,9 +92,9 @@ const TrendChart = ({
         )
             return <span></span>
         const {timeStamp, close, sign} = props.payload[ 0 ].payload
+        const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
+        const change = index === 0 ? '--' : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
         if (isDailyTrend) {
-            const index = data.findIndex((o: any) => o.timeStamp === timeStamp)
-            const change = index === 0 ? '--' : (((close - data[index - 1].close) / data[index - 1].close) * 100).toFixed(2)
             return (
                 <TooltipStyled>
                     {/* {extraInfo && (
@@ -121,7 +121,16 @@ const TrendChart = ({
             return (
                 <TooltipStyled>
                     {extraInfo && (
-                        <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                        <Box display={'flex'} alignItems={'center'}>
+                            <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                            <Typography fontSize={16} color={sign !== 1 
+                            ? upColor === 'green' 
+                                ? DOWN_COLOR 
+                                : UP_COLOR 
+                            : upColor === 'green' 
+                                ? UP_COLOR
+                                : DOWN_COLOR }>&nbsp;{Number(change || 0) > 0 ? `+${change}` : change} %</Typography>
+                        </Box>
                     )}
                     <Typography component={'div'} fontSize={12}>
                         {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
