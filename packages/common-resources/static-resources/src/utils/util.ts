@@ -121,7 +121,8 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
         let [_init, _dot] = result.toString().split('.');
         const integerPartLength = _init.length
         if (integerPartLength > abbreviate) {
-            return getAbbreviateNumber(result)
+            // return getAbbreviateNumber(result)
+            return abbreviateNumber(result.toString())
         }
     }
 

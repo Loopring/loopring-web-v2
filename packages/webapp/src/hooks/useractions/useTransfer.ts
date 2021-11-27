@@ -54,15 +54,37 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
+    // const [isLoopringAddress, setIsLoopringAddress] = React.useState(true)
+    // const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
 
     const {
         address,
         realAddr,
         setAddress,
         addrStatus,
+        isLoopringAddress,
+        isAddressCheckLoading,
     } = useAddressCheck()
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
+
+    // check whether the address belongs to loopring layer2
+    // React.useEffect(() => {
+    //     if (address && LoopringAPI && LoopringAPI.exchangeAPI && addrStatus === AddressError.NoError) {
+    //         (async function checkAddress () {
+    //             setIsAddressCheckLoading(true)
+    //             const res = await LoopringAPI.exchangeAPI?.getAccount({ owner: realAddr || address }) // ENS or address
+    //             if (res && !res.error) {
+    //                 setIsLoopringAddress(true)
+    //             } if (res && res.error){
+    //                 setIsLoopringAddress(false)
+    //             } else {
+    //                 setIsLoopringAddress(true)
+    //             }
+    //             setIsAddressCheckLoading(false)
+    //         })()
+    //     }
+    // }, [addrStatus, address, realAddr])
 
     const checkBtnStatus = React.useCallback(() => {
 
@@ -137,8 +159,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
 
         if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-            myLog('useEffect transferValue.address:', transferValue.address)
-            setAddress(transferValue.address ? transferValue.address : '')
+            // myLog('useEffect transferValue.address:', transferValue.address)
+            if (!transferValue.address) {
+                setAddress('')
+            }
+            // setAddress(transferValue.address ? transferValue.address : '')
         }
 
     }, [setAddress, isShow, transferValue.address, accountStatus, account.readyState])
@@ -330,7 +355,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         handlePanelEvent,
         chargeFeeToken: transferValue.belong,
         chargeFeeTokenList: chargeFeeList,
+        isLoopringAddress,
+        isAddressCheckLoading,
+        addrStatus,
         handleOnAddressChange: (value: any) => {
+            setAddress(value || '')
         },
         handleError: ({ belong, balance, tradeValue }: any) => {
             balance = getFloatValue(balance)

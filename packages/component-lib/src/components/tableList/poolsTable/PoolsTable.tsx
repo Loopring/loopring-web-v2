@@ -64,7 +64,7 @@ const BoxStyled = styled(Box)`
 const TableStyled = styled(Box)`
     .rdg {
         border-radius: ${({theme}) => theme.unit}px;
-        --template-columns: 200px auto auto auto 200px !important;
+        --template-columns: 240px auto auto auto 200px !important;
 
         .rdg-cell.action {
         display: flex;
