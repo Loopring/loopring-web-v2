@@ -9,7 +9,8 @@ import { ConnectProviders } from '@loopring-web/common-resources';
 // myLog('---BRIDGE_URL:', BRIDGE_URL)
 
 const RPC_URLS: { [ chainId: number ]: string } = {
-    1: process.env.REACT_APP_RPC_URL_1 as string,
+    // 1: process.env.REACT_APP_RPC_URL_1 as string,
+    1: 'https://mainnet.infura.io/v3/39bc6f557baf40f4b37dd34fb94c545f',
     5: process.env.REACT_APP_RPC_URL_5 as string
 }
 
