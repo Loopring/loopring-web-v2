@@ -62,13 +62,14 @@ const linkListMap = {
     Support: [
         {
             linkName: 'Feedback', //❤️ Submit a Request
-            linkHref: 'https://loopring.io/#/newticket'
+            // linkHref: 'https://loopring.io/#/newticket'
+            linkHref: 'https://desk.zoho.com/portal/loopring/en/home'
         },
         {
             linkName: 'CreatorGrants', // Creator Grants
             linkHref: "https://www.loopringgrants.org/"
         },
-             {
+        {
             linkName: 'TokenListing',
             linkHref: "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com"
         },
