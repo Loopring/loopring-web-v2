@@ -266,12 +266,14 @@ export const useAmmJoin = ({
 
         const newData = _.cloneDeep(data)
 
-        if (isAtoB) {
-            newData.coinB.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[ 1 ].volume)
-                .div('1e' + coinB.decimals).toFixed(marketInfo.precisionForPrice))
-        } else {
-            newData.coinA.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[ 0 ].volume)
-                .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
+        if (ammPoolSnapshot.lp && ammPoolSnapshot.lp.volume !== '0') {
+            if (isAtoB) {
+                newData.coinB.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[ 1 ].volume)
+                    .div('1e' + coinB.decimals).toFixed(marketInfo.precisionForPrice))
+            } else {
+                newData.coinA.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[ 0 ].volume)
+                    .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
+            }
         }
 
         myLog('raw request:', request)
