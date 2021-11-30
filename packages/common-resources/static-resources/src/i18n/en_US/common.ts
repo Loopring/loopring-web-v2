@@ -421,4 +421,5 @@ export default {
     labelTransferTokenAmount: 'Token Amount',
     labelTransferAddress: 'Transfer Address',
     labelTransferMemo: 'Memo',
+    labelTransferSameAddress: 'Cannot transfer to your own address',
 }

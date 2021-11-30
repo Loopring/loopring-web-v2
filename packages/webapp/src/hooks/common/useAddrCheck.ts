@@ -4,6 +4,7 @@ import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError } from 'defs/common_defs'
 import { checkAddr } from 'utils/web3_tools'
 import { LoopringAPI } from 'api_wrapper'
+import { useAccount } from 'stores/account'
 
 export const useAddressCheck = () => {
 
@@ -16,6 +17,10 @@ export const useAddressCheck = () => {
     const [isAddressCheckLoading, setIsAddressCheckLoading] = React.useState(false)
 
     const [isLoopringAddress, setIsLoopringAddress] = React.useState(true)
+
+    const [isSameAddress, setIsSameAddress] = React.useState(false)
+
+    const{ account: { accAddress } } = useAccount()
 
     const check = React.useCallback(async(address: any, web3: any) => {
 
@@ -51,6 +56,10 @@ export const useAddressCheck = () => {
         debounceCheck()
     }, [address, connectProvides.usedWeb3, ])
 
+    React.useEffect(() => {
+        setIsSameAddress(address === accAddress)
+    }, [accAddress, address])
+
     return {
         address,
         realAddr,
@@ -58,6 +67,7 @@ export const useAddressCheck = () => {
         addrStatus,
         isAddressCheckLoading,
         isLoopringAddress,
+        isSameAddress,
     }
 
 }

@@ -101,14 +101,13 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
            isLoopringAddress,
            addrStatus,
            isAddressCheckLoading,
+           isSameAddress,
            ...rest
        }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
 
-
-        // myLog({addrStatus})
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
-        if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough) {
+        if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough || isSameAddress) {
             return true
         } else {
             return false
@@ -339,6 +338,11 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
                             {t('labelTransferInvalidAddress')}
                         </Typography>
                     ) : (
+                        isSameAddress ? (
+                            <Typography color={'var(--color-error)'} fontSize={14} alignSelf={"stretch"} position={'relative'}>
+                                {t('labelTransferSameAddress')}
+                            </Typography>
+                        ) :
                         <>
                             {realAddr && !isAddressCheckLoading && (
                                 <Typography color={'var(--color-text-primary)'} variant={'body2'} marginTop={1 / 4}>{realAddr}</Typography>
