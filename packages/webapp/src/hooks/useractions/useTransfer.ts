@@ -64,6 +64,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         addrStatus,
         isLoopringAddress,
         isAddressCheckLoading,
+        isSameAddress,
     } = useAddressCheck()
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
@@ -356,6 +357,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         chargeFeeToken: transferValue.belong,
         chargeFeeTokenList: chargeFeeList,
         isLoopringAddress,
+        isSameAddress,
         isAddressCheckLoading,
         addrStatus,
         handleOnAddressChange: (value: any) => {

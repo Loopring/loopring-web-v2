@@ -56,6 +56,7 @@ export type TransferExtendProps<T, I, C> = {
     realAddr?: string,
     isLoopringAddress?: boolean;
     isAddressCheckLoading?: boolean;
+    isSameAddress?: boolean;
     addrStatus?: AddressError;
     onTransferClick: (data: T) => void,
     handleFeeChange: (value: FeeInfo) => void,

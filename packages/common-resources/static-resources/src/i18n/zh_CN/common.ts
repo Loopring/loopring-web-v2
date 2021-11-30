@@ -421,4 +421,5 @@ export default {
     labelTransferAddress: 'Transfer Address',
     labelTransferMemo: 'Memo',
     labelTransferConfirm: 'Confirm',
+    labelTransferSameAddress: 'Cannot transfer to your own address',
 }
