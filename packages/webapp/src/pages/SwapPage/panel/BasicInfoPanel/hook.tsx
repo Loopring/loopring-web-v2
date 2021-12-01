@@ -11,12 +11,10 @@ import {
     TradingInterval
 } from '@loopring-web/loopring-sdk'
 
-import { ChartUnit } from '@loopring-web/common-resources'
-
 import { ChartType, IGetDepthDataParams, TGItemData, TGItemJSXInterface } from '@loopring-web/component-lib'
 import { LoopringAPI } from 'api_wrapper'
 
-const toggleData: TGItemData[] = [
+const chartTypeToggleOptionData: TGItemData[] = [
     {
         value: ChartType.Trend,
         key: ChartType.Trend,
@@ -27,10 +25,44 @@ const toggleData: TGItemData[] = [
         key: ChartType.Depth,
         label: 'label' + ChartType.Depth
     },
-]
+];
+
+const chartIntervalOptionData: TGItemData[] = [
+    {
+        value: TradingInterval.min30,
+        key: TradingInterval.min30,
+        label: 'labelToday'
+    },
+    {
+        value: TradingInterval.hr4,
+        key: TradingInterval.hr4,
+        label: 'labelWeek', //'label' + TradingInterval.hr1
+    },
+    {
+        value: TradingInterval.d1,
+        key: TradingInterval.d1,
+        label: 'labelMonth'
+    },
+    {
+        value: TradingInterval.w1,
+        key: TradingInterval.w1,
+        label: 'labelYear'
+    },
+];
+
+const chartIntervalData = {
+    [TradingInterval.min30]: { limit: 48, xAxisIsTime: true, xAxisLabelCount: 12 }, // 1 day
+    [TradingInterval.hr4]: { limit: 42, xAxisLabelCount: 6 }, // 1 week
+    [TradingInterval.d1]: { limit: 30 }, // ~1 month
+    [TradingInterval.w1]: { limit: 52, xAxisLabelCount: 6 }, // 1 year
+};
 
 export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketArray: any[], t: any) {
-    const tgItemJSXs: TGItemJSXInterface[] = toggleData.map(({value, label, key}) => {
+    const chartTypeOptionsJSXs: TGItemJSXInterface[] = chartTypeToggleOptionData.map(({value, label, key}) => {
+        return {value, tlabel: t(label), key, JSX: <>{t(label)}</>}
+    });
+
+    const chartIntervalOptionsJSXs: TGItemJSXInterface[] = chartIntervalOptionData.map(({value, label, key}) => {
         return {value, tlabel: t(label), key, JSX: <>{t(label)}</>}
     })
 
@@ -38,38 +70,24 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
 
     const [chartType, setChartType] = useState<ChartType>(ChartType.Trend)
 
-    const [chartUnit, setChartUnit] = useState(ChartUnit.D1)
+    const [chartInterval, setChartInterval] = useState(TradingInterval.min30);
+    const { xAxisIsTime, xAxisLabelCount } = chartIntervalData[chartInterval] || {};
 
     const [originData, setOriginData] = useState<any>(undefined)
 
-    const handleChange = useCallback((_e: React.MouseEvent, value: any) => {
+    const handleChartTypeChange = useCallback((_e: React.MouseEvent, value: any) => {
         if (value === null) return
         // Settings.setChartType(value)
         // console.log('useBasicInfo handleChange:', value)
         setOriginData(undefined)
         setChartType(value === 'Trend' ? ChartType.Trend : ChartType.Depth)
-    }, [setOriginData, setChartType])
+    }, [setOriginData, setChartType]);
 
-    const handleChartUnitChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, newValue: string) => {
-        const mappedValue = newValue === '1H' ? ChartUnit.H1 : newValue === '1W' ? ChartUnit.W1 : ChartUnit.D1
-        setChartUnit(mappedValue)
-    }
-
-    const tgItemJSXsPriceChart: TGItemJSXInterface[] = Object.keys(ChartUnit).reduce((pre, item) => {
-        // @ts-ignore
-        const tGItemData: TGItemData = {
-            value: ChartUnit[ item ],
-            key: ChartUnit[ item ],
-            label: 'label' + ChartUnit[ item ]
-        };
-        pre.push({
-            value: tGItemData.value,
-            tlabel: t(tGItemData.label ? tGItemData.label : tGItemData.key),
-            key: tGItemData.key,
-            JSX: <>{t(tGItemData.label ? tGItemData.label : tGItemData.key)}</>
-        })
-        return pre
-    }, [] as TGItemJSXInterface[])
+    const handleChartIntervalChange = useCallback((_e: React.MouseEvent, value: any) => {
+        if (value === null) return
+        setOriginData(undefined)
+        setChartInterval(value)
+    }, [setOriginData, setChartInterval]);
 
     useCustomDCEffect(async () => {
 
@@ -82,8 +100,8 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
         if (chartType === ChartType.Trend) {
             const request: GetCandlestickRequest = {
                 market: amm as string,
-                interval: TradingInterval.d1,
-                limit: 30
+                interval: chartInterval,
+                limit: (chartIntervalData[chartInterval] || {}).limit || 30
             }
 
             try {
@@ -99,7 +117,8 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
                             close: item.close,
                             volume: item.quoteVol,
                             change: (item.close - item.open) / item.open,
-                            date: moment(item.timestamp).format('MMM DD')
+                            date: moment(item.timestamp).format('MMM DD'),
+                            timeOfDay: moment(item.timestamp).format('hh:mm A')
                         }
                     })
                     setOriginData(originData)
@@ -137,19 +156,21 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
             mounted = false
         }
 
-    }, [LoopringAPI.exchangeAPI, amm, market, chartType])
+    }, [LoopringAPI.exchangeAPI, amm, market, chartType, chartInterval])
 
     return {
         // change,
         // volume,
         baseShow,
         quoteShow,
-        chartUnit,
         chartType,
-        tgItemJSXs,
-        tgItemJSXsPriceChart,
-        handleChange,
+        chartTypeOptionsJSXs,
+        handleChartTypeChange,
         originData,
-        handleChartUnitChange,
+        chartInterval,
+        chartIntervalOptionsJSXs,
+        handleChartIntervalChange,
+        xAxisIsTime,
+        xAxisLabelCount
     }
 }

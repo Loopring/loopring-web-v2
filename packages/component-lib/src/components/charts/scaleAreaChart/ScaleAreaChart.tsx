@@ -17,6 +17,8 @@ export interface ScaleAreaChartProps {
     data: any
     indicator?: IndicatorProps
     interval?: sdk.TradingInterval
+    xAxisIsTime?: boolean;
+    xAxisLabelCount?: number;
     handleMove?: (props: any) => void
     yAxisDomainPercent?: number // defualt 0.1
     riseColor?: 'green' | 'red'

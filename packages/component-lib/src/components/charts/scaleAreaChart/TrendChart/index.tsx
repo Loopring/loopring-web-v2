@@ -36,6 +36,8 @@ const TrendChart = ({
                         showArea = true,
                         extraInfo,
                         showXAxis = false,
+                        xAxisLabelCount = undefined,
+                        xAxisIsTime = false,
                         isHeadTailCompare = false,
                         isDailyTrend = false,
                         handleMoveOut = undefined,
@@ -199,6 +201,9 @@ const TrendChart = ({
     //     return formattedValue ?? '0.00'
     // }
 
+    const xAxisDataKey = xAxisIsTime ? 'timeOfDay' : isDailyTrend ? 'timeStamp' : 'date';
+    const xAxisInterval = xAxisLabelCount || (isDailyTrend ? 5 : 8);
+
     return (
         <ResponsiveContainer debounce={100} width={'99%'}>
             <ComposedChart margin={{ left: 5, right: 10 }} data={renderData} onMouseMove={showTooltip && handleMousemove}
@@ -220,8 +225,8 @@ const TrendChart = ({
                 </defs>
                 <XAxis
                     hide={!showXAxis && !isDailyTrend}
-                    dataKey={isDailyTrend ? 'timeStamp' : 'date'} /* tickFormatter={convertDate} */
-                    interval={isDailyTrend ? 5 : 8}
+                    dataKey={xAxisDataKey} /* tickFormatter={convertDate} */
+                    interval={xAxisInterval}
                     axisLine={isDailyTrend}
                     tickLine={isDailyTrend}
                     tick={customTick}
