@@ -52,11 +52,11 @@ const linkListMap = {
         },
         {
             linkName: 'VIP', //VIP
-            linkHref: "https://medium.com/loopring-protocol/introducing-loopring-vip-tiers-c6f73d753bac"
+            linkHref: "https://medium.loopring.io/introducing-loopring-vip-tiers-c6f73d753bac"
         },
         {
             linkName: 'Referrals', //Referrals
-            linkHref: "https://medium.com/loopring-protocol/loopring-exchange-launches-referral-program-c61777f072d1"
+            linkHref: "https://medium.loopring.io/loopring-exchange-launches-referral-program-c61777f072d1"
         },
     ],
     Support: [

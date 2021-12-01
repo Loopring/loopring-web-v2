@@ -14,6 +14,6 @@ We will rank each user's DPR/ETH trading volume between April 15, 0:00 AM (UTC) 
 
 5) For the winners who completed the transfer, we will transfer 30% of the purchased DPR (30,000DPR) to your Loopring Layer 2 account within seven days, and the remaining 70% will be distributed in installments of 7% every month for ten months.
 
-6) The DPR/ETH swap tournament and our [DPR lottery event](https://medium.com/loopring-protocol/trade-dpr-on-loopring-layer2-million-dpr-at-your-grasp-9f870fd9ca2b) end on the same day, and the top 10 winners of the swap tournament cannot participate in the lottery event at the same time.
+6) The DPR/ETH swap tournament and our [DPR lottery event](https://medium.loopring.io/trade-dpr-on-loopring-layer2-million-dpr-at-your-grasp-9f870fd9ca2b) end on the same day, and the top 10 winners of the swap tournament cannot participate in the lottery event at the same time.
 
 7) Loopring reserves the right of final decision and interpretation of the rules of the swap tournament.

@@ -20,7 +20,7 @@
 
 2) The maximum spread is 0.1% for USDC/USDT trading pair, 1% for LRC/ETH, LRC/USDT and LRC/USDC trading pairs, 1.5% for VSP/ETH and VSP/DAI trading pairs, 2% for RAI/ETH trading pair.
 
-3) Other details follow [Loopring v1 orderbook liquidity mining rules](https://medium.com/loopring-protocol/loopring-exchange-liquidity-mining-competition-748917b277e6). Hourly snapshots, measured by order depth, tightness, and balance.
+3) Other details follow [Loopring v1 orderbook liquidity mining rules](https://medium.loopring.io/loopring-exchange-liquidity-mining-competition-748917b277e6). Hourly snapshots, measured by order depth, tightness, and balance.
 
 4) FLX rewards will distributed by Reflexer on Layer-1 at app.reflexer.finance during their 3rd batch of incentives in mid-June.
 
