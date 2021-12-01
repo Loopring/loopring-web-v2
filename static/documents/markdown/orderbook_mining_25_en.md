@@ -21,7 +21,7 @@
 
 4) The maximum spread is 0.1% for USDC/USDT trading pair,  0.5% for UNI/ETH trading pair, 1.5% for BKT/USDT trading pair.
 
-5) Other details follow [Loopring v1 orderbook liquidity mining rules](https://medium.com/loopring-protocol/loopring-exchange-liquidity-mining-competition-748917b277e6). Hourly snapshots, measured by order depth, tightness, and balance.
+5) Other details follow [Loopring v1 orderbook liquidity mining rules](https://medium.loopring.io/loopring-exchange-liquidity-mining-competition-748917b277e6). Hourly snapshots, measured by order depth, tightness, and balance.
 
 6) The rewards of each cycle will be directly distributed to LP's layer2 accounts after the seventh day of liquidation, but note that single-cycle rewards below $1 will not be distributed or accumulated.
 

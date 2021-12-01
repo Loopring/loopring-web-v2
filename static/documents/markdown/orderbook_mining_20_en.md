@@ -16,7 +16,7 @@
 
 2) The maximum spread is 0.1% for USDC/USDT trading pair, 1.5% for VSP/ETH and VSP/DAI trading pairs.
 
-3) Other details follow [Loopring v1 orderbook liquidity mining rules](https://medium.com/loopring-protocol/loopring-exchange-liquidity-mining-competition-748917b277e6). Hourly snapshots, measured by order depth, tightness, and balance.
+3) Other details follow [Loopring v1 orderbook liquidity mining rules](https://medium.loopring.io/loopring-exchange-liquidity-mining-competition-748917b277e6). Hourly snapshots, measured by order depth, tightness, and balance.
 
 4) Rewards will be directly distributed to LP's layer2 accounts on the day after the campaigns end (Day 14).
 
