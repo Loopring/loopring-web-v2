@@ -42,7 +42,7 @@ export interface ReqParams {
     feeBips?: string,
 
     // key is ETH or USDT
-    tokenAmtMap?: { [key: string]: sdk.TokenAmount },
+    tokenAmtMap?: { [ key: string ]: sdk.TokenAmount },
 
     ammPoolSnapshot?: sdk.AmmPoolSnapshot,
     depth?: sdk.DepthData,
@@ -50,28 +50,28 @@ export interface ReqParams {
 }
 
 export function makeMarketReq({
-    isBuy,
+                                  isBuy,
 
-    amountBase,
-    amountQuote,
-    base,
-    quote,
+                                  amountBase,
+                                  amountQuote,
+                                  base,
+                                  quote,
 
-    tokenMap,
-    marketArray,
-    marketMap,
+                                  tokenMap,
+                                  marketArray,
+                                  marketMap,
 
-    exchangeAddress,
-    accountId,
-    storageId,
+                                  exchangeAddress,
+                                  accountId,
+                                  storageId,
 
-    feeBips,
-    tokenAmtMap,
+                                  feeBips,
+                                  tokenAmtMap,
 
-    depth,
-    ammPoolSnapshot,
-    slippage,
-}: ReqParams) {
+                                  depth,
+                                  ammPoolSnapshot,
+                                  slippage,
+                              }: ReqParams) {
 
     if (!tokenMap || !exchangeAddress || !marketArray
         || accountId === undefined || !base || !quote || (!depth && !ammPoolSnapshot)) {
@@ -96,23 +96,23 @@ export function makeMarketReq({
         storageId = 0
     }
 
-    const baseTokenInfo = tokenMap[base]
-    const quoteTokenInfo = tokenMap[quote]
+    const baseTokenInfo = tokenMap[ base ]
+    const quoteTokenInfo = tokenMap[ quote ]
 
     const sellTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
     const buyTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
 
     let input = (amountBase !== undefined ? amountBase : amountQuote !== undefined ? amountQuote : 0)?.toString()
-    
+
     const sell = sellTokenInfo.symbol
     const buy = buyTokenInfo.symbol
 
     // buy. amountSell is not null.
     const isAtoB = (isBuy && amountQuote !== undefined) || (!isBuy && amountBase !== undefined)
 
-    const sellUserOrderInfo = (tokenAmtMap && tokenAmtMap[sell]) ? tokenAmtMap[sell].userOrderInfo : undefined
+    const sellUserOrderInfo = (tokenAmtMap && tokenAmtMap[ sell ]) ? tokenAmtMap[ sell ].userOrderInfo : undefined
 
-    const buyUserOrderInfo = (tokenAmtMap && tokenAmtMap[buy]) ? tokenAmtMap[buy].userOrderInfo : undefined
+    const buyUserOrderInfo = (tokenAmtMap && tokenAmtMap[ buy ]) ? tokenAmtMap[ buy ].userOrderInfo : undefined
 
     const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0
 
@@ -135,11 +135,11 @@ export function makeMarketReq({
         slipBips: slippage as string,
     })
 
-    const minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo) 
+    const minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo)
 
     if (minOrderInfo) {
         if (!isBuy) { // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
-            const minInput = sdk.toBig(buyUserOrderInfo?.minAmount).div('1e' + buyTokenInfo.decimals).toString()
+            const minInput = sdk.toBig(buyUserOrderInfo?.minAmount ?? '').div('1e' + buyTokenInfo.decimals).toString()
 
             const calcTradeParamsForMin = sdk.getOutputAmount({
                 input: minInput,
@@ -155,17 +155,17 @@ export function makeMarketReq({
                 takerRate: takerRate ? takerRate.toString() : '0',
                 slipBips: slippage as string,
             })
-            
+
             minOrderInfo.minAmount = calcTradeParamsForMin?.amountS as string
             minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + sellTokenInfo.decimals).toNumber()
             minOrderInfo.symbol = sell
-            minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.sellAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
+            minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.sellAmt ?? '').gte(sdk.toBig(minOrderInfo.minAmtShow))
 
         } else {
 
             minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
             minOrderInfo.symbol = buy
-            minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.buyAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
+            minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.buyAmt ?? '').gte(sdk.toBig(minOrderInfo.minAmtShow))
         }
     } else {
         myError('undefined minOrderInfo')
@@ -214,23 +214,23 @@ export function makeMarketReq({
 }
 
 export function makeLimitReq({
-    isBuy,
+                                 isBuy,
 
-    depth,
-    price,
-    amountBase,
-    amountQuote,
-    base,
-    quote,
-    tokenMap,
+                                 depth,
+                                 price,
+                                 amountBase,
+                                 amountQuote,
+                                 base,
+                                 quote,
+                                 tokenMap,
 
-    exchangeAddress,
-    accountId,
-    storageId,
+                                 exchangeAddress,
+                                 accountId,
+                                 storageId,
 
-    feeBips,
-    tokenAmtMap,
-}: ReqParams) {
+                                 feeBips,
+                                 tokenAmtMap,
+                             }: ReqParams) {
 
     if (!tokenMap || !exchangeAddress || !depth
         || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
@@ -259,8 +259,8 @@ export function makeLimitReq({
         storageId = 0
     }
 
-    const baseTokenInfo = tokenMap[base]
-    const quoteTokenInfo = tokenMap[quote]
+    const baseTokenInfo = tokenMap[ base ]
+    const quoteTokenInfo = tokenMap[ quote ]
 
     const sellTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
     const buyTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
@@ -268,9 +268,9 @@ export function makeLimitReq({
     const sell = sellTokenInfo.symbol
     const buy = buyTokenInfo.symbol
 
-    const sellUserOrderInfo = (tokenAmtMap && tokenAmtMap[sell]) ? tokenAmtMap[sell].userOrderInfo : undefined
+    const sellUserOrderInfo = (tokenAmtMap && tokenAmtMap[ sell ]) ? tokenAmtMap[ sell ].userOrderInfo : undefined
 
-    const buyUserOrderInfo = (tokenAmtMap && tokenAmtMap[buy]) ? tokenAmtMap[buy].userOrderInfo : undefined
+    const buyUserOrderInfo = (tokenAmtMap && tokenAmtMap[ buy ]) ? tokenAmtMap[ buy ].userOrderInfo : undefined
 
     let baseVol = undefined
     let quoteVol = undefined
@@ -324,13 +324,13 @@ export function makeLimitReq({
             minOrderInfo.minAmtCheck = baseVol.gte(sdk.toBig(minOrderInfo.minAmount))
 
         }
-        
+
     } else {
         // throw Error('undefined minOrderInfo')
         myError('undefined minOrderInfo')
     }
 
-    const takerRate = (tokenAmtMap && tokenAmtMap[baseTokenInfo.symbol]) ? tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate : 0
+    const takerRate = (tokenAmtMap && tokenAmtMap[ baseTokenInfo.symbol ]) ? tokenAmtMap[ baseTokenInfo.symbol ].userOrderInfo.takerRate : 0
 
     const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
 
@@ -356,8 +356,8 @@ export function makeLimitReq({
 
     let priceImpact = 0
 
-    const ask1 = depth.asks_prices[0]
-    const bid1 = depth.bids_prices[depth.bids_prices.length - 1]
+    const ask1 = depth.asks_prices[ 0 ]
+    const bid1 = depth.bids_prices[ depth.bids_prices.length - 1 ]
 
     if (isBuy && ask1 && price > ask1) {
         priceImpact = (price - ask1) / ask1
@@ -402,15 +402,15 @@ export function makeMarketSellReq() {
 
 export function usePlaceOrder() {
 
-    const { account } = useAccount()
+    const {account} = useAccount()
 
-    const { tokenMap, marketArray, } = useTokenMap()
-    const { ammMap } = useAmmMap()
+    const {tokenMap, marketArray,} = useTokenMap()
+    const {ammMap} = useAmmMap()
 
-    const { exchangeInfo, } = useSystem()
+    const {exchangeInfo,} = useSystem()
 
     const getTokenAmtMap = React.useCallback((params: ReqParams) => {
-        const { amountMap } = store.getState().amountMap
+        const {amountMap} = store.getState().amountMap
         if (ammMap && marketArray && amountMap) {
             let base = params.base
 
@@ -436,10 +436,10 @@ export function usePlaceOrder() {
             market = existedMarket.market
             ammMarket = existedMarket.amm as string
 
-            const tokenAmtMap = amountMap ? ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string] : undefined
+            const tokenAmtMap = amountMap ? ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ] : undefined
 
 
-            const feeBips = ammMap[ammMarket] ? ammMap[ammMarket].__rawConfig__.feeBips : 0
+            const feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
             return {
                 feeBips,
                 tokenAmtMap,
@@ -456,7 +456,7 @@ export function usePlaceOrder() {
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
     const makeMarketReqInHook = React.useCallback((params: ReqParams) => {
 
-        const { tokenAmtMap, feeBips } = getTokenAmtMap(params)
+        const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
 
         // myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
 
@@ -485,7 +485,7 @@ export function usePlaceOrder() {
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
     const makeLimitReqInHook = React.useCallback((params: ReqParams) => {
-        const { tokenAmtMap, feeBips } = getTokenAmtMap(params)
+        const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
 
         myLog('makeLimitReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
 

@@ -22,17 +22,19 @@ const getAbbreviateNumber = (value: number | string) => {
     const formattedValue = toBig(value).toNumber()
     if (formattedValue >= 1000) {
         let suffixes = ['', 'K', 'M', 'B', 'T']
-        let suffixNum = Math.floor(('' + formattedValue).length / 3 )
-        let shortValue
+        let suffixNum = Math.floor(('' + formattedValue).length / 3)
+        let shortValue: string | number = 0;
         for (let precision = 3; precision >= 1; precision--) {
             shortValue = parseFloat((suffixNum !== 0 ? (formattedValue / Math.pow(1000, suffixNum)) : formattedValue).toPrecision(precision))
-            const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'')
-            if (dotLessShortValue.length <= 3) { break }
+            const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '')
+            if (dotLessShortValue.length <= 3) {
+                break
+            }
         }
-        if (toBig(shortValue).toNumber() % 1 !== 0) {
+        if (shortValue && toBig(shortValue).toNumber() % 1 !== 0) {
             shortValue = toBig(shortValue).toNumber()
         }
-        newValue = shortValue + suffixes[suffixNum]
+        newValue = shortValue + suffixes[ suffixNum ]
     }
     return newValue
 }
@@ -44,7 +46,7 @@ export const getFormattedHash = (hash?: string) => {
     return `${firstSix}****${lastFour}`
 }
 
-export function getShortAddr(address: string):string|'' {
+export function getShortAddr(address: string): string | '' {
     if (!address || address.trim() === '') {
         // console.log('getShortAddr got empty!')
         return ''
@@ -53,7 +55,7 @@ export function getShortAddr(address: string):string|'' {
 }
 
 const getFloatFloor = (value: number | string | undefined, precision: number) => {
-    if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
+    if ((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) {
         return '0.00'
     }
     const result = Math.floor(Number(value) * Math.pow(10, precision))
@@ -61,7 +63,7 @@ const getFloatFloor = (value: number | string | undefined, precision: number) =>
 }
 
 const getFloatCeil = (value: number | string | undefined, precision: number) => {
-    if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
+    if ((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) {
         return '0.00'
     }
     let result = Math.ceil(Number(value) * Math.pow(10, precision))
@@ -73,7 +75,7 @@ const addZeroAfterDot = (value: string) => {
     if (_dot) {
         _dot = _dot.replace(/0+?$/, '');
         if (_dot) {
-            value = _init + '.' + _dot ;
+            value = _init + '.' + _dot;
         } else {
             value = _init
         }
@@ -97,7 +99,7 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     isTrade?: boolean,
     isExponential?: boolean,
     isPrice?: boolean,
-    abbreviate?: 3|6|9|12|15|18,
+    abbreviate?: 3 | 6 | 9 | 12 | 15 | 18,
     isAbbreviate?: true,
 }) => {
     const floor = option?.floor
@@ -106,13 +108,13 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     const isExponential = option?.isExponential
     const isPrice = option?.isPrice
     const isAbbreviate = option?.isAbbreviate
-    const abbreviate = (option?.abbreviate)?? 6
-    if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
+    const abbreviate = (option?.abbreviate) ?? 6
+    if ((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) {
         return '0.00'
     }
     let result: any = value;
-    
-    if (!BigNumber.isBigNumber(result)){
+
+    if (!BigNumber.isBigNumber(result)) {
         result = toBig(value);
     }
 
@@ -134,7 +136,7 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     if (isPrice === true) {
         return toBig(toBig(result).toFixed(fixed || 6)).toNumber().toLocaleString('en', {minimumFractionDigits: fixed || 6})
     }
-    
+
     // fait price
     if (isFait === true) {
         if (toBig(result).isGreaterThanOrEqualTo(1)) {
@@ -182,12 +184,12 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
             formattedValue = result.toFixed(fixed || minDigit)
         }
         // remain string-number zero
-        result = toBig(formattedValue).toNumber().toLocaleString('en',{minimumFractionDigits: (fixed || minDigit)})
+        result = toBig(formattedValue).toNumber().toLocaleString('en', {minimumFractionDigits: (fixed || minDigit)})
     } else if (result.isLessThanOrEqualTo(1)) {
         // console.log(11111, result.toNumber())
         result = fixed ? result.toFixed(fixed) : toBig(result).toPrecision(precision)
     }
-    
+
     if (result && !notRemoveEndZero) {
         result = addZeroAfterDot(result)
     }

@@ -24,7 +24,10 @@ import store from 'stores';
 import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
 
-export const useMarket = <C extends { [ key: string ]: any }>({market,resetTradeCalcData}: {market: MarketType } & any): {
+export const useMarket = <C extends { [ key: string ]: any }>({
+                                                                  market,
+                                                                  resetTradeCalcData
+                                                              }: { market: MarketType } & any): {
     [ key: string ]: any;
     // market: MarketType|undefined;
     // marketTicker: MarketBlockProps<C> |undefined,
@@ -36,7 +39,7 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {account} = useAccount();
     const {slippage} = useSettings();
-    const {exchangeInfo,allowTrade} = useSystem();
+    const {exchangeInfo, allowTrade} = useSystem();
     const {setShowSupport} = useOpenModals();
     const autoRefresh = React.useRef<NodeJS.Timeout | -1>(-1);
 
@@ -68,13 +71,13 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
             type: TradeProType.buy
         }
     );
-    React.useEffect(()=>{
+    React.useEffect(() => {
         return () => {
             if (autoRefresh.current !== -1) {
                 clearTimeout(autoRefresh.current as NodeJS.Timeout);
             }
         }
-    },[])
+    }, [])
     React.useEffect(() => {
         resetTradeData()
     }, [pageTradePro.market,
@@ -86,7 +89,7 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
             clearTimeout(autoRefresh.current as NodeJS.Timeout);
         }
         if (pageTradePro.lastStepAt && marketTradeData[ pageTradePro.lastStepAt ].tradeValue) {
-            myLog('autoUpdate',marketTradeData)
+            myLog('autoUpdate', marketTradeData)
             onChangeMarketEvent(marketTradeData, pageTradePro.lastStepAt as TradeBaseType)
 
         }
@@ -115,13 +118,14 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
             lastStepAt = formType as any;
         }
 
-        if(lastStepAt){
+        if (lastStepAt) {
             if (autoRefresh.current !== -1) {
                 clearTimeout(autoRefresh.current as NodeJS.Timeout);
             }
-            autoRefresh.current = setTimeout(()=>{
+            autoRefresh.current = setTimeout(() => {
                 // myLog('autoUpdate',marketTradeData)
-                autoRecalc()}, __AUTO_RECALC__)
+                autoRecalc()
+            }, __AUTO_RECALC__)
         }
 
         // myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
@@ -147,7 +151,7 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
         })
 
         // myLog('depth:',pageTradePro.depth)
-        const minSymbol = tradeData.type === TradeProType.buy? tradeData.base.belong: tradeData.quote.belong
+        const minSymbol = tradeData.type === TradeProType.buy ? tradeData.base.belong : tradeData.quote.belong
         const priceImpactObj = getPriceImpactInfo(calcTradeParams)
         updatePageTradePro({
             market,
@@ -161,11 +165,11 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
                     (calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal) ?
                         getValuePrecisionThousand(
                             calcTradeParams.amountBOutSlip?.minReceivedVal,
-                            tokenMap[minSymbol].precision,
-                            tokenMap[minSymbol].precision,
-                            tokenMap[minSymbol].precision,
+                            tokenMap[ minSymbol ].precision,
+                            tokenMap[ minSymbol ].precision,
+                            tokenMap[ minSymbol ].precision,
                             true,
-                            {floor:true}
+                            {floor: true}
                         ) : undefined,
                 priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
                 priceImpactColor: priceImpactObj?.priceImpactColor,
@@ -227,7 +231,7 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
             calcTradeParams: null,
             limitCalcTradeParams: null,
             lastStepAt: undefined,
-            tradeCalcProData:  {
+            tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
                 // walletMap:walletMap as any,
                 priceImpact: undefined,
@@ -351,11 +355,11 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
                 || marketTradeData?.base.tradeValue === 0
                 || marketTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            } else if  (!minOrderInfo?.minAmtCheck) {
+            } else if (!minOrderInfo?.minAmtCheck) {
                 // const symbol: string = marketTradeData[ 'base' ].belong;
                 // const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
                 let minOrderSize = 'Error';
-                if( minOrderInfo?.symbol){
+                if (minOrderInfo?.symbol) {
                     const basePrecision = tokenMap[ minOrderInfo.symbol ].precisionForOrder;
                     const showValue = getValuePrecisionThousand(minOrderInfo?.minAmtShow,
                         undefined, undefined, basePrecision, true, {isAbbreviate: true})
@@ -363,9 +367,9 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
                 }
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
 
-            } else if(sdk.toBig(marketTradeData[marketTradeData.type === TradeProType.buy?'quote':'base']?.tradeValue
-            ).gt(marketTradeData[marketTradeData.type === TradeProType.buy?'quote':'base'].balance)){
-                return {tradeBtnStatus: TradeBtnStatus.DISABLED,label:''}
+            } else if (sdk.toBig(marketTradeData[ marketTradeData.type === TradeProType.buy ? 'quote' : 'base' ]?.tradeValue ?? ''
+            ).gt(marketTradeData[ marketTradeData.type === TradeProType.buy ? 'quote' : 'base' ].balance)) {
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: ''}
             } else {
                 return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             }

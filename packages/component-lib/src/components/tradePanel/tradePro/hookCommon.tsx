@@ -34,19 +34,19 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         error: false,
         message: ''
     });
-    React.useEffect(()=>{
+    React.useEffect(() => {
         const inputType = tradeType === TradeProType.sell ? 'base' : 'quote';
-        if(tradeData[inputType].tradeValue && tradeData[inputType].balance){
-            const _data = tradeData[inputType]//.tradeValue
-            const value = sdk.toBig(_data.tradeValue).div(sdk.toBig(_data.balance)).times(100).toFixed()
+        if (tradeData[ inputType ].tradeValue && tradeData[ inputType ].balance) {
+            const _data = tradeData[ inputType ]//.tradeValue
+            const value = sdk.toBig(_data.tradeValue ?? '').div(sdk.toBig(_data.balance)).times(100).toFixed()
             setSelectedPercentage(Number(value))
-        }else{
+        } else {
             setSelectedPercentage(0)
         }
-    },[tradeData['base'].tradeValue,tradeData['quote'].tradeValue]);
+    }, [tradeData[ 'base' ].tradeValue, tradeData[ 'quote' ].tradeValue]);
 
 
-    const handleError = React.useCallback(({belong, balance, tradeValue}: any,ref?) => {
+    const handleError = React.useCallback(({belong, balance, tradeValue}: any, ref?) => {
         if (typeof rest.handleError !== 'function') {
             if (balance < tradeValue || (tradeValue && !balance)) {
                 const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
@@ -56,11 +56,11 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             }
             setInputError({error: false, message: ''});
             return {error: false, message: ''}
-        }else{
-            return rest.handleError({belong, balance, tradeValue} as any,ref)
+        } else {
+            return rest.handleError({belong, balance, tradeValue} as any, ref)
         }
 
-    },[rest.handleError,setInputError])
+    }, [rest.handleError, setInputError])
     const _handleCountChange = React.useCallback((ibData: T, name: string, _ref: any) => {
         if (handleCountChange) {
             handleCountChange(ibData, name, _ref)

@@ -1,21 +1,14 @@
 import store from 'stores';
 
 import { LoopringAPI } from 'api_wrapper';
-import {
-    CustomError,
-    ErrorMap,
-    getValuePrecisionThousand,
-    IBData,
-    MarketType,
-    myLog
-} from '@loopring-web/common-resources';
+import { CustomError, ErrorMap, getValuePrecisionThousand, IBData, MarketType } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from 'hooks/help';
 import BigNumber from 'bignumber.js';
 import { Ticker, updateTicker } from 'stores/ticker';
 import { SwapTradeData } from '@loopring-web/component-lib';
 import * as sdk from '@loopring-web/loopring-sdk';
 
-export const swapDependAsync = (market: MarketType,level?:number,limit?:number): Promise<{
+export const swapDependAsync = (market: MarketType, level?: number, limit?: number): Promise<{
     ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
     tickMap: sdk.LoopringMap<sdk.TickerData>,
     depth: sdk.DepthData
@@ -26,7 +19,7 @@ export const swapDependAsync = (market: MarketType,level?:number,limit?:number):
         const poolAddress = ammMap[ 'AMM-' + market ]?.address
         if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
             Promise.all([
-                LoopringAPI.exchangeAPI.getMixDepth({market,level,limit}),
+                LoopringAPI.exchangeAPI.getMixDepth({market, level, limit}),
                 LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress,}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: market})])
                 .then(([{depth}, {ammPoolSnapshot}, {tickMap}]) => {
@@ -53,7 +46,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
     }: {
         market: MarketType,
         tradePair: MarketType
-        dependencyData: { ticker: Ticker|undefined, ammPoolSnapshot: any, depth: any },
+        dependencyData: { ticker: Ticker | undefined, ammPoolSnapshot: any, depth: any },
     }): {
     stob: string | undefined,
     btos: string | undefined
@@ -78,9 +71,9 @@ export const calcPriceByAmmTickMapDepth = <C>(
             )
             // @ts-ignore
             btos = getValuePrecisionThousand(BigNumber(1).div(stob).toNumber(),
-                tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision,true);// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+                tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, true);// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
             let precision = marketMap[ market ].precisionForPrice ? marketMap[ market ].precisionForPrice : tokenMap[ coinB ].precision;
-            stob = getValuePrecisionThousand(stob, precision, precision, precision,true)
+            stob = getValuePrecisionThousand(stob, precision, precision, precision, true)
 
             // stob = Number(stob?.toFixed(tokenMap[idIndex[poolBTokenVol.tokenId]].precision))
             close = stob?.toString();
@@ -95,10 +88,10 @@ export const calcPriceByAmmTickMapDepth = <C>(
         if ((stob === '0.00' || !stob) && ticker) {
             // const tickerData = tickerMap[ market ]
             let precision = marketMap[ market ].precisionForPrice ? marketMap[ market ].precisionForPrice : tokenMap[ coinB ].precision;
-            close = getValuePrecisionThousand(ticker.close, precision, precision, precision,true);
+            close = getValuePrecisionThousand(ticker.close, precision, precision, precision, true);
             stob = close;
             btos = Number(ticker.close) !== 0 ?
-                getValuePrecisionThousand(1 / ticker.close, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision,true) : 0
+                getValuePrecisionThousand(1 / ticker.close, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, true) : 0
             if (!ticker.__rawTicker__.base === coinSell) {
                 stob = btos;
                 btos = close;
@@ -108,9 +101,9 @@ export const calcPriceByAmmTickMapDepth = <C>(
         //last check from depth
         if ((stob === '0.00' || !stob) && depth) {
             let precision = marketMap[ market ].precisionForPrice ? marketMap[ market ].precisionForPrice : tokenMap[ coinB ].precision;
-            close = getValuePrecisionThousand(depth.mid_price, precision, precision, precision,true);
+            close = getValuePrecisionThousand(depth.mid_price, precision, precision, precision, true);
             stob = close;
-            btos = Number(close) !== 0 ? getValuePrecisionThousand(1 / Number(close), tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision,true) : 0;
+            btos = Number(close) !== 0 ? getValuePrecisionThousand(1 / Number(close), tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, true) : 0;
             if (!tradePair === depth.symbol) {
                 stob = btos;
                 btos = close;
@@ -130,46 +123,34 @@ export const calcPriceByAmmTickMapDepth = <C>(
         close: undefined
     }
 }
-export const reCalcStoB = <T extends  SwapTradeData<IBData<C>>,C extends any>(market:MarketType,tradeData:T,tradePair:MarketType):
-    { stob:string,btos:string }|undefined=>{
-    const { tokenMap, marketMap} = store.getState().tokenMap;
+export const reCalcStoB = <T extends SwapTradeData<IBData<C>>, C extends any>(market: MarketType, tradeData: T, tradePair: MarketType):
+    { stob: string, btos: string } | undefined => {
+    const {tokenMap, marketMap} = store.getState().tokenMap;
     // const marketPrecision =  ? marketMap[market].precisionForPrice : 4;
     //@ts-ignore
-    const  [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
+    const [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
     // const tokenA = tokenMap[coinA];
     // const tokenB =;
-    if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue && tradeData?.sell.tradeValue!==0) {
-        const sellBig = sdk.toBig(tradeData?.sell.tradeValue)
-        const buyBig = sdk.toBig(tradeData?.buy.tradeValue)
-        const marketPrecision =  marketMap[market].precisionForPrice ? marketMap[market].precisionForPrice :  tokenMap[coinB].precision;
-        const tokenPrecision =  tokenMap[coinA].precision;
-        let stob,btos;
-        
-        if(market === tradePair) {
-            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), marketPrecision, marketPrecision, marketPrecision,true)
-            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), tokenPrecision , tokenPrecision, tokenPrecision)
-        } else{
-            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), tokenPrecision , tokenPrecision, tokenPrecision)
-            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(),  marketPrecision, marketPrecision, marketPrecision,true)
+    if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue && tradeData?.sell.tradeValue !== 0) {
+        const sellBig = sdk.toBig(tradeData?.sell.tradeValue ?? '')
+        const buyBig = sdk.toBig(tradeData?.buy.tradeValue ?? '')
+        const marketPrecision = marketMap[ market ].precisionForPrice ? marketMap[ market ].precisionForPrice : tokenMap[ coinB ].precision;
+        const tokenPrecision = tokenMap[ coinA ].precision;
+        let stob, btos;
+
+        if (market === tradePair) {
+            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), marketPrecision, marketPrecision, marketPrecision, true)
+            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), tokenPrecision, tokenPrecision, tokenPrecision)
+        } else {
+            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), tokenPrecision, tokenPrecision, tokenPrecision)
+            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), marketPrecision, marketPrecision, marketPrecision, true)
         }
-        return {stob,btos}
-        // btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), btosPrecision, btosPrecision, btosPrecision)
-        // myLog("tradeCalcData.stob:", buyBig.div(sellBig).toString(), stob, sellBig.div(buyBig).toString(), btos)
+        return {stob, btos}
 
-        // const BIG0 = sdk.toBig(0)
-        // if (sellBig.gt(BIG0) && buyBig.gt(BIG0))  {
-            // stob = (tradeData?.sell.tradeValue / tradeData?.buy.tradeValue).toString()
-            // btos = (tradeData?.buy.tradeValue / tradeData?.sell.tradeValue).toString()
-            // const isReversed = tradeData.sell.belong !== tradeCalcData.tokenA.symbol
-
-            // const btosPrecision = !isReversed ? tradeCalcData.tokenA.precision : marketPrecision
-            // market===tradePair &&
-
-
-    }else {
-        return  undefined
+    } else {
+        return undefined
     }
-    
+
 }
 
 export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradePair: MarketType } => {

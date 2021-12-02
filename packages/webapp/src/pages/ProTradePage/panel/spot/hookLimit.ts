@@ -2,7 +2,6 @@ import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { AccountStatus, getValuePrecisionThousand, IBData, MarketType, myLog, } from '@loopring-web/common-resources';
 import {
-    account,
     DepthType,
     LimitTradeData,
     TradeBaseType,
@@ -25,7 +24,7 @@ import { BIGO } from 'defs/common_defs';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 
-export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: MarketType } & any) => {
+export const useLimit = <C extends { [ key: string ]: any }>({market}: { market: MarketType } & any) => {
     const {
         pageTradePro,
         updatePageTradePro,
@@ -80,56 +79,57 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
         pageTradePro.tradeCalcProData.walletMap,
         pageTradePro.market,
         currency,
-        ])
+    ])
 
     React.useEffect(() => {
         if (pageTradePro.chooseDepth) {
             //@ts-ignore
             const [, baseSymbol, quoteSymbol] = pageTradePro.market.match(/(\w+)-(\w+)/i);
-            const {decimals: baseDecimal,precision:basePrecision} = tokenMap[ baseSymbol ];
+            const {decimals: baseDecimal, precision: basePrecision} = tokenMap[ baseSymbol ];
             const tradePrice = pageTradePro.chooseDepth ? pageTradePro.chooseDepth.price : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
             let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
             if (balance && currency === sdk.Currency.cny) {
                 balance = Number(balance) * forex;
             }
-           if((pageTradePro.tradeType === TradeProType.buy && pageTradePro.chooseDepth.type === DepthType.ask)
-               ||( pageTradePro.tradeType === TradeProType.sell && pageTradePro.chooseDepth.type === DepthType.bid )
-           ){
-               const amount = getValuePrecisionThousand(
-                   sdk.toBig(pageTradePro.chooseDepth.amtTotal).div('1e' + baseDecimal),
-                   undefined, undefined,
-                   basePrecision, true).replace(',','')
-               onChangeLimitEvent({
-                   ...limitTradeData,
-                   base:{
-                       ...limitTradeData.base,
-                       tradeValue: Number(amount),
-                   },
-                   price: {
-                       ...limitTradeData.price,
-                       tradeValue: Number(tradePrice),
-                       balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
+            if ((pageTradePro.tradeType === TradeProType.buy && pageTradePro.chooseDepth.type === DepthType.ask)
+                || (pageTradePro.tradeType === TradeProType.sell && pageTradePro.chooseDepth.type === DepthType.bid)
+            ) {
+                const amount = getValuePrecisionThousand(
+                    sdk.toBig(pageTradePro.chooseDepth.amtTotal).div('1e' + baseDecimal),
+                    undefined, undefined,
+                    basePrecision, true).replace(',', '')
+                onChangeLimitEvent({
+                    ...limitTradeData,
+                    base: {
+                        ...limitTradeData.base,
+                        tradeValue: Number(amount),
+                    },
+                    price: {
+                        ...limitTradeData.price,
+                        tradeValue: Number(tradePrice),
+                        balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
 
-                   }},TradeBaseType.price)
-               // if(account.readyState === 'ACTIVATED'){
-               //
-               // }else{
-               //
-               //
-               //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
-               //
-               // }
-           }else{
-               onChangeLimitEvent({
-                   ...limitTradeData,
-                   price: {
-                       ...limitTradeData.price,
-                       tradeValue: Number(tradePrice),
-                       balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
+                    }
+                }, TradeBaseType.price)
+                // if(account.readyState === 'ACTIVATED'){
+                //
+                // }else{
+                //
+                //
+                //     // const amtTotalForShow = pageTradePro.chooseDepth.amtTotalForShow;
+                //
+                // }
+            } else {
+                onChangeLimitEvent({
+                    ...limitTradeData,
+                    price: {
+                        ...limitTradeData.price,
+                        tradeValue: Number(tradePrice),
+                        balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
 
-                   }},TradeBaseType.price)
-           }
-
+                    }
+                }, TradeBaseType.price)
+            }
 
 
             // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
@@ -190,7 +190,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
 
             }
         })
-    }, [ marketPrecision, market, currency, forex])
+    }, [marketPrecision, market, currency, forex])
 
     const limitSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
         myLog('limitSubmit:', event, isAgree)
@@ -267,7 +267,6 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
                     resetTradeData(pageTradePro.tradeType)
                     walletLayer2Service.sendUserUpdate()
                 }
-
 
 
                 setIsLimitLoading(false)
@@ -427,19 +426,19 @@ export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: 
                 || limitTradeData?.base.tradeValue === 0
                 || limitTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            }  else if (!minOrderInfo?.minAmtCheck) {
+            } else if (!minOrderInfo?.minAmtCheck) {
                 let minOrderSize = 'Error';
-                if( minOrderInfo?.symbol){
+                if (minOrderInfo?.symbol) {
                     const basePrecision = tokenMap[ minOrderInfo.symbol ].precisionForOrder;
                     const showValue = getValuePrecisionThousand(minOrderInfo?.minAmtShow,
                         undefined, undefined, basePrecision, true, {isAbbreviate: true})
                     minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
                 }
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
-            } else if(sdk.toBig(
-                limitTradeData[limitTradeData.type === TradeProType.buy?'quote':'base']?.tradeValue
-            ).gt(limitTradeData[limitTradeData.type === TradeProType.buy?'quote':'base'].balance)){
-                return {tradeBtnStatus: TradeBtnStatus.DISABLED,label:''}
+            } else if (sdk.toBig(
+                limitTradeData[ limitTradeData.type === TradeProType.buy ? 'quote' : 'base' ]?.tradeValue ?? ''
+            ).gt(limitTradeData[ limitTradeData.type === TradeProType.buy ? 'quote' : 'base' ].balance)) {
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: ''}
             } else {
                 return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             }

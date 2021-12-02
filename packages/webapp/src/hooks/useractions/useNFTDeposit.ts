@@ -1,14 +1,13 @@
 import React, { useCallback } from 'react';
 
 import { AccountStep, DepositProps, SwitchData, useOpenModals, } from '@loopring-web/component-lib';
-import { AccountStatus, CoinMap, IBData, NFTWholeINFO } from '@loopring-web/common-resources';
+import { AccountStatus, CoinMap, IBData, myLog, NFTWholeINFO } from '@loopring-web/common-resources';
 import * as sdk from '@loopring-web/loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
-import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode, AddressError } from 'defs/common_defs';
 import { checkErrorInfo } from './utils';
@@ -19,25 +18,25 @@ import { checkAddr } from 'utils/web3_tools';
 import { isPosIntNum } from 'utils/formatter_tool';
 import { useOnChainInfo } from '../../stores/localStore/onchainHashInfo';
 
-export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): {
+export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>, T>(): {
     nftDepositProps: DepositProps<R, T>
 } => {
-    const { tokenMap, totalCoinMap, } = useTokenMap()
-    const { account } = useAccount()
-    const { exchangeInfo, chainId, gasPrice } = useSystem()
+    const {tokenMap, totalCoinMap,} = useTokenMap()
+    const {account} = useAccount()
+    const {exchangeInfo, chainId, gasPrice} = useSystem()
 
-    const { nftDepositValue, updateNFTDepositData, resetNFTDepositData, } = useModalData()
+    const {nftDepositValue, updateNFTDepositData, resetNFTDepositData,} = useModalData()
 
-    const { modals: { isShowNFTDeposit: { nftData,nftBalance,isShow ,...nftRest} } } = useOpenModals()
+    const {modals: {isShowNFTDeposit: {nftData, nftBalance, isShow, ...nftRest}}} = useOpenModals()
 
     // const { walletLayer1 } = useWalletLayer1()
-    const { setShowNFTDeposit, setShowAccount } = useOpenModals();
-    const { updateDepositHash }= useOnChainInfo();
-    const { t } = useTranslation('common')
+    const {setShowNFTDeposit, setShowAccount} = useOpenModals();
+    const {updateDepositHash} = useOnChainInfo();
+    const {t} = useTranslation('common')
 
-    const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo, } = useBtnStatus()
+    const {btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo,} = useBtnStatus()
 
-    const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: nftDepositValue.belong as string, })
+    const {allowanceInfo} = useAllowances({owner: account.accAddress, symbol: nftDepositValue.belong as string,})
 
     const updateBtnStatus = React.useCallback(() => {
 
@@ -46,11 +45,11 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
         resetBtnInfo()
 
         if (nftDepositValue.belong === allowanceInfo?.tokenInfo.symbol && nftDepositValue?.tradeValue && allowanceInfo
-            && sdk.toBig(nftDepositValue?.tradeValue).lte(sdk.toBig(nftDepositValue?.balance))) {
+            && sdk.toBig(nftDepositValue?.tradeValue).lte(sdk.toBig(nftDepositValue?.balance ?? ''))) {
             const curValInWei = sdk.toBig(nftDepositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
                 myLog('!!---> set labelDepositNeedApprove!!!! belong:', nftDepositValue.belong)
-                setLabelAndParams('labelDepositNeedApprove', { symbol: nftDepositValue.belong as string })
+                setLabelAndParams('labelDepositNeedApprove', {symbol: nftDepositValue.belong as string})
             }
             enableBtn()
         } else {
@@ -65,7 +64,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
     const walletLayer1Callback = React.useCallback(() => {
 
-        if (nftData ) {
+        if (nftData) {
 
             updateNFTDepositData({
                 belong: nftData as any,
@@ -75,7 +74,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
             })
 
         } else {
-            setShowNFTDeposit({isShow:false})
+            setShowNFTDeposit({isShow: false})
             // updateNFTDepositData({
             //     belong: keyVal as any,
             //     tradeValue: 0,
@@ -96,7 +95,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
             // }
 
         }
-    }, [ nftData,nftBalance, updateNFTDepositData, nftDepositValue])
+    }, [nftData, nftBalance, updateNFTDepositData, nftDepositValue])
 
     React.useEffect(() => {
         // myLog('isShow:', isShow)
@@ -125,12 +124,12 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
                     myLog('got isPosIntNum')
                 } else {
                     try {
-                        const { realAddr, addressErr, } = await checkAddr(reffer, connectProvides.usedWeb3)
+                        const {realAddr, addressErr,} = await checkAddr(reffer, connectProvides.usedWeb3)
                         if (addressErr !== AddressError.NoError) {
                             return
                         }
                         const realRefferAddr = realAddr ? realAddr : reffer
-                        const { accInfo, error, } = await LoopringAPI.exchangeAPI.getAccount({ owner: realRefferAddr, })
+                        const {accInfo, error,} = await LoopringAPI.exchangeAPI.getAccount({owner: realRefferAddr,})
 
                         if (error || !accInfo?.accountId) {
                             return
@@ -153,12 +152,12 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
                     myLog('setReffer generateKeyPair!!! refferId:', refferId)
 
                     const eddsaKey = await sdk.generateKeyPair({
-                        web3: connectProvides.usedWeb3,
-                        address: account.accAddress,
-                        exchangeAddress: exchangeInfo.exchangeAddress,
-                        keyNonce: 0,
-                        walletType: account.connectName as sdk.ConnectorNames,
-                    }
+                            web3: connectProvides.usedWeb3,
+                            address: account.accAddress,
+                            exchangeAddress: exchangeInfo.exchangeAddress,
+                            keyNonce: 0,
+                            walletType: account.connectName as sdk.ConnectorNames,
+                        }
                     )
                     const request: sdk.SetReferrerRequest = {
                         address: account.accAddress,
@@ -186,18 +185,18 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
         await setReffer(inputValue)
 
-        const { readyState, connectName } = account
+        const {readyState, connectName} = account
 
         console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
 
-        let result: ActionResult = { code: ActionResultCode.NoError }
+        let result: ActionResult = {code: ActionResultCode.NoError}
 
         if ((readyState !== AccountStatus.UN_CONNECT
             && inputValue.tradeValue)
             && tokenMap && exchangeInfo?.exchangeAddress
             && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
-                const tokenInfo = tokenMap[inputValue.belong]
+                const tokenInfo = tokenMap[ inputValue.belong ]
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
 
                 const fee = 0
@@ -223,7 +222,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
                         myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
 
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth })
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth})
 
                         nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
@@ -237,7 +236,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
 
-                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_Denied })
+                            setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Denied})
                             return
                         }
 
@@ -247,7 +246,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
                 }
 
-                setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
+                setShowAccount({isShow: true, step: AccountStep.Deposit_WaitForAuth})
 
                 if (!nonceInit) {
                     nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
@@ -267,15 +266,17 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
                 if (response) {
 
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
-                    updateDepositHash(response.result,account.accAddress,undefined,
-                        {symbol:tokenInfo.symbol,
-                            type:'Deposit',
-                            value:inputValue.tradeValue});
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_Submit})
+                    updateDepositHash(response.result, account.accAddress, undefined,
+                        {
+                            symbol: tokenInfo.symbol,
+                            type: 'Deposit',
+                            value: inputValue.tradeValue
+                        });
 
                 } else {
                     // deposit failed
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
                 }
 
                 resetNFTDepositData()
@@ -294,10 +295,10 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
                 switch (err) {
                     case sdk.ConnectorError.USER_DENIED:
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Denied})
                         break
                     default:
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
                         resetNFTDepositData()
                         break
                 }
@@ -313,7 +314,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
 
     const onDepositClick = useCallback(async (nftDepositValue) => {
         myLog('onDepositClick nftDepositValue:', nftDepositValue)
-        setShowNFTDeposit({ isShow: false })
+        setShowNFTDeposit({isShow: false})
 
         if (nftDepositValue && nftDepositValue.belong) {
             await handleDeposit(nftDepositValue as R)
@@ -326,7 +327,7 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
             if (data.to === 'button') {
                 // if (walletLayer1 && data?.tradeData?.belong) {
                 //     const walletInfo = walletLayer1[data?.tradeData?.belong]
-                    // myLog('got!!!! data:', data.to, data.tradeData, walletInfo)
+                // myLog('got!!!! data:', data.to, data.tradeData, walletInfo)
                 //TODO: getLayer1 NFT Token
                 updateNFTDepositData({
                     belong: data.tradeData?.belong,
@@ -341,15 +342,15 @@ export const useNFTDeposit = <R extends IBData<T> & Partial<NFTWholeINFO>,T>(): 
             }
             res();
         })
-    }, [ updateNFTDepositData])
+    }, [updateNFTDepositData])
 
     const handleAddressError = useCallback((value: string): { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined => {
         myLog('handleAddressError:', value)
-        updateNFTDepositData({ reffer: value, tradeValue: -1, balance: -1, })
+        updateNFTDepositData({reffer: value, tradeValue: -1, balance: -1,})
         return undefined
     }, [])
 
-    const nftDepositProps:DepositProps<R, T> = React.useMemo(() => {
+    const nftDepositProps: DepositProps<R, T> = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT;
         const title = account.readyState === AccountStatus.NO_ACCOUNT ? t('labelCreateLayer2Title') : t('depositTitle');
         return {
