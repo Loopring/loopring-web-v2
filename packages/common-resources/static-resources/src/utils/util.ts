@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { toBig } from '@loopring-web/loopring-sdk'
 
-export function abbreviateNumber(value: number) {
+export function abbreviateNumber(value: number, precision?: number) {
     let newValue = value, result: string;
     const suffixes = ["", "K", "M", "B", "T"];
     let suffixNum = 0;
@@ -9,8 +9,12 @@ export function abbreviateNumber(value: number) {
         newValue /= 1000;
         suffixNum++;
     }
-
-    result = newValue.toPrecision(3);
+    
+    if (precision) {
+        result = newValue.toFixed(precision);
+    } else {
+        result = newValue.toPrecision(3)
+    }
 
     result += suffixes[ suffixNum ];
     return result;

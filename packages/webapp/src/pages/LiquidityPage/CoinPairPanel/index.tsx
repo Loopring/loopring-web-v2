@@ -115,6 +115,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     const priceCoinAYuan = priceCoinADollar * (forex || 6.5)
     // const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
     const totalAmountValueCoinA = (tickerFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
+    const render24hVolume = (currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + (totalAmountValueCoinA >= 1000000 ? abbreviateNumber(totalAmountValueCoinA, 2) : getValuePrecisionThousand(totalAmountValueCoinA, undefined, undefined, undefined, true, { isFait: true, floor: false }))
 
     return <>
         {/* <Box marginBottom={2}>
@@ -249,7 +250,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                                    currency === Currency.usd ? PriceTag.Dollar + abbreviateNumber(coinPairInfo.amountDollar || 0) : PriceTag.Yuan + abbreviateNumber(coinPairInfo.amountYuan || 0)}
+                                    currency === Currency.usd ? PriceTag.Dollar + abbreviateNumber(coinPairInfo.amountDollar || 0, 2) : PriceTag.Yuan + abbreviateNumber(coinPairInfo.amountYuan || 0, 2)}
                                 </Typography>
 
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
@@ -261,7 +262,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
-                                    {(currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(totalAmountValueCoinA, undefined, undefined, undefined, true, { isFait: true })}
+                                    {render24hVolume}
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('label24Volume')}
