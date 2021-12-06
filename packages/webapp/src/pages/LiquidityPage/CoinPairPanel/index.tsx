@@ -17,7 +17,8 @@ import { StylePaper } from 'pages/styled';
 import store from 'stores'
 import { Link as RouterLink } from 'react-router-dom';
 import { Currency } from '@loopring-web/loopring-sdk';
-
+import { useTicker } from 'stores/ticker';
+import { makeTickView } from 'hooks/help';
 
 //******************** page code ************************//
 const BoxWrapperStyled = styled(Grid)`
@@ -80,8 +81,13 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         stob,
         btos,
     } = useCoinPair();
+    const { tickerMap } = useTicker();
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
+
+    const realMarket = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
+    const _tickerMap = tickerMap[realMarket]?.__rawTicker__
+    const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {})
 
     const {coinJson} = useSettings();
     const {forex} = store.getState().system
@@ -107,7 +113,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 
     const priceCoinADollar = pair.coinAInfo?.simpleName ? tokenPrices[pair.coinAInfo?.simpleName] : 0
     const priceCoinAYuan = priceCoinADollar * (forex || 6.5)
-    const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
+    // const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
+    const totalAmountValueCoinA = (tickerFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
 
     return <>
         {/* <Box marginBottom={2}>
