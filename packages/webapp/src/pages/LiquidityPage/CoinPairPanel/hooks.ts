@@ -96,11 +96,11 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
     const {walletLayer2} = useWalletLayer2();
     const [walletMap, setWalletMap] = React.useState<WalletMapExtend<C> | undefined>(undefined);
-    const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
-    const [ammTotal, setAmmTotal] = React.useState(0)
-    const [ammUserTotal, setAmmUserTotal] = React.useState(0)
+    // const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
+    // const [ammTotal, setAmmTotal] = React.useState(0)
+    // const [ammUserTotal, setAmmUserTotal] = React.useState(0)
 
-    const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
+    // const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
     const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap | undefined>(undefined);
     const [snapShotData, setSnapShotData] = React.useState<{
         tickerData: TickerData | undefined
@@ -146,8 +146,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     });
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
     const [awardList, setAwardList] = React.useState<AwardItme[]>([])
-    const [isLoading, setIsLoading] = React.useState(false)
-    const [isRecentLoading, setIsRecentLoading] = React.useState(false)
+    // const [isLoading, setIsLoading] = React.useState(false)
+    // const [isRecentLoading, setIsRecentLoading] = React.useState(false)
     const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number; }[]>([])
     const {forex} = store.getState().system
     const [stobPair,setStobPair]  =  React.useState< {stob:string|undefined,btos:string|undefined}>({stob:undefined,btos:undefined})
@@ -202,116 +202,116 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         getLpTokenList()
     }, [getLpTokenList])
 
-    const getLpTokenPrice = React.useCallback((market: string) => {
-        if (addressIndex && !!lpTokenList.length) {
-            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[ 0 ]
-            if (address && lpTokenList) {
-                return lpTokenList.find((o) => o.addr === address)?.price
-            }
-            return undefined
-        }
-        return undefined
-    }, [addressIndex, lpTokenList])
+    // const getLpTokenPrice = React.useCallback((market: string) => {
+    //     if (addressIndex && !!lpTokenList.length) {
+    //         const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[ 0 ]
+    //         if (address && lpTokenList) {
+    //             return lpTokenList.find((o) => o.addr === address)?.price
+    //         }
+    //         return undefined
+    //     }
+    //     return undefined
+    // }, [addressIndex, lpTokenList])
 
-    const getUserAmmPoolTxs = React.useCallback(({
-                                                     limit = 14,
-                                                     offset = 0,
-                                                 }) => {
-        if (ammMap && forex) {
-            const url = routerLocation.pathname
-            const list = url.split('/')
-            const market = list[ list.length - 1 ]
+    // const getUserAmmPoolTxs = React.useCallback(({
+    //                                                  limit = 14,
+    //                                                  offset = 0,
+    //                                              }) => {
+    //     if (ammMap && forex) {
+    //         const url = routerLocation.pathname
+    //         const list = url.split('/')
+    //         const market = list[ list.length - 1 ]
 
-            const addr = ammMap[ 'AMM-' + market ]?.address
+    //         const addr = ammMap[ 'AMM-' + market ]?.address
 
-            if (addr) {
-                setIsLoading(true)
-                getUserAmmTransaction({
-                    address: addr,
-                    limit: limit,
-                    offset,
-                    txStatus: 'processed'
-                })?.then((res) => {
-                    let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
+    //         if (addr) {
+    //             setIsLoading(true)
+    //             getUserAmmTransaction({
+    //                 address: addr,
+    //                 limit: limit,
+    //                 offset,
+    //                 txStatus: 'processed'
+    //             })?.then((res) => {
+    //                 let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
     
-                    const formattedArray = _myTradeArray.map((o: any) => {
-                        const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
-                        const formattedBalance = Number(volumeToCount(market, o.totalBalance))
-                        const price = getLpTokenPrice(market)
-                        const totalDollar = (formattedBalance || 0) * (price || 0) as any;
-                        const totalYuan = totalDollar * forex
-                        return ({
-                            ...o,
-                            totalDollar: totalDollar,
-                            totalYuan: totalYuan,
-                        })
-                    })
-                    // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
-                    setMyAmmMarketArray(formattedArray || [])
-                    setAmmUserTotal(res.totalNum)
-                    setIsLoading(false)
-                })
-            }
-        }
-    }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
+    //                 const formattedArray = _myTradeArray.map((o: any) => {
+    //                     const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+    //                     const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+    //                     const price = getLpTokenPrice(market)
+    //                     const totalDollar = (formattedBalance || 0) * (price || 0) as any;
+    //                     const totalYuan = totalDollar * forex
+    //                     return ({
+    //                         ...o,
+    //                         totalDollar: totalDollar,
+    //                         totalYuan: totalYuan,
+    //                     })
+    //                 })
+    //                 // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+    //                 setMyAmmMarketArray(formattedArray || [])
+    //                 setAmmUserTotal(res.totalNum)
+    //                 setIsLoading(false)
+    //             })
+    //         }
+    //     }
+    // }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
 
-    const getRecentAmmPoolTxs = React.useCallback(({
-        limit = 15,
-        offset = 0,
-    }) => {
-        if (ammMap && forex) {
-            const url = routerLocation.pathname
-            const list = url.split('/')
-            const market = list[list.length - 1]
-            const addr = ammMap['AMM-' + market]?.address
+    // const getRecentAmmPoolTxs = React.useCallback(({
+    //     limit = 15,
+    //     offset = 0,
+    // }) => {
+    //     if (ammMap && forex) {
+    //         const url = routerLocation.pathname
+    //         const list = url.split('/')
+    //         const market = list[list.length - 1]
+    //         const addr = ammMap['AMM-' + market]?.address
 
-            if (addr) {
-                setIsRecentLoading(true)
-                getRecentAmmTransaction({
-                    address: addr,
-                    limit: limit,
-                    offset,
-                })?.then(({ammPoolTrades, totalNum}) => {
-                    let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades)
+    //         if (addr) {
+    //             setIsRecentLoading(true)
+    //             getRecentAmmTransaction({
+    //                 address: addr,
+    //                 limit: limit,
+    //                 offset,
+    //             })?.then(({ammPoolTrades, totalNum}) => {
+    //                 let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades)
     
-                    const formattedArray = _tradeArray.map((o: any) => {
-                        const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
-                        const formattedBalance = Number(volumeToCount(market, o.totalBalance))
-                        const price = getLpTokenPrice(market)
-                        const totalDollar = (formattedBalance || 0) * (price || 0) as any;
-                        const totalYuan = totalDollar * forex
-                        return ({
-                            ...o,
-                            totalDollar: totalDollar,
-                            totalYuan: totalYuan,
-                        })
-                    })
-                    // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
-                    setAmmMarketArray(formattedArray || [])
-                    setAmmTotal(totalNum)
-                    setIsRecentLoading(false)
-                })
-            }
-        }
-    }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
+    //                 const formattedArray = _tradeArray.map((o: any) => {
+    //                     const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+    //                     const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+    //                     const price = getLpTokenPrice(market)
+    //                     const totalDollar = (formattedBalance || 0) * (price || 0) as any;
+    //                     const totalYuan = totalDollar * forex
+    //                     return ({
+    //                         ...o,
+    //                         totalDollar: totalDollar,
+    //                         totalYuan: totalYuan,
+    //                     })
+    //                 })
+    //                 // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+    //                 setAmmMarketArray(formattedArray || [])
+    //                 setAmmTotal(totalNum)
+    //                 setIsRecentLoading(false)
+    //             })
+    //         }
+    //     }
+    // }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
 
-    useDeepCompareEffect(() => {
-        if (!!lpTokenList.length) {
-            getUserAmmPoolTxs({})
-            getRecentAmmPoolTxs({})
-        }
-    }, [getUserAmmPoolTxs, getRecentAmmPoolTxs, lpTokenList])
+    // useDeepCompareEffect(() => {
+    //     if (!!lpTokenList.length) {
+    //         getUserAmmPoolTxs({})
+    //         getRecentAmmPoolTxs({})
+    //     }
+    // }, [getUserAmmPoolTxs, getRecentAmmPoolTxs, lpTokenList])
 
     const walletLayer2DoIt = React.useCallback(() => {
         const {walletMap: _walletMap} = makeWalletLayer2(false);
 
         setWalletMap(_walletMap as WalletMapExtend<any>)
-        if (_walletMap) {
-            getUserAmmPoolTxs({})
-            getRecentAmmPoolTxs({})
-        }
+        // if (_walletMap) {
+        //     getUserAmmPoolTxs({})
+        //     getRecentAmmPoolTxs({})
+        // }
         return _walletMap
-    }, [makeWalletLayer2, getUserAmmPoolTxs, makeMyAmmMarketArray, marketArray, pair, getRecentAmmPoolTxs])
+    }, [makeWalletLayer2, /* getUserAmmPoolTxs */makeMyAmmMarketArray, marketArray, pair, /* getRecentAmmPoolTxs */])
 
     const getPairList = React.useCallback(async (coinPairInfo: any) => {
         // myLog('***  getPairList   coinPairInfo:', coinPairInfo)
@@ -472,15 +472,15 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         snapShotData,
         pair,
         tradeFloat,
-        ammMarketArray,
-        myAmmMarketArray,
+        // ammMarketArray,
+        // myAmmMarketArray,
         pairHistory,
         awardList,
-        getUserAmmPoolTxs,
-        showAmmPoolLoading: isLoading,
-        isRecentLoading,
-        ammTotal,
-        ammUserTotal,
+        // getUserAmmPoolTxs,
+        // showAmmPoolLoading: isLoading,
+        // isRecentLoading,
+        // ammTotal,
+        // ammUserTotal,
         stob:stobPair.stob,
         btos:stobPair.btos
         // recentTxnTotal,

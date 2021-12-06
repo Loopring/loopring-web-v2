@@ -33,7 +33,7 @@ import _ from 'lodash'
 import { getTimestampDaysLater } from "utils/dt_tools";
 import { DAYS } from "defs/common_defs";
 import { useSystem } from '../../../stores/system';
-import { useCoinPair } from '../CoinPairPanel/hooks'
+import { useAmmPool } from '../hook'
 
 // ----------calc hook -------
 
@@ -70,7 +70,7 @@ export const useAmmJoin = ({
     const {allowTrade} = useSystem();
     const {ammMap} = useAmmMap();
     const {account, status: accountStatus} = useAccount();
-    const { getUserAmmPoolTxs } = useCoinPair()
+    const { getUserAmmPoolTxs } = useAmmPool()
 
     const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
     const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
