@@ -183,12 +183,13 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             return(
                 <>  
                     <Box className={'textAlignRight'}>
-                        <Button {...bindHover(popoverState)}>
-                            <Typography
-                                component={'span'} style={{ cursor: 'pointer' }}> {
-                                    typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, undefined, undefined, undefined, true, { isFait: true })}
-                            </Typography>
-                        </Button>
+                        <Typography
+                            {...bindHover(popoverState)}
+                            paddingTop={1}
+                            component={'span'} 
+                            style={{ cursor: 'pointer' }}> {
+                            typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, undefined, undefined, undefined, true, { isFait: true })}
+                        </Typography>
                     </Box>
                     <PopoverPure
                         className={'arrow-top-center'}
