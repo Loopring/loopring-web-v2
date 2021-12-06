@@ -177,11 +177,11 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const showRamp = useCallback(() => {
         const widget = new RampInstantSDK({
             hostAppName: 'Loopring',
-            hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
-            // url: 'https://ri-widget-staging.web.app/?swapAsset=LOOPRING_*', // main staging
-            url: 'https://ri-widget-staging.web.app/',
-            userAddress: accAddress,
+            hostLogoUrl: 'https://ramp.network/assets/images/Logo.svg',
+            url: 'https://ri-widget-staging.web.app/', // main staging
             swapAsset: 'LOOPRING_*',
+            userAddress: accAddress,
+            hostApiKey: '7v6thd8gprbgac3mupxdkatvotq97mzy62x4g6ga',
         }).show();
         if (widget && widget.domNodes) {
             (widget as any).domNodes.overlay.style.zIndex = 10000;

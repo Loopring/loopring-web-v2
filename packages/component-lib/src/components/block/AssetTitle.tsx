@@ -1,6 +1,7 @@
 import { Box, Grid, IconButton, Typography } from '@mui/material';
 import { HideIcon, ViewIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom'
 import { AssetTitleProps } from './Interface';
 import styled from '@emotion/styled';
 import { TradeBtnStatus } from '../tradePanel';
@@ -29,6 +30,10 @@ export const AssetTitle = withTranslation('common')(({
                                                          showRamp,
                                                      }: AssetTitleProps & WithTranslation) => {
     // const [isShow, setIsShow] = React.useState<boolean>(assetInfo.isShow ? assetInfo.isShow : true);
+
+    const {search} = useLocation()
+    const isTestRamp = search === '?extra=ramp'
+    
     return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
         <Grid item xs={7} display={'flex'} flexDirection={'column'}>
             <BoxStyled component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
@@ -57,8 +62,10 @@ export const AssetTitle = withTranslation('common')(({
             </Typography>
         </Grid>
         <ButtonListRightStyled item xs={5} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-            <Button variant={'outlined'} size={'medium'} color={'primary'}
-                    onClick={showRamp}>Ramp</Button>
+            {isTestRamp && (
+                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                onClick={showRamp}>Ramp</Button>
+            )}
             <Button variant={'outlined'} size={'medium'} color={'primary'}
                     loading={btnShowTransferStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false}
