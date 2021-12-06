@@ -60,7 +60,13 @@ const applyProps = (index: number) => {
 }
 
 export const CoinPairPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
-({t, ...rest}:
+({t, ammMarketArray,
+    ammTotal,
+    myAmmMarketArray,
+    ammUserTotal,
+    isMyAmmLoading,
+    isRecentLoading,
+    getUserAmmPoolTxs, ...rest}:
      WithTranslation & any) => {    //ActivityMap<I, I>
     const {currency} = useSettings();
     const {tokenPrices} = store.getState().tokenPrices
@@ -71,13 +77,13 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         pair,
         coinPairInfo,
         walletMap,
-        ammMarketArray,
-        myAmmMarketArray,
+        // ammMarketArray,
+        // myAmmMarketArray,
         pairHistory,
-        getUserAmmPoolTxs,
-        showAmmPoolLoading,
-        ammUserTotal,
-        isRecentLoading,
+        // getUserAmmPoolTxs,
+        // showAmmPoolLoading,
+        // ammUserTotal,
+        // isRecentLoading,
         stob,
         btos,
     } = useCoinPair();
@@ -308,7 +314,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             pageSize: 14,
                             total: ammUserTotal
                         }}
-                        showloading={showAmmPoolLoading}
+                        showloading={isMyAmmLoading}
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.rowHeaderHeight}
                         currentheight={tableHeight}

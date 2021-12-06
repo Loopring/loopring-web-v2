@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { PoolsPanel } from './PoolsPanel'
 import { CoinPairPanel } from './CoinPairPanel';
+import { useAmmPool } from './hook'
 
 const TableWrapperStyled = styled(Box)`
     display: flex;
@@ -29,9 +30,27 @@ export const LiquidityPage = withTranslation('common', { withRef: true })(() => 
         }
     }
 
+    const {
+        ammMarketArray,
+        ammTotal,
+        myAmmMarketArray,
+        ammUserTotal,
+        isMyAmmLoading,
+        isRecentLoading,
+        getUserAmmPoolTxs,
+    } = useAmmPool()
+
     return <>
         {!!symbol ? <Box display={'flex'} flexDirection={'column'} flex={1} alignSelf={'flex-start'}>
-            <CoinPairPanel />
+            <CoinPairPanel {...{
+                ammMarketArray,
+                ammTotal,
+                myAmmMarketArray,
+                ammUserTotal,
+                isMyAmmLoading,
+                isRecentLoading,
+                getUserAmmPoolTxs,
+            }} />
         </Box> : <TableWrapperStyled>
             {(selected === 'pools') && <PoolsPanel />}
         </TableWrapperStyled>}
