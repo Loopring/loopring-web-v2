@@ -183,8 +183,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             userAddress: accAddress,
             hostApiKey: '7v6thd8gprbgac3mupxdkatvotq97mzy62x4g6ga',
         }).show();
+        
         if (widget && widget.domNodes) {
-            (widget as any).domNodes.overlay.style.zIndex = 10000;
+            (widget as any).domNodes.shadowHost.style.position = 'absolute';
         }
     }, [accAddress])
 
