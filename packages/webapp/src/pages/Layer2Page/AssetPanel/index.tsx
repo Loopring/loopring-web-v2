@@ -178,7 +178,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         const widget = new RampInstantSDK({
             hostAppName: 'Loopring',
             hostLogoUrl: 'https://ramp.network/assets/images/Logo.svg',
-            url: 'https://ri-widget-staging.web.app/', // main staging
+            // url: 'https://ri-widget-staging.web.app/', // main staging
             swapAsset: 'LOOPRING_*',
             userAddress: accAddress,
             hostApiKey: '7v6thd8gprbgac3mupxdkatvotq97mzy62x4g6ga',
