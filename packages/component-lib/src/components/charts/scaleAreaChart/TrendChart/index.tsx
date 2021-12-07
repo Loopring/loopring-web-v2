@@ -166,7 +166,7 @@ const TrendChart = ({
         return (
             <g transform={`translate(${x}, ${y})`}>
                 <text x={0} y={0} dy={16} fontSize={12} textAnchor="start" fill="#A1A7BB">
-                    {payload.value}
+                    {isDailyTrend ? moment(payload.value).format('MMM DD') : payload.value}
                 </text>
             </g>
         )
@@ -220,7 +220,7 @@ const TrendChart = ({
                 </defs>
                 <XAxis
                     hide={!showXAxis && !isDailyTrend}
-                    dataKey={isDailyTrend ? 'timeStamp' : 'date'} /* tickFormatter={convertDate} */
+                    dataKey={isDailyTrend ? 'timeStamp' : 'date'}
                     interval={isDailyTrend ? 5 : 8}
                     axisLine={isDailyTrend}
                     tickLine={isDailyTrend}
