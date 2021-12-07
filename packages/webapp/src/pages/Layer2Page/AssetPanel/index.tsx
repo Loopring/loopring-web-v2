@@ -25,6 +25,7 @@ import { Currency } from '@loopring-web/loopring-sdk';
 import { useSystem } from 'stores/system';
 import { useAccount } from 'stores/account';
 import { useTokenPrices } from 'stores/tokenPrices'
+import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -83,7 +84,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     // const [pageSize, setPageSize] = useState(10);
     // const [chartPeriod, setChartPeriod] = useState('week')
     const {allowTrade, forex} = useSystem();
-    const { account: { accountId } } = useAccount();
+    const { account: { accountId, accAddress } } = useAccount();
     const { tokenPrices } = useTokenPrices()
     const {marketArray, assetsRawData, userAssets, getUserAssets} = useGetAssets()
     const {currency, themeMode, setHideL2Assets, setHideLpToken, setHideSmallBalances} = useSettings()
@@ -173,6 +174,20 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         }
     }, [history])
 
+    const showRamp = useCallback(() => {
+        const widget = new RampInstantSDK({
+            hostAppName: 'Loopring',
+            hostLogoUrl: 'https://ramp.network/assets/images/Logo.svg',
+            url: 'https://ri-widget-staging.web.app/', // main staging
+            swapAsset: 'LOOPRING_*',
+            userAddress: accAddress,
+            hostApiKey: '7v6thd8gprbgac3mupxdkatvotq97mzy62x4g6ga',
+        }).show();
+        if (widget && widget.domNodes) {
+            (widget as any).domNodes.overlay.style.zIndex = 10000;
+        }
+    }, [accAddress])
+
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
             totalAsset: assetsRawData.map(o => currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
@@ -186,6 +201,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         onShowTransfer,
         onShowWithdraw,
         setHideL2Assets,
+        showRamp,
     }
 
     const ethFaitPriceDollar = tokenPrices ? tokenPrices['ETH'] : 0
