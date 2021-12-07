@@ -21,6 +21,11 @@ const LinkStyle = styled(Link)`
   &:hover {
     color: var(--color-text-hover);
   }
+  &[disabled] {
+    &:hover {
+
+    }
+  }
 ` as typeof Link;
 const FooterDiv = styled(Box)`
   background: var(--color-global-bg);
@@ -67,7 +72,7 @@ const linkListMap = {
         },
                 {
             linkName: 'FAQ', // FAQ
-            linkHref: ""
+            linkHref: null,
         },
         {
             linkName: 'CreatorGrants', // Creator Grants
@@ -143,9 +148,10 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
                             variant="body2" component="div"> {t('labelFooter' + key.toString())} </Typography>
                 <Box display={'flex'} flexDirection={'column'} height={'100%'} justifyContent={'flex-start'}>
                     {linkListMap[ key ].map((item: any) => {
-                        return <LinkStyle /* href={item.linkHref} */ key={item.linkName}
+                        // TODO(winda): disable a button if linkHref is null
+                        return <LinkStyle  /*href={item.linkHref}*/ key={item.linkName}
                                                                      onClick={() => handleLinkClick(item.linkHref)}>
-                            {t('label' + 'key' + item.linkName)}
+                            {t('labelkey' + item.linkName)}
                         </LinkStyle>
                     })}
                 </Box>
@@ -154,7 +160,9 @@ export const Footer = withTranslation(['layout'])(({t}: any) => {
     }, [linkListMap])
 
     const handleLinkClick = React.useCallback((href: string) => {
-        window.open(href)
+        if (href) {
+            window.open(href)
+        }
     }, [])
     const medias = React.useMemo(()=>{
         return                             <List style={{display: 'flex', alignItems: 'flex-start', paddingTop: 0, paddingBottom: 0}}>
