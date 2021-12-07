@@ -181,7 +181,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             // url: 'https://ri-widget-staging.web.app/', // main staging
             swapAsset: 'LOOPRING_*',
             userAddress: accAddress,
-            hostApiKey: '7v6thd8gprbgac3mupxdkatvotq97mzy62x4g6ga',
+            hostApiKey: 'syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d', // test env,
         }).show();
         
         if (widget && widget.domNodes) {
