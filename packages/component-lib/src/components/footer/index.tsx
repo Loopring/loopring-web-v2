@@ -65,6 +65,10 @@ const linkListMap = {
             // linkHref: 'https://loopring.io/#/newticket'
             linkHref: 'https://desk.zoho.com/portal/loopring/en/home'
         },
+                {
+            linkName: 'FAQ', // FAQ
+            linkHref: ""
+        },
         {
             linkName: 'CreatorGrants', // Creator Grants
             linkHref: "https://www.loopringgrants.org/"
