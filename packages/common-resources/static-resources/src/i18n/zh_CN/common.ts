@@ -177,7 +177,7 @@ export default {
     labelConnectBy: '当前连接 <1>{{connectBy}}</1>',
     labelWrongNetwork: '未识别网络',
     labelActivatedAccountDeposit: '首次开通二层钱包需充值并激活',
-    labelActivatedAccountNotSupport: 'We are apologize, Loopring app not support your address current now.',
+    labelActivatedAccountNotSupport: 'We apologize, loopring app does not support your address currently.',
     labelProcessing: '请稍等片刻',
     labelMetaMaskProcessing: 'MetaMask正在连接路印钱包',
     labelMetaMaskProcessDescribe: '请在MetaMask的弹出窗口内点击确定按钮。 如果MetaMask插件没有主动弹出窗口, 请在浏览器工具栏中点击 <1></1> 图标。',
