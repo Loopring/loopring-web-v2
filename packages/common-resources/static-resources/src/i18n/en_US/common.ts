@@ -177,7 +177,7 @@ export default {
     labelConnectBy: 'Connected with <1>{{connectBy}}</1>',
     labelWrongNetwork: 'Wrong network',
     labelActivatedAccountDeposit: 'Please deposit to activate your Layer2 account',
-    labelActivatedAccountNotSupport: 'We are apologize, Loopring app not support your address current now.',
+    labelActivatedAccountNotSupport: 'We apologize, loopring app does not support your address currently.',
     labelProcessing: 'Processing',
     labelMetaMaskProcessing: 'Connect Wallet with MetaMask...',
     labelMetaMaskProcessDescribe: 'Please click ‘Approve’ button on MetaMask popup window. If MetaMask dialog is dismissed, please manually click <1></1> on your browser toolbar.',
