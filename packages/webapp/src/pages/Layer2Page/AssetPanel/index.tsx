@@ -1,10 +1,12 @@
 import { useCallback, useRef, useEffect, useState } from 'react'
 import { useDeepCompareEffect } from 'react-use';
 import { WithTranslation, withTranslation } from 'react-i18next'
+import ReactEcharts from 'echarts-for-react'
 import { getValuePrecisionThousand, myLog, PriceTag } from '@loopring-web/common-resources'
 import { Box, Grid, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
+import moment from 'moment'
 import {
     AssetsTable,
     AssetTitle,
@@ -26,6 +28,9 @@ import { useSystem } from 'stores/system';
 import { useAccount } from 'stores/account';
 import { useTokenPrices } from 'stores/tokenPrices'
 import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
+
+const UP_COLOR = '#00BBA8'
+const DOWN_COLOR = '#fb3838'
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -158,6 +163,8 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     let history = useHistory();
 
+    const { upColor } = useSettings()
+
     const onShowDeposit = useCallback((token?: any) => {
         showDeposit({isShow: true, symbol: token})
     }, [showDeposit])
@@ -213,8 +220,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const currAssetsEthDollar = getValuePrecisionThousand((ethFaitPriceDollar || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
     const currAssetsEthYuan = getValuePrecisionThousand((ethFaitPriceYuan || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
 
-    const handleAssetsTrendMove = useCallback(({close}) => {
-        setCurrAssetsEth(close)
+    const handleAssetsTrendMove = useCallback((params) => {
+        if (params.data) {
+            setCurrAssetsEth(params.data)
+        }
     }, [])
 
     const handleAssetsTrendMoveOut = useCallback(() => {
@@ -224,7 +233,76 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             setCurrAssetsEth(0)
         }
     }, [userAssets])
-    
+
+    const getSign = useCallback((close: string, dataIndex: number) => {
+        let sign
+        const closeLastDay = dataIndex !== 0 && userAssets[ dataIndex - 1 ].close
+        sign = dataIndex > 0 && closeLastDay
+            ? closeLastDay < close 
+                ? 1
+                : -1
+            : 1
+        return sign
+    }, [userAssets])
+
+    const getAssetsTrendChartOption = useCallback(() => {
+        const option = {
+            grid: { top: 0, right: 8, bottom: 24, left: 0 },
+            xAxis: {
+                type: 'category',
+                data: userAssets.map(o => moment(o.timeStamp).format('MMM DD')),
+                axisLabel: {
+                    interval: 7,
+                    align: 'left',
+                }
+            },
+            yAxis: {
+                type: 'value',
+                show: false,
+            },
+            series: [
+                {
+                    data: userAssets.map(o => o.close),
+                    type: 'line',
+                    smooth: true,
+                },
+            ],
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: 'var(--color-pop-bg)',
+                borderColor: 'var(--color-border)',
+                textStyle: {
+                    color: 'var(--color-text-primary)',
+                    fontFamily: 'Roboto'
+                    // fontSize: 13,
+                },
+                padding: 16,
+                formatter: (params: any) => {
+                    console.log({params}, userAssets)
+                    const {name, data, dataIndex} = params[0]
+                    const change = dataIndex === 0 ? '--' : (((data - userAssets[dataIndex - 1].close) / userAssets[dataIndex - 1].close) * 100).toFixed(2)
+                    const sign = getSign(data, dataIndex)
+                    const renderColor = sign !== 1 
+                        ? upColor === 'green' 
+                            ? DOWN_COLOR 
+                            : UP_COLOR 
+                        : upColor === 'green' 
+                            ? UP_COLOR
+                            : DOWN_COLOR
+                    let renderHtml = `<div>
+                        <div>${moment(name).format('MMM DD [UTC]Z')}</div>
+                        <div>
+                            <span>ETH: ${data}</span>
+                            <span style="color: ${renderColor}">${Number(change || 0) > 0 ? `+${change}` : change} %</span>
+                        </div>
+                    </div>`
+                    return renderHtml
+                }
+            },
+        }
+        return option
+    }, [userAssets, getSign])
+
     return (
         <>
             <StyleTitlePaper paddingX={3} paddingY={5/2} className={'MuiPaper-elevation2'} >
@@ -252,18 +330,24 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         <Typography component={'span'} variant={'h5'}>{getCurrAssetsEth()} ETH </Typography>
                         <Typography component={'span'} variant={'body2'} color={'var(--color-text-third)'}>&nbsp;&#8776;&nbsp;{currency === Currency.usd ? PriceTag.Dollar + currAssetsEthDollar : PriceTag.Yuan + currAssetsEthYuan}</Typography>
                     </Box>
-                    {!!userAssets.length ? (
-                        <ScaleAreaChart 
-                        type={ChartType.Trend} 
-                        isDailyTrend 
-                        showArea={false} 
-                        handleMove={handleAssetsTrendMove} 
-                        handleMoveOut={handleAssetsTrendMoveOut}
-                        data={userAssets.map(o => ({
-                            close: o.close,
-                            timeStamp: o.timeStamp,
-                        }))} />
-                    ) : (
+                    {!!userAssets.length ?
+                        (
+                            <ReactEcharts
+                                notMerge={true}
+                                lazyUpdate={true}
+                                option={getAssetsTrendChartOption()} />
+                        )
+                        // <ScaleAreaChart 
+                        // type={ChartType.Trend} 
+                        // isDailyTrend 
+                        // showArea={false} 
+                        // handleMove={handleAssetsTrendMove} 
+                        // handleMoveOut={handleAssetsTrendMoveOut}
+                        // data={userAssets.map(o => ({
+                        //     close: o.close,
+                        //     timeStamp: o.timeStamp,
+                        // }))} />
+                    : (
                         <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
                     )}
                 </Box>
