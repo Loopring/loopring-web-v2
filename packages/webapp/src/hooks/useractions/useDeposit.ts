@@ -96,7 +96,6 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     }, [walletLayer1, symbol, updateDepositData, depositValue])
 
     React.useEffect(() => {
-        myLog('isShow:', isShow)
         if (isShow) {
             walletLayer1Callback()
         }

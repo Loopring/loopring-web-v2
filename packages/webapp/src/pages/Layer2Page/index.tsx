@@ -3,7 +3,7 @@ import { useRouteMatch } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
 import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
-import { AccountStatus, fnType, i18n, LoadingIcon, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
+import { AccountStatus, fnType, i18n, LoadingIcon, myLog, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import AssetPanel from './AssetPanel'
 import HistoryPanel from './HistoryPanel'
@@ -18,12 +18,14 @@ import { VipPanel } from './VipPanel';
 import { RewardPanel } from './RewardPanel';
 import { RedPockPanel } from './RedPockPanel';
 import { MyNFTPanel } from './MyNFTPanel';
-
+import { useModals } from 'hooks/useractions/useModals'
+import { accountServices } from 'services/account/accountServices'
 
 export const subMenu = subMenuLayer2
 
 const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
     const {status: accountStatus, account} = useAccount();
+    const { showDeposit } = useModals()
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
 
@@ -50,6 +52,14 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
 
     return <Button variant={'contained'} size={'large'} color={'primary'} fullWidth={true}
                    style={{maxWidth: '280px'}} onClick={() => {
+        // remove the middle account status panel
+        // make deposite directly to create an account
+        if (account.readyState === AccountStatus.NO_ACCOUNT) {
+            myLog('DEPOSITING! sendCheckAcc',)
+            accountServices.sendCheckAcc()
+            showDeposit({ isShow: true })
+            return
+        }
         accountStaticCallBack(_btnClickMap, [])
     }
     }>{t(label)}</Button>
