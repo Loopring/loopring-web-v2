@@ -22,6 +22,8 @@
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^7.0.3",
     "easy-template-string": "^1.0.1",
+    "echarts": "^5.2.2",
+    "echarts-for-react": "^3.0.2",
     "ffjavascript": "^0.1.0",
     "github-markdown-css": "^5.0.0",
     "i18next": "^20.1.0",
