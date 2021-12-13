@@ -13,10 +13,10 @@ import * as _ from "lodash";
 import {
   HelpIcon,
   NFTWholeINFO,
-  // RampIcon
+  RampIcon
 } from "@loopring-web/common-resources";
 import { BasicANFTTrade } from "./BasicANFTTrade";
-// import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
+import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
 
 //SelectReceiveCoin
 export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
@@ -87,10 +87,25 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       if (error?.error) {
         setAddressError(error);
       }
+      setAddress(address);
+      debounceAddress({ address });
     }
-    setAddress(address);
-    debounceAddress({ address });
   };
+
+  const showRamp = React.useCallback(() => {
+    const widget = new RampInstantSDK({
+        hostAppName: 'Loopring',
+        hostLogoUrl: 'https://ramp.network/assets/images/Logo.svg',
+        swapAsset: 'LOOPRING_*',
+        userAddress: addressDefault,
+        hostApiKey: 'syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d',
+    }).show();
+    
+    if (widget && widget.domNodes) {
+        (widget as any).domNodes.shadowHost.style.position = 'absolute';
+        (widget as any).domNodes.overlay.style.zIndex = 10000;
+    }
+  }, [addressDefault])
 
   const inputButtonDefaultProps = {
     label: t("depositLabelEnterToken"),
@@ -131,54 +146,54 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
                     will be added to your balance within <TypographyGood component={'span'}>2 minutes</TypographyGood>.
                 </Trans>
             </Typography> */}
-        <PopoverPure
-          className={"arrow-center"}
-          {...bindPopper(popupState)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-        >
-          <Typography
-            padding={2}
-            component={"p"}
-            variant={"body2"}
-            whiteSpace={"pre-line"}
-          >
-            <Trans i18nKey={description ? description : "depositDescription"}>
-              Once your deposit is confirmed on Ethereum, it will be added to
-              your balance within 2 minutes.
-            </Trans>
-          </Typography>
-        </PopoverPure>
-      </Grid>
-      <Grid item marginTop={2} alignSelf={"stretch"}>
-        {type === "NFT" ? (
-          <Box
-            display={"inline-flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <BasicANFTTrade
-              {...{
-                ...rest,
-                type,
-                t,
-                disabled,
-                walletMap,
-                tradeData,
-                // coinMap,
-                inputNFTDefaultProps: { label: "" },
-                // inputButtonDefaultProps,
-                inputNFTRef: inputBtnRef,
-              }}
-            />
-          </Box>
-        ) : (
+            <PopoverPure
+                className={'arrow-center'}
+                {...bindPopper(popupState)}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Typography padding={2} component={'p'} variant={'body2'} whiteSpace={'pre-line'}>
+                    <Trans i18nKey={description ? description : 'depositDescription'}>
+                        Once your deposit is confirmed on Ethereum, it
+                        will be added to your balance within 2 minutes.
+                    </Trans>
+                </Typography>
+            </PopoverPure>
+        </Grid>
+        <Grid item alignSelf={"flex-end"} display={'flex'} alignItems={'center'}>
+            <Button
+                variant={'text'} 
+                style={{ textTransform: 'none', paddingRight: 0 }}
+                onClick={showRamp}
+            >
+                {t('labelDepositRamp')}
+                <RampIcon fontSize={'large'} style={{ marginLeft: 4, marginRight: 4 }} />
+                <Typography>Ramp</Typography>
+            </Button>
+        </Grid>
+        <Grid item marginTop={2} alignSelf={"stretch"}>
+            {type === 'NFT'? (<Box display={'inline-flex'} alignItems={'center'} justifyContent={'space-between'}>
+                <BasicANFTTrade
+                   {...{
+                    ...rest,
+                    type,
+                    t,
+                    disabled,
+                    walletMap,
+                    tradeData,
+                    // coinMap,
+                    inputNFTDefaultProps:  {label:''},
+                    // inputButtonDefaultProps,
+                    inputNFTRef: inputBtnRef,
+                }}                />
+            </Box>
+            ) : (
           <BasicACoinTrade
             {...{
               ...rest,
