@@ -154,7 +154,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
                onClose={() => setShowDeposit({isShow: false})}
                content={<DepositPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: DEFAULT_DEPOSIT_HEIGHT, ...depositProps,
+                   _height: 'auto', ...depositProps,
                }} > </DepositPanel>}/>
         <Modal open={isShowResetAccount.isShow}
                onClose={() => setShowResetAccount({...isShowResetAccount, isShow: false})}

@@ -188,7 +188,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             // url: 'https://ri-widget-staging.web.app/', // main staging
             swapAsset: 'LOOPRING_*',
             userAddress: accAddress,
-            hostApiKey: 'syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d', // test env,
+            hostApiKey: 'syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d',
         }).show();
         
         if (widget && widget.domNodes) {
@@ -246,7 +246,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const getAssetsTrendChartOption = useCallback(() => {
         const option = {
-            grid: { top: 0, right: 8, bottom: 24, left: 0 },
+            grid: { top: 8, right: 8, bottom: 24, left: 0 },
             xAxis: {
                 show: false,
                 type: 'category',

@@ -184,7 +184,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
         const {readyState, connectName} = account
 
-        console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
+        // console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
 
         let result: ActionResult = {code: ActionResultCode.NoError}
 
@@ -352,6 +352,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             btnInfo,
             isNewAccount,
             title,
+            defaultAddress: account?.accAddress,
             tradeData: depositValue as any,
             coinMap: totalCoinMap as CoinMap<any>,
             walletMap: walletLayer1 as WalletMap<any>,
@@ -360,7 +361,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             handleAddressError,
             onDepositClick,
         }
-    }, [account.readyState, btnInfo, totalCoinMap, walletLayer1, onDepositClick])
+    }, [account.readyState, btnInfo, totalCoinMap, walletLayer1, onDepositClick, account.accAddress])
 
     return {
         depositProps,

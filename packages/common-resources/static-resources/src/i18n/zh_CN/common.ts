@@ -76,6 +76,7 @@ export default {
     labelShowAccountInfo: '查看,设置账号信息',
     labelAssetTitle: '总资产(路印二层)',
     labelShowAccount: '显示或隐藏总资产',
+    labelAssetsBtnRamp: 'Buy with Ramp',
     labelBtnDeposit: '充值',
     labelBtnTransfer: '转账',
     labelBtnWithdraw: '提现',
@@ -422,4 +423,5 @@ export default {
     labelTransferMemo: 'Memo',
     labelTransferConfirm: 'Confirm',
     labelTransferSameAddress: 'Cannot transfer to your own address',
+    labelDepositRamp: 'Buy Crypto with'
 }

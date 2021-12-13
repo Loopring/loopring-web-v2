@@ -76,6 +76,7 @@ export default {
     labelShowAccountInfo: 'Show account information',
     labelAssetTitle: 'Layer2 Total Assets',
     labelShowAccount: 'Show or Hide Assets',
+    labelAssetsBtnRamp: 'Buy with Ramp',
     labelBtnDeposit: 'Deposit',
     labelBtnTransfer: 'Transfer',
     labelBtnWithdraw: 'Withdraw',
@@ -422,4 +423,5 @@ export default {
     labelTransferAddress: 'Transfer Address',
     labelTransferMemo: 'Memo',
     labelTransferSameAddress: 'Cannot transfer to your own address',
+    labelDepositRamp: 'Buy Crypto with'
 }
