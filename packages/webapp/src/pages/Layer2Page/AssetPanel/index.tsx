@@ -217,19 +217,19 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const currAssetsEthDollar = getValuePrecisionThousand((ethFaitPriceDollar || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
     const currAssetsEthYuan = getValuePrecisionThousand((ethFaitPriceYuan || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
 
-    const handleAssetsTrendMove = useCallback((params) => {
-        if (params.data) {
-            setCurrAssetsEth(params.data)
-        }
-    }, [])
+    // const handleAssetsTrendMove = useCallback((params) => {
+    //     if (params.data) {
+    //         setCurrAssetsEth(params.data)
+    //     }
+    // }, [])
 
-    const handleAssetsTrendMoveOut = useCallback(() => {
-        if (!!userAssets.length) {
-            setCurrAssetsEth(userAssets[userAssets.length - 1].close)
-        } else {
-            setCurrAssetsEth(0)
-        }
-    }, [userAssets])
+    // const handleAssetsTrendMoveOut = useCallback(() => {
+    //     if (!!userAssets.length) {
+    //         setCurrAssetsEth(userAssets[userAssets.length - 1].close)
+    //     } else {
+    //         setCurrAssetsEth(0)
+    //     }
+    // }, [userAssets])
 
     const getSign = useCallback((close: string, dataIndex: number) => {
         let sign
@@ -242,16 +242,20 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         return sign
     }, [userAssets])
 
+    const isThemeDark = themeMode === 'dark'
+
     const getAssetsTrendChartOption = useCallback(() => {
         const option = {
             grid: { top: 0, right: 8, bottom: 24, left: 0 },
             xAxis: {
+                show: false,
                 type: 'category',
-                data: userAssets.map(o => moment(o.timeStamp).format('MMM DD')),
-                axisLabel: {
-                    interval: 7,
-                    align: 'left',
-                }
+                // data: userAssets.map(o => moment(o.timeStamp).format('MMM DD')),
+                data: userAssets.map(o => o.timeStamp),
+                // axisLabel: {
+                //     interval: 7,
+                //     align: 'left',
+                // }
             },
             yAxis: {
                 type: 'value',
@@ -262,20 +266,22 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                     data: userAssets.map(o => o.close),
                     type: 'line',
                     smooth: true,
+                    showSymbol: false,
                 },
             ],
             tooltip: {
                 trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow',
+                },
                 backgroundColor: 'var(--color-pop-bg)',
                 borderColor: 'var(--color-border)',
                 textStyle: {
                     color: 'var(--color-text-primary)',
                     fontFamily: 'Roboto'
-                    // fontSize: 13,
                 },
                 padding: 16,
                 formatter: (params: any) => {
-                    console.log({params}, userAssets)
                     const {name, data, dataIndex} = params[0]
                     const change = dataIndex === 0 ? '--' : (((data - userAssets[dataIndex - 1].close) / userAssets[dataIndex - 1].close) * 100).toFixed(2)
                     const sign = getSign(data, dataIndex)
@@ -287,9 +293,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                             ? UP_COLOR
                             : DOWN_COLOR
                     let renderHtml = `<div>
-                        <div>${moment(name).format('MMM DD [UTC]Z')}</div>
+                        <div>${moment(name).format('YYYY-MM-DD')}</div>
                         <div>
-                            <span>ETH: ${data}</span>
+                            <span>${Number(data).toFixed(8)} ETH</span>
                             <span style="color: ${renderColor}">${Number(change || 0) > 0 ? `+${change}` : change} %</span>
                         </div>
                     </div>`
@@ -298,7 +304,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             },
         }
         return option
-    }, [userAssets, getSign])
+    }, [userAssets, getSign, upColor])
 
     return (
         <>
@@ -345,7 +351,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         //     timeStamp: o.timeStamp,
                         // }))} />
                     : (
-                        <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
+                        <ChartWrapper marginTop={2} dark={isThemeDark ? 'true' : 'false'} flex={1} component={'div'}/>
                     )}
                 </Box>
             </StyledChartWrapper>
