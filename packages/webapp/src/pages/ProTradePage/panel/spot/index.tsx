@@ -135,11 +135,14 @@ export const SpotView = withTranslation('common')(({
         </>
     }, [popupMarketState])
 
+    const isMarketUnavailable = marketMap && marketMap.market && ((marketMap.market.status || 0) % 3 !== 0)
+    const marketUnavailableConent = isMarketUnavailable && (marketMap.market.status || 0) % 3 === 2 ? 'This pair doesn’t support limit order, please place a market order' : ''
+
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
                open={toastOpen?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToast}/>
-        <Toast alertText={toastOpenL?.content ?? ''} severity={toastOpenL?.type ?? 'success'}
+        <Toast alertText={isMarketUnavailable ? marketUnavailableConent : toastOpenL?.content ?? ''} severity={toastOpenL?.type ?? 'success'}
                open={toastOpenL?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToastL}/>
         <AlertImpact handleClose={marketSubmit} open={alertOpen}
