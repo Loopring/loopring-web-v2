@@ -217,20 +217,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const currAssetsEthDollar = getValuePrecisionThousand((ethFaitPriceDollar || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
     const currAssetsEthYuan = getValuePrecisionThousand((ethFaitPriceYuan || 0) * (currAssetsEth || 0), undefined, undefined, undefined, false, { isFait: true, floor: true })
 
-    // const handleAssetsTrendMove = useCallback((params) => {
-    //     if (params.data) {
-    //         setCurrAssetsEth(params.data)
-    //     }
-    // }, [])
-
-    // const handleAssetsTrendMoveOut = useCallback(() => {
-    //     if (!!userAssets.length) {
-    //         setCurrAssetsEth(userAssets[userAssets.length - 1].close)
-    //     } else {
-    //         setCurrAssetsEth(0)
-    //     }
-    // }, [userAssets])
-
     const getSign = useCallback((close: string, dataIndex: number) => {
         let sign
         const closeLastDay = dataIndex !== 0 && userAssets[ dataIndex - 1 ].close
@@ -340,16 +326,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                                 lazyUpdate={true}
                                 option={getAssetsTrendChartOption()} />
                         )
-                        // <ScaleAreaChart 
-                        // type={ChartType.Trend} 
-                        // isDailyTrend 
-                        // showArea={false} 
-                        // handleMove={handleAssetsTrendMove} 
-                        // handleMoveOut={handleAssetsTrendMoveOut}
-                        // data={userAssets.map(o => ({
-                        //     close: o.close,
-                        //     timeStamp: o.timeStamp,
-                        // }))} />
                     : (
                         <ChartWrapper marginTop={2} dark={isThemeDark ? 'true' : 'false'} flex={1} component={'div'}/>
                     )}
