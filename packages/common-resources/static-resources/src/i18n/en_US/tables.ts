@@ -3,6 +3,7 @@ export default {
     labelAMM: 'AMM',
     labelTransfer: 'Transfer',
     labelWithdraw: 'Withdrawal',
+    labelWithdrawAction: 'Withdraw',
     labelDeposit: 'Deposit',
     labelTrade: 'Trade',
     labelToken: 'Token',

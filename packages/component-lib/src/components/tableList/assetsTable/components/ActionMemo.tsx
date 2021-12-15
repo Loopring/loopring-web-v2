@@ -119,7 +119,7 @@ const ActionMemo = React.memo(({
             </Grid>
             {!isLp && <Grid item>
                 <Button variant={'text'} size={'medium'} color={'primary'}
-                        onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
+                        onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdrawAction')}</Button>
             </Grid>}
         </Box>
         <>
