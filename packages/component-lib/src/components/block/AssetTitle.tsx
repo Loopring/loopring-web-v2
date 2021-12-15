@@ -58,10 +58,10 @@ export const AssetTitle = withTranslation('common')(({
             </Typography>
         </Grid>
         <ButtonListRightStyled item xs={5} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-            <Button variant={'outlined'} size={'medium'} color={'primary'} style={{ minWidth: 120, textTransform: 'none' }}
+            {/* <Button variant={'outlined'} size={'medium'} color={'primary'} style={{ minWidth: 120, textTransform: 'none' }}
                 onClick={showRamp}>
                 {t('labelAssetsBtnRamp')}
-            </Button>
+            </Button> */}
             <Button variant={'outlined'} size={'medium'} color={'primary'}
                     loading={btnShowTransferStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false}
