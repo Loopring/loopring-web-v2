@@ -13,7 +13,6 @@ export const UpdateAccount = ({
 }: WithTranslation & AccountBaseProps & {
     goUpdateAccount?: () => void ,
     clearDepositHash: () => void ,
-    // updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
     chainInfos:AccountHashInfo}) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}
         alignItems={'center'}>

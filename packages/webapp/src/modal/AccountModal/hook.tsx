@@ -386,10 +386,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                     ...account,
                     clearDepositHash:clearDeposit,
                     chainInfos,
-                    updateDepositHash,
                     onSwitch, onCopy,
                     etherscanUrl:etherscanBaseUrl,
-
                     onViewQRCode, onDisconnect, addressShort,
                     etherscanLink: etherscanBaseUrl + 'address/' + account.accAddress,
                     mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
@@ -591,6 +589,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                 view: <UpdateAccount {...{
                     ...account,
                     clearDepositHash:clearDeposit,
+                    chainInfos,
                     etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
                     onViewQRCode, onDisconnect, addressShort,
