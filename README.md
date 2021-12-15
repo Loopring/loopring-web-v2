@@ -31,11 +31,13 @@ yarn up
 cd ./packages/component-lib
 npm run storybook
 ``` 
-- Welcome to improve or create feature or loopring layer2 website, please follow and use the basic UI-Components,
-see it on component-lib.
-- Project separate a lib call web3-provider, it's a third-part ETH web3 wallet provider service (wallectConnect & metamask), 
-- Welcome to reuse it or support your provider service for our website. 
-- Suggestions and idea are welcome.
+- We appreciate your improvement or initiatives for loopring layer2 website, please view the source code in the component-lib.
+
+- Project separates a lib called web3-provider, which is a third-party ETH web3 wallet provider service (wallectConnect & metamask), 
+
+- Welcome to reuse it or integrate your provider service to our website. 
+
+- Feel free to leave suggestions or ideas.
 
 
 ## Framework Design

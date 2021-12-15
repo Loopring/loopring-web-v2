@@ -509,3 +509,15 @@ export const ExitIcon = (props: SvgIconProps) => {
         <path d="M17.9989 13.0001V16.0001L22.9989 12.0001L17.9989 8.0001V11.0001H10.9989V13.0001H17.9989Z" />
     </SvgIcon>
 }
+
+export const RampIcon = (props: SvgIconProps) => {
+    return <SvgIcon {...props} width="29" height="17" viewBox="0 0 29 17" fill="none" >
+        <rect x="0.277344" y="0.0126953" width="28" height="16" fill="url(#pattern0)"/>
+        <defs>
+        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+        <use xlinkHref="#image0_20003_28289" transform="scale(0.0357143 0.0625)"/>
+        </pattern>
+        <image id="image0_20003_28289" width="28" height="16" xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAQCAYAAAAFzx/vAAABhUlEQVRIDa2V3W2DMBCALQXeGeGyASN0BKTa72xQZCsS9kszAhukk3DZINkg2YBskOoMdlwT/qQioTO+n+9s3xnGFh5A1exRPQFlOWl6LLJEc0wM75gR+aTdkgJQ/RDMvYDye+RzLLLUiEtqxJNegu70ZzGyW5qIYS+oarxvBHNQkjsjpnfEB2CMAVYZoLo4QCwpEW9fF5Bo8QhB4XgRuhZGUEDZAR5yOrM5aGrEl08wHGyBuVX3UFmyuoBUi2u4umh8ClmMMiVnFyiW/Ypoq+Up1tG3rWB7nvwegWwhDXM9FLCCOdi+VQ/KDlp5fgdzc4CqoOqcAT4TIxpbJBTUOcaSkvlXoA2Gh3zfqnsMc9+0lb3d374M9CWjLdXiNrlCzV/V3QerMmjl1QWJ5Vtoqx72/KhoguYfQWMYAemxlboO2tAx+LYwvBtBhpsn1bwawr8Xa6HWmxp/BrbY+GEKq6+2if7bBHPgGAooj07nZV8svunp1klq/uH1Wwfrf0/iTLCl39Mvr+A3U+zQlLoAAAAASUVORK5CYII="/>
+        </defs>
+    </SvgIcon>
+}

@@ -307,9 +307,6 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                         </>
                     ) : (
                         <>
-                            <LinkStyle variant={'body2'} href={'https://legacy.loopring.io/'}>
-                                Use Legacy UI
-                            </LinkStyle>
                             {getMenuButtons({toolbarList: headerToolBarData, i18n, t, ...rest})}
                         </>
                     )}

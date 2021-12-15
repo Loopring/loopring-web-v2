@@ -164,7 +164,7 @@ export const subMenuLayer2 = {
             icon: VipIcon,
             router: {path: '/layer2/vip'},
             label: {
-                id: 'vipPanel',
+                id: 'vip',
                 i18nKey: 'labelVipPanel',
             },
         }]

@@ -76,6 +76,7 @@ export default {
     labelShowAccountInfo: '查看,设置账号信息',
     labelAssetTitle: '总资产(路印二层)',
     labelShowAccount: '显示或隐藏总资产',
+    labelAssetsBtnRamp: 'Buy with Ramp',
     labelBtnDeposit: '充值',
     labelBtnTransfer: '转账',
     labelBtnWithdraw: '提现',
@@ -177,7 +178,7 @@ export default {
     labelConnectBy: '当前连接 <1>{{connectBy}}</1>',
     labelWrongNetwork: '未识别网络',
     labelActivatedAccountDeposit: '首次开通二层钱包需充值并激活',
-    labelActivatedAccountNotSupport: 'We are apologize, Loopring app not support your address current now.',
+    labelActivatedAccountNotSupport: 'We apologize, loopring app does not support your address currently.',
     labelProcessing: '请稍等片刻',
     labelMetaMaskProcessing: 'MetaMask正在连接路印钱包',
     labelMetaMaskProcessDescribe: '请在MetaMask的弹出窗口内点击确定按钮。 如果MetaMask插件没有主动弹出窗口, 请在浏览器工具栏中点击 <1></1> 图标。',
@@ -422,4 +423,5 @@ export default {
     labelTransferMemo: 'Memo',
     labelTransferConfirm: 'Confirm',
     labelTransferSameAddress: 'Cannot transfer to your own address',
+    labelDepositRamp: 'Buy Crypto with'
 }

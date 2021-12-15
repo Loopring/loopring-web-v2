@@ -112,8 +112,11 @@ const TableStyled = styled(Box)`
         .textAlignRight {
             text-align: right;
         }
-        .textAlingCenter {
+        .textAlignCenter {
             text-align: center;
+        }
+        .textAlignLeft{
+            text-align: left;
         }
     }
     // .textAlignRight {
@@ -332,7 +335,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     etherscanBaseUrl,
                 }
                 return (
-                    <Box className="rdg-cell-value textAlignRight" display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
+                    <Box className="rdg-cell-value " display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                         {path ? <Link href={path}>
                                 <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
                             </Link> :
@@ -347,9 +350,9 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
         {
             key: 'status',
             name: t('labelTxMemo'),
-            headerCellClass: 'textAlignRight',
+            headerCellClass: 'textAlingCenter',
             formatter: ({row}) => (
-                <MemoCellStyled title={row['memo']} className="rdg-cell-value rdgCellCenter" >
+                <MemoCellStyled title={row['memo']} className="rdg-cell-value textAlignLeft" >
                     {row['memo'] || EmptyValueTag}
                 </MemoCellStyled>
             )

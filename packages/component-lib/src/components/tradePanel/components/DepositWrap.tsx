@@ -10,8 +10,9 @@ import { Button, IconClearStyled, TextField } from '../../../index';
 import { DepositViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import * as _ from 'lodash'
-import { HelpIcon,NFTWholeINFO } from '@loopring-web/common-resources'
+import { HelpIcon,NFTWholeINFO, RampIcon } from '@loopring-web/common-resources'
 import { BasicANFTTrade } from './BasicANFTTrade';
+import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
 
 //SelectReceiveCoin
 export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
@@ -38,7 +39,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
             return false
         }
     };
-    const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
+    const [address, setAddress] = React.useState<string | undefined>(addressDefault || '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     // const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
     //     error: false,
