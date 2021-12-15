@@ -46,7 +46,7 @@ import {
     ExportAccount_Approve_WaitForAuth,
     ExportAccount_User_Denied,
     ExportAccount_Success,
-    ExportAccount_Failed, WithdrawProps,
+    ExportAccount_Failed
 } from '@loopring-web/component-lib';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 
@@ -55,7 +55,6 @@ import { copyToClipBoard } from '@loopring-web/common-resources';
 import { useAccount } from 'stores/account';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
-import { myLog } from "@loopring-web/common-resources";
 import { useDeposit } from 'hooks/useractions/useDeposit';
 
 import { useTransfer } from 'hooks/useractions/useTransfer';
@@ -71,6 +70,7 @@ import { isContract } from 'utils/web3_tools';
 import { useNFTWithdraw } from '../../hooks/useractions/useNFTWithdraw';
 import { useNFTTransfer } from '../../hooks/useractions/useNFTTransfer';
 import { useNFTDeposit } from '../../hooks/useractions/useNFTDeposit';
+import { LAST_STEP, useModalData } from '../../stores/router';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
@@ -81,7 +81,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         modals: {isShowAccount}, setShowConnect, setShowAccount,
         setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount,
     } = useOpenModals()
-
+    const {lastStep} =  useModalData();
     const {chainId} = useSystem();
 
     const {
@@ -211,36 +211,44 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
     }, [account])
 
 
-    const backToDepositBtnInfo = React.useMemo(() => {
-        return {
-            btnTxt: 'labelRetry',
-            callback: () => {
-                setShowAccount({isShow: false})
-                setShowDeposit({isShow: true})
-                // setShowAccount({isShow: true, step: AccountStep.Deposit});
-            }
-        }
-    }, [])
+  const backToDepositBtnInfo = React.useMemo(() => {
+    return {
+      btnTxt: 'labelRetry',
+      callback: () => {
+        setShowAccount({isShow: false})
+        setShowDeposit({isShow: true})
+        // setShowAccount({isShow: true, step: AccountStep.Deposit});
+      }
+    }
+  }, [])
 
-    const backToTransferBtnInfo = React.useMemo(() => {
-        return {
-            btnTxt: 'labelRetry',
-            callback: () => {
-                setShowAccount({isShow: false,})
-                setShowTransfer({isShow: true,})
-            }
+  const backToTransferBtnInfo = React.useMemo(() => {
+    return {
+      btnTxt: 'labelRetry',
+      callback: () => {
+        if (lastStep === LAST_STEP.transfer) {
+          setShowAccount({isShow: false})
+          setShowTransfer({isShow: true})
+        } else{
+          setShowAccount({isShow: false})
         }
-    }, [])
+      }
+    }
+  }, [lastStep])
 
-    const backToWithdrawBtnInfo = React.useMemo(() => {
-        return {
-            btnTxt: 'labelRetry',
-            callback: () => {
-                setShowAccount({isShow: false})
-                setShowWithdraw({isShow: true})
-            }
+  const backToWithdrawBtnInfo = React.useMemo(() => {
+    return {
+      btnTxt: 'labelRetry',
+      callback: () => {
+        if (lastStep === LAST_STEP.withdraw) {
+          setShowAccount({isShow: false})
+          setShowWithdraw({isShow: true})
+        }else{
+          setShowAccount({isShow: false})
         }
-    }, [setShowWithdraw,])
+      }
+    }
+  }, [setShowWithdraw])
 
     const backToUnlockAccountBtnInfo = React.useMemo(() => {
         return {
@@ -274,7 +282,6 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelTryNext',
             callback: () => {
-                myLog('...labelTryNext...')
                 setShowAccount({isShow: true, step: AccountStep.Transfer_WaitForAuth})
                 transferProcessRequest(transferLastRequest.request, false)
             }
@@ -285,7 +292,6 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelTryNext',
             callback: () => {
-                myLog('...labelTryNext...')
                 setShowAccount({isShow: true, step: AccountStep.Withdraw_WaitForAuth})
                 processRequest(lastRequest.request, false)
             }
@@ -296,7 +302,6 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelClose',
             callback: (e: any) => {
-                myLog('try to close all')
                 setShouldShow(false);
                 setShowTransfer({ isShow: false, })
                 setShowWithdraw({ isShow: false, })
@@ -725,8 +730,6 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
     }, [addressShort,chainInfos, account, depositProps, etherscanBaseUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     const currentModal = accountList[ isShowAccount.step ]
-
-
 
     return {
         nftTransferToastOpen,

@@ -200,9 +200,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
                 if (isAccActivated()) {
 
-                    if (response?.errorInfo) {
+                    if ((response as sdk.ErrorMsg)?.errMsg) {
                         // Withdraw failed
-                        const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                        const code = checkErrorInfo(response, isFirstTime)
                         if (code === sdk.ConnectorError.USER_DENIED) {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
                         } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
@@ -211,7 +211,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                         } else {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                         }
-                    } else if (response?.resultInfo) {
+                    } else if ((response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo ) {
                         setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                     } else {
                         // Withdraw success
