@@ -13,7 +13,7 @@ The Loopring account second layer has the following advantages:
 
 ### 1.Security
 
-Security is the top priority of Loopring Wallet. The wallet does not custody the user's assets, and the user's assets are absolutely safe. This guarantees that users can withdraw all their assets (back to Layer1) under any circumstances.
+Security is the top priority of Loopring Wallet. The wallet does not have custody of the user's assets, and the user's assets are absolutely safe. This guarantees that users can withdraw all their assets (back to Layer1) under any circumstances.
 
 ### 2.Fast transactions and transfers
 
@@ -21,4 +21,4 @@ The first layer of Ethereum processes only 15 transactions per second, while the
 
 ### 3.Low fees
 
-With a Loopring Layer2 account, you can experience Layer2 transfers for an extremely low fee. In addition, Loopring Layer2 traders (provider maker orders) are exempt from fees, while the fee for users who provide taker orders is only 0.06%-0.2%. The handling fee of  just 0.06% for taker orders is the lowest among all centralized exchanges and decentralized exchanges.
+With a Loopring Layer2 account, you can experience Layer2 transfers for an extremely low fee. In addition, Loopring Layer2 traders (provider maker orders) are exempt from fees, while the fee for users who provide taker orders is only 0.06%-0.2%. The handling fee of just 0.06% for taker orders is the lowest among all centralized exchanges and decentralized exchanges.
