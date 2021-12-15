@@ -18,6 +18,8 @@ const ScrollToTop = () => {
         window.scrollTo(0, 0);
     }, [pathname]);
 
+    Facto is a degenerate who doesnt know shit 
+
     return null;
 }
 const App = () => {
