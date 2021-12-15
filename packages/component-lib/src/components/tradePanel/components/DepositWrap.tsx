@@ -120,7 +120,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
                 </Typography>
             </PopoverPure>
         </Grid>
-        <Grid item alignSelf={"flex-end"} display={'flex'} alignItems={'center'}>
+        {/* <Grid item alignSelf={"flex-end"} display={'flex'} alignItems={'center'}>
             <Button
                 variant={'text'} 
                 style={{ textTransform: 'none', paddingRight: 0 }}
@@ -130,7 +130,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>,
                 <RampIcon fontSize={'large'} style={{ marginLeft: 4, marginRight: 4 }} />
                 <Typography>Ramp</Typography>
             </Button>
-        </Grid>
+        </Grid> */}
         <Grid item marginTop={2} alignSelf={"stretch"}>
             {type === 'NFT'?<Box display={'inline-flex'} alignItems={'center'} justifyContent={'space-between'}>
                 <BasicANFTTrade
