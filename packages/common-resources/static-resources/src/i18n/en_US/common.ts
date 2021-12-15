@@ -428,4 +428,5 @@ export default {
     labelTradeRaceYourVolume: 'Your trade volume',
     labelTradeRaceYourRanking: 'Your ranking',
     labelTradeRaceGoTrading: 'Go trading',
+    labelTradeRaceTitle: 'Loopring Holiday Trading Giveaway:\n$600,000 in Prizes!'
 }

@@ -8,7 +8,12 @@ import { getValuePrecisionThousand } from '@loopring-web/common-resources'
 export const useTradeRace = () => {
     const { account: { apiKey, accAddress } } = useAccount()
     const [currPairRankData, setCurrPairRankData] = React.useState<GameRankInfo[]>([])
-    const [currPairUserRank, setCurrPairUserRank] = React.useState<any>(undefined)
+    const [currPairUserRank, setCurrPairUserRank] = React.useState<GameRankInfo>({
+        address: '',
+        volume: '',
+        rank: 0,
+        rewards: []
+    })
 
     // const getTradeRaceList = React.useCallback(async() => {
     //     if (LoopringAPI && LoopringAPI.ammpoolAPI) {
@@ -38,11 +43,16 @@ export const useTradeRace = () => {
 
     const getAmmGameUserRank = React.useCallback(async(market: string) => {
         if (LoopringAPI && LoopringAPI.ammpoolAPI) {
-            const data = await LoopringAPI.ammpoolAPI.getAmmPoolGameUserRank({
+            const { userRank } = await LoopringAPI.ammpoolAPI.getAmmPoolGameUserRank({
                 ammPoolMarket: market,
                 owner: accAddress,
             }, apiKey)
-            setCurrPairUserRank(data)
+            setCurrPairUserRank(userRank || {
+                address: '',
+                volume: '',
+                rank: 0,
+                rewards: []
+            })
         }
     }, [accAddress, apiKey])
 

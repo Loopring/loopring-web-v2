@@ -10,11 +10,10 @@ const TableStyled = styled(Box)`
     display: flex;
     flex-direction: column;
     flex: 1;
-    height: 100%;
 
     .rdg {
-        height: 100% !important;
         --template-columns: auto auto auto auto !important;
+        height: auto;
 
         // .rdg-cell.action {
         // display: flex;
