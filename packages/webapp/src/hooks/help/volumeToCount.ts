@@ -18,3 +18,15 @@ export const volumeToCountAsBigNumber = (symbol: string, volumn: string | number
         return undefined;
     }
 }
+
+export const getTokenNameFromTokenId = (tokenId: number | string, tokenMap = store.getState().tokenMap.tokenMap) => {
+    if (tokenMap) {
+        const valueList = Object.values(tokenMap)
+        const hasToken = valueList.find(o => o.tokenId === tokenId)
+        if (hasToken) {
+            return hasToken.symbol
+        }
+        return ''
+    }
+    return ''
+}

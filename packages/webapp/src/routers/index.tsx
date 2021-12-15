@@ -16,11 +16,12 @@ import { LoadingBlock, LoadingPage } from '../pages/LoadingPage';
 import { LandPage, WalletPage } from '../pages/LandPage'
 // import { LandPage } from '../pages/LandPage/LandPage';
 // import { WalletPage } from '../pages/LandPage/WalletPage'
-import { ErrorMap, SagaStatus, ThemeType } from '@loopring-web/common-resources';
+import { ErrorMap, myLog, SagaStatus, ThemeType } from '@loopring-web/common-resources';
 import { ErrorPage } from '../pages/ErrorPage';
 import { Footer, useSettings } from '@loopring-web/component-lib';
 import { ReportPage } from 'pages/ReportPage';
 import { MarkDonwPage } from '../pages/MarkdownPage';
+import { TradeRacePage } from '../pages/TradeRacePage'
 
 const ContentWrap = ({children, state}: React.PropsWithChildren<any> & { state: keyof typeof SagaStatus }) => {
     return <>
@@ -74,9 +75,14 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                 <LandPage />
             </Route> */}
 
+            <Route exact path='/trade-race'>
+                {query && query.has('noheader') ? <></> : <Header/>}
+                <TradeRacePage />
+            </Route>
+
             <Route exact path='/wallet'>
                 {query && query.has('noheader') ? <></> : <Header isHideOnScroll={true} isLandPage/>}
-                <WalletPage/>
+                <WalletPage/>       zz
             </Route>
             <Route exact path='/loading'><LoadingPage/> </Route>
             <Route exact path='/'>
@@ -155,6 +161,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
             <Route exact path='/liquidity/my-liquidity'><ContentWrap
                 state={state}><LiquidityPage/></ContentWrap></Route>
 
+            
 
         </Switch>
         <ModalGroup/>

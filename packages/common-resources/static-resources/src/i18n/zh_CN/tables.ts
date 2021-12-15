@@ -134,4 +134,8 @@ export default {
     labelOrderCancel: '取消',
     labelTradeProPrice: '价格({{symbol}})',
     labelTradeProAmount: '总量',
+    lableTradeRaceRank: 'Rank',
+    lableTradeRaceAddress: 'Address',
+    lableTradeRaceTradeVolume: 'Trade Volume',
+    lableTradeRaceProfit: 'Profit',
 }
