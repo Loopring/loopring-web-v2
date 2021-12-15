@@ -103,7 +103,7 @@ export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { 
 
                         myLog('updateAccountFromServer req:', request)
 
-                        const updateAccountResponse = await LoopringAPI.userAPI.updateAccount({
+                        const response = await LoopringAPI.userAPI.updateAccount({
                             request,
                             web3: connectProvides.usedWeb3,
                             chainId: system.chainId,
@@ -111,32 +111,30 @@ export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { 
                             isHWAddr,
                         })
 
-                        myLog('updateAccountResponse:', updateAccountResponse)
+                        myLog('updateAccountResponse:', response)
 
-                        if (updateAccountResponse.errorInfo) {
+                        if ((response as sdk.ErrorMsg)?.errMsg) {
                             result.code = ActionResultCode.UpdateAccoutError
                             result.data = {
                                 eddsaKey,
-                                errorInfo: updateAccountResponse.errorInfo,
+                                ...response,
                             }
-                        } else if (updateAccountResponse?.resultInfo) {
+                        } else if ((response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo ) {
                             result.code = ActionResultCode.UpdateAccoutError
                             result.data = {
                                 eddsaKey,
-                                errorInfo: updateAccountResponse.resultInfo,
+                                ...response,
                             }
                         } else {
                             result.data = {
-                                response: updateAccountResponse,
+                                response,
                                 eddsaKey,
                             }
                         }
 
                     } catch (reason) {
                         result.code = ActionResultCode.UpdateAccoutError
-                        result.data = {
-                            errorInfo: reason
-                        }
+                        result.data = reason
                         sdk.dumpError400(reason)
                     }
 
@@ -145,9 +143,7 @@ export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { 
                     myLog('GenEddsaKeyError!!!!!! ')
 
                     result.code = ActionResultCode.GenEddsaKeyError
-                    result.data = {
-                        errorInfo: reason
-                    }
+                    result.data = reason
                     sdk.dumpError400(reason)
                 }
             }
