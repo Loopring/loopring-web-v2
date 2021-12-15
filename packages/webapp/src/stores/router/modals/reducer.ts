@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { ModalDataStatus, WithdrawData, TransferData, DepositData, } from './interface'
+import { DepositData, LAST_STEP, ModalDataStatus, TransferData, WithdrawData, } from './interface'
 import { UserNFTBalanceInfo } from '@loopring-web/loopring-sdk';
 import { NFTWholeINFO } from '@loopring-web/common-resources';
 
@@ -26,6 +26,7 @@ const initialDepositState: DepositData = {
 }
 
 const initialState: ModalDataStatus = {
+    lastStep: LAST_STEP.default,
     withdrawValue: initialWithdrawState,
     transferValue: initialTransferState,
     depositValue: initialDepositState,
@@ -47,26 +48,32 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
             this.resetNFTDepositData(state)
         },
         resetWithdrawData(state) {
+            state.lastStep = LAST_STEP.default;
             state.withdrawValue = initialWithdrawState
         },
         resetTransferData(state) {
+            state.lastStep = LAST_STEP.default;
             state.transferValue = initialTransferState
         },
         resetDepositData(state) {
+            state.lastStep = LAST_STEP.default;
             state.depositValue = initialDepositState
         },
         resetNFTWithdrawData(state) {
+            state.lastStep = LAST_STEP.default;
             state.nftWithdrawValue = initialWithdrawState
         },
         resetNFTTransferData(state) {
+            state.lastStep = LAST_STEP.default;
             state.nftTransferValue = initialTransferState
         },
         resetNFTDepositData(state) {
+            state.lastStep = LAST_STEP.default;
             state.nftDepositValue = initialDepositState
         },
         updateWithdrawData(state, action: PayloadAction<Partial<WithdrawData>>) {
             const { belong, balance, tradeValue, address } = action.payload
-
+            state.lastStep = LAST_STEP.withdraw;
             if (belong) {
                 state.withdrawValue.belong = belong
             }
@@ -85,7 +92,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         },
         updateTransferData(state, action: PayloadAction<Partial<TransferData>>) {
             const { belong, balance, tradeValue, address } = action.payload
-
+            state.lastStep = LAST_STEP.transfer;
             if (belong) {
                 state.transferValue.belong = belong
             }
@@ -104,7 +111,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         },
         updateDepositData(state, action: PayloadAction<Partial<DepositData>>) {
             const { belong, balance, tradeValue, reffer, } = action.payload
-
+            state.lastStep = LAST_STEP.nftDeposit;
             if (belong) {
                 state.depositValue.belong = belong
             }
@@ -124,7 +131,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         },
         updateNFTWithdrawData(state, action: PayloadAction<Partial<WithdrawData  & UserNFTBalanceInfo & NFTWholeINFO>>) {
             const { belong, balance, tradeValue, address,...rest } = action.payload
-
+            state.lastStep = LAST_STEP.nftWithdraw;
             if (belong) {
                 state.nftWithdrawValue.belong = belong
             }
@@ -147,6 +154,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         },
         updateNFTTransferData(state, action: PayloadAction<Partial<TransferData  & UserNFTBalanceInfo & NFTWholeINFO>>) {
             const { belong, balance, tradeValue, address,...rest } = action.payload
+            state.lastStep = LAST_STEP.nftTransfer;
 
             if (belong) {
                 state.nftTransferValue.belong = belong
@@ -170,7 +178,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         },
         updateNFTDepositData(state, action: PayloadAction<Partial<DepositData  & UserNFTBalanceInfo & NFTWholeINFO>>) {
             const { belong, balance, tradeValue, reffer, ...rest} = action.payload
-
+            state.lastStep = LAST_STEP.nftDeposit;
             if (belong) {
                 state.nftDepositValue.belong = belong
             }

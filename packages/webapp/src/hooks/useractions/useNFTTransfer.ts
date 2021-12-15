@@ -39,7 +39,7 @@ import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
-import { UserNFTBalanceInfo } from '@loopring-web/loopring-sdk';
+    import { ErrorMsg, UserNFTBalanceInfo } from '@loopring-web/loopring-sdk';
 import { NFTTokenInfo } from '@loopring-web/loopring-sdk';
 import { useChargeNFTFees } from '../common/useChargeNFTFees';
 
@@ -219,9 +219,9 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
                 if (isAccActivated()) {
 
-                    if (response?.errorInfo) {
+                    if ((response as sdk.ErrorMsg)?.errMsg ) {
                         // Withdraw failed
-                        const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                        const code = checkErrorInfo(response, isFirstTime)
                         if (code === sdk.ConnectorError.USER_DENIED) {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
                         } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
@@ -230,7 +230,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
                         } else {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                         }
-                    } else if (response?.resultInfo) {
+                    } else if ((response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo) {
                         setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                     } else {
                         // Withdraw success

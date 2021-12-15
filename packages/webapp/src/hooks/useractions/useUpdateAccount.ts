@@ -119,7 +119,7 @@ export function useUpdateAccout() {
                 case ActionResultCode.GenEddsaKeyError:
                 case ActionResultCode.UpdateAccoutError:
 
-                    const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime as boolean)
+                    const errMsg = checkErrorInfo(result?.data, isFirstTime as boolean)
 
                     myLog('----------UpdateAccoutError errMsg:', errMsg)
 
