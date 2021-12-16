@@ -4,8 +4,6 @@ import {
     Table
 } from '../basic-lib';
 import {  WithTranslation, withTranslation } from 'react-i18next';
-// import {  Typography, Box } from '@mui/material';
-// import { CheckIcon, myLog } from '@loopring-web/common-resources'
 import styled from '@emotion/styled';
 import { Box } from '@mui/material'
 
@@ -16,6 +14,7 @@ interface Row {
 }
 const TableStyle = styled(Table)`
     &.rdg{
+      min-Height: 380px;
       border-top: 1px solid var(--color-divide);
       text-align: center;
       

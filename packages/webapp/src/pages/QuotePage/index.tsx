@@ -18,6 +18,7 @@ import { LoopringAPI } from 'api_wrapper'
 import { AmmPoolActivityRule, TradingInterval } from '@loopring-web/loopring-sdk'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
+import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
 import { LAYOUT } from '../../defs/common_defs';
 
 const RowStyled = styled(Grid)`
@@ -62,6 +63,9 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
     const {t} = rest
     const tableRef  = React.useRef<HTMLDivElement>();
+
+    const { ammActivityMap } = useAmmActivityMap()
+    const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
     
     // const [isFixed,setIsFixed] = React.useState(false);
     const resetTableData = React.useCallback((tableData)=>{
@@ -365,6 +369,7 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     currentheight={tableHeight}
                     rowHeight={RowConfig.rowHeight}
                     headerRowHeight={RowConfig.rowHeaderHeight}
+                    tradeRaceList={tradeRaceList}
                     {...{showLoading: tickList && !tickList.length, ...rest}} />
             </Box>
         </TableWrapStyled>

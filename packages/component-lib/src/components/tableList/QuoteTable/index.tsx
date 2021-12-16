@@ -8,7 +8,8 @@ import {
     getValuePrecisionThousand,
     PriceTag,
     StarHollowIcon,
-    StarSolidIcon
+    StarSolidIcon,
+    TrophyIcon,
 } from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
@@ -103,8 +104,8 @@ type IGetColumnModePros = {
 }
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const getColumnMode = (props: IGetColumnModePros & { currency: Currency }): Column<QuoteTableRawDataItem, unknown>[] => {
-    const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency, isPro} = props
+const getColumnMode = (props: IGetColumnModePros & { currency: Currency, tradeRaceList: string[] }): Column<QuoteTableRawDataItem, unknown>[] => {
+    const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency, isPro, tradeRaceList} = props
     const isUSD = currency === Currency.usd
     const basicRender = [
         {
@@ -141,6 +142,16 @@ const getColumnMode = (props: IGetColumnModePros & { currency: Currency }): Colu
                                 /{coinB}
                             </Typography>
                         </Typography>
+                        &nbsp;
+
+                        {tradeRaceList.includes(pair) && (
+                            <Box style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
+                                event.stopPropagation()
+                                history.push(`/trade-race?pair=${pair}`)
+                            }}>
+                                <TrophyIcon />
+                            </Box>
+                        )}
                     </Box>
                 )
             },
@@ -293,6 +304,7 @@ export interface QuoteTableProps {
     currentheight?: number;
     showLoading?: boolean;
     isPro?: boolean;
+    tradeRaceList: string[];
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -319,6 +331,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     removeFavoriteMarket,
                                                                     showLoading,
                                                                     isPro = false,
+                                                                    tradeRaceList,
                                                                     ...rest
                                                                 }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
@@ -361,6 +374,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
             favoriteMarket,
             currency,
             isPro,
+            tradeRaceList,
         }),//getColumnModelQuoteTable(t, history),
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,

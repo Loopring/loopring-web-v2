@@ -24,6 +24,7 @@ import { Layout, Layouts } from 'react-grid-layout';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
+import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
 import { TableProWrapStyled } from 'pages/styled'
 import { useQuote } from 'pages/QuotePage/hook'
 import { useToolbar } from './hook'
@@ -69,6 +70,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
     const { ammPoolBalances } = useToolbar()
     const {tickList} = useQuote()
+    const { ammActivityMap } = useAmmActivityMap()
+    const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
     const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
     const [searchValue, setSearchValue] = React.useState<string>('')
     const [tableTabValue, setTableTabValue] = React.useState('all')
@@ -306,6 +309,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                                 favoriteMarket={favoriteMarket}
                                 addFavoriteMarket={addMarket}
                                 removeFavoriteMarket={removeMarket}
+                                tradeRaceList={tradeRaceList}
                                 onRowClick={(_:any, row:any) => {
                                     handleOnMarketChange(`${row.pair.coinA}-${row.pair.coinB}` as MarketType);
                                     popState.setOpen(false);

@@ -5,6 +5,7 @@ import { TablePaddingX } from '../../styled';
 import { Column, Table } from '../../basic-lib'
 import { TFunction } from 'i18next'
 import { withTranslation } from 'react-i18next';
+import { FirstPlaceIcon, myLog, SecondPlaceIcon, ThirdPlaceIcon } from '@loopring-web/common-resources'
 
 const TableStyled = styled(Box)`
     display: flex;
@@ -12,7 +13,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: auto auto auto auto !important;
+        --template-columns: 150px 350px auto auto !important;
         height: auto;
 
         // .rdg-cell.action {
@@ -51,10 +52,16 @@ export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, 
             name: t('lableTradeRaceRank'),
             formatter: ({row}) => {
                 const value = row[ 'rank' ]
-                
+                const formattedValue = value === '1'
+                    ? <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={'large'} /> 
+                    : value === '2'
+                        ? <SecondPlaceIcon style={{ marginTop: 8 }} fontSize={'large'} /> 
+                        : value === '3'
+                            ? <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={'large'} />
+                            : value
                 return (
                     <Box className="rdg-cell-value">
-                        {value}
+                        {formattedValue}
                     </Box>
                 )
             }
@@ -65,12 +72,13 @@ export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, 
             headerCellClass: 'textAlignCenter',
             formatter: ({row}) => {
                 const value = row[ 'address' ]
-                const firstSix = value.substring(0, 6)
-                const lastFour = value.substring(value.length - 4, value.length)
-                const formattedAddress = `${firstSix}...${lastFour}`
+                // const firstSix = value.substring(0, 6)
+                // const lastFour = value.substring(value.length - 4, value.length)
+                // const formattedAddress = `${firstSix}...${lastFour}`
                 return (
                     <Box className="rdg-cell-value textAlignCenter">
-                        {formattedAddress}
+                        {/* {formattedAddress} */}
+                        {value}
                     </Box>
                 )
             }
