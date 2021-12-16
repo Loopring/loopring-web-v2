@@ -7,7 +7,7 @@
 - Loopring Technology Limited reserves the right to revoke part of or all Points from user wallets.
 - Loopring Technology Limited reserves the right to adjust the terms and query methods according to regulatory requirements and market conditions without prior notice.
 - Unless otherwise specified, each Point has an independent issuance date and the validity period is twelve months. Expired Points will be automatically deducted from the Point balance.
-- Loopring Points related programs are still subject to Loopring's **Service Agreement** and **Privacy Policy**.
+- Loopring Points related programs are still subject to Loopring's [**Service Agreement**](./terms_en.md) and [**Privacy Policy**](./privacy_en.md).
 
 ## Special Clauses for Q4, 2020
 
