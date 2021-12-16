@@ -8,7 +8,8 @@ import {
     MarketType,
     PriceTag,
     SagaStatus,
-    UpIcon
+    UpIcon,
+    TrophyIcon,
 } from '@loopring-web/common-resources';
 import { Button, MarketBlockProps, useSettings, PopoverPure, QuoteTable, InputSearch, QuoteTableRawDataItem } from '@loopring-web/component-lib';
 import { useTicker } from 'stores/ticker';
@@ -28,6 +29,7 @@ import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
 import { TableProWrapStyled } from 'pages/styled'
 import { useQuote } from 'pages/QuotePage/hook'
 import { useToolbar } from './hook'
+import { useHistory } from 'react-router-dom'
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -91,7 +93,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const {currency} = useSettings()
     const {forex} = useSystem()
     const {tokenPrices} = useTokenPrices()
-
+    const history = useHistory()
     // const {
     //     change,
     //     close,
@@ -321,6 +323,14 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                     </Box>
                 </ClickAwayListener>
             </PopoverPure>
+            {tradeRaceList.includes(market) && (
+                <Box marginLeft={1 / 2} style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
+                    event.stopPropagation()
+                    history.push(`/trade-race?pair=${market}`)
+                }}>
+                    <TrophyIcon style={{ marginBottom: 5 }} />
+                </Box>
+            )}
             <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
                 <Grid item>
                     <Typography fontWeight={500}
