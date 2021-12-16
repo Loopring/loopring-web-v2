@@ -1,7 +1,6 @@
 import React, { useCallback, } from "react"
 import store from 'stores';
 import { MarketBlockProps, QuoteTableRawDataItem, } from '@loopring-web/component-lib';
-import { useSocket } from 'stores/socket';
 import { TradingInterval, WsTopicType } from '@loopring-web/loopring-sdk';
 import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from 'services/socket';
@@ -15,7 +14,6 @@ export function useQuote<C extends { [ key: string ]: string }>() {
 
 
 
-    const {sendSocketTopic, socketEnd} = useSocket();
     const [recommendedPairs, setRecommendedPairs] = React.useState<string[]>([])
     const {marketArray, coinMap, marketMap, tokenMap} = store.getState().tokenMap;
     const {forex} = store.getState().system
@@ -71,13 +69,6 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     React.useEffect(() => {
         getRecommendPairs()
     }, [getRecommendPairs])
-
-    React.useEffect(() => {
-        socketSendTicker();
-        return () => {
-            socketEnd()
-        }
-    }, []);
 
     React.useEffect(() => {
         if(tickerStatus === SagaStatus.UNSET) {
@@ -183,19 +174,6 @@ export function useQuote<C extends { [ key: string ]: string }>() {
         setRecommendations(_recommendationsWithPrecision)
         // }
     }, [tickList])
-
-
-    // const  = (startIndex: number) => {
-    //     console.log(startIndex)
-    // }
-
-    // const debounceGetTicker = React.useCallback(debounce((from, to) => {
-    //     getTicker(from, to)
-    // }, globalSetup.wait), [])
-
-    const socketSendTicker = React.useCallback(() => {
-        sendSocketTopic({[ WsTopicType.ticker ]: marketArray});
-    }, [])
 
     return {
         tickList,
