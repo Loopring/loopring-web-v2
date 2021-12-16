@@ -26,16 +26,16 @@ cd ./packages/webapp
 npm run dev
 
 // how to run storybook 
-yarn instsll 
+yarn install 
 yarn up 
 cd ./packages/component-lib
 npm run storybook
 ``` 
-- We appreciate your improvement or initiatives for loopring layer2 website, please view the source code in the component-lib.
+- We appreciate any improvements or initiatives for Loopring Layer2 website, please view the source code in `./packages/component-lib`.
 
-- Project separates a lib called web3-provider, which is a third-party ETH web3 wallet provider service (wallectConnect & metamask), 
+- The project contains a separate lib "web3-provider", which is a third-party ETH web3 wallet provider service (wallectConnect & metamask), 
 
-- You are welcome to reuse it or integrate your provider service to our website. 
+- You are welcome to reuse it or integrate your provider service with our website.
 
 - Feel free to leave suggestions or ideas.
 
