@@ -13,21 +13,6 @@ import { TableWrapStyled } from 'pages/styled'
 import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
 
 
-//TODO: FIXED:  demo data
-
-
-const toggleData = [
-    {value: '24 H', key: '24 H'},
-    {value: '1 W', key: '1 W'},
-    {value: 'ALL', key: 'ALL'},
-]
-
-const StylePaper = styled(Box)`
-    height: 100%;
-    flex: 1;
-    background: var(--color-box);
-    border-radius: ${({theme}) => theme.unit}px;
-` as typeof Box;
 
 const StyleWrapper = styled(Grid)`
     position: relative;
@@ -37,32 +22,17 @@ const StyleWrapper = styled(Grid)`
 ` as typeof Grid
 
 
-const StyledBtnGroupWrapper = styled(Box)`
-  position: absolute;
-  z-index: 99;
-  top: ${({theme}) => theme.unit}px;
-  width: 100%;
-` as typeof Box
-
-
 const MyLiquidity: any = withTranslation('common')(
     <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
     ({t, /* ammActivityMap, */ ...rest}:
          WithTranslation &
          { ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined }
     ) => {
-        const {ammActivityMap, status: ammActivityMapStatus} = useAmmActivityMap()
-        const [chartPeriod, setChartPeriod] = React.useState('ALL');
-        const [page, setPage] = React.useState(1);
+        const {ammActivityMap} = useAmmActivityMap()
         const {currency} = useSettings();
         const {forex,allowTrade} = useSystem()
         const history = useHistory()
 
-        // React.useEffect(() => {
-        //     if(ammActivityMapStatus === SagaStatus.UNSET){
-        //         setAmmActivityMap(ammActivityMap)
-        //     }
-        // }, [ammActivityMapStatus])
 
         const JumpToLiqudity = React.useCallback((pair, type) => {
             if (history) {
@@ -70,10 +40,7 @@ const MyLiquidity: any = withTranslation('common')(
             }
         }, [history])
 
-        const _handlePageChange = React.useCallback((page: number) => {
-            setPage(page);
-        }, [])
-        const {myAmmMarketArray, summaryReward, myPoolRow, showLoading} = useOverview({ammActivityMap});
+        const {summaryReward, myPoolRow, showLoading} = useOverview({ammActivityMap});
         const totalValueDollar = myPoolRow.map((o: any) => {
             return o.totalAmmValueDollar as number
         }).reduce((a, b) => a + b, 0)
@@ -112,39 +79,10 @@ const MyLiquidity: any = withTranslation('common')(
                                     }
                                 </Typography>
                             </Grid>
-                            {/* <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
-                                <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
-                                            color={'textSecondary'}>{t('labelMiningRewards')}</Typography>
-                                <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.usd ? PriceTag.Dollar
-                                        + getThousandFormattedNumbers(summaryReward.rewardDollar ? summaryReward.rewardDollar : 0)
-                                        : PriceTag.Yuan
-                                        + getThousandFormattedNumbers(summaryReward.rewardYuan ? summaryReward.rewardYuan : 0)}
-                                </Typography>
-                            </Grid> */}
                         </StyleWrapper>
                     </Grid>
-                    {/* <Grid item xs={9}>
-                        <StylePaper />
-                    </Grid> */}
-                </Grid>
 
-                {/*<StyleWrapper container marginY={2} height={340}>*/}
-                {/*    <StyledBtnGroupWrapper display={'flex'} padding={3} justifyContent={'space-between'}>*/}
-                {/*        <Typography variant={'body1'} component={'h5'}*/}
-                {/*                    color={'textSecondary'}>{t('labelLiquidityValue')}</Typography>*/}
-                {/*        <Box marginRight={-1}>*/}
-                {/*            <ToggleButtonGroup exclusive size="small" {...{*/}
-                {/*                ...rest,*/}
-                {/*                t,*/}
-                {/*                data: toggleData,*/}
-                {/*                value: chartPeriod,*/}
-                {/*                setValue: setChartPeriod*/}
-                {/*            }} />*/}
-                {/*        </Box>*/}
-                {/*    </StyledBtnGroupWrapper>*/}
-                {/*    <ScaleAreaChart type={ChartType.Trend} data={[]}/>*/}
-                {/*</StyleWrapper>*/}
+                </Grid>
                 <TableWrapStyled className={'table-divide-short MuiPaper-elevation2'} marginY={2} paddingY={2} paddingX={3} flex={1}>
                     <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                         <Typography variant={'h5'} marginBottom={3}>{t('labelMyAmm')}</Typography>
@@ -167,12 +105,6 @@ const MyLiquidity: any = withTranslation('common')(
                         />
                     </Grid>
                 </TableWrapStyled>
-                {/* <Typography paddingLeft={2} variant={'h5'}>{t('labelMyAmmRecord')}</Typography> */}
-                {/* <TableWrapStyled container marginTop={2}  paddingBottom={2} flex={1}>
-                    <Grid item xs={12} display={'flex'} flexDirection={'column'}>
-                        <AmmRecordTable rawData={myAmmMarketArray} handlePageChange={_handlePageChange} page={page}/>
-                    </Grid>
-                </TableWrapStyled> */}
             </>
         )
     })

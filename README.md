@@ -35,7 +35,7 @@ npm run storybook
 
 - Project separates a lib called web3-provider, which is a third-party ETH web3 wallet provider service (wallectConnect & metamask), 
 
-- Welcome to reuse it or integrate your provider service to our website. 
+- You are welcome to reuse it or integrate your provider service to our website. 
 
 - Feel free to leave suggestions or ideas.
 
