@@ -58,12 +58,6 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     (ammData.coinLP.tradeValue / ammCalcData.lpCoin.tradeValue * 100) : 0
   const [_selectedPercentage, setSelectedPercentage] = React.useState(percentage);
 
-  // React.useEffect(() => {
-  //     if (percentage === 0) {
-  //         setSelectedPercentage(0)
-  //     }
-  // }, [ammData?.coinLP?.tradeValue, ammCalcData?.lpCoin?.tradeValue])
-
   const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
   const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
     error: false,
@@ -94,15 +88,15 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
   const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
     if (_ref) {
-      if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue && ammData[ 'coinLP' ].balance) {
-        const percentageValue = toBig(ibData.tradeValue ?? 0).div(ammData[ 'coinLP' ].balance).times(100).toFixed(2)
+      if (ammData?.coinLP.tradeValue !== ibData.tradeValue && ammData?.coinLP.balance) {
+        const percentageValue = toBig(ibData.tradeValue ?? 0).div(ammData.coinLP.balance).times(100).toFixed(2)
         if (!isNaN(Number(percentageValue))) {
           setSelectedPercentage(Number(percentageValue))
         }
-        onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type: 'lp'});
+        onRemoveChangeEvent({tradeData: {...ammData, coinLP: ibData}, type: 'lp'});
       }
     } else {
-      onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type: 'lp'});
+      onRemoveChangeEvent({tradeData: {...ammData, coinLP: ibData}, type: 'lp'});
     }
   }, [ammData, onRemoveChangeEvent]);
 
@@ -168,8 +162,6 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
   const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue <= lpBalance) ? getValuePrecisionThousand(lpTradeValue, 2, 6) : '0'
 
   const miniA = ammData?.coinA?.tradeValue ? getValuePrecisionThousand(ammData?.coinA?.tradeValue) : EmptyValueTag
-
-  // myLog('ammData?.coinB?.tradeValue:', ammData?.coinB?.tradeValue, getValuePrecisionThousand(ammData?.coinB?.tradeValue))
 
   const miniB = ammData?.coinB?.tradeValue ? getValuePrecisionThousand(ammData?.coinB?.tradeValue) : EmptyValueTag
 
@@ -269,7 +261,6 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                           width: 'var(--withdraw-coin-size)',
                           height: 'var(--withdraw-coin-size)',
                         }}
-                // src={sellData?.icon}
                         src={SoursURL + 'images/icon-default.png'}/>
             }
             <Typography variant={'body1'}>{ammData?.coinB?.belong}</Typography>
