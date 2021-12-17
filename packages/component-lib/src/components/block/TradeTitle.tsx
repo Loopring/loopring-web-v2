@@ -8,6 +8,7 @@ import {
     PriceTag, SoursURL,
     TradeFloat,
     TrophyIcon,
+    CURRENT_EVENT_DATE,
 } from '@loopring-web/common-resources';
 import { Box, Grid } from '@mui/material';
 import { Avatar, Typography } from '@mui/material';
@@ -113,7 +114,7 @@ export const TradeTitle = <I extends object>({
                     {tradeRaceList.includes(pair) && (
                         <Box style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
                             event.stopPropagation()
-                            history.push(`/trading-race?pair=${pair}`)
+                            history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${pair}`)
                         }}>
                             <TrophyIcon />
                         </Box>

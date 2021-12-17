@@ -10,6 +10,7 @@ import {
   StarHollowIcon,
   StarSolidIcon,
   TrophyIcon,
+  CURRENT_EVENT_DATE,
 } from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
@@ -143,7 +144,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: Currency, tradeRa
             {tradeRaceList.includes(pair) && (
               <Box style={{cursor: 'pointer', paddingTop: 4}} onClick={(event) => {
                 event.stopPropagation()
-                history.push(`/trading-race?pair=${pair}`)
+                history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${pair}`)
               }}>
                 <TrophyIcon/>
               </Box>

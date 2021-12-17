@@ -11,7 +11,7 @@ import {
 import { useTradeRace } from "./hook";
 import { useAmmPool } from "../LiquidityPage/hook";
 import { useAmmMiningUI } from "../MiningPage/hook";
-import { DropDownIcon } from "@loopring-web/common-resources";
+import { DropDownIcon, CURRENT_EVENT_DATE } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 import { useTheme } from "@emotion/react";
 import moment from "moment";
@@ -83,8 +83,9 @@ export const TradeRacePage = withTranslation("common")(
         setCurrMarketPair(e.target.value);
         getAmmGameRank(e.target.value);
         getAmmGameUserRank(e.target.value);
+        history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${e.target.value}`)
       },
-      [setCurrMarketPair, getAmmGameUserRank, getAmmGameRank]
+      [setCurrMarketPair, getAmmGameUserRank, getAmmGameRank, history]
     );
 
     React.useEffect(() => {

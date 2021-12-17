@@ -11,6 +11,7 @@ import {
     getValuePrecisionThousand,
     myLog,
     PriceTag, SoursURL,
+    CURRENT_EVENT_DATE,
 } from '@loopring-web/common-resources';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { PopoverPure } from '../basic-lib'
@@ -156,7 +157,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             // const urlList = getMiningLinkList(isUs ? 'en' : 'cn')
             // const url = urlList[pathname]
             // window.open(url)
-            history.push(`/trading-race?pair=${pathname}`)
+            history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${pathname}`)
         }, [history, pathname])
 
         const handleMyRewardClick = React.useCallback(() => {

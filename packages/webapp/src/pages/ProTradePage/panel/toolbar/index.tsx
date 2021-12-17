@@ -11,6 +11,7 @@ import {
   PriceTag,
   SagaStatus,
   TrophyIcon,
+  CURRENT_EVENT_DATE,
 } from '@loopring-web/common-resources';
 import {
   Button,
@@ -279,7 +280,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
       {tradeRaceList.includes(market) && (
             <Box marginLeft={1 / 2} style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
                 event.stopPropagation()
-                history.push(`/trading-race?pair=${market}`)
+                history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${market}`)
             }}>
                 <TrophyIcon style={{ marginBottom: 5 }} />
             </Box>
