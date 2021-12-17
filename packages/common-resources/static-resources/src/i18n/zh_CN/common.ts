@@ -428,10 +428,6 @@ export default {
     labelTradeRaceYourVolume: 'Your trade volume',
     labelTradeRaceYourRanking: 'Your ranking',
     labelTradeRaceGoTrading: 'Go trading',
-    labelTradeRaceTitle: 'Loopring Holiday Trading Giveaway:\n$600,000 in Prizes!',
-    labelTradeRaceRulesOne: 'All Loopring L2 or Smart Wallet users that trade the above 6 trading pairs are eligible for the trading competition. We will rank the top 100 addresses in terms of volume (AMM+Orderbook) per pair, and provide them with a total of $600,000 rewards. If you use the Loopring mobile Smart Wallet to trade, your volume will be weighted an extra 50% higher. (i.e., Smart Wallet users will receive a 1.5x multiplier in trading volume)',
-    labelTradeRaceRulesTwo: 'The rewards of the top 25 traders in first 4 flagship pairs will be as follows, 1st place will be rewarded with 10,000 LRC; The users ranked 26-100 will each be rewarded with 100 LRC.',
-    labelTradeRaceRulesThree: 'For RICE/USDT and MOVD/ETH, the actual size of the reward will scale based on the total reward, but maintain the same function. e.g. RICE/USDT, the rewards of the top 25 traders will be as follows, 1st place will be rewarded with 8,000 RICE;The users ranked 26-100 will each be rewarded with 80 RICE. e.g. MOVD/ETH, the rewards of the top 25 traders will be as follows, 1st place will be rewarded with 30,000 MOVD;The users ranked 26-100 will each be rewarded with 300 MOVD.',
-    labelTradeRaceRulesFour: 'Rewards will be directly distributed to winners’ Layer 2 accounts before December 31.',
-    labelTradeRaceRulesFive: 'Loopring reserves the right of final decision and interpretation of the rules of the swap tournament.',
+    labelTradeRaceRewards:'Rewards',
+    labelTradeRaceRules:'Activity Rules'
 }
