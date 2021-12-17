@@ -89,6 +89,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     // const [pageSize, setPageSize] = useState(10);
     // const [chartPeriod, setChartPeriod] = useState('week')
     const {allowTrade, forex} = useSystem();
+    const { raw_data } = allowTrade
+    const legalEnable = (raw_data as any)?.legal.enable
+    const legalShow = (raw_data as any)?.legal.show
     const { account: { accountId, accAddress } } = useAccount();
     const { tokenPrices } = useTokenPrices()
     const {marketArray, assetsRawData, userAssets, getUserAssets} = useGetAssets()
@@ -96,7 +99,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const {walletLayer2} = store.getState().walletLayer2;
     const { hideL2Assets, hideLpToken, hideSmallBalances } = store.getState().settings
     const [currAssetsEth, setCurrAssetsEth] = useState(0)
-    
     
     const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
     
@@ -210,6 +212,8 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         onShowWithdraw,
         setHideL2Assets,
         showRamp,
+        legalEnable,
+        legalShow,
     }
 
     const ethFaitPriceDollar = tokenPrices ? tokenPrices['ETH'] : 0

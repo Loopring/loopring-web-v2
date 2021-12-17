@@ -29,4 +29,6 @@ export type AssetTitleProps = {
     hideL2Assets: boolean,
     setHideL2Assets: (value: boolean) => void, 
     showRamp: () => void,
+    legalEnable?: boolean,
+    legalShow?: boolean,
 }
