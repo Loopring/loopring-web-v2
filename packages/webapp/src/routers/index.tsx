@@ -75,7 +75,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
                 <LandPage />
             </Route> */}
 
-            <Route exact path='/trade-race'>
+            <Route exact path='/trading-race'>
                 {query && query.has('noheader') ? <></> : <Header/>}
                 <TradeRacePage />
             </Route>

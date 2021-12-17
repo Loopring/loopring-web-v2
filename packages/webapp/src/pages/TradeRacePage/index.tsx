@@ -144,7 +144,7 @@ export const TradeRacePage = withTranslation('common')(({ t }: WithTranslation) 
             <TableWrapperStyled>
                 <SelectWrapperStyled textAlign={'right'}>
                     <StyledTextFiled
-                            id={'trade-race-market-pair'}
+                            id={'trading-race-market-pair'}
                             select
                             style={{ width: 150, textAlign: 'left' }}
                             value={currMarketPair}

@@ -147,7 +147,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: Currency, tradeRa
                         {tradeRaceList.includes(pair) && (
                             <Box style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
                                 event.stopPropagation()
-                                history.push(`/trade-race?pair=${pair}`)
+                                history.push(`/trading-race?pair=${pair}`)
                             }}>
                                 <TrophyIcon />
                             </Box>

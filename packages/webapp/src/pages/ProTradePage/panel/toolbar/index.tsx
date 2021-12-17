@@ -326,7 +326,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             {tradeRaceList.includes(market) && (
                 <Box marginLeft={1 / 2} style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
                     event.stopPropagation()
-                    history.push(`/trade-race?pair=${market}`)
+                    history.push(`/trading-race?pair=${market}`)
                 }}>
                     <TrophyIcon style={{ marginBottom: 5 }} />
                 </Box>

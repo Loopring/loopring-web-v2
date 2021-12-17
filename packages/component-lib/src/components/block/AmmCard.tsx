@@ -156,7 +156,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             // const urlList = getMiningLinkList(isUs ? 'en' : 'cn')
             // const url = urlList[pathname]
             // window.open(url)
-            history.push(`/trade-race?pair=${pathname}`)
+            history.push(`/trading-race?pair=${pathname}`)
         }, [history, pathname])
 
         const handleMyRewardClick = React.useCallback(() => {
