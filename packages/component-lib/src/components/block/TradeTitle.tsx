@@ -6,7 +6,9 @@ import {
     getValuePrecisionThousand,
     myLog,
     PriceTag, SoursURL,
-    TradeFloat
+    TradeFloat,
+    TrophyIcon,
+    CURRENT_EVENT_DATE,
 } from '@loopring-web/common-resources';
 import { Box, Grid } from '@mui/material';
 import { Avatar, Typography } from '@mui/material';
@@ -15,6 +17,7 @@ import React from 'react';
 import { baseTitleCss, useSettings } from '../../index';
 import { NewTagIcon } from '../basic-lib/Tags';
 import { Currency } from '@loopring-web/loopring-sdk';
+import { useHistory } from 'react-router-dom'
 
 type StyledProps = {
     custom: any
@@ -37,13 +40,15 @@ export const TradeTitle = <I extends object>({
         floatTag: FloatTag.none,
         close: 0,
     }
-    , isNew
+    , isNew, 
+    tradeRaceList,
 }: WithTranslation & {
     baseShow: string,
-    quoteShow: string, coinAInfo: CoinInfo<I>, coinBInfo: CoinInfo<I>, tradeFloat: TradeFloat, isNew: boolean
+    quoteShow: string, coinAInfo: CoinInfo<I>, coinBInfo: CoinInfo<I>, tradeFloat: TradeFloat, isNew: boolean, tradeRaceList: string[]
 }) => {
 
     const { coinJson } = useSettings();
+    const history = useHistory()
 
     const sellCoinIcon: any = coinJson[coinAInfo?.simpleName];
     const buyCoinIcon: any = coinJson[coinBInfo?.simpleName];
@@ -58,7 +63,7 @@ export const TradeTitle = <I extends object>({
     : '\u2248 ' + PriceTag.Yuan
     + getValuePrecisionThousand((tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan : 0), undefined, undefined, undefined, true, { isFait: true })
 
-    // console.log({tradeFloat})
+    const pair = `${coinAInfo?.simpleName}-${coinBInfo?.simpleName}`
     const change = (tradeFloat?.change && tradeFloat.change.toFixed && !Number.isNaN(tradeFloat?.change)) ? (tradeFloat.change).toFixed(2) + '%' : '0.00%'
     return <TradeTitleStyled custom={{ chg: upColor }}>{coinBInfo && coinAInfo ?
         <Grid container height={72}>
@@ -106,6 +111,14 @@ export const TradeTitle = <I extends object>({
                             {quoteShow}
                         </Typography>
                     </Typography>
+                    {tradeRaceList.includes(pair) && (
+                        <Box style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
+                            event.stopPropagation()
+                            history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${pair}`)
+                        }}>
+                            <TrophyIcon />
+                        </Box>
+                    )}
                     {isNew ? <NewTagIcon /> : undefined}
                 </Box>
             </Grid>

@@ -65,5 +65,4 @@ export const TOAST_TIME = 3000
 
 export const EmptyValueTag = '--'
 
-
-
+export const CURRENT_EVENT_DATE = '2021-12-23'

@@ -5,6 +5,7 @@ import { WithTranslation } from 'react-i18next'
 import { useBasicInfo } from './hook'
 import { VolToNumberWithPrecision } from 'utils/formatter_tool'
 import { useTokenMap } from 'stores/token'
+import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
 
 const  BoxStyle = styled(Box)`
   .recharts-responsive-container{
@@ -22,6 +23,8 @@ const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t
         handleChange,
         originData,
     } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t)
+    const { ammActivityMap } = useAmmActivityMap()
+    const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
     const {upColor} = useSettings();
     const {marketMap} = useTokenMap()
     const baseToken = coinAInfo?.name
@@ -42,7 +45,7 @@ const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t
                 baseShow,
                 quoteShow,
                 coinAInfo, coinBInfo,
-                ...rest, t, tradeFloat
+                ...rest, t, tradeFloat, tradeRaceList
             }}></TradeTitle>
             <ToggleButtonGroup exclusive {...{...rest, t, tgItemJSXs, value: chartType}}
                                onChange={handleChange} size={'medium'}/>

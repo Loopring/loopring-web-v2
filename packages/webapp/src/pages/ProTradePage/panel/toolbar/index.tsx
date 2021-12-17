@@ -9,7 +9,9 @@ import {
   layoutConfigs,
   MarketType,
   PriceTag,
-  SagaStatus
+  SagaStatus,
+  TrophyIcon,
+  CURRENT_EVENT_DATE,
 } from '@loopring-web/common-resources';
 import {
   Button,
@@ -32,8 +34,10 @@ import { Layout, Layouts } from 'react-grid-layout';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
+import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
 import { TableProWrapStyled } from 'pages/styled'
 import { useToolbar } from './hook'
+import { useHistory } from 'react-router-dom'
 import { useTickList } from '../../../QuotePage/hook';
 
 const PriceTitleStyled = styled(Typography)`
@@ -76,6 +80,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
   const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
   const {ammPoolBalances} = useToolbar();
   const {tickList} = useTickList();
+  const { ammActivityMap } = useAmmActivityMap()
+  const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
   const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
   const [searchValue, setSearchValue] = React.useState<string>('')
   const [tableTabValue, setTableTabValue] = React.useState('all')
@@ -88,6 +94,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
   const {currency} = useSettings()
   const {forex} = useSystem()
   const {tokenPrices} = useTokenPrices()
+  const history = useHistory()
 
   const isUSD = currency === Currency.usd
 
@@ -258,6 +265,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                 favoriteMarket={favoriteMarket}
                 addFavoriteMarket={addMarket}
                 removeFavoriteMarket={removeMarket}
+                tradeRaceList={tradeRaceList}
                 onRowClick={(_: any, row: any) => {
                   handleOnMarketChange(`${row.pair.coinA}-${row.pair.coinB}` as MarketType);
                   popState.setOpen(false);
@@ -269,6 +277,14 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
           </Box>
         </ClickAwayListener>
       </PopoverPure>
+      {tradeRaceList.includes(market) && (
+            <Box marginLeft={1 / 2} style={{ cursor: 'pointer', paddingTop: 4 }} onClick={(event) => {
+                event.stopPropagation()
+                history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${market}`)
+            }}>
+                <TrophyIcon style={{ marginBottom: 5 }} />
+            </Box>
+        )}
       <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
         <Grid item>
           <Typography fontWeight={500}

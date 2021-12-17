@@ -11,30 +11,8 @@ import { css, useTheme } from '@emotion/react';
 import cssStyle from 'github-markdown-css/github-markdown.css';
 import { ThemeType } from '@loopring-web/common-resources';
 import { LoadingBlock } from '../LoadingPage';
-// //@ts-ignore
-// import cssDarkStyle from  'github-markdown-css/github-markdown-dark.css'
-// //@ts-ignore
-// import cssLightStyle from  'github-markdown-css/github-markdown-light.css'
-// ${theme.mode === 'dark'?cssDarkStyle:cssLightStyle}
-// --color-fg-default: #c9d1d9;
-// --color-fg-muted: #8b949e;
-// --color-fg-subtle: #484f58;
-// --color-canvas-default: #0d1117;
-// --color-canvas-subtle: #161b22;
-// --color-border-default: #30363d;
-// --color-border-muted: #21262d;
-// --color-neutral-muted: rgba(110,118,129,0.4);
-// --color-fg-default: #24292f;
-// --color-fg-muted: #57606a;
-// --color-fg-subtle: #6e7781;
-// --color-canvas-default: #ffffff;
-// --color-canvas-subtle: #f6f8fa;
-// --color-border-default: #d0d7de;
-// --color-border-muted: hsla(210,18%,87%,1);
-// --color-neutral-muted: rgba(175,184,193,0.2);
-// const url_path = 'https://raw.githubusercontent.com/Loopring/website/update_app_download_url/loopring.io/public/'
+
 const url_path = 'https://static.loopring.io/documents';
-// --color-canvas-subtle:  ${theme.colorBase.borderDisable};
 
 const style = css`${cssStyle}`
 const BoxStyle = styled(Grid)`
@@ -125,94 +103,92 @@ const BoxStyle = styled(Grid)`
   ${style}
 ` as typeof Grid;
 const formatInput = async (textContent: string): Promise<string> => {
-    // let [data, content] = args;
-    const data = await fetch('https://api3.loopring.io/api/v2/exchange/feeInfo')
-        .then((res) => res.json())
-        .then((data) => data.data);
-    let {
-        ORDERBOOK_TRADING_FEES_STABLECOIN,
-        ORDERBOOK_TRADING_FEES,
-        AMM_TRADING_FEES,
-    } = data;
-    ORDERBOOK_TRADING_FEES_STABLECOIN = Object.keys(
-        ORDERBOOK_TRADING_FEES_STABLECOIN
-    ).reduce((pre, key) => {
-        pre[ 'ORDERBOOK_TRADING_FEES_STABLECOIN.' + key ] = (
-            ORDERBOOK_TRADING_FEES_STABLECOIN[ key ].takerRate / 100
-        ).toFixed(2);
-        return pre;
-    }, {});
-    ORDERBOOK_TRADING_FEES = Object.keys(ORDERBOOK_TRADING_FEES).reduce(
-        (pre, key) => {
-            pre[ 'ORDERBOOK_TRADING_FEES.' + key ] = (
-                ORDERBOOK_TRADING_FEES[ key ].takerRate / 100
-            ).toFixed(2);
-            return pre;
-        },
-        {}
-    );
-    AMM_TRADING_FEES = Object.keys(AMM_TRADING_FEES).reduce((pre, key) => {
-        pre[ 'AMM_TRADING_FEES.' + key ] = (
-            AMM_TRADING_FEES[ key ].takerRate / 100
-        ).toFixed(2);
-        return pre;
-    }, {});
-    const template1 = new Template(textContent);
-    return template1.interpolate({
-        ...ORDERBOOK_TRADING_FEES_STABLECOIN,
-        ...ORDERBOOK_TRADING_FEES,
-        ...AMM_TRADING_FEES,
-    });
-    // updateMarkdown(content);
+  // let [data, content] = args;
+  const data = await fetch('https://api3.loopring.io/api/v2/exchange/feeInfo')
+    .then((res) => res.json())
+    .then((data) => data.data);
+  let {
+    ORDERBOOK_TRADING_FEES_STABLECOIN,
+    ORDERBOOK_TRADING_FEES,
+    AMM_TRADING_FEES,
+  } = data;
+  ORDERBOOK_TRADING_FEES_STABLECOIN = Object.keys(
+    ORDERBOOK_TRADING_FEES_STABLECOIN
+  ).reduce((pre, key) => {
+    pre[ 'ORDERBOOK_TRADING_FEES_STABLECOIN.' + key ] = (
+      ORDERBOOK_TRADING_FEES_STABLECOIN[ key ].takerRate / 100
+    ).toFixed(2);
+    return pre;
+  }, {});
+  ORDERBOOK_TRADING_FEES = Object.keys(ORDERBOOK_TRADING_FEES).reduce(
+    (pre, key) => {
+      pre[ 'ORDERBOOK_TRADING_FEES.' + key ] = (
+        ORDERBOOK_TRADING_FEES[ key ].takerRate / 100
+      ).toFixed(2);
+      return pre;
+    },
+    {}
+  );
+  AMM_TRADING_FEES = Object.keys(AMM_TRADING_FEES).reduce((pre, key) => {
+    pre[ 'AMM_TRADING_FEES.' + key ] = (
+      AMM_TRADING_FEES[ key ].takerRate / 100
+    ).toFixed(2);
+    return pre;
+  }, {});
+  const template1 = new Template(textContent);
+  return template1.interpolate({
+    ...ORDERBOOK_TRADING_FEES_STABLECOIN,
+    ...ORDERBOOK_TRADING_FEES,
+    ...AMM_TRADING_FEES,
+  });
 };
 const list = [
-    'wallet_fees_zh.md',
-    'wallet_fees_en.md',
-    'dex_fees_en.md',
-    'dex_fees_zh.md',
+  'wallet_fees_zh.md',
+  'wallet_fees_en.md',
+  'dex_fees_en.md',
+  'dex_fees_zh.md',
 ];
 export const MarkDonwPage = () => {
-    let match: any = useRouteMatch("/document/:path");
-    const [path, setPath] = React.useState<null | string>(match?.params.path);
-    const [input, setInput] = React.useState<string>('');
+  let match: any = useRouteMatch("/document/:path");
+  const [path, setPath] = React.useState<null | string>(match?.params.path);
+  const [input, setInput] = React.useState<string>('');
 
-    React.useEffect(() => {
-        if (path) {
-            try {
-                const _path = (path.split('/').length > 1) ? path : `markdown/${path}`
+  React.useEffect(() => {
+    if (path) {
+      try {
+        const _path = (path.split('/').length > 1) ? path : `markdown/${path}`
 
-                fetch(url_path + "/" + _path)
-                    .then(response => response.text()).then((input) => {
-                    if (list.findIndex((f) => f === path) !== -1) {
-                        return formatInput(input)
-                    } else {
-                        return input
-                    }
-                }).then((input) => {
-                    setInput(input)
-                })
-                    .catch(() => {
-                        setPath(null)
-                    })
+        fetch(url_path + "/" + _path)
+          .then(response => response.text()).then((input) => {
+          if (list.findIndex((f) => f === path) !== -1) {
+            return formatInput(input)
+          } else {
+            return input
+          }
+        }).then((input) => {
+          setInput(input)
+        })
+          .catch(() => {
+            setPath(null)
+          })
 
-            } catch (e: any) {
-                setPath(null)
-            }
+      } catch (e: any) {
+        setPath(null)
+      }
 
-        }
-    }, [path]);
-    const theme = useTheme()
+    }
+  }, [path]);
+  const theme = useTheme()
 
-    return <BoxStyle container minHeight={'calc(100% - 260px)'} flex={1}
-                     marginTop={3} marginBottom={2}>
-        <Grid item xs={12}>
-            {path ? input?<Box flex={1} padding={3} boxSizing={'border-box'}
-                          className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2`}>
-                <ReactMarkdown plugins={[gfm]} children={input}/></Box>
-                : <LoadingBlock/> : <EmptyDefault height={'100%'} message={() =>
-                <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>No Content</Box>}/>
-            }
-        </Grid>
-    </BoxStyle>
+  return <BoxStyle container minHeight={'calc(100% - 260px)'} flex={1}
+                   marginTop={3} marginBottom={2}>
+    <Grid item xs={12}>
+      {path ? input ? <Box flex={1} padding={3} boxSizing={'border-box'}
+                           className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2`}>
+          <ReactMarkdown plugins={[gfm]} children={input}/></Box>
+        : <LoadingBlock/> : <EmptyDefault height={'100%'} message={() =>
+        <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>No Content</Box>}/>
+      }
+    </Grid>
+  </BoxStyle>
 }
-//className={''}
