@@ -5,10 +5,11 @@ import { Box, Typography, MenuItem } from '@mui/material'
 import styled from '@emotion/styled'
 import { TradeRaceTable } from '@loopring-web/component-lib/src/components/tableList'
 import { Button, TextField, TradeRacePanel } from '@loopring-web/component-lib'
-import { DropDownIcon, myLog } from '@loopring-web/common-resources'
+import { DropDownIcon } from '@loopring-web/common-resources'
 import { useTradeRace } from './hook'
 import { useAmmPool } from '../LiquidityPage/hook'
 import { useAmmMiningUI } from '../MiningPage/hook'
+import { raceData } from './raceData'
 
 const LayoutStyled = styled(Box)`
     width: 100%;
@@ -57,44 +58,6 @@ const RulesStyled = styled(Typography)`
     font-size: 1.4rem;
     margin-bottom: 1.6rem;
 `
-
-const rawData = [
-    {
-        project: 'Loopring',
-        pair: 'LRC/ETH',
-        reward: '50,000 LRC',
-    },
-    {
-        project: 'Loopring',
-        pair: 'LRC/USDC',
-        reward: '50,000 LRC',
-    },
-    {
-        project: 'Ethereum',
-        pair: 'ETH/USDC',
-        reward: '50,000 LRC',
-    },
-    {
-        project: 'Ethereum Name Service',
-        pair: 'ENS/ETH',
-        reward: '50,000 LRC',
-    },
-    {
-        project: 'DAOSquare',
-        pair: 'RICE/USDT',
-        reward: '40,000 RICE',
-    },
-    {
-        project: 'MOVE Network',
-        pair: 'MOVD/ETH',
-        reward: '150,000 MOVD',
-    },
-    {
-        project: 'DEAPcoin',
-        pair: 'DEP/ETH',
-        reward: '1,225,000 MOVD',
-    },
-]
 
 export const TradeRacePage = withTranslation('common')(({ t }: WithTranslation) => {
     const history = useHistory()
@@ -172,7 +135,7 @@ export const TradeRacePage = withTranslation('common')(({ t }: WithTranslation) 
             <ProjectWrapperStyled>
                 <Typography marginBottom={1} variant={'h4'}>Rewards</Typography>
                 <Box width={'50%'} minWidth={600}>
-                    <TradeRacePanel rawData={rawData} />
+                    <TradeRacePanel rawData={raceData} />
                 </Box>
             </ProjectWrapperStyled>
             <ProjectWrapperStyled marginTop={2}>

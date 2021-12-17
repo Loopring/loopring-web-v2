@@ -58,7 +58,7 @@ export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, 
                         ? <SecondPlaceIcon style={{ marginTop: 8 }} fontSize={'large'} /> 
                         : value === '3'
                             ? <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={'large'} />
-                            : value
+                            : <Box paddingLeft={1}>{value}</Box>
                 return (
                     <Box className="rdg-cell-value">
                         {formattedValue}
