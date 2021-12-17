@@ -28,6 +28,8 @@ export const AssetTitle = withTranslation('common')(({
                                                        setHideL2Assets,
                                                        // TODO: Ramp
                                                        // showRamp,
+                                                       legalEnable,
+                                                       legalShow,
                                                      }: AssetTitleProps & WithTranslation) => {
 
   return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
@@ -58,7 +60,8 @@ export const AssetTitle = withTranslation('common')(({
       </Typography>
     </Grid>
     <ButtonListRightStyled item xs={5} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-
+      {/* TODO: conditions to show Ramp */}
+      {/* {legalEnable && legalShow && (...)} */}
       <Button variant={'outlined'} size={'medium'} color={'primary'}
               loading={btnShowTransferStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
               disabled={btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false}
