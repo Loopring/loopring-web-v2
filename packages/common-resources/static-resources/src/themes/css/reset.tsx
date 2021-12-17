@@ -91,19 +91,19 @@ export default css`
     box-sizing: border-box;
   }
 
-  //address,
-  //caption,
-  //cite,
-  //code,
-  //dfn,
-  //em,
-  //strong,
-  //th,
-  //var,
-  //b {
-  //  font-weight: normal;
-  //  font-style: normal;
-  //}
+  address,
+  caption,
+  cite,
+  code,
+  dfn,
+  em,
+  strong,
+  th,
+  var,
+  b {
+    font-weight: normal;
+    font-style: normal;
+  }
 
   abbr,
   acronym {
