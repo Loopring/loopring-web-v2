@@ -82,7 +82,7 @@ const RouterView = ({state}: { state: keyof typeof SagaStatus }) => {
 
             <Route exact path='/wallet'>
                 {query && query.has('noheader') ? <></> : <Header isHideOnScroll={true} isLandPage/>}
-                <WalletPage/>       zz
+                <WalletPage/>
             </Route>
             <Route exact path='/loading'><LoadingPage/> </Route>
             <Route exact path='/'>
