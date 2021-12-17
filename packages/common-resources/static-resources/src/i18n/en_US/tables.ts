@@ -141,4 +141,11 @@ export default {
     labelVipTableBalance: 'LRC Balance',
     labelVipTableMaker: 'Maker',
     labelVipTableTaker: 'Taker',
+    lableTradeRaceRank: 'Rank',
+    lableTradeRaceAddress: 'Address',
+    lableTradeRaceTradeVolume: 'Trade Volume',
+    lableTradeRaceProfit: 'Profit',
+    labelTradeRaceProject: 'Project',
+    labelTradeRacePair: 'Pair',
+    labelTradeRaceReward: 'Reward',
 }

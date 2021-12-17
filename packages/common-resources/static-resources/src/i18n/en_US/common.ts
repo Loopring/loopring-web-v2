@@ -423,5 +423,11 @@ export default {
     labelTransferAddress: 'Transfer Address',
     labelTransferMemo: 'Memo',
     labelTransferSameAddress: 'Cannot transfer to your own address',
-    labelDepositRamp: 'Buy Crypto with'
-}
+    labelDepositRamp: 'Buy Crypto with',
+    labelTradeRaceRanking: 'Trade Ranking',
+    labelTradeRaceYourVolume: 'Your trade volume',
+    labelTradeRaceYourRanking: 'Your ranking',
+    labelTradeRaceGoTrading: 'Go trading',
+    labelTradeRaceRewards:'Rewards',
+    labelTradeRaceRules:'Activity Rules'
+ }
