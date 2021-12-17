@@ -6,7 +6,6 @@ import { connectProvides } from '@loopring-web/web3-provider';
 
 import {
     AccountStep,
-    setShowNFTTransfer,
     SwitchData,
     TransferProps,
     useOpenModals,
@@ -23,7 +22,6 @@ import {
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
-// import { useChargeFees } from '../common/useChargeFees';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from "@loopring-web/common-resources";
@@ -39,11 +37,9 @@ import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
-import { UserNFTBalanceInfo } from '@loopring-web/loopring-sdk';
-import { NFTTokenInfo } from '@loopring-web/loopring-sdk';
 import { useChargeNFTFees } from '../common/useChargeNFTFees';
 
-export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>,T>(
+export const useNFTTransfer = <R extends IBData<T> & Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>,T>(
     {isLocalShow = false,doTransferDone}: { isLocalShow?: boolean, doTransferDone?:()=>void }
 ): {
     nftTransferToastOpen: boolean,
@@ -91,8 +87,6 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
             disableBtn()
             return
         }
-
-        // const sellToken = tokenMap[nftTransferValue.belong as string]
 
         const tradeValue = sdk.toBig(nftTransferValue.tradeValue)
         
@@ -143,33 +137,6 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
             })
             setShowNFTTransfer({isShow:false})
         }
-        // if (symbol && walletMap) {
-        //     myLog('resetDefault symbol:', symbol)
-        //     updateTransferData({
-        //         belong: symbol as any,
-        //         balance: walletMap[symbol]?.count,
-        //         tradeValue: undefined,
-        //         address: "*",
-        //     })
-        // } else {
-        //     if (!nftTransferValue.belong && walletMap) {
-        //         const keys = Reflect.ownKeys(walletMap)
-        //         for (var key in keys) {
-        //             const keyVal = keys[key]
-        //             const walletInfo = walletMap[keyVal]
-        //             if (sdk.toBig(walletInfo.count).gt(0)) {
-        //                 updateTransferData({
-        //                     belong: keyVal as any,
-        //                     tradeValue: 0,
-        //                     balance: walletInfo.count,
-        //                     address: "*",
-        //                 })
-        //                 break
-        //             }
-        //         }
-        //     }
-        //
-        // }
     }, [address,nftData,nftBalance, walletMap, updateNFTTransferData, nftTransferValue])
 
     //TODO NO pop is pop add isShow
@@ -219,9 +186,9 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
 
                 if (isAccActivated()) {
 
-                    if (response?.errorInfo) {
+                    if ((response as sdk.ErrorMsg)?.errMsg ) {
                         // Withdraw failed
-                        const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                        const code = checkErrorInfo(response, isFirstTime)
                         if (code === sdk.ConnectorError.USER_DENIED) {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
                         } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
@@ -230,7 +197,7 @@ export const useNFTTransfer = <R extends IBData<T> & Partial<NFTTokenInfo & User
                         } else {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                         }
-                    } else if (response?.resultInfo) {
+                    } else if ((response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo) {
                         setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                     } else {
                         // Withdraw success

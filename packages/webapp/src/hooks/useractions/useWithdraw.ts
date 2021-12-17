@@ -260,9 +260,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 myLog('submitOffchainWithdraw:', response)
 
                 if (isAccActivated()) {
-                    if (response?.errorInfo) {
+                    if ((response as sdk.ErrorMsg)?.errMsg) {
                         // Withdraw failed
-                        const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                        const code = checkErrorInfo(response, isFirstTime)
                         if (code === sdk.ConnectorError.USER_DENIED) {
                             setShowAccount({ isShow: true, step: AccountStep.Withdraw_User_Denied })
                         } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
@@ -271,7 +271,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         } else {
                             setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
                         }
-                    } else if (response?.resultInfo) {
+                    } else if ((response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo ) {
                         setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
                     } else {
                         // Withdraw success

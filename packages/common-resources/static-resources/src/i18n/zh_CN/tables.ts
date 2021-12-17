@@ -3,6 +3,7 @@ export default {
     labelAMM: 'AMM',
     labelTransfer: '转账',
     labelWithdraw: '提现',
+    labelWithdrawAction: '提现',
     labelDeposit: '充值',
     labelTrade: '交易',
     labelToken: '币种',

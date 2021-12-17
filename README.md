@@ -16,30 +16,59 @@
 
 </div>
 
-## Install & Run 
+## 🚀 Quick Start
 
-```sh
+```bash
 // with yarn
 yarn install
 yarn up
 cd ./packages/webapp
 npm run dev
 
-// how to run storybook 
-yarn instsll 
-yarn up 
+
+``` 
+## 📚 Loopring UI component StoryBook 
+```bash 
+
 cd ./packages/component-lib
 npm run storybook
-``` 
-- We appreciate your improvement or initiatives for loopring layer2 website, please view the source code in the component-lib.
+```
 
-- Project separates a lib called web3-provider, which is a third-party ETH web3 wallet provider service (wallectConnect & metamask), 
-
-- Welcome to reuse it or integrate your provider service to our website. 
-
-- Feel free to leave suggestions or ideas.
-
-
-## Framework Design
+## 🏗 Framework Design
 
 ![](https://static.loopring.io/Loopring%20framwork.png)
+
+## 👉 [What is Loopring?](https://loopring.org/#/)
+
+## 🫂 Community
+- [Loopring Website](https://loopring.org/)
+- [Loopring Exchange](https://loopring.io/#/layer2)
+- [Loopring Reddit](https://www.reddit.com/r/loopringorg/)
+- [Loopring Medium](https://medium.com/loopring-protocol)
+- [Loopring Twitter](https://twitter.com/loopringorg)
+- [Loopring Telegram](https://t.me/loopring_en)
+
+
+## 👺 For Developer
+- We appreciate any improvements or initiatives for Loopring Layer2 website, please view the source code in `./packages/component-lib`.
+- The project contains a separate lib "web3-provider", which is a third-party ETH web3 wallet provider service (wallectConnect & metamask),
+- You are welcome to reuse it or integrate your provider service with our website.
+- Feel free to leave suggestions or ideas.
+
+### 📒 API & SDK
+- [JS SDK](https://loopring.github.io/loopring_sdk)
+- [Python](https://github.com/Loopring/hello_loopring)
+- [APIs](https://docs.loopring.io/en/)
+
+
+## 🙋 Protocol & Architecture
+
+- [Whitepaper](https://loopring.org/resources/en_whitepaper.pdf)
+- [Design Docs](https://github.com/LoopringSecondary/docs/wiki/Loopring3_Design)
+
+## ❓[Help](https://loopring.io/#/newticket)
+
+## 🔑 Security
+
+- [Wallet](https://security.loopring.io/)
+- [Protocol Audit](https://loopring.org/resources/loopring1.0_audit.pdf)

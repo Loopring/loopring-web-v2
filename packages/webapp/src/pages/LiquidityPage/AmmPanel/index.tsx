@@ -27,7 +27,7 @@ const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
 
     const getTokenPrecision = React.useCallback((token: string) => {
         if (tokenMap) {
-            return tokenMap[token].precision
+            return tokenMap[token]?.precision
         }
     }, [tokenMap])
     // myLog(Number(ammCalcData.percentage) * 100)
@@ -175,7 +175,7 @@ export const AmmPanelView = ({
 
     const getTokenPrecision = React.useCallback((token: string) => {
         if (tokenMap && token) {
-            return tokenMap[token].precision
+            return tokenMap[token]?.precision
         }
         return undefined
     }, [tokenMap])

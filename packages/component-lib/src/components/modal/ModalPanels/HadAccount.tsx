@@ -8,18 +8,11 @@ import { AccountHashInfo } from '@loopring-web/common-resources';
 export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: WithTranslation &
     AccountBaseProps & {
     clearDepositHash: () => void ,
-    // updateDepositHash: (depositHash: string,accountAddress:string,status?:'success'|'failed') => void,
     chainInfos:AccountHashInfo}) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
         <Box display={'flex'} flex={1}  justifyContent={'center'} alignItems={'center'}>
             <AccountBasePanel {...props} t={t}/>
         </Box>
-        {/*marginBottom={6}*/}
-        {/*<Box display={'flex'}  flexDirection={'column'} alignItems={'center'}>*/}
-        {/*    <Typography variant={'body2'} marginBottom={1} >*/}
-        {/*        {t('labelActivatedAccountDeposit')}*/}
-        {/*    </Typography>*/}
-        {/*</Box>*/}
         <Box display={'flex'}  marginTop={2} alignSelf={'stretch'} paddingX={5} flexDirection={'column'} alignItems={'center'}>
             {mainBtn}
         </Box>

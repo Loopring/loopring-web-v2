@@ -28,9 +28,9 @@ When interacting with Loopring Exchange, exchange fees will also apply. Normally
 ## Loopring Exchange
 
 Loopring Exchange charges fees per service type. Each service has a **flat-fee** and a **percentage fee**. For the percentage fee, there is a **minimum-fee** applied, so if the percentage does not hit the minimum, the minimum fee is in effect.
-The acutal fee charged for a service is `flat_fee + max(minimum_fee, percentage_fee * volume)`.
+The actual fee charged for a service is `flat_fee + max(minimum_fee, percentage_fee * volume)`.
 
-All users share the same **flat-fees** and **minimum-fees**, but VIPs have different percentange fee settings.
+All users share the same **flat-fees** and **minimum-fees**, but VIPs have different percentage fee settings.
 
 ### Exchange Fee Table
 Service | Flat-Fee | Minimum-Fee | Normal User | VIP1 | VIP2 | VIP3 | VIP4
