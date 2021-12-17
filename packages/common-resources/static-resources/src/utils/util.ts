@@ -113,7 +113,7 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     const isPrice = option?.isPrice
     const isAbbreviate = option?.isAbbreviate
     const abbreviate = (option?.abbreviate) ?? 6
-    if ((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) {
+    if (((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) || (BigNumber.isBigNumber(value) && value.isNaN())){
         return '0.00'
     }
     let result: any = value;
