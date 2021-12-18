@@ -30,7 +30,6 @@ export const useTradeRace = () => {
   const [currPairRankData, setCurrPairRankData] = React.useState<
     GameRankInfo[]
   >([]);
-  const [rewardToken, setRewardToken] = React.useState('')
   const [currPairUserRank, setCurrPairUserRank] = React.useState<GameRankInfo>({
     address: "",
     volume: "",
@@ -54,10 +53,9 @@ export const useTradeRace = () => {
   const getAmmGameRank = React.useCallback(async (market: string) => {
     if (LoopringAPI && LoopringAPI.ammpoolAPI) {
       const [coinBase, coinQuote] = market.split("-");
-      const { userRankList, totalRewards } = await LoopringAPI.ammpoolAPI.getAmmPoolGameRank({
+      const { userRankList } = await LoopringAPI.ammpoolAPI.getAmmPoolGameRank({
         ammPoolMarket: market,
       });
-      const profitToken = getTokenNameFromTokenId(Number(totalRewards[0].tokenId))
       const formattedUserRankList = userRankList.map((o) => ({
         ...o,
         tradeVolume: getValuePrecisionThousand(
@@ -65,12 +63,11 @@ export const useTradeRace = () => {
         ),
         profit: getValuePrecisionThousand(
           volumeToCount(
-            profitToken,
+            getTokenNameFromTokenId(Number(o.rewards[0].tokenId)),
             o.rewards[0].volume
           )
         ),
       }));
-      setRewardToken(profitToken)
       setCurrPairRankData(formattedUserRankList);
     }
   }, []);
@@ -142,6 +139,7 @@ export const useTradeRace = () => {
     if (eventData && eventStatus) {
       if (eventStatus === EVENT_STATUS.EVENT_READY) {
         let difference = +new Date(eventData.duration.startDate) - Date.now();
+        console.log(eventStatus, countDown);
 
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
@@ -191,7 +189,6 @@ export const useTradeRace = () => {
     countDown,
     currPairUserRank,
     currPairRankData,
-    rewardToken,
     getAmmGameRank,
     getAmmGameUserRank,
     eventStatus,
