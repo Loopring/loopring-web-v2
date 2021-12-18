@@ -8,15 +8,14 @@ import {
   TradeRacePanel,
   TradeRaceTable,
 } from "@loopring-web/component-lib";
-import { useTradeRace } from "./hook";
+import { EVENT_STATUS, useTradeRace } from "./hook";
 import { useAmmPool } from "../LiquidityPage/hook";
 import { useAmmMiningUI } from "../MiningPage/hook";
 import {
-  DropDownIcon,
   CURRENT_EVENT_DATE,
+  DropDownIcon,
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
-import { useTheme } from "@emotion/react";
 import moment from "moment";
 
 const LayoutStyled = styled(Box)`
@@ -29,12 +28,25 @@ const LayoutStyled = styled(Box)`
     list-style: dismal;
     font-size: ${({ theme }) => theme.fontDefault.body1};
     margin-left: ${({ theme }) => theme.unit * 2}px;
+
     li {
       color: var(--color-text-secondary);
     }
+
     li ::marker {
       content: counter(list-item) " )";
       color: var(--color-text-secondary);
+    }
+  }
+  .hours,
+  .minutes {
+    position: relative;
+    span:after {
+      display: block;
+      content: ":";
+      position: absolute;
+      right: -8px;
+      top: 0;
     }
   }
 `;
@@ -75,18 +87,19 @@ const StyledTextFiled = styled(TextField)`
 `;
 
 export const TradeRacePage = withTranslation("common")(
-  ({ t, i18n }: WithTranslation) => {
+  ({ t }: WithTranslation) => {
     const { search } = useLocation();
     const [currMarketPair, setCurrMarketPair] = React.useState("");
-    const theme = useTheme();
     const { ammActivityMap } = useAmmPool();
     const {
+      eventData,
+      history,
+      countDown,
       currPairUserRank,
       currPairRankData,
       getAmmGameRank,
       getAmmGameUserRank,
-      eventData,
-      history,
+      eventStatus,
     } = useTradeRace();
     const { volume, rank } = currPairUserRank || {};
     const { ammActivityViewMap } = useAmmMiningUI({ ammActivityMap });
@@ -152,21 +165,134 @@ export const TradeRacePage = withTranslation("common")(
               variant={"h2"}
               whiteSpace={"pre-line"}
               textAlign={"center"}
+              marginBottom={4}
               dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
-            ></Typography>
+            />
 
-            <Typography
-              marginTop={4}
-              marginBottom={2}
-              variant={"h5"}
-              textAlign={"center"}
-            >
+            {eventStatus && (
+              <Box
+                component={"section"}
+                marginBottom={4}
+                textAlign={"center"}
+                // display={"flex"}
+                // flexDirection={"row"}
+                // alignItems={"center"}
+              >
+                <Typography component={"h2"} variant={"h4"} marginBottom={2}>
+                  {t(eventStatus)}
+                </Typography>
+                {EVENT_STATUS[eventStatus] !== EVENT_STATUS.EVENT_END && (
+                  <Box
+                    display={"flex"}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                  >
+                    <Box
+                      className={"day"}
+                      display={"flex"}
+                      flexDirection={"column"}
+                      minWidth={86}
+                      alignItems={"center"}
+                      marginRight={2}
+                    >
+                      <Typography
+                        variant={"h2"}
+                        component={"span"}
+                        color={"var(--color--text-secondary)"}
+                      >
+                        {countDown?.days}
+                      </Typography>
+                      <Typography
+                        variant={"h4"}
+                        color={"var(--color--text-secondary)"}
+                        marginTop={1}
+                        style={{ textTransform: "uppercase" }}
+                      >
+                        {t("labelDay")}
+                      </Typography>
+                    </Box>
+                    <Box
+                      className={"hours"}
+                      display={"flex"}
+                      minWidth={86}
+                      flexDirection={"column"}
+                      alignItems={"center"}
+                      marginRight={2}
+                    >
+                      <Typography
+                        variant={"h2"}
+                        component={"span"}
+                        color={"var(--color--text-secondary)"}
+                      >
+                        {countDown?.hours}
+                      </Typography>
+                      <Typography
+                        variant={"h4"}
+                        color={"var(--color--text-secondary)"}
+                        marginTop={1}
+                        style={{ textTransform: "uppercase" }}
+                      >
+                        {t("labelHours")}
+                      </Typography>
+                    </Box>
+                    <Box
+                      className={"minutes"}
+                      display={"flex"}
+                      minWidth={86}
+                      flexDirection={"column"}
+                      alignItems={"center"}
+                      marginRight={2}
+                    >
+                      <Typography
+                        variant={"h2"}
+                        component={"span"}
+                        color={"var(--color--text-secondary)"}
+                      >
+                        {countDown?.minutes}
+                      </Typography>
+                      <Typography
+                        variant={"h4"}
+                        color={"var(--color--text-secondary)"}
+                        marginTop={1}
+                        style={{ textTransform: "uppercase" }}
+                      >
+                        {t("labelMinutes")}
+                      </Typography>
+                    </Box>
+                    <Box
+                      className={"secondary"}
+                      display={"flex"}
+                      minWidth={86}
+                      flexDirection={"column"}
+                      alignItems={"center"}
+                      marginRight={2}
+                    >
+                      <Typography
+                        variant={"h2"}
+                        color={"var(--color--text-secondary)"}
+                      >
+                        {countDown?.seconds}
+                      </Typography>
+                      <Typography
+                        variant={"h4"}
+                        color={"var(--color--text-secondary)"}
+                        marginTop={1}
+                        style={{ textTransform: "uppercase" }}
+                      >
+                        {t("labelSeconds")}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+            )}
+            <Typography marginBottom={2} variant={"h5"}>
               {eventData.duration.prev}
               <Typography
                 component={"time"}
                 paddingX={1}
                 variant={"h5"}
-                dateTime={eventData.duration.startDate}
+                dateTime={eventData.duration.startDate.toString()}
               >
                 {startDate}
               </Typography>
@@ -177,7 +303,7 @@ export const TradeRacePage = withTranslation("common")(
                 component={"time"}
                 paddingX={1}
                 variant={"h5"}
-                dateTime={eventData.duration.endDate}
+                dateTime={eventData.duration.endDate.toString()}
               >
                 {endDate}
               </Typography>
@@ -205,6 +331,7 @@ export const TradeRacePage = withTranslation("common")(
               </SelectWrapperStyled>
               <Typography
                 variant={"h2"}
+                color={"var(--color--text-secondary)"}
                 textAlign={"center"}
                 marginTop={1}
                 marginBottom={0}
@@ -234,7 +361,11 @@ export const TradeRacePage = withTranslation("common")(
               <TradeRaceTable {...{ t, rawData: currPairRankData }} />
             </TableWrapperStyled>
             <ProjectWrapperStyled>
-              <Typography marginBottom={1} variant={"h4"}>
+              <Typography
+                marginBottom={1}
+                variant={"h4"}
+                color={"var(--color--text-secondary)"}
+              >
                 {t("labelTradeRaceRewards")}
               </Typography>
               <Box width={"50%"} minWidth={600}>
@@ -242,7 +373,11 @@ export const TradeRacePage = withTranslation("common")(
               </Box>
             </ProjectWrapperStyled>
             <ProjectWrapperStyled marginTop={2}>
-              <Typography marginBottom={2} variant={"h4"}>
+              <Typography
+                marginBottom={2}
+                variant={"h4"}
+                color={"var(--color--text-secondary)"}
+              >
                 {t("labelTradeRaceRules")}
               </Typography>
               <ol>
