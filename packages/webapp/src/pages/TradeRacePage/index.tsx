@@ -11,7 +11,10 @@ import {
 import { useTradeRace } from "./hook";
 import { useAmmPool } from "../LiquidityPage/hook";
 import { useAmmMiningUI } from "../MiningPage/hook";
-import { DropDownIcon, CURRENT_EVENT_DATE } from "@loopring-web/common-resources";
+import {
+  DropDownIcon,
+  CURRENT_EVENT_DATE,
+} from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 import { useTheme } from "@emotion/react";
 import moment from "moment";
@@ -21,6 +24,19 @@ const LayoutStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  ol {
+    list-style: dismal;
+    font-size: ${({ theme }) => theme.fontDefault.body1};
+    margin-left: ${({ theme }) => theme.unit * 2}px;
+    li {
+      color: var(--color-text-secondary);
+    }
+    li ::marker {
+      content: counter(list-item) " )";
+      color: var(--color-text-secondary);
+    }
+  }
 `;
 
 const TableWrapperStyled = styled(Box)`
@@ -83,7 +99,9 @@ export const TradeRacePage = withTranslation("common")(
         setCurrMarketPair(e.target.value);
         getAmmGameRank(e.target.value);
         getAmmGameUserRank(e.target.value);
-        history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${e.target.value}`)
+        history.push(
+          `/race-event/${CURRENT_EVENT_DATE}?pair=${e.target.value}`
+        );
       },
       [setCurrMarketPair, getAmmGameUserRank, getAmmGameRank, history]
     );
@@ -227,17 +245,12 @@ export const TradeRacePage = withTranslation("common")(
               <Typography marginBottom={2} variant={"h4"}>
                 {t("labelTradeRaceRules")}
               </Typography>
-              <ol
-                style={{
-                  listStyle: "dismal",
-                  fontSize: theme.fontDefault.body1,
-                  marginLeft: theme.unit * 2,
-                }}
-              >
+              <ol>
                 {eventData.rules.map((item, index) => (
                   <li key={index}>
                     <Typography
                       whiteSpace={"pre-line"}
+                      color={"inherit"}
                       component={"p"}
                       variant={"body1"}
                       marginBottom={2}
