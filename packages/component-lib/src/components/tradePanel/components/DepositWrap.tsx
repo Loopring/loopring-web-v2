@@ -13,10 +13,10 @@ import * as _ from "lodash";
 import {
   HelpIcon,
   NFTWholeINFO,
-  RampIcon,
+  // RampIcon
 } from "@loopring-web/common-resources";
 import { BasicANFTTrade } from "./BasicANFTTrade";
-import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+// import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk'
 
 //SelectReceiveCoin
 export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
