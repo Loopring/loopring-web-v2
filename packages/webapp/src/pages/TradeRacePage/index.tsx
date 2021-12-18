@@ -8,16 +8,15 @@ import {
   TradeRacePanel,
   TradeRaceTable,
 } from "@loopring-web/component-lib";
-import { EVENT_STATUS, useTradeRace } from "./hook";
+import { useTradeRace } from "./hook";
 import { useAmmPool } from "../LiquidityPage/hook";
 import { useAmmMiningUI } from "../MiningPage/hook";
 import {
-  CURRENT_EVENT_DATE,
   DropDownIcon,
+  CURRENT_EVENT_DATE,
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
-//@ts-ignore
-import cssStyle from "./snow.css";
+import { useTheme } from "@emotion/react";
 import moment from "moment";
 
 const LayoutStyled = styled(Box)`
@@ -25,35 +24,19 @@ const LayoutStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
+
   ol {
     list-style: dismal;
     font-size: ${({ theme }) => theme.fontDefault.body1};
     margin-left: ${({ theme }) => theme.unit * 2}px;
-
     li {
       color: var(--color-text-secondary);
     }
-
     li ::marker {
       content: counter(list-item) " )";
       color: var(--color-text-secondary);
     }
   }
-
-  .hours,
-  .minutes {
-    position: relative;
-
-    span:after {
-      display: block;
-      content: ":";
-      position: absolute;
-      right: -8px;
-      top: 0;
-    }
-  }
-  //
-  ${cssStyle}
 `;
 
 const TableWrapperStyled = styled(Box)`
@@ -92,19 +75,18 @@ const StyledTextFiled = styled(TextField)`
 `;
 
 export const TradeRacePage = withTranslation("common")(
-  ({ t }: WithTranslation) => {
+  ({ t, i18n }: WithTranslation) => {
     const { search } = useLocation();
     const [currMarketPair, setCurrMarketPair] = React.useState("");
+    const theme = useTheme();
     const { ammActivityMap } = useAmmPool();
     const {
-      eventData,
-      history,
-      countDown,
       currPairUserRank,
       currPairRankData,
       getAmmGameRank,
       getAmmGameUserRank,
-      eventStatus,
+      eventData,
+      history,
     } = useTradeRace();
     const { volume, rank } = currPairUserRank || {};
     const { ammActivityViewMap } = useAmmMiningUI({ ammActivityMap });
@@ -152,18 +134,10 @@ export const TradeRacePage = withTranslation("common")(
     const endDate = eventData
       ? moment.utc(eventData?.duration.endDate).format(`YYYY-MM-DD HH:mm:ss`)
       : "";
-    /*remove: holiday only end*/
-    const flakes = 160;
-    const flake = React.useMemo(() => {
-      return <div className={"flake"} />;
-    }, []);
-    const snows = new Array(flakes).fill(flake, 0, flakes);
     return (
       <>
         {eventData ? (
           <LayoutStyled marginY={4}>
-            <div className={"snow"}>{snows.map((item) => item)}</div>
-            {/*remove: holiday only end*/}
             <Typography
               marginY={1}
               component={"h1"}
@@ -178,140 +152,21 @@ export const TradeRacePage = withTranslation("common")(
               variant={"h2"}
               whiteSpace={"pre-line"}
               textAlign={"center"}
-              marginBottom={4}
               dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
-            />
+            ></Typography>
 
-            {eventStatus && (
-              <Box
-                component={"section"}
-                marginBottom={4}
-                textAlign={"center"}
-                // display={"flex"}
-                // flexDirection={"row"}
-                // alignItems={"center"}
-              >
-                <Typography
-                  component={"h2"}
-                  variant={"h4"}
-                  marginBottom={2}
-                  color={"var(--color-text-secondary)"}
-                >
-                  {t(eventStatus)}
-                </Typography>
-                {EVENT_STATUS[eventStatus] !== EVENT_STATUS.EVENT_END && (
-                  <Box
-                    display={"flex"}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                  >
-                    <Box
-                      className={"day"}
-                      display={"flex"}
-                      flexDirection={"column"}
-                      minWidth={86}
-                      alignItems={"center"}
-                      marginRight={2}
-                    >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {countDown?.days}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelDay")}
-                      </Typography>
-                    </Box>
-                    <Box
-                      className={"hours"}
-                      display={"flex"}
-                      minWidth={86}
-                      flexDirection={"column"}
-                      alignItems={"center"}
-                      marginRight={2}
-                    >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {countDown?.hours}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelHours")}
-                      </Typography>
-                    </Box>
-                    <Box
-                      className={"minutes"}
-                      display={"flex"}
-                      minWidth={86}
-                      flexDirection={"column"}
-                      alignItems={"center"}
-                      marginRight={2}
-                    >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {countDown?.minutes}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelMinutes")}
-                      </Typography>
-                    </Box>
-                    <Box
-                      className={"secondary"}
-                      display={"flex"}
-                      minWidth={86}
-                      flexDirection={"column"}
-                      alignItems={"center"}
-                      marginRight={2}
-                    >
-                      <Typography
-                        variant={"h2"}
-                        component={"span"}
-                        color={"var(--color-text-primary)"}
-                      >
-                        {countDown?.seconds}
-                      </Typography>
-                      <Typography
-                        variant={"h4"}
-                        color={"var(--color-text-secondary)"}
-                        marginTop={1}
-                        style={{ textTransform: "uppercase" }}
-                      >
-                        {t("labelSeconds")}
-                      </Typography>
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-            )}
-            <Typography marginBottom={2} variant={"h5"}>
+            <Typography
+              marginTop={4}
+              marginBottom={2}
+              variant={"h5"}
+              textAlign={"center"}
+            >
               {eventData.duration.prev}
               <Typography
                 component={"time"}
                 paddingX={1}
                 variant={"h5"}
-                dateTime={eventData.duration.startDate.toString()}
+                dateTime={eventData.duration.startDate}
               >
                 {startDate}
               </Typography>
@@ -322,7 +177,7 @@ export const TradeRacePage = withTranslation("common")(
                 component={"time"}
                 paddingX={1}
                 variant={"h5"}
-                dateTime={eventData.duration.endDate.toString()}
+                dateTime={eventData.duration.endDate}
               >
                 {endDate}
               </Typography>
@@ -350,7 +205,6 @@ export const TradeRacePage = withTranslation("common")(
               </SelectWrapperStyled>
               <Typography
                 variant={"h2"}
-                color={"var(--color-text-secondary)"}
                 textAlign={"center"}
                 marginTop={1}
                 marginBottom={0}
@@ -380,11 +234,7 @@ export const TradeRacePage = withTranslation("common")(
               <TradeRaceTable {...{ t, rawData: currPairRankData }} />
             </TableWrapperStyled>
             <ProjectWrapperStyled>
-              <Typography
-                marginBottom={1}
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-              >
+              <Typography marginBottom={1} variant={"h4"}>
                 {t("labelTradeRaceRewards")}
               </Typography>
               <Box width={"50%"} minWidth={600}>
@@ -392,11 +242,7 @@ export const TradeRacePage = withTranslation("common")(
               </Box>
             </ProjectWrapperStyled>
             <ProjectWrapperStyled marginTop={2}>
-              <Typography
-                marginBottom={2}
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-              >
+              <Typography marginBottom={2} variant={"h4"}>
                 {t("labelTradeRaceRules")}
               </Typography>
               <ol>
