@@ -16,6 +16,8 @@ import {
   DropDownIcon,
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
+//@ts-ignore
+import cssStyle from "./snow.css";
 import moment from "moment";
 
 const LayoutStyled = styled(Box)`
@@ -23,7 +25,6 @@ const LayoutStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   ol {
     list-style: dismal;
     font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -38,9 +39,11 @@ const LayoutStyled = styled(Box)`
       color: var(--color-text-secondary);
     }
   }
+
   .hours,
   .minutes {
     position: relative;
+
     span:after {
       display: block;
       content: ":";
@@ -49,6 +52,8 @@ const LayoutStyled = styled(Box)`
       top: 0;
     }
   }
+  //
+  ${cssStyle}
 `;
 
 const TableWrapperStyled = styled(Box)`
@@ -147,10 +152,17 @@ export const TradeRacePage = withTranslation("common")(
     const endDate = eventData
       ? moment.utc(eventData?.duration.endDate).format(`YYYY-MM-DD HH:mm:ss`)
       : "";
+    const flakes = 200;
+    const flake = React.useMemo(() => {
+      return <div className={"flake"} />;
+    }, []);
+    const snows = new Array(flakes).fill(flake, 0, flakes);
     return (
       <>
         {eventData ? (
           <LayoutStyled marginY={4}>
+            <div className={"snow"}>{snows.map((item) => item)}</div>
+            {/*remove: holiday only end*/}
             <Typography
               marginY={1}
               component={"h1"}
@@ -178,7 +190,12 @@ export const TradeRacePage = withTranslation("common")(
                 // flexDirection={"row"}
                 // alignItems={"center"}
               >
-                <Typography component={"h2"} variant={"h4"} marginBottom={2}>
+                <Typography
+                  component={"h2"}
+                  variant={"h4"}
+                  marginBottom={2}
+                  color={"var(--color-text-secondary)"}
+                >
                   {t(eventStatus)}
                 </Typography>
                 {EVENT_STATUS[eventStatus] !== EVENT_STATUS.EVENT_END && (
@@ -198,13 +215,13 @@ export const TradeRacePage = withTranslation("common")(
                       <Typography
                         variant={"h2"}
                         component={"span"}
-                        color={"var(--color--text-secondary)"}
+                        color={"var(--color-text-primary)"}
                       >
                         {countDown?.days}
                       </Typography>
                       <Typography
                         variant={"h4"}
-                        color={"var(--color--text-secondary)"}
+                        color={"var(--color-text-secondary)"}
                         marginTop={1}
                         style={{ textTransform: "uppercase" }}
                       >
@@ -222,13 +239,13 @@ export const TradeRacePage = withTranslation("common")(
                       <Typography
                         variant={"h2"}
                         component={"span"}
-                        color={"var(--color--text-secondary)"}
+                        color={"var(--color-text-primary)"}
                       >
                         {countDown?.hours}
                       </Typography>
                       <Typography
                         variant={"h4"}
-                        color={"var(--color--text-secondary)"}
+                        color={"var(--color-text-secondary)"}
                         marginTop={1}
                         style={{ textTransform: "uppercase" }}
                       >
@@ -246,13 +263,13 @@ export const TradeRacePage = withTranslation("common")(
                       <Typography
                         variant={"h2"}
                         component={"span"}
-                        color={"var(--color--text-secondary)"}
+                        color={"var(--color-text-primary)"}
                       >
                         {countDown?.minutes}
                       </Typography>
                       <Typography
                         variant={"h4"}
-                        color={"var(--color--text-secondary)"}
+                        color={"var(--color-text-secondary)"}
                         marginTop={1}
                         style={{ textTransform: "uppercase" }}
                       >
@@ -269,13 +286,14 @@ export const TradeRacePage = withTranslation("common")(
                     >
                       <Typography
                         variant={"h2"}
-                        color={"var(--color--text-secondary)"}
+                        component={"span"}
+                        color={"var(--color-text-primary)"}
                       >
                         {countDown?.seconds}
                       </Typography>
                       <Typography
                         variant={"h4"}
-                        color={"var(--color--text-secondary)"}
+                        color={"var(--color-text-secondary)"}
                         marginTop={1}
                         style={{ textTransform: "uppercase" }}
                       >
@@ -331,7 +349,7 @@ export const TradeRacePage = withTranslation("common")(
               </SelectWrapperStyled>
               <Typography
                 variant={"h2"}
-                color={"var(--color--text-secondary)"}
+                color={"var(--color-text-secondary)"}
                 textAlign={"center"}
                 marginTop={1}
                 marginBottom={0}
@@ -364,7 +382,7 @@ export const TradeRacePage = withTranslation("common")(
               <Typography
                 marginBottom={1}
                 variant={"h4"}
-                color={"var(--color--text-secondary)"}
+                color={"var(--color-text-secondary)"}
               >
                 {t("labelTradeRaceRewards")}
               </Typography>
@@ -376,7 +394,7 @@ export const TradeRacePage = withTranslation("common")(
               <Typography
                 marginBottom={2}
                 variant={"h4"}
-                color={"var(--color--text-secondary)"}
+                color={"var(--color-text-secondary)"}
               >
                 {t("labelTradeRaceRules")}
               </Typography>
