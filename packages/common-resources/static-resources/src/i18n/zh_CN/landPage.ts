@@ -40,4 +40,6 @@ export default {
     labelWalletUnleashed: 'ETHEREUM UNLEASHED',
     labelWalletUnleashedDetail: 'Your mobile gateway to Ethereum DeFi, collectables, and more.',
     labelLaunchApp: 'LAUNCH APP',
+    labelUpgradeHide: 'Loopring System Service Upgrade: Loopring will perform a temporary system upgrade starting at 2021/12/20 2:00pm (UTC+8), which will take approximately 2 hours.',
+    labelUpgradeShow: 'Loopring System Service Upgrade: Loopring will perform a temporary system upgrade starting at 2021/12/20 2:00pm (UTC+8), which will take approximately 2 hours. \n\n During this period, the following relayer services will be suspended: deposits, withdrawals, trading and wallet creation. Deposits that are not completed before the start of the upgrade will be processed after the completion of the upgrade. \n We apologize for any inconvenience this may cause, and thank you for your patience! \n Please note: The 2 hours is our best estimation and may vary. As usual, we will maintain regular communication on the progress of the upgrade on our Twitter and Discord. \n Thank you for your support!',
 }
