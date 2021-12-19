@@ -1,7 +1,8 @@
 import { Box, Container, Grid, Typography, Link } from '@mui/material';
 import React from 'react';
+import moment from 'moment'
 import styled from '@emotion/styled/';
-import { myLog, ThemeType, SoursURL, SpeakerIcon } from '@loopring-web/common-resources';
+import { ThemeType, SoursURL, SpeakerIcon, maintainceEndTime } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { LoopringAPI } from '../../api_wrapper';
 
@@ -230,9 +231,21 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
         tradeNum: string,
         layerTwoLockedVolume: string
     } | undefined>();
-    // const theme = useTheme();
-    // const history = useHistory()
+
+    const [currentBJTime, setCurrentBJTime] = React.useState(0)
     const [showTotalUpgradeInfo ,setShowTotalUpgradeInfo] = React.useState(false)
+    
+    const afterMaintaince = currentBJTime > maintainceEndTime
+    
+    React.useEffect(() => {
+        setInterval(() => {
+            setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000)
+        }, 1000)
+
+        return () => {
+            clearInterval()
+        }
+    }, [])
     
     React.useLayoutEffect(() => {
         function updateSize() {
@@ -254,11 +267,6 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                 tradeNum,
                 layerTwoLockedVolume
             } = await LoopringAPI.exchangeAPI.getProtocolPortrait()
-            myLog({ timestamp,
-                tradeVolume,
-                totalUserNum,
-                tradeNum,
-                layerTwoLockedVolume })
             setValue({
                 timestamp,
                 tradeVolume,
@@ -285,7 +293,8 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
     }, [result, LoopringAPI.exchangeAPI])
 
     return <ContainerStyle>
-        <Box 
+        {!afterMaintaince && (
+            <Box
             width={'100%'} 
             display={'flex'} 
             justifyContent={'center'} 
@@ -304,6 +313,8 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                     &nbsp;&gt;&gt;
                 </Typography>
         </Box>
+        )}
+        
         <Box>
             <ContainerStyled>
                 <GridBg item xs={12}
