@@ -53,6 +53,7 @@ const LayoutStyled = styled(Box)`
       top: 0;
     }
   }
+
   //
   ${cssStyle}
 `;
@@ -87,7 +88,6 @@ export const TradeRacePage = withTranslation("common")(
   ({ t }: WithTranslation) => {
     const { search } = useLocation();
     const [currMarketPair, setCurrMarketPair] = React.useState("");
-    const volumeToken = currMarketPair ? currMarketPair.split('-')[1] : ''
     const { ammActivityMap } = useAmmPool();
     const {
       eventData,
@@ -95,14 +95,11 @@ export const TradeRacePage = withTranslation("common")(
       countDown,
       currPairUserRank,
       currPairRankData,
-      rewardToken,
       getAmmGameRank,
       getAmmGameUserRank,
       eventStatus,
     } = useTradeRace();
     const { volume, rank } = currPairUserRank || {};
-    const userVolume = volume ? getValuePrecisionThousand(
-      volumeToCount(volumeToken, volume)) : '--'
     const { ammActivityViewMap } = useAmmMiningUI({ ammActivityMap });
     const filteredAmmViewMap = ammActivityViewMap
       .filter((o) => o.activity.ruleType === "SWAP_VOLUME_RANKING")
@@ -364,7 +361,7 @@ export const TradeRacePage = withTranslation("common")(
                   alignItems={"center"}
                 >
                   <Typography fontSize={16} marginRight={2}>
-                  {t("labelTradeRaceYourVolume")}: {userVolume}
+                    {t("labelTradeRaceYourVolume")}: {volume || "--"}
                   </Typography>
                   <Typography fontSize={16}>
                     {t("labelTradeRaceYourRanking")}: {rank || "--"}
@@ -379,7 +376,9 @@ export const TradeRacePage = withTranslation("common")(
                     {t("labelTradeRaceGoTrading")} &gt;&gt;
                   </Button>
                 </Box>
-              <TradeRaceTable {...{ t, rawData: currPairRankData,volumeToken, rewardToken }} />
+                {/*{eventStatus !== EVENT_STATUS.EVENT_READY && (*/}
+                <TradeRaceTable {...{ t, rawData: currPairRankData }} />
+                {/*)}*/}
               </TableWrapperStyled>
             </Box>
             <Box
