@@ -1,22 +1,24 @@
-import { Box, Grid } from '@mui/material';
-import { useRouteMatch } from 'react-router-dom';
-import React from 'react';
-import { EmptyDefault } from '@loopring-web/component-lib';
-import Template from 'easy-template-string';
-import gfm from 'remark-gfm';
-import ReactMarkdown from 'react-markdown';
-import styled from '@emotion/styled';
-import { css, useTheme } from '@emotion/react';
+import { Box, Grid } from "@mui/material";
+import { useRouteMatch } from "react-router-dom";
+import React from "react";
+import { EmptyDefault } from "@loopring-web/component-lib";
+import Template from "easy-template-string";
+import gfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import styled from "@emotion/styled";
+import { css, useTheme } from "@emotion/react";
 //@ts-ignore
-import cssStyle from 'github-markdown-css/github-markdown.css';
-import { ThemeType } from '@loopring-web/common-resources';
-import { LoadingBlock } from '../LoadingPage';
+import cssStyle from "github-markdown-css/github-markdown.css";
+import { ThemeType } from "@loopring-web/common-resources";
+import { LoadingBlock } from "../LoadingPage";
 
-const url_path = 'https://static.loopring.io/documents';
+const url_path = "https://static.loopring.io/documents";
 
-const style = css`${cssStyle}`
+const style = css`
+  ${cssStyle}
+`;
 const BoxStyle = styled(Grid)`
-  ${({theme}) => `
+  ${({ theme }) => `
       .markdown-body{
         border-radius: ${theme.unit / 2}px;
         max-width:1200px;
@@ -28,7 +30,9 @@ const BoxStyle = styled(Grid)`
           --color-border-muted: ${theme.colorBase.divide};
           --color-canvas-subtle:${theme.colorBase.fieldOpacity};
 
-         ${theme.mode === ThemeType.dark ? `
+         ${
+           theme.mode === ThemeType.dark
+             ? `
           --color-prettylights-syntax-comment: #8b949e;
           --color-prettylights-syntax-constant: #79c0ff;
           --color-prettylights-syntax-entity: #d2a8ff;
@@ -63,7 +67,7 @@ const BoxStyle = styled(Grid)`
           --color-accent-emphasis: #1f6feb;
           --color-danger-fg: #f85149;
           }`
-          : `
+             : `
           --color-prettylights-syntax-comment: #6e7781;
           --color-prettylights-syntax-constant: #0550ae;
           --color-prettylights-syntax-entity: #8250df;
@@ -97,14 +101,22 @@ const BoxStyle = styled(Grid)`
           --color-accent-fg: #0969da;
           --color-accent-emphasis: #0969da;
           --color-danger-fg: #cf222e;
-        `}
+        `
+         }
       }
   `};
+
+  ul {
+    list-style: inherit;
+  }
+  ol {
+    list-style: decimal;
+  }
   ${style}
 ` as typeof Grid;
 const formatInput = async (textContent: string): Promise<string> => {
   // let [data, content] = args;
-  const data = await fetch('https://api3.loopring.io/api/v2/exchange/feeInfo')
+  const data = await fetch("https://api3.loopring.io/api/v2/exchange/feeInfo")
     .then((res) => res.json())
     .then((data) => data.data);
   let {
@@ -115,23 +127,23 @@ const formatInput = async (textContent: string): Promise<string> => {
   ORDERBOOK_TRADING_FEES_STABLECOIN = Object.keys(
     ORDERBOOK_TRADING_FEES_STABLECOIN
   ).reduce((pre, key) => {
-    pre[ 'ORDERBOOK_TRADING_FEES_STABLECOIN.' + key ] = (
-      ORDERBOOK_TRADING_FEES_STABLECOIN[ key ].takerRate / 100
+    pre["ORDERBOOK_TRADING_FEES_STABLECOIN." + key] = (
+      ORDERBOOK_TRADING_FEES_STABLECOIN[key].takerRate / 100
     ).toFixed(2);
     return pre;
   }, {});
   ORDERBOOK_TRADING_FEES = Object.keys(ORDERBOOK_TRADING_FEES).reduce(
     (pre, key) => {
-      pre[ 'ORDERBOOK_TRADING_FEES.' + key ] = (
-        ORDERBOOK_TRADING_FEES[ key ].takerRate / 100
+      pre["ORDERBOOK_TRADING_FEES." + key] = (
+        ORDERBOOK_TRADING_FEES[key].takerRate / 100
       ).toFixed(2);
       return pre;
     },
     {}
   );
   AMM_TRADING_FEES = Object.keys(AMM_TRADING_FEES).reduce((pre, key) => {
-    pre[ 'AMM_TRADING_FEES.' + key ] = (
-      AMM_TRADING_FEES[ key ].takerRate / 100
+    pre["AMM_TRADING_FEES." + key] = (
+      AMM_TRADING_FEES[key].takerRate / 100
     ).toFixed(2);
     return pre;
   }, {});
@@ -143,52 +155,81 @@ const formatInput = async (textContent: string): Promise<string> => {
   });
 };
 const list = [
-  'wallet_fees_zh.md',
-  'wallet_fees_en.md',
-  'dex_fees_en.md',
-  'dex_fees_zh.md',
+  "wallet_fees_zh.md",
+  "wallet_fees_en.md",
+  "dex_fees_en.md",
+  "dex_fees_zh.md",
 ];
 export const MarkDonwPage = () => {
   let match: any = useRouteMatch("/document/:path");
   const [path, setPath] = React.useState<null | string>(match?.params.path);
-  const [input, setInput] = React.useState<string>('');
+  const [input, setInput] = React.useState<string>("");
 
   React.useEffect(() => {
     if (path) {
       try {
-        const _path = (path.split('/').length > 1) ? path : `markdown/${path}`
+        const _path = path.split("/").length > 1 ? path : `markdown/${path}`;
 
         fetch(url_path + "/" + _path)
-          .then(response => response.text()).then((input) => {
-          if (list.findIndex((f) => f === path) !== -1) {
-            return formatInput(input)
-          } else {
-            return input
-          }
-        }).then((input) => {
-          setInput(input)
-        })
-          .catch(() => {
-            setPath(null)
+          .then((response) => response.text())
+          .then((input) => {
+            if (list.findIndex((f) => f === path) !== -1) {
+              return formatInput(input);
+            } else {
+              return input;
+            }
           })
-
+          .then((input) => {
+            setInput(input);
+          })
+          .catch(() => {
+            setPath(null);
+          });
       } catch (e: any) {
-        setPath(null)
+        setPath(null);
       }
-
     }
   }, [path]);
-  const theme = useTheme()
+  const theme = useTheme();
 
-  return <BoxStyle container minHeight={'calc(100% - 260px)'} flex={1}
-                   marginTop={3} marginBottom={2}>
-    <Grid item xs={12}>
-      {path ? input ? <Box flex={1} padding={3} boxSizing={'border-box'}
-                           className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2`}>
-          <ReactMarkdown plugins={[gfm]} children={input}/></Box>
-        : <LoadingBlock/> : <EmptyDefault height={'100%'} message={() =>
-        <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>No Content</Box>}/>
-      }
-    </Grid>
-  </BoxStyle>
-}
+  return (
+    <BoxStyle
+      container
+      minHeight={"calc(100% - 260px)"}
+      flex={1}
+      marginTop={3}
+      marginBottom={2}
+    >
+      <Grid item xs={12}>
+        {path ? (
+          input ? (
+            <Box
+              flex={1}
+              padding={3}
+              boxSizing={"border-box"}
+              className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2`}
+            >
+              <ReactMarkdown plugins={[gfm]} children={input} />
+            </Box>
+          ) : (
+            <LoadingBlock />
+          )
+        ) : (
+          <EmptyDefault
+            height={"100%"}
+            message={() => (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                No Content
+              </Box>
+            )}
+          />
+        )}
+      </Grid>
+    </BoxStyle>
+  );
+};
