@@ -32,8 +32,6 @@ import {
   ThemeType,
   LightIcon,
   DarkIcon,
-  maintainceStatTime,
-  maintainceEndTime,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -42,7 +40,6 @@ import {
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
-import moment from 'moment'
 import { useSettings } from "../../stores/reducer/settings";
 
 const ButtonStyled = styled(Button)`
@@ -227,19 +224,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const { themeMode, setTheme } = useSettings();
       const history = useHistory();
       const location = useLocation();
-      
-      const [currentBJTime, setCurrentBJTime] = React.useState(0)
-
-      React.useEffect(() => {
-        setInterval(() => {
-            setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000)
-        }, 1000)
-
-        return () => {
-            clearInterval()
-        }
-    }, [])
-
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -395,8 +379,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);
 
-      const isMaintaining = currentBJTime >= maintainceStatTime && currentBJTime <= maintainceEndTime
-
       const displayDesktop = React.useMemo(() => {
         return (
           <ToolBarStyled>
@@ -459,7 +441,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     </Grid>
                     <Grid item>
                       <ButtonStyled
-                        disabled={isMaintaining}
                         variant={"contained"}
                         onClick={() => history.push("/trade/lite/LRC-ETH")}
                       >
