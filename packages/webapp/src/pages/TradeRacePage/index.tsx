@@ -16,6 +16,8 @@ import {
   DropDownIcon,
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
+//@ts-ignore
+import cssStyle from "./snow.css";
 import moment from "moment";
 
 const LayoutStyled = styled(Box)`
@@ -23,7 +25,6 @@ const LayoutStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   ol {
     list-style: dismal;
     font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -38,9 +39,11 @@ const LayoutStyled = styled(Box)`
       color: var(--color-text-secondary);
     }
   }
+
   .hours,
   .minutes {
     position: relative;
+
     span:after {
       display: block;
       content: ":";
@@ -49,6 +52,8 @@ const LayoutStyled = styled(Box)`
       top: 0;
     }
   }
+  //
+  ${cssStyle}
 `;
 
 const TableWrapperStyled = styled(Box)`
@@ -147,10 +152,17 @@ export const TradeRacePage = withTranslation("common")(
     const endDate = eventData
       ? moment.utc(eventData?.duration.endDate).format(`YYYY-MM-DD HH:mm:ss`)
       : "";
+    const flakes = 200;
+    const flake = React.useMemo(() => {
+      return <div className={"flake"} />;
+    }, []);
+    const snows = new Array(flakes).fill(flake, 0, flakes);
     return (
       <>
         {eventData ? (
           <LayoutStyled marginY={4}>
+            <div className={"snow"}>{snows.map((item) => item)}</div>
+            {/*remove: holiday only end*/}
             <Typography
               marginY={1}
               component={"h1"}
