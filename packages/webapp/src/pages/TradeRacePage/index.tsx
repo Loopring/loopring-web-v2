@@ -152,7 +152,8 @@ export const TradeRacePage = withTranslation("common")(
     const endDate = eventData
       ? moment.utc(eventData?.duration.endDate).format(`YYYY-MM-DD HH:mm:ss`)
       : "";
-    const flakes = 200;
+    /*remove: holiday only end*/
+    const flakes = 160;
     const flake = React.useMemo(() => {
       return <div className={"flake"} />;
     }, []);
