@@ -14,13 +14,11 @@ import { useAmmMiningUI } from "../MiningPage/hook";
 import {
   CURRENT_EVENT_DATE,
   DropDownIcon,
-  getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 //@ts-ignore
 import cssStyle from "./snow.css";
 import moment from "moment";
-import { volumeToCount } from "../../hooks/help";
 
 const LayoutStyled = styled(Box)`
   width: 100%;
@@ -89,7 +87,7 @@ export const TradeRacePage = withTranslation("common")(
   ({ t }: WithTranslation) => {
     const { search } = useLocation();
     const [currMarketPair, setCurrMarketPair] = React.useState("");
-    const volumeToken = currMarketPair ? currMarketPair.split("-")[1] : "";
+    const volumeToken = currMarketPair ? currMarketPair.split('-')[1] : ''
     const { ammActivityMap } = useAmmPool();
     const {
       eventData,
@@ -103,9 +101,8 @@ export const TradeRacePage = withTranslation("common")(
       eventStatus,
     } = useTradeRace();
     const { volume, rank } = currPairUserRank || {};
-    const userVolume = volume
-      ? getValuePrecisionThousand(volumeToCount(volumeToken, volume))
-      : "--";
+    const userVolume = volume ? getValuePrecisionThousand(
+      volumeToCount(volumeToken, volume)) : '--'
     const { ammActivityViewMap } = useAmmMiningUI({ ammActivityMap });
     const filteredAmmViewMap = ammActivityViewMap
       .filter((o) => o.activity.ruleType === "SWAP_VOLUME_RANKING")
@@ -367,7 +364,7 @@ export const TradeRacePage = withTranslation("common")(
                   alignItems={"center"}
                 >
                   <Typography fontSize={16} marginRight={2}>
-                    {t("labelTradeRaceYourVolume")}: {userVolume}
+                  {t("labelTradeRaceYourVolume")}: {userVolume}
                   </Typography>
                   <Typography fontSize={16}>
                     {t("labelTradeRaceYourRanking")}: {rank || "--"}
@@ -382,14 +379,7 @@ export const TradeRacePage = withTranslation("common")(
                     {t("labelTradeRaceGoTrading")} &gt;&gt;
                   </Button>
                 </Box>
-                <TradeRaceTable
-                  {...{
-                    t,
-                    rawData: currPairRankData,
-                    volumeToken,
-                    rewardToken,
-                  }}
-                />
+              <TradeRaceTable {...{ t, rawData: currPairRankData,volumeToken, rewardToken }} />
               </TableWrapperStyled>
             </Box>
             <Box
