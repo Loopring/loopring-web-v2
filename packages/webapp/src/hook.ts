@@ -52,8 +52,6 @@ export function useInit() {
   const { status: socketStatus, statusUnset: socketUnset } = useSocket();
 
   useCustomDCEffect(async () => {
-    // TODO getSessionAccount infor
-
     if (
       account.accAddress !== "" &&
       account.connectName &&
@@ -78,7 +76,6 @@ export function useInit() {
           return;
         }
       } catch (error) {
-        //await resetAccount({shouldUpdateProvider:true});
         walletServices.sendDisconnect(
           "",
           `error at init loading  ${error}, disconnect`
@@ -110,7 +107,6 @@ export function useInit() {
       case SagaStatus.ERROR:
         systemStatusUnset();
         setState("ERROR");
-        //TODO show error at button page show error  some retry dispat again
         break;
       case SagaStatus.DONE:
         systemStatusUnset();
@@ -152,7 +148,6 @@ export function useInit() {
     }
   }, [tokenMapStatus, ammMapStatus, tokenPricesStatus]);
   React.useEffect(() => {
-    console.log(tokenPricesStatus);
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:
         tokenPricesUnset();
@@ -169,8 +164,6 @@ export function useInit() {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:
         ammActivityMapStatusUnset();
-        // setState('ERROR')
-        //TODO: show error at button page show error  some retry dispath again
         break;
       case SagaStatus.DONE:
         ammActivityMapStatusUnset();
@@ -244,8 +237,4 @@ export function useInit() {
   return {
     state,
   };
-}
-
-function mylog(arg0: string, arg1: string) {
-  throw new Error("Function not implemented.");
 }
