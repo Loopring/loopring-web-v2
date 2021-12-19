@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Typography, Link } from '@mui/material';
 import React from 'react';
 import styled from '@emotion/styled/';
-import { myLog, ThemeType, SoursURL } from '@loopring-web/common-resources';
+import { myLog, ThemeType, SoursURL, SpeakerIcon } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { LoopringAPI } from '../../api_wrapper';
 
@@ -232,6 +232,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
     } | undefined>();
     // const theme = useTheme();
     // const history = useHistory()
+    const [showTotalUpgradeInfo ,setShowTotalUpgradeInfo] = React.useState(false)
     
     React.useLayoutEffect(() => {
         function updateSize() {
@@ -284,6 +285,25 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
     }, [result, LoopringAPI.exchangeAPI])
 
     return <ContainerStyle>
+        <Box 
+            width={'100%'} 
+            display={'flex'} 
+            justifyContent={'center'} 
+            lineHeight={'4.4rem'}
+            height={showTotalUpgradeInfo ? '23rem' : '4.4rem'}
+            style={{ 
+                backgroundColor: 'rgba(251, 169, 92, 0.1)',
+                cursor: 'pointer',
+                whiteSpace: 'pre'
+            }}
+            onClick={() => setShowTotalUpgradeInfo(prevStatus => !prevStatus)}
+        >
+            <Typography width={'1200px'} color={'var(--color-warning)'} variant={'h6'} lineHeight={'4.4rem'} height={'4.4rem'}>
+                <SpeakerIcon style={{ marginBottom: -5 }} />&nbsp;&nbsp;
+                    {showTotalUpgradeInfo ? t('labelUpgradeShow') : t('labelUpgradeHide')}
+                    &nbsp;&gt;&gt;
+                </Typography>
+        </Box>
         <Box>
             <ContainerStyled>
                 <GridBg item xs={12}
