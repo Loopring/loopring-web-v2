@@ -367,7 +367,7 @@ export const TradeRacePage = withTranslation("common")(
                   alignItems={"center"}
                 >
                   <Typography fontSize={16} marginRight={2}>
-                    {t("labelTradeRaceYourVolume")}: {userVolume}
+                    {t("labelTradeRaceYourVolume")} ({volumeToken}): {userVolume}
                   </Typography>
                   <Typography fontSize={16}>
                     {t("labelTradeRaceYourRanking")}: {rank || "--"}
