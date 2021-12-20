@@ -23,10 +23,9 @@ export const useAmmPool = <
   I extends { [key: string]: any }
 >() => {
   const { ammActivityMap, status: ammActivityMapStatus } = useAmmActivityMap();
-  const { addressIndex } = useTokenMap();
   const { forex } = useSystem();
   const { account, status: accountStatus } = useAccount();
-  const { status: tokenPricesStatus } = useTokenPrices();
+  const { status: tokenPricesStatus, tokenPrices } = useTokenPrices();
 
   const { status: walletLayer2Status } = useWalletLayer2();
   const { ammMap, getAmmMap } = useAmmMap();
@@ -45,9 +44,6 @@ export const useAmmPool = <
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [isRecentLoading, setIsRecentLoading] = React.useState(false);
-  const [lpTokenList, setLpTokenList] = React.useState<
-    { addr: string; price: number }[]
-  >([]);
 
   let routerLocation = useLocation();
 
@@ -57,40 +53,12 @@ export const useAmmPool = <
     }
   }, [ammActivityMapStatus]);
 
-  const getLpTokenList = React.useCallback(async () => {
-    if (LoopringAPI.walletAPI) {
-      const result = await LoopringAPI.walletAPI.getLatestTokenPrices();
-      const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
-        addr,
-        price,
-      }));
-      setLpTokenList(list);
-    }
-    return [];
-  }, []);
   // init AmmMap at begin
   React.useEffect(() => {
     if (!ammMap || Object.keys(ammMap).length === 0) {
       getAmmMap();
     }
-    getLpTokenList();
   }, []);
-
-  const getLpTokenPrice = React.useCallback(
-    (market: string) => {
-      if (addressIndex && !!lpTokenList.length) {
-        const address = Object.entries(addressIndex).find(
-          ([_, token]) => token === market
-        )?.[0];
-        if (address && lpTokenList) {
-          return lpTokenList.find((o) => o.addr === address)?.price;
-        }
-        return undefined;
-      }
-      return undefined;
-    },
-    [addressIndex, lpTokenList]
-  );
 
   const getUserAmmPoolTxs = React.useCallback(
     ({ limit = 14, offset = 0 }) => {
@@ -119,7 +87,7 @@ export const useAmmPool = <
               const formattedBalance = Number(
                 volumeToCount(market, o.totalBalance)
               );
-              const price = getLpTokenPrice(market);
+              const price = tokenPrices && tokenPrices[market];
               const totalDollar = ((formattedBalance || 0) *
                 (price || 0)) as any;
               const totalYuan = totalDollar * forex;
@@ -129,7 +97,6 @@ export const useAmmPool = <
                 totalYuan: totalYuan,
               };
             });
-            // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
             setMyAmmMarketArray(formattedArray || []);
             setAmmUserTotal(res.totalNum);
             setIsLoading(false);
@@ -137,7 +104,7 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, routerLocation.pathname, forex, getLpTokenPrice]
+    [ammMap, routerLocation.pathname, forex, tokenPrices]
   );
 
   const getRecentAmmPoolTxs = React.useCallback(
@@ -162,7 +129,7 @@ export const useAmmPool = <
               const formattedBalance = Number(
                 volumeToCount(market, o.totalBalance)
               );
-              const price = getLpTokenPrice(market);
+              const price = tokenPrices && tokenPrices[market];
               const totalDollar = ((formattedBalance || 0) *
                 (price || 0)) as any;
               const totalYuan = totalDollar * forex;
@@ -179,7 +146,7 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, routerLocation.pathname, forex, getLpTokenPrice]
+    [ammMap, routerLocation.pathname, forex]
   );
   React.useEffect(() => {
     if (
