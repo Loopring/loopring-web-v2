@@ -14,3 +14,6 @@ export const RowConfig = {
     rowHeaderHeight:44,
 }
 export const FeeChargeOrderDefault = ['ETH','USDT','LRC','DAI','USDC'];
+
+export const maintainceStatTime = 1639980000000
+export const maintainceEndTime = 1639987200000

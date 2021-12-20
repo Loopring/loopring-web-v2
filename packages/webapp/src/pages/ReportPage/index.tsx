@@ -1,28 +1,33 @@
-import styled from '@emotion/styled';
-import { Box, Typography } from '@mui/material';
+import styled from "@emotion/styled";
+import { Box, Typography } from "@mui/material";
 // @ts-ignore
-import * as mailTemplate from '@loopring-web/common-resources/mail.html'
-import React from 'react';
+import * as mailTemplate from "@loopring-web/common-resources/mail.html";
+import React from "react";
 
-const StyleBox= styled(Box)`
+const StyleBox = styled(Box)`
   background-color: var(--color-box);
-  #zohoSupportWebToCase textarea, #zohoSupportWebToCase input[type='text'], #zohoSupportWebToCase select, .wb_common {
-      width: 100%;
+  #zohoSupportWebToCase textarea,
+  #zohoSupportWebToCase input[type="text"],
+  #zohoSupportWebToCase select,
+  .wb_common {
+    width: 100%;
   }
 
   #zohoSupportWebToCase td {
-      padding: 11px 5px;
+    padding: 11px 5px;
   }
 
-  #zohoSupportWebToCase textarea, #zohoSupportWebToCase input[type='text'], #zohoSupportWebToCase select {
-      //border: 1px solid #ddd;
-      //padding: 3px 0;
-      //border-radius: 3px;
-    text-indent: .5em;
-    border-radius:4px;
+  #zohoSupportWebToCase textarea,
+  #zohoSupportWebToCase input[type="text"],
+  #zohoSupportWebToCase select {
+    //border: 1px solid #ddd;
+    //padding: 3px 0;
+    //border-radius: 3px;
+    text-indent: 0.5em;
+    border-radius: 4px;
     border-color: var(--opacity);
     background: var(--field-opacity);
-    padding:0.3rem 0.3rem 0.3rem 0.8rem;
+    padding: 0.3rem 0.3rem 0.3rem 0.8rem;
     font-size: 14px;
     letter-spacing: inherit;
     color: currentcolor;
@@ -34,99 +39,98 @@ const StyleBox= styled(Box)`
     display: block;
     min-width: 0px;
     width: 100%;
-    animation-name: mui-auto-fill-cancel;                             
+    animation-name: mui-auto-fill-cancel;
     animation-duration: 10ms;
-    
-
   }
   #zohoSupportWebToCase select {
     appearance: none;
     -webkit-appearance: none;
   }
-  #zohoSupportWebToCase  select option{
+  #zohoSupportWebToCase select option {
     appearance: none;
     -webkit-appearance: none;
     background: var(--color-pop-bg);
     color: var(--color-primary);
   }
 
-  #zohoSupportWebToCase textarea:focus-visible, #zohoSupportWebToCase input[type='text']:focus-visible, #zohoSupportWebToCase select:focus-visible{
+  #zohoSupportWebToCase textarea:focus-visible,
+  #zohoSupportWebToCase input[type="text"]:focus-visible,
+  #zohoSupportWebToCase select:focus-visible {
     outline: 1px solid;
   }
-  
+
   #zohoSupportWebToCase select {
-      box-sizing: unset
+    box-sizing: unset;
   }
 
   #zohoSupportWebToCase .wb_selectDate {
-      width: auto
+    width: auto;
   }
 
   #zohoSupportWebToCase input.wb_cusInput {
-      width: 108px
+    width: 108px;
   }
-  .inline-flex{
-     display: flex;
-     flex-direction: column;
-     max-width: 300px;
-     margin: 0 auto;
+  .inline-flex {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 0 auto;
   }
-  .inline-flex label{
+  .inline-flex label {
     margin-top: 16px;
     padding-bottom: 8px;
   }
-  .zsCaptchablock{
+  .zsCaptchablock {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
   .wb_FtCon {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      margin-top: 15px;
-      padding-left: 10px
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 15px;
+    padding-left: 10px;
   }
 
   .wb_logoCon {
-      display: flex;
-      margin-left: 5px
+    display: flex;
+    margin-left: 5px;
   }
 
   .wb_logo {
-      max-width: 16px;
-      max-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
   }
 
   .zsFormClass {
-      //background-color: #FFFFFF;
-      //width: 600px
-  
+    //background-color: #FFFFFF;
+    //width: 600px
   }
   .zsFontClass {
     color: var(--color-text-second);
-    
+
     font-size: 14px;
-    &[type=button],&[type=submit]{
+    &[type="button"],
+    &[type="submit"] {
       color: var(--color-text-button);
 
       cursor: pointer;
-      border:0;
+      border: 0;
       border-radius: 4px;
-      padding:8px 16px;
-      background:  var(--color-primary);
+      padding: 8px 16px;
+      background: var(--color-primary);
     }
-   
   }
   .manfieldbdr {
-    border-left: 1px solid #ff6448 !important
+    border-left: 1px solid #ff6448 !important;
   }
 
   .hleft {
     text-align: left;
   }
 
-  input[type=file]::-webkit-file-upload-button {
+  input[type="file"]::-webkit-file-upload-button {
     cursor: pointer;
   }
 
@@ -138,7 +142,7 @@ const StyleBox= styled(Box)`
 
   .wtccloudattach {
     float: left;
-    color: #00a3fe !important;   //var(--color-text-primary)
+    color: #00a3fe !important; //var(--color-text-primary)
     cursor: pointer;
     text-decoration: none !important;
   }
@@ -195,7 +199,7 @@ const StyleBox= styled(Box)`
     -webkit-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
     z-index: 10000;
-    color: #777
+    color: #777;
   }
 
   .wtcmanfield {
@@ -225,36 +229,38 @@ const StyleBox= styled(Box)`
     display: inline-block;
     position: relative;
     top: 2px;
-    background-image: url('https://css.zohostatic.com/support/4488988/images/zs-mpro.png');
+    background-image: url("https://css.zohostatic.com/support/4488988/images/zs-mpro.png");
   }
 
   .zsMaxSizeMessage {
     font-size: 14px;
-    color: var(--color-text-third)
+    color: var(--color-text-third);
   }
-`as typeof Box
-export const ReportPage = ()=>{
-    const ref = React.createRef<HTMLDivElement>();
-    const renderCall = React.useCallback(()=>{
-        if(window&&window.__renderReportCall__){
-            window.__renderReportCall__();
-        }
-
-    },[]);
-    React.useEffect(()=>{
-        if ( ref.current ) {
-            renderCall()
-            // debugger
-            // //@ts-ignore
-            // ref.current.addEventListener("readystatechange", );
-        }
-        return ()=>{
-            //@ts-ignore
-            // ref.current.removeEventListener('readystatechange',renderCall)
-        }
-    },[ref.current])
-    return <StyleBox display={'flex'} className={'MuiPaper-elevation2'}
-          flexDirection={'column'} flex={1}  marginY={3} padding={3} borderRadius={1}>
-        <div ref={ref} dangerouslySetInnerHTML={{__html: mailTemplate}}/>
+` as typeof Box;
+export const ReportPage = () => {
+  const ref = React.createRef<HTMLDivElement>();
+  const renderCall = React.useCallback(() => {
+    if (window && window.__renderReportCall__) {
+      window.__renderReportCall__();
+    }
+  }, []);
+  React.useEffect(() => {
+    if (ref.current) {
+      renderCall();
+    }
+    return () => {};
+  }, [ref.current]);
+  return (
+    <StyleBox
+      display={"flex"}
+      className={"MuiPaper-elevation2"}
+      flexDirection={"column"}
+      flex={1}
+      marginY={3}
+      padding={3}
+      borderRadius={1}
+    >
+      <div ref={ref} dangerouslySetInnerHTML={{ __html: mailTemplate }} />
     </StyleBox>
-}
+  );
+};

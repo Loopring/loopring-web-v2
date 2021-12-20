@@ -45,7 +45,7 @@ const TableStyled = styled(Box)`
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
-export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, t, ...props}: any) => {
+export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, volumeToken, rewardToken, t, ...props}: any) => {
     const getColumnMode = React.useCallback((t: TFunction): Column<any, unknown>[] => [
         {
             key: 'rank',
@@ -85,7 +85,7 @@ export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, 
         },
         {
             key: 'tradeVolume',
-            name: t('lableTradeRaceTradeVolume'),
+            name: `${t('lableTradeRaceTradeVolume')} (${volumeToken})`,
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'tradeVolume' ]
@@ -99,7 +99,7 @@ export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, 
         },
         {
             key: 'profit',
-            name: t('lableTradeRaceProfit'),
+            name: `${t('lableTradeRaceProfit')} (${rewardToken})`,
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'profit' ]
@@ -111,7 +111,7 @@ export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, 
                 )
             }
         },
-    ], [])
+    ], [rewardToken, volumeToken])
 
     const defaultArgs: any = {
         columnMode: getColumnMode(t),

@@ -14,17 +14,20 @@ import { useAmmMiningUI } from "../MiningPage/hook";
 import {
   CURRENT_EVENT_DATE,
   DropDownIcon,
+  getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 //@ts-ignore
 import cssStyle from "./snow.css";
 import moment from "moment";
+import { volumeToCount } from "../../hooks/help";
 
 const LayoutStyled = styled(Box)`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+
   ol {
     list-style: dismal;
     font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -57,27 +60,8 @@ const LayoutStyled = styled(Box)`
 `;
 
 const TableWrapperStyled = styled(Box)`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  max-width: 1200px;
-  min-height: 650px;
   background-color: var(--color-box);
-  border-radius: 0.4rem;
-  margin-bottom: 2rem;
-  padding: ${({ theme }: any) => theme.unit * 4}px;
-`;
-
-const ProjectWrapperStyled = styled(Box)`
-  width: 80%;
-  max-width: 1200px;
-`;
-
-const SelectWrapperStyled = styled(Box)`
-  position: absolute;
-  top: 3.2rem;
-  right: 3.2rem;
+  border-radius: ${({ theme }) => theme.unit}px;
 `;
 
 const StyledTextFiled = styled(TextField)`
@@ -90,11 +74,22 @@ const StyledTextFiled = styled(TextField)`
     max-width: initial;
   }
 `;
+const BoxSelect = styled(Box)`
+  position: absolute;
+  text-align: right;
+  top: ${({ theme }) => 3 * theme.unit}px;
+  right: ${({ theme }) => 3 * theme.unit}px;
+  @media only screen and (max-width: 720px) {
+    position: initial;
+    text-align: center;
+  }
+`;
 
 export const TradeRacePage = withTranslation("common")(
   ({ t }: WithTranslation) => {
     const { search } = useLocation();
     const [currMarketPair, setCurrMarketPair] = React.useState("");
+    const volumeToken = currMarketPair ? currMarketPair.split("-")[1] : "";
     const { ammActivityMap } = useAmmPool();
     const {
       eventData,
@@ -102,11 +97,15 @@ export const TradeRacePage = withTranslation("common")(
       countDown,
       currPairUserRank,
       currPairRankData,
+      rewardToken,
       getAmmGameRank,
       getAmmGameUserRank,
       eventStatus,
     } = useTradeRace();
     const { volume, rank } = currPairUserRank || {};
+    const userVolume = volume
+      ? getValuePrecisionThousand(volumeToCount(volumeToken, volume))
+      : "--";
     const { ammActivityViewMap } = useAmmMiningUI({ ammActivityMap });
     const filteredAmmViewMap = ammActivityViewMap
       .filter((o) => o.activity.ruleType === "SWAP_VOLUME_RANKING")
@@ -185,11 +184,9 @@ export const TradeRacePage = withTranslation("common")(
             {eventStatus && (
               <Box
                 component={"section"}
+                paddingX={3}
                 marginBottom={4}
                 textAlign={"center"}
-                // display={"flex"}
-                // flexDirection={"row"}
-                // alignItems={"center"}
               >
                 <Typography
                   component={"h2"}
@@ -199,7 +196,7 @@ export const TradeRacePage = withTranslation("common")(
                 >
                   {t(eventStatus)}
                 </Typography>
-                {EVENT_STATUS[eventStatus] !== EVENT_STATUS.EVENT_END && (
+                {eventStatus !== EVENT_STATUS.EVENT_END && (
                   <Box
                     display={"flex"}
                     flexDirection={"row"}
@@ -305,7 +302,7 @@ export const TradeRacePage = withTranslation("common")(
                 )}
               </Box>
             )}
-            <Typography marginBottom={2} variant={"h5"}>
+            <Typography marginBottom={2} paddingX={3} variant={"h5"}>
               {eventData.duration.prev}
               <Typography
                 component={"time"}
@@ -327,59 +324,82 @@ export const TradeRacePage = withTranslation("common")(
                 {endDate}
               </Typography>
               ({eventData.duration.timeZone})
-              {/*Activity Period: 2021/12/23 0:00 AM to 2021/12/30 0:00 AM (UTC)*/}
             </Typography>
-            <TableWrapperStyled>
-              <SelectWrapperStyled textAlign={"right"}>
-                <StyledTextFiled
-                  id={"trading-race-market-pair"}
-                  select
-                  style={{ width: 150, textAlign: "left" }}
-                  value={currMarketPair}
-                  onChange={(event: React.ChangeEvent<{ value: string }>) => {
-                    handleMarketPairChange(event);
+
+            <Box
+              maxWidth={1200}
+              width={"100%"}
+              paddingX={3}
+              marginX={"auto"}
+              alignSelf={"self-start"}
+            >
+              <TableWrapperStyled paddingY={3} position={"relative"}>
+                <Typography
+                  variant={"h2"}
+                  color={"var(--color-text-secondary)"}
+                  textAlign={"center"}
+                  marginBottom={1}
+                >
+                  · {t("labelTradeRaceRanking")} ·
+                </Typography>
+                <BoxSelect>
+                  <StyledTextFiled
+                    id={"trading-race-market-pair"}
+                    select
+                    style={{ width: 150, textAlign: "left" }}
+                    value={currMarketPair}
+                    onChange={(event: React.ChangeEvent<{ value: string }>) => {
+                      handleMarketPairChange(event);
+                    }}
+                    inputProps={{ IconComponent: DropDownIcon }}
+                  >
+                    {filteredAmmViewMap.map((market) => (
+                      <MenuItem key={market} value={market}>
+                        {market}
+                      </MenuItem>
+                    ))}
+                  </StyledTextFiled>
+                </BoxSelect>
+                <Box
+                  lineHeight={"24px"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                >
+                  <Typography fontSize={16} marginRight={2}>
+                    {t("labelTradeRaceYourVolume")}: {userVolume}
+                  </Typography>
+                  <Typography fontSize={16}>
+                    {t("labelTradeRaceYourRanking")}: {rank || "--"}
+                  </Typography>
+                  <Button
+                    style={{ fontSize: 16 }}
+                    variant={"text"}
+                    onClick={() =>
+                      history.push(`/trade/lite/${currMarketPair}`)
+                    }
+                  >
+                    {t("labelTradeRaceGoTrading")} &gt;&gt;
+                  </Button>
+                </Box>
+                <TradeRaceTable
+                  {...{
+                    t,
+                    rawData: currPairRankData,
+                    volumeToken,
+                    rewardToken,
                   }}
-                  inputProps={{ IconComponent: DropDownIcon }}
-                >
-                  {filteredAmmViewMap.map((market) => (
-                    <MenuItem key={market} value={market}>
-                      {market}
-                    </MenuItem>
-                  ))}
-                </StyledTextFiled>
-              </SelectWrapperStyled>
-              <Typography
-                variant={"h2"}
-                color={"var(--color-text-secondary)"}
-                textAlign={"center"}
-                marginTop={1}
-                marginBottom={0}
-              >
-                · {t("labelTradeRaceRanking")} ·
-              </Typography>
-              <Box
-                lineHeight={"24px"}
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
-              >
-                <Typography fontSize={16} marginRight={2}>
-                  {t("labelTradeRaceYourVolume")}: {volume || "--"}
-                </Typography>
-                <Typography fontSize={16}>
-                  {t("labelTradeRaceYourRanking")}: {rank || "--"}
-                </Typography>
-                <Button
-                  style={{ fontSize: 16 }}
-                  variant={"text"}
-                  onClick={() => history.push(`/trade/lite/${currMarketPair}`)}
-                >
-                  {t("labelTradeRaceGoTrading")} &gt;&gt;
-                </Button>
-              </Box>
-              <TradeRaceTable {...{ t, rawData: currPairRankData }} />
-            </TableWrapperStyled>
-            <ProjectWrapperStyled>
+                />
+              </TableWrapperStyled>
+            </Box>
+            <Box
+              maxWidth={1200}
+              width={"100%"}
+              paddingX={3}
+              marginX={"auto"}
+              alignSelf={"self-start"}
+              marginTop={3}
+            >
               <Typography
                 marginBottom={1}
                 variant={"h4"}
@@ -387,34 +407,34 @@ export const TradeRacePage = withTranslation("common")(
               >
                 {t("labelTradeRaceRewards")}
               </Typography>
-              <Box width={"50%"} minWidth={600}>
-                <TradeRacePanel rawData={eventData.rewards} />
+              <TradeRacePanel rawData={eventData.rewards} />
+            </Box>
+            <Box maxWidth={1200} width={"100%"} paddingX={3} marginTop={3}>
+              <Box>
+                <Typography
+                  marginBottom={2}
+                  variant={"h4"}
+                  color={"var(--color-text-secondary)"}
+                >
+                  {t("labelTradeRaceRules")}
+                </Typography>
+                <ol>
+                  {eventData.rules.map((item, index) => (
+                    <li key={index}>
+                      <Typography
+                        whiteSpace={"pre-line"}
+                        color={"inherit"}
+                        component={"p"}
+                        variant={"body1"}
+                        marginBottom={2}
+                        paddingLeft={1}
+                        dangerouslySetInnerHTML={{ __html: item }}
+                      />
+                    </li>
+                  ))}
+                </ol>
               </Box>
-            </ProjectWrapperStyled>
-            <ProjectWrapperStyled marginTop={2}>
-              <Typography
-                marginBottom={2}
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
-              >
-                {t("labelTradeRaceRules")}
-              </Typography>
-              <ol>
-                {eventData.rules.map((item, index) => (
-                  <li key={index}>
-                    <Typography
-                      whiteSpace={"pre-line"}
-                      color={"inherit"}
-                      component={"p"}
-                      variant={"body1"}
-                      marginBottom={2}
-                      paddingLeft={1}
-                      dangerouslySetInnerHTML={{ __html: item }}
-                    />
-                  </li>
-                ))}
-              </ol>
-            </ProjectWrapperStyled>
+            </Box>
           </LayoutStyled>
         ) : (
           <LoadingBlock />
