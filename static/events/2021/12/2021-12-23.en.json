@@ -4,9 +4,9 @@
   "local": "en-US",
   "duration": {
     "prev": "Activity Period:",
-    "startDate": 1640188800000,
+    "startDate": 1640217600000,
     "to": "to",
-    "endDate": 1643500800000,
+    "endDate": 1640822400000,
     "timeZone": "UTC"
   },
   "rewards": [
