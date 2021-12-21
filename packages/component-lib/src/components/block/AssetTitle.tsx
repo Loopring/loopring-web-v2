@@ -27,26 +27,26 @@ export const AssetTitle = withTranslation('common')(({
                                                        hideL2Assets,
                                                        setHideL2Assets,
                                                        // TODO: Ramp
-                                                       // showRamp,
+                                                       showRamp,
                                                        legalEnable,
                                                        legalShow,
                                                      }: AssetTitleProps & WithTranslation) => {
 
-  return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
-    <Grid item xs={7} display={'flex'} flexDirection={'column'}>
-      <BoxStyled component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
-                 marginBottom={'16px'}>
-        <Typography component={'span'} variant={'body1'} paddingRight={3} color={'textSecondary'}>
-          {t('labelAssetTitle')}
-          {` (UID: ${accountId})`}
-          <IconButton
-            size={'small'}
-            // color={'secondary'}
-            onClick={() => setHideL2Assets(!hideL2Assets)}
-            aria-label={t('labelShowAccountInfo')}>
-            {!hideL2Assets ? <ViewIcon/> : <HideIcon/>}
-          </IconButton>
-        </Typography>
+    return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
+        <Grid item xs={7} display={'flex'} flexDirection={'column'}>
+            <BoxStyled component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
+                        marginBottom={'16px'}>
+                <Typography component={'span'} variant={'body1'} paddingRight={3} color={'textSecondary'}>
+                    {t('labelAssetTitle')}
+                    {` (UID: ${accountId})`}
+                    <IconButton
+                        size={'small'}
+                        // color={'secondary'}
+                        onClick={() => setHideL2Assets(!hideL2Assets)}
+                        aria-label={t('labelShowAccountInfo')}>
+                        {!hideL2Assets ? <ViewIcon/> : <HideIcon/>}
+                    </IconButton>
+                </Typography>
 
       </BoxStyled>
 
@@ -60,8 +60,12 @@ export const AssetTitle = withTranslation('common')(({
       </Typography>
     </Grid>
     <ButtonListRightStyled item xs={5} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-      {/* TODO: conditions to show Ramp */}
-      {/* {legalEnable && legalShow && (...)} */}
+      {legalEnable && legalShow && (
+        <Button variant={'outlined'} size={'medium'} color={'primary'} style={{ minWidth: 120, textTransform: 'none' }}
+          onClick={showRamp}>
+          {t('labelAssetsBtnRamp')}
+      </Button>
+      )}
       <Button variant={'outlined'} size={'medium'} color={'primary'}
               loading={btnShowTransferStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
               disabled={btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false}
