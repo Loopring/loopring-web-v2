@@ -29,6 +29,8 @@ import {
   ThemeType,
   LightIcon,
   DarkIcon,
+  maintainceStatTime,
+  maintainceEndTime,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -37,6 +39,7 @@ import {
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
+import moment from "moment";
 import { useSettings } from "../../stores";
 
 const ButtonStyled = styled(Button)`
@@ -215,6 +218,18 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const history = useHistory();
       const location = useLocation();
 
+      const [currentBJTime, setCurrentBJTime] = React.useState(0);
+
+      React.useEffect(() => {
+        setInterval(() => {
+          setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000);
+        }, 1000);
+
+        return () => {
+          clearInterval();
+        };
+      }, []);
+
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -308,6 +323,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               selected: new RegExp(label.id, "ig").test(
                 selected.split("/")[1] ? selected.split("/")[1] : selected
               ),
+              // className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
               renderList: ({
                 handleListKeyDown,
               }: {
@@ -330,7 +346,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);
 
-      const isMaintaining = false;
+      const isMaintaining =
+        currentBJTime >= maintainceStatTime &&
+        currentBJTime <= maintainceEndTime;
 
       const displayDesktop = React.useMemo(() => {
         return (
@@ -373,7 +391,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       item
                       onClick={() => history.push("/")}
                     >
-                      {t("labelLandingHeaderLayer2")}
+                      zkRollup Layer2
                     </GridStyled>
                     <GridStyled
                       iscurrentroute={
@@ -382,21 +400,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       item
                       onClick={() => history.push("/wallet")}
                     >
-                      {t("labelLandingHeaderWallet")}
-                    </GridStyled>
-                    {/*hotfix  */}
-                    <GridStyled
-                      item
-                      onClick={() => history.push("/race-event/2021-12-23")}
-                    >
-                      <Typography
-                        variant={"h5"}
-                        component={"span"}
-                        paddingRight={1}
-                      >
-                        🎁
-                      </Typography>
-                      Holiday Giveaway
+                      Smart Wallet
                     </GridStyled>
                     {/*hotfix  */}
                     <GridStyled
@@ -420,7 +424,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                         {themeMode === "dark" ? <DarkIcon /> : <LightIcon />}
                       </Box>
                     </Grid>
-
                     <Grid item>
                       <ButtonStyled
                         size={"small"}
