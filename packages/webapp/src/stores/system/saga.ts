@@ -128,35 +128,12 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
       let exchangeInfo;
       let fiatPrices, gasPrice, forex;
       try {
-        [
-          // relayStatus,
-          { exchangeInfo },
-          { fiatPrices, gasPrice, forex },
-          allowTrade,
-        ] = await Promise.all([
-          // fetch(
-          //   "https://powerlight.loopring.network:8080/prod/status?language=en",
-          //   {
-          //     method: "GET",
-          //     mode: "cors", // no-cors, *cors, same-origin
-          //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          //     credentials: "same-origin", // include, *same-origin, omit
-          //     headers: {
-          //       "Content-Type": "application/json",
-          //     },
-          //     redirect: "follow", // manual, *follow, error
-          //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-          //   }
-          // )
-          //   .then((res) => {})
-          //   .catch((e) => {
-          //     // debugger;
-          //     // window.location.replace(window.location.origin);
-          //   }),
-          LoopringAPI.exchangeAPI.getExchangeInfo(),
-          should15MinutesUpdateDataGroup(),
-          LoopringAPI.exchangeAPI.getAccountServices({}),
-        ]);
+        [{ exchangeInfo }, { fiatPrices, gasPrice, forex }, allowTrade] =
+          await Promise.all([
+            LoopringAPI.exchangeAPI.getExchangeInfo(),
+            should15MinutesUpdateDataGroup(),
+            LoopringAPI.exchangeAPI.getAccountServices({}),
+          ]);
       } catch (e) {
         allowTrade = {
           register: { enable: false },

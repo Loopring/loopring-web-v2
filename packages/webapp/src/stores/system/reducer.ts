@@ -1,123 +1,119 @@
-import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { ENV, System, SystemStatus } from './interface';
-import { SagaStatus } from '@loopring-web/common-resources';
+import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
+import { ENV, System, SystemStatus } from "./interface";
+import { SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: SystemStatus = {
-    env: ENV.PROD,
-    chainId: 'unknown',
-    // network:'NONETWORK',
-    baseURL: '',
-    socketURL: '',
-    etherscanBaseUrl: '',
-    fiatPrices: {},
-    gasPrice: -1,
-    forex: 6.5,
-    __timer__: -1,
-    status: 'PENDING',
-    errorMessage: null,
-    allowTrade: {
-        register: {enable:false},
-        order: {enable:false},
-        joinAmm: {enable:false},
-        dAppTrade: {enable:false},
-        raw_data: {enable:false},
-    },
-    exchangeInfo: undefined,
+  env: ENV.PROD,
+  chainId: "unknown",
+  baseURL: "",
+  socketURL: "",
+  etherscanBaseUrl: "",
+  fiatPrices: {},
+  gasPrice: -1,
+  forex: 6.5,
+  __timer__: -1,
+  status: "PENDING",
+  errorMessage: null,
+  allowTrade: {
+    register: { enable: false },
+    order: { enable: false },
+    joinAmm: { enable: false },
+    dAppTrade: { enable: false },
+    raw_data: { enable: false },
+  },
+  exchangeInfo: undefined,
 
-    topics: [],
-}
+  topics: [],
+};
 const systemSlice: Slice<SystemStatus> = createSlice({
-    name: 'system',
-    initialState,
-    reducers: {
-
-        updateSystem(state, action: PayloadAction<System<{ [ key: string ]: any }>>) {
-            state.chainId = action.payload.chainId
-            state.status = SagaStatus.PENDING
-        },
-        // updateSocketURL(state, action:PayloadAction<{socketURL:string}>) {
-        //     state.socketURL =  action.payload.socketURL;
-        // },
-        updateRealTimeObj(state, action: PayloadAction<Partial<{ fiatPrices: any, gasPrice: number, forex: number }>>) {
-            const {forex, fiatPrices, gasPrice} = action.payload;
-            if (forex) {
-                state.forex = forex
-            }
-            if (fiatPrices) {
-                state.fiatPrices = fiatPrices
-            }
-            if (gasPrice) {
-                state.gasPrice = gasPrice
-            }
-
-
-            // state = {
-            //     ...state.system,
-            //     forex: forex?,
-            //     fiatPrices: action.payload.fiatPrices ? action.payload.fiatPrices : state.system.fiatPrices,
-            //     gasPrice: action.payload.gasPrice ? action.payload.gasPrice : state.system.gasPrice,
-            // };
-
-        },
-        getSystemStatus(state, action: PayloadAction<Partial<SystemStatus>>) {
-
-            // @ts-ignore
-            if (action.error) {
-                state.status = SagaStatus.ERROR
-                // @ts-ignore
-                state.errorMessage = action.error
-            }
-            const {
-                env,
-                baseURL,
-                socketURL,
-                fiatPrices,
-                gasPrice,
-                forex,
-                allowTrade,
-                exchangeInfo,
-                __timer__,
-                etherscanBaseUrl
-            } = action.payload;
-            if (env) {
-                state.env = env
-            }
-            if (allowTrade) {
-                state.allowTrade = allowTrade
-            }
-            if (socketURL) {
-                state.socketURL = socketURL;
-            }
-            if (baseURL) {
-                state.baseURL = baseURL
-            }
-            if (fiatPrices) {
-                state.fiatPrices = fiatPrices
-            }
-            if (gasPrice) {
-                state.gasPrice = gasPrice
-            }
-            if (forex) {
-                state.forex = forex
-            }
-
-            if (exchangeInfo) {
-                state.exchangeInfo = exchangeInfo
-            }
-            if (etherscanBaseUrl) {
-                state.etherscanBaseUrl = etherscanBaseUrl
-            }
-
-            if (__timer__) {
-                state.__timer__ = __timer__
-            }
-            state.status = SagaStatus.DONE
-        },
-        statusUnset: state => {
-            state.status = SagaStatus.UNSET
-        }
-
+  name: "system",
+  initialState,
+  reducers: {
+    updateSystem(state, action: PayloadAction<System<{ [key: string]: any }>>) {
+      state.chainId = action.payload.chainId;
+      state.status = SagaStatus.PENDING;
     },
+
+    updateRealTimeObj(
+      state,
+      action: PayloadAction<
+        Partial<{ fiatPrices: any; gasPrice: number; forex: number }>
+      >
+    ) {
+      const { forex, fiatPrices, gasPrice } = action.payload;
+      if (forex) {
+        state.forex = forex;
+      }
+      if (fiatPrices) {
+        state.fiatPrices = fiatPrices;
+      }
+      if (gasPrice) {
+        state.gasPrice = gasPrice;
+      }
+    },
+    getSystemStatus(state, action: PayloadAction<Partial<SystemStatus>>) {
+      // @ts-ignore
+      if (action.error) {
+        state.status = SagaStatus.ERROR;
+        // @ts-ignore
+        state.errorMessage = action.error;
+      }
+      const {
+        env,
+        baseURL,
+        socketURL,
+        fiatPrices,
+        gasPrice,
+        forex,
+        allowTrade,
+        exchangeInfo,
+        __timer__,
+        etherscanBaseUrl,
+      } = action.payload;
+      if (env) {
+        state.env = env;
+      }
+      if (allowTrade) {
+        state.allowTrade = allowTrade;
+      }
+      if (socketURL) {
+        state.socketURL = socketURL;
+      }
+      if (baseURL) {
+        state.baseURL = baseURL;
+      }
+      if (fiatPrices) {
+        state.fiatPrices = fiatPrices;
+      }
+      if (gasPrice) {
+        state.gasPrice = gasPrice;
+      }
+      if (forex) {
+        state.forex = forex;
+      }
+
+      if (exchangeInfo) {
+        state.exchangeInfo = exchangeInfo;
+      }
+      if (etherscanBaseUrl) {
+        state.etherscanBaseUrl = etherscanBaseUrl;
+      }
+
+      if (__timer__) {
+        state.__timer__ = __timer__;
+      }
+      state.status = SagaStatus.DONE;
+    },
+    statusUnset: (state) => {
+      state.status = SagaStatus.UNSET;
+    },
+  },
 });
 export { systemSlice };
-export const {updateSystem, setTopics, getSystemStatus, statusUnset, updateRealTimeObj} = systemSlice.actions;
+export const {
+  updateSystem,
+  setTopics,
+  getSystemStatus,
+  statusUnset,
+  updateRealTimeObj,
+} = systemSlice.actions;

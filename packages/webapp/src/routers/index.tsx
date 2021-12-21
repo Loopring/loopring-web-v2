@@ -21,7 +21,7 @@ import {
 import { ErrorPage } from "../pages/ErrorPage";
 import { Footer, useSettings } from "@loopring-web/component-lib";
 import { ReportPage } from "pages/ReportPage";
-import { MarkDonwPage } from "../pages/MarkdownPage";
+import { MarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 
 const ContentWrap = ({
@@ -147,7 +147,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               flexDirection: "column",
             }}
           >
-            <MarkDonwPage />{" "}
+            <MarkdownPage />{" "}
           </Container>
         </Route>
         <Route exact path="/race-event">
