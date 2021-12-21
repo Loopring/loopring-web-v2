@@ -87,9 +87,9 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       if (error?.error) {
         setAddressError(error);
       }
-      setAddress(address);
-      debounceAddress({ address });
     }
+    setAddress(address);
+    debounceAddress({ address });
   };
 
   const showRamp = React.useCallback(() => {
