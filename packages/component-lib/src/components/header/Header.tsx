@@ -4,7 +4,6 @@ import {
   Box,
   Container,
   IconButton,
-  Link,
   Slide,
   Toolbar,
   Typography,
@@ -22,12 +21,10 @@ import {
 } from "../basic-lib";
 import { HeaderProps, HeaderToolBarInterface } from "./Interface";
 import {
-  // ammDisableList,
   ButtonComponentsMap,
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
   SoursURL,
-  // orderDisableList,
   ToolBarAvailableItem,
   ThemeType,
   LightIcon,
@@ -42,14 +39,13 @@ import {
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
-import moment from 'moment'
-import { useSettings } from "../../stores/reducer/settings";
+import moment from "moment";
+import { useSettings } from "../../stores";
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
-  width: 10.7rem;
-  height: 3.4rem;
-  fontsize: 1.4rem;
+  padding-left: ${({ theme }) => 3 * theme.unit}px;
+  padding-right: ${({ theme }) => 3 * theme.unit}px;
 `;
 
 const GridStyled = styled(Grid)`
@@ -73,33 +69,18 @@ const ToolBarStyled = styled(Toolbar)`
     padding: 0;
   }
 `;
-const LinkStyle = styled(Link)`
-  color: var(--color-text-secondary);
-  //&.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
-  //  //background: var(--color-global-bg);
-  //  //box-shadow: var(--shadow);
-  //}
-` as typeof Link;
 const HeaderStyled = styled(AppBar)`
   && {
     z-index: 400;
     box-shadow: var(--shadow-header);
-    //.wrap {
-    //
-    //  //min-width: 800px;
-    //}
     height: var(--header-height);
     margin: 0 auto;
     background-color: var(--color-box);
     backdrop-filter: blur(4px);
     box-sizing: border-box;
-    // border-bottom: ${({ theme }) =>
-      theme.border.borderConfig({ d_W: 1, c_key: "blur" })};
+    ${({ theme }) => theme.border.borderConfig({ d_W: 1, c_key: "blur" })};
     border-radius: 0;
-    //box-shadow: var(--shadow);
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
-      //background-color: var(--color-box);
-      //box-shadow: var(--shadow);
     }
   }
 `;
@@ -120,15 +101,13 @@ const LogoStyle = styled(Typography)`
     top: 14px;
     font-weight: 200;
     opacity: 0.6;
-    box-shadow: 0px 0px 1px 0px var(--color-logo);
+    box-shadow: 0 0 1px 0 var(--color-logo);
     //border: 1px solid ;
     border-radius: 2px;
     padding: 3px 2px;
   }
 
   a.MuiButtonBase-root {
-    height: auto;
-    width: auto;
     min-width: auto;
     border-radius: 0;
     text-indent: -999999em;
@@ -137,7 +116,6 @@ const LogoStyle = styled(Typography)`
     mask: url(${logoSVG}) space;
     mask-size: contain;
     mask-position: center;
-    mask-size: contain;
     width: 105px;
     height: 40px;
     margin-top: -10px;
@@ -176,10 +154,6 @@ const ToolBarItem = ({ buttonComponent, ...props }: any) => {
         return <BtnNotification {...props} />;
       case ButtonComponentsMap.Setting:
         return <BtnSetting {...props} />;
-      // case  ButtonComponentsMap.Theme:
-      //     return <BtnTheme {...{...props, themeMode}} />;
-      // case  ButtonComponentsMap.Language:
-      //     return <BtnLanguage {...{...props, language}} />;
       case ButtonComponentsMap.WalletConnect:
         return <WalletConnectBtn {...props} />;
       default:
@@ -208,6 +182,22 @@ export const HideOnScroll = React.forwardRef(
   }
 );
 
+const NodeMenuItem = React.memo(
+  ({ label, router, layer, child, ...rest }: HeaderMenuItemInterface & any) => {
+    return (
+      <>
+        {layer >= 1 ? (
+          <Layer2Item {...{ ...rest, label, router, child, layer }} />
+        ) : (
+          <Typography variant={"body1"} key={label.id} color={"inherit"}>
+            {rest.t(label.i18nKey)}
+          </Typography>
+        )}
+      </>
+    );
+  }
+);
+
 export const Header = withTranslation(["layout", "common"], { withRef: true })(
   React.forwardRef(
     (
@@ -227,18 +217,18 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const { themeMode, setTheme } = useSettings();
       const history = useHistory();
       const location = useLocation();
-      
-      const [currentBJTime, setCurrentBJTime] = React.useState(0)
+
+      const [currentBJTime, setCurrentBJTime] = React.useState(0);
 
       React.useEffect(() => {
         setInterval(() => {
-            setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000)
-        }, 1000)
+          setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000);
+        }, 1000);
 
         return () => {
-            clearInterval()
-        }
-    }, [])
+          clearInterval();
+        };
+      }, []);
 
       const getMenuButtons = React.useCallback(
         ({
@@ -257,14 +247,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         },
         []
       );
-
-      // const getSettingsButton = ({
-      //     toolbarList,
-      //     ...rest
-      // }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
-      //     return <ToolBarItem {...{...toolbarList[2], ...rest}} />
-      // }
-
       const getDrawerChoices = React.useCallback(
         ({
           menuList,
@@ -275,68 +257,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           layer?: number;
           handleListKeyDown?: any;
         } & WithTranslation) => {
-          const nodeMenuItem = ({
-            label,
-            router,
-            layer,
-            child,
-            ...rest
-          }: HeaderMenuItemInterface & any) => {
-            return (
-              <>
-                {layer >= 1 ? (
-                  <Layer2Item {...{ ...rest, label, router, child, layer }} />
-                ) : (
-                  <Typography
-                    variant={"body1"}
-                    key={label.id}
-                    color={"inherit"}
-                  >
-                    {rest.t(label.i18nKey)}
-                  </Typography>
-                )}
-              </>
-            );
-          };
-
-          const Memoized = ({
-            label,
-            router,
-            child,
-            layer,
-            ref,
-            ...rest
-          }: any) => (
-            <HeaderMenuSub
-              {...{
-                ...rest,
-                label,
-                router,
-                allowTrade,
-                child,
-                layer,
-                selected: new RegExp(label.id, "ig").test(
-                  selected.split("/")[1] ? selected.split("/")[1] : selected
-                )
-                  ? true
-                  : false,
-                // className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
-                renderList: ({
-                  handleListKeyDown,
-                }: {
-                  handleListKeyDown: ({ ...rest }) => any;
-                }) => {
-                  return getDrawerChoices({
-                    menuList: child,
-                    layer: layer + 1,
-                    handleListKeyDown,
-                    ...rest,
-                  });
-                },
-              }}
-            />
-          );
-
           return menuList.map((props: HeaderMenuItemInterface) => {
             const { label, child, status } = props;
             const selectedFlag = new RegExp(label.id, "ig").test(
@@ -344,21 +264,17 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
             if (status === HeaderMenuTabStatus.hidden) {
               // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
-              return (
-                <React.Fragment key={label.id + "-" + layer}></React.Fragment>
-              );
+              return <React.Fragment key={label.id + "-" + layer} />;
             } else {
               if (child) {
                 return (
-                  <Memoized
-                    {...{
+                  <React.Fragment key={label.id + "-" + layer}>
+                    {memoized({
                       ...props,
-                      // status: checkEnable({headerMenuItem: props, allowTrade}),
                       layer,
                       ...rest,
-                    }}
-                    key={label.id + "-" + layer}
-                  />
+                    })}
+                  </React.Fragment>
                 );
               } else {
                 return (
@@ -368,12 +284,16 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       ...props,
                       allowTrade,
                       layer,
-                      children: nodeMenuItem({
-                        ...props,
-                        layer,
-                        child,
-                        ...rest,
-                      }),
+                      children: (
+                        <NodeMenuItem
+                          {...{
+                            ...props,
+                            layer,
+                            child,
+                            ...rest,
+                          }}
+                        />
+                      ),
                       style: { textDecoration: "none" },
                       key: label.id + "-" + layer,
                     }}
@@ -390,12 +310,45 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         },
         [allowTrade, selected]
       );
+      const memoized = React.useCallback(
+        ({ label, router, child, layer, ref, ...rest }: any) => (
+          <HeaderMenuSub
+            {...{
+              ...rest,
+              label,
+              router,
+              allowTrade,
+              child,
+              layer,
+              selected: new RegExp(label.id, "ig").test(
+                selected.split("/")[1] ? selected.split("/")[1] : selected
+              ),
+              // className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
+              renderList: ({
+                handleListKeyDown,
+              }: {
+                handleListKeyDown: ({ ...rest }) => any;
+              }) => {
+                return getDrawerChoices({
+                  menuList: child,
+                  layer: layer + 1,
+                  handleListKeyDown,
+                  ...rest,
+                });
+              },
+            }}
+          />
+        ),
+        [allowTrade, getDrawerChoices, selected]
+      );
 
       const handleThemeClick = React.useCallback(() => {
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);
 
-      const isMaintaining = currentBJTime >= maintainceStatTime && currentBJTime <= maintainceEndTime
+      const isMaintaining =
+        currentBJTime >= maintainceStatTime &&
+        currentBJTime <= maintainceEndTime;
 
       const displayDesktop = React.useMemo(() => {
         return (
@@ -459,6 +412,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     </Grid>
                     <Grid item>
                       <ButtonStyled
+                        size={"small"}
                         disabled={isMaintaining}
                         variant={"contained"}
                         onClick={() => history.push("/trade/lite/LRC-ETH")}
