@@ -421,20 +421,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                 </>
               ) : (
                 <>
-                  {/*hotfix  */}
-                  <GridStyled
-                    item
-                    onClick={() => history.push("/race-event/2021-12-23")}
-                  >
-                    <Typography
-                      variant={"h5"}
-                      component={"span"}
-                      paddingRight={1}
-                    >
-                      🎁
-                    </Typography>
-                    Holiday Giveaway
-                  </GridStyled>
                   {getMenuButtons({
                     toolbarList: headerToolBarData,
                     i18n,
