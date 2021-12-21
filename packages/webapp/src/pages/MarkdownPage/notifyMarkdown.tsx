@@ -10,55 +10,8 @@ import { useTheme } from "@emotion/react";
 import { LoadingBlock } from "../LoadingPage";
 import { MarkdownStyle } from "./style";
 
-const url_path = "https://static.loopring.io/documents";
-
-const formatInput = async (textContent: string): Promise<string> => {
-  // let [data, content] = args;
-  const data = await fetch("https://api3.loopring.io/api/v2/exchange/feeInfo")
-    .then((res) => res.json())
-    .then((data) => data.data);
-  let {
-    ORDERBOOK_TRADING_FEES_STABLECOIN,
-    ORDERBOOK_TRADING_FEES,
-    AMM_TRADING_FEES,
-  } = data;
-  ORDERBOOK_TRADING_FEES_STABLECOIN = Object.keys(
-    ORDERBOOK_TRADING_FEES_STABLECOIN
-  ).reduce((pre, key) => {
-    pre["ORDERBOOK_TRADING_FEES_STABLECOIN." + key] = (
-      ORDERBOOK_TRADING_FEES_STABLECOIN[key].takerRate / 100
-    ).toFixed(2);
-    return pre;
-  }, {});
-  ORDERBOOK_TRADING_FEES = Object.keys(ORDERBOOK_TRADING_FEES).reduce(
-    (pre, key) => {
-      pre["ORDERBOOK_TRADING_FEES." + key] = (
-        ORDERBOOK_TRADING_FEES[key].takerRate / 100
-      ).toFixed(2);
-      return pre;
-    },
-    {}
-  );
-  AMM_TRADING_FEES = Object.keys(AMM_TRADING_FEES).reduce((pre, key) => {
-    pre["AMM_TRADING_FEES." + key] = (
-      AMM_TRADING_FEES[key].takerRate / 100
-    ).toFixed(2);
-    return pre;
-  }, {});
-  const template1 = new Template(textContent);
-  return template1.interpolate({
-    ...ORDERBOOK_TRADING_FEES_STABLECOIN,
-    ...ORDERBOOK_TRADING_FEES,
-    ...AMM_TRADING_FEES,
-  });
-};
-const list = [
-  "wallet_fees_zh.md",
-  "wallet_fees_en.md",
-  "dex_fees_en.md",
-  "dex_fees_zh.md",
-];
-export const MarkdownPage = () => {
+const url_path = "https://static.loopring.io/static/documents/notifaction";
+export const MotifyMarkdownPage = () => {
   let match: any = useRouteMatch("/document/:path");
   const [path, setPath] = React.useState<null | string>(match?.params.path);
   const [input, setInput] = React.useState<string>("");
@@ -66,19 +19,15 @@ export const MarkdownPage = () => {
   React.useEffect(() => {
     if (path) {
       try {
-        const _path = path.split("/").length > 1 ? path : `markdown/${path}`;
+        const _path = path.split("/").length > 1 ? path : `/${path}`;
 
         fetch(url_path + "/" + _path)
           .then((response) => response.text())
           .then((input) => {
-            if (list.findIndex((f) => f === path) !== -1) {
-              return formatInput(input);
-            } else {
-              return input;
-            }
+            // return formatInput(input);
           })
           .then((input) => {
-            setInput(input);
+            // setInput(input);
           })
           .catch(() => {
             setPath(null);

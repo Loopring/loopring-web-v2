@@ -14,6 +14,7 @@ import { useUserRewards } from "./stores/userRewards";
 import { useTokenPrices } from "./stores/tokenPrices";
 import { useAmount } from "./stores/amount";
 import { useSocket } from "./stores/socket";
+import { useNotify } from "./stores/notify";
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -50,8 +51,14 @@ export function useInit() {
   const { status: tickerStatus, statusUnset: tickerStatusUnset } = useTicker();
   const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount();
   const { status: socketStatus, statusUnset: socketUnset } = useSocket();
+  const {
+    getNotify,
+    status: notifyStatus,
+    statusUnset: notifyStatusUnset,
+  } = useNotify();
 
   useCustomDCEffect(async () => {
+    getNotify();
     if (
       account.accAddress !== "" &&
       account.connectName &&
@@ -231,6 +238,21 @@ export function useInit() {
         break;
     }
   }, [socketStatus]);
+
+  React.useEffect(() => {
+    switch (notifyStatus) {
+      case "ERROR":
+        notifyStatusUnset();
+        break;
+      case "PENDING":
+        break;
+      case "DONE":
+        notifyStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [notifyStatus]);
 
   useAccountInit({ state });
 
