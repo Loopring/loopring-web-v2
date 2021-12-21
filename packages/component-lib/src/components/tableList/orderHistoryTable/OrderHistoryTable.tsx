@@ -14,7 +14,7 @@ import { Filter, FilterOrderTypes } from './components/Filter'
 import { OrderDetailPanel } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 // import { useSettings } from '../../../stores';
-import { GetOrdersRequest, Side, OrderType } from '@loopring-web/loopring-sdk'
+import { GetOrdersRequest, Side, OrderType, GetUserTradesRequest } from '@loopring-web/loopring-sdk'
 
 const CancelColHeaderStyled = styled(Typography)`
     display: flex;
@@ -56,6 +56,18 @@ export interface OrderHistoryRow {
 export enum DetailRole {
     maker = 'maker',
     taker = 'taker'
+}
+
+export type OrderDetailItem = {
+    market: string;
+    amount: number;
+    filledPrice: string;
+    time: number;
+    fee: {
+        key: string;
+        value: string;
+    };
+    volumeToken: string;
 }
 
 export type OrderHistoryTableDetailItem = {
@@ -160,11 +172,13 @@ export interface OrderHistoryTableProps {
     };
     showFilter?: boolean;
     getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<any>;
+    userOrderDetailList?: any[];
+    getUserOrderDetailTradeList?: (props?: Omit<GetUserTradesRequest, "accountId">) => Promise<void>;
     showLoading?: boolean;
     marketArray?: string[];
     showDetailLoading?: boolean;
-    getOrderDetail: (orderHash: string, t: TFunction) => Promise<any>;
-    orderDetailList: OrderHistoryTableDetailItem[];
+    // getOrderDetail: (orderHash: string, t: TFunction) => Promise<any>;
+    // orderDetailList: OrderHistoryTableDetailItem[];
     isOpenOrder?: boolean;
     cancelOrder: ({orderHash, clientOrderId}: any) => Promise<void>;
     cancelOrderByHashList?: (orderHashList: string) => Promise<void>;
@@ -175,7 +189,8 @@ export interface OrderHistoryTableProps {
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false, clearOrderDetail, cancelOrderByHashList } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, /* getOrderDetail, */ /* orderDetailList, */ cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false, clearOrderDetail, cancelOrderByHashList, userOrderDetailList,
+        getUserOrderDetailTradeList, } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -193,7 +208,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             setPage(1)
         }
     }, [isOpenOrder])
-    
+
     const updateData = useCallback(({
                                         isOpen = isOpenOrder,
                                         actionType,
@@ -252,11 +267,8 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     }, [updateData])
 
     const CellStatus = useCallback(({row, column, rowIdx}: any) => {
-        // const [isOpen, setIsOpen] = useState(false)
-        // const [orderDetail, setOrderDetail] = useState<any[]>([])
         const hash = row['hash']
         const value = row[ column.key ]
-        // const [currentE, setCurrentE] = useState<any>(undefined)
         const popupId = `${column.key}-orderTable-${rowIdx}`
         const rightState = usePopupState({variant: 'popover', popupId: popupId});
         const RenderValue: any = styled.span`
@@ -309,12 +321,17 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 break;
         }
     
-        const handleOrderClick = useCallback((hash: string) => {
-            setCurrOrderId(row['orderId'])
-            getOrderDetail(hash, t)
-            setModalState(true)
+        const handleOrderClick = useCallback(async(hash: string) => {
             if (clearOrderDetail) {
                 clearOrderDetail()
+            }
+            setCurrOrderId(row['orderId'])
+            setModalState(true)
+            // getOrderDetail(hash, t)
+            if (getUserOrderDetailTradeList) {
+                getUserOrderDetailTradeList({
+                    orderHash: hash,
+                })
             }
         }, [row])
     
@@ -324,7 +341,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             </Typography>
             <DropDownIcon htmlColor={'var(--color-text-third)'} fontSize={'large'} />
         </RenderValue>
-    }, [clearOrderDetail, getOrderDetail, t])
+    }, [clearOrderDetail, getUserOrderDetailTradeList, t])
 
     const getPopoverState = useCallback((label: string) => {
         return usePopupState({variant: 'popover', popupId: `popup-cancel-order-${label}`})
@@ -663,7 +680,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             open={modalState}
             onClose={() => setModalState(false)}
         >
-            <OrderDetailPanel rawData={orderDetailList} showLoading={showDetailLoading} orderId={currOrderId} />
+            <OrderDetailPanel rawData={userOrderDetailList || []} showLoading={showDetailLoading} orderId={currOrderId} />
         </Modal>
         {
             pagination && !!rawData.length && (

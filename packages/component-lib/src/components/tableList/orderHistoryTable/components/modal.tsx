@@ -1,11 +1,9 @@
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import styled from '@emotion/styled'
-import { Box, Grid, Typography } from '@mui/material';
-import moment from 'moment'
-import { EmptyValueTag } from '@loopring-web/common-resources';
-import { SingleOrderHistoryTable, SingleOrderHistoryTableProps } from '../SingleOrderHistoryTable'
+import { Box, Typography } from '@mui/material';
+import { SingleOrderHistoryTable, } from '../SingleOrderHistoryTable'
 import { TFunction } from 'i18next';
-import { OrderHistoryTableDetailItem } from '../OrderHistoryTable'
+import { OrderDetailItem } from '../OrderHistoryTable'
 
 export enum TxnDetailStatus {
     processed = 'PROCESSED',
@@ -60,19 +58,19 @@ const HeaderStyled = styled(Box)`
 
 export const OrderDetailPanel = withTranslation('tables', { withRef: true })((
     {rawData, t, showLoading, orderId}: {
-        rawData: OrderHistoryTableDetailItem[],
+        rawData: OrderDetailItem[],
         showLoading?: boolean,
         t: TFunction,
         orderId: string,
     }
 ) => {
-        const volume = rawData.map(o => o.volume || 0).reduce((a, b) => a + b, 0)
-        const quoteToken = rawData[0]?.amount.to.key || ''
+        const volume = rawData.map(o => o.amount).reduce((prev, curr) => ((prev || 0) + (curr || 0)), 0)
+        const volumeToken = rawData[0]?.volumeToken
         return <ContentWrapperStyled>
             <HeaderStyled>
                 <Typography variant={'h6'}>
                     {t('labelOrderDetailTradingVolume')} : &nbsp;
-                    {volume}&nbsp;{quoteToken}
+                    {volume}&nbsp;{volumeToken}
                 </Typography>
                 <Typography variant={'h6'}>
                     {t('labelOrderDetailOrderId')} : &nbsp;

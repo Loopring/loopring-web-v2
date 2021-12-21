@@ -142,4 +142,6 @@ export default {
     labelTradeRaceProject: 'Project',
     labelTradeRacePair: 'Pair',
     labelTradeRaceReward: 'Reward',
+    labelMaker: 'Maker',
+    labelTaker: 'Taker',
 }

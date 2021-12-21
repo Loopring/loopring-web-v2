@@ -4,7 +4,7 @@ import { OrderHistoryTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useOrderList } from './hook'
 import { StylePaper } from '../../styled'
-import { myLog } from '@loopring-web/common-resources';
+import { useGetTrades } from '../TradePanel/hooks'
 
 const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     const {t} = rest
@@ -18,12 +18,17 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         showLoading,
         marketArray,
         showDetailLoading,
-        getOrderDetail,
-        orderDetailList,
+        // getOrderDetail,
+        // orderDetailList,
         // openOrderList,
         cancelOrder,
         clearRawData,
     } = useOrderList()
+
+    const { 
+        userOrderDetailList,
+        getUserOrderDetailTradeList, 
+    } = useGetTrades()
 
     React.useEffect(() => {
         // @ts-ignore
@@ -79,8 +84,10 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                         getOrderList,
                         marketArray,
                         showDetailLoading,
-                        getOrderDetail,
-                        orderDetailList,
+                        // getOrderDetail,
+                        userOrderDetailList,
+                        getUserOrderDetailTradeList,
+                        // orderDetailList,
                         ...rest,
                         showLoading,
                         isOpenOrder: isOpenOrder,

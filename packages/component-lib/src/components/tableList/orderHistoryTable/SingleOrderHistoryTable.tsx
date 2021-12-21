@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { Column, generateColumns, generateRows, Table, } from '../../basic-lib'
-import { OrderHistoryTableDetailItem, OrderPair } from './OrderHistoryTable'
+import { OrderHistoryTableDetailItem, OrderPair, OrderDetailItem } from './OrderHistoryTable'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next';
 import { EmptyValueTag, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 import styled from '@emotion/styled'
@@ -8,7 +8,7 @@ import moment from 'moment'
 import { TablePaddingX } from '../../styled'
 
 interface Row {
-    amount: OrderPair
+    amount: number
     tradingPrice: number
     filledPrice: number
     time: number
@@ -28,7 +28,7 @@ const TableStyled = styled(Box)`
     height: auto;
 
     .rdg {
-        --template-columns: 300px auto auto auto 180px !important;
+        --template-columns: auto auto auto auto 180px !important;
 
     }
     .textAlignRight{
@@ -48,32 +48,17 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
             key: 'amount',
             name: t('labelOrderAmount'),
             formatter: ({row, column}) => {
-                const {from, to} = row[ column.key ]
-                const {key: keyFrom, value: valueFrom} = from
-                const {key: keyTo, value: valueTo} = to
-                const precisionFrom = row.amount.from?.['precision']
-                const precisionTo = row.amount.to?.['precision']
-                const renderValue = `${getValuePrecisionThousand(valueFrom, undefined, undefined, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo, precisionTo)} ${keyTo}`
+                const value = row[ 'amount' ]
+                const renderValue = `${getValuePrecisionThousand(value, undefined, undefined, 6)}`
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
-        // {
-        //     key: 'tradingPrice',
-        //     name: t('labelOrderTradingPrice'),
-        //     formatter: ({row, column}) => {
-        //         const value = row[ column.key ]
-        //         const hasValue = Number.isFinite(value)
-        //         const renderValue = hasValue ? value.toFixed(5) : EmptyValueTag
-        //         return <div className="rdg-cell-value">{renderValue}</div>
-        //     },
-        // },
         {
             key: 'filledPrice',
             name: t('labelOrderFilledPrice'),
             headerCellClass: 'textAlignRight',
             formatter: ({row, column}) => {
-                const value = row[ column.key ].value
-                // const precisionMarket = row[ column.key ].precision
+                const value = row[ column.key ]
                 const renderValue = value ? getValuePrecisionThousand(value, undefined, undefined, undefined, true, {isPrice: true}) : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
@@ -83,11 +68,10 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
             name: t('labelOrderFee'),
             headerCellClass: 'textAlignRight',
             formatter: ({row, column}) => {
+                myLog(666, row['fee'])
                 const value = row[ column.key ].value
-                const precision = row[ column.key ].precision
-                const quoteToken = row.amount.to.key
-                const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, precision, false, {floor: false})} ${quoteToken}` : EmptyValueTag
+                const token = row[ column.key ].key
+                const renderValue = value ? `${getValuePrecisionThousand(value, undefined, undefined, undefined, false, {floor: false})} ${token}` : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },
@@ -96,8 +80,8 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
             name: t('labelOrderRole'),
             headerCellClass: 'textAlignRight',
             formatter: ({row, column}) => {
-                const value = row[ column.key ]
-                return <div className="rdg-cell-value textAlignRight">{value}</div>
+                const renderValue = row[ 'fee' ].value ? t('labelTaker') : t('labelMaker')
+                return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },
         {
@@ -116,25 +100,11 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
                 )
             },
         },
-        // {
-        //     key: 'total',
-        //     name: t('labelOrderTotal'),
-        //     formatter: ({row, column}) => {
-        //         const {key, value} = row[ column.key ]
-        //         const hasValue = Number.isFinite(value)
-        //         const renderValue = hasValue ? `${value.toFixed(4)} ${key}` : EmptyValueTag
-        //         return (
-        //             <div className="rdg-cell-value">
-        //                 <span>{renderValue}</span>
-        //             </div>
-        //         )
-        //     },
-        // },
     ];
 }
 
 export interface SingleOrderHistoryTableProps {
-    rawData: OrderHistoryTableDetailItem[];
+    rawData: OrderDetailItem[];
     showloading?: boolean;
 }
 
@@ -142,13 +112,12 @@ export const SingleOrderHistoryTable = withTranslation('tables')((props: SingleO
     const defaultArgs: any = {
         rawData: [],
         columnMode: getColumnModeSingleHistory(props.t),
-        generateRows,
+        generateRows: (rawData: any) => rawData,
         generateColumns,
     }
-    const formattedRawData = props.rawData.map(o => Object.values(o))
     return (
         <TableStyled>
-            <Table {...{...defaultArgs, ...props, rawData: formattedRawData, showloading: props.showloading}} />
+            <Table className={"scrollable"} {...{...defaultArgs, ...props, rawData: props.rawData, showloading: props.showloading}} />
         </TableStyled>
     ) 
 })
