@@ -145,6 +145,7 @@ export const Toolbar = withTranslation("common")(
       if (
         coinMap &&
         tickerMap &&
+        tokenPrices &&
         tickerMap[market] &&
         tickerMap[market].__rawTicker__
       ) {
@@ -155,12 +156,15 @@ export const Toolbar = withTranslation("common")(
           base,
           ticker.__rawTicker__?.base_token_volume || 0
         );
+
         const quoteVol = volumeToCount(
           quote,
           ticker.__rawTicker__?.quote_token_volume || 0
         );
         const isRise = ticker.floatTag === "increase";
-        const basePriceDollar = tokenPrices ? tokenPrices[base] : 0;
+
+        const basePriceDollar =
+          ticker.close * (tokenPrices[quote] ?? 0) ?? tokenPrices[base] ?? 0;
         const basePriceYuan = basePriceDollar * forex;
         setMarketTicker((state: any) => {
           return {
@@ -171,8 +175,22 @@ export const Toolbar = withTranslation("common")(
             isRise,
             baseVol,
             quoteVol,
-            basePriceDollar,
-            basePriceYuan,
+            basePriceDollar: getValuePrecisionThousand(
+              basePriceDollar,
+              undefined,
+              undefined,
+              undefined,
+              true,
+              { isFait: true }
+            ),
+            basePriceYuan: getValuePrecisionThousand(
+              basePriceYuan,
+              undefined,
+              undefined,
+              undefined,
+              true,
+              { isFait: true }
+            ),
           };
         });
       }
