@@ -9,25 +9,19 @@ export enum ACTIVITY_TYPE {
 
 //
 export type NOTIFICATION_ITEM = {
-  id: ""; //localStore for visited should be unique
   title: string;
-  description1: string;
-  description2: string;
+  description: string;
   link: string;
   startDate: number;
   endDate: number;
 };
 export type ACTIVITY = {
-  id: ""; //localStore for visited should be unique
   type: ACTIVITY_TYPE;
-  link: `${number}/${number}/${number}-${number}-${number}` | string;
-  title: string;
-  description1: string;
-  description2: string;
+  link: `${number}/${number}/${number}-${number}-${number}`;
   startDate: number;
   endDate: number;
   pairs: Array<MarketType | AMMMarketType>;
-  config?: [string, number, number, number, number];
+  config: [string, number, number, number, number];
   giftIcon?: string;
 };
 export type NOTIFICATION = {
