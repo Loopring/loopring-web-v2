@@ -2,12 +2,13 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getTokenPrices, getTokenPricesStatus } from "./reducer";
 import { LoopringAPI } from "api_wrapper";
 import store from "../index";
-import { TokenPrices } from "./interface";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { myLog } from "@loopring-web/common-resources";
 
 const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
   const { addressIndex } = store.getState().tokenMap;
   if (LoopringAPI?.walletAPI && addressIndex) {
+    myLog("loop get getLatestTokenPrices");
     const { tokenPrices: _tokenPrices, raw_data } =
       await LoopringAPI?.walletAPI.getLatestTokenPrices();
     let { __timer__ } = store.getState().tokenPrices;
