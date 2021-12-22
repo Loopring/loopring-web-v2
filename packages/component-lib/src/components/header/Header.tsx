@@ -29,8 +29,6 @@ import {
   ThemeType,
   LightIcon,
   DarkIcon,
-  maintainceStatTime,
-  maintainceEndTime,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
