@@ -107,6 +107,7 @@ export type DepositInfoProps<I> = {
 export type DepositExtendProps<T, I> = {
     isThumb?:boolean;
     onDepositClick: (data: T) => void,
+    allowTrade?: any;
 } & DepositInfoProps<I>
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExtendProps<T, I>
