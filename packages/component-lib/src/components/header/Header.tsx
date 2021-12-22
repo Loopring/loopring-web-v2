@@ -344,9 +344,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);
 
-      const isMaintaining =
-        currentBJTime >= maintainceStatTime &&
-        currentBJTime <= maintainceEndTime;
+      const isMaintaining = false;
 
       const displayDesktop = React.useMemo(() => {
         return (

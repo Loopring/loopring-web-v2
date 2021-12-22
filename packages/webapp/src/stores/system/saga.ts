@@ -5,7 +5,7 @@ import store from "../index";
 import { LoopringAPI } from "api_wrapper";
 import { getAmmMap, initAmmMap, updateRealTimeAmmMap } from "../Amm/AmmMap";
 import { getTokenMap } from "../token";
-import { CustomError, ErrorMap } from "@loopring-web/common-resources";
+import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
 import { getAmmActivityMap } from "../Amm/AmmActivityMap";
 import { updateWalletLayer1 } from "../walletLayer1";
 import { delay } from "rxjs/operators";
@@ -56,6 +56,7 @@ const should15MinutesUpdateDataGroup = async (): Promise<{
   gasPrice: number | undefined;
   forex: number | undefined;
 }> => {
+  myLog("loop get getFiatPrice getGasPrice");
   if (LoopringAPI.exchangeAPI && LoopringAPI.walletAPI) {
     const [fiatPrices, fiatPricesY, gasPrice]: [
       LoopringMap<FiatPriceInfo>,
