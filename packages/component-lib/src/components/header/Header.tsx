@@ -398,20 +398,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       </Typography>
                       Holiday Giveaway
                     </GridStyled>
-                    {/*hotfix  */}
-                    <GridStyled
-                      item
-                      onClick={() => history.push("/race-event/2021-12-23")}
-                    >
-                      <Typography
-                        variant={"h5"}
-                        component={"span"}
-                        paddingRight={1}
-                      >
-                        🎁
-                      </Typography>
-                      Holiday Giveaway
-                    </GridStyled>
                     <Grid item>
                       <Box
                         style={{ cursor: "pointer" }}
