@@ -109,7 +109,7 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
     }
   }, []);
 
-  const { recommendations, tickList /* onVisibleRowsChange */ } = useQuote();
+  const { recommendations, tickList } = useQuote();
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
     if (currentTarget && tableRef.current) {
       const calcHeight =
@@ -138,8 +138,7 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
 
   React.useEffect(() => {
     const list = recommendations.map((item) => {
-      const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`;
-      return market;
+      return `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`;
     });
     if (!!list.length) {
       getCandlestick(list[0]);
@@ -282,14 +281,6 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
     };
   });
 
-  // const handleRecommendationJump = React.useCallback((market: string) => {
-  //   if (!market) {
-  //     return
-  //   }
-  //   history && history.push({
-  //     pathname: `/trade/lite/${market}`
-  //   })
-  // }, [history])
   const handleRecommendBoxClick = React.useCallback(
     (recommendation: any) => {
       if (recommendation && recommendation.market) {
@@ -312,7 +303,6 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
   return (
     <Box display={"flex"} flexDirection={"column"} flex={1}>
       <RowStyled container spacing={2}>
-        {/* give default value to have empty block render */}
         {(!!recommendations.length
           ? recommendations
           : ([
@@ -372,7 +362,7 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
                   handleRecommendBoxClick(formattedRecommendations[index]),
                 ...rest,
               }}
-            ></MarketBlock>
+            />
           </Grid>
         ))}
       </RowStyled>
@@ -424,5 +414,3 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
     </Box>
   );
 });
-
-// export default QuotePage

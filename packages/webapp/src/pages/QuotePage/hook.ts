@@ -7,7 +7,11 @@ import {
 import { TradingInterval, WsTopicType } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "api_wrapper";
 import { tickerService } from "services/socket";
-import { myError, SagaStatus } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  myError,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import _ from "lodash";
 import { TickerMap, useTicker } from "stores/ticker";
 import { useSocket } from "../../stores/socket";
@@ -55,14 +59,36 @@ export function useTickList<C extends { [key: string]: string }>() {
           ? Reflect.ownKeys(tickerMap).reduce((prev, key) => {
               // @ts-ignore
               const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
+              const ticker = tickerMap[key as string];
+              const coinAPriceDollar =
+                ticker.close * (tokenPrices[coinB] ?? 0) ??
+                tokenPrices[coinB] ??
+                0;
+              const coinAPriceYuan = coinAPriceDollar * forex;
               let _item = {
-                ...tickerMap[key as string],
+                ...ticker,
                 pair: {
                   coinA,
                   coinB,
                 },
-                coinAPriceDollar: tokenPrices[coinA] || 0,
-                coinAPriceYuan: (tokenPrices[coinA] || 0) * (forex || 6.5),
+                coinAPriceDollar:
+                  getValuePrecisionThousand(
+                    coinAPriceDollar,
+                    undefined,
+                    undefined,
+                    undefined,
+                    true,
+                    { isFait: true }
+                  ) || 0,
+                coinAPriceYuan:
+                  getValuePrecisionThousand(
+                    coinAPriceYuan,
+                    undefined,
+                    undefined,
+                    undefined,
+                    true,
+                    { isFait: true }
+                  ) || 0,
               } as QuoteTableRawDataItem;
 
               if (marketPairs.findIndex((m) => m === key) !== -1) {

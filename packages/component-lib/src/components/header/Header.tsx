@@ -375,7 +375,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       item
                       onClick={() => history.push("/")}
                     >
-                      zkRollup Layer2
+                      {t("labelLandingHeaderLayer2")}
                     </GridStyled>
                     <GridStyled
                       iscurrentroute={
@@ -384,7 +384,21 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       item
                       onClick={() => history.push("/wallet")}
                     >
-                      Smart Wallet
+                      {t("labelLandingHeaderWallet")}
+                    </GridStyled>
+                    {/*hotfix  */}
+                    <GridStyled
+                      item
+                      onClick={() => history.push("/race-event/2021-12-23")}
+                    >
+                      <Typography
+                        variant={"h5"}
+                        component={"span"}
+                        paddingRight={1}
+                      >
+                        🎁
+                      </Typography>
+                      Holiday Giveaway
                     </GridStyled>
                     {/*hotfix  */}
                     <GridStyled
