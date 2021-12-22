@@ -23,8 +23,6 @@ export function useTickList<C extends { [key: string]: string }>() {
   const { tickerMap, status: tickerStatus } = useTicker();
   const { forex } = store.getState().system;
   const { tokenPrices } = store.getState().tokenPrices;
-  console.log(tokenPrices);
-  console.log(tokenMap);
   const getRecommendPairs = React.useCallback(async () => {
     if (LoopringAPI.exchangeAPI) {
       try {
