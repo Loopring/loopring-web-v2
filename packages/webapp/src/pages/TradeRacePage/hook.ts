@@ -122,9 +122,9 @@ export const useTradeRace = () => {
               if (input.duration.startDate > Date.now()) {
                 setEventStatus(EVENT_STATUS.EVENT_READY);
               } else if (input.duration.endDate > Date.now()) {
-                setEventStatus(EVENT_STATUS.EVENT_END);
-              } else {
                 setEventStatus(EVENT_STATUS.EVENT_START);
+              } else {
+                setEventStatus(EVENT_STATUS.EVENT_END);
               }
             })
             .catch((e) => {
