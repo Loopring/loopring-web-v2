@@ -14,7 +14,6 @@ import {
   volumeToCount,
   getRecentAmmTransaction,
 } from "hooks/help";
-import { useTokenMap } from "stores/token";
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { useTokenPrices } from "../../stores/tokenPrices";
 
