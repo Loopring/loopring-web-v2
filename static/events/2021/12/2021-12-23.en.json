@@ -52,10 +52,10 @@
     },
     {
       "project": "MOVE Network",
-      "pair": "MOCD/ETH",
+      "pair": "MOVD/ETH",
       "reward": {
         "count": 150000,
-        "token": "RICE"
+        "token": "MOVD"
       }
     },
     {
@@ -63,7 +63,7 @@
       "pair": "DEP/ETH",
       "reward": {
         "count": 1225000,
-        "token": "RICE"
+        "token": "DEP"
       }
     }
   ],
