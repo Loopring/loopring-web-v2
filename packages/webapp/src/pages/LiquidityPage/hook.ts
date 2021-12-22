@@ -1,20 +1,22 @@
 import React from "react";
 import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
-import { LoopringAPI } from "api_wrapper";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useAccount } from "stores/account/hook";
 import { useAmmMap } from "stores/Amm/AmmMap";
-import { AccountStatus, SagaStatus } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  myLog,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import { AmmRecordRow } from "@loopring-web/component-lib";
 import { useSystem } from "stores/system";
 import { useLocation } from "react-router-dom";
 import {
+  getRecentAmmTransaction,
   getUserAmmTransaction,
   makeMyAmmMarketArray,
   volumeToCount,
-  getRecentAmmTransaction,
 } from "hooks/help";
-import { useTokenMap } from "stores/token";
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { useTokenPrices } from "../../stores/tokenPrices";
 
@@ -25,9 +27,9 @@ export const useAmmPool = <
   const { ammActivityMap, status: ammActivityMapStatus } = useAmmActivityMap();
   const { forex } = useSystem();
   const { account, status: accountStatus } = useAccount();
-  const { status: tokenPricesStatus, tokenPrices } = useTokenPrices();
+  const { tokenPrices } = useTokenPrices();
 
-  const { status: walletLayer2Status } = useWalletLayer2();
+  const { status: walletLayer2Status, walletLayer2 } = useWalletLayer2();
   const { ammMap, getAmmMap } = useAmmMap();
   const [_ammActivityMap, setAmmActivityMap] = React.useState<
     LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
@@ -45,7 +47,9 @@ export const useAmmPool = <
   const [isLoading, setIsLoading] = React.useState(false);
   const [isRecentLoading, setIsRecentLoading] = React.useState(false);
 
-  let routerLocation = useLocation();
+  const routerLocation = useLocation();
+  const list = routerLocation.pathname.split("/");
+  const market = list[list.length - 1];
 
   React.useEffect(() => {
     if (ammActivityMapStatus === SagaStatus.UNSET) {
@@ -63,12 +67,7 @@ export const useAmmPool = <
   const getUserAmmPoolTxs = React.useCallback(
     ({ limit = 14, offset = 0 }) => {
       if (ammMap && forex) {
-        const url = routerLocation.pathname;
-        const list = url.split("/");
-        const market = list[list.length - 1];
-
         const addr = ammMap["AMM-" + market]?.address;
-
         if (addr) {
           setIsLoading(true);
           getUserAmmTransaction({
@@ -104,14 +103,12 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, routerLocation.pathname, forex, tokenPrices]
+    [ammMap, market, forex, tokenPrices]
   );
 
   const getRecentAmmPoolTxs = React.useCallback(
     ({ limit = 15, offset = 0 }) => {
       if (ammMap && forex) {
-        const url = routerLocation.pathname;
-        const list = url.split("/");
         const market = list[list.length - 1];
         const addr = ammMap["AMM-" + market]?.address;
 
@@ -146,22 +143,19 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, routerLocation.pathname, forex]
+    [ammMap, market, forex]
   );
   React.useEffect(() => {
     if (
       walletLayer2Status === SagaStatus.UNSET &&
+      walletLayer2 !== undefined &&
+      accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
-      // &&  tokenPricesStatus === SagaStatus.UNSET
     ) {
       getUserAmmPoolTxs({});
     }
-  }, [walletLayer2Status, accountStatus, tokenPricesStatus]);
-  React.useEffect(() => {
-    if (tokenPricesStatus === SagaStatus.UNSET) {
-      getRecentAmmPoolTxs({});
-    }
-  }, [tokenPricesStatus]);
+  }, [walletLayer2Status]);
+
   return {
     ammActivityMap: _ammActivityMap,
     isMyAmmLoading: isLoading,
@@ -170,7 +164,7 @@ export const useAmmPool = <
     ammTotal,
     myAmmMarketArray,
     ammUserTotal,
+    getUserAmmPoolTxs, //handle page change used
     getRecentAmmPoolTxs,
-    getUserAmmPoolTxs,
   };
 };
