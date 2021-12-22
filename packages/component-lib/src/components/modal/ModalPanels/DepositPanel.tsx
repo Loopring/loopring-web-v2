@@ -14,6 +14,7 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
         walletMap,
         coinMap,
         addressDefault,
+        allowTrade,
         ...rest
     }: DepositProps<T, I> & WithTranslation) => {
 
@@ -67,7 +68,8 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
                                                   walletMap,
                                                   coinMap,
                                                   addressDefault,
-                                              }} />,[rest, switchData.tradeData, onChangeEvent, onDepositClick, depositBtnStatus, walletMap, coinMap, addressDefault]),
+                                                  allowTrade,
+                                              }} />,[rest, switchData.tradeData, onChangeEvent, onDepositClick, depositBtnStatus, walletMap, coinMap, addressDefault, allowTrade]),
             toolBarItem: undefined
         },
             {

@@ -7,6 +7,7 @@ import { useOrderList } from './hookTable'
 import { useAccount } from 'stores/account'
 import { useTradeProSettings } from 'stores/localStore/tradeProSettings'
 import styled from '@emotion/styled'
+import { useGetTrades } from '../../../Layer2Page/TradePanel/hooks'
 
 const CheckboxStyled = styled(Box)`
   position: absolute;
@@ -37,6 +38,7 @@ export const OrderTableView = withTranslation('common')(
       showDetailLoading,
       cancelOrderByHashList,
     } = useOrderList()
+    const { userOrderDetailList, getUserOrderDetailTradeList } = useGetTrades()
     const [tabValue, setTabValue] = React.useState(0)
     const {account: {readyState}} = useAccount()
     const isShowHidePairsOption = readyState === 'ACTIVATED'
@@ -105,6 +107,8 @@ export const OrderTableView = withTranslation('common')(
           handleScroll: handleScroll,
           clearOrderDetail,
           showDetailLoading,
+          userOrderDetailList, 
+          getUserOrderDetailTradeList,
         }}
       />
     </>

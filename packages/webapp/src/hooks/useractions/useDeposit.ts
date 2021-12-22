@@ -24,7 +24,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 } => {
     const {tokenMap, totalCoinMap,} = useTokenMap()
     const {account} = useAccount()
-    const {exchangeInfo, chainId, gasPrice} = useSystem()
+    const {exchangeInfo, chainId, gasPrice, allowTrade} = useSystem()
 
     const {depositValue, updateDepositData, resetDepositData,} = useModalData()
 
@@ -352,6 +352,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             btnInfo,
             isNewAccount,
             title,
+            allowTrade,
             defaultAddress: account?.accAddress,
             tradeData: depositValue as any,
             coinMap: totalCoinMap as CoinMap<any>,
@@ -361,7 +362,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             handleAddressError,
             onDepositClick,
         }
-    }, [account.readyState, btnInfo, totalCoinMap, walletLayer1, onDepositClick, account.accAddress])
+    }, [account.readyState, btnInfo, totalCoinMap, walletLayer1, onDepositClick, account.accAddress, allowTrade])
 
     return {
         depositProps,

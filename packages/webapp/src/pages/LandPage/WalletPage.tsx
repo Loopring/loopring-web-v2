@@ -2,7 +2,7 @@ import { Box, Container, Grid, Typography, Link } from '@mui/material';
 import React from 'react';
 import moment from 'moment'
 import styled from '@emotion/styled/';
-import { ThemeType, SoursURL, SpeakerIcon, maintainceEndTime } from '@loopring-web/common-resources';
+import { ThemeType, SoursURL, SpeakerIcon } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { LoopringAPI } from '../../api_wrapper';
 
@@ -232,20 +232,10 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
         layerTwoLockedVolume: string
     } | undefined>();
 
-    const [currentBJTime, setCurrentBJTime] = React.useState(0)
-    const [showTotalUpgradeInfo ,setShowTotalUpgradeInfo] = React.useState(false)
+    // const [currentBJTime, setCurrentBJTime] = React.useState(0)
+    // const [showTotalUpgradeInfo ,setShowTotalUpgradeInfo] = React.useState(false)
     
-    const afterMaintaince = currentBJTime > maintainceEndTime
-    
-    React.useEffect(() => {
-        setInterval(() => {
-            setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000)
-        }, 1000)
-
-        return () => {
-            clearInterval()
-        }
-    }, [])
+    // const afterMaintaince = currentBJTime > maintainceEndTime
     
     React.useLayoutEffect(() => {
         function updateSize() {
@@ -293,7 +283,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
     }, [result, LoopringAPI.exchangeAPI])
 
     return <ContainerStyle>
-        {!afterMaintaince && (
+        {/* {!afterMaintaince && (
             <Box
             width={'100%'} 
             display={'flex'} 
@@ -313,7 +303,7 @@ export const WalletPage = withTranslation(['landPage', 'common'])(({t}: any) => 
                     &nbsp;&gt;&gt;
                 </Typography>
         </Box>
-        )}
+        )} */}
         
         <Box>
             <ContainerStyled>
