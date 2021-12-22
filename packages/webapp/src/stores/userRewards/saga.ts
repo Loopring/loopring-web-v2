@@ -1,94 +1,75 @@
-import { all, call, fork, put, takeLatest } from "redux-saga/effects"
-import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
+import { all, call, fork, put, takeLatest } from "redux-saga/effects";
+import {
+  getUserRewards,
+  getUserRewardsStatus,
+  resetUserRewards,
+} from "./reducer";
 
-import store from '../index';
-import { LoopringAPI } from 'api_wrapper';
+import store from "../index";
+import { LoopringAPI } from "api_wrapper";
+import { myLog } from "@loopring-web/common-resources";
 
-const getUserRewardsApi = async <R extends { [ key: string ]: any }>(list: Array<keyof R>) => {
+const getUserRewardsApi = async <R extends { [key: string]: any }>(
+  list: Array<keyof R>
+) => {
+  const { accountId } = store.getState().account;
+  let { __timer__ } = store.getState().userRewardsMap;
+  if (LoopringAPI.ammpoolAPI && accountId) {
+    myLog("loop get getAmmPoolUserRewards");
 
-    // const data:UserRewardsMap<R> = {}
+    const { ammUserRewardMap } =
+      await LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({ owner: accountId });
+    __timer__ = ((__timer__) => {
+      if (__timer__ && __timer__ !== -1) {
+        clearInterval(__timer__);
+      }
+      return setInterval(async () => {
+        store.dispatch(getUserRewards(undefined));
+      }, 300000 * 4);
+    })(__timer__);
 
-    // const userRewardss = await exchangeAPI().getUserRewards({market: list.join(',')})
-    const {accountId} = store.getState().account
-    let {__timer__} = store.getState().userRewardsMap;
-
-    if (LoopringAPI.ammpoolAPI && accountId) {
-        // __timer__ = ((__timer__) => {
-        if (__timer__ && __timer__ !== -1) {
-            clearInterval(__timer__);
-        }
-        // setInterval(async () => {
-        //     store.dispatch(getUserRewards(undefined))
-        // }, 300000 * 4)   //
-        __timer__ = ((__timer__) => {
-            if (__timer__ && __timer__ !== -1) {
-                clearInterval(__timer__)
-            }
-            return setInterval(async () => {
-                store.dispatch(getUserRewards(undefined))
-            }, 300000 * 4)
-        })(__timer__)
-
-        // })(__timer__);
-        return LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({owner: accountId}).then(({ammUserRewardMap}) => {
-            return {data: ammUserRewardMap, __timer__}
-        })
-    } else {
-        if (__timer__ && __timer__ !== -1) {
-            clearInterval(__timer__);
-        }
-        return Promise.resolve({data: undefined, __timer__: -1})
-        // if(accountId) {
-        //     return  Promise.reject({data:undefined,__timer__:-1})
-        // }else{
-        //
-        // }
-
+    return { data: ammUserRewardMap, __timer__ };
+  } else {
+    if (__timer__ && __timer__ !== -1) {
+      clearInterval(__timer__);
     }
+    return Promise.resolve({ data: undefined, __timer__: -1 });
+  }
+};
 
+export function* getPostsSaga({ payload }: any) {
+  try {
+    // @ts-ignore
+    const { data, __timer__ } = yield call(getUserRewardsApi);
+    yield put(getUserRewardsStatus({ userRewardsMap: data, __timer__ }));
+  } catch (err) {
+    yield put(getUserRewardsStatus(err));
+  }
 }
 
-export function* getPostsSaga({payload}: any) {
-    try {
-        // @ts-ignore
-        // const { userRewardsKey,userRewardsKeys } = payload;
-        // console.log('getPostsSaga userRewardsKey',userRewardsKey, userRewardsKeys)
-        // if(userRewardsKey || (userRewardsKeys && userRewardsKeys.length)) {
-        const {data, __timer__} = yield call(getUserRewardsApi);
-        yield put(getUserRewardsStatus({userRewardsMap: data, __timer__}));
-
-        // }else{
-        //     throw new CustomError(ErrorMap.NO_SDK);
-        // }
-    } catch (err) {
-        yield put(getUserRewardsStatus(err));
+export function* getResetsSaga() {
+  try {
+    // @ts-ignore
+    let { __timer__ } = store.getState().userRewardsMap;
+    if (__timer__ && __timer__ !== -1) {
+      clearInterval(__timer__);
     }
-}
-
-export function* getResetsSaga({payload}: any) {
-    try {
-        // @ts-ignore
-        let {__timer__} = store.getState().userRewardsMap;
-        if (__timer__ && __timer__ !== -1) {
-            clearInterval(__timer__);
-        }
-        yield put(getUserRewardsStatus({userRewardsMap: [], __timer__: -1}));
-    } catch (err) {
-        yield put(getUserRewardsStatus(err));
-    }
+    yield put(getUserRewardsStatus({ userRewardsMap: [], __timer__: -1 }));
+  } catch (err) {
+    yield put(getUserRewardsStatus(err));
+  }
 }
 
 function* userRewardsSaga() {
-    yield all([takeLatest(getUserRewards, getPostsSaga)]);
+  yield all([takeLatest(getUserRewards, getPostsSaga)]);
 }
 
 function* resetUserRewardsSaga() {
-    yield all([takeLatest(resetUserRewards, getResetsSaga)]);
+  yield all([takeLatest(resetUserRewards, getResetsSaga)]);
 }
 
 export const userRewardsForks = [
-    fork(userRewardsSaga),
-    fork(resetUserRewardsSaga),
-    // fork(userRewardssSaga),
-]
- 
+  fork(userRewardsSaga),
+  fork(resetUserRewardsSaga),
+  // fork(uerRewardssSaga),
+];
