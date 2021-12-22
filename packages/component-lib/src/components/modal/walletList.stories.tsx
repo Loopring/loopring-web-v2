@@ -164,7 +164,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                                  handleClick={() => {
                                      console.log('click')
                                  }}/>
-                    {/*<WrapTransferPanell/>*/}
+                    {/*<WrapTransferPanel/>*/}
                     {/*<WrapDepositPanel/>*/}
                     {/*<WrapWithdrawPanel />*/}
                 </MemoryRouter>

@@ -33,6 +33,7 @@ import {
 
 import {
     DepositPanel,
+    TransferPanel,
     WithdrawPanel,
 } from '../modal'
 
@@ -203,14 +204,14 @@ let _ammProps: AmmProps<AmmJoinData<IBData<any>>, AmmExitData<IBData<any>>, any,
     }
 }
 
-const WrapTransferPanell = (rest: any) => {
+const WrapTransferPanel = (rest: any) => {
     const dispatch = useDispatch();
     dispatch(setShowTransfer({isShow: false}));
     return <> <Grid item sm={6}>
-        <TransferPanell {...transferProps} {...rest}> </TransferPanell>
+        <TransferPanel {...transferProps} {...rest}> </TransferPanel>
     </Grid>
         <Grid item sm={6}>
-            <TransferPanell  {...rest}> </TransferPanell>
+            <TransferPanel  {...rest}> </TransferPanel>
         </Grid>
         <Grid item sm={12}>
 
@@ -399,9 +400,9 @@ const Template: Story<any> = () => {
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
                 <WrapResetPanel/>
             </Grid>
-            <h4>TransferPanell</h4>
+            <h4>TransferPanel</h4>
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
-                <WrapTransferPanell/>
+                <WrapTransferPanel/>
             </Grid>
             <h4>WithdrawPanel</h4>
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
