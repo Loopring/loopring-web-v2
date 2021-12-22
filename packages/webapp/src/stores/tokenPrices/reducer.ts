@@ -1,45 +1,45 @@
-import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { TokenPricesStates } from './interface';
-import { SagaStatus } from '@loopring-web/common-resources';
-import * as loopring_defs from '@loopring-web/loopring-sdk';
-
+import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
+import { TokenPricesStates } from "./interface";
+import { SagaStatus } from "@loopring-web/common-resources";
+import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 const initialState: Required<TokenPricesStates<object>> = {
-    tokenPrices: undefined,
-    __rawConfig__: undefined,
-    __timer__: -1,
-    status: SagaStatus.PENDING,
-    errorMessage: null,
-}
+  tokenPrices: undefined,
+  __rawConfig__: undefined,
+  __timer__: -1,
+  status: SagaStatus.PENDING,
+  errorMessage: null,
+};
 const tokenPricesSlice: Slice = createSlice({
-    name: 'tokenPrices',
-    initialState,
-    reducers: {
-        getTokenPrices(state, action: PayloadAction<undefined>) {
-            state.status = SagaStatus.PENDING
-        },
-        getTokenPricesStatus(state, action: PayloadAction<TokenPricesStates<any>>) {
-            // @ts-ignore
-            if (action.error) {
-                state.status = SagaStatus.ERROR
-                // @ts-ignore
-                state.errorMessage = action.error
-            }
-            const {tokenPrices, __timer__, __rawConfig__} = action.payload
-            if (tokenPrices) {
-                state.tokenPrices = tokenPrices;
-                state.__rawConfig__ =  __rawConfig__;
-            }
-            if (__timer__) {
-                state.__timer__ = __timer__;
-            }
-            state.status = SagaStatus.DONE
-        },
-       
-        statusUnset: state => {
-            state.status = SagaStatus.UNSET
-        }
+  name: "tokenPrices",
+  initialState,
+  reducers: {
+    getTokenPrices(state, action: PayloadAction<undefined>) {
+      state.status = SagaStatus.PENDING;
     },
+    getTokenPricesStatus(state, action: PayloadAction<TokenPricesStates<any>>) {
+      // @ts-ignore
+      if (action.error) {
+        state.status = SagaStatus.ERROR;
+        // @ts-ignore
+        state.errorMessage = action.error;
+      }
+      const { tokenPrices, __timer__, __rawConfig__ } = action.payload;
+      if (tokenPrices) {
+        state.tokenPrices = tokenPrices;
+        state.__rawConfig__ = __rawConfig__;
+      }
+      if (__timer__) {
+        state.__timer__ = __timer__;
+      }
+      state.status = SagaStatus.DONE;
+    },
+
+    statusUnset: (state) => {
+      state.status = SagaStatus.UNSET;
+    },
+  },
 });
 export { tokenPricesSlice };
-export const {getTokenPrices, getTokenPricesStatus, statusUnset} = tokenPricesSlice.actions
+export const { getTokenPrices, getTokenPricesStatus, statusUnset } =
+  tokenPricesSlice.actions;

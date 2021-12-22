@@ -116,6 +116,15 @@ export function useInit() {
     }
   }, [systemStatus]);
   React.useEffect(() => {
+    if (
+      tokenMapStatus === SagaStatus.UNSET &&
+      ammMapStatus === SagaStatus.UNSET &&
+      tokenPricesStatus === SagaStatus.UNSET
+    ) {
+      setState("DONE");
+    }
+  }, [tokenMapStatus, ammMapStatus, tokenPricesStatus]);
+  React.useEffect(() => {
     switch (tokenMapStatus) {
       case SagaStatus.ERROR:
         tokenMapStatusUnset();
@@ -127,6 +136,8 @@ export function useInit() {
       default:
         break;
     }
+  }, [tokenMapStatus]);
+  React.useEffect(() => {
     switch (ammMapStatus) {
       case SagaStatus.ERROR:
         ammMapStatusUnset();
@@ -138,15 +149,8 @@ export function useInit() {
       default:
         break;
     }
+  }, [ammMapStatus]);
 
-    if (
-      tokenMapStatus === SagaStatus.UNSET &&
-      ammMapStatus === SagaStatus.UNSET &&
-      tokenPricesStatus === SagaStatus.UNSET
-    ) {
-      setState("DONE");
-    }
-  }, [tokenMapStatus, ammMapStatus, tokenPricesStatus]);
   React.useEffect(() => {
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:

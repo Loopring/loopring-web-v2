@@ -37,7 +37,6 @@ import {
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
-import moment from "moment";
 import { useSettings } from "../../stores";
 
 const ButtonStyled = styled(Button)`
@@ -216,18 +215,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const history = useHistory();
       const location = useLocation();
 
-      const [currentBJTime, setCurrentBJTime] = React.useState(0);
-
-      React.useEffect(() => {
-        setInterval(() => {
-          setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000);
-        }, 1000);
-
-        return () => {
-          clearInterval();
-        };
-      }, []);
-
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -321,7 +308,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               selected: new RegExp(label.id, "ig").test(
                 selected.split("/")[1] ? selected.split("/")[1] : selected
               ),
-              // className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
               renderList: ({
                 handleListKeyDown,
               }: {

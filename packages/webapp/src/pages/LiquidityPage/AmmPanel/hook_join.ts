@@ -84,8 +84,6 @@ export const useAmmJoin = ({
   const { allowTrade } = useSystem();
   const { ammMap } = useAmmMap();
   const { account, status: accountStatus } = useAccount();
-  const { getUserAmmPoolTxs } = useAmmPool();
-
   const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
   const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
   const [baseMinAmt, setBaseMinAmt] = React.useState<any>();
@@ -511,9 +509,6 @@ export const useAmmJoin = ({
           setIsLoading(false);
           walletLayer2Service.sendUserUpdate();
           await updateJoinFee();
-          if (account.readyState === AccountStatus.ACTIVATED) {
-            getUserAmmPoolTxs({ limit: 14 });
-          }
         }
 
         if (props.__cache__) {
