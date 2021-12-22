@@ -38,7 +38,6 @@ const MyAmmLPAssets = withTranslation("common")(
       },
       [tokenMap]
     );
-    // myLog(Number(ammCalcData.percentage) * 100)
     const coinAPrecision = getTokenPrecision(ammCalcData?.lpCoinA?.belong);
     const coinBPrecision = getTokenPrecision(ammCalcData?.lpCoinB?.belong);
     return (
@@ -199,6 +198,7 @@ export const AmmPanelView = ({
   stob,
   ammType,
   snapShotData,
+  getRecentAmmPoolTxs,
   ...rest
 }: {
   pair: {
@@ -215,6 +215,7 @@ export const AmmPanelView = ({
     | undefined;
   walletMap: WalletMap<string>;
   ammType?: keyof typeof AmmPanelType;
+  getRecentAmmPoolTxs?: (props: { limit?: number; offset?: number }) => void;
 } & any) => {
   const {
     accountStatus,
@@ -308,8 +309,9 @@ export const AmmPanelView = ({
             accStatus={accountStatus}
             onRefreshData={() => {
               updateAmmPoolSnapshot();
-              //updateJoinFee()
-              //updateExitFee()
+              if (getRecentAmmPoolTxs) {
+                getRecentAmmPoolTxs({});
+              }
             }}
             refreshRef={refreshRef}
             ammDepositData={ammJoinData}

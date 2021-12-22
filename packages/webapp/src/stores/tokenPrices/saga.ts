@@ -22,10 +22,7 @@ const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
       if (__timer__ && __timer__ !== -1) {
         clearInterval(__timer__);
       }
-      return setInterval(async () => {
-        if (!LoopringAPI.walletAPI) {
-          return undefined;
-        }
+      return setInterval(() => {
         store.dispatch(getTokenPrices({}));
       }, 900000); //15*60*1000 //900000
     })();
