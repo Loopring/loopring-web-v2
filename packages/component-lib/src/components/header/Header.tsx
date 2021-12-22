@@ -400,6 +400,20 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     >
                       Smart Wallet
                     </GridStyled>
+                    {/*hotfix  */}
+                    <GridStyled
+                      item
+                      onClick={() => history.push("/race-event/2021-12-23")}
+                    >
+                      <Typography
+                        variant={"h5"}
+                        component={"span"}
+                        paddingRight={1}
+                      >
+                        🎁
+                      </Typography>
+                      Holiday Giveaway
+                    </GridStyled>
                     <Grid item>
                       <Box
                         style={{ cursor: "pointer" }}
@@ -408,6 +422,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                         {themeMode === "dark" ? <DarkIcon /> : <LightIcon />}
                       </Box>
                     </Grid>
+
                     <Grid item>
                       <ButtonStyled
                         size={"small"}
@@ -422,6 +437,20 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                 </>
               ) : (
                 <>
+                  {/*hotfix  */}
+                  <GridStyled
+                    item
+                    onClick={() => history.push("/race-event/2021-12-23")}
+                  >
+                    <Typography
+                      variant={"h5"}
+                      component={"span"}
+                      paddingRight={1}
+                    >
+                      🎁
+                    </Typography>
+                    Holiday Giveaway
+                  </GridStyled>
                   {getMenuButtons({
                     toolbarList: headerToolBarData,
                     i18n,
