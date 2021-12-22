@@ -216,17 +216,17 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const history = useHistory();
       const location = useLocation();
 
-      // const [currentBJTime, setCurrentBJTime] = React.useState(0);
+      const [currentBJTime, setCurrentBJTime] = React.useState(0);
 
-      // React.useEffect(() => {
-      //   setInterval(() => {
-      //     setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000);
-      //   }, 1000);
+      React.useEffect(() => {
+        setInterval(() => {
+          setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000);
+        }, 1000);
 
-      //   return () => {
-      //     clearInterval();
-      //   };
-      // }, []);
+        return () => {
+          clearInterval();
+        };
+      }, []);
 
       const getMenuButtons = React.useCallback(
         ({
@@ -344,9 +344,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);
 
-      // const isMaintaining =
-      //   currentBJTime >= maintainceStatTime &&
-      //   currentBJTime <= maintainceEndTime;
+      const isMaintaining = false;
 
       const displayDesktop = React.useMemo(() => {
         return (
@@ -411,7 +409,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     <Grid item>
                       <ButtonStyled
                         size={"small"}
-                        // disabled={isMaintaining}
+                        disabled={isMaintaining}
                         variant={"contained"}
                         onClick={() => history.push("/trade/lite/LRC-ETH")}
                       >
