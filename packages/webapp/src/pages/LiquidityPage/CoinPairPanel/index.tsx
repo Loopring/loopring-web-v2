@@ -8,21 +8,19 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import {
+  abbreviateNumber,
   AvatarCoinStyled,
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
-  abbreviateNumber,
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import {
   Avatar,
   Box,
-  Breadcrumbs,
   Divider,
   Grid,
-  Link,
   Tab,
   Tabs,
   Typography,
@@ -32,7 +30,6 @@ import styled from "@emotion/styled/";
 import { useCoinPair } from "./hooks";
 import { StylePaper } from "pages/styled";
 import store from "stores";
-import { Link as RouterLink } from "react-router-dom";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { useTicker } from "stores/ticker";
 import { makeTickView } from "hooks/help";
@@ -72,43 +69,32 @@ export const CoinPairPanel = withTranslation("common")(
     isMyAmmLoading,
     isRecentLoading,
     getUserAmmPoolTxs,
+    getRecentAmmPoolTxs,
     ...rest
   }: WithTranslation & any) => {
-    //ActivityMap<I, I>
     const { currency } = useSettings();
     const { tokenPrices } = store.getState().tokenPrices;
-    // let history = useHistory()
     const {
       tradeFloat,
       snapShotData,
       pair,
       coinPairInfo,
       walletMap,
-      // ammMarketArray,
-      // myAmmMarketArray,
       pairHistory,
-      // getUserAmmPoolTxs,
-      // showAmmPoolLoading,
-      // ammUserTotal,
-      // isRecentLoading,
       stob,
       btos,
     } = useCoinPair();
     const { tickerMap } = useTicker();
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
-    // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-
     const realMarket = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`;
     const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
     const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
-
     const { coinJson } = useSettings();
     const { forex } = store.getState().system;
     const coinAIcon: any = coinJson[coinPairInfo.myCoinA?.simpleName];
     const coinBIcon: any = coinJson[coinPairInfo.myCoinB?.simpleName];
     const precisionA = coinPairInfo["precisionA"] || undefined;
     const precisionB = coinPairInfo["precisionB"] || undefined;
-    // const [pageSize, setPageSize] = React.useState(0)
     const container = React.useRef(null);
     const tableHeight =
       RowConfig.rowHeaderHeight +
@@ -122,7 +108,6 @@ export const CoinPairPanel = withTranslation("common")(
       ? tokenPrices[pair.coinAInfo?.simpleName]
       : 0;
     const priceCoinAYuan = priceCoinADollar * (forex || 6.5);
-    // const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
     const totalAmountValueCoinA =
       (tickerFloat?.volume || 0) *
       (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan);
@@ -288,13 +273,6 @@ export const CoinPairPanel = withTranslation("common")(
                       marginTop={1}
                       style={{ textTransform: "capitalize" }}
                     >
-                      {/*<Typography component={'span'} marginRight={1 / 2}*/}
-                      {/*            color={'textSecondary'}>*/}
-                      {/*    */}
-                      {/*    /!*<Avatar variant="square" sizes={'small'} alt={'coinLogo'}*!/*/}
-                      {/*    /!*    // src={coinBInfo?.icon}*!/*/}
-                      {/*    /!*        src={buyIconHasLoaded ? coinPairInfo?.myCoinB?.icon : SoursURL+'images/icon-default.png'}/>*!/*/}
-                      {/*</Typography>*/}
                       <Box
                         component={"span"}
                         className={"logo-icon"}
@@ -462,7 +440,6 @@ export const CoinPairPanel = withTranslation("common")(
                   currentheight={tableHeight}
                   showloading={isRecentLoading}
                   currency={currency}
-                  // handlePageChange={getUserAmmPoolTxs} page={page}
                 />
               ) : (
                 <AmmRecordTable
@@ -482,12 +459,12 @@ export const CoinPairPanel = withTranslation("common")(
             </StylePaper>
           </Box>
           <Box display={"flex"} style={{ minWidth: "var(--swap-box-width)" }}>
-            {/*<FixedStyle>*/}
             <Box>
               <AmmPanelView
                 pair={pair}
                 stob={stob}
                 btos={btos}
+                getRecentAmmPoolTxs={getRecentAmmPoolTxs}
                 walletMap={walletMap}
                 snapShotData={snapShotData}
               />
