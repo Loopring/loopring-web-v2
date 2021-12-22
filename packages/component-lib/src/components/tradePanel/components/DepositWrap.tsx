@@ -37,8 +37,13 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   handleOnAddressChange,
   handleAddressError,
   wait = globalSetup.wait,
+  allowTrade,
   ...rest
 }: DepositViewProps<T, I> & WithTranslation) => {
+  const { raw_data } = allowTrade
+  const legalEnable = (raw_data as any)?.legal.enable
+  const legalShow = (raw_data as any)?.legal.show
+
   const inputBtnRef = React.useRef();
   const popupState = usePopupState({
     variant: "popover",
@@ -166,7 +171,8 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
                 </Typography>
             </PopoverPure>
         </Grid>
-        <Grid item alignSelf={"flex-end"} display={'flex'} alignItems={'center'}>
+        {legalEnable && legalShow && (
+          <Grid item alignSelf={"flex-end"} display={'flex'} alignItems={'center'}>
             <Button
                 variant={'text'} 
                 style={{ textTransform: 'none', paddingRight: 0 }}
@@ -177,6 +183,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
                 <Typography>Ramp</Typography>
             </Button>
         </Grid>
+        )}
         <Grid item marginTop={2} alignSelf={"stretch"}>
             {type === 'NFT'? (<Box display={'inline-flex'} alignItems={'center'} justifyContent={'space-between'}>
                 <BasicANFTTrade
