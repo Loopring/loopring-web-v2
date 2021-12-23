@@ -99,7 +99,7 @@ export const TradeRaceTable = withTranslation('tables')(({rawData, showloading, 
         },
         {
             key: 'profit',
-            name: `${t('lableTradeRaceProfit')} (${rewardToken})`,
+            name: `${t('lableTradeRaceAward')} (${rewardToken})`,
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'profit' ]
