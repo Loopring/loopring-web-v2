@@ -37,7 +37,7 @@ import {
   WithdrawProps,
 } from "./index";
 
-import { DepositPanel, WithdrawPanel } from "../modal";
+import { DepositPanel, TransferPanel, WithdrawPanel } from "../modal";
 
 import { useDispatch } from "react-redux";
 import {
@@ -104,8 +104,24 @@ let withdrawProps: WithdrawProps<any, any> = {
   chargeFeeToken: "ETH",
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
+    {
+      belong: "ETH",
+      fee: 0.001,
+      __raw__: {
+        fastWithDraw: "",
+        tokenId: 1,
+        feeRaw: "1212122",
+      },
+    },
+    {
+      belong: "LRC",
+      fee: "1",
+      __raw__: {
+        fastWithDraw: "",
+        tokenId: 2,
+        feeRaw: "1212122",
+      },
+    },
   ],
   handleOnAddressChange: (value: any) => {
     console.log("handleOnAddressChange", value);
@@ -156,8 +172,24 @@ let transferProps: TransferProps<any, any> = {
   chargeFeeToken: "ETH",
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
+    {
+      belong: "ETH",
+      fee: 0.001,
+      __raw__: {
+        fastWithDraw: "",
+        tokenId: 1,
+        feeRaw: "1212122",
+      },
+    },
+    {
+      belong: "LRC",
+      fee: "1",
+      __raw__: {
+        fastWithDraw: "",
+        tokenId: 2,
+        feeRaw: "1212122",
+      },
+    },
   ],
   handleOnAddressChange: (value: any) => {
     console.log("handleOnAddressChange", value);
@@ -166,15 +198,14 @@ let transferProps: TransferProps<any, any> = {
     return { error: true, message: "any error" };
   },
 };
-// @ts-ignore
+
 let resetProps: ResetProps<any> = {
+  // @ts-ignore
   tradeData,
   coinMap,
   walletMap,
   resetBtnStatus: TradeBtnStatus.AVAILABLE,
-  // onResetClick: (tradeData: SwapTradeData<CoinType>) => {
-  //     console.log('Swap button click', tradeData);
-  // },
+
   handlePanelEvent: async (
     props: SwitchData<any>,
     switchType: "Tomenu" | "Tobutton"
@@ -182,7 +213,7 @@ let resetProps: ResetProps<any> = {
     return new Promise((res) => {
       setTimeout(() => {
         console.log("wait 100, with props", props, switchType);
-        // res();
+        res("");
       }, 500);
     });
   },
@@ -203,38 +234,37 @@ let swapProps: SwapProps<IBData<string>, string, any> = {
     console.log(data, switchType);
   },
 };
-// @ts-ignore
 let _ammProps: AmmProps<
   AmmJoinData<IBData<any>>,
   AmmExitData<IBData<any>>,
   any,
   AmmInData<any>
 > = {
-  refreshRef: React.createRef(),
   ammDepositData: {
     coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
     coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
     slippage: "",
   },
-  AmmExitData: {
+  ammWithdrawData: {
     coinLP: { belong: "LP-ETH-LRC", balance: 0.3, tradeValue: 0 },
-    // coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
+    coinA: { belong: "ETH", balance: 1, tradeValue: 0 },
+    coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
     slippage: "",
   },
-  // tradeCalcData,
+  handleAmmRemoveChangeEvent(data: AmmExitData<IBData<any>>): void {
+    console.log("handleAmmAddChangeEvent", data);
+  },
+  onAmmAddClick(ammSendData: AmmJoinData<IBData<any>>): any {
+    console.log("onAmmRemoveClick", ammSendData);
+  },
+  onAmmRemoveClick(ammSendData: AmmExitData<IBData<any>>): any {
+    console.log("onAmmRemoveClick", ammSendData);
+  },
+  refreshRef: React.createRef(),
   ammCalcDataDeposit: ammCalcData,
   ammCalcDataWithDraw: ammCalcData,
   handleAmmAddChangeEvent: (data, type) => {
     console.log("handleAmmAddChangeEvent", data, type);
-  },
-  handleAmmRemoveChangeEvent: (data, type) => {
-    return console.log("handleAmmRemoveChangeEvent", data, type);
-  },
-  onAmmRemoveClick: (data) => {
-    console.log("onAmmRemoveClick", data);
-  },
-  onAmmAddClick: (data) => {
-    console.log("onAmmAddClick", data);
   },
 };
 
@@ -342,10 +372,7 @@ const WrapSwapPanel = (rest: any) => {
     },
   };
 
-  setTimeout(() => {
-    // console.log('swapProps update')
-    // swapProps.swapTradeData = {sell: {belong: "ETH"}, buy: {belong: "LRC"}} as any;
-  }, 500);
+  setTimeout(() => {}, 500);
   setTimeout(() => {
     swapProps.tradeCalcData = { ...tradeCalcData, StoB: 1.123 };
   }, 800);
@@ -365,30 +392,8 @@ const WrapSwapPanel = (rest: any) => {
   );
 };
 const WrapAmmPanel = (rest: any) => {
-  // let tradeData: any = {
-  //     coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
-  //     coinB: {belong: 'LRC', balance: 1000, tradeValue: 0}
-  // };
   let ammProps: AmmProps<AmmJoinData<IBData<any>>, any, AmmInData<any>, any> = {
     ..._ammProps,
-    // refreshRef: React.createRef(),
-    // ammDepositData: tradeData,
-    // AmmExitData: {coinLP:{belong: 'ETH', balance: 0.3, tradeValue: 0}},
-    // // tradeCalcData,
-    // ammCalcDataDeposit: ammCalcData,
-    // ammCalcDataWithDraw: ammCalcData,
-    // handleAmmAddChangeEvent: (data, type) => {
-    //     console.log('handleAmmAddChangeEvent', data, type);
-    // },
-    // handleAmmRemoveChangeEvent: (data, type) => {
-    //     console.log('handleAmmRemoveChangeEvent', data, type);
-    // },
-    // onAmmRemoveClick: (data) => {
-    //     console.log('onAmmRemoveClick', data);
-    // },
-    // onAmmAddClick: (data) => {
-    //     console.log('onAmmAddClick', data);
-    // }
   };
 
   return (
@@ -450,6 +455,9 @@ const ModalPanelWrap = () => {
       resetProps={resetProps}
       ammProps={_ammProps}
       swapProps={swapProps}
+      assetsData={[]}
+      exportAccountProps={undefined}
+      setExportAccountToastOpen={() => undefined}
     />
   );
 };

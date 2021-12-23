@@ -1,357 +1,446 @@
-import styled from '@emotion/styled';
-import { Meta, Story } from '@storybook/react/types-6-0';
-import { MemoryRouter } from 'react-router-dom';
-import { Box, Collapse, Container, CssBaseline, GlobalStyles, Grid, IconButton, Paper, Toolbar, } from '@mui/material';
-import { Header, HideOnScroll } from '../header'
-import { css, Theme, useTheme } from '@emotion/react';
-import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '../basic-lib';
+import styled from "@emotion/styled";
+import { Meta, Story } from "@storybook/react/types-6-0";
+import { MemoryRouter } from "react-router-dom";
 import {
-    AmmExitData,
-    AmmInData,
-    globalCss,
-    headerMenuData,
-    headerToolBarData,
-    HideIcon,
-    IBData,
-    NavListIndex,
-    PriceTag,
-    subMenuLayer2,
-    ViewIcon,
-    WithdrawType,
-    WithdrawTypes
-} from '@loopring-web/common-resources';
-import {  withTranslation } from 'react-i18next';
-import { OrderHistoryTable as OrderHistoryTableUI } from '../tableList/orderHistoryTable'
-import {  AssetTitleProps } from '../block';
-import React from 'react';
-import { AssetTitle } from '../block';
+  Box,
+  Collapse,
+  Container,
+  CssBaseline,
+  GlobalStyles,
+  Grid,
+  IconButton,
+  Paper,
+  Toolbar,
+} from "@mui/material";
+import { Header, HideOnScroll } from "../header";
+import { css, Theme, useTheme } from "@emotion/react";
+import { Button, SubMenu, SubMenuList as BasicSubMenuList } from "../basic-lib";
 import {
-    AccountBasePanel,
-    AccountBaseProps,
-    AmmProps,
-    DepositProps,
-    ModalPanel,
-    ResetProps,
-    SwapProps,
-    SwapTradeData,
-    SwitchData,
-    TradeBtnStatus,
-    TransferProps,
-    WithdrawProps
-} from '../';
-import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
-import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
-import { useDispatch } from 'react-redux';
-import { Typography } from '@mui/material';
+  AmmExitData,
+  AmmInData,
+  globalCss,
+  headerMenuData,
+  headerToolBarData,
+  HideIcon,
+  IBData,
+  NavListIndex,
+  PriceTag,
+  subMenuLayer2,
+  ViewIcon,
+  WithdrawType,
+  WithdrawTypes,
+} from "@loopring-web/common-resources";
+import { withTranslation } from "react-i18next";
+import { OrderHistoryTable as OrderHistoryTableUI } from "../tableList/orderHistoryTable";
+import { AssetTitleProps } from "../block";
+import React from "react";
+import { AssetTitle } from "../block";
+import {
+  AccountBasePanel,
+  AccountBaseProps,
+  AmmProps,
+  DepositProps,
+  ModalPanel,
+  ResetProps,
+  SwapProps,
+  SwapTradeData,
+  SwitchData,
+  TradeBtnStatus,
+  TransferProps,
+  WithdrawProps,
+} from "../";
+import { setShowDeposit, setShowTransfer, setShowWithdraw } from "../../stores";
+import {
+  ammCalcData,
+  coinMap,
+  CoinType,
+  tradeCalcData,
+  walletMap,
+} from "../../static";
+import { useDispatch } from "react-redux";
+import { Typography } from "@mui/material";
 
-
-const Style = styled.div`
-  
-`
-const SubMenuList = withTranslation('layout', {withRef: true})(BasicSubMenuList);
-const OrderHistoryTable = withTranslation('common', {withRef: true})(OrderHistoryTableUI);
+const Style = styled.div``;
+const SubMenuList = withTranslation("layout", { withRef: true })(
+  BasicSubMenuList
+);
+const OrderHistoryTable = withTranslation("common", { withRef: true })(
+  OrderHistoryTableUI
+);
 
 let tradeData: any = {};
 let depositProps: DepositProps<any, any> = {
-    isNewAccount: true,
-    tradeData,
-    coinMap,
-    walletMap,
-    depositBtnStatus: TradeBtnStatus.AVAILABLE,
-    onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
-        console.log('Swap button click', tradeData);
-    },
-    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res) => {
-            setTimeout(() => {
-                console.log('wait 100, with props', props, switchType);
-                res();
-            }, 500)
-        })
-    },
-}
+  isNewAccount: true,
+  tradeData,
+  coinMap,
+  walletMap,
+  depositBtnStatus: TradeBtnStatus.AVAILABLE,
+  onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
+    console.log("Swap button click", tradeData);
+  },
+  handlePanelEvent: async (
+    props: SwitchData<any>,
+    switchType: "Tomenu" | "Tobutton"
+  ) => {
+    return new Promise((res) => {
+      setTimeout(() => {
+        console.log("wait 100, with props", props, switchType);
+        res();
+      }, 500);
+    });
+  },
+};
 let withdrawProps: WithdrawProps<any, any> = {
-    handleFeeChange(value: { belong: string; fee: number | string; __raw__?: any }): void {
-        console.log(value)
-    },
-    handleWithdrawTypeChange(value: keyof typeof WithdrawType): void {
-        console.log(value)
-    },
-    tradeData,
-    coinMap,
-    walletMap,
-    withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
-    onWithdrawClick: (tradeData: SwapTradeData<CoinType>) => {
-        console.log('Swap button click', tradeData);
-    },
+  handleFeeChange(value: {
+    belong: string;
+    fee: number | string;
+    __raw__?: any;
+  }): void {
+    console.log(value);
+  },
+  handleWithdrawTypeChange(value: keyof typeof WithdrawType): void {
+    console.log(value);
+  },
+  tradeData,
+  coinMap,
+  walletMap,
+  withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
+  onWithdrawClick: (tradeData: SwapTradeData<CoinType>) => {
+    console.log("Swap button click", tradeData);
+  },
 
-    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res: any) => {
-            setTimeout(() => {
-                console.log('wait 100, with props', props, switchType);
-                res();
-            }, 500)
-        })
-    },
-    withdrawType: WithdrawType.Fast,
-    withdrawTypes: WithdrawTypes,
-    chargeFeeToken: 'ETH',
-    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001,__raw__:''}, {belong: 'LRC', fee: '1',__raw__:''}] as any,
-    handleOnAddressChange: (value: any) => {
-        console.log('handleOnAddressChange', value);
-    },
-    handleAddressError: (_value: any) => {
-        return {error: true, message: 'any error'}
-    }
-}
+  handlePanelEvent: async (
+    props: SwitchData<any>,
+    switchType: "Tomenu" | "Tobutton"
+  ) => {
+    return new Promise((res: any) => {
+      setTimeout(() => {
+        console.log("wait 100, with props", props, switchType);
+        res();
+      }, 500);
+    });
+  },
+  withdrawType: WithdrawType.Fast,
+  withdrawTypes: WithdrawTypes,
+  chargeFeeToken: "ETH",
+  chargeFeeTokenList: [
+    { belong: "ETH", fee: 0.001, __raw__: "" },
+    { belong: "LRC", fee: "1", __raw__: "" },
+  ] as any,
+  handleOnAddressChange: (value: any) => {
+    console.log("handleOnAddressChange", value);
+  },
+  handleAddressError: (_value: any) => {
+    return { error: true, message: "any error" };
+  },
+};
 let transferProps: TransferProps<any, any> = {
-
-    tradeData,
-    coinMap,
-    walletMap,
-    transferBtnStatus: TradeBtnStatus.AVAILABLE,
-    onTransferClick: (tradeData: any) => {
-        console.log('Swap button click', tradeData);
-    },
-    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res: any) => {
-            setTimeout(() => {
-                console.log('wait 100, with props', props, switchType);
-                res();
-            }, 500)
-        })
-    },
-    handleFeeChange(value: { belong: string; fee: number | string; __raw__?: any }): void {
-        console.log(value)
-    },
-    chargeFeeToken: 'ETH',
-    chargeFeeTokenList:[{belong: 'ETH', fee: 0.001,__raw__:''}, {belong: 'LRC', fee: '1',__raw__:''}] as any,
-    handleOnAddressChange: (value: any) => {
-        console.log('handleOnAddressChange', value);
-    },
-    handleAddressError: (_value: any) => {
-        return {error: true, message: 'any error'}
-    }
-}
+  tradeData,
+  coinMap,
+  walletMap,
+  transferBtnStatus: TradeBtnStatus.AVAILABLE,
+  onTransferClick: (tradeData: any) => {
+    console.log("Swap button click", tradeData);
+  },
+  handlePanelEvent: async (
+    props: SwitchData<any>,
+    switchType: "Tomenu" | "Tobutton"
+  ) => {
+    return new Promise((res: any) => {
+      setTimeout(() => {
+        console.log("wait 100, with props", props, switchType);
+        res();
+      }, 500);
+    });
+  },
+  handleFeeChange(value: {
+    belong: string;
+    fee: number | string;
+    __raw__?: any;
+  }): void {
+    console.log(value);
+  },
+  chargeFeeToken: "ETH",
+  chargeFeeTokenList: [
+    { belong: "ETH", fee: 0.001, __raw__: "" },
+    { belong: "LRC", fee: "1", __raw__: "" },
+  ] as any,
+  handleOnAddressChange: (value: any) => {
+    console.log("handleOnAddressChange", value);
+  },
+  handleAddressError: (_value: any) => {
+    return { error: true, message: "any error" };
+  },
+};
 let resetProps: ResetProps<any> = {
-    chargeFeeTokenList: [],
-    // tradeData,
-    assetsData:[],
-    // walletMap,
-    resetBtnStatus: TradeBtnStatus.AVAILABLE,
-    onResetClick: () => {
-        console.log('Swap button click', tradeData);
-    },
-    handleFeeChange: async (value: any) => {
-        console.log(value)
-    }
-}
+  chargeFeeTokenList: [],
+  // tradeData,
+  assetsData: [],
+  // walletMap,
+  resetBtnStatus: TradeBtnStatus.AVAILABLE,
+  onResetClick: () => {
+    console.log("Swap button click", tradeData);
+  },
+  handleFeeChange: async (value: any) => {
+    console.log(value);
+  },
+};
 let swapProps: SwapProps<IBData<string>, string, any> = {
-    refreshRef: React.createRef(),
-    tradeData: {sell: {belong: undefined}, buy: {belong: undefined}, slippage: ''} as any,
-    tradeCalcData,
-    onSwapClick: (tradeData) => {
-        console.log('Swap button click', tradeData);
-    },
-    handleSwapPanelEvent: async (data: any, switchType: any) => {
-        console.log(data, switchType)
-    }
+  refreshRef: React.createRef(),
+  tradeData: {
+    sell: { belong: undefined },
+    buy: { belong: undefined },
+    slippage: "",
+  } as any,
+  tradeCalcData,
+  onSwapClick: (tradeData) => {
+    console.log("Swap button click", tradeData);
+  },
+  handleSwapPanelEvent: async (data: any, switchType: any) => {
+    console.log(data, switchType);
+  },
 };
 let ammProps: AmmProps<AmmExitData<IBData<any>>, any, AmmInData<any>, any> = {
-    refreshRef: React.createRef(),
-    ammDepositData: {
-        coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
-        coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
-        coinLP: {belong: 'LP-ETH-LRC', balance: 1000, tradeValue: 0},
-        slippage: '',
-    },
-    ammWithdrawData: {
-        coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
-        coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
-        slippage: '',
-    },
-    // tradeCalcData,
-    ammCalcDataDeposit: ammCalcData,
-    ammCalcDataWithDraw: ammCalcData,
-    handleAmmAddChangeEvent: (data: any, type: any) => {
-        console.log('handleAmmAddChangeEvent', data, type);
-    },
-    handleAmmRemoveChangeEvent: (data: any) => {
-        console.log('handleAmmRemoveChangeEvent', data);
-    },
-    onAmmRemoveClick: (data: any) => {
-        console.log('onAmmRemoveClick', data);
-    },
-    onAmmAddClick: (data: any) => {
-        console.log('onAmmAddClick', data);
-    }
-}
+  refreshRef: React.createRef(),
+  ammDepositData: {
+    coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
+    coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
+    coinLP: { belong: "LP-ETH-LRC", balance: 1000, tradeValue: 0 },
+    slippage: "",
+  },
+  ammWithdrawData: {
+    coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
+    coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
+    slippage: "",
+  },
+  // tradeCalcData,
+  ammCalcDataDeposit: ammCalcData,
+  ammCalcDataWithDraw: ammCalcData,
+  handleAmmAddChangeEvent: (data: any, type: any) => {
+    console.log("handleAmmAddChangeEvent", data, type);
+  },
+  handleAmmRemoveChangeEvent: (data: any) => {
+    console.log("handleAmmRemoveChangeEvent", data);
+  },
+  onAmmRemoveClick: (data: any) => {
+    console.log("onAmmRemoveClick", data);
+  },
+  onAmmAddClick: (data: any) => {
+    console.log("onAmmAddClick", data);
+  },
+};
 
 const ModalPanelWrap = () => {
-    return <ModalPanel transferProps={transferProps} withdrawProps={withdrawProps} depositProps={depositProps}
-                       resetProps={resetProps}
-                       ammProps={ammProps as AmmProps<any, any, any, any>}
-                       swapProps={swapProps} assetsData={resetProps as any}
-                       exportAccountProps={{} as any}
-                       setExportAccountToastOpen={{} as any} />
-}
+  return (
+    <ModalPanel
+      transferProps={transferProps}
+      withdrawProps={withdrawProps}
+      depositProps={depositProps}
+      resetProps={resetProps}
+      ammProps={ammProps as AmmProps<any, any, any, any>}
+      swapProps={swapProps}
+      assetsData={resetProps as any}
+      exportAccountProps={{} as any}
+      setExportAccountToastOpen={{} as any}
+      nftDepositProps={{} as any}
+      nftTransferProps={{} as any}
+      nftWithdrawProps={{} as any}
+    />
+  );
+};
 
 const AssetTitleWrap = (rest: any) => {
-    const dispatch = useDispatch();
-    // const [isTransferShow,setIsTransferShow] = React.useState(false)
-    // const [isDepositShow, setIsDepositShow] = React.useState(false)
-    // const [isWithdrawShow, setIsWithdrawShow] = React.useState(false)
-    const AssetTitleProps: AssetTitleProps = {
-        hideL2Assets: false,
-        setHideL2Assets(value: boolean): void {
-            console.log(value)
-        },
-        assetInfo: {
-            totalAsset: 123456.789,
-            priceTag: PriceTag.Dollar,
-        },
-        onShowWithdraw: () => dispatch(setShowDeposit({isShow: true})),
-        onShowTransfer: () => dispatch(setShowTransfer({isShow: true})),
-        onShowDeposit: () => dispatch(setShowWithdraw({isShow: true}))
-    }
-    return <>
-        <Grid item xs={12}>
-            <AssetTitle  {...{
-                ...rest,
-                ...AssetTitleProps
-            }} />
-        </Grid>
+  const dispatch = useDispatch();
+
+  const AssetTitleProps: AssetTitleProps = {
+    accountId: 0,
+    showRamp(): void {},
+    hideL2Assets: false,
+    setHideL2Assets(value: boolean): void {
+      console.log(value);
+    },
+    assetInfo: {
+      totalAsset: 123456.789,
+      priceTag: PriceTag.Dollar,
+    },
+    onShowWithdraw: () => dispatch(setShowDeposit({ isShow: true })),
+    onShowTransfer: () => dispatch(setShowTransfer({ isShow: true })),
+    onShowDeposit: () => dispatch(setShowWithdraw({ isShow: true })),
+  };
+  return (
+    <>
+      <Grid item xs={12}>
+        <AssetTitle
+          {...{
+            ...rest,
+            ...AssetTitleProps,
+          }}
+        />
+      </Grid>
     </>
-}
+  );
+};
 
-const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
-    // const _headerMenuData: List<HeaderMenuItemInterface> = headerMenuData as List<HeaderMenuItemInterface>;
-    // const _headerToolBarData: List<HeaderToolBarInterface> = headerToolBarData as List<HeaderToolBarInterface>;
-    const selected = 'assets';
-    const StylePaper = styled(Box)`
-      width: 100%;
-      height: 100%;
-      flex: 1;
-      background: var(--color-box);
-      border-radius: ${({theme}) => theme.unit}px;
-      padding: ${({theme}) => theme.unit * 3}px;
+const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
+  const selected = "assets";
+  const StylePaper = styled(Box)`
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    background: var(--color-box);
+    border-radius: ${({ theme }) => theme.unit}px;
+    padding: ${({ theme }) => theme.unit * 3}px;
 
-
-      .tableWrapper {
-        ${({theme}) => theme.border.defaultFrame({c_key: 'default', d_R: 1})};
-          // margin-top:  ${({theme}) => theme.unit * 3}px;
-        // border: 1px solid #252842;
-          // border-radius: ${({theme}) => theme.unit}px;
-        // padding: 26px;
-      }
-    ` as typeof Paper;
-    const accountInfoProps: AccountBaseProps = {
-        keySeed: '',
-        qrCodeUrl: '',
-        accAddress: '0x123567243o24o242423098784',
-        accountId: 0,
-        apiKey: '',
-        connectName: 'unknown',
-        eddsaKey: undefined,
-        etherscanUrl: 'https://material-ui.com/components/material-icons/',
-        keyNonce: undefined,
-        nonce: undefined,
-        publicKey: undefined,
-        readyState: 'unknown',
-        level: 'VIP 1',
-        mainBtn: <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => console.log('my event')}>My
-            button</Button>
+    .tableWrapper {
+      ${({ theme }) => theme.border.defaultFrame({ c_key: "default", d_R: 1 })};
+      // margin-top:  ${({ theme }) => theme.unit * 3}px;
+      // border: 1px solid #252842;
+      // border-radius: ${({ theme }) => theme.unit}px;
+      // padding: 26px;
     }
-    const hasAccount = true;
-    const [showAccountInfo, setShowAccountInfo] = React.useState(hasAccount);
-    const handleClick = (_event: React.MouseEvent) => {
-        if (showAccountInfo) {
-            // headerMenuData[ NavListIndex.layer2 ].iconBtn.view = false;
-            setShowAccountInfo(false);
-        } else {
-            // headerMenuData[ NavListIndex.layer2 ].iconBtn.view = true;
-            setShowAccountInfo(true);
-        }
-        _event.stopPropagation();
+  ` as typeof Paper;
+  const accountInfoProps: AccountBaseProps = {
+    keySeed: "",
+    qrCodeUrl: "",
+    accAddress: "0x123567243o24o242423098784",
+    accountId: 0,
+    apiKey: "",
+    connectName: "unknown",
+    eddsaKey: undefined,
+    etherscanUrl: "https://material-ui.com/components/material-icons/",
+    keyNonce: undefined,
+    nonce: undefined,
+    publicKey: undefined,
+    readyState: "unknown",
+    level: "VIP 1",
+    mainBtn: (
+      <Button
+        variant={"contained"}
+        size={"small"}
+        color={"primary"}
+        onClick={() => console.log("my event")}
+      >
+        My button
+      </Button>
+    ),
+  };
+  const hasAccount = true;
+  const [showAccountInfo, setShowAccountInfo] = React.useState(hasAccount);
+  const handleClick = (_event: React.MouseEvent) => {
+    if (showAccountInfo) {
+      // headerMenuData[ NavListIndex.layer2 ].iconBtn.view = false;
+      setShowAccountInfo(false);
+    } else {
+      // headerMenuData[ NavListIndex.layer2 ].iconBtn.view = true;
+      setShowAccountInfo(true);
     }
-    headerMenuData[ NavListIndex.layer2 ].extender = hasAccount ? <IconButton disabled={!hasAccount}
-                                                                              onClick={handleClick}
-                                                                              aria-label={t('labelShowAccountInfo')}
-                                                                              color="primary">
-        {showAccountInfo ? <HideIcon/> : <ViewIcon/>}
-    </IconButton> : undefined
+    _event.stopPropagation();
+  };
+  headerMenuData[NavListIndex.layer2].extender = hasAccount ? (
+    <IconButton
+      disabled={!hasAccount}
+      onClick={handleClick}
+      aria-label={t("labelShowAccountInfo")}
+      color="primary"
+    >
+      {showAccountInfo ? <HideIcon /> : <ViewIcon />}
+    </IconButton>
+  ) : undefined;
 
-
-
-    return <>
-        <CssBaseline />
-        <HideOnScroll>
-            <Header headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
-    selected={'markets'}/>
-        </HideOnScroll>
-        <Toolbar/>
-        <ModalPanelWrap/>
-        {hasAccount ?
-            <Collapse in={showAccountInfo}>
-                <Container maxWidth="lg">
-                    <Box marginTop={3}>
-                        <AccountBasePanel  {...{...accountInfoProps,t,...rest}}/>
-                    </Box>
-                </Container>
-            </Collapse> : undefined}
-        <Container maxWidth="lg">
-            {/*style={{height: '100%' }}*/}
-            <Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection="row" marginTop={3} minWidth={800}>
-                <Box width={200} display={'flex'} justifyContent={'stretch'}>
-                    <SubMenu>
-                        <SubMenuList selected={selected} subMenu={subMenuLayer2 as any}/>
-                    </SubMenu>
-                </Box>
-                <Box flex={1} marginLeft={4} height={1600} flexDirection="column">
-                    <Box marginBottom={3}>
-                        <AssetTitleWrap/>
-                    </Box>
-                    <StylePaper>
-                        <Typography variant={'h5'} component={'h3'}>Orders</Typography>
-                        <Box marginTop={2} className="tableWrapper">
-                            <OrderHistoryTable rawData={[]} pageSize={0} {...rest}/>
-                        </Box>
-                    </StylePaper>
-                </Box>
+  return (
+    <>
+      <CssBaseline />
+      <HideOnScroll>
+        <Header
+          headerMenuData={{ ...headerMenuData, allowTrade: true }}
+          headerToolBarData={{ ...headerToolBarData }}
+          selected={"markets"}
+        />
+      </HideOnScroll>
+      <Toolbar />
+      <ModalPanelWrap />
+      {hasAccount ? (
+        <Collapse in={showAccountInfo}>
+          <Container maxWidth="lg">
+            <Box marginTop={3}>
+              <AccountBasePanel {...{ ...accountInfoProps, t, ...rest }} />
             </Box>
-        </Container>
-        {/*<Footer></Footer>*/}
+          </Container>
+        </Collapse>
+      ) : undefined}
+      <Container maxWidth="lg">
+        {/*style={{height: '100%' }}*/}
+        <Box
+          flex={1}
+          display={"flex"}
+          alignItems={"stretch"}
+          flexDirection="row"
+          marginTop={3}
+          minWidth={800}
+        >
+          <Box width={200} display={"flex"} justifyContent={"stretch"}>
+            <SubMenu>
+              <SubMenuList selected={selected} subMenu={subMenuLayer2 as any} />
+            </SubMenu>
+          </Box>
+          <Box flex={1} marginLeft={4} height={1600} flexDirection="column">
+            <Box marginBottom={3}>
+              <AssetTitleWrap />
+            </Box>
+            <StylePaper>
+              <Typography variant={"h5"} component={"h3"}>
+                Orders
+              </Typography>
+              <Box marginTop={2} className="tableWrapper">
+                <OrderHistoryTable rawData={[]} pageSize={0} {...rest} />
+              </Box>
+            </StylePaper>
+          </Box>
+        </Box>
+      </Container>
+      {/*<Footer></Footer>*/}
     </>
-})
+  );
+});
 
 const Template: Story<any> = () => {
-    const theme: Theme = useTheme();
-    console.log(theme.mode)
-    return <> <MemoryRouter initialEntries={['/']}><GlobalStyles styles={css`
-  ${globalCss({theme})};
+  const theme: Theme = useTheme();
+  console.log(theme.mode);
+  return (
+    <>
+      {" "}
+      <MemoryRouter initialEntries={["/"]}>
+        <GlobalStyles
+          styles={css`
+  ${globalCss({ theme })};
 
   body:before {
-    ${theme.mode === 'dark' ? `
+    ${
+      theme.mode === "dark"
+        ? `
             color: ${theme.colorBase.textPrimary};        
            
             background: var(--color-global-bg);
-       ` : ''}
+       `
+        : ""
+    }
   }
 }
-`}/>
+`}
+        />
         <Style>
-            <Layer2Wrap/>
+          <Layer2Wrap />
         </Style>
-    </MemoryRouter>
+      </MemoryRouter>
     </>
+  );
 };
 
 export default {
-    title: 'components/Layout/Layer2',
-    component: Layer2Wrap,
-    argTypes: {},
-} as Meta
+  title: "components/Layout/Layer2",
+  component: Layer2Wrap,
+  argTypes: {},
+} as Meta;
 
 export const Layer2Story = Template.bind({});
 // SwitchPanel.args = {}
-
