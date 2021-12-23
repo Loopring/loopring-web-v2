@@ -82,7 +82,7 @@
     }
   ],
   "prev": {
-    endDate: 1640822400000,
-    prevMonth: 11
+    "endDate": 1640822400000,
+    "prevMonth": 11
   }
 }
