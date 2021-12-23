@@ -12,7 +12,6 @@ import { EVENT_STATUS, useTradeRace } from "./hook";
 import { useAmmPool } from "../LiquidityPage/hook";
 import { useAmmMiningUI } from "../MiningPage/hook";
 import {
-  CURRENT_EVENT_DATE,
   DropDownIcon,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
@@ -87,7 +86,7 @@ const BoxSelect = styled(Box)`
 
 export const TradeRacePage = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    const { search } = useLocation();
+    const { search, pathname } = useLocation();
     const [currMarketPair, setCurrMarketPair] = React.useState("");
     const volumeToken = currMarketPair ? currMarketPair.split("-")[1] : "";
     const { ammActivityMap } = useAmmPool();
@@ -116,9 +115,8 @@ export const TradeRacePage = withTranslation("common")(
         setCurrMarketPair(e.target.value);
         getAmmGameRank(e.target.value);
         getAmmGameUserRank(e.target.value);
-        history.push(
-          `/race-event/${CURRENT_EVENT_DATE}?pair=${e.target.value}`
-        );
+
+        history.push(`${pathname}?pair=${e.target.value}`);
       },
       [setCurrMarketPair, getAmmGameUserRank, getAmmGameRank, history]
     );
@@ -367,7 +365,8 @@ export const TradeRacePage = withTranslation("common")(
                   alignItems={"center"}
                 >
                   <Typography fontSize={16} marginRight={2}>
-                    {t("labelTradeRaceYourVolume")} ({volumeToken}): {userVolume}
+                    {t("labelTradeRaceYourVolume")} ({volumeToken}):{" "}
+                    {userVolume}
                   </Typography>
                   <Typography fontSize={16}>
                     {t("labelTradeRaceYourRanking")}: {rank || "--"}

@@ -39,7 +39,6 @@ import {
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
-import moment from "moment";
 import { useSettings } from "../../stores";
 
 const ButtonStyled = styled(Button)`
@@ -145,13 +144,13 @@ export const LoopringLogo = React.memo(() => {
   );
 });
 
-const ToolBarItem = ({ buttonComponent, ...props }: any) => {
+const ToolBarItem = ({ buttonComponent, notification, ...props }: any) => {
   const render = React.useMemo(() => {
     switch (buttonComponent) {
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />;
       case ButtonComponentsMap.Notification:
-        return <BtnNotification {...props} />;
+        return <BtnNotification {...props} notification={notification} />;
       case ButtonComponentsMap.Setting:
         return <BtnSetting {...props} />;
       case ButtonComponentsMap.WalletConnect:
@@ -204,6 +203,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       {
         headerMenuData,
         headerToolBarData,
+        notification,
         allowTrade,
         selected,
         isWrap = true,
@@ -217,19 +217,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const { themeMode, setTheme } = useSettings();
       const history = useHistory();
       const location = useLocation();
-
-      const [currentBJTime, setCurrentBJTime] = React.useState(0);
-
-      React.useEffect(() => {
-        setInterval(() => {
-          setCurrentBJTime(Number(moment().utcOffset(480).unix()) * 1000);
-        }, 1000);
-
-        return () => {
-          clearInterval();
-        };
-      }, []);
-
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -238,14 +225,13 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           return ToolBarAvailableItem.map((index: number) => {
             return (
               <ToolBarItem
-                {...{ ...toolbarList[index], ...rest }}
+                {...{ ...toolbarList[index], notification, ...rest }}
                 key={index}
               />
             );
           });
-          // toolbarList.map((item, index) =>);
         },
-        []
+        [notification]
       );
       const getDrawerChoices = React.useCallback(
         ({
@@ -257,56 +243,59 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           layer?: number;
           handleListKeyDown?: any;
         } & WithTranslation) => {
-          return menuList.map((props: HeaderMenuItemInterface) => {
-            const { label, child, status } = props;
-            const selectedFlag = new RegExp(label.id, "ig").test(
-              selected.split("/")[1] ? selected.split("/")[1] : selected
-            );
-            if (status === HeaderMenuTabStatus.hidden) {
-              // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
-              return <React.Fragment key={label.id + "-" + layer} />;
-            } else {
-              if (child) {
-                return (
-                  <React.Fragment key={label.id + "-" + layer}>
-                    {memoized({
-                      ...props,
-                      layer,
-                      ...rest,
-                    })}
-                  </React.Fragment>
-                );
+          return (
+            menuList.length &&
+            menuList.map((props: HeaderMenuItemInterface) => {
+              const { label, child, status } = props;
+              const selectedFlag = new RegExp(label.id, "ig").test(
+                selected.split("/")[1] ? selected.split("/")[1] : selected
+              );
+              if (status === HeaderMenuTabStatus.hidden) {
+                // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
+                return <React.Fragment key={label.id + "-" + layer} />;
               } else {
-                return (
-                  <HeadMenuItem
-                    selected={selectedFlag}
-                    {...{
-                      ...props,
-                      allowTrade,
-                      layer,
-                      children: (
-                        <NodeMenuItem
-                          {...{
-                            ...props,
-                            layer,
-                            child,
-                            ...rest,
-                          }}
-                        />
-                      ),
-                      style: { textDecoration: "none" },
-                      key: label.id + "-" + layer,
-                    }}
-                    onClick={
-                      rest?.handleListKeyDown
-                        ? rest.handleListKeyDown
-                        : undefined
-                    }
-                  />
-                );
+                if (child) {
+                  return (
+                    <React.Fragment key={label.id + "-" + layer}>
+                      {memoized({
+                        ...props,
+                        layer,
+                        ...rest,
+                      })}
+                    </React.Fragment>
+                  );
+                } else {
+                  return (
+                    <HeadMenuItem
+                      selected={selectedFlag}
+                      {...{
+                        ...props,
+                        allowTrade,
+                        layer,
+                        children: (
+                          <NodeMenuItem
+                            {...{
+                              ...props,
+                              layer,
+                              child,
+                              ...rest,
+                            }}
+                          />
+                        ),
+                        style: { textDecoration: "none" },
+                        key: label.id + "-" + layer,
+                      }}
+                      onClick={
+                        rest?.handleListKeyDown
+                          ? rest.handleListKeyDown
+                          : undefined
+                      }
+                    />
+                  );
+                }
               }
-            }
-          });
+            })
+          );
         },
         [allowTrade, selected]
       );
@@ -323,7 +312,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               selected: new RegExp(label.id, "ig").test(
                 selected.split("/")[1] ? selected.split("/")[1] : selected
               ),
-              // className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
               renderList: ({
                 handleListKeyDown,
               }: {
@@ -346,9 +334,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);
 
-      const isMaintaining =
-        currentBJTime >= maintainceStatTime &&
-        currentBJTime <= maintainceEndTime;
+      const isMaintaining = false;
 
       const displayDesktop = React.useMemo(() => {
         return (
@@ -391,7 +377,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       item
                       onClick={() => history.push("/")}
                     >
-                      zkRollup Layer2
+                      {t("labelLandingHeaderLayer2")}
                     </GridStyled>
                     <GridStyled
                       iscurrentroute={
@@ -400,23 +386,12 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       item
                       onClick={() => history.push("/wallet")}
                     >
-                      Smart Wallet
+                      {t("labelLandingHeaderWallet")}
                     </GridStyled>
-                    {/*hotfix  */}
-                    <GridStyled
-                      item
-                      onClick={() => history.push("/race-event/2021-12-23")}
-                    >
-                      <Typography
-                        variant={"h5"}
-                        component={"span"}
-                        paddingRight={1}
-                      >
-                        🎁
-                      </Typography>
-                      Holiday Giveaway
-                    </GridStyled>
-                    <Grid item>
+                    <Grid item style={{ paddingLeft: 16 }}>
+                      <BtnNotification notification={notification} />
+                    </Grid>
+                    <Grid item style={{ paddingLeft: 16 }}>
                       <Box
                         style={{ cursor: "pointer" }}
                         onClick={handleThemeClick}

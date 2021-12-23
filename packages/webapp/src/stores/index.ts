@@ -108,7 +108,7 @@ const reducer = combineReducers({
   tickerMap: tickerMapSlice.reducer,
   localStore: persistedLocalStoreReducer,
   amountMap: amountMapSlice.reducer,
-  notify: notifyMapSlice.reducer,
+  notifyMap: notifyMapSlice.reducer,
 
   // router redux
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
@@ -136,7 +136,6 @@ const store = configureStore({
 store.dispatch(updateVersion());
 
 store.dispatch(setLanguage(store.getState().settings.language));
-//https://static.loopring.io/assets/images/coin/loopring.json
 fetch(`./static/coin/loopring.json`)
   .then((results) => results.json())
   .then((imgConfig) => {

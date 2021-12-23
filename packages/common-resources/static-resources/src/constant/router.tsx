@@ -46,7 +46,6 @@ export let headerToolBarData: Array<{
     buttonComponent: ButtonComponentsMap.WalletConnect,
     label: "labelConnectWallet",
     status: undefined,
-    notificationList: [],
     handleClick: undefined,
   },
 ];

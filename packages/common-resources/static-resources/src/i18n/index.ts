@@ -10,6 +10,10 @@ export enum LanguageType {
   zh_CN = "zh_CN",
 }
 
+export enum languageMap {
+  en_US = "en",
+}
+
 export type LanguageKeys = keyof typeof LanguageType;
 
 export const resources = {

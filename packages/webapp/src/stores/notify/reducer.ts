@@ -23,6 +23,7 @@ const notifyMapSlice: Slice<NotifyStates> = createSlice({
         state.errorMessage = action.error;
       }
       state.notifyMap = action.payload.notifyMap;
+      state.status = SagaStatus.DONE;
     },
 
     statusUnset: (state) => {

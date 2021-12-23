@@ -3,17 +3,16 @@ import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
 import { GameRankInfo } from "@loopring-web/loopring-sdk";
 import { getTokenNameFromTokenId, volumeToCount } from "hooks/help";
-import { getValuePrecisionThousand } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  languageMap,
+} from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
 import { setInterval } from "timers";
 
 const url_path = "https://static.loopring.io/events";
-
-enum languageMap {
-  en_US = "en",
-}
 
 export enum EVENT_STATUS {
   EVENT_START = "labelTradeRaceStart",

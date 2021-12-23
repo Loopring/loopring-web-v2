@@ -1,14 +1,48 @@
 {
   "activities": [
     {
-      type: 'trade_mining',
-      link: '2021/12/2021-12-23',
-      startDate: 1640020320000,
-      endDate: 1640040320000,
-      pairs: [
-        'ETH-USDT'
+      "type": "amm_mining",
+      "link": "2021-12-23",
+      "startDate": 1640020320000,
+      "endDate": 1640822400000,
+      "title": "Demo amm_mining Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+      "pairs": [
+        "LRC-ETH",
+        "LRC-USDC",
+        "ETH-USDC",
+        "ENS-ETH",
+        "RICE-USDT",
+        "MOVD-ETH",
+        "DEP-ETH"
       ],
-      config: [
+      "config": [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    },
+    {
+      "type": "swap_mining",
+      "link": "2021-12-23",
+      "startDate": 1640020320000,
+      "endDate": 1640822400000,
+      "title": "Demo swap_mining Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+      "pairs": [
+        "AMM-LRC-ETH",
+        "AMM-LRC-USDC",
+        "AMM-ETH-USDC",
+        "AMM-ENS-ETH",
+        "AMM-RICE-USDT",
+        "AMM-MOVD-ETH",
+        "AMM-DEP-ETH"
+      ],
+      "config": [
         "#D3F1F8",
         12,
         16,
@@ -18,13 +52,16 @@
     },
     {
       "type": "orderbook_mining",
-      link: '2021/12/2021-12-23',
-      startDate: 1640020320000,
-      endDate: 1640040320000,
-      pairs: [
-        'ETH-USDT'
+      "link": "2021-12-23",
+      "startDate": 1640020320000,
+      "endDate": 1640822400000,
+      "title": "Demo orderbook_mining Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+      "pairs": [
+        "ETH-USDT"
       ],
-      config: [
+      "config": [
         "#D3F1F8",
         12,
         16,
@@ -35,15 +72,26 @@
   ],
   "notifications": [
     {
-      "name": {
-        "en": "Loopring Relayer System Upgrade Notice",
-        "zh": "路印中继系统升级"
-      },
-      "link": {
-        "en": "https://twitter.com/loopringorg/status/1471832121421533184\",\"zh\":\"https://twitter.com/loopringorg/status/1471832121421533184"
-      },
-      "since": "1639756803",
-      "until": "1639994403"
+      "id": "2021-12-23-maintain",
+      "title": "Demo Relayer Upgrade Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+      "link": "maintainTemplate.{lng}.md",
+      "startDate": 1638316800000,
+      "endDate": 1640822400000
+    },
+    {
+      "id": "2021-12-23-maintain",
+      "title": "Demo2 Relayer Upgrade Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+      "link": "maintainTemplate.md",
+      "startDate": 1638316800000,
+      "endDate": 1640822400000
     }
-  ]
+  ],
+  "prev": {
+    "endDate": 1640822400000,
+    "prevMonth": 11
+  }
 }
