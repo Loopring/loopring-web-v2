@@ -3,7 +3,7 @@ import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
 import { GameRankInfo } from "@loopring-web/loopring-sdk";
 import { getTokenNameFromTokenId, volumeToCount } from "hooks/help";
-import { getValuePrecisionThousand, myLog } from "@loopring-web/common-resources";
+import { getValuePrecisionThousand } from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
