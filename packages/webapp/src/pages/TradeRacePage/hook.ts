@@ -3,7 +3,7 @@ import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
 import { GameRankInfo } from "@loopring-web/loopring-sdk";
 import { getTokenNameFromTokenId, volumeToCount } from "hooks/help";
-import { getValuePrecisionThousand } from "@loopring-web/common-resources";
+import { getValuePrecisionThousand, myLog } from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
@@ -155,8 +155,8 @@ export const useTradeRace = () => {
             "0" + Math.floor((difference / 1000) % 60).toString()
           ).slice(-2),
         });
-      } else if (eventStatus !== EVENT_STATUS.EVENT_START) {
-        let difference = +new Date() - +new Date(eventData.duration.startDate);
+      } else if (eventStatus === EVENT_STATUS.EVENT_START) {
+        let difference = +new Date(eventData.duration.endDate) - Date.now();
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
           hours: (
