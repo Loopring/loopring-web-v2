@@ -6,7 +6,23 @@
       startDate: 1640020320000,
       endDate: 1640040320000,
       pairs: [
-        'ETH-USDT'
+        'LRC/ETH','LRC/USDC','ETH/USDC','ENS/ETH','RICE/USDT',  'MOVD/ETH',  'DEP/ETH'
+      ],
+      config: [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    },
+    {
+      type: 'trade_mining',
+      link: '2021/12/2021-12-23',
+      startDate: 1640020320000,
+      endDate: 1640040320000,
+      pairs: [
+        'LRC/ETH','LRC/USDC','ETH/USDC','ENS/ETH','RICE/USDT',  'MOVD/ETH',  'DEP/ETH'
       ],
       config: [
         "#D3F1F8",
@@ -34,16 +50,19 @@
     }
   ],
   "notifications": [
-    {
-      "name": {
-        "en": "Loopring Relayer System Upgrade Notice",
-        "zh": "路印中继系统升级"
-      },
-      "link": {
-        "en": "https://twitter.com/loopringorg/status/1471832121421533184\",\"zh\":\"https://twitter.com/loopringorg/status/1471832121421533184"
-      },
-      "since": "1639756803",
-      "until": "1639994403"
-    }
+    { id: '2021-12-23-maintain',
+      title: 'Demo Relayer Upgrade Notification',
+      description1: 'Dex and App will be SUSPENDED from',
+      description2: '2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)',
+      link: 'maintainTemplate.{lng}.md',
+      startDate:1638316800000 ,
+      endDate: 1640822400000},
+    { id: '2021-12-23-maintain',
+      title: 'Demo2 Relayer Upgrade Notification',
+      description1: 'Dex and App will be SUSPENDED from',
+      description2: '2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)',
+      link: 'maintainTemplate.md',
+      startDate:1638316800000 ,
+      endDate: 1640822400000}
   ]
 }
