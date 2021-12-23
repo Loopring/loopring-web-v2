@@ -131,3 +131,5 @@ export const MarkdownPage = () => {
     </MarkdownStyle>
   );
 };
+
+export * from "./notifyMarkdown";

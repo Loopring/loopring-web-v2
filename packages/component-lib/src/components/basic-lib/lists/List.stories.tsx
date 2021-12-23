@@ -31,6 +31,7 @@ import {
   CoinInfo,
   DownloadIcon,
   globalCss,
+  NOTIFICATION_ITEM,
 } from "@loopring-web/common-resources";
 import React from "react";
 
@@ -244,6 +245,7 @@ const TabPanelBtn = () => {
 const Template: Story<any> = withTranslation()(({ t }: any) => {
   const theme = useTheme();
   const activity: ACTIVITY = {
+    id: "unique1",
     type: ACTIVITY_TYPE.swap_mining,
     link: `2021/12/2021-12-23`,
     title: "🎄 Loopring Holiday Trading Giveaway",
@@ -254,6 +256,15 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
     pairs: ["LRC-ETH"],
     // config: [string, number, number, number, number];
     // giftIcon?: string;
+  };
+  const notify: NOTIFICATION_ITEM = {
+    id: "unique2", //localStore for visited should be unique
+    title: "路印中继系统升级",
+    description1: "Loopring Relayer System Upgrade Notice",
+    description2: "Period: 2021-12-23 12AM to 2021-12-31 12AM (UAT)",
+    link: `2021/12/2021-12-23`,
+    startDate: 1639526400000,
+    endDate: 1612915200000,
   };
 
   return (
@@ -293,11 +304,10 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
           </Grid>
           <Grid item xs={3}>
             <Box width={375} style={{ backgroundColor: "var(--color-pop-bg)" }}>
-              <NotificationListItem key={1} />
               <ListItemActivity {...{ ...activity }} />
               <ListItemActivity
                 {...{ ...activity }}
-                type={ACTIVITY_TYPE.trade_mining}
+                type={ACTIVITY_TYPE.amm_mining}
               />
               <ListItemActivity
                 {...{ ...activity }}
@@ -308,6 +318,8 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
                 type={ACTIVITY_TYPE.special}
                 giftIcon={""}
               />
+              <NotificationListItem key={1} {...{ ...notify }} />
+              <NotificationListItem key={1} {...{ ...notify }} />
             </Box>
           </Grid>
         </Grid>

@@ -257,7 +257,7 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
               paddingBottom={2}
               color={"var(--color-text-third)"}
             >
-              © 2017 Loopring Technology Limited. All rights reserved.
+              {t("labelCopyRight", { year: new Date().getFullYear() })}
             </Typography>
           </>
         )}
@@ -291,7 +291,7 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
                 color={"var(--color-text-third)"}
                 paddingLeft={2}
               >
-                © 2017 Loopring Technology Limited. All rights reserved.
+                {t("labelCopyRight", { year: new Date().getFullYear() })}
               </Typography>
               <Box>{medias}</Box>
             </Box>{" "}

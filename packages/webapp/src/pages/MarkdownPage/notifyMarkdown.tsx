@@ -2,32 +2,34 @@ import { Box, Grid } from "@mui/material";
 import { useRouteMatch } from "react-router-dom";
 import React from "react";
 import { EmptyDefault } from "@loopring-web/component-lib";
-import Template from "easy-template-string";
 import gfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 
 import { LoadingBlock } from "../LoadingPage";
 import { MarkdownStyle } from "./style";
+import { languageMap } from "@loopring-web/common-resources";
+import { useTranslation } from "react-i18next";
 
-const url_path = "https://static.loopring.io/static/documents/notifaction";
-export const MotifyMarkdownPage = () => {
-  let match: any = useRouteMatch("/document/:path");
-  const [path, setPath] = React.useState<null | string>(match?.params.path);
+const url_path = "https://static.loopring.io/documents/notification";
+export const NotifyMarkdownPage = () => {
+  let match: any = useRouteMatch("/notification/:path");
+  const { i18n } = useTranslation();
   const [input, setInput] = React.useState<string>("");
 
+  const [path, setPath] = React.useState<null | string>(match?.params.path);
   React.useEffect(() => {
     if (path) {
       try {
-        const _path = path.split("/").length > 1 ? path : `/${path}`;
+        const _path =
+          path.split("/").length > 1
+            ? path
+            : `${path.replace("{lng}", languageMap[i18n.language])}`;
 
         fetch(url_path + "/" + _path)
           .then((response) => response.text())
           .then((input) => {
-            // return formatInput(input);
-          })
-          .then((input) => {
-            // setInput(input);
+            setInput(input);
           })
           .catch(() => {
             setPath(null);
