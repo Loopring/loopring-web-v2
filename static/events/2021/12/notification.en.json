@@ -23,7 +23,7 @@
       ]
     },
     {
-      "type": "amm_mining",
+      "type": "swap_mining",
       "link": "2021/12/2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
