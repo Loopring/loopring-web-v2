@@ -1,17 +1,47 @@
 {
-  "activity": [
+  "activities": [
     {
-      "link": '2021/12/2021-12-23',
-      "startDate": 12345,
-      "endDate": 12314,
-      "type": 'trade_mining',
-      "pairs": [
-        "UNI-ETH",
-        "USDC-USDT",
-        "BKT-USDT"
+      type: 'trade_mining',
+      link: '2021/12/2021-12-23',
+      startDate: 1640020320000,
+      endDate: 1640040320000,
+      pairs: [
+        'LRC/ETH','LRC/USDC','ETH/USDC','ENS/ETH','RICE/USDT',  'MOVD/ETH',  'DEP/ETH'
       ],
-      "config": [
-        "#F7DEEB",
+      config: [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    },
+    {
+      type: 'trade_mining',
+      link: '2021/12/2021-12-23',
+      startDate: 1640020320000,
+      endDate: 1640040320000,
+      pairs: [
+        'LRC/ETH','LRC/USDC','ETH/USDC','ENS/ETH','RICE/USDT',  'MOVD/ETH',  'DEP/ETH'
+      ],
+      config: [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    },
+    {
+      "type": "orderbook_mining",
+      link: '2021/12/2021-12-23',
+      startDate: 1640020320000,
+      endDate: 1640040320000,
+      pairs: [
+        'ETH-USDT'
+      ],
+      config: [
+        "#D3F1F8",
         12,
         16,
         11,
@@ -19,15 +49,20 @@
       ]
     }
   ],
-  "notification": [
-    {
-      "title": "Loopring Relayer System Upgrade Notice",
-      "description": "xxxxxxxxxxxxxxxxx<strong style='color:red'>xxxxxxxxxxx</strong> ",
-      "startDate": 12312,
-      "endDate": 12312,
-      "link": 'www.google.com',
-      "isShow": true,
-      "type": "system Upgrade"
-    }
+  "notifications": [
+    { id: '2021-12-23-maintain',
+      title: 'Demo Relayer Upgrade Notification',
+      description1: 'Dex and App will be SUSPENDED from',
+      description2: '2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)',
+      link: 'maintainTemplate.{lng}.md',
+      startDate:1638316800000 ,
+      endDate: 1640822400000},
+    { id: '2021-12-23-maintain',
+      title: 'Demo2 Relayer Upgrade Notification',
+      description1: 'Dex and App will be SUSPENDED from',
+      description2: '2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)',
+      link: 'maintainTemplate.md',
+      startDate:1638316800000 ,
+      endDate: 1640822400000}
   ]
 }
