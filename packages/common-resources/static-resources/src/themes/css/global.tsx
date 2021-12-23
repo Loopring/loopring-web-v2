@@ -1,27 +1,26 @@
 import { css } from "@emotion/react";
-import reset from './reset';
+import reset from "./reset";
 // @ts-ignore
-import InterMedium from '../fonts/english/Inter-Medium.ttf';
+import InterMedium from "../fonts/english/Inter-Medium.ttf";
 // @ts-ignore
 // import GilroyMedium from '../fonts/english/DINCondensed.ttf';
-import DINCondensed from  '../fonts/english/DINCondensed/363123_0_0.ttf'
+import DINCondensed from "../fonts/english/DINCondensed/363123_0_0.ttf";
 
-import { ColorDarkDefault, ColorLightDefault,hexToRGB } from "./color-lib";
+import { ColorDarkDefault, ColorLightDefault, hexToRGB } from "./color-lib";
 
 export const fontDefault = {
-    h1: '3.8rem',
-    h2: '3.0rem',
-    h3: '2.4rem',
-    h4: '2.0rem',
-    h5: '1.6rem',
-    h6: '1.4rem',
-    body1: '1.4rem',
-    body2: '1.2rem'
-}
+  h1: "3.8rem",
+  h2: "3.0rem",
+  h3: "2.4rem",
+  h4: "2.0rem",
+  h5: "1.6rem",
+  h6: "1.4rem",
+  body1: "1.4rem",
+  body2: "1.2rem",
+};
 
-export const
-    refreshTime = 15;
-export const colorBase = ({theme}: any) => css`
+export const refreshTime = 15;
+export const colorBase = ({ theme }: any) => css`
   html {
     --color-primary: ${theme.colorBase.primary};
     --color-primary-hover: ${theme.colorBase.primaryHover};
@@ -56,14 +55,13 @@ export const colorBase = ({theme}: any) => css`
     --field-opacity: ${theme.colorBase.fieldOpacity};
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
-    --color-mask:  ${theme.colorBase.mask};
-    --color-table-header-bg : ${theme.colorBase.tableHeaderBg};
-    --color-star: ${theme.colorBase.star};  
+    --color-mask: ${theme.colorBase.mask};
+    --color-table-header-bg: ${theme.colorBase.tableHeaderBg};
+    --color-star: ${theme.colorBase.star};
     --color-logo: ${theme.colorBase.logo};
 
-
     /********************Case for shadow*******************/
-    --color-button-pot:  ${theme.colorBase.buttonPot};
+    --color-button-pot: ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
 
     /********************CSS shadow *******************/
@@ -74,19 +72,18 @@ export const colorBase = ({theme}: any) => css`
     --shadow3: ${theme.colorBase.shadow3};
 
     /********************Case for special*******************/
-    --provider-btn:${theme.colorBase.providerBtn};
+    --provider-btn: ${theme.colorBase.providerBtn};
     --provider-hover: ${theme.colorBase.providerBtnHover};
     --provider-agree: ${theme.colorBase.providerApprove};
-    --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
+    --vip-bg: ${hexToRGB(theme.colorBase.warning, "0.2")};
     --vip-text: ${theme.colorBase.warning};
-    --network-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
+    --network-bg: ${hexToRGB(theme.colorBase.warning, "0.2")};
     --network-text: ${theme.colorBase.warning};
     --auto-refresh-color: ${theme.colorBase.primary};
     --opacity: ${theme.colorBase.opacity};
   }
- 
 `;
-export const scrollbarDefault = ({theme}: any) => css`
+export const scrollbarDefault = ({ theme }: any) => css`
   html {
     scrollbar-face-color: ${theme.colorBase.box};
     scrollbar-base-color: ${theme.colorBase.box};
@@ -97,15 +94,16 @@ export const scrollbarDefault = ({theme}: any) => css`
     scrollbar-shadow-color: ${theme.colorBase.box};
     scrollbar-dark-shadow-color: ${theme.colorBase.box};
   }
-  .MuiPaper-elevation2{
-    box-shadow:var(--shadow)
+  .MuiPaper-elevation2 {
+    box-shadow: var(--shadow);
   }
-  .MuiPaper-elevation4{
-    box-shadow:var(--shadow-header)
+  .MuiPaper-elevation4 {
+    box-shadow: var(--shadow-header);
   }
-  
+
   //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
-    // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase.textHint};}
+  // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase
+    .textHint};}
   ::-webkit-scrollbar-track {
     background-color: ${theme.colorBase.box};
     border-radius: 3px;
@@ -130,14 +128,14 @@ export const scrollbarDefault = ({theme}: any) => css`
     background-color: ${theme.colorBase.box};
   }
 `;
-export const globalCss = ({theme}: any) => css`
-  ${colorBase({theme})}
-  ${scrollbarDefault({theme})};
+export const globalCss = ({ theme }: any) => css`
+  ${colorBase({ theme })}
+  ${scrollbarDefault({ theme })};
   ${reset}
   html, body {
     position: relative;
-    color:var( --color-text-primary);
-    background:var(--color-global-bg) ;
+    color: var(--color-text-primary);
+    background: var(--color-global-bg);
     // @font-face {
     //   font-family: 'Inter-Medium';
     //   src: url(${InterMedium}) format('truetype');
@@ -150,15 +148,15 @@ export const globalCss = ({theme}: any) => css`
     //   font-weight: normal;
     //   font-style: normal;
     // }
-    
+
     height: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei",
+      "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
     //font-family: Roboto;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
-
   }
 
   body {
@@ -168,7 +166,7 @@ export const globalCss = ({theme}: any) => css`
     z-index: 1;
 
     &:before {
-      content: '';
+      content: "";
       position: fixed;
       z-index: -1;
       top: 0;
@@ -203,9 +201,8 @@ export const globalCss = ({theme}: any) => css`
   }
 
   html {
-   
     overflow-y: scroll;
-    --auto-refresh-duration: ${refreshTime-1}s;
+    --auto-refresh-duration: ${refreshTime - 1}s;
     --durationInternal: calc(var(--auto-refresh-duration) * 2);
     --delay: calc(var(--auto-refresh-duration) / 2);
     --header-row-height: 44px;
@@ -254,22 +251,17 @@ export const globalCss = ({theme}: any) => css`
     --account-button-fixed-width: 88px;
     --account-button-fixed-height: 72px;
     --empty-size: 130px;
-    --account-modal-box-width:284px;
-    --walletconnect-width:150px;
-    --row-height:44px;
-    --row-header-height:44px;
-    --chart-height:396px;
-    --nft-height:396px;
+    --account-modal-box-width: 284px;
+    --walletconnect-width: 150px;
+    --row-height: 44px;
+    --row-header-height: 44px;
+    --chart-height: 396px;
+    --nft-height: 396px;
+
+    --notification-activited-heigth: 88px;
   }
 
-  //div {
-  //  -moz-user-select: none;
-  //  -webkit-user-select: none;
-  //  user-select: none;
-  //}
-
   select {
-
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -277,7 +269,6 @@ export const globalCss = ({theme}: any) => css`
     &::-ms-expand {
       display: none;
     }
-
   }
 
   //. draggable_panel {
@@ -295,5 +286,5 @@ export const globalCss = ({theme}: any) => css`
   .rdg.rdg {
     --background-color: inherit;
   }
-`
-export { ColorDarkDefault, ColorLightDefault }
+`;
+export { ColorDarkDefault, ColorLightDefault };
