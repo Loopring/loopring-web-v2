@@ -1,33 +1,14 @@
 {
-  "activity": [
-    {
-      "link": '2021/12/2021-12-23',
-      "startDate": 12345,
-      "endDate": 12314,
-      "type": 'trade_mining',
-      "pairs": [
-        "UNI-ETH",
-        "USDC-USDT",
-        "BKT-USDT"
-      ],
-      "config": [
-        "#F7DEEB",
-        12,
-        16,
-        11,
-        10
-      ]
-    }
-  ],
+  "activity": [],
   "notification": [
     {
-      "title": "Loopring Relayer System Upgrade Notice",
-      "description": "xxxxxxxxxxxxxxxxx<strong style='color:red'>xxxxxxxxxxx</strong> ",
-      "startDate": 12312,
-      "endDate": 12312,
-      "link": 'www.google.com',
-      "isShow": true,
-      "type": "system Upgrade"
+      "id": "2021-12-23-maintain",
+      "title": "Demo2 Relayer Upgrade Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+      "link": "maintainTemplate.md",
+      "startDate": 1638316800000,
+      "endDate": 1640822400000
     }
   ]
 }
