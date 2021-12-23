@@ -138,7 +138,7 @@ export default {
     lableTradeRaceRank: 'Rank',
     lableTradeRaceAddress: 'Address',
     lableTradeRaceTradeVolume: 'Trade Volume',
-    lableTradeRaceProfit: 'Profit',
+    lableTradeRaceAward: 'Award',
     labelTradeRaceProject: 'Project',
     labelTradeRacePair: 'Pair',
     labelTradeRaceReward: 'Reward',
