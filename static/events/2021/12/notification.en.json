@@ -4,7 +4,7 @@
       "type": "trade_mining",
       "link": "2021/12/2021-12-23",
       "startDate": 1640020320000,
-      "endDate": 1640040320000,
+      "endDate": 1640822400000,
       "pairs": [
         "LRC-ETH",
         "LRC-USDC",
@@ -26,7 +26,7 @@
       "type": "amm_mining",
       "link": "2021/12/2021-12-23",
       "startDate": 1640020320000,
-      "endDate": 1640040320000,
+      "endDate": 1640822400000,
       "pairs": [
         "AMM-LRC-ETH",
         "AMM-LRC-USDC",
@@ -48,7 +48,7 @@
       "type": "orderbook_mining",
       "link": "2021/12/2021-12-23",
       "startDate": 1640020320000,
-      "endDate": 1640040320000,
+      "endDate": 1640822400000,
       "pairs": [
         "ETH-USDT"
       ],
