@@ -3,7 +3,7 @@ import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
 import { GameRankInfo } from "@loopring-web/loopring-sdk";
 import { getTokenNameFromTokenId, volumeToCount } from "hooks/help";
-import { getValuePrecisionThousand, myLog } from "@loopring-web/common-resources";
+import { getValuePrecisionThousand } from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
@@ -30,7 +30,7 @@ export const useTradeRace = () => {
   const [currPairRankData, setCurrPairRankData] = React.useState<
     GameRankInfo[]
   >([]);
-  const [rewardToken, setRewardToken] = React.useState('')
+  const [rewardToken, setRewardToken] = React.useState("");
   const [currPairUserRank, setCurrPairUserRank] = React.useState<GameRankInfo>({
     address: "",
     volume: "",
@@ -53,24 +53,24 @@ export const useTradeRace = () => {
   // const now = Date.now();
   const getAmmGameRank = React.useCallback(async (market: string) => {
     if (LoopringAPI && LoopringAPI.ammpoolAPI) {
-      const [coinBase, coinQuote] = market.split("-");
-      const { userRankList, totalRewards } = await LoopringAPI.ammpoolAPI.getAmmPoolGameRank({
-        ammPoolMarket: market,
-      });
-      const profitToken = getTokenNameFromTokenId(Number(totalRewards[0].tokenId))
+      const [, coinQuote] = market.split("-");
+      const { userRankList, totalRewards } =
+        await LoopringAPI.ammpoolAPI.getAmmPoolGameRank({
+          ammPoolMarket: market,
+        });
+      const profitToken = getTokenNameFromTokenId(
+        Number(totalRewards[0].tokenId)
+      );
       const formattedUserRankList = userRankList.map((o) => ({
         ...o,
         tradeVolume: getValuePrecisionThousand(
           volumeToCount(coinQuote, o.volume)
         ),
         profit: getValuePrecisionThousand(
-          volumeToCount(
-            profitToken,
-            o.rewards[0].volume
-          )
+          volumeToCount(profitToken, o.rewards[0].volume)
         ),
       }));
-      setRewardToken(profitToken)
+      setRewardToken(profitToken);
       setCurrPairRankData(formattedUserRankList);
     }
   }, []);
