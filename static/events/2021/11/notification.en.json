@@ -1,8 +1,8 @@
 {
-  "activity": [],
-  "notification": [
+  "activities": [],
+  "notifications": [
     {
-      "id": "2021-12-23-maintain",
+      "id": "2021-11-23-maintain",
       "title": "Demo2 Relayer Upgrade Notification",
       "description1": "Dex and App will be SUSPENDED from",
       "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
