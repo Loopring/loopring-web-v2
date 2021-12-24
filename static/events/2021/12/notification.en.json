@@ -1,10 +1,13 @@
 {
   "activities": [
     {
-      "type": "trade_mining",
-      "link": "2021/12/2021-12-23",
+      "type": "amm_mining",
+      "link": "2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
+      "title": "Demo amm_mining Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
         "LRC-ETH",
         "LRC-USDC",
@@ -24,9 +27,12 @@
     },
     {
       "type": "swap_mining",
-      "link": "2021/12/2021-12-23",
+      "link": "2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
+      "title": "Demo swap_mining Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
         "AMM-LRC-ETH",
         "AMM-LRC-USDC",
@@ -46,9 +52,12 @@
     },
     {
       "type": "orderbook_mining",
-      "link": "2021/12/2021-12-23",
+      "link": "2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
+      "title": "Demo orderbook_mining Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
         "ETH-USDT"
       ],
