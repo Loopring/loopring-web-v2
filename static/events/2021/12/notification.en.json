@@ -5,6 +5,9 @@
       "link": "2021/12/2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
+      "title": "Demo Relayer Upgrade Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
         "LRC-ETH",
         "LRC-USDC",
@@ -27,6 +30,9 @@
       "link": "2021/12/2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
+      "title": "Demo Relayer Upgrade Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
         "AMM-LRC-ETH",
         "AMM-LRC-USDC",
@@ -49,6 +55,9 @@
       "link": "2021/12/2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
+      "title": "Demo Relayer Upgrade Notification",
+      "description1": "Dex and App will be SUSPENDED from",
+      "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
         "ETH-USDT"
       ],
