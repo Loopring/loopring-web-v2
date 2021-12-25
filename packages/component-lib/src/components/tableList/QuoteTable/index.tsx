@@ -165,8 +165,9 @@ const getColumnMode = (
             &nbsp;
             {activityInProgressRules &&
               activityInProgressRules[pair] &&
-              activityInProgressRules[pair].ruleType.map((ruleType) => (
+              activityInProgressRules[pair].ruleType.map((ruleType, index) => (
                 <Box
+                  key={ruleType.toString() + index}
                   style={{ cursor: "pointer", paddingTop: 4 }}
                   onClick={(event) => {
                     event.stopPropagation();

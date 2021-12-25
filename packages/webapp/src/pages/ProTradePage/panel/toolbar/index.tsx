@@ -397,8 +397,9 @@ export const Toolbar = withTranslation("common")(
           </PopoverPure>
           {activityInProgressRules &&
             activityInProgressRules[market] &&
-            activityInProgressRules[market].ruleType.map((ruleType) => (
+            activityInProgressRules[market].ruleType.map((ruleType, index) => (
               <Box
+                key={ruleType.toString() + index}
                 style={{ cursor: "pointer", paddingTop: 4 }}
                 onClick={(event) => {
                   event.stopPropagation();

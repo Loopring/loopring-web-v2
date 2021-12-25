@@ -23,7 +23,7 @@ const cssBackground = ({
   const fillColor = theme.colorBase.textDisable;
   const opacity = 0.2;
   switch (type) {
-    case ACTIVITY_TYPE.ORDERBOOK_MINING:
+    case ACTIVITY_TYPE.AMM_MINING:
       color = theme.colorBase.warning;
       svg =
         encodeURI(`<svg width="88" height="88" viewBox="0 0 88 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
@@ -35,14 +35,14 @@ const cssBackground = ({
 </g>
 </svg>`);
       break;
-    case ACTIVITY_TYPE.AMM_MINING:
+    case ACTIVITY_TYPE.SWAP_VOLUME_RANKING:
       color = theme.colorBase.success;
       svg =
         encodeURI(`<svg width="80" height="88" viewBox="0 0 80 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
 <path opacity="${opacity}" d="M17.6 88L4.78625e-07 70.4L17.6 52.8L17.6 66L61.6 66L61.6 48.4L70.4 48.4L70.4 70.4C70.4 72.8301 68.43 74.8 66 74.8L17.6 74.8L17.6 88ZM17.6 39.6L8.8 39.6L8.8 17.6C8.8 15.1699 10.7699 13.2 13.2 13.2L61.6 13.2L61.6 -4.18797e-07L79.2 17.6L61.6 35.2L61.6 22L17.6 22L17.6 39.6Z" />
 </svg>`);
       break;
-    case ACTIVITY_TYPE.SWAP_VOLUME_RANKING:
+    case ACTIVITY_TYPE.ORDERBOOK_MINING:
       color = theme.colorBase.error;
       svg =
         encodeURI(`<svg width="87" height="88" viewBox="0 0 87 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
@@ -61,7 +61,6 @@ const cssBackground = ({
       color = theme.colorBase.box;
       svg = "";
   }
-
   return css`
     &,
     &:hover {

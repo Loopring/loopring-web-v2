@@ -68,7 +68,12 @@ export const useTradeRace = () => {
               }
             })
             .then((input: EventData) => {
-              let eventData = input; //input[searchParams.get("type") as string];
+              let eventData;
+              if (searchParams.get("type")) {
+                eventData = input[searchParams.get("type") as string];
+              } else {
+                eventData = input;
+              }
               if (
                 eventData &&
                 activityDateMap[eventData.duration.startDate] &&
