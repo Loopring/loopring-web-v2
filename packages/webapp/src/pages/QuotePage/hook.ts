@@ -172,7 +172,15 @@ export function useTickList<C extends { [key: string]: string }>() {
 
       setRecommendations(_recommendationsWithPrecision);
     },
-    [tickList]
+    [
+      coinMap,
+      forex,
+      getRecommendPairs,
+      marketArray,
+      marketMap,
+      tokenMap,
+      tokenPrices,
+    ]
   );
 
   React.useEffect(() => {
@@ -238,7 +246,7 @@ export function useQuote<C extends { [key: string]: string }>() {
 
   const socketSendTicker = React.useCallback(() => {
     sendSocketTopic({ [WsTopicType.ticker]: marketArray });
-  }, []);
+  }, [marketArray, sendSocketTopic]);
 
   return {
     tickList,

@@ -3,6 +3,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
+  AmmRankIcon,
   EmptyValueTag,
   FloatTag,
   getValuePrecisionThousand,
@@ -10,13 +11,14 @@ import {
   StarHollowIcon,
   StarSolidIcon,
   TrophyIcon,
-  CURRENT_EVENT_DATE,
 } from "@loopring-web/common-resources";
 import { Column, Table } from "../../basic-lib";
 import { TablePaddingX } from "../../styled";
 import { useSettings } from "@loopring-web/component-lib/src/stores";
 import { useDispatch } from "react-redux";
 import { Currency } from "@loopring-web/loopring-sdk";
+import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
+import React from "react";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -109,7 +111,10 @@ type IGetColumnModePros = {
 };
 
 const getColumnMode = (
-  props: IGetColumnModePros & { currency: Currency; tradeRaceList: string[] }
+  props: IGetColumnModePros & {
+    currency: Currency;
+    activityInProgressRules: ActivityRulesMap;
+  }
 ): Column<QuoteTableRawDataItem, unknown>[] => {
   const {
     t: { t },
@@ -119,7 +124,7 @@ const getColumnMode = (
     favoriteMarket,
     currency,
     isPro,
-    tradeRaceList,
+    activityInProgressRules,
   } = props;
   const isUSD = currency === Currency.usd;
   const basicRender = [
@@ -158,17 +163,56 @@ const getColumnMode = (
               </Typography>
             </Typography>
             &nbsp;
-            {tradeRaceList?.includes(pair) && (
+            {activityInProgressRules &&
+              activityInProgressRules[pair] &&
+              activityInProgressRules[pair].ruleType.map((ruleType) => (
+                <Box
+                  style={{ cursor: "pointer", paddingTop: 4 }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    const date = new Date(
+                      activityInProgressRules[pair].rangeFrom
+                    );
+                    const year = date.getFullYear();
+                    const month = (
+                      "0" + (new Date().getMonth() + 1).toString()
+                    ).slice(-2);
+                    const day = ("0" + new Date().getDate().toString()).slice(
+                      -2
+                    );
+                    const current_event_date = `${year}-${month}-${day}`;
+
+                    history.push(
+                      `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                    );
+                  }}
+                >
+                  <TrophyIcon />
+                </Box>
+              ))}
+            {activityInProgressRules && activityInProgressRules[`AMM-${pair}`] && (
               <Box
                 style={{ cursor: "pointer", paddingTop: 4 }}
                 onClick={(event) => {
                   event.stopPropagation();
+                  const date = new Date(
+                    activityInProgressRules[`AMM-${pair}`].rangeFrom
+                  );
+                  const year = date.getFullYear();
+                  const month = (
+                    "0" + (new Date().getMonth() + 1).toString()
+                  ).slice(-2);
+                  const day = ("0" + new Date().getDate().toString()).slice(-2);
+                  const current_event_date = `${year}-${month}-${day}`;
+
                   history.push(
-                    `/race-event/${CURRENT_EVENT_DATE}?pair=${pair}`
+                    `/race-event/${current_event_date}?pair=${pair}&type=${
+                      activityInProgressRules[`AMM-${pair}`].ruleType[0]
+                    }`
                   );
                 }}
               >
-                <TrophyIcon />
+                <AmmRankIcon />
               </Box>
             )}
           </Box>
@@ -363,7 +407,7 @@ export interface QuoteTableProps {
   currentheight?: number;
   showLoading?: boolean;
   isPro?: boolean;
-  tradeRaceList: string[];
+  activityInProgressRules: ActivityRulesMap;
   // generateColumns: ({
   //                       columnsRaw,
   //                       t,
@@ -392,7 +436,7 @@ export const QuoteTable = withTranslation("tables")(
       removeFavoriteMarket,
       showLoading,
       isPro = false,
-      tradeRaceList,
+      activityInProgressRules,
       ...rest
     }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
       let userSettings = useSettings();
@@ -424,7 +468,7 @@ export const QuoteTable = withTranslation("tables")(
           favoriteMarket,
           currency,
           isPro,
-          tradeRaceList,
+          activityInProgressRules,
         }),
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,

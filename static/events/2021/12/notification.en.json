@@ -1,11 +1,11 @@
 {
   "activities": [
     {
-      "type": "trade_mining",
-      "link": "2021/12/2021-12-23",
+      "type": "AMM_MINING",
+      "link": "2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
-      "title": "Demo Relayer Upgrade Notification",
+      "title": "Demo AMM_MINING Notification",
       "description1": "Dex and App will be SUSPENDED from",
       "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
@@ -26,11 +26,11 @@
       ]
     },
     {
-      "type": "swap_mining",
-      "link": "2021/12/2021-12-23",
+      "type": "SWAP_VOLUME_RANKING",
+      "link": "2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
-      "title": "Demo Relayer Upgrade Notification",
+      "title": "Demo SWAP_VOLUME_RANKING Notification",
       "description1": "Dex and App will be SUSPENDED from",
       "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
@@ -51,11 +51,11 @@
       ]
     },
     {
-      "type": "orderbook_mining",
-      "link": "2021/12/2021-12-23",
+      "type": "ORDERBOOK_MINING",
+      "link": "2021-12-23",
       "startDate": 1640020320000,
       "endDate": 1640822400000,
-      "title": "Demo Relayer Upgrade Notification",
+      "title": "Demo ORDERBOOK_MINING Notification",
       "description1": "Dex and App will be SUSPENDED from",
       "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
       "pairs": [
@@ -93,5 +93,102 @@
   "prev": {
     "endDate": 1640822400000,
     "prevMonth": 11
+  },
+  "SWAP_VOLUME_RANKING":{
+    "activities": [
+      {
+        "type": "AMM_MINING",
+        "link": "2021-12-23",
+        "startDate": 1640020320000,
+        "endDate": 1640822400000,
+        "title": "Demo AMM_MINING Notification",
+        "description1": "Dex and App will be SUSPENDED from",
+        "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+        "pairs": [
+          "LRC-ETH",
+          "LRC-USDC",
+          "ETH-USDC",
+          "ENS-ETH",
+          "RICE-USDT",
+          "MOVD-ETH",
+          "DEP-ETH"
+        ],
+        "config": [
+          "#D3F1F8",
+          12,
+          16,
+          11,
+          10
+        ]
+      },
+      {
+        "type": "SWAP_VOLUME_RANKING",
+        "link": "2021-12-23",
+        "startDate": 1640020320000,
+        "endDate": 1640822400000,
+        "title": "Demo SWAP_VOLUME_RANKING Notification",
+        "description1": "Dex and App will be SUSPENDED from",
+        "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+        "pairs": [
+          "AMM-LRC-ETH",
+          "AMM-LRC-USDC",
+          "AMM-ETH-USDC",
+          "AMM-ENS-ETH",
+          "AMM-RICE-USDT",
+          "AMM-MOVD-ETH",
+          "AMM-DEP-ETH"
+        ],
+        "config": [
+          "#D3F1F8",
+          12,
+          16,
+          11,
+          10
+        ]
+      },
+      {
+        "type": "ORDERBOOK_MINING",
+        "link": "2021-12-23",
+        "startDate": 1640020320000,
+        "endDate": 1640822400000,
+        "title": "Demo ORDERBOOK_MINING Notification",
+        "description1": "Dex and App will be SUSPENDED from",
+        "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+        "pairs": [
+          "ETH-USDT"
+        ],
+        "config": [
+          "#D3F1F8",
+          12,
+          16,
+          11,
+          10
+        ]
+      }
+    ],
+    "notifications": [
+      {
+        "id": "2021-12-23-maintain",
+        "title": "Demo Relayer Upgrade Notification",
+        "description1": "Dex and App will be SUSPENDED from",
+        "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+        "link": "maintainTemplate.{lng}.md",
+        "startDate": 1638316800000,
+        "endDate": 1640822400000
+      },
+      {
+        "id": "2021-12-23-maintain",
+        "title": "Demo2 Relayer Upgrade Notification",
+        "description1": "Dex and App will be SUSPENDED from",
+        "description2": "2021-12-15 00:00:00 to 2021-12-15 00:11:00 (UTC)",
+        "link": "maintainTemplate.md",
+        "startDate": 1638316800000,
+        "endDate": 1640822400000
+      }
+    ],
+    "prev": {
+      "endDate": 1640822400000,
+      "prevMonth": 11
+    }
   }
 }

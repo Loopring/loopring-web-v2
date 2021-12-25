@@ -357,7 +357,6 @@ export const AssetsTable = withTranslation("tables")(
         resultData = resultData.filter(
           (o) => o.token.type === TokenType.single
         );
-        // debugger
       }
       if (filter.searchValue) {
         resultData = resultData.filter((o) =>

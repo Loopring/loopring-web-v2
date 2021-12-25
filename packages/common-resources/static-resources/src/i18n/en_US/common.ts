@@ -465,6 +465,7 @@ export default {
   labelTradeRaceYourVolume: "Your trading volume",
   labelTradeRaceYourRanking: "Your ranking",
   labelTradeRaceGoTrading: "Go to trade",
+  labelTradeReadRule: "Read Rule",
   labelTradeRaceRewards: "Rewards",
   labelTradeRaceRules: "Activity Rules",
   labelTradeRaceStart: "Activity ends in:",

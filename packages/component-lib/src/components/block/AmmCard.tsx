@@ -13,6 +13,7 @@ import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import {
+  ACTIVITY_TYPE,
   AmmCardProps,
   AvatarCoinStyled,
   EmptyValueTag,
@@ -20,7 +21,6 @@ import {
   myLog,
   PriceTag,
   SoursURL,
-  CURRENT_EVENT_DATE,
 } from "@loopring-web/common-resources";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { PopoverPure } from "../basic-lib";
@@ -219,7 +219,6 @@ export const AmmCard = withTranslation("common", { withRef: true })(
             true,
             { isFait: true }
           );
-        // console.log({totalRewards, rewardTokenYuan}, rewardToken.simpleName, orderbookRewardDollar, ruleType)
         const isComing = moment(duration.from).unix() * 1000 > moment.now();
 
         const popLiquidityState = usePopupState({
@@ -238,11 +237,16 @@ export const AmmCard = withTranslation("common", { withRef: true })(
         const history = useHistory();
 
         const handleViewDetail = React.useCallback(() => {
-          // const isUs = language === 'en_US'
-          // const urlList = getMiningLinkList(isUs ? 'en' : 'cn')
-          // const url = urlList[pathname]
-          // window.open(url)
-          history.push(`/race-event/${CURRENT_EVENT_DATE}?pair=${pathname}`);
+          const date = new Date(duration.from);
+          const year = date.getFullYear();
+          const month = ("0" + (new Date().getMonth() + 1).toString()).slice(
+            -2
+          );
+          const day = ("0" + new Date().getDate().toString()).slice(-2);
+          const current_event_date = `${year}-${month}-${day}`;
+          history.push(
+            `/race-event/${current_event_date}?pair=${pathname}&type=${ACTIVITY_TYPE[ruleType]}`
+          );
         }, [history, pathname]);
 
         const handleMyRewardClick = React.useCallback(() => {

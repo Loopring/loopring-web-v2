@@ -1,31 +1,32 @@
-import { Container, ListItemAvatar, MenuItem, MenuProps, Typography } from '@mui/material';
+import {
+  Container,
+  ListItemAvatar,
+  MenuItem,
+  MenuProps,
+  Typography,
+} from "@mui/material";
 import { WithTranslation } from "react-i18next";
-import { bindHover, bindMenu, usePopupState } from "material-ui-popup-state/hooks";
-import { BasicHeaderItem, HeadMenuType, MenuItemLink, MenuItemProps } from './Interface'
+import {
+  bindHover,
+  bindMenu,
+  usePopupState,
+} from "material-ui-popup-state/hooks";
+import {
+  BasicHeaderItem,
+  HeadMenuType,
+  MenuItemLink,
+  MenuItemProps,
+} from "./Interface";
 import styled from "@emotion/styled";
 import clsx from "clsx";
-import { ammDisableList, DropDownIcon, orderDisableList } from '@loopring-web/common-resources';
-import Menu from 'material-ui-popup-state/HoverMenu';
+import {
+  ammDisableList,
+  DropDownIcon,
+  orderDisableList,
+} from "@loopring-web/common-resources";
+import Menu from "material-ui-popup-state/HoverMenu";
 import React, { ForwardedRef, RefAttributes } from "react";
-import { useHistory } from 'react-router-dom';
-// import Popover from 'material-ui-popup-state/HoverPopover';
-// background-color: ${theme.colorBase.primaryLight};
-
-
-// &:after {
-//     ${hr}
-// }
-// export const MenuTab = styled(Tab)`
-//   opacity: 1;
-//   height: var(--header-height);
-//   &.MuiTab-root.Mui-selected {
-//     //background-color: chocolate;
-//
-//     //color: var(--color-text-primary);
-//
-//
-//   }
-// ` as unknown as typeof Tab;
+import { useHistory } from "react-router-dom";
 export const HeaderMenu = styled(Container)`
   display: flex;
   justify-content: space-between;
@@ -45,7 +46,7 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
     flex-direction: column;
     justify-content: center;
     text-transform: capitalize;
-      // font-size: ${({theme}) => theme.fontDefault.h5};
+      // font-size: ${({ theme }) => theme.fontDefault.h5};
     box-shadow: inherit;
     height: var(--header-height);
     //color: var(--color-text-secondary);
@@ -109,27 +110,25 @@ const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
     background: var(--opacity);
 
     h5 {
-      color: var(--color-primary)
+      color: var(--color-primary);
     }
   }
 ` as typeof MenuItem;
 
-
 const StyledHeaderMenuSub = styled(Menu)<MenuProps>`
- 
   && {
     color: var(--color-text-third);
     ul {
-      ${({theme}) => theme.border.defaultFrame({c_key: 'var(--opacity)', d_R: 0.5})};
+      ${({ theme }) =>
+        theme.border.defaultFrame({ c_key: "var(--opacity)", d_R: 0.5 })};
       background: var(--color-pop-bg);
       padding: 0;
       //.layer-sub {
       //  height: var(--header-menu-list-height)
       //}
     }
-   
-
-  }` as typeof Menu;
+  }
+` as typeof Menu;
 const StyledTabBtn = styled(MenuItem)<MenuItemProps<any>>`
   &.Mui-selected, &.Mui-selected.Mui-focusVisible {
     background: inherit;
@@ -143,7 +142,7 @@ const StyledTabBtn = styled(MenuItem)<MenuItemProps<any>>`
     text-transform: capitalize;
     display: flex;
     height: 100%;
-    padding-left: ${({theme}) => theme.unit * 3 / 2}px;
+    padding-left: ${({ theme }) => (theme.unit * 3) / 2}px;
     padding-right: 0;
 
     svg {
@@ -159,98 +158,183 @@ const StyledTabBtn = styled(MenuItem)<MenuItemProps<any>>`
     }
 ` as typeof MenuItem;
 
-
 const checkEnable = ({
-                         allowTrade,
-                         id
-                     }: { id: string, allowTrade?: any }): boolean => {
-    if (allowTrade?.order?.enable === false && orderDisableList.includes(id)) {
-        return true
-    } else if (allowTrade?.joinAmm?.enable === false && ammDisableList.includes(id)) {
-        return true
-    } else {
-        return false
+  allowTrade,
+  id,
+}: {
+  id: string;
+  allowTrade?: any;
+}): boolean => {
+  if (allowTrade?.order?.enable === false && orderDisableList.includes(id)) {
+    return true;
+  } else if (
+    allowTrade?.joinAmm?.enable === false &&
+    ammDisableList.includes(id)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const HeadMenuItem = React.memo(
+  React.forwardRef(
+    <I extends BasicHeaderItem>(
+      {
+        className,
+        layer,
+        selected,
+        allowTrade,
+        handleListKeyDown,
+        children,
+        status,
+        router,
+        label,
+      }: MenuItemLink<I>,
+      ref: ForwardedRef<any>
+    ) => {
+      const history = useHistory();
+      return (
+        <StyledHeadMenuItem
+          selected={selected}
+          disabled={
+            checkEnable({ allowTrade, id: label.id }) || status === "disabled"
+          }
+          className={clsx([`layer-${layer}`, className])}
+          ref={ref}
+          onClick={
+            handleListKeyDown
+              ? handleListKeyDown
+              : () => {
+                  // history.push(router.path )
+                  history.push(router?.path ?? "");
+                }
+          }
+        >
+          {" "}
+          {children}
+        </StyledHeadMenuItem>
+      );
     }
-}
+  )
+) as <I extends BasicHeaderItem>(props: MenuItemLink<I>) => JSX.Element;
 
-export const HeadMenuItem = React.memo(React.forwardRef(<I extends BasicHeaderItem>({
-                                                                                        className,
-                                                                                        layer,
-                                                                                        selected,
-                                                                                        allowTrade,
-                                                                                        handleListKeyDown,
-                                                                                        children,
-                                                                                        status,
-                                                                                        router,
-                                                                                        label
-                                                                                    }: MenuItemLink<I>, ref: ForwardedRef<any>) => {
-    const history = useHistory();
-    return <StyledHeadMenuItem selected={selected}
-                               disabled={checkEnable({allowTrade, id: label.id}) || status === 'disabled'}
-                               className={clsx([`layer-${layer}`, className])} ref={ref}
-
-                               onClick={handleListKeyDown ? handleListKeyDown : () => {
-                                   // history.push(router.path )
-                                   history.push(router?.path ?? '')
-                               }}
-    >  {children}</StyledHeadMenuItem>;
-})) as <I extends BasicHeaderItem>(props: MenuItemLink<I>) => JSX.Element;
-
-
-export let Layer2Item: <I extends BasicHeaderItem>(props: (MenuItemProps<I> & WithTranslation)) => JSX.Element;
-Layer2Item = React.memo(<I extends BasicHeaderItem>({t, label}: MenuItemProps<I> & WithTranslation) => {
-    return <StyledLayer2Item className={'layer-sub'} key={label.id}>
+export let Layer2Item: <I extends BasicHeaderItem>(
+  props: MenuItemProps<I> & WithTranslation
+) => JSX.Element;
+Layer2Item = React.memo(
+  <I extends BasicHeaderItem>({
+    t,
+    label,
+  }: MenuItemProps<I> & WithTranslation) => {
+    return (
+      <StyledLayer2Item className={"layer-sub"} key={label.id}>
         {/*<Box className={'dot'} paddingTop={0}>&#x25CF;</Box>*/}
         {/*<Box display={"flex"} paddingRight={1.5} flexDirection={"column"} justifyContent={"space-around"}>*/}
-        <Typography lineHeight={'22px'} component={'h5'} variant={"body1"}
-                    color={'text.primary'}>{t(label.i18nKey)}</Typography>
-        <Typography lineHeight={'20px'} component={'p'} variant={'body2'}
-                    color={'inherit'}>{label?.description ? t(label.description) : ''}</Typography>
+        <Typography
+          lineHeight={"22px"}
+          component={"h5"}
+          variant={"body1"}
+          color={"text.primary"}
+        >
+          {t(label.i18nKey)}
+        </Typography>
+        <Typography
+          lineHeight={"20px"}
+          component={"p"}
+          variant={"body2"}
+          color={"inherit"}
+        >
+          {label?.description ? t(label.description) : ""}
+        </Typography>
         {/*</Box>*/}
-    </StyledLayer2Item>
-}) as <I extends BasicHeaderItem>(props: MenuItemProps<I> & WithTranslation) => JSX.Element;
+      </StyledLayer2Item>
+    );
+  }
+) as <I extends BasicHeaderItem>(
+  props: MenuItemProps<I> & WithTranslation
+) => JSX.Element;
 
-
-export const HeaderMenuSub = React.memo(React.forwardRef(<I extends BasicHeaderItem>({
-                                                                                         t,
-                                                                                         label,
-                                                                                         className,
-                                                                                         selected,
-                                                                                         allowTrade,
-                                                                                         status,
-                                                                                         renderList,
-                                                                                         layer = 0
-                                                                                     }: HeadMenuType<I> & WithTranslation, ref: ForwardedRef<any>) => {
-
-    const popupState = usePopupState({variant: 'popover', popupId: `popupId: 'tradeHeaderSubMenu'`});
-    return <>{checkEnable({allowTrade, id: label.id}) || status === 'disabled' ?
-        <StyledTabBtn disabled={true}
-                      selected={selected} key={label.id} className={className} ref={ref}>
-            <Typography component={'span'} variant={'body1'} paddingRight={1} color={'inherit'}>
+export const HeaderMenuSub = React.memo(
+  React.forwardRef(
+    <I extends BasicHeaderItem>(
+      {
+        t,
+        label,
+        className,
+        selected,
+        allowTrade,
+        status,
+        renderList,
+        layer = 0,
+      }: HeadMenuType<I> & WithTranslation,
+      ref: ForwardedRef<any>
+    ) => {
+      const popupState = usePopupState({
+        variant: "popover",
+        popupId: `popupId: 'tradeHeaderSubMenu'`,
+      });
+      return (
+        <>
+          {checkEnable({ allowTrade, id: label.id }) ||
+          status === "disabled" ? (
+            <StyledTabBtn
+              disabled={true}
+              selected={selected}
+              key={label.id}
+              className={className}
+              ref={ref}
+            >
+              <Typography
+                component={"span"}
+                variant={"body1"}
+                paddingRight={1}
+                color={"inherit"}
+              >
                 {t(label.i18nKey)}
-            </Typography>
-        </StyledTabBtn> : <>
-            <StyledTabBtn   {...bindHover(popupState)}
-                            selected={selected} key={label.id} className={className} ref={ref}>
-                <Typography component={'span'} variant={'body1'} paddingRight={1} color={'inherit'}>
-                    {t(label.i18nKey)}
-                </Typography>
-                <ListItemAvatar color={'inherit'} style={{display: 'inline-flex', alignItems: 'center'}}><DropDownIcon
-                    fontSize={'medium'}/></ListItemAvatar>
+              </Typography>
             </StyledTabBtn>
-            <StyledHeaderMenuSub key={`menu-${layer}-${label.id}`}
-                                 {...bindMenu(popupState)}
+          ) : (
+            <>
+              <StyledTabBtn
+                {...bindHover(popupState)}
+                selected={selected}
+                key={label.id}
+                className={className}
+                ref={ref}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"body1"}
+                  paddingRight={1}
+                  color={"inherit"}
+                >
+                  {t(label.i18nKey)}
+                </Typography>
+                <ListItemAvatar
+                  color={"inherit"}
+                  style={{ display: "inline-flex", alignItems: "center" }}
+                >
+                  <DropDownIcon fontSize={"medium"} />
+                </ListItemAvatar>
+              </StyledTabBtn>
+              <StyledHeaderMenuSub
+                key={`menu-${layer}-${label.id}`}
+                {...bindMenu(popupState)}
                 // getContentAnchorEl={null}
-                                 anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
-                                 transformOrigin={{vertical: 'top', horizontal: 'left'}}
-                                 className={`MuiPaper-elevation2 menu-${layer}-${label.id}`}>
-                {renderList && renderList({handleListKeyDown: popupState.close})}
-            </StyledHeaderMenuSub>
-        </>} </>
-})) as <I extends BasicHeaderItem> (props: HeadMenuType<I> & WithTranslation & RefAttributes<any>) => JSX.Element;
-
-
-
-
-
-
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+                className={`MuiPaper-elevation2 menu-${layer}-${label.id}`}
+              >
+                {renderList &&
+                  renderList({ handleListKeyDown: popupState.close })}
+              </StyledHeaderMenuSub>
+            </>
+          )}{" "}
+        </>
+      );
+    }
+  )
+) as <I extends BasicHeaderItem>(
+  props: HeadMenuType<I> & WithTranslation & RefAttributes<any>
+) => JSX.Element;
