@@ -30,7 +30,8 @@ export const NotificationPanel = ({
       flexDirection={"column"}
       maxHeight={600}
       overflow={"scroll"}
-      paddingY={1}
+      // paddingBottom={1}
+      paddingTop={1}
     >
       {notification.activities.length || notification.notifications.length ? (
         <>
@@ -49,13 +50,20 @@ export const NotificationPanel = ({
                 <ListItemActivity key={activity.id + index} {...activity} />
               ))}
           </Box>
-          <Divider />
-          <Box component={"section"} display={"flex"} flexDirection={"column"}>
-            {notification.notifications.length &&
-              notification.notifications.map((notify, index) => (
-                <NotificationListItem key={notify.id + index} {...notify} />
-              ))}
-          </Box>
+          {notification.notifications.length > 0 && (
+            <>
+              <Divider />
+              <Box
+                component={"section"}
+                display={"flex"}
+                flexDirection={"column"}
+              >
+                {notification.notifications.map((notify, index) => (
+                  <NotificationListItem key={notify.id + index} {...notify} />
+                ))}
+              </Box>
+            </>
+          )}
         </>
       ) : (
         <Box margin={2}>
