@@ -36,7 +36,7 @@ const BasicInfoPanel = ({
     handleChange,
     originData,
   } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t);
-  const { activityRules } = useAmmActivityMap();
+  const { activityInProgressRules } = useAmmActivityMap();
   // const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
   const { upColor } = useSettings();
   const { marketMap } = useTokenMap();
@@ -81,7 +81,7 @@ const BasicInfoPanel = ({
             ...rest,
             t,
             tradeFloat,
-            activityRules,
+            activityInProgressRules,
           }}
         ></TradeTitle>
         <ToggleButtonGroup

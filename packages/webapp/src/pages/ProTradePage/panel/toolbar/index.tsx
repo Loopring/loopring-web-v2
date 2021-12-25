@@ -93,7 +93,7 @@ export const Toolbar = withTranslation("common")(
     const { favoriteMarket, removeMarket, addMarket } = useFavoriteMarket();
     const { ammPoolBalances } = useToolbar();
     const { tickList } = useTickList();
-    const { activityRules } = useAmmActivityMap();
+    const { activityInProgressRules } = useAmmActivityMap();
 
     const [filteredData, setFilteredData] = React.useState<
       QuoteTableRawDataItem[]
@@ -381,7 +381,7 @@ export const Toolbar = withTranslation("common")(
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
                     removeFavoriteMarket={removeMarket}
-                    activityRules={activityRules}
+                    activityInProgressRules={activityInProgressRules}
                     onRowClick={(_: any, row: any) => {
                       handleOnMarketChange(
                         `${row.pair.coinA}-${row.pair.coinB}` as MarketType
@@ -395,34 +395,40 @@ export const Toolbar = withTranslation("common")(
               </Box>
             </ClickAwayListener>
           </PopoverPure>
-          {activityRules && activityRules[market] && (
+          {activityInProgressRules &&
+            activityInProgressRules[market] &&
+            activityInProgressRules[market].ruleType.map((ruleType) => (
+              <Box
+                style={{ cursor: "pointer", paddingTop: 4 }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const date = new Date(
+                    activityInProgressRules[market].rangeFrom
+                  );
+                  const year = date.getFullYear();
+                  const month = (
+                    "0" + (new Date().getMonth() + 1).toString()
+                  ).slice(-2);
+                  const day = ("0" + new Date().getDate().toString()).slice(-2);
+                  const current_event_date = `${year}-${month}-${day}`;
+
+                  history.push(
+                    `/race-event/${current_event_date}?pair=${market}&type=${ruleType}`
+                  );
+                }}
+              >
+                <TrophyIcon />
+              </Box>
+            ))}
+          {activityInProgressRules && activityInProgressRules[`AMM-${market}`] && (
             <Box
               marginLeft={1 / 2}
               style={{ cursor: "pointer", paddingTop: 4 }}
               onClick={(event) => {
                 event.stopPropagation();
-                const date = new Date(activityRules[market].rangeFrom);
-                const year = date.getFullYear();
-                const month = (
-                  "0" + (new Date().getMonth() + 1).toString()
-                ).slice(-2);
-                const day = ("0" + new Date().getDate().toString()).slice(-2);
-                const current_event_date = `${year}-${month}-${day}`;
-                history.push(
-                  `/race-event/${current_event_date}?pair=${market}`
+                const date = new Date(
+                  activityInProgressRules[`AMM-${market}`].rangeFrom
                 );
-              }}
-            >
-              <TrophyIcon style={{ marginBottom: 5 }} />
-            </Box>
-          )}
-          {activityRules && activityRules[`AMM-${market}`] && (
-            <Box
-              marginLeft={1 / 2}
-              style={{ cursor: "pointer", paddingTop: 4 }}
-              onClick={(event) => {
-                event.stopPropagation();
-                const date = new Date(activityRules[`AMM-${market}`].rangeFrom);
                 const year = date.getFullYear();
                 const month = (
                   "0" + (new Date().getMonth() + 1).toString()
@@ -430,7 +436,9 @@ export const Toolbar = withTranslation("common")(
                 const day = ("0" + new Date().getDate().toString()).slice(-2);
                 const current_event_date = `${year}-${month}-${day}`;
                 history.push(
-                  `/race-event/${current_event_date}?pair=${market}`
+                  `/race-event/${current_event_date}?pair=${market}&type=${
+                    activityInProgressRules[`AMM-${market}`].ruleType[0]
+                  }`
                 );
               }}
             >

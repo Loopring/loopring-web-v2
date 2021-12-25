@@ -51,7 +51,7 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
   const { favoriteMarket, removeMarket, addMarket } = useFavoriteMarket();
   const { t } = rest;
   const tableRef = React.useRef<HTMLDivElement>();
-  const { activityRules } = useAmmActivityMap();
+  const { activityInProgressRules } = useAmmActivityMap();
 
   const resetTableData = React.useCallback(
     (tableData) => {
@@ -403,7 +403,7 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
             currentheight={tableHeight}
             rowHeight={RowConfig.rowHeight}
             headerRowHeight={RowConfig.rowHeaderHeight}
-            activityRules={activityRules}
+            activityInProgressRules={activityInProgressRules}
             {...{ showLoading: tickList && !tickList.length, ...rest }}
           />
         </Box>

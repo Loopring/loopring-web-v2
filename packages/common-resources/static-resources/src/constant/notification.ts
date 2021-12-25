@@ -8,11 +8,12 @@ import { myLog } from "../utils";
  *   ORDERBOOK_MINING = "ORDERBOOK_MINING",
  * }
  */
+
 export enum ACTIVITY_TYPE {
-  amm_mining = "amm_mining",
-  swap_mining = "swap_mining",
-  orderbook_mining = "orderbook_mining",
-  special = "special",
+  AMM_MINING = "AMM_MINING",
+  SWAP_VOLUME_RANKING = "SWAP_VOLUME_RANKING",
+  ORDERBOOK_MINING = "ORDERBOOK_MINING",
+  SPECIAL = "SPECIAL",
 }
 
 export type NOTIFICATION_ITEM = {
@@ -40,13 +41,13 @@ export type NOTIFICATION = {
   };
 };
 export type PairType = {
-  amm_mining: {
+  AMM_MINING: {
     pairs: Array<MarketType | AMMMarketType>;
   };
-  swap_mining: {
+  SWAP_VOLUME_RANKING: {
     pairs: Array<MarketType | AMMMarketType>;
   };
-  orderbook_mining: {
+  ORDERBOOK_MINING: {
     pairs: Array<MarketType | AMMMarketType>;
   };
   special?: Array<{
@@ -112,13 +113,13 @@ export async function getNotification(
   };
   await buildNotification(month, notification);
   const pairs: PairType = {
-    [ACTIVITY_TYPE.orderbook_mining]: {
+    [ACTIVITY_TYPE.ORDERBOOK_MINING]: {
       pairs: [],
     },
-    [ACTIVITY_TYPE.swap_mining]: {
+    [ACTIVITY_TYPE.SWAP_VOLUME_RANKING]: {
       pairs: [],
     },
-    [ACTIVITY_TYPE.amm_mining]: {
+    [ACTIVITY_TYPE.AMM_MINING]: {
       pairs: [],
     },
     special: undefined,
@@ -127,7 +128,7 @@ export async function getNotification(
     try {
       if (item.endDate > date.getTime()) {
         prev.push(item);
-        if (item.type === ACTIVITY_TYPE.special) {
+        if (item.type === ACTIVITY_TYPE.SPECIAL) {
           pairs.special = [
             ...(pairs.special ?? []),
             {

@@ -124,7 +124,7 @@ export const CoinPairPanel = withTranslation("common")(
             true,
             { isFait: true, floor: false }
           ));
-    const { activityRules } = useAmmActivityMap();
+    const { activityInProgressRules } = useAmmActivityMap();
 
     return (
       <>
@@ -147,7 +147,7 @@ export const CoinPairPanel = withTranslation("common")(
                   ...pair,
                   tradeFloat,
                   isNew: false,
-                  activityRules,
+                  activityInProgressRules,
                 }}
               />
             </Box>

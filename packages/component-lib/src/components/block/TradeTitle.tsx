@@ -43,7 +43,7 @@ export const TradeTitle = <I extends object>({
     close: 0,
   },
   isNew,
-  activityRules,
+  activityInProgressRules,
 }: WithTranslation & {
   baseShow: string;
   quoteShow: string;
@@ -51,7 +51,7 @@ export const TradeTitle = <I extends object>({
   coinBInfo: CoinInfo<I>;
   tradeFloat: TradeFloat;
   isNew: boolean;
-  activityRules: ActivityRulesMap;
+  activityInProgressRules: ActivityRulesMap;
 }) => {
   const { coinJson } = useSettings();
   const history = useHistory();
@@ -202,54 +202,61 @@ export const TradeTitle = <I extends object>({
                 </Typography>
               </Typography>
 
-              {activityRules && activityRules[pair] && (
-                <Box
-                  style={{ cursor: "pointer", paddingTop: 4 }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    const date = new Date(activityRules[pair].rangeFrom);
-                    const year = date.getFullYear();
-                    const month = (
-                      "0" + (new Date().getMonth() + 1).toString()
-                    ).slice(-2);
-                    const day = ("0" + new Date().getDate().toString()).slice(
-                      -2
-                    );
-                    const current_event_date = `${year}-${month}-${day}`;
+              {activityInProgressRules &&
+                activityInProgressRules[pair] &&
+                activityInProgressRules[pair].ruleType.map((ruleType) => (
+                  <Box
+                    style={{ cursor: "pointer", paddingTop: 4 }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      const date = new Date(
+                        activityInProgressRules[pair].rangeFrom
+                      );
+                      const year = date.getFullYear();
+                      const month = (
+                        "0" + (new Date().getMonth() + 1).toString()
+                      ).slice(-2);
+                      const day = ("0" + new Date().getDate().toString()).slice(
+                        -2
+                      );
+                      const current_event_date = `${year}-${month}-${day}`;
 
-                    history.push(
-                      `/race-event/${current_event_date}?pair=${pair}`
-                    );
-                  }}
-                >
-                  <TrophyIcon />
-                </Box>
-              )}
-              {activityRules && activityRules[`AMM-${pair}`] && (
-                <Box
-                  style={{ cursor: "pointer", paddingTop: 4 }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    const date = new Date(
-                      activityRules[`AMM-${pair}`].rangeFrom
-                    );
-                    const year = date.getFullYear();
-                    const month = (
-                      "0" + (new Date().getMonth() + 1).toString()
-                    ).slice(-2);
-                    const day = ("0" + new Date().getDate().toString()).slice(
-                      -2
-                    );
-                    const current_event_date = `${year}-${month}-${day}`;
+                      history.push(
+                        `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                      );
+                    }}
+                  >
+                    <TrophyIcon />
+                  </Box>
+                ))}
+              {activityInProgressRules &&
+                activityInProgressRules[`AMM-${pair}`] && (
+                  <Box
+                    style={{ cursor: "pointer", paddingTop: 4 }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      const date = new Date(
+                        activityInProgressRules[`AMM-${pair}`].rangeFrom
+                      );
+                      const year = date.getFullYear();
+                      const month = (
+                        "0" + (new Date().getMonth() + 1).toString()
+                      ).slice(-2);
+                      const day = ("0" + new Date().getDate().toString()).slice(
+                        -2
+                      );
+                      const current_event_date = `${year}-${month}-${day}`;
 
-                    history.push(
-                      `/race-event/${current_event_date}?pair=${pair}`
-                    );
-                  }}
-                >
-                  <AmmRankIcon />
-                </Box>
-              )}
+                      history.push(
+                        `/race-event/${current_event_date}?pair=${pair}&type=${
+                          activityInProgressRules[`AMM-${pair}`].ruleType[0]
+                        }`
+                      );
+                    }}
+                  >
+                    <AmmRankIcon />
+                  </Box>
+                )}
               {isNew ? <NewTagIcon /> : undefined}
             </Box>
           </Grid>

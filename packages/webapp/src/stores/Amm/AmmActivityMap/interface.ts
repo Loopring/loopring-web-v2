@@ -1,9 +1,20 @@
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { StateBase } from "@loopring-web/common-resources";
+import { AmmPoolInProgressActivityRule } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export type ActivityMap = LoopringMap<LoopringMap<AmmPoolActivityRule[]>>;
-export type ActivityRulesMap = LoopringMap<AmmPoolActivityRule>;
+export type ActivityRulesMap = LoopringMap<AmmPoolInProgressActivityRule>;
 export type AmmActivityMapStates = {
-  ammActivityMap: ActivityMap;
-  activityRules: ActivityRulesMap;
+  activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
+  activityDateMap: {
+    [key: number]: {
+      AMM_MINING?: LoopringMap<AmmPoolActivityRule> | undefined;
+      ORDERBOOK_MINING?: LoopringMap<AmmPoolActivityRule> | undefined;
+      SWAP_VOLUME_RANKING?: LoopringMap<AmmPoolActivityRule> | undefined;
+    };
+  };
+  ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>>;
+  groupByRuleType: LoopringMap<AmmPoolActivityRule[]>;
+  groupByActivityStatus: LoopringMap<AmmPoolActivityRule[]>;
+  groupByRuleTypeAndStatus: LoopringMap<LoopringMap<AmmPoolActivityRule[]>>;
 } & StateBase;

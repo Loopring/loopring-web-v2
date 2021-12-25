@@ -1064,3 +1064,11 @@ export const SpeakerIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+
+export const GoTopIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon {...props} width="24" height="24" fill="none">
+      <path d="M4 11L12 1L20 11L15 11C15 16.523 15 20.968 15 20.968L9 20.968C9 20.968 9 14.458 9 11L4 11Z" />
+    </SvgIcon>
+  );
+};

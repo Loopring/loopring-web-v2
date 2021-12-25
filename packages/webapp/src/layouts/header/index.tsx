@@ -59,7 +59,7 @@ const Header = withTranslation("common")(
               }
             ></HeaderUI>
           )}
-          <Toolbar />
+          <Toolbar id="back-to-top-anchor" />
           {/* <BottomRule isShow={!confirmation?.confirmed} */}
           <BottomRule
             isShow={false}

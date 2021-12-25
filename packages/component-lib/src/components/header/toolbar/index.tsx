@@ -6,11 +6,7 @@ import {
   SettingIcon,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
-import {
-  bindHover,
-  bindTrigger,
-  usePopupState,
-} from "material-ui-popup-state/hooks";
+import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import { bindPopper } from "material-ui-popup-state/es";
 import { PopoverPure } from "../../basic-lib";
 import { SettingPanel } from "../../block/SettingPanel";

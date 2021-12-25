@@ -23,7 +23,7 @@ const cssBackground = ({
   const fillColor = theme.colorBase.textDisable;
   const opacity = 0.2;
   switch (type) {
-    case ACTIVITY_TYPE.orderbook_mining:
+    case ACTIVITY_TYPE.ORDERBOOK_MINING:
       color = theme.colorBase.warning;
       svg =
         encodeURI(`<svg width="88" height="88" viewBox="0 0 88 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
@@ -35,21 +35,21 @@ const cssBackground = ({
 </g>
 </svg>`);
       break;
-    case ACTIVITY_TYPE.amm_mining:
+    case ACTIVITY_TYPE.AMM_MINING:
       color = theme.colorBase.success;
       svg =
         encodeURI(`<svg width="80" height="88" viewBox="0 0 80 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
 <path opacity="${opacity}" d="M17.6 88L4.78625e-07 70.4L17.6 52.8L17.6 66L61.6 66L61.6 48.4L70.4 48.4L70.4 70.4C70.4 72.8301 68.43 74.8 66 74.8L17.6 74.8L17.6 88ZM17.6 39.6L8.8 39.6L8.8 17.6C8.8 15.1699 10.7699 13.2 13.2 13.2L61.6 13.2L61.6 -4.18797e-07L79.2 17.6L61.6 35.2L61.6 22L17.6 22L17.6 39.6Z" />
 </svg>`);
       break;
-    case ACTIVITY_TYPE.swap_mining:
+    case ACTIVITY_TYPE.SWAP_VOLUME_RANKING:
       color = theme.colorBase.error;
       svg =
         encodeURI(`<svg width="87" height="88" viewBox="0 0 87 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
 <path opacity="${opacity}"  fill-rule="evenodd" clip-rule="evenodd" d="M9.66409 88H77.3127C82.6501 88 86.9767 84.0602 86.9767 79.2V17.6C86.9767 12.7399 82.6501 8.8 77.3127 8.8H67.6486V0H57.9845V8.8H28.9923V0H19.3282V8.8H9.66409C4.32676 8.8 0 12.7399 0 17.6V79.2C0 84.0602 4.32676 88 9.66409 88ZM9.66409 79.2V35.2H77.3127V79.2H9.66409ZM9.66409 26.4V17.6H77.3127V26.4H9.66409ZM28.2823 53.1683L28.2823 53.1683L35.1158 46.9458L41.9493 53.1683L46.0493 56.9017L51.5163 51.9236L44.7886 45.7975L66.3845 44.6081L65.0784 64.2731L58.3498 58.1461L52.8828 63.1242L46.0493 69.3467L39.2158 63.1241L35.1158 59.3908L24.1822 69.3471L17.3487 63.1242L28.2823 53.1683Z"/>
 </svg>`);
       break;
-    case ACTIVITY_TYPE.special:
+    case ACTIVITY_TYPE.SPECIAL:
       color = theme.colorBase.primary;
       svg =
         encodeURI(`<svg width="102" height="88" viewBox="0 0 102 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
@@ -111,7 +111,7 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
   return (
     <NotificationListItemStyled
       alignItems="flex-start"
-      onClick={() => history.push(`/notification/${props.link}`)}
+      onClick={() => history.replace(`/notification/${props.link}`)}
       className={`notification`}
     >
       <ListItemAvatar />
@@ -170,7 +170,9 @@ export const ListItemActivity = (props: ACTIVITY) => {
     return (
       <ListItemActivityStyle
         className={type}
-        onClick={() => history.push(`/race-event/${link}`)}
+        onClick={() =>
+          history.replace(`/race-event/${link}?type=${ACTIVITY_TYPE[type]}`)
+        }
         {...props}
       >
         <ListItemAvatar />

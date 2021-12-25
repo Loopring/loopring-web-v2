@@ -246,7 +246,7 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
   const theme = useTheme();
   const activity: ACTIVITY = {
     id: "unique1",
-    type: ACTIVITY_TYPE.swap_mining,
+    type: ACTIVITY_TYPE.SWAP_VOLUME_RANKING,
     link: `2021/12/2021-12-23`,
     title: "🎄 Loopring Holiday Trading Giveaway",
     description1: "Loopring Holiday Trading Giveaway,$600,000 in Prizes!\n",
@@ -307,15 +307,15 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
               <ListItemActivity {...{ ...activity }} />
               <ListItemActivity
                 {...{ ...activity }}
-                type={ACTIVITY_TYPE.amm_mining}
+                type={ACTIVITY_TYPE.AMM_MINING}
               />
               <ListItemActivity
                 {...{ ...activity }}
-                type={ACTIVITY_TYPE.orderbook_mining}
+                type={ACTIVITY_TYPE.ORDERBOOK_MINING}
               />
               <ListItemActivity
                 {...{ ...activity }}
-                type={ACTIVITY_TYPE.special}
+                type={ACTIVITY_TYPE.SPECIAL}
                 giftIcon={""}
               />
               <NotificationListItem key={1} {...{ ...notify }} />
