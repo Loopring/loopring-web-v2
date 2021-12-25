@@ -176,11 +176,9 @@ const getColumnMode = (
                     );
                     const year = date.getFullYear();
                     const month = (
-                      "0" + (new Date().getMonth() + 1).toString()
+                      "0" + (date.getMonth() + 1).toString()
                     ).slice(-2);
-                    const day = ("0" + new Date().getDate().toString()).slice(
-                      -2
-                    );
+                    const day = ("0" + date.getDate().toString()).slice(-2);
                     const current_event_date = `${year}-${month}-${day}`;
 
                     history.push(
@@ -200,10 +198,10 @@ const getColumnMode = (
                     activityInProgressRules[`AMM-${pair}`].rangeFrom
                   );
                   const year = date.getFullYear();
-                  const month = (
-                    "0" + (new Date().getMonth() + 1).toString()
-                  ).slice(-2);
-                  const day = ("0" + new Date().getDate().toString()).slice(-2);
+                  const month = ("0" + (date.getMonth() + 1).toString()).slice(
+                    -2
+                  );
+                  const day = ("0" + date.getDate().toString()).slice(-2);
                   const current_event_date = `${year}-${month}-${day}`;
 
                   history.push(

@@ -239,10 +239,8 @@ export const AmmCard = withTranslation("common", { withRef: true })(
         const handleViewDetail = React.useCallback(() => {
           const date = new Date(duration.from);
           const year = date.getFullYear();
-          const month = ("0" + (new Date().getMonth() + 1).toString()).slice(
-            -2
-          );
-          const day = ("0" + new Date().getDate().toString()).slice(-2);
+          const month = ("0" + (date.getMonth() + 1).toString()).slice(-2);
+          const day = ("0" + date.getDate().toString()).slice(-2);
           const current_event_date = `${year}-${month}-${day}`;
           history.push(
             `/race-event/${current_event_date}?pair=${pathname}&type=${ACTIVITY_TYPE[ruleType]}`

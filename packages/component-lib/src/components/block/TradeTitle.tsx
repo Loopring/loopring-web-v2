@@ -216,11 +216,9 @@ export const TradeTitle = <I extends object>({
                         );
                         const year = date.getFullYear();
                         const month = (
-                          "0" + (new Date().getMonth() + 1).toString()
+                          "0" + (date.getMonth() + 1).toString()
                         ).slice(-2);
-                        const day = (
-                          "0" + new Date().getDate().toString()
-                        ).slice(-2);
+                        const day = ("0" + date.getDate().toString()).slice(-2);
                         const current_event_date = `${year}-${month}-${day}`;
 
                         history.push(
@@ -243,11 +241,9 @@ export const TradeTitle = <I extends object>({
                       );
                       const year = date.getFullYear();
                       const month = (
-                        "0" + (new Date().getMonth() + 1).toString()
+                        "0" + (date.getMonth() + 1).toString()
                       ).slice(-2);
-                      const day = ("0" + new Date().getDate().toString()).slice(
-                        -2
-                      );
+                      const day = ("0" + date.getDate().toString()).slice(-2);
                       const current_event_date = `${year}-${month}-${day}`;
 
                       history.push(

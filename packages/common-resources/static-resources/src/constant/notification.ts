@@ -106,7 +106,7 @@ export async function getNotification(
 
   const date = new Date();
   const year = date.getFullYear();
-  const month = ("0" + (new Date().getMonth() + 1).toString()).slice(-2); //  01,02 ... 12
+  const month = ("0" + (date.getMonth() + 1).toString()).slice(-2); //  01,02 ... 12
   const notification: NOTIFICATION = {
     activities: [],
     notifications: [],
