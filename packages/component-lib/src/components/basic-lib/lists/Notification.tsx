@@ -90,10 +90,12 @@ const NotificationListItemStyled = styled(ListItem)<
 
   .MuiListItemText-root {
     margin-top: 0;
+    white-space: pre-line;
   }
   .description {
     text-overflow: ellipsis;
     word-break: break-all;
+    white-space: pre-line;
   }
   .MuiListItemAvatar-root {
     width: 1em;
@@ -123,12 +125,16 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         overflow={"hidden"}
       >
         <ListItemText
-          primary={title}
+          primary={() => (
+            <div dangerouslySetInnerHTML={{ __html: title ?? "" }} />
+          )}
           primaryTypographyProps={{ component: "h4", color: "textPrimary" }}
         />
         <ListItemText
           className="description description1"
-          primary={description1}
+          primary={() => (
+            <div dangerouslySetInnerHTML={{ __html: description1 ?? "" }} />
+          )}
           primaryTypographyProps={{
             component: "p",
 
@@ -138,7 +144,9 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         />
         <ListItemText
           className="description description2"
-          primary={description2}
+          primary={() => (
+            <div dangerouslySetInnerHTML={{ __html: description2 ?? "" }} />
+          )}
           primaryTypographyProps={{
             component: "p",
             variant: "body2",
