@@ -160,7 +160,7 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
             {linkListMap[key].map((item: any) => {
               return (
                 <LinkStyle
-                  /* href={item.linkHref} */ key={item.linkName}
+                  key={item.linkName}
                   onClick={() => handleLinkClick(item.linkHref)}
                 >
                   {t("label" + "key" + item.linkName)}
