@@ -80,6 +80,5 @@ export default {
   labelLaunchApp: "Launch App",
   labelLandingHeaderLayer2: "zkRollup Layer2",
   labelLandingHeaderWallet: "Smart Wallet",
-  labelCopyRight:
-    "© {{year}} Loopring Technology Limited. All rights reserved.",
+  labelCopyRight: "© 2017 Loopring Technology Limited. All rights reserved.",
 };
