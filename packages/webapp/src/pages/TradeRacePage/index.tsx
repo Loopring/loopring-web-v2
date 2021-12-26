@@ -1,24 +1,17 @@
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import {
-  Box,
-  createStyles,
-  Fab,
-  IconButton,
-  Link,
-  makeStyles,
-  Typography,
-  useScrollTrigger,
-  Zoom,
-} from "@mui/material";
+import { Box, Fab, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { ScrollTop, TradeRacePanel } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
-import { GoTopIcon, MarketType } from "@loopring-web/common-resources";
+import {
+  EmptyValueTag,
+  GoTopIcon,
+  MarketType,
+} from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 //@ts-ignore
 import cssStyle from "./snow.css";
-import moment from "moment";
 import { RuleType } from "@loopring-web/loopring-sdk";
 import { Rank } from "./rank";
 
@@ -68,15 +61,9 @@ export const TradeRacePage = withTranslation("common")(
       eventStatus,
       scrollToRule,
       currMarketPair,
+      duration,
       handleMarketPairChange,
     } = useTradeRace();
-
-    const startDate = eventData
-      ? moment.utc(eventData?.duration.startDate).format(`YYYY-MM-DD HH:mm:ss`)
-      : "";
-    const endDate = eventData
-      ? moment.utc(eventData?.duration.endDate).format(`YYYY-MM-DD HH:mm:ss`)
-      : "";
     /*remove: holiday only end*/
     const flakes = 160;
     const flake = React.useMemo(() => {
@@ -238,34 +225,36 @@ export const TradeRacePage = withTranslation("common")(
                 )}
               </Box>
             )}
-            <Typography marginBottom={2} paddingX={3} variant={"body1"}>
-              {eventData.duration.prev}
-              <Typography
-                component={"time"}
-                paddingX={1}
-                variant={"h5"}
-                dateTime={eventData.duration.startDate.toString()}
-              >
-                {startDate}
+            {duration && (
+              <Typography marginBottom={2} paddingX={3} variant={"body1"}>
+                {eventData?.duration?.prev}
+                <Typography
+                  component={"time"}
+                  paddingX={1}
+                  variant={"h5"}
+                  dateTime={duration.startDate}
+                >
+                  {duration.startDate}
+                </Typography>
+                <Typography component={"span"} variant={"h5"}>
+                  {eventData?.duration?.middle}
+                </Typography>
+                <Typography
+                  component={"time"}
+                  paddingX={1}
+                  variant={"h5"}
+                  dateTime={duration.endDate}
+                >
+                  {duration.endDate ? duration.endDate : EmptyValueTag}
+                </Typography>
+                {eventData?.duration?.end}
+                <Typography marginLeft={1} component={"span"}>
+                  <Link onClick={(e) => scrollToRule(e)}>
+                    {t("labelTradeReadRule")}
+                  </Link>
+                </Typography>
               </Typography>
-              <Typography component={"span"} variant={"h5"}>
-                {eventData.duration.to}
-              </Typography>
-              <Typography
-                component={"time"}
-                paddingX={1}
-                variant={"h5"}
-                dateTime={eventData.duration.endDate.toString()}
-              >
-                {endDate}
-              </Typography>
-              ({eventData.duration.timeZone})
-              <Typography marginLeft={1} component={"span"}>
-                <Link onClick={(e) => scrollToRule(e)}>
-                  {t("labelTradeReadRule")}
-                </Link>
-              </Typography>
-            </Typography>
+            )}
             {activityRule &&
               searchParams.get("type") &&
               [

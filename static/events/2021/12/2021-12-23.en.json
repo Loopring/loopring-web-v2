@@ -82,9 +82,8 @@
     "duration": {
       "prev": "Activity Period:",
       "startDate": 1640217600000,
-      "to": "to",
-      "endDate": 1640822400000,
-      "timeZone": "UTC"
+      "middle": "to",
+      "end": "UTC"
     },
     "rewards": [
       {

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
 import { setInterval } from "timers";
 import { useAmmActivityMap } from "../../stores/Amm/AmmActivityMap";
+import moment from "moment";
 
 const url_path = "https://static.loopring.io/events";
 
@@ -33,6 +34,13 @@ export const useTradeRace = () => {
   const [currMarketPair, setCurrMarketPair] = React.useState(
     () => searchParams.get("pair") ?? ""
   );
+  const [duration, setDuration] = React.useState<
+    | {
+        startDate?: string;
+        endDate?: string;
+      }
+    | undefined
+  >();
   const [countDown, setCountDown] = React.useState<{
     days: undefined | string;
     hours: undefined | string;
@@ -68,12 +76,13 @@ export const useTradeRace = () => {
               }
             })
             .then((input: EventData) => {
-              let eventData;
+              let eventData: EventData;
               if (searchParams.get("type")) {
                 eventData = input[searchParams.get("type") as string];
               } else {
                 eventData = input;
               }
+
               if (
                 eventData &&
                 activityDateMap[eventData.duration.startDate] &&
@@ -86,19 +95,47 @@ export const useTradeRace = () => {
                       searchParams.get("type") as string
                     ];
                   setActivityRule(activityRule);
-                  if (!currMarketPair && Reflect.ownKeys(activityRule).length) {
-                    setCurrMarketPair(
-                      Reflect.ownKeys(activityRule)[0] as string
-                    );
+                  if (Reflect.ownKeys(activityRule).length) {
+                    const rule: AmmPoolActivityRule =
+                      activityRule[Reflect.ownKeys(activityRule)[0]];
+                    setDuration(() => ({
+                      startDate: moment(rule.rangeFrom).format(
+                        `YYYY-MM-DD HH:mm:ss`
+                      ),
+                      endDate: moment(rule.rangeTo).format(
+                        `YYYY-MM-DD HH:mm:ss`
+                      ),
+                    }));
+                    if (rule.rangeFrom > Date.now()) {
+                      setEventStatus(EVENT_STATUS.EVENT_READY);
+                    } else if (rule.rangeTo > Date.now()) {
+                      setEventStatus(EVENT_STATUS.EVENT_START);
+                    } else {
+                      setEventStatus(EVENT_STATUS.EVENT_END);
+                    }
+
+                    if (!currMarketPair) {
+                      setCurrMarketPair(
+                        Reflect.ownKeys(activityRule)[0] as string
+                      );
+                    }
                   }
                 }
-              }
-              if (eventData && eventData.duration.startDate > Date.now()) {
-                setEventStatus(EVENT_STATUS.EVENT_READY);
-              } else if (eventData.duration.endDate > Date.now()) {
-                setEventStatus(EVENT_STATUS.EVENT_START);
-              } else {
-                setEventStatus(EVENT_STATUS.EVENT_END);
+              } else if (eventData) {
+                setDuration((duration) => ({
+                  ...duration,
+                  startDate: moment(eventData.duration.startDate).format(
+                    `YYYY-MM-DD HH:mm:ss`
+                  ),
+                  endDatet: eventData.duration.endDate
+                    ? moment(eventData.duration.endDate).format(
+                        `YYYY-MM-DD HH:mm:ss`
+                      )
+                    : undefined,
+                }));
+                if (eventData.duration.startDate > Date.now()) {
+                  setEventStatus(EVENT_STATUS.EVENT_READY);
+                }
               }
             })
             .catch((e) => {
@@ -124,9 +161,11 @@ export const useTradeRace = () => {
   };
 
   const calculateTimeLeft = React.useCallback(() => {
-    if (eventData && eventStatus) {
+    if (activityRule && Reflect.ownKeys(activityRule).length && eventStatus) {
+      const rule: AmmPoolActivityRule =
+        activityRule[Reflect.ownKeys(activityRule)[0]];
       if (eventStatus === EVENT_STATUS.EVENT_READY) {
-        let difference = +new Date(eventData.duration.startDate) - Date.now();
+        let difference = +new Date(rule.rangeFrom) - Date.now();
 
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
@@ -141,7 +180,7 @@ export const useTradeRace = () => {
           ).slice(-2),
         });
       } else if (eventStatus === EVENT_STATUS.EVENT_START) {
-        let difference = +new Date(eventData.duration.endDate) - Date.now();
+        let difference = +new Date(rule.rangeTo) - Date.now();
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
           hours: (
@@ -156,7 +195,7 @@ export const useTradeRace = () => {
         });
       }
     }
-  }, [eventData, eventStatus]);
+  }, [activityRule, eventStatus]);
   React.useEffect(() => {
     if (eventStatus) {
       if (nodeTimer.current !== -1) {
@@ -178,6 +217,7 @@ export const useTradeRace = () => {
     countDown,
     handleMarketPairChange,
     searchParams,
+    duration,
     scrollToRule,
     activityRule,
     eventStatus,
