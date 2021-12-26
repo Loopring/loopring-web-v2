@@ -180,7 +180,7 @@ export const ListItemActivity = (props: ACTIVITY) => {
         onClick={() =>
           history.replace(`/race-event/${link}?type=${ACTIVITY_TYPE[type]}`)
         }
-        {...props}
+        type={props.type}
       >
         <ListItemAvatar />
         <Box

@@ -75,7 +75,7 @@ export const TradeRacePage = withTranslation("common")(
       <>
         <ScrollTop>
           <Fab color="primary" size={"large"} aria-label="scroll back to top">
-            <GoTopIcon />
+            <GoTopIcon htmlColor={"var(--color-text-button)"} />
           </Fab>
         </ScrollTop>
         {eventData ? (
