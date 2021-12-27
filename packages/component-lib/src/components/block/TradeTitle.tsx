@@ -1,5 +1,6 @@
 import { WithTranslation } from "react-i18next";
 import {
+  AmmRankIcon,
   AvatarCoinStyled,
   CoinInfo,
   FloatTag,
@@ -8,7 +9,6 @@ import {
   SoursURL,
   TradeFloat,
   TrophyIcon,
-  CURRENT_EVENT_DATE,
 } from "@loopring-web/common-resources";
 import { Box, Grid } from "@mui/material";
 import { Avatar, Typography } from "@mui/material";
@@ -18,6 +18,7 @@ import { baseTitleCss, useSettings } from "../../index";
 import { NewTagIcon } from "../basic-lib/Tags";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
+import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
 
 type StyledProps = {
   custom: any;
@@ -42,7 +43,7 @@ export const TradeTitle = <I extends object>({
     close: 0,
   },
   isNew,
-  tradeRaceList,
+  activityInProgressRules,
 }: WithTranslation & {
   baseShow: string;
   quoteShow: string;
@@ -50,7 +51,7 @@ export const TradeTitle = <I extends object>({
   coinBInfo: CoinInfo<I>;
   tradeFloat: TradeFloat;
   isNew: boolean;
-  tradeRaceList: string[];
+  activityInProgressRules: ActivityRulesMap;
 }) => {
   const { coinJson } = useSettings();
   const history = useHistory();
@@ -200,19 +201,61 @@ export const TradeTitle = <I extends object>({
                   {quoteShow}
                 </Typography>
               </Typography>
-              {tradeRaceList?.includes(pair) && (
-                <Box
-                  style={{ cursor: "pointer", paddingTop: 4 }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    history.push(
-                      `/race-event/${CURRENT_EVENT_DATE}?pair=${pair}`
-                    );
-                  }}
-                >
-                  <TrophyIcon />
-                </Box>
-              )}
+
+              {activityInProgressRules &&
+                activityInProgressRules[pair] &&
+                activityInProgressRules[pair].ruleType.map(
+                  (ruleType, index) => (
+                    <Box
+                      key={ruleType.toString() + index}
+                      style={{ cursor: "pointer", paddingTop: 4 }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        const date = new Date(
+                          activityInProgressRules[pair].rangeFrom
+                        );
+                        const year = date.getFullYear();
+                        const month = (
+                          "0" + (date.getMonth() + 1).toString()
+                        ).slice(-2);
+                        const day = ("0" + date.getDate().toString()).slice(-2);
+                        const current_event_date = `${year}-${month}-${day}`;
+
+                        history.push(
+                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                        );
+                      }}
+                    >
+                      <TrophyIcon />
+                    </Box>
+                  )
+                )}
+              {activityInProgressRules &&
+                activityInProgressRules[`AMM-${pair}`] && (
+                  <Box
+                    style={{ cursor: "pointer", paddingTop: 4 }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      const date = new Date(
+                        activityInProgressRules[`AMM-${pair}`].rangeFrom
+                      );
+                      const year = date.getFullYear();
+                      const month = (
+                        "0" + (date.getMonth() + 1).toString()
+                      ).slice(-2);
+                      const day = ("0" + date.getDate().toString()).slice(-2);
+                      const current_event_date = `${year}-${month}-${day}`;
+
+                      history.push(
+                        `/race-event/${current_event_date}?pair=${pair}&type=${
+                          activityInProgressRules[`AMM-${pair}`].ruleType[0]
+                        }`
+                      );
+                    }}
+                  >
+                    <AmmRankIcon />
+                  </Box>
+                )}
               {isNew ? <NewTagIcon /> : undefined}
             </Box>
           </Grid>

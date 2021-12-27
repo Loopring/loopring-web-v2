@@ -3,11 +3,11 @@ export type EventData = {
   subTitle: string;
   local: "en-US";
   duration: {
-    prev: string;
+    prev?: string;
     startDate: number;
-    to: "to";
-    endDate: number;
-    timeZone: string;
+    middle?: "to";
+    endDate?: number;
+    end?: string;
   };
   rewards: {
     project: string;

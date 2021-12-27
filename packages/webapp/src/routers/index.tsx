@@ -21,7 +21,7 @@ import {
 import { ErrorPage } from "../pages/ErrorPage";
 import { Footer, useSettings } from "@loopring-web/component-lib";
 import { ReportPage } from "pages/ReportPage";
-import { MarkDonwPage } from "../pages/MarkdownPage";
+import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 
 const ContentWrap = ({
@@ -85,7 +85,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <WalletPage />
         </Route>
         <Route exact path="/loading">
-          <LoadingPage />{" "}
+          <LoadingPage />
         </Route>
         <Route exact path="/">
           {query && query.has("noheader") ? (
@@ -112,7 +112,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               flexDirection: "column",
             }}
           >
-            <ReportPage />{" "}
+            <ReportPage />
           </Container>
         </Route>
         <Route exact path="/document">
@@ -129,8 +129,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               flexDirection: "column",
             }}
           >
-            {" "}
-            <ErrorPage messageKey={"error404"} />{" "}
+            <ErrorPage messageKey={"error404"} />
           </Container>
         </Route>
         <Route exact path="/document/:path">
@@ -147,9 +146,27 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               flexDirection: "column",
             }}
           >
-            <MarkDonwPage />{" "}
+            <MarkdownPage />
           </Container>
         </Route>
+        <Route exact path="/notification/:path">
+          {query && query.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} isLandPage />
+          )}
+          <Container
+            maxWidth="lg"
+            style={{
+              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <NotifyMarkdownPage />
+          </Container>
+        </Route>
+
         <Route exact path="/race-event">
           {query && query.has("noheader") ? (
             <></>
@@ -190,12 +207,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path="/markets">
           <ContentWrap state={state}>
             <QuotePage />
-          </ContentWrap>{" "}
+          </ContentWrap>
         </Route>
         <Route exact path="/mining">
           <ContentWrap state={state}>
             <MiningPage />
-          </ContentWrap>{" "}
+          </ContentWrap>
         </Route>
         <Route exact path="/layer2">
           <ContentWrap state={state}>
@@ -208,7 +225,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </ContentWrap>
         </Route>
         <Route exact path="/liquidity">
-          {" "}
           <ContentWrap state={state}>
             <LiquidityPage />
           </ContentWrap>
@@ -226,7 +242,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path="/liquidity/amm-mining">
           <ContentWrap state={state}>
             <LiquidityPage />
-          </ContentWrap>{" "}
+          </ContentWrap>
         </Route>
         <Route exact path="/liquidity/my-liquidity">
           <ContentWrap state={state}>

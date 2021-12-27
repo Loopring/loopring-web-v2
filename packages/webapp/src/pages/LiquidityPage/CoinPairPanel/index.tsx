@@ -33,6 +33,7 @@ import store from "stores";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { useTicker } from "stores/ticker";
 import { makeTickView } from "hooks/help";
+import { useAmmActivityMap } from "../../../stores/Amm/AmmActivityMap";
 
 //******************** page code ************************//
 const BoxWrapperStyled = styled(Grid)`
@@ -123,6 +124,7 @@ export const CoinPairPanel = withTranslation("common")(
             true,
             { isFait: true, floor: false }
           ));
+    const { activityInProgressRules } = useAmmActivityMap();
 
     return (
       <>
@@ -145,6 +147,7 @@ export const CoinPairPanel = withTranslation("common")(
                   ...pair,
                   tradeFloat,
                   isNew: false,
+                  activityInProgressRules,
                 }}
               />
             </Box>

@@ -1,0 +1,33 @@
+{
+  "AMM_MINING": {
+    "eventTitle": "GORLI DEMO MINING",
+    "subTitle": "Test ENV",
+    "duration": {
+      "prev": "Activity Period:",
+      "startDate": 1630886400000,
+      "middle": "to",
+      "end": "UTC"
+    },
+    "rewards": [
+      {
+        "project": "Loopring",
+        "pair": "AMM-ETH-USDT",
+        "reward": {
+          "count": 0,
+          "token": "LRC"
+        }
+      },
+      {
+        "project": "Loopring",
+        "pair": "AMM-LRC-ETH",
+        "reward": {
+          "count": 0,
+          "token": "LRC"
+        }
+      }
+    ],
+    "rules": [
+      "rule 1 🏆 <span style=\"font-size:14px\"><tt>demo&nbsp;<span style=\"color:#1abc9c\">color </span><span style=\"color:null\"><strong>bolder&nbsp;</strong></span></tt></span>",
+      "rule 2 🏆 <span style=\"font-size:14px\"><tt>demo&nbsp;<span style=\"color:#1abc9c\">color </span><span style=\"color:null\"><strong>bolder&nbsp;</strong></span></tt></span>"
+    ]}
+}

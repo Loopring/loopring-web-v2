@@ -2,6 +2,7 @@ import React from "react";
 import { TFunction, withTranslation } from "react-i18next";
 import * as _ from "lodash";
 import {
+  AmmRankIcon,
   CoinInfo,
   DropDownIcon,
   EmptyValueTag,
@@ -11,7 +12,6 @@ import {
   PriceTag,
   SagaStatus,
   TrophyIcon,
-  CURRENT_EVENT_DATE,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -93,10 +93,8 @@ export const Toolbar = withTranslation("common")(
     const { favoriteMarket, removeMarket, addMarket } = useFavoriteMarket();
     const { ammPoolBalances } = useToolbar();
     const { tickList } = useTickList();
-    const { ammActivityMap } = useAmmActivityMap();
-    const tradeRaceList = (
-      ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []
-    ).map((o) => o.market);
+    const { activityInProgressRules } = useAmmActivityMap();
+
     const [filteredData, setFilteredData] = React.useState<
       QuoteTableRawDataItem[]
     >([]);
@@ -383,7 +381,7 @@ export const Toolbar = withTranslation("common")(
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
                     removeFavoriteMarket={removeMarket}
-                    tradeRaceList={tradeRaceList}
+                    activityInProgressRules={activityInProgressRules}
                     onRowClick={(_: any, row: any) => {
                       handleOnMarketChange(
                         `${row.pair.coinA}-${row.pair.coinB}` as MarketType
@@ -397,18 +395,55 @@ export const Toolbar = withTranslation("common")(
               </Box>
             </ClickAwayListener>
           </PopoverPure>
-          {tradeRaceList?.includes(market) && (
+          {activityInProgressRules &&
+            activityInProgressRules[market] &&
+            activityInProgressRules[market].ruleType.map((ruleType, index) => (
+              <Box
+                key={ruleType.toString() + index}
+                style={{ cursor: "pointer", paddingTop: 4 }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const date = new Date(
+                    activityInProgressRules[market].rangeFrom
+                  );
+                  const year = date.getFullYear();
+                  const month = ("0" + (date.getMonth() + 1).toString()).slice(
+                    -2
+                  );
+                  const day = ("0" + date.getDate().toString()).slice(-2);
+                  const current_event_date = `${year}-${month}-${day}`;
+
+                  history.push(
+                    `/race-event/${current_event_date}?pair=${market}&type=${ruleType}`
+                  );
+                }}
+              >
+                <TrophyIcon />
+              </Box>
+            ))}
+          {activityInProgressRules && activityInProgressRules[`AMM-${market}`] && (
             <Box
               marginLeft={1 / 2}
               style={{ cursor: "pointer", paddingTop: 4 }}
               onClick={(event) => {
                 event.stopPropagation();
+                const date = new Date(
+                  activityInProgressRules[`AMM-${market}`].rangeFrom
+                );
+                const year = date.getFullYear();
+                const month = ("0" + (date.getMonth() + 1).toString()).slice(
+                  -2
+                );
+                const day = ("0" + date.getDate().toString()).slice(-2);
+                const current_event_date = `${year}-${month}-${day}`;
                 history.push(
-                  `/race-event/${CURRENT_EVENT_DATE}?pair=${market}`
+                  `/race-event/${current_event_date}?pair=${market}&type=${
+                    activityInProgressRules[`AMM-${market}`].ruleType[0]
+                  }`
                 );
               }}
             >
-              <TrophyIcon style={{ marginBottom: 5 }} />
+              <AmmRankIcon style={{ marginBottom: 5 }} />
             </Box>
           )}
           <Grid

@@ -7,16 +7,18 @@ import { TFunction } from "i18next";
 import { withTranslation } from "react-i18next";
 import {
   FirstPlaceIcon,
+  RowConfig,
   SecondPlaceIcon,
   ThirdPlaceIcon,
 } from "@loopring-web/common-resources";
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<{ height: number | undefined | string }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
+    height: ${({ height }) => height}px;
     --template-columns: 150px 350px auto auto !important;
     height: auto;
 
@@ -41,10 +43,6 @@ const TableStyled = styled(Box)`
       text-align: left;
     }
   }
-  // .textAlignRight {
-  //     text-align: right;
-  // }
-
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as typeof Box;
@@ -120,7 +118,7 @@ export const TradeRaceTable = withTranslation("tables")(
     };
 
     return (
-      <TableStyled>
+      <TableStyled height={(rawData.length + 1) * RowConfig.rowHeight}>
         <Table
           className={"scrollable"}
           {...{ ...defaultArgs, ...props, rawData, showloading }}

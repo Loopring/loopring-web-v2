@@ -4,6 +4,8 @@ import {
   IconButton,
   ToggleButton,
   ToggleButtonGroup as MuToggleButtonGroup,
+  useScrollTrigger,
+  Zoom,
 } from "@mui/material";
 import {
   ButtonProps,
@@ -50,18 +52,47 @@ export const Button = styled(MuButton)<ButtonProps>`
   }
 ` as React.ComponentType<ButtonProps>;
 
-// export const MuiToggleButtonGroup = ({colorBase}: any) => {
-//     return {
-//         styleOverrides: {
-//             root: {
-//                 backgroundColor: colorBase.borderDark,
-//                 padding: pxToRem(4),
-//                 paddingRight: pxToRem(2),
-//
-//             }
-//         }
-//     }
-// }
+export function ScrollTop(props: {
+  window?: () => Window;
+  children: React.ReactElement;
+}) {
+  const { children, window } = props;
+
+  const trigger = useScrollTrigger({
+    target: window ? window() : undefined,
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const scrollToTop = (event: React.MouseEvent<HTMLDivElement>) => {
+    const anchor = (
+      (event.target as HTMLDivElement).ownerDocument || document
+    ).querySelector("#back-to-top-anchor");
+
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
+  return (
+    <Zoom in={trigger}>
+      <Box
+        position={"fixed"}
+        role="presentation"
+        bottom={24}
+        right={24}
+        zIndex={9999}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        onClick={scrollToTop}
+        title={"go top"}
+      >
+        {children}
+      </Box>
+    </Zoom>
+  );
+}
 
 const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
   ${({ theme, size }) =>
