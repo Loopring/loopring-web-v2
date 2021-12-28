@@ -452,7 +452,7 @@ export default {
     "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
   labelTransferOriginDesc:
-    "Please select the address source: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huoboi, Okex….)",
+    "Please select the address source: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex….)",
   labelTransferOriginBtnExchange: "Exchange",
   labelTransferOriginBtnWallet: "Wallet",
   labelTransferConfirm: "Confirm",
