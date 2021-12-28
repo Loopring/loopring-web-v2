@@ -18,7 +18,6 @@ import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useGetAssets } from "../AssetPanel/hook";
 import { useNFTWithdraw } from "../../../hooks/useractions/useNFTWithdraw";
-import { toBig } from "@loopring-web/loopring-sdk";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -58,31 +57,16 @@ export const NFTDetail = withTranslation("common")(
   } & WithTranslation) => {
     const { assetsRawData } = useGetAssets();
 
-    // const theme = useTheme();
     const [viewPage, setViewPage] = React.useState<number>(0);
     const handleChangeIndex = (index: number) => {
       setViewPage(index);
     };
-    const {
-      // nftTransferToastOpen,
-      // nftTransferAlertText,
-      // setNFTTransferToastOpen,
-      nftTransferProps,
-      // processRequestNFT,
-      // lastNFTRequest,
-    } = useNFTTransfer({
+    const { nftTransferProps } = useNFTTransfer({
       isLocalShow: viewPage === 1,
       doTransferDone: onDetailClose,
     });
     //TODO: finished feature with draw
-    const {
-      // nftTransferToastOpen,
-      // nftTransferAlertText,
-      // setNFTTransferToastOpen,
-      nftWithdrawProps,
-      // processRequestNFT,
-      // lastNFTRequest,
-    } = useNFTWithdraw({
+    const { nftWithdrawProps } = useNFTWithdraw({
       isLocalShow: viewPage === 2,
       doWithdrawDone: onDetailClose,
     });
@@ -132,14 +116,14 @@ export const NFTDetail = withTranslation("common")(
 
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
               <Typography color={"var(--color-text-third)"} width={160}>
-                {t("labelNFTID")}
+                {t("labelNFTID")}{" "}
               </Typography>
               <Typography
                 color={"var(--color-text-third)"}
                 maxWidth={300}
                 title={popItem?.nftId}
               >
-                {toBig(popItem?.nftId ?? "").toString()}
+                {popItem?.nftIdView ?? ""}
               </Typography>
             </Typography>
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
@@ -153,11 +137,7 @@ export const NFTDetail = withTranslation("common")(
                 {popItem.nftType}
               </Typography>
             </Typography>
-            {/*<Typography display={'inline-flex'} variant={'body1'} marginTop={2}>*/}
-            {/*    <Typography color={'var(--color-text-third)'} width={160}>{t('labelNFTTYPE')} </Typography>*/}
-            {/*    <Typography color={'var(--color-text-third)'}*/}
-            {/*                title={popItem?.nftType}>{popItem.nftType}</Typography>*/}
-            {/*</Typography>*/}
+
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
               <Typography color={"var(--color-text-third)"} width={160}>
                 {t("labelNFTContractAddress")}
@@ -364,13 +344,3 @@ export const NFTDetail = withTranslation("common")(
     );
   }
 );
-// onClick={() => showNFTTransfer({
-//     isShow: true,
-//     ...popItem
-// })}
-// {/*<SwipeableViews*/}
-// {/*    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}*/}
-// {/*    index={viewPage}*/}
-// {/*    width={400}*/}
-// {/*    onChangeIndex={handleChangeIndex}*/}
-// {/*>*/}

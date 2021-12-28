@@ -1,12 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  Avatar,
-  Box,
-  Card,
-  Grid,
-  Modal as MuiModal,
-  Typography,
-} from "@mui/material";
+import { Box, Card, Grid, Modal as MuiModal, Typography } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -34,17 +27,13 @@ const CardStyle = styled(Card)`
   position: relative;
 
   img {
-    //width: 100%;
     object-fit: contain;
   }
-
-  //margin: 50px;
 ` as typeof Card;
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const {
-      // showDeposit,
       popItem,
       onDetail,
       onDetailClose,
@@ -83,16 +72,8 @@ export const MyNFTPanel = withTranslation("common")(
             minWidth={1000}
             style={{ alignItems: "stretch" }}
           >
-            {/*<Box display={'flex'} width={"100%"} flexDirection={'column'}>*/}
-            {/*    <ModalCloseButton onClose={onClose} {...rest} />*/}
-            {/*    /!*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*!/*/}
-            {/*</Box>*/}
-            {/*<Box className={'trade-panel'}>*/}
-            {/*    {content}*/}
-            {/*</Box>*/}
             <Box display={"flex"} width={"100%"} flexDirection={"column"}>
               <ModalCloseButton onClose={onDetailClose} t={t} {...rest} />
-              {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
             </Box>
             <Box
               display={"flex"}
@@ -165,7 +146,6 @@ export const MyNFTPanel = withTranslation("common")(
                           title={item?.tokenId?.toString()}
                         >
                           {t("labelNFTTokenID")} #{item?.tokenId}
-                          {/*#{item.nftId.length > 10 ? getFormattedHash(item.nftId) : item.nftId}*/}
                         </Typography>
                       </Box>
 
@@ -185,17 +165,6 @@ export const MyNFTPanel = withTranslation("common")(
                         >
                           × {item.total}
                         </Typography>
-                        {/*<Typography variant={'h4'}*/}
-                        {/*            component={'div'}*/}
-                        {/*            height={24}  display={'inline-flex'}*/}
-                        {/*            alignItems={'center'}  color={'textPrimary'}*/}
-                        {/*            paddingRight={1}*/}
-                        {/*    // style={{background:'var(--color-box)',*/}
-                        {/*    //     borderRadius:'50%'}}*/}
-                        {/*> × </Typography>*/}
-                        {/*<Avatar sx={{background:'var(--field-opacity)'}} aria-label="recipe">*/}
-                        {/*    */}
-                        {/*</Avatar>*/}
                       </Box>
                     </Box>
                   </Box>
@@ -217,19 +186,7 @@ export const MyNFTPanel = withTranslation("common")(
             )}
           />
         )}
-
-        {/*<Typography variant={'h5'} component={'h3'} paddingLeft={2}>{t('labelNFTTitleMyNFT')}</Typography>*/}
-        {/*<Modal>*/}
       </StyledPaper>
     );
   }
 );
-
-//     <Link variant={'h5'}
-// onClick={() => window.open(`${tradeData.etherscanBaseUrl}tx/${tradeData.tokenAddress}`)}>
-// {getFormattedHash(tradeData.tokenAddress)}
-// </Link>
-// <Typography variant={'body1'} onClick={()=>onCopy(tradeData.nftId as string)}>
-// <Typography component={'span'} color={'text.secondary'} >ID: </Typography>
-// <Typography component={'span'} color={'text.secondary'}  title={tradeData.nftId}>{getFormattedHash(tradeData.nftId)} </Typography>
-// </Typography>

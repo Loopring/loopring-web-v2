@@ -64,6 +64,7 @@ export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo & {
     image: string;
     name: string;
+    nftIdView: string;
     description: string;
     nftBalance: number;
     etherscanBaseUrl: string;
