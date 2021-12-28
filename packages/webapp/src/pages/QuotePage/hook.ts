@@ -65,30 +65,14 @@ export function useTickList<C extends { [key: string]: string }>() {
                 tokenPrices[coinB] ??
                 0;
               const coinAPriceYuan = coinAPriceDollar * forex;
-              let _item = {
+              let _item: QuoteTableRawDataItem = {
                 ...ticker,
                 pair: {
                   coinA,
                   coinB,
                 },
-                coinAPriceDollar:
-                  getValuePrecisionThousand(
-                    coinAPriceDollar,
-                    undefined,
-                    undefined,
-                    undefined,
-                    true,
-                    { isFait: true }
-                  ) || 0,
-                coinAPriceYuan:
-                  getValuePrecisionThousand(
-                    coinAPriceYuan,
-                    undefined,
-                    undefined,
-                    undefined,
-                    true,
-                    { isFait: true }
-                  ) || 0,
+                coinAPriceDollar,
+                coinAPriceYuan,
               } as QuoteTableRawDataItem;
 
               if (marketPairs.findIndex((m) => m === key) !== -1) {

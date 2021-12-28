@@ -79,11 +79,22 @@ export type QuoteTableRawDataItem = {
   low: number;
   floatTag: keyof typeof FloatTag;
   volume: number;
+  changeDollar: number;
+  changeYuan: number;
+  closeDollar: number;
+  closeYuan: number;
+  coinAPriceDollar: number;
+  coinAPriceYuan: number;
+  precision?: number;
+  priceDollar?: number;
+  priceYuan?: number;
+  reward?: number;
+  rewardToken?: string;
+  timeUnit?: "24h";
 };
 
 const QuoteTableChangedCell: any = styled.span`
   color: ${({ theme: { colorBase }, upColor, value }: any) => {
-    // const {theme: {colorBase}, upColor} = props
     const isUpColorGreen = upColor === "green";
     return value > 0
       ? isUpColorGreen
@@ -223,9 +234,8 @@ const getColumnMode = (
       name: t("labelQuotaLastPrice"),
       sortable: true,
       formatter: ({ row }: any) => {
-        const value = row["close"];
-        const priceDollar = row["coinAPriceDollar"];
-        const priceYuan = row["coinAPriceYuan"];
+        const value = row.close;
+        console.log(row.pair, row.coinAPriceDollar);
         const precision = row["precision"] || 6;
         const price = Number.isFinite(value)
           ? getValuePrecisionThousand(
@@ -241,11 +251,11 @@ const getColumnMode = (
         const faitPrice = Number.isFinite(value)
           ? isUSD
             ? PriceTag.Dollar +
-              getValuePrecisionThousand(priceDollar, 2, 2, 2, true, {
+              getValuePrecisionThousand(row.coinAPriceDollar, 2, 2, 2, true, {
                 isFait: true,
               })
             : PriceTag.Yuan +
-              getValuePrecisionThousand(priceYuan, 2, 2, 2, true, {
+              getValuePrecisionThousand(row.coinAPriceYuan, 2, 2, 2, true, {
                 isFait: true,
               })
           : EmptyValueTag;
