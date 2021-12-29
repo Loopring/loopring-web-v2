@@ -67,7 +67,6 @@ const TableStyled = styled(Table)`
   }
 ` as any;
 
-// export type QuoteTableRawDataItem = (string | number | string[] | number[])[]
 export type QuoteTableRawDataItem = {
   pair: {
     coinA: string;
@@ -235,7 +234,6 @@ const getColumnMode = (
       sortable: true,
       formatter: ({ row }: any) => {
         const value = row.close;
-        console.log(row.pair, row.coinAPriceDollar);
         const precision = row["precision"] || 6;
         const price = Number.isFinite(value)
           ? getValuePrecisionThousand(
@@ -273,7 +271,6 @@ const getColumnMode = (
     {
       key: "change",
       name: t("labelQuota24hChange"),
-      // resizable: true,
       sortable: true,
       headerCellClass: "textAlignRight",
       formatter: ({ row }: any) => {
@@ -297,8 +294,6 @@ const getColumnMode = (
       key: "high",
       name: t("labelQuota24hHigh"),
       headerCellClass: "textAlignRight",
-      // resizable: true,
-      // sortable: true,
       formatter: ({ row, column }: any) => {
         const value = row[column.key];
         const precision = row["precision"] || 6;
@@ -371,7 +366,6 @@ const getColumnMode = (
     },
     {
       key: "actions",
-      // resizable: true,
       headerCellClass: "textAlignCenter",
       name: t("labelQuoteAction"),
       formatter: ({ row }: any) => {
@@ -417,11 +411,6 @@ export interface QuoteTableProps {
   showLoading?: boolean;
   isPro?: boolean;
   activityInProgressRules: ActivityRulesMap;
-  // generateColumns: ({
-  //                       columnsRaw,
-  //                       t,
-  //                       ...rest
-  //                   }: { columnsRaw: readonly Column<R,unknown>[], [ key: string ]: any } & WithT) => Array<RdgColumns<R>>;
 }
 
 export type VisibleDataItem = {
