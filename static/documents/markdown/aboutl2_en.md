@@ -3,7 +3,7 @@
 
 Loopring Wallet has two accounts: an Ethereum account (Layer1) and a Loopring account (Layer2). What is the difference between these two accounts?
 
-When you are using an Ethereum account (first floor), if the Ethereum network is congested, your experience will feel slow and the cost will be high. This is because you are interacting the Ethereum (Layer1) chain directly, waiting for Layer1 blocks and paying Layer1 gas-fees.
+When you are using an Ethereum account (first floor), if the Ethereum network is congested, your experience will feel slow and the cost will be high. This is because you are interacting with the Ethereum (Layer1) chain directly, waiting for Layer1 blocks and paying Layer1 gas-fees.
 
 With a Loopring Layer2 account, it is the equivalent of entering into the fast lane of Ethereum. After you create your wallet, you only need to click on the homepage to activate the Layer2 account for free. Now, you are enabled to use the extremely fast and cheap transfers and transactions of Layer2, which is completely unaffected by any network congestion.
 
