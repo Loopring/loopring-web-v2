@@ -5,4 +5,5 @@ export default {
   errorLoading: "Loading! Please wait for a while.",
   error404: "404! page can't be reached",
   errorMaintain: "System update! Please wait for a while.",
+  errorMessageNoNetwork: "Oops! Something went wrong at service.",
 };

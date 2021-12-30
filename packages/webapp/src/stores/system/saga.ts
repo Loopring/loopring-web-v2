@@ -123,7 +123,6 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
         ChainId.MAINNET === chainId
           ? `https://etherscan.io/`
           : `https://goerli.etherscan.io/`;
-      let relayStatus;
       let allowTrade;
       let exchangeInfo;
       let fiatPrices, gasPrice, forex;
@@ -142,10 +141,7 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
           dAppTrade: { enable: false },
           raw_data: { enable: false },
         };
-        // hack: for temple
-        if (window.location.hash !== "#/") {
-          window.location.replace(window.location.origin);
-        }
+        throw new CustomError(ErrorMap.NO_SDK);
       }
 
       // @ts-ignore
@@ -154,7 +150,7 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
       let { __timer__ } = store.getState().system;
       __timer__ = ((__timer__) => {
         if (__timer__ && __timer__ !== -1) {
-          clearInterval(__timer__);
+          clearInterval(__timer__ as NodeJS.Timeout);
         }
         return setInterval(async () => {
           if (LoopringAPI.exchangeAPI) {
