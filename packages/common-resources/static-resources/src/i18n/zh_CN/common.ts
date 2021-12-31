@@ -176,6 +176,7 @@ export default {
   labelPleaseInputWalletAddress: "请输入地址",
   labelEmptyDefault: "内容空空的～",
   labelUnlockAccount: "解锁账号",
+  labelLockWallet: "Lock Wallet",
   labelAssetsDistribution: "资产分布",
   labelTotalAssets: "总资产",
   labelTxnPageTitle: "充值提现",
@@ -514,4 +515,12 @@ export default {
   labelAddAsset: "Add Layer2 Assets",
   labelDepositVendor:
     " Make an order form third Loopring-parter, Once your order confirmed  by Loopring, it will be added to your balance within 2 minutes.",
+  labelLock: "Lock",
+  labelHebaoAddAsGuardian: "Add as a Guardian",
+  labelHebaoScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelHebaoGuardianList: "Guardian List",
+  labelAddProtector: "add Guardian",
+  labelUnknown: "unknown",
+  labelHebaoApprove: "Approve",
+  labelHebaoLogList: "List of Actions who I Guardian",
 };

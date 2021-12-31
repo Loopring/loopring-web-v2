@@ -177,6 +177,7 @@ export default {
   labelPleaseInputWalletAddress: "Please Input Address",
   labelEmptyDefault: "No data to display",
   labelUnlockAccount: "Unlock Account",
+  labelLockWallet: "Lock Wallet",
   labelAssetsDistribution: "Assets Distribution",
   labelTotalAssets: "Assets Trend",
   labelTxnPageTitle: "Deposit/Withdraw",
@@ -527,4 +528,12 @@ export default {
   labelAddAsset: "Add Layer2 Assets",
   labelDepositVendor:
     "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
+  labelLock: "Lock",
+  labelHebaoAddAsGuardian: "Add as a Guardian",
+  labelHebaoScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelHebaoGuardianList: "Guardian List",
+  labelAddProtector: "add Guardian",
+  labelUnknown: "unknown",
+  labelHebaoApprove: "Approve",
+  labelHebaoLogList: "List of Actions who I Guardian",
 };

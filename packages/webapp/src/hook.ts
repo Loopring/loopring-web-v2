@@ -29,7 +29,19 @@ import { useNotify } from "./stores/notify";
  */
 
 export function useInit() {
-  const [state, setState] = React.useState<keyof typeof SagaStatus>("PENDING");
+  const [, search] = window.location?.hash.split("?") ?? [];
+  const query = new URLSearchParams(search);
+  const [, pathname1] = window.location.hash.match(/#\/([\w\d\-]+)\??/) ?? [];
+  const isNoServer: boolean =
+    query.has("noheader") && ["notification", "document"].includes(pathname1);
+  const [state, setState] = React.useState<keyof typeof SagaStatus>(() => {
+    if (isNoServer) {
+      return SagaStatus.DONE;
+    } else {
+      return SagaStatus.PENDING;
+    }
+  });
+
   const { account, updateAccount, resetAccount } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
     useTokenMap();
@@ -78,8 +90,9 @@ export function useInit() {
                 ? account._chainId
                 : ChainId.MAINNET;
           }
-
-          updateSystem({ chainId: chainId as any });
+          if (!isNoServer) {
+            updateSystem({ chainId: chainId as any });
+          }
           return;
         }
       } catch (error) {
@@ -91,7 +104,9 @@ export function useInit() {
           account._chainId && account._chainId !== "unknown"
             ? account._chainId
             : ChainId.MAINNET;
-        updateSystem({ chainId });
+        if (!isNoServer) {
+          updateSystem({ chainId });
+        }
       }
     } else {
       if (account.accAddress === "" || account.connectName === "unknown") {
@@ -101,13 +116,15 @@ export function useInit() {
         account._chainId && account._chainId !== "unknown"
           ? account._chainId
           : ChainId.MAINNET;
-      updateSystem({ chainId });
+      if (!isNoServer) {
+        updateSystem({ chainId });
+      }
     }
   }, []);
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:
-        if (state !== SagaStatus.PENDING) {
+        if (!query.has("noheader") && state !== SagaStatus.PENDING) {
           setState(SagaStatus.PENDING);
         }
         break;
@@ -157,7 +174,6 @@ export function useInit() {
         break;
     }
   }, [ammMapStatus]);
-
   React.useEffect(() => {
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:
@@ -189,8 +205,6 @@ export function useInit() {
         console.log("ERROR", "get ticker error,ui");
         tickerStatusUnset();
         break;
-      case "PENDING":
-        break;
       case "DONE":
         tickerStatusUnset();
         break;
@@ -203,8 +217,6 @@ export function useInit() {
       case SagaStatus.ERROR:
         console.log("ERROR", "get ticker error,ui");
         amountStatusUnset();
-        break;
-      case SagaStatus.PENDING:
         break;
       case SagaStatus.DONE:
         amountStatusUnset();
@@ -219,8 +231,6 @@ export function useInit() {
         console.log("ERROR", "get userRewards");
         userRewardsUnset();
         break;
-      case SagaStatus.PENDING:
-        break;
       case SagaStatus.DONE:
         userRewardsUnset();
         break;
@@ -233,8 +243,6 @@ export function useInit() {
       case "ERROR":
         socketUnset();
         break;
-      case "PENDING":
-        break;
       case "DONE":
         socketUnset();
         break;
@@ -242,13 +250,10 @@ export function useInit() {
         break;
     }
   }, [socketStatus]);
-
   React.useEffect(() => {
     switch (notifyStatus) {
       case "ERROR":
         notifyStatusUnset();
-        break;
-      case "PENDING":
         break;
       case "DONE":
         notifyStatusUnset();
@@ -259,7 +264,6 @@ export function useInit() {
   }, [notifyStatus]);
 
   useAccountInit({ state });
-
   return {
     state,
   };

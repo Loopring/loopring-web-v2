@@ -1,26 +1,28 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Modal } from "@mui/material";
+import { useTheme } from "@emotion/react";
+import { Box } from "@mui/material";
 import {
   ModalBackButton,
   ModalCloseButton,
-  ModalWalletConnectProps,
+  ModalHebaoProps,
+  QRButtonStyle,
   SwipeableViewsStyled,
   SwitchPanelStyled,
 } from "../../../index";
-import { useTheme } from "@emotion/react";
-import { Box } from "@mui/material";
 
-export const ModalWalletConnect = withTranslation("common", { withRef: true })(
+export const ModalHebao = withTranslation("common", { withRef: true })(
   ({
-    // t,
     open,
     onClose,
     step,
     onBack,
-    panelList,
     style,
+    noClose,
+    onQRClick,
+    panelList,
     ...rest
-  }: ModalWalletConnectProps & WithTranslation) => {
+  }: ModalHebaoProps & WithTranslation) => {
     const theme = useTheme();
     const { w, h } = style ? style : { w: undefined, h: undefined };
 
@@ -39,9 +41,15 @@ export const ModalWalletConnect = withTranslation("common", { withRef: true })(
           }}
         >
           <Box display={"flex"} width={"100%"} flexDirection={"column"}>
-            <ModalCloseButton onClose={onClose} {...rest} />
+            {noClose ? <></> : <ModalCloseButton onClose={onClose} {...rest} />}
             {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
+            {onQRClick ? (
+              <QRButtonStyle onQRClick={onQRClick} {...rest} />
+            ) : (
+              <></>
+            )}
           </Box>
+
           <SwipeableViewsStyled
             animateTransitions={false}
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}
@@ -54,12 +62,10 @@ export const ModalWalletConnect = withTranslation("common", { withRef: true })(
             {panelList.map((panel, index) => {
               return (
                 <Box
-                  flexDirection={"column"}
                   flex={1}
                   display={"flex"}
-                  key={index}
-                  justifyContent={"center"}
                   alignItems={"stretch"}
+                  key={index}
                 >
                   {panel.view}
                 </Box>

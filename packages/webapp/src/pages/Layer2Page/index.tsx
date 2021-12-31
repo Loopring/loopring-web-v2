@@ -1,11 +1,7 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box, Typography } from "@mui/material";
-import {
-  Button,
-  SubMenu,
-  SubMenuList as BasicSubMenuList,
-} from "@loopring-web/component-lib";
+import { Button, SubMenu, SubMenuList } from "@loopring-web/component-lib";
 import { useTranslation, withTranslation } from "react-i18next";
 import {
   AccountStatus,
@@ -91,9 +87,7 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
     );
   }
 ) as typeof Button;
-const SubMenuList = withTranslation(["layout", "common"], { withRef: true })(
-  BasicSubMenuList
-);
+
 export const Layer2Page = () => {
   let match: any = useRouteMatch("/layer2/:item");
   const { account } = useAccount();
