@@ -1,142 +1,113 @@
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from "web3";
-import { walletServices } from "../walletServices";
-import { ErrorType } from "../command";
-import { ConnectProviders } from "@loopring-web/common-resources";
+import { walletServices } from '../walletServices';
+import { ErrorType } from '../command';
+import { ConnectProviders } from '@loopring-web/common-resources';
 
 // const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
 
 // myLog('---BRIDGE_URL:', BRIDGE_URL)
 
-const RPC_URLS: { [chainId: number]: string } = {
-  1: process.env.REACT_APP_RPC_URL_1 as string,
-  5: process.env.REACT_APP_RPC_URL_5 as string,
-};
+const RPC_URLS: { [ chainId: number ]: string } = {
+    1: process.env.REACT_APP_RPC_URL_1 as string,
+    5: process.env.REACT_APP_RPC_URL_5 as string
+}
 
-const POLLING_INTERVAL = 12000;
+const POLLING_INTERVAL = 12000
 
-export const WalletConnectProvide = async (
-  account?: string
-): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
-  try {
-    const BRIDGE_URL = await fetch("https://wcbridge.loopring.network/hello")
-      .then(({ status }) => {
-        return status === 200
-          ? process.env.REACT_APP_WALLET_CONNECT_BRIDGE
-          : "https://bridge.walletconnect.org";
-      })
-      .catch(() => {
-        return "https://bridge.walletconnect.org";
-      });
-    // const BRIDGE_URL = "https://bridge.walletconnect.org";
+export const WalletConnectProvide = async (account?: string): Promise<{ provider?: WalletConnectProvider, web3?: Web3, } | undefined> => {
+    try {
+        const BRIDGE_URL = await (fetch('https://wcbridge.loopring.network/hello').then(({status}) => {
+            return status === 200 ? process.env.REACT_APP_WALLET_CONNECT_BRIDGE : 'https://bridge.walletconnect.org'
+        }).catch(() => {
+            return 'https://bridge.walletconnect.org';
+        }))
 
-    const provider: WalletConnectProvider = new WalletConnectProvider({
-      rpc: RPC_URLS,
-      bridge: BRIDGE_URL,
-      pollingInterval: POLLING_INTERVAL,
-      qrcode: false,
-    });
-    const { connector } = provider;
-    let web3: Web3 | undefined;
-
-    if (!connector.connected && account === undefined) {
-      await connector.createSession();
-      const uri = connector.uri;
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (isMobile) {
-      } else {
-        walletServices.sendProcess("nextStep", { qrCodeUrl: uri });
-      }
-      await provider.enable();
-      web3 = new Web3(provider as any);
-      walletServices.sendConnect(web3, provider);
-    } else if (!connector.connected && account !== undefined) {
-      console.log(
-        "WalletConnect reconnect connected is failed",
-        account,
-        provider
-      );
-      throw new Error("walletConnect not connect");
-    } else if (account && provider.isWalletConnect) {
-      console.log(
-        "WalletConnect reconnect connected is true",
-        account,
-        provider,
-        connector.session
-      );
-      await provider.enable();
-      web3 = new Web3(provider as any);
-      walletServices.sendConnect(web3, provider);
-    }
-    return { provider, web3 };
-  } catch (error) {
-    console.log("error happen at connect wallet with WalletConnect:", error);
-    walletServices.sendError(ErrorType.FailedConnect, {
-      connectName: ConnectProviders.WalletConnect,
-      error,
-    });
-  }
-};
-
-export const WalletConnectSubscribe = (
-  provider: any,
-  web3: Web3,
-  account?: string
-) => {
-  const { connector } = provider;
-  if (provider && connector && connector.connected) {
-    connector.on("connect", (error: Error | null, payload: any | null) => {
-      if (error) {
-        walletServices.sendError(ErrorType.FailedConnect, {
-          connectName: ConnectProviders.WalletConnect,
-          error,
+        const provider: WalletConnectProvider = new WalletConnectProvider({
+            rpc: RPC_URLS,
+            bridge: BRIDGE_URL,
+            pollingInterval: POLLING_INTERVAL,
+            qrcode: false,
         });
-      }
-      const { accounts, chainId } = payload.params[0];
-      connector.approveSession({ accounts, chainId });
-      //
-      // // const _accounts = await web3.eth.getAccounts();
-      // console.log('accounts:', accounts)
-      walletServices.sendConnect(web3, provider);
-    });
-    connector.on(
-      "session_update",
-      (error: Error | null, payload: any | null) => {
-        const { accounts, chainId } = payload.params[0];
-        if (error) {
-          walletServices.sendError(ErrorType.FailedConnect, {
-            connectName: ConnectProviders.WalletConnect,
-            error,
-          });
+        const {connector} = provider;
+        let web3: Web3 | undefined;
+
+        if (!connector.connected && account === undefined) {
+            await connector.createSession();
+            const uri = connector.uri;
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            if (isMobile) {
+
+            } else {
+                walletServices.sendProcess('nextStep', {qrCodeUrl: uri});
+            }
+            await provider.enable();
+            web3 = new Web3(provider as any);
+            walletServices.sendConnect(web3, provider);
+
+        } else if (!connector.connected && account !== undefined) {
+            console.log('WalletConnect reconnect connected is failed', account, provider)
+            // WalletConnectUnsubscribe(provider);
+            // walletServices.sendDisconnect('', 'walletConnect not connect');
+            web3 = undefined
+            throw new Error('walletConnect not connect');
+        } else if (account && provider.isWalletConnect) {
+            console.log('WalletConnect reconnect connected is true', account, provider, connector.session)
+            await provider.enable();
+            web3 = new Web3(provider as any);
+            walletServices.sendConnect(web3, provider)
         }
-        connector.updateSession({ accounts, chainId });
-        walletServices.sendConnect(web3, provider);
-      }
-    );
-    connector.on("disconnect", (error: Error | null, payload: any | null) => {
-      const { message } = payload.params[0];
-      if (error) {
-        walletServices.sendError(ErrorType.FailedConnect, {
-          connectName: ConnectProviders.WalletConnect,
-          error,
+        return {provider, web3}
+    } catch (error) {
+        console.log('error happen at connect wallet with WalletConnect:', error)
+        walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+    }
+}
+
+export const WalletConnectSubscribe = (provider: any, web3: Web3, account?: string) => {
+    const {connector} = provider;
+    if (provider && connector && connector.connected) {
+
+        connector.on("connect", (error: Error | null, payload: any | null) => {
+            if (error) {
+                walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+            }
+            const {accounts, chainId} = payload.params[ 0 ];
+            connector.approveSession({accounts, chainId})
+            //
+            // // const _accounts = await web3.eth.getAccounts();
+            // console.log('accounts:', accounts)
+            walletServices.sendConnect(web3, provider)
         });
-      }
-      walletServices.sendDisconnect("", message);
-      console.log("WalletConnect on disconnect");
-    });
-  }
-};
+        connector.on("session_update", (error: Error | null, payload: any | null) => {
+            const {accounts, chainId} = payload.params[ 0 ];
+            if (error) {
+                walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+            }
+            connector.updateSession({accounts, chainId})
+            walletServices.sendConnect(web3, provider);
+        });
+        connector.on("disconnect", (error: Error | null, payload: any | null) => {
+            const {message} = payload.params[ 0 ];
+            if (error) {
+                walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+            }
+            walletServices.sendDisconnect('', message);
+            console.log('WalletConnect on disconnect')
+        });
+    }
+}
 
 export const WalletConnectUnsubscribe = async (provider: any) => {
-  if (provider && provider.connector) {
-    const { connector } = provider;
-    console.log("WalletConnect on Unsubscribe");
-    connector.off("disconnect");
-    connector.off("connect");
-    connector.off("session_update");
-    return;
-  }
-};
+    if (provider && provider.connector) {
+        const {connector} = provider;
+        console.log('WalletConnect on Unsubscribe')
+        connector.off('disconnect');
+        connector.off('connect')
+        connector.off('session_update');
+        return
+    }
+}
 //)
 //     new Proxy<Array<keyof typeof Commands>>(
 //    [

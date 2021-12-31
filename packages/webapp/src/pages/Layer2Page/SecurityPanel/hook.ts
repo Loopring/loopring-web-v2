@@ -1,10 +1,12 @@
-import { AccountStatus, myLog } from "@loopring-web/common-resources";
+import { AccountStatus } from "@loopring-web/common-resources";
+import exportFromJSON from "export-from-json";
 import { useAccount } from "../../../stores/account";
 import React from "react";
 
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import store from "stores";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from "api_wrapper";
 
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -33,7 +35,7 @@ export function useExportAccountInfo() {
       return undefined;
     }
 
-    return {
+    const accInfo = {
       address: account.accAddress,
       accountId: account.accountId,
       level: account.level,
@@ -43,6 +45,7 @@ export function useExportAccountInfo() {
       publicY: account.eddsaKey.formatedPy,
       privateKey: account.eddsaKey.sk,
     };
+    return accInfo;
   }, [account]);
 
   const exportAccount = React.useCallback(async () => {
@@ -67,7 +70,6 @@ export function useExportAccountInfo() {
           exchangeAddress: exchangeInfo.exchangeAddress,
           keyNonce: account.nonce - 1,
           walletType: connectName,
-          accountId: account.accountId,
         });
 
         const { apiKey, raw_data } = await LoopringAPI.userAPI.getUserApiKey(
@@ -110,7 +112,7 @@ export function useExportAccountInfo() {
         });
       }
     }
-  }, [setShowAccount, setShowExportAccount]);
+  }, [setShowExportAccount]);
 
   return {
     exportAccInfo,
