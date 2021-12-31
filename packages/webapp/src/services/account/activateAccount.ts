@@ -131,19 +131,13 @@ export async function updateAccountFromServer({
 
             myLog("updateAccountFromServer req:", request);
 
-            const response = await LoopringAPI.userAPI.updateAccount(
-              {
-                request,
-                web3: connectProvides.usedWeb3,
-                chainId: system.chainId,
-                walletType: connectName,
-                isHWAddr,
-              },
-              {
-                accountId: account.accountId,
-                counterFactualInfo: eddsaKey.counterFactualInfo,
-              }
-            );
+            const response = await LoopringAPI.userAPI.updateAccount({
+              request,
+              web3: connectProvides.usedWeb3,
+              chainId: system.chainId,
+              walletType: connectName,
+              isHWAddr,
+            });
 
             myLog("updateAccountResponse:", response);
 
