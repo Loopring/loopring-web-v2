@@ -98,11 +98,14 @@ export const useNFTDeposit = <
       disableBtn();
     }
   }, [
-    enableBtn,
-    disableBtn,
-    setLabelAndParams,
-    nftDepositValue,
+    resetBtnInfo,
+    nftDepositValue.belong,
+    nftDepositValue.tradeValue,
+    nftDepositValue.balance,
     allowanceInfo,
+    enableBtn,
+    setLabelAndParams,
+    disableBtn,
   ]);
 
   React.useEffect(() => {
@@ -125,7 +128,7 @@ export const useNFTDeposit = <
     } else {
       setShowNFTDeposit({ isShow: false });
     }
-  }, [nftData, nftBalance, updateNFTDepositData, nftDepositValue]);
+  }, [nftData, updateNFTDepositData, nftBalance, nftRest, setShowNFTDeposit]);
 
   React.useEffect(() => {
     // myLog('isShow:', isShow)
@@ -199,6 +202,7 @@ export const useNFTDeposit = <
               chainId: chainId as any,
               exchangeAddress: exchangeInfo.exchangeAddress,
               keyNonce: 0,
+              accountId: account.accountId,
               walletType: account.connectName as sdk.ConnectorNames,
             });
             const request: sdk.SetReferrerRequest = {
@@ -220,7 +224,13 @@ export const useNFTDeposit = <
         }
       }
     },
-    [exchangeInfo, account]
+    [
+      exchangeInfo?.exchangeAddress,
+      account.accAddress,
+      account.accountId,
+      account.connectName,
+      chainId,
+    ]
   );
 
   const handleDeposit = React.useCallback(
@@ -396,13 +406,18 @@ export const useNFTDeposit = <
       return result;
     },
     [
+      setReffer,
       account,
       tokenMap,
-      chainId,
-      exchangeInfo,
+      exchangeInfo?.exchangeAddress,
+      exchangeInfo?.depositAddress,
       gasPrice,
-      LoopringAPI.exchangeAPI,
+      chainId,
+      allowanceInfo?.needCheck,
+      allowanceInfo?.allowance,
       setShowAccount,
+      resetNFTDepositData,
+      updateDepositHash,
     ]
   );
 
@@ -412,7 +427,7 @@ export const useNFTDeposit = <
       setShowNFTDeposit({ isShow: false });
 
       if (nftDepositValue && nftDepositValue.belong) {
-        await handleDeposit(nftDepositValue as R);
+        await handleDeposit(nftDepositValue);
       }
     },
     [nftDepositValue, handleDeposit, setShowNFTDeposit, setShowAccount]
@@ -452,7 +467,7 @@ export const useNFTDeposit = <
       updateNFTDepositData({ reffer: value, tradeValue: -1, balance: -1 });
       return undefined;
     },
-    []
+    [updateNFTDepositData]
   );
 
   const nftDepositProps: DepositProps<R, T> = React.useMemo(() => {
