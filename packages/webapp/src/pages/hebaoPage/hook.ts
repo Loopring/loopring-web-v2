@@ -8,7 +8,6 @@ import {
 import { LoopringAPI } from "../../api_wrapper";
 import {
   Guardian,
-  HebaoOperationLog,
   LockHebaoHebaoParam,
   Protector,
 } from "@loopring-web/loopring-sdk";
@@ -17,18 +16,14 @@ import { HebaoStep } from "@loopring-web/component-lib";
 import { useSystem } from "../../stores/system";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-export const useHebaoMain = <
-  T extends Protector,
-  G extends Guardian,
-  H extends HebaoOperationLog
->() => {
+export const useHebaoMain = <T extends Protector, G extends Guardian>() => {
   const { account, status: accountStatus } = useAccount();
   const [{ hebaoConfig, protectList, guardiansList, history }, setList] =
     React.useState<{
       hebaoConfig: any;
       protectList: T[];
       guardiansList: G[];
-      history: H[];
+      history: any;
     }>({ protectList: [], guardiansList: [], history: [], hebaoConfig: {} });
   const [openHebao, setOpenHebao] = React.useState<{
     isShow: boolean;
@@ -42,47 +37,44 @@ export const useHebaoMain = <
 
   const loadData = async () => {
     if (LoopringAPI.walletAPI && account.accAddress) {
-      const hebaoTxType = Object.keys(sdk.HEBAO_META_TYPE).reduce(
-        (pre, key) => {
-          pre += isNaN(Number(key)) ? "" : `${key},`;
-          return pre;
-        },
-        ""
-      );
-      const [
-        { raw_data: hebaoConfig },
-        hebaoOperation,
-        protector,
-        guardian,
-      ]: any = await Promise.all([
-        LoopringAPI.walletAPI.getHebaoConfig(),
-        LoopringAPI.walletAPI.getHebaoOperationLogs({
-          from: account.accAddress,
-          fromTime: 0,
-          offset: 0,
-          hebaoTxType,
-        }),
-        LoopringAPI.walletAPI.getProtectors(
-          {
-            guardian: account.accAddress,
-          },
-          account.apiKey
-        ),
-
-        LoopringAPI.walletAPI
-          .getGuardianApproveList({
-            guardian: account.accAddress,
-          })
-          .then((guardian) => {
-            guardian?.guardiansArray.map((ele) => {
-              ele.businessDataJson = JSON.parse(ele.businessDataJson ?? "");
-              return ele;
-            });
-            return guardian;
+      const [{ raw_data: hebaoConfig }, protector, guardian, logData]: any =
+        await Promise.all([
+          LoopringAPI.walletAPI.getHebaoConfig(),
+          LoopringAPI.walletAPI.getProtectors(
+            {
+              guardian: account.accAddress,
+            },
+            account.apiKey
+          ),
+          // api/wallet/v3/operationLogs
+          LoopringAPI.walletAPI
+            .getGuardianApproveList({
+              guardian: account.accAddress,
+            })
+            .then((guardian) => {
+              guardian?.guardiansArray.map((ele) => {
+                ele.businessDataJson = JSON.parse(ele.businessDataJson ?? "");
+                return ele;
+              });
+              return guardian;
+            }),
+          LoopringAPI.walletAPI.getHebaoOperationLogs({
+            from: account.accAddress,
+            fromTime: 0,
+            offset: 0,
+            limit: 50,
+            // to?: string;
+            // offset?: number;
+            // network?: 'ETHEREUM';
+            // statues?: string;
+            // hebaoTxType?: string;
+            // limit?: number;
           }),
-      ]).catch((error) => {
-        myLog(error);
-      });
+        ])
+          .then(([protector, guardians]) => [protector, guardians])
+          .catch((error) => {
+            myLog(error);
+          });
       const _guardiansList: G[] = guardian?.guardiansArray
         ? guardian.guardiansArray.reduce((prev: G[], approve: G) => {
             const _protector = protector.protectorArray?.find(
@@ -96,11 +88,12 @@ export const useHebaoMain = <
             return prev;
           }, [] as G[])
         : [];
+      console.log("actionGasSettings", hebaoConfig);
 
       setList({
         protectList: protector.protectorArray ?? [],
         guardiansList: _guardiansList,
-        history: hebaoOperation.operationArray ?? [],
+        history,
         hebaoConfig,
       });
     }
@@ -110,16 +103,8 @@ export const useHebaoMain = <
       loadData();
     }
   }, [accountStatus]);
-  return {
-    protectList,
-    guardiansList,
-    operationHistory: history,
-    hebaoConfig,
-    openHebao,
-    setOpenHebao,
-  };
+  return { protectList, guardiansList, hebaoConfig, openHebao, setOpenHebao };
 };
-
 export const useHebaoProtector = <T extends Protector>({
   hebaoConfig,
   handleOpenModal,
@@ -151,15 +136,10 @@ export const useHebaoProtector = <T extends Protector>({
         };
         try {
           await LoopringAPI.walletAPI.lockHebaoWallet(params);
-          handleOpenModal({
-            step: HebaoStep.LockAccount_Success,
-            options: { lockRetry: undefined, lockRetryParams: undefined },
-          });
         } catch (reason) {
           // result.code = ActionResultCode.ApproveFailed;
           // result.data = reason;
-          // sdk.dumpError400(reason);
-          console.log(reason);
+          sdk.dumpError400(reason);
           handleOpenModal({
             step: HebaoStep.LockAccount_User_Denied,
             options: { reason },
@@ -171,31 +151,5 @@ export const useHebaoProtector = <T extends Protector>({
   );
   return {
     onLock,
-  };
-};
-
-export const useValidationInfo = <G extends Guardian>() => {
-  const [hebaoCodeOpen, setHebaoCodeOpen] = React.useState(false);
-  const [selectedGuardian, setSelectedGuardian] = React.useState<
-    G | undefined
-  >();
-
-  const onApproveClick = (item: G) => {
-    setHebaoCodeOpen(true);
-  };
-  const onSubmit = (item: G) => {};
-
-  const handleClose = (event: MouseEvent | undefined, code?: string) => {
-    setHebaoCodeOpen(false);
-    if (code && selectedGuardian) {
-      onSubmit(selectedGuardian);
-    }
-  };
-  return {
-    onApproveClick,
-    onSubmit,
-    hebaoCodeOpen,
-    handleClose,
-    selectedGuardian,
   };
 };

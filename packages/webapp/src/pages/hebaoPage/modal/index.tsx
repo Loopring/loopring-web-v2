@@ -6,10 +6,6 @@ import {
   LockAccount_Success,
   LockAccount_User_Denied,
   LockAccount_WaitForAuth,
-  Approve_WaitForAuth,
-  Approve_User_Denied,
-  Approve_Success,
-  Approve_Failed,
 } from "@loopring-web/component-lib";
 import React from "react";
 
@@ -36,18 +32,18 @@ export const ModalLock = withTranslation("common")(
       ): void;
     }["bivarianceHack"];
   } & WithTranslation) => {
-    const backToLockCallback = () => {
-      handleOpenModal({ step: HebaoStep.LockAccount_WaitForAuth });
-      if (options && options.lockRetry && options.lockRetryParams) {
-        options.lockRetry(options.lockRetryParams);
-      }
-    };
     const backToLockAccountBtnInfo = React.useMemo(() => {
+      const _options = options;
       return {
         btnTxt: "labelRetry",
-        callback: backToLockCallback,
+        callback: () => {
+          handleOpenModal({ step: HebaoStep.LockAccount_WaitForAuth });
+          if (_options && _options.lockRetry && _options.lockRetryParams) {
+            _options.lockRetry(_options.lockRetryParams);
+          }
+        },
       };
-    }, [options, backToLockCallback]);
+    }, [options]);
     const closeBtnInfo = React.useMemo(() => {
       return {
         btnTxt: "labelClose",
@@ -96,49 +92,6 @@ export const ModalLock = withTranslation("common")(
         [HebaoStep.LockAccount_Failed]: {
           view: (
             <LockAccount_Failed
-              btnInfo={closeBtnInfo}
-              {...{
-                ...rest,
-                t,
-              }}
-            />
-          ),
-        },
-        [HebaoStep.Approve_WaitForAuth]: {
-          view: (
-            <Approve_WaitForAuth
-              {...{
-                ...rest,
-                t,
-              }}
-            />
-          ),
-        },
-        [HebaoStep.Approve_User_Denied]: {
-          view: (
-            <Approve_User_Denied
-              btnInfo={backToLockAccountBtnInfo}
-              {...{
-                ...rest,
-                t,
-              }}
-            />
-          ),
-        },
-        [HebaoStep.Approve_Success]: {
-          view: (
-            <Approve_Success
-              btnInfo={closeBtnInfo}
-              {...{
-                ...rest,
-                t,
-              }}
-            />
-          ),
-        },
-        [HebaoStep.Approve_Failed]: {
-          view: (
-            <Approve_Failed
               btnInfo={closeBtnInfo}
               {...{
                 ...rest,

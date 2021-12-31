@@ -6,21 +6,26 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { EmptyDefault } from "@loopring-web/component-lib";
+import {
+  ButtonListRightStyled,
+  EmptyDefault,
+  Button,
+  ModalQRCode,
+  HebaoStep,
+} from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAccount } from "../../stores/account";
-import { HebaoOperationLog, HEBAO_META_TYPE } from "@loopring-web/loopring-sdk";
 import {
-  CompleteIcon,
-  ErrorIcon,
-  GoodIcon,
-  WarningIcon,
+  LoadingIcon,
+  LockIcon,
+  SecurityIcon,
 } from "@loopring-web/common-resources";
-import moment from "moment";
+import { useAccount } from "../../stores/account";
+import { Protector } from "@loopring-web/loopring-sdk";
+import { useHebaoProtector } from "./hook";
 
-const HebaoHistoryStyled = styled(ListItem)<ListItemProps>`
+const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
   overflow: hidden;
   background-color: var(--opacity);
@@ -51,44 +56,83 @@ const HebaoHistoryStyled = styled(ListItem)<ListItemProps>`
   }
 ` as (prosp: ListItemProps) => JSX.Element;
 
-export const HebaoHistoryItem = <T extends HebaoOperationLog>(props: T) => {
+export const HebaoProtectItem = <T extends Protector>(
+  props: T & { onClick: () => void }
+) => {
   const { t } = useTranslation("common");
-  const { createdAt, ens, from, hebaoTxType, id: number, status, to } = props;
-  const statusButton = React.useMemo(() => {
-    switch (hebaoTxType as any) {
-      case HEBAO_META_TYPE.recovery:
-        return "recovery";
-      case HEBAO_META_TYPE.transfer:
-        return "transfer";
-      case HEBAO_META_TYPE.add_guardian:
-        return "Add Guardia";
-      case HEBAO_META_TYPE.remove_guardian:
-        return "Remove Guardia";
-      case HEBAO_META_TYPE.unlock_wallet:
-        return "Unlock Wallet";
-      default:
-        return "";
-    }
-  }, [hebaoTxType]);
+  const { address, ens, lockStatus, onClick } = props;
   const statusView = React.useMemo(() => {
-    switch (hebaoTxType as any) {
-      case HEBAO_META_TYPE.recovery:
-        return "recovery";
-      case HEBAO_META_TYPE.transfer:
-        return "transfer";
-      case HEBAO_META_TYPE.add_guardian:
-        return "+ Guardia";
-      case HEBAO_META_TYPE.remove_guardian:
-        return "- Guardia";
-      case HEBAO_META_TYPE.unlock_wallet:
-        return "Unlock Wallet";
-      default:
-        return "";
+    switch (lockStatus) {
+      case "UNLOCK_FAILED":
+      case "LOCKED":
+        return (
+          <>
+            <LockIcon color={"error"} fontSize={"medium"} />
+            <Typography
+              color={"error"}
+              paddingLeft={1}
+              variant={"body1"}
+              component={"span"}
+              alignItems={"center"}
+              display={"inline-flex"}
+              lineHeight={"inherit"}
+            >
+              {"LOCKED"}
+            </Typography>
+          </>
+        );
+      case "UNLOCK_WAITING":
+        return (
+          <>
+            <LoadingIcon color={"warning"} fontSize={"medium"} />
+            <Typography
+              color={"warning"}
+              paddingLeft={1}
+              variant={"body1"}
+              component={"span"}
+              alignItems={"center"}
+              display={"inline-flex"}
+              lineHeight={"inherit"}
+            >
+              {"UNLOCKING"}
+            </Typography>
+          </>
+        );
+      case "LOCK_WAITING":
+        return (
+          <>
+            <LockIcon color={"warning"} fontSize={"medium"} />
+            <Typography
+              color={"var(--color-warning)"}
+              paddingLeft={1}
+              variant={"body1"}
+              component={"span"}
+              alignItems={"center"}
+              display={"inline-flex"}
+              lineHeight={"inherit"}
+            >
+              {"LOCKING"}
+            </Typography>
+          </>
+        );
+      case "LOCK_FAILED":
+      case "CREATED":
+        return (
+          <Button
+            variant={"contained"}
+            size={"small"}
+            color={"primary"}
+            startIcon={<LockIcon htmlColor={"var(--color-text-button)"} />}
+            onClick={() => onClick()}
+          >
+            {t("labelLock")}
+          </Button>
+        );
     }
-  }, [hebaoTxType]);
+  }, [lockStatus]);
 
   return (
-    <HebaoHistoryStyled alignItems="flex-start" className={`Hebao`}>
+    <HebaoProtectStyled alignItems="flex-start" className={`Hebao`}>
       <Box
         flex={1}
         className={"hebao-content"}
@@ -100,23 +144,6 @@ export const HebaoHistoryItem = <T extends HebaoOperationLog>(props: T) => {
         overflow={"hidden"}
         paddingX={2}
       >
-        <Box display={"flex"} alignItems={"center"} width={40}>
-          <ListItemText
-            className="description status"
-            primary={
-              status === 0 ? (
-                <GoodIcon color={"success"} fontSize={"large"} />
-              ) : (
-                <ErrorIcon color={"error"} fontSize={"large"} />
-              )
-            }
-            primaryTypographyProps={{
-              component: "p",
-              variant: "body1",
-              color: "textPrimary",
-            }}
-          />
-        </Box>
         <Box flex={1}>
           <ListItemText
             className="description description1"
@@ -129,57 +156,88 @@ export const HebaoHistoryItem = <T extends HebaoOperationLog>(props: T) => {
           />
 
           <ListItemText
-            primary={from}
+            primary={address}
             primaryTypographyProps={{ component: "p", color: "textSecondary" }}
           />
         </Box>
         <Box
           width={100}
           display={"flex"}
-          justifyContent={"center"}
-          title={hebaoTxType.toString()}
-          alignItems={"flex-end"}
-          flexDirection={"column"}
+          justifyContent={"flex-end"}
+          title={lockStatus}
+          alignItems={"center"}
         >
-          <Typography
-            color={"textSecondary"}
-            paddingLeft={1}
-            variant={"body1"}
-            component={"span"}
-            alignItems={"center"}
-            display={"inline-flex"}
-            lineHeight={"inherit"}
-          >
-            {statusView}
-            {hebaoTxType}
-          </Typography>
-
-          <Typography
-            color={"textThird"}
-            paddingLeft={1}
-            marginTop={1}
-            variant={"body2"}
-            component={"span"}
-            alignItems={"center"}
-            display={"inline-flex"}
-            lineHeight={"inherit"}
-          >
-            {moment(new Date(createdAt)).fromNow()}
-          </Typography>
+          {statusView}
         </Box>
       </Box>
-    </HebaoHistoryStyled>
+    </HebaoProtectStyled>
   );
 };
-export const HebaoHistory = <T extends HebaoOperationLog>({
-  historyList,
+export const HebaoProtector = <T extends Protector>({
+  protectList,
+  hebaoConfig,
+  handleOpenModal,
 }: {
-  historyList: T[];
+  protectList: T[];
+  hebaoConfig: any;
+  handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common"]);
+  const [openQRCode, setOpenQRCode] = React.useState(false);
+  const { onLock } = useHebaoProtector({ hebaoConfig, handleOpenModal });
+  const description = () => (
+    <Typography
+      marginTop={2}
+      component={"div"}
+      textAlign={"center"}
+      variant={"body1"}
+    >
+      <Typography
+        color={"var(--color-text-secondary)"}
+        component={"p"}
+        variant={"inherit"}
+      >
+        {account?.accAddress}
+      </Typography>
+      <Typography
+        color={"var(--color-text-third)"}
+        component={"p"}
+        variant={"body2"}
+      >
+        {account?.connectName}
+      </Typography>
+    </Typography>
+  );
   return (
     <>
+      <ModalQRCode
+        open={openQRCode}
+        className={"hebaoPop"}
+        onClose={() => setOpenQRCode(false)}
+        title={() => (
+          <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+            <Typography
+              color={"var(--color-text-primary)"}
+              component={"p"}
+              variant={"h5"}
+            >
+              {t("labelHebaoAddAsGuardian")}
+            </Typography>
+            <Typography
+              color={"var(--color-text-secondary)"}
+              component={"p"}
+              variant={"body1"}
+            >
+              {t("labelHebaoScanQRCode")}
+            </Typography>
+          </Typography>
+        )}
+        size={240}
+        description={description()}
+        url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+      />
+
       <Box
         paddingTop={3}
         borderRadius={2}
@@ -189,14 +247,43 @@ export const HebaoHistory = <T extends HebaoOperationLog>({
       >
         <Box display={"flex"} justifyContent={"space-between"} paddingX={5 / 2}>
           <Typography component={"h3"} variant={"h5"}>
-            {t("labelHebaoLogList")}
+            {t("labelHebaoGuardianList")}
           </Typography>
+          <ButtonListRightStyled
+            item
+            xs={5}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"flex-end"}
+          >
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              startIcon={
+                <SecurityIcon htmlColor={"var(--color-text-button)"} />
+              }
+              onClick={() => setOpenQRCode(true)}
+            >
+              {t("labelAddProtector")}
+            </Button>
+          </ButtonListRightStyled>
         </Box>
         <Box flex={1} alignItems={"center"} marginTop={2}>
-          {historyList.length ? (
+          {protectList.length ? (
             <>
-              {historyList.map((item) => (
-                <HebaoHistoryItem key={item.id} {...{ ...item }} />
+              {protectList.map((item) => (
+                <HebaoProtectItem
+                  key={item.address}
+                  {...{ ...item }}
+                  onClick={() => {
+                    onLock(item);
+                    handleOpenModal({
+                      step: HebaoStep.LockAccount_WaitForAuth,
+                      options: { lockRetry: onLock, lockRetryParams: item },
+                    });
+                  }}
+                />
               ))}
             </>
           ) : (
