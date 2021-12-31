@@ -18,8 +18,6 @@ import {
   DoughnutChart,
   LpTokenAction,
   useSettings,
-  ScaleAreaChart,
-  ChartType,
 } from "@loopring-web/component-lib";
 
 import { useModals } from "hooks/useractions/useModals";
@@ -40,9 +38,6 @@ const StyledChartWrapper = styled(Box)`
   height: 225px;
 
   > section {
-    //position: relative;
-    //width: calc(50% - 6px);
-    //height: 100%;
     background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit}px;
     padding: ${({ theme }) => theme.unit * 2.5}px
@@ -63,38 +58,9 @@ const ChartWrapper = styled(Box)`
   background-repeat: no-repeat;
 ` as any;
 
-// const StyledBtnGroupWrapper = styled(Box)`
-//     position: absolute;
-//     z-index: 10;
-//     right: ${({theme}) => theme.unit * 3}px;
-//     bottom: ${({theme}) => theme.unit * 2.5}px;
-// `
-//
-// const toggleData = [
-//     // {value: '24 H', key: '24 H'},
-//     {value: 'week', key: '1 W'},
-//     {value: 'all', key: 'ALL'},
-// ]
-
-export type ITokenInfoItem = {
-  token: string;
-  detail: {
-    price: string;
-    symbol: string;
-    updatedAt: number;
-  };
-};
-
-export type TrendDataItem = {
-  timeStamp: number;
-  close: number;
-};
-
 const AssetPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const container = useRef(null);
-    // const [pageSize, setPageSize] = useState(10);
-    // const [chartPeriod, setChartPeriod] = useState('week')
     const { allowTrade, forex } = useSystem();
     const { raw_data } = allowTrade;
     const legalEnable = (raw_data as any)?.legal.enable;
@@ -157,14 +123,6 @@ const AssetPanel = withTranslation("common")(
     useEffect(() => {
       getUserAssets();
     }, []);
-
-    // useEffect(() => {
-    //     // @ts-ignore
-    //     let height = container?.current?.offsetHeight;
-    //     if (height) {
-    //         setPageSize(Math.floor((height - 120) / 44) - 1);
-    //     }
-    // }, [container, pageSize]);
 
     const getCurrAssetsEth = useCallback(() => {
       if (currAssetsEth) {
@@ -386,8 +344,6 @@ const AssetPanel = withTranslation("common")(
             }}
           />
         </StyleTitlePaper>
-
-        {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 
         <StyledChartWrapper
           flexDirection={"row"}
