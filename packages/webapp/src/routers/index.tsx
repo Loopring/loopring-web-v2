@@ -73,6 +73,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         : setTheme("light");
     }
   }, [location.search]);
+  React.useEffect(() => {
+    if (state === SagaStatus.ERROR) {
+      window.location.replace(`${window.location.origin}/error`);
+    }
+  }, [state]);
   return (
     <>
       <Switch>
@@ -193,8 +198,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
 
           {state === "PENDING" && proFlag && tickerMap ? (
             <LoadingBlock />
-          ) : state === "ERROR" ? (
-            <ErrorPage {...ErrorMap.NO_NETWORK_ERROR} />
           ) : (
             <OrderbookPage />
           )}
@@ -249,7 +252,15 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <LiquidityPage />
           </ContentWrap>
         </Route>
-
+        <Route
+          path={["/error/:messageKey", "/error"]}
+          component={() => (
+            <>
+              <Header isHideOnScroll={true} isLandPage />
+              <ErrorPage {...ErrorMap.NO_NETWORK_ERROR} />
+            </>
+          )}
+        />
         <Route
           component={() => (
             <>
