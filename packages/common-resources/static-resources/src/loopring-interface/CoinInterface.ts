@@ -31,6 +31,8 @@ export type CoinMap<R, I = CoinInfo<R>> = {
 export interface FeeInfo {
   belong: string;
   fee: number | string;
+  feeRaw?: string | number;
+  token?: string;
   __raw__: {
     fastWithDraw: string;
     tokenId: number;

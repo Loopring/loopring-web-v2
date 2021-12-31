@@ -132,7 +132,12 @@ export const globalCss = ({ theme }: any) => css`
   ${colorBase({ theme })}
   ${scrollbarDefault({ theme })};
   ${reset}
-  html, body {
+  #root {
+    display: flex;
+    flex-direction: column;
+  }
+  html,
+  body {
     position: relative;
     color: var(--color-text-primary);
     background: var(--color-global-bg);
@@ -164,6 +169,7 @@ export const globalCss = ({ theme }: any) => css`
     width: 100%;
     position: relative;
     z-index: 1;
+    flex-direction: column;
 
     &:before {
       content: "";

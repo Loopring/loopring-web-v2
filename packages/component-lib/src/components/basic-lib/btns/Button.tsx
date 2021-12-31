@@ -12,7 +12,7 @@ import {
   TGItemJSXInterface,
   ToggleButtonGroupProps,
 } from "./Interface";
-import { TFunction, WithTranslation } from "react-i18next";
+import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import {
   BackIcon,
@@ -94,7 +94,7 @@ export function ScrollTop(props: {
   );
 }
 
-const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
+export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
   ${({ theme, size }) =>
     size !== "small"
       ? `
@@ -165,55 +165,64 @@ const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
   }
 ` as typeof MuToggleButtonGroup;
 
-export const ToggleButtonGroup = ({
-  t,
-  value,
-  // handleChange,
-  size = "medium",
-  tgItemJSXs,
-  data,
-  exclusive,
-  onChange,
-}: { t: TFunction } & ToggleButtonGroupProps) => {
-  const _handleChange = React.useCallback(
-    (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => {
-      // setValue(value)
-      if (onChange) {
-        onChange(_e, value);
-      }
-    },
-    []
-  );
-  if (data) {
-    tgItemJSXs = data.map(({ value, key, disabled }) => {
-      return { value, JSX: t(key), tlabel: t(key), disabled };
-    });
+export const ToggleButtonGroup = withTranslation("common")(
+  ({
+    t,
+    value,
+    // handleChange,
+    size = "medium",
+    tgItemJSXs,
+    data,
+    exclusive,
+    onChange,
+  }: { t: TFunction } & ToggleButtonGroupProps) => {
+    const _handleChange = React.useCallback(
+      (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => {
+        // setValue(value)
+        if (onChange) {
+          onChange(_e, value);
+        }
+      },
+      []
+    );
+    if (data) {
+      tgItemJSXs = data.map(({ value, key, disabled }) => {
+        return { value, JSX: t(key), tlabel: t(key), disabled };
+      });
+    }
+    return (
+      <MuToggleButtonGroupStyle
+        size={size}
+        value={value}
+        exclusive={exclusive}
+        onChange={_handleChange}
+      >
+        {tgItemJSXs?.map(
+          ({
+            value,
+            JSX,
+            tlabel,
+            disabled,
+            key,
+            notWrap,
+          }: TGItemJSXInterface) =>
+            notWrap ? (
+              <Box key={key ? key : value}>{JSX}</Box>
+            ) : (
+              <ToggleButton
+                key={key ? key : value}
+                value={value}
+                aria-label={tlabel}
+                disabled={disabled}
+              >
+                {JSX}
+              </ToggleButton>
+            )
+        )}
+      </MuToggleButtonGroupStyle>
+    );
   }
-  return (
-    <MuToggleButtonGroupStyle
-      size={size}
-      value={value}
-      exclusive={exclusive}
-      onChange={_handleChange}
-    >
-      {tgItemJSXs?.map(
-        ({ value, JSX, tlabel, disabled, key, notWrap }: TGItemJSXInterface) =>
-          notWrap ? (
-            <Box key={key ? key : value}>{JSX}</Box>
-          ) : (
-            <ToggleButton
-              key={key ? key : value}
-              value={value}
-              aria-label={tlabel}
-              disabled={disabled}
-            >
-              {JSX}
-            </ToggleButton>
-          )
-      )}
-    </MuToggleButtonGroupStyle>
-  );
-};
+);
 
 export const ModalCloseButton = ({
   onClose,
@@ -222,7 +231,7 @@ export const ModalCloseButton = ({
   onClose?: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
-} & WithTranslation) => {
+} & { t: TFunction }) => {
   return (
     <Box
       className={"close-button"}

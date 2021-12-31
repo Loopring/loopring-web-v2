@@ -11,6 +11,7 @@ import {
   SlippageTolerance,
   WithdrawType,
   WithdrawTypes,
+  vendorList,
 } from "@loopring-web/common-resources";
 import {
   ammCalcData,
@@ -37,7 +38,7 @@ import {
   WithdrawProps,
 } from "./index";
 
-import { DepositPanel, WithdrawPanel } from "../modal";
+import { DepositGroup, TransferPanel, WithdrawPanel } from "../modal";
 
 import { useDispatch } from "react-redux";
 import {
@@ -80,6 +81,10 @@ let depositProps: DepositProps<any, any> = {
   },
 };
 let withdrawProps: WithdrawProps<any, any> = {
+  isContractAddress: false,
+  isFeeNotEnough: false,
+  isAddressCheckLoading: false,
+  isCFAddress: false,
   tradeData,
   coinMap,
   walletMap,
@@ -101,11 +106,11 @@ let withdrawProps: WithdrawProps<any, any> = {
   },
   withdrawType: WithdrawType.Fast,
   withdrawTypes: WithdrawTypes,
-  chargeFeeToken: "ETH",
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
+    { belong: "ETH", fee: 0.001, __raw__: "" as any },
+    { belong: "LRC", fee: "1", __raw__: "" as any },
   ],
   handleOnAddressChange: (value: any) => {
     console.log("handleOnAddressChange", value);
@@ -117,9 +122,6 @@ let withdrawProps: WithdrawProps<any, any> = {
   }): void {
     console.log("handleWithdrawFee", value);
   },
-  // handleWithdrawFee(value: { belong: string; fee: number | string; __raw__?: any }): void {
-  //     console.log('handleWithdrawFee', value);
-  // },
   handleWithdrawTypeChange: (value: any) => {
     console.log(value);
   },
@@ -128,6 +130,7 @@ let withdrawProps: WithdrawProps<any, any> = {
   },
 };
 let transferProps: TransferProps<any, any> = {
+  isFeeNotEnough: false,
   tradeData,
   coinMap,
   walletMap,
@@ -153,11 +156,11 @@ let transferProps: TransferProps<any, any> = {
   }): void {
     console.log("handleWithdrawFee", value);
   },
-  chargeFeeToken: "ETH",
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
+    { belong: "ETH", fee: 0.001, __raw__: "" as any },
+    { belong: "LRC", fee: "1", __raw__: "" as any },
   ],
   handleOnAddressChange: (value: any) => {
     console.log("handleOnAddressChange", value);
@@ -166,28 +169,35 @@ let transferProps: TransferProps<any, any> = {
     return { error: true, message: "any error" };
   },
 };
-// @ts-ignore
 let resetProps: ResetProps<any> = {
-  tradeData,
-  coinMap,
-  walletMap,
-  resetBtnStatus: TradeBtnStatus.AVAILABLE,
-  // onResetClick: (tradeData: SwapTradeData<CoinType>) => {
-  //     console.log('Swap button click', tradeData);
-  // },
-  handlePanelEvent: async (
-    props: SwitchData<any>,
-    switchType: "Tomenu" | "Tobutton"
-  ) => {
-    return new Promise((res) => {
-      setTimeout(() => {
-        console.log("wait 100, with props", props, switchType);
-        // res();
-      }, 500);
-    });
+  isFeeNotEnough: false,
+  chargeFeeTokenList: [
+    { belong: "ETH", fee: 0.001, __raw__: "" as any },
+    { belong: "LRC", fee: "1", __raw__: "" as any },
+  ],
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
+  handleFeeChange(value: {
+    belong: string;
+    fee: number | string;
+    __raw__?: any;
+  }): void {
+    console.log("handleWithdrawFee", value);
   },
-  fee: { count: 234, price: 123 },
+  onResetClick(): void {},
 };
+// resetBtnStatus: TradeBtnStatus.AVAILABLE,
+//   handlePanelEvent: async (
+//     props: SwitchData<any>,
+//     switchType: "Tomenu" | "Tobutton"
+//   ) => {
+//     return new Promise((res: any) => {
+//       setTimeout(() => {
+//         console.log("wait 100, with props", props, switchType);
+//         res();
+//       }, 500);
+//     });
+//   },
+//   fee: { count: 234, price: 123 },
 let swapProps: SwapProps<IBData<string>, string, any> = {
   refreshRef: React.createRef(),
   tradeData: {
@@ -216,9 +226,9 @@ let _ammProps: AmmProps<
     coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
     slippage: "",
   },
-  AmmExitData: {
+  // @ts-ignore
+  ammWithdrawData: {
     coinLP: { belong: "LP-ETH-LRC", balance: 0.3, tradeValue: 0 },
-    // coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
     slippage: "",
   },
   // tradeCalcData,
@@ -227,8 +237,8 @@ let _ammProps: AmmProps<
   handleAmmAddChangeEvent: (data, type) => {
     console.log("handleAmmAddChangeEvent", data, type);
   },
-  handleAmmRemoveChangeEvent: (data, type) => {
-    return console.log("handleAmmRemoveChangeEvent", data, type);
+  handleAmmRemoveChangeEvent: (data) => {
+    return console.log("handleAmmRemoveChangeEvent", data);
   },
   onAmmRemoveClick: (data) => {
     console.log("onAmmRemoveClick", data);
@@ -243,16 +253,12 @@ const WrapTransferPanel = (rest: any) => {
   dispatch(setShowTransfer({ isShow: false }));
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <TransferPanel {...transferProps} {...rest}>
-          {" "}
-        </TransferPanel>
+        <TransferPanel {...{ ...rest, ...transferProps }} />
       </Grid>
       <Grid item sm={6}>
-        <TransferPanel {...rest}> </TransferPanel>
+        <TransferPanel {...rest} />
       </Grid>
-      <Grid item sm={12}></Grid>
     </>
   );
 };
@@ -262,16 +268,12 @@ const WrapWithdrawPanel = (rest: any) => {
 
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <WithdrawPanel {...withdrawProps} {...rest}>
-          {" "}
-        </WithdrawPanel>
+        <WithdrawPanel {...withdrawProps} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <WithdrawPanel {...rest}> </WithdrawPanel>
       </Grid>
-      <Grid item sm={12}></Grid>
     </>
   );
 };
@@ -282,14 +284,11 @@ const WrapDepositPanel = (rest: any) => {
   const { t } = useTranslation("common");
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <DepositPanel {...{ ...rest, ...depositProps, ...{ v: true } }}>
-          {" "}
-        </DepositPanel>
+        <DepositGroup {...{ ...rest, ...depositProps, ...{ v: true } }} />
       </Grid>
       <Grid item sm={6}>
-        <DepositPanel
+        <DepositGroup
           {...{
             ...rest,
             ...depositProps,
@@ -297,9 +296,7 @@ const WrapDepositPanel = (rest: any) => {
             title: t("depositTitleAndActive"),
             description: "depositAndActiveDescription",
           }}
-        >
-          {" "}
-        </DepositPanel>
+        />
       </Grid>
       <Grid item sm={12}>
         {/*<Button onClick={() => setOpen(true)}> open</Button>*/}
@@ -312,16 +309,13 @@ const WrapResetPanel = (rest: any) => {
   dispatch(setShowResetAccount({ isShow: false }));
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <ResetPanel {...resetProps} {...rest}>
-          {" "}
-        </ResetPanel>
+        <ResetPanel {...resetProps} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <ResetPanel {...rest}> </ResetPanel>
       </Grid>
-      <Grid item sm={12}></Grid>
+      <Grid item sm={12} />
     </>
   );
 };
@@ -352,11 +346,8 @@ const WrapSwapPanel = (rest: any) => {
 
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <SwapPanel {...swapProps} {...rest}>
-          {" "}
-        </SwapPanel>
+        <SwapPanel {...swapProps} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <SwapPanel {...rest}> </SwapPanel>
@@ -393,14 +384,11 @@ const WrapAmmPanel = (rest: any) => {
 
   return (
     <>
-      {" "}
       <Grid item sm={6}>
         <AmmPanel
           {...{ ...ammProps, tabSelected: AmmPanelType.Join }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -410,17 +398,13 @@ const WrapAmmPanel = (rest: any) => {
             ammDepositBtnStatus: TradeBtnStatus.LOADING,
           }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
           {...{ ...ammProps, tabSelected: AmmPanelType.Exit }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -430,9 +414,7 @@ const WrapAmmPanel = (rest: any) => {
             ammWithdrawBtnStatus: TradeBtnStatus.DISABLED,
           }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        />
       </Grid>
     </>
   );
@@ -442,14 +424,24 @@ const ModalPanelWrap = () => {
   return (
     <ModalPanel
       transferProps={transferProps}
-      depositProps={depositProps}
+      depositGroupProps={{
+        depositProps,
+        vendorMenuProps: {
+          vendorList,
+          vendorForce: undefined,
+        },
+      }}
       withdrawProps={withdrawProps}
       nftTransferProps={transferProps}
-      nftDepositProps={depositProps}
+      nftDepositProps={{} as any}
       nftWithdrawProps={withdrawProps}
       resetProps={resetProps}
       ammProps={_ammProps}
       swapProps={swapProps}
+      assetsData={{} as any}
+      exportAccountProps={{} as any}
+      setExportAccountToastOpen={{} as any}
+      activeAccountProps={{} as any}
     />
   );
 };
@@ -462,7 +454,6 @@ const Template: Story<any> = () => {
   ) as Array<number | string>;
   return (
     <Style>
-      {" "}
       <MemoryRouter initialEntries={["/"]}>
         <Box>
           <h4>Slippage bloc</h4>

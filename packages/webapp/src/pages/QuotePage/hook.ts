@@ -7,11 +7,7 @@ import {
 import { TradingInterval, WsTopicType } from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "api_wrapper";
 import { tickerService } from "services/socket";
-import {
-  getValuePrecisionThousand,
-  myError,
-  SagaStatus,
-} from "@loopring-web/common-resources";
+import { myError, SagaStatus } from "@loopring-web/common-resources";
 import _ from "lodash";
 import { TickerMap, useTicker } from "stores/ticker";
 import { useSocket } from "../../stores/socket";

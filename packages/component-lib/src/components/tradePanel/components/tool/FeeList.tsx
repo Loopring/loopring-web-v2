@@ -1,29 +1,35 @@
-import { MenuItem } from '../../../basic-lib';
-import { ListItemText, Typography } from '@mui/material';
+import { MuToggleButtonGroupStyle } from "../../../basic-lib";
+import { ToggleButton } from "@mui/material";
+import { FeeInfo } from "@loopring-web/common-resources";
 
-export const ChargeFeeTokenListView = <C extends { [ key: string ]: any }>({chargeFeeTokenList}: {
-    chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?: any }>
-}): JSX.Element => {
-    return <>{chargeFeeTokenList.map(({belong, fee}, index) => {
-        // @ts-ignore
-        return <MenuItem key={index} value={index} withnocheckicon={'true'}>
-            <ListItemText primary={<Typography
-                sx={{display: 'inline'}}
-                component="span"
-                variant="body1"
-                color="text.primary"
-            >{belong}</Typography>} secondary={<Typography
-                sx={{display: 'inline'}}
-                component="span"
-                variant="body1"
-                color="text.primaryLight"
-            >{fee}</Typography>}/>
-        </MenuItem>
-    })
-    }
-    </>
-}
-
-// ) )as <C extends { [ key: string ]: any }>(props: {
-//     chargeFeeTokenList: Array<{ belong: C, fee: number | string, __raw__?: any }>
-// }) => JSX.Element;
+export const FeeToggle = <C extends FeeInfo>({
+  chargeFeeTokenList,
+  handleToggleChange,
+  feeInfo,
+}: {
+  chargeFeeTokenList: Array<C>;
+  handleToggleChange: (value: C) => void;
+  feeInfo: C;
+}) => {
+  return (
+    <MuToggleButtonGroupStyle
+      size={"small"}
+      value={feeInfo}
+      exclusive
+      onChange={(_e, value: C) => {
+        handleToggleChange(value);
+      }}
+    >
+      {chargeFeeTokenList?.map((feeInfo, index) => (
+        <ToggleButton
+          key={feeInfo.belong + index}
+          value={feeInfo}
+          aria-label={feeInfo.belong}
+          // disabled={disabled}
+        >
+          {feeInfo.belong}
+        </ToggleButton>
+      ))}
+    </MuToggleButtonGroupStyle>
+  );
+};

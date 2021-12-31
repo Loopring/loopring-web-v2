@@ -31,7 +31,7 @@ import { Currency } from "@loopring-web/loopring-sdk";
 import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import { useTokenPrices } from "stores/tokenPrices";
-import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { useTokenMap } from "../../../stores/token";
 
 const UP_COLOR = "#00BBA8";
 const DOWN_COLOR = "#fb3838";
@@ -93,12 +93,11 @@ export type TrendDataItem = {
 const AssetPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const container = useRef(null);
-    // const [pageSize, setPageSize] = useState(10);
-    // const [chartPeriod, setChartPeriod] = useState('week')
+    const { disableWithdrawList } = useTokenMap();
     const { allowTrade, forex } = useSystem();
     const { raw_data } = allowTrade;
-    const legalEnable = (raw_data as any)?.legal.enable;
-    const legalShow = (raw_data as any)?.legal.show;
+    const legalEnable = (raw_data as any)?.legal?.enable;
+    const legalShow = (raw_data as any)?.legal?.show;
     const {
       account: { accountId, accAddress },
     } = useAccount();
@@ -201,8 +200,12 @@ const AssetPanel = withTranslation("common")(
     const { upColor } = useSettings();
 
     const onShowDeposit = useCallback(
-      (token?: any) => {
-        showDeposit({ isShow: true, symbol: token });
+      (token?: any, partner?: boolean) => {
+        if (partner) {
+          showDeposit({ isShow: true, partner: true });
+        } else {
+          showDeposit({ isShow: true, symbol: token });
+        }
       },
       [showDeposit]
     );
@@ -229,21 +232,22 @@ const AssetPanel = withTranslation("common")(
       },
       [history]
     );
+    const showPartner = () => {};
 
-    const showRamp = useCallback(() => {
-      const widget = new RampInstantSDK({
-        hostAppName: "Loopring",
-        hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
-        // url: 'https://ri-widget-staging.web.app/', // main staging
-        swapAsset: "LOOPRING_*",
-        userAddress: accAddress,
-        hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
-      }).show();
-
-      if (widget && widget.domNodes) {
-        (widget as any).domNodes.shadowHost.style.position = "absolute";
-      }
-    }, [accAddress]);
+    // const showRamp = useCallback(() => {
+    //   const widget = new RampInstantSDK({
+    //     hostAppName: "Loopring",
+    //     hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
+    //     // url: 'https://ri-widget-staging.web.app/', // main staging
+    //     swapAsset: "LOOPRING_*",
+    //     userAddress: accAddress,
+    //     hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
+    //   }).show();
+    //
+    //   if (widget && widget.domNodes) {
+    //     (widget as any).domNodes.shadowHost.style.position = "absolute";
+    //   }
+    // }, [accAddress]);
 
     const AssetTitleProps: AssetTitleProps = {
       assetInfo: {
@@ -262,7 +266,7 @@ const AssetPanel = withTranslation("common")(
       onShowTransfer,
       onShowWithdraw,
       setHideL2Assets,
-      showRamp,
+      showPartner: () => onShowDeposit(undefined, true),
       legalEnable,
       legalShow,
     };
@@ -419,7 +423,7 @@ const AssetPanel = withTranslation("common")(
             </Typography>
             <Box display={"flex"} alignItems={"center"}>
               <Typography component={"span"} variant={"h5"}>
-                {getCurrAssetsEth()} ETH{" "}
+                {getCurrAssetsEth()} ETH
               </Typography>
               <Typography
                 component={"span"}
@@ -457,9 +461,7 @@ const AssetPanel = withTranslation("common")(
             <AssetsTable
               {...{
                 rawData: assetsRawData,
-                // pagination: {
-                //     pageSize: pageSize
-                // },
+                disableWithdrawList,
                 showFilter: true,
                 allowTrade,
                 onShowDeposit: onShowDeposit,

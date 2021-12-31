@@ -26,6 +26,7 @@ import {
   NavListIndex,
   PriceTag,
   subMenuLayer2,
+  VendorProviders,
   ViewIcon,
   WithdrawType,
   WithdrawTypes,
@@ -70,6 +71,8 @@ const OrderHistoryTable = withTranslation("common", { withRef: true })(
 
 let tradeData: any = {};
 let depositProps: DepositProps<any, any> = {
+  vendorForce: VendorProviders.Ramp,
+  vendorList: [],
   isNewAccount: true,
   tradeData,
   coinMap,
@@ -122,7 +125,8 @@ let withdrawProps: WithdrawProps<any, any> = {
   },
   withdrawType: WithdrawType.Fast,
   withdrawTypes: WithdrawTypes,
-  chargeFeeToken: "ETH",
+  // @ts-ignore
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" },
   chargeFeeTokenList: [
     { belong: "ETH", fee: 0.001, __raw__: "" },
     { belong: "LRC", fee: "1", __raw__: "" },
@@ -160,7 +164,8 @@ let transferProps: TransferProps<any, any> = {
   }): void {
     console.log(value);
   },
-  chargeFeeToken: "ETH",
+  // @ts-ignore
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" },
   chargeFeeTokenList: [
     { belong: "ETH", fee: 0.001, __raw__: "" },
     { belong: "LRC", fee: "1", __raw__: "" },
@@ -173,10 +178,12 @@ let transferProps: TransferProps<any, any> = {
   },
 };
 let resetProps: ResetProps<any> = {
+  isFeeNotEnough: false,
   chargeFeeTokenList: [],
   // tradeData,
   assetsData: [],
   // walletMap,
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: {} },
   resetBtnStatus: TradeBtnStatus.AVAILABLE,
   onResetClick: () => {
     console.log("Swap button click", tradeData);
@@ -238,11 +245,11 @@ const ModalPanelWrap = () => {
       depositProps={depositProps}
       resetProps={resetProps}
       ammProps={ammProps as AmmProps<any, any, any, any>}
-      swapProps={swapProps}
+      swapProps={swapProps as any}
       assetsData={resetProps as any}
       exportAccountProps={{} as any}
+      activeAccountProps={{} as any}
       setExportAccountToastOpen={{} as any}
-      nftDepositProps={{} as any}
       nftTransferProps={{} as any}
       nftWithdrawProps={{} as any}
     />
@@ -352,7 +359,8 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
       <CssBaseline />
       <HideOnScroll>
         <Header
-          headerMenuData={{ ...headerMenuData, allowTrade: true }}
+          {...{ ...rest }}
+          headerMenuData={{ ...headerMenuData }}
           headerToolBarData={{ ...headerToolBarData }}
           selected={"markets"}
         />

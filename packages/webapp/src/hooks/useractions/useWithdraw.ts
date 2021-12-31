@@ -41,7 +41,6 @@ import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
-import { getFloatValue } from "utils/formatter_tool";
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
   withdrawAlertText: string | undefined;
@@ -65,7 +64,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
   const [withdrawAlertText, setWithdrawAlertText] = React.useState<string>();
 
-  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
 
@@ -76,8 +75,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
 
-  const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<FeeInfo>();
-
   const [withdrawType, setWithdrawType] =
     React.useState<sdk.OffchainFeeReqType>(
       sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -87,66 +84,70 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
       ? "Fast"
       : "Standard";
-  const { chargeFeeList } = useChargeFees({
-    tokenSymbol: withdrawValue.belong,
-    requestType: withdrawType,
-    tokenMap,
-    amount: withdrawValue.tradeValue,
-  });
+  // const { chargeFeeList } = useChargeFees({
+  //   tokenSymbol: withdrawValue.belong,
+  //   requestType: withdrawType,
+  //   tokenMap,
+  //   amount: withdrawValue.tradeValue,
+  // });
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      requestType: withdrawType,
+      tokenSymbol: withdrawValue.belong,
+      updateData: (feeInfo, _chargeFeeList) => {
+        updateWithdrawData({ ...withdrawValue, fee: feeInfo });
+      },
+    });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes);
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
   const { checkHWAddr, updateHW } = useWalletInfo();
 
   const [lastRequest, setLastRequest] = React.useState<any>({});
 
   const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>();
 
-  const { address, realAddr, setAddress, addrStatus } = useAddressCheck();
+  const {
+    address,
+    realAddr,
+    isCFAddress,
+    isContractAddress,
+    setAddress,
+    addrStatus,
+    isAddressCheckLoading,
+  } = useAddressCheck();
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
   const checkBtnStatus = React.useCallback(() => {
-    if (
-      !tokenMap ||
-      !withdrawFeeInfo?.belong ||
-      !withdrawValue?.belong ||
-      !address
-    ) {
-      disableBtn();
-      return;
+    if (tokenMap && withdrawValue.belong && tokenMap[withdrawValue.belong]) {
+      const withdrawT = tokenMap[withdrawValue.belong];
+      const tradeValue = sdk
+        .toBig(withdrawValue.tradeValue ?? 0)
+        .times("1e" + withdrawT.decimals);
+      const exceedPoolLimit =
+        withdrawType2 === "Fast" &&
+        tradeValue.gt(0) &&
+        tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit));
+      if (
+        tradeValue &&
+        !exceedPoolLimit &&
+        chargeFeeTokenList.length &&
+        !isFeeNotEnough &&
+        tradeValue.gt(BIGO) &&
+        address &&
+        address !== "" &&
+        addrStatus === AddressError.NoError
+      ) {
+        enableBtn();
+        return;
+      }
+      if (exceedPoolLimit) {
+        setWithdrawI18nKey("withdrawLabelBtnExceed");
+      } else {
+        setWithdrawI18nKey(undefined);
+      }
     }
-
-    const withdrawT = tokenMap[withdrawValue.belong as string];
-
-    const tradeValue = sdk
-      .toBig(withdrawValue.tradeValue ?? 0)
-      .times("1e" + withdrawT.decimals);
-
-    const exceedPoolLimit =
-      withdrawType2 === "Fast" &&
-      tradeValue.gt(0) &&
-      tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit));
-
-    if (
-      chargeFeeList &&
-      chargeFeeList?.length > 0 &&
-      !!address &&
-      tradeValue.gt(BIGO) &&
-      addrStatus === AddressError.NoError &&
-      !isExceedMax &&
-      !exceedPoolLimit
-    ) {
-      enableBtn();
-    } else {
-      disableBtn();
-    }
-
-    if (exceedPoolLimit) {
-      setWithdrawI18nKey("withdrawLabelBtnExceed");
-    } else {
-      setWithdrawI18nKey(undefined);
-    }
+    disableBtn();
 
     // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, withdrawFeeInfo)
   }, [
@@ -156,10 +157,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     tokenMap,
     address,
     addrStatus,
-    chargeFeeList,
-    withdrawFeeInfo,
+    chargeFeeTokenList,
     withdrawValue,
-    isExceedMax,
+    isFeeNotEnough,
   ]);
 
   React.useEffect(() => {
@@ -168,12 +168,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawType2,
     address,
     addrStatus,
-    withdrawFeeInfo?.belong,
-    withdrawFeeInfo?.fee,
-    withdrawFeeInfo?.belong,
+    withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,
-    isExceedMax,
   ]);
 
   const updateWithdrawTypes = React.useCallback(async () => {
@@ -214,7 +211,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   }, [withdrawValue.belong, tokenMap]);
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
+    const walletMap =
+      makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>);
     setWalletMap2(walletMap);
   }, [setWalletMap2]);
 
@@ -410,7 +408,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         address &&
-        withdrawFeeInfo?.belong &&
+        withdrawValue?.fee?.belong &&
+        withdrawValue.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
@@ -420,10 +419,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             step: AccountStep.Withdraw_WaitForAuth,
           });
 
-          const withdrawToken = tokenMap[inputValue.belong as string];
-          const feeToken = tokenMap[withdrawFeeInfo.belong];
+          const withdrawToken = tokenMap[withdrawValue.belong as string];
+          const feeToken = tokenMap[withdrawValue.fee.belong];
 
-          const fee = sdk.toBig(withdrawFeeInfo?.__raw__?.feeRaw ?? 0);
+          const fee = sdk.toBig(withdrawValue.fee?.__raw__?.feeRaw ?? 0);
           const balance = sdk
             .toBig(inputValue.balance ?? 0)
             .times("1e" + withdrawToken.decimals);
@@ -481,8 +480,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       account,
       tokenMap,
       exchangeInfo,
-      withdrawFeeInfo?.belong,
-      withdrawFeeInfo?.__raw__.feeRaw,
       setShowWithdraw,
       setShowAccount,
       withdrawType2,
@@ -490,17 +487,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     ]
   );
 
-  const handleFeeChange = React.useCallback(
-    (value: FeeInfo): void => {
-      setWithdrawFeeInfo(value);
-    },
-    [setWithdrawFeeInfo]
-  );
-
-  const withdrawProps: any = {
+  const withdrawProps: WithdrawProps<any, any> = {
+    isAddressCheckLoading,
+    isCFAddress,
+    isContractAddress,
     withdrawI18nKey,
     addressDefault: address,
     realAddr,
+    disableWithdrawList,
     tradeData: withdrawValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap2 as WalletMap<any>,
@@ -513,7 +507,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       }
       setShowWithdraw({ isShow: false });
     },
-    handleFeeChange,
     handleWithdrawTypeChange: (value: "Fast" | "Standard") => {
       // myLog('handleWithdrawTypeChange', value)
       const offchainType =
@@ -549,23 +542,25 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         res();
       });
     },
-    chargeFeeToken: withdrawFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
+    handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     handleOnAddressChange: (value: any) => {},
     handleAddressError: (value: any) => {
       updateWithdrawData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };
     },
-    handleError: ({ belong, balance, tradeValue }: any) => {
-      balance = getFloatValue(balance);
-      tradeValue = getFloatValue(tradeValue);
-      if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-        setIsExceedMax(true);
-        return { error: true, message: t("tokenNotEnough", { belong }) };
-      }
-      setIsExceedMax(false);
-      return { error: false, message: "" };
-    },
+    // handleError: ({ belong, balance, tradeValue }: any) => {
+    //   balance = getFloatValue(balance);
+    //   tradeValue = getFloatValue(tradeValue);
+    //   if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
+    //     setIsExceedMax(true);
+    //     return { error: true, message: t("tokenNotEnough", { belong }) };
+    //   }
+    //   setIsExceedMax(false);
+    //   return { error: false, message: "" };
+    // },
   };
 
   return {

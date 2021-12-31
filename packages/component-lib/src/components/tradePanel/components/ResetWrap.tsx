@@ -1,121 +1,29 @@
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import styled from "@emotion/styled";
-import { Grid, Typography, Box, IconProps } from "@mui/material";
-import {
-  DropDownIcon,
-  EmptyValueTag,
-  getValuePrecisionThousand,
-} from "@loopring-web/common-resources";
-import { Button, ToggleButtonGroup } from "../../basic-lib";
+import { Grid, Typography, Box } from "@mui/material";
+import { EmptyValueTag, FeeInfo } from "@loopring-web/common-resources";
+import { Button } from "../../basic-lib";
 import { ResetViewProps } from "./Interface";
-import { TypographyStrong } from "../../../index";
-import { useSettings } from "../../../stores";
+import {
+  DropdownIconStyled,
+  FeeTokenItemWrapper,
+  TypographyStrong,
+} from "../../../index";
+import { FeeToggle } from "./tool/FeeList";
 
-const FeeTokenItemWrapper = styled(Box)`
-  background-color: var(--color-global-bg);
-`;
-
-const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
-  transform: rotate(
-    ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
-    }}
-  );
-` as (props: IconProps & { status: string }) => JSX.Element;
-
-export const ResetWrap = <T extends object>({
+export const ResetWrap = <T extends FeeInfo>({
   t,
   resetBtnStatus,
   onResetClick,
-  chargeFeeToken,
+  feeInfo,
+  isFeeNotEnough,
   chargeFeeTokenList,
   handleFeeChange,
-  assetsData = [],
-  ...rest
 }: ResetViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
-  const [feeToken, setFeeToken] = React.useState("");
-  const { feeChargeOrder } = useSettings();
-
-  const toggleData: any[] = chargeFeeTokenList
-    .sort(
-      (a, b) =>
-        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-    )
-    .map(({ belong, fee, __raw__ }) => ({
-      key: belong,
-      value: belong,
-      fee,
-      __raw__,
-    }));
-
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-      const currFee =
-        toggleData.find((o) => o.key === defaultToken)?.fee || EmptyValueTag;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === defaultToken)?.__raw__ ||
-        EmptyValueTag;
-      handleFeeChange({
-        belong: defaultToken,
-        fee: currFee,
-        __raw__: currFeeRaw,
-      });
-    }
-  }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData]);
-
-  const getTokenFee = React.useCallback(
-    (token: string) => {
-      const raw = toggleData.find((o) => o.key === token)?.fee;
-      // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
-      return getValuePrecisionThousand(
-        raw,
-        undefined,
-        undefined,
-        undefined,
-        false,
-        { isTrade: true, floor: false }
-      );
-    },
-    [toggleData]
-  );
-
-  const checkFeeTokenEnough = React.useCallback(
-    (token: string, fee: number) => {
-      const tokenAssets = assetsData.find((o) => o.name === token)?.available;
-      return tokenAssets && Number(tokenAssets) > fee;
-    },
-    [assetsData]
-  );
-
-  React.useEffect(() => {
-    if (
-      !!chargeFeeTokenList.length &&
-      assetsData &&
-      !checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))
-    ) {
-      setIsFeeNotEnough(true);
-      return;
-    }
-    setIsFeeNotEnough(false);
-  }, [
-    chargeFeeTokenList,
-    assetsData,
-    checkFeeTokenEnough,
-    getTokenFee,
-    feeToken,
-  ]);
 
   const getDisabled = React.useCallback(() => {
     if (isFeeNotEnough) {
@@ -125,20 +33,11 @@ export const ResetWrap = <T extends object>({
     }
   }, [isFeeNotEnough]);
 
-  const handleToggleChange = React.useCallback(
-    (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
-      if (value === null) return;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === value)?.__raw__ || EmptyValueTag;
-      setFeeToken(value);
-      handleFeeChange({
-        belong: value,
-        fee: getTokenFee(value),
-        __raw__: currFeeRaw,
-      });
-    },
-    [handleFeeChange, getTokenFee, toggleData]
-  );
+  const handleToggleChange = (value: T) => {
+    if (handleFeeChange) {
+      handleFeeChange(value);
+    }
+  };
 
   return (
     <Grid
@@ -152,7 +51,7 @@ export const ResetWrap = <T extends object>({
       flex={1}
       height={"100%"}
     >
-      <Grid item>
+      <Grid item marginBottom={2}>
         <Typography
           component={"h4"}
           textAlign={"center"}
@@ -178,51 +77,61 @@ export const ResetWrap = <T extends object>({
       </Grid>
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
-        <Typography
-          component={"span"}
-          display={"flex"}
-          alignItems={"center"}
-          variant={"body1"}
-          color={"var(--color-text-secondary)"}
-          marginBottom={1}
-        >
-          {t("transferLabelFee")}：
-          <Box
-            component={"span"}
-            display={"flex"}
-            alignItems={"center"}
-            style={{ cursor: "pointer" }}
-            onClick={() =>
-              setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
-            }
-          >
-            {getTokenFee(feeToken) || EmptyValueTag} {feeToken}
-            <DropdownIconStyled status={dropdownStatus} fontSize={"medium"} />
+        {!chargeFeeTokenList?.length ? (
+          <Typography>{t("labelFeeCalculating")}</Typography>
+        ) : (
+          <>
             <Typography
-              marginLeft={1}
               component={"span"}
-              color={"var(--color-error)"}
-            >
-              {isFeeNotEnough && t("transferLabelFeeNotEnough")}
-            </Typography>
-          </Box>
-        </Typography>
-        {dropdownStatus === "up" && (
-          <FeeTokenItemWrapper padding={2}>
-            <Typography
-              variant={"body2"}
-              color={"var(--color-text-third)"}
+              display={"flex"}
+              alignItems={"center"}
+              variant={"body1"}
+              color={"var(--color-text-secondary)"}
               marginBottom={1}
             >
-              {t("transferLabelFeeChoose")}
+              {t("transferLabelFee")}：
+              <Box
+                component={"span"}
+                display={"flex"}
+                alignItems={"center"}
+                style={{ cursor: "pointer" }}
+                onClick={() =>
+                  setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
+                }
+              >
+                {feeInfo && feeInfo.belong && feeInfo.fee
+                  ? feeInfo.fee + " " + feeInfo.belong
+                  : EmptyValueTag + " " + feeInfo.belong}
+                <DropdownIconStyled
+                  status={dropdownStatus}
+                  fontSize={"medium"}
+                />
+                <Typography
+                  marginLeft={1}
+                  component={"span"}
+                  color={"var(--color-error)"}
+                >
+                  {isFeeNotEnough && t("transferLabelFeeNotEnough")}
+                </Typography>
+              </Box>
             </Typography>
-            <ToggleButtonGroup
-              exclusive
-              size={"small"}
-              {...{ data: toggleData, value: feeToken, t, ...rest }}
-              onChange={handleToggleChange}
-            />
-          </FeeTokenItemWrapper>
+            {dropdownStatus === "up" && (
+              <FeeTokenItemWrapper padding={2}>
+                <Typography
+                  variant={"body2"}
+                  color={"var(--color-text-third)"}
+                  marginBottom={1}
+                >
+                  {t("transferLabelFeeChoose")}
+                </Typography>
+                <FeeToggle
+                  chargeFeeTokenList={chargeFeeTokenList}
+                  handleToggleChange={handleToggleChange}
+                  feeInfo={feeInfo}
+                />
+              </FeeTokenItemWrapper>
+            )}
+          </>
         )}
       </Grid>
 

@@ -1,89 +1,283 @@
-import * as sdk from '@loopring-web/loopring-sdk';
+import * as sdk from "@loopring-web/loopring-sdk";
 import {
-    dumpError400,
-    GetOffchainFeeAmtRequest,
-    LoopringMap,
-    OffchainFeeReqType,
-    toBig,
-    TokenInfo
-} from '@loopring-web/loopring-sdk';
-import { useAccount } from 'stores/account';
-import React, { useState } from 'react';
-import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
-import { LoopringAPI } from 'api_wrapper';
-import * as _ from 'lodash'
-import { FeeInfo, globalSetup } from '@loopring-web/common-resources'
+  ChainId,
+  dumpError400,
+  GetOffchainFeeAmtRequest,
+  OffchainFeeReqType,
+  toBig,
+} from "@loopring-web/loopring-sdk";
+import React from "react";
+import { LoopringAPI } from "api_wrapper";
+import * as _ from "lodash";
+import {
+  AccountStatus,
+  FeeChargeOrderUATDefault,
+  FeeInfo,
+  globalSetup,
+  myLog,
+  WalletMap,
+} from "@loopring-web/common-resources";
+import { useTokenMap } from "../../stores/token";
+import { useSettings } from "@loopring-web/component-lib";
+import { OffchainNFTFeeReqType } from "@loopring-web/loopring-sdk";
+import { GetNFTOffchainFeeAmtRequest } from "@loopring-web/loopring-sdk";
+import { useAccount } from "../../stores/account";
+import { useSystem } from "../../stores/system";
+import { makeWalletLayer2 } from "../help";
+import store from "../../stores";
 
-export function useChargeFees({ tokenSymbol, requestType, tokenMap, amount, needRefresh, }: {
-    tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
-    tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number, needRefresh?: boolean
+export function useChargeFees({
+  tokenSymbol,
+  requestType,
+  amount,
+  tokenAddress,
+  updateData,
+  isActiveAccount = false,
+  needAmountRefresh,
+}: {
+  tokenAddress?: string | undefined;
+  tokenSymbol?: string | undefined;
+  requestType: OffchainFeeReqType | OffchainNFTFeeReqType;
+  amount?: number;
+  updateData:
+    | undefined
+    | ((fee: FeeInfo, chargeFeeTokenList?: FeeInfo[]) => void);
+  isActiveAccount?: boolean;
+  needAmountRefresh?: boolean;
 }) {
+  const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
+    belong: "ETH",
+    fee: 0,
+    feeRaw: undefined,
+  } as FeeInfo);
+  const { chainId } = useSystem();
+  let { feeChargeOrder } = useSettings();
+  feeChargeOrder =
+    chainId === ChainId.MAINNET ? feeChargeOrder : FeeChargeOrderUATDefault;
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  const [chargeFeeTokenList, setChargeFeeTokenList] = React.useState<FeeInfo[]>(
+    []
+  );
+  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<boolean>(false);
+  const { tokenMap } = useTokenMap();
+  const { account } = useAccount();
+  const handleFeeChange = (value: FeeInfo): void => {
+    const walletMap =
+      makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
+    if (
+      walletMap &&
+      value?.belong &&
+      walletMap[value.belong] &&
+      walletMap[value.belong]?.count &&
+      // @ts-ignore
+      sdk.toBig(walletMap[value.belong].count).gte(sdk.toBig(value.fee))
+    ) {
+      setIsFeeNotEnough(false);
+    } else {
+      setIsFeeNotEnough(true);
+    }
+    if (updateData && value) {
+      updateData({
+        ...value,
+        __raw__: {
+          ...value.__raw__,
+          tokenId: tokenMap[value.belong.toString()].tokenId,
+        },
+      });
+    }
+    setFeeInfo(value);
+  };
 
-    const { account } = useAccount()
+  const getFeeList = _.debounce(
+    async () => {
+      const { tokenMap } = store.getState().tokenMap;
+      const walletMap =
+        makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+      }
+      let tokenInfo;
+      if (tokenSymbol && tokenMap) {
+        tokenInfo = tokenMap[tokenSymbol];
+      }
+      if (
+        tokenMap &&
+        tokenMap.ETH &&
+        LoopringAPI.userAPI &&
+        LoopringAPI.globalAPI
+      ) {
+        try {
+          const request:
+            | GetOffchainFeeAmtRequest
+            | GetNFTOffchainFeeAmtRequest = {
+            accountId: account.accountId,
+            tokenSymbol,
+            tokenAddress,
+            requestType,
+            amount:
+              tokenInfo && amount
+                ? toBig(amount)
+                    .times("1e" + tokenInfo.decimals)
+                    .toFixed(0, 0)
+                : "0",
+          };
+          let fees: any;
+          if (isActiveAccount) {
+            // if(account.readyState  === 'NO_ACCOUNT'){
+            //
+            // }
+            fees = (
+              await LoopringAPI?.globalAPI.getActiveFeeInfo({
+                accountId:
+                  account._accountIdNotActive &&
+                  account._accountIdNotActive !== -1
+                    ? account._accountIdNotActive
+                    : undefined,
+              })
+            ).fees;
+          } else if (
+            [
+              OffchainNFTFeeReqType.NFT_MINT,
+              OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+              OffchainNFTFeeReqType.NFT_TRANSFER,
+              OffchainNFTFeeReqType.NFT_DEPLOY,
+            ].includes(requestType as any) &&
+            account.accountId &&
+            account.accountId !== -1 &&
+            account.apiKey
+          ) {
+            fees = (
+              await LoopringAPI.userAPI.getNFTOffchainFeeAmt(
+                request as GetNFTOffchainFeeAmtRequest,
+                account.apiKey
+              )
+            ).fees;
+          } else if (
+            account.accountId &&
+            account.accountId !== -1 &&
+            account.apiKey
+          ) {
+            fees = (
+              await LoopringAPI.userAPI.getOffchainFeeAmt(
+                request as GetOffchainFeeAmtRequest,
+                account.apiKey
+              )
+            ).fees;
+          }
 
-    const [chargeFeeList, setChargeFeeList] = useState<FeeInfo[]>([])
-
-    const getFeeList = React.useCallback(
-        _.debounce(async (accountId: number, apiKey: string, tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
-            tokenMap: LoopringMap<TokenInfo> | undefined, amount: number | undefined) => {
-
-            if (accountId === -1 || !apiKey || !tokenSymbol || typeof tokenSymbol !== 'string'
-                || !tokenMap || !LoopringAPI.userAPI) {
-                return
+          nodeTimer.current = setTimeout(() => {
+            getFeeList();
+          }, 900000); //15*60*1000 //900000
+          let feeInfo: any;
+          if (fees) {
+            const _chargeFeeTokenList = feeChargeOrder.reduce(
+              (pre, item, index) => {
+                let { fee, token } = fees[item] ?? {};
+                if (fee && token) {
+                  const tokenInfo = tokenMap[token];
+                  const tokenId = tokenInfo.tokenId;
+                  const fastWithDraw = tokenInfo.fastWithdrawLimit;
+                  const feeRaw = fee;
+                  fee = sdk
+                    .toBig(fee)
+                    .div("1e" + tokenInfo.decimals)
+                    .toString();
+                  const _feeInfo = {
+                    belong: token,
+                    fee,
+                    feeRaw,
+                    __raw__: { fastWithDraw, feeRaw, tokenId },
+                  };
+                  pre.push(_feeInfo);
+                  if (feeInfo === undefined && walletMap && walletMap[token]) {
+                    const { count } = walletMap[token] ?? { count: 0 };
+                    if (sdk.toBig(count).gt(sdk.toBig(fee))) {
+                      feeInfo = _feeInfo;
+                    }
+                  }
+                }
+                return pre;
+              },
+              [] as Array<FeeInfo>
+            );
+            if (feeInfo === undefined) {
+              feeInfo = _chargeFeeTokenList[0] ?? {
+                belong: "ETH",
+                fee: 0,
+                feeRaw: undefined,
+              };
+              setIsFeeNotEnough(true);
+            } else {
+              setIsFeeNotEnough(false);
             }
 
-            // myLog('tokenSymbol:', tokenSymbol, ' requestType:', OffchainFeeReqType[requestType])
-
-            let chargeFeeList: FeeInfo[] = []
-
-            try {
-                const tokenInfo = tokenMap[tokenSymbol]
-
-                const request: GetOffchainFeeAmtRequest = {
-                    accountId,
-                    tokenSymbol,
-                    requestType,
-                    amount: amount ? toBig(amount).times('1e' + tokenInfo.decimals).toFixed(0, 0) : '0'
+            setFeeInfo((state) => {
+              if (state && state.feeRaw === undefined) {
+                if (updateData && feeInfo) {
+                  updateData(
+                    {
+                      ...feeInfo,
+                      __raw__: {
+                        ...feeInfo?.__raw__,
+                        tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                      },
+                    },
+                    _chargeFeeTokenList
+                  );
                 }
-
-                // myLog('request:', request)
-
-                const response = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
-
-                // myLog('response:', response)
-
-                if (response?.raw_data?.fees instanceof Array) {
-                    response.raw_data.fees.forEach((item: any) => {
-                        const feeRaw = item.fee
-                        const tokenInfo = tokenMap[item.token]
-                        const tokenId = tokenInfo.tokenId
-                        const fastWithDraw = tokenInfo.fastWithdrawLimit
-                        const fee = sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toString()
-                        chargeFeeList.push({ belong: item.token, fee, __raw__: { fastWithDraw, feeRaw, tokenId, } })
-                    })
-                }
-
-            } catch (reason) {
-                dumpError400(reason)
-            }
-
-            setChargeFeeList(chargeFeeList)
+                return feeInfo;
+              } else {
+                return state;
+              }
+            });
+            myLog(
+              "chargeFeeTokenList,requestType",
+              _chargeFeeTokenList,
+              requestType
+            );
+            setChargeFeeTokenList(_chargeFeeTokenList ?? []);
+          }
+        } catch (reason) {
+          dumpError400(reason);
+          myLog("chargeFeeTokenList,error", reason);
         }
-            , globalSetup.wait)
-        , [])
+        return;
+      } else {
+        nodeTimer.current = setTimeout(() => {
+          getFeeList();
+        }, 1000); //15*60*1000 //900000
+      }
+    },
+    globalSetup.wait,
+    { trailing: true }
+  );
 
-    useCustomDCEffect(() => {
-        getFeeList(account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount)
-    }, [account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount])
-
-    useCustomDCEffect(() => {
-        if (needRefresh) {
-            getFeeList(account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount)
-        }
-    }, [needRefresh, account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount])
-
-    return {
-        chargeFeeList,
+  React.useEffect(() => {
+    if (nodeTimer.current !== -1) {
+      clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+    }
+    if (
+      [
+        [
+          AccountStatus.NO_ACCOUNT,
+          AccountStatus.NOT_ACTIVE,
+          AccountStatus.ACTIVATED,
+        ].includes(account.readyState as any),
+      ]
+    ) {
+      getFeeList();
     }
 
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+      }
+    };
+  }, [tokenSymbol, account.readyState]);
+  return {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+  };
 }

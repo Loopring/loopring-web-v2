@@ -1,50 +1,43 @@
-import React from 'react';
+import React from "react";
 
-import { ResetProps, useOpenModals } from '@loopring-web/component-lib';
-import { FeeInfo } from '@loopring-web/common-resources';
-import { useBtnStatus } from 'hooks/common/useBtnStatus';
-import { useChargeFees } from 'hooks/common/useChargeFees';
-import * as sdk from '@loopring-web/loopring-sdk'
-import { useTokenMap } from 'stores/token';
-import { useUpdateAccout } from './useUpdateAccount';
+import { ResetProps, useOpenModals } from "@loopring-web/component-lib";
+import { FeeInfo } from "@loopring-web/common-resources";
+import { useBtnStatus } from "hooks/common/useBtnStatus";
+import { useChargeFees } from "hooks/common/useChargeFees";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { useUpdateAccount } from "./useUpdateAccount";
+import { makeWalletLayer2 } from "../help";
 
-export const useReset = <T>(): {
-    resetProps: ResetProps<T>
+export const useReset = <T extends FeeInfo>(): {
+  resetProps: ResetProps<T>;
 } => {
-    const [resetFeeInfo, setResetFeeInfo] = React.useState<FeeInfo>()
-    const { btnStatus, } = useBtnStatus()
+  const { btnStatus } = useBtnStatus();
+  const { setShowResetAccount } = useOpenModals();
 
-    const { tokenMap } = useTokenMap()
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      tokenSymbol: "ETH",
+      requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
+      updateData: undefined,
+    });
 
-    const { modals: { isShowResetAccount, }, setShowResetAccount, } = useOpenModals()
+  const { goUpdateAccount } = useUpdateAccount();
 
-    const { chargeFeeList, } = useChargeFees({
-        tokenSymbol: 'ETH', 
-        requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT, 
-        tokenMap, 
-        needRefresh: isShowResetAccount.isShow, 
-    })
+  const onResetClick = React.useCallback(() => {
+    setShowResetAccount({ isShow: false });
+    goUpdateAccount({ isReset: true, feeInfo: feeInfo });
+  }, [goUpdateAccount]);
 
-    const { goUpdateAccount, } = useUpdateAccout()
+  const resetProps: ResetProps<any> = {
+    isFeeNotEnough,
+    onResetClick,
+    resetBtnStatus: btnStatus,
+    feeInfo,
+    chargeFeeTokenList,
+    handleFeeChange,
+  };
 
-    const onResetClick = React.useCallback(() => {
-        setShowResetAccount({ isShow: false, })
-        goUpdateAccount({ isReset: true, feeInfo: resetFeeInfo, })
-    }, [goUpdateAccount])
-
-    const handleFeeChange = React.useCallback((value: FeeInfo): void => {
-        setResetFeeInfo(value)
-    }, [setResetFeeInfo])
-
-    const resetProps: ResetProps<T> = {
-        onResetClick,
-        resetBtnStatus: btnStatus,
-        chargeFeeToken: resetFeeInfo?.belong,
-        chargeFeeTokenList: chargeFeeList,
-        handleFeeChange,
-    }
-
-    return {
-        resetProps: resetProps as ResetProps<T>,
-    }
-}
+  return {
+    resetProps: resetProps as ResetProps<T>,
+  };
+};
