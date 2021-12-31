@@ -23,6 +23,7 @@ import { Footer, useSettings } from "@loopring-web/component-lib";
 import { ReportPage } from "pages/ReportPage";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
+import { HebaoPage } from "../pages/hebaoPage";
 
 const ContentWrap = ({
   children,
@@ -39,9 +40,9 @@ const ContentWrap = ({
         <Container
           maxWidth="lg"
           style={{
-            minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
             display: "flex",
             flexDirection: "column",
+            flex: 1,
           }}
         >
           <Box
@@ -92,6 +93,31 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path="/loading">
           <LoadingPage />
         </Route>
+        <Route path={["/hebao", "/hebao/*"]}>
+          {query && query.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={false} />
+          )}
+          <Container
+            maxWidth="lg"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: 1,
+            }}
+          >
+            <Box
+              display={"flex"}
+              flex={1}
+              alignItems={"stretch"}
+              flexDirection={"row"}
+              marginTop={3}
+            >
+              <HebaoPage />
+            </Box>
+          </Container>
+        </Route>
         <Route exact path="/">
           {query && query.has("noheader") ? (
             <></>
@@ -112,29 +138,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <Container
             maxWidth="lg"
             style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
               display: "flex",
               flexDirection: "column",
+              flex: 1,
             }}
           >
             <ReportPage />
-          </Container>
-        </Route>
-        <Route exact path="/document">
-          {query && query.has("noheader") ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} />
-          )}
-          <Container
-            maxWidth="lg"
-            style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <ErrorPage messageKey={"error404"} />
           </Container>
         </Route>
         <Route exact path="/document/:path">
@@ -146,9 +155,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <Container
             maxWidth="lg"
             style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
               display: "flex",
               flexDirection: "column",
+              flex: 1,
             }}
           >
             <MarkdownPage />
@@ -163,16 +172,16 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <Container
             maxWidth="lg"
             style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
               display: "flex",
               flexDirection: "column",
+              flex: 1,
             }}
           >
             <NotifyMarkdownPage />
           </Container>
         </Route>
 
-        <Route exact path="/race-event">
+        <Route exact path={["/document", "/race-event", "/notification"]}>
           {query && query.has("noheader") ? (
             <></>
           ) : (
@@ -180,7 +189,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
           <ErrorPage messageKey={"error404"} />
         </Route>
-        <Route exact path="/race-event/:path">
+        <Route exact path={["/race-event/:path"]}>
           {query && query.has("noheader") ? (
             <></>
           ) : (
@@ -217,12 +226,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MiningPage />
           </ContentWrap>
         </Route>
-        <Route exact path="/layer2">
-          <ContentWrap state={state}>
-            <Layer2Page />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/layer2/*">
+        <Route exact path={["/layer2", "/layer2/*"]}>
           <ContentWrap state={state}>
             <Layer2Page />
           </ContentWrap>

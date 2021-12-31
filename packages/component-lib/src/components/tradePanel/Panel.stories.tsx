@@ -37,7 +37,7 @@ import {
   WithdrawProps,
 } from "./index";
 
-import { DepositPanel, WithdrawPanel } from "../modal";
+import { DepositPanel, TransferPanel, WithdrawPanel } from "../modal";
 
 import { useDispatch } from "react-redux";
 import {
@@ -104,8 +104,8 @@ let withdrawProps: WithdrawProps<any, any> = {
   chargeFeeToken: "ETH",
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
+    { belong: "ETH", fee: 0.001, __raw__: "" as any },
+    { belong: "LRC", fee: "1", __raw__: "" as any },
   ],
   handleOnAddressChange: (value: any) => {
     console.log("handleOnAddressChange", value);
@@ -117,9 +117,6 @@ let withdrawProps: WithdrawProps<any, any> = {
   }): void {
     console.log("handleWithdrawFee", value);
   },
-  // handleWithdrawFee(value: { belong: string; fee: number | string; __raw__?: any }): void {
-  //     console.log('handleWithdrawFee', value);
-  // },
   handleWithdrawTypeChange: (value: any) => {
     console.log(value);
   },
@@ -156,8 +153,8 @@ let transferProps: TransferProps<any, any> = {
   chargeFeeToken: "ETH",
   // @ts-ignore
   chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
+    { belong: "ETH", fee: 0.001, __raw__: "" as any },
+    { belong: "LRC", fee: "1", __raw__: "" as any },
   ],
   handleOnAddressChange: (value: any) => {
     console.log("handleOnAddressChange", value);
@@ -166,28 +163,33 @@ let transferProps: TransferProps<any, any> = {
     return { error: true, message: "any error" };
   },
 };
-// @ts-ignore
 let resetProps: ResetProps<any> = {
-  tradeData,
-  coinMap,
-  walletMap,
-  resetBtnStatus: TradeBtnStatus.AVAILABLE,
-  // onResetClick: (tradeData: SwapTradeData<CoinType>) => {
-  //     console.log('Swap button click', tradeData);
-  // },
-  handlePanelEvent: async (
-    props: SwitchData<any>,
-    switchType: "Tomenu" | "Tobutton"
-  ) => {
-    return new Promise((res) => {
-      setTimeout(() => {
-        console.log("wait 100, with props", props, switchType);
-        // res();
-      }, 500);
-    });
+  chargeFeeTokenList: [
+    { belong: "ETH", fee: 0.001, __raw__: "" as any },
+    { belong: "LRC", fee: "1", __raw__: "" as any },
+  ],
+  handleFeeChange(value: {
+    belong: string;
+    fee: number | string;
+    __raw__?: any;
+  }): void {
+    console.log("handleWithdrawFee", value);
   },
-  fee: { count: 234, price: 123 },
+  onResetClick(): void {},
 };
+// resetBtnStatus: TradeBtnStatus.AVAILABLE,
+//   handlePanelEvent: async (
+//     props: SwitchData<any>,
+//     switchType: "Tomenu" | "Tobutton"
+//   ) => {
+//     return new Promise((res: any) => {
+//       setTimeout(() => {
+//         console.log("wait 100, with props", props, switchType);
+//         res();
+//       }, 500);
+//     });
+//   },
+//   fee: { count: 234, price: 123 },
 let swapProps: SwapProps<IBData<string>, string, any> = {
   refreshRef: React.createRef(),
   tradeData: {
@@ -216,9 +218,9 @@ let _ammProps: AmmProps<
     coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
     slippage: "",
   },
-  AmmExitData: {
+  // @ts-ignore
+  ammWithdrawData: {
     coinLP: { belong: "LP-ETH-LRC", balance: 0.3, tradeValue: 0 },
-    // coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
     slippage: "",
   },
   // tradeCalcData,
@@ -227,8 +229,8 @@ let _ammProps: AmmProps<
   handleAmmAddChangeEvent: (data, type) => {
     console.log("handleAmmAddChangeEvent", data, type);
   },
-  handleAmmRemoveChangeEvent: (data, type) => {
-    return console.log("handleAmmRemoveChangeEvent", data, type);
+  handleAmmRemoveChangeEvent: (data) => {
+    return console.log("handleAmmRemoveChangeEvent", data);
   },
   onAmmRemoveClick: (data) => {
     console.log("onAmmRemoveClick", data);
@@ -245,14 +247,11 @@ const WrapTransferPanel = (rest: any) => {
     <>
       {" "}
       <Grid item sm={6}>
-        <TransferPanel {...transferProps} {...rest}>
-          {" "}
-        </TransferPanel>
+        <TransferPanel {...{ ...rest, ...transferProps }} />
       </Grid>
       <Grid item sm={6}>
-        <TransferPanel {...rest}> </TransferPanel>
+        <TransferPanel {...rest} />
       </Grid>
-      <Grid item sm={12}></Grid>
     </>
   );
 };
@@ -450,6 +449,9 @@ const ModalPanelWrap = () => {
       resetProps={resetProps}
       ammProps={_ammProps}
       swapProps={swapProps}
+      assetsData={{} as any}
+      exportAccountProps={{} as any}
+      setExportAccountToastOpen={{} as any}
     />
   );
 };
