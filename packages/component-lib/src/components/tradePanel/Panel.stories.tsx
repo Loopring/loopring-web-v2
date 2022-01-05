@@ -245,7 +245,6 @@ const WrapTransferPanel = (rest: any) => {
   dispatch(setShowTransfer({ isShow: false }));
   return (
     <>
-      {" "}
       <Grid item sm={6}>
         <TransferPanel {...{ ...rest, ...transferProps }} />
       </Grid>
@@ -261,11 +260,8 @@ const WrapWithdrawPanel = (rest: any) => {
 
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <WithdrawPanel {...withdrawProps} {...rest}>
-          {" "}
-        </WithdrawPanel>
+        <WithdrawPanel {...withdrawProps} {...rest}></WithdrawPanel>
       </Grid>
       <Grid item sm={6}>
         <WithdrawPanel {...rest}> </WithdrawPanel>
@@ -281,11 +277,10 @@ const WrapDepositPanel = (rest: any) => {
   const { t } = useTranslation("common");
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <DepositPanel {...{ ...rest, ...depositProps, ...{ v: true } }}>
-          {" "}
-        </DepositPanel>
+        <DepositPanel
+          {...{ ...rest, ...depositProps, ...{ v: true } }}
+        ></DepositPanel>
       </Grid>
       <Grid item sm={6}>
         <DepositPanel
@@ -296,9 +291,7 @@ const WrapDepositPanel = (rest: any) => {
             title: t("depositTitleAndActive"),
             description: "depositAndActiveDescription",
           }}
-        >
-          {" "}
-        </DepositPanel>
+        ></DepositPanel>
       </Grid>
       <Grid item sm={12}>
         {/*<Button onClick={() => setOpen(true)}> open</Button>*/}
@@ -311,11 +304,8 @@ const WrapResetPanel = (rest: any) => {
   dispatch(setShowResetAccount({ isShow: false }));
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <ResetPanel {...resetProps} {...rest}>
-          {" "}
-        </ResetPanel>
+        <ResetPanel {...resetProps} {...rest}></ResetPanel>
       </Grid>
       <Grid item sm={6}>
         <ResetPanel {...rest}> </ResetPanel>
@@ -351,11 +341,8 @@ const WrapSwapPanel = (rest: any) => {
 
   return (
     <>
-      {" "}
       <Grid item sm={6}>
-        <SwapPanel {...swapProps} {...rest}>
-          {" "}
-        </SwapPanel>
+        <SwapPanel {...swapProps} {...rest}></SwapPanel>
       </Grid>
       <Grid item sm={6}>
         <SwapPanel {...rest}> </SwapPanel>
@@ -392,14 +379,11 @@ const WrapAmmPanel = (rest: any) => {
 
   return (
     <>
-      {" "}
       <Grid item sm={6}>
         <AmmPanel
           {...{ ...ammProps, tabSelected: AmmPanelType.Join }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        ></AmmPanel>
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -409,17 +393,13 @@ const WrapAmmPanel = (rest: any) => {
             ammDepositBtnStatus: TradeBtnStatus.LOADING,
           }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        ></AmmPanel>
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
           {...{ ...ammProps, tabSelected: AmmPanelType.Exit }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        ></AmmPanel>
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -429,9 +409,7 @@ const WrapAmmPanel = (rest: any) => {
             ammWithdrawBtnStatus: TradeBtnStatus.DISABLED,
           }}
           {...rest}
-        >
-          {" "}
-        </AmmPanel>
+        ></AmmPanel>
       </Grid>
     </>
   );
@@ -464,7 +442,6 @@ const Template: Story<any> = () => {
   ) as Array<number | string>;
   return (
     <Style>
-      {" "}
       <MemoryRouter initialEntries={["/"]}>
         <Box>
           <h4>Slippage bloc</h4>
