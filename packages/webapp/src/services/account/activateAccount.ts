@@ -105,6 +105,8 @@ export async function updateAccountFromServer({
               keyNonce: accInfo.nonce,
               walletType: connectName,
               chainId: system.chainId as any,
+              counterFactualInfo:
+                account?.eddsaKey?.counterFactualInfo ?? undefined,
             });
             myLog("no eddsaKey! after generateKeyPair");
           }
@@ -131,13 +133,19 @@ export async function updateAccountFromServer({
 
             myLog("updateAccountFromServer req:", request);
 
-            const response = await LoopringAPI.userAPI.updateAccount({
-              request,
-              web3: connectProvides.usedWeb3,
-              chainId: system.chainId,
-              walletType: connectName,
-              isHWAddr,
-            });
+            const response = await LoopringAPI.userAPI.updateAccount(
+              {
+                request,
+                web3: connectProvides.usedWeb3,
+                chainId: system.chainId,
+                walletType: connectName,
+                isHWAddr,
+              },
+              {
+                accountId: account.accountId,
+                counterFactualInfo: eddsaKey.counterFactualInfo,
+              }
+            );
 
             myLog("updateAccountResponse:", response);
 

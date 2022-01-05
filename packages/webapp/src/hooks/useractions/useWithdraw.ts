@@ -1,459 +1,579 @@
-import React from 'react';
+import React from "react";
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-import { connectProvides } from '@loopring-web/web3-provider';
-import { AccountStep, SwitchData, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
+import { connectProvides } from "@loopring-web/web3-provider";
 import {
-    AccountStatus,
-    CoinMap,
-    FeeInfo,
-    IBData,
-    SagaStatus,
-    WalletMap,
-    WithdrawType,
-    WithdrawTypes
-} from '@loopring-web/common-resources';
+  AccountStep,
+  SwitchData,
+  useOpenModals,
+  WithdrawProps,
+} from "@loopring-web/component-lib";
+import {
+  AccountStatus,
+  CoinMap,
+  FeeInfo,
+  IBData,
+  SagaStatus,
+  WalletMap,
+  WithdrawType,
+  WithdrawTypes,
+} from "@loopring-web/common-resources";
 
-import * as sdk from '@loopring-web/loopring-sdk'
+import * as sdk from "@loopring-web/loopring-sdk";
 
-import { useTokenMap } from 'stores/token';
-import { useAccount } from 'stores/account';
-import { useChargeFees } from '../common/useChargeFees';
-import { LoopringAPI } from 'api_wrapper';
-import { useSystem } from 'stores/system';
+import { useTokenMap } from "stores/token";
+import { useAccount } from "stores/account";
+import { useChargeFees } from "../common/useChargeFees";
+import { LoopringAPI } from "api_wrapper";
+import { useSystem } from "stores/system";
 import { myLog } from "@loopring-web/common-resources";
-import { makeWalletLayer2 } from 'hooks/help';
-import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
-import { getTimestampDaysLater } from 'utils/dt_tools';
-import { AddressError, BIGO, DAYS, TOAST_TIME } from 'defs/common_defs';
-import { useAddressCheck, } from 'hooks/common/useAddrCheck';
-import { useWalletInfo } from 'stores/localStore/walletInfo';
-import { checkErrorInfo } from './utils';
-import { useBtnStatus } from 'hooks/common/useBtnStatus';
-import { useModalData } from 'stores/router';
-import { isAccActivated } from './checkAccStatus';
-import { getFloatValue } from 'utils/formatter_tool';
+import { makeWalletLayer2 } from "hooks/help";
+import {
+  useWalletLayer2Socket,
+  walletLayer2Service,
+} from "../../services/socket";
+import { getTimestampDaysLater } from "utils/dt_tools";
+import { AddressError, BIGO, DAYS, TOAST_TIME } from "defs/common_defs";
+import { useAddressCheck } from "hooks/common/useAddrCheck";
+import { useWalletInfo } from "stores/localStore/walletInfo";
+import { checkErrorInfo } from "./utils";
+import { useBtnStatus } from "hooks/common/useBtnStatus";
+import { useModalData } from "stores/router";
+import { isAccActivated } from "./checkAccStatus";
+import { getFloatValue } from "utils/formatter_tool";
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
-    withdrawAlertText: string | undefined,
-    withdrawToastOpen: boolean,
-    setWithdrawToastOpen: any,
-    withdrawProps: WithdrawProps<R, T>
-    processRequest: any,
-    lastRequest: any,
+  withdrawAlertText: string | undefined;
+  withdrawToastOpen: boolean;
+  setWithdrawToastOpen: any;
+  withdrawProps: WithdrawProps<R, T>;
+  processRequest: any;
+  lastRequest: any;
 } => {
+  const { t } = useTranslation("common");
+  const {
+    modals: {
+      isShowWithdraw: { symbol, isShow },
+    },
+    setShowAccount,
+    setShowWithdraw,
+  } = useOpenModals();
 
-    const { t } = useTranslation('common')
-    const { modals: { isShowWithdraw: { symbol, isShow } }, setShowAccount, setShowWithdraw, } = useOpenModals()
+  const [withdrawToastOpen, setWithdrawToastOpen] =
+    React.useState<boolean>(false);
 
-    const [withdrawToastOpen, setWithdrawToastOpen] = React.useState<boolean>(false)
+  const [withdrawAlertText, setWithdrawAlertText] = React.useState<string>();
 
-    const [withdrawAlertText, setWithdrawAlertText] = React.useState<string>()
+  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { account, status: accountStatus } = useAccount();
+  const { exchangeInfo, chainId } = useSystem();
 
-    const { tokenMap, totalCoinMap, } = useTokenMap();
-    const { account, status: accountStatus } = useAccount()
-    const { exchangeInfo, chainId } = useSystem();
+  const { withdrawValue, updateWithdrawData, resetWithdrawData } =
+    useModalData();
 
-    const { withdrawValue, updateWithdrawData, resetWithdrawData, } = useModalData()
+  const [walletMap2, setWalletMap2] = React.useState(
+    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
+  );
 
-    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>);
+  const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<FeeInfo>();
 
-    const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<FeeInfo>()
+  const [withdrawType, setWithdrawType] =
+    React.useState<sdk.OffchainFeeReqType>(
+      sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
+    );
 
-    const [withdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+  const withdrawType2 =
+    withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
+      ? "Fast"
+      : "Standard";
+  const { chargeFeeList } = useChargeFees({
+    tokenSymbol: withdrawValue.belong,
+    requestType: withdrawType,
+    tokenMap,
+    amount: withdrawValue.tradeValue,
+  });
 
-    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-    const { chargeFeeList } = useChargeFees({tokenSymbol: withdrawValue.belong, requestType: withdrawType, tokenMap, amount: withdrawValue.tradeValue})
+  const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes);
+  const [isExceedMax, setIsExceedMax] = React.useState(false);
+  const { checkHWAddr, updateHW } = useWalletInfo();
 
-    const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
-    const [isExceedMax, setIsExceedMax] = React.useState(false)
-    const { checkHWAddr, updateHW, } = useWalletInfo()
+  const [lastRequest, setLastRequest] = React.useState<any>({});
 
-    const [lastRequest, setLastRequest] = React.useState<any>({})
+  const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>();
 
-    const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>()
+  const { address, realAddr, setAddress, addrStatus } = useAddressCheck();
 
-    const {
-        address,
-        realAddr,
-        setAddress,
-        addrStatus,
-    } = useAddressCheck()
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
-    const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
+  const checkBtnStatus = React.useCallback(() => {
+    if (
+      !tokenMap ||
+      !withdrawFeeInfo?.belong ||
+      !withdrawValue?.belong ||
+      !address
+    ) {
+      disableBtn();
+      return;
+    }
 
-    const checkBtnStatus = React.useCallback(() => {
+    const withdrawT = tokenMap[withdrawValue.belong as string];
 
-        if (!tokenMap || !withdrawFeeInfo?.belong || !withdrawValue?.belong || !address) {
-            disableBtn()
-            return
+    const tradeValue = sdk
+      .toBig(withdrawValue.tradeValue ?? 0)
+      .times("1e" + withdrawT.decimals);
+
+    const exceedPoolLimit =
+      withdrawType2 === "Fast" &&
+      tradeValue.gt(0) &&
+      tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit));
+
+    if (
+      chargeFeeList &&
+      chargeFeeList?.length > 0 &&
+      !!address &&
+      tradeValue.gt(BIGO) &&
+      addrStatus === AddressError.NoError &&
+      !isExceedMax &&
+      !exceedPoolLimit
+    ) {
+      enableBtn();
+    } else {
+      disableBtn();
+    }
+
+    if (exceedPoolLimit) {
+      setWithdrawI18nKey("withdrawLabelBtnExceed");
+    } else {
+      setWithdrawI18nKey(undefined);
+    }
+
+    // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, withdrawFeeInfo)
+  }, [
+    withdrawType2,
+    enableBtn,
+    disableBtn,
+    tokenMap,
+    address,
+    addrStatus,
+    chargeFeeList,
+    withdrawFeeInfo,
+    withdrawValue,
+    isExceedMax,
+  ]);
+
+  React.useEffect(() => {
+    checkBtnStatus();
+  }, [
+    withdrawType2,
+    address,
+    addrStatus,
+    withdrawFeeInfo?.belong,
+    withdrawFeeInfo?.fee,
+    withdrawFeeInfo?.belong,
+    withdrawValue?.belong,
+    withdrawValue?.tradeValue,
+    isExceedMax,
+  ]);
+
+  const updateWithdrawTypes = React.useCallback(async () => {
+    if (withdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
+      const tokenInfo = tokenMap[withdrawValue.belong];
+
+      const req: sdk.GetWithdrawalAgentsRequest = {
+        tokenId: tokenInfo.tokenId,
+        amount: sdk.toBig("1e" + tokenInfo.decimals).toString(),
+      };
+
+      const agent = await LoopringAPI.exchangeAPI.getWithdrawalAgents(req);
+
+      if (agent.supportTokenMap[withdrawValue.belong]) {
+        myLog("------- have agent!");
+        setWithdrawTypes(WithdrawTypes);
+      } else {
+        myLog("------- have NO agent!");
+        setWithdrawTypes({ Standard: "" });
+      }
+    }
+  }, [withdrawValue, tokenMap]);
+
+  const updateWithdrawType = React.useCallback(() => {
+    // myLog('withdrawTypes:', withdrawTypes, ' withdrawType2:', withdrawType2)
+    if (!withdrawTypes["Fast"]) {
+      // myLog('try to reset setWithdrawType!')
+      setWithdrawType(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL);
+    }
+  }, [withdrawTypes, setWithdrawType]);
+
+  React.useEffect(() => {
+    updateWithdrawType();
+  }, [withdrawTypes, updateWithdrawType]);
+
+  React.useEffect(() => {
+    updateWithdrawTypes();
+  }, [withdrawValue.belong, tokenMap]);
+
+  const walletLayer2Callback = React.useCallback(() => {
+    const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
+    setWalletMap2(walletMap);
+  }, [setWalletMap2]);
+
+  const resetDefault = React.useCallback(() => {
+    if (symbol) {
+      if (walletMap2) {
+        updateWithdrawData({
+          belong: symbol as any,
+          balance: walletMap2[symbol]?.count,
+          tradeValue: undefined,
+          address: "*",
+        });
+      }
+    } else {
+      if (!withdrawValue.belong && walletMap2) {
+        const keys = Reflect.ownKeys(walletMap2);
+        for (var key in keys) {
+          const keyVal = keys[key];
+          const walletInfo = walletMap2[keyVal];
+          if (sdk.toBig(walletInfo.count).gt(0)) {
+            updateWithdrawData({
+              belong: keyVal as any,
+              tradeValue: 0,
+              balance: walletInfo.count,
+              address: "*",
+            });
+            break;
+          }
         }
+      }
+    }
+  }, [symbol, walletMap2, updateWithdrawData, withdrawValue]);
 
-        const withdrawT = tokenMap[withdrawValue.belong as string]
+  React.useEffect(() => {
+    if (isShow) {
+      resetDefault();
+    }
+  }, [isShow]);
 
-        const tradeValue = sdk.toBig(withdrawValue.tradeValue ?? 0).times('1e' + withdrawT.decimals)
+  React.useEffect(() => {
+    if (
+      accountStatus === SagaStatus.UNSET &&
+      account.readyState === AccountStatus.ACTIVATED
+    ) {
+    } else {
+      setShowWithdraw({ isShow: false });
+    }
+  }, [accountStatus, account.readyState]);
 
-        const exceedPoolLimit = withdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit))
-        
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue.gt(BIGO)
-            && addrStatus === AddressError.NoError && !isExceedMax && !exceedPoolLimit) {
-            enableBtn()
-        } else {
-            disableBtn()
-        }
+  React.useEffect(() => {
+    if (
+      isShow &&
+      accountStatus === SagaStatus.UNSET &&
+      account.readyState === AccountStatus.ACTIVATED
+    ) {
+      if (withdrawValue.address) {
+        myLog("addr 1");
+        setAddress(withdrawValue.address);
+      } else {
+        myLog("addr 2");
+        // setAddress(account.accAddress)
+        updateWithdrawData({
+          balance: -1,
+          tradeValue: -1,
+        });
+      }
+    }
+  }, [
+    setAddress,
+    isShow,
+    withdrawValue.address,
+    accountStatus,
+    account.readyState,
+  ]);
 
-        if (exceedPoolLimit) {
-            setWithdrawI18nKey('withdrawLabelBtnExceed')
-        } else {
-            setWithdrawI18nKey(undefined)
-        }
+  useWalletLayer2Socket({ walletLayer2Callback });
 
-        // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, withdrawFeeInfo)
+  const processRequest = React.useCallback(
+    async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
+      const { apiKey, connectName, eddsaKey } = account;
 
-    }, [withdrawType2, enableBtn, disableBtn, tokenMap, address, addrStatus, 
-        chargeFeeList, withdrawFeeInfo, withdrawValue, isExceedMax, ])
+      try {
+        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+          let isHWAddr = checkHWAddr(account.accAddress);
 
-    React.useEffect(() => {
-        
-        checkBtnStatus()
+          isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
 
-    }, [withdrawType2, address, addrStatus, withdrawFeeInfo?.belong, withdrawFeeInfo?.fee,
-        withdrawFeeInfo?.belong, withdrawValue?.belong, withdrawValue?.tradeValue, isExceedMax, ])
+          myLog("withdraw processRequest:", isHWAddr, isFirstTime);
 
-    const updateWithdrawTypes = React.useCallback(async () => {
-
-        if (withdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
-
-            const tokenInfo = tokenMap[withdrawValue.belong]
-
-            const req: sdk.GetWithdrawalAgentsRequest = {
-                tokenId: tokenInfo.tokenId,
-                amount: sdk.toBig('1e' + tokenInfo.decimals).toString(),
+          const response = await LoopringAPI.userAPI.submitOffchainWithdraw(
+            {
+              request,
+              web3: connectProvides.usedWeb3,
+              chainId: chainId === "unknown" ? 1 : chainId,
+              walletType: connectName as sdk.ConnectorNames,
+              eddsaKey: eddsaKey.sk,
+              apiKey,
+              isHWAddr,
+            },
+            {
+              accountId: account.accountId,
+              counterFactualInfo: eddsaKey.counterFactualInfo,
             }
+          );
 
-            const agent = await LoopringAPI.exchangeAPI.getWithdrawalAgents(req)
+          myLog("submitOffchainWithdraw:", response);
 
-            if (agent.supportTokenMap[withdrawValue.belong]) {
-                myLog('------- have agent!')
-                setWithdrawTypes(WithdrawTypes)
+          if (isAccActivated()) {
+            if ((response as sdk.ErrorMsg)?.errMsg) {
+              // Withdraw failed
+              const code = checkErrorInfo(response, isFirstTime);
+              if (code === sdk.ConnectorError.USER_DENIED) {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Withdraw_User_Denied,
+                });
+              } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+                setLastRequest({ request });
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Withdraw_First_Method_Denied,
+                });
+              } else {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.Withdraw_Failed,
+                });
+              }
+            } else if (
+              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
+            ) {
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.Withdraw_Failed,
+              });
             } else {
-                myLog('------- have NO agent!')
-                setWithdrawTypes({ 'Standard': '' })
-            }
-        }
+              // Withdraw success
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.Withdraw_In_Progress,
+              });
+              await sdk.sleep(TOAST_TIME);
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.Withdraw_Success,
+              });
+              if (isHWAddr) {
+                myLog("......try to set isHWAddr", isHWAddr);
+                updateHW({ wallet: account.accAddress, isHWAddr });
+              }
 
-    }, [withdrawValue, tokenMap,])
-
-    const updateWithdrawType = React.useCallback(() => {
-        // myLog('withdrawTypes:', withdrawTypes, ' withdrawType2:', withdrawType2)
-        if (!withdrawTypes['Fast']) {
-            // myLog('try to reset setWithdrawType!')
-            setWithdrawType(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
-        }
-    }, [withdrawTypes, setWithdrawType])
-
-    React.useEffect(() => {
-        updateWithdrawType()
-    }, [withdrawTypes, updateWithdrawType])
-
-    React.useEffect(() => {
-
-        updateWithdrawTypes()
-
-    }, [withdrawValue.belong, tokenMap,])
-
-    const walletLayer2Callback = React.useCallback(() => {
-        const walletMap = makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>
-        setWalletMap2(walletMap)
-    }, [setWalletMap2])
-
-    const resetDefault = React.useCallback(() => {
-        if (symbol) {
-            if (walletMap2) {
-                updateWithdrawData({
-                    belong: symbol as any,
-                    balance: walletMap2[symbol]?.count,
-                    tradeValue: undefined,
-                    address: '*',
-                })
+              resetWithdrawData();
             }
 
-        } else {
-            if (!withdrawValue.belong && walletMap2) {
-                const keys = Reflect.ownKeys(walletMap2)
-                for (var key in keys) {
-                    const keyVal = keys[key]
-                    const walletInfo = walletMap2[keyVal]
-                    if (sdk.toBig(walletInfo.count).gt(0)) {
-                        updateWithdrawData({
-                            belong: keyVal as any,
-                            tradeValue: 0,
-                            balance: walletInfo.count,
-                            address: '*',
-                        })
-                        break
-                    }
-                }
-
-
-            }
+            walletLayer2Service.sendUserUpdate();
+          } else {
+            resetWithdrawData();
+          }
         }
-    }, [symbol, walletMap2, updateWithdrawData, withdrawValue])
+      } catch (reason) {
+        sdk.dumpError400(reason);
+        const code = checkErrorInfo(reason, isFirstTime);
+        myLog("code:", code);
 
-    React.useEffect(() => {
-        if (isShow) {
-            resetDefault();
+        if (isAccActivated()) {
+          if (code === sdk.ConnectorError.USER_DENIED) {
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Withdraw_User_Denied,
+            });
+          } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
+            setLastRequest({ request });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Withdraw_First_Method_Denied,
+            });
+          } else {
+            setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed });
+          }
         }
-    }, [isShow])
+      }
+    },
+    [account, checkHWAddr, chainId, setShowAccount, resetWithdrawData, updateHW]
+  );
 
-    React.useEffect(() => {
-        if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-        } else {
-            setShowWithdraw({ isShow: false })
-        }
-    }, [accountStatus, account.readyState])
+  const handleWithdraw = React.useCallback(
+    async (inputValue: any, address, isFirstTime: boolean = true) => {
+      const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
 
-    React.useEffect(() => {
-
-        if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
-            if (withdrawValue.address) {
-                myLog('addr 1')
-                setAddress(withdrawValue.address)
-            } else {
-                myLog('addr 2')
-                // setAddress(account.accAddress)
-                updateWithdrawData({
-                    balance: -1,
-                    tradeValue: -1,
-                })
-            }
-        }
-
-    }, [setAddress, isShow, withdrawValue.address, accountStatus, account.readyState])
-
-    useWalletLayer2Socket({ walletLayer2Callback })
-
-    const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
-
-        const { apiKey, connectName, eddsaKey } = account
-
+      if (
+        readyState === AccountStatus.ACTIVATED &&
+        tokenMap &&
+        exchangeInfo &&
+        connectProvides.usedWeb3 &&
+        address &&
+        withdrawFeeInfo?.belong &&
+        eddsaKey?.sk
+      ) {
         try {
-            if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+          setShowWithdraw({ isShow: false });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_WaitForAuth,
+          });
 
-                let isHWAddr = checkHWAddr(account.accAddress)
+          const withdrawToken = tokenMap[inputValue.belong as string];
+          const feeToken = tokenMap[withdrawFeeInfo.belong];
 
-                isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+          const fee = sdk.toBig(withdrawFeeInfo?.__raw__?.feeRaw ?? 0);
+          const balance = sdk
+            .toBig(inputValue.balance ?? 0)
+            .times("1e" + withdrawToken.decimals);
+          const tradeValue = sdk
+            .toBig(inputValue.tradeValue ?? 0)
+            .times("1e" + withdrawToken.decimals);
+          const isExceedBalance =
+            feeToken.tokenId === withdrawToken.tokenId &&
+            tradeValue.plus(fee).gt(balance);
+          const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue;
+          const withdrawVol = finalVol.toFixed(0, 0);
 
-                myLog('withdraw processRequest:', isHWAddr, isFirstTime)
+          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+            {
+              accountId: accountId,
+              sellTokenId: withdrawToken.tokenId,
+            },
+            apiKey
+          );
 
-                const response = await LoopringAPI.userAPI.submitOffchainWithdraw({
-                    request,
-                    web3: connectProvides.usedWeb3,
-                    chainId: chainId === 'unknown' ? 1 : chainId,
-                    walletType: connectName as sdk.ConnectorNames,
-                    eddsaKey: eddsaKey.sk,
-                    apiKey,
-                    isHWAddr,
-                })
+          const request: sdk.OffChainWithdrawalRequestV3 = {
+            exchange: exchangeInfo.exchangeAddress,
+            owner: accAddress,
+            to: address,
+            accountId: account.accountId,
+            storageId: storageId?.offchainId,
+            token: {
+              tokenId: withdrawToken.tokenId,
+              volume: withdrawVol,
+            },
+            maxFee: {
+              tokenId: feeToken.tokenId,
+              volume: fee.toString(),
+            },
+            fastWithdrawalMode: withdrawType2 === WithdrawType.Fast,
+            extraData: "",
+            minGas: 0,
+            validUntil: getTimestampDaysLater(DAYS),
+          };
 
-                myLog('submitOffchainWithdraw:', response)
+          myLog("submitOffchainWithdraw:", request);
 
-                if (isAccActivated()) {
-                    if ((response as sdk.ErrorMsg)?.errMsg) {
-                        // Withdraw failed
-                        const code = checkErrorInfo(response, isFirstTime)
-                        if (code === sdk.ConnectorError.USER_DENIED) {
-                            setShowAccount({ isShow: true, step: AccountStep.Withdraw_User_Denied })
-                        } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                            setLastRequest({ request })
-                            setShowAccount({ isShow: true, step: AccountStep.Withdraw_First_Method_Denied })
-                        } else {
-                            setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
-                        }
-                    } else if ((response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo ) {
-                        setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
-                    } else {
-                        // Withdraw success
-                        setShowAccount({ isShow: true, step: AccountStep.Withdraw_In_Progress })
-                        await sdk.sleep(TOAST_TIME)
-                        setShowAccount({ isShow: true, step: AccountStep.Withdraw_Success })
-                        if (isHWAddr) {
-                            myLog('......try to set isHWAddr', isHWAddr)
-                            updateHW({ wallet: account.accAddress, isHWAddr })
-                        }
-
-                        resetWithdrawData()
-                    }
-
-                    walletLayer2Service.sendUserUpdate()
-                } else {
-
-                    resetWithdrawData()
-                }
-
-            }
-
-        } catch (reason) {
-            sdk.dumpError400(reason)
-            const code = checkErrorInfo(reason, isFirstTime)
-            myLog('code:', code)
-
-            if (isAccActivated()) {
-                if (code === sdk.ConnectorError.USER_DENIED) {
-                    setShowAccount({ isShow: true, step: AccountStep.Withdraw_User_Denied })
-                } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                    setLastRequest({ request })
-                    setShowAccount({ isShow: true, step: AccountStep.Withdraw_First_Method_Denied })
-                } else {
-                    setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
-                }
-            }
+          processRequest(request, isFirstTime);
+        } catch (e) {
+          sdk.dumpError400(e);
+          setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed });
         }
 
-    }, [setLastRequest, setShowAccount, updateHW, account])
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [
+      account,
+      tokenMap,
+      exchangeInfo,
+      withdrawFeeInfo?.belong,
+      withdrawFeeInfo?.__raw__.feeRaw,
+      setShowWithdraw,
+      setShowAccount,
+      withdrawType2,
+      processRequest,
+    ]
+  );
 
-    const handleWithdraw = React.useCallback(async (inputValue: any, address, isFirstTime: boolean = true) => {
+  const handleFeeChange = React.useCallback(
+    (value: FeeInfo): void => {
+      setWithdrawFeeInfo(value);
+    },
+    [setWithdrawFeeInfo]
+  );
 
-        const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
-
-        if (readyState === AccountStatus.ACTIVATED && tokenMap
-            && exchangeInfo && connectProvides.usedWeb3
-            && address && withdrawFeeInfo?.belong && eddsaKey?.sk) {
-            try {
-
-                setShowWithdraw({ isShow: false, })
-                setShowAccount({ isShow: true, step: AccountStep.Withdraw_WaitForAuth, })
-
-                const withdrawToken = tokenMap[inputValue.belong as string]
-                const feeToken = tokenMap[withdrawFeeInfo.belong]
-
-                const fee = sdk.toBig(withdrawFeeInfo?.__raw__?.feeRaw ?? 0)
-                const balance = sdk.toBig(inputValue.balance ?? 0).times('1e' + withdrawToken.decimals)
-                const tradeValue = sdk.toBig(inputValue.tradeValue ?? 0).times('1e' + withdrawToken.decimals)
-                const isExceedBalance = feeToken.tokenId === withdrawToken.tokenId && tradeValue.plus(fee).gt(balance)
-                const finalVol = isExceedBalance ?  balance.minus(fee) : tradeValue
-                const withdrawVol = finalVol.toFixed(0, 0)
-
-                const storageId = await LoopringAPI.userAPI?.getNextStorageId({
-                    accountId: accountId,
-                    sellTokenId: withdrawToken.tokenId
-                }, apiKey)
-
-                const request: sdk.OffChainWithdrawalRequestV3 = {
-                    exchange: exchangeInfo.exchangeAddress,
-                    owner: accAddress,
-                    to: address,
-                    accountId: account.accountId,
-                    storageId: storageId?.offchainId,
-                    token: {
-                        tokenId: withdrawToken.tokenId,
-                        volume: withdrawVol,
-                    },
-                    maxFee: {
-                        tokenId: feeToken.tokenId,
-                        volume: fee.toString(),
-                    },
-                    fastWithdrawalMode: withdrawType2 === WithdrawType.Fast,
-                    extraData: '',
-                    minGas: 0,
-                    validUntil: getTimestampDaysLater(DAYS),
-                }
-
-                myLog('submitOffchainWithdraw:', request)
-
-                processRequest(request, isFirstTime)
-
-            } catch (e) {
-                sdk.dumpError400(e)
-                setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
-            }
-
-            return true
-
-        } else {
-            return false
+  const withdrawProps: any = {
+    withdrawI18nKey,
+    addressDefault: address,
+    realAddr,
+    tradeData: withdrawValue as any,
+    coinMap: totalCoinMap as CoinMap<T>,
+    walletMap: walletMap2 as WalletMap<any>,
+    withdrawBtnStatus: btnStatus,
+    withdrawType: withdrawType2,
+    withdrawTypes,
+    onWithdrawClick: () => {
+      if (withdrawValue && withdrawValue.belong) {
+        handleWithdraw(withdrawValue, realAddr ? realAddr : address);
+      }
+      setShowWithdraw({ isShow: false });
+    },
+    handleFeeChange,
+    handleWithdrawTypeChange: (value: "Fast" | "Standard") => {
+      // myLog('handleWithdrawTypeChange', value)
+      const offchainType =
+        value === WithdrawType.Fast
+          ? sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
+          : sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL;
+      setWithdrawType(offchainType);
+    },
+    handlePanelEvent: async (
+      data: SwitchData<R>,
+      switchType: "Tomenu" | "Tobutton"
+    ) => {
+      return new Promise((res: any) => {
+        if (data.to === "button") {
+          if (walletMap2 && data?.tradeData?.belong) {
+            const walletInfo = walletMap2[data?.tradeData?.belong as string];
+            updateWithdrawData({
+              belong: data.tradeData?.belong,
+              tradeValue: data.tradeData?.tradeValue,
+              balance: walletInfo.count,
+              address: "*",
+            });
+          } else {
+            updateWithdrawData({
+              belong: undefined,
+              tradeValue: undefined,
+              balance: undefined,
+              address: "*",
+            });
+          }
         }
 
-    }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
+        res();
+      });
+    },
+    chargeFeeToken: withdrawFeeInfo?.belong,
+    chargeFeeTokenList: chargeFeeList,
+    handleOnAddressChange: (value: any) => {},
+    handleAddressError: (value: any) => {
+      updateWithdrawData({ address: value, balance: -1, tradeValue: -1 });
+      return { error: false, message: "" };
+    },
+    handleError: ({ belong, balance, tradeValue }: any) => {
+      balance = getFloatValue(balance);
+      tradeValue = getFloatValue(tradeValue);
+      if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
+        setIsExceedMax(true);
+        return { error: true, message: t("tokenNotEnough", { belong }) };
+      }
+      setIsExceedMax(false);
+      return { error: false, message: "" };
+    },
+  };
 
-    const handleFeeChange = React.useCallback((value: FeeInfo): void => {
-        setWithdrawFeeInfo(value)
-    }, [setWithdrawFeeInfo])
-
-    const withdrawProps: any = {
-        withdrawI18nKey,
-        addressDefault: address,
-        realAddr,
-        tradeData: withdrawValue as any,
-        coinMap: totalCoinMap as CoinMap<T>,
-        walletMap: walletMap2 as WalletMap<any>,
-        withdrawBtnStatus: btnStatus,
-        withdrawType: withdrawType2,
-        withdrawTypes,
-        onWithdrawClick: () => {
-            if (withdrawValue && withdrawValue.belong) {
-                handleWithdraw(withdrawValue, realAddr ? realAddr : address)
-            }
-            setShowWithdraw({ isShow: false })
-        },
-        handleFeeChange,
-        handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
-            // myLog('handleWithdrawTypeChange', value)
-            const offchainType = value === WithdrawType.Fast ? sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL : sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
-            setWithdrawType(offchainType)
-        },
-        handlePanelEvent: async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
-            return new Promise((res: any) => {
-
-                if (data.to === 'button') {
-                    if (walletMap2 && data?.tradeData?.belong) {
-                        const walletInfo = walletMap2[data?.tradeData?.belong as string]
-                        updateWithdrawData({
-                            belong: data.tradeData?.belong,
-                            tradeValue: data.tradeData?.tradeValue,
-                            balance: walletInfo.count,
-                            address: '*',
-                        })
-                    } else {
-                        updateWithdrawData({ 
-                            belong: undefined, 
-                            tradeValue: undefined, 
-                            balance: undefined,
-                            address: '*', 
-                        })
-                    }
-                }
-
-                res()
-            })
-        },
-        chargeFeeToken: withdrawFeeInfo?.belong,
-        chargeFeeTokenList: chargeFeeList,
-        handleOnAddressChange: (value: any) => {
-        },
-        handleAddressError: (value: any) => {
-            updateWithdrawData({ address: value, balance: -1, tradeValue: -1 })
-            return { error: false, message: '' }
-        },
-        handleError: ({ belong, balance, tradeValue }: any) => {
-            balance = getFloatValue(balance)
-            tradeValue = getFloatValue(tradeValue)
-            if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-                setIsExceedMax(true)
-                return { error: true, message: t('tokenNotEnough', { belong, }) }
-            }
-            setIsExceedMax(false)
-            return { error: false, message: '' }
-        },
-    }
-
-    return {
-        withdrawAlertText,
-        withdrawToastOpen,
-        setWithdrawToastOpen,
-        withdrawProps,
-        processRequest,
-        lastRequest,
-    }
-}
+  return {
+    withdrawAlertText,
+    withdrawToastOpen,
+    setWithdrawToastOpen,
+    withdrawProps,
+    processRequest,
+    lastRequest,
+  };
+};

@@ -64,6 +64,7 @@ export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo & {
     image: string;
     name: string;
+    nftIdView: string;
     description: string;
     nftBalance: number;
     etherscanBaseUrl: string;
@@ -72,3 +73,5 @@ export type NFTWholeINFO = NFTTokenInfo &
 export const TOAST_TIME = 3000;
 
 export const EmptyValueTag = "--";
+
+export const IPFS_META_URL = "ipfs://";
