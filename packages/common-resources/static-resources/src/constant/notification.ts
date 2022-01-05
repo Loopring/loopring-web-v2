@@ -69,10 +69,37 @@ const url_path = "https://static.loopring.io/events";
 export async function getNotification(
   lng: "en" | "zh" = "en"
 ): Promise<Notify> {
-  async function buildNotification(month: string, notification: NOTIFICATION) {
+  const monthArray = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ];
+
+  const date = new Date();
+  const year = date.getFullYear();
+  const monthIndex = date.getMonth();
+  const notification: NOTIFICATION = {
+    activities: [],
+    notifications: [],
+  };
+
+  async function buildNotification(
+    monthIndex: number,
+    notification: NOTIFICATION,
+    year: number
+  ) {
     try {
       const myNotification: NOTIFICATION | undefined = await fetch(
-        url_path + `/${year}/${month}/notification.${lng}.json`
+        url_path + `/${year}/${monthArray[monthIndex]}/notification.${lng}.json`
       )
         .then((response) => {
           if (response.ok) {
@@ -95,7 +122,11 @@ export async function getNotification(
         myNotification.prev &&
         myNotification.prev.endDate > date.getTime()
       ) {
-        await buildNotification(myNotification.prev.prevMonth, notification);
+        await buildNotification(
+          monthIndex === 0 ? 11 : monthIndex - 1,
+          notification,
+          monthIndex === 0 ? year - 1 : year
+        );
       }
       return;
     } catch (e) {
@@ -104,14 +135,7 @@ export async function getNotification(
     }
   }
 
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = ("0" + (date.getMonth() + 1).toString()).slice(-2); //  01,02 ... 12
-  const notification: NOTIFICATION = {
-    activities: [],
-    notifications: [],
-  };
-  await buildNotification(month, notification);
+  await buildNotification(monthIndex, notification, year);
   const pairs: PairType = {
     [ACTIVITY_TYPE.ORDERBOOK_MINING]: {
       pairs: [],
