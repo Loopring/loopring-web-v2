@@ -73,3 +73,5 @@ export type NFTWholeINFO = NFTTokenInfo &
 export const TOAST_TIME = 3000;
 
 export const EmptyValueTag = "--";
+
+export const IPFS_META_URL = "ipfs://";

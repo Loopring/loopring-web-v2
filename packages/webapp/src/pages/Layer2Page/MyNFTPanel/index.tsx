@@ -9,6 +9,8 @@ import {
 } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
 import { NFTDetail } from "./detail";
+import { IPFS_META_URL } from "@loopring-web/common-resources";
+import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 
 const StyledPaper = styled(Box)`
   //width: 100%;
@@ -124,7 +126,10 @@ export const MyNFTPanel = withTranslation("common")(
                         alt={"NFT"}
                         width={"100%"}
                         height={"100%"}
-                        src={item?.image}
+                        src={item?.image?.replace(
+                          IPFS_META_URL,
+                          LOOPRING_URLs.IPFS_META_URL
+                        )}
                       />
                     </Box>
                     <Box

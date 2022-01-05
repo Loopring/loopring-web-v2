@@ -1,6 +1,7 @@
 import { Box, Link, Typography } from "@mui/material";
 import {
   DiscordIcon,
+  IPFS_META_URL,
   MediumIcon,
   NFTWholeINFO,
   TwitterIcon,
@@ -18,6 +19,7 @@ import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useGetAssets } from "../AssetPanel/hook";
 import { useNFTWithdraw } from "../../../hooks/useractions/useNFTWithdraw";
+import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -157,12 +159,11 @@ export const NFTDetail = withTranslation("common")(
             </Typography>
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
               <Typography color={"var(--color-text-third)"} width={160}>
-                {t("labelNFTMinter")}{" "}
+                {t("labelNFTMinter")}
               </Typography>
 
               <Link
                 fontSize={"inherit"}
-                maxWidth={300}
                 whiteSpace={"break-spaces"}
                 style={{ wordBreak: "break-all" }}
                 onClick={() =>
@@ -277,7 +278,15 @@ export const NFTDetail = withTranslation("common")(
           alignItems={"center"}
           justifyContent={"center"}
         >
-          <img alt={"NFT"} width={"100%"} height={"100%"} src={popItem.image} />
+          <img
+            alt={"NFT"}
+            width={"100%"}
+            height={"100%"}
+            src={popItem?.image?.replace(
+              IPFS_META_URL,
+              LOOPRING_URLs.IPFS_META_URL
+            )}
+          />
         </BoxNFT>
         <BoxStyle
           marginLeft={2}

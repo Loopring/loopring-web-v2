@@ -105,6 +105,8 @@ export async function updateAccountFromServer({
               keyNonce: accInfo.nonce,
               walletType: connectName,
               chainId: system.chainId as any,
+              counterFactualInfo:
+                account?.eddsaKey?.counterFactualInfo ?? undefined,
             });
             myLog("no eddsaKey! after generateKeyPair");
           }
