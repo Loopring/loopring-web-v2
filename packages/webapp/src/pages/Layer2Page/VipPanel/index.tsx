@@ -450,7 +450,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
                 >
                   LRC Balance
                 </Typography>
-                <Typography variant={"h4"} component={"p"} marginY={0.5}>
+                <Typography variant={"h4"} component={"span"} marginY={0.5}>
                   Currently {getValuePrecisionThousand(getCurrentBalanceLRC())}{" "}
                   LRC
                 </Typography>

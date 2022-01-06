@@ -94,7 +94,15 @@ export const useNFTTransfer = <
   const [nftTransferFeeInfo, setNFTTransferFeeInfo] = React.useState<FeeInfo>();
   const [isExceedMax, setIsExceedMax] = React.useState(false);
 
-  const { address, realAddr, setAddress, addrStatus } = useAddressCheck();
+  const {
+    address,
+    realAddr,
+    setAddress,
+    addrStatus,
+    isLoopringAddress,
+    isAddressCheckLoading,
+    isSameAddress,
+  } = useAddressCheck();
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
@@ -448,6 +456,9 @@ export const useNFTTransfer = <
     handlePanelEvent,
     chargeFeeToken: nftTransferFeeInfo?.belong,
     chargeFeeTokenList: chargeFeeList,
+    isLoopringAddress,
+    isSameAddress,
+    isAddressCheckLoading,
     handleOnAddressChange: (value: any) => {},
     handleError: ({ belong, balance, tradeValue }: any) => {
       balance = getFloatValue(balance);

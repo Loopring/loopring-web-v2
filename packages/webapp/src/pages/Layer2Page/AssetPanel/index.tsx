@@ -97,8 +97,8 @@ const AssetPanel = withTranslation("common")(
     const { disableWithdrawList } = useTokenMap();
     const { allowTrade, forex } = useSystem();
     const { raw_data } = allowTrade;
-    const legalEnable = (raw_data as any)?.legal.enable;
-    const legalShow = (raw_data as any)?.legal.show;
+    const legalEnable = (raw_data as any)?.legal?.enable;
+    const legalShow = (raw_data as any)?.legal?.show;
     const {
       account: { accountId, accAddress },
     } = useAccount();

@@ -22,6 +22,12 @@ export default {
     "创建一个新的二层身份验证签名密钥（无需备份），该操作将会<1>取消您的所有待定指令</1>。",
   resetFee: "{{count}} GAS ≈ ${{price}} 费用",
   resetLabelBtn: "重置",
+  labelActiveAccountTitle: "Active Account",
+  labelActiveEnterToken: "Select payment token",
+  labelActiveAccountDescription:
+    "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests.",
+  labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
+  labelActiveAccountBtn: "Reset",
   depositTitle: "充值",
   depositTitleAndActive: "充值并激活二层账号",
   depositTitleActive: "激活二层账号",
@@ -287,6 +293,7 @@ export default {
   labelImpactExtraGreat:
     "您的交易金额将影响池子价格<1> {{value}}</1>，您确定执行此操作吗？",
   labelCalculating: "计算中...",
+  labelFeeCalculating: "费用计算中...",
   labelAmmMyTransactions: "我的交易",
   labelAmmAllTransactions: "所有交易",
   labelWaitForAuth: "等待钱包签名",
@@ -432,6 +439,8 @@ export default {
   labelIKnow: "I know",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
+  labelWithdrawInvalidAddress:
+    "Invalid address, ENS, or an Counter Factual wallet",
   labelTransferAddressNotLoopring:
     "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
@@ -459,4 +468,8 @@ export default {
   labelHours: "Hours",
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
+  labelIsNotFeeToken: "You should deposit {{symbol}} for pay active layer2",
+  labelIsNotEnoughFeeToken:
+    "Your should deposit {{fee}} {{symbol}} for pay active layer2",
+  labelActiveAccountFeeNotEnough: "Insufficient balance <1>Go Deposit</1>",
 };

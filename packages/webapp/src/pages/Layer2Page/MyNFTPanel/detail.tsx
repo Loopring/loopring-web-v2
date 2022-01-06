@@ -118,7 +118,7 @@ export const NFTDetail = withTranslation("common")(
 
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
               <Typography color={"var(--color-text-third)"} width={160}>
-                {t("labelNFTID")}{" "}
+                {t("labelNFTID")}
               </Typography>
               <Typography
                 color={"var(--color-text-third)"}
@@ -130,7 +130,7 @@ export const NFTDetail = withTranslation("common")(
             </Typography>
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
               <Typography color={"var(--color-text-third)"} width={160}>
-                {t("labelNFTTYPE")}{" "}
+                {t("labelNFTTYPE")}
               </Typography>
               <Typography
                 color={"var(--color-text-third)"}
@@ -181,7 +181,7 @@ export const NFTDetail = withTranslation("common")(
               flex={1}
             >
               <Typography color={"var(--color-text-third)"} width={160}>
-                {t("labelNFTDescription")}{" "}
+                {t("labelNFTDescription")}
               </Typography>
               <Typography
                 color={"var(--color-text-third)"}
@@ -190,7 +190,7 @@ export const NFTDetail = withTranslation("common")(
                 style={{ wordBreak: "break-all" }}
                 title={popItem?.description}
               >
-                {popItem.description}{" "}
+                {popItem.description}
               </Typography>
             </Typography>
 
@@ -246,7 +246,6 @@ export const NFTDetail = withTranslation("common")(
                     fullWidth
                     onClick={() => handleChangeIndex(2)}
                   >
-                    {" "}
                     {t("labelNFTWithdraw")}
                   </Button>
                 </Typography>

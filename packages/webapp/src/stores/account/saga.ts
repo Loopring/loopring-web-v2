@@ -1,58 +1,72 @@
-import { all, call, fork, put, takeLatest } from "redux-saga/effects"
-import { cleanAccountStatus, nextAccountStatus, updateAccountStatus } from './reducer';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { Account, AccountStatus, ConnectProviders } from '@loopring-web/common-resources';
-import { connectProvides } from '@loopring-web/web3-provider';
+import { all, call, fork, put, takeLatest } from "redux-saga/effects";
+import {
+  cleanAccountStatus,
+  nextAccountStatus,
+  updateAccountStatus,
+} from "./reducer";
+import { PayloadAction } from "@reduxjs/toolkit";
+import {
+  Account,
+  AccountStatus,
+  ConnectProviders,
+} from "@loopring-web/common-resources";
+import { connectProvides } from "@loopring-web/web3-provider";
 
-
-export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
-    try {
-        // let data: { accountState: Partial<AccountState> };
-        // const {currentState} = yield select();
-        const account = payload;
-        yield put(nextAccountStatus({
-            // ...currentState,
-            ...account
-        }));
-
-    } catch (err) {
-        yield put(nextAccountStatus(err));
-    }
+export function* accountUpdateSaga({
+  payload,
+}: PayloadAction<Partial<Account>>) {
+  try {
+    // let data: { accountState: Partial<AccountState> };
+    // const {currentState} = yield select();
+    const account = payload;
+    yield put(
+      nextAccountStatus({
+        // ...currentState,
+        ...account,
+      })
+    );
+  } catch (err) {
+    yield put(nextAccountStatus(err));
+  }
 }
 
-export function* cleanAccountSaga({payload}: PayloadAction<{ shouldUpdateProvider?: boolean | undefined }>) {
-    try {
-        let account: Partial<Account> = {
-            accAddress: '',
-            readyState: AccountStatus.UN_CONNECT,
-            accountId: -1,
-            apiKey: '',
-            eddsaKey: '',
-            publicKey: {},
-            level: '',
-            nonce: -1,
-            keyNonce : -1,
-            keySeed: '',
-        }
+export function* cleanAccountSaga({
+  payload,
+}: PayloadAction<{ shouldUpdateProvider?: boolean | undefined }>) {
+  try {
+    let account: Partial<Account> = {
+      accAddress: "",
+      readyState: AccountStatus.UN_CONNECT,
+      accountId: -1,
+      apiKey: "",
+      eddsaKey: "",
+      publicKey: {},
+      level: "",
+      nonce: -1,
+      keyNonce: -1,
+      keySeed: "",
+      _accountIdNotActive: -1,
+    };
 
-        if (payload && payload.shouldUpdateProvider) {
-            yield call(async () => await connectProvides.clear())
-            account = {
-                ...account,
-                connectName: ConnectProviders.unknown
-            }
-        }
-        yield put(nextAccountStatus({
-            ...account
-        }));
-
-    } catch (err) {
-        yield put(nextAccountStatus(err));
+    if (payload && payload.shouldUpdateProvider) {
+      yield call(async () => await connectProvides.clear());
+      account = {
+        ...account,
+        connectName: ConnectProviders.unknown,
+      };
     }
+    yield put(
+      nextAccountStatus({
+        ...account,
+      })
+    );
+  } catch (err) {
+    yield put(nextAccountStatus(err));
+  }
 }
 
 function* accountSage() {
-    yield all([takeLatest(updateAccountStatus, accountUpdateSaga)]);
+  yield all([takeLatest(updateAccountStatus, accountUpdateSaga)]);
 }
 
 // function* goCleanAccount({payload}: PayloadAction<undefined>) {
@@ -60,13 +74,10 @@ function* accountSage() {
 // }
 
 function* accountRestSage() {
-    yield all([takeLatest(cleanAccountStatus, cleanAccountSaga)]);
+  yield all([takeLatest(cleanAccountStatus, cleanAccountSaga)]);
 }
 
-export const accountFork = [
-    fork(accountSage),
-    fork(accountRestSage)
-]
+export const accountFork = [fork(accountSage), fork(accountRestSage)];
 
 // const subject = new Subject<{ command: keyof typeof StorageCommands, data?: any }>();
 // const goNextAccountStatus = async (currentState: Partial<AccountState>,
@@ -153,4 +164,3 @@ export const accountFork = [
 //
 //
 //
-

@@ -31,7 +31,16 @@ const initConfig = function* <R extends { [key: string]: any }>(
     call(async () => LoopringAPI.exchangeAPI?.getTokens()),
     call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
     call(async () => LoopringAPI.exchangeAPI?.getMixMarkets()),
-    call(async () => LoopringAPI.exchangeAPI?.disableWithdrawTokenList()),
+    call(async () => {
+      try {
+        return await LoopringAPI.exchangeAPI?.disableWithdrawTokenList();
+      } catch (e) {
+        return {
+          disableWithdrawTokenList: [],
+          raw_data: undefined,
+        };
+      }
+    }),
   ]);
   store.dispatch(
     getTokenMap({
@@ -52,6 +61,7 @@ const initConfig = function* <R extends { [key: string]: any }>(
   store.dispatch(getAmmActivityMap({ ammpools }));
   if (store.getState().tokenMap.status === "ERROR") {
   }
+
   yield delay(5);
   const { account, walletLayer1 } = store.getState();
   if (account.accAddress && walletLayer1.walletLayer1 === undefined) {

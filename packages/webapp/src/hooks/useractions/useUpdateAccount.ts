@@ -20,7 +20,7 @@ import { ConnectorError, sleep } from "@loopring-web/loopring-sdk";
 
 import { checkErrorInfo } from "hooks/useractions/utils";
 
-export function useUpdateAccout() {
+export function useUpdateAccount() {
   const { updateHW, checkHWAddr } = useWalletInfo();
 
   const { setShowAccount } = useOpenModals();

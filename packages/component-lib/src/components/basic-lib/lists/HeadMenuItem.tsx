@@ -1,4 +1,6 @@
 import {
+  Box,
+  BoxProps,
   Container,
   ListItemAvatar,
   MenuItem,
@@ -98,7 +100,7 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
 
 }
 ` as typeof MenuItem;
-const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
+const StyledLayer2Item = styled(Box)<BoxProps<any>>`
   padding: 0;
   margin: 0;
   display: flex;
