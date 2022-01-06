@@ -26,13 +26,22 @@ const initConfig = function* <R extends { [key: string]: any }>(
     { tokenSymbolMap: tokensMap },
     { ammpools },
     { pairs, marketArr, tokenArr, markets },
+    { disableWithdrawTokenList },
   ] = yield all([
     call(async () => LoopringAPI.exchangeAPI?.getTokens()),
     call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
     call(async () => LoopringAPI.exchangeAPI?.getMixMarkets()),
+    call(async () => LoopringAPI.exchangeAPI?.disableWithdrawTokenList()),
   ]);
   store.dispatch(
-    getTokenMap({ tokensMap, marketMap: markets, pairs, marketArr, tokenArr })
+    getTokenMap({
+      tokensMap,
+      marketMap: markets,
+      pairs,
+      marketArr,
+      tokenArr,
+      disableWithdrawTokenList,
+    })
   );
   store.dispatch(initAmmMap({ ammpools }));
   yield take("tokenMap/getTokenMapStatus");
@@ -123,9 +132,13 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
         ChainId.MAINNET === chainId
           ? `https://etherscan.io/`
           : `https://goerli.etherscan.io/`;
-      let allowTrade;
-      let exchangeInfo;
-      let fiatPrices, gasPrice, forex;
+      let allowTrade,
+        disableWithdrawTokenList,
+        exchangeInfo,
+        fiatPrices,
+        gasPrice,
+        forex;
+
       try {
         [{ exchangeInfo }, { fiatPrices, gasPrice, forex }, allowTrade] =
           await Promise.all([

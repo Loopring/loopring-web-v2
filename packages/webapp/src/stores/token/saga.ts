@@ -10,12 +10,19 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
   pairs,
   marketArr,
   tokenArr,
+  disableWithdrawTokenList,
 }: GetTokenMapParams<R>) => {
   let coinMap: CoinMap<any, CoinInfo<any>> = {};
   let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
   let tokenMap: any = tokensMap;
   let addressIndex: AddressMap = {};
   let idIndex: IdMap = {};
+  let disableWithdrawList: string[] = disableWithdrawTokenList
+    ? disableWithdrawTokenList.map((item) => {
+        return item.symbol;
+      })
+    : [];
+
   Reflect.ownKeys(tokensMap).forEach((key) => {
     const coinInfo = {
       icon: getIcon(key as string, tokensMap),
@@ -38,6 +45,7 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
       // @ts-ignore
       [tokensMap[key].address.toLowerCase()]: key as string,
     };
+
     idIndex = {
       ...idIndex,
       // @ts-ignore
@@ -51,6 +59,7 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
       addressIndex,
       idIndex,
       tokenMap,
+      disableWithdrawList,
       marketArray: marketArr,
       marketCoins: tokenArr,
     },
@@ -61,13 +70,21 @@ export function* getPostsSaga<R extends { [key: string]: any }>({
   payload,
 }: PayloadAction<GetTokenMapParams<R>>) {
   try {
-    const { tokensMap, marketMap, pairs, marketArr, tokenArr } = payload;
+    const {
+      tokensMap,
+      marketMap,
+      pairs,
+      marketArr,
+      tokenArr,
+      disableWithdrawTokenList,
+    } = payload;
     // @ts-ignore
     const { data } = yield call(getTokenMapApi, {
       tokensMap,
       pairs,
       marketArr,
       tokenArr,
+      disableWithdrawTokenList,
     });
 
     yield put(getTokenMapStatus({ ...data, marketMap }));
@@ -84,20 +101,3 @@ export const tokenSaga = [
   fork(tokenInitSaga),
   // fork(tokenPairsSaga),
 ];
-
-// export function* getPairsSaga({payload}:PayloadAction<{tokenPairs: TokenPairs }>) {
-//     try {
-//         const {tokenPairs} = payload;
-//         const tokenPairsMap =  Reflect.ownKeys(tokenPairs).reduce((prev,key)=>{
-//            // @ts-ignore
-//             return prev[key as string] =  tokenPairs[key as string].tokenList
-//         }, {} )
-//
-//         yield put(getTokenMapStatus({tokenPairsMap}));
-//     } catch (err) {
-//         yield put(getAmmMapStatus(err));
-//     }
-// }
-// export function* tokenPairsSaga() {
-//     yield all([takeLatest(getTokenPairMap, getPairsSaga)]);
-// }

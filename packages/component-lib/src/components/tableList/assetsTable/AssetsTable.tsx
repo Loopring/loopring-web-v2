@@ -124,10 +124,9 @@ export interface AssetsTableProps {
   onLpDeposit: (token: string, type: LpTokenAction) => void;
   onLpWithdraw: (token: string, type: LpTokenAction) => void;
   getMarketArrayListCallback: (token: string) => string[];
-  // hideL2Assets: boolean,
   hideLpToken: boolean;
   hideSmallBalances: boolean;
-  // setHideL2Assets: (value: boolean) => void,
+  disableWithdrawList: string[];
   setHideLpToken: (value: boolean) => void;
   setHideSmallBalances: (value: boolean) => void;
 }
@@ -141,33 +140,23 @@ export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
     const {
       t,
-      // pagination,
       rawData,
       allowTrade,
-      // onVisibleRowsChange,
       showFilter,
       onShowDeposit,
       onShowTransfer,
       onShowWithdraw,
-      // tableHeight = 350,
       getMarketArrayListCallback,
-      // onLpWithdraw,
-      // hideL2Assets,
+      disableWithdrawList,
       hideLpToken,
       hideSmallBalances,
-      // setHideL2Assets,
       setHideLpToken,
       setHideSmallBalances,
       ...rest
     } = props;
 
-    // const [searchValue, setSearchValue] = useState('')
-    // const [hideSmallBalance, setHideSmallBalance] = useState(false)
-    // const [hideLpToken, sethideLpToken] = useState(false)
     const [filter, setFilter] = useState({
       searchValue: "",
-      // hideSmallBalance:false,
-      // hideLpToken:false
     });
     const [totalData, setTotalData] = useState<RawDataAssetsItem[]>(rawData);
     const [viewData, setViewData] = useState<RawDataAssetsItem[]>(rawData);
@@ -182,12 +171,8 @@ export const AssetsTable = withTranslation("tables")(
       },
       [setViewData, setTableHeight]
     );
-    // const [page, setPage] = useState(1)
-    // const pageSize = pagination ? pagination.pageSize : 10;
-
     const { language } = useSettings();
     const { coinJson, currency } = useSettings();
-    // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
     const isUSD = currency === Currency.usd;
     useEffect(() => {
       setTotalData(rawData);
@@ -320,10 +305,14 @@ export const AssetsTable = withTranslation("tables")(
         formatter: ({ row }) => {
           const token = row["token"];
           const isLp = token.type === TokenType.lp;
-          const lpPairList = token.value.split("-");
+          const tokenValue = token.value;
+
+          const isWithdraw =
+            token.type !== TokenType.lp &&
+            !disableWithdrawList.includes(tokenValue);
+          const lpPairList = tokenValue.split("-");
           lpPairList.splice(0, 1);
           const lpPair = lpPairList.join("-");
-          const tokenValue = token.value;
           const renderMarket: MarketType = (
             isLp ? lpPair : tokenValue
           ) as MarketType;
@@ -333,7 +322,9 @@ export const AssetsTable = withTranslation("tables")(
                 t,
                 tokenValue,
                 getMarketArrayListCallback,
+                disableWithdrawList,
                 isLp,
+                isWithdraw,
                 allowTrade,
                 market: renderMarket,
                 onShowDeposit,

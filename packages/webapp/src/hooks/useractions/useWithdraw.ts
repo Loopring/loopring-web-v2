@@ -214,7 +214,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   }, [withdrawValue.belong, tokenMap]);
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
+    const walletMap =
+      makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>);
     setWalletMap2(walletMap);
   }, [setWalletMap2]);
 
