@@ -653,7 +653,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       {!isConfirmTransfer && (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           {!toggleData?.length ? (
-            <Typography>{t("labelCalculating")}</Typography>
+            <Typography>{t("labelFeeCalculating")}</Typography>
           ) : (
             <>
               <Typography

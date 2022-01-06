@@ -384,7 +384,7 @@ export const WithdrawWrap = <
       {/* TODO: check whether there's a need to show deposit fee */}
       <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
         {!toggleData?.length ? (
-          <Typography>{t("labelCalculating")}</Typography>
+          <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
           <>
             <Typography

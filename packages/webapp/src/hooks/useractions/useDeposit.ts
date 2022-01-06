@@ -29,6 +29,7 @@ import { useModalData } from "stores/router";
 import { checkAddr } from "utils/web3_tools";
 import { isPosIntNum } from "utils/formatter_tool";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const useDeposit = <R extends IBData<T>, T>(): {
   depositProps: DepositProps<R, T>;
@@ -49,7 +50,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
   const { setShowDeposit, setShowAccount } = useOpenModals();
   const { updateDepositHash } = useOnChainInfo();
   const { t } = useTranslation("common");
-
+  const {
+    activeAccountValue: { chargeFeeList },
+  } = useModalData();
   const {
     btnStatus,
     btnInfo,
@@ -470,6 +473,20 @@ export const useDeposit = <R extends IBData<T>, T>(): {
       isNewAccount,
       title,
       allowTrade,
+      chargeFeeList:
+        tokenMap && Reflect.ownKeys(tokenMap).length
+          ? chargeFeeList.map((item: any) => {
+              const tokenInfo = tokenMap[item.token.toString()];
+              return {
+                ...item,
+                tokenId: tokenInfo?.tokenId,
+                belong: item.token,
+                fee: toBig(item.fee)
+                  .div("1e" + tokenInfo.decimals)
+                  .toString(),
+              };
+            })
+          : [],
       defaultAddress: account?.accAddress,
       tradeData: depositValue as any,
       coinMap: totalCoinMap as CoinMap<any>,
@@ -487,6 +504,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     onDepositClick,
     account.accAddress,
     allowTrade,
+    tokenMap,
   ]);
 
   return {

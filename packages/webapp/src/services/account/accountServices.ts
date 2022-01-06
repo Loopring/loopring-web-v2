@@ -10,15 +10,13 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { unlockAccount } from "./unlockAccount";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
-import { ChainId, sleep } from "@loopring-web/loopring-sdk";
+import { checkIsFeeEnough } from "./checkIsFeeEnough";
 
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
 export const accountServices = {
   //INFO: for update Account and unlock account
   sendSign: async () => {
-    // const account = store.getState().account;
-    // const {exchangeInfo} = store.getState().system;
     subject.next({
       status: Commands.ProcessSign,
       data: undefined,
@@ -165,7 +163,12 @@ export const accountServices = {
           if (account.accountId) {
             if (!account.publicKey.x || !account.publicKey.y) {
               myLog("-------sendCheckAcc need update account!");
-              accountServices.sendNeedUpdateAccount(accInfo);
+              const isFeeEnough = await checkIsFeeEnough();
+              if (isFeeEnough) {
+                accountServices.sendNeedUpdateAccount(accInfo);
+              } else {
+                accountServices.sendNoAccount();
+              }
             } else {
               myLog("-------need unlockAccount!");
               unlockAccount();
@@ -180,7 +183,7 @@ export const accountServices = {
   },
   sendCheckAccount: async (
     ethAddress: string,
-    chainId?: ChainId | undefined
+    chainId?: sdk.ChainId | undefined
   ) => {
     myLog(
       "After connect >>,sendCheckAccount: step3 processAccountCheck",
@@ -196,13 +199,17 @@ export const accountServices = {
       status: Commands.ProcessAccountCheck,
       data: undefined,
     });
-    if (LoopringAPI.exchangeAPI) {
+    if (LoopringAPI.exchangeAPI && ethAddress) {
       if (chainId && LoopringAPI.__chainId__ !== chainId) {
-        await sleep(5);
+        await sdk.sleep(5);
       }
-      const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
-        owner: ethAddress,
-      });
+
+      const [{ accInfo }, isFeeEnough] = await Promise.all([
+        LoopringAPI.exchangeAPI.getAccount({
+          owner: ethAddress,
+        }),
+        checkIsFeeEnough(),
+      ]);
       myLog("After connect >>,checkAccount: step3", accInfo);
 
       if (accInfo === undefined) {
@@ -211,15 +218,23 @@ export const accountServices = {
         if (accInfo.accountId) {
           if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
             myLog("-------sendCheckAccount need update account!");
-            accountServices.sendNeedUpdateAccount(accInfo);
+
+            if (isFeeEnough) {
+              accountServices.sendNeedUpdateAccount(accInfo);
+            } else {
+              accountServices.sendNoAccount();
+            }
           } else {
-            accountServices.sendAccountLock(accInfo);
+            myLog("-------need unlockAccount!");
+            unlockAccount();
           }
         } else {
           myLog("unexpected accInfo:", accInfo);
           throw Error("unexpected accinfo:" + accInfo);
         }
       }
+    } else {
+      throw Error("unexpected no ethAddress:" + ethAddress);
     }
 
     // try {

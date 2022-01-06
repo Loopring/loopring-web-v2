@@ -22,6 +22,12 @@ export default {
     "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests. You can reset the EdDSA keypair at any time.",
   resetFee: "Fee {{count}} GAS ≈ ${{price}}",
   resetLabelBtn: "Reset",
+  labelActiveAccountTitle: "Active Account",
+  labelActiveEnterToken: "Select payment token",
+  labelActiveAccountDescription:
+    "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests.",
+  labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
+  labelActiveAccountBtn: "Active Account",
   depositTitle: "Deposit",
   depositTitleAndActive: "Deposit & Activate Layer2",
   depositTitleActive: " Activate Layer2",
@@ -296,6 +302,7 @@ export default {
   labelImpactExtraGreat:
     "Your transaction amount will affect the pool price <1>{{value}}</1>. Are you sure to swap?",
   labelCalculating: "Calculating...",
+  labelFeeCalculating: "Fee Calculating...",
   labelAmmMyTransactions: "My Transactions",
   labelAmmAllTransactions: "All Transactions",
   labelWaitForAuth: "Waiting for signature",
@@ -475,4 +482,7 @@ export default {
   labelHours: "Hours",
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
+  labelIsNotFeeToken: "Please deposit {{symbol}} to active layer2",
+  labelIsNotEnoughFeeToken:
+    "Please deposit {{fee}} {{symbol}} to cover active layer2 fee",
 };
