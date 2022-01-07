@@ -146,12 +146,7 @@ export const useActiveAccount = <T>(): {
     ) {
       resultMemo();
     }
-  }, [
-    tokenMapStatus,
-    chargeFeeList,
-    activeAccountFeeInfo,
-    account._accountIdNotActive,
-  ]);
+  }, [tokenMapStatus, chargeFeeList.length, account._accountIdNotActive]);
 
   return {
     activeAccountProps,
