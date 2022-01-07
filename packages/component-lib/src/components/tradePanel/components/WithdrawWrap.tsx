@@ -19,6 +19,7 @@ import {
   globalSetup,
   HelpIcon,
   IBData,
+  LoadingIcon,
   TOAST_TIME,
   WithdrawTypes,
 } from "@loopring-web/common-resources";
@@ -67,6 +68,8 @@ export const WithdrawWrap = <
   handleFeeChange,
   handleWithdrawTypeChange,
   handleOnAddressChange,
+  isAddressCheckLoading,
+  isFCAddress,
   handleAddressError,
   wait = globalSetup.wait,
   assetsData = [],
@@ -78,6 +81,7 @@ export const WithdrawWrap = <
   const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(
     withdrawType
   );
+
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault ? addressDefault : ""
   );
@@ -144,7 +148,8 @@ export const WithdrawWrap = <
       disabled ||
       tradeData === undefined ||
       walletMap === undefined ||
-      coinMap === undefined
+      coinMap === undefined ||
+      isFCAddress === true
     ) {
       return true;
     } else {
@@ -339,52 +344,74 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid
-        item
-        /* marginTop={2} */ alignSelf={"stretch"}
-        position={"relative"}
-      >
-        <TextField
-          value={address}
-          error={addressError && addressError.error ? true : false}
-          label={t("withdrawLabelAddress")}
-          placeholder={t("labelPleaseInputWalletAddress")}
-          onChange={_handleOnAddressChange}
-          disabled={chargeFeeTokenList.length ? false : true}
-          // required={true}
-          SelectProps={{ IconComponent: DropDownIcon }}
-          helperText={
-            <Typography component={"span"} variant={"body2"}>
-              {addressError && addressError.error ? addressError.message : ""}
-            </Typography>
-          }
-          fullWidth={true}
-        />
-        {address !== "" ? (
-          <IconClearStyled
-            size={"small"}
-            color={"inherit"}
-            style={{ top: "28px" }}
-            aria-label="Clear"
-            onClick={handleClear}
-          >
-            <CloseIcon />
-          </IconClearStyled>
-        ) : (
-          ""
-        )}
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        <>
+          <TextField
+            value={address}
+            error={addressError && addressError.error ? true : false}
+            label={t("withdrawLabelAddress")}
+            placeholder={t("labelPleaseInputWalletAddress")}
+            onChange={_handleOnAddressChange}
+            disabled={chargeFeeTokenList.length ? false : true}
+            SelectProps={{ IconComponent: DropDownIcon }}
+            helperText={
+              <Typography variant={"body2"} component={"span"}>
+                {addressError && addressError.error ? addressError.message : ""}
+              </Typography>
+            }
+            fullWidth={true}
+          />
+          {address !== "" ? (
+            isAddressCheckLoading ? (
+              <LoadingIcon
+                width={24}
+                style={{ top: "32px", right: "8px", position: "absolute" }}
+              />
+            ) : (
+              <IconClearStyled
+                color={"inherit"}
+                size={"small"}
+                style={{ top: "30px" }}
+                aria-label="Clear"
+                onClick={handleClear}
+              >
+                <CloseIcon />
+              </IconClearStyled>
+            )
+          ) : (
+            ""
+          )}
+          <Box marginLeft={1 / 2}>
+            {isFCAddress ? (
+              <Typography
+                color={"var(--color-error)"}
+                fontSize={14}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelWithdrawInvalidAddress")}
+              </Typography>
+            ) : (
+              <>
+                {realAddr && !isAddressCheckLoading && (
+                  <Typography
+                    color={"var(--color-text-primary)"}
+                    variant={"body2"}
+                    marginTop={1 / 4}
+                  >
+                    {realAddr}
+                  </Typography>
+                )}
+              </>
+            )}
+          </Box>
+        </>
       </Grid>
-
-      {realAddr && (
-        <Grid item alignSelf={"stretch"} position={"relative"}>
-          {realAddr}
-        </Grid>
-      )}
 
       {/* TODO: check whether there's a need to show deposit fee */}
       <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
         {!toggleData?.length ? (
-          <Typography>{t("labelCalculating")}</Typography>
+          <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
           <>
             <Typography

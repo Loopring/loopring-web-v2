@@ -26,13 +26,31 @@ const initConfig = function* <R extends { [key: string]: any }>(
     { tokenSymbolMap: tokensMap },
     { ammpools },
     { pairs, marketArr, tokenArr, markets },
+    { disableWithdrawTokenList },
   ] = yield all([
     call(async () => LoopringAPI.exchangeAPI?.getTokens()),
     call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
     call(async () => LoopringAPI.exchangeAPI?.getMixMarkets()),
+    call(async () => {
+      try {
+        return await LoopringAPI.exchangeAPI?.disableWithdrawTokenList();
+      } catch (e) {
+        return {
+          disableWithdrawTokenList: [],
+          raw_data: undefined,
+        };
+      }
+    }),
   ]);
   store.dispatch(
-    getTokenMap({ tokensMap, marketMap: markets, pairs, marketArr, tokenArr })
+    getTokenMap({
+      tokensMap,
+      marketMap: markets,
+      pairs,
+      marketArr,
+      tokenArr,
+      disableWithdrawTokenList,
+    })
   );
   store.dispatch(initAmmMap({ ammpools }));
   yield take("tokenMap/getTokenMapStatus");
@@ -43,6 +61,7 @@ const initConfig = function* <R extends { [key: string]: any }>(
   store.dispatch(getAmmActivityMap({ ammpools }));
   if (store.getState().tokenMap.status === "ERROR") {
   }
+
   yield delay(5);
   const { account, walletLayer1 } = store.getState();
   if (account.accAddress && walletLayer1.walletLayer1 === undefined) {
@@ -123,9 +142,13 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
         ChainId.MAINNET === chainId
           ? `https://etherscan.io/`
           : `https://goerli.etherscan.io/`;
-      let allowTrade;
-      let exchangeInfo;
-      let fiatPrices, gasPrice, forex;
+      let allowTrade,
+        disableWithdrawTokenList,
+        exchangeInfo,
+        fiatPrices,
+        gasPrice,
+        forex;
+
       try {
         [{ exchangeInfo }, { fiatPrices, gasPrice, forex }, allowTrade] =
           await Promise.all([

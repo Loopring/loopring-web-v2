@@ -20,7 +20,7 @@ import {
   walletMap,
 } from "../../static";
 import { Button } from "../basic-lib";
-import { ResetPanel } from "./Reset";
+import { ResetPanel } from "./Reset/ResetPanel";
 import { useTranslation } from "react-i18next";
 import {
   AmmPanel,

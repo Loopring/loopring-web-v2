@@ -32,6 +32,7 @@ import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import { useTokenPrices } from "stores/tokenPrices";
 import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { useTokenMap } from "../../../stores/token";
 
 const UP_COLOR = "#00BBA8";
 const DOWN_COLOR = "#fb3838";
@@ -93,12 +94,11 @@ export type TrendDataItem = {
 const AssetPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const container = useRef(null);
-    // const [pageSize, setPageSize] = useState(10);
-    // const [chartPeriod, setChartPeriod] = useState('week')
+    const { disableWithdrawList } = useTokenMap();
     const { allowTrade, forex } = useSystem();
     const { raw_data } = allowTrade;
-    const legalEnable = (raw_data as any)?.legal.enable;
-    const legalShow = (raw_data as any)?.legal.show;
+    const legalEnable = (raw_data as any)?.legal?.enable;
+    const legalShow = (raw_data as any)?.legal?.show;
     const {
       account: { accountId, accAddress },
     } = useAccount();
@@ -457,9 +457,7 @@ const AssetPanel = withTranslation("common")(
             <AssetsTable
               {...{
                 rawData: assetsRawData,
-                // pagination: {
-                //     pageSize: pageSize
-                // },
+                disableWithdrawList,
                 showFilter: true,
                 allowTrade,
                 onShowDeposit: onShowDeposit,
