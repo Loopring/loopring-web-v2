@@ -59,7 +59,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     ) {
       return true;
     } else {
-      if (isNewAlert && chargeFeeList) {
+      if (isNewAccount && chargeFeeList) {
         const index = chargeFeeList?.findIndex(
           ({ token }) => token === tradeData.belong
         );
@@ -88,7 +88,6 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   );
   const handleClear = React.useCallback(() => {
     // @ts-ignore
-    // addressInput?.current?.value = "";
     setAddress("");
   }, []);
   const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -159,11 +158,6 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     } else {
       return <></>;
     }
-    // {
-    //   isNewAccount &&
-    //   chargeFeeList
-    //   &&
-    // }
   }, [isNewAccount, chargeFeeList, tradeData]);
 
   return (
@@ -262,9 +256,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
                 disabled,
                 walletMap,
                 tradeData,
-                // coinMap,
                 inputNFTDefaultProps: { label: "" },
-                // inputButtonDefaultProps,
                 inputNFTRef: inputBtnRef,
               }}
             />
@@ -293,9 +285,6 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             label={t("depositLabelRefer")}
             placeholder={t("depositLabelPlaceholder")}
             onChange={_handleOnAddressChange}
-            // SelectProps={{IconComponent: DropDownIcon}}
-            // required={true}
-            // inputRef={addressInput}
             helperText={
               <Typography variant={"body2"} component={"span"}>
                 {addressError && addressError.error ? addressError.message : ""}
@@ -330,7 +319,6 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
           onClick={() => {
             onDepositClick(tradeData);
           }}
-          // style={{width: '200px'}}
           loading={
             !getDisabled() && depositBtnStatus === TradeBtnStatus.LOADING
               ? "true"
