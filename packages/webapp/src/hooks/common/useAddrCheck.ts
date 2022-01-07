@@ -7,6 +7,7 @@ import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
 import { globalSetup } from "@loopring-web/common-resources";
 import _ from "lodash";
+import { WalletType } from "@loopring-web/loopring-sdk";
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>("");
@@ -36,11 +37,16 @@ export const useAddressCheck = () => {
         const { realAddr, addressErr } = await checkAddr(address, web3);
         setRealAddr(realAddr);
         setAddrStatus(addressErr);
-        const { walletType } =
-          (await LoopringAPI.walletAPI.getWalletType({
-            wallet: realAddr != "" ? realAddr : address,
-          })) ?? {};
-        if (walletType && walletType.isInCounterFactualStatus) {
+        let walletType: WalletType | undefined = undefined;
+        if (realAddr !== "" || address !== "") {
+          walletType = (
+            await LoopringAPI.walletAPI.getWalletType({
+              wallet: realAddr != "" ? realAddr : address,
+            })
+          ).walletType;
+        }
+
+        if (walletType && walletType?.isInCounterFactualStatus) {
           setIsFCAddress(true);
         } else {
           setIsFCAddress(false);
