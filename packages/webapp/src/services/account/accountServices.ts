@@ -67,7 +67,8 @@ export const accountServices = {
           readyState: AccountStatus.LOCKED,
           accountId: accInfo.accountId,
           nonce: accInfo.nonce,
-          level: accInfo.tags,
+          level:
+            accInfo.tags?.split(";").find((item) => /vip/gi.test(item)) ?? "",
           keyNonce: accInfo.keyNonce,
           keySeed: accInfo.keySeed,
         }
