@@ -149,7 +149,8 @@ export const WithdrawWrap = <
       tradeData === undefined ||
       walletMap === undefined ||
       coinMap === undefined ||
-      isFCAddress === true
+      isFCAddress ||
+      isFeeNotEnough
     ) {
       return true;
     } else {

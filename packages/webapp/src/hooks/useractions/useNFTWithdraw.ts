@@ -485,7 +485,7 @@ export const useNFTWithdraw = <
     isAddressCheckLoading,
     withdrawBtnStatus: btnStatus,
     withdrawType: "Standard",
-    withdrawTypes: WithdrawTypes,
+    withdrawTypes: { Standard: "" } as any,
     onWithdrawClick: () => {
       if (nftWithdrawValue && nftWithdrawValue.tradeValue) {
         handleNFTWithdraw(nftWithdrawValue, realAddr ? realAddr : address);

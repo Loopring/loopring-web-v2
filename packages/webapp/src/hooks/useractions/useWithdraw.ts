@@ -41,7 +41,6 @@ import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
-import { getFloatValue } from "utils/formatter_tool";
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
   withdrawAlertText: string | undefined;
