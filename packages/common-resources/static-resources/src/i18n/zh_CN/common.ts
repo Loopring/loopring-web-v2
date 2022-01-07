@@ -22,7 +22,7 @@ export default {
     "创建一个新的二层身份验证签名密钥（无需备份），该操作将会<1>取消您的所有待定指令</1>。",
   resetFee: "{{count}} GAS ≈ ${{price}} 费用",
   resetLabelBtn: "重置",
-  labelActiveAccountTitle: "Active Account",
+  labelActiveAccountTitle: "Activate Account",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
     "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests.",
