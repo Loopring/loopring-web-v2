@@ -81,7 +81,6 @@ export const WithdrawWrap = <
   const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(
     withdrawType
   );
-
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault ? addressDefault : ""
   );
@@ -94,32 +93,36 @@ export const WithdrawWrap = <
   );
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
   const [feeToken, setFeeToken] = React.useState("");
-  const [toggleData, setToggleData] = React.useState<any[]>([]);
   const { feeChargeOrder } = useSettings();
-
+  const toggleData: any[] = chargeFeeTokenList
+    .sort(
+      (a, b) =>
+        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
+    )
+    .map(({ belong, fee, __raw__ }) => ({
+      key: belong,
+      value: belong,
+      fee,
+      __raw__,
+    }));
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-withdraw`,
   });
 
   React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && feeChargeOrder && assetsData) {
-      const list = chargeFeeTokenList
-        .sort(
-          (a, b) =>
-            feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-        )
-        .map(({ belong, fee, __raw__ }) => ({
-          key: belong,
-          value: belong,
-          fee,
-          __raw__,
-        })) as any[];
-      setToggleData(list);
+    if (!!chargeFeeTokenList.length && feeChargeOrder) {
+      const defaultToken =
+        chargeFeeTokenList.find(
+          (o) =>
+            o.fee !== undefined &&
+            assetsData.find((item) => item.name === o.belong)?.available > o.fee
+        )?.belong || "ETH";
+      setFeeToken(defaultToken);
       const currFee =
-        list.find((o) => o.key === feeToken)?.fee || EmptyValueTag;
+        toggleData.find((o) => o.key === feeToken)?.fee || EmptyValueTag;
       const currFeeRaw =
-        list.find((o) => o.key === feeToken)?.__raw__ || EmptyValueTag;
+        toggleData.find((o) => o.key === feeToken)?.__raw__ || EmptyValueTag;
       handleFeeChange({
         belong: feeToken,
         fee: currFee,
@@ -409,7 +412,6 @@ export const WithdrawWrap = <
         </>
       </Grid>
 
-      {/* TODO: check whether there's a need to show deposit fee */}
       <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
         {!toggleData?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
