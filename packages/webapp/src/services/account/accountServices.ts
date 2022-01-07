@@ -217,7 +217,7 @@ export const accountServices = {
             accountServices.sendNeedUpdateAccount(accInfo);
           } else {
             myLog("-------need unlockAccount!");
-            unlockAccount();
+            accountServices.sendAccountLock(accInfo);
           }
         } else {
           myLog("unexpected accInfo:", accInfo);

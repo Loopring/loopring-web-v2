@@ -29,7 +29,7 @@ export const ActiveAccountWrap = <T extends object>({
   activeAccountBtnStatus,
   onActiveAccountClick,
   chargeFeeToken,
-  chargeFeeTokenList,
+  chargeFeeTokenList = [],
   handleFeeChange,
   goToDeposit,
   assetsData = [],
@@ -42,17 +42,19 @@ export const ActiveAccountWrap = <T extends object>({
   const [feeToken, setFeeToken] = React.useState("");
   const { feeChargeOrder } = useSettings();
 
-  const toggleData: any[] = chargeFeeTokenList
-    .sort(
-      (a, b) =>
-        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-    )
-    .map(({ belong, fee, __raw__ }) => ({
-      key: belong,
-      value: belong,
-      fee,
-      __raw__,
-    }));
+  const toggleData: any[] =
+    chargeFeeTokenList &&
+    chargeFeeTokenList
+      .sort(
+        (a, b) =>
+          feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
+      )
+      .map(({ belong, fee, __raw__ }) => ({
+        key: belong,
+        value: belong,
+        fee,
+        __raw__,
+      }));
   const isFeeEnough = () => {
     if (!!chargeFeeTokenList.length && assetsData && feeToken) {
       if (!checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))) {
