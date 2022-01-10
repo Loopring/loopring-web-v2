@@ -22,7 +22,7 @@ const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
       return status === "down" ? "0deg" : "180deg";
     }}
   );
-` as (props: IconProps & { status: string }) => JSX.Element;
+` as unknown as (props: IconProps & { status: string }) => JSX.Element;
 
 export const ActiveAccountWrap = <T extends object>({
   t,
@@ -39,7 +39,7 @@ export const ActiveAccountWrap = <T extends object>({
     "down"
   );
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
-  const [feeToken, setFeeToken] = React.useState("");
+  const [feeToken, setFeeToken] = React.useState("ETH");
   const { feeChargeOrder } = useSettings();
 
   const toggleData: any[] =

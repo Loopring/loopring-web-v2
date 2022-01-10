@@ -6,7 +6,11 @@ import {
   useOpenModals,
 } from "@loopring-web/component-lib";
 
-import { FeeInfo, SagaStatus } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  FeeInfo,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 
 import { useUpdateAccount } from "./useUpdateAccount";
@@ -30,65 +34,82 @@ export const useActiveAccount = <T>(): {
     activeAccountValue: { chargeFeeList },
     updateActiveAccountData,
   } = useModalData();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
   const { setShowActiveAccount, setShowDeposit } = useOpenModals();
 
   const { goUpdateAccount } = useUpdateAccount();
 
-  const onActiveAccountClick = React.useCallback(() => {
-    setShowActiveAccount({ isShow: false });
-    if (activeAccountFeeInfo) {
-      goUpdateAccount({
-        isFirstTime: true,
-        isReset: false,
-        feeInfo: activeAccountFeeInfo,
-      });
-    }
-  }, [setShowActiveAccount, activeAccountFeeInfo, goUpdateAccount]);
-
-  const handleFeeChange = React.useCallback(
-    (value: FeeInfo): void => {
-      value.__raw__ = {
-        ...value.__raw__,
-        tokenId: tokenMap[value.belong.toString()].tokenId,
-      };
-      setActiveAccountFeeInfo(value);
-    },
-    [setActiveAccountFeeInfo, tokenMap]
-  );
-  const buildProps = () =>
-    ({
-      onActiveAccountClick,
-      activeAccountBtnStatus: btnStatus,
-      chargeFeeToken: activeAccountFeeInfo?.belong,
-      goToDeposit: () => {
+  const handleFeeChange = (value: FeeInfo): void => {
+    value.__raw__ = {
+      ...value.__raw__,
+      tokenId: tokenMap[value.belong.toString()].tokenId,
+    };
+    setActiveAccountFeeInfo(value);
+  };
+  const onActiveAccountClick = () => {
+    setActiveAccountFeeInfo((state: any) => {
+      if (state) {
         setShowActiveAccount({ isShow: false });
-        setShowDeposit({ isShow: true });
-      },
-      chargeFeeTokenList:
-        tokenMap &&
-        Reflect.ownKeys(tokenMap).length &&
-        chargeFeeList.map((item: any) => {
-          const tokenInfo = tokenMap[item.token.toString()];
-          return {
-            ...item,
-            tokenId: tokenInfo?.tokenId,
-            belong: item.token,
-            fee: sdk
-              .toBig(item.fee)
-              .div("1e" + tokenInfo.decimals)
-              .toString(),
-            __raw__: item,
-          };
-        }),
+        goUpdateAccount({
+          isFirstTime: true,
+          isReset: false,
+          feeInfo: state,
+        });
+      }
+      return state;
+    });
+  };
+
+  const buildProps = React.useCallback(
+    () =>
+      ({
+        onActiveAccountClick,
+        activeAccountBtnStatus: btnStatus,
+        chargeFeeToken: activeAccountFeeInfo?.belong,
+        goToDeposit: () => {
+          setShowActiveAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+        },
+        chargeFeeTokenList:
+          tokenMap &&
+          Reflect.ownKeys(tokenMap).length &&
+          chargeFeeList.map((item: any) => {
+            const tokenInfo = tokenMap[item.token.toString()];
+            return {
+              ...item,
+              tokenId: tokenInfo?.tokenId,
+              belong: item.token,
+              fee: sdk
+                .toBig(item.fee)
+                .div("1e" + tokenInfo.decimals)
+                .toString(),
+              __raw__: item,
+            };
+          }),
+        handleFeeChange,
+      } as ActiveAccountProps<T>),
+    [
+      onActiveAccountClick,
       handleFeeChange,
-    } as ActiveAccountProps<T>);
+      tokenMap,
+      btnStatus,
+      activeAccountFeeInfo,
+    ]
+  );
 
   const resultMemo = React.useCallback(async () => {
-    let tokens = chargeFeeList
-      .map((item) => `${tokenMap[item.token ?? "ETH"].tokenId}`)
-      .join(",");
-    if (account._accountIdNotActive) {
+    if (
+      account._accountIdNotActive &&
+      (account.readyState === AccountStatus.DEPOSITING ||
+        account.readyState === AccountStatus.NOT_ACTIVE)
+    ) {
+      if (account.readyState === AccountStatus.DEPOSITING) {
+        nodeTimer.current = setTimeout(() => resultMemo(), 30000);
+      }
+      let tokens = chargeFeeList
+        .map((item) => `${tokenMap[item.token ?? "ETH"].tokenId}`)
+        .join(",");
       const { userBalances } =
         (await LoopringAPI?.globalAPI?.getUserBalanceForFee({
           accountId: account._accountIdNotActive,
@@ -126,6 +147,7 @@ export const useActiveAccount = <T>(): {
       });
     }
   }, [
+    nodeTimer,
     account._accountIdNotActive,
     buildProps,
     chargeFeeList,
@@ -144,8 +166,16 @@ export const useActiveAccount = <T>(): {
       account._accountIdNotActive &&
       account._accountIdNotActive !== -1
     ) {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
       resultMemo();
     }
+    return () => {
+      if (nodeTimer.current !== -1) {
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
+      }
+    };
   }, [tokenMapStatus, chargeFeeList.length, account._accountIdNotActive]);
 
   return {

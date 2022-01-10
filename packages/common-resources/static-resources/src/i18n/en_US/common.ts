@@ -488,4 +488,11 @@ export default {
   labelIsNotEnoughFeeToken:
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Deposit Now</1>",
+  labelNFTTransferTX: "Transfers",
+  labelNFTWithdrawTX: "Withdrawals",
+  labelNFTDepositTX: "Deposits",
+  labelNFTDeposit: "Deposit NFT",
+  depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
+  depositNFTIdLabelPlaceholder: "please input NFT id",
+  labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & Deposit it",
 };

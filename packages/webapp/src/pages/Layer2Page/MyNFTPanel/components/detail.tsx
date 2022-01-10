@@ -17,8 +17,8 @@ import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
-import { useGetAssets } from "../AssetPanel/hook";
-import { useNFTWithdraw } from "../../../hooks/useractions/useNFTWithdraw";
+import { useGetAssets } from "../../AssetPanel/hook";
+import { useNFTWithdraw } from "../../../../hooks/useractions/useNFTWithdraw";
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 
 const BoxNFT = styled(Box)`

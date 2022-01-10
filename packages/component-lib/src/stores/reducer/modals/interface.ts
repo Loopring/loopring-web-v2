@@ -1,4 +1,4 @@
-import { NFTWholeINFO } from "@loopring-web/common-resources";
+import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 
 export enum ModalType {
   transfer = "transfer",
@@ -22,7 +22,8 @@ export interface ModalState {
   isShowDeposit: ModalStatePlayLoad & Transaction;
   isShowNFTTransfer: ModalStatePlayLoad & Partial<NFTWholeINFO>;
   isShowNFTWithdraw: ModalStatePlayLoad & Partial<NFTWholeINFO>;
-  isShowNFTDeposit: ModalStatePlayLoad & Partial<NFTWholeINFO>;
+  isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTMint: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowResetAccount: ModalStatePlayLoad;
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;

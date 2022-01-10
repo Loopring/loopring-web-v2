@@ -419,7 +419,7 @@ const AssetPanel = withTranslation("common")(
             </Typography>
             <Box display={"flex"} alignItems={"center"}>
               <Typography component={"span"} variant={"h5"}>
-                {getCurrAssetsEth()} ETH{" "}
+                {getCurrAssetsEth()} ETH
               </Typography>
               <Typography
                 component={"span"}
