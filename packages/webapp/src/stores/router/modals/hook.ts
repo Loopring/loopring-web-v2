@@ -3,6 +3,7 @@ import {
   resetActiveAccountData,
   resetDepositData,
   resetNFTDepositData,
+  resetNFTMintData,
   resetNFTTransferData,
   resetNFTWithdrawData,
   resetTransferData,
@@ -10,6 +11,7 @@ import {
   updateActiveAccountData,
   updateDepositData,
   updateNFTDepositData,
+  updateNFTMintData,
   updateNFTTransferData,
   updateNFTWithdrawData,
   updateTransferData,
@@ -24,7 +26,12 @@ import {
   WithdrawData,
 } from "./interface";
 import React from "react";
-import { NFTWholeINFO, RequireOne } from "@loopring-web/common-resources";
+import {
+  IBData,
+  TradeNFT,
+  NFTWholeINFO,
+  RequireOne,
+} from "@loopring-web/common-resources";
 import { RootState } from "stores";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 
@@ -35,7 +42,7 @@ export function useModalData(): {
     activeAccountData: RequireOne<ActiveAccountData, never>
   ) => void;
   resetActiveAccountData: () => void;
-  nftDepositValue: DepositData & Partial<NFTWholeINFO>;
+  nftDepositValue: TradeNFT<any>;
   updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
   updateNFTTransferData: (
     nftTransferData: RequireOne<TransferData & NFTWholeINFO, never>
@@ -44,7 +51,7 @@ export function useModalData(): {
   nftWithdrawValue: WithdrawData & Partial<NFTWholeINFO>;
   transferValue: TransferData;
   updateNFTDepositData: (
-    nftDepositData: RequireOne<DepositData & NFTWholeINFO, never>
+    nftDepositData: RequireOne<TradeNFT<any>, never>
   ) => void;
   nftTransferValue: TransferData & Partial<NFTWholeINFO>;
   depositValue: DepositData;
@@ -59,6 +66,11 @@ export function useModalData(): {
     nftWithdrawData: RequireOne<WithdrawData & NFTWholeINFO, never>
   ) => void;
   resetNFTWithdrawData: () => void;
+  nftMintValue: TradeNFT<any>;
+  updateNFTMintData: (
+    nftMintData: RequireOne<DepositData & NFTWholeINFO, never>
+  ) => void;
+  resetNFTMintData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -116,14 +128,14 @@ export function useModalData(): {
       [dispatch]
     ),
     updateNFTDepositData: React.useCallback(
-      (
-        nftDepositData: RequireOne<
-          DepositData &
-            NFTTokenInfo & { image: string; name: string; description: string },
-          never
-        >
-      ) => {
+      (nftDepositData: TradeNFT<any>) => {
         dispatch(updateNFTDepositData(nftDepositData));
+      },
+      [dispatch]
+    ),
+    updateNFTMintData: React.useCallback(
+      (nftMintData: TradeNFT<any>) => {
+        dispatch(updateNFTMintData(nftMintData));
       },
       [dispatch]
     ),
@@ -147,6 +159,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetActiveAccountData: React.useCallback(() => {
       dispatch(resetActiveAccountData(undefined));
+    }, [dispatch]),
+    resetNFTMintData: React.useCallback(() => {
+      dispatch(resetNFTMintData(undefined));
     }, [dispatch]),
   };
 }

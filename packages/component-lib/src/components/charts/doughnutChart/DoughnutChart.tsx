@@ -138,6 +138,12 @@ export const DoughnutChart = ({ data }: DoughnutChartProps) => {
     return result;
   }, [data]);
   const formattedData = getFormattedData();
+  const paddingAngle =
+    formattedData.filter((item) => {
+      return item.value;
+    }).length > 1
+      ? 5
+      : 0;
   return (
     <ResponsiveContainer debounce={1} width={"99%"}>
       <PieChart>
@@ -153,7 +159,7 @@ export const DoughnutChart = ({ data }: DoughnutChartProps) => {
           fill="#8884d8"
           stroke="none"
           radius={5}
-          paddingAngle={formattedData.length > 1 ? 5 : 0}
+          paddingAngle={paddingAngle}
           minAngle={2}
           animationEasing={"ease-in-out"}
           animationDuration={1000}

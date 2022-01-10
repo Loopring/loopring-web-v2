@@ -97,12 +97,16 @@ export const accountServices = {
     eddsaKey,
     isReset,
     nonce,
+    isInCounterFactualStatus,
+    isContract,
   }: {
     accountId?: number;
     apiKey?: string;
     eddsaKey?: any;
     isReset?: boolean;
     nonce?: number;
+    isInCounterFactualStatus?: boolean;
+    isContract?: boolean;
   }) => {
     const updateInfo =
       accountId && apiKey && eddsaKey && nonce !== undefined
@@ -116,6 +120,9 @@ export const accountServices = {
               y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
             },
             readyState: AccountStatus.ACTIVATED,
+            _accountIdNotActive: -1,
+            isInCounterFactualStatus,
+            isContract,
           }
         : { readyState: AccountStatus.ACTIVATED };
 

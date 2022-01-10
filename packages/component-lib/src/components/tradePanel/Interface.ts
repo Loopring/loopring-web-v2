@@ -14,16 +14,16 @@ import {
   TransferExtendProps,
   TransferInfoProps as _TransferInfoProps,
   WithdrawExtendProps,
-  WithdrawInfoProps as _WithdrawInfoProps,
   ExportAccountExtendProps,
   ActiveAccountExtendProps,
+  NFTDepositViewProps,
+  NFTMintViewProps,
 } from "./components/Interface";
 import {
   SwapData,
   SwapTradeBaseEventProps,
   SwapTradeBaseProps,
 } from "./components";
-import { AmmPanelBaseProps } from "./Amm";
 import {
   TradeBaseType,
   TradeLimitInfoProps,
@@ -88,19 +88,15 @@ export type ActiveAccountInfoProps<T, I> = DefaultProps<T, I> &
   _ActiveAccountInfoProps<T>;
 
 export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps<I>;
-export type WithdrawInfoProps<T, I> = DefaultProps<T, I> &
-  _WithdrawInfoProps<CoinKey<I>>;
+
 export type TransferInfoProps<T, I> = DefaultProps<T, I> &
   _TransferInfoProps<CoinKey<I>>;
 
 export type SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
-export type AmmInfoProps<T, TW, I, ACD, C = IBData<I>> = AmmPanelBaseProps<
-  T,
-  TW,
-  I,
-  ACD,
-  C
->;
+
+export type NFTDepositProps<T, I> = NFTDepositViewProps<T, I>;
+
+export type NFTMintProps<T, I> = NFTMintViewProps<T, I>;
 
 /**
  *  @type SwapProps
@@ -144,9 +140,6 @@ export type SwapProps<T, I, TCD> = {
   SwapTradeBaseEventProps<T, I> &
   SwapTradeBaseProps<T, I, TCD>;
 
-//L = LimitTradeData<T> ,
-//T = IBData<I>,
-//I = CoinKey<any>, TCD
 export type TradeLimitProps<
   L extends LimitTradeData<T>,
   T extends IBData<I>,

@@ -70,7 +70,8 @@ const accountSlice: Slice<AccountState> = createSlice<
           nonce,
           _accountIdNotActive,
           connectName,
-          // _userOnModel
+          isInCounterFactualStatus,
+          isContract,
         } = action.payload;
         if (_accountIdNotActive) {
           state._accountIdNotActive = _accountIdNotActive;
@@ -113,6 +114,8 @@ const accountSlice: Slice<AccountState> = createSlice<
         if (keySeed !== undefined) {
           state.keySeed = keySeed;
         }
+        state.isInCounterFactualStatus = isInCounterFactualStatus;
+        state.isContract = isContract;
         state.status = SagaStatus.DONE;
       }
     },

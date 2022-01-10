@@ -186,14 +186,12 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     [toggleData]
   );
 
-  const debounceAddress = React.useCallback(
-    _.debounce(({ address }: any) => {
-      if (handleOnAddressChange) {
-        handleOnAddressChange(address);
-      }
-    }, 500),
-    []
-  );
+  const debounceAddress = _.debounce(({ address }: any) => {
+    if (handleOnAddressChange) {
+      handleOnAddressChange(address);
+    }
+  }, 500);
+
   const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
     const address = event.target.value;
     if (handleAddressError) {

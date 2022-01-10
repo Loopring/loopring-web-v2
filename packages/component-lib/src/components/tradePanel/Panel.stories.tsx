@@ -20,7 +20,7 @@ import {
   walletMap,
 } from "../../static";
 import { Button } from "../basic-lib";
-import { ResetPanel } from "./Reset/ResetPanel";
+import { ResetPanel } from "./Reset";
 import { useTranslation } from "react-i18next";
 import {
   AmmPanel,
@@ -80,6 +80,8 @@ let depositProps: DepositProps<any, any> = {
   },
 };
 let withdrawProps: WithdrawProps<any, any> = {
+  isAddressCheckLoading: false,
+  isFCAddress: false,
   tradeData,
   coinMap,
   walletMap,
@@ -261,12 +263,11 @@ const WrapWithdrawPanel = (rest: any) => {
   return (
     <>
       <Grid item sm={6}>
-        <WithdrawPanel {...withdrawProps} {...rest}></WithdrawPanel>
+        <WithdrawPanel {...withdrawProps} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <WithdrawPanel {...rest}> </WithdrawPanel>
       </Grid>
-      <Grid item sm={12}></Grid>
     </>
   );
 };
@@ -278,9 +279,7 @@ const WrapDepositPanel = (rest: any) => {
   return (
     <>
       <Grid item sm={6}>
-        <DepositPanel
-          {...{ ...rest, ...depositProps, ...{ v: true } }}
-        ></DepositPanel>
+        <DepositPanel {...{ ...rest, ...depositProps, ...{ v: true } }} />
       </Grid>
       <Grid item sm={6}>
         <DepositPanel
@@ -291,7 +290,7 @@ const WrapDepositPanel = (rest: any) => {
             title: t("depositTitleAndActive"),
             description: "depositAndActiveDescription",
           }}
-        ></DepositPanel>
+        />
       </Grid>
       <Grid item sm={12}>
         {/*<Button onClick={() => setOpen(true)}> open</Button>*/}
@@ -305,12 +304,12 @@ const WrapResetPanel = (rest: any) => {
   return (
     <>
       <Grid item sm={6}>
-        <ResetPanel {...resetProps} {...rest}></ResetPanel>
+        <ResetPanel {...resetProps} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <ResetPanel {...rest}> </ResetPanel>
       </Grid>
-      <Grid item sm={12}></Grid>
+      <Grid item sm={12} />
     </>
   );
 };
@@ -342,7 +341,7 @@ const WrapSwapPanel = (rest: any) => {
   return (
     <>
       <Grid item sm={6}>
-        <SwapPanel {...swapProps} {...rest}></SwapPanel>
+        <SwapPanel {...swapProps} {...rest} />
       </Grid>
       <Grid item sm={6}>
         <SwapPanel {...rest}> </SwapPanel>
@@ -383,7 +382,7 @@ const WrapAmmPanel = (rest: any) => {
         <AmmPanel
           {...{ ...ammProps, tabSelected: AmmPanelType.Join }}
           {...rest}
-        ></AmmPanel>
+        />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -393,13 +392,13 @@ const WrapAmmPanel = (rest: any) => {
             ammDepositBtnStatus: TradeBtnStatus.LOADING,
           }}
           {...rest}
-        ></AmmPanel>
+        />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
           {...{ ...ammProps, tabSelected: AmmPanelType.Exit }}
           {...rest}
-        ></AmmPanel>
+        />
       </Grid>
       <Grid item sm={6}>
         <AmmPanel
@@ -409,7 +408,7 @@ const WrapAmmPanel = (rest: any) => {
             ammWithdrawBtnStatus: TradeBtnStatus.DISABLED,
           }}
           {...rest}
-        ></AmmPanel>
+        />
       </Grid>
     </>
   );
@@ -430,6 +429,7 @@ const ModalPanelWrap = () => {
       assetsData={{} as any}
       exportAccountProps={{} as any}
       setExportAccountToastOpen={{} as any}
+      activeAccountProps={{} as any}
     />
   );
 };

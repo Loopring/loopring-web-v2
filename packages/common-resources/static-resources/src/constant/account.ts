@@ -38,6 +38,8 @@ export type Account = {
   keyNonce: number | undefined;
   connectName: keyof typeof ConnectProviders;
   wrongChain?: boolean | undefined;
+  isInCounterFactualStatus?: boolean;
+  isContract?: boolean;
   _chainId?: 1 | 5 | "unknown";
   _accountIdNotActive?: number;
   _userOnModel?: boolean | undefined;

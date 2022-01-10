@@ -15,7 +15,6 @@ import {
   NFTWholeINFO,
   RampIcon,
 } from "@loopring-web/common-resources";
-import { BasicANFTTrade } from "./BasicANFTTrade";
 import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
 
 //SelectReceiveCoin
@@ -27,7 +26,6 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   coinMap,
   title,
   description,
-  type,
   btnInfo,
   depositBtnStatus,
   onDepositClick,
@@ -78,14 +76,11 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     | undefined
   >();
 
-  const debounceAddress = React.useCallback(
-    _.debounce(({ address }: any) => {
-      if (handleOnAddressChange) {
-        handleOnAddressChange(address);
-      }
-    }, wait),
-    []
-  );
+  const debounceAddress = _.debounce(({ address }: any) => {
+    if (handleOnAddressChange) {
+      handleOnAddressChange(address);
+    }
+  }, wait);
   const handleClear = React.useCallback(() => {
     // @ts-ignore
     setAddress("");
@@ -242,40 +237,19 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
         </Grid>
       )}
       <Grid item marginTop={2} alignSelf={"stretch"}>
-        {type === "NFT" ? (
-          <Box
-            display={"inline-flex"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <BasicANFTTrade
-              {...{
-                ...rest,
-                type,
-                t,
-                disabled,
-                walletMap,
-                tradeData,
-                inputNFTDefaultProps: { label: "" },
-                inputNFTRef: inputBtnRef,
-              }}
-            />
-          </Box>
-        ) : (
-          <BasicACoinTrade
-            {...{
-              ...rest,
-              t,
-              type,
-              disabled,
-              walletMap,
-              tradeData,
-              coinMap,
-              inputButtonDefaultProps,
-              inputBtnRef: inputBtnRef,
-            }}
-          />
-        )}
+        <BasicACoinTrade
+          {...{
+            ...rest,
+            t,
+            type: "TOKEN",
+            disabled,
+            walletMap,
+            tradeData,
+            coinMap,
+            inputButtonDefaultProps,
+            inputBtnRef: inputBtnRef,
+          }}
+        />
       </Grid>
       {isNewAccount ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>

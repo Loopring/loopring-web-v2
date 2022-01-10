@@ -25,8 +25,8 @@ import { IBData } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 
-const DEFAULT_DEPOSIT_HEIGHT = 300;
-const DEFAULT_TRANSFER_HEIGHT = 550;
+// const DEFAULT_DEPOSIT_HEIGHT = 300;
+// const DEFAULT_TRANSFER_HEIGHT = 550;
 const DEFAULT_WITHDRAW_HEIGHT = 550;
 
 const Modal = withTranslation("common")(
@@ -79,7 +79,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
   depositProps,
   nftTransferProps,
   nftWithdrawProps,
-  nftDepositProps,
+  // nftDepositProps,
   resetProps,
   activeAccountProps,
   ammProps,
@@ -94,7 +94,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
   depositProps: DepositProps<T, I>;
   nftTransferProps: TransferProps<T, I>;
   nftWithdrawProps: WithdrawProps<T, I>;
-  nftDepositProps: DepositProps<T, I>;
+  // nftDepositProps: DepositProps<T, I>;
   resetProps: ResetProps<I>;
   activeAccountProps: ActiveAccountProps<I>;
   ammProps: AmmProps<any, any, T, any>;
@@ -113,9 +113,6 @@ export const ModalPanel = <T extends IBData<I>, I>({
     setShowResetAccount,
     setShowActiveAccount,
     setShowExportAccount,
-    setShowNFTTransfer,
-    setShowNFTWithdraw,
-    setShowNFTDeposit,
   } = useOpenModals();
   const {
     isShowTransfer,
@@ -125,66 +122,11 @@ export const ModalPanel = <T extends IBData<I>, I>({
     isShowExportAccount,
     isShowAmm,
     isShowSwap,
-    isShowNFTTransfer,
-    isShowNFTWithdraw,
-    isShowNFTDeposit,
     isShowActiveAccount,
   } = modals;
   const theme = useTheme();
   return (
     <>
-      <Modal
-        open={isShowNFTTransfer.isShow}
-        onClose={() => setShowNFTTransfer({ isShow: false })}
-        content={
-          <TransferPanel<any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              type: "NFT",
-              _height: DEFAULT_TRANSFER_HEIGHT,
-              ...nftTransferProps,
-              assetsData,
-            }}
-          >
-            {" "}
-          </TransferPanel>
-        }
-      />
-      <Modal
-        open={isShowNFTWithdraw.isShow}
-        onClose={() => setShowNFTWithdraw({ isShow: false })}
-        content={
-          <WithdrawPanel<any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              type: "NFT",
-              _height: DEFAULT_WITHDRAW_HEIGHT,
-              ...nftWithdrawProps,
-              assetsData,
-            }}
-          >
-            {" "}
-          </WithdrawPanel>
-        }
-      />
-      <Modal
-        open={isShowNFTDeposit.isShow}
-        onClose={() => setShowNFTDeposit({ isShow: false })}
-        content={
-          <DepositPanel<any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: DEFAULT_DEPOSIT_HEIGHT,
-              ...nftDepositProps,
-            }}
-          >
-            {" "}
-          </DepositPanel>
-        }
-      />
       <Modal
         open={isShowTransfer.isShow}
         onClose={() => setShowTransfer({ isShow: false })}

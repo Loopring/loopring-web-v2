@@ -83,19 +83,30 @@ export function useUpdateAccount() {
             myLog(" after NoError:", eddsaKey);
             await sleep(REFRESH_RATE);
 
-            if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && eddsaKey) {
+            if (
+              LoopringAPI.userAPI &&
+              LoopringAPI.exchangeAPI &&
+              LoopringAPI.walletAPI &&
+              eddsaKey
+            ) {
               const { accInfo, error } =
                 await LoopringAPI.exchangeAPI.getAccount({
                   owner: account.accAddress,
                 });
+              //  await ;
 
               if (!error && accInfo) {
-                const { apiKey } = await LoopringAPI.userAPI.getUserApiKey(
-                  {
-                    accountId: accInfo.accountId,
-                  },
-                  eddsaKey.sk
-                );
+                const [{ apiKey }, { walletType }] = await Promise.all([
+                  LoopringAPI.userAPI.getUserApiKey(
+                    {
+                      accountId: accInfo.accountId,
+                    },
+                    eddsaKey.sk
+                  ),
+                  LoopringAPI.walletAPI?.getWalletType({
+                    wallet: account.accAddress,
+                  }),
+                ]);
 
                 myLog("After connect >>, get apiKey", apiKey);
 
@@ -109,6 +120,9 @@ export function useUpdateAccount() {
                   apiKey,
                   eddsaKey,
                   isReset,
+                  isInCounterFactualStatus:
+                    walletType?.isInCounterFactualStatus,
+                  isContract: walletType?.isContract,
                 });
               }
             }
