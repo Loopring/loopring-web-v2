@@ -15,6 +15,13 @@ import {
   Deposit_Failed,
   Deposit_Submit,
   Deposit_WaitForAuth,
+  NFTDeposit_Approve_Denied,
+  NFTDeposit_Approve_Submit,
+  NFTDeposit_Approve_WaitForAuth,
+  NFTDeposit_Denied,
+  NFTDeposit_Failed,
+  NFTDeposit_Submit,
+  NFTDeposit_WaitForAuth,
   ExportAccount_Approve_WaitForAuth,
   ExportAccount_Failed,
   ExportAccount_Success,
@@ -22,7 +29,6 @@ import {
   HadAccount,
   NoAccount,
   QRAddressPanel,
-  setShowActiveAccount,
   Transfer_Failed,
   Transfer_First_Method_Denied,
   Transfer_In_Progress,
@@ -47,6 +53,10 @@ import {
   Withdraw_Success,
   Withdraw_User_Denied,
   Withdraw_WaitForAuth,
+  NFTMint_WaitForAuth,
+  NFTMint_Denied,
+  NFTMint_Failed,
+  NFTMint_Submit,
 } from "@loopring-web/component-lib";
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 
@@ -72,6 +82,7 @@ import { useNFTTransfer } from "../../hooks/useractions/useNFTTransfer";
 import { useNFTDeposit } from "../../hooks/useractions/useNFTDeposit";
 import { LAST_STEP, useModalData } from "../../stores/router";
 import { useActiveAccount } from "../../hooks/useractions/useActiveAccount";
+import { useNFTMint } from "../../hooks/useractions/useNFTMint";
 
 export function useAccountModalForUI({
   t,
@@ -91,12 +102,14 @@ export function useAccountModalForUI({
     setShowConnect,
     setShowAccount,
     setShowDeposit,
+    setShowNFTDeposit,
+    setShowNFTMint,
     setShowTransfer,
     setShowWithdraw,
     setShowResetAccount,
     setShowActiveAccount,
   } = useOpenModals();
-  const { lastStep } = useModalData();
+  const { lastStep, nftMintValue, nftDepositValue } = useModalData();
   const { chainId } = useSystem();
 
   const { account, addressShort, shouldShow, setShouldShow } = useAccount();
@@ -126,7 +139,7 @@ export function useAccountModalForUI({
 
   const { depositProps } = useDeposit();
   const { nftDepositProps } = useNFTDeposit();
-
+  const { nftMintProps } = useNFTMint();
   const { assetsRawData } = useGetAssets();
 
   const {
@@ -242,6 +255,28 @@ export function useAccountModalForUI({
       },
     };
   }, [setShowAccount, setShowDeposit]);
+
+  const backToNFTDepositBtnInfo = React.useMemo(() => {
+    return {
+      btnTxt: "labelRetry",
+      callback: () => {
+        setShowAccount({ isShow: false });
+        setShowNFTDeposit({ isShow: true });
+        // setShowAccount({isShow: true, step: AccountStep.Deposit});
+      },
+    };
+  }, [setShowAccount, setShowNFTDeposit]);
+
+  const backToMintBtnInfo = React.useMemo(() => {
+    return {
+      btnTxt: "labelRetry",
+      callback: () => {
+        setShowAccount({ isShow: false });
+        setShowNFTMint({ isShow: true });
+        // setShowAccount({isShow: true, step: AccountStep.Deposit});
+      },
+    };
+  }, [setShowAccount, setShowNFTMint]);
 
   const backToTransferBtnInfo = React.useMemo(() => {
     return {
@@ -470,17 +505,6 @@ export function useAccountModalForUI({
         onQRClick,
       },
 
-      // new
-      // deposit
-      // [ AccountStep.Deposit ]: {
-      //     view: <DepositPanel title={title} {...{
-      //         ...rest,
-      //         _height: 'var(--modal-height)',
-      //         _width: 'var(--modal-width)',
-      //         ...depositProps,
-      //         t
-      //     }} />
-      // },
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (
           <Deposit_Approve_WaitForAuth
@@ -593,6 +617,197 @@ export function useAccountModalForUI({
         },
       },
 
+      [AccountStep.NFTDeposit_Approve_WaitForAuth]: {
+        view: (
+          <NFTDeposit_Approve_WaitForAuth
+            providerName={account.connectName}
+            {...{
+              ...rest,
+              ...nftDepositValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTDeposit_Approve_Denied]: {
+        view: (
+          <NFTDeposit_Approve_Denied
+            btnInfo={backToNFTDepositBtnInfo}
+            {...{
+              ...rest,
+              ...nftDepositValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTDeposit_Approve_Submit]: {
+        view: (
+          <NFTDeposit_Approve_Submit
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              ...nftDepositValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTDeposit_WaitForAuth]: {
+        view: (
+          <NFTDeposit_WaitForAuth
+            symbol={nftDepositProps.tradeData.name}
+            value={nftDepositProps.tradeData.tradeValue}
+            chainInfos={chainInfos}
+            updateDepositHash={updateDepositHash}
+            providerName={account.connectName}
+            {...{
+              ...rest,
+              ...nftDepositValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTDeposit_Denied]: {
+        view: (
+          <NFTDeposit_Denied
+            btnInfo={backToNFTDepositBtnInfo}
+            {...{
+              ...rest,
+              ...nftDepositValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTDeposit_Failed]: {
+        view: (
+          <NFTDeposit_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              ...nftDepositValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTDeposit_Submit]: {
+        view: (
+          <NFTDeposit_Submit
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              ...nftDepositValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+
+      [AccountStep.NFTMint_WaitForAuth]: {
+        view: (
+          <NFTMint_WaitForAuth
+            symbol={nftMintProps.tradeData.name}
+            value={nftMintProps.tradeData.tradeValue}
+            chainInfos={chainInfos}
+            updateDepositHash={updateDepositHash}
+            providerName={account.connectName}
+            {...{
+              ...rest,
+              ...nftMintValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTMint_Denied]: {
+        view: (
+          <NFTMint_Denied
+            btnInfo={backToMintBtnInfo}
+            {...{
+              ...rest,
+              ...nftMintValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTMint_Failed]: {
+        view: (
+          <NFTMint_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              ...nftMintValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
+      [AccountStep.NFTMint_Submit]: {
+        view: (
+          <NFTMint_Submit
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              ...nftMintValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true });
+          // setShowAccount({isShow: true, step: AccountStep.Deposit});
+        },
+      },
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
@@ -1101,9 +1316,15 @@ export function useAccountModalForUI({
     lockBtn,
     unlockBtn,
     backToDepositBtnInfo,
+    backToNFTDepositBtnInfo,
+    backToMintBtnInfo,
     closeBtnInfo,
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
+    nftDepositProps.tradeData.name,
+    nftDepositProps.tradeData.tradeValue,
+    nftMintProps.tradeData.name,
+    nftMintProps.tradeData.tradeValue,
     TryNewTransferAuthBtnInfo,
     backToTransferBtnInfo,
     TryNewWithdrawAuthBtnInfo,

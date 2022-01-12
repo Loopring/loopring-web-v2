@@ -128,14 +128,64 @@ export type DepositInfoProps<I> = {
   wait?: number;
 } & BtnInfoProps;
 
+export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
+  nftDepositBtnStatus?: keyof typeof TradeBtnStatus | undefined;
+  title?: string;
+  description?: string;
+  chargeFeeList?: FeeInfo[];
+  addressDefault?: string;
+  handleOnAddressChange?: (value: string | undefined | I) => void;
+  handleAddressError?: (
+    address: string
+  ) =>
+    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
+    | undefined;
+  wait?: number;
+} & BtnInfoProps;
+
+export type NFTMintInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
+  nftMintBtnStatus?: keyof typeof TradeBtnStatus | undefined;
+  title?: string;
+  description?: string;
+  chargeFeeList?: FeeInfo[];
+  addressDefault?: string;
+  handleOnAddressChange?: (value: string | undefined | I) => void;
+  handleAddressError?: (
+    address: string
+  ) =>
+    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
+    | undefined;
+  wait?: number;
+} & BtnInfoProps;
+
 export type DepositExtendProps<T, I> = {
   isThumb?: boolean;
   onDepositClick: (data: T) => void;
   allowTrade?: any;
 } & DepositInfoProps<I>;
 
+export type NFTDepositExtendProps<T, I> = {
+  isThumb?: boolean;
+  isNFTCheckLoading?: boolean;
+  handleOnNFTDataChange: (data: T) => void;
+  onNFTDepositClick: (data: T) => void;
+  allowTrade?: any;
+} & NFTDepositInfoProps<T, I>;
+
+export type NFTMintExtendProps<T, I> = {
+  isThumb?: boolean;
+  isNFTCheckLoading?: boolean;
+  handleOnNFTDataChange: (data: T) => void;
+  onNFTMintClick: (data: T) => void;
+  allowTrade?: any;
+} & NFTMintInfoProps<T, I>;
+
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
   DepositExtendProps<T, I>;
+
+export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;
+
+export type NFTMintViewProps<T, I> = NFTMintExtendProps<T, I>;
 
 export type WithdrawInfoProps<C> = {
   withdrawI18nKey?: string;
@@ -178,22 +228,7 @@ export type inputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
   InputButtonProps<T, I, C>,
   "label"
 >;
-//     {
-//     inputData?: IBData<R> | undefined,
-//     label: string,
-//     subLabel?: string,
-//     emptyText?: string,
-//     coinMap?: CoinMap<R, I>,
-//     placeholderText?: string,
-//     maxAllow?: boolean,
-//     disabled?: boolean,
-//     logoColor?: string,
-//     wait?: number,
-//     handleCountChange?: (ibData: IBData<R>, ref: React.ForwardedRef<any>) => void,
-//     handleOnClick?: (event: React.MouseEvent, ref: React.ForwardedRef<any>) => void,
-//     handleError?: (ibData: IBData<R>, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
-//     focusOnInput?: boolean
-// }
+
 export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
@@ -202,15 +237,12 @@ export type DefaultProps<T, I> = {
   type?: "TOKEN" | "NFT";
 };
 
-type DefaultWithMethodProps<T, I> = DefaultProps<T, I> & {
-  // onCoinValueChange: (data: T) => void,
-};
+type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
 export type BasicACoinTradeViewProps<T, I> = Required<
   DefaultWithMethodProps<T, I>
 > & {
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;
-  // coinInputError:{ error: boolean, message?: string | React.ElementType },
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {

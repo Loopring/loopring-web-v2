@@ -47,7 +47,6 @@ export const useActiveAccount = <T>(): {
     };
     setActiveAccountFeeInfo(value);
   };
-  console.log("activeAccountFeeInfo", activeAccountFeeInfo);
   const onActiveAccountClick = () => {
     setActiveAccountFeeInfo((state: any) => {
       if (state) {

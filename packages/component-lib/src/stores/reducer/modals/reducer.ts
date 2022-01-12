@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
+import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 
 const initialState: ModalState = {
   isShowTransfer: { isShow: false, symbol: undefined },
@@ -19,6 +19,7 @@ const initialState: ModalState = {
   isShowNFTTransfer: { isShow: false },
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
+  isShowNFTMint: { isShow: false },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -61,10 +62,21 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowNFTDeposit(
       state,
-      action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
+      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
     ) {
       const { isShow, nftData, nftType, ...rest } = action.payload;
       state.isShowNFTDeposit = {
+        isShow,
+        nftType,
+        ...rest,
+      };
+    },
+    setShowNFTMint(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
+    ) {
+      const { isShow, nftData, nftType, ...rest } = action.payload;
+      state.isShowNFTMint = {
         isShow,
         nftData,
         nftType,
@@ -170,5 +182,6 @@ export const {
   setShowFeeSetting,
   setShowActiveAccount,
   setShowIFrame,
+  setShowNFTMint,
 } = modalsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

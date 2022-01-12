@@ -12,6 +12,7 @@ import {
   setShowNFTDeposit,
   setShowNFTTransfer,
   setShowNFTWithdraw,
+  setShowNFTMint,
   setShowResetAccount,
   setShowSupport,
   setShowSwap,
@@ -20,7 +21,7 @@ import {
 } from "./reducer";
 
 import React from "react";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
+import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 
 export const useOpenModals = () => {
   const dispatch = useDispatch();
@@ -52,8 +53,13 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowNFTDeposit: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) =>
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) =>
         dispatch(setShowNFTDeposit(state)),
+      [dispatch]
+    ),
+    setShowNFTMint: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) =>
+        dispatch(setShowNFTMint(state)),
       [dispatch]
     ),
     setShowNFTWithdraw: React.useCallback(

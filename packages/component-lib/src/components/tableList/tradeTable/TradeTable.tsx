@@ -40,7 +40,7 @@ export type RawDataTradeItem = {
     };
     volume?: number;
   };
-  counterParty: TradeItemCounterparty;
+  counterParty?: TradeItemCounterparty;
   price: {
     key: string;
     value: number | undefined;

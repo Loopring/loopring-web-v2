@@ -17,8 +17,8 @@ import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
-import { useGetAssets } from "../AssetPanel/hook";
-import { useNFTWithdraw } from "../../../hooks/useractions/useNFTWithdraw";
+import { useGetAssets } from "../../AssetPanel/hook";
+import { useNFTWithdraw } from "../../../../hooks/useractions/useNFTWithdraw";
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 
 const BoxNFT = styled(Box)`
@@ -202,41 +202,41 @@ export const NFTDetail = withTranslation("common")(
               justifyContent={"space-between"}
             >
               <Typography display={"inline-flex"} alignItems={"center"}>
-                {[
-                  {
-                    linkName: (
-                      <DiscordIcon color={"inherit"} fontSize={"large"} />
-                    ),
-                    linkHref: "https://discord.com/invite/KkYccYp",
-                  },
-                  {
-                    linkName: (
-                      <TwitterIcon color={"inherit"} fontSize={"large"} />
-                    ),
-                    linkHref: "https://twitter.com/loopringorg",
-                  },
-                  {
-                    linkName: (
-                      <YoutubeIcon color={"inherit"} fontSize={"large"} />
-                    ),
-                    linkHref: "https://www.youtube.com/c/Loopring",
-                  },
-                  {
-                    linkName: (
-                      <MediumIcon color={"inherit"} fontSize={"large"} />
-                    ),
-                    linkHref: "https://medium.com/loopring-protocol",
-                  },
-                ].map((o, index) => (
-                  <Link
-                    paddingX={0.5}
-                    fontSize={12}
-                    key={`${o.linkName}-${index}`}
-                    onClick={() => window.open(o.linkHref)}
-                  >
-                    {o.linkName}
-                  </Link>
-                ))}
+                {/*{[*/}
+                {/*  {*/}
+                {/*    linkName: (*/}
+                {/*      <DiscordIcon color={"inherit"} fontSize={"large"} />*/}
+                {/*    ),*/}
+                {/*    linkHref: "https://discord.com/invite/KkYccYp",*/}
+                {/*  },*/}
+                {/*  {*/}
+                {/*    linkName: (*/}
+                {/*      <TwitterIcon color={"inherit"} fontSize={"large"} />*/}
+                {/*    ),*/}
+                {/*    linkHref: "https://twitter.com/loopringorg",*/}
+                {/*  },*/}
+                {/*  {*/}
+                {/*    linkName: (*/}
+                {/*      <YoutubeIcon color={"inherit"} fontSize={"large"} />*/}
+                {/*    ),*/}
+                {/*    linkHref: "https://www.youtube.com/c/Loopring",*/}
+                {/*  },*/}
+                {/*  {*/}
+                {/*    linkName: (*/}
+                {/*      <MediumIcon color={"inherit"} fontSize={"large"} />*/}
+                {/*    ),*/}
+                {/*    linkHref: "https://medium.com/loopring-protocol",*/}
+                {/*  },*/}
+                {/*].map((o, index) => (*/}
+                {/*  <Link*/}
+                {/*    paddingX={0.5}*/}
+                {/*    fontSize={12}*/}
+                {/*    key={`${o.linkName}-${index}`}*/}
+                {/*    onClick={() => window.open(o.linkHref)}*/}
+                {/*  >*/}
+                {/*    {o.linkName}*/}
+                {/*  </Link>*/}
+                {/*))}*/}
               </Typography>
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography minWidth={100} marginRight={2}>

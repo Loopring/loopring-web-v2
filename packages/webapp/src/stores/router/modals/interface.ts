@@ -1,5 +1,10 @@
 import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
-import { FeeInfo, NFTWholeINFO } from "@loopring-web/common-resources";
+import {
+  FeeInfo,
+  IBData,
+  TradeNFT,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
 
 export type WithdrawData = {
@@ -39,8 +44,8 @@ export type ModalDataStatus = {
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftTransferValue: TransferData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
-  nftDepositValue: DepositData &
-    Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
+  nftDepositValue: TradeNFT<any>;
+  nftMintValue: TradeNFT<any>;
 };
 
 export enum LAST_STEP {
@@ -50,5 +55,6 @@ export enum LAST_STEP {
   nftWithdraw = "nftWithdraw",
   nftTransfer = "nftTransfer",
   nftDeposit = "nftDeposit",
+  nftMint = "nftMint",
   default = "default",
 }

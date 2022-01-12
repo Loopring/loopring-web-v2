@@ -14,7 +14,12 @@ export async function unlockAccount() {
 
   myLog("unlockAccount account:", account);
 
-  if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
+  if (
+    exchangeInfo &&
+    LoopringAPI.userAPI &&
+    LoopringAPI.walletAPI &&
+    account.nonce !== undefined
+  ) {
     try {
       const connectName = account.connectName as sdk.ConnectorNames;
 
@@ -30,12 +35,17 @@ export async function unlockAccount() {
 
       myLog("unlockAccount eddsaKey:", eddsaKey);
 
-      const { apiKey, raw_data } = await LoopringAPI.userAPI.getUserApiKey(
-        {
-          accountId: account.accountId,
-        },
-        eddsaKey.sk
-      );
+      const [{ apiKey, raw_data }, { walletType }] = await Promise.all([
+        LoopringAPI.userAPI.getUserApiKey(
+          {
+            accountId: account.accountId,
+          },
+          eddsaKey.sk
+        ),
+        LoopringAPI.walletAPI.getWalletType({
+          wallet: account.accAddress,
+        }),
+      ]);
 
       myLog("unlockAccount raw_data:", raw_data);
 
@@ -49,6 +59,8 @@ export async function unlockAccount() {
           nonce: account.nonce,
           apiKey,
           eddsaKey,
+          isContract: walletType?.isContract,
+          isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
         });
       }
     } catch (e) {
