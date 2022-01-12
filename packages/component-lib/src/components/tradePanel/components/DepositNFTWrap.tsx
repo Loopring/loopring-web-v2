@@ -4,6 +4,7 @@ import {
   HelpIcon,
   TradeNFT,
   LoadingIcon,
+  IPFS_META_URL,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, useTranslation } from "react-i18next";
@@ -12,32 +13,47 @@ import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import {
+  EmptyDefault,
   IconClearStyled,
   InputSize,
   PopoverPure,
   TextField,
-  TGItemJSXInterface,
+  TGItemData,
   ToggleButtonGroup,
 } from "../../";
 import { Button } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
 import * as _ from "lodash";
 import { NFTInput } from "./BasicANFTTrade";
-import { NFTType } from "@loopring-web/loopring-sdk";
-const NFT_TYPE: TGItemJSXInterface[] = [
+import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
+import styled from "@emotion/styled";
+const GridStyle = styled(Grid)`
+  .coinInput-wrap {
+    .input-wrap {
+      //background: var(--field-opacity);
+      border-radius: ${({ theme }) => theme.unit / 2}px;
+      border: 1px solid var(--color-border);
+    }
+  }
+  .MuiInputLabel-root {
+    font-size: ${({ theme }) => theme.fontDefault.body2};
+  }
+` as typeof Grid;
+const NFT_TYPE: TGItemData[] = [
   {
     value: NFTType.ERC1155,
-    JSX: <>ERC1155</>,
-    tlabel: "ERC1155", // after 18n
+    key: "ERC1155",
+    label: "ERC1155",
     disabled: false,
   },
   {
     value: NFTType.ERC721,
-    JSX: <>ERC721</>,
-    tlabel: "ERC721", // after 18n
+    key: "ERC721",
+    label: "ERC721", // after 18n
     disabled: false,
   },
 ];
+
 export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
   disabled,
   walletMap,
@@ -57,11 +73,6 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
     variant: "popover",
     popupId: `popupId-nftDeposit`,
   });
-  // const [tradeData, setNFTData] = React.useState<T>(() => ({
-  //   tokenAddress: undefined,
-  //   nftId: undefined,
-  //   ...inputTradeData,
-  // }));
   const inputBtnRef = React.useRef();
 
   const getDisabled = () => {
@@ -75,25 +86,21 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
 
   const debounceNFTDataChange = _.debounce((_tradeData: T) => {
     if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ tradeData, ..._tradeData });
+      handleOnNFTDataChange({ ...tradeData, ..._tradeData });
     }
   }, wait);
 
-  // const handleClear = React.useCallback(() => {
-  //   // @ts-ignore
-  //   setAddress("");
-  // }, []);
   const _handleOnNFTDataChange = (tradeData: T) => {
-    // const address = event.target.value;
     debounceNFTDataChange(tradeData);
   };
 
   // @ts-ignore
   return (
-    <Grid
+    <GridStyle
       className={walletMap ? "" : "loading"}
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
+      paddingBottom={3}
       container
       direction={"column"}
       justifyContent={"space-between"}
@@ -148,21 +155,21 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
 
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <Box
-          display={"inline-flex"}
+          display={"flex"}
           alignItems={"center"}
           justifyContent={"space-between"}
           position={"relative"}
         >
           <TextField
             value={tradeData?.tokenAddress}
-            label={"nft contract address"}
+            label={t("labelNFTContractAddress")}
             placeholder={t("depositNFTAddressLabelPlaceholder")}
             onChange={(event) =>
               _handleOnNFTDataChange({ tokenAddress: event.target?.value } as T)
             }
             fullWidth={true}
           />
-          {tradeData.tokenAddress !== "" ? (
+          {tradeData.tokenAddress && tradeData.tokenAddress !== "" ? (
             isNFTCheckLoading ? (
               <LoadingIcon
                 width={24}
@@ -188,22 +195,34 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
       </Grid>
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <Box
-          display={"inline-flex"}
+          display={"flex"}
           alignItems={"center"}
           justifyContent={"space-between"}
           position={"relative"}
         >
           <TextField
             value={tradeData.nftIdView}
-            label={"nft contract address"}
+            label={t("labelNFTTId")}
             placeholder={t("depositNFTAddressLabelPlaceholder")}
             onChange={(event) =>
-              _handleOnNFTDataChange({ nftIdView: event.target?.value } as T)
+              _handleOnNFTDataChange({
+                nftIdView: event.target?.value,
+                nftId: "",
+              } as T)
             }
-            helperText={tradeData.nftId}
+            helperText={
+              <Typography
+                variant={"body2"}
+                component={"span"}
+                textAlign={"left"}
+                display={"inherit"}
+              >
+                {tradeData.nftId}
+              </Typography>
+            }
             fullWidth={true}
           />
-          {tradeData.tokenAddress !== "" ? (
+          {tradeData.nftIdView && tradeData.nftIdView !== "" ? (
             isNFTCheckLoading ? (
               <LoadingIcon
                 width={24}
@@ -215,7 +234,9 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
                 size={"small"}
                 style={{ top: "30px" }}
                 aria-label="Clear"
-                onClick={() => _handleOnNFTDataChange({ nftId: "" } as T)}
+                onClick={() =>
+                  _handleOnNFTDataChange({ nftIdView: "", nftId: "" } as T)
+                }
               >
                 <CloseIcon />
               </IconClearStyled>
@@ -226,39 +247,115 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
         </Box>
       </Grid>
       <Grid item marginTop={2} alignSelf={"stretch"}>
-        <ToggleButtonGroup
-          exclusive
-          {...{
-            tgItemJSXs: NFT_TYPE,
-            value: tradeData?.nftType ?? "0",
-          }}
-          onChange={(_e, value) =>
-            _handleOnNFTDataChange({ nftType: value } as T)
-          }
-          size={"medium"}
-        />
+        <Box
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          alignContent={"center"}
+        >
+          <Box>
+            <Box>
+              <Typography
+                color={"textSecondary"}
+                marginBottom={1}
+                variant={"body2"}
+              >
+                {t("labelNFTType")}
+              </Typography>
+              <ToggleButtonGroup
+                exclusive
+                fullWidth
+                {...{
+                  data: NFT_TYPE,
+                  value: tradeData?.nftType ?? 0,
+                }}
+                onChange={(_e, value) => {
+                  _handleOnNFTDataChange({ nftType: value } as T);
+                }}
+                size={"medium"}
+              />
+            </Box>
+            <Box
+              marginTop={2}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              {isNFTCheckLoading ? (
+                <LoadingIcon fontSize={"large"} />
+              ) : (
+                <NFTInput
+                  {...({ t } as any)}
+                  isThumb={false}
+                  inputNFTDefaultProps={{
+                    size: InputSize.small,
+                    label: t("labelNFTDepositInputTitle"),
+                  }}
+                  disabled={
+                    tradeData.nftId &&
+                    tradeData.tokenAddress &&
+                    tradeData.balance !== undefined
+                      ? true
+                      : false
+                  }
+                  type={"NFT"}
+                  inputNFTRef={inputBtnRef}
+                  onChangeEvent={(_index, data) =>
+                    _handleOnNFTDataChange({
+                      tradeValue: data.tradeData?.tradeValue ?? "0",
+                    } as T)
+                  }
+                  tradeData={
+                    {
+                      ...tradeData,
+                      belong: tradeData?.tokenAddress ?? undefined,
+                    } as any
+                  }
+                  walletMap={walletMap}
+                />
+              )}
+            </Box>
+          </Box>
+          <Box
+            flex={1}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            {tradeData.image ? (
+              <img
+                alt={"NFT"}
+                width={"100%"}
+                height={"100%"}
+                src={tradeData?.image?.replace(
+                  IPFS_META_URL,
+                  LOOPRING_URLs.IPFS_META_URL
+                )}
+              />
+            ) : isNFTCheckLoading ? (
+              <LoadingIcon fontSize={"large"} />
+            ) : (
+              <EmptyDefault
+                height={"100%"}
+                message={() => (
+                  <Box
+                    flex={1}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    {t("labelNoContent")}
+                  </Box>
+                )}
+              />
+            )}
+          </Box>
+        </Box>
       </Grid>
-      <Grid item marginTop={2} alignSelf={"stretch"}>
-        <NFTInput
-          {...({ t } as any)}
-          isThumb={true}
-          inputNFTDefaultProps={{
-            size: InputSize.small,
-            label: t("labelTokenAmount"),
-          }}
-          disabled={false}
-          type={"NFT"}
-          inputNFTRef={inputBtnRef}
-          onChangeEvent={(_index, data) =>
-            _handleOnNFTDataChange({
-              tradeValue: data.tradeData?.tradeValue ?? "0",
-            } as T)
-          }
-          tradeData={tradeData as any}
-          walletMap={walletMap}
-        />
-      </Grid>
-      <Grid item marginTop={2} alignSelf={"stretch"}>
+
+      <Grid item marginTop={2} alignSelf={"stretch"}></Grid>
+
+      <Grid item marginTop={3} alignSelf={"stretch"}>
         <Button
           fullWidth
           variant={"contained"}
@@ -278,9 +375,9 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
             nftDepositBtnStatus === TradeBtnStatus.LOADING
           }
         >
-          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`nftDepositLabelBtn`)}
+          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTDepositBtn`)}
         </Button>
       </Grid>
-    </Grid>
+    </GridStyle>
   );
 };

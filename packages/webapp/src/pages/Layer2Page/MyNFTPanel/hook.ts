@@ -11,10 +11,11 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "stores/system";
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { NftData, NFTTokenInfo } from "@loopring-web/loopring-sdk";
-import { useModalData } from "../../../stores/router";
+import { useModalData } from "stores/router";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
-import { useNFTDeposit } from "../../../hooks/useractions/useNFTDeposit";
+import { useNFTDeposit } from "hooks/useractions/useNFTDeposit";
+
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 
 export const useMyNFT = () => {
@@ -41,7 +42,7 @@ export const useMyNFT = () => {
     []
   );
   const onNFTDepositClose = React.useCallback(
-    () => setShowNFTDeposit({ isShow: true }),
+    () => setShowNFTDeposit({ isShow: false }),
     []
   );
 

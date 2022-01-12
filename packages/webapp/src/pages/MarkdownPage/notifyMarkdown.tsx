@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 const url_path = "https://static.loopring.io/documents/notification";
 export const NotifyMarkdownPage = () => {
   let match: any = useRouteMatch("/notification/:path");
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [input, setInput] = React.useState<string>("");
 
   const [path, setPath] = React.useState<null | string>(match?.params.path);
@@ -73,7 +73,7 @@ export const NotifyMarkdownPage = () => {
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                No Content
+                {t("labelNoContent")}
               </Box>
             )}
           />

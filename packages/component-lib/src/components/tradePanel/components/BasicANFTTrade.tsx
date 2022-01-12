@@ -55,20 +55,19 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   );
 
   if (typeof handleError !== "function") {
-    handleError = ({ belong, balance, tradeValue }: T) => {
+    handleError = ({ balance, tradeValue }: T) => {
       if (
         (typeof tradeValue !== "undefined" && balance < tradeValue) ||
         (tradeValue && !balance)
       ) {
         return {
           error: true,
-          message: t("tokenNotEnough", { belong: belong }),
+          message: t("tokenNotEnough", { belong: "NFT" }),
         };
       }
       return { error: false, message: "" };
     };
   }
-
   const inputCoinProps = {
     subLabel: t("labelAvailable"),
     placeholderText: "0",
@@ -137,7 +136,7 @@ export const NFTInput = React.memo(
                 className={"main-label"}
                 paddingBottom={1 / 2}
               >
-                {t("labelNFTName")} {tradeData.name}
+                {t(inputNFTDefaultProps?.label ?? "labelNFTTitle")}
               </Typography>
               <Box
                 display={"flex"}
@@ -177,27 +176,31 @@ export const NFTInput = React.memo(
                   >
                     {getFormattedHash(tradeData.tokenAddress)}
                   </Link>
-                  <Typography
-                    variant={"body1"}
-                    onClick={() => onCopy && onCopy(tradeData.nftId as string)}
-                  >
+                  <Typography variant={"body1"} paddingBottom={1 / 2}>
                     <Typography component={"span"} color={"text.secondary"}>
-                      ID:
+                      {t("labelNFTName")}
                     </Typography>
                     <Typography
                       component={"span"}
                       color={"text.secondary"}
                       title={tradeData.nftId}
                     >
-                      {tradeData.nftId &&
-                      parseInt(tradeData.nftId).toString().length > 16
-                        ? getFormattedHash(parseInt(tradeData.nftId).toString())
-                        : parseInt(tradeData?.nftId ?? "").toString()}
+                      {tradeData.name}
                     </Typography>
                   </Typography>
-                  {/*<Typography variant={'h5'} color={'text.secondary'} >*/}
-                  {/*    {( tradeData?.name && tradeData.name.length > 8)?getFormattedHash(tradeData.name):tradeData.name}*/}
-                  {/*</Typography>*/}
+                  <Typography variant={"body1"} paddingBottom={1 / 2}>
+                    <Typography component={"span"} color={"text.secondary"}>
+                      {t("labelNFTDescribe")}
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"text.secondary"}
+                      textOverflow={"ellipsis"}
+                      whiteSpace={"break-spaces"}
+                    >
+                      {tradeData.description}
+                    </Typography>
+                  </Typography>
                 </Box>
               </Box>
             </Box>
@@ -229,11 +232,9 @@ export const NFTInput = React.memo(
                 walletMap: {},
                 tradeData,
                 inputNFTDefaultProps: {
-                  size: InputSize.small,
-                  label: t("labelTokenAmount"),
-                  // label: '' + tradeData?.name
+                  ...{ size: InputSize.small, label: t("labelTokenAmount") },
+                  ...inputNFTDefaultProps,
                 },
-                // inputButtonDefaultProps,
                 inputNFTRef,
               }}
             />
