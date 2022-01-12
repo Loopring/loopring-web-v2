@@ -1,4 +1,5 @@
 export default {
+  labelNoContent: "No Content",
   labelError: "Error",
   tokenEnter: "Enter Token",
   tokenEnterPaymentToken: "From",
@@ -434,7 +435,6 @@ export default {
     "I have read, understand, and agree to the <1> Terms of Service </1>.",
   labelNFTName: "NFT Name:",
   labelNFTDetail: "Detail:",
-  labelNFTContractAddress: "Contract Address:",
   labelNFTTokenStandard: "Token Standard:",
   labelNFTTokenMinted: "Token Minted:",
   labelNFTDescription: "Description:",
@@ -495,4 +495,13 @@ export default {
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   depositNFTIdLabelPlaceholder: "please input NFT id",
   labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & Deposit it",
+  labelNFTDepositBtn: "Deposit NFT",
+  nftDepositTitle: "Deposit NFT",
+  labelNFTDescribe: "Description:",
+  labelNFTTitle: "Amount",
+  labelNFTDepositInputTitle: "NFT Amount:",
+  labelNFTContractAddress: "NFT Token Contract:",
+  labelNFTTId: "NFT Token Id:",
+  labelNFTType: "NFT Type:",
+  labelNFTAccess: "Allow Loopring to spend {{symbol}}",
 };

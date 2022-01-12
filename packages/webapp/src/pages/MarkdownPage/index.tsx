@@ -9,6 +9,7 @@ import { useTheme } from "@emotion/react";
 
 import { LoadingBlock } from "../LoadingPage";
 import { MarkdownStyle } from "./style";
+import { useTranslation } from "react-i18next";
 
 const url_path = "https://static.loopring.io/documents";
 
@@ -62,7 +63,7 @@ export const MarkdownPage = () => {
   let match: any = useRouteMatch("/document/:path");
   const [path, setPath] = React.useState<null | string>(match?.params.path);
   const [input, setInput] = React.useState<string>("");
-
+  const { t } = useTranslation("common");
   React.useEffect(() => {
     if (path) {
       try {
@@ -122,7 +123,7 @@ export const MarkdownPage = () => {
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                No Content
+                {t("labelNoContent")}
               </Box>
             )}
           />

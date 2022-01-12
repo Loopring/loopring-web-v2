@@ -109,7 +109,7 @@ export function useAccountModalForUI({
     setShowResetAccount,
     setShowActiveAccount,
   } = useOpenModals();
-  const { lastStep } = useModalData();
+  const { lastStep, nftMintValue, nftDepositValue } = useModalData();
   const { chainId } = useSystem();
 
   const { account, addressShort, shouldShow, setShouldShow } = useAccount();
@@ -623,6 +623,7 @@ export function useAccountModalForUI({
             providerName={account.connectName}
             {...{
               ...rest,
+              ...nftDepositValue,
               t,
             }}
           />
@@ -634,6 +635,7 @@ export function useAccountModalForUI({
             btnInfo={backToNFTDepositBtnInfo}
             {...{
               ...rest,
+              ...nftDepositValue,
               t,
             }}
           />
@@ -650,6 +652,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              ...nftDepositValue,
               t,
             }}
           />
@@ -670,6 +673,7 @@ export function useAccountModalForUI({
             providerName={account.connectName}
             {...{
               ...rest,
+              ...nftDepositValue,
               t,
             }}
           />
@@ -686,6 +690,7 @@ export function useAccountModalForUI({
             btnInfo={backToNFTDepositBtnInfo}
             {...{
               ...rest,
+              ...nftDepositValue,
               t,
             }}
           />
@@ -702,6 +707,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              ...nftDepositValue,
               t,
             }}
           />
@@ -718,6 +724,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              ...nftDepositValue,
               t,
             }}
           />
@@ -739,6 +746,7 @@ export function useAccountModalForUI({
             providerName={account.connectName}
             {...{
               ...rest,
+              ...nftMintValue,
               t,
             }}
           />
@@ -755,6 +763,7 @@ export function useAccountModalForUI({
             btnInfo={backToMintBtnInfo}
             {...{
               ...rest,
+              ...nftMintValue,
               t,
             }}
           />
@@ -771,6 +780,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              ...nftMintValue,
               t,
             }}
           />
@@ -787,6 +797,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              ...nftMintValue,
               t,
             }}
           />
