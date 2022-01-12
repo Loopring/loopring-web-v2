@@ -2,15 +2,15 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Box, Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { TextField, DateRangePicker } from "../../../";
-import { Button } from "../../../basic-lib/btns";
+import { Button, TextField, DateRangePicker } from "../../../basic-lib";
 import { DropDownIcon } from "@loopring-web/common-resources";
 import { DateRange } from "@mui/lab";
+import { RawDataTsNFTItem } from "../Interface";
 
 export interface FilterProps {
-  handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void;
+  originalData: RawDataTsNFTItem[];
+  handleFilterChange: ({ filterDate, filterToken }: any) => void;
   filterDate: DateRange<Date | string>;
-  filterType: FilterOrderTypes;
   filterToken: string;
   handleReset: () => void;
   marketArray?: string[];
@@ -65,24 +65,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
 
     return (
       <Grid container spacing={2}>
-        {/* <Grid item xs={2}>
-                <StyledTextFiled
-                    id="table-order-filter-types"
-                    select
-                    fullWidth
-                    value={filterType}
-                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                        handleFilterChange({
-                            type: event.target.value as FilterOrderTypes
-                        })
-                    }}
-                    inputProps={{IconComponent: DropDownIcon}}
-                    // > {Object.values(FilterTradeTypes).map(type => <MenuItem key={type} value={type}>{t(type)}</MenuItem>)}
-                > {FilterOrderTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
-                </StyledTextFiled>
-            </Grid> */}
         <Grid item>
-          {/* <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/> */}
           <DateRangePicker
             value={filterDate}
             onChange={(date: any) => {
