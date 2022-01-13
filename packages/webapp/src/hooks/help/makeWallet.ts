@@ -14,7 +14,7 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>(
   isWithdraw?: boolean
 ): { walletMap: WalletMapExtend<C> | undefined } => {
   const { walletLayer2 } = store.getState().walletLayer2;
-  const { tokenMap, disableWithdrawList } = store.getState().tokenMap;
+  const { tokenMap } = store.getState().tokenMap;
   let walletMap: WalletMapExtend<C> | undefined;
 
   if (walletLayer2) {
@@ -26,10 +26,7 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>(
       } = walletLayer2[item as string];
       const countBig = sdk.toBig(total).minus(sdk.toBig(locked));
 
-      if (
-        (needFilterZero && countBig.eq(BIGO)) ||
-        (isWithdraw && disableWithdrawList.includes(item as string))
-      ) {
+      if (needFilterZero && countBig.eq(BIGO)) {
         return prev;
       }
 

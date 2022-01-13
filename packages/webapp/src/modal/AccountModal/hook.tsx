@@ -61,7 +61,7 @@ import {
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 
 import React, { useState } from "react";
-import { copyToClipBoard } from "@loopring-web/common-resources";
+import { AccountStatus, copyToClipBoard } from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { lockAccount } from "services/account/lockAccount";
 import { unlockAccount } from "services/account/unlockAccount";
@@ -83,6 +83,7 @@ import { useNFTDeposit } from "../../hooks/useractions/useNFTDeposit";
 import { LAST_STEP, useModalData } from "../../stores/router";
 import { useActiveAccount } from "../../hooks/useractions/useActiveAccount";
 import { useNFTMint } from "../../hooks/useractions/useNFTMint";
+import { useWalletLayer2 } from "../../stores/walletLayer2";
 
 export function useAccountModalForUI({
   t,
@@ -97,6 +98,7 @@ export function useAccountModalForUI({
 }) {
   const { goUpdateAccount } = useUpdateAccount();
   const { chainInfos, updateDepositHash, clearDepositHash } = useOnChainInfo();
+  const { updateWalletLayer2 } = useWalletLayer2();
   const {
     modals: { isShowAccount },
     setShowConnect,
@@ -420,18 +422,41 @@ export function useAccountModalForUI({
         clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
       }
       if (flag) {
+        let wait = 30000;
+        if (
+          account.readyState &&
+          [AccountStatus.DEPOSITING, AccountStatus.NOT_ACTIVE].includes(
+            // @ts-ignore
+            account?.readyState
+          )
+        ) {
+          wait = 10000;
+        }
         nodeTimer.current = setTimeout(() => {
           updateDepositStatus();
-        }, 30000);
+        }, wait);
+      }
+      if (
+        [AccountStatus.DEPOSITING, AccountStatus.NOT_ACTIVE].includes(
+          // @ts-ignore
+          account?.readyState
+        )
+      ) {
+        updateWalletLayer2();
       }
     }
   }, [account, chainId, updateDepositHash]);
   React.useEffect(() => {
-    updateDepositStatus();
+    if (
+      chainInfos?.depositHashes &&
+      chainInfos?.depositHashes[account.accAddress]
+    ) {
+      updateDepositStatus();
+    }
     return () => {
       clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
     };
-  }, [updateDepositStatus]);
+  }, [chainInfos?.depositHashes]);
 
   const isSupportCallback = React.useCallback(async () => {
     const isSupport = await isContract(

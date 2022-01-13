@@ -69,7 +69,9 @@ export const WithdrawWrap = <
   handleWithdrawTypeChange,
   handleOnAddressChange,
   isAddressCheckLoading,
-  isFCAddress,
+  isCFAddress,
+  isContractAddress,
+  disableWithdrawList = [],
   handleAddressError,
   wait = globalSetup.wait,
   assetsData = [],
@@ -146,13 +148,17 @@ export const WithdrawWrap = <
   );
 
   const inputBtnRef = React.useRef();
+  const isNotAvaiableAddress =
+    isCFAddress ||
+    (isContractAddress &&
+      disableWithdrawList.includes(tradeData?.belong ?? ""));
   const getDisabled = () => {
     if (
       disabled ||
       tradeData === undefined ||
       walletMap === undefined ||
       coinMap === undefined ||
-      isFCAddress ||
+      isNotAvaiableAddress ||
       isFeeNotEnough
     ) {
       return true;
@@ -386,7 +392,7 @@ export const WithdrawWrap = <
             ""
           )}
           <Box marginLeft={1 / 2}>
-            {isFCAddress ? (
+            {isNotAvaiableAddress ? (
               <Typography
                 color={"var(--color-error)"}
                 fontSize={14}

@@ -18,8 +18,7 @@ import { useModalData } from "stores/router";
 import { AssetsRawDataItem } from "pages/Layer2Page/AssetPanel/hook";
 import { useTokenMap } from "stores/token";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "../../api_wrapper";
-import { WalletLayer2Map } from "stores/walletLayer2";
+import { useWalletLayer2 } from "stores/walletLayer2";
 import { useAccount } from "stores/account";
 
 export const useActiveAccount = <T>(): {
@@ -30,11 +29,11 @@ export const useActiveAccount = <T>(): {
   const { btnStatus } = useBtnStatus();
   const { tokenMap, idIndex, status: tokenMapStatus } = useTokenMap();
   const { account } = useAccount();
+  const { walletLayer2, status: walletLayer2Statue } = useWalletLayer2();
   const {
     activeAccountValue: { chargeFeeList },
     updateActiveAccountData,
   } = useModalData();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
   const { setShowActiveAccount, setShowDeposit } = useOpenModals();
 
@@ -104,25 +103,6 @@ export const useActiveAccount = <T>(): {
       (account.readyState === AccountStatus.DEPOSITING ||
         account.readyState === AccountStatus.NOT_ACTIVE)
     ) {
-      if (account.readyState === AccountStatus.DEPOSITING) {
-        nodeTimer.current = setTimeout(() => resultMemo(), 30000);
-      }
-      let tokens = chargeFeeList
-        .map((item) => `${tokenMap[item.token ?? "ETH"].tokenId}`)
-        .join(",");
-      const { userBalances } =
-        (await LoopringAPI?.globalAPI?.getUserBalanceForFee({
-          accountId: account._accountIdNotActive,
-          tokens,
-        })) ?? {};
-      let walletLayer2: WalletLayer2Map<T> | undefined = undefined;
-      if (userBalances) {
-        walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
-          // @ts-ignore
-          return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
-        }, {} as WalletLayer2Map<T>);
-        updateActiveAccountData({ chargeFeeList, walletLayer2 });
-      }
       const _activeAccountProps = buildProps();
       setActiveAccountProps({
         ..._activeAccountProps,
@@ -147,9 +127,9 @@ export const useActiveAccount = <T>(): {
       });
     }
   }, [
-    nodeTimer,
     account._accountIdNotActive,
     buildProps,
+    walletLayer2,
     chargeFeeList,
     idIndex,
     tokenMap,
@@ -162,21 +142,12 @@ export const useActiveAccount = <T>(): {
   React.useEffect(() => {
     if (
       tokenMapStatus === SagaStatus.UNSET &&
-      chargeFeeList.length &&
-      account._accountIdNotActive &&
-      account._accountIdNotActive !== -1
+      walletLayer2Statue === SagaStatus.UNSET &&
+      chargeFeeList.length
     ) {
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as NodeJS.Timeout);
-      }
       resultMemo();
     }
-    return () => {
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer.current as NodeJS.Timeout);
-      }
-    };
-  }, [tokenMapStatus, chargeFeeList.length, account._accountIdNotActive]);
+  }, [tokenMapStatus, chargeFeeList.length, walletLayer2Statue]);
 
   return {
     activeAccountProps,
