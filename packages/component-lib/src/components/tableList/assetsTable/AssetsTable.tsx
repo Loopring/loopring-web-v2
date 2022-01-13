@@ -307,9 +307,8 @@ export const AssetsTable = withTranslation("tables")(
           const isLp = token.type === TokenType.lp;
           const tokenValue = token.value;
 
-          const isWithdraw =
-            token.type !== TokenType.lp &&
-            !disableWithdrawList.includes(tokenValue);
+          const isWithdraw = token.type !== TokenType.lp;
+
           const lpPairList = tokenValue.split("-");
           lpPairList.splice(0, 1);
           const lpPair = lpPairList.join("-");

@@ -456,7 +456,7 @@ export default {
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
   labelWithdrawInvalidAddress:
-    "Invalid address, ENS, or an Counter Factual wallet",
+    "Invalid address, ENS, special token, or an Counter Factual wallet",
   labelTransferAddressNotLoopring:
     "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",

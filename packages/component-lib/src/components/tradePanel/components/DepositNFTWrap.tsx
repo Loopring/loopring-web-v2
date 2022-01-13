@@ -1,6 +1,5 @@
 import {
   CloseIcon,
-  globalSetup,
   HelpIcon,
   TradeNFT,
   LoadingIcon,
@@ -66,8 +65,8 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
   nftDepositBtnStatus,
   isNFTCheckLoading,
   onNFTDepositClick,
-  wait = globalSetup.wait,
-}: NFTDepositViewProps<T, I>) => {
+}: // wait = globalSetup.wait,
+NFTDepositViewProps<T, I>) => {
   const { t } = useTranslation(["common"]);
   const popupState = usePopupState({
     variant: "popover",
@@ -88,7 +87,7 @@ export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
     if (handleOnNFTDataChange) {
       handleOnNFTDataChange({ ...tradeData, ..._tradeData });
     }
-  }, wait);
+  }, 0);
 
   const _handleOnNFTDataChange = (tradeData: T) => {
     debounceNFTDataChange(tradeData);

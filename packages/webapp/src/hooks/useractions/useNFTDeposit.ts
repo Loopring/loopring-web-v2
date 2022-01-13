@@ -261,7 +261,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
       const realGasPrice = gasPrice ?? 30;
       let nonce =
         (await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)) ?? 0;
-      if (nftDepositValue.isApproved) {
+      if (!nftDepositValue.isApproved) {
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTDeposit_Approve_WaitForAuth,

@@ -137,12 +137,6 @@ export const useNFTWithdraw = <
       disableBtn();
       return;
     }
-
-    // const nftWithdrawT = tokenMap[nftWithdrawValue.belong as string]
-
-    // const tradeValue = sdk.toBig(nftWithdrawValue.tradeValue ?? 0).times('1e' + nftWithdrawT.decimals)
-
-    // const exceedPoolLimit = nftWithdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(nftWithdrawT.fastWithdrawLimit))
     const tradeValue = sdk.toBig(nftWithdrawValue.tradeValue ?? 0);
     if (
       chargeFeeList &&
