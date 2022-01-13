@@ -116,7 +116,7 @@ export const useNFTWithdraw = <
     realAddr,
     setAddress,
     addrStatus,
-    isFCAddress,
+    isCFAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
@@ -481,7 +481,7 @@ export const useNFTWithdraw = <
     tradeData: nftWithdrawValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap2 as WalletMap<any>,
-    isFCAddress,
+    isCFAddress,
     isAddressCheckLoading,
     withdrawBtnStatus: btnStatus,
     withdrawType: "Standard",

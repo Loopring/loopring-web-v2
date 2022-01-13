@@ -25,7 +25,8 @@ export const useAddressCheck = () => {
 
   const [isSameAddress, setIsSameAddress] = React.useState(false);
 
-  const [isFCAddress, setIsFCAddress] = React.useState(false);
+  const [isCFAddress, setIsCFAddress] = React.useState(false);
+  const [isContractAddress, setIsContractAddress] = React.useState(false);
 
   const {
     account: { accAddress },
@@ -47,9 +48,14 @@ export const useAddressCheck = () => {
         }
 
         if (walletType && walletType?.isInCounterFactualStatus) {
-          setIsFCAddress(true);
+          setIsCFAddress(true);
         } else {
-          setIsFCAddress(false);
+          setIsCFAddress(false);
+        }
+        if (walletType && walletType.isContract) {
+          setIsContractAddress(true);
+        } else {
+          setIsContractAddress(false);
         }
 
         return {
@@ -109,7 +115,8 @@ export const useAddressCheck = () => {
     addrStatus,
     isAddressCheckLoading,
     isLoopringAddress,
-    isFCAddress,
+    isCFAddress,
     isSameAddress,
+    isContractAddress,
   };
 };

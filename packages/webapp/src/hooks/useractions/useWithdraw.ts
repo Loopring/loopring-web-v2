@@ -64,7 +64,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
   const [withdrawAlertText, setWithdrawAlertText] = React.useState<string>();
 
-  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
 
@@ -104,7 +104,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   const {
     address,
     realAddr,
-    isFCAddress,
+    isCFAddress,
+    isContractAddress,
     setAddress,
     addrStatus,
     isAddressCheckLoading,
@@ -506,7 +507,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
   const withdrawProps: WithdrawProps<any, any> = {
     isAddressCheckLoading,
-    isFCAddress,
+    isCFAddress,
+    isContractAddress,
     withdrawI18nKey,
     addressDefault: address,
     realAddr,
