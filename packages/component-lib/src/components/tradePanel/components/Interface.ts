@@ -201,7 +201,9 @@ export type WithdrawExtendProps<T, I, C> = {
   addressDefault?: string;
   realAddr?: string;
   isAddressCheckLoading: boolean;
-  isFCAddress: boolean;
+  isCFAddress: boolean;
+  isContractAddress: boolean;
+  disableWithdrawList?: [];
   onWithdrawClick: (data: T) => void;
   handleFeeChange: (value: FeeInfo) => void;
   handleWithdrawTypeChange: (value: Partial<keyof typeof WithdrawType>) => void;

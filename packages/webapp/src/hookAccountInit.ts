@@ -28,19 +28,23 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
         case AccountStatus.ERROR_NETWORK:
-          // resetLayer1();
+          break;
+        case AccountStatus.DEPOSITING:
+        case AccountStatus.NOT_ACTIVE:
+          if (walletLayer1Status !== SagaStatus.PENDING) {
+            updateWalletLayer1();
+          }
+          if (walletLayer2Status !== SagaStatus.PENDING) {
+            updateWalletLayer2();
+          }
           break;
         case AccountStatus.NO_ACCOUNT:
-        case AccountStatus.DEPOSITING:
         case AccountStatus.LOCKED:
-          // resetLayer2();
           if (walletLayer1Status !== SagaStatus.PENDING) {
             updateWalletLayer1();
           }
           break;
         case AccountStatus.ACTIVATED:
-          //
-          // if(userRewardsStatus) {
           getUserRewards();
           // }
           if (walletLayer1Status !== SagaStatus.PENDING) {

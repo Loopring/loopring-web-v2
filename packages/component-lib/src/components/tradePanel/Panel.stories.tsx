@@ -81,7 +81,7 @@ let depositProps: DepositProps<any, any> = {
 };
 let withdrawProps: WithdrawProps<any, any> = {
   isAddressCheckLoading: false,
-  isFCAddress: false,
+  isCFAddress: false,
   tradeData,
   coinMap,
   walletMap,
