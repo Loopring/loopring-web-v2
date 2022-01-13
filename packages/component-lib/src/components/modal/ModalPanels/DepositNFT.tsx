@@ -26,7 +26,7 @@ export const NFTDeposit_Approve_Denied = (
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelNFTTokenFailedAccess", {
-      symbol: props.symbol,
+      symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
   };
@@ -42,7 +42,7 @@ export const NFTDeposit_Approve_Submit = (
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelNFTTokenSuccessAccess", {
-      symbol: props.symbol,
+      symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
   };
@@ -55,7 +55,7 @@ export const NFTDeposit_WaitForAuth = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTTokenDepositWaitForAuth", {
-      symbol: props.symbol,
+      symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
   };
@@ -68,7 +68,7 @@ export const NFTDeposit_Denied = (
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelDepositDenied", {
-      symbol: props.symbol,
+      symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
   };
@@ -81,7 +81,7 @@ export const NFTDeposit_Failed = (
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelDepositFailed", {
-      symbol: props.symbol,
+      symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
   };
@@ -94,7 +94,7 @@ export const NFTDeposit_Submit = (
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelDepositSubmit", {
-      symbol: props.symbol,
+      symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
   };

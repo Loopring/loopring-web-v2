@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export default {
   labelNoContent: "No Content",
   labelError: "Error",
@@ -504,4 +505,5 @@ export default {
   labelNFTTId: "NFT Token Id:",
   labelNFTType: "NFT Type:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
+  labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
 };
