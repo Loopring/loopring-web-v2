@@ -512,6 +512,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawI18nKey,
     addressDefault: address,
     realAddr,
+    disableWithdrawList,
     tradeData: withdrawValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap2 as WalletMap<any>,

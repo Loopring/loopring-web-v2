@@ -82,7 +82,7 @@ export const useNFTWithdraw = <
   const [nftWithdrawAlertText, setNFTWithdrawAlertText] =
     React.useState<string>();
 
-  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
 
@@ -117,6 +117,7 @@ export const useNFTWithdraw = <
     setAddress,
     addrStatus,
     isCFAddress,
+    isContractAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
@@ -478,10 +479,12 @@ export const useNFTWithdraw = <
     withdrawI18nKey: nftWithdrawI18nKey,
     addressDefault: address,
     realAddr,
+    disableWithdrawList,
     tradeData: nftWithdrawValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap2 as WalletMap<any>,
     isCFAddress,
+    isContractAddress,
     isAddressCheckLoading,
     withdrawBtnStatus: btnStatus,
     withdrawType: "Standard",
