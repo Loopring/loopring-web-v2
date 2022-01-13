@@ -203,7 +203,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
   isContractAddress: boolean;
-  disableWithdrawList?: [];
+  disableWithdrawList?: string[];
   onWithdrawClick: (data: T) => void;
   handleFeeChange: (value: FeeInfo) => void;
   handleWithdrawTypeChange: (value: Partial<keyof typeof WithdrawType>) => void;

@@ -34,7 +34,6 @@ export const useActiveAccount = <T>(): {
     activeAccountValue: { chargeFeeList },
     updateActiveAccountData,
   } = useModalData();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
   const { setShowActiveAccount, setShowDeposit } = useOpenModals();
 
@@ -128,9 +127,9 @@ export const useActiveAccount = <T>(): {
       });
     }
   }, [
-    nodeTimer,
     account._accountIdNotActive,
     buildProps,
+    walletLayer2,
     chargeFeeList,
     idIndex,
     tokenMap,
