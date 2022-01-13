@@ -151,7 +151,7 @@ export const WithdrawWrap = <
   const isNotAvaiableAddress =
     isCFAddress ||
     (isContractAddress &&
-      disableWithdrawList.includes(tradeData.belong as string));
+      disableWithdrawList.includes(tradeData?.belong ?? ""));
   const getDisabled = () => {
     if (
       disabled ||
