@@ -53,7 +53,7 @@ export function useChargeNFTFees({
 
         // myLog('tokenSymbol:', tokenSymbol, ' requestType:', OffchainFeeReqType[requestType])
 
-        let chargeFeeList: FeeInfo[] = [];
+        let _chargeFeeList: FeeInfo[] = [];
 
         try {
           // const tokenInfo = tokenMap[tokenSymbol]
@@ -84,7 +84,7 @@ export function useChargeNFTFees({
                 .toBig(item.fee)
                 .div("1e" + tokenInfo.decimals)
                 .toString();
-              chargeFeeList.push({
+              _chargeFeeList.push({
                 belong: item.token,
                 fee,
                 __raw__: { fastWithDraw, feeRaw, tokenId },
@@ -95,7 +95,7 @@ export function useChargeNFTFees({
           dumpError400(reason);
         }
         setChargeFeeList((stats) => {
-          return chargeFeeList;
+          return _chargeFeeList;
         });
       },
       globalSetup.wait

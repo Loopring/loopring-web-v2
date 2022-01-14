@@ -1,6 +1,6 @@
 import { Trans, WithTranslation } from "react-i18next";
 import React, { ChangeEvent, useState } from "react";
-import { Box, Grid, IconProps, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
@@ -8,7 +8,6 @@ import {
   copyToClipBoard,
   DropDownIcon,
   FeeChargeOrderDefault,
-  // getFormattedHash,
   getValuePrecisionThousand,
   globalSetup,
   HelpIcon,
@@ -20,6 +19,8 @@ import {
 } from "@loopring-web/common-resources";
 import {
   Button,
+  DropdownIconStyled,
+  FeeTokenItemWrapper,
   IconClearStyled,
   TextField,
   Toast,
@@ -34,18 +35,6 @@ import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
 import { NFTInput } from "./BasicANFTTrade";
 import { AddressError } from "./Interface";
-
-const FeeTokenItemWrapper = styled(Box)`
-  background-color: var(--color-global-bg);
-`;
-
-const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
-  transform: rotate(
-    ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
-    }}
-  );
-` as (props: IconProps & { status: string }) => JSX.Element;
 
 const OriginBoxStyled = styled(Box)`
   background-color: var(--field-opacity);

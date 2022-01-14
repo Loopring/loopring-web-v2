@@ -24,8 +24,13 @@ import { useAccount } from "stores/account";
 export const useActiveAccount = <T>(): {
   activeAccountProps: ActiveAccountProps<T>;
 } => {
-  const [activeAccountFeeInfo, setActiveAccountFeeInfo] =
-    React.useState<FeeInfo>();
+  const [activeAccountFeeInfo, setActiveAccountFeeInfo] = React.useState<
+    Partial<FeeInfo>
+  >({
+    belong: "",
+    fee: "",
+    __raw__: undefined,
+  } as unknown as FeeInfo);
   const { btnStatus } = useBtnStatus();
   const { tokenMap, idIndex, status: tokenMapStatus } = useTokenMap();
   const { account } = useAccount();
@@ -45,6 +50,7 @@ export const useActiveAccount = <T>(): {
       tokenId: tokenMap[value.belong.toString()].tokenId,
     };
     setActiveAccountFeeInfo(value);
+    updateActiveAccountData({ fee: value });
   };
   const onActiveAccountClick = () => {
     setActiveAccountFeeInfo((state: any) => {

@@ -28,7 +28,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
       switchData,
     } = useBasicTrade({ ...rest, type, walletMap, coinMap });
 
-    const getFiltedWalletMap = React.useCallback(() => {
+    const getFilteredWalletMap = React.useCallback(() => {
       if (walletMap) {
         const clonedWalletMap = cloneDeep(walletMap);
         Object.values(clonedWalletMap).forEach((o: any) => {
@@ -42,10 +42,10 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     }, [walletMap]);
 
     const getFilteredCoinMap: any = React.useCallback(() => {
-      if (coinMap && getFiltedWalletMap()) {
+      if (coinMap && getFilteredWalletMap()) {
         const clonedCoinMap = cloneDeep(coinMap);
         const remainList = {};
-        Object.keys(getFiltedWalletMap()).forEach((token) => {
+        Object.keys(getFilteredWalletMap()).forEach((token) => {
           if (clonedCoinMap[token]) {
             remainList[token] = clonedCoinMap[token];
           }
@@ -53,7 +53,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
         return remainList;
       }
       return {};
-    }, [coinMap, getFiltedWalletMap]);
+    }, [coinMap, getFilteredWalletMap]);
 
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show
@@ -106,7 +106,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                   //rest.walletMap,
                   selected: switchData.tradeData.belong,
                   tradeData: switchData.tradeData,
-                  walletMap: getFiltedWalletMap(),
+                  walletMap: getFilteredWalletMap(),
                   coinMap: getFilteredCoinMap() as CoinMap<I, CoinInfo<I>>,
                   //oinMap
                 }}
@@ -116,7 +116,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
               rest,
               onChangeEvent,
               switchData.tradeData,
-              getFiltedWalletMap,
+              getFilteredWalletMap,
               getFilteredCoinMap,
             ]
           ),

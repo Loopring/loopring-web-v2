@@ -20,3 +20,4 @@ export * from "./DepositPanel";
 export * from "./TransferPanel";
 export * from "./WithdrawPanel";
 export * from "./MintNFT";
+export * from "./DeployNFT";

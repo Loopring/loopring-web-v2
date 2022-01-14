@@ -329,6 +329,13 @@ export const MintBase = (props: PanelProps & WithTranslation) => {
   return <BasicPanel {...props} {...propsPatch} />;
 };
 
+export const DeployBase = (props: PanelProps & WithTranslation) => {
+  const propsPatch = {
+    title: "labelNFTDeploy",
+  };
+  return <BasicPanel {...props} {...propsPatch} />;
+};
+
 export const TransferBase = (props: PanelProps & WithTranslation) => {
   const propsPatch = {
     title: "labelTransfer",

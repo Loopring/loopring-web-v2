@@ -1,25 +1,44 @@
-import styled from '@emotion/styled';
-import { Box, IconButton, LinearProgress, linearProgressClasses, Tabs } from '@mui/material';
-import { css } from '@emotion/react';
-import { Button } from '../../basic-lib';
+import styled from "@emotion/styled";
+import {
+  Box,
+  IconButton,
+  IconProps,
+  LinearProgress,
+  linearProgressClasses,
+  Tabs,
+} from "@mui/material";
+import { css } from "@emotion/react";
+import { Button } from "../../basic-lib";
+import { DropDownIcon } from "@loopring-web/common-resources";
 
+export const FeeTokenItemWrapper = styled(Box)`
+  background-color: var(--color-global-bg);
+`;
 
-export const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
-    height: 10,
+export const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
+  transform: rotate(
+    ${({ status }: any) => {
+      return status === "down" ? "0deg" : "180deg";
+    }}
+  );
+` as unknown as (props: IconProps & { status: string }) => JSX.Element;
+
+export const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 10,
+  borderRadius: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: theme.colorBase.textSecondary, //theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+  },
+  [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
-    [ `&.${linearProgressClasses.colorPrimary}` ]: {
-        backgroundColor: theme.colorBase.textSecondary, //theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
-    },
-    [ `& .${linearProgressClasses.bar}` ]: {
-        borderRadius: 5,
-        backgroundColor: theme.colorBase.primary,
-    },
+    backgroundColor: theme.colorBase.primary,
+  },
 }));
 export const IconClearStyled = styled(IconButton)`
   position: absolute;
   top: 20px;
   right: 4px;
-` as typeof IconButton
+` as typeof IconButton;
 
 export const IconButtonStyled = styled(IconButton)`
   &.MuiButtonBase-root {
@@ -30,25 +49,22 @@ export const IconButtonStyled = styled(IconButton)`
 
   .MuiToolbar-root &.MuiButtonBase-root {
     svg {
-      //font-size: ${({theme}) => theme.fontDefault.h4};
+      //font-size: ${({ theme }) => theme.fontDefault.h4};
       //height: var(--btn-icon-size-small);
       //width: var(--btn-icon-size-small);
-
     }
 
     &.outline {
       background-color: var(--color-box);
-      margin: 0 ${({theme}) => theme.unit / 2}px;
-      ${({theme}) => theme.border.defaultFrame({c_key: 'transparent'})};
+      margin: 0 ${({ theme }) => theme.unit / 2}px;
+      ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
 
       &:last-child {
         margin-right: 0;
-
       }
     }
-
   }
-` as typeof IconButton
+` as typeof IconButton;
 
 const cssAutoRefresh = (_props: any) => css`
   @keyframes rotate {
@@ -68,7 +84,7 @@ const cssAutoRefresh = (_props: any) => css`
 
   @keyframes hide1 {
     25% {
-      left: -.5em;
+      left: -0.5em;
       opacity: 0;
     }
     50% {
@@ -79,7 +95,7 @@ const cssAutoRefresh = (_props: any) => css`
 
   @keyframes hide2 {
     25% {
-      right: -.5em;
+      right: -0.5em;
       opacity: 0;
     }
     50% {
@@ -93,20 +109,20 @@ const cssAutoRefresh = (_props: any) => css`
     //5% { background-image: none }
     25% {
       transform: translate3d(0, -50%, 0);
-      width: .5em;
+      width: 0.5em;
     }
     50% {
       transform: translate3d(-100%, -50%, 0);
-      width: .5em;
+      width: 0.5em;
     }
     75% {
       transform: translate3d(-50%, -50%, 0);
       width: 1em;
     }
   }
-`
+`;
 export const CountDownStyled = styled(Box)`
-  ${({theme}) => cssAutoRefresh({theme})}
+  ${({ theme }) => cssAutoRefresh({ theme })}
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
   position: relative;
@@ -116,8 +132,8 @@ export const CountDownStyled = styled(Box)`
 
   &.outline {
     background-color: var(--field-opacity);
-    margin: 0 ${({theme}) => theme.unit / 2}px;
-    ${({theme}) => theme.border.defaultFrame({c_key: 'transparent'})};
+    margin: 0 ${({ theme }) => theme.unit / 2}px;
+    ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
     text-align: center;
     line-height: var(--btn-icon-size);
 
@@ -131,12 +147,12 @@ export const CountDownStyled = styled(Box)`
   }
 
   &.countdown {
-    font-size: ${({theme}) => theme.fontDefault.h6};
+    font-size: ${({ theme }) => theme.fontDefault.h6};
     display: inline-block;
     color: var(--color-primary);
 
     .circle {
-      font-size: ${({theme}) => theme.fontDefault.h4};
+      font-size: ${({ theme }) => theme.fontDefault.h4};
       width: 1em;
       height: 1em;
       position: absolute;
@@ -176,75 +192,71 @@ export const CountDownStyled = styled(Box)`
         right: 0;
       }
     }
-` as typeof Box
+` as typeof Box;
 
 export const ButtonStyle = styled(Button)`
-   font-size: 1.6rem;
-`as typeof Button
-
+  font-size: 1.6rem;
+` as typeof Button;
 
 export const TabsStyle = styled(Tabs)`
- &&.trade-tabs{
-     background:var(--color-global-bg);
-     min-height: 28px;
-     height: 28px;
-     border-radius: ${({theme}) => theme.unit/2}px;
-     margin-top: ${({theme}) => theme.unit*2}px;
-     .MuiTab-fullWidth.MuiTab-root{
-       min-height: 28px;
-       height: 28px;
-       line-height: 28px;
-       font-size: ${({theme}) => theme.fontDefault.h6};
-       &:focus-visible,&:active:after{
-         background-color: initial;
-       }
-       &.Mui-selected{
-         overflow: unset;
-         border-radius: ${({theme}) => theme.unit/2}px;
-         color: var(--color-text-button);
-         &.trade-tab-buy{
-         
-           background:var(--color-success);
-         }
-         &.trade-tab-sell{
-           background:var(--color-error); 
-         }
-         &.trade-tab-sell:after{
-           background-color: var(--color-error);
-           mask-size: cover;
-         //<svg width="17" height="28" viewBox="0 0 17 28" fill="none" >
-         //<path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" fill="#00BBA8"/>
-         //</svg>
+  &&.trade-tabs {
+    background: var(--color-global-bg);
+    min-height: 28px;
+    height: 28px;
+    border-radius: ${({ theme }) => theme.unit / 2}px;
+    margin-top: ${({ theme }) => theme.unit * 2}px;
+    .MuiTab-fullWidth.MuiTab-root {
+      min-height: 28px;
+      height: 28px;
+      line-height: 28px;
+      font-size: ${({ theme }) => theme.fontDefault.h6};
+      &:focus-visible,
+      &:active:after {
+        background-color: initial;
+      }
+      &.Mui-selected {
+        overflow: unset;
+        border-radius: ${({ theme }) => theme.unit / 2}px;
+        color: var(--color-text-button);
+        &.trade-tab-buy {
+          background: var(--color-success);
+        }
+        &.trade-tab-sell {
+          background: var(--color-error);
+        }
+        &.trade-tab-sell:after {
+          background-color: var(--color-error);
+          mask-size: cover;
+          //<svg width="17" height="28" viewBox="0 0 17 28" fill="none" >
+          //<path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" fill="#00BBA8"/>
+          //</svg>
 
-           mask-image: url('data:image/svg+xml,\
+          mask-image: url('data:image/svg+xml,\
            <svg width="17" height="28" viewBox="0 0 17 28" fill="white" xmlns="http://www.w3.org/2000/svg">\
            <path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" />\
            </svg>');
-           top:0;
-           height: 28px;
-           left: -8px;
-           width: 17px;
-           transform: rotate(180deg);
-           //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
-         }
-         &.trade-tab-buy:after {
-           background-color:var(--color-success);
-           mask-size: cover;
-           mask-image: url('data:image/svg+xml,\
+          top: 0;
+          height: 28px;
+          left: -8px;
+          width: 17px;
+          transform: rotate(180deg);
+          //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
+        }
+        &.trade-tab-buy:after {
+          background-color: var(--color-success);
+          mask-size: cover;
+          mask-image: url('data:image/svg+xml,\
            <svg width="17" height="28" viewBox="0 0 17 28" fill="white" xmlns="http://www.w3.org/2000/svg">\
            <path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" />\
            </svg>');
-           top:0;
-           left: auto;
-           height: 28px;
-           right: -8px;
-           width: 17px;
-           //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
-         }
-       }
+          top: 0;
+          left: auto;
+          height: 28px;
+          right: -8px;
+          width: 17px;
+          //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
+        }
+      }
     }
- }
-
-
-` as typeof Tabs
-
+  }
+` as typeof Tabs;

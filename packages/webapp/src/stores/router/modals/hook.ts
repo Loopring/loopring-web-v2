@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   resetActiveAccountData,
   resetDepositData,
+  resetNFTDeployData,
   resetNFTDepositData,
   resetNFTMintData,
   resetNFTTransferData,
@@ -10,6 +11,7 @@ import {
   resetWithdrawData,
   updateActiveAccountData,
   updateDepositData,
+  updateNFTDeployData,
   updateNFTDepositData,
   updateNFTMintData,
   updateNFTTransferData,
@@ -71,6 +73,11 @@ export function useModalData(): {
     nftMintData: RequireOne<DepositData & NFTWholeINFO, never>
   ) => void;
   resetNFTMintData: () => void;
+  nftDeployValue: TradeNFT<any> & { broker: string };
+  updateNFTDeployData: (
+    nftDeployData: Partial<TradeNFT<any> & { broker: string }>
+  ) => void;
+  resetNFTDeployData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -133,6 +140,12 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateNFTDeployData: React.useCallback(
+      (nftDeployData: Partial<TradeNFT<any> & { broker: string }>) => {
+        dispatch(updateNFTDeployData(nftDeployData));
+      },
+      [dispatch]
+    ),
     updateNFTMintData: React.useCallback(
       (nftMintData: TradeNFT<any>) => {
         dispatch(updateNFTMintData(nftMintData));
@@ -162,6 +175,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetNFTMintData: React.useCallback(() => {
       dispatch(resetNFTMintData(undefined));
+    }, [dispatch]),
+    resetNFTDeployData: React.useCallback(() => {
+      dispatch(resetNFTDeployData(undefined));
     }, [dispatch]),
   };
 }

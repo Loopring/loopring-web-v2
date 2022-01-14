@@ -28,6 +28,31 @@ export const NFTMint_Denied = (
   return <MintBase {...propsPatch} {...props} />;
 };
 
+export const NFTMint_First_Method_Denied = (
+  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+) => {
+  const propsPatch = {
+    iconType: IconType.RefuseIcon,
+    describe1: props.t("labelFirstSignDenied", {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+  };
+  return <MintBase {...propsPatch} {...props} />;
+};
+export const NFTMint_In_Progress = (
+  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+) => {
+  const propsPatch = {
+    iconType: IconType.RefuseIcon,
+    describe1: props.t("labelMintInProgress", {
+      symbol: props.symbol,
+      value: props.value,
+    }),
+  };
+  return <MintBase {...propsPatch} {...props} />;
+};
+
 export const NFTMint_Failed = (
   props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
 ) => {

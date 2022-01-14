@@ -51,6 +51,7 @@ const initialState: ModalDataStatus = {
   nftTransferValue: initialTransferState,
   nftDepositValue: initialTradeNFT,
   nftMintValue: initialTradeNFT,
+  nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
 };
 
@@ -67,6 +68,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       this.resetNFTDepositData(state);
       this.resetActiveAccountData(state);
       this.resetNFTMintData(state);
+      this.resetNFTDeployData(state);
     },
 
     resetWithdrawData(state) {
@@ -100,6 +102,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetNFTMintData(state) {
       state.lastStep = LAST_STEP.default;
       state.nftMintValue = initialWithdrawState;
+    },
+    resetNFTDeployData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.nftDeployValue = { ...initialTradeNFT, broker: "" };
     },
     updateActiveAccountData(
       state,
@@ -246,7 +252,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     updateNFTMintData(state, action: PayloadAction<Partial<TradeNFT<any>>>) {
       const { balance, tradeValue, ...rest } = action.payload;
-      state.lastStep = LAST_STEP.nftDeposit;
+      state.lastStep = LAST_STEP.nftMint;
 
       if (balance === undefined || balance >= 0) {
         state.nftMintValue.balance = balance;
@@ -258,6 +264,29 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
 
       state.nftMintValue = {
         ...state.nftMintValue,
+        ...rest,
+      };
+    },
+    updateNFTDeployData(
+      state,
+      action: PayloadAction<Partial<TradeNFT<any> & { broker: string }>>
+    ) {
+      const { balance, tradeValue, broker, ...rest } = action.payload;
+      state.lastStep = LAST_STEP.nftDeploy;
+
+      if (balance === undefined || balance >= 0) {
+        state.nftDeployValue.balance = balance;
+      }
+      if (broker) {
+        state.nftDeployValue.broker = broker;
+      }
+
+      if (tradeValue === undefined || tradeValue >= 0) {
+        state.nftDeployValue.tradeValue = tradeValue;
+      }
+
+      state.nftDeployValue = {
+        ...state.nftDeployValue,
         ...rest,
       };
     },
@@ -275,6 +304,7 @@ export const {
   updateNFTTransferData,
   updateNFTDepositData,
   updateNFTMintData,
+  updateNFTDeployData,
   resetNFTWithdrawData,
   resetNFTTransferData,
   resetNFTDepositData,
@@ -283,5 +313,6 @@ export const {
   resetTransferData,
   resetDepositData,
   resetActiveAccountData,
+  resetNFTDeployData,
   resetAll,
 } = modalDataSlice.actions;
