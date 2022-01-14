@@ -105,7 +105,6 @@ export const useAddressCheck = () => {
       isAddressCheckLoading === false
     ) {
       _address.current = address;
-      console.log("debounceCheck");
       debounceCheck();
     } else if (address === "") {
       _address.current = "";
