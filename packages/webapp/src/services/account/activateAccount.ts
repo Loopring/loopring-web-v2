@@ -1,64 +1,11 @@
-import { updateAccountStatus } from "../../stores/account";
-import {
-  AccountStep,
-  setShowAccount,
-  setShowConnect,
-} from "@loopring-web/component-lib";
 import store from "../../stores";
-import { AccountStatus, FeeInfo } from "@loopring-web/common-resources";
+import { FeeInfo } from "@loopring-web/common-resources";
 import { myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from "api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ActionResult, ActionResultCode, DAYS } from "defs/common_defs";
 import { getTimestampDaysLater } from "utils/dt_tools";
-
-export async function activeAccount({
-  reason,
-  shouldShow,
-}: {
-  reason: any;
-  shouldShow: boolean;
-}) {
-  const account = store.getState().account;
-  // const {exchangeInfo} = store.getState().system;
-  if (reason?.response?.data?.resultInfo?.code === 100001) {
-    // deposited, but need update account
-    myLog("SignAccount");
-    store.dispatch(setShowConnect({ isShow: false }));
-    store.dispatch(
-      setShowAccount({ isShow: true, step: AccountStep.UpdateAccount })
-    );
-    store.dispatch(
-      updateAccountStatus({ readyState: AccountStatus.NOT_ACTIVE })
-    );
-  } else {
-    // need to deposit.
-    let activeDeposit = localStorage.getItem("activeDeposit");
-    if (activeDeposit) {
-      activeDeposit = JSON.stringify(activeDeposit);
-    }
-    if (activeDeposit && activeDeposit[account.accAddress]) {
-      myLog("DEPOSITING");
-      store.dispatch(setShowConnect({ isShow: false }));
-      store.dispatch(
-        setShowAccount({ isShow: shouldShow, step: AccountStep.Deposit_Submit })
-      );
-      store.dispatch(
-        updateAccountStatus({ readyState: AccountStatus.DEPOSITING })
-      );
-      // store.dispatch(statusAccountUnset(undefined))
-    } else {
-      myLog("NO_ACCOUNT");
-      setShowConnect({ isShow: false });
-      setShowAccount({ isShow: shouldShow, step: AccountStep.NoAccount });
-      store.dispatch(
-        updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT })
-      );
-      // store.dispatch(statusAccountUnset(undefined));
-    }
-  }
-}
 
 export async function updateAccountFromServer({
   isHWAddr,
@@ -115,12 +62,10 @@ export async function updateAccountFromServer({
             let tokenId = 0;
 
             let feeVol = "0";
-
             if (feeInfo) {
               tokenId = feeInfo.__raw__.tokenId;
               feeVol = feeInfo.__raw__.feeRaw;
             }
-
             const request: sdk.UpdateAccountRequestV3 = {
               exchange: system.exchangeInfo.exchangeAddress,
               owner: accInfo.owner,

@@ -3,6 +3,7 @@ import {
   NFTTokenInfo,
   UserNFTBalanceInfo,
 } from "@loopring-web/loopring-sdk";
+import { IBData } from "../loopring-interface";
 
 export enum WithdrawType {
   Fast = "Fast",
@@ -44,18 +45,11 @@ export type TxInfo = {
   hash: string;
   timestamp?: number | undefined;
   status?: "pending" | "success" | "failed" | undefined;
-
-  // reason:'activeAccount'|'regular'|'reset'
-} & { [key: string]: any };
-// export interface accountHashInfo {
-//     depositHashes: TxInfo[]
-//     withdrawHashes: TxInfo[]
-// }
-// export type Address = string
+  [key: string]: any;
+};
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] };
 }
-// export type Address = string
 export type ChainHashInfos = {
   [key in ChainId extends string ? string : string]: AccountHashInfo;
 };
@@ -69,6 +63,12 @@ export type NFTWholeINFO = NFTTokenInfo &
     nftBalance: number;
     etherscanBaseUrl: string;
   };
+export type TradeNFT<I> = {
+  balance?: number;
+  isApproved?: boolean;
+} & Partial<NFTWholeINFO> &
+  Partial<IBData<I>> &
+  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
 export const TOAST_TIME = 3000;
 

@@ -41,7 +41,6 @@ import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
-import { getFloatValue } from "utils/formatter_tool";
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
   withdrawAlertText: string | undefined;
@@ -65,7 +64,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
   const [withdrawAlertText, setWithdrawAlertText] = React.useState<string>();
 
-  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
 
@@ -102,7 +101,15 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
   const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>();
 
-  const { address, realAddr, setAddress, addrStatus } = useAddressCheck();
+  const {
+    address,
+    realAddr,
+    isCFAddress,
+    isContractAddress,
+    setAddress,
+    addrStatus,
+    isAddressCheckLoading,
+  } = useAddressCheck();
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
@@ -214,7 +221,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   }, [withdrawValue.belong, tokenMap]);
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
+    const walletMap =
+      makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>);
     setWalletMap2(walletMap);
   }, [setWalletMap2]);
 
@@ -497,10 +505,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     [setWithdrawFeeInfo]
   );
 
-  const withdrawProps: any = {
+  const withdrawProps: WithdrawProps<any, any> = {
+    isAddressCheckLoading,
+    isCFAddress,
+    isContractAddress,
     withdrawI18nKey,
     addressDefault: address,
     realAddr,
+    disableWithdrawList,
     tradeData: withdrawValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap2 as WalletMap<any>,
@@ -556,16 +568,16 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       updateWithdrawData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };
     },
-    handleError: ({ belong, balance, tradeValue }: any) => {
-      balance = getFloatValue(balance);
-      tradeValue = getFloatValue(tradeValue);
-      if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-        setIsExceedMax(true);
-        return { error: true, message: t("tokenNotEnough", { belong }) };
-      }
-      setIsExceedMax(false);
-      return { error: false, message: "" };
-    },
+    // handleError: ({ belong, balance, tradeValue }: any) => {
+    //   balance = getFloatValue(balance);
+    //   tradeValue = getFloatValue(tradeValue);
+    //   if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
+    //     setIsExceedMax(true);
+    //     return { error: true, message: t("tokenNotEnough", { belong }) };
+    //   }
+    //   setIsExceedMax(false);
+    //   return { error: false, message: "" };
+    // },
   };
 
   return {

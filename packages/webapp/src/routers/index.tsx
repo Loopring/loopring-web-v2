@@ -39,9 +39,9 @@ const ContentWrap = ({
         <Container
           maxWidth="lg"
           style={{
-            minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
             display: "flex",
             flexDirection: "column",
+            flex: 1,
           }}
         >
           <Box
@@ -112,29 +112,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <Container
             maxWidth="lg"
             style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
               display: "flex",
               flexDirection: "column",
+              flex: 1,
             }}
           >
             <ReportPage />
-          </Container>
-        </Route>
-        <Route exact path="/document">
-          {query && query.has("noheader") ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} />
-          )}
-          <Container
-            maxWidth="lg"
-            style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <ErrorPage messageKey={"error404"} />
           </Container>
         </Route>
         <Route exact path="/document/:path">
@@ -146,9 +129,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <Container
             maxWidth="lg"
             style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
               display: "flex",
               flexDirection: "column",
+              flex: 1,
             }}
           >
             <MarkdownPage />
@@ -163,16 +146,16 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <Container
             maxWidth="lg"
             style={{
-              minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
               display: "flex",
               flexDirection: "column",
+              flex: 1,
             }}
           >
             <NotifyMarkdownPage />
           </Container>
         </Route>
 
-        <Route exact path="/race-event">
+        <Route exact path={["/document", "/race-event", "/notification"]}>
           {query && query.has("noheader") ? (
             <></>
           ) : (
@@ -180,7 +163,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
           <ErrorPage messageKey={"error404"} />
         </Route>
-        <Route exact path="/race-event/:path">
+        <Route exact path={["/race-event/:path"]}>
           {query && query.has("noheader") ? (
             <></>
           ) : (
@@ -199,7 +182,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           {state === "PENDING" && proFlag && tickerMap ? (
             <LoadingBlock />
           ) : (
-            <OrderbookPage />
+            <Box display={"flex"} flexDirection={"column"} flex={1}>
+              <OrderbookPage />
+            </Box>
           )}
         </Route>
         <Route path="/trade/lite">
@@ -217,12 +202,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <MiningPage />
           </ContentWrap>
         </Route>
-        <Route exact path="/layer2">
-          <ContentWrap state={state}>
-            <Layer2Page />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/layer2/*">
+        <Route exact path={["/layer2", "/layer2/*"]}>
           <ContentWrap state={state}>
             <Layer2Page />
           </ContentWrap>

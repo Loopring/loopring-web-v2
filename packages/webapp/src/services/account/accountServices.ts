@@ -10,15 +10,13 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { unlockAccount } from "./unlockAccount";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
-import { ChainId, sleep } from "@loopring-web/loopring-sdk";
+import { checkIsFeeEnough } from "./checkIsFeeEnough";
 
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
 export const accountServices = {
   //INFO: for update Account and unlock account
   sendSign: async () => {
-    // const account = store.getState().account;
-    // const {exchangeInfo} = store.getState().system;
     subject.next({
       status: Commands.ProcessSign,
       data: undefined,
@@ -69,7 +67,8 @@ export const accountServices = {
           readyState: AccountStatus.LOCKED,
           accountId: accInfo.accountId,
           nonce: accInfo.nonce,
-          level: accInfo.tags,
+          level:
+            accInfo.tags?.split(";").find((item) => /vip/gi.test(item)) ?? "",
           keyNonce: accInfo.keyNonce,
           keySeed: accInfo.keySeed,
         }
@@ -98,12 +97,16 @@ export const accountServices = {
     eddsaKey,
     isReset,
     nonce,
+    isInCounterFactualStatus,
+    isContract,
   }: {
     accountId?: number;
     apiKey?: string;
     eddsaKey?: any;
     isReset?: boolean;
     nonce?: number;
+    isInCounterFactualStatus?: boolean;
+    isContract?: boolean;
   }) => {
     const updateInfo =
       accountId && apiKey && eddsaKey && nonce !== undefined
@@ -117,6 +120,9 @@ export const accountServices = {
               y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
             },
             readyState: AccountStatus.ACTIVATED,
+            _accountIdNotActive: -1,
+            isInCounterFactualStatus,
+            isContract,
           }
         : { readyState: AccountStatus.ACTIVATED };
 
@@ -143,7 +149,11 @@ export const accountServices = {
   sendNeedUpdateAccount: async (accInfo: sdk.AccountInfo) => {
     myLog("sendNeedUpdateAccount accInfo:", accInfo);
     store.dispatch(
-      updateAccountStatus({ readyState: AccountStatus.NOT_ACTIVE })
+      updateAccountStatus({
+        readyState: AccountStatus.NOT_ACTIVE,
+        _accountIdNotActive: accInfo.accountId,
+        nonce: accInfo.nonce,
+      })
     );
     subject.next({
       status: Commands.SignAccount,
@@ -158,7 +168,7 @@ export const accountServices = {
         const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
           owner: account.accAddress,
         });
-
+        checkIsFeeEnough();
         if (accInfo === undefined) {
           accountServices.sendNoAccount();
         } else {
@@ -180,7 +190,7 @@ export const accountServices = {
   },
   sendCheckAccount: async (
     ethAddress: string,
-    chainId?: ChainId | undefined
+    chainId?: sdk.ChainId | undefined
   ) => {
     myLog(
       "After connect >>,sendCheckAccount: step3 processAccountCheck",
@@ -198,11 +208,12 @@ export const accountServices = {
     });
     if (LoopringAPI.exchangeAPI) {
       if (chainId && LoopringAPI.__chainId__ !== chainId) {
-        await sleep(5);
+        await sdk.sleep(5);
       }
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
         owner: ethAddress,
       });
+      checkIsFeeEnough(accInfo);
       myLog("After connect >>,checkAccount: step3", accInfo);
 
       if (accInfo === undefined) {
@@ -213,6 +224,7 @@ export const accountServices = {
             myLog("-------sendCheckAccount need update account!");
             accountServices.sendNeedUpdateAccount(accInfo);
           } else {
+            myLog("-------need unlockAccount!");
             accountServices.sendAccountLock(accInfo);
           }
         } else {
@@ -220,23 +232,10 @@ export const accountServices = {
           throw Error("unexpected accinfo:" + accInfo);
         }
       }
+    } else {
+      throw Error("unexpected no ethAddress:" + ethAddress);
     }
-
-    // try {
-    //
-    //
-    //     if (accInfo && accInfo.accountId) {
-    //         await unlockAccount({accInfo, shouldShow: shouldShow ?? false})
-    //     }
-    //     statusAccountUnset();
-    // } catch (reason) {
-    //     dumpError400(reason)
-    //     await activeAccount({reason, shouldShow: shouldShow ?? false});
-    //     statusAccountUnset();
-    // }
   },
 
   onSocket: () => subject.asObservable(),
-  // clearMessages: () => subject.next(),
-  // onSocket: () => subject.asObservable()
 };

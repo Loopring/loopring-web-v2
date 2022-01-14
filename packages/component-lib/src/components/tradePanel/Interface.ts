@@ -1,83 +1,102 @@
-import { CoinKey, IBData, TradeCalcProData } from '@loopring-web/common-resources';
 import {
-    BasicACoinTradeHookProps,
-    DefaultProps,
-    DepositExtendProps,
-    DepositInfoProps as _DepositInfoProps,
-    ResetExtendProps,
-    ResetInfoProps as _ResetInfoProps,
-    TransferExtendProps,
-    TransferInfoProps as _TransferInfoProps,
-    WithdrawExtendProps,
-    WithdrawInfoProps as _WithdrawInfoProps,
-    ExportAccountExtendProps,
-} from './components/Interface';
-import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components';
-import { AmmPanelBaseProps } from './Amm';
+  CoinKey,
+  IBData,
+  TradeCalcProData,
+} from "@loopring-web/common-resources";
 import {
-    TradeBaseType,
-    TradeLimitInfoProps,
-    TradeMarketInfoProps,
-    TradeProBaseEventProps,
-    TradeProType
-} from './tradePro/Interface';
-export {TradeProType,TradeBaseType}
+  BasicACoinTradeHookProps,
+  DefaultProps,
+  DepositExtendProps,
+  DepositInfoProps as _DepositInfoProps,
+  ResetExtendProps,
+  ActiveAccountInfoProps as _ActiveAccountInfoProps,
+  ResetInfoProps as _ResetInfoProps,
+  TransferExtendProps,
+  TransferInfoProps as _TransferInfoProps,
+  WithdrawExtendProps,
+  ExportAccountExtendProps,
+  ActiveAccountExtendProps,
+  NFTDepositViewProps,
+  NFTMintViewProps,
+} from "./components/Interface";
+import {
+  SwapData,
+  SwapTradeBaseEventProps,
+  SwapTradeBaseProps,
+} from "./components";
+import {
+  TradeBaseType,
+  TradeLimitInfoProps,
+  TradeMarketInfoProps,
+  TradeProBaseEventProps,
+  TradeProType,
+} from "./tradePro/Interface";
+export { TradeProType, TradeBaseType };
 
 export type SwapTradeData<T> = {
-    sell: T,
-    buy: T,
-    slippage: number | string,
-    __cache__?: {
-        [ key: string ]: any
-    }
-}
-
+  sell: T;
+  buy: T;
+  slippage: number | string;
+  __cache__?: {
+    [key: string]: any;
+  };
+};
 
 export type LimitTradeData<T> = {
-    price: T,
-    base: T,
-    quote: T,
-    type: TradeProType,
-    // slippage: number | string,
-    // __cache__?: {
-    //     [ key: string ]: any
-    // }
-}
+  price: T;
+  base: T;
+  quote: T;
+  type: TradeProType;
+  // slippage: number | string,
+  // __cache__?: {
+  //     [ key: string ]: any
+  // }
+};
 export type MarketTradeData<T> = {
-    // price: T,
-    base: T,
-    quote: T,
-    type: TradeProType,
-    slippage: number | string,
-    __cache__?: {
-        [ key: string ]: any
-    }
-}
+  // price: T,
+  base: T;
+  quote: T;
+  type: TradeProType;
+  slippage: number | string;
+  __cache__?: {
+    [key: string]: any;
+  };
+};
 
-
-
-export type { SwapData }
+export type { SwapData };
 
 export type ModalProps = {
-    open: boolean,
-    onClose: { bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void; }['bivarianceHack'];
-    btnDisable?: boolean
-}
+  open: boolean;
+  onClose: {
+    bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
+  }["bivarianceHack"];
+  btnDisable?: boolean;
+};
 
-export type ResetProps<T> = ResetExtendProps<T>
-export type ExportAccountProps = ExportAccountExtendProps
-export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> & DepositExtendProps<T, I>;
-export type WithdrawProps<T, I> = BasicACoinTradeHookProps<T, I> & WithdrawExtendProps<T, I, CoinKey<I>>;
-export type TransferProps<T, I> = BasicACoinTradeHookProps<T, I> & TransferExtendProps<T, I, CoinKey<I>>;
+export type ResetProps<T> = ResetExtendProps<T>;
+export type ActiveAccountProps<T> = ActiveAccountExtendProps<T>;
+export type ExportAccountProps = ExportAccountExtendProps;
+export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> &
+  DepositExtendProps<T, I>;
+export type WithdrawProps<T, I> = BasicACoinTradeHookProps<T, I> &
+  WithdrawExtendProps<T, I, CoinKey<I>>;
+export type TransferProps<T, I> = BasicACoinTradeHookProps<T, I> &
+  TransferExtendProps<T, I, CoinKey<I>>;
 
+export type ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
+export type ActiveAccountInfoProps<T, I> = DefaultProps<T, I> &
+  _ActiveAccountInfoProps<T>;
 
-export  type  ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
-export  type  DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps<I>;
-export  type  WithdrawInfoProps<T, I> = DefaultProps<T, I> & _WithdrawInfoProps<CoinKey<I>>;
-export  type  TransferInfoProps<T, I> = DefaultProps<T, I> & _TransferInfoProps<CoinKey<I>>;
+export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps<I>;
 
-export  type  SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
-export  type  AmmInfoProps<T, TW, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, TW, I, ACD, C>;
+export type TransferInfoProps<T, I> = DefaultProps<T, I> &
+  _TransferInfoProps<CoinKey<I>>;
+
+export type SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
+
+export type NFTDepositProps<T, I> = NFTDepositViewProps<T, I>;
+
+export type NFTMintProps<T, I> = NFTMintViewProps<T, I>;
 
 /**
  *  @type SwapProps
@@ -100,63 +119,81 @@ export  type  AmmInfoProps<T, TW, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, 
  *  ) => SwapData<T>
  */
 export type SwapProps<T, I, TCD> = {
-    refreshRef: React.Ref<any>;
-    onRefreshData?: () => void;
-    toPro?: () => void;     
-    tradeData: SwapTradeData<T> | undefined,
-    handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: 'buyTomenu' | 'sellTomenu' | 'exchange' | 'buyTobutton' | 'sellTobutton') => Promise<void>,
-    onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>,
-} & SwapInfoProps<T, I, TCD> & SwapTradeBaseEventProps<T, I> & SwapTradeBaseProps<T, I, TCD>
+  refreshRef: React.Ref<any>;
+  onRefreshData?: () => void;
+  toPro?: () => void;
+  tradeData: SwapTradeData<T> | undefined;
+  handleSwapPanelEvent: (
+    data: SwapData<SwapTradeData<T>>,
+    switchType:
+      | "buyTomenu"
+      | "sellTomenu"
+      | "exchange"
+      | "buyTobutton"
+      | "sellTobutton"
+  ) => Promise<void>;
+  onChangeEvent?: (
+    index: 0 | 1,
+    data: SwapData<SwapTradeData<T>>
+  ) => SwapData<SwapTradeData<T>>;
+} & SwapInfoProps<T, I, TCD> &
+  SwapTradeBaseEventProps<T, I> &
+  SwapTradeBaseProps<T, I, TCD>;
 
+export type TradeLimitProps<
+  L extends LimitTradeData<T>,
+  T extends IBData<I>,
+  TCD extends TradeCalcProData<I>,
+  I = CoinKey<any>
+> = {
+  tradeData: L | undefined;
+  handleSubmitEvent: (data: L) => Promise<void>;
+  onChangeEvent: (data: L, formType: TradeBaseType) => L;
+} & TradeLimitInfoProps<T, TCD, I> &
+  TradeProBaseEventProps<L, T, I>;
 
-//L = LimitTradeData<T> ,
-//T = IBData<I>,
-//I = CoinKey<any>, TCD
-export type TradeLimitProps<L extends LimitTradeData<T> ,
-    T extends  IBData<I>,
-    TCD extends TradeCalcProData<I>, I =  CoinKey<any>> = {
-    tradeData: L | undefined,
-    handleSubmitEvent: (data:L) => Promise<void>,
-    onChangeEvent: (data:L,formType:TradeBaseType) => L,
-} & TradeLimitInfoProps<T,TCD,I>  & TradeProBaseEventProps<L, T, I>
-
-export type TradeMarketProps<M extends MarketTradeData<T> ,
-    T extends  IBData<I>,
-    TCD extends TradeCalcProData<I>, I =  CoinKey<any>> = {
-    tradeData: M | undefined,
-    handleSubmitEvent: (data:M) => Promise<void>,
-    onChangeEvent: (data:M,formType:TradeBaseType) => M,
-} & TradeMarketInfoProps<T,TCD,I>  & TradeProBaseEventProps<M, T, I>
-
+export type TradeMarketProps<
+  M extends MarketTradeData<T>,
+  T extends IBData<I>,
+  TCD extends TradeCalcProData<I>,
+  I = CoinKey<any>
+> = {
+  tradeData: M | undefined;
+  handleSubmitEvent: (data: M) => Promise<void>;
+  onChangeEvent: (data: M, formType: TradeBaseType) => M;
+} & TradeMarketInfoProps<T, TCD, I> &
+  TradeProBaseEventProps<M, T, I>;
 
 export type SwitchData<T> = {
-    to: 'menu' | 'button'
-    tradeData: T,
-}
+  to: "menu" | "button";
+  tradeData: T;
+};
 
 export enum TradeBtnStatus {
-    AVAILABLE = 'AVAILABLE',
-    DISABLED = 'DISABLED',
-    LOADING = 'LOADING',
+  AVAILABLE = "AVAILABLE",
+  DISABLED = "DISABLED",
+  LOADING = "LOADING",
 }
 
 export enum SwitchType {
-    TO_MENU = 'Tomenu',
-    TO_BTN = 'Tobutton',
+  TO_MENU = "Tomenu",
+  TO_BTN = "Tobutton",
 }
 
 export enum SwapType {
-    BUY_CLICK = 'buyTomenu',
-    SEll_CLICK = 'sellTomenu',
-    EXCHANGE_CLICK = 'exchange',
-    BUY_SELECTED = 'buyTobutton',
-    SELL_SELECTED = 'sellTobutton',
+  BUY_CLICK = "buyTomenu",
+  SEll_CLICK = "sellTomenu",
+  EXCHANGE_CLICK = "exchange",
+  BUY_SELECTED = "buyTobutton",
+  SELL_SELECTED = "sellTobutton",
 }
 
-export type  ModalPanelProps = {
-    open: boolean,
-    onClose: { bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void; }['bivarianceHack'];
-    content: React.ElementType<any> | JSX.Element,
-    _height?: number | string,
-    _width?: number | string,
-}
+export type ModalPanelProps = {
+  open: boolean;
+  onClose: {
+    bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
+  }["bivarianceHack"];
+  content: React.ElementType<any> | JSX.Element;
+  _height?: number | string;
+  _width?: number | string;
+};

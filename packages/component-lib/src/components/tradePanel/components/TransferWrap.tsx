@@ -39,12 +39,6 @@ const FeeTokenItemWrapper = styled(Box)`
   background-color: var(--color-global-bg);
 `;
 
-const IconLoadingStyled = styled(LoadingIcon)`
-  position: absolute;
-  top: 20px;
-  right: 4px;
-` as typeof LoadingIcon;
-
 const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
   transform: rotate(
     ${({ status }: any) => {
@@ -192,14 +186,12 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     [toggleData]
   );
 
-  const debounceAddress = React.useCallback(
-    _.debounce(({ address }: any) => {
-      if (handleOnAddressChange) {
-        handleOnAddressChange(address);
-      }
-    }, 500),
-    []
-  );
+  const debounceAddress = _.debounce(({ address }: any) => {
+    if (handleOnAddressChange) {
+      handleOnAddressChange(address);
+    }
+  }, 500);
+
   const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
     const address = event.target.value;
     if (handleAddressError) {
@@ -463,9 +455,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             />
             {address !== "" ? (
               isAddressCheckLoading ? (
-                <IconLoadingStyled
+                <LoadingIcon
                   width={24}
-                  style={{ top: "32px", right: "8px" }}
+                  style={{ top: "32px", right: "8px", position: "absolute" }}
                 />
               ) : (
                 <IconClearStyled
@@ -653,7 +645,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       {!isConfirmTransfer && (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           {!toggleData?.length ? (
-            <Typography>{t("labelCalculating")}</Typography>
+            <Typography>{t("labelFeeCalculating")}</Typography>
           ) : (
             <>
               <Typography

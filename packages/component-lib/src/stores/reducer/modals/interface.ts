@@ -1,35 +1,36 @@
-import { NFTWholeINFO } from '@loopring-web/common-resources';
+import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 
 export enum ModalType {
-    transfer = 'transfer',
-    deposit = 'deposit',
-    withdraw = 'withdraw',
+  transfer = "transfer",
+  deposit = "deposit",
+  withdraw = "withdraw",
 }
 
-export type ModalTypeKeys = keyof typeof ModalType
+export type ModalTypeKeys = keyof typeof ModalType;
 
 export type ModalStatePlayLoad = {
-    isShow: boolean,
-}
+  isShow: boolean;
+};
 export type Transaction = {
-    symbol?: undefined|string,
-}                        
+  symbol?: undefined | string;
+};
 
 export interface ModalState {
-    isShowSupport: ModalStatePlayLoad,
-    isShowTransfer: ModalStatePlayLoad & Transaction,
-    isShowWithdraw: ModalStatePlayLoad & Transaction,
-    isShowDeposit: ModalStatePlayLoad & Transaction,
-    isShowNFTTransfer: ModalStatePlayLoad & Partial<NFTWholeINFO>,
-    isShowNFTWithdraw: ModalStatePlayLoad & Partial<NFTWholeINFO>,
-    isShowNFTDeposit: ModalStatePlayLoad & Partial<NFTWholeINFO>,
-    isShowResetAccount: ModalStatePlayLoad,
-    isShowExportAccount: ModalStatePlayLoad,
-    isShowSwap: ModalStatePlayLoad,
-    isShowAmm: ModalStatePlayLoad,
-    isShowConnect: ModalStatePlayLoad & { step: number },
-    isShowAccount: ModalStatePlayLoad & { step: number },
-    isShowFeeSetting: ModalStatePlayLoad,
-    isShowIFrame: ModalStatePlayLoad & { url: string },
-
+  isShowSupport: ModalStatePlayLoad;
+  isShowTransfer: ModalStatePlayLoad & Transaction;
+  isShowWithdraw: ModalStatePlayLoad & Transaction;
+  isShowDeposit: ModalStatePlayLoad & Transaction;
+  isShowNFTTransfer: ModalStatePlayLoad & Partial<NFTWholeINFO>;
+  isShowNFTWithdraw: ModalStatePlayLoad & Partial<NFTWholeINFO>;
+  isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTMint: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowResetAccount: ModalStatePlayLoad;
+  isShowActiveAccount: ModalStatePlayLoad;
+  isShowExportAccount: ModalStatePlayLoad;
+  isShowSwap: ModalStatePlayLoad;
+  isShowAmm: ModalStatePlayLoad;
+  isShowConnect: ModalStatePlayLoad & { step: number };
+  isShowAccount: ModalStatePlayLoad & { step: number };
+  isShowFeeSetting: ModalStatePlayLoad;
+  isShowIFrame: ModalStatePlayLoad & { url: string };
 }

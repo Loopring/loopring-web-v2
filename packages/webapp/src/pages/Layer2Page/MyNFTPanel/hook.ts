@@ -11,13 +11,37 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "stores/system";
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { NftData, NFTTokenInfo } from "@loopring-web/loopring-sdk";
-import { useModalData } from "../../../stores/router";
+import { useModalData } from "stores/router";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
-BigNumber.config({ EXPONENTIAL_AT: 100 });
+import { useNFTDeposit } from "hooks/useractions/useNFTDeposit";
+import * as loopring_defs from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
+BigNumber.config({ EXPONENTIAL_AT: 100 });
+const LimitNFTHistory = 50;
 export const useMyNFT = () => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
+  const [nftHistory, setNftHistory] = React.useState<{
+    transfers: {
+      totalNum: number;
+      userNFTTransfers: loopring_defs.UserNFTTransferHistoryTx[];
+      page: number;
+    };
+    deposits: {
+      totalNum: number;
+      userNFTDepositHistory: loopring_defs.UserNFTDepositHistoryTx[];
+      page: number;
+    };
+    withdraws: {
+      totalNum: number;
+      userNFTWithdrawalHistory: loopring_defs.UserNFTWithdrawalHistoryTx[];
+      page: number;
+    };
+  }>({
+    transfers: { totalNum: 0, userNFTTransfers: [], page: 1 },
+    deposits: { totalNum: 0, userNFTDepositHistory: [], page: 1 },
+    withdraws: { totalNum: 0, userNFTWithdrawalHistory: [], page: 1 },
+  });
   const { account } = useAccount();
   const [isShow, setIsShow] = React.useState(false);
   const [popItem, setPopItem] = React.useState<
@@ -25,10 +49,90 @@ export const useMyNFT = () => {
   >(undefined);
   const { status: walletLayer2Status, nftLayer2 } = useWalletLayer2();
   const { updateNFTTransferData, updateNFTWithdrawData } = useModalData();
-  const { setShowNFTTransfer } = useOpenModals();
+  const {
+    setShowNFTTransfer,
+    setShowNFTWithdraw,
+    setShowNFTDeposit,
+    modals: { isShowNFTDeposit },
+  } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
+  const { nftDepositProps } = useNFTDeposit();
 
   const onDetailClose = React.useCallback(() => setIsShow(false), []);
+  const getTransferList = React.useCallback(
+    async (page = 1, limit = LimitNFTHistory) => {
+      if (LoopringAPI.userAPI) {
+        const { totalNum, userNFTTransfers } =
+          await LoopringAPI.userAPI.getUserNFTTransferHistory(
+            {
+              accountId: account.accountId,
+              start: (nftHistory.transfers.page - 1) * limit,
+              limit,
+            },
+            account.apiKey
+          );
+        setNftHistory((state) => {
+          return {
+            ...state,
+            transfers: { totalNum, userNFTTransfers, page },
+          };
+        });
+      }
+    },
+    [nftHistory]
+  );
+  const getDepositList = React.useCallback(
+    async (page = 1, limit = LimitNFTHistory) => {
+      if (LoopringAPI.userAPI) {
+        const { totalNum, userNFTDepositHistory } =
+          await LoopringAPI.userAPI.getUserNFTDepositHistory(
+            {
+              accountId: account.accountId,
+              start: (nftHistory.transfers.page - 1) * limit,
+              limit,
+            },
+            account.apiKey
+          );
+        setNftHistory((state) => {
+          return {
+            ...state,
+            deposits: { totalNum, userNFTDepositHistory, page },
+          };
+        });
+      }
+    },
+    [nftHistory]
+  );
+  const getWithdrawalList = React.useCallback(
+    async (page = 1, limit = LimitNFTHistory) => {
+      if (LoopringAPI.userAPI) {
+        const { totalNum, userNFTWithdrawalHistory } =
+          await LoopringAPI.userAPI.getUserNFTWithdrawalHistory(
+            {
+              accountId: account.accountId,
+              start: (nftHistory.transfers.page - 1) * limit,
+              limit,
+            },
+            account.apiKey
+          );
+        setNftHistory((state) => {
+          return {
+            ...state,
+            withdraws: { totalNum, userNFTWithdrawalHistory, page },
+          };
+        });
+      }
+    },
+    [nftHistory]
+  );
+  const popNFTDeposit = React.useCallback(
+    () => setShowNFTDeposit({ isShow: true }),
+    []
+  );
+  const onNFTDepositClose = React.useCallback(
+    () => setShowNFTDeposit({ isShow: false }),
+    []
+  );
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
@@ -51,6 +155,7 @@ export const useMyNFT = () => {
       updateNFTTransferData(tokenInfo);
       updateNFTWithdrawData(tokenInfo);
       setShowNFTTransfer({ isShow: false, ...tokenInfo });
+      setShowNFTWithdraw({ isShow: false, ...tokenInfo });
       setIsShow(true);
     },
     [setShowNFTTransfer, updateNFTTransferData, updateNFTWithdrawData]
@@ -66,6 +171,9 @@ export const useMyNFT = () => {
   }, [walletLayer2Status]);
   const initNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
+    getTransferList();
+    getDepositList();
+    getWithdrawalList();
     for (const { nftId, tokenAddress } of nftLayer2) {
       if (tokenAddress && nftId) {
         const _id = new BigNumber(nftId ?? "", 16);
@@ -82,6 +190,7 @@ export const useMyNFT = () => {
       }
     }
     const meta: any[] = await Promise.all(mediaPromise);
+
     setNFTList(
       nftLayer2.map((item, index) => {
         return { ...item, ...meta[index], etherscanBaseUrl };
@@ -96,5 +205,13 @@ export const useMyNFT = () => {
     onDetail,
     etherscanBaseUrl,
     onDetailClose,
+    isShowNFTDeposit,
+    nftDepositProps,
+    onNFTDepositClose,
+    popNFTDeposit,
+    nftHistory,
+    getTransferList,
+    getDepositList,
+    getWithdrawalList,
   };
 };

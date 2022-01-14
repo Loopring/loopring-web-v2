@@ -1,4 +1,6 @@
+/* eslint-disable max-len */
 export default {
+  labelNoContent: "No Content",
   labelError: "Error",
   tokenEnter: "Enter Token",
   tokenEnterPaymentToken: "From",
@@ -22,6 +24,12 @@ export default {
     "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests. You can reset the EdDSA keypair at any time.",
   resetFee: "Fee {{count}} GAS ≈ ${{price}}",
   resetLabelBtn: "Reset",
+  labelActiveAccountTitle: "Activate Account",
+  labelActiveEnterToken: "Select payment token",
+  labelActiveAccountDescription:
+    "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests.",
+  labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
+  labelActiveAccountBtn: "Activate Account",
   depositTitle: "Deposit",
   depositTitleAndActive: "Deposit & Activate Layer2",
   depositTitleActive: " Activate Layer2",
@@ -296,6 +304,7 @@ export default {
   labelImpactExtraGreat:
     "Your transaction amount will affect the pool price <1>{{value}}</1>. Are you sure to swap?",
   labelCalculating: "Calculating...",
+  labelFeeCalculating: "Calculating fee...",
   labelAmmMyTransactions: "My Transactions",
   labelAmmAllTransactions: "All Transactions",
   labelWaitForAuth: "Waiting for signature",
@@ -427,7 +436,6 @@ export default {
     "I have read, understand, and agree to the <1> Terms of Service </1>.",
   labelNFTName: "NFT Name:",
   labelNFTDetail: "Detail:",
-  labelNFTContractAddress: "Contract Address:",
   labelNFTTokenStandard: "Token Standard:",
   labelNFTTokenMinted: "Token Minted:",
   labelNFTDescription: "Description:",
@@ -448,6 +456,8 @@ export default {
   labelIKnow: "I know",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
+  labelWithdrawInvalidAddress:
+    "Invalid address, ENS, special token, or an Counter Factual wallet",
   labelTransferAddressNotLoopring:
     "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
@@ -475,4 +485,25 @@ export default {
   labelHours: "Hours",
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
+  labelIsNotFeeToken: "Please deposit {{symbol}} to activate Layer 2",
+  labelIsNotEnoughFeeToken:
+    "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
+  labelActiveAccountFeeNotEnough: "Insufficient balance <1>Deposit Now</1>",
+  labelNFTTransferTX: "Transfers",
+  labelNFTWithdrawTX: "Withdrawals",
+  labelNFTDepositTX: "Deposits",
+  labelNFTDeposit: "Deposit NFT",
+  depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
+  depositNFTIdLabelPlaceholder: "please input NFT id",
+  labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & Deposit it",
+  labelNFTDepositBtn: "Deposit NFT",
+  nftDepositTitle: "Deposit NFT",
+  labelNFTDescribe: "Description:",
+  labelNFTTitle: "Amount",
+  labelNFTDepositInputTitle: "NFT Amount:",
+  labelNFTContractAddress: "NFT Token Contract:",
+  labelNFTTId: "NFT Token Id:",
+  labelNFTType: "NFT Type:",
+  labelNFTAccess: "Allow Loopring to spend {{symbol}}",
+  labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
 };

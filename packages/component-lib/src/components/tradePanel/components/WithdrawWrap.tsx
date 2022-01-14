@@ -19,6 +19,7 @@ import {
   globalSetup,
   HelpIcon,
   IBData,
+  LoadingIcon,
   TOAST_TIME,
   WithdrawTypes,
 } from "@loopring-web/common-resources";
@@ -67,6 +68,10 @@ export const WithdrawWrap = <
   handleFeeChange,
   handleWithdrawTypeChange,
   handleOnAddressChange,
+  isAddressCheckLoading,
+  isCFAddress,
+  isContractAddress,
+  disableWithdrawList = [],
   handleAddressError,
   wait = globalSetup.wait,
   assetsData = [],
@@ -90,32 +95,36 @@ export const WithdrawWrap = <
   );
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
   const [feeToken, setFeeToken] = React.useState("");
-  const [toggleData, setToggleData] = React.useState<any[]>([]);
   const { feeChargeOrder } = useSettings();
-
+  const toggleData: any[] = chargeFeeTokenList
+    .sort(
+      (a, b) =>
+        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
+    )
+    .map(({ belong, fee, __raw__ }) => ({
+      key: belong,
+      value: belong,
+      fee,
+      __raw__,
+    }));
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-withdraw`,
   });
 
   React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && feeChargeOrder && assetsData) {
-      const list = chargeFeeTokenList
-        .sort(
-          (a, b) =>
-            feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-        )
-        .map(({ belong, fee, __raw__ }) => ({
-          key: belong,
-          value: belong,
-          fee,
-          __raw__,
-        })) as any[];
-      setToggleData(list);
+    if (!!chargeFeeTokenList.length && feeChargeOrder) {
+      const defaultToken =
+        chargeFeeTokenList.find(
+          (o) =>
+            o.fee !== undefined &&
+            assetsData.find((item) => item.name === o.belong)?.available > o.fee
+        )?.belong || "ETH";
+      setFeeToken(defaultToken);
       const currFee =
-        list.find((o) => o.key === feeToken)?.fee || EmptyValueTag;
+        toggleData.find((o) => o.key === feeToken)?.fee || EmptyValueTag;
       const currFeeRaw =
-        list.find((o) => o.key === feeToken)?.__raw__ || EmptyValueTag;
+        toggleData.find((o) => o.key === feeToken)?.__raw__ || EmptyValueTag;
       handleFeeChange({
         belong: feeToken,
         fee: currFee,
@@ -139,12 +148,18 @@ export const WithdrawWrap = <
   );
 
   const inputBtnRef = React.useRef();
+  const isNotAvaiableAddress =
+    isCFAddress ||
+    (isContractAddress &&
+      disableWithdrawList.includes(tradeData?.belong ?? ""));
   const getDisabled = () => {
     if (
       disabled ||
       tradeData === undefined ||
       walletMap === undefined ||
-      coinMap === undefined
+      coinMap === undefined ||
+      isNotAvaiableAddress ||
+      isFeeNotEnough
     ) {
       return true;
     } else {
@@ -339,52 +354,73 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid
-        item
-        /* marginTop={2} */ alignSelf={"stretch"}
-        position={"relative"}
-      >
-        <TextField
-          value={address}
-          error={addressError && addressError.error ? true : false}
-          label={t("withdrawLabelAddress")}
-          placeholder={t("labelPleaseInputWalletAddress")}
-          onChange={_handleOnAddressChange}
-          disabled={chargeFeeTokenList.length ? false : true}
-          // required={true}
-          SelectProps={{ IconComponent: DropDownIcon }}
-          helperText={
-            <Typography component={"span"} variant={"body2"}>
-              {addressError && addressError.error ? addressError.message : ""}
-            </Typography>
-          }
-          fullWidth={true}
-        />
-        {address !== "" ? (
-          <IconClearStyled
-            size={"small"}
-            color={"inherit"}
-            style={{ top: "28px" }}
-            aria-label="Clear"
-            onClick={handleClear}
-          >
-            <CloseIcon />
-          </IconClearStyled>
-        ) : (
-          ""
-        )}
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        <>
+          <TextField
+            value={address}
+            error={addressError && addressError.error ? true : false}
+            label={t("withdrawLabelAddress")}
+            placeholder={t("labelPleaseInputWalletAddress")}
+            onChange={_handleOnAddressChange}
+            disabled={chargeFeeTokenList.length ? false : true}
+            SelectProps={{ IconComponent: DropDownIcon }}
+            helperText={
+              <Typography variant={"body2"} component={"span"}>
+                {addressError && addressError.error ? addressError.message : ""}
+              </Typography>
+            }
+            fullWidth={true}
+          />
+          {address !== "" ? (
+            isAddressCheckLoading ? (
+              <LoadingIcon
+                width={24}
+                style={{ top: "32px", right: "8px", position: "absolute" }}
+              />
+            ) : (
+              <IconClearStyled
+                color={"inherit"}
+                size={"small"}
+                style={{ top: "30px" }}
+                aria-label="Clear"
+                onClick={handleClear}
+              >
+                <CloseIcon />
+              </IconClearStyled>
+            )
+          ) : (
+            ""
+          )}
+          <Box marginLeft={1 / 2}>
+            {isNotAvaiableAddress ? (
+              <Typography
+                color={"var(--color-error)"}
+                fontSize={14}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelWithdrawInvalidAddress")}
+              </Typography>
+            ) : (
+              <>
+                {realAddr && !isAddressCheckLoading && (
+                  <Typography
+                    color={"var(--color-text-primary)"}
+                    variant={"body2"}
+                    marginTop={1 / 4}
+                  >
+                    {realAddr}
+                  </Typography>
+                )}
+              </>
+            )}
+          </Box>
+        </>
       </Grid>
 
-      {realAddr && (
-        <Grid item alignSelf={"stretch"} position={"relative"}>
-          {realAddr}
-        </Grid>
-      )}
-
-      {/* TODO: check whether there's a need to show deposit fee */}
       <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
         {!toggleData?.length ? (
-          <Typography>{t("labelCalculating")}</Typography>
+          <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
           <>
             <Typography
