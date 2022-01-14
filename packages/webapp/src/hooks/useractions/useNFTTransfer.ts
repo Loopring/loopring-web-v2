@@ -106,52 +106,35 @@ export const useNFTTransfer = <
 
   const checkBtnStatus = React.useCallback(() => {
     if (
-      !tokenMap ||
-      !nftTransferFeeInfo?.belong ||
-      !nftTransferValue?.tradeValue ||
-      !address
-    ) {
-      disableBtn();
-      return;
-    }
-
-    const tradeValue = sdk.toBig(nftTransferValue.tradeValue);
-
-    if (
-      chargeFeeList &&
-      chargeFeeList?.length > 0 &&
-      !!address &&
-      tradeValue.gt(BIGO) &&
-      tradeValue.lte(nftTransferValue.nftBalance ?? 0) &&
+      tokenMap &&
+      nftTransferValue.fee?.belong &&
+      nftTransferValue?.tradeValue &&
+      sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
+      sdk
+        .toBig(nftTransferValue.tradeValue)
+        .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
+      address &&
       !isExceedMax
     ) {
       enableBtn();
-    } else {
-      disableBtn();
+      myLog("enableBtn");
+      return;
     }
+    disableBtn();
   }, [
-    tokenMap,
-    nftTransferFeeInfo?.belong,
-    nftTransferValue.tradeValue,
-    nftTransferValue.nftBalance,
-    address,
-    chargeFeeList,
     addrStatus,
-    isExceedMax,
+    address,
     disableBtn,
     enableBtn,
+    isExceedMax,
+    nftTransferValue,
+    tokenMap,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [
-    chargeFeeList,
-    address,
-    addrStatus,
-    nftTransferValue?.tradeValue,
-    isExceedMax,
-  ]);
+  }, [address, addrStatus, nftTransferValue?.tradeValue, isExceedMax]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};

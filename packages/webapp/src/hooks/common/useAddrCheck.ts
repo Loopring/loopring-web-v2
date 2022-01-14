@@ -11,6 +11,7 @@ import { WalletType } from "@loopring-web/loopring-sdk";
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>("");
+  const _address = React.useRef<string>("");
 
   const [realAddr, setRealAddr] = React.useState<string>("");
 
@@ -98,8 +99,16 @@ export const useAddressCheck = () => {
   }, globalSetup.wait);
 
   React.useEffect(() => {
-    if (address !== "" && isAddressCheckLoading === false) {
+    if (
+      address !== "" &&
+      _address.current !== address &&
+      isAddressCheckLoading === false
+    ) {
+      _address.current = address;
+      console.log("debounceCheck");
       debounceCheck();
+    } else if (address === "") {
+      _address.current = "";
     }
   }, [address, isAddressCheckLoading]);
 

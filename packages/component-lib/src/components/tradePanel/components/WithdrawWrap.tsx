@@ -152,8 +152,7 @@ export const WithdrawWrap = <
       coinMap === undefined ||
       isNotAvaiableAddress ||
       isFeeNotEnough ||
-      withdrawBtnStatus === TradeBtnStatus.DISABLED ||
-      withdrawBtnStatus === TradeBtnStatus.LOADING
+      withdrawBtnStatus === TradeBtnStatus.DISABLED
     ) {
       return true;
     } else {
@@ -531,7 +530,7 @@ export const WithdrawWrap = <
               ? "true"
               : "false"
           }
-          disabled={getDisabled}
+          disabled={getDisabled || withdrawBtnStatus === TradeBtnStatus.LOADING}
         >
           {t(withdrawI18nKey ?? `withdrawLabelBtn`)}
         </Button>

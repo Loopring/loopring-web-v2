@@ -16,6 +16,7 @@ import {
   TOAST_TIME,
   LoadingIcon,
   EmptyValueTag,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -102,20 +103,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   ...rest
 }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
   const inputBtnRef = React.useRef();
-  const getDisabled = () => {
-    if (
-      disabled ||
-      tradeData === undefined ||
-      walletMap === undefined ||
-      coinMap === undefined ||
-      isFeeNotEnough ||
-      isSameAddress
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+
   const inputButtonDefaultProps = {
     label: t("transferLabelEnterToken"),
   };
@@ -174,6 +162,42 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     },
     [toggleData]
   );
+  const getDisabled = React.useMemo(() => {
+    if (
+      disabled ||
+      tradeData === undefined ||
+      walletMap === undefined ||
+      coinMap === undefined ||
+      isFeeNotEnough ||
+      isSameAddress ||
+      !addressOrigin ||
+      isAddressCheckLoading ||
+      transferBtnStatus === TradeBtnStatus.DISABLED
+    ) {
+      myLog(
+        "getDisabled true",
+        tradeData === undefined,
+        walletMap === undefined,
+        coinMap === undefined,
+        isFeeNotEnough,
+        isSameAddress,
+        transferBtnStatus === TradeBtnStatus.DISABLED
+      );
+
+      return true;
+    } else {
+      myLog("getDisabled", disabled, isFeeNotEnough, transferBtnStatus);
+      return false;
+    }
+  }, [
+    disabled,
+    isFeeNotEnough,
+    isSameAddress,
+    addressOrigin,
+    transferBtnStatus,
+    walletMap,
+    address,
+  ]);
 
   const debounceAddress = _.debounce(({ address }: any) => {
     if (handleOnAddressChange) {
@@ -712,16 +736,14 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
                 }
           }
           loading={
-            !getDisabled() && transferBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && transferBtnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
           disabled={
-            getDisabled() ||
-            transferBtnStatus === TradeBtnStatus.DISABLED ||
-            transferBtnStatus === TradeBtnStatus.LOADING
+            getDisabled || transferBtnStatus === TradeBtnStatus.LOADING
               ? true
-              : false || !addressOrigin || isAddressCheckLoading
+              : false
           }
         >
           {isConfirmTransfer
