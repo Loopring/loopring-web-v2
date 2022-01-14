@@ -1,28 +1,15 @@
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import styled from "@emotion/styled";
-import { Grid, Typography, Box, IconProps, Link } from "@mui/material";
+import { Grid, Typography, Box, Link } from "@mui/material";
 import {
-  DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import { Button, ToggleButtonGroup } from "../../basic-lib";
 import { ActiveAccountViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
-
-const FeeTokenItemWrapper = styled(Box)`
-  background-color: var(--color-global-bg);
-`;
-
-const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
-  transform: rotate(
-    ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
-    }}
-  );
-` as unknown as (props: IconProps & { status: string }) => JSX.Element;
+import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 
 export const ActiveAccountWrap = <T extends object>({
   t,
@@ -39,7 +26,14 @@ export const ActiveAccountWrap = <T extends object>({
     "down"
   );
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
-  const [feeToken, setFeeToken] = React.useState("ETH");
+  const [feeToken, setFeeToken] = React.useState(() => {
+    return (
+      chargeFeeTokenList.find(
+        (o) =>
+          assetsData.find((item) => item.name === o.belong)?.available > o.fee
+      )?.belong || "ETH"
+    );
+  });
   const { feeChargeOrder } = useSettings();
 
   const toggleData: any[] =
@@ -63,7 +57,7 @@ export const ActiveAccountWrap = <T extends object>({
         setIsFeeNotEnough(false);
       }
       const feeItem = chargeFeeTokenList.find(
-        (item) => item.token === feeToken
+        (item) => item.belong === feeToken || item.token === feeToken
       );
       handleFeeChange({
         belong: feeToken,
@@ -71,16 +65,6 @@ export const ActiveAccountWrap = <T extends object>({
       } as any);
     }
   };
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-    }
-  }, [chargeFeeTokenList, assetsData]);
 
   const getTokenFee = React.useCallback(
     (token: string) => {

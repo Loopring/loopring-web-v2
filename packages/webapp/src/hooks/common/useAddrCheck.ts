@@ -98,8 +98,10 @@ export const useAddressCheck = () => {
   }, globalSetup.wait);
 
   React.useEffect(() => {
-    debounceCheck();
-  }, [address, connectProvides.usedWeb3]);
+    if (address !== "" && isAddressCheckLoading === false) {
+      debounceCheck();
+    }
+  }, [address, isAddressCheckLoading]);
 
   React.useEffect(() => {
     setIsSameAddress(

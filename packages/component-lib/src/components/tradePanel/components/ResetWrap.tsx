@@ -1,29 +1,19 @@
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import styled from "@emotion/styled";
-import { Grid, Typography, Box, IconProps } from "@mui/material";
+import { Grid, Typography, Box } from "@mui/material";
 import {
-  DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import { Button, ToggleButtonGroup } from "../../basic-lib";
 import { ResetViewProps } from "./Interface";
-import { TypographyStrong } from "../../../index";
+import {
+  DropdownIconStyled,
+  FeeTokenItemWrapper,
+  TypographyStrong,
+} from "../../../index";
 import { useSettings } from "../../../stores";
-
-const FeeTokenItemWrapper = styled(Box)`
-  background-color: var(--color-global-bg);
-`;
-
-const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
-  transform: rotate(
-    ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
-    }}
-  );
-` as (props: IconProps & { status: string }) => JSX.Element;
 
 export const ResetWrap = <T extends object>({
   t,

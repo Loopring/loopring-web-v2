@@ -6,7 +6,6 @@ import {
   Box,
   FormControlLabel,
   Grid,
-  IconProps,
   Radio,
   RadioGroup,
   Typography,
@@ -20,32 +19,25 @@ import {
   HelpIcon,
   IBData,
   LoadingIcon,
+  myLog,
   TOAST_TIME,
   WithdrawTypes,
 } from "@loopring-web/common-resources";
-import { PopoverPure, Toast } from "../..";
+import {
+  DropdownIconStyled,
+  FeeTokenItemWrapper,
+  PopoverPure,
+  Toast,
+} from "../..";
 import { TradeBtnStatus } from "../Interface";
 import { Button, IconClearStyled, TextField } from "../../../index";
 import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { ToggleButtonGroup } from "../../basic-lib";
-import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import * as _ from "lodash";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 import { NFTInput } from "./BasicANFTTrade";
-
-const FeeTokenItemWrapper = styled(Box)`
-  background-color: var(--color-global-bg);
-`;
-
-const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
-  transform: rotate(
-    ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
-    }}
-  );
-` as (props: IconProps & { status: string }) => JSX.Element;
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTTokenInfo & IBData<I>),
@@ -113,7 +105,7 @@ export const WithdrawWrap = <
   });
 
   React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && feeChargeOrder) {
+    if (!!chargeFeeTokenList.length && feeChargeOrder && !feeToken) {
       const defaultToken =
         chargeFeeTokenList.find(
           (o) =>
@@ -152,20 +144,31 @@ export const WithdrawWrap = <
     isCFAddress ||
     (isContractAddress &&
       disableWithdrawList.includes(tradeData?.belong ?? ""));
-  const getDisabled = () => {
+  const getDisabled = React.useMemo(() => {
     if (
       disabled ||
       tradeData === undefined ||
       walletMap === undefined ||
       coinMap === undefined ||
       isNotAvaiableAddress ||
-      isFeeNotEnough
+      isFeeNotEnough ||
+      withdrawBtnStatus === TradeBtnStatus.DISABLED ||
+      withdrawBtnStatus === TradeBtnStatus.LOADING
     ) {
       return true;
     } else {
       return false;
     }
-  };
+  }, [
+    disabled,
+    withdrawBtnStatus,
+    tradeData,
+    walletMap,
+    coinMap,
+    isNotAvaiableAddress,
+    isFeeNotEnough,
+  ]);
+  myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
     label: t("withdrawLabelEnterToken"),
   };
@@ -264,7 +267,6 @@ export const WithdrawWrap = <
       }
     }
   }, [setAddress, setAddressError, handleAddressError]);
-
   return (
     <Grid
       className={walletMap ? "" : "loading"}
@@ -525,17 +527,11 @@ export const WithdrawWrap = <
             onWithdrawClick(tradeData);
           }}
           loading={
-            !getDisabled() && withdrawBtnStatus === TradeBtnStatus.LOADING
+            withdrawBtnStatus === TradeBtnStatus.LOADING && !getDisabled
               ? "true"
               : "false"
           }
-          disabled={
-            getDisabled() ||
-            withdrawBtnStatus === TradeBtnStatus.DISABLED ||
-            withdrawBtnStatus === TradeBtnStatus.LOADING
-              ? true
-              : false
-          }
+          disabled={getDisabled}
         >
           {t(withdrawI18nKey ?? `withdrawLabelBtn`)}
         </Button>
