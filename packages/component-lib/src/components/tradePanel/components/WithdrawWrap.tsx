@@ -15,6 +15,7 @@ import {
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
+  FeeInfo,
   globalSetup,
   HelpIcon,
   IBData,
@@ -33,15 +34,15 @@ import { TradeBtnStatus } from "../Interface";
 import { Button, IconClearStyled, TextField } from "../../../index";
 import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
-import { ToggleButtonGroup } from "../../basic-lib";
-import { useSettings } from "../../../stores";
 import * as _ from "lodash";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 import { NFTInput } from "./BasicANFTTrade";
+import { FeeToggle } from "./tool/FeeList";
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTTokenInfo & IBData<I>),
-  I
+  I,
+  C extends FeeInfo
 >({
   t,
   disabled,
@@ -53,8 +54,9 @@ export const WithdrawWrap = <
   addressDefault,
   withdrawTypes = WithdrawTypes,
   withdrawType,
-  chargeFeeToken = "ETH",
-  chargeFeeTokenList,
+  chargeFeeTokenList = [],
+  feeInfo,
+  isFeeNotEnough,
   onWithdrawClick,
   withdrawBtnStatus,
   handleFeeChange,
@@ -71,7 +73,7 @@ export const WithdrawWrap = <
   isThumb,
 
   ...rest
-}: WithdrawViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
+}: WithdrawViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
   const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(
     withdrawType
   );
@@ -85,45 +87,11 @@ export const WithdrawWrap = <
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
-  const [feeToken, setFeeToken] = React.useState("");
-  const { feeChargeOrder } = useSettings();
-  const toggleData: any[] = chargeFeeTokenList
-    .sort(
-      (a, b) =>
-        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-    )
-    .map(({ belong, fee, __raw__ }) => ({
-      key: belong,
-      value: belong,
-      fee,
-      __raw__,
-    }));
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-withdraw`,
   });
 
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && feeChargeOrder && !feeToken) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            o.fee !== undefined &&
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-      const currFee =
-        toggleData.find((o) => o.key === feeToken)?.fee || EmptyValueTag;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === feeToken)?.__raw__ || EmptyValueTag;
-      handleFeeChange({
-        belong: feeToken,
-        fee: currFee,
-        __raw__: currFeeRaw,
-      });
-    }
-  }, [chargeFeeTokenList, feeChargeOrder, feeToken, handleFeeChange]);
   const [copyToastOpen, setCopyToastOpen] = useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
@@ -131,12 +99,6 @@ export const WithdrawWrap = <
       setCopyToastOpen(true);
     },
     [setCopyToastOpen]
-  );
-  const getTokenFee = React.useCallback(
-    (token: string) => {
-      return toggleData.find((o) => o.key === token)?.fee || 0;
-    },
-    [toggleData]
   );
 
   const inputBtnRef = React.useRef();
@@ -172,60 +134,11 @@ export const WithdrawWrap = <
     label: t("withdrawLabelEnterToken"),
   };
 
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-      const currFee =
-        toggleData.find((o) => o.key === defaultToken)?.fee || EmptyValueTag;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === defaultToken)?.__raw__ ||
-        EmptyValueTag;
-      handleFeeChange({
-        belong: defaultToken,
-        fee: currFee,
-        __raw__: currFeeRaw,
-      });
+  const handleToggleChange = (value: C) => {
+    if (handleFeeChange) {
+      handleFeeChange(value);
     }
-  }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData]);
-
-  const checkFeeTokenEnough = React.useCallback(
-    (token: string, fee: number) => {
-      const tokenAssets = assetsData.find((o) => o.name === token)?.available;
-      return tokenAssets && Number(tokenAssets) > fee;
-    },
-    [assetsData]
-  );
-
-  React.useEffect(() => {
-    if (
-      !!chargeFeeTokenList.length &&
-      assetsData &&
-      !checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))
-    ) {
-      setIsFeeNotEnough(true);
-      return;
-    }
-    setIsFeeNotEnough(false);
-  }, [
-    chargeFeeTokenList,
-    assetsData,
-    checkFeeTokenEnough,
-    getTokenFee,
-    feeToken,
-  ]);
-
-  const handleToggleChange = React.useCallback(
-    (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
-      if (value === null) return;
-      setFeeToken(value);
-    },
-    []
-  );
+  };
 
   const _handleWithdrawTypeChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -420,7 +333,7 @@ export const WithdrawWrap = <
       </Grid>
 
       <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
-        {!toggleData?.length ? (
+        {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
           <>
@@ -446,7 +359,8 @@ export const WithdrawWrap = <
                   setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
                 }
               >
-                {getTokenFee(feeToken) || EmptyValueTag} {feeToken}
+                {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}
+                {" " + feeInfo.belong}
                 <Typography
                   marginLeft={1}
                   color={"var(--color-text-secondary)"}
@@ -479,16 +393,10 @@ export const WithdrawWrap = <
                 >
                   {t("transferLabelFeeChoose")}
                 </Typography>
-                <ToggleButtonGroup
-                  exclusive
-                  size={"small"}
-                  {...{
-                    data: toggleData,
-                    value: feeToken,
-                    t,
-                    ...rest,
-                  }}
-                  onChange={handleToggleChange}
+                <FeeToggle
+                  chargeFeeTokenList={chargeFeeTokenList}
+                  handleToggleChange={handleToggleChange}
+                  feeInfo={feeInfo}
                 />
                 <Box marginTop={1}>
                   <RadioGroup

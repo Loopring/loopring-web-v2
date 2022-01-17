@@ -72,13 +72,15 @@ export const useTransfer = <R extends IBData<T>, T>(): {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const { chargeFeeList } = useChargeFees({
-    tokenSymbol: transferValue.belong,
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
-    tokenMap,
-  });
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      isActiveAccount: true,
+      walletMap,
+      requestType: sdk.OffchainFeeReqType.TRANSFER,
+      tokenSymbol: transferValue.belong,
+      updateData: updateTransferData,
+    });
 
-  const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>();
   const [isExceedMax, setIsExceedMax] = React.useState(false);
 
   const {
@@ -95,9 +97,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
   const checkBtnStatus = React.useCallback(() => {
     if (
       !tokenMap ||
-      !tranferFeeInfo?.belong ||
+      !feeInfo?.belong ||
       !transferValue?.belong ||
-      !address
+      !address ||
+      isFeeNotEnough
     ) {
       disableBtn();
       return;
@@ -110,8 +113,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
       .times("1e" + sellToken.decimals);
 
     if (
-      chargeFeeList &&
-      chargeFeeList?.length > 0 &&
+      chargeFeeTokenList &&
+      chargeFeeTokenList?.length > 0 &&
       !!address &&
       tradeValue.gt(BIGO) &&
       addrStatus === AddressError.NoError &&
@@ -127,8 +130,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     tokenMap,
     address,
     addrStatus,
-    chargeFeeList,
-    tranferFeeInfo,
+    chargeFeeTokenList,
+    feeInfo,
     transferValue,
     isExceedMax,
   ]);
@@ -137,10 +140,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     checkBtnStatus();
   }, [
     tokenMap,
-    chargeFeeList,
+    chargeFeeTokenList,
     address,
     addrStatus,
-    tranferFeeInfo?.belong,
+    feeInfo?.belong,
     transferValue?.belong,
     transferValue?.tradeValue,
     isExceedMax,
@@ -328,7 +331,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         connectProvides.usedWeb3 &&
         transferValue.address !== "*" &&
         transferValue?.belong &&
-        tranferFeeInfo?.belong &&
+        feeInfo?.belong &&
         eddsaKey?.sk
       ) {
         try {
@@ -339,9 +342,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
           });
 
           const sellToken = tokenMap[transferValue.belong as string];
-          const feeToken = tokenMap[tranferFeeInfo.belong];
+          const feeToken = tokenMap[feeInfo.belong];
 
-          const fee = sdk.toBig(tranferFeeInfo.__raw__.feeRaw ?? 0);
+          const fee = sdk.toBig(feeInfo.__raw__.feeRaw ?? 0);
           const balance = sdk
             .toBig(transferValue.balance ?? 0)
             .times("1e" + sellToken.decimals);
@@ -396,8 +399,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
       account,
       tokenMap,
       exchangeInfo,
-      tranferFeeInfo?.belong,
-      tranferFeeInfo?.__raw__.feeRaw,
+      feeInfo?.belong,
+      feeInfo?.__raw__.feeRaw,
       setShowTransfer,
       setShowAccount,
       realAddr,
@@ -434,16 +437,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     [walletMap, updateTransferData]
   );
 
-  const handleFeeChange = useCallback(
-    (value: FeeInfo): void => {
-      setTransferFeeInfo(value);
-    },
-    [setTransferFeeInfo]
-  );
-
   const { t } = useTranslation();
 
-  const transferProps = {
+  const transferProps: TransferProps<any, any> = {
     addressDefault: address,
     realAddr,
     tradeData: transferValue as any,
@@ -451,10 +447,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     walletMap: walletMap as WalletMap<T>,
     transferBtnStatus: btnStatus,
     onTransferClick,
-    handleFeeChange,
     handlePanelEvent,
-    chargeFeeToken: transferValue.belong,
-    chargeFeeTokenList: chargeFeeList,
+    handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     isLoopringAddress,
     isSameAddress,
     isAddressCheckLoading,
@@ -462,17 +459,17 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     handleOnAddressChange: (value: any) => {
       setAddress(value || "");
     },
-    handleError: ({ belong, balance, tradeValue }: any) => {
-      balance = getFloatValue(balance);
-      tradeValue = getFloatValue(tradeValue);
-      // myLog(belong, balance, tradeValue, (tradeValue > 0 && balance < tradeValue) || (!!tradeValue && !balance))
-      if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-        setIsExceedMax(true);
-        return { error: true, message: t("tokenNotEnough", { belong }) };
-      }
-      setIsExceedMax(false);
-      return { error: false, message: "" };
-    },
+    // handleError: ({ belong, balance, tradeValue }: any) => {
+    //   balance = getFloatValue(balance);
+    //   tradeValue = getFloatValue(tradeValue);
+    //   // myLog(belong, balance, tradeValue, (tradeValue > 0 && balance < tradeValue) || (!!tradeValue && !balance))
+    //   if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
+    //     setIsExceedMax(true);
+    //     return { error: true, message: t("tokenNotEnough", { belong }) };
+    //   }
+    //   setIsExceedMax(false);
+    //   return { error: false, message: "" };
+    // },
     handleAddressError: (value: any) => {
       updateTransferData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };

@@ -1,5 +1,6 @@
 import {
   CoinKey,
+  FeeInfo,
   IBData,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
@@ -79,10 +80,10 @@ export type ActiveAccountProps<T> = ActiveAccountExtendProps<T>;
 export type ExportAccountProps = ExportAccountExtendProps;
 export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> &
   DepositExtendProps<T, I>;
-export type WithdrawProps<T, I> = BasicACoinTradeHookProps<T, I> &
-  WithdrawExtendProps<T, I, CoinKey<I>>;
-export type TransferProps<T, I> = BasicACoinTradeHookProps<T, I> &
-  TransferExtendProps<T, I, CoinKey<I>>;
+export type WithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
+  WithdrawExtendProps<T, I, C>;
+export type TransferProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
+  TransferExtendProps<T, I, C>;
 
 export type ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
 export type ActiveAccountInfoProps<T, I> = DefaultProps<T, I> &
@@ -99,7 +100,7 @@ export type NFTDepositProps<T, I> = NFTDepositViewProps<T, I>;
 
 export type NFTMintProps<T, I> = NFTMintViewProps<T, I>;
 
-export type NFTDeployProps<T, I> = NFTDeployViewProps<T, I>;
+export type NFTDeployProps<T, I, C = FeeInfo> = NFTDeployViewProps<T, I, C>;
 /**
  *  @type SwapProps
  *  @param swapTradeData: SwapTradeData<T>

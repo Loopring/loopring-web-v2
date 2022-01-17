@@ -7,8 +7,6 @@ import {
   CloseIcon,
   copyToClipBoard,
   DropDownIcon,
-  FeeChargeOrderDefault,
-  getValuePrecisionThousand,
   globalSetup,
   HelpIcon,
   IBData,
@@ -17,6 +15,7 @@ import {
   LoadingIcon,
   EmptyValueTag,
   myLog,
+  FeeInfo,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -31,11 +30,11 @@ import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import * as _ from "lodash";
-import { ToggleButtonGroup } from "../../basic-lib";
-import { useSettings } from "../../../stores";
 import styled from "@emotion/styled";
 import { NFTInput } from "./BasicANFTTrade";
 import { AddressError } from "./Interface";
+import { useTheme } from "@emotion/react";
+import { FeeToggle } from "./tool/FeeList";
 
 const OriginBoxStyled = styled(Box)`
   background-color: var(--field-opacity);
@@ -76,16 +75,21 @@ const UpIconWrapper = styled(Box)`
   transform: translateY(30%);
 `;
 
-export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
+export const TransferWrap = <
+  T extends IBData<I> & Partial<NFTWholeINFO>,
+  I,
+  C extends FeeInfo
+>({
   t,
   disabled,
   walletMap,
   tradeData,
   coinMap,
   transferI18nKey,
-  chargeFeeToken = "ETH",
   type,
   chargeFeeTokenList,
+  feeInfo,
+  isFeeNotEnough,
   onTransferClick,
   handleFeeChange,
   isThumb,
@@ -101,9 +105,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   isAddressCheckLoading,
   isSameAddress,
   ...rest
-}: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
+}: TransferViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
   const inputBtnRef = React.useRef();
-
+  const { mode: themeMode } = useTheme();
   const inputButtonDefaultProps = {
     label: t("transferLabelEnterToken"),
   };
@@ -117,11 +121,9 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   >();
 
   const [memo, setMemo] = React.useState("");
-  const [feeToken, setFeeToken] = React.useState("");
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
   const [addressOrigin, setAddressOrigin] = React.useState("");
   const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] =
     React.useState<"up" | "down">("up");
@@ -129,39 +131,11 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
 
   const ITEM_MARGIN = isConfirmTransfer ? 3 : 2;
 
-  let { feeChargeOrder, themeMode } = useSettings();
-  feeChargeOrder = feeChargeOrder ?? FeeChargeOrderDefault;
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-transfer`,
   });
-  const toggleData: any[] = chargeFeeTokenList
-    .sort(
-      (a, b) =>
-        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-    )
-    .map(({ belong, fee, __raw__ }) => ({
-      key: belong,
-      value: belong,
-      fee,
-      __raw__,
-    }));
 
-  const getTokenFee = React.useCallback(
-    (token: string) => {
-      const raw = toggleData.find((o) => o.key === token)?.fee;
-      // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
-      return getValuePrecisionThousand(
-        raw,
-        undefined,
-        undefined,
-        undefined,
-        false,
-        { isTrade: true, floor: false }
-      );
-    },
-    [toggleData]
-  );
   const getDisabled = React.useMemo(() => {
     if (
       disabled ||
@@ -234,36 +208,6 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     }
   }, [setAddress, handleAddressError, setAddressError]);
 
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            o.fee !== undefined &&
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-      const currFee =
-        toggleData.find((o) => o.key === defaultToken)?.fee || EmptyValueTag;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === defaultToken)?.__raw__ ||
-        EmptyValueTag;
-      handleFeeChange({
-        belong: defaultToken,
-        fee: currFee,
-        __raw__: currFeeRaw,
-      });
-    }
-  }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData]);
-
-  const checkFeeTokenEnough = React.useCallback(
-    (token: string, fee: number) => {
-      const tokenAssets = assetsData.find((o) => o.name === token)?.available;
-      return tokenAssets && Number(tokenAssets) > fee;
-    },
-    [assetsData]
-  );
-
   const [copyToastOpen, setCopyToastOpen] = useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
@@ -272,38 +216,11 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     },
     [setCopyToastOpen]
   );
-  const handleToggleChange = React.useCallback(
-    (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
-      if (value === null) return;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === value)?.__raw__ || EmptyValueTag;
-      setFeeToken(value);
-      handleFeeChange({
-        belong: value,
-        fee: getTokenFee(value),
-        __raw__: currFeeRaw,
-      });
-    },
-    [handleFeeChange, getTokenFee, toggleData]
-  );
-
-  React.useEffect(() => {
-    if (
-      !!chargeFeeTokenList.length &&
-      assetsData &&
-      !checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))
-    ) {
-      setIsFeeNotEnough(true);
-      return;
+  const handleToggleChange = (value: C) => {
+    if (handleFeeChange) {
+      handleFeeChange(value);
     }
-    setIsFeeNotEnough(false);
-  }, [
-    chargeFeeTokenList,
-    assetsData,
-    checkFeeTokenEnough,
-    getTokenFee,
-    feeToken,
-  ]);
+  };
 
   const getTransferConfirmTemplate = React.useCallback(
     (label: string, content: string) => {
@@ -657,7 +574,7 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
 
       {!isConfirmTransfer && (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
-          {!toggleData?.length ? (
+          {!chargeFeeTokenList?.length ? (
             <Typography>{t("labelFeeCalculating")}</Typography>
           ) : (
             <>
@@ -682,7 +599,8 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
                     setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
                   }
                 >
-                  {getTokenFee(feeToken) || EmptyValueTag} {feeToken}
+                  {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}{" "}
+                  {" " + feeInfo.belong}
                   <DropdownIconStyled
                     status={dropdownStatus}
                     fontSize={"medium"}
@@ -705,11 +623,10 @@ export const TransferWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
                   >
                     {t("transferLabelFeeChoose")}
                   </Typography>
-                  <ToggleButtonGroup
-                    exclusive
-                    size={"small"}
-                    {...{ data: toggleData, value: feeToken, t, ...rest }}
-                    onChange={handleToggleChange}
+                  <FeeToggle
+                    chargeFeeTokenList={chargeFeeTokenList}
+                    handleToggleChange={handleToggleChange}
+                    feeInfo={feeInfo}
                   />
                 </FeeTokenItemWrapper>
               )}

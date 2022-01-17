@@ -47,8 +47,8 @@ import {
   UserNFTBalanceInfo,
 } from "@loopring-web/loopring-sdk";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
-import { useChargeNFTFees } from "../common/useChargeNFTFees";
 import store from "../../stores";
+import { useChargeFees } from "../common/useChargeFees";
 
 export const useNFTWithdraw = <
   R extends IBData<T> &
@@ -92,13 +92,21 @@ export const useNFTWithdraw = <
   >({});
 
   // const nftWithdrawType2 = nftWithdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-  const { chargeFeeList } = useChargeNFTFees({
-    tokenAddress: nftWithdrawValue.tokenAddress,
-    requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
-    tokenMap,
-    amount: nftWithdrawValue.tradeValue,
-    needRefresh: true,
-  });
+  // const { chargeFeeList } = useChargeNFTFees({
+  //   tokenAddress: nftWithdrawValue.tokenAddress,
+  //   requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+  //   tokenMap,
+  //   amount: nftWithdrawValue.tradeValue,
+  //   needRefresh: true,
+  // });
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      isActiveAccount: true,
+      walletMap: walletMap2,
+      requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+      tokenAddress: nftWithdrawValue.tokenAddress,
+      updateData: updateNFTWithdrawData,
+    });
 
   const [isExceedMax, setIsExceedMax] = React.useState(false);
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -129,6 +137,7 @@ export const useNFTWithdraw = <
         .lte(Number(nftWithdrawValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
       !isExceedMax &&
+      !isFeeNotEnough &&
       !!address
     ) {
       enableBtn();
@@ -142,7 +151,7 @@ export const useNFTWithdraw = <
     tokenMap,
     address,
     addrStatus,
-    chargeFeeList,
+    chargeFeeTokenList,
     nftWithdrawValue.fee,
     isExceedMax,
   ]);
@@ -424,15 +433,6 @@ export const useNFTWithdraw = <
     ]
   );
 
-  const handleFeeChange = React.useCallback(
-    (value: FeeInfo): void => {
-      setNFTWithdrawFeeInfo(value);
-      myLog("updateNFTWithdrawData", { fee: value });
-      updateNFTWithdrawData({ fee: value });
-    },
-    [setNFTWithdrawFeeInfo]
-  );
-
   React.useEffect(() => {
     if (isLocalShow) {
       resetDefault();
@@ -462,7 +462,6 @@ export const useNFTWithdraw = <
       }
       setShowNFTWithdraw({ isShow: false });
     },
-    handleFeeChange,
     handleWithdrawTypeChange: () => {},
     handlePanelEvent: async (data: SwitchData<R>) => {
       return new Promise((res: any) => {
@@ -486,8 +485,10 @@ export const useNFTWithdraw = <
         res();
       });
     },
-    chargeFeeToken: nftWithdrawFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
+    handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     handleAddressError: (value: any) => {
       updateNFTWithdrawData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };

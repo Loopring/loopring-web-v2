@@ -32,7 +32,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   isNewAccount,
   handleError,
   addressDefault,
-  chargeFeeList,
+  chargeFeeTokenList,
   handleOnAddressChange,
   handleAddressError,
   wait = globalSetup.wait,
@@ -57,9 +57,9 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     ) {
       return true;
     } else {
-      if (isNewAccount && chargeFeeList) {
-        const index = chargeFeeList?.findIndex(
-          ({ token }) => token === tradeData.belong
+      if (isNewAccount && chargeFeeTokenList) {
+        const index = chargeFeeTokenList?.findIndex(
+          ({ belong }) => belong === tradeData.belong
         );
         if (index === -1) {
           return true;
@@ -116,9 +116,9 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     label: t("depositLabelEnterToken"),
   };
   const isNewAlert = React.useMemo(() => {
-    if (isNewAccount && chargeFeeList && tradeData && tradeData.belong) {
-      const index = chargeFeeList?.findIndex(
-        ({ token }) => token === tradeData.belong
+    if (isNewAccount && chargeFeeTokenList && tradeData && tradeData.belong) {
+      const index = chargeFeeTokenList?.findIndex(
+        ({ belong }) => belong === tradeData.belong
       );
       if (index === -1) {
         return (
@@ -129,11 +129,11 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             marginBottom={1}
           >
             {t("labelIsNotFeeToken", {
-              symbol: chargeFeeList.map((item) => " " + item.token),
+              symbol: chargeFeeTokenList.map((item) => item.belong ?? ""),
             })}
           </Typography>
         );
-      } else if (chargeFeeList[index].fee > (tradeData.tradeValue ?? 0)) {
+      } else if (chargeFeeTokenList[index].fee > (tradeData.tradeValue ?? 0)) {
         return (
           <Typography
             color={"var(--color-warning)"}
@@ -143,7 +143,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
           >
             {t("labelIsNotEnoughFeeToken", {
               symbol: tradeData.belong,
-              fee: chargeFeeList[index].fee,
+              fee: chargeFeeTokenList[index].fee,
             })}
           </Typography>
         );
@@ -153,7 +153,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     } else {
       return <></>;
     }
-  }, [isNewAccount, chargeFeeList, tradeData]);
+  }, [isNewAccount, chargeFeeTokenList, tradeData]);
 
   return (
     <Grid

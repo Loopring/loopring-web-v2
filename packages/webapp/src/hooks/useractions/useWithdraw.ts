@@ -86,12 +86,20 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
       ? "Fast"
       : "Standard";
-  const { chargeFeeList } = useChargeFees({
-    tokenSymbol: withdrawValue.belong,
-    requestType: withdrawType,
-    tokenMap,
-    amount: withdrawValue.tradeValue,
-  });
+  // const { chargeFeeList } = useChargeFees({
+  //   tokenSymbol: withdrawValue.belong,
+  //   requestType: withdrawType,
+  //   tokenMap,
+  //   amount: withdrawValue.tradeValue,
+  // });
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      isActiveAccount: true,
+      walletMap: walletMap2,
+      requestType: withdrawType,
+      tokenSymbol: withdrawValue.belong,
+      updateData: updateWithdrawData,
+    });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes);
   const [isExceedMax, setIsExceedMax] = React.useState(false);
@@ -118,7 +126,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       !tokenMap ||
       !withdrawFeeInfo?.belong ||
       !withdrawValue?.belong ||
-      !address
+      !address ||
+      isFeeNotEnough
     ) {
       disableBtn();
       return;
@@ -136,8 +145,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit));
 
     if (
-      chargeFeeList &&
-      chargeFeeList?.length > 0 &&
+      chargeFeeTokenList &&
+      chargeFeeTokenList?.length > 0 &&
       !!address &&
       tradeValue.gt(BIGO) &&
       addrStatus === AddressError.NoError &&
@@ -163,7 +172,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     tokenMap,
     address,
     addrStatus,
-    chargeFeeList,
+    chargeFeeTokenList,
     withdrawFeeInfo,
     withdrawValue,
     isExceedMax,
@@ -498,13 +507,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     ]
   );
 
-  const handleFeeChange = React.useCallback(
-    (value: FeeInfo): void => {
-      setWithdrawFeeInfo(value);
-    },
-    [setWithdrawFeeInfo]
-  );
-
   const withdrawProps: WithdrawProps<any, any> = {
     isAddressCheckLoading,
     isCFAddress,
@@ -525,7 +527,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       }
       setShowWithdraw({ isShow: false });
     },
-    handleFeeChange,
     handleWithdrawTypeChange: (value: "Fast" | "Standard") => {
       // myLog('handleWithdrawTypeChange', value)
       const offchainType =
@@ -561,8 +562,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         res();
       });
     },
-    chargeFeeToken: withdrawFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
+    handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     handleOnAddressChange: (value: any) => {},
     handleAddressError: (value: any) => {
       updateWithdrawData({ address: value, balance: -1, tradeValue: -1 });

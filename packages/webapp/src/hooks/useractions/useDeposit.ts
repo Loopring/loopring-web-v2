@@ -476,7 +476,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
       isNewAccount,
       title,
       allowTrade,
-      chargeFeeList:
+      chargeFeeTokenList:
         tokenMap && Reflect.ownKeys(tokenMap).length
           ? chargeFeeList.map((item: any) => {
               const tokenInfo = tokenMap[item.token.toString()];
@@ -486,6 +486,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 belong: item.token,
                 fee: toBig(item.fee)
                   .div("1e" + tokenInfo.decimals)
+                  .times(2)
                   .toString(),
               };
             })

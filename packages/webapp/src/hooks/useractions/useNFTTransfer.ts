@@ -7,7 +7,6 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import {
   AccountStep,
   SwitchData,
-  TransferProps,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import {
@@ -37,11 +36,15 @@ import { useAddressCheck } from "hooks/common/useAddrCheck";
 import { useWalletInfo } from "stores/localStore/walletInfo";
 import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
-import { updateNFTTransferData, useModalData } from "stores/router";
+import {
+  updateActiveAccountData,
+  updateNFTTransferData,
+  useModalData,
+} from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
 import { getFloatValue } from "utils/formatter_tool";
-import { useChargeNFTFees } from "../common/useChargeNFTFees";
 import store from "../../stores";
+import { useChargeFees } from "../common/useChargeFees";
 
 export const useNFTTransfer = <
   R extends IBData<T> &
@@ -78,12 +81,13 @@ export const useNFTTransfer = <
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const { chargeFeeList } = useChargeNFTFees({
-    tokenAddress: nftTransferValue.tokenAddress,
-    requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    tokenMap,
-    needRefresh: true,
-  });
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      tokenAddress: nftTransferValue.tokenAddress,
+      requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+      walletMap,
+      updateData: updateNFTTransferData,
+    });
 
   const [nftTransferFeeInfo, setNFTTransferFeeInfo] = React.useState<FeeInfo>({
     belong: "",
@@ -115,6 +119,7 @@ export const useNFTTransfer = <
         .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
       address &&
+      !isFeeNotEnough &&
       !isExceedMax
     ) {
       enableBtn();
@@ -419,15 +424,6 @@ export const useNFTTransfer = <
     [updateNFTTransferData]
   );
 
-  const handleFeeChange = useCallback(
-    (value: FeeInfo): void => {
-      setNFTTransferFeeInfo(value);
-      myLog("updateNFTTransferData", { fee: value });
-      updateNFTTransferData({ fee: value });
-    },
-    [setNFTTransferFeeInfo]
-  );
-
   const { t } = useTranslation();
 
   const nftTransferProps = {
@@ -441,9 +437,10 @@ export const useNFTTransfer = <
       onTransferClick(trade);
     },
     handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     handlePanelEvent,
-    chargeFeeToken: nftTransferFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
     isLoopringAddress,
     isSameAddress,
     isAddressCheckLoading,
