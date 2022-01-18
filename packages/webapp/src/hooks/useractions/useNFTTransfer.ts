@@ -120,7 +120,15 @@ export const useNFTTransfer = <
       return;
     }
     disableBtn();
-  }, [addrStatus, address, disableBtn, enableBtn, nftTransferValue, tokenMap]);
+  }, [
+    addrStatus,
+    address,
+    disableBtn,
+    enableBtn,
+    isFeeNotEnough,
+    nftTransferValue,
+    tokenMap,
+  ]);
 
   React.useEffect(() => {
     checkBtnStatus();

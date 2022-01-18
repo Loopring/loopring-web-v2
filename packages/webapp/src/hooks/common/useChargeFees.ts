@@ -194,6 +194,15 @@ export function useChargeFees({
 
           setFeeInfo((state) => {
             if (state.feeRaw === undefined) {
+              if (updateData) {
+                updateData({
+                  ...feeInfo,
+                  __raw__: {
+                    ...feeInfo.__raw__,
+                    tokenId: tokenMap[feeInfo.belong.toString()].tokenId,
+                  },
+                });
+              }
               return feeInfo;
             }
           });

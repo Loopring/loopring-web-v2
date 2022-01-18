@@ -111,8 +111,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     disableBtn();
   }, [
     tokenMap,
-    transferValue.belong,
-    transferValue.tradeValue,
+    transferValue,
     disableBtn,
     chargeFeeTokenList.length,
     isFeeNotEnough,
