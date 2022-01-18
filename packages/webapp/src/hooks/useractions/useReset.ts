@@ -5,48 +5,39 @@ import { FeeInfo } from "@loopring-web/common-resources";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useChargeFees } from "hooks/common/useChargeFees";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useTokenMap } from "stores/token";
 import { useUpdateAccount } from "./useUpdateAccount";
+import { makeWalletLayer2 } from "../help";
 
-export const useReset = <T>(): {
+export const useReset = <T extends FeeInfo>(): {
   resetProps: ResetProps<T>;
 } => {
-  const [resetFeeInfo, setResetFeeInfo] = React.useState<FeeInfo>();
+  const walletMap = makeWalletLayer2(true).walletMap ?? {};
   const { btnStatus } = useBtnStatus();
-
-  const { tokenMap } = useTokenMap();
-
   const {
     modals: { isShowResetAccount },
     setShowResetAccount,
   } = useOpenModals();
 
-  const { chargeFeeList } = useChargeFees({
-    tokenSymbol: "ETH",
-    requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
-    tokenMap,
-    needRefresh: isShowResetAccount.isShow,
-  });
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      tokenSymbol: "ETH",
+      requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
+      updateData: undefined,
+    });
 
   const { goUpdateAccount } = useUpdateAccount();
 
   const onResetClick = React.useCallback(() => {
     setShowResetAccount({ isShow: false });
-    goUpdateAccount({ isReset: true, feeInfo: resetFeeInfo });
+    goUpdateAccount({ isReset: true, feeInfo: feeInfo });
   }, [goUpdateAccount]);
 
-  const handleFeeChange = React.useCallback(
-    (value: FeeInfo): void => {
-      setResetFeeInfo(value);
-    },
-    [setResetFeeInfo]
-  );
-
   const resetProps: ResetProps<T> = {
+    isFeeNotEnough,
     onResetClick,
     resetBtnStatus: btnStatus,
-    chargeFeeToken: resetFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
+    feeInfo: feeInfo as T,
+    chargeFeeTokenList: chargeFeeTokenList as T[],
     handleFeeChange,
   };
 

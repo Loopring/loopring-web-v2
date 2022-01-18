@@ -7,13 +7,11 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import {
   AccountStep,
   SwitchData,
-  TransferProps,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
   CoinMap,
-  FeeInfo,
   IBData,
   NFTWholeINFO,
   SagaStatus,
@@ -37,11 +35,15 @@ import { useAddressCheck } from "hooks/common/useAddrCheck";
 import { useWalletInfo } from "stores/localStore/walletInfo";
 import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
-import { updateNFTTransferData, useModalData } from "stores/router";
+import {
+  updateActiveAccountData,
+  updateNFTTransferData,
+  useModalData,
+} from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
 import { getFloatValue } from "utils/formatter_tool";
-import { useChargeNFTFees } from "../common/useChargeNFTFees";
 import store from "../../stores";
+import { useChargeFees } from "../common/useChargeFees";
 
 export const useNFTTransfer = <
   R extends IBData<T> &
@@ -78,19 +80,14 @@ export const useNFTTransfer = <
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const { chargeFeeList } = useChargeNFTFees({
-    tokenAddress: nftTransferValue.tokenAddress,
-    requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    tokenMap,
-    needRefresh: true,
-  });
-
-  const [nftTransferFeeInfo, setNFTTransferFeeInfo] = React.useState<FeeInfo>({
-    belong: "",
-    fee: "",
-    __raw__: undefined,
-  } as unknown as FeeInfo);
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      tokenAddress: nftTransferValue.tokenAddress,
+      requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+      updateData: (feeInfo) => {
+        updateNFTTransferData({ ...nftTransferValue, fee: feeInfo });
+      },
+    });
 
   const {
     address,
@@ -115,26 +112,18 @@ export const useNFTTransfer = <
         .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
       address &&
-      !isExceedMax
+      !isFeeNotEnough
     ) {
       enableBtn();
       myLog("enableBtn");
       return;
     }
     disableBtn();
-  }, [
-    addrStatus,
-    address,
-    disableBtn,
-    enableBtn,
-    isExceedMax,
-    nftTransferValue,
-    tokenMap,
-  ]);
+  }, [addrStatus, address, disableBtn, enableBtn, nftTransferValue, tokenMap]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [address, addrStatus, nftTransferValue?.tradeValue, isExceedMax]);
+  }, [address, addrStatus, nftTransferValue.tradeValue, nftTransferValue.fee]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
@@ -318,8 +307,8 @@ export const useNFTTransfer = <
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         nftTransferValue?.nftData &&
-        nftTransferFeeInfo?.belong &&
-        nftTransferFeeInfo?.__raw__ &&
+        nftTransferValue?.fee?.belong &&
+        nftTransferValue?.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
@@ -329,10 +318,9 @@ export const useNFTTransfer = <
             step: AccountStep.Transfer_WaitForAuth,
           });
           // const sellTokenID = nftTransferValue.tokenId
-
           // const sellToken = tokenMap[nftTransferValue.belong as string]
-          const feeToken = tokenMap[nftTransferFeeInfo.belong];
-          const fee = sdk.toBig(nftTransferFeeInfo.__raw__?.feeRaw ?? 0);
+          const feeToken = tokenMap[nftTransferValue.belong];
+          const fee = sdk.toBig(nftTransferValue.__raw__?.feeRaw ?? 0);
           const tradeValue = nftTransferValue.tradeValue;
           const balance = nftTransferValue.nftBalance;
           const isExceedBalance = sdk.toBig(tradeValue).gt(balance);
@@ -384,7 +372,6 @@ export const useNFTTransfer = <
       account,
       tokenMap,
       exchangeInfo,
-      nftTransferFeeInfo,
       setShowNFTTransfer,
       setShowAccount,
       realAddr,
@@ -419,15 +406,6 @@ export const useNFTTransfer = <
     [updateNFTTransferData]
   );
 
-  const handleFeeChange = useCallback(
-    (value: FeeInfo): void => {
-      setNFTTransferFeeInfo(value);
-      myLog("updateNFTTransferData", { fee: value });
-      updateNFTTransferData({ fee: value });
-    },
-    [setNFTTransferFeeInfo]
-  );
-
   const { t } = useTranslation();
 
   const nftTransferProps = {
@@ -441,24 +419,13 @@ export const useNFTTransfer = <
       onTransferClick(trade);
     },
     handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     handlePanelEvent,
-    chargeFeeToken: nftTransferFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
     isLoopringAddress,
     isSameAddress,
     isAddressCheckLoading,
-    handleOnAddressChange: (value: any) => {},
-    handleError: ({ belong, balance, tradeValue }: any) => {
-      balance = getFloatValue(balance);
-      tradeValue = getFloatValue(tradeValue);
-      // myLog(belong, balance, tradeValue, (tradeValue > 0 && balance < tradeValue) || (!!tradeValue && !balance))
-      if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-        setIsExceedMax(true);
-        return { error: true, message: t("tokenNotEnough", { belong }) };
-      }
-      setIsExceedMax(false);
-      return { error: false, message: "" };
-    },
     handleAddressError: (value: any) => {
       updateNFTTransferData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };

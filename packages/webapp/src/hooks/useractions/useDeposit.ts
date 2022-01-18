@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 
 import {
   AccountStep,
-  DepositProps,
   SwitchData,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -11,6 +10,7 @@ import {
   CoinMap,
   IBData,
   myLog,
+  VendorProviders,
   WalletMap,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -21,7 +21,12 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "api_wrapper";
 import { useWalletLayer1 } from "stores/walletLayer1";
 import { useTranslation } from "react-i18next";
-import { ActionResult, ActionResultCode, AddressError } from "defs/common_defs";
+import {
+  ActionResult,
+  ActionResultCode,
+  AddressError,
+  BIGO,
+} from "defs/common_defs";
 import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useAllowances } from "hooks/common/useAllowances";
@@ -30,16 +35,14 @@ import { checkAddr } from "utils/web3_tools";
 import { isPosIntNum } from "utils/formatter_tool";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 import { toBig } from "@loopring-web/loopring-sdk";
+import _ from "lodash";
+import { useVendor } from "./useVendor";
 
-export const useDeposit = <R extends IBData<T>, T>(): {
-  depositProps: DepositProps<R, T>;
-} => {
+export const useDeposit = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
-
   const { depositValue, updateDepositData, resetDepositData } = useModalData();
-
   const {
     modals: {
       isShowDeposit: { symbol, isShow },
@@ -76,6 +79,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
+      sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
       sdk
         .toBig(depositValue?.tradeValue)
         .lte(sdk.toBig(depositValue?.balance ?? ""))
@@ -458,6 +462,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
       myLog("handleAddressError:", value);
       updateDepositData({ reffer: value, tradeValue: -1, balance: -1 });
       return undefined;
+      return undefined;
     },
     []
   );
@@ -471,12 +476,13 @@ export const useDeposit = <R extends IBData<T>, T>(): {
       account.readyState === AccountStatus.NO_ACCOUNT
         ? t("labelCreateLayer2Title")
         : t("depositTitle");
+
     return {
       btnInfo,
       isNewAccount,
       title,
       allowTrade,
-      chargeFeeList:
+      chargeFeeTokenList:
         tokenMap && Reflect.ownKeys(tokenMap).length
           ? chargeFeeList.map((item: any) => {
               const tokenInfo = tokenMap[item.token.toString()];
@@ -486,6 +492,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 belong: item.token,
                 fee: toBig(item.fee)
                   .div("1e" + tokenInfo.decimals)
+                  .times(2)
                   .toString(),
               };
             })

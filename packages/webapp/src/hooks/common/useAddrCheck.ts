@@ -73,30 +73,38 @@ export const useAddressCheck = () => {
     [setRealAddr, setAddrStatus]
   );
 
-  const debounceCheck = _.debounce(async () => {
-    setIsAddressCheckLoading(true);
-    const { addressErr, lastAddress } = await check(
-      address,
-      connectProvides.usedWeb3
-    );
-    // check whether the address belongs to loopring layer2
-    if (
-      LoopringAPI &&
-      LoopringAPI.exchangeAPI &&
-      addressErr === AddressError.NoError &&
-      lastAddress
-    ) {
-      const res = await LoopringAPI.exchangeAPI?.getAccount({
-        owner: lastAddress,
-      }); // ENS or address
-      if (res && !res.error) {
-        setIsLoopringAddress(true);
-      } else {
-        setIsLoopringAddress(false);
+  const debounceCheck = _.debounce(
+    async () => {
+      setIsAddressCheckLoading(true);
+      const { addressErr, lastAddress } = await check(
+        address,
+        connectProvides.usedWeb3
+      );
+      // check whether the address belongs to loopring layer2
+      if (
+        LoopringAPI &&
+        LoopringAPI.exchangeAPI &&
+        addressErr === AddressError.NoError &&
+        lastAddress
+      ) {
+        const res = await LoopringAPI.exchangeAPI
+          ?.getAccount({
+            owner: lastAddress,
+          })
+          .finally(() => {
+            setIsAddressCheckLoading(false);
+          });
+        // ENS or address
+        if (res && !res.error) {
+          setIsLoopringAddress(true);
+        } else {
+          setIsLoopringAddress(false);
+        }
       }
-    }
-    setIsAddressCheckLoading(false);
-  }, globalSetup.wait);
+    },
+    globalSetup.wait,
+    { maxWait: 1000, leading: false, trailing: true }
+  );
 
   React.useEffect(() => {
     if (

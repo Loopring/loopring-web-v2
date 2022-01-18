@@ -1,12 +1,8 @@
-import { DepositProps } from "../../tradePanel/Interface";
+import { DepositProps } from "../Interface";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { CoinInfo, CoinMap, IBData } from "@loopring-web/common-resources";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
-import {
-  DepositWrap,
-  TradeMenuList,
-  useBasicTrade,
-} from "../../tradePanel/components";
+import { DepositWrap, TradeMenuList, useBasicTrade } from "../components";
 import React from "react";
 import { cloneDeep } from "lodash";
 

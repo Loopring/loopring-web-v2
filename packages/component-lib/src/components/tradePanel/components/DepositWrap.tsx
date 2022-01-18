@@ -1,21 +1,13 @@
 import { CloseIcon, globalSetup, IBData } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
-import { Trans, WithTranslation } from "react-i18next";
-import { bindHover } from "material-ui-popup-state/es";
-import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
+import { WithTranslation } from "react-i18next";
 import React, { ChangeEvent } from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import { PopoverPure } from "../../";
+import { Grid, Typography } from "@mui/material";
 import { Button, IconClearStyled, TextField } from "../../../index";
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import * as _ from "lodash";
-import {
-  HelpIcon,
-  NFTWholeINFO,
-  RampIcon,
-} from "@loopring-web/common-resources";
-import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { NFTWholeINFO } from "@loopring-web/common-resources";
 
 //SelectReceiveCoin
 export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
@@ -32,34 +24,28 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   isNewAccount,
   handleError,
   addressDefault,
-  chargeFeeList,
+  chargeFeeTokenList,
   handleOnAddressChange,
   handleAddressError,
   wait = globalSetup.wait,
   allowTrade,
   ...rest
 }: DepositViewProps<T, I> & WithTranslation) => {
-  const { raw_data } = allowTrade;
-  const legalEnable = (raw_data as any)?.legal?.enable;
-  const legalShow = (raw_data as any)?.legal?.show;
-
   const inputBtnRef = React.useRef();
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: `popupId-deposit`,
-  });
-  const getDisabled = () => {
+
+  const getDisabled = React.useMemo(() => {
     if (
       disabled ||
       tradeData === undefined ||
       walletMap === undefined ||
-      coinMap === undefined
+      coinMap === undefined ||
+      depositBtnStatus === TradeBtnStatus.DISABLED
     ) {
       return true;
     } else {
-      if (isNewAccount && chargeFeeList) {
-        const index = chargeFeeList?.findIndex(
-          ({ token }) => token === tradeData.belong
+      if (isNewAccount && chargeFeeTokenList) {
+        const index = chargeFeeTokenList?.findIndex(
+          ({ belong }) => belong === tradeData.belong
         );
         if (index === -1) {
           return true;
@@ -67,7 +53,15 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       }
       return false;
     }
-  };
+  }, [
+    chargeFeeTokenList,
+    coinMap,
+    depositBtnStatus,
+    disabled,
+    isNewAccount,
+    tradeData,
+    walletMap,
+  ]);
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault || ""
   );
@@ -97,28 +91,13 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     debounceAddress({ address });
   };
 
-  const showRamp = React.useCallback(() => {
-    const widget = new RampInstantSDK({
-      hostAppName: "Loopring",
-      hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
-      swapAsset: "LOOPRING_*",
-      userAddress: addressDefault,
-      hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
-    }).show();
-
-    if (widget && widget.domNodes) {
-      (widget as any).domNodes.shadowHost.style.position = "absolute";
-      (widget as any).domNodes.overlay.style.zIndex = 10000;
-    }
-  }, [addressDefault]);
-
   const inputButtonDefaultProps = {
     label: t("depositLabelEnterToken"),
   };
   const isNewAlert = React.useMemo(() => {
-    if (isNewAccount && chargeFeeList && tradeData && tradeData.belong) {
-      const index = chargeFeeList?.findIndex(
-        ({ token }) => token === tradeData.belong
+    if (isNewAccount && chargeFeeTokenList && tradeData && tradeData.belong) {
+      const index = chargeFeeTokenList?.findIndex(
+        ({ belong }) => belong === tradeData.belong
       );
       if (index === -1) {
         return (
@@ -129,11 +108,11 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             marginBottom={1}
           >
             {t("labelIsNotFeeToken", {
-              symbol: chargeFeeList.map((item) => " " + item.token),
+              symbol: chargeFeeTokenList.map((item) => item.belong ?? ""),
             })}
           </Typography>
         );
-      } else if (chargeFeeList[index].fee > (tradeData.tradeValue ?? 0)) {
+      } else if (chargeFeeTokenList[index].fee > (tradeData.tradeValue ?? 0)) {
         return (
           <Typography
             color={"var(--color-warning)"}
@@ -143,7 +122,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
           >
             {t("labelIsNotEnoughFeeToken", {
               symbol: tradeData.belong,
-              fee: chargeFeeList[index].fee,
+              fee: chargeFeeTokenList[index].fee,
             })}
           </Typography>
         );
@@ -153,11 +132,11 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     } else {
       return <></>;
     }
-  }, [isNewAccount, chargeFeeList, tradeData]);
+  }, [isNewAccount, chargeFeeTokenList, tradeData]);
 
   return (
     <Grid
-      className={walletMap ? "" : "loading"}
+      className={walletMap ? "depositWrap" : "depositWrap loading"}
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
       container
@@ -167,75 +146,6 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       flex={1}
       height={"100%"}
     >
-      <Grid item>
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          /* textAlign={'center'} */ marginBottom={2}
-        >
-          <Typography component={"h4"} variant={"h3"} marginRight={1}>
-            {title ? title : t("depositTitle")}
-          </Typography>
-          <HelpIcon
-            {...bindHover(popupState)}
-            fontSize={"large"}
-            htmlColor={"var(--color-text-third)"}
-          />
-        </Box>
-        {/* <Typography component={'p'} variant="body1">
-                <Trans i18nKey={description ? description : 'depositDescription'}>
-                    Once your deposit is <TypographyGood component={'span'}>confirmed on Ethereum</TypographyGood>, it
-                    will be added to your balance within <TypographyGood component={'span'}>2 minutes</TypographyGood>.
-                </Trans>
-            </Typography> */}
-        <PopoverPure
-          className={"arrow-center"}
-          {...bindPopper(popupState)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-        >
-          <Typography
-            padding={2}
-            component={"p"}
-            variant={"body2"}
-            whiteSpace={"pre-line"}
-          >
-            <Trans i18nKey={description ? description : "depositDescription"}>
-              Once your deposit is confirmed on Ethereum, it will be added to
-              your balance within 2 minutes.
-            </Trans>
-          </Typography>
-        </PopoverPure>
-      </Grid>
-      {legalEnable && legalShow && (
-        <Grid
-          item
-          alignSelf={"flex-end"}
-          display={"flex"}
-          alignItems={"center"}
-        >
-          <Button
-            variant={"text"}
-            style={{ textTransform: "none", paddingRight: 0 }}
-            onClick={showRamp}
-          >
-            {t("labelDepositRamp")}
-            <RampIcon
-              fontSize={"large"}
-              style={{ marginLeft: 4, marginRight: 4 }}
-            />
-            <Typography>Ramp</Typography>
-          </Button>
-        </Grid>
-      )}
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <BasicACoinTrade
           {...{
@@ -294,14 +204,12 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             onDepositClick(tradeData);
           }}
           loading={
-            !getDisabled() && depositBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && depositBtnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
           disabled={
-            getDisabled() ||
-            depositBtnStatus === TradeBtnStatus.DISABLED ||
-            depositBtnStatus === TradeBtnStatus.LOADING
+            getDisabled || depositBtnStatus === TradeBtnStatus.LOADING
               ? true
               : false
           }

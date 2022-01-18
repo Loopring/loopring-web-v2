@@ -94,7 +94,7 @@ export function ScrollTop(props: {
   );
 }
 
-const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
+export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
   ${({ theme, size }) =>
     size !== "small"
       ? `

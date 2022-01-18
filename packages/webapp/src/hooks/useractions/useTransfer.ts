@@ -39,7 +39,6 @@ import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
-import { getFloatValue } from "utils/formatter_tool";
 
 export const useTransfer = <R extends IBData<T>, T>(): {
   transferToastOpen: boolean;
@@ -72,14 +71,15 @@ export const useTransfer = <R extends IBData<T>, T>(): {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const { chargeFeeList } = useChargeFees({
-    tokenSymbol: transferValue.belong,
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
-    tokenMap,
-  });
-
-  const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>();
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      isActiveAccount: true,
+      requestType: sdk.OffchainFeeReqType.TRANSFER,
+      tokenSymbol: transferValue.belong,
+      updateData: (feeInfo) => {
+        updateTransferData({ ...transferValue, fee: feeInfo });
+      },
+    });
 
   const {
     address,
@@ -93,57 +93,46 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const checkBtnStatus = React.useCallback(() => {
-    if (
-      !tokenMap ||
-      !tranferFeeInfo?.belong ||
-      !transferValue?.belong ||
-      !address
-    ) {
-      disableBtn();
-      return;
+    if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
+      const sellToken = tokenMap[transferValue.belong];
+      const tradeValue = sdk
+        .toBig(transferValue.tradeValue ?? 0)
+        .times("1e" + sellToken.decimals);
+      if (
+        tradeValue &&
+        chargeFeeTokenList.length &&
+        !isFeeNotEnough &&
+        tradeValue.gt(BIGO) &&
+        address &&
+        address !== "" &&
+        addrStatus === AddressError.NoError
+      ) {
+        enableBtn();
+        return;
+      }
     }
-
-    const sellToken = tokenMap[transferValue.belong as string];
-
-    const tradeValue = sdk
-      .toBig(transferValue.tradeValue ?? 0)
-      .times("1e" + sellToken.decimals);
-
-    if (
-      chargeFeeList &&
-      chargeFeeList?.length > 0 &&
-      !!address &&
-      tradeValue.gt(BIGO) &&
-      addrStatus === AddressError.NoError &&
-      !isExceedMax
-    ) {
-      enableBtn();
-    } else {
-      disableBtn();
-    }
+    disableBtn();
   }, [
     enableBtn,
     disableBtn,
     tokenMap,
     address,
     addrStatus,
-    chargeFeeList,
-    tranferFeeInfo,
+    chargeFeeTokenList,
+    feeInfo,
     transferValue,
-    isExceedMax,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
   }, [
     tokenMap,
-    chargeFeeList,
+    chargeFeeTokenList,
     address,
     addrStatus,
-    tranferFeeInfo?.belong,
+    transferValue?.fee,
     transferValue?.belong,
     transferValue?.tradeValue,
-    isExceedMax,
   ]);
 
   const walletLayer2Callback = React.useCallback(() => {
@@ -327,8 +316,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         transferValue.address !== "*" &&
-        transferValue?.belong &&
-        tranferFeeInfo?.belong &&
+        transferValue?.fee.belong &&
+        transferValue.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
@@ -339,9 +328,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
           });
 
           const sellToken = tokenMap[transferValue.belong as string];
-          const feeToken = tokenMap[tranferFeeInfo.belong];
+          const feeToken = tokenMap[transferValue.fee.belong];
 
-          const fee = sdk.toBig(tranferFeeInfo.__raw__.feeRaw ?? 0);
+          const fee = sdk.toBig(transferValue.fee.__raw__?.feeRaw ?? 0);
           const balance = sdk
             .toBig(transferValue.balance ?? 0)
             .times("1e" + sellToken.decimals);
@@ -396,8 +385,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
       account,
       tokenMap,
       exchangeInfo,
-      tranferFeeInfo?.belong,
-      tranferFeeInfo?.__raw__.feeRaw,
+      feeInfo,
       setShowTransfer,
       setShowAccount,
       realAddr,
@@ -431,19 +419,12 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         res();
       });
     },
-    [walletMap, updateTransferData]
-  );
-
-  const handleFeeChange = useCallback(
-    (value: FeeInfo): void => {
-      setTransferFeeInfo(value);
-    },
-    [setTransferFeeInfo]
+    [walletMap, updateTransferData, transferValue]
   );
 
   const { t } = useTranslation();
 
-  const transferProps = {
+  const transferProps: TransferProps<any, any> = {
     addressDefault: address,
     realAddr,
     tradeData: transferValue as any,
@@ -451,27 +432,17 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     walletMap: walletMap as WalletMap<T>,
     transferBtnStatus: btnStatus,
     onTransferClick,
-    handleFeeChange,
     handlePanelEvent,
-    chargeFeeToken: transferValue.belong,
-    chargeFeeTokenList: chargeFeeList,
+    handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     isLoopringAddress,
     isSameAddress,
     isAddressCheckLoading,
     addrStatus,
     handleOnAddressChange: (value: any) => {
       setAddress(value || "");
-    },
-    handleError: ({ belong, balance, tradeValue }: any) => {
-      balance = getFloatValue(balance);
-      tradeValue = getFloatValue(tradeValue);
-      // myLog(belong, balance, tradeValue, (tradeValue > 0 && balance < tradeValue) || (!!tradeValue && !balance))
-      if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-        setIsExceedMax(true);
-        return { error: true, message: t("tokenNotEnough", { belong }) };
-      }
-      setIsExceedMax(false);
-      return { error: false, message: "" };
     },
     handleAddressError: (value: any) => {
       updateTransferData({ address: value, balance: -1, tradeValue: -1 });

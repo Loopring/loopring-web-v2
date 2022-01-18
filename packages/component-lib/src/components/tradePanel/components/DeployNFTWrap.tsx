@@ -1,6 +1,6 @@
 import {
   EmptyValueTag,
-  getValuePrecisionThousand,
+  FeeInfo,
   HelpIcon,
   TradeNFT,
 } from "@loopring-web/common-resources";
@@ -8,14 +8,18 @@ import { NFTDeployViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
-import { useSettings } from "../../../stores";
 import { Box, Grid, Link, Typography } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
-import { Button, PopoverPure, ToggleButtonGroup } from "../../basic-lib";
+import { Button, PopoverPure } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { TradeBtnStatus } from "../Interface";
+import { FeeToggle } from "./tool/FeeList";
 
-export const DeployNFTWrap = <T extends TradeNFT<I> & { broker: string }, I>({
+export const DeployNFTWrap = <
+  T extends TradeNFT<I> & { broker: string },
+  I,
+  C extends FeeInfo
+>({
   tradeData,
   title,
   description,
@@ -23,10 +27,12 @@ export const DeployNFTWrap = <T extends TradeNFT<I> & { broker: string }, I>({
   nftDeployBtnStatus,
   onNFTDeployClick,
   chargeFeeTokenList = [],
+  feeInfo,
+  isFeeNotEnough,
   handleFeeChange,
   assetsData = [],
-}: NFTDeployViewProps<T, I>) => {
-  const { t, ...rest } = useTranslation(["common"]);
+}: NFTDeployViewProps<T, I, C>) => {
+  const { t } = useTranslation(["common"]);
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
@@ -34,72 +40,6 @@ export const DeployNFTWrap = <T extends TradeNFT<I> & { broker: string }, I>({
     variant: "popover",
     popupId: `popupId-nftDeposit`,
   });
-  const { feeChargeOrder } = useSettings();
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
-  const [feeToken, setFeeToken] = React.useState(() => {
-    return (
-      chargeFeeTokenList.find(
-        (o) =>
-          assetsData.find((item) => item.name === o.belong)?.available > o.fee
-      )?.belong || "ETH"
-    );
-  });
-  const toggleData: any[] =
-    chargeFeeTokenList &&
-    chargeFeeTokenList
-      .sort(
-        (a, b) =>
-          feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-      )
-      .map(({ belong, fee, __raw__ }) => ({
-        key: belong,
-        value: belong,
-        fee,
-        __raw__,
-      }));
-  const isFeeEnough = () => {
-    if (!!chargeFeeTokenList.length && assetsData && feeToken) {
-      if (!checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))) {
-        setIsFeeNotEnough(true);
-      } else {
-        setIsFeeNotEnough(false);
-      }
-      const feeItem = chargeFeeTokenList.find(
-        (item) => item.belong === feeToken || item.token === feeToken
-      );
-      handleFeeChange({
-        belong: feeToken,
-        ...feeItem,
-      } as any);
-    }
-  };
-  const checkFeeTokenEnough = React.useCallback(
-    (token: string, fee: number) => {
-      const tokenAssets = assetsData.find((o) => o.name === token)?.available;
-      return tokenAssets && Number(tokenAssets) > fee;
-    },
-    [assetsData]
-  );
-
-  const getTokenFee = React.useCallback(
-    (token: string) => {
-      const raw = toggleData.find((o) => o.key === token)?.fee;
-      // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
-      return getValuePrecisionThousand(
-        raw,
-        undefined,
-        undefined,
-        undefined,
-        false,
-        { isTrade: true, floor: false }
-      );
-    },
-    [toggleData]
-  );
-
-  React.useEffect(() => {
-    isFeeEnough();
-  }, [feeToken]);
 
   const getDisabled = React.useCallback(() => {
     if (isFeeNotEnough) {
@@ -109,21 +49,11 @@ export const DeployNFTWrap = <T extends TradeNFT<I> & { broker: string }, I>({
     }
   }, [isFeeNotEnough]);
 
-  const handleToggleChange = React.useCallback(
-    (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
-      if (value === null) return;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === value)?.__raw__ || EmptyValueTag;
-      setFeeToken(value);
-      handleFeeChange({
-        belong: value,
-        fee: getTokenFee(value),
-        __raw__: currFeeRaw,
-      });
-    },
-    [handleFeeChange, getTokenFee, toggleData]
-  );
-
+  const handleToggleChange = (value: C) => {
+    if (handleFeeChange) {
+      handleFeeChange(value);
+    }
+  };
   // @ts-ignore
   return (
     <Grid
@@ -272,7 +202,8 @@ export const DeployNFTWrap = <T extends TradeNFT<I> & { broker: string }, I>({
               setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
             }
           >
-            {getTokenFee(feeToken) || EmptyValueTag} {feeToken}
+            {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}
+            {" " + feeInfo.belong}
             <DropdownIconStyled status={dropdownStatus} fontSize={"medium"} />
             <Typography
               marginLeft={1}
@@ -296,11 +227,10 @@ export const DeployNFTWrap = <T extends TradeNFT<I> & { broker: string }, I>({
             >
               {t("labelActiveEnterToken")}
             </Typography>
-            <ToggleButtonGroup
-              exclusive
-              size={"small"}
-              {...{ data: toggleData, value: feeToken, t, ...rest }}
-              onChange={handleToggleChange}
+            <FeeToggle
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={handleToggleChange}
+              feeInfo={feeInfo}
             />
           </FeeTokenItemWrapper>
         )}

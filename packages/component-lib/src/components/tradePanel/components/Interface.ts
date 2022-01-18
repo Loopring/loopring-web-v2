@@ -39,8 +39,9 @@ export type SwitchData<T> = {
 export type TransferInfoProps<C> = {
   transferI18nKey?: string;
   transferBtnStatus?: keyof typeof TradeBtnStatus | undefined;
-  chargeFeeTokenList: Array<FeeInfo>;
-  chargeFeeToken?: C | string;
+  chargeFeeTokenList: Array<C>;
+  feeInfo: C;
+  isFeeNotEnough: boolean;
 };
 
 export enum AddressError {
@@ -59,7 +60,7 @@ export type TransferExtendProps<T, I, C> = {
   isSameAddress?: boolean;
   addrStatus?: AddressError;
   onTransferClick: (data: T) => void;
-  handleFeeChange: (value: FeeInfo) => void;
+  handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
   handleAddressError: (
     address: string
@@ -81,14 +82,16 @@ export type TransferViewProps<
 export type ResetInfoProps<C> = {
   assetsData?: any[];
   resetBtnStatus?: keyof typeof TradeBtnStatus | undefined;
-  chargeFeeTokenList: Array<FeeInfo>;
-  chargeFeeToken?: C | string;
-  handleFeeChange: (value: FeeInfo) => void;
+  chargeFeeTokenList: Array<C>;
+  feeInfo: C;
+  isFeeNotEnough: boolean;
+  handleFeeChange: (value: C) => void;
 };
-export type ResetExtendProps<T> = {
+export type ResetExtendProps<C> = {
   onResetClick: () => void;
-} & ResetInfoProps<T>;
-export type ResetViewProps<T> = ResetExtendProps<T>;
+} & ResetInfoProps<C>;
+
+export type ResetViewProps<C extends FeeInfo> = ResetExtendProps<C>;
 
 export type ExportAccountExtendProps = {
   exportAccountProps: any;
@@ -116,7 +119,7 @@ export type DepositInfoProps<I> = {
   depositBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   title?: string;
   description?: string;
-  chargeFeeList?: FeeInfo[];
+  chargeFeeTokenList?: FeeInfo[];
   isNewAccount: boolean;
   addressDefault?: string;
   handleOnAddressChange?: (value: string | undefined | I) => void;
@@ -130,8 +133,8 @@ export type DepositInfoProps<I> = {
 
 export type DepositExtendProps<T, I> = {
   isThumb?: boolean;
-  onDepositClick: (data: T) => void;
   allowTrade?: any;
+  onDepositClick: (data: T) => void;
 } & DepositInfoProps<I>;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
@@ -142,8 +145,9 @@ export type WithdrawInfoProps<C> = {
   withdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   withdrawType?: keyof typeof WithdrawType;
   withdrawTypes: typeof WithdrawTypes;
-  chargeFeeTokenList: Array<FeeInfo>;
-  chargeFeeToken?: C | string;
+  chargeFeeTokenList: Array<C>;
+  feeInfo: C;
+  isFeeNotEnough: boolean;
 };
 
 export type WithdrawExtendProps<T, I, C> = {
@@ -155,7 +159,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isContractAddress: boolean;
   disableWithdrawList?: string[];
   onWithdrawClick: (data: T) => void;
-  handleFeeChange: (value: FeeInfo) => void;
+  handleFeeChange: (value: C) => void;
   handleWithdrawTypeChange: (value: Partial<keyof typeof WithdrawType>) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
   handleAddressError?: (
@@ -270,19 +274,21 @@ export type NFTMintExtendProps<T, I> = {
 } & NFTMintInfoProps<T, I>;
 export type NFTMintViewProps<T, I> = NFTMintExtendProps<T, I>;
 
-export type NFTDeployInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
+export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   nftDeployBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   title?: string;
   description?: string;
   assetsData?: any[];
-  chargeFeeTokenList: Array<FeeInfo>;
-  chargeFeeToken?: I | string;
-  handleFeeChange: (value: FeeInfo) => void;
+  chargeFeeTokenList: Array<C>;
+  feeInfo: C;
+  isFeeNotEnough: boolean;
+  handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
-export type NFTDeployExtendProps<T, I> = {
+export type NFTDeployExtendProps<T, I, C> = {
   handleOnNFTDataChange: (data: T) => void;
   onNFTDeployClick: (data: T) => void;
   allowTrade?: any;
-} & NFTDeployInfoProps<T, I>;
-export type NFTDeployViewProps<T, I> = NFTDeployExtendProps<T, I>;
+} & NFTDeployInfoProps<T, I, C>;
+
+export type NFTDeployViewProps<T, I, C> = NFTDeployExtendProps<T, I, C>;

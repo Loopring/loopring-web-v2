@@ -87,8 +87,8 @@ export function useModalData(): {
   return {
     ...modalDataStatus,
     updateActiveAccountData: React.useCallback(
-      (withdrawData: RequireOne<ActiveAccountData, never>) => {
-        dispatch(updateActiveAccountData(withdrawData));
+      (activeAccountData: RequireOne<ActiveAccountData, never>) => {
+        dispatch(updateActiveAccountData(activeAccountData));
       },
       [dispatch]
     ),

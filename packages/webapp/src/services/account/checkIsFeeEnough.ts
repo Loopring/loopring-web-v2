@@ -17,6 +17,7 @@ export const checkIsFeeEnough = async <T>(account?: Partial<Account>) => {
         ...pre,
         {
           feeRaw: fees[item.toString()].fee,
+          belong: item.toString(),
           ...fees[item.toString()],
         },
       ];

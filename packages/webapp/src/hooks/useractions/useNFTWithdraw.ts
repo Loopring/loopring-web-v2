@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { connectProvides } from "@loopring-web/web3-provider";
 import {
   AccountStep,
-  ActiveAccountProps,
   SwitchData,
   useOpenModals,
   WithdrawProps,
@@ -13,13 +12,10 @@ import {
 import {
   AccountStatus,
   CoinMap,
-  FeeInfo,
   IBData,
   NFTWholeINFO,
   SagaStatus,
   WalletMap,
-  WithdrawType,
-  WithdrawTypes,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -47,8 +43,8 @@ import {
   UserNFTBalanceInfo,
 } from "@loopring-web/loopring-sdk";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
-import { useChargeNFTFees } from "../common/useChargeNFTFees";
 import store from "../../stores";
+import { useChargeFees } from "../common/useChargeFees";
 
 export const useNFTWithdraw = <
   R extends IBData<T> &
@@ -73,9 +69,6 @@ export const useNFTWithdraw = <
   const [nftWithdrawToastOpen, setNFTWithdrawToastOpen] =
     React.useState<boolean>(false);
 
-  const [nftWithdrawAlertText, setNFTWithdrawAlertText] =
-    React.useState<string>();
-
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -87,25 +80,19 @@ export const useNFTWithdraw = <
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
 
-  const [nftWithdrawFeeInfo, setNFTWithdrawFeeInfo] = React.useState<
-    Partial<FeeInfo>
-  >({});
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      isActiveAccount: true,
+      requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+      tokenAddress: nftWithdrawValue.tokenAddress,
+      updateData: (feeInfo) => {
+        updateNFTWithdrawData({ ...nftWithdrawValue, fee: feeInfo });
+      },
+    });
 
-  // const nftWithdrawType2 = nftWithdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-  const { chargeFeeList } = useChargeNFTFees({
-    tokenAddress: nftWithdrawValue.tokenAddress,
-    requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
-    tokenMap,
-    amount: nftWithdrawValue.tradeValue,
-    needRefresh: true,
-  });
-
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
   const { checkHWAddr, updateHW } = useWalletInfo();
 
   const [lastNFTRequest, setLastNFTRequest] = React.useState<any>({});
-
-  const [nftWithdrawI18nKey, setWithdrawI18nKey] = React.useState<string>();
 
   const {
     address,
@@ -128,7 +115,7 @@ export const useNFTWithdraw = <
         .toBig(nftWithdrawValue.tradeValue)
         .lte(Number(nftWithdrawValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
-      !isExceedMax &&
+      !isFeeNotEnough &&
       !!address
     ) {
       enableBtn();
@@ -142,14 +129,13 @@ export const useNFTWithdraw = <
     tokenMap,
     address,
     addrStatus,
-    chargeFeeList,
+    chargeFeeTokenList,
     nftWithdrawValue.fee,
-    isExceedMax,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [address, addrStatus, nftWithdrawValue.fee, isExceedMax]);
+  }, [address, addrStatus, nftWithdrawValue.fee, nftWithdrawValue.tradeValue]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
@@ -417,20 +403,11 @@ export const useNFTWithdraw = <
       account,
       tokenMap,
       exchangeInfo,
-      nftWithdrawFeeInfo,
+      feeInfo,
       setShowNFTWithdraw,
       setShowAccount,
       processRequestNFT,
     ]
-  );
-
-  const handleFeeChange = React.useCallback(
-    (value: FeeInfo): void => {
-      setNFTWithdrawFeeInfo(value);
-      myLog("updateNFTWithdrawData", { fee: value });
-      updateNFTWithdrawData({ fee: value });
-    },
-    [setNFTWithdrawFeeInfo]
   );
 
   React.useEffect(() => {
@@ -443,7 +420,7 @@ export const useNFTWithdraw = <
   // >(() => buildProps() as WithdrawProps<R, T>);
   const nftWithdrawProps = {
     handleOnAddressChange: (value: any) => {},
-    withdrawI18nKey: nftWithdrawI18nKey,
+    withdrawI18nKey: "",
     addressDefault: address,
     realAddr,
     disableWithdrawList,
@@ -462,7 +439,6 @@ export const useNFTWithdraw = <
       }
       setShowNFTWithdraw({ isShow: false });
     },
-    handleFeeChange,
     handleWithdrawTypeChange: () => {},
     handlePanelEvent: async (data: SwitchData<R>) => {
       return new Promise((res: any) => {
@@ -486,8 +462,10 @@ export const useNFTWithdraw = <
         res();
       });
     },
-    chargeFeeToken: nftWithdrawFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
+    handleFeeChange,
+    feeInfo,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     handleAddressError: (value: any) => {
       updateNFTWithdrawData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };
@@ -495,7 +473,6 @@ export const useNFTWithdraw = <
   } as WithdrawProps<any, any>;
 
   return {
-    nftWithdrawAlertText,
     nftWithdrawToastOpen,
     setNFTWithdrawToastOpen,
     updateNFTWithdrawData,
