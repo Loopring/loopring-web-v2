@@ -112,7 +112,7 @@ export function useChargeFees({
                 : "0",
           };
           let fees: any;
-          if (!isActiveAccount) {
+          if (isActiveAccount) {
             fees = (
               await LoopringAPI?.globalAPI.getActiveFeeInfo({
                 accountId:

@@ -525,5 +525,5 @@ export default {
   labelNFTDeploy: "Deploy NFT",
   labelVendor: "Partner",
   labelDepositVendor:
-    "Make an order form third Loopring-Partner, Once your order confirmed by Loopring,\n it will be added to your balance within 2 minutes.\n Fee: 3% - 5%",
+    "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\\n it will be added to your balance within 2 minutes.\\n Fee: 3% - 5%",
 };
