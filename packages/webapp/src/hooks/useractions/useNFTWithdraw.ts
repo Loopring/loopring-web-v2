@@ -13,13 +13,10 @@ import {
 import {
   AccountStatus,
   CoinMap,
-  FeeInfo,
   IBData,
   NFTWholeINFO,
   SagaStatus,
   WalletMap,
-  WithdrawType,
-  WithdrawTypes,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -87,25 +84,14 @@ export const useNFTWithdraw = <
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
 
-  const [nftWithdrawFeeInfo, setNFTWithdrawFeeInfo] = React.useState<
-    Partial<FeeInfo>
-  >({});
-
-  // const nftWithdrawType2 = nftWithdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-  // const { chargeFeeList } = useChargeNFTFees({
-  //   tokenAddress: nftWithdrawValue.tokenAddress,
-  //   requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
-  //   tokenMap,
-  //   amount: nftWithdrawValue.tradeValue,
-  //   needRefresh: true,
-  // });
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       isActiveAccount: true,
-      walletMap: walletMap2,
       requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
       tokenAddress: nftWithdrawValue.tokenAddress,
-      updateData: updateNFTWithdrawData,
+      updateData: (feeInfo) => {
+        updateNFTWithdrawData({ ...nftWithdrawValue, fee: feeInfo });
+      },
     });
 
   const [isExceedMax, setIsExceedMax] = React.useState(false);
@@ -136,7 +122,6 @@ export const useNFTWithdraw = <
         .toBig(nftWithdrawValue.tradeValue)
         .lte(Number(nftWithdrawValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
-      !isExceedMax &&
       !isFeeNotEnough &&
       !!address
     ) {
@@ -153,12 +138,17 @@ export const useNFTWithdraw = <
     addrStatus,
     chargeFeeTokenList,
     nftWithdrawValue.fee,
-    isExceedMax,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [address, addrStatus, nftWithdrawValue.fee, isExceedMax]);
+  }, [
+    address,
+    addrStatus,
+    nftWithdrawValue.fee,
+    nftWithdrawValue.tradeValue,
+    isExceedMax,
+  ]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
@@ -426,7 +416,7 @@ export const useNFTWithdraw = <
       account,
       tokenMap,
       exchangeInfo,
-      nftWithdrawFeeInfo,
+      feeInfo,
       setShowNFTWithdraw,
       setShowAccount,
       processRequestNFT,

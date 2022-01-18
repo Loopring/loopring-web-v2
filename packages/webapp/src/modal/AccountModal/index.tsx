@@ -1,9 +1,11 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
+  DepositPanelType,
   ModalAccount,
   ModalPanel,
   ModalQRCode,
   Toast,
+  useOpenModals,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "defs/common_defs";
 import { useAccountModalForUI } from "./hook";
@@ -20,6 +22,11 @@ export const ModalAccountInfo = withTranslation("common")(
     onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
   } & WithTranslation) => {
+    const {
+      modals: {
+        isShowDeposit: { partner },
+      },
+    } = useOpenModals();
     const {
       withdrawAlertText,
       withdrawToastOpen,
@@ -46,6 +53,7 @@ export const ModalAccountInfo = withTranslation("common")(
       closeBtnInfo,
       accountList,
       currentModal,
+      vendorProps,
     } = useAccountModalForUI({ t, etherscanBaseUrl, rest, onClose });
 
     return (
@@ -77,7 +85,13 @@ export const ModalAccountInfo = withTranslation("common")(
         <ModalPanel
           transferProps={transferProps}
           withdrawProps={withdrawProps}
-          depositProps={depositProps}
+          depositGroupProps={{
+            depositProps: depositProps,
+            tabIndex: partner
+              ? DepositPanelType.ThirdPart
+              : DepositPanelType.Deposit,
+            vendorMenuProps: vendorProps,
+          }}
           nftTransferProps={nftTransferProps}
           // nftDepositProps={nftDepositProps}
           nftWithdrawProps={nftWithdrawProps}

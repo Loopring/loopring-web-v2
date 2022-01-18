@@ -119,10 +119,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction>
     ) {
-      const { isShow, symbol } = action.payload;
+      const { isShow, symbol, partner } = action.payload;
       state.isShowDeposit = {
         isShow,
         symbol,
+        partner,
       };
     },
     setShowResetAccount(state, action: PayloadAction<ModalStatePlayLoad>) {

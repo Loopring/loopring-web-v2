@@ -11,6 +11,7 @@ import {
   SlippageTolerance,
   WithdrawType,
   WithdrawTypes,
+  vendorList,
 } from "@loopring-web/common-resources";
 import {
   ammCalcData,
@@ -37,7 +38,7 @@ import {
   WithdrawProps,
 } from "./index";
 
-import { DepositPanel, TransferPanel, WithdrawPanel } from "../modal";
+import { DepositGroup, TransferPanel, WithdrawPanel } from "../modal";
 
 import { useDispatch } from "react-redux";
 import {
@@ -80,6 +81,8 @@ let depositProps: DepositProps<any, any> = {
   },
 };
 let withdrawProps: WithdrawProps<any, any> = {
+  isContractAddress: false,
+  isFeeNotEnough: false,
   isAddressCheckLoading: false,
   isCFAddress: false,
   tradeData,
@@ -103,7 +106,7 @@ let withdrawProps: WithdrawProps<any, any> = {
   },
   withdrawType: WithdrawType.Fast,
   withdrawTypes: WithdrawTypes,
-  chargeFeeToken: "ETH",
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
   // @ts-ignore
   chargeFeeTokenList: [
     { belong: "ETH", fee: 0.001, __raw__: "" as any },
@@ -127,6 +130,7 @@ let withdrawProps: WithdrawProps<any, any> = {
   },
 };
 let transferProps: TransferProps<any, any> = {
+  isFeeNotEnough: false,
   tradeData,
   coinMap,
   walletMap,
@@ -152,7 +156,7 @@ let transferProps: TransferProps<any, any> = {
   }): void {
     console.log("handleWithdrawFee", value);
   },
-  chargeFeeToken: "ETH",
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
   // @ts-ignore
   chargeFeeTokenList: [
     { belong: "ETH", fee: 0.001, __raw__: "" as any },
@@ -166,10 +170,12 @@ let transferProps: TransferProps<any, any> = {
   },
 };
 let resetProps: ResetProps<any> = {
+  isFeeNotEnough: false,
   chargeFeeTokenList: [
     { belong: "ETH", fee: 0.001, __raw__: "" as any },
     { belong: "LRC", fee: "1", __raw__: "" as any },
   ],
+  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
   handleFeeChange(value: {
     belong: string;
     fee: number | string;
@@ -279,10 +285,10 @@ const WrapDepositPanel = (rest: any) => {
   return (
     <>
       <Grid item sm={6}>
-        <DepositPanel {...{ ...rest, ...depositProps, ...{ v: true } }} />
+        <DepositGroup {...{ ...rest, ...depositProps, ...{ v: true } }} />
       </Grid>
       <Grid item sm={6}>
-        <DepositPanel
+        <DepositGroup
           {...{
             ...rest,
             ...depositProps,
@@ -418,10 +424,16 @@ const ModalPanelWrap = () => {
   return (
     <ModalPanel
       transferProps={transferProps}
-      depositProps={depositProps}
+      depositGroupProps={{
+        depositProps,
+        vendorMenuProps: {
+          vendorList,
+          vendorForce: undefined,
+        },
+      }}
       withdrawProps={withdrawProps}
       nftTransferProps={transferProps}
-      nftDepositProps={depositProps}
+      nftDepositProps={{} as any}
       nftWithdrawProps={withdrawProps}
       resetProps={resetProps}
       ammProps={_ammProps}

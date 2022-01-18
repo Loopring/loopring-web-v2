@@ -12,7 +12,6 @@ import {
 import {
   AccountStatus,
   CoinMap,
-  FeeInfo,
   IBData,
   NFTWholeINFO,
   SagaStatus,
@@ -85,15 +84,11 @@ export const useNFTTransfer = <
     useChargeFees({
       tokenAddress: nftTransferValue.tokenAddress,
       requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-      walletMap,
-      updateData: updateNFTTransferData,
+      updateData: (feeInfo) => {
+        updateNFTTransferData({ ...nftTransferValue, fee: feeInfo });
+      },
     });
 
-  const [nftTransferFeeInfo, setNFTTransferFeeInfo] = React.useState<FeeInfo>({
-    belong: "",
-    fee: "",
-    __raw__: undefined,
-  } as unknown as FeeInfo);
   const [isExceedMax, setIsExceedMax] = React.useState(false);
 
   const {
@@ -119,8 +114,7 @@ export const useNFTTransfer = <
         .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
       address &&
-      !isFeeNotEnough &&
-      !isExceedMax
+      !isFeeNotEnough
     ) {
       enableBtn();
       myLog("enableBtn");
@@ -139,7 +133,13 @@ export const useNFTTransfer = <
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [address, addrStatus, nftTransferValue?.tradeValue, isExceedMax]);
+  }, [
+    address,
+    addrStatus,
+    nftTransferValue.tradeValue,
+    nftTransferValue.fee,
+    isExceedMax,
+  ]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
@@ -323,8 +323,8 @@ export const useNFTTransfer = <
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         nftTransferValue?.nftData &&
-        nftTransferFeeInfo?.belong &&
-        nftTransferFeeInfo?.__raw__ &&
+        nftTransferValue?.fee?.belong &&
+        nftTransferValue?.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
@@ -334,10 +334,9 @@ export const useNFTTransfer = <
             step: AccountStep.Transfer_WaitForAuth,
           });
           // const sellTokenID = nftTransferValue.tokenId
-
           // const sellToken = tokenMap[nftTransferValue.belong as string]
-          const feeToken = tokenMap[nftTransferFeeInfo.belong];
-          const fee = sdk.toBig(nftTransferFeeInfo.__raw__?.feeRaw ?? 0);
+          const feeToken = tokenMap[nftTransferValue.belong];
+          const fee = sdk.toBig(nftTransferValue.__raw__?.feeRaw ?? 0);
           const tradeValue = nftTransferValue.tradeValue;
           const balance = nftTransferValue.nftBalance;
           const isExceedBalance = sdk.toBig(tradeValue).gt(balance);
@@ -389,7 +388,6 @@ export const useNFTTransfer = <
       account,
       tokenMap,
       exchangeInfo,
-      nftTransferFeeInfo,
       setShowNFTTransfer,
       setShowAccount,
       realAddr,

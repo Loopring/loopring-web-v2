@@ -1,5 +1,9 @@
 import { ButtonProps } from "../../basic-lib";
-import { Account } from "@loopring-web/common-resources";
+import {
+  Account,
+  VendorItem,
+  VendorProviders,
+} from "@loopring-web/common-resources";
 
 export type AccountBaseProps = {
   // addressShort: string
@@ -98,4 +102,14 @@ export enum AccountStep {
   ExportAccount_User_Denied,
   ExportAccount_Success,
   ExportAccount_Failed,
+}
+
+/**
+ * @param handleSelect default handleSelect, if item have no private handleSelect function
+ */
+export interface VendorMenuProps {
+  // termUrl: string;
+  vendorList: VendorItem[];
+  handleSelect?: (event: React.MouseEvent, key: string) => void;
+  vendorForce: VendorProviders | undefined;
 }

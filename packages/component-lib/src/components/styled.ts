@@ -4,6 +4,7 @@ import { css, Theme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
 import React from "react";
+import { Button } from "./basic-lib";
 
 // @ts-ignore
 export const boxLiner = (_props: { theme: Theme }) => css`
@@ -367,3 +368,41 @@ export const shake = css`
     }
   }
 `;
+
+export const MenuBtnStyled = styled(Button)`
+  font-size: 1.4rem;
+  background: var(--opacity);
+  color: var(--color-text-secondary);
+  justify-content: space-between;
+  padding: 0 ${({ theme }) => theme.unit * 3}px;
+  text-indent: 0.5em;
+  &:hover {
+    background: var(--provider-hover);
+    border-color: var(--opacity);
+    color: var(--color-text-button-select);
+  }
+  &.selected {
+    position: relative;
+    background: var(--provider-hover);
+    border-color: var(--opacity);
+    color: var(--color-text-button-select);
+
+    &:after {
+      position: absolute;
+      content: "\u25CF";
+      text-indent: 0em;
+      color: var(--color-success);
+      //width: 100%;
+      display: flex;
+      left: 0;
+      padding-left: ${({ theme }) => (theme.unit * 3) / 2}px;
+      //justify-content: ;
+      align-items: center;
+      font-size: ${({ theme }) => theme.fontDefault.h5};
+    }
+  }
+  &.vendor {
+    text-indent: -999em;
+    justify-content: center;
+  }
+` as typeof Button;
