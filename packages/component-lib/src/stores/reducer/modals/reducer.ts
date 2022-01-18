@@ -117,7 +117,9 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowDeposit(
       state,
-      action: PayloadAction<ModalStatePlayLoad & Transaction>
+      action: PayloadAction<
+        ModalStatePlayLoad & Transaction & { partner: boolean }
+      >
     ) {
       const { isShow, symbol, partner } = action.payload;
       state.isShowDeposit = {
