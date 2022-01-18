@@ -90,6 +90,8 @@ export function useChargeFees({
   const getFeeList = _.debounce(
     async () => {
       const { tokenMap } = store.getState().tokenMap;
+      const walletMap =
+        makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
       }
