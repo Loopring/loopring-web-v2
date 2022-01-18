@@ -74,11 +74,11 @@ export function useChargeFees({
     } else {
       setIsFeeNotEnough(true);
     }
-    if (updateData) {
+    if (updateData && value) {
       updateData({
         ...value,
         __raw__: {
-          ...value.__raw__,
+          ...value?.__raw__,
           tokenId: tokenMap[value.belong.toString()].tokenId,
         },
       });
