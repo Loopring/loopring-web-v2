@@ -75,10 +75,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       isActiveAccount: true,
-      walletMap,
       requestType: sdk.OffchainFeeReqType.TRANSFER,
       tokenSymbol: transferValue.belong,
-      updateData: updateTransferData,
+      updateData: (feeInfo) => {
+        updateTransferData({ ...transferValue, fee: feeInfo });
+      },
     });
 
   const [isExceedMax, setIsExceedMax] = React.useState(false);
@@ -143,7 +144,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     chargeFeeTokenList,
     address,
     addrStatus,
-    feeInfo?.belong,
+    transferValue?.fee,
     transferValue?.belong,
     transferValue?.tradeValue,
     isExceedMax,
@@ -330,8 +331,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         transferValue.address !== "*" &&
-        transferValue?.belong &&
-        feeInfo?.belong &&
+        transferValue?.fee.belong &&
+        transferValue.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
@@ -342,9 +343,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
           });
 
           const sellToken = tokenMap[transferValue.belong as string];
-          const feeToken = tokenMap[feeInfo.belong];
+          const feeToken = tokenMap[transferValue.fee.belong];
 
-          const fee = sdk.toBig(feeInfo.__raw__.feeRaw ?? 0);
+          const fee = sdk.toBig(transferValue.fee.__raw__?.feeRaw ?? 0);
           const balance = sdk
             .toBig(transferValue.balance ?? 0)
             .times("1e" + sellToken.decimals);
@@ -399,8 +400,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
       account,
       tokenMap,
       exchangeInfo,
-      feeInfo?.belong,
-      feeInfo?.__raw__.feeRaw,
+      feeInfo,
       setShowTransfer,
       setShowAccount,
       realAddr,

@@ -89,7 +89,7 @@ export default {
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "Layer2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
-  labelAssetsBtnRamp: "Buy with Ramp",
+  labelAssetsBtnRamp: "Buy with Cash",
   labelBtnDeposit: "Deposit",
   labelBtnTransfer: "Transfer",
   labelBtnWithdraw: "Withdraw",
@@ -471,7 +471,7 @@ export default {
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
   labelTransferSameAddress: "Cannot transfer to your own address",
-  labelDepositRamp: "Buy Crypto with",
+  labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",
   labelTradeRaceYourRanking: "Your ranking",
@@ -523,4 +523,7 @@ export default {
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
   labelNFTDeploy: "Deploy NFT",
+  labelVendor: "Partner",
+  labelDepositVendor:
+    "Make an order form third Loopring-Partner, Once your order confirmed by Loopring,\n it will be added to your balance within 2 minutes.\n Fee: 3% - 5%",
 };

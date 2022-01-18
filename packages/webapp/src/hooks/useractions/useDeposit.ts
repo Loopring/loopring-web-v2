@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 
 import {
   AccountStep,
-  DepositProps,
   SwitchData,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -11,6 +10,7 @@ import {
   CoinMap,
   IBData,
   myLog,
+  VendorProviders,
   WalletMap,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -30,16 +30,14 @@ import { checkAddr } from "utils/web3_tools";
 import { isPosIntNum } from "utils/formatter_tool";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 import { toBig } from "@loopring-web/loopring-sdk";
+import _ from "lodash";
+import { useVendor } from "./useVendor";
 
-export const useDeposit = <R extends IBData<T>, T>(): {
-  depositProps: DepositProps<R, T>;
-} => {
+export const useDeposit = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
-
   const { depositValue, updateDepositData, resetDepositData } = useModalData();
-
   const {
     modals: {
       isShowDeposit: { symbol, isShow },
@@ -458,6 +456,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
       myLog("handleAddressError:", value);
       updateDepositData({ reffer: value, tradeValue: -1, balance: -1 });
       return undefined;
+      return undefined;
     },
     []
   );
@@ -471,6 +470,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
       account.readyState === AccountStatus.NO_ACCOUNT
         ? t("labelCreateLayer2Title")
         : t("depositTitle");
+
     return {
       btnInfo,
       isNewAccount,
