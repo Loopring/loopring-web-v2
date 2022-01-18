@@ -35,28 +35,39 @@ export const useAddressCheck = () => {
 
   const check = React.useCallback(
     async (address: any, web3: any) => {
-      if (LoopringAPI.walletAPI) {
+      if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
+        setIsAddressCheckLoading(true);
         const { realAddr, addressErr } = await checkAddr(address, web3);
         setRealAddr(realAddr);
         setAddrStatus(addressErr);
-        let walletType: WalletType | undefined = undefined;
         if (realAddr !== "" || address !== "") {
-          walletType = (
-            await LoopringAPI.walletAPI.getWalletType({
+          const [{ walletType }, res] = await Promise.all([
+            LoopringAPI.walletAPI.getWalletType({
               wallet: realAddr != "" ? realAddr : address,
-            })
-          ).walletType;
-        }
+            }),
+            LoopringAPI.exchangeAPI.getAccount({
+              owner: realAddr != "" ? realAddr : address,
+            }),
+          ]).finally(() => {
+            setIsAddressCheckLoading(false);
+          });
+          if (walletType && walletType?.isInCounterFactualStatus) {
+            setIsCFAddress(true);
+          } else {
+            setIsCFAddress(false);
+          }
+          if (walletType && walletType.isContract) {
+            setIsContractAddress(true);
+          } else {
+            setIsContractAddress(false);
+          }
 
-        if (walletType && walletType?.isInCounterFactualStatus) {
-          setIsCFAddress(true);
-        } else {
-          setIsCFAddress(false);
-        }
-        if (walletType && walletType.isContract) {
-          setIsContractAddress(true);
-        } else {
-          setIsContractAddress(false);
+          // ENS or address
+          if (res && !res.error) {
+            setIsLoopringAddress(true);
+          } else {
+            setIsLoopringAddress(false);
+          }
         }
 
         return {
@@ -74,33 +85,8 @@ export const useAddressCheck = () => {
   );
 
   const debounceCheck = _.debounce(
-    async () => {
-      setIsAddressCheckLoading(true);
-      const { addressErr, lastAddress } = await check(
-        address,
-        connectProvides.usedWeb3
-      );
-      // check whether the address belongs to loopring layer2
-      if (
-        LoopringAPI &&
-        LoopringAPI.exchangeAPI &&
-        addressErr === AddressError.NoError &&
-        lastAddress
-      ) {
-        const res = await LoopringAPI.exchangeAPI
-          ?.getAccount({
-            owner: lastAddress,
-          })
-          .finally(() => {
-            setIsAddressCheckLoading(false);
-          });
-        // ENS or address
-        if (res && !res.error) {
-          setIsLoopringAddress(true);
-        } else {
-          setIsLoopringAddress(false);
-        }
-      }
+    () => {
+      check(address, connectProvides.usedWeb3);
     },
     globalSetup.wait,
     { maxWait: 1000, leading: false, trailing: true }

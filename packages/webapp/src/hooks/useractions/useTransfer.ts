@@ -52,9 +52,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
   const [transferToastOpen, setTransferToastOpen] =
     React.useState<boolean>(false);
-
-  const [transferAlertText, setTransferAlertText] = React.useState<string>();
-
   const {
     modals: {
       isShowTransfer: { symbol, isShow },
@@ -113,26 +110,25 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     }
     disableBtn();
   }, [
-    enableBtn,
-    disableBtn,
     tokenMap,
+    transferValue.belong,
+    transferValue.tradeValue,
+    disableBtn,
+    chargeFeeTokenList.length,
+    isFeeNotEnough,
     address,
     addrStatus,
-    chargeFeeTokenList,
-    feeInfo,
-    transferValue,
+    enableBtn,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
   }, [
-    tokenMap,
     chargeFeeTokenList,
     address,
-    addrStatus,
-    transferValue?.fee,
-    transferValue?.belong,
-    transferValue?.tradeValue,
+    isFeeNotEnough,
+    isAddressCheckLoading,
+    transferValue,
   ]);
 
   const walletLayer2Callback = React.useCallback(() => {
@@ -385,7 +381,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
       account,
       tokenMap,
       exchangeInfo,
-      feeInfo,
       setShowTransfer,
       setShowAccount,
       realAddr,
@@ -452,7 +447,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
   return {
     transferToastOpen,
-    transferAlertText,
+    transferAlertText: "",
     setTransferToastOpen,
     transferProps,
     processRequest,

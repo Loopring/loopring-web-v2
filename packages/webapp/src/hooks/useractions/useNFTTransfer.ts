@@ -7,6 +7,7 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import {
   AccountStep,
   SwitchData,
+  TransferProps,
   useOpenModals,
 } from "@loopring-web/component-lib";
 import {
@@ -408,7 +409,7 @@ export const useNFTTransfer = <
 
   const { t } = useTranslation();
 
-  const nftTransferProps = {
+  const nftTransferProps: TransferProps<any, any> = {
     addressDefault: address,
     realAddr,
     tradeData: nftTransferValue as any,
@@ -419,6 +420,9 @@ export const useNFTTransfer = <
       onTransferClick(trade);
     },
     handleFeeChange,
+    handleOnAddressChange: (value: any) => {
+      setAddress(value || "");
+    },
     feeInfo,
     chargeFeeTokenList,
     isFeeNotEnough,

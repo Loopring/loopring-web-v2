@@ -39,7 +39,7 @@ export const ModalAccountInfo = withTranslation("common")(
       depositProps,
       nftTransferProps,
       nftWithdrawProps,
-      nftDepositProps,
+      // nftDepositProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
