@@ -19,7 +19,7 @@ export const useActiveAccount = <T>(): {
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       isActiveAccount: true,
-      requestType: sdk.OffchainFeeReqType.TRANSFER,
+      requestType: "UPDATE_ACCOUNT_BY_New" as any,
       updateData: (feeInfo) => {
         updateActiveAccountData({ ...activeAccountValue, fee: feeInfo });
       },
