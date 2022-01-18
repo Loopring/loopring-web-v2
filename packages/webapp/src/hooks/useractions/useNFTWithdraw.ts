@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { connectProvides } from "@loopring-web/web3-provider";
 import {
   AccountStep,
-  ActiveAccountProps,
   SwitchData,
   useOpenModals,
   WithdrawProps,
