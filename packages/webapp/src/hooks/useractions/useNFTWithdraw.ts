@@ -82,7 +82,6 @@ export const useNFTWithdraw = <
 
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
-      isActiveAccount: true,
       requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
       tokenAddress: nftWithdrawValue.tokenAddress,
       updateData: (feeInfo) => {

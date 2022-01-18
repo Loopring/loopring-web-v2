@@ -92,7 +92,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   // });
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
-      isActiveAccount: true,
       requestType: withdrawType,
       tokenSymbol: withdrawValue.belong,
       updateData: (feeInfo) => {
