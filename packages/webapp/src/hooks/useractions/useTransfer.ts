@@ -70,7 +70,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
   );
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
-      isActiveAccount: true,
       requestType: sdk.OffchainFeeReqType.TRANSFER,
       tokenSymbol: transferValue.belong,
       updateData: (feeInfo) => {

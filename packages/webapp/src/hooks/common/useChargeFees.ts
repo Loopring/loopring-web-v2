@@ -74,7 +74,7 @@ export function useChargeFees({
     } else {
       setIsFeeNotEnough(true);
     }
-    if (updateData) {
+    if (updateData && value) {
       updateData({
         ...value,
         __raw__: {
@@ -158,7 +158,6 @@ export function useChargeFees({
           let feeInfo: any;
           const _chargeFeeTokenList = feeChargeOrder.reduce(
             (pre, item, index) => {
-              debugger;
               let { fee, token } = fees[item] ?? {};
               if (fee && token) {
                 const tokenInfo = tokenMap[token];
