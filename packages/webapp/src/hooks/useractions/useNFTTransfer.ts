@@ -89,8 +89,6 @@ export const useNFTTransfer = <
       },
     });
 
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
-
   const {
     address,
     realAddr,
@@ -121,25 +119,11 @@ export const useNFTTransfer = <
       return;
     }
     disableBtn();
-  }, [
-    addrStatus,
-    address,
-    disableBtn,
-    enableBtn,
-    isExceedMax,
-    nftTransferValue,
-    tokenMap,
-  ]);
+  }, [addrStatus, address, disableBtn, enableBtn, nftTransferValue, tokenMap]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [
-    address,
-    addrStatus,
-    nftTransferValue.tradeValue,
-    nftTransferValue.fee,
-    isExceedMax,
-  ]);
+  }, [address, addrStatus, nftTransferValue.tradeValue, nftTransferValue.fee]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
@@ -442,18 +426,6 @@ export const useNFTTransfer = <
     isLoopringAddress,
     isSameAddress,
     isAddressCheckLoading,
-    handleOnAddressChange: (value: any) => {},
-    handleError: ({ belong, balance, tradeValue }: any) => {
-      balance = getFloatValue(balance);
-      tradeValue = getFloatValue(tradeValue);
-      // myLog(belong, balance, tradeValue, (tradeValue > 0 && balance < tradeValue) || (!!tradeValue && !balance))
-      if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-        setIsExceedMax(true);
-        return { error: true, message: t("tokenNotEnough", { belong }) };
-      }
-      setIsExceedMax(false);
-      return { error: false, message: "" };
-    },
     handleAddressError: (value: any) => {
       updateNFTTransferData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };

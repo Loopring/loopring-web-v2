@@ -101,7 +101,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes);
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
   const { checkHWAddr, updateHW } = useWalletInfo();
 
   const [lastRequest, setLastRequest] = React.useState<any>({});
@@ -162,7 +161,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     chargeFeeTokenList,
     withdrawValue,
     isFeeNotEnough,
-    isExceedMax,
   ]);
 
   React.useEffect(() => {
@@ -174,7 +172,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,
-    isExceedMax,
   ]);
 
   const updateWithdrawTypes = React.useCallback(async () => {

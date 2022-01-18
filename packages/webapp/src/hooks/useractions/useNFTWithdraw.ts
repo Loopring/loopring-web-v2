@@ -70,9 +70,6 @@ export const useNFTWithdraw = <
   const [nftWithdrawToastOpen, setNFTWithdrawToastOpen] =
     React.useState<boolean>(false);
 
-  const [nftWithdrawAlertText, setNFTWithdrawAlertText] =
-    React.useState<string>();
-
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -94,12 +91,9 @@ export const useNFTWithdraw = <
       },
     });
 
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
   const { checkHWAddr, updateHW } = useWalletInfo();
 
   const [lastNFTRequest, setLastNFTRequest] = React.useState<any>({});
-
-  const [nftWithdrawI18nKey, setWithdrawI18nKey] = React.useState<string>();
 
   const {
     address,
@@ -142,13 +136,7 @@ export const useNFTWithdraw = <
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [
-    address,
-    addrStatus,
-    nftWithdrawValue.fee,
-    nftWithdrawValue.tradeValue,
-    isExceedMax,
-  ]);
+  }, [address, addrStatus, nftWithdrawValue.fee, nftWithdrawValue.tradeValue]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
@@ -433,7 +421,7 @@ export const useNFTWithdraw = <
   // >(() => buildProps() as WithdrawProps<R, T>);
   const nftWithdrawProps = {
     handleOnAddressChange: (value: any) => {},
-    withdrawI18nKey: nftWithdrawI18nKey,
+    withdrawI18nKey: "",
     addressDefault: address,
     realAddr,
     disableWithdrawList,
@@ -486,7 +474,6 @@ export const useNFTWithdraw = <
   } as WithdrawProps<any, any>;
 
   return {
-    nftWithdrawAlertText,
     nftWithdrawToastOpen,
     setNFTWithdrawToastOpen,
     updateNFTWithdrawData,

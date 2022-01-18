@@ -81,8 +81,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
       },
     });
 
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
-
   const {
     address,
     realAddr,
@@ -107,8 +105,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         tradeValue.gt(BIGO) &&
         address &&
         address !== "" &&
-        addrStatus === AddressError.NoError &&
-        !isExceedMax
+        addrStatus === AddressError.NoError
       ) {
         enableBtn();
         return;
@@ -124,7 +121,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     chargeFeeTokenList,
     feeInfo,
     transferValue,
-    isExceedMax,
   ]);
 
   React.useEffect(() => {
@@ -137,7 +133,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     transferValue?.fee,
     transferValue?.belong,
     transferValue?.tradeValue,
-    isExceedMax,
   ]);
 
   const walletLayer2Callback = React.useCallback(() => {
