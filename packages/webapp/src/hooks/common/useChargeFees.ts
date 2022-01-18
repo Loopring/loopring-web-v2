@@ -23,6 +23,7 @@ import { GetNFTOffchainFeeAmtRequest } from "@loopring-web/loopring-sdk";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
 import { makeWalletLayer2 } from "../help";
+import store from "../../stores";
 
 export function useChargeFees({
   tokenSymbol,
@@ -88,6 +89,9 @@ export function useChargeFees({
 
   const getFeeList = _.debounce(
     async () => {
+      const { tokenMap } = store.getState().tokenMap;
+      const walletMap =
+        makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
       }
@@ -95,7 +99,12 @@ export function useChargeFees({
       if (tokenSymbol && tokenMap) {
         tokenInfo = tokenMap[tokenSymbol];
       }
-      if (tokenMap && LoopringAPI.userAPI && LoopringAPI.globalAPI) {
+      if (
+        tokenMap &&
+        tokenMap.ETH &&
+        LoopringAPI.userAPI &&
+        LoopringAPI.globalAPI
+      ) {
         try {
           const request:
             | GetOffchainFeeAmtRequest
@@ -156,67 +165,73 @@ export function useChargeFees({
             getFeeList();
           }, 900000); //15*60*1000 //900000
           let feeInfo: any;
-          const _chargeFeeTokenList = feeChargeOrder.reduce(
-            (pre, item, index) => {
-              let { fee, token } = fees[item] ?? {};
-              if (fee && token) {
-                const tokenInfo = tokenMap[token];
-                const tokenId = tokenInfo.tokenId;
-                const fastWithDraw = tokenInfo.fastWithdrawLimit;
-                const feeRaw = fee;
-                fee = sdk
-                  .toBig(fee)
-                  .div("1e" + tokenInfo.decimals)
-                  .toString();
-                const _feeInfo = {
-                  belong: token,
-                  fee,
-                  __raw__: { fastWithDraw, feeRaw, tokenId },
-                };
-                pre.push(_feeInfo);
-                if (feeInfo === undefined && walletMap && walletMap[token]) {
-                  const { count } = walletMap[token] ?? { count: 0 };
-                  if (sdk.toBig(count).gt(sdk.toBig(fee))) {
-                    feeInfo = _feeInfo;
+          if (fees) {
+            const _chargeFeeTokenList = feeChargeOrder.reduce(
+              (pre, item, index) => {
+                let { fee, token } = fees[item] ?? {};
+                if (fee && token) {
+                  const tokenInfo = tokenMap[token];
+                  const tokenId = tokenInfo.tokenId;
+                  const fastWithDraw = tokenInfo.fastWithdrawLimit;
+                  const feeRaw = fee;
+                  fee = sdk
+                    .toBig(fee)
+                    .div("1e" + tokenInfo.decimals)
+                    .toString();
+                  const _feeInfo = {
+                    belong: token,
+                    fee,
+                    __raw__: { fastWithDraw, feeRaw, tokenId },
+                  };
+                  pre.push(_feeInfo);
+                  if (feeInfo === undefined && walletMap && walletMap[token]) {
+                    const { count } = walletMap[token] ?? { count: 0 };
+                    if (sdk.toBig(count).gt(sdk.toBig(fee))) {
+                      feeInfo = _feeInfo;
+                    }
                   }
                 }
-              }
-              return pre;
-            },
-            [] as Array<FeeInfo>
-          );
-          if (feeInfo === undefined) {
-            feeInfo = chargeFeeTokenList[0];
-            setIsFeeNotEnough(true);
-          } else {
-            setIsFeeNotEnough(false);
-          }
-
-          setFeeInfo((state) => {
-            if (state.feeRaw === undefined) {
-              if (updateData) {
-                updateData({
-                  ...feeInfo,
-                  __raw__: {
-                    ...feeInfo.__raw__,
-                    tokenId: tokenMap[feeInfo.belong.toString()].tokenId,
-                  },
-                });
-              }
-              return feeInfo;
+                return pre;
+              },
+              [] as Array<FeeInfo>
+            );
+            if (feeInfo === undefined) {
+              feeInfo = _chargeFeeTokenList[0];
+              setIsFeeNotEnough(true);
+            } else {
+              setIsFeeNotEnough(false);
             }
-          });
-          myLog(
-            "chargeFeeTokenList,requestType",
-            _chargeFeeTokenList,
-            requestType
-          );
-          setChargeFeeTokenList(_chargeFeeTokenList);
+
+            setFeeInfo((state) => {
+              if (state.feeRaw === undefined) {
+                if (updateData && feeInfo) {
+                  updateData({
+                    ...feeInfo,
+                    __raw__: {
+                      ...feeInfo?.__raw__,
+                      tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                    },
+                  });
+                }
+                return feeInfo;
+              }
+            });
+            myLog(
+              "chargeFeeTokenList,requestType",
+              _chargeFeeTokenList,
+              requestType
+            );
+            setChargeFeeTokenList(_chargeFeeTokenList);
+          }
         } catch (reason) {
           dumpError400(reason);
           myLog("chargeFeeTokenList,error", reason);
         }
         return;
+      } else {
+        nodeTimer.current = setTimeout(() => {
+          getFeeList();
+        }, 1000); //15*60*1000 //900000
       }
     },
     globalSetup.wait,
