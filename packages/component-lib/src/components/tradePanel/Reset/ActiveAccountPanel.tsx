@@ -15,7 +15,6 @@ export const ActiveAccountPanel = withTranslation("common", { withRef: true })(
     assetsData,
     ...rest
   }: ActiveAccountProps<T> & WithTranslation) => {
-    console.log(chargeFeeTokenList);
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: 0, // show default show
       panelList: [
