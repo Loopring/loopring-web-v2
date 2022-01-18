@@ -130,7 +130,7 @@ export const useNFTWithdraw = <
     address,
     addrStatus,
     chargeFeeTokenList,
-    nftWithdrawValue.fee,
+    nftWithdrawValue,
   ]);
 
   React.useEffect(() => {
@@ -420,7 +420,6 @@ export const useNFTWithdraw = <
   // >(() => buildProps() as WithdrawProps<R, T>);
   const nftWithdrawProps = {
     handleOnAddressChange: (value: any) => {},
-    withdrawI18nKey: "",
     addressDefault: address,
     realAddr,
     disableWithdrawList,

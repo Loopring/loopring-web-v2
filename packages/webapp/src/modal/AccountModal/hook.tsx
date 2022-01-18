@@ -139,8 +139,7 @@ export function useAccountModalForUI({
     lastRequest,
   } = useWithdraw();
   const {
-    nftWithdrawAlertText,
-    nftWithdrawToastOpen,
+    // nftWithdrawToastOpen,
     setNFTWithdrawToastOpen,
     nftWithdrawProps,
     processRequestNFT: withdrawProcessRequestNFT,
@@ -1510,8 +1509,7 @@ export function useAccountModalForUI({
     nftTransferProps,
     transferProcessRequestNFT,
     transferNFTRequest,
-    nftWithdrawToastOpen,
-    nftWithdrawAlertText,
+    // nftWithdrawToastOpen,
     setNFTWithdrawToastOpen,
     nftWithdrawProps,
     withdrawProcessRequestNFT,
