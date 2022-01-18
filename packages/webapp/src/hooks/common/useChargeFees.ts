@@ -158,7 +158,6 @@ export function useChargeFees({
           let feeInfo: any;
           const _chargeFeeTokenList = feeChargeOrder.reduce(
             (pre, item, index) => {
-              debugger;
               let { fee, token } = fees[item] ?? {};
               if (fee && token) {
                 const tokenInfo = tokenMap[token];
