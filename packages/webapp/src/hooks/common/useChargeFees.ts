@@ -112,7 +112,7 @@ export function useChargeFees({
                 : "0",
           };
           let fees: any;
-          if (!isActiveAccount) {
+          if (isActiveAccount) {
             fees = (
               await LoopringAPI?.globalAPI.getActiveFeeInfo({
                 accountId:
@@ -156,9 +156,10 @@ export function useChargeFees({
             getFeeList();
           }, 900000); //15*60*1000 //900000
           let feeInfo: any;
-          const chargeFeeTokenList = feeChargeOrder.reduce(
+          const _chargeFeeTokenList = feeChargeOrder.reduce(
             (pre, item, index) => {
-              let { fee, token } = fees[item];
+              debugger;
+              let { fee, token } = fees[item] ?? {};
               if (fee && token) {
                 const tokenInfo = tokenMap[token];
                 const tokenId = tokenInfo.tokenId;
@@ -206,10 +207,15 @@ export function useChargeFees({
               return feeInfo;
             }
           });
-          myLog("chargeFeeTokenList", chargeFeeTokenList);
-          setChargeFeeTokenList(chargeFeeTokenList);
+          myLog(
+            "chargeFeeTokenList,requestType",
+            _chargeFeeTokenList,
+            requestType
+          );
+          setChargeFeeTokenList(_chargeFeeTokenList);
         } catch (reason) {
           dumpError400(reason);
+          myLog("chargeFeeTokenList,error", reason);
         }
         return;
       }
