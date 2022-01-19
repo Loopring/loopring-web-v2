@@ -21,7 +21,6 @@ import { useBtnStatus } from "../common/useBtnStatus";
 import { useTokenMap } from "../../stores/token";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useModalData } from "../../stores/router";
-import { useChargeNFTFees } from "../common/useChargeNFTFees";
 import { OffchainNFTFeeReqType } from "@loopring-web/loopring-sdk";
 import { makeWalletLayer2 } from "../help";
 import {
@@ -32,12 +31,13 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "../../api_wrapper";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
-import { DAYS, TOAST_TIME } from "../../defs/common_defs";
+import { AddressError, BIGO, DAYS, TOAST_TIME } from "../../defs/common_defs";
 import { useSystem } from "../../stores/system";
 import { isAccActivated } from "./checkAccStatus";
 import { checkErrorInfo } from "./utils";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import store from "../../stores";
+import { useChargeFees } from "../common/useChargeFees";
 
 export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   isLocalShow = false,
@@ -46,13 +46,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   isLocalShow?: boolean;
   doDeployDone?: () => void;
 }) {
-  const [nftDeployFeeInfo, setNFTDeployFeeInfo] = React.useState<FeeInfo>({
-    belong: "ETH",
-    fee: "",
-    __raw__: undefined,
-  } as unknown as FeeInfo);
-  const { btnStatus } = useBtnStatus();
-  const { tokenMap, idIndex, status: tokenMapStatus } = useTokenMap();
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+  const { tokenMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const { updateWalletLayer2 } = useWalletLayer2();
@@ -65,11 +60,6 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
 
   const { checkHWAddr, updateHW } = useWalletInfo();
 
-  const handleFeeChange = (value: FeeInfo): void => {
-    setNFTDeployFeeInfo(value);
-    myLog("updateNFTDeployData", { fee: value });
-    updateNFTDeployData({ fee: value });
-  };
   const processRequestNFT = React.useCallback(
     async (request: sdk.OriginDeployNFTRequestV3, isFirstTime: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
@@ -182,6 +172,28 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       updateHW,
     ]
   );
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      tokenAddress: nftDeployValue.tokenAddress,
+      requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
+      updateData: (feeInfo, _chargeFeeList) => {
+        updateNFTDeployData({ ...nftDeployValue, fee: feeInfo });
+      },
+    });
+
+  const checkBtnStatus = React.useCallback(() => {
+    if (tokenMap && !isFeeNotEnough) {
+      enableBtn();
+      myLog("enableBtn");
+      return;
+    }
+    disableBtn();
+  }, [isFeeNotEnough]);
+
+  React.useEffect(() => {
+    checkBtnStatus();
+  }, [nftDeployValue]);
+
   const onNFTDeployClick = async (
     _nftDeployValue: T,
     isFirsTime: boolean = true
@@ -251,13 +263,6 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
     }
   };
 
-  const { chargeFeeList } = useChargeNFTFees({
-    tokenAddress: nftDeployValue.tokenAddress,
-    requestType: OffchainNFTFeeReqType.NFT_DEPLOY,
-    tokenMap,
-    amount: 0,
-    needRefresh: true,
-  });
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<I>);
     setWalletMap2(walletMap);
@@ -274,9 +279,10 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       onNFTDeployClick(trade);
     },
     nftDeployBtnStatus: btnStatus,
-    chargeFeeToken: nftDeployFeeInfo?.belong,
-    chargeFeeTokenList: chargeFeeList,
+    chargeFeeTokenList,
+    isFeeNotEnough,
     handleFeeChange,
+    feeInfo,
   } as NFTDeployProps<any, any>;
 
   return {

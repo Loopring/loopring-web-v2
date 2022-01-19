@@ -165,12 +165,14 @@ export const TransferWrap = <
     }
   }, [
     disabled,
+    tradeData,
+    walletMap,
+    coinMap,
     isFeeNotEnough,
     isSameAddress,
     addressOrigin,
+    isAddressCheckLoading,
     transferBtnStatus,
-    walletMap,
-    address,
   ]);
 
   const debounceAddress = _.debounce(({ address }: any) => {

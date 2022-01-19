@@ -240,7 +240,6 @@ export const TabsStyle = styled(Tabs)`
           left: -8px;
           width: 17px;
           transform: rotate(180deg);
-          //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
         }
         &.trade-tab-buy:after {
           background-color: var(--color-success);
@@ -254,7 +253,6 @@ export const TabsStyle = styled(Tabs)`
           height: 28px;
           right: -8px;
           width: 17px;
-          //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
         }
       }
     }

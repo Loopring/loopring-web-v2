@@ -345,7 +345,7 @@ export const NFTDetail = withTranslation("common")(
           )}
           {viewPage === 3 && (
             <Box height={540} width={"100%"} paddingX={3} flex={1}>
-              <DeployNFTWrap<any, any>
+              <DeployNFTWrap
                 {...{
                   ...nftDeployProps,
                   tradeData: {

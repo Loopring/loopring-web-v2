@@ -15,6 +15,7 @@ const initialWithdrawState: WithdrawData = {
   tradeValue: 0,
   balance: 0,
   address: undefined,
+  fee: undefined,
 };
 
 const initialTransferState: TransferData = {
@@ -23,6 +24,7 @@ const initialTransferState: TransferData = {
   balance: 0,
   address: undefined,
   memo: undefined,
+  fee: undefined,
 };
 
 const initialDepositState: DepositData = {
@@ -111,16 +113,20 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state,
       action: PayloadAction<Partial<ActiveAccountData>>
     ) {
-      const { chargeFeeList, walletLayer2 } = action.payload;
+      const { chargeFeeList, walletLayer2, ...rest } = action.payload;
       state.lastStep = LAST_STEP.default;
       if (chargeFeeList) {
         state.activeAccountValue.chargeFeeList = chargeFeeList;
         state.activeAccountValue.walletLayer2 = walletLayer2;
       }
+      state.activeAccountValue = {
+        ...state.activeAccountValue,
+        ...rest,
+      };
     },
 
     updateWithdrawData(state, action: PayloadAction<Partial<WithdrawData>>) {
-      const { belong, balance, tradeValue, address } = action.payload;
+      const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.withdraw;
       if (belong) {
         state.withdrawValue.belong = belong;
@@ -137,9 +143,13 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       if (address === undefined || address !== "*") {
         state.withdrawValue.address = address;
       }
+      state.withdrawValue = {
+        ...state.withdrawValue,
+        ...rest,
+      };
     },
     updateTransferData(state, action: PayloadAction<Partial<TransferData>>) {
-      const { belong, balance, tradeValue, address } = action.payload;
+      const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.transfer;
       if (belong) {
         state.transferValue.belong = belong;
@@ -156,6 +166,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       if (address === undefined || address !== "*") {
         state.transferValue.address = address;
       }
+      state.transferValue = {
+        ...state.transferValue,
+        ...rest,
+      };
     },
     updateDepositData(state, action: PayloadAction<Partial<DepositData>>) {
       const { belong, balance, tradeValue, reffer } = action.payload;

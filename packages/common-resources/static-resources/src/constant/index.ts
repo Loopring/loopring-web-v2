@@ -13,3 +13,4 @@ export * from "./sagaStatus";
 export * from "./proLayout";
 export * from "./miningOuterLinks";
 export * from "./notification";
+export * from "./vendor";

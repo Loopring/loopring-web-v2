@@ -125,7 +125,7 @@ export const ActiveAccountWrap = <T extends FeeInfo>({
         </Typography>
       </Grid>
 
-      <Grid item alignSelf={"stretch"} position={"relative"}>
+      <Grid item alignSelf={"stretch"} position={"relative"} marginTop={4}>
         <Typography
           component={"span"}
           display={"flex"}
@@ -187,7 +187,7 @@ export const ActiveAccountWrap = <T extends FeeInfo>({
           </FeeTokenItemWrapper>
         )}
       </Grid>
-      <Grid item marginTop={2} alignSelf={"stretch"}>
+      <Grid item marginTop={4} alignSelf={"stretch"}>
         <Button
           fullWidth
           variant={"contained"}

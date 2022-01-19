@@ -268,7 +268,7 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid item alignSelf={"stretch"} position={"relative"}>
+      <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
         <>
           <TextField
             value={address}
@@ -332,7 +332,7 @@ export const WithdrawWrap = <
         </>
       </Grid>
 
-      <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
+      <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
@@ -424,7 +424,7 @@ export const WithdrawWrap = <
           </>
         )}
       </Grid>
-      <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
+      <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
         <Button
           fullWidth
           variant={"contained"}
