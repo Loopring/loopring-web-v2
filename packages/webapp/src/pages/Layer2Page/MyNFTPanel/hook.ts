@@ -48,7 +48,9 @@ export const useMyNFT = () => {
     Partial<NFTWholeINFO> | undefined
   >(undefined);
   const { status: walletLayer2Status, nftLayer2 } = useWalletLayer2();
-  const { updateNFTTransferData, updateNFTWithdrawData } = useModalData();
+  const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
+    useModalData();
+
   const {
     setShowNFTTransfer,
     setShowNFTWithdraw,
@@ -57,7 +59,6 @@ export const useMyNFT = () => {
   } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
   const { nftDepositProps } = useNFTDeposit();
-
   const onDetailClose = React.useCallback(() => setIsShow(false), []);
   const getTransferList = React.useCallback(
     async (page = 1, limit = LimitNFTHistory) => {
@@ -137,23 +138,42 @@ export const useMyNFT = () => {
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
       const nftData: NftData = item.nftData as NftData;
-      const nftMap = await LoopringAPI?.nftAPI?.getInfoForNFTTokens({
-        nftDatas:
-          // [item.tokenAddress]
-          [nftData],
-      });
+      let [nftMap, isDeployed] = await Promise.all([
+        LoopringAPI?.nftAPI?.getInfoForNFTTokens({
+          nftDatas:
+            // [item.tokenAddress]
+            [nftData],
+        }),
+        LoopringAPI?.delegate
+          ?.getCode(item.tokenAddress ?? "")
+          .then(({ result: code }: any) => {
+            return code && code.startsWith("0x") && code.length > 2;
+          }),
+      ]);
       const nftToken: Partial<NFTTokenInfo> =
         nftMap && nftMap[nftData as NftData] ? nftMap[nftData as NftData] : {};
-      let tokenInfo: NFTWholeINFO = { ...item, ...nftToken } as NFTWholeINFO;
+      // isDeployed = !isDeployed;
+      let tokenInfo: NFTWholeINFO = {
+        ...item,
+        isDeployed,
+        ...nftToken,
+      } as NFTWholeINFO;
       const _id = new BigNumber(tokenInfo.nftId ?? "0", 16);
       tokenInfo = {
         ...tokenInfo,
         nftIdView: _id.toString(),
         nftBalance: tokenInfo.total ? Number(tokenInfo.total) : 0,
       };
+      if (!isDeployed) {
+        await LoopringAPI.userAPI?.getAvailableBroker().then(({ broker }) => {
+          updateNFTDeployData({ broker });
+        });
+        updateNFTDeployData(tokenInfo);
+      } else {
+        updateNFTWithdrawData(tokenInfo);
+      }
       setPopItem(tokenInfo);
       updateNFTTransferData(tokenInfo);
-      updateNFTWithdrawData(tokenInfo);
       setShowNFTTransfer({ isShow: false, ...tokenInfo });
       setShowNFTWithdraw({ isShow: false, ...tokenInfo });
       setIsShow(true);
@@ -190,10 +210,13 @@ export const useMyNFT = () => {
       }
     }
     const meta: any[] = await Promise.all(mediaPromise);
-
     setNFTList(
       nftLayer2.map((item, index) => {
-        return { ...item, ...meta[index], etherscanBaseUrl };
+        return {
+          ...item,
+          ...meta[index],
+          etherscanBaseUrl,
+        };
       })
     );
   }, [etherscanBaseUrl, nftLayer2]);

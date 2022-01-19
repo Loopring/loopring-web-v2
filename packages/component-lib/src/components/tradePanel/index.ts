@@ -7,4 +7,6 @@ export * from "./Amm";
 export * from "./components/tool/Dialogs";
 export * from "./tradePro";
 export * from "./ExportAccount";
-export { DepositNFTWrap } from "./components";
+export * from "./components/DepositNFTWrap";
+export * from "./components/DeployNFTWrap";
+export * from "./Deposit";

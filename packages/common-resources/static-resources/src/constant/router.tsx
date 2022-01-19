@@ -138,12 +138,14 @@ export const subMenuLayer2 = {
         id: "assets",
         i18nKey: "labelAssets",
       },
-      // }, {
-      //     icon: L2MyLiquidityIcon,
-      //     router: {path: '/layer2/my-nft'},
-      //     label: {
-      //         id: 'my-nft', i18nKey: 'labelMyNFT',
-      //     }
+    },
+    {
+      icon: L2MyLiquidityIcon,
+      router: { path: "/layer2/my-nft" },
+      label: {
+        id: "my-nft",
+        i18nKey: "labelMyNFT",
+      },
     },
     {
       icon: L2MyLiquidityIcon,
