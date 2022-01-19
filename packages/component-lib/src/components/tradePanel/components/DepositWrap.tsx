@@ -129,10 +129,26 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       } else {
         return <></>;
       }
+    } else if (isNewAccount) {
+      return (
+        <Typography
+          color={"var(--color-warning)"}
+          component={"p"}
+          variant={"body1"}
+          marginBottom={1}
+        >
+          {t("labelIsNotFeeToken")}
+        </Typography>
+      );
     } else {
       return <></>;
     }
-  }, [isNewAccount, chargeFeeTokenList, tradeData]);
+  }, [
+    isNewAccount,
+    chargeFeeTokenList,
+    tradeData.belong,
+    tradeData.tradeValue,
+  ]);
 
   return (
     <Grid

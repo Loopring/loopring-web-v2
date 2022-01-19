@@ -11,12 +11,8 @@ import { makeWalletLayer2 } from "../help";
 export const useReset = <T extends FeeInfo>(): {
   resetProps: ResetProps<T>;
 } => {
-  const walletMap = makeWalletLayer2(true).walletMap ?? {};
   const { btnStatus } = useBtnStatus();
-  const {
-    modals: { isShowResetAccount },
-    setShowResetAccount,
-  } = useOpenModals();
+  const { setShowResetAccount } = useOpenModals();
 
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
@@ -32,12 +28,12 @@ export const useReset = <T extends FeeInfo>(): {
     goUpdateAccount({ isReset: true, feeInfo: feeInfo });
   }, [goUpdateAccount]);
 
-  const resetProps: ResetProps<T> = {
+  const resetProps: ResetProps<any> = {
     isFeeNotEnough,
     onResetClick,
     resetBtnStatus: btnStatus,
-    feeInfo: feeInfo as T,
-    chargeFeeTokenList: chargeFeeTokenList as T[],
+    feeInfo,
+    chargeFeeTokenList,
     handleFeeChange,
   };
 

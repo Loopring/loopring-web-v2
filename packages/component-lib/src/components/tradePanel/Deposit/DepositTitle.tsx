@@ -1,4 +1,4 @@
-import { Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { HelpIcon } from "@loopring-web/common-resources";
 import React from "react";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
@@ -108,7 +108,11 @@ export const DepositTitleGroup = ({
 }) => {
   return (
     <>
-      <Tabs value={tabIndex} onChange={(_e, value) => onTabChange(value)}>
+      <Tabs
+        variant={"fullWidth"}
+        value={tabIndex}
+        onChange={(_e, value) => onTabChange(value)}
+      >
         <Tab
           value={DepositPanelType.Deposit}
           label={<DepositTitle title={title} description={description} />}
@@ -116,5 +120,23 @@ export const DepositTitleGroup = ({
         <Tab value={DepositPanelType.ThirdPart} label={<ThirdPartTitle />} />
       </Tabs>
     </>
+  );
+};
+
+export const DepositTitleNewGroup = () => {
+  return (
+    <Box
+      flex={1}
+      display={"flex"}
+      flexDirection={"row"}
+      justifyContent={"space-around"}
+    >
+      <Typography component={"span"}>
+        <DepositTitle />
+      </Typography>
+      <Typography component={"span"}>
+        <ThirdPartTitle />
+      </Typography>
+    </Box>
   );
 };

@@ -51,7 +51,7 @@ export const ResetWrap = <T extends FeeInfo>({
       flex={1}
       height={"100%"}
     >
-      <Grid item>
+      <Grid item marginBottom={2}>
         <Typography
           component={"h4"}
           textAlign={"center"}

@@ -10,6 +10,7 @@ import React from "react";
 import { LoopringAPI } from "api_wrapper";
 import * as _ from "lodash";
 import {
+  AccountStatus,
   FeeChargeOrderUATDefault,
   FeeInfo,
   globalSetup,
@@ -38,18 +39,17 @@ export function useChargeFees({
   tokenSymbol?: string | undefined;
   requestType: OffchainFeeReqType | OffchainNFTFeeReqType;
   amount?: number;
-  updateData: undefined | ((props: any) => void);
+  updateData:
+    | undefined
+    | ((fee: FeeInfo, chargeFeeTokenList?: FeeInfo[]) => void);
   isActiveAccount?: boolean;
   needAmountRefresh?: boolean;
 }) {
-  const [feeInfo, setFeeInfo] = React.useState<FeeInfo>(
-    () =>
-      ({
-        belong: "ETH",
-        fee: 0,
-        feeRaw: undefined,
-      } as FeeInfo)
-  );
+  const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
+    belong: "ETH",
+    fee: 0,
+    feeRaw: undefined,
+  } as FeeInfo);
   const { chainId } = useSystem();
   let { feeChargeOrder } = useSettings();
   feeChargeOrder =
@@ -122,6 +122,9 @@ export function useChargeFees({
           };
           let fees: any;
           if (isActiveAccount) {
+            // if(account.readyState  === 'NO_ACCOUNT'){
+            //
+            // }
             fees = (
               await LoopringAPI?.globalAPI.getActiveFeeInfo({
                 accountId:
@@ -181,6 +184,7 @@ export function useChargeFees({
                   const _feeInfo = {
                     belong: token,
                     fee,
+                    feeRaw,
                     __raw__: { fastWithDraw, feeRaw, tokenId },
                   };
                   pre.push(_feeInfo);
@@ -196,24 +200,33 @@ export function useChargeFees({
               [] as Array<FeeInfo>
             );
             if (feeInfo === undefined) {
-              feeInfo = _chargeFeeTokenList[0];
+              feeInfo = _chargeFeeTokenList[0] ?? {
+                belong: "ETH",
+                fee: 0,
+                feeRaw: undefined,
+              };
               setIsFeeNotEnough(true);
             } else {
               setIsFeeNotEnough(false);
             }
 
             setFeeInfo((state) => {
-              if (state.feeRaw === undefined) {
+              if (state && state.feeRaw === undefined) {
                 if (updateData && feeInfo) {
-                  updateData({
-                    ...feeInfo,
-                    __raw__: {
-                      ...feeInfo?.__raw__,
-                      tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                  updateData(
+                    {
+                      ...feeInfo,
+                      __raw__: {
+                        ...feeInfo?.__raw__,
+                        tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                      },
                     },
-                  });
+                    _chargeFeeTokenList
+                  );
                 }
                 return feeInfo;
+              } else {
+                return state;
               }
             });
             myLog(
@@ -221,7 +234,7 @@ export function useChargeFees({
               _chargeFeeTokenList,
               requestType
             );
-            setChargeFeeTokenList(_chargeFeeTokenList);
+            setChargeFeeTokenList(_chargeFeeTokenList ?? []);
           }
         } catch (reason) {
           dumpError400(reason);
@@ -242,13 +255,24 @@ export function useChargeFees({
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
     }
-    getFeeList();
+    if (
+      [
+        [
+          AccountStatus.NO_ACCOUNT,
+          AccountStatus.NOT_ACTIVE,
+          AccountStatus.ACTIVATED,
+        ].includes(account.readyState as any),
+      ]
+    ) {
+      getFeeList();
+    }
+
     return () => {
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
       }
     };
-  }, [tokenSymbol]);
+  }, [tokenSymbol, account.readyState]);
   return {
     chargeFeeTokenList,
     isFeeNotEnough,

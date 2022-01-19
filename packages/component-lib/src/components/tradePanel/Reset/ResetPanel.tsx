@@ -1,6 +1,6 @@
 import { ResetProps } from "../Interface";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { FeeInfo, IBData } from "@loopring-web/common-resources";
+import { FeeInfo, IBData, myLog } from "@loopring-web/common-resources";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import { ResetWrap } from "../components";
 import React from "react";
@@ -9,9 +9,11 @@ export const ResetPanel = withTranslation("common", { withRef: true })(
   <T extends FeeInfo>({
     onResetClick,
     resetBtnStatus,
+    chargeFeeTokenList,
     assetsData,
     ...rest
   }: ResetProps<T> & WithTranslation) => {
+    myLog("chargeFeeTokenList", chargeFeeTokenList);
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: 0, // show default show
       panelList: [
@@ -23,6 +25,7 @@ export const ResetPanel = withTranslation("common", { withRef: true })(
               {...{
                 ...rest,
                 resetBtnStatus,
+                chargeFeeTokenList,
                 onResetClick,
                 assetsData,
               }}

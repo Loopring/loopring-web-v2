@@ -37,7 +37,7 @@ const BoxStyle = styled(Box)<
   justify-content: center;
   ${({ theme }) => modalContentBaseStyle({ theme: theme })}
   background: ${({ theme }) => theme.colorBase.box};
-  .trade-wrap {
+  .trade-panel {
     position: relative;
     height: ${({ _height }) =>
       _height && Number.isNaN(_height)

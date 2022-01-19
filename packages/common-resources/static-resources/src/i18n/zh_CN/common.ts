@@ -88,7 +88,7 @@ export default {
   labelShowAccountInfo: "查看,设置账号信息",
   labelAssetTitle: "总资产(路印二层)",
   labelShowAccount: "显示或隐藏总资产",
-  labelAssetsBtnRamp: "Buy with Cash",
+  labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "充值",
   labelBtnTransfer: "转账",
   labelBtnWithdraw: "提现",
@@ -511,6 +511,7 @@ export default {
   labelDeployInProgress: "Processing...",
   labelNFTDeploy: "Deploy NFT",
   labelVendor: "Vendor",
+  labelAddAsset: "Add Layer2 Assets",
   labelDepositVendor:
     " Make an order form third Loopring-parter, Once your order confirmed  by Loopring, it will be added to your balance within 2 minutes.",
 };
