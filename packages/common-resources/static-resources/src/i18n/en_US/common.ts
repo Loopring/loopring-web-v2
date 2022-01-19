@@ -526,5 +526,5 @@ export default {
   labelVendor: "Buy with Card",
   labelAddAsset: "Add Layer2 Assets",
   labelDepositVendor:
-    "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.\n Fee: 3% - 5%",
+    "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
 };
