@@ -130,6 +130,7 @@ export const DepositTitleNewGroup = () => {
       display={"flex"}
       flexDirection={"row"}
       justifyContent={"space-around"}
+      marginBottom={2}
     >
       <Typography component={"span"}>
         <DepositTitle />

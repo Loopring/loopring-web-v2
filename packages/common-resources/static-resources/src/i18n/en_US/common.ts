@@ -33,7 +33,7 @@ export default {
   depositTitle: "Deposit",
   depositTitleAndActive: "Deposit & Activate Layer2",
   depositTitleActive: " Activate Layer2",
-  depositLabelEnterToken: "Select Token",
+  depositLabelEnterToken: "Select Layer1 Token",
   depositDescription:
     "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
   depositAndActiveDescription:
