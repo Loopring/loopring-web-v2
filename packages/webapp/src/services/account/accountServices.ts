@@ -10,7 +10,6 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { unlockAccount } from "./unlockAccount";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
-import { checkIsFeeEnough } from "./checkIsFeeEnough";
 
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
@@ -168,7 +167,6 @@ export const accountServices = {
         const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
           owner: account.accAddress,
         });
-        checkIsFeeEnough();
         if (accInfo === undefined) {
           accountServices.sendNoAccount();
         } else {
@@ -213,8 +211,6 @@ export const accountServices = {
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
         owner: ethAddress,
       });
-      checkIsFeeEnough(accInfo);
-      myLog("After connect >>,checkAccount: step3", accInfo);
 
       if (accInfo === undefined) {
         accountServices.sendNoAccount();

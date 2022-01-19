@@ -3,7 +3,6 @@ import { ActiveAccountProps, useOpenModals } from "@loopring-web/component-lib";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 
 import { useUpdateAccount } from "./useUpdateAccount";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { useChargeFees } from "../common/useChargeFees";
 import { useModalData } from "../../stores/router";
 
@@ -19,9 +18,19 @@ export const useActiveAccount = <T>(): {
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       isActiveAccount: true,
-      requestType: "UPDATE_ACCOUNT_BY_New" as any,
-      updateData: (feeInfo) => {
-        updateActiveAccountData({ ...activeAccountValue, fee: feeInfo });
+      requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
+      updateData: (feeInfo, chargeFeeList) => {
+        updateActiveAccountData({
+          ...activeAccountValue,
+          fee: feeInfo,
+          chargeFeeList:
+            chargeFeeList && chargeFeeList.length
+              ? chargeFeeList
+              : activeAccountValue?.chargeFeeList &&
+                activeAccountValue?.chargeFeeList.length
+              ? activeAccountValue?.chargeFeeList
+              : [],
+        });
       },
     });
 

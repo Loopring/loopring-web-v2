@@ -45,7 +45,7 @@ export const VendorMenu = ({
       justifyContent={"space-around"}
       flexDirection={"column"}
       marginTop={2}
-      paddingX={2}
+      paddingX={4}
       height={"100%"}
     >
       <Box

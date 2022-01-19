@@ -72,7 +72,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     useChargeFees({
       requestType: sdk.OffchainFeeReqType.TRANSFER,
       tokenSymbol: transferValue.belong,
-      updateData: (feeInfo) => {
+      updateData: (feeInfo, _chargeFeeList) => {
         updateTransferData({ ...transferValue, fee: feeInfo });
       },
     });

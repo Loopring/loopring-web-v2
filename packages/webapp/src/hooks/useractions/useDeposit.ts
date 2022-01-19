@@ -482,21 +482,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
       isNewAccount,
       title,
       allowTrade,
-      chargeFeeTokenList:
-        tokenMap && Reflect.ownKeys(tokenMap).length
-          ? chargeFeeList.map((item: any) => {
-              const tokenInfo = tokenMap[item.token.toString()];
-              return {
-                ...item,
-                tokenId: tokenInfo?.tokenId,
-                belong: item.token,
-                fee: toBig(item.fee)
-                  .div("1e" + tokenInfo.decimals)
-                  .times(2)
-                  .toString(),
-              };
-            })
-          : [],
+      chargeFeeTokenList: chargeFeeList ?? [],
       defaultAddress: account?.accAddress,
       tradeData: depositValue as any,
       coinMap: totalCoinMap as CoinMap<any>,
