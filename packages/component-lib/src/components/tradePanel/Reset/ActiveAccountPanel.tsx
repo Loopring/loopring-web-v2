@@ -1,15 +1,16 @@
 import { ActiveAccountProps } from "../Interface";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { IBData } from "@loopring-web/common-resources";
+import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import { ActiveAccountWrap } from "../components";
 import React from "react";
 
 export const ActiveAccountPanel = withTranslation("common", { withRef: true })(
-  <T extends IBData<I>, I>({
+  <T extends FeeInfo>({
     onActiveAccountClick,
     activeAccountBtnStatus,
-    chargeFeeToken,
+    feeInfo,
+    isFeeNotEnough,
     chargeFeeTokenList,
     assetsData,
     ...rest
@@ -19,28 +20,19 @@ export const ActiveAccountPanel = withTranslation("common", { withRef: true })(
       panelList: [
         {
           key: "trade",
-          element: React.useMemo(
-            () => (
-              <ActiveAccountWrap<T>
-                key={"transfer"}
-                {...{
-                  ...rest,
-                  chargeFeeToken,
-                  chargeFeeTokenList,
-                  activeAccountBtnStatus,
-                  onActiveAccountClick,
-                  assetsData,
-                }}
-              />
-            ),
-            [
-              onActiveAccountClick,
-              activeAccountBtnStatus,
-              rest,
-              assetsData,
-              chargeFeeToken,
-              chargeFeeTokenList,
-            ]
+          element: (
+            <ActiveAccountWrap<T>
+              key={"transfer"}
+              {...{
+                ...rest,
+                isFeeNotEnough,
+                feeInfo,
+                chargeFeeTokenList,
+                activeAccountBtnStatus,
+                onActiveAccountClick,
+                assetsData,
+              }}
+            />
           ),
           toolBarItem: undefined,
         },

@@ -61,6 +61,7 @@ import {
   GoTopIcon,
   AmmRankIcon,
   TrophyIcon,
+  BanxaIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -124,6 +125,7 @@ const listIcon = [
   <DarkIcon />,
   <ExitIcon />,
   <RampIcon />,
+  <BanxaIcon />,
   <FirstPlaceIcon />,
   <SecondPlaceIcon />,
   <ThirdPlaceIcon />,

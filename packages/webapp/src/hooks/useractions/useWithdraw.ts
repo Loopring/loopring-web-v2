@@ -75,8 +75,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
 
-  const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<FeeInfo>();
-
   const [withdrawType, setWithdrawType] =
     React.useState<sdk.OffchainFeeReqType>(
       sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -94,15 +92,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   // });
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
-      isActiveAccount: true,
-      walletMap: walletMap2,
       requestType: withdrawType,
       tokenSymbol: withdrawValue.belong,
-      updateData: updateWithdrawData,
+      updateData: (feeInfo, _chargeFeeList) => {
+        updateWithdrawData({ ...withdrawValue, fee: feeInfo });
+      },
     });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes);
-  const [isExceedMax, setIsExceedMax] = React.useState(false);
   const { checkHWAddr, updateHW } = useWalletInfo();
 
   const [lastRequest, setLastRequest] = React.useState<any>({});
@@ -122,47 +119,35 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
   const checkBtnStatus = React.useCallback(() => {
-    if (
-      !tokenMap ||
-      !withdrawFeeInfo?.belong ||
-      !withdrawValue?.belong ||
-      !address ||
-      isFeeNotEnough
-    ) {
-      disableBtn();
-      return;
+    if (tokenMap && withdrawValue.belong && tokenMap[withdrawValue.belong]) {
+      const withdrawT = tokenMap[withdrawValue.belong];
+      const tradeValue = sdk
+        .toBig(withdrawValue.tradeValue ?? 0)
+        .times("1e" + withdrawT.decimals);
+      const exceedPoolLimit =
+        withdrawType2 === "Fast" &&
+        tradeValue.gt(0) &&
+        tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit));
+      if (
+        tradeValue &&
+        !exceedPoolLimit &&
+        chargeFeeTokenList.length &&
+        !isFeeNotEnough &&
+        tradeValue.gt(BIGO) &&
+        address &&
+        address !== "" &&
+        addrStatus === AddressError.NoError
+      ) {
+        enableBtn();
+        return;
+      }
+      if (exceedPoolLimit) {
+        setWithdrawI18nKey("withdrawLabelBtnExceed");
+      } else {
+        setWithdrawI18nKey(undefined);
+      }
     }
-
-    const withdrawT = tokenMap[withdrawValue.belong as string];
-
-    const tradeValue = sdk
-      .toBig(withdrawValue.tradeValue ?? 0)
-      .times("1e" + withdrawT.decimals);
-
-    const exceedPoolLimit =
-      withdrawType2 === "Fast" &&
-      tradeValue.gt(0) &&
-      tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit));
-
-    if (
-      chargeFeeTokenList &&
-      chargeFeeTokenList?.length > 0 &&
-      !!address &&
-      tradeValue.gt(BIGO) &&
-      addrStatus === AddressError.NoError &&
-      !isExceedMax &&
-      !exceedPoolLimit
-    ) {
-      enableBtn();
-    } else {
-      disableBtn();
-    }
-
-    if (exceedPoolLimit) {
-      setWithdrawI18nKey("withdrawLabelBtnExceed");
-    } else {
-      setWithdrawI18nKey(undefined);
-    }
+    disableBtn();
 
     // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, withdrawFeeInfo)
   }, [
@@ -173,9 +158,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     address,
     addrStatus,
     chargeFeeTokenList,
-    withdrawFeeInfo,
     withdrawValue,
-    isExceedMax,
+    isFeeNotEnough,
   ]);
 
   React.useEffect(() => {
@@ -184,12 +168,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawType2,
     address,
     addrStatus,
-    withdrawFeeInfo?.belong,
-    withdrawFeeInfo?.fee,
-    withdrawFeeInfo?.belong,
+    withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,
-    isExceedMax,
   ]);
 
   const updateWithdrawTypes = React.useCallback(async () => {
@@ -427,7 +408,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         address &&
-        withdrawFeeInfo?.belong &&
+        withdrawValue?.fee?.belong &&
+        withdrawValue.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
@@ -437,10 +419,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             step: AccountStep.Withdraw_WaitForAuth,
           });
 
-          const withdrawToken = tokenMap[inputValue.belong as string];
-          const feeToken = tokenMap[withdrawFeeInfo.belong];
+          const withdrawToken = tokenMap[withdrawValue.belong as string];
+          const feeToken = tokenMap[withdrawValue.fee.belong];
 
-          const fee = sdk.toBig(withdrawFeeInfo?.__raw__?.feeRaw ?? 0);
+          const fee = sdk.toBig(withdrawValue.fee?.__raw__?.feeRaw ?? 0);
           const balance = sdk
             .toBig(inputValue.balance ?? 0)
             .times("1e" + withdrawToken.decimals);
@@ -498,8 +480,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       account,
       tokenMap,
       exchangeInfo,
-      withdrawFeeInfo?.belong,
-      withdrawFeeInfo?.__raw__.feeRaw,
       setShowWithdraw,
       setShowAccount,
       withdrawType2,
