@@ -33,7 +33,7 @@ export default {
   depositTitle: "Deposit",
   depositTitleAndActive: "Deposit & Activate Layer2",
   depositTitleActive: " Activate Layer2",
-  depositLabelEnterToken: "Select Token",
+  depositLabelEnterToken: "Select Layer1 Token",
   depositDescription:
     "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
   depositAndActiveDescription:
@@ -89,7 +89,7 @@ export default {
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "Layer2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
-  labelAssetsBtnRamp: "Buy with Ramp",
+  labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "Deposit",
   labelBtnTransfer: "Transfer",
   labelBtnWithdraw: "Withdraw",
@@ -471,7 +471,7 @@ export default {
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
   labelTransferSameAddress: "Cannot transfer to your own address",
-  labelDepositRamp: "Buy Crypto with",
+  labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",
   labelTradeRaceYourRanking: "Your ranking",
@@ -523,4 +523,8 @@ export default {
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
   labelNFTDeploy: "Deploy NFT",
+  labelVendor: "Buy with Card",
+  labelAddAsset: "Add Layer2 Assets",
+  labelDepositVendor:
+    "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
 };

@@ -33,6 +33,7 @@ import {
   TradeProBaseEventProps,
   TradeProType,
 } from "./tradePro/Interface";
+import React from "react";
 export { TradeProType, TradeBaseType };
 
 export type SwapTradeData<T> = {

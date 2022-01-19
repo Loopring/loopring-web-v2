@@ -164,6 +164,7 @@ export const globalCss = ({ theme }: any) => css`
     width: 100%;
     position: relative;
     z-index: 1;
+    flex-direction: column;
 
     &:before {
       content: "";

@@ -69,7 +69,11 @@ import {
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 
 import React, { useState } from "react";
-import { AccountStatus, copyToClipBoard } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  copyToClipBoard,
+  VendorProviders,
+} from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { lockAccount } from "services/account/lockAccount";
 import { unlockAccount } from "services/account/unlockAccount";
@@ -92,6 +96,7 @@ import { LAST_STEP, useModalData } from "../../stores/router";
 import { useActiveAccount } from "../../hooks/useractions/useActiveAccount";
 import { useNFTMint } from "../../hooks/useractions/useNFTMint";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
+import { useVendor } from "../../hooks/useractions/useVendor";
 
 export function useAccountModalForUI({
   t,
@@ -134,8 +139,7 @@ export function useAccountModalForUI({
     lastRequest,
   } = useWithdraw();
   const {
-    nftWithdrawAlertText,
-    nftWithdrawToastOpen,
+    // nftWithdrawToastOpen,
     setNFTWithdrawToastOpen,
     nftWithdrawProps,
     processRequestNFT: withdrawProcessRequestNFT,
@@ -147,7 +151,7 @@ export function useAccountModalForUI({
     exportAccountToastOpen,
     setExportAccountToastOpen,
   } = useExportAccount();
-
+  const vendorProps = useVendor();
   const { depositProps } = useDeposit();
   const { nftDepositProps } = useNFTDeposit();
   const { nftMintProps } = useNFTMint();
@@ -841,7 +845,6 @@ export function useAccountModalForUI({
           />
         ),
       },
-
       [AccountStep.NFTMint_Failed]: {
         view: (
           <NFTMint_Failed
@@ -1506,8 +1509,7 @@ export function useAccountModalForUI({
     nftTransferProps,
     transferProcessRequestNFT,
     transferNFTRequest,
-    nftWithdrawToastOpen,
-    nftWithdrawAlertText,
+    // nftWithdrawToastOpen,
     setNFTWithdrawToastOpen,
     nftWithdrawProps,
     withdrawProcessRequestNFT,
@@ -1539,5 +1541,6 @@ export function useAccountModalForUI({
     accountList,
     currentModal,
     nftMintProps,
+    vendorProps,
   };
 }

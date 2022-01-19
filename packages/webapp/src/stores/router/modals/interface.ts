@@ -12,6 +12,7 @@ export type WithdrawData = {
   tradeValue: number | undefined;
   balance: number | undefined;
   address: string | undefined;
+  fee: FeeInfo | undefined;
 };
 
 export type TransferData = {
@@ -20,6 +21,7 @@ export type TransferData = {
   balance: number | undefined;
   address: string | undefined;
   memo: string | undefined;
+  fee: FeeInfo | undefined;
 };
 
 export type DepositData = {

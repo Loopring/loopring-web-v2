@@ -133,8 +133,8 @@ export type DepositInfoProps<I> = {
 
 export type DepositExtendProps<T, I> = {
   isThumb?: boolean;
-  onDepositClick: (data: T) => void;
   allowTrade?: any;
+  onDepositClick: (data: T) => void;
 } & DepositInfoProps<I>;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
@@ -290,4 +290,5 @@ export type NFTDeployExtendProps<T, I, C> = {
   onNFTDeployClick: (data: T) => void;
   allowTrade?: any;
 } & NFTDeployInfoProps<T, I, C>;
+
 export type NFTDeployViewProps<T, I, C> = NFTDeployExtendProps<T, I, C>;
