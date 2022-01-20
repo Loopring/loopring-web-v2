@@ -63,11 +63,12 @@ export const useHistoryNFT = () => {
             },
             account.apiKey
           );
-        console.log(userNFTTransfers);
         setNftHistory((state) => {
           return {
             ...state,
+
             transfers: {
+              txType: TxType.TRANSFER,
               ...state.transfers,
               pagination: {
                 pageSize: LimitNFTHistory,
@@ -76,6 +77,10 @@ export const useHistoryNFT = () => {
               rawData: userNFTTransfers.map((item) => {
                 return {
                   ...item,
+                  amount:
+                    (item.payeeAddress === account.accAddress ? "+" : "-") +
+                    item.amount.toString(),
+                  txType: TxType.TRANSFER,
                   fee: {
                     unit: item.feeTokenSymbol || "",
                     value: Number(
@@ -110,6 +115,7 @@ export const useHistoryNFT = () => {
           return {
             ...state,
             deposits: {
+              txType: TxType.DEPOSIT,
               ...state.deposits,
               pagination: {
                 pageSize: LimitNFTHistory,
@@ -117,6 +123,7 @@ export const useHistoryNFT = () => {
               },
               rawData: userNFTDepositHistory.map((item) => {
                 return {
+                  txType: TxType.DEPOSIT,
                   ...item,
                   fee: {
                     unit: item.feeTokenSymbol || "",
@@ -150,8 +157,10 @@ export const useHistoryNFT = () => {
           );
         setNftHistory((state) => {
           return {
+            txType: TxType.OFFCHAIN_WITHDRAWAL,
             ...state,
             withdraws: {
+              txType: TxType.OFFCHAIN_WITHDRAWAL,
               ...state.withdraws,
               pagination: {
                 pageSize: LimitNFTHistory,
