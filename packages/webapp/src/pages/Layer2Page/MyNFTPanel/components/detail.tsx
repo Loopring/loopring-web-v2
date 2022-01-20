@@ -12,10 +12,9 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
-import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
+import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { useGetAssets } from "../../AssetPanel/hook";
-import { updateNFTTransferData } from "../../../../stores/router";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);

@@ -36,13 +36,8 @@ import { useAddressCheck } from "hooks/common/useAddrCheck";
 import { useWalletInfo } from "stores/localStore/walletInfo";
 import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
-import {
-  updateActiveAccountData,
-  updateNFTTransferData,
-  useModalData,
-} from "stores/router";
+import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
-import { getFloatValue } from "utils/formatter_tool";
 import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
 
@@ -58,12 +53,6 @@ export const useNFTTransfer = <
   doTransferDone?: () => void;
 }) => {
   const { setShowAccount, setShowNFTTransfer } = useOpenModals();
-
-  const [nftTransferToastOpen, setNFTTransferToastOpen] =
-    React.useState<boolean>(false);
-
-  const [nftTransferAlertText, setNFTTransferAlertText] =
-    React.useState<string>();
 
   const {
     modals: {
@@ -449,9 +438,6 @@ export const useNFTTransfer = <
   };
 
   return {
-    nftTransferToastOpen,
-    nftTransferAlertText,
-    setNFTTransferToastOpen,
     nftTransferProps,
     processRequestNFT,
     lastNFTRequest,

@@ -18,30 +18,8 @@ import { useNFTDeposit } from "hooks/useractions/useNFTDeposit";
 import * as loopring_defs from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
-const LimitNFTHistory = 50;
 export const useMyNFT = () => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
-  const [nftHistory, setNftHistory] = React.useState<{
-    transfers: {
-      totalNum: number;
-      userNFTTransfers: loopring_defs.UserNFTTransferHistoryTx[];
-      page: number;
-    };
-    deposits: {
-      totalNum: number;
-      userNFTDepositHistory: loopring_defs.UserNFTDepositHistoryTx[];
-      page: number;
-    };
-    withdraws: {
-      totalNum: number;
-      userNFTWithdrawalHistory: loopring_defs.UserNFTWithdrawalHistoryTx[];
-      page: number;
-    };
-  }>({
-    transfers: { totalNum: 0, userNFTTransfers: [], page: 1 },
-    deposits: { totalNum: 0, userNFTDepositHistory: [], page: 1 },
-    withdraws: { totalNum: 0, userNFTWithdrawalHistory: [], page: 1 },
-  });
   const { account } = useAccount();
   const [isShow, setIsShow] = React.useState(false);
   const [popItem, setPopItem] = React.useState<
@@ -60,72 +38,6 @@ export const useMyNFT = () => {
   const { etherscanBaseUrl } = useSystem();
   const { nftDepositProps } = useNFTDeposit();
   const onDetailClose = React.useCallback(() => setIsShow(false), []);
-  const getTransferList = React.useCallback(
-    async (page = 1, limit = LimitNFTHistory) => {
-      if (LoopringAPI.userAPI) {
-        const { totalNum, userNFTTransfers } =
-          await LoopringAPI.userAPI.getUserNFTTransferHistory(
-            {
-              accountId: account.accountId,
-              start: (nftHistory.transfers.page - 1) * limit,
-              limit,
-            },
-            account.apiKey
-          );
-        setNftHistory((state) => {
-          return {
-            ...state,
-            transfers: { totalNum, userNFTTransfers, page },
-          };
-        });
-      }
-    },
-    [nftHistory]
-  );
-  const getDepositList = React.useCallback(
-    async (page = 1, limit = LimitNFTHistory) => {
-      if (LoopringAPI.userAPI) {
-        const { totalNum, userNFTDepositHistory } =
-          await LoopringAPI.userAPI.getUserNFTDepositHistory(
-            {
-              accountId: account.accountId,
-              start: (nftHistory.transfers.page - 1) * limit,
-              limit,
-            },
-            account.apiKey
-          );
-        setNftHistory((state) => {
-          return {
-            ...state,
-            deposits: { totalNum, userNFTDepositHistory, page },
-          };
-        });
-      }
-    },
-    [nftHistory]
-  );
-  const getWithdrawalList = React.useCallback(
-    async (page = 1, limit = LimitNFTHistory) => {
-      if (LoopringAPI.userAPI) {
-        const { totalNum, userNFTWithdrawalHistory } =
-          await LoopringAPI.userAPI.getUserNFTWithdrawalHistory(
-            {
-              accountId: account.accountId,
-              start: (nftHistory.transfers.page - 1) * limit,
-              limit,
-            },
-            account.apiKey
-          );
-        setNftHistory((state) => {
-          return {
-            ...state,
-            withdraws: { totalNum, userNFTWithdrawalHistory, page },
-          };
-        });
-      }
-    },
-    [nftHistory]
-  );
   const popNFTDeposit = React.useCallback(
     () => setShowNFTDeposit({ isShow: true }),
     []
@@ -191,9 +103,6 @@ export const useMyNFT = () => {
   }, [walletLayer2Status]);
   const initNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
-    getTransferList();
-    getDepositList();
-    getWithdrawalList();
     for (const { nftId, tokenAddress } of nftLayer2) {
       if (tokenAddress && nftId) {
         const _id = new BigNumber(nftId ?? "", 16);
@@ -232,9 +141,7 @@ export const useMyNFT = () => {
     nftDepositProps,
     onNFTDepositClose,
     popNFTDeposit,
-    nftHistory,
-    getTransferList,
-    getDepositList,
-    getWithdrawalList,
   };
 };
+
+//
