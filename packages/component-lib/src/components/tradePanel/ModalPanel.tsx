@@ -1,10 +1,9 @@
-import { Box, Modal as MuiModal } from "@mui/material";
+import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
   AmmPanel,
   AmmProps,
   // DepositPanel,
-  DepositPanel,
-  DepositProps,
+  DepositGroup,
   ModalCloseButton,
   ModalPanelProps,
   ResetPanel,
@@ -12,7 +11,7 @@ import {
   ResetProps,
   SwapPanel,
   SwapProps,
-  SwitchPanelStyled,
+  // SwitchPanelStyled,
   TransferPanel,
   TransferProps,
   useOpenModals,
@@ -20,14 +19,50 @@ import {
   WithdrawProps,
   ActiveAccountPanel,
   ActiveAccountProps,
+  DepositGroupProps,
+  modalContentBaseStyle,
 } from "../..";
 import { IBData } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
+import styled from "@emotion/styled";
+import React from "react";
 
-// const DEFAULT_DEPOSIT_HEIGHT = 300;
-// const DEFAULT_TRANSFER_HEIGHT = 550;
-const DEFAULT_WITHDRAW_HEIGHT = 550;
+const BoxStyle = styled(Box)<
+  { _height?: number | string; _width?: number | string } & BoxProps
+>`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  ${({ theme }) => modalContentBaseStyle({ theme: theme })}
+  background: ${({ theme }) => theme.colorBase.box};
+  .trade-panel {
+    position: relative;
+    height: ${({ _height }) =>
+      _height && Number.isNaN(_height)
+        ? _height + "px"
+        : _height
+        ? _height
+        : "auto"};
+    .react-swipeable-view-container {
+      & > div {
+        padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px
+          ${({ theme }) => theme.unit * 5}px;
+        overflow-x: hidden;
+        overflow-y: scroll !important;
+        padding-bottom: var(--toolbar-row-padding);
+        background: initial;
+        .container {
+          height: 100%;
+          padding-top: 0;
+        }
+      }
+    }
+  }
+` as React.ElementType<
+  { _height?: number | string; _width?: number | string } & BoxProps
+>;
 
 const Modal = withTranslation("common")(
   ({
@@ -45,28 +80,19 @@ const Modal = withTranslation("common")(
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        {/*<SwitchPanelStyled style={{boxShadow: '24'}} {...{_height: height, _width: width}}  >*/}
-        {/*    /!*<ModalCloseButton onClose={onClose} {...rest} />*!/*/}
-        {/*    */}
-        {/*</SwitchPanelStyled>*/}
-        {/*<>*/}
-
-        <SwitchPanelStyled
+        <BoxStyle
           style={{ boxShadow: "24" }}
-          position={"relative"}
           {...{
-            _width: `calc(var(--modal-width)`,
+            _width: `var(--modal-width)`,
             _height: _height,
           }}
-          flex={1}
-          display={"flex"}
         >
           <Box display={"flex"} width={"100%"} flexDirection={"column"}>
             <ModalCloseButton onClose={onClose} {...rest} />
             {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
           </Box>
-          <Box className={"trade-panel"}>{content}</Box>
-        </SwitchPanelStyled>
+          <Box className={"trade-wrap"}>{content}</Box>
+        </BoxStyle>
         {/*</>*/}
       </MuiModal>
     );
@@ -76,7 +102,7 @@ const Modal = withTranslation("common")(
 export const ModalPanel = <T extends IBData<I>, I>({
   transferProps,
   withdrawProps,
-  depositProps,
+  depositGroupProps,
   nftTransferProps,
   nftWithdrawProps,
   // nftDepositProps,
@@ -91,7 +117,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
   _height?: number | string;
   transferProps: TransferProps<T, I>;
   withdrawProps: WithdrawProps<T, I>;
-  depositProps: DepositProps<T, I>;
+  depositGroupProps: DepositGroupProps<T, I>;
   nftTransferProps: TransferProps<T, I>;
   nftWithdrawProps: WithdrawProps<T, I>;
   // nftDepositProps: DepositProps<T, I>;
@@ -140,9 +166,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
               ...transferProps,
               assetsData,
             }}
-          >
-            {" "}
-          </TransferPanel>
+          />
         }
       />
       <Modal
@@ -153,7 +177,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
             {...{
               ...rest,
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: DEFAULT_WITHDRAW_HEIGHT,
+              _height: "auto",
               ...withdrawProps,
               assetsData,
             }}
@@ -166,16 +190,12 @@ export const ModalPanel = <T extends IBData<I>, I>({
         open={isShowDeposit.isShow}
         onClose={() => setShowDeposit({ isShow: false })}
         content={
-          <DepositPanel<any, any>
+          <DepositGroup
             {...{
               ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: "auto",
-              ...depositProps,
+              ...depositGroupProps,
             }}
-          >
-            {" "}
-          </DepositPanel>
+          />
         }
       />
       <Modal

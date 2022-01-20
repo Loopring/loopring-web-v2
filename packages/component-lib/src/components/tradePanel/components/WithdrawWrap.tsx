@@ -6,7 +6,6 @@ import {
   Box,
   FormControlLabel,
   Grid,
-  IconProps,
   Radio,
   RadioGroup,
   Typography,
@@ -16,40 +15,34 @@ import {
   copyToClipBoard,
   DropDownIcon,
   EmptyValueTag,
+  FeeInfo,
   globalSetup,
   HelpIcon,
   IBData,
   LoadingIcon,
+  myLog,
   TOAST_TIME,
   WithdrawTypes,
 } from "@loopring-web/common-resources";
-import { PopoverPure, Toast } from "../..";
+import {
+  DropdownIconStyled,
+  FeeTokenItemWrapper,
+  PopoverPure,
+  Toast,
+} from "../..";
 import { TradeBtnStatus } from "../Interface";
 import { Button, IconClearStyled, TextField } from "../../../index";
 import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
-import { ToggleButtonGroup } from "../../basic-lib";
-import styled from "@emotion/styled";
-import { useSettings } from "../../../stores";
 import * as _ from "lodash";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 import { NFTInput } from "./BasicANFTTrade";
-
-const FeeTokenItemWrapper = styled(Box)`
-  background-color: var(--color-global-bg);
-`;
-
-const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
-  transform: rotate(
-    ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
-    }}
-  );
-` as (props: IconProps & { status: string }) => JSX.Element;
+import { FeeToggle } from "./tool/FeeList";
 
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTTokenInfo & IBData<I>),
-  I
+  I,
+  C extends FeeInfo
 >({
   t,
   disabled,
@@ -61,8 +54,9 @@ export const WithdrawWrap = <
   addressDefault,
   withdrawTypes = WithdrawTypes,
   withdrawType,
-  chargeFeeToken = "ETH",
-  chargeFeeTokenList,
+  chargeFeeTokenList = [],
+  feeInfo,
+  isFeeNotEnough,
   onWithdrawClick,
   withdrawBtnStatus,
   handleFeeChange,
@@ -79,7 +73,7 @@ export const WithdrawWrap = <
   isThumb,
 
   ...rest
-}: WithdrawViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
+}: WithdrawViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
   const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(
     withdrawType
   );
@@ -93,45 +87,11 @@ export const WithdrawWrap = <
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
-  const [feeToken, setFeeToken] = React.useState("");
-  const { feeChargeOrder } = useSettings();
-  const toggleData: any[] = chargeFeeTokenList
-    .sort(
-      (a, b) =>
-        feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-    )
-    .map(({ belong, fee, __raw__ }) => ({
-      key: belong,
-      value: belong,
-      fee,
-      __raw__,
-    }));
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-withdraw`,
   });
 
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && feeChargeOrder) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            o.fee !== undefined &&
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-      const currFee =
-        toggleData.find((o) => o.key === feeToken)?.fee || EmptyValueTag;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === feeToken)?.__raw__ || EmptyValueTag;
-      handleFeeChange({
-        belong: feeToken,
-        fee: currFee,
-        __raw__: currFeeRaw,
-      });
-    }
-  }, [chargeFeeTokenList, feeChargeOrder, feeToken, handleFeeChange]);
   const [copyToastOpen, setCopyToastOpen] = useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
@@ -140,90 +100,45 @@ export const WithdrawWrap = <
     },
     [setCopyToastOpen]
   );
-  const getTokenFee = React.useCallback(
-    (token: string) => {
-      return toggleData.find((o) => o.key === token)?.fee || 0;
-    },
-    [toggleData]
-  );
 
   const inputBtnRef = React.useRef();
   const isNotAvaiableAddress =
     isCFAddress ||
     (isContractAddress &&
       disableWithdrawList.includes(tradeData?.belong ?? ""));
-  const getDisabled = () => {
+  const getDisabled = React.useMemo(() => {
     if (
       disabled ||
       tradeData === undefined ||
       walletMap === undefined ||
       coinMap === undefined ||
       isNotAvaiableAddress ||
-      isFeeNotEnough
+      isFeeNotEnough ||
+      withdrawBtnStatus === TradeBtnStatus.DISABLED
     ) {
       return true;
     } else {
       return false;
     }
-  };
+  }, [
+    disabled,
+    withdrawBtnStatus,
+    tradeData,
+    walletMap,
+    coinMap,
+    isNotAvaiableAddress,
+    isFeeNotEnough,
+  ]);
+  myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
     label: t("withdrawLabelEnterToken"),
   };
 
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-      const currFee =
-        toggleData.find((o) => o.key === defaultToken)?.fee || EmptyValueTag;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === defaultToken)?.__raw__ ||
-        EmptyValueTag;
-      handleFeeChange({
-        belong: defaultToken,
-        fee: currFee,
-        __raw__: currFeeRaw,
-      });
+  const handleToggleChange = (value: C) => {
+    if (handleFeeChange) {
+      handleFeeChange(value);
     }
-  }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData]);
-
-  const checkFeeTokenEnough = React.useCallback(
-    (token: string, fee: number) => {
-      const tokenAssets = assetsData.find((o) => o.name === token)?.available;
-      return tokenAssets && Number(tokenAssets) > fee;
-    },
-    [assetsData]
-  );
-
-  React.useEffect(() => {
-    if (
-      !!chargeFeeTokenList.length &&
-      assetsData &&
-      !checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))
-    ) {
-      setIsFeeNotEnough(true);
-      return;
-    }
-    setIsFeeNotEnough(false);
-  }, [
-    chargeFeeTokenList,
-    assetsData,
-    checkFeeTokenEnough,
-    getTokenFee,
-    feeToken,
-  ]);
-
-  const handleToggleChange = React.useCallback(
-    (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
-      if (value === null) return;
-      setFeeToken(value);
-    },
-    []
-  );
+  };
 
   const _handleWithdrawTypeChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -264,7 +179,6 @@ export const WithdrawWrap = <
       }
     }
   }, [setAddress, setAddressError, handleAddressError]);
-
   return (
     <Grid
       className={walletMap ? "" : "loading"}
@@ -354,7 +268,7 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid item alignSelf={"stretch"} position={"relative"}>
+      <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
         <>
           <TextField
             value={address}
@@ -418,8 +332,8 @@ export const WithdrawWrap = <
         </>
       </Grid>
 
-      <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
-        {!toggleData?.length ? (
+      <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
+        {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
           <>
@@ -445,7 +359,8 @@ export const WithdrawWrap = <
                   setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
                 }
               >
-                {getTokenFee(feeToken) || EmptyValueTag} {feeToken}
+                {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}
+                {" " + feeInfo.belong}
                 <Typography
                   marginLeft={1}
                   color={"var(--color-text-secondary)"}
@@ -478,16 +393,10 @@ export const WithdrawWrap = <
                 >
                   {t("transferLabelFeeChoose")}
                 </Typography>
-                <ToggleButtonGroup
-                  exclusive
-                  size={"small"}
-                  {...{
-                    data: toggleData,
-                    value: feeToken,
-                    t,
-                    ...rest,
-                  }}
-                  onChange={handleToggleChange}
+                <FeeToggle
+                  chargeFeeTokenList={chargeFeeTokenList}
+                  handleToggleChange={handleToggleChange}
+                  feeInfo={feeInfo}
                 />
                 <Box marginTop={1}>
                   <RadioGroup
@@ -515,7 +424,7 @@ export const WithdrawWrap = <
           </>
         )}
       </Grid>
-      <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
+      <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
         <Button
           fullWidth
           variant={"contained"}
@@ -525,17 +434,11 @@ export const WithdrawWrap = <
             onWithdrawClick(tradeData);
           }}
           loading={
-            !getDisabled() && withdrawBtnStatus === TradeBtnStatus.LOADING
+            withdrawBtnStatus === TradeBtnStatus.LOADING && !getDisabled
               ? "true"
               : "false"
           }
-          disabled={
-            getDisabled() ||
-            withdrawBtnStatus === TradeBtnStatus.DISABLED ||
-            withdrawBtnStatus === TradeBtnStatus.LOADING
-              ? true
-              : false
-          }
+          disabled={getDisabled || withdrawBtnStatus === TradeBtnStatus.LOADING}
         >
           {t(withdrawI18nKey ?? `withdrawLabelBtn`)}
         </Button>

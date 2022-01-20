@@ -31,7 +31,6 @@ import { Currency } from "@loopring-web/loopring-sdk";
 import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import { useTokenPrices } from "stores/tokenPrices";
-import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
 import { useTokenMap } from "../../../stores/token";
 
 const UP_COLOR = "#00BBA8";
@@ -201,8 +200,12 @@ const AssetPanel = withTranslation("common")(
     const { upColor } = useSettings();
 
     const onShowDeposit = useCallback(
-      (token?: any) => {
-        showDeposit({ isShow: true, symbol: token });
+      (token?: any, partner?: boolean) => {
+        if (partner) {
+          showDeposit({ isShow: true, partner: true });
+        } else {
+          showDeposit({ isShow: true, symbol: token });
+        }
       },
       [showDeposit]
     );
@@ -229,21 +232,22 @@ const AssetPanel = withTranslation("common")(
       },
       [history]
     );
+    const showPartner = () => {};
 
-    const showRamp = useCallback(() => {
-      const widget = new RampInstantSDK({
-        hostAppName: "Loopring",
-        hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
-        // url: 'https://ri-widget-staging.web.app/', // main staging
-        swapAsset: "LOOPRING_*",
-        userAddress: accAddress,
-        hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
-      }).show();
-
-      if (widget && widget.domNodes) {
-        (widget as any).domNodes.shadowHost.style.position = "absolute";
-      }
-    }, [accAddress]);
+    // const showRamp = useCallback(() => {
+    //   const widget = new RampInstantSDK({
+    //     hostAppName: "Loopring",
+    //     hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
+    //     // url: 'https://ri-widget-staging.web.app/', // main staging
+    //     swapAsset: "LOOPRING_*",
+    //     userAddress: accAddress,
+    //     hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
+    //   }).show();
+    //
+    //   if (widget && widget.domNodes) {
+    //     (widget as any).domNodes.shadowHost.style.position = "absolute";
+    //   }
+    // }, [accAddress]);
 
     const AssetTitleProps: AssetTitleProps = {
       assetInfo: {
@@ -262,7 +266,7 @@ const AssetPanel = withTranslation("common")(
       onShowTransfer,
       onShowWithdraw,
       setHideL2Assets,
-      showRamp,
+      showPartner: () => onShowDeposit(undefined, true),
       legalEnable,
       legalShow,
     };

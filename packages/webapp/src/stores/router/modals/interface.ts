@@ -12,6 +12,7 @@ export type WithdrawData = {
   tradeValue: number | undefined;
   balance: number | undefined;
   address: string | undefined;
+  fee: FeeInfo | undefined;
 };
 
 export type TransferData = {
@@ -20,6 +21,7 @@ export type TransferData = {
   balance: number | undefined;
   address: string | undefined;
   memo: string | undefined;
+  fee: FeeInfo | undefined;
 };
 
 export type DepositData = {
@@ -31,6 +33,7 @@ export type DepositData = {
 
 export type ActiveAccountData = {
   chargeFeeList: FeeInfo[];
+  fee?: FeeInfo;
   walletLayer2: WalletLayer2Map<any> | undefined;
 };
 
@@ -46,6 +49,7 @@ export type ModalDataStatus = {
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftDepositValue: TradeNFT<any>;
   nftMintValue: TradeNFT<any>;
+  nftDeployValue: TradeNFT<any> & { broker: string };
 };
 
 export enum LAST_STEP {
@@ -55,6 +59,7 @@ export enum LAST_STEP {
   nftWithdraw = "nftWithdraw",
   nftTransfer = "nftTransfer",
   nftDeposit = "nftDeposit",
+  nftDeploy = "nftDeploy",
   nftMint = "nftMint",
   default = "default",
 }

@@ -1,5 +1,9 @@
 import { ButtonProps } from "../../basic-lib";
-import { Account } from "@loopring-web/common-resources";
+import {
+  Account,
+  VendorItem,
+  VendorProviders,
+} from "@loopring-web/common-resources";
 
 export type AccountBaseProps = {
   // addressShort: string
@@ -38,9 +42,18 @@ export enum AccountStep {
   NFTDeposit_Submit,
 
   NFTMint_WaitForAuth,
+  NFTMint_First_Method_Denied,
+  NFTMint_In_Progress,
   NFTMint_Denied,
   NFTMint_Failed,
   NFTMint_Submit,
+
+  NFTDeploy_WaitForAuth,
+  NFTDeploy_First_Method_Denied,
+  NFTDeploy_In_Progress,
+  NFTDeploy_Denied,
+  NFTDeploy_Failed,
+  NFTDeploy_Submit,
 
   Transfer_WaitForAuth,
   Transfer_First_Method_Denied,
@@ -89,4 +102,14 @@ export enum AccountStep {
   ExportAccount_User_Denied,
   ExportAccount_Success,
   ExportAccount_Failed,
+}
+
+/**
+ * @param handleSelect default handleSelect, if item have no private handleSelect function
+ */
+export interface VendorMenuProps {
+  // termUrl: string;
+  vendorList: VendorItem[];
+  handleSelect?: (event: React.MouseEvent, key: string) => void;
+  vendorForce: VendorProviders | undefined;
 }

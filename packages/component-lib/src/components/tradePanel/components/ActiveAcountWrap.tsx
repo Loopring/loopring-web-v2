@@ -1,114 +1,86 @@
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import styled from "@emotion/styled";
-import { Grid, Typography, Box, IconProps, Link } from "@mui/material";
-import {
-  DropDownIcon,
-  EmptyValueTag,
-  getValuePrecisionThousand,
-} from "@loopring-web/common-resources";
-import { Button, ToggleButtonGroup } from "../../basic-lib";
+import { Grid, Typography, Box, Link } from "@mui/material";
+import { EmptyValueTag, FeeInfo } from "@loopring-web/common-resources";
+import { Button } from "../../basic-lib";
 import { ActiveAccountViewProps } from "./Interface";
-import { useSettings } from "../../../stores";
+import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
+import { FeeToggle } from "./tool/FeeList";
 
-const FeeTokenItemWrapper = styled(Box)`
-  background-color: var(--color-global-bg);
-`;
-
-const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
-  transform: rotate(
-    ${({ status }: any) => {
-      return status === "down" ? "0deg" : "180deg";
-    }}
-  );
-` as unknown as (props: IconProps & { status: string }) => JSX.Element;
-
-export const ActiveAccountWrap = <T extends object>({
+export const ActiveAccountWrap = <T extends FeeInfo>({
   t,
   activeAccountBtnStatus,
   onActiveAccountClick,
-  chargeFeeToken,
   chargeFeeTokenList = [],
+  feeInfo,
+  isFeeNotEnough,
   handleFeeChange,
   goToDeposit,
-  assetsData = [],
-  ...rest
 }: ActiveAccountViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false);
-  const [feeToken, setFeeToken] = React.useState("ETH");
-  const { feeChargeOrder } = useSettings();
 
-  const toggleData: any[] =
-    chargeFeeTokenList &&
-    chargeFeeTokenList
-      .sort(
-        (a, b) =>
-          feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-      )
-      .map(({ belong, fee, __raw__ }) => ({
-        key: belong,
-        value: belong,
-        fee,
-        __raw__,
-      }));
-  const isFeeEnough = () => {
-    if (!!chargeFeeTokenList.length && assetsData && feeToken) {
-      if (!checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))) {
-        setIsFeeNotEnough(true);
-      } else {
-        setIsFeeNotEnough(false);
-      }
-      const feeItem = chargeFeeTokenList.find(
-        (item) => item.token === feeToken
-      );
-      handleFeeChange({
-        belong: feeToken,
-        ...feeItem,
-      } as any);
-    }
-  };
-  React.useEffect(() => {
-    if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
-      const defaultToken =
-        chargeFeeTokenList.find(
-          (o) =>
-            assetsData.find((item) => item.name === o.belong)?.available > o.fee
-        )?.belong || "ETH";
-      setFeeToken(defaultToken);
-    }
-  }, [chargeFeeTokenList, assetsData]);
+  // const { feeChargeOrder } = useSettings();
 
-  const getTokenFee = React.useCallback(
-    (token: string) => {
-      const raw = toggleData.find((o) => o.key === token)?.fee;
-      // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
-      return getValuePrecisionThousand(
-        raw,
-        undefined,
-        undefined,
-        undefined,
-        false,
-        { isTrade: true, floor: false }
-      );
-    },
-    [toggleData]
-  );
+  // const toggleData: any[] =
+  //   chargeFeeTokenList &&
+  //   chargeFeeTokenList
+  //     .sort(
+  //       (a, b) =>
+  //         feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
+  //     )
+  //     .map(({ belong, fee, __raw__ }) => ({
+  //       key: belong,
+  //       value: belong,
+  //       fee,
+  //       __raw__,
+  //     }));
+  // const isFeeEnough = () => {
+  //   if (!!chargeFeeTokenList.length && assetsData && feeToken) {
+  //     if (!checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))) {
+  //       setIsFeeNotEnough(true);
+  //     } else {
+  //       setIsFeeNotEnough(false);
+  //     }
+  //     const feeItem = chargeFeeTokenList.find(
+  //       (item) => item.belong === feeToken || item.token === feeToken
+  //     );
+  //     handleFeeChange({
+  //       belong: feeToken,
+  //       ...feeItem,
+  //     } as any);
+  //   }
+  // };
+  //
+  // const getTokenFee = React.useCallback(
+  //   (token: string) => {
+  //     const raw = toggleData.find((o) => o.key === token)?.fee;
+  //     // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
+  //     return getValuePrecisionThousand(
+  //       raw,
+  //       undefined,
+  //       undefined,
+  //       undefined,
+  //       false,
+  //       { isTrade: true, floor: false }
+  //     );
+  //   },
+  //   [toggleData]
+  // );
 
-  const checkFeeTokenEnough = React.useCallback(
-    (token: string, fee: number) => {
-      const tokenAssets = assetsData.find((o) => o.name === token)?.available;
-      return tokenAssets && Number(tokenAssets) > fee;
-    },
-    [assetsData]
-  );
+  // const checkFeeTokenEnough = React.useCallback(
+  //   (token: string, fee: number) => {
+  //     const tokenAssets = assetsData.find((o) => o.name === token)?.available;
+  //     return tokenAssets && Number(tokenAssets) > fee;
+  //   },
+  //   [assetsData]
+  // );
 
-  React.useEffect(() => {
-    isFeeEnough();
-  }, [feeToken]);
+  // React.useEffect(() => {
+  //   isFeeEnough();
+  // }, [feeToken]);
 
   const getDisabled = React.useCallback(() => {
     if (isFeeNotEnough) {
@@ -118,21 +90,11 @@ export const ActiveAccountWrap = <T extends object>({
     }
   }, [isFeeNotEnough]);
 
-  const handleToggleChange = React.useCallback(
-    (_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
-      if (value === null) return;
-      const currFeeRaw =
-        toggleData.find((o) => o.key === value)?.__raw__ || EmptyValueTag;
-      setFeeToken(value);
-      handleFeeChange({
-        belong: value,
-        fee: getTokenFee(value),
-        __raw__: currFeeRaw,
-      });
-    },
-    [handleFeeChange, getTokenFee, toggleData]
-  );
-
+  const handleToggleChange = (value: T) => {
+    if (handleFeeChange) {
+      handleFeeChange(value);
+    }
+  };
   return (
     <Grid
       className={""}
@@ -163,7 +125,7 @@ export const ActiveAccountWrap = <T extends object>({
         </Typography>
       </Grid>
 
-      <Grid item alignSelf={"stretch"} position={"relative"}>
+      <Grid item alignSelf={"stretch"} position={"relative"} marginTop={4}>
         <Typography
           component={"span"}
           display={"flex"}
@@ -182,7 +144,8 @@ export const ActiveAccountWrap = <T extends object>({
               setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
             }
           >
-            {getTokenFee(feeToken) || EmptyValueTag} {feeToken}
+            {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}
+            {" " + feeInfo.belong}
             <DropdownIconStyled status={dropdownStatus} fontSize={"medium"} />
             <Typography
               marginLeft={1}
@@ -216,16 +179,15 @@ export const ActiveAccountWrap = <T extends object>({
             >
               {t("labelActiveEnterToken")}
             </Typography>
-            <ToggleButtonGroup
-              exclusive
-              size={"small"}
-              {...{ data: toggleData, value: feeToken, t, ...rest }}
-              onChange={handleToggleChange}
+            <FeeToggle
+              chargeFeeTokenList={chargeFeeTokenList}
+              handleToggleChange={handleToggleChange}
+              feeInfo={feeInfo}
             />
           </FeeTokenItemWrapper>
         )}
       </Grid>
-      <Grid item marginTop={2} alignSelf={"stretch"}>
+      <Grid item marginTop={4} alignSelf={"stretch"}>
         <Button
           fullWidth
           variant={"contained"}
