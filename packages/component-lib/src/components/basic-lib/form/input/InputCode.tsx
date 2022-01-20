@@ -119,4 +119,4 @@ const InputCode = ({
   );
 };
 
-export default InputCode;
+export { InputCode };

@@ -1,5 +1,6 @@
-import { Trans, WithTranslation } from "react-i18next";
+import { Trans, useTranslation, WithTranslation } from "react-i18next";
 import { IconType, PanelProps, BasicPanel } from "../ModalPanels/BasicPanel";
+import { Box, Typography } from "@mui/material";
 
 export const LockWallet = (props: PanelProps & WithTranslation) => {
   const propsPatch = {
@@ -38,10 +39,18 @@ export const LockAccount_Success = (props: PanelProps & WithTranslation) => {
 };
 
 // value symbol
-export const LockAccount_Failed = (props: PanelProps & WithTranslation) => {
+export const LockAccount_Failed = (
+  props: PanelProps & WithTranslation & any
+) => {
+  const { t } = useTranslation("common");
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: <Trans i18nKey={"labelLockAccountFailed"}></Trans>,
+    describe1: (
+      <Box>
+        <Typography component={"p"}>{t("labelLockAccountFailed")}</Typography>
+        <Typography>{props?.error}</Typography>
+      </Box>
+    ),
   };
   return <LockWallet {...propsPatch} {...props} />;
 };

@@ -6,6 +6,14 @@ import {
   LockAccount_Success,
   LockAccount_User_Denied,
   LockAccount_WaitForAuth,
+  Approve_Failed,
+  Approve_Success,
+  Approve_User_Denied,
+  Approve_WaitForAuth,
+  Reject_Failed,
+  Reject_Success,
+  Reject_User_Denied,
+  Reject_WaitForAuth,
 } from "@loopring-web/component-lib";
 import React from "react";
 
@@ -43,7 +51,32 @@ export const ModalLock = withTranslation("common")(
           }
         },
       };
-    }, [options]);
+    }, [handleOpenModal, options]);
+    const backToRejectBtnInfo = React.useMemo(() => {
+      const _options = options;
+      return {
+        btnTxt: "labelRetry",
+        callback: () => {
+          handleOpenModal({ step: HebaoStep.Reject_WaitForAuth });
+          if (_options && _options.lockRetry && _options.lockRetryParams) {
+            _options.lockRetry(_options.lockRetryParams);
+          }
+        },
+      };
+    }, [handleOpenModal, options]);
+    const backToApproveBtnInfo = React.useMemo(() => {
+      const _options = options;
+      return {
+        btnTxt: "labelRetry",
+        callback: () => {
+          handleOpenModal({ step: HebaoStep.Approve_WaitForAuth });
+          if (_options && _options.lockRetry && _options.lockRetryParams) {
+            _options.lockRetry(_options.lockRetryParams);
+          }
+        },
+      };
+    }, [handleOpenModal, options]);
+
     const closeBtnInfo = React.useMemo(() => {
       return {
         btnTxt: "labelClose",
@@ -95,6 +128,96 @@ export const ModalLock = withTranslation("common")(
               btnInfo={closeBtnInfo}
               {...{
                 ...rest,
+                ...options,
+                t,
+              }}
+            />
+          ),
+        },
+        [HebaoStep.Approve_WaitForAuth]: {
+          view: (
+            <Approve_WaitForAuth
+              {...{
+                ...rest,
+                t,
+              }}
+            />
+          ),
+        },
+        [HebaoStep.Approve_User_Denied]: {
+          view: (
+            <Approve_User_Denied
+              btnInfo={backToApproveBtnInfo}
+              {...{
+                ...rest,
+                t,
+              }}
+            />
+          ),
+        },
+        [HebaoStep.Approve_Success]: {
+          view: (
+            <Approve_Success
+              btnInfo={closeBtnInfo}
+              {...{
+                ...rest,
+                t,
+              }}
+            />
+          ),
+        },
+        [HebaoStep.Approve_Failed]: {
+          view: (
+            <Approve_Failed
+              btnInfo={closeBtnInfo}
+              {...{
+                ...rest,
+                ...options,
+                t,
+              }}
+            />
+          ),
+        },
+
+        [HebaoStep.Reject_WaitForAuth]: {
+          view: (
+            <Reject_WaitForAuth
+              {...{
+                ...rest,
+                t,
+              }}
+            />
+          ),
+        },
+        [HebaoStep.Reject_User_Denied]: {
+          view: (
+            <Reject_User_Denied
+              btnInfo={backToRejectBtnInfo}
+              {...{
+                ...rest,
+                t,
+              }}
+            />
+          ),
+        },
+        [HebaoStep.Reject_Success]: {
+          view: (
+            <Reject_Success
+              btnInfo={closeBtnInfo}
+              {...{
+                ...rest,
+                t,
+              }}
+            />
+          ),
+        },
+        [HebaoStep.Reject_Failed]: {
+          view: (
+            <Reject_Failed
+              btnInfo={closeBtnInfo}
+              {...{
+                ...rest,
+                ...options,
                 t,
               }}
             />

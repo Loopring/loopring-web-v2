@@ -534,4 +534,6 @@ export default {
   labelHebaoGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
   labelUnknown: "unknown",
+  labelApprove: "Approve",
+  labelReject: "Reject",
 };

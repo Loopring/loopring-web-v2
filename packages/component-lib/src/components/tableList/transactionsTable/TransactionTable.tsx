@@ -321,6 +321,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           key: "txnHash",
           name: t("labelTxTxnHash"),
           headerCellClass: "textAlignRight",
+          cellClass: "textAlignRight",
           formatter: ({ row }) => {
             if (row.txHash || row.blockIdInfo.blockId) {
               const path =
@@ -332,6 +333,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               const hash = row.txHash !== "" ? row.txHash : row.hash;
               return (
                 <Box
+                  className="rdg-cell-value textAlignRight"
                   display={"inline-flex"}
                   justifyContent={"flex-end"}
                   alignItems={"center"}
@@ -411,8 +413,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               };
               return (
                 <Box
-                  className="rdg-cell-value "
-                  display={"flex"}
+                  className="rdg-cell-value textAlignRight"
+                  display={"inline-flex"}
                   justifyContent={"flex-end"}
                   alignItems={"center"}
                 >

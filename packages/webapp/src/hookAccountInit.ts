@@ -10,7 +10,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state });
   const {
     updateWalletLayer1,
-    resetLayer1,
     status: walletLayer1Status,
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1();
