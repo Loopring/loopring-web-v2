@@ -331,7 +331,7 @@ export const useNFTTransfer = <
           });
           // const sellTokenID = nftTransferValue.tokenId
           // const sellToken = tokenMap[nftTransferValue.belong as string]
-          const feeToken = tokenMap[nftTransferValue.belong];
+          const feeToken = tokenMap[nftTransferValue.fee.belong];
           const fee = sdk.toBig(nftTransferValue.__raw__?.feeRaw ?? 0);
           const tradeValue = nftTransferValue.tradeValue;
           const balance = nftTransferValue.nftBalance;
@@ -348,6 +348,7 @@ export const useNFTTransfer = <
             },
             apiKey
           );
+          debugger;
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,

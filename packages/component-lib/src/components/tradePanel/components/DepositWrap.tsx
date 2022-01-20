@@ -3,7 +3,12 @@ import { TradeBtnStatus } from "../Interface";
 import { WithTranslation } from "react-i18next";
 import React, { ChangeEvent } from "react";
 import { Grid, Typography } from "@mui/material";
-import { Button, IconClearStyled, TextField } from "../../../index";
+import {
+  Button,
+  IconClearStyled,
+  TextField,
+  useSettings,
+} from "../../../index";
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import * as _ from "lodash";
@@ -32,6 +37,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   ...rest
 }: DepositViewProps<T, I> & WithTranslation) => {
   const inputBtnRef = React.useRef();
+  let { feeChargeOrder } = useSettings();
 
   const getDisabled = React.useMemo(() => {
     if (
@@ -132,12 +138,16 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     } else if (isNewAccount) {
       return (
         <Typography
-          color={"var(--color-warning)"}
+          color={"var(--color-text-third)"}
           component={"p"}
           variant={"body1"}
           marginBottom={1}
         >
-          {t("labelIsNotFeeToken")}
+          {t("labelIsNotFeeToken", {
+            symbol:
+              chargeFeeTokenList?.map((item) => item.belong ?? "") ??
+              feeChargeOrder,
+          })}
         </Typography>
       );
     } else {
