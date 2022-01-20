@@ -16,6 +16,7 @@ import {
 import { TablePaddingX } from "../../styled";
 
 import { NFTTableProps, TsTradeStatus, TxnDetailProps } from "./Interface";
+import { TxType } from "@loopring-web/loopring-sdk";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
