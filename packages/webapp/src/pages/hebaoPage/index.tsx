@@ -30,6 +30,7 @@ import { HebaoValidationInfo } from "./HebaoValidationInfo";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
+import { HebaoHistory } from "./HebaoHistory";
 
 const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
   ({ t }: any) => {
@@ -69,8 +70,15 @@ export const HebaoPage = withTranslation(["common"])(
     let options;
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
-    const { protectList, guardiansList, hebaoConfig, openHebao, setOpenHebao } =
-      useHebaoMain();
+    const {
+      protectList,
+      guardiansList,
+      hebaoConfig,
+      openHebao,
+      operationLogList,
+      setOpenHebao,
+      loadData,
+    } = useHebaoMain();
     const handleOpenModal = ({
       step,
       options,
@@ -95,6 +103,14 @@ export const HebaoPage = withTranslation(["common"])(
             <HebaoValidationInfo
               {...{ guardiansList, hebaoConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
+              loadData={loadData}
+            />
+          );
+        case "hebao-history":
+          return (
+            <HebaoHistory
+              operationLogList={operationLogList}
+              hebaoConfig={hebaoConfig}
             />
           );
         case "hebao-protected":

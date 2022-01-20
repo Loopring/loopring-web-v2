@@ -18,6 +18,7 @@ const InputCodeStyle = styled(Box)`
   //}
   .code-inputs input {
     border: none;
+    color: var(--text-third);
     background-color: var(--field-opacity);
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -33,10 +34,10 @@ const InputCodeStyle = styled(Box)`
   .code-inputs input:focus {
     outline: none;
   }
-  .code-inputs input:first-child {
+  .code-inputs input:first-of-type {
     margin-left: 24px;
   }
-  .code-inputs input:nth-child(3n) {
+  .code-inputs input:nth-of-type(3n) {
     margin-right: 24px;
   }
 ` as typeof Box;
@@ -119,4 +120,4 @@ const InputCode = ({
   );
 };
 
-export default InputCode;
+export { InputCode };

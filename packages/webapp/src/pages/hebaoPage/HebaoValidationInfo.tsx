@@ -1,10 +1,30 @@
-import { Guardian, Protector } from "@loopring-web/loopring-sdk";
-import { Box, ListItem, ListItemProps, ListItemText } from "@mui/material";
+import {
+  Box,
+  ListItem,
+  ListItemProps,
+  ListItemText,
+  Modal,
+  Typography,
+} from "@mui/material";
+import * as sdk from "@loopring-web/loopring-sdk";
+
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 import React from "react";
-import { myLog } from "@loopring-web/common-resources";
-import { HebaoStep } from "@loopring-web/component-lib";
+import {
+  Button,
+  ButtonListRightStyled,
+  HebaoStep,
+  InputCode,
+  ModalCloseButton,
+  SwitchPanelStyled,
+} from "@loopring-web/component-lib";
+import { LoopringAPI } from "../../api_wrapper";
+import Web3 from "web3";
+
+import { connectProvides } from "@loopring-web/web3-provider";
+import { useAccount } from "../../stores/account";
+import { useSystem } from "../../stores/system";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -37,22 +57,18 @@ const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   }
 ` as (prosp: ListItemProps) => JSX.Element;
 
-export const HebaoGuardianItem = <G extends Guardian>({
+export const HebaoGuardianItem = <G extends sdk.Guardian>({
   guardian,
+  handleOpenApprove,
+  handleReject,
 }: {
+  submitApprove: (args: any) => void;
+  handleOpenApprove: (guardians: G) => void;
+  handleReject: (guardians: G) => void;
   guardian: G;
 }) => {
   const { t } = useTranslation("common");
-  const { address, ens, type, id, businessDataJson } = guardian;
-  const newOwner = (businessDataJson as any)?.value?.value?.newOwner;
-  const statusView = React.useMemo(() => {
-    switch (type) {
-      case "recovery":
-        break;
-      case "transfer":
-        break;
-    }
-  }, [type]);
+  const { address, ens, type } = guardian;
 
   return (
     <HebaoGuardianStyled alignItems="flex-start" className={`Hebao`}>
@@ -84,40 +100,221 @@ export const HebaoGuardianItem = <G extends Guardian>({
           />
         </Box>
         <Box
-          width={100}
+          min-width={200}
           display={"flex"}
-          justifyContent={"flex-end"}
+          flexDirection={"column"}
+          alignItems={"flex-end"}
+          justifyContent={"center"}
           title={type}
-          alignItems={"center"}
         >
-          {type}
+          <Typography color={"--color-text-secondary"} paddingRight={1}>
+            {type.replace("_", " ").toUpperCase()}
+          </Typography>
+          <ButtonListRightStyled
+            item
+            xs={5}
+            marginTop={1}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"flex-end"}
+          >
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              onClick={() => handleOpenApprove(guardian)}
+            >
+              <Typography paddingX={2}> {t("labelApprove")}</Typography>
+            </Button>
+            <Button
+              variant={"outlined"}
+              color={"primary"}
+              onClick={() => handleReject(guardian)}
+            >
+              <Typography paddingX={2}> {t("labelReject")} </Typography>
+            </Button>
+          </ButtonListRightStyled>
         </Box>
       </Box>
     </HebaoGuardianStyled>
   );
 };
-export const HebaoValidationInfo = <G extends Guardian>({
+export const HebaoValidationInfo = <G extends sdk.Guardian>({
   guardiansList,
-  hebaoConfig,
+  loadData,
   handleOpenModal,
 }: {
   guardiansList: G[];
   hebaoConfig: any;
+  loadData: () => Promise<void>;
   handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
 }) => {
-  myLog(guardiansList);
+  const { t } = useTranslation(["common"]);
+  const [openCode, setOpenCode] = React.useState(false);
+  const [selected, setSelected] = React.useState<G | undefined>();
+  const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true);
+  const { account } = useAccount();
+  const { chainId } = useSystem();
+
+  const VCODE_UNIT = 6;
+  const submitApprove = (code: string) => {
+    setOpenCode(false);
+    handleOpenModal({
+      step: HebaoStep.Approve_WaitForAuth,
+      options: {
+        approveRetry: () => {
+          submitApprove(code);
+        },
+      },
+    });
+    if (LoopringAPI.walletAPI && selected) {
+      const request: sdk.ApproveSignatureRequest = {
+        approveRecordId: selected.id,
+        txAwareHash: selected.messageHash,
+        securityNumber: code,
+        signer: account.accAddress,
+        signature: "",
+      };
+      LoopringAPI.walletAPI
+        .submitApproveSignature({
+          request: request,
+          guardian: selected,
+          web3: connectProvides.usedWeb3 as Web3,
+          chainId: chainId as any,
+          eddsaKey: "",
+          apiKey: "",
+          isHWAddr: !isFirstTime,
+          walletType: account.connectName as any,
+        })
+        .then((result: any) => {
+          if (!result || result.error || result.raw_data.error) {
+            handleOpenModal({
+              step: HebaoStep.Approve_Failed,
+              options: {
+                error: result.error
+                  ? result.error.msg
+                  : result.raw_data.message,
+              },
+            });
+          } else {
+            handleOpenModal({
+              step: HebaoStep.Approve_Success,
+            });
+            loadData();
+          }
+        })
+        .catch((error: any) => {
+          setIsFirstTime((state) => !state);
+          handleOpenModal({
+            step: HebaoStep.Approve_Failed,
+            options: { error: error.message },
+          });
+        });
+    }
+  };
+  const handleReject = (guardian: G) => {
+    handleOpenModal({
+      step: HebaoStep.Reject_WaitForAuth,
+      options: {
+        approveRetry: () => {
+          handleReject(guardian);
+        },
+      },
+    });
+    if (LoopringAPI.walletAPI && guardian) {
+      const request = {
+        approveRecordId: guardian.id,
+        signer: account.accAddress,
+      };
+      LoopringAPI.walletAPI
+        .rejectHebao({
+          request,
+          web3: connectProvides.usedWeb3 as Web3,
+          address: account.accAddress,
+          chainId: chainId as any,
+          guardiaContractAddress: guardian.address,
+          walletType: account.connectName as any,
+        })
+        .then((result: any) => {
+          if (!result || result.error || result.raw_data.error) {
+            handleOpenModal({
+              step: HebaoStep.Reject_Failed,
+              options: {
+                error: result.error
+                  ? result.error.msg
+                  : result.raw_data.message,
+              },
+            });
+          } else {
+            handleOpenModal({
+              step: HebaoStep.Approve_Success,
+            });
+            loadData();
+          }
+        })
+        .catch((error: any) => {
+          handleOpenModal({
+            step: HebaoStep.Approve_Failed,
+            options: { error: error.message },
+          });
+        });
+    }
+  };
+  const handleOpenApprove = (guardians: G) => {
+    setOpenCode(true);
+    setSelected(guardians);
+  };
   return (
-    <Box
-      paddingTop={3}
-      borderRadius={2}
-      flex={1}
-      marginBottom={0}
-      display={"flex"}
-      flexDirection={"column"}
-    >
-      {guardiansList.map((guardian, index) => {
-        return <HebaoGuardianItem key={index} guardian={guardian} />;
-      })}
-    </Box>
+    <>
+      <Modal open={openCode} onClose={() => setOpenCode(false)}>
+        <SwitchPanelStyled>
+          <Box display={"flex"} flexDirection={"column"}>
+            <ModalCloseButton onClose={() => setOpenCode(false)} t={t as any} />
+            <Box padding={3}>
+              <InputCode
+                length={VCODE_UNIT}
+                onComplete={submitApprove}
+                loading={false}
+              />
+              <Box display={"flex"} marginTop={4} justifyContent={"center"}>
+                <Button
+                  variant={"contained"}
+                  size={"small"}
+                  color={"primary"}
+                  onClick={() => setOpenCode(false)}
+                >
+                  <Typography paddingX={2}> {t("labelCancel")}</Typography>
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </SwitchPanelStyled>
+      </Modal>
+      <Box
+        paddingTop={3}
+        borderRadius={2}
+        flex={1}
+        marginBottom={0}
+        display={"flex"}
+        flexDirection={"column"}
+      >
+        <Typography paddingX={5 / 2} component={"h3"} variant={"h5"}>
+          {t("labelCommonList")}
+        </Typography>
+        <Box flex={1}>
+          {guardiansList.map((guardian, index) => {
+            return (
+              <HebaoGuardianItem
+                key={index}
+                guardian={guardian}
+                submitApprove={submitApprove}
+                handleReject={handleReject}
+                handleOpenApprove={handleOpenApprove}
+              />
+            );
+          })}
+        </Box>
+      </Box>
+    </>
   );
 };

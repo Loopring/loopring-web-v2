@@ -231,7 +231,7 @@ export const ModalCloseButton = ({
   onClose?: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
-} & WithTranslation) => {
+} & { t: TFunction }) => {
   return (
     <Box
       className={"close-button"}

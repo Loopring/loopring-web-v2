@@ -8,6 +8,7 @@ import {
 import { LoopringAPI } from "../../api_wrapper";
 import {
   Guardian,
+  HebaoOperationLog,
   LockHebaoHebaoParam,
   Protector,
 } from "@loopring-web/loopring-sdk";
@@ -16,15 +17,26 @@ import { HebaoStep } from "@loopring-web/component-lib";
 import { useSystem } from "../../stores/system";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-export const useHebaoMain = <T extends Protector, G extends Guardian>() => {
+export const useHebaoMain = <
+  T extends Protector,
+  G extends Guardian,
+  H extends HebaoOperationLog
+>() => {
   const { account, status: accountStatus } = useAccount();
-  const [{ hebaoConfig, protectList, guardiansList, history }, setList] =
-    React.useState<{
-      hebaoConfig: any;
-      protectList: T[];
-      guardiansList: G[];
-      history: any;
-    }>({ protectList: [], guardiansList: [], history: [], hebaoConfig: {} });
+  const [
+    { hebaoConfig, protectList, guardiansList, operationLogList },
+    setList,
+  ] = React.useState<{
+    hebaoConfig: any;
+    protectList: T[];
+    guardiansList: G[];
+    operationLogList: H[];
+  }>({
+    protectList: [],
+    guardiansList: [],
+    operationLogList: [],
+    hebaoConfig: {},
+  });
   const [openHebao, setOpenHebao] = React.useState<{
     isShow: boolean;
     step: HebaoStep;
@@ -37,44 +49,46 @@ export const useHebaoMain = <T extends Protector, G extends Guardian>() => {
 
   const loadData = async () => {
     if (LoopringAPI.walletAPI && account.accAddress) {
-      const [{ raw_data: hebaoConfig }, protector, guardian, logData]: any =
-        await Promise.all([
-          LoopringAPI.walletAPI.getHebaoConfig(),
-          LoopringAPI.walletAPI.getProtectors(
-            {
-              guardian: account.accAddress,
-            },
-            account.apiKey
-          ),
-          // api/wallet/v3/operationLogs
-          LoopringAPI.walletAPI
-            .getGuardianApproveList({
-              guardian: account.accAddress,
-            })
-            .then((guardian) => {
-              guardian?.guardiansArray.map((ele) => {
-                ele.businessDataJson = JSON.parse(ele.businessDataJson ?? "");
-                return ele;
-              });
-              return guardian;
-            }),
-          LoopringAPI.walletAPI.getHebaoOperationLogs({
-            from: account.accAddress,
-            fromTime: 0,
-            offset: 0,
-            limit: 50,
-            // to?: string;
-            // offset?: number;
-            // network?: 'ETHEREUM';
-            // statues?: string;
-            // hebaoTxType?: string;
-            // limit?: number;
+      const [
+        { raw_data: hebaoConfig },
+        protector,
+        guardian,
+        hebaooperationlog,
+      ]: any = await Promise.all([
+        LoopringAPI.walletAPI.getHebaoConfig(),
+        LoopringAPI.walletAPI.getProtectors(
+          {
+            guardian: account.accAddress,
+          },
+          account.apiKey
+        ),
+        // api/wallet/v3/operationLogs
+        LoopringAPI.walletAPI
+          .getGuardianApproveList({
+            guardian: account.accAddress,
+          })
+          .then((guardian) => {
+            guardian?.guardiansArray.map((ele) => {
+              ele.businessDataJson = JSON.parse(ele.businessDataJson ?? "");
+              return ele;
+            });
+            return guardian;
           }),
-        ])
-          .then(([protector, guardians]) => [protector, guardians])
-          .catch((error) => {
-            myLog(error);
-          });
+        LoopringAPI.walletAPI.getHebaoOperationLogs({
+          from: account.accAddress,
+          fromTime: 0,
+          offset: 0,
+          limit: 50,
+          // to?: string;
+          // offset?: number;
+          // network?: 'ETHEREUM';
+          // statues?: string;
+          // hebaoTxType?: string;
+          // limit?: number;
+        }),
+      ]).catch((error) => {
+        myLog(error);
+      });
       const _guardiansList: G[] = guardian?.guardiansArray
         ? guardian.guardiansArray.reduce((prev: G[], approve: G) => {
             const _protector = protector.protectorArray?.find(
@@ -88,12 +102,11 @@ export const useHebaoMain = <T extends Protector, G extends Guardian>() => {
             return prev;
           }, [] as G[])
         : [];
-      console.log("actionGasSettings", hebaoConfig);
 
       setList({
         protectList: protector.protectorArray ?? [],
         guardiansList: _guardiansList,
-        history,
+        operationLogList: hebaooperationlog?.operationArray ?? [],
         hebaoConfig,
       });
     }
@@ -103,7 +116,15 @@ export const useHebaoMain = <T extends Protector, G extends Guardian>() => {
       loadData();
     }
   }, [accountStatus]);
-  return { protectList, guardiansList, hebaoConfig, openHebao, setOpenHebao };
+  return {
+    protectList,
+    guardiansList,
+    hebaoConfig,
+    openHebao,
+    operationLogList,
+    setOpenHebao,
+    loadData,
+  };
 };
 export const useHebaoProtector = <T extends Protector>({
   hebaoConfig,
@@ -135,14 +156,26 @@ export const useHebaoProtector = <T extends Protector>({
             connectProvides.provideName === ConnectProviders.MetaMask,
         };
         try {
-          await LoopringAPI.walletAPI.lockHebaoWallet(params);
+          const { result, error } = await LoopringAPI.walletAPI.lockHebaoWallet(
+            params
+          );
+          if (result) {
+            handleOpenModal({
+              step: HebaoStep.LockAccount_Success,
+            });
+          } else {
+            handleOpenModal({
+              step: HebaoStep.LockAccount_Failed,
+              options: { error: error.message },
+            });
+          }
         } catch (reason) {
           // result.code = ActionResultCode.ApproveFailed;
           // result.data = reason;
           sdk.dumpError400(reason);
           handleOpenModal({
             step: HebaoStep.LockAccount_User_Denied,
-            options: { reason },
+            options: { error: reason.message },
           });
         }
       }

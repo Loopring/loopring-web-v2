@@ -82,6 +82,6 @@ export default {
   labelCopyRight: "© 2017 Loopring Technology Limited. All rights reserved.",
 
   labelHebaoProtect: "Guardian",
-  labelHebaoValidation: "Pending On you",
+  labelHebaoValidation: "Ask approve",
   labelHebaoHistory: "History",
 };

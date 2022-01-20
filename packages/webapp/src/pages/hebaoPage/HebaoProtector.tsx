@@ -185,7 +185,10 @@ export const HebaoProtector = <T extends Protector>({
   const { account } = useAccount();
   const { t } = useTranslation(["common"]);
   const [openQRCode, setOpenQRCode] = React.useState(false);
-  const { onLock } = useHebaoProtector({ hebaoConfig, handleOpenModal });
+  const { onLock } = useHebaoProtector({
+    hebaoConfig,
+    handleOpenModal,
+  });
   const description = () => (
     <Typography
       marginTop={2}

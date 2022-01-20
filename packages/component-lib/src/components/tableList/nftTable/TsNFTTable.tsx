@@ -17,7 +17,6 @@ import {
 import { TablePaddingX } from "../../styled";
 
 import { NFTTableProps, TsTradeStatus, TxnDetailProps } from "./Interface";
-import { TxType } from "@loopring-web/loopring-sdk";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
@@ -128,6 +127,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
         {
           key: "txnHash",
           name: t("labelTxTxnHash"),
+          cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const path =
               row.txHash !== ""
@@ -136,6 +136,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             const hash = row.txHash !== "" ? row.txHash : row.hash;
             return (
               <Box
+                className="rdg-cell-value"
                 display={"inline-flex"}
                 justifyContent={"flex-end"}
                 alignItems={"center"}
