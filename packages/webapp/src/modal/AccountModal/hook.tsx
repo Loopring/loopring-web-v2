@@ -166,9 +166,9 @@ export function useAccountModalForUI({
     processRequest: transferProcessRequest,
   } = useTransfer();
   const {
-    nftTransferToastOpen,
-    nftTransferAlertText,
-    setNFTTransferToastOpen,
+    // nftTransferToastOpen,
+    // nftTransferAlertText,
+    // setNFTTransferToastOpen,
     nftTransferProps,
     processRequestNFT: transferProcessRequestNFT,
     lastNFTRequest: transferNFTRequest,
@@ -1503,13 +1503,9 @@ export function useAccountModalForUI({
   const currentModal = accountList[isShowAccount.step];
 
   return {
-    nftTransferToastOpen,
-    nftTransferAlertText,
-    setNFTTransferToastOpen,
     nftTransferProps,
     transferProcessRequestNFT,
     transferNFTRequest,
-    // nftWithdrawToastOpen,
     setNFTWithdrawToastOpen,
     nftWithdrawProps,
     withdrawProcessRequestNFT,
