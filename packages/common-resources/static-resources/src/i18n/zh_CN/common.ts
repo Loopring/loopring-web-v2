@@ -424,7 +424,7 @@ export default {
   labelProviderAgree:
     "I have read, understand, and agree to the <1> Terms of Service </1>.",
   labelNFTName: "NFT Name:",
-  labelNFTDetail: "Detail:",
+  labelNFTDetail: "Detail",
   labelNFTTokenStandard: "Token Standard:",
   labelNFTTokenMinted: "Token Minted:",
   labelNFTDescription: "Description:",

@@ -21,6 +21,7 @@ import {
 import { useMyNFT } from "./hook";
 import { NFTDetail } from "./components/detail";
 import {
+  EmptyValueTag,
   getShortAddr,
   getShowStr,
   IPFS_META_URL,
@@ -147,7 +148,7 @@ export const MyNFTPanel = withTranslation("common")(
                               color={"text.secondary"}
                               component={"h6"}
                             >
-                              {item?.name}
+                              {item?.name ?? EmptyValueTag}
                             </Typography>
                             <Typography
                               color={"--color-text-primary"}

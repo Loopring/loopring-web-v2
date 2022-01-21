@@ -222,14 +222,14 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             className={"scrollable"}
             {...{ ...defaultArgs, ...props, rawData, showloading }}
           />
-          {pagination && (
-            <TablePagination
-              page={page}
-              pageSize={pagination.pageSize}
-              total={pagination.total}
-              onPageChange={handlePageChange}
-            />
-          )}
+          {/*{pagination && (*/}
+          {/*  <TablePagination*/}
+          {/*    page={page}*/}
+          {/*    pageSize={pagination.pageSize}*/}
+          {/*    total={pagination.total}*/}
+          {/*    onPageChange={handlePageChange}*/}
+          {/*  />*/}
+          {/*)}*/}
         </TableStyled>
       </>
     );
