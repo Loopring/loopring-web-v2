@@ -1,5 +1,10 @@
 import { Box, Link, Typography } from "@mui/material";
-import { IPFS_META_URL, NFTWholeINFO } from "@loopring-web/common-resources";
+import {
+  getShortAddr,
+  getShowStr,
+  IPFS_META_URL,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
 import {
   Button,
   ModalBackButton,
@@ -100,7 +105,7 @@ export const NFTDetail = withTranslation("common")(
               {t("labelNFTTokenID")}
             </Typography>
             <Typography color={"text.primary"} variant={"h2"} marginTop={2}>
-              #{popItem?.tokenId}{" "}
+              #{" " + getShortAddr(popItem?.nftId ?? "")}
             </Typography>
           </Box>
           <Box

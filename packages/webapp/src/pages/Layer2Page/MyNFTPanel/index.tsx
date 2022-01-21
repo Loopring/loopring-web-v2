@@ -20,7 +20,11 @@ import {
 } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
 import { NFTDetail } from "./components/detail";
-import { IPFS_META_URL } from "@loopring-web/common-resources";
+import {
+  getShortAddr,
+  getShowStr,
+  IPFS_META_URL,
+} from "@loopring-web/common-resources";
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 import SwipeableViews from "react-swipeable-views";
 import { useTheme } from "@emotion/react";
@@ -149,9 +153,12 @@ export const MyNFTPanel = withTranslation("common")(
                               color={"--color-text-primary"}
                               component={"p"}
                               paddingTop={1}
-                              title={item?.tokenId?.toString()}
+                              minWidth={164}
+                              textOverflow={"ellipsis"}
+                              title={item?.nftId?.toString()}
                             >
-                              {t("labelNFTTokenID")} #{item?.tokenId}
+                              {t("labelNFTTokenID")} #
+                              {" " + getShortAddr(item?.nftId ?? "")}
                             </Typography>
                           </Box>
 
@@ -161,6 +168,7 @@ export const MyNFTPanel = withTranslation("common")(
                               component={"div"}
                               height={40}
                               paddingX={3}
+                              whiteSpace={"pre"}
                               display={"inline-flex"}
                               alignItems={"center"}
                               color={"textPrimary"}
