@@ -3,7 +3,7 @@ import {
   L2HistoryIcon,
   L2MyLiquidityIcon,
   L2OrderIcon,
-  NFTIcon,
+  // NFTIcon,
   SecurityIcon,
   VipIcon,
 } from "../svg";
@@ -140,14 +140,14 @@ export const subMenuLayer2 = {
         i18nKey: "labelAssets",
       },
     },
-    {
-      icon: NFTIcon,
-      router: { path: "/layer2/my-nft" },
-      label: {
-        id: "my-nft",
-        i18nKey: "labelMyNFT",
-      },
-    },
+    // {
+    //   icon: NFTIcon,
+    //   router: { path: "/layer2/my-nft" },
+    //   label: {
+    //     id: "my-nft",
+    //     i18nKey: "labelMyNFT",
+    //   },
+    // },
     {
       icon: L2MyLiquidityIcon,
       router: { path: "/layer2/my-liquidity" },
