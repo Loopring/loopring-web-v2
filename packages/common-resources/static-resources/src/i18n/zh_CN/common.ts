@@ -523,4 +523,5 @@ export default {
   labelUnknown: "unknown",
   labelApprove: "Approve",
   labelReject: "Reject",
+  labelYourBalance: "You have {{balance}}.",
 };

@@ -61,8 +61,9 @@ export function useChargeFees({
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<boolean>(false);
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
-  const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
   const handleFeeChange = (value: FeeInfo): void => {
+    const walletMap =
+      makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
     if (
       walletMap &&
       value?.belong &&
