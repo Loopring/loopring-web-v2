@@ -601,7 +601,9 @@ export const TransferWrap = <
                     setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
                   }
                 >
-                  {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}{" "}
+                  {feeInfo && feeInfo.belong && feeInfo.fee
+                    ? feeInfo.fee
+                    : EmptyValueTag}{" "}
                   {" " + feeInfo.belong}
                   <DropdownIconStyled
                     status={dropdownStatus}

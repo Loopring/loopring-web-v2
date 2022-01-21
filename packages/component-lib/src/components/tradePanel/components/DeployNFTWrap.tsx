@@ -184,55 +184,66 @@ export const DeployNFTWrap = <
         </Box>
       </Grid>
       <Grid item alignSelf={"stretch"} position={"relative"}>
-        <Typography
-          component={"span"}
-          display={"flex"}
-          alignItems={"center"}
-          variant={"body1"}
-          color={"var(--color-text-secondary)"}
-          marginBottom={1}
-        >
-          {t("transferLabelFee")}：
-          <Box
-            component={"span"}
-            display={"flex"}
-            alignItems={"center"}
-            style={{ cursor: "pointer" }}
-            onClick={() =>
-              setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
-            }
-          >
-            {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}
-            {" " + feeInfo.belong}
-            <DropdownIconStyled status={dropdownStatus} fontSize={"medium"} />
+        {!chargeFeeTokenList?.length ? (
+          <Typography>{t("labelFeeCalculating")}</Typography>
+        ) : (
+          <>
             <Typography
-              marginLeft={1}
               component={"span"}
-              color={"var(--color-error)"}
-            >
-              {isFeeNotEnough && (
-                <Trans i18nKey={"transferLabelFeeNotEnough"}>
-                  Insufficient balance
-                </Trans>
-              )}
-            </Typography>
-          </Box>
-        </Typography>
-        {dropdownStatus === "up" && (
-          <FeeTokenItemWrapper padding={2}>
-            <Typography
-              variant={"body2"}
-              color={"var(--color-text-third)"}
+              display={"flex"}
+              alignItems={"center"}
+              variant={"body1"}
+              color={"var(--color-text-secondary)"}
               marginBottom={1}
             >
-              {t("labelActiveEnterToken")}
+              {t("transferLabelFee")}：
+              <Box
+                component={"span"}
+                display={"flex"}
+                alignItems={"center"}
+                style={{ cursor: "pointer" }}
+                onClick={() =>
+                  setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
+                }
+              >
+                {feeInfo && feeInfo.belong && feeInfo.fee
+                  ? feeInfo.fee
+                  : EmptyValueTag}
+                {" " + feeInfo.belong}
+                <DropdownIconStyled
+                  status={dropdownStatus}
+                  fontSize={"medium"}
+                />
+                <Typography
+                  marginLeft={1}
+                  component={"span"}
+                  color={"var(--color-error)"}
+                >
+                  {isFeeNotEnough && (
+                    <Trans i18nKey={"transferLabelFeeNotEnough"}>
+                      Insufficient balance
+                    </Trans>
+                  )}
+                </Typography>
+              </Box>
             </Typography>
-            <FeeToggle
-              chargeFeeTokenList={chargeFeeTokenList}
-              handleToggleChange={handleToggleChange}
-              feeInfo={feeInfo}
-            />
-          </FeeTokenItemWrapper>
+            {dropdownStatus === "up" && (
+              <FeeTokenItemWrapper padding={2}>
+                <Typography
+                  variant={"body2"}
+                  color={"var(--color-text-third)"}
+                  marginBottom={1}
+                >
+                  {t("labelActiveEnterToken")}
+                </Typography>
+                <FeeToggle
+                  chargeFeeTokenList={chargeFeeTokenList}
+                  handleToggleChange={handleToggleChange}
+                  feeInfo={feeInfo}
+                />
+              </FeeTokenItemWrapper>
+            )}
+          </>
         )}
       </Grid>
       <Grid item marginTop={3} alignSelf={"stretch"}>

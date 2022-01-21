@@ -359,7 +359,9 @@ export const WithdrawWrap = <
                   setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
                 }
               >
-                {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}
+                {feeInfo && feeInfo.belong && feeInfo.fee
+                  ? feeInfo.fee
+                  : EmptyValueTag}
                 {" " + feeInfo.belong}
                 <Typography
                   marginLeft={1}
