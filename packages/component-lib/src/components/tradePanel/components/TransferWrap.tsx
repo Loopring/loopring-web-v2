@@ -356,7 +356,7 @@ export const TransferWrap = <
           <>
             {getTransferConfirmTemplate(
               t("labelTransferAddress"),
-              tradeData["address"]
+              address ?? ""
             )}
             {realAddr && (
               <Typography fontSize={14} color={"var(--color-text-secondary)"}>

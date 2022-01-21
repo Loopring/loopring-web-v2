@@ -337,7 +337,6 @@ export const useNFTTransfer = <
             },
             apiKey
           );
-          debugger;
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,
