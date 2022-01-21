@@ -72,3 +72,6 @@ npm run storybook
 
 - [Wallet](https://security.loopring.io/)
 - [Protocol Audit](https://loopring.org/resources/loopring1.0_audit.pdf)
+
+## Release Process
+alpha.loopring.io, beta.loopring.io, static.loopring.io, and loopring.io are now auto deployed using Vercel.
