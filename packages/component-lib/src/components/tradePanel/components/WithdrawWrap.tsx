@@ -276,7 +276,7 @@ export const WithdrawWrap = <
             label={t("withdrawLabelAddress")}
             placeholder={t("labelPleaseInputWalletAddress")}
             onChange={_handleOnAddressChange}
-            disabled={chargeFeeTokenList.length ? false : true}
+            // disabled={chargeFeeTokenList.length ? false : true}
             SelectProps={{ IconComponent: DropDownIcon }}
             helperText={
               <Typography variant={"body2"} component={"span"}>
