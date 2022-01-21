@@ -17,7 +17,6 @@ const StyleBox = styled(Box)`
 
 export const ErrorPage = ({ messageKey }: ErrorObject) => {
   // const {messageKey}: { id?:string,messageKey:string } = {messageKey: 'errorMessageTokenMapIsEmpty'};
-  //TODO: checkRouter
   const { t } = useTranslation("error");
   const message = `labelConnectUs`;
   return (
