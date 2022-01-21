@@ -5,6 +5,7 @@ import {
   L2MyLiquidityIcon,
   L2OrderIcon,
   NFTIcon,
+  // NFTIcon,
   SecurityIcon,
   VipIcon,
   WaitingIcon,
