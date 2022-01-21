@@ -3,6 +3,7 @@ import {
   L2HistoryIcon,
   L2MyLiquidityIcon,
   L2OrderIcon,
+  NFTIcon,
   SecurityIcon,
   VipIcon,
 } from "../svg";
@@ -140,7 +141,7 @@ export const subMenuLayer2 = {
       },
     },
     {
-      icon: L2MyLiquidityIcon,
+      icon: NFTIcon,
       router: { path: "/layer2/my-nft" },
       label: {
         id: "my-nft",

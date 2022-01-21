@@ -4,7 +4,7 @@
 //   transfer = "TRANSFER",
 // }
 
-import { TxType, UserTxTypes } from "@loopring-web/loopring-sdk";
+import { TxType } from "@loopring-web/loopring-sdk";
 
 export enum TsTradeStatus {
   processing = "processing",
@@ -12,14 +12,7 @@ export enum TsTradeStatus {
   received = "received",
   failed = "failed",
 }
-export type TxsFilterProps = {
-  tokenSymbol?: string;
-  start?: number;
-  end?: number;
-  offset?: number;
-  limit?: number;
-  types?: UserTxTypes[] | string;
-};
+
 export enum TxnDetailStatus {
   processed = "PROCESSED",
   processing = "PROCESSING",
@@ -36,23 +29,28 @@ export type TxnDetailProps = {
   from: string;
   to: string;
   amount: string;
-  fee: string;
-  memo?: string;
-  etherscanBaseUrl?: string;
-};
-
-export type RawDataTsNFTItem = {
-  amount: {
-    unit: string;
-    value: number;
-  };
   fee: {
     unit: string;
     value: number;
   };
+  blockId: number;
+  indexInBlock: number;
   memo?: string;
-  time: number;
-  txnHash: string;
-  status: TsTradeStatus;
-  path?: string;
+  createdAt: string;
+  nftData: string;
+  etherscanBaseUrl?: string;
 };
+
+export interface NFTTableProps {
+  etherscanBaseUrl?: string;
+  rawData: TxnDetailProps[];
+  pagination?: {
+    pageSize: number;
+    total: number;
+  };
+  txType: TxType;
+  getTxnList: (page: number) => Promise<void>;
+  // showFilter?: boolean;
+  showloading: boolean;
+  // accAddress?: string;
+}

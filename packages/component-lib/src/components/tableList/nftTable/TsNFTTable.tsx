@@ -1,29 +1,21 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Link, Modal } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { TFunction, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, Table, TablePagination } from "../../basic-lib";
+import { Column, Table } from "../../basic-lib";
 import {
   CompleteIcon,
   EmptyValueTag,
+  Explorer,
   getFormattedHash,
   getValuePrecisionThousand,
-  TableType,
   WaitingIcon,
   WarningIcon,
 } from "@loopring-web/common-resources";
-import { Filter } from "./components/Filter";
-import { TableFilterStyled, TablePaddingX } from "../../styled";
-import { DateRange } from "@mui/lab";
-import { TxType } from "@loopring-web/loopring-sdk";
-import {
-  RawDataTsNFTItem,
-  TsTradeStatus,
-  TxsFilterProps,
-  TxnDetailProps,
-} from "./Interface";
-import { TxnDetailPanel } from "../transactionsTable/components/modal";
+import { TablePaddingX } from "../../styled";
+
+import { NFTTableProps, TsTradeStatus, TxnDetailProps } from "./Interface";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
@@ -32,8 +24,7 @@ const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.failed, color: "error" },
 ];
 
-const CellStatus = ({ row }: any) => {
-  const status = row["status"];
+const CellStatus = ({ row: { status } }: any) => {
   const RenderValue = styled.div`
     display: flex;
     align-items: center;
@@ -59,22 +50,12 @@ const CellStatus = ({ row }: any) => {
   return RenderValueWrapper;
 };
 
-const MemoCellStyled = styled(Box)`
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: right;
-`;
-
 const TableStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    --template-columns: 120px auto auto auto 120px 150px !important;
-
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -98,155 +79,77 @@ const TableStyled = styled(Box)`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as typeof Box;
 
-export interface TransactionTableProps {
-  etherscanBaseUrl?: string;
-  rawData: RawDataTsNFTItem[];
-  pagination?: {
-    pageSize: number;
-    total: number;
-  };
-  getTxnList: ({
-    tokenSymbol,
-    start,
-    end,
-    limit,
-    offset,
-    types,
-  }: TxsFilterProps) => Promise<void>;
-  showFilter?: boolean;
-  showloading: boolean;
-  accAddress?: string;
-}
-
 export const TsNFTTable = withTranslation(["tables", "common"])(
-  (props: TransactionTableProps & WithTranslation) => {
-    const {
-      rawData,
-      pagination,
-      showFilter,
-      getTxnList,
-      showloading,
-      etherscanBaseUrl,
-      accAddress,
-    } = props;
-    const [modalState, setModalState] = React.useState(false);
-    const [txnDetailInfo, setTxnDetailInfo] = React.useState<TxnDetailProps>({
-      hash: "",
-      txHash: "",
-      status: "processed",
-      time: "",
-      from: "",
-      to: "",
-      amount: "",
-      fee: "",
-      memo: "",
-    });
-    const [page, setPage] = React.useState(1);
-    const [filterDate, setFilterDate] = React.useState<
-      DateRange<Date | string>
-    >(["", ""]);
-    const [filterToken, setFilterToken] = React.useState<string>("All Tokens");
-    const pageSize = pagination ? pagination.pageSize : 10;
+  <Row extends TxnDetailProps>(props: NFTTableProps & WithTranslation) => {
+    const { rawData, showloading, etherscanBaseUrl } = props;
+    // const [page, setPage] = React.useState(1);
+    // const updateData = React.useCallback(
+    //   (page) => {
+    //     setPage(page);
+    //     getTxnList(page);
+    //   },
+    //   [getTxnList]
+    // );
 
-    const updateData = React.useCallback(
-      ({
-        TableType,
-        currFilterDate = filterDate,
-        currFilterToken = filterToken,
-        currPage = page,
-      }) => {
-        let actualPage = currPage;
-        if (TableType === "filter") {
-          actualPage = 1;
-          setPage(1);
-        }
-        const tokenSymbol =
-          currFilterToken === "All Tokens" ? "" : currFilterToken;
-        const start = Number(moment(currFilterDate[0]).format("x"));
-        const end = Number(moment(currFilterDate[1]).format("x"));
-        getTxnList({
-          limit: pageSize,
-          offset: (actualPage - 1) * pageSize,
-          tokenSymbol: tokenSymbol,
-          start: Number.isNaN(start) ? -1 : start,
-          end: Number.isNaN(end) ? -1 : end,
-        });
-      },
-      [filterDate, filterToken, getTxnList, page, pageSize]
-    );
-    const handleTxnDetail = React.useCallback(
-      (prop: TxnDetailProps) => {
-        setModalState(true);
-        setTxnDetailInfo(prop);
-      },
-      [setModalState, setTxnDetailInfo]
-    );
-    const handleFilterChange = React.useCallback(
-      ({ date = filterDate, token = filterToken }) => {
-        setFilterDate(date);
-        setFilterToken(token);
-        updateData({
-          TableType: TableType.filter,
-          currFilterDate: date,
-          currFilterToken: token,
-        });
-      },
-      [updateData, filterDate, filterToken]
-    );
-
-    const handleReset = React.useCallback(() => {
-      setFilterDate([null, null]);
-      setFilterToken("All Tokens");
-      updateData({
-        TableType: TableType.filter,
-        currFilterDate: [null, null],
-        currFilterToken: "All Tokens",
-      });
-    }, [updateData]);
-
-    const handlePageChange = React.useCallback(
-      (currPage: number) => {
-        if (currPage === page) return;
-        setPage(currPage);
-        updateData({ TableType: TableType.page, currPage: currPage });
-      },
-      [updateData, page]
-    );
+    // const handlePageChange = React.useCallback(
+    //   (currPage: number) => {
+    //     if (currPage === page) return;
+    //     setPage(currPage);
+    //     updateData({ TableType: TableType.page, currPage: currPage });
+    //   },
+    //   [updateData, page]
+    // );
 
     const getColumnModeTransaction = React.useCallback(
-      (t: TFunction): Column<any, unknown>[] => [
+      (t: TFunction): Column<Row, unknown>[] => [
         {
           key: "amount",
-          name: t("labelTxAmount"),
-          headerCellClass: "textAlignRight",
+          name: t("labelAmount"),
           formatter: ({ row }) => {
-            const { unit, value } = row["amount"];
-            const hasValue = Number.isFinite(value);
-            const hasSymbol =
-              row["side"] === "TRANSFER"
-                ? row["receiverAddress"]?.toUpperCase() ===
-                  accAddress?.toUpperCase()
-                  ? "+"
-                  : "-"
-                : row["side"] === "DEPOSIT"
-                ? "+"
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
-                ? "-"
-                : "";
-            const renderValue = hasValue
-              ? `${getValuePrecisionThousand(
-                  value,
-                  undefined,
-                  undefined,
-                  undefined,
-                  false,
-                  { isTrade: true }
-                )}`
-              : EmptyValueTag;
             return (
-              <Box className="rdg-cell-value textAlignRight">
-                {hasSymbol}
-                {renderValue} {unit || ""}
+              <>
+                <Typography
+                  variant={"body1"}
+                  component={"span"}
+                  marginRight={1}
+                >
+                  {row.amount}
+                </Typography>
+                <Typography variant={"body1"} component={"span"}>
+                  {getFormattedHash(row.nftData)}
+                </Typography>
+              </>
+            );
+          },
+        },
+        {
+          key: "txnHash",
+          name: t("labelTxTxnHash"),
+          formatter: ({ row }) => {
+            const path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer + `/tx/${row.blockId}-${row.indexInBlock}`;
+            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            return (
+              <Box
+                display={"inline-flex"}
+                justifyContent={"flex-end"}
+                alignItems={"center"}
+              >
+                <Typography
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  color={"var(--color-primary)"}
+                  onClick={() => window.open(path, "_blank")}
+                  title={hash}
+                >
+                  {hash ? getFormattedHash(hash) : EmptyValueTag}
+                </Typography>
+                <Box marginLeft={1}>
+                  <CellStatus {...{ row }} />
+                </Box>
               </Box>
             );
           },
@@ -274,107 +177,13 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           },
         },
         {
-          key: "txnHash",
-          name: t("labelTxTxnHash"),
-          headerCellClass: "textAlignRight",
-          formatter: ({ row }) => {
-            const path = row["path"] || "";
-            const value = row["txnHash"];
-            const RenderValue = styled(Box)`
-              color: ${({ theme }) =>
-                theme.colorBase[value ? "secondary" : "textSecondary"]};
-              cursor: pointer;
-            `;
-
-            const {
-              hash,
-              txHash,
-              txType,
-              status,
-              time,
-              receiverAddress,
-              recipient,
-              senderAddress,
-              amount,
-              fee,
-              memo,
-            } = row;
-
-            const receiver =
-              txType === TxType.TRANSFER
-                ? receiverAddress
-                : txType === TxType.OFFCHAIN_WITHDRAWAL
-                ? recipient
-                : "";
-            const formattedDetail = {
-              txType,
-              hash,
-              txHash,
-              status,
-              time,
-              from: senderAddress,
-              to: receiver,
-              fee: `${getValuePrecisionThousand(
-                fee.value,
-                undefined,
-                undefined,
-                undefined,
-                false,
-                {
-                  isTrade: true,
-                  floor: false,
-                }
-              )} ${fee.unit}`,
-              amount: `${getValuePrecisionThousand(
-                amount.value,
-                undefined,
-                undefined,
-                undefined,
-                false,
-                { isTrade: true }
-              )} ${amount.unit}`,
-              memo,
-              etherscanBaseUrl,
-            };
-            return (
-              <Box
-                className="rdg-cell-value "
-                display={"flex"}
-                justifyContent={"flex-end"}
-                alignItems={"center"}
-              >
-                {path ? (
-                  <Link href={path}>
-                    <RenderValue title={value}>
-                      {value || EmptyValueTag}
-                    </RenderValue>
-                  </Link>
-                ) : (
-                  <RenderValue
-                    onClick={() => handleTxnDetail(formattedDetail)}
-                    title={value}
-                  >
-                    {value ? getFormattedHash(value) : EmptyValueTag}
-                  </RenderValue>
-                )}
-                <Box marginLeft={1}>
-                  <CellStatus {...{ row }} />
-                </Box>
-              </Box>
-            );
-          },
-        },
-        {
-          key: "status",
+          key: "memo",
           name: t("labelTxMemo"),
           headerCellClass: "textAlignCenter",
           formatter: ({ row }) => (
-            <MemoCellStyled
-              title={row["memo"]}
-              className="rdg-cell-value textAlignLeft"
-            >
+            <Box title={row.memo} className="rdg-cell-value textAlignCenter">
               {row["memo"] || EmptyValueTag}
-            </MemoCellStyled>
+            </Box>
           ),
         },
         {
@@ -382,10 +191,10 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxTime"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const value = row["time"];
+            const value = row.createdAt;
             const hasValue = Number.isFinite(value);
             const renderValue = hasValue
-              ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
+              ? moment(new Date(value), "YYYYMMDDHHMM").fromNow()
               : EmptyValueTag;
             return (
               <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
@@ -393,7 +202,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [handleTxnDetail, etherscanBaseUrl]
+      [etherscanBaseUrl]
     );
 
     const defaultArgs: any = {
@@ -405,31 +214,19 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
 
     return (
       <>
-        <Modal open={modalState} onClose={() => setModalState(false)}>
-          <TxnDetailPanel {...{ ...txnDetailInfo }} />
-        </Modal>
-
         <TableStyled>
-          {showFilter && (
-            <TableFilterStyled>
-              <Filter
-                originalData={rawData}
-                filterDate={filterDate}
-                filterToken={filterToken}
-                handleFilterChange={handleFilterChange}
-                handleReset={handleReset}
-              />
-            </TableFilterStyled>
-          )}
-          <Table {...{ ...defaultArgs, ...props, rawData, showloading }} />
-          {pagination && (
-            <TablePagination
-              page={page}
-              pageSize={pageSize}
-              total={pagination.total}
-              onPageChange={handlePageChange}
-            />
-          )}
+          <Table
+            className={"scrollable"}
+            {...{ ...defaultArgs, ...props, rawData, showloading }}
+          />
+          {/*{pagination && (*/}
+          {/*  <TablePagination*/}
+          {/*    page={page}*/}
+          {/*    pageSize={pagination.pageSize}*/}
+          {/*    total={pagination.total}*/}
+          {/*    onPageChange={handlePageChange}*/}
+          {/*  />*/}
+          {/*)}*/}
         </TableStyled>
       </>
     );

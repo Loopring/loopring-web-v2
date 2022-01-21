@@ -36,13 +36,8 @@ import { useAddressCheck } from "hooks/common/useAddrCheck";
 import { useWalletInfo } from "stores/localStore/walletInfo";
 import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
-import {
-  updateActiveAccountData,
-  updateNFTTransferData,
-  useModalData,
-} from "stores/router";
+import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
-import { getFloatValue } from "utils/formatter_tool";
 import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
 
@@ -58,12 +53,6 @@ export const useNFTTransfer = <
   doTransferDone?: () => void;
 }) => {
   const { setShowAccount, setShowNFTTransfer } = useOpenModals();
-
-  const [nftTransferToastOpen, setNFTTransferToastOpen] =
-    React.useState<boolean>(false);
-
-  const [nftTransferAlertText, setNFTTransferAlertText] =
-    React.useState<string>();
 
   const {
     modals: {
@@ -332,7 +321,7 @@ export const useNFTTransfer = <
           // const sellTokenID = nftTransferValue.tokenId
           // const sellToken = tokenMap[nftTransferValue.belong as string]
           const feeToken = tokenMap[nftTransferValue.fee.belong];
-          const fee = sdk.toBig(nftTransferValue.__raw__?.feeRaw ?? 0);
+          const fee = sdk.toBig(nftTransferValue.fee.__raw__?.feeRaw ?? 0);
           const tradeValue = nftTransferValue.tradeValue;
           const balance = nftTransferValue.nftBalance;
           const isExceedBalance = sdk.toBig(tradeValue).gt(balance);
@@ -348,7 +337,6 @@ export const useNFTTransfer = <
             },
             apiKey
           );
-          debugger;
           const req: sdk.OriginNFTTransferRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
             fromAccountId: accountId,
@@ -449,9 +437,6 @@ export const useNFTTransfer = <
   };
 
   return {
-    nftTransferToastOpen,
-    nftTransferAlertText,
-    setNFTTransferToastOpen,
     nftTransferProps,
     processRequestNFT,
     lastNFTRequest,

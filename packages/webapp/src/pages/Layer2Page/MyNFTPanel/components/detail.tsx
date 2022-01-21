@@ -1,5 +1,11 @@
-import { Box, Link, Typography } from "@mui/material";
-import { IPFS_META_URL, NFTWholeINFO } from "@loopring-web/common-resources";
+import { Box, Link, TextareaAutosize, Typography } from "@mui/material";
+import {
+  EmptyValueTag,
+  getShortAddr,
+  getShowStr,
+  IPFS_META_URL,
+  NFTWholeINFO,
+} from "@loopring-web/common-resources";
 import {
   Button,
   ModalBackButton,
@@ -12,10 +18,9 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
-import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
+import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { useGetAssets } from "../../AssetPanel/hook";
-import { updateNFTTransferData } from "../../../../stores/router";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -24,6 +29,13 @@ const BoxNFT = styled(Box)`
     object-fit: contain;
   }
 ` as typeof Box;
+const TextareaAutosizeStyled = styled(TextareaAutosize)`
+  &:disabled {
+    line-height: 1.5em;
+    border: 0;
+    background: (var(--opacity));
+  }
+` as typeof TextareaAutosize;
 const BoxStyle = styled(Box)`
   &.nft-detail {
     .react-swipeable-view-container {
@@ -96,12 +108,9 @@ export const NFTDetail = withTranslation("common")(
     const detailView = React.useMemo(() => {
       return (
         <Box flexDirection={"column"} display={"flex"}>
-          <Box marginBottom={3}>
-            <Typography color={"text.secondary"}>
-              {t("labelNFTTokenID")}
-            </Typography>
+          <Box marginBottom={3} display={"flex"} alignItems={"center"}>
             <Typography color={"text.primary"} variant={"h2"} marginTop={2}>
-              #{popItem?.tokenId}{" "}
+              # {" " + getShortAddr(popItem?.nftId ?? "")}
             </Typography>
           </Box>
           <Box
@@ -121,7 +130,7 @@ export const NFTDetail = withTranslation("common")(
                 color={"var(--color-text-third)"}
                 title={popItem?.name}
               >
-                {popItem?.name}
+                {popItem?.name ?? EmptyValueTag}
               </Typography>
             </Typography>
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
@@ -201,15 +210,25 @@ export const NFTDetail = withTranslation("common")(
               <Typography color={"var(--color-text-third)"} width={160}>
                 {t("labelNFTDescription")}
               </Typography>
-              <Typography
-                color={"var(--color-text-third)"}
-                component={"span"}
-                whiteSpace={"break-spaces"}
-                style={{ wordBreak: "break-all" }}
-                title={popItem?.description}
-              >
-                {popItem.description}
-              </Typography>
+              <Box flex={1}>
+                <TextareaAutosizeStyled
+                  aria-label="NFT Description"
+                  minRows={5}
+                  disabled={true}
+                  value={popItem.description ?? EmptyValueTag}
+                  style={{ width: "100%" }}
+                />
+              </Box>
+
+              {/*<Typography*/}
+              {/*  color={"var(--color-text-third)"}*/}
+              {/*  component={"span"}*/}
+              {/*  whiteSpace={"break-spaces"}*/}
+              {/*  style={{ wordBreak: "break-all" }}*/}
+              {/*  title={popItem?.description}*/}
+              {/*>*/}
+              {/*  {popItem.description}*/}
+              {/*</Typography>*/}
             </Typography>
 
             <Typography
