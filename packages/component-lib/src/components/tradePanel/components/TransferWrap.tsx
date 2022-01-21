@@ -356,7 +356,7 @@ export const TransferWrap = <
           <>
             {getTransferConfirmTemplate(
               t("labelTransferAddress"),
-              tradeData["address"]
+              address ?? ""
             )}
             {realAddr && (
               <Typography fontSize={14} color={"var(--color-text-secondary)"}>
@@ -601,8 +601,9 @@ export const TransferWrap = <
                     setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
                   }
                 >
-                  {feeInfo.belong && feeInfo.fee ? feeInfo.fee : EmptyValueTag}{" "}
-                  {" " + feeInfo.belong}
+                  {feeInfo && feeInfo.belong && feeInfo.fee
+                    ? feeInfo.fee + " " + feeInfo.belong
+                    : EmptyValueTag + " " + feeInfo.belong}
                   <DropdownIconStyled
                     status={dropdownStatus}
                     fontSize={"medium"}

@@ -163,7 +163,11 @@ export const accountServices = {
     myLog("-------sendCheckAcc enter!");
     if (store) {
       const account = store.getState().account;
+      const { chainId } = store.getState().system;
       if (LoopringAPI.exchangeAPI) {
+        if (chainId && LoopringAPI.__chainId__ !== chainId) {
+          await sdk.sleep(5);
+        }
         const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
           owner: account.accAddress,
         });

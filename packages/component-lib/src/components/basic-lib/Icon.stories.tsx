@@ -80,6 +80,7 @@ import {
   AmmRankIcon,
   TrophyIcon,
   BanxaIcon,
+  NFTIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -158,6 +159,7 @@ const listIcon = [
   <GoTopIcon />,
   <AmmRankIcon />,
   <TrophyIcon />,
+  <NFTIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(
