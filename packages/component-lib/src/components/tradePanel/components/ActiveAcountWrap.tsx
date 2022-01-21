@@ -2,7 +2,7 @@ import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
 import { Grid, Typography, Box, Link } from "@mui/material";
-import { EmptyValueTag, FeeInfo } from "@loopring-web/common-resources";
+import { EmptyValueTag, FeeInfo, myLog } from "@loopring-web/common-resources";
 import { Button } from "../../basic-lib";
 import { ActiveAccountViewProps } from "./Interface";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
@@ -17,70 +17,12 @@ export const ActiveAccountWrap = <T extends FeeInfo>({
   isFeeNotEnough,
   handleFeeChange,
   goToDeposit,
+  walletMap,
 }: ActiveAccountViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
-
-  // const { feeChargeOrder } = useSettings();
-
-  // const toggleData: any[] =
-  //   chargeFeeTokenList &&
-  //   chargeFeeTokenList
-  //     .sort(
-  //       (a, b) =>
-  //         feeChargeOrder.indexOf(a.belong) - feeChargeOrder.indexOf(b.belong)
-  //     )
-  //     .map(({ belong, fee, __raw__ }) => ({
-  //       key: belong,
-  //       value: belong,
-  //       fee,
-  //       __raw__,
-  //     }));
-  // const isFeeEnough = () => {
-  //   if (!!chargeFeeTokenList.length && assetsData && feeToken) {
-  //     if (!checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))) {
-  //       setIsFeeNotEnough(true);
-  //     } else {
-  //       setIsFeeNotEnough(false);
-  //     }
-  //     const feeItem = chargeFeeTokenList.find(
-  //       (item) => item.belong === feeToken || item.token === feeToken
-  //     );
-  //     handleFeeChange({
-  //       belong: feeToken,
-  //       ...feeItem,
-  //     } as any);
-  //   }
-  // };
-  //
-  // const getTokenFee = React.useCallback(
-  //   (token: string) => {
-  //     const raw = toggleData.find((o) => o.key === token)?.fee;
-  //     // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
-  //     return getValuePrecisionThousand(
-  //       raw,
-  //       undefined,
-  //       undefined,
-  //       undefined,
-  //       false,
-  //       { isTrade: true, floor: false }
-  //     );
-  //   },
-  //   [toggleData]
-  // );
-
-  // const checkFeeTokenEnough = React.useCallback(
-  //   (token: string, fee: number) => {
-  //     const tokenAssets = assetsData.find((o) => o.name === token)?.available;
-  //     return tokenAssets && Number(tokenAssets) > fee;
-  //   },
-  //   [assetsData]
-  // );
-
-  // React.useEffect(() => {
-  //   isFeeEnough();
-  // }, [feeToken]);
+  myLog("walletMap", walletMap);
 
   const getDisabled = React.useCallback(() => {
     if (isFeeNotEnough) {
@@ -136,7 +78,6 @@ export const ActiveAccountWrap = <T extends FeeInfo>({
               alignItems={"center"}
               variant={"body1"}
               color={"var(--color-text-secondary)"}
-              marginBottom={1}
             >
               {t("transferLabelFee")}：
               <Box
@@ -177,6 +118,25 @@ export const ActiveAccountWrap = <T extends FeeInfo>({
                   )}
                 </Typography>
               </Box>
+            </Typography>
+            <Typography
+              component={"span"}
+              display={"flex"}
+              alignItems={"center"}
+              variant={"body1"}
+              color={"var(--color-text-secondary)"}
+              marginTop={1}
+              marginBottom={1}
+            >
+              {t("labelYourBalance", {
+                balance:
+                  walletMap &&
+                  feeInfo &&
+                  feeInfo.belong &&
+                  walletMap[feeInfo.belong]
+                    ? walletMap[feeInfo.belong]?.count + " " + feeInfo.belong
+                    : EmptyValueTag + " " + (feeInfo && feeInfo?.belong),
+              })}
             </Typography>
             {dropdownStatus === "up" && (
               <FeeTokenItemWrapper padding={2}>

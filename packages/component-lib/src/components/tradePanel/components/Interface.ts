@@ -102,6 +102,7 @@ export type ActiveAccountInfoProps<C> = Omit<
   ResetInfoProps<C>,
   "resetBtnStatus"
 > & {
+  walletMap: WalletMap<any>;
   goToDeposit: () => void;
   activeAccountBtnStatus?: keyof typeof TradeBtnStatus | undefined;
 };

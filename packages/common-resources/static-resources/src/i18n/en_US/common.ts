@@ -546,4 +546,5 @@ export default {
   labelApproveFailed: "Approve Signature Failed",
   labelRejectSuccess: "Reject Signature Success",
   labelRejectFailed: "Reject Signature Failed",
+  labelYourBalance: "Your Layer2 have: {{balance}}",
 };
