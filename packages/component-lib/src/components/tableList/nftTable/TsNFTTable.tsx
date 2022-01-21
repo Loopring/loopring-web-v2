@@ -3,21 +3,19 @@ import styled from "@emotion/styled";
 import { Box, Typography } from "@mui/material";
 import { TFunction, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, Table, TablePagination } from "../../basic-lib";
+import { Column, Table } from "../../basic-lib";
 import {
   CompleteIcon,
   EmptyValueTag,
   Explorer,
   getFormattedHash,
   getValuePrecisionThousand,
-  TableType,
   WaitingIcon,
   WarningIcon,
 } from "@loopring-web/common-resources";
 import { TablePaddingX } from "../../styled";
 
 import { NFTTableProps, TsTradeStatus, TxnDetailProps } from "./Interface";
-import { TxType } from "@loopring-web/loopring-sdk";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
@@ -83,25 +81,24 @@ const TableStyled = styled(Box)`
 
 export const TsNFTTable = withTranslation(["tables", "common"])(
   <Row extends TxnDetailProps>(props: NFTTableProps & WithTranslation) => {
-    const { rawData, pagination, getTxnList, showloading, etherscanBaseUrl } =
-      props;
-    const [page, setPage] = React.useState(1);
-    const updateData = React.useCallback(
-      (page) => {
-        setPage(page);
-        getTxnList(page);
-      },
-      [getTxnList]
-    );
+    const { rawData, showloading, etherscanBaseUrl } = props;
+    // const [page, setPage] = React.useState(1);
+    // const updateData = React.useCallback(
+    //   (page) => {
+    //     setPage(page);
+    //     getTxnList(page);
+    //   },
+    //   [getTxnList]
+    // );
 
-    const handlePageChange = React.useCallback(
-      (currPage: number) => {
-        if (currPage === page) return;
-        setPage(currPage);
-        updateData({ TableType: TableType.page, currPage: currPage });
-      },
-      [updateData, page]
-    );
+    // const handlePageChange = React.useCallback(
+    //   (currPage: number) => {
+    //     if (currPage === page) return;
+    //     setPage(currPage);
+    //     updateData({ TableType: TableType.page, currPage: currPage });
+    //   },
+    //   [updateData, page]
+    // );
 
     const getColumnModeTransaction = React.useCallback(
       (t: TFunction): Column<Row, unknown>[] => [
