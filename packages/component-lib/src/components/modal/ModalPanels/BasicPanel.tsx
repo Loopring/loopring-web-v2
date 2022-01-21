@@ -159,7 +159,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
         </Typography>
         <Typography
           marginTop={marginTopIcon}
-          component={"p"}
+          component={"div"}
           display={"flex"}
           alignItems={"flex-start"}
           flexDirection={"column"}
@@ -178,7 +178,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               whiteSpace={"pre-line"}
               textAlign={"center"}
               color={"textPrimary"}
-              component={"p"}
+              component={"div"}
               marginTop={0}
               alignSelf={"flex-center"}
               paddingRight={1}
@@ -214,7 +214,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               whiteSpace={"pre-line"}
               variant={"h5"}
               color={"textPrimary"}
-              component={"p"}
+              component={"div"}
               marginTop={0}
               alignSelf={"flex-center"}
               paddingX={1}
@@ -228,7 +228,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
           <Typography
             variant={"body2"}
             color={"textSecondary"}
-            component={"p"}
+            component={"div"}
             paddingX={5}
             marginTop={marginProvider}
             alignSelf={"flex-start"}
@@ -259,7 +259,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             <Typography
               variant={"body2"}
               color={"textSecondary"}
-              component={"p"}
+              component={"div"}
               alignSelf={"flex-center"}
             >
               <Link color={"textSecondary"} href={link.url}>
