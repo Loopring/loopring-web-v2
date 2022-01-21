@@ -125,6 +125,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
         {
           key: "txnHash",
           name: t("labelTxTxnHash"),
+          cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const path =
               row.txHash !== ""
@@ -133,6 +134,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             const hash = row.txHash !== "" ? row.txHash : row.hash;
             return (
               <Box
+                className="rdg-cell-value"
                 display={"inline-flex"}
                 justifyContent={"flex-end"}
                 alignItems={"center"}

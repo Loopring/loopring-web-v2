@@ -45,7 +45,7 @@ const BoxStyle = styled(Box)`
   .depositWrap {
     justify-content: space-around;
   }
-  .way-content > div:first-child {
+  .way-content > div:first-of-type {
     position: relative;
     font-size: ${({ theme }) => theme.fontDefault.body1};
     &:before {
