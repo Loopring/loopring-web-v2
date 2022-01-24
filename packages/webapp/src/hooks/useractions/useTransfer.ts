@@ -98,6 +98,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         tradeValue &&
         chargeFeeTokenList.length &&
         !isFeeNotEnough &&
+        transferValue.fee?.belong &&
         tradeValue.gt(BIGO) &&
         address &&
         address !== "" &&
@@ -310,6 +311,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         transferValue.address !== "*" &&
+        transferValue?.fee &&
         transferValue?.fee.belong &&
         transferValue.fee?.__raw__ &&
         eddsaKey?.sk
