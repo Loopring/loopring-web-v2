@@ -12,7 +12,6 @@ import {
 import {
   AccountStatus,
   CoinMap,
-  FeeInfo,
   IBData,
   SagaStatus,
   WalletMap,
@@ -62,7 +61,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   const [withdrawToastOpen, setWithdrawToastOpen] =
     React.useState<boolean>(false);
 
-  const [withdrawAlertText, setWithdrawAlertText] = React.useState<string>();
+  const [withdrawAlertText] = React.useState<string>();
 
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
@@ -84,12 +83,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
       ? "Fast"
       : "Standard";
-  // const { chargeFeeList } = useChargeFees({
-  //   tokenSymbol: withdrawValue.belong,
-  //   requestType: withdrawType,
-  //   tokenMap,
-  //   amount: withdrawValue.tradeValue,
-  // });
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       requestType: withdrawType,
@@ -552,16 +545,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       updateWithdrawData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };
     },
-    // handleError: ({ belong, balance, tradeValue }: any) => {
-    //   balance = getFloatValue(balance);
-    //   tradeValue = getFloatValue(tradeValue);
-    //   if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
-    //     setIsExceedMax(true);
-    //     return { error: true, message: t("tokenNotEnough", { belong }) };
-    //   }
-    //   setIsExceedMax(false);
-    //   return { error: false, message: "" };
-    // },
   };
 
   return {

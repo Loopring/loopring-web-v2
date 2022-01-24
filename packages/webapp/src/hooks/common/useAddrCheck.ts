@@ -35,45 +35,53 @@ export const useAddressCheck = () => {
 
   const check = React.useCallback(
     async (address: any, web3: any) => {
+      // if( address.math)
       if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
         setIsAddressCheckLoading(true);
-        const { realAddr, addressErr } = await checkAddr(address, web3);
-        setRealAddr(realAddr);
-        setAddrStatus(addressErr);
-        if (realAddr !== "" || address !== "") {
-          const [{ walletType }, res] = await Promise.all([
-            LoopringAPI.walletAPI.getWalletType({
-              wallet: realAddr != "" ? realAddr : address,
-            }),
-            LoopringAPI.exchangeAPI.getAccount({
-              owner: realAddr != "" ? realAddr : address,
-            }),
-          ]).finally(() => {
-            setIsAddressCheckLoading(false);
-          });
-          if (walletType && walletType?.isInCounterFactualStatus) {
-            setIsCFAddress(true);
-          } else {
-            setIsCFAddress(false);
-          }
-          if (walletType && walletType.isContract) {
-            setIsContractAddress(true);
-          } else {
-            setIsContractAddress(false);
-          }
+        if (
+          /^0x[a-fA-F0-9]{40}$/g.test(address) ||
+          /.*\.eth$/gi.test(address)
+        ) {
+          const { realAddr, addressErr } = await checkAddr(address, web3);
+          setRealAddr(realAddr);
+          setAddrStatus(addressErr);
+          if (realAddr !== "" || address !== "") {
+            const [{ walletType }, res] = await Promise.all([
+              LoopringAPI.walletAPI.getWalletType({
+                wallet: realAddr != "" ? realAddr : address,
+              }),
+              LoopringAPI.exchangeAPI.getAccount({
+                owner: realAddr != "" ? realAddr : address,
+              }),
+            ]).finally(() => {
+              setIsAddressCheckLoading(false);
+            });
+            if (walletType && walletType?.isInCounterFactualStatus) {
+              setIsCFAddress(true);
+            } else {
+              setIsCFAddress(false);
+            }
+            if (walletType && walletType.isContract) {
+              setIsContractAddress(true);
+            } else {
+              setIsContractAddress(false);
+            }
 
-          // ENS or address
-          if (res && !res.error) {
-            setIsLoopringAddress(true);
-          } else {
-            setIsLoopringAddress(false);
+            // ENS or address
+            if (res && !res.error) {
+              setIsLoopringAddress(true);
+            } else {
+              setIsLoopringAddress(false);
+            }
           }
+          // return {
+          //   lastAddress: realAddr || address,
+          //   addressErr,
+          // };
+        } else {
+          setIsAddressCheckLoading(false);
+          setAddrStatus(AddressError.InvalidAddr);
         }
-
-        return {
-          lastAddress: realAddr || address,
-          addressErr,
-        };
       } else {
         return {
           lastAddress: address,
@@ -85,7 +93,7 @@ export const useAddressCheck = () => {
   );
 
   const debounceCheck = _.debounce(
-    () => {
+    (address) => {
       check(address, connectProvides.usedWeb3);
     },
     globalSetup.wait,
@@ -99,7 +107,7 @@ export const useAddressCheck = () => {
       isAddressCheckLoading === false
     ) {
       _address.current = address;
-      debounceCheck();
+      debounceCheck(address);
     } else if (address === "") {
       _address.current = "";
     }
