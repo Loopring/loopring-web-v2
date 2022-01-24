@@ -17,6 +17,24 @@ import { HebaoStep } from "@loopring-web/component-lib";
 import { useSystem } from "../../stores/system";
 import * as sdk from "@loopring-web/loopring-sdk";
 
+export enum TxHebaoHistoryType {
+  ADD_GUARDIAN = 51,
+  GUARDIAN_CONFIRM_ADDITION = 52,
+  GUARDIAN_REJECT_ADDITION = 53,
+  GUARDIAN_APPROVE = 54,
+  APPROVE_RECOVER = 55, // RECOVER  16
+  APPROVE_TRANSFER = 56, // APPROVE TRANSFER 18
+  APPROVE_TOKEN_APPROVE = 57, // 23
+  ADD_GUARDIAN_WA = 58, // 34
+  REMOVE_GUARDIAN_WA = 59, // 35
+  UNLOCK_WALLET_WA = 60, // 37
+  RESET_GUARDIANS_WA = 61, // 200
+}
+export enum TxHebaoAction {
+  Approve,
+  Reject,
+}
+
 export const useHebaoMain = <
   T extends Protector,
   G extends Guardian,

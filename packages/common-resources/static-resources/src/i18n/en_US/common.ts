@@ -547,4 +547,17 @@ export default {
   labelRejectSuccess: "Reject Signature Success",
   labelRejectFailed: "Reject Signature Failed",
   labelYourBalance: "Your Layer2 have: {{balance}}",
+  labelTxHebaoADD_GUARDIAN: "ADD GUARDIAN",
+  labelTxHebaoGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
+  labelTxHebaoGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
+  labelTxHebaoGUARDIAN_APPROVE: "GUARDIAN APPROVE",
+  labelTxHebaoAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
+  labelTxHebaoAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
+  labelTxHebaoAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
+  labelTxHebaoADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34
+  labelTxHebaoREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
+  labelTxHebaoUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
+  labelTxHebaoRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
+  labelTxHebaoApprove: "APPROVE",
+  labelTxHebaoReject: "REJECT",
 };

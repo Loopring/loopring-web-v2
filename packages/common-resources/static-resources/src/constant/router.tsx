@@ -1,14 +1,14 @@
 import {
   AssetsIcon,
-  CompleteIcon,
   L2HistoryIcon,
   L2MyLiquidityIcon,
   L2OrderIcon,
   NFTIcon,
+  RecordIcon,
   // NFTIcon,
   SecurityIcon,
   VipIcon,
-  WaitingIcon,
+  WaitApproveIcon,
 } from "../svg";
 
 import {
@@ -208,7 +208,7 @@ export const subMenuHebao = {
       },
     },
     {
-      icon: WaitingIcon,
+      icon: WaitApproveIcon,
       router: { path: "/hebao/hebao-validation-info" },
       label: {
         id: "hebao-validation",
@@ -216,7 +216,7 @@ export const subMenuHebao = {
       },
     },
     {
-      icon: CompleteIcon,
+      icon: RecordIcon,
       router: { path: "/hebao/hebao-history" },
       label: {
         id: "hebao-history",

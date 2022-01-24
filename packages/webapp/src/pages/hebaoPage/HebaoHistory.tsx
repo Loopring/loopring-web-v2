@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import {
   Box,
+  Divider,
   ListItem,
   ListItemProps,
   ListItemText,
@@ -12,6 +13,7 @@ import { useTranslation } from "react-i18next";
 
 import { HebaoOperationLog } from "@loopring-web/loopring-sdk";
 import moment from "moment";
+import { TxHebaoAction, TxHebaoHistoryType } from "./hook";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -70,56 +72,73 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
         <Box flex={1} alignItems={"center"} marginTop={2}>
           {operationLogList.length ? (
             <>
-              {operationLogList.map((item) => (
-                <Box
-                  display={"flex"}
-                  flexDirection={"row"}
-                  justifyContent={"space-between"}
-                  paddingX={2}
-                >
-                  <Box flex={1}>
-                    <ListItemText
-                      className="description description1"
-                      primary={item.ens ? item.ens : t("labelUnknown")}
-                      primaryTypographyProps={{
-                        component: "p",
-                        variant: "h5",
-                        color: "textPrimary",
-                      }}
-                    />
-                    <ListItemText
-                      primary={item.from}
-                      primaryTypographyProps={{
-                        component: "p",
-                        color: "textSecondary",
-                      }}
-                    />
-                  </Box>
+              {operationLogList.map((item, index) => (
+                <React.Fragment key={item.id + index}>
                   <Box
-                    width={100}
                     display={"flex"}
-                    justifyContent={"flex-end"}
-                    alignItems={"center"}
+                    flexDirection={"row"}
+                    justifyContent={"space-between"}
+                    paddingX={2}
+                    paddingY={1}
                   >
-                    <Typography
-                      variant={"body1"}
-                      component={"p"}
-                      color={"--color-text-third"}
+                    <Box flex={1}>
+                      <ListItemText
+                        className="description description1"
+                        primary={item.ens ? item.ens : t("labelUnknown")}
+                        primaryTypographyProps={{
+                          component: "p",
+                          variant: "h5",
+                          color: "textPrimary",
+                        }}
+                      />
+                      <ListItemText
+                        primary={item.from}
+                        primaryTypographyProps={{
+                          component: "p",
+                          color: "textSecondary",
+                        }}
+                      />
+                    </Box>
+                    <Box
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"flex-end"}
+                      flexDirection={"column"}
                     >
-                      {item.hebaoTxType}
-                    </Typography>
-                    <Typography
-                      variant={"body2"}
-                      component={"p"}
-                      color={"--color-text-third"}
-                    >
-                      {moment(
-                        new Date(item.createdAt),
-                        "YYYYMMDDHHMM"
-                      ).fromNow()}
-                    </Typography>
+                      <Typography variant={"body1"} component={"p"}>
+                        <Typography
+                          variant={"body1"}
+                          component={"span"}
+                          color={item.status ? "error" : "var(--color-success)"}
+                        >
+                          {t("labelTxHebao" + TxHebaoAction[item.status]) + " "}
+                        </Typography>
+                        <Typography
+                          variant={"body1"}
+                          component={"span"}
+                          color={"--color-text-third"}
+                        >
+                          {t(
+                            "labelTxHebao" +
+                              TxHebaoHistoryType[item.hebaoTxType]
+                          )}
+                        </Typography>
+                      </Typography>
+                      <Typography
+                        variant={"body2"}
+                        component={"p"}
+                        color={"--color-text-third"}
+                        marginTop={1}
+                      >
+                        {moment(
+                          new Date(item.createdAt),
+                          "YYYYMMDDHHMM"
+                        ).fromNow()}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
+                  <Divider />
+                </React.Fragment>
               ))}
             </>
           ) : (
