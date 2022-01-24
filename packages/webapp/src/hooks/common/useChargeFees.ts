@@ -191,8 +191,8 @@ export function useChargeFees({
                   pre.push(_feeInfo);
                   if (feeInfo === undefined && walletMap && walletMap[token]) {
                     const { count } = walletMap[token] ?? { count: 0 };
-                    if (sdk.toBig(count).gt(sdk.toBig(fee))) {
-                      feeInfo = _feeInfo;
+                    if (sdk.toBig(count).gte(sdk.toBig(fee))) {
+                      feeInfo = _.cloneDeep(_feeInfo);
                     }
                   }
                 }
@@ -201,11 +201,13 @@ export function useChargeFees({
               [] as Array<FeeInfo>
             );
             if (feeInfo === undefined) {
-              feeInfo = _chargeFeeTokenList[0] ?? {
-                belong: "ETH",
-                fee: 0,
-                feeRaw: undefined,
-              };
+              feeInfo = _chargeFeeTokenList[0]
+                ? _.cloneDeep(_chargeFeeTokenList[0])
+                : {
+                    belong: "ETH",
+                    fee: 0,
+                    feeRaw: undefined,
+                  };
               setIsFeeNotEnough(true);
             } else {
               setIsFeeNotEnough(false);

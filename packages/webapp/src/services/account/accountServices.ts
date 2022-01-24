@@ -166,7 +166,7 @@ export const accountServices = {
       const { chainId } = store.getState().system;
       if (LoopringAPI.exchangeAPI) {
         if (chainId && LoopringAPI.__chainId__ !== chainId) {
-          await sdk.sleep(5);
+          await sdk.sleep(100);
         }
         const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
           owner: account.accAddress,
@@ -210,7 +210,7 @@ export const accountServices = {
     });
     if (LoopringAPI.exchangeAPI) {
       if (chainId && LoopringAPI.__chainId__ !== chainId) {
-        await sdk.sleep(5);
+        await sdk.sleep(100);
       }
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
         owner: ethAddress,
