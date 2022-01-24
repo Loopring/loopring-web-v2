@@ -361,7 +361,7 @@ export const WithdrawWrap = <
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo.belong}
+                  : EmptyValueTag + " " + feeInfo?.belong}
                 <Typography
                   marginLeft={1}
                   color={"var(--color-text-secondary)"}

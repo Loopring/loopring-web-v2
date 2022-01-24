@@ -97,7 +97,7 @@ const LogoStyle = styled(Typography)`
     right: -24px;
     top: 14px;
     font-weight: 200;
-    opacity: 0.6;
+    opacity: 0;
     box-shadow: 0 0 1px 0 var(--color-logo);
     //border: 1px solid ;
     border-radius: 2px;

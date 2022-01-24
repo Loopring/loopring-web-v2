@@ -208,7 +208,7 @@ export const DeployNFTWrap = <
               >
                 {feeInfo && feeInfo.belong && feeInfo.fee
                   ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo.belong}
+                  : EmptyValueTag + " " + feeInfo?.belong}
                 <DropdownIconStyled
                   status={dropdownStatus}
                   fontSize={"medium"}
