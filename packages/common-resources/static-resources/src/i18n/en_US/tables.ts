@@ -67,7 +67,7 @@ export default {
   labelTxFee: "Fee",
   labelTxMemo: "Memo",
   labelTxTime: "Time",
-  labelTxTxnHash: "Tx Hash",
+  labelTxTxnHash: "Txn Hash",
   labelTxStatus: "Status",
 
   labelVolume: "volume",

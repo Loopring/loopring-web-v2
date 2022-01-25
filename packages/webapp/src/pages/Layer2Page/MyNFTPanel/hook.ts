@@ -162,5 +162,3 @@ export const useMyNFT = () => {
     nftLayer2,
   };
 };
-
-//
