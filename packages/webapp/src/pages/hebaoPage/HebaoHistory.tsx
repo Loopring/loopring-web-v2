@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { HebaoOperationLog } from "@loopring-web/loopring-sdk";
 import moment from "moment";
 import { TxHebaoAction, TxHebaoHistoryType } from "./hook";
+import { useTheme } from "@emotion/react";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -54,7 +55,7 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
   hebaoConfig: any;
 }) => {
   const { t } = useTranslation(["common"]);
-
+  const theme = useTheme();
   return (
     <>
       <Box
@@ -92,7 +93,7 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
                         }}
                       />
                       <ListItemText
-                        primary={item.from}
+                        primary={item.to}
                         primaryTypographyProps={{
                           component: "p",
                           color: "textSecondary",
@@ -137,7 +138,7 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
                       </Typography>
                     </Box>
                   </Box>
-                  <Divider />
+                  <Divider style={{ margin: `0 ${(theme.unit * 5) / 2}px` }} />
                 </React.Fragment>
               ))}
             </>

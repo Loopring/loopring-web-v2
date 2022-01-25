@@ -11,6 +11,7 @@ import { LoopringAPI } from "api_wrapper";
 import * as _ from "lodash";
 import {
   AccountStatus,
+  FeeChargeOrderDefault,
   FeeChargeOrderUATDefault,
   FeeInfo,
   globalSetup,
@@ -53,7 +54,9 @@ export function useChargeFees({
   const { chainId } = useSystem();
   let { feeChargeOrder } = useSettings();
   feeChargeOrder =
-    chainId === ChainId.MAINNET ? feeChargeOrder : FeeChargeOrderUATDefault;
+    chainId === ChainId.MAINNET
+      ? FeeChargeOrderDefault
+      : FeeChargeOrderUATDefault;
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [chargeFeeTokenList, setChargeFeeTokenList] = React.useState<FeeInfo[]>(
     []
@@ -169,8 +172,8 @@ export function useChargeFees({
             getFeeList();
           }, 900000); //15*60*1000 //900000
           let feeInfo: any;
-          if (fees) {
-            const _chargeFeeTokenList = feeChargeOrder.reduce(
+          if (fees && feeChargeOrder) {
+            const _chargeFeeTokenList = feeChargeOrder?.reduce(
               (pre, item, index) => {
                 let { fee, token } = fees[item] ?? {};
                 if (fee && token) {

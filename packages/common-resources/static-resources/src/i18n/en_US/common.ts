@@ -49,6 +49,7 @@ export default {
   withdrawLabelBtn: "Withdraw",
   withdrawLabelBtnExceed: "Exceed Max Fast Withdraw Amt{{amt}}!",
   withdrawLabelAddress: "Withdrawal Address",
+  labelWithdrawMyAddress: "To My Layer1",
   withdrawLabelAddressInput: "Please input the address",
   withdrawLabelFee: "Select payment token",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",

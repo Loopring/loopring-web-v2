@@ -17,13 +17,17 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import {
+  ConnectProviders,
   LoadingIcon,
   LockIcon,
   SecurityIcon,
 } from "@loopring-web/common-resources";
 import { useAccount } from "../../stores/account";
-import { Protector } from "@loopring-web/loopring-sdk";
-import { useHebaoProtector } from "./hook";
+import { LockHebaoHebaoParam, Protector } from "@loopring-web/loopring-sdk";
+import { useSystem } from "../../stores/system";
+import { LoopringAPI } from "../../api_wrapper";
+import { connectProvides } from "@loopring-web/web3-provider";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -55,6 +59,70 @@ const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
     height: 100%;
   }
 ` as (prosp: ListItemProps) => JSX.Element;
+
+export const useHebaoProtector = <T extends Protector>({
+  hebaoConfig,
+  handleOpenModal,
+  loadData,
+}: {
+  hebaoConfig: any;
+  handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
+  loadData: () => Promise<void>;
+}) => {
+  const { account } = useAccount();
+  const { chainId, gasPrice } = useSystem();
+  const onLock = React.useCallback(
+    async (item: T) => {
+      const config = hebaoConfig.actionGasSettings.find(
+        (item: any) => item.action === "META_TX_LOCK_WALLET_WA"
+      );
+      const guardianModule = hebaoConfig.supportContracts.find(
+        (ele: any) => ele.contractName.toUpperCase() === "GUARDIAN_MODULE"
+      ).contractAddress;
+      if (LoopringAPI?.walletAPI) {
+        const params: LockHebaoHebaoParam = {
+          web3: connectProvides.usedWeb3 as any,
+          from: account.accAddress,
+          contractAddress: guardianModule,
+          wallet: item.address,
+          gasPrice,
+          gasLimit: config.gasLimit ?? 15000,
+          chainId: chainId as any,
+          sendByMetaMask:
+            connectProvides.provideName === ConnectProviders.MetaMask,
+        };
+        try {
+          const { result, error } = await LoopringAPI.walletAPI.lockHebaoWallet(
+            params
+          );
+          if (result) {
+            handleOpenModal({
+              step: HebaoStep.LockAccount_Success,
+            });
+            loadData();
+          } else {
+            handleOpenModal({
+              step: HebaoStep.LockAccount_Failed,
+              options: { error: error.message },
+            });
+          }
+        } catch (reason) {
+          // result.code = ActionResultCode.ApproveFailed;
+          // result.data = reason;
+          sdk.dumpError400(reason);
+          handleOpenModal({
+            step: HebaoStep.LockAccount_User_Denied,
+            options: { error: reason.message },
+          });
+        }
+      }
+    },
+    [hebaoConfig, handleOpenModal]
+  );
+  return {
+    onLock,
+  };
+};
 
 export const HebaoProtectItem = <T extends Protector>(
   props: T & { onClick: () => void }
@@ -177,9 +245,11 @@ export const HebaoProtector = <T extends Protector>({
   protectList,
   hebaoConfig,
   handleOpenModal,
+  loadData,
 }: {
   protectList: T[];
   hebaoConfig: any;
+  loadData: () => Promise<void>;
   handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
 }) => {
   const { account } = useAccount();
@@ -188,6 +258,7 @@ export const HebaoProtector = <T extends Protector>({
   const { onLock } = useHebaoProtector({
     hebaoConfig,
     handleOpenModal,
+    loadData,
   });
   const description = () => (
     <Typography

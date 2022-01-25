@@ -119,6 +119,7 @@ export const HebaoPage = withTranslation(["common"])(
             <HebaoProtector
               protectList={protectList}
               hebaoConfig={hebaoConfig}
+              loadData={loadData}
               handleOpenModal={handleOpenModal}
             />
           );

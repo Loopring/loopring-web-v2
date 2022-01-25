@@ -23,13 +23,13 @@ import { NFTDetail } from "./components/detail";
 import {
   EmptyValueTag,
   getShortAddr,
-  getShowStr,
   IPFS_META_URL,
+  LoadingIcon,
 } from "@loopring-web/common-resources";
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
-import SwipeableViews from "react-swipeable-views";
 import { useTheme } from "@emotion/react";
 import { HistoryNFT } from "./components/history";
+import { LoadingBlock } from "../../LoadingPage";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -68,6 +68,7 @@ export const MyNFTPanel = withTranslation("common")(
       popNFTDeposit,
       nftDepositProps,
       etherscanBaseUrl,
+      nftLayer2,
     } = useMyNFT();
     const [currentTab, setCurrentTab] = React.useState<TabKey>(TabKey.ASSETS);
     const handleTabChange = React.useCallback((value) => {
@@ -187,6 +188,16 @@ export const MyNFTPanel = withTranslation("common")(
                   </Grid>
                 ))}
               </Grid>
+            ) : nftLayer2 && nftLayer2.length ? (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                height={"90%"}
+              >
+                <LoadingIcon style={{ width: 32, height: 32 }} />
+              </Box>
             ) : (
               <EmptyDefault
                 message={() => (
@@ -266,6 +277,8 @@ export const MyNFTPanel = withTranslation("common")(
           className={"MuiPaper-elevation2"}
           marginTop={0}
           marginBottom={2}
+          display={"flex"}
+          flexDirection={"column"}
         >
           <Box
             marginY={2}
@@ -295,14 +308,7 @@ export const MyNFTPanel = withTranslation("common")(
               {t("labelNFTDeposit")}
             </Button>
           </Box>
-          <Box flex={1}>
-            {/*{panelList.map((panel, index) => {*/}
-            {/*  return (*/}
-            {/*    <React.Fragment key={index}>{panel.element}</React.Fragment>*/}
-            {/*  );*/}
-            {/*})}*/}
-            {panelList[currentTab].element}
-          </Box>
+          <Box flex={1}>{panelList[currentTab].element}</Box>
         </StyledPaper>
       </>
     );

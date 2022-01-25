@@ -418,8 +418,11 @@ export const useNFTWithdraw = <
   //   WithdrawProps<R, T>
   // >(() => buildProps() as WithdrawProps<R, T>);
   const nftWithdrawProps = {
-    handleOnAddressChange: (value: any) => {},
+    handleOnAddressChange: (value: any) => {
+      setAddress(value);
+    },
     addressDefault: address,
+    accAddr: account.accAddress,
     realAddr,
     disableWithdrawList,
     tradeData: nftWithdrawValue as any,

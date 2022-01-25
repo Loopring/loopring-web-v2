@@ -141,5 +141,6 @@ export const useMyNFT = () => {
     nftDepositProps,
     onNFTDepositClose,
     popNFTDeposit,
+    nftLayer2,
   };
 };

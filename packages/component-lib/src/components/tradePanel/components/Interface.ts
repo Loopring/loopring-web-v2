@@ -153,7 +153,8 @@ export type WithdrawInfoProps<C> = {
 
 export type WithdrawExtendProps<T, I, C> = {
   isThumb?: boolean;
-  addressDefault?: string;
+  addressDefault: string;
+  accAddr: string;
   realAddr?: string;
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
