@@ -18,21 +18,21 @@ export default {
   swapFee: "Fee",
   swapBtn: "swap",
   goBack: "go back",
-  resetTitle: "Reset Layer2 Keypair",
+  resetTitle: "Reset Layer 2 Keypair",
   restLabelEnterToken: "Select Reset cause token",
   resetDescription:
-    "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests. You can reset the EdDSA keypair at any time.",
+    "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests. You can reset the EdDSA keypair at any time.",
   resetFee: "Fee {{count}} GAS ≈ ${{price}}",
   resetLabelBtn: "Reset",
   labelActiveAccountTitle: "Activate Account",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
-    "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests.",
+    "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests.",
   labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
   labelActiveAccountBtn: "Activate Account",
   depositTitle: "Deposit",
-  depositTitleAndActive: "Deposit & Activate Layer2",
-  depositTitleActive: " Activate Layer2",
+  depositTitleAndActive: "Deposit & Activate Layer 2",
+  depositTitleActive: " Activate Layer 2",
   depositLabelEnterToken: "Select Layer1 Token",
   depositDescription:
     "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
@@ -83,12 +83,12 @@ export default {
   labelDisconnect: "Disconnect",
   labelLockLayer2: "Lock",
   labelUnLockLayer2: "Unlock",
-  labelActiveLayer2: "Activate Layer2 Account",
+  labelActiveLayer2: "Activate Layer 2 Account",
   labelSwitchAccount: "Switch",
   labelViewEth: "View on Etherscan",
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
-  labelAssetTitle: "Layer2 Total Assets",
+  labelAssetTitle: "Layer 2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "Deposit",
@@ -101,7 +101,7 @@ export default {
   labelWithdraw: "Withdraw",
   labelSetPublicKey: "Set EdDSA Public Key",
   labelTitleSecurity: "Security",
-  labelTitleResetL2Keypair: "Reset Layer2 Keypair",
+  labelTitleResetL2Keypair: "Reset Layer 2 Keypair",
   labelBtnReset: "Reset",
   labelHadChangPassword: "You changed your keypair {{passDay}} ago.",
   labelTitleForceWithdraw: "Force Withdraw",
@@ -194,7 +194,7 @@ export default {
   labelConnectBy: "Connected with <1>{{connectBy}}</1>",
   labelWrongNetwork: "Wrong network",
   labelActivatedAccountDeposit:
-    "Please deposit to activate your Layer2 account",
+    "Please deposit to activate your Layer 2 account",
   labelActivatedAccountNotSupport:
     "Loopring does not currently support your address. We apologize for the inconvenience.",
   labelProcessing: "Processing",
@@ -212,7 +212,7 @@ export default {
   labelRejectOrError:
     "Request was rejected or some unknown error occurred, please retry",
   labelWalletConnectProcessDescribe2: "Please click ‘Approve’ on your device.",
-  labelUnlockProcessing: "Unlocking Layer2...",
+  labelUnlockProcessing: "Unlocking Layer 2...",
   labelDepositing: "Depositing...",
   labelDepositingProcessing:
     "Depositing, around {{count}} minutes remaining...",
@@ -227,7 +227,7 @@ export default {
   labelSuccessUnlockDescribe: "Congratulations, Successfully Unlocked!",
   labelSuccessUnlock: "Unlock Successfully!",
   labelDepositApproveSuccess:
-    "Activate your Loopring Layer2 account and start trading",
+    "Activate your Loopring L2 account and start trading",
   labelActivateAccount: "Activate Account",
   labelClose: "Close",
   labelRetry: "Retry",
@@ -240,13 +240,13 @@ export default {
   labelUpdateAccSigWarning:
     "Your Wallet does not support current sig function, it will try another one.",
   labelUpdateAccUserDenied: "Signature request rejected!",
-  labelCreateLayer2Title: "Create Layer2 Account",
-  labelCreateAccount: "Create Layer2 Account",
-  labelUpdateAccount: "Update Layer2 Account",
+  labelCreateLayer2Title: "Create Layer 2 Account",
+  labelCreateAccount: "Create Layer 2 Account",
+  labelUpdateAccount: "Update Layer 2 Account",
   labelTryAnother: "Try Another Sig Method",
   labelCancel: "Cancel",
   describeTitleNoAccount:
-    "You need to activate Loopring Layer2.\n Please make a deposit to create L2 wallet",
+    "You need to activate Loopring L2.\n Please make a deposit to create L2 wallet",
   describeTitleOpenAccounting:
     "Your deposit has been submitted to Ethereum\n Please wait...",
   describeTitleOnErrorNetwork:
@@ -283,7 +283,7 @@ export default {
   labelDTxnDetailHeader: "Deposit Record",
   labelWTxnDetailHeader: "Withdraw Record",
   labelTTxnDetailHeader: "Transfer Record",
-  labelTxnDetailHash: "Layer2 Hash",
+  labelTxnDetailHash: "Layer 2 Hash",
   labelTxnDetailHashLv1: "Eth Hash",
   labelTxnDetailStatus: "Status",
   labelTxnDetailTime: "Time",
@@ -325,10 +325,10 @@ export default {
   labelTransferSuccess: "Transfer {{value}} {{symbol}} successfully!",
   labelUpdateAccountSuccess: "Congratulations!",
   labelUpdateAccountSuccess2:
-    "You have been successfully activated Loopring Layer2 account!",
+    "You have been successfully activated Loopring L2 account!",
   labelResetAccountSuccess: "Congratulations!",
   labelResetAccountSuccess2:
-    "You have been successfully reset Loopring Layer2 account keypair!",
+    "You have been successfully reset Loopring L2 account keypair!",
   labelUpdateAccountSubmit: "Activating Tx submitted.",
   labelUnlockAccountSuccess: "Unlock successfully!",
   labelUnlockAccountFailed: "Unlock failed!",
@@ -336,7 +336,7 @@ export default {
   labelNotAllowTrade:
     "Apologies! But we are unable to provide services of order and AMM deposit by your IP address to you as per our Terms of Use.",
   labelKnown: "OK",
-  labelResetAccount: "Reset Layer2 Account",
+  labelResetAccount: "Reset Layer 2 Account",
   labelExportAccount: "Export Account",
   labelExportAccountNoPhotos: "No Photos",
   labelExportAccountDescription: "Please keep the secret",
@@ -346,12 +346,12 @@ export default {
   // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
   labelCreateAccountApproveDenied: "Signature request rejected!",
   labelAmmSwitch: "switch",
-  labelUpdateAccountFailed: "Activate layer2 failed!",
+  labelUpdateAccountFailed: "Activate Layer 2 failed!",
   labelCreateAccountDepositDenied: "Signature request rejected!",
   labelCreateAccountSubmit:
-    "Activate layer2, deposit {{value}} {{symbol}} submitted! \n Around {{count}} minutes remaining...',",
+    "Activate Layer 2, deposit {{value}} {{symbol}} submitted! \n Around {{count}} minutes remaining...',",
   labelCreateAccountFailed:
-    "Activate layer2, deposit {{value}} {{symbol}} failed!",
+    "Activate Layer 2, deposit {{value}} {{symbol}} failed!",
   labelSlippageAlert:
     "The slippage tolerance is so high, you may receive less token",
   labelOrderTableOpenOrder: "Open Order",
@@ -421,7 +421,7 @@ export default {
   labelBtnEdit: "Edit",
   labelSettingChargeFeeOrder: "Service charge priority order",
   desSettingChargeFeeOrder:
-    "Loopring Layer2 will follow this token priority to charge fees",
+    "Loopring L2 will follow this token priority to charge fees",
   labelReset: "Reset",
   labelQueryFeeOK: "Save",
   depositLimit:
@@ -526,7 +526,7 @@ export default {
   labelDeployInProgress: "Processing...",
   labelNFTDeploy: "Deploy NFT",
   labelVendor: "Buy with Card",
-  labelAddAsset: "Add Layer2 Assets",
+  labelAddAsset: "Add Layer 2 Assets",
   labelDepositVendor:
     "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
@@ -547,7 +547,7 @@ export default {
   labelApproveFailed: "Approve Signature Failed",
   labelRejectSuccess: "Reject Signature Success",
   labelRejectFailed: "Reject Signature Failed",
-  labelYourBalance: "Your Layer2 have: {{balance}}",
+  labelYourBalance: "Your Layer 2 have: {{balance}}",
   labelTxHebaoADD_GUARDIAN: "ADD GUARDIAN",
   labelTxHebaoGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
   labelTxHebaoGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",

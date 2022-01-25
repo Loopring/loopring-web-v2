@@ -27,7 +27,7 @@ export default {
   labelActiveAccountTitle: "Activate Account",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
-    "Each account on Loopring Layer2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer2) requests.",
+    "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests.",
   labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
   labelActiveAccountBtn: "Reset",
   depositTitle: "充值",
@@ -410,7 +410,7 @@ export default {
   labelBtnEdit: "Edit",
   labelSettingChargeFeeOrder: "Service charge priority order",
   desSettingChargeFeeOrder:
-    "Loopring Layer2 will follow this token priority to charge fees",
+    "Loopring L2 will follow this token priority to charge fees",
   labelReset: "Reset",
   labelQueryFeeOK: "Save",
   depositLimit:
@@ -513,7 +513,7 @@ export default {
   labelDeployInProgress: "Processing...",
   labelNFTDeploy: "Deploy NFT",
   labelVendor: "Vendor",
-  labelAddAsset: "Add Layer2 Assets",
+  labelAddAsset: "Add Layer 2 Assets",
   labelDepositVendor:
     " Make an order form third Loopring-parter, Once your order confirmed  by Loopring, it will be added to your balance within 2 minutes.",
   labelLock: "Lock",

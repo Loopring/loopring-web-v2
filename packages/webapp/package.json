@@ -1,7 +1,7 @@
 {
   "name": "@loopring-web/webapp",
   "version": "1.0.0",
-  "author": "Loopring Layer2 App Frontend Team",
+  "author": "Loopring L2 App Frontend Team",
   "description": "dexwebapp new version",
   "private": true,
   "dependencies": {
