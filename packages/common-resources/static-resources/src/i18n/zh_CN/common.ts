@@ -49,6 +49,7 @@ export default {
   withdrawLabelBtnExceed: "超过最大提现数{{amt}}!",
   withdrawLabelAddress: "提现到该账号地址",
   withdrawLabelAddressInput: "输入地址",
+  labelWithdrawMyAddress: "to My Layer1",
   withdrawLabelFee: "请选付费代币",
   withdrawTypeLabelFast: "快速提现（最快15秒到账）",
   withdrawTypeLabelStandard: "普通提现（约25分钟）",

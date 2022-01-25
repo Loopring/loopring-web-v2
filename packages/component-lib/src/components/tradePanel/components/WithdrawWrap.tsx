@@ -6,6 +6,7 @@ import {
   Box,
   FormControlLabel,
   Grid,
+  Link,
   Radio,
   RadioGroup,
   Typography,
@@ -38,7 +39,17 @@ import * as _ from "lodash";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
+import styled from "@emotion/styled";
 
+const LinkStyle = styled(Link)`
+  text-decoration: underline dotted;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: ${({ theme }) => theme.fontDefault.body2};
+  &:hover {
+    color: var(--color-primary);
+  }
+`;
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTTokenInfo & IBData<I>),
   I,
@@ -52,6 +63,7 @@ export const WithdrawWrap = <
   type,
   withdrawI18nKey,
   addressDefault,
+  accAddr,
   withdrawTypes = WithdrawTypes,
   withdrawType,
   chargeFeeTokenList = [],
@@ -71,14 +83,13 @@ export const WithdrawWrap = <
   assetsData = [],
   realAddr,
   isThumb,
-
   ...rest
 }: WithdrawViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
   const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(
     withdrawType
   );
   const [address, setAddress] = React.useState<string | undefined>(
-    addressDefault ? addressDefault : ""
+    addressDefault ?? ""
   );
   const [addressError, setAddressError] = React.useState<
     | { error: boolean; message?: string | React.ElementType<HTMLElement> }
@@ -102,6 +113,7 @@ export const WithdrawWrap = <
   );
 
   const inputBtnRef = React.useRef();
+  myLog("accAddr", accAddr);
   const isNotAvaiableAddress =
     isCFAddress ||
     (isContractAddress &&
@@ -150,16 +162,17 @@ export const WithdrawWrap = <
     [handleWithdrawTypeChange]
   );
 
-  const debounceAddress = React.useCallback(
-    _.debounce(({ address, handleOnAddressChange }: any) => {
-      if (handleOnAddressChange) {
-        handleOnAddressChange(address);
-      }
-    }, wait),
-    []
-  );
-  const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const address = event.target.value;
+  const _handleOnAddressChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    _myAddress?: string
+  ) => {
+    let address: string;
+
+    if (_myAddress) {
+      address = _myAddress;
+    } else {
+      address = event.target?.value ?? "";
+    }
     if (handleAddressError) {
       const error = handleAddressError(address);
       if (error?.error) {
@@ -167,18 +180,20 @@ export const WithdrawWrap = <
       }
     }
     setAddress(address);
-    debounceAddress({ address });
+    if (handleOnAddressChange) {
+      handleOnAddressChange(address);
+    }
   };
 
-  const handleClear = React.useCallback(() => {
-    setAddress("");
-    if (handleAddressError) {
-      const error = handleAddressError("");
-      if (error?.error) {
-        setAddressError(error);
-      }
-    }
-  }, [setAddress, setAddressError, handleAddressError]);
+  // const handleClear = React.useCallback(() => {
+  //   // setAddress("");
+  //   // if (handleAddressError) {
+  //   //   const error = handleAddressError("");
+  //   //   if (error?.error) {
+  //   //     setAddressError(error);
+  //   //   }
+  //   // }
+  // }, [setAddress, setAddressError, handleAddressError]);
   return (
     <Grid
       className={walletMap ? "" : "loading"}
@@ -270,10 +285,27 @@ export const WithdrawWrap = <
 
       <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
         <>
+          <Typography
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            marginBottom={1}
+          >
+            <span> {t("withdrawLabelAddress")}</span>
+            {accAddr && (
+              <LinkStyle
+                onClick={(e) => {
+                  _handleOnAddressChange(e as any, accAddr);
+                }}
+              >
+                {t("labelWithdrawMyAddress")}
+              </LinkStyle>
+            )}
+          </Typography>
           <TextField
+            className={"text-address"}
             value={address}
             error={addressError && addressError.error ? true : false}
-            label={t("withdrawLabelAddress")}
             placeholder={t("labelPleaseInputWalletAddress")}
             onChange={_handleOnAddressChange}
             // disabled={chargeFeeTokenList.length ? false : true}
@@ -289,15 +321,17 @@ export const WithdrawWrap = <
             isAddressCheckLoading ? (
               <LoadingIcon
                 width={24}
-                style={{ top: "32px", right: "8px", position: "absolute" }}
+                style={{ top: "35px", right: "8px", position: "absolute" }}
               />
             ) : (
               <IconClearStyled
                 color={"inherit"}
                 size={"small"}
-                style={{ top: "30px" }}
+                style={{ top: "35px" }}
                 aria-label="Clear"
-                onClick={handleClear}
+                onClick={(e) => {
+                  _handleOnAddressChange(e as any, "");
+                }}
               >
                 <CloseIcon />
               </IconClearStyled>

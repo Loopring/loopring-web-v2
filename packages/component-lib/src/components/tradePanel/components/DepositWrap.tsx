@@ -190,6 +190,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       {isNewAccount ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           <TextField
+            className={"text-address"}
             value={address}
             error={addressError && addressError.error ? true : false}
             label={t("depositLabelRefer")}

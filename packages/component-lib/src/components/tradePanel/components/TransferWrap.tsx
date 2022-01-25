@@ -367,6 +367,7 @@ export const TransferWrap = <
         ) : (
           <>
             <TextField
+              className={"text-address"}
               value={address}
               error={addressError && addressError.error ? true : false}
               label={t("transferLabelAddress")}

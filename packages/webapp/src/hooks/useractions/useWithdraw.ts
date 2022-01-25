@@ -486,6 +486,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     isCFAddress,
     isContractAddress,
     withdrawI18nKey,
+    accAddr: account.accAddress,
     addressDefault: address,
     realAddr,
     disableWithdrawList,
@@ -540,7 +541,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     feeInfo,
     chargeFeeTokenList,
     isFeeNotEnough,
-    handleOnAddressChange: (value: any) => {},
+    handleOnAddressChange: (value: any) => {
+      setAddress(value);
+    },
     handleAddressError: (value: any) => {
       updateWithdrawData({ address: value, balance: -1, tradeValue: -1 });
       return { error: false, message: "" };

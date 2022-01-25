@@ -1,12 +1,14 @@
 let _myLog;
-if (process.env.NODE_ENV !== "production") {
+// @ts-ignore
+if (process.env.NODE_ENV !== "production" || window?.___OhTrustDebugger___) {
   _myLog = console.log;
 } else {
   // @ts-ignore
   _myLog = function (message?: any, ...optionalParams: any[]) {};
 }
 let _myError;
-if (process.env.NODE_ENV !== "production") {
+// @ts-ignore
+if (process.env.NODE_ENV !== "production" || window?.___OhTrustDebugger___) {
   _myError = console.error;
 } else {
   // @ts-ignore
