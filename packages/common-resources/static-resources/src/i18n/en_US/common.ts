@@ -33,7 +33,7 @@ export default {
   depositTitle: "Deposit",
   depositTitleAndActive: "Deposit & Activate Layer 2",
   depositTitleActive: " Activate Layer 2",
-  depositLabelEnterToken: "Select Layer1 Token",
+  depositLabelEnterToken: "Select Layer 1 Token",
   depositDescription:
     "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
   depositAndActiveDescription:
@@ -49,7 +49,7 @@ export default {
   withdrawLabelBtn: "Withdraw",
   withdrawLabelBtnExceed: "Exceed Max Fast Withdraw Amt{{amt}}!",
   withdrawLabelAddress: "Withdrawal Address",
-  labelWithdrawMyAddress: "To My Layer1",
+  labelWithdrawMyAddress: "To My Layer 1",
   withdrawLabelAddressInput: "Please input the address",
   withdrawLabelFee: "Select payment token",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
