@@ -11,6 +11,7 @@ import {
   ErrorType,
   TradeNFT,
   myLog,
+  UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTokenMap } from "stores/token";
@@ -251,7 +252,14 @@ export const useNFTMint = <T extends TradeNFT<I>, I>(): {
           });
         } else {
           // deposit failed
-          setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTMint_Failed,
+            error: {
+              code: UIERROR_CODE.Unknow,
+              msg: "No Response",
+            },
+          });
         }
         resetNFTMintData();
       } catch (reason) {
@@ -280,6 +288,10 @@ export const useNFTMint = <T extends TradeNFT<I>, I>(): {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_Failed,
+              error: {
+                code: result.code ?? UIERROR_CODE.Unknow,
+                msg: reason?.message,
+              },
             });
             resetNFTMintData();
             break;

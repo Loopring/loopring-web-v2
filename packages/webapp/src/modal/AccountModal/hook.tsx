@@ -72,6 +72,7 @@ import React, { useState } from "react";
 import {
   AccountStatus,
   copyToClipBoard,
+  myLog,
   VendorProviders,
 } from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
@@ -411,6 +412,7 @@ export function useAccountModalForUI({
   const clearDeposit = React.useCallback(() => {
     clearDepositHash(account.accAddress);
   }, [clearDepositHash, account]);
+
   const updateDepositStatus = React.useCallback(async () => {
     const chainInfos = store.getState().localStore.chainHashInfos[chainId];
     const { accAddress } = account;
@@ -494,7 +496,6 @@ export function useAccountModalForUI({
       isSupportCallback();
     }
   }, [account.accAddress, isSupportCallback]);
-
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.NoAccount]: {
@@ -638,6 +639,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -756,6 +758,7 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               ...nftDepositValue,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -852,6 +855,7 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               ...nftMintValue,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -948,6 +952,7 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               ...nftDeployValue,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1036,6 +1041,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1103,6 +1109,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1172,6 +1179,7 @@ export function useAccountModalForUI({
             providerName={account.connectName}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1284,6 +1292,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1328,6 +1337,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1409,6 +1419,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1457,6 +1468,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />

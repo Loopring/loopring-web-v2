@@ -250,14 +250,14 @@ export const useOrderList = () => {
     async (orderHash: string, t: TFunction) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         setShowDetailLoading(true);
-        const orderDetail = await LoopringAPI.userAPI.getOrderDetails(
+        const response = await LoopringAPI.userAPI.getOrderDetails(
           {
             accountId,
             orderHash,
           },
           apiKey
         );
-        const formattedData = [orderDetail.orderDetail].map((o) => {
+        const formattedData = [response.orderDetail].map((o: any) => {
           const { baseAmount, quoteAmount, baseFilled, quoteFilled, fee } =
             o.volumes;
           const marketList = o.market.split("-");

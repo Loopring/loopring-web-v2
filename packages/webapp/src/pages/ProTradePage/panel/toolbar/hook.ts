@@ -1,25 +1,25 @@
-import React from 'react'
-import { LoopringAPI } from 'api_wrapper'
+import React from "react";
+import { LoopringAPI } from "api_wrapper";
 
 export const useToolbar = () => {
-    const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([])
-    
-    const getAmmPoolBalances = React.useCallback(async () => {
-        if (LoopringAPI.ammpoolAPI) {
-            const ammRes = await LoopringAPI.ammpoolAPI?.getAmmPoolBalances()
-            const fomattedRes = ammRes.raw_data.map((o: any) => ({
-                ...o,
-                poolName: o.poolName.replace('AMM-', '')
-            }))
-            setAmmPoolBalances(fomattedRes)
-        }
-    }, [])
+  const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);
 
-    React.useEffect(() => {
-        getAmmPoolBalances()
-    }, [])
-    
-    return {
-        ammPoolBalances,
+  const getAmmPoolBalances = React.useCallback(async () => {
+    if (LoopringAPI.ammpoolAPI) {
+      const response = await LoopringAPI.ammpoolAPI.getAmmPoolBalances<any[]>();
+      const fomattedRes = response.raw_data.map((o) => ({
+        ...o,
+        poolName: o.poolName.replace("AMM-", ""),
+      }));
+      setAmmPoolBalances(fomattedRes);
     }
-}
+  }, []);
+
+  React.useEffect(() => {
+    getAmmPoolBalances();
+  }, []);
+
+  return {
+    ammPoolBalances,
+  };
+};

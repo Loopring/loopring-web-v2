@@ -22,6 +22,7 @@ import {
 
 import React from "react";
 import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 export const useOpenModals = () => {
   const dispatch = useDispatch();
@@ -89,7 +90,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowAccount: React.useCallback(
-      (state: ModalStatePlayLoad & { step?: number }) =>
+      (state: ModalStatePlayLoad & { step?: number; error?: RESULT_INFO }) =>
         dispatch(setShowAccount(state)),
       [dispatch]
     ),

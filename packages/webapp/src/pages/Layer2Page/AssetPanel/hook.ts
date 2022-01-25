@@ -100,12 +100,14 @@ export const useGetAssets = () => {
   const getUserAssets = React.useCallback(async () => {
     if (LoopringAPI && LoopringAPI.userAPI && tokenMap) {
       const { accAddress } = account;
-      const res = await LoopringAPI.userAPI.getUserVIPAssets({
+      const { raw_data } = await LoopringAPI.userAPI.getUserVIPAssets<{
+        data: any;
+      }>({
         address: accAddress,
         assetTypes: "DEX",
       });
-      if (res.raw_data && res.raw_data.data) {
-        const ethValueList = res.raw_data.data.map((o: any) => ({
+      if (raw_data && raw_data.data) {
+        const ethValueList = raw_data.data.map((o: any) => ({
           timeStamp: moment(o.createdAt).format("YYYY-MM-DD"),
           close: o.ethValue,
         }));

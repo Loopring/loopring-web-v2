@@ -2,7 +2,7 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "api_wrapper";
 import store from "stores";
 import { accountServices } from "./accountServices";
-import { myLog } from "@loopring-web/common-resources";
+import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import { checkErrorInfo } from "hooks/useractions/utils";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -35,7 +35,11 @@ export async function unlockAccount() {
 
       myLog("unlockAccount eddsaKey:", eddsaKey);
 
-      const [{ apiKey, raw_data }, { walletType }] = await Promise.all([
+      const [
+        response,
+        // { apiKey, raw_data },
+        { walletType },
+      ] = await Promise.all([
         LoopringAPI.userAPI.getUserApiKey(
           {
             accountId: account.accountId,
@@ -47,17 +51,21 @@ export async function unlockAccount() {
         }),
       ]);
 
-      myLog("unlockAccount raw_data:", raw_data);
+      myLog("unlockAccount raw_data:", response);
 
-      if (!apiKey && raw_data.resultInfo) {
+      if (
+        !response.apiKey &&
+        ((response as sdk.RESULT_INFO).msg ||
+          (response as sdk.RESULT_INFO).message)
+      ) {
         myLog("try to sendErrorUnlock....");
-        accountServices.sendErrorUnlock();
+        accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
         myLog("try to sendAccountSigned....");
         accountServices.sendAccountSigned({
           accountId: account.accountId,
           nonce: account.nonce,
-          apiKey,
+          apiKey: response.apiKey,
           eddsaKey,
           isContract: walletType?.isContract,
           isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
@@ -74,7 +82,10 @@ export async function unlockAccount() {
         default:
           break;
       }
-      accountServices.sendErrorUnlock();
+      accountServices.sendErrorUnlock({
+        code: UIERROR_CODE.Unknow,
+        msg: e.message,
+      });
     }
   }
 }

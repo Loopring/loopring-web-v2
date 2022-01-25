@@ -14,6 +14,7 @@ import {
   CoinMap,
   IBData,
   SagaStatus,
+  UIERROR_CODE,
   WalletMap,
   WithdrawType,
   WithdrawTypes,
@@ -315,7 +316,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
           myLog("submitOffchainWithdraw:", response);
 
           if (isAccActivated()) {
-            if ((response as sdk.ErrorMsg)?.errMsg) {
+            if (
+              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).message
+            ) {
               // Withdraw failed
               const code = checkErrorInfo(response, isFirstTime);
               if (code === sdk.ConnectorError.USER_DENIED) {
@@ -333,16 +337,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Withdraw_Failed,
+                  error: response as sdk.RESULT_INFO,
                 });
               }
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
-            ) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Withdraw_Failed,
-              });
-            } else {
+            } else if ((response as sdk.TX_HASH_API)?.hash) {
               // Withdraw success
               setShowAccount({
                 isShow: true,
@@ -384,7 +382,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
               step: AccountStep.Withdraw_First_Method_Denied,
             });
           } else {
-            setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Withdraw_Failed,
+              error: {
+                code: UIERROR_CODE.Unknow,
+                msg: reason?.message,
+              },
+            });
           }
         }
       }
@@ -402,6 +407,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         address &&
+        LoopringAPI.userAPI &&
         withdrawValue?.fee?.belong &&
         withdrawValue.fee?.__raw__ &&
         eddsaKey?.sk
@@ -429,7 +435,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
           const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue;
           const withdrawVol = finalVol.toFixed(0, 0);
 
-          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+          const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId: accountId,
               sellTokenId: withdrawToken.tokenId,
@@ -462,7 +468,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
           processRequest(request, isFirstTime);
         } catch (e) {
           sdk.dumpError400(e);
-          setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_Failed,
+            error: {
+              code: UIERROR_CODE.Unknow,
+              msg: e?.message,
+            },
+          });
         }
 
         return true;

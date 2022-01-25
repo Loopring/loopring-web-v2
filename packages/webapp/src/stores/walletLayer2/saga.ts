@@ -39,7 +39,7 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   } else if (
     !apiKey &&
     _accountIdNotActive &&
-    _accountIdNotActive != -1 &&
+    _accountIdNotActive !== -1 &&
     ["DEPOSITING", "NOT_ACTIVE"].includes(readyState)
   ) {
     const {

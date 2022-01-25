@@ -15,6 +15,7 @@ import {
   FeeInfo,
   myLog,
   TradeNFT,
+  UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
@@ -90,7 +91,10 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
           myLog("submitInternalTransfer:", response);
 
           if (isAccActivated()) {
-            if ((response as sdk.ErrorMsg)?.errMsg) {
+            if (
+              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).message
+            ) {
               // Withdraw failed
               const code = checkErrorInfo(response, isFirstTime);
               if (code === sdk.ConnectorError.USER_DENIED) {
@@ -107,16 +111,10 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTDeploy_Failed,
+                  error: response as sdk.RESULT_INFO,
                 });
               }
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
-            ) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTDeploy_Failed,
-              });
-            } else {
+            } else if ((response as sdk.TX_HASH_API)?.hash) {
               // Withdraw success
               setShowAccount({
                 isShow: true,
@@ -157,7 +155,11 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
               step: AccountStep.Transfer_First_Method_Denied,
             });
           } else {
-            setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_Failed,
+              error: { code: UIERROR_CODE.Unknow, msg: reason.message },
+            });
           }
         }
       }
@@ -256,7 +258,11 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       } catch (e) {
         sdk.dumpError400(e);
         // nftTransfer failed
-        setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.Transfer_Failed,
+          error: { code: UIERROR_CODE.Unknow, msg: e.message },
+        });
       }
     } else {
       return false;

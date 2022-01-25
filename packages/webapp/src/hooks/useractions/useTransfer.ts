@@ -16,6 +16,7 @@ import {
   FeeInfo,
   IBData,
   SagaStatus,
+  UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 
@@ -39,6 +40,7 @@ import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
+import { TX_HASH_API } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export const useTransfer = <R extends IBData<T>, T>(): {
   transferToastOpen: boolean;
@@ -201,12 +203,12 @@ export const useTransfer = <R extends IBData<T>, T>(): {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3) {
+        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
           isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
 
-          const response = await LoopringAPI.userAPI?.submitInternalTransfer(
+          const response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request,
               web3: connectProvides.usedWeb3,
@@ -226,7 +228,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
           myLog("submitInternalTransfer:", response);
 
           if (isAccActivated()) {
-            if ((response as sdk.ErrorMsg)?.errMsg) {
+            if (
+              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).message
+            ) {
               // Withdraw failed
               const code = checkErrorInfo(response, isFirstTime);
               if (code === sdk.ConnectorError.USER_DENIED) {
@@ -244,16 +249,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Transfer_Failed,
+                  error: response as sdk.RESULT_INFO,
                 });
               }
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
-            ) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_Failed,
-              });
-            } else {
+            } else if ((response as sdk.TX_HASH_API)?.hash) {
               // Withdraw success
               setShowAccount({
                 isShow: true,
@@ -292,7 +291,14 @@ export const useTransfer = <R extends IBData<T>, T>(): {
               step: AccountStep.Transfer_First_Method_Denied,
             });
           } else {
-            setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Transfer_Failed,
+              error: {
+                code: UIERROR_CODE.Unknow,
+                msg: reason?.message,
+              },
+            });
           }
         }
       }
@@ -371,7 +377,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         } catch (e) {
           sdk.dumpError400(e);
           // transfer failed
-          setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_Failed,
+          });
         }
       } else {
         return false;

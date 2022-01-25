@@ -10,6 +10,7 @@ import {
   CoinMap,
   IBData,
   myLog,
+  UIERROR_CODE,
   VendorProviders,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -182,16 +183,19 @@ export const useDeposit = <R extends IBData<T>, T>() => {
                 return;
               }
               const realRefferAddr = realAddr ? realAddr : reffer;
-              const { accInfo, error } =
-                await LoopringAPI.exchangeAPI.getAccount({
-                  owner: realRefferAddr,
-                });
-
-              if (error || !accInfo?.accountId) {
+              const response = await LoopringAPI.exchangeAPI.getAccount({
+                owner: realRefferAddr,
+              });
+              if (
+                (response &&
+                  ((response as sdk.RESULT_INFO).msg ||
+                    (response as sdk.RESULT_INFO).message)) ||
+                (response.accInfo && !response.accInfo?.accountId)
+              ) {
                 return;
               }
 
-              refferId = accInfo?.accountId;
+              refferId = response.accInfo?.accountId;
             } catch (reason) {
               sdk.dumpError400(reason);
             }
@@ -366,7 +370,14 @@ export const useDeposit = <R extends IBData<T>, T>() => {
             });
           } else {
             // deposit failed
-            setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Deposit_Failed,
+              error: {
+                code: UIERROR_CODE.Unknow,
+                msg: "No Response",
+              },
+            });
           }
 
           resetDepositData();
@@ -396,6 +407,10 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Deposit_Failed,
+                error: {
+                  code: result.code ?? UIERROR_CODE.Unknow,
+                  msg: reason?.message,
+                },
               });
               resetDepositData();
               break;

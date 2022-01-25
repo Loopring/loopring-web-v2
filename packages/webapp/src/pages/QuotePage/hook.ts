@@ -29,11 +29,11 @@ export function useTickList<C extends { [key: string]: string }>() {
         const { recommended } =
           await LoopringAPI.exchangeAPI.getRecommendedMarkets();
         setRecommendedPairs(recommended);
-        return recommended || [];
+        return recommended;
       } catch (e) {
         myError(e);
       }
-      return [];
+      return [] as string[];
     }
   }, [setRecommendedPairs]);
   const updateRecommendation = React.useCallback(
@@ -47,7 +47,7 @@ export function useTickList<C extends { [key: string]: string }>() {
   );
   const updateRawData = React.useCallback(
     async (tickerMap: TickerMap<C>) => {
-      const marketPairs: string[] = await getRecommendPairs();
+      const marketPairs: string[] = (await getRecommendPairs()) ?? [];
       let _recommendationsFloat: QuoteTableRawDataItem[] = [];
       let defaultRecommendationsFloat: QuoteTableRawDataItem[] = [];
       const _tickList =

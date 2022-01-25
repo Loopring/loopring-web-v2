@@ -126,18 +126,21 @@ export function useChargeFees({
           };
           let fees: any;
           if (isActiveAccount) {
-            // if(account.readyState  === 'NO_ACCOUNT'){
-            //
-            // }
-            fees = (
-              await LoopringAPI?.globalAPI.getActiveFeeInfo({
-                accountId:
-                  account._accountIdNotActive &&
-                  account._accountIdNotActive !== -1
-                    ? account._accountIdNotActive
-                    : undefined,
-              })
-            ).fees;
+            const response = await LoopringAPI.globalAPI.getActiveFeeInfo({
+              accountId:
+                account._accountIdNotActive &&
+                account._accountIdNotActive !== -1
+                  ? account._accountIdNotActive
+                  : undefined,
+            });
+
+            if (
+              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).message
+            ) {
+            } else {
+              fees = response.fees;
+            }
           } else if (
             [
               OffchainNFTFeeReqType.NFT_MINT,
@@ -149,23 +152,33 @@ export function useChargeFees({
             account.accountId !== -1 &&
             account.apiKey
           ) {
-            fees = (
-              await LoopringAPI.userAPI.getNFTOffchainFeeAmt(
-                request as GetNFTOffchainFeeAmtRequest,
-                account.apiKey
-              )
-            ).fees;
+            const response = await LoopringAPI.userAPI.getNFTOffchainFeeAmt(
+              request as GetNFTOffchainFeeAmtRequest,
+              account.apiKey
+            );
+            if (
+              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).message
+            ) {
+            } else {
+              fees = response.fees;
+            }
           } else if (
             account.accountId &&
             account.accountId !== -1 &&
             account.apiKey
           ) {
-            fees = (
-              await LoopringAPI.userAPI.getOffchainFeeAmt(
-                request as GetOffchainFeeAmtRequest,
-                account.apiKey
-              )
-            ).fees;
+            const response = await LoopringAPI.userAPI.getOffchainFeeAmt(
+              request as GetOffchainFeeAmtRequest,
+              account.apiKey
+            );
+            if (
+              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).message
+            ) {
+            } else {
+              fees = response.fees;
+            }
           }
 
           nodeTimer.current = setTimeout(() => {

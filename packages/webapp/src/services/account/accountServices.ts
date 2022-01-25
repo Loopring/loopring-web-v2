@@ -1,4 +1,4 @@
-import { AccountStatus } from "@loopring-web/common-resources";
+import { AccountStatus, UIERROR_CODE } from "@loopring-web/common-resources";
 
 import { Subject } from "rxjs";
 import { Commands } from "./command";
@@ -27,10 +27,17 @@ export const accountServices = {
       data: undefined,
     });
   },
-  sendErrorUnlock: () => {
+  sendErrorUnlock: (error?: sdk.RESULT_INFO) => {
     subject.next({
       status: Commands.ErrorSign,
-      data: undefined,
+      data: {
+        error:
+          error ??
+          ({
+            code: UIERROR_CODE.Unknow,
+            msg: "unknown error",
+          } as sdk.RESULT_INFO),
+      },
     });
   },
 
