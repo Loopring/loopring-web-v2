@@ -1,0 +1,13 @@
+{
+  "status": 0,
+  "from": "1639980000",
+  "to": "1639987200",
+  "descriptions": {
+    "en": {
+      "comments": "Dex upgrading, please wait about 2 hours"
+    },
+    "zh": {
+      "comments": "交易所正在升级，大约需要1小时"
+    }
+  }
+}
