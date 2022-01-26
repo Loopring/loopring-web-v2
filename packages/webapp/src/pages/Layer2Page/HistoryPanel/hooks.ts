@@ -10,8 +10,8 @@ import {
 import { volumeToCount, volumeToCountAsBigNumber } from "hooks/help";
 import { LoopringAPI } from "api_wrapper";
 import store from "stores";
-import { AmmTxType, UserTxTypes } from "@loopring-web/loopring-sdk";
 import { tradeItemToTableDataItem } from "utils/formatter_tool";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -20,10 +20,10 @@ export type TxsFilterProps = {
   end?: number;
   offset?: number;
   limit?: number;
-  types?: UserTxTypes[] | string;
+  types?: sdk.UserTxTypes[] | string;
 };
 
-export function useGetTxs() {
+export function useGetTxs(setToastOpen: (state: any) => void) {
   const {
     account: { accountId, apiKey },
   } = useAccount();
@@ -55,7 +55,7 @@ export function useGetTxs() {
     }: TxsFilterProps) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
         setShowLoading(true);
-        const userTxnList = await LoopringAPI.userAPI.getUserTxs(
+        const response = await LoopringAPI.userAPI.getUserTxs(
           {
             accountId,
             limit,
@@ -67,34 +67,44 @@ export function useGetTxs() {
           },
           apiKey
         );
-
-        const formattedList = userTxnList.userTxs.map((o) => {
-          const feePrecision = tokenMap
-            ? tokenMap[o.feeTokenSymbol].precision
-            : undefined;
-          return {
-            ...o,
-            side: o.txType as any,
-            amount: {
-              unit: o.symbol || "",
-              value: Number(volumeToCount(o.symbol, o.amount)),
-            },
-            fee: {
-              unit: o.feeTokenSymbol || "",
-              value: Number(
-                volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
-              ),
-            },
-            memo: o.memo || "",
-            time: o.timestamp,
-            txnHash: o.hash,
-            status: getTxnStatus(o.status),
-            feePrecision: feePrecision,
-          };
-        });
-        setTxs(formattedList);
-        setTxsTotal(userTxnList.totalNum);
-        setShowLoading(false);
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          setToastOpen({
+            open: true,
+            type: "error",
+            content: "error : " + (response as sdk.RESULT_INFO).message,
+          });
+        } else {
+          const formattedList = response.userTxs.map((o) => {
+            const feePrecision = tokenMap
+              ? tokenMap[o.feeTokenSymbol].precision
+              : undefined;
+            return {
+              ...o,
+              side: o.txType as any,
+              amount: {
+                unit: o.symbol || "",
+                value: Number(volumeToCount(o.symbol, o.amount)),
+              },
+              fee: {
+                unit: o.feeTokenSymbol || "",
+                value: Number(
+                  volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
+                ),
+              },
+              memo: o.memo || "",
+              time: o.timestamp,
+              txnHash: o.hash,
+              status: getTxnStatus(o.status),
+              feePrecision: feePrecision,
+            };
+          });
+          setTxs(formattedList);
+          setTxsTotal(response.totalNum);
+          setShowLoading(false);
+        }
       }
     },
     [accountId, apiKey, tokenMap]
@@ -108,7 +118,7 @@ export function useGetTxs() {
   };
 }
 
-export function useGetTrades() {
+export function useGetTrades(setToastOpen: (state: any) => void) {
   const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([]);
   const [userTradesTotal, setUserTradesTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
@@ -128,7 +138,7 @@ export function useGetTrades() {
         tokenMap
       ) {
         setShowLoading(true);
-        const userTrades = await LoopringAPI.userAPI.getUserTrades(
+        const response = await LoopringAPI.userAPI.getUserTrades(
           {
             accountId,
             market,
@@ -140,14 +150,22 @@ export function useGetTrades() {
           },
           apiKey
         );
-
-        if (userTrades && userTrades.userTrades) {
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          setToastOpen({
+            open: true,
+            type: "error",
+            content: "error : " + (response as sdk.RESULT_INFO).message,
+          });
+        } else {
           setUserTrades(
-            userTrades.userTrades.map((o) => {
+            response.userTrades.map((o) => {
               return tradeItemToTableDataItem(o) as RawDataTradeItem;
             })
           );
-          setUserTradesTotal(userTrades.totalNum);
+          setUserTradesTotal(response.totalNum);
         }
         setShowLoading(false);
       }
@@ -167,7 +185,7 @@ export function useGetTrades() {
   };
 }
 
-export function useGetAmmRecord() {
+export function useGetAmmRecord(setToastOpen: (state: any) => void) {
   const [ammRecordList, setAmmRecordList] = React.useState<RawDataAmmItem[]>(
     []
   );
@@ -193,16 +211,27 @@ export function useGetAmmRecord() {
 
   const getAmmpoolList = React.useCallback(async () => {
     if (LoopringAPI.ammpoolAPI && accountId && apiKey) {
-      const ammpool = await LoopringAPI.ammpoolAPI.getUserAmmPoolTxs(
+      const response = await LoopringAPI.ammpoolAPI.getUserAmmPoolTxs(
         {
           accountId,
         },
         apiKey
       );
-      if (ammpool && ammpool.userAmmPoolTxs) {
-        const result = ammpool.userAmmPoolTxs.map((o) => ({
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        setToastOpen({
+          open: true,
+          type: "error",
+          content: "error : " + (response as sdk.RESULT_INFO).message,
+        });
+      } else {
+        const result = response.userAmmPoolTxs.map((o) => ({
           side:
-            o.txType === AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
+            o.txType === sdk.AmmTxType.JOIN
+              ? AmmSideTypes.Join
+              : AmmSideTypes.Exit,
           amount: {
             from: {
               key: getTokenName(o.poolTokens[0]?.tokenId),

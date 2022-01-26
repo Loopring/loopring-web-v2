@@ -135,7 +135,7 @@ export function useChargeFees({
             });
 
             if (
-              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
             } else {
@@ -157,7 +157,7 @@ export function useChargeFees({
               account.apiKey
             );
             if (
-              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
             } else {
@@ -173,7 +173,7 @@ export function useChargeFees({
               account.apiKey
             );
             if (
-              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
             } else {

@@ -84,7 +84,7 @@ export function useExportAccountInfo() {
         myLog("ExportAccount raw_data:", response);
 
         if (
-          (response as sdk.RESULT_INFO).msg ||
+          (response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message ||
           !response.apiKey
         ) {

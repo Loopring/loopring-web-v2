@@ -70,7 +70,7 @@ export const useAddressCheck = () => {
 
             if (
               response &&
-              ((response as sdk.RESULT_INFO).msg ||
+              ((response as sdk.RESULT_INFO).code ||
                 (response as sdk.RESULT_INFO).message)
             ) {
               setIsLoopringAddress(false);

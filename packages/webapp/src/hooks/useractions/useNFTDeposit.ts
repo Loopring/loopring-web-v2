@@ -132,6 +132,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
           setIsNFTCheckLoading(() => false);
         });
         myLog("setIsNFTCheckLoading done", balance, meta, isApproved);
+
         const shouldUpdate = {
           ...data,
           nftId: _nftId,

@@ -221,7 +221,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
           if (isAccActivated()) {
             if (
-              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
               const code = checkErrorInfo(

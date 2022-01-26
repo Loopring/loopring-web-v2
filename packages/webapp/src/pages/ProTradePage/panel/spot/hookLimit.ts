@@ -291,28 +291,30 @@ export const useLimit = <C extends { [key: string]: any }>({
 
           myLog(requestClone);
 
-          const response = await LoopringAPI.userAPI.submitOrder(
-            requestClone,
-            account.eddsaKey.sk,
-            account.apiKey
-          );
+          const response: { hash: string } | any =
+            await LoopringAPI.userAPI.submitOrder(
+              requestClone,
+              account.eddsaKey.sk,
+              account.apiKey
+            );
 
           myLog(response);
-
-          if (!response?.hash) {
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
             setToastOpen({
               open: true,
               type: "error",
-              content: t("labelSwapFailed"),
+              content: t("labelSwapFailed") + " : " + response.message,
             });
-            myLog(response?.resultInfo);
           } else {
             await sdk.sleep(__SUBMIT_LOCK_TIMER__);
 
             const resp = await LoopringAPI.userAPI.getOrderDetails(
               {
                 accountId: account.accountId,
-                orderHash: response.hash,
+                orderHash: response?.hash,
               },
               account.apiKey
             );

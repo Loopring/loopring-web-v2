@@ -85,7 +85,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
 
           if (isAccActivated()) {
             if (
-              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
               // Withdraw failed

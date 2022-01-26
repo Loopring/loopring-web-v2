@@ -98,7 +98,7 @@ export async function updateAccountFromServer({
             myLog("updateAccountResponse:", response);
 
             if (
-              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
               result.code = ActionResultCode.UpdateAccoutError;

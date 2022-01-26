@@ -188,7 +188,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               });
               if (
                 (response &&
-                  ((response as sdk.RESULT_INFO).msg ||
+                  ((response as sdk.RESULT_INFO).code ||
                     (response as sdk.RESULT_INFO).message)) ||
                 (response.accInfo && !response.accInfo?.accountId)
               ) {

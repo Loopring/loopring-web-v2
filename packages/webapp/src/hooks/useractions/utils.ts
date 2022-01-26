@@ -5,7 +5,7 @@ export const checkErrorInfo = (
   errorInfo: sdk.RESULT_INFO,
   isFirstTime: boolean
 ) => {
-  const message = errorInfo.msg ?? errorInfo.message;
+  const message = errorInfo.message;
   if (isFirstTime && message === "NOT_SUPPORT_ERROR") {
     return ConnectorError.NOT_SUPPORT_ERROR;
   } else if (message === "USER_DENIED") {

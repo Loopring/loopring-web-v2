@@ -55,7 +55,7 @@ export async function unlockAccount() {
 
       if (
         !response.apiKey &&
-        ((response as sdk.RESULT_INFO).msg ||
+        ((response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message)
       ) {
         myLog("try to sendErrorUnlock....");

@@ -218,7 +218,7 @@ export const useNFTTransfer = <
 
           if (isAccActivated()) {
             if (
-              (response as sdk.RESULT_INFO).msg ||
+              (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
               // Withdraw failed
