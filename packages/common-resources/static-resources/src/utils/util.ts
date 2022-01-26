@@ -1,8 +1,9 @@
-import { BigNumber } from 'bignumber.js'
-import { toBig } from '@loopring-web/loopring-sdk'
+import { BigNumber } from "bignumber.js";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export function abbreviateNumber(value: number, precision?: number) {
-  let newValue = value, result: string;
+  let newValue = value,
+    result: string;
   const suffixes = ["", "K", "M", "B", "T"];
   let suffixNum = 0;
   while (newValue >= 1000) {
@@ -13,79 +14,99 @@ export function abbreviateNumber(value: number, precision?: number) {
   if (precision) {
     result = newValue.toFixed(precision);
   } else {
-    result = newValue.toPrecision(3)
+    result = newValue.toPrecision(3);
   }
 
-  result += suffixes[ suffixNum ];
+  result += suffixes[suffixNum];
   return result;
 }
 
 export const getAbbreviateNumber = (value: number | string) => {
-  let newValue: any = value
-  value = parseInt(toBig(value).toString())
-  const formattedValue = toBig(value).toNumber()
+  let newValue: any = value;
+  value = parseInt(toBig(value).toString());
+  const formattedValue = toBig(value).toNumber();
   if (formattedValue >= 1000) {
-    let suffixes = ['', 'K', 'M', 'B', 'T']
-    let suffixNum = Math.floor(('' + formattedValue).length / 3)
+    let suffixes = ["", "K", "M", "B", "T"];
+    let suffixNum = Math.floor(("" + formattedValue).length / 3);
     let shortValue: string | number = 0;
     for (let precision = 3; precision >= 1; precision--) {
-      shortValue = parseFloat((suffixNum !== 0 ? (formattedValue / Math.pow(1000, suffixNum)) : formattedValue).toPrecision(precision))
-      const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '')
+      shortValue = parseFloat(
+        (suffixNum !== 0
+          ? formattedValue / Math.pow(1000, suffixNum)
+          : formattedValue
+        ).toPrecision(precision)
+      );
+      const dotLessShortValue = (shortValue + "").replace(
+        /[^a-zA-Z 0-9]+/g,
+        ""
+      );
       if (dotLessShortValue.length <= 3) {
-        break
+        break;
       }
     }
     if (shortValue && toBig(shortValue).toNumber() % 1 !== 0) {
-      shortValue = toBig(shortValue).toNumber()
+      shortValue = toBig(shortValue).toNumber();
     }
-    newValue = shortValue + suffixes[ suffixNum ]
+    newValue = shortValue + suffixes[suffixNum];
   }
-  return newValue
-}
+  return newValue;
+};
 
 export const getFormattedHash = (hash?: string) => {
-  if (!hash) return hash
-  const firstSix = hash.slice(0, 6)
-  const lastFour = hash.slice(hash.length - 4)
-  return `${firstSix}****${lastFour}`
+  if (!hash) return hash;
+  const firstSix = hash.slice(0, 6);
+  const lastFour = hash.slice(hash.length - 4);
+  return `${firstSix}****${lastFour}`;
+};
+
+export function getShortAddr(address: string): string | "" {
+  if (!address || address.trim() === "") {
+    return "";
+  }
+  return address.substr(0, 6) + "..." + address.substr(address.length - 4);
 }
 
-export function getShortAddr(address: string): string | '' {
-  if (!address || address.trim() === '') {
-    return ''
+const getFloatFloor = (
+  value: number | string | undefined,
+  precision: number
+) => {
+  if (
+    (!value || !Number.isFinite(Number(value)) || Number(value) === 0) &&
+    !BigNumber.isBigNumber(value)
+  ) {
+    return "0.00";
   }
-  return address.substr(0, 6) + '...' + address.substr(address.length - 4)
-}
+  const result = Math.floor(Number(value) * Math.pow(10, precision));
+  return result / Math.pow(10, precision);
+};
 
-const getFloatFloor = (value: number | string | undefined, precision: number) => {
-  if ((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) {
-    return '0.00'
+const getFloatCeil = (
+  value: number | string | undefined,
+  precision: number
+) => {
+  if (
+    (!value || !Number.isFinite(Number(value)) || Number(value) === 0) &&
+    !BigNumber.isBigNumber(value)
+  ) {
+    return "0.00";
   }
-  const result = Math.floor(Number(value) * Math.pow(10, precision))
-  return result / Math.pow(10, precision)
-}
-
-const getFloatCeil = (value: number | string | undefined, precision: number) => {
-  if ((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) {
-    return '0.00'
-  }
-  let result = Math.ceil(Number(value) * Math.pow(10, precision))
-  return result / Math.pow(10, precision)
-}
+  let result = Math.ceil(Number(value) * Math.pow(10, precision));
+  return result / Math.pow(10, precision);
+};
 
 const addZeroAfterDot = (value: string) => {
-  let [_init, _dot] = value.split('.');
+  let [_init, _dot] = value.split(".");
   if (_dot) {
-    _dot = _dot.replace(/0+?$/, '');
+    _dot = _dot.replace(/0+?$/, "");
     if (_dot) {
-      value = _init + '.' + _dot;
+      value = _init + "." + _dot;
     } else {
-      value = _init
+      value = _init;
     }
-    return value
+    return value;
   }
-  return value
-}
+  return value;
+};
 
 /**
  * @param value
@@ -95,26 +116,36 @@ const addZeroAfterDot = (value: string) => {
  * @param notRemoveEndZero default will remove after dot end 0
  * @param option { floor?: boolean, isFait?: boolean, isTrade?: boolean }
  */
-export const getValuePrecisionThousand = (value: number | string | BigNumber | undefined, minDigit = 6, precision = 2, fixed?: number, notRemoveEndZero?: boolean, option?: {
-  floor?: boolean,
-  isFait?: boolean,
-  isTrade?: boolean,
-  isExponential?: boolean,
-  isPrice?: boolean,
-  abbreviate?: 3 | 6 | 9 | 12 | 15 | 18,
-  isAbbreviate?: true,
-}) => {
-    const floor = option?.floor
-    const isFait = option?.isFait
-    const isTrade = option?.isTrade
-    const isExponential = option?.isExponential
-    const isPrice = option?.isPrice
-    const isAbbreviate = option?.isAbbreviate
-    const abbreviate = (option?.abbreviate) ?? 6
-    if ((!value || !Number.isFinite(Number(value)) || Number(value) === 0) && !BigNumber.isBigNumber(value)) {
-        return '0.00'
-    }
-    let result: any = value;
+export const getValuePrecisionThousand = (
+  value: number | string | BigNumber | undefined,
+  minDigit = 6,
+  precision = 2,
+  fixed?: number,
+  notRemoveEndZero?: boolean,
+  option?: {
+    floor?: boolean;
+    isFait?: boolean;
+    isTrade?: boolean;
+    isExponential?: boolean;
+    isPrice?: boolean;
+    abbreviate?: 3 | 6 | 9 | 12 | 15 | 18;
+    isAbbreviate?: true;
+  }
+) => {
+  const floor = option?.floor;
+  const isFait = option?.isFait;
+  const isTrade = option?.isTrade;
+  const isExponential = option?.isExponential;
+  const isPrice = option?.isPrice;
+  const isAbbreviate = option?.isAbbreviate;
+  const abbreviate = option?.abbreviate ?? 6;
+  if (
+    (!value || !Number.isFinite(Number(value)) || Number(value) === 0) &&
+    !BigNumber.isBigNumber(value)
+  ) {
+    return "0.00";
+  }
+  let result: any = value;
 
   if (!BigNumber.isBigNumber(result)) {
     result = toBig(value);
@@ -122,11 +153,11 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
 
   // integer part exceed 6 digits abbreaviate, otherwise toLocaleString
   if (isAbbreviate === true) {
-    let [_init, _dot] = result.toString().split('.');
-    const integerPartLength = _init.length
+    let [_init, _dot] = result.toString().split(".");
+    const integerPartLength = _init.length;
     if (integerPartLength > abbreviate) {
       // return getAbbreviateNumber(result)
-      return abbreviateNumber(result.toString())
+      return abbreviateNumber(result.toString());
     }
   }
 
@@ -136,36 +167,44 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
   }
 
   if (isPrice === true) {
-    return toBig(toBig(result).toFixed(fixed || 6)).toNumber().toLocaleString('en', {minimumFractionDigits: fixed || 6})
+    return toBig(toBig(result).toFixed(fixed || 6))
+      .toNumber()
+      .toLocaleString("en", { minimumFractionDigits: fixed || 6 });
   }
 
   // fait price
   if (isFait === true) {
     if (toBig(result).isGreaterThanOrEqualTo(1)) {
       if (floor === true) {
-        result = getFloatFloor(result, 2)
+        result = getFloatFloor(result, 2);
       }
       if (floor === false) {
-        result = getFloatCeil(result, 2)
+        result = getFloatCeil(result, 2);
       }
       // fixed 2 decimals
-      return toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
+      return toBig(result.toFixed(2))
+        .toNumber()
+        .toLocaleString("en", { minimumFractionDigits: 2 });
     } else {
       if (floor === true) {
-        result = getFloatFloor(result, 6)
+        result = getFloatFloor(result, 6);
       }
       if (floor === false) {
-        result = getFloatCeil(result, 6)
+        result = getFloatCeil(result, 6);
       }
-      return toBig(result).toNumber().toLocaleString('en', {minimumFractionDigits: 6})
+      return toBig(result)
+        .toNumber()
+        .toLocaleString("en", { minimumFractionDigits: 6 });
     }
   }
   if (isTrade === true) {
-    let [_init, _dot] = result.toString().split('.');
+    let [_init, _dot] = result.toString().split(".");
     if (_dot && _dot.length > 3) {
-      return result.toNumber().toLocaleString('en', {minimumFractionDigits: _dot.length})
+      return result
+        .toNumber()
+        .toLocaleString("en", { minimumFractionDigits: _dot.length });
     } else {
-      return result.toNumber().toLocaleString('en')
+      return result.toNumber().toLocaleString("en");
     }
   }
   if (result.isGreaterThan(1)) {
@@ -175,26 +214,29 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     //         minimumFractionDigits: minDigit
     //     })
     // }
-    let formattedValue = null
+    let formattedValue = null;
     if (floor === true) {
-      formattedValue = getFloatFloor(result, fixed || minDigit)
+      formattedValue = getFloatFloor(result, fixed || minDigit);
     }
     if (floor === false) {
-      formattedValue = getFloatCeil(result, fixed || minDigit)
+      formattedValue = getFloatCeil(result, fixed || minDigit);
     }
     if (floor === undefined) {
-      formattedValue = result.toFixed(fixed || minDigit)
+      formattedValue = result.toFixed(fixed || minDigit);
     }
     // remain string-number zero
-    result = toBig(formattedValue).toNumber().toLocaleString('en', {minimumFractionDigits: (fixed || minDigit)})
+    result = toBig(formattedValue)
+      .toNumber()
+      .toLocaleString("en", { minimumFractionDigits: fixed || minDigit });
   } else if (result.isLessThanOrEqualTo(1)) {
-    // console.log(11111, result.toNumber())
-    result = fixed ? result.toFixed(fixed) : toBig(result).toPrecision(precision)
+    result = fixed
+      ? result.toFixed(fixed)
+      : toBig(result).toPrecision(precision);
   }
 
   if (result && !notRemoveEndZero) {
-    result = addZeroAfterDot(result)
+    result = addZeroAfterDot(result);
   }
 
-  return result
-}
+  return result;
+};
