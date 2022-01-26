@@ -69,7 +69,6 @@ function genABViewDataAccumulated({
   return amtTotalSlice.reduce((prv, value: string, ind: number) => {
     if (amtSlice[ind] && amtSlice[ind].amt) {
       const amt = amtSlice[ind].amt;
-      // console.log(amt)
       const amtForShow = getValuePrecisionThousand(
         sdk.toBig(amt).div("1e" + baseDecimal),
         undefined,
@@ -229,7 +228,6 @@ function genABViewData({
   return abInfoSlice.reduce((prv, value: ABInfo, ind: number) => {
     if (amtSlice[ind] && amtSlice[ind].amt) {
       const amt = amtSlice[ind].amt;
-      // console.log(amt)
       const amtForShow = getValuePrecisionThousand(
         sdk.toBig(amt).div("1e" + baseDecimal),
         undefined,

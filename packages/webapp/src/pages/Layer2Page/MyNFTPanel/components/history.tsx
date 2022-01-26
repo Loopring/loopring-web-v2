@@ -62,7 +62,6 @@ export const HistoryNFT = () => {
     tabIndex,
     setTabIndex,
   } = useHistoryNFT();
-  console.log(nftHistory.transfers.rawData);
   const panelList: Pick<PanelContent<TxType>, "key" | "element">[] = [
     {
       key: TxType.TRANSFER,

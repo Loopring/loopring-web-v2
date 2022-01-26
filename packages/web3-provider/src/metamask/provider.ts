@@ -34,8 +34,6 @@ export const MetaMaskProvide = async (): Promise<
 export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
   if (provider) {
     provider.on("accountsChanged", (accounts: Array<string>) => {
-      // const _accounts = await h.getAccounts();
-      // console.log(haccounts:', accounts)
       if (accounts.length) {
         walletServices.sendConnect(web3, provider);
       } else {

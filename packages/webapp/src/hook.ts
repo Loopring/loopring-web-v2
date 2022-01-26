@@ -25,7 +25,6 @@ import { useNotify } from "./stores/notify";
  * @step3 decide china Id by step2
  * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, forex, Activities ...)
  * @step5 launch the page
- * @todo each step has error show the ErrorPage , next version for service maintain page.
  */
 
 export function useInit() {
@@ -190,6 +189,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:
+        console.log("ERROR", "get ammActivity error,ui");
         ammActivityMapStatusUnset();
         break;
       case SagaStatus.DONE:
@@ -215,7 +215,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (amountStatus) {
       case SagaStatus.ERROR:
-        console.log("ERROR", "get ticker error,ui");
+        console.log("ERROR", "get (amount error,ui");
         amountStatusUnset();
         break;
       case SagaStatus.DONE:
