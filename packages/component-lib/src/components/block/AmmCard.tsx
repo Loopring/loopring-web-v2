@@ -362,7 +362,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                         // src={sellData?.icon}
                         src={SoursURL + "images/icon-default.png"}
                       />
-                    )}{" "}
+                    )}
                   </Box>
                 </Box>
               </BoxStyled>
