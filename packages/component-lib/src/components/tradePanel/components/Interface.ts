@@ -1,4 +1,9 @@
-import { InputButtonProps, InputCoinProps } from "../../basic-lib/form";
+import {
+  InputButtonProps,
+  InputCoinProps,
+  BtnInfoProps,
+  SwitchPanelProps,
+} from "../../basic-lib";
 import {
   CoinInfo,
   CoinKey,
@@ -12,7 +17,6 @@ import {
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React from "react";
-import { BtnInfoProps, SwitchPanelProps } from "../../basic-lib";
 
 /**
  * private props
@@ -59,7 +63,7 @@ export type TransferExtendProps<T, I, C> = {
   isAddressCheckLoading?: boolean;
   isSameAddress?: boolean;
   addrStatus?: AddressError;
-  onTransferClick: (data: T) => void;
+  onTransferClick: (data: T, isFirstTime?: boolean) => void;
   handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
   handleAddressError: (
@@ -160,7 +164,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isCFAddress: boolean;
   isContractAddress: boolean;
   disableWithdrawList?: string[];
-  onWithdrawClick: (data: T) => void;
+  onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
   handleFeeChange: (value: C) => void;
   handleWithdrawTypeChange: (value: Partial<keyof typeof WithdrawType>) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
@@ -271,7 +275,7 @@ export type NFTMintExtendProps<T, I> = {
   isThumb?: boolean;
   isNFTCheckLoading?: boolean;
   handleOnNFTDataChange: (data: T) => void;
-  onNFTMintClick: (data: T) => void;
+  onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
 } & NFTMintInfoProps<T, I>;
 export type NFTMintViewProps<T, I> = NFTMintExtendProps<T, I>;
@@ -289,7 +293,7 @@ export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
 } & BtnInfoProps;
 export type NFTDeployExtendProps<T, I, C> = {
   handleOnNFTDataChange: (data: T) => void;
-  onNFTDeployClick: (data: T) => void;
+  onNFTDeployClick: (data: T, isFirstTime?: boolean) => void;
   allowTrade?: any;
 } & NFTDeployInfoProps<T, I, C>;
 

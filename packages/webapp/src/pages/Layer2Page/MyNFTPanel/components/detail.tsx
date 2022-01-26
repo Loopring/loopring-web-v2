@@ -2,7 +2,6 @@ import { Box, Link, TextareaAutosize, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   getShortAddr,
-  getShowStr,
   IPFS_META_URL,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
@@ -69,15 +68,15 @@ export const NFTDetail = withTranslation("common")(
 
     const [viewPage, setViewPage] = React.useState<number>(0);
 
-    const { nftTransferProps, updateNFTTransferData } = useNFTTransfer({
+    const { nftTransferProps } = useNFTTransfer({
       isLocalShow: viewPage === 1,
       doTransferDone: onDetailClose,
     });
-    const { nftWithdrawProps, updateNFTWithdrawData } = useNFTWithdraw({
+    const { nftWithdrawProps } = useNFTWithdraw({
       isLocalShow: viewPage === 2,
       doWithdrawDone: onDetailClose,
     });
-    const { nftDeployProps, updateNFTDeployData } = useNFTDeploy({
+    const { nftDeployProps } = useNFTDeploy({
       isLocalShow: viewPage === 3,
       doDeployDone: onDetailClose,
     });
@@ -177,7 +176,7 @@ export const NFTDetail = withTranslation("common")(
                 style={{ wordBreak: "break-all" }}
                 onClick={() =>
                   window.open(
-                    `${etherscanBaseUrl}address/${popItem.tokenAddress}`
+                    `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
                   )
                 }
               >
@@ -238,10 +237,6 @@ export const NFTDetail = withTranslation("common")(
               marginTop={3}
               justifyContent={"space-between"}
             >
-              <Typography
-                display={"inline-flex"}
-                alignItems={"center"}
-              ></Typography>
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography minWidth={100} marginRight={2}>
                   {popItem.isDeployed ? (
@@ -280,7 +275,7 @@ export const NFTDetail = withTranslation("common")(
           </Box>
         </Box>
       );
-    }, [popItem, etherscanBaseUrl]);
+    }, [t, popItem, etherscanBaseUrl]);
     return (
       <>
         <BoxNFT

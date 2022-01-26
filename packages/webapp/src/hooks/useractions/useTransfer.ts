@@ -13,7 +13,6 @@ import {
 import {
   AccountStatus,
   CoinMap,
-  FeeInfo,
   IBData,
   SagaStatus,
   UIERROR_CODE,
@@ -33,27 +32,16 @@ import {
 } from "../../services/socket";
 import { getTimestampDaysLater } from "utils/dt_tools";
 import { AddressError, BIGO, DAYS, TOAST_TIME } from "defs/common_defs";
-import { useTranslation } from "react-i18next";
 import { useAddressCheck } from "hooks/common/useAddrCheck";
 import { useWalletInfo } from "stores/localStore/walletInfo";
 import { checkErrorInfo } from "./utils";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
-import { TX_HASH_API } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
-export const useTransfer = <R extends IBData<T>, T>(): {
-  transferToastOpen: boolean;
-  transferAlertText: any;
-  setTransferToastOpen: any;
-  transferProps: TransferProps<R, T>;
-  processRequest: any;
-  lastRequest: any;
-} => {
+export const useTransfer = <R extends IBData<T>, T>() => {
   const { setShowAccount, setShowTransfer } = useOpenModals();
 
-  const [transferToastOpen, setTransferToastOpen] =
-    React.useState<boolean>(false);
   const {
     modals: {
       isShowTransfer: { symbol, isShow },
@@ -151,7 +139,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     } else {
       if (!transferValue.belong && walletMap) {
         const keys = Reflect.ownKeys(walletMap);
-        for (var key in keys) {
+        for (let key in keys) {
           const keyVal = keys[key];
           const walletInfo = walletMap[keyVal];
           if (sdk.toBig(walletInfo.count).gt(0)) {
@@ -199,15 +187,19 @@ export const useTransfer = <R extends IBData<T>, T>(): {
   const [lastRequest, setLastRequest] = React.useState<any>({});
 
   const processRequest = React.useCallback(
-    async (request: sdk.OriginTransferRequestV3, isFirstTime: boolean) => {
+    async (
+      request: sdk.OriginTransferRequestV3,
+      isNotHardwareWallet: boolean
+    ) => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
-
-          isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
-
+          if (!isHWAddr && !isNotHardwareWallet) {
+            isHWAddr = true;
+          }
+          setLastRequest({ request });
           const response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request,
@@ -232,15 +224,16 @@ export const useTransfer = <R extends IBData<T>, T>(): {
               (response as sdk.RESULT_INFO).msg ||
               (response as sdk.RESULT_INFO).message
             ) {
-              // Withdraw failed
-              const code = checkErrorInfo(response, isFirstTime);
+              const code = checkErrorInfo(
+                response as sdk.RESULT_INFO,
+                isNotHardwareWallet
+              );
               if (code === sdk.ConnectorError.USER_DENIED) {
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Transfer_User_Denied,
                 });
               } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setLastRequest({ request });
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Transfer_First_Method_Denied,
@@ -276,7 +269,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
           }
         }
       } catch (reason) {
-        const code = checkErrorInfo(reason, isFirstTime);
+        const code = checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
           if (code === sdk.ConnectorError.USER_DENIED) {
@@ -285,7 +278,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
               step: AccountStep.Transfer_User_Denied,
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-            setLastRequest({ request });
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_First_Method_Denied,
@@ -365,7 +357,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             },
             maxFee: {
               tokenId: feeToken.tokenId,
-              volume: fee.toString(),
+              volume: fee.toString(), // TEST: fee.toString(),
             },
             validUntil: getTimestampDaysLater(DAYS),
             memo: transferValue.memo,
@@ -423,10 +415,19 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         res();
       });
     },
-    [walletMap, updateTransferData, transferValue]
+    [walletMap, updateTransferData]
   );
 
-  const { t } = useTranslation();
+  const retryBtn = React.useCallback(
+    (isHardwareRetry: boolean = false) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.Transfer_WaitForAuth,
+      });
+      processRequest(lastRequest, !isHardwareRetry);
+    },
+    [lastRequest, processRequest, setShowAccount]
+  );
 
   const transferProps: TransferProps<any, any> = {
     addressDefault: address,
@@ -455,11 +456,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
   };
 
   return {
-    transferToastOpen,
-    transferAlertText: "",
-    setTransferToastOpen,
+    retryBtn,
     transferProps,
-    processRequest,
-    lastRequest,
   };
 };

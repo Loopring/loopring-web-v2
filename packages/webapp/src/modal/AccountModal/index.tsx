@@ -28,9 +28,6 @@ export const ModalAccountInfo = withTranslation("common")(
       },
     } = useOpenModals();
     const {
-      withdrawAlertText,
-      withdrawToastOpen,
-      setWithdrawToastOpen,
       exportAccountAlertText,
       exportAccountToastOpen,
       setExportAccountToastOpen,
@@ -59,20 +56,6 @@ export const ModalAccountInfo = withTranslation("common")(
     return (
       <>
         <Toast
-          alertText={withdrawAlertText as string}
-          open={withdrawToastOpen}
-          autoHideDuration={TOAST_TIME}
-          onClose={() => {
-            setWithdrawToastOpen(false);
-          }}
-        />
-
-        {/*<Toast alertText={transferAlertText as string} open={transferToastOpen}*/}
-        {/*       autoHideDuration={TOAST_TIME} onClose={() => {*/}
-        {/*    setWithdrawToastOpen(false)*/}
-        {/*}}/>*/}
-
-        <Toast
           alertText={exportAccountAlertText as string}
           open={exportAccountToastOpen}
           autoHideDuration={TOAST_TIME}
@@ -95,7 +78,7 @@ export const ModalAccountInfo = withTranslation("common")(
           nftTransferProps={nftTransferProps}
           // nftDepositProps={nftDepositProps}
           nftWithdrawProps={nftWithdrawProps}
-          resetProps={resetProps}
+          resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}
           exportAccountProps={exportAccountProps}
           ammProps={{} as any}

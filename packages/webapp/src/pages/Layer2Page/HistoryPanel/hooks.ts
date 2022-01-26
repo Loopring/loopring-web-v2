@@ -54,17 +54,6 @@ export function useGetTxs() {
       types,
     }: TxsFilterProps) => {
       if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
-        // const userTxnList = await Promise.all([
-        //     LoopringAPI.userAPI.getUserTranferList({
-        //         accountId,
-        //     }, apiKey),
-        //     LoopringAPI.userAPI.getUserDepositHistory({
-        //         accountId,
-        //     }, apiKey),
-        //     LoopringAPI.userAPI.getUserOnchainWithdrawalHistory({
-        //         accountId,
-        //     }, apiKey)
-        // ])
         setShowLoading(true);
         const userTxnList = await LoopringAPI.userAPI.getUserTxs(
           {
@@ -108,7 +97,7 @@ export function useGetTxs() {
         setShowLoading(false);
       }
     },
-    [accountId, apiKey]
+    [accountId, apiKey, tokenMap]
   );
 
   return {
