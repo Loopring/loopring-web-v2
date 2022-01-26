@@ -83,14 +83,10 @@ NFTDepositViewProps<T, I>) => {
     );
   };
 
-  const debounceNFTDataChange = _.debounce((_tradeData: T) => {
+  const _handleOnNFTDataChange = (_tradeData: T) => {
     if (handleOnNFTDataChange) {
       handleOnNFTDataChange({ ...tradeData, ..._tradeData });
     }
-  }, 0);
-
-  const _handleOnNFTDataChange = (tradeData: T) => {
-    debounceNFTDataChange(tradeData);
   };
 
   // @ts-ignore

@@ -69,6 +69,20 @@ export enum AccountStep {
   Withdraw_Success,
   Withdraw_Failed,
 
+  NFTTransfer_WaitForAuth,
+  NFTTransfer_First_Method_Denied,
+  NFTTransfer_User_Denied,
+  NFTTransfer_In_Progress,
+  NFTTransfer_Success,
+  NFTTransfer_Failed,
+
+  NFTWithdraw_WaitForAuth,
+  NFTWithdraw_First_Method_Denied,
+  NFTWithdraw_User_Denied,
+  NFTWithdraw_In_Progress,
+  NFTWithdraw_Success,
+  NFTWithdraw_Failed,
+
   CreateAccount_Approve_WaitForAuth,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
