@@ -106,14 +106,6 @@ export async function updateAccountFromServer({
                 eddsaKey,
                 ...response,
               };
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
-            ) {
-              result.code = ActionResultCode.UpdateAccoutError;
-              result.data = {
-                eddsaKey,
-                ...response,
-              };
             } else {
               result.data = {
                 response,
