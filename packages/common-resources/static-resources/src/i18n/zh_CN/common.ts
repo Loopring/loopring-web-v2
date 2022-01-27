@@ -538,4 +538,5 @@ export default {
   labelTxHebaoRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
   labelTxHebaoApprove: "APPROVE",
   labelTxHebaoReject: "REJECT",
+  labelReActiveAccount: "Re-Active Account",
 };
