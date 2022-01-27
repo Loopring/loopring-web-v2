@@ -17,17 +17,25 @@ export async function unlockAccount() {
   if (
     exchangeInfo &&
     LoopringAPI.userAPI &&
+    LoopringAPI.exchangeAPI &&
     LoopringAPI.walletAPI &&
     account.nonce !== undefined
   ) {
     try {
       const connectName = account.connectName as sdk.ConnectorNames;
+      let nonce = account.nonce;
+      if (account.accountId) {
+        const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
+          owner: account.accAddress,
+        });
+        nonce = accInfo ? account.nonce : nonce;
+      }
 
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.accAddress,
         exchangeAddress: exchangeInfo.exchangeAddress,
-        keyNonce: account.nonce - 1,
+        keyNonce: nonce - 1,
         walletType: connectName,
         chainId: chainId as any,
         accountId: account.accountId,
@@ -56,7 +64,7 @@ export async function unlockAccount() {
         myLog("try to sendAccountSigned....");
         accountServices.sendAccountSigned({
           accountId: account.accountId,
-          nonce: account.nonce,
+          nonce,
           apiKey,
           eddsaKey,
           isContract: walletType?.isContract,
