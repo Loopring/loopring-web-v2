@@ -45,13 +45,14 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
     const {
       activeAccountValue: { chargeFeeList },
     } = store.getState()._router_modalData;
-    let tokens = chargeFeeList
-      .map((item) => `${tokenMap[item.belong ?? "ETH"].tokenId}`)
-      .join(",");
+    // let tokens = chargeFeeList
+    //   .map((item) => `${tokenMap[item.belong ?? "ETH"].tokenId}`)
+    //   .join(",");
     const { userBalances } =
       (await LoopringAPI?.globalAPI?.getUserBalanceForFee({
         accountId: _accountIdNotActive,
-        tokens,
+        tokens: "",
+        // tokens,
       })) ?? {};
     if (userBalances) {
       // @ts-ignore
