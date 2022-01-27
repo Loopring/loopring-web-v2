@@ -10,15 +10,12 @@ export const checkErrorInfo = (
     return ConnectorError.NOT_SUPPORT_ERROR;
   } else if (message === "USER_DENIED") {
     return ConnectorError.USER_DENIED;
-  } else if (message) {
-    const msgStr = errorInfo.message as string;
-    if (
-      msgStr.startsWith("personalSign last") ||
-      msgStr.indexOf("User denied transaction") > 0
-    ) {
-      return message;
-    }
+  } else if (
+    message &&
+    (message.startsWith("personalSign last") ||
+      message.indexOf("User denied transaction") > 0)
+  ) {
+    return ConnectorError.USER_DENIED;
   }
-
-  return "OK";
+  return message;
 };
