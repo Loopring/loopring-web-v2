@@ -7,7 +7,6 @@ import {
 import { CoinKey, PairKey, WalletCoin } from "@loopring-web/common-resources";
 import { LoopringAPI } from "api_wrapper";
 import store from "../index";
-import { account } from "@loopring-web/component-lib";
 
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
