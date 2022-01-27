@@ -7,7 +7,6 @@ import {
 import { CoinKey, PairKey, WalletCoin } from "@loopring-web/common-resources";
 import { LoopringAPI } from "api_wrapper";
 import store from "../index";
-import { useModalData } from "../router";
 
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
@@ -16,7 +15,7 @@ type WalletLayer2Map<R extends { [key: string]: any }> = {
 const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   const { accountId, apiKey, readyState, _accountIdNotActive } =
     store.getState().account;
-  const { tokenMap, idIndex, marketCoins } = store.getState().tokenMap;
+  const { idIndex } = store.getState().tokenMap;
   let walletLayer2, userNFTBalances;
   if (apiKey && accountId && LoopringAPI.userAPI) {
     // @ts-ignore
@@ -38,19 +37,22 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
     }
   } else if (
     !apiKey &&
-    _accountIdNotActive &&
-    _accountIdNotActive !== -1 &&
-    ["DEPOSITING", "NOT_ACTIVE"].includes(readyState)
+    ["DEPOSITING", "NOT_ACTIVE", "LOCKED"].includes(readyState) &&
+    ((_accountIdNotActive && _accountIdNotActive != -1) ||
+      (accountId && accountId !== -1))
   ) {
-    const {
-      activeAccountValue: { chargeFeeList },
-    } = store.getState()._router_modalData;
+    // const {
+    //   activeAccountValue: { chargeFeeList },
+    // } = store.getState()._router_modalData;
     // let tokens = chargeFeeList
     //   .map((item) => `${tokenMap[item.belong ?? "ETH"].tokenId}`)
     //   .join(",");
     const { userBalances } =
       (await LoopringAPI?.globalAPI?.getUserBalanceForFee({
-        accountId: _accountIdNotActive,
+        accountId:
+          _accountIdNotActive && _accountIdNotActive != -1
+            ? _accountIdNotActive
+            : accountId,
         tokens: "",
         // tokens,
       })) ?? {};

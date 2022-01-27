@@ -52,6 +52,7 @@ export const useActiveAccount = <T>(): {
   }, [walletLayer2Status]);
   const onActiveAccountClick = () => {
     if (activeAccountValue?.fee?.belong && activeAccountValue?.fee?.__raw__) {
+      setShowActiveAccount({ isShow: false });
       goUpdateAccount({
         isFirstTime: true,
         isReset: false,

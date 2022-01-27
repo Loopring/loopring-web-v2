@@ -1493,6 +1493,10 @@ export function useAccountModalForUI({
         view: (
           <UnlockAccount_Failed
             btnInfo={closeBtnInfo}
+            resetAccount={() => {
+              setShowAccount({ isShow: false });
+              setShowActiveAccount({ isShow: true });
+            }}
             {...{
               ...rest,
               error: isShowAccount.error,
