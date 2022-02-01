@@ -1,7 +1,7 @@
 **NFT Airdrop Winners List**
 
 
-**300 Top Addresses**
+**1. 300 Top Addresses**
 
 From 2021/12/21 0:00 AM to 2022/1/30 0:00 AM (UTC),  300 top addresses (in volume) to use the on-ramps will be airdropped 1 NFT to L2.
 
@@ -311,7 +311,7 @@ From 2021/12/21 0:00 AM to 2022/1/30 0:00 AM (UTC),  300 top addresses (in volum
 
 Note:The total volume is calculated based on the close price on Coinmarketcap on January 29, 2022.
 
-**670 Random Addresses**
+**2. 670 Random Addresses**
 
 From 2021/12/21 0:00 AM to 2022/1/30 0:00 AM (UTC), 670 random addresses (by lucky draw) who used the on-ramps will be airdropped 1 NFT to L2. *300 top addresses(in volume) will not participate in the lottery.*
 
