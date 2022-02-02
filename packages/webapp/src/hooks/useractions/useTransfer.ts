@@ -58,6 +58,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
+  const [addressOrigin, setAddressOrigin] = React.useState<
+    "Wallet" | undefined
+  >();
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       requestType: sdk.OffchainFeeReqType.TRANSFER,
@@ -88,6 +91,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         tradeValue &&
         chargeFeeTokenList.length &&
         !isFeeNotEnough &&
+        !isSameAddress &&
+        !isAddressCheckLoading &&
         transferValue.fee?.belong &&
         tradeValue.gt(BIGO) &&
         address &&
@@ -105,6 +110,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     disableBtn,
     chargeFeeTokenList.length,
     isFeeNotEnough,
+    isSameAddress,
     address,
     addrStatus,
     enableBtn,
@@ -440,6 +446,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handlePanelEvent,
     handleFeeChange,
     feeInfo,
+    handleSureItsLayer2: (sure: boolean) => {
+      if (sure) {
+        setAddressOrigin("Wallet");
+      }
+    },
+    addressOrigin,
     chargeFeeTokenList,
     isFeeNotEnough,
     isLoopringAddress,

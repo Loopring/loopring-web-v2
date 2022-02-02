@@ -58,6 +58,8 @@ export enum AddressError {
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault?: string;
+  addressOrigin: "Wallet" | undefined;
+  handleSureItsLayer2: (sure: boolean) => void;
   realAddr?: string;
   isLoopringAddress?: boolean;
   isAddressCheckLoading?: boolean;
@@ -159,6 +161,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault: string;
   accAddr: string;
+  isNotAvaiableAddress: boolean;
   realAddr?: string;
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;

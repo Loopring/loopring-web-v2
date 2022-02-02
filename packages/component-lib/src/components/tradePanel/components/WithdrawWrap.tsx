@@ -64,6 +64,7 @@ export const WithdrawWrap = <
   withdrawI18nKey,
   addressDefault,
   accAddr,
+  isNotAvaiableAddress,
   withdrawTypes = WithdrawTypes,
   withdrawType,
   chargeFeeTokenList = [],
@@ -114,33 +115,20 @@ export const WithdrawWrap = <
 
   const inputBtnRef = React.useRef();
   myLog("accAddr", accAddr);
-  const isNotAvaiableAddress =
-    isCFAddress ||
-    (isContractAddress &&
-      disableWithdrawList.includes(tradeData?.belong ?? ""));
+
   const getDisabled = React.useMemo(() => {
     if (
       disabled ||
       tradeData === undefined ||
       walletMap === undefined ||
       coinMap === undefined ||
-      isNotAvaiableAddress ||
-      isFeeNotEnough ||
       withdrawBtnStatus === TradeBtnStatus.DISABLED
     ) {
       return true;
     } else {
       return false;
     }
-  }, [
-    disabled,
-    withdrawBtnStatus,
-    tradeData,
-    walletMap,
-    coinMap,
-    isNotAvaiableAddress,
-    isFeeNotEnough,
-  ]);
+  }, [disabled, withdrawBtnStatus, tradeData, walletMap, coinMap]);
   myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
     label: t("withdrawLabelEnterToken"),

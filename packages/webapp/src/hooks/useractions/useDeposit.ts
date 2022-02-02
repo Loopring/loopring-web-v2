@@ -11,7 +11,6 @@ import {
   IBData,
   myLog,
   UIERROR_CODE,
-  VendorProviders,
   WalletMap,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -35,9 +34,6 @@ import { useModalData } from "stores/router";
 import { checkAddr } from "utils/web3_tools";
 import { isPosIntNum } from "utils/formatter_tool";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
-import { toBig } from "@loopring-web/loopring-sdk";
-import _ from "lodash";
-import { useVendor } from "./useVendor";
 
 export const useDeposit = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
@@ -72,8 +68,6 @@ export const useDeposit = <R extends IBData<T>, T>() => {
   });
 
   const updateBtnStatus = React.useCallback(() => {
-    // myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
-
     resetBtnInfo();
 
     if (

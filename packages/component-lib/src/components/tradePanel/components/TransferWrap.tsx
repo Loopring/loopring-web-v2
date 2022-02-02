@@ -91,12 +91,14 @@ export const TransferWrap = <
   feeInfo,
   isFeeNotEnough,
   onTransferClick,
+  handleSureItsLayer2,
   handleFeeChange,
   isThumb,
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,
   handleAddressError,
+  addressOrigin,
   wait = globalSetup.wait,
   assetsData = [],
   realAddr,
@@ -124,7 +126,6 @@ export const TransferWrap = <
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
-  const [addressOrigin, setAddressOrigin] = React.useState("");
   const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] =
     React.useState<"up" | "down">("up");
   const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
@@ -142,10 +143,6 @@ export const TransferWrap = <
       tradeData === undefined ||
       walletMap === undefined ||
       coinMap === undefined ||
-      isFeeNotEnough ||
-      isSameAddress ||
-      !addressOrigin ||
-      isAddressCheckLoading ||
       transferBtnStatus === TradeBtnStatus.DISABLED
     ) {
       myLog(
@@ -153,8 +150,6 @@ export const TransferWrap = <
         tradeData === undefined,
         walletMap === undefined,
         coinMap === undefined,
-        isFeeNotEnough,
-        isSameAddress,
         transferBtnStatus === TradeBtnStatus.DISABLED
       );
 
@@ -168,18 +163,20 @@ export const TransferWrap = <
     tradeData,
     walletMap,
     coinMap,
-    isFeeNotEnough,
     isSameAddress,
-    addressOrigin,
     isAddressCheckLoading,
     transferBtnStatus,
   ]);
 
-  const debounceAddress = _.debounce(({ address }: any) => {
-    if (handleOnAddressChange) {
-      handleOnAddressChange(address);
-    }
-  }, 500);
+  const debounceAddress = _.debounce(
+    ({ address }: any) => {
+      if (handleOnAddressChange) {
+        handleOnAddressChange(address);
+      }
+    },
+    500,
+    { trailing: true }
+  );
 
   const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
     const address = event.target.value;
@@ -256,8 +253,6 @@ export const TransferWrap = <
       paddingRight={5 / 2}
       container
       direction={"column"}
-      //  justifyContent={'space-between'}
-      //  alignItems={"stretch"} flex={1} height={'100%'} flexWrap={'nowrap'}
       alignItems={"stretch"}
       flex={1}
       height={"100%"}
@@ -307,8 +302,7 @@ export const TransferWrap = <
           </Typography>
         </PopoverPure>
       </Grid>
-      {/*{tradeData.tokenId} {tradeData.balance }*/}
-      <Grid item /* marginTop={3} */ alignSelf={"stretch"}>
+      <Grid item alignSelf={"stretch"}>
         {isConfirmTransfer ? (
           getTransferConfirmTemplate(
             t("labelTransferTokenAmount"),
@@ -541,7 +535,8 @@ export const TransferWrap = <
                         : "undefined",
                   }}
                   onClick={() => {
-                    setAddressOrigin("Wallet");
+                    // setAddressOrigin("Wallet");
+                    handleSureItsLayer2(true);
                     setAddressOriginDropdownStatus("up");
                   }}
                   fullWidth

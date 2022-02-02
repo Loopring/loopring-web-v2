@@ -96,6 +96,12 @@ export const useNFTWithdraw = <
     isContractAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
+
+  const isNotAvaiableAddress =
+    isCFAddress ||
+    (isContractAddress &&
+      disableWithdrawList.includes(nftWithdrawValue?.belong ?? ""));
+
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
   const checkBtnStatus = React.useCallback(() => {
@@ -109,6 +115,7 @@ export const useNFTWithdraw = <
         .lte(Number(nftWithdrawValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
       !isFeeNotEnough &&
+      !isNotAvaiableAddress &&
       !!address
     ) {
       enableBtn();
@@ -126,11 +133,18 @@ export const useNFTWithdraw = <
     address,
     disableBtn,
     enableBtn,
+    isNotAvaiableAddress,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [address, addrStatus, nftWithdrawValue.fee, nftWithdrawValue.tradeValue]);
+  }, [
+    address,
+    addrStatus,
+    nftWithdrawValue.fee,
+    nftWithdrawValue.tradeValue,
+    isNotAvaiableAddress,
+  ]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
@@ -443,6 +457,7 @@ export const useNFTWithdraw = <
     },
     addressDefault: address,
     accAddr: account.accAddress,
+    isNotAvaiableAddress,
     realAddr,
     disableWithdrawList,
     tradeData: nftWithdrawValue as any,
