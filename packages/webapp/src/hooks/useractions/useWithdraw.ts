@@ -109,6 +109,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     isAddressCheckLoading,
   } = useAddressCheck();
 
+  const isNotAvaiableAddress =
+    isCFAddress ||
+    (isContractAddress &&
+      disableWithdrawList.includes(withdrawValue?.belong ?? ""));
+
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
   const checkBtnStatus = React.useCallback(() => {
@@ -124,6 +129,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       if (
         tradeValue &&
         !exceedPoolLimit &&
+        !isNotAvaiableAddress &&
         chargeFeeTokenList.length &&
         !isFeeNotEnough &&
         withdrawValue.fee?.belong &&
@@ -151,6 +157,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     tokenMap,
     address,
     addrStatus,
+    isNotAvaiableAddress,
     chargeFeeTokenList,
     withdrawValue,
     isFeeNotEnough,
@@ -165,6 +172,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,
+    isNotAvaiableAddress,
   ]);
 
   const updateWithdrawTypes = React.useCallback(async () => {
@@ -487,6 +495,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     isContractAddress,
     withdrawI18nKey,
     accAddr: account.accAddress,
+    isNotAvaiableAddress,
     addressDefault: address,
     realAddr,
     disableWithdrawList,

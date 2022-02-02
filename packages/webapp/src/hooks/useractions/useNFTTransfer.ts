@@ -70,6 +70,9 @@ export const useNFTTransfer = <
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
+  const [addressOrigin, setAddressOrigin] = React.useState<
+    "Wallet" | undefined
+  >();
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       tokenAddress: nftTransferValue.tokenAddress,
@@ -412,6 +415,12 @@ export const useNFTTransfer = <
   const nftTransferProps: TransferProps<any, any> = {
     addressDefault: address,
     realAddr,
+    handleSureItsLayer2: (sure: boolean) => {
+      if (sure) {
+        setAddressOrigin("Wallet");
+      }
+    },
+    addressOrigin,
     tradeData: nftTransferValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap as WalletMap<T>,

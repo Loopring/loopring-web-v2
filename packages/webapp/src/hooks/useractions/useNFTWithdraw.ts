@@ -102,6 +102,12 @@ export const useNFTWithdraw = <
     isContractAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
+
+  const isNotAvaiableAddress =
+    isCFAddress ||
+    (isContractAddress &&
+      disableWithdrawList.includes(nftWithdrawValue?.belong ?? ""));
+
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
   const checkBtnStatus = React.useCallback(() => {
@@ -115,6 +121,7 @@ export const useNFTWithdraw = <
         .lte(Number(nftWithdrawValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
       !isFeeNotEnough &&
+      !isNotAvaiableAddress &&
       !!address
     ) {
       enableBtn();
@@ -123,18 +130,27 @@ export const useNFTWithdraw = <
     }
     disableBtn();
   }, [
-    enableBtn,
-    disableBtn,
     tokenMap,
-    address,
+    nftWithdrawValue?.fee?.belong,
+    nftWithdrawValue.tradeValue,
+    nftWithdrawValue.nftBalance,
     addrStatus,
-    chargeFeeTokenList,
-    nftWithdrawValue,
+    isFeeNotEnough,
+    address,
+    disableBtn,
+    enableBtn,
+    isNotAvaiableAddress,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [address, addrStatus, nftWithdrawValue.fee, nftWithdrawValue.tradeValue]);
+  }, [
+    address,
+    addrStatus,
+    nftWithdrawValue.fee,
+    nftWithdrawValue.tradeValue,
+    isNotAvaiableAddress,
+  ]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
@@ -212,16 +228,18 @@ export const useNFTWithdraw = <
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const processRequestNFT = React.useCallback(
-    async (request: sdk.NFTWithdrawRequestV3, isFirstTime: boolean) => {
+    async (request: sdk.NFTWithdrawRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
-          isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
+          if (!isHWAddr && !isNotHardwareWallet) {
+            isHWAddr = true;
+          }
 
-          myLog("nftWithdraw processRequestNFT:", isHWAddr, isFirstTime);
+          myLog("nftWithdraw processRequest:", isHWAddr, isNotHardwareWallet);
           const response = await LoopringAPI.userAPI.submitNFTWithdraw(
             {
               request,
@@ -242,7 +260,7 @@ export const useNFTWithdraw = <
           if (isAccActivated()) {
             if ((response as sdk.ErrorMsg)?.errMsg) {
               // Withdraw failed
-              const code = checkErrorInfo(response, isFirstTime);
+              const code = checkErrorInfo(response, isNotHardwareWallet);
               if (code === sdk.ConnectorError.USER_DENIED) {
                 setShowAccount({
                   isShow: true,
@@ -295,7 +313,7 @@ export const useNFTWithdraw = <
         }
       } catch (reason) {
         sdk.dumpError400(reason);
-        const code = checkErrorInfo(reason, isFirstTime);
+        const code = checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
 
         if (isAccActivated()) {
@@ -423,6 +441,7 @@ export const useNFTWithdraw = <
     },
     addressDefault: address,
     accAddr: account.accAddress,
+    isNotAvaiableAddress,
     realAddr,
     disableWithdrawList,
     tradeData: nftWithdrawValue as any,

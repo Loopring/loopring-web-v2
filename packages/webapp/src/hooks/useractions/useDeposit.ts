@@ -71,8 +71,6 @@ export const useDeposit = <R extends IBData<T>, T>() => {
   });
 
   const updateBtnStatus = React.useCallback(() => {
-    // myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
-
     resetBtnInfo();
 
     if (
