@@ -191,7 +191,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
             }, {
               value: 75, label: ''
             }, {
-              value: 100, label: t('labelAvaiable:') + '100%'
+              value: 100, label: t('labelAvailable:') + '100%'
             }]} handleChanged={onPercentage}/>
           </Box>
 

@@ -64,7 +64,7 @@ export const WithdrawWrap = <
   withdrawI18nKey,
   addressDefault,
   accAddr,
-  isNotAvaiableAddress,
+  isNotAvailableAddress,
   withdrawTypes = WithdrawTypes,
   withdrawType,
   chargeFeeTokenList = [],
@@ -328,7 +328,7 @@ export const WithdrawWrap = <
             ""
           )}
           <Box marginLeft={1 / 2}>
-            {isNotAvaiableAddress ? (
+            {isNotAvailableAddress ? (
               <Typography
                 color={"var(--color-error)"}
                 fontSize={14}

@@ -161,7 +161,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault: string;
   accAddr: string;
-  isNotAvaiableAddress: boolean;
+  isNotAvailableAddress: boolean;
   realAddr?: string;
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;

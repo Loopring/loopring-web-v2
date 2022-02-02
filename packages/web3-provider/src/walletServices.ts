@@ -5,7 +5,7 @@ import { Commands, ErrorType, ProcessingType } from "./command";
 //TODO typeof account State
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
-const AvaiableNetwork = [1, 5];
+const AvailableNetwork = [1, 5];
 export const walletServices = {
   subject,
   sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
@@ -32,7 +32,7 @@ export const walletServices = {
           provider,
           accounts,
           chainId:
-            AvaiableNetwork.findIndex((i) => i == Number(chainId)) !== -1
+            AvailableNetwork.findIndex((i) => i == Number(chainId)) !== -1
               ? Number(chainId)
               : "unknown",
         },
