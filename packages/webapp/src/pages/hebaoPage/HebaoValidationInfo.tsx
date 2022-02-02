@@ -186,14 +186,15 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
           isHWAddr: !isFirstTime,
           walletType: account.connectName as any,
         })
-        .then((result: any) => {
-          if (!result || result.error || result.raw_data.error) {
+        .then((response) => {
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
             handleOpenModal({
               step: HebaoStep.Approve_Failed,
               options: {
-                error: result.error
-                  ? result.error.msg
-                  : result.raw_data.message,
+                error: response,
               },
             });
           } else {
@@ -235,14 +236,15 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
           guardiaContractAddress: guardian.address,
           walletType: account.connectName as any,
         })
-        .then((result: any) => {
-          if (!result || result.error || result.raw_data.error) {
+        .then((response) => {
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
             handleOpenModal({
               step: HebaoStep.Reject_Failed,
               options: {
-                error: result.error
-                  ? result.error.msg
-                  : result.raw_data.message,
+                error: response,
               },
             });
           } else {

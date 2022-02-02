@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 const initialState: ModalState = {
   isShowTransfer: { isShow: false, symbol: undefined },
@@ -152,12 +153,17 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowAccount(
       state,
-      action: PayloadAction<{ isShow: boolean; step?: number }>
+      action: PayloadAction<{
+        isShow: boolean;
+        step?: number;
+        error?: RESULT_INFO;
+      }>
     ) {
-      const { isShow, step } = action.payload;
+      const { isShow, step, error } = action.payload;
       state.isShowAccount = {
         isShow,
         step: step ? step : 0,
+        error: error ?? undefined,
       };
     },
     setShowFeeSetting(state, action: PayloadAction<{ isShow: boolean }>) {

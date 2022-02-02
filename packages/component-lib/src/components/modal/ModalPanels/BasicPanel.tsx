@@ -14,6 +14,7 @@ import React from "react";
 
 import { Button } from "../../basic-lib";
 import { Link } from "@mui/material";
+import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 export enum IconType {
   LoadingIcon,
@@ -44,6 +45,7 @@ export interface PanelProps {
     url: string;
   };
   patch?: any;
+  error?: RESULT_INFO;
 }
 
 export const BasicPanel = withTranslation("common", { withRef: true })(
@@ -56,6 +58,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     txCheck,
     btnInfo,
     providerName,
+    error,
     link,
   }: PanelProps & WithTranslation) => {
     const isLoading = iconType === IconType.LoadingIcon;
@@ -145,7 +148,6 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
       }
       return <></>;
     }, [providerName]);
-
     return (
       <Box
         flex={1}
@@ -222,6 +224,20 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               {describe2}
             </Typography>
           </Box>
+        )}
+        {iconType == IconType.FailedIcon && error && (
+          <Typography
+            marginX={3}
+            whiteSpace={"pre-line"}
+            variant={"body2"}
+            color={"var(--color-text-third)"}
+            component={"div"}
+            marginBottom={2}
+            alignSelf={"flex-center"}
+            paddingX={1}
+          >
+            {`Error Description:\n {code: ${error?.code}, message:${error?.message}}`}
+          </Typography>
         )}
 
         {providerName && (

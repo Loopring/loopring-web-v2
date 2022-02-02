@@ -10,7 +10,7 @@ import {
   CoinMap,
   IBData,
   myLog,
-  VendorProviders,
+  UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -34,9 +34,6 @@ import { useModalData } from "stores/router";
 import { checkAddr } from "utils/web3_tools";
 import { isPosIntNum } from "utils/formatter_tool";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
-import { toBig } from "@loopring-web/loopring-sdk";
-import _ from "lodash";
-import { useVendor } from "./useVendor";
 
 export const useDeposit = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
@@ -71,8 +68,6 @@ export const useDeposit = <R extends IBData<T>, T>() => {
   });
 
   const updateBtnStatus = React.useCallback(() => {
-    // myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
-
     resetBtnInfo();
 
     if (
@@ -182,16 +177,19 @@ export const useDeposit = <R extends IBData<T>, T>() => {
                 return;
               }
               const realRefferAddr = realAddr ? realAddr : reffer;
-              const { accInfo, error } =
-                await LoopringAPI.exchangeAPI.getAccount({
-                  owner: realRefferAddr,
-                });
-
-              if (error || !accInfo?.accountId) {
+              const response = await LoopringAPI.exchangeAPI.getAccount({
+                owner: realRefferAddr,
+              });
+              if (
+                (response &&
+                  ((response as sdk.RESULT_INFO).code ||
+                    (response as sdk.RESULT_INFO).message)) ||
+                (response.accInfo && !response.accInfo?.accountId)
+              ) {
                 return;
               }
 
-              refferId = accInfo?.accountId;
+              refferId = response.accInfo?.accountId;
             } catch (reason) {
               sdk.dumpError400(reason);
             }
@@ -366,7 +364,14 @@ export const useDeposit = <R extends IBData<T>, T>() => {
             });
           } else {
             // deposit failed
-            setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Deposit_Failed,
+              error: {
+                code: UIERROR_CODE.Unknow,
+                msg: "No Response",
+              },
+            });
           }
 
           resetDepositData();
@@ -396,6 +401,10 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Deposit_Failed,
+                error: {
+                  code: result.code ?? UIERROR_CODE.Unknow,
+                  msg: reason?.message,
+                },
               });
               resetDepositData();
               break;

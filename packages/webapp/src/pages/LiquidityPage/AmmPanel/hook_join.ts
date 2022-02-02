@@ -485,11 +485,17 @@ export const useAmmJoin = ({
             },
           });
 
-          if ((response.joinAmmPoolResult as any)?.resultInfo) {
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
             setToastOpen({
               open: true,
               type: "error",
-              content: t("labelJoinAmmFailed"),
+              content:
+                t("labelJoinAmmFailed") +
+                ", error:" +
+                (response as sdk.RESULT_INFO).message,
             });
           } else {
             setToastOpen({

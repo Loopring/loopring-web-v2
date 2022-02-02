@@ -19,6 +19,7 @@ import store from "stores";
 import { ConnectorError, sleep } from "@loopring-web/loopring-sdk";
 
 import { checkErrorInfo } from "hooks/useractions/utils";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export function useUpdateAccount() {
   const { updateHW, checkHWAddr } = useWalletInfo();
@@ -89,13 +90,18 @@ export function useUpdateAccount() {
               LoopringAPI.walletAPI &&
               eddsaKey
             ) {
-              const { accInfo, error } =
-                await LoopringAPI.exchangeAPI.getAccount({
-                  owner: account.accAddress,
-                });
-              //  await ;
-
-              if (!error && accInfo) {
+              const response = await LoopringAPI.exchangeAPI.getAccount({
+                owner: account.accAddress,
+              });
+              if (
+                (response &&
+                  ((response as sdk.RESULT_INFO).code ||
+                    (response as sdk.RESULT_INFO).message)) ||
+                (response.accInfo && !response.accInfo?.accountId)
+              ) {
+                return;
+              } else {
+                const accInfo = response.accInfo;
                 const [{ apiKey }, { walletType }] = await Promise.all([
                   LoopringAPI.userAPI.getUserApiKey(
                     {

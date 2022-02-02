@@ -3,6 +3,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { Box, Tab, Tabs } from "@mui/material";
 import {
   AmmTable,
+  Toast,
   TradeTable,
   TransactionTable,
 } from "@loopring-web/component-lib";
@@ -11,29 +12,32 @@ import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
 import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import store from "stores";
+import { TOAST_TIME } from "defs/common_defs";
+import { useToast } from "hooks/common/useToast";
 
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState("transactions");
+    const { toastOpen, setToastOpen, closeToast } = useToast();
 
     const {
       txs: txTableData,
       txsTotal,
       showLoading: showTxsLoading,
       getUserTxnList,
-    } = useGetTxs();
+    } = useGetTxs(setToastOpen);
     const {
       userTrades,
       getUserTradeList,
       userTradesTotal,
       showLoading: showTradeLoading,
-    } = useGetTrades();
+    } = useGetTrades(setToastOpen);
     const {
       ammRecordList,
       showLoading: ammLoading,
       getAmmpoolList,
-    } = useGetAmmRecord();
+    } = useGetAmmRecord(setToastOpen);
     const { tokenMap, marketMap } = store.getState().tokenMap;
     const {
       account: { accAddress },
@@ -84,6 +88,13 @@ const HistoryPanel = withTranslation("common")(
 
     return (
       <StylePaper ref={container}>
+        <Toast
+          alertText={toastOpen?.content ?? ""}
+          severity={toastOpen?.type ?? "success"}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
         <Box marginTop={2} marginLeft={2}>
           <Tabs
             value={currentTab}

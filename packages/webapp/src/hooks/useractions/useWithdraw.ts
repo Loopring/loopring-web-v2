@@ -1,7 +1,5 @@
 import React from "react";
 
-import { useTranslation } from "react-i18next";
-
 import { connectProvides } from "@loopring-web/web3-provider";
 import {
   AccountStep,
@@ -14,6 +12,7 @@ import {
   CoinMap,
   IBData,
   SagaStatus,
+  UIERROR_CODE,
   WalletMap,
   WithdrawType,
   WithdrawTypes,
@@ -41,15 +40,7 @@ import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
 
-export const useWithdraw = <R extends IBData<T>, T>(): {
-  withdrawAlertText: string | undefined;
-  withdrawToastOpen: boolean;
-  setWithdrawToastOpen: any;
-  withdrawProps: WithdrawProps<R, T>;
-  processRequest: any;
-  lastRequest: any;
-} => {
-  const { t } = useTranslation("common");
+export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
       isShowWithdraw: { symbol, isShow },
@@ -57,11 +48,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     setShowAccount,
     setShowWithdraw,
   } = useOpenModals();
-
-  const [withdrawToastOpen, setWithdrawToastOpen] =
-    React.useState<boolean>(false);
-
-  const [withdrawAlertText] = React.useState<string>();
 
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
@@ -109,6 +95,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     isAddressCheckLoading,
   } = useAddressCheck();
 
+  const isNotAvaiableAddress =
+    isCFAddress ||
+    (isContractAddress &&
+      disableWithdrawList.includes(withdrawValue?.belong ?? ""));
+
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
   const checkBtnStatus = React.useCallback(() => {
@@ -124,6 +115,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       if (
         tradeValue &&
         !exceedPoolLimit &&
+        !isNotAvaiableAddress &&
         chargeFeeTokenList.length &&
         !isFeeNotEnough &&
         withdrawValue.fee?.belong &&
@@ -142,8 +134,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       }
     }
     disableBtn();
-
-    // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, withdrawFeeInfo)
   }, [
     withdrawType2,
     enableBtn,
@@ -151,6 +141,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     tokenMap,
     address,
     addrStatus,
+    isNotAvaiableAddress,
     chargeFeeTokenList,
     withdrawValue,
     isFeeNotEnough,
@@ -165,6 +156,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,
+    isNotAvaiableAddress,
   ]);
 
   const updateWithdrawTypes = React.useCallback(async () => {
@@ -204,11 +196,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     updateWithdrawTypes();
   }, [withdrawValue.belong, tokenMap]);
 
-  const walletLayer2Callback = React.useCallback(() => {
+  const walletLayer2Callback = () => {
     const walletMap =
       makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>);
     setWalletMap2(walletMap);
-  }, [setWalletMap2]);
+  };
 
   const resetDefault = React.useCallback(() => {
     if (symbol) {
@@ -223,7 +215,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     } else {
       if (!withdrawValue.belong && walletMap2) {
         const keys = Reflect.ownKeys(walletMap2);
-        for (var key in keys) {
+        for (let key in keys) {
           const keyVal = keys[key];
           const walletInfo = walletMap2[keyVal];
           if (sdk.toBig(walletInfo.count).gt(0)) {
@@ -285,16 +277,20 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const processRequest = React.useCallback(
-    async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
+    async (
+      request: sdk.OffChainWithdrawalRequestV3,
+      isNotHardwareWallet: boolean
+    ) => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
+          if (!isHWAddr && !isNotHardwareWallet) {
+            isHWAddr = true;
+          }
 
-          isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
-
-          myLog("withdraw processRequest:", isHWAddr, isFirstTime);
+          myLog("withdraw processRequest:", isHWAddr, isNotHardwareWallet);
 
           const response = await LoopringAPI.userAPI.submitOffchainWithdraw(
             {
@@ -315,9 +311,15 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
           myLog("submitOffchainWithdraw:", response);
 
           if (isAccActivated()) {
-            if ((response as sdk.ErrorMsg)?.errMsg) {
+            if (
+              (response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message
+            ) {
               // Withdraw failed
-              const code = checkErrorInfo(response, isFirstTime);
+              const code = checkErrorInfo(
+                response as sdk.RESULT_INFO,
+                isNotHardwareWallet
+              );
               if (code === sdk.ConnectorError.USER_DENIED) {
                 setShowAccount({
                   isShow: true,
@@ -333,16 +335,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Withdraw_Failed,
+                  error: response as sdk.RESULT_INFO,
                 });
               }
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
-            ) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Withdraw_Failed,
-              });
-            } else {
+            } else if ((response as sdk.TX_HASH_API)?.hash) {
               // Withdraw success
               setShowAccount({
                 isShow: true,
@@ -368,7 +364,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         }
       } catch (reason) {
         sdk.dumpError400(reason);
-        const code = checkErrorInfo(reason, isFirstTime);
+        const code = checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
 
         if (isAccActivated()) {
@@ -384,7 +380,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
               step: AccountStep.Withdraw_First_Method_Denied,
             });
           } else {
-            setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.Withdraw_Failed,
+              error: {
+                code: UIERROR_CODE.Unknow,
+                msg: reason?.message,
+              },
+            });
           }
         }
       }
@@ -402,6 +405,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         exchangeInfo &&
         connectProvides.usedWeb3 &&
         address &&
+        LoopringAPI.userAPI &&
         withdrawValue?.fee?.belong &&
         withdrawValue.fee?.__raw__ &&
         eddsaKey?.sk
@@ -429,7 +433,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
           const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue;
           const withdrawVol = finalVol.toFixed(0, 0);
 
-          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
+          const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId: accountId,
               sellTokenId: withdrawToken.tokenId,
@@ -449,7 +453,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             },
             maxFee: {
               tokenId: feeToken.tokenId,
-              volume: fee.toString(),
+              volume: fee.toString(), // TEST: fee.toString(),
             },
             fastWithdrawalMode: withdrawType2 === WithdrawType.Fast,
             extraData: "",
@@ -462,7 +466,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
           processRequest(request, isFirstTime);
         } catch (e) {
           sdk.dumpError400(e);
-          setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Withdraw_Failed,
+            error: {
+              code: UIERROR_CODE.Unknow,
+              msg: e?.message,
+            },
+          });
         }
 
         return true;
@@ -474,11 +485,24 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
       account,
       tokenMap,
       exchangeInfo,
+      withdrawValue?.fee?.belong,
+      withdrawValue?.fee?.__raw__,
+      withdrawValue.belong,
       setShowWithdraw,
       setShowAccount,
       withdrawType2,
       processRequest,
     ]
+  );
+  const retryBtn = React.useCallback(
+    (isHardwareRetry: boolean = false) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.NFTWithdraw_WaitForAuth,
+      });
+      processRequest(lastRequest, !isHardwareRetry);
+    },
+    [lastRequest, processRequest, setShowAccount]
   );
 
   const withdrawProps: WithdrawProps<any, any> = {
@@ -487,6 +511,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     isContractAddress,
     withdrawI18nKey,
     accAddr: account.accAddress,
+    isNotAvaiableAddress,
     addressDefault: address,
     realAddr,
     disableWithdrawList,
@@ -512,7 +537,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     },
     handlePanelEvent: async (
       data: SwitchData<R>,
-      switchType: "Tomenu" | "Tobutton"
+      _switchType: "Tomenu" | "Tobutton"
     ) => {
       return new Promise((res: any) => {
         if (data.to === "button") {
@@ -551,11 +576,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
   };
 
   return {
-    withdrawAlertText,
-    withdrawToastOpen,
-    setWithdrawToastOpen,
     withdrawProps,
-    processRequest,
-    lastRequest,
+    retryBtn,
   };
 };

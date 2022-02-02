@@ -1,4 +1,8 @@
-import { AccountStatus, myLog } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  myLog,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 import { useAccount } from "../../../stores/account";
 import React from "react";
 
@@ -70,20 +74,25 @@ export function useExportAccountInfo() {
           accountId: account.accountId,
         });
 
-        const { apiKey, raw_data } = await LoopringAPI.userAPI.getUserApiKey(
+        const response = await LoopringAPI.userAPI.getUserApiKey(
           {
             accountId: account.accountId,
           },
           eddsaKey.sk
         );
 
-        myLog("unlockAccount raw_data:", raw_data);
+        myLog("ExportAccount raw_data:", response);
 
-        if (!apiKey && raw_data.resultInfo) {
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message ||
+          !response.apiKey
+        ) {
           myLog("try to sendErrorUnlock....");
           setShowAccount({
             isShow: true,
             step: AccountStep.ExportAccount_Failed,
+            error: response as sdk.RESULT_INFO,
           });
         } else {
           myLog("try to sendAccountSigned....");
@@ -91,7 +100,7 @@ export function useExportAccountInfo() {
           setShowExportAccount({ isShow: true });
         }
       } catch (e) {
-        myLog("unlockAccount e:", e);
+        myLog("ExportAccount e:", e);
 
         const errType = checkErrorInfo(e, true);
         switch (errType) {
@@ -107,6 +116,10 @@ export function useExportAccountInfo() {
         setShowAccount({
           isShow: true,
           step: AccountStep.ExportAccount_Failed,
+          error: {
+            code: UIERROR_CODE.Unknow,
+            msg: e?.message,
+          },
         });
       }
     }

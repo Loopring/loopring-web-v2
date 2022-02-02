@@ -207,7 +207,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             <IconClearStyled
               color={"inherit"}
               size={"small"}
-              style={{ top: "28px" }}
+              style={{ top: "30px" }}
               aria-label="Clear"
               onClick={handleClear}
             >

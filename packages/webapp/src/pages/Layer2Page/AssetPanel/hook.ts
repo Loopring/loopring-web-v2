@@ -12,6 +12,7 @@ import BigNumber from "bignumber.js";
 import { useTokenPrices } from "stores/tokenPrices";
 import { LoopringAPI } from "api_wrapper";
 import moment from "moment";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export type TrendDataItem = {
   timeStamp: number;
@@ -100,20 +101,23 @@ export const useGetAssets = () => {
   const getUserAssets = React.useCallback(async () => {
     if (LoopringAPI && LoopringAPI.userAPI && tokenMap) {
       const { accAddress } = account;
-      const res = await LoopringAPI.userAPI.getUserVIPAssets({
+      const response = await LoopringAPI.userAPI.getUserVIPAssets<any[]>({
         address: accAddress,
         assetTypes: "DEX",
       });
-      if (res.raw_data && res.raw_data.data) {
-        const ethValueList = res.raw_data.data.map((o: any) => ({
+      if (
+        (response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message
+      ) {
+        console.error((response as sdk.RESULT_INFO).message);
+      } else if (response.vipAsset && response.vipAsset.length) {
+        const ethValueList = response.vipAsset.map((o: any) => ({
           timeStamp: moment(o.createdAt).format("YYYY-MM-DD"),
           close: o.ethValue,
         }));
         setUserAssets(ethValueList);
         return;
       }
-      setUserAssets([]);
-      return;
     }
     setUserAssets([]);
   }, [account, tokenMap]);

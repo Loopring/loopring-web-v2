@@ -1,4 +1,4 @@
-import { AccountStatus } from "@loopring-web/common-resources";
+import { AccountStatus, UIERROR_CODE } from "@loopring-web/common-resources";
 
 import { Subject } from "rxjs";
 import { Commands } from "./command";
@@ -27,10 +27,17 @@ export const accountServices = {
       data: undefined,
     });
   },
-  sendErrorUnlock: () => {
+  sendErrorUnlock: (error?: sdk.RESULT_INFO) => {
     subject.next({
       status: Commands.ErrorSign,
-      data: undefined,
+      data: {
+        error:
+          error ??
+          ({
+            code: UIERROR_CODE.Unknow,
+            msg: "unknown error",
+          } as sdk.RESULT_INFO),
+      },
     });
   },
 
@@ -163,10 +170,9 @@ export const accountServices = {
     myLog("-------sendCheckAcc enter!");
     if (store) {
       const account = store.getState().account;
-      const { chainId } = store.getState().system;
       if (LoopringAPI.exchangeAPI) {
-        if (chainId && LoopringAPI.__chainId__ !== chainId) {
-          await sdk.sleep(100);
+        if (!account._chainId || LoopringAPI.__chainId__ !== account._chainId) {
+          await sdk.sleep(10);
         }
         const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
           owner: account.accAddress,
@@ -210,7 +216,7 @@ export const accountServices = {
     });
     if (LoopringAPI.exchangeAPI) {
       if (chainId && LoopringAPI.__chainId__ !== chainId) {
-        await sdk.sleep(100);
+        await sdk.sleep(10);
       }
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
         owner: ethAddress,

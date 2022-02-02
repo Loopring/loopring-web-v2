@@ -61,17 +61,20 @@ export async function updateAccountFromServer({
           try {
             let tokenId = 0;
 
-            let feeVol = "0";
+            let fee = "0";
             if (feeInfo) {
               tokenId = feeInfo.__raw__.tokenId;
-              feeVol = feeInfo.__raw__.feeRaw;
+              fee = feeInfo.__raw__.feeRaw;
             }
             const request: sdk.UpdateAccountRequestV3 = {
               exchange: system.exchangeInfo.exchangeAddress,
               owner: accInfo.owner,
               accountId: accInfo.accountId,
               publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy },
-              maxFee: { tokenId, volume: feeVol },
+              maxFee: {
+                tokenId,
+                volume: fee.toString(),
+              },
               validUntil: getTimestampDaysLater(DAYS),
               nonce: accInfo.nonce as number,
             };
@@ -94,14 +97,9 @@ export async function updateAccountFromServer({
 
             myLog("updateAccountResponse:", response);
 
-            if ((response as sdk.ErrorMsg)?.errMsg) {
-              result.code = ActionResultCode.UpdateAccoutError;
-              result.data = {
-                eddsaKey,
-                ...response,
-              };
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
+            if (
+              (response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message
             ) {
               result.code = ActionResultCode.UpdateAccoutError;
               result.data = {

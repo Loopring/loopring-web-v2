@@ -213,7 +213,6 @@ export const HeadMenuItem = React.memo(
                 }
           }
         >
-          {" "}
           {children}
         </StyledHeadMenuItem>
       );
@@ -332,7 +331,7 @@ export const HeaderMenuSub = React.memo(
                   renderList({ handleListKeyDown: popupState.close })}
               </StyledHeaderMenuSub>
             </>
-          )}{" "}
+          )}
         </>
       );
     }

@@ -68,7 +68,6 @@ const TradeTitleWrap = withTranslation("common")((rest) => {
         />
       </Grid>
       <Grid item>
-        {" "}
         <TradeTitle
           {...{
             ...rest,
@@ -151,7 +150,7 @@ const AmmCardWrap = () => {
     isActivity: false,
   };
 
-  return <AmmCard ref={ref} {...{ ...ammInfo }}></AmmCard>;
+  return <AmmCard ref={ref} {...{ ...ammInfo }} />;
 };
 
 const MarketWrap = withTranslation("common")((rest) => {
@@ -177,7 +176,7 @@ const MarketWrap = withTranslation("common")((rest) => {
     <>
       <RowStyled container>
         <Grid item xs={3}>
-          <MarketBlock {...{ ...props }}></MarketBlock>
+          <MarketBlock {...{ ...props }} />
         </Grid>
         <Grid item xs={3}>
           <MarketBlock
@@ -192,7 +191,7 @@ const MarketWrap = withTranslation("common")((rest) => {
                 floatTag: FloatTag.none,
               },
             }}
-          ></MarketBlock>
+          />
         </Grid>
         <Grid item xs={3}>
           <MarketBlock
@@ -207,10 +206,10 @@ const MarketWrap = withTranslation("common")((rest) => {
                 floatTag: FloatTag.decrease,
               },
             }}
-          ></MarketBlock>
+          />
         </Grid>
         <Grid item xs={3}>
-          <MarketBlock {...{ ...props }}></MarketBlock>
+          <MarketBlock {...{ ...props }} />
         </Grid>
       </RowStyled>
     </>
@@ -224,8 +223,8 @@ const SettingPanelWrap = (_rest: any) => {
 const AssetTitleWrap = (rest: any) => {
   const dispatch = useDispatch();
   const AssetTitleProps: AssetTitleProps = {
+    showPartner(): void {},
     accountId: 0,
-    showRamp(): void {},
     setHideL2Assets: () => undefined,
     hideL2Assets: false,
     assetInfo: {
@@ -252,7 +251,6 @@ const AssetTitleWrap = (rest: any) => {
 const Template: Story<any> = withTranslation("common")((...rest) => {
   return (
     <Style>
-      {" "}
       <MemoryRouter initialEntries={["/"]}>
         <h4>MarketWrap row</h4>
         <MarketWrap />

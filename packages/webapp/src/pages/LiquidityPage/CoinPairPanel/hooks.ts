@@ -244,7 +244,6 @@ export const useCoinPair = <C extends { [key: string]: any }>() => {
 
   React.useEffect(() => {
     const coinKey = match?.params.symbol ?? undefined;
-    let _tradeFloat: Partial<TradeFloat> | undefined = {};
     let [, coinA, coinB] = coinKey.match(/(\w+)-(\w+)/i);
 
     if (ammMap && !ammMap[`AMM-${coinA}-${coinB}`]) {
@@ -317,9 +316,6 @@ export const useCoinPair = <C extends { [key: string]: any }>() => {
               tradePair: realMarket,
               dependencyData: { ammPoolSnapshot, ticker, depth },
             });
-
-            // _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
-            // myLog('........close:', _tradeFloat, close)
             setStobPair({ stob, btos });
             setTradeFloat({ ...ticker, close: close } as TradeFloat);
 

@@ -29,7 +29,6 @@ import {
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
 import { HistoryNFT } from "./components/history";
-import { LoadingBlock } from "../../LoadingPage";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);

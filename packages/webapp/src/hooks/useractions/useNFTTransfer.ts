@@ -16,6 +16,7 @@ import {
   IBData,
   NFTWholeINFO,
   SagaStatus,
+  UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 
@@ -31,7 +32,6 @@ import {
 } from "../../services/socket";
 import { getTimestampDaysLater } from "utils/dt_tools";
 import { AddressError, BIGO, DAYS, TOAST_TIME } from "defs/common_defs";
-import { useTranslation } from "react-i18next";
 import { useAddressCheck } from "hooks/common/useAddrCheck";
 import { useWalletInfo } from "stores/localStore/walletInfo";
 import { checkErrorInfo } from "./utils";
@@ -70,6 +70,9 @@ export const useNFTTransfer = <
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
+  const [addressOrigin, setAddressOrigin] = React.useState<
+    "Wallet" | undefined
+  >();
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       tokenAddress: nftTransferValue.tokenAddress,
@@ -178,17 +181,24 @@ export const useNFTTransfer = <
 
   const { checkHWAddr, updateHW } = useWalletInfo();
 
-  const [lastNFTRequest, setLastNFTRequest] = React.useState<any>({});
+  const [lastRequest, setLastRequest] = React.useState<any>({});
 
-  const processRequestNFT = React.useCallback(
-    async (request: sdk.OriginNFTTransferRequestV3, isFirstTime: boolean) => {
+  const processRequest = React.useCallback(
+    async (
+      request: sdk.OriginNFTTransferRequestV3,
+      isNotHardwareWallet: boolean
+    ) => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3) {
+        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
 
-          isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr;
+          if (!isHWAddr && !isNotHardwareWallet) {
+            isHWAddr = true;
+          }
+
+          setLastRequest({ request });
 
           const response = await LoopringAPI.userAPI?.submitNFTInTransfer(
             {
@@ -210,43 +220,42 @@ export const useNFTTransfer = <
           myLog("submitInternalTransfer:", response);
 
           if (isAccActivated()) {
-            if ((response as sdk.ErrorMsg)?.errMsg) {
+            if (
+              (response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message
+            ) {
               // Withdraw failed
-              const code = checkErrorInfo(response, isFirstTime);
+              const code = checkErrorInfo(
+                response as sdk.RESULT_INFO,
+                isNotHardwareWallet
+              );
               if (code === sdk.ConnectorError.USER_DENIED) {
                 setShowAccount({
                   isShow: true,
-                  step: AccountStep.Transfer_User_Denied,
+                  step: AccountStep.NFTTransfer_User_Denied,
                 });
               } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setLastNFTRequest({ request });
                 setShowAccount({
                   isShow: true,
-                  step: AccountStep.Transfer_First_Method_Denied,
+                  step: AccountStep.NFTTransfer_First_Method_Denied,
                 });
               } else {
                 setShowAccount({
                   isShow: true,
-                  step: AccountStep.Transfer_Failed,
+                  step: AccountStep.NFTTransfer_Failed,
+                  error: response as sdk.RESULT_INFO,
                 });
               }
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
-            ) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.Transfer_Failed,
-              });
-            } else {
+            } else if ((response as sdk.TX_HASH_API)?.hash) {
               // Withdraw success
               setShowAccount({
                 isShow: true,
-                step: AccountStep.Transfer_In_Progress,
+                step: AccountStep.NFTTransfer_In_Progress,
               });
               await sdk.sleep(TOAST_TIME);
               setShowAccount({
                 isShow: true,
-                step: AccountStep.Transfer_Success,
+                step: AccountStep.NFTTransfer_Success,
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);
@@ -263,22 +272,28 @@ export const useNFTTransfer = <
           }
         }
       } catch (reason) {
-        const code = checkErrorInfo(reason, isFirstTime);
+        const code = checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
           if (code === sdk.ConnectorError.USER_DENIED) {
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_User_Denied,
+              step: AccountStep.NFTTransfer_User_Denied,
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-            setLastNFTRequest({ request });
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_First_Method_Denied,
+              step: AccountStep.NFTTransfer_First_Method_Denied,
             });
           } else {
-            setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTTransfer_Failed,
+              error: {
+                code: UIERROR_CODE.Unknow,
+                msg: reason?.message,
+              },
+            });
           }
         }
       }
@@ -316,7 +331,7 @@ export const useNFTTransfer = <
           setShowNFTTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
-            step: AccountStep.Transfer_WaitForAuth,
+            step: AccountStep.NFTTransfer_WaitForAuth,
           });
           // const sellTokenID = nftTransferValue.tokenId
           // const sellToken = tokenMap[nftTransferValue.belong as string]
@@ -351,7 +366,7 @@ export const useNFTTransfer = <
             },
             maxFee: {
               tokenId: feeToken.tokenId,
-              amount: fee.toString(),
+              amount: fee.toString(), // TEST: fee.toString(),
             },
             validUntil: getTimestampDaysLater(DAYS),
             memo: nftTransferValue.memo,
@@ -359,11 +374,18 @@ export const useNFTTransfer = <
 
           myLog("nftTransfer req:", req);
 
-          processRequestNFT(req, isFirstTime);
+          processRequest(req, isFirstTime);
         } catch (e) {
           sdk.dumpError400(e);
           // nftTransfer failed
-          setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTTransfer_Failed,
+            error: {
+              code: UIERROR_CODE.Unknow,
+              msg: e?.message,
+            },
+          });
         }
       } else {
         return false;
@@ -377,7 +399,7 @@ export const useNFTTransfer = <
       setShowAccount,
       realAddr,
       address,
-      processRequestNFT,
+      processRequest,
     ]
   );
 
@@ -407,11 +429,25 @@ export const useNFTTransfer = <
     [updateNFTTransferData]
   );
 
-  const { t } = useTranslation();
-
+  const retryBtn = React.useCallback(
+    (isHardwareRetry: boolean = false) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.NFTTransfer_WaitForAuth,
+      });
+      processRequest(lastRequest, !isHardwareRetry);
+    },
+    [lastRequest, processRequest, setShowAccount]
+  );
   const nftTransferProps: TransferProps<any, any> = {
     addressDefault: address,
     realAddr,
+    handleSureItsLayer2: (sure: boolean) => {
+      if (sure) {
+        setAddressOrigin("Wallet");
+      }
+    },
+    addressOrigin,
     tradeData: nftTransferValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap as WalletMap<T>,
@@ -438,8 +474,6 @@ export const useNFTTransfer = <
 
   return {
     nftTransferProps,
-    processRequestNFT,
-    lastNFTRequest,
-    updateNFTTransferData,
+    retryBtn,
   };
 };

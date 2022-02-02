@@ -3,6 +3,7 @@ import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
 import { sleep } from "@loopring-web/loopring-sdk";
 import { useAccountHook } from "../../services/account/useAccountHook";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export function useAccountModal() {
   const {
@@ -72,12 +73,16 @@ export function useAccountModal() {
       step: AccountStep.UnlockAccount_User_Denied,
     });
   }, [setShowAccount, shouldShow]);
-  const handleSignError = React.useCallback(() => {
-    setShowAccount({
-      isShow: shouldShow ?? false,
-      step: AccountStep.UnlockAccount_Failed,
-    });
-  }, [setShowAccount, shouldShow]);
+  const handleSignError = React.useCallback(
+    ({ error }: { error?: sdk.RESULT_INFO }) => {
+      setShowAccount({
+        isShow: shouldShow ?? false,
+        step: AccountStep.UnlockAccount_Failed,
+        error,
+      });
+    },
+    [setShowAccount, shouldShow]
+  );
   const handleProcessSign = React.useCallback(() => {
     setShowAccount({
       isShow: shouldShow ?? false,

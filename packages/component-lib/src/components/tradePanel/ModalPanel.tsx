@@ -22,7 +22,7 @@ import {
   DepositGroupProps,
   modalContentBaseStyle,
 } from "../..";
-import { IBData } from "@loopring-web/common-resources";
+import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
@@ -99,7 +99,7 @@ const Modal = withTranslation("common")(
   }
 );
 
-export const ModalPanel = <T extends IBData<I>, I>({
+export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   transferProps,
   withdrawProps,
   depositGroupProps,
@@ -121,8 +121,8 @@ export const ModalPanel = <T extends IBData<I>, I>({
   nftTransferProps: TransferProps<T, I>;
   nftWithdrawProps: WithdrawProps<T, I>;
   // nftDepositProps: DepositProps<T, I>;
-  resetProps: ResetProps<I>;
-  activeAccountProps: ActiveAccountProps<I>;
+  resetProps: ResetProps<F>;
+  activeAccountProps: ActiveAccountProps<F>;
   ammProps: AmmProps<any, any, T, any>;
   swapProps: SwapProps<T, I, any>;
   assetsData: any[];

@@ -77,7 +77,6 @@ export const AssetTitle = withTranslation("common")(
             marginTop={1}
           >
             <Typography component={"span"} paddingRight={1} variant={"h1"}>
-              {" "}
               {assetInfo.priceTag}{" "}
             </Typography>
             {!hideL2Assets ? (

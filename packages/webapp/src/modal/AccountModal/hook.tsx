@@ -29,12 +29,6 @@ import {
   HadAccount,
   NoAccount,
   QRAddressPanel,
-  Transfer_Failed,
-  Transfer_First_Method_Denied,
-  Transfer_In_Progress,
-  Transfer_Success,
-  Transfer_User_Denied,
-  Transfer_WaitForAuth,
   UnlockAccount_Failed,
   UnlockAccount_Success,
   UnlockAccount_User_Denied,
@@ -47,12 +41,30 @@ import {
   UpdateAccount_Success,
   UpdateAccount_User_Denied,
   useOpenModals,
+  Transfer_Failed,
+  Transfer_First_Method_Denied,
+  Transfer_In_Progress,
+  Transfer_Success,
+  Transfer_User_Denied,
+  Transfer_WaitForAuth,
   Withdraw_Failed,
   Withdraw_First_Method_Denied,
   Withdraw_In_Progress,
   Withdraw_Success,
   Withdraw_User_Denied,
   Withdraw_WaitForAuth,
+  NFTTransfer_Failed,
+  NFTTransfer_First_Method_Denied,
+  NFTTransfer_In_Progress,
+  NFTTransfer_Success,
+  NFTTransfer_User_Denied,
+  NFTTransfer_WaitForAuth,
+  NFTWithdraw_Failed,
+  NFTWithdraw_First_Method_Denied,
+  NFTWithdraw_In_Progress,
+  NFTWithdraw_Success,
+  NFTWithdraw_User_Denied,
+  NFTWithdraw_WaitForAuth,
   NFTMint_WaitForAuth,
   NFTMint_Denied,
   NFTMint_Failed,
@@ -69,11 +81,7 @@ import {
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 
 import React, { useState } from "react";
-import {
-  AccountStatus,
-  copyToClipBoard,
-  VendorProviders,
-} from "@loopring-web/common-resources";
+import { AccountStatus, copyToClipBoard } from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { lockAccount } from "services/account/lockAccount";
 import { unlockAccount } from "services/account/unlockAccount";
@@ -97,6 +105,7 @@ import { useActiveAccount } from "../../hooks/useractions/useActiveAccount";
 import { useNFTMint } from "../../hooks/useractions/useNFTMint";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useVendor } from "../../hooks/useractions/useVendor";
+import { useNFTDeploy } from "../../hooks/useractions/useNFTDeploy";
 
 export function useAccountModalForUI({
   t,
@@ -124,27 +133,19 @@ export function useAccountModalForUI({
     setShowResetAccount,
     setShowActiveAccount,
   } = useOpenModals();
-  const { lastStep, nftMintValue, nftDepositValue, nftDeployValue } =
-    useModalData();
+  const {
+    lastStep,
+    nftMintValue,
+    nftDepositValue,
+    nftTransferValue,
+    nftWithdrawValue,
+    nftDeployValue,
+    transferValue,
+    withdrawValue,
+  } = useModalData();
   const { chainId } = useSystem();
 
   const { account, addressShort, shouldShow, setShouldShow } = useAccount();
-
-  const {
-    withdrawAlertText,
-    withdrawToastOpen,
-    setWithdrawToastOpen,
-    withdrawProps,
-    processRequest,
-    lastRequest,
-  } = useWithdraw();
-  const {
-    // nftWithdrawToastOpen,
-    setNFTWithdrawToastOpen,
-    nftWithdrawProps,
-    processRequestNFT: withdrawProcessRequestNFT,
-    lastNFTRequest: withdrawNFTRequest,
-  } = useNFTWithdraw({});
 
   const {
     exportAccountAlertText,
@@ -154,26 +155,13 @@ export function useAccountModalForUI({
   const vendorProps = useVendor();
   const { depositProps } = useDeposit();
   const { nftDepositProps } = useNFTDeposit();
-  const { nftMintProps } = useNFTMint();
   const { assetsRawData } = useGetAssets();
-
-  const {
-    transferAlertText,
-    transferToastOpen,
-    setTransferToastOpen,
-    transferProps,
-    lastRequest: transferLastRequest,
-    processRequest: transferProcessRequest,
-  } = useTransfer();
-  const {
-    // nftTransferToastOpen,
-    // nftTransferAlertText,
-    // setNFTTransferToastOpen,
-    nftTransferProps,
-    processRequestNFT: transferProcessRequestNFT,
-    lastNFTRequest: transferNFTRequest,
-  } = useNFTTransfer({});
-
+  const { nftMintProps } = useNFTMint();
+  const { withdrawProps } = useWithdraw();
+  const { transferProps } = useTransfer();
+  const { nftWithdrawProps } = useNFTWithdraw({});
+  const { nftTransferProps } = useNFTTransfer({});
+  const { nftDeployProps } = useNFTDeploy({});
   const { resetProps } = useReset();
   const { activeAccountProps } = useActiveAccount();
 
@@ -298,7 +286,6 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        // setShowAccount({isShow: true, step: AccountStep.Deposit});
       },
     };
   }, [setShowAccount]);
@@ -359,31 +346,31 @@ export function useAccountModalForUI({
     };
   }, [setShowAccount, setShowResetAccount]);
 
-  const TryNewTransferAuthBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelTryNext",
-      callback: () => {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Transfer_WaitForAuth,
-        });
-        transferProcessRequest(transferLastRequest.request, false);
-      },
-    };
-  }, [setShowAccount, transferProcessRequest, transferLastRequest.request]);
-
-  const TryNewWithdrawAuthBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelTryNext",
-      callback: () => {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.Withdraw_WaitForAuth,
-        });
-        processRequest(lastRequest.request, false);
-      },
-    };
-  }, [setShowAccount, processRequest, lastRequest.request]);
+  // const TryNewTransferAuthBtnInfo = React.useMemo(() => {
+  //   return {
+  //     btnTxt: "labelTryNext",
+  //     callback: () => {
+  //       setShowAccount({
+  //         isShow: true,
+  //         step: AccountStep.Transfer_WaitForAuth,
+  //       });
+  //       transferProcessRequest(transferLastRequest.request, false);
+  //     },
+  //   };
+  // }, [setShowAccount, transferProcessRequest, transferLastRequest.request]);
+  //
+  // const TryNewWithdrawAuthBtnInfo = React.useMemo(() => {
+  //   return {
+  //     btnTxt: "labelTryNext",
+  //     callback: () => {
+  //       setShowAccount({
+  //         isShow: true,
+  //         step: AccountStep.Withdraw_WaitForAuth,
+  //       });
+  //       processRequest(lastRequest.request, false);
+  //     },
+  //   };
+  // }, [setShowAccount, processRequest, lastRequest.request]);
 
   const closeBtnInfo = React.useMemo(() => {
     return {
@@ -411,6 +398,7 @@ export function useAccountModalForUI({
   const clearDeposit = React.useCallback(() => {
     clearDepositHash(account.accAddress);
   }, [clearDepositHash, account]);
+
   const updateDepositStatus = React.useCallback(async () => {
     const chainInfos = store.getState().localStore.chainHashInfos[chainId];
     const { accAddress } = account;
@@ -494,7 +482,6 @@ export function useAccountModalForUI({
       isSupportCallback();
     }
   }, [account.accAddress, isSupportCallback]);
-
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.NoAccount]: {
@@ -638,6 +625,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -756,6 +744,7 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               ...nftDepositValue,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -825,7 +814,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_First_Method_Denied]: {
         view: (
           <NFTMint_First_Method_Denied
-            btnInfo={backToMintBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftMintProps.onNFTMintClick(nftMintValue as any, false);
+              },
+            }}
             {...{
               ...rest,
               ...nftDeployValue,
@@ -852,6 +846,7 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               ...nftMintValue,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -921,7 +916,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeploy_First_Method_Denied]: {
         view: (
           <NFTDeploy_First_Method_Denied
-            btnInfo={backToDeployBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftDeployProps.onNFTDeployClick(nftDeployValue as any, false);
+              },
+            }}
             {...{
               ...rest,
               ...nftDeployValue,
@@ -948,6 +948,7 @@ export function useAccountModalForUI({
             {...{
               ...rest,
               ...nftDeployValue,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -990,7 +991,12 @@ export function useAccountModalForUI({
       [AccountStep.Transfer_First_Method_Denied]: {
         view: (
           <Transfer_First_Method_Denied
-            btnInfo={TryNewTransferAuthBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                transferProps.onTransferClick(transferValue as any, false);
+              },
+            }}
             {...{
               ...rest,
               t,
@@ -1036,6 +1042,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1057,7 +1064,12 @@ export function useAccountModalForUI({
       [AccountStep.Withdraw_First_Method_Denied]: {
         view: (
           <Withdraw_First_Method_Denied
-            btnInfo={TryNewWithdrawAuthBtnInfo}
+            btnInfo={{
+              btnTxt: "labelTryNext",
+              callback: () => {
+                withdrawProps.onWithdrawClick(withdrawValue as any, false);
+              },
+            }}
             {...{
               ...rest,
               t,
@@ -1103,6 +1115,159 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
+      // transfer
+      [AccountStep.NFTTransfer_WaitForAuth]: {
+        view: (
+          <NFTTransfer_WaitForAuth
+            providerName={account.connectName}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTTransfer_First_Method_Denied]: {
+        view: (
+          <NFTTransfer_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryNext",
+              callback: () => {
+                nftTransferProps.onTransferClick(
+                  nftTransferValue as any,
+                  false
+                );
+              },
+            }}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTTransfer_User_Denied]: {
+        view: (
+          <NFTTransfer_User_Denied
+            btnInfo={backToTransferBtnInfo}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTTransfer_In_Progress]: {
+        view: (
+          <NFTTransfer_In_Progress
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTTransfer_Success]: {
+        view: (
+          <NFTTransfer_Success
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTTransfer_Failed]: {
+        view: (
+          <NFTTransfer_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
+      // withdraw
+      [AccountStep.NFTWithdraw_WaitForAuth]: {
+        view: (
+          <NFTWithdraw_WaitForAuth
+            providerName={account.connectName}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTWithdraw_First_Method_Denied]: {
+        view: (
+          <NFTWithdraw_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryNext",
+              callback: () => {
+                nftWithdrawProps.onWithdrawClick(
+                  nftWithdrawValue as any,
+                  false
+                );
+              },
+            }}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTWithdraw_User_Denied]: {
+        view: (
+          <NFTWithdraw_User_Denied
+            btnInfo={backToWithdrawBtnInfo}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTWithdraw_In_Progress]: {
+        view: (
+          <NFTWithdraw_In_Progress
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTWithdraw_Success]: {
+        view: (
+          <NFTWithdraw_Success
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.NFTWithdraw_Failed]: {
+        view: (
+          <NFTWithdraw_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1172,6 +1337,7 @@ export function useAccountModalForUI({
             providerName={account.connectName}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1284,6 +1450,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1332,6 +1499,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1413,6 +1581,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1461,6 +1630,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              error: isShowAccount.error,
               t,
             }}
           />
@@ -1492,9 +1662,9 @@ export function useAccountModalForUI({
     closeBtnInfo,
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
-    TryNewTransferAuthBtnInfo,
+    // TryNewTransferAuthBtnInfo,
     backToTransferBtnInfo,
-    TryNewWithdrawAuthBtnInfo,
+    // TryNewWithdrawAuthBtnInfo,
     backToWithdrawBtnInfo,
     backToUpdateAccountBtnInfo,
     backToUnlockAccountBtnInfo,
@@ -1508,16 +1678,12 @@ export function useAccountModalForUI({
 
   return {
     nftTransferProps,
-    transferProcessRequestNFT,
-    transferNFTRequest,
-    setNFTWithdrawToastOpen,
+    // transferProcessRequestNFT,
+    // transferNFTRequest,
     nftWithdrawProps,
-    withdrawProcessRequestNFT,
-    withdrawNFTRequest,
-    withdrawAlertText,
-    withdrawToastOpen,
+    // withdrawProcessRequestNFT,
+    // withdrawNFTRequest,
     nftDepositProps,
-    setWithdrawToastOpen,
     transferProps,
     withdrawProps,
     depositProps,
@@ -1527,9 +1693,6 @@ export function useAccountModalForUI({
     exportAccountAlertText,
     exportAccountToastOpen,
     setExportAccountToastOpen,
-    transferAlertText,
-    transferToastOpen,
-    setTransferToastOpen,
     assetsRawData,
     copyToastOpen,
     setCopyToastOpen,

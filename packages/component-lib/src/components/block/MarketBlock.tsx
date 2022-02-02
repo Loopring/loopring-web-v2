@@ -102,8 +102,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                 {coinAInfo?.simpleName}
               </Typography>
               <Typography variant={"h5"} component={"i"}>
-                {" "}
-                /{" "}
+                {` / `}
               </Typography>
               <Typography
                 variant={"h5"}
@@ -194,7 +193,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                   whiteSpace={"nowrap"}
                   marginTop={1 / 2}
                 >
-                  {t("labelAmount")} :{" "}
+                  {t("labelAmount") + " "} :
                   {getValuePrecisionThousand(
                     volume,
                     coinBPrecision,
@@ -226,7 +225,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
         </Grid>
       ) : (
         <></>
-      )}{" "}
+      )}
     </MarketBlockStyled>
   );
 };

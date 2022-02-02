@@ -169,7 +169,7 @@ export const getValuePrecisionThousand = (
   if (isPrice === true) {
     return toBig(toBig(result).toFixed(fixed || 6))
       .toNumber()
-      .toLocaleString("en", { minimumFractionDigits: fixed || 6 });
+      .toLocaleString("en-US", { minimumFractionDigits: fixed || 6 });
   }
 
   // fait price
@@ -184,7 +184,7 @@ export const getValuePrecisionThousand = (
       // fixed 2 decimals
       return toBig(result.toFixed(2))
         .toNumber()
-        .toLocaleString("en", { minimumFractionDigits: 2 });
+        .toLocaleString("en-US", { minimumFractionDigits: 2 });
     } else {
       if (floor === true) {
         result = getFloatFloor(result, 6);
@@ -194,7 +194,7 @@ export const getValuePrecisionThousand = (
       }
       return toBig(result)
         .toNumber()
-        .toLocaleString("en", { minimumFractionDigits: 6 });
+        .toLocaleString("en-US", { minimumFractionDigits: 6 });
     }
   }
   if (isTrade === true) {
@@ -202,9 +202,9 @@ export const getValuePrecisionThousand = (
     if (_dot && _dot.length > 3) {
       return result
         .toNumber()
-        .toLocaleString("en", { minimumFractionDigits: _dot.length });
+        .toLocaleString("en-US", { minimumFractionDigits: _dot.length });
     } else {
-      return result.toNumber().toLocaleString("en");
+      return result.toNumber().toLocaleString("en-US");
     }
   }
   if (result.isGreaterThan(1)) {
@@ -227,7 +227,7 @@ export const getValuePrecisionThousand = (
     // remain string-number zero
     result = toBig(formattedValue)
       .toNumber()
-      .toLocaleString("en", { minimumFractionDigits: fixed || minDigit });
+      .toLocaleString("en-US", { minimumFractionDigits: fixed || minDigit });
   } else if (result.isLessThanOrEqualTo(1)) {
     result = fixed
       ? result.toFixed(fixed)

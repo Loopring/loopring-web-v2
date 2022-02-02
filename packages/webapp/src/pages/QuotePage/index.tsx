@@ -147,7 +147,7 @@ export const QuotePage = withTranslation("common")((rest: WithTranslation) => {
 
   const getAmmPoolBalances = useCallback(async () => {
     if (LoopringAPI.ammpoolAPI) {
-      const ammRes = await LoopringAPI.ammpoolAPI?.getAmmPoolBalances();
+      const ammRes = await LoopringAPI.ammpoolAPI?.getAmmPoolBalances<any[]>();
       const fomattedRes = ammRes.raw_data.map((o: any) => ({
         ...o,
         poolName: o.poolName.replace("AMM-", ""),

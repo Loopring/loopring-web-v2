@@ -2,26 +2,21 @@ import { useAccount } from "../../stores/account";
 import {
   AccountStep,
   NFTDeployProps,
-  SwitchData,
-  TokenType,
   useOpenModals,
-  WithdrawProps,
 } from "@loopring-web/component-lib";
-import React, { useCallback } from "react";
+import React from "react";
 
 import {
   AccountStatus,
-  CoinMap,
-  FeeInfo,
   myLog,
   TradeNFT,
+  UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 import { useTokenMap } from "../../stores/token";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useModalData } from "../../stores/router";
-import { OffchainNFTFeeReqType } from "@loopring-web/loopring-sdk";
 import { makeWalletLayer2 } from "../help";
 import {
   useWalletLayer2Socket,
@@ -31,7 +26,7 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "../../api_wrapper";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
-import { AddressError, BIGO, DAYS, TOAST_TIME } from "../../defs/common_defs";
+import { DAYS, TOAST_TIME } from "../../defs/common_defs";
 import { useSystem } from "../../stores/system";
 import { isAccActivated } from "./checkAccStatus";
 import { checkErrorInfo } from "./utils";
@@ -40,7 +35,6 @@ import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
 
 export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
-  isLocalShow = false,
   doDeployDone,
 }: {
   isLocalShow?: boolean;
@@ -90,9 +84,15 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
           myLog("submitInternalTransfer:", response);
 
           if (isAccActivated()) {
-            if ((response as sdk.ErrorMsg)?.errMsg) {
+            if (
+              (response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message
+            ) {
               // Withdraw failed
-              const code = checkErrorInfo(response, isFirstTime);
+              const code = checkErrorInfo(
+                response as sdk.RESULT_INFO,
+                isFirstTime
+              );
               if (code === sdk.ConnectorError.USER_DENIED) {
                 setShowAccount({
                   isShow: true,
@@ -107,16 +107,10 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTDeploy_Failed,
+                  error: response as sdk.RESULT_INFO,
                 });
               }
-            } else if (
-              (response as sdk.TX_HASH_RESULT<sdk.TX_HASH_API>)?.resultInfo
-            ) {
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTDeploy_Failed,
-              });
-            } else {
+            } else if ((response as sdk.TX_HASH_API)?.hash) {
               // Withdraw success
               setShowAccount({
                 isShow: true,
@@ -149,15 +143,19 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
           if (code === sdk.ConnectorError.USER_DENIED) {
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_User_Denied,
+              step: AccountStep.NFTDeploy_Denied,
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_First_Method_Denied,
+              step: AccountStep.NFTDeploy_First_Method_Denied,
             });
           } else {
-            setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+            setShowAccount({
+              isShow: true,
+              step: AccountStep.NFTDeploy_Failed,
+              error: { code: UIERROR_CODE.Unknow, msg: reason.message },
+            });
           }
         }
       }
@@ -169,6 +167,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       setShowAccount,
       doDeployDone,
       resetNFTDeployData,
+      updateWalletLayer2,
       updateHW,
     ]
   );
@@ -188,11 +187,11 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       return;
     }
     disableBtn();
-  }, [isFeeNotEnough]);
+  }, [disableBtn, enableBtn, isFeeNotEnough, tokenMap]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [nftDeployValue]);
+  }, [checkBtnStatus, nftDeployValue]);
 
   const onNFTDeployClick = async (
     _nftDeployValue: T,
@@ -244,7 +243,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
             storageId: storageId.offchainId,
             token: {
               tokenId: feeToken.tokenId,
-              volume: fee.toString(),
+              volume: fee.toString(), // TEST: fee.toString(),
             },
             validUntil: getTimestampDaysLater(DAYS),
           },
@@ -256,17 +255,21 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       } catch (e) {
         sdk.dumpError400(e);
         // nftTransfer failed
-        setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed });
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.NFTDeploy_Failed,
+          error: { code: UIERROR_CODE.Unknow, msg: e.message },
+        });
       }
     } else {
       return false;
     }
   };
 
-  const walletLayer2Callback = React.useCallback(() => {
+  const walletLayer2Callback = () => {
     const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<I>);
     setWalletMap2(walletMap);
-  }, []);
+  };
 
   useWalletLayer2Socket({ walletLayer2Callback });
 

@@ -58,7 +58,9 @@ export const ErrorMap = {
     options: {},
   },
 };
-
+export enum UIERROR_CODE {
+  Unknow = 700001,
+}
 export type ErrorObject = {
   from?: string;
   timestamp?: number;

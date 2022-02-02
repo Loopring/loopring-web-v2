@@ -8,6 +8,7 @@ import { useAccount } from "stores/account";
 import { globalSetup } from "@loopring-web/common-resources";
 import _ from "lodash";
 import { WalletType } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>("");
@@ -46,7 +47,7 @@ export const useAddressCheck = () => {
           setRealAddr(realAddr);
           setAddrStatus(addressErr);
           if (realAddr !== "" || address !== "") {
-            const [{ walletType }, res] = await Promise.all([
+            const [{ walletType }, response] = await Promise.all([
               LoopringAPI.walletAPI.getWalletType({
                 wallet: realAddr != "" ? realAddr : address,
               }),
@@ -67,11 +68,14 @@ export const useAddressCheck = () => {
               setIsContractAddress(false);
             }
 
-            // ENS or address
-            if (res && !res.error) {
-              setIsLoopringAddress(true);
-            } else {
+            if (
+              response &&
+              ((response as sdk.RESULT_INFO).code ||
+                (response as sdk.RESULT_INFO).message)
+            ) {
               setIsLoopringAddress(false);
+            } else {
+              setIsLoopringAddress(true);
             }
           }
           // return {

@@ -144,10 +144,8 @@ export const VipPanel = withTranslation(["common", "layout"])(
     }, [tradeAmountInfo]);
 
     const getCurrentBalanceLRC = React.useCallback(() => {
-      if (userAssets && !!userAssets.raw_data.data.length) {
-        return Number(
-          userAssets.raw_data.data[userAssets.raw_data.data.length - 1].lrcValue
-        ).toFixed(3);
+      if (userAssets && userAssets.length) {
+        return Number(userAssets[userAssets.length - 1].lrcValue).toFixed(3);
       }
       return 0;
     }, [userAssets]);
