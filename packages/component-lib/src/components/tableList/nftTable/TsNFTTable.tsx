@@ -127,11 +127,18 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxTxnHash"),
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const path =
-              row.txHash !== ""
-                ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : Explorer + `/tx/${row.blockId}-${row.indexInBlock}`;
-            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            let path = "",
+              hash = row.txHash !== "" ? row.txHash : row.hash;
+            if (row.txHash || (row.blockIdInfo.blockId && row.storageInfo)) {
+              path =
+                row.txHash !== ""
+                  ? etherscanBaseUrl + `/tx/${row.txHash}`
+                  : row.storageInfo.tokenId || row.storageInfo.storageId
+                  ? Explorer +
+                    `/tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
+                  : Explorer +
+                    `/tx/${row.blockIdInfo.blockId}-${row.blockIdInfo.indexInBlock}`;
+            }
             return (
               <Box
                 className="rdg-cell-value"
