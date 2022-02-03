@@ -323,14 +323,20 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            if (row.txHash || row.blockIdInfo.blockId) {
+            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            if (
+              row.txHash ||
+              (row.blockIdInfo.blockId &&
+                row.storageInfo &&
+                (row.storageInfo.tokenId || row.storageInfo.storageId))
+            ) {
               const path =
                 row.txHash !== ""
                   ? etherscanBaseUrl + `/tx/${row.txHash}`
                   : row.blockIdInfo &&
+                    row.storageInfo &&
                     Explorer +
-                      `/tx/${row.blockIdInfo.blockId}-${row.blockIdInfo.indexInBlock}`;
-              const hash = row.txHash !== "" ? row.txHash : row.hash;
+                      `/tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`;
               return (
                 <Box
                   className="rdg-cell-value textAlignRight"

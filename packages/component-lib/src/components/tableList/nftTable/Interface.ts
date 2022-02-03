@@ -33,6 +33,15 @@ export type TxnDetailProps = {
     unit: string;
     value: number;
   };
+  blockIdInfo: {
+    blockId: number;
+    indexInBlock: number;
+  };
+  storageInfo: {
+    accountId: number;
+    storageId: number;
+    tokenId: number;
+  };
   blockId: number;
   indexInBlock: number;
   memo?: string;
