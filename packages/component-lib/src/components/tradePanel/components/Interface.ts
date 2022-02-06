@@ -17,6 +17,7 @@ import {
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React from "react";
+import { XOR } from "../../../types/lib";
 
 /**
  * private props
@@ -90,9 +91,19 @@ export type ResetInfoProps<C> = {
   resetBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   chargeFeeTokenList: Array<C>;
   feeInfo: C;
+  disabled?: boolean;
   isFeeNotEnough: boolean;
+
   handleFeeChange: (value: C) => void;
-};
+} & XOR<
+  {
+    walletMap: WalletMap<any>;
+    goToDeposit: () => void;
+    isNewAccount?: boolean;
+  },
+  {}
+>;
+
 export type ResetExtendProps<C> = {
   onResetClick: () => void;
 } & ResetInfoProps<C>;
@@ -103,21 +114,6 @@ export type ExportAccountExtendProps = {
   exportAccountProps: any;
   setExportAccountToastOpen: (value: boolean) => void;
 };
-
-export type ActiveAccountInfoProps<C> = Omit<
-  ResetInfoProps<C>,
-  "resetBtnStatus"
-> & {
-  walletMap: WalletMap<any>;
-  goToDeposit: () => void;
-  activeAccountBtnStatus?: keyof typeof TradeBtnStatus | undefined;
-};
-
-export type ActiveAccountExtendProps<T> = {
-  onActiveAccountClick: () => void;
-} & ActiveAccountInfoProps<T>;
-
-export type ActiveAccountViewProps<T> = ActiveAccountExtendProps<T>;
 
 /**
  * private props

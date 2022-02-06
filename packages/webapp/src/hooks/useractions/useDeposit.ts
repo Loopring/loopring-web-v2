@@ -66,7 +66,10 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     owner: account.accAddress,
     symbol: depositValue.belong as string,
   });
-
+  const isNewAccount = [
+    AccountStatus.NO_ACCOUNT,
+    AccountStatus.NOT_ACTIVE,
+  ].includes(account.readyState as any);
   const updateBtnStatus = React.useCallback(() => {
     resetBtnInfo();
 
@@ -91,12 +94,27 @@ export const useDeposit = <R extends IBData<T>, T>() => {
           symbol: depositValue.belong as string,
         });
       }
-      enableBtn();
-    } else {
-      myLog("try to disable deposit btn!");
-      disableBtn();
+
+      // NewAccountCheck
+      const index =
+        chargeFeeList?.findIndex(
+          ({ belong }) => belong === depositValue.belong
+        ) ?? -1;
+      if ((isNewAccount && index !== -1) || !isNewAccount) {
+        enableBtn();
+        return;
+      }
     }
-  }, [enableBtn, disableBtn, setLabelAndParams, depositValue, allowanceInfo]);
+    myLog("try to disable deposit btn!");
+    disableBtn();
+  }, [
+    enableBtn,
+    disableBtn,
+    setLabelAndParams,
+    depositValue,
+    allowanceInfo,
+    chargeFeeList,
+  ]);
 
   React.useEffect(() => {
     updateBtnStatus();
@@ -475,42 +493,25 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     },
     []
   );
-
-  const depositProps = React.useMemo(() => {
-    const isNewAccount = [
-      AccountStatus.NO_ACCOUNT,
-      AccountStatus.NOT_ACTIVE,
-    ].includes(account.readyState as any);
-    const title =
-      account.readyState === AccountStatus.NO_ACCOUNT
-        ? t("labelCreateLayer2Title")
-        : t("depositTitle");
-
-    return {
-      btnInfo,
-      isNewAccount,
-      title,
-      allowTrade,
-      chargeFeeTokenList: chargeFeeList ?? [],
-      defaultAddress: account?.accAddress,
-      tradeData: depositValue as any,
-      coinMap: totalCoinMap as CoinMap<any>,
-      walletMap: walletLayer1 as WalletMap<any>,
-      depositBtnStatus: btnStatus,
-      handlePanelEvent,
-      handleAddressError,
-      onDepositClick,
-    };
-  }, [
-    account.readyState,
+  const title =
+    account.readyState === AccountStatus.NO_ACCOUNT
+      ? t("labelCreateLayer2Title")
+      : t("depositTitle");
+  const depositProps = {
     btnInfo,
-    totalCoinMap,
-    walletLayer1,
-    onDepositClick,
-    account.accAddress,
+    isNewAccount,
+    title,
     allowTrade,
-    tokenMap,
-  ]);
+    chargeFeeTokenList: chargeFeeList ?? [],
+    defaultAddress: account?.accAddress,
+    tradeData: depositValue as any,
+    coinMap: totalCoinMap as CoinMap<any>,
+    walletMap: walletLayer1 as WalletMap<any>,
+    depositBtnStatus: btnStatus,
+    handlePanelEvent,
+    handleAddressError,
+    onDepositClick,
+  };
 
   return {
     depositProps,

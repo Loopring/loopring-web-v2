@@ -11,7 +11,7 @@ import { makeWalletLayer2 } from "../help";
 export const useReset = <T extends FeeInfo>(): {
   resetProps: ResetProps<T>;
 } => {
-  const { btnStatus } = useBtnStatus();
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const { setShowResetAccount } = useOpenModals();
 
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
@@ -20,6 +20,13 @@ export const useReset = <T extends FeeInfo>(): {
       requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
       updateData: undefined,
     });
+  React.useEffect(() => {
+    if (isFeeNotEnough) {
+      disableBtn();
+    } else {
+      enableBtn();
+    }
+  }, [isFeeNotEnough]);
 
   const { goUpdateAccount } = useUpdateAccount();
 

@@ -130,6 +130,10 @@ export default css`
     padding: 0;
     box-sizing: inherit;
   }
+  *:focus-visible {
+    outline: rgba(0, 0, 0, 0);
+  }
+
   html {
     text-size-adjust: 100%;
     box-sizing: border-box;

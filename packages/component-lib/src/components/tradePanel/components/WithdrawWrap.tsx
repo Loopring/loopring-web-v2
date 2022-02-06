@@ -117,18 +117,12 @@ export const WithdrawWrap = <
   myLog("accAddr", accAddr);
 
   const getDisabled = React.useMemo(() => {
-    if (
-      disabled ||
-      tradeData === undefined ||
-      walletMap === undefined ||
-      coinMap === undefined ||
-      withdrawBtnStatus === TradeBtnStatus.DISABLED
-    ) {
+    if (disabled || withdrawBtnStatus === TradeBtnStatus.DISABLED) {
       return true;
     } else {
       return false;
     }
-  }, [disabled, withdrawBtnStatus, tradeData, walletMap, coinMap]);
+  }, [disabled, withdrawBtnStatus]);
   myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
     label: t("withdrawLabelEnterToken"),

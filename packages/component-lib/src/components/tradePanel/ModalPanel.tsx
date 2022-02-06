@@ -18,7 +18,6 @@ import {
   WithdrawPanel,
   WithdrawProps,
   ActiveAccountPanel,
-  ActiveAccountProps,
   DepositGroupProps,
   modalContentBaseStyle,
 } from "../..";
@@ -122,7 +121,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   nftWithdrawProps: WithdrawProps<T, I>;
   // nftDepositProps: DepositProps<T, I>;
   resetProps: ResetProps<F>;
-  activeAccountProps: ActiveAccountProps<F>;
+  activeAccountProps: ResetProps<F>;
   ammProps: AmmProps<any, any, T, any>;
   swapProps: SwapProps<T, I, any>;
   assetsData: any[];

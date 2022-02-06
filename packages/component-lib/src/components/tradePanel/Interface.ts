@@ -10,13 +10,11 @@ import {
   DepositExtendProps,
   DepositInfoProps as _DepositInfoProps,
   ResetExtendProps,
-  ActiveAccountInfoProps as _ActiveAccountInfoProps,
   ResetInfoProps as _ResetInfoProps,
   TransferExtendProps,
   TransferInfoProps as _TransferInfoProps,
   WithdrawExtendProps,
   ExportAccountExtendProps,
-  ActiveAccountExtendProps,
   NFTDepositViewProps,
   NFTMintViewProps,
   NFTDeployViewProps,
@@ -77,7 +75,6 @@ export type ModalProps = {
 };
 
 export type ResetProps<T> = ResetExtendProps<T>;
-export type ActiveAccountProps<T> = ActiveAccountExtendProps<T>;
 export type ExportAccountProps = ExportAccountExtendProps;
 export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> &
   DepositExtendProps<T, I>;
@@ -87,8 +84,6 @@ export type TransferProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
   TransferExtendProps<T, I, C>;
 
 export type ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
-export type ActiveAccountInfoProps<T, I> = DefaultProps<T, I> &
-  _ActiveAccountInfoProps<T>;
 
 export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps<I>;
 

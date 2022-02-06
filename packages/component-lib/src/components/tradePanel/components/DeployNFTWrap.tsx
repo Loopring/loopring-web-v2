@@ -41,13 +41,13 @@ export const DeployNFTWrap = <
     popupId: `popupId-nftDeposit`,
   });
 
-  const getDisabled = React.useCallback(() => {
+  const getDisabled = () => {
     if (isFeeNotEnough) {
       return true;
     } else {
       return false;
     }
-  }, [isFeeNotEnough]);
+  };
 
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {

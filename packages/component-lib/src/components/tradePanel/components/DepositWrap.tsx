@@ -40,34 +40,12 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   let { feeChargeOrder } = useSettings();
 
   const getDisabled = React.useMemo(() => {
-    if (
-      disabled ||
-      tradeData === undefined ||
-      walletMap === undefined ||
-      coinMap === undefined ||
-      depositBtnStatus === TradeBtnStatus.DISABLED
-    ) {
+    if (disabled || depositBtnStatus === TradeBtnStatus.DISABLED) {
       return true;
     } else {
-      if (isNewAccount && chargeFeeTokenList) {
-        const index = chargeFeeTokenList?.findIndex(
-          ({ belong }) => belong === tradeData.belong
-        );
-        if (index === -1) {
-          return true;
-        }
-      }
       return false;
     }
-  }, [
-    chargeFeeTokenList,
-    coinMap,
-    depositBtnStatus,
-    disabled,
-    isNewAccount,
-    tradeData,
-    walletMap,
-  ]);
+  }, [depositBtnStatus, disabled]);
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault || ""
   );

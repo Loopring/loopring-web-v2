@@ -1,4 +1,4 @@
-import { ActiveAccountProps, useOpenModals } from "@loopring-web/component-lib";
+import { ResetProps, useOpenModals } from "@loopring-web/component-lib";
 
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 
@@ -11,17 +11,15 @@ import React from "react";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 
 export const useActiveAccount = <T>(): {
-  activeAccountProps: ActiveAccountProps<T>;
+  activeAccountProps: ResetProps<T>;
 } => {
-  const { btnStatus } = useBtnStatus();
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const { setShowActiveAccount, setShowDeposit } = useOpenModals();
   const { status: walletLayer2Status } = useWalletLayer2();
-
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>)
   );
   const { goUpdateAccount } = useUpdateAccount();
-
   const { updateActiveAccountData, activeAccountValue } = useModalData();
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
@@ -50,6 +48,14 @@ export const useActiveAccount = <T>(): {
       walletLayer2Callback();
     }
   }, [walletLayer2Status]);
+  React.useEffect(() => {
+    if (isFeeNotEnough) {
+      disableBtn();
+    } else {
+      enableBtn();
+    }
+  }, [isFeeNotEnough]);
+
   const onActiveAccountClick = () => {
     if (activeAccountValue?.fee?.belong && activeAccountValue?.fee?.__raw__) {
       setShowActiveAccount({ isShow: false });
@@ -61,9 +67,10 @@ export const useActiveAccount = <T>(): {
     }
   };
 
-  const activeAccountProps: ActiveAccountProps<any> = {
-    onActiveAccountClick,
-    activeAccountBtnStatus: btnStatus,
+  const activeAccountProps: ResetProps<any> = {
+    onResetClick: onActiveAccountClick,
+    isNewAccount: true,
+    resetBtnStatus: btnStatus,
     goToDeposit: () => {
       setShowActiveAccount({ isShow: false });
       setShowDeposit({ isShow: true });

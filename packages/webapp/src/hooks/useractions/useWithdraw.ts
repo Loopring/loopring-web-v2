@@ -153,6 +153,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     withdrawType2,
     address,
     addrStatus,
+    isFeeNotEnough,
     withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,

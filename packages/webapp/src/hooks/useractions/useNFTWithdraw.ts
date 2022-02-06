@@ -141,6 +141,7 @@ export const useNFTWithdraw = <
   }, [
     address,
     addrStatus,
+    isFeeNotEnough,
     nftWithdrawValue.fee,
     nftWithdrawValue.tradeValue,
     isNotAvaiableAddress,
