@@ -1,37 +1,37 @@
 import { TradeBtnStatus } from "../Interface";
 import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Grid, Typography, Box } from "@mui/material";
+import { Grid, Typography, Box, Link } from "@mui/material";
 import { EmptyValueTag, FeeInfo } from "@loopring-web/common-resources";
 import { Button } from "../../basic-lib";
 import { ResetViewProps } from "./Interface";
-import {
-  DropdownIconStyled,
-  FeeTokenItemWrapper,
-  TypographyStrong,
-} from "../../../index";
+import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
 
 export const ResetWrap = <T extends FeeInfo>({
   t,
   resetBtnStatus,
   onResetClick,
-  feeInfo,
+  isNewAccount = false,
   isFeeNotEnough,
-  chargeFeeTokenList,
+  feeInfo,
+  disabled = false,
+  chargeFeeTokenList = [],
+  goToDeposit,
+  walletMap,
   handleFeeChange,
 }: ResetViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
 
-  const getDisabled = React.useCallback(() => {
-    if (isFeeNotEnough) {
+  const getDisabled = React.useMemo(() => {
+    if (disabled || resetBtnStatus === TradeBtnStatus.DISABLED) {
       return true;
     } else {
       return false;
     }
-  }, [isFeeNotEnough]);
+  }, [disabled, resetBtnStatus]);
 
   const handleToggleChange = (value: T) => {
     if (handleFeeChange) {
@@ -58,25 +58,20 @@ export const ResetWrap = <T extends FeeInfo>({
           variant={"h3"}
           marginBottom={2}
         >
-          {t("resetTitle")}
+          {isNewAccount ? t("labelActiveAccountTitle") : t("resetTitle")}
         </Typography>
         <Typography
           component={"p"}
           variant="body1"
           color={"var(--color-text-secondary)"}
         >
-          <Trans i18nKey="resetDescription">
-            Create a new signing key for layer2 authentication (no backup
-            needed). This will
-            <TypographyStrong component={"span"}>
-              cancel all your pending orders
-            </TypographyStrong>
-            .
-          </Trans>
+          {isNewAccount
+            ? t("labelActiveAccountDescription")
+            : t("resetDescription")}
         </Typography>
       </Grid>
 
-      <Grid item alignSelf={"stretch"} position={"relative"}>
+      <Grid item alignSelf={"stretch"} position={"relative"} marginTop={1}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
@@ -111,10 +106,46 @@ export const ResetWrap = <T extends FeeInfo>({
                   component={"span"}
                   color={"var(--color-error)"}
                 >
-                  {isFeeNotEnough && t("transferLabelFeeNotEnough")}
+                  {isFeeNotEnough &&
+                    (isNewAccount && goToDeposit ? (
+                      <Trans i18nKey={"labelActiveAccountFeeNotEnough"}>
+                        Insufficient balance
+                        <Link
+                          onClick={() => {
+                            goToDeposit();
+                          }}
+                          variant={"body2"}
+                        >
+                          Go Deposit
+                        </Link>
+                      </Trans>
+                    ) : (
+                      t("transferLabelFeeNotEnough")
+                    ))}
                 </Typography>
               </Box>
             </Typography>
+            {isNewAccount && (
+              <Typography
+                component={"span"}
+                display={"flex"}
+                alignItems={"center"}
+                variant={"body1"}
+                color={"var(--color-text-secondary)"}
+                marginTop={1}
+                marginBottom={1}
+              >
+                {t("labelYourBalance", {
+                  balance:
+                    walletMap &&
+                    feeInfo &&
+                    feeInfo.belong &&
+                    walletMap[feeInfo.belong]
+                      ? walletMap[feeInfo.belong]?.count + " " + feeInfo.belong
+                      : EmptyValueTag + " " + (feeInfo && feeInfo?.belong),
+                })}
+              </Typography>
+            )}
             {dropdownStatus === "up" && (
               <FeeTokenItemWrapper padding={2}>
                 <Typography
@@ -122,7 +153,9 @@ export const ResetWrap = <T extends FeeInfo>({
                   color={"var(--color-text-third)"}
                   marginBottom={1}
                 >
-                  {t("transferLabelFeeChoose")}
+                  {isNewAccount
+                    ? t("labelActiveEnterToken")
+                    : t("transferLabelFeeChoose")}
                 </Typography>
                 <FeeToggle
                   chargeFeeTokenList={chargeFeeTokenList}
@@ -134,8 +167,7 @@ export const ResetWrap = <T extends FeeInfo>({
           </>
         )}
       </Grid>
-
-      <Grid item marginTop={2} alignSelf={"stretch"}>
+      <Grid item marginTop={4} alignSelf={"stretch"}>
         <Button
           fullWidth
           variant={"contained"}
@@ -147,19 +179,19 @@ export const ResetWrap = <T extends FeeInfo>({
             }
           }}
           loading={
-            !getDisabled() && resetBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && resetBtnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
           disabled={
-            getDisabled() ||
+            getDisabled ||
             resetBtnStatus === TradeBtnStatus.DISABLED ||
             resetBtnStatus === TradeBtnStatus.LOADING
               ? true
               : false
           }
         >
-          {t(`resetLabelBtn`)}
+          {isNewAccount ? t(`labelActiveAccountBtn`) : t(`resetLabelBtn`)}
         </Button>
       </Grid>
     </Grid>

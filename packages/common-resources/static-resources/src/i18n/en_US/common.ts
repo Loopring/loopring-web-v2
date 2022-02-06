@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export default {
+  labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
   labelError: "Error",
   tokenEnter: "Enter Token",

@@ -14,7 +14,6 @@ import {
   TOAST_TIME,
   LoadingIcon,
   EmptyValueTag,
-  myLog,
   FeeInfo,
 } from "@loopring-web/common-resources";
 import {
@@ -138,35 +137,12 @@ export const TransferWrap = <
   });
 
   const getDisabled = React.useMemo(() => {
-    if (
-      disabled ||
-      tradeData === undefined ||
-      walletMap === undefined ||
-      coinMap === undefined ||
-      transferBtnStatus === TradeBtnStatus.DISABLED
-    ) {
-      myLog(
-        "getDisabled true",
-        tradeData === undefined,
-        walletMap === undefined,
-        coinMap === undefined,
-        transferBtnStatus === TradeBtnStatus.DISABLED
-      );
-
+    if (disabled || transferBtnStatus === TradeBtnStatus.DISABLED) {
       return true;
     } else {
-      myLog("getDisabled", disabled, isFeeNotEnough, transferBtnStatus);
       return false;
     }
-  }, [
-    disabled,
-    tradeData,
-    walletMap,
-    coinMap,
-    isSameAddress,
-    isAddressCheckLoading,
-    transferBtnStatus,
-  ]);
+  }, [disabled, transferBtnStatus]);
 
   const debounceAddress = _.debounce(
     ({ address }: any) => {

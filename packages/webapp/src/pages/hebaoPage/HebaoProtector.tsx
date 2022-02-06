@@ -20,6 +20,7 @@ import {
   ConnectProviders,
   LoadingIcon,
   LockIcon,
+  SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
 } from "@loopring-web/common-resources";
 import { useAccount } from "../../stores/account";
@@ -71,6 +72,8 @@ export const useHebaoProtector = <T extends Protector>({
 }) => {
   const { account } = useAccount();
   const { chainId, gasPrice } = useSystem();
+  const { t } = useTranslation(["error"]);
+
   const onLock = React.useCallback(
     async (item: T) => {
       const config = hebaoConfig.actionGasSettings.find(
@@ -95,6 +98,8 @@ export const useHebaoProtector = <T extends Protector>({
           const { result, error } = await LoopringAPI.walletAPI.lockHebaoWallet(
             params
           );
+          const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
+
           if (result) {
             handleOpenModal({
               step: HebaoStep.LockAccount_Success,
@@ -103,7 +108,9 @@ export const useHebaoProtector = <T extends Protector>({
           } else {
             handleOpenModal({
               step: HebaoStep.LockAccount_Failed,
-              options: { error: error.message },
+              options: {
+                error: errorItem ? t(errorItem.messageKey) : error.message,
+              },
             });
           }
         } catch (reason) {

@@ -9,6 +9,7 @@ import {
   SubmitIcon,
   LinkIcon,
   SoursURL,
+  TransErrorHelp,
 } from "@loopring-web/common-resources";
 import React from "react";
 
@@ -236,7 +237,9 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             alignSelf={"flex-center"}
             paddingX={1}
           >
-            {`Error Description:\n {code: ${error?.code}, message:${error?.message}}`}
+            {`${t("labelErrorTitle")}`}
+            {error && <TransErrorHelp error={error} />}
+            {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
           </Typography>
         )}
 

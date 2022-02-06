@@ -26,6 +26,7 @@ import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
 import { makeWalletLayer2 } from "../help";
 import store from "../../stores";
+import { useWalletLayer2 } from "../../stores/walletLayer2";
 
 export function useChargeFees({
   tokenSymbol,
@@ -34,7 +35,6 @@ export function useChargeFees({
   tokenAddress,
   updateData,
   isActiveAccount = false,
-  needAmountRefresh,
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
@@ -64,6 +64,7 @@ export function useChargeFees({
   const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<boolean>(false);
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
+  const { status: walletLayer2Status } = useWalletLayer2();
   const handleFeeChange = (value: FeeInfo): void => {
     const walletMap =
       makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
@@ -184,7 +185,7 @@ export function useChargeFees({
           nodeTimer.current = setTimeout(() => {
             getFeeList();
           }, 900000); //15*60*1000 //900000
-          let feeInfo: any;
+          let feeInfo: any = undefined;
           if (fees && feeChargeOrder) {
             const _chargeFeeTokenList = feeChargeOrder?.reduce(
               (pre, item, index) => {
@@ -216,38 +217,55 @@ export function useChargeFees({
               },
               [] as Array<FeeInfo>
             );
-            if (feeInfo === undefined) {
-              feeInfo = _chargeFeeTokenList[0]
-                ? _.cloneDeep(_chargeFeeTokenList[0])
-                : {
-                    belong: "ETH",
-                    fee: 0,
-                    feeRaw: undefined,
-                  };
-              setIsFeeNotEnough(true);
-            } else {
-              setIsFeeNotEnough(false);
-            }
-
             setFeeInfo((state) => {
-              if (state && state.feeRaw === undefined) {
-                if (updateData && feeInfo) {
-                  updateData(
-                    {
-                      ...feeInfo,
-                      __raw__: {
-                        ...feeInfo?.__raw__,
-                        tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+              if (feeInfo === undefined) {
+                setIsFeeNotEnough(true);
+                if (!state || state?.feeRaw === undefined) {
+                  feeInfo = _chargeFeeTokenList[0]
+                    ? _.cloneDeep(_chargeFeeTokenList[0])
+                    : {
+                        belong: "ETH",
+                        fee: 0,
+                        feeRaw: undefined,
+                      };
+                  if (updateData && feeInfo) {
+                    updateData(
+                      {
+                        ...feeInfo,
+                        __raw__: {
+                          ...feeInfo?.__raw__,
+                          tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                        },
                       },
-                    },
-                    _chargeFeeTokenList
-                  );
+                      _chargeFeeTokenList
+                    );
+                  }
+                  return feeInfo;
+                } else {
+                  return state;
                 }
-                return feeInfo;
               } else {
-                return state;
+                setIsFeeNotEnough(false);
+                if (isFeeNotEnough || !state || state?.feeRaw === undefined) {
+                  if (updateData && feeInfo) {
+                    updateData(
+                      {
+                        ...feeInfo,
+                        __raw__: {
+                          ...feeInfo?.__raw__,
+                          tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                        },
+                      },
+                      _chargeFeeTokenList
+                    );
+                  }
+                  return feeInfo;
+                } else {
+                  return state;
+                }
               }
             });
+
             myLog(
               "chargeFeeTokenList,requestType",
               _chargeFeeTokenList,
@@ -276,12 +294,11 @@ export function useChargeFees({
     }
     if (
       [
-        [
-          AccountStatus.NO_ACCOUNT,
-          AccountStatus.NOT_ACTIVE,
-          AccountStatus.ACTIVATED,
-        ].includes(account.readyState as any),
-      ]
+        AccountStatus.NO_ACCOUNT,
+        AccountStatus.NOT_ACTIVE,
+        // AccountStatus.ACTIVATED,
+      ].includes(account.readyState as any) ||
+      walletLayer2Status == "UNSET"
     ) {
       getFeeList();
     }
@@ -291,7 +308,7 @@ export function useChargeFees({
         clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
       }
     };
-  }, [tokenSymbol, account.readyState]);
+  }, [tokenSymbol, account.readyState, walletLayer2Status]);
   return {
     chargeFeeTokenList,
     isFeeNotEnough,

@@ -29,7 +29,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I>({
   disabled,
   walletMap,
   tradeData,
-  coinMap,
   title,
   description,
   btnInfo,
@@ -45,14 +44,13 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I>({
   });
   const inputBtnRef = React.useRef();
 
-  const getDisabled = () => {
-    return (
-      disabled ||
-      tradeData === undefined ||
-      walletMap === undefined ||
-      coinMap === undefined
-    );
-  };
+  const getDisabled = React.useMemo(() => {
+    if (disabled || nftMintBtnStatus) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [disabled, nftMintBtnStatus]);
 
   const debounceNFTDataChange = _.debounce((_tradeData: T) => {
     if (handleOnNFTDataChange) {
@@ -323,12 +321,12 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I>({
             onNFTMintClick(tradeData);
           }}
           loading={
-            !getDisabled() && nftMintBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && nftMintBtnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
           disabled={
-            getDisabled() ||
+            getDisabled ||
             nftMintBtnStatus === TradeBtnStatus.DISABLED ||
             nftMintBtnStatus === TradeBtnStatus.LOADING
           }

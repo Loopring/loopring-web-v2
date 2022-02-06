@@ -25,6 +25,7 @@ import Web3 from "web3";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
+import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -149,7 +150,8 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
   loadData: () => Promise<void>;
   handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
 }) => {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "error"]);
+
   const [openCode, setOpenCode] = React.useState(false);
   const [selected, setSelected] = React.useState<G | undefined>();
   const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true);
@@ -206,9 +208,12 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
         })
         .catch((error: any) => {
           setIsFirstTime((state) => !state);
+          const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
           handleOpenModal({
             step: HebaoStep.Approve_Failed,
-            options: { error: error.message },
+            options: {
+              error: errorItem ? t(errorItem.messageKey) : error.message,
+            },
           });
         });
     }
@@ -255,9 +260,12 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
           }
         })
         .catch((error: any) => {
+          const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
           handleOpenModal({
             step: HebaoStep.Approve_Failed,
-            options: { error: error.message },
+            options: {
+              error: errorItem ? t(errorItem.messageKey) : error.message,
+            },
           });
         });
     }

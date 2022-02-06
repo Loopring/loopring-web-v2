@@ -10,4 +10,3 @@ export * from "./AmmWrap";
 export * from "./hook/BasicACoinPanelHook";
 export * from "./tool";
 export * from "./ExportAccountWrap";
-export * from "./ActiveAcountWrap";

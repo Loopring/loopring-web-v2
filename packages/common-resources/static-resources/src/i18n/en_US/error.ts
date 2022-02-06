@@ -6,4 +6,9 @@ export default {
   error404: "404! page can't be reached",
   errorMaintain: "System update! Please wait for a while.",
   errorMessageNoNetwork: "Oops! Something went wrong at service.",
+  errorUnknown: "Unknown Error",
+  errorOnFromSubmit: "Error on submit Info!",
+  errorWrongAccount: "Error on account Info!",
+  errorWrongApikey: "Error on signature or no Apikey",
+  errorAboutFee: "Fee token is not Enough or wrong",
 };

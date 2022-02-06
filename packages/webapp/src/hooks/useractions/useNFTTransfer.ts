@@ -127,7 +127,13 @@ export const useNFTTransfer = <
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [address, addrStatus, nftTransferValue.tradeValue, nftTransferValue.fee]);
+  }, [
+    address,
+    addrStatus,
+    isFeeNotEnough,
+    nftTransferValue.tradeValue,
+    nftTransferValue.fee,
+  ]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
