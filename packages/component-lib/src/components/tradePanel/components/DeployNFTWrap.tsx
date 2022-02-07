@@ -28,6 +28,7 @@ export const DeployNFTWrap = <
   onNFTDeployClick,
   chargeFeeTokenList = [],
   feeInfo,
+  disabled,
   isFeeNotEnough,
   handleFeeChange,
   assetsData = [],
@@ -41,13 +42,13 @@ export const DeployNFTWrap = <
     popupId: `popupId-nftDeposit`,
   });
 
-  const getDisabled = () => {
-    if (isFeeNotEnough) {
+  const getDisabled = React.useMemo(() => {
+    if (disabled || nftDeployBtnStatus === TradeBtnStatus.DISABLED) {
       return true;
     } else {
       return false;
     }
-  };
+  }, [nftDeployBtnStatus, disabled]);
 
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
@@ -255,14 +256,12 @@ export const DeployNFTWrap = <
             onNFTDeployClick(tradeData);
           }}
           loading={
-            !getDisabled() && nftDeployBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && nftDeployBtnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
           disabled={
-            getDisabled() ||
-            nftDeployBtnStatus === TradeBtnStatus.DISABLED ||
-            nftDeployBtnStatus === TradeBtnStatus.LOADING
+            getDisabled || nftDeployBtnStatus === TradeBtnStatus.LOADING
           }
         >
           {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTDeployBtn`)}

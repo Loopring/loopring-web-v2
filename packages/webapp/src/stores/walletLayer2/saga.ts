@@ -38,7 +38,7 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   } else if (
     !apiKey &&
     ["DEPOSITING", "NOT_ACTIVE", "LOCKED"].includes(readyState) &&
-    ((_accountIdNotActive && _accountIdNotActive != -1) ||
+    ((_accountIdNotActive && _accountIdNotActive !== -1) ||
       (accountId && accountId !== -1))
   ) {
     // const {
@@ -50,7 +50,7 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
     const { userBalances } =
       (await LoopringAPI?.globalAPI?.getUserBalanceForFee({
         accountId:
-          _accountIdNotActive && _accountIdNotActive != -1
+          _accountIdNotActive && _accountIdNotActive !== -1
             ? _accountIdNotActive
             : accountId,
         tokens: "",

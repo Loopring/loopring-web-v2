@@ -22,7 +22,6 @@ import {
 } from "../../";
 import { Button } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
-import * as _ from "lodash";
 import { NFTInput } from "./BasicANFTTrade";
 import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
@@ -54,19 +53,18 @@ const NFT_TYPE: TGItemData[] = [
 ];
 
 export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
-  disabled,
-  walletMap,
-  tradeData,
-  coinMap,
-  title,
-  description,
-  btnInfo,
-  handleOnNFTDataChange,
-  nftDepositBtnStatus,
-  isNFTCheckLoading,
-  onNFTDepositClick,
-}: // wait = globalSetup.wait,
-NFTDepositViewProps<T, I>) => {
+                                                           disabled,
+                                                           walletMap,
+                                                           tradeData,
+                                                           title,
+                                                           description,
+                                                           btnInfo,
+                                                           handleOnNFTDataChange,
+                                                           nftDepositBtnStatus,
+                                                           isNFTCheckLoading,
+                                                           onNFTDepositClick,
+                                                         }: // wait = globalSetup.wait,
+                                                           NFTDepositViewProps<T, I>) => {
   const { t } = useTranslation(["common"]);
   const popupState = usePopupState({
     variant: "popover",
@@ -74,14 +72,21 @@ NFTDepositViewProps<T, I>) => {
   });
   const inputBtnRef = React.useRef();
 
-  const getDisabled = () => {
-    return (
-      disabled ||
-      tradeData === undefined ||
-      walletMap === undefined ||
-      coinMap === undefined
-    );
-  };
+  const getDisabled = React.useMemo(() => {
+    if (disabled || nftDepositBtnStatus === TradeBtnStatus.DISABLED) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [nftDepositBtnStatus, disabled]);
+
+  React.useMemo(() => {
+    if (disabled || nftDepositBtnStatus === TradeBtnStatus.DISABLED) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [nftDepositBtnStatus, disabled]);
 
   const _handleOnNFTDataChange = (_tradeData: T) => {
     if (handleOnNFTDataChange) {
@@ -360,14 +365,12 @@ NFTDepositViewProps<T, I>) => {
             onNFTDepositClick(tradeData);
           }}
           loading={
-            !getDisabled() && nftDepositBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && nftDepositBtnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
           disabled={
-            getDisabled() ||
-            nftDepositBtnStatus === TradeBtnStatus.DISABLED ||
-            nftDepositBtnStatus === TradeBtnStatus.LOADING
+            getDisabled || nftDepositBtnStatus === TradeBtnStatus.LOADING
           }
         >
           {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTDepositBtn`)}

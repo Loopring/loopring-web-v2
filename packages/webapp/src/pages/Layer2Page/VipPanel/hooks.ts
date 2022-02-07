@@ -3,6 +3,7 @@ import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
 import { useTokenMap } from "stores/token";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { myLog } from "@loopring-web/common-resources";
 
 export function useGetVIPInfo() {
   const {
@@ -52,7 +53,7 @@ export function useGetVIPInfo() {
         (response as sdk.RESULT_INFO).code ||
         (response as sdk.RESULT_INFO).message
       ) {
-        console.error((response as sdk.RESULT_INFO).message);
+        myLog((response as sdk.RESULT_INFO).message);
       } else {
         setUserAssets(response.vipAsset as any[]);
       }

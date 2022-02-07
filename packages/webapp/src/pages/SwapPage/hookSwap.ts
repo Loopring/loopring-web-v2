@@ -19,6 +19,7 @@ import {
   IBData,
   MarketType,
   SagaStatus,
+  SDK_ERROR_MAP_TO_UI,
   TradeCalcData,
   TradeFloat,
   WalletMap,
@@ -104,7 +105,7 @@ export const useSwap = <C extends { [key: string]: any }>({
   } = usePageTradeLite();
   const { status: walletLayer2Status } = useWalletLayer2();
   /*** api prepare ***/
-  const { t } = useTranslation("common");
+  const { t } = useTranslation(["common", "error"]);
   const history = useHistory();
   const refreshRef = React.createRef();
   const [pair, setPair] = React.useState(realPair);
@@ -216,10 +217,19 @@ export const useSwap = <C extends { [key: string]: any }>({
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
+            const errorItem =
+              SDK_ERROR_MAP_TO_UI[
+                (response as sdk.RESULT_INFO)?.code ?? 700001
+              ];
             setToastOpen({
               open: true,
               type: "error",
-              content: t("labelSwapFailed") + " : " + response.message,
+              content:
+                t("labelSwapFailed") +
+                " error:" +
+                (errorItem
+                  ? t(errorItem.messageKey)
+                  : (response as sdk.RESULT_INFO).message),
             });
           } else {
             await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);

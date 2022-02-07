@@ -12,6 +12,8 @@ import { LoopringAPI } from "api_wrapper";
 import store from "stores";
 import { tradeItemToTableDataItem } from "utils/formatter_tool";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
+import { useTranslation } from "react-i18next";
 
 export type TxsFilterProps = {
   // accountId: number;
@@ -28,7 +30,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
     account: { accountId, apiKey },
   } = useAccount();
   const { tokenMap } = store.getState().tokenMap;
-
+  const { t } = useTranslation(["error"]);
   const [txs, setTxs] = useState<RawDataTransactionItem[]>([]);
   const [txsTotal, setTxsTotal] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
@@ -71,10 +73,15 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
           (response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message
         ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           setToastOpen({
             open: true,
             type: "error",
-            content: "error : " + (response as sdk.RESULT_INFO).message,
+            content:
+              "error : " + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
           });
         } else {
           const formattedList = response.userTxs.map((o) => {
@@ -127,6 +134,7 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
   } = useAccount();
 
   const tokenMap = store.getState().tokenMap.tokenMap;
+  const { t } = useTranslation(["error"]);
 
   const getUserTradeList = React.useCallback(
     async ({ market, orderHash, offset, limit, fromId, fillTypes }) => {
@@ -154,10 +162,15 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
           (response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message
         ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
           setToastOpen({
             open: true,
             type: "error",
-            content: "error : " + (response as sdk.RESULT_INFO).message,
+            content:
+              "error : " + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
           });
         } else {
           setUserTrades(
@@ -189,6 +202,8 @@ export function useGetAmmRecord(setToastOpen: (state: any) => void) {
   const [ammRecordList, setAmmRecordList] = React.useState<RawDataAmmItem[]>(
     []
   );
+  const { t } = useTranslation(["error"]);
+
   const [showLoading, setShowLoading] = React.useState(true);
   const { accountId, apiKey } = store.getState().account;
   const { tokenMap } = store.getState().tokenMap;
@@ -221,10 +236,15 @@ export function useGetAmmRecord(setToastOpen: (state: any) => void) {
         (response as sdk.RESULT_INFO).code ||
         (response as sdk.RESULT_INFO).message
       ) {
+        const errorItem =
+          SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
         setToastOpen({
           open: true,
           type: "error",
-          content: "error : " + (response as sdk.RESULT_INFO).message,
+          content:
+            "error : " + errorItem
+              ? t(errorItem.messageKey)
+              : (response as sdk.RESULT_INFO).message,
         });
       } else {
         const result = response.userAmmPoolTxs.map((o) => ({

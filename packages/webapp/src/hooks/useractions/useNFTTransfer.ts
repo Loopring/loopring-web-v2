@@ -70,20 +70,25 @@ export const useNFTTransfer = <
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const [addressOrigin, setAddressOrigin] = React.useState<
-    "Wallet" | undefined
-  >();
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      tokenAddress: nftTransferValue.tokenAddress,
-      requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-      updateData: (feeInfo, _chargeFeeList) => {
-        updateNFTTransferData({
-          ...nftTransferValue,
-          fee: feeInfo,
-        });
-      },
-    });
+  const [addressOrigin, setAddressOrigin] = React.useState<"Wallet" | null>(
+    null
+  );
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    tokenAddress: nftTransferValue.tokenAddress,
+    requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateNFTTransferData({
+        ...nftTransferValue,
+        fee: feeInfo,
+      });
+    },
+  });
 
   const {
     address,
@@ -102,13 +107,16 @@ export const useNFTTransfer = <
       tokenMap &&
       nftTransferValue.fee?.belong &&
       nftTransferValue?.tradeValue &&
+      chargeFeeTokenList.length &&
+      !isFeeNotEnough &&
+      !isSameAddress &&
+      addressOrigin === "Wallet" &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
       sdk
         .toBig(nftTransferValue.tradeValue)
         .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
-      address &&
-      !isFeeNotEnough
+      address
     ) {
       enableBtn();
       myLog("enableBtn");
@@ -118,8 +126,11 @@ export const useNFTTransfer = <
   }, [
     addrStatus,
     address,
+    chargeFeeTokenList,
+    isSameAddress,
     disableBtn,
     enableBtn,
+    addressOrigin,
     isFeeNotEnough,
     nftTransferValue,
     tokenMap,
@@ -130,7 +141,9 @@ export const useNFTTransfer = <
   }, [
     address,
     addrStatus,
+    addressOrigin,
     isFeeNotEnough,
+    isSameAddress,
     nftTransferValue.tradeValue,
     nftTransferValue.fee,
   ]);
@@ -143,16 +156,19 @@ export const useNFTTransfer = <
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const resetDefault = React.useCallback(() => {
+    checkFeeIsEnough();
     if (nftData) {
       updateNFTTransferData({
         belong: nftData as any,
         balance: nftBalance,
         tradeValue: undefined,
+        fee: feeInfo,
         ...nftRest,
         address: address ? address : "*",
       });
     } else {
       updateNFTTransferData({
+        fee: feeInfo,
         belong: "",
         balance: 0,
         tradeValue: 0,
@@ -162,6 +178,7 @@ export const useNFTTransfer = <
     }
   }, [
     nftData,
+    feeInfo,
     updateNFTTransferData,
     nftBalance,
     nftRest,
@@ -224,7 +241,7 @@ export const useNFTTransfer = <
           );
 
           myLog("submitInternalTransfer:", response);
-
+          setAddressOrigin(null);
           if (isAccActivated()) {
             if (
               (response as sdk.RESULT_INFO).code ||

@@ -1,7 +1,11 @@
 import React from "react";
 import store from "stores";
 import { TokenType } from "@loopring-web/component-lib";
-import { AccountStatus, EmptyValueTag } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  EmptyValueTag,
+  myLog,
+} from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { makeWalletLayer2, volumeToCountAsBigNumber } from "hooks/help";
 import { WsTopicType } from "@loopring-web/loopring-sdk";
@@ -109,7 +113,7 @@ export const useGetAssets = () => {
         (response as sdk.RESULT_INFO).code ||
         (response as sdk.RESULT_INFO).message
       ) {
-        console.error((response as sdk.RESULT_INFO).message);
+        myLog((response as sdk.RESULT_INFO).message);
       } else if (response.vipAsset && response.vipAsset.length) {
         const ethValueList = response.vipAsset.map((o: any) => ({
           timeStamp: moment(o.createdAt).format("YYYY-MM-DD"),

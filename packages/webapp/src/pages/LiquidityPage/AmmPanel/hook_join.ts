@@ -7,6 +7,7 @@ import {
   IBData,
   myLog,
   SagaStatus,
+  SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus, useOpenModals } from "@loopring-web/component-lib";
 import { IdMap, useTokenMap } from "../../../stores/token";
@@ -75,7 +76,7 @@ export const useAmmJoin = ({
     common: { ammInfo, ammPoolSnapshot },
   } = usePageAmmPool();
 
-  const { t } = useTranslation("common");
+  const { t } = useTranslation(["common", "error"]);
 
   const [isLoading, setIsLoading] = React.useState(false);
   const { setShowSupport } = useOpenModals();
@@ -489,13 +490,19 @@ export const useAmmJoin = ({
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
+            const errorItem =
+              SDK_ERROR_MAP_TO_UI[
+                (response as sdk.RESULT_INFO)?.code ?? 700001
+              ];
             setToastOpen({
               open: true,
               type: "error",
               content:
                 t("labelJoinAmmFailed") +
-                ", error:" +
-                (response as sdk.RESULT_INFO).message,
+                " error:" +
+                (errorItem
+                  ? t(errorItem.messageKey)
+                  : (response as sdk.RESULT_INFO).message),
             });
           } else {
             setToastOpen({
