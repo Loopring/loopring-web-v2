@@ -74,14 +74,19 @@ export const useNFTWithdraw = <
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
 
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
-      tokenAddress: nftWithdrawValue.tokenAddress,
-      updateData: (feeInfo, _chargeFeeList) => {
-        updateNFTWithdrawData({ ...nftWithdrawValue, fee: feeInfo });
-      },
-    });
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+    tokenAddress: nftWithdrawValue.tokenAddress,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateNFTWithdrawData({ ...nftWithdrawValue, fee: feeInfo });
+    },
+  });
 
   const { checkHWAddr, updateHW } = useWalletInfo();
 
@@ -153,16 +158,19 @@ export const useNFTWithdraw = <
   }, []);
 
   const resetDefault = React.useCallback(() => {
+    checkFeeIsEnough();
     if (nftData) {
       updateNFTWithdrawData({
         belong: nftData as any,
         balance: nftBalance,
         tradeValue: undefined,
         ...nftRest,
+        fee: feeInfo,
         address: address ? address : "*",
       });
     } else {
       updateNFTWithdrawData({
+        fee: feeInfo,
         belong: "",
         balance: 0,
         tradeValue: 0,
@@ -176,6 +184,7 @@ export const useNFTWithdraw = <
     nftBalance,
     nftRest,
     address,
+    feeInfo,
     setShowNFTWithdraw,
   ]);
 

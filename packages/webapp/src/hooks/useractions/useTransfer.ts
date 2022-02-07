@@ -58,17 +58,22 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const [addressOrigin, setAddressOrigin] = React.useState<
-    "Wallet" | undefined
-  >();
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      requestType: sdk.OffchainFeeReqType.TRANSFER,
-      tokenSymbol: transferValue.belong,
-      updateData: (feeInfo, _chargeFeeList) => {
-        updateTransferData({ ...transferValue, fee: feeInfo });
-      },
-    });
+  const [addressOrigin, setAddressOrigin] = React.useState<"Wallet" | null>(
+    null
+  );
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.TRANSFER,
+    tokenSymbol: transferValue.belong,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateTransferData({ ...transferValue, fee: feeInfo });
+    },
+  });
 
   const {
     address,
@@ -87,12 +92,27 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       const tradeValue = sdk
         .toBig(transferValue.tradeValue ?? 0)
         .times("1e" + sellToken.decimals);
+      // myLog(
+      //   "Trans checkBtnStatus",
+      //   tradeValue,
+      //   chargeFeeTokenList.length,
+      //   !isFeeNotEnough,
+      //   !isSameAddress,
+      //   !isAddressCheckLoading,
+      //   addressOrigin,
+      //   transferValue.fee?.belong,
+      //   tradeValue.gt(BIGO),
+      //   address,
+      //   address !== "",
+      //   addrStatus === AddressError.NoError
+      // );
       if (
         tradeValue &&
         chargeFeeTokenList.length &&
         !isFeeNotEnough &&
         !isSameAddress &&
-        !isAddressCheckLoading &&
+        // !isAddressCheckLoading &&
+        addressOrigin === "Wallet" &&
         transferValue.fee?.belong &&
         tradeValue.gt(BIGO) &&
         address &&
@@ -103,11 +123,13 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         return;
       }
     }
+
     disableBtn();
   }, [
     tokenMap,
     transferValue,
     disableBtn,
+    addressOrigin,
     chargeFeeTokenList.length,
     isFeeNotEnough,
     isSameAddress,
@@ -121,6 +143,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   }, [
     chargeFeeTokenList,
     address,
+    addressOrigin,
     isFeeNotEnough,
     isAddressCheckLoading,
     transferValue,
@@ -134,9 +157,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const resetDefault = React.useCallback(() => {
+    checkFeeIsEnough();
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
+        fee: feeInfo,
         belong: symbol as any,
         balance: walletMap[symbol]?.count,
         tradeValue: undefined,
@@ -152,6 +177,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             updateTransferData({
               belong: keyVal as any,
               tradeValue: 0,
+              fee: feeInfo,
               balance: walletInfo.count,
               address: "*",
             });
@@ -160,7 +186,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         }
       }
     }
-  }, [symbol, walletMap, updateTransferData, transferValue]);
+  }, [symbol, walletMap, updateTransferData, transferValue, feeInfo]);
 
   React.useEffect(() => {
     if (isShow) {
@@ -224,7 +250,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           );
 
           myLog("submitInternalTransfer:", response);
-
+          setAddressOrigin(null);
           if (isAccActivated()) {
             if (
               (response as sdk.RESULT_INFO).code ||
@@ -267,7 +293,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-
               resetTransferData();
             }
           } else {

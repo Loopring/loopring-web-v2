@@ -69,14 +69,19 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL
       ? "Fast"
       : "Standard";
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      requestType: withdrawType,
-      tokenSymbol: withdrawValue.belong,
-      updateData: (feeInfo, _chargeFeeList) => {
-        updateWithdrawData({ ...withdrawValue, fee: feeInfo });
-      },
-    });
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    requestType: withdrawType,
+    tokenSymbol: withdrawValue.belong,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateWithdrawData({ ...withdrawValue, fee: feeInfo });
+    },
+  });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes);
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -204,9 +209,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   };
 
   const resetDefault = React.useCallback(() => {
+    checkFeeIsEnough();
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({
+          fee: feeInfo,
           belong: symbol as any,
           balance: walletMap2[symbol]?.count,
           tradeValue: undefined,
@@ -221,6 +228,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           const walletInfo = walletMap2[keyVal];
           if (sdk.toBig(walletInfo.count).gt(0)) {
             updateWithdrawData({
+              fee: feeInfo,
               belong: keyVal as any,
               tradeValue: 0,
               balance: walletInfo.count,
@@ -231,7 +239,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         }
       }
     }
-  }, [symbol, walletMap2, updateWithdrawData, withdrawValue]);
+  }, [symbol, walletMap2, updateWithdrawData, withdrawValue, feeInfo]);
 
   React.useEffect(() => {
     if (isShow) {
