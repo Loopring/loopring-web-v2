@@ -226,9 +226,9 @@ export const useSwap = <C extends { [key: string]: any }>({
               type: "error",
               content:
                 t("labelSwapFailed") +
-                " error:" +
+                " error: " +
                 (errorItem
-                  ? t(errorItem.messageKey)
+                  ? t(errorItem.messageKey, { ns: "error" })
                   : (response as sdk.RESULT_INFO).message),
             });
           } else {

@@ -475,9 +475,9 @@ export const useAmmExit = ({
             type: "error",
             content:
               t("labelExitAmmFailed") +
-              " error:" +
+              " error: " +
               (errorItem
-                ? t(errorItem.messageKey)
+                ? t(errorItem.messageKey, { ns: "error" })
                 : (response as sdk.RESULT_INFO).message),
           });
         } else {
