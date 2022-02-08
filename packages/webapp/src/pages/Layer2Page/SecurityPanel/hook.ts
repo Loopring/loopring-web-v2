@@ -68,8 +68,13 @@ export function useExportAccountInfo() {
           web3: connectProvides.usedWeb3,
           address: account.accAddress,
           chainId: chainId as any,
-          exchangeAddress: exchangeInfo.exchangeAddress,
-          keyNonce: account.nonce - 1,
+          keySeed:
+            account.keySeed && account.keySeed !== ""
+              ? account.keySeed
+              : sdk.GlobalAPI.KEY_MESSAGE.replace(
+                  "${exchangeAddress}",
+                  exchangeInfo.exchangeAddress
+                ).replace("${nonce}", (account.nonce - 1).toString()),
           walletType: connectName,
           accountId: account.accountId,
         });

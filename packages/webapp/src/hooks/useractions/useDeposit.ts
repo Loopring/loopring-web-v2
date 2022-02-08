@@ -223,8 +223,12 @@ export const useDeposit = <R extends IBData<T>, T>() => {
             const eddsaKey = await sdk.generateKeyPair({
               web3: connectProvides.usedWeb3,
               address: account.accAddress,
-              exchangeAddress: exchangeInfo.exchangeAddress,
-              keyNonce: 0,
+              // exchangeAddress: exchangeInfo.exchangeAddress,
+              // keyNonce: 0,
+              keySeed: sdk.GlobalAPI.KEY_MESSAGE.replace(
+                "${exchangeAddress}",
+                exchangeInfo.exchangeAddress
+              ).replace("${nonce}", "0"),
               walletType: account.connectName as sdk.ConnectorNames,
               chainId: chainId as any,
               accountId: account.accountId,
