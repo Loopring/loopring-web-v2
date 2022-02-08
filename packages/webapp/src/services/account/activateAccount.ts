@@ -48,8 +48,15 @@ export async function updateAccountFromServer({
             eddsaKey = await sdk.generateKeyPair({
               web3: connectProvides.usedWeb3,
               address: accInfo.owner,
-              exchangeAddress: system.exchangeInfo.exchangeAddress,
-              keyNonce: accInfo.nonce,
+              keySeed:
+                account.keySeed && account.keySeed !== ""
+                  ? account.keySeed
+                  : sdk.GlobalAPI.KEY_MESSAGE.replace(
+                      "${exchangeAddress}",
+                      system.exchangeInfo.exchangeAddress
+                    ).replace("${nonce}", (accInfo.nonce - 1).toString()),
+              // exchangeAddress: system.exchangeInfo.exchangeAddress,
+              // keyNonce: accInfo.nonce,
               walletType: connectName,
               chainId: system.chainId as any,
               counterFactualInfo:
@@ -76,6 +83,10 @@ export async function updateAccountFromServer({
                 volume: fee.toString(),
               },
               validUntil: getTimestampDaysLater(DAYS),
+              keySeed:
+                account.keySeed && account.keySeed !== ""
+                  ? account.keySeed
+                  : undefined,
               nonce: accInfo.nonce as number,
             };
 

@@ -6,7 +6,6 @@ import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useChargeFees } from "hooks/common/useChargeFees";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useUpdateAccount } from "./useUpdateAccount";
-import { makeWalletLayer2 } from "../help";
 
 export const useReset = <T extends FeeInfo>(): {
   resetProps: ResetProps<T>;
@@ -33,7 +32,7 @@ export const useReset = <T extends FeeInfo>(): {
   const onResetClick = React.useCallback(() => {
     setShowResetAccount({ isShow: false });
     goUpdateAccount({ isReset: true, feeInfo: feeInfo });
-  }, [goUpdateAccount]);
+  }, [goUpdateAccount, feeInfo]);
 
   const resetProps: ResetProps<any> = {
     isFeeNotEnough,

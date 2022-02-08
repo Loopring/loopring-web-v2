@@ -30,12 +30,19 @@ export async function unlockAccount() {
         });
         nonce = accInfo ? account.nonce : nonce;
       }
-
+      // myLog("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE);
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.accAddress,
-        exchangeAddress: exchangeInfo.exchangeAddress,
-        keyNonce: nonce - 1,
+        // exchangeAddress: exchangeInfo.exchangeAddress,
+        // keyNonce: nonce - 1,
+        keySeed:
+          account.keySeed && account.keySeed !== ""
+            ? account.keySeed
+            : sdk.GlobalAPI.KEY_MESSAGE.replace(
+                "${exchangeAddress}",
+                exchangeInfo.exchangeAddress
+              ).replace("${nonce}", (account.nonce - 1).toString()),
         walletType: connectName,
         chainId: chainId as any,
         accountId: account.accountId,

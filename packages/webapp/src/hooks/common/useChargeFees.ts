@@ -264,7 +264,10 @@ export function useChargeFees({
                   }
                   return feeInfo;
                 } else {
-                  return state;
+                  const _feeInfo = _chargeFeeTokenList?.find(
+                    (ele) => ele.belong === state.belong
+                  );
+                  return { ...state, ..._feeInfo };
                 }
               }
             });
