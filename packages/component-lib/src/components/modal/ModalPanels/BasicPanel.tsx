@@ -40,7 +40,7 @@ export interface PanelProps {
     btnTxt: any;
     callback: (e?: any) => void;
   };
-  providerName?: "MetaMask" | "WalletConnect" | "unknown";
+  providerName?: ConnectProviders | "unknown";
   link?: {
     name: string;
     url: string;
@@ -125,14 +125,18 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
       if (providerName) {
         switch (providerName) {
           case ConnectProviders.MetaMask:
+          case ConnectProviders.GameStop:
             return (
-              <Trans i18nKey={"labelMetaMaskProcessDescribe"}>
-                Please click approve button on MetaMask popup window. When
-                MetaMask dialog is dismiss, please manually click{" "}
+              <Trans
+                i18nKey={"labelProviderCommonProcessDescribe"}
+                tOptions={{ name: providerName }}
+              >
+                Please click approve button on {providerName} popup window. When
+                {providerName} dialog is dismiss, please manually click
                 <img
                   alt="MetaMask"
                   style={{ verticalAlign: "text-bottom" }}
-                  src={SoursURL + "images/MetaMaskPlugIn.png"}
+                  src={SoursURL + `images/${providerName}PlugIn.png`}
                 />{" "}
                 on your browser toolbar.
               </Trans>

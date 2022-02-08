@@ -314,12 +314,15 @@ export const InformationForCoinBase = withTranslation("common", {
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelNoticeForMetaMask"}>
-              Loopring only support and maintain MetaMask plugin for Wallet
+            <Trans
+              i18nKey={"labelNoticeForProvider"}
+              tOptions={{ name: "MetaMask" }}
+            >
+              Loopring only support and maintain {"MetaMask"} plugin for Wallet
               Connect, if your installed other Wallet plugin, please make sure
-              it's the MetaMask popup:{" "}
+              it's the MetaMask popup: {"MetaMask"}
               <img
-                alt="MetaMask"
+                alt="MetaMask-Plugin"
                 style={{ verticalAlign: "text-bottom" }}
                 src={SoursURL + "images/MetaMaskPlugIn.png"}
               />
