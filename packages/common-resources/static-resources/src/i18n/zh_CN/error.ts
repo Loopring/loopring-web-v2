@@ -4,10 +4,11 @@ export default {
   errorLoading: "不要着急, 不要着急马上就好",
   error404: "四〇四! 这是页面不存在呢.",
   errorMaintain: "系统维护中...",
+  errorUnknown: "Unknown Error",
   errorMessageNoNetwork: "Oops! Something went wrong at service.",
   errorDisableOtherWalletForCurrent:
     "Global ethereum is not {{name}}, Please disable other Wallet Plugin",
-  errorUnknown: "Unknown Error",
+  errorNotInstallGME: "GameStop Plugin is not install or disabled",
   errorOnFromSubmit: "Submit request Info has Error!",
   errorWrongAccount: "Error on account Info!",
   errorWrongToken: "Error on Token Info!",
@@ -29,4 +30,4 @@ export default {
   errorOnRate: "Error on submit rate value",
   errorForExistOrder: "Order is not exist",
   errorOrderExpired: "Order is Expired",
- };
+};
