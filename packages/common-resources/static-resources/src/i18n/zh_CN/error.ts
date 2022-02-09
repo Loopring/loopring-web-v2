@@ -5,8 +5,8 @@ export default {
   error404: "四〇四! 这是页面不存在呢.",
   errorMaintain: "系统维护中...",
   errorMessageNoNetwork: "Oops! Something went wrong at service.",
-  errorDisableOtherWalletForMetaMask:
-    "Global ethereum is not MetaMask, Please disable other Wallet Plugin",
+  errorDisableOtherWalletForCurrent:
+    "Global ethereum is not {{name}}, Please disable other Wallet Plugin",
   errorUnknown: "Unknown Error",
   errorOnFromSubmit: "Submit request Info has Error!",
   errorWrongAccount: "Error on account Info!",
@@ -29,4 +29,4 @@ export default {
   errorOnRate: "Error on submit rate value",
   errorForExistOrder: "Order is not exist",
   errorOrderExpired: "Order is Expired",
-};
+ };

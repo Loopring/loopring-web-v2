@@ -277,7 +277,12 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         [WalletConnectStep.FailedConnect]: {
           view: (
             <ConnectFailed
-              {...{ t, error: isShowConnect.error, ...rest }}
+              {...{
+                t,
+                error: isShowConnect.error,
+                errorOptions: { name: connectProvider },
+                ...rest,
+              }}
               btnInfo={{ btnTxt: "labelRetry", callback: onRetry }}
             />
           ),

@@ -47,6 +47,7 @@ export interface PanelProps {
   };
   patch?: any;
   error?: RESULT_INFO;
+  errorOptions?: any;
 }
 
 export const BasicPanel = withTranslation("common", { withRef: true })(
@@ -60,6 +61,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     btnInfo,
     providerName,
     error,
+    errorOptions,
     link,
   }: PanelProps & WithTranslation) => {
     const isLoading = iconType === IconType.LoadingIcon;
@@ -236,9 +238,10 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             marginBottom={2}
             alignSelf={"flex-center"}
             paddingX={1}
+            marginY={1}
           >
             {`${t("labelErrorTitle")}`}
-            {error && <TransErrorHelp error={error} />}
+            {error && <TransErrorHelp error={error} options={errorOptions} />}
             {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
           </Typography>
         )}
