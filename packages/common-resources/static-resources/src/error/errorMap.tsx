@@ -101,6 +101,7 @@ export type ErrorObject = {
 export const SDK_ERROR_MAP_TO_UI = {
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
   700002: ErrorMap.PROVIDER_ERROR,
+  700003: ErrorMap.ERROR_UNKNOWN,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_FROM_FROM_SUBMIT, //Invalid argument
   101002: ErrorMap.ERROR_WRONG_ACCOUNT, //User not found
