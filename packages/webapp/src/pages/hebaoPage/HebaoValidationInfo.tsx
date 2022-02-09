@@ -212,7 +212,9 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
           handleOpenModal({
             step: HebaoStep.Approve_Failed,
             options: {
-              error: errorItem ? t(errorItem.messageKey) : error.message,
+              error: errorItem
+                ? t(errorItem.messageKey, { ns: "error" })
+                : error.message,
             },
           });
         });
@@ -264,7 +266,9 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
           handleOpenModal({
             step: HebaoStep.Approve_Failed,
             options: {
-              error: errorItem ? t(errorItem.messageKey) : error.message,
+              error: errorItem
+                ? t(errorItem.messageKey, { ns: "error" })
+                : error.message,
             },
           });
         });

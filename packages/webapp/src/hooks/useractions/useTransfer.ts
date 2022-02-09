@@ -69,7 +69,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    tokenSymbol: transferValue.belong,
     updateData: (feeInfo, _chargeFeeList) => {
       updateTransferData({ ...transferValue, fee: feeInfo });
     },
@@ -115,8 +114,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         addressOrigin === "Wallet" &&
         transferValue.fee?.belong &&
         tradeValue.gt(BIGO) &&
-        address &&
-        address !== "" &&
+        ((address && address.startsWith("0x")) || realAddr) &&
         addrStatus === AddressError.NoError
       ) {
         enableBtn();
@@ -485,10 +483,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     addrStatus,
     handleOnAddressChange: (value: any) => {
       setAddress(value || "");
-    },
-    handleAddressError: (value: any) => {
-      updateTransferData({ address: value, balance: -1, tradeValue: -1 });
-      return { error: false, message: "" };
     },
   };
 

@@ -267,7 +267,10 @@ export function useChargeFees({
                   const _feeInfo = _chargeFeeTokenList?.find(
                     (ele) => ele.belong === state.belong
                   );
-                  return { ...state, ..._feeInfo };
+                  if (updateData && _feeInfo) {
+                    updateData({ ..._feeInfo }, _chargeFeeTokenList);
+                  }
+                  return _feeInfo ?? state;
                 }
               }
             });
@@ -313,12 +316,32 @@ export function useChargeFees({
       clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
     }
     if (
-      [
-        AccountStatus.NO_ACCOUNT,
-        AccountStatus.NOT_ACTIVE,
-        // AccountStatus.ACTIVATED,
-      ].includes(account.readyState as any) ||
-      walletLayer2Status === "UNSET"
+      (isActiveAccount &&
+        [
+          AccountStatus.NO_ACCOUNT,
+          AccountStatus.DEPOSITING,
+          AccountStatus.NOT_ACTIVE,
+        ].includes(account.readyState as any)) ||
+      (!isActiveAccount &&
+        walletLayer2Status === "UNSET" &&
+        AccountStatus.ACTIVATED === account.readyState &&
+        [
+          OffchainFeeReqType.UPDATE_ACCOUNT,
+          OffchainFeeReqType.UPDATE_ACCOUNT,
+          OffchainFeeReqType.TRANSFER,
+          OffchainNFTFeeReqType.NFT_MINT,
+          OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+          OffchainNFTFeeReqType.NFT_TRANSFER,
+          OffchainNFTFeeReqType.NFT_DEPLOY,
+        ].includes(Number(requestType))) ||
+      (!isActiveAccount &&
+        tokenSymbol &&
+        AccountStatus.ACTIVATED === account.readyState &&
+        walletLayer2Status === "UNSET" &&
+        [
+          OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+          OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
+        ].includes(Number(requestType)))
     ) {
       getFeeList();
     }
@@ -328,7 +351,8 @@ export function useChargeFees({
         clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
       }
     };
-  }, [tokenSymbol, account.readyState, walletLayer2Status]);
+  }, [tokenSymbol, requestType, account.readyState, walletLayer2Status]);
+
   return {
     chargeFeeTokenList,
     isFeeNotEnough,

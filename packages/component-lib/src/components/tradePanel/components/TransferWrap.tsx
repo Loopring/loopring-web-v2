@@ -42,8 +42,7 @@ const OriginBoxStyled = styled(Box)`
   border-radius: ${({ theme }: any) => theme.unit / 2}px;
   cursor: pointer;
   color: var(--color-text-primary);
-  padding: 0.3rem;
-  padding-left: 1.6rem;
+  padding: 0.3rem 0.3rem 0.3rem 1.6rem;
   display: flex;
   align-items: center;
   border: 1px solid
@@ -96,7 +95,6 @@ export const TransferWrap = <
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,
-  handleAddressError,
   addressOrigin,
   wait = globalSetup.wait,
   assetsData = [],
@@ -116,10 +114,6 @@ export const TransferWrap = <
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault ? addressDefault : ""
   );
-  const [addressError, setAddressError] = React.useState<
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined
-  >();
 
   const [memo, setMemo] = React.useState("");
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
@@ -137,11 +131,7 @@ export const TransferWrap = <
   });
 
   const getDisabled = React.useMemo(() => {
-    if (disabled || transferBtnStatus === TradeBtnStatus.DISABLED) {
-      return true;
-    } else {
-      return false;
-    }
+    return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, transferBtnStatus]);
 
   const debounceAddress = _.debounce(
@@ -156,12 +146,6 @@ export const TransferWrap = <
 
   const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
     const address = event.target.value;
-    if (handleAddressError) {
-      const error = handleAddressError(address);
-      if (error?.error) {
-        setAddressError(error);
-      }
-    }
     setAddress(address);
     debounceAddress({ address });
   };
@@ -175,18 +159,12 @@ export const TransferWrap = <
 
   const handleClear = React.useCallback(() => {
     setAddress("");
-    if (handleAddressError) {
-      const error = handleAddressError("");
-      if (error?.error) {
-        setAddressError(error);
-      }
-    }
-  }, [setAddress, handleAddressError, setAddressError]);
+  }, [setAddress]);
 
   const [copyToastOpen, setCopyToastOpen] = useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
-      copyToClipBoard(content);
+      await copyToClipBoard(content);
       setCopyToastOpen(true);
     },
     [setCopyToastOpen]
@@ -339,21 +317,12 @@ export const TransferWrap = <
             <TextField
               className={"text-address"}
               value={address}
-              error={addressError && addressError.error ? true : false}
+              error={!!(isInvalidAddressOrENS || isSameAddress)}
               label={t("transferLabelAddress")}
               placeholder={t("transferLabelAddressInput")}
               onChange={_handleOnAddressChange}
-              disabled={chargeFeeTokenList.length ? false : true}
+              disabled={!chargeFeeTokenList.length}
               SelectProps={{ IconComponent: DropDownIcon }}
-              // required={true}
-              // inputRef={addressInput}
-              helperText={
-                <Typography variant={"body2"} component={"span"}>
-                  {addressError && addressError.error
-                    ? addressError.message
-                    : ""}
-                </Typography>
-              }
               fullWidth={true}
             />
             {address !== "" ? (
@@ -397,7 +366,7 @@ export const TransferWrap = <
                 </Typography>
               ) : (
                 <>
-                  {realAddr && !isAddressCheckLoading && (
+                  {address && realAddr && !isAddressCheckLoading && (
                     <Typography
                       color={"var(--color-text-primary)"}
                       variant={"body2"}
@@ -632,11 +601,7 @@ export const TransferWrap = <
               ? "true"
               : "false"
           }
-          disabled={
-            getDisabled || transferBtnStatus === TradeBtnStatus.LOADING
-              ? true
-              : false
-          }
+          disabled={getDisabled || transferBtnStatus === TradeBtnStatus.LOADING}
         >
           {isConfirmTransfer
             ? t("labelConfirm")

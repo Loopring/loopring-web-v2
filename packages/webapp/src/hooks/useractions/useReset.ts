@@ -15,7 +15,6 @@ export const useReset = <T extends FeeInfo>(): {
 
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
-      tokenSymbol: "ETH",
       requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
       updateData: undefined,
     });

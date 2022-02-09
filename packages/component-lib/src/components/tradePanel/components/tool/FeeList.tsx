@@ -14,16 +14,18 @@ export const FeeToggle = <C extends FeeInfo>({
   return (
     <MuToggleButtonGroupStyle
       size={"small"}
-      value={feeInfo}
+      value={chargeFeeTokenList.findIndex(
+        (ele) => feeInfo?.belong === ele.belong
+      )}
       exclusive
-      onChange={(_e, value: C) => {
-        handleToggleChange(value);
+      onChange={(_e, value: number) => {
+        handleToggleChange(chargeFeeTokenList[value]);
       }}
     >
       {chargeFeeTokenList?.map((feeInfo, index) => (
         <ToggleButton
           key={feeInfo.belong + index}
-          value={feeInfo}
+          value={index}
           aria-label={feeInfo.belong}
           // disabled={disabled}
         >

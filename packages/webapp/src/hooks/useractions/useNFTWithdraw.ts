@@ -121,7 +121,7 @@ export const useNFTWithdraw = <
       addrStatus === AddressError.NoError &&
       !isFeeNotEnough &&
       !isNotAvaiableAddress &&
-      !!address
+      ((address && address.startsWith("0x")) || realAddr)
     ) {
       enableBtn();
       myLog("enableBtn");
@@ -476,9 +476,12 @@ export const useNFTWithdraw = <
     isCFAddress,
     isContractAddress,
     isAddressCheckLoading,
+    addrStatus,
     withdrawBtnStatus: btnStatus,
-    withdrawType: "Standard",
-    withdrawTypes: { Standard: "" } as any,
+    withdrawType: sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+    withdrawTypes: {
+      [sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL]: "Standard",
+    } as any,
     onWithdrawClick: (tradeData: R) => {
       if (nftWithdrawValue && nftWithdrawValue.tradeValue) {
         handleNFTWithdraw(tradeData, realAddr ? realAddr : address);
@@ -512,10 +515,6 @@ export const useNFTWithdraw = <
     feeInfo,
     chargeFeeTokenList,
     isFeeNotEnough,
-    handleAddressError: (value: any) => {
-      updateNFTWithdrawData({ address: value, balance: -1, tradeValue: -1 });
-      return { error: false, message: "" };
-    },
   } as WithdrawProps<any, any>;
 
   return {

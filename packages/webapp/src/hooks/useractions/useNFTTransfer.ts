@@ -116,7 +116,7 @@ export const useNFTTransfer = <
         .toBig(nftTransferValue.tradeValue)
         .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
       addrStatus === AddressError.NoError &&
-      address
+      ((address && address.startsWith("0x")) || realAddr)
     ) {
       enableBtn();
       myLog("enableBtn");
@@ -177,10 +177,11 @@ export const useNFTTransfer = <
       setShowNFTTransfer({ isShow: false });
     }
   }, [
+    checkFeeIsEnough,
     nftData,
-    feeInfo,
     updateNFTTransferData,
     nftBalance,
+    feeInfo,
     nftRest,
     address,
     setShowNFTTransfer,
@@ -489,10 +490,6 @@ export const useNFTTransfer = <
     isLoopringAddress,
     isSameAddress,
     isAddressCheckLoading,
-    handleAddressError: (value: any) => {
-      updateNFTTransferData({ address: value, balance: -1, tradeValue: -1 });
-      return { error: false, message: "" };
-    },
   };
 
   return {
