@@ -23,7 +23,6 @@ import {
   LoadingIcon,
   myLog,
   TOAST_TIME,
-  WithdrawTypes,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -33,9 +32,8 @@ import {
 } from "../..";
 import { TradeBtnStatus } from "../Interface";
 import { Button, IconClearStyled, TextField } from "../../../index";
-import { WithdrawViewProps } from "./Interface";
+import { AddressError, WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
-import * as _ from "lodash";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
@@ -65,7 +63,7 @@ export const WithdrawWrap = <
   addressDefault,
   accAddr,
   isNotAvaiableAddress,
-  withdrawTypes = WithdrawTypes,
+  withdrawTypes,
   withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
@@ -78,24 +76,18 @@ export const WithdrawWrap = <
   isAddressCheckLoading,
   isCFAddress,
   isContractAddress,
+  addrStatus,
   disableWithdrawList = [],
-  handleAddressError,
   wait = globalSetup.wait,
   assetsData = [],
   realAddr,
   isThumb,
   ...rest
 }: WithdrawViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
-  const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(
-    withdrawType
-  );
+  // const [_withdrawType, setWithdrawType] = React.useState(withdrawType);
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault ?? ""
   );
-  const [addressError, setAddressError] = React.useState<
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined
-  >();
   const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
     "down"
   );
@@ -114,14 +106,10 @@ export const WithdrawWrap = <
   );
 
   const inputBtnRef = React.useRef();
-  myLog("accAddr", accAddr);
+  myLog("withdraw accAddr", accAddr, withdrawType);
 
   const getDisabled = React.useMemo(() => {
-    if (disabled || withdrawBtnStatus === TradeBtnStatus.DISABLED) {
-      return true;
-    } else {
-      return false;
-    }
+    return disabled || withdrawBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, withdrawBtnStatus]);
   myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
@@ -136,7 +124,6 @@ export const WithdrawWrap = <
 
   const _handleWithdrawTypeChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setWithdrawType(e.target?.value);
       if (handleWithdrawTypeChange) {
         handleWithdrawTypeChange(e.target?.value as any);
       }
@@ -155,27 +142,18 @@ export const WithdrawWrap = <
     } else {
       address = event.target?.value ?? "";
     }
-    if (handleAddressError) {
-      const error = handleAddressError(address);
-      if (error?.error) {
-        setAddressError(error);
-      }
-    }
+
     setAddress(address);
     if (handleOnAddressChange) {
       handleOnAddressChange(address);
     }
   };
 
-  // const handleClear = React.useCallback(() => {
-  //   // setAddress("");
-  //   // if (handleAddressError) {
-  //   //   const error = handleAddressError("");
-  //   //   if (error?.error) {
-  //   //     setAddressError(error);
-  //   //   }
-  //   // }
-  // }, [setAddress, setAddressError, handleAddressError]);
+  const isInvalidAddressOrENS =
+    !isAddressCheckLoading &&
+    address &&
+    addrStatus === AddressError.InvalidAddr;
+
   return (
     <Grid
       className={walletMap ? "" : "loading"}
@@ -287,23 +265,18 @@ export const WithdrawWrap = <
           <TextField
             className={"text-address"}
             value={address}
-            error={addressError && addressError.error ? true : false}
+            error={!!(isNotAvaiableAddress || isInvalidAddressOrENS)}
             placeholder={t("labelPleaseInputWalletAddress")}
             onChange={_handleOnAddressChange}
             // disabled={chargeFeeTokenList.length ? false : true}
             SelectProps={{ IconComponent: DropDownIcon }}
-            helperText={
-              <Typography variant={"body2"} component={"span"}>
-                {addressError && addressError.error ? addressError.message : ""}
-              </Typography>
-            }
             fullWidth={true}
           />
           {address !== "" ? (
             isAddressCheckLoading ? (
               <LoadingIcon
                 width={24}
-                style={{ top: "35px", right: "8px", position: "absolute" }}
+                style={{ top: "36px", right: "8px", position: "absolute" }}
               />
             ) : (
               <IconClearStyled
@@ -322,18 +295,29 @@ export const WithdrawWrap = <
             ""
           )}
           <Box marginLeft={1 / 2}>
-            {isNotAvaiableAddress ? (
+            {isInvalidAddressOrENS ? (
               <Typography
                 color={"var(--color-error)"}
                 fontSize={14}
                 alignSelf={"stretch"}
                 position={"relative"}
+                marginTop={1 / 4}
+              >
+                {t("labelTransferInvalidAddress")}
+              </Typography>
+            ) : isNotAvaiableAddress ? (
+              <Typography
+                color={"var(--color-error)"}
+                fontSize={14}
+                alignSelf={"stretch"}
+                position={"relative"}
+                marginTop={1 / 4}
               >
                 {t("labelWithdrawInvalidAddress")}
               </Typography>
             ) : (
               <>
-                {realAddr && !isAddressCheckLoading && (
+                {address && realAddr && !isAddressCheckLoading && (
                   <Typography
                     color={"var(--color-text-primary)"}
                     variant={"body2"}
@@ -382,11 +366,7 @@ export const WithdrawWrap = <
                   marginLeft={1}
                   color={"var(--color-text-secondary)"}
                 >
-                  {t(
-                    `withdrawLabel${
-                      _withdrawType === "Fast" ? "Fast" : "Standard"
-                    }`
-                  )}
+                  {t(`withdrawLabel${withdrawTypes[withdrawType]}`)}
                 </Typography>
                 <DropdownIconStyled
                   status={dropdownStatus}
@@ -419,7 +399,7 @@ export const WithdrawWrap = <
                   <RadioGroup
                     aria-label="withdraw"
                     name="withdraw"
-                    value={_withdrawType}
+                    value={withdrawType.toString()}
                     onChange={(e) => {
                       _handleWithdrawTypeChange(e);
                     }}
@@ -428,9 +408,11 @@ export const WithdrawWrap = <
                       return (
                         <FormControlLabel
                           key={key}
-                          value={key}
+                          value={key.toString()}
                           control={<Radio />}
-                          label={`${t("withdrawTypeLabel" + key)}`}
+                          label={`${t(
+                            "withdrawTypeLabel" + withdrawTypes[key]
+                          )}`}
                         />
                       );
                     })}
