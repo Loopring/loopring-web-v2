@@ -4,17 +4,16 @@ import {
   UserNFTBalanceInfo,
 } from "@loopring-web/loopring-sdk";
 import { FeeInfo, IBData } from "../loopring-interface";
+import * as sdk from "@loopring-web/loopring-sdk";
 
-export enum WithdrawType {
-  Fast = "Fast",
-  Standard = "Standard",
-}
+export type WithdrawType =
+  | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
+  | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
+  | sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL;
 
-export const WithdrawTypes: {
-  [P in keyof typeof WithdrawType]: string | number;
-} = {
-  Fast: "",
-  Standard: "",
+export type WithdrawTypes = {
+  [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast";
+  [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard";
 };
 
 export type PriceTagType = "$" | "￥";

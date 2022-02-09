@@ -38,15 +38,15 @@ export const useAddressCheck = () => {
     async (address: any, web3: any) => {
       // if( address.math)
       if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
-        setIsAddressCheckLoading(true);
         if (
           /^0x[a-fA-F0-9]{40}$/g.test(address) ||
           /.*\.eth$/gi.test(address)
         ) {
+          setIsAddressCheckLoading(true);
           const { realAddr, addressErr } = await checkAddr(address, web3);
           setRealAddr(realAddr);
           setAddrStatus(addressErr);
-          if (realAddr !== "" || address !== "") {
+          if (realAddr !== "" || (address !== "" && address.startsWith("0x"))) {
             const [{ walletType }, response] = await Promise.all([
               LoopringAPI.walletAPI.getWalletType({
                 wallet: realAddr != "" ? realAddr : address,
@@ -54,9 +54,7 @@ export const useAddressCheck = () => {
               LoopringAPI.exchangeAPI.getAccount({
                 owner: realAddr != "" ? realAddr : address,
               }),
-            ]).finally(() => {
-              setIsAddressCheckLoading(false);
-            });
+            ]);
             if (walletType && walletType?.isInCounterFactualStatus) {
               setIsCFAddress(true);
             } else {
@@ -78,13 +76,11 @@ export const useAddressCheck = () => {
               setIsLoopringAddress(true);
             }
           }
-          // return {
-          //   lastAddress: realAddr || address,
-          //   addressErr,
-          // };
-        } else {
           setIsAddressCheckLoading(false);
-          setAddrStatus(AddressError.InvalidAddr);
+        } else {
+          setAddrStatus(
+            address === "" ? AddressError.EmptyAddr : AddressError.InvalidAddr
+          );
         }
       } else {
         return {

@@ -83,6 +83,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       const index = chargeFeeTokenList?.findIndex(
         ({ belong }) => belong === tradeData.belong
       );
+
       if (index === -1) {
         return (
           <Typography
@@ -96,7 +97,10 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             })}
           </Typography>
         );
-      } else if (chargeFeeTokenList[index].fee > (tradeData.tradeValue ?? 0)) {
+      }
+      const Max: number =
+        Number(chargeFeeTokenList[index].fee.toString().replace(",", "")) * 4;
+      if (Max > (tradeData.tradeValue ?? 0)) {
         return (
           <Typography
             color={"var(--color-warning)"}
@@ -106,7 +110,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
           >
             {t("labelIsNotEnoughFeeToken", {
               symbol: tradeData.belong,
-              fee: chargeFeeTokenList[index].fee,
+              fee: Max,
             })}
           </Typography>
         );

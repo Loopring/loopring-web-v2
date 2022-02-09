@@ -69,11 +69,6 @@ export type TransferExtendProps<T, I, C> = {
   onTransferClick: (data: T, isFirstTime?: boolean) => void;
   handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
-  handleAddressError: (
-    address: string
-  ) =>
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined;
   wait?: number;
 } & TransferInfoProps<C>;
 
@@ -93,7 +88,6 @@ export type ResetInfoProps<C> = {
   feeInfo: C;
   disabled?: boolean;
   isFeeNotEnough: boolean;
-
   handleFeeChange: (value: C) => void;
 } & XOR<
   {
@@ -146,8 +140,8 @@ export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
 export type WithdrawInfoProps<C> = {
   withdrawI18nKey?: string;
   withdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined;
-  withdrawType?: keyof typeof WithdrawType;
-  withdrawTypes: typeof WithdrawTypes;
+  withdrawType: WithdrawType;
+  withdrawTypes: Partial<WithdrawTypes>;
   chargeFeeTokenList: Array<C>;
   feeInfo: C;
   isFeeNotEnough: boolean;
@@ -162,16 +156,12 @@ export type WithdrawExtendProps<T, I, C> = {
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
   isContractAddress: boolean;
+  addrStatus?: AddressError;
   disableWithdrawList?: string[];
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
   handleFeeChange: (value: C) => void;
-  handleWithdrawTypeChange: (value: Partial<keyof typeof WithdrawType>) => void;
+  handleWithdrawTypeChange: (value: WithdrawType) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
-  handleAddressError?: (
-    address: string
-  ) =>
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined;
   wait?: number;
 } & WithdrawInfoProps<C>;
 
