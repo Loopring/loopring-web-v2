@@ -88,7 +88,7 @@ export const ErrorMap = {
   },
 };
 export enum UIERROR_CODE {
-  Unknow = 700001,
+  Unknown = 700001,
   PROVIDER_ERROR = 700002,
   PROVIDER_ERROR_Unknown = 700003,
 }
