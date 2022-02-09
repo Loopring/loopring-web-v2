@@ -81,9 +81,16 @@ export const ErrorMap = {
     messageKey: "NTF_ID_ENCODE_ERROR",
     options: {},
   },
+  PROVIDER_ERROR: {
+    id: "PROVIDER_ERROR",
+    messageKey: "errorDisableOtherWalletForMetaMask",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   Unknow = 700001,
+  PROVIDER_ERROR = 700002,
+  PROVIDER_ERROR_Unknow = 700003,
 }
 export type ErrorObject = {
   from?: string;
@@ -93,6 +100,7 @@ export type ErrorObject = {
 };
 export const SDK_ERROR_MAP_TO_UI = {
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
+  700002: ErrorMap.PROVIDER_ERROR,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_FROM_FROM_SUBMIT, //Invalid argument
   101002: ErrorMap.ERROR_WRONG_ACCOUNT, //User not found

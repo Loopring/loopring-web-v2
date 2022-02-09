@@ -41,7 +41,7 @@ export const GameStop = async (): Promise<
     console.error("Error happen at connect wallet with GameStop:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.GameStop,
-      error,
+      error: error.message,
     });
   }
 };

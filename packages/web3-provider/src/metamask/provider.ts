@@ -3,12 +3,17 @@ import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { IpcProvider } from "web3-core";
 import { ErrorType } from "../command";
-import { ConnectProviders } from "@loopring-web/common-resources";
+import { ConnectProviders, CustomError } from "@loopring-web/common-resources";
 
 export const MetaMaskProvide = async (): Promise<
   { provider: IpcProvider; web3: Web3 } | undefined
 > => {
   try {
+    if (!window.ethereum?.isMetaMask) {
+      throw new Error(
+        `Global ethereum is not MetaMask, Please disable other Wallet Plugin`
+      );
+    }
     const provider: any = await detectEthereumProvider({
       mustBeMetaMask: true,
     });
@@ -24,10 +29,20 @@ export const MetaMaskProvide = async (): Promise<
       return undefined;
     }
   } catch (error) {
-    console.error("Error happen at connect wallet with MetaMask:", error);
+    console.error(
+      "Error happen at connect wallet with MetaMask:",
+      error.message
+    );
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.MetaMask,
-      error,
+      error: {
+        code:
+          error.message ===
+          `Global ethereum is not MetaMask, Please disable other Wallet Plugin`
+            ? 700002
+            : 700003,
+        message: error.message,
+      },
     });
   }
 };

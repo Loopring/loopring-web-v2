@@ -5,4 +5,6 @@ export default {
   error404: "四〇四! 这是页面不存在呢.",
   errorMaintain: "系统维护中...",
   errorMessageNoNetwork: "Oops! Something went wrong at service.",
+  errorDisableOtherWalletForMetaMask:
+    "Global ethereum is not MetaMask, Please disable other Wallet Plugin",
 };

@@ -73,7 +73,7 @@ export const WalletConnectProvide = async (
     console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.WalletConnect,
-      error,
+      error: error.message,
     });
   }
 };
@@ -89,7 +89,7 @@ export const WalletConnectSubscribe = (
       if (error) {
         walletServices.sendError(ErrorType.FailedConnect, {
           connectName: ConnectProviders.WalletConnect,
-          error,
+          error: error.message,
         });
       }
       const { accounts, chainId } = payload.params[0];
@@ -106,7 +106,7 @@ export const WalletConnectSubscribe = (
         if (error) {
           walletServices.sendError(ErrorType.FailedConnect, {
             connectName: ConnectProviders.WalletConnect,
-            error,
+            error: error.message,
           });
         }
         connector.updateSession({ accounts, chainId });
@@ -118,7 +118,7 @@ export const WalletConnectSubscribe = (
       if (error) {
         walletServices.sendError(ErrorType.FailedConnect, {
           connectName: ConnectProviders.WalletConnect,
-          error,
+          error: error.message,
         });
       }
       walletServices.sendDisconnect("", message);
