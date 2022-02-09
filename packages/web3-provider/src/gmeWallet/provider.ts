@@ -41,7 +41,13 @@ export const GameStop = async (): Promise<
     console.error("Error happen at connect wallet with GameStop:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.GameStop,
-      error: error.message,
+      error: {
+        code:
+          error.message === `User not installed GameStop extension`
+            ? 700004
+            : 700003,
+        message: error.message,
+      },
     });
   }
 };

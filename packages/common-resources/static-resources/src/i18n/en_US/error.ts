@@ -11,6 +11,7 @@ export default {
   errorWrongAccount: "Error on account Info!",
   errorWrongApikey: "Error on signature or no Apikey",
   errorAboutFee: "Fee token is not Enough or wrong",
-  errorDisableOtherWalletForMetaMask:
-    "Global ethereum is not MetaMask, Please disable other Wallet Plugin",
+  errorDisableOtherWalletForCurrent:
+    "Global ethereum is not {{name}}, Please disable other Wallet Plugin",
+  errorNotInstallGME: "GameStop Plugin is not install or disabled",
 };
