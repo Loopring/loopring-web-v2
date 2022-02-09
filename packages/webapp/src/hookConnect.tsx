@@ -9,8 +9,8 @@ import {
   ProcessingType,
   useConnectHook,
 } from "@loopring-web/web3-provider";
-import { SagaStatus } from "@loopring-web/common-resources";
-import { ChainId, sleep } from "@loopring-web/loopring-sdk";
+import { SagaStatus, UIERROR_CODE } from "@loopring-web/common-resources";
+import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
 
 import { updateAccountStatus, useAccount } from "stores/account";
 import { useSystem } from "stores/system";
@@ -147,8 +147,14 @@ export function useConnect(props: { state: keyof typeof SagaStatus }) {
 
       setShowAccount({ isShow: false });
       setShowConnect({
-        isShow: !!shouldShow ?? false,
+        isShow: true,
         step: WalletConnectStep.FailedConnect,
+        error: {
+          ...props.opts.error,
+          // code: UIERROR_CODE.PROVIDER_ERROR,
+          // message: props.opts.error,
+          // ...props.errorObj,
+        } as RESULT_INFO,
       });
     },
     [

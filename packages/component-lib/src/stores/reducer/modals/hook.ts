@@ -95,7 +95,7 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowConnect: React.useCallback(
-      (state: ModalStatePlayLoad & { step?: number }) =>
+      (state: ModalStatePlayLoad & { step?: number; error?: RESULT_INFO }) =>
         dispatch(setShowConnect(state)),
       [dispatch]
     ),

@@ -540,4 +540,6 @@ export default {
   labelTxHebaoApprove: "APPROVE",
   labelTxHebaoReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
+  labelDisableOtherWalletForMetaMask:
+    "Global ethereum is not MetaMask, Please disable other Wallet Plugin",
 };

@@ -231,6 +231,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             }
           };
     }, [account, setShowAccount]);
+    myLog("isShowConnect.error", isShowConnect.error);
     const walletList = React.useMemo(() => {
       return Object.values({
         [WalletConnectStep.Provider]: {
@@ -276,7 +277,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         [WalletConnectStep.FailedConnect]: {
           view: (
             <ConnectFailed
-              {...{ t, ...rest }}
+              {...{ t, error: isShowConnect.error, ...rest }}
               btnInfo={{ btnTxt: "labelRetry", callback: onRetry }}
             />
           ),
@@ -286,7 +287,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           },
         },
       });
-    }, [qrCodeUrl, account, t, rest, onClose]);
+    }, [qrCodeUrl, isShowConnect.error, account, t, rest, onClose]);
     return (
       <>
         <InformationForCoinBase

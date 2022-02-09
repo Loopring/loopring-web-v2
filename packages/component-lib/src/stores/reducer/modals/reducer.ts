@@ -143,12 +143,17 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
     setShowConnect(
       state,
-      action: PayloadAction<{ isShow: boolean; step?: number }>
+      action: PayloadAction<{
+        isShow: boolean;
+        step?: number;
+        error?: RESULT_INFO;
+      }>
     ) {
-      const { isShow, step } = action.payload;
+      const { isShow, step, error } = action.payload;
       state.isShowConnect = {
         isShow,
         step: step ? step : 0,
+        error: error ?? undefined,
       };
     },
     setShowAccount(
