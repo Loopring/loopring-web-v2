@@ -34,7 +34,7 @@ export const accountServices = {
         error:
           error ??
           ({
-            code: UIERROR_CODE.Unknow,
+            code: UIERROR_CODE.Unknown,
             msg: "unknown error",
           } as sdk.RESULT_INFO),
       },

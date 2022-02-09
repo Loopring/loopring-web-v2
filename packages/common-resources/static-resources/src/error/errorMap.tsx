@@ -90,7 +90,7 @@ export const ErrorMap = {
 export enum UIERROR_CODE {
   Unknow = 700001,
   PROVIDER_ERROR = 700002,
-  PROVIDER_ERROR_Unknow = 700003,
+  PROVIDER_ERROR_Unknown = 700003,
 }
 export type ErrorObject = {
   from?: string;

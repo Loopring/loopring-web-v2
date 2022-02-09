@@ -334,7 +334,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
             isShow: true,
             step: AccountStep.NFTDeposit_Failed,
             error: {
-              code: UIERROR_CODE.Unknow,
+              code: UIERROR_CODE.Unknown,
               msg: "No Response",
             },
           });
@@ -367,7 +367,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
               isShow: true,
               step: AccountStep.NFTDeposit_Failed,
               error: {
-                code: result.code ?? UIERROR_CODE.Unknow,
+                code: result.code ?? UIERROR_CODE.Unknown,
                 msg: reason?.message,
               },
             });

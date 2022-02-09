@@ -122,7 +122,7 @@ export function useExportAccountInfo() {
           isShow: true,
           step: AccountStep.ExportAccount_Failed,
           error: {
-            code: UIERROR_CODE.Unknow,
+            code: UIERROR_CODE.Unknown,
             msg: e?.message,
           },
         });

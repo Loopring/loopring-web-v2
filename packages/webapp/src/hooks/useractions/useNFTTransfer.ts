@@ -314,7 +314,7 @@ export const useNFTTransfer = <
               isShow: true,
               step: AccountStep.NFTTransfer_Failed,
               error: {
-                code: UIERROR_CODE.Unknow,
+                code: UIERROR_CODE.Unknown,
                 msg: reason?.message,
               },
             });
@@ -406,7 +406,7 @@ export const useNFTTransfer = <
             isShow: true,
             step: AccountStep.NFTTransfer_Failed,
             error: {
-              code: UIERROR_CODE.Unknow,
+              code: UIERROR_CODE.Unknown,
               msg: e?.message,
             },
           });
