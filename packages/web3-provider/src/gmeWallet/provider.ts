@@ -12,11 +12,11 @@ export const GameStop = async (): Promise<
   try {
     // const provider: any = await detectEthereumProvider();
     // @ts-ignore
-    if (!window.gme) {
+    if (!window.gamestop) {
       throw new Error("User not installed GameStop extension");
     }
     // @ts-ignore
-    const provider = window.gme;
+    const provider = window.gamestop;
     await (provider.send as Send)("eth_requestAccounts");
     const web3 = new Web3(provider as any);
     walletServices.sendConnect(web3, provider);
