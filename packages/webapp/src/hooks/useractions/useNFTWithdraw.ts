@@ -337,7 +337,7 @@ export const useNFTWithdraw = <
               isShow: true,
               step: AccountStep.NFTWithdraw_Failed,
               error: {
-                code: UIERROR_CODE.Unknown,
+                code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,
               },
             });
@@ -424,7 +424,7 @@ export const useNFTWithdraw = <
             isShow: true,
             step: AccountStep.NFTWithdraw_Failed,
             error: {
-              code: UIERROR_CODE.Unknown,
+              code: UIERROR_CODE.UNKNOWN,
               msg: e?.message,
             },
           });

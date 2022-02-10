@@ -406,7 +406,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               isShow: true,
               step: AccountStep.Withdraw_Failed,
               error: {
-                code: UIERROR_CODE.Unknown,
+                code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,
               },
             });
@@ -493,7 +493,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             isShow: true,
             step: AccountStep.Withdraw_Failed,
             error: {
-              code: UIERROR_CODE.Unknown,
+              code: UIERROR_CODE.UNKNOWN,
               msg: e?.message,
             },
           });

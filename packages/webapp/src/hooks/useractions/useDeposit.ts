@@ -390,7 +390,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               isShow: true,
               step: AccountStep.Deposit_Failed,
               error: {
-                code: UIERROR_CODE.Unknown,
+                code: UIERROR_CODE.UNKNOWN,
                 msg: "No Response",
               },
             });
@@ -424,7 +424,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
                 isShow: true,
                 step: AccountStep.Deposit_Failed,
                 error: {
-                  code: result.code ?? UIERROR_CODE.Unknown,
+                  code: result.code ?? UIERROR_CODE.UNKNOWN,
                   msg: reason?.message,
                 },
               });

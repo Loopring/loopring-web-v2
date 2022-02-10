@@ -93,7 +93,7 @@ export const ErrorMap = {
   },
 };
 export enum UIERROR_CODE {
-  Unknown = 700001,
+  UNKNOWN = 700001,
   PROVIDER_ERROR = 700002,
   PROVIDER_ERROR_Unknown = 700003,
   PROVIDER_NOT_INSTALL_GME = 700004,

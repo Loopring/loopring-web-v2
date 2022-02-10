@@ -98,7 +98,7 @@ export async function unlockAccount() {
           break;
       }
       accountServices.sendErrorUnlock({
-        code: UIERROR_CODE.Unknown,
+        code: UIERROR_CODE.UNKNOWN,
         msg: e.message,
       });
     }
