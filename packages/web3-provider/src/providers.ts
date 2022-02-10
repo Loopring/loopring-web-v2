@@ -12,6 +12,7 @@ import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { ConnectProviders } from "@loopring-web/common-resources";
+import { GameStop, GameStopSubscribe, GameStopUnsubscribe } from "./gmeWallet";
 
 export class ConnectProvides {
   public usedProvide: undefined | IpcProvider | WalletConnectProvider;
@@ -28,6 +29,17 @@ export class ConnectProvides {
     this._provideName = ConnectProviders.MetaMask;
     this.clearProviderSubscribe();
     const obj = await MetaMaskProvide();
+    if (obj) {
+      this.usedProvide = obj.provider;
+      this.usedWeb3 = obj.web3;
+    }
+    this.subScribe();
+  };
+
+  public GameStop = async () => {
+    this._provideName = ConnectProviders.GameStop;
+    this.clearProviderSubscribe();
+    const obj = await GameStop();
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -71,6 +83,11 @@ export class ConnectProvides {
         delete this.usedProvide;
         delete this.usedWeb3;
         break;
+      case ConnectProviders.GameStop:
+        await GameStopUnsubscribe(this.usedProvide);
+        delete this.usedProvide;
+        delete this.usedWeb3;
+        break;
     }
 
     return;
@@ -84,6 +101,9 @@ export class ConnectProvides {
           this.usedWeb3 as Web3,
           account
         );
+        break;
+      case ConnectProviders.GameStop:
+        GameStopSubscribe(this.usedProvide, this.usedWeb3 as Web3);
         break;
       case ConnectProviders.MetaMask:
         MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
