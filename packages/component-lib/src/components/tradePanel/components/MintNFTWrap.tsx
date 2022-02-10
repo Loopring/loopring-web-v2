@@ -18,13 +18,41 @@ import {
   InputSize,
   PopoverPure,
   TextField,
+  TGItemData,
+  ToggleButtonGroup,
 } from "../../basic-lib";
 import { IconClearStyled } from "./Styled";
 import { NFTInput } from "./BasicANFTTrade";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
+import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
-import { GridStyle } from "components";
+import styled from "@emotion/styled";
 
+const GridStyle = styled(Grid)`
+  .coinInput-wrap {
+    .input-wrap {
+      //background: var(--field-opacity);
+      border-radius: ${({ theme }) => theme.unit / 2}px;
+      border: 1px solid var(--color-border);
+    }
+  }
+  .MuiInputLabel-root {
+    font-size: ${({ theme }) => theme.fontDefault.body2};
+  }
+` as typeof Grid;
+const NFT_TYPE: TGItemData[] = [
+  {
+    value: NFTType.ERC1155,
+    key: "ERC1155",
+    label: "ERC1155",
+    disabled: false,
+  },
+  {
+    value: NFTType.ERC721,
+    key: "ERC721",
+    label: "ERC721", // after 18n
+    disabled: true,
+  },
+];
 export const MintNFTWrap = <T extends TradeNFT<I>, I>({
   disabled,
   walletMap,
@@ -169,7 +197,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I>({
           <TextField
             value={tradeData.nftIdView}
             label={t("labelNFTTId")}
-            placeholder={t("depositNFTAddressLabelPlaceholder")}
+            placeholder={t("mintNFTAddressLabelPlaceholder")}
             onChange={(event) =>
               _handleOnNFTDataChange({
                 nftIdView: event.target?.value,
@@ -228,8 +256,18 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I>({
               >
                 {t("labelNFTType")}
               </Typography>
-              {"ERC1155"}
-              {/*NFTType.ERC1155*/}
+              <ToggleButtonGroup
+                exclusive
+                fullWidth
+                {...{
+                  data: NFT_TYPE,
+                  value: tradeData?.nftType ?? 0,
+                }}
+                onChange={(_e, value) => {
+                  _handleOnNFTDataChange({ nftType: value } as T);
+                }}
+                size={"medium"}
+              />
             </Box>
             <Box
               marginTop={2}
@@ -247,13 +285,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I>({
                     size: InputSize.small,
                     label: t("labelNFTMintInputTitle"),
                   }}
-                  disabled={
-                    tradeData.nftId &&
-                    tradeData.tokenAddress &&
-                    tradeData.balance !== undefined
-                      ? true
-                      : false
-                  }
+                  disabled={!tradeData.nftId || !tradeData.tokenAddress}
                   type={"NFT"}
                   inputNFTRef={inputBtnRef}
                   onChangeEvent={(_index, data) =>
