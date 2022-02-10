@@ -210,7 +210,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               isShow: true,
               step: AccountStep.NFTMint_Failed,
               error: {
-                code: UIERROR_CODE.Unknow,
+                code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,
               },
             });
@@ -375,7 +375,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               isShow: true,
               step: AccountStep.NFTMint_Failed,
               error: {
-                code: UIERROR_CODE.Unknow,
+                code: UIERROR_CODE.UNKNOWN,
                 msg: "No Response",
               },
             });
@@ -408,7 +408,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                 isShow: true,
                 step: AccountStep.NFTMint_Failed,
                 error: {
-                  code: result.code ?? UIERROR_CODE.Unknow,
+                  code: result.code ?? UIERROR_CODE.UNKNOWN,
                   msg: reason?.message,
                 },
               });

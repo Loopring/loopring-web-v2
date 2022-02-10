@@ -316,7 +316,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               isShow: true,
               step: AccountStep.Transfer_Failed,
               error: {
-                code: UIERROR_CODE.Unknow,
+                code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,
               },
             });

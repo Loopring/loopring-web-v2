@@ -154,7 +154,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeploy_Failed,
-              error: { code: UIERROR_CODE.Unknow, msg: reason.message },
+              error: { code: UIERROR_CODE.UNKNOWN, msg: reason.message },
             });
           }
         }
@@ -258,7 +258,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTDeploy_Failed,
-          error: { code: UIERROR_CODE.Unknow, msg: e.message },
+          error: { code: UIERROR_CODE.UNKNOWN, msg: e.message },
         });
       }
     } else {

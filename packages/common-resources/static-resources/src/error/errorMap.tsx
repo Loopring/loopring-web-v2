@@ -7,21 +7,100 @@ export const ErrorMap = {
     id: "ERROR_UNKNOWN",
     messageKey: "errorUnknown",
   },
-  ERROR_FROM_FROM_SUBMIT: {
-    id: "ERROR_FROM_FROM_SUBMIT",
+  ERROR_ON_FROM_SUBMIT: {
+    id: "ERROR_ON_FROM_SUBMIT",
     messageKey: "errorOnFromSubmit",
   },
   ERROR_WRONG_ACCOUNT: {
     id: "ERROR_WRONG_ACCOUNT",
     messageKey: "errorWrongAccount",
   },
+  ERROR_WRONG_TOKEN: {
+    id: "ERROR_WRONG_TOKEN",
+    messageKey: "errorWrongToken",
+  },
   ERROR_WRONG_APIKEY: {
     id: "ERROR_WRONG_APIKEY",
     messageKey: "errorWrongApikey",
   },
+  ERROR_WRONG_BALANCE: {
+    id: "ERROR_WRONG_BALANCE",
+    messageKey: "errorWrongBalance",
+  },
+  ERROR_WRONG_MIN: {
+    id: "ERROR_WRONG_BALANCE",
+    messageKey: "errorWrongBalance",
+  },
+  ERROR_MINIMUM_ORDER: {
+    id: "ERROR_MINIMUM_ORDER",
+    messageKey: "errorMinimumOrder",
+  },
+  ERROR_MAXIMUM_ORDER: {
+    id: "ERROR_MAXIMUM_ORDER",
+    messageKey: "errorMaximumOrder",
+  },
+  ERROR_ON_FROZEN: {
+    id: "ERROR_ON_FROZEN",
+    messageKey: "errorOnFrozen",
+  },
   ERROR_ON_FEE: {
     id: "ERROR_ON_FEE",
     messageKey: "errorAboutFee",
+  },
+  ERROR_PROVIDER_ERROR: {
+    id: "ERROR_PROVIDER_ERROR",
+    messageKey: "errorProviderError",
+    options: {},
+  },
+  ERROR_ON_STORAGE_ID: {
+    id: "ERROR_ON_STORAGE_ID",
+    messageKey: "errorOnStorageId",
+    options: {},
+  },
+  ERROR_ON_NO_RECIPIENT: {
+    id: "ERROR_ON_NO_RECIPIENT",
+    messageKey: "errorOnNoRecipient",
+    options: {},
+  },
+  ERROR_INVALID_HASH: {
+    id: "ERROR_INVALID_HASH",
+    messageKey: "errorInvalidHash",
+    options: {},
+  },
+  ERROR_ON_CANCEL_ORDERS: {
+    id: "ERROR_ON_CANCEL_ORDERS",
+    messageKey: "errorOnCancelOrders",
+    options: {},
+  },
+  ERROR_ON_GAS: {
+    id: "ERROR_ON_GAS",
+    messageKey: "errorOnGas",
+    options: {},
+  },
+  ERROR_NO_MARKET: {
+    id: "ERROR_NO_MARKET",
+    messageKey: "errorNoMarket",
+    options: {},
+  },
+  ERROR_INVALID_ORDER_ID: {
+    id: "ERROR_INVALID_ORDER_ID",
+    messageKey: "errorInvalidOrderId",
+    options: {},
+  },
+  ERROR_ON_RATE: {
+    id: "ERROR_ON_RATE",
+    messageKey: "errorOnRate",
+    options: {},
+  },
+  ERROR_FOR_EXIST_ORDER: {
+    id: "ERROR_FOR_EXIST_ORDER",
+    messageKey: "errorForExistOrder",
+    options: {},
+  },
+  ERROR_ORDER_EXPIRED: {
+    id: "ERROR_ORDER_EXPIRED",
+    messageKey: "errorOrderExpired",
+    options: {},
   },
   LOADING_WHOLE_SITE: {
     id: "LOADING_WHOLE_SITE",
@@ -83,7 +162,9 @@ export const ErrorMap = {
   },
 };
 export enum UIERROR_CODE {
-  Unknow = 700001,
+  UNKNOWN = 700001,
+  ERROR_PROVIDER_ERROR = 700002,
+  ERROR_PROVIDER_ERROR_Unknown = 700003,
 }
 export type ErrorObject = {
   from?: string;
@@ -93,20 +174,54 @@ export type ErrorObject = {
 };
 export const SDK_ERROR_MAP_TO_UI = {
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
+  700002: ErrorMap.ERROR_PROVIDER_ERROR,
+  700003: ErrorMap.ERROR_UNKNOWN,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
-  100001: ErrorMap.ERROR_FROM_FROM_SUBMIT, //Invalid argument
+  100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
+  101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found
   101002: ErrorMap.ERROR_WRONG_ACCOUNT, //User not found
+  102001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Exchange ID is incorrect
+  102002: ErrorMap.ERROR_WRONG_TOKEN, //Unsupported TokenId in the order
+  102003: ErrorMap.ERROR_WRONG_ACCOUNT, //Invalid account ID
+  102004: ErrorMap.ERROR_INVALID_ORDER_ID, //Invalid order ID
+  102005: ErrorMap.ERROR_NO_MARKET, //Market does not support
+  102006: ErrorMap.ERROR_ON_RATE, //Illegal rate field
+  102007: ErrorMap.ERROR_FOR_EXIST_ORDER, //Order already exists
+  102008: ErrorMap.ERROR_ORDER_EXPIRED, //Order has expired
+  102010: ErrorMap.ERROR_WRONG_APIKEY, //Order is missing signature information
+  102011: ErrorMap.ERROR_WRONG_BALANCE, //Insufficient user balance
+  102012: ErrorMap.ERROR_MINIMUM_ORDER, //The order amount is too small
+  102014: ErrorMap.ERROR_ON_FROZEN, //Failed to freeze the amount, please try again later
+  102020: ErrorMap.ERROR_MAXIMUM_ORDER, //Exceeded the maximum order amount
+  102021: ErrorMap.ERROR_ON_FROM_SUBMIT, //	Nonce is invalid
+  102022: ErrorMap.ERROR_ON_FROM_SUBMIT, //Transfer sender is invalid
+  102023: ErrorMap.ERROR_ON_FROM_SUBMIT, //Transfer receiver is invalid
+  102024: ErrorMap.ERROR_ON_FEE, //Fee token is unsupported
+  102025: ErrorMap.ERROR_ON_FEE, //Fee token is unsupported//Transfer token isnt consistent with fee token
+  102027: ErrorMap.ERROR_ON_FROM_SUBMIT, //Submit order failed
+  102028: ErrorMap.ERROR_ON_STORAGE_ID, //No Available storage id
+  102030: ErrorMap.ERROR_ON_STORAGE_ID, //Invalid storage id
+  102032: ErrorMap.ERROR_ON_NO_RECIPIENT, //Invalid recipient
+  102117: ErrorMap.ERROR_ON_CANCEL_ORDERS, //No orders to cancel
+  102118: ErrorMap.ERROR_ON_CANCEL_ORDERS, //Failed to cancel orders, please try again later
+  102119: ErrorMap.ERROR_INVALID_HASH, //Invalid hash
+  102120: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order is not valid
+  102122: ErrorMap.ERROR_ON_CANCEL_ORDERS, //Order already in cancel
   104001: ErrorMap.ERROR_WRONG_APIKEY, //Empty ApiKey
   104002: ErrorMap.ERROR_WRONG_APIKEY, //Invalid ApiKey
   104003: ErrorMap.ERROR_WRONG_ACCOUNT, //Invalid Account ID
-  104004: ErrorMap.ERROR_FROM_FROM_SUBMIT, //No signature information provided
-  104005: ErrorMap.ERROR_FROM_FROM_SUBMIT, //Wrong signature information
-  102001: ErrorMap.ERROR_FROM_FROM_SUBMIT, //Exchange ID is incorrect
-  102021: ErrorMap.ERROR_FROM_FROM_SUBMIT, //	Nonce is invalid
-  102022: ErrorMap.ERROR_FROM_FROM_SUBMIT, //Transfer sender is invalid
-  102023: ErrorMap.ERROR_FROM_FROM_SUBMIT, //Transfer receiver is invalid
-  102024: ErrorMap.ERROR_ON_FEE, //Fee token is unsupported
-  102025: ErrorMap.ERROR_ON_FEE, //Fee token is unsupported//Transfer token isnt consistent with fee token
+  104004: ErrorMap.ERROR_ON_FROM_SUBMIT, //No signature information provided
+  104005: ErrorMap.ERROR_ON_FROM_SUBMIT, //Wrong signature information
+  104208: ErrorMap.ERROR_UNKNOWN, //Unknown error in Ethereum node
+  104209: ErrorMap.ERROR_UNKNOWN, //Partial batch operation failed
+  105001: ErrorMap.ERROR_ON_GAS, //Failed to get recommended gas
+  107001: ErrorMap.ERROR_WRONG_ACCOUNT, //User ID cannot be empty
+  107002: ErrorMap.ERROR_INVALID_HASH, //Order Hash cannot be empty
+  107003: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order does not exist
+  108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
+  108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
+  114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
+  114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
 };
 export const TransErrorHelp = ({
   error,

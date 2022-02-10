@@ -124,7 +124,7 @@ export function useConnect(props: { state: keyof typeof SagaStatus }) {
   );
 
   const handleError = React.useCallback(
-    (props: { type: keyof typeof ErrorType; errorObj: any }) => {
+    (props: { type: keyof typeof ErrorType; opts?: any }) => {
       const chainId =
         account._chainId === ChainId.MAINNET ||
         account._chainId === ChainId.GOERLI
