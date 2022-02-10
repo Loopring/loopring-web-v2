@@ -321,6 +321,7 @@ export function useChargeFees({
           AccountStatus.NO_ACCOUNT,
           AccountStatus.DEPOSITING,
           AccountStatus.NOT_ACTIVE,
+          AccountStatus.LOCKED,
         ].includes(account.readyState as any)) ||
       (!isActiveAccount &&
         walletLayer2Status === "UNSET" &&

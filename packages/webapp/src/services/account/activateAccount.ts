@@ -19,7 +19,7 @@ export async function updateAccountFromServer({
   const system = store.getState().system;
   const account = store.getState().account;
 
-  let eddsaKey = isReset ? undefined : account.eddsaKey;
+  let eddsaKey = undefined; //isReset ?  //: account.eddsaKey;
 
   myLog("before check!", account);
 
@@ -41,7 +41,6 @@ export async function updateAccountFromServer({
 
       if (accInfo?.owner && accInfo?.accountId) {
         const connectName = account.connectName as sdk.ConnectorNames;
-
         try {
           if (!eddsaKey) {
             myLog("no eddsaKey ！!");
@@ -54,7 +53,7 @@ export async function updateAccountFromServer({
                   : sdk.GlobalAPI.KEY_MESSAGE.replace(
                       "${exchangeAddress}",
                       system.exchangeInfo.exchangeAddress
-                    ).replace("${nonce}", (accInfo.nonce - 1).toString()),
+                    ).replace("${nonce}", accInfo.nonce.toString()),
               // exchangeAddress: system.exchangeInfo.exchangeAddress,
               // keyNonce: accInfo.nonce,
               walletType: connectName,
