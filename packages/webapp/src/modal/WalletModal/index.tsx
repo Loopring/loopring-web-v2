@@ -273,7 +273,6 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             }
           };
     }, [account, setShowAccount]);
-    myLog("isShowConnect.error", isShowConnect.error);
     const walletList = React.useMemo(() => {
       return Object.values({
         [WalletConnectStep.Provider]: {
