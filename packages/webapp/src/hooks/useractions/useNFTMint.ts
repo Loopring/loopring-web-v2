@@ -89,6 +89,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         walletMap &&
         nftMintValue &&
         nftMintValue.tradeValue &&
+        Number(nftMintValue.tradeValue) > 0 &&
         nftMintValue.fee &&
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
