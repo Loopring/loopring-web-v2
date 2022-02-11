@@ -451,6 +451,7 @@ export default {
   labelNFTTYPE: "Token Standard:",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
+  labelNFTMint: "Mint NFT",
   labelNFTTitleMyNFT: "My NFT",
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
@@ -460,6 +461,7 @@ export default {
   labelIKnow: "I know",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
+  labelInvalidCID: "Invalid CID",
   labelWithdrawInvalidAddress:
     "Invalid address, ENS, special token, or an Counter Factual wallet",
   labelTransferAddressNotLoopring:
@@ -520,6 +522,7 @@ export default {
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
+  labelNFTMintBtn: "Mint My NFT",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription: "Mint NFT",

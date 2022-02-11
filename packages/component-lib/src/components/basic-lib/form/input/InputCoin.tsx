@@ -19,6 +19,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
     subLabel,
     // wait = globalSetup.wait,
     // coinMap,
+    // isBalanceLimit = true,
     maxAllow,
     disabled,
     placeholderText = "0.00",

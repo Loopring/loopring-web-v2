@@ -330,7 +330,6 @@ export function useChargeFees({
           OffchainFeeReqType.UPDATE_ACCOUNT,
           OffchainFeeReqType.UPDATE_ACCOUNT,
           OffchainFeeReqType.TRANSFER,
-          OffchainNFTFeeReqType.NFT_MINT,
           OffchainNFTFeeReqType.NFT_WITHDRAWAL,
           OffchainNFTFeeReqType.NFT_TRANSFER,
           OffchainNFTFeeReqType.NFT_DEPLOY,
@@ -342,7 +341,12 @@ export function useChargeFees({
         [
           OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
           OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
-        ].includes(Number(requestType)))
+        ].includes(Number(requestType))) ||
+      (!isActiveAccount &&
+        tokenAddress &&
+        AccountStatus.ACTIVATED === account.readyState &&
+        walletLayer2Status === "UNSET" &&
+        [OffchainNFTFeeReqType.NFT_MINT].includes(Number(requestType)))
     ) {
       getFeeList();
     }
@@ -352,7 +356,13 @@ export function useChargeFees({
         clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
       }
     };
-  }, [tokenSymbol, requestType, account.readyState, walletLayer2Status]);
+  }, [
+    tokenAddress,
+    tokenSymbol,
+    requestType,
+    account.readyState,
+    walletLayer2Status,
+  ]);
 
   return {
     chargeFeeTokenList,

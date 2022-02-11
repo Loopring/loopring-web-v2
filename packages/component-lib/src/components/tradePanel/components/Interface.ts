@@ -208,6 +208,7 @@ export type BasicANFTTradeProps<T, I> = Omit<
 > & {
   type?: "TOKEN" | "NFT";
   isThumb?: boolean;
+  isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;
   inputNFTProps?: inputNFTProps<I, CoinInfo<I>>;
   inputNFTDefaultProps: inputNFTProps<I, CoinInfo<I>>;
@@ -246,28 +247,26 @@ export type NFTDepositExtendProps<T, I> = {
   allowTrade?: any;
 } & NFTDepositInfoProps<T, I>;
 
-export type NFTMintInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
+export type NFTMintInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   nftMintBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   title?: string;
   description?: string;
-  chargeFeeList?: FeeInfo[];
-  addressDefault?: string;
-  handleOnAddressChange?: (value: string | undefined | I) => void;
-  handleAddressError?: (
-    address: string
-  ) =>
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined;
+  chargeFeeTokenList?: Array<C>;
+  feeInfo: C;
+  isNFTCheckLoading?: boolean;
+  isAvaiableId?: boolean;
+  isFeeNotEnough?: boolean;
+  handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
-export type NFTMintExtendProps<T, I> = {
+
+export type NFTMintExtendProps<T, I, C = FeeInfo> = {
   isThumb?: boolean;
-  isNFTCheckLoading?: boolean;
   handleOnNFTDataChange: (data: T) => void;
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
-} & NFTMintInfoProps<T, I>;
-export type NFTMintViewProps<T, I> = NFTMintExtendProps<T, I>;
+} & NFTMintInfoProps<T, I, C>;
+export type NFTMintViewProps<T, I, C> = NFTMintExtendProps<T, I, C>;
 
 export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   nftDeployBtnStatus?: keyof typeof TradeBtnStatus | undefined;

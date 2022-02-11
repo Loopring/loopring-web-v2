@@ -23,6 +23,7 @@ import {
   ActiveAccountData,
   DepositData,
   LAST_STEP,
+  MintData,
   ModalDataStatus,
   TransferData,
   WithdrawData,
@@ -70,7 +71,7 @@ export function useModalData(): {
   resetNFTWithdrawData: () => void;
   nftMintValue: TradeNFT<any>;
   updateNFTMintData: (
-    nftMintData: RequireOne<DepositData & NFTWholeINFO, never>
+    nftMintData: RequireOne<MintData & NFTWholeINFO, never>
   ) => void;
   resetNFTMintData: () => void;
   nftDeployValue: TradeNFT<any> & { broker: string };
