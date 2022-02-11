@@ -98,14 +98,12 @@ export const useNFTWithdraw = <
     setAddress,
     addrStatus,
     isCFAddress,
-    isContractAddress,
+    // isContractAddress,
+    isContract1XAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
 
-  const isNotAvaiableAddress =
-    isCFAddress ||
-    (isContractAddress &&
-      disableWithdrawList.includes(nftWithdrawValue?.belong ?? ""));
+  const isNotAvaiableAddress = isCFAddress || isContract1XAddress;
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
@@ -474,7 +472,7 @@ export const useNFTWithdraw = <
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap2 as WalletMap<any>,
     isCFAddress,
-    isContractAddress,
+    isContractAddress: isContract1XAddress,
     isAddressCheckLoading,
     addrStatus,
     withdrawBtnStatus: btnStatus,
