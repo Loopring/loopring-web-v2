@@ -15,7 +15,7 @@ import { useModalData } from "stores/router";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import { useNFTDeposit } from "hooks/useractions/useNFTDeposit";
-import { useNFTMint } from "../../../hooks/useractions/useNFTMint";
+import { useNFTMint } from "hooks/useractions/useNFTMint";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {

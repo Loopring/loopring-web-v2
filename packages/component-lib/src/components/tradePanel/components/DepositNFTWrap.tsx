@@ -4,6 +4,7 @@ import {
   TradeNFT,
   LoadingIcon,
   IPFS_META_URL,
+  myLog,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { Trans, useTranslation } from "react-i18next";
@@ -73,19 +74,11 @@ NFTDepositViewProps<T, I>) => {
   const inputBtnRef = React.useRef();
 
   const getDisabled = React.useMemo(() => {
-    if (disabled || nftDepositBtnStatus === TradeBtnStatus.DISABLED) {
-      return true;
-    } else {
-      return false;
-    }
+    return disabled || nftDepositBtnStatus === TradeBtnStatus.DISABLED;
   }, [nftDepositBtnStatus, disabled]);
 
   React.useMemo(() => {
-    if (disabled || nftDepositBtnStatus === TradeBtnStatus.DISABLED) {
-      return true;
-    } else {
-      return false;
-    }
+    return disabled || nftDepositBtnStatus === TradeBtnStatus.DISABLED;
   }, [nftDepositBtnStatus, disabled]);
 
   const _handleOnNFTDataChange = (_tradeData: T) => {
@@ -93,6 +86,7 @@ NFTDepositViewProps<T, I>) => {
       handleOnNFTDataChange({ ...tradeData, ..._tradeData });
     }
   };
+  myLog(getDisabled, "getDisabled");
 
   // @ts-ignore
   return (
@@ -292,11 +286,11 @@ NFTDepositViewProps<T, I>) => {
                     label: t("labelNFTDepositInputTitle"),
                   }}
                   disabled={
-                    tradeData.nftId &&
-                    tradeData.tokenAddress &&
-                    tradeData.balance !== undefined
-                      ? true
-                      : false
+                    !!(
+                      tradeData.nftId &&
+                      tradeData.tokenAddress &&
+                      tradeData.balance !== undefined
+                    )
                   }
                   type={"NFT"}
                   inputNFTRef={inputBtnRef}
@@ -353,7 +347,7 @@ NFTDepositViewProps<T, I>) => {
         </Box>
       </Grid>
 
-      <Grid item marginTop={2} alignSelf={"stretch"}></Grid>
+      <Grid item marginTop={2} alignSelf={"stretch"} />
 
       <Grid item marginTop={3} alignSelf={"stretch"}>
         <Button

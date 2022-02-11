@@ -94,7 +94,7 @@ export type SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
 
 export type NFTDepositProps<T, I> = NFTDepositViewProps<T, I>;
 
-export type NFTMintProps<T, I> = NFTMintViewProps<T, I>;
+export type NFTMintProps<T, I, C = FeeInfo> = NFTMintViewProps<T, I, C>;
 
 export type NFTDeployProps<T, I, C = FeeInfo> = NFTDeployViewProps<T, I, C>;
 /**

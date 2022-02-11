@@ -7,12 +7,12 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
-  ErrorMap,
   ErrorType,
   TradeNFT,
   myLog,
   UIERROR_CODE,
   WalletMap,
+  EmptyValueTag,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTokenMap } from "stores/token";
@@ -22,13 +22,13 @@ import { useModalData } from "stores/router";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
-import { BigNumber } from "bignumber.js";
 import Web3 from "web3";
 import { ChainId, NFTType } from "@loopring-web/loopring-sdk";
 import { useSystem } from "../../stores/system";
 import {
   ActionResult,
   ActionResultCode,
+  DAYS,
   TOAST_TIME,
 } from "../../defs/common_defs";
 import { checkErrorInfo } from "./utils";
@@ -36,7 +36,9 @@ import { isAccActivated } from "./checkAccStatus";
 import { walletLayer2Service } from "../../services/socket";
 import { makeWalletLayer2 } from "../help";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-
+import { useChargeFees } from "../common/useChargeFees";
+import { useTranslation } from "react-i18next";
+import { getTimestampDaysLater } from "../../utils/dt_tools";
 const NFTGasAmounts = {
   deposit: "200000",
 };
@@ -54,42 +56,57 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus();
+  const { t } = useTranslation("common");
   const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
-
-  const { setShowAccount } = useOpenModals();
+  const [isAvaiableId, setIsAvaiableId] = React.useState(false);
+  const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
+  const { setShowAccount, setShowNFTMint } = useOpenModals();
   const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>);
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    tokenAddress: nftMintValue.tokenAddress,
+    requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateNFTMintData({
+        ...nftMintValue,
+        fee: feeInfo,
+      });
+    },
+  });
+  myLog("isAvaiableId", isAvaiableId, btnStatus);
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
+      myLog(!error, nftMintValue, !isFeeNotEnough, isAvaiableId);
       if (
         !error &&
         walletMap &&
         nftMintValue &&
-        nftMintValue.balance &&
         nftMintValue.tradeValue &&
-        sdk
-          .toBig(nftMintValue.tradeValue)
-          .lte(sdk.toBig(nftMintValue?.balance ?? ""))
+        nftMintValue.fee &&
+        nftMintValue.fee.belong &&
+        nftMintValue.fee.__raw__ &&
+        !isFeeNotEnough &&
+        isAvaiableId
       ) {
-        if (nftMintValue.isApproved) {
-          resetBtnInfo();
-        } else {
-          myLog(
-            "!!---> set labelNFTMintNeedApprove!!!! belong:",
-            nftMintValue.tokenAddress
-          );
-          setLabelAndParams("labelNFTMintNeedApprove", {
-            symbol: nftMintValue.name ?? "unknown NFT",
-          });
-        }
         enableBtn();
-      } else {
-        myLog("try to disable nftMint btn!");
-        disableBtn();
+        return;
       }
+      // else {
+      disableBtn();
+      myLog("try to disable nftMint btn!");
+
+      // }
     },
     [
+      isAvaiableId,
+      isFeeNotEnough,
       resetBtnInfo,
       walletMap,
       nftMintValue,
@@ -101,12 +118,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [
-    nftMintValue?.tokenAddress,
-    nftMintValue?.nftId,
-    nftMintValue?.tradeValue,
-    nftMintValue?.balance,
-  ]);
+  }, [isFeeNotEnough, isAvaiableId, nftMintValue, feeInfo]);
 
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
@@ -139,7 +151,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
             }
           );
 
-          myLog("submitInternalTransfer:", response);
+          myLog("submitNFTMint:", response);
 
           if (isAccActivated()) {
             if (
@@ -186,6 +198,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               walletLayer2Service.sendUserUpdate();
 
               resetNFTMintData();
+              // checkFeeIsEnough();
             }
           } else {
             resetNFTMintData();
@@ -223,96 +236,52 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
 
   const handleOnNFTDataChange = useCallback(
     async (data: T) => {
-      let _nftId = "",
-        balance,
-        meta,
-        isApproved;
       let shouldUpdate = {};
-      const web3: Web3 = connectProvides.usedWeb3 as Web3;
-      if (data.nftIdView?.toLowerCase().startsWith("0x")) {
-        _nftId = data.nftIdView;
-      } else if (data.nftIdView) {
-        try {
-          _nftId = web3.utils.toHex(sdk.toBN(data.nftIdView));
-        } catch (error) {
-          const errorView: ErrorType = ErrorMap.NTF_ID_ENCODE_ERROR;
-          updateBtnStatus({ errorView, ...error });
-          return;
-        }
-      }
 
-      if (LoopringAPI.nftAPI && exchangeInfo) {
-        //step check user have this NFT
-        if (
-          data.tokenAddress &&
-          data.tokenAddress !== nftMintValue.tokenAddress &&
-          data.nftIdView &&
-          data.nftIdView !== nftMintValue.nftIdView &&
-          data.nftType &&
-          data.nftType !== nftMintValue.nftType
-        ) {
-          const _id = new BigNumber(data.nftId ?? "", 16);
-          [balance, meta, isApproved] = await Promise.all([
-            LoopringAPI.nftAPI.getNFTBalance({
-              account: account.accAddress,
-              nftId: _nftId,
-              nftType: data.nftType as unknown as NFTType,
-              web3,
-              tokenAddress: data.tokenAddress,
-            }),
-            LoopringAPI.nftAPI.getContractNFTMeta({
-              _id: data.nftIdView,
-              nftId: _nftId,
-              nftType: data.nftType as unknown as NFTType,
-              web3,
-              tokenAddress: data.tokenAddress,
-            }),
-            LoopringAPI.nftAPI.isApprovedForAll({
-              web3,
-              from: account.accAddress,
-              exchangeAddress: exchangeInfo.exchangeAddress,
-              tokenAddress: data.tokenAddress,
-              nftType: data.nftType as unknown as NFTType,
-            }),
-          ]);
+      if (data.nftIdView && LoopringAPI.nftAPI) {
+        setIsNFTCheckLoading(true);
+        let nftId: string = "";
+        try {
+          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.nftIdView);
           shouldUpdate = {
+            nftId,
             ...shouldUpdate,
-            tokenAddress: data.tokenAddress,
-            nftIdView: data.nftIdView,
-            nftType: data.nftType,
-            name: meta.name ?? "unknown NFT",
-            image: meta?.image ?? "",
-            balance,
-            isApproved,
+          };
+          setIsAvaiableId(true);
+        } catch (error) {
+          myLog("handleOnNFTDataChange -> data.nftId", error);
+          setIsAvaiableId(false);
+          shouldUpdate = {
+            nftId: "",
+            // nftIdView:'',
           };
         }
-      } else if (
-        data.tokenAddress &&
-        data.nftIdView &&
-        data.nftType &&
-        data.tradeValue
-      ) {
+
+        if (nftId && nftId !== "") {
+          const value: {
+            image: string;
+            name: string;
+            description: string;
+          } = await fetch(
+            sdk.LOOPRING_URLs.IPFS_META_URL + `${data.nftIdView}`
+          ).then((response) => response.json());
+          shouldUpdate = {
+            nftId: nftId,
+            name: value.name ?? t("labelUnknown"),
+            image: value.image,
+            description: value.description ?? EmptyValueTag,
+            ...shouldUpdate,
+          };
+        }
+      } else if (!data.nftIdView) {
         shouldUpdate = {
-          tradeValue: data.tradeValue,
-        };
-      } else if (
-        nftMintValue.balance !== 0 &&
-        (!data.tokenAddress || !data.nftIdView || !data.nftType)
-      ) {
-        shouldUpdate = {
-          ...shouldUpdate,
-          tokenAddress: data.tokenAddress,
-          nftIdView: data.nftIdView,
-          nftType: data.nftType,
-          image: "",
-          name: "",
-          balance: 0,
-          isApproved: undefined,
+          nftId: "",
         };
       }
-      updateBtnStatus({});
+      setIsNFTCheckLoading(false);
       updateNFTMintData({
         ...nftMintValue,
+        ...data,
         ...shouldUpdate,
       });
     },
@@ -320,108 +289,73 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   );
 
   const onNFTMintClick = useCallback(
-    async (nftMintValue, isFirstTime: boolean = true) => {
+    async (_nftMintValue, isFirstTime: boolean = true) => {
       let result: ActionResult = { code: ActionResultCode.NoError };
       if (
-        account.readyState !== AccountStatus.UN_CONNECT &&
+        account.readyState === AccountStatus.ACTIVATED &&
         nftMintValue.tradeValue &&
         nftMintValue.tokenAddress &&
         nftMintValue.nftId &&
-        tokenMap &&
-        exchangeInfo?.exchangeAddress &&
-        connectProvides.usedWeb3 &&
-        LoopringAPI.nftAPI
+        nftMintValue.fee &&
+        nftMintValue.fee.belong &&
+        nftMintValue.fee.__raw__ &&
+        LoopringAPI.userAPI &&
+        !isFeeNotEnough &&
+        exchangeInfo &&
+        isAvaiableId
       ) {
-        const web3: Web3 = connectProvides.usedWeb3 as Web3;
-        const gasLimit = parseInt(NFTGasAmounts.deposit);
-        const realGasPrice = gasPrice ?? 30;
-        let nonce =
-          (await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)) ??
-          0;
-
+        setShowNFTMint({ isShow: false });
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTMint_WaitForAuth,
         });
         try {
-          const response = await LoopringAPI.nftAPI.depositNFT({
-            web3,
-            from: account.accAddress,
-            exchangeAddress: exchangeInfo?.exchangeAddress,
-            tokenAddress: nftMintValue.tokenAddress,
-            nftId: nftMintValue.nftId,
-            amount: nftMintValue.tradeValue,
-            gasPrice: realGasPrice,
-            gasLimit,
-            chainId: chainId as ChainId,
-            nonce,
-            nftType: nftMintValue.nftType as unknown as NFTType,
-            sendByMetaMask: true,
-          });
-          myLog("response:", response);
-          // updateDepositHash({response.result})
-          // result.data = response
-
-          if (response) {
-            setShowAccount({ isShow: true, step: AccountStep.NFTMint_Submit });
-            updateDepositHash(response.result, account.accAddress, undefined, {
-              symbol: nftMintValue.name,
-              type: "Deposit NFT",
-              value: nftMintValue.tradeValue,
-            });
-          } else {
-            // deposit failed
-            setShowAccount({
-              isShow: true,
-              step: AccountStep.NFTMint_Failed,
-              error: {
-                code: UIERROR_CODE.UNKNOWN,
-                msg: "No Response",
-              },
-            });
-          }
-          resetNFTMintData();
-        } catch (reason) {
-          sdk.dumpError400(reason);
-          result.code = ActionResultCode.DepositFailed;
-          result.data = reason;
-
-          //deposit failed
-          const err = checkErrorInfo(reason, true);
-
-          myLog(
-            "---- deposit NFT ERROR reason:",
-            reason?.message.indexOf("User denied transaction")
+          const { accountId, accAddress, apiKey } = account;
+          const fee = sdk.toBig(nftMintValue.fee.__raw__?.feeRaw ?? 0);
+          const feeToken = tokenMap[nftMintValue.fee.belong];
+          const storageId = await LoopringAPI.userAPI.getNextStorageId(
+            {
+              accountId,
+              sellTokenId: feeToken.tokenId,
+            },
+            apiKey
           );
-          myLog(reason);
-          myLog("---- deposit err:", err);
+          const req: sdk.NFTMintRequestV3 = {
+            exchange: exchangeInfo.exchangeAddress,
+            minterId: accountId,
+            minterAddress: accAddress,
+            toAccountId: accountId,
+            toAddress: accAddress,
+            nftType: 0,
+            tokenAddress: nftMintValue.tokenAddress,
+            nftId: nftMintValue.nftId, //nftId.toString(16),
+            amount: nftMintValue.tradeValue.toString(),
+            validUntil: getTimestampDaysLater(DAYS),
+            storageId: storageId?.offchainId,
+            maxFee: {
+              tokenId: feeToken.tokenId,
+              amount: fee.toString(), // TEST: fee.toString(),
+            },
+            forceToMint: false,
+          };
+          myLog("onNFTMintClick req:", req);
 
-          switch (err) {
-            case sdk.ConnectorError.USER_DENIED:
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTMint_Denied,
-              });
-              break;
-            default:
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.NFTMint_Failed,
-                error: {
-                  code: result.code ?? UIERROR_CODE.UNKNOWN,
-                  msg: reason?.message,
-                },
-              });
-              resetNFTMintData();
-              break;
-          }
+          processRequest(req, isFirstTime);
+        } catch (e) {
+          sdk.dumpError400(e);
+          // transfer failed
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTMint_Failed,
+            error: { code: 400, message: e.message } as sdk.RESULT_INFO,
+          });
         }
         return;
       } else {
         result.code = ActionResultCode.DataNotReady;
       }
     },
-    []
+    [nftMintValue]
   );
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
@@ -433,18 +367,34 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
+  // const resetDefault = React.useCallback(() => {
+  //   checkFeeIsEnough();
+  //   updateNFTMintData({
+  //     fee: feeInfo,
+  //     tokenAddress: "",
+  //     nftIdView: "",
+  //     nftType: NFTType.ERC1155.toString(),
+  //     image: "",
+  //     name: "",
+  //     balance: 0,
+  //   });
+  // }, [walletMap, updateNFTMintData, feeInfo]);
 
-  const nftMintProps: NFTMintProps<T, I> = React.useMemo(() => {
-    return {
-      handleOnNFTDataChange,
-      onNFTMintClick,
-      walletMap,
-      coinMap: totalCoinMap,
-      tradeData: nftMintValue as T,
-      nftMintBtnStatus: btnStatus,
-      btnInfo,
-    } as unknown as NFTMintProps<T, I>;
-  }, [nftMintValue]);
+  const nftMintProps: NFTMintProps<T, I> = {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    isNFTCheckLoading,
+    isAvaiableId,
+    handleOnNFTDataChange,
+    onNFTMintClick,
+    walletMap: walletMap as any,
+    coinMap: totalCoinMap as any,
+    tradeData: nftMintValue as T,
+    nftMintBtnStatus: btnStatus,
+    btnInfo,
+  };
 
   return {
     nftMintProps,

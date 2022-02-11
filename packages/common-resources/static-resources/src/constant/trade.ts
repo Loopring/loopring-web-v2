@@ -65,6 +65,7 @@ export type NFTWholeINFO = NFTTokenInfo &
   } & { fee?: FeeInfo };
 export type TradeNFT<I> = {
   balance?: number;
+  fee?: FeeInfo;
   isApproved?: boolean;
 } & Partial<NFTWholeINFO> &
   Partial<IBData<I>> &
