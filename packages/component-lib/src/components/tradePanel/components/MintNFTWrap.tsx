@@ -241,7 +241,9 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
           ) : (
             ""
           )}
-          {!isAvaiableId ? (
+          {!isAvaiableId &&
+          tradeData.nftIdView &&
+          tradeData.nftIdView !== "" ? (
             <Typography
               color={"var(--color-error)"}
               fontSize={14}
