@@ -199,7 +199,8 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
         >
           <TextField
             value={tradeData.nftIdView}
-            label={t("labelNFTTId")}
+            label={t("labelNFTCid")}
+            title={t("labelNFTCid")}
             placeholder={t("mintNFTAddressLabelPlaceholder")}
             onChange={(event) =>
               _handleOnNFTDataChange({
