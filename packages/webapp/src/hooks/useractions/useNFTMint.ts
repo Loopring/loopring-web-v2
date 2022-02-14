@@ -59,10 +59,15 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { t } = useTranslation("common");
   const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
+
   const [isAvaiableId, setIsAvaiableId] = React.useState(false);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMint } = useOpenModals();
   const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>);
+  const tokenAddress =
+    LoopringAPI.nftAPI?.computeNFTAddress({
+      nftOwner: account.accAddress,
+    }).tokenAddress || "";
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -70,7 +75,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     feeInfo,
     checkFeeIsEnough,
   } = useChargeFees({
-    tokenAddress: nftMintValue.tokenAddress,
+    tokenAddress: tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
     updateData: (feeInfo, _chargeFeeList) => {
       updateNFTMintData({
@@ -88,6 +93,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         !error &&
         walletMap &&
         nftMintValue &&
+        tokenAddress &&
         nftMintValue.tradeValue &&
         Number(nftMintValue.tradeValue) > 0 &&
         nftMintValue.fee &&
@@ -111,6 +117,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       resetBtnInfo,
       walletMap,
       nftMintValue,
+      tokenAddress,
       enableBtn,
       setLabelAndParams,
       disableBtn,
@@ -295,12 +302,12 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       if (
         account.readyState === AccountStatus.ACTIVATED &&
         nftMintValue.tradeValue &&
-        nftMintValue.tokenAddress &&
         nftMintValue.nftId &&
         nftMintValue.fee &&
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
         LoopringAPI.userAPI &&
+        LoopringAPI.nftAPI &&
         !isFeeNotEnough &&
         exchangeInfo &&
         isAvaiableId
@@ -328,8 +335,8 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
             toAccountId: accountId,
             toAddress: accAddress,
             nftType: 0,
-            tokenAddress: nftMintValue.tokenAddress,
-            nftId: nftMintValue.nftId, //nftId.toString(16),
+            tokenAddress,
+            nftId: nftMintValue.nftId,
             amount: nftMintValue.tradeValue.toString(),
             validUntil: getTimestampDaysLater(DAYS),
             storageId: storageId?.offchainId,
