@@ -119,17 +119,20 @@ export const useMyNFT = () => {
         const _id = new BigNumber(nftId ?? "", 16);
         myLog("nftId", _id, _id.toString());
         mediaPromise.push(
-          LoopringAPI?.nftAPI?.getContractNFTMeta({
-            _id: _id.toString(),
-            // @ts-ignore
-            nftId,
-            web3: connectProvides.usedWeb3,
-            tokenAddress,
-          })
+          LoopringAPI?.nftAPI
+            ?.getContractNFTMeta({
+              _id: _id.toString(),
+              // @ts-ignore
+              nftId,
+              web3: connectProvides.usedWeb3,
+              tokenAddress,
+            })
+            .catch(() => {})
         );
       }
     }
     const meta: any[] = await Promise.all(mediaPromise);
+
     setNFTList(
       nftLayer2.map((item, index) => {
         return {

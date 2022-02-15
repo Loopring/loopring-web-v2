@@ -203,18 +203,14 @@ export const MyNFTPanel = withTranslation("common")(
                 <LoadingIcon style={{ width: 32, height: 32 }} />
               </Box>
             ) : (
-              <EmptyDefault
-                message={() => (
-                  <Box
-                    flex={1}
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                  >
-                    No NFT
-                  </Box>
-                )}
-              />
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <EmptyDefault message={() => <>No NFT</>} />
+              </Box>
             )}
           </>
         ),
@@ -347,7 +343,9 @@ export const MyNFTPanel = withTranslation("common")(
               </Button>
             </Box>
           </Box>
-          <Box flex={1}>{panelList[currentTab].element}</Box>
+          <Box flex={1} display={"flex"}>
+            {panelList[currentTab].element}
+          </Box>
         </StyledPaper>
       </>
     );

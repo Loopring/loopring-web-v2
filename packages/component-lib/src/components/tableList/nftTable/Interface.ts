@@ -4,7 +4,8 @@
 //   transfer = "TRANSFER",
 // }
 
-import { TxType } from "@loopring-web/loopring-sdk";
+import { UserNFTTxsHistory, UserNFTTxTypes } from "@loopring-web/loopring-sdk";
+import { DateRange } from "@mui/lab";
 
 export enum TsTradeStatus {
   processing = "processing",
@@ -20,22 +21,11 @@ export enum TxnDetailStatus {
   failed = "FAILED",
 }
 
-export type TxnDetailProps = {
-  txType?: TxType;
-  hash: string;
-  txHash: string;
-  status: keyof typeof TxnDetailStatus;
+export type TxnDetailProps = UserNFTTxsHistory & {
   time: string;
-  from: string;
-  to: string;
-  amount: string;
   fee: {
     unit: string;
     value: number;
-  };
-  blockIdInfo: {
-    blockId: number;
-    indexInBlock: number;
   };
   storageInfo: {
     accountId: number;
@@ -49,17 +39,25 @@ export type TxnDetailProps = {
   nftData: string;
   etherscanBaseUrl?: string;
 };
+export type NFTTableFilter = {
+  txType?: UserNFTTxTypes;
+  limit?: number;
+  duration?: DateRange<Date | string>;
+  page: number;
+};
 
-export interface NFTTableProps {
+export type NFTTableProps<Row> = NFTTableFilter & {
   etherscanBaseUrl?: string;
-  rawData: TxnDetailProps[];
+  rawData: Row[];
+  showFilter?: boolean;
   pagination?: {
     pageSize: number;
     total: number;
   };
-  txType: TxType;
-  getTxnList: (page: number) => Promise<void>;
+  getTxnList: (filter: NFTTableFilter) => Promise<void>;
+
   // showFilter?: boolean;
   showloading: boolean;
+  accAddress: string;
   // accAddress?: string;
-}
+};
