@@ -122,9 +122,9 @@ export const useHistoryNFT = <Row extends TxnDetailProps>() => {
               rawData: userNFTTxs.map((item) => {
                 return {
                   ...item,
-                  amount:
-                    (item.payeeAddress === account.accAddress ? "+" : "-") +
-                    item.amount.toString(),
+                  amount: item.amount.toString(),
+                  // (item.payeeAddress === account.accAddress ? "+" : "-") +
+                  // item.amount.toString(),
                   fee: {
                     unit: item.feeTokenSymbol || "",
                     value: Number(

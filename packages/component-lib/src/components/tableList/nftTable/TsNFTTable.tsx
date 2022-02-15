@@ -130,7 +130,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
-                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
+                  row.nftTxType === TxNFTType[TxNFTType.MINT]
                 ? "+"
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? "-"
@@ -142,7 +143,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   component={"span"}
                   marginRight={1}
                 >
-                  {hasSymbol} {row.amount ?? EmptyValueTag}
+                  {hasSymbol}
+                  {row.amount ?? EmptyValueTag}
                 </Typography>
                 <Typography variant={"body1"} component={"span"}>
                   {getFormattedHash(row.nftData)}
