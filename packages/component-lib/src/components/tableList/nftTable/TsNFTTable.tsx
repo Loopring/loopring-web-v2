@@ -7,6 +7,7 @@ import { Column, TablePagination, Table } from "../../basic-lib";
 import {
   CompleteIcon,
   EmptyValueTag,
+  EXPLORE_TYPE,
   Explorer,
   getFormattedHash,
   getValuePrecisionThousand,
@@ -178,20 +179,17 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxTxnHash"),
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            let path = "",
-              hash = row.txHash !== "" ? row.txHash : row.hash;
-            if (
-              row.txHash ||
-              (row.indexInBlock && row.blockId && row.storageInfo)
-            ) {
-              path =
-                row.txHash !== ""
-                  ? etherscanBaseUrl + `/tx/${row.txHash}`
-                  : row.storageInfo.tokenId || row.storageInfo.storageId
-                  ? Explorer +
-                    `/tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
-                  : Explorer + `/tx/${row.blockId}-${row.indexInBlock}`;
-            }
+            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            let path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : row.storageInfo.tokenId || row.storageInfo.storageId
+                ? Explorer +
+                  `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
+                : Explorer +
+                  `tx/hash-${
+                    EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
+                  }/${row.hash}`;
             return (
               <Box
                 className="rdg-cell-value"
