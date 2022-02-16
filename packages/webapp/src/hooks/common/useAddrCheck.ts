@@ -63,11 +63,8 @@ export const useAddressCheck = () => {
             }
             if (walletType && walletType.isContract) {
               setIsContractAddress(true);
-
-              setIsContract1XAddress(false);
             } else {
               setIsContractAddress(false);
-              setIsContract1XAddress(false);
             }
             //@ts-ignore
             if (walletType.loopringWalletContractVersion.startsWith("V1_")) {

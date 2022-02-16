@@ -78,6 +78,7 @@ export const HebaoPage = withTranslation(["common"])(
       operationLogList,
       setOpenHebao,
       loadData,
+      isContractAddress,
     } = useHebaoMain();
     const handleOpenModal = ({
       step,
@@ -120,6 +121,7 @@ export const HebaoPage = withTranslation(["common"])(
               protectList={protectList}
               hebaoConfig={hebaoConfig}
               loadData={loadData}
+              isContractAddress={isContractAddress}
               handleOpenModal={handleOpenModal}
             />
           );

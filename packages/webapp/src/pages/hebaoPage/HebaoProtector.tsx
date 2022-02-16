@@ -67,6 +67,7 @@ export const useHebaoProtector = <T extends Protector>({
   loadData,
 }: {
   hebaoConfig: any;
+  // isContractAddress: boolean;
   handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
   loadData: () => Promise<void>;
 }) => {
@@ -99,19 +100,19 @@ export const useHebaoProtector = <T extends Protector>({
             params
           );
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
-
-          if (result) {
-            handleOpenModal({
-              step: HebaoStep.LockAccount_Success,
-            });
-            loadData();
-          } else {
+          if (error) {
             handleOpenModal({
               step: HebaoStep.LockAccount_Failed,
               options: {
                 error: errorItem ? t(errorItem.messageKey) : error.message,
               },
             });
+          } else {
+            await sdk.sleep(3000);
+            handleOpenModal({
+              step: HebaoStep.LockAccount_Success,
+            });
+            loadData();
           }
         } catch (reason) {
           // result.code = ActionResultCode.ApproveFailed;
@@ -253,11 +254,13 @@ export const HebaoProtector = <T extends Protector>({
   hebaoConfig,
   handleOpenModal,
   loadData,
+  isContractAddress,
 }: {
   protectList: T[];
   hebaoConfig: any;
   loadData: () => Promise<void>;
   handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
+  isContractAddress: boolean;
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common"]);
@@ -337,17 +340,19 @@ export const HebaoProtector = <T extends Protector>({
             flexDirection={"row"}
             justifyContent={"flex-end"}
           >
-            <Button
-              variant={"contained"}
-              size={"small"}
-              color={"primary"}
-              startIcon={
-                <SecurityIcon htmlColor={"var(--color-text-button)"} />
-              }
-              onClick={() => setOpenQRCode(true)}
-            >
-              {t("labelAddProtector")}
-            </Button>
+            {!isContractAddress && (
+              <Button
+                variant={"contained"}
+                size={"small"}
+                color={"primary"}
+                startIcon={
+                  <SecurityIcon htmlColor={"var(--color-text-button)"} />
+                }
+                onClick={() => setOpenQRCode(true)}
+              >
+                {t("labelAddProtector")}
+              </Button>
+            )}
           </ButtonListRightStyled>
         </Box>
         <Box flex={1} alignItems={"center"} marginTop={2}>

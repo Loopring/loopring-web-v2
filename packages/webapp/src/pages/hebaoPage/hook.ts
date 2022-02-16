@@ -1,21 +1,13 @@
 import React from "react";
 import { useAccount } from "../../stores/account";
-import {
-  ConnectProviders,
-  myLog,
-  SagaStatus,
-} from "@loopring-web/common-resources";
+import { myLog, SagaStatus } from "@loopring-web/common-resources";
 import { LoopringAPI } from "../../api_wrapper";
 import {
   Guardian,
   HebaoOperationLog,
-  LockHebaoHebaoParam,
   Protector,
 } from "@loopring-web/loopring-sdk";
-import { connectProvides } from "@loopring-web/web3-provider";
 import { HebaoStep } from "@loopring-web/component-lib";
-import { useSystem } from "../../stores/system";
-import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum TxHebaoHistoryType {
   ADD_GUARDIAN = 51,
@@ -30,6 +22,7 @@ export enum TxHebaoHistoryType {
   UNLOCK_WALLET_WA = 60, // 37
   RESET_GUARDIANS_WA = 61, // 200
 }
+
 export enum TxHebaoAction {
   Approve,
   Reject,
@@ -41,6 +34,22 @@ export const useHebaoMain = <
   H extends HebaoOperationLog
 >() => {
   const { account, status: accountStatus } = useAccount();
+  const [isContractAddress, setIsContractAddress] =
+    React.useState<boolean>(false);
+  LoopringAPI.walletAPI
+    ?.getWalletType({
+      wallet: account.accAddress,
+    })
+    .then(({ walletType }) => {
+      if (walletType?.isContract) {
+        setIsContractAddress(true);
+      } else {
+        setIsContractAddress(false);
+      }
+    });
+
+  myLog(isContractAddress, "isContractAddress");
+
   const [
     { hebaoConfig, protectList, guardiansList, operationLogList },
     setList,
@@ -135,6 +144,7 @@ export const useHebaoMain = <
     }
   }, [accountStatus]);
   return {
+    isContractAddress,
     protectList,
     guardiansList,
     hebaoConfig,
