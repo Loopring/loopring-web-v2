@@ -183,13 +183,20 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             let path =
               row.txHash !== ""
                 ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : row.storageInfo.tokenId || row.storageInfo.storageId
-                ? Explorer +
-                  `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
                 : Explorer +
                   `tx/${row.hash}-${
                     EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
                   }`;
+            // let path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : row.storageInfo.tokenId || row.storageInfo.storageId
+            //     ? Explorer +
+            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${
+            //         EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
+            //       }`;
             return (
               <Box
                 className="rdg-cell-value"

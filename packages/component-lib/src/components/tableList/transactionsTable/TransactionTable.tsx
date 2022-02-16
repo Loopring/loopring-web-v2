@@ -334,11 +334,16 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const path =
               row.txHash !== ""
                 ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : row.storageInfo.tokenId || row.storageInfo.storageId
-                ? Explorer +
-                  `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
                 : Explorer +
                   `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            // const path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : row.storageInfo.tokenId || row.storageInfo.storageId
+            //     ? Explorer +
+            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
             return (
               <Box
                 className="rdg-cell-value textAlignRight"
