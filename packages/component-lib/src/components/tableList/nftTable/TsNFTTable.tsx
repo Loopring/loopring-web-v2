@@ -187,9 +187,9 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 ? Explorer +
                   `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
                 : Explorer +
-                  `tx/hash-${
+                  `tx/${row.hash}-${
                     EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
-                  }/${row.hash}`;
+                  }`;
             return (
               <Box
                 className="rdg-cell-value"
