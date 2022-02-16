@@ -500,7 +500,7 @@ export default {
   labelNFTContractAddress: "NFT Token Contract:",
   labelNFTTId: "NFT Token ID:",
   labelNFTCid:
-    "IPFS CID: (Which storage a META JSON as an unique Token ID for NFT)",
+    "IPFS CID <1></1>: (Which storage a META JSON as an unique Token ID for NFT)",
   labelNFTType: "NFT Type:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
