@@ -371,7 +371,7 @@ export const Table = <R, SR>(
         <LoadingStyled color={"inherit"}>
           <img
             className="loading-gif"
-            width="300"
+            width="100"
             src={`${SoursURL}images/loader.gif`}
           />
         </LoadingStyled>
