@@ -28,7 +28,7 @@ export async function unlockAccount() {
         const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
           owner: account.accAddress,
         });
-        nonce = accInfo ? account.nonce : nonce;
+        nonce = accInfo ? accInfo.nonce : nonce;
       }
       // myLog("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE);
       const eddsaKey = await sdk.generateKeyPair({
@@ -42,7 +42,7 @@ export async function unlockAccount() {
             : sdk.GlobalAPI.KEY_MESSAGE.replace(
                 "${exchangeAddress}",
                 exchangeInfo.exchangeAddress
-              ).replace("${nonce}", (account.nonce - 1).toString()),
+              ).replace("${nonce}", (nonce - 1).toString()),
         walletType: connectName,
         chainId: chainId as any,
         accountId: account.accountId,

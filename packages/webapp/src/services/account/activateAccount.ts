@@ -41,21 +41,18 @@ export async function updateAccountFromServer({
 
       if (accInfo?.owner && accInfo?.accountId) {
         const connectName = account.connectName as sdk.ConnectorNames;
+        let keySeed = sdk.GlobalAPI.KEY_MESSAGE.replace(
+          "${exchangeAddress}",
+          system.exchangeInfo.exchangeAddress
+        ).replace("${nonce}", accInfo.nonce.toString());
         try {
           if (!eddsaKey) {
             myLog("no eddsaKey ！!");
+
             eddsaKey = await sdk.generateKeyPair({
               web3: connectProvides.usedWeb3,
               address: accInfo.owner,
-              keySeed:
-                account.keySeed && account.keySeed !== ""
-                  ? account.keySeed
-                  : sdk.GlobalAPI.KEY_MESSAGE.replace(
-                      "${exchangeAddress}",
-                      system.exchangeInfo.exchangeAddress
-                    ).replace("${nonce}", accInfo.nonce.toString()),
-              // exchangeAddress: system.exchangeInfo.exchangeAddress,
-              // keyNonce: accInfo.nonce,
+              keySeed,
               walletType: connectName,
               chainId: system.chainId as any,
               counterFactualInfo:
@@ -63,7 +60,6 @@ export async function updateAccountFromServer({
             });
             myLog("no eddsaKey! after generateKeyPair");
           }
-
           try {
             let tokenId = 0;
 
@@ -82,10 +78,7 @@ export async function updateAccountFromServer({
                 volume: fee.toString(),
               },
               validUntil: getTimestampDaysLater(DAYS),
-              keySeed:
-                account.keySeed && account.keySeed !== ""
-                  ? account.keySeed
-                  : undefined,
+              keySeed,
               nonce: accInfo.nonce as number,
             };
 
