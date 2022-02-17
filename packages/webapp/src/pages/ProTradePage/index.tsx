@@ -127,8 +127,8 @@ export const OrderbookPage = withTranslation("common")(() => {
             {/*<LoadingIcon />*/}
             <img
               className="loading-gif"
-              width="100"
-              src={`${SoursURL}images/loader.gif`}
+              width="36"
+              src={`${SoursURL}images/loading-line.gif`}
             />
           </Box>
         )}
@@ -373,8 +373,8 @@ export const OrderbookPage = withTranslation("common")(() => {
           {/*<LoadingIcon />*/}
           <img
             className="loading-gif"
-            width="100"
-            src={`${SoursURL}images/loader.gif`}
+            width="36"
+            src={`${SoursURL}images/loading-line.gif`}
           />
         </Box>
       )}

@@ -120,7 +120,7 @@ export const useMyNFT = () => {
     } else {
       tokenInfo = {
         ...tokenInfo,
-        isFailedLoadMeta: true,
+        isFailedLoadMeta: false,
       };
     }
     return tokenInfo;
@@ -145,24 +145,44 @@ export const useMyNFT = () => {
     },
     [setShowNFTTransfer, updateNFTTransferData, updateNFTWithdrawData]
   );
-  const onNFTError = (item: Partial<NFTWholeINFO>, index: number) => {
-    // if(item.)
-    // loadNFT();
+  const onNFTError = (item: Partial<NFTWholeINFO>, index?: number) => {
+    let _index = index;
+
     setNFTList((state) => {
-      state[index] = {
-        ...state[index],
-        isFailedLoadMeta: true,
-      };
+      if (index === undefined) {
+        _index = state.findIndex(
+          (_item) =>
+            _item.tokenAddress === item.tokenAddress &&
+            _item.nftId === item.tokenAddress
+        );
+      }
+      if (_index) {
+        state[_index] = {
+          ...state[_index],
+          isFailedLoadMeta: true,
+        };
+      }
       return state;
     });
   };
-  const onNFTReload = async (item: Partial<NFTWholeINFO>, index: number) => {
+  const onNFTReload = async (item: Partial<NFTWholeINFO>, index?: number) => {
     const tokenInfo = await infoDetail(item);
+    let _index = index;
+
     setNFTList((state) => {
-      state[index] = {
-        ...state[index],
-        ...tokenInfo,
-      };
+      if (index === undefined) {
+        _index = state.findIndex(
+          (_item) =>
+            _item.tokenAddress === item.tokenAddress &&
+            _item.nftId === item.tokenAddress
+        );
+      }
+      if (_index) {
+        state[_index] = {
+          ...state[_index],
+          ...tokenInfo,
+        };
+      }
       return state;
     });
   };

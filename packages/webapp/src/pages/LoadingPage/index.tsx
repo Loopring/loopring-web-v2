@@ -51,8 +51,8 @@ export const LoadingPage = () => {
         <div className="loader loader--style3" title="2">
           <img
             className="loading-gif"
-            width="100"
-            src={`${SoursURL}images/loader.gif`}
+            width="36"
+            src={`${SoursURL}images/loading-line.gif`}
           />
         </div>
       </StyleBox>
@@ -77,8 +77,8 @@ export const LoadingBlock = () => {
         <div className="loader loader--style3" title="2">
           <img
             className="loading-gif"
-            width="100"
-            src={`${SoursURL}images/loader.gif`}
+            width="36"
+            src={`${SoursURL}images/loading-line.gif`}
           />
         </div>
       </StyleBlock>

@@ -63,7 +63,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
   }: PanelProps & WithTranslation) => {
     const isLoading = iconType === IconType.LoadingIcon;
 
-    const size = isLoading ? 300 : 60;
+    const size = isLoading ? 60 : 60;
 
     const marginTopIcon = isLoading ? 0 : 8;
 
@@ -82,7 +82,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             <img
               className="loading-gif"
               width={size}
-              src={`${SoursURL}images/loader.gif`}
+              src={`${SoursURL}images/loading-line.gif`}
             />
             // <LoadingIcon
             //   color={"primary"}
