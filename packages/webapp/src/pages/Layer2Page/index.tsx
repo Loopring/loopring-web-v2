@@ -7,9 +7,9 @@ import {
   AccountStatus,
   fnType,
   i18n,
-  LoadingIcon,
   myLog,
   SagaStatus,
+  SoursURL,
   subMenuLayer2,
 } from "@loopring-web/common-resources";
 
@@ -199,7 +199,12 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />
+            <img
+              className="loading-gif"
+              width="300"
+              src={`${SoursURL}images/loader.gif`}
+            />
+            {/*<LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />*/}
             <Typography marginY={3} variant={"h1"} textAlign={"center"}>
               {t("describeTitleOpenAccounting")}
             </Typography>

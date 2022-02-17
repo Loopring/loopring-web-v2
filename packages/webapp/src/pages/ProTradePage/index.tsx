@@ -10,8 +10,8 @@ import {
   BreakPoint,
   DragIcon,
   layoutConfigs,
-  LoadingIcon,
   ResizeIcon,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import {
   ChartView,
@@ -124,7 +124,12 @@ export const OrderbookPage = withTranslation("common")(() => {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <LoadingIcon />
+            {/*<LoadingIcon />*/}
+            <img
+              className="loading-gif"
+              width="100"
+              src={`${SoursURL}images/loader.gif`}
+            />
           </Box>
         )}
       </>
@@ -365,7 +370,12 @@ export const OrderbookPage = withTranslation("common")(() => {
           alignItems={"center"}
           justifyContent={"center"}
         >
-          <LoadingIcon />
+          {/*<LoadingIcon />*/}
+          <img
+            className="loading-gif"
+            width="100"
+            src={`${SoursURL}images/loader.gif`}
+          />
         </Box>
       )}
     </Box>

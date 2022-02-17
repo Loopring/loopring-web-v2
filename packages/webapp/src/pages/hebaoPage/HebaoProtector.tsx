@@ -22,6 +22,7 @@ import {
   LockIcon,
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
+  // SoursURL,
 } from "@loopring-web/common-resources";
 import { useAccount } from "../../stores/account";
 import { LockHebaoHebaoParam, Protector } from "@loopring-web/loopring-sdk";

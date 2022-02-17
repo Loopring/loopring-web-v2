@@ -33,6 +33,7 @@ import {
   IPFS_META_URL,
   LoadingIcon,
   RefreshIcon,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 import { css, Theme, useTheme } from "@emotion/react";
@@ -252,7 +253,12 @@ export const MyNFTPanel = withTranslation("common")(
                 justifyContent={"center"}
                 height={"90%"}
               >
-                <LoadingIcon style={{ width: 32, height: 32 }} />
+                <img
+                  className="loading-gif"
+                  width="100"
+                  src={`${SoursURL}images/loader.gif`}
+                />
+                {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
               </Box>
             ) : (
               <EmptyDefault
