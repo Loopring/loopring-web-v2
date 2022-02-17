@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   Grid,
-  ListItemProps,
   Modal as MuiModal,
   Tab,
   Tabs,
@@ -112,9 +111,12 @@ export const MyNFTPanel = withTranslation("common")(
       setCurrentTab(value);
     }, []);
     const modalContent = React.useMemo(() => {
+      // @ts-ignore
       return (
         popItem && (
           <NFTDetail
+            onNFTReload={onNFTReload}
+            onNFTError={onNFTError}
             etherscanBaseUrl={etherscanBaseUrl}
             onDetailClose={onDetailClose}
             popItem={popItem}

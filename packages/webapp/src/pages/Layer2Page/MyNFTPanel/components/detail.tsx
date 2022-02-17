@@ -4,6 +4,7 @@ import {
   getShortAddr,
   IPFS_META_URL,
   NFTWholeINFO,
+  RefreshIcon,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -11,6 +12,7 @@ import {
   TransferPanel,
   WithdrawPanel,
   DeployNFTWrap,
+  NftImage,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -57,12 +59,16 @@ export const NFTDetail = withTranslation("common")(
     popItem,
     etherscanBaseUrl,
     onDetailClose,
+    onNFTError,
+    onNFTReload,
     t,
     ...rest
   }: {
     onDetailClose: () => void;
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
+    onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
+    onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
   } & WithTranslation) => {
     const { assetsRawData } = useGetAssets();
 
@@ -83,26 +89,6 @@ export const NFTDetail = withTranslation("common")(
 
     const handleChangeIndex = (index: number) => {
       setViewPage(index);
-      // switch (index) {
-      //   case 1:
-      //     updateNFTTransferData({
-      //       ...nftTransferProps.tradeData,
-      //       ...popItem,
-      //     });
-      //     break;
-      //   case 2:
-      //     updateNFTWithdrawData({
-      //       ...nftWithdrawProps.tradeData,
-      //       ...popItem,
-      //     });
-      //     break;
-      //   case 3:
-      //     updateNFTDeployData({
-      //       ...nftDeployProps.tradeData,
-      //       ...popItem,
-      //     });
-      //     break;
-      // }
     };
     const detailView = React.useMemo(() => {
       return (
@@ -287,15 +273,34 @@ export const NFTDetail = withTranslation("common")(
           alignItems={"center"}
           justifyContent={"center"}
         >
-          <img
-            alt={"NFT"}
-            width={"100%"}
-            height={"100%"}
-            src={popItem?.image?.replace(
-              IPFS_META_URL,
-              LOOPRING_URLs.IPFS_META_URL
-            )}
-          />
+          <Box
+            flex={1}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            onClick={() => onNFTReload(popItem)}
+          >
+            <RefreshIcon style={{ height: 36, width: 36 }} />
+          </Box>
+          ) : (
+          <Box
+            alignSelf={"stretch"}
+            flex={1}
+            display={"flex"}
+            style={{ background: "var(--color-white)" }}
+          >
+            <NftImage
+              {...popItem}
+              onError={() => onNFTError(popItem)}
+              alt={popItem.name ?? "NFT"}
+              src={
+                popItem?.image?.replace(
+                  IPFS_META_URL,
+                  LOOPRING_URLs.IPFS_META_URL
+                ) ?? ""
+              }
+            />
+          </Box>
         </BoxNFT>
         <BoxStyle
           marginLeft={2}
