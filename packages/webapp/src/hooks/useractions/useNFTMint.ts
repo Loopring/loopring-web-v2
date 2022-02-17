@@ -263,20 +263,27 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         }
 
         if (nftId && nftId !== "") {
-          const value: {
-            image: string;
-            name: string;
-            description: string;
-          } = await fetch(
-            sdk.LOOPRING_URLs.IPFS_META_URL + `${data.nftIdView}`
-          ).then((response) => response.json());
-          shouldUpdate = {
-            nftId: nftId,
-            name: value.name ?? t("labelUnknown"),
-            image: value.image,
-            description: value.description ?? EmptyValueTag,
-            ...shouldUpdate,
-          };
+          try {
+            const value = await fetch(
+              sdk.LOOPRING_URLs.IPFS_META_URL + `${data.nftIdView}`
+            )
+              .then((response) => response.json())
+              .catch((error) => {
+                myLog(error);
+                return undefined;
+              });
+            if (value) {
+              shouldUpdate = {
+                nftId: nftId,
+                name: value.name ?? t("labelUnknown"),
+                image: value.image,
+                description: value.description ?? EmptyValueTag,
+                ...shouldUpdate,
+              };
+            }
+          } catch (error) {
+            myLog(error);
+          }
         }
       } else if (!data.nftIdView) {
         shouldUpdate = {
