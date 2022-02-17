@@ -101,7 +101,6 @@ export const NFTDetail = withTranslation("common")(
           >
             <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
               {t("labelNFTDetail")}
-              {popItem.image}
             </Typography>
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
               <Typography color={"var(--color-text-third)"} width={160}>
