@@ -22,8 +22,6 @@ import { useModalData } from "stores/router";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
-import Web3 from "web3";
-import { ChainId, NFTType } from "@loopring-web/loopring-sdk";
 import { useSystem } from "../../stores/system";
 import {
   ActionResult,
@@ -45,9 +43,8 @@ const NFTGasAmounts = {
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
-  const { exchangeInfo, chainId, gasPrice } = useSystem();
+  const { exchangeInfo, chainId } = useSystem();
   const { nftMintValue, updateNFTMintData, resetNFTMintData } = useModalData();
-  const { updateDepositHash } = useOnChainInfo();
   const {
     btnStatus,
     btnInfo,
