@@ -2,9 +2,7 @@ import { Box, Link, TextareaAutosize, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   getShortAddr,
-  IPFS_META_URL,
   NFTWholeINFO,
-  RefreshIcon,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -12,20 +10,18 @@ import {
   TransferPanel,
   WithdrawPanel,
   DeployNFTWrap,
-  NftImage,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { useGetAssets } from "../../AssetPanel/hook";
+import { NFTMedia } from "./nftMedia";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
-
   img {
     object-fit: contain;
   }
@@ -47,7 +43,6 @@ const BoxStyle = styled(Box)`
         white-space: break-spaces;
       }
     }
-
     .transfer-wrap {
       padding-left: 0;
       padding-right: 0;
@@ -106,6 +101,7 @@ export const NFTDetail = withTranslation("common")(
           >
             <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
               {t("labelNFTDetail")}
+              {popItem.image}
             </Typography>
             <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
               <Typography color={"var(--color-text-third)"} width={160}>
@@ -204,16 +200,6 @@ export const NFTDetail = withTranslation("common")(
                   style={{ width: "100%" }}
                 />
               </Box>
-
-              {/*<Typography*/}
-              {/*  color={"var(--color-text-third)"}*/}
-              {/*  component={"span"}*/}
-              {/*  whiteSpace={"break-spaces"}*/}
-              {/*  style={{ wordBreak: "break-all" }}*/}
-              {/*  title={popItem?.description}*/}
-              {/*>*/}
-              {/*  {popItem.description}*/}
-              {/*</Typography>*/}
             </Typography>
 
             <Typography
@@ -272,35 +258,14 @@ export const NFTDetail = withTranslation("common")(
           marginTop={-4}
           alignItems={"center"}
           justifyContent={"center"}
+          style={{ cursor: "pointer" }}
         >
-          <Box
-            flex={1}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            onClick={() => onNFTReload(popItem)}
-          >
-            <RefreshIcon style={{ height: 36, width: 36 }} />
-          </Box>
-          ) : (
-          <Box
-            alignSelf={"stretch"}
-            flex={1}
-            display={"flex"}
-            style={{ background: "var(--color-white)" }}
-          >
-            <NftImage
-              {...popItem}
-              onError={() => onNFTError(popItem)}
-              alt={popItem.name ?? "NFT"}
-              src={
-                popItem?.image?.replace(
-                  IPFS_META_URL,
-                  LOOPRING_URLs.IPFS_META_URL
-                ) ?? ""
-              }
-            />
-          </Box>
+          <NFTMedia
+            // ref={popItem.tokenId}
+            item={popItem}
+            onNFTReload={onNFTReload}
+            onNFTError={onNFTError}
+          />
         </BoxNFT>
         <BoxStyle
           marginLeft={2}
@@ -382,39 +347,3 @@ export const NFTDetail = withTranslation("common")(
     );
   }
 );
-
-// {/*{[*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <DiscordIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://discord.com/invite/KkYccYp",*/}
-// {/*  },*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <TwitterIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://twitter.com/loopringorg",*/}
-// {/*  },*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <YoutubeIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://www.youtube.com/c/Loopring",*/}
-// {/*  },*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <MediumIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://medium.com/loopring-protocol",*/}
-// {/*  },*/}
-// {/*].map((o, index) => (*/}
-// {/*  <Link*/}
-// {/*    paddingX={0.5}*/}
-// {/*    fontSize={12}*/}
-// {/*    key={`${o.linkName}-${index}`}*/}
-// {/*    onClick={() => window.open(o.linkHref)}*/}
-// {/*  >*/}
-// {/*    {o.linkName}*/}
-// {/*  </Link>*/}
-// {/*))}*/}

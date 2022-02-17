@@ -120,7 +120,7 @@ export const useMyNFT = () => {
     } else {
       tokenInfo = {
         ...tokenInfo,
-        isFailedLoadMeta: true,
+        isFailedLoadMeta: false,
       };
     }
     return tokenInfo;
@@ -147,14 +147,15 @@ export const useMyNFT = () => {
   );
   const onNFTError = (item: Partial<NFTWholeINFO>, index?: number) => {
     let _index = index;
-    if (index === undefined) {
-      _index = nftList.findIndex(
-        (_item) =>
-          _item.tokenAddress === item.tokenAddress &&
-          _item.nftId === item.tokenAddress
-      );
-    }
+
     setNFTList((state) => {
+      if (index === undefined) {
+        _index = state.findIndex(
+          (_item) =>
+            _item.tokenAddress === item.tokenAddress &&
+            _item.nftId === item.tokenAddress
+        );
+      }
       if (_index) {
         state[_index] = {
           ...state[_index],
@@ -167,14 +168,15 @@ export const useMyNFT = () => {
   const onNFTReload = async (item: Partial<NFTWholeINFO>, index?: number) => {
     const tokenInfo = await infoDetail(item);
     let _index = index;
-    if (index === undefined) {
-      _index = nftList.findIndex(
-        (_item) =>
-          _item.tokenAddress === item.tokenAddress &&
-          _item.nftId === item.tokenAddress
-      );
-    }
+
     setNFTList((state) => {
+      if (index === undefined) {
+        _index = state.findIndex(
+          (_item) =>
+            _item.tokenAddress === item.tokenAddress &&
+            _item.nftId === item.tokenAddress
+        );
+      }
       if (_index) {
         state[_index] = {
           ...state[_index],
