@@ -255,8 +255,8 @@ export const MyNFTPanel = withTranslation("common")(
               >
                 <img
                   className="loading-gif"
-                  width="100"
-                  src={`${SoursURL}images/loader.gif`}
+                  width="36"
+                  src={`${SoursURL}images/loading-line.gif`}
                 />
                 {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
               </Box>
