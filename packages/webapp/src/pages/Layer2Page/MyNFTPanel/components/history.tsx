@@ -9,9 +9,7 @@ export const HistoryNFT = () => {
 
   return (
     <Box flex={1} display={"flex"} ref={container}>
-      <TsNFTTable
-        {...{ ...(nftHistory.userNFTTxs as any), getTxnList: getTxnList }}
-      />
+      <TsNFTTable {...{ ...(nftHistory.userNFTTxs as any), getTxnList }} />
     </Box>
   );
 };

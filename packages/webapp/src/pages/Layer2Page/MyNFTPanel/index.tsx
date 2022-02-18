@@ -372,7 +372,9 @@ export const MyNFTPanel = withTranslation("common")(
               </Button>
             </Box>
           </Box>
-          <Box flex={1}>{panelList[currentTab].element}</Box>
+          <Box flex={1} display={"flex"}>
+            {panelList[currentTab].element}
+          </Box>
         </StyledPaper>
       </>
     );
