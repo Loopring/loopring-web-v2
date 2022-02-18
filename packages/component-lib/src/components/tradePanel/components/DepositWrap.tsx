@@ -203,6 +203,16 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
         <></>
       )}
       <Grid item marginTop={2} alignSelf={"stretch"}>
+        {tradeData.belong === "ETH" && (
+          <Typography
+            color={"var(--color-warning)"}
+            component={"p"}
+            variant={"body1"}
+            marginBottom={1}
+          >
+            {t("labelIsETHDepositAlert")}
+          </Typography>
+        )}
         {isNewAlert}
         <Button
           fullWidth

@@ -25,7 +25,7 @@ const BoxStyle = styled(Box)`
     height: 240px;
   }
   .isNew .trade-panel {
-    height: 280px;
+    height: 308px;
   }
 
   .react-swipeable-view-container {

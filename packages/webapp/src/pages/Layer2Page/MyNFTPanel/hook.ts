@@ -196,6 +196,7 @@ export const useMyNFT = () => {
       if (_index) {
         state[_index] = {
           ...state[_index],
+          isFailedLoadMeta: false,
           ...tokenInfo,
         };
       }

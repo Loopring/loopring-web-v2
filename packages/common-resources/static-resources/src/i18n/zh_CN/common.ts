@@ -481,6 +481,7 @@ export default {
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
   labelIsNotFeeToken: "Please deposit {{symbol}} to activate Layer 2",
+  labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
   labelIsNotEnoughFeeToken:
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Deposit Now</1>",
