@@ -60,6 +60,7 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
     <>
       <Box
         paddingTop={3}
+        paddingBottom={3}
         borderRadius={2}
         flex={1}
         display={"flex"}
@@ -138,7 +139,11 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
                       </Typography>
                     </Box>
                   </Box>
-                  <Divider style={{ margin: `0 ${(theme.unit * 5) / 2}px` }} />
+                  {operationLogList.length - 1 !== index && (
+                    <Divider
+                      style={{ margin: `0 ${(theme.unit * 5) / 2}px` }}
+                    />
+                  )}
                 </React.Fragment>
               ))}
             </>

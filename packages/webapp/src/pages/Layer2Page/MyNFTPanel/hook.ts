@@ -104,10 +104,11 @@ export const useMyNFT = () => {
     if (!tokenInfo.isDeployed) {
       try {
         const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(tokenInfo.nftId);
-        const image = LOOPRING_URLs.IPFS_META_URL + cid;
+        const uri = LOOPRING_URLs.IPFS_META_URL + cid;
+        const meta = await fetch(uri).then((response) => response.json());
         tokenInfo = {
           ...tokenInfo,
-          image,
+          ...meta,
           isFailedLoadMeta: false,
         };
       } catch (error) {

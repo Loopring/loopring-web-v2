@@ -68,7 +68,7 @@ export const InProgressBasic = ({
           className="loading-gif"
           alt={"loading"}
           width="60"
-          src={`${SoursURL}images/loading.gif`}
+          src={`${SoursURL}images/loading-line.gif`}
         />
       </Typography>
       {describe}
