@@ -53,7 +53,7 @@ export const LoadingPage = () => {
             className="loading-gif"
             alt={"loading"}
             width="36"
-            src={`${SoursURL}images/loading.gif`}
+            src={`${SoursURL}images/loading-line.gif`}
           />
         </div>
       </StyleBox>
@@ -80,7 +80,7 @@ export const LoadingBlock = () => {
             className="loading-gif"
             alt={"loading"}
             width="36"
-            src={`${SoursURL}images/loading.gif`}
+            src={`${SoursURL}images/loading-line.gif`}
           />
         </div>
       </StyleBlock>

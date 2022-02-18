@@ -373,7 +373,7 @@ export const Table = <R, SR>(
             className="loading-gif"
             alt={"loading"}
             width="36"
-            src={`${SoursURL}images/loading.gif`}
+            src={`${SoursURL}images/loading-line.gif`}
           />
         </LoadingStyled>
       )}
