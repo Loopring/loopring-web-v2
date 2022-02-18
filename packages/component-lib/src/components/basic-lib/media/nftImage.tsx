@@ -34,7 +34,7 @@ export const cssBackground = ({ theme }: { theme: Theme }) => {
     background-repeat: no-repeat;
     background-clip: content-box;
     background-size: contain;
-    backgroundpositionx: 100%;
+    background-position: 50% 50%;
     align-self: stretch;
   `;
 };

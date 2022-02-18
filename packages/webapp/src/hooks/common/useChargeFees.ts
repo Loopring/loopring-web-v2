@@ -274,12 +274,6 @@ export function useChargeFees({
                 }
               }
             });
-
-            myLog(
-              "chargeFeeTokenList,requestType",
-              _chargeFeeTokenList,
-              requestType
-            );
             setChargeFeeTokenList(_chargeFeeTokenList ?? []);
           }
         } catch (reason) {

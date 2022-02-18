@@ -500,6 +500,7 @@ export const MarketView = withTranslation("common")(
               >
                 <img
                   className="loading-gif"
+                  alt={"loading"}
                   width="36"
                   src={`${SoursURL}images/loading-line.gif`}
                 />

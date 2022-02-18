@@ -15,6 +15,7 @@ import { useTokenPrices } from "./stores/tokenPrices";
 import { useAmount } from "./stores/amount";
 import { useSocket } from "./stores/socket";
 import { useNotify } from "./stores/notify";
+import { useWalletLayer2NFT } from "./stores/walletLayer2NFT";
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -57,11 +58,10 @@ export function useInit() {
     status: ammActivityMapStatus,
     statusUnset: ammActivityMapStatusUnset,
   } = useAmmActivityMap();
-  const { status: userRewardsStatus, statusUnset: userRewardsUnset } =
-    useUserRewards();
   const { status: tickerStatus, statusUnset: tickerStatusUnset } = useTicker();
   const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount();
   const { status: socketStatus, statusUnset: socketUnset } = useSocket();
+
   const {
     getNotify,
     status: notifyStatus,
@@ -225,19 +225,7 @@ export function useInit() {
         break;
     }
   }, [amountStatus]);
-  React.useEffect(() => {
-    switch (userRewardsStatus) {
-      case SagaStatus.ERROR:
-        console.log("ERROR", "get userRewards");
-        userRewardsUnset();
-        break;
-      case SagaStatus.DONE:
-        userRewardsUnset();
-        break;
-      default:
-        break;
-    }
-  }, [userRewardsStatus]);
+
   React.useEffect(() => {
     switch (socketStatus) {
       case "ERROR":

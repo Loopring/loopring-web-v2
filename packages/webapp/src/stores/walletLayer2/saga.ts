@@ -11,24 +11,20 @@ import store from "../index";
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
 };
+const NFTLimit = 20;
 
 const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   const { accountId, apiKey, readyState, _accountIdNotActive } =
     store.getState().account;
   const { idIndex } = store.getState().tokenMap;
-  let walletLayer2, userNFTBalances;
+  let walletLayer2;
   if (apiKey && accountId && LoopringAPI.userAPI) {
     // @ts-ignore
     const { userBalances } = await LoopringAPI.userAPI.getUserBalances(
       { accountId: accountId, tokens: "" },
       apiKey
     );
-    userNFTBalances = (
-      await LoopringAPI.userAPI.getUserNFTBalances(
-        { accountId: accountId },
-        apiKey
-      )
-    ).userNFTBalances;
+
     if (userBalances) {
       walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
         // @ts-ignore
@@ -64,14 +60,14 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
     }
   }
 
-  return { walletLayer2, nftLayer2: userNFTBalances ?? [] };
+  return { walletLayer2 };
 };
 
 export function* getPostsSaga() {
   try {
     //
-    const { walletLayer2, nftLayer2 } = yield call(getWalletLayer2Balance);
-    yield put(getWalletLayer2Status({ walletLayer2, nftLayer2 }));
+    const { walletLayer2 } = yield call(getWalletLayer2Balance);
+    yield put(getWalletLayer2Status({ walletLayer2 }));
   } catch (err) {
     yield put(getWalletLayer2Status(err));
   }
@@ -91,11 +87,11 @@ export function* getSocketSaga({ payload }: any) {
   }
 }
 
-export function* walletLayerSocketSaga() {
+export function* walletLayer2SocketSaga() {
   yield all([takeLatest(socketUpdateBalance, getSocketSaga)]);
 }
 
 export const walletLayer2Fork = [
   fork(walletLayer2Saga),
-  fork(walletLayerSocketSaga),
+  fork(walletLayer2SocketSaga),
 ];

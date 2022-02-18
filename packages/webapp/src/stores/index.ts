@@ -47,6 +47,7 @@ import {
 import { tokenPricesSlice } from "./tokenPrices";
 import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify";
+import { walletLayer2NFTSlice } from "./walletLayer2NFT";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -104,6 +105,7 @@ const reducer = combineReducers({
   tokenPrices: tokenPricesSlice.reducer,
 
   walletLayer2: walletLayer2Slice.reducer,
+  walletLayer2NFT: walletLayer2NFTSlice.reducer,
   walletLayer1: walletLayer1Slice.reducer,
   tickerMap: tickerMapSlice.reducer,
   localStore: persistedLocalStoreReducer,

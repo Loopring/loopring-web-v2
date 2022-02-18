@@ -201,6 +201,7 @@ export const Layer2Page = () => {
           >
             <img
               className="loading-gif"
+              alt={"loading"}
               width="60"
               src={`${SoursURL}images/loading-line.gif`}
             />

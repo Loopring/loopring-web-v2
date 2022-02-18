@@ -65,27 +65,20 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     LoopringAPI.nftAPI?.computeNFTAddress({
       nftOwner: account.accAddress,
     }).tokenAddress || "";
-  const {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
-  } = useChargeFees({
-    tokenAddress: tokenAddress,
-    requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
-    updateData: (feeInfo, _chargeFeeList) => {
-      updateNFTMintData({
-        ...nftMintValue,
-        fee: feeInfo,
-      });
-    },
-  });
-  myLog("isAvaiableId", isAvaiableId, btnStatus);
+  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
+    useChargeFees({
+      tokenAddress: tokenAddress,
+      requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
+      updateData: (feeInfo, _chargeFeeList) => {
+        updateNFTMintData({
+          ...nftMintValue,
+          fee: feeInfo,
+        });
+      },
+    });
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      myLog(!error, nftMintValue, !isFeeNotEnough, isAvaiableId);
       if (
         !error &&
         walletMap &&

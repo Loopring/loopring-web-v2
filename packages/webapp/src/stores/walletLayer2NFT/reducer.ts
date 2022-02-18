@@ -1,32 +1,33 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { WalletLayer2Map, WalletLayer2States } from "./interface";
+import { WalletLayer2NFTStates } from "./interface";
 import { SagaStatus } from "@loopring-web/common-resources";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 
-const initialState: WalletLayer2States = {
-  walletLayer2: undefined,
+const initialState: WalletLayer2NFTStates = {
+  walletLayer2NFT: [],
+  total: 0,
   status: "DONE",
   errorMessage: null,
 };
-const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
-  name: "walletLayer2",
+const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
+  name: "walletLayer2NFT",
   initialState,
   reducers: {
-    updateWalletLayer2(state) {
+    updateWalletLayer2NFT(state, action: PayloadAction<{ page?: number }>) {
       state.status = SagaStatus.PENDING;
     },
     reset(state) {
-      state.walletLayer2 = undefined;
-      state.status = SagaStatus.UNSET;
+      state = {
+        ...initialState,
+        status: SagaStatus.UNSET,
+      };
     },
     socketUpdateBalance(state) {
       state.status = SagaStatus.PENDING;
     },
-    getWalletLayer2Status(
+    getWalletLayer2NFTStatus(
       state,
-      action: PayloadAction<{
-        walletLayer2: WalletLayer2Map<object>;
-      }>
+      action: PayloadAction<WalletLayer2NFTStates>
     ) {
       // @ts-ignore
       if (action.error) {
@@ -34,7 +35,8 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
         // @ts-ignore
         state.errorMessage = action.error;
       }
-      state.walletLayer2 = { ...action.payload.walletLayer2 };
+      state.walletLayer2NFT = [...action.payload.walletLayer2NFT];
+      state.total = action.payload.total ?? 0;
       state.status = SagaStatus.DONE;
     },
     statusUnset: (state) => {
@@ -42,11 +44,11 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
     },
   },
 });
-export { walletLayer2Slice };
+export { walletLayer2NFTSlice };
 export const {
-  updateWalletLayer2,
+  updateWalletLayer2NFT,
   socketUpdateBalance,
-  getWalletLayer2Status,
+  getWalletLayer2NFTStatus,
   statusUnset,
   reset,
-} = walletLayer2Slice.actions;
+} = walletLayer2NFTSlice.actions;

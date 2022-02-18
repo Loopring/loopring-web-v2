@@ -66,6 +66,7 @@ export const InProgressBasic = ({
         {/*<LoadingIcon color={'primary'} style={{width: 72, height: 72}}/>*/}
         <img
           className="loading-gif"
+          alt={"loading"}
           width="60"
           src={`${SoursURL}images/loading-line.gif`}
         />

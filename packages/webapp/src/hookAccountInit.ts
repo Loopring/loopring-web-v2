@@ -5,6 +5,7 @@ import { useWalletLayer2 } from "./stores/walletLayer2";
 import { useAccount } from "./stores/account";
 import { useUserRewards } from "./stores/userRewards";
 import { useConnect } from "./hookConnect";
+import { useWalletLayer2NFT } from "./stores/walletLayer2NFT";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state });
@@ -13,10 +14,15 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer1Status,
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1();
-  const { getUserRewards, status: userRewardsStatus } = useUserRewards();
+  const { status: wallet2statusNFTStatus, statusUnset: wallet2statusNFTUnset } =
+    useWalletLayer2NFT();
+  const {
+    getUserRewards,
+    status: userRewardsStatus,
+    statusUnset: userRewardsUnset,
+  } = useUserRewards();
   const {
     updateWalletLayer2,
-    resetLayer2,
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2();
@@ -81,4 +87,29 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break;
     }
   }, [walletLayer2Status]);
+  React.useEffect(() => {
+    switch (wallet2statusNFTStatus) {
+      case SagaStatus.ERROR:
+        wallet2statusNFTUnset();
+        break;
+      case SagaStatus.DONE:
+        wallet2statusNFTUnset();
+        break;
+      default:
+        break;
+    }
+  }, [wallet2statusNFTStatus]);
+  React.useEffect(() => {
+    switch (userRewardsStatus) {
+      case SagaStatus.ERROR:
+        console.log("ERROR", "get userRewards");
+        userRewardsUnset();
+        break;
+      case SagaStatus.DONE:
+        userRewardsUnset();
+        break;
+      default:
+        break;
+    }
+  }, [userRewardsStatus]);
 }

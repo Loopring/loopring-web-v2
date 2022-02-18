@@ -5,6 +5,7 @@ import {
   Card,
   Grid,
   Modal as MuiModal,
+  Pagination,
   Tab,
   Tabs,
   Typography,
@@ -29,6 +30,7 @@ import {
 import { useTheme } from "@emotion/react";
 import { HistoryNFT } from "./components/history";
 import { NFTMedia } from "./components/nftMedia";
+import { NFTLimit } from "stores/walletLayer2NFT/saga";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -71,9 +73,12 @@ export const MyNFTPanel = withTranslation("common")(
       nftDepositProps,
       nftMintProps,
       etherscanBaseUrl,
-      nftLayer2,
+      isLoading,
+      page,
+      total,
       onNFTError,
       onNFTReload,
+      onPageChange,
     } = useMyNFT();
     const [currentTab, setCurrentTab] = React.useState<TabKey>(TabKey.ASSETS);
     const handleTabChange = React.useCallback((value) => {
@@ -101,7 +106,23 @@ export const MyNFTPanel = withTranslation("common")(
         key: "ASSETS",
         element: (
           <>
-            {nftList && nftList.length ? (
+            {isLoading ? (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                height={"90%"}
+              >
+                <img
+                  className="loading-gif"
+                  alt={"loading"}
+                  width="36"
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
+                {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
+              </Box>
+            ) : nftList && nftList.length ? (
               <Grid container spacing={2} paddingX={3} paddingBottom={3}>
                 {nftList.map((item, index) => (
                   <Grid
@@ -184,21 +205,6 @@ export const MyNFTPanel = withTranslation("common")(
                   </Grid>
                 ))}
               </Grid>
-            ) : nftLayer2 && nftLayer2.length ? (
-              <Box
-                flex={1}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                height={"90%"}
-              >
-                <img
-                  className="loading-gif"
-                  width="36"
-                  src={`${SoursURL}images/loading-line.gif`}
-                />
-                {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
-              </Box>
             ) : (
               <EmptyDefault
                 message={() => (
@@ -213,6 +219,27 @@ export const MyNFTPanel = withTranslation("common")(
                 )}
               />
             )}
+            <>
+              {nftList && nftList.length && (
+                <Box
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <Pagination
+                    color={"primary"}
+                    count={
+                      parseInt(String(total / NFTLimit)) +
+                      (total % NFTLimit > 0 ? 1 : 0)
+                    }
+                    page={page}
+                    onChange={(_event, value) => {
+                      onPageChange(Number(value));
+                    }}
+                  />
+                </Box>
+              )}
+            </>
           </>
         ),
       },
