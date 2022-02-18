@@ -362,7 +362,7 @@ export const MyNFTPanel = withTranslation("common")(
                 {t("labelNFTDeposit")}
               </Button>
               <Button
-                disabled={true}
+                disabled={false}
                 variant={"outlined"}
                 size={"medium"}
                 style={{ marginLeft: `${theme.unit}px` }}
