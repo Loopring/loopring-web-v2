@@ -206,18 +206,20 @@ export const MyNFTPanel = withTranslation("common")(
                 ))}
               </Grid>
             ) : (
-              <EmptyDefault
-                message={() => (
-                  <Box
-                    flex={1}
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                  >
-                    No NFT
-                  </Box>
-                )}
-              />
+              <Box flex={1}>
+                <EmptyDefault
+                  message={() => (
+                    <Box
+                      flex={1}
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                    >
+                      No NFT
+                    </Box>
+                  )}
+                />
+              </Box>
             )}
             <>
               {nftList && nftList.length && (
