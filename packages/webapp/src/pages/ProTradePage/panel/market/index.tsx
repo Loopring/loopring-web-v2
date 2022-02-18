@@ -344,7 +344,7 @@ export const MarketView = withTranslation("common")(
               <img
                 className="loading-git"
                 width="36"
-                src={`${SoursURL}images/loading-line.gif`}
+                src={`${SoursURL}images/loading.gif`}
               />
             </Box>
           )}
@@ -502,7 +502,7 @@ export const MarketView = withTranslation("common")(
                   className="loading-gif"
                   alt={"loading"}
                   width="36"
-                  src={`${SoursURL}images/loading-line.gif`}
+                  src={`${SoursURL}images/loading.gif`}
                 />
               </Box>
             )}

@@ -47,7 +47,7 @@ export const NFTMedia = React.memo(
             <img
               className="loading-git"
               width="36"
-              src={`${SoursURL}images/loading-line.gif`}
+              src={`${SoursURL}images/loading.gif`}
             />
           </Box>
         ) : (

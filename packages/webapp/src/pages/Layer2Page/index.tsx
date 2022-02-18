@@ -203,7 +203,7 @@ export const Layer2Page = () => {
               className="loading-gif"
               alt={"loading"}
               width="60"
-              src={`${SoursURL}images/loading-line.gif`}
+              src={`${SoursURL}images/loading.gif`}
             />
             {/*<LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />*/}
             <Typography marginY={3} variant={"h1"} textAlign={"center"}>

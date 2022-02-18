@@ -83,7 +83,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               className="loading-gif"
               alt={"loading"}
               width={size}
-              src={`${SoursURL}images/loading-line.gif`}
+              src={`${SoursURL}images/loading.gif`}
             />
             // <LoadingIcon
             //   color={"primary"}
