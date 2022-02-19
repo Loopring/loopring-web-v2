@@ -25,7 +25,6 @@ import {
   // SoursURL,
 } from "@loopring-web/common-resources";
 import { useAccount } from "../../stores/account";
-import { LockHebaoHebaoParam, Protector } from "@loopring-web/loopring-sdk";
 import { useSystem } from "../../stores/system";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -62,7 +61,7 @@ const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   }
 ` as (prosp: ListItemProps) => JSX.Element;
 
-export const useHebaoProtector = <T extends Protector>({
+export const useHebaoProtector = <T extends sdk.Protector>({
   hebaoConfig,
   handleOpenModal,
   loadData,
@@ -78,6 +77,7 @@ export const useHebaoProtector = <T extends Protector>({
 
   const onLock = React.useCallback(
     async (item: T) => {
+      // const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);
       const config = hebaoConfig.actionGasSettings.find(
         (item: any) => item.action === "META_TX_LOCK_WALLET_WA"
       );
@@ -85,14 +85,29 @@ export const useHebaoProtector = <T extends Protector>({
         (ele: any) => ele.contractName.toUpperCase() === "GUARDIAN_MODULE"
       ).contractAddress;
       if (LoopringAPI?.walletAPI) {
-        const params: LockHebaoHebaoParam = {
+        const isVersion1 = await LoopringAPI.walletAPI
+          ?.getWalletType({
+            wallet: item.address, //account.accAddress,
+          })
+          .then(({ walletType }) => {
+            if (
+              walletType &&
+              walletType.loopringWalletContractVersion?.startsWith("V1_")
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+        const params: sdk.LockHebaoHebaoParam = {
           web3: connectProvides.usedWeb3 as any,
           from: account.accAddress,
-          contractAddress: guardianModule,
+          contractAddress: isVersion1 ? guardianModule : item.address,
           wallet: item.address,
           gasPrice,
           gasLimit: config.gasLimit ?? 15000,
           chainId: chainId as any,
+          isVersion1,
           sendByMetaMask:
             connectProvides.provideName === ConnectProviders.MetaMask,
         };
@@ -133,7 +148,7 @@ export const useHebaoProtector = <T extends Protector>({
   };
 };
 
-export const HebaoProtectItem = <T extends Protector>(
+export const HebaoProtectItem = <T extends sdk.Protector>(
   props: T & { onClick: () => void }
 ) => {
   const { t } = useTranslation("common");
@@ -250,7 +265,7 @@ export const HebaoProtectItem = <T extends Protector>(
     </HebaoProtectStyled>
   );
 };
-export const HebaoProtector = <T extends Protector>({
+export const HebaoProtector = <T extends sdk.Protector>({
   protectList,
   hebaoConfig,
   handleOpenModal,

@@ -19,7 +19,6 @@ import { useTokenMap } from "stores/token";
 import { useAccount } from "stores/account";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
-import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "../../stores/system";
@@ -37,9 +36,6 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useChargeFees } from "../common/useChargeFees";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
-const NFTGasAmounts = {
-  deposit: "200000",
-};
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
@@ -64,6 +60,8 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const tokenAddress =
     LoopringAPI.nftAPI?.computeNFTAddress({
       nftOwner: account.accAddress,
+      nftFactory: sdk.NFTFactory[chainId],
+      nftBaseUri: "",
     }).tokenAddress || "";
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
@@ -340,6 +338,11 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
             maxFee: {
               tokenId: feeToken.tokenId,
               amount: fee.toString(), // TEST: fee.toString(),
+            },
+            counterFactualNftInfo: {
+              nftOwner: account.accAddress,
+              nftFactory: sdk.NFTFactory[chainId],
+              nftBaseUri: "",
             },
             forceToMint: false,
           };
