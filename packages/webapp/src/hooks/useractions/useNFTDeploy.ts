@@ -228,7 +228,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
         const storageId = await LoopringAPI.userAPI?.getNextStorageId(
           {
             accountId,
-            sellTokenId: Number(nftDeployValue.tokenId),
+            sellTokenId: Number(feeToken.tokenId),
           },
           apiKey
         );
