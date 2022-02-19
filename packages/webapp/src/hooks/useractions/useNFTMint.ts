@@ -36,6 +36,7 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useChargeFees } from "../common/useChargeFees";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
+import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
@@ -256,7 +257,9 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         if (nftId && nftId !== "") {
           try {
             const value = await fetch(
-              sdk.LOOPRING_URLs.IPFS_META_URL + `${data.nftIdView}`
+              sdk.LOOPRING_URLs.IPFS_META_URL +
+                `${data.nftIdView}` +
+                "/metadata.json"
             )
               .then((response) => response.json())
               .catch((error) => {

@@ -213,7 +213,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             }}
           >
             <Trans i18nKey={"labelNFTCid"}>
-              IPFS CID: (Which storage a META JSON as an unique Token ID for
+              IPFS CID: (Which storage a metadata.json as an unique Token ID for
               NFT)
               <HelpIcon
                 style={{ cursor: "pointer", marginLeft: "4px" }}
