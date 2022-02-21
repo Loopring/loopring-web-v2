@@ -10,7 +10,7 @@ import {
 import { Box, Typography } from "@mui/material";
 import {
   Button,
-  HebaoStep,
+  GuardianStep,
   setShowConnect,
   SubMenu,
   SubMenuList,
@@ -23,14 +23,14 @@ import {
   btnLabel,
 } from "../../layouts/connectStatusCallback";
 import store from "../../stores";
-import { HebaoProtector } from "./HebaoProtector";
+import { WalletProtector } from "./WalletProtector";
 
 import { useRouteMatch } from "react-router-dom";
-import { HebaoValidationInfo } from "./HebaoValidationInfo";
+import { WalletValidationInfo } from "./WalletValidationInfo";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
-import { HebaoHistory } from "./HebaoHistory";
+import { WalletHistory } from "./WalletHistory";
 
 const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
   ({ t }: any) => {
@@ -63,16 +63,16 @@ const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
     );
   }
 ) as typeof Button;
-export const HebaoPage = withTranslation(["common"])(
+export const GuardianPage = withTranslation(["common"])(
   ({ t, ...rest }: WithTranslation) => {
     const { account } = useAccount();
-    let match = useRouteMatch("/hebao/:item");
+    let match = useRouteMatch("/guardian/:item");
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
     const {
       protectList,
       guardiansList,
-      hebaoConfig,
+      guardianConfig,
       openHebao,
       operationLogList,
       setOpenHebao,
@@ -83,7 +83,7 @@ export const HebaoPage = withTranslation(["common"])(
       step,
       options,
     }: {
-      step: HebaoStep;
+      step: GuardianStep;
       options?: any;
     }) => {
       setOpenHebao((state) => {
@@ -96,12 +96,12 @@ export const HebaoPage = withTranslation(["common"])(
         return { ...state };
       });
     };
-    const hebaoRouter = () => {
+    const guardianRouter = () => {
       switch (selected) {
-        case "hebao-validation-info":
+        case "guardian-validation-info":
           return !isContractAddress ? (
-            <HebaoValidationInfo
-              {...{ guardiansList, hebaoConfig, setOpenHebao }}
+            <WalletValidationInfo
+              {...{ guardiansList, guardianConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
               loadData={loadData}
             />
@@ -114,24 +114,24 @@ export const HebaoPage = withTranslation(["common"])(
               alignItems={"center"}
             >
               <Typography marginY={3} variant={"h1"} textAlign={"center"}>
-                {t("labelHebaoToWallet")}
+                {t("labelWalletToWallet")}
               </Typography>
               <BtnConnect />
             </Box>
           );
-        case "hebao-history":
+        case "guardian-history":
           return (
-            <HebaoHistory
+            <WalletHistory
               operationLogList={operationLogList}
-              hebaoConfig={hebaoConfig}
+              guardianConfig={guardianConfig}
             />
           );
-        case "hebao-protected":
+        case "guardian-protected":
         default:
           return !isContractAddress ? (
-            <HebaoProtector
+            <WalletProtector
               protectList={protectList}
-              hebaoConfig={hebaoConfig}
+              guardianConfig={guardianConfig}
               loadData={loadData}
               // isContractAddress={isContractAddress}
               handleOpenModal={handleOpenModal}
@@ -202,7 +202,7 @@ export const HebaoPage = withTranslation(["common"])(
                 marginBottom={2}
                 className={"MuiPaper-elevation2"}
               >
-                {hebaoRouter()}
+                {guardianRouter()}
               </StylePaper>
             </>
           );
@@ -240,7 +240,7 @@ export const HebaoPage = withTranslation(["common"])(
             onClose: () => {
               setOpenHebao({
                 isShow: false,
-                step: HebaoStep.LockAccount_WaitForAuth,
+                step: GuardianStep.LockAccount_WaitForAuth,
               });
             },
           }}

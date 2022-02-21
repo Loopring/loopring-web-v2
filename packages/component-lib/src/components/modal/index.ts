@@ -2,7 +2,7 @@ export * from "./QRCode";
 export * from "./WalletConnect";
 export * from "./ModalPanelBase";
 export * from "./ModalPanels";
-export * from "./HebaoPanels";
+export * from "./WalletPanels";
 export * from "./setting";
 export type ModalBasicProps = {
   open: boolean;
@@ -18,4 +18,4 @@ export type ModalBasicProps = {
 };
 export type ModalWalletConnectProps = ModalBasicProps;
 export type ModalAccountProps = ModalWalletConnectProps;
-export type ModalHebaoProps = ModalWalletConnectProps;
+export type ModalGuardianProps = ModalWalletConnectProps;

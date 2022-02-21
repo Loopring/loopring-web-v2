@@ -17,9 +17,9 @@ const initialState: LAYER1_ACTION_HISTORY = {
 const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
   LAYER1_ACTION_HISTORY,
   SliceCaseReducers<LAYER1_ACTION_HISTORY>,
-  "chainHashInfos"
+  "layer1ActionHistory"
 >({
-  name: "chainHashInfos",
+  name: "layer1ActionHistory",
   initialState,
   reducers: {
     circleUpdateLayer1ActionHistory(
@@ -35,14 +35,15 @@ const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
         } & Layer1ActionHistory
       >
     ) {
-      const { chainId, __timer__, ...rest } = action.payload;
+      const { chainId, __timer__, layer1ActionHistory } = action.payload;
       // @ts-ignore
       if (action.error) {
         // @ts-ignore
         state.errorMessage = action.error;
       }
       state.__timer__ = __timer__;
-      state[chainId] = rest; //{...state.amountMap, ...action.payload.amountMap};
+
+      state[chainId] = { ...layer1ActionHistory }; //{...state.amountMap, ...action.payload.amountMap};
     },
     clearOneItem(
       state,
@@ -67,6 +68,7 @@ const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
       }>
     ) {
       const { domain, uniqueId, chainId } = action.payload;
+
       state[chainId][domain] = {
         ...state[chainId][domain],
         [uniqueId]: Date.now(),

@@ -374,11 +374,11 @@ export const HebaoConfirmApprove = withTranslation("common", {
       >
         <DialogTitle>
           {" "}
-          {t("labelHebaoConfirmApproveTile", { project })}
+          {t("labelWalletConfirmApproveTile", { project })}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelHebaoConfirmApproveContent"}>
+            <Trans i18nKey={"labelWalletConfirmApproveContent"}>
               Loopring only support and maintain MetaMask plugin for Wallet
               Connect, if your installed other Wallet plugin, please make sure
               it's the MetaMask popup:{" "}
@@ -442,10 +442,10 @@ export const HebaoConfirmLock = withTranslation("common", {
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("labelHebaoConfirmLockTitle")}</DialogTitle>
+        <DialogTitle> {t("labelWalletConfirmLockTitle")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelHebaoConfirmLockConent"}>
+            <Trans i18nKey={"labelWalletConfirmLockConent"}>
               Loopring only support and maintain MetaMask plugin for Wallet
               Connect, if your installed other Wallet plugin, please make sure
               it's the MetaMask popup:{" "}

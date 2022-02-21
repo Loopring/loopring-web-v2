@@ -5,13 +5,13 @@ import { Box } from "@mui/material";
 import {
   ModalBackButton,
   ModalCloseButton,
-  ModalHebaoProps,
+  ModalGuardianProps,
   QRButtonStyle,
   SwipeableViewsStyled,
   SwitchPanelStyled,
 } from "../../../index";
 
-export const ModalHebao = withTranslation("common", { withRef: true })(
+export const ModalWallet = withTranslation("common", { withRef: true })(
   ({
     open,
     onClose,
@@ -22,7 +22,7 @@ export const ModalHebao = withTranslation("common", { withRef: true })(
     onQRClick,
     panelList,
     ...rest
-  }: ModalHebaoProps & WithTranslation) => {
+  }: ModalGuardianProps & WithTranslation) => {
     const theme = useTheme();
     const { w, h } = style ? style : { w: undefined, h: undefined };
 

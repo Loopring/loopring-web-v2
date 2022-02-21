@@ -13,11 +13,11 @@ import {
   HebaoOperationLog,
   Protector,
 } from "@loopring-web/loopring-sdk";
-import { HebaoStep } from "@loopring-web/component-lib";
+import { GuardianStep } from "@loopring-web/component-lib";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useSystem } from "../../stores/system";
 
-export enum TxHebaoHistoryType {
+export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
   GUARDIAN_CONFIRM_ADDITION = 52,
   GUARDIAN_REJECT_ADDITION = 53,
@@ -59,10 +59,10 @@ export const useHebaoMain = <
   myLog(isContractAddress, "isContractAddress");
 
   const [
-    { hebaoConfig, protectList, guardiansList, operationLogList },
+    { guardianConfig, protectList, guardiansList, operationLogList },
     setList,
   ] = React.useState<{
-    hebaoConfig: any;
+    guardianConfig: any;
     protectList: T[];
     guardiansList: G[];
     operationLogList: H[];
@@ -70,15 +70,15 @@ export const useHebaoMain = <
     protectList: [],
     guardiansList: [],
     operationLogList: [],
-    hebaoConfig: {},
+    guardianConfig: {},
   });
   const [openHebao, setOpenHebao] = React.useState<{
     isShow: boolean;
-    step: HebaoStep;
+    step: GuardianStep;
     options?: any;
   }>({
     isShow: false,
-    step: HebaoStep.LockAccount_WaitForAuth,
+    step: GuardianStep.LockAccount_WaitForAuth,
     options: undefined,
   });
   const { layer1ActionHistory, clearOneItem } = useLayer1Store();
@@ -86,10 +86,10 @@ export const useHebaoMain = <
   const loadData = async () => {
     if (LoopringAPI.walletAPI && account.accAddress) {
       const [
-        { raw_data: hebaoConfig },
+        { raw_data: guardianConfig },
         protector,
         guardian,
-        hebaooperationlog,
+        guardianoperationlog,
       ]: any = await Promise.all([
         LoopringAPI.walletAPI.getHebaoConfig(),
         LoopringAPI.walletAPI
@@ -100,10 +100,10 @@ export const useHebaoMain = <
             account.apiKey
           )
           .then((protector) => {
-            return protector.protectorArray.map((props) => {
-              if (layer1ActionHistory[chainId[Layer1Action.HebaoLock]]) {
+            protector.protectorArray.map((props) => {
+              if (layer1ActionHistory[chainId[Layer1Action.GuardianLock]]) {
                 if (
-                  layer1ActionHistory[chainId[Layer1Action.HebaoLock]][
+                  layer1ActionHistory[chainId[Layer1Action.GuardianLock]][
                     props.address
                   ]
                 ) {
@@ -113,13 +113,14 @@ export const useHebaoMain = <
                     clearOneItem({
                       chainId: chainId as ChainId,
                       uniqueId: props.address,
-                      domain: "HebaoLock",
+                      domain: Layer1Action.GuardianLock,
                     });
                   }
                 }
-                return props;
               }
+              return props;
             });
+            return protector;
           }),
         // api/wallet/v3/operationLogs
         LoopringAPI.walletAPI
@@ -142,7 +143,7 @@ export const useHebaoMain = <
           // offset?: number;
           // network?: 'ETHEREUM';
           // statues?: string;
-          // hebaoTxType?: string;
+          // guardianTxType?: string;
           // limit?: number;
         }),
       ]).catch((error) => {
@@ -165,8 +166,8 @@ export const useHebaoMain = <
       setList({
         protectList: protector.protectorArray ?? [],
         guardiansList: _guardiansList,
-        operationLogList: hebaooperationlog?.operationArray ?? [],
-        hebaoConfig,
+        operationLogList: guardianoperationlog?.operationArray ?? [],
+        guardianConfig,
       });
     }
   };
@@ -179,7 +180,7 @@ export const useHebaoMain = <
     isContractAddress,
     protectList,
     guardiansList,
-    hebaoConfig,
+    guardianConfig,
     openHebao,
     operationLogList,
     setOpenHebao,

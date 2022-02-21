@@ -11,6 +11,7 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "stores/system";
 import { useWalletLayer2 } from "stores/walletLayer2";
 import {
+  ChainId,
   LOOPRING_URLs,
   NftData,
   NFTTokenInfo,
@@ -22,6 +23,7 @@ import { useNFTDeposit } from "hooks/useractions/useNFTDeposit";
 import { useNFTMint } from "hooks/useractions/useNFTMint";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
 import { useLayer1Store } from "../../../stores/localStore/layer1Store";
+import store from "../../../stores";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {
@@ -37,6 +39,7 @@ export const useMyNFT = () => {
     total,
     updateWalletLayer2NFT,
   } = useWalletLayer2NFT();
+  const { clearOneItem } = useLayer1Store();
 
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
@@ -73,9 +76,10 @@ export const useMyNFT = () => {
     () => setShowNFTMint({ isShow: false }),
     []
   );
-  const { layer1ActionHistory } = useLayer1Store();
 
   const infoDetail = async (item: Partial<NFTWholeINFO>) => {
+    const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
+
     const nftData: NftData = item.nftData as NftData;
     let [nftMap, isDeployed] = await Promise.all([
       LoopringAPI?.nftAPI?.getInfoForNFTTokens({
@@ -103,21 +107,35 @@ export const useMyNFT = () => {
       nftIdView: _id.toString(),
       nftBalance: tokenInfo.total ? Number(tokenInfo.total) : 0,
     };
-    if (tokenInfo.isDeployed === "no") {
+    if (
+      layer1ActionHistory[chainId] &&
+      layer1ActionHistory[chainId][Layer1Action.NFTDeploy] &&
+      layer1ActionHistory[chainId][Layer1Action.NFTDeploy][
+        tokenInfo.tokenAddress.toLowerCase()
+      ]
+    ) {
+      if (tokenInfo.isDeployed === "no") {
+        tokenInfo = {
+          ...tokenInfo,
+          isDeployed: "unknown",
+        };
+      } else if (tokenInfo.isDeployed === "yes") {
+        clearOneItem({
+          chainId: chainId as ChainId,
+          uniqueId: tokenInfo.tokenAddress.toLowerCase(),
+          domain: Layer1Action.NFTDeploy,
+        });
+      }
+    }
+    if (["no", "unknown"].includes(tokenInfo.isDeployed)) {
       try {
         const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(tokenInfo.nftId);
         const uri = LOOPRING_URLs.IPFS_META_URL + cid + "/metadata.json";
-        const meta = await fetch(uri).then((response) => response.json());
-        if (
-          layer1ActionHistory[chainId][Layer1Action.NFTDeploy][
-            tokenInfo.tokenAddress
-          ]
-        ) {
-          tokenInfo = {
-            ...tokenInfo,
-            isDeployed: "unknown",
-          };
-        }
+        const meta = await fetch(uri)
+          .then((response) => response.json())
+          .catch((error) => {
+            throw error;
+          });
 
         tokenInfo = {
           ...tokenInfo,
@@ -125,6 +143,10 @@ export const useMyNFT = () => {
           isFailedLoadMeta: false,
         };
       } catch (error) {
+        tokenInfo = {
+          ...tokenInfo,
+          isFailedLoadMeta: false,
+        };
         myLog("load IPFS cid error", error);
       }
     } else if (!tokenInfo.name) {
@@ -158,12 +180,12 @@ export const useMyNFT = () => {
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
       const tokenInfo = await infoDetail(item);
-      if (!(tokenInfo.isDeployed === "no")) {
+      if (tokenInfo.isDeployed === "no") {
         await LoopringAPI.userAPI?.getAvailableBroker().then(({ broker }) => {
           updateNFTDeployData({ broker });
         });
         updateNFTDeployData(tokenInfo);
-      } else {
+      } else if (tokenInfo.isDeployed === "yes") {
         updateNFTWithdrawData(tokenInfo);
       }
       setPopItem(tokenInfo);
@@ -181,8 +203,8 @@ export const useMyNFT = () => {
       if (index === undefined) {
         _index = state.findIndex(
           (_item) =>
-            _item.tokenAddress === item.tokenAddress &&
-            _item.nftId === item.tokenAddress
+            _item.tokenAddress?.toLowerCase() ===
+              item.tokenAddress?.toLowerCase() && _item.nftId === item.nftId
         );
       }
       if (_index) {
@@ -202,8 +224,8 @@ export const useMyNFT = () => {
       if (index === undefined) {
         _index = state.findIndex(
           (_item) =>
-            _item.tokenAddress === item.tokenAddress &&
-            _item.nftId === item.tokenAddress
+            _item.tokenAddress?.toLowerCase() ===
+              item.tokenAddress?.toLowerCase() && _item.nftId === item.nftId
         );
       }
       if (_index) {
@@ -248,6 +270,7 @@ export const useMyNFT = () => {
           return {
             ...item,
             ...meta[index],
+            tokenAddress: item.tokenAddress?.toLowerCase(),
             etherscanBaseUrl,
           };
         })

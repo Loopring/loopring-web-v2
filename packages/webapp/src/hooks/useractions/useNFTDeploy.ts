@@ -8,6 +8,7 @@ import React from "react";
 
 import {
   AccountStatus,
+  Layer1Action,
   myLog,
   TradeNFT,
   UIERROR_CODE,
@@ -82,8 +83,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
               counterFactualInfo: eddsaKey.counterFactualInfo,
             }
           );
-
-          myLog("submitInternalTransfer:", response);
+          // const response = { hash: "string" };
+          // myLog("submitInternalTransfer:", response);
 
           if (isAccActivated()) {
             if (
@@ -115,8 +116,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
             } else if ((response as sdk.TX_HASH_API)?.hash) {
               setOneItem({
                 chainId: chainId as ChainId,
-                uniqueId: request.tokenAddress,
-                domain: "HebaoLock",
+                uniqueId: request.tokenAddress.toLowerCase(),
+                domain: Layer1Action.NFTDeploy,
               });
               // Withdraw success
               setShowAccount({
@@ -174,6 +175,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       chainId,
       setShowAccount,
       doDeployDone,
+      setOneItem,
       resetNFTDeployData,
       updateWalletLayer2,
       updateHW,

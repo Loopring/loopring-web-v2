@@ -49,12 +49,12 @@ export type TxInfo = {
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] };
 }
-// export type HebaoLock
+// export type GuardianLock
 export enum Layer1Action {
-  HebaoLock = "HebaoLock",
+  GuardianLock = "GuardianLock",
   NFTDeploy = "NFTDeploy",
 }
-// HebaoLock
+// GuardianLock
 export type Layer1ActionHistory = {
   [key: string]: {
     [key in keyof typeof Layer1Action]?: { [key: string]: number };

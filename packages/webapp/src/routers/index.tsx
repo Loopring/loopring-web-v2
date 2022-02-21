@@ -23,7 +23,7 @@ import { Footer, useSettings } from "@loopring-web/component-lib";
 import { ReportPage } from "pages/ReportPage";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
-import { HebaoPage } from "../pages/hebaoPage";
+import { GuardianPage } from "../pages/walletPage";
 
 const ContentWrap = ({
   children,
@@ -93,7 +93,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path="/loading">
           <LoadingPage />
         </Route>
-        <Route path={["/hebao", "/hebao/*"]}>
+        <Route path={["/guardian", "/guardian/*"]}>
           {query && query.has("noheader") ? (
             <></>
           ) : (
@@ -114,7 +114,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               flexDirection={"row"}
               marginTop={3}
             >
-              <HebaoPage />
+              <GuardianPage />
             </Box>
           </Container>
         </Route>

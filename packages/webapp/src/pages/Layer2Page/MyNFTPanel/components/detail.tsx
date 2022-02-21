@@ -238,8 +238,9 @@ export const NFTDetail = withTranslation("common")(
                     >
                       <LoadingIcon
                         color={"primary"}
-                        style={{ width: 18, height: 18 }}
-                      />
+                        style={{ width: 18, height: 18, marginRight: "8px" }}
+                      />{" "}
+                      {t("labelNFTDeploying")}
                     </Button>
                   )}
                 </Typography>

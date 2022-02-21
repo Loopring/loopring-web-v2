@@ -36,7 +36,6 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useChargeFees } from "../common/useChargeFees";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
@@ -85,6 +84,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         tokenAddress &&
         nftMintValue.tradeValue &&
         Number(nftMintValue.tradeValue) > 0 &&
+        (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
         nftMintValue.fee &&
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
@@ -304,6 +304,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         nftMintValue.fee &&
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
+        (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
         !isFeeNotEnough &&
