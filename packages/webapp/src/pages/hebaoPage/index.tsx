@@ -67,7 +67,6 @@ export const HebaoPage = withTranslation(["common"])(
   ({ t, ...rest }: WithTranslation) => {
     const { account } = useAccount();
     let match = useRouteMatch("/hebao/:item");
-    let options;
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
     const {
@@ -100,12 +99,25 @@ export const HebaoPage = withTranslation(["common"])(
     const hebaoRouter = () => {
       switch (selected) {
         case "hebao-validation-info":
-          return (
+          return !isContractAddress ? (
             <HebaoValidationInfo
               {...{ guardiansList, hebaoConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
               loadData={loadData}
             />
+          ) : (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+                {t("labelHebaoToWallet")}
+              </Typography>
+              <BtnConnect />
+            </Box>
           );
         case "hebao-history":
           return (
@@ -116,14 +128,27 @@ export const HebaoPage = withTranslation(["common"])(
           );
         case "hebao-protected":
         default:
-          return (
+          return !isContractAddress ? (
             <HebaoProtector
               protectList={protectList}
               hebaoConfig={hebaoConfig}
               loadData={loadData}
-              isContractAddress={isContractAddress}
+              // isContractAddress={isContractAddress}
               handleOpenModal={handleOpenModal}
             />
+          ) : (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+                {t("describeTitleConnectToWallet")}
+              </Typography>
+              <BtnConnect />
+            </Box>
           );
       }
     };

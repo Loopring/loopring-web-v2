@@ -1,4 +1,5 @@
 import {
+  Layer1Action,
   myLog,
   NFTWholeINFO,
   SagaStatus,
@@ -20,17 +21,16 @@ import { BigNumber } from "bignumber.js";
 import { useNFTDeposit } from "hooks/useractions/useNFTDeposit";
 import { useNFTMint } from "hooks/useractions/useNFTMint";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
+import { useLayer1Store } from "../../../stores/localStore/layer1Store";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
-  const { account } = useAccount();
   const [isShow, setIsShow] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [popItem, setPopItem] = React.useState<
     Partial<NFTWholeINFO> | undefined
   >(undefined);
-  const { status: walletLayer2Status } = useWalletLayer2();
   const {
     status: walletLayer2NFTStatus,
     walletLayer2NFT,
@@ -48,7 +48,7 @@ export const useMyNFT = () => {
     setShowNFTMint,
     modals: { isShowNFTDeposit, isShowNFTMint },
   } = useOpenModals();
-  const { etherscanBaseUrl } = useSystem();
+  const { etherscanBaseUrl, chainId } = useSystem();
   const { nftDepositProps } = useNFTDeposit();
   const { nftMintProps } = useNFTMint();
   const [page, setPage] = useState(1);
@@ -73,6 +73,8 @@ export const useMyNFT = () => {
     () => setShowNFTMint({ isShow: false }),
     []
   );
+  const { layer1ActionHistory } = useLayer1Store();
+
   const infoDetail = async (item: Partial<NFTWholeINFO>) => {
     const nftData: NftData = item.nftData as NftData;
     let [nftMap, isDeployed] = await Promise.all([
@@ -92,7 +94,7 @@ export const useMyNFT = () => {
     // isDeployed = !isDeployed;
     let tokenInfo: NFTWholeINFO = {
       ...item,
-      isDeployed,
+      isDeployed: isDeployed ? "yes" : "no",
       ...nftToken,
     } as NFTWholeINFO;
     const _id = new BigNumber(tokenInfo.nftId ?? "0", 16);
@@ -101,11 +103,21 @@ export const useMyNFT = () => {
       nftIdView: _id.toString(),
       nftBalance: tokenInfo.total ? Number(tokenInfo.total) : 0,
     };
-    if (!tokenInfo.isDeployed) {
+    if (tokenInfo.isDeployed === "no") {
       try {
         const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(tokenInfo.nftId);
         const uri = LOOPRING_URLs.IPFS_META_URL + cid + "/metadata.json";
         const meta = await fetch(uri).then((response) => response.json());
+        if (
+          layer1ActionHistory[chainId][Layer1Action.NFTDeploy][
+            tokenInfo.tokenAddress
+          ]
+        ) {
+          tokenInfo = {
+            ...tokenInfo,
+            isDeployed: "unknown",
+          };
+        }
 
         tokenInfo = {
           ...tokenInfo,
@@ -146,7 +158,7 @@ export const useMyNFT = () => {
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
       const tokenInfo = await infoDetail(item);
-      if (!tokenInfo.isDeployed) {
+      if (!(tokenInfo.isDeployed === "no")) {
         await LoopringAPI.userAPI?.getAvailableBroker().then(({ broker }) => {
           updateNFTDeployData({ broker });
         });

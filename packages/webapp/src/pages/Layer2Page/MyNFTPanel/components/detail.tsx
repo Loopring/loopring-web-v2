@@ -2,6 +2,7 @@ import { Box, Link, TextareaAutosize, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   getShortAddr,
+  LoadingIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import {
@@ -210,7 +211,7 @@ export const NFTDetail = withTranslation("common")(
             >
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography minWidth={100} marginRight={2}>
-                  {popItem.isDeployed ? (
+                  {popItem.isDeployed === "yes" ? (
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -219,7 +220,7 @@ export const NFTDetail = withTranslation("common")(
                     >
                       {t("labelNFTWithdraw")}
                     </Button>
-                  ) : (
+                  ) : popItem.isDeployed === "no" ? (
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -227,6 +228,18 @@ export const NFTDetail = withTranslation("common")(
                       onClick={() => handleChangeIndex(3)}
                     >
                       {t("labelNFTDeployContract")}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant={"outlined"}
+                      size={"medium"}
+                      fullWidth
+                      disabled={true}
+                    >
+                      <LoadingIcon
+                        color={"primary"}
+                        style={{ width: 18, height: 18 }}
+                      />
                     </Button>
                   )}
                 </Typography>

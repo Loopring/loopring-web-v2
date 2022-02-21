@@ -1,13 +1,21 @@
 import React from "react";
 import { useAccount } from "../../stores/account";
-import { myLog, SagaStatus } from "@loopring-web/common-resources";
+import {
+  Layer1Action,
+  myLog,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import { LoopringAPI } from "../../api_wrapper";
 import {
+  ChainId,
   Guardian,
+  HEBAO_LOCK_STATUS,
   HebaoOperationLog,
   Protector,
 } from "@loopring-web/loopring-sdk";
 import { HebaoStep } from "@loopring-web/component-lib";
+import { useLayer1Store } from "../../stores/localStore/layer1Store";
+import { useSystem } from "../../stores/system";
 
 export enum TxHebaoHistoryType {
   ADD_GUARDIAN = 51,
@@ -73,7 +81,8 @@ export const useHebaoMain = <
     step: HebaoStep.LockAccount_WaitForAuth,
     options: undefined,
   });
-
+  const { layer1ActionHistory, clearOneItem } = useLayer1Store();
+  const { chainId } = useSystem();
   const loadData = async () => {
     if (LoopringAPI.walletAPI && account.accAddress) {
       const [
@@ -83,12 +92,35 @@ export const useHebaoMain = <
         hebaooperationlog,
       ]: any = await Promise.all([
         LoopringAPI.walletAPI.getHebaoConfig(),
-        LoopringAPI.walletAPI.getProtectors(
-          {
-            guardian: account.accAddress,
-          },
-          account.apiKey
-        ),
+        LoopringAPI.walletAPI
+          .getProtectors(
+            {
+              guardian: account.accAddress,
+            },
+            account.apiKey
+          )
+          .then((protector) => {
+            return protector.protectorArray.map((props) => {
+              if (layer1ActionHistory[chainId[Layer1Action.HebaoLock]]) {
+                if (
+                  layer1ActionHistory[chainId[Layer1Action.HebaoLock]][
+                    props.address
+                  ]
+                ) {
+                  if (props.lockStatus === HEBAO_LOCK_STATUS.CREATED) {
+                    props.lockStatus = HEBAO_LOCK_STATUS.LOCK_WAITING;
+                  } else {
+                    clearOneItem({
+                      chainId: chainId as ChainId,
+                      uniqueId: props.address,
+                      domain: "HebaoLock",
+                    });
+                  }
+                }
+                return props;
+              }
+            });
+          }),
         // api/wallet/v3/operationLogs
         LoopringAPI.walletAPI
           .getGuardianApproveList({

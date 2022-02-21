@@ -29,6 +29,8 @@ import { useSystem } from "../../stores/system";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { ChainId } from "@loopring-web/loopring-sdk";
+import { useLayer1Store } from "../../stores/localStore/layer1Store";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -74,7 +76,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
   const { account } = useAccount();
   const { chainId, gasPrice } = useSystem();
   const { t } = useTranslation(["error"]);
-
+  const { setOneItem } = useLayer1Store();
   const onLock = React.useCallback(
     async (item: T) => {
       // const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);
@@ -112,9 +114,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             connectProvides.provideName === ConnectProviders.MetaMask,
         };
         try {
-          const { result, error } = await LoopringAPI.walletAPI.lockHebaoWallet(
-            params
-          );
+          const { error } = await LoopringAPI.walletAPI.lockHebaoWallet(params);
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
           if (error) {
             handleOpenModal({
@@ -124,6 +124,11 @@ export const useHebaoProtector = <T extends sdk.Protector>({
               },
             });
           } else {
+            setOneItem({
+              chainId: chainId as ChainId,
+              uniqueId: item.address,
+              domain: "HebaoLock",
+            });
             await sdk.sleep(3000);
             handleOpenModal({
               step: HebaoStep.LockAccount_Success,
@@ -270,13 +275,13 @@ export const HebaoProtector = <T extends sdk.Protector>({
   hebaoConfig,
   handleOpenModal,
   loadData,
-  isContractAddress,
-}: {
+}: // isContractAddress,
+{
   protectList: T[];
   hebaoConfig: any;
   loadData: () => Promise<void>;
   handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
-  isContractAddress: boolean;
+  // isContractAddress: boolean;
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common"]);
@@ -356,19 +361,17 @@ export const HebaoProtector = <T extends sdk.Protector>({
             flexDirection={"row"}
             justifyContent={"flex-end"}
           >
-            {!isContractAddress && (
-              <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
-                startIcon={
-                  <SecurityIcon htmlColor={"var(--color-text-button)"} />
-                }
-                onClick={() => setOpenQRCode(true)}
-              >
-                {t("labelAddProtector")}
-              </Button>
-            )}
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              startIcon={
+                <SecurityIcon htmlColor={"var(--color-text-button)"} />
+              }
+              onClick={() => setOpenQRCode(true)}
+            >
+              {t("labelAddProtector")}
+            </Button>
           </ButtonListRightStyled>
         </Box>
         <Box flex={1} alignItems={"center"} marginTop={2}>

@@ -527,6 +527,8 @@ export default {
   labelDepositVendor:
     " Make an order form third Loopring-parter, Once your order confirmed  by Loopring, it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
+  labelHebaoToWallet:
+    "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
   labelHebaoAddAsGuardian: "Add as a Guardian",
   labelHebaoScanQRCode: "Scan the QR code with your Loopring Wallet",
   labelHebaoGuardianList: "Guardian List",
