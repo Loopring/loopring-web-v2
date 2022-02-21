@@ -12,27 +12,28 @@ const updateLayer1ActionHistory = async <R extends { [key: string]: any }>({
 }: {
   chainId: ChainId;
 }) => {
-  let { __timer__, layer1ActionHistory } = store.getState().layer1ActionHistory;
+  let { __timer__, ...layer1ActionHistory } =
+    store.getState().localStore.layer1ActionHistory;
   const now = Date.now();
   let _layer1ActionHistory = {};
   if (layer1ActionHistory[chainId]) {
-    _layer1ActionHistory = Reflect.ownKeys(layer1ActionHistory[chainId]).map(
-      (item) => {
-        if (layer1ActionHistory[chainId][item]) {
-          _layer1ActionHistory[chainId] = {};
-          // _layer1ActionHistory = _.cloneDeep(layer1ActionHistory[chainId][item]);
-          _layer1ActionHistory[chainId][item] = Reflect.ownKeys(
-            layer1ActionHistory[chainId][item]
-          ).reduce((prev, unit) => {
-            if (now - layer1ActionHistory[chainId][item][unit] >= 1800000) {
-              prev[unit] = layer1ActionHistory[chainId][item][unit];
-              return prev;
-            }
+    Reflect.ownKeys(layer1ActionHistory[chainId]).map((item) => {
+      if (layer1ActionHistory[chainId][item as string]) {
+        // _layer1ActionHistory = _.cloneDeep(layer1ActionHistory[chainId][item]);
+        _layer1ActionHistory[item] = Reflect.ownKeys(
+          layer1ActionHistory[chainId][item as string]
+        ).reduce((prev, unit) => {
+          if (
+            unit &&
+            now - 1800000 < layer1ActionHistory[chainId][item as string][unit]
+          ) {
+            prev[unit] = layer1ActionHistory[chainId][item as string][unit];
             return prev;
-          }, {});
-        }
+          }
+          return prev;
+        }, {});
       }
-    );
+    });
   }
   __timer__ = (() => {
     if (__timer__ && __timer__ !== -1) {
@@ -41,21 +42,22 @@ const updateLayer1ActionHistory = async <R extends { [key: string]: any }>({
     return setInterval(() => {
       const chainId = store.getState().system.chainId;
       store.dispatch(circleUpdateLayer1ActionHistory({ chainId }));
-    }, 1800000); //30*60*1000 //1800000
+    }, 300000); //5*60*1000 //900000
   })();
-  return { layer1ActionHistory: _layer1ActionHistory, __timer__ };
+  return { layer1ActionHistory: _layer1ActionHistory, __timer__, chainId };
 };
 
 export function* getPostsSaga({
   payload,
 }: PayloadAction<{ chainId: ChainId }>) {
   try {
-    const chainId = payload.chainId;
-    const { layer1ActionHistory, __timer__ } = yield call(
+    const { __timer__, chainId, layer1ActionHistory } = yield call(
       updateLayer1ActionHistory,
-      { chainId }
+      { chainId: payload.chainId }
     );
-    yield put(layer1ActionHistoryStatus({ layer1ActionHistory, __timer__ }));
+    yield put(
+      layer1ActionHistoryStatus({ layer1ActionHistory, __timer__, chainId })
+    );
   } catch (err) {
     yield put(layer1ActionHistoryStatus(err));
   }

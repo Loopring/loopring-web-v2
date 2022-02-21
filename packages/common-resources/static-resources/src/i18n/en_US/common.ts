@@ -446,6 +446,7 @@ export default {
   labelNFTTransfer: "Transfer",
   labelNFTWithdraw: "Withdraw",
   labelNFTDeployContract: "Deploy Contract",
+  labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
