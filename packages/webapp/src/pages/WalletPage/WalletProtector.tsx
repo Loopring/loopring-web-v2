@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 
 import {
   ConnectProviders,
+  Layer1Action,
   LoadingIcon,
   LockIcon,
   SDK_ERROR_MAP_TO_UI,
@@ -127,9 +128,8 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             setOneItem({
               chainId: chainId as ChainId,
               uniqueId: item.address,
-              domain: "GuardianLock",
+              domain: Layer1Action.GuardianLock,
             });
-            await sdk.sleep(3000);
             handleOpenModal({
               step: GuardianStep.LockAccount_Success,
             });

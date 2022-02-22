@@ -23,7 +23,7 @@ import { Footer, useSettings } from "@loopring-web/component-lib";
 import { ReportPage } from "pages/ReportPage";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
-import { GuardianPage } from "../pages/walletPage";
+import { GuardianPage } from "../pages/WalletPage";
 
 const ContentWrap = ({
   children,

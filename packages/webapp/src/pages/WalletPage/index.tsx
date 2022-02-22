@@ -23,14 +23,14 @@ import {
   btnLabel,
 } from "../../layouts/connectStatusCallback";
 import store from "../../stores";
-import { WalletProtector } from "./WalletProtector";
 
 import { useRouteMatch } from "react-router-dom";
-import { WalletValidationInfo } from "./WalletValidationInfo";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
 import { WalletHistory } from "./WalletHistory";
+import { WalletValidationInfo } from "./WalletValidationInfo";
+import { WalletProtector } from "./WalletProtector";
 
 const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
   ({ t }: any) => {

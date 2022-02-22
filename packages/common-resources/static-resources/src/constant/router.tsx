@@ -66,7 +66,6 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
     label: {
       id: "Advanced",
       i18nKey: "labelAdvanced",
-      //TODO: translate id
       description: "labelAdvancedDescription",
     },
     router: { path: "/trade/pro/LRC-ETH" },

@@ -526,6 +526,7 @@ export default {
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
+  labelNFTMintNoMetaBtn: "No Metadata",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription: "Mint NFT",

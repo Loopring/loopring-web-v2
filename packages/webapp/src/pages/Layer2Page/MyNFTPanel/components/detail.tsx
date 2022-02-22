@@ -319,7 +319,7 @@ export const NFTDetail = withTranslation("common")(
               }}
             />
           )}
-          {/*TODO: finished feature withdraw*/}
+
           {viewPage === 2 && (
             <WithdrawPanel<any, any>
               {...{

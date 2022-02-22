@@ -16,6 +16,7 @@ import {
 import { GuardianStep } from "@loopring-web/component-lib";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useSystem } from "../../stores/system";
+import store from "../../stores";
 
 export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
@@ -81,9 +82,10 @@ export const useHebaoMain = <
     step: GuardianStep.LockAccount_WaitForAuth,
     options: undefined,
   });
-  const { layer1ActionHistory, clearOneItem } = useLayer1Store();
+  const { clearOneItem } = useLayer1Store();
   const { chainId } = useSystem();
   const loadData = async () => {
+    const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
     if (LoopringAPI.walletAPI && account.accAddress) {
       const [
         { raw_data: guardianConfig },
@@ -101,23 +103,23 @@ export const useHebaoMain = <
           )
           .then((protector) => {
             protector.protectorArray.map((props) => {
-              if (layer1ActionHistory[chainId[Layer1Action.GuardianLock]]) {
-                if (
-                  layer1ActionHistory[chainId[Layer1Action.GuardianLock]][
-                    props.address
-                  ]
-                ) {
-                  if (props.lockStatus === HEBAO_LOCK_STATUS.CREATED) {
-                    props.lockStatus = HEBAO_LOCK_STATUS.LOCK_WAITING;
-                  } else {
-                    clearOneItem({
-                      chainId: chainId as ChainId,
-                      uniqueId: props.address,
-                      domain: Layer1Action.GuardianLock,
-                    });
-                  }
-                }
+              if (
+                layer1ActionHistory[chainId] &&
+                layer1ActionHistory[chainId][Layer1Action.GuardianLock] &&
+                layer1ActionHistory[chainId][Layer1Action.GuardianLock][
+                  props.address
+                ] &&
+                props.lockStatus === HEBAO_LOCK_STATUS.CREATED
+              ) {
+                props.lockStatus = HEBAO_LOCK_STATUS.LOCK_WAITING;
+              } else {
+                clearOneItem({
+                  chainId: chainId as ChainId,
+                  uniqueId: props.address,
+                  domain: Layer1Action.GuardianLock,
+                });
               }
+
               return props;
             });
             return protector;

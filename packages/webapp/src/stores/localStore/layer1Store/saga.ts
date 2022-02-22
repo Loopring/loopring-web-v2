@@ -25,7 +25,7 @@ const updateLayer1ActionHistory = async <R extends { [key: string]: any }>({
         ).reduce((prev, unit) => {
           if (
             unit &&
-            now - 1800000 < layer1ActionHistory[chainId][item as string][unit]
+            now - 1800000 < layer1ActionHistory[chainId][item as string][unit] //1800000
           ) {
             prev[unit] = layer1ActionHistory[chainId][item as string][unit];
             return prev;
@@ -42,7 +42,7 @@ const updateLayer1ActionHistory = async <R extends { [key: string]: any }>({
     return setInterval(() => {
       const chainId = store.getState().system.chainId;
       store.dispatch(circleUpdateLayer1ActionHistory({ chainId }));
-    }, 300000); //5*60*1000 //900000
+    }, 300000); //5*60*1000 //300000
   })();
   return { layer1ActionHistory: _layer1ActionHistory, __timer__, chainId };
 };
