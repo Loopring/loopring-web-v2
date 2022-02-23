@@ -11,13 +11,14 @@ import {
   EmptyDefault,
   Button,
   ModalQRCode,
-  HebaoStep,
+  GuardianStep,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import {
   ConnectProviders,
+  Layer1Action,
   LoadingIcon,
   LockIcon,
   SDK_ERROR_MAP_TO_UI,
@@ -29,17 +30,19 @@ import { useSystem } from "../../stores/system";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { ChainId } from "@loopring-web/loopring-sdk";
+import { useLayer1Store } from "../../stores/localStore/layer1Store";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
   overflow: hidden;
   background-color: var(--opacity);
   padding-bottom: 0;
-  .hebao-content {
+  .guardian-content {
     padding: ${({ theme }) => theme.unit}px 0px;
   }
   &:not(:last-child) {
-    .hebao-content {
+    .guardian-content {
       border-bottom: 1px solid var(--color-divide);
     }
 
@@ -62,26 +65,26 @@ const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
 ` as (prosp: ListItemProps) => JSX.Element;
 
 export const useHebaoProtector = <T extends sdk.Protector>({
-  hebaoConfig,
+  guardianConfig,
   handleOpenModal,
   loadData,
 }: {
-  hebaoConfig: any;
+  guardianConfig: any;
   // isContractAddress: boolean;
-  handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
+  handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
   loadData: () => Promise<void>;
 }) => {
   const { account } = useAccount();
   const { chainId, gasPrice } = useSystem();
   const { t } = useTranslation(["error"]);
-
+  const { setOneItem } = useLayer1Store();
   const onLock = React.useCallback(
     async (item: T) => {
       // const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);
-      const config = hebaoConfig.actionGasSettings.find(
+      const config = guardianConfig.actionGasSettings.find(
         (item: any) => item.action === "META_TX_LOCK_WALLET_WA"
       );
-      const guardianModule = hebaoConfig.supportContracts.find(
+      const guardianModule = guardianConfig.supportContracts.find(
         (ele: any) => ele.contractName.toUpperCase() === "GUARDIAN_MODULE"
       ).contractAddress;
       if (LoopringAPI?.walletAPI) {
@@ -112,21 +115,23 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             connectProvides.provideName === ConnectProviders.MetaMask,
         };
         try {
-          const { result, error } = await LoopringAPI.walletAPI.lockHebaoWallet(
-            params
-          );
+          const { error } = await LoopringAPI.walletAPI.lockHebaoWallet(params);
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
           if (error) {
             handleOpenModal({
-              step: HebaoStep.LockAccount_Failed,
+              step: GuardianStep.LockAccount_Failed,
               options: {
                 error: errorItem ? t(errorItem.messageKey) : error.message,
               },
             });
           } else {
-            await sdk.sleep(3000);
+            setOneItem({
+              chainId: chainId as ChainId,
+              uniqueId: item.address,
+              domain: Layer1Action.GuardianLock,
+            });
             handleOpenModal({
-              step: HebaoStep.LockAccount_Success,
+              step: GuardianStep.LockAccount_Success,
             });
             loadData();
           }
@@ -135,13 +140,13 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           // result.data = reason;
           sdk.dumpError400(reason);
           handleOpenModal({
-            step: HebaoStep.LockAccount_User_Denied,
+            step: GuardianStep.LockAccount_User_Denied,
             options: { error: reason.message },
           });
         }
       }
     },
-    [hebaoConfig, handleOpenModal]
+    [guardianConfig, handleOpenModal]
   );
   return {
     onLock,
@@ -227,7 +232,7 @@ export const HebaoProtectItem = <T extends sdk.Protector>(
     <HebaoProtectStyled alignItems="flex-start" className={`Hebao`}>
       <Box
         flex={1}
-        className={"hebao-content"}
+        className={"guardian-content"}
         component={"section"}
         display={"flex"}
         alignItems={"center"}
@@ -265,24 +270,24 @@ export const HebaoProtectItem = <T extends sdk.Protector>(
     </HebaoProtectStyled>
   );
 };
-export const HebaoProtector = <T extends sdk.Protector>({
+export const WalletProtector = <T extends sdk.Protector>({
   protectList,
-  hebaoConfig,
+  guardianConfig,
   handleOpenModal,
   loadData,
-  isContractAddress,
-}: {
+}: // isContractAddress,
+{
   protectList: T[];
-  hebaoConfig: any;
+  guardianConfig: any;
   loadData: () => Promise<void>;
-  handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
-  isContractAddress: boolean;
+  handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
+  // isContractAddress: boolean;
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common"]);
   const [openQRCode, setOpenQRCode] = React.useState(false);
   const { onLock } = useHebaoProtector({
-    hebaoConfig,
+    guardianConfig,
     handleOpenModal,
     loadData,
   });
@@ -313,7 +318,7 @@ export const HebaoProtector = <T extends sdk.Protector>({
     <>
       <ModalQRCode
         open={openQRCode}
-        className={"hebaoPop"}
+        className={"guardianPop"}
         onClose={() => setOpenQRCode(false)}
         title={() => (
           <Typography component={"p"} textAlign={"center"} marginBottom={1}>
@@ -322,14 +327,14 @@ export const HebaoProtector = <T extends sdk.Protector>({
               component={"p"}
               variant={"h5"}
             >
-              {t("labelHebaoAddAsGuardian")}
+              {t("labelWalletAddAsGuardian")}
             </Typography>
             <Typography
               color={"var(--color-text-secondary)"}
               component={"p"}
               variant={"body1"}
             >
-              {t("labelHebaoScanQRCode")}
+              {t("labelWalletScanQRCode")}
             </Typography>
           </Typography>
         )}
@@ -347,7 +352,7 @@ export const HebaoProtector = <T extends sdk.Protector>({
       >
         <Box display={"flex"} justifyContent={"space-between"} paddingX={5 / 2}>
           <Typography component={"h3"} variant={"h5"}>
-            {t("labelHebaoGuardianList")}
+            {t("labelWalletGuardianList")}
           </Typography>
           <ButtonListRightStyled
             item
@@ -356,19 +361,17 @@ export const HebaoProtector = <T extends sdk.Protector>({
             flexDirection={"row"}
             justifyContent={"flex-end"}
           >
-            {!isContractAddress && (
-              <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
-                startIcon={
-                  <SecurityIcon htmlColor={"var(--color-text-button)"} />
-                }
-                onClick={() => setOpenQRCode(true)}
-              >
-                {t("labelAddProtector")}
-              </Button>
-            )}
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              startIcon={
+                <SecurityIcon htmlColor={"var(--color-text-button)"} />
+              }
+              onClick={() => setOpenQRCode(true)}
+            >
+              {t("labelAddProtector")}
+            </Button>
           </ButtonListRightStyled>
         </Box>
         <Box flex={1} alignItems={"center"} marginTop={2}>
@@ -381,7 +384,7 @@ export const HebaoProtector = <T extends sdk.Protector>({
                   onClick={() => {
                     onLock(item);
                     handleOpenModal({
-                      step: HebaoStep.LockAccount_WaitForAuth,
+                      step: GuardianStep.LockAccount_WaitForAuth,
                       options: { lockRetry: onLock, lockRetryParams: item },
                     });
                   }}

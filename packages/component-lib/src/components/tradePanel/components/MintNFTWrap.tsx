@@ -157,38 +157,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
           </Typography>
         </PopoverPure>
       </Grid>
-
-      {/*<Grid item marginTop={2} alignSelf={"stretch"}>*/}
-      {/*  <Box*/}
-      {/*    display={"flex"}*/}
-      {/*    alignItems={"center"}*/}
-      {/*    justifyContent={"space-between"}*/}
-      {/*    position={"relative"}*/}
-      {/*  >*/}
-      {/*    <TextField*/}
-      {/*      value={tradeData?.tokenAddress}*/}
-      {/*      label={t("labelNFTContractAddress")}*/}
-      {/*      placeholder={t("depositNFTAddressLabelPlaceholder")}*/}
-      {/*      onChange={(event) =>*/}
-      {/*        _handleOnNFTDataChange({ tokenAddress: event.target?.value } as T)*/}
-      {/*      }*/}
-      {/*      fullWidth={true}*/}
-      {/*    />*/}
-      {/*    {tradeData.tokenAddress && tradeData.tokenAddress !== "" ? (*/}
-      {/*      <IconClearStyled*/}
-      {/*        color={"inherit"}*/}
-      {/*        size={"small"}*/}
-      {/*        style={{ top: "30px" }}*/}
-      {/*        aria-label="Clear"*/}
-      {/*        onClick={() => _handleOnNFTDataChange({ tokenAddress: "" } as T)}*/}
-      {/*      >*/}
-      {/*        <CloseIcon />*/}
-      {/*      </IconClearStyled>*/}
-      {/*    ) : (*/}
-      {/*      ""*/}
-      {/*    )}*/}
-      {/*  </Box>*/}
-      {/*</Grid>*/}
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <Box
           display={"flex"}

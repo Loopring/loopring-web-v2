@@ -66,7 +66,6 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
     label: {
       id: "Advanced",
       i18nKey: "labelAdvanced",
-      //TODO: translate id
       description: "labelAdvancedDescription",
     },
     router: { path: "/trade/pro/LRC-ETH" },
@@ -201,26 +200,26 @@ export const subMenuHebao = {
   assetsGroup: [
     {
       icon: AssetsIcon,
-      router: { path: "/hebao/hebao-protected" },
+      router: { path: "/guardian/guardian-protected" },
       label: {
-        id: "hebao-protected",
-        i18nKey: "labelHebaoProtect",
+        id: "guardian-protected",
+        i18nKey: "labelWalletProtect",
       },
     },
     {
       icon: WaitApproveIcon,
-      router: { path: "/hebao/hebao-validation-info" },
+      router: { path: "/guardian/guardian-validation-info" },
       label: {
-        id: "hebao-validation",
-        i18nKey: "labelHebaoValidation",
+        id: "guardian-validation",
+        i18nKey: "labelWalletValidation",
       },
     },
     {
       icon: RecordIcon,
-      router: { path: "/hebao/hebao-history" },
+      router: { path: "/guardian/guardian-history" },
       label: {
-        id: "hebao-history",
-        i18nKey: "labelHebaoHistory",
+        id: "guardian-history",
+        i18nKey: "labelWalletHistory",
       },
     },
   ],

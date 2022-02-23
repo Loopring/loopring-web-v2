@@ -36,7 +36,6 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useChargeFees } from "../common/useChargeFees";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
@@ -85,6 +84,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         tokenAddress &&
         nftMintValue.tradeValue &&
         Number(nftMintValue.tradeValue) > 0 &&
+        (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
         nftMintValue.fee &&
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
@@ -94,6 +94,13 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         enableBtn();
         return;
       }
+      if (!nftMintValue.image && !nftMintValue.name) {
+        setLabelAndParams("labelNFTMintNoMetaBtn", {});
+      }
+      // if (Number(nftMintValue.tradeValue) <= 0) {
+      //   setLabelAndParams("labelNFTMintNoMetaBtn", {});
+      // }
+
       // else {
       disableBtn();
       myLog("try to disable nftMint btn!");
@@ -260,12 +267,8 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               sdk.LOOPRING_URLs.IPFS_META_URL +
                 `${data.nftIdView}` +
                 "/metadata.json"
-            )
-              .then((response) => response.json())
-              .catch((error) => {
-                myLog(error);
-                return undefined;
-              });
+            ).then((response) => response.json());
+
             if (value) {
               shouldUpdate = {
                 nftId: nftId,
@@ -274,8 +277,23 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                 description: value.description ?? EmptyValueTag,
                 ...shouldUpdate,
               };
+            } else {
+              shouldUpdate = {
+                nftId: nftId,
+                name: undefined,
+                image: undefined,
+                description: undefined,
+                ...shouldUpdate,
+              };
             }
           } catch (error) {
+            shouldUpdate = {
+              nftId: nftId,
+              name: undefined,
+              image: undefined,
+              description: undefined,
+              ...shouldUpdate,
+            };
             myLog(error);
           }
         }
@@ -304,6 +322,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         nftMintValue.fee &&
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
+        (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
         !isFeeNotEnough &&

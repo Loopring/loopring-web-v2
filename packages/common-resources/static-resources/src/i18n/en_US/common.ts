@@ -446,6 +446,7 @@ export default {
   labelNFTTransfer: "Transfer",
   labelNFTWithdraw: "Withdraw",
   labelNFTDeployContract: "Deploy Contract",
+  labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
@@ -525,6 +526,7 @@ export default {
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
+  labelNFTMintNoMetaBtn: "No Metadata",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription: "Mint NFT",
@@ -541,17 +543,19 @@ export default {
   labelDepositVendor:
     "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
-  labelHebaoAddAsGuardian: "Add as a Guardian",
-  labelHebaoScanQRCode: "Scan the QR code with your Loopring Wallet",
-  labelHebaoGuardianList: "Guardian List",
+  labelWalletToWallet:
+    "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
+  labelWalletAddAsGuardian: "Add as a Guardian",
+  labelWalletScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelWalletGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
   labelUnknown: "unknown",
   labelApprove: "Approve",
   labelReject: "Reject",
-  labelHebaoApprove: "Approve Signature",
+  labelWalletApprove: "Approve Signature",
   labelCommonList: "Waiting for your Approve List",
   labelLogList: "Log List",
-  labelHebaoReject: "Reject Signature",
+  labelWalletReject: "Reject Signature",
   labelLockAccountSuccess: "Lock Account Success",
   labelLockAccountFailed: "Lock Account Failed",
   labelApproveSuccess: "Approve Signature Success",
@@ -559,18 +563,18 @@ export default {
   labelRejectSuccess: "Reject Signature Success",
   labelRejectFailed: "Reject Signature Failed",
   labelYourBalance: "Your Layer 2 have: {{balance}}",
-  labelTxHebaoADD_GUARDIAN: "ADD GUARDIAN",
-  labelTxHebaoGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
-  labelTxHebaoGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
-  labelTxHebaoGUARDIAN_APPROVE: "GUARDIAN APPROVE",
-  labelTxHebaoAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
-  labelTxHebaoAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
-  labelTxHebaoAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
-  labelTxHebaoADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34
-  labelTxHebaoREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
-  labelTxHebaoUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
-  labelTxHebaoRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
-  labelTxHebaoApprove: "APPROVE",
-  labelTxHebaoReject: "REJECT",
+  labelTxGuardianADD_GUARDIAN: "ADD GUARDIAN",
+  labelTxGuardianGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
+  labelTxGuardianGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
+  labelTxGuardianGUARDIAN_APPROVE: "GUARDIAN APPROVE",
+  labelTxGuardianAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
+  labelTxGuardianAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
+  labelTxGuardianAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
+  labelTxGuardianADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34
+  labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
+  labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
+  labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
+  labelTxGuardianApprove: "APPROVE",
+  labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
 };

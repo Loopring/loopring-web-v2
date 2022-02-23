@@ -49,9 +49,25 @@ export type TxInfo = {
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] };
 }
+// export type GuardianLock
+export enum Layer1Action {
+  GuardianLock = "GuardianLock",
+  NFTDeploy = "NFTDeploy",
+}
+// GuardianLock
+export type Layer1ActionHistory = {
+  [key: string]: {
+    [key in keyof typeof Layer1Action]?: { [key: string]: number };
+    // NFTDeploy?: { [key: string]: number };
+  };
+};
+
 export type ChainHashInfos = {
   [key in ChainId extends string ? string : string]: AccountHashInfo;
 };
+export type LAYER1_ACTION_HISTORY = {
+  [key in ChainId extends string ? string : string]: Layer1ActionHistory;
+} & { __timer__: -1 | NodeJS.Timeout };
 
 export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo & {
@@ -60,7 +76,7 @@ export type NFTWholeINFO = NFTTokenInfo &
     nftIdView: string;
     description: string;
     nftBalance: number;
-    isDeployed: boolean;
+    isDeployed: "yes" | "no" | "unknown";
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
   } & { fee?: FeeInfo };
