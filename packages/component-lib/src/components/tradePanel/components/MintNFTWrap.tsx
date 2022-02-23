@@ -53,12 +53,12 @@ const NFT_TYPE: TGItemData[] = [
     label: "ERC1155",
     disabled: false,
   },
-  {
-    value: NFTType.ERC721,
-    key: "ERC721",
-    label: "ERC721", // after 18n
-    disabled: true,
-  },
+  // {
+  //   value: NFTType.ERC721,
+  //   key: "ERC721",
+  //   label: "ERC721", // after 18n
+  //   disabled: true,
+  // },
 ];
 export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   disabled,

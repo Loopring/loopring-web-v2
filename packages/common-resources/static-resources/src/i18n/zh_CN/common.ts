@@ -247,6 +247,8 @@ export default {
     "路印暂不支持您当前登入的网络，\n请在{{connectName}}切换网络",
   describeTitleNotActive: "充值钱包, 激活账户, \n开始二层之旅.",
   describeTitleConnectToWallet: "点击按钮，连接路印钱包，\n开始二层之旅.",
+  describeWhatIsGuardian: "what is Loopring guardian!",
+  describeTitleConnectToWalletAsGuardian: "点击按钮，连接路印钱包，作为守护人",
   describeTitleLocked: "已连接您的钱包，\n点击解锁后查看账户信息",
   labelLiquidityPageTitle: "AMM 资金池",
   labelMinReceive: "最少接收量",

@@ -7,7 +7,7 @@ import {
   SagaStatus,
   subMenuHebao,
 } from "@loopring-web/common-resources";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import {
   Button,
   GuardianStep,
@@ -24,7 +24,7 @@ import {
 } from "../../layouts/connectStatusCallback";
 import store from "../../stores";
 
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
@@ -37,6 +37,7 @@ const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
     const { status: accountStatus, account } = useAccount();
     const [label, setLabel] = React.useState(undefined);
     const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
+
     React.useEffect(() => {
       if (accountStatus === SagaStatus.UNSET) {
         setLabel(accountStaticCallBack(_btnLabel));
@@ -67,6 +68,7 @@ export const GuardianPage = withTranslation(["common"])(
   ({ t, ...rest }: WithTranslation) => {
     const { account } = useAccount();
     let match = useRouteMatch("/guardian/:item");
+    const history = useHistory();
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
     const {
@@ -163,9 +165,21 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
-                {t("describeTitleConnectToWallet")}
+              <Typography marginTop={3} variant={"h1"} textAlign={"center"}>
+                {t("describeTitleConnectToWalletAsGuardian")}
               </Typography>
+
+              <Link
+                marginY={2}
+                variant={"body1"}
+                textAlign={"center"}
+                color={"textSecondary"}
+                onClick={() =>
+                  window.open("./#/document/walletdesign_en.md", "_blank")
+                }
+              >
+                {t("describeWhatIsGuardian")}
+              </Link>
               <BtnConnect />
             </Box>
           );
