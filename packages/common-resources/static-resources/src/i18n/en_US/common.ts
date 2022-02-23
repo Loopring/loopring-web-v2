@@ -255,6 +255,9 @@ export default {
   describeTitleNotActive:
     "Connect your wallet,\n make a deposit, and enjoy Loopring L2.",
   describeTitleConnectToWallet: "Connect wallet to start",
+  describeWhatIsGuardian: "What is Loopring guardian",
+  describeTitleConnectToWalletAsGuardian:
+    "Connect wallet to be a wallet guardian!",
   describeTitleLocked: "Unlock your account to check your assets.",
   labelLiquidityPageTitle: "AMM Pools",
   labelMinReceive: "Minimum Received Amount",
