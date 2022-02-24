@@ -2,7 +2,6 @@ import { Box, Typography } from "@mui/material";
 import { Trans, withTranslation, WithTranslation } from "react-i18next";
 import {
   ConnectProviders,
-  LoadingIcon,
   DoneIcon,
   FailedIcon,
   RefuseIcon,
@@ -66,9 +65,9 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
   }: PanelProps & WithTranslation) => {
     const isLoading = iconType === IconType.LoadingIcon;
 
-    const size = isLoading ? 72 : 60;
+    const size = isLoading ? 60 : 60;
 
-    const marginTopIcon = isLoading ? 7 : 8;
+    const marginTopIcon = isLoading ? 0 : 8;
 
     const marginTopDescribe1 = isLoading ? 2 : 3;
 
@@ -82,10 +81,16 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
       switch (iconType) {
         case IconType.LoadingIcon:
           return (
-            <LoadingIcon
-              color={"primary"}
-              style={{ width: size, height: size }}
+            <img
+              className="loading-gif"
+              alt={"loading"}
+              width={size}
+              src={`${SoursURL}images/loading-line.gif`}
             />
+            // <LoadingIcon
+            //   color={"primary"}
+            //   style={{ width: size, height: size }}
+            // />
           );
         case IconType.FailedIcon:
           return (
@@ -127,6 +132,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
       if (providerName) {
         switch (providerName) {
           case ConnectProviders.MetaMask:
+          case ConnectProviders.WalletLink:
           case ConnectProviders.GameStop:
             return (
               <Trans

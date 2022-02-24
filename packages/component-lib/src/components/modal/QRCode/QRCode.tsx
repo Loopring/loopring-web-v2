@@ -14,7 +14,7 @@ const ModalContentStyled = styled(Box)`
     transform: translate(-50%, -50%);
     width: var(--modal-width);
   }
-  &.hebaoPop .content {
+  &.guardianPop .content {
     padding-top: ${({ theme }) => 5 * theme.unit}px;
     border-radius: ${({ theme }) => theme.unit}px;
   }

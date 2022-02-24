@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   AccountStep,
@@ -69,6 +68,25 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const [stateCheck, setStateCheck] = React.useState<boolean>(false);
     const [connectProvider, setConnectProvider] =
       React.useState<boolean>(false);
+    const walletLinkCallback = React.useCallback(async () => {
+      updateAccount({ connectName: ConnectProviders.WalletLink });
+      await connectProvides.WalletLink();
+
+      // statusAccountUnset();
+      if (connectProvides.usedProvide) {
+        let chainId: ChainId = Number(
+          await connectProvides.usedWeb3?.eth.getChainId()
+        );
+        chainId =
+          chainId && chainId === ChainId.GOERLI
+            ? (chainId as ChainId)
+            : ChainId.MAINNET;
+        if (chainId !== _chainId) {
+          updateSystem({ chainId });
+        }
+        return;
+      }
+    }, [_chainId]);
     const gameStopCallback = React.useCallback(async () => {
       updateAccount({ connectName: ConnectProviders.GameStop });
       await connectProvides.GameStop();
@@ -212,7 +230,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 isShow: true,
                 step: WalletConnectStep.CommonProcessing,
               });
-              setProcessingCallback({ callback: gameStopCallback });
+              setProcessingCallback({ callback: walletConnectCallback });
               setStateCheck(true);
             }
           },
@@ -229,12 +247,28 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               step: WalletConnectStep.WalletConnectProcessing,
             });
             setConnectProvider(DefaultGatewayList[2].key);
-            setProcessingCallback({ callback: walletConnectCallback });
+            setProcessingCallback({ callback: gameStopCallback });
             setStateCheck(true);
           },
           [account]
         ),
       },
+      // {
+      //   ...DefaultGatewayList[3],
+      //   handleSelect: React.useCallback(
+      //     async (event, flag?) => {
+      //       walletServices.sendDisconnect("", "should new provider");
+      //       setShowConnect({
+      //         isShow: true,
+      //         step: WalletConnectStep.WalletConnectProcessing,
+      //       });
+      //       setConnectProvider(DefaultGatewayList[3].key);
+      //       setProcessingCallback({ callback: walletLinkCallback });
+      //       setStateCheck(true);
+      //     },
+      //     [account]
+      //   ),
+      // },
     ];
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);

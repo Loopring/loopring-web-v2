@@ -66,7 +66,6 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
     label: {
       id: "Advanced",
       i18nKey: "labelAdvanced",
-      //TODO: translate id
       description: "labelAdvancedDescription",
     },
     router: { path: "/trade/pro/LRC-ETH" },
@@ -90,7 +89,7 @@ export enum NavListIndex {
 export const orderDisableList = ["Liquidity", "Markets", "Trading", "Mining"];
 export const ammDisableList = ["Liquidity"];
 
-export let headerMenuData: Array<HeaderMenuItemInterface> = [
+export const headerMenuData: Array<HeaderMenuItemInterface> = [
   {
     label: {
       id: "Markets",
@@ -132,6 +131,8 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
     status: HeaderMenuTabStatus.default,
   },
 ];
+
+export const headerGuardianMenuData: Array<HeaderMenuItemInterface> = [];
 
 export const subMenuLayer2 = {
   assetsGroup: [
@@ -197,34 +198,35 @@ export const subMenuLayer2 = {
     },
   ],
 };
-export const subMenuHebao = {
+export const subMenuGuardian = {
   assetsGroup: [
     {
       icon: AssetsIcon,
-      router: { path: "/hebao/hebao-protected" },
+      router: { path: "/guardian/guardian-protected" },
       label: {
-        id: "hebao-protected",
-        i18nKey: "labelHebaoProtect",
+        id: "guardian-protected",
+        i18nKey: "labelWalletProtect",
       },
     },
     {
       icon: WaitApproveIcon,
-      router: { path: "/hebao/hebao-validation-info" },
+      router: { path: "/guardian/guardian-validation-info" },
       label: {
-        id: "hebao-validation",
-        i18nKey: "labelHebaoValidation",
+        id: "guardian-validation",
+        i18nKey: "labelWalletValidation",
       },
     },
     {
       icon: RecordIcon,
-      router: { path: "/hebao/hebao-history" },
+      router: { path: "/guardian/guardian-history" },
       label: {
-        id: "hebao-history",
-        i18nKey: "labelHebaoHistory",
+        id: "guardian-history",
+        i18nKey: "labelWalletHistory",
       },
     },
   ],
 };
 
 export const headerRoot = "Landing-page";
+
 export const SoursURL = "https://static.loopring.io/assets/";

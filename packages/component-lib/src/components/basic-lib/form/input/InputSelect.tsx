@@ -1,12 +1,16 @@
 import styled from "@emotion/styled";
 import { Box } from "@mui/material";
-import { CoinInfo, CoinKey, globalSetup } from "@loopring-web/common-resources";
+import {
+  CoinInfo,
+  CoinKey,
+  globalSetup,
+} from "@loopring-web/common-resources";
 import React from "react";
 import { InputSelectProps } from "./Interface";
 import { useFocusRef, usePanelRef } from "../hooks";
-import { WithTranslation } from "react-i18next";
-import { InputSearch } from "./InputSearch";
-import * as _ from "lodash";
+import { WithTranslation } from 'react-i18next';
+import { InputSearch } from './InputSearch';
+import * as _ from 'lodash'
 
 const WrapStyled = styled(Box)`
   padding: 0;
@@ -86,6 +90,7 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
         paddingRight={5 / 2}
       >
         <Box alignSelf={"stretch"} position={"relative"} flex={1}>
+          {/* <SearchWrap/> */}
           <InputSearch
             key={"search"}
             fullWidth
@@ -97,7 +102,7 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
             className={"search-wrap"}
             onChange={_handleContentChange}
           />
-        </Box>
+         </Box>
         {backElement ? <Box marginLeft={2}>{backElement}</Box> : <></>}
       </Box>
       <Box flex={1} ref={panelRef}>

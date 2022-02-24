@@ -242,7 +242,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           handleListKeyDown?: any;
         } & WithTranslation) => {
           return (
-            menuList.length &&
+            !!menuList.length &&
             menuList.map((props: HeaderMenuItemInterface) => {
               const { label, child, status } = props;
               const selectedFlag = new RegExp(label.id, "ig").test(

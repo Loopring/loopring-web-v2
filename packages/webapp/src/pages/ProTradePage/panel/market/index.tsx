@@ -16,9 +16,9 @@ import {
   DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
-  LoadingIcon,
   MarketType,
   PriceTag,
+  SoursURL,
   UpColor,
   UpIcon,
 } from "@loopring-web/common-resources";
@@ -341,7 +341,11 @@ export const MarketView = withTranslation("common")(
               alignItems={"center"}
               justifyContent={"center"}
             >
-              <LoadingIcon />
+              <img
+                className="loading-gif"
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
             </Box>
           )}
         </>
@@ -494,7 +498,12 @@ export const MarketView = withTranslation("common")(
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                <LoadingIcon />
+                <img
+                  className="loading-gif"
+                  alt={"loading"}
+                  width="36"
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
               </Box>
             )}
           </Box>

@@ -1,23 +1,24 @@
 import React from "react";
 import { useAccount } from "../../stores/account";
 import {
-  ConnectProviders,
+  Layer1Action,
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
 import { LoopringAPI } from "../../api_wrapper";
 import {
+  ChainId,
   Guardian,
+  HEBAO_LOCK_STATUS,
   HebaoOperationLog,
-  LockHebaoHebaoParam,
   Protector,
 } from "@loopring-web/loopring-sdk";
-import { connectProvides } from "@loopring-web/web3-provider";
-import { HebaoStep } from "@loopring-web/component-lib";
+import { GuardianStep } from "@loopring-web/component-lib";
+import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useSystem } from "../../stores/system";
-import * as sdk from "@loopring-web/loopring-sdk";
+import store from "../../stores";
 
-export enum TxHebaoHistoryType {
+export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
   GUARDIAN_CONFIRM_ADDITION = 52,
   GUARDIAN_REJECT_ADDITION = 53,
@@ -30,6 +31,7 @@ export enum TxHebaoHistoryType {
   UNLOCK_WALLET_WA = 60, // 37
   RESET_GUARDIANS_WA = 61, // 200
 }
+
 export enum TxHebaoAction {
   Approve,
   Reject,
@@ -41,11 +43,27 @@ export const useHebaoMain = <
   H extends HebaoOperationLog
 >() => {
   const { account, status: accountStatus } = useAccount();
+  const [isContractAddress, setIsContractAddress] =
+    React.useState<boolean>(false);
+  LoopringAPI.walletAPI
+    ?.getWalletType({
+      wallet: account.accAddress,
+    })
+    .then(({ walletType }) => {
+      if (walletType?.isContract) {
+        setIsContractAddress(true);
+      } else {
+        setIsContractAddress(false);
+      }
+    });
+
+  myLog(isContractAddress, "isContractAddress");
+
   const [
-    { hebaoConfig, protectList, guardiansList, operationLogList },
+    { guardianConfig, protectList, guardiansList, operationLogList },
     setList,
   ] = React.useState<{
-    hebaoConfig: any;
+    guardianConfig: any;
     protectList: T[];
     guardiansList: G[];
     operationLogList: H[];
@@ -53,33 +71,59 @@ export const useHebaoMain = <
     protectList: [],
     guardiansList: [],
     operationLogList: [],
-    hebaoConfig: {},
+    guardianConfig: {},
   });
   const [openHebao, setOpenHebao] = React.useState<{
     isShow: boolean;
-    step: HebaoStep;
+    step: GuardianStep;
     options?: any;
   }>({
     isShow: false,
-    step: HebaoStep.LockAccount_WaitForAuth,
+    step: GuardianStep.LockAccount_WaitForAuth,
     options: undefined,
   });
-
+  const { clearOneItem } = useLayer1Store();
+  const { chainId } = useSystem();
   const loadData = async () => {
+    const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
     if (LoopringAPI.walletAPI && account.accAddress) {
       const [
-        { raw_data: hebaoConfig },
+        { raw_data: guardianConfig },
         protector,
         guardian,
-        hebaooperationlog,
+        guardianoperationlog,
       ]: any = await Promise.all([
         LoopringAPI.walletAPI.getHebaoConfig(),
-        LoopringAPI.walletAPI.getProtectors(
-          {
-            guardian: account.accAddress,
-          },
-          account.apiKey
-        ),
+        LoopringAPI.walletAPI
+          .getProtectors(
+            {
+              guardian: account.accAddress,
+            },
+            account.apiKey
+          )
+          .then((protector) => {
+            protector.protectorArray.map((props) => {
+              if (
+                layer1ActionHistory[chainId] &&
+                layer1ActionHistory[chainId][Layer1Action.GuardianLock] &&
+                layer1ActionHistory[chainId][Layer1Action.GuardianLock][
+                  props.address
+                ] &&
+                props.lockStatus === HEBAO_LOCK_STATUS.CREATED
+              ) {
+                props.lockStatus = HEBAO_LOCK_STATUS.LOCK_WAITING;
+              } else {
+                clearOneItem({
+                  chainId: chainId as ChainId,
+                  uniqueId: props.address,
+                  domain: Layer1Action.GuardianLock,
+                });
+              }
+
+              return props;
+            });
+            return protector;
+          }),
         // api/wallet/v3/operationLogs
         LoopringAPI.walletAPI
           .getGuardianApproveList({
@@ -101,7 +145,7 @@ export const useHebaoMain = <
           // offset?: number;
           // network?: 'ETHEREUM';
           // statues?: string;
-          // hebaoTxType?: string;
+          // guardianTxType?: string;
           // limit?: number;
         }),
       ]).catch((error) => {
@@ -124,8 +168,8 @@ export const useHebaoMain = <
       setList({
         protectList: protector.protectorArray ?? [],
         guardiansList: _guardiansList,
-        operationLogList: hebaooperationlog?.operationArray ?? [],
-        hebaoConfig,
+        operationLogList: guardianoperationlog?.operationArray ?? [],
+        guardianConfig,
       });
     }
   };
@@ -135,9 +179,10 @@ export const useHebaoMain = <
     }
   }, [accountStatus]);
   return {
+    isContractAddress,
     protectList,
     guardiansList,
-    hebaoConfig,
+    guardianConfig,
     openHebao,
     operationLogList,
     setOpenHebao,

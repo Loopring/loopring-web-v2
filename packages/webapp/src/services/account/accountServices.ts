@@ -102,6 +102,7 @@ export const accountServices = {
     apiKey,
     eddsaKey,
     isReset,
+    keySeed,
     nonce,
     isInCounterFactualStatus,
     isContract,
@@ -111,6 +112,7 @@ export const accountServices = {
     eddsaKey?: any;
     isReset?: boolean;
     nonce?: number;
+    keySeed?: string;
     isInCounterFactualStatus?: boolean;
     isContract?: boolean;
   }) => {
@@ -121,6 +123,7 @@ export const accountServices = {
             apiKey,
             eddsaKey,
             nonce,
+            keySeed,
             publicKey: {
               x: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyX)),
               y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),

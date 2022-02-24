@@ -5,22 +5,22 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { Button, TextField, DateRangePicker } from "../../../basic-lib";
 import { DropDownIcon } from "@loopring-web/common-resources";
 import { DateRange } from "@mui/lab";
-import { RawDataTsNFTItem } from "../Interface";
+import { UserNFTTxTypes, TxNFTType } from "@loopring-web/loopring-sdk";
+import { NFTTableFilter } from "../Interface";
 
 export interface FilterProps {
-  originalData: RawDataTsNFTItem[];
-  handleFilterChange: ({ filterDate, filterToken }: any) => void;
-  filterDate: DateRange<Date | string>;
-  filterToken: string;
-  handleReset: () => void;
+  handleFilterChange: (filter: Partial<NFTTableFilter>) => void;
+  filterDate?: DateRange<Date | string>;
+  filterType?: UserNFTTxTypes;
+  // handleReset: () => void;
   marketArray?: string[];
 }
 
-export enum FilterOrderTypes {
-  allTypes = "All Types",
-  buy = "Buy",
-  sell = "Sell",
-}
+// export enum FilterOrderTypes {
+//   allTypes = "All Types",
+//   buy = "Buy",
+//   sell = "Sell",
+// }
 
 const StyledTextFiled = styled(TextField)`
   &.MuiTextField-root {
@@ -44,48 +44,51 @@ const StyledBtnBox = styled(Box)`
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
+    filterType,
     filterDate,
-    filterToken,
     handleFilterChange,
-    handleReset,
-    marketArray = [],
   }: FilterProps & WithTranslation) => {
-    const getTokenTypeList = React.useCallback(() => {
-      return [
-        {
-          label: t("labelOrderFilterAllPairs"),
-          value: "All Pairs",
-        },
-        ...Array.from(new Set(marketArray)).map((token) => ({
-          label: token,
-          value: token,
-        })),
-      ];
-    }, [t, marketArray]);
-
+    const transactionTypeList = [
+      {
+        label: t(`labelTxNFTFilter${TxNFTType.ALL}`),
+        value: 0,
+      },
+      {
+        label: t(`labelTxNFTFilter${TxNFTType.DEPOSIT}`),
+        value: UserNFTTxTypes[TxNFTType.DEPOSIT],
+      },
+      {
+        label: t(`labelTxNFTFilter${TxNFTType.WITHDRAW}`),
+        value: UserNFTTxTypes[TxNFTType.WITHDRAW],
+      },
+      {
+        label: t(`labelTxNFTFilter${TxNFTType.TRANSFER}`),
+        value: UserNFTTxTypes[TxNFTType.TRANSFER],
+      },
+      {
+        label: t(`labelTxNFTFilter${TxNFTType.MINT}`),
+        value: UserNFTTxTypes[TxNFTType.MINT],
+      },
+    ];
     return (
       <Grid container spacing={2}>
-        <Grid item>
-          <DateRangePicker
-            value={filterDate}
-            onChange={(date: any) => {
-              handleFilterChange({ date: date });
-            }}
-          />
-        </Grid>
-        <Grid item xs={2} minWidth={200}>
+        <Grid item xs={2}>
           <StyledTextFiled
-            id="table-order-token-types"
+            id="table-transaction-trade-types"
             select
             fullWidth
-            value={filterToken}
-            onChange={(event: React.ChangeEvent<{ value: string }>) => {
-              handleFilterChange({ token: event.target.value });
+            value={filterType ?? 0}
+            placeholder={`labelTxNFTFilter${TxNFTType.ALL}`}
+            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+              let txType: any = event.target.value as UserNFTTxTypes;
+
+              handleFilterChange({
+                txType,
+              });
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
-            {getTokenTypeList().map((o) => (
+            {transactionTypeList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
               </MenuItem>
@@ -93,12 +96,25 @@ export const Filter = withTranslation("tables", { withRef: true })(
           </StyledTextFiled>
         </Grid>
         <Grid item>
+          <DateRangePicker
+            value={filterDate ?? [null, null]}
+            onChange={(date: any) => {
+              handleFilterChange({ duration: date });
+            }}
+          />
+        </Grid>
+        <Grid item>
           <StyledBtnBox>
             <Button
               variant={"outlined"}
               size={"medium"}
               color={"primary"}
-              onClick={handleReset}
+              onClick={() => {
+                handleFilterChange({
+                  duration: [null, null],
+                  txType: undefined,
+                });
+              }}
             >
               {t("labelFilterReset")}
             </Button>

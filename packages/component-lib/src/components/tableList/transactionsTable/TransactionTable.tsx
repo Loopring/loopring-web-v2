@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Link, Modal, Typography } from "@mui/material";
+import { Box, Modal, Typography } from "@mui/material";
 import { TFunction, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import {
   CompleteIcon,
   EmptyValueTag,
+  EXPLORE_TYPE,
   Explorer,
   getFormattedHash,
   getValuePrecisionThousand,
@@ -23,7 +24,7 @@ import {
   TransactionTradeTypes,
 } from "./Interface";
 import { DateRange } from "@mui/lab";
-import { TxType, UserTxTypes } from "@loopring-web/loopring-sdk";
+import { UserTxTypes } from "@loopring-web/loopring-sdk";
 
 export type TxsFilterProps = {
   tokenSymbol?: string;
@@ -324,126 +325,47 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const hash = row.txHash !== "" ? row.txHash : row.hash;
-            if (
-              row.txHash ||
-              (row.blockIdInfo.blockId &&
-                row.storageInfo &&
-                (row.storageInfo.tokenId || row.storageInfo.storageId))
-            ) {
-              const path =
-                row.txHash !== ""
-                  ? etherscanBaseUrl + `/tx/${row.txHash}`
-                  : row.blockIdInfo &&
-                    row.storageInfo &&
-                    Explorer +
-                      `/tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`;
-              return (
-                <Box
-                  className="rdg-cell-value textAlignRight"
-                  display={"inline-flex"}
-                  justifyContent={"flex-end"}
-                  alignItems={"center"}
+            // if (
+            //   row.txHash ||
+            //   (row.blockIdInfo.blockId &&
+            //     row.storageInfo &&
+            //     (row.storageInfo.tokenId || row.storageInfo.storageId))
+            // ) {
+            const path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer +
+                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            // const path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : row.storageInfo.tokenId || row.storageInfo.storageId
+            //     ? Explorer +
+            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            return (
+              <Box
+                className="rdg-cell-value textAlignRight"
+                display={"inline-flex"}
+                justifyContent={"flex-end"}
+                alignItems={"center"}
+              >
+                <Typography
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  color={"var(--color-primary)"}
+                  onClick={() => window.open(path, "_blank")}
+                  title={hash}
                 >
-                  <Typography
-                    style={{
-                      cursor: "pointer",
-                    }}
-                    color={"var(--color-primary)"}
-                    onClick={() => window.open(path, "_blank")}
-                    title={hash}
-                  >
-                    {hash ? getFormattedHash(hash) : EmptyValueTag}
-                  </Typography>
-                  <Box marginLeft={1}>
-                    <CellStatus {...{ row }} />
-                  </Box>
+                  {hash ? getFormattedHash(hash) : EmptyValueTag}
+                </Typography>
+                <Box marginLeft={1}>
+                  <CellStatus {...{ row }} />
                 </Box>
-              );
-            } else {
-              const value = row["txnHash"];
-              const path = row["path"] || "";
-              const RenderValue = styled(Box)`
-                color: ${({ theme }) =>
-                  theme.colorBase[value ? "secondary" : "textSecondary"]};
-                cursor: pointer;
-              `;
-
-              const {
-                hash,
-                txHash,
-                txType,
-                status,
-                time,
-                receiverAddress,
-                recipient,
-                senderAddress,
-                amount,
-                fee,
-                memo,
-              } = row;
-              const receiver =
-                txType === TxType.TRANSFER
-                  ? receiverAddress
-                  : txType === TxType.OFFCHAIN_WITHDRAWAL
-                  ? recipient
-                  : "";
-              const formattedDetail = {
-                txType,
-                hash,
-                txHash,
-                status,
-                time,
-                from: senderAddress,
-                to: receiver,
-                fee: `${getValuePrecisionThousand(
-                  fee.value,
-                  undefined,
-                  undefined,
-                  undefined,
-                  false,
-                  {
-                    isTrade: true,
-                    floor: false,
-                  }
-                )} ${fee.unit}`,
-                amount: `${getValuePrecisionThousand(
-                  amount.value,
-                  undefined,
-                  undefined,
-                  undefined,
-                  false,
-                  { isTrade: true }
-                )} ${amount.unit}`,
-                memo,
-                etherscanBaseUrl,
-              };
-              return (
-                <Box
-                  className="rdg-cell-value textAlignRight"
-                  display={"inline-flex"}
-                  justifyContent={"flex-end"}
-                  alignItems={"center"}
-                >
-                  {path ? (
-                    <Link href={path}>
-                      <RenderValue title={value}>
-                        {value || EmptyValueTag}
-                      </RenderValue>
-                    </Link>
-                  ) : (
-                    <RenderValue
-                      onClick={() => handleTxnDetail(formattedDetail)}
-                      title={value}
-                    >
-                      {value ? getFormattedHash(value) : EmptyValueTag}
-                    </RenderValue>
-                  )}
-                  <Box marginLeft={1}>
-                    <CellStatus {...{ row }} />
-                  </Box>
-                </Box>
-              );
-            }
+              </Box>
+            );
           },
         },
         {

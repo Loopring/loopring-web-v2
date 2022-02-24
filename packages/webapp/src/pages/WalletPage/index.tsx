@@ -5,12 +5,13 @@ import {
   i18n,
   myLog,
   SagaStatus,
-  subMenuHebao,
+  subMenuGuardian,
 } from "@loopring-web/common-resources";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import {
   Button,
-  HebaoStep,
+  GuardianStep,
+  ModalQRCode,
   setShowConnect,
   SubMenu,
   SubMenuList,
@@ -23,20 +24,21 @@ import {
   btnLabel,
 } from "../../layouts/connectStatusCallback";
 import store from "../../stores";
-import { HebaoProtector } from "./HebaoProtector";
 
-import { useRouteMatch } from "react-router-dom";
-import { HebaoValidationInfo } from "./HebaoValidationInfo";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
-import { HebaoHistory } from "./HebaoHistory";
+import { WalletHistory } from "./WalletHistory";
+import { WalletValidationInfo } from "./WalletValidationInfo";
+import { WalletProtector } from "./WalletProtector";
 
 const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
   ({ t }: any) => {
     const { status: accountStatus, account } = useAccount();
     const [label, setLabel] = React.useState(undefined);
     const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
+
     React.useEffect(() => {
       if (accountStatus === SagaStatus.UNSET) {
         setLabel(accountStaticCallBack(_btnLabel));
@@ -63,27 +65,55 @@ const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
     );
   }
 ) as typeof Button;
-export const HebaoPage = withTranslation(["common"])(
+export const GuardianPage = withTranslation(["common"])(
   ({ t, ...rest }: WithTranslation) => {
     const { account } = useAccount();
-    let match = useRouteMatch("/hebao/:item");
-    let options;
+    let match = useRouteMatch("/guardian/:item");
+    const [openQRCode, setOpenQRCode] = React.useState(false);
+    const onOpenAdd = React.useCallback(() => {
+      setOpenQRCode(true);
+    }, []);
+    const description = () => (
+      <Typography
+        marginTop={2}
+        component={"div"}
+        textAlign={"center"}
+        variant={"body1"}
+      >
+        <Typography
+          color={"var(--color-text-secondary)"}
+          component={"p"}
+          variant={"inherit"}
+        >
+          {account?.accAddress}
+        </Typography>
+        <Typography
+          color={"var(--color-text-third)"}
+          component={"p"}
+          variant={"body2"}
+        >
+          {account?.connectName}
+        </Typography>
+      </Typography>
+    );
+    const history = useHistory();
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
     const {
       protectList,
       guardiansList,
-      hebaoConfig,
+      guardianConfig,
       openHebao,
       operationLogList,
       setOpenHebao,
       loadData,
+      isContractAddress,
     } = useHebaoMain();
     const handleOpenModal = ({
       step,
       options,
     }: {
-      step: HebaoStep;
+      step: GuardianStep;
       options?: any;
     }) => {
       setOpenHebao((state) => {
@@ -96,32 +126,61 @@ export const HebaoPage = withTranslation(["common"])(
         return { ...state };
       });
     };
-    const hebaoRouter = () => {
+    const guardianRouter = () => {
       switch (selected) {
-        case "hebao-validation-info":
-          return (
-            <HebaoValidationInfo
-              {...{ guardiansList, hebaoConfig, setOpenHebao }}
+        case "guardian-validation-info":
+          return !isContractAddress ? (
+            <WalletValidationInfo
+              onOpenAdd={onOpenAdd}
+              {...{ guardiansList, guardianConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
               loadData={loadData}
             />
+          ) : (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+                {t("labelWalletToWallet")}
+              </Typography>
+              <BtnConnect />
+            </Box>
           );
-        case "hebao-history":
+        case "guardian-history":
           return (
-            <HebaoHistory
+            <WalletHistory
               operationLogList={operationLogList}
-              hebaoConfig={hebaoConfig}
+              guardianConfig={guardianConfig}
             />
           );
-        case "hebao-protected":
+        case "guardian-protected":
         default:
-          return (
-            <HebaoProtector
+          return !isContractAddress ? (
+            <WalletProtector
+              onOpenAdd={onOpenAdd}
               protectList={protectList}
-              hebaoConfig={hebaoConfig}
+              guardianConfig={guardianConfig}
               loadData={loadData}
+              // isContractAddress={isContractAddress}
               handleOpenModal={handleOpenModal}
             />
+          ) : (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+                {t("describeTitleConnectToWallet")}
+              </Typography>
+              <BtnConnect />
+            </Box>
           );
       }
     };
@@ -136,9 +195,21 @@ export const HebaoPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
-                {t("describeTitleConnectToWallet")}
+              <Typography marginTop={3} variant={"h1"} textAlign={"center"}>
+                {t("describeTitleConnectToWalletAsGuardian")}
               </Typography>
+
+              <Link
+                marginY={2}
+                variant={"body1"}
+                textAlign={"center"}
+                color={"textSecondary"}
+                onClick={() =>
+                  window.open("./#/document/walletdesign_en.md", "_blank")
+                }
+              >
+                {t("describeWhatIsGuardian")}
+              </Link>
               <BtnConnect />
             </Box>
           );
@@ -161,7 +232,7 @@ export const HebaoPage = withTranslation(["common"])(
                 <SubMenu>
                   <SubMenuList
                     selected={selected}
-                    subMenu={subMenuHebao as any}
+                    subMenu={subMenuGuardian as any}
                   />
                 </SubMenu>
               </Box>
@@ -175,7 +246,7 @@ export const HebaoPage = withTranslation(["common"])(
                 marginBottom={2}
                 className={"MuiPaper-elevation2"}
               >
-                {hebaoRouter()}
+                {guardianRouter()}
               </StylePaper>
             </>
           );
@@ -204,6 +275,32 @@ export const HebaoPage = withTranslation(["common"])(
 
     return (
       <>
+        <ModalQRCode
+          open={openQRCode}
+          className={"guardianPop"}
+          onClose={() => setOpenQRCode(false)}
+          title={() => (
+            <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h5"}
+              >
+                {t("labelWalletAddAsGuardian")}
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                component={"p"}
+                variant={"body1"}
+              >
+                {t("labelWalletScanQRCode")}
+              </Typography>
+            </Typography>
+          )}
+          size={240}
+          description={description()}
+          url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+        />
         <ModalLock
           options={openHebao.options ?? {}}
           {...{
@@ -213,7 +310,7 @@ export const HebaoPage = withTranslation(["common"])(
             onClose: () => {
               setOpenHebao({
                 isShow: false,
-                step: HebaoStep.LockAccount_WaitForAuth,
+                step: GuardianStep.LockAccount_WaitForAuth,
               });
             },
           }}

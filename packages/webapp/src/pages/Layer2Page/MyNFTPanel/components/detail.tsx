@@ -2,7 +2,7 @@ import { Box, Link, TextareaAutosize, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   getShortAddr,
-  IPFS_META_URL,
+  LoadingIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import {
@@ -17,13 +17,12 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { useGetAssets } from "../../AssetPanel/hook";
+import { NFTMedia } from "./nftMedia";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
-
   img {
     object-fit: contain;
   }
@@ -45,7 +44,6 @@ const BoxStyle = styled(Box)`
         white-space: break-spaces;
       }
     }
-
     .transfer-wrap {
       padding-left: 0;
       padding-right: 0;
@@ -57,12 +55,16 @@ export const NFTDetail = withTranslation("common")(
     popItem,
     etherscanBaseUrl,
     onDetailClose,
+    onNFTError,
+    onNFTReload,
     t,
     ...rest
   }: {
     onDetailClose: () => void;
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
+    onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
+    onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
   } & WithTranslation) => {
     const { assetsRawData } = useGetAssets();
 
@@ -83,26 +85,6 @@ export const NFTDetail = withTranslation("common")(
 
     const handleChangeIndex = (index: number) => {
       setViewPage(index);
-      // switch (index) {
-      //   case 1:
-      //     updateNFTTransferData({
-      //       ...nftTransferProps.tradeData,
-      //       ...popItem,
-      //     });
-      //     break;
-      //   case 2:
-      //     updateNFTWithdrawData({
-      //       ...nftWithdrawProps.tradeData,
-      //       ...popItem,
-      //     });
-      //     break;
-      //   case 3:
-      //     updateNFTDeployData({
-      //       ...nftDeployProps.tradeData,
-      //       ...popItem,
-      //     });
-      //     break;
-      // }
     };
     const detailView = React.useMemo(() => {
       return (
@@ -218,16 +200,6 @@ export const NFTDetail = withTranslation("common")(
                   style={{ width: "100%" }}
                 />
               </Box>
-
-              {/*<Typography*/}
-              {/*  color={"var(--color-text-third)"}*/}
-              {/*  component={"span"}*/}
-              {/*  whiteSpace={"break-spaces"}*/}
-              {/*  style={{ wordBreak: "break-all" }}*/}
-              {/*  title={popItem?.description}*/}
-              {/*>*/}
-              {/*  {popItem.description}*/}
-              {/*</Typography>*/}
             </Typography>
 
             <Typography
@@ -239,7 +211,7 @@ export const NFTDetail = withTranslation("common")(
             >
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography minWidth={100} marginRight={2}>
-                  {popItem.isDeployed ? (
+                  {popItem.isDeployed === "yes" ? (
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -248,7 +220,7 @@ export const NFTDetail = withTranslation("common")(
                     >
                       {t("labelNFTWithdraw")}
                     </Button>
-                  ) : (
+                  ) : popItem.isDeployed === "no" ? (
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -256,6 +228,19 @@ export const NFTDetail = withTranslation("common")(
                       onClick={() => handleChangeIndex(3)}
                     >
                       {t("labelNFTDeployContract")}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant={"outlined"}
+                      size={"medium"}
+                      fullWidth
+                      disabled={true}
+                    >
+                      <LoadingIcon
+                        color={"primary"}
+                        style={{ width: 18, height: 18, marginRight: "8px" }}
+                      />{" "}
+                      {t("labelNFTDeploying")}
                     </Button>
                   )}
                 </Typography>
@@ -286,15 +271,13 @@ export const NFTDetail = withTranslation("common")(
           marginTop={-4}
           alignItems={"center"}
           justifyContent={"center"}
+          style={{ cursor: "pointer" }}
         >
-          <img
-            alt={"NFT"}
-            width={"100%"}
-            height={"100%"}
-            src={popItem?.image?.replace(
-              IPFS_META_URL,
-              LOOPRING_URLs.IPFS_META_URL
-            )}
+          <NFTMedia
+            // ref={popItem.tokenId}
+            item={popItem}
+            onNFTReload={onNFTReload}
+            onNFTError={onNFTError}
           />
         </BoxNFT>
         <BoxStyle
@@ -336,7 +319,7 @@ export const NFTDetail = withTranslation("common")(
               }}
             />
           )}
-          {/*TODO: finished feature withdraw*/}
+
           {viewPage === 2 && (
             <WithdrawPanel<any, any>
               {...{
@@ -377,39 +360,3 @@ export const NFTDetail = withTranslation("common")(
     );
   }
 );
-
-// {/*{[*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <DiscordIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://discord.com/invite/KkYccYp",*/}
-// {/*  },*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <TwitterIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://twitter.com/loopringorg",*/}
-// {/*  },*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <YoutubeIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://www.youtube.com/c/Loopring",*/}
-// {/*  },*/}
-// {/*  {*/}
-// {/*    linkName: (*/}
-// {/*      <MediumIcon color={"inherit"} fontSize={"large"} />*/}
-// {/*    ),*/}
-// {/*    linkHref: "https://medium.com/loopring-protocol",*/}
-// {/*  },*/}
-// {/*].map((o, index) => (*/}
-// {/*  <Link*/}
-// {/*    paddingX={0.5}*/}
-// {/*    fontSize={12}*/}
-// {/*    key={`${o.linkName}-${index}`}*/}
-// {/*    onClick={() => window.open(o.linkHref)}*/}
-// {/*  >*/}
-// {/*    {o.linkName}*/}
-// {/*  </Link>*/}
-// {/*))}*/}

@@ -33,7 +33,11 @@ import { walletLayer2Slice } from "./walletLayer2";
 import { socketSlice } from "./socket";
 import { userRewardsMapSlice } from "./userRewards";
 import { localStoreReducer } from "./localStore";
-import { ChainHashInfos, myLog } from "@loopring-web/common-resources";
+import {
+  ChainHashInfos,
+  LAYER1_ACTION_HISTORY,
+  myLog,
+} from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from "./localStore/favoriteMarket";
 import { Confirmation } from "./localStore/confirmation";
 import { WalletInfo } from "./localStore/walletInfo";
@@ -47,6 +51,8 @@ import {
 import { tokenPricesSlice } from "./tokenPrices";
 import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify";
+import { walletLayer2NFTSlice } from "./walletLayer2NFT";
+import { layer1ActionHistorySlice } from "./localStore/layer1Store";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -89,6 +95,7 @@ const persistedLocalStoreReducer = persistReducer<
     confirmation: Confirmation;
     walletInfo: WalletInfo;
     tradeProSettings: TradeProSettings;
+    layer1ActionHistory: LAYER1_ACTION_HISTORY;
   }>
 >(persistLocalStoreConfig, localStoreReducer);
 
@@ -104,12 +111,13 @@ const reducer = combineReducers({
   tokenPrices: tokenPricesSlice.reducer,
 
   walletLayer2: walletLayer2Slice.reducer,
+  walletLayer2NFT: walletLayer2NFTSlice.reducer,
   walletLayer1: walletLayer1Slice.reducer,
   tickerMap: tickerMapSlice.reducer,
   localStore: persistedLocalStoreReducer,
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,
-
+  // layer1ActionHistory: layer1ActionHistorySlice.reducer,
   // router redux
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
   _router_pageTradePro: pageTradeProSlice.reducer,

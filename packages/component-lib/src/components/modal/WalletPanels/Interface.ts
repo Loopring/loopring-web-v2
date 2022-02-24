@@ -1,4 +1,4 @@
-export enum HebaoStep {
+export enum GuardianStep {
   LockAccount_WaitForAuth,
   LockAccount_User_Denied,
   LockAccount_Success,

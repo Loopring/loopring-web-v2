@@ -338,7 +338,7 @@ export const useAmmJoin = ({
       const rawA = data.coinA.tradeValue ? data.coinA.tradeValue.toString() : 0;
       const rawB = data.coinB.tradeValue ? data.coinB.tradeValue.toString() : 0;
       const rawVal = isAtoB ? rawA : rawB;
-
+      const rawValMatchForRawVal = isAtoB ? rawB : rawA;
       const { request } = sdk.makeJoinAmmPoolRequest(
         rawVal,
         isAtoB,
@@ -349,7 +349,8 @@ export const useAmmJoin = ({
         tokenMap as any,
         idIndex as IdMap,
         0,
-        0
+        0,
+        rawValMatchForRawVal
       );
 
       const newData = _.cloneDeep(data);

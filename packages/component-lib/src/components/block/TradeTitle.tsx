@@ -15,7 +15,7 @@ import { Avatar, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import React from "react";
 import { baseTitleCss, useSettings } from "../../index";
-import { NewTagIcon } from "../basic-lib/Tags";
+import { NewTagIcon } from "../basic-lib";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";

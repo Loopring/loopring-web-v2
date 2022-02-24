@@ -254,6 +254,9 @@ export default {
   describeTitleNotActive:
     "Connect your wallet,\n make a deposit, and enjoy Loopring L2.",
   describeTitleConnectToWallet: "Connect wallet to start",
+  describeWhatIsGuardian: "What is Loopring guardian",
+  describeTitleConnectToWalletAsGuardian:
+    "Connect wallet to be a wallet guardian!",
   describeTitleLocked: "Unlock your account to check your assets.",
   labelLiquidityPageTitle: "AMM Pools",
   labelMinReceive: "Minimum Received Amount",
@@ -445,11 +448,13 @@ export default {
   labelNFTTransfer: "Transfer",
   labelNFTWithdraw: "Withdraw",
   labelNFTDeployContract: "Deploy Contract",
+  labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
   labelNFTID: "ID:",
   labelNFTMinter: "Minter:",
+  labelNFTMint: "Mint NFT",
   labelNFTTitleMyNFT: "My NFT",
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
@@ -459,6 +464,7 @@ export default {
   labelIKnow: "I know",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
+  labelInvalidCID: "Invalid CID",
   labelWithdrawInvalidAddress:
     "Invalid address, ENS, special token, or an Counter Factual wallet",
   labelTransferAddressNotLoopring:
@@ -489,6 +495,7 @@ export default {
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
   labelIsNotFeeToken: "Please deposit {{symbol}} to activate Layer 2",
+  labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
   labelIsNotEnoughFeeToken:
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Deposit Now</1>",
@@ -497,6 +504,8 @@ export default {
   labelNFTDepositTX: "Deposits",
   labelNFTDeposit: "Deposit NFT",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
+  mintNFTAddressLabelPlaceholder:
+    "eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
   depositNFTIdLabelPlaceholder: "please input NFT id",
   labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & Deposit it",
   labelNFTDepositBtn: "Deposit NFT",
@@ -505,7 +514,8 @@ export default {
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "Amount:",
   labelNFTContractAddress: "Token Contract:",
-  labelNFTTId: "ID:",
+  labelNFTTId: "NFT Token ID",
+  labelNFTCid: "IPFS CID <1></1>: (Which storage a `metadata.json`)",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
@@ -517,10 +527,15 @@ export default {
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
+  labelNFTMintBtn: "Mint My NFT",
+  labelNFTMintNoMetaBtn: "No Metadata",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription: "Mint NFT",
   nftMintTitle: "Mint NFT",
+  nftMintBtn: "Mint NFT",
+  labelMintInProgress: "In Progress",
+  labelNFTMintInputTitle: "Mint Amount",
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
@@ -530,17 +545,19 @@ export default {
   labelDepositVendor:
     "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
-  labelHebaoAddAsGuardian: "Add as a Guardian",
-  labelHebaoScanQRCode: "Scan the QR code with your Loopring Wallet",
-  labelHebaoGuardianList: "Guardian List",
+  labelWalletToWallet:
+    "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
+  labelWalletAddAsGuardian: "Add as a Guardian",
+  labelWalletScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelWalletGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
   labelUnknown: "unknown",
   labelApprove: "Approve",
   labelReject: "Reject",
-  labelHebaoApprove: "Approve Signature",
+  labelWalletApprove: "Approve Signature",
   labelCommonList: "Waiting for your Approve List",
   labelLogList: "Log List",
-  labelHebaoReject: "Reject Signature",
+  labelWalletReject: "Reject Signature",
   labelLockAccountSuccess: "Lock Account Success",
   labelLockAccountFailed: "Lock Account Failed",
   labelApproveSuccess: "Approve Signature Success",
@@ -548,18 +565,18 @@ export default {
   labelRejectSuccess: "Reject Signature Success",
   labelRejectFailed: "Reject Signature Failed",
   labelYourBalance: "Your Layer 2 have: {{balance}}",
-  labelTxHebaoADD_GUARDIAN: "ADD GUARDIAN",
-  labelTxHebaoGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
-  labelTxHebaoGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
-  labelTxHebaoGUARDIAN_APPROVE: "GUARDIAN APPROVE",
-  labelTxHebaoAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
-  labelTxHebaoAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
-  labelTxHebaoAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
-  labelTxHebaoADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34
-  labelTxHebaoREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
-  labelTxHebaoUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
-  labelTxHebaoRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
-  labelTxHebaoApprove: "APPROVE",
-  labelTxHebaoReject: "REJECT",
+  labelTxGuardianADD_GUARDIAN: "ADD GUARDIAN",
+  labelTxGuardianGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
+  labelTxGuardianGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
+  labelTxGuardianGUARDIAN_APPROVE: "GUARDIAN APPROVE",
+  labelTxGuardianAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
+  labelTxGuardianAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
+  labelTxGuardianAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
+  labelTxGuardianADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34
+  labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
+  labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
+  labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
+  labelTxGuardianApprove: "APPROVE",
+  labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
 };

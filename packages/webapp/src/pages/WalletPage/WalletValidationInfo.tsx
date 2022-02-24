@@ -14,7 +14,7 @@ import React from "react";
 import {
   Button,
   ButtonListRightStyled,
-  HebaoStep,
+  GuardianStep,
   InputCode,
   ModalCloseButton,
   SwitchPanelStyled,
@@ -25,18 +25,21 @@ import Web3 from "web3";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
-import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
+import {
+  SDK_ERROR_MAP_TO_UI,
+  SecurityIcon,
+} from "@loopring-web/common-resources";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
   overflow: hidden;
   background-color: var(--opacity);
   padding-bottom: 0;
-  .hebao-content {
+  .guardian-content {
     padding: ${({ theme }) => theme.unit}px 0px;
   }
   &:not(:last-child) {
-    .hebao-content {
+    .guardian-content {
       border-bottom: 1px solid var(--color-divide);
     }
 
@@ -75,7 +78,7 @@ export const HebaoGuardianItem = <G extends sdk.Guardian>({
     <HebaoGuardianStyled alignItems="flex-start" className={`Hebao`}>
       <Box
         flex={1}
-        className={"hebao-content"}
+        className={"guardian-content"}
         component={"section"}
         display={"flex"}
         alignItems={"center"}
@@ -140,15 +143,18 @@ export const HebaoGuardianItem = <G extends sdk.Guardian>({
     </HebaoGuardianStyled>
   );
 };
-export const HebaoValidationInfo = <G extends sdk.Guardian>({
+
+export const WalletValidationInfo = <G extends sdk.Guardian>({
   guardiansList,
   loadData,
+  onOpenAdd,
   handleOpenModal,
 }: {
   guardiansList: G[];
-  hebaoConfig: any;
+  guardianConfig: any;
   loadData: () => Promise<void>;
-  handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
+  onOpenAdd: () => void;
+  handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
 }) => {
   const { t } = useTranslation(["common", "error"]);
 
@@ -162,7 +168,7 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
   const submitApprove = (code: string) => {
     setOpenCode(false);
     handleOpenModal({
-      step: HebaoStep.Approve_WaitForAuth,
+      step: GuardianStep.Approve_WaitForAuth,
       options: {
         approveRetry: () => {
           submitApprove(code);
@@ -194,14 +200,14 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
             (response as sdk.RESULT_INFO).message
           ) {
             handleOpenModal({
-              step: HebaoStep.Approve_Failed,
+              step: GuardianStep.Approve_Failed,
               options: {
                 error: response,
               },
             });
           } else {
             handleOpenModal({
-              step: HebaoStep.Approve_Success,
+              step: GuardianStep.Approve_Success,
             });
             loadData();
           }
@@ -210,7 +216,7 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
           setIsFirstTime((state) => !state);
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
           handleOpenModal({
-            step: HebaoStep.Approve_Failed,
+            step: GuardianStep.Approve_Failed,
             options: {
               error: errorItem
                 ? t(errorItem.messageKey, { ns: "error" })
@@ -222,7 +228,7 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
   };
   const handleReject = (guardian: G) => {
     handleOpenModal({
-      step: HebaoStep.Reject_WaitForAuth,
+      step: GuardianStep.Reject_WaitForAuth,
       options: {
         approveRetry: () => {
           handleReject(guardian);
@@ -249,14 +255,14 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
             (response as sdk.RESULT_INFO).message
           ) {
             handleOpenModal({
-              step: HebaoStep.Reject_Failed,
+              step: GuardianStep.Reject_Failed,
               options: {
                 error: response,
               },
             });
           } else {
             handleOpenModal({
-              step: HebaoStep.Approve_Success,
+              step: GuardianStep.Approve_Success,
             });
             loadData();
           }
@@ -264,7 +270,7 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
         .catch((error: any) => {
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
           handleOpenModal({
-            step: HebaoStep.Approve_Failed,
+            step: GuardianStep.Approve_Failed,
             options: {
               error: errorItem
                 ? t(errorItem.messageKey, { ns: "error" })
@@ -312,9 +318,30 @@ export const HebaoValidationInfo = <G extends sdk.Guardian>({
         display={"flex"}
         flexDirection={"column"}
       >
-        <Typography paddingX={5 / 2} component={"h3"} variant={"h5"}>
-          {t("labelCommonList")}
-        </Typography>
+        <Box display={"flex"} justifyContent={"space-between"} paddingX={5 / 2}>
+          <Typography paddingX={5 / 2} component={"h3"} variant={"h5"}>
+            {t("labelCommonList")}
+          </Typography>
+          <ButtonListRightStyled
+            item
+            xs={5}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"flex-end"}
+          >
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              startIcon={
+                <SecurityIcon htmlColor={"var(--color-text-button)"} />
+              }
+              onClick={() => onOpenAdd()}
+            >
+              {t("labelAddProtector")}
+            </Button>
+          </ButtonListRightStyled>
+        </Box>
         <Box flex={1}>
           {guardiansList.map((guardian, index) => {
             return (

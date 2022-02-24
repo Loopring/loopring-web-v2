@@ -3,19 +3,27 @@ import styled from "@emotion/styled";
 import { Box, Typography } from "@mui/material";
 import { TFunction, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, Table } from "../../basic-lib";
+import { Column, TablePagination, Table } from "../../basic-lib";
 import {
   CompleteIcon,
   EmptyValueTag,
+  EXPLORE_TYPE,
   Explorer,
   getFormattedHash,
   getValuePrecisionThousand,
   WaitingIcon,
   WarningIcon,
 } from "@loopring-web/common-resources";
-import { TablePaddingX } from "../../styled";
+import { TableFilterStyled, TablePaddingX } from "../../styled";
 
-import { NFTTableProps, TsTradeStatus, TxnDetailProps } from "./Interface";
+import {
+  NFTTableFilter,
+  NFTTableProps,
+  TsTradeStatus,
+  TxnDetailProps,
+} from "./Interface";
+import { Filter } from "./components/Filter";
+import { TxNFTType } from "@loopring-web/loopring-sdk";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
@@ -80,32 +88,55 @@ const TableStyled = styled(Box)`
 ` as typeof Box;
 
 export const TsNFTTable = withTranslation(["tables", "common"])(
-  <Row extends TxnDetailProps>(props: NFTTableProps & WithTranslation) => {
-    const { rawData, showloading, etherscanBaseUrl } = props;
-    // const [page, setPage] = React.useState(1);
-    // const updateData = React.useCallback(
-    //   (page) => {
-    //     setPage(page);
-    //     getTxnList(page);
-    //   },
-    //   [getTxnList]
-    // );
-
-    // const handlePageChange = React.useCallback(
-    //   (currPage: number) => {
-    //     if (currPage === page) return;
-    //     setPage(currPage);
-    //     updateData({ TableType: TableType.page, currPage: currPage });
-    //   },
-    //   [updateData, page]
-    // );
-
+  <Row extends TxnDetailProps>({
+    accAddress,
+    showFilter = true,
+    rawData,
+    page,
+    pagination,
+    txType,
+    getTxnList,
+    duration,
+    showloading,
+    etherscanBaseUrl,
+    ...props
+  }: NFTTableProps<Row> & WithTranslation) => {
     const getColumnModeTransaction = React.useCallback(
-      (t: TFunction): Column<Row, unknown>[] => [
+      (t: TFunction): Column<Row, Row>[] => [
+        {
+          key: "side",
+          name: t("labelTxSide"),
+          formatter: ({ row }) => {
+            // const renderValue =
+            //   value === TransactionTradeTypes.deposit
+            //     ? t("labelDeposit")
+            //     : value === TransactionTradeTypes.transfer
+            //     ? t("labelTransfer")
+            //     : t("labelWithdraw");
+            return (
+              <Box className="rdg-cell-value" title={row.nftTxType}>
+                {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
+              </Box>
+            );
+          },
+        },
         {
           key: "amount",
-          name: t("labelAmount"),
-          formatter: ({ row }) => {
+          name: t("labelTxAmount"),
+          headerCellClass: "textAlignRight",
+          formatter: ({ row }: { row: Row }) => {
+            const hasSymbol =
+              row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
+                ? row.receiverAddress?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? "+"
+                  : "-"
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
+                  row.nftTxType === TxNFTType[TxNFTType.MINT]
+                ? "+"
+                : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? "-"
+                : "";
             return (
               <>
                 <Typography
@@ -113,7 +144,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   component={"span"}
                   marginRight={1}
                 >
-                  {row.amount}
+                  {hasSymbol}
+                  {row.amount ?? EmptyValueTag}
                 </Typography>
                 <Typography variant={"body1"} component={"span"}>
                   {getFormattedHash(row.nftData)}
@@ -122,23 +154,49 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             );
           },
         },
+        // {
+        //   key: "amount",
+        //   name: t("labelAmount"),
+        //   formatter: ({ row }) => {
+        //     return (
+        //       <>
+        //         <Typography
+        //           variant={"body1"}
+        //           component={"span"}
+        //           marginRight={1}
+        //         >
+        //           {row.amount}
+        //         </Typography>
+        //         <Typography variant={"body1"} component={"span"}>
+        //           {getFormattedHash(row.nftData)}
+        //         </Typography>
+        //       </>
+        //     );
+        //   },
+        // },
         {
           key: "txnHash",
           name: t("labelTxTxnHash"),
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            let path = "",
-              hash = row.txHash !== "" ? row.txHash : row.hash;
-            if (row.txHash || (row.blockIdInfo.blockId && row.storageInfo)) {
-              path =
-                row.txHash !== ""
-                  ? etherscanBaseUrl + `/tx/${row.txHash}`
-                  : row.storageInfo.tokenId || row.storageInfo.storageId
-                  ? Explorer +
-                    `/tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
-                  : Explorer +
-                    `/tx/${row.blockIdInfo.blockId}-${row.blockIdInfo.indexInBlock}`;
-            }
+            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            let path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer +
+                  `tx/${row.hash}-${
+                    EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
+                  }`;
+            // let path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : row.storageInfo.tokenId || row.storageInfo.storageId
+            //     ? Explorer +
+            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${
+            //         EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
+            //       }`;
             return (
               <Box
                 className="rdg-cell-value"
@@ -168,7 +226,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxFee"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const fee = row["fee"];
+            const fee = row["fee"] ?? {};
             const renderValue = `${getValuePrecisionThousand(
               fee.value,
               undefined,
@@ -213,7 +271,25 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
       ],
       [etherscanBaseUrl]
     );
-
+    const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
+      getTxnList({
+        page: filter.page ?? page,
+        txType:
+          filter.txType !== undefined
+            ? // @ts-ignore
+              filter.txType == 0
+              ? undefined
+              : filter.txType
+            : txType,
+        duration: filter.duration ?? duration,
+      });
+    };
+    // const handleReset = () => {
+    //   getTxnList({ page: 1, txType: undefined });
+    // };
+    // const handlePageChange = ({ page: number }) => {
+    //   getTxnList({ page: 1, txType: undefined });
+    // };
     const defaultArgs: any = {
       columnMode: getColumnModeTransaction(props.t).filter((o) => !o.hidden),
       generateRows: (rawData: any) => rawData,
@@ -222,22 +298,34 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     };
 
     return (
-      <>
-        <TableStyled>
-          <Table
-            className={"scrollable"}
-            {...{ ...defaultArgs, ...props, rawData, showloading }}
+      <TableStyled>
+        {showFilter && (
+          <TableFilterStyled>
+            <Filter
+              {...{
+                rawData,
+                handleFilterChange,
+                filterType: txType,
+                filterDate: duration,
+              }}
+            />
+          </TableFilterStyled>
+        )}
+        <Table
+          className={"scrollable"}
+          {...{ ...defaultArgs, ...props, rawData, showloading }}
+        />
+        {pagination && pagination.total && (
+          <TablePagination
+            page={page}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            onPageChange={(page) => {
+              handleFilterChange({ page });
+            }}
           />
-          {/*{pagination && (*/}
-          {/*  <TablePagination*/}
-          {/*    page={page}*/}
-          {/*    pageSize={pagination.pageSize}*/}
-          {/*    total={pagination.total}*/}
-          {/*    onPageChange={handlePageChange}*/}
-          {/*  />*/}
-          {/*)}*/}
-        </TableStyled>
-      </>
+        )}
+      </TableStyled>
     );
   }
 );

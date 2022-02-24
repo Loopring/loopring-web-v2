@@ -20,7 +20,6 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useTokenMap } from "stores/token";
 import { useAccount } from "stores/account";
 import { useWalletLayer1 } from "stores/walletLayer1";
-import { useTranslation } from "react-i18next";
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useModalData } from "stores/router";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";

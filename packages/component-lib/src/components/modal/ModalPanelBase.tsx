@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { Trans, WithTranslation } from "react-i18next";
 import {
   ConnectProviders,
-  LoadingIcon,
+  // LoadingIcon,
   DoneIcon,
   FailedIcon,
   RefuseIcon,
@@ -24,6 +24,8 @@ export const InProgressBasic = ({
   const providerDescribe = React.useMemo(() => {
     switch (providerName) {
       case ConnectProviders.MetaMask:
+      case ConnectProviders.WalletLink:
+      case ConnectProviders.GameStop:
         return (
           <Trans i18nKey={"labelProviderCommonProcessDescribe"}>
             {/*Please adding MetaMask to your browser,*/}
@@ -63,7 +65,13 @@ export const InProgressBasic = ({
         flexDirection={"column"}
         marginBottom={2}
       >
-        <LoadingIcon color={"primary"} style={{ width: 72, height: 72 }} />
+          {/*<LoadingIcon color={'primary'} style={{width: 72, height: 72}}/>*/}
+          <img
+            className="loading-gif"
+            alt={"loading"}
+            width="60"
+            src={`${SoursURL}images/loading-line.gif`}
+          />
       </Typography>
       {describe}
       <Typography
