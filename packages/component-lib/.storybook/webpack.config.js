@@ -1,9 +1,9 @@
-const path = require("path")
-const toPath = (filePath) => path.join(process.cwd(), '../../' + filePath)
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require("path");
+const toPath = (filePath) => path.join(process.cwd(), "../../" + filePath);
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = function ({config, mode = 'DEV'}) {
-  const isProd = mode === 'PRODUCTION';
+module.exports = function ({ config, mode = "DEV" }) {
+  const isProd = mode === "PRODUCTION";
   config.resolve = {
     ...config.resolve,
     // modules: [
@@ -23,24 +23,30 @@ module.exports = function ({config, mode = 'DEV'}) {
       "emotion-theming": toPath("node_modules/@emotion/react"),
       "@emotion/styled-base": toPath("node_modules/@emotion/styled/base"),
     },
-  }
+  };
   config.module.rules.push({
     test: /\.(mjs|js|jsx|tsx|ts)$/,
     exclude: [/node_modules/, /dist/],
-    include: [path.resolve(__dirname, '..', '..', 'common-resources', "static-resources")],
-    // TODO - this should be handled by the general `resolve.extensions` option
+    include: [
+      path.resolve(
+        __dirname,
+        "..",
+        "..",
+        "common-resources",
+        "static-resources"
+      ),
+    ],
+
     // resolve: { fullySpecified: false },
-    loader: 'babel-loader',
+    loader: "babel-loader",
     // loader: require.resolve('babel-loader'),
     options: {
-      customize: require.resolve(
-        'babel-preset-react-app/webpack-overrides'
-      ),
+      customize: require.resolve("babel-preset-react-app/webpack-overrides"),
       presets: [
         [
-          require.resolve('babel-preset-react-app'),
+          require.resolve("babel-preset-react-app"),
           {
-            runtime: !isProd ? 'automatic' : 'classic',
+            runtime: !isProd ? "automatic" : "classic",
           },
         ],
       ],
@@ -64,17 +70,16 @@ module.exports = function ({config, mode = 'DEV'}) {
       // @remove-on-eject-end
       plugins: [
         [
-          require.resolve('babel-plugin-named-asset-import'),
+          require.resolve("babel-plugin-named-asset-import"),
           {
             loaderMap: {
               svg: {
-                ReactComponent:
-                  '@svgr/webpack?-svgo,+titleProp,+ref![path]',
+                ReactComponent: "@svgr/webpack?-svgo,+titleProp,+ref![path]",
               },
             },
           },
         ],
-        'production' && require.resolve('react-refresh/babel'),
+        "production" && require.resolve("react-refresh/babel"),
       ].filter(Boolean),
       // This is a feature of `babel-loader` for webpack (not Babel itself).
       // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -82,22 +87,19 @@ module.exports = function ({config, mode = 'DEV'}) {
       cacheDirectory: true,
       // See #6846 for context on why cacheCompression is disabled
       cacheCompression: false,
-      compact: 'auto',
+      compact: "auto",
     },
   });
   config.module.rules.push({
     test: /\.css$/,
-      use: [MiniCssExtractPlugin.loader, 'css-loader']
-  })
+    use: [MiniCssExtractPlugin.loader, "css-loader"],
+  });
   config.plugins.push(
     new MiniCssExtractPlugin({
-      filename: isProd ? '[name].[contenthash].css' : '[name].css',
-      chunkFilename: isProd ? '[id].[contenthash].css' : '[id].css',
-      ignoreOrder: true
+      filename: isProd ? "[name].[contenthash].css" : "[name].css",
+      chunkFilename: isProd ? "[id].[contenthash].css" : "[id].css",
+      ignoreOrder: true,
     })
   );
-  return config
-
-
-}
-
+  return config;
+};

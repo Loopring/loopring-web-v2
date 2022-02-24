@@ -106,6 +106,7 @@ import { useNFTMint } from "../../hooks/useractions/useNFTMint";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useVendor } from "../../hooks/useractions/useVendor";
 import { useNFTDeploy } from "../../hooks/useractions/useNFTDeploy";
+import { useLocation } from "react-router-dom";
 
 export function useAccountModalForUI({
   t,
@@ -118,6 +119,8 @@ export function useAccountModalForUI({
   rest: any;
   onClose?: any;
 }) {
+  const { pathname } = useLocation();
+
   const { goUpdateAccount } = useUpdateAccount();
   const { chainInfos, updateDepositHash, clearDepositHash } = useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
@@ -481,12 +484,13 @@ export function useAccountModalForUI({
     if (connectProvides && connectProvides.usedWeb3 && account.accAddress) {
       isSupportCallback();
     }
-  }, [account.accAddress, isSupportCallback]);
+  }, [account.accAddress]);
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
+            className={/guardian/gi.test(pathname) ? "guardian" : ""}
             {...{
               goDeposit,
               chainInfos,
@@ -500,6 +504,27 @@ export function useAccountModalForUI({
               onViewQRCode,
               onDisconnect,
               addressShort,
+            }}
+          />
+        ),
+        onQRClick,
+      },
+      [AccountStep.HadAccount]: {
+        view: (
+          <HadAccount
+            className={/guardian/gi.test(pathname) ? "guardian" : ""}
+            {...{
+              ...account,
+              clearDepositHash: clearDeposit,
+              chainInfos,
+              onSwitch,
+              onCopy,
+              etherscanUrl: etherscanBaseUrl,
+              onViewQRCode,
+              onDisconnect,
+              addressShort,
+              etherscanLink: etherscanBaseUrl + "address/" + account.accAddress,
+              mainBtn: account.readyState === "ACTIVATED" ? lockBtn : unlockBtn,
             }}
           />
         ),
@@ -519,27 +544,6 @@ export function useAccountModalForUI({
         onBack,
         noClose: true,
       },
-      [AccountStep.HadAccount]: {
-        view: (
-          <HadAccount
-            {...{
-              ...account,
-              clearDepositHash: clearDeposit,
-              chainInfos,
-              onSwitch,
-              onCopy,
-              etherscanUrl: etherscanBaseUrl,
-              onViewQRCode,
-              onDisconnect,
-              addressShort,
-              etherscanLink: etherscanBaseUrl + "address/" + account.accAddress,
-              mainBtn: account.readyState === "ACTIVATED" ? lockBtn : unlockBtn,
-            }}
-          />
-        ),
-        onQRClick,
-      },
-
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (
           <Deposit_Approve_WaitForAuth
@@ -652,7 +656,6 @@ export function useAccountModalForUI({
           // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
-
       [AccountStep.NFTDeposit_Approve_WaitForAuth]: {
         view: (
           <NFTDeposit_Approve_WaitForAuth

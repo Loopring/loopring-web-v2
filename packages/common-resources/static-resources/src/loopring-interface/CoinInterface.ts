@@ -257,3 +257,13 @@ export type TradeFloat = {
   // APR?:number
   // tagNew?: boolean
 };
+
+export enum EXPLORE_TYPE {
+  TRANSFER = "transfer",
+  DEPOSIT = "deposit",
+  WITHDRAW = "withdraw",
+  OFFCHAIN_WITHDRAWAL = "withdraw",
+  NFTMINT = "nftMint",
+  NFTWITHDRAW = "nftWithdraw",
+  NFTTRANSFER = "nftTransfer",
+}

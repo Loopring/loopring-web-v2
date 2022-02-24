@@ -14,7 +14,7 @@ import {
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { DateRange } from "@mui/lab";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { Currency, MarketTradeInfo } from "@loopring-web/loopring-sdk";
 
 export enum TradeItemRole {
   maker = "Maker",
@@ -52,6 +52,7 @@ export type RawDataTradeItem = {
     value: number | undefined;
   };
   time: number;
+  __raw__: Partial<MarketTradeInfo>;
 };
 
 export type TradeTableProps = {

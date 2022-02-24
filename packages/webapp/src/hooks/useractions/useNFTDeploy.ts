@@ -8,6 +8,7 @@ import React from "react";
 
 import {
   AccountStatus,
+  Layer1Action,
   myLog,
   TradeNFT,
   UIERROR_CODE,
@@ -33,6 +34,8 @@ import { checkErrorInfo } from "./utils";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
+import { ChainId } from "@loopring-web/loopring-sdk";
+import { useLayer1Store } from "../../stores/localStore/layer1Store";
 
 export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   doDeployDone,
@@ -51,7 +54,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<I>)
   );
   const { setShowAccount } = useOpenModals();
-
+  const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
 
   const processRequestNFT = React.useCallback(
@@ -80,8 +83,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
               counterFactualInfo: eddsaKey.counterFactualInfo,
             }
           );
-
-          myLog("submitInternalTransfer:", response);
+          // const response = { hash: "string" };
+          // myLog("submitInternalTransfer:", response);
 
           if (isAccActivated()) {
             if (
@@ -111,11 +114,17 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                 });
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
+              setOneItem({
+                chainId: chainId as ChainId,
+                uniqueId: request.tokenAddress.toLowerCase(),
+                domain: Layer1Action.NFTDeploy,
+              });
               // Withdraw success
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTDeploy_In_Progress,
               });
+
               await sdk.sleep(TOAST_TIME);
               setShowAccount({
                 isShow: true,
@@ -166,6 +175,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       chainId,
       setShowAccount,
       doDeployDone,
+      setOneItem,
       resetNFTDeployData,
       updateWalletLayer2,
       updateHW,
@@ -228,7 +238,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
         const storageId = await LoopringAPI.userAPI?.getNextStorageId(
           {
             accountId,
-            sellTokenId: Number(nftDeployValue.tokenId),
+            sellTokenId: Number(feeToken.tokenId),
           },
           apiKey
         );

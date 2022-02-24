@@ -208,7 +208,6 @@ export function useQuote<C extends { [key: string]: string }>() {
         if (recommendationIndex !== -1) {
           updateRecommendation(recommendationIndex, tickerMap[key as string]);
         }
-        //TODO update related row. use socket return
       });
     }
   }, [recommendedPairs, updateRecommendation, tickerMap]);

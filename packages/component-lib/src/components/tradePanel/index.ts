@@ -9,4 +9,5 @@ export * from "./tradePro";
 export * from "./ExportAccount";
 export * from "./components/DepositNFTWrap";
 export * from "./components/DeployNFTWrap";
+export * from "./components/MintNFTWrap";
 export * from "./Deposit";

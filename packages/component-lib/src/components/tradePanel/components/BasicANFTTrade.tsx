@@ -25,6 +25,7 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   tradeData,
   onChangeEvent,
   disabled,
+  isBalanceLimit = true,
   handleError,
   inputNFTRef,
   inputNFTProps,
@@ -54,11 +55,17 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     [onChangeEvent, tradeData]
   );
 
+  // myLog("isBalanceLimit", isBalanceLimit);
   if (typeof handleError !== "function") {
     handleError = ({ balance, tradeValue }: T) => {
       if (
-        (typeof tradeValue !== "undefined" && balance < tradeValue) ||
-        (tradeValue && !balance)
+        (isBalanceLimit &&
+          !balance &&
+          typeof tradeValue !== "undefined" &&
+          isBalanceLimit &&
+          balance < tradeValue) ||
+        !tradeValue ||
+        tradeValue < 1
       ) {
         return {
           error: true,
@@ -81,7 +88,7 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     noBalance: "0",
     // coinLabelStyle ,
     coinPrecision: 0,
-    maxAllow: true,
+    maxAllow: isBalanceLimit,
     handleError,
     handleCountChange,
     ...inputNFTDefaultProps,
@@ -108,6 +115,7 @@ export const NFTInput = React.memo(
     isThumb,
     tradeData,
     t,
+    isBalanceLimit,
     onCopy,
     inputNFTDefaultProps,
     inputNFTRef,
@@ -213,6 +221,7 @@ export const NFTInput = React.memo(
                   disabled,
                   walletMap: {},
                   tradeData,
+                  isBalanceLimit,
                   // coinMap,
                   inputNFTDefaultProps: { label: "" },
                   // inputButtonDefaultProps,
@@ -235,6 +244,7 @@ export const NFTInput = React.memo(
                   ...{ size: InputSize.small, label: t("labelTokenAmount") },
                   ...inputNFTDefaultProps,
                 },
+                isBalanceLimit,
                 inputNFTRef,
               }}
             />

@@ -1,7 +1,7 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-  HebaoStep,
-  ModalHebao,
+  GuardianStep,
+  ModalWallet,
   LockAccount_Failed,
   LockAccount_Success,
   LockAccount_User_Denied,
@@ -29,8 +29,8 @@ export const ModalLock = withTranslation("common")(
     ...rest
   }: {
     open: boolean;
-    step: HebaoStep;
-    handleOpenModal: (props: { step: HebaoStep; options?: any }) => void;
+    step: GuardianStep;
+    handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
     onBack?: () => void;
     options: any;
     onClose: {
@@ -45,7 +45,7 @@ export const ModalLock = withTranslation("common")(
       return {
         btnTxt: "labelRetry",
         callback: () => {
-          handleOpenModal({ step: HebaoStep.LockAccount_WaitForAuth });
+          handleOpenModal({ step: GuardianStep.LockAccount_WaitForAuth });
           if (_options && _options.lockRetry && _options.lockRetryParams) {
             _options.lockRetry(_options.lockRetryParams);
           }
@@ -57,7 +57,7 @@ export const ModalLock = withTranslation("common")(
       return {
         btnTxt: "labelRetry",
         callback: () => {
-          handleOpenModal({ step: HebaoStep.Reject_WaitForAuth });
+          handleOpenModal({ step: GuardianStep.Reject_WaitForAuth });
           if (_options && _options.lockRetry && _options.lockRetryParams) {
             _options.lockRetry(_options.lockRetryParams);
           }
@@ -69,7 +69,7 @@ export const ModalLock = withTranslation("common")(
       return {
         btnTxt: "labelRetry",
         callback: () => {
-          handleOpenModal({ step: HebaoStep.Approve_WaitForAuth });
+          handleOpenModal({ step: GuardianStep.Approve_WaitForAuth });
           if (_options && _options.lockRetry && _options.lockRetryParams) {
             _options.lockRetry(_options.lockRetryParams);
           }
@@ -90,7 +90,7 @@ export const ModalLock = withTranslation("common")(
 
     const accountList = React.useMemo(() => {
       return Object.values({
-        [HebaoStep.LockAccount_WaitForAuth]: {
+        [GuardianStep.LockAccount_WaitForAuth]: {
           view: (
             <LockAccount_WaitForAuth
               {...{
@@ -100,7 +100,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.LockAccount_User_Denied]: {
+        [GuardianStep.LockAccount_User_Denied]: {
           view: (
             <LockAccount_User_Denied
               btnInfo={backToLockAccountBtnInfo}
@@ -111,7 +111,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.LockAccount_Success]: {
+        [GuardianStep.LockAccount_Success]: {
           view: (
             <LockAccount_Success
               btnInfo={closeBtnInfo}
@@ -122,7 +122,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.LockAccount_Failed]: {
+        [GuardianStep.LockAccount_Failed]: {
           view: (
             <LockAccount_Failed
               btnInfo={closeBtnInfo}
@@ -134,7 +134,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.Approve_WaitForAuth]: {
+        [GuardianStep.Approve_WaitForAuth]: {
           view: (
             <Approve_WaitForAuth
               {...{
@@ -144,7 +144,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.Approve_User_Denied]: {
+        [GuardianStep.Approve_User_Denied]: {
           view: (
             <Approve_User_Denied
               btnInfo={backToApproveBtnInfo}
@@ -155,7 +155,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.Approve_Success]: {
+        [GuardianStep.Approve_Success]: {
           view: (
             <Approve_Success
               btnInfo={closeBtnInfo}
@@ -166,7 +166,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.Approve_Failed]: {
+        [GuardianStep.Approve_Failed]: {
           view: (
             <Approve_Failed
               btnInfo={closeBtnInfo}
@@ -179,7 +179,7 @@ export const ModalLock = withTranslation("common")(
           ),
         },
 
-        [HebaoStep.Reject_WaitForAuth]: {
+        [GuardianStep.Reject_WaitForAuth]: {
           view: (
             <Reject_WaitForAuth
               {...{
@@ -189,7 +189,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.Reject_User_Denied]: {
+        [GuardianStep.Reject_User_Denied]: {
           view: (
             <Reject_User_Denied
               btnInfo={backToRejectBtnInfo}
@@ -200,7 +200,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.Reject_Success]: {
+        [GuardianStep.Reject_Success]: {
           view: (
             <Reject_Success
               btnInfo={closeBtnInfo}
@@ -211,7 +211,7 @@ export const ModalLock = withTranslation("common")(
             />
           ),
         },
-        [HebaoStep.Reject_Failed]: {
+        [GuardianStep.Reject_Failed]: {
           view: (
             <Reject_Failed
               btnInfo={closeBtnInfo}
@@ -228,12 +228,12 @@ export const ModalLock = withTranslation("common")(
 
     return (
       <>
-        <ModalHebao
+        <ModalWallet
           open={open}
           onClose={onClose}
           panelList={accountList}
           onBack={onBack}
-          step={step ?? HebaoStep.LockAccount_WaitForAuth}
+          step={step ?? GuardianStep.LockAccount_WaitForAuth}
         />
       </>
     );

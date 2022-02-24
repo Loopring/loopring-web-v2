@@ -1,18 +1,24 @@
-import type { Column as RdgColumn } from 'react-data-grid';
-import DataGrid, { SortColumn } from 'react-data-grid';
+import type { Column as RdgColumn } from "react-data-grid";
+import DataGrid, { SortColumn } from "react-data-grid";
 import styled from "@emotion/styled";
-import { Trans, WithTranslation } from 'react-i18next';
+import { Trans, WithTranslation } from "react-i18next";
 
 import { WithT } from "i18next";
 import React from "react";
-import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
-import { EmptyDefault } from '../empty';
-import { LoadingIcon } from '@loopring-web/common-resources'
-import { Box, IconButton } from '@mui/material';
-import { css } from '@emotion/react';
+import {
+  Column,
+  DataGridProps,
+  SortableHeaderCell,
+  SortableHeaderCellProps,
+  TableProps,
+} from "./";
+import { EmptyDefault } from "../empty";
+import { SoursURL } from "@loopring-web/common-resources";
+import { Box, IconButton } from "@mui/material";
+import { css } from "@emotion/react";
 
 interface TableWrapperStyledProps {
-  showloading: 'true' | 'false'
+  showloading: "true" | "false";
 }
 
 const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
@@ -21,7 +27,8 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   flex: 1;
 
   // &::after {
-  //   visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
+  //   visibility: ${({ showloading }) =>
+    showloading === "true" ? "visible" : "hidden"};
   //   position: absolute;
   //   z-index: 20;
   //   top: 0;
@@ -35,10 +42,10 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   //   content: '';
   //   pointer-events: auto;
   // }
-` as any
-const hr = ({theme}: any) => css`
+` as any;
+const hr = ({ theme }: any) => css`
   border-radius: ${theme.unit / 2}px;
-  content: '';
+  content: "";
   display: block;
   height: 1px;
   //margin-bottom: -2px;
@@ -49,9 +56,9 @@ const hr = ({theme}: any) => css`
   bottom: 0;
 `;
 
-const hrShort = ({theme}: any) => css`
+const hrShort = ({ theme }: any) => css`
   border-radius: ${theme.unit / 2}px;
-  content: '';
+  content: "";
   display: block;
   height: 1px;
   width: calc(100% - ${theme.unit * 6}px);
@@ -68,12 +75,12 @@ export const DataGridStyled = styled(DataGrid)`
   height: 100%;
 
   .table-divide &.rdg .rdg-header-row {
-    &:after{
+    &:after {
       ${hr}
     }
   }
   .table-divide-short &.rdg .rdg-header-row {
-    &:after{
+    &:after {
       ${hrShort}
     }
   }
@@ -85,14 +92,11 @@ export const DataGridStyled = styled(DataGrid)`
     border: rgba(0, 0, 0, 0) 0 solid;
     //background-color: inherit;
     .rdg-header-row {
-      
       color: var(--color-text-secondary);
       width: 100%;
       background-color: inherit;
       font-weight: normal;
-      
     }
-    
 
     &.scrollable .rdg-header-row {
       background: var(--color-box);
@@ -124,7 +128,6 @@ export const DataGridStyled = styled(DataGrid)`
         .NONE svg {
           transform: rotate(90deg) translateX(-3px) scale(1.2);
         }
-
       }
     }
 
@@ -142,7 +145,8 @@ export const DataGridStyled = styled(DataGrid)`
         background: var(--color-box-hover);
 
         .rdg-cell:first-of-type {
-            // border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
+          // border-left: ${({ theme }) =>
+            theme.border.borderConfig({ d_W: 2, c_key: "selected" })}
         }
       }
     }
@@ -155,12 +159,13 @@ export const DataGridStyled = styled(DataGrid)`
       box-sizing: border-box;
       height: 100%;
 
-      & > span, div {
+      & > span,
+      div {
         user-select: text;
       }
     }
 
-    .rdg-cell[aria-selected=true] {
+    .rdg-cell[aria-selected="true"] {
       box-shadow: none;
     }
 
@@ -172,7 +177,6 @@ export const DataGridStyled = styled(DataGrid)`
       color: var(--color-error);
     }
   }
-
 ` as typeof DataGrid;
 
 const LoadingStyled = styled(IconButton)`
@@ -181,7 +185,7 @@ const LoadingStyled = styled(IconButton)`
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-`
+`;
 
 // interface Action {
 //     type: 'toggleSubRow' | 'deleteSubRow' | 'refresh' | 'sort';
@@ -199,139 +203,182 @@ const LoadingStyled = styled(IconButton)`
 //     }
 // }
 
-
 export const generateColumns = <Row, SR>({
-                                             columnsRaw,
-                                             t
-                                         }: { columnsRaw: readonly Column<Row, SR>[], [ key: string ]: any } & WithT): RdgColumn<Row, SR>[] => {
-    const columns: Column<Row, SR>[] = columnsRaw.reduce((prev: RdgColumn<Row, SR>[], column: Column<Row, SR>) => {
-        const {name, isHidden} = column;
-        if (typeof name === 'string' && !isHidden) {
-            column.name = t(name);
-            prev.push(column);
-        }
-        return prev;
-    }, [])
-    return columns as Column<Row, SR>[];
-}
-export const generateRows = <Row, SR>(rawData: [][], rest: TableProps<Row, SR>): Row[] => {
-    const {columnMode} = rest;
-    return rawData.map(row => row.reduce((prev: { [ key: string ]: any }, cell, index) => {
-        if (columnMode[ index ]) {
-            prev[ columnMode[ index ].key ] = cell;
-        }
-        return prev;
-    }, {_rawData: row}) as Row)
+  columnsRaw,
+  t,
+}: {
+  columnsRaw: readonly Column<Row, SR>[];
+  [key: string]: any;
+} & WithT): RdgColumn<Row, SR>[] => {
+  const columns: Column<Row, SR>[] = columnsRaw.reduce(
+    (prev: RdgColumn<Row, SR>[], column: Column<Row, SR>) => {
+      const { name, isHidden } = column;
+      if (typeof name === "string" && !isHidden) {
+        column.name = t(name);
+        prev.push(column);
+      }
+      return prev;
+    },
+    []
+  );
+  return columns as Column<Row, SR>[];
+};
+export const generateRows = <Row, SR>(
+  rawData: [][],
+  rest: TableProps<Row, SR>
+): Row[] => {
+  const { columnMode } = rest;
+  return rawData.map(
+    (row) =>
+      row.reduce(
+        (prev: { [key: string]: any }, cell, index) => {
+          if (columnMode[index]) {
+            prev[columnMode[index].key] = cell;
+          }
+          return prev;
+        },
+        { _rawData: row }
+      ) as Row
+  );
 };
 
 export type ExtraTableProps = {
-    showloading?: boolean
-}
+  showloading?: boolean;
+};
 
 //TODO:
 // {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>
-export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps) => {
-    const {
-        EmptyRowsRenderer,
-        generateRows,
-        generateColumns,
-        sortInitDirection,
-        sortDefaultKey,
-        sortMethod,
-        rawData,
-        style,
-        frozeSort,
-        rowRenderer,
-        rowClassFn,
-        rowKeyGetter,
-        columnMode,
-        onScroll,
-        onRowClick,
-        rowHeight,
-        showloading,
-        t,
-        ...rest
-    } = props;
+export const Table = <R, SR>(
+  props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps
+) => {
+  const {
+    EmptyRowsRenderer,
+    generateRows,
+    generateColumns,
+    sortInitDirection,
+    sortDefaultKey,
+    sortMethod,
+    rawData,
+    style,
+    frozeSort,
+    rowRenderer,
+    rowClassFn,
+    rowKeyGetter,
+    columnMode,
+    onScroll,
+    onRowClick,
+    rowHeight,
+    showloading,
+    t,
+    ...rest
+  } = props;
 
-    const columns = generateColumns({columnsRaw: columnMode, t});
-    const [rows, setRows] = React.useState(generateRows(rawData, props));
+  const columns = generateColumns({ columnsRaw: columnMode, t });
+  const [rows, setRows] = React.useState(generateRows(rawData, props));
 
-    React.useEffect(() => {
-        setRows(generateRows(rawData, props));
-    }, [rawData])
-    /*** sort handle start ***/
-    const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([{
-        columnKey: sortDefaultKey as any,
-        direction: sortInitDirection ? sortInitDirection : 'ASC' as any
-    }]);
+  React.useEffect(() => {
+    setRows(generateRows(rawData, props));
+  }, [rawData]);
+  /*** sort handle start ***/
+  const [sortColumns, setSortColumns] = React.useState<
+    readonly Readonly<SortColumn>[]
+  >([
+    {
+      columnKey: sortDefaultKey as any,
+      direction: sortInitDirection ? sortInitDirection : ("ASC" as any),
+    },
+  ]);
 
-    // const [[sortColumn, sortDirection], setSort] = React.useState<[string | undefined, SortDirection]>([sortDefaultKey, sortInitDirection ? sortInitDirection : undefined]);
+  // const [[sortColumn, sortDirection], setSort] = React.useState<[string | undefined, SortDirection]>([sortDefaultKey, sortInitDirection ? sortInitDirection : undefined]);
 
-    const sortedRows: readonly R[] = React.useMemo(() => {
-        if (sortColumns.length === 0) return rows;
-        const {columnKey, direction} = sortColumns[ 0 ];
-        let sortedRows: R[] = [...rows];
-        sortedRows = sortMethod ? sortMethod(sortedRows, columnKey, direction) : rows;
-        return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
+  const sortedRows: readonly R[] = React.useMemo(() => {
+    if (sortColumns.length === 0) return rows;
+    const { columnKey, direction } = sortColumns[0];
+    let sortedRows: R[] = [...rows];
+    sortedRows = sortMethod
+      ? sortMethod(sortedRows, columnKey, direction)
+      : rows;
+    return direction === "DESC" ? sortedRows.reverse() : sortedRows;
+  }, [rows, sortColumns, sortMethod]);
+  // const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([]);
+  const onSortColumnsChange = React.useCallback((sortColumns: SortColumn[]) => {
+    setSortColumns(sortColumns.slice(-1));
+  }, []);
 
-    }, [rows, sortColumns, sortMethod]);
-    // const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([]);
-    const onSortColumnsChange = React.useCallback((sortColumns: SortColumn[]) => {
-        setSortColumns(sortColumns.slice(-1));
-    }, []);
-
-    const loopringColumns = React.useMemo(() => {
-        return columns.map(c => {
-            if (c.headerRenderer) {
-                return {...c} as Column<R, unknown>;
-            } else {
-                return {
-                    ...c, headerRenderer: (props: SortableHeaderCellProps<R>) => <SortableHeaderCell {...props} />
-                } as Column<R, unknown>;
-            }
-        }) as Column<R, unknown>[];
-    }, [columns]);
-    const RenderEmptyMsg = styled.span`
-      display: flex;
-
-      .link {
-        margin: 0 5px;
+  const loopringColumns = React.useMemo(() => {
+    return columns.map((c) => {
+      if (c.headerRenderer) {
+        return { ...c } as Column<R, unknown>;
+      } else {
+        return {
+          ...c,
+          headerRenderer: (props: SortableHeaderCellProps<R>) => (
+            <SortableHeaderCell {...props} />
+          ),
+        } as Column<R, unknown>;
       }
-    `
+    }) as Column<R, unknown>[];
+  }, [columns]);
+  const RenderEmptyMsg = styled.span`
+    display: flex;
 
-    /*** sort handle end ***/
+    .link {
+      margin: 0 5px;
+    }
+  `;
 
-    return <TableWrapperStyled showloading={!!showloading ? 'true' : 'false'}>
-        <DataGridStyled
-            {...rest}
-            onScroll={onScroll}
-            columns={loopringColumns as any}
-            style={style}
-            rows={(sortDefaultKey && sortedRows) ? sortedRows : rows}
-            rowKeyGetter={rowKeyGetter}
-            rowClass={row => rowClassFn ? rowClassFn(row, props) : ''}
-            rowHeight={rowHeight ? rowHeight : 44}
-            onRowsChange={setRows}
-            onSortColumnsChange={onSortColumnsChange}
-            rowRenderer={rowRenderer as any}
-            sortColumns={sortColumns}
-            onRowClick={onRowClick}
-            emptyRowsRenderer={!showloading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
-                <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
-                    return <RenderEmptyMsg>
-                        <Trans i18nKey="labelEmptyDefault">
+  /*** sort handle end ***/
+
+  return (
+    <TableWrapperStyled showloading={!!showloading ? "true" : "false"}>
+      <DataGridStyled
+        {...rest}
+        onScroll={onScroll}
+        columns={loopringColumns as any}
+        style={style}
+        rows={sortDefaultKey && sortedRows ? sortedRows : rows}
+        rowKeyGetter={rowKeyGetter}
+        rowClass={(row) => (rowClassFn ? rowClassFn(row, props) : "")}
+        rowHeight={rowHeight ? rowHeight : 44}
+        onRowsChange={setRows}
+        onSortColumnsChange={onSortColumnsChange}
+        rowRenderer={rowRenderer as any}
+        sortColumns={sortColumns}
+        onRowClick={onRowClick}
+        emptyRowsRenderer={
+          !showloading
+            ? () =>
+                EmptyRowsRenderer ? (
+                  EmptyRowsRenderer
+                ) : (
+                  <EmptyDefault
+                    height={`calc(100% - var(--header-row-height))`}
+                    message={() => {
+                      return (
+                        <RenderEmptyMsg>
+                          <Trans i18nKey="labelEmptyDefault">
                             Content is Empty
-                        </Trans>
-                    </RenderEmptyMsg>
-                }}/>) : null}
-        />
-        {showloading && (
-            <LoadingStyled color={'inherit'}>
-              <LoadingIcon />
-            </LoadingStyled>
-        )}
+                          </Trans>
+                        </RenderEmptyMsg>
+                      );
+                    }}
+                  />
+                )
+            : null
+        }
+      />
+      {showloading && (
+        <LoadingStyled color={"inherit"}>
+          <img
+            className="loading-gif"
+            alt={"loading"}
+            width="36"
+            src={`${SoursURL}images/loading-line.gif`}
+          />
+        </LoadingStyled>
+      )}
     </TableWrapperStyled>
-        ;
-    //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{
-    //  return <>Go to <Link to={'./path'}> link or event</Link> at here</>} } />   }
-}
+  );
+  //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{
+  //  return <>Go to <Link to={'./path'}> link or event</Link> at here</>} } />   }
+};

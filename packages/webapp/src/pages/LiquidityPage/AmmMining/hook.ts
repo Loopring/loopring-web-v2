@@ -67,7 +67,6 @@ export const useAmmMiningUI = <
   }, [ammActivityMap]);
   React.useEffect(() => {
     if (userRewardsMapState.status === "ERROR") {
-      //TODO: solve error
       userRewardsMapState.statusUnset();
     } else if (userRewardsMapState.status === "DONE") {
       userRewardsMapState.statusUnset();

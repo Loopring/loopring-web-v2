@@ -10,11 +10,11 @@ import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 import { useAccountInit } from "./hookAccountInit";
 import { useAmmActivityMap } from "./stores/Amm/AmmActivityMap";
 import { useTicker } from "./stores/ticker";
-import { useUserRewards } from "./stores/userRewards";
 import { useTokenPrices } from "./stores/tokenPrices";
 import { useAmount } from "./stores/amount";
 import { useSocket } from "./stores/socket";
 import { useNotify } from "./stores/notify";
+import { useLayer1Store } from "./stores/localStore/layer1Store";
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -22,7 +22,7 @@ import { useNotify } from "./stores/notify";
  * @description
  * @step1 subscribe Connect hook
  * @step2 check the session storage ? choose the provider : none provider
- * @step3 decide china Id by step2
+ * @step3 decide china ID by step2
  * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, forex, Activities ...)
  * @step5 launch the page
  */
@@ -57,11 +57,10 @@ export function useInit() {
     status: ammActivityMapStatus,
     statusUnset: ammActivityMapStatusUnset,
   } = useAmmActivityMap();
-  const { status: userRewardsStatus, statusUnset: userRewardsUnset } =
-    useUserRewards();
   const { status: tickerStatus, statusUnset: tickerStatusUnset } = useTicker();
   const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount();
   const { status: socketStatus, statusUnset: socketUnset } = useSocket();
+  const { circleUpdateLayer1ActionHistory } = useLayer1Store();
   const {
     getNotify,
     status: notifyStatus,
@@ -89,6 +88,8 @@ export function useInit() {
                 ? account._chainId
                 : ChainId.MAINNET;
           }
+          circleUpdateLayer1ActionHistory({ chainId });
+
           if (!isNoServer) {
             updateSystem({ chainId: chainId as any });
           }
@@ -225,19 +226,7 @@ export function useInit() {
         break;
     }
   }, [amountStatus]);
-  React.useEffect(() => {
-    switch (userRewardsStatus) {
-      case SagaStatus.ERROR:
-        console.log("ERROR", "get userRewards");
-        userRewardsUnset();
-        break;
-      case SagaStatus.DONE:
-        userRewardsUnset();
-        break;
-      default:
-        break;
-    }
-  }, [userRewardsStatus]);
+
   React.useEffect(() => {
     switch (socketStatus) {
       case "ERROR":

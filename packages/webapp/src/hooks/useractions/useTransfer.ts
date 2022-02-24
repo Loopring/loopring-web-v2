@@ -91,20 +91,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       const tradeValue = sdk
         .toBig(transferValue.tradeValue ?? 0)
         .times("1e" + sellToken.decimals);
-      // myLog(
-      //   "Trans checkBtnStatus",
-      //   tradeValue,
-      //   chargeFeeTokenList.length,
-      //   !isFeeNotEnough,
-      //   !isSameAddress,
-      //   !isAddressCheckLoading,
-      //   addressOrigin,
-      //   transferValue.fee?.belong,
-      //   tradeValue.gt(BIGO),
-      //   address,
-      //   address !== "",
-      //   addrStatus === AddressError.NoError
-      // );
+
       if (
         tradeValue &&
         chargeFeeTokenList.length &&
@@ -401,6 +388,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           setShowAccount({
             isShow: true,
             step: AccountStep.Transfer_Failed,
+            error: { code: 400, message: e.message } as sdk.RESULT_INFO,
           });
         }
       } else {

@@ -30,6 +30,12 @@ export type DepositData = {
   balance: number | undefined;
   reffer: string | undefined;
 };
+export type MintData = {
+  tokenAddress: string | undefined;
+  tradeValue: number | undefined;
+  memo: string | undefined;
+  fee: FeeInfo | undefined;
+};
 
 export type ActiveAccountData = {
   chargeFeeList: FeeInfo[];

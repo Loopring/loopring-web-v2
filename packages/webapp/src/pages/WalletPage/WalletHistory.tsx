@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 
 import { HebaoOperationLog } from "@loopring-web/loopring-sdk";
 import moment from "moment";
-import { TxHebaoAction, TxHebaoHistoryType } from "./hook";
+import { TxHebaoAction, TxGuardianHistoryType } from "./hook";
 import { useTheme } from "@emotion/react";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
@@ -21,11 +21,11 @@ const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   overflow: hidden;
   background-color: var(--opacity);
   padding-bottom: 0;
-  .hebao-content {
+  .guardian-content {
     padding: ${({ theme }) => theme.unit}px 0px;
   }
   &:not(:last-child) {
-    .hebao-content {
+    .guardian-content {
       border-bottom: 1px solid var(--color-divide);
     }
 
@@ -47,12 +47,12 @@ const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   }
 ` as (prosp: ListItemProps) => JSX.Element;
 
-export const HebaoHistory = <H extends HebaoOperationLog>({
+export const WalletHistory = <H extends HebaoOperationLog>({
   operationLogList,
-  hebaoConfig,
+  guardianConfig,
 }: {
   operationLogList: H[];
-  hebaoConfig: any;
+  guardianConfig: any;
 }) => {
   const { t } = useTranslation(["common"]);
   const theme = useTheme();
@@ -60,6 +60,7 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
     <>
       <Box
         paddingTop={3}
+        paddingBottom={3}
         borderRadius={2}
         flex={1}
         display={"flex"}
@@ -112,7 +113,8 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
                           component={"span"}
                           color={item.status ? "error" : "var(--color-success)"}
                         >
-                          {t("labelTxHebao" + TxHebaoAction[item.status]) + " "}
+                          {t("labelTxGuardian" + TxHebaoAction[item.status]) +
+                            " "}
                         </Typography>
                         <Typography
                           variant={"body1"}
@@ -120,8 +122,8 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
                           color={"--color-text-third"}
                         >
                           {t(
-                            "labelTxHebao" +
-                              TxHebaoHistoryType[item.hebaoTxType]
+                            "labelTxGuardian" +
+                              TxGuardianHistoryType[item.hebaoTxType]
                           )}
                         </Typography>
                       </Typography>
@@ -138,7 +140,11 @@ export const HebaoHistory = <H extends HebaoOperationLog>({
                       </Typography>
                     </Box>
                   </Box>
-                  <Divider style={{ margin: `0 ${(theme.unit * 5) / 2}px` }} />
+                  {operationLogList.length - 1 !== index && (
+                    <Divider
+                      style={{ margin: `0 ${(theme.unit * 5) / 2}px` }}
+                    />
+                  )}
                 </React.Fragment>
               ))}
             </>

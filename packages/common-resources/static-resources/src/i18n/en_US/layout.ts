@@ -81,7 +81,7 @@ export default {
   labelLandingHeaderWallet: "Smart Wallet",
   labelCopyRight: "© 2017 Loopring Technology Limited. All rights reserved.",
 
-  labelHebaoProtect: "Guardian",
-  labelHebaoValidation: "Ask approve",
-  labelHebaoHistory: "History",
+  labelWalletProtect: "Guardian",
+  labelWalletValidation: "Ask approve",
+  labelWalletHistory: "History",
 };
