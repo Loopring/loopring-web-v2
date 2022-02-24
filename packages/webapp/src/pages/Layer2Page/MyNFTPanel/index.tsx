@@ -123,88 +123,109 @@ export const MyNFTPanel = withTranslation("common")(
                 {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
               </Box>
             ) : nftList && nftList.length ? (
-              <Grid container spacing={2} paddingX={3} paddingBottom={3}>
-                {nftList.map((item, index) => (
-                  <Grid
-                    key={(item?.nftId ?? "") + index.toString()}
-                    item
-                    xs={12}
-                    md={6}
-                    lg={4}
-                    flex={"1 1 120%"}
-                  >
-                    <CardStyle
-                      sx={{ maxWidth: 345 }}
-                      onClick={() => {
-                        onDetail(item);
-                      }}
+              <>
+                <Box
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"right"}
+                  marginRight={3}
+                  marginBottom={2}
+                >
+                  <Pagination
+                    color={"primary"}
+                    count={
+                      parseInt(String(total / NFTLimit)) +
+                      (total % NFTLimit > 0 ? 1 : 0)
+                    }
+                    page={page}
+                    onChange={(_event, value) => {
+                      onPageChange(Number(value));
+                    }}
+                  />
+                </Box>
+                <Grid container spacing={2} paddingX={3} paddingBottom={3}>
+                  {nftList.map((item, index) => (
+                    <Grid
+                      key={(item?.nftId ?? "") + index.toString()}
+                      item
+                      xs={12}
+                      md={6}
+                      lg={4}
+                      flex={"1 1 120%"}
                     >
-                      <Box
-                        position={"absolute"}
-                        width={"100%"}
-                        height={"100%"}
-                        display={"flex"}
-                        flexDirection={"column"}
-                        justifyContent={"space-between"}
+                      <CardStyle
+                        // sx={{ maxWidth: 345 }}
+                        onClick={() => {
+                          onDetail(item);
+                        }}
                       >
-                        <NFTMedia
-                          item={item}
-                          index={index}
-                          onNFTReload={onNFTReload}
-                          onNFTError={onNFTError}
-                        />
                         <Box
-                          padding={2}
-                          height={80}
+                          position={"absolute"}
+                          width={"100%"}
+                          height={"100%"}
                           display={"flex"}
-                          flexDirection={"row"}
-                          alignItems={"center"}
+                          flexDirection={"column"}
                           justifyContent={"space-between"}
                         >
-                          <Box display={"flex"} flexDirection={"column"}>
-                            <Typography
-                              color={"text.secondary"}
-                              component={"h6"}
-                            >
-                              {item?.name ?? EmptyValueTag}
-                            </Typography>
-                            <Typography
-                              color={"--color-text-primary"}
-                              component={"p"}
-                              paddingTop={1}
-                              minWidth={164}
-                              textOverflow={"ellipsis"}
-                              title={item?.nftId?.toString()}
-                            >
-                              {t("labelNFTTokenID")} #
-                              {" " + getShortAddr(item?.nftId ?? "")}
-                            </Typography>
-                          </Box>
+                          <NFTMedia
+                            item={item}
+                            index={index}
+                            onNFTReload={onNFTReload}
+                            onNFTError={onNFTError}
+                          />
+                          <Box
+                            padding={2}
+                            height={80}
+                            display={"flex"}
+                            flexDirection={"row"}
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
+                          >
+                            <Box display={"flex"} flexDirection={"column"}>
+                              <Typography
+                                color={"text.secondary"}
+                                component={"h6"}
+                              >
+                                {item?.name ?? EmptyValueTag}
+                              </Typography>
+                              <Typography
+                                color={"--color-text-primary"}
+                                component={"p"}
+                                paddingTop={1}
+                                minWidth={164}
+                                textOverflow={"ellipsis"}
+                                title={item?.nftId?.toString()}
+                              >
+                                {t("labelNFTTokenID")} #
+                                {" " + getShortAddr(item?.nftId ?? "")}
+                              </Typography>
+                            </Box>
 
-                          <Box display={"inline-flex"} alignItems={"center"}>
-                            <Typography
-                              variant={"h4"}
-                              component={"div"}
-                              height={40}
-                              paddingX={3}
-                              whiteSpace={"pre"}
-                              display={"inline-flex"}
-                              alignItems={"center"}
-                              color={"textPrimary"}
-                              style={{
-                                background: "var(--field-opacity)",
-                                borderRadius: "20px",
-                              }}
-                            >
-                              × {item.total}
-                            </Typography>
+                            <Box display={"inline-flex"} alignItems={"center"}>
+                              <Typography
+                                variant={"h4"}
+                                component={"div"}
+                                height={40}
+                                paddingX={3}
+                                whiteSpace={"pre"}
+                                display={"inline-flex"}
+                                alignItems={"center"}
+                                color={"textPrimary"}
+                                style={{
+                                  background: "var(--field-opacity)",
+                                  borderRadius: "20px",
+                                }}
+                              >
+                                × {item.total}
+                              </Typography>
+                            </Box>
                           </Box>
                         </Box>
-                      </Box>
-                    </CardStyle>
-                  </Grid>
-                ))}
-              </Grid>
+                      </CardStyle>
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
             ) : (
               <Box flex={1}>
                 <EmptyDefault
@@ -226,7 +247,10 @@ export const MyNFTPanel = withTranslation("common")(
                 <Box
                   display={"flex"}
                   alignItems={"center"}
-                  justifyContent={"center"}
+                  justifyContent={"right"}
+                  marginRight={3}
+                  marginTop={1}
+                  marginBottom={2}
                 >
                   <Pagination
                     color={"primary"}

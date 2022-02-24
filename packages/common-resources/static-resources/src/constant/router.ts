@@ -132,7 +132,24 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
   },
 ];
 
-export const headerGuardianMenuData: Array<HeaderMenuItemInterface> = [];
+export const headerGuardianMenuData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: "exchange",
+      i18nKey: "labelZkRollupLayer2",
+    },
+    router: { path: "/" },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: "wallet",
+      i18nKey: "labelWallet",
+    },
+    router: { path: "/wallet" },
+    status: HeaderMenuTabStatus.default,
+  },
+];
 
 export const subMenuLayer2 = {
   assetsGroup: [
