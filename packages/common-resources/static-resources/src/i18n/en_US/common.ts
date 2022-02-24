@@ -199,10 +199,9 @@ export default {
   labelActivatedAccountNotSupport:
     "Loopring does not currently support your address. We apologize for the inconvenience.",
   labelProcessing: "Processing",
-  labelMetaMaskProcessing: "Connect Wallet with MetaMask...",
-  labelMetaMaskProcessDescribe:
-    "Please click ‘Approve’ button on MetaMask popup window. If MetaMask dialog is dismissed, please manually click <1></1> on your browser toolbar.",
-  labelWalletConnectProcessing: "Connect Wallet with WalletConnect...",
+  labelProviderProcessing: "Connect Wallet with {{name}}...",
+  labelProviderCommonProcessDescribe:
+    "Please click ‘Approve’ button on {{name}} popup window. If {{name}} dialog is dismissed, please manually click <5></5> on your browser toolbar.",
   labelWalletConnectProcessDescribe:
     "Please wait for WalletConnect provider to confirm processing",
   labelWalletConnectQRCode:

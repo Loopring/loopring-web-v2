@@ -5,12 +5,13 @@ import {
   i18n,
   myLog,
   SagaStatus,
-  subMenuHebao,
+  subMenuGuardian,
 } from "@loopring-web/common-resources";
 import { Box, Link, Typography } from "@mui/material";
 import {
   Button,
   GuardianStep,
+  ModalQRCode,
   setShowConnect,
   SubMenu,
   SubMenuList,
@@ -68,6 +69,33 @@ export const GuardianPage = withTranslation(["common"])(
   ({ t, ...rest }: WithTranslation) => {
     const { account } = useAccount();
     let match = useRouteMatch("/guardian/:item");
+    const [openQRCode, setOpenQRCode] = React.useState(false);
+    const onOpenAdd = React.useCallback(() => {
+      setOpenQRCode(true);
+    }, []);
+    const description = () => (
+      <Typography
+        marginTop={2}
+        component={"div"}
+        textAlign={"center"}
+        variant={"body1"}
+      >
+        <Typography
+          color={"var(--color-text-secondary)"}
+          component={"p"}
+          variant={"inherit"}
+        >
+          {account?.accAddress}
+        </Typography>
+        <Typography
+          color={"var(--color-text-third)"}
+          component={"p"}
+          variant={"body2"}
+        >
+          {account?.connectName}
+        </Typography>
+      </Typography>
+    );
     const history = useHistory();
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
@@ -103,6 +131,7 @@ export const GuardianPage = withTranslation(["common"])(
         case "guardian-validation-info":
           return !isContractAddress ? (
             <WalletValidationInfo
+              onOpenAdd={onOpenAdd}
               {...{ guardiansList, guardianConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
               loadData={loadData}
@@ -132,6 +161,7 @@ export const GuardianPage = withTranslation(["common"])(
         default:
           return !isContractAddress ? (
             <WalletProtector
+              onOpenAdd={onOpenAdd}
               protectList={protectList}
               guardianConfig={guardianConfig}
               loadData={loadData}
@@ -202,7 +232,7 @@ export const GuardianPage = withTranslation(["common"])(
                 <SubMenu>
                   <SubMenuList
                     selected={selected}
-                    subMenu={subMenuHebao as any}
+                    subMenu={subMenuGuardian as any}
                   />
                 </SubMenu>
               </Box>
@@ -245,6 +275,32 @@ export const GuardianPage = withTranslation(["common"])(
 
     return (
       <>
+        <ModalQRCode
+          open={openQRCode}
+          className={"guardianPop"}
+          onClose={() => setOpenQRCode(false)}
+          title={() => (
+            <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h5"}
+              >
+                {t("labelWalletAddAsGuardian")}
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                component={"p"}
+                variant={"body1"}
+              >
+                {t("labelWalletScanQRCode")}
+              </Typography>
+            </Typography>
+          )}
+          size={240}
+          description={description()}
+          url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+        />
         <ModalLock
           options={openHebao.options ?? {}}
           {...{

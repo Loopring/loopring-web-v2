@@ -2,16 +2,11 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ErrorType } from "../command";
-import { ConnectProviders } from "@loopring-web/common-resources";
+import { ConnectProviders, RPC_URLS } from "@loopring-web/common-resources";
 
 // const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
 
 // myLog('---BRIDGE_URL:', BRIDGE_URL)
-
-const RPC_URLS: { [chainId: number]: string } = {
-  1: process.env.REACT_APP_RPC_URL_1 as string,
-  5: process.env.REACT_APP_RPC_URL_5 as string,
-};
 
 const POLLING_INTERVAL = 12000;
 
@@ -73,7 +68,7 @@ export const WalletConnectProvide = async (
     console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.WalletConnect,
-      error,
+      error: error.message,
     });
   }
 };

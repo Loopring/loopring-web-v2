@@ -25,7 +25,10 @@ import Web3 from "web3";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
-import { SDK_ERROR_MAP_TO_UI } from "@loopring-web/common-resources";
+import {
+  SDK_ERROR_MAP_TO_UI,
+  SecurityIcon,
+} from "@loopring-web/common-resources";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -140,14 +143,17 @@ export const HebaoGuardianItem = <G extends sdk.Guardian>({
     </HebaoGuardianStyled>
   );
 };
+
 export const WalletValidationInfo = <G extends sdk.Guardian>({
   guardiansList,
   loadData,
+  onOpenAdd,
   handleOpenModal,
 }: {
   guardiansList: G[];
   guardianConfig: any;
   loadData: () => Promise<void>;
+  onOpenAdd: () => void;
   handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
 }) => {
   const { t } = useTranslation(["common", "error"]);
@@ -312,9 +318,30 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
         display={"flex"}
         flexDirection={"column"}
       >
-        <Typography paddingX={5 / 2} component={"h3"} variant={"h5"}>
-          {t("labelCommonList")}
-        </Typography>
+        <Box display={"flex"} justifyContent={"space-between"} paddingX={5 / 2}>
+          <Typography paddingX={5 / 2} component={"h3"} variant={"h5"}>
+            {t("labelCommonList")}
+          </Typography>
+          <ButtonListRightStyled
+            item
+            xs={5}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"flex-end"}
+          >
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              startIcon={
+                <SecurityIcon htmlColor={"var(--color-text-button)"} />
+              }
+              onClick={() => onOpenAdd()}
+            >
+              {t("labelAddProtector")}
+            </Button>
+          </ButtonListRightStyled>
+        </Box>
         <Box flex={1}>
           {guardiansList.map((guardian, index) => {
             return (

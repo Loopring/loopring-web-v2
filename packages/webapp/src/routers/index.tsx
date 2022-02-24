@@ -3,7 +3,6 @@ import React from "react";
 import { Box, Container } from "@mui/material";
 import Header from "layouts/header";
 import { ModalGroup } from "../modal";
-import { LAYOUT } from "../defs/common_defs";
 import { QuotePage } from "pages/QuotePage";
 import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";

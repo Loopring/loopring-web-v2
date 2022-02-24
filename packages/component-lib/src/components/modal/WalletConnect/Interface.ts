@@ -12,7 +12,7 @@ export interface ProviderMenuProps {
 
 export enum WalletConnectStep {
   Provider,
-  MetaMaskProcessing,
+  CommonProcessing,
   WalletConnectProcessing,
   WalletConnectQRCode,
   SuccessConnect,
