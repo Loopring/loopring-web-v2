@@ -10,10 +10,12 @@ export const HadAccount = withTranslation("common")(
   ({
     mainBtn,
     className,
+    onClose,
     t,
     ...props
   }: WithTranslation &
     AccountBaseProps & {
+      onClose: (e?: any) => void;
       className?: string;
       clearDepositHash: () => void;
       chainInfos: AccountHashInfo;
@@ -49,13 +51,9 @@ export const HadAccount = withTranslation("common")(
                 variant={"contained"}
                 fullWidth
                 size={"medium"}
-                onClick={() => {
-                  if (props.onDisconnect) {
-                    props.onDisconnect();
-                  }
-                }}
+                onClick={onClose}
               >
-                {t("labelDisconnect")}{" "}
+                {t("labelClose")}
               </Button>
             </Box>
           ) : (

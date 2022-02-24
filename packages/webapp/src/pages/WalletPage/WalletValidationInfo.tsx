@@ -290,14 +290,49 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
         <SwitchPanelStyled>
           <Box display={"flex"} flexDirection={"column"}>
             <ModalCloseButton onClose={() => setOpenCode(false)} t={t as any} />
-            <Box padding={3}>
-              <InputCode
-                length={VCODE_UNIT}
-                onComplete={submitApprove}
-                loading={false}
-              />
-              <Box display={"flex"} marginTop={4} justifyContent={"center"}>
+            <Typography
+              component={"p"}
+              textAlign={"center"}
+              marginBottom={2}
+              paddingX={2}
+            >
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h4"}
+                marginBottom={2}
+              >
+                {t("labelWalletInputGuardianCode")}
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                component={"p"}
+                variant={"body1"}
+                marginBottom={2}
+              >
+                {t("labelWalletInputGuardianCodeDes")}
+              </Typography>
+            </Typography>
+            <Box paddingBottom={3}>
+              <Box
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <InputCode
+                  length={VCODE_UNIT}
+                  onComplete={submitApprove}
+                  loading={false}
+                />
+              </Box>
+              <Box
+                display={"flex"}
+                marginTop={4}
+                marginX={2}
+                justifyContent={"center"}
+              >
                 <Button
+                  fullWidth
                   variant={"contained"}
                   size={"small"}
                   color={"primary"}

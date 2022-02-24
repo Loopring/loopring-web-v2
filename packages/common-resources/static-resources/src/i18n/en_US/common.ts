@@ -548,7 +548,10 @@ export default {
   labelWalletToWallet:
     "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
   labelWalletAddAsGuardian: "Add as a Guardian",
+  labelWalletInputGuardianCode: "Input 6 digital Code and Approve",
   labelWalletScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelWalletInputGuardianCodeDes:
+    "The 6 digital Code already send to your wallet, Please input it and submit approve",
   labelWalletGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
   labelUnknown: "unknown",

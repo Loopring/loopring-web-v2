@@ -78,7 +78,7 @@ export const GuardianPage = withTranslation(["common"])(
         marginTop={2}
         component={"div"}
         textAlign={"center"}
-        variant={"body1"}
+        variant={"body2"}
       >
         <Typography
           color={"var(--color-text-secondary)"}
@@ -86,13 +86,6 @@ export const GuardianPage = withTranslation(["common"])(
           variant={"inherit"}
         >
           {account?.accAddress}
-        </Typography>
-        <Typography
-          color={"var(--color-text-third)"}
-          component={"p"}
-          variant={"body2"}
-        >
-          {account?.connectName}
         </Typography>
       </Typography>
     );
@@ -279,12 +272,13 @@ export const GuardianPage = withTranslation(["common"])(
           open={openQRCode}
           className={"guardianPop"}
           onClose={() => setOpenQRCode(false)}
-          title={() => (
+          title={
             <Typography component={"p"} textAlign={"center"} marginBottom={1}>
               <Typography
                 color={"var(--color-text-primary)"}
                 component={"p"}
-                variant={"h5"}
+                variant={"h4"}
+                marginBottom={2}
               >
                 {t("labelWalletAddAsGuardian")}
               </Typography>
@@ -292,12 +286,13 @@ export const GuardianPage = withTranslation(["common"])(
                 color={"var(--color-text-secondary)"}
                 component={"p"}
                 variant={"body1"}
+                marginBottom={2}
               >
                 {t("labelWalletScanQRCode")}
               </Typography>
             </Typography>
-          )}
-          size={240}
+          }
+          size={260}
           description={description()}
           url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
         />

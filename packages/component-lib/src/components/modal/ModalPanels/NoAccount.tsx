@@ -11,12 +11,14 @@ export const NoAccount = withTranslation("common")(
     goDeposit,
     className,
     t,
+    onClose,
     isSupport = true,
     ...props
   }: WithTranslation &
     AccountBaseProps & {
       className?: string;
       goDeposit: () => void;
+      onClose: (e?: any) => void;
       chainInfos: AccountHashInfo;
       isSupport: boolean;
       clearDepositHash: () => void;
@@ -52,13 +54,9 @@ export const NoAccount = withTranslation("common")(
               variant={"contained"}
               fullWidth
               size={"medium"}
-              onClick={() => {
-                if (props.onDisconnect) {
-                  props.onDisconnect();
-                }
-              }}
+              onClick={onClose}
             >
-              {t("labelDisconnect")}{" "}
+              {t("labelClose")}
             </Button>
           </Box>
         ) : isSupport ? (
