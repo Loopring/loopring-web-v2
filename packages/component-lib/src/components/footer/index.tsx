@@ -74,6 +74,10 @@ const linkListMap = {
       linkHref:
         "https://loopringexchange.typeform.com/to/T0bgsodw?typeform-source=medium.com",
     },
+    {
+      linkName: "Guardian",
+      linkHref: "./#/guardian",
+    },
   ],
   Developers: [
     {
