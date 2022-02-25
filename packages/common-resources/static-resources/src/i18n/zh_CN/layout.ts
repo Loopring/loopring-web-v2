@@ -67,6 +67,7 @@ export default {
   labelkeySubgraph: "Subgraph",
   labelFooterSupport: "Support",
   labelkeyFeedback: "❤️ Submit a Request",
+  labelkeyGuardian: "Wallet add Guardian",
   labelkeyLoopringTutorial: "Loopring Tutorial",
   labelkeyCommunityDocs: "Community Docs",
   labelkeySupportCenter: "Support Center",
