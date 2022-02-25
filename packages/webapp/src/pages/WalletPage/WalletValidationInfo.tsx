@@ -1,5 +1,6 @@
 import {
   Box,
+  Grid,
   ListItem,
   ListItemProps,
   ListItemText,
@@ -9,11 +10,12 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
   Button,
   ButtonListRightStyled,
+  EmptyDefault,
   GuardianStep,
   InputCode,
   ModalCloseButton,
@@ -26,8 +28,11 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
 import {
+  myLog,
+  RefreshIcon,
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
+  SoursURL,
 } from "@loopring-web/common-resources";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
@@ -35,15 +40,16 @@ const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   overflow: hidden;
   background-color: var(--opacity);
   padding-bottom: 0;
-  .guardian-content {
-    padding: ${({ theme }) => theme.unit}px 0px;
+  &:hover {
+    background-color: var(--opacity);
   }
-  &:not(:last-child) {
-    .guardian-content {
-      border-bottom: 1px solid var(--color-divide);
+  .guardian-content {
+    padding: ${({ theme }) => 2 * theme.unit}px ${({ theme }) => theme.unit}px;
+    border-radius: ${({ theme }) => theme.unit / 2}px;
+    background-color: var(--field-opacity);
+    .description {
+      padding: 0 ${({ theme }) => 1 * theme.unit}px;
     }
-
-    // margin-bottom: ${({ theme }) => theme.unit}px;
   }
 
   .MuiListItemText-root {
@@ -81,46 +87,47 @@ export const HebaoGuardianItem = <G extends sdk.Guardian>({
         className={"guardian-content"}
         component={"section"}
         display={"flex"}
-        alignItems={"center"}
+        alignItems={"stretch"}
         justifyContent={"space-between"}
-        flexDirection={"row"}
+        flexDirection={"column"}
         overflow={"hidden"}
         paddingX={2}
       >
-        <Box flex={1}>
-          <ListItemText
-            className="description description1"
-            primary={ens ? ens : t("labelUnknown")}
-            primaryTypographyProps={{
-              component: "p",
-              variant: "h5",
-              color: "textPrimary",
-            }}
-          />
-
-          <ListItemText
-            primary={address}
-            primaryTypographyProps={{ component: "p", color: "textSecondary" }}
-          />
-        </Box>
+        <ListItemText
+          className="description description1"
+          primary={ens ? ens : t("labelUnknown")}
+          primaryTypographyProps={{
+            component: "p",
+            variant: "h5",
+            color: "textPrimary",
+          }}
+        />
+        <ListItemText
+          primary={address}
+          className="description description1"
+          primaryTypographyProps={{ component: "p", color: "textSecondary" }}
+        />
         <Box
-          min-width={200}
           display={"flex"}
-          flexDirection={"column"}
-          alignItems={"flex-end"}
-          justifyContent={"center"}
-          title={type}
+          padding={1}
+          justifyContent={"space-between"}
+          flex={1}
+          alignItems={"center"}
         >
           <Typography color={"--color-text-secondary"} paddingRight={1}>
-            {type.replace("_", " ").toUpperCase()}
+            <Trans
+              i18nKey={"labelWalletSignType"}
+              tOptions={{ type: t("labelTxGuardian_" + type) }}
+            >
+              Request for {type.replace("_", " ").toUpperCase()}
+            </Trans>
           </Typography>
           <ButtonListRightStyled
             item
             xs={5}
-            marginTop={1}
             display={"flex"}
             flexDirection={"row"}
-            justifyContent={"flex-end"}
+            justifyContent={"center"}
           >
             <Button
               variant={"contained"}
@@ -148,10 +155,12 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
   guardiansList,
   loadData,
   onOpenAdd,
+  // isLoading,
   handleOpenModal,
 }: {
   guardiansList: G[];
   guardianConfig: any;
+  // isLoading: boolean;
   loadData: () => Promise<void>;
   onOpenAdd: () => void;
   handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
@@ -165,6 +174,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
   const { chainId } = useSystem();
 
   const VCODE_UNIT = 6;
+
   const submitApprove = (code: string) => {
     setOpenCode(false);
     handleOpenModal({
@@ -354,8 +364,18 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
         flexDirection={"column"}
       >
         <Box display={"flex"} justifyContent={"space-between"} paddingX={5 / 2}>
-          <Typography paddingX={5 / 2} component={"h3"} variant={"h5"}>
+          <Typography
+            component={"h3"}
+            variant={"h5"}
+            display={"inline-flex"}
+            alignItems={"center"}
+          >
             {t("labelCommonList")}
+            <RefreshIcon
+              style={{ marginLeft: 8, cursor: "indexpointer" }}
+              color={"inherit"}
+              onClick={loadData}
+            />
           </Typography>
           <ButtonListRightStyled
             item
@@ -377,19 +397,53 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
             </Button>
           </ButtonListRightStyled>
         </Box>
-        <Box flex={1}>
-          {guardiansList.map((guardian, index) => {
-            return (
-              <HebaoGuardianItem
-                key={index}
-                guardian={guardian}
-                submitApprove={submitApprove}
-                handleReject={handleReject}
-                handleOpenApprove={handleOpenApprove}
+        <>
+          {!!guardiansList.length ? (
+            <Grid
+              container
+              alignItems={"flex-start"}
+              marginTop={2}
+              flex={1}
+              alignContent={"flex-start"}
+            >
+              {guardiansList.map((guardian, index) => {
+                return (
+                  <Grid
+                    item
+                    xs={1}
+                    md={6}
+                    lg={4}
+                    key={guardian.address + index}
+                  >
+                    <HebaoGuardianItem
+                      guardian={guardian}
+                      submitApprove={submitApprove}
+                      handleReject={handleReject}
+                      handleOpenApprove={handleOpenApprove}
+                    />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          ) : (
+            <Box flex={1} height={"100%"} width={"100%"}>
+              <EmptyDefault
+                style={{ alignSelf: "center" }}
+                height={"100%"}
+                message={() => (
+                  <Box
+                    flex={1}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    {t("labelNoContent")}
+                  </Box>
+                )}
               />
-            );
-          })}
-        </Box>
+            </Box>
+          )}
+        </>
       </Box>
     </>
   );
