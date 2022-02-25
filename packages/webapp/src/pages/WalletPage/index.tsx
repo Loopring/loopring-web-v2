@@ -122,8 +122,6 @@ export const GuardianPage = withTranslation(["common"])(
       });
     };
     const guardianRouter = (isLoading: boolean) => {
-      myLog("isLoading", isLoading);
-
       switch (selected) {
         case "guardian-validation-info":
           return !!isLoading ? (

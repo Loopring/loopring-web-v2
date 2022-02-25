@@ -410,7 +410,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
                 return (
                   <Grid
                     item
-                    xs={1}
+                    xs={12}
                     md={6}
                     lg={4}
                     key={guardian.address + index}

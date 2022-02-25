@@ -217,10 +217,13 @@ export const accountServices = {
       status: Commands.ProcessAccountCheck,
       data: undefined,
     });
+    if (
+      !LoopringAPI.exchangeAPI ||
+      (chainId && LoopringAPI.__chainId__ !== chainId)
+    ) {
+      await sdk.sleep(20);
+    }
     if (LoopringAPI.exchangeAPI) {
-      if (chainId && LoopringAPI.__chainId__ !== chainId) {
-        await sdk.sleep(10);
-      }
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
         owner: ethAddress,
       });
@@ -242,7 +245,7 @@ export const accountServices = {
         }
       }
     } else {
-      throw Error("unexpected no ethAddress:" + ethAddress);
+      myLog("unexpected no ethAddress:" + ethAddress);
     }
   },
 

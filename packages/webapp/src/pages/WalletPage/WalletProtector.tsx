@@ -18,7 +18,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  ConnectProviders,
   Layer1Action,
   LoadingIcon,
   LockIcon,
@@ -26,15 +25,12 @@ import {
   RefreshIcon,
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
-  SoursURL,
-  // SoursURL,
 } from "@loopring-web/common-resources";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { ChainId } from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
@@ -100,20 +96,23 @@ export const useHebaoProtector = <T extends sdk.Protector>({
         (ele: any) => ele.contractName.toUpperCase() === "GUARDIAN_MODULE"
       ).contractAddress;
       if (LoopringAPI?.walletAPI) {
-        const isVersion1 = await LoopringAPI.walletAPI
-          ?.getWalletType({
-            wallet: item.address, //account.accAddress,
-          })
-          .then(({ walletType }) => {
-            if (
-              walletType &&
-              walletType.loopringWalletContractVersion?.startsWith("V1_")
-            ) {
-              return true;
-            } else {
-              return false;
-            }
-          });
+        const [isVersion1, nonce] = await Promise.all([
+          LoopringAPI.walletAPI
+            .getWalletType({
+              wallet: item.address, //account.accAddress,
+            })
+            .then(({ walletType }) => {
+              if (
+                walletType &&
+                walletType.loopringWalletContractVersion?.startsWith("V1_")
+              ) {
+                return true;
+              } else {
+                return false;
+              }
+            }),
+          sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress),
+        ]);
         const params: sdk.LockHebaoHebaoParam = {
           web3: connectProvides.usedWeb3 as any,
           from: account.accAddress,
@@ -123,9 +122,11 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           gasLimit: config.gasLimit ?? 15000,
           chainId: chainId as any,
           isVersion1,
-          sendByMetaMask:
-            connectProvides.provideName === ConnectProviders.MetaMask,
+          nonce,
+          sendByMetaMask: true,
         };
+        myLog("LockHebaoHebaoParam params", params);
+        // debugger;
         try {
           const { error } = await LoopringAPI.walletAPI.lockHebaoWallet(params);
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
@@ -138,7 +139,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             });
           } else {
             setOneItem({
-              chainId: chainId as ChainId,
+              chainId: chainId as sdk.ChainId,
               uniqueId: item.address,
               domain: Layer1Action.GuardianLock,
             });
@@ -158,7 +159,17 @@ export const useHebaoProtector = <T extends sdk.Protector>({
         }
       }
     },
-    [guardianConfig, handleOpenModal]
+    [
+      guardianConfig.actionGasSettings,
+      guardianConfig.supportContracts,
+      account.accAddress,
+      gasPrice,
+      chainId,
+      handleOpenModal,
+      t,
+      setOneItem,
+      loadData,
+    ]
   );
   return {
     onLock,
@@ -346,7 +357,7 @@ export const WalletProtector = <T extends sdk.Protector>({
           {!!protectList.length ? (
             <>
               {protectList.map((item) => (
-                <Grid item xs={1} md={6} lg={4} key={item.address}>
+                <Grid item xs={12} md={6} lg={4} key={item.address}>
                   <HebaoProtectItem
                     {...{ ...item }}
                     onClick={() => {
