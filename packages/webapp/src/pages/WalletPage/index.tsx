@@ -156,7 +156,7 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+              <Typography margin={3} variant={"h1"} textAlign={"center"}>
                 {t("labelWalletToWallet")}
               </Typography>
             </Box>
@@ -201,7 +201,7 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+              <Typography margin={3} variant={"h1"} textAlign={"center"}>
                 {t("labelWalletToWallet")}
               </Typography>
             </Box>
