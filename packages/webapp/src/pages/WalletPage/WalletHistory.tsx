@@ -72,7 +72,7 @@ export const WalletHistory = <H extends HebaoOperationLog>({
           </Typography>
         </Box>
         <Box flex={1} alignItems={"center"} marginTop={2}>
-          {operationLogList.length ? (
+          {!!operationLogList.length ? (
             <>
               {operationLogList.map((item, index) => (
                 <React.Fragment key={item.id + index}>
@@ -149,20 +149,22 @@ export const WalletHistory = <H extends HebaoOperationLog>({
               ))}
             </>
           ) : (
-            <EmptyDefault
-              style={{ alignSelf: "center" }}
-              height={"100%"}
-              message={() => (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                >
-                  {t("labelNoContent")}
-                </Box>
-              )}
-            />
+            <Box flex={1} height={"100%"} width={"100%"}>
+              <EmptyDefault
+                style={{ alignSelf: "center" }}
+                height={"100%"}
+                message={() => (
+                  <Box
+                    flex={1}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    {t("labelNoContent")}
+                  </Box>
+                )}
+              />
+            </Box>
           )}
         </Box>
       </Box>

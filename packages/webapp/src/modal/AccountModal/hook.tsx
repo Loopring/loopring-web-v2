@@ -81,7 +81,11 @@ import {
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 
 import React, { useState } from "react";
-import { AccountStatus, copyToClipBoard } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  copyToClipBoard,
+  myLog,
+} from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { lockAccount } from "services/account/lockAccount";
 import { unlockAccount } from "services/account/unlockAccount";
@@ -473,18 +477,19 @@ export function useAccountModalForUI({
   }, [chainInfos?.depositHashes]);
 
   const isSupportCallback = React.useCallback(async () => {
-    const isSupport = await isContract(
+    const is_Contract = await isContract(
       connectProvides.usedWeb3,
       account.accAddress
     );
-    setIsSupport(!isSupport);
-  }, [account]);
+    setIsSupport(!is_Contract);
+    myLog("isSupportCallback", account.accAddress, !is_Contract);
+  }, [account, connectProvides.usedWeb3]);
 
   React.useEffect(() => {
     if (connectProvides && connectProvides.usedWeb3 && account.accAddress) {
       isSupportCallback();
     }
-  }, [account.accAddress]);
+  }, [account.accAddress, , connectProvides.usedWeb3]);
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.NoAccount]: {

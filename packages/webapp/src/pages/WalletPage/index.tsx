@@ -5,6 +5,7 @@ import {
   i18n,
   myLog,
   SagaStatus,
+  SoursURL,
   subMenuGuardian,
 } from "@loopring-web/common-resources";
 import { Box, Link, Typography } from "@mui/material";
@@ -89,7 +90,6 @@ export const GuardianPage = withTranslation(["common"])(
         </Typography>
       </Typography>
     );
-    const history = useHistory();
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
     const {
@@ -100,8 +100,10 @@ export const GuardianPage = withTranslation(["common"])(
       operationLogList,
       setOpenHebao,
       loadData,
+      isLoading,
       isContractAddress,
     } = useHebaoMain();
+
     const handleOpenModal = ({
       step,
       options,
@@ -119,12 +121,27 @@ export const GuardianPage = withTranslation(["common"])(
         return { ...state };
       });
     };
-    const guardianRouter = () => {
+    const guardianRouter = (isLoading: boolean) => {
       switch (selected) {
         case "guardian-validation-info":
-          return !isContractAddress ? (
+          return !!isLoading ? (
+            <Box
+              flex={1}
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                className="loading-gif"
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          ) : !isContractAddress ? (
             <WalletValidationInfo
               onOpenAdd={onOpenAdd}
+              // isLoading={isLoading}
               {...{ guardiansList, guardianConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
               loadData={loadData}
@@ -137,10 +154,9 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+              <Typography margin={3} variant={"h1"} textAlign={"center"}>
                 {t("labelWalletToWallet")}
               </Typography>
-              <BtnConnect />
             </Box>
           );
         case "guardian-history":
@@ -152,7 +168,21 @@ export const GuardianPage = withTranslation(["common"])(
           );
         case "guardian-protected":
         default:
-          return !isContractAddress ? (
+          return !!isLoading ? (
+            <Box
+              flex={1}
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                className="loading-gif"
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          ) : !isContractAddress ? (
             <WalletProtector
               onOpenAdd={onOpenAdd}
               protectList={protectList}
@@ -169,10 +199,9 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
-                {t("describeTitleConnectToWallet")}
+              <Typography margin={3} variant={"h1"} textAlign={"center"}>
+                {t("labelWalletToWallet")}
               </Typography>
-              <BtnConnect />
             </Box>
           );
       }
@@ -239,7 +268,7 @@ export const GuardianPage = withTranslation(["common"])(
                 marginBottom={2}
                 className={"MuiPaper-elevation2"}
               >
-                {guardianRouter()}
+                {guardianRouter(isLoading)}
               </StylePaper>
             </>
           );
@@ -264,7 +293,14 @@ export const GuardianPage = withTranslation(["common"])(
         default:
           break;
       }
-    }, [account.readyState, selected, protectList]);
+    }, [
+      account.readyState,
+      account.connectName,
+      t,
+      selected,
+      isLoading,
+      guardianRouter,
+    ]);
 
     return (
       <>

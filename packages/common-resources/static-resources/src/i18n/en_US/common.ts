@@ -547,14 +547,14 @@ export default {
   labelLock: "Lock",
   labelWalletToWallet:
     "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
-  labelWalletAddAsGuardian: "Add as a Guardian",
+  labelWalletAddAsGuardian: "Add a guardian",
   labelWalletInputGuardianCode: "Input 6 digital Code and Approve",
-  labelWalletScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelWalletScanQRCode: "Please use your Loopring wallet to scan the QR code",
   labelWalletInputGuardianCodeDes:
-    "The 6 digital Code already send to your wallet, Please input it and submit approve",
+    "Please contact the owner to obtain the approval code and enter it below.",
   labelWalletGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
-  labelUnknown: "unknown",
+  labelUnknown: "Unknown",
   labelApprove: "Approve",
   labelReject: "Reject",
   labelWalletApprove: "Approve Signature",
@@ -579,7 +579,13 @@ export default {
   labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
   labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
   labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
+  labelTxGuardian_recovery: "recovery",
+  labelTxGuardian_transfer: "transfer",
+  labelTxGuardian_add_guardian: "add guardian",
+  labelTxGuardian_remove_guardian: "remove guardian",
+  labelTxGuardian_unlock_wallet: "unlock wallet",
   labelTxGuardianApprove: "APPROVE",
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
+  labelWalletSignType: "Request for {{type}}",
 };
