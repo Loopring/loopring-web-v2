@@ -45,19 +45,6 @@ export const useHebaoMain = <
   const { account, status: accountStatus } = useAccount();
   const [isContractAddress, setIsContractAddress] =
     React.useState<boolean>(false);
-  LoopringAPI.walletAPI
-    ?.getWalletType({
-      wallet: account.accAddress,
-    })
-    .then(({ walletType }) => {
-      if (walletType?.isContract) {
-        setIsContractAddress(true);
-      } else {
-        setIsContractAddress(false);
-      }
-    });
-
-  myLog(isContractAddress, "isContractAddress");
 
   const [
     { guardianConfig, protectList, guardiansList, operationLogList },
@@ -84,9 +71,11 @@ export const useHebaoMain = <
   });
   const { clearOneItem } = useLayer1Store();
   const { chainId } = useSystem();
-  const loadData = async () => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const loadData = React.useCallback(async () => {
     const layer1ActionHistory = store.getState().localStore.layer1ActionHistory;
     if (LoopringAPI.walletAPI && account.accAddress) {
+      setIsLoading(true);
       const [
         { raw_data: guardianConfig },
         protector,
@@ -148,9 +137,15 @@ export const useHebaoMain = <
           // guardianTxType?: string;
           // limit?: number;
         }),
-      ]).catch((error) => {
-        myLog(error);
-      });
+      ])
+        .catch((error) => {
+          myLog(error);
+          setIsLoading(false);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+
       const _guardiansList: G[] = guardian?.guardiansArray
         ? guardian.guardiansArray.reduce((prev: G[], approve: G) => {
             const _protector = protector.protectorArray?.find(
@@ -172,10 +167,25 @@ export const useHebaoMain = <
         guardianConfig,
       });
     }
-  };
+  }, [account.accAddress, account.apiKey, chainId, clearOneItem]);
+
   React.useEffect(() => {
     if (account.accAddress && accountStatus === SagaStatus.UNSET) {
       loadData();
+      LoopringAPI.walletAPI
+        ?.getWalletType({
+          wallet: account.accAddress,
+        })
+        .then(({ walletType }) => {
+          if (walletType?.isContract) {
+            setIsContractAddress(true);
+          } else {
+            setIsContractAddress(false);
+          }
+        })
+        .catch(() => {
+          setIsContractAddress(true);
+        });
     }
   }, [accountStatus]);
   return {
@@ -186,6 +196,8 @@ export const useHebaoMain = <
     openHebao,
     operationLogList,
     setOpenHebao,
+    isLoading,
+    setIsLoading,
     loadData,
   };
 };
