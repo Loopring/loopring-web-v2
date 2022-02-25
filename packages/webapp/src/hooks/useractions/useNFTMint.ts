@@ -57,12 +57,16 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMint } = useOpenModals();
   const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>);
-  const tokenAddress =
-    LoopringAPI.nftAPI?.computeNFTAddress({
-      nftOwner: account.accAddress,
-      nftFactory: sdk.NFTFactory[chainId],
-      nftBaseUri: "",
-    }).tokenAddress || "";
+  const [tokenAddress] = React.useState(() => {
+    return (
+      LoopringAPI.nftAPI?.computeNFTAddress({
+        nftOwner: account.accAddress,
+        nftFactory: sdk.NFTFactory[chainId],
+        nftBaseUri: "",
+      }).tokenAddress || ""
+    );
+  });
+
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
       tokenAddress: tokenAddress,
@@ -249,6 +253,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
           nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.nftIdView);
           shouldUpdate = {
             nftId,
+            // nftIdView: data.nftIdView,
             ...shouldUpdate,
           };
           setIsAvaiableId(true);
@@ -298,6 +303,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
           }
         }
       } else if (!data.nftIdView) {
+        setIsAvaiableId(false);
         shouldUpdate = {
           nftId: "",
         };

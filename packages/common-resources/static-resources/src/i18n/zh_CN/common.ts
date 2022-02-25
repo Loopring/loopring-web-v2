@@ -197,10 +197,9 @@ export default {
   labelActivatedAccountNotSupport:
     "We apologize, loopring app does not support your address currently.",
   labelProcessing: "请稍等片刻",
-  labelMetaMaskProcessing: "MetaMask正在连接路印钱包",
-  labelMetaMaskProcessDescribe:
-    "请在MetaMask的弹出窗口内点击确定按钮。 如果MetaMask插件没有主动弹出窗口, 请在浏览器工具栏中点击 <1></1> 图标。",
-  labelWalletConnectProcessing: "WalletConnect正在连接路印钱包",
+  labelProviderProcessing: "{{name}}正在连接路印钱包",
+  labelProviderCommonProcessDescribe:
+    "请在{{name}}的弹出窗口内点击确定按钮。 如果{{name}}插件没有主动弹出窗口, 请在浏览器工具栏中点击 <1></1> 图标。",
   labelWalletConnectProcessDescribe:
     "正在等待WalletConnect确认相关信息，请耐心等待片刻。",
   labelWalletConnectQRCode:
@@ -247,6 +246,8 @@ export default {
     "路印暂不支持您当前登入的网络，\n请在{{connectName}}切换网络",
   describeTitleNotActive: "充值钱包, 激活账户, \n开始二层之旅.",
   describeTitleConnectToWallet: "点击按钮，连接路印钱包，\n开始二层之旅.",
+  describeWhatIsGuardian: "what is Loopring guardian!",
+  describeTitleConnectToWalletAsGuardian: "点击按钮，连接路印钱包，作为守护人",
   describeTitleLocked: "已连接您的钱包，\n点击解锁后查看账户信息",
   labelLiquidityPageTitle: "AMM 资金池",
   labelMinReceive: "最少接收量",
@@ -532,7 +533,9 @@ export default {
   labelWalletToWallet:
     "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
   labelWalletAddAsGuardian: "Add as a Guardian",
+  labelWalletInputGuardianCode: "Input Guardian code",
   labelWalletScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelWalletInputGuardianCodeDes: "Input Guardian cod",
   labelWalletGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
   labelUnknown: "unknown",

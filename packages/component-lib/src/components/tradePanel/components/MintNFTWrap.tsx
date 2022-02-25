@@ -20,7 +20,7 @@ import {
   PopoverPure,
   TextField,
   TGItemData,
-  ToggleButtonGroup,
+  // ToggleButtonGroup,
 } from "../../basic-lib";
 import {
   DropdownIconStyled,
@@ -53,12 +53,12 @@ const NFT_TYPE: TGItemData[] = [
     label: "ERC1155",
     disabled: false,
   },
-  {
-    value: NFTType.ERC721,
-    key: "ERC721",
-    label: "ERC721", // after 18n
-    disabled: true,
-  },
+  // {
+  //   value: NFTType.ERC721,
+  //   key: "ERC721",
+  //   label: "ERC721", // after 18n
+  //   disabled: true,
+  // },
 ];
 export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   disabled,
@@ -339,29 +339,44 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             <Box>
               <Typography
                 color={"textSecondary"}
-                marginBottom={1}
-                variant={"body2"}
+                marginBottom={2}
+                variant={"body1"}
+                display={"flex"}
+                flexDirection={"column"}
+                whiteSpace={"pre-line"}
+                maxWidth={240}
               >
-                {t("labelNFTType")}
+                {t("labelNFTName") +
+                  " " +
+                  (tradeData.nftId
+                    ? tradeData.name ?? t("labelUnknown").toUpperCase()
+                    : EmptyValueTag)}
               </Typography>
-              <ToggleButtonGroup
-                exclusive
-                fullWidth
-                {...{
-                  data: NFT_TYPE,
-                  value: tradeData?.nftType ?? 0,
-                }}
-                onChange={(_e, value) => {
-                  _handleOnNFTDataChange({ nftType: value } as T);
-                }}
-                size={"medium"}
-              />
+              <Typography
+                color={"textSecondary"}
+                marginBottom={2}
+                variant={"body1"}
+              >
+                {t("labelNFTType") + " "} {NFT_TYPE[0].label}
+              </Typography>
+
+              {/*<ToggleButtonGroup*/}
+              {/*  exclusive*/}
+              {/*  fullWidth*/}
+              {/*  {...{*/}
+              {/*    data: NFT_TYPE,*/}
+              {/*    value: tradeData?.nftType ?? 0,*/}
+              {/*  }}*/}
+              {/*  onChange={(_e, value) => {*/}
+              {/*    _handleOnNFTDataChange({ nftType: value } as T);*/}
+              {/*  }}*/}
+              {/*  size={"medium"}*/}
+              {/*/>*/}
             </Box>
             <Box
-              marginTop={2}
               display={"flex"}
               alignItems={"center"}
-              justifyContent={"center"}
+              justifyContent={"flex-start"}
             >
               <NFTInput
                 {...({ t } as any)}

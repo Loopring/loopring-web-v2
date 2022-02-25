@@ -4,6 +4,7 @@ import {
   ButtonComponentsMap,
   fnType,
   headerMenuData,
+  headerGuardianMenuData,
   headerToolBarData as _initHeaderToolBarData,
 } from "@loopring-web/common-resources";
 
@@ -90,6 +91,7 @@ export const useHeader = () => {
   return {
     headerToolBarData,
     headerMenuData,
+    headerGuardianMenuData,
     account,
     notifyMap,
   };

@@ -160,11 +160,16 @@ export const ErrorMap = {
     messageKey: "NTF_ID_ENCODE_ERROR",
     options: {},
   },
+  PROVIDER_ERROR: {
+    id: "PROVIDER_ERROR",
+    messageKey: "errorDisableOtherWalletForCurrent",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
-  ERROR_PROVIDER_ERROR = 700002,
-  ERROR_PROVIDER_ERROR_Unknown = 700003,
+  PROVIDER_ERROR = 700002,
+  PROVIDER_ERROR_Unknown = 700003,
 }
 export type ErrorObject = {
   from?: string;

@@ -12,6 +12,7 @@
     "@walletconnect/client": "^1.6.0",
     "@walletconnect/qrcode-modal": "^1.6.0",
     "@walletconnect/web3-provider": "^1.6.0",
+    "walletlink": "^2.5.0",
     "react": "^17.0.2",
     "react-redux": "^7.2.4",
     "redux-saga": "^1.1.3",

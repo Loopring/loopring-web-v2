@@ -230,11 +230,8 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                   >
                     Already have a wallet?
                   </Typography>
-                  <LinkStyle
-                    href={"https://security.loopring.io"}
-                    variant={"body1"}
-                  >
-                    Manage Security
+                  <LinkStyle href={"./#/guardian"} variant={"body1"}>
+                    {t("labelGoGuardian")}
                   </LinkStyle>
                 </Box>
               </Box>

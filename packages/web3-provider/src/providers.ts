@@ -8,6 +8,11 @@ import {
   MetaMaskSubscribe,
   MetaMaskUnsubscribe,
 } from "./metamask";
+import {
+  WalletLinkProvide,
+  WalletLinkSubscribe,
+  WalletLinkUnsubscribe,
+} from "./coinbase";
 import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -28,6 +33,17 @@ export class ConnectProvides {
     this._provideName = ConnectProviders.MetaMask;
     this.clearProviderSubscribe();
     const obj = await MetaMaskProvide();
+    if (obj) {
+      this.usedProvide = obj.provider;
+      this.usedWeb3 = obj.web3;
+    }
+    this.subScribe();
+  };
+
+  public WalletLink = async () => {
+    this._provideName = ConnectProviders.WalletLink;
+    this.clearProviderSubscribe();
+    const obj = await WalletLinkProvide();
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -71,6 +87,11 @@ export class ConnectProvides {
         delete this.usedProvide;
         delete this.usedWeb3;
         break;
+      case ConnectProviders.WalletLink:
+        await WalletLinkUnsubscribe(this.usedProvide);
+        delete this.usedProvide;
+        delete this.usedWeb3;
+        break;
     }
 
     return;
@@ -87,6 +108,9 @@ export class ConnectProvides {
         break;
       case ConnectProviders.MetaMask:
         MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+        break;
+      case ConnectProviders.WalletLink:
+        WalletLinkSubscribe(this.usedProvide, this.usedWeb3 as Web3);
         break;
     }
   };

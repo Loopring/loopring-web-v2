@@ -14,8 +14,8 @@ export default {
   errorWrongBalance: "Insufficient balance",
   errorMinimumOrder: "Trade amount is minimum",
   errorMaximumOrder: "Trade amount is maximum",
-  errorOnFrozen: "Some of your assets are frozen, please try again later!",
-  errorAboutFee: "Fee token is not enough or incorrect",
+  errorOnFrozen: "Some of your assets is freeze, please try again later!",
+  errorAboutFee: "Fee token is not Enough or wrong",
   errorProviderError:
     "Global ethereum is not {{name}}, Please disable other Wallet Plugin",
   errorOnStorageId: "Error on wrong StorageId",
@@ -28,4 +28,6 @@ export default {
   errorOnRate: "Error on submit rate value",
   errorForExistOrder: "Order is not exist",
   errorOrderExpired: "Order is Expired",
+  errorDisableOtherWalletForCurrent:
+    "Global ethereum is not {{name}}, Please disable other Wallet Plugin",
 };

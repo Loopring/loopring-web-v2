@@ -5,12 +5,13 @@ import {
   i18n,
   myLog,
   SagaStatus,
-  subMenuHebao,
+  subMenuGuardian,
 } from "@loopring-web/common-resources";
-import { Box, Typography } from "@mui/material";
+import { Box, Link, Typography } from "@mui/material";
 import {
   Button,
   GuardianStep,
+  ModalQRCode,
   setShowConnect,
   SubMenu,
   SubMenuList,
@@ -24,7 +25,7 @@ import {
 } from "../../layouts/connectStatusCallback";
 import store from "../../stores";
 
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
@@ -37,6 +38,7 @@ const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
     const { status: accountStatus, account } = useAccount();
     const [label, setLabel] = React.useState(undefined);
     const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
+
     React.useEffect(() => {
       if (accountStatus === SagaStatus.UNSET) {
         setLabel(accountStaticCallBack(_btnLabel));
@@ -67,6 +69,27 @@ export const GuardianPage = withTranslation(["common"])(
   ({ t, ...rest }: WithTranslation) => {
     const { account } = useAccount();
     let match = useRouteMatch("/guardian/:item");
+    const [openQRCode, setOpenQRCode] = React.useState(false);
+    const onOpenAdd = React.useCallback(() => {
+      setOpenQRCode(true);
+    }, []);
+    const description = () => (
+      <Typography
+        marginTop={2}
+        component={"div"}
+        textAlign={"center"}
+        variant={"body2"}
+      >
+        <Typography
+          color={"var(--color-text-secondary)"}
+          component={"p"}
+          variant={"inherit"}
+        >
+          {account?.accAddress}
+        </Typography>
+      </Typography>
+    );
+    const history = useHistory();
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
     const {
@@ -101,6 +124,7 @@ export const GuardianPage = withTranslation(["common"])(
         case "guardian-validation-info":
           return !isContractAddress ? (
             <WalletValidationInfo
+              onOpenAdd={onOpenAdd}
               {...{ guardiansList, guardianConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
               loadData={loadData}
@@ -130,6 +154,7 @@ export const GuardianPage = withTranslation(["common"])(
         default:
           return !isContractAddress ? (
             <WalletProtector
+              onOpenAdd={onOpenAdd}
               protectList={protectList}
               guardianConfig={guardianConfig}
               loadData={loadData}
@@ -163,9 +188,21 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
-                {t("describeTitleConnectToWallet")}
+              <Typography marginTop={3} variant={"h1"} textAlign={"center"}>
+                {t("describeTitleConnectToWalletAsGuardian")}
               </Typography>
+
+              <Link
+                marginY={2}
+                variant={"body1"}
+                textAlign={"center"}
+                color={"textSecondary"}
+                onClick={() =>
+                  window.open("./#/document/walletdesign_en.md", "_blank")
+                }
+              >
+                {t("describeWhatIsGuardian")}
+              </Link>
               <BtnConnect />
             </Box>
           );
@@ -188,7 +225,7 @@ export const GuardianPage = withTranslation(["common"])(
                 <SubMenu>
                   <SubMenuList
                     selected={selected}
-                    subMenu={subMenuHebao as any}
+                    subMenu={subMenuGuardian as any}
                   />
                 </SubMenu>
               </Box>
@@ -231,6 +268,34 @@ export const GuardianPage = withTranslation(["common"])(
 
     return (
       <>
+        <ModalQRCode
+          open={openQRCode}
+          className={"guardianPop"}
+          onClose={() => setOpenQRCode(false)}
+          title={
+            <Typography component={"p"} textAlign={"center"} marginBottom={1}>
+              <Typography
+                color={"var(--color-text-primary)"}
+                component={"p"}
+                variant={"h4"}
+                marginBottom={2}
+              >
+                {t("labelWalletAddAsGuardian")}
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                component={"p"}
+                variant={"body1"}
+                marginBottom={2}
+              >
+                {t("labelWalletScanQRCode")}
+              </Typography>
+            </Typography>
+          }
+          size={260}
+          description={description()}
+          url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
+        />
         <ModalLock
           options={openHebao.options ?? {}}
           {...{

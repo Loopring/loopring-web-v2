@@ -275,9 +275,11 @@ export const WalletProtector = <T extends sdk.Protector>({
   guardianConfig,
   handleOpenModal,
   loadData,
+  onOpenAdd,
 }: // isContractAddress,
 {
   protectList: T[];
+  onOpenAdd: () => void;
   guardianConfig: any;
   loadData: () => Promise<void>;
   handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
@@ -285,64 +287,14 @@ export const WalletProtector = <T extends sdk.Protector>({
 }) => {
   const { account } = useAccount();
   const { t } = useTranslation(["common"]);
-  const [openQRCode, setOpenQRCode] = React.useState(false);
   const { onLock } = useHebaoProtector({
     guardianConfig,
     handleOpenModal,
     loadData,
   });
-  const description = () => (
-    <Typography
-      marginTop={2}
-      component={"div"}
-      textAlign={"center"}
-      variant={"body1"}
-    >
-      <Typography
-        color={"var(--color-text-secondary)"}
-        component={"p"}
-        variant={"inherit"}
-      >
-        {account?.accAddress}
-      </Typography>
-      <Typography
-        color={"var(--color-text-third)"}
-        component={"p"}
-        variant={"body2"}
-      >
-        {account?.connectName}
-      </Typography>
-    </Typography>
-  );
+
   return (
     <>
-      <ModalQRCode
-        open={openQRCode}
-        className={"guardianPop"}
-        onClose={() => setOpenQRCode(false)}
-        title={() => (
-          <Typography component={"p"} textAlign={"center"} marginBottom={1}>
-            <Typography
-              color={"var(--color-text-primary)"}
-              component={"p"}
-              variant={"h5"}
-            >
-              {t("labelWalletAddAsGuardian")}
-            </Typography>
-            <Typography
-              color={"var(--color-text-secondary)"}
-              component={"p"}
-              variant={"body1"}
-            >
-              {t("labelWalletScanQRCode")}
-            </Typography>
-          </Typography>
-        )}
-        size={240}
-        description={description()}
-        url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
-      />
-
       <Box
         paddingTop={3}
         borderRadius={2}
@@ -368,7 +320,7 @@ export const WalletProtector = <T extends sdk.Protector>({
               startIcon={
                 <SecurityIcon htmlColor={"var(--color-text-button)"} />
               }
-              onClick={() => setOpenQRCode(true)}
+              onClick={() => onOpenAdd()}
             >
               {t("labelAddProtector")}
             </Button>

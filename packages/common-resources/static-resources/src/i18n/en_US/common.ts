@@ -199,10 +199,9 @@ export default {
   labelActivatedAccountNotSupport:
     "Loopring does not currently support your address. We apologize for the inconvenience.",
   labelProcessing: "Processing",
-  labelMetaMaskProcessing: "Connect Wallet with MetaMask...",
-  labelMetaMaskProcessDescribe:
-    "Please click ‘Approve’ button on MetaMask popup window. If MetaMask dialog is dismissed, please manually click <1></1> on your browser toolbar.",
-  labelWalletConnectProcessing: "Connect Wallet with WalletConnect...",
+  labelProviderProcessing: "Connect Wallet with {{name}}...",
+  labelProviderCommonProcessDescribe:
+    "Please click ‘Approve’ button on {{name}} popup window. If {{name}} dialog is dismissed, please manually click <5></5> on your browser toolbar.",
   labelWalletConnectProcessDescribe:
     "Please wait for WalletConnect provider to confirm processing",
   labelWalletConnectQRCode:
@@ -255,6 +254,9 @@ export default {
   describeTitleNotActive:
     "Connect your wallet,\n make a deposit, and enjoy Loopring L2.",
   describeTitleConnectToWallet: "Connect wallet to start",
+  describeWhatIsGuardian: "What is Loopring guardian",
+  describeTitleConnectToWalletAsGuardian:
+    "Connect wallet to be a wallet guardian!",
   describeTitleLocked: "Unlock your account to check your assets.",
   labelLiquidityPageTitle: "AMM Pools",
   labelMinReceive: "Minimum Received Amount",
@@ -546,7 +548,10 @@ export default {
   labelWalletToWallet:
     "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
   labelWalletAddAsGuardian: "Add as a Guardian",
+  labelWalletInputGuardianCode: "Input 6 digital Code and Approve",
   labelWalletScanQRCode: "Scan the QR code with your Loopring Wallet",
+  labelWalletInputGuardianCodeDes:
+    "The 6 digital Code already send to your wallet, Please input it and submit approve",
   labelWalletGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
   labelUnknown: "unknown",

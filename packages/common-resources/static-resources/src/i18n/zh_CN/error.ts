@@ -27,4 +27,6 @@ export default {
   errorOnRate: "Error on submit rate value",
   errorForExistOrder: "Order is not exist",
   errorOrderExpired: "Order is Expired",
+  errorDisableOtherWalletForCurrent:
+    "Global ethereum is not {{name}}, Please disable other Wallet Plugin",
 };

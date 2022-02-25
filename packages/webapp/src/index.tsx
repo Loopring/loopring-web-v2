@@ -3,12 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store, { persistor } from "stores";
-import {
-  getTheme,
-  i18n,
-  provider,
-  ProviderComposer,
-} from "@loopring-web/common-resources";
+import { getTheme, i18n } from "@loopring-web/common-resources";
 import { ThemeProvider as MuThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/lab";
 import MomentUtils from "@mui/lab/AdapterMoment";
@@ -17,7 +12,11 @@ import { ThemeProvider } from "@emotion/react";
 
 import { I18nextProvider } from "react-i18next";
 import { PersistGate } from "redux-persist/integration/react";
-import { useSettings } from "@loopring-web/component-lib";
+import {
+  provider,
+  ProviderComposer,
+  useSettings,
+} from "@loopring-web/component-lib";
 import React, { Provider as TProvider } from "react";
 import { TimeoutCheckProvider } from "TimeoutCheckProvider";
 

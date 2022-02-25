@@ -1,8 +1,8 @@
 // @ts-nocheck
-
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   AccountStep,
+  CommonConnectInProgress,
   ConnectFailed,
   ConnectSuccess,
   InformationForCoinBase,
@@ -52,11 +52,9 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       account,
       updateAccount,
       setShouldShow,
-      resetAccount,
-      statusUnset: statusAccountUnset,
       status: accountStatus,
     } = useAccount();
-    const { updateSystem, chainId: _chainId, exchangeInfo } = useSystem();
+    const { updateSystem, chainId: _chainId } = useSystem();
     const {
       modals: { isShowConnect },
       setShowConnect,
@@ -68,6 +66,27 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     );
 
     const [stateCheck, setStateCheck] = React.useState<boolean>(false);
+    const [connectProvider, setConnectProvider] =
+      React.useState<boolean>(false);
+    const walletLinkCallback = React.useCallback(async () => {
+      updateAccount({ connectName: ConnectProviders.WalletLink });
+      await connectProvides.WalletLink();
+
+      // statusAccountUnset();
+      if (connectProvides.usedProvide) {
+        let chainId: ChainId = Number(
+          await connectProvides.usedWeb3?.eth.getChainId()
+        );
+        chainId =
+          chainId && chainId === ChainId.GOERLI
+            ? (chainId as ChainId)
+            : ChainId.MAINNET;
+        if (chainId !== _chainId) {
+          updateSystem({ chainId });
+        }
+        return;
+      }
+    }, [_chainId]);
     const metaMaskCallback = React.useCallback(async () => {
       updateAccount({ connectName: ConnectProviders.MetaMask });
       await connectProvides.MetaMask();
@@ -167,9 +186,10 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 setIsOpenUnknownProvider(true);
               }
               walletServices.sendDisconnect("", "should new provider");
+              setConnectProvider(DefaultGatewayList[0].key);
               setShowConnect({
                 isShow: true,
-                step: WalletConnectStep.MetaMaskProcessing,
+                step: WalletConnectStep.CommonProcessing,
               });
               setProcessingCallback({ callback: metaMaskCallback });
               setStateCheck(true);
@@ -182,17 +202,38 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         ...DefaultGatewayList[1],
         handleSelect: React.useCallback(
           async (event, flag?) => {
-            walletServices.sendDisconnect("", "should new provider");
-            setShowConnect({
-              isShow: true,
-              step: WalletConnectStep.WalletConnectProcessing,
-            });
-            setProcessingCallback({ callback: walletConnectCallback });
-            setStateCheck(true);
+            if (!flag && account.connectName === DefaultGatewayList[1].key) {
+              setShowConnect({ isShow: false });
+            } else {
+              walletServices.sendDisconnect("", "should new provider");
+              setConnectProvider(DefaultGatewayList[1].key);
+              setShowConnect({
+                isShow: true,
+                step: WalletConnectStep.CommonProcessing,
+              });
+              setProcessingCallback({ callback: walletConnectCallback });
+              setStateCheck(true);
+            }
           },
           [account]
         ),
       },
+      // {
+      //   ...DefaultGatewayList[2],
+      //   handleSelect: React.useCallback(
+      //     async (event, flag?) => {
+      //       walletServices.sendDisconnect("", "should new provider");
+      //       setShowConnect({
+      //         isShow: true,
+      //         step: WalletConnectStep.WalletConnectProcessing,
+      //       });
+      //       setConnectProvider(DefaultGatewayList[2].key);
+      //       setProcessingCallback({ callback: walletLinkCallback });
+      //       setStateCheck(true);
+      //     },
+      //     [account]
+      //   ),
+      // },
     ];
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
@@ -244,8 +285,12 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           ),
           onBack: providerBack,
         },
-        [WalletConnectStep.MetaMaskProcessing]: {
-          view: <MetaMaskConnectInProgress {...{ t, ...rest }} />,
+        [WalletConnectStep.CommonProcessing]: {
+          view: (
+            <CommonConnectInProgress
+              {...{ t, ...rest, providerName: connectProvider }}
+            />
+          ),
         },
         [WalletConnectStep.WalletConnectProcessing]: {
           view: <WalletConnectConnectInProgress {...{ t, ...rest }} />,
@@ -276,7 +321,12 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         [WalletConnectStep.FailedConnect]: {
           view: (
             <ConnectFailed
-              {...{ t, ...rest }}
+              {...{
+                t,
+                error: isShowConnect.error,
+                errorOptions: { name: connectProvider },
+                ...rest,
+              }}
               btnInfo={{ btnTxt: "labelRetry", callback: onRetry }}
             />
           ),
@@ -286,7 +336,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           },
         },
       });
-    }, [qrCodeUrl, account, t, rest, onClose]);
+    }, [qrCodeUrl, isShowConnect.error, account, t, rest, onClose]);
     return (
       <>
         <InformationForCoinBase

@@ -89,7 +89,7 @@ export enum NavListIndex {
 export const orderDisableList = ["Liquidity", "Markets", "Trading", "Mining"];
 export const ammDisableList = ["Liquidity"];
 
-export let headerMenuData: Array<HeaderMenuItemInterface> = [
+export const headerMenuData: Array<HeaderMenuItemInterface> = [
   {
     label: {
       id: "Markets",
@@ -128,6 +128,25 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelLayer2",
     },
     router: { path: "/layer2" },
+    status: HeaderMenuTabStatus.default,
+  },
+];
+
+export const headerGuardianMenuData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: "exchange",
+      i18nKey: "labelZkRollupLayer2",
+    },
+    router: { path: "/" },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: "wallet",
+      i18nKey: "labelWallet",
+    },
+    router: { path: "/wallet" },
     status: HeaderMenuTabStatus.default,
   },
 ];
@@ -196,7 +215,7 @@ export const subMenuLayer2 = {
     },
   ],
 };
-export const subMenuHebao = {
+export const subMenuGuardian = {
   assetsGroup: [
     {
       icon: AssetsIcon,
@@ -226,4 +245,5 @@ export const subMenuHebao = {
 };
 
 export const headerRoot = "Landing-page";
+
 export const SoursURL = "https://static.loopring.io/assets/";

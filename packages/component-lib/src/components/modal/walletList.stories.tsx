@@ -142,7 +142,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
           />
         ),
       },
-      [WalletConnectStep.MetaMaskProcessing]: {
+      [WalletConnectStep.CommonProcessing]: {
         view: <MetaMaskConnectInProgress {...rest} />,
       },
       [WalletConnectStep.WalletConnectProcessing]: {

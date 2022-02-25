@@ -155,8 +155,12 @@ export function escapeRegExp(string: string): string {
 }
 
 export async function isContract(web3: any, address: string) {
-  const code = await web3.eth.getCode(address);
-  return code && code.length > 2;
+  try {
+    const code = await web3.eth.getCode(address);
+    return code && code.length > 2;
+  } catch (error) {
+    myLog(error);
+  }
 }
 
 export interface AddrCheckResult {

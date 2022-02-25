@@ -3,7 +3,6 @@ import React from "react";
 import { Box, Container } from "@mui/material";
 import Header from "layouts/header";
 import { ModalGroup } from "../modal";
-import { LAYOUT } from "../defs/common_defs";
 import { QuotePage } from "pages/QuotePage";
 import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
@@ -19,11 +18,16 @@ import {
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import { Footer, useSettings } from "@loopring-web/component-lib";
+import {
+  Footer,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { ReportPage } from "pages/ReportPage";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
+import { useAccountModal } from "../hooks/useractions/useAccountModal";
 
 const ContentWrap = ({
   children,
@@ -66,6 +70,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
   const location = useLocation();
+  const { setShowAccount } = useOpenModals();
   const query = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (query.has("theme")) {
@@ -276,7 +281,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
         />
       </Switch>
-      <ModalGroup />
+      <ModalGroup
+        onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
+      />
       {query && query.has("nofooter") ? <></> : <Footer />}
     </>
   );
