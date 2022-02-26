@@ -11,6 +11,7 @@ const initialState: SystemStatus = {
   fiatPrices: {},
   gasPrice: -1,
   forex: 6.5,
+  isMobile: false,
   __timer__: -1,
   status: "PENDING",
   errorMessage: null,
@@ -68,11 +69,16 @@ const systemSlice: Slice<SystemStatus> = createSlice({
         allowTrade,
         exchangeInfo,
         __timer__,
+        isMobile,
         etherscanBaseUrl,
       } = action.payload;
+
+      state.isMobile = isMobile ?? false;
+
       if (env) {
         state.env = env;
       }
+
       if (allowTrade) {
         state.allowTrade = allowTrade;
       }
