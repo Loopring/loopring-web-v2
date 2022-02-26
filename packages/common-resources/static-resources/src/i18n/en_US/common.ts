@@ -531,7 +531,8 @@ export default {
   labelNFTMintNoMetaBtn: "No Metadata",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
-  nftMintDescription: "Mint NFT",
+  nftMintDescription:
+    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder populates the Name\n and also the image displays.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "In Progress",

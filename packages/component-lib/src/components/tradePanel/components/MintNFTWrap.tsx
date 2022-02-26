@@ -151,8 +151,10 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             whiteSpace={"pre-line"}
           >
             <Trans i18nKey={description ? description : "nftMintDescription"}>
-              Once your nftMint is confirmed on Ethereum, it will be added to
-              your balance within 2 minutes.
+              Paste in the CID that you obtained from uploading the
+              metadata.json folder (point 11 above) - if successful, the data
+              from the metadata.json file you created contained within the
+              folder populates the Name and also the image displays.
             </Trans>
           </Typography>
         </PopoverPure>
@@ -174,10 +176,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             color={"textSecondary"}
             variant={"body2"}
             onClick={() => {
-              window.open(
-                "https://docs.ipfs.io/concepts/content-addressing/#identifier-formats",
-                "_blank"
-              );
+              window.open("./#/document/mint_nft.md", "_blank");
             }}
           >
             <Trans i18nKey={"labelNFTCid"}>
