@@ -364,7 +364,7 @@ export const WalletProtector = <T extends sdk.Protector>({
           {!!protectList.length ? (
             <>
               {protectList.map((item) => (
-                <Grid item xs={12} md={6} lg={4} key={item.address}>
+                <Grid item xs={12} md={6} lg={6} key={item.address}>
                   <HebaoProtectItem
                     {...{ ...item }}
                     onClick={() => {

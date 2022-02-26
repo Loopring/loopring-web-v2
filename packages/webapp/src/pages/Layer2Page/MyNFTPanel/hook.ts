@@ -4,12 +4,10 @@ import {
   NFTWholeINFO,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { useAccount } from "stores/account";
 import React, { useState } from "react";
 import { LoopringAPI } from "api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "stores/system";
-import { useWalletLayer2 } from "stores/walletLayer2";
 import {
   ChainId,
   LOOPRING_URLs,

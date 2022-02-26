@@ -7,6 +7,7 @@ import {
   AccountStatus,
   fnType,
   i18n,
+  LoadingIcon,
   myLog,
   SagaStatus,
   SoursURL,
@@ -82,7 +83,11 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
           accountStaticCallBack(_btnClickMap, []);
         }}
       >
-        {t(label)}
+        {label !== "" ? (
+          t(label)
+        ) : (
+          <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
+        )}
       </Button>
     );
   }
