@@ -372,7 +372,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
           >
             {t("labelCommonList")}
             <RefreshIcon
-              style={{ marginLeft: 8, cursor: "indexpointer" }}
+              style={{ marginLeft: 8, cursor: "pointer" }}
               color={"inherit"}
               onClick={loadData}
             />
@@ -412,7 +412,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
                     item
                     xs={12}
                     md={6}
-                    lg={4}
+                    lg={6}
                     key={guardian.address + index}
                   >
                     <HebaoGuardianItem
