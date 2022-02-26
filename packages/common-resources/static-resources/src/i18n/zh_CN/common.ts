@@ -517,7 +517,7 @@ export default {
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:
-    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder populates the Name\n and also the image displays.",
+    "Mint your own Counter Factual NFT on the Loopring L2 Web DEX!",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "In Progress",
