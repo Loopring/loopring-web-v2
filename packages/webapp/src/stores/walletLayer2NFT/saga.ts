@@ -7,7 +7,7 @@ import {
 import { LoopringAPI } from "api_wrapper";
 import store from "../index";
 
-export const NFTLimit = 24;
+export const NFTLimit = 12;
 
 const getWalletLayer2NFTBalance = async <R extends { [key: string]: any }>({
   offset,
