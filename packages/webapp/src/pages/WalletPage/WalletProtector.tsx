@@ -126,7 +126,6 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           sendByMetaMask: true,
         };
         myLog("LockHebaoHebaoParam params", params);
-        // debugger;
         try {
           const { error } = await LoopringAPI.walletAPI.lockHebaoWallet(params);
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];

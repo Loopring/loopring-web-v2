@@ -1,4 +1,7 @@
 {
   "activities": [],
-  "notifications": []
+  "notifications": [],
+  "prev": {
+      "endDate": 1649980800000
+  }
 }

@@ -203,9 +203,9 @@ export const TransferWrap = <
   return (
     <Grid
       className={walletMap ? "transfer-wrap" : "loading"}
+      container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
-      container
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
@@ -362,7 +362,9 @@ export const TransferWrap = <
                   alignSelf={"stretch"}
                   position={"relative"}
                 >
-                  {t("labelTransferSameAddress")}
+                  {t("labelInvalidisSameAddress", {
+                    wat: t("labelTransfer").toLowerCase(),
+                  })}
                 </Typography>
               ) : (
                 <>

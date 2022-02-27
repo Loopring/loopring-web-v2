@@ -10,6 +10,7 @@ import {
   HelpIcon,
   IPFS_META_URL,
   LoadingIcon,
+  // MINT_LIMIT,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
@@ -83,9 +84,8 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
     popupId: `popupId-nftMint`,
   });
   const inputBtnRef = React.useRef();
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "down"
-  );
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("down");
   const getDisabled = React.useMemo(() => {
     return !!(disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED);
   }, [disabled, nftMintBtnStatus]);
@@ -105,10 +105,10 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   return (
     <GridStyle
       className={walletMap ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       paddingBottom={3}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
@@ -151,10 +151,10 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             whiteSpace={"pre-line"}
           >
             <Trans i18nKey={description ? description : "nftMintDescription"}>
-              Paste in the CID that you obtained from uploading the
-              metadata.json folder (point 11 above) - if successful, the data
-              from the metadata.json file you created contained within the
-              folder populates the Name and also the image displays.
+              Paste in the CID that you obtained from uploading the metadata
+              Information file (point 11 above) - if successful, the data from
+              the metadata Information you created contained within the folder
+              populates the Name and also the image displays.
             </Trans>
           </Typography>
         </PopoverPure>
@@ -180,8 +180,8 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             }}
           >
             <Trans i18nKey={"labelNFTCid"}>
-              IPFS CID: (Which storage a metadata.json as an unique Token ID for
-              NFT)
+              IPFS CID: (Which storage a metadata Information as an unique Token
+              ID for NFT)
               <HelpIcon
                 style={{ cursor: "pointer", marginLeft: "4px" }}
                 fontSize={"medium"}
@@ -380,9 +380,9 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
               <NFTInput
                 {...({ t } as any)}
                 isThumb={false}
-                isBalanceLimit={false}
+                isBalanceLimit={true}
                 inputNFTDefaultProps={{
-                  subLabel: "",
+                  subLabel: t("tokenNFTMaxMINT"),
                   size: InputSize.small,
                   label: t("labelNFTMintInputTitle"),
                 }}
@@ -397,7 +397,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
                 tradeData={
                   {
                     ...tradeData,
-                    belong: tradeData?.tokenAddress ?? undefined,
+                    belong: tradeData?.tokenAddress ?? "NFT",
                   } as any
                 }
                 walletMap={walletMap}

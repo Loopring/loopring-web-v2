@@ -10,6 +10,7 @@ import React from "react";
 import { useFocusRef } from "../hooks";
 import { CoinWrap, IInput, IWrap } from "./style";
 import { CoinIcon } from "./Default";
+import { useSettings } from "../../../../stores";
 
 function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   {
@@ -42,6 +43,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const { balance, belong, tradeValue } = (
     inputData ? inputData : {}
   ) as IBData<C>;
+  const { isMobile } = useSettings();
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined
   );
@@ -139,7 +141,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   );
   return (
     <>
-      <IWrap size={size} component={"div"} ref={ref}>
+      <IWrap isMobile={isMobile} size={size} component={"div"} ref={ref}>
         <Grid
           container
           component={"div"}

@@ -6,12 +6,13 @@ import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import { checkErrorInfo } from "hooks/useractions/utils";
 
 import * as sdk from "@loopring-web/loopring-sdk";
+import Web3 from "web3";
 
 export async function unlockAccount() {
   const accoun_old = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
-
+  const { isMobile } = store.getState().settings;
   myLog("unlockAccount account:", accoun_old);
 
   if (
@@ -27,11 +28,50 @@ export async function unlockAccount() {
         owner: accoun_old.accAddress,
       });
       const nonce = account ? account.nonce : accoun_old.nonce;
-      // myLog("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE);
+
+      //TODO: debugger
+      const msg =
+        account.keySeed && account.keySeed !== ""
+          ? account.keySeed
+          : sdk.GlobalAPI.KEY_MESSAGE.replace(
+              "${exchangeAddress}",
+              exchangeInfo.exchangeAddress
+            ).replace("${nonce}", (nonce - 1).toString());
+      console.log("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE, msg);
+
+      await (connectProvides.usedWeb3 as Web3).eth.personal.sign(
+        msg,
+        account.owner,
+        "",
+        async function (err: any, result: any) {
+          if (!err) {
+            console.log(
+              "ecRecover valid before",
+              msg,
+              result,
+              (connectProvides.usedWeb3 as Web3).eth.personal.ecRecover
+            );
+            const valid: any = await (
+              connectProvides.usedWeb3 as Web3
+            ).eth.personal.ecRecover(msg, result);
+            console.log("ecRecover valid", valid);
+            if (valid.result) {
+              return { sig: result };
+            }
+          }
+        }
+      );
+      //TODO: debugger
+
+      console.log(
+        "unlockAccount isMobile, connectName:",
+        isMobile,
+        connectName
+      );
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
-        // exchangeAddress: exchangeInfo.exchangeAddress,
+        // exchangeAddress: exfchangeInfo.exchangeAddress,
         // keyNonce: nonce - 1,
         keySeed:
           account.keySeed && account.keySeed !== ""
@@ -45,8 +85,20 @@ export async function unlockAccount() {
         accountId: account.accountId,
       });
 
-      myLog("unlockAccount eddsaKey:", eddsaKey);
+      console.log(
+        "unlockAccount isMobile, connectName:",
+        isMobile,
+        connectName
+      );
 
+      const walletTypePromise: Promise<{ walletType: any }> =
+        window.ethereum &&
+        connectName === sdk.ConnectorNames.MetaMask &&
+        isMobile
+          ? Promise.resolve({ walletType: undefined })
+          : LoopringAPI.walletAPI.getWalletType({
+              wallet: account.owner,
+            });
       const [
         response,
         // { apiKey, raw_data },
@@ -58,22 +110,21 @@ export async function unlockAccount() {
           },
           eddsaKey.sk
         ),
-        LoopringAPI.walletAPI.getWalletType({
-          wallet: account.owner,
+        walletTypePromise.catch((error) => {
+          console.log(error);
+          return { walletType: undefined };
         }),
       ]);
-
-      myLog("unlockAccount raw_data:", response);
 
       if (
         !response.apiKey &&
         ((response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message)
       ) {
-        myLog("try to sendErrorUnlock....");
+        console.log("try to sendErrorUnlock....");
         accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
-        myLog("try to sendAccountSigned....");
+        console.log("try to sendAccountSigned....");
         accountServices.sendAccountSigned({
           accountId: account.accountId,
           nonce,
@@ -85,7 +136,7 @@ export async function unlockAccount() {
         });
       }
     } catch (e) {
-      myLog("unlockAccount e:", e);
+      console.log("unlockAccount error:", JSON.stringify(e));
 
       const errType = checkErrorInfo(e, true);
       switch (errType) {

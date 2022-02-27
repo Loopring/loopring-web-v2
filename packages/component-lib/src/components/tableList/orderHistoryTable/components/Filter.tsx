@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Grid, MenuItem } from "@mui/material";
+import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from "../../../";
 import { Button } from "../../../basic-lib/btns";
@@ -29,15 +29,6 @@ const StyledTextFiled = styled(TextField)`
   .MuiInputBase-root {
     width: initial;
     max-width: initial;
-  }
-`;
-
-const StyledBtnBox = styled(Box)`
-  display: flex;
-  margin-left: 40%;
-
-  button:first-of-type {
-    margin-right: 8px;
   }
 `;
 
@@ -81,7 +72,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
                 > {FilterOrderTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
             </Grid> */}
-        <Grid item>
+        <Grid item xs={12} lg={4}>
           {/* <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/> */}
           <DateRangePicker
             value={filterDate}
@@ -90,7 +81,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
           />
         </Grid>
-        <Grid item xs={2} minWidth={200}>
+        <Grid item xs={6} lg={2}>
           <StyledTextFiled
             id="table-order-token-types"
             select
@@ -101,7 +92,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {getTokenTypeList().map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
@@ -109,19 +99,16 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
-          <StyledBtnBox>
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={handleReset}
-            >
-              {t("labelFilterReset")}
-            </Button>
-            {/* <Button variant={'contained'} size={'small'} color={'primary'}
-                            onClick={handleSearch}>{t('labelFilterSearch')}</Button> */}
-          </StyledBtnBox>
+        <Grid item xs={6} lg={2}>
+          <Button
+            fullWidth
+            variant={"outlined"}
+            size={"medium"}
+            color={"primary"}
+            onClick={handleReset}
+          >
+            {t("labelFilterReset")}
+          </Button>
         </Grid>
       </Grid>
     );

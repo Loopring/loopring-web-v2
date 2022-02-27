@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getNotify, getNotifyStatus } from "./reducer";
 
-import { getNotification, Notify } from "@loopring-web/common-resources";
+import { getNotification, myLog, Notify } from "@loopring-web/common-resources";
 import store from "../index";
 
 const Lang = {
@@ -13,6 +13,7 @@ const getNotifyApi = async <R extends { [key: string]: any }>(): Promise<{
 }> => {
   const lng = store.getState().settings.language;
   const notifyMap = await getNotification(Lang[lng] as any);
+  myLog("getNotification notifyMap", notifyMap);
   return { notifyMap: notifyMap };
 };
 

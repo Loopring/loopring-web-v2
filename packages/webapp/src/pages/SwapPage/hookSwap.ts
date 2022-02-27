@@ -31,6 +31,7 @@ import {
   SwapType,
   TradeBtnStatus,
   useOpenModals,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
@@ -88,6 +89,7 @@ export const useSwap = <C extends { [key: string]: any }>({
   const { realPair, realMarket } = usePairMatch(path);
   /** get store value **/
   const { amountMap, getAmount } = useAmount();
+  const { isMobile } = useSettings();
   const { account, status: accountStatus } = useAccount();
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
@@ -1178,6 +1180,7 @@ export const useSwap = <C extends { [key: string]: any }>({
     isSwapLoading,
     market,
     toPro,
+    isMobile,
     // buyPrecision,
     // sellPrecision,
   };

@@ -50,6 +50,7 @@ const cssBackground = ({
 </svg>`);
       break;
     case ACTIVITY_TYPE.SPECIAL:
+    default:
       color = theme.colorBase.primary;
       svg =
         encodeURI(`<svg width="102" height="88" viewBox="0 0 102 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
@@ -57,9 +58,6 @@ const cssBackground = ({
 </svg>
 `);
       break;
-    default:
-      color = theme.colorBase.box;
-      svg = "";
   }
   return css`
     &,
@@ -90,12 +88,13 @@ const NotificationListItemStyled = styled(ListItem)<
 
   .MuiListItemText-root {
     margin-top: 0;
-    white-space: pre-line;
   }
   .description {
     text-overflow: ellipsis;
     word-break: break-all;
-    white-space: pre-line;
+    white-space: nowrap;
+    max-width: 320px;
+    min-width: 260px;
   }
   .MuiListItemAvatar-root {
     width: 1em;
@@ -137,7 +136,6 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
           )}
           primaryTypographyProps={{
             component: "p",
-
             variant: "body1",
             color: "textPrimary",
           }}
@@ -173,6 +171,7 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
 export const ListItemActivity = (props: ACTIVITY) => {
   const { type, title, description1, description2, startDate, link } = props;
   const history = useHistory();
+
   if (Date.now() > startDate) {
     return (
       <ListItemActivityStyle

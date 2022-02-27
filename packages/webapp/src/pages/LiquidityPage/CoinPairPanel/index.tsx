@@ -27,15 +27,12 @@ import {
 } from "@mui/material";
 import { AmmPanelView } from "../AmmPanel";
 import styled from "@emotion/styled/";
-import { useCoinPair } from "./hooks";
+import { useAmmPool, useCoinPair } from "./hooks";
 import { StylePaper } from "pages/styled";
-import store from "stores";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { useTicker } from "stores/ticker";
 import { makeTickView } from "hooks/help";
-import { useAmmActivityMap } from "../../../stores/Amm/AmmActivityMap";
 
-//******************** page code ************************//
+//**************useAmmPool****** page code ************************//
 const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
@@ -63,18 +60,24 @@ const applyProps = (index: number) => {
 export const CoinPairPanel = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
-    ammMarketArray,
-    ammTotal,
-    myAmmMarketArray,
-    ammUserTotal,
-    isMyAmmLoading,
-    isRecentLoading,
-    getUserAmmPoolTxs,
-    getRecentAmmPoolTxs,
     ...rest
-  }: WithTranslation & any) => {
-    const { currency } = useSettings();
-    const { tokenPrices } = store.getState().tokenPrices;
+  }: WithTranslation) => {
+    const {
+      ammMarketArray,
+      ammTotal,
+      myAmmMarketArray,
+      ammUserTotal,
+      isMyAmmLoading,
+      isRecentLoading,
+      getUserAmmPoolTxs,
+      getRecentAmmPoolTxs,
+      activityInProgressRules,
+      isMobile,
+      tokenPrices,
+      currency,
+      coinJson,
+      forex,
+    } = useAmmPool();
     const {
       tradeFloat,
       snapShotData,
@@ -84,14 +87,13 @@ export const CoinPairPanel = withTranslation("common")(
       pairHistory,
       stob,
       btos,
+      tickerMap,
     } = useCoinPair();
-    const { tickerMap } = useTicker();
+
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const realMarket = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`;
     const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
     const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
-    const { coinJson } = useSettings();
-    const { forex } = store.getState().system;
     const coinAIcon: any = coinJson[coinPairInfo.myCoinA?.simpleName];
     const coinBIcon: any = coinJson[coinPairInfo.myCoinB?.simpleName];
     const precisionA = coinPairInfo["precisionA"] || undefined;
@@ -105,9 +107,10 @@ export const CoinPairPanel = withTranslation("common")(
       setTabIndex(value);
     }, []);
 
-    const priceCoinADollar = pair.coinAInfo?.simpleName
-      ? tokenPrices[pair.coinAInfo?.simpleName]
-      : 0;
+    const priceCoinADollar =
+      pair.coinAInfo?.simpleName && tokenPrices
+        ? tokenPrices[pair.coinAInfo?.simpleName]
+        : 0;
     const priceCoinAYuan = priceCoinADollar * (forex || 6.5);
     const totalAmountValueCoinA =
       (tickerFloat?.volume || 0) *
@@ -124,354 +127,606 @@ export const CoinPairPanel = withTranslation("common")(
             true,
             { isFait: true, floor: false }
           ));
-    const { activityInProgressRules } = useAmmActivityMap();
 
     return (
       <>
-        <Box flex={1} display={"flex"} flexDirection={"row"}>
-          <Box
-            display={"flex"}
-            flex={1}
-            marginRight={3}
-            alignContent={"stretch"}
-            flexDirection={"column"}
-            flexWrap={"nowrap"}
-          >
-            <Box marginTop={0}>
-              <TradeTitle
-                {...{
-                  baseShow: coinPairInfo.myCoinA?.simpleName,
-                  quoteShow: coinPairInfo.myCoinB?.simpleName,
-                  ...rest,
-                  t,
-                  ...pair,
-                  tradeFloat,
-                  isNew: false,
-                  activityInProgressRules,
-                }}
-              />
-            </Box>
+        <Box
+          flex={1}
+          display={"flex"}
+          flexDirection={!isMobile ? "row" : "column"}
+          alignItems={!isMobile ? "flex-start" : "center"}
+        >
+          {!isMobile && (
             <Box
-              marginTop={3}
               display={"flex"}
+              flex={1}
+              marginRight={3}
+              alignContent={"stretch"}
               flexDirection={"column"}
-              justifyContent={"space-between"}
+              flexWrap={"nowrap"}
             >
-              <Box
-                flex={1}
-                width={"101%"}
-                minHeight={"var(--chart-height)"}
-                height={"var(--chart-height)"}
-                maxHeight={420}
-              >
-                <ScaleAreaChart
-                  type={ChartType.Trend}
-                  data={pairHistory}
-                  extraInfo={pair.coinBInfo?.simpleName}
-                  showXAxis
+              <Box marginTop={0}>
+                <TradeTitle
+                  {...{
+                    baseShow: coinPairInfo.myCoinA?.simpleName,
+                    quoteShow: coinPairInfo.myCoinB?.simpleName,
+                    t,
+                    ...rest,
+                    ...(pair as any),
+                    tradeFloat,
+                    isNew: false,
+                    activityInProgressRules,
+                  }}
                 />
               </Box>
-              <BoxWrapperStyled
-                container
-                className={"MuiPaper-elevation2"}
+
+              <Box
+                marginTop={3}
                 display={"flex"}
-                alignItems={"center"}
+                flexDirection={"column"}
+                justifyContent={"space-between"}
               >
-                <Grid
-                  item
-                  paddingLeft={2}
-                  paddingY={3}
-                  xs={12}
-                  sm={6}
-                  lg={4} /* overflow={'scroll'} */
+                <Box
+                  flex={1}
+                  width={"101%"}
+                  minHeight={"var(--chart-height)"}
+                  height={"var(--chart-height)"}
+                  maxHeight={420}
+                >
+                  <ScaleAreaChart
+                    type={ChartType.Trend}
+                    data={pairHistory}
+                    extraInfo={pair.coinBInfo?.simpleName}
+                    showXAxis
+                  />
+                </Box>
+
+                <BoxWrapperStyled
+                  container
+                  className={"MuiPaper-elevation2"}
                   display={"flex"}
-                  justifyContent={"space-between"}
                   alignItems={"center"}
                 >
-                  <Box>
-                    <Typography
-                      component={"span"}
-                      display={"flex"}
-                      flexDirection={"row"}
-                      justifyContent={"flex-start"}
-                      alignItems={"center"}
-                      style={{ textTransform: "capitalize" }}
-                      color={"textPrimary"}
-                    >
-                      <Box
-                        component={"span"}
-                        className={"logo-icon"}
-                        display={"flex"}
-                        height={"var(--list-menu-coin-size)"}
-                        width={"var(--list-menu-coin-size)"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                      >
-                        {coinAIcon ? (
-                          <AvatarCoinStyled
-                            imgx={coinAIcon.x}
-                            imgy={coinAIcon.y}
-                            imgheight={coinAIcon.h}
-                            imgwidth={coinAIcon.w}
-                            size={20}
-                            variant="circular"
-                            style={{ marginTop: 2 }}
-                            alt={coinPairInfo?.myCoinA?.simpleName as string}
-                            // src={sellData?.icon}
-                            src={
-                              "data:image/svg+xml;utf8," +
-                              '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                            }
-                          />
-                        ) : (
-                          <Avatar
-                            variant="circular"
-                            alt={coinPairInfo?.myCoinA?.simpleName as string}
-                            style={{
-                              height: "var(--list-menu-coin-size)",
-                              width: "var(--list-menu-coin-size)",
-                            }}
-                            // src={sellData?.icon}
-                            src={SoursURL + "images/icon-default.png"}
-                          />
-                        )}
-                      </Box>
+                  <Grid
+                    item
+                    paddingLeft={2}
+                    paddingY={3}
+                    xs={12}
+                    sm={6}
+                    lg={4} /* overflow={'scroll'} */
+                    display={"flex"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                  >
+                    <Box>
                       <Typography
-                        marginLeft={1 / 2}
-                        justifyContent={"center"}
+                        component={"span"}
                         display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                        style={{ textTransform: "capitalize" }}
+                        color={"textPrimary"}
                       >
-                        <Typography
+                        <Box
                           component={"span"}
-                          alignSelf={"right"}
-                          variant={"h5"}
-                          height={24}
-                          lineHeight={"24px"}
+                          className={"logo-icon"}
+                          display={"flex"}
+                          height={"var(--list-menu-coin-size)"}
+                          width={"var(--list-menu-coin-size)"}
+                          alignItems={"center"}
+                          justifyContent={"center"}
                         >
-                          {getValuePrecisionThousand(
-                            coinPairInfo.totalA,
-                            precisionA,
-                            precisionA
+                          {coinAIcon ? (
+                            <AvatarCoinStyled
+                              imgx={coinAIcon.x}
+                              imgy={coinAIcon.y}
+                              imgheight={coinAIcon.h}
+                              imgwidth={coinAIcon.w}
+                              size={20}
+                              variant="circular"
+                              style={{ marginTop: 2 }}
+                              alt={coinPairInfo?.myCoinA?.simpleName as string}
+                              // src={sellData?.icon}
+                              src={
+                                "data:image/svg+xml;utf8," +
+                                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
+                              }
+                            />
+                          ) : (
+                            <Avatar
+                              variant="circular"
+                              alt={coinPairInfo?.myCoinA?.simpleName as string}
+                              style={{
+                                height: "var(--list-menu-coin-size)",
+                                width: "var(--list-menu-coin-size)",
+                              }}
+                              // src={sellData?.icon}
+                              src={SoursURL + "images/icon-default.png"}
+                            />
                           )}
-                        </Typography>
+                        </Box>
                         <Typography
-                          component={"span"}
-                          variant={"h5"}
-                          marginLeft={1}
-                          alignSelf={"right"}
-                          height={24}
-                          lineHeight={"24px"}
+                          marginLeft={1 / 2}
+                          justifyContent={"center"}
+                          display={"flex"}
                         >
-                          {/*<HiddenHidden>{t('labelLPTotal')}</Hidden>*/}
-                          {coinPairInfo.myCoinA?.simpleName}
+                          <Typography
+                            component={"span"}
+                            alignSelf={"right"}
+                            variant={"h5"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {getValuePrecisionThousand(
+                              coinPairInfo.totalA,
+                              precisionA,
+                              precisionA
+                            )}
+                          </Typography>
+                          <Typography
+                            component={"span"}
+                            variant={"h5"}
+                            marginLeft={1}
+                            alignSelf={"right"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {/*<HiddenHidden>{t('labelLPTotal')}</Hidden>*/}
+                            {coinPairInfo.myCoinA?.simpleName}
+                          </Typography>
                         </Typography>
                       </Typography>
-                    </Typography>
-                    <Typography
-                      component={"span"}
-                      display={"flex"}
-                      flexDirection={"row"}
-                      justifyContent={"flex-start"}
-                      alignItems={"center"}
-                      marginTop={1}
-                      style={{ textTransform: "capitalize" }}
-                    >
-                      <Box
-                        component={"span"}
-                        className={"logo-icon"}
-                        display={"flex"}
-                        height={"var(--list-menu-coin-size)"}
-                        width={"var(--list-menu-coin-size)"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                      >
-                        {coinBIcon ? (
-                          <AvatarCoinStyled
-                            style={{ marginTop: 2 }}
-                            imgx={coinBIcon.x}
-                            imgy={coinBIcon.y}
-                            imgheight={coinBIcon.h}
-                            imgwidth={coinBIcon.w}
-                            size={20}
-                            variant="circular"
-                            alt={coinPairInfo?.myCoinB?.simpleName as string}
-                            // src={sellData?.icon}
-                            src={
-                              "data:image/svg+xml;utf8," +
-                              '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                            }
-                          />
-                        ) : (
-                          <Avatar
-                            variant="circular"
-                            alt={coinPairInfo?.myCoinB?.simpleName as string}
-                            style={{
-                              height: "var(--list-menu-coin-size)",
-                              width: "var(--list-menu-coin-size)",
-                            }}
-                            src={SoursURL + "images/icon-default.png"}
-                          />
-                        )}
-                      </Box>
                       <Typography
-                        marginLeft={1 / 2}
-                        justifyContent={"center"}
+                        component={"span"}
                         display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                        marginTop={1}
+                        style={{ textTransform: "capitalize" }}
                       >
-                        <Typography
-                          variant={"h5"}
+                        <Box
                           component={"span"}
-                          alignSelf={"right"}
-                          height={24}
-                          lineHeight={"24px"}
+                          className={"logo-icon"}
+                          display={"flex"}
+                          height={"var(--list-menu-coin-size)"}
+                          width={"var(--list-menu-coin-size)"}
+                          alignItems={"center"}
+                          justifyContent={"center"}
                         >
-                          {getValuePrecisionThousand(
-                            coinPairInfo.totalB,
-                            precisionB,
-                            precisionB
+                          {coinBIcon ? (
+                            <AvatarCoinStyled
+                              style={{ marginTop: 2 }}
+                              imgx={coinBIcon.x}
+                              imgy={coinBIcon.y}
+                              imgheight={coinBIcon.h}
+                              imgwidth={coinBIcon.w}
+                              size={20}
+                              variant="circular"
+                              alt={coinPairInfo?.myCoinB?.simpleName as string}
+                              // src={sellData?.icon}
+                              src={
+                                "data:image/svg+xml;utf8," +
+                                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
+                              }
+                            />
+                          ) : (
+                            <Avatar
+                              variant="circular"
+                              alt={coinPairInfo?.myCoinB?.simpleName as string}
+                              style={{
+                                height: "var(--list-menu-coin-size)",
+                                width: "var(--list-menu-coin-size)",
+                              }}
+                              src={SoursURL + "images/icon-default.png"}
+                            />
                           )}
-                        </Typography>
+                        </Box>
                         <Typography
-                          variant={"h5"}
-                          component={"span"}
-                          marginLeft={1}
-                          alignSelf={"right"}
-                          height={24}
-                          lineHeight={"24px"}
+                          marginLeft={1 / 2}
+                          justifyContent={"center"}
+                          display={"flex"}
                         >
-                          {/*<Hidden>{t('labelLPTotal')}</Hidden>*/}
-                          {coinPairInfo.myCoinB?.simpleName}
+                          <Typography
+                            variant={"h5"}
+                            component={"span"}
+                            alignSelf={"right"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {getValuePrecisionThousand(
+                              coinPairInfo.totalB,
+                              precisionB,
+                              precisionB
+                            )}
+                          </Typography>
+                          <Typography
+                            variant={"h5"}
+                            component={"span"}
+                            marginLeft={1}
+                            alignSelf={"right"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {/*<Hidden>{t('labelLPTotal')}</Hidden>*/}
+                            {coinPairInfo.myCoinB?.simpleName}
+                          </Typography>
                         </Typography>
                       </Typography>
-                    </Typography>
-                  </Box>
-                  <Divider
-                    style={{
-                      height: "56px",
-                      marginLeft: "8px",
-                      borderRight: "1px solid var(--color-divide)",
-                    }}
-                    orientation={"vertical"}
-                  />
-                </Grid>
+                    </Box>
+                    <Divider
+                      style={{
+                        height: "56px",
+                        marginLeft: "8px",
+                        borderRight: "1px solid var(--color-divide)",
+                      }}
+                      orientation={"vertical"}
+                    />
+                  </Grid>
 
-                <Grid item paddingX={2} paddingY={3} xs={4} sm={3} lg={3}>
-                  <Box>
-                    <Typography variant={"h3"} component={"span"}>
-                      {" "}
-                      {typeof coinPairInfo.amountDollar === "undefined"
-                        ? EmptyValueTag
-                        : currency === Currency.usd
-                        ? PriceTag.Dollar +
-                          abbreviateNumber(coinPairInfo.amountDollar || 0, 2)
-                        : PriceTag.Yuan +
-                          abbreviateNumber(coinPairInfo.amountYuan || 0, 2)}
-                    </Typography>
+                  <Grid item paddingX={2} paddingY={3} xs={4} sm={3} lg={3}>
+                    <Box>
+                      <Typography variant={"h3"} component={"span"}>
+                        {" "}
+                        {typeof coinPairInfo.amountDollar === "undefined"
+                          ? EmptyValueTag
+                          : currency === Currency.usd
+                          ? PriceTag.Dollar +
+                            abbreviateNumber(coinPairInfo.amountDollar || 0, 2)
+                          : PriceTag.Yuan +
+                            abbreviateNumber(coinPairInfo.amountYuan || 0, 2)}
+                      </Typography>
 
-                    <Typography
-                      component={"p"}
-                      color={"textSecondary"}
-                      display={"flex"}
-                    >
-                      {t("labelTVL")}
-                    </Typography>
-                  </Box>
-                </Grid>
+                      <Typography
+                        component={"p"}
+                        color={"textSecondary"}
+                        display={"flex"}
+                      >
+                        {t("labelTVL")}
+                      </Typography>
+                    </Box>
+                  </Grid>
 
-                <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={3}>
-                  <Box>
-                    <Typography variant={"h3"} component={"span"}>
-                      {render24hVolume}
-                    </Typography>
-                    <Typography
-                      component={"p"}
-                      color={"textSecondary"}
-                      display={"flex"}
-                    >
-                      {t("label24Volume")}
-                    </Typography>
-                  </Box>
-                </Grid>
+                  <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={3}>
+                    <Box>
+                      <Typography variant={"h3"} component={"span"}>
+                        {render24hVolume}
+                      </Typography>
+                      <Typography
+                        component={"p"}
+                        color={"textSecondary"}
+                        display={"flex"}
+                      >
+                        {t("label24Volume")}
+                      </Typography>
+                    </Box>
+                  </Grid>
 
-                <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
-                  <Box>
-                    <Typography variant={"h3"} component={"span"}>
-                      {" "}
-                      {coinPairInfo.APR
-                        ? getValuePrecisionThousand(
-                            coinPairInfo.APR,
-                            2,
-                            2,
-                            undefined,
-                            true
-                          )
-                        : EmptyValueTag}
-                      %
-                    </Typography>
-                    <Typography
-                      component={"p"}
-                      color={"textSecondary"}
-                      display={"flex"}
-                    >
-                      {t("labelAPR")}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </BoxWrapperStyled>
-            </Box>
-            <StylePaper
-              className={"MuiPaper-elevation2"}
-              marginTop={3}
-              paddingBottom={1}
-              ref={container}
-            >
-              <TabsStyled
-                value={tabIndex}
-                onChange={handleTabsChange}
-                aria-label="tabs switch"
+                  <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
+                    <Box>
+                      <Typography variant={"h3"} component={"span"}>
+                        {" "}
+                        {coinPairInfo.APR
+                          ? getValuePrecisionThousand(
+                              coinPairInfo.APR,
+                              2,
+                              2,
+                              undefined,
+                              true
+                            )
+                          : EmptyValueTag}
+                        %
+                      </Typography>
+                      <Typography
+                        component={"p"}
+                        color={"textSecondary"}
+                        display={"flex"}
+                      >
+                        {t("labelAPR")}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </BoxWrapperStyled>
+              </Box>
+
+              <StylePaper
+                className={"MuiPaper-elevation2"}
+                marginTop={3}
+                paddingBottom={1}
+                ref={container}
               >
-                <Tab label={t("labelAmmAllTransactions")} {...applyProps(0)} />
-                <Tab label={t("labelAmmMyTransactions")} {...applyProps(1)} />
-              </TabsStyled>
-              <Divider style={{ marginTop: "-1px" }} />
-              {/*ammRecordArray*/}
-              {tabIndex === 0 ? (
-                <AmmRecordTable
-                  rawData={ammMarketArray}
-                  rowHeight={RowConfig.rowHeight}
-                  headerRowHeight={RowConfig.rowHeaderHeight}
-                  currentheight={tableHeight}
-                  showloading={isRecentLoading}
-                  currency={currency}
-                />
-              ) : (
-                <AmmRecordTable
-                  rawData={myAmmMarketArray}
-                  handlePageChange={getUserAmmPoolTxs}
-                  pagination={{
-                    pageSize: 14,
-                    total: ammUserTotal,
-                  }}
-                  showloading={isMyAmmLoading}
-                  rowHeight={RowConfig.rowHeight}
-                  headerRowHeight={RowConfig.rowHeaderHeight}
-                  currentheight={tableHeight}
-                  currency={currency}
-                />
-              )}
-            </StylePaper>
-          </Box>
-          <Box display={"flex"} style={{ minWidth: "var(--swap-box-width)" }}>
-            <Box>
-              <AmmPanelView
-                pair={pair}
-                stob={stob}
-                btos={btos}
-                getRecentAmmPoolTxs={getRecentAmmPoolTxs}
-                walletMap={walletMap}
-                snapShotData={snapShotData}
-              />
+                <TabsStyled
+                  value={tabIndex}
+                  onChange={handleTabsChange}
+                  aria-label="tabs switch"
+                >
+                  <Tab
+                    label={t("labelAmmAllTransactions")}
+                    {...applyProps(0)}
+                  />
+                  <Tab label={t("labelAmmMyTransactions")} {...applyProps(1)} />
+                </TabsStyled>
+                <Divider style={{ marginTop: "-1px" }} />
+                {/*ammRecordArray*/}
+                {tabIndex === 0 ? (
+                  <AmmRecordTable
+                    rawData={ammMarketArray}
+                    rowHeight={RowConfig.rowHeight}
+                    headerRowHeight={RowConfig.rowHeaderHeight}
+                    currentheight={tableHeight}
+                    showloading={isRecentLoading}
+                    currency={currency}
+                  />
+                ) : (
+                  <AmmRecordTable
+                    rawData={myAmmMarketArray}
+                    handlePageChange={getUserAmmPoolTxs}
+                    pagination={{
+                      pageSize: 14,
+                      total: ammUserTotal,
+                    }}
+                    showloading={isMyAmmLoading}
+                    rowHeight={RowConfig.rowHeight}
+                    headerRowHeight={RowConfig.rowHeaderHeight}
+                    currentheight={tableHeight}
+                    currency={currency}
+                  />
+                )}
+              </StylePaper>
             </Box>
+          )}
+          {/*style={{ minWidth: "var(--swap-box-width)" }}*/}
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            flex={isMobile ? 1 : "initial"}
+          >
+            <AmmPanelView
+              pair={pair}
+              stob={stob}
+              btos={btos}
+              getRecentAmmPoolTxs={getRecentAmmPoolTxs}
+              walletMap={walletMap}
+              snapShotData={snapShotData}
+            />
+            {isMobile && (
+              <Box marginLeft={1}>
+                <BoxWrapperStyled
+                  container
+                  marginY={2}
+                  padding={2}
+                  className={"MuiPaper-elevation2"}
+                  display={"flex"}
+                  alignItems={"center"}
+                  rowSpacing={4}
+                  columnSpacing={1}
+                >
+                  <Grid item xs={6}>
+                    <Box>
+                      <Typography
+                        component={"span"}
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                        style={{ textTransform: "capitalize" }}
+                        color={"textPrimary"}
+                      >
+                        <Box
+                          component={"span"}
+                          className={"logo-icon"}
+                          display={"flex"}
+                          height={"var(--list-menu-coin-size)"}
+                          width={"var(--list-menu-coin-size)"}
+                          alignItems={"center"}
+                          justifyContent={"center"}
+                        >
+                          {coinAIcon ? (
+                            <AvatarCoinStyled
+                              imgx={coinAIcon.x}
+                              imgy={coinAIcon.y}
+                              imgheight={coinAIcon.h}
+                              imgwidth={coinAIcon.w}
+                              size={20}
+                              variant="circular"
+                              style={{ marginTop: 2 }}
+                              alt={coinPairInfo?.myCoinA?.simpleName as string}
+                              // src={sellData?.icon}
+                              src={
+                                "data:image/svg+xml;utf8," +
+                                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
+                              }
+                            />
+                          ) : (
+                            <Avatar
+                              variant="circular"
+                              alt={coinPairInfo?.myCoinA?.simpleName as string}
+                              style={{
+                                height: "var(--list-menu-coin-size)",
+                                width: "var(--list-menu-coin-size)",
+                              }}
+                              // src={sellData?.icon}
+                              src={SoursURL + "images/icon-default.png"}
+                            />
+                          )}
+                        </Box>
+                        <Typography
+                          marginLeft={1 / 2}
+                          justifyContent={"center"}
+                          display={"flex"}
+                        >
+                          <Typography
+                            component={"span"}
+                            alignSelf={"right"}
+                            variant={"h5"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {getValuePrecisionThousand(
+                              coinPairInfo.totalA,
+                              precisionA,
+                              precisionA
+                            )}
+                          </Typography>
+                          <Typography
+                            component={"span"}
+                            variant={"h5"}
+                            marginLeft={1}
+                            alignSelf={"right"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {/*<HiddenHidden>{t('labelLPTotal')}</Hidden>*/}
+                            {coinPairInfo.myCoinA?.simpleName}
+                          </Typography>
+                        </Typography>
+                      </Typography>
+                      <Typography
+                        component={"span"}
+                        display={"flex"}
+                        flexDirection={"row"}
+                        justifyContent={"flex-start"}
+                        alignItems={"center"}
+                        marginTop={1}
+                        style={{ textTransform: "capitalize" }}
+                      >
+                        <Box
+                          component={"span"}
+                          className={"logo-icon"}
+                          display={"flex"}
+                          height={"var(--list-menu-coin-size)"}
+                          width={"var(--list-menu-coin-size)"}
+                          alignItems={"center"}
+                          justifyContent={"center"}
+                        >
+                          {coinBIcon ? (
+                            <AvatarCoinStyled
+                              style={{ marginTop: 2 }}
+                              imgx={coinBIcon.x}
+                              imgy={coinBIcon.y}
+                              imgheight={coinBIcon.h}
+                              imgwidth={coinBIcon.w}
+                              size={20}
+                              variant="circular"
+                              alt={coinPairInfo?.myCoinB?.simpleName as string}
+                              // src={sellData?.icon}
+                              src={
+                                "data:image/svg+xml;utf8," +
+                                '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
+                              }
+                            />
+                          ) : (
+                            <Avatar
+                              variant="circular"
+                              alt={coinPairInfo?.myCoinB?.simpleName as string}
+                              style={{
+                                height: "var(--list-menu-coin-size)",
+                                width: "var(--list-menu-coin-size)",
+                              }}
+                              src={SoursURL + "images/icon-default.png"}
+                            />
+                          )}
+                        </Box>
+                        <Typography
+                          marginLeft={1 / 2}
+                          justifyContent={"center"}
+                          display={"flex"}
+                        >
+                          <Typography
+                            variant={"h5"}
+                            component={"span"}
+                            alignSelf={"right"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {getValuePrecisionThousand(
+                              coinPairInfo.totalB,
+                              precisionB,
+                              precisionB
+                            )}
+                          </Typography>
+                          <Typography
+                            variant={"h5"}
+                            component={"span"}
+                            marginLeft={1}
+                            alignSelf={"right"}
+                            height={24}
+                            lineHeight={"24px"}
+                          >
+                            {/*<Hidden>{t('labelLPTotal')}</Hidden>*/}
+                            {coinPairInfo.myCoinB?.simpleName}
+                          </Typography>
+                        </Typography>
+                      </Typography>
+                    </Box>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Box>
+                      <Typography variant={"h3"} component={"span"}>
+                        {" "}
+                        {typeof coinPairInfo.amountDollar === "undefined"
+                          ? EmptyValueTag
+                          : currency === Currency.usd
+                          ? PriceTag.Dollar +
+                            abbreviateNumber(coinPairInfo.amountDollar || 0, 2)
+                          : PriceTag.Yuan +
+                            abbreviateNumber(coinPairInfo.amountYuan || 0, 2)}
+                      </Typography>
+
+                      <Typography
+                        component={"p"}
+                        color={"textSecondary"}
+                        display={"flex"}
+                      >
+                        {t("labelTVL")}
+                      </Typography>
+                    </Box>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Box>
+                      <Typography variant={"h3"} component={"span"}>
+                        {render24hVolume}
+                      </Typography>
+                      <Typography
+                        component={"p"}
+                        color={"textSecondary"}
+                        display={"flex"}
+                      >
+                        {t("label24Volume")}
+                      </Typography>
+                    </Box>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Box>
+                      <Typography variant={"h3"} component={"span"}>
+                        {" "}
+                        {coinPairInfo.APR
+                          ? getValuePrecisionThousand(
+                              coinPairInfo.APR,
+                              2,
+                              2,
+                              undefined,
+                              true
+                            )
+                          : EmptyValueTag}
+                        %
+                      </Typography>
+                      <Typography
+                        component={"p"}
+                        color={"textSecondary"}
+                        display={"flex"}
+                      >
+                        {t("labelAPR")}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                </BoxWrapperStyled>
+              </Box>
+            )}
           </Box>
         </Box>
       </>

@@ -19,10 +19,19 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { ConnectProviders } from "@loopring-web/common-resources";
 
 export class ConnectProvides {
+  private static _isMobile = false;
   public usedProvide: undefined | IpcProvider | WalletConnectProvider;
   public usedWeb3: undefined | Web3;
 
   private _provideName: string | undefined;
+
+  public static set IsMobile(isMobile: boolean) {
+    ConnectProvides._isMobile = isMobile;
+  }
+
+  public static get IsMobile() {
+    return ConnectProvides._isMobile;
+  }
 
   get provideName(): string | undefined {
     return this._provideName;
@@ -98,20 +107,24 @@ export class ConnectProvides {
   };
 
   private subScribe = (account?: string) => {
-    switch (this._provideName) {
-      case ConnectProviders.WalletConnect:
-        WalletConnectSubscribe(
-          this.usedProvide,
-          this.usedWeb3 as Web3,
-          account
-        );
-        break;
-      case ConnectProviders.MetaMask:
-        MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-        break;
-      case ConnectProviders.WalletLink:
-        WalletLinkSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-        break;
+    try {
+      switch (this._provideName) {
+        case ConnectProviders.WalletConnect:
+          WalletConnectSubscribe(
+            this.usedProvide,
+            this.usedWeb3 as Web3,
+            account
+          );
+          break;
+        case ConnectProviders.MetaMask:
+          MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+          break;
+        case ConnectProviders.WalletLink:
+          WalletLinkSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+          break;
+      }
+    } catch (error) {
+      console.log("subScribe", error);
     }
   };
 }

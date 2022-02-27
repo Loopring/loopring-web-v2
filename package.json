@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "^1.8.2",
+    "@loopring-web/loopring-sdk": "^1.8.16-dev",
     "@loopring-web/recharts": "^2.0.10",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.0.0-rc.0",
@@ -78,6 +78,7 @@
     "reset_proxy": "npm config set proxy=http://127.0.0.1:1087; yarn reset",
     "dev": "cd ./packages/webapp; yarn dev",
     "build": "cd ./packages/webapp; yarn build",
+    "build_dev": "cd ./packages/webapp; yarn build_dev",
     "deploy": "cd ./packages/webapp; yarn deploy",
     "deploy:ipfs": "cd ./packages/webapp; yarn deploy:ipfs"
   },

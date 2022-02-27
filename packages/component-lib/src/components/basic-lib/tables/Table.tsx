@@ -158,10 +158,19 @@ export const DataGridStyled = styled(DataGrid)`
       border-bottom: rgba(0, 0, 0, 0) 2px solid;
       box-sizing: border-box;
       height: 100%;
-
+      padding: 0 ${({ theme }) => theme.unit}px;
       & > span,
       div {
         user-select: text;
+      }
+      &.textAlignRight {
+        text-align: right;
+      }
+      &.textAlignLeft {
+        text-align: left;
+      }
+      &.textAlignCenter {
+        text-align: center;
       }
     }
 
