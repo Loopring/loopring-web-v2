@@ -123,6 +123,7 @@ export interface TransactionTableProps {
     offset,
     types,
   }: TxsFilterProps) => Promise<void>;
+  filterTokens: string[];
   showFilter?: boolean;
   showloading: boolean;
   accAddress?: string;
@@ -135,6 +136,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       pagination,
       showFilter,
       getTxnList,
+      filterTokens,
       showloading,
       etherscanBaseUrl,
       accAddress,
@@ -412,7 +414,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         {showFilter && (
           <TableFilterStyled>
             <Filter
-              originalData={rawData}
+              filterTokens={filterTokens}
+              // originalData={rawData}
               filterDate={filterDate}
               filterType={filterType}
               filterToken={filterToken}

@@ -12,16 +12,16 @@ import {
   // myLog
 } from "@loopring-web/common-resources";
 import { DateRange } from "@mui/lab";
-import { RawDataTradeItem } from "../TradeTable";
 
 export interface FilterProps {
-  rawData: RawDataTradeItem[];
+  // rawData: RawDataTradeItem[];
   filterDate: DateRange<Date | string>;
   filterType: FilterTradeTypes;
   filterPair: string;
   handleReset: () => void;
   handleFilterChange: ({ type, date }: any) => void;
   marketMap?: any;
+  filterPairs: string[];
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -52,14 +52,14 @@ export enum FilterTradeTypes {
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
-    rawData,
     // filterDate,
     // filterType,
+    filterPairs = [],
     filterPair,
     handleReset,
     handleFilterChange,
-    marketMap,
-  }: FilterProps & WithTranslation) => {
+  }: // marketMap,
+  FilterProps & WithTranslation) => {
     // const filterTradeTypeList = [
     //     {
     //         label: t('labelOrderFilterAllTypes'),
@@ -75,13 +75,21 @@ export const Filter = withTranslation("tables", { withRef: true })(
     //     },
     // ]
 
-    const rawPairList = rawData
-      .map((item) => `${item.amount.from.key}-${item.amount.to.key}`)
-      .filter((o) => marketMap[o])
-      .map((market) => {
-        const formattedMarket = market.split("-");
-        return formattedMarket.join(" - ");
+    // filterPairs
+
+    const rawPairList = [].slice
+      .call(filterPairs)
+      .map((item: string) => item.replace("-", " - "))
+      .sort((a: string, b: string) => {
+        return a.localeCompare(b);
       });
+
+    // return formattedMarket.join(" - "))
+    // .filter((o) => marketMap[o])
+    // .map((market) => {
+    //   const formattedMarket = market.split("-");
+    //   return formattedMarket.join(" - ");
+    // });
     const formattedRawPairList = [
       {
         label: t("labelFilterAllPairs"),

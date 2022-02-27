@@ -15,6 +15,7 @@ import {
 import { useSettings } from "../../../stores";
 import { DateRange } from "@mui/lab";
 import { Currency, MarketTradeInfo } from "@loopring-web/loopring-sdk";
+import { XOR } from "../../../types/lib";
 
 export enum TradeItemRole {
   maker = "Maker",
@@ -57,20 +58,21 @@ export type RawDataTradeItem = {
 
 export type TradeTableProps = {
   rawData: RawDataTradeItem[];
+
   // getUserTradeList?: (param: Omit<GetUserTradesRequest, 'accountId'>) => void;
   getUserTradeList?: (param: any) => void;
   pagination?: {
     pageSize: number;
     total: number;
   };
-  showFilter?: boolean;
+
   currentheight?: number;
   rowHeight?: number;
   headerRowHeight?: number;
   isL2Trade?: boolean;
   marketMap?: any;
   showLoading?: boolean;
-};
+} & XOR<{ showFilter: true; filterPairs: string[] }, { showFilter?: false }>;
 
 const TableStyled = styled(Box)`
   display: flex;
@@ -311,13 +313,13 @@ export const TradeTable = withTranslation("tables")(
     t,
     pagination,
     showFilter,
+    filterPairs = [],
     rawData,
     currentheight,
     rowHeight = 44,
     headerRowHeight = 44,
     tokenMap = undefined,
     isL2Trade = false,
-    marketMap = undefined,
     getUserTradeList,
     showLoading = false,
     ...rest
@@ -410,13 +412,12 @@ export const TradeTable = withTranslation("tables")(
           <TableFilterStyled>
             <Filter
               {...{
-                rawData,
+                filterPairs,
                 handleFilterChange,
                 filterType,
                 filterDate,
                 filterPair,
                 handleReset,
-                marketMap,
               }}
             />
           </TableFilterStyled>
