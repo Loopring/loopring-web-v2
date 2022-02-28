@@ -1,7 +1,6 @@
 import { Box, IconButton, Link } from "@mui/material";
 import {
   DownloadIcon,
-  myLog,
   NotificationIcon,
   Notify,
   SettingIcon,
