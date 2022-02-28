@@ -11,7 +11,7 @@ import {
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 //@ts-ignore
-import cssStyle from "./snow.css";
+// import cssStyle from "./snow.css";
 import { RuleType } from "@loopring-web/loopring-sdk";
 import { Rank } from "./rank";
 
@@ -48,8 +48,8 @@ const LayoutStyled = styled(Box)`
       top: 0;
     }
   }
-  ${cssStyle}
 `;
+// ${cssStyle}
 
 export const TradeRacePage = withTranslation("common")(
   ({ t }: WithTranslation) => {
