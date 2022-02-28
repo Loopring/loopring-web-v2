@@ -1,5 +1,5 @@
 import { Trans } from "react-i18next";
-import { NOTIFICATION } from "@loopring-web/common-resources";
+import { myLog, NOTIFICATION } from "@loopring-web/common-resources";
 import { Box, Divider } from "@mui/material";
 import {
   EmptyDefault,
@@ -24,16 +24,28 @@ export const NotificationPanel = ({
 }: {
   notification: NOTIFICATION;
 }) => {
+  myLog("notification component", notification);
+
   return (
     <BoxStyle
       display={"flex"}
       flexDirection={"column"}
       maxHeight={600}
+      // minHeight={100}
+      // minWidth={100}
       overflow={"scroll"}
       // paddingBottom={1}
       paddingTop={1}
     >
-      {notification.activities.length || notification.notifications.length ? (
+      {(notification.activities.length &&
+        // @ts-ignore
+        notification.activities.findIndex(({ startDate }) => {
+          return Date.now() > 0; //TODO debug startDate;
+        }) !== -1) ||
+      (notification.notifications.length &&
+        notification.notifications.findIndex(
+          ({ startDate }) => Date.now() > startDate
+        ) !== -1) ? (
         <>
           <Box
             component={"section"}
@@ -45,6 +57,7 @@ export const NotificationPanel = ({
             {/*<Typography component={"h4"} variant={"h5"}>{*/}
             {/*  t('labelActivityTitle')*/}
             {/*}</Typography>*/}
+            {/*{notification.activities[0].title}*/}
             {notification.activities.length &&
               notification.activities.map((activity, index) => (
                 <ListItemActivity key={activity.id + index} {...activity} />
