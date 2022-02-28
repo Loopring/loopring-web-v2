@@ -6,6 +6,7 @@ export default {
   tokenEnter: "Enter Token",
   tokenEnterPaymentToken: "From",
   tokenMax: "Available:",
+  tokenNFTMaxMINT: "Max:",
   tokenHave: "Available:",
   tokenEnterReceiveToken: "to",
   tokenSelectToken: "Select Token",
@@ -531,7 +532,8 @@ export default {
   labelNFTMintNoMetaBtn: "No Metadata",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
-  nftMintDescription: "Mint NFT",
+  nftMintDescription:
+    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder populates the Name\n and also the image displays.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "In Progress",
@@ -572,15 +574,15 @@ export default {
   labelTxGuardianGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
   labelTxGuardianGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
   labelTxGuardianGUARDIAN_APPROVE: "GUARDIAN APPROVE",
-  labelTxGuardianAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
-  labelTxGuardianAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
-  labelTxGuardianAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
-  labelTxGuardianADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34
-  labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
-  labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
-  labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
-  labelTxGuardian_recovery: "recovery",
-  labelTxGuardian_transfer: "transfer",
+  labelTxGuardianAPPROVE_RECOVER: "RECOVER WALLET", // RECOVER  16
+  labelTxGuardianAPPROVE_TRANSFER: "OVER DAILY QUOTA TRANSFER", // APPROVE TRANSFER 18
+  labelTxGuardianAPPROVE_TOKEN_APPROVE: "TOKEN ACCESS", // 23
+  labelTxGuardianADD_GUARDIAN_WA: "ADD GUARDIAN", // 34
+  labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN", // 35
+  labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET", // 37
+  labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS", // 200
+  labelTxGuardian_recovery: "recovery wallet",
+  labelTxGuardian_transfer: "over daily quota transfer",
   labelTxGuardian_add_guardian: "add guardian",
   labelTxGuardian_remove_guardian: "remove guardian",
   labelTxGuardian_unlock_wallet: "unlock wallet",

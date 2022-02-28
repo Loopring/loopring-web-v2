@@ -225,6 +225,7 @@ export const HebaoProtectItem = <T extends sdk.Protector>(
             <Typography
               color={"var(--color-warning)"}
               paddingLeft={1}
+              height={32}
               variant={"body1"}
               component={"span"}
               alignItems={"center"}
@@ -278,7 +279,13 @@ export const HebaoProtectItem = <T extends sdk.Protector>(
           className="description description1"
           primaryTypographyProps={{ component: "p", color: "textSecondary" }}
         />
-        <Typography className="description description1" alignSelf={"flex-end"}>
+        <Typography
+          display={"inline-flex"}
+          className="description description1"
+          alignSelf={"flex-end"}
+          alignItems={"center"}
+          height={32}
+        >
           {statusView}
         </Typography>
       </Box>
@@ -357,7 +364,7 @@ export const WalletProtector = <T extends sdk.Protector>({
           {!!protectList.length ? (
             <>
               {protectList.map((item) => (
-                <Grid item xs={12} md={6} lg={4} key={item.address}>
+                <Grid item xs={12} md={6} lg={6} key={item.address}>
                   <HebaoProtectItem
                     {...{ ...item }}
                     onClick={() => {

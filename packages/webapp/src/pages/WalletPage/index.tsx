@@ -3,6 +3,7 @@ import React from "react";
 import {
   AccountStatus,
   i18n,
+  LoadingIcon,
   myLog,
   SagaStatus,
   SoursURL,
@@ -26,7 +27,7 @@ import {
 } from "../../layouts/connectStatusCallback";
 import store from "../../stores";
 
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
@@ -36,33 +37,39 @@ import { WalletProtector } from "./WalletProtector";
 
 const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
   ({ t }: any) => {
-    const { status: accountStatus, account } = useAccount();
-    const [label, setLabel] = React.useState(undefined);
+    const { status: accountStatus } = useAccount();
+    const [label, setLabel] = React.useState("labelConnectWallet");
     const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
 
     React.useEffect(() => {
       if (accountStatus === SagaStatus.UNSET) {
         setLabel(accountStaticCallBack(_btnLabel));
       }
-    }, [accountStatus, account.readyState, i18n.language]);
+    }, [accountStatus, i18n.language]);
 
     return (
-      <Button
-        variant={"contained"}
-        size={"large"}
-        color={"primary"}
-        fullWidth={true}
-        style={{ maxWidth: "280px" }}
-        onClick={() => {
-          myLog("UN_CONNECT!");
-          store.dispatch(changeShowModel({ _userOnModel: true }));
-          store.dispatch(
-            setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
-          );
-        }}
-      >
-        {t(label)}
-      </Button>
+      <>
+        <Button
+          variant={"contained"}
+          size={"large"}
+          color={"primary"}
+          fullWidth={true}
+          style={{ maxWidth: "280px" }}
+          onClick={() => {
+            myLog("UN_CONNECT!");
+            store.dispatch(changeShowModel({ _userOnModel: true }));
+            store.dispatch(
+              setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
+            );
+          }}
+        >
+          {label !== "" ? (
+            t(label)
+          ) : (
+            <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
+          )}
+        </Button>
+      </>
     );
   }
 ) as typeof Button;

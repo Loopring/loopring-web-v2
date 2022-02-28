@@ -124,25 +124,27 @@ export const MyNFTPanel = withTranslation("common")(
               </Box>
             ) : nftList && nftList.length ? (
               <>
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"right"}
-                  marginRight={3}
-                  marginBottom={2}
-                >
-                  <Pagination
-                    color={"primary"}
-                    count={
-                      parseInt(String(total / NFTLimit)) +
-                      (total % NFTLimit > 0 ? 1 : 0)
-                    }
-                    page={page}
-                    onChange={(_event, value) => {
-                      onPageChange(Number(value));
-                    }}
-                  />
-                </Box>
+                {total > NFTLimit && (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"right"}
+                    marginRight={3}
+                    marginBottom={2}
+                  >
+                    <Pagination
+                      color={"primary"}
+                      count={
+                        parseInt(String(total / NFTLimit)) +
+                        (total % NFTLimit > 0 ? 1 : 0)
+                      }
+                      page={page}
+                      onChange={(_event, value) => {
+                        onPageChange(Number(value));
+                      }}
+                    />
+                  </Box>
+                )}
                 <Grid container spacing={2} paddingX={3} paddingBottom={3}>
                   {nftList.map((item, index) => (
                     <Grid
@@ -243,7 +245,7 @@ export const MyNFTPanel = withTranslation("common")(
               </Box>
             )}
             <>
-              {nftList && nftList.length && (
+              {total > NFTLimit && (
                 <Box
                   display={"flex"}
                   alignItems={"center"}

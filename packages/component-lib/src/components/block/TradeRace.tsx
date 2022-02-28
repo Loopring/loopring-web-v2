@@ -3,7 +3,10 @@ import { Column, Table } from "../basic-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { Box, Typography } from "@mui/material";
-import { getValuePrecisionThousand } from "@loopring-web/common-resources";
+import {
+  EmptyValueTag,
+  getValuePrecisionThousand,
+} from "@loopring-web/common-resources";
 
 export interface TradeRaceRow {
   project: string;
@@ -67,19 +70,42 @@ export const TradeRacePanel = withTranslation(["tables"])(
             return <Box className="rdg-cell-value">{value}</Box>;
           },
         },
-        { key: "pair", name: t("labelTradeRacePair") },
+        {
+          key: "pair",
+          name: /\-/gi.test(rawData[0].pair)
+            ? t("labelTradeRacePair")
+            : t("labelTradeRaceToken"),
+        },
         {
           key: "reward",
+          // cellClass: "",
+          // headerCellClass: "",
           name: t("labelTradeRaceReward"),
           formatter: ({ row }) => {
             return (
               <>
-                <Typography variant={"body1"} component={"span"}>
-                  {getValuePrecisionThousand(row.reward.count)}
-                </Typography>
-                <Typography variant={"body1"} component={"span"} marginLeft={1}>
-                  {row.reward.token}
-                </Typography>
+                {row.reward.token ? (
+                  <>
+                    <Typography variant={"body1"} component={"span"}>
+                      {getValuePrecisionThousand(row.reward.count)}
+                    </Typography>
+                    <Typography
+                      variant={"body1"}
+                      component={"span"}
+                      marginLeft={1}
+                    >
+                      {row.reward.token}
+                    </Typography>
+                  </>
+                ) : (
+                  <Typography
+                    variant={"body1"}
+                    component={"span"}
+                    marginLeft={1}
+                  >
+                    {EmptyValueTag}
+                  </Typography>
+                )}
               </>
             );
           },

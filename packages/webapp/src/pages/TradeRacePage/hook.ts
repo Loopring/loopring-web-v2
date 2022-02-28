@@ -1,6 +1,10 @@
 import React from "react";
 import { AmmPoolActivityRule } from "@loopring-web/loopring-sdk";
-import { ACTIVITY_TYPE, languageMap } from "@loopring-web/common-resources";
+import {
+  ACTIVITY_TYPE,
+  languageMap,
+  myLog,
+} from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
@@ -29,8 +33,20 @@ export const useTradeRace = () => {
     EVENT_STATUS | undefined
   >();
   const [activityRule, setActivityRule] = React.useState<
-    AmmPoolActivityRule | undefined
+    | AmmPoolActivityRule
+    | undefined
+    | {
+        event_awardRules: {
+          project: string;
+          pair: string;
+          reward: {
+            count: number;
+            token: string;
+          };
+        }[];
+      }
   >();
+
   const [currMarketPair, setCurrMarketPair] = React.useState(
     () => searchParams.get("pair") ?? ""
   );
@@ -82,46 +98,49 @@ export const useTradeRace = () => {
               } else {
                 eventData = input;
               }
+              myLog("useTradeRace eventData", eventData);
 
               if (
                 eventData &&
-                activityDateMap[eventData.duration.startDate] &&
-                searchParams.get("type")
+                searchParams.get("type") &&
+                [
+                  "AMM_MINING",
+                  "SWAP_VOLUME_RANKING",
+                  "ORDERBOOK_MINING",
+                ].includes(searchParams.get("type") ?? "") &&
+                activityDateMap[eventData.duration.startDate]
               ) {
                 setEventData(eventData);
-                if (searchParams.get("type") !== ACTIVITY_TYPE.SPECIAL) {
-                  const activityRule =
-                    activityDateMap[eventData.duration.startDate][
-                      searchParams.get("type") as string
-                    ];
-                  setActivityRule(activityRule);
-                  if (Reflect.ownKeys(activityRule).length) {
-                    const rule: AmmPoolActivityRule =
-                      activityRule[Reflect.ownKeys(activityRule)[0]];
-                    setDuration(() => ({
-                      startDate: moment(rule.rangeFrom).format(
-                        `YYYY-MM-DD HH:mm:ss`
-                      ),
-                      endDate: moment(rule.rangeTo).format(
-                        `YYYY-MM-DD HH:mm:ss`
-                      ),
-                    }));
-                    if (rule.rangeFrom > Date.now()) {
-                      setEventStatus(EVENT_STATUS.EVENT_READY);
-                    } else if (rule.rangeTo > Date.now()) {
-                      setEventStatus(EVENT_STATUS.EVENT_START);
-                    } else {
-                      setEventStatus(EVENT_STATUS.EVENT_END);
-                    }
+                const activityRule =
+                  activityDateMap[eventData.duration.startDate][
+                    searchParams.get("type") as string
+                  ];
+                setActivityRule(activityRule);
+                if (Reflect.ownKeys(activityRule).length) {
+                  const rule: AmmPoolActivityRule =
+                    activityRule[Reflect.ownKeys(activityRule)[0]];
+                  setDuration(() => ({
+                    startDate: moment(rule.rangeFrom).format(
+                      `YYYY-MM-DD HH:mm:ss`
+                    ),
+                    endDate: moment(rule.rangeTo).format(`YYYY-MM-DD HH:mm:ss`),
+                  }));
+                  if (rule.rangeFrom > Date.now()) {
+                    setEventStatus(EVENT_STATUS.EVENT_READY);
+                  } else if (rule.rangeTo > Date.now()) {
+                    setEventStatus(EVENT_STATUS.EVENT_START);
+                  } else {
+                    setEventStatus(EVENT_STATUS.EVENT_END);
+                  }
 
-                    if (!currMarketPair) {
-                      setCurrMarketPair(
-                        Reflect.ownKeys(activityRule)[0] as string
-                      );
-                    }
+                  if (!currMarketPair) {
+                    setCurrMarketPair(
+                      Reflect.ownKeys(activityRule)[0] as string
+                    );
                   }
                 }
-              } else if (eventData) {
+              } else if (eventData && searchParams.get("type")) {
+                setEventData(eventData);
                 setDuration((duration) => ({
                   ...duration,
                   startDate: moment(eventData.duration.startDate).format(
@@ -133,6 +152,11 @@ export const useTradeRace = () => {
                       )
                     : undefined,
                 }));
+                // const activityRule =
+                //   activityDateMap[eventData.duration.startDate][
+                //     searchParams.get("type") as string
+                //   ];
+                setActivityRule({ event_awardRules: eventData.rewards });
                 if (eventData.duration.startDate > Date.now()) {
                   setEventStatus(EVENT_STATUS.EVENT_READY);
                 }

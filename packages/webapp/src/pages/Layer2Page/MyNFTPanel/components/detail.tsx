@@ -32,7 +32,10 @@ const TextareaAutosizeStyled = styled(TextareaAutosize)`
     line-height: 1.5em;
     border: 0;
     background: (var(--opacity));
+    color: var(--color-text-third);
   }
+  font-family: inherit;
+  width: 100%;
 ` as typeof TextareaAutosize;
 const BoxStyle = styled(Box)`
   &.nft-detail {
@@ -197,7 +200,6 @@ export const NFTDetail = withTranslation("common")(
                   minRows={5}
                   disabled={true}
                   value={popItem.description ?? EmptyValueTag}
-                  style={{ width: "100%" }}
                 />
               </Box>
             </Typography>

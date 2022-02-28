@@ -107,7 +107,11 @@ export const WalletHistory = <H extends HebaoOperationLog>({
                       alignItems={"flex-end"}
                       flexDirection={"column"}
                     >
-                      <Typography variant={"body1"} component={"p"}>
+                      <Typography
+                        variant={"body1"}
+                        component={"p"}
+                        textAlign={"right"}
+                      >
                         <Typography
                           variant={"body1"}
                           component={"span"}

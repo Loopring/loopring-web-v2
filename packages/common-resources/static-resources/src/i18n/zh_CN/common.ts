@@ -6,6 +6,7 @@ export default {
   tokenEnter: "输入币种",
   tokenEnterPaymentToken: "卖出",
   tokenMax: "可用:",
+  tokenNFTMaxMINT: "Max:",
   tokenHave: "可用:",
   tokenEnterReceiveToken: "买入",
   tokenSelectToken: "选择币种",
@@ -516,7 +517,8 @@ export default {
   labelNFTMintNoMetaBtn: "No Metadata",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
-  nftMintDescription: "Mint NFT",
+  nftMintDescription:
+    "Mint your own Counter Factual NFT on the Loopring L2 Web DEX!",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "In Progress",
@@ -547,7 +549,7 @@ export default {
   labelTxGuardianGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
   labelTxGuardianGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
   labelTxGuardianGUARDIAN_APPROVE: "GUARDIAN APPROVE",
-  labelTxGuardianAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
+  labelTxGuardianAPPROVE_RECOVER: "APPROVE RECOVER WALLET", // RECOVER  16
   labelTxGuardianAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
   labelTxGuardianAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
   labelTxGuardianADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34

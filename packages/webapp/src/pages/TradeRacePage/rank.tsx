@@ -203,3 +203,88 @@ export const Rank = ({
     </>
   );
 };
+
+// export const RankEvent = ({
+//   event_awardRules,
+// }: {
+//   event_awardRules: {
+//     project: string;
+//     pair: string;
+//     reward: {
+//       count: number;
+//       token: string;
+//     };
+//   };
+// }) => {
+//   return (
+//     <>
+//       <Box
+//         maxWidth={1200}
+//         width={"100%"}
+//         paddingX={3}
+//         marginX={"auto"}
+//         alignSelf={"self-start"}
+//       >
+//         <TableWrapperStyled paddingY={3} position={"relative"}>
+//           <Typography
+//             variant={"h2"}
+//             color={"var(--color-text-secondary)"}
+//             textAlign={"center"}
+//             marginBottom={1}
+//           >
+//             · {t("labelTradeRaceRanking")} ·
+//           </Typography>
+//           <BoxSelect>
+//             <StyledTextFiled
+//               id={"trading-race-market-pair"}
+//               select
+//               style={{ width: 150, textAlign: "left" }}
+//               value={pair}
+//               onChange={(event: React.ChangeEvent<{ value: string }>) => {
+//                 handleMarketPairChange(event);
+//               }}
+//               inputProps={{ IconComponent: DropDownIcon }}
+//             >
+//               {Reflect.ownKeys(activityRule).map((market, index) => (
+//                 <MenuItem
+//                   key={market.toString() + index}
+//                   value={market.toString()}
+//                 >
+//                   {market}
+//                 </MenuItem>
+//               ))}
+//             </StyledTextFiled>
+//           </BoxSelect>
+//           <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+//             <Typography fontSize={16} marginRight={2}>
+//               {t("labelTradeRaceYourVolume")} ({volumeToken}):
+//               {currPairUserRank.volume
+//                 ? getValuePrecisionThousand(
+//                     volumeToCount(volumeToken, currPairUserRank.volume)
+//                   )
+//                 : "--"}
+//             </Typography>
+//             <Typography fontSize={16}>
+//               {t("labelTradeRaceYourRanking")}: {currPairUserRank.rank || "--"}
+//             </Typography>
+//             <Button
+//               style={{ fontSize: 16 }}
+//               variant={"text"}
+//               onClick={() => history.push(`/trade/lite/${pair}`)}
+//             >
+//               {t("labelTradeRaceGoTrading")} &gt;&gt;
+//             </Button>
+//           </Box>
+//           <TradeRaceTable
+//             {...{
+//               t,
+//               rawData: currPairRankData,
+//               volumeToken,
+//               rewardToken,
+//             }}
+//           />
+//         </TableWrapperStyled>
+//       </Box>
+//     </>
+//   );
+// };
