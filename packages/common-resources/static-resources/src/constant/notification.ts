@@ -1,5 +1,6 @@
 import { AMMMarketType, MarketType } from "./market";
 import { myLog } from "../utils";
+import { CoinKey } from "../loopring-interface";
 
 /**
  * export enum RuleType {
@@ -13,6 +14,7 @@ export enum ACTIVITY_TYPE {
   AMM_MINING = "AMM_MINING",
   SWAP_VOLUME_RANKING = "SWAP_VOLUME_RANKING",
   ORDERBOOK_MINING = "ORDERBOOK_MINING",
+  DEPOSIT = "DEPOSIT",
   SPECIAL = "SPECIAL",
 }
 
@@ -28,7 +30,8 @@ export type NOTIFICATION_ITEM = {
 export type ACTIVITY = NOTIFICATION_ITEM & {
   type: ACTIVITY_TYPE;
   link: `${number}/${number}/${number}-${number}-${number}` | string;
-  pairs: Array<MarketType | AMMMarketType>;
+  pairs?: Array<MarketType | AMMMarketType>;
+  tokens?: string[];
   config?: [string, number, number, number, number];
   giftIcon?: string;
 };
@@ -41,25 +44,25 @@ export type NOTIFICATION = {
   };
 };
 export type PairType = {
-  AMM_MINING: {
-    pairs: Array<MarketType | AMMMarketType>;
-  };
-  SWAP_VOLUME_RANKING: {
-    pairs: Array<MarketType | AMMMarketType>;
-  };
-  ORDERBOOK_MINING: {
-    pairs: Array<MarketType | AMMMarketType>;
-  };
-  special?: Array<{
-    pairs: Array<MarketType | AMMMarketType>;
+  // AMM_MINING: {
+  //   pairs?: Array<MarketType | AMMMarketType>;
+  // };
+  // SWAP_VOLUME_RANKING: {
+  //   pairs: Array<MarketType | AMMMarketType>;
+  // };
+  // ORDERBOOK_MINING: {
+  //   pairs: Array<MarketType | AMMMarketType>;
+  // };
+  // tokens?: Array<CoinType>;
+  // special?: Array<{
+  //   pairs: Array<MarketType | AMMMarketType>;
+  //   giftIcon?: string;
+  // }>;
+  [key in ACTIVITY_TYPE | any]?: {
+    pairs?: Array<MarketType | AMMMarketType>;
+    tokens?: Array<CoinKey<any>>;
     giftIcon?: string;
-  }>;
-} & {
-  [key: string]:
-    | {
-        pairs: Array<MarketType | AMMMarketType>;
-      }
-    | undefined;
+  };
 };
 export type Notify = Omit<NOTIFICATION, "prev"> & {
   pairs: PairType;
@@ -146,30 +149,42 @@ export async function getNotification(
     [ACTIVITY_TYPE.AMM_MINING]: {
       pairs: [],
     },
-    special: undefined,
+    [ACTIVITY_TYPE.DEPOSIT]: {
+      tokens: [],
+    },
+    [ACTIVITY_TYPE.SPECIAL]: {},
   };
   notification.activities = notification.activities.reduce((prev, item) => {
     try {
       if (item.endDate > date.getTime()) {
         prev.push(item);
-        if (item.type === ACTIVITY_TYPE.SPECIAL) {
-          pairs.special = [
-            ...(pairs.special ?? []),
-            {
-              pairs: item.pairs,
-              giftIcon: item.giftIcon,
-            },
-          ];
-        } else {
-          if (!pairs[item.type]) {
-            // @ts-ignore
-            pairs[item.type] = { pairs: [] };
-          }
-
-          pairs[item.type].pairs = pairs[item.type].pairs.concat(
-            item.pairs ?? []
-          );
-        }
+        pairs[item.type] = {
+          pairs: [...(pairs[item.type]?.pairs ?? []), ...(item.pairs ?? [])],
+          giftIcon: item.giftIcon,
+          tokens: [...(pairs[item.type]?.tokens ?? []), ...(item.tokens ?? [])],
+        };
+        // if (item.type === ACTIVITY_TYPE.SPECIAL ) {
+        //   if(item.pairs && pairs.SPECIAL){
+        //
+        //     // pairs.SPECIAL = [
+        //     //   ...(pairs.SPECIAL ?? []),
+        //     //   {
+        //     //     pairs: item.pairs,
+        //     //     giftIcon: item.giftIcon,
+        //     //   },
+        //     // ];
+        //   }
+        //
+        // } else {
+        //   if (!pairs[item.type]) {
+        //     // @ts-ignore
+        //     pairs[item.type] = { pairs: [] };
+        //   }
+        //
+        //   pairs[item.type].pairs = pairs[item.type].pairs.concat(
+        //     item.pairs ?? []
+        //   );
+        // }
       }
     } catch (e) {
       myLog(e);

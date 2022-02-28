@@ -147,6 +147,7 @@ export default {
   labelTradeRaceAward: "Award",
   labelTradeRaceProject: "Project",
   labelTradeRacePair: "Pair",
+  labelTradeRaceToken: "Token",
   labelTradeRaceReward: "Reward",
   labelMaker: "Maker",
   labelTaker: "Taker",

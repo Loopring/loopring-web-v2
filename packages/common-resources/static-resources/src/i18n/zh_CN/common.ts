@@ -6,6 +6,7 @@ export default {
   tokenEnter: "输入币种",
   tokenEnterPaymentToken: "卖出",
   tokenMax: "可用:",
+  tokenNFTMaxMINT: "Max:",
   tokenHave: "可用:",
   tokenEnterReceiveToken: "买入",
   tokenSelectToken: "选择币种",
