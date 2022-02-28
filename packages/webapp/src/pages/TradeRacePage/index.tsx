@@ -8,11 +8,12 @@ import {
   EmptyValueTag,
   GoTopIcon,
   MarketType,
+  myLog,
 } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 //@ts-ignore
 // import cssStyle from "./snow.css";
-import { RuleType } from "@loopring-web/loopring-sdk";
+import { AmmPoolActivityRule, RuleType } from "@loopring-web/loopring-sdk";
 import { Rank } from "./rank";
 
 const LayoutStyled = styled(Box)`
@@ -21,7 +22,8 @@ const LayoutStyled = styled(Box)`
   flex-direction: column;
   align-items: center;
 
-  ol {
+  ol,
+  ul {
     list-style: dismal;
     font-size: ${({ theme }) => theme.fontDefault.body1};
     margin-left: ${({ theme }) => theme.unit * 2}px;
@@ -31,7 +33,8 @@ const LayoutStyled = styled(Box)`
     }
 
     li ::marker {
-      content: counter(list-item) " )";
+      content: "  " counter(list-item) ")  ";
+      display: inline-flex;
       color: var(--color-text-secondary);
     }
   }
@@ -64,13 +67,16 @@ export const TradeRacePage = withTranslation("common")(
       duration,
       handleMarketPairChange,
     } = useTradeRace();
-    /*remove: holiday only end*/
-    const flakes = 160;
-    const flake = React.useMemo(() => {
-      return <div className={"flake"} />;
-    }, []);
     const anchorRef = React.useRef();
-    const snows = new Array(flakes).fill(flake, 0, flakes);
+
+    /*remove: holiday only end
+      const flakes = 160;
+      const flake = React.useMemo(() => {
+        return <div className={"flake"} />;
+      }, []);
+      const snows = new Array(flakes).fill(flake, 0, flakes);
+    */
+    myLog("TradeRacePage index", eventData);
     return (
       <>
         <ScrollTop>
@@ -80,11 +86,11 @@ export const TradeRacePage = withTranslation("common")(
         </ScrollTop>
         {eventData ? (
           <LayoutStyled marginY={4}>
-            <div className={"snow"}>
-              {snows.map((item, index) => (
-                <React.Fragment key={index}>{item}</React.Fragment>
-              ))}
-            </div>
+            {/*<div className={"snow"}>*/}
+            {/*  {snows.map((item, index) => (*/}
+            {/*    <React.Fragment key={index}>{item}</React.Fragment>*/}
+            {/*  ))}*/}
+            {/*</div>*/}
             {/*remove: holiday only end*/}
             <Typography
               marginY={1}
@@ -256,22 +262,26 @@ export const TradeRacePage = withTranslation("common")(
               </Typography>
             )}
             {activityRule &&
-              searchParams.get("type") &&
-              [
-                RuleType.SWAP_VOLUME_RANKING,
-                RuleType.ORDERBOOK_MINING,
-              ].includes(searchParams.get("type") as RuleType) &&
-              eventStatus &&
-              [EVENT_STATUS.EVENT_START, EVENT_STATUS.EVENT_END].includes(
-                eventStatus
-              ) &&
-              !searchParams.has("rule") && (
-                <Rank
-                  handleMarketPairChange={handleMarketPairChange}
-                  activityRule={activityRule}
-                  pair={currMarketPair as MarketType}
-                />
-              )}
+            (activityRule as AmmPoolActivityRule)?.ruleType &&
+            searchParams.get("type") &&
+            [
+              RuleType.SWAP_VOLUME_RANKING,
+              RuleType.ORDERBOOK_MINING,
+              RuleType.AMM_MINING,
+            ].includes(searchParams.get("type") as RuleType) &&
+            eventStatus &&
+            [EVENT_STATUS.EVENT_START, EVENT_STATUS.EVENT_END].includes(
+              eventStatus
+            ) &&
+            !searchParams.has("rule") ? (
+              <Rank
+                handleMarketPairChange={handleMarketPairChange}
+                activityRule={activityRule as AmmPoolActivityRule}
+                pair={currMarketPair as MarketType}
+              />
+            ) : (
+              <></>
+            )}
 
             <Box
               ref={anchorRef}

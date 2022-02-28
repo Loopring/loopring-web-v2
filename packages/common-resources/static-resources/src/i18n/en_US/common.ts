@@ -6,6 +6,7 @@ export default {
   tokenEnter: "Enter Token",
   tokenEnterPaymentToken: "From",
   tokenMax: "Available:",
+  tokenNFTMaxMINT: "Max:",
   tokenHave: "Available:",
   tokenEnterReceiveToken: "to",
   tokenSelectToken: "Select Token",

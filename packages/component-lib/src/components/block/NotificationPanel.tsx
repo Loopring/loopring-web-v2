@@ -1,5 +1,5 @@
 import { Trans } from "react-i18next";
-import { myLog, NOTIFICATION } from "@loopring-web/common-resources";
+import { NOTIFICATION } from "@loopring-web/common-resources";
 import { Box, Divider } from "@mui/material";
 import {
   EmptyDefault,
@@ -24,8 +24,6 @@ export const NotificationPanel = ({
 }: {
   notification: NOTIFICATION;
 }) => {
-  myLog("notification component", notification);
-
   return (
     <BoxStyle
       display={"flex"}
@@ -40,7 +38,7 @@ export const NotificationPanel = ({
       {(notification.activities.length &&
         // @ts-ignore
         notification.activities.findIndex(({ startDate }) => {
-          return Date.now() > 0; //TODO debug startDate;
+          return Date.now() > startDate;
         }) !== -1) ||
       (notification.notifications.length &&
         notification.notifications.findIndex(

@@ -4,6 +4,7 @@ import {
   getFormattedHash,
   IBData,
   IPFS_META_URL,
+  myLog,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
@@ -55,7 +56,7 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     [onChangeEvent, tradeData]
   );
 
-  // myLog("isBalanceLimit", isBalanceLimit);
+  myLog("isBalanceLimit", isBalanceLimit, tradeData.balance);
   if (typeof handleError !== "function") {
     handleError = ({ balance, tradeValue }: T) => {
       if (
@@ -75,6 +76,7 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       return { error: false, message: "" };
     };
   }
+  myLog("isBalanceLimit", isBalanceLimit);
   const inputCoinProps = {
     subLabel: t("labelAvailable"),
     placeholderText: "0",

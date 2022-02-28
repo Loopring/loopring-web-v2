@@ -172,7 +172,6 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
 export const ListItemActivity = (props: ACTIVITY) => {
   const { type, title, description1, description2, startDate, link } = props;
   const history = useHistory();
-  myLog("notification Detail", type, title);
   if (Date.now() > startDate) {
     return (
       <ListItemActivityStyle

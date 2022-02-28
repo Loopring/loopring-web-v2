@@ -13,6 +13,7 @@ import {
   UIERROR_CODE,
   WalletMap,
   EmptyValueTag,
+  MINT_LIMIT,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTokenMap } from "stores/token";
@@ -88,6 +89,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         tokenAddress &&
         nftMintValue.tradeValue &&
         Number(nftMintValue.tradeValue) > 0 &&
+        Number(nftMintValue.tradeValue) <= MINT_LIMIT &&
         (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
         nftMintValue.fee &&
         nftMintValue.fee.belong &&
@@ -246,7 +248,11 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     async (data: T) => {
       let shouldUpdate = {};
 
-      if (data.nftIdView && LoopringAPI.nftAPI) {
+      if (
+        data.nftIdView &&
+        LoopringAPI.nftAPI &&
+        nftMintValue.nftIdView !== data.nftIdView
+      ) {
         setIsNFTCheckLoading(true);
         let nftId: string = "";
         try {
@@ -280,6 +286,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                 name: value.name ?? t("labelUnknown"),
                 image: value.image,
                 description: value.description ?? EmptyValueTag,
+                balance: MINT_LIMIT,
                 ...shouldUpdate,
               };
             } else {
@@ -288,6 +295,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                 name: undefined,
                 image: undefined,
                 description: undefined,
+                balance: undefined,
                 ...shouldUpdate,
               };
             }
@@ -297,15 +305,21 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               name: undefined,
               image: undefined,
               description: undefined,
+              balance: undefined,
               ...shouldUpdate,
             };
             myLog(error);
           }
         }
+      } else if (data.nftIdView) {
       } else if (!data.nftIdView) {
         setIsAvaiableId(false);
         shouldUpdate = {
           nftId: "",
+          name: undefined,
+          image: undefined,
+          description: undefined,
+          balance: undefined,
         };
       }
       setIsNFTCheckLoading(false);

@@ -70,3 +70,6 @@
  >   7. Sign / Approve the mint transaction with your wallet
 
 Congratulations, you have minted your NFT on Loopring’s L2 web DEX.
+
+
+

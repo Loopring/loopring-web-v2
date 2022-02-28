@@ -10,6 +10,7 @@ import {
   HelpIcon,
   IPFS_META_URL,
   LoadingIcon,
+  // MINT_LIMIT,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
@@ -380,9 +381,9 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
               <NFTInput
                 {...({ t } as any)}
                 isThumb={false}
-                isBalanceLimit={false}
+                isBalanceLimit={true}
                 inputNFTDefaultProps={{
-                  subLabel: "",
+                  subLabel: t("tokenNFTMaxMINT"),
                   size: InputSize.small,
                   label: t("labelNFTMintInputTitle"),
                 }}
@@ -397,7 +398,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
                 tradeData={
                   {
                     ...tradeData,
-                    belong: tradeData?.tokenAddress ?? undefined,
+                    belong: tradeData?.tokenAddress ?? "NFT",
                   } as any
                 }
                 walletMap={walletMap}

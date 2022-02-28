@@ -15,40 +15,40 @@
         "project": "Loopring",
         "pair": "LRC",
         "reward": {
-          "count": "--",
-          "token": ""
+          "count": "",
+          "token": "Loophead NFT"
         }
       },
       {
         "project": "Ethereum",
         "pair": "ETH",
         "reward": {
-          "count": "--",
-          "token": ""
+          "count": "",
+          "token": "Loophead NFT"
         }
       },
       {
         "project": "Ethereum",
         "pair": "USDC",
         "reward": {
-          "count": "--",
-          "token": ""
+          "count": "",
+          "token": "Loophead NFT"
         }
       },
       {
         "project": "Ethereum",
         "pair": "USDT",
         "reward": {
-          "count": "--",
-          "token": ""
+          "count": "",
+          "token": "Loophead NFT"
         }
       },
       {
         "project": "Ethereum Name Service",
         "pair": "ENS",
         "reward": {
-          "count": "--",
-          "token": ""
+          "count": "",
+          "token": "Loophead NFT"
         }
       },
       {
