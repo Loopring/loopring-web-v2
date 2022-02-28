@@ -1,7 +1,7 @@
 {
   "activities": [
     {
-      "type": 'DEPOSIT',
+      "type": "DEPOSIT",
       "link": "2022-03-03",
       "startDate": 1646265600000,
       "endDate": 1649980800000,
@@ -10,7 +10,12 @@
       "description2": "2022-03-03 00:00 to 2022-04-30 00:00 (UTC)",
       "pairs": [],
       "tokens": [
-        'ETH', 'LRC', 'USDC', 'USDT', 'ENS', 'UNI'
+        "ETH",
+        "LRC",
+        "USDC",
+        "USDT",
+        "ENS",
+        "UNI"
       ],
       "config": [
         "#D3F1F8",
