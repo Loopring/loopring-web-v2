@@ -1,7 +1,12 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box, Typography } from "@mui/material";
-import { Button, SubMenu, SubMenuList } from "@loopring-web/component-lib";
+import {
+  Button,
+  SubMenu,
+  SubMenuList,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { useTranslation, withTranslation } from "react-i18next";
 import {
   AccountStatus,
@@ -123,7 +128,7 @@ export const Layer2Page = () => {
         <AssetPanel />;
     }
   }, [selected]);
-
+  const { isMobile } = useSettings();
   const viewTemplate = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
@@ -240,18 +245,20 @@ export const Layer2Page = () => {
       case AccountStatus.ACTIVATED:
         return (
           <>
-            <Box
-              width={"200px"}
-              display={"flex"}
-              justifyContent={"stretch"}
-              marginRight={3}
-              marginBottom={2}
-              className={"MuiPaper-elevation2"}
-            >
-              <SubMenu>
-                <SubMenuList selected={selected} subMenu={subMenu as any} />
-              </SubMenu>
-            </Box>
+            {!isMobile && (
+              <Box
+                width={"200px"}
+                display={"flex"}
+                justifyContent={"stretch"}
+                marginRight={3}
+                marginBottom={2}
+                className={"MuiPaper-elevation2"}
+              >
+                <SubMenu>
+                  <SubMenuList selected={selected} subMenu={subMenu as any} />
+                </SubMenu>
+              </Box>
+            )}
             <Box
               minHeight={420}
               display={"flex"}

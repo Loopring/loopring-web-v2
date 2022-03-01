@@ -5,9 +5,11 @@ import ReactEcharts from "echarts-for-react";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  HideIcon,
   PriceTag,
+  ViewIcon,
 } from "@loopring-web/common-resources";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
@@ -98,10 +100,11 @@ const AssetPanel = withTranslation("common")(
     const { raw_data } = allowTrade;
     const legalEnable = (raw_data as any)?.legal?.enable;
     const legalShow = (raw_data as any)?.legal?.show;
-    const {
-      account: { accountId, accAddress },
-    } = useAccount();
+    const { isMobile } = useSettings();
     const { tokenPrices } = useTokenPrices();
+    const {
+      account: { accountId },
+    } = useAccount();
     const { marketArray, assetsRawData, userAssets, getUserAssets } =
       useGetAssets();
     const {
@@ -249,7 +252,7 @@ const AssetPanel = withTranslation("common")(
     //   }
     // }, [accAddress]);
 
-    const AssetTitleProps: AssetTitleProps = {
+    const assetTitleProps: AssetTitleProps = {
       assetInfo: {
         totalAsset: assetsRawData
           .map((o) =>
@@ -377,19 +380,21 @@ const AssetPanel = withTranslation("common")(
 
     return (
       <>
-        <StyleTitlePaper
-          paddingX={3}
-          paddingY={5 / 2}
-          className={"MuiPaper-elevation2"}
-        >
-          <AssetTitle
-            {...{
-              t,
-              ...rest,
-              ...AssetTitleProps,
-            }}
-          />
-        </StyleTitlePaper>
+        {!isMobile && (
+          <StyleTitlePaper
+            paddingX={3}
+            paddingY={5 / 2}
+            className={"MuiPaper-elevation2"}
+          >
+            <AssetTitle
+              {...{
+                t,
+                ...rest,
+                ...assetTitleProps,
+              }}
+            />
+          </StyleTitlePaper>
+        )}
 
         {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 
@@ -406,51 +411,111 @@ const AssetPanel = withTranslation("common")(
             className={"MuiPaper-elevation2"}
             marginRight={2}
           >
-            <Typography component="span" color="textSecondary" variant="body1">
-              {t("labelAssetsDistribution")}
+            <Typography
+              component="span"
+              color="textSecondary"
+              variant="body1"
+              display={"flex"}
+              justifyContent={"space-between"}
+            >
+              <Typography component={"span"}>
+                {t("labelAssetsDistribution")}
+                {isMobile && ` (UID: ${accountId})`}
+              </Typography>
+              {isMobile && (
+                <Typography
+                  component={"span"}
+                  variant={"h5"}
+                  paddingRight={3}
+                  color={"textSecondary"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    component={"span"}
+                    paddingLeft={1}
+                    variant={"inherit"}
+                  >
+                    {assetTitleProps.assetInfo.priceTag}{" "}
+                  </Typography>
+                  {!hideL2Assets ? (
+                    <Typography component={"span"} variant={"inherit"}>
+                      {assetTitleProps.assetInfo.totalAsset
+                        ? getValuePrecisionThousand(
+                            assetTitleProps.assetInfo.totalAsset,
+                            2,
+                            2,
+                            2,
+                            true,
+                            { floor: true }
+                          )
+                        : "0.00"}
+                    </Typography>
+                  ) : (
+                    <Typography component={"span"} variant={"inherit"}>
+                      &#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;
+                    </Typography>
+                  )}
+
+                  <IconButton
+                    size={"medium"}
+                    // color={'secondary'}
+                    onClick={() => setHideL2Assets(!hideL2Assets)}
+                    aria-label={t("labelShowAccountInfo")}
+                  >
+                    {!hideL2Assets ? <ViewIcon /> : <HideIcon />}
+                  </IconButton>
+                </Typography>
+              )}
             </Typography>
             <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []} />
           </Box>
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            flex={1}
-            component={"section"}
-            className={"MuiPaper-elevation2"}
-          >
-            <Typography component="span" color="textSecondary" variant="body1">
-              {t("labelTotalAssets")}
-            </Typography>
-            <Box display={"flex"} alignItems={"center"}>
-              <Typography component={"span"} variant={"h5"}>
-                {getCurrAssetsEth()} ETH
-              </Typography>
+          {!isMobile && (
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              flex={1}
+              component={"section"}
+              className={"MuiPaper-elevation2"}
+            >
               <Typography
-                component={"span"}
-                variant={"body2"}
-                color={"var(--color-text-third)"}
+                component="span"
+                color="textSecondary"
+                variant="body1"
               >
-                &nbsp;&#8776;&nbsp;
-                {currency === Currency.usd
-                  ? PriceTag.Dollar + currAssetsEthDollar
-                  : PriceTag.Yuan + currAssetsEthYuan}
+                {t("labelTotalAssets")}
               </Typography>
+              <Box display={"flex"} alignItems={"center"}>
+                <Typography component={"span"} variant={"h5"}>
+                  {getCurrAssetsEth()} ETH
+                </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"body2"}
+                  color={"var(--color-text-third)"}
+                >
+                  &nbsp;&#8776;&nbsp;
+                  {currency === Currency.usd
+                    ? PriceTag.Dollar + currAssetsEthDollar
+                    : PriceTag.Yuan + currAssetsEthYuan}
+                </Typography>
+              </Box>
+              {!!userAssets.length ? (
+                <ReactEcharts
+                  notMerge={true}
+                  lazyUpdate={true}
+                  option={getAssetsTrendChartOption()}
+                />
+              ) : (
+                <ChartWrapper
+                  marginTop={2}
+                  dark={isThemeDark ? "true" : "false"}
+                  flex={1}
+                  component={"div"}
+                />
+              )}
             </Box>
-            {!!userAssets.length ? (
-              <ReactEcharts
-                notMerge={true}
-                lazyUpdate={true}
-                option={getAssetsTrendChartOption()}
-              />
-            ) : (
-              <ChartWrapper
-                marginTop={2}
-                dark={isThemeDark ? "true" : "false"}
-                flex={1}
-                component={"div"}
-              />
-            )}
-          </Box>
+          )}
         </StyledChartWrapper>
         <StylePaper
           marginTop={2}
