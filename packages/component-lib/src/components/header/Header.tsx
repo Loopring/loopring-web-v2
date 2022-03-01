@@ -29,6 +29,7 @@ import {
   ThemeType,
   LightIcon,
   DarkIcon,
+  LoopringLogoIcon,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -206,6 +207,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         selected,
         isWrap = true,
         isLandPage = false,
+        isMobile = false,
         i18n,
         t,
         ...rest
@@ -342,8 +344,19 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               alignContent="center"
               justifyContent={"flex-start"}
               alignItems={"stretch"}
+              flexDirection={"row"} //!isMobile ? "row" : "column"}
             >
-              <LoopringLogo />
+              {!isMobile ? (
+                <LoopringLogo />
+              ) : (
+                <Typography display={"inline-flex"} alignItems={"center"}>
+                  <LoopringLogoIcon
+                    // fontSize={"large"}
+                    style={{ height: 28, width: 28 }}
+                    color={"primary"}
+                  />
+                </Typography>
+              )}
               {!isLandPage &&
                 getDrawerChoices({
                   menuList: headerMenuData,

@@ -203,7 +203,7 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
 
 export function* getUpdateSystem({ payload }: any) {
   try {
-    const { chainId, isMobile } = payload;
+    const { chainId } = payload;
     const {
       env,
       baseURL,
@@ -224,7 +224,6 @@ export function* getUpdateSystem({ payload }: any) {
         fiatPrices,
         gasPrice,
         forex,
-        isMobile,
         exchangeInfo,
         etherscanBaseUrl,
         __timer__,

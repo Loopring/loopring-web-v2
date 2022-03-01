@@ -18,6 +18,9 @@ import { useAmount } from "./stores/amount";
 import { useSocket } from "./stores/socket";
 import { useNotify } from "./stores/notify";
 import { useLayer1Store } from "./stores/localStore/layer1Store";
+import theme from "echarts/types/src/theme/dark";
+import { useTheme } from "@mui/material";
+import { useSettings } from "@loopring-web/component-lib";
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -43,6 +46,7 @@ export function useInit() {
       return SagaStatus.PENDING;
     }
   });
+  const { isMobile } = useSettings();
 
   const { account, updateAccount, resetAccount } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
@@ -79,10 +83,6 @@ export function useInit() {
         account.connectName !== "unknown"
       ) {
         try {
-          let isMobile = false;
-          if (IsMobile.any()) {
-            isMobile = true;
-          }
           ConnectProvides.setIsMobile(isMobile);
           await connectProvides[account.connectName](account.accAddress);
           updateAccount({});
@@ -100,7 +100,7 @@ export function useInit() {
             circleUpdateLayer1ActionHistory({ chainId });
 
             if (!isNoServer) {
-              updateSystem({ chainId: chainId as any, isMobile });
+              updateSystem({ chainId: chainId as any });
             }
             return;
           }
@@ -197,6 +197,7 @@ export function useInit() {
         break;
     }
   }, [tokenPricesStatus]);
+
   React.useEffect(() => {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:

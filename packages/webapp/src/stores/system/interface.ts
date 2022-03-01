@@ -16,7 +16,6 @@ export type NETWORK = NETWORKEXTEND | ChainId;
 export type System<C extends { [key: string]: any }> = {
   env: keyof typeof ENV;
   chainId: 1 | 5 | "unknown";
-  isMobile: boolean;
   // network: keyof typeof NETWORK,
   etherscanBaseUrl: string;
   socketURL: string;
