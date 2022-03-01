@@ -56,7 +56,7 @@ const basicLayout = {
       { i: "orderTable", x: 3, y: 64, w: 9, h: 36, minW: 6, minH: 36 },
     ],
     xs: [
-      { i: "toolbar", x: 0, y: 0, w: 12, h: 9, minW: 12, minH: 9 },
+      { i: "toolbar", x: 0, y: 0, w: 12, h: 14, minW: 12, minH: 9 },
       { i: "walletInfo", x: 0, y: 10, w: 4, h: 28, minW: 3, minH: 22 },
       { i: "spot", x: 0, y: 14, w: 4, h: 66, minW: 3, minH: 66 },
       { i: "market", x: 4, y: 10, w: 3, h: 58, minW: 3, minH: 58 },
@@ -65,13 +65,13 @@ const basicLayout = {
       { i: "orderTable", x: 7, y: 64, w: 8, h: 36, minW: 5, minH: 36 },
     ],
     xxs: [
-      { i: "toolbar", x: 0, y: 0, w: 6, h: 9, minW: 6, minH: 9 },
-      { i: "walletInfo", x: 0, y: 63, w: 3, h: 25, minW: 3, minH: 22 },
-      { i: "spot", x: 0, y: 9, w: 3, h: 54, minW: 3, minH: 54 },
-      { i: "market", x: 3, y: 9, w: 3, h: 79, minW: 3, minH: 58 },
+      { i: "toolbar", x: 0, y: 0, w: 6, h: 14, minW: 6, minH: 9 },
+      { i: "walletInfo", x: 0, y: 63, w: 3, h: 39, minW: 3, minH: 22 },
+      { i: "spot", x: 0, y: 9, w: 3, h: 89, minW: 3, minH: 54 },
+      { i: "market", x: 3, y: 9, w: 3, h: 128, minW: 3, minH: 58 },
       { i: "market2", x: 0, y: 0, w: 0, h: 0, minW: 0, minH: 0 },
-      { i: "chart", x: 3, y: 125, w: 6, h: 36, minW: 3, minH: 32 },
-      { i: "orderTable", x: 0, y: 88, w: 6, h: 36, minW: 5, minH: 36 },
+      { i: "chart", x: 3, y: 125, w: 6, h: 80, minW: 3, minH: 32 },
+      { i: "orderTable", x: 0, y: 88, w: 6, h: 80, minW: 5, minH: 36 },
     ],
   },
 };

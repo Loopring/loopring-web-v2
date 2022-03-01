@@ -148,7 +148,6 @@ const StyledTabBtn = styled(MenuItem)<MenuItemProps<any>>`
     text-transform: capitalize;
     display: flex;
     height: 100%;
-    padding-left: ${({ theme }) => (theme.unit * 3) / 2}px;
     padding-right: 0;
 
     svg {
