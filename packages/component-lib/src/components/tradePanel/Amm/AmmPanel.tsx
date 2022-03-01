@@ -53,6 +53,9 @@ const WrapStyle = styled(Box)<
   ${({ theme }) => boxLiner({ theme })}
   ${({ theme }) => toolBarPanel({ theme })}
   border-radius: ${({ theme }) => theme.unit}px;
+  .trade-panel .coinInput-wrap {
+    background: var(--field-opacity);
+  }
   .MuiToolbar-root {
     //padding-left:0;
     justify-content: space-between;
