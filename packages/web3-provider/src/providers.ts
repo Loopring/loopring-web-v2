@@ -19,10 +19,19 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { ConnectProviders } from "@loopring-web/common-resources";
 
 export class ConnectProvides {
+  private static _isMobile = false;
   public usedProvide: undefined | IpcProvider | WalletConnectProvider;
   public usedWeb3: undefined | Web3;
 
   private _provideName: string | undefined;
+
+  public static setIsMobile(isMobile: boolean) {
+    ConnectProvides._isMobile = isMobile;
+  }
+
+  public static getIsMobile(isMobile: boolean) {
+    return ConnectProvides._isMobile;
+  }
 
   get provideName(): string | undefined {
     return this._provideName;

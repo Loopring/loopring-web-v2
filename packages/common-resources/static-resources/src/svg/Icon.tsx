@@ -1104,3 +1104,11 @@ export const WaitApproveIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+
+export const LoopringLogoIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
+      <path d="M23.4736 11.8583H14.1426L16.1262 15.0013L8.90438 20.7588L23.4736 11.914V11.8583ZM8.70878 20.8839V3.33333L1.33334 15.0152L8.70878 20.8839Z" />
+    </SvgIcon>
+  );
+};

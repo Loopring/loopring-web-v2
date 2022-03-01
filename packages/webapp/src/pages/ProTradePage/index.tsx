@@ -10,6 +10,7 @@ import {
   BreakPoint,
   DragIcon,
   layoutConfigs,
+  myLog,
   ResizeIcon,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -218,6 +219,7 @@ export const OrderbookPage = withTranslation("common")(() => {
         }, 0);
       } else {
       }
+      myLog(currentLayout);
     },
     [configLayout, proLayout, setConfigLayout, setLayouts]
   );
