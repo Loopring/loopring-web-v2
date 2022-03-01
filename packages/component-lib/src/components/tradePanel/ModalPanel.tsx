@@ -26,7 +26,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import React from "react";
-
+//padding-bottom: var(--toolbar-row-padding);
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`
@@ -50,7 +50,6 @@ const BoxStyle = styled(Box)<
           ${({ theme }) => theme.unit * 5}px;
         overflow-x: hidden;
         overflow-y: scroll !important;
-        padding-bottom: var(--toolbar-row-padding);
         background: initial;
         .container {
           height: 100%;

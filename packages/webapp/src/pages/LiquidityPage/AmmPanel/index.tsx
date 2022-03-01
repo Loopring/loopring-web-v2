@@ -301,7 +301,6 @@ export const AmmPanelView = ({
 
       {pair ? (
         <>
-          {" "}
           <AmmPanel
             {...{ ...rest }}
             accStatus={accountStatus}

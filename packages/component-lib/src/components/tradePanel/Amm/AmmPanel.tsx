@@ -56,6 +56,7 @@ const WrapStyle = styled(Box)<
   .MuiToolbar-root {
     //padding-left:0;
     justify-content: space-between;
+    padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px;
   }
 ` as (
   props: BoxProps & {

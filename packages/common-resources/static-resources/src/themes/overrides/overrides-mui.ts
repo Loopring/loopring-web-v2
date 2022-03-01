@@ -1,9 +1,10 @@
 import { borderFunc, pxToRem } from "./utils";
 import { ComponentsOverrides } from "@mui/material";
 import { fontDefault } from "../css/global";
+import { IsMobile } from "../../utils";
 
-// const opacity = 1;
-export const unit = 8;
+const isMobile = IsMobile.any();
+export const unit = isMobile ? 4 : 8;
 export const radius = 4;
 export const checkBoxSize = 18;
 export const hr = ({ colorBase }: any) => {

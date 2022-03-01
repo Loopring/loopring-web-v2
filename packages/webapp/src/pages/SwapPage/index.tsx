@@ -42,6 +42,7 @@ export const SwapPage = withTranslation("common")(
       toPro,
       isMobile,
     } = useSwap({ path: "/trade/lite" });
+    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     return (
       <>
         <Toast
@@ -72,12 +73,7 @@ export const SwapPage = withTranslation("common")(
             <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray} />
           </Box>
         )}
-        <Box
-          display={"flex"}
-          flex={isMobile ? 1 : "initial"}
-          style={{ minWidth: "var(--swap-box-width)" }}
-          justifyContent={"center"}
-        >
+        <Box display={"flex"} style={styles} justifyContent={"center"}>
           <FixedStyle>
             <SwapPanel
               //disabled={isSwapLoading}
