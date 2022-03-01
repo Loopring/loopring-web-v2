@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 import { BoxProps, Grid, Typography } from "@mui/material";
-import { css, Theme } from "@emotion/react";
+import { css, Theme, useTheme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
 import React from "react";
 import { Button } from "./basic-lib";
+import { useSettings } from "../stores";
 
 // @ts-ignore
 export const boxLiner = (_props: { theme: Theme }) => css`
@@ -28,24 +29,22 @@ export const TypographyStrong = styled(Typography)`
 export const TypographyGood = styled(Typography)`
   color: var(--color-success);
 ` as typeof Typography;
-export const TablePaddingX = ({
-  pLeft = 24,
-  pRight = 24,
-}: {
-  pLeft: number;
-  pRight: number;
-}) => css`
-  .rdg-row,
-  .rdg-header-row {
-    .rdg-cell:first-of-type {
-      padding-left: ${pLeft}px;
-    }
+export const TablePaddingX = (_props: { pLeft: number; pRight: number }) => {
+  const { unit } = useTheme();
+  const { isMobile } = useSettings();
+  return css`
+    .rdg-row,
+    .rdg-header-row {
+      .rdg-cell:first-of-type {
+        padding-left: ${unit * (isMobile ? 1 : 3)}px;
+      }
 
-    .rdg-cell:last-of-type {
-      padding-right: ${pRight}px;
+      .rdg-cell:last-of-type {
+        padding-right: ${unit * (isMobile ? 1 : 3)}px;
+      }
     }
-  }
-`;
+  `;
+};
 export const VipStyled = styled(Typography)`
   margin-left: ${({ theme }) => theme.unit}px;
   padding: ${({ theme }) => theme.unit / 4}px ${({ theme }) => theme.unit}px;
