@@ -195,7 +195,6 @@ export const SwitchPanelStyled: any = styled(Box)<
               height:initial;
               overflow-x: hidden;
               overflow-y: scroll !important;
-              padding-bottom:var(--toolbar-row-padding); 
               background: initial;
            }
        }
