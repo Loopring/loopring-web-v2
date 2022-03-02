@@ -59,11 +59,15 @@ export const getFormattedHash = (hash?: string) => {
   return `${firstSix}****${lastFour}`;
 };
 
-export function getShortAddr(address: string): string | "" {
+export function getShortAddr(address: string, isMobile?: boolean): string | "" {
   if (!address || address.trim() === "") {
     return "";
   }
-  return address.substr(0, 6) + "..." + address.substr(address.length - 4);
+  return (
+    (isMobile ? "0x" : address.substr(0, 6)) +
+    "..." +
+    address.substr(address.length - 4)
+  );
 }
 
 const getFloatFloor = (
