@@ -44,7 +44,7 @@ const TableStyled = styled(Table)`
 
     --template-columns: ${({ ispro, isMobile }: any) =>
       ispro || isMobile
-        ? "35% 38% auto"
+        ? "35% 44% auto"
         : "240px 220px 100px auto auto auto 132px"} !important;
 
     .rdg-cell.action {
@@ -287,6 +287,8 @@ export const QuoteTable = withTranslation("tables")(
           {
             key: "close",
             name: t("labelQuotaLastPrice"),
+            headerCellClass: "textAlignCenter",
+            cellClass: "textAlignRight",
             sortable: true,
             formatter: ({ row }: any) => {
               const value = row.close;
@@ -328,24 +330,36 @@ export const QuoteTable = withTranslation("tables")(
                     )
                 : EmptyValueTag;
               return (
-                <div className="rdg-cell-value">
-                  <span>{price}</span>
-                  <Typography
-                    color={"var(--color-text-third)"}
-                    component={"span"}
-                  >
-                    {" "}
-                    / {faitPrice}
+                <Typography
+                  className="rdg-cell-value"
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  whiteSpace={isMobile ? "pre-line" : "pre"}
+                  justifyContent={isMobile ? "flex-end" : "flex-start"}
+                >
+                  <Typography component={"span"} variant={"inherit"}>
+                    {price}
                   </Typography>
-                </div>
+                  <Typography
+                    component={"span"}
+                    variant={isMobile ? "body2" : "body1"}
+                    color={"var(--color-text-third)"}
+                  >
+                    {"/"}
+                    {/*{isMobile ? "\n" : "/"}*/}
+                    {faitPrice}
+                  </Typography>
+                </Typography>
               );
             },
           },
           {
             key: "change",
-            name: t("labelQuota24hChange"),
+            name: t(
+              isMobile ? "labelQuota24hChangeLit" : "labelQuota24hChange"
+            ),
             sortable: true,
-            headerCellClass: "textAlignRight",
+            headerCellClass: "textAlignCenter",
             formatter: ({ row }: any) => {
               const value = row.change;
               return (

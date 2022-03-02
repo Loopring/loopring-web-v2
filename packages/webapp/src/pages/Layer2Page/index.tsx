@@ -140,7 +140,11 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+            <Typography
+              marginY={3}
+              variant={isMobile ? "h4" : "h1"}
+              textAlign={"center"}
+            >
               {t("describeTitleConnectToWallet")}
             </Typography>
             <BtnConnect />
@@ -156,7 +160,11 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+            <Typography
+              marginY={3}
+              variant={isMobile ? "h4" : "h1"}
+              textAlign={"center"}
+            >
               {t("describeTitleLocked")}
             </Typography>
             <BtnConnect />
@@ -174,7 +182,7 @@ export const Layer2Page = () => {
           >
             <Typography
               marginY={3}
-              variant={"h1"}
+              variant={isMobile ? "h4" : "h1"}
               whiteSpace={"pre-line"}
               textAlign={"center"}
             >
@@ -193,7 +201,11 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+            <Typography
+              marginY={3}
+              variant={isMobile ? "h4" : "h1"}
+              textAlign={"center"}
+            >
               {t("describeTitleNotActive")}
             </Typography>
             <BtnConnect />
@@ -216,7 +228,11 @@ export const Layer2Page = () => {
               src={`${SoursURL}images/loading-line.gif`}
             />
             {/*<LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />*/}
-            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+            <Typography
+              marginY={3}
+              variant={isMobile ? "h4" : "h1"}
+              textAlign={"center"}
+            >
               {t("describeTitleOpenAccounting")}
             </Typography>
             {/*<BtnConnect/>*/}
@@ -232,7 +248,11 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+            <Typography
+              marginY={3}
+              variant={isMobile ? "h4" : "h1"}
+              textAlign={"center"}
+            >
               {t("describeTitleOnErrorNetwork", {
                 connectName: account.connectName,
               })}
@@ -274,7 +294,7 @@ export const Layer2Page = () => {
       default:
         break;
     }
-  }, [t, account.readyState, selected]);
+  }, [t, account.readyState, selected, isMobile]);
 
   return <>{viewTemplate}</>;
 };

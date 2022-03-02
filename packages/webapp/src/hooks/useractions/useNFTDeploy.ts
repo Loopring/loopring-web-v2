@@ -208,10 +208,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
     isFirsTime: boolean = true
   ) => {
     const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-    const nftDeployValue = {
-      ...store.getState()._router_modalData.nftDeployValue,
-      ..._nftDeployValue,
-    };
+    const nftDeployValue = store.getState()._router_modalData.nftDeployValue;
 
     if (
       readyState === AccountStatus.ACTIVATED &&
