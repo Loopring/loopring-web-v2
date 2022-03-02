@@ -514,7 +514,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         const _headerMenuData = _.cloneDeep(headerMenuData);
         let item = _headerMenuData.find((item) => item.label.id === "Layer2");
         if (item) {
-          item.child = subMenuLayer2;
+          item.child = [...subMenuLayer2];
         }
         return (
           <ToolBarStyled>
