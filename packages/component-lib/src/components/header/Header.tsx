@@ -525,11 +525,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               alignItems={"stretch"}
               flexDirection={"row"} //!isMobile ? "row" : "column"}
             >
-              <Typography
-                display={"inline-flex"}
-                alignItems={"center"}
-                {...bindTrigger(popupState)}
-              >
+              <Typography display={"inline-flex"} alignItems={"center"}>
                 <LoopringLogoIcon
                   fontSize={"large"}
                   style={{ height: 28, width: 28 }}
