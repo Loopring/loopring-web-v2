@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "@emotion/styled";
 import { Box, Modal, Typography } from "@mui/material";
 import { TFunction, WithTranslation, withTranslation } from "react-i18next";
@@ -9,7 +8,7 @@ import {
   EmptyValueTag,
   EXPLORE_TYPE,
   Explorer,
-  getFormattedHash,
+  getShortAddr,
   getValuePrecisionThousand,
   TableType,
   WaitingIcon,
@@ -25,6 +24,7 @@ import {
 } from "./Interface";
 import { DateRange } from "@mui/lab";
 import { UserTxTypes } from "@loopring-web/loopring-sdk";
+import React from "react";
 
 export type TxsFilterProps = {
   tokenSymbol?: string;
@@ -128,6 +128,21 @@ export interface TransactionTableProps {
   accAddress?: string;
 }
 
+// const RowRenderer = React.memo(
+//   React.forwardRef(
+//     (props: RowRendererProps<any>, _ref: React.ForwardedRef<any>) => {
+//       const transactionDetail = usePopupState({
+//         variant: "popover",
+//         popupId: `popup-pro-kline-features`,
+//       });
+//       return (
+//         <>
+//           <Row {...props} />
+//         </>
+//       );
+//     }
+//   )
+// );
 export const TransactionTable = withTranslation(["tables", "common"])(
   (props: TransactionTableProps & WithTranslation) => {
     const {
@@ -319,23 +334,42 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           },
         },
         {
-          key: "txnHash",
-          name: t("labelTxTxnHash"),
+          key: "from",
+          name: t("labelTxFrom"),
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
+            const receiverAddress = getShortAddr(row.receiverAddress);
+            const senderAddress = getShortAddr(row.senderAddress);
+            const [from, to] =
+              row["side"] === "TRANSFER"
+                ? row["receiverAddress"]?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? [senderAddress, "L2"]
+                  : ["L2", receiverAddress]
+                : row["side"] === "DEPOSIT"
+                ? ["L1", "L2"]
+                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                ? ["L2", receiverAddress]
+                : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
+            const path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer +
+                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+
             // if (
             //   row.txHash ||
             //   (row.blockIdInfo.blockId &&
             //     row.storageInfo &&
             //     (row.storageInfo.tokenId || row.storageInfo.storageId))
             // ) {
-            const path =
-              row.txHash !== ""
-                ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : Explorer +
-                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            // const path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
             // const path =
             //   row.txHash !== ""
             //     ? etherscanBaseUrl + `/tx/${row.txHash}`
@@ -359,7 +393,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   onClick={() => window.open(path, "_blank")}
                   title={hash}
                 >
-                  {hash ? getFormattedHash(hash) : EmptyValueTag}
+                  {from + " -> " + to}
+                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
                 </Typography>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
@@ -424,7 +459,15 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <TxnDetailPanel {...{ ...txnDetailInfo }} />
         </Modal>
-        <Table {...{ ...defaultArgs, ...props, rawData, showloading }} />
+        <Table
+          {...{
+            ...defaultArgs,
+            // rowRenderer: RowRenderer,
+            ...props,
+            rawData,
+            showloading,
+          }}
+        />
         {pagination && (
           <TablePagination
             page={page}
