@@ -259,8 +259,8 @@ export const toolBarPanel = ({ theme }: any) => css`
 `;
 
 export const TableFilterStyled = styled(Box)`
-  margin-left: 26px;
-  margin-bottom: ${({ theme }) => theme.unit * 2}px;
+  margin: 0 ${({ theme }) => theme.unit * 3}px
+    ${({ theme }) => theme.unit * 2}px;
 ` as typeof Box;
 
 export const AnimationArrow = styled(Box)`
