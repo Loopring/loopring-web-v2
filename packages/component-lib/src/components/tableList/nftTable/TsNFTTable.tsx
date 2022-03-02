@@ -10,6 +10,7 @@ import {
   EXPLORE_TYPE,
   Explorer,
   getFormattedHash,
+  getShortAddr,
   getValuePrecisionThousand,
   WaitingIcon,
   WarningIcon,
@@ -174,11 +175,26 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
         //     );
         //   },
         // },
+
         {
-          key: "txnHash",
-          name: t("labelTxTxnHash"),
+          key: "from",
+          name: t("labelTxFrom"),
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
+            const receiverAddress = getShortAddr(row.receiverAddress);
+            const senderAddress = getShortAddr(row.senderAddress);
+            const [from, to] =
+              row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
+                ? row.receiverAddress?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? [senderAddress, "L2"]
+                  : ["L2", receiverAddress]
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
+                  row.nftTxType === TxNFTType[TxNFTType.MINT]
+                ? ["L2 Mint", "L2"]
+                : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? ["L2", receiverAddress]
+                : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
             let path =
               row.txHash !== ""
@@ -187,19 +203,9 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   `tx/${row.hash}-${
                     EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
                   }`;
-            // let path =
-            //   row.txHash !== ""
-            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
-            //     : row.storageInfo.tokenId || row.storageInfo.storageId
-            //     ? Explorer +
-            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
-            //     : Explorer +
-            //       `tx/${row.hash}-${
-            //         EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
-            //       }`;
             return (
               <Box
-                className="rdg-cell-value"
+                className="rdg-cell-value textAlignRight"
                 display={"inline-flex"}
                 justifyContent={"flex-end"}
                 alignItems={"center"}
@@ -212,7 +218,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   onClick={() => window.open(path, "_blank")}
                   title={hash}
                 >
-                  {hash ? getFormattedHash(hash) : EmptyValueTag}
+                  {from + " -> " + to}
+                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
                 </Typography>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
