@@ -16,6 +16,7 @@ import {
   CompleteIcon,
   CopyIcon,
   DarkIcon,
+  DepositIcon,
   DepthFIcon,
   DepthHIcon,
   DoneIcon,
@@ -63,6 +64,7 @@ import {
   StarSolidIcon,
   SubmitIcon,
   ThirdPlaceIcon,
+  TransferIcon,
   TrophyIcon,
   UnConnectIcon,
   UpIcon,
@@ -70,6 +72,7 @@ import {
   VipIcon,
   WaitingIcon,
   WarningIcon,
+  WithdrawIcon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -150,6 +153,9 @@ const listIcon = [
   <TrophyIcon />,
   <NFTIcon />,
   <LoopringLogoIcon />,
+  <DepositIcon />,
+  <TransferIcon />,
+  <WithdrawIcon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(
@@ -185,7 +191,7 @@ export const IconList: Story<any> = withTranslation()(
 ) as Story<any>;
 
 //export const Button = Template.bind({});
-
+// @ts-ignore
 export default {
   title: "Resource/IconsList",
   component: IconList,

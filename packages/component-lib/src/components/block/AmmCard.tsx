@@ -40,7 +40,7 @@ export interface Reward {
 }
 
 const CardStyled = styled(Card)`
-  height: ${({ theme }) => theme.unit * 61.5}px;
+  min-height: ${({ theme }) => theme.unit * 61.5}px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

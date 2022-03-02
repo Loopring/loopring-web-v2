@@ -5,6 +5,7 @@ import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import {
   CompleteIcon,
+  DepositIcon,
   EmptyValueTag,
   EXPLORE_TYPE,
   Explorer,
@@ -25,6 +26,7 @@ import {
 import { DateRange } from "@mui/lab";
 import { UserTxTypes } from "@loopring-web/loopring-sdk";
 import React from "react";
+import { useSettings } from "../../../stores";
 
 export type TxsFilterProps = {
   tokenSymbol?: string;
@@ -154,6 +156,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       etherscanBaseUrl,
       accAddress,
     } = props;
+    const { isMobile } = useSettings();
     const [page, setPage] = React.useState(1);
     const [filterType, setFilterType] = React.useState(
       TransactionTradeTypes.allTypes
@@ -260,7 +263,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     );
 
     const getColumnModeTransaction = React.useCallback(
-      (t: TFunction): Column<any, unknown>[] => [
+      (): Column<any, unknown>[] => [
         {
           key: "side",
           name: t("labelTxSide"),
@@ -435,8 +438,195 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       [handleTxnDetail, etherscanBaseUrl]
     );
 
+    const getColumnMobileTransaction = React.useCallback(
+      (t: TFunction): Column<any, unknown>[] => [
+        // {
+        //   key: "side",
+        //   name: t("labelTxSide"),
+        //   formatter: ({ row }) => {
+        //     const value = row["side"];
+        //     const renderValue =
+        //       value === TransactionTradeTypes.deposit
+        //         ? t("labelDeposit")
+        //         : value === TransactionTradeTypes.transfer
+        //         ? t("labelTransfer")
+        //         : t("labelWithdraw");
+        //     return <Box className="rdg-cell-value">{renderValue}</Box>;
+        //   },
+        // },
+        {
+          key: "amount",
+          name: t("labelTxAmount"),
+          headerCellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            const { unit, value } = row["amount"];
+            const hasValue = Number.isFinite(value);
+            const hasSymbol =
+              row["side"] === "TRANSFER"
+                ? row["receiverAddress"]?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? "+"
+                  : "-"
+                : row["side"] === "DEPOSIT"
+                ? "+"
+                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                ? "-"
+                : "";
+            const value = row["side"];
+            const renderValue =
+              value === TransactionTradeTypes.deposit ? (
+                <DepositIcon />
+              ) : value === TransactionTradeTypes.transfer ? (
+                <Tr
+              ) : (
+                t("labelWithdraw")
+              );
+            const renderValue = hasValue
+              ? `${getValuePrecisionThousand(
+                  value,
+                  undefined,
+                  undefined,
+                  undefined,
+                  false,
+                  { isTrade: true }
+                )}`
+              : EmptyValueTag;
+            return (
+              <Box className="rdg-cell-value textAlignRight">
+                {hasSymbol}
+                {renderValue} {unit || ""}
+              </Box>
+            );
+          },
+        },
+        {
+          key: "fee",
+          name: t("labelTxFee"),
+          headerCellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            const fee = row["fee"];
+            const renderValue = `${getValuePrecisionThousand(
+              fee.value,
+              undefined,
+              undefined,
+              undefined,
+              false,
+              {
+                floor: false,
+                isTrade: true,
+              }
+            )} ${fee.unit}`;
+            return (
+              <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
+            );
+          },
+        },
+        {
+          key: "from",
+          name: t("labelTxFrom"),
+          headerCellClass: "textAlignRight",
+          cellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            const receiverAddress = getShortAddr(row.receiverAddress);
+            const senderAddress = getShortAddr(row.senderAddress);
+            const [from, to] =
+              row["side"] === "TRANSFER"
+                ? row["receiverAddress"]?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? [senderAddress, "L2"]
+                  : ["L2", receiverAddress]
+                : row["side"] === "DEPOSIT"
+                ? ["L1", "L2"]
+                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                ? ["L2", receiverAddress]
+                : ["", ""];
+            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            const path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer +
+                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+
+            // if (
+            //   row.txHash ||
+            //   (row.blockIdInfo.blockId &&
+            //     row.storageInfo &&
+            //     (row.storageInfo.tokenId || row.storageInfo.storageId))
+            // ) {
+            // const path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            // const path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : row.storageInfo.tokenId || row.storageInfo.storageId
+            //     ? Explorer +
+            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            return (
+              <Box
+                className="rdg-cell-value textAlignRight"
+                display={"inline-flex"}
+                justifyContent={"flex-end"}
+                alignItems={"center"}
+              >
+                <Typography
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  color={"var(--color-primary)"}
+                  onClick={() => window.open(path, "_blank")}
+                  title={hash}
+                >
+                  {from + " -> " + to}
+                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
+                </Typography>
+                <Box marginLeft={1}>
+                  <CellStatus {...{ row }} />
+                </Box>
+              </Box>
+            );
+          },
+        },
+        {
+          key: "status",
+          name: t("labelTxMemo"),
+          headerCellClass: "textAlignCenter",
+          formatter: ({ row }) => (
+            <MemoCellStyled
+              title={row["memo"]}
+              className="rdg-cell-value textAlignLeft"
+            >
+              {row["memo"] || EmptyValueTag}
+            </MemoCellStyled>
+          ),
+        },
+        {
+          key: "time",
+          name: t("labelTxTime"),
+          headerCellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            const value = row["time"];
+            const hasValue = Number.isFinite(value);
+            const renderValue = hasValue
+              ? moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow()
+              : EmptyValueTag;
+            return (
+              <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
+            );
+          },
+        },
+      ],
+      [handleTxnDetail, etherscanBaseUrl]
+    );
+
     const defaultArgs: any = {
-      columnMode: getColumnModeTransaction(props.t).filter((o) => !o.hidden),
+      columnMode: isMobile
+        ? getColumnMobileTransaction()
+        : getColumnModeTransaction(),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
