@@ -10,6 +10,7 @@ import {
   useScrollTrigger,
   Grid,
   ClickAwayListener,
+  Divider,
 } from "@mui/material";
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -34,6 +35,8 @@ import {
   // LoopringLogoIcon,
   MenuIcon,
   LoopringLogoIcon,
+  HeadMenuTabKey,
+  subMenuLayer2,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -46,6 +49,7 @@ import { useSettings } from "../../stores";
 import { bindPopper } from "material-ui-popup-state/es";
 import { bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
 import { useTheme } from "@emotion/react";
+import _ from "lodash";
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
@@ -266,56 +270,81 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           // onClose?: () => void;
           handleListKeyDown?: any;
         } & WithTranslation) => {
+          let _obj = {};
+          if (menuList instanceof Array) {
+            _obj[0] = menuList;
+          } else {
+            _obj = menuList;
+          }
           return (
-            !!menuList.length &&
-            menuList.map((props: HeaderMenuItemInterface) => {
-              const { label, child, status } = props;
-              const selectedFlag = new RegExp(label.id, "ig").test(
-                selected.split("/")[1] ? selected.split("/")[1] : selected
-              );
-              if (status === HeaderMenuTabStatus.hidden) {
-                // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
-                return <React.Fragment key={label.id + "-" + layer} />;
-              } else {
-                if (child) {
-                  return (
-                    <React.Fragment key={label.id + "-" + layer}>
-                      {memoized({
-                        ...props,
-                        layer,
-                        handleListKeyDown,
-                        ...rest,
+            <>
+              {Reflect.ownKeys(_obj).map((key, index) => {
+                return (
+                  <>
+                    {!!_obj[key].length &&
+                      _obj[key].map((props: HeaderMenuItemInterface) => {
+                        const { label, child, status } = props;
+                        const selectedFlag = new RegExp(label.id, "ig").test(
+                          selected.split("/")[1]
+                            ? selected.split("/")[1]
+                            : selected
+                        );
+                        if (status === HeaderMenuTabStatus.hidden) {
+                          // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
+                          return (
+                            <React.Fragment key={label.id + "-" + layer} />
+                          );
+                        } else {
+                          if (child) {
+                            return (
+                              <React.Fragment key={label.id + "-" + layer}>
+                                {memoized({
+                                  ...props,
+                                  layer,
+                                  handleListKeyDown,
+                                  ...rest,
+                                })}
+                              </React.Fragment>
+                            );
+                          } else {
+                            return (
+                              <HeadMenuItem
+                                selected={selectedFlag}
+                                {...{
+                                  ...props,
+                                  allowTrade,
+                                  layer,
+                                  children: (
+                                    <NodeMenuItem
+                                      {...{
+                                        ...props,
+                                        layer,
+                                        child,
+                                        handleListKeyDown,
+                                        ...rest,
+                                      }}
+                                    />
+                                  ),
+                                  style: { textDecoration: "none" },
+                                  key: label.id + "-" + layer,
+                                }}
+                                // onClick={handleListKeyDown ? handleListKeyDown : ""}
+                              />
+                            );
+                          }
+                        }
+                        {
+                          index + 1 !== _obj[key].length && (
+                            <Box marginX={3}>
+                              <Divider />
+                            </Box>
+                          );
+                        }
                       })}
-                    </React.Fragment>
-                  );
-                } else {
-                  return (
-                    <HeadMenuItem
-                      selected={selectedFlag}
-                      {...{
-                        ...props,
-                        allowTrade,
-                        layer,
-                        children: (
-                          <NodeMenuItem
-                            {...{
-                              ...props,
-                              layer,
-                              child,
-                              handleListKeyDown,
-                              ...rest,
-                            }}
-                          />
-                        ),
-                        style: { textDecoration: "none" },
-                        key: label.id + "-" + layer,
-                      }}
-                      // onClick={handleListKeyDown ? handleListKeyDown : ""}
-                    />
-                  );
-                }
-              }
-            })
+                  </>
+                );
+              })}
+            </>
           );
         },
         [allowTrade, selected, isMobile]
@@ -482,6 +511,11 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         popupId: "mobile",
       });
       const displayMobile = React.useMemo(() => {
+        const _headerMenuData = _.cloneDeep(headerMenuData);
+        let item = _headerMenuData.find((item) => item.label.id === "Layer2");
+        if (item) {
+          item.child = subMenuLayer2;
+        }
         return (
           <ToolBarStyled>
             <Box
@@ -611,7 +645,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       flexDirection={"column"}
                     >
                       {getDrawerChoices({
-                        menuList: headerMenuData,
+                        menuList: _headerMenuData,
                         i18n,
                         t,
                         handleListKeyDown: popupState.close,

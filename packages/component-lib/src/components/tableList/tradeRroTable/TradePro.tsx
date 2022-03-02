@@ -81,97 +81,6 @@ const TableStyled = styled(Box)`
     TablePaddingX({ pLeft: theme.unit * 2, pRight: theme.unit * 2 })}
 ` as (props: { currentheight?: number } & BoxProps) => JSX.Element;
 
-const getColumnModeAssets = (
-  t: TFunction,
-  _currency: Currency,
-  // quotePrecision,
-  baseSymbol: string,
-  quoteSymbol: string,
-  precision: number
-): Column<Required<RawDataTradeItem>, unknown>[] => [
-  {
-    key: "price",
-    name: t("labelTradeProPrice", { symbol: quoteSymbol }),
-    formatter: ({ row }) => {
-      const color =
-        row["side"] === TradeTypes.Buy
-          ? "var(--color-error)"
-          : "var(--color-success)";
-      const { value } = row["price"];
-
-      // const precision = row['precision'] || 6
-      const renderValue = value
-        ? getValuePrecisionThousand(
-            value,
-            undefined,
-            undefined,
-            precision,
-            true
-          )
-        : EmptyValueTag;
-
-      return (
-        <Box className="rdg-cell-value">
-          <Typography
-            textAlign={"left"}
-            color={color}
-            variant={"body2"}
-            lineHeight={`${MarketRowHeight}px`}
-          >
-            {" "}
-            {renderValue}{" "}
-          </Typography>
-        </Box>
-      );
-    },
-  },
-  {
-    key: "amount",
-    name: t("labelTradeProAmount", { symbol: baseSymbol }),
-    headerCellClass: "text-align-right",
-    formatter: ({ row }) => {
-      const { volume } = row["amount"];
-      // getValuePrecisionThousand(volume, precision, precision, precision, true)
-      // const value =
-      return (
-        <Box className="rdg-cell-value">
-          <Typography
-            className=" text-align-right"
-            textAlign={"right"}
-            variant={"body2"}
-            lineHeight={`${MarketRowHeight}px`}
-          >
-            {" "}
-            {volume ? volume : EmptyValueTag}{" "}
-          </Typography>
-        </Box>
-      );
-    },
-  },
-  {
-    key: "time",
-    name: t("labelTradeTime"),
-    headerCellClass: "text-align-right",
-    // minWidth: 400,
-    formatter: ({ row }) => {
-      const time = moment(new Date(row["time"])).format("HH:mm:ss"); //,M-DD
-      return (
-        <Box className="rdg-cell-value">
-          <Typography
-            className=" text-align-right"
-            textAlign={"right"}
-            variant={"body2"}
-            lineHeight={`${MarketRowHeight}px`}
-          >
-            {" "}
-            {time}
-          </Typography>{" "}
-        </Box>
-      );
-    },
-  },
-];
-
 export const TradePro = withTranslation("tables")(
   ({
     t,
@@ -185,10 +94,107 @@ export const TradePro = withTranslation("tables")(
     precision,
     ...rest
   }: WithTranslation & TradeProTableProps) => {
-    const { currency } = useSettings();
+    const { currency, isMobile } = useSettings();
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = marketInfo.market.match(/(\w+)-(\w+)/i);
+    const getColumnModeAssets = (
+      t: TFunction,
+      _currency: Currency,
+      // quotePrecision,
+      baseSymbol: string,
+      quoteSymbol: string,
+      precision: number
+    ): Column<Required<RawDataTradeItem>, unknown>[] => [
+      ...[
+        {
+          key: "price",
+          name: t("labelTradeProPrice", { symbol: quoteSymbol }),
+          // @ts-ignore
+          formatter: ({ row }) => {
+            const color =
+              row["side"] === TradeTypes.Buy
+                ? "var(--color-error)"
+                : "var(--color-success)";
+            const { value } = row["price"];
 
+            // const precision = row['precision'] || 6
+            const renderValue = value
+              ? getValuePrecisionThousand(
+                  value,
+                  undefined,
+                  undefined,
+                  precision,
+                  true
+                )
+              : EmptyValueTag;
+
+            return (
+              <Box className="rdg-cell-value">
+                <Typography
+                  textAlign={"left"}
+                  color={color}
+                  variant={"body2"}
+                  lineHeight={`${MarketRowHeight}px`}
+                >
+                  {" "}
+                  {renderValue}{" "}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+        {
+          key: "amount",
+          name: t("labelTradeProAmount", { symbol: baseSymbol }),
+          headerCellClass: "text-align-right",
+          // @ts-ignore
+          formatter: ({ row }) => {
+            const { volume } = row["amount"];
+            // getValuePrecisionThousand(volume, precision, precision, precision, true)
+            // const value =
+            return (
+              <Box className="rdg-cell-value">
+                <Typography
+                  className=" text-align-right"
+                  textAlign={"right"}
+                  variant={"body2"}
+                  lineHeight={`${MarketRowHeight}px`}
+                >
+                  {" "}
+                  {volume ? volume : EmptyValueTag}{" "}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+      ],
+      ...(isMobile
+        ? []
+        : [
+            {
+              key: "time",
+              name: t("labelTradeTime"),
+              headerCellClass: "text-align-right",
+              // @ts-ignore
+              formatter: ({ row }) => {
+                const time = moment(new Date(row["time"])).format("HH:mm:ss"); //,M-DD
+                return (
+                  <Box className="rdg-cell-value">
+                    <Typography
+                      className=" text-align-right"
+                      textAlign={"right"}
+                      variant={"body2"}
+                      lineHeight={`${MarketRowHeight}px`}
+                    >
+                      {" "}
+                      {time}
+                    </Typography>{" "}
+                  </Box>
+                );
+              },
+            },
+          ]),
+    ];
     const defaultArgs: any = {
       rawData: rawData,
       columnMode: getColumnModeAssets(

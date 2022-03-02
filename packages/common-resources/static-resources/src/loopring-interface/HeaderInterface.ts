@@ -13,7 +13,9 @@ export interface HeaderMenuItemInterface {
     i18nKey: string;
   };
   handleListKeyDown?: (props?: any) => void;
-  child?: Array<HeaderMenuItemInterface>;
+  child?:
+    | Array<HeaderMenuItemInterface>
+    | { [key: string]: Array<HeaderMenuItemInterface> };
   router?: { path: string; [key: string]: any };
   status?: keyof typeof HeaderMenuTabStatus;
   extender?: React.ElementType<any> | JSX.Element | undefined;
