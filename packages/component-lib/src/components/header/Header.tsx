@@ -235,6 +235,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
     ) => {
       const { themeMode, setTheme } = useSettings();
       const history = useHistory();
+      const theme = useTheme();
       const location = useLocation();
       const getMenuButtons = React.useCallback(
         ({
@@ -250,7 +251,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [notification]
+        [notification, isMobile]
       );
       const getDrawerChoices = React.useCallback(
         ({
@@ -503,75 +504,71 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               </Typography>
             </Box>
             <Box display={"flex"}>
-              <Box
-                component={"ul"}
-                display="flex"
-                alignItems="center"
-                justifyContent={"flex-end"}
-                color={"textColorSecondary"}
-                marginRight={1}
-              >
-                {isLandPage ? (
-                  <>
-                    {/* {getDrawerChoices({menuList: landingMenuData, i18n, ...rest})} */}
-                    <Grid
-                      container
-                      spacing={4}
-                      display={"flex"}
-                      alignItems={"center"}
+              {isLandPage ? (
+                <Grid
+                  container
+                  spacing={4}
+                  display={"flex"}
+                  alignItems={"center"}
+                >
+                  <GridStyled
+                    iscurrentroute={
+                      location.pathname === "/" ? "true" : "false"
+                    }
+                    item
+                    onClick={() => history.push("/")}
+                  >
+                    {t("labelLandingHeaderLayer2")}
+                  </GridStyled>
+                  <GridStyled
+                    iscurrentroute={
+                      location.pathname === "/wallet" ? "true" : "false"
+                    }
+                    item
+                    onClick={() => history.push("/wallet")}
+                  >
+                    {t("labelLandingHeaderWallet")}
+                  </GridStyled>
+                  <Grid item style={{ paddingLeft: 16 }}>
+                    <BtnNotification notification={notification} />
+                  </Grid>
+                  <Grid item style={{ paddingLeft: 16 }}>
+                    <Box
+                      style={{ cursor: "pointer" }}
+                      onClick={handleThemeClick}
                     >
-                      <GridStyled
-                        iscurrentroute={
-                          location.pathname === "/" ? "true" : "false"
-                        }
-                        item
-                        onClick={() => history.push("/")}
-                      >
-                        {t("labelLandingHeaderLayer2")}
-                      </GridStyled>
-                      <GridStyled
-                        iscurrentroute={
-                          location.pathname === "/wallet" ? "true" : "false"
-                        }
-                        item
-                        onClick={() => history.push("/wallet")}
-                      >
-                        {t("labelLandingHeaderWallet")}
-                      </GridStyled>
-                      <Grid item style={{ paddingLeft: 16 }}>
-                        <BtnNotification notification={notification} />
-                      </Grid>
-                      <Grid item style={{ paddingLeft: 16 }}>
-                        <Box
-                          style={{ cursor: "pointer" }}
-                          onClick={handleThemeClick}
-                        >
-                          {themeMode === "dark" ? <DarkIcon /> : <LightIcon />}
-                        </Box>
-                      </Grid>
-                      <Grid item>
-                        <ButtonStyled
-                          size={"small"}
-                          disabled={isMaintaining}
-                          variant={"contained"}
-                          onClick={() => history.push("/trade/lite/LRC-ETH")}
-                        >
-                          {t("labelLaunchApp")}
-                        </ButtonStyled>
-                      </Grid>
-                    </Grid>
-                  </>
-                ) : (
-                  <>
-                    {getMenuButtons({
-                      toolbarList: headerToolBarData,
-                      i18n,
-                      t,
-                      ...rest,
-                    })}
-                  </>
-                )}
-              </Box>
+                      {themeMode === "dark" ? <DarkIcon /> : <LightIcon />}
+                    </Box>
+                  </Grid>
+                  <Grid item>
+                    <ButtonStyled
+                      size={"small"}
+                      disabled={isMaintaining}
+                      variant={"contained"}
+                      onClick={() => history.push("/trade/lite/LRC-ETH")}
+                    >
+                      {t("labelLaunchApp")}
+                    </ButtonStyled>
+                  </Grid>
+                </Grid>
+              ) : (
+                <Box
+                  component={"ul"}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent={"flex-end"}
+                  color={"textColorSecondary"}
+                  marginRight={1}
+                >
+                  {getMenuButtons({
+                    toolbarList: headerToolBarData,
+                    i18n,
+                    t,
+                    ...rest,
+                  })}
+                </Box>
+              )}
+
               <ClickAwayListener
                 onClickAway={() => {
                   popupState.close();
@@ -637,7 +634,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         rest,
         isLandPage,
       ]);
-      const theme = useTheme();
 
       const paddingStyle = {
         paddingTop: 0,

@@ -409,7 +409,7 @@ const AssetPanel = withTranslation("common")(
             flex={1}
             component={"section"}
             className={"MuiPaper-elevation2"}
-            marginRight={2}
+            marginRight={isMobile ? 0 : 2}
           >
             <Typography
               component="span"
