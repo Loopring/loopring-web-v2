@@ -510,12 +510,16 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               >
                 {/*{side + " "}*/}
                 <Typography
-                  display={"inline-flex"}
+                  display={"flex"}
                   marginRight={1}
-                  variant={"h2"}
+                  variant={"h3"}
                   alignItems={"center"}
+                  flexDirection={"column"}
                 >
                   {sideIcon}
+                  <Typography fontSize={10} marginTop={-1}>
+                    {side}
+                  </Typography>
                 </Typography>
                 <Box display={"flex"} flex={1} flexDirection={"column"}>
                   <Typography
