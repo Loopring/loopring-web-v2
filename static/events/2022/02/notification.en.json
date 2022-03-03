@@ -3,11 +3,11 @@
     {
       "type": "DEPOSIT",
       "link": "2022-03-03",
-      "startDate": 1649980800000,
-      "endDate": 1649980800000,
-      "title": "Loophead NFT Drop Round#2",
-      "description1": "980 Loopheads NFTs will drop to you!",
-      "description2": "2022-03-03 00:00 to 2022-04-30 00:00 (UTC)",
+      "startDate": 1646265600000,
+      "endDate": 1648771200000,
+      "title": "Loophead NFT Drop #2",
+      "description1": "980 Loopheads are up for grabs in the second Loophead dynamic NFT drop!",
+      "description2": "2022-03-03 00:00 to 2022-04-01 00:00 (UTC)",
       "pairs": [],
       "tokens": [
         "ETH",
