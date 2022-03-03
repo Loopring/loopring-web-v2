@@ -146,7 +146,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {tokenTypeList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
