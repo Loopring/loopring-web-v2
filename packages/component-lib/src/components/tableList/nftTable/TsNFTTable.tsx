@@ -70,6 +70,9 @@ const TableStyled = styled(Box)`
   flex: 1;
 
   .rdg {
+    @media only screen and (max-width: 768px) {
+      --template-columns: 60% 40% !important;
+    }
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -128,7 +131,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: { row: Row }) => {
             const hasSymbol =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row.receiverAddress?.toUpperCase() ===
+                ? row?.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
@@ -245,7 +248,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxTime"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const value = row.createdAt;
+            const value = row.updatedAt;
             const hasValue = Number.isFinite(value);
             const renderValue = hasValue
               ? moment(new Date(value), "YYYYMMDDHHMM").fromNow()
@@ -282,9 +285,9 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           headerCellClass: "textAlignLeft",
           formatter: ({ row }) => {
-            const { unit, value } = row["amount"];
-            const hasValue = Number.isFinite(value);
+            const hasValue = Number.isFinite(row.amount);
             let side, hasSymbol, sideIcon;
+
             switch (row.nftTxType) {
               case TxNFTType[TxNFTType.DEPOSIT]:
                 side = t("labelDeposit");
@@ -311,10 +314,9 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 sideIcon = <WithdrawIcon fontSize={"inherit"} />;
                 side = t("labelWithdraw");
             }
-
             const renderValue = hasValue
               ? `${getValuePrecisionThousand(
-                  value,
+                  Number(row.amount),
                   undefined,
                   undefined,
                   undefined,
@@ -349,6 +351,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   variant={"h3"}
                   alignItems={"center"}
                   flexDirection={"column"}
+                  width={"60px"}
                 >
                   {sideIcon}
                   <Typography fontSize={10} marginTop={-1}>
@@ -362,7 +365,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                     alignItems={"center"}
                   >
                     {hasSymbol}
-                    {renderValue} {unit || ""}
+                    {renderValue}
                   </Typography>
                   <Typography color={"textSecondary"} variant={"body2"}>
                     {renderFee}
@@ -380,15 +383,18 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             const receiverAddress = getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
+
             const [from, to] =
-              row["side"] === "TRANSFER"
-                ? row["receiverAddress"]?.toUpperCase() ===
+              row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
+                ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row["side"] === "DEPOSIT"
+                : TxNFTType[TxNFTType.DEPOSIT]
                 ? ["L1", "L2"]
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                : TxNFTType[TxNFTType.MINT]
+                ? ["Mint", "L2"]
+                : TxNFTType[TxNFTType.WITHDRAW]
                 ? ["L2", receiverAddress]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
@@ -396,11 +402,11 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               row.txHash !== ""
                 ? etherscanBaseUrl + `/tx/${row.txHash}`
                 : Explorer +
-                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+                  `tx/${row.hash}-${EXPLORE_TYPE[row.nftTxType.toUpperCase()]}`;
 
-            const hasValue = Number.isFinite(row.time);
+            const hasValue = Number.isFinite(row.updatedAt);
             const renderTime = hasValue
-              ? moment(new Date(row.time), "YYYYMMDDHHMM").fromNow()
+              ? moment(new Date(row.updatedAt), "YYYYMMDDHHMM").fromNow()
               : EmptyValueTag;
 
             return (

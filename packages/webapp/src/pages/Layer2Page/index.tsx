@@ -284,7 +284,7 @@ export const Layer2Page = () => {
             )}
 
             <Box
-              minHeight={420}
+              // minHeight={420}
               display={"flex"}
               alignItems={"stretch"}
               flexDirection={"column"}

@@ -198,7 +198,7 @@ export const AssetTitleMobile = ({
   );
   const { t } = useTranslation();
   return (
-    <Box display={"flex"} flexDirection={"column"}>
+    <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
       <Box
         display={"flex"}
         flexDirection={"row"}

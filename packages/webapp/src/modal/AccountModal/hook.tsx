@@ -161,9 +161,8 @@ export function useAccountModalForUI({
   } = useExportAccount();
   const vendorProps = useVendor();
   const { depositProps } = useDeposit();
-  const { nftDepositProps } = useNFTDeposit();
-  const { assetsRawData } = useGetAssets();
   const { nftMintProps } = useNFTMint();
+  const { assetsRawData } = useGetAssets();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw({});
@@ -171,7 +170,7 @@ export function useAccountModalForUI({
   const { nftDeployProps } = useNFTDeploy({});
   const { resetProps } = useReset();
   const { activeAccountProps } = useActiveAccount();
-
+  const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
 
   const [openQRCode, setOpenQRCode] = useState(false);
@@ -1688,11 +1687,7 @@ export function useAccountModalForUI({
 
   return {
     nftTransferProps,
-    // transferProcessRequestNFT,
-    // transferNFTRequest,
     nftWithdrawProps,
-    // withdrawProcessRequestNFT,
-    // withdrawNFTRequest,
     nftDepositProps,
     transferProps,
     withdrawProps,
