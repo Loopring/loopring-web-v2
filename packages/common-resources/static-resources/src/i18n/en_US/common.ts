@@ -469,13 +469,13 @@ export default {
   labelInvalidCID: "Invalid CID",
   labelInvalidAddress: "Invalid address, ENS",
   labelInvalidisCFAddress:
-    "Loopring counter Counter Factual wallet is disable {{way}} {{token}}",
+    "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
   labelInvalidisContract1XAddress:
-    "Loopring wallet 1.x is disable {{way}} {{token}}",
+    "Loopring wallet 1.x is disabled {{way}} {{token}}",
   labelInvalidisContractAddress:
-    "{{token}} is not available {{way}} to Contract wallet",
+    "{{way}} of {{token}} to Contract wallet is not available ",
   labelInvalidisLoopringAddress:
-    "This address has not yet active Loopring L2, {{way}} is {{token}} disable!",
+    "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
   labelInvalidisSameAddress: "Cannot {{way}} to your own address",
   labelTransferAddressNotLoopring:
     "This address has not yet active Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
