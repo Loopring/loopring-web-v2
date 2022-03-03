@@ -178,7 +178,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
           <Box display={"flex"}>
             <Grid item>
               <Button
-                variant={"text"}
+                variant={"outlined"}
                 size={"medium"}
                 color={"primary"}
                 onClick={() => onShowDeposit(tokenValue)}
@@ -188,7 +188,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             </Grid>
             <Grid item>
               <Button
-                variant={"text"}
+                variant={"outlined"}
                 size={"medium"}
                 color={"primary"}
                 onClick={() => onShowTransfer(tokenValue)}
@@ -199,7 +199,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             {isWithdraw && (
               <Grid item>
                 <Button
-                  variant={"text"}
+                  variant={"outlined"}
                   size={"medium"}
                   color={"primary"}
                   onClick={() => onShowWithdraw(tokenValue)}

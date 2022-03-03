@@ -2,6 +2,7 @@ import { useRouteMatch } from "react-router-dom";
 
 import { Box, Typography } from "@mui/material";
 import {
+  AssetTitleMobile,
   Button,
   SubMenu,
   SubMenuList,
@@ -38,6 +39,7 @@ import { RedPockPanel } from "./RedPockPanel";
 import { MyNFTPanel } from "./MyNFTPanel";
 import { useModals } from "hooks/useractions/useModals";
 import { accountServices } from "services/account/accountServices";
+import { useGetAssets } from "./AssetPanel/hook";
 
 export const subMenu = subMenuLayer2;
 
@@ -45,6 +47,7 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
   ({ t }: any) => {
     const { status: accountStatus, account } = useAccount();
     const { showDeposit } = useModals();
+
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
 
@@ -101,9 +104,9 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
 export const Layer2Page = () => {
   let match: any = useRouteMatch("/layer2/:item");
   const { account } = useAccount();
-
   const { t } = useTranslation(["common", "layout"]);
   const selected = match?.params.item ?? "assets";
+  const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
   const layer2Router = React.useMemo(() => {
     switch (selected) {
       case "assets":
@@ -279,6 +282,7 @@ export const Layer2Page = () => {
                 </SubMenu>
               </Box>
             )}
+
             <Box
               minHeight={420}
               display={"flex"}
@@ -287,6 +291,11 @@ export const Layer2Page = () => {
               marginTop={0}
               flex={1}
             >
+              {isMobile && (
+                <AssetTitleMobile
+                  {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
+                />
+              )}
               {layer2Router}
             </Box>
           </>

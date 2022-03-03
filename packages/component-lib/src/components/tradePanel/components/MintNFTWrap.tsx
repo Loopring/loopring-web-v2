@@ -108,6 +108,8 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
       className={walletMap ? "" : "loading"}
       paddingBottom={3}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}

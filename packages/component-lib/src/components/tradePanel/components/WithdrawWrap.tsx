@@ -158,6 +158,8 @@ export const WithdrawWrap = <
     <Grid
       className={walletMap ? "" : "loading"}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"} /* minHeight={540} */
       justifyContent={"space-between"}
       alignItems={"center"}

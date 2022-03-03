@@ -91,6 +91,7 @@ export default {
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "Layer 2 Total Assets",
+  labelAssetMobileTitle: "L2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "Deposit",

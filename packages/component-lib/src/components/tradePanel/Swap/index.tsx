@@ -241,7 +241,7 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   <Typography display={"inline-block"} marginLeft={2}>
                     <IconButtonStyled
                       onClick={toPro}
-                      className={"switch outline"}
+                      className={"switch outlined"}
                       size={"large"}
                       aria-label="to Professional"
                     >

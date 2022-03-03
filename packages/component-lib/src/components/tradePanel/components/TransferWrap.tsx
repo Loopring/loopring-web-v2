@@ -203,9 +203,9 @@ export const TransferWrap = <
   return (
     <Grid
       className={walletMap ? "transfer-wrap" : "loading"}
-      // paddingLeft={5 / 2}
-      // paddingRight={5 / 2}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"}
       alignItems={"stretch"}
       flex={1}

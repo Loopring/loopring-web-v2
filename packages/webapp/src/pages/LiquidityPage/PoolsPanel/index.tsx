@@ -1,15 +1,13 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Box, InputAdornment, OutlinedInput, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
 import React from "react";
 import { useAmmMapUI } from "./hook";
 
 import { PoolsTable, InputSearch } from "@loopring-web/component-lib";
-import { SearchIcon } from "@loopring-web/common-resources";
 import { useSettings } from "@loopring-web/component-lib";
 import { useSystem } from "stores/system";
-import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import store from "stores";
 
 const WrapperStyled = styled(Box)`

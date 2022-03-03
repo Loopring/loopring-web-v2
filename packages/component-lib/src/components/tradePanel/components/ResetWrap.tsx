@@ -41,12 +41,13 @@ export const ResetWrap = <T extends FeeInfo>({
 
   return (
     <Grid
-      className={""}
       container
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
       flex={1}
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       height={"100%"}
     >
       <Grid item marginBottom={2}>

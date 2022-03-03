@@ -31,3 +31,10 @@ export type AssetTitleProps = {
   legalEnable?: boolean;
   legalShow?: boolean;
 };
+
+export type AssetTitleMobileProps = AssetTitleProps & {
+  onShowNFTDeposit: () => void;
+  onShowNFTMINT: () => void;
+  btnShowNFTDepositStatus?: keyof typeof TradeBtnStatus;
+  btnShowNFTMINTStatus?: keyof typeof TradeBtnStatus;
+};

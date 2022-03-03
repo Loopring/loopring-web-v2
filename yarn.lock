@@ -4386,7 +4386,7 @@
     "@storybook/addon-controls" "6.4.0-alpha.30"
     "@storybook/addon-docs" "6.4.0-alpha.30"
     "@storybook/addon-measure" "6.4.0-alpha.30"
-    "@storybook/addon-outline" "6.4.0-alpha.30"
+    "@storybook/addon-outlined" "6.4.0-alpha.30"
     "@storybook/addon-toolbars" "6.4.0-alpha.30"
     "@storybook/addon-viewport" "6.4.0-alpha.30"
     "@storybook/addons" "6.4.0-alpha.30"
@@ -4427,9 +4427,9 @@
     core-js "^3.8.2"
     global "^4.4.0"
 
-"@storybook/addon-outline@6.4.0-alpha.30":
+"@storybook/addon-outlined@6.4.0-alpha.30":
   version "6.4.0-alpha.30"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-outline/-/addon-outline-6.4.0-alpha.30.tgz#88c7c8619f12958c7cf83fac09180a90f3a19945"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-outlined/-/addon-outlined-6.4.0-alpha.30.tgz#88c7c8619f12958c7cf83fac09180a90f3a19945"
   integrity sha512-T70Wjwiia/0eCIq70nZcHn+tpBJTWNUPeOcCIxUBHBlz7TSmIWgANuqp0+fttg+Skq9myR3c9+kZGUE7KaiPaA==
   dependencies:
     "@storybook/addons" "6.4.0-alpha.30"

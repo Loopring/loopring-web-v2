@@ -95,10 +95,10 @@ NFTDepositViewProps<T, I>) => {
     <GridStyle
       className={walletMap ? "" : "loading"}
       style={styles}
-      // paddingLeft={5 / 2}
-      // paddingRight={5 / 2}
       paddingBottom={3}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}

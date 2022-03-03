@@ -184,7 +184,7 @@ export const Rank = ({
             </Typography>
             <Button
               style={{ fontSize: 16 }}
-              variant={"text"}
+              variant={"outlined"}
               onClick={() => history.push(`/trade/lite/${pair}`)}
             >
               {t("labelTradeRaceGoTrading")} &gt;&gt;
@@ -269,7 +269,7 @@ export const Rank = ({
 //             </Typography>
 //             <Button
 //               style={{ fontSize: 16 }}
-//               variant={"text"}
+//               variant={"outlined"}
 //               onClick={() => history.push(`/trade/lite/${pair}`)}
 //             >
 //               {t("labelTradeRaceGoTrading")} &gt;&gt;

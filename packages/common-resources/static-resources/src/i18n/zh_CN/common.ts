@@ -90,6 +90,7 @@ export default {
   labelQRCode: "查看二维码",
   labelShowAccountInfo: "查看,设置账号信息",
   labelAssetTitle: "总资产(路印二层)",
+  labelAssetMobileTitle: "Layer 2 Total Assets",
   labelShowAccount: "显示或隐藏总资产",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "充值",

@@ -134,21 +134,6 @@ export interface TransactionTableProps {
   accAddress?: string;
 }
 
-// const RowRenderer = React.memo(
-//   React.forwardRef(
-//     (props: RowRendererProps<any>, _ref: React.ForwardedRef<any>) => {
-//       const transactionDetail = usePopupState({
-//         variant: "popover",
-//         popupId: `popup-pro-kline-features`,
-//       });
-//       return (
-//         <>
-//           <Row {...props} />
-//         </>
-//       );
-//     }
-//   )
-// );
 export const TransactionTable = withTranslation(["tables", "common"])(
   (props: TransactionTableProps & WithTranslation) => {
     const {
