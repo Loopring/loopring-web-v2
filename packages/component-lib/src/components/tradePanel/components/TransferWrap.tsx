@@ -362,7 +362,9 @@ export const TransferWrap = <
                   alignSelf={"stretch"}
                   position={"relative"}
                 >
-                  {t("labelTransferSameAddress")}
+                  {t("labelInvalidisSameAddress", {
+                    wat: t("labelTransfer").toLowerCase(),
+                  })}
                 </Typography>
               ) : (
                 <>

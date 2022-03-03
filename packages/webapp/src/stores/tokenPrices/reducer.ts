@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { TokenPricesStates } from "./interface";
 import { SagaStatus } from "@loopring-web/common-resources";
-import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 const initialState: Required<TokenPricesStates<object>> = {
-  tokenPrices: undefined,
+  tokenPrices: {},
   __rawConfig__: undefined,
   __timer__: -1,
   status: SagaStatus.PENDING,

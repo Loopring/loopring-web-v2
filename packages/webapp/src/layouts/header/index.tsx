@@ -10,6 +10,7 @@ import {
   BottomRule,
   Header as HeaderUI,
   HideOnScroll,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { withRouter, useHistory, useLocation } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
@@ -31,6 +32,7 @@ const Header = withTranslation("common")(
         notifyMap,
         headerGuardianMenuData,
       } = useHeader();
+      const { isMobile } = useSettings();
       const { pathname } = useLocation();
       const { confirmWrapper } = useConfirmation();
       const { allowTrade } = useSystem();
@@ -43,6 +45,7 @@ const Header = withTranslation("common")(
                 isWrap={isLandPage}
                 {...rest}
                 isLandPage={isLandPage}
+                isMobile={isMobile}
                 allowTrade={allowTrade}
                 headerMenuData={
                   /guardian/gi.test(pathname)
@@ -60,6 +63,7 @@ const Header = withTranslation("common")(
             <HeaderUI
               {...rest}
               allowTrade={allowTrade}
+              isMobile={isMobile}
               headerMenuData={
                 /guardian/gi.test(pathname)
                   ? headerGuardianMenuData

@@ -7,6 +7,7 @@ import { Button } from "../../../basic-lib/btns";
 import { DropDownIcon } from "@loopring-web/common-resources";
 import { TransactionTradeTypes, RawDataTransactionItem } from "../Interface";
 import { DateRange } from "@mui/lab";
+import { useSettings } from "../../../../stores";
 
 export interface FilterProps {
   originalData: RawDataTransactionItem[];
@@ -46,6 +47,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
     handleFilterChange,
     handleReset,
   }: FilterProps & WithTranslation) => {
+    const { isMobile } = useSettings();
     const transactionTypeList = [
       {
         label: t("labelTxFilterAllTypes"),
@@ -107,8 +109,16 @@ export const Filter = withTranslation("tables", { withRef: true })(
     // }, [handleFilterChange, filterType, filterDate])
 
     return (
-      <Grid container spacing={2} alignItems={"center"}>
-        <Grid item xs={2}>
+      <Grid container spacing={isMobile ? 1 : 2} alignItems={"center"}>
+        <Grid item xs={12} order={isMobile ? 0 : 1} lg={6}>
+          <DateRangePicker
+            value={filterDate}
+            onChange={(date: any) => {
+              handleFilterChange({ date: date });
+            }}
+          />
+        </Grid>
+        <Grid item xs={4} order={isMobile ? 1 : 0} lg={2}>
           <StyledTextFiled
             id="table-transaction-trade-types"
             select
@@ -127,15 +137,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
-          <DateRangePicker
-            value={filterDate}
-            onChange={(date: any) => {
-              handleFilterChange({ date: date });
-            }}
-          />
-        </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={4} order={2} lg={2}>
           <StyledTextFiled
             id="table-transaction-token-types"
             select
@@ -146,7 +148,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {tokenTypeList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
@@ -154,7 +155,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
+        <Grid item xs={4} order={3} lg={2}>
           <StyledBtnBox>
             <Button
               variant={"outlined"}

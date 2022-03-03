@@ -3,6 +3,7 @@ import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ErrorType } from "../command";
 import { ConnectProviders, RPC_URLS } from "@loopring-web/common-resources";
+import { ConnectProvides } from "../providers";
 
 // const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
 
@@ -29,7 +30,7 @@ export const WalletConnectProvide = async (
       rpc: RPC_URLS,
       bridge: BRIDGE_URL,
       pollingInterval: POLLING_INTERVAL,
-      qrcode: false,
+      qrcode: ConnectProvides.IsMobile ? true : false,
     });
     const { connector } = provider;
     let web3: Web3 | undefined;

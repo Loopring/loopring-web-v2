@@ -313,7 +313,9 @@ export const WithdrawWrap = <
                 position={"relative"}
                 marginTop={1 / 4}
               >
-                {t("labelWithdrawInvalidAddress")}
+                {t(`labelInvalid${isNotAvaiableAddress}`, {
+                  token: type === "NFT" ? "NFT" : tradeData.belong,
+                })}
               </Typography>
             ) : (
               <>
