@@ -107,20 +107,24 @@ export class ConnectProvides {
   };
 
   private subScribe = (account?: string) => {
-    switch (this._provideName) {
-      case ConnectProviders.WalletConnect:
-        WalletConnectSubscribe(
-          this.usedProvide,
-          this.usedWeb3 as Web3,
-          account
-        );
-        break;
-      case ConnectProviders.MetaMask:
-        MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-        break;
-      case ConnectProviders.WalletLink:
-        WalletLinkSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-        break;
+    try {
+      switch (this._provideName) {
+        case ConnectProviders.WalletConnect:
+          WalletConnectSubscribe(
+            this.usedProvide,
+            this.usedWeb3 as Web3,
+            account
+          );
+          break;
+        case ConnectProviders.MetaMask:
+          MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+          break;
+        case ConnectProviders.WalletLink:
+          WalletLinkSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+          break;
+      }
+    } catch (error) {
+      console.log("subScribe", error);
     }
   };
 }
