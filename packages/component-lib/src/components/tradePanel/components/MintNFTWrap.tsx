@@ -106,8 +106,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   return (
     <GridStyle
       className={walletMap ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       paddingBottom={3}
       container
       direction={"column"}

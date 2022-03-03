@@ -20,6 +20,7 @@ import {
   ActiveAccountPanel,
   DepositGroupProps,
   modalContentBaseStyle,
+  useSettings,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -149,6 +150,9 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     isShowActiveAccount,
   } = modals;
   const theme = useTheme();
+  const { isMobile } = useSettings();
+  const styles = isMobile ? { flex: 1 } : { _width: "var(--modal-width)" };
+
   return (
     <>
       <Modal
@@ -157,10 +161,11 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
         content={
           <TransferPanel<any, any>
             {...{
+              ...styles,
               ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
-              _height: "auto",
+              // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              // //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
+              // _height: "auto",
               ...transferProps,
               assetsData,
             }}
