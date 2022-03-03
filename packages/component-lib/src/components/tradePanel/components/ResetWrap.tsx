@@ -42,8 +42,6 @@ export const ResetWrap = <T extends FeeInfo>({
   return (
     <Grid
       className={""}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       container
       direction={"column"}
       justifyContent={"space-between"}
