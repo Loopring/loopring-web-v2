@@ -453,9 +453,16 @@ export default {
   labelIKnow: "I know",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
-  labelInvalidCID: "Invalid CID",
-  labelWithdrawInvalidAddress:
-    "Invalid address, ENS, special token, or an Counter Factual wallet",
+  labelInvalidAddress: "Invalid address, ENS",
+  labelInvalidisCFAddress:
+    "Loopring counter Counter Factual wallet is disable {{way}} {{token}}",
+  labelInvalidisContract1XAddress:
+    "Loopring wallet 1.x is disable {{way}} {{token}}",
+  labelInvalidisContractAddress:
+    "{{token}} is not available {{way}} to Contract wallet",
+  labelInvalidisLoopringAddress:
+    "This address has not yet active Loopring L2, {{way}} is {{token}} disable!",
+  labelInvalidisSameAddress: "Cannot {{way}} to your own address",
   labelTransferAddressNotLoopring:
     "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
@@ -467,7 +474,6 @@ export default {
   labelTransferTokenAmount: "Token Amount",
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
-  labelTransferSameAddress: "Cannot transfer to your own address",
   labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",

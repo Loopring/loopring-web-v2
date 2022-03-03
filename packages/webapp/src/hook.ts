@@ -83,7 +83,7 @@ export function useInit() {
         account.connectName !== "unknown"
       ) {
         try {
-          ConnectProvides.setIsMobile(isMobile);
+          ConnectProvides.IsMobile = isMobile;
           await connectProvides[account.connectName](account.accAddress);
           updateAccount({});
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {

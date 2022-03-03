@@ -367,10 +367,12 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               allowTrade,
               child,
               layer,
-              anchorOrigin: isMobile && {
-                vertical: "right",
-                horizontal: "right",
-              },
+              anchorOrigin: isMobile
+                ? {
+                    vertical: "right",
+                    horizontal: "right",
+                  }
+                : { vertical: "bottom", horizontal: "left" },
               selected: new RegExp(label.id, "ig").test(
                 selected.split("/")[1] ? selected.split("/")[1] : selected
               ),

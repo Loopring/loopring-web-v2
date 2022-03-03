@@ -122,6 +122,7 @@ export const SettingPanel = withTranslation(["common", "layout"], {
     upColor,
     setTheme,
     themeMode,
+    isMobile,
   } = useSettings();
 
   const handleOnLanguageChange = React.useCallback(
@@ -210,13 +211,13 @@ export const SettingPanel = withTranslation(["common", "layout"], {
     },
     [UpColor]
   );
-
+  const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
   return (
     <BoxStyle
       component={"section"}
       display={"flex"}
       flexDirection={"column"}
-      width={"var(--swap-box-width)"}
+      style={styles}
     >
       {/*<Typography variant={'h6'} component={'h4'} paddingX={2}>{t('labelTitleLayout')}</Typography>*/}
       <Grid

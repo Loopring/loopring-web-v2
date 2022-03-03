@@ -25,11 +25,11 @@ export class ConnectProvides {
 
   private _provideName: string | undefined;
 
-  public static setIsMobile(isMobile: boolean) {
+  public static set IsMobile(isMobile: boolean) {
     ConnectProvides._isMobile = isMobile;
   }
 
-  public static getIsMobile(isMobile: boolean) {
+  public static get IsMobile() {
     return ConnectProvides._isMobile;
   }
 

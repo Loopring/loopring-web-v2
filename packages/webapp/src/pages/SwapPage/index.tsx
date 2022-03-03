@@ -13,7 +13,6 @@ import { TOAST_TIME } from "defs/common_defs";
 import { FixedStyle } from "pages/styled";
 import { useSwap } from "./hookSwap";
 import { getValuePrecisionThousand } from "@loopring-web/common-resources";
-import { useSystem } from "../../stores/system";
 
 export const SwapPage = withTranslation("common")(
   ({ ...rest }: WithTranslation) => {

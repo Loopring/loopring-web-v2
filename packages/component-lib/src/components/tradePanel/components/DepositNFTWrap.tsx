@@ -21,7 +21,7 @@ import {
   TGItemData,
   ToggleButtonGroup,
 } from "../../";
-import { Button } from "../../../index";
+import { Button, useSettings } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
@@ -87,13 +87,16 @@ NFTDepositViewProps<T, I>) => {
     }
   };
   myLog(getDisabled, "getDisabled");
+  const { isMobile } = useSettings();
+  const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 
   // @ts-ignore
   return (
     <GridStyle
       className={walletMap ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
+      style={styles}
+      // paddingLeft={5 / 2}
+      // paddingRight={5 / 2}
       paddingBottom={3}
       container
       direction={"column"}

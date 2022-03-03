@@ -157,8 +157,6 @@ export const WithdrawWrap = <
   return (
     <Grid
       className={walletMap ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       container
       direction={"column"} /* minHeight={540} */
       justifyContent={"space-between"}
@@ -313,7 +311,9 @@ export const WithdrawWrap = <
                 position={"relative"}
                 marginTop={1 / 4}
               >
-                {t("labelWithdrawInvalidAddress")}
+                {t(`labelInvalid${isNotAvaiableAddress}`, {
+                  token: type === "NFT" ? "NFT" : tradeData.belong,
+                })}
               </Typography>
             ) : (
               <>

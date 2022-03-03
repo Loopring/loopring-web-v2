@@ -44,6 +44,15 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     & > div {
       .container {
         flex: 1;
+        .coinInput-wrap,
+        .btnInput-wrap,
+        .MuiOutlinedInput-root {
+          background: var(--field-opacity);
+          border-color: var(--opacity);
+          :hover {
+            border-color: var(--color-border-hover);
+          }
+        }
       }
       display: flex;
       flex-direction: column;
