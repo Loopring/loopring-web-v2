@@ -30,13 +30,32 @@ export const IsMobile = {
       navigator.userAgent.match(/WPDesktop/i)
     );
   },
+  Ethereum: function () {
+    //@ts-ignore
+    return window?.ethereum.isImToken;
+  },
+
   any: function () {
     return (
       IsMobile.Android() ||
       IsMobile.BlackBerry() ||
       IsMobile.iOS() ||
       IsMobile.Opera() ||
-      IsMobile.Windows()
+      IsMobile.Windows() ||
+      IsMobile.Ethereum()
     );
+  },
+};
+
+export const IsWhichWebView = {
+  any: function () {
+    //@ts-ignore
+    if (window?.ethereum.isImToken) {
+      return "isImToken";
+    }
+    //@ts-ignore
+    if (window?.ethereum.isMetaMask) {
+      return "isMetaMask";
+    }
   },
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { useSystem } from "./stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { useAmmMap } from "./stores/Amm/AmmMap";
-import { IsMobile, SagaStatus } from "@loopring-web/common-resources";
+import { SagaStatus } from "@loopring-web/common-resources";
 import { useTokenMap } from "./stores/token";
 import { useAccount } from "./stores/account";
 import {

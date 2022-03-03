@@ -114,7 +114,7 @@ export const BtnSetting = ({ t, label }: any) => {
           horizontal: "center",
         }}
       >
-        <Box margin={2}>
+        <Box margin={2} minWidth={320}>
           <SettingPanel />
         </Box>
       </PopoverPure>
