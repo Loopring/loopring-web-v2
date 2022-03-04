@@ -1,17 +1,19 @@
 import { WithTranslation } from "react-i18next";
 import { ConnectProviders } from "@loopring-web/common-resources";
 import { ConnectBase, IconType, PanelProps } from "./BasicPanel";
+import { useSettings } from "../../../stores";
 
 // value symbol
 export const CommonConnectInProgress = (
   props: PanelProps & WithTranslation
 ) => {
+  const { isMobile } = useSettings();
   const providerName = props.providerName;
   const propsPatch = {
     providerName,
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelProviderProcessing", {
-      name: providerName,
+      name: isMobile ? "DApp" : providerName,
     }),
   };
   return <ConnectBase {...propsPatch} {...props} />;
