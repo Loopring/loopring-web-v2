@@ -3469,10 +3469,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@^1.8.15":
-  version "1.8.15"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-1.8.15.tgz#ce5e3e89ac663f0b6b0039ad20bc0c32d82ba4f7"
-  integrity sha512-e8nnHzowgPNOPwpwscEqU+3gv/FG9tTqEG8xZ57o6sDr1ZoKa/9dNJxu+W7kwsiOdKScztV48rmSN9xK2FnqGQ==
+"@loopring-web/loopring-sdk@^1.8.12":
+  version "1.8.12"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-1.8.12.tgz#8d6734a19fed3c7a447d14e831bafd026f099592"
+  integrity sha512-WIhlFVyXJT408s1d1a5s9KpA8FQKoavn8ikUx6HOQzYtIZjAHuNki4DTXinZXqSoyiXo9GnfQTDhQnYTOVioHg==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -4386,7 +4386,7 @@
     "@storybook/addon-controls" "6.4.0-alpha.30"
     "@storybook/addon-docs" "6.4.0-alpha.30"
     "@storybook/addon-measure" "6.4.0-alpha.30"
-    "@storybook/addon-outlined" "6.4.0-alpha.30"
+    "@storybook/addon-outline" "6.4.0-alpha.30"
     "@storybook/addon-toolbars" "6.4.0-alpha.30"
     "@storybook/addon-viewport" "6.4.0-alpha.30"
     "@storybook/addons" "6.4.0-alpha.30"
@@ -4427,9 +4427,9 @@
     core-js "^3.8.2"
     global "^4.4.0"
 
-"@storybook/addon-outlined@6.4.0-alpha.30":
+"@storybook/addon-outline@6.4.0-alpha.30":
   version "6.4.0-alpha.30"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-outlined/-/addon-outlined-6.4.0-alpha.30.tgz#88c7c8619f12958c7cf83fac09180a90f3a19945"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-outline/-/addon-outline-6.4.0-alpha.30.tgz#88c7c8619f12958c7cf83fac09180a90f3a19945"
   integrity sha512-T70Wjwiia/0eCIq70nZcHn+tpBJTWNUPeOcCIxUBHBlz7TSmIWgANuqp0+fttg+Skq9myR3c9+kZGUE7KaiPaA==
   dependencies:
     "@storybook/addons" "6.4.0-alpha.30"
