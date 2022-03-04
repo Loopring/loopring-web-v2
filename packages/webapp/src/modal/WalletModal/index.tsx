@@ -25,6 +25,7 @@ import {
   globalSetup,
   myLog,
   SagaStatus,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
@@ -244,6 +245,32 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           },
         ]
       : [
+          ...(window.ethereum && [
+            {
+              key: "Connect",
+              imgSrc: SoursURL + "svg/loopring.svg",
+              handleSelect: React.useCallback(
+                async (event, flag?) => {
+                  if (
+                    !flag &&
+                    account.connectName === DefaultGatewayList[0].key
+                  ) {
+                    setShowConnect({ isShow: false });
+                  } else {
+                    walletServices.sendDisconnect("", "should new provider");
+                    setConnectProvider(DefaultGatewayList[0].key);
+                    setShowConnect({
+                      isShow: true,
+                      step: WalletConnectStep.CommonProcessing,
+                    });
+                    setProcessingCallback({ callback: metaMaskCallback });
+                    setStateCheck(true);
+                  }
+                },
+                [account]
+              ),
+            },
+          ]),
           {
             ...DefaultGatewayList[1],
             handleSelect: React.useCallback(
