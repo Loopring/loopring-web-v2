@@ -51,26 +51,31 @@ const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
     ${({ isMobile, theme }) =>
       isMobile
         ? `
+        padding-bottom:  ${10 * theme.unit}px;
          &:before {
           display: block;
           content: " ";
           position: absolute;
-          bottom:  ${-theme.unit}px;
-          left:0;
+          bottom:  0px;
+          left:0;          
           right:0;
+          bottom: ${6 * theme.unit}px;
+          margin: 0 ${2 * theme.unit}px;
           color: var(--color-text-third);
-          border-right: 1px solid var(--color-divide);
+          border: 1px solid var(--color-text-third);
+          opacity: 0.4;
        }
       &:after {
         display: block;
         content: "OR";
         position: absolute;
-        bottom: 50%;
         width: 32px;
         height: 32px;
         line-height: 32px;
         text-align: center;
-        right: ${-3 * theme.unit}px;
+        left:50%;
+        margin-left: -16px;
+        bottom: ${2 * theme.unit}px;
         background: ${theme.colorBase.box};
         color: var(--color-text-third);
       }`
@@ -95,8 +100,8 @@ const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
         height: 32px;
         line-height: 32px;
         text-align: center;
-        right: ${({ theme }) => -3 * theme.unit}px;
-        background: ${({ theme }) => theme.colorBase.box};
+        right: ${-3 * theme.unit}px;
+        background: ${theme.colorBase.box};
         color: var(--color-text-third);
       }`}
   }
@@ -143,7 +148,7 @@ DepositGroupProps<T, I>) => {
       flexDirection={"column"}
       flexWrap={"nowrap"}
       paddingX={3}
-      marginTop={-3}
+      marginTop={-4}
       paddingBottom={3}
     >
       <Box marginBottom={3}>
@@ -167,11 +172,13 @@ DepositGroupProps<T, I>) => {
       >
         {depositProps.isNewAccount ? (
           <Box
+            minWidth={"320px"}
             width={
               isMobile
                 ? "auto"
                 : `calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`
             }
+            display={"flex"}
           >
             <Box
               className={"content way-content isNew"}
@@ -185,7 +192,7 @@ DepositGroupProps<T, I>) => {
                   <Box
                     width={isMobile ? "auto" : "48%"}
                     key={index}
-                    minHeight={280}
+                    minHeight={isMobile ? "320" : "280"}
                   >
                     <Box
                       flex={1}
