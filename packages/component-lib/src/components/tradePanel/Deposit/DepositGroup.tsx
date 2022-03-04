@@ -3,7 +3,7 @@ import { IBData } from "@loopring-web/common-resources";
 import { PanelContent } from "../../basic-lib";
 import { DepositPanel } from "./DepositPanel";
 import { VendorMenu } from "./VendorMenu";
-import { Box, Toolbar, Typography } from "@mui/material";
+import { Box, BoxProps, Toolbar, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import { DepositTitleGroup, DepositTitleNewGroup } from "./DepositTitle";
 import React from "react";
@@ -20,7 +20,7 @@ const ToolbarStyle = styled(Toolbar)`
     }
   }
 `;
-const BoxStyle = styled(Box)`
+const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
   .trade-panel {
     width: 100%;
     height: 240px;
@@ -33,12 +33,10 @@ const BoxStyle = styled(Box)`
     .trade-panel .react-swipeable-view-container {
       & > div {
         padding: 0;
-
         & > .MuiGrid-container {
           padding: 0;
         }
       }
-
       padding: 0;
     }
   }
@@ -49,33 +47,62 @@ const BoxStyle = styled(Box)`
   .way-content > div:first-of-type {
     position: relative;
     font-size: ${({ theme }) => theme.fontDefault.body1};
-    &:before {
-      display: block;
-      content: " ";
-      position: absolute;
-      right: ${({ theme }) => -theme.unit}px;
-      bottom: 0;
-      height: 100%;
-      color: var(--color-text-third);
-      border-right: 1px solid var(--color-divide);
-    }
-    &:after {
-      display: block;
-      content: "OR";
-      position: absolute;
-      bottom: 50%;
-      width: 32px;
-      height: 32px;
-      line-height: 32px;
-      text-align: center;
-      right: ${({ theme }) => -3 * theme.unit}px;
-      background: ${({ theme }) => theme.colorBase.box};
-      color: var(--color-text-third);
-    }
+
+    ${({ isMobile, theme }) =>
+      isMobile
+        ? `
+         &:before {
+          display: block;
+          content: " ";
+          position: absolute;
+          bottom:  ${-theme.unit}px;
+          left:0;
+          right:0;
+          color: var(--color-text-third);
+          border-right: 1px solid var(--color-divide);
+       }
+      &:after {
+        display: block;
+        content: "OR";
+        position: absolute;
+        bottom: 50%;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        right: ${-3 * theme.unit}px;
+        background: ${theme.colorBase.box};
+        color: var(--color-text-third);
+      }`
+        : ` 
+        &:before {
+          display: block;
+          content: " ";
+          position: absolute;
+          right: ${-theme.unit}px;
+          bottom: 0;
+          top:0;
+          height: 100%;
+          color: var(--color-text-third);
+          border-right: 1px solid var(--color-divide);
+       }
+      &:after {
+        display: block;
+        content: "OR";
+        position: absolute;
+        bottom: 50%;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        right: ${({ theme }) => -3 * theme.unit}px;
+        background: ${({ theme }) => theme.colorBase.box};
+        color: var(--color-text-third);
+      }`}
   }
   padding-left: 0;
   padding-right: 0;
-` as typeof Box;
+` as (props: BoxProps & { isMobile: boolean | undefined }) => JSX.Element;
 
 export const DepositGroup = <T extends IBData<I>, I>({
   depositProps,
@@ -110,6 +137,7 @@ DepositGroupProps<T, I>) => {
 
   return (
     <BoxStyle
+      isMobile={isMobile}
       display={"flex"}
       height={"auto"}
       flexDirection={"column"}
@@ -144,11 +172,7 @@ DepositGroupProps<T, I>) => {
                 ? "auto"
                 : `calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`
             }
-
-            // isMobile
-            // width={`calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
           >
-            <DepositTitleNewGroup />
             <Box
               className={"content way-content isNew"}
               display={"flex"}
@@ -163,6 +187,16 @@ DepositGroupProps<T, I>) => {
                     key={index}
                     minHeight={280}
                   >
+                    <Box
+                      flex={1}
+                      display={"flex"}
+                      flexDirection={"row"}
+                      justifyContent={"space-around"}
+                      marginBottom={2}
+                      paddingLeft={4}
+                    >
+                      {DepositTitleNewGroup()[index]}
+                    </Box>
                     {panel.element}
                   </Box>
                 );
