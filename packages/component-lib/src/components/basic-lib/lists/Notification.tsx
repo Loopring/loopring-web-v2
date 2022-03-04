@@ -10,7 +10,6 @@ import {
   ACTIVITY,
   ACTIVITY_TYPE,
   hexToRGB,
-  myLog,
   NOTIFICATION_ITEM,
 } from "@loopring-web/common-resources";
 import { css, Theme } from "@emotion/react";
