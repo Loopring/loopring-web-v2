@@ -10,6 +10,7 @@ import React from "react";
 import SwipeableViews from "react-swipeable-views";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
+import { useSettings } from "../../../stores";
 const ToolbarStyle = styled(Toolbar)`
   .MuiTabs-root {
     flex: 1;
@@ -84,6 +85,7 @@ export const DepositGroup = <T extends IBData<I>, I>({
 DepositGroupProps<T, I>) => {
   const theme = useTheme();
   const { t } = useTranslation(["common"]);
+  const { isMobile } = useSettings();
   const [_tabIndex, setTabIndex] = React.useState<DepositPanelType>(
     tabIndex ?? DepositPanelType.Deposit
   );
@@ -137,19 +139,30 @@ DepositGroupProps<T, I>) => {
       >
         {depositProps.isNewAccount ? (
           <Box
-            width={`calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
+            width={
+              isMobile
+                ? "auto"
+                : `calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`
+            }
+
+            // isMobile
+            // width={`calc(2 *  var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
           >
             <DepositTitleNewGroup />
             <Box
               className={"content way-content isNew"}
               display={"flex"}
               flex={1}
-              flexDirection={"row"}
+              flexDirection={isMobile ? "column" : "row"}
               justifyContent={"space-around"}
             >
               {panelList.map((panel, index) => {
                 return (
-                  <Box width={"48%"} key={index} minHeight={280}>
+                  <Box
+                    width={isMobile ? "auto" : "48%"}
+                    key={index}
+                    minHeight={280}
+                  >
                     {panel.element}
                   </Box>
                 );
@@ -159,7 +172,11 @@ DepositGroupProps<T, I>) => {
         ) : (
           <Box
             minHeight={240}
-            maxWidth={`calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
+            width={
+              isMobile
+                ? "auto"
+                : `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`
+            }
           >
             <ToolbarStyle className={"large"} variant={"regular"}>
               <DepositTitleGroup

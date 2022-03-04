@@ -289,7 +289,7 @@ export const MyNFTPanel = withTranslation("common")(
             </Box>
             <Box
               display={"flex"}
-              flexDirection={"row"}
+              flexDirection={isMobile ? "column" : "row"}
               flex={1}
               justifyContent={"stretch"}
             >
