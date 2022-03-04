@@ -35,9 +35,6 @@ import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../../stores";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { useHistory } from "react-router-dom";
-import { LpTokenAction } from "../assetsTable";
-import { ActionProps } from "../assetsTable/components/ActionMemo";
 
 export enum PoolTradeType {
   add = "add",

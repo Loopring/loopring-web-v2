@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
@@ -79,6 +79,9 @@ const TableStyled = styled(Box)`
 
   .rdg {
     height: ${(props: any) => props.currentheight}px;
+    @media only screen and (max-width: 768px) {
+      --template-columns: 16% 34% 30% auto !important;
+    }
     --template-columns: ${({ tradeposition }: any) =>
       tradeposition === "swap"
         ? "300px 120px auto auto !important"
@@ -102,8 +105,6 @@ const TableStyled = styled(Box)`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as any;
-
-const StyledSideCell: any = styled(Box)``;
 
 const getColumnModeAssets = (
   t: TFunction,
@@ -150,9 +151,9 @@ const getColumnModeAssets = (
 
           return (
             <Box className="rdg-cell-value">
-              <StyledSideCell value={row["side"]}>
+              <Typography>
                 {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
-              </StyledSideCell>
+              </Typography>
             </Box>
           );
         },
@@ -243,14 +244,13 @@ const getColumnModeAssets = (
 
           return (
             <Box className="rdg-cell-value">
-              <StyledSideCell value={row["side"]}>
+              <Typography>
                 {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
-              </StyledSideCell>
+              </Typography>
             </Box>
           );
         },
       },
-
       {
         key: "price",
         name: t("labelTradePrice"),
@@ -306,6 +306,134 @@ const getColumnModeAssets = (
   }
 };
 
+const getColumnModeMobileAssets = (
+  t: TFunction,
+  _currency: Currency,
+  tokenMap: any,
+  isL2Trade: boolean
+): Column<RawDataTradeItem, unknown>[] => {
+  return [
+    ...(isL2Trade
+      ? [
+          {
+            key: "role",
+            name: t("labelTradeRole") + "/" + t("labelTradeConterparty"),
+            // @ts-ignore
+            formatter: ({ row }) => {
+              const value = row["role"];
+              const renderValue =
+                value === TradeItemRole.maker
+                  ? t("labelTradeRoleMaker")
+                  : t("labelTradeRoleTaker");
+              const counterParty =
+                row.counterParty === TradeItemCounterparty.orderbook
+                  ? t("labelTradeCounterpartyOrderbook")
+                  : t("labelTradeCounterpartyPool");
+              return (
+                <Box
+                  className="rdg-cell-value"
+                  display={"flex"}
+                  flexDirection={"column"}
+                  justifyContent={"flex-start"}
+                >
+                  <Typography>{renderValue}</Typography>
+                  <Typography color={"textSecondary"} variant={"body2"}>
+                    {counterParty}
+                  </Typography>
+                </Box>
+              );
+            },
+          },
+        ]
+      : []),
+    {
+      key: "side",
+      name: t("labelTradeSide"),
+      formatter: ({ row }) => {
+        // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
+        const { from, to } = row["amount"];
+        const precisionFrom = tokenMap
+          ? tokenMap[from.key]?.precision
+          : undefined;
+        const precisionTo = tokenMap ? tokenMap[to.key]?.precision : undefined;
+        const fromValue = from.value
+          ? getValuePrecisionThousand(from.value, precisionFrom, precisionFrom)
+          : EmptyValueTag;
+        const toValue = to.value
+          ? getValuePrecisionThousand(to.value, precisionTo, precisionTo)
+          : EmptyValueTag;
+
+        return (
+          <Box
+            className="rdg-cell-value"
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"flex-end"}
+            textAlign={"right"}
+          >
+            <Typography whiteSpace={"pre-line"}>
+              {`${fromValue} ${from.key} \n \u2192 ${toValue} ${to.key}`}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      key: "price",
+      name: t("labelTradePrice") + "/" + t("labelTradeFee"),
+      headerCellClass: "textAlignRight",
+      formatter: ({ row }) => {
+        const precision = row["precision"] || 6;
+        const { key, value } = row["fee"];
+        const renderValue = row.price
+          ? getValuePrecisionThousand(
+              row.price.value,
+              undefined,
+              undefined,
+              precision,
+              true,
+              { isPrice: true }
+            )
+          : EmptyValueTag;
+
+        return (
+          <Box
+            className="rdg-cell-value textAlignRight"
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"flex-end"}
+          >
+            <Typography>{renderValue}</Typography>
+            <Typography variant={"body2"} color={"textSecondary"}>
+              {t("labelFee", { ns: "common" }) + ` ${value} ${key}`}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      key: "time",
+      name: t("labelTradeTime"),
+      headerCellClass: "textAlignRight",
+      // minWidth: 400,
+      formatter: ({ row }) => {
+        const time = moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow();
+        return (
+          <Box
+            className="rdg-cell-value textAlignRight"
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"flex-end"}
+            whiteSpace={"pre-line"}
+          >
+            <Typography textOverflow={"ellipsis"}>{time}</Typography>
+          </Box>
+        );
+      },
+    },
+  ];
+};
+
 export const TradeTable = withTranslation("tables")(
   ({
     t,
@@ -331,11 +459,11 @@ export const TradeTable = withTranslation("tables")(
     const [filterPair, setFilterPair] = React.useState("all");
     const [page, setPage] = React.useState(1);
     // const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
-    const { currency } = useSettings();
+    const { currency, isMobile } = useSettings();
     const defaultArgs: any = {
-      columnMode: getColumnModeAssets(t, currency, tokenMap, isL2Trade).filter(
-        (o) => !o.hidden
-      ),
+      columnMode: isMobile
+        ? getColumnModeMobileAssets(t, currency, tokenMap, isL2Trade)
+        : getColumnModeAssets(t, currency, tokenMap, isL2Trade),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<RawDataTradeItem, unknown>[],
