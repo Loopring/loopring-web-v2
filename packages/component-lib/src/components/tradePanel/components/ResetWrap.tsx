@@ -49,6 +49,7 @@ export const ResetWrap = <T extends FeeInfo>({
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
       height={"100%"}
+      minWidth={320}
     >
       <Grid item marginBottom={2}>
         <Typography

@@ -5,6 +5,7 @@ import { IpcProvider } from "web3-core";
 import { ErrorType } from "../command";
 import { ConnectProviders } from "@loopring-web/common-resources";
 import { IsMobile } from "../utilities";
+import { ethers } from "ethers";
 
 export const MetaMaskProvide = async (): Promise<
   { provider: IpcProvider; web3: Web3 } | undefined
@@ -27,9 +28,7 @@ export const MetaMaskProvide = async (): Promise<
       // @ts-ignore
       await window.ethereum.enable();
     }
-    // @ts-ignore
-    if (window.ethereum.providers && ethers.providers.Web3Provider) {
-      // @ts-ignore
+    if (window.ethereum && ethers.providers.Web3Provider) {
       provider = new ethers.providers.Web3Provider(window.ethereum);
     } else {
       provider = await detectEthereumProvider({
@@ -44,6 +43,7 @@ export const MetaMaskProvide = async (): Promise<
       const web3 = new Web3(provider as any);
       await ethereum.request({ method: "eth_requestAccounts" });
       walletServices.sendConnect(web3, provider);
+      // @ts-ignore
       return { provider, web3 };
     } else {
       return undefined;
