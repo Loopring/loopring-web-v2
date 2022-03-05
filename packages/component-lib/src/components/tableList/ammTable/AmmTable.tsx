@@ -82,6 +82,9 @@ const TableStyled = styled(Box)`
 
   .rdg {
     --template-columns: 300px auto auto auto !important;
+    @media only screen and (max-width: 768px) {
+      --template-columns: 54% 46% !important;
+    }
     .rdg-row .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -149,18 +152,6 @@ const getColumnModeAssets = (
       );
     },
   },
-  // {
-  //     key: 'amount',
-  //     name: t('labelAmmAmount'),
-  //     formatter: ({row}) => {
-  //         const {from, to} = row[ 'amount' ]
-  //         return (
-  //             <div className="rdg-cell-value">
-  //                 {`${from.value} ${from.key} + ${to.value} ${to.key}`}
-  //             </div>
-  //         )
-  //     }
-  // },
   {
     key: "lpTokenAmount",
     name: t("labelAmmLpTokenAmount"),
@@ -227,6 +218,124 @@ const getColumnModeAssets = (
   },
 ];
 
+const getColumnModeMobileAssets = (
+  t: TFunction,
+  _currency: Currency
+): Column<RawDataAmmItem, unknown>[] => [
+  {
+    key: "side",
+    name: t("labelAmmSide"),
+    formatter: ({ row }) => {
+      const tradeType =
+        row["side"] === AmmSideTypes.Join
+          ? t("labelAmmJoin")
+          : t("labelAmmExit");
+      const { from, to } = row["amount"];
+      const renderFromValue = getValuePrecisionThousand(
+        from.value,
+        undefined,
+        undefined,
+        undefined,
+        false,
+        { isTrade: true }
+      );
+      const renderToValue = getValuePrecisionThousand(
+        to.value,
+        undefined,
+        undefined,
+        undefined,
+        false,
+        { isTrade: true }
+      );
+      const time = moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow();
+      return (
+        <Box
+          height={"100%"}
+          width={"100%"}
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"flex-end"}
+          justifyContent={"center"}
+        >
+          <Typography
+            component={"span"}
+            display={"inline-flex"}
+            justifyContent={"space-between"}
+            alignSelf={"stretch"}
+          >
+            <StyledSideCell
+              component={"span"}
+              value={row.side}
+              variant={"body2"}
+            >
+              {tradeType}
+            </StyledSideCell>
+            <Typography component={"span"} variant={"body2"}>
+              {time}
+            </Typography>
+          </Typography>
+          <Typography marginLeft={1 / 2}>
+            {`${renderFromValue} ${from.key} + ${renderToValue} ${to.key}`}
+          </Typography>
+        </Box>
+      );
+    },
+  },
+  {
+    key: "lpTokenAmount",
+    name: t("labelAmmLpTokenAmount") + "/" + t("labelAmmFee"),
+    headerCellClass: "textAlignRight",
+    formatter: ({ row }) => {
+      const amount = row["lpTokenAmount"];
+      const renderValue =
+        row["side"] === AmmSideTypes.Join
+          ? `+${getValuePrecisionThousand(
+              amount,
+              undefined,
+              undefined,
+              undefined,
+              false,
+              { isTrade: true }
+            )}`
+          : `-${getValuePrecisionThousand(
+              amount,
+              undefined,
+              undefined,
+              undefined,
+              false,
+              { isTrade: true }
+            )}`;
+      const { key, value } = row.fee;
+      return (
+        <Box
+          height={"100%"}
+          width={"100%"}
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"flex-end"}
+          justifyContent={"center"}
+        >
+          <Typography>{renderValue}</Typography>
+          <Typography
+            variant={"body2"}
+            component={"span"}
+            color={"textSecondary"}
+          >
+            {`Fee: ${getValuePrecisionThousand(
+              value,
+              undefined,
+              undefined,
+              undefined,
+              false,
+              { isTrade: true, floor: false }
+            )} ${key}`}
+          </Typography>
+        </Box>
+      );
+    },
+  },
+];
+
 export const AmmTable = withTranslation("tables")(
   (props: WithTranslation & AmmTableProps) => {
     const { t, pagination, showFilter, rawData } = props;
@@ -238,9 +347,11 @@ export const AmmTable = withTranslation("tables")(
     const [totalData, setTotalData] = React.useState<RawDataAmmItem[]>(rawData);
     const [filterPair, setFilterPair] = React.useState("all");
 
-    const { currency } = useSettings();
+    const { currency, isMobile } = useSettings();
     const defaultArgs: any = {
-      columnMode: getColumnModeAssets(t, currency).filter((o) => !o.hidden),
+      columnMode: isMobile
+        ? getColumnModeMobileAssets(t, currency)
+        : getColumnModeAssets(t, currency),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<Row<any>, unknown>[],

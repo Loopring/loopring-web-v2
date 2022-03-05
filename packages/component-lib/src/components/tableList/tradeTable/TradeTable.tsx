@@ -80,7 +80,7 @@ const TableStyled = styled(Box)`
   .rdg {
     height: ${(props: any) => props.currentheight}px;
     @media only screen and (max-width: 768px) {
-      --template-columns: 16% 34% 30% auto !important;
+      --template-columns: 16% 54% 30% !important;
     }
     --template-columns: ${({ tradeposition }: any) =>
       tradeposition === "swap"
@@ -334,7 +334,8 @@ const getColumnModeMobileAssets = (
                   className="rdg-cell-value"
                   display={"flex"}
                   flexDirection={"column"}
-                  justifyContent={"flex-start"}
+                  justifyContent={"center"}
+                  height={"100%"}
                 >
                   <Typography>{renderValue}</Typography>
                   <Typography color={"textSecondary"} variant={"body2"}>
@@ -348,7 +349,8 @@ const getColumnModeMobileAssets = (
       : []),
     {
       key: "side",
-      name: t("labelTradeSide"),
+      name: t("labelTradeSide") + t("labelTradeFee"),
+      headerCellClass: "textAlignRight",
       formatter: ({ row }) => {
         // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
         const { from, to } = row["amount"];
@@ -362,17 +364,23 @@ const getColumnModeMobileAssets = (
         const toValue = to.value
           ? getValuePrecisionThousand(to.value, precisionTo, precisionTo)
           : EmptyValueTag;
+        const { key, value } = row["fee"];
 
         return (
           <Box
             className="rdg-cell-value"
             display={"flex"}
             flexDirection={"column"}
-            justifyContent={"flex-end"}
+            justifyContent={"center"}
+            alignItems={"flex-end"}
             textAlign={"right"}
+            height={"100%"}
           >
-            <Typography whiteSpace={"pre-line"}>
-              {`${fromValue} ${from.key} \n \u2192 ${toValue} ${to.key}`}
+            <Typography variant={"body2"}>
+              {`${fromValue} ${from.key}  \u2192 ${toValue} ${to.key}`}
+            </Typography>
+            <Typography variant={"body2"} color={"textSecondary"}>
+              {t("labelFee", { ns: "common" }) + `: ${value} ${key}`}
             </Typography>
           </Box>
         );
@@ -380,19 +388,19 @@ const getColumnModeMobileAssets = (
     },
     {
       key: "price",
-      name: t("labelTradePrice") + "/" + t("labelTradeFee"),
+      name: t("labelTradePrice") + "/" + t("labelTradeTime"),
       headerCellClass: "textAlignRight",
       formatter: ({ row }) => {
         const precision = row["precision"] || 6;
-        const { key, value } = row["fee"];
+        const time = moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow();
         const renderValue = row.price
           ? getValuePrecisionThousand(
               row.price.value,
               undefined,
               undefined,
               precision,
-              true,
-              { isPrice: true }
+              true
+              // { isPrice: true }
             )
           : EmptyValueTag;
 
@@ -401,32 +409,13 @@ const getColumnModeMobileAssets = (
             className="rdg-cell-value textAlignRight"
             display={"flex"}
             flexDirection={"column"}
-            justifyContent={"flex-end"}
+            justifyContent={"center"}
+            height={"100%"}
           >
             <Typography>{renderValue}</Typography>
-            <Typography variant={"body2"} color={"textSecondary"}>
-              {t("labelFee", { ns: "common" }) + ` ${value} ${key}`}
+            <Typography color={""} textOverflow={"ellipsis"} variant={"body2"}>
+              {time}
             </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      key: "time",
-      name: t("labelTradeTime"),
-      headerCellClass: "textAlignRight",
-      // minWidth: 400,
-      formatter: ({ row }) => {
-        const time = moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow();
-        return (
-          <Box
-            className="rdg-cell-value textAlignRight"
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"flex-end"}
-            whiteSpace={"pre-line"}
-          >
-            <Typography textOverflow={"ellipsis"}>{time}</Typography>
           </Box>
         );
       },

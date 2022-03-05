@@ -48,7 +48,7 @@ const TableStyled = styled(Box)`
   .rdg {
     --template-columns: 200px auto 300px auto !important;
     @media only screen and (max-width: 768px) {
-      --template-columns: 40% 52% 8% !important;
+      --template-columns: 30% auto 8% !important;
     }
     height: calc(86px * 5 + var(--header-row-height));
 
@@ -388,12 +388,7 @@ const columnMode = (
                     {feeDollar === undefined ? EmptyValueTag : currency === Currency.usd ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
                         : 'CNY' + PriceTag.Yuan + getThousandFormattedNumbers(feeYuan as number)}
                 </TypogStyle> */}
-          <Typography
-            variant={"body2"}
-            component={"p"}
-            color={"textPrimary"}
-            fontFamily={"Roboto"}
-          >
+          <Typography variant={"body2"} component={"p"} color={"textPrimary"}>
             <Typography component={"span"}>
               {getValuePrecisionThousand(
                 feeA,
@@ -418,9 +413,8 @@ const columnMode = (
           </Typography>
           <Typography
             variant={"body2"}
-            component={"p"}
+            component={"span"}
             color={"textPrimary"}
-            fontFamily={"Roboto"}
           >
             <Typography component={"span"}>
               {getValuePrecisionThousand(
@@ -494,16 +488,28 @@ const columnModeMobile = (
     sortable: false,
     width: "auto",
     name: t("labelPool"),
-    formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
+    formatter: ({ row }: FormatterProps<Row<any>>) => {
+      // const {
+      //   ammDetail: { coinAInfo, coinBInfo },
+      // } = row;
+      let coinAInfo, coinBInfo;
+      if (row.ammDetail) {
+        coinAInfo = row.ammDetail.coinAInfo;
+        coinBInfo = row.ammDetail.coinBInfo;
+      }
       return (
-        <PoolStyle
+        <Box
           display={"flex"}
           flexDirection={"column"}
           alignContent={"flex-start"}
           justifyContent={"center"}
+          height={"100%"}
         >
-          <IconColumn row={row.ammDetail as any} />
-        </PoolStyle>
+          {/*<IconColumn row={row.ammDetail as any} />*/}
+          <Typography variant={"body1"}>
+            {coinAInfo?.simpleName + "-" + coinBInfo?.simpleName}
+          </Typography>
+        </Box>
       );
     },
   },
@@ -582,51 +588,25 @@ const columnModeMobile = (
           >
             <Typography
               variant={"body2"}
-              component={"p"}
-              color={"textPrimary"}
-              fontFamily={"Roboto"}
+              component={"span"}
+              color={"textSecondary"}
             >
-              <Typography component={"span"}>
-                {getValuePrecisionThousand(
-                  feeA,
-                  undefined,
-                  undefined,
-                  precisionA,
-                  false,
-                  { floor: true }
-                )}
-              </Typography>
-              <Typography component={"span"}>{` ${
-                coinAInfo?.simpleName as string
-              }`}</Typography>
-            </Typography>
-            <Typography
-              variant={"body2"}
-              component={"p"}
-              color={"textPrimary"}
-              marginX={1 / 2}
-            >
-              +
-            </Typography>
-            <Typography
-              variant={"body2"}
-              component={"p"}
-              color={"textPrimary"}
-              fontFamily={"Roboto"}
-            >
-              <Typography component={"span"}>
-                {getValuePrecisionThousand(
-                  feeB,
-                  undefined,
-                  undefined,
-                  precisionB,
-                  false,
-                  { floor: true }
-                )}
-              </Typography>
-              <Typography component={"span"}>{` ${
-                coinBInfo?.simpleName as string
-              }`}</Typography>
+              {`Fee: ${getValuePrecisionThousand(
+                feeA,
+                undefined,
+                undefined,
+                precisionA,
+                false,
+                { floor: true }
+              )} ${coinAInfo?.simpleName as string} 
+              + ${getValuePrecisionThousand(
+                feeB,
+                undefined,
+                undefined,
+                precisionB,
+                false,
+                { floor: true }
+              )} ${coinBInfo?.simpleName as string}`}
             </Typography>
           </Box>
 

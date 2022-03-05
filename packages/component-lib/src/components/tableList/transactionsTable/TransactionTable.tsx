@@ -500,6 +500,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   variant={"h3"}
                   alignItems={"center"}
                   flexDirection={"column"}
+                  width={"50px"}
                 >
                   {sideIcon}
                   <Typography fontSize={10} marginTop={-1}>

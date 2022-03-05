@@ -46,9 +46,9 @@ export const VendorMenu = ({
       alignItems={"stretch"}
       justifyContent={isMobile ? "flex-start" : "center"}
       flexDirection={"column"}
-      marginTop={2}
+      paddingTop={2}
       paddingX={4}
-      marginBottom={3}
+      paddingBottom={3}
       height={"100%"}
       alignSelf={"flex-start"}
     >

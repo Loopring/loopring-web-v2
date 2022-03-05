@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Grid, MenuItem } from "@mui/material";
+import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { DatePicker, TextField } from "../../../basic-lib/form";
 import { Button } from "../../../basic-lib/btns";
@@ -24,15 +24,6 @@ const StyledTextFiled = styled(TextField)`
   .MuiInputBase-root {
     width: initial;
     max-width: initial;
-  }
-`;
-
-const StyledBtnBox = styled(Box)`
-  display: flex;
-  margin-left: 40%;
-
-  button:first-of-type {
-    margin-right: 8px;
   }
 `;
 
@@ -83,7 +74,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
 
     return (
       <Grid container spacing={2} alignItems={"center"}>
-        <Grid item xs={2}>
+        <Grid item xs={6} lg={2}>
           <StyledTextFiled
             id="table-amm-filter-types"
             select
@@ -94,7 +85,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {FilterTradeTypeList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
@@ -102,13 +92,13 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
+        <Grid item xs={6} lg={2}>
           <DatePicker
             value={filterDate}
             onChange={(newValue: any) => handleFilterChange({ date: newValue })}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={6} lg={2}>
           <StyledTextFiled
             id="table-trade-filter-pairs"
             select
@@ -119,7 +109,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {formattedRawPairList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
@@ -127,19 +116,18 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
-          <StyledBtnBox>
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={handleReset}
-            >
-              {t("labelFilterReset")}
-            </Button>
-            {/* <Button variant={'contained'} size={'small'} color={'primary'}
+        <Grid item xs={6} lg={2}>
+          <Button
+            fullWidth
+            variant={"outlined"}
+            size={"medium"}
+            color={"primary"}
+            onClick={handleReset}
+          >
+            {t("labelFilterReset")}
+          </Button>
+          {/* <Button variant={'contained'} size={'small'} color={'primary'}
                             onClick={handleSearch}>{t('Search')}</Button> */}
-          </StyledBtnBox>
         </Grid>
       </Grid>
     );

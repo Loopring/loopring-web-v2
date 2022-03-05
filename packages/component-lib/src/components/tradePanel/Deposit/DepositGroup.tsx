@@ -213,11 +213,7 @@ DepositGroupProps<T, I>) => {
         ) : (
           <Box
             minHeight={240}
-            width={
-              isMobile
-                ? "auto"
-                : `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`
-            }
+            width={`calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
           >
             <ToolbarStyle className={"large"} variant={"regular"}>
               <DepositTitleGroup
