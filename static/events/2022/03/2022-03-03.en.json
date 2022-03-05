@@ -62,7 +62,20 @@
     ],
     "api": {
       "url": "/api/v3/user/gaveawayNft2/getAccount",
-      "params":'undefined'
+      "params": null,
+      "column": [
+        {
+          "key": "accountId",
+          "label": "account Id"
+        },
+        {
+          "key": "address",
+          "label": "Address"
+        },{
+          "key": "absolute",
+          "label": "Total Value"
+        }
+      ]
     },
     "rules": [
       "Users who make a ETH, LRC, USDC, USDT, ENS, or UNI deposit onto Loopring L2 will have a chance to win a Loophead NFT. To be eligible, users must deposit a minimum of $100 USD during the specified dates while maintaining a positive net deposit on their L2 account by the end of the round.",
