@@ -61,7 +61,7 @@
       }
     ],
     "api": {
-      "url": "/api/v3/user/gaveawayNft2/getAccount",
+      "url": "https://api.loopring.network/api/v3/user/gaveawayNft2/getAccount",
       "params": null,
       "column": [
         {
