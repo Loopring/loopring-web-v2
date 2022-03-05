@@ -14,7 +14,7 @@ import { LoadingBlock } from "../LoadingPage";
 //@ts-ignore
 // import cssStyle from "./snow.css";
 import { AmmPoolActivityRule, RuleType } from "@loopring-web/loopring-sdk";
-import { Rank } from "./rank";
+import { Rank, RankRaw } from "./rank";
 
 const LayoutStyled = styled(Box)`
   width: 100%;
@@ -76,7 +76,6 @@ export const TradeRacePage = withTranslation("common")(
       }, []);
       const snows = new Array(flakes).fill(flake, 0, flakes);
     */
-    myLog("TradeRacePage index", eventData);
     return (
       <>
         <ScrollTop>
@@ -282,6 +281,7 @@ export const TradeRacePage = withTranslation("common")(
             ) : (
               <></>
             )}
+            {eventData.api && <RankRaw {...eventData.api} />}
 
             <Box
               ref={anchorRef}
