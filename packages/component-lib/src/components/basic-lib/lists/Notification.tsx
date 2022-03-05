@@ -10,7 +10,6 @@ import {
   ACTIVITY,
   ACTIVITY_TYPE,
   hexToRGB,
-  myLog,
   NOTIFICATION_ITEM,
 } from "@loopring-web/common-resources";
 import { css, Theme } from "@emotion/react";
@@ -172,6 +171,7 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
 export const ListItemActivity = (props: ACTIVITY) => {
   const { type, title, description1, description2, startDate, link } = props;
   const history = useHistory();
+
   if (Date.now() > startDate) {
     return (
       <ListItemActivityStyle
