@@ -4,18 +4,19 @@ import { walletServices } from "../walletServices";
 import { IpcProvider } from "web3-core";
 import { ErrorType } from "../command";
 import { ConnectProviders } from "@loopring-web/common-resources";
+import { IsMobile } from "../utilities";
 
 export const MetaMaskProvide = async (): Promise<
   { provider: IpcProvider; web3: Web3 } | undefined
 > => {
   try {
-    if (!window.ethereum?.isMetaMask) {
+    if (!window.ethereum?.isMetaMask && !IsMobile.any()) {
       throw new Error(
         `Global ethereum is not MetaMask, Please disable other Wallet Plugin`
       );
     }
     const provider: any = await detectEthereumProvider({
-      mustBeMetaMask: true,
+      mustBeMetaMask: !IsMobile.any(),
     });
     const ethereum: any = window.ethereum;
 
