@@ -235,7 +235,6 @@ export const RankRaw = <R extends any>(props: {
     fetch(props.url)
       .then((response) => response.json())
       .then((data) => {
-        debugger;
         setRank(data as any[]);
         setShowLoading(false);
       })
