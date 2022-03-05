@@ -60,7 +60,10 @@
         }
       }
     ],
-    "api": "/api/v3/user/gaveawayNft2/getAccount",
+    "api": {
+      "url": "/api/v3/user/gaveawayNft2/getAccount",
+      "params":'undefined'
+    },
     "rules": [
       "Users who make a ETH, LRC, USDC, USDT, ENS, or UNI deposit onto Loopring L2 will have a chance to win a Loophead NFT. To be eligible, users must deposit a minimum of $100 USD during the specified dates while maintaining a positive net deposit on their L2 account by the end of the round.",
       "Net deposits are calculated as inflows less outflows (withdrawals + transfers). There are three ways to make a deposit: <br/><ul><li>Ethereum L1 to Loopring Layer 2</li><li>Withdrawals from CEXs to Loopring via <a href=\"https://www.layerswap.io/\">LayerSwap</a></li><li>FIAT to Loopring via <a href=\"https://ramp.network/\">Ramp</a> or <a href=\"https://banxa.com/\">Banxa</a>.</li>\n</ul>",
