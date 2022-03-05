@@ -87,7 +87,8 @@ export const TradeRacePanel = withTranslation(["tables"])(
                 {row.reward.token ? (
                   <>
                     <Typography variant={"body1"} component={"span"}>
-                      {getValuePrecisionThousand(row.reward.count)}
+                      {row.reward.count !== "" &&
+                        getValuePrecisionThousand(row.reward.count)}
                     </Typography>
                     <Typography
                       variant={"body1"}
