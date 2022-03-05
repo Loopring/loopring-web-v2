@@ -15,9 +15,28 @@ export const MetaMaskProvide = async (): Promise<
         `Global ethereum is not MetaMask, Please disable other Wallet Plugin`
       );
     }
-    const provider: any = await detectEthereumProvider({
-      mustBeMetaMask: !IsMobile.any(),
-    });
+    let provider;
+    // @ts-ignore
+    if (
+      IsMobile.any() &&
+      window.ethereum &&
+      // @ts-ignore
+      window.ethereum.enable &&
+      !window.ethereum.isMetaMask
+    ) {
+      // @ts-ignore
+      await window.ethereum.enable();
+    }
+    // @ts-ignore
+    if (window.ethereum.providers && ethers.providers.Web3Provider) {
+      // @ts-ignore
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+    } else {
+      provider = await detectEthereumProvider({
+        mustBeMetaMask: !IsMobile.any(),
+      });
+    }
+
     const ethereum: any = window.ethereum;
 
     if (provider && ethereum && ethereum.isMetaMask) {
