@@ -1,5 +1,5 @@
 import { Trans } from "react-i18next";
-import { NOTIFICATION } from "@loopring-web/common-resources";
+import { myLog, NOTIFICATION } from "@loopring-web/common-resources";
 import { Box, Divider } from "@mui/material";
 import {
   EmptyDefault,
@@ -36,8 +36,9 @@ export const NotificationPanel = ({
       paddingTop={1}
     >
       {(notification.activities.length &&
-        // @ts-ignore
         notification.activities.findIndex(({ startDate }) => {
+          myLog("NotificationPanel", Date.now() > startDate);
+
           return Date.now() > startDate;
         }) !== -1) ||
       (notification.notifications.length &&
