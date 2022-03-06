@@ -5,7 +5,7 @@ import { IpcProvider } from "web3-core";
 import { ErrorType } from "../command";
 import { ConnectProviders } from "@loopring-web/common-resources";
 import { IsMobile } from "../utilities";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
 
 export const MetaMaskProvide = async (): Promise<
   { provider: IpcProvider; web3: Web3 } | undefined
@@ -18,25 +18,28 @@ export const MetaMaskProvide = async (): Promise<
     }
     let provider;
 
-    if (
-      window.ethereum &&
-      // @ts-ignore
-      window.ethereum.enable &&
-      ethers.providers.Web3Provider &&
-      !window.ethereum.isMetaMask
-    ) {
-      // @ts-ignore
-      await window.ethereum.enable();
-      const provider = new ethers.providers.Web3Provider(
-        (window as any).ethereum
-      );
-      // const signer = provider.getSigner();
-      console.log("provider success");
-    } else {
-      provider = await detectEthereumProvider({
-        mustBeMetaMask: !IsMobile.any(),
-      });
-    }
+    // if (
+    //   window.ethereum &&
+    //   // @ts-ignore
+    //   window.ethereum.enable &&
+    //   ethers.providers.Web3Provider &&
+    //   !window.ethereum.isMetaMask
+    // ) {
+    //   // @ts-ignore
+    //   await window.ethereum.enable();
+    //   const provider = new ethers.providers.Web3Provider(
+    //     (window as any).ethereum
+    //   );
+    //   // const signer = provider.getSigner();
+    //   console.log("provider success");
+    // } else {
+    //   provider = await detectEthereumProvider({
+    //     mustBeMetaMask: !IsMobile.any(),
+    //   });
+    // }
+    provider = await detectEthereumProvider({
+      mustBeMetaMask: !IsMobile.any(),
+    });
 
     const ethereum: any = window.ethereum;
 

@@ -91,7 +91,7 @@ export const OrderbookPage = withTranslation("common")(() => {
   } = usePageTradePro();
   const { market, handleOnMarketChange, resetTradeCalcData } = usePro();
   const { unit } = useTheme();
-  const { proLayout, setLayouts } = useSettings();
+  const { proLayout, setLayouts, isMobile } = useSettings();
   const history = useHistory();
 
   const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
@@ -138,27 +138,30 @@ export const OrderbookPage = withTranslation("common")(() => {
     );
   }, [market, depthForCalc]);
 
-  const onRestDepthTableLength = React.useCallback((h: number) => {
-    if (h) {
-      const i = Math.floor(((h - 58) * unit) / 40);
-      if (i <= 40) {
-        setRowLength(MARKET_ROW_LENGTH + i);
-      } else {
-        setRowLength(48);
+  const onRestDepthTableLength = React.useCallback(
+    (h: number) => {
+      if (h) {
+        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 40);
+        if (i <= 40) {
+          setRowLength(i);
+        } else {
+          setRowLength(48);
+        }
       }
-    }
-  }, []);
+    },
+    [isMobile]
+  );
   const onRestMarketTableLength = React.useCallback(
     (layout: Layout | undefined) => {
       if (layout && layout.h) {
         const h = layout.h;
-        const i = Math.floor(((h - 58) * unit) / 20);
+        const i = Math.floor((h * unit - (isMobile ? 88 : 144)) / 20);
         setTradeTableLengths((state) => {
           if (i <= 30) {
             //32
             return {
               ...state,
-              [layout.i]: MARKET_TRADES_LENGTH + i,
+              [layout.i]: i,
             };
           } else {
             return {
@@ -169,7 +172,7 @@ export const OrderbookPage = withTranslation("common")(() => {
         });
       }
     },
-    []
+    [isMobile]
   );
 
   const onBreakpointChange = React.useCallback(
