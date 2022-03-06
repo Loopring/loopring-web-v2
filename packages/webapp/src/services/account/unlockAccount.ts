@@ -62,8 +62,8 @@ export async function unlockAccount() {
           wallet: account.owner,
         }),
       ]);
-
-      myLog("unlockAccount raw_data:", response);
+      //TODO: debugger
+      console.log("unlockAccount raw_data:", response);
 
       if (
         !response.apiKey &&
@@ -85,7 +85,8 @@ export async function unlockAccount() {
         });
       }
     } catch (e) {
-      myLog("unlockAccount e:", e);
+      //TODO: debugger
+      console.log("unlockAccount e:", e);
 
       const errType = checkErrorInfo(e, true);
       switch (errType) {
