@@ -350,6 +350,7 @@ export default {
   labelOrderTableOpenOrder: "当前委托",
   labelOrderTableOrderHistory: "历史委托",
   labelResetLayout: "重置布局",
+  labelResetMobileLayout: "Reset",
   labelBtnFix: "重置",
   labelProSell: "卖",
   labelProBuy: "买",

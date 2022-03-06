@@ -579,7 +579,7 @@ export const Toolbar = withTranslation("common")(
               handleLayoutChange([], undefined, layoutConfigs[0].layouts);
             }}
           >
-            {t("labelResetLayout")}
+            {isMobile ? t("labelResetMobileLayout") : t("labelResetLayout")}
           </Button>
         </Box>
       </Box>

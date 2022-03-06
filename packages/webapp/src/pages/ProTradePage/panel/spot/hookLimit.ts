@@ -47,7 +47,7 @@ export const useLimit = <C extends { [key: string]: any }>({
   const { marketMap, tokenMap } = useTokenMap();
   const { tokenPrices } = useTokenPrices();
   const { forex, allowTrade } = useSystem();
-  const { currency } = useSettings();
+  const { currency, isMobile } = useSettings();
 
   const { t } = useTranslation("common");
 
@@ -649,7 +649,10 @@ export const useLimit = <C extends { [key: string]: any }>({
     limitSubmit,
     limitBtnClick,
     handlePriceError,
-    tradeLimitBtnStyle,
+    tradeLimitBtnStyle: {
+      ...tradeLimitBtnStyle,
+      ...{ fontSize: isMobile ? "1.4rem" : "1.6rem" },
+    },
     // marketTicker,
   };
 };

@@ -362,6 +362,7 @@ export default {
   labelOrderTableOpenOrder: "Open Order",
   labelOrderTableOrderHistory: "Order History",
   labelResetLayout: "Reset Layout",
+  labelResetMobileLayout: "Reset",
   labelBtnFix: "reset",
   labelProSell: "Sell",
   labelProBuy: "Buy",
