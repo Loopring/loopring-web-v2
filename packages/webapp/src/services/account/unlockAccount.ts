@@ -2,7 +2,11 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "api_wrapper";
 import store from "stores";
 import { accountServices } from "./accountServices";
-import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
+import {
+  ConnectProviders,
+  myLog,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 import { checkErrorInfo } from "hooks/useractions/utils";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -47,6 +51,17 @@ export async function unlockAccount() {
 
       myLog("unlockAccount eddsaKey:", eddsaKey);
 
+      const walletTypePromise: Promise<{ walletType: any }> =
+        window.ethereum && connectName === sdk.ConnectorNames.MetaMask
+          ? Promise.resolve({ walletType: undefined })
+          : LoopringAPI.walletAPI
+              .getWalletType({
+                wallet: account.owner,
+              })
+              .catch((error) => {
+                console.log(error);
+                return { walletType: undefined };
+              });
       const [
         response,
         // { apiKey, raw_data },
@@ -58,9 +73,7 @@ export async function unlockAccount() {
           },
           eddsaKey.sk
         ),
-        LoopringAPI.walletAPI.getWalletType({
-          wallet: account.owner,
-        }),
+        walletTypePromise,
       ]);
       //TODO: debugger
       console.log("unlockAccount raw_data:", response);
