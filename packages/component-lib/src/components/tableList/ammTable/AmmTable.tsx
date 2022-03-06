@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
@@ -75,16 +75,17 @@ export type AmmTableProps = {
 //     page = 'page'
 // }
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    --template-columns: 300px auto auto auto !important;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 54% 46% !important;
-    }
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 300px auto auto auto !important`
+        : `--template-columns: 54% 46% !important;`}
+
     .rdg-row .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -101,7 +102,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 const StyledSideCell: any = styled(Typography)`
   color: ${(props: any) => {
@@ -440,7 +441,7 @@ export const AmmTable = withTranslation("tables")(
     }, [handleFilterChange]);
 
     return (
-      <TableStyled>
+      <TableStyled isMobile={isMobile}>
         {showFilter && (
           <TableFilterStyled>
             <Filter

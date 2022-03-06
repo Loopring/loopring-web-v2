@@ -44,7 +44,6 @@ export const MetaMaskProvide = async (): Promise<
     const ethereum: any = window.ethereum;
 
     if (provider && ethereum) {
-      // const metamaskProvider:IpcProvider = ethereum.find((provider:IpcProvider & {isMetaMask:boolean}) => provider.isMetaMask);
       const web3 = new Web3(provider as any);
       await ethereum.request({ method: "eth_requestAccounts" });
       walletServices.sendConnect(web3, provider);

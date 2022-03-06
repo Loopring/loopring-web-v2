@@ -2,7 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { PopoverPure, Button, CancelAllOrdersAlert } from "../../index";
 import { bindTrigger } from "material-ui-popup-state/es";
 import styled from "@emotion/styled";
-import { Box, Modal, Typography, ClickAwayListener, Grid } from "@mui/material";
+import {
+  Box,
+  Modal,
+  Typography,
+  ClickAwayListener,
+  Grid,
+  BoxProps,
+} from "@mui/material";
 import { DateRange } from "@mui/lab";
 import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
@@ -110,23 +117,26 @@ export type OrderHistoryRawDataItem = {
   orderId: string;
 };
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<
+  BoxProps & { isMobile?: boolean; isopen?: string; ispro?: string }
+>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    --template-columns: ${({ isopen, ispro }: any) =>
-      isopen === "open"
-        ? ispro === "pro"
-          ? "auto auto 250px auto auto auto auto"
-          : "auto auto 230px auto auto 130px 140px"
-        : ispro === "pro"
-        ? "auto auto 250px auto auto auto auto"
-        : "auto auto 230px auto 130px 130px 130px"} !important;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 14% 56% 30% !important;
-    }
+    ${({ isMobile, isopen, ispro }) =>
+      !isMobile
+        ? `--template-columns: ${
+            isopen === "open"
+              ? ispro === "pro"
+                ? "auto auto 250px auto auto auto auto"
+                : "auto auto 230px auto auto 130px 140px"
+              : ispro === "pro"
+              ? "auto auto 250px auto auto auto auto"
+              : "auto auto 230px auto 130px 130px 130px"
+          } !important;`
+        : `--template-columns: 14% 56% 30% !important;`}
 
     .rdg-cell:last-of-type {
       display: flex;
@@ -139,7 +149,9 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as any;
+` as (
+  props: { isMobile?: boolean; isopen?: string; ispro?: string } & BoxProps
+) => JSX.Element;
 
 export interface OrderHistoryTableProps {
   rawData: OrderHistoryRawDataItem[];
@@ -1150,6 +1162,7 @@ export const OrderHistoryTable = withTranslation("tables")(
 
     return (
       <TableStyled
+        isMobile={isMobile}
         isopen={isOpenOrder ? "open" : "history"}
         ispro={isPro ? "pro" : "lite"}
       >

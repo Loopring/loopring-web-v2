@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, TablePagination, Table } from "../../basic-lib";
@@ -64,15 +64,14 @@ const CellStatus = ({ row: { status } }: any) => {
   return RenderValueWrapper;
 };
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    @media only screen and (max-width: 768px) {
-      --template-columns: 60% 40% !important;
-    }
+    ${({ isMobile }) =>
+      isMobile ? `--template-columns: 60% 40% !important;` : ``}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -94,7 +93,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 export const TsNFTTable = withTranslation(["tables", "common"])(
   <Row extends TxnDetailProps>({
@@ -455,7 +454,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     };
 
     return (
-      <TableStyled>
+      <TableStyled isMobile={isMobile}>
         {showFilter && (
           <TableFilterStyled>
             <Filter

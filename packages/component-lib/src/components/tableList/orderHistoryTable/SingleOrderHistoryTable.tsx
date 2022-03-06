@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import { Column, generateColumns, Table } from "../../basic-lib";
 import { OrderDetailItem } from "./OrderHistoryTable";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -27,17 +27,17 @@ interface Row {
   actionsStatus: object;
 }
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
   height: auto;
 
   .rdg {
-    --template-columns: auto auto auto auto 180px !important;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 40% 40% 20% !important;
-    }
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: auto auto auto auto 180px !important;`
+        : `--template-columns: 40% 40% 20% !important;`}
   }
 
   .textAlignRight {
@@ -46,7 +46,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 export interface SingleOrderHistoryTableProps {
   rawData: OrderDetailItem[];
@@ -248,7 +248,7 @@ export const SingleOrderHistoryTable = withTranslation("tables")(
       generateColumns,
     };
     return (
-      <TableStyled>
+      <TableStyled isMobile={isMobile}>
         <Table
           className={"scrollable"}
           {...{

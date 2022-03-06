@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, BoxProps, Modal, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -81,16 +81,16 @@ const MemoCellStyled = styled(Box)`
   text-align: right;
 `;
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    --template-columns: 120px auto auto auto 120px 150px !important;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 60% 40% !important;
-    }
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 120px auto auto auto 120px 150px !important;`
+        : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -112,7 +112,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 export interface TransactionTableProps {
   etherscanBaseUrl?: string;
@@ -602,7 +602,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     };
 
     return (
-      <TableStyled>
+      <TableStyled isMobile={isMobile}>
         {showFilter && (
           <TableFilterStyled>
             <Filter
