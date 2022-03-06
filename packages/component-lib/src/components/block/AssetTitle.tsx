@@ -290,7 +290,11 @@ export const AssetTitleMobile = ({
                 variant={"outlined"}
                 size={"medium"}
                 color={"primary"}
-                style={{ minWidth: 120, textTransform: "none" }}
+                style={{
+                  textTransform: "none",
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                }}
                 onClick={showPartner}
               >
                 {t("labelAssetsBtnRamp")}

@@ -66,9 +66,9 @@ const basicLayout = {
     ],
     xxs: [
       { i: "toolbar", x: 0, y: 0, w: 6, h: 14, minW: 6, minH: 9 },
-      { i: "walletInfo", x: 0, y: 63, w: 3, h: 39, minW: 3, minH: 22 },
-      { i: "spot", x: 0, y: 9, w: 3, h: 89, minW: 3, minH: 54 },
-      { i: "market", x: 3, y: 9, w: 3, h: 128, minW: 3, minH: 58 },
+      { i: "walletInfo", x: 0, y: 63, w: 3, h: 50, minW: 3, minH: 22 },
+      { i: "spot", x: 0, y: 9, w: 3, h: 103, minW: 3, minH: 54 },
+      { i: "market", x: 3, y: 9, w: 3, h: 152, minW: 3, minH: 58 },
       { i: "market2", x: 0, y: 0, w: 0, h: 0, minW: 0, minH: 0 },
       { i: "chart", x: 3, y: 125, w: 6, h: 80, minW: 3, minH: 32 },
       { i: "orderTable", x: 0, y: 88, w: 6, h: 80, minW: 5, minH: 36 },
