@@ -17,23 +17,20 @@ export const MetaMaskProvide = async (): Promise<
       );
     }
     let provider;
-    // @ts-ignore
+
     if (
-      IsMobile.any() &&
       window.ethereum &&
       // @ts-ignore
       window.ethereum.enable &&
+      ethers.providers.Web3Provider &&
       !window.ethereum.isMetaMask
     ) {
       // @ts-ignore
       await window.ethereum.enable();
-    }
-    if (
-      window.ethereum &&
-      ethers.providers.Web3Provider &&
-      !window.ethereum.isMetaMask
-    ) {
-      provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(
+        (window as any).ethereum
+      );
+      // const signer = provider.getSigner();
       console.log("provider success");
     } else {
       provider = await detectEthereumProvider({

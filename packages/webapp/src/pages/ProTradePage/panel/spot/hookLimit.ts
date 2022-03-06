@@ -651,7 +651,13 @@ export const useLimit = <C extends { [key: string]: any }>({
     handlePriceError,
     tradeLimitBtnStyle: {
       ...tradeLimitBtnStyle,
-      ...{ fontSize: isMobile ? "1.4rem" : "1.6rem" },
+      ...{
+        fontSize: isMobile
+          ? tradeLimitI18nKey !== ""
+            ? "1.2rem"
+            : "1.4rem"
+          : "1.6rem",
+      },
     },
     // marketTicker,
   };
