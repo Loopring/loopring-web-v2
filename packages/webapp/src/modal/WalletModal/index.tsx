@@ -247,8 +247,9 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       : [
           ...(window.ethereum && [
             {
-              key: "Connect",
-              imgSrc: SoursURL + "svg/loopring.svg",
+              ...DefaultGatewayList[0],
+              // key: "Connect",
+              // imgSrc: SoursURL + "svg/loopring.svg",
               handleSelect: React.useCallback(
                 async (event, flag?) => {
                   if (

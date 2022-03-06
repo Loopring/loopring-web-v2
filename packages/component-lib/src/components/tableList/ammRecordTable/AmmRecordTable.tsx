@@ -21,11 +21,6 @@ import { Currency } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import { TFunction } from "i18next";
 
-// enum ActionType {
-//     // filter = 'filter',
-//     page = 'page'
-// }
-
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;

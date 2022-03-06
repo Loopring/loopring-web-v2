@@ -503,9 +503,6 @@ export const useLimit = <C extends { [key: string]: any }>({
           };
         });
       }
-      // if (formType === TradeBaseType.slippage) {
-      //     return
-      // }
     },
     [setLimitTradeData, currency, forex]
   );
@@ -528,8 +525,6 @@ export const useLimit = <C extends { [key: string]: any }>({
               symbol: data.belong,
               decimal: marketMap[market].precisionForPrice,
             }),
-            //labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
-            //labelErrorPricePrecisionLimit:'限价 {{symbol}}，最多可保留小数点后 {{decimal} 位'
           };
         }
         return undefined;
@@ -571,9 +566,6 @@ export const useLimit = <C extends { [key: string]: any }>({
       minOrderInfo,
       // calcTradeParams,
     } = pageTradePro;
-    // const seed =
-
-    // const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip.minReceived)
     if (account.readyState === AccountStatus.ACTIVATED) {
       // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
       if (
