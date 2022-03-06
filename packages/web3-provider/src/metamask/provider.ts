@@ -48,6 +48,7 @@ export const MetaMaskProvide = async (): Promise<
       const web3 = new Web3(provider as any);
       await ethereum.request({ method: "eth_requestAccounts" });
       walletServices.sendConnect(web3, provider);
+      console.log("provider new web3 success");
       // @ts-ignore
       return { provider, web3 };
     } else {
