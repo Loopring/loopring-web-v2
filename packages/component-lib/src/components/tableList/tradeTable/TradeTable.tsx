@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
@@ -72,20 +72,28 @@ export type TradeTableProps = {
   showLoading?: boolean;
 };
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<
+  BoxProps & {
+    isMobile?: boolean;
+    currentheight?: number;
+    tradeposition: string;
+  }
+>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
     height: ${(props: any) => props.currentheight}px;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 16% 54% 30% !important;
-    }
-    --template-columns: ${({ tradeposition }: any) =>
-      tradeposition === "swap"
-        ? "300px 120px auto auto !important"
-        : "150px 300px auto 120px auto auto !important"};
+
+    ${({ isMobile, tradeposition }) =>
+      !isMobile
+        ? `--template-columns: ${
+            tradeposition === "swap"
+              ? "300px 120px auto auto !important"
+              : "150px 300px auto 120px auto auto !important"
+          }`
+        : ` --template-columns: 40% 40% 20%  !important;`}
 
     .rdg-cell.action {
       display: flex;
@@ -104,7 +112,13 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as any;
+` as (
+  props: {
+    isMobile?: boolean;
+    currentheight?: number;
+    tradeposition: string;
+  } & BoxProps
+) => JSX.Element;
 
 const getColumnModeAssets = (
   t: TFunction,
@@ -522,7 +536,11 @@ export const TradeTable = withTranslation("tables")(
     const tradeposition = isL2Trade === true ? "layer2" : "swap";
 
     return (
-      <TableStyled currentheight={currentheight} tradeposition={tradeposition}>
+      <TableStyled
+        isMobile={isMobile}
+        currentheight={currentheight}
+        tradeposition={tradeposition}
+      >
         {showFilter && (
           <TableFilterStyled>
             <Filter

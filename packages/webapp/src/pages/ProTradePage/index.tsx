@@ -267,17 +267,14 @@ export const OrderbookPage = withTranslation("common")(() => {
     market2: React.useMemo(
       () => (
         <>
-          {[BreakPoint.lg, BreakPoint.xlg].includes(
-            configLayout.currentBreakpoint
-          ) && (
-            <MarketView
-              market={market as any}
-              main={TabMarketIndex.Trades}
-              tableLength={tradeTableLengths.market2}
-              rowLength={0}
-              breakpoint={configLayout.currentBreakpoint}
-            />
-          )}
+          <MarketView
+            isOnlyTrade={true}
+            market={market as any}
+            main={TabMarketIndex.Trades}
+            tableLength={tradeTableLengths.market2}
+            rowLength={0}
+            breakpoint={configLayout.currentBreakpoint}
+          />
         </>
       ),
       [

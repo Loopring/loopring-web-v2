@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 // import { useHistory } from 'react-router-dom'
@@ -18,18 +18,22 @@ import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo from "./components/ActionMemo";
 import { Currency } from "@loopring-web/loopring-sdk";
 
-const TableWrap = styled(Box)`
+const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
     flex: 1;
-    --template-columns: 200px 150px auto auto
-      ${(props: any) => (props.lan === "en_US" ? "285px" : "240px")} !important;
     @media only screen and (max-width: 768px) {
       --template-columns: 52% 38% auto !important;
     }
+    ${({ isMobile, lan }) =>
+      isMobile
+        ? `--template-columns: 200px 150px auto auto ${
+            lan === "en_US" ? "285px" : "240px"
+          } !important;`
+        : `--template-columns: 54% 46% !important;`}
 
     .rdg-cell:first-of-type {
       display: flex;
@@ -50,7 +54,7 @@ const TableWrap = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as any;
+` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element;
 
 // const IconWrapperStyled = styled(Box)`
 //     margin-top: ${({theme}) => theme.unit * 1.1}px;
@@ -483,7 +487,7 @@ export const AssetsTable = withTranslation("tables")(
     );
 
     return (
-      <TableWrap lan={language}>
+      <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
           <TableFilterStyled>
             <Filter

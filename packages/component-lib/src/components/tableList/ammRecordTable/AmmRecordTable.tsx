@@ -26,7 +26,7 @@ import { TFunction } from "i18next";
 //     page = 'page'
 // }
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -39,10 +39,10 @@ const TableStyled = styled(Box)`
         return "100%";
       }
     }};
-    --template-columns: 420px auto auto !important;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 90% 10% !important;
-    }
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 420px auto auto !important; `
+        : `--template-columns: 90% 10% !important;`}
     .rdg-cell.action {
       display: flex;
       justify-content: center;
@@ -56,7 +56,9 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { currentheight?: number } & BoxProps) => JSX.Element;
+` as (
+  props: { currentheight?: number; isMobile?: boolean } & BoxProps
+) => JSX.Element;
 
 const columnMode = (
   { t }: { t: TFunction },
@@ -287,7 +289,7 @@ export const AmmRecordTable = withTranslation("tables")(
     const height = (currentheight || 0) + (!!rawData.length ? 0 : 44);
 
     return (
-      <TableStyled currentheight={height}>
+      <TableStyled isMobile={isMobile} currentheight={height}>
         <Table
           /* className={'scrollable'}  */ {...{
             ...defaultArgs,

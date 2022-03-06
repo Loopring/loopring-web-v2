@@ -2,6 +2,7 @@ import React from "react";
 import {
   Avatar,
   Box,
+  BoxProps,
   Grid,
   ListItemText,
   MenuItem,
@@ -44,12 +45,12 @@ export enum PoolTradeType {
 
 const rowHeight = 44;
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
-    --template-columns: 200px auto 300px auto !important;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 30% auto 8% !important;
-    }
+    ${({ isMobile }) =>
+      isMobile
+        ? `--template-columns: 200px auto 300px auto !important;`
+        : `--template-columns: 30% auto 8% !important;`}
     height: calc(86px * 5 + var(--header-row-height));
 
     .rdg-cell.action {
@@ -70,7 +71,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 const ActionPopContent = React.memo(
   ({ row, allowTrade, handleWithdraw, handleDeposit, t }: any) => {
@@ -883,7 +884,7 @@ export const MyPoolTable = withTranslation("tables")(
     };
 
     return (
-      <TableStyled>
+      <TableStyled isMobile={isMobile}>
         <Table
           rowHeight={rowHeight}
           headerRowHeight={44}
