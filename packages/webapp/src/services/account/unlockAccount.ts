@@ -49,7 +49,12 @@ export async function unlockAccount() {
         "",
         async function (err: any, result: any) {
           if (!err) {
-            console.log("ecRecover valid before", msg);
+            console.log(
+              "ecRecover valid before",
+              msg,
+              result,
+              (connectProvides.usedWeb3 as Web3).eth.personal.ecRecover
+            );
             const valid: any = await (
               connectProvides.usedWeb3 as Web3
             ).eth.personal.ecRecover(msg, result);
@@ -70,7 +75,7 @@ export async function unlockAccount() {
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
-        // exchangeAddress: exchangeInfo.exchangeAddress,
+        // exchangeAddress: exfchangeInfo.exchangeAddress,
         // keyNonce: nonce - 1,
         keySeed:
           account.keySeed && account.keySeed !== ""
