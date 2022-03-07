@@ -266,7 +266,7 @@ export const IsMobile = {
   },
   Ethereum: function () {
     //@ts-ignore
-    return window?.ethereum.isImToken;
+    return window?.ethereum && window?.ethereum.isImToken;
   },
 
   any: function () {

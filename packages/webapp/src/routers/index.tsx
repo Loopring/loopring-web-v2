@@ -84,6 +84,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
       window.location.replace(`${window.location.origin}/error`);
     }
   }, [state]);
+  // @ts-ignore
+  window.___OhTrustDebugger___ = query.has("___OhTrustDebugger___");
   return (
     <>
       <Switch>
