@@ -75,8 +75,6 @@ export async function unlockAccount() {
         ),
         walletTypePromise,
       ]);
-      //TODO: debugger
-      console.log("unlockAccount raw_data:", response);
 
       if (
         !response.apiKey &&
@@ -98,9 +96,6 @@ export async function unlockAccount() {
         });
       }
     } catch (e) {
-      //TODO: debugger
-      console.log("unlockAccount e:", e);
-
       const errType = checkErrorInfo(e, true);
       switch (errType) {
         case sdk.ConnectorError.USER_DENIED:
