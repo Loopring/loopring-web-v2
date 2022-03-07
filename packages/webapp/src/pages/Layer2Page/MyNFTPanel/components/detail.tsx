@@ -215,6 +215,7 @@ export const NFTDetail = withTranslation("common")(
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography minWidth={100} marginRight={2}>
                   {popItem.isDeployed === "yes" ? (
+                    // popItem.
                     <Button
                       variant={"outlined"}
                       size={"medium"}

@@ -275,9 +275,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         if (nftId && nftId !== "") {
           try {
             const value = await fetch(
-              sdk.LOOPRING_URLs.IPFS_META_URL +
-                `${data.nftIdView}` +
-                "/metadata.json"
+              sdk.LOOPRING_URLs.IPFS_META_URL + `${data.nftIdView}`
             ).then((response) => response.json());
 
             if (value) {
