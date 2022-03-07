@@ -149,9 +149,8 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       },
       []
     );
-    const [processingCallback, setProcessingCallback] = React.useState<
-      { callback: () => Promise<void> } | undefined
-    >(undefined);
+    const [processingCallback, setProcessingCallback] =
+      React.useState<{ callback: () => Promise<void> } | undefined>(undefined);
     useEffect(() => {
       if (
         stateCheck === true &&
@@ -245,33 +244,38 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           },
         ]
       : [
-          ...(window.ethereum && [
-            {
-              ...DefaultGatewayList[0],
-              key: "Connect with Dapp",
-              imgSrc: SoursURL + "svg/loopring.svg",
-              handleSelect: React.useCallback(
-                async (event, flag?) => {
-                  if (
-                    !flag &&
-                    account.connectName === DefaultGatewayList[0].key
-                  ) {
-                    setShowConnect({ isShow: false });
-                  } else {
-                    walletServices.sendDisconnect("", "should new provider");
-                    setConnectProvider(DefaultGatewayList[0].key);
-                    setShowConnect({
-                      isShow: true,
-                      step: WalletConnectStep.CommonProcessing,
-                    });
-                    setProcessingCallback({ callback: metaMaskCallback });
-                    setStateCheck(true);
-                  }
+          ...(window.ethereum
+            ? [
+                {
+                  ...DefaultGatewayList[0],
+                  key: "Connect with Dapp",
+                  imgSrc: SoursURL + "svg/loopring.svg",
+                  handleSelect: React.useCallback(
+                    async (event, flag?) => {
+                      if (
+                        !flag &&
+                        account.connectName === DefaultGatewayList[0].key
+                      ) {
+                        setShowConnect({ isShow: false });
+                      } else {
+                        walletServices.sendDisconnect(
+                          "",
+                          "should new provider"
+                        );
+                        setConnectProvider(DefaultGatewayList[0].key);
+                        setShowConnect({
+                          isShow: true,
+                          step: WalletConnectStep.CommonProcessing,
+                        });
+                        setProcessingCallback({ callback: metaMaskCallback });
+                        setStateCheck(true);
+                      }
+                    },
+                    [account]
+                  ),
                 },
-                [account]
-              ),
-            },
-          ]),
+              ]
+            : []),
           {
             ...DefaultGatewayList[1],
             handleSelect: React.useCallback(
