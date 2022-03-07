@@ -24,6 +24,8 @@ import styled from "@emotion/styled";
 import { useAccount } from "../../stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
+import { useSystem } from "../../stores/system";
+import { ChainId } from "@loopring-web/loopring-sdk";
 
 const TableWrapperStyled = styled(Box)`
   background-color: var(--color-box);
@@ -230,12 +232,16 @@ export const RankRaw = <R extends any>(props: {
   const [rankView, setRankView] = React.useState<R[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>("");
   const [showLoading, setShowLoading] = React.useState(true);
-
+  const { chainId } = useSystem();
   React.useEffect(() => {
-    fetch(props.url)
+    const url = props.url.replace(
+      "api.loopring.network",
+      chainId === ChainId.MAINNET ? "api.loopring.network" : "uat2.loopring.io"
+    );
+    fetch(url)
       .then((response) => response.json())
-      .then((data) => {
-        setRank(data as any[]);
+      .then((json) => {
+        setRank(json.data as any[]);
         setShowLoading(false);
       })
       .catch(() => {
@@ -261,13 +267,21 @@ export const RankRaw = <R extends any>(props: {
     }
   }, [rank, searchValue]);
   const defaultArgs: any = {
-    columnMode: () =>
-      props.column.map((item) => ({
-        key: item.key,
-        name: item.label,
-        width: "auto",
-        headerCellClass: `textAlignCenter`,
-      })),
+    columnMode: props.column.length
+      ? props.column.map((item, index) => ({
+          key: item.key,
+          name: item.label,
+          width: "auto",
+          headerCellClass:
+            props.column.length == index + 1
+              ? "textAlignRight"
+              : `textAlignCenter`,
+          cellClass:
+            props.column.length == index + 1
+              ? "rdg-cell-value textAlignRight"
+              : "rdg-cell-value textAlignCenter",
+        }))
+      : [],
     generateRows: (rawData: R) => rawData,
     generateColumns: ({ columnsRaw }: any) =>
       columnsRaw as Column<any, unknown>[],
@@ -281,7 +295,7 @@ export const RankRaw = <R extends any>(props: {
       width={"100%"}
       paddingX={3}
     >
-      <Box alignSelf={"flex-end"}>
+      <Box alignSelf={"flex-end"} marginY={2}>
         <InputSearch
           value={searchValue}
           onChange={(value: any) => {

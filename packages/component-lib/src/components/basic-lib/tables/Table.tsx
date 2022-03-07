@@ -163,6 +163,15 @@ export const DataGridStyled = styled(DataGrid)`
       div {
         user-select: text;
       }
+      &.textAlignRight {
+        text-align: right;
+      }
+      &.textAlignLeft {
+        text-align: left;
+      }
+      &.textAlignCenter {
+        text-align: center;
+      }
     }
 
     .rdg-cell[aria-selected="true"] {
