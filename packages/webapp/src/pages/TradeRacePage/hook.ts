@@ -29,40 +29,42 @@ export const useTradeRace = () => {
   const { i18n } = useTranslation();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [eventData, setEventData] = React.useState<EventData>();
-  const [eventStatus, setEventStatus] = React.useState<
-    EVENT_STATUS | undefined
-  >();
-  const [activityRule, setActivityRule] = React.useState<
-    | AmmPoolActivityRule
-    | undefined
-    | {
-        event_awardRules: {
-          project: string;
-          pair: string;
-          reward: {
-            count: number;
-            token: string;
-          };
-        }[];
-      }
-  >();
+  const [eventStatus, setEventStatus] =
+    React.useState<EVENT_STATUS | undefined>();
+  const [activityRule, setActivityRule] =
+    React.useState<
+      | AmmPoolActivityRule
+      | undefined
+      | {
+          event_awardRules: {
+            project: string;
+            pair: string;
+            reward: {
+              count: number;
+              token: string;
+            };
+          }[];
+        }
+    >();
 
   const [currMarketPair, setCurrMarketPair] = React.useState(
     () => searchParams.get("pair") ?? ""
   );
-  const [duration, setDuration] = React.useState<
-    | {
-        startDate?: string;
-        endDate?: string;
-      }
-    | undefined
-  >();
-  const [countDown, setCountDown] = React.useState<{
-    days: undefined | string;
-    hours: undefined | string;
-    seconds: undefined | string;
-    minutes: undefined | string;
-  }>();
+  const [duration, setDuration] =
+    React.useState<
+      | {
+          startDate?: string;
+          endDate?: string;
+        }
+      | undefined
+    >();
+  const [countDown, setCountDown] =
+    React.useState<{
+      days: undefined | string;
+      hours: undefined | string;
+      seconds: undefined | string;
+      minutes: undefined | string;
+    }>();
   const handleMarketPairChange = React.useCallback(
     (e: React.ChangeEvent<{ value: string }>) => {
       setCurrMarketPair(e.target.value);
@@ -143,13 +145,14 @@ export const useTradeRace = () => {
                 setEventData(eventData);
                 setDuration((duration) => ({
                   ...duration,
-                  startDate: moment(eventData.duration.startDate).format(
-                    `YYYY-MM-DD HH:mm:ss`
-                  ),
-                  endDatet: eventData.duration.endDate
-                    ? moment(eventData.duration.endDate).format(
-                        `YYYY-MM-DD HH:mm:ss`
-                      )
+                  startDate:
+                    moment
+                      .utc(eventData.duration.startDate)
+                      .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)",
+                  endDate: eventData.duration.endDate
+                    ? moment
+                        .utc(eventData.duration.endDate)
+                        .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)"
                     : undefined,
                 }));
                 // const activityRule =
