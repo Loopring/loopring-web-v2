@@ -49,7 +49,7 @@ export const AssetTitle = withTranslation("common")(
       >
         <Grid item xs={7} display={"flex"} flexDirection={"column"}>
           <BoxStyled
-            component={"p"}
+            component={"span"}
             display={"flex"}
             alignItems={"center"}
             justifyContent={"flex-start"}
@@ -75,7 +75,7 @@ export const AssetTitle = withTranslation("common")(
           </BoxStyled>
 
           <Typography
-            component={"p"}
+            component={"span"}
             display={"flex"}
             alignItems={"center"}
             justifyContent={"flex-start"}
@@ -193,9 +193,8 @@ export const AssetTitleMobile = ({
   onShowNFTMINT,
   legalShow,
 }: AssetTitleMobileProps) => {
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "up"
-  );
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("up");
   const { t } = useTranslation();
   return (
     <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
@@ -205,7 +204,7 @@ export const AssetTitleMobile = ({
         justifyContent={"space-between"}
       >
         <Typography
-          component={"p"}
+          component={"span"}
           variant={"body1"}
           display={"inline-flex"}
           alignItems={"center"}
@@ -227,7 +226,7 @@ export const AssetTitleMobile = ({
           </IconButton>
         </Typography>
         <Typography
-          component={"p"}
+          component={"span"}
           display={"flex"}
           alignItems={"center"}
           justifyContent={"flex-start"}

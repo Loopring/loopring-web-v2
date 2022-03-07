@@ -15,12 +15,12 @@ import {
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-  HeaderMenuSub,
   HeadMenuItem,
   Layer2Item,
   TabItemPlus,
   Button,
   PopoverPure,
+  HeaderMenuSub,
 } from "../basic-lib";
 import { HeaderProps, HeaderToolBarInterface } from "./Interface";
 import {
@@ -254,87 +254,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [notification, notification]
+        [notification]
       );
-      const getDrawerChoices = React.useCallback(
-        ({
-          menuList,
-          layer = 0,
-          // onClose,
-          handleListKeyDown,
-          ...rest
-        }: {
-          menuList: HeaderMenuItemInterface[];
-          layer?: number;
-          // onClose?: () => void;
-          handleListKeyDown?: any;
-        } & WithTranslation) => {
-          let _obj = {};
-          if (menuList instanceof Array) {
-            _obj[0] = menuList;
-          } else {
-            _obj = menuList;
-          }
-          return Reflect.ownKeys(_obj).map((key, index) => {
-            return (
-              !!_obj[key].length &&
-              _obj[key].map((props: HeaderMenuItemInterface) => {
-                const { label, child, status } = props;
-                const selectedFlag = new RegExp(label.id, "ig").test(
-                  selected.split("/")[1] ? selected.split("/")[1] : selected
-                );
-                if (status === HeaderMenuTabStatus.hidden) {
-                  // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
-                  return <React.Fragment key={label.id + "-" + layer} />;
-                } else {
-                  if (child) {
-                    return memoized({
-                      ...props,
-                      layer,
-                      handleListKeyDown,
-                      ...rest,
-                    });
-                  } else {
-                    return (
-                      <HeadMenuItem
-                        selected={selectedFlag}
-                        {...{
-                          ...props,
-                          allowTrade,
-                          layer,
-                          children: (
-                            <NodeMenuItem
-                              {...{
-                                ...props,
-                                layer,
-                                child,
-                                handleListKeyDown,
-                                ...rest,
-                              }}
-                            />
-                          ),
-                          style: { textDecoration: "none" },
-                          key: label.id + "-" + layer,
-                        }}
-                        // onClick={handleListKeyDown ? handleListKeyDown : ""}
-                      />
-                    );
-                  }
-                }
-                {
-                  index + 1 !== _obj[key].length && (
-                    <Box marginX={3}>
-                      <Divider />
-                    </Box>
-                  );
-                }
-              })
-            );
-          });
-        },
-        [allowTrade, selected, isMobile]
-      );
-      const memoized = React.useCallback(
+      const memoized: any = React.useCallback(
         ({
           label,
           router,
@@ -367,26 +289,123 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               }: {
                 handleListKeyDown: ({ ...rest }) => any;
               }) => {
-                return getDrawerChoices({
-                  menuList: child,
-                  layer: layer + 1,
-                  handleListKeyDown: () => {
-                    if (_handleListKeyDown) {
-                      _handleListKeyDown();
-                    }
-                    if (handleListKeyDown) {
-                      handleListKeyDown({ ...rest });
-                    }
-                  },
-                  ...rest,
-                });
+                return (
+                  <>
+                    {getDrawerChoices({
+                      menuList: child,
+                      layer: layer + 1,
+                      handleListKeyDown: () => {
+                        if (_handleListKeyDown) {
+                          _handleListKeyDown();
+                        }
+                        if (handleListKeyDown) {
+                          handleListKeyDown({ ...rest });
+                        }
+                      },
+                      ...rest,
+                    })}
+                  </>
+                );
               },
             }}
           />
         ),
-        [allowTrade, getDrawerChoices, selected, isMobile]
+        [allowTrade, selected, isMobile]
       );
 
+      const getDrawerChoices: any = React.useCallback(
+        ({
+          menuList,
+          layer = 0,
+          // onClose,
+          handleListKeyDown,
+          ...rest
+        }: {
+          menuList: HeaderMenuItemInterface[];
+          layer?: number;
+          // onClose?: () => void;
+          handleListKeyDown?: any;
+        } & WithTranslation) => {
+          let _obj = {};
+          if (menuList instanceof Array) {
+            _obj[0] = menuList;
+          } else {
+            _obj = menuList;
+          }
+          return Reflect.ownKeys(_obj).map((key, index) => {
+            return (
+              <Box key={key.toString() + "-" + index}>
+                {!!_obj[key].length &&
+                  _obj[key].map(
+                    (props: HeaderMenuItemInterface, l2Index: number) => {
+                      const { label, child, status } = props;
+                      const selectedFlag = new RegExp(label.id, "ig").test(
+                        selected.split("/")[1]
+                          ? selected.split("/")[1]
+                          : selected
+                      );
+                      if (status === HeaderMenuTabStatus.hidden) {
+                        // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
+                        return (
+                          <React.Fragment
+                            key={key.toString() + "-" + layer + l2Index}
+                          />
+                        );
+                      } else {
+                        if (child) {
+                          return memoized({
+                            ...props,
+                            layer,
+                            divider: index + 1 !== _obj[key].length,
+                            handleListKeyDown,
+                            ...rest,
+                          });
+                        } else {
+                          return (
+                            <HeadMenuItem
+                              selected={selectedFlag}
+                              {...{
+                                ...props,
+                                allowTrade,
+                                layer,
+                                children: (
+                                  <NodeMenuItem
+                                    {...{
+                                      ...props,
+                                      layer,
+                                      child,
+                                      handleListKeyDown,
+                                      ...rest,
+                                    }}
+                                  />
+                                ),
+                                style: { textDecoration: "none" },
+                                key: key.toString() + "-" + layer + l2Index,
+                              }}
+                              // onClick={handleListKeyDown ? handleListKeyDown : ""}
+                            />
+                          );
+                        }
+                      }
+                    }
+                  )}
+
+                <Box marginX={3}>
+                  <Divider />
+                </Box>
+              </Box>
+            );
+          });
+        },
+        [selected, memoized, allowTrade]
+      );
+      // {
+      //    && (
+      //     <Box marginX={3}>
+      //       <Divider />
+      //     </Box>
+      //   );
+      // }
       const handleThemeClick = React.useCallback(() => {
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);
@@ -484,14 +503,20 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           </ToolBarStyled>
         );
       }, [
-        headerToolBarData,
-        headerMenuData,
-        getDrawerChoices,
-        getMenuButtons,
-        i18n,
-        rest,
-        isMobile,
         isLandPage,
+        getDrawerChoices,
+        headerMenuData,
+        i18n,
+        t,
+        rest,
+        location.pathname,
+        notification,
+        handleThemeClick,
+        themeMode,
+        isMaintaining,
+        getMenuButtons,
+        headerToolBarData,
+        history,
       ]);
       const popupState = usePopupState({
         variant: "popover",
@@ -642,14 +667,21 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           </ToolBarStyled>
         );
       }, [
-        headerToolBarData,
         headerMenuData,
-        getDrawerChoices,
-        getMenuButtons,
-        i18n,
-        isMobile,
-        rest,
         isLandPage,
+        location.pathname,
+        t,
+        notification,
+        handleThemeClick,
+        themeMode,
+        isMaintaining,
+        getMenuButtons,
+        headerToolBarData,
+        i18n,
+        rest,
+        popupState,
+        getDrawerChoices,
+        history,
       ]);
 
       const paddingStyle = {
