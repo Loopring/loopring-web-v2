@@ -10,6 +10,7 @@ import {
 import { checkErrorInfo } from "hooks/useractions/utils";
 
 import * as sdk from "@loopring-web/loopring-sdk";
+import Web3 from "web3";
 
 export async function unlockAccount() {
   const accoun_old = store.getState().account;
@@ -31,7 +32,41 @@ export async function unlockAccount() {
         owner: accoun_old.accAddress,
       });
       const nonce = account ? account.nonce : accoun_old.nonce;
-      // myLog("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE);
+
+      //TODO: debugger
+      const msg =
+        account.keySeed && account.keySeed !== ""
+          ? account.keySeed
+          : sdk.GlobalAPI.KEY_MESSAGE.replace(
+              "${exchangeAddress}",
+              exchangeInfo.exchangeAddress
+            ).replace("${nonce}", (nonce - 1).toString());
+      console.log("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE, msg);
+
+      await (connectProvides.usedWeb3 as Web3).eth.personal.sign(
+        msg,
+        account.owner,
+        "",
+        async function (err: any, result: any) {
+          if (!err) {
+            console.log("ecRecover valid before", msg);
+            const valid: any = await (
+              connectProvides.usedWeb3 as Web3
+            ).eth.personal.ecRecover(msg, result);
+            console.log("ecRecover valid", valid);
+            if (valid.result) {
+              return { sig: result };
+            }
+          }
+        }
+      );
+      //TODO: debugger
+
+      console.log(
+        "unlockAccount isMobile, connectName:",
+        isMobile,
+        connectName
+      );
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
