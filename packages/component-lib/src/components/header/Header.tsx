@@ -334,7 +334,11 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           }
           return Reflect.ownKeys(_obj).map((key, index) => {
             return (
-              <Box key={key.toString() + "-" + index}>
+              <Box
+                key={key.toString() + "-" + index}
+                display={"flex"}
+                flexDirection={isMobile || layer > 0 ? "column" : "row"}
+              >
                 {!!_obj[key].length &&
                   _obj[key].map(
                     (props: HeaderMenuItemInterface, l2Index: number) => {
