@@ -49,7 +49,11 @@ export async function unlockAccount() {
         accountId: account.accountId,
       });
 
-      console.log("unlockAccount isMobile,connectName:", isMobile, connectName);
+      console.log(
+        "unlockAccount isMobile, connectName:",
+        isMobile,
+        connectName
+      );
 
       const walletTypePromise: Promise<{ walletType: any }> =
         window.ethereum &&
@@ -96,6 +100,8 @@ export async function unlockAccount() {
         });
       }
     } catch (e) {
+      console.log("unlockAccount error:", JSON.stringify(e));
+
       const errType = checkErrorInfo(e, true);
       switch (errType) {
         case sdk.ConnectorError.USER_DENIED:
