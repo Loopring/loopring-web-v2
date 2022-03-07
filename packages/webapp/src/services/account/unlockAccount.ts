@@ -15,7 +15,7 @@ export async function unlockAccount() {
   const accoun_old = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
-
+  const { isMobile } = store.getState().settings;
   myLog("unlockAccount account:", accoun_old);
 
   if (
@@ -49,19 +49,16 @@ export async function unlockAccount() {
         accountId: account.accountId,
       });
 
-      myLog("unlockAccount eddsaKey:", eddsaKey);
+      console.log("unlockAccount isMobile,connectName:", isMobile, connectName);
 
       const walletTypePromise: Promise<{ walletType: any }> =
-        window.ethereum && connectName === sdk.ConnectorNames.MetaMask
+        window.ethereum &&
+        connectName === sdk.ConnectorNames.MetaMask &&
+        isMobile
           ? Promise.resolve({ walletType: undefined })
-          : LoopringAPI.walletAPI
-              .getWalletType({
-                wallet: account.owner,
-              })
-              .catch((error) => {
-                console.log(error);
-                return { walletType: undefined };
-              });
+          : LoopringAPI.walletAPI.getWalletType({
+              wallet: account.owner,
+            });
       const [
         response,
         // { apiKey, raw_data },
@@ -73,7 +70,10 @@ export async function unlockAccount() {
           },
           eddsaKey.sk
         ),
-        walletTypePromise,
+        walletTypePromise.catch((error) => {
+          console.log(error);
+          return { walletType: undefined };
+        }),
       ]);
 
       if (
@@ -81,10 +81,10 @@ export async function unlockAccount() {
         ((response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message)
       ) {
-        myLog("try to sendErrorUnlock....");
+        console.log("try to sendErrorUnlock....");
         accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
-        myLog("try to sendAccountSigned....");
+        console.log("try to sendAccountSigned....");
         accountServices.sendAccountSigned({
           accountId: account.accountId,
           nonce,
