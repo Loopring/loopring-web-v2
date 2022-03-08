@@ -20,13 +20,22 @@ import {
   ActiveAccountPanel,
   DepositGroupProps,
   modalContentBaseStyle,
+  SwitchPanelStyled,
+  DepositNFTWrap,
+  MintNFTWrap,
+  NFTMintProps,
+  NFTDepositProps,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import React from "react";
-
+//padding-bottom: var(--toolbar-row-padding);
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`
@@ -50,7 +59,6 @@ const BoxStyle = styled(Box)<
           ${({ theme }) => theme.unit * 5}px;
         overflow-x: hidden;
         overflow-y: scroll !important;
-        padding-bottom: var(--toolbar-row-padding);
         background: initial;
         .container {
           height: 100%;
@@ -104,8 +112,9 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   depositGroupProps,
   nftTransferProps,
   nftWithdrawProps,
-  // nftDepositProps,
+  nftDepositProps,
   resetProps,
+  nftMintProps,
   activeAccountProps,
   ammProps,
   swapProps,
@@ -119,7 +128,8 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   depositGroupProps: DepositGroupProps<T, I>;
   nftTransferProps: TransferProps<T, I>;
   nftWithdrawProps: WithdrawProps<T, I>;
-  // nftDepositProps: DepositProps<T, I>;
+  nftDepositProps: NFTDepositProps<T, I>;
+  nftMintProps: NFTMintProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
   ammProps: AmmProps<any, any, T, any>;
@@ -128,6 +138,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   exportAccountProps: any;
   setExportAccountToastOpen: any;
 }) => {
+  const { t } = useTranslation();
   const {
     modals,
     setShowAmm,
@@ -135,19 +146,23 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     setShowTransfer,
     setShowDeposit,
     setShowWithdraw,
+    setShowNFTDeposit,
     setShowResetAccount,
     setShowActiveAccount,
     setShowExportAccount,
+    setShowNFTMint,
   } = useOpenModals();
   const {
     isShowTransfer,
     isShowWithdraw,
     isShowDeposit,
+    isShowNFTDeposit,
     isShowResetAccount,
     isShowExportAccount,
     isShowAmm,
     isShowSwap,
     isShowActiveAccount,
+    isShowNFTMint,
   } = modals;
   const theme = useTheme();
   return (
@@ -283,6 +298,62 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
           </SwapPanel>
         }
       />
+      <MuiModal
+        open={isShowNFTDeposit.isShow}
+        onClose={() => setShowNFTDeposit({ isShow: false })}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <SwitchPanelStyled
+          width={"var(--modal-width)"}
+          position={"relative"}
+          style={{ alignItems: "stretch" }}
+        >
+          <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+            <ModalCloseButton
+              onClose={() => setShowNFTDeposit({ isShow: false })}
+              t={t}
+              {...rest}
+            />
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            flex={1}
+            justifyContent={"stretch"}
+          >
+            <DepositNFTWrap {...nftDepositProps} />
+          </Box>
+        </SwitchPanelStyled>
+      </MuiModal>
+      <MuiModal
+        open={isShowNFTMint.isShow}
+        onClose={() => setShowNFTMint({ isShow: false })}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <SwitchPanelStyled
+          width={"var(--modal-width)"}
+          position={"relative"}
+          style={{ alignItems: "stretch" }}
+        >
+          <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+            <ModalCloseButton
+              onClose={() => setShowNFTMint({ isShow: false })}
+              t={t}
+              {...rest}
+            />
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            flex={1}
+            justifyContent={"stretch"}
+          >
+            <MintNFTWrap {...nftMintProps} />
+          </Box>
+        </SwitchPanelStyled>
+      </MuiModal>
     </>
   );
 };

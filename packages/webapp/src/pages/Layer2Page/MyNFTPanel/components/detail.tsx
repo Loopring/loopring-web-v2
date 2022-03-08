@@ -11,6 +11,7 @@ import {
   TransferPanel,
   WithdrawPanel,
   DeployNFTWrap,
+  useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -214,6 +215,7 @@ export const NFTDetail = withTranslation("common")(
               <Box display={"flex"} flexDirection={"row"}>
                 <Typography minWidth={100} marginRight={2}>
                   {popItem.isDeployed === "yes" ? (
+                    // popItem.
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -263,6 +265,7 @@ export const NFTDetail = withTranslation("common")(
         </Box>
       );
     }, [t, popItem, etherscanBaseUrl]);
+
     return (
       <>
         <BoxNFT

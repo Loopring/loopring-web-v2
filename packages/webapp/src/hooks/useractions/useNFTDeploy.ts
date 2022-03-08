@@ -208,16 +208,14 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
     isFirsTime: boolean = true
   ) => {
     const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-    const nftDeployValue = {
-      ...store.getState()._router_modalData.nftDeployValue,
-      ..._nftDeployValue,
-    };
+    const nftDeployValue = store.getState()._router_modalData.nftDeployValue;
 
     if (
       readyState === AccountStatus.ACTIVATED &&
       tokenMap &&
       LoopringAPI.userAPI &&
       exchangeInfo &&
+      !isFeeNotEnough &&
       nftDeployValue &&
       nftDeployValue.broker &&
       nftDeployValue.tokenAddress &&
@@ -225,6 +223,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       nftDeployValue?.nftData &&
       nftDeployValue.fee &&
       nftDeployValue?.fee.belong &&
+      nftDeployValue?.fee.fee &&
       eddsaKey?.sk
     ) {
       try {
@@ -233,8 +232,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
           step: AccountStep.NFTDeploy_WaitForAuth,
         });
         const feeToken = tokenMap[nftDeployValue.fee.belong];
-        const fee = sdk.toBig(nftDeployValue.fee.__raw__?.feeRaw ?? 0);
-
+        const _fee = sdk.toBig(nftDeployValue.fee.__raw__?.feeRaw ?? 0);
+        // myLog("fee.__raw__", nftDeployValue.fee.__raw__?.feeRaw, feeToken);
         const storageId = await LoopringAPI.userAPI?.getNextStorageId(
           {
             accountId,
@@ -253,7 +252,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
             storageId: storageId.offchainId,
             token: {
               tokenId: feeToken.tokenId,
-              volume: fee.toString(), // TEST: fee.toString(),
+              volume: _fee.toFixed(), // TEST: fee.toString(),
             },
             validUntil: getTimestampDaysLater(DAYS),
           },

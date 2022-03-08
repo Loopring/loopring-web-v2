@@ -1,46 +1,11 @@
-import styled from "@emotion/styled";
 import { Box } from "@mui/material";
-import {
-  CloseIcon,
-  CoinInfo,
-  CoinKey,
-  globalSetup,
-} from "@loopring-web/common-resources";
+import { CoinInfo, CoinKey, globalSetup } from "@loopring-web/common-resources";
 import React from "react";
 import { InputSelectProps } from "./Interface";
 import { useFocusRef, usePanelRef } from "../hooks";
 import { WithTranslation } from "react-i18next";
 import { InputSearch } from "./InputSearch";
 import * as _ from "lodash";
-
-const WrapStyled = styled(Box)`
-  padding: 0;
-  margin: 0;
-  flex: 1;
-  min-height: 100%;
-  width: 100%;
-  display: flex;
-
-  .search-wrap {
-    //flex-grow: 1;
-    //width: 100%;
-    //min-width: 100%;
-    //& label{
-    //  display: none;
-    //}
-    //
-    .MuiInputBase-root {
-      margin: 0;
-      //width: 100%;
-      max-width: inherit;
-      height: var(--toolbar-row-height);
-
-      .MuiInputBase-input {
-        height: inherit;
-      }
-    }
-
-` as typeof Box;
 
 function _InputSelect<C, I extends string = CoinKey<C>>(
   {
@@ -89,65 +54,38 @@ function _InputSelect<C, I extends string = CoinKey<C>>(
     // }
   });
 
-  const handleClear = React.useCallback(() => {
-    // @ts-ignore
-    // addressInput?.current?.value = "";
-    setValue({ ...value, selected: "" });
-  }, []);
+  // const handleClear = React.useCallback(() => {
+  //   // @ts-ignore
+  //   // addressInput?.current?.value = "";
+  //   setValue({ ...value, selected: "" });
+  // }, []);
   return (
-    <WrapStyled
-      flexDirection={"column"}
-      alignItems={"stretch"}
-      justifyContent={"flex-start"}
-      ref={_ref}
-    >
+    <>
       <Box
         display={"flex"}
-        flexWrap={"nowrap"}
         alignItems={"center"}
         justifyContent={"space-between"}
         paddingBottom={2}
         paddingLeft={5 / 2}
         paddingRight={5 / 2}
       >
-        {/*/!*<Grid item xs={12} flex={1}>*!/*/}
-        {/*<OutlinedInput*/}
-        {/*    ref={inputEle}*/}
-        {/*    {...inputProps}*/}
-        {/*    key={'search'}*/}
-        {/*    value={value.selected}*/}
-        {/*    placeholder={t(selected ? selected : placeholder)}*/}
-        {/*    onChange={_handleContentChange}*/}
-        {/*    className={'search-wrap'}*/}
-        {/*    aria-label={t(placeholder)}*/}
-        {/*    startAdornment={<InputAdornment position="start">*/}
-        {/*        <SearchIcon/>*/}
-        {/*    </InputAdornment>}*/}
-        {/*/>*/}
-        <Box alignSelf={"stretch"} position={"relative"} flex={1}>
-          {/* <SearchWrap/> */}
-          <InputSearch
-            key={"search"}
-            fullWidth
-            ref={inputEle}
-            {...inputProps}
-            aria-label={t(placeholder)}
-            placeholder={t(selected ? selected : placeholder)}
-            value={value?.selected}
-            className={"search-wrap"}
-            onChange={_handleContentChange}
-          />
-          {/* {value?.selected !== '' ? <IconClearStyled size={'small'}  style={{top:'6px'}} aria-label="Clear" onClick={handleClear}>
-                    <CloseIcon/>
-                </IconClearStyled> : ''} */}
-        </Box>
+        <InputSearch
+          key={"search"}
+          fullWidth
+          ref={inputEle}
+          {...inputProps}
+          aria-label={t(placeholder)}
+          placeholder={t(selected ? selected : placeholder)}
+          value={value?.selected}
+          className={"search-wrap"}
+          onChange={_handleContentChange}
+        />
         {backElement ? <Box marginLeft={2}>{backElement}</Box> : <></>}
-        {/*</Grid>*/}
       </Box>
       <Box flex={1} ref={panelRef}>
         {panelRender({ selected, value: value.selected })}
       </Box>
-    </WrapStyled>
+    </>
   );
 }
 

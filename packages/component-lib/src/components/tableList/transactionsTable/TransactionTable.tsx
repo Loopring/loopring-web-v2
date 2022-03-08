@@ -1,19 +1,21 @@
-import React from "react";
 import styled from "@emotion/styled";
-import { Box, Modal, Typography } from "@mui/material";
-import { TFunction, WithTranslation, withTranslation } from "react-i18next";
+import { Box, BoxProps, Modal, Typography } from "@mui/material";
+import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import {
   CompleteIcon,
+  DepositIcon,
   EmptyValueTag,
   EXPLORE_TYPE,
   Explorer,
-  getFormattedHash,
+  getShortAddr,
   getValuePrecisionThousand,
   TableType,
+  TransferIcon,
   WaitingIcon,
   WarningIcon,
+  WithdrawIcon,
 } from "@loopring-web/common-resources";
 import { Filter } from "./components/Filter";
 import { TxnDetailPanel, TxnDetailProps } from "./components/modal";
@@ -25,6 +27,8 @@ import {
 } from "./Interface";
 import { DateRange } from "@mui/lab";
 import { UserTxTypes } from "@loopring-web/loopring-sdk";
+import React from "react";
+import { useSettings } from "../../../stores";
 
 export type TxsFilterProps = {
   tokenSymbol?: string;
@@ -77,14 +81,16 @@ const MemoCellStyled = styled(Box)`
   text-align: right;
 `;
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    --template-columns: 120px auto auto auto 120px 150px !important;
-
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 120px auto auto auto 120px 150px !important;`
+        : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -106,7 +112,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 export interface TransactionTableProps {
   etherscanBaseUrl?: string;
@@ -140,7 +146,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       showloading,
       etherscanBaseUrl,
       accAddress,
+      t,
     } = props;
+    const { isMobile } = useSettings();
     const [page, setPage] = React.useState(1);
     const [filterType, setFilterType] = React.useState(
       TransactionTradeTypes.allTypes
@@ -247,7 +255,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     );
 
     const getColumnModeTransaction = React.useCallback(
-      (t: TFunction): Column<any, unknown>[] => [
+      (): Column<any, unknown>[] => [
         {
           key: "side",
           name: t("labelTxSide"),
@@ -321,23 +329,42 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           },
         },
         {
-          key: "txnHash",
-          name: t("labelTxTxnHash"),
+          key: "from",
+          name: t("labelTxFrom"),
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
+            const receiverAddress = getShortAddr(row.receiverAddress);
+            const senderAddress = getShortAddr(row.senderAddress);
+            const [from, to] =
+              row["side"] === "TRANSFER"
+                ? row["receiverAddress"]?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? [senderAddress, "L2"]
+                  : ["L2", receiverAddress]
+                : row["side"] === "DEPOSIT"
+                ? ["L1", "L2"]
+                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                ? ["L2", receiverAddress]
+                : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
+            const path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer +
+                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+
             // if (
             //   row.txHash ||
             //   (row.blockIdInfo.blockId &&
             //     row.storageInfo &&
             //     (row.storageInfo.tokenId || row.storageInfo.storageId))
             // ) {
-            const path =
-              row.txHash !== ""
-                ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : Explorer +
-                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+            // const path =
+            //   row.txHash !== ""
+            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
+            //     : Explorer +
+            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
             // const path =
             //   row.txHash !== ""
             //     ? etherscanBaseUrl + `/tx/${row.txHash}`
@@ -361,7 +388,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   onClick={() => window.open(path, "_blank")}
                   title={hash}
                 >
-                  {hash ? getFormattedHash(hash) : EmptyValueTag}
+                  {from + " -> " + to}
+                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
                 </Typography>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
@@ -399,18 +427,184 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [handleTxnDetail, etherscanBaseUrl]
+      [handleTxnDetail, etherscanBaseUrl, t]
+    );
+
+    const getColumnMobileTransaction = React.useCallback(
+      (): Column<any, unknown>[] => [
+        {
+          key: "amount",
+          name: t("labelTxAmount") + " / " + t("labelTxFee"),
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignLeft",
+          formatter: ({ row }) => {
+            const { unit, value } = row["amount"];
+            const hasValue = Number.isFinite(value);
+            const side =
+              row.side === TransactionTradeTypes.deposit
+                ? t("labelDeposit")
+                : row.side === TransactionTradeTypes.transfer
+                ? t("labelTransfer")
+                : t("labelWithdraw");
+            const hasSymbol =
+              row.side === "TRANSFER"
+                ? row["receiverAddress"]?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? "+"
+                  : "-"
+                : row.side === "DEPOSIT"
+                ? "+"
+                : row.side === "OFFCHAIN_WITHDRAWAL"
+                ? "-"
+                : "";
+            const sideIcon =
+              row.side === TransactionTradeTypes.deposit ? (
+                <DepositIcon fontSize={"inherit"} />
+              ) : row.side === TransactionTradeTypes.transfer ? (
+                <TransferIcon fontSize={"inherit"} />
+              ) : (
+                <WithdrawIcon fontSize={"inherit"} />
+              );
+            const renderValue = hasValue
+              ? `${getValuePrecisionThousand(
+                  value,
+                  undefined,
+                  undefined,
+                  undefined,
+                  false,
+                  { isTrade: true }
+                )}`
+              : EmptyValueTag;
+
+            const renderFee = `Fee: ${getValuePrecisionThousand(
+              row.fee.value,
+              undefined,
+              undefined,
+              undefined,
+              false,
+              {
+                floor: false,
+                isTrade: true,
+              }
+            )} ${row.fee.unit}`;
+            return (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"flex-start"}
+                title={side}
+              >
+                {/*{side + " "}*/}
+                <Typography
+                  display={"flex"}
+                  marginRight={1}
+                  variant={"h3"}
+                  alignItems={"center"}
+                  flexDirection={"column"}
+                  width={"50px"}
+                >
+                  {sideIcon}
+                  <Typography fontSize={10} marginTop={-1}>
+                    {side}
+                  </Typography>
+                </Typography>
+                <Box display={"flex"} flex={1} flexDirection={"column"}>
+                  <Typography
+                    display={"inline-flex"}
+                    justifyContent={"flex-end"}
+                    alignItems={"center"}
+                  >
+                    {hasSymbol}
+                    {renderValue} {unit || ""}
+                  </Typography>
+                  <Typography color={"textSecondary"} variant={"body2"}>
+                    {renderFee}
+                  </Typography>
+                </Box>
+              </Box>
+            );
+          },
+        },
+        {
+          key: "from",
+          name: t("labelTxFrom") + " / " + t("labelTxTime"),
+          headerCellClass: "textAlignRight",
+          cellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            const receiverAddress = getShortAddr(row.receiverAddress, isMobile);
+            const senderAddress = getShortAddr(row.senderAddress, isMobile);
+            const [from, to] =
+              row["side"] === "TRANSFER"
+                ? row["receiverAddress"]?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? [senderAddress, "L2"]
+                  : ["L2", receiverAddress]
+                : row["side"] === "DEPOSIT"
+                ? ["L1", "L2"]
+                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                ? ["L2", receiverAddress]
+                : ["", ""];
+            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            const path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer +
+                  `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
+
+            const hasValue = Number.isFinite(row.time);
+            const renderTime = hasValue
+              ? moment(new Date(row.time), "YYYYMMDDHHMM").fromNow()
+              : EmptyValueTag;
+
+            return (
+              <Box
+                display={"flex"}
+                flex={1}
+                flexDirection={"column"}
+                onClick={() => window.open(path, "_blank")}
+              >
+                <Typography
+                  display={"inline-flex"}
+                  justifyContent={"flex-end"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    color={"var(--color-primary)"}
+                    title={hash}
+                  >
+                    {from + " -> " + to}
+                    {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
+                  </Typography>
+                  <Typography marginLeft={1}>
+                    <CellStatus {...{ row }} />
+                  </Typography>
+                </Typography>
+                <Typography color={"textSecondary"} variant={"body2"}>
+                  {renderTime}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+      ],
+      [handleTxnDetail, etherscanBaseUrl, isMobile, t]
     );
 
     const defaultArgs: any = {
-      columnMode: getColumnModeTransaction(props.t).filter((o) => !o.hidden),
+      columnMode: isMobile
+        ? getColumnMobileTransaction()
+        : getColumnModeTransaction(),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
 
     return (
-      <TableStyled>
+      <TableStyled isMobile={isMobile}>
         {showFilter && (
           <TableFilterStyled>
             <Filter
@@ -427,7 +621,15 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <TxnDetailPanel {...{ ...txnDetailInfo }} />
         </Modal>
-        <Table {...{ ...defaultArgs, ...props, rawData, showloading }} />
+        <Table
+          {...{
+            ...defaultArgs,
+            // rowRenderer: RowRenderer,
+            ...props,
+            rawData,
+            showloading,
+          }}
+        />
         {pagination && (
           <TablePagination
             page={page}

@@ -56,7 +56,7 @@ const StyleBox = styled(Box)`
   #zohoSupportWebToCase textarea:focus-visible,
   #zohoSupportWebToCase input[type="text"]:focus-visible,
   #zohoSupportWebToCase select:focus-visible {
-    outline: 1px solid;
+    outlined: 1px solid;
   }
 
   #zohoSupportWebToCase select {

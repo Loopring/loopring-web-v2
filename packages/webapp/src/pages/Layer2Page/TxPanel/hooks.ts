@@ -99,34 +99,39 @@ export function useGetTxs() {
       myLog("userDepositMapped:", userDepositMapped);
 
       const userWithdrawMapped =
-        userTxnList[2].userOnchainWithdrawalHistory?.map((o) => ({
-          side: TransactionTradeTypes.withdraw,
-          // token: o.symbol,
-          // from: 'My Loopring',
-          // to: o.distributeHash,
-          amount: {
-            unit: o.symbol || "",
-            value: Number(volumeToCount(o.symbol, o.amount)),
-          },
-          fee: {
-            unit: o.feeTokenSymbol || "",
-            value: Number(
-              volumeToCount(o.feeTokenSymbol, o.feeAmount || 0)?.toFixed(6)
-            ),
-          },
-          memo: "",
-          time: o.timestamp,
-          txnHash: o.txHash,
-          status: getTxnStatus(o.status),
-          // tradeType: TransactionTradeTypes.withdraw
-        }));
+        userTxnList[2].userOnchainWithdrawalHistory?.map(
+          (o) =>
+            ({
+              ...o,
+              side: TransactionTradeTypes.withdraw,
+              // token: o.symbol,
+              // from: 'My Loopring',
+              // to: o.distributeHash,
+              amount: {
+                unit: o.symbol || "",
+                value: Number(volumeToCount(o.symbol, o.amount)),
+              },
+              fee: {
+                unit: o.feeTokenSymbol || "",
+                value: Number(
+                  volumeToCount(o.feeTokenSymbol, o.feeAmount || 0)?.toFixed(6)
+                ),
+              },
+              memo: "",
+              time: o.timestamp,
+              txnHash: o.txHash,
+              status: getTxnStatus(o.status),
+              // tradeType: TransactionTradeTypes.withdraw
+            } as RawDataTransactionItem)
+        );
       const mappingList = [
         ...(userTransferMapped ?? []),
         ...(userDepositMapped ?? []),
         ...(userWithdrawMapped ?? []),
-      ];
+      ] as RawDataTransactionItem[];
+      // @ts-ignore
       const sortedMappingList = mappingList.sort((a, b) => b.time - a.time);
-      setTxs(sortedMappingList);
+      setTxs(sortedMappingList as RawDataTransactionItem[]);
       setIsLoading(false);
     }
   }, [accountId, apiKey]);

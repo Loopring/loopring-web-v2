@@ -84,30 +84,32 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
                 : (response as sdk.RESULT_INFO).message,
           });
         } else {
-          const formattedList = response.userTxs.map((o) => {
-            const feePrecision = tokenMap
-              ? tokenMap[o.feeTokenSymbol].precision
-              : undefined;
-            return {
-              ...o,
-              side: o.txType as any,
-              amount: {
-                unit: o.symbol || "",
-                value: Number(volumeToCount(o.symbol, o.amount)),
-              },
-              fee: {
-                unit: o.feeTokenSymbol || "",
-                value: Number(
-                  volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
-                ),
-              },
-              memo: o.memo || "",
-              time: o.timestamp,
-              txnHash: o.hash,
-              status: getTxnStatus(o.status),
-              feePrecision: feePrecision,
-            };
-          });
+          const formattedList: RawDataTransactionItem[] = response.userTxs.map(
+            (o) => {
+              const feePrecision = tokenMap
+                ? tokenMap[o.feeTokenSymbol].precision
+                : undefined;
+              return {
+                ...o,
+                side: o.txType as any,
+                amount: {
+                  unit: o.symbol || "",
+                  value: Number(volumeToCount(o.symbol, o.amount)),
+                },
+                fee: {
+                  unit: o.feeTokenSymbol || "",
+                  value: Number(
+                    volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0)
+                  ),
+                },
+                memo: o.memo || "",
+                time: o.timestamp,
+                txnHash: o.hash,
+                status: getTxnStatus(o.status),
+                feePrecision: feePrecision,
+              } as RawDataTransactionItem;
+            }
+          );
           setTxs(formattedList);
           setTxsTotal(response.totalNum);
           setShowLoading(false);

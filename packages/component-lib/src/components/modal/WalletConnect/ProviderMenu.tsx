@@ -157,6 +157,7 @@ export const ProviderMenu = ({
         className="modalContent"
         marginTop={3}
         paddingX={10}
+        paddingBottom={4}
       >
         <>
           {gatewayList.map((item: GatewayItem) => (

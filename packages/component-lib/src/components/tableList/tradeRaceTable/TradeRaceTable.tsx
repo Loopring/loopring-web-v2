@@ -22,11 +22,6 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
     --template-columns: 150px 350px auto auto !important;
     height: auto;
 
-    // .rdg-cell.action {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // }
     .rdgCellCenter {
       height: 100%;
       // display: flex;
@@ -77,7 +72,7 @@ export const TradeRaceTable = withTranslation("tables")(
             const value = row["address"];
             // const firstSix = value.substring(0, 6)
             // const lastFour = value.substring(value.length - 4, value.length)
-            // const formattedAddress = `${firstSix}...${lastFour}`
+            // const formattedAddress = `${firstSix}.f..${lastFour}`
             return (
               <Box className="rdg-cell-value textAlignCenter">
                 {/* {formattedAddress} */}

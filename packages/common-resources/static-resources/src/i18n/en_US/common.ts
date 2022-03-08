@@ -91,6 +91,7 @@ export default {
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "Layer 2 Total Assets",
+  labelAssetMobileTitle: "L2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "Deposit",
@@ -361,6 +362,7 @@ export default {
   labelOrderTableOpenOrder: "Open Order",
   labelOrderTableOrderHistory: "Order History",
   labelResetLayout: "Reset Layout",
+  labelResetMobileLayout: "Reset",
   labelBtnFix: "reset",
   labelProSell: "Sell",
   labelProBuy: "Buy",
@@ -466,10 +468,18 @@ export default {
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
   labelInvalidCID: "Invalid CID",
-  labelWithdrawInvalidAddress:
-    "Invalid address, ENS, special token, or an Counter Factual wallet",
+  labelInvalidAddress: "Invalid address, ENS",
+  labelInvalidisCFAddress:
+    "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
+  labelInvalidisContract1XAddress:
+    "Loopring wallet 1.x is disabled {{way}} {{token}}",
+  labelInvalidisContractAddress:
+    "{{way}} of {{token}} to Contract wallet is not available ",
+  labelInvalidisLoopringAddress:
+    "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
+  labelInvalidisSameAddress: "Cannot {{way}} to your own address",
   labelTransferAddressNotLoopring:
-    "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
+    "This address has not yet active Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
   labelTransferOriginDesc:
     "Please select the address source: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex….)",
@@ -479,7 +489,6 @@ export default {
   labelTransferTokenAmount: "Token Amount",
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
-  labelTransferSameAddress: "Cannot transfer to your own address",
   labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",
@@ -516,7 +525,7 @@ export default {
   labelNFTDepositInputTitle: "Amount:",
   labelNFTContractAddress: "Token Contract:",
   labelNFTTId: "NFT Token ID",
-  labelNFTCid: "IPFS CID <1></1>: (Which storage a `metadata.json`)",
+  labelNFTCid: "IPFS CID <1></1>: (Store `metadata Information`)",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
