@@ -24,11 +24,7 @@
 
 5. Take note of the CID above as you will need it later.
 
-6. Create a Folder on your PC for the NFT metadata and give it a name. (eg. Diamondjson)
-
-7. Within this folder create a file using a text editor (eg Notepad) and rename it to metadata.json
-
-8. Within this metadata.json file copy the following (note: case sensitive including filename):
+6. Create an xxxx.json file copy the following (note: case sensitive including filename):
 
 ```
 {
@@ -48,9 +44,9 @@
 }
 ```
 
-9. Save the metadata.json file you just created.
+7. Save the xxxx.json file you just created.
    
-10. Upload the folder you created in point 6 that contains your metadata.json file (eg. Diamondjson)
+8. Upload the xxxx.json you create file to the ipfs(eg. Diamondjson)
 
 **Using Pinata**
  ![ipfs-2.png](https://static.loopring.io/assets/images/ipfs-3.png)
@@ -58,9 +54,9 @@
 **Using IPFS Desktop**
 ![IPFS 3](https://lh6.googleusercontent.com/m3W814tEgpnN7VvKe8xXeYXOcMcQTe0bK1tCZ9Fkg6WATyjFbk5PBljpuN31tBKoqFNk6rVehOFexUWhunAwEpqdwK_IKPcBLCklm_d6mnihgWOHiS24dASFGHY4WvezejtW-fRw)
 
-11. Take a note of the metadata.json folder CID
+9. Take a note of the metadata.json folder CID
    
-12. Log into Loopring.io with your [wallet](https://desk.zoho.com/portal/loopring/en/kb/articles/how-do-i-connect-loopringsmartwallet-webdex)
+10. Log into Loopring.io with your [wallet](https://desk.zoho.com/portal/loopring/en/kb/articles/how-do-i-connect-loopringsmartwallet-webdex)
 
 ![DEX 1](https://lh3.googleusercontent.com/Jj_-o3atJ283KSqCH5bybw-uCS_f_6jGnYPkVXMQzaQ9cyrSpiCsYxIljz4miDT3JwiwF3efQGA2CD0pRxLzoXXKc-HX9oFuiaL1zKxuwOuDhnVXN-scEY1AdZjbqVwNSBVrph-v)
 
@@ -71,7 +67,7 @@
  >   5.  Enter the number of NFT's you want to mint
  >   6.  Ensure you have sufficient funds in your wallet. Click the **Mint My NFT** button
 
-13. Sign / Approve the mint transaction with your wallet
+11. Sign / Approve the mint transaction with your wallet
 
 Congratulations, you have minted your NFT on Loopring’s L2 web DEX.
 
