@@ -43,7 +43,7 @@ export async function unlockAccount() {
             ).replace("${nonce}", (nonce - 1).toString());
       console.log("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE, msg);
 
-      await (connectProvides.usedWeb3 as Web3).eth.personal.sign(
+      const result = await (connectProvides.usedWeb3 as Web3).eth.personal.sign(
         msg,
         account.owner,
         "",
@@ -52,19 +52,21 @@ export async function unlockAccount() {
             console.log(
               "ecRecover valid before",
               msg,
-              result,
-              (connectProvides.usedWeb3 as Web3).eth.personal.ecRecover
+              result
+              // (connectProvides.usedWeb3 as Web3).eth.personal.ecRecover
             );
-            const valid: any = await (
-              connectProvides.usedWeb3 as Web3
-            ).eth.personal.ecRecover(msg, result);
-            console.log("ecRecover valid", valid);
-            if (valid.result) {
-              return { sig: result };
-            }
+            return result;
+            // console.log("ecRecover valid", valid);
+            // if (valid.result) {
+            //   return { sig: result };
+            // }
           }
         }
       );
+      const valid: any = await (
+        connectProvides.usedWeb3 as Web3
+      ).eth.personal.ecRecover(msg.toString(), result.toString());
+      console.log("ecRecover valid", valid);
       //TODO: debugger
 
       console.log(
