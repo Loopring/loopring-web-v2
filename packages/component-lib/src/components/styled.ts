@@ -1,11 +1,10 @@
 import styled from "@emotion/styled";
 import { BoxProps, Grid, Typography } from "@mui/material";
-import { css, Theme, useTheme } from "@emotion/react";
+import { css, Theme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
 import React from "react";
 import { Button } from "./basic-lib";
-import { useSettings } from "../stores";
 
 // @ts-ignore
 export const boxLiner = (_props: { theme: Theme }) => css`
@@ -29,22 +28,24 @@ export const TypographyStrong = styled(Typography)`
 export const TypographyGood = styled(Typography)`
   color: var(--color-success);
 ` as typeof Typography;
-export const TablePaddingX = (_props: { pLeft: number; pRight: number }) => {
-  const { unit } = useTheme();
-  const { isMobile } = useSettings();
-  return css`
-    .rdg-row,
-    .rdg-header-row {
-      .rdg-cell:first-of-type {
-        padding-left: ${unit * (isMobile ? 1 : 3)}px;
-      }
-
-      .rdg-cell:last-of-type {
-        padding-right: ${unit * (isMobile ? 1 : 3)}px;
-      }
+export const TablePaddingX = ({
+  pLeft = 24,
+  pRight = 24,
+}: {
+  pLeft: number;
+  pRight: number;
+}) => css`
+  .rdg-row,
+  .rdg-header-row {
+    .rdg-cell:first-of-type {
+      padding-left: ${pLeft}px;
     }
-  `;
-};
+
+    .rdg-cell:last-of-type {
+      padding-right: ${pRight}px;
+    }
+  }
+`;
 export const VipStyled = styled(Typography)`
   margin-left: ${({ theme }) => theme.unit}px;
   padding: ${({ theme }) => theme.unit / 4}px ${({ theme }) => theme.unit}px;
@@ -195,6 +196,7 @@ export const SwitchPanelStyled: any = styled(Box)<
               height:initial;
               overflow-x: hidden;
               overflow-y: scroll !important;
+              padding-bottom:var(--toolbar-row-padding); 
               background: initial;
            }
        }
@@ -213,26 +215,25 @@ export const SwitchPanelStyled: any = styled(Box)<
     `}
   }
 
+  ${({ _height, theme }) => `
   .MuiModal-root & {
-    .coin-menu {
-      flex: 1;
-      height: 100%;
-    }
-  }
+     .coin-menu {
+          height:${
+            _height
+              ? typeof _height === "number"
+                ? ` calc(${_height + "px"} - ${
+                    theme.unit * 4
+                  }px - 2 * var(--toolbar-row-padding)  ) `
+                : ` calc(${_height} - ${
+                    theme.unit * 4
+                  }px - 2 * var(--toolbar-row-padding)  )`
+              : "410px"
+          } !important;
+     }
+  }`};
 ` as React.ElementType<
   { _height?: number | string; _width?: number | string } & BoxProps
 >;
-// height:${
-//   _height
-//     ? typeof _height === "number"
-//       ? ` calc(${_height + "px"} - ${
-//           theme.unit * 4
-//         }px - 2 * var(--toolbar-row-padding)  ) `
-//       : ` calc(${_height} - ${
-//           theme.unit * 4
-//         }px - 2 * var(--toolbar-row-padding)  )`
-//     : "410px"
-// } !important;
 
 export const toolBarPanel = ({ theme }: any) => css`
   .MuiToolbar-root {
@@ -260,8 +261,8 @@ export const toolBarPanel = ({ theme }: any) => css`
 `;
 
 export const TableFilterStyled = styled(Box)`
-  margin: 0 ${({ theme }) => theme.unit * 3}px
-    ${({ theme }) => theme.unit * 2}px;
+  margin-left: 26px;
+  margin-bottom: ${({ theme }) => theme.unit * 2}px;
 ` as typeof Box;
 
 export const AnimationArrow = styled(Box)`

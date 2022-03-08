@@ -36,7 +36,6 @@ export default {
   labelQuotaPair: "交易对",
   labelQuotaLastPrice: "最新价",
   labelQuota24hChange: "24h 涨跌",
-  labelQuota24hChangeLit: "24h Chg",
   labelQuota24hHigh: "24h 最高",
   labelQuota24hLow: "24h 最低",
   labelQuoteAction: "操作",

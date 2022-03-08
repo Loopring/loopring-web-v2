@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
-import { MenuItem, MenuItemProps } from "@mui/material";
-//${({ theme }) => theme.unit * 2}
+import { MenuItem, MenuItemProps } from '@mui/material';
+
+
 export const TabItemPlus = styled<any>(MenuItem)`
   && {
     &.Mui-focusVisible {
@@ -8,7 +9,7 @@ export const TabItemPlus = styled<any>(MenuItem)`
     }
 
     margin: 0;
-    padding: 0 8px;
+    padding: 0 0 0 ${({theme}) => theme.unit }px;
 
     &:hover {
       background-color: transparent;
@@ -30,5 +31,8 @@ export const TabItemPlus = styled<any>(MenuItem)`
         color: var(--color-text-primary);
       }
     }
+
   }
 ` as React.ElementType<MenuItemProps>;
+
+

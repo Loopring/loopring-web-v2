@@ -11,7 +11,6 @@ import {
   setShowResetAccount,
   setShowTransfer,
   setShowWithdraw,
-  setShowNFTMint,
   Transaction,
 } from "@loopring-web/component-lib";
 
@@ -20,7 +19,9 @@ import { NFTWholeINFO } from "@loopring-web/common-resources";
 
 export function useModals() {
   const dispatch = useDispatch();
-  const { account } = useAccount();
+  const {
+    account: { readyState },
+  } = useAccount();
   const { t } = useTranslation("common");
   const showDeposit = React.useCallback(
     ({
@@ -81,11 +82,6 @@ export function useModals() {
       dispatch(setShowNFTWithdraw({ isShow, ...rest })),
     [dispatch]
   );
-  const showNFTMint = React.useCallback(
-    ({ isShow, ...rest }: ModalStatePlayLoad & Partial<NFTWholeINFO>) =>
-      dispatch(setShowNFTMint({ isShow, ...rest })),
-    [dispatch]
-  );
 
   return {
     showDeposit,
@@ -95,7 +91,6 @@ export function useModals() {
     showNFTTransfer,
     showNFTDeposit,
     showNFTWithdraw,
-    showNFTMint,
     // ShowResetAccount,
   };
 }

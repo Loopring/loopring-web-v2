@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
@@ -75,17 +75,13 @@ export type AmmTableProps = {
 //     page = 'page'
 // }
 
-const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
+const TableStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    ${({ isMobile }) =>
-      !isMobile
-        ? `--template-columns: 300px auto auto auto !important`
-        : `--template-columns: 54% 46% !important;`}
-
+    --template-columns: 300px auto auto auto !important;
     .rdg-row .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -102,7 +98,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+` as typeof Box;
 
 const StyledSideCell: any = styled(Typography)`
   color: ${(props: any) => {
@@ -153,6 +149,18 @@ const getColumnModeAssets = (
       );
     },
   },
+  // {
+  //     key: 'amount',
+  //     name: t('labelAmmAmount'),
+  //     formatter: ({row}) => {
+  //         const {from, to} = row[ 'amount' ]
+  //         return (
+  //             <div className="rdg-cell-value">
+  //                 {`${from.value} ${from.key} + ${to.value} ${to.key}`}
+  //             </div>
+  //         )
+  //     }
+  // },
   {
     key: "lpTokenAmount",
     name: t("labelAmmLpTokenAmount"),
@@ -219,124 +227,6 @@ const getColumnModeAssets = (
   },
 ];
 
-const getColumnModeMobileAssets = (
-  t: TFunction,
-  _currency: Currency
-): Column<RawDataAmmItem, unknown>[] => [
-  {
-    key: "side",
-    name: t("labelAmmSide"),
-    formatter: ({ row }) => {
-      const tradeType =
-        row["side"] === AmmSideTypes.Join
-          ? t("labelAmmJoin")
-          : t("labelAmmExit");
-      const { from, to } = row["amount"];
-      const renderFromValue = getValuePrecisionThousand(
-        from.value,
-        undefined,
-        undefined,
-        undefined,
-        false,
-        { isTrade: true }
-      );
-      const renderToValue = getValuePrecisionThousand(
-        to.value,
-        undefined,
-        undefined,
-        undefined,
-        false,
-        { isTrade: true }
-      );
-      const time = moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow();
-      return (
-        <Box
-          height={"100%"}
-          width={"100%"}
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"flex-end"}
-          justifyContent={"center"}
-        >
-          <Typography
-            component={"span"}
-            display={"inline-flex"}
-            justifyContent={"space-between"}
-            alignSelf={"stretch"}
-          >
-            <StyledSideCell
-              component={"span"}
-              value={row.side}
-              variant={"body2"}
-            >
-              {tradeType}
-            </StyledSideCell>
-            <Typography component={"span"} variant={"body2"}>
-              {time}
-            </Typography>
-          </Typography>
-          <Typography marginLeft={1 / 2}>
-            {`${renderFromValue} ${from.key} + ${renderToValue} ${to.key}`}
-          </Typography>
-        </Box>
-      );
-    },
-  },
-  {
-    key: "lpTokenAmount",
-    name: t("labelAmmLpTokenAmount") + "/" + t("labelAmmFee"),
-    headerCellClass: "textAlignRight",
-    formatter: ({ row }) => {
-      const amount = row["lpTokenAmount"];
-      const renderValue =
-        row["side"] === AmmSideTypes.Join
-          ? `+${getValuePrecisionThousand(
-              amount,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              { isTrade: true }
-            )}`
-          : `-${getValuePrecisionThousand(
-              amount,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              { isTrade: true }
-            )}`;
-      const { key, value } = row.fee;
-      return (
-        <Box
-          height={"100%"}
-          width={"100%"}
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"flex-end"}
-          justifyContent={"center"}
-        >
-          <Typography>{renderValue}</Typography>
-          <Typography
-            variant={"body2"}
-            component={"span"}
-            color={"textSecondary"}
-          >
-            {`Fee: ${getValuePrecisionThousand(
-              value,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              { isTrade: true, floor: false }
-            )} ${key}`}
-          </Typography>
-        </Box>
-      );
-    },
-  },
-];
-
 export const AmmTable = withTranslation("tables")(
   (props: WithTranslation & AmmTableProps) => {
     const { t, pagination, showFilter, rawData } = props;
@@ -348,11 +238,9 @@ export const AmmTable = withTranslation("tables")(
     const [totalData, setTotalData] = React.useState<RawDataAmmItem[]>(rawData);
     const [filterPair, setFilterPair] = React.useState("all");
 
-    const { currency, isMobile } = useSettings();
+    const { currency } = useSettings();
     const defaultArgs: any = {
-      columnMode: isMobile
-        ? getColumnModeMobileAssets(t, currency)
-        : getColumnModeAssets(t, currency),
+      columnMode: getColumnModeAssets(t, currency).filter((o) => !o.hidden),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<Row<any>, unknown>[],
@@ -441,7 +329,7 @@ export const AmmTable = withTranslation("tables")(
     }, [handleFilterChange]);
 
     return (
-      <TableStyled isMobile={isMobile}>
+      <TableStyled>
         {showFilter && (
           <TableFilterStyled>
             <Filter

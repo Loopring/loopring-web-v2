@@ -68,14 +68,11 @@ const systemSlice: Slice<SystemStatus> = createSlice({
         allowTrade,
         exchangeInfo,
         __timer__,
-        // isMobile,
         etherscanBaseUrl,
       } = action.payload;
-
       if (env) {
         state.env = env;
       }
-
       if (allowTrade) {
         state.allowTrade = allowTrade;
       }

@@ -26,7 +26,6 @@ const initialState: SettingsState = {
   hideL2Assets: false,
   hideLpToken: false,
   hideSmallBalances: true,
-  isMobile: false,
   proLayout: layoutConfigs[0].layouts,
 };
 
@@ -85,10 +84,6 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
             });
         state.language = action.payload;
       }
-    },
-    setIsMobile(state, action: PayloadAction<boolean>) {
-      // localStore.setItem('UpColor',action.payload)
-      state.isMobile = action.payload;
     },
     setPlatform(state, action: PayloadAction<keyof typeof PlatFormType>) {
       state.platform = action.payload;
@@ -185,6 +180,5 @@ export const {
   setHideL2Assets,
   setHideLpToken,
   setHideSmallBalances,
-  setIsMobile,
 } = settingsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

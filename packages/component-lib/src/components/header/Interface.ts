@@ -19,7 +19,6 @@ export interface HeaderProps {
     dAppTrade: { enable: boolean; reason?: string };
     raw_data: { enable: boolean; reason?: string };
   };
-  isMobile: boolean;
   isWrap?: boolean;
   selected: string;
   className?: string;

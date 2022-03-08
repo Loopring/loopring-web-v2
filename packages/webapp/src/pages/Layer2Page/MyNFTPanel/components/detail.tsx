@@ -11,7 +11,7 @@ import {
   TransferPanel,
   WithdrawPanel,
   DeployNFTWrap,
-  useSettings,
+  InformationForNoMetaNFT,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -71,8 +71,17 @@ export const NFTDetail = withTranslation("common")(
     onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
   } & WithTranslation) => {
     const { assetsRawData } = useGetAssets();
-
+    const [showDialog, setShowDialog] =
+      React.useState<string | undefined>(undefined);
     const [viewPage, setViewPage] = React.useState<number>(0);
+    const [isKnowNFTNoMeta, setIsKnowNFTNoMeta] = React.useState<boolean>(
+      !!(popItem?.name !== "" && popItem.image && popItem.image !== "")
+    );
+    React.useEffect(() => {
+      setIsKnowNFTNoMeta((_state) => {
+        return !!(popItem.name !== "" && popItem.image && popItem.image !== "");
+      });
+    }, [popItem.name, popItem.image]);
 
     const { nftTransferProps } = useNFTTransfer({
       isLocalShow: viewPage === 1,
@@ -93,6 +102,24 @@ export const NFTDetail = withTranslation("common")(
     const detailView = React.useMemo(() => {
       return (
         <Box flexDirection={"column"} display={"flex"}>
+          <InformationForNoMetaNFT
+            open={!!showDialog}
+            method={showDialog}
+            handleClose={(e, isAgress) => {
+              setShowDialog(undefined);
+              if (isAgress && showDialog) {
+                switch (showDialog?.toLowerCase()) {
+                  case "withdraw":
+                    handleChangeIndex(2);
+                    break;
+                  case "transfer":
+                    handleChangeIndex(1);
+                    break;
+                }
+              }
+            }}
+          />
+
           <Box marginBottom={3} display={"flex"} alignItems={"center"}>
             <Typography color={"text.primary"} variant={"h2"} marginTop={2}>
               # {" " + getShortAddr(popItem?.nftId ?? "")}
@@ -221,7 +248,11 @@ export const NFTDetail = withTranslation("common")(
                       size={"medium"}
                       fullWidth
                       disabled={true}
-                      onClick={() => handleChangeIndex(2)}
+                      onClick={() => {
+                        isKnowNFTNoMeta
+                          ? handleChangeIndex(2)
+                          : setShowDialog("Withdraw");
+                      }}
                     >
                       {t("labelNFTWithdraw")}
                     </Button>
@@ -230,7 +261,6 @@ export const NFTDetail = withTranslation("common")(
                       variant={"outlined"}
                       size={"medium"}
                       fullWidth
-                      disabled={true}
                       onClick={() => handleChangeIndex(3)}
                     >
                       {t("labelNFTDeployContract")}
@@ -245,7 +275,7 @@ export const NFTDetail = withTranslation("common")(
                       <LoadingIcon
                         color={"primary"}
                         style={{ width: 18, height: 18, marginRight: "8px" }}
-                      />{" "}
+                      />
                       {t("labelNFTDeploying")}
                     </Button>
                   )}
@@ -256,8 +286,12 @@ export const NFTDetail = withTranslation("common")(
                     size={"small"}
                     color={"primary"}
                     fullWidth
-                    disabled={true}
-                    onClick={() => handleChangeIndex(1)}
+                    // disabled={isKnowNFTNoMeta ? true : false}
+                    onClick={() =>
+                      isKnowNFTNoMeta
+                        ? handleChangeIndex(1)
+                        : setShowDialog("Transfer")
+                    }
                   >
                     {t("labelNFTTransfer")}
                   </Button>
@@ -267,8 +301,21 @@ export const NFTDetail = withTranslation("common")(
           </Box>
         </Box>
       );
-    }, [t, popItem, etherscanBaseUrl]);
-
+    }, [
+      showDialog,
+      popItem.nftId,
+      popItem.name,
+      popItem.total,
+      popItem.nftIdView,
+      popItem.nftType,
+      popItem.tokenAddress,
+      popItem.minter,
+      popItem.description,
+      popItem.isDeployed,
+      t,
+      isKnowNFTNoMeta,
+      etherscanBaseUrl,
+    ]);
     return (
       <>
         <BoxNFT

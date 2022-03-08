@@ -263,12 +263,8 @@ export const globalCss = ({ theme }: any) => css`
     --row-header-height: 44px;
     --chart-height: 396px;
     --nft-height: 396px;
+
     --notification-activited-heigth: 88px;
-    @media only screen and (max-width: 768px) {
-      --modal-width: 320px;
-      --lage-modal-width: 460px;
-      --walletconnect-width: 126px;
-    }
   }
 
   select {

@@ -5,11 +5,11 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from "../../../basic-lib/form";
 import { Button } from "../../../basic-lib/btns";
 import { DropDownIcon } from "@loopring-web/common-resources";
-import { TransactionTradeTypes } from "../Interface";
+import { TransactionTradeTypes, RawDataTransactionItem } from "../Interface";
 import { DateRange } from "@mui/lab";
 
 export interface FilterProps {
-  filterTokens: string[];
+  originalData: RawDataTransactionItem[];
   filterDate: DateRange<Date | string>;
   filterType: TransactionTradeTypes;
   filterToken: string;
@@ -39,7 +39,7 @@ const StyledBtnBox = styled(Box)`
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
-    filterTokens = [],
+    originalData,
     filterDate,
     filterType,
     filterToken,
@@ -78,14 +78,13 @@ export const Filter = withTranslation("tables", { withRef: true })(
         label: t("labelTxFilterAllTokens"),
         value: "All Tokens",
       },
-      ...Array.from(filterTokens)
-        .sort((a: string, b: string) => {
-          return a.localeCompare(b);
-        })
-        .map((token: string) => ({
+      // @ts-ignore
+      ...Array.from(new Set(originalData.map((o) => o?.amount.unit))).map(
+        (token) => ({
           label: token,
           value: token,
-        })),
+        })
+      ),
     ];
 
     // const handleReset = React.useCallback(() => {
@@ -147,7 +146,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {tokenTypeList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}

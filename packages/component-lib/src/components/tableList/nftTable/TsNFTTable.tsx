@@ -1,23 +1,19 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, BoxProps, Typography } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
+import { Box, Typography } from "@mui/material";
+import { TFunction, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, TablePagination, Table } from "../../basic-lib";
 import {
   CompleteIcon,
-  DepositIcon,
   EmptyValueTag,
   EXPLORE_TYPE,
   Explorer,
   getFormattedHash,
   getShortAddr,
   getValuePrecisionThousand,
-  MintIcon,
-  TransferIcon,
   WaitingIcon,
   WarningIcon,
-  WithdrawIcon,
 } from "@loopring-web/common-resources";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 
@@ -29,7 +25,6 @@ import {
 } from "./Interface";
 import { Filter } from "./components/Filter";
 import { TxNFTType } from "@loopring-web/loopring-sdk";
-import { useSettings } from "../../../stores";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
@@ -64,14 +59,12 @@ const CellStatus = ({ row: { status } }: any) => {
   return RenderValueWrapper;
 };
 
-const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
+const TableStyled = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    ${({ isMobile }) =>
-      isMobile ? `--template-columns: 60% 40% !important;` : ``}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -93,7 +86,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+` as typeof Box;
 
 export const TsNFTTable = withTranslation(["tables", "common"])(
   <Row extends TxnDetailProps>({
@@ -107,15 +100,20 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     duration,
     showloading,
     etherscanBaseUrl,
-    t,
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
     const getColumnModeTransaction = React.useCallback(
-      (): Column<Row, Row>[] => [
+      (t: TFunction): Column<Row, Row>[] => [
         {
           key: "side",
           name: t("labelTxSide"),
           formatter: ({ row }) => {
+            // const renderValue =
+            //   value === TransactionTradeTypes.deposit
+            //     ? t("labelDeposit")
+            //     : value === TransactionTradeTypes.transfer
+            //     ? t("labelTransfer")
+            //     : t("labelWithdraw");
             return (
               <Box className="rdg-cell-value" title={row.nftTxType}>
                 {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
@@ -130,7 +128,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: { row: Row }) => {
             const hasSymbol =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row?.receiverAddress?.toUpperCase() ===
+                ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
@@ -157,6 +155,26 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             );
           },
         },
+        // {
+        //   key: "amount",
+        //   name: t("labelAmount"),
+        //   formatter: ({ row }) => {
+        //     return (
+        //       <>
+        //         <Typography
+        //           variant={"body1"}
+        //           component={"span"}
+        //           marginRight={1}
+        //         >
+        //           {row.amount}
+        //         </Typography>
+        //         <Typography variant={"body1"} component={"span"}>
+        //           {getFormattedHash(row.nftData)}
+        //         </Typography>
+        //       </>
+        //     );
+        //   },
+        // },
 
         {
           key: "from",
@@ -247,7 +265,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxTime"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const value = row.updatedAt;
+            const value = row.createdAt;
             const hasValue = Number.isFinite(value);
             const renderValue = hasValue
               ? moment(new Date(value), "YYYYMMDDHHMM").fromNow()
@@ -260,8 +278,6 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
       ],
       [etherscanBaseUrl]
     );
-    const { isMobile } = useSettings();
-
     const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
       getTxnList({
         page: filter.page ?? page,
@@ -275,186 +291,21 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
         duration: filter.duration ?? duration,
       });
     };
-
-    const getColumnMobileTransaction = React.useCallback(
-      (): Column<any, unknown>[] => [
-        {
-          key: "amount",
-          name: t("labelTxAmount") + " / " + t("labelTxFee"),
-          cellClass: "textAlignRight",
-          headerCellClass: "textAlignLeft",
-          formatter: ({ row }) => {
-            const hasValue = Number.isFinite(row.amount);
-            let side, hasSymbol, sideIcon;
-
-            switch (row.nftTxType) {
-              case TxNFTType[TxNFTType.DEPOSIT]:
-                side = t("labelDeposit");
-                hasSymbol = "+";
-                sideIcon = <DepositIcon fontSize={"inherit"} />;
-                break;
-              case TxNFTType[TxNFTType.TRANSFER]:
-                side = t("labelTransfer");
-                hasSymbol =
-                  row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
-                    ? "+"
-                    : "-";
-                sideIcon = <TransferIcon fontSize={"inherit"} />;
-                break;
-              case TxNFTType[TxNFTType.MINT]:
-                side = t("labelMint");
-                sideIcon = <MintIcon fontSize={"inherit"} />;
-                hasSymbol = "+";
-                break;
-              case TxNFTType[TxNFTType.WITHDRAW]:
-              default:
-                hasSymbol = "-";
-                sideIcon = <WithdrawIcon fontSize={"inherit"} />;
-                side = t("labelWithdraw");
-            }
-            const renderValue = hasValue
-              ? `${getValuePrecisionThousand(
-                  Number(row.amount),
-                  undefined,
-                  undefined,
-                  undefined,
-                  false,
-                  { isTrade: true }
-                )}`
-              : EmptyValueTag;
-
-            const renderFee = `Fee: ${getValuePrecisionThousand(
-              row.fee.value,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              {
-                floor: false,
-                isTrade: true,
-              }
-            )} ${row.fee.unit}`;
-            return (
-              <Box
-                flex={1}
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"flex-start"}
-                title={side}
-              >
-                {/*{side + " "}*/}
-                <Typography
-                  display={"flex"}
-                  marginRight={1}
-                  variant={"h3"}
-                  alignItems={"center"}
-                  flexDirection={"column"}
-                  width={"60px"}
-                >
-                  {sideIcon}
-                  <Typography fontSize={10} marginTop={-1}>
-                    {side}
-                  </Typography>
-                </Typography>
-                <Box display={"flex"} flex={1} flexDirection={"column"}>
-                  <Typography
-                    display={"inline-flex"}
-                    justifyContent={"flex-end"}
-                    alignItems={"center"}
-                  >
-                    {hasSymbol}
-                    {renderValue}
-                  </Typography>
-                  <Typography color={"textSecondary"} variant={"body2"}>
-                    {renderFee}
-                  </Typography>
-                </Box>
-              </Box>
-            );
-          },
-        },
-        {
-          key: "from",
-          name: t("labelTxFrom") + " / " + t("labelTxTime"),
-          headerCellClass: "textAlignRight",
-          cellClass: "textAlignRight",
-          formatter: ({ row }) => {
-            const receiverAddress = getShortAddr(row.receiverAddress, isMobile);
-            const senderAddress = getShortAddr(row.senderAddress, isMobile);
-
-            const [from, to] =
-              row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
-                  ? [senderAddress, "L2"]
-                  : ["L2", receiverAddress]
-                : TxNFTType[TxNFTType.DEPOSIT]
-                ? ["L1", "L2"]
-                : TxNFTType[TxNFTType.MINT]
-                ? ["Mint", "L2"]
-                : TxNFTType[TxNFTType.WITHDRAW]
-                ? ["L2", receiverAddress]
-                : ["", ""];
-            const hash = row.txHash !== "" ? row.txHash : row.hash;
-            const path =
-              row.txHash !== ""
-                ? etherscanBaseUrl + `/tx/${row.txHash}`
-                : Explorer +
-                  `tx/${row.hash}-${EXPLORE_TYPE[row.nftTxType.toUpperCase()]}`;
-
-            const hasValue = Number.isFinite(row.updatedAt);
-            const renderTime = hasValue
-              ? moment(new Date(row.updatedAt), "YYYYMMDDHHMM").fromNow()
-              : EmptyValueTag;
-
-            return (
-              <Box
-                display={"flex"}
-                flex={1}
-                flexDirection={"column"}
-                onClick={() => window.open(path, "_blank")}
-              >
-                <Typography
-                  display={"inline-flex"}
-                  justifyContent={"flex-end"}
-                  alignItems={"center"}
-                >
-                  <Typography
-                    style={{
-                      cursor: "pointer",
-                    }}
-                    color={"var(--color-primary)"}
-                    title={hash}
-                  >
-                    {from + " -> " + to}
-                    {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
-                  </Typography>
-                  <Typography marginLeft={1}>
-                    <CellStatus {...{ row }} />
-                  </Typography>
-                </Typography>
-                <Typography color={"textSecondary"} variant={"body2"}>
-                  {renderTime}
-                </Typography>
-              </Box>
-            );
-          },
-        },
-      ],
-      [etherscanBaseUrl, isMobile, t]
-    );
+    // const handleReset = () => {
+    //   getTxnList({ page: 1, txType: undefined });
+    // };
+    // const handlePageChange = ({ page: number }) => {
+    //   getTxnList({ page: 1, txType: undefined });
+    // };
     const defaultArgs: any = {
-      columnMode: isMobile
-        ? getColumnMobileTransaction()
-        : getColumnModeTransaction(),
+      columnMode: getColumnModeTransaction(props.t).filter((o) => !o.hidden),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
 
     return (
-      <TableStyled isMobile={isMobile}>
+      <TableStyled>
         {showFilter && (
           <TableFilterStyled>
             <Filter

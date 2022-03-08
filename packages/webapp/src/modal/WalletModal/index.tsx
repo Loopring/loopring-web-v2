@@ -6,11 +6,11 @@ import {
   ConnectFailed,
   ConnectSuccess,
   InformationForCoinBase,
+  MetaMaskConnectInProgress,
   ModalWalletConnect,
   ProviderMenu,
   Toast,
   useOpenModals,
-  useSettings,
   WalletConnectConnectInProgress,
   WalletConnectQRCode,
   WalletConnectStep,
@@ -25,7 +25,6 @@ import {
   globalSetup,
   myLog,
   SagaStatus,
-  SoursURL,
 } from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
@@ -55,7 +54,6 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       setShouldShow,
       status: accountStatus,
     } = useAccount();
-    const { isMobile } = useSettings();
     const { updateSystem, chainId: _chainId } = useSystem();
     const {
       modals: { isShowConnect },
@@ -149,8 +147,9 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       },
       []
     );
-    const [processingCallback, setProcessingCallback] =
-      React.useState<{ callback: () => Promise<void> } | undefined>(undefined);
+    const [processingCallback, setProcessingCallback] = React.useState<
+      { callback: () => Promise<void> } | undefined
+    >(undefined);
     useEffect(() => {
       if (
         stateCheck === true &&
@@ -165,141 +164,77 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       }
     }, [accountStatus, stateCheck]);
 
-    const gatewayList: GatewayItem[] = !isMobile
-      ? [
-          {
-            ...DefaultGatewayList[0],
-            handleSelect: React.useCallback(
-              async (event, flag?) => {
-                if (
-                  !flag &&
-                  account.connectName === DefaultGatewayList[0].key
-                ) {
-                  setShowConnect({ isShow: false });
-                } else {
-                  const isKnow = localStorage.getItem(
-                    "useKnowCoinBaseWalletInstall"
-                  );
+    const gatewayList: GatewayItem[] = [
+      {
+        ...DefaultGatewayList[0],
+        handleSelect: React.useCallback(
+          async (event, flag?) => {
+            if (!flag && account.connectName === DefaultGatewayList[0].key) {
+              setShowConnect({ isShow: false });
+            } else {
+              const isKnow = localStorage.getItem(
+                "useKnowCoinBaseWalletInstall"
+              );
 
-                  if (
-                    !(isKnow === "true") &&
-                    !(
-                      window?.ethereum?._metamask &&
-                      window?.ethereum?._metamask.requestBatch
-                    )
-                  ) {
-                    setIsOpenUnknownProvider(true);
-                  }
-                  walletServices.sendDisconnect("", "should new provider");
-                  setConnectProvider(DefaultGatewayList[0].key);
-                  setShowConnect({
-                    isShow: true,
-                    step: WalletConnectStep.CommonProcessing,
-                  });
-                  setProcessingCallback({ callback: metaMaskCallback });
-                  setStateCheck(true);
-                }
-              },
-              [account]
-            ),
+              if (
+                !(isKnow === "true") &&
+                !(
+                  window?.ethereum?._metamask &&
+                  window?.ethereum?._metamask.requestBatch
+                )
+              ) {
+                setIsOpenUnknownProvider(true);
+              }
+              walletServices.sendDisconnect("", "should new provider");
+              setConnectProvider(DefaultGatewayList[0].key);
+              setShowConnect({
+                isShow: true,
+                step: WalletConnectStep.CommonProcessing,
+              });
+              setProcessingCallback({ callback: metaMaskCallback });
+              setStateCheck(true);
+            }
           },
-          {
-            ...DefaultGatewayList[1],
-            handleSelect: React.useCallback(
-              async (event, flag?) => {
-                if (
-                  !flag &&
-                  account.connectName === DefaultGatewayList[1].key
-                ) {
-                  setShowConnect({ isShow: false });
-                } else {
-                  walletServices.sendDisconnect("", "should new provider");
-                  setConnectProvider(DefaultGatewayList[1].key);
-                  setShowConnect({
-                    isShow: true,
-                    step: WalletConnectStep.CommonProcessing,
-                  });
-                  setProcessingCallback({ callback: walletConnectCallback });
-                  setStateCheck(true);
-                }
-              },
-              [account]
-            ),
+          [account]
+        ),
+      },
+      {
+        ...DefaultGatewayList[1],
+        handleSelect: React.useCallback(
+          async (event, flag?) => {
+            if (!flag && account.connectName === DefaultGatewayList[1].key) {
+              setShowConnect({ isShow: false });
+            } else {
+              walletServices.sendDisconnect("", "should new provider");
+              setConnectProvider(DefaultGatewayList[1].key);
+              setShowConnect({
+                isShow: true,
+                step: WalletConnectStep.CommonProcessing,
+              });
+              setProcessingCallback({ callback: walletConnectCallback });
+              setStateCheck(true);
+            }
           },
-          {
-            ...DefaultGatewayList[2],
-            handleSelect: React.useCallback(
-              async (event, flag?) => {
-                walletServices.sendDisconnect("", "should new provider");
-                setShowConnect({
-                  isShow: true,
-                  step: WalletConnectStep.WalletConnectProcessing,
-                });
-                setConnectProvider(DefaultGatewayList[2].key);
-                setProcessingCallback({ callback: walletLinkCallback });
-                setStateCheck(true);
-              },
-              [account]
-            ),
-          },
-        ]
-      : [
-          ...(window.ethereum
-            ? [
-                {
-                  ...DefaultGatewayList[0],
-                  key: "Connect with Dapp",
-                  imgSrc: SoursURL + "svg/loopring.svg",
-                  handleSelect: React.useCallback(
-                    async (event, flag?) => {
-                      if (
-                        !flag &&
-                        account.connectName === DefaultGatewayList[0].key
-                      ) {
-                        setShowConnect({ isShow: false });
-                      } else {
-                        walletServices.sendDisconnect(
-                          "",
-                          "should new provider"
-                        );
-                        setConnectProvider(DefaultGatewayList[0].key);
-                        setShowConnect({
-                          isShow: true,
-                          step: WalletConnectStep.CommonProcessing,
-                        });
-                        setProcessingCallback({ callback: metaMaskCallback });
-                        setStateCheck(true);
-                      }
-                    },
-                    [account]
-                  ),
-                },
-              ]
-            : []),
-          {
-            ...DefaultGatewayList[1],
-            handleSelect: React.useCallback(
-              async (event, flag?) => {
-                if (
-                  !flag &&
-                  account.connectName === DefaultGatewayList[1].key
-                ) {
-                  setShowConnect({ isShow: false });
-                } else {
-                  walletServices.sendDisconnect("", "should new provider");
-                  setConnectProvider(DefaultGatewayList[1].key);
-                  setShowConnect({
-                    isShow: true,
-                    step: WalletConnectStep.CommonProcessing,
-                  });
-                  setProcessingCallback({ callback: walletConnectCallback });
-                  setStateCheck(true);
-                }
-              },
-              [account]
-            ),
-          },
-        ];
+          [account]
+        ),
+      },
+      // {
+      //   ...DefaultGatewayList[2],
+      //   handleSelect: React.useCallback(
+      //     async (event, flag?) => {
+      //       walletServices.sendDisconnect("", "should new provider");
+      //       setShowConnect({
+      //         isShow: true,
+      //         step: WalletConnectStep.WalletConnectProcessing,
+      //       });
+      //       setConnectProvider(DefaultGatewayList[2].key);
+      //       setProcessingCallback({ callback: walletLinkCallback });
+      //       setStateCheck(true);
+      //     },
+      //     [account]
+      //   ),
+      // },
+    ];
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onRetry = React.useCallback(async () => {

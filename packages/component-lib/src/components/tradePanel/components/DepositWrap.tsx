@@ -145,9 +145,9 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   return (
     <Grid
       className={walletMap ? "depositWrap" : "depositWrap loading"}
-      container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
+      container
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}

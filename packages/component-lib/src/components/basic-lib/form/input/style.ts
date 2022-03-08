@@ -1,14 +1,12 @@
-import styled from "@emotion/styled";
-import { Box, BoxProps, Button, ButtonProps } from "@mui/material";
-import React from "react";
-import CurrencyInput from "react-currency-input-field";
-import { InputSize } from "./Interface";
+import styled from '@emotion/styled';
+import { Box, BoxProps, Button, ButtonProps } from '@mui/material';
+import React from 'react';
+import CurrencyInput from 'react-currency-input-field';
+import { InputSize } from './Interface';
 
-export const IWrap = styled(Box)<
-  BoxProps & { size: "middle" | "small"; isMobile?: boolean }
->`
-  ${({ theme }) => theme.border.defaultFrame({ c_key: "var(--opacity)" })};
-
+export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
+  ${({theme}) => theme.border.defaultFrame({c_key: 'var(--opacity)'})};
+ 
   .label-wrap {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -20,8 +18,9 @@ export const IWrap = styled(Box)<
     .MuiFormHelperText-root {
       color: var(--color-error);
       text-align: right;
-      font-size: ${({ theme }) => theme.fontDefault.h6};
+      font-size: ${({theme}) => theme.fontDefault.h6};
     }
+
   }
 
   .sub-label {
@@ -40,18 +39,20 @@ export const IWrap = styled(Box)<
       text-decoration: none;
     }
   }
+ 
 
-  .coinInput-wrap,
-  .btnInput-wrap {
+  .coinInput-wrap, .btnInput-wrap {
     position: relative;
     box-sizing: border-box;
     background: var(--color-box);
-    border-radius: ${({ theme }) => theme.unit / 2}px;
-    margin-top: ${({ theme }) => `${theme.unit / 2}px`};
+    border-radius: ${({theme}) => theme.unit / 2}px;
+    margin-top: ${({theme}) => `${theme.unit / 2}px`};
     height: var(--btn-Input-height);
-
+    
+   
+   
     ::before {
-      content: "";
+      content: '';
       display: block;
       width: 100%;
       height: 100%;
@@ -61,45 +62,45 @@ export const IWrap = styled(Box)<
       box-sizing: border-box;
       pointer-events: none;
       z-index: 1;
+      
     }
+
 
     &.error {
       border: 1px solid var(--color-error) !important;
-      border-radius: ${({ theme }) => theme.unit / 2}px;
+      border-radius:  ${({theme}) => theme.unit / 2}px;
+     
     }
+    
   }
 
   .input-wrap {
     //min-width: 128px;
     // width: 100%;
     flex: 1;
-    height: 100%;
+    height: 100%
   }
 
-  .icon-wrap,
-  .btn-wrap {
+  .icon-wrap, .btn-wrap {
     max-width: var(--btn-max-width);
     min-width: var(--coin-min-width);
 
     .MuiButton-label {
       justify-content: flex-start;
     }
+
   }
-  ${({ size, theme, isMobile }) => {
-    if (size === InputSize.small) {
-      return `
+  ${({size,theme}) => {
+    if(size === InputSize.small){
+      return`
           .input-wrap,.icon-wrap{
-            font-size: ${
-              isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1
-            };
+            font-size: ${theme.fontDefault.body1};
           }
           .label-wrap, .main-label{
             font-size: ${theme.fontDefault.body2};
           }
           .coinInput-wrap, .btnInput-wrap {
-            font-size: ${
-              isMobile ? theme.fontDefault.body2 : theme.fontDefault.body1
-            };
+            font-size: ${theme.fontDefault.body1};
             height: var(--btn-Input-small-height);
             &.text-small{
               font-size: ${theme.fontDefault.body2};
@@ -109,9 +110,9 @@ export const IWrap = styled(Box)<
             }
           }
          
-      `;
-    } else {
-      return `
+      `
+    }else{
+      return`
           .input-wrap,.icon-wrap{
              font-size: ${theme.fontDefault.h5};
           }
@@ -132,19 +133,17 @@ export const IWrap = styled(Box)<
       `;
     }
   }};
-` as (
-  props: BoxProps & { size: "middle" | "small"; isMobile?: boolean }
-) => JSX.Element;
-export const CoinWrap: React.ComponentType<
-  BoxProps & { logoColor?: any }
-> = styled(Box)<BoxProps & { logoColor?: any }>`
+
+` as (props:BoxProps & {size:'middle'|'small'})=>JSX.Element
+export const CoinWrap:React.ComponentType<BoxProps & { logoColor?: any }> = styled(Box)<BoxProps & { logoColor?: any }>`
   & {
+
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: 1px solid transparent;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: ${({ theme }) => theme.fontDefault.h5};
+    font-size: ${({theme}) => theme.fontDefault.h5};
     color: var(--color-text-primary);
 
     .placeholder {
@@ -154,19 +153,18 @@ export const CoinWrap: React.ComponentType<
 
   &.icon-wrap-right > div {
     justify-content: flex-start;
-    padding-left: ${({ theme }) => (theme.unit / 2) * 3}px;
+    padding-left: ${({theme}) => theme.unit / 2 * 3}px;
     align-items: center;
   }
 
   &.icon-wrap-left > div {
     justify-content: flex-end;
-    padding-right: ${({ theme }) => (theme.unit / 2) * 3}px;
+    padding-right: ${({theme}) => theme.unit / 2 * 3}px;
     align-items: center;
   }
-`;
-export const ISBtn: React.ComponentType<
-  ButtonProps & { logoColor?: any }
-> = styled(Button)<ButtonProps & { logoColor?: any }>`
+
+` ;
+export const ISBtn:React.ComponentType<ButtonProps & { logoColor?: any }> = styled(Button)<ButtonProps & { logoColor?: any }>`
   && {
     width: 100%;
     height: 100%;
@@ -175,19 +173,19 @@ export const ISBtn: React.ComponentType<
     border-right: 1px solid transparent;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: ${({ theme }) => theme.fontDefault.h5};
+    font-size: ${({theme}) => theme.fontDefault.h5};
     color: var(--color-text-primary);
-    .MuiButton-endIcon {
+    .MuiButton-endIcon{
       color: var(--color-text-third);
     }
-
+    
     .placeholder {
       color: var(--color-text-secondary);
     }
   }
 
   // .logo-icon svg {
-  //   color: ${({ logoColor }) => logoColor}
+    //   color: ${({logoColor}) => logoColor}
   // }
   //.MuiAvatar-root {
   //  width: 24px;
@@ -196,15 +194,14 @@ export const ISBtn: React.ComponentType<
 
   // .MuiButton-endIcon svg {
   //   color: var(--color-text-primary)
-  //     // color: ${({ logoColor }) => logoColor}
+  //     // color: ${({logoColor}) => logoColor}
   // }
 
-  &:hover,
-  &:active {
+  &:hover, &:active {
     color: var(--color-text-primary);
     background: var(--color-box-hover);
   }
-`;
+` ;
 export const IInput = styled(CurrencyInput)`
   text-align: right;
   color: var(--color-text-primary);
@@ -233,7 +230,7 @@ export const IInput = styled(CurrencyInput)`
     width: 0;
   }
   :focus {
-    outlined: 0;
+    outline: 0;
     & + label::before {
       content:'';
       position: absolute;
@@ -241,17 +238,12 @@ export const IInput = styled(CurrencyInput)`
       left: 0;
       right: 0;
       bottom: 0;
-      ${({ theme }) =>
-        `${theme.border.defaultFrame({
-          c_key: "var(--color-border-hover)",
-          d_R: 0.5,
-        })};`};
+      ${({theme}) => `${theme.border.defaultFrame({c_key: 'var(--color-border-hover)',d_R: 0.5})};`};
     }
   }
   .error &:focus {
     & + label::before {
-      ${({ theme }) =>
-        `${theme.border.defaultFrame({ c_key: "var(--opacity)", d_R: 0.5 })};`}
+      ${({theme}) => `${theme.border.defaultFrame({c_key: 'var(--opacity)',d_R: 0.5})};`}
     }
   }
 
@@ -276,7 +268,7 @@ export const IInput = styled(CurrencyInput)`
      
     }
   }
-}` as typeof CurrencyInput;
+}` as typeof CurrencyInput
 // border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
 // ${theme.mode === 'dark' ? `border-color: transparent` : ''};
 // ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};

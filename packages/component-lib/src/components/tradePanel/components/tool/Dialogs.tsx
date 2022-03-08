@@ -352,6 +352,61 @@ export const InformationForCoinBase = withTranslation("common", {
   }
 );
 
+export const InformationForNoMetaNFT = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    method,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    method?: string;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <DialogStyle
+        open={open}
+        onClose={(e: MouseEvent) => handleClose(e, false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans
+              i18nKey={"labelNoticeForNoMetaNFT"}
+              tOptions={{ method: t("label" + method).toLowerCase() }}
+            >
+              Your Mint NFT is without Metadata or media information, Are you
+              still want {{ method }} this NFT?.
+            </Trans>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any, false)}
+          >
+            {t("labelDisAgreeConfirm")}
+          </Button>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
+
 export const HebaoConfirmApprove = withTranslation("common", {
   withRef: true,
 })(
@@ -405,7 +460,6 @@ export const HebaoConfirmApprove = withTranslation("common", {
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {" "}
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button

@@ -48,7 +48,7 @@ export const useMarket = <C extends { [key: string]: any }>({
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { account } = useAccount();
-  const { slippage, isMobile } = useSettings();
+  const { slippage } = useSettings();
   const { exchangeInfo, allowTrade } = useSystem();
   const { setShowSupport } = useOpenModals();
   const autoRefresh = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -576,10 +576,7 @@ export const useMarket = <C extends { [key: string]: any }>({
     tradeMarketBtnStatus,
     tradeMarketI18nKey,
     marketBtnClick,
-    tradeMarketBtnStyle: {
-      ...tradeMarketBtnStyle,
-      ...{ fontSize: isMobile ? "1.4rem" : "1.6rem" },
-    },
+    tradeMarketBtnStyle,
     // marketTicker,
   };
 };

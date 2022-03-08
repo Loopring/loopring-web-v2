@@ -9,7 +9,6 @@ import {
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "defs/common_defs";
 import { useAccountModalForUI } from "./hook";
-import { useNFTDeposit } from "../../hooks/useractions/useNFTDeposit";
 
 export const ModalAccountInfo = withTranslation("common")(
   ({
@@ -37,8 +36,7 @@ export const ModalAccountInfo = withTranslation("common")(
       depositProps,
       nftTransferProps,
       nftWithdrawProps,
-      nftDepositProps,
-      nftMintProps,
+      // nftDepositProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
@@ -78,8 +76,7 @@ export const ModalAccountInfo = withTranslation("common")(
             vendorMenuProps: vendorProps,
           }}
           nftTransferProps={nftTransferProps}
-          nftMintProps={nftMintProps}
-          nftDepositProps={nftDepositProps}
+          // nftDepositProps={nftDepositProps}
           nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}

@@ -167,7 +167,6 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
         alignItems={"center"}
         justifyContent={"space-between"}
         flexDirection={"column"}
-        paddingBottom={4}
       >
         <Typography component={"h3"} variant={"h3"}>
           {t(title as string)}

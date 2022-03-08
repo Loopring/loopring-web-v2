@@ -1,21 +1,14 @@
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import store from "stores";
-import {
-  AssetTitleProps,
-  LpTokenAction,
-  TokenType,
-  TradeBtnStatus,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { TokenType } from "@loopring-web/component-lib";
 import {
   AccountStatus,
   EmptyValueTag,
   myLog,
-  PriceTag,
 } from "@loopring-web/common-resources";
 import { useAccount } from "stores/account";
 import { makeWalletLayer2, volumeToCountAsBigNumber } from "hooks/help";
-import { Currency, WsTopicType } from "@loopring-web/loopring-sdk";
+import { WsTopicType } from "@loopring-web/loopring-sdk";
 import { useSocket } from "stores/socket";
 import { useWalletLayer2Socket } from "services/socket";
 import { useSystem } from "stores/system";
@@ -24,9 +17,6 @@ import { useTokenPrices } from "stores/tokenPrices";
 import { LoopringAPI } from "api_wrapper";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory } from "react-router-dom";
-import { useModals } from "../../../hooks/useractions/useModals";
-import { useTokenMap } from "../../../stores/token";
 
 export type TrendDataItem = {
   timeStamp: number;
@@ -62,37 +52,16 @@ export const useGetAssets = () => {
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>(
     []
   );
-
-  const {
-    showDeposit,
-    showTransfer,
-    showWithdraw,
-    showNFTDeposit,
-    showNFTMint,
-  } = useModals();
   const [userAssets, setUserAssets] = React.useState<any[]>([]);
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
   const { account } = useAccount();
   const { sendSocketTopic, socketEnd } = useSocket();
-  const { forex, allowTrade } = useSystem();
+  const { forex } = useSystem();
   const { tokenPrices } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
-  const { raw_data } = allowTrade;
-  const legalEnable = (raw_data as any)?.legal?.enable;
-  const legalShow = (raw_data as any)?.legal?.show;
-  const {
-    themeMode,
-    hideL2Assets,
-    hideLpToken,
-    hideSmallBalances,
-    currency,
-    setHideLpToken,
-    setHideSmallBalances,
-    setHideL2Assets,
-  } = useSettings();
 
-  const { marketArray, tokenMap } = useTokenMap();
-  const history = useHistory();
+  const { marketArray, tokenMap } = store.getState().tokenMap;
+
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       sendSocketTopic({ [WsTopicType.account]: true });
@@ -293,100 +262,10 @@ export const useGetAssets = () => {
     getAssetsRawData();
   }, [getAssetsRawData]);
 
-  const total = assetsRawData
-    .map((o) => o.tokenValueDollar)
-    .reduce((a, b) => a + b, 0);
-  const onShowDeposit = useCallback(
-    (token?: any, partner?: boolean) => {
-      if (partner) {
-        showDeposit({ isShow: true, partner: true });
-      } else {
-        showDeposit({ isShow: true, symbol: token });
-      }
-    },
-    [showDeposit]
-  );
-
-  const onShowTransfer = useCallback(
-    (token?: any) => {
-      showTransfer({ isShow: true, symbol: token });
-    },
-    [showTransfer]
-  );
-
-  const onShowWithdraw = useCallback(
-    (token?: any) => {
-      showWithdraw({ isShow: true, symbol: token });
-    },
-    [showWithdraw]
-  );
-
-  const lpTokenJump = useCallback(
-    (token: string, type: LpTokenAction) => {
-      if (history) {
-        history.push(`/liquidity/pools/coinPair/${token}?type=${type}`);
-      }
-    },
-    [history]
-  );
-
-  const assetTitleProps: AssetTitleProps = {
-    btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
-    btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
-    btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
-    setHideL2Assets,
-    assetInfo: {
-      totalAsset: assetsRawData
-        .map((o) =>
-          currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan
-        )
-        .reduce((prev, next) => {
-          return prev + next;
-        }, 0),
-      priceTag: currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan,
-    },
-    accountId: account.accountId,
-    hideL2Assets,
-    onShowDeposit,
-    onShowTransfer,
-    onShowWithdraw,
-    showPartner: () => onShowDeposit(undefined, true),
-    legalEnable,
-    legalShow,
-  };
-  const assetTitleMobileExtendProps = {
-    onShowNFTDeposit: () => showNFTDeposit({ isShow: true }),
-    onShowNFTMINT: () => showNFTMint({ isShow: true }),
-    btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
-    btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
-  };
-  const isThemeDark = themeMode === "dark";
-  React.useEffect(() => {
-    getUserAssets();
-  }, []);
   return {
     assetsRawData,
-    total,
-    forex,
-    account,
-    currency,
-    hideL2Assets,
-    onShowTransfer,
-    onShowWithdraw,
-    onShowDeposit,
-    lpTokenJump,
-    assetTitleProps,
-    assetTitleMobileExtendProps,
     marketArray,
     userAssets,
     getUserAssets,
-    hideLpToken,
-    allowTrade,
-    setHideL2Assets,
-    isThemeDark,
-    setHideLpToken,
-    setHideSmallBalances,
-    themeMode,
-    hideSmallBalances,
   };
 };

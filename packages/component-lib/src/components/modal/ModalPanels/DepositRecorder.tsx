@@ -12,7 +12,6 @@ import {
   WaitingIcon,
   WarningIcon,
 } from "@loopring-web/common-resources";
-import { useTheme } from "@emotion/react";
 
 const BoxStyled = styled(Box)`
   background: var(--color-global-bg);
@@ -45,7 +44,6 @@ WithTranslation & {
   clear: () => void;
   // updateDepositHash: (depositHash: string, accountAddress: string, status?: 'success' | 'failed') => void
 }) => {
-  const theme = useTheme();
   const depositView = React.useMemo(() => {
     return (
       <>
@@ -107,7 +105,7 @@ WithTranslation & {
                       getFormattedHash(txInfo.hash)
                     )}
                     <LinkIcon
-                      style={{ marginLeft: `${theme.unit}px` }}
+                      style={{ marginLeft: "8px" }}
                       fontSize={"small"}
                     />
                   </Link>

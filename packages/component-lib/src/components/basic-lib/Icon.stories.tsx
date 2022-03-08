@@ -17,6 +17,7 @@ import {
   CopyIcon,
   DarkIcon,
   DepositIcon,
+  DepositIcon,
   DepthFIcon,
   DepthHIcon,
   DoneIcon,
@@ -191,7 +192,7 @@ export const IconList: Story<any> = withTranslation()(
 ) as Story<any>;
 
 //export const Button = Template.bind({});
-// @ts-ignore
+
 export default {
   title: "Resource/IconsList",
   component: IconList,

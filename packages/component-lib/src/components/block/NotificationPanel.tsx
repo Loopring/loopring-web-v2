@@ -53,10 +53,6 @@ export const NotificationPanel = ({
             marginX={1}
             marginBottom={1}
           >
-            {/*<Typography component={"h4"} variant={"h5"}>{*/}
-            {/*  t('labelActivityTitle')*/}
-            {/*}</Typography>*/}
-            {/*{notification.activities[0].title}*/}
             {notification.activities.length &&
               notification.activities.map((activity, index) => (
                 <ListItemActivity key={activity.id + index} {...activity} />

@@ -17,13 +17,13 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     allowTrade,
     ...rest
   }: DepositProps<T, I> & WithTranslation) => {
-    // const { theme } = useSettings();
     const {
       // toolBarItemBack,
       onChangeEvent,
       index,
       switchData,
     } = useBasicTrade({ ...rest, type, walletMap, coinMap });
+
     const getFilteredWalletMap = React.useCallback(() => {
       if (walletMap) {
         const clonedWalletMap = cloneDeep(walletMap);
@@ -53,8 +53,6 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
 
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show
-      _height: "auto",
-      _width: "auto",
       panelList: [
         {
           key: "trade",
@@ -67,8 +65,6 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                   type,
                   tradeData: switchData.tradeData,
                   onChangeEvent,
-                  // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-
                   disabled: !!rest.disabled,
                   onDepositClick,
                   depositBtnStatus,

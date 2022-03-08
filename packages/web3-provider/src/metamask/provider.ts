@@ -4,31 +4,26 @@ import { walletServices } from "../walletServices";
 import { IpcProvider } from "web3-core";
 import { ErrorType } from "../command";
 import { ConnectProviders } from "@loopring-web/common-resources";
-import { IsMobile } from "../utilities";
-// import { ethers } from "ethers";
 
 export const MetaMaskProvide = async (): Promise<
   { provider: IpcProvider; web3: Web3 } | undefined
 > => {
   try {
-    if (!window.ethereum?.isMetaMask && !IsMobile.any()) {
+    if (!window.ethereum?.isMetaMask) {
       throw new Error(
         `Global ethereum is not MetaMask, Please disable other Wallet Plugin`
       );
     }
-    let provider = await detectEthereumProvider({
-      mustBeMetaMask: !IsMobile.any(),
+    const provider: any = await detectEthereumProvider({
+      mustBeMetaMask: true,
     });
-
     const ethereum: any = window.ethereum;
 
-    if (provider && ethereum) {
+    if (provider && ethereum && ethereum.isMetaMask) {
+      // const metamaskProvider:IpcProvider = ethereum.find((provider:IpcProvider & {isMetaMask:boolean}) => provider.isMetaMask);
       const web3 = new Web3(provider as any);
       await ethereum.request({ method: "eth_requestAccounts" });
       walletServices.sendConnect(web3, provider);
-      //TODO debugger
-      console.log("provider new web3 success");
-      // @ts-ignore
       return { provider, web3 };
     } else {
       return undefined;

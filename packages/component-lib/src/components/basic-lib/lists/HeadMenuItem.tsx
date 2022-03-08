@@ -42,7 +42,6 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
     width: var(--header-submenu-item-weight);
     align-items: flex-start;
   }
-  
 
   &.layer-0 {
     display: flex;
@@ -89,7 +88,7 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
     //  color: inherit;
     //}
   }
-  
+
   //svg {
   //  width: var(--header-menu-icon-size);
   //  height: var(--header-menu-icon-size);
@@ -97,9 +96,6 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
 
   &&.layer-next {
     display: flex;
-  }
-  .mobile &{
-      align-items: flex-start;
   }
 
 }
@@ -148,6 +144,7 @@ const StyledTabBtn = styled(MenuItem)<MenuItemProps<any>>`
     text-transform: capitalize;
     display: flex;
     height: 100%;
+    padding-left: ${({ theme }) => (theme.unit * 3) / 2}px;
     padding-right: 0;
 
     svg {
@@ -271,7 +268,6 @@ export const HeaderMenuSub = React.memo(
         status,
         renderList,
         layer = 0,
-        anchorOrigin = { vertical: "bottom", horizontal: "left" },
       }: HeadMenuType<I> & WithTranslation,
       ref: ForwardedRef<any>
     ) => {
@@ -320,29 +316,19 @@ export const HeaderMenuSub = React.memo(
                   color={"inherit"}
                   style={{ display: "inline-flex", alignItems: "center" }}
                 >
-                  <DropDownIcon
-                    style={{
-                      transform:
-                        anchorOrigin.vertical === "right"
-                          ? "rotate(-90deg)"
-                          : "",
-                    }}
-                    fontSize={"medium"}
-                  />
+                  <DropDownIcon fontSize={"medium"} />
                 </ListItemAvatar>
               </StyledTabBtn>
               <StyledHeaderMenuSub
                 key={`menu-${layer}-${label.id}`}
                 {...bindMenu(popupState)}
                 // getContentAnchorEl={null}
-                anchorOrigin={anchorOrigin}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
                 className={`MuiPaper-elevation2 menu-${layer}-${label.id}`}
               >
                 {renderList &&
-                  renderList({
-                    handleListKeyDown: popupState.close,
-                  })}
+                  renderList({ handleListKeyDown: popupState.close })}
               </StyledHeaderMenuSub>
             </>
           )}

@@ -5,7 +5,7 @@
   "op": 42,
   "w": 500,
   "h": 500,
-  "nm": "298-coins-outlined",
+  "nm": "298-coins-outline",
   "ddd": 0,
   "assets": [
     {
@@ -492,7 +492,7 @@
                       1
                     ],
                     "ix": 3,
-                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Primary')('Color');"
+                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outline').layer('Color  & Stroke Change').effect('Primary')('Color');"
                   },
                   "o": {
                     "a": 0,
@@ -503,7 +503,7 @@
                     "a": 0,
                     "k": 1.5,
                     "ix": 5,
-                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
+                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outline').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
                   },
                   "lc": 1,
                   "lj": 1,
@@ -865,7 +865,7 @@
                       1
                     ],
                     "ix": 3,
-                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Primary')('Color');"
+                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outline').layer('Color  & Stroke Change').effect('Primary')('Color');"
                   },
                   "o": {
                     "a": 0,
@@ -876,7 +876,7 @@
                     "a": 0,
                     "k": 1.5,
                     "ix": 5,
-                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
+                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outline').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
                   },
                   "lc": 1,
                   "lj": 1,
@@ -1386,7 +1386,7 @@
                       1
                     ],
                     "ix": 3,
-                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Primary')('Color');"
+                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outline').layer('Color  & Stroke Change').effect('Primary')('Color');"
                   },
                   "o": {
                     "a": 0,
@@ -1397,7 +1397,7 @@
                     "a": 0,
                     "k": 1.5,
                     "ix": 5,
-                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
+                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outline').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
                   },
                   "lc": 1,
                   "lj": 1,
@@ -1907,7 +1907,7 @@
                       1
                     ],
                     "ix": 3,
-                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Primary')('Color');"
+                    "x": "var $bm_rt;\n$bm_rt = comp('298-coins-outline').layer('Color  & Stroke Change').effect('Primary')('Color');"
                   },
                   "o": {
                     "a": 0,
@@ -1918,7 +1918,7 @@
                     "a": 0,
                     "k": 1.5,
                     "ix": 5,
-                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outlined').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
+                    "x": "var $bm_rt;\n$bm_rt = $bm_mul(1.5 / 100, comp('298-coins-outline').layer('Color  & Stroke Change').effect('Stroke')('Slider'));"
                   },
                   "lc": 1,
                   "lj": 1,
@@ -2076,7 +2076,7 @@
       "ddd": 0,
       "ind": 2,
       "ty": 4,
-      "nm": "lordicon.com outlineds",
+      "nm": "lordicon.com Outlines",
       "cl": "com",
       "sr": 1,
       "ks": {

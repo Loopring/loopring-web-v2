@@ -90,7 +90,6 @@ export default {
   labelQRCode: "查看二维码",
   labelShowAccountInfo: "查看,设置账号信息",
   labelAssetTitle: "总资产(路印二层)",
-  labelAssetMobileTitle: "Layer 2 Total Assets",
   labelShowAccount: "显示或隐藏总资产",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "充值",
@@ -350,7 +349,6 @@ export default {
   labelOrderTableOpenOrder: "当前委托",
   labelOrderTableOrderHistory: "历史委托",
   labelResetLayout: "重置布局",
-  labelResetMobileLayout: "Reset",
   labelBtnFix: "重置",
   labelProSell: "卖",
   labelProBuy: "买",
@@ -453,18 +451,13 @@ export default {
     "Loopring only supports and maintains the MetaMask plugin for WalletConnect, if you've installed other Wallet plugins, please make sure it's through the MetaMask pop-up: <1></1>",
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
+  labelNoticeForNoMetaNFT:
+    "Your Mint NFT is without Metadata or media information, \nAre you still want {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
-  labelInvalidAddress: "Invalid address, ENS",
-  labelInvalidisCFAddress:
-    "Loopring counter Counter Factual wallet is disable {{way}} {{token}}",
-  labelInvalidisContract1XAddress:
-    "Loopring wallet 1.x is disable {{way}} {{token}}",
-  labelInvalidisContractAddress:
-    "{{token}} is not available {{way}} to Contract wallet",
-  labelInvalidisLoopringAddress:
-    "This address has not yet active Loopring L2, {{way}} is {{token}} disable!",
-  labelInvalidisSameAddress: "Cannot {{way}} to your own address",
+  labelInvalidCID: "Invalid CID",
+  labelWithdrawInvalidAddress:
+    "Invalid address, ENS, special token, or an Counter Factual wallet",
   labelTransferAddressNotLoopring:
     "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
@@ -476,6 +469,7 @@ export default {
   labelTransferTokenAmount: "Token Amount",
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
+  labelTransferSameAddress: "Cannot transfer to your own address",
   labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",

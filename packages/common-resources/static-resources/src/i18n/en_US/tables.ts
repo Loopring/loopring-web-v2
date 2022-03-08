@@ -36,7 +36,6 @@ export default {
   labelQuotaPair: "Pair",
   labelQuotaLastPrice: "Latest Price",
   labelQuota24hChange: "24h Change",
-  labelQuota24hChangeLit: "24h Chg  ",
   labelQuota24hHigh: "24h High",
   labelQuota24hLow: "24h Low",
   labelQuota24hAmount: "24h Amount",

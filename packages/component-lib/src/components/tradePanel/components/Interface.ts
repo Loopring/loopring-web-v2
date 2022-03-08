@@ -151,13 +151,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault: string;
   accAddr: string;
-  isNotAvaiableAddress:
-    | "isCFAddress"
-    | "isContract1XAddress"
-    | "isContractAddress"
-    | "isLoopringAddress"
-    | "isSameAddress"
-    | undefined;
+  isNotAvaiableAddress: boolean;
   realAddr?: string;
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;

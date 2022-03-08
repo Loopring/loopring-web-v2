@@ -1,13 +1,7 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box, Typography } from "@mui/material";
-import {
-  AssetTitleMobile,
-  Button,
-  SubMenu,
-  SubMenuList,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { Button, SubMenu, SubMenuList } from "@loopring-web/component-lib";
 import { useTranslation, withTranslation } from "react-i18next";
 import {
   AccountStatus,
@@ -39,7 +33,6 @@ import { RedPockPanel } from "./RedPockPanel";
 import { MyNFTPanel } from "./MyNFTPanel";
 import { useModals } from "hooks/useractions/useModals";
 import { accountServices } from "services/account/accountServices";
-import { useGetAssets } from "./AssetPanel/hook";
 
 export const subMenu = subMenuLayer2;
 
@@ -47,7 +40,6 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
   ({ t }: any) => {
     const { status: accountStatus, account } = useAccount();
     const { showDeposit } = useModals();
-
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
 
@@ -104,9 +96,9 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
 export const Layer2Page = () => {
   let match: any = useRouteMatch("/layer2/:item");
   const { account } = useAccount();
+
   const { t } = useTranslation(["common", "layout"]);
   const selected = match?.params.item ?? "assets";
-  const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
   const layer2Router = React.useMemo(() => {
     switch (selected) {
       case "assets":
@@ -131,7 +123,7 @@ export const Layer2Page = () => {
         <AssetPanel />;
     }
   }, [selected]);
-  const { isMobile } = useSettings();
+
   const viewTemplate = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
@@ -143,11 +135,7 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography
-              marginY={3}
-              variant={isMobile ? "h4" : "h1"}
-              textAlign={"center"}
-            >
+            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
               {t("describeTitleConnectToWallet")}
             </Typography>
             <BtnConnect />
@@ -163,11 +151,7 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography
-              marginY={3}
-              variant={isMobile ? "h4" : "h1"}
-              textAlign={"center"}
-            >
+            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
               {t("describeTitleLocked")}
             </Typography>
             <BtnConnect />
@@ -185,7 +169,7 @@ export const Layer2Page = () => {
           >
             <Typography
               marginY={3}
-              variant={isMobile ? "h4" : "h1"}
+              variant={"h1"}
               whiteSpace={"pre-line"}
               textAlign={"center"}
             >
@@ -204,11 +188,7 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography
-              marginY={3}
-              variant={isMobile ? "h4" : "h1"}
-              textAlign={"center"}
-            >
+            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
               {t("describeTitleNotActive")}
             </Typography>
             <BtnConnect />
@@ -231,11 +211,7 @@ export const Layer2Page = () => {
               src={`${SoursURL}images/loading-line.gif`}
             />
             {/*<LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />*/}
-            <Typography
-              marginY={3}
-              variant={isMobile ? "h4" : "h1"}
-              textAlign={"center"}
-            >
+            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
               {t("describeTitleOpenAccounting")}
             </Typography>
             {/*<BtnConnect/>*/}
@@ -251,11 +227,7 @@ export const Layer2Page = () => {
             flexDirection={"column"}
             alignItems={"center"}
           >
-            <Typography
-              marginY={3}
-              variant={isMobile ? "h4" : "h1"}
-              textAlign={"center"}
-            >
+            <Typography marginY={3} variant={"h1"} textAlign={"center"}>
               {t("describeTitleOnErrorNetwork", {
                 connectName: account.connectName,
               })}
@@ -268,34 +240,26 @@ export const Layer2Page = () => {
       case AccountStatus.ACTIVATED:
         return (
           <>
-            {!isMobile && (
-              <Box
-                width={"200px"}
-                display={"flex"}
-                justifyContent={"stretch"}
-                marginRight={3}
-                marginBottom={2}
-                className={"MuiPaper-elevation2"}
-              >
-                <SubMenu>
-                  <SubMenuList selected={selected} subMenu={subMenu as any} />
-                </SubMenu>
-              </Box>
-            )}
-
             <Box
-              // minHeight={420}
+              width={"200px"}
+              display={"flex"}
+              justifyContent={"stretch"}
+              marginRight={3}
+              marginBottom={2}
+              className={"MuiPaper-elevation2"}
+            >
+              <SubMenu>
+                <SubMenuList selected={selected} subMenu={subMenu as any} />
+              </SubMenu>
+            </Box>
+            <Box
+              minHeight={420}
               display={"flex"}
               alignItems={"stretch"}
               flexDirection={"column"}
               marginTop={0}
               flex={1}
             >
-              {isMobile && (
-                <AssetTitleMobile
-                  {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
-                />
-              )}
               {layer2Router}
             </Box>
           </>
@@ -303,7 +267,7 @@ export const Layer2Page = () => {
       default:
         break;
     }
-  }, [t, account.readyState, selected, isMobile]);
+  }, [t, account.readyState, selected]);
 
   return <>{viewTemplate}</>;
 };

@@ -14,14 +14,12 @@ import { useAccount } from "stores/account";
 import store from "stores";
 import { TOAST_TIME } from "defs/common_defs";
 import { useToast } from "hooks/common/useToast";
-import { useTokenMap } from "../../../stores/token";
 
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState("transactions");
     const { toastOpen, setToastOpen, closeToast } = useToast();
-    const { totalCoinMap } = useTokenMap();
 
     const {
       txs: txTableData,
@@ -40,7 +38,7 @@ const HistoryPanel = withTranslation("common")(
       showLoading: ammLoading,
       getAmmpoolList,
     } = useGetAmmRecord(setToastOpen);
-    const { tokenMap, marketArray } = store.getState().tokenMap;
+    const { tokenMap, marketMap } = store.getState().tokenMap;
     const {
       account: { accAddress },
     } = useAccount();
@@ -106,9 +104,12 @@ const HistoryPanel = withTranslation("common")(
             <Tab
               label={t("labelLayer2HistoryTransactions")}
               value="transactions"
-            />
-            <Tab label={t("labelLayer2HistoryTrades")} value="trades" />
-            <Tab label={t("labelLayer2HistoryAmmRecords")} value="ammRecords" />
+            ></Tab>
+            <Tab label={t("labelLayer2HistoryTrades")} value="trades"></Tab>
+            <Tab
+              label={t("labelLayer2HistoryAmmRecords")}
+              value="ammRecords"
+            ></Tab>
           </Tabs>
         </Box>
         <div className="tableWrapper table-divide-short">
@@ -121,9 +122,6 @@ const HistoryPanel = withTranslation("common")(
                   pageSize: pageSize,
                   total: txsTotal,
                 },
-                filterTokens: totalCoinMap
-                  ? (Reflect.ownKeys(totalCoinMap) as string[])
-                  : [],
                 showFilter: true,
                 showloading: showTxsLoading,
                 getTxnList: getUserTxnList,
@@ -137,11 +135,10 @@ const HistoryPanel = withTranslation("common")(
               {...{
                 rawData: userTrades,
                 showFilter: true,
-                filterPairs: marketArray,
                 showloading: showTradeLoading,
                 tokenMap: tokenMap,
                 isL2Trade: true,
-                // marketMap: marketMap,
+                marketMap: marketMap,
                 pagination: {
                   pageSize: pageSize,
                   total: userTradesTotal,

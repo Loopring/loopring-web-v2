@@ -14,9 +14,7 @@ import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  myLog,
   SagaStatus,
-  setMyLog,
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
@@ -29,6 +27,7 @@ import { ReportPage } from "pages/ReportPage";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
+import { useAccountModal } from "../hooks/useractions/useAccountModal";
 
 const ContentWrap = ({
   children,
@@ -85,10 +84,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
       window.location.replace(`${window.location.origin}/error`);
     }
   }, [state]);
-  if (query.has("___OhTrustDebugger___")) {
-    // @ts-ignore
-    setMyLog(true);
-  }
   return (
     <>
       <Switch>
