@@ -466,7 +466,7 @@ export default {
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
   labelNoticeForNoMetaNFT:
-    "Your Mint NFT is without Metadata or media information, \nAre you still want {{ method }} this NFT?",
+    "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
   labelInvalidCID: "Invalid CID",
@@ -547,7 +547,7 @@ export default {
     "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder populates the Name\n and also the image displays.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
-  labelMintInProgress: "In Progress",
+  labelMintInProgress: "Processing...",
   labelNFTMintInputTitle: "Mint Amount",
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",

@@ -531,7 +531,7 @@ export default {
     "Mint your own Counter Factual NFT on the Loopring L2 Web DEX!",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
-  labelMintInProgress: "In Progress",
+  labelMintInProgress: "Processing...",
   labelNFTMintInputTitle: "Mint Amount",
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",

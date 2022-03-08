@@ -285,8 +285,6 @@ export const useMyNFT = () => {
     isShowNFTDeposit,
     isShowNFTMint,
     nftDepositProps,
-    // onNFTDepositClose,
-    // onNFTMintClose,
     nftMintProps,
     popNFTDeposit,
     popNFTMint,
