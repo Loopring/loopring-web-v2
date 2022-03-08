@@ -47,7 +47,7 @@ export async function unlockAccount() {
         msg,
         account.owner,
         "",
-        async function (err: any, result: any) {
+        function (err: any, result: any) {
           if (!err) {
             console.log(
               "ecRecover valid before",
