@@ -465,6 +465,8 @@ export default {
     "Loopring only supports and maintains the MetaMask plugin for WalletConnect, if you've installed other Wallet plugins, please make sure it's through the MetaMask pop-up: <1></1>",
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
+  labelYes: "Yes",
+  labelNo: "No",
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
@@ -526,7 +528,7 @@ export default {
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "Amount:",
   labelNFTContractAddress: "Token Contract:",
-  labelNFTTId: "NFT Token ID",
+  labelNFTTId: "NFT Token ID:",
   labelNFTCid: "IPFS CID <1></1>: (Store `metadata Information`)",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",

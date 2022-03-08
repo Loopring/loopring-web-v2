@@ -453,6 +453,8 @@ export default {
     "Loopring only supports and maintains the MetaMask plugin for WalletConnect, if you've installed other Wallet plugins, please make sure it's through the MetaMask pop-up: <1></1>",
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
+  labelYes: "Yes",
+  labelNo: "No",
   labelNoticeForNoMetaNFT:
     "Your Mint NFT is without Metadata or media information, \nAre you still want {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",

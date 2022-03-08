@@ -34,6 +34,7 @@ import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
+import { useSettings } from "../../../stores";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -80,6 +81,11 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   onNFTMintClick,
 }: NFTMintViewProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);
+  const { isMobile } = useSettings();
+  const styles = isMobile
+    ? { flex: 1, width: "var(--swap-box-width)" }
+    : { width: "var(--modal-width)" };
+
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftMint`,
@@ -107,6 +113,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   return (
     <GridStyle
       className={walletMap ? "" : "loading"}
+      style={styles}
       paddingBottom={3}
       container
       paddingLeft={5 / 2}

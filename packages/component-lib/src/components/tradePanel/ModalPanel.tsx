@@ -293,9 +293,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _height: "var(--modal-height)",
               ...swapProps,
             }}
-          >
-            {" "}
-          </SwapPanel>
+          ></SwapPanel>
         }
       />
       <MuiModal
@@ -305,7 +303,6 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
         aria-describedby="modal-modal-description"
       >
         <SwitchPanelStyled
-          width={"var(--modal-width)"}
           position={"relative"}
           style={{ alignItems: "stretch" }}
         >
@@ -333,7 +330,6 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
         aria-describedby="modal-modal-description"
       >
         <SwitchPanelStyled
-          width={"var(--modal-width)"}
           position={"relative"}
           style={{ alignItems: "stretch" }}
         >

@@ -389,7 +389,7 @@ export const InformationForNoMetaNFT = withTranslation("common", {
             size={"medium"}
             onClick={(e) => handleClose(e as any, false)}
           >
-            {t("labelDisAgreeConfirm")}
+            {t("labelNo")}
           </Button>
           <Button
             variant={"contained"}
@@ -399,7 +399,7 @@ export const InformationForNoMetaNFT = withTranslation("common", {
             }}
             color={"primary"}
           >
-            {t("labelIKnow")}
+            {t("labelYes")}
           </Button>
         </DialogActions>
       </DialogStyle>

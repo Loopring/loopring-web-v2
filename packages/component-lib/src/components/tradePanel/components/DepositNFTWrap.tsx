@@ -88,7 +88,9 @@ NFTDepositViewProps<T, I>) => {
   };
   myLog(getDisabled, "getDisabled");
   const { isMobile } = useSettings();
-  const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+  const styles = isMobile
+    ? { flex: 1, width: "var(--swap-box-width)" }
+    : { width: "var(--modal-width)" };
 
   // @ts-ignore
   return (

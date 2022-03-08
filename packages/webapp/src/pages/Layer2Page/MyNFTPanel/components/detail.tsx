@@ -1,7 +1,14 @@
-import { Box, Link, TextareaAutosize, Typography } from "@mui/material";
+import {
+  Box,
+  BoxProps,
+  Link,
+  TextareaAutosize,
+  Typography,
+} from "@mui/material";
 import {
   EmptyValueTag,
   getShortAddr,
+  IPFS_META_URL,
   LoadingIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
@@ -12,6 +19,7 @@ import {
   WithdrawPanel,
   DeployNFTWrap,
   InformationForNoMetaNFT,
+  useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -21,6 +29,8 @@ import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { useGetAssets } from "../../AssetPanel/hook";
 import { NFTMedia } from "./nftMedia";
+import { useTheme } from "@emotion/react";
+import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -38,7 +48,9 @@ const TextareaAutosizeStyled = styled(TextareaAutosize)`
   font-family: inherit;
   width: 100%;
 ` as typeof TextareaAutosize;
-const BoxStyle = styled(Box)`
+const BoxStyle = styled(Box)<
+  { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
+>`
   &.nft-detail {
     .react-swipeable-view-container {
       & > div {
@@ -53,7 +65,53 @@ const BoxStyle = styled(Box)`
       padding-right: 0;
     }
   }
-` as typeof Box;
+  ${({ isMobile, image }) => `
+     ${
+       isMobile &&
+       `
+      
+       position:relative; 
+       
+      
+       .MuiBox-root{
+        z-index:2
+       } 
+       &:before{
+         z-index:1;
+         position:absolute;
+         filter: blur(3px);
+         background:url(${
+           image
+             ? image.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+             : ""
+         }) no-repeat 50% 10px;
+          background-size: contain;
+         opacity: 0.15;
+         content:'';
+         height: 100vh;
+         width: 50%;
+         display:block;
+         height:100%;
+         width:100%;
+         
+       }
+       
+       
+     `
+     }
+  `}
+  .nft-trade {
+    ${({ isMobile }) =>
+      isMobile
+        ? `
+          .container {
+             width:320px;
+          }`
+        : ``}
+  }
+` as (
+  props: { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
+) => JSX.Element;
 export const NFTDetail = withTranslation("common")(
   ({
     popItem,
@@ -71,6 +129,8 @@ export const NFTDetail = withTranslation("common")(
     onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
   } & WithTranslation) => {
     const { assetsRawData } = useGetAssets();
+    const { isMobile } = useSettings();
+
     const [showDialog, setShowDialog] =
       React.useState<string | undefined>(undefined);
     const [viewPage, setViewPage] = React.useState<number>(0);
@@ -134,53 +194,78 @@ export const NFTDetail = withTranslation("common")(
             <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
               {t("labelNFTDetail")}
             </Typography>
-            <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
-              <Typography color={"var(--color-text-third)"} width={160}>
+            <Typography
+              display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              variant={"body1"}
+              marginTop={2}
+            >
+              <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTName")}
               </Typography>
               <Typography
-                color={"var(--color-text-third)"}
+                color={"var(--color-text-secondary)"}
                 title={popItem?.name}
               >
                 {popItem?.name ?? EmptyValueTag}
               </Typography>
             </Typography>
-            <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
-              <Typography color={"var(--color-text-third)"} width={160}>
+            <Typography
+              display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              variant={"body1"}
+              marginTop={2}
+            >
+              <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTTOTAL")}
               </Typography>
               <Typography
-                color={"var(--color-text-third)"}
+                color={"var(--color-text-secondary)"}
                 title={popItem?.name}
               >
                 {popItem?.total}
               </Typography>
             </Typography>
-            <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
-              <Typography color={"var(--color-text-third)"} width={160}>
+            <Typography
+              display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              variant={"body1"}
+              marginTop={2}
+            >
+              <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTID")}
               </Typography>
               <Typography
-                color={"var(--color-text-third)"}
-                maxWidth={300}
+                color={"var(--color-text-secondary)"}
                 title={popItem?.nftId}
+                width={"fit-content"}
               >
                 {popItem?.nftIdView ?? ""}
               </Typography>
             </Typography>
-            <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
-              <Typography color={"var(--color-text-third)"} width={160}>
+            <Typography
+              display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              variant={"body1"}
+              marginTop={2}
+            >
+              <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTTYPE")}
               </Typography>
               <Typography
-                color={"var(--color-text-third)"}
+                color={"var(--color-text-secondary)"}
                 title={popItem?.nftType}
               >
                 {popItem?.nftType}
               </Typography>
             </Typography>
-            <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
-              <Typography color={"var(--color-text-third)"} width={160}>
+            <Typography
+              display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              variant={"body1"}
+              marginTop={2}
+            >
+              <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTContractAddress")}
               </Typography>
               <Link
@@ -196,8 +281,13 @@ export const NFTDetail = withTranslation("common")(
                 {popItem.tokenAddress}
               </Link>
             </Typography>
-            <Typography display={"inline-flex"} variant={"body1"} marginTop={2}>
-              <Typography color={"var(--color-text-third)"} width={160}>
+            <Typography
+              display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              variant={"body1"}
+              marginTop={2}
+            >
+              <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTMinter")}
               </Typography>
 
@@ -215,11 +305,12 @@ export const NFTDetail = withTranslation("common")(
 
             <Typography
               display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
               variant={"body1"}
               marginTop={2}
               flex={1}
             >
-              <Typography color={"var(--color-text-third)"} width={160}>
+              <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTDescription")}
               </Typography>
               <Box flex={1}>
@@ -234,6 +325,7 @@ export const NFTDetail = withTranslation("common")(
 
             <Typography
               display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
               alignItems={"center"}
               variant={"body1"}
               marginTop={3}
@@ -314,26 +406,42 @@ export const NFTDetail = withTranslation("common")(
       isKnowNFTNoMeta,
       etherscanBaseUrl,
     ]);
+    const theme = useTheme();
+    const style = isMobile
+      ? {
+          width: 300,
+          height: 300,
+          margin: theme.unit,
+          marginTop: 0,
+          cursor: "pointer",
+        }
+      : {
+          margin: theme.unit,
+          marginTop: -4 * theme.unit,
+          width: 570,
+          height: 570,
+          cursor: "pointer",
+        };
     return (
       <>
-        <BoxNFT
-          display={"flex"}
-          width={570}
-          height={570}
-          margin={1}
-          marginTop={-4}
-          alignItems={"center"}
-          justifyContent={"center"}
-          style={{ cursor: "pointer" }}
-        >
-          <NFTMedia
-            // ref={popItem.tokenId}
-            item={popItem}
-            onNFTReload={onNFTReload}
-            onNFTError={onNFTError}
-          />
-        </BoxNFT>
+        {!isMobile && (
+          <BoxNFT
+            display={"flex"}
+            style={style}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <NFTMedia
+              // ref={popItem.tokenId}
+              item={popItem}
+              onNFTReload={onNFTReload}
+              onNFTError={onNFTError}
+            />
+          </BoxNFT>
+        )}
         <BoxStyle
+          isMobile={isMobile}
+          image={popItem.image}
           marginLeft={2}
           display={"flex"}
           flex={1}
@@ -353,30 +461,32 @@ export const NFTDetail = withTranslation("common")(
 
           {viewPage === 0 && detailView}
           {viewPage === 1 && (
-            <TransferPanel<any, any>
-              {...{
-                _width: 416,
-                type: "NFT",
-                _height: 540,
-                isThumb: false,
+            <Box flex={1} width={320} className={"nft-trade"}>
+              <TransferPanel<any, any>
+                {...{
+                  _width: isMobile ? 320 : 416,
+                  type: "NFT",
+                  _height: 540,
+                  isThumb: false,
 
-                ...{
-                  ...nftTransferProps,
-                  tradeData: {
-                    ...popItem,
-                    belong: popItem.nftData,
-                    balance: Number(popItem?.nftBalance),
+                  ...{
+                    ...nftTransferProps,
+                    tradeData: {
+                      ...popItem,
+                      belong: popItem.nftData,
+                      balance: Number(popItem?.nftBalance),
+                    },
                   },
-                },
-                assetsData: assetsRawData,
-              }}
-            />
+                  assetsData: assetsRawData,
+                }}
+              />
+            </Box>
           )}
 
           {viewPage === 2 && (
             <WithdrawPanel<any, any>
               {...{
-                _width: 400,
+                _width: isMobile ? 320 : 416,
                 type: "NFT",
                 _height: 540,
                 isThumb: false,
