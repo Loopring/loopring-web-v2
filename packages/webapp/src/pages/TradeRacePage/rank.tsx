@@ -5,6 +5,7 @@ import { getTokenNameFromTokenId, volumeToCount } from "../../hooks/help";
 import {
   AccountStatus,
   DropDownIcon,
+  getShortAddr,
   getValuePrecisionThousand,
   MarketType,
   myLog,
@@ -280,6 +281,13 @@ export const RankRaw = <R extends any>(props: {
             props.column.length == index + 1
               ? "rdg-cell-value textAlignRight"
               : "rdg-cell-value textAlignCenter",
+          formatter: ({ row, column }: any) => {
+            if (column.key.toLowerCase() === "address") {
+              return getShortAddr(row[column.key]);
+            } else {
+              return row[column.key];
+            }
+          },
         }))
       : [],
     generateRows: (rawData: R) => rawData,
