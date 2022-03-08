@@ -2,7 +2,11 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "api_wrapper";
 import store from "stores";
 import { accountServices } from "./accountServices";
-import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
+import {
+  ConnectProviders,
+  myLog,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 import { checkErrorInfo } from "hooks/useractions/utils";
 
 import * as sdk from "@loopring-web/loopring-sdk";
