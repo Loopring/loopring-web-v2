@@ -10,6 +10,7 @@ import {
   HelpIcon,
   IPFS_META_URL,
   LoadingIcon,
+  myLog,
   // MINT_LIMIT,
   TradeNFT,
 } from "@loopring-web/common-resources";
@@ -100,6 +101,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
       handleOnNFTDataChange({ ...tradeData, ..._tradeData });
     }
   };
+  myLog("mint tradeData", tradeData);
 
   // @ts-ignore
   return (

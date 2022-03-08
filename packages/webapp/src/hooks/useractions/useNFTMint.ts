@@ -82,17 +82,22 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       );
   }, [accountStatus]);
 
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      tokenAddress,
-      requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
-      updateData: (feeInfo, _chargeFeeList) => {
-        updateNFTMintData({
-          ...nftMintValue,
-          fee: feeInfo,
-        });
-      },
-    });
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    checkFeeIsEnough,
+    handleFeeChange,
+    feeInfo,
+  } = useChargeFees({
+    tokenAddress,
+    requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateNFTMintData({
+        ...nftMintValue,
+        fee: feeInfo,
+      });
+    },
+  });
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
@@ -143,7 +148,21 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   React.useEffect(() => {
     updateBtnStatus();
   }, [isFeeNotEnough, isAvaiableId, nftMintValue, feeInfo]);
-
+  const resetDefault = React.useCallback(() => {
+    checkFeeIsEnough();
+    resetNFTMintData();
+    updateNFTMintData({
+      ...nftMintValue,
+      tradeValue: 0,
+      nftIdView: "",
+      image: undefined,
+      name: "",
+      nftId: undefined,
+      tokenAddress,
+      description: "",
+      fee: feeInfo,
+    });
+  }, [checkFeeIsEnough, tokenAddress]);
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
@@ -203,6 +222,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                   step: AccountStep.NFTMint_Failed,
                   error: response as sdk.RESULT_INFO,
                 });
+                resetDefault();
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
               // Withdraw success
@@ -221,11 +241,11 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               }
               walletLayer2Service.sendUserUpdate();
 
-              resetNFTMintData();
+              resetDefault();
               // checkFeeIsEnough();
             }
           } else {
-            resetNFTMintData();
+            resetDefault();
           }
         }
       } catch (reason) {
@@ -255,7 +275,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         }
       }
     },
-    [account, checkHWAddr, chainId, setShowAccount, resetNFTMintData, updateHW]
+    [account, checkHWAddr, chainId, setShowAccount, resetDefault, updateHW]
   );
 
   const handleOnNFTDataChange = useCallback(
@@ -442,21 +462,39 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   //   });
   // }, [walletMap, updateNFTMintData, feeInfo]);
 
-  const nftMintProps: NFTMintProps<T, I> = {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    isNFTCheckLoading,
-    isAvaiableId,
-    handleOnNFTDataChange,
-    onNFTMintClick,
-    walletMap: walletMap as any,
-    coinMap: totalCoinMap as any,
-    tradeData: nftMintValue as T,
-    nftMintBtnStatus: btnStatus,
+  const nftMintProps: NFTMintProps<T, I> = React.useMemo(() => {
+    // const tradeData = store.getState()._router_modalData.nftMintValue;
+    myLog("nftMintValue", nftMintValue);
+    return {
+      chargeFeeTokenList,
+      isFeeNotEnough,
+      handleFeeChange,
+      feeInfo,
+      isNFTCheckLoading,
+      isAvaiableId,
+      handleOnNFTDataChange,
+      onNFTMintClick,
+      walletMap: walletMap as any,
+      coinMap: totalCoinMap as any,
+      tradeData: nftMintValue as T,
+      nftMintBtnStatus: btnStatus,
+      btnInfo,
+    };
+  }, [
     btnInfo,
-  };
+    btnStatus,
+    chargeFeeTokenList,
+    feeInfo,
+    handleFeeChange,
+    handleOnNFTDataChange,
+    isAvaiableId,
+    isFeeNotEnough,
+    isNFTCheckLoading,
+    nftMintValue,
+    onNFTMintClick,
+    totalCoinMap,
+    walletMap,
+  ]);
 
   return {
     nftMintProps,
