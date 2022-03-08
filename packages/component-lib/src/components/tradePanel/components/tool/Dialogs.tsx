@@ -386,20 +386,20 @@ export const InformationForNoMetaNFT = withTranslation("common", {
         <DialogActions>
           <Button
             variant={"outlined"}
+            color={"primary"}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+          >
+            {t("labelIKnow")}
+          </Button>
+          <Button
+            size={"small"}
+            variant={"contained"}
             size={"medium"}
             onClick={(e) => handleClose(e as any, false)}
           >
             {t("labelDisAgreeConfirm")}
-          </Button>
-          <Button
-            variant={"contained"}
-            size={"small"}
-            onClick={(e) => {
-              handleClose(e as any, true);
-            }}
-            color={"primary"}
-          >
-            {t("labelIKnow")}
           </Button>
         </DialogActions>
       </DialogStyle>

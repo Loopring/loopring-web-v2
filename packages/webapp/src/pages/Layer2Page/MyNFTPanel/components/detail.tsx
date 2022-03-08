@@ -247,7 +247,6 @@ export const NFTDetail = withTranslation("common")(
                       variant={"outlined"}
                       size={"medium"}
                       fullWidth
-                      disabled={true}
                       onClick={() => {
                         isKnowNFTNoMeta
                           ? handleChangeIndex(2)
