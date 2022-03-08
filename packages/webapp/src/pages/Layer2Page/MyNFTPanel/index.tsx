@@ -13,11 +13,12 @@ import {
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
+  DepositNFTWrap,
   EmptyDefault,
+  MintNFTWrap,
   ModalCloseButton,
   PanelContent,
   SwitchPanelStyled,
-  useSettings,
 } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
 import { NFTDetail } from "./components/detail";
@@ -57,15 +58,20 @@ const enum TabKey {
 export const MyNFTPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const theme = useTheme();
-    const { isMobile } = useSettings();
     const {
       popItem,
       onDetail,
       onDetailClose,
       isShow,
       nftList,
+      isShowNFTDeposit,
+      isShowNFTMint,
+      onNFTDepositClose,
+      onNFTMintClose,
       popNFTDeposit,
       popNFTMint,
+      nftDepositProps,
+      nftMintProps,
       etherscanBaseUrl,
       isLoading,
       page,
@@ -289,7 +295,7 @@ export const MyNFTPanel = withTranslation("common")(
             </Box>
             <Box
               display={"flex"}
-              flexDirection={isMobile ? "column" : "row"}
+              flexDirection={"row"}
               flex={1}
               justifyContent={"stretch"}
             >
@@ -298,6 +304,54 @@ export const MyNFTPanel = withTranslation("common")(
           </SwitchPanelStyled>
         </MuiModal>
 
+        <MuiModal
+          open={isShowNFTDeposit.isShow}
+          onClose={onNFTDepositClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <SwitchPanelStyled
+            width={"var(--modal-width)"}
+            position={"relative"}
+            style={{ alignItems: "stretch" }}
+          >
+            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+              <ModalCloseButton onClose={onNFTDepositClose} t={t} {...rest} />
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              flex={1}
+              justifyContent={"stretch"}
+            >
+              <DepositNFTWrap {...nftDepositProps} />
+            </Box>
+          </SwitchPanelStyled>
+        </MuiModal>
+        <MuiModal
+          open={isShowNFTMint.isShow}
+          onClose={onNFTMintClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <SwitchPanelStyled
+            width={"var(--modal-width)"}
+            position={"relative"}
+            style={{ alignItems: "stretch" }}
+          >
+            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+              <ModalCloseButton onClose={onNFTMintClose} t={t} {...rest} />
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              flex={1}
+              justifyContent={"stretch"}
+            >
+              <MintNFTWrap {...nftMintProps} />
+            </Box>
+          </SwitchPanelStyled>
+        </MuiModal>
         <StyledPaper
           flex={1}
           className={"MuiPaper-elevation2"}
@@ -326,27 +380,25 @@ export const MyNFTPanel = withTranslation("common")(
               />
               <Tab label={t("labelTransactions")} value={TabKey.TRANSACTION} />
             </Tabs>
-            {!isMobile && (
-              <Box display={"flex"}>
-                <Button
-                  variant={"contained"}
-                  size={"small"}
-                  style={{ marginLeft: 4 }}
-                  onClick={() => popNFTDeposit()}
-                >
-                  {t("labelNFTDeposit")}
-                </Button>
-                <Button
-                  disabled={false}
-                  variant={"outlined"}
-                  size={"medium"}
-                  style={{ marginLeft: `${theme.unit}px` }}
-                  onClick={() => popNFTMint()}
-                >
-                  {t("nftMintBtn")}
-                </Button>
-              </Box>
-            )}
+            <Box display={"flex"}>
+              <Button
+                variant={"contained"}
+                size={"small"}
+                style={{ marginLeft: 4 }}
+                onClick={() => popNFTDeposit()}
+              >
+                {t("labelNFTDeposit")}
+              </Button>
+              <Button
+                disabled={true}
+                variant={"outlined"}
+                size={"medium"}
+                style={{ marginLeft: `${theme.unit}px` }}
+                onClick={() => popNFTMint()}
+              >
+                {t("nftMintBtn")}
+              </Button>
+            </Box>
           </Box>
           <Box flex={1} display={"flex"} flexDirection={"column"}>
             {panelList[currentTab].element}

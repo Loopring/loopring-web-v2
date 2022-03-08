@@ -220,6 +220,7 @@ export const NFTDetail = withTranslation("common")(
                       variant={"outlined"}
                       size={"medium"}
                       fullWidth
+                      disabled={true}
                       onClick={() => handleChangeIndex(2)}
                     >
                       {t("labelNFTWithdraw")}
@@ -229,6 +230,7 @@ export const NFTDetail = withTranslation("common")(
                       variant={"outlined"}
                       size={"medium"}
                       fullWidth
+                      disabled={true}
                       onClick={() => handleChangeIndex(3)}
                     >
                       {t("labelNFTDeployContract")}
@@ -254,6 +256,7 @@ export const NFTDetail = withTranslation("common")(
                     size={"small"}
                     color={"primary"}
                     fullWidth
+                    disabled={true}
                     onClick={() => handleChangeIndex(1)}
                   >
                     {t("labelNFTTransfer")}

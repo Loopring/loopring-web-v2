@@ -299,7 +299,9 @@ export const TradeRacePage = withTranslation("common")(
               >
                 {t("labelTradeRaceRewards")}
               </Typography>
-              <TradeRacePanel rawData={eventData.rewards} />
+              {eventData.rewards && (
+                <TradeRacePanel rawData={eventData.rewards} />
+              )}
             </Box>
             <Box
               maxWidth={1200}

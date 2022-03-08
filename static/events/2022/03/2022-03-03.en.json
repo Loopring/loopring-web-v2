@@ -10,70 +10,21 @@
       "timeZone": "UTC",
       "middle": "to"
     },
-    "rewards": [
-      {
-        "project": "Loopring",
-        "pair": "LRC",
-        "reward": {
-          "count": "",
-          "token": "Loophead NFT"
-        }
-      },
-      {
-        "project": "Ethereum",
-        "pair": "ETH",
-        "reward": {
-          "count": "",
-          "token": "Loophead NFT"
-        }
-      },
-      {
-        "project": "Ethereum",
-        "pair": "USDC",
-        "reward": {
-          "count": "",
-          "token": "Loophead NFT"
-        }
-      },
-      {
-        "project": "Ethereum",
-        "pair": "USDT",
-        "reward": {
-          "count": "",
-          "token": "Loophead NFT"
-        }
-      },
-      {
-        "project": "Ethereum Name Service",
-        "pair": "ENS",
-        "reward": {
-          "count": "",
-          "token": "Loophead NFT"
-        }
-      },
-      {
-        "project": "Uniswap",
-        "pair": "UNI",
-        "reward": {
-          "count": "",
-          "token": "Loophead NFT"
-        }
-      }
-    ],
+   
     "api": {
       "url": "https://api.loopring.network/api/v3/user/gaveawayNft2/getAccount",
       "params": null,
       "column": [
         {
           "key": "accountId",
-          "label": "account Id"
+          "label": "Account ID"
         },
         {
           "key": "address",
           "label": "Address"
         },{
           "key": "absolute",
-          "label": "Total Value"
+          "label": "Net Deposits"
         }
       ]
     },
