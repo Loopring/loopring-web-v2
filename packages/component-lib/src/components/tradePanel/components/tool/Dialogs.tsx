@@ -387,6 +387,7 @@ export const InformationForNoMetaNFT = withTranslation("common", {
           <Button
             variant={"outlined"}
             color={"primary"}
+            size={"medium"}
             onClick={(e) => {
               handleClose(e as any, true);
             }}
@@ -396,7 +397,6 @@ export const InformationForNoMetaNFT = withTranslation("common", {
           <Button
             size={"small"}
             variant={"contained"}
-            size={"medium"}
             onClick={(e) => handleClose(e as any, false)}
           >
             {t("labelDisAgreeConfirm")}
