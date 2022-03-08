@@ -57,20 +57,13 @@ export const useMyNFT = () => {
     () => setShowNFTDeposit({ isShow: true }),
     []
   );
-  const onNFTDepositClose = React.useCallback(
-    () => setShowNFTDeposit({ isShow: false }),
-    []
-  );
+
   const onPageChange = (page: number) => {
     setPage(page);
     setIsLoading(true);
   };
   const popNFTMint = React.useCallback(
     () => setShowNFTMint({ isShow: true }),
-    []
-  );
-  const onNFTMintClose = React.useCallback(
-    () => setShowNFTMint({ isShow: false }),
     []
   );
 
@@ -292,8 +285,7 @@ export const useMyNFT = () => {
     isShowNFTDeposit,
     isShowNFTMint,
     nftDepositProps,
-    onNFTDepositClose,
-    onNFTMintClose,
+
     nftMintProps,
     popNFTDeposit,
     popNFTMint,

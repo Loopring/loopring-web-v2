@@ -378,8 +378,8 @@ export const InformationForNoMetaNFT = withTranslation("common", {
               i18nKey={"labelNoticeForNoMetaNFT"}
               tOptions={{ method: t("label" + method).toLowerCase() }}
             >
-              Your Mint NFT is without Metadata or media information, Are you
-              still want {{ method }} this NFT?.
+              Your Minted NFT does not contain Metadata or media information.
+              Are you sure you still wish to {{ method }} this NFT?
             </Trans>
           </DialogContentText>
         </DialogContent>

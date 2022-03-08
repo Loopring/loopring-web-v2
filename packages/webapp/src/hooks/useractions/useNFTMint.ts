@@ -14,6 +14,7 @@ import {
   WalletMap,
   EmptyValueTag,
   MINT_LIMIT,
+  SagaStatus,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTokenMap } from "stores/token";
@@ -39,7 +40,7 @@ import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
-  const { account } = useAccount();
+  const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const { nftMintValue, updateNFTMintData, resetNFTMintData } = useModalData();
   const {
@@ -58,7 +59,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMint } = useOpenModals();
   const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>);
-  const [tokenAddress] = React.useState(() => {
+  const [tokenAddress, setTokenAddress] = React.useState(() => {
     return (
       LoopringAPI.nftAPI?.computeNFTAddress({
         nftOwner: account.accAddress,
@@ -67,10 +68,23 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       }).tokenAddress || ""
     );
   });
+  React.useEffect(() => {
+    if (
+      account.readyState === "ACTIVATED" &&
+      accountStatus === SagaStatus.UNSET
+    )
+      setTokenAddress(
+        LoopringAPI.nftAPI?.computeNFTAddress({
+          nftOwner: account.accAddress,
+          nftFactory: sdk.NFTFactory[chainId],
+          nftBaseUri: "",
+        }).tokenAddress || ""
+      );
+  }, [accountStatus]);
 
   const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
     useChargeFees({
-      tokenAddress: tokenAddress,
+      tokenAddress,
       requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
       updateData: (feeInfo, _chargeFeeList) => {
         updateNFTMintData({

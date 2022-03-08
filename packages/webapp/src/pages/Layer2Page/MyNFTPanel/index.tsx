@@ -64,14 +64,8 @@ export const MyNFTPanel = withTranslation("common")(
       onDetailClose,
       isShow,
       nftList,
-      isShowNFTDeposit,
-      isShowNFTMint,
-      onNFTDepositClose,
-      onNFTMintClose,
       popNFTDeposit,
       popNFTMint,
-      nftDepositProps,
-      nftMintProps,
       etherscanBaseUrl,
       isLoading,
       page,
@@ -304,54 +298,6 @@ export const MyNFTPanel = withTranslation("common")(
           </SwitchPanelStyled>
         </MuiModal>
 
-        <MuiModal
-          open={isShowNFTDeposit.isShow}
-          onClose={onNFTDepositClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <SwitchPanelStyled
-            width={"var(--modal-width)"}
-            position={"relative"}
-            style={{ alignItems: "stretch" }}
-          >
-            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
-              <ModalCloseButton onClose={onNFTDepositClose} t={t} {...rest} />
-            </Box>
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              flex={1}
-              justifyContent={"stretch"}
-            >
-              <DepositNFTWrap {...nftDepositProps} />
-            </Box>
-          </SwitchPanelStyled>
-        </MuiModal>
-        <MuiModal
-          open={isShowNFTMint.isShow}
-          onClose={onNFTMintClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <SwitchPanelStyled
-            width={"var(--modal-width)"}
-            position={"relative"}
-            style={{ alignItems: "stretch" }}
-          >
-            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
-              <ModalCloseButton onClose={onNFTMintClose} t={t} {...rest} />
-            </Box>
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              flex={1}
-              justifyContent={"stretch"}
-            >
-              <MintNFTWrap {...nftMintProps} />
-            </Box>
-          </SwitchPanelStyled>
-        </MuiModal>
         <StyledPaper
           flex={1}
           className={"MuiPaper-elevation2"}
@@ -380,6 +326,7 @@ export const MyNFTPanel = withTranslation("common")(
               />
               <Tab label={t("labelTransactions")} value={TabKey.TRANSACTION} />
             </Tabs>
+
             <Box display={"flex"}>
               <Button
                 variant={"contained"}
@@ -390,7 +337,7 @@ export const MyNFTPanel = withTranslation("common")(
                 {t("labelNFTDeposit")}
               </Button>
               <Button
-                // disabled={true}
+                disabled={false}
                 variant={"outlined"}
                 size={"medium"}
                 style={{ marginLeft: `${theme.unit}px` }}
