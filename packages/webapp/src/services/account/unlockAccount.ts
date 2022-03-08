@@ -33,42 +33,6 @@ export async function unlockAccount() {
       });
       const nonce = account ? account.nonce : accoun_old.nonce;
 
-      //TODO: debugger
-      const msg =
-        account.keySeed && account.keySeed !== ""
-          ? account.keySeed
-          : sdk.GlobalAPI.KEY_MESSAGE.replace(
-              "${exchangeAddress}",
-              exchangeInfo.exchangeAddress
-            ).replace("${nonce}", (nonce - 1).toString());
-      console.log("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE, msg);
-
-      const result = await (connectProvides.usedWeb3 as Web3).eth.personal.sign(
-        msg,
-        account.owner,
-        "",
-        function (err: any, result: any) {
-          if (!err) {
-            console.log(
-              "ecRecover valid before",
-              msg,
-              result
-              // (connectProvides.usedWeb3 as Web3).eth.personal.ecRecover
-            );
-            return result;
-            // console.log("ecRecover valid", valid);
-            // if (valid.result) {
-            //   return { sig: result };
-            // }
-          }
-        }
-      );
-      const valid: any = await (
-        connectProvides.usedWeb3 as Web3
-      ).eth.personal.ecRecover(msg.toString(), result.toString());
-      console.log("ecRecover valid", valid);
-      //TODO: debugger
-
       console.log(
         "unlockAccount isMobile, connectName:",
         isMobile,
