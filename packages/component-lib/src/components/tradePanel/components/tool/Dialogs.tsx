@@ -344,7 +344,7 @@ export const InformationForCoinBase = withTranslation("common", {
             }}
             color={"primary"}
           >
-            {t("labelIKnow")}
+            {t("labelYes")}
           </Button>
         </DialogActions>
       </DialogStyle>
@@ -460,7 +460,7 @@ export const HebaoConfirmApprove = withTranslation("common", {
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {t("labelDisAgreeConfirm")}
+            {t("labelNo")}
           </Button>
           <Button
             variant={"contained"}
