@@ -29,19 +29,10 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
     isAddressCheckLoading,
     ...rest
   }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
-    // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
-    //     to: 'button',
-    //     tradeData: tradeData
-    // } as SwitchData<T>);
-    // const [index, setIndex] = React.useState(0);
-    const {
-      //toolbar UI
-      // toolBarItemBack,
-      //Data, panel and function
-      onChangeEvent,
-      index,
-      switchData,
-    } = useBasicTrade({ ...rest, type });
+    const { onChangeEvent, index, switchData } = useBasicTrade({
+      ...rest,
+      type,
+    });
 
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show

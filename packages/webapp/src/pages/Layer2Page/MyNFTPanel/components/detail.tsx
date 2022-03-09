@@ -64,14 +64,18 @@ const BoxStyle = styled(Box)<
       padding-left: 0;
       padding-right: 0;
     }
+    .nft-trade {
+      .container {
+        width: 320px;
+      }
+    }
   }
   ${({ isMobile, image }) => `
      ${
        isMobile &&
        `
-      
        position:relative; 
-       
+       margin-top: -10px;
       
        .MuiBox-root{
         z-index:2
@@ -100,15 +104,6 @@ const BoxStyle = styled(Box)<
      `
      }
   `}
-  .nft-trade {
-    ${({ isMobile }) =>
-      isMobile
-        ? `
-          .container {
-             width:320px;
-          }`
-        : ``}
-  }
 ` as (
   props: { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
 ) => JSX.Element;
@@ -461,12 +456,18 @@ export const NFTDetail = withTranslation("common")(
 
           {viewPage === 0 && detailView}
           {viewPage === 1 && (
-            <Box flex={1} width={320} className={"nft-trade"}>
+            <Box
+              flex={1}
+              width={320}
+              className={"nft-trade"}
+              paddingBottom={isMobile ? 3 : 0}
+              marginTop={isMobile ? -4 : 0}
+            >
               <TransferPanel<any, any>
                 {...{
-                  _width: isMobile ? 320 : 416,
+                  _width: 320,
                   type: "NFT",
-                  _height: 540,
+                  _height: isMobile ? "auto" : 540,
                   isThumb: false,
 
                   ...{
@@ -484,24 +485,31 @@ export const NFTDetail = withTranslation("common")(
           )}
 
           {viewPage === 2 && (
-            <WithdrawPanel<any, any>
-              {...{
-                _width: isMobile ? 320 : 416,
-                type: "NFT",
-                _height: 540,
-                isThumb: false,
-
-                ...{
-                  ...nftWithdrawProps,
-                  tradeData: {
-                    ...popItem,
-                    belong: popItem.nftData,
-                    balance: Number(popItem?.nftBalance),
+            <Box
+              flex={1}
+              width={320}
+              className={"nft-trade"}
+              paddingBottom={isMobile ? 2 : 0}
+              marginTop={isMobile ? -4 : 0}
+            >
+              <WithdrawPanel<any, any>
+                {...{
+                  _width: 320,
+                  type: "NFT",
+                  _height: isMobile ? "auto" : 540,
+                  isThumb: false,
+                  ...{
+                    ...nftWithdrawProps,
+                    tradeData: {
+                      ...popItem,
+                      belong: popItem.nftData,
+                      balance: Number(popItem?.nftBalance),
+                    },
                   },
-                },
-                assetsData: assetsRawData,
-              }}
-            />
+                  assetsData: assetsRawData,
+                }}
+              />{" "}
+            </Box>
           )}
           {viewPage === 3 && (
             <Box height={540} width={"100%"} paddingX={3} flex={1}>
