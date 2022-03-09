@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { getValuePrecisionThousand } from "../../utils";
+
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -603,4 +605,9 @@ export default {
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
   labelWalletSignType: "Request for {{type}}",
+  labelSpotTrading: "Spot Trading Volume (30d in ETH)",
+  labelTradeSpot: "Trade Spot",
+  labelBuyToken: "Buy {{token}}",
+  labelCurrentlyLevel: "Currently {{value}} {{token}}",
+  labelLRCBalance: "LRC Balance",
 };

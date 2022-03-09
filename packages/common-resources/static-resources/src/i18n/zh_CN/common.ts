@@ -572,4 +572,9 @@ export default {
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
   labelWalletSignType: "Request for <1></1>",
+  labelSpotTrading: "Spot Trading Volume (30d in ETH)",
+  labelTradeSpot: "Trade Spot",
+  labelBuyToken: "Buy {{token}}",
+  labelCurrentlyLevel: "Currently {{value}} {{token}}",
+  labelLRCBalance: "LRC Balance",
 };
