@@ -41,9 +41,6 @@ const BoxStyle = styled(Box)<BoxProps & { isMobile: boolean | undefined }>`
     }
   }
 
-  .depositWrap {
-    justify-content: space-around;
-  }
   .way-content > div:first-of-type {
     position: relative;
     font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -151,7 +148,7 @@ DepositGroupProps<T, I>) => {
       marginTop={-4}
       paddingBottom={3}
     >
-      <Box marginBottom={3}>
+      <Box marginBottom={3} marginTop={isMobile ? 0 : 3}>
         <Typography
           component={"h4"}
           variant={"h4"}
@@ -213,7 +210,7 @@ DepositGroupProps<T, I>) => {
         ) : (
           <Box
             minHeight={240}
-            width={`calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`}
+            width={`calc(var(--swap-box-width) + ${theme.unit * 5}px)`}
           >
             <ToolbarStyle className={"large"} variant={"regular"}>
               <DepositTitleGroup

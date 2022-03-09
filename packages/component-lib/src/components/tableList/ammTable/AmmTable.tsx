@@ -17,31 +17,6 @@ import { Row } from "../poolsTable/Interface";
 import { AmmSideTypes } from "./interface";
 import { Currency } from "@loopring-web/loopring-sdk";
 
-// interface Row {
-//     side: TradeTypes;
-//     amount: {
-//         from: {
-//             key: string;
-//             value: number;
-//         },
-//         to: {
-//             key: string;
-//             value: number
-//         }
-//     };
-//     price: number;
-//     fee: number;
-//     time: number;
-//     cellExpend?: {
-//         value: string
-//         children: []
-//         isExpanded: boolean
-//     };
-//     children?: Row[];
-//     isExpanded?: boolean;
-//     formatter?: any;
-// }
-
 export type RawDataAmmItem = {
   side: AmmSideTypes;
   amount: {
@@ -83,7 +58,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 300px auto auto auto !important`
+        ? `--template-columns: 300px auto auto auto !important;`
         : `--template-columns: 54% 46% !important;`}
 
     .rdg-row .rdg-cell:first-of-type {

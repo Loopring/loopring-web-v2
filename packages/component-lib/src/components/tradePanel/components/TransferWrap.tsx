@@ -34,6 +34,7 @@ import { NFTInput } from "./BasicANFTTrade";
 import { AddressError } from "./Interface";
 import { useTheme } from "@emotion/react";
 import { FeeToggle } from "./tool/FeeList";
+import { useSettings } from "../../../stores";
 
 const OriginBoxStyled = styled(Box)`
   background-color: var(--field-opacity);
@@ -107,6 +108,8 @@ export const TransferWrap = <
 }: TransferViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
   const inputBtnRef = React.useRef();
   const { mode: themeMode } = useTheme();
+  const { isMobile } = useSettings();
+
   const inputButtonDefaultProps = {
     label: t("transferLabelEnterToken"),
   };
@@ -209,6 +212,7 @@ export const TransferWrap = <
       alignItems={"stretch"}
       flex={1}
       height={"100%"}
+      minWidth={240}
       flexWrap={"nowrap"}
     >
       <Grid item>
@@ -580,7 +584,12 @@ export const TransferWrap = <
         </Grid>
       )}
 
-      <Grid item marginTop={ITEM_MARGIN} alignSelf={"stretch"}>
+      <Grid
+        item
+        marginTop={ITEM_MARGIN}
+        alignSelf={"stretch"}
+        paddingBottom={isMobile ? 0 : 5 / 2}
+      >
         <Button
           fullWidth
           variant={"contained"}

@@ -36,7 +36,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     }};
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 420px auto auto !important; `
+        ? `--template-columns: 280px 240px auto auto !important;`
         : `--template-columns: 90% 10% !important;`}
     .rdg-cell.action {
       display: flex;

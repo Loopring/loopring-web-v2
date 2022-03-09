@@ -25,11 +25,9 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
 
   .rdg {
     flex: 1;
-    @media only screen and (max-width: 768px) {
-      --template-columns: 52% 38% auto !important;
-    }
+
     ${({ isMobile, lan }) =>
-      isMobile
+      !isMobile
         ? `--template-columns: 200px 150px auto auto ${
             lan === "en_US" ? "285px" : "240px"
           } !important;`

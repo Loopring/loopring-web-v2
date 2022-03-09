@@ -92,8 +92,8 @@ const TableStyled = styled(Box)<
       !isMobile
         ? `--template-columns: ${
             tradeposition === "swap"
-              ? "300px 120px auto auto !important"
-              : "150px 300px auto 120px auto auto !important"
+              ? "300px 120px auto auto !important;"
+              : "100px 340px auto 120px auto auto !important;"
           }`
         : ` --template-columns: 40% 40% 20%  !important;`}
 
@@ -166,7 +166,12 @@ const getColumnModeAssets = (
             : EmptyValueTag;
 
           return (
-            <Box className="rdg-cell-value">
+            <Box
+              className="rdg-cell-value"
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+            >
               <Typography>
                 {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
               </Typography>

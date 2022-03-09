@@ -48,7 +48,7 @@ const rowHeight = 44;
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
-      isMobile
+      !isMobile
         ? `--template-columns: 200px auto 300px auto !important;`
         : `--template-columns: 30% auto 8% !important;`}
     height: calc(86px * 5 + var(--header-row-height));
