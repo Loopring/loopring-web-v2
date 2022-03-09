@@ -9,6 +9,7 @@ import { PoolsTable, InputSearch } from "@loopring-web/component-lib";
 import { useSettings } from "@loopring-web/component-lib";
 import { useSystem } from "stores/system";
 import store from "stores";
+import { useAmmActivityMap } from "../../../stores/Amm/AmmActivityMap";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -32,7 +33,6 @@ const StylePaper = styled(Box)`
 export const PoolsPanel = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
-    ...rest
   }: WithTranslation & {}) => {
     const container = React.useRef(null);
     const {
@@ -47,6 +47,7 @@ export const PoolsPanel = withTranslation("common")(
     const { forex } = useSystem();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
+    const { activityInProgressRules } = useAmmActivityMap();
 
     return (
       <>
@@ -81,6 +82,7 @@ export const PoolsPanel = withTranslation("common")(
                 showLoading: showLoading,
                 tableHeight: tableHeight,
                 sortMethod: sortMethod,
+                activityInProgressRules,
                 coinJson,
                 forex,
                 tokenPrices,

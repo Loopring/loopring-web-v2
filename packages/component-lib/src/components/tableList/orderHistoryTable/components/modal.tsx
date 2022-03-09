@@ -70,7 +70,7 @@ export const OrderDetailPanel = withTranslation("tables", { withRef: true })(
         >
           <Typography variant={"h6"} display={"flex"}>
             <Typography>
-              {t("labelOrderDetailTradingVolume")} :&nbsp;{" "}
+              {t("labelOrderDetailTradingVolume")} :&nbsp;
             </Typography>
             <Typography>
               {volume}&nbsp;{volumeToken}

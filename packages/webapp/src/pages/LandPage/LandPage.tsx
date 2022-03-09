@@ -163,16 +163,17 @@ const ImgWrapperStyled = styled(Box)`
 
 export const LandPage = withTranslation(["landPage", "common"])(
   ({ t }: any) => {
-    const [value, setValue] = React.useState<
-      | {
-          timestamp: string;
-          tradeVolume: string;
-          totalUserNum: string;
-          tradeNum: string;
-          layerTwoLockedVolume: string;
-        }
-      | undefined
-    >();
+    const [value, setValue] =
+      React.useState<
+        | {
+            timestamp: string;
+            tradeVolume: string;
+            totalUserNum: string;
+            tradeNum: string;
+            layerTwoLockedVolume: string;
+          }
+        | undefined
+      >();
     const history = useHistory();
 
     const result = React.useCallback(async () => {
@@ -342,7 +343,6 @@ export const LandPage = withTranslation(["landPage", "common"])(
                     {t("labelTradeTVL")}
                   </Typography>
                   <TradeInfoStyled component={"span"}>
-                    {" "}
                     $
                     {value &&
                       getValuePrecisionThousand(

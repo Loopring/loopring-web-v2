@@ -181,9 +181,9 @@ const AmmList = <I extends { [key: string]: any }>({
                 <Trans i18nKey="labelEmptyDefault">Content is Empty</Trans>
               );
             }}
-          />{" "}
+          />
         </Box>
-      )}{" "}
+      )}
     </>
   );
 };

@@ -111,7 +111,6 @@ const columnMode = (
       const { totalDollar, totalYuan } = row;
       return (
         <Typography component={"span"}>
-          {" "}
           {typeof totalDollar === "undefined"
             ? EmptyValueTag
             : currency === Currency.usd

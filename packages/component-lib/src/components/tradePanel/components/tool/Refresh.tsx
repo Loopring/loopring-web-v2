@@ -112,7 +112,7 @@ export const CountDownIcon = React.memo(
               {/*{refreshCount>0?refreshCount:''}*/}
             </Typography>
             <Box className={"circle"} />
-          </CountDownStyled>{" "}
+          </CountDownStyled>
         </Box>
       );
     }

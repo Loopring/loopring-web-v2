@@ -169,7 +169,6 @@ const columnMode = (
         >
           <Box {...bindHover(popState)}>
             <Typography component={"span"} style={{ cursor: "pointer" }}>
-              {" "}
               {typeof totalAmmValueDollar === "undefined"
                 ? EmptyValueTag
                 : currency === Currency.usd

@@ -28,12 +28,12 @@ export const InProgressBasic = ({
           <Trans i18nKey={"labelMetaMaskProcessDescribe"}>
             {/*Please adding MetaMask to your browser,*/}
             Please click approve button on MetaMask popup window. When MetaMask
-            dialog is dismiss, please manually click{" "}
+            dialog is dismiss, please manually click
             <img
               alt="MetaMask"
               style={{ verticalAlign: "text-bottom" }}
               src={SoursURL + "images/MetaMaskPlugIn.png"}
-            />{" "}
+            />
             on your browser toolbar.
           </Trans>
         );
@@ -128,7 +128,7 @@ export const CompletedBasic = ({
           size={"medium"}
           onClick={onClose}
         >
-          {t("labelClose")}{" "}
+          {t("labelClose")}
         </Button>
       </Box>
     </Box>
@@ -173,7 +173,7 @@ export const FailedBasic = ({
           size={"medium"}
           onClick={onRetry}
         >
-          {t("labelRetry")}{" "}
+          {t("labelRetry")}
         </Button>
       </Box>
     </Box>
@@ -219,7 +219,7 @@ export const WarningBasic = ({
           size={"medium"}
           onClick={callback}
         >
-          {t("labelRetry")}{" "}
+          {t("labelRetry")}
         </Button>
       </Box>
     </Box>

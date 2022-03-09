@@ -101,7 +101,7 @@ WithTranslation & {
                         {t("labelDepositRecord", {
                           symbol: txInfo.symbol,
                           value: txInfo.value,
-                        })}{" "}
+                        })}
                       </Typography>
                     ) : (
                       getFormattedHash(txInfo.hash)
@@ -140,7 +140,7 @@ WithTranslation & {
               {t("labelDepositHashEmpty")}
             </Typography>
           </Typography>
-        )}{" "}
+        )}
       </>
     );
   }, [chainInfos?.depositHashes[accAddress]]);

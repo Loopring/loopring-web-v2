@@ -38,7 +38,7 @@ import { FeeToggle } from "./tool/FeeList";
 const OriginBoxStyled = styled(Box)`
   background-color: var(--field-opacity);
   // width: 100%;
-  height: ${({ theme }: any) => theme.unit * 4}px;
+  height: 32px;
   border-radius: ${({ theme }: any) => theme.unit / 2}px;
   cursor: pointer;
   color: var(--color-text-primary);
@@ -116,9 +116,8 @@ export const TransferWrap = <
   );
 
   const [memo, setMemo] = React.useState("");
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "down"
-  );
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("down");
   const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] =
     React.useState<"up" | "down">("up");
   const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);

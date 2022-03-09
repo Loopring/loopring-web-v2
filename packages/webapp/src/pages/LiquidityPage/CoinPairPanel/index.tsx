@@ -368,7 +368,6 @@ export const CoinPairPanel = withTranslation("common")(
                   <Grid item paddingX={2} paddingY={3} xs={4} sm={3} lg={3}>
                     <Box>
                       <Typography variant={"h3"} component={"span"}>
-                        {" "}
                         {typeof coinPairInfo.amountDollar === "undefined"
                           ? EmptyValueTag
                           : currency === Currency.usd
@@ -406,7 +405,6 @@ export const CoinPairPanel = withTranslation("common")(
                   <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
                     <Box>
                       <Typography variant={"h3"} component={"span"}>
-                        {" "}
                         {coinPairInfo.APR
                           ? getValuePrecisionThousand(
                               coinPairInfo.APR,
@@ -665,7 +663,6 @@ export const CoinPairPanel = withTranslation("common")(
                   <Grid item xs={6}>
                     <Box>
                       <Typography variant={"h3"} component={"span"}>
-                        {" "}
                         {typeof coinPairInfo.amountDollar === "undefined"
                           ? EmptyValueTag
                           : currency === Currency.usd
@@ -703,7 +700,6 @@ export const CoinPairPanel = withTranslation("common")(
                   <Grid item xs={6}>
                     <Box>
                       <Typography variant={"h3"} component={"span"}>
-                        {" "}
                         {coinPairInfo.APR
                           ? getValuePrecisionThousand(
                               coinPairInfo.APR,

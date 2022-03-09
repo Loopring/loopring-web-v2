@@ -470,7 +470,7 @@ export const WalletInfo = withTranslation(["common", "layout"])(
           <UnLookView {...props} />
         ) : (
           <OtherView {...props} />
-        )}{" "}
+        )}
       </>
     );
   }

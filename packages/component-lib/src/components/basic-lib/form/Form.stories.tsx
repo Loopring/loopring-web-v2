@@ -224,7 +224,6 @@ const SimpleSelect = ({ t }: any) => {
   const [value, setValue] = React.useState("1");
   return (
     <>
-      {" "}
       <FormControl>
         <TextField
           id="outlined-select-currency"
@@ -236,7 +235,6 @@ const SimpleSelect = ({ t }: any) => {
           }}
           inputProps={{ IconComponent: DropDownIcon }}
         >
-          {" "}
           {datas.map(({ label, value }) => (
             <MenuItem key={value} value={value}>
               {t(label)}
@@ -330,7 +328,6 @@ const InputSelectWrap = (rest: any) => {
     <>
       <Grid item xs={6} md={4}>
         <Box height={500} width={338}>
-          {" "}
           <InputSelect
             {...{
               ...inputSelectProps,
@@ -338,12 +335,11 @@ const InputSelectWrap = (rest: any) => {
               handleListItemClick,
               ...rest,
             }}
-          />{" "}
+          />
         </Box>
       </Grid>
       <Grid item xs={6} md={4}>
         <Box height={500} width={338}>
-          {" "}
           <InputSelect
             {...{
               ...inputSelectProps,
@@ -352,19 +348,18 @@ const InputSelectWrap = (rest: any) => {
               handleListItemClick,
               ...rest,
             }}
-          />{" "}
+          />
         </Box>
       </Grid>
       <Grid item xs={6} md={4}>
         <Box height={500} width={338}>
-          {" "}
           <InputSelect
             {...{
               ...inputSelectProps,
               panelRender: PanelEmptyRender,
               ...rest,
             }}
-          />{" "}
+          />
         </Box>
       </Grid>
     </>
@@ -394,7 +389,7 @@ const MyDatePicker = (props: any) => {
           startText="Start"
           endText="End"
         />
-      </Grid>{" "}
+      </Grid>
     </>
   );
 };

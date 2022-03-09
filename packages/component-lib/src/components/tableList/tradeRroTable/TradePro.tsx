@@ -136,8 +136,7 @@ export const TradePro = withTranslation("tables")(
                   variant={"body2"}
                   lineHeight={`${MarketRowHeight}px`}
                 >
-                  {" "}
-                  {renderValue}{" "}
+                  {renderValue}
                 </Typography>
               </Box>
             );
@@ -160,8 +159,7 @@ export const TradePro = withTranslation("tables")(
                   variant={"body2"}
                   lineHeight={`${MarketRowHeight}px`}
                 >
-                  {" "}
-                  {volume ? volume : EmptyValueTag}{" "}
+                  {volume ? volume : EmptyValueTag}
                 </Typography>
               </Box>
             );
@@ -186,9 +184,8 @@ export const TradePro = withTranslation("tables")(
                       variant={"body2"}
                       lineHeight={`${MarketRowHeight}px`}
                     >
-                      {" "}
                       {time}
-                    </Typography>{" "}
+                    </Typography>
                   </Box>
                 );
               },

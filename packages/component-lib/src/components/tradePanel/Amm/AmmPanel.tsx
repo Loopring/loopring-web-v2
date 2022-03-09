@@ -25,6 +25,13 @@ import { boxLiner, toolBarPanel } from "../../styled";
 import { AmmPanelType, AmmProps } from "./Interface";
 import { useSettings } from "../../../stores";
 
+// ${
+//         typeof _height === "string"
+//           ? _height
+//           : typeof _height === "number"
+//           ? _height + "px"
+//           : `var(--swap-box-height)`
+//       };
 const WrapStyle = styled(Box)<
   BoxProps & {
     _height?: number | string;
@@ -33,8 +40,8 @@ const WrapStyle = styled(Box)<
   }
 >`
   ${({ _width, _height, isMobile }) =>
-    (isMobile
-      ? `width:100%;`
+    isMobile
+      ? `width:100%;height:auto;`
       : `       
       width: ${
         typeof _width === "string"
@@ -42,14 +49,8 @@ const WrapStyle = styled(Box)<
           : typeof _width === "number"
           ? _width + "px"
           : `var(--swap-box-width)`
-      };`) +
-    `height: ${
-      typeof _height === "string"
-        ? _height
-        : typeof _height === "number"
-        ? _height + "px"
-        : `var(--swap-box-height)`
-    };`}
+      };
+      height: auto;`}
   ${({ theme }) => boxLiner({ theme })}
   ${({ theme }) => toolBarPanel({ theme })}
   border-radius: ${({ theme }) => theme.unit}px;
@@ -323,24 +324,30 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
           </Box>
         </Toolbar>
 
-        <SwipeableViewsStyled
-          axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-          index={index}
-        >
-          {panelList.map((panel, index) => {
-            return (
-              <Grid
-                item
-                justifyContent={"space-evenly"}
-                alignItems={"stretch"}
-                height={"100%"}
-                key={index}
-              >
-                {panel.element}
-              </Grid>
-            );
-          })}
-        </SwipeableViewsStyled>
+        <Box flex={1} className={"trade-panel"}>
+          <SwipeableViewsStyled
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={index}
+            {...{
+              _height: "auto",
+              _width: "auto",
+            }}
+          >
+            {panelList.map((panel, index) => {
+              return (
+                <Grid
+                  item
+                  justifyContent={"space-evenly"}
+                  alignItems={"stretch"}
+                  height={"100%"}
+                  key={index}
+                >
+                  {panel.element}
+                </Grid>
+              );
+            })}
+          </SwipeableViewsStyled>
+        </Box>
       </WrapStyle>
     );
   }

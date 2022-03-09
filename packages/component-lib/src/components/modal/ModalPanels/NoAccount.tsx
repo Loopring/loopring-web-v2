@@ -81,7 +81,7 @@ export const NoAccount = withTranslation("common")(
                 goDeposit();
               }}
             >
-              {t("depositLabelBtn")}{" "}
+              {t("depositLabelBtn")}
             </Button>
           </Box>
         ) : (
@@ -107,7 +107,7 @@ export const NoAccount = withTranslation("common")(
                 }
               }}
             >
-              {t("labelDisconnect")}{" "}
+              {t("labelDisconnect")}
             </Button>
           </Box>
         )}

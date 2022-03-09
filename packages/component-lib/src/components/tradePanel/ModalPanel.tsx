@@ -195,9 +195,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               ...withdrawProps,
               assetsData,
             }}
-          >
-            {" "}
-          </WithdrawPanel>
+          ></WithdrawPanel>
         }
       />
       <Modal
@@ -226,9 +224,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               ...resetProps,
               assetsData,
             }}
-          >
-            {" "}
-          </ResetPanel>
+          ></ResetPanel>
         }
       />
       <Modal
@@ -244,9 +240,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
               ...activeAccountProps,
             }}
-          >
-            {" "}
-          </ActiveAccountPanel>
+          ></ActiveAccountPanel>
         }
       />
       <Modal
@@ -261,9 +255,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,
             }}
-          >
-            {" "}
-          </ExportAccountPanel>
+          ></ExportAccountPanel>
         }
       />
       <Modal
@@ -277,9 +269,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _height: "var(--modal-height)",
               ...ammProps,
             }}
-          >
-            {" "}
-          </AmmPanel>
+          ></AmmPanel>
         }
       />
       <Modal

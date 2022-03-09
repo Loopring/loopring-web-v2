@@ -181,7 +181,6 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                 alignSelf={"stretch"}
               >
                 <Grid item>
-                  {" "}
                   <Button
                     onClick={() => {
                       // exportAccInfo()

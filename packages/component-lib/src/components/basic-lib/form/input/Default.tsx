@@ -145,7 +145,6 @@ export const CoinIcon = <R extends MarketType | string | LPTokenType>({
     const coinIcon: any = coinJson[symbol];
     return (
       <>
-        {" "}
         {coinIcon ? (
           <AvatarCoinStyled
             imgx={coinIcon.x}

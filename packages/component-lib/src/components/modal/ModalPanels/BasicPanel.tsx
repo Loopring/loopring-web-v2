@@ -144,7 +144,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   alt="MetaMask"
                   style={{ verticalAlign: "text-bottom" }}
                   src={SoursURL + `images/${providerName}PlugIn.png`}
-                />{" "}
+                />
                 on your browser toolbar.
               </Trans>
             );
@@ -281,7 +281,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                 }
               }}
             >
-              {t(btnInfo?.btnTxt)}{" "}
+              {t(btnInfo?.btnTxt)}
             </Button>
           </Box>
         )}

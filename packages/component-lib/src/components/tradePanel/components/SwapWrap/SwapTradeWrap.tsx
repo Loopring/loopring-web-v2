@@ -306,7 +306,6 @@ export const SwapTradeWrap = <
         >
           {showVal ? (
             <>
-              {" "}
               {convertStr}
               <IconButtonStyled
                 size={"small"}
@@ -402,7 +401,6 @@ export const SwapTradeWrap = <
                 variant="body2"
                 color={"textSecondary"}
               >
-                {" "}
                 {t("swapPriceImpact")}
               </Typography>
               <Typography
@@ -410,8 +408,7 @@ export const SwapTradeWrap = <
                 color={priceImpactColor}
                 variant="body2"
               >
-                {" "}
-                {priceImpact}{" "}
+                {priceImpact}
               </Typography>
             </Grid>
             <Grid
@@ -426,11 +423,10 @@ export const SwapTradeWrap = <
                 variant="body2"
                 color={"textSecondary"}
               >
-                {" "}
                 {t("swapMinReceive")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {minimumReceived}{" "}
+                {minimumReceived}
               </Typography>
             </Grid>
             <Grid
@@ -445,8 +441,7 @@ export const SwapTradeWrap = <
                 variant="body2"
                 color={"textSecondary"}
               >
-                {" "}
-                {t("swapFee")}{" "}
+                {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
                 {fee}

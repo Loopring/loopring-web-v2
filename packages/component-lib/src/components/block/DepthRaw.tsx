@@ -149,7 +149,7 @@ export const DepthTitle = withTranslation("common")(
             variant={"body2"}
             component={"p"}
           >
-            {t("labelDepthPrice", { symbol: quoteSymbol })}{" "}
+            {t("labelDepthPrice", { symbol: quoteSymbol })}
           </Typography>
         </Grid>
         <Grid item xs={6} lg={4} alignSelf={"flex-end"}>
@@ -163,8 +163,7 @@ export const DepthTitle = withTranslation("common")(
             textAlign={"right"}
             component={"p"}
           >
-            {" "}
-            {t("labelDepthAmount", { symbol: baseSymbol })}{" "}
+            {t("labelDepthAmount", { symbol: baseSymbol })}
           </Typography>
         </Grid>
         {!isMobile && (
@@ -177,8 +176,7 @@ export const DepthTitle = withTranslation("common")(
               title={t("labelDepthTotal")}
               component={"p"}
             >
-              {" "}
-              {t("labelDepthTotal")}{" "}
+              {t("labelDepthTotal")}
             </Typography>
           </Grid>
         )}
