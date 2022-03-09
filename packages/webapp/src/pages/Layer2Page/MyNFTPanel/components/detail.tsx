@@ -90,7 +90,7 @@ const BoxStyle = styled(Box)<
              : ""
          }) no-repeat 50% 10px;
           background-size: contain;
-         opacity: 0.15;
+         opacity: 0.08;
          content:'';
          height: 100vh;
          width: 50%;
