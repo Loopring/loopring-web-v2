@@ -24,7 +24,7 @@
           "label": "Address"
         },{
           "key": "absolute",
-          "label": "Net Deposits"
+          "label": "Net Deposits(USD)"
         }
       ]
     },
