@@ -106,11 +106,12 @@ export const VipPanel = withTranslation(["common", "layout"])(
         return userVIPInfo.vipInfo.vipTag;
       }
       return "vip_0";
-    }, [userVIPInfo]);
+    }, [level]);
 
     const getNextVIPlevel = React.useCallback(() => {
-      if (getVIPLevel() === "super_vip" || getVIPLevel() === "vip_4") {
-        return getVIPLevel();
+      const level = getVIPLevel();
+      if (level === "super_vip" || level === "vip_4") {
+        return level;
       }
       let [_, number] = getVIPLevel()
         .toUpperCase()
@@ -184,8 +185,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
 
     const getImagePath = React.useMemo(() => {
       const path =
-        SoursURL +
-        `images/vips/${getVIPLevel().toUpperCase().replace("_", "")}`;
+        SoursURL + `images/vips/${level.toUpperCase().replace("_", "")}`;
       return (
         <img
           alt="VIP"
@@ -198,16 +198,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
           // srcSet={`${path}.webp 1x, ${path}.png 1x`}
         />
       );
-      // <>
-      //     <picture>
-      //     <source srcSet={path+'.webp'} type="image/webp"/>
-      //     <source srcSet={path+'.png'} />
-      //     <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
-      //          src={'https://static.loopring.io/assets/images/vips/VIP4.png'}/>
-      // </picture>
-      //
-      // </>
-    }, [getVIPLevel]);
+    }, [level]);
     const result = React.useCallback(async () => {
       if (LoopringAPI.exchangeAPI) {
         const {
@@ -345,9 +336,6 @@ export const VipPanel = withTranslation(["common", "layout"])(
                 >
                   {t("labelTradeFeeLevel")}
                 </Typography>
-
-                {/*{getImagePath}*/}
-                {/*<VipStyled component={'span'} variant={'body2'} > {'VIP 1'} </VipStyled>*/}
                 <Typography
                   variant={"body1"}
                   component={"span"}
