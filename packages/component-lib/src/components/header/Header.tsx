@@ -49,6 +49,7 @@ import { bindPopper } from "material-ui-popup-state/es";
 import { bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
 import { useTheme } from "@emotion/react";
 import _ from "lodash";
+import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
@@ -240,6 +241,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const history = useHistory();
       const theme = useTheme();
       const location = useLocation();
+      const { account } = useAccount();
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -356,7 +358,11 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                           />
                         );
                       } else {
-                        if (child) {
+                        if (
+                          child &&
+                          (account.readyState === "ACTIVATED" ||
+                            label.id !== "Layer2")
+                        ) {
                           return memoized({
                             ...props,
                             layer,
@@ -364,32 +370,31 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                             handleListKeyDown,
                             ...rest,
                           });
-                        } else {
-                          return (
-                            <HeadMenuItem
-                              selected={selectedFlag}
-                              {...{
-                                ...props,
-                                allowTrade,
-                                layer,
-                                children: (
-                                  <NodeMenuItem
-                                    {...{
-                                      ...props,
-                                      layer,
-                                      child,
-                                      handleListKeyDown,
-                                      ...rest,
-                                    }}
-                                  />
-                                ),
-                                style: { textDecoration: "none" },
-                                key: key.toString() + "-" + layer + l2Index,
-                              }}
-                              // onClick={handleListKeyDown ? handleListKeyDown : ""}
-                            />
-                          );
                         }
+                        return (
+                          <HeadMenuItem
+                            selected={selectedFlag}
+                            {...{
+                              ...props,
+                              allowTrade,
+                              layer,
+                              children: (
+                                <NodeMenuItem
+                                  {...{
+                                    ...props,
+                                    layer,
+                                    child,
+                                    handleListKeyDown,
+                                    ...rest,
+                                  }}
+                                />
+                              ),
+                              style: { textDecoration: "none" },
+                              key: key.toString() + "-" + layer + l2Index,
+                            }}
+                            // onClick={handleListKeyDown ? handleListKeyDown : ""}
+                          />
+                        );
                       }
                     }
                   )}
@@ -401,15 +406,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [selected, memoized, allowTrade]
+        [selected, memoized, allowTrade, account.readyState]
       );
-      // {
-      //    && (
-      //     <Box marginX={3}>
-      //       <Divider />
-      //     </Box>
-      //   );
-      // }
+
       const handleThemeClick = React.useCallback(() => {
         setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
       }, [themeMode, setTheme]);

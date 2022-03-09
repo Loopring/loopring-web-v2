@@ -464,7 +464,6 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
 
   const nftMintProps: NFTMintProps<T, I> = React.useMemo(() => {
     // const tradeData = store.getState()._router_modalData.nftMintValue;
-    myLog("nftMintValue", nftMintValue);
     return {
       chargeFeeTokenList,
       isFeeNotEnough,
