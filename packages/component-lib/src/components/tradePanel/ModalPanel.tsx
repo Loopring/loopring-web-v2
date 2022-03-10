@@ -1,17 +1,11 @@
 import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
-  AmmPanel,
-  AmmProps,
-  // DepositPanel,
   DepositGroup,
   ModalCloseButton,
   ModalPanelProps,
   ResetPanel,
   ExportAccountPanel,
   ResetProps,
-  SwapPanel,
-  SwapProps,
-  // SwitchPanelStyled,
   TransferPanel,
   TransferProps,
   useOpenModals,
@@ -116,8 +110,8 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   resetProps,
   nftMintProps,
   activeAccountProps,
-  ammProps,
-  swapProps,
+  // ammProps,
+  // swapProps,
   assetsData,
   ...rest
 }: {
@@ -132,8 +126,8 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   nftMintProps: NFTMintProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
-  ammProps: AmmProps<any, any, T, any>;
-  swapProps: SwapProps<T, I, any>;
+  // ammProps: AmmProps<any, any, T, any>;
+  // swapProps: SwapProps<T, I, any>;
   assetsData: any[];
   exportAccountProps: any;
   setExportAccountToastOpen: any;
@@ -141,8 +135,8 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   const { t } = useTranslation();
   const {
     modals,
-    setShowAmm,
-    setShowSwap,
+    // setShowAmm,
+    // setShowSwap,
     setShowTransfer,
     setShowDeposit,
     setShowWithdraw,
@@ -159,8 +153,6 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     isShowNFTDeposit,
     isShowResetAccount,
     isShowExportAccount,
-    isShowAmm,
-    isShowSwap,
     isShowActiveAccount,
     isShowNFTMint,
   } = modals;
@@ -195,7 +187,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               ...withdrawProps,
               assetsData,
             }}
-          ></WithdrawPanel>
+          />
         }
       />
       <Modal
@@ -224,7 +216,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               ...resetProps,
               assetsData,
             }}
-          ></ResetPanel>
+          />
         }
       />
       <Modal
@@ -240,7 +232,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
               ...activeAccountProps,
             }}
-          ></ActiveAccountPanel>
+          />
         }
       />
       <Modal
@@ -255,37 +247,37 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,
             }}
-          ></ExportAccountPanel>
+          />
         }
       />
-      <Modal
-        open={isShowAmm.isShow}
-        onClose={() => setShowAmm({ ...isShowAmm, isShow: false } as any)}
-        content={
-          <AmmPanel<any, any, any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: "var(--modal-height)",
-              ...ammProps,
-            }}
-          ></AmmPanel>
-        }
-      />
-      <Modal
-        open={isShowSwap.isShow}
-        onClose={() => setShowSwap({ ...isShowSwap, isShow: false } as any)}
-        content={
-          <SwapPanel<any, any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: "var(--modal-height)",
-              ...swapProps,
-            }}
-          ></SwapPanel>
-        }
-      />
+      {/*<Modal*/}
+      {/*  open={isShowAmm.isShow}*/}
+      {/*  onClose={() => setShowAmm({ ...isShowAmm, isShow: false } as any)}*/}
+      {/*  content={*/}
+      {/*    <AmmPanel<any, any, any, any>*/}
+      {/*      {...{*/}
+      {/*        ...rest,*/}
+      {/*        _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
+      {/*        _height: "var(--modal-height)",*/}
+      {/*        ...ammProps,*/}
+      {/*      }}*/}
+      {/*    ></AmmPanel>*/}
+      {/*  }*/}
+      {/*/>*/}
+      {/*<Modal*/}
+      {/*  open={isShowSwap.isShow}*/}
+      {/*  onClose={() => setShowSwap({ ...isShowSwap, isShow: false } as any)}*/}
+      {/*  content={*/}
+      {/*    <SwapPanel<any, any, any>*/}
+      {/*      {...{*/}
+      {/*        ...rest,*/}
+      {/*        _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
+      {/*        _height: "var(--modal-height)",*/}
+      {/*        ...swapProps,*/}
+      {/*      }}*/}
+      {/*    ></SwapPanel>*/}
+      {/*  }*/}
+      {/*/>*/}
       <MuiModal
         open={isShowNFTDeposit.isShow}
         onClose={() => setShowNFTDeposit({ isShow: false })}

@@ -38,9 +38,6 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
       isMobile
         ? `
         --template-columns: 38% 39% 23% !important;
-        .rdg-header-row .rdg-cell{
-          font-size: 12px;
-        }
         `
         : `--template-columns: 240px auto auto auto 200px !important;`}
     .rdg-cell.action {

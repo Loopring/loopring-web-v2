@@ -96,8 +96,12 @@ export const DataGridStyled = styled(DataGrid)`
       width: 100%;
       background-color: inherit;
       font-weight: normal;
+      @media only screen and (max-width: 768px) {
+        .rdg-cell {
+          font-size: 12px;
+        }
+      }
     }
-
     &.scrollable .rdg-header-row {
       background: var(--color-box);
     }
@@ -195,22 +199,6 @@ const LoadingStyled = styled(IconButton)`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
-
-// interface Action {
-//     type: 'toggleSubRow' | 'deleteSubRow' | 'refresh' | 'sort';
-//     id: string;
-//     uniqueKey: string;
-// }
-// function reducer<R extends { children: R[], [ key: string ]: any }, SR>(rows: R[], {type, id, uniqueKey}: Action): R[] {
-//     switch (type) {
-//         case 'toggleSubRow':
-//             return toggleSubRow(rows, id, uniqueKey);
-//         case 'deleteSubRow':
-//             return deleteSubRow(rows, id);
-//         default:
-//             return rows;
-//     }
-// }
 
 export const generateColumns = <Row, SR>({
   columnsRaw,

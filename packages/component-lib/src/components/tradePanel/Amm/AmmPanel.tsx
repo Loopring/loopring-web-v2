@@ -39,7 +39,7 @@ const WrapStyle = styled(Box)<
     isMobile: boolean;
   }
 >`
-  ${({ _width, _height, isMobile }) =>
+  ${({ _width, isMobile }) =>
     isMobile
       ? `width:100%;height:auto;`
       : `       

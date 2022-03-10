@@ -1,6 +1,6 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 export enum TransactionTradeTypes {
-  allTypes = "All Types",
+  allTypes = "all",
   deposit = "DEPOSIT",
   withdraw = "WITHDRAW",
   transfer = "TRANSFER",

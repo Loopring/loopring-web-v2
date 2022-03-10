@@ -2,16 +2,17 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { DatePicker, TextField } from "../../../basic-lib/form";
+import { DateRangePicker, TextField } from "../../../basic-lib/form";
 import { Button } from "../../../basic-lib/btns";
 import { DropDownIcon } from "@loopring-web/common-resources";
-import { RawDataAmmItem } from "../AmmTable";
+import { DateRange } from "@mui/lab";
+import { useSettings } from "../../../../stores";
 
 export interface FilterProps {
-  rawData: RawDataAmmItem[];
+  filterPairs: string[];
   filterType: string;
-  filterDate: Date | null;
   filterPair: string;
+  filterDate: DateRange<Date | null>;
   handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void;
   handleReset: () => void;
 }
@@ -30,23 +31,25 @@ const StyledTextFiled = styled(TextField)`
 export enum FilterTradeTypes {
   join = "Add",
   exit = "Remove",
-  allTypes = "All Types",
+  allTypes = "all",
 }
 
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
-    rawData,
+    filterPairs,
     filterType,
     filterDate,
     filterPair,
     handleReset,
     handleFilterChange,
   }: FilterProps & WithTranslation) => {
+    const { isMobile } = useSettings();
+
     const FilterTradeTypeList = [
       {
         label: t("labelAmmFilterTypes"),
-        value: "All Types",
+        value: "all",
       },
       {
         label: t("labelAmmJoin"),
@@ -58,23 +61,34 @@ export const Filter = withTranslation("tables", { withRef: true })(
       },
     ];
 
-    const rawPairList = rawData.map(
-      (item) => `${item.amount.from.key} - ${item.amount.to.key}`
-    );
+    const rawPairList = [].slice
+      .call(filterPairs)
+      .sort((a: string, b: string) => {
+        return a.localeCompare(b);
+      })
+      .map((pair: string) => ({
+        label: pair,
+        value: pair,
+      }));
     const formattedRawPairList = [
       {
         label: t("labelFilterAllPairs"),
         value: "all",
       },
-      ...Array.from(new Set(rawPairList)).map((pair: string) => ({
-        label: pair,
-        value: pair,
-      })),
+      ...rawPairList,
     ];
 
     return (
       <Grid container spacing={2} alignItems={"center"}>
-        <Grid item xs={6} lg={2}>
+        <Grid item xs={12} order={isMobile ? 0 : 1} lg={6}>
+          <DateRangePicker
+            value={filterDate}
+            onChange={(date: any) => {
+              handleFilterChange({ date: date });
+            }}
+          />
+        </Grid>
+        <Grid item xs={4} order={isMobile ? 1 : 0} lg={2}>
           <StyledTextFiled
             id="table-amm-filter-types"
             select
@@ -92,13 +106,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item xs={6} lg={2}>
-          <DatePicker
-            value={filterDate}
-            onChange={(newValue: any) => handleFilterChange({ date: newValue })}
-          />
-        </Grid>
-        <Grid item xs={6} lg={2}>
+        <Grid item xs={4} order={2} lg={2}>
           <StyledTextFiled
             id="table-trade-filter-pairs"
             select
@@ -116,7 +124,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item xs={6} lg={2}>
+        <Grid item xs={4} order={3} lg={2}>
           <Button
             fullWidth
             variant={"outlined"}

@@ -17,7 +17,7 @@ export interface FilterProps {
 }
 
 export enum FilterOrderTypes {
-  allTypes = "All Types",
+  allTypes = "all",
   buy = "Buy",
   sell = "Sell",
 }
@@ -45,7 +45,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
       return [
         {
           label: t("labelOrderFilterAllPairs"),
-          value: "All Pairs",
+          value: "all",
         },
         ...Array.from(new Set(marketArray)).map((token) => ({
           label: token,

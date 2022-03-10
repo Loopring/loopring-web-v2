@@ -156,7 +156,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     const [filterDate, setFilterDate] = React.useState<
       DateRange<Date | string>
     >(["", ""]);
-    const [filterToken, setFilterToken] = React.useState<string>("All Tokens");
+    const [filterToken, setFilterToken] = React.useState<string>("all");
     const [modalState, setModalState] = React.useState(false);
     const [txnDetailInfo, setTxnDetailInfo] = React.useState<TxnDetailProps>({
       hash: "",
@@ -180,13 +180,11 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         currFilterToken = filterToken,
         currPage = page,
       }) => {
-        let actualPage = currPage;
         if (TableType === "filter") {
-          actualPage = 1;
+          currPage = 1;
           setPage(1);
         }
-        const tokenSymbol =
-          currFilterToken === "All Tokens" ? "" : currFilterToken;
+        const tokenSymbol = currFilterToken === "all" ? "" : currFilterToken;
         const formattedType = currFilterType.toUpperCase();
         const types =
           currFilterType === TransactionTradeTypes.allTypes
@@ -200,7 +198,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         const end = Number(moment(currFilterDate[1]).format("x"));
         getTxnList({
           limit: pageSize,
-          offset: (actualPage - 1) * pageSize,
+          offset: (currPage - 1) * pageSize,
           types: types,
           tokenSymbol: tokenSymbol,
           start: Number.isNaN(start) ? -1 : start,
@@ -228,12 +226,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     const handleReset = React.useCallback(() => {
       setFilterType(TransactionTradeTypes.allTypes);
       setFilterDate([null, null]);
-      setFilterToken("All Tokens");
+      setFilterToken("all");
       updateData({
         TableType: TableType.filter,
         currFilterType: TransactionTradeTypes.allTypes,
         currFilterDate: [null, null],
-        currFilterToken: "All Tokens",
+        currFilterToken: "all",
       });
     }, [updateData]);
 

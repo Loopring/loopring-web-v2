@@ -136,7 +136,7 @@ const TableStyled = styled(Box)<
               ? "auto auto 250px auto auto auto auto"
               : "auto auto 230px auto 130px 130px 130px"
           } !important;`
-        : `--template-columns: 14% 56% 30% !important;`}
+        : `--template-columns: 14% 62% 24% !important;`}
 
     .rdg-cell:last-of-type {
       display: flex;
@@ -209,7 +209,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       null,
       null,
     ]);
-    const [filterToken, setFilterToken] = useState<string>("All Pairs");
+    const [filterToken, setFilterToken] = useState<string>("all");
     const [page, setPage] = useState(1);
     const [modalState, setModalState] = useState(false);
     const [currOrderId, setCurrOrderId] = useState("");
@@ -248,7 +248,7 @@ export const OrderHistoryTable = withTranslation("tables")(
           limit: pageSize,
           offset: (actualPage - 1) * pageSize,
           side: [types] as Side[],
-          market: currFilterToken === "All Pairs" ? "" : currFilterToken,
+          market: currFilterToken === "all" ? "" : currFilterToken,
           start: Number.isNaN(start) ? -1 : start,
           end: Number.isNaN(end) ? -1 : end,
           status: isOpen
@@ -299,12 +299,12 @@ export const OrderHistoryTable = withTranslation("tables")(
     const handleReset = useCallback(async () => {
       setFilterType(FilterOrderTypes.allTypes);
       setFilterDate([null, null]);
-      setFilterToken("All Pairs");
+      setFilterToken("all");
       await updateData({
         TableType: TableType.filter,
         currFilterType: FilterOrderTypes.allTypes,
         currFilterDate: [null, null],
-        currFilterToken: "All Pairs",
+        currFilterToken: "all",
       });
     }, [updateData]);
     const handleOrderClick = async (row: OrderHistoryRawDataItem) => {

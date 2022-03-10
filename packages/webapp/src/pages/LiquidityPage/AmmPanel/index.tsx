@@ -300,6 +300,7 @@ export const AmmPanelView = ({
           <AmmPanel
             {...{ ...rest }}
             accStatus={accountStatus}
+            getRecentAmmPoolTxs={getRecentAmmPoolTxs}
             onRefreshData={() => {
               updateAmmPoolSnapshot();
               if (getRecentAmmPoolTxs) {

@@ -370,7 +370,7 @@ const getColumnModeMobileAssets = (
       : []),
     {
       key: "side",
-      name: t("labelTradeSide") + t("labelTradeFee"),
+      name: t("labelTradeSide") + "/" + t("labelTradeFee"),
       headerCellClass: "textAlignRight",
       formatter: ({ row }) => {
         // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
@@ -481,14 +481,16 @@ export const TradeTable = withTranslation("tables")(
         backgroundColor: ({ colorBase }: any) => `${colorBase.box}`,
       },
     };
-    // useDeepCompareEffect(() => {
-    //     setTotalData(rawData);
-    // }, [rawData])
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const updateData = React.useCallback(
-      ({ TableType, currFilterPair = filterPair, currPage = page }) => {
+      ({
+        TableType,
+        currFilterPair = filterPair,
+        currPage = page,
+        currFilterType = filterType,
+      }) => {
         if (TableType === "filter") {
           setPage(1);
         }
@@ -499,6 +501,7 @@ export const TradeTable = withTranslation("tables")(
             market,
             offset: (currPage - 1) * pageSize,
             limit: pageSize,
+            fillTypes: currFilterType !== "all" ? currFilterType : "",
           });
         }
       },
