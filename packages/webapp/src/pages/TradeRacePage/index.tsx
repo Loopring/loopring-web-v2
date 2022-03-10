@@ -85,12 +85,6 @@ export const TradeRacePage = withTranslation("common")(
         </ScrollTop>
         {eventData ? (
           <LayoutStyled marginY={4}>
-            {/*<div className={"snow"}>*/}
-            {/*  {snows.map((item, index) => (*/}
-            {/*    <React.Fragment key={index}>{item}</React.Fragment>*/}
-            {/*  ))}*/}
-            {/*</div>*/}
-            {/*remove: holiday only end*/}
             <Typography
               marginY={1}
               component={"h1"}

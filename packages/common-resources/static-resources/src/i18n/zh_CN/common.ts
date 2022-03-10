@@ -521,6 +521,7 @@ export default {
   labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
   labelDeployFailed: "Deploy {{symbol}} Failed!",
   labelDeploySubmit: "Deploy {{symbol}} Submit",
+  labelMint: "Mint",
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",

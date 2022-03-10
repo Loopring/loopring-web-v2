@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import { getValuePrecisionThousand } from "../../utils";
-
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -539,6 +537,7 @@ export default {
   labelNFTTokenDeployWaitForAuth: "Allow Loopring to Deploy {{symbol}}",
   labelDeployFailed: "Deploy {{symbol}} Failed!",
   labelDeploySubmit: "Deploy {{symbol}} Submit",
+  labelMint: "Mint",
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",

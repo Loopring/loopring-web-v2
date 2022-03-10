@@ -352,7 +352,15 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   flexDirection={"column"}
                   width={"60px"}
                 >
-                  {sideIcon}
+                  <Typography
+                    fontSize={20}
+                    width={"60px"}
+                    justifyContent={"center"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    {sideIcon}
+                  </Typography>
                   <Typography fontSize={10} marginTop={-1}>
                     {side}
                   </Typography>

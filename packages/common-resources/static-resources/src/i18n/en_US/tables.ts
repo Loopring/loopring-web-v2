@@ -156,6 +156,7 @@ export default {
   labelNFTTypeTRANSFER: "Transfer",
   labelNFTTypeWITHDRAWAL: "Withdraw",
   labelNFTTypeWITHDRAW: "Withdraw",
+  labelMint: "Mint",
   labelNFTTypeMINT: "Mint",
   labelTxNFTFilterALL: "All Types",
   labelTxNFTFilterDEPOSIT: "Deposit",
