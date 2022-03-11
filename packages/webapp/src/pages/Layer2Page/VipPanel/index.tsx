@@ -520,27 +520,33 @@ export const VipPanel = withTranslation(["common", "layout"])(
             </Typography>
           </Grid>
         </StylePaper>
-
-        <StylePaper
-          container
-          className={"MuiPaper-elevation2"}
-          marginTop={1}
-          padding={4}
-          marginBottom={2}
-        >
-          <Grid item xs={12}>
-            <Typography
-              component={"h3"}
-              variant={isMobile ? "h5" : "h4"}
-              color={"text.secondary"}
-            >
-              Fee List
-            </Typography>
-            <Box marginTop={3} flex={1}>
-              <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
-            </Box>
-          </Grid>
-        </StylePaper>
+        {isMobile ? (
+          <Typography variant={"body1"} paddingY={2} textAlign={"center"}>
+            {" "}
+            For details, please view on desktop.
+          </Typography>
+        ) : (
+          <StylePaper
+            container
+            className={"MuiPaper-elevation2"}
+            marginTop={1}
+            padding={4}
+            marginBottom={2}
+          >
+            <Grid item xs={12}>
+              <Typography
+                component={"h3"}
+                variant={isMobile ? "h5" : "h4"}
+                color={"text.secondary"}
+              >
+                Fee List
+              </Typography>
+              <Box marginTop={3} flex={1}>
+                <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
+              </Box>
+            </Grid>
+          </StylePaper>
+        )}
       </>
     );
   }
