@@ -35,11 +35,10 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     border-radius: ${({ theme }) => theme.unit}px;
 
     ${({ isMobile }) =>
-      isMobile
-        ? `
-        --template-columns: 38% 39% 23% !important;
-        `
-        : `--template-columns: 240px auto auto auto 200px !important;`}
+      !isMobile
+        ? `--template-columns: 240px auto auto auto 200px !important;`
+        : ` --template-columns: 16% 62% 22% !important;
+`}
     .rdg-cell.action {
       display: flex;
       justify-content: flex-end;
@@ -161,36 +160,39 @@ export const IconColumn = React.memo(
             )}
           </Box>
         </Box>
-        <Typography
-          variant={isMobile ? "body2" : "inherit"}
-          display={"flex"}
-          flexDirection={"column"}
-          marginLeft={isMobile ? -1 : 1}
-          component={"div"}
-          paddingRight={isMobile ? 0 : 1}
-          textOverflow={"ellipsis"}
-        >
+
+        {!isMobile && (
           <Typography
-            variant="inherit"
-            component={"span"}
-            color={"textPrimary"}
-            title={"sell"}
+            variant={isMobile ? "body2" : "inherit"}
+            display={"flex"}
+            flexDirection={"column"}
+            marginLeft={isMobile ? 0 : 1}
+            component={"div"}
+            paddingRight={isMobile ? 0 : 1}
+            textOverflow={"ellipsis"}
           >
             <Typography
               variant="inherit"
               component={"span"}
-              className={"next-coin"}
+              color={"textPrimary"}
+              title={"sell"}
             >
-              {coinAInfo?.simpleName}
-            </Typography>
-            <Typography variant="inherit" component={"i"}>
-              /
-            </Typography>
-            <Typography variant="inherit" component={"span"} title={"buy"}>
-              {coinBInfo?.simpleName}
+              <Typography
+                variant="inherit"
+                component={"span"}
+                className={"next-coin"}
+              >
+                {coinAInfo?.simpleName}
+              </Typography>
+              <Typography variant="inherit" component={"i"}>
+                /
+              </Typography>
+              <Typography variant="inherit" component={"span"} title={"buy"}>
+                {coinBInfo?.simpleName}
+              </Typography>
             </Typography>
           </Typography>
-        </Typography>
+        )}
         <>
           {activityInProgressRules && activityInProgressRules[`AMM-${pair}`] && (
             <Box
@@ -227,7 +229,7 @@ export const IconColumn = React.memo(
   activityInProgressRules?: ActivityRulesMap;
 }) => JSX.Element;
 
-export const PoolsTable = withTranslation("tables")(
+export const PoolsTable = withTranslation(["tables", "common"])(
   <T extends { [key: string]: any }>({
     t,
     i18n,
@@ -640,7 +642,7 @@ export const PoolsTable = withTranslation("tables")(
         sortable: true,
         width: "auto",
         headerCellClass: "textAlignRight",
-        name: t("label24VolumeSimple") + "/" + t("labelAPR"),
+        name: t("label24VolumeSimple", { ns: "common" }) + "/" + t("labelAPR"),
         formatter: ({ row }) => {
           const { volume } =
             row.tradeFloat && row.tradeFloat.volume

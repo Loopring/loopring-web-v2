@@ -22,6 +22,7 @@ import {
   TradeStatus,
   TradeTypes,
   getValuePrecisionThousand,
+  DirectionTag,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Filter, FilterOrderTypes } from "./components/Filter";
@@ -485,7 +486,7 @@ export const OrderHistoryTable = withTranslation("tables")(
             valueFrom,
             precisionFrom,
             precisionFrom
-          )} ${keyFrom} \u2192 ${getValuePrecisionThousand(
+          )} ${keyFrom} ${DirectionTag} ${getValuePrecisionThousand(
             valueTo,
             precisionTo,
             precisionTo
@@ -631,7 +632,7 @@ export const OrderHistoryTable = withTranslation("tables")(
             valueFrom,
             precisionFrom,
             precisionFrom
-          )} ${keyFrom} \u2192 ${getValuePrecisionThousand(
+          )} ${keyFrom} ${DirectionTag} ${getValuePrecisionThousand(
             valueTo,
             precisionTo,
             precisionTo
@@ -846,7 +847,7 @@ export const OrderHistoryTable = withTranslation("tables")(
             valueFrom,
             precisionFrom,
             precisionFrom
-          )} ${keyFrom} \u2192 ${getValuePrecisionThousand(
+          )} ${keyFrom} ${DirectionTag} ${getValuePrecisionThousand(
             valueTo,
             precisionTo,
             precisionTo
@@ -997,7 +998,7 @@ export const OrderHistoryTable = withTranslation("tables")(
             valueFrom,
             precisionFrom,
             precisionFrom
-          )} ${keyFrom} \u2192 ${getValuePrecisionThousand(
+          )} ${keyFrom} ${DirectionTag} ${getValuePrecisionThousand(
             valueTo,
             precisionTo,
             precisionTo

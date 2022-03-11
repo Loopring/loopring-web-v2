@@ -8,6 +8,7 @@ import { TableFilterStyled, TablePaddingX } from "../../styled";
 import { Filter, FilterTradeTypes } from "./components/Filter";
 
 import {
+  DirectionTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   RowConfig,
@@ -174,7 +175,7 @@ const getColumnModeAssets = (
               alignItems={"center"}
             >
               <Typography>
-                {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
+                {`${fromValue} ${from.key} ${DirectionTag} ${toValue} ${to.key}`}
               </Typography>
             </Box>
           );
@@ -267,7 +268,7 @@ const getColumnModeAssets = (
           return (
             <Box className="rdg-cell-value">
               <Typography>
-                {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
+                {`${fromValue} ${from.key} ${DirectionTag} ${toValue} ${to.key}`}
               </Typography>
             </Box>
           );
@@ -399,7 +400,7 @@ const getColumnModeMobileAssets = (
             height={"100%"}
           >
             <Typography variant={"body2"}>
-              {`${fromValue} ${from.key}  \u2192 ${toValue} ${to.key}`}
+              {`${fromValue} ${from.key} ${DirectionTag} ${toValue} ${to.key}`}
             </Typography>
             <Typography variant={"body2"} color={"textSecondary"}>
               {t("labelFee", { ns: "common" }) + `: ${value} ${key}`}

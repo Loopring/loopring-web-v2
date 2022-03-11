@@ -11,7 +11,7 @@ export const RowConfig = {
   rowHeight: IsMobile.any() ? 48 : 44,
   rowHeaderHeight: IsMobile.any() ? 48 : 44,
 };
-
+export const DirectionTag = "\u2192";
 export const FeeChargeOrderDefault = ["ETH", "USDT", "LRC", "DAI", "USDC"];
 
 export const LandPageHeightConfig = {

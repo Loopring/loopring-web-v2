@@ -6,6 +6,7 @@ import { Column, Table, TablePagination } from "../../basic-lib";
 import {
   CompleteIcon,
   DepositIcon,
+  DirectionTag,
   EmptyValueTag,
   EXPLORE_TYPE,
   Explorer,
@@ -370,7 +371,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   onClick={() => window.open(path, "_blank")}
                   title={hash}
                 >
-                  {from + " -> " + to}
+                  {from + ` ${DirectionTag} ` + to}
                   {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
                 </Typography>
                 <Box marginLeft={1}>
@@ -575,7 +576,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     color={"var(--color-primary)"}
                     title={hash}
                   >
-                    {from + " -> " + to}
+                    {from + ` ${DirectionTag} ` + to}
                     {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
                   </Typography>
                   <Typography marginLeft={1}>
