@@ -1,11 +1,10 @@
 /* Rectangle 340 */
-import styled from '@emotion/styled';
-import {  BtnPercentageProps } from './Interface';
-import { Slider } from '@mui/material';
-import { Box } from '@mui/material';
-import { WithTranslation, withTranslation } from 'react-i18next';
-import React from 'react';
-
+import styled from "@emotion/styled";
+import { BtnPercentageProps } from "./Interface";
+import { Slider } from "@mui/material";
+import { Box } from "@mui/material";
+import { WithTranslation, withTranslation } from "react-i18next";
+import React from "react";
 
 //
 // export const BtnPercentage = ({selected = -1, handleChanged, anchors}: BtnPercentageProps) => {
@@ -122,14 +121,13 @@ import React from 'react';
 //
 // }
 
-
 const StyledSlider = styled(Slider)`
   && {
     border: 0;
-
     & .MuiSlider-mark {
       width: 24px;
       height: 24px;
+      line-height: initial;
       box-sizing: border-box;
       display: flex;
       justify-content: center;
@@ -141,14 +139,21 @@ const StyledSlider = styled(Slider)`
       z-index: 25;
 
       :after {
-        content: '';
+        content: "";
         width: 8px;
         height: 8px;
         background: var(--color-box);
-        ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 2, c_key: 'var(--color-secondary)'})};
+        ${({ theme }) =>
+          theme.border.defaultFrame({
+            d_W: 1,
+            d_R: 2,
+            c_key: "var(--color-secondary)",
+          })};
       }
     }
-
+    & .MuiSlider-markLabel {
+      line-height: initial;
+    }
     & .MuiSlider-rail {
       width: 100%;
       height: 4px;
@@ -175,7 +180,12 @@ const StyledSlider = styled(Slider)`
       color: var(--color-button-pot);
       margin-top: 0;
       margin-left: 0;
-      ${({theme}) => theme.border.defaultFrame({d_W: 2, d_R: 12, c_key: 'var(--color-secondary)'})};
+      ${({ theme }) =>
+        theme.border.defaultFrame({
+          d_W: 2,
+          d_R: 12,
+          c_key: "var(--color-secondary)",
+        })};
       box-shadow: initial;
 
       input {
@@ -185,96 +195,92 @@ const StyledSlider = styled(Slider)`
       .MuiSlider-valueLabel {
         background: var(--opacity);
         padding: 0;
-        top:-4px;
+        top: -4px;
       }
-
-      // .MuiSlider-valueLabelCircle{
-      //   background: var(--color-pop-bg);
-      //   background: var(--color-pop-bg);
-      //   overflow: visible;
-      //   box-shadow: var(--shadow);
-        //   border-radius: ${({theme}) => theme.unit * 0.5}px;
-      //   transform: rotate(0) ;
-      //   .MuiSlider-valueLabelLabel{
-      //     transform: rotate(0) ;
-      //   }
-      //   &:before {
-      //     position: absolute;
-      //     bottom:  2px;
-      //     content: '';
-      //     display: block;
-      //     transform: rotate(-180deg);
-      //     transform-origin: bottom;
-      //     width: 0;
-      //     height: 0;
-        //     border: ${({theme}) => theme.unit}px solid transparent;
-        //     border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
-      //   }
-      // }
-
     }
   }
 ` as typeof Slider;
 
-
-export const BtnPercentage = withTranslation('common')(({
-                                                            selected = -1,
-                                                            handleChanged,
-                                                            anchors,
-                                                            valueLabelDisplay = 'off',
-                                                            valuetext,
-                                                            step = 1,
-                                                            t,
-                                                            tReady,
-                                                            ...rest
-                                                        }: BtnPercentageProps & WithTranslation) => {
+export const BtnPercentage = withTranslation("common")(
+  ({
+    selected = -1,
+    handleChanged,
+    anchors,
+    valueLabelDisplay = "off",
+    valuetext,
+    step = 1,
+    t,
+    tReady,
+    ...rest
+  }: BtnPercentageProps & WithTranslation) => {
     const [value, setValue] = React.useState<number>(selected);
 
     React.useEffect(() => {
       if (selected >= 0 && selected <= 100) {
-        setValue(Math.floor(selected))
+        setValue(Math.floor(selected));
       } else {
-        setValue(0)
+        setValue(0);
       }
-    }, [selected])
+    }, [selected]);
 
-    const _anchors = anchors && anchors.length ? anchors : [{
-        value: 0, label: '0'
-    }, {
-        value: 25, label: ''
-    }, {
-        value: 50, label: ''
-    }, {
-        value: 75, label: ''
-    }, {
-        value: 100, label: t('labelMax:') + '100%'
-    }];
-    const _handleChanged = (_event: Event, value: number| number[], _activeThumb: number)=>{
-        setValue(value as number)
-        handleChanged(value)
-    }
-    const  _valuetext = (value:number):string|number=>{
-        if(valuetext){
-            return  valuetext(value)
-        }else {
-            return value
-        }
-
-    }
+    const _anchors =
+      anchors && anchors.length
+        ? anchors
+        : [
+            {
+              value: 0,
+              label: "0",
+            },
+            {
+              value: 25,
+              label: "",
+            },
+            {
+              value: 50,
+              label: "",
+            },
+            {
+              value: 75,
+              label: "",
+            },
+            {
+              value: 100,
+              label: t("labelMax:") + "100%",
+            },
+          ];
+    const _handleChanged = (
+      _event: Event,
+      value: number | number[],
+      _activeThumb: number
+    ) => {
+      setValue(value as number);
+      handleChanged(value);
+    };
+    const _valuetext = (value: number): string | number => {
+      if (valuetext) {
+        return valuetext(value);
+      } else {
+        return value;
+      }
+    };
     // function valuetext(value: number) {
     //     return `${value}°C`;
     // }
-    return <Box width={'100%'} display={'flex'}>
+    return (
+      <Box width={"100%"} display={"flex"}>
         <StyledSlider
-            {...rest}
-            aria-label="Always visible"
-            value={value}
-            getAriaValueText={_valuetext as any}
-            valueLabelDisplay={valueLabelDisplay}
-            onChange={(_event,value,_activeThumb)=>{_handleChanged(_event,value,_activeThumb)}}
-            step={step}
-            marks={_anchors}
+          {...rest}
+          aria-label="Always visible"
+          value={value}
+          getAriaValueText={_valuetext as any}
+          valueLabelDisplay={valueLabelDisplay}
+          onChange={(_event, value, _activeThumb) => {
+            _handleChanged(_event, value, _activeThumb);
+          }}
+          step={step}
+          marks={_anchors}
         />
-    </Box>
-})
-
+      </Box>
+    );
+  }
+);

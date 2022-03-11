@@ -301,9 +301,9 @@ export const SwapTradeWrap = <
         <Typography
           component={"p"}
           variant="body1"
-          height={24}
           textAlign={"center"}
           lineHeight={"24px"}
+          paddingY={2}
         >
           {showVal ? (
             <>

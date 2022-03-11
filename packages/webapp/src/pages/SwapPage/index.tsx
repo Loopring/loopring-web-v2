@@ -4,7 +4,9 @@ import BasicInfoPanel from "./panel/BasicInfoPanel";
 import TradePanel from "./panel/TradePanel";
 import {
   AlertImpact,
+  ChartType,
   ConfirmImpact,
+  ScaleAreaChart,
   SwapPanel,
   Toast,
 } from "@loopring-web/component-lib";
@@ -12,7 +14,11 @@ import {
 import { TOAST_TIME } from "defs/common_defs";
 import { FixedStyle } from "pages/styled";
 import { useSwap } from "./hookSwap";
-import { getValuePrecisionThousand } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  UpColor,
+} from "@loopring-web/common-resources";
+import { useBasicInfo } from "./panel/BasicInfoPanel/hook";
 
 export const SwapPage = withTranslation("common")(
   ({ ...rest }: WithTranslation) => {
@@ -52,14 +58,80 @@ export const SwapPage = withTranslation("common")(
           onClose={closeToast}
         />
 
-        {!isMobile && (
-          <Box
-            flex={1}
-            marginRight={3}
-            alignContent={"stretch"}
-            flexDirection={"column"}
-            flexWrap={"nowrap"}
-          >
+        {!isMobile ? (
+          <>
+            <Box
+              flex={1}
+              marginRight={3}
+              alignContent={"stretch"}
+              flexDirection={"column"}
+              flexWrap={"nowrap"}
+            >
+              <BasicInfoPanel
+                {...{
+                  ...rest,
+                  ...pair,
+                  marketArray,
+                  tradeFloat,
+                  tradeArray,
+                }}
+              />
+              <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray} />
+            </Box>
+
+            <Box display={"flex"} style={styles} justifyContent={"center"}>
+              <FixedStyle>
+                <SwapPanel
+                  //disabled={isSwapLoading}
+                  toPro={toPro}
+                  tokenBuyProps={{
+                    disabled: isSwapLoading,
+                    decimalsLimit: tradeCalcData.buyPrecision,
+                  }}
+                  tokenSellProps={{
+                    disabled: isSwapLoading,
+                    decimalsLimit: tradeCalcData.sellPrecision,
+                  }}
+                  onRefreshData={should15sRefresh}
+                  refreshRef={refreshRef}
+                  tradeData={tradeData as any}
+                  tradeCalcData={tradeCalcData as any}
+                  onSwapClick={onSwapClick}
+                  swapBtnI18nKey={swapBtnI18nKey}
+                  swapBtnStatus={swapBtnStatus}
+                  {...{ handleSwapPanelEvent, ...rest }}
+                />
+              </FixedStyle>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+            >
+              <SwapPanel
+                //disabled={isSwapLoading}
+                toPro={toPro}
+                tokenBuyProps={{
+                  disabled: isSwapLoading,
+                  decimalsLimit: tradeCalcData.buyPrecision,
+                }}
+                tokenSellProps={{
+                  disabled: isSwapLoading,
+                  decimalsLimit: tradeCalcData.sellPrecision,
+                }}
+                onRefreshData={should15sRefresh}
+                refreshRef={refreshRef}
+                tradeData={tradeData as any}
+                tradeCalcData={tradeCalcData as any}
+                onSwapClick={onSwapClick}
+                swapBtnI18nKey={swapBtnI18nKey}
+                swapBtnStatus={swapBtnStatus}
+                {...{ handleSwapPanelEvent, ...rest }}
+              />
+            </Box>
             <BasicInfoPanel
               {...{
                 ...rest,
@@ -69,33 +141,9 @@ export const SwapPage = withTranslation("common")(
                 tradeArray,
               }}
             />
-            <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray} />
-          </Box>
+          </>
         )}
-        <Box display={"flex"} style={styles} justifyContent={"center"}>
-          <FixedStyle>
-            <SwapPanel
-              //disabled={isSwapLoading}
-              toPro={toPro}
-              tokenBuyProps={{
-                disabled: isSwapLoading,
-                decimalsLimit: tradeCalcData.buyPrecision,
-              }}
-              tokenSellProps={{
-                disabled: isSwapLoading,
-                decimalsLimit: tradeCalcData.sellPrecision,
-              }}
-              onRefreshData={should15sRefresh}
-              refreshRef={refreshRef}
-              tradeData={tradeData as any}
-              tradeCalcData={tradeCalcData as any}
-              onSwapClick={onSwapClick}
-              swapBtnI18nKey={swapBtnI18nKey}
-              swapBtnStatus={swapBtnStatus}
-              {...{ handleSwapPanelEvent, ...rest }}
-            />
-          </FixedStyle>
-        </Box>
+
         <AlertImpact
           handleClose={swapFunc}
           open={alertOpen}
