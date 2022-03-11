@@ -416,7 +416,19 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       (): Column<any, unknown>[] => [
         {
           key: "amount",
-          name: t("labelTxAmount") + " / " + t("labelTxFee"),
+          name: (
+            <Typography
+              height={"100%"}
+              display={"flex"}
+              justifyContent={"space-between"}
+              variant={"inherit"}
+              color={"inherit"}
+              alignItems={"center"}
+            >
+              <span>{t("labelTransactions")}</span>
+              <span>{t("labelTxAmount") + " / " + t("labelTxFee")}</span>
+            </Typography>
+          ),
           cellClass: "textAlignRight",
           headerCellClass: "textAlignLeft",
           formatter: ({ row }) => {

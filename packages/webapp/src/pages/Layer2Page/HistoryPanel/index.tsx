@@ -54,22 +54,22 @@ const HistoryPanel = withTranslation("common")(
     const container = React.useRef(null);
 
     const handleTabChange = React.useCallback(
-      (value: string) => {
+      (value: string, _pageSize?: number) => {
         setCurrentTab(value);
         if (value === "transactions") {
           getUserTxnList({
-            limit: pageSize,
+            limit: _pageSize ? _pageSize : pageSize,
             types: "deposit,transfer,offchain_withdrawal",
           });
         }
         if (value === "trades") {
           getUserTradeList({
-            limit: pageSize,
+            limit: _pageSize ? _pageSize : pageSize,
           });
         }
         if (value === "ammRecords") {
           getAmmpoolList({
-            limit: pageSize,
+            limit: _pageSize ? _pageSize : pageSize,
           });
         }
       },
@@ -81,7 +81,7 @@ const HistoryPanel = withTranslation("common")(
       let height = container?.current?.offsetHeight;
       if (height) {
         setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 3);
-        handleTabChange(currentTab);
+        handleTabChange(currentTab, pageSize);
       }
     }, [container]);
 
