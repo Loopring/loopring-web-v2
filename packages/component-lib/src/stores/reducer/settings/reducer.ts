@@ -24,6 +24,7 @@ const initialState: SettingsState = {
   slippage: "N",
   feeChargeOrder: FeeChargeOrderDefault,
   hideL2Assets: false,
+  hideL2Action: true,
   hideLpToken: false,
   hideSmallBalances: true,
   isMobile: false,
@@ -112,6 +113,9 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
     setHideL2Assets(state, action: PayloadAction<boolean>) {
       state.hideL2Assets = action.payload;
     },
+    setHideL2Action(state, action: PayloadAction<boolean>) {
+      state.hideL2Action = action.payload;
+    },
     setHideLpToken(state, action: PayloadAction<boolean>) {
       state.hideLpToken = action.payload;
     },
@@ -184,6 +188,7 @@ export const {
   setFeeChargeOrder,
   setHideL2Assets,
   setHideLpToken,
+  setHideL2Action,
   setHideSmallBalances,
   setIsMobile,
 } = settingsSlice.actions;

@@ -9,6 +9,7 @@ import {
   ClickAwayListener,
   Grid,
   BoxProps,
+  Link,
 } from "@mui/material";
 import { DateRange } from "@mui/lab";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -1159,6 +1160,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         await cancelOrderByHashList(openOrdresList);
       }
     }, [rawData, cancelOrderByHashList]);
+    const [isDropDown, setIsDropDown] = React.useState(true);
 
     return (
       <TableStyled
@@ -1166,18 +1168,30 @@ export const OrderHistoryTable = withTranslation("tables")(
         isopen={isOpenOrder ? "open" : "history"}
         ispro={isPro ? "pro" : "lite"}
       >
-        {showFilter && (
-          <TableFilterStyled>
-            <Filter
-              marketArray={marketArray}
-              filterDate={filterDate}
-              filterType={filterType}
-              filterToken={filterToken}
-              handleReset={handleReset}
-              handleFilterChange={handleFilterChange}
-            />
-          </TableFilterStyled>
-        )}
+        {showFilter &&
+          (isMobile && isDropDown ? (
+            <Link
+              variant={"body1"}
+              display={"inline-flex"}
+              width={"100%"}
+              justifyContent={"flex-end"}
+              paddingRight={2}
+              onClick={() => setIsDropDown(false)}
+            >
+              Show Filter
+            </Link>
+          ) : (
+            <TableFilterStyled>
+              <Filter
+                marketArray={marketArray}
+                filterDate={filterDate}
+                filterType={filterType}
+                filterToken={filterToken}
+                handleReset={handleReset}
+                handleFilterChange={handleFilterChange}
+              />
+            </TableFilterStyled>
+          ))}
         <Table
           className={isScroll ? "scrollable" : undefined}
           onRowClick={

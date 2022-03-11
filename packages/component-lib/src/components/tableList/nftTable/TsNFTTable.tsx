@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, TablePagination, Table } from "../../basic-lib";
@@ -110,6 +110,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     t,
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
+    const [isDropDown, setIsDropDown] = React.useState(true);
+
     const getColumnModeTransaction = React.useCallback(
       (): Column<Row, Row>[] => [
         {
@@ -163,7 +165,10 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxFrom"),
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const receiverAddress = getShortAddr(row.receiverAddress);
+            const receiverAddress =
+              row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             const [from, to] =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
@@ -286,7 +291,6 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             const hasValue = Number.isFinite(row.amount);
             let side, hasSymbol, sideIcon;
-
             switch (row.nftTxType) {
               case TxNFTType[TxNFTType.DEPOSIT]:
                 side = t("labelDeposit");
@@ -313,16 +317,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 sideIcon = <WithdrawIcon fontSize={"inherit"} />;
                 side = t("labelWithdraw");
             }
-            const renderValue = hasValue
-              ? `${getValuePrecisionThousand(
-                  Number(row.amount),
-                  undefined,
-                  undefined,
-                  undefined,
-                  false,
-                  { isTrade: true }
-                )}`
-              : EmptyValueTag;
+            // const renderValue = hasValue ? row.amount : EmptyValueTag;
 
             const renderFee = `Fee: ${getValuePrecisionThousand(
               row.fee.value,
@@ -372,7 +367,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                     alignItems={"center"}
                   >
                     {hasSymbol}
-                    {renderValue}
+                    {row.amount ?? EmptyValueTag}
                   </Typography>
                   <Typography color={"textSecondary"} variant={"body2"}>
                     {renderFee}
@@ -388,7 +383,11 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const receiverAddress = getShortAddr(row.receiverAddress, isMobile);
+            const receiverAddress =
+              row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : getShortAddr(row.receiverAddress, isMobile);
+
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
 
             const [from, to] =
@@ -397,11 +396,11 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : TxNFTType[TxNFTType.DEPOSIT]
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
                 ? ["L1", "L2"]
-                : TxNFTType[TxNFTType.MINT]
+                : row.nftTxType === TxNFTType[TxNFTType.MINT]
                 ? ["Mint", "L2"]
-                : TxNFTType[TxNFTType.WITHDRAW]
+                : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? ["L2", receiverAddress]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
@@ -463,18 +462,30 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
 
     return (
       <TableStyled isMobile={isMobile}>
-        {showFilter && (
-          <TableFilterStyled>
-            <Filter
-              {...{
-                rawData,
-                handleFilterChange,
-                filterType: txType,
-                filterDate: duration,
-              }}
-            />
-          </TableFilterStyled>
-        )}
+        {showFilter &&
+          (isMobile && isDropDown ? (
+            <Link
+              variant={"body1"}
+              display={"inline-flex"}
+              width={"100%"}
+              justifyContent={"flex-end"}
+              paddingRight={2}
+              onClick={() => setIsDropDown(false)}
+            >
+              Show Filter
+            </Link>
+          ) : (
+            <TableFilterStyled>
+              <Filter
+                {...{
+                  rawData,
+                  handleFilterChange,
+                  filterType: txType,
+                  filterDate: duration,
+                }}
+              />
+            </TableFilterStyled>
+          ))}
         <Table
           className={"scrollable"}
           {...{ ...defaultArgs, ...props, rawData, showloading }}

@@ -32,12 +32,6 @@ export async function unlockAccount() {
         owner: accoun_old.accAddress,
       });
       const nonce = account ? account.nonce : accoun_old.nonce;
-
-      console.log(
-        "unlockAccount isMobile, connectName:",
-        isMobile,
-        connectName
-      );
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
@@ -54,12 +48,6 @@ export async function unlockAccount() {
         chainId: chainId as any,
         accountId: account.accountId,
       });
-
-      console.log(
-        "unlockAccount isMobile, connectName:",
-        isMobile,
-        connectName
-      );
 
       const walletTypePromise: Promise<{ walletType: any }> =
         window.ethereum &&
@@ -81,7 +69,6 @@ export async function unlockAccount() {
           eddsaKey.sk
         ),
         walletTypePromise.catch((error) => {
-          console.log(error);
           return { walletType: undefined };
         }),
       ]);
@@ -94,7 +81,6 @@ export async function unlockAccount() {
         console.log("try to sendErrorUnlock....");
         accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
-        console.log("try to sendAccountSigned....");
         accountServices.sendAccountSigned({
           accountId: account.accountId,
           nonce,

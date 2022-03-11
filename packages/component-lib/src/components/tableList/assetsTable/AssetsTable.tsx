@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 // import { useHistory } from 'react-router-dom'
@@ -31,7 +31,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
         ? `--template-columns: 200px 150px auto auto ${
             lan === "en_US" ? "285px" : "240px"
           } !important;`
-        : `--template-columns: 54% 46% !important;`}
+        : `--template-columns: 54% 40% 6% !important;`}
 
     .rdg-cell:first-of-type {
       display: flex;
@@ -166,6 +166,7 @@ export const AssetsTable = withTranslation("tables")(
     const [totalData, setTotalData] = useState<RawDataAssetsItem[]>(rawData);
     const [viewData, setViewData] = useState<RawDataAssetsItem[]>(rawData);
     const [tableHeight, setTableHeight] = React.useState(props.tableHeight);
+    const [isDropDown, setIsDropDown] = React.useState(true);
 
     const resetTableData = React.useCallback(
       (viewData) => {
@@ -394,10 +395,6 @@ export const AssetsTable = withTranslation("tables")(
           );
         },
       },
-      // {
-      //     key: 'available',
-      //     name: t('labelAvailable'),
-      // },
       {
         key: "locked",
         name: t("labelLocked"),
@@ -421,7 +418,7 @@ export const AssetsTable = withTranslation("tables")(
       },
       {
         key: "actions",
-        name: t("labelActions"),
+        name: "",
         headerCellClass: "textAlignRight",
         // minWidth: 280,
         formatter: ({ row }) => {
@@ -487,6 +484,18 @@ export const AssetsTable = withTranslation("tables")(
     return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
+          // (isMobile && isDropDown ? (
+          //   <Link
+          //     variant={"body1"}
+          //     display={"inline-flex"}
+          //     width={"100%"}
+          //     justifyContent={"flex-end"}
+          //     paddingRight={2}
+          //     onClick={() => setIsDropDown(false)}
+          //   >
+          //     Show Filter
+          //   </Link>
+          // ) :
           <TableFilterStyled>
             <Filter
               {...{

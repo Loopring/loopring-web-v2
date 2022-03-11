@@ -210,14 +210,19 @@ NFTDepositViewProps<T, I>) => {
               } as T)
             }
             helperText={
-              <Typography
-                variant={"body2"}
-                component={"span"}
-                textAlign={"left"}
-                display={"inherit"}
-              >
-                {tradeData.nftId}
-              </Typography>
+              isMobile ? (
+                <></>
+              ) : (
+                <Typography
+                  variant={"body2"}
+                  component={"span"}
+                  textAlign={"left"}
+                  display={"inherit"}
+                  whiteSpace={"pre-line"}
+                >
+                  {tradeData.nftId}
+                </Typography>
+              )
             }
             fullWidth={true}
           />

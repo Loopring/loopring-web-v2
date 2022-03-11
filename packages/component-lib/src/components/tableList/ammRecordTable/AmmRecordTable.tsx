@@ -8,6 +8,7 @@ import {
   getValuePrecisionThousand,
   globalSetup,
   PriceTag,
+  RowConfig,
 } from "@loopring-web/common-resources";
 import {
   AmmRecordRow as Row,
@@ -243,8 +244,8 @@ export const AmmRecordTable = withTranslation("tables")(
     handlePageChange,
     pagination,
     currentheight,
-    rowHeight = 44,
-    headerRowHeight = 44,
+    rowHeight = RowConfig.rowHeight,
+    headerRowHeight = RowConfig.rowHeaderHeight,
     showFilter = true,
     rawData,
     wait = globalSetup.wait,
@@ -280,7 +281,8 @@ export const AmmRecordTable = withTranslation("tables")(
       [handlePageChange, page, pageSize]
     );
 
-    const height = (currentheight || 0) + (!!rawData.length ? 0 : 44);
+    const height =
+      (currentheight || 0) + (!!rawData.length ? 0 : RowConfig.rowHeaderHeight);
 
     return (
       <TableStyled isMobile={isMobile} currentheight={height}>

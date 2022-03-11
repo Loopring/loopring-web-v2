@@ -3,6 +3,7 @@ import {
   setCoinJson,
   setCurrency,
   setFeeChargeOrder,
+  setHideL2Action,
   setHideL2Assets,
   setHideLpToken,
   setHideSmallBalances,
@@ -35,6 +36,7 @@ export function useSettings(): SettingsState & {
   setSlippage(value: "N" | number): void;
   setCoinJson(value: any): void;
   setHideL2Assets(value: boolean): void;
+  setHideL2Action(value: boolean): void;
   setHideLpToken(value: boolean): void;
   setHideSmallBalances(value: boolean): void;
   setLayouts(value: Layouts): void;
@@ -75,6 +77,10 @@ export function useSettings(): SettingsState & {
     ),
     setHideL2Assets: React.useCallback(
       (value: boolean) => dispatch(setHideL2Assets(value)),
+      [dispatch]
+    ),
+    setHideL2Action: React.useCallback(
+      (value: boolean) => dispatch(setHideL2Action(value)),
       [dispatch]
     ),
     setHideLpToken: React.useCallback(

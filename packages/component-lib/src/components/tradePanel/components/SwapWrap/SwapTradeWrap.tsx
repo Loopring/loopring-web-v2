@@ -302,6 +302,7 @@ export const SwapTradeWrap = <
           component={"p"}
           variant="body1"
           height={24}
+          textAlign={"center"}
           lineHeight={"24px"}
         >
           {showVal ? (

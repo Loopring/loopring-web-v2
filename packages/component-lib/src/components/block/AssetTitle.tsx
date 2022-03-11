@@ -1,7 +1,9 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import {
   getValuePrecisionThousand,
+  HeaderMenuItemInterface,
   HideIcon,
+  subMenuLayer2,
   ViewIcon,
 } from "@loopring-web/common-resources";
 import {
@@ -13,7 +15,8 @@ import { AssetTitleMobileProps, AssetTitleProps } from "./Interface";
 import styled from "@emotion/styled";
 import { DropdownIconStyled, TradeBtnStatus } from "../tradePanel";
 import { AnimationArrow, Button, ButtonListRightStyled } from "./../";
-import React from "react";
+import { useRouteMatch } from "react-router-dom";
+import { useSettings } from "../../stores";
 
 const BoxStyled = styled(Box)`
   color: var(--color-text-secondary);
@@ -193,15 +196,26 @@ export const AssetTitleMobile = ({
   onShowNFTMINT,
   legalShow,
 }: AssetTitleMobileProps) => {
-  const [dropdownStatus, setDropdownStatus] =
-    React.useState<"up" | "down">("up");
-  const { t } = useTranslation();
+  const { hideL2Action, setHideL2Action } = useSettings();
+  // const [dropdownStatus, setDropdownStatus] =
+  //   React.useState<"up" | "down">(hideL2Action?"up":"down");
+  const { t } = useTranslation(["common", "layout"]);
+  let match: any = useRouteMatch("/layer2/:item");
+  const label = Reflect.ownKeys(subMenuLayer2)
+    .reduce(
+      (pre, item) => [...pre, ...subMenuLayer2[item]],
+      [] as HeaderMenuItemInterface[]
+    )
+    .find((item) => RegExp(item?.router?.path ?? "").test(match.url))
+    ?.label?.i18nKey;
   return (
     <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
       <Box
         display={"flex"}
-        flexDirection={"row"}
+        flexDirection={"column"}
         justifyContent={"space-between"}
+        position={"relative"}
+        alignItems={"flex-end"}
       >
         <Typography
           component={"span"}
@@ -254,6 +268,15 @@ export const AssetTitleMobile = ({
             </Typography>
           )}
         </Typography>
+        <Typography
+          component={"h3"}
+          variant={"h4"}
+          position={"absolute"}
+          left={2}
+          top={2}
+        >
+          {t(label ?? "", { ns: "layout" })}
+        </Typography>
       </Box>
       <Box
         component={"span"}
@@ -261,13 +284,14 @@ export const AssetTitleMobile = ({
         alignItems={"center"}
         style={{ cursor: "pointer" }}
         justifyContent={"center"}
-        onClick={() =>
-          setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
-        }
+        onClick={() => setHideL2Action(!hideL2Action)}
         marginBottom={1}
       >
-        {dropdownStatus === "up" ? (
-          <DropdownIconStyled status={dropdownStatus} fontSize={"medium"} />
+        {!hideL2Action ? (
+          <DropdownIconStyled
+            status={hideL2Action ? "down" : "up"}
+            fontSize={"medium"}
+          />
         ) : (
           <AnimationArrow
             className={"arrowCta"}
@@ -280,7 +304,7 @@ export const AssetTitleMobile = ({
           />
         )}
       </Box>
-      {dropdownStatus === "up" && (
+      {!hideL2Action && (
         <Grid container spacing={2}>
           {legalEnable && legalShow && (
             <Grid item xs={4}>

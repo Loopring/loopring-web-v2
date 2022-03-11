@@ -75,7 +75,7 @@ export const Depth = ({
         right={0}
         width={percentage * 100 + "%"}
         height={`${MarketRowHeight}px`}
-        zIndex={44}
+        zIndex={42}
       />
       <Grid item xs={6} lg={4} alignSelf={"flex-start"} zIndex={55}>
         <Typography

@@ -6,6 +6,7 @@ import { Box, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  RowConfig,
 } from "@loopring-web/common-resources";
 
 export interface TradeRaceRow {
@@ -16,7 +17,7 @@ export interface TradeRaceRow {
     token: string;
   };
 }
-const rowHeight = 44;
+const rowHeight = RowConfig.rowHeight;
 const TableStyle = styled(Table)`
   &.rdg {
     box-sizing: border-box;

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Modal, Typography } from "@mui/material";
+import { Box, BoxProps, Link, Modal, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -286,6 +286,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 : row["side"] === "OFFCHAIN_WITHDRAWAL"
                 ? "-"
                 : "";
+
             const renderValue = hasValue
               ? `${getValuePrecisionThousand(
                   value,
@@ -332,7 +333,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const receiverAddress = getShortAddr(row.receiverAddress);
+            const receiverAddress =
+              row["side"] === "OFFCHAIN_WITHDRAWAL"
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             const [from, to] =
               row["side"] === "TRANSFER"
@@ -351,26 +355,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? etherscanBaseUrl + `/tx/${row.txHash}`
                 : Explorer +
                   `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
-
-            // if (
-            //   row.txHash ||
-            //   (row.blockIdInfo.blockId &&
-            //     row.storageInfo &&
-            //     (row.storageInfo.tokenId || row.storageInfo.storageId))
-            // ) {
-            // const path =
-            //   row.txHash !== ""
-            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
-            //     : Explorer +
-            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
-            // const path =
-            //   row.txHash !== ""
-            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
-            //     : row.storageInfo.tokenId || row.storageInfo.storageId
-            //     ? Explorer +
-            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
-            //     : Explorer +
-            //       `tx/${row.hash}-${EXPLORE_TYPE[row.txType.toUpperCase()]}`;
             return (
               <Box
                 className="rdg-cell-value textAlignRight"
@@ -492,6 +476,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 alignItems={"center"}
                 justifyContent={"flex-start"}
                 title={side}
+                height={"100%"}
               >
                 {/*{side + " "}*/}
                 <Typography
@@ -530,7 +515,11 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const receiverAddress = getShortAddr(row.receiverAddress, isMobile);
+            const receiverAddress =
+              row["side"] === "OFFCHAIN_WITHDRAWAL"
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : getShortAddr(row.receiverAddress, isMobile);
+
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
             const [from, to] =
               row["side"] === "TRANSFER"
@@ -591,6 +580,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       ],
       [handleTxnDetail, etherscanBaseUrl, isMobile, t]
     );
+    const [isDropDown, setIsDropDown] = React.useState(true);
 
     const defaultArgs: any = {
       columnMode: isMobile
@@ -603,19 +593,31 @@ export const TransactionTable = withTranslation(["tables", "common"])(
 
     return (
       <TableStyled isMobile={isMobile}>
-        {showFilter && (
-          <TableFilterStyled>
-            <Filter
-              filterTokens={filterTokens}
-              // originalData={rawData}
-              filterDate={filterDate}
-              filterType={filterType}
-              filterToken={filterToken}
-              handleFilterChange={handleFilterChange}
-              handleReset={handleReset}
-            />
-          </TableFilterStyled>
-        )}
+        {showFilter &&
+          (isMobile && isDropDown ? (
+            <Link
+              variant={"body1"}
+              display={"inline-flex"}
+              width={"100%"}
+              justifyContent={"flex-end"}
+              paddingRight={2}
+              onClick={() => setIsDropDown(false)}
+            >
+              Show Filter
+            </Link>
+          ) : (
+            <TableFilterStyled>
+              <Filter
+                filterTokens={filterTokens}
+                // originalData={rawData}
+                filterDate={filterDate}
+                filterType={filterType}
+                filterToken={filterToken}
+                handleFilterChange={handleFilterChange}
+                handleReset={handleReset}
+              />
+            </TableFilterStyled>
+          ))}
         <Modal open={modalState} onClose={() => setModalState(false)}>
           <TxnDetailPanel {...{ ...txnDetailInfo }} />
         </Modal>

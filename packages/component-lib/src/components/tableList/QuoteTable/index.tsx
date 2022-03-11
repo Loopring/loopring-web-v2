@@ -8,6 +8,7 @@ import {
   FloatTag,
   getValuePrecisionThousand,
   PriceTag,
+  RowConfig,
   StarHollowIcon,
   StarSolidIcon,
   TrophyIcon,
@@ -149,8 +150,8 @@ export const QuoteTable = withTranslation("tables")(
     ({
       t,
       currentheight = 350,
-      rowHeight = 44,
-      headerRowHeight = 44,
+      rowHeight = RowConfig.rowHeight,
+      headerRowHeight = RowConfig.rowHeaderHeight,
       onVisibleRowsChange,
       rawData,
       history,

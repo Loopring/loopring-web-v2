@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, BoxProps, Typography } from "@mui/material";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
@@ -10,6 +10,7 @@ import { Filter, FilterTradeTypes } from "./components/Filter";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  RowConfig,
   TableType,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
@@ -452,8 +453,8 @@ export const TradeTable = withTranslation("tables")(
     filterPairs = [],
     rawData,
     currentheight,
-    rowHeight = 44,
-    headerRowHeight = 44,
+    rowHeight = RowConfig.rowHeight,
+    headerRowHeight = RowConfig.rowHeaderHeight,
     tokenMap = undefined,
     isL2Trade = false,
     getUserTradeList,
@@ -544,6 +545,7 @@ export const TradeTable = withTranslation("tables")(
       });
     };
     const tradeposition = isL2Trade === true ? "layer2" : "swap";
+    const [isDropDown, setIsDropDown] = React.useState(true);
 
     return (
       <TableStyled
@@ -551,20 +553,32 @@ export const TradeTable = withTranslation("tables")(
         currentheight={currentheight}
         tradeposition={tradeposition}
       >
-        {showFilter && (
-          <TableFilterStyled>
-            <Filter
-              {...{
-                filterPairs,
-                handleFilterChange,
-                filterType,
-                filterDate,
-                filterPair,
-                handleReset,
-              }}
-            />
-          </TableFilterStyled>
-        )}
+        {showFilter &&
+          (isMobile && isDropDown ? (
+            <Link
+              variant={"body1"}
+              display={"inline-flex"}
+              width={"100%"}
+              justifyContent={"flex-end"}
+              paddingRight={2}
+              onClick={() => setIsDropDown(false)}
+            >
+              Show Filter
+            </Link>
+          ) : (
+            <TableFilterStyled>
+              <Filter
+                {...{
+                  filterPairs,
+                  handleFilterChange,
+                  filterType,
+                  filterDate,
+                  filterPair,
+                  handleReset,
+                }}
+              />
+            </TableFilterStyled>
+          ))}
         <Table
           className={"scrollable"}
           {...{

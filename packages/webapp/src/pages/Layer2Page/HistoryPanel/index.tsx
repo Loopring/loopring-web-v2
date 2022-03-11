@@ -16,6 +16,7 @@ import { TOAST_TIME } from "defs/common_defs";
 import { useToast } from "hooks/common/useToast";
 import { useTokenMap } from "../../../stores/token";
 import { useAmmMap } from "../../../stores/Amm/AmmMap";
+import { RowConfig } from "@loopring-web/common-resources";
 
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
@@ -79,7 +80,7 @@ const HistoryPanel = withTranslation("common")(
       // @ts-ignore
       let height = container?.current?.offsetHeight;
       if (height) {
-        setPageSize(Math.floor((height - 120) / 44) - 3);
+        setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 3);
         handleTabChange(currentTab);
       }
     }, [container]);

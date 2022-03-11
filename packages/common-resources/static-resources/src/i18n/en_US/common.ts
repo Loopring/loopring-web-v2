@@ -160,6 +160,7 @@ export default {
   labelBack: "Back",
   labelAPR: "APR",
   label24Volume: "24h Volume",
+  label24VolumeSimple: "24h Vol",
   labelTVL: "Total Volume Locked",
   labelAmmTotalToken: "Tokens in AMM",
   labelNoActiveEvent: "No event",

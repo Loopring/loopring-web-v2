@@ -23,6 +23,7 @@ export interface SettingsState {
   slippage: number | "N";
   coinJson: any;
   hideL2Assets: boolean;
+  hideL2Action: boolean;
   hideLpToken: boolean;
   isMobile: boolean;
   hideSmallBalances: boolean;

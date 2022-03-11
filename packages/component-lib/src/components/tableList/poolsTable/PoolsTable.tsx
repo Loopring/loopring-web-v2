@@ -640,7 +640,7 @@ export const PoolsTable = withTranslation("tables")(
         sortable: true,
         width: "auto",
         headerCellClass: "textAlignRight",
-        name: t("label24TradeVolume") + "/" + t("labelAPR"),
+        name: t("label24VolumeSimple") + "/" + t("labelAPR"),
         formatter: ({ row }) => {
           const { volume } =
             row.tradeFloat && row.tradeFloat.volume

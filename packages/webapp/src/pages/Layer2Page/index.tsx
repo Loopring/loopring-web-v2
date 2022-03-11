@@ -103,9 +103,9 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
 
 export const Layer2Page = () => {
   let match: any = useRouteMatch("/layer2/:item");
+  const selected = match?.params.item ?? "assets";
   const { account } = useAccount();
   const { t } = useTranslation(["common", "layout"]);
-  const selected = match?.params.item ?? "assets";
   const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
   const layer2Router = React.useMemo(() => {
     switch (selected) {

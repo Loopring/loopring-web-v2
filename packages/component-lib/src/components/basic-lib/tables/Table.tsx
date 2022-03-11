@@ -13,7 +13,7 @@ import {
   TableProps,
 } from "./";
 import { EmptyDefault } from "../empty";
-import { SoursURL } from "@loopring-web/common-resources";
+import { RowConfig, SoursURL } from "@loopring-web/common-resources";
 import { Box, IconButton } from "@mui/material";
 import { css } from "@emotion/react";
 
@@ -336,7 +336,7 @@ export const Table = <R, SR>(
         rows={sortDefaultKey && sortedRows ? sortedRows : rows}
         rowKeyGetter={rowKeyGetter}
         rowClass={(row) => (rowClassFn ? rowClassFn(row, props) : "")}
-        rowHeight={rowHeight ? rowHeight : 44}
+        rowHeight={rowHeight ? rowHeight : RowConfig.rowHeight}
         onRowsChange={setRows}
         onSortColumnsChange={onSortColumnsChange}
         rowRenderer={rowRenderer as any}

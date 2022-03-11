@@ -18,8 +18,6 @@ import { useAmount } from "./stores/amount";
 import { useSocket } from "./stores/socket";
 import { useNotify } from "./stores/notify";
 import { useLayer1Store } from "./stores/localStore/layer1Store";
-import theme from "echarts/types/src/theme/dark";
-import { useTheme } from "@mui/material";
 import { useSettings } from "@loopring-web/component-lib";
 
 // import { statusUnset as accountStatusUnset } from './stores/account';

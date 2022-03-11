@@ -12,6 +12,7 @@ import {
   layoutConfigs,
   myLog,
   ResizeIcon,
+  RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import {
@@ -33,7 +34,7 @@ const MARKET_ROW_LENGTH: number = 8;
 
 const MARKET_TRADES_LENGTH: number = 19;
 // const MARKET_TRADES_LENGTH_LG: number = 24;
-export const HeaderHeight = 44;
+export const HeaderHeight = RowConfig.rowHeaderHeight;
 
 const BoxStyle = styled(Box)`
   --tab-header: ${HeaderHeight}px;

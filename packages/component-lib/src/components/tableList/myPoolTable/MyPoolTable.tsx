@@ -25,6 +25,7 @@ import {
   globalSetup,
   MoreIcon,
   PriceTag,
+  RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Method, MyPoolRow as Row, MyPoolTableProps } from "./Interface";
@@ -42,8 +43,6 @@ export enum PoolTradeType {
   swap = "swap",
   remove = "remove",
 }
-
-const rowHeight = 44;
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
@@ -91,8 +90,7 @@ const ActionPopContent = React.memo(
 );
 
 const PoolStyle = styled(Box)`
-  height: calc(${rowHeight}px);
-
+  height: calc(${RowConfig.rowHeight}px);
   &.MuiTypography-body1 {
     font-size: ${({ theme }) => theme.fontDefault.body1};
   }
@@ -767,7 +765,7 @@ const columnModeMobile = (
   },
   {
     key: "action",
-    name: t("labelActions"),
+    name: "",
     headerCellClass: "textAlignRight",
     formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
       const popoverProps: PopoverWrapProps = {
@@ -885,7 +883,7 @@ export const MyPoolTable = withTranslation("tables")(
     return (
       <TableStyled isMobile={isMobile}>
         <Table
-          rowHeight={rowHeight}
+          rowHeight={RowConfig.rowHeight}
           headerRowHeight={44}
           showloading={showloading}
           {...{

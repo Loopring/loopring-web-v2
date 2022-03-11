@@ -57,7 +57,7 @@ const basicLayout = {
     ],
     xs: [
       { i: "toolbar", w: 12, h: 17, x: 0, y: 0, minW: 6, minH: 9 },
-      { i: "walletInfo", w: 4, h: 47, x: 0, y: 121, minW: 3, minH: 22 },
+      { i: "walletInfo", w: 4, h: 48, x: 0, y: 121, minW: 3, minH: 22 },
       { i: "spot", w: 4, h: 104, x: 0, y: 17, minW: 3, minH: 54 },
       { i: "market", w: 4, h: 151, x: 4, y: 17, minW: 3, minH: 58 },
       { i: "market2", w: 4, x: 8, y: 17, h: 151, minW: 3, minH: 58 },
@@ -66,7 +66,7 @@ const basicLayout = {
     ],
     xxs: [
       { i: "toolbar", x: 0, y: 0, w: 6, h: 14, minW: 6, minH: 9 },
-      { i: "walletInfo", x: 0, y: 63, w: 3, h: 50, minW: 3, minH: 22 },
+      { i: "walletInfo", x: 0, y: 63, w: 3, h: 51, minW: 3, minH: 22 },
       { i: "spot", x: 0, y: 9, w: 3, h: 103, minW: 3, minH: 54 },
       { i: "market", x: 3, y: 9, w: 3, h: 154, minW: 3, minH: 58 },
       { i: "market2", x: 0, y: 0, w: 0, h: 0, minW: 0, minH: 0 },
