@@ -505,7 +505,7 @@ const columnModeMobile = (
         >
           {/*<IconColumn row={row.ammDetail as any} />*/}
           <Typography variant={"body1"}>
-            {coinAInfo?.simpleName + "-" + coinBInfo?.simpleName}
+            {coinAInfo?.simpleName + "/" + coinBInfo?.simpleName}
           </Typography>
         </Box>
       );
