@@ -522,7 +522,6 @@ export const VipPanel = withTranslation(["common", "layout"])(
         </StylePaper>
         {isMobile ? (
           <Typography variant={"body1"} paddingY={2} textAlign={"center"}>
-            {" "}
             For details, please view on desktop.
           </Typography>
         ) : (

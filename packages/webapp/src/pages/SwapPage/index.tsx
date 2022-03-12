@@ -105,43 +105,44 @@ export const SwapPage = withTranslation("common")(
             </Box>
           </>
         ) : (
-          <>
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-            >
-              <SwapPanel
-                //disabled={isSwapLoading}
-                toPro={toPro}
-                tokenBuyProps={{
-                  disabled: isSwapLoading,
-                  decimalsLimit: tradeCalcData.buyPrecision,
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            flex={1}
+          >
+            <SwapPanel
+              //disabled={isSwapLoading}
+              toPro={toPro}
+              tokenBuyProps={{
+                disabled: isSwapLoading,
+                decimalsLimit: tradeCalcData.buyPrecision,
+              }}
+              tokenSellProps={{
+                disabled: isSwapLoading,
+                decimalsLimit: tradeCalcData.sellPrecision,
+              }}
+              onRefreshData={should15sRefresh}
+              refreshRef={refreshRef}
+              tradeData={tradeData as any}
+              tradeCalcData={tradeCalcData as any}
+              onSwapClick={onSwapClick}
+              swapBtnI18nKey={swapBtnI18nKey}
+              swapBtnStatus={swapBtnStatus}
+              {...{ handleSwapPanelEvent, ...rest }}
+            />
+            <Box height={"30%"} paddingY={2}>
+              <BasicInfoPanel
+                {...{
+                  ...rest,
+                  ...pair,
+                  marketArray,
+                  tradeFloat,
+                  tradeArray,
                 }}
-                tokenSellProps={{
-                  disabled: isSwapLoading,
-                  decimalsLimit: tradeCalcData.sellPrecision,
-                }}
-                onRefreshData={should15sRefresh}
-                refreshRef={refreshRef}
-                tradeData={tradeData as any}
-                tradeCalcData={tradeCalcData as any}
-                onSwapClick={onSwapClick}
-                swapBtnI18nKey={swapBtnI18nKey}
-                swapBtnStatus={swapBtnStatus}
-                {...{ handleSwapPanelEvent, ...rest }}
               />
             </Box>
-            <BasicInfoPanel
-              {...{
-                ...rest,
-                ...pair,
-                marketArray,
-                tradeFloat,
-                tradeArray,
-              }}
-            />
-          </>
+          </Box>
         )}
 
         <AlertImpact
