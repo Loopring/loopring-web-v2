@@ -32,22 +32,60 @@ export async function unlockAccount() {
         owner: accoun_old.accAddress,
       });
       const nonce = account ? account.nonce : accoun_old.nonce;
+
+      const msg =
+        account.keySeed && account.keySeed !== ""
+          ? account.keySeed
+          : sdk.GlobalAPI.KEY_MESSAGE.replace(
+              "${exchangeAddress}",
+              exchangeInfo.exchangeAddress
+            ).replace("${nonce}", (nonce - 1).toString());
+
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
-        // exchangeAddress: exfchangeInfo.exchangeAddress,
-        // keyNonce: nonce - 1,
-        keySeed:
-          account.keySeed && account.keySeed !== ""
-            ? account.keySeed
-            : sdk.GlobalAPI.KEY_MESSAGE.replace(
-                "${exchangeAddress}",
-                exchangeInfo.exchangeAddress
-              ).replace("${nonce}", (nonce - 1).toString()),
+        keySeed: msg,
         walletType: connectName,
         chainId: chainId as any,
         accountId: account.accountId,
       });
+
+      await (connectProvides.usedWeb3 as Web3).eth.personal.sign(
+        msg,
+        account.owner,
+        "",
+        async function (err: any, result: any) {
+          //TODO: debugger
+          console.log(
+            "sdk.GlobalAPI.KEY_MESSAGE",
+            sdk.GlobalAPI.KEY_MESSAGE,
+            msg
+          );
+          if (!err) {
+            console.log(
+              "ecRecover valid before",
+              msg,
+              result,
+              (connectProvides.usedWeb3 as Web3).eth.personal.ecRecover
+            );
+            const valid: any = await (
+              connectProvides.usedWeb3 as Web3
+            ).eth.personal
+              .ecRecover(msg, result)
+              .catch((error) => {
+                console.log(
+                  "unlockAccount isMobile ecRecover catch error:",
+                  isMobile,
+                  error
+                );
+              });
+            console.log("ecRecover valid pass", valid);
+            if (valid.result) {
+              return { sig: result };
+            }
+          }
+        }
+      );
 
       const walletTypePromise: Promise<{ walletType: any }> =
         window.ethereum &&
