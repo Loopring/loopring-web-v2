@@ -206,7 +206,7 @@ export const AssetTitleMobile = ({
       (pre, item) => [...pre, ...subMenuLayer2[item]],
       [] as HeaderMenuItemInterface[]
     )
-    .find((item) => RegExp(item?.router?.path ?? "").test(match.url))
+    .find((item) => RegExp(item?.router?.path ?? "").test(match?.url ?? ""))
     ?.label?.i18nKey;
   return (
     <Box display={"flex"} flexDirection={"column"} marginBottom={2}>
@@ -217,6 +217,15 @@ export const AssetTitleMobile = ({
         position={"relative"}
         alignItems={"flex-end"}
       >
+        <Typography
+          component={"h3"}
+          variant={"h4"}
+          position={"absolute"}
+          left={2}
+          top={2}
+        >
+          {t(label ?? "labelAssets", { ns: "layout" })}
+        </Typography>
         <Typography
           component={"span"}
           variant={"body1"}
@@ -267,15 +276,6 @@ export const AssetTitleMobile = ({
               &#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;
             </Typography>
           )}
-        </Typography>
-        <Typography
-          component={"h3"}
-          variant={"h4"}
-          position={"absolute"}
-          left={2}
-          top={2}
-        >
-          {t(label ?? "", { ns: "layout" })}
         </Typography>
       </Box>
       <Box
