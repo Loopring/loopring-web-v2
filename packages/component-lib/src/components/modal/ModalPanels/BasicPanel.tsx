@@ -228,6 +228,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               marginX={3}
               whiteSpace={"pre-line"}
               variant={"h5"}
+              textAlign={"center"}
               color={"textPrimary"}
               component={"div"}
               marginTop={0}
