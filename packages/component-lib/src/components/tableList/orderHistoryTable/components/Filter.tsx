@@ -56,22 +56,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
 
     return (
       <Grid container spacing={2}>
-        {/* <Grid item xs={2}>
-                <StyledTextFiled
-                    id="table-order-filter-types"
-                    select
-                    fullWidth
-                    value={filterType}
-                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                        handleFilterChange({
-                            type: event.target.value as FilterOrderTypes
-                        })
-                    }}
-                    inputProps={{IconComponent: DropDownIcon}}
-                    // > {Object.values(FilterTradeTypes).map(type => <MenuItem key={type} value={type}>{t(type)}</MenuItem>)}
-                > {FilterOrderTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
-                </StyledTextFiled>
-            </Grid> */}
         <Grid item xs={12} lg={4}>
           {/* <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/> */}
           <DateRangePicker

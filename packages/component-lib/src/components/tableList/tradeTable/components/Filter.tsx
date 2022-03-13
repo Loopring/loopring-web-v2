@@ -51,23 +51,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
     handleFilterChange,
   }: // marketMap,
   FilterProps & WithTranslation) => {
-    // const filterTradeTypeList = [
-    //     {
-    //         label: t('labelOrderFilterAllTypes'),
-    //         value: 'All Types'
-    //     },
-    //     {
-    //         label: t('labelTradeRoleMaker'),
-    //         value: 'Maker'
-    //     },
-    //     {
-    //         label: t('labelTradeRoleTaker'),
-    //         value: 'Taker'
-    //     },
-    // ]
-
-    // filterPairs
-
     const rawPairList = [].slice
       .call(filterPairs)
       .map((item: string) => item.replace("-", " - "))
@@ -75,12 +58,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
         return a.localeCompare(b);
       });
 
-    // return formattedMarket.join(" - "))
-    // .filter((o) => marketMap[o])
-    // .map((market) => {
-    //   const formattedMarket = market.split("-");
-    //   return formattedMarket.join(" - ");
-    // });
     const formattedRawPairList = [
       {
         label: t("labelFilterAllPairs"),

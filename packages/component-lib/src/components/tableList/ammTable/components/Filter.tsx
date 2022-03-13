@@ -49,15 +49,15 @@ export const Filter = withTranslation("tables", { withRef: true })(
     const FilterTradeTypeList = [
       {
         label: t("labelAmmFilterTypes"),
-        value: "all",
+        value: FilterTradeTypes.allTypes,
       },
       {
         label: t("labelAmmJoin"),
-        value: "Join",
+        value: FilterTradeTypes.join,
       },
       {
         label: t("labelAmmExit"),
-        value: "Exit",
+        value: FilterTradeTypes.exit,
       },
     ];
 

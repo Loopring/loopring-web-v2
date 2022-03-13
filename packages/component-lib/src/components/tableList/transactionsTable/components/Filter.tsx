@@ -5,9 +5,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from "../../../basic-lib/form";
 import { Button } from "../../../basic-lib/btns";
 import { DropDownIcon } from "@loopring-web/common-resources";
-import { TransactionTradeTypes } from "../Interface";
 import { DateRange } from "@mui/lab";
 import { useSettings } from "../../../../stores";
+import { TransactionTradeTypes } from "../Interface";
 
 export interface FilterProps {
   filterTokens: string[];
@@ -51,19 +51,19 @@ export const Filter = withTranslation("tables", { withRef: true })(
     const transactionTypeList = [
       {
         label: t("labelTxFilterAllTypes"),
-        value: "All Types",
+        value: TransactionTradeTypes.allTypes,
       },
       {
         label: t("labelTxFilterDeposit"),
-        value: "Deposit",
+        value: TransactionTradeTypes.deposit,
       },
       {
         label: t("labelTxFilterWithdraw"),
-        value: "Withdraw",
+        value: TransactionTradeTypes.withdraw,
       },
       {
         label: t("labelTxFilterTransfer"),
-        value: "Transfer",
+        value: TransactionTradeTypes.transfer,
       },
     ];
 

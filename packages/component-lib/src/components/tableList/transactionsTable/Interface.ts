@@ -1,10 +1,4 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-export enum TransactionTradeTypes {
-  allTypes = "all",
-  deposit = "DEPOSIT",
-  withdraw = "WITHDRAW",
-  transfer = "TRANSFER",
-}
 
 // export type TransactionSide = {
 //     address: string;
@@ -16,6 +10,12 @@ export enum TransactionStatus {
   processed = "processed",
   received = "received",
   failed = "failed",
+}
+export enum TransactionTradeTypes {
+  allTypes = "all",
+  deposit = "DEPOSIT",
+  withdraw = "WITHDRAW",
+  transfer = "TRANSFER",
 }
 
 export type RawDataTransactionItem = {
