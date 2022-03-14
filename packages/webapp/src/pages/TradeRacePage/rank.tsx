@@ -219,7 +219,9 @@ export const Rank = ({
 const TableStyled = styled(Box)<{ height: number | undefined | string }>`
   display: flex;
   flex-direction: column;
-  flex: 1;
+  .rdg {
+    height: auto;
+  }
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as typeof Box;

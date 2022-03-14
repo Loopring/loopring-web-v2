@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Grid, MenuItem } from "@mui/material";
+import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   TextField,
@@ -12,16 +12,16 @@ import {
   // myLog
 } from "@loopring-web/common-resources";
 import { DateRange } from "@mui/lab";
-import { RawDataTradeItem } from "../TradeTable";
 
 export interface FilterProps {
-  rawData: RawDataTradeItem[];
+  // rawData: RawDataTradeItem[];
   filterDate: DateRange<Date | string>;
   filterType: FilterTradeTypes;
   filterPair: string;
   handleReset: () => void;
   handleFilterChange: ({ type, date }: any) => void;
   marketMap?: any;
+  filterPairs: string[];
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -34,54 +34,30 @@ const StyledTextFiled = styled(TextField)`
   }
 `;
 
-const StyledBtnBox = styled(Box)`
-  display: flex;
-  margin-left: 40%;
-
-  button:first-of-type {
-    margin-right: 8px;
-  }
-`;
-
 export enum FilterTradeTypes {
   maker = "Maker",
   taker = "Taker",
-  allTypes = "All Types",
+  allTypes = "all",
 }
 
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
-    rawData,
     // filterDate,
     // filterType,
+    filterPairs = [],
     filterPair,
     handleReset,
     handleFilterChange,
-    marketMap,
-  }: FilterProps & WithTranslation) => {
-    // const filterTradeTypeList = [
-    //     {
-    //         label: t('labelOrderFilterAllTypes'),
-    //         value: 'All Types'
-    //     },
-    //     {
-    //         label: t('labelTradeRoleMaker'),
-    //         value: 'Maker'
-    //     },
-    //     {
-    //         label: t('labelTradeRoleTaker'),
-    //         value: 'Taker'
-    //     },
-    // ]
-
-    const rawPairList = rawData
-      .map((item) => `${item.amount.from.key}-${item.amount.to.key}`)
-      .filter((o) => marketMap[o])
-      .map((market) => {
-        const formattedMarket = market.split("-");
-        return formattedMarket.join(" - ");
+  }: // marketMap,
+  FilterProps & WithTranslation) => {
+    const rawPairList = [].slice
+      .call(filterPairs)
+      .map((item: string) => item.replace("-", " - "))
+      .sort((a: string, b: string) => {
+        return a.localeCompare(b);
       });
+
     const formattedRawPairList = [
       {
         label: t("labelFilterAllPairs"),
@@ -95,27 +71,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
 
     return (
       <Grid container spacing={2} alignItems={"center"}>
-        {/* <Grid item xs={2}>
-                <StyledTextFiled
-                    id="table-trade-filter-types"
-                    select
-                    fullWidth
-                    value={filterType}
-                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                        // setFilterType(event.target.value as FilterTradeTypes)
-                        handleFilterChange({type: event.target.value})
-                    }}
-                    inputProps={{IconComponent: DropDownIcon}}
-                > {filterTradeTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
-                </StyledTextFiled>
-            </Grid> */}
-        {/* <Grid item>
-                <DateRangePicker value={filterDate} onChange={(date: any) => {
-                    // setFilterDate(date)
-                    handleFilterChange({date: date})
-                }} />
-            </Grid> */}
-        <Grid item xs={2}>
+        <Grid item xs={6} lg={2}>
           <StyledTextFiled
             id="table-trade-filter-pairs"
             select
@@ -126,7 +82,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {formattedRawPairList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
@@ -134,19 +89,16 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
-          <StyledBtnBox>
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={handleReset}
-            >
-              {t("labelFilterReset")}
-            </Button>
-            {/* <Button variant={'contained'} size={'small'} color={'primary'}
-                            onClick={handleSearch}>{t('Search')}</Button> */}
-          </StyledBtnBox>
+        <Grid item xs={6} lg={2}>
+          <Button
+            fullWidth
+            variant={"outlined"}
+            size={"medium"}
+            color={"primary"}
+            onClick={handleReset}
+          >
+            {t("labelFilterReset")}
+          </Button>
         </Grid>
       </Grid>
     );

@@ -89,8 +89,7 @@ const MyAmmLPAssets = withTranslation("common")(
             alignItems={"center"}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
-              {t("labelMyLPToken")}{" "}
+              {t("labelMyLPToken")}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData?.lpCoin?.balance !== undefined
@@ -113,10 +112,9 @@ const MyAmmLPAssets = withTranslation("common")(
             marginTop={1 / 2}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
               {t("labelMyLPAToken", {
                 symbol: ammCalcData.lpCoinA.belong,
-              })}{" "}
+              })}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData.lpCoinA.balance
@@ -139,10 +137,9 @@ const MyAmmLPAssets = withTranslation("common")(
             marginTop={1 / 2}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
               {t("labelMyLPBToken", {
                 symbol: ammCalcData.lpCoinB.belong,
-              })}{" "}
+              })}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData.lpCoinB.balance
@@ -165,8 +162,7 @@ const MyAmmLPAssets = withTranslation("common")(
             marginTop={1 / 2}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
-              {t("labelMyLPAmountFor")}{" "}
+              {t("labelMyLPAmountFor")}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData.percentage
@@ -307,6 +303,7 @@ export const AmmPanelView = ({
           <AmmPanel
             {...{ ...rest }}
             accStatus={accountStatus}
+            getRecentAmmPoolTxs={getRecentAmmPoolTxs}
             onRefreshData={() => {
               updateAmmPoolSnapshot();
               if (getRecentAmmPoolTxs) {
@@ -336,7 +333,7 @@ export const AmmPanelView = ({
             </BoxWrapperStyled>
           ) : (
             <></>
-          )}{" "}
+          )}
         </>
       ) : (
         <></>

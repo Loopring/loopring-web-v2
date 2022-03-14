@@ -83,6 +83,6 @@ export default {
   labelCopyRight: "© 2017 Loopring Technology Limited. All rights reserved.",
 
   labelWalletProtect: "Guardian",
-  labelWalletValidation: "Ask approve",
+  labelWalletValidation: "Approval Requests",
   labelWalletHistory: "History",
 };

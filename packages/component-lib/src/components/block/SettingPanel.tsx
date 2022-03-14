@@ -180,7 +180,7 @@ export const SettingPanel = withTranslation(["common", "layout"], {
               >
                 color up
               </Typography>
-              and{" "}
+              and
               <Typography
                 component={"span"}
                 variant={"body2"}

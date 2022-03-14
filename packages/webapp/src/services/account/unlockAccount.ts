@@ -2,16 +2,21 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "api_wrapper";
 import store from "stores";
 import { accountServices } from "./accountServices";
-import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
+import {
+  ConnectProviders,
+  myLog,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 import { checkErrorInfo } from "hooks/useractions/utils";
 
 import * as sdk from "@loopring-web/loopring-sdk";
+import Web3 from "web3";
 
 export async function unlockAccount() {
   const accoun_old = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
-
+  const { isMobile } = store.getState().settings;
   myLog("unlockAccount account:", accoun_old);
 
   if (
@@ -27,53 +32,50 @@ export async function unlockAccount() {
         owner: accoun_old.accAddress,
       });
       const nonce = account ? account.nonce : accoun_old.nonce;
-      // myLog("sdk.GlobalAPI.KEY_MESSAGE", sdk.GlobalAPI.KEY_MESSAGE);
+
+      const msg =
+        account.keySeed && account.keySeed !== ""
+          ? account.keySeed
+          : sdk.GlobalAPI.KEY_MESSAGE.replace(
+              "${exchangeAddress}",
+              exchangeInfo.exchangeAddress
+            ).replace("${nonce}", (nonce - 1).toString());
+
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
-        // exchangeAddress: exchangeInfo.exchangeAddress,
-        // keyNonce: nonce - 1,
-        keySeed:
-          account.keySeed && account.keySeed !== ""
-            ? account.keySeed
-            : sdk.GlobalAPI.KEY_MESSAGE.replace(
-                "${exchangeAddress}",
-                exchangeInfo.exchangeAddress
-              ).replace("${nonce}", (nonce - 1).toString()),
+        keySeed: msg,
         walletType: connectName,
         chainId: chainId as any,
         accountId: account.accountId,
       });
-
-      myLog("unlockAccount eddsaKey:", eddsaKey);
-
-      const [
-        response,
-        // { apiKey, raw_data },
-        { walletType },
-      ] = await Promise.all([
+      const walletTypePromise: Promise<{ walletType: any }> =
+        window.ethereum &&
+        connectName === sdk.ConnectorNames.MetaMask &&
+        isMobile
+          ? Promise.resolve({ walletType: undefined })
+          : LoopringAPI.walletAPI.getWalletType({
+              wallet: account.owner,
+            });
+      const [response, { walletType }] = await Promise.all([
         LoopringAPI.userAPI.getUserApiKey(
           {
             accountId: account.accountId,
           },
           eddsaKey.sk
         ),
-        LoopringAPI.walletAPI.getWalletType({
-          wallet: account.owner,
+        walletTypePromise.catch((error) => {
+          return { walletType: undefined };
         }),
       ]);
-
-      myLog("unlockAccount raw_data:", response);
 
       if (
         !response.apiKey &&
         ((response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message)
       ) {
-        myLog("try to sendErrorUnlock....");
         accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
-        myLog("try to sendAccountSigned....");
         accountServices.sendAccountSigned({
           accountId: account.accountId,
           nonce,
@@ -85,7 +87,7 @@ export async function unlockAccount() {
         });
       }
     } catch (e) {
-      myLog("unlockAccount e:", e);
+      console.log("unlockAccount error:", JSON.stringify(e));
 
       const errType = checkErrorInfo(e, true);
       switch (errType) {

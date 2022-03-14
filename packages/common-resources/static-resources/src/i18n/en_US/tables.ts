@@ -69,7 +69,7 @@ export default {
   labelTxTime: "Time",
   labelTxTxnHash: "Txn Hash",
   labelTxStatus: "Status",
-
+  labelTransactions: "Transactions",
   labelVolume: "volume",
   labelTradePair: "Trade Pair",
   labelPool: "Pool",
@@ -155,6 +155,7 @@ export default {
   labelNFTTypeTRANSFER: "Transfer",
   labelNFTTypeWITHDRAWAL: "Withdraw",
   labelNFTTypeWITHDRAW: "Withdraw",
+  labelMint: "Mint",
   labelNFTTypeMINT: "Mint",
   labelTxNFTFilterALL: "All Types",
   labelTxNFTFilterDEPOSIT: "Deposit",

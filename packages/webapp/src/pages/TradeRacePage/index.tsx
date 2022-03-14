@@ -85,12 +85,6 @@ export const TradeRacePage = withTranslation("common")(
         </ScrollTop>
         {eventData ? (
           <LayoutStyled marginY={4}>
-            {/*<div className={"snow"}>*/}
-            {/*  {snows.map((item, index) => (*/}
-            {/*    <React.Fragment key={index}>{item}</React.Fragment>*/}
-            {/*  ))}*/}
-            {/*</div>*/}
-            {/*remove: holiday only end*/}
             <Typography
               marginY={1}
               component={"h1"}
@@ -283,26 +277,26 @@ export const TradeRacePage = withTranslation("common")(
             )}
             {eventData.api && <RankRaw {...eventData.api} />}
 
-            <Box
-              ref={anchorRef}
-              maxWidth={1200}
-              width={"100%"}
-              paddingX={3}
-              marginX={"auto"}
-              alignSelf={"self-start"}
-              marginTop={3}
-            >
-              <Typography
-                marginBottom={1}
-                variant={"h4"}
-                color={"var(--color-text-secondary)"}
+            {eventData.rewards && (
+              <Box
+                ref={anchorRef}
+                maxWidth={1200}
+                width={"100%"}
+                paddingX={3}
+                marginX={"auto"}
+                alignSelf={"self-start"}
+                marginTop={3}
               >
-                {t("labelTradeRaceRewards")}
-              </Typography>
-              {eventData.rewards && (
-                <TradeRacePanel rawData={eventData.rewards} />
-              )}
-            </Box>
+                <Typography
+                  marginBottom={1}
+                  variant={"h4"}
+                  color={"var(--color-text-secondary)"}
+                >
+                  {t("labelTradeRaceRewards")}
+                </Typography>
+                <TradeRacePanel rawData={eventData.rewards} /> )
+              </Box>
+            )}
             <Box
               maxWidth={1200}
               width={"100%"}

@@ -31,7 +31,12 @@ import {
   Toast,
 } from "../..";
 import { TradeBtnStatus } from "../Interface";
-import { Button, IconClearStyled, TextField } from "../../../index";
+import {
+  Button,
+  IconClearStyled,
+  TextField,
+  useSettings,
+} from "../../../index";
 import { AddressError, WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
@@ -88,9 +93,10 @@ export const WithdrawWrap = <
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault ?? ""
   );
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "down"
-  );
+  const { isMobile } = useSettings();
+
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("down");
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-withdraw`,
@@ -164,6 +170,7 @@ export const WithdrawWrap = <
       justifyContent={"space-between"}
       alignItems={"center"}
       flex={1}
+      minWidth={240}
       height={"100%"}
       flexWrap={"nowrap"}
     >
@@ -423,7 +430,12 @@ export const WithdrawWrap = <
           </>
         )}
       </Grid>
-      <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
+      <Grid
+        item
+        /* marginTop={2} */ alignSelf={"stretch"}
+        marginTop={2}
+        paddingBottom={isMobile ? 0 : 5 / 2}
+      >
         <Button
           fullWidth
           variant={"contained"}

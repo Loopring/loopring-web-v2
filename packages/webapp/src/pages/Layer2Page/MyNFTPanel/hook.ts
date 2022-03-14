@@ -49,8 +49,6 @@ export const useMyNFT = () => {
     modals: { isShowNFTDeposit, isShowNFTMint },
   } = useOpenModals();
   const { etherscanBaseUrl, chainId } = useSystem();
-  const { nftDepositProps } = useNFTDeposit();
-  const { nftMintProps } = useNFTMint();
   const [page, setPage] = useState(1);
   const onDetailClose = React.useCallback(() => setIsShow(false), []);
   const popNFTDeposit = React.useCallback(
@@ -284,9 +282,6 @@ export const useMyNFT = () => {
     onDetailClose,
     isShowNFTDeposit,
     isShowNFTMint,
-    nftDepositProps,
-
-    nftMintProps,
     popNFTDeposit,
     popNFTMint,
     onNFTError,

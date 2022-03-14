@@ -108,6 +108,7 @@ export const MuiTextField = ({
           marginLeft: 0,
           marginRight: 0,
           textAlign: "right",
+          whiteSpace: "pre-line",
         },
         " .MuiFormLabel-root": {
           color: colorBase.textSecondary,

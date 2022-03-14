@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
@@ -12,35 +12,10 @@ import {
   TableType,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
-import { useDeepCompareEffect } from "react-use";
 import { Row } from "../poolsTable/Interface";
 import { AmmSideTypes } from "./interface";
 import { Currency } from "@loopring-web/loopring-sdk";
-
-// interface Row {
-//     side: TradeTypes;
-//     amount: {
-//         from: {
-//             key: string;
-//             value: number;
-//         },
-//         to: {
-//             key: string;
-//             value: number
-//         }
-//     };
-//     price: number;
-//     fee: number;
-//     time: number;
-//     cellExpend?: {
-//         value: string
-//         children: []
-//         isExpanded: boolean
-//     };
-//     children?: Row[];
-//     isExpanded?: boolean;
-//     formatter?: any;
-// }
+import { DateRange } from "@mui/lab";
 
 export type RawDataAmmItem = {
   side: AmmSideTypes;
@@ -63,9 +38,12 @@ export type RawDataAmmItem = {
 };
 
 export type AmmTableProps = {
+  getAmmpoolList: (props: any) => void;
   rawData: RawDataAmmItem[];
+  filterPairs: string[];
   pagination?: {
     pageSize: number;
+    total: number;
   };
   showFilter?: boolean;
 };
@@ -75,13 +53,17 @@ export type AmmTableProps = {
 //     page = 'page'
 // }
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    --template-columns: 300px auto auto auto !important;
+    ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 300px auto auto auto !important;`
+        : `--template-columns: 78% 22% !important;`}
+
     .rdg-row .rdg-cell:first-of-type {
       display: flex;
       align-items: center;
@@ -98,7 +80,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 const StyledSideCell: any = styled(Typography)`
   color: ${(props: any) => {
@@ -149,18 +131,6 @@ const getColumnModeAssets = (
       );
     },
   },
-  // {
-  //     key: 'amount',
-  //     name: t('labelAmmAmount'),
-  //     formatter: ({row}) => {
-  //         const {from, to} = row[ 'amount' ]
-  //         return (
-  //             <div className="rdg-cell-value">
-  //                 {`${from.value} ${from.key} + ${to.value} ${to.key}`}
-  //             </div>
-  //         )
-  //     }
-  // },
   {
     key: "lpTokenAmount",
     name: t("labelAmmLpTokenAmount"),
@@ -227,20 +197,155 @@ const getColumnModeAssets = (
   },
 ];
 
+const getColumnModeMobileAssets = (
+  t: TFunction,
+  _currency: Currency
+): Column<RawDataAmmItem, unknown>[] => [
+  {
+    key: "side",
+    name: (
+      <Typography
+        height={"100%"}
+        display={"flex"}
+        justifyContent={"space-between"}
+        variant={"inherit"}
+        color={"inherit"}
+        alignItems={"center"}
+      >
+        <span>{t("labelAmmSide")}</span>
+        <span>{t("labelAmmLpTokenAmount") + "/" + t("labelAmmFee")}</span>
+      </Typography>
+    ),
+    formatter: ({ row }) => {
+      const tradeType =
+        row["side"] === AmmSideTypes.Join
+          ? t("labelAmmJoin")
+          : t("labelAmmExit");
+      const { from, to } = row["amount"];
+      const renderFromValue = getValuePrecisionThousand(
+        from.value,
+        undefined,
+        undefined,
+        undefined,
+        false,
+        { isTrade: true }
+      );
+      const renderToValue = getValuePrecisionThousand(
+        to.value,
+        undefined,
+        undefined,
+        undefined,
+        false,
+        { isTrade: true }
+      );
+      const { key, value } = row.fee;
+
+      return (
+        <Box
+          height={"100%"}
+          width={"100%"}
+          display={"flex"}
+          flexDirection={"row"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <StyledSideCell component={"span"} value={row.side} variant={"body1"}>
+            {tradeType}
+          </StyledSideCell>
+          <Typography
+            component={"span"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"space-around"}
+            alignSelf={"stretch"}
+            alignItems={"flex-end"}
+          >
+            <Typography marginLeft={1 / 2}>
+              {`${renderFromValue} ${from.key} + ${renderToValue} ${to.key}`}
+            </Typography>
+            <Typography
+              variant={"body2"}
+              component={"span"}
+              color={"textSecondary"}
+            >
+              {`Fee: ${getValuePrecisionThousand(
+                value,
+                undefined,
+                undefined,
+                undefined,
+                false,
+                { isTrade: true, floor: false }
+              )} ${key}`}
+            </Typography>
+          </Typography>
+        </Box>
+      );
+    },
+  },
+  {
+    key: "lpTokenAmount",
+    name: t("labelAmmTime"),
+    headerCellClass: "textAlignRight",
+    formatter: ({ row }) => {
+      // const amount = row["lpTokenAmount"];
+      // const renderValue =
+      //   row["side"] === AmmSideTypes.Join
+      //     ? `+${getValuePrecisionThousand(
+      //         amount,
+      //         undefined,
+      //         undefined,
+      //         undefined,
+      //         false,
+      //         { isTrade: true }
+      //       )}`
+      //     : `-${getValuePrecisionThousand(
+      //         amount,
+      //         undefined,
+      //         undefined,
+      //         undefined,
+      //         false,
+      //         { isTrade: true }
+      //       )}`;
+      const time = moment(new Date(row["time"]), "YYYYMMDDHHMM").fromNow();
+
+      return (
+        <Box
+          height={"100%"}
+          width={"100%"}
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"flex-end"}
+          justifyContent={"center"}
+        >
+          <Typography component={"span"} variant={"body2"}>
+            {time}
+          </Typography>
+        </Box>
+      );
+    },
+  },
+];
+
 export const AmmTable = withTranslation("tables")(
   (props: WithTranslation & AmmTableProps) => {
-    const { t, pagination, showFilter, rawData } = props;
+    const { t, pagination, showFilter, rawData, filterPairs, getAmmpoolList } =
+      props;
     const [filterType, setFilterType] = React.useState(
       FilterTradeTypes.allTypes
     );
-    const [filterDate, setFilterDate] = React.useState<Date | null>(null);
+    const [isDropDown, setIsDropDown] = React.useState(true);
+    const [filterDate, setFilterDate] = React.useState<DateRange<Date | null>>([
+      null,
+      null,
+    ]);
     const [page, setPage] = React.useState(1);
-    const [totalData, setTotalData] = React.useState<RawDataAmmItem[]>(rawData);
     const [filterPair, setFilterPair] = React.useState("all");
 
-    const { currency } = useSettings();
+    const { currency, isMobile } = useSettings();
     const defaultArgs: any = {
-      columnMode: getColumnModeAssets(t, currency).filter((o) => !o.hidden),
+      columnMode: isMobile
+        ? getColumnModeMobileAssets(t, currency)
+        : getColumnModeAssets(t, currency),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<Row<any>, unknown>[],
@@ -248,20 +353,7 @@ export const AmmTable = withTranslation("tables")(
         backgroundColor: ({ colorBase }: any) => `${colorBase.box}`,
       },
     };
-
-    useDeepCompareEffect(() => {
-      setTotalData(rawData);
-    }, [rawData]);
-
     const pageSize = pagination ? pagination.pageSize : 10;
-
-    const getRenderData = React.useCallback(
-      () =>
-        pagination
-          ? totalData.slice((page - 1) * pageSize, page * pageSize)
-          : totalData,
-      [page, pageSize, pagination, totalData]
-    );
 
     const updateData = React.useCallback(
       ({
@@ -270,28 +362,27 @@ export const AmmTable = withTranslation("tables")(
         currFilterDate = filterDate,
         currFilterPair = filterPair,
       }) => {
-        let resultData = rawData ? rawData : [];
-        if (currFilterType !== FilterTradeTypes.allTypes) {
-          resultData = resultData.filter((o) => o.side === currFilterType);
-        }
-        if (currFilterDate) {
-          resultData = resultData.filter((o) => {
-            const chosenDate = Number(moment(currFilterDate).format("x"));
-            return chosenDate < o.time;
-          });
-        }
-        if (currFilterPair !== "all") {
-          resultData = resultData.filter((o) => {
-            const pair = `${o.amount.from.key} - ${o.amount.to.key}`;
-            return pair === currFilterPair;
-          });
-        }
+        const start =
+          currFilterDate[0] && Number(moment(currFilterDate[0]).format("x"));
+        const end =
+          currFilterDate[1] && Number(moment(currFilterDate[1]).format("x"));
+        let currPage = page;
         if (TableType === "filter") {
           setPage(1);
+          currPage = 1;
         }
-        setTotalData(resultData);
+        getAmmpoolList({
+          tokenSymbol: currFilterPair,
+          start,
+          end,
+          txTypes:
+            currFilterType !== FilterTradeTypes.allTypes ? currFilterType : "",
+          offset: (currPage - 1) * pageSize,
+          limit: pageSize,
+        });
+        // setTotalData(resultData);
       },
-      [rawData, filterDate, filterType, filterPair]
+      [rawData, filterDate, filterType, filterPair, page, page]
     );
 
     const setFilterItems = React.useCallback(({ type, date, pair }) => {
@@ -324,30 +415,42 @@ export const AmmTable = withTranslation("tables")(
       handleFilterChange({
         type: FilterTradeTypes.allTypes,
         date: null,
-        pair: "all",
+        pair: filterPair,
       });
     }, [handleFilterChange]);
 
     return (
-      <TableStyled>
-        {showFilter && (
-          <TableFilterStyled>
-            <Filter
-              rawData={rawData}
-              handleFilterChange={handleFilterChange}
-              filterType={filterType}
-              filterDate={filterDate}
-              filterPair={filterPair}
-              handleReset={handleReset}
-            />
-          </TableFilterStyled>
-        )}
-        <Table {...{ ...defaultArgs, ...props, rawData: getRenderData() }} />
-        {pagination && (
+      <TableStyled isMobile={isMobile}>
+        {showFilter &&
+          (isMobile && isDropDown ? (
+            <Link
+              variant={"body1"}
+              display={"inline-flex"}
+              width={"100%"}
+              justifyContent={"flex-end"}
+              paddingRight={2}
+              onClick={() => setIsDropDown(false)}
+            >
+              Show Filter
+            </Link>
+          ) : (
+            <TableFilterStyled>
+              <Filter
+                filterPairs={filterPairs}
+                handleFilterChange={handleFilterChange}
+                filterType={filterType}
+                filterDate={filterDate}
+                filterPair={filterPair}
+                handleReset={handleReset}
+              />
+            </TableFilterStyled>
+          ))}
+        <Table {...{ ...defaultArgs, ...props, rawData }} />
+        {pagination && pagination.total && (
           <TablePagination
             page={page}
-            pageSize={pageSize}
-            total={totalData.length}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
             onPageChange={handlePageChange}
           />
         )}

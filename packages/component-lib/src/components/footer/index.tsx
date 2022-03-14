@@ -152,8 +152,7 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
             variant="body2"
             component="div"
           >
-            {" "}
-            {t("labelFooter" + key.toString())}{" "}
+            {t("labelFooter" + key.toString())}
           </Typography>
           <Box
             display={"flex"}
@@ -281,7 +280,6 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
           }}
         >
           <Container>
-            {" "}
             <Box
               display={"flex"}
               flex={1}
@@ -298,7 +296,7 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
                 {t("labelCopyRight", { year: new Date().getFullYear() })}
               </Typography>
               <Box>{medias}</Box>
-            </Box>{" "}
+            </Box>
           </Container>
         </Box>
       )}

@@ -279,9 +279,10 @@ export const MyNFTPanel = withTranslation("common")(
           aria-describedby="modal-modal-description"
         >
           <SwitchPanelStyled
-            width={"80%"}
+            // width={"80%"}
+            width={isMobile ? "360px" : "80%"}
             position={"relative"}
-            minWidth={1000}
+            minWidth={isMobile ? "initial" : 1000}
             style={{ alignItems: "stretch" }}
           >
             <Box display={"flex"} width={"100%"} flexDirection={"column"}>

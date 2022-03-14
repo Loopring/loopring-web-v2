@@ -1,12 +1,15 @@
 import React from "react";
-import { useCustomDCEffect } from "hooks/common/useCustomDCEffect";
 import { useSystem } from "./stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { useAmmMap } from "./stores/Amm/AmmMap";
 import { SagaStatus } from "@loopring-web/common-resources";
 import { useTokenMap } from "./stores/token";
 import { useAccount } from "./stores/account";
-import { connectProvides, walletServices } from "@loopring-web/web3-provider";
+import {
+  ConnectProvides,
+  connectProvides,
+  walletServices,
+} from "@loopring-web/web3-provider";
 import { useAccountInit } from "./hookAccountInit";
 import { useAmmActivityMap } from "./stores/Amm/AmmActivityMap";
 import { useTicker } from "./stores/ticker";
@@ -15,6 +18,7 @@ import { useAmount } from "./stores/amount";
 import { useSocket } from "./stores/socket";
 import { useNotify } from "./stores/notify";
 import { useLayer1Store } from "./stores/localStore/layer1Store";
+import { useSettings } from "@loopring-web/component-lib";
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -40,6 +44,7 @@ export function useInit() {
       return SagaStatus.PENDING;
     }
   });
+  const { isMobile } = useSettings();
 
   const { account, updateAccount, resetAccount } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
@@ -67,39 +72,53 @@ export function useInit() {
     statusUnset: notifyStatusUnset,
   } = useNotify();
 
-  useCustomDCEffect(async () => {
-    getNotify();
-    if (
-      account.accAddress !== "" &&
-      account.connectName &&
-      account.connectName !== "unknown"
-    ) {
-      try {
-        await connectProvides[account.connectName](account.accAddress);
-        updateAccount({});
-        if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-          // @ts-ignore
-          let chainId =
-            Number(connectProvides.usedProvide?.connection?.chainId) ??
-            Number(await connectProvides.usedWeb3.eth.getChainId());
-          if (ChainId[chainId] === undefined) {
-            chainId =
-              account._chainId && account._chainId !== "unknown"
-                ? account._chainId
-                : ChainId.MAINNET;
-          }
-          circleUpdateLayer1ActionHistory({ chainId });
+  React.useEffect(() => {
+    (async (account) => {
+      getNotify();
+      if (
+        account.accAddress !== "" &&
+        account.connectName &&
+        account.connectName !== "unknown"
+      ) {
+        try {
+          ConnectProvides.IsMobile = isMobile;
+          await connectProvides[account.connectName](account.accAddress);
+          updateAccount({});
+          if (connectProvides.usedProvide && connectProvides.usedWeb3) {
+            // @ts-ignore
+            let chainId =
+              Number(connectProvides.usedProvide?.connection?.chainId) ??
+              Number(await connectProvides.usedWeb3.eth.getChainId());
+            if (ChainId[chainId] === undefined) {
+              chainId =
+                account._chainId && account._chainId !== "unknown"
+                  ? account._chainId
+                  : ChainId.MAINNET;
+            }
+            circleUpdateLayer1ActionHistory({ chainId });
 
-          if (!isNoServer) {
-            updateSystem({ chainId: chainId as any });
+            if (!isNoServer) {
+              updateSystem({ chainId: chainId as any });
+            }
+            return;
           }
-          return;
+        } catch (error) {
+          walletServices.sendDisconnect(
+            "",
+            `error at init loading  ${error}, disconnect`
+          );
+          const chainId =
+            account._chainId && account._chainId !== "unknown"
+              ? account._chainId
+              : ChainId.MAINNET;
+          if (!isNoServer) {
+            updateSystem({ chainId });
+          }
         }
-      } catch (error) {
-        walletServices.sendDisconnect(
-          "",
-          `error at init loading  ${error}, disconnect`
-        );
+      } else {
+        if (account.accAddress === "" || account.connectName === "unknown") {
+          resetAccount();
+        }
         const chainId =
           account._chainId && account._chainId !== "unknown"
             ? account._chainId
@@ -108,18 +127,7 @@ export function useInit() {
           updateSystem({ chainId });
         }
       }
-    } else {
-      if (account.accAddress === "" || account.connectName === "unknown") {
-        resetAccount();
-      }
-      const chainId =
-        account._chainId && account._chainId !== "unknown"
-          ? account._chainId
-          : ChainId.MAINNET;
-      if (!isNoServer) {
-        updateSystem({ chainId });
-      }
-    }
+    })(account);
   }, []);
   React.useEffect(() => {
     switch (systemStatus) {
@@ -187,6 +195,7 @@ export function useInit() {
         break;
     }
   }, [tokenPricesStatus]);
+
   React.useEffect(() => {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:

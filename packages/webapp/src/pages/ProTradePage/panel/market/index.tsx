@@ -251,7 +251,6 @@ export const MarketView = withTranslation("common")(
                 alignItems={"center"}
                 display={"inline-flex"}
               >
-                {" "}
                 {close}
                 {up && (
                   <UpIcon
@@ -262,7 +261,7 @@ export const MarketView = withTranslation("common")(
                     }}
                   />
                 )}
-              </Typography>{" "}
+              </Typography>
               {value}
             </>
           ) : (

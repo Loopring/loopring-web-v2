@@ -4,6 +4,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 
 import { StylePaper } from "../../styled";
 import { useGetTrades } from "./hooks";
+import { RowConfig } from "@loopring-web/common-resources";
 
 const TradePanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
@@ -16,7 +17,7 @@ const TradePanel = withTranslation("common")(
       // @ts-ignore
       let height = container?.current?.offsetHeight;
       if (height) {
-        setPageSize(Math.floor((height - 120) / 44) - 2);
+        setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 2);
       }
     }, [container, pageSize]);
 
