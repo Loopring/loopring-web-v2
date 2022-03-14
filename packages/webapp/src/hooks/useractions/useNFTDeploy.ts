@@ -36,6 +36,7 @@ import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
+import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
 export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   doDeployDone,
@@ -50,9 +51,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   const { updateWalletLayer2 } = useWalletLayer2();
   const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
-  const [walletMap2, setWalletMap2] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<I>)
-  );
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { setShowAccount } = useOpenModals();
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -135,11 +134,11 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
+              updateWalletLayer2NFT({ page });
               if (doDeployDone) {
                 doDeployDone();
               }
               resetNFTDeployData();
-              updateWalletLayer2();
             }
           } else {
             resetNFTDeployData();
@@ -275,18 +274,13 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
     }
   };
 
-  const walletLayer2Callback = () => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<I>);
-    setWalletMap2(walletMap);
-  };
-
-  useWalletLayer2Socket({ walletLayer2Callback });
+  useWalletLayer2Socket({});
 
   const nftDeployProps = {
     coinMap: {},
     handleOnNFTDataChange<T>(data: T): void {},
     tradeData: nftDeployValue as T,
-    walletMap: walletMap2 as WalletMap<any>,
+    walletMap: {},
     onNFTDeployClick: (trade: T) => {
       onNFTDeployClick(trade);
     },

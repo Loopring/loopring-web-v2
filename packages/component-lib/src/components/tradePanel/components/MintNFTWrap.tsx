@@ -39,11 +39,6 @@ import { useSettings } from "../../../stores";
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
-    // .input-wrap {
-    //   //background: var(--field-opacity);
-    //   border-radius: ${({ theme }) => theme.unit / 2}px;
-    //
-    // }
   }
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
@@ -203,16 +198,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
                 nftId: "",
               } as T)
             }
-            // helperText={
-            //   <Typography
-            //     variant={"body2"}
-            //     component={"span"}
-            //     textAlign={"left"}
-            //     display={"inherit"}
-            //   >
-            //     {tradeData.nftId}
-            //   </Typography>
-            // }
             fullWidth={true}
           />
           {tradeData.nftIdView && tradeData.nftIdView !== "" ? (
@@ -361,19 +346,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
               >
                 {t("labelNFTType") + " "} {NFT_TYPE[0].label}
               </Typography>
-
-              {/*<ToggleButtonGroup*/}
-              {/*  exclusive*/}
-              {/*  fullWidth*/}
-              {/*  {...{*/}
-              {/*    data: NFT_TYPE,*/}
-              {/*    value: tradeData?.nftType ?? 0,*/}
-              {/*  }}*/}
-              {/*  onChange={(_e, value) => {*/}
-              {/*    _handleOnNFTDataChange({ nftType: value } as T);*/}
-              {/*  }}*/}
-              {/*  size={"medium"}*/}
-              {/*/>*/}
             </Box>
             <Box
               display={"flex"}

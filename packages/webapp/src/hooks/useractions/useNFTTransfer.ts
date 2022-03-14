@@ -25,7 +25,6 @@ import { useAccount } from "stores/account";
 import { LoopringAPI } from "api_wrapper";
 import { useSystem } from "stores/system";
 import { myLog } from "@loopring-web/common-resources";
-import { makeWalletLayer2 } from "hooks/help";
 import {
   useWalletLayer2Socket,
   walletLayer2Service,
@@ -146,11 +145,7 @@ export const useNFTTransfer = <
     nftTransferValue.fee,
   ]);
 
-  const walletLayer2Callback = React.useCallback(() => {
-    updateWalletLayer2NFT({ page });
-  }, []);
-
-  useWalletLayer2Socket({ walletLayer2Callback });
+  useWalletLayer2Socket({});
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
@@ -283,6 +278,7 @@ export const useNFTTransfer = <
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
+              updateWalletLayer2NFT({ page });
               if (doTransferDone) {
                 doTransferDone();
               }

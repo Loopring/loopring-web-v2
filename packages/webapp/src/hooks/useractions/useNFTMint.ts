@@ -58,7 +58,6 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-
   const [isAvaiableId, setIsAvaiableId] = React.useState(false);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMint } = useOpenModals();
@@ -141,10 +140,8 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       disableBtn,
     ]
   );
-  const walletLayer2Callback = React.useCallback(() => {
-    updateWalletLayer2NFT({ page });
-  }, []);
-  useWalletLayer2Socket({ walletLayer2Callback });
+
+  useWalletLayer2Socket({});
 
   React.useEffect(() => {
     updateBtnStatus();
@@ -241,7 +238,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-
+              updateWalletLayer2NFT({ page });
               resetDefault();
               // checkFeeIsEnough();
             }
