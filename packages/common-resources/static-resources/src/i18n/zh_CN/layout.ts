@@ -82,7 +82,7 @@ export default {
   labelLandingHeaderLayer2: "zkRollup Layer2",
   labelLandingHeaderWallet: "Smart Wallet",
   labelCopyRight: "© 2017 Loopring Technology Limited. All rights reserved.",
-
   labelWalletProtect: "Guardian",
-  labelWalletValidation: "Validation",
+  labelWalletValidation: "Approval Requests",
+  labelWalletHistory: "History",
 };
