@@ -317,6 +317,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                 image: value.image,
                 description: value.description ?? EmptyValueTag,
                 balance: MINT_LIMIT,
+                royaltyPercentage: value.royalty_percentage,
                 ...shouldUpdate,
               };
             } else {
