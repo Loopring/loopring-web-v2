@@ -547,7 +547,7 @@ export default {
     " Make an order form third Loopring-parter, Once your order confirmed  by Loopring, it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
   labelWalletToWallet:
-    "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
+    "The connected wallet is a contract address which cannot be used. If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
   labelWalletAddAsGuardian: "Add a guardian",
   labelWalletInputGuardianCode: "Input Guardian code",
   labelWalletScanQRCode: "Please use your Loopring wallet to scan the QR code",
