@@ -70,7 +70,7 @@ export default {
   labelTxTime: "Time",
   labelTxTxnHash: "Txn Hash",
   labelTxStatus: "Status",
-
+  labelTransactions: "Transactions",
   labelVolume: "volume",
   labelTradePair: "Trade Pair",
   labelPool: "Pool",

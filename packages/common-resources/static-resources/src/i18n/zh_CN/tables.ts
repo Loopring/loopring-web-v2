@@ -70,7 +70,7 @@ export default {
   labelTxTime: "时间",
   labelTxTxnHash: "交易哈希",
   labelTxStatus: "状态",
-
+  labelTransactions: "Transactions",
   labelVolume: "交易量",
   labelTradePair: "交易对",
   labelPool: "资金池",
