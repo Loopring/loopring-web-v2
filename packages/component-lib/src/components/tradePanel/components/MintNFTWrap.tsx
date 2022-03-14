@@ -426,7 +426,10 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
           >
             <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
               Your NFT metadata should identify
-              <em>name, image & royalty_percentage(number from 0 to 10)</em>.
+              <em style={{ fontWeight: 600 }}>
+                name, image & royalty_percentage(number from 0 to 10)
+              </em>
+              .
             </Trans>
           </Typography>
         )}
