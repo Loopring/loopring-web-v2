@@ -123,7 +123,14 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         enableBtn();
         return;
       }
-      if (!nftMintValue.image && !nftMintValue.name) {
+      if (
+        (!nftMintValue.image && !nftMintValue.name) ||
+        !(
+          nftMintValue.royaltyPercentage &&
+          nftMintValue.royaltyPercentage >= 0 &&
+          nftMintValue.royaltyPercentage <= 10
+        )
+      ) {
         setLabelAndParams("labelNFTMintNoMetaBtn", {});
       }
       disableBtn();
@@ -420,7 +427,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               nftFactory: sdk.NFTFactory[chainId],
               nftBaseUri: "",
             },
-            royaltyPercentage: nftMintValue.royaltyPercentage ?? 0,
+            royaltyPercentage: Math.floor(nftMintValue.royaltyPercentage) ?? 0,
             forceToMint: false,
           };
           myLog("onNFTMintClick req:", req);

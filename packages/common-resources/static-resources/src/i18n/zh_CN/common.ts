@@ -529,6 +529,8 @@ export default {
   labelMintSubmit: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
   labelNFTMintNoMetaBtn: "No Metadata",
+  labelNFTMintNoMetaDetail:
+    "Your NFT metadata should identify <1>name, image & royalty_percentage(Int from 0 to 10)</1>.",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:

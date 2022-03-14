@@ -546,7 +546,7 @@ export default {
   labelNFTMintBtn: "Mint My NFT",
   labelNFTMintNoMetaBtn: "Wrong Metadata",
   labelNFTMintNoMetaDetail:
-    "Your NFT metadata should identify <1>name, image & royalty_percentage(number from 0 to 10).",
+    "Your NFT metadata should identify <1>name, image & royalty_percentage(Int from 0 to 10)</1>.",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:
