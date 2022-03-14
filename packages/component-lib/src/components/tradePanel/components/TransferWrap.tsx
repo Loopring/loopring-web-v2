@@ -375,7 +375,8 @@ export const TransferWrap = <
                     <Typography
                       color={"var(--color-text-primary)"}
                       variant={"body2"}
-                      marginTop={1 / 4}
+                      marginTop={1 / 2}
+                      style={{ wordBreak: "break-all" }}
                     >
                       {realAddr}
                     </Typography>

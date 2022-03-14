@@ -43,6 +43,11 @@ const StyledChartWrapper = styled(Box)`
     padding: ${({ theme }) => theme.unit * 2.5}px
       ${({ theme }) => theme.unit * 3}px;
   }
+  .recharts-pie {
+    @media only screen and (max-width: 768px) {
+      transform: scale(0.9) translate(10px, 10px);
+    }
+  }
 `;
 const StyleTitlePaper = styled(Box)`
   width: 100%;
@@ -315,6 +320,8 @@ const AssetPanel = withTranslation("common")(
             component={"section"}
             className={"MuiPaper-elevation2"}
             marginRight={isMobile ? 0 : 2}
+            display={"flex"}
+            flexDirection={"column"}
           >
             <Typography
               component="span"
@@ -327,7 +334,9 @@ const AssetPanel = withTranslation("common")(
                 {t("labelAssetsDistribution")}
               </Typography>
             </Typography>
-            <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []} />
+            <Box flex={1} marginLeft={isMobile ? 2 : 0}>
+              <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []} />
+            </Box>
           </Box>
           {!isMobile && (
             <Box

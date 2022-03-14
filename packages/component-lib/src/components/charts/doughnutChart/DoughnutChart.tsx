@@ -145,7 +145,7 @@ export const DoughnutChart = ({ data }: DoughnutChartProps) => {
       ? 5
       : 0;
   return (
-    <ResponsiveContainer debounce={1} width={"99%"}>
+    <ResponsiveContainer debounce={1}>
       <PieChart>
         <Pie
           dataKey={"value"}
