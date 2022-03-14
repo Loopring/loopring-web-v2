@@ -32,7 +32,8 @@
 {
 "description": "Description of your NFT goes here",
 "image": "ipfs://CID of the folder of the image from point 5/imagename.jpg",
-"name": "Name of the NFT"
+"name": "Name of the NFT",
+"royalty_percentage": integer between 1 to 10
 }
 ```
 
@@ -42,7 +43,8 @@
 {
 "description": "Precious",
 "image": "ipfs://QmcegKF6r3VqSc4jmSmJ6WeM3kVy9NAjY9D1e33xk56C77/precious.jpg",
-"name": "Diamonds Are a Girl's Best Friend"
+"name": "Diamonds Are a Girl's Best Friend",
+"royalty_percentage": 10
 }
 ```
 
