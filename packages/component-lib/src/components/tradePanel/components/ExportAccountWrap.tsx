@@ -23,7 +23,6 @@ export const ExportAccountWrap = ({
     exportAccountProps: { accountInfo },
   } = rest;
 
-  // console.log({exportAccountProps})
   React.useEffect(() => {
     if (accountInfo) {
       try {
@@ -37,7 +36,6 @@ export const ExportAccountWrap = ({
   return (
     <Grid
       container
-
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
       direction={"column"}

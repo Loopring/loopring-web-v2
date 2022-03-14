@@ -49,44 +49,6 @@ export async function unlockAccount() {
         chainId: chainId as any,
         accountId: account.accountId,
       });
-
-      await (connectProvides.usedWeb3 as Web3).eth.personal.sign(
-        msg,
-        account.owner,
-        "",
-        async function (err: any, result: any) {
-          //TODO: debugger
-          console.log(
-            "sdk.GlobalAPI.KEY_MESSAGE",
-            sdk.GlobalAPI.KEY_MESSAGE,
-            msg
-          );
-          if (!err) {
-            console.log(
-              "ecRecover valid before",
-              msg,
-              result,
-              (connectProvides.usedWeb3 as Web3).eth.personal.ecRecover
-            );
-            const valid: any = await (
-              connectProvides.usedWeb3 as Web3
-            ).eth.personal
-              .ecRecover(msg, result)
-              .catch((error) => {
-                console.log(
-                  "unlockAccount isMobile ecRecover catch error:",
-                  isMobile,
-                  error
-                );
-              });
-            console.log("ecRecover valid pass", valid);
-            if (valid.result) {
-              return { sig: result };
-            }
-          }
-        }
-      );
-
       const walletTypePromise: Promise<{ walletType: any }> =
         window.ethereum &&
         connectName === sdk.ConnectorNames.MetaMask &&
@@ -95,11 +57,7 @@ export async function unlockAccount() {
           : LoopringAPI.walletAPI.getWalletType({
               wallet: account.owner,
             });
-      const [
-        response,
-        // { apiKey, raw_data },
-        { walletType },
-      ] = await Promise.all([
+      const [response, { walletType }] = await Promise.all([
         LoopringAPI.userAPI.getUserApiKey(
           {
             accountId: account.accountId,
@@ -116,7 +74,6 @@ export async function unlockAccount() {
         ((response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message)
       ) {
-        console.log("try to sendErrorUnlock....");
         accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
         accountServices.sendAccountSigned({
