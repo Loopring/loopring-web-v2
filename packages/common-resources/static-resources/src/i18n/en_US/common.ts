@@ -544,7 +544,9 @@ export default {
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
-  labelNFTMintNoMetaBtn: "No Metadata",
+  labelNFTMintNoMetaBtn: "Wrong Metadata",
+  labelNFTMintNoMetaDetail:
+    "Your NFT metadata should identify <1>name, image & royalty_percentage(number from 0 to 10).",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:

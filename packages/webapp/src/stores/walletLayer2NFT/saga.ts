@@ -1,9 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import {
-  getWalletLayer2NFTStatus,
-  socketUpdateBalance,
-  updateWalletLayer2NFT,
-} from "./reducer";
+import { getWalletLayer2NFTStatus, updateWalletLayer2NFT } from "./reducer";
 import { LoopringAPI } from "api_wrapper";
 import store from "../index";
 
@@ -36,7 +32,7 @@ export function* getPostsSaga({ payload: { page = 1 } }: any) {
     const walletLayer2NFT: any = yield call(getWalletLayer2NFTBalance, {
       offset,
     });
-    yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }));
+    yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT, page }));
   } catch (err) {
     yield put(getWalletLayer2NFTStatus(err));
   }

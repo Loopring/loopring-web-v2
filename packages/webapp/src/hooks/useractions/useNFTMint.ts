@@ -32,12 +32,15 @@ import {
 } from "../../defs/common_defs";
 import { checkErrorInfo } from "./utils";
 import { isAccActivated } from "./checkAccStatus";
-import { walletLayer2Service } from "../../services/socket";
-import { makeWalletLayer2 } from "../help";
+import {
+  useWalletLayer2Socket,
+  walletLayer2Service,
+} from "../../services/socket";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useChargeFees } from "../common/useChargeFees";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
+import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
@@ -54,11 +57,11 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { t } = useTranslation("common");
   const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
 
   const [isAvaiableId, setIsAvaiableId] = React.useState(false);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMint } = useOpenModals();
-  const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>);
   const [tokenAddress, setTokenAddress] = React.useState(() => {
     return (
       LoopringAPI.nftAPI?.computeNFTAddress({
@@ -103,7 +106,9 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       resetBtnInfo();
       if (
         !error &&
-        walletMap &&
+        nftMintValue.royaltyPercentage &&
+        nftMintValue.royaltyPercentage >= 0 &&
+        nftMintValue.royaltyPercentage <= 10 &&
         nftMintValue &&
         tokenAddress &&
         nftMintValue.tradeValue &&
@@ -122,21 +127,13 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       if (!nftMintValue.image && !nftMintValue.name) {
         setLabelAndParams("labelNFTMintNoMetaBtn", {});
       }
-      // if (Number(nftMintValue.tradeValue) <= 0) {
-      //   setLabelAndParams("labelNFTMintNoMetaBtn", {});
-      // }
-
-      // else {
       disableBtn();
       myLog("try to disable nftMint btn!");
-
-      // }
     },
     [
       isAvaiableId,
       isFeeNotEnough,
       resetBtnInfo,
-      walletMap,
       nftMintValue,
       tokenAddress,
       enableBtn,
@@ -144,6 +141,10 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       disableBtn,
     ]
   );
+  const walletLayer2Callback = React.useCallback(() => {
+    updateWalletLayer2NFT({ page });
+  }, []);
+  useWalletLayer2Socket({ walletLayer2Callback });
 
   React.useEffect(() => {
     updateBtnStatus();
@@ -375,6 +376,9 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
         (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
+        nftMintValue.royaltyPercentage &&
+        nftMintValue.royaltyPercentage >= 0 &&
+        nftMintValue.royaltyPercentage <= 10 &&
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
         !isFeeNotEnough &&
@@ -418,6 +422,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               nftFactory: sdk.NFTFactory[chainId],
               nftBaseUri: "",
             },
+            royaltyPercentage: nftMintValue.royaltyPercentage ?? 0,
             forceToMint: false,
           };
           myLog("onNFTMintClick req:", req);
@@ -449,21 +454,8 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  // const resetDefault = React.useCallback(() => {
-  //   checkFeeIsEnough();
-  //   updateNFTMintData({
-  //     fee: feeInfo,
-  //     tokenAddress: "",
-  //     nftIdView: "",
-  //     nftType: NFTType.ERC1155.toString(),
-  //     image: "",
-  //     name: "",
-  //     balance: 0,
-  //   });
-  // }, [walletMap, updateNFTMintData, feeInfo]);
 
   const nftMintProps: NFTMintProps<T, I> = React.useMemo(() => {
-    // const tradeData = store.getState()._router_modalData.nftMintValue;
     return {
       chargeFeeTokenList,
       isFeeNotEnough,
@@ -473,7 +465,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       isAvaiableId,
       handleOnNFTDataChange,
       onNFTMintClick,
-      walletMap: walletMap as any,
+      walletMap: {} as any,
       coinMap: totalCoinMap as any,
       tradeData: nftMintValue as T,
       nftMintBtnStatus: btnStatus,
@@ -492,7 +484,6 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     nftMintValue,
     onNFTMintClick,
     totalCoinMap,
-    walletMap,
   ]);
 
   return {

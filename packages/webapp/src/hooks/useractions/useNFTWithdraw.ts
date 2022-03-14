@@ -43,6 +43,7 @@ import {
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
+import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
 export const useNFTWithdraw = <
   R extends IBData<T> &
@@ -66,13 +67,10 @@ export const useNFTWithdraw = <
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
     useModalData();
-
-  const [walletMap2, setWalletMap2] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
-  );
 
   const {
     chargeFeeTokenList,
@@ -155,9 +153,9 @@ export const useNFTWithdraw = <
   ]);
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>);
-    setWalletMap2(walletMap);
+    updateWalletLayer2NFT({ page });
   }, []);
+  useWalletLayer2Socket({ walletLayer2Callback });
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
@@ -230,8 +228,6 @@ export const useNFTWithdraw = <
     accountStatus,
     account.readyState,
   ]);
-
-  useWalletLayer2Socket({ walletLayer2Callback });
 
   const processRequest = React.useCallback(
     async (request: sdk.NFTWithdrawRequestV3, isNotHardwareWallet: boolean) => {
@@ -474,7 +470,7 @@ export const useNFTWithdraw = <
     disableWithdrawList,
     tradeData: nftWithdrawValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
-    walletMap: walletMap2 as WalletMap<any>,
+    walletMap: {},
     isCFAddress,
     isContractAddress: isContract1XAddress,
     isAddressCheckLoading,

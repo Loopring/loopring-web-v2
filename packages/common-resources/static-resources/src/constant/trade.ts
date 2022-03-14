@@ -73,6 +73,7 @@ export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo & {
     image: string;
     name: string;
+    royaltyPercentage: number; // 0 - 10 for UI
     nftIdView: string;
     description: string;
     nftBalance: number;

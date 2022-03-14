@@ -56,12 +56,6 @@ const NFT_TYPE: TGItemData[] = [
     label: "ERC1155",
     disabled: false,
   },
-  // {
-  //   value: NFTType.ERC721,
-  //   key: "ERC721",
-  //   label: "ERC721", // after 18n
-  //   disabled: true,
-  // },
 ];
 export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   disabled,
@@ -451,6 +445,16 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
       </Grid>
 
       <Grid item marginTop={3} alignSelf={"stretch"}>
+        {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
+          <Typography
+            color={"var(--color-warning)"}
+            component={"p"}
+            variant={"body1"}
+            marginBottom={1}
+          >
+            {t("labelNFTMintNoMetaDetail")}
+          </Typography>
+        )}
         <Button
           fullWidth
           variant={"contained"}

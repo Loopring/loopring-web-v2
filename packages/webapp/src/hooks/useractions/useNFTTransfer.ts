@@ -40,6 +40,7 @@ import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
 import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
+import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
 export const useNFTTransfer = <
   R extends IBData<T> &
@@ -63,16 +64,13 @@ export const useNFTTransfer = <
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
 
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
 
-  const [walletMap, setWalletMap] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
-  );
-  const [addressOrigin, setAddressOrigin] = React.useState<"Wallet" | null>(
-    null
-  );
+  const [addressOrigin, setAddressOrigin] =
+    React.useState<"Wallet" | null>(null);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -149,8 +147,7 @@ export const useNFTTransfer = <
   ]);
 
   const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? {};
-    setWalletMap(walletMap);
+    updateWalletLayer2NFT({ page });
   }, []);
 
   useWalletLayer2Socket({ walletLayer2Callback });
@@ -474,7 +471,7 @@ export const useNFTTransfer = <
     addressOrigin,
     tradeData: nftTransferValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
-    walletMap: walletMap as WalletMap<T>,
+    walletMap: {},
     transferBtnStatus: btnStatus,
     onTransferClick: (trade: R) => {
       onTransferClick(trade);
