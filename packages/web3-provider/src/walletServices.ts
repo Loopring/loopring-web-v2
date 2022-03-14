@@ -23,6 +23,7 @@ export const walletServices = {
   sendConnect: async (web3: Web3, provider: any) => {
     try {
       let accounts, chainId: number;
+      //@ts-ignore
       accounts = provider.accounts ?? (await web3.eth.getAccounts());
       chainId = provider.chainId ?? (await web3.eth.getChainId());
       subject.next({

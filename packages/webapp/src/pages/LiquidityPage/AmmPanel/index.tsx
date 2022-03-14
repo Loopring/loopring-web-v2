@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   AmmPanel,
   AmmPanelType,
@@ -10,7 +10,6 @@ import {
   CoinInfo,
   EmptyValueTag,
   getValuePrecisionThousand,
-  myLog,
   WalletMap,
 } from "@loopring-web/common-resources";
 import { useAmmJoin } from "./hook_join";
@@ -22,7 +21,6 @@ import { TOAST_TIME } from "defs/common_defs";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import store from "stores";
-import { useTokenMap } from "stores/token";
 import { initSlippage } from "stores/router";
 import { useDeepCompareEffect } from "react-use";
 
@@ -299,7 +297,6 @@ export const AmmPanelView = ({
 
       {pair ? (
         <>
-          {" "}
           <AmmPanel
             {...{ ...rest }}
             accStatus={accountStatus}

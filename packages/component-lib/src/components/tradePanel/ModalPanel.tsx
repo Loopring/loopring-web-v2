@@ -53,7 +53,6 @@ const BoxStyle = styled(Box)<
           ${({ theme }) => theme.unit * 5}px;
         overflow-x: hidden;
         overflow-y: scroll !important;
-        padding-bottom: var(--toolbar-row-padding);
         background: initial;
         .container {
           height: 100%;

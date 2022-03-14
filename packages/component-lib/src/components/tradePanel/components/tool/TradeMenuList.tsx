@@ -107,35 +107,36 @@ export const TradeMenuList = <T extends IBData<I>, I>({
       );
     };
     return (
-      <>
-        <Box className={"menu-panel"} flex={1} height={"100%"}>
-          <InputSelect
-            {...{
-              ...{ ...inputSelectProps, selected },
-              backElement,
-              panelRender: PanelRender,
-              t,
-              ...rest,
-            }}
-          />{" "}
-        </Box>
-      </>
+      <Box
+        className={"menu-panel"}
+        flexDirection={"column"}
+        flex={1}
+        height={"100%"}
+        display={"flex"}
+      >
+        <InputSelect
+          {...{
+            ...{ ...inputSelectProps, selected },
+            backElement,
+            panelRender: PanelRender,
+            t,
+            ...rest,
+          }}
+        />
+      </Box>
     );
   } catch (error) {
     return (
-      <>
-        <Box flex={1} height={"100%"}>
-          {" "}
-          <InputSelect
-            {...{
-              ...inputSelectProps,
-              panelRender: PanelEmptyRender,
-              t,
-              ...rest,
-            }}
-          />{" "}
-        </Box>
-      </>
+      <Box flex={1} height={"100%"}>
+        <InputSelect
+          {...{
+            ...inputSelectProps,
+            panelRender: PanelEmptyRender,
+            t,
+            ...rest,
+          }}
+        />
+      </Box>
     );
   }
 };

@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Grid, MenuItem } from "@mui/material";
+import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Button, TextField, DateRangePicker } from "../../../basic-lib";
 import { DropDownIcon } from "@loopring-web/common-resources";
 import { DateRange } from "@mui/lab";
 import { UserNFTTxTypes, TxNFTType } from "@loopring-web/loopring-sdk";
 import { NFTTableFilter } from "../Interface";
+import { useSettings } from "../../../../stores";
 
 export interface FilterProps {
   handleFilterChange: (filter: Partial<NFTTableFilter>) => void;
@@ -32,15 +33,6 @@ const StyledTextFiled = styled(TextField)`
   }
 `;
 
-const StyledBtnBox = styled(Box)`
-  display: flex;
-  margin-left: 40%;
-
-  button:first-of-type {
-    margin-right: 8px;
-  }
-`;
-
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
@@ -48,6 +40,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
     filterDate,
     handleFilterChange,
   }: FilterProps & WithTranslation) => {
+    const { isMobile } = useSettings();
     const transactionTypeList = [
       {
         label: t(`labelTxNFTFilter${TxNFTType.ALL}`),
@@ -72,7 +65,15 @@ export const Filter = withTranslation("tables", { withRef: true })(
     ];
     return (
       <Grid container spacing={2}>
-        <Grid item xs={2}>
+        <Grid item xs={12} order={isMobile ? 0 : 1} lg={6}>
+          <DateRangePicker
+            value={filterDate ?? [null, null]}
+            onChange={(date: any) => {
+              handleFilterChange({ duration: date });
+            }}
+          />
+        </Grid>
+        <Grid item xs={6} order={isMobile ? 1 : 0} lg={2}>
           <StyledTextFiled
             id="table-transaction-trade-types"
             select
@@ -95,32 +96,21 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
-          <DateRangePicker
-            value={filterDate ?? [null, null]}
-            onChange={(date: any) => {
-              handleFilterChange({ duration: date });
+        <Grid item xs={6} order={3} lg={2}>
+          <Button
+            fullWidth
+            variant={"outlined"}
+            size={"medium"}
+            color={"primary"}
+            onClick={() => {
+              handleFilterChange({
+                duration: [null, null],
+                txType: undefined,
+              });
             }}
-          />
-        </Grid>
-        <Grid item>
-          <StyledBtnBox>
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => {
-                handleFilterChange({
-                  duration: [null, null],
-                  txType: undefined,
-                });
-              }}
-            >
-              {t("labelFilterReset")}
-            </Button>
-            {/* <Button variant={'contained'} size={'small'} color={'primary'}
-                            onClick={handleSearch}>{t('labelFilterSearch')}</Button> */}
-          </StyledBtnBox>
+          >
+            {t("labelFilterReset")}
+          </Button>
         </Grid>
       </Grid>
     );

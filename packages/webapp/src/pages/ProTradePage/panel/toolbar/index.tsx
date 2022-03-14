@@ -206,7 +206,7 @@ export const Toolbar = withTranslation("common")(
       }
       return [];
     }, [tickList, ammPoolBalances]);
-
+    const { isMobile } = useSettings();
     const resetTableData = React.useCallback(
       (tableData) => {
         setFilteredData(tableData);
@@ -321,7 +321,6 @@ export const Toolbar = withTranslation("common")(
                 handleTabChange(_, "favourite");
               }
             }}
-            width={"min-content"}
             style={{ cursor: "pointer", whiteSpace: "nowrap" }}
           >
             {market}
@@ -374,7 +373,7 @@ export const Toolbar = withTranslation("common")(
                   </Tabs>
                 </Box>
                 <Divider style={{ marginTop: "-1px" }} />
-                <TableProWrapStyled width={"580px"}>
+                <TableProWrapStyled width={isMobile ? "360px" : "580px"}>
                   <QuoteTable
                     isPro
                     rawData={filteredData}
@@ -500,64 +499,78 @@ export const Toolbar = withTranslation("common")(
                 )}%`}
               </PriceValueStyled>
             </Grid>
-            <Grid item>
-              <PriceTitleStyled>{t("labelProToolbar24hHigh")}</PriceTitleStyled>
-              <PriceValueStyled>
-                {getValuePrecisionThousand(
-                  marketTicker?.tradeFloat?.high,
-                  undefined,
-                  undefined,
-                  getMarketPrecision(market),
-                  true,
-                  { isPrice: true }
-                )}
-              </PriceValueStyled>
-            </Grid>
-            <Grid item>
-              <PriceTitleStyled>{t("labelProToolbar24hLow")}</PriceTitleStyled>
-              <PriceValueStyled>
-                {getValuePrecisionThousand(
-                  marketTicker?.tradeFloat?.low,
-                  undefined,
-                  undefined,
-                  getMarketPrecision(market),
-                  true,
-                  { isPrice: true }
-                )}
-              </PriceValueStyled>
-            </Grid>
-            <Grid item>
-              <PriceTitleStyled>
-                {t("labelProToolbar24hBaseVol", { symbol: marketTicker.base })}
-              </PriceTitleStyled>
-              <PriceValueStyled>
-                {getValuePrecisionThousand(
-                  marketTicker.baseVol,
-                  undefined,
-                  undefined,
-                  getTokenPrecision(marketTicker.base),
-                  true,
-                  { isPrice: true }
-                )}
-              </PriceValueStyled>
-            </Grid>
-            <Grid item>
-              <PriceTitleStyled>
-                {t("labelProToolbar24hQuoteVol", {
-                  symbol: marketTicker.quote,
-                })}
-              </PriceTitleStyled>
-              <PriceValueStyled>
-                {getValuePrecisionThousand(
-                  marketTicker.quoteVol,
-                  undefined,
-                  undefined,
-                  getTokenPrecision(marketTicker.quote),
-                  true,
-                  { isPrice: true }
-                )}
-              </PriceValueStyled>
-            </Grid>
+            {!isMobile && (
+              <Grid item>
+                <PriceTitleStyled>
+                  {t("labelProToolbar24hHigh")}
+                </PriceTitleStyled>
+                <PriceValueStyled>
+                  {getValuePrecisionThousand(
+                    marketTicker?.tradeFloat?.high,
+                    undefined,
+                    undefined,
+                    getMarketPrecision(market),
+                    true,
+                    { isPrice: true }
+                  )}
+                </PriceValueStyled>
+              </Grid>
+            )}
+            {!isMobile && (
+              <Grid item>
+                <PriceTitleStyled>
+                  {t("labelProToolbar24hLow")}
+                </PriceTitleStyled>
+                <PriceValueStyled>
+                  {getValuePrecisionThousand(
+                    marketTicker?.tradeFloat?.low,
+                    undefined,
+                    undefined,
+                    getMarketPrecision(market),
+                    true,
+                    { isPrice: true }
+                  )}
+                </PriceValueStyled>
+              </Grid>
+            )}
+            {!isMobile && (
+              <Grid item>
+                <PriceTitleStyled>
+                  {t("labelProToolbar24hBaseVol", {
+                    symbol: marketTicker.base,
+                  })}
+                </PriceTitleStyled>
+                <PriceValueStyled>
+                  {getValuePrecisionThousand(
+                    marketTicker.baseVol,
+                    undefined,
+                    undefined,
+                    getTokenPrecision(marketTicker.base),
+                    true,
+                    { isPrice: true }
+                  )}
+                </PriceValueStyled>
+              </Grid>
+            )}
+            {!isMobile && (
+              <Grid item>
+                <PriceTitleStyled>
+                  {t("labelProToolbar24hQuoteVol", {
+                    symbol: marketTicker.quote,
+                  })}
+                </PriceTitleStyled>
+                <PriceValueStyled>
+                  {getValuePrecisionThousand(
+                    marketTicker.quoteVol,
+                    undefined,
+                    undefined,
+                    getTokenPrecision(marketTicker.quote),
+                    true,
+                    { isPrice: true }
+                  )}
+                </PriceValueStyled>
+              </Grid>
+            )}
           </Grid>
         </Box>
         <Box>
@@ -566,7 +579,7 @@ export const Toolbar = withTranslation("common")(
               handleLayoutChange([], undefined, layoutConfigs[0].layouts);
             }}
           >
-            {t("labelResetLayout")}
+            {isMobile ? t("labelResetMobileLayout") : t("labelResetLayout")}
           </Button>
         </Box>
       </Box>

@@ -13,12 +13,11 @@ import {
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-  DepositNFTWrap,
   EmptyDefault,
-  MintNFTWrap,
   ModalCloseButton,
   PanelContent,
   SwitchPanelStyled,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
 import { NFTDetail } from "./components/detail";
@@ -58,6 +57,7 @@ const enum TabKey {
 export const MyNFTPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const theme = useTheme();
+    const { isMobile } = useSettings();
     const {
       popItem,
       onDetail,
@@ -290,7 +290,7 @@ export const MyNFTPanel = withTranslation("common")(
             </Box>
             <Box
               display={"flex"}
-              flexDirection={"row"}
+              flexDirection={isMobile ? "column" : "row"}
               flex={1}
               justifyContent={"stretch"}
             >
@@ -327,26 +327,27 @@ export const MyNFTPanel = withTranslation("common")(
               />
               <Tab label={t("labelTransactions")} value={TabKey.TRANSACTION} />
             </Tabs>
-
-            <Box display={"flex"}>
-              <Button
-                variant={"contained"}
-                size={"small"}
-                style={{ marginLeft: 4 }}
-                onClick={() => popNFTDeposit()}
-              >
-                {t("labelNFTDeposit")}
-              </Button>
-              <Button
-                disabled={false}
-                variant={"outlined"}
-                size={"medium"}
-                style={{ marginLeft: `${theme.unit}px` }}
-                onClick={() => popNFTMint()}
-              >
-                {t("nftMintBtn")}
-              </Button>
-            </Box>
+            {!isMobile && (
+              <Box display={"flex"}>
+                <Button
+                  variant={"contained"}
+                  size={"small"}
+                  style={{ marginLeft: 4 }}
+                  onClick={() => popNFTDeposit()}
+                >
+                  {t("labelNFTDeposit")}
+                </Button>
+                <Button
+                  disabled={false}
+                  variant={"outlined"}
+                  size={"medium"}
+                  style={{ marginLeft: `${theme.unit}px` }}
+                  onClick={() => popNFTMint()}
+                >
+                  {t("nftMintBtn")}
+                </Button>
+              </Box>
+            )}
           </Box>
           <Box flex={1} display={"flex"} flexDirection={"column"}>
             {panelList[currentTab].element}

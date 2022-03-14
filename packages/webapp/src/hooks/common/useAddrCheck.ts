@@ -7,7 +7,6 @@ import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
 import { globalSetup } from "@loopring-web/common-resources";
 import _ from "lodash";
-import { WalletType } from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export const useAddressCheck = () => {

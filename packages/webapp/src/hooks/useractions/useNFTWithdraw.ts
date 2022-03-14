@@ -103,7 +103,11 @@ export const useNFTWithdraw = <
     isAddressCheckLoading,
   } = useAddressCheck();
 
-  const isNotAvaiableAddress = isCFAddress || isContract1XAddress;
+  const isNotAvaiableAddress = isCFAddress
+    ? "isCFAddress"
+    : isContract1XAddress
+    ? "isContract1XAddress"
+    : undefined;
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 

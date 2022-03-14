@@ -17,6 +17,7 @@ import {
   setShowConnect,
   SubMenu,
   SubMenuList,
+  useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import { changeShowModel, useAccount } from "../../stores/account";
@@ -161,7 +162,11 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography margin={3} variant={"h1"} textAlign={"center"}>
+              <Typography
+                margin={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
                 {t("labelWalletToWallet")}
               </Typography>
             </Box>
@@ -206,13 +211,19 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography margin={3} variant={"h1"} textAlign={"center"}>
+              <Typography
+                margin={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
                 {t("labelWalletToWallet")}
               </Typography>
             </Box>
           );
       }
     };
+    const { isMobile } = useSettings();
+
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
@@ -224,7 +235,11 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginTop={3} variant={"h1"} textAlign={"center"}>
+              <Typography
+                marginTop={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
                 {t("describeTitleConnectToWalletAsGuardian")}
               </Typography>
 
@@ -289,7 +304,11 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
                 {t("describeTitleOnErrorNetwork", {
                   connectName: account.connectName,
                 })}
