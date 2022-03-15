@@ -33,7 +33,7 @@
 "description": "Description of your NFT goes here",
 "image": "ipfs://CID of the folder of the image from point 5/imagename.jpg",
 "name": "Name of the NFT",
-"royalty_percentage":0
+"royalty_percentage": integer between 0 to 10
 }
 ```
 
@@ -44,10 +44,19 @@
 "description": "Precious",
 "image": "ipfs://QmcegKF6r3VqSc4jmSmJ6WeM3kVy9NAjY9D1e33xk56C77/precious.jpg",
 "name": "Diamonds Are a Girl's Best Friend",
-"royalty_percentage": 1
-
+"royalty_percentage": 10
 }
 ```
+
+***JSON Legend***
+
+***description:*** *A text string containing a description of your NFT.*
+
+***image:*** *A text string containing an image to display for your NFT.*
+
+***name:*** *A text string containing the name or title of your NFT.*
+
+***royalty_percentage:*** *An integer from 0 - 10 describing the amount of royalty to be collected by the creator each time the NFT is sold. For example, if a creator mints an NFT with a royalty percentage of 10, the creator will receive 10% of the proceeds of every sale. Royalties are distributed to creators at the end of each month. If an NFT is minted with a royalty percentage of 0, no royalties will be collected.*
 
 8. Save the xxxx.json file you just created
    
