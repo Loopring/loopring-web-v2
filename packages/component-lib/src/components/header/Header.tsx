@@ -443,14 +443,16 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                 t,
                 ...rest,
               })}
-              <ButtonStyled
-                size={"small"}
-                disabled={isMaintaining}
-                variant={"contained"}
-                onClick={() => history.push("/trade/lite/LRC-ETH")}
-              >
-                {t("labelLaunchApp")}
-              </ButtonStyled>
+              {!!isLandPage && (
+                <ButtonStyled
+                  size={"small"}
+                  disabled={isMaintaining}
+                  variant={"contained"}
+                  onClick={() => history.push("/trade/lite/LRC-ETH")}
+                >
+                  {t("labelLaunchApp")}
+                </ButtonStyled>
+              )}
             </Box>
           </ToolBarStyled>
         );
@@ -516,14 +518,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     />
                   )}
 
-                  {/*<Typography variant={} */}
-                  {/*></Typography>*/}
-                  {/*{getDrawerChoices({*/}
-                  {/*  menuList: headerMenuLandingData,*/}
-                  {/*  i18n,*/}
-                  {/*  t,*/}
-                  {/*  ...rest,*/}
-                  {/*})}*/}
                   {getMenuButtons({
                     toolbarList: isLandPage
                       ? headerToolBarData.filter(

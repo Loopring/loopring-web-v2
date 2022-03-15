@@ -74,7 +74,7 @@ const Header = withTranslation("common")(
               selected={
                 location.pathname === "/" ? headerRoot : location.pathname
               }
-            ></HeaderUI>
+            />
           )}
           <Toolbar id="back-to-top-anchor" />
           {/* <BottomRule isShow={!confirmation?.confirmed} */}
