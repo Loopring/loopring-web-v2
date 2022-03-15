@@ -53,7 +53,7 @@ export const useVendor = () => {
                   hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
                   swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
                   userAddress: account.accAddress,
-                  hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
+                  hostApiKey: "v6955rqfuvny5ts6sjh5y2eedjgc3sobjswhzw65",
                 }).show();
               }
             }
