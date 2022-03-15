@@ -106,6 +106,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       if (
         !error &&
         nftMintValue.royaltyPercentage &&
+        Number.isInteger(nftMintValue.royaltyPercentage / 1) &&
         nftMintValue.royaltyPercentage >= 0 &&
         nftMintValue.royaltyPercentage <= 10 &&
         nftMintValue &&
@@ -127,6 +128,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         (!nftMintValue.image && !nftMintValue.name) ||
         !(
           nftMintValue.royaltyPercentage &&
+          Number.isInteger(nftMintValue.royaltyPercentage / 1) &&
           nftMintValue.royaltyPercentage >= 0 &&
           nftMintValue.royaltyPercentage <= 10
         )
