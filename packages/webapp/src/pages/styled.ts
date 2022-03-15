@@ -7,7 +7,6 @@ export const StylePaper = styled(Box)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  //height: 100%;
   flex: 1;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;

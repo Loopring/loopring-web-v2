@@ -6,10 +6,12 @@ export const FeeToggle = <C extends FeeInfo>({
   chargeFeeTokenList,
   handleToggleChange,
   feeInfo,
+  disableNoToken = false,
 }: {
   chargeFeeTokenList: Array<C>;
   handleToggleChange: (value: C) => void;
   feeInfo: C;
+  disableNoToken?: boolean;
 }) => {
   return (
     <MuToggleButtonGroupStyle
@@ -27,7 +29,7 @@ export const FeeToggle = <C extends FeeInfo>({
           key={feeInfo.belong + index}
           value={index}
           aria-label={feeInfo.belong}
-          // disabled={disabled}
+          disabled={disableNoToken && !feeInfo.hasToken}
         >
           {feeInfo.belong}
         </ToggleButton>

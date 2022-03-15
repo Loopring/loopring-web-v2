@@ -32,6 +32,9 @@ export const ModalAccountInfo = withTranslation("common")(
       exportAccountAlertText,
       exportAccountToastOpen,
       setExportAccountToastOpen,
+      setCopyToastOpen,
+      setOpenQRCode,
+      account,
       transferProps,
       withdrawProps,
       depositProps,
@@ -44,11 +47,8 @@ export const ModalAccountInfo = withTranslation("common")(
       exportAccountProps,
       assetsRawData,
       copyToastOpen,
-      setCopyToastOpen,
       openQRCode,
-      setOpenQRCode,
       isShowAccount,
-      account,
       closeBtnInfo,
       accountList,
       currentModal,
@@ -84,8 +84,6 @@ export const ModalAccountInfo = withTranslation("common")(
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}
           exportAccountProps={exportAccountProps}
-          // ammProps={{} as any}
-          // swapProps={{} as any}
           assetsData={assetsRawData}
           setExportAccountToastOpen={setExportAccountToastOpen}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}

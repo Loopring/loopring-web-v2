@@ -204,6 +204,7 @@ export function useChargeFees({
                   belong: token,
                   fee,
                   feeRaw,
+                  hasToken: !!(walletMap && walletMap[token]),
                   __raw__: { fastWithDraw, feeRaw, tokenId },
                 };
                 pre.push(_feeInfo);
@@ -293,6 +294,15 @@ export function useChargeFees({
   const checkFeeIsEnough = () => {
     const walletMap =
       makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
+    if (chargeFeeTokenList && walletMap) {
+      chargeFeeTokenList.map((feeInfo) => {
+        return {
+          ...feeInfo,
+          hasToken: !!(walletMap && walletMap[feeInfo.belong]),
+        };
+      });
+    }
+
     if (feeInfo && feeInfo.belong && feeInfo.feeRaw) {
       const { count } = walletMap[feeInfo.belong] ?? { count: 0 };
       if (

@@ -503,7 +503,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           className={"scrollable"}
           {...{ ...defaultArgs, ...props, rawData, showloading }}
         />
-        {pagination && pagination.total && (
+        {!!(pagination && pagination.total) && (
           <TablePagination
             page={page}
             pageSize={pagination.pageSize}
