@@ -384,6 +384,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         nftMintValue.fee.__raw__ &&
         (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
         nftMintValue.royaltyPercentage &&
+        Number.isInteger(nftMintValue.royaltyPercentage / 1) &&
         nftMintValue.royaltyPercentage >= 0 &&
         nftMintValue.royaltyPercentage <= 10 &&
         LoopringAPI.userAPI &&
