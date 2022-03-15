@@ -8,7 +8,6 @@ import {
   Toolbar,
   Typography,
   useScrollTrigger,
-  Grid,
   ClickAwayListener,
   Divider,
 } from "@mui/material";
@@ -30,7 +29,6 @@ import {
   SoursURL,
   ToolBarAvailableItem,
   ThemeType,
-  // LoopringLogoIcon,
   MenuIcon,
   LoopringLogoIcon,
   subMenuLayer2,
@@ -55,18 +53,6 @@ const ButtonStyled = styled(Button)`
   padding-left: ${({ theme }) => 3 * theme.unit}px;
   padding-right: ${({ theme }) => 3 * theme.unit}px;
 `;
-
-const GridStyled = styled(Grid)`
-  color: ${({ iscurrentroute }: any) =>
-    iscurrentroute === "true"
-      ? "var(--color-text-button-select)"
-      : "var(--color-text-secondary)"};
-  &:hover {
-    color: var(--color-text-button-select);
-  }
-  font-size: 1.4rem;
-  cursor: pointer;
-` as any;
 
 const logoSVG = SoursURL + "svg/logo.svg";
 const ToolBarStyled = styled(Toolbar)`

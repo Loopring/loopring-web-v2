@@ -30,7 +30,7 @@ const Header = withTranslation("common")(
         headerToolBarData,
         headerMenuData,
         notifyMap,
-        headerGuardianMenuData,
+        headerMenuLandingData,
       } = useHeader();
       const { isMobile } = useSettings();
       const { pathname } = useLocation();
@@ -49,7 +49,7 @@ const Header = withTranslation("common")(
                 allowTrade={allowTrade}
                 headerMenuData={
                   /guardian/gi.test(pathname)
-                    ? headerGuardianMenuData
+                    ? headerMenuLandingData
                     : headerMenuData
                 }
                 headerToolBarData={headerToolBarData}
@@ -66,7 +66,7 @@ const Header = withTranslation("common")(
               isMobile={isMobile}
               headerMenuData={
                 /guardian/gi.test(pathname)
-                  ? headerGuardianMenuData
+                  ? headerMenuLandingData
                   : headerMenuData
               }
               headerToolBarData={headerToolBarData}

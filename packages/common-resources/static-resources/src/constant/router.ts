@@ -135,28 +135,10 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: "HeaderMain",
-      i18nKey: "labelLandingHeaderLayer2",
-    },
-    router: { path: "/" },
-  },
-  {
-    label: {
-      id: "HeaderWallet",
-      i18nKey: "labelLandingHeaderWallet",
-    },
-    router: { path: "/wallet" },
-  },
-];
-
-export const headerGuardianMenuData: Array<HeaderMenuItemInterface> = [
-  {
-    label: {
-      id: "exchange",
+      id: "Landing-page",
       i18nKey: "labelZkRollupLayer2",
     },
     router: { path: "/" },
-    status: HeaderMenuTabStatus.default,
   },
   {
     label: {
@@ -164,7 +146,6 @@ export const headerGuardianMenuData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelWallet",
     },
     router: { path: "/wallet" },
-    status: HeaderMenuTabStatus.default,
   },
 ];
 
