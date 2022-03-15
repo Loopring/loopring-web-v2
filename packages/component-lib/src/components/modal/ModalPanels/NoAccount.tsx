@@ -31,6 +31,7 @@ export const NoAccount = withTranslation("common")(
         justifyContent={"space-between"}
         alignItems={"center"}
         className={className}
+        // style={{ transform: "translateY(-40px)" }}
       >
         <Box
           display={"flex"}
@@ -80,7 +81,7 @@ export const NoAccount = withTranslation("common")(
                 goDeposit();
               }}
             >
-              {t("depositLabelBtn")}{" "}
+              {t("depositLabelBtn")}
             </Button>
           </Box>
         ) : (
@@ -106,7 +107,7 @@ export const NoAccount = withTranslation("common")(
                 }
               }}
             >
-              {t("labelDisconnect")}{" "}
+              {t("labelDisconnect")}
             </Button>
           </Box>
         )}
@@ -114,7 +115,7 @@ export const NoAccount = withTranslation("common")(
           display={"flex"}
           marginX={0}
           marginTop={3}
-          marginBottom={-5}
+          marginBottom={"-40"}
           alignSelf={"stretch"}
           paddingX={5}
           padding={0}

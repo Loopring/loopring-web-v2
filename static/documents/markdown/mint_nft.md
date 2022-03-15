@@ -26,14 +26,14 @@
 
 6. Create a xxxx.json file using a text editor such as Notepad (eg metadata.json)
 
-7. Within this xxxx.json file copy the following (note: case sensitive including filename):
+7. Within this xxxx.json file copy the following (note: case sensitive including filename & royalty_percentage from 0 to 10):
 
 ```
 {
 "description": "Description of your NFT goes here",
 "image": "ipfs://CID of the folder of the image from point 5/imagename.jpg",
 "name": "Name of the NFT",
-"royalty_percentage": integer between 1 to 10
+"royalty_percentage":0
 }
 ```
 
@@ -44,7 +44,8 @@
 "description": "Precious",
 "image": "ipfs://QmcegKF6r3VqSc4jmSmJ6WeM3kVy9NAjY9D1e33xk56C77/precious.jpg",
 "name": "Diamonds Are a Girl's Best Friend",
-"royalty_percentage": 10
+"royalty_percentage": 1
+
 }
 ```
 

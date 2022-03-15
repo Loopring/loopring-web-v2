@@ -8,6 +8,7 @@ import {
   FloatTag,
   getValuePrecisionThousand,
   PriceTag,
+  RowConfig,
   StarHollowIcon,
   StarSolidIcon,
   TrophyIcon,
@@ -42,9 +43,9 @@ const TableStyled = styled(Table)`
       }
     }};
 
-    --template-columns: ${({ ispro }: any) =>
-      ispro === "pro"
-        ? "240px 220px 120px"
+    --template-columns: ${({ ispro, isMobile }: any) =>
+      ispro || isMobile
+        ? "35% 44% auto"
         : "240px 220px 100px auto auto auto 132px"} !important;
 
     .rdg-cell.action {
@@ -120,280 +121,6 @@ type IGetColumnModePros = {
   isPro: boolean;
 };
 
-const getColumnMode = (
-  props: IGetColumnModePros & {
-    currency: Currency;
-    activityInProgressRules: ActivityRulesMap;
-  }
-): Column<QuoteTableRawDataItem, unknown>[] => {
-  const {
-    t: { t },
-    history,
-    upColor,
-    handleStartClick,
-    favoriteMarket,
-    currency,
-    isPro,
-    activityInProgressRules,
-  } = props;
-  const isUSD = currency === Currency.usd;
-  const basicRender = [
-    {
-      key: "pair",
-      name: t("labelQuotaPair"),
-      sortable: true,
-      formatter: ({ row }: any) => {
-        const { coinA, coinB } = row["pair"];
-        const pair = `${coinA}-${coinB}`;
-        const isFavourite = favoriteMarket?.includes(pair);
-        return (
-          <Box
-            className="rdg-cell-value"
-            display={"flex"}
-            alignItems={"center"}
-            height={"100%"}
-          >
-            <Typography marginRight={1}>
-              <IconButton
-                style={{ color: "var(--color-star)" }}
-                size={"large"}
-                onClick={(e: any) => handleStartClick(e, isFavourite, pair)}
-              >
-                {isFavourite ? (
-                  <StarSolidIcon cursor={"pointer"} />
-                ) : (
-                  <StarHollowIcon cursor={"pointer"} />
-                )}
-              </IconButton>
-            </Typography>
-            <Typography component={"span"}>
-              {coinA}
-              <Typography component={"span"} color={"textSecondary"}>
-                /{coinB}
-              </Typography>
-            </Typography>
-            &nbsp;
-            {activityInProgressRules &&
-              activityInProgressRules[pair] &&
-              activityInProgressRules[pair].ruleType.map((ruleType, index) => (
-                <Box
-                  key={ruleType.toString() + index}
-                  style={{ cursor: "pointer", paddingTop: 4 }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    const date = new Date(
-                      activityInProgressRules[pair].rangeFrom
-                    );
-                    const year = date.getFullYear();
-                    const month = (
-                      "0" + (date.getMonth() + 1).toString()
-                    ).slice(-2);
-                    const day = ("0" + date.getDate().toString()).slice(-2);
-                    const current_event_date = `${year}-${month}-${day}`;
-
-                    history.push(
-                      `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
-                    );
-                  }}
-                >
-                  <TrophyIcon />
-                </Box>
-              ))}
-            {activityInProgressRules && activityInProgressRules[`AMM-${pair}`] && (
-              <Box
-                style={{ cursor: "pointer", paddingTop: 4 }}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  const date = new Date(
-                    activityInProgressRules[`AMM-${pair}`].rangeFrom
-                  );
-                  const year = date.getFullYear();
-                  const month = ("0" + (date.getMonth() + 1).toString()).slice(
-                    -2
-                  );
-                  const day = ("0" + date.getDate().toString()).slice(-2);
-                  const current_event_date = `${year}-${month}-${day}`;
-
-                  history.push(
-                    `/race-event/${current_event_date}?pair=${pair}&type=${
-                      activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                    }`
-                  );
-                }}
-              >
-                <AmmRankIcon />
-              </Box>
-            )}
-          </Box>
-        );
-      },
-    },
-    {
-      key: "close",
-      name: t("labelQuotaLastPrice"),
-      sortable: true,
-      formatter: ({ row }: any) => {
-        const value = row.close;
-        const precision = row["precision"] || 6;
-        const price = Number.isFinite(value)
-          ? getValuePrecisionThousand(
-              value,
-              undefined,
-              undefined,
-              precision,
-              true,
-              { isPrice: true }
-            )
-          : EmptyValueTag;
-
-        const faitPrice = Number.isFinite(value)
-          ? isUSD
-            ? PriceTag.Dollar +
-              getValuePrecisionThousand(row.coinAPriceDollar, 2, 2, 2, true, {
-                isFait: true,
-              })
-            : PriceTag.Yuan +
-              getValuePrecisionThousand(row.coinAPriceYuan, 2, 2, 2, true, {
-                isFait: true,
-              })
-          : EmptyValueTag;
-        return (
-          <div className="rdg-cell-value">
-            <span>{price}</span>
-            <Typography color={"var(--color-text-third)"} component={"span"}>
-              {" "}
-              / {faitPrice}
-            </Typography>
-          </div>
-        );
-      },
-    },
-    {
-      key: "change",
-      name: t("labelQuota24hChange"),
-      sortable: true,
-      headerCellClass: "textAlignRight",
-      formatter: ({ row }: any) => {
-        const value = row.change;
-        return (
-          <div className="rdg-cell-value textAlignRight">
-            <QuoteTableChangedCell value={value} upColor={upColor}>
-              {typeof value !== "undefined"
-                ? (row.floatTag === FloatTag.increase ? "+" : "") +
-                  getValuePrecisionThousand(value, 2, 2, 2, true) +
-                  "%"
-                : EmptyValueTag}
-            </QuoteTableChangedCell>
-          </div>
-        );
-      },
-    },
-  ];
-  const extraRender = [
-    {
-      key: "high",
-      name: t("labelQuota24hHigh"),
-      headerCellClass: "textAlignRight",
-      formatter: ({ row, column }: any) => {
-        const value = row[column.key];
-        const precision = row["precision"] || 6;
-        const price = Number.isFinite(value)
-          ? getValuePrecisionThousand(
-              value,
-              undefined,
-              undefined,
-              precision,
-              true,
-              { isPrice: true }
-            )
-          : EmptyValueTag;
-        return (
-          <div className="rdg-cell-value textAlignRight">
-            <span>{price}</span>
-          </div>
-        );
-      },
-    },
-    {
-      key: "low",
-      name: t("labelQuota24hLow"),
-      headerCellClass: "textAlignRight",
-      formatter: ({ row, column }: any) => {
-        const value = row[column.key];
-        const precision = row["precision"] || 6;
-        const price = Number.isFinite(value)
-          ? getValuePrecisionThousand(
-              value,
-              undefined,
-              undefined,
-              precision,
-              true,
-              { isPrice: true }
-            )
-          : EmptyValueTag;
-        return (
-          <div className="rdg-cell-value textAlignRight">
-            <span>{price}</span>
-          </div>
-        );
-      },
-    },
-    {
-      key: "volume",
-      name: t("labelQuota24hAmount"),
-      headerCellClass: "textAlignRight",
-      // resizable: true,
-      sortable: true,
-      formatter: ({ row }: any) => {
-        const value = row["volume"];
-        const precision = row["precision"] || 6;
-        const price = Number.isFinite(value)
-          ? getValuePrecisionThousand(
-              value,
-              precision,
-              undefined,
-              undefined,
-              true,
-              { isTrade: true }
-            )
-          : EmptyValueTag;
-        return (
-          <div className="rdg-cell-value textAlignRight">
-            <span>{price}</span>
-          </div>
-        );
-      },
-    },
-    {
-      key: "actions",
-      headerCellClass: "textAlignCenter",
-      name: t("labelQuoteAction"),
-      formatter: ({ row }: any) => {
-        const { coinA, coinB } = row["pair"];
-        const tradePair = `${coinA}-${coinB}`;
-        return (
-          <div className="rdg-cell-value textAlignCenter">
-            <Button
-              variant="outlined"
-              onClick={() =>
-                history.push({
-                  pathname: `/trade/lite/${tradePair}`,
-                })
-              }
-            >
-              {t("labelTrade")}
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-  if (isPro) {
-    return [...basicRender];
-  }
-  return [...basicRender, ...extraRender];
-};
-
 export interface QuoteTableProps {
   rawData: QuoteTableRawDataItem[];
   rowHeight?: number;
@@ -423,8 +150,8 @@ export const QuoteTable = withTranslation("tables")(
     ({
       t,
       currentheight = 350,
-      rowHeight = 44,
-      headerRowHeight = 44,
+      rowHeight = RowConfig.rowHeight,
+      headerRowHeight = RowConfig.rowHeaderHeight,
       onVisibleRowsChange,
       rawData,
       history,
@@ -439,7 +166,326 @@ export const QuoteTable = withTranslation("tables")(
     }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
       let userSettings = useSettings();
       const upColor = userSettings?.upColor;
-      const { currency } = userSettings;
+      const { currency, isMobile } = userSettings;
+      const getColumnMode = (
+        props: IGetColumnModePros & {
+          currency: Currency;
+          activityInProgressRules: ActivityRulesMap;
+        }
+      ): Column<QuoteTableRawDataItem, unknown>[] => {
+        const {
+          t: { t },
+          history,
+          upColor,
+          handleStartClick,
+          favoriteMarket,
+          currency,
+          isPro,
+          activityInProgressRules,
+        } = props;
+
+        const isUSD = currency === Currency.usd;
+        const basicRender = [
+          {
+            key: "pair",
+            name: t("labelQuotaPair"),
+            sortable: true,
+            formatter: ({ row }: any) => {
+              const { coinA, coinB } = row["pair"];
+              const pair = `${coinA}-${coinB}`;
+              const isFavourite = favoriteMarket?.includes(pair);
+              return (
+                <Box
+                  className="rdg-cell-value"
+                  display={"flex"}
+                  alignItems={"center"}
+                  height={"100%"}
+                >
+                  <Typography marginRight={1} marginLeft={-2}>
+                    <IconButton
+                      style={{ color: "var(--color-star)" }}
+                      size={"large"}
+                      onClick={(e: any) =>
+                        handleStartClick(e, isFavourite, pair)
+                      }
+                    >
+                      {isFavourite ? (
+                        <StarSolidIcon cursor={"pointer"} />
+                      ) : (
+                        <StarHollowIcon cursor={"pointer"} />
+                      )}
+                    </IconButton>
+                  </Typography>
+                  <Typography component={"span"}>
+                    {coinA}
+                    <Typography component={"span"} color={"textSecondary"}>
+                      /{coinB}
+                    </Typography>
+                  </Typography>
+                  &nbsp;
+                  {activityInProgressRules &&
+                    activityInProgressRules[pair] &&
+                    activityInProgressRules[pair].ruleType.map(
+                      (ruleType, index) => (
+                        <Box
+                          key={ruleType.toString() + index}
+                          style={{ cursor: "pointer", paddingTop: 4 }}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            const date = new Date(
+                              activityInProgressRules[pair].rangeFrom
+                            );
+                            const year = date.getFullYear();
+                            const month = (
+                              "0" + (date.getMonth() + 1).toString()
+                            ).slice(-2);
+                            const day = ("0" + date.getDate().toString()).slice(
+                              -2
+                            );
+                            const current_event_date = `${year}-${month}-${day}`;
+
+                            history.push(
+                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                            );
+                          }}
+                        >
+                          <TrophyIcon />
+                        </Box>
+                      )
+                    )}
+                  {activityInProgressRules &&
+                    activityInProgressRules[`AMM-${pair}`] && (
+                      <Box
+                        style={{ cursor: "pointer", paddingTop: 4 }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          const date = new Date(
+                            activityInProgressRules[`AMM-${pair}`].rangeFrom
+                          );
+                          const year = date.getFullYear();
+                          const month = (
+                            "0" + (date.getMonth() + 1).toString()
+                          ).slice(-2);
+                          const day = ("0" + date.getDate().toString()).slice(
+                            -2
+                          );
+                          const current_event_date = `${year}-${month}-${day}`;
+
+                          history.push(
+                            `/race-event/${current_event_date}?pair=${pair}&type=${
+                              activityInProgressRules[`AMM-${pair}`].ruleType[0]
+                            }`
+                          );
+                        }}
+                      >
+                        <AmmRankIcon />
+                      </Box>
+                    )}
+                </Box>
+              );
+            },
+          },
+          {
+            key: "close",
+            name: t("labelQuotaLastPrice"),
+            headerCellClass: "textAlignCenter",
+            cellClass: "textAlignRight",
+            sortable: true,
+            formatter: ({ row }: any) => {
+              const value = row.close;
+              const precision = row["precision"] || 6;
+              const price = Number.isFinite(value)
+                ? getValuePrecisionThousand(
+                    value,
+                    undefined,
+                    undefined,
+                    precision,
+                    true,
+                    { isPrice: true }
+                  )
+                : EmptyValueTag;
+
+              const faitPrice = Number.isFinite(value)
+                ? isUSD
+                  ? PriceTag.Dollar +
+                    getValuePrecisionThousand(
+                      row.coinAPriceDollar,
+                      2,
+                      2,
+                      2,
+                      true,
+                      {
+                        isFait: true,
+                      }
+                    )
+                  : PriceTag.Yuan +
+                    getValuePrecisionThousand(
+                      row.coinAPriceYuan,
+                      2,
+                      2,
+                      2,
+                      true,
+                      {
+                        isFait: true,
+                      }
+                    )
+                : EmptyValueTag;
+              return (
+                <Typography
+                  className="rdg-cell-value"
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  whiteSpace={isMobile ? "pre-line" : "pre"}
+                  justifyContent={isMobile ? "flex-end" : "flex-start"}
+                >
+                  <Typography component={"span"} variant={"inherit"}>
+                    {price}
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    variant={isMobile ? "body2" : "body1"}
+                    color={"var(--color-text-third)"}
+                  >
+                    {"/"}
+                    {/*{isMobile ? "\n" : "/"}*/}
+                    {faitPrice}
+                  </Typography>
+                </Typography>
+              );
+            },
+          },
+          {
+            key: "change",
+            name: t(
+              isMobile ? "labelQuota24hChangeLit" : "labelQuota24hChange"
+            ),
+            sortable: true,
+            headerCellClass: "textAlignCenter",
+            formatter: ({ row }: any) => {
+              const value = row.change;
+              return (
+                <div className="rdg-cell-value textAlignRight">
+                  <QuoteTableChangedCell value={value} upColor={upColor}>
+                    {typeof value !== "undefined"
+                      ? (row.floatTag === FloatTag.increase ? "+" : "") +
+                        getValuePrecisionThousand(value, 2, 2, 2, true) +
+                        "%"
+                      : EmptyValueTag}
+                  </QuoteTableChangedCell>
+                </div>
+              );
+            },
+          },
+        ];
+        const extraRender = [
+          {
+            key: "high",
+            name: t("labelQuota24hHigh"),
+            headerCellClass: "textAlignRight",
+            formatter: ({ row, column }: any) => {
+              const value = row[column.key];
+              const precision = row["precision"] || 6;
+              const price = Number.isFinite(value)
+                ? getValuePrecisionThousand(
+                    value,
+                    undefined,
+                    undefined,
+                    precision,
+                    true,
+                    { isPrice: true }
+                  )
+                : EmptyValueTag;
+              return (
+                <div className="rdg-cell-value textAlignRight">
+                  <span>{price}</span>
+                </div>
+              );
+            },
+          },
+          {
+            key: "low",
+            name: t("labelQuota24hLow"),
+            headerCellClass: "textAlignRight",
+            formatter: ({ row, column }: any) => {
+              const value = row[column.key];
+              const precision = row["precision"] || 6;
+              const price = Number.isFinite(value)
+                ? getValuePrecisionThousand(
+                    value,
+                    undefined,
+                    undefined,
+                    precision,
+                    true,
+                    { isPrice: true }
+                  )
+                : EmptyValueTag;
+              return (
+                <div className="rdg-cell-value textAlignRight">
+                  <span>{price}</span>
+                </div>
+              );
+            },
+          },
+          {
+            key: "volume",
+            name: t("labelQuota24hAmount"),
+            headerCellClass: "textAlignRight",
+            // resizable: true,
+            sortable: true,
+            formatter: ({ row }: any) => {
+              const value = row["volume"];
+              const precision = row["precision"] || 6;
+              const price = Number.isFinite(value)
+                ? getValuePrecisionThousand(
+                    value,
+                    precision,
+                    undefined,
+                    undefined,
+                    true,
+                    { isTrade: true }
+                  )
+                : EmptyValueTag;
+              return (
+                <div className="rdg-cell-value textAlignRight">
+                  <span>{price}</span>
+                </div>
+              );
+            },
+          },
+          {
+            key: "actions",
+            headerCellClass: "textAlignCenter",
+            name: t("labelQuoteAction"),
+            formatter: ({ row }: any) => {
+              const { coinA, coinB } = row["pair"];
+              const tradePair = `${coinA}-${coinB}`;
+              return (
+                <div className="rdg-cell-value textAlignCenter">
+                  <Button
+                    variant="outlined"
+                    onClick={() =>
+                      history.push({
+                        pathname: `/trade/lite/${tradePair}`,
+                      })
+                    }
+                  >
+                    {t("labelTrade")}
+                  </Button>
+                </div>
+              );
+            },
+          },
+        ];
+        // const isMobile = [];
+        if (isMobile) {
+          return [...basicRender];
+        }
+        if (isPro) {
+          return [...basicRender];
+        }
+
+        return [...basicRender, ...extraRender];
+      };
 
       const dispatch = useDispatch();
 
@@ -575,8 +621,9 @@ export const QuoteTable = withTranslation("tables")(
       return (
         <TableWrapperStyled>
           <TableStyled
+            isMobile={isMobile}
             currentheight={currentheight}
-            ispro={isPro ? "pro" : "simple"}
+            ispro={isPro}
             className={"scrollable"}
             {...{
               ...defaultArgs,

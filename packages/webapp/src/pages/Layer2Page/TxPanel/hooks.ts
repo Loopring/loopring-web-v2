@@ -1,6 +1,4 @@
-import { useCallback, useState } from "react";
-// import { useAmmpoolAPI, useUserAPI } from "hooks/exchange/useApi"
-import { useCustomDCEffect } from "hooks/common/useCustomDCEffect";
+import React, { useCallback, useState } from "react";
 import { useAccount } from "stores/account/hook";
 import {
   RawDataTransactionItem,
@@ -136,9 +134,9 @@ export function useGetTxs() {
     }
   }, [accountId, apiKey]);
 
-  useCustomDCEffect(() => {
+  React.useEffect(() => {
     getUserTxnList();
-  }, [getUserTxnList]);
+  }, []);
 
   return {
     txs,

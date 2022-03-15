@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { WalletLayer2NFTStates } from "./interface";
 import { SagaStatus } from "@loopring-web/common-resources";
-import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 const initialState: WalletLayer2NFTStates = {
   walletLayer2NFT: [],
   total: 0,
   status: "DONE",
   errorMessage: null,
+  page: 1,
 };
 const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
   name: "walletLayer2NFT",
@@ -38,6 +38,7 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
       state.walletLayer2NFT = [...action.payload.walletLayer2NFT];
       state.total = action.payload.total ?? 0;
       state.status = SagaStatus.DONE;
+      state.page = action.payload.page ?? 1;
     },
     statusUnset: (state) => {
       state.status = SagaStatus.UNSET;

@@ -25,7 +25,6 @@ import { useAccount } from "stores/account";
 import { LoopringAPI } from "api_wrapper";
 import { useSystem } from "stores/system";
 import { myLog } from "@loopring-web/common-resources";
-import { makeWalletLayer2 } from "hooks/help";
 import {
   useWalletLayer2Socket,
   walletLayer2Service,
@@ -40,6 +39,7 @@ import { useModalData } from "stores/router";
 import { isAccActivated } from "./checkAccStatus";
 import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
+import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
 export const useNFTTransfer = <
   R extends IBData<T> &
@@ -63,16 +63,13 @@ export const useNFTTransfer = <
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
 
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
 
-  const [walletMap, setWalletMap] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
-  );
-  const [addressOrigin, setAddressOrigin] = React.useState<"Wallet" | null>(
-    null
-  );
+  const [addressOrigin, setAddressOrigin] =
+    React.useState<"Wallet" | null>(null);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -148,12 +145,7 @@ export const useNFTTransfer = <
     nftTransferValue.fee,
   ]);
 
-  const walletLayer2Callback = React.useCallback(() => {
-    const walletMap = makeWalletLayer2(true).walletMap ?? {};
-    setWalletMap(walletMap);
-  }, []);
-
-  useWalletLayer2Socket({ walletLayer2Callback });
+  useWalletLayer2Socket({});
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
@@ -286,6 +278,7 @@ export const useNFTTransfer = <
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
+              updateWalletLayer2NFT({ page });
               if (doTransferDone) {
                 doTransferDone();
               }
@@ -474,7 +467,7 @@ export const useNFTTransfer = <
     addressOrigin,
     tradeData: nftTransferValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
-    walletMap: walletMap as WalletMap<T>,
+    walletMap: {},
     transferBtnStatus: btnStatus,
     onTransferClick: (trade: R) => {
       onTransferClick(trade);

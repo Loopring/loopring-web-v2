@@ -1,28 +1,22 @@
-import { useCallback, useRef, useEffect, useState } from "react";
 import { useDeepCompareEffect } from "react-use";
 import { WithTranslation, withTranslation } from "react-i18next";
 import ReactEcharts from "echarts-for-react";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  HideIcon,
   PriceTag,
+  ViewIcon,
 } from "@loopring-web/common-resources";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { useHistory } from "react-router-dom";
 import moment from "moment";
 import {
   AssetsTable,
   AssetTitle,
-  AssetTitleProps,
   DoughnutChart,
-  LpTokenAction,
   useSettings,
-  ScaleAreaChart,
-  ChartType,
 } from "@loopring-web/component-lib";
-
-import { useModals } from "hooks/useractions/useModals";
 
 import store from "stores";
 import { StylePaper } from "pages/styled";
@@ -32,6 +26,7 @@ import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import { useTokenPrices } from "stores/tokenPrices";
 import { useTokenMap } from "../../../stores/token";
+import React from "react";
 
 const UP_COLOR = "#00BBA8";
 const DOWN_COLOR = "#fb3838";
@@ -47,6 +42,11 @@ const StyledChartWrapper = styled(Box)`
     border-radius: ${({ theme }) => theme.unit}px;
     padding: ${({ theme }) => theme.unit * 2.5}px
       ${({ theme }) => theme.unit * 3}px;
+  }
+  .recharts-pie {
+    @media only screen and (max-width: 768px) {
+      transform: scale(0.9) translate(10px, 10px);
+    }
   }
 `;
 const StyleTitlePaper = styled(Box)`
@@ -92,33 +92,39 @@ export type TrendDataItem = {
 
 const AssetPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
-    const container = useRef(null);
+    const container = React.useRef(null);
     const { disableWithdrawList } = useTokenMap();
-    const { allowTrade, forex } = useSystem();
-    const { raw_data } = allowTrade;
-    const legalEnable = (raw_data as any)?.legal?.enable;
-    const legalShow = (raw_data as any)?.legal?.show;
-    const {
-      account: { accountId, accAddress },
-    } = useAccount();
+
+    const { isMobile } = useSettings();
     const { tokenPrices } = useTokenPrices();
-    const { marketArray, assetsRawData, userAssets, getUserAssets } =
-      useGetAssets();
+    const { upColor } = useSettings();
+
     const {
-      currency,
-      themeMode,
-      setHideL2Assets,
+      marketArray,
+      assetsRawData,
+      userAssets,
+      assetTitleProps,
+      onShowTransfer,
+      onShowWithdraw,
+      onShowDeposit,
+      lpTokenJump,
+      total,
+      forex,
+      account,
+      hideL2Assets,
+      hideLpToken,
+      hideSmallBalances,
+      allowTrade,
       setHideLpToken,
       setHideSmallBalances,
-    } = useSettings();
-    const { walletLayer2 } = store.getState().walletLayer2;
-    const { hideL2Assets, hideLpToken, hideSmallBalances } =
-      store.getState().settings;
-    const [currAssetsEth, setCurrAssetsEth] = useState(0);
+      setHideL2Assets,
+      isThemeDark,
+      currency,
+    } = useGetAssets();
 
-    const total = assetsRawData
-      .map((o) => o.tokenValueDollar)
-      .reduce((a, b) => a + b, 0);
+    const { walletLayer2 } = store.getState().walletLayer2;
+
+    const [currAssetsEth, setCurrAssetsEth] = React.useState(0);
 
     const percentList = assetsRawData.map((o) => ({
       ...o,
@@ -152,20 +158,7 @@ const AssetPanel = withTranslation("common")(
           ]
         : percentList;
 
-    // get user daily eth assets
-    useEffect(() => {
-      getUserAssets();
-    }, []);
-
-    // useEffect(() => {
-    //     // @ts-ignore
-    //     let height = container?.current?.offsetHeight;
-    //     if (height) {
-    //         setPageSize(Math.floor((height - 120) / 44) - 1);
-    //     }
-    // }, [container, pageSize]);
-
-    const getCurrAssetsEth = useCallback(() => {
+    const getCurrAssetsEth = React.useCallback(() => {
       if (currAssetsEth) {
         return getValuePrecisionThousand(
           (Number.isFinite(currAssetsEth)
@@ -182,7 +175,7 @@ const AssetPanel = withTranslation("common")(
       return 0;
     }, [currAssetsEth]);
 
-    const getTokenRelatedMarketArray = useCallback(
+    const getTokenRelatedMarketArray = React.useCallback(
       (token: string) => {
         if (!marketArray) return [];
         return marketArray.filter((market) => {
@@ -192,84 +185,6 @@ const AssetPanel = withTranslation("common")(
       },
       [marketArray]
     );
-
-    const { showDeposit, showTransfer, showWithdraw } = useModals();
-
-    let history = useHistory();
-
-    const { upColor } = useSettings();
-
-    const onShowDeposit = useCallback(
-      (token?: any, partner?: boolean) => {
-        if (partner) {
-          showDeposit({ isShow: true, partner: true });
-        } else {
-          showDeposit({ isShow: true, symbol: token });
-        }
-      },
-      [showDeposit]
-    );
-
-    const onShowTransfer = useCallback(
-      (token?: any) => {
-        showTransfer({ isShow: true, symbol: token });
-      },
-      [showTransfer]
-    );
-
-    const onShowWithdraw = useCallback(
-      (token?: any) => {
-        showWithdraw({ isShow: true, symbol: token });
-      },
-      [showWithdraw]
-    );
-
-    const lpTokenJump = useCallback(
-      (token: string, type: LpTokenAction) => {
-        if (history) {
-          history.push(`/liquidity/pools/coinPair/${token}?type=${type}`);
-        }
-      },
-      [history]
-    );
-    const showPartner = () => {};
-
-    // const showRamp = useCallback(() => {
-    //   const widget = new RampInstantSDK({
-    //     hostAppName: "Loopring",
-    //     hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
-    //     // url: 'https://ri-widget-staging.web.app/', // main staging
-    //     swapAsset: "LOOPRING_*",
-    //     userAddress: accAddress,
-    //     hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
-    //   }).show();
-    //
-    //   if (widget && widget.domNodes) {
-    //     (widget as any).domNodes.shadowHost.style.position = "absolute";
-    //   }
-    // }, [accAddress]);
-
-    const AssetTitleProps: AssetTitleProps = {
-      assetInfo: {
-        totalAsset: assetsRawData
-          .map((o) =>
-            currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan
-          )
-          .reduce((prev, next) => {
-            return prev + next;
-          }, 0),
-        priceTag: currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan,
-      },
-      accountId,
-      hideL2Assets,
-      onShowDeposit,
-      onShowTransfer,
-      onShowWithdraw,
-      setHideL2Assets,
-      showPartner: () => onShowDeposit(undefined, true),
-      legalEnable,
-      legalShow,
-    };
 
     const ethFaitPriceDollar = tokenPrices ? tokenPrices["ETH"] : 0;
     const ethFaitPriceYuan = ethFaitPriceDollar * forex;
@@ -290,7 +205,7 @@ const AssetPanel = withTranslation("common")(
       { isFait: true, floor: true }
     );
 
-    const getSign = useCallback(
+    const getSign = React.useCallback(
       (close: string, dataIndex: number) => {
         let sign;
         const closeLastDay = dataIndex !== 0 && userAssets[dataIndex - 1].close;
@@ -301,9 +216,7 @@ const AssetPanel = withTranslation("common")(
       [userAssets]
     );
 
-    const isThemeDark = themeMode === "dark";
-
-    const getAssetsTrendChartOption = useCallback(() => {
+    const getAssetsTrendChartOption = React.useCallback(() => {
       const option = {
         grid: { top: 8, right: 8, bottom: 24, left: 0 },
         xAxis: {
@@ -377,19 +290,21 @@ const AssetPanel = withTranslation("common")(
 
     return (
       <>
-        <StyleTitlePaper
-          paddingX={3}
-          paddingY={5 / 2}
-          className={"MuiPaper-elevation2"}
-        >
-          <AssetTitle
-            {...{
-              t,
-              ...rest,
-              ...AssetTitleProps,
-            }}
-          />
-        </StyleTitlePaper>
+        {!isMobile && (
+          <StyleTitlePaper
+            paddingX={3}
+            paddingY={5 / 2}
+            className={"MuiPaper-elevation2"}
+          >
+            <AssetTitle
+              {...{
+                t,
+                ...rest,
+                ...assetTitleProps,
+              }}
+            />
+          </StyleTitlePaper>
+        )}
 
         {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 
@@ -404,53 +319,71 @@ const AssetPanel = withTranslation("common")(
             flex={1}
             component={"section"}
             className={"MuiPaper-elevation2"}
-            marginRight={2}
-          >
-            <Typography component="span" color="textSecondary" variant="body1">
-              {t("labelAssetsDistribution")}
-            </Typography>
-            <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []} />
-          </Box>
-          <Box
+            marginRight={isMobile ? 0 : 2}
             display={"flex"}
             flexDirection={"column"}
-            flex={1}
-            component={"section"}
-            className={"MuiPaper-elevation2"}
           >
-            <Typography component="span" color="textSecondary" variant="body1">
-              {t("labelTotalAssets")}
+            <Typography
+              component="span"
+              color="textSecondary"
+              variant="body1"
+              display={"flex"}
+              justifyContent={"space-between"}
+            >
+              <Typography component={"span"}>
+                {t("labelAssetsDistribution")}
+              </Typography>
             </Typography>
-            <Box display={"flex"} alignItems={"center"}>
-              <Typography component={"span"} variant={"h5"}>
-                {getCurrAssetsEth()} ETH
-              </Typography>
-              <Typography
-                component={"span"}
-                variant={"body2"}
-                color={"var(--color-text-third)"}
-              >
-                &nbsp;&#8776;&nbsp;
-                {currency === Currency.usd
-                  ? PriceTag.Dollar + currAssetsEthDollar
-                  : PriceTag.Yuan + currAssetsEthYuan}
-              </Typography>
+            <Box flex={1} marginLeft={isMobile ? 2 : 0}>
+              <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []} />
             </Box>
-            {!!userAssets.length ? (
-              <ReactEcharts
-                notMerge={true}
-                lazyUpdate={true}
-                option={getAssetsTrendChartOption()}
-              />
-            ) : (
-              <ChartWrapper
-                marginTop={2}
-                dark={isThemeDark ? "true" : "false"}
-                flex={1}
-                component={"div"}
-              />
-            )}
           </Box>
+          {!isMobile && (
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              flex={1}
+              component={"section"}
+              className={"MuiPaper-elevation2"}
+            >
+              <Typography
+                component="span"
+                color="textSecondary"
+                variant="body1"
+              >
+                {t("labelTotalAssets")}
+              </Typography>
+              <Box display={"flex"} alignItems={"center"}>
+                <Typography component={"span"} variant={"h5"}>
+                  {getCurrAssetsEth()} ETH
+                </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"body2"}
+                  color={"var(--color-text-third)"}
+                >
+                  &nbsp;&#8776;&nbsp;
+                  {currency === Currency.usd
+                    ? PriceTag.Dollar + currAssetsEthDollar
+                    : PriceTag.Yuan + currAssetsEthYuan}
+                </Typography>
+              </Box>
+              {!!userAssets.length ? (
+                <ReactEcharts
+                  notMerge={true}
+                  lazyUpdate={true}
+                  option={getAssetsTrendChartOption()}
+                />
+              ) : (
+                <ChartWrapper
+                  marginTop={2}
+                  dark={isThemeDark ? "true" : "false"}
+                  flex={1}
+                  component={"div"}
+                />
+              )}
+            </Box>
+          )}
         </StyledChartWrapper>
         <StylePaper
           marginTop={2}

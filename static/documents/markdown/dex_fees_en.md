@@ -12,7 +12,7 @@ Service | Flat-Fee | Minimum-Fee | Normal User | VIP1 | VIP2 | VIP3 | VIP4
 :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---
 Stablecoin orderbook trade [0]| - | maker:0, taker:2,750 GAS [2] | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES_STABLECOIN.default}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES_STABLECOIN.vip_1}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES_STABLECOIN.vip_2}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES_STABLECOIN.vip_3}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES_STABLECOIN.vip_4}%
 Other orderbook trade [0]| - | maker:0, taker:2,750 GAS [2] |maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES.default}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES.vip_1}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES.vip_2}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES.vip_3}% | maker：-0.02%, taker：${ORDERBOOK_TRADING_FEES.vip_4}%
-AMM swap | - | 2,750 GAS [2] | ${AMM_TRADING_FEES.default}% | ${AMM_TRADING_FEES.vip_1}% | ${AMM_TRADING_FEES.vip_2}% | ${AMM_TRADING_FEES.vip_3}% | ${AMM_TRADING_FEES.vip_4}%
+AMM swap | - | 2,750 GAS [2] | ${AMM_TRADING_FEES.default}% + 0.20%(liquidity provision fees) | ${AMM_TRADING_FEES.vip_1}% + 0.20%(liquidity provision fees)| ${AMM_TRADING_FEES.vip_2}% + 0.20%(liquidity provision fees) | ${AMM_TRADING_FEES.vip_3}% + 0.20%(liquidity provision fees)| ${AMM_TRADING_FEES.vip_4}% + 0.20%(liquidity provision fees)
 AMM exit | 100,650 GAS [3] | - | - | - | - | - | -
 AMM join | 100,650 GAS [3][4] | - | - | - | - | - | -
 L2-to-L2 transfer | 700 GAS [3] | - | - | - | - | - | -

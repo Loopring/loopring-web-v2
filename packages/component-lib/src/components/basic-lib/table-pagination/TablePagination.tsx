@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Pagination } from "@mui/material";
 import styled from "@emotion/styled";
+import { RowConfig } from "@loopring-web/common-resources";
 
 // const StyledPaginationWrapper = styled(Box)`
 //     height: 44px;
@@ -26,7 +27,7 @@ export type PaginationProps = {
 export const TablePagination = ({
   onPageChange,
   page,
-  height = 44,
+  height = RowConfig.rowHeight,
   justifyContent = "center",
   alignItems = "center",
   pageSize,

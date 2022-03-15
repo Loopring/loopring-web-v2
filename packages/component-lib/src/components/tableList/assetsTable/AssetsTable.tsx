@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 // import { useHistory } from 'react-router-dom'
@@ -18,15 +18,20 @@ import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo from "./components/ActionMemo";
 import { Currency } from "@loopring-web/loopring-sdk";
 
-const TableWrap = styled(Box)`
+const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
     flex: 1;
-    --template-columns: 200px 150px auto auto
-      ${(props: any) => (props.lan === "en_US" ? "285px" : "240px")} !important;
+
+    ${({ isMobile, lan }) =>
+      !isMobile
+        ? `--template-columns: 200px 150px auto auto ${
+            lan === "en_US" ? "285px" : "240px"
+          } !important;`
+        : `--template-columns: 54% 40% 6% !important;`}
 
     .rdg-cell:first-of-type {
       display: flex;
@@ -47,7 +52,7 @@ const TableWrap = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as any;
+` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element;
 
 // const IconWrapperStyled = styled(Box)`
 //     margin-top: ${({theme}) => theme.unit * 1.1}px;
@@ -171,7 +176,7 @@ export const AssetsTable = withTranslation("tables")(
       },
       [setViewData, setTableHeight]
     );
-    const { language } = useSettings();
+    const { language, isMobile } = useSettings();
     const { coinJson, currency } = useSettings();
     const isUSD = currency === Currency.usd;
     useEffect(() => {
@@ -208,20 +213,15 @@ export const AssetsTable = withTranslation("tables")(
               <CoinIcons tokenIcon={tokenIcon} />
               <Typography
                 variant={"inherit"}
+                color={"textPrimary"}
                 display={"flex"}
                 flexDirection={"column"}
-                marginLeft={1}
-                component={"div"}
+                marginLeft={2}
+                component={"span"}
                 paddingRight={1}
               >
-                <Typography
-                  component={"h3"}
-                  color={"textPrimary"}
-                  title={"sell"}
-                >
-                  <Typography component={"span"} className={"next-coin"}>
-                    {token.value}
-                  </Typography>
+                <Typography component={"span"} className={"next-coin"}>
+                  {token.value}
                 </Typography>
               </Typography>
             </>
@@ -335,7 +335,124 @@ export const AssetsTable = withTranslation("tables")(
         },
       },
     ];
+    const getColumnMobileAssets = (
+      t: TFunction,
+      allowTrade?: any
+    ): Column<Row, unknown>[] => [
+      {
+        key: "token",
+        name: t("labelToken"),
+        formatter: ({ row, column }) => {
+          const token = row[column.key];
+          const value = row["amount"];
+          const precision = row["precision"];
+          let tokenIcon: [any, any] = [undefined, undefined];
+          const [head, middle, tail] = token.value.split("-");
+          if (token.type === "lp" && middle && tail) {
+            tokenIcon =
+              coinJson[middle] && coinJson[tail]
+                ? [coinJson[middle], coinJson[tail]]
+                : [undefined, undefined];
+          }
+          if (token.type !== "lp" && head && head !== "lp") {
+            tokenIcon = coinJson[head]
+              ? [coinJson[head], undefined]
+              : [undefined, undefined];
+          }
+          return (
+            <>
+              <Typography width={"56px"} display={"flex"}>
+                <CoinIcons tokenIcon={tokenIcon} />
+              </Typography>
+              <Typography
+                variant={"body1"}
+                display={"flex"}
+                flexDirection={"row"}
+                justifyContent={"flex-end"}
+                textAlign={"right"}
+                flex={1}
+              >
+                <Typography display={"flex"}>
+                  {getValuePrecisionThousand(
+                    value,
+                    precision,
+                    precision,
+                    undefined,
+                    false,
+                    { floor: true }
+                  )}
+                </Typography>
+                <Typography
+                  display={"flex"}
+                  color={"textSecondary"}
+                  marginLeft={1}
+                >
+                  {token.value}
+                </Typography>
+              </Typography>
+            </>
+          );
+        },
+      },
+      {
+        key: "locked",
+        name: t("labelLocked"),
+        headerCellClass: "textAlignRight",
+        formatter: ({ row }) => {
+          const value = row["locked"];
+          const precision = row["precision"];
+          return (
+            <Box className={"textAlignRight"}>
+              {getValuePrecisionThousand(
+                value,
+                precision,
+                precision,
+                undefined,
+                false,
+                { floor: true }
+              )}
+            </Box>
+          );
+        },
+      },
+      {
+        key: "actions",
+        name: "",
+        headerCellClass: "textAlignRight",
+        // minWidth: 280,
+        formatter: ({ row }) => {
+          const token = row["token"];
+          const isLp = token.type === TokenType.lp;
+          const tokenValue = token.value;
 
+          const isWithdraw = token.type !== TokenType.lp;
+
+          const lpPairList = tokenValue.split("-");
+          lpPairList.splice(0, 1);
+          const lpPair = lpPairList.join("-");
+          const renderMarket: MarketType = (
+            isLp ? lpPair : tokenValue
+          ) as MarketType;
+          return (
+            <ActionMemo
+              {...{
+                t,
+                tokenValue,
+                getMarketArrayListCallback,
+                disableWithdrawList,
+                isLp,
+                isWithdraw,
+                allowTrade,
+                market: renderMarket,
+                onShowDeposit,
+                onShowTransfer,
+                onShowWithdraw,
+              }}
+            />
+          );
+        },
+      },
+    ];
     const updateData = useCallback(() => {
       let resultData = totalData && !!totalData.length ? totalData : [];
       // if (filter.hideSmallBalance) {
@@ -364,8 +481,20 @@ export const AssetsTable = withTranslation("tables")(
     );
 
     return (
-      <TableWrap lan={language}>
+      <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
+          // (isMobile && isDropDown ? (
+          //   <Link
+          //     variant={"body1"}
+          //     display={"inline-flex"}
+          //     width={"100%"}
+          //     justifyContent={"flex-end"}
+          //     paddingRight={2}
+          //     onClick={() => setIsDropDown(false)}
+          //   >
+          //     Show Filter
+          //   </Link>
+          // ) :
           <TableFilterStyled>
             <Filter
               {...{
@@ -390,9 +519,11 @@ export const AssetsTable = withTranslation("tables")(
           generateColumns={({ columnsRaw }: any) =>
             columnsRaw as Column<any, unknown>[]
           }
-          columnMode={getColumnModeAssets(t, allowTrade).filter(
-            (o) => !o.hidden
-          )}
+          columnMode={
+            isMobile
+              ? getColumnMobileAssets(t, allowTrade)
+              : getColumnModeAssets(t, allowTrade)
+          }
         />
       </TableWrap>
     );

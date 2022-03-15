@@ -14,12 +14,17 @@ import { useAccount } from "stores/account";
 import store from "stores";
 import { TOAST_TIME } from "defs/common_defs";
 import { useToast } from "hooks/common/useToast";
+import { useTokenMap } from "../../../stores/token";
+import { useAmmMap } from "../../../stores/Amm/AmmMap";
+import { RowConfig } from "@loopring-web/common-resources";
 
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState("transactions");
     const { toastOpen, setToastOpen, closeToast } = useToast();
+    const { totalCoinMap, tokenMap, marketArray } = useTokenMap();
+    const { ammMap } = useAmmMap();
 
     const {
       txs: txTableData,
@@ -36,9 +41,11 @@ const HistoryPanel = withTranslation("common")(
     const {
       ammRecordList,
       showLoading: ammLoading,
+      ammRecordTotal,
       getAmmpoolList,
     } = useGetAmmRecord(setToastOpen);
-    const { tokenMap, marketMap } = store.getState().tokenMap;
+    const { etherscanBaseUrl } = useSystem();
+
     const {
       account: { accAddress },
     } = useAccount();
@@ -46,45 +53,37 @@ const HistoryPanel = withTranslation("common")(
     const { t } = rest;
     const container = React.useRef(null);
 
-    React.useEffect(() => {
-      // @ts-ignore
-      let height = container?.current?.offsetHeight;
-      if (height) {
-        setPageSize(Math.floor((height - 120) / 44) - 3);
-      }
-    }, [container, pageSize]);
-
-    useEffect(() => {
-      if (pageSize) {
-        getUserTxnList({
-          limit: pageSize,
-          types: "deposit,transfer,offchain_withdrawal",
-        });
-      }
-    }, [getUserTxnList, pageSize]);
-
-    const { etherscanBaseUrl } = useSystem();
-
     const handleTabChange = React.useCallback(
-      (value: string) => {
+      (value: string, _pageSize?: number) => {
         setCurrentTab(value);
         if (value === "transactions") {
           getUserTxnList({
-            limit: pageSize,
+            limit: _pageSize ? _pageSize : pageSize,
             types: "deposit,transfer,offchain_withdrawal",
           });
         }
         if (value === "trades") {
           getUserTradeList({
-            limit: pageSize,
+            limit: _pageSize ? _pageSize : pageSize,
           });
         }
         if (value === "ammRecords") {
-          getAmmpoolList();
+          getAmmpoolList({
+            limit: _pageSize ? _pageSize : pageSize,
+          });
         }
       },
       [getAmmpoolList, getUserTradeList, getUserTxnList, pageSize]
     );
+
+    React.useEffect(() => {
+      // @ts-ignore
+      let height = container?.current?.offsetHeight;
+      if (height) {
+        setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 3);
+        handleTabChange(currentTab, pageSize);
+      }
+    }, [container]);
 
     return (
       <StylePaper ref={container}>
@@ -104,12 +103,9 @@ const HistoryPanel = withTranslation("common")(
             <Tab
               label={t("labelLayer2HistoryTransactions")}
               value="transactions"
-            ></Tab>
-            <Tab label={t("labelLayer2HistoryTrades")} value="trades"></Tab>
-            <Tab
-              label={t("labelLayer2HistoryAmmRecords")}
-              value="ammRecords"
-            ></Tab>
+            />
+            <Tab label={t("labelLayer2HistoryTrades")} value="trades" />
+            <Tab label={t("labelLayer2HistoryAmmRecords")} value="ammRecords" />
           </Tabs>
         </Box>
         <div className="tableWrapper table-divide-short">
@@ -122,6 +118,9 @@ const HistoryPanel = withTranslation("common")(
                   pageSize: pageSize,
                   total: txsTotal,
                 },
+                filterTokens: totalCoinMap
+                  ? (Reflect.ownKeys(totalCoinMap) as string[])
+                  : [],
                 showFilter: true,
                 showloading: showTxsLoading,
                 getTxnList: getUserTxnList,
@@ -135,10 +134,10 @@ const HistoryPanel = withTranslation("common")(
               {...{
                 rawData: userTrades,
                 showFilter: true,
+                filterPairs: marketArray,
                 showloading: showTradeLoading,
                 tokenMap: tokenMap,
                 isL2Trade: true,
-                marketMap: marketMap,
                 pagination: {
                   pageSize: pageSize,
                   total: userTradesTotal,
@@ -152,8 +151,13 @@ const HistoryPanel = withTranslation("common")(
                 rawData: ammRecordList,
                 pagination: {
                   pageSize: pageSize,
+                  total: ammRecordTotal,
                 },
+                getAmmpoolList,
                 showFilter: true,
+                filterPairs: Reflect.ownKeys(ammMap ?? {}).map((item) =>
+                  item.toString().replace("AMM", "LP")
+                ),
                 showLoading: ammLoading,
                 ...rest,
               }}

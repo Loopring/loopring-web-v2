@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   AmmPanel,
   AmmPanelType,
@@ -10,7 +10,6 @@ import {
   CoinInfo,
   EmptyValueTag,
   getValuePrecisionThousand,
-  myLog,
   WalletMap,
 } from "@loopring-web/common-resources";
 import { useAmmJoin } from "./hook_join";
@@ -22,7 +21,6 @@ import { TOAST_TIME } from "defs/common_defs";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import store from "stores";
-import { useTokenMap } from "stores/token";
 import { initSlippage } from "stores/router";
 import { useDeepCompareEffect } from "react-use";
 
@@ -89,8 +87,7 @@ const MyAmmLPAssets = withTranslation("common")(
             alignItems={"center"}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
-              {t("labelMyLPToken")}{" "}
+              {t("labelMyLPToken")}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData?.lpCoin?.balance !== undefined
@@ -113,10 +110,9 @@ const MyAmmLPAssets = withTranslation("common")(
             marginTop={1 / 2}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
               {t("labelMyLPAToken", {
                 symbol: ammCalcData.lpCoinA.belong,
-              })}{" "}
+              })}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData.lpCoinA.balance
@@ -139,10 +135,9 @@ const MyAmmLPAssets = withTranslation("common")(
             marginTop={1 / 2}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
               {t("labelMyLPBToken", {
                 symbol: ammCalcData.lpCoinB.belong,
-              })}{" "}
+              })}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData.lpCoinB.balance
@@ -165,8 +160,7 @@ const MyAmmLPAssets = withTranslation("common")(
             marginTop={1 / 2}
           >
             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-              {" "}
-              {t("labelMyLPAmountFor")}{" "}
+              {t("labelMyLPAmountFor")}
             </Typography>
             <Typography component={"p"} variant="body2">
               {ammCalcData && ammCalcData.percentage
@@ -303,10 +297,10 @@ export const AmmPanelView = ({
 
       {pair ? (
         <>
-          {" "}
           <AmmPanel
             {...{ ...rest }}
             accStatus={accountStatus}
+            getRecentAmmPoolTxs={getRecentAmmPoolTxs}
             onRefreshData={() => {
               updateAmmPoolSnapshot();
               if (getRecentAmmPoolTxs) {
@@ -336,7 +330,7 @@ export const AmmPanelView = ({
             </BoxWrapperStyled>
           ) : (
             <></>
-          )}{" "}
+          )}
         </>
       ) : (
         <></>

@@ -11,6 +11,7 @@ import { useAccount } from "stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TxNFTType } from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "../../../../hooks/help";
+import { RowConfig } from "@loopring-web/common-resources";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 const LimitNFTHistory = 20;
@@ -146,7 +147,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps>() => {
   React.useEffect(() => {
     // @ts-ignore
     let height = container?.current?.offsetHeight;
-    const pageSize = Math.floor(height / 44) - 3;
+    const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
     if (height) {
       setNftHistory((state) => {
         const userNFTTxs = state.userNFTTxs;

@@ -1,16 +1,15 @@
 import styled from "@emotion/styled";
 import { Box, Grid, Link, Typography, LinearProgress } from "@mui/material";
 import React from "react";
-import { Trans, WithTranslation, withTranslation } from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "stores/account";
 import { LoopringAPI } from "../../../api_wrapper";
 import {
-  myLog,
   SoursURL,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
-import { VipPanel as VipView } from "@loopring-web/component-lib";
+import { useSettings, VipPanel as VipView } from "@loopring-web/component-lib";
 import { useGetVIPInfo } from "./hooks";
 
 const StylePaper = styled(Grid)`
@@ -88,7 +87,8 @@ export const VipPanel = withTranslation(["common", "layout"])(
       account: { level },
     } = useAccount();
     const history = useHistory();
-    const [vipTable, setVipTable] = React.useState<string[][]>([]);
+    const { isMobile } = useSettings();
+    const [setVipTable] = React.useState<string[][]>([]);
     const {
       getUserTradeAmount,
       tradeAmountInfo,
@@ -217,19 +217,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
               (orderbookTradingFees[_level].takerRate / 10000).toString() + "%",
           });
         }
-
-        // orderbookTradingFeesStablecoin: VipFeeRateInfoMap;
-        // orderbookTradingFees: VipFeeRateInfoMap;
-        // ammTradingFees: VipFeeRateInfoMap;
-        // otherFees: {
-        //     [key: string]: string;
-        // };
-        // raw_data: any;
-        // raw_data.
-        //setVipTable(raw_data)
       }
-
-      // setUserFee(userFee)
     }, [setVipTable, level]);
     React.useEffect(() => {
       result();
@@ -311,12 +299,15 @@ export const VipPanel = withTranslation(["common", "layout"])(
           flex={1}
           container
           className={"MuiPaper-elevation2"}
-          padding={4}
+          padding={isMobile ? "" : 4}
+          margin={0}
           marginBottom={1}
+          marginTop={isMobile ? 1 : 0}
+          spacing={2}
         >
           <Grid item xs={12}>
             <Typography
-              variant={"h5"}
+              variant={isMobile ? "body1" : "h5"}
               component={"h2"}
               marginY={1}
               display={"flex"}
@@ -330,7 +321,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
               >
                 <Typography
                   component={"p"}
-                  variant={"h4"}
+                  variant={isMobile ? "h5" : "h4"}
                   color={"text.primary"}
                   paddingRight={1}
                 >
@@ -351,7 +342,7 @@ export const VipPanel = withTranslation(["common", "layout"])(
                 </Typography>
               </Typography>
               <Typography
-                variant={"h5"}
+                variant={isMobile ? "body1" : "h5"}
                 component={"p"}
                 color={"var(--color-text-secondary)"}
                 marginTop={2}
@@ -368,54 +359,28 @@ export const VipPanel = withTranslation(["common", "layout"])(
               </Typography>
             </Typography>
           </Grid>
-
-          <Grid item xs={12}>
-            <Grid container marginY={2.5}>
-              <Grid item xs={6}>
-                <Typography
-                  fontWeight={400}
-                  variant={"h6"}
-                  component={"p"}
-                  color={"var(--color-text-secondary)"}
-                >
-                  Spot Trading Volume (30d in ETH)
-                </Typography>
-                <Typography variant={"h4"} component={"p"} marginTop={0.5}>
-                  Currently{" "}
-                  {getValuePrecisionThousand(getCurrentETHTradeAmount())} ETH
-                </Typography>
-                <Box width={"90%"} marginY={1.5}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={getTradeVolETH()}
-                  />
-                  <Box
-                    marginTop={1}
-                    display={"flex"}
-                    justifyContent={"space-between"}
-                  >
-                    <Typography
-                      fontWeight={400}
-                      color={
-                        isVIP4
-                          ? "var(--color-text-secondary)"
-                          : "var(--color-star)"
-                      }
-                    >
-                      {getCurrVIPLevel("left")}
-                    </Typography>
-                    <Typography
-                      fontWeight={400}
-                      color={
-                        isSVIP || isVIP4
-                          ? "var(--color-star)"
-                          : "var(--color-text-secondary)"
-                      }
-                    >
-                      {getCurrVIPLevel("right")}
-                    </Typography>
-                  </Box>
-                </Box>
+          <Grid item xs={12} md={6}>
+            <Typography
+              fontWeight={400}
+              variant={"h6"}
+              color={"var(--color-text-secondary)"}
+            >
+              {t("labelSpotTrading")}
+            </Typography>
+            <Typography
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              width={"100%"}
+              paddingRight={2}
+            >
+              <Typography variant={isMobile ? "h5" : "h4"} marginTop={0.5}>
+                {t("labelCurrentlyLevel", {
+                  value: getValuePrecisionThousand(getCurrentETHTradeAmount()),
+                  token: "ETH",
+                })}
+              </Typography>
+              {isMobile && (
                 <Link
                   variant={"body1"}
                   onClick={handleTradeLinkClick}
@@ -424,54 +389,72 @@ export const VipPanel = withTranslation(["common", "layout"])(
                     color: "var(--color-text-secondary)",
                   }}
                 >
-                  Trade Spot
+                  {t("labelTradeSpot")}
                 </Link>
-              </Grid>
-              <Grid item xs={6}>
+              )}
+            </Typography>
+            <Box width={"100%"} paddingRight={2} marginY={1.5}>
+              <LinearProgress variant="determinate" value={getTradeVolETH()} />
+              <Box
+                marginTop={1}
+                display={"flex"}
+                justifyContent={"space-between"}
+              >
                 <Typography
                   fontWeight={400}
-                  variant={"h6"}
-                  component={"p"}
-                  color={"var(--color-text-secondary)"}
+                  color={
+                    isVIP4 ? "var(--color-text-secondary)" : "var(--color-star)"
+                  }
                 >
-                  LRC Balance
+                  {getCurrVIPLevel("left")}
                 </Typography>
-                <Typography variant={"h4"} component={"span"} marginY={0.5}>
-                  Currently {getValuePrecisionThousand(getCurrentBalanceLRC())}{" "}
-                  LRC
+                <Typography
+                  fontWeight={400}
+                  color={
+                    isSVIP || isVIP4
+                      ? "var(--color-star)"
+                      : "var(--color-text-secondary)"
+                  }
+                >
+                  {getCurrVIPLevel("right")}
                 </Typography>
-                <Box width={"90%"} marginY={1.5}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={getBalanceLRC()}
-                  />
-                  <Box
-                    marginTop={1}
-                    display={"flex"}
-                    justifyContent={"space-between"}
-                  >
-                    <Typography
-                      fontWeight={400}
-                      color={
-                        isVIP4
-                          ? "var(--color-text-secondary)"
-                          : "var(--color-star)"
-                      }
-                    >
-                      {getCurrVIPLevel("left")}
-                    </Typography>
-                    <Typography
-                      fontWeight={400}
-                      color={
-                        isSVIP || isVIP4
-                          ? "var(--color-star)"
-                          : "var(--color-text-secondary)"
-                      }
-                    >
-                      {getCurrVIPLevel("right")}
-                    </Typography>
-                  </Box>
-                </Box>
+              </Box>
+            </Box>
+            {!isMobile && (
+              <Link
+                variant={"body1"}
+                onClick={handleTradeLinkClick}
+                style={{
+                  textDecoration: "underline",
+                  color: "var(--color-text-secondary)",
+                }}
+              >
+                {t("labelTradeSpot")}
+              </Link>
+            )}
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography
+              fontWeight={400}
+              variant={"h6"}
+              color={"var(--color-text-secondary)"}
+            >
+              {t("labelLRCBalance")}
+            </Typography>
+            <Typography
+              display={"inline-flex"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              width={"100%"}
+              paddingRight={2}
+            >
+              <Typography variant={isMobile ? "h5" : "h4"} marginTop={0.5}>
+                {t("labelCurrentlyLevel", {
+                  value: getValuePrecisionThousand(getCurrentBalanceLRC()),
+                  token: "LRC",
+                })}
+              </Typography>
+              {isMobile && (
                 <Link
                   variant={"body1"}
                   onClick={handleTradeLinkClick}
@@ -480,10 +463,49 @@ export const VipPanel = withTranslation(["common", "layout"])(
                     color: "var(--color-text-secondary)",
                   }}
                 >
-                  Buy LRC
+                  {t("labelBuyToken", { token: "LRC" })}
                 </Link>
-              </Grid>
-            </Grid>
+              )}
+            </Typography>
+            <Box width={"100%"} paddingRight={2} marginY={1.5}>
+              <LinearProgress variant="determinate" value={getBalanceLRC()} />
+              <Box
+                marginTop={1}
+                display={"flex"}
+                justifyContent={"space-between"}
+              >
+                <Typography
+                  fontWeight={400}
+                  color={
+                    isVIP4 ? "var(--color-text-secondary)" : "var(--color-star)"
+                  }
+                >
+                  {getCurrVIPLevel("left")}
+                </Typography>
+                <Typography
+                  fontWeight={400}
+                  color={
+                    isSVIP || isVIP4
+                      ? "var(--color-star)"
+                      : "var(--color-text-secondary)"
+                  }
+                >
+                  {getCurrVIPLevel("right")}
+                </Typography>
+              </Box>
+            </Box>
+            {!isMobile && (
+              <Link
+                variant={"body1"}
+                onClick={handleTradeLinkClick}
+                style={{
+                  textDecoration: "underline",
+                  color: "var(--color-text-secondary)",
+                }}
+              >
+                {t("labelBuyToken", { token: "LRC" })}
+              </Link>
+            )}
           </Grid>
           <Grid item xs={12}>
             <Typography
@@ -497,58 +519,33 @@ export const VipPanel = withTranslation(["common", "layout"])(
               you can access the corresponding fee discount in the table below.
             </Typography>
           </Grid>
-          {/* <Grid item xs={6} justifyContent={'flex-end'} display={'flex'}>
-                <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'flex-end'} marginRight={6}>
-                    <Typography component={'h5'} variant={'h5'} color={'text.secondary'}>{t('labelMaker')}</Typography>
-                    <Typography component={'p'} variant={'h3'} color={'text.primary'} marginTop={1/2}>{userFee.maker}</Typography>
-                </Box>
+        </StylePaper>
+        {isMobile ? (
+          <Typography variant={"body1"} paddingY={2} textAlign={"center"}>
+            For details, please view on desktop.
+          </Typography>
+        ) : (
+          <StylePaper
+            container
+            className={"MuiPaper-elevation2"}
+            marginTop={1}
+            padding={4}
+            marginBottom={2}
+          >
+            <Grid item xs={12}>
+              <Typography
+                component={"h3"}
+                variant={isMobile ? "h5" : "h4"}
+                color={"text.secondary"}
+              >
+                Fee List
+              </Typography>
+              <Box marginTop={3} flex={1}>
+                <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
+              </Box>
             </Grid>
-            <Grid item xs={6} justifyContent={'flex-start'} display={'flex'} >
-                <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} marginLeft={6} >
-                    <Typography component={'h5'} variant={'h5'}
-                                color={'text.secondary'}> {t('labelTaker')}  </Typography>
-                    <Typography component={'p'} variant={'h3'} color={'text.primary'}  marginTop={1/2}>{userFee.taker}</Typography>
-                </Box>
-            </Grid> */}
-        </StylePaper>
-
-        <StylePaper
-          container
-          className={"MuiPaper-elevation2"}
-          marginTop={1}
-          padding={4}
-          marginBottom={2}
-        >
-          <Grid item xs={12}>
-            {/* <Trans i18nKey={''}>
-                    <Typography component={'p'} variant={'body1'} color={'text.secondary'}>Loopring Exchange charges
-                        different fees for each type of service. Each service has a base fee and a proportional fee. For
-                        proportional fees, there is also a minimum proportional fee setting for each service. The actual
-                        fee calculation formula is: basic fee + max (minimum proportional fee, proportional fee *
-                        amount).</Typography>
-                    <br/>
-                    <Typography component={'p'} variant={'body1'} color={'text.secondary'}>The basic fee and the minimum
-                        proportional fee are the same for all users. VIPs enjoy different proportional fee
-                        discounts.</Typography>
-                </Trans> */}
-            {/* <Box marginTop={2} flex={1}> */}
-            <Typography
-              component={"h3"}
-              variant={"h4"}
-              color={"text.secondary"}
-            >
-              Fee List
-            </Typography>
-            <Box marginTop={3} flex={1}>
-              <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
-            </Box>
-
-            {/* <Typography component={'h6'} variant={'h1'} padding={3} textAlign={'center'}>
-                        Coming soon
-                    </Typography> */}
-            {/* </Box> */}
-          </Grid>
-        </StylePaper>
+          </StylePaper>
+        )}
       </>
     );
   }

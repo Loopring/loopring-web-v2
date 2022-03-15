@@ -5,11 +5,12 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from "../../../basic-lib/form";
 import { Button } from "../../../basic-lib/btns";
 import { DropDownIcon } from "@loopring-web/common-resources";
-import { TransactionTradeTypes, RawDataTransactionItem } from "../Interface";
 import { DateRange } from "@mui/lab";
+import { useSettings } from "../../../../stores";
+import { TransactionTradeTypes } from "../Interface";
 
 export interface FilterProps {
-  originalData: RawDataTransactionItem[];
+  filterTokens: string[];
   filterDate: DateRange<Date | string>;
   filterType: TransactionTradeTypes;
   filterToken: string;
@@ -39,76 +40,59 @@ const StyledBtnBox = styled(Box)`
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
-    originalData,
+    filterTokens = [],
     filterDate,
     filterType,
     filterToken,
     handleFilterChange,
     handleReset,
   }: FilterProps & WithTranslation) => {
+    const { isMobile } = useSettings();
     const transactionTypeList = [
       {
         label: t("labelTxFilterAllTypes"),
-        value: "All Types",
+        value: TransactionTradeTypes.allTypes,
       },
       {
         label: t("labelTxFilterDeposit"),
-        value: "Deposit",
+        value: TransactionTradeTypes.deposit,
       },
       {
         label: t("labelTxFilterWithdraw"),
-        value: "Withdraw",
+        value: TransactionTradeTypes.withdraw,
       },
       {
         label: t("labelTxFilterTransfer"),
-        value: "Transfer",
+        value: TransactionTradeTypes.transfer,
       },
     ];
 
-    // tokenPairList.map(o => <MenuItem key={o.key} value={o.value}>{o.value}</MenuItem>)
-    // const [filterType, setFilterType] = React.useState<TransactionTradeTypes>(TransactionTradeTypes.allTypes)
-    // const [filterDate, setFilterDate] = React.useState<Date | any>(null);
-    // const [filterToken, setFilterToken] = React.useState('All Tokens')
-
-    // const [timeRange, setTimeRange] = React.useState<DateRange<Date | string>>(['', '']);
-
-    // de-duplicate
-    const tokenTypeList = [
+    const tokenTypeList: { label: string; value: string }[] = [
       {
         label: t("labelTxFilterAllTokens"),
-        value: "All Tokens",
+        value: "all",
       },
-      // @ts-ignore
-      ...Array.from(new Set(originalData.map((o) => o?.amount.unit))).map(
-        (token) => ({
+      ...Array.from(filterTokens)
+        .sort((a: string, b: string) => {
+          return a.localeCompare(b);
+        })
+        .map((token: string) => ({
           label: token,
           value: token,
-        })
-      ),
+        })),
     ];
 
-    // const handleReset = React.useCallback(() => {
-    //     setFilterType(TransactionTradeTypes.allTypes)
-    //     setTimeRange([null, null])
-    //     // setFilterToken('All Tokens')
-    //     handleFilterChange({
-    //         filterType: TransactionTradeTypes.allTypes,
-    //         filterDate: ['', ''],
-    //         filterToken: 'All Tokens'
-    //     })
-    // }, [handleFilterChange])
-
-    // const handleSearch = React.useCallback(() => {
-    //     handleFilterChange({
-    //         filterType,
-    //         filterDate: filterDate,
-    //         // filterToken
-    //     })
-    // }, [handleFilterChange, filterType, filterDate])
-
     return (
-      <Grid container spacing={2} alignItems={"center"}>
-        <Grid item xs={2}>
+      <Grid container spacing={isMobile ? 1 : 2} alignItems={"center"}>
+        <Grid item xs={12} order={isMobile ? 0 : 1} lg={6}>
+          <DateRangePicker
+            value={filterDate}
+            onChange={(date: any) => {
+              handleFilterChange({ date: date });
+            }}
+          />
+        </Grid>
+        <Grid item xs={4} order={isMobile ? 1 : 0} lg={2}>
           <StyledTextFiled
             id="table-transaction-trade-types"
             select
@@ -119,7 +103,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
-            {" "}
             {transactionTypeList.map((o) => (
               <MenuItem key={o.value} value={o.value}>
                 {o.label}
@@ -127,15 +110,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
-          <DateRangePicker
-            value={filterDate}
-            onChange={(date: any) => {
-              handleFilterChange({ date: date });
-            }}
-          />
-        </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={4} order={2} lg={2}>
           <StyledTextFiled
             id="table-transaction-token-types"
             select
@@ -153,9 +128,10 @@ export const Filter = withTranslation("tables", { withRef: true })(
             ))}
           </StyledTextFiled>
         </Grid>
-        <Grid item>
+        <Grid item xs={4} order={3} lg={2}>
           <StyledBtnBox>
             <Button
+              fullWidth
               variant={"outlined"}
               size={"medium"}
               color={"primary"}

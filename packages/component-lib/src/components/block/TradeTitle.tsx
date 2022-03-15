@@ -186,7 +186,7 @@ export const TradeTitle = <I extends object>({
                     // src={sellData?.icon}
                     src={SoursURL + "images/icon-default.png"}
                   />
-                )}{" "}
+                )}
               </Box>
               <Typography variant={"h4"} component={"h3"} paddingRight={1}>
                 <Typography
@@ -284,9 +284,7 @@ export const TradeTitle = <I extends object>({
                 variant={"body2"}
                 component={"span"}
                 className={"chart-change"}
-              >
-                {" "}
-              </Typography>
+              ></Typography>
               <Typography
                 variant={"h5"}
                 component={"span"}
@@ -310,7 +308,7 @@ export const TradeTitle = <I extends object>({
         </Grid>
       ) : (
         <></>
-      )}{" "}
+      )}
     </TradeTitleStyled>
   );
 };

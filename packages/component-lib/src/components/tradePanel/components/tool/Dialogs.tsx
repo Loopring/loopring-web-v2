@@ -45,8 +45,7 @@ export const AlertImpact = withTranslation("common", { withRef: true })(
             <Trans i18nKey={"labelImpactExtraGreat"} tOptions={{ value }}>
               Your transaction amount will affect the pool price
               <Typography component={"span"} color={"error"}>
-                {" "}
-                {<>{value}</>}%{" "}
+                {<>{value}</>}%
               </Typography>
               . Are you sure to swap?
             </Trans>
@@ -58,7 +57,6 @@ export const AlertImpact = withTranslation("common", { withRef: true })(
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {" "}
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button
@@ -105,7 +103,6 @@ export const CancelAllOrdersAlert = withTranslation("common", {
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {" "}
             {t("labelCancel")}
           </Button>
           <Button
@@ -152,7 +149,6 @@ export const AlertNotSupport = withTranslation("common", { withRef: true })(
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {" "}
             {t("labelConfirm")}
           </Button>
         </DialogActions>
@@ -193,8 +189,7 @@ export const ConfirmImpact = withTranslation("common", { withRef: true })(
             <Trans i18nKey={"labelImpactExtraGreat"} tOptions={{ value }}>
               Your transaction amount will affect the pool price
               <Typography component={"span"} color={"error"}>
-                {" "}
-                {<>{value}</>}%{" "}
+                {<>{value}</>}%
               </Typography>
               . Are you sure to swap?
             </Trans>
@@ -220,7 +215,6 @@ export const ConfirmImpact = withTranslation("common", { withRef: true })(
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {" "}
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button
@@ -274,7 +268,6 @@ export const AlertLimitPrice = withTranslation("common", { withRef: true })(
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {" "}
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button
@@ -317,7 +310,7 @@ export const InformationForCoinBase = withTranslation("common", {
             <Trans i18nKey={"labelNoticeForMetaMask"}>
               Loopring only support and maintain MetaMask plugin for Wallet
               Connect, if your installed other Wallet plugin, please make sure
-              it's the MetaMask popup:{" "}
+              it's the MetaMask popup:
               <img
                 alt="MetaMask"
                 style={{ verticalAlign: "text-bottom" }}
@@ -344,7 +337,7 @@ export const InformationForCoinBase = withTranslation("common", {
             }}
             color={"primary"}
           >
-            {t("labelYes")}
+            {t("labelIKnow")}
           </Button>
         </DialogActions>
       </DialogStyle>
@@ -386,20 +379,20 @@ export const InformationForNoMetaNFT = withTranslation("common", {
         <DialogActions>
           <Button
             variant={"outlined"}
-            color={"primary"}
             size={"medium"}
-            onClick={(e) => {
-              handleClose(e as any, true);
-            }}
-          >
-            {t("labelYes")}
-          </Button>
-          <Button
-            size={"small"}
-            variant={"contained"}
             onClick={(e) => handleClose(e as any, false)}
           >
             {t("labelNo")}
+          </Button>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelYes")}
           </Button>
         </DialogActions>
       </DialogStyle>
@@ -428,7 +421,6 @@ export const HebaoConfirmApprove = withTranslation("common", {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle>
-          {" "}
           {t("labelWalletConfirmApproveTile", { project })}
         </DialogTitle>
         <DialogContent>
@@ -436,7 +428,7 @@ export const HebaoConfirmApprove = withTranslation("common", {
             <Trans i18nKey={"labelWalletConfirmApproveContent"}>
               Loopring only support and maintain MetaMask plugin for Wallet
               Connect, if your installed other Wallet plugin, please make sure
-              it's the MetaMask popup:{" "}
+              it's the MetaMask popup:
               <img
                 alt="MetaMask"
                 style={{ verticalAlign: "text-bottom" }}
@@ -460,7 +452,7 @@ export const HebaoConfirmApprove = withTranslation("common", {
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {t("labelNo")}
+            {t("labelDisAgreeConfirm")}
           </Button>
           <Button
             variant={"contained"}
@@ -502,7 +494,7 @@ export const HebaoConfirmLock = withTranslation("common", {
             <Trans i18nKey={"labelWalletConfirmLockConent"}>
               Loopring only support and maintain MetaMask plugin for Wallet
               Connect, if your installed other Wallet plugin, please make sure
-              it's the MetaMask popup:{" "}
+              it's the MetaMask popup:
               <img
                 alt="MetaMask"
                 style={{ verticalAlign: "text-bottom" }}
@@ -526,7 +518,6 @@ export const HebaoConfirmLock = withTranslation("common", {
             size={"medium"}
             onClick={(e) => handleClose(e as any)}
           >
-            {" "}
             {t("labelDisAgreeConfirm")}
           </Button>
           <Button

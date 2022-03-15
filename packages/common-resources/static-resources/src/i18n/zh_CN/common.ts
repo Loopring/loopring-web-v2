@@ -90,6 +90,7 @@ export default {
   labelQRCode: "查看二维码",
   labelShowAccountInfo: "查看,设置账号信息",
   labelAssetTitle: "总资产(路印二层)",
+  labelAssetMobileTitle: "Layer 2 Total Assets",
   labelShowAccount: "显示或隐藏总资产",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "充值",
@@ -158,6 +159,7 @@ export default {
   labelBack: "返回",
   labelAPR: "APR",
   label24Volume: "24h 交易量",
+  label24VolumeSimple: "24h Vol",
   labelTVL: "总锁仓量",
   labelAmmTotalToken: "池子中的代币",
   labelNoActiveEvent: "暂时没有活动",
@@ -349,6 +351,7 @@ export default {
   labelOrderTableOpenOrder: "当前委托",
   labelOrderTableOrderHistory: "历史委托",
   labelResetLayout: "重置布局",
+  labelResetMobileLayout: "Reset",
   labelBtnFix: "重置",
   labelProSell: "卖",
   labelProBuy: "买",
@@ -457,9 +460,16 @@ export default {
     "Your Mint NFT is without Metadata or media information, \nAre you still want {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
-  labelInvalidCID: "Invalid CID",
-  labelWithdrawInvalidAddress:
-    "Invalid address, ENS, special token, or an Counter Factual wallet",
+  labelInvalidAddress: "Invalid address, ENS",
+  labelInvalidisCFAddress:
+    "Loopring counter Counter Factual wallet is disable {{way}} {{token}}",
+  labelInvalidisContract1XAddress:
+    "Loopring wallet 1.x is disable {{way}} {{token}}",
+  labelInvalidisContractAddress:
+    "{{token}} is not available {{way}} to Contract wallet",
+  labelInvalidisLoopringAddress:
+    "This address has not yet active Loopring L2, {{way}} is {{token}} disable!",
+  labelInvalidisSameAddress: "Cannot {{way}} to your own address",
   labelTransferAddressNotLoopring:
     "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
@@ -471,7 +481,6 @@ export default {
   labelTransferTokenAmount: "Token Amount",
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
-  labelTransferSameAddress: "Cannot transfer to your own address",
   labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",
@@ -505,7 +514,7 @@ export default {
   labelNFTDescribe: "Description:",
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "NFT Amount:",
-  labelNFTContractAddress: "NFT Token Contract:",
+  labelNFTContractAddress: "Token Contract:",
   labelNFTTId: "NFT Token ID:",
   labelNFTCid: "IPFS CID <1></1>: (Store `metadata Information`)",
   labelNFTType: "NFT Type:",
@@ -513,12 +522,15 @@ export default {
   labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
   labelDeployFailed: "Deploy {{symbol}} Failed!",
   labelDeploySubmit: "Deploy {{symbol}} Submit",
+  labelMint: "Mint",
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
   labelNFTMintNoMetaBtn: "No Metadata",
+  labelNFTMintNoMetaDetail:
+    "Your NFT metadata should identify <1>name, image & royalty_percentage(Int from 0 to 10)</1>.",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:
@@ -564,4 +576,9 @@ export default {
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
   labelWalletSignType: "Request for <1></1>",
+  labelSpotTrading: "Spot Trading Volume (30d in ETH)",
+  labelTradeSpot: "Trade Spot",
+  labelBuyToken: "Buy {{token}}",
+  labelCurrentlyLevel: "Currently {{value}} {{token}}",
+  labelLRCBalance: "LRC Balance",
 };

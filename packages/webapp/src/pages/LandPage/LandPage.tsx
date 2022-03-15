@@ -163,16 +163,17 @@ const ImgWrapperStyled = styled(Box)`
 
 export const LandPage = withTranslation(["landPage", "common"])(
   ({ t }: any) => {
-    const [value, setValue] = React.useState<
-      | {
-          timestamp: string;
-          tradeVolume: string;
-          totalUserNum: string;
-          tradeNum: string;
-          layerTwoLockedVolume: string;
-        }
-      | undefined
-    >();
+    const [value, setValue] =
+      React.useState<
+        | {
+            timestamp: string;
+            tradeVolume: string;
+            totalUserNum: string;
+            tradeNum: string;
+            layerTwoLockedVolume: string;
+          }
+        | undefined
+      >();
     const history = useHistory();
 
     const result = React.useCallback(async () => {
@@ -273,11 +274,11 @@ export const LandPage = withTranslation(["landPage", "common"])(
                   marginTop={11}
                   position={"absolute"}
                   component={"h3"}
-                  zIndex={44}
+                  zIndex={42}
                 >
                   {t("labelTitleDEX")}
                 </TitleTypography>
-                <BoxCard width={320} height={256} top={196} zIndex={44}>
+                <BoxCard width={320} height={256} top={196} zIndex={42}>
                   <Typography
                     whiteSpace={"pre-line"}
                     component={"h4"}
@@ -303,7 +304,7 @@ export const LandPage = withTranslation(["landPage", "common"])(
                   height={272}
                   top={247}
                   left={394}
-                  zIndex={44}
+                  zIndex={42}
                 >
                   <Typography
                     whiteSpace={"pre-line"}
@@ -332,7 +333,7 @@ export const LandPage = withTranslation(["landPage", "common"])(
                   height={210}
                   top={102}
                   left={798}
-                  zIndex={44}
+                  zIndex={42}
                 >
                   <Typography
                     whiteSpace={"pre-line"}
@@ -342,7 +343,6 @@ export const LandPage = withTranslation(["landPage", "common"])(
                     {t("labelTradeTVL")}
                   </Typography>
                   <TradeInfoStyled component={"span"}>
-                    {" "}
                     $
                     {value &&
                       getValuePrecisionThousand(
@@ -360,7 +360,7 @@ export const LandPage = withTranslation(["landPage", "common"])(
                   height={319}
                   top={351}
                   left={798}
-                  zIndex={44}
+                  zIndex={42}
                 >
                   <Typography
                     whiteSpace={"pre-line"}

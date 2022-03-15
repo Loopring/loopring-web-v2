@@ -29,21 +29,12 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
     isAddressCheckLoading,
     ...rest
   }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
-    // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
-    //     to: 'button',
-    //     tradeData: tradeData
-    // } as SwitchData<T>);
-    // const [index, setIndex] = React.useState(0);
-    const {
-      //toolbar UI
-      // toolBarItemBack,
-      //Data, panel and function
-      onChangeEvent,
-      index,
-      switchData,
-    } = useBasicTrade({ ...rest, type });
+    const { onChangeEvent, index, switchData } = useBasicTrade({
+      ...rest,
+      type,
+    });
 
-    const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
+    const props: SwitchPanelProps<string> = {
       index: index, // show default show
       panelList: [
         {
@@ -84,29 +75,34 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
           ),
           toolBarItem: undefined,
         },
-        {
-          key: "tradeMenuList",
-          element: React.useMemo(
-            () => (
-              <TradeMenuList
-                {...{
-                  nonZero: true,
-                  sorted: true,
-                  ...rest,
-                  onChangeEvent,
-                  //rest.walletMap,
-                  selected: switchData.tradeData.belong,
-                  tradeData: switchData.tradeData,
-                  //oinMap
-                }}
-              />
-            ),
-            [switchData, rest, onChangeEvent]
-          ),
-          toolBarItem: undefined,
-          // toolBarItem: toolBarItemBack
-        },
-      ],
+      ].concat(
+        type === "TOKEN"
+          ? [
+              {
+                key: "tradeMenuList",
+                element: React.useMemo(
+                  () => (
+                    <TradeMenuList
+                      {...{
+                        nonZero: true,
+                        sorted: true,
+                        ...rest,
+                        onChangeEvent,
+                        //rest.walletMap,
+                        selected: switchData.tradeData.belong,
+                        tradeData: switchData.tradeData,
+                        //oinMap
+                      }}
+                    />
+                  ),
+                  [switchData, rest, onChangeEvent]
+                ),
+                toolBarItem: undefined,
+                // toolBarItem: toolBarItemBack
+              },
+            ]
+          : []
+      ),
     };
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }

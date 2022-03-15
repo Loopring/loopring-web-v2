@@ -144,7 +144,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   alt="MetaMask"
                   style={{ verticalAlign: "text-bottom" }}
                   src={SoursURL + `images/${providerName}PlugIn.png`}
-                />{" "}
+                />
                 on your browser toolbar.
               </Trans>
             );
@@ -167,6 +167,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
         alignItems={"center"}
         justifyContent={"space-between"}
         flexDirection={"column"}
+        paddingBottom={4}
       >
         <Typography component={"h3"} variant={"h3"}>
           {t(title as string)}
@@ -227,6 +228,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               marginX={3}
               whiteSpace={"pre-line"}
               variant={"h5"}
+              textAlign={"center"}
               color={"textPrimary"}
               component={"div"}
               marginTop={0}
@@ -280,7 +282,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                 }
               }}
             >
-              {t(btnInfo?.btnTxt)}{" "}
+              {t(btnInfo?.btnTxt)}
             </Button>
           </Box>
         )}

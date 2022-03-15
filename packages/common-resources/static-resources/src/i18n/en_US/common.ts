@@ -91,6 +91,7 @@ export default {
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "Layer 2 Total Assets",
+  labelAssetMobileTitle: "L2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "Deposit",
@@ -159,6 +160,7 @@ export default {
   labelBack: "Back",
   labelAPR: "APR",
   label24Volume: "24h Volume",
+  label24VolumeSimple: "24h Vol",
   labelTVL: "Total Volume Locked",
   labelAmmTotalToken: "Tokens in AMM",
   labelNoActiveEvent: "No event",
@@ -361,6 +363,7 @@ export default {
   labelOrderTableOpenOrder: "Open Order",
   labelOrderTableOrderHistory: "Order History",
   labelResetLayout: "Reset Layout",
+  labelResetMobileLayout: "Reset",
   labelBtnFix: "reset",
   labelProSell: "Sell",
   labelProBuy: "Buy",
@@ -470,10 +473,18 @@ export default {
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
   labelInvalidCID: "Invalid CID",
-  labelWithdrawInvalidAddress:
-    "Invalid address, ENS, special token, or an Counter Factual wallet",
+  labelInvalidAddress: "Invalid address, ENS",
+  labelInvalidisCFAddress:
+    "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
+  labelInvalidisContract1XAddress:
+    "Loopring wallet 1.x is disabled {{way}} {{token}}",
+  labelInvalidisContractAddress:
+    "{{way}} of {{token}} to Contract wallet is not available ",
+  labelInvalidisLoopringAddress:
+    "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
+  labelInvalidisSameAddress: "Cannot {{way}} to your own address",
   labelTransferAddressNotLoopring:
-    "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
+    "This address has not yet active Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
   labelTransferOriginDesc:
     "Please select the address source: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex….)",
@@ -483,7 +494,6 @@ export default {
   labelTransferTokenAmount: "Token Amount",
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
-  labelTransferSameAddress: "Cannot transfer to your own address",
   labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",
@@ -528,16 +538,19 @@ export default {
   labelNFTTokenDeployWaitForAuth: "Allow Loopring to Deploy {{symbol}}",
   labelDeployFailed: "Deploy {{symbol}} Failed!",
   labelDeploySubmit: "Deploy {{symbol}} Submit",
+  labelMint: "Mint",
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
-  labelNFTMintNoMetaBtn: "No Metadata",
+  labelNFTMintNoMetaBtn: "Wrong Metadata",
+  labelNFTMintNoMetaDetail:
+    "Your NFT metadata should identify <1>name, image & royalty_percentage(Int from 0 to 10)</1>.",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:
-    "Paste in the CID that you obtained from uploading \n the metadata file (point 11 above) - if successful,\n the data from the metadata file you created contained\n within the folder populates the Name\n and also the image displays.",
+    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder populates the Name\n and also the image displays.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "Processing...",
@@ -594,4 +607,9 @@ export default {
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
   labelWalletSignType: "Request for {{type}}",
+  labelSpotTrading: "Spot Trading Volume (30d in ETH)",
+  labelTradeSpot: "Trade Spot",
+  labelBuyToken: "Buy {{token}}",
+  labelCurrentlyLevel: "Currently {{value}} {{token}}",
+  labelLRCBalance: "LRC Balance",
 };

@@ -84,13 +84,12 @@ export const ModalAccountInfo = withTranslation("common")(
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}
           exportAccountProps={exportAccountProps}
-          ammProps={{} as any}
-          swapProps={{} as any}
+          // ammProps={{} as any}
+          // swapProps={{} as any}
           assetsData={assetsRawData}
           setExportAccountToastOpen={setExportAccountToastOpen}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}
         />
-
         <Toast
           alertText={t("labelCopyAddClip")}
           open={copyToastOpen}
@@ -100,7 +99,6 @@ export const ModalAccountInfo = withTranslation("common")(
           }}
           severity={"success"}
         />
-
         <ModalQRCode
           open={openQRCode}
           onClose={() => setOpenQRCode(false)}
@@ -108,7 +106,6 @@ export const ModalAccountInfo = withTranslation("common")(
           description={account?.accAddress}
           url={account?.accAddress}
         />
-
         <ModalAccount
           open={isShowAccount.isShow}
           onClose={closeBtnInfo.callback}

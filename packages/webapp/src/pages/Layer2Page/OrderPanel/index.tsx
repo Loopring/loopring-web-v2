@@ -5,6 +5,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useOrderList } from "./hook";
 import { StylePaper } from "../../styled";
 import { useGetTrades } from "../TradePanel/hooks";
+import { RowConfig } from "@loopring-web/common-resources";
 
 const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
   const { t } = rest;
@@ -27,7 +28,9 @@ const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
     // @ts-ignore
     let height = container?.current?.offsetHeight;
     if (height) {
-      setPageSize(Math.floor((height - 88) / 44) - 3);
+      setPageSize(
+        Math.floor((height - RowConfig.rowHeight * 2) / RowConfig.rowHeight) - 3
+      );
     }
   }, [container, pageSize]);
 

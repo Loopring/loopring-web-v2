@@ -133,7 +133,7 @@ export const SubMenuList = withTranslation(["layout", "common"], {
           });
           return (
             <div key={`group-${list}`}>
-              {subList}{" "}
+              {subList}
               {index + 1 !== Object.keys(subMenu).length ? (
                 <Box marginX={3}>
                   <Divider />

@@ -1,43 +1,49 @@
-import React from 'react'
-import { TransactionTable } from '@loopring-web/component-lib'
-import { WithTranslation, withTranslation } from 'react-i18next'
-import { StylePaper } from '../../styled'
-import { useGetTxs } from './hooks';
+import React from "react";
+import { TransactionTable } from "@loopring-web/component-lib";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { StylePaper } from "../../styled";
+import { useGetTxs } from "./hooks";
+import { useTokenMap } from "../../../stores/token";
+import { RowConfig } from "@loopring-web/common-resources";
 
-const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
-    const {t} = rest
-    const container = React.useRef(null);
-    const [pageSize, setPageSize] = React.useState(10);
+const TxPanel = withTranslation("common")((rest: WithTranslation<"common">) => {
+  const { t } = rest;
+  const container = React.useRef(null);
+  const [pageSize, setPageSize] = React.useState(10);
+  const { totalCoinMap } = useTokenMap();
+  const { txs: txTableData, isLoading } = useGetTxs();
 
-    const {txs: txTableData, isLoading} = useGetTxs()
+  React.useEffect(() => {
+    // @ts-ignore
+    let height = container?.current?.offsetHeight;
+    if (height) {
+      setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 2);
+    }
+  }, [container, pageSize]);
 
-    React.useEffect(() => {
-        // @ts-ignore
-        let height = container?.current?.offsetHeight;
-        if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 2);
-        }
-    }, [container, pageSize]);
+  return (
+    <StylePaper ref={container}>
+      <div className="title">{t("labelTxnPageTitle")}</div>
+      <div className="tableWrapper">
+        <TransactionTable
+          {...{
+            rawData: txTableData,
+            pagination: {
+              pageSize: pageSize,
+              total: txTableData.length,
+            },
+            filterTokens: totalCoinMap
+              ? (Reflect.ownKeys(totalCoinMap) as string[])
+              : [],
+            showFilter: true,
+            showloading: isLoading,
+            getTxnList: (): any => {},
+            ...rest,
+          }}
+        />
+      </div>
+    </StylePaper>
+  );
+});
 
-    return (
-        <StylePaper ref={container}>
-            <div className="title">{t('labelTxnPageTitle')}</div>
-            <div className="tableWrapper">
-                <TransactionTable {...{
-                    rawData: txTableData,
-                    pagination: {
-                        pageSize: pageSize,
-                        total: txTableData.length
-                    },
-                    showFilter: true,
-                    showloading: isLoading,
-                    getTxnList: (): any => {
-                    },
-                    ...rest
-                }} />
-            </div>
-        </StylePaper>
-    )
-})
-
-export default TxPanel
+export default TxPanel;

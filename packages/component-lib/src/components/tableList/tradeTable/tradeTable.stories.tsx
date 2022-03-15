@@ -1,287 +1,156 @@
-import styled from '@emotion/styled'
-import { Meta, Story } from '@storybook/react/types-6-0'
-import { withTranslation } from 'react-i18next'
-import { MemoryRouter } from 'react-router-dom'
-import { RawDataTradeItem, TradeTable } from './index'
-import { TradeTypes } from '@loopring-web/common-resources';
+import styled from "@emotion/styled";
+import { Meta, Story } from "@storybook/react/types-6-0";
+import { withTranslation } from "react-i18next";
+import { MemoryRouter } from "react-router-dom";
+import {
+  RawDataTradeItem,
+  TradeItemCounterparty,
+  TradeItemRole,
+  TradeTable,
+} from "./index";
 
 const Style = styled.div`
-	
-	flex: 1;
-	height: 100%;
-	flex: 1;
-`
+  flex: 1;
+  height: 100%;
+  flex: 1;
+`;
 
 const rawData: RawDataTradeItem[] = [
-    {
-        side: TradeTypes.Buy,
-        amount: {
-            from: {
-                key: 'LRC',
-                value: 2333
-            },
-            to: {
-                key: 'ETH',
-                value: 1.05
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 0
+  {
+    role: TradeItemRole.maker,
+    amount: {
+      from: {
+        key: "eth",
+        value: 1234,
+      },
+      to: {
+        key: "let",
+        value: 5678,
+      },
+      volume: 1234,
     },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
+    counterParty: TradeItemCounterparty.orderbook,
+    price: {
+      key: "ETH",
+      value: 1200,
     },
-    {
-        side: TradeTypes.Buy,
-        amount: {
-            from: {
-                key: 'LRC',
-                value: 2333
-            },
-            to: {
-                key: 'ETH',
-                value: 1.05
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 0
+    // priceDollar: number;
+    // priceYuan: number;
+    fee: {
+      key: "LRC",
+      value: 0.1,
     },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
+    time: Date.now(),
+    __raw__: {} as any,
+  },
+  {
+    role: TradeItemRole.maker,
+    amount: {
+      from: {
+        key: "eth",
+        value: 1234,
+      },
+      to: {
+        key: "let",
+        value: 5678,
+      },
+      volume: 1234,
     },
-    {
-        side: TradeTypes.Buy,
-        amount: {
-            from: {
-                key: 'LRC',
-                value: 2333
-            },
-            to: {
-                key: 'ETH',
-                value: 1.05
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 0
+    counterParty: TradeItemCounterparty.orderbook,
+    price: {
+      key: "ETH",
+      value: 1200,
     },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
+    // priceDollar: number;
+    // priceYuan: number;
+    fee: {
+      key: "LRC",
+      value: 0.1,
     },
-    {
-        side: TradeTypes.Buy,
-        amount: {
-            from: {
-                key: 'LRC',
-                value: 2333
-            },
-            to: {
-                key: 'ETH',
-                value: 1.05
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 0
+    time: Date.now(),
+    __raw__: {} as any,
+  },
+  {
+    role: TradeItemRole.maker,
+    amount: {
+      from: {
+        key: "eth",
+        value: 1234,
+      },
+      to: {
+        key: "let",
+        value: 5678,
+      },
+      volume: 1234,
     },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
+    counterParty: TradeItemCounterparty.orderbook,
+    price: {
+      key: "ETH",
+      value: 1200,
     },
-    {
-        side: TradeTypes.Buy,
-        amount: {
-            from: {
-                key: 'LRC',
-                value: 2333
-            },
-            to: {
-                key: 'ETH',
-                value: 1.05
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 0
+    // priceDollar: number;
+    // priceYuan: number;
+    fee: {
+      key: "LRC",
+      value: 0.1,
     },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
+    time: Date.now(),
+    __raw__: {} as any,
+  },
+  {
+    role: TradeItemRole.maker,
+    amount: {
+      from: {
+        key: "eth",
+        value: 1234,
+      },
+      to: {
+        key: "let",
+        value: 5678,
+      },
+      volume: 1234,
     },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'LRC',
-                value: 2333
-            },
-            to: {
-                key: 'ETH',
-                value: 1.05
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
+    counterParty: TradeItemCounterparty.orderbook,
+    price: {
+      key: "ETH",
+      value: 1200,
     },
-]
+    // priceDollar: number;
+    // priceYuan: number;
+    fee: {
+      key: "LRC",
+      value: 0.1,
+    },
+    time: Date.now(),
+    __raw__: {} as any,
+  },
+];
 
 const Template: Story<any> = withTranslation()((args: any) => {
-    return (
-        <>
-            <Style>
-                <MemoryRouter initialEntries={['/']}>
-                    <TradeTable {...args} />
-                </MemoryRouter>
-            </Style>
-        </>
-    )
-}) as Story<any>
+  return (
+    <>
+      <Style>
+        <MemoryRouter initialEntries={["/"]}>
+          <TradeTable {...args} />
+        </MemoryRouter>
+      </Style>
+    </>
+  );
+}) as Story<any>;
 
 // @ts-ignore
-export const Trade = Template.bind({})
+export const Trade = Template.bind({});
 
 Trade.args = {
-    rawData: rawData,
-    pagination: {
-        pageSize: 5
-    },
-    showFilter: true
-}
+  rawData: rawData,
+  pagination: {
+    pageSize: 5,
+  },
+  showFilter: true,
+};
 
 export default {
-    title: 'components/TableList/Trade',
-    component: TradeTable,
-    argTypes: {},
-} as Meta
+  title: "components/TableList/Trade",
+  component: TradeTable,
+  argTypes: {},
+} as Meta;
