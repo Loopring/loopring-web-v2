@@ -79,6 +79,7 @@ export default {
   labelkeyReportIssue: "Report Issue",
   labelMyNFT: "My NFT",
   labelLaunchApp: "Launch App",
+  labelLaunchMobileApp: "Exchange",
   labelLandingHeaderLayer2: "zkRollup Layer2",
   labelLandingHeaderWallet: "Smart Wallet",
   labelCopyRight: "© 2017 Loopring Technology Limited. All rights reserved.",

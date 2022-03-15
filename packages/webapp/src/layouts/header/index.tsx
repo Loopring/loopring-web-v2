@@ -57,7 +57,7 @@ const Header = withTranslation("common")(
                 selected={
                   location.pathname === "/" ? headerRoot : location.pathname
                 }
-              ></HeaderUI>
+              />
             </HideOnScroll>
           ) : (
             <HeaderUI

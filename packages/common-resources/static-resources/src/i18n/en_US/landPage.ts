@@ -50,6 +50,7 @@ export default {
   labelWalletUnleashedDetail:
     "Your mobile gateway to Ethereum DeFi, collectables, and more.",
   labelLaunchApp: "LAUNCH APP",
+  labelLaunchMobileApp: "Exchange",
   labelUpgradeHide:
     "Loopring System Service Upgrade: Loopring will perform a temporary system upgrade starting at 2021/12/20 2:00pm (UTC+8), which will take approximately 2 hours.",
   labelUpgradeShow:

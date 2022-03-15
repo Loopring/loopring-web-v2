@@ -24,7 +24,6 @@ import _ from "lodash";
 import { useNotify } from "../../stores/notify";
 
 export const useHeader = () => {
-  // const {setTheme, themeMode, setLanguage} = useSettings();
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { setShowAccount } = useOpenModals();
@@ -58,30 +57,37 @@ export const useHeader = () => {
   }, [account, setShouldShow, _btnClickMap]);
   React.useEffect(() => {
     setHeaderToolBarData((headerToolBarData) => {
-      return {
-        ...headerToolBarData,
-        // [ButtonComponentsMap.Notification]: {
-        //   ...headerToolBarData[ButtonComponentsMap.Notification],
-        // },
-        [ButtonComponentsMap.WalletConnect]: {
-          ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-          accountState,
-          handleClick: onWalletBtnConnect,
-        },
-      } as HeaderToolBarInterface[];
+      headerToolBarData[ButtonComponentsMap.Notification] = {
+        ...headerToolBarData[ButtonComponentsMap.Notification],
+      };
+      headerToolBarData[ButtonComponentsMap.WalletConnect] = {
+        ...headerToolBarData[ButtonComponentsMap.WalletConnect],
+        accountState,
+        handleClick: onWalletBtnConnect,
+      };
+      return headerToolBarData;
+      // return {
+      //   ...headerToolBarData,
+      //   // [ButtonComponentsMap.Notification]: {
+      //   //   ...headerToolBarData[ButtonComponentsMap.Notification],
+      //   // },
+      //   [ButtonComponentsMap.WalletConnect]: {
+      //     ...headerToolBarData[ButtonComponentsMap.WalletConnect],
+      //     accountState,
+      //     handleClick: onWalletBtnConnect,
+      //   },
+      // } as HeaderToolBarInterface[];
     });
   }, []);
 
   React.useEffect(() => {
     if (accountStatus && accountStatus === "UNSET") {
       setHeaderToolBarData((headerToolBarData) => {
-        return {
-          ...headerToolBarData,
-          [ButtonComponentsMap.WalletConnect]: {
-            ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-            accountState,
-          },
-        } as HeaderToolBarInterface[];
+        headerToolBarData[ButtonComponentsMap.WalletConnect] = {
+          ...headerToolBarData[ButtonComponentsMap.WalletConnect],
+          accountState,
+        };
+        return headerToolBarData;
       });
     }
     // forceUpdate()

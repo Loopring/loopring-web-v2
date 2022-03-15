@@ -132,6 +132,23 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
   },
 ];
 
+export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: "HeaderMain",
+      i18nKey: "labelLandingHeaderLayer2",
+    },
+    router: { path: "/" },
+  },
+  {
+    label: {
+      id: "HeaderWallet",
+      i18nKey: "labelLandingHeaderWallet",
+    },
+    router: { path: "/wallet" },
+  },
+];
+
 export const headerGuardianMenuData: Array<HeaderMenuItemInterface> = [
   {
     label: {
