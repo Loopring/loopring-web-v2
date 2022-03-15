@@ -184,6 +184,7 @@ export const TransferWrap = <
           <Typography
             fontSize={16}
             lineHeight={"24px"}
+            style={{ wordBreak: "break-all" }}
             color={"var(--color-text-third)"}
           >
             {label}
@@ -310,7 +311,11 @@ export const TransferWrap = <
               address ?? ""
             )}
             {realAddr && (
-              <Typography fontSize={14} color={"var(--color-text-secondary)"}>
+              <Typography
+                variant={isMobile ? "body2" : "body1"}
+                color={"var(--color-text-secondary)"}
+                style={{ wordBreak: "break-all" }}
+              >
                 {realAddr}
               </Typography>
             )}
