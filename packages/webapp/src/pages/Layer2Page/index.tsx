@@ -132,6 +132,7 @@ export const Layer2Page = () => {
     }
   }, [selected]);
   const { isMobile } = useSettings();
+  // myLog("assetTitleProps", assetTitleProps.assetInfo);
   const viewTemplate = React.useMemo(() => {
     switch (account.readyState) {
       case AccountStatus.UN_CONNECT:
@@ -303,7 +304,7 @@ export const Layer2Page = () => {
       default:
         break;
     }
-  }, [t, account.readyState, selected, isMobile]);
+  }, [t, account.readyState, selected, assetTitleProps, isMobile]);
 
   return <>{viewTemplate}</>;
 };
