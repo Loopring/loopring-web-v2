@@ -9,7 +9,7 @@ import {
   ProcessingType,
   useConnectHook,
 } from "@loopring-web/web3-provider";
-import { SagaStatus, UIERROR_CODE } from "@loopring-web/common-resources";
+import { SagaStatus } from "@loopring-web/common-resources";
 import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
 
 import { updateAccountStatus, useAccount } from "stores/account";

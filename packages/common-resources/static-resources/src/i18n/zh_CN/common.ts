@@ -450,8 +450,8 @@ export default {
   labelNFTTitleMyNFT: "My NFT",
   labelNFTTOTAL: "Count:",
   labelInformation: "Notification",
-  labelNoticeForMetaMask:
-    "Loopring only supports and maintains the MetaMask plugin for WalletConnect, if you've installed other Wallet plugins, please make sure it's through the MetaMask pop-up: <1></1>",
+  labelNoticeForProvider:
+    "Loopring only support and maintain {{name}} plugins for WalletConnect, if your installed other Wallet plugin, please make sure it's the {{name}} popup.",
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
   labelYes: "Yes",

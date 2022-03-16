@@ -12,7 +12,7 @@ import {
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { Button } from "../../../basic-lib";
 import React from "react";
-import { SoursURL } from "@loopring-web/common-resources";
+import { ConnectProviders } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 
 const DialogStyle = styled(Dialog)`
@@ -297,6 +297,9 @@ export const InformationForCoinBase = withTranslation("common", {
     open: boolean;
     handleClose: (event: MouseEvent, notShow?: boolean) => void;
   }) => {
+    const providers = Object.keys(ConnectProviders).filter(
+      (item) => item !== "unknown"
+    );
     return (
       <DialogStyle
         open={open}
@@ -307,16 +310,14 @@ export const InformationForCoinBase = withTranslation("common", {
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelNoticeForMetaMask"}>
-              Loopring only support and maintain MetaMask plugin for Wallet
-              Connect, if your installed other Wallet plugin, please make sure
-              it's the MetaMask popup:
-              <img
-                alt="MetaMask"
-                style={{ verticalAlign: "text-bottom" }}
-                src={SoursURL + "images/MetaMaskPlugIn.png"}
-              />
-              .
+            <Trans
+              i18nKey={"labelNoticeForProvider"}
+              tOptions={{ name: providers.join(",") }}
+            >
+              Loopring only support and maintain {providers.join(",")} plugin
+              for Wallet Connect, if your installed other Wallet plugin, please
+              make sure it's the
+              {providers.join(",")} popup.
             </Trans>
             <Link
               target={"_top"}
@@ -393,142 +394,6 @@ export const InformationForNoMetaNFT = withTranslation("common", {
             color={"primary"}
           >
             {t("labelYes")}
-          </Button>
-        </DialogActions>
-      </DialogStyle>
-    );
-  }
-);
-
-export const HebaoConfirmApprove = withTranslation("common", {
-  withRef: true,
-})(
-  ({
-    t,
-    open,
-    project,
-    handleClose,
-  }: WithTranslation & {
-    open: boolean;
-    project: string;
-    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
-  }) => {
-    return (
-      <DialogStyle
-        open={open}
-        keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>
-          {t("labelWalletConfirmApproveTile", { project })}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelWalletConfirmApproveContent"}>
-              Loopring only support and maintain MetaMask plugin for Wallet
-              Connect, if your installed other Wallet plugin, please make sure
-              it's the MetaMask popup:
-              <img
-                alt="MetaMask"
-                style={{ verticalAlign: "text-bottom" }}
-                src={SoursURL + "images/MetaMaskPlugIn.png"}
-              />
-              .
-            </Trans>
-            <Link
-              target={"_top"}
-              onClick={() => {
-                window.open("./#/document/plugin_guide.md");
-              }}
-            >
-              {t("labelGuid")}
-            </Link>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant={"outlined"}
-            size={"medium"}
-            onClick={(e) => handleClose(e as any)}
-          >
-            {t("labelDisAgreeConfirm")}
-          </Button>
-          <Button
-            variant={"contained"}
-            size={"small"}
-            onClick={(e) => {
-              handleClose(e as any, true);
-            }}
-            color={"primary"}
-          >
-            {t("labelAgreeConfirm")}
-          </Button>
-        </DialogActions>
-      </DialogStyle>
-    );
-  }
-);
-
-export const HebaoConfirmLock = withTranslation("common", {
-  withRef: true,
-})(
-  ({
-    t,
-    open,
-    handleClose,
-  }: WithTranslation & {
-    open: boolean;
-    handleClose: (event: MouseEvent, notShow?: boolean) => void;
-  }) => {
-    return (
-      <DialogStyle
-        open={open}
-        keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle> {t("labelWalletConfirmLockTitle")}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelWalletConfirmLockConent"}>
-              Loopring only support and maintain MetaMask plugin for Wallet
-              Connect, if your installed other Wallet plugin, please make sure
-              it's the MetaMask popup:
-              <img
-                alt="MetaMask"
-                style={{ verticalAlign: "text-bottom" }}
-                src={SoursURL + "images/MetaMaskPlugIn.png"}
-              />
-              .
-            </Trans>
-            <Link
-              target={"_top"}
-              onClick={() => {
-                window.open("./#/document/plugin_guide.md");
-              }}
-            >
-              {t("labelGuid")}
-            </Link>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant={"outlined"}
-            size={"medium"}
-            onClick={(e) => handleClose(e as any)}
-          >
-            {t("labelDisAgreeConfirm")}
-          </Button>
-          <Button
-            variant={"contained"}
-            size={"small"}
-            onClick={(e) => {
-              handleClose(e as any, true);
-            }}
-            color={"primary"}
-          >
-            {t("labelAgreeConfirm")}
           </Button>
         </DialogActions>
       </DialogStyle>
