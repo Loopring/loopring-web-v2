@@ -46,7 +46,7 @@ export enum AccountStep {
   NFTMint_In_Progress,
   NFTMint_Denied,
   NFTMint_Failed,
-  NFTMint_Submit,
+  NFTMint_Success,
 
   NFTDeploy_WaitForAuth,
   NFTDeploy_First_Method_Denied,
@@ -96,7 +96,6 @@ export enum AccountStep {
   UpdateAccount_First_Method_Denied,
   UpdateAccount_User_Denied,
   UpdateAccount_Success,
-  UpdateAccount_Submit,
   UpdateAccount_Failed,
 
   // UnlockAccount,
@@ -109,7 +108,6 @@ export enum AccountStep {
   ResetAccount_First_Method_Denied,
   ResetAccount_User_Denied,
   ResetAccount_Success,
-  ResetAccount_Submit,
   ResetAccount_Failed,
 
   ExportAccount_Approve_WaitForAuth,

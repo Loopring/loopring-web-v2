@@ -9,6 +9,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  Explorer,
   IBData,
   NFTWholeINFO,
   SagaStatus,
@@ -80,6 +81,9 @@ export const useNFTWithdraw = <
   } = useChargeFees({
     requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
     tokenAddress: nftWithdrawValue.tokenAddress,
+    deployInWithdraw:
+      nftWithdrawValue.isCounterFactualNFT &&
+      nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
     updateData: (feeInfo, _chargeFeeList) => {
       updateNFTWithdrawData({ ...nftWithdrawValue, fee: feeInfo });
     },
@@ -293,6 +297,11 @@ export const useNFTWithdraw = <
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTWithdraw_Success,
+                info: {
+                  hash:
+                    Explorer +
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw`,
+                },
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);
@@ -309,7 +318,7 @@ export const useNFTWithdraw = <
             resetNFTWithdrawData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         sdk.dumpError400(reason);
         const code = checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
@@ -412,7 +421,7 @@ export const useNFTWithdraw = <
           myLog("submitNFTWithdraw:", request);
 
           processRequest(request, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           setShowAccount({
             isShow: true,

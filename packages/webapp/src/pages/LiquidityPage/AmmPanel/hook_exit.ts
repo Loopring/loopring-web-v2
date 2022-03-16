@@ -9,7 +9,11 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus } from "@loopring-web/component-lib";
+import {
+  TradeBtnStatus,
+  useOpenModals,
+  useToggle,
+} from "@loopring-web/component-lib";
 import { IdMap, useTokenMap } from "../../../stores/token";
 import { useAmmMap } from "../../../stores/Amm/AmmMap";
 import {
@@ -44,7 +48,7 @@ export const useAmmExit = ({
 }: {
   stob: string;
   btos: string;
-  getFee: (requestType: sdk.OffchainFeeReqType) => any;
+  getFee: (requestType: sdk.OffchainFeeReqType.AMM_EXIT) => any;
   setToastOpen: any;
   pair: {
     coinAInfo: CoinInfo<string> | undefined;
@@ -81,10 +85,12 @@ export const useAmmExit = ({
   const { idIndex, marketArray, marketMap, coinMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
   const { account, status: accountStatus } = useAccount();
-
+  const { setShowTradeIsFrozen } = useOpenModals();
+  const {
+    toggle: { exitAmm },
+  } = useToggle();
   const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
   const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
-  const [lpToken, setLpToken] = React.useState<sdk.TokenInfo>();
   const [baseMinAmt, setBaseMinAmt] = React.useState<any>();
   const [quoteMinAmt, setQuoteMinAmt] = React.useState<any>();
   const [lpMinAmt, setLpMinAmt] = React.useState<any>();
@@ -166,8 +172,6 @@ export const useAmmExit = ({
 
         setBaseToken(baseT);
         setQuoteToken(quoteT);
-        setLpToken(lpToken);
-
         setBaseMinAmt(
           baseT
             ? sdk
@@ -396,112 +400,118 @@ export const useAmmExit = ({
     async function (props) {
       setIsLoading(true);
       updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
-
-      if (
-        !LoopringAPI.ammpoolAPI ||
-        !LoopringAPI.userAPI ||
-        !request ||
-        !account?.eddsaKey?.sk
-      ) {
-        myLog(
-          " onAmmJoin ammpoolAPI:",
-          LoopringAPI.ammpoolAPI,
-          "joinRequest:",
-          request
-        );
-
-        setToastOpen({
-          open: true,
-          type: "success",
-          content: t("labelJoinAmmFailed"),
-        });
+      if (!exitAmm.enable) {
+        setShowTradeIsFrozen({ isShow: true });
         setIsLoading(false);
-        walletLayer2Service.sendUserUpdate();
-        return;
-      }
-
-      let req = _.cloneDeep(request);
-
-      const patch: sdk.AmmPoolRequestPatch = {
-        chainId: store.getState().system.chainId as sdk.ChainId,
-        ammName: ammInfo.__rawConfig__.name,
-        poolAddress: ammInfo.address,
-        eddsaKey: account.eddsaKey.sk,
-      };
-
-      const burnedReq: sdk.GetNextStorageIdRequest = {
-        accountId: account.accountId,
-        sellTokenId: req.exitTokens.burned.tokenId as number,
-      };
-      const storageId0 = await LoopringAPI.userAPI.getNextStorageId(
-        burnedReq,
-        account.apiKey
-      );
-
-      req.storageId = storageId0.offchainId;
-
-      try {
-        myLog("---- try to exit req:", req);
-
-        updatePageAmmExit({
-          ammData: {
-            ...ammData,
-            ...{
-              coinLP: { ...ammData.coinLP, tradeValue: 0 },
-            },
-          },
-        });
-
-        req.validUntil = getTimestampDaysLater(DAYS);
-
-        myLog("exit ammpool req:", req);
-
-        const response = await LoopringAPI.ammpoolAPI.exitAmmPool(
-          req,
-          patch,
-          account.apiKey
-        );
-
-        myLog("exit ammpool response:", response);
-
+      } else {
         if (
-          (response as sdk.RESULT_INFO).code ||
-          (response as sdk.RESULT_INFO).message
+          !LoopringAPI.ammpoolAPI ||
+          !LoopringAPI.userAPI ||
+          !request ||
+          !account?.eddsaKey?.sk
         ) {
-          const errorItem =
-            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
-          setToastOpen({
-            open: true,
-            type: "error",
-            content:
-              t("labelExitAmmFailed") +
-              " error: " +
-              (errorItem
-                ? t(errorItem.messageKey, { ns: "error" })
-                : (response as sdk.RESULT_INFO).message),
-          });
-        } else {
+          myLog(
+            " onAmmJoin ammpoolAPI:",
+            LoopringAPI.ammpoolAPI,
+            "joinRequest:",
+            request
+          );
+
           setToastOpen({
             open: true,
             type: "success",
-            content: t("labelExitAmmSuccess"),
+            content: t("labelJoinAmmFailed"),
           });
+          setIsLoading(false);
+          walletLayer2Service.sendUserUpdate();
+          return;
         }
-      } catch (reason) {
-        sdk.dumpError400(reason);
-        setToastOpen({
-          open: true,
-          type: "error",
-          content: t("labelExitAmmFailed"),
-        });
-      } finally {
-        setIsLoading(false);
-        updateExitFee();
-        walletLayer2Service.sendUserUpdate();
-      }
 
-      if (props.__cache__) {
-        makeCache(props.__cache__);
+        let req = _.cloneDeep(request);
+
+        const patch: sdk.AmmPoolRequestPatch = {
+          chainId: store.getState().system.chainId as sdk.ChainId,
+          ammName: ammInfo.__rawConfig__.name,
+          poolAddress: ammInfo.address,
+          eddsaKey: account.eddsaKey.sk,
+        };
+
+        const burnedReq: sdk.GetNextStorageIdRequest = {
+          accountId: account.accountId,
+          sellTokenId: req.exitTokens.burned.tokenId as number,
+        };
+        const storageId0 = await LoopringAPI.userAPI.getNextStorageId(
+          burnedReq,
+          account.apiKey
+        );
+
+        req.storageId = storageId0.offchainId;
+
+        try {
+          myLog("---- try to exit req:", req);
+
+          updatePageAmmExit({
+            ammData: {
+              ...ammData,
+              ...{
+                coinLP: { ...ammData.coinLP, tradeValue: 0 },
+              },
+            },
+          });
+
+          req.validUntil = getTimestampDaysLater(DAYS);
+
+          myLog("exit ammpool req:", req);
+
+          const response = await LoopringAPI.ammpoolAPI.exitAmmPool(
+            req,
+            patch,
+            account.apiKey
+          );
+
+          myLog("exit ammpool response:", response);
+
+          if (
+            (response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message
+          ) {
+            const errorItem =
+              SDK_ERROR_MAP_TO_UI[
+                (response as sdk.RESULT_INFO)?.code ?? 700001
+              ];
+            setToastOpen({
+              open: true,
+              type: "error",
+              content:
+                t("labelExitAmmFailed") +
+                " error: " +
+                (errorItem
+                  ? t(errorItem.messageKey, { ns: "error" })
+                  : (response as sdk.RESULT_INFO).message),
+            });
+          } else {
+            setToastOpen({
+              open: true,
+              type: "success",
+              content: t("labelExitAmmSuccess"),
+            });
+          }
+        } catch (reason) {
+          sdk.dumpError400(reason);
+          setToastOpen({
+            open: true,
+            type: "error",
+            content: t("labelExitAmmFailed"),
+          });
+        } finally {
+          setIsLoading(false);
+          updateExitFee();
+          walletLayer2Service.sendUserUpdate();
+        }
+
+        if (props.__cache__) {
+          makeCache(props.__cache__);
+        }
       }
     },
     [request, ammData, account, t, updatePageAmmExit]

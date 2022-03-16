@@ -13,6 +13,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  Explorer,
   IBData,
   NFTWholeINFO,
   SagaStatus,
@@ -272,6 +273,11 @@ export const useNFTTransfer = <
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTTransfer_Success,
+                info: {
+                  hash:
+                    Explorer +
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer`,
+                },
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);
@@ -288,7 +294,7 @@ export const useNFTTransfer = <
             resetNFTTransferData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         const code = checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
@@ -392,7 +398,7 @@ export const useNFTTransfer = <
           myLog("nftTransfer req:", req);
 
           processRequest(req, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           // nftTransfer failed
           setShowAccount({

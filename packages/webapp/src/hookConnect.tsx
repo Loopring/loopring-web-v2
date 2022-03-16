@@ -4,24 +4,19 @@ import {
   useOpenModals,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
-import {
-  ErrorType,
-  ProcessingType,
-  useConnectHook,
-} from "@loopring-web/web3-provider";
-import { SagaStatus, UIERROR_CODE } from "@loopring-web/common-resources";
+import { ErrorType, ProcessingType } from "@loopring-web/web3-provider";
+import { myLog, SagaStatus } from "@loopring-web/common-resources";
 import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
 
 import { updateAccountStatus, useAccount } from "stores/account";
 import { useSystem } from "stores/system";
-import { myLog } from "@loopring-web/common-resources";
 import { networkUpdate } from "services/account/networkUpdate";
 import { checkAccount } from "services/account/checkAccount";
 import { REFRESH_RATE } from "defs/common_defs";
-import { resetLayer12Data } from "./services/account/resetAccount";
-
+import { resetLayer12Data } from "services/account/resetAccount";
 import store from "stores";
 import { useModalData } from "stores/router";
+import { useConnectHook } from "./services/account/useConnectHook";
 
 export function useConnect(props: { state: keyof typeof SagaStatus }) {
   const {

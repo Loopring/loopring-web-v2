@@ -48,7 +48,12 @@ export const WalletConnectQRCode = ({
         <Typography variant={"body2"} color={"textSecondary"} marginTop={2}>
           {t("labelWalletConnectQRCode")}
         </Typography>
-        <Typography variant={"body2"} component={"p"} marginTop={2}>
+        <Typography
+          variant={"body2"}
+          component={"p"}
+          marginTop={1}
+          marginBottom={3}
+        >
           <Link onClick={onCopy}>{t("labelCopyClipBoard")}</Link>
         </Typography>
       </Box>

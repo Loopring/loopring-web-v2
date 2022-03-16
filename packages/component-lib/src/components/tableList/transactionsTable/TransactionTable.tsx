@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Modal, Typography } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import {
@@ -133,7 +133,8 @@ export interface TransactionTableProps {
   filterTokens: string[];
   showFilter?: boolean;
   showloading: boolean;
-  accAddress?: string;
+  accAddress: string;
+  accountId: number;
 }
 
 export const TransactionTable = withTranslation(["tables", "common"])(
@@ -147,6 +148,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       showloading,
       etherscanBaseUrl,
       accAddress,
+      accountId,
       t,
     } = props;
     const { isMobile } = useSettings();
@@ -643,6 +645,27 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             showloading,
           }}
         />
+        {!!(accountId && showFilter) && (
+          <Typography
+            display={"flex"}
+            justifyContent={"flex-end"}
+            textAlign={"right"}
+            paddingRight={5 / 2}
+            paddingY={1}
+          >
+            <Trans i18nKey={"labelGoExplore"} ns={"common"}>
+              View transactions on
+              <Link
+                display={"inline-flex"}
+                target={"_blank"}
+                href={Explorer + `/account/${accountId}`}
+                paddingLeft={1 / 2}
+              >
+                block explorer
+              </Link>
+            </Trans>
+          </Typography>
+        )}
         {pagination && (
           <TablePagination
             page={page}

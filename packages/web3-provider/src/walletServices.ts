@@ -25,7 +25,10 @@ export const walletServices = {
       let accounts, chainId: number;
       //@ts-ignore
       accounts = provider.accounts ?? (await web3.eth.getAccounts());
-      chainId = provider.chainId ?? (await web3.eth.getChainId());
+      chainId =
+        typeof provider.chainId === "function"
+          ? await provider.chainId()
+          : provider.chainId ?? (await web3.eth.getChainId());
       subject.next({
         status: "ConnectWallet",
         data: {

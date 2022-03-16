@@ -11,11 +11,11 @@ import { ProviderMenuProps } from "./Interface";
 import {
   CheckBoxIcon,
   CheckedIcon,
-  ConnectProviders,
   GatewayItem,
 } from "@loopring-web/common-resources";
 import React from "react";
 import { MenuBtnStyled, shake } from "../../styled";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 const CheckboxStyled = styled(Checkbox)`
   &.shake {
@@ -45,7 +45,7 @@ export const ProviderMenu = ({
   gatewayList,
   termUrl,
   handleSelect,
-  providerName = ConnectProviders.unknown,
+  providerName = ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
   const [checkboxValue, setCheckboxValue] = React.useState(false);
   const [isShake, setIsShake] = React.useState(false);
@@ -82,7 +82,7 @@ export const ProviderMenu = ({
     },
     [checkboxValue, isShake]
   );
-  // const  !==  ConnectProviders.unknown
+  // const  !==  ConnectProviders.Unknown
   return (
     <Box
       flex={1}

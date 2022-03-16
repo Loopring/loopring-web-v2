@@ -267,7 +267,7 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
           ticker: tickerMap[pageTradePro.market],
         });
       }
-    } catch (error) {}
+    } catch (error: any) {}
   }, [pageTradePro, ammMap, tickerMap, market]);
   const getMarketDepData = React.useCallback(async () => {
     const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
@@ -365,7 +365,7 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
         } else {
           myLog("NO doSocket ", pageTradePro.market);
         }
-      } catch (e) {
+      } catch (e: any) {
         socketEnd();
       }
     }

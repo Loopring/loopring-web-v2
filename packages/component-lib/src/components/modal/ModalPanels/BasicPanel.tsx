@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Trans, withTranslation, WithTranslation } from "react-i18next";
 import {
-  ConnectProviders,
   DoneIcon,
   FailedIcon,
   RefuseIcon,
@@ -15,6 +14,7 @@ import React from "react";
 import { Button } from "../../basic-lib";
 import { Link } from "@mui/material";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 export enum IconType {
   LoadingIcon,
@@ -289,16 +289,26 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
 
         {link && (
           <Box marginTop={marginToplink} alignSelf={"flex-center"} paddingX={0}>
-            <Typography
-              variant={"body2"}
-              color={"textSecondary"}
-              component={"div"}
-              alignSelf={"flex-center"}
+            <Link
+              variant={"body1"}
+              display={"inline-flex"}
+              alignItems={"center"}
+              color={"secondary"}
+              href={link.url}
             >
-              <Link color={"textSecondary"} href={link.url}>
-                {link.name}
-              </Link>
-            </Typography>
+              {link.name}
+              {link.name === "Txn Hash" && (
+                <Typography
+                  paddingLeft={1}
+                  color={"secondary"}
+                  component={"span"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <LinkIcon color={"inherit"} fontSize={"medium"} />
+                </Typography>
+              )}
+            </Link>
           </Box>
         )}
       </Box>

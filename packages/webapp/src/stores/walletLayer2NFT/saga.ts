@@ -15,7 +15,13 @@ const getWalletLayer2NFTBalance = async <R extends { [key: string]: any }>({
   if (apiKey && accountId && LoopringAPI.userAPI) {
     let { userNFTBalances, totalNum } =
       await LoopringAPI.userAPI.getUserNFTBalances(
-        { accountId: accountId, limit: NFTLimit, offset },
+        {
+          accountId: accountId,
+          limit: NFTLimit,
+          offset,
+          // @ts-ignore
+          metadata: true,
+        },
         apiKey
       );
     return {

@@ -30,4 +30,6 @@ export default {
   errorOrderExpired: "Order is Expired",
   errorDisableOtherWalletForCurrent:
     "Global ethereum is not {{name}}, Please disable other Wallet Plugin",
+  errorGenerateEddsa: "GenerateEddsa key Failed",
+  errorNotInstallGME: "GameStop Plugin is not install or disabled",
 };

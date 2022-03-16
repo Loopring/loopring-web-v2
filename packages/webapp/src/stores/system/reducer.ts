@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { ENV, System, SystemStatus } from "./interface";
+import { ENV, NETWORKEXTEND, System, SystemStatus } from "./interface";
 import { SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: SystemStatus = {
   env: ENV.PROD,
-  chainId: "unknown",
+  chainId: NETWORKEXTEND.NONETWORK,
   baseURL: "",
   socketURL: "",
   etherscanBaseUrl: "",
@@ -19,7 +19,6 @@ const initialState: SystemStatus = {
     order: { enable: false },
     joinAmm: { enable: false },
     dAppTrade: { enable: false },
-    raw_data: { enable: false },
   },
   exchangeInfo: undefined,
 

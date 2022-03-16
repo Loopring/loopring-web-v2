@@ -44,10 +44,12 @@ export default {
   depositLabelRefer: "请输入推荐您的ENS，地址，或者账号ID。(选填)",
   depositLabelPlaceholder: "以太坊地址， 账号ID或ENS",
   withdrawTitle: "提现",
+  withdrawDeployTitle: "Deploy & Withdraw",
   withdrawLabelEnterToken: "选择提现代币",
   withdrawDescription:
     "提现操作会被提交到以太坊的下一个区块，一般会在<1>30分钟到2小时</1>内到账。（如果以太坊的GAS价格<5>超过500GWei</5>的话，可能会存在<3>长时间的延迟</3>）",
   withdrawLabelBtn: "提现",
+  withdrawDeployLabelBtn: "Deploy & Withdraw",
   withdrawLabelBtnExceed: "超过最大提现数{{amt}}!",
   withdrawLabelAddress: "提现到该账号地址",
   withdrawLabelAddressInput: "输入地址",
@@ -439,8 +441,9 @@ export default {
   labelNFTDate: "Date:",
   labelNFTTransfer: "Transfer",
   labelNFTWithdraw: "Withdraw",
-  labelNFTDeployContract: "Deploy Contract",
+  labelNFTDeployWithdraw: "Deploy & Withdraw",
   labelNFTDeploying: "Deploying",
+  labelNFTDeployContract: "Deploy",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "Token ID:",
   labelNFTTYPE: "NFT Type:",
@@ -450,8 +453,8 @@ export default {
   labelNFTTitleMyNFT: "My NFT",
   labelNFTTOTAL: "Count:",
   labelInformation: "Notification",
-  labelNoticeForMetaMask:
-    "Loopring only supports and maintains the MetaMask plugin for WalletConnect, if you've installed other Wallet plugins, please make sure it's through the MetaMask pop-up: <1></1>",
+  labelNoticeForProvider:
+    "Loopring only support and maintain {{name}} plugins for WalletConnect, if your installed other Wallet plugin, please make sure it's the {{name}} popup.",
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
   labelYes: "Yes",
@@ -526,7 +529,7 @@ export default {
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
-  labelMintSubmit: "Mint {{symbol}} Submit",
+  labelMintSuccess: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
   labelNFTMintNoMetaBtn: "No Metadata",
   labelNFTMintNoMetaDetail:
@@ -581,4 +584,9 @@ export default {
   labelBuyToken: "Buy {{token}}",
   labelCurrentlyLevel: "Currently {{value}} {{token}}",
   labelLRCBalance: "LRC Balance",
+  labelNoticeForForAccountFrozen:
+    "please waiting a while, {{ type }} is on updating.",
+  labelAction: "action",
+  labelGoExplore: "View transactions on block explorer",
+  labelNOETH: "Need ETH for gas",
 };

@@ -165,11 +165,29 @@ export const ErrorMap = {
     messageKey: "errorDisableOtherWalletForCurrent",
     options: {},
   },
+  GENERATE_EDDSA: {
+    id: "GENERATE_EDDSA",
+    messageKey: "errorGenerateEddsa",
+    options: {},
+  },
+  DATA_NOT_READY: {
+    id: "DATA_NOT_READY",
+    messageKey: "errorDataNotReady",
+    options: {},
+  },
+  PROVIDER_NOT_INSTALL_GME: {
+    id: "PROVIDER_NOT_INSTALL_GME",
+    messageKey: "errorNotInstallGME",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
   PROVIDER_ERROR = 700002,
   PROVIDER_ERROR_Unknown = 700003,
+  GENERATE_EDDSA = 700004,
+  DATA_NOT_READY = 700005,
+  PROVIDER_NOT_INSTALL_GME = 700006,
 }
 export type ErrorObject = {
   from?: string;
@@ -181,6 +199,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
   700002: ErrorMap.ERROR_PROVIDER_ERROR,
   700003: ErrorMap.ERROR_UNKNOWN,
+  700004: ErrorMap.GENERATE_EDDSA,
+  700005: ErrorMap.DATA_NOT_READY,
+  700006: ErrorMap.PROVIDER_NOT_INSTALL_GME,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

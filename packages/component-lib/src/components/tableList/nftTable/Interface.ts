@@ -59,5 +59,6 @@ export type NFTTableProps<Row> = NFTTableFilter & {
   // showFilter?: boolean;
   showloading: boolean;
   accAddress: string;
+  accountId: number;
   // accAddress?: string;
 };

@@ -43,7 +43,7 @@ export const NFTDeploy_In_Progress = (
   props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
-    iconType: IconType.RefuseIcon,
+    iconType: IconType.LoadingIcon,
     describe1: props.t("labelDeployInProgress", {
       symbol: props.symbol,
       value: props.value,

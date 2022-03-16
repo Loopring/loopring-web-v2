@@ -2,17 +2,12 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "api_wrapper";
 import store from "stores";
 import { accountServices } from "./accountServices";
-import {
-  ConnectProviders,
-  myLog,
-  UIERROR_CODE,
-} from "@loopring-web/common-resources";
+import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import { checkErrorInfo } from "hooks/useractions/utils";
-
 import * as sdk from "@loopring-web/loopring-sdk";
-import Web3 from "web3";
 
 export async function unlockAccount() {
+  myLog("unlockAccount starts");
   const accoun_old = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
@@ -41,13 +36,15 @@ export async function unlockAccount() {
               exchangeInfo.exchangeAddress
             ).replace("${nonce}", (nonce - 1).toString());
 
+      myLog("generateKeyPair:", msg, chainId, isMobile);
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
         keySeed: msg,
         walletType: connectName,
-        chainId: chainId as any,
-        accountId: account.accountId,
+        chainId: Number(chainId),
+        accountId: Number(account.accountId),
+        isMobile: isMobile,
       });
       const walletTypePromise: Promise<{ walletType: any }> =
         window.ethereum &&
@@ -77,17 +74,14 @@ export async function unlockAccount() {
         accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
         accountServices.sendAccountSigned({
-          accountId: account.accountId,
-          nonce,
-          keySeed: account.keySeed,
           apiKey: response.apiKey,
           eddsaKey,
-          isContract: walletType?.isContract,
           isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
+          isContract: walletType?.isContract,
         });
       }
-    } catch (e) {
-      console.log("unlockAccount error:", JSON.stringify(e));
+    } catch (e: any) {
+      myLog("unlockAccount error:", JSON.stringify(e));
 
       const errType = checkErrorInfo(e, true);
       switch (errType) {

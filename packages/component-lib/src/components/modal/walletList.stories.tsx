@@ -7,7 +7,6 @@ import { Button, Grid } from "@mui/material";
 import {
   AccountFull,
   AccountStatus,
-  ConnectProviders,
   gatewayList,
 } from "@loopring-web/common-resources";
 import {
@@ -23,10 +22,10 @@ import { WalletConnectBtn } from "../header";
 import { Box } from "@mui/material";
 
 import {
-  MetaMaskConnectInProgress,
   WalletConnectConnectInProgress,
   ConnectSuccess,
   ConnectFailed,
+  CommonConnectInProgress,
 } from "index";
 
 const Style = styled.div`
@@ -51,7 +50,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
         <WalletConnectBtn
           accountState={accountState}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -60,7 +59,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
             account: { ...account, readyState: AccountStatus.NO_ACCOUNT },
           }}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -69,7 +68,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
             account: { ...account, readyState: AccountStatus.DEPOSITING },
           }}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -78,7 +77,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
             account: { ...account, readyState: AccountStatus.NOT_ACTIVE },
           }}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -87,7 +86,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
             account: { ...account, readyState: AccountStatus.ACTIVATED },
           }}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -96,7 +95,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
             account: { ...account, readyState: AccountStatus.ERROR_NETWORK },
           }}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -105,7 +104,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
             account: { ...account, readyState: AccountStatus.LOCKED },
           }}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
       <Grid item xs={3}>
         <WalletConnectBtn
@@ -118,7 +117,7 @@ const ConnectButtonWrap = withTranslation("common")((_rest: any) => {
             },
           }}
           handleClick={() => undefined}
-        ></WalletConnectBtn>
+        />
       </Grid>
     </>
   );
@@ -138,12 +137,12 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         view: (
           <ProviderMenu
             gatewayList={gatewayList}
-            {...{ providerName: ConnectProviders.MetaMask, ...rest }}
+            {...{ providerName: "MetaMask", ...rest }}
           />
         ),
       },
       [WalletConnectStep.CommonProcessing]: {
-        view: <MetaMaskConnectInProgress {...rest} />,
+        view: <CommonConnectInProgress {...rest} />,
       },
       [WalletConnectStep.WalletConnectProcessing]: {
         view: <WalletConnectConnectInProgress {...rest} />,
@@ -152,11 +151,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         view: <WalletConnectQRCode {...rest} url={url} />,
       },
       [WalletConnectStep.SuccessConnect]: {
-        view: (
-          <ConnectSuccess
-            {...{ providerName: ConnectProviders.MetaMask, ...rest }}
-          />
-        ),
+        view: <ConnectSuccess {...{ providerName: "MetaMask", ...rest }} />,
       },
       [WalletConnectStep.FailedConnect]: {
         view: <ConnectFailed {...rest} onRetry={() => {}} />,

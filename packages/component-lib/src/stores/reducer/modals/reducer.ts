@@ -16,6 +16,7 @@ const initialState: ModalState = {
   isShowAccount: { isShow: false, step: 0 },
   isShowSupport: { isShow: false },
   isShowFeeSetting: { isShow: false },
+  isShowTradeIsFrozen: { isShow: false, type: "" },
   isShowIFrame: { isShow: false, url: "" },
   isShowNFTTransfer: { isShow: false },
   isShowNFTWithdraw: { isShow: false },
@@ -162,19 +163,31 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow: boolean;
         step?: number;
         error?: RESULT_INFO;
+        info?: { [key: string]: any };
       }>
     ) {
-      const { isShow, step, error } = action.payload;
+      const { isShow, step, error, info } = action.payload;
       state.isShowAccount = {
         isShow,
         step: step ? step : 0,
         error: error ?? undefined,
+        info: info ?? undefined,
       };
     },
     setShowFeeSetting(state, action: PayloadAction<{ isShow: boolean }>) {
       const { isShow } = action.payload;
       state.isShowFeeSetting = {
         isShow,
+      };
+    },
+    setShowTradeIsFrozen(
+      state,
+      action: PayloadAction<{ isShow: boolean; type: string }>
+    ) {
+      const { isShow, type } = action.payload;
+      state.isShowTradeIsFrozen = {
+        isShow,
+        type,
       };
     },
   },
@@ -197,5 +210,6 @@ export const {
   setShowActiveAccount,
   setShowIFrame,
   setShowNFTMint,
+  setShowTradeIsFrozen,
 } = modalsSlice.actions;
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

@@ -161,15 +161,17 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
         _nftId = data.nftIdView ?? "";
       } else if (data.nftIdView) {
         try {
-          _nftId = web3.utils.toHex(sdk.toBN(data.nftIdView)).replace("0x", "");
+          _nftId = web3.utils
+            .toHex(sdk.toBN(data.nftIdView) as any)
+            .replace("0x", "");
           const prev = DEAULT_NFTID_STRING.substring(
             0,
             DEAULT_NFTID_STRING.length - _nftId.toString().length
           );
           _nftId = prev + _nftId.toString();
-        } catch (error) {
+        } catch (error: any) {
           const errorView: ErrorType = ErrorMap.NTF_ID_ENCODE_ERROR;
-          updateBtnStatus({ errorView, ...error });
+          updateBtnStatus({ errorView, ...(error as any) });
           return;
         }
       }
@@ -283,10 +285,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
             nftType: nftDepositValue.nftType as unknown as NFTType,
             sendByMetaMask: true,
           });
-        } catch (reason) {
-          result.code = ActionResultCode.ApproveFailed;
-          result.data = reason;
-
+        } catch (reason: any) {
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTDeposit_Approve_Denied,
@@ -339,11 +338,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
           });
         }
         resetNFTDepositData();
-      } catch (reason) {
-        sdk.dumpError400(reason);
-        result.code = ActionResultCode.DepositFailed;
-        result.data = reason;
-
+      } catch (reason: any) {
         //deposit failed
         const err = checkErrorInfo(reason, true);
 

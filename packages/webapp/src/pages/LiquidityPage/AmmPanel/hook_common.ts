@@ -26,7 +26,6 @@ export const useAmmCommon = ({
   const { toastOpen, setToastOpen, closeToast } = useToast();
 
   const { sendSocketTopic, socketEnd } = useSocket();
-  const { getTokenPrices } = useTokenPrices();
 
   const { account, status: accountStatus } = useAccount();
 
@@ -36,8 +35,6 @@ export const useAmmCommon = ({
   const { updatePageAmmCommon } = usePageAmmPool();
 
   const updateAmmPoolSnapshot = React.useCallback(async () => {
-    getTokenPrices();
-
     if (
       !pair?.coinAInfo?.simpleName ||
       !pair?.coinBInfo?.simpleName ||
@@ -104,7 +101,11 @@ export const useAmmCommon = ({
   }, []);
 
   const getFee = React.useCallback(
-    async (requestType: sdk.OffchainFeeReqType) => {
+    async (
+      requestType:
+        | sdk.OffchainFeeReqType.AMM_EXIT
+        | sdk.OffchainFeeReqType.AMM_JOIN
+    ) => {
       if (
         accountStatus === SagaStatus.UNSET &&
         LoopringAPI.userAPI &&

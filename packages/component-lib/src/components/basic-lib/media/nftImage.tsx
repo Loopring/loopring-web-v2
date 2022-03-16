@@ -4,10 +4,10 @@ import { css, Theme } from "@emotion/react";
 export const NftImage = (props: NftImageProps) => {
   return (
     <img
-      contentEditable={true}
+      // contentEditable={true}
       referrerPolicy={"unsafe-url"}
-      loading={"lazy"}
-      crossOrigin={"anonymous"}
+      // loading={"lazy"}
+      // crossOrigin={"anonymous"}
       onError={props.onError}
       alt={props.name ?? "NFT"}
       width={props.width ?? "100%"}

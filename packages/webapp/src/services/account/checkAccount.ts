@@ -22,7 +22,12 @@ export const checkAccount = (
       myLog(
         "After connect >>,checkAccount: step1 have activate account from store"
       );
-      accountServices.sendAccountSigned({});
+      accountServices.sendAccountSigned({
+        apiKey: account.apiKey,
+        eddsaKey: account.eddsaKey,
+        isInCounterFactualStatus: account.isInCounterFactualStatus,
+        isContract: account.isContract,
+      });
     } else {
       myLog("After connect >>,checkAccount: step1 account locked");
       accountServices.sendAccountLock();

@@ -32,6 +32,7 @@ import {
   TradeBtnStatus,
   useOpenModals,
   useSettings,
+  useToggle,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
@@ -95,9 +96,12 @@ export const useSwap = <C extends { [key: string]: any }>({
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
     useTokenMap();
   const { tickerMap } = useTicker();
-  const { setShowSupport } = useOpenModals();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { ammMap } = useAmmMap();
   const { exchangeInfo, allowTrade } = useSystem();
+  const {
+    toggle: { order },
+  } = useToggle();
   const {
     pageTradeLite,
     updatePageTradeLite,
@@ -114,17 +118,15 @@ export const useSwap = <C extends { [key: string]: any }>({
   const [market, setMarket] = React.useState<MarketType>(
     realMarket as MarketType
   );
-  const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<
-    string | undefined
-  >(undefined);
+  const [swapBtnI18nKey, setSwapBtnI18nKey] =
+    React.useState<string | undefined>(undefined);
   const [swapBtnStatus, setSwapBtnStatus] = React.useState(
     TradeBtnStatus.AVAILABLE
   );
   const [isSwapLoading, setIsSwapLoading] = React.useState(false);
   const [sellMinAmt, setSellMinAmt] = React.useState<string>();
-  const [tradeData, setTradeData] = React.useState<
-    SwapTradeData<IBData<C>> | undefined
-  >(undefined);
+  const [tradeData, setTradeData] =
+    React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
   const [tradeCalcData, setTradeCalcData] = React.useState<
     Partial<TradeCalcData<C>>
   >({
@@ -136,9 +138,8 @@ export const useSwap = <C extends { [key: string]: any }>({
   const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>(
     []
   );
-  const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(
-    undefined
-  );
+  const [tradeFloat, setTradeFloat] =
+    React.useState<TradeFloat | undefined>(undefined);
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
 
@@ -337,7 +338,7 @@ export const useSwap = <C extends { [key: string]: any }>({
               },
             });
           }
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
@@ -448,7 +449,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           );
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
           if (isNaN(Number(minOrderSize))) {
-            return `labelOrderSmall`;
+            return ``;
           } else {
             return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
           }
@@ -478,6 +479,9 @@ export const useSwap = <C extends { [key: string]: any }>({
     myLog("---- swapCalculatorCallback priceLevel:", priceLevel);
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true });
+      setIsSwapLoading(false);
+    } else if (!order.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "Swap" });
       setIsSwapLoading(false);
     } else {
       // {}
@@ -871,7 +875,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           ammPoolSnapshot,
           ticker: tickerMap[market],
         });
-      } catch (error) {
+      } catch (error: any) {
         myLog(error, "go to LRC-ETH");
         resetTradeCalcData(undefined, market);
       }

@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import store from "stores";
 import {
   AssetTitleProps,
-  LpTokenAction,
   TokenType,
   TradeBtnStatus,
+  useOpenModals,
   useSettings,
+  useToggle,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
@@ -24,8 +25,6 @@ import { useTokenPrices } from "stores/tokenPrices";
 import { LoopringAPI } from "api_wrapper";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory } from "react-router-dom";
-import { useModals } from "../../../hooks/useractions/useModals";
 import { useTokenMap } from "../../../stores/token";
 
 export type TrendDataItem = {
@@ -62,14 +61,21 @@ export const useGetAssets = () => {
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>(
     []
   );
-
   const {
-    showDeposit,
-    showTransfer,
-    showWithdraw,
-    showNFTDeposit,
-    showNFTMint,
-  } = useModals();
+    setShowTransfer,
+    setShowDeposit,
+    setShowWithdraw,
+    setShowNFTDeposit,
+    setShowNFTMint,
+  } = useOpenModals();
+
+  // const {
+  //   showDeposit,
+  //   showTransfer,
+  //   showWithdraw,
+  //   showNFTDeposit,
+  //   showNFTMint,
+  // } = useModals();
   const [userAssets, setUserAssets] = React.useState<any[]>([]);
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
   const { account } = useAccount();
@@ -92,7 +98,6 @@ export const useGetAssets = () => {
   } = useSettings();
 
   const { marketArray, tokenMap } = useTokenMap();
-  const history = useHistory();
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       sendSocketTopic({ [WsTopicType.account]: true });
@@ -296,38 +301,29 @@ export const useGetAssets = () => {
   const total = assetsRawData
     .map((o) => o.tokenValueDollar)
     .reduce((a, b) => a + b, 0);
-  const onShowDeposit = useCallback(
+  const onShowDeposit = React.useCallback(
     (token?: any, partner?: boolean) => {
       if (partner) {
-        showDeposit({ isShow: true, partner: true });
+        setShowDeposit({ isShow: true, partner: true });
       } else {
-        showDeposit({ isShow: true, symbol: token });
+        setShowDeposit({ isShow: true, symbol: token });
       }
     },
-    [showDeposit]
+    [setShowDeposit]
   );
 
-  const onShowTransfer = useCallback(
+  const onShowTransfer = React.useCallback(
     (token?: any) => {
-      showTransfer({ isShow: true, symbol: token });
+      setShowTransfer({ isShow: true, symbol: token });
     },
-    [showTransfer]
+    [setShowTransfer]
   );
 
-  const onShowWithdraw = useCallback(
+  const onShowWithdraw = React.useCallback(
     (token?: any) => {
-      showWithdraw({ isShow: true, symbol: token });
+      setShowWithdraw({ isShow: true, symbol: token });
     },
-    [showWithdraw]
-  );
-
-  const lpTokenJump = useCallback(
-    (token: string, type: LpTokenAction) => {
-      if (history) {
-        history.push(`/liquidity/pools/coinPair/${token}?type=${type}`);
-      }
-    },
-    [history]
+    [setShowWithdraw]
   );
 
   const assetTitleProps: AssetTitleProps = {
@@ -355,8 +351,8 @@ export const useGetAssets = () => {
     legalShow,
   };
   const assetTitleMobileExtendProps = {
-    onShowNFTDeposit: () => showNFTDeposit({ isShow: true }),
-    onShowNFTMINT: () => showNFTMint({ isShow: true }),
+    onShowNFTDeposit: () => setShowNFTDeposit({ isShow: true }),
+    onShowNFTMINT: () => setShowNFTMint({ isShow: true }),
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   };
@@ -374,7 +370,6 @@ export const useGetAssets = () => {
     onShowTransfer,
     onShowWithdraw,
     onShowDeposit,
-    lpTokenJump,
     assetTitleProps,
     assetTitleMobileExtendProps,
     marketArray,

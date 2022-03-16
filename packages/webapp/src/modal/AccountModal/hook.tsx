@@ -37,7 +37,6 @@ import {
   UpdateAccount_Approve_WaitForAuth,
   UpdateAccount_Failed,
   UpdateAccount_First_Method_Denied,
-  UpdateAccount_Submit,
   UpdateAccount_Success,
   UpdateAccount_User_Denied,
   useOpenModals,
@@ -68,7 +67,7 @@ import {
   NFTMint_WaitForAuth,
   NFTMint_Denied,
   NFTMint_Failed,
-  NFTMint_Submit,
+  NFTMint_Success,
   NFTDeploy_WaitForAuth,
   NFTDeploy_Denied,
   NFTDeploy_Failed,
@@ -241,12 +240,12 @@ export function useAccountModalForUI({
 
   const onBack = React.useCallback(() => {
     switch (account.readyState) {
-      case "NO_ACCOUNT":
-      case "DEPOSITING":
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.DEPOSITING:
         setShowAccount({ isShow: true, step: AccountStep.NoAccount });
         break;
-      case "LOCKED":
-      case "ACTIVATED":
+      case AccountStatus.LOCKED:
+      case AccountStatus.ACTIVATED:
         setShowAccount({ isShow: true, step: AccountStep.HadAccount });
         break;
       default:
@@ -530,7 +529,10 @@ export function useAccountModalForUI({
               onDisconnect,
               addressShort,
               etherscanLink: etherscanBaseUrl + "address/" + account.accAddress,
-              mainBtn: account.readyState === "ACTIVATED" ? lockBtn : unlockBtn,
+              mainBtn:
+                account.readyState === AccountStatus.ACTIVATED
+                  ? lockBtn
+                  : unlockBtn,
             }}
           />
         ),
@@ -866,14 +868,20 @@ export function useAccountModalForUI({
           // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
-      [AccountStep.NFTMint_Submit]: {
+      [AccountStep.NFTMint_Success]: {
         view: (
-          <NFTMint_Submit
+          <NFTMint_Success
             btnInfo={closeBtnInfo}
             {...{
+              t,
               ...rest,
               ...nftMintValue,
-              t,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
             }}
           />
         ),
@@ -1033,6 +1041,12 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
               t,
             }}
           />
@@ -1106,6 +1120,12 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
               t,
             }}
           />
@@ -1182,6 +1202,12 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
               t,
             }}
           />
@@ -1258,6 +1284,12 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
               t,
             }}
           />
@@ -1430,17 +1462,29 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
               t,
             }}
           />
         ),
       },
-      [AccountStep.UpdateAccount_Submit]: {
+      [AccountStep.UpdateAccount_Success]: {
         view: (
-          <UpdateAccount_Submit
+          <UpdateAccount_Success
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
               t,
             }}
           />
@@ -1559,18 +1603,12 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
-              t,
-            }}
-          />
-        ),
-      },
-      [AccountStep.ResetAccount_Submit]: {
-        view: (
-          <UpdateAccount_Submit
-            patch={{ isReset: true }}
-            btnInfo={closeBtnInfo}
-            {...{
-              ...rest,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
               t,
             }}
           />

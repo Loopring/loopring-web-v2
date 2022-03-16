@@ -18,7 +18,7 @@ import {
 import { ChainId } from "@loopring-web/loopring-sdk";
 import React, { useEffect, useState } from "react";
 import {
-  ConnectProviders,
+  AccountStatus,
   copyToClipBoard,
   GatewayItem,
   gatewayList as DefaultGatewayList,
@@ -27,6 +27,7 @@ import {
   SagaStatus,
   SoursURL,
 } from "@loopring-web/common-resources";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 import { useAccount } from "stores/account";
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 import { useSystem } from "stores/system";
@@ -73,6 +74,25 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const CoinbaseCallback = React.useCallback(async () => {
       updateAccount({ connectName: ConnectProviders.Coinbase });
       await connectProvides.Coinbase();
+
+      // statusAccountUnset();
+      if (connectProvides.usedProvide) {
+        let chainId: ChainId = Number(
+          await connectProvides.usedWeb3?.eth.getChainId()
+        );
+        chainId =
+          chainId && chainId === ChainId.GOERLI
+            ? (chainId as ChainId)
+            : ChainId.MAINNET;
+        if (chainId !== _chainId) {
+          updateSystem({ chainId });
+        }
+        return;
+      }
+    }, [_chainId]);
+    const gameStopCallback = React.useCallback(async () => {
+      updateAccount({ connectName: ConnectProviders.GameStop });
+      await connectProvides.GameStop();
 
       // statusAccountUnset();
       if (connectProvides.usedProvide) {
@@ -242,6 +262,22 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               [account]
             ),
           },
+          {
+            ...DefaultGatewayList[3],
+            handleSelect: React.useCallback(
+              async (event, flag?) => {
+                walletServices.sendDisconnect("", "should new provider");
+                setShowConnect({
+                  isShow: true,
+                  step: WalletConnectStep.CommonProcessing,
+                });
+                setConnectProvider(DefaultGatewayList[3].key);
+                setProcessingCallback({ callback: gameStopCallback });
+                setStateCheck(true);
+              },
+              [account]
+            ),
+          },
         ]
       : [
           ...(window.ethereum
@@ -321,11 +357,11 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         : () => {
             setShowConnect({ isShow: false });
             switch (account.readyState) {
-              case "ACTIVATED":
-              case "LOCKED":
+              case AccountStatus.ACTIVATED:
+              case AccountStatus.LOCKED:
                 setShowAccount({ isShow: true, step: AccountStep.HadAccount });
                 break;
-              case "DEPOSITING":
+              case AccountStatus.DEPOSITING:
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Deposit_Submit,

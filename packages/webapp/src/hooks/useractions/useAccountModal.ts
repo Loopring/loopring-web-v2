@@ -108,6 +108,6 @@ export function useAccountModal() {
     handleSignError,
     handleSignDeniedByUser,
     // handleProcessAccountCheck,
-    handleAccountActive: handleAccountActive,
+    handleAccountActive,
   });
 }

@@ -1,36 +1,42 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { ErrorType } from "../command";
-import { ConnectProviders, RPC_URLS } from "@loopring-web/common-resources";
+import {  ConnectProviders, ErrorType, RPC_URLS } from "../command";
 import { IsMobile } from "../utilities";
+import { ConnectProvides } from '../providers';
 const POLLING_INTERVAL = 12000;
+const DEFAULT_BRIDGE = "https://bridge.walletconnect.org"
 
-export const WalletConnectProvide = async (
-  account?: string
-): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
+export const WalletConnectProvide = async (props?: {
+  account?: string;
+  darkMode?: boolean;
+}): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
   try {
-    const BRIDGE_URL = await fetch("https://wcbridge.loopring.network/hello")
-      .then(({ status }) => {
-        return status === 200
-          ? process.env.REACT_APP_WALLET_CONNECT_BRIDGE
-          : "https://bridge.walletconnect.org";
-      })
-      .catch(() => {
-        return "https://bridge.walletconnect.org";
-      });
+     console.log('WALLET_CONNECT_PING:',process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`])
+     const BRIDGE_URL = (await fetch(process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`]??'')
+        .then(({ status }) => {
+          return status === 200
+            ? process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`]
+            : DEFAULT_BRIDGE;
+        })
+        .catch(() => {
+          return DEFAULT_BRIDGE;
+        }))??DEFAULT_BRIDGE
+
+    console.log('WALLET_CONNECT_BRIDGE:',process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`])
+
     // const BRIDGE_URL = "https://bridge.walletconnect.org";
 
     const provider: WalletConnectProvider = new WalletConnectProvider({
       rpc: RPC_URLS,
       bridge: BRIDGE_URL,
       pollingInterval: POLLING_INTERVAL,
-      qrcode: IsMobile.any() ? true : false,
+      qrcode: !!IsMobile.any(),
     });
     const { connector } = provider;
     let web3: Web3 | undefined;
 
-    if (!connector.connected && account === undefined) {
+    if (!connector.connected && props?.account === undefined) {
       await connector.createSession();
       const uri = connector.uri;
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -41,17 +47,17 @@ export const WalletConnectProvide = async (
       await provider.enable();
       web3 = new Web3(provider as any);
       walletServices.sendConnect(web3, provider);
-    } else if (!connector.connected && account !== undefined) {
+    } else if (!connector.connected && props?.account !== undefined) {
       console.log(
         "WalletConnect reconnect connected is failed",
-        account,
+        props.account,
         provider
       );
       throw new Error("walletConnect not connect");
-    } else if (account && provider.isWalletConnect) {
+    } else if (props?.account && provider.isWalletConnect) {
       console.log(
         "WalletConnect reconnect connected is true",
-        account,
+        props.account,
         provider,
         connector.session
       );
@@ -64,7 +70,7 @@ export const WalletConnectProvide = async (
     console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.WalletConnect,
-      error: error.message,
+      error:( error as any)?.message,
     });
   }
 };
@@ -72,7 +78,7 @@ export const WalletConnectProvide = async (
 export const WalletConnectSubscribe = (
   provider: any,
   web3: Web3,
-  account?: string
+  _account?: string
 ) => {
   const { connector } = provider;
   if (provider && connector && connector.connected) {
@@ -192,8 +198,8 @@ export const WalletConnectUnsubscribe = async (provider: any) => {
 // const POLLING_INTERVAL = 12000
 //
 // const RPC_URLS: { [chainId: number]: string } = {
-//     1: process.env.REACT_APP_RPC_URL_1 as string,
-//     5: process.env.REACT_APP_RPC_URL_5 as string
+//     1: process.env.RPC_URL_1 as string,
+//     5: process.env.RPC_URL_5 as string
 // }
 //
 // myLog('RPC_URLS 1:', RPC_URLS[1])

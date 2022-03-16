@@ -6,6 +6,7 @@ import {
   Button,
   SubMenu,
   SubMenuList,
+  useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
 import { useTranslation, withTranslation } from "react-i18next";
@@ -37,7 +38,6 @@ import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
 import { RedPockPanel } from "./RedPockPanel";
 import { MyNFTPanel } from "./MyNFTPanel";
-import { useModals } from "hooks/useractions/useModals";
 import { accountServices } from "services/account/accountServices";
 import { useGetAssets } from "./AssetPanel/hook";
 
@@ -46,7 +46,7 @@ export const subMenu = subMenuLayer2;
 const BtnConnect = withTranslation(["common"], { withRef: true })(
   ({ t }: any) => {
     const { status: accountStatus, account } = useAccount();
-    const { showDeposit } = useModals();
+    const { setShowDeposit } = useOpenModals();
 
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
@@ -85,7 +85,7 @@ const BtnConnect = withTranslation(["common"], { withRef: true })(
           if (account.readyState === AccountStatus.NO_ACCOUNT) {
             myLog("DEPOSITING! sendCheckAcc");
             accountServices.sendCheckAcc();
-            showDeposit({ isShow: true });
+            setShowDeposit({ isShow: true });
             return;
           }
           accountStaticCallBack(_btnClickMap, []);

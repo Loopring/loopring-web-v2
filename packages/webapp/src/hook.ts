@@ -2,10 +2,15 @@ import React from "react";
 import { useSystem } from "./stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { useAmmMap } from "./stores/Amm/AmmMap";
-import { SagaStatus } from "@loopring-web/common-resources";
+import {
+  SagaStatus,
+  ThemeKeys,
+  ThemeType,
+} from "@loopring-web/common-resources";
 import { useTokenMap } from "./stores/token";
 import { useAccount } from "./stores/account";
 import {
+  ConnectProviders,
   ConnectProvides,
   connectProvides,
   walletServices,
@@ -19,8 +24,7 @@ import { useSocket } from "./stores/socket";
 import { useNotify } from "./stores/notify";
 import { useLayer1Store } from "./stores/localStore/layer1Store";
 import { useSettings } from "@loopring-web/component-lib";
-
-// import { statusUnset as accountStatusUnset } from './stores/account';
+import { useTheme } from "@emotion/react";
 
 /**
  * @description
@@ -45,8 +49,15 @@ export function useInit() {
     }
   });
   const { isMobile } = useSettings();
+  const theme = useTheme();
 
-  const { account, updateAccount, resetAccount } = useAccount();
+  const {
+    account,
+    updateAccount,
+    resetAccount,
+    status: accountStatus,
+    statusUnset: accountStatusUnset,
+  } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
     useTokenMap();
   const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap();
@@ -78,15 +89,18 @@ export function useInit() {
       if (
         account.accAddress !== "" &&
         account.connectName &&
-        account.connectName !== "unknown"
+        account.connectName !== ConnectProviders.Unknown
       ) {
         try {
           ConnectProvides.IsMobile = isMobile;
-          await connectProvides[account.connectName](account.accAddress);
+          await connectProvides[account.connectName]({
+            account: account.accAddress,
+            darkMode: theme.mode === ThemeType.dark,
+          });
           updateAccount({});
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-            // @ts-ignore
             let chainId =
+              // @ts-ignore
               Number(connectProvides.usedProvide?.connection?.chainId) ??
               Number(await connectProvides.usedWeb3.eth.getChainId());
             if (ChainId[chainId] === undefined) {
@@ -102,7 +116,7 @@ export function useInit() {
             }
             return;
           }
-        } catch (error) {
+        } catch (error: any) {
           walletServices.sendDisconnect(
             "",
             `error at init loading  ${error}, disconnect`
@@ -116,7 +130,10 @@ export function useInit() {
           }
         }
       } else {
-        if (account.accAddress === "" || account.connectName === "unknown") {
+        if (
+          account.accAddress === "" ||
+          account.connectName === ConnectProviders.Unknown
+        ) {
           resetAccount();
         }
         const chainId =
@@ -129,6 +146,20 @@ export function useInit() {
       }
     })(account);
   }, []);
+
+  React.useEffect(() => {
+    switch (accountStatus) {
+      case SagaStatus.ERROR:
+        accountStatusUnset();
+        setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        accountStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [accountStatus]);
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:

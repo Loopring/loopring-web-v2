@@ -1,5 +1,5 @@
 import { StateBase } from "./sagaStatus";
-import { ConnectProviders } from "./connect";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 export enum AccountStatus {
   UN_CONNECT = "UN_CONNECT",
@@ -31,6 +31,7 @@ export type Account = {
   accountId: number;
   level: string;
   apiKey: string;
+  frozen: boolean | undefined;
   eddsaKey: any;
   publicKey: any;
   keySeed: string;
@@ -43,6 +44,7 @@ export type Account = {
   _chainId?: 1 | 5 | "unknown";
   _accountIdNotActive?: number;
   _userOnModel?: boolean | undefined;
+  __timer__: NodeJS.Timer | -1;
 };
 export type AccountState = Account & StateBase;
 export type AccountFull = {

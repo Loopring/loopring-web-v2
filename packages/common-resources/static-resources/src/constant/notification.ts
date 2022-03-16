@@ -132,7 +132,7 @@ export async function getNotification(
         );
       }
       return;
-    } catch (e) {
+    } catch (e: any) {
       myLog(e);
       return;
     }
@@ -186,7 +186,7 @@ export async function getNotification(
         //   );
         // }
       }
-    } catch (e) {
+    } catch (e: any) {
       myLog(e);
     }
 

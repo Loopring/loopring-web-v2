@@ -45,10 +45,12 @@ export default {
   depositLabelRefer: "Referral address, account id or ENS. (Optional)",
   depositLabelPlaceholder: "address, account id or ENS",
   withdrawTitle: "Withdraw",
+  withdrawDeployTitle: "Deploy & Withdraw",
   withdrawLabelEnterToken: "Select Token",
   withdrawDescription:
     "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
   withdrawLabelBtn: "Withdraw",
+  withdrawDeployLabelBtn: "Deploy & Withdraw",
   withdrawLabelBtnExceed: "Exceed Max Fast Withdraw Amt{{amt}}!",
   withdrawLabelAddress: "Withdrawal Address",
   labelWithdrawMyAddress: "To My Layer 1",
@@ -451,7 +453,8 @@ export default {
   labelNFTDate: "Date:",
   labelNFTTransfer: "Transfer",
   labelNFTWithdraw: "Withdraw",
-  labelNFTDeployContract: "Deploy Contract",
+  labelNFTDeployWithdraw: "Deploy & Withdraw",
+  labelNFTDeployContract: "Deploy",
   labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "ID:",
@@ -462,10 +465,10 @@ export default {
   labelNFTTitleMyNFT: "My NFT",
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
-  labelNoticeForMetaMask:
-    "Loopring only supports and maintains the MetaMask plugin for WalletConnect, if you've installed other Wallet plugins, please make sure it's through the MetaMask pop-up: <1></1>",
+  labelNoticeForProvider:
+    "Loopring currently supports the following wallet connections: {{name}}. Please make sure to use one of these when attempting to connect.",
   labelGuid: "Go to Guid",
-  labelIKnow: "I know",
+  labelIKnow: "OK",
   labelYes: "Yes",
   labelNo: "No",
   labelNoticeForNoMetaNFT:
@@ -542,7 +545,7 @@ export default {
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
-  labelMintSubmit: "Mint {{symbol}} Submit",
+  labelMintSuccess: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
   labelNFTMintNoMetaBtn: "Wrong Metadata",
   labelNFTMintNoMetaDetail:
@@ -612,4 +615,9 @@ export default {
   labelBuyToken: "Buy {{token}}",
   labelCurrentlyLevel: "Currently {{value}} {{token}}",
   labelLRCBalance: "LRC Balance",
+  labelNoticeForForAccountFrozen:
+    "please waiting a while, {{ type }} is on updating.",
+  labelAction: "action",
+  labelGoExplore: "View transactions on <1>block explorer</1>",
+  labelNOETH: "Need ETH for gas",
 };

@@ -2,7 +2,6 @@
   <a href="https://github.com/Loopring/loopring-web-v2" rel="noopener" target="_blank"><img width="150" src="https://loopring.org/images/logo.svg" alt="Loopring-website"></a>
 </p>
 
-
 <h1 align="center">Loopring Application</h1>
 <div align="center">
 <h2>Ethereum’s First zkRollup Layer2</h2>
@@ -55,8 +54,9 @@ npm run storybook
 - You are welcome to reuse it or integrate your provider service with our website.
 - Feel free to leave suggestions or ideas.
 
-### 📒 API & SDK
-- [JS SDK](https://loopring.github.io/loopring_sdk)
+### 📒 API & Dependency
+- [Web3-Provider](https://www.npmjs.com/package/@loopring-web/web3-provider)
+- [Loopring-sdk](https://www.npmjs.com/package/@loopring-web/loopring-sdk)
 - [Python](https://github.com/Loopring/hello_loopring)
 - [APIs](https://docs.loopring.io/en/)
 
@@ -66,7 +66,7 @@ npm run storybook
 - [Whitepaper](https://loopring.org/resources/en_whitepaper.pdf)
 - [Design Docs](https://github.com/LoopringSecondary/docs/wiki/Loopring3_Design)
 
-## ❓[Help](https://loopring.io/#/newticket)
+## ❓[Help](https://desk.zoho.com/portal/loopring/en/home)
 
 ## 🔑 Security
 

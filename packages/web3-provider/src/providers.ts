@@ -3,24 +3,36 @@ import {
   WalletConnectSubscribe,
   WalletConnectUnsubscribe,
 } from "./walletConnect";
-import {
-  MetaMaskProvide,
-  MetaMaskSubscribe,
-  MetaMaskUnsubscribe,
-} from "./metamask";
-import {
-  CoinbaseProvide,
-  CoinbaseSubscribe,
-  CoinbaseUnsubscribe,
-} from "./coinbase";
+import { MetaMaskProvide } from "./metamask";
+import { CoinbaseProvide } from "./coinbase";
+import { GameStop } from "./gmeWallet";
+
 import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { ConnectProviders } from "@loopring-web/common-resources";
+import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk";
+import {
+  ConnectProviders,
+  ExtensionSubscribe,
+  ExtensionUnsubscribe,
+} from "./command";
+import { Web3Provider } from "@ethersproject/providers";
 
 export class ConnectProvides {
+  private static _APP_FRAMeWORK: string = "REACT_APP_";
+  public static get APP_FRAMeWORK() {
+    return ConnectProvides._APP_FRAMeWORK;
+  }
+  public static set APP_FRAMeWORK(vaule: string) {
+    ConnectProvides._APP_FRAMeWORK = vaule;
+  }
   private static _isMobile = false;
-  public usedProvide: undefined | IpcProvider | WalletConnectProvider;
+  public usedProvide:
+    | undefined
+    | Web3Provider
+    | IpcProvider
+    | WalletConnectProvider
+    | CoinbaseWalletProvider;
   public usedWeb3: undefined | Web3;
 
   private _provideName: string | undefined;
@@ -36,12 +48,21 @@ export class ConnectProvides {
   get provideName(): string | undefined {
     return this._provideName;
   }
-
+  public GameStop = async (props: { darkMode?: boolean }) => {
+    this._provideName = ConnectProviders.GameStop;
+    this.clear();
+    const obj = await GameStop(props);
+    if (obj) {
+      this.usedProvide = obj.provider;
+      this.usedWeb3 = obj.web3;
+    }
+    this.subScribe();
+  };
   // private provderObj:provider|undefined
-  public MetaMask = async () => {
+  public MetaMask = async (props: { darkMode?: boolean }) => {
     this._provideName = ConnectProviders.MetaMask;
-    this.clearProviderSubscribe();
-    const obj = await MetaMaskProvide();
+    this.clear();
+    const obj = await MetaMaskProvide(props);
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -49,10 +70,10 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public Coinbase = async () => {
+  public Coinbase = async (props: { darkMode?: boolean }) => {
     this._provideName = ConnectProviders.Coinbase;
-    this.clearProviderSubscribe();
-    const obj = await CoinbaseProvide();
+    this.clear();
+    const obj = await CoinbaseProvide(props);
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -60,16 +81,19 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public WalletConnect = async (account?: string) => {
+  public WalletConnect = async (props?: {
+    account?: string;
+    darkMode?: boolean;
+  }) => {
     this._provideName = ConnectProviders.WalletConnect;
-    this.clearProviderSubscribe();
+    this.clear();
     try {
-      const obj = await WalletConnectProvide(account);
+      const obj = await WalletConnectProvide(props);
       if (obj) {
         this.usedProvide = obj.provider;
         this.usedWeb3 = obj.web3;
       }
-      this.subScribe(account);
+      this.subScribe(props);
     } catch (e) {
       throw e;
     }
@@ -80,47 +104,41 @@ export class ConnectProvides {
   };
 
   private clearProviderSubscribe = async () => {
-    switch (this._provideName) {
-      case ConnectProviders.WalletConnect:
-        if (this.usedProvide) {
-          await (
-            this.usedProvide as WalletConnectProvider
-          ).connector.killSession();
-        }
-        await WalletConnectUnsubscribe(this.usedProvide);
-        delete this.usedProvide;
-        delete this.usedWeb3;
-        break;
-      case ConnectProviders.MetaMask:
-        await MetaMaskUnsubscribe(this.usedProvide);
-        delete this.usedProvide;
-        delete this.usedWeb3;
-        break;
-      case ConnectProviders.Coinbase:
-        await CoinbaseUnsubscribe(this.usedProvide);
-        delete this.usedProvide;
-        delete this.usedWeb3;
-        break;
+    try {
+      if (
+        this.usedProvide &&
+        typeof (this.usedProvide as WalletConnectProvider)?.connector
+          ?.killSession === "function"
+      ) {
+        await (
+          this.usedProvide as WalletConnectProvider
+        ).connector.killSession();
+      }
+      await WalletConnectUnsubscribe(this.usedProvide);
+      await ExtensionUnsubscribe(this.usedProvide);
+      // await CoinbaseUnsubscribe(this.usedProvide);
+      delete this.usedProvide;
+      delete this.usedWeb3;
+    } catch (error) {
+      console.log("clearProviderSubscribe", error);
     }
 
     return;
   };
 
-  private subScribe = (account?: string) => {
+  private subScribe = (props?: { account?: string }) => {
     try {
       switch (this._provideName) {
         case ConnectProviders.WalletConnect:
           WalletConnectSubscribe(
             this.usedProvide,
             this.usedWeb3 as Web3,
-            account
+            props?.account
           );
           break;
         case ConnectProviders.MetaMask:
-          MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-          break;
         case ConnectProviders.Coinbase:
-          CoinbaseSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+          ExtensionSubscribe(this.usedProvide, this.usedWeb3 as Web3);
           break;
       }
     } catch (error) {

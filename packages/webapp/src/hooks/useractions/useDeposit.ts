@@ -39,20 +39,23 @@ export const useDeposit = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
-  const { depositValue, updateDepositData, resetDepositData } = useModalData();
+  const {
+    depositValue,
+    updateDepositData,
+    resetDepositData,
+    activeAccountValue: { chargeFeeList },
+  } = useModalData();
   const {
     modals: {
       isShowDeposit: { symbol, isShow },
     },
+    setShowDeposit,
+    setShowAccount,
   } = useOpenModals();
 
   const { walletLayer1 } = useWalletLayer1();
-  const { setShowDeposit, setShowAccount } = useOpenModals();
   const { updateDepositHash } = useOnChainInfo();
   const { t } = useTranslation("common");
-  const {
-    activeAccountValue: { chargeFeeList },
-  } = useModalData();
   const {
     btnStatus,
     btnInfo,
@@ -77,6 +80,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
+      sdk.toBig(walletLayer1?.ETH.count ?? 0).gt(BIGO) &&
       sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
       sdk
         .toBig(depositValue?.tradeValue)
@@ -106,6 +110,9 @@ export const useDeposit = <R extends IBData<T>, T>() => {
       }
     }
     myLog("try to disable deposit btn!");
+    if (sdk.toBig(walletLayer1?.ETH.count ?? 0).eq(BIGO)) {
+      setLabelAndParams("labelNOETH", {});
+    }
     disableBtn();
   }, [
     enableBtn,
@@ -114,6 +121,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     depositValue,
     allowanceInfo,
     chargeFeeList,
+    walletLayer1,
   ]);
 
   React.useEffect(() => {
@@ -144,7 +152,6 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               tradeValue: 0,
               balance: walletInfo.count,
             });
-
             return;
           }
         }
@@ -208,7 +215,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               }
 
               refferId = response.accInfo?.accountId;
-            } catch (reason) {
+            } catch (reason: any) {
               sdk.dumpError400(reason);
             }
           }
@@ -246,7 +253,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
             );
 
             myLog(response);
-          } catch (reason) {
+          } catch (reason: any) {
             sdk.dumpError400(reason);
           }
         }
@@ -328,9 +335,9 @@ export const useDeposit = <R extends IBData<T>, T>() => {
                   isMetaMask
                 );
                 nonce += 1;
-              } catch (reason) {
-                result.code = ActionResultCode.ApproveFailed;
-                result.data = reason;
+              } catch (reason: any) {
+                // result.code = ActionResultCode.ApproveFailed;
+                // result.data = reason;
 
                 setShowAccount({
                   isShow: true,
@@ -398,13 +405,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
 
           resetDepositData();
         } catch (reason: any) {
-          sdk.dumpError400(reason);
-          result.code = ActionResultCode.DepositFailed;
-          result.data = reason;
-
-          //deposit failed
           const err = checkErrorInfo(reason, true);
-
           myLog(
             "---- deposit reason:",
             reason?.message.indexOf("User denied transaction")
@@ -484,19 +485,14 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     [walletLayer1, updateDepositData]
   );
 
-  const handleAddressError = useCallback(
-    (
-      value: string
-    ):
-      | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-      | undefined => {
-      myLog("handleAddressError:", value);
-      updateDepositData({ reffer: value, tradeValue: -1, balance: -1 });
-      return undefined;
-      return undefined;
-    },
-    []
-  );
+  const handleAddressError = useCallback((value: string):
+    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
+    | undefined => {
+    myLog("handleAddressError:", value);
+    updateDepositData({ reffer: value, tradeValue: -1, balance: -1 });
+    return undefined;
+    return undefined;
+  }, []);
   const title =
     account.readyState === AccountStatus.NO_ACCOUNT
       ? t("labelCreateLayer2Title")
