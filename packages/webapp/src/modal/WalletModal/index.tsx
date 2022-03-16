@@ -70,9 +70,9 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const [stateCheck, setStateCheck] = React.useState<boolean>(false);
     const [connectProvider, setConnectProvider] =
       React.useState<boolean>(false);
-    const walletLinkCallback = React.useCallback(async () => {
-      updateAccount({ connectName: ConnectProviders.WalletLink });
-      await connectProvides.WalletLink();
+    const CoinbaseCallback = React.useCallback(async () => {
+      updateAccount({ connectName: ConnectProviders.Coinbase });
+      await connectProvides.Coinbase();
 
       // statusAccountUnset();
       if (connectProvides.usedProvide) {
@@ -226,22 +226,22 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               [account]
             ),
           },
-          // {
-          //   ...DefaultGatewayList[2],
-          //   handleSelect: React.useCallback(
-          //     async (event, flag?) => {
-          //       walletServices.sendDisconnect("", "should new provider");
-          //       setShowConnect({
-          //         isShow: true,
-          //         step: WalletConnectStep.WalletConnectProcessing,
-          //       });
-          //       setConnectProvider(DefaultGatewayList[2].key);
-          //       setProcessingCallback({ callback: walletLinkCallback });
-          //       setStateCheck(true);
-          //     },
-          //     [account]
-          //   ),
-          // },
+          {
+            ...DefaultGatewayList[2],
+            handleSelect: React.useCallback(
+              async (event, flag?) => {
+                walletServices.sendDisconnect("", "should new provider");
+                setShowConnect({
+                  isShow: true,
+                  step: WalletConnectStep.WalletConnectProcessing,
+                });
+                setConnectProvider(DefaultGatewayList[2].key);
+                setProcessingCallback({ callback: CoinbaseCallback });
+                setStateCheck(true);
+              },
+              [account]
+            ),
+          },
         ]
       : [
           ...(window.ethereum

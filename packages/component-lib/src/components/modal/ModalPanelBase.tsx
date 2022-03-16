@@ -38,7 +38,7 @@ export const InProgressBasic = ({
           </Trans>
         );
       case ConnectProviders.WalletConnect:
-      case ConnectProviders.WalletLink:
+      case ConnectProviders.Coinbase:
         return (
           <Trans i18nKey={"labelWalletConnectProcessDescribe2"}>
             Please click approve on your device.

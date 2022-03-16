@@ -132,7 +132,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
       if (providerName) {
         switch (providerName) {
           case ConnectProviders.MetaMask:
-          case ConnectProviders.WalletLink:
+          case ConnectProviders.Coinbase:
             return (
               <Trans
                 i18nKey={"labelProviderCommonProcessDescribe"}

@@ -2,7 +2,7 @@ export enum ConnectProviders {
   unknown = "unknown",
   MetaMask = "MetaMask",
   WalletConnect = "WalletConnect",
-  WalletLink = "WalletLink",
+  Coinbase = "Coinbase",
 }
 export const RPC_URLS: { [chainId: number]: string } = {
   1: process.env.REACT_APP_RPC_URL_1 as string,
