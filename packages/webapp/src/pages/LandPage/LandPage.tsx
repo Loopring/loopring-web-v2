@@ -1,25 +1,16 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Typography,
-  TypographyProps,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import React from "react";
 import styled from "@emotion/styled/";
 import {
   DropDownIcon,
   getValuePrecisionThousand,
-  ThemeType,
 } from "@loopring-web/common-resources";
 import { withTranslation } from "react-i18next";
 import { Card } from "./Card";
 import { useHistory } from "react-router-dom";
 import { LoopringAPI } from "../../api_wrapper";
 import { useSettings } from "@loopring-web/component-lib";
-import { ContainerProps } from "@mui/material/Container/Container";
-import { LAYOUT } from "../../defs/common_defs";
+import { ContainerStyle, TitleTypography, ContainerStyled } from "./style";
 
 const ButtonStyled = styled(Button)`
   display: flex;
@@ -46,197 +37,9 @@ const CardBox = styled(Box)`
   }
 ` as typeof Box;
 
-const ContainerStyle = styled(Box)`
-  .MuiContainer-root {
-    min-width: 1200px;
-    @media only screen and (max-width: 768px) {
-      min-width: 360px;
-    }
-  }
-
-  ${({ theme }) => {
-    let result = `
-       --img-banner-url: url("https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png");
-      `;
-    if (theme.mode === ThemeType.dark) {
-      result += `
-            // --main-page-bg: #04092E;
-            --main-page-bg: #060D42;
-            --color-primary: #4169FF;
-            --layer-2: #0D1655;
-            --box-card-decorate:rgba(255, 255, 255, 0.1);
-            // --box-card-background:#2D2F4B;
-            --box-card-background: #283485;
-            --box-card-background-hover:#4169FF;
-            --box-card-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15); 
-            --text-secondary: #687295;
-            --border-card:1px solid #49527D;
-            --border-card-hover: rgba(255, 255, 255, 0.1);
-            --text-highlight:#4169FF;
-            --text-third:#ffffff;
-            --bg-bottom: #1A32A1;
-        `;
-    } else {
-      result += `
-            --main-page-bg: #ffffff;
-            --color-primary: #3B5AF4;
-            --layer-2:#F6F7FB;
-            --box-card-decorate:rgba(255, 255, 255, 0);
-            --box-card-background:#ffffff;
-            --box-card-background-hover:#3B5AF4;
-            --box-card-shadow: 0px 10px 20px rgba(87, 129, 236, 0.1);
-            --text-secondary: #A3A8CA;
-            --border-card:1px solid #E9EAF2;
-            --border-card-hover: rgba(255, 255, 255, 0.1);
-            --text-highlight:#4169FF;
-            --text-third:#ffffff;
-            --bg-bottom: #4169FF;
-        `;
-    }
-    return result;
-  }};
-  background: var(--main-page-bg);
-
-  body {
-    background: var(--main-page-bg);
-  }
-`;
-
 const BottomBanner = styled(Box)`
   background-color: var(--bg-bottom);
 ` as typeof Box;
-
-const TitleTypography = styled(Typography)<
-  TypographyProps & { isMobile?: boolean }
->`
-  text-transform: uppercase;
-  font-size: ${({ isMobile }) => (isMobile ? "2rem" : "4rem")};
-  font-weight: 700;
-  white-space: pre-line;
-  line-height: 5.6rem;
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: space-between;
-  align-self: flex-start;
-  height: ${({ isMobile }) => (isMobile ? "auto" : "calc(80px + 24px)")};
-  &:before {
-    margin-top: 24px;
-    content: "";
-    // top: ${({ isMobile }) => (isMobile ? "-16px" : "-30px")};
-    // left: 0;
-    height: 6px;
-    width: 96px;
-    display: block;
-    background: var(--color-primary);
-  }
-` as (props: TypographyProps & { isMobile?: boolean }) => JSX.Element;
-
-// const TradeInfoStyled = styled(Typography)`
-//   font-size: 6.4rem;
-//   font-weight: 700;
-//   line-height: 8.8rem;
-//   margin-bottom: 2.5rem;
-//   margin-left: 3.2rem;
-// ` as any;
-
-const ContainerStyled = styled(Container)<
-  ContainerProps & { isMobile?: boolean }
->`
-  padding: 0 !important;
-  & > .MuiGrid-item {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    ${({ isMobile }) => `
-      min-height: ${
-        isMobile ? `calc(100vh - ${LAYOUT.HEADER_HEIGHT}px)` : "734px"
-      };
-    `}
-    .boxCard {
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: var(--box-card-background);
-      box-shadow: var(--box-card-shadow);
-      font-size: 1.4rem;
-      h4 {
-        text-transform: uppercase;
-        font-weight: 500;
-        margin-left: 14px;
-        font-size: 2em;
-      }
-      .content {
-        margin-left: 14px;
-        //position: absolute;
-        font-size: 5.6em;
-      }
-
-      :before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 10px;
-        display: block;
-        border-start-end-radius: 4px;
-        border-end-end-radius: 4px;
-        background: var(--box-card-decorate);
-      }
-
-      ${({ isMobile }) =>
-        isMobile
-          ? `
-            position: relative;
-             margin: 24px;
-          `
-          : `
-      position: absolute;
-     
-      &.trade-volume {
-        width: 320px;
-        height: 256px;
-        top: 196px;
-        zindex: 42;
-        
-      }
-      &.trade-tvl {
-        width: 262px;
-        height: 210px;
-        top: 102px;
-        left: 394px;
-        zindex: 42;
-        font-size: 12px;
-      }
-      
-      &.trade-user {
-        width: 262px;
-        height: 210px;
-        top: 102px;
-        left: 798px;
-        zindex: 42;
-        font-size: 12px;
-      }
-      &.trade-trades {
-        width: 399px;
-        height: 319px;
-        top: 351px;
-        left: 798px;
-        zindex: 42;
-        font-size: 24px;
-       
-      }
-      `}
-    }
-  }
-` as (props: ContainerProps & { isMobile?: boolean }) => JSX.Element;
-// .content{
-//   font-size: 9.6em;
-// }
 
 export const LandPage = withTranslation(["landPage", "common"])(
   ({ t }: any) => {
@@ -336,15 +139,9 @@ export const LandPage = withTranslation(["landPage", "common"])(
             </Grid>
           </ContainerStyled>
         </Box>
-        <Box style={{ background: "var(--layer-2)" }}>
+        <Box style={{ background: "var(--second-bg)" }}>
           <ContainerStyled isMobile={isMobile}>
-            <TitleTypography
-              isMobile={isMobile}
-
-              // marginTop={isMobile ? 4 : 11}
-              // position={"absolute"}
-              // zIndex={42}
-            >
+            <TitleTypography isMobile={isMobile}>
               {t("labelTitleDEX")}
             </TitleTypography>
             <Grid item xs={12} position={"relative"}>
@@ -609,7 +406,7 @@ export const LandPage = withTranslation(["landPage", "common"])(
             </Grid>
           </ContainerStyled>
         </Box>
-        <BottomBanner height={500}>
+        <BottomBanner height={isMobile ? 400 : 500}>
           <ContainerStyled isMobile={isMobile}>
             <Grid item xs={12} display={"flex"} position={"relative"}>
               <Box
@@ -625,18 +422,17 @@ export const LandPage = withTranslation(["landPage", "common"])(
                   component={"h4"}
                   whiteSpace={"pre-line"}
                   lineHeight={"56px"}
-                  fontSize={isMobile ? 24 : 40}
+                  variant={isMobile ? "h2" : "h2"}
                 >
                   {t("labelSuperpowers")}
                 </Typography>
 
                 <Typography
                   marginTop={1.5}
-                  fontSize={isMobile ? 14 : 16}
+                  variant={isMobile ? "h5" : "h4"}
                   lineHeight={"24px"}
                   whiteSpace={"pre-line"}
                   textAlign={"center"}
-                  color={"#F0F6FF"}
                 >
                   {t("describeSuperpowers")}
                 </Typography>

@@ -1,16 +1,15 @@
-import { Box, Container, Grid, Typography, Link } from "@mui/material";
+import { Box, Container, Grid, Typography, Link, Button } from "@mui/material";
 import React from "react";
 import styled from "@emotion/styled/";
 import {
   ThemeType,
   SoursURL,
   LandPageHeightConfig,
+  DropDownIcon,
 } from "@loopring-web/common-resources";
 import { withTranslation } from "react-i18next";
-
-const ContainerStyled = styled(Container)`
-  padding: 0 !important;
-`;
+import { ContainerStyle, ContainerStyled, TitleTypography } from "./style";
+import { useSettings } from "@loopring-web/component-lib";
 
 const LinkStyle = styled(Link)`
   color: var(--color-button-select);
@@ -33,58 +32,6 @@ const ImgWrapperRightStyled = styled(Box)`
   transform: translateY(-50%);
 `;
 
-const ContainerStyle = styled(Box)`
-  .MuiContainer-root {
-    min-width: 1200px;
-  }
-
-  ${({ theme }) => {
-    let result = `
-       --img-banner-url: url("https://static.loopring.io/assets/images/landPage/img_home_banner_${theme.mode}@2x.png");
-      `;
-    if (theme.mode === ThemeType.dark) {
-      result += `
-            --main-page-bg: #060D42;
-            --color-primary: #4169FF;
-            --layer-2: #1A32A2;
-            --second-bg: #0D1655;
-            --box-card-decorate:rgba(255, 255, 255, 0.1);
-            --box-card-background:#2D2F4B;
-            --box-card-background-hover:#4169FF;
-            --box-card-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15); 
-            --text-secondary: #687295;
-            --border-card:1px solid #49527D;
-            --border-card-hover: rgba(255, 255, 255, 0.1);
-            --text-highlight:#4169FF;
-            --text-third:#ffffff; 
-          `;
-    } else {
-      result += `
-            --main-page-bg: #ffffff;
-            --color-primary: #3B5AF4;
-            --layer-2: #4169FF;
-            --second-bg: #F6F7FB;
-            --box-card-decorate:rgba(255, 255, 255, 0);
-            --box-card-background:#ffffff;
-            --box-card-background-hover:#3B5AF4;
-            --box-card-shadow: 0px 10px 20px rgba(87, 129, 236, 0.1);
-            --text-secondary: #A3A8CA;
-            --border-card:1px solid #E9EAF2;
-            --border-card-hover: rgba(255, 255, 255, 0.1);
-             --text-highlight:#4169FF;
-             --text-third:#ffffff;
-
-
-            `;
-    }
-    return result;
-  }};
-  background: var(--main-page-bg);
-
-  body {
-    background: var(--main-page-bg);
-  }
-`;
 const GridBg = styled(Grid)`
   background-size: 160%;
   background-repeat: no-repeat;
@@ -101,202 +48,207 @@ const BottomBanner = styled(Box)`
   background: var(--layer-2);
 ` as typeof Box;
 
-const TitleTypography = styled(Typography)`
-  text-transform: uppercase;
-  font-size: 4rem;
-  font-weight: 700;
-  white-space: pre-line;
-  line-height: 5.6rem;
-  position: relative;
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 6px;
-    width: 96px;
-    display: block;
-    background: var(--color-primary);
-  }
-` as typeof Typography;
-
-const TitleTypographyRight = styled(Typography)`
-  text-transform: uppercase;
-  font-size: 4rem;
-  font-weight: 700;
-  white-space: pre-line;
-  line-height: 5.6rem;
-  position: relative;
-
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 6px;
-    width: 96px;
-    display: block;
-    background: var(--color-primary);
-  }
-` as typeof Typography;
-
-/**
- * resize
- *     // const afterMaintaince = currentBJTime > maintainceEndTime
- *     // const [size, setSize] = React.useState<[number, number]>([1200, 0]);
- *     // React.useLayoutEffect(() => {
- *     //     function updateSize() {
- *     //         setSize([1200, window.innerHeight - LandPageHeightConfig.headerHeight - LandPageHeightConfig.whiteHeight]);
- *     //
- *     //     }
- *     //     window.addEventListener('resize', updateSize);
- *     //     updateSize();
- *     //     return () => window.removeEventListener('resize', updateSize);
- *     // }, []);
- */
-
 export const WalletPage = withTranslation(["landPage", "common"])(
   ({ t }: any) => {
+    const { isMobile } = useSettings();
     return (
       <ContainerStyle>
         <Box>
-          <ContainerStyled>
-            <GridBg
-              item
-              xs={12}
-              maxHeight={LandPageHeightConfig.maxHeight}
-              position={"relative"}
-              height={624}
-            >
-              <Box
-                position={"absolute"}
-                left={0}
-                top={"50%"}
-                style={{ transform: "translateY(-50%)" }}
+          <ContainerStyled isMobile={isMobile}>
+            {isMobile ? (
+              <Grid
+                item
+                xs={12}
+                flex={1}
+                alignItems={"center"}
+                justifyContent={"center"}
               >
-                <Typography
-                  component={"h1"}
-                  fontSize={64}
-                  marginTop={4}
-                  whiteSpace={"pre-line"}
-                  lineHeight={"96px"}
+                <Box
+                  flex={1}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
+                  flexDirection={"column"}
                 >
-                  {t("labelH1TitleWallet")}
-                </Typography>
-                <Typography
-                  component={"h2"}
-                  fontSize={38}
-                  marginTop={2}
-                  whiteSpace={"pre-line"}
-                  lineHeight={"46px"}
-                >
-                  {t("labelH2TitleWallet")}
-                </Typography>
-                <Grid container width={"600px"} marginTop={8} marginLeft={-2}>
-                  <Grid item xs={4}>
+                  <Typography
+                    component={"h1"}
+                    variant={"h1"}
+                    whiteSpace={"pre-line"}
+                  >
+                    {t("labelH1TitleWallet")}
+                  </Typography>
+                  <Typography
+                    component={"h2"}
+                    variant={"h3"}
+                    marginTop={2}
+                    whiteSpace={"pre-line"}
+                  >
+                    {t("labelH2TitleWallet")}
+                  </Typography>
+                  <Box
+                    display={"flex"}
+                    flexDirection={"column"}
+                    marginTop={12}
+                    alignItems={"center"}
+                  >
                     <Link href="https://play.google.com/store/apps/details?id=loopring.defi.wallet">
                       <img
-                        style={{ width: "100%" }}
+                        width={260}
                         src={`${SoursURL}images/landPage/appGooglePlay.webp`}
                         alt={"Android"}
                       />
                     </Link>
-                  </Grid>
-                  <Grid item xs={4}>
                     <Link href="https://download.loopring.io/LoopringWallet.apk">
                       <img
-                        style={{ width: "100%" }}
+                        width={260}
                         src={`${SoursURL}images/landPage/appAndroid.webp`}
                         alt={"GooglePlay"}
                       />
                     </Link>
-                  </Grid>
-                  <Grid item xs={4}>
                     <Link href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126">
                       <img
-                        style={{ width: "100%" }}
+                        width={260}
                         src={`${SoursURL}images/landPage/appAppleStore.webp`}
                         alt={"AppStore"}
                       />
                     </Link>
-                  </Grid>
-                </Grid>
-                <Box display={"flex"} alignItems={"center"}>
-                  <Typography
-                    variant={"h5"}
-                    color={"var(--color-text-third)"}
-                    marginRight={1.5}
-                  >
-                    Already have a wallet?
-                  </Typography>
-                  <LinkStyle href={"./#/guardian"} variant={"body1"}>
-                    {t("labelGoGuardian")}
-                  </LinkStyle>
+                  </Box>
+                  <Box display={"flex"} alignItems={"center"}>
+                    <Typography
+                      variant={"h5"}
+                      color={"var(--color-text-third)"}
+                      marginRight={1.5}
+                    >
+                      {t("labelHaveWallet")}
+                    </Typography>
+                    <LinkStyle href={"./#/guardian"} variant={"body1"}>
+                      {t("labelGoGuardian")}
+                    </LinkStyle>
+                  </Box>
                 </Box>
-              </Box>
-            </GridBg>
-          </ContainerStyled>
-        </Box>
-        <Box style={{ background: "var(--layer-2)" }}>
-          <ContainerStyled>
-            <Grid item xs={12} position={"relative"} height={624}>
-              <Box
-                position={"absolute"}
-                width={"100%"}
-                height={624}
-                zIndex={33}
-                left={0}
-                top={"50%"}
-                style={{ transform: "translateY(-50%)" }}
-                display={"flex"}
-                justifyContent={"center"}
-                alignItems={"center"}
+              </Grid>
+            ) : (
+              <GridBg
+                item
+                xs={12}
+                maxHeight={LandPageHeightConfig.maxHeight}
+                position={"relative"}
+                flex={1}
               >
                 <Box
-                  display={"flex"}
-                  flexDirection={"column"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
+                  position={"absolute"}
+                  left={0}
+                  top={"50%"}
+                  style={{ transform: "translateY(-50%)" }}
                 >
                   <Typography
                     component={"h1"}
-                    fontSize={40}
-                    fontWeight={500}
-                    marginTop={0}
+                    fontSize={isMobile ? 24 : 64}
+                    marginTop={4}
                     whiteSpace={"pre-line"}
-                    lineHeight={"68px"}
-                    color={"var(--text-third)"}
+                    lineHeight={"96px"}
                   >
-                    {t("labelFirstWallet")}
+                    {t("labelH1TitleWallet")}
                   </Typography>
                   <Typography
                     component={"h2"}
-                    variant={"h5"}
-                    fontWeight={400}
+                    fontSize={isMobile ? 14 : 38}
                     marginTop={2}
-                    textAlign={"center"}
                     whiteSpace={"pre-line"}
-                    color={"var(--text-third)"}
+                    lineHeight={"46px"}
                   >
-                    {t("labelFirstWalletDetail")}
+                    {t("labelH2TitleWallet")}
                   </Typography>
+                  <Grid container width={"600px"} marginTop={8} marginLeft={-2}>
+                    <Grid item xs={4}>
+                      <Link href="https://play.google.com/store/apps/details?id=loopring.defi.wallet">
+                        <img
+                          style={{ width: "100%" }}
+                          src={`${SoursURL}images/landPage/appGooglePlay.webp`}
+                          alt={"Android"}
+                        />
+                      </Link>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Link href="https://download.loopring.io/LoopringWallet.apk">
+                        <img
+                          style={{ width: "100%" }}
+                          src={`${SoursURL}images/landPage/appAndroid.webp`}
+                          alt={"GooglePlay"}
+                        />
+                      </Link>
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Link href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126">
+                        <img
+                          style={{ width: "100%" }}
+                          src={`${SoursURL}images/landPage/appAppleStore.webp`}
+                          alt={"AppStore"}
+                        />
+                      </Link>
+                    </Grid>
+                  </Grid>
+                  <Box display={"flex"} alignItems={"center"}>
+                    <Typography
+                      variant={"h5"}
+                      color={"var(--color-text-third)"}
+                      marginRight={1.5}
+                    >
+                      {t("labelHaveWallet")}
+                    </Typography>
+                    <LinkStyle href={"./#/guardian"} variant={"body1"}>
+                      {t("labelGoGuardian")}
+                    </LinkStyle>
+                  </Box>
                 </Box>
+              </GridBg>
+            )}
+          </ContainerStyled>
+        </Box>
+        <Box style={{ background: "var(--layer-2)" }}>
+          <ContainerStyled isMobile={isMobile}>
+            <Grid item xs={12} flex={1} alignItems={"center"}>
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Typography
+                  component={"h1"}
+                  variant={isMobile ? "h2" : "h2"}
+                  marginTop={0}
+                  textAlign={"center"}
+                  whiteSpace={"pre-line"}
+                  color={"var(--text-third)"}
+                >
+                  {t("labelFirstWallet")}
+                </Typography>
+                <Typography
+                  component={"h2"}
+                  variant={isMobile ? "h4" : "h3"}
+                  marginTop={3}
+                  textAlign={"center"}
+                  whiteSpace={"pre-line"}
+                  color={"var(--text-third)"}
+                >
+                  {t("labelFirstWalletDetail")}
+                </Typography>
               </Box>
             </Grid>
           </ContainerStyled>
         </Box>
-        <Box>
-          <ContainerStyled>
-            <Grid item xs={12} height={624} position={"relative"}>
+        <Box style={{ background: "auto" }}>
+          <ContainerStyled isMobile={isMobile}>
+            <Grid item xs={12} position={"relative"} className={"wallet-grid"}>
               <Box
-                width={"100%"}
-                height={"100%"}
+                className="wallet-content"
                 display={"flex"}
                 flexDirection={"column"}
                 justifyContent={"center"}
               >
-                <TitleTypography component={"h3"} paddingTop={4}>
+                <TitleTypography isMobile={isMobile}>
                   {t("labelWalletSecureH1")}
                 </TitleTypography>
                 <Typography variant={"h3"}>
@@ -311,38 +263,46 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                   {t("labelWalletSecureDetail")}
                 </Typography>
               </Box>
-              <ImgWrapperRightStyled>
-                <img
-                  style={{ width: 500 }}
-                  src={`${SoursURL}images/landPage/img_wallet_guardians@1x.webp`}
-                  alt={"secure"}
-                />
-              </ImgWrapperRightStyled>
+              {!isMobile ? (
+                <ImgWrapperRightStyled>
+                  <img
+                    style={{ width: 500 }}
+                    src={`${SoursURL}images/landPage/img_wallet_guardians@1x.webp`}
+                    alt={"secure"}
+                  />
+                </ImgWrapperRightStyled>
+              ) : (
+                <Box>
+                  <img
+                    width={360}
+                    src={`${SoursURL}images/landPage/img_wallet_guardians@1x.webp`}
+                    alt={"future"}
+                  />
+                </Box>
+              )}
             </Grid>
           </ContainerStyled>
         </Box>
         <Box style={{ background: "var(--second-bg)" }}>
-          <ContainerStyled>
+          <ContainerStyled isMobile={isMobile}>
             <Grid
               item
               xs={12}
               position={"relative"}
-              height={624}
               display={"flex"}
-              justifyContent={"flex-end"}
+              className={"wallet-grid"}
             >
               <Box
-                width={"100%"}
-                height={"100%"}
+                className="wallet-content"
                 display={"flex"}
                 flexDirection={"column"}
                 justifyContent={"center"}
                 alignItems={"flex-end"}
               >
-                <TitleTypographyRight component={"h3"} paddingTop={4}>
+                <TitleTypography className={"right"} isMobile={isMobile}>
                   {t("labelWalletIdentityH1")}
-                </TitleTypographyRight>
-                <Typography variant={"h3"}>
+                </TitleTypography>
+                <Typography variant={"h3"} textAlign={"right"}>
                   {t("labelWalletIdentityH2")}
                 </Typography>
                 <Typography
@@ -355,33 +315,42 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                   {t("labelWalletIdentityDetail")}
                 </Typography>
               </Box>
-              <ImgWrapperLeftStyled>
-                <img
-                  style={{ width: 500 }}
-                  src={`${SoursURL}images/landPage/img_wallet_address@1x.webp`}
-                  alt={"identity"}
-                />
-              </ImgWrapperLeftStyled>
+              {!isMobile ? (
+                <ImgWrapperLeftStyled>
+                  <img
+                    style={{ width: 500 }}
+                    src={`${SoursURL}images/landPage/img_wallet_address@1x.webp`}
+                    alt={"identity"}
+                  />
+                </ImgWrapperLeftStyled>
+              ) : (
+                <Box>
+                  <img
+                    width={360}
+                    src={`${SoursURL}images/landPage/img_wallet_address@1x.webp`}
+                    alt={"future"}
+                  />
+                </Box>
+              )}
             </Grid>
           </ContainerStyled>
         </Box>
         <Box style={{ background: "var(--layer-1)" }}>
-          <ContainerStyled>
+          <ContainerStyled isMobile={isMobile}>
             <Grid
               item
               xs={12}
               position={"relative"}
-              height={624}
               display={"flex"}
+              className={"wallet-grid"}
             >
               <Box
-                width={"100%"}
-                height={"100%"}
+                className="wallet-content"
                 display={"flex"}
                 flexDirection={"column"}
                 justifyContent={"center"}
               >
-                <TitleTypography component={"h3"} paddingTop={4}>
+                <TitleTypography isMobile={isMobile}>
                   {t("labelWalletUsageH1")}
                 </TitleTypography>
                 <Typography variant={"h3"}>
@@ -396,42 +365,46 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                   {t("labelWalletUsageDetail")}
                 </Typography>
               </Box>
-              <ImgWrapperRightStyled>
-                <img
-                  style={{ width: 500 }}
-                  src={`${SoursURL}images/landPage/img_wallet_operation@1x.webp`}
-                  alt={"performance"}
-                />
-              </ImgWrapperRightStyled>
+              {!isMobile ? (
+                <ImgWrapperRightStyled>
+                  <img
+                    style={{ width: 500 }}
+                    src={`${SoursURL}images/landPage/img_wallet_operation@1x.webp`}
+                    alt={"performance"}
+                  />
+                </ImgWrapperRightStyled>
+              ) : (
+                <Box>
+                  <img
+                    width={360}
+                    src={`${SoursURL}images/landPage/img_wallet_operation@1x.webp`}
+                    alt={"future"}
+                  />
+                </Box>
+              )}
             </Grid>
           </ContainerStyled>
         </Box>
         <Box style={{ background: "var(--second-bg)" }}>
-          <ContainerStyled>
+          <ContainerStyled isMobile={isMobile}>
             <Grid
               item
               xs={12}
               position={"relative"}
-              height={624}
               display={"flex"}
-              justifyContent={"flex-end"}
+              className={"wallet-grid"}
             >
               <Box
-                width={"100%"}
-                height={"100%"}
+                className="wallet-content"
                 display={"flex"}
                 flexDirection={"column"}
                 justifyContent={"center"}
                 alignItems={"flex-end"}
               >
-                <TitleTypographyRight
-                  textAlign={"right"}
-                  component={"h3"}
-                  paddingTop={4}
-                >
+                <TitleTypography className={"right"} isMobile={isMobile}>
                   {t("labelWalletFutureH1")}
-                </TitleTypographyRight>
-                <Typography variant={"h3"}>
+                </TitleTypography>
+                <Typography variant={"h3"} textAlign={"right"}>
                   {t("labelWalletFutureH2")}
                 </Typography>
                 <Typography
@@ -444,33 +417,60 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                   {t("labelWalletFutureDetail")}
                 </Typography>
               </Box>
-              <ImgWrapperLeftStyled>
-                <img
-                  style={{ width: 500 }}
-                  src={`${SoursURL}images/landPage/img_wallet_income@1x.webp`}
-                  alt={"future"}
-                />
-              </ImgWrapperLeftStyled>
+              {!isMobile ? (
+                <ImgWrapperLeftStyled>
+                  <img
+                    style={{ width: 500 }}
+                    src={`${SoursURL}images/landPage/img_wallet_income@1x.webp`}
+                    alt={"future"}
+                  />
+                </ImgWrapperLeftStyled>
+              ) : (
+                <Box>
+                  <img
+                    width={360}
+                    src={`${SoursURL}images/landPage/img_wallet_income@1x.webp`}
+                    alt={"future"}
+                  />
+                </Box>
+              )}
             </Grid>
           </ContainerStyled>
         </Box>
-        <BottomBanner height={400}>
-          <ContainerStyled>
+        <BottomBanner height={isMobile ? 400 : 500}>
+          <ContainerStyled isMobile={isMobile}>
             <Grid
               item
               xs={12}
-              height={400}
               display={"flex"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              position={"relative"}
+              style={{ minHeight: "auto" }}
             >
-              <Typography color={"#fff"} fontSize={40} lineHeight={"56px"}>
-                {t("labelWalletUnleashed")}
-              </Typography>
-              <Typography color={"#fff"} variant={"h3"} marginTop={3}>
-                {t("labelWalletUnleashedDetail")}
-              </Typography>
+              <Box
+                height={isMobile ? 400 : 500}
+                // marginTop={isMobile ? 2 : 4}
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Typography
+                  color={"#fff"}
+                  variant={isMobile ? "h2" : "h2"}
+                  lineHeight={"56px"}
+                  textAlign={"center"}
+                >
+                  {t("labelWalletUnleashed")}
+                </Typography>
+                <Typography
+                  color={"#fff"}
+                  variant={isMobile ? "h4" : "h4"}
+                  marginTop={3}
+                  textAlign={"center"}
+                >
+                  {t("labelWalletUnleashedDetail")}
+                </Typography>
+              </Box>
             </Grid>
           </ContainerStyled>
         </BottomBanner>
