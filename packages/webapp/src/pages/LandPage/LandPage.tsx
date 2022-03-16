@@ -408,7 +408,13 @@ export const LandPage = withTranslation(["landPage", "common"])(
         </Box>
         <BottomBanner height={isMobile ? 400 : 500}>
           <ContainerStyled isMobile={isMobile}>
-            <Grid item xs={12} display={"flex"} position={"relative"}>
+            <Grid
+              item
+              xs={12}
+              display={"flex"}
+              position={"relative"}
+              style={{ minHeight: "auto" }}
+            >
               <Box
                 height={isMobile ? 400 : 500}
                 // marginTop={isMobile ? 2 : 4}
