@@ -51,7 +51,6 @@ const StyledChartWrapper = styled(Box)`
 `;
 const StyleTitlePaper = styled(Box)`
   width: 100%;
-  //height: 100%;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;

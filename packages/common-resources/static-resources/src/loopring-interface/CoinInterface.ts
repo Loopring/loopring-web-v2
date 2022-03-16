@@ -33,6 +33,7 @@ export interface FeeInfo {
   fee: number | string;
   feeRaw?: string | number;
   token?: string;
+  hasToken?: boolean;
   __raw__: {
     fastWithDraw: string;
     tokenId: number;

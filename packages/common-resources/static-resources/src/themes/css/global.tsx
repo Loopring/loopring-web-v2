@@ -141,20 +141,7 @@ export const globalCss = ({ theme }: any) => css`
     position: relative;
     color: var(--color-text-primary);
     background: var(--color-global-bg);
-    // @font-face {
-    //   font-family: 'Inter-Medium';
-    //   src: url(${InterMedium}) format('truetype');
-    //   font-weight: normal;
-    //   font-style: normal;
-    // }
-    // @font-face {
-    //   font-family: 'DINCondensed';
-    //   src: url(${DINCondensed}) format('truetype');
-    //   font-weight: normal;
-    //   font-style: normal;
-    // }
-
-    height: 100%;
+    height: 100vh;
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
@@ -280,19 +267,6 @@ export const globalCss = ({ theme }: any) => css`
       display: none;
     }
   }
-
-  //. draggable_panel {
-  //  border: 1px solid var(--color-border);
-  //  height: 100%;
-  //}
-  //
-  //. draggable_header {
-  //  display: none;
-  //  cursor: move;
-  //  height: 0px;
-  //  width: 100%;
-  //}
-
   .rdg.rdg {
     --background-color: inherit;
   }

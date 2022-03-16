@@ -5,6 +5,7 @@ import {
   NFTTableFilter,
   NFTTableProps,
   TxnDetailProps,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
@@ -19,6 +20,7 @@ const LimitNFTHistory = 20;
 export const useHistoryNFT = <Row extends TxnDetailProps>() => {
   const { etherscanBaseUrl } = useSystem();
   const { account } = useAccount();
+  const { isMobile } = useSettings();
   const [tabIndex, setTabIndex] = React.useState(0);
   const container = React.useRef(null);
 
@@ -147,7 +149,8 @@ export const useHistoryNFT = <Row extends TxnDetailProps>() => {
   React.useEffect(() => {
     // @ts-ignore
     let height = container?.current?.offsetHeight;
-    const pageSize = Math.floor(height / RowConfig.rowHeight) - 3;
+    const pageSize =
+      Math.floor(height / RowConfig.rowHeight) - (isMobile ? 1 : 3);
     if (height) {
       setNftHistory((state) => {
         const userNFTTxs = state.userNFTTxs;
@@ -313,10 +316,6 @@ export const useHistoryNFT = <Row extends TxnDetailProps>() => {
     container,
     nftHistory,
     getTxnList,
-    // userNFTTxs,
-    // getTransferList,
-    // getDepositList,
-    // getWithdrawalList,
     tabIndex,
     setTabIndex,
   };

@@ -110,8 +110,6 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   resetProps,
   nftMintProps,
   activeAccountProps,
-  // ammProps,
-  // swapProps,
   assetsData,
   ...rest
 }: {
@@ -126,8 +124,6 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   nftMintProps: NFTMintProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
-  // ammProps: AmmProps<any, any, T, any>;
-  // swapProps: SwapProps<T, I, any>;
   assetsData: any[];
   exportAccountProps: any;
   setExportAccountToastOpen: any;
