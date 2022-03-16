@@ -1,19 +1,20 @@
-import React from 'react'
-import styled from '@emotion/styled'
-import { Box, Grid, MenuItem } from '@mui/material'
+import React from "react";
+import styled from "@emotion/styled";
+import { Grid, MenuItem } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { DatePicker, TextField } from '../../../basic-lib/form'
-import { Button } from '../../../basic-lib/btns'
-import { DropDownIcon } from '@loopring-web/common-resources'
-import { RawDataAmmItem } from '../AmmTable'
+import { DateRangePicker, TextField } from "../../../basic-lib/form";
+import { Button } from "../../../basic-lib/btns";
+import { DropDownIcon } from "@loopring-web/common-resources";
+import { DateRange } from "@mui/lab";
+import { useSettings } from "../../../../stores";
 
 export interface FilterProps {
-    rawData: RawDataAmmItem[];
-    filterType: string;
-    filterDate: Date | null;
-    filterPair: string;
-    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void;
-    handleReset: () => void;
+  filterPairs: string[];
+  filterType: string;
+  filterPair: string;
+  filterDate: DateRange<Date | null>;
+  handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void;
+  handleReset: () => void;
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -25,98 +26,118 @@ const StyledTextFiled = styled(TextField)`
     width: initial;
     max-width: initial;
   }
-`
-
-const StyledBtnBox = styled(Box)`
-  display: flex;
-  margin-left: 40%;
-
-  button:first-of-type {
-    margin-right: 8px;
-  }
-`
+`;
 
 export enum FilterTradeTypes {
-    join = 'Add',
-    exit = 'Remove',
-    allTypes = 'All Types'
+  join = "Add",
+  exit = "Remove",
+  allTypes = "all",
 }
 
-export const Filter = withTranslation('tables', {withRef: true})(({
-        t,
-        rawData,
-        filterType,
-        filterDate,
-        filterPair,
-        handleReset,
-        handleFilterChange,
-    }: FilterProps & WithTranslation) => {
-    const FilterTradeTypeList = [
-        {
-            label: t('labelAmmFilterTypes'),
-            value: 'All Types'
-        },
-        {
-            label: t('labelAmmJoin'),
-            value: 'Join'
-        },
-        {
-            label: t('labelAmmExit'),
-            value: 'Exit'
-        },
-    ]
+export const Filter = withTranslation("tables", { withRef: true })(
+  ({
+    t,
+    filterPairs,
+    filterType,
+    filterDate,
+    filterPair,
+    handleReset,
+    handleFilterChange,
+  }: FilterProps & WithTranslation) => {
+    const { isMobile } = useSettings();
 
-    const rawPairList = rawData.map(item => `${item.amount.from.key} - ${item.amount.to.key}`)
+    const FilterTradeTypeList = [
+      {
+        label: t("labelAmmFilterTypes"),
+        value: FilterTradeTypes.allTypes,
+      },
+      {
+        label: t("labelAmmJoin"),
+        value: FilterTradeTypes.join,
+      },
+      {
+        label: t("labelAmmExit"),
+        value: FilterTradeTypes.exit,
+      },
+    ];
+
+    const rawPairList = [].slice
+      .call(filterPairs)
+      .sort((a: string, b: string) => {
+        return a.localeCompare(b);
+      })
+      .map((pair: string) => ({
+        label: pair,
+        value: pair,
+      }));
     const formattedRawPairList = [
-        {
-            label: t('labelFilterAllPairs'),
-            value: 'all'
-        },
-        ...Array.from(new Set(rawPairList)).map((pair: string) => ({
-            label: pair,
-            value: pair
-        }))
-    ]
+      {
+        label: t("labelFilterAllPairs"),
+        value: "all",
+      },
+      ...rawPairList,
+    ];
 
     return (
-        <Grid container spacing={2} alignItems={'center'}>
-            <Grid item xs={2}>
-                <StyledTextFiled
-                    id="table-amm-filter-types"
-                    select
-                    fullWidth
-                    value={filterType}
-                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                        handleFilterChange({type: event.target.value})
-                    }}
-                    inputProps={{IconComponent: DropDownIcon}}
-                > {FilterTradeTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
-                </StyledTextFiled>
-            </Grid>
-            <Grid item>
-                <DatePicker value={filterDate} onChange={(newValue: any) => handleFilterChange({date: newValue})}/>
-            </Grid>
-            <Grid item xs={2}>
-                <StyledTextFiled
-                    id="table-trade-filter-pairs"
-                    select
-                    fullWidth
-                    value={filterPair}
-                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                        handleFilterChange({ pair: event.target.value })
-                    }}
-                    inputProps={{IconComponent: DropDownIcon}}
-                > {formattedRawPairList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
-                </StyledTextFiled>
-            </Grid>
-            <Grid item>
-                <StyledBtnBox>
-                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                            onClick={handleReset}>{t('labelFilterReset')}</Button>
-                    {/* <Button variant={'contained'} size={'small'} color={'primary'}
-                            onClick={handleSearch}>{t('Search')}</Button> */}
-                </StyledBtnBox>
-            </Grid>
+      <Grid container spacing={2} alignItems={"center"}>
+        <Grid item xs={12} order={isMobile ? 0 : 1} lg={6}>
+          <DateRangePicker
+            value={filterDate}
+            onChange={(date: any) => {
+              handleFilterChange({ date: date });
+            }}
+          />
         </Grid>
-    )
-})
+        <Grid item xs={4} order={isMobile ? 1 : 0} lg={2}>
+          <StyledTextFiled
+            id="table-amm-filter-types"
+            select
+            fullWidth
+            value={filterType}
+            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+              handleFilterChange({ type: event.target.value });
+            }}
+            inputProps={{ IconComponent: DropDownIcon }}
+          >
+            {FilterTradeTypeList.map((o) => (
+              <MenuItem key={o.value} value={o.value}>
+                {o.label}
+              </MenuItem>
+            ))}
+          </StyledTextFiled>
+        </Grid>
+        <Grid item xs={4} order={2} lg={2}>
+          <StyledTextFiled
+            id="table-trade-filter-pairs"
+            select
+            fullWidth
+            value={filterPair}
+            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+              handleFilterChange({ pair: event.target.value });
+            }}
+            inputProps={{ IconComponent: DropDownIcon }}
+          >
+            {formattedRawPairList.map((o) => (
+              <MenuItem key={o.value} value={o.value}>
+                {o.label}
+              </MenuItem>
+            ))}
+          </StyledTextFiled>
+        </Grid>
+        <Grid item xs={4} order={3} lg={2}>
+          <Button
+            fullWidth
+            variant={"outlined"}
+            size={"medium"}
+            color={"primary"}
+            onClick={handleReset}
+          >
+            {t("labelFilterReset")}
+          </Button>
+          {/* <Button variant={'contained'} size={'small'} color={'primary'}
+                            onClick={handleSearch}>{t('Search')}</Button> */}
+        </Grid>
+      </Grid>
+    );
+  }
+);

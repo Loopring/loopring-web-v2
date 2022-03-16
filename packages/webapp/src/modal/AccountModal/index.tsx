@@ -9,6 +9,7 @@ import {
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "defs/common_defs";
 import { useAccountModalForUI } from "./hook";
+import { useNFTDeposit } from "../../hooks/useractions/useNFTDeposit";
 
 export const ModalAccountInfo = withTranslation("common")(
   ({
@@ -31,22 +32,23 @@ export const ModalAccountInfo = withTranslation("common")(
       exportAccountAlertText,
       exportAccountToastOpen,
       setExportAccountToastOpen,
+      setCopyToastOpen,
+      setOpenQRCode,
+      account,
       transferProps,
       withdrawProps,
       depositProps,
       nftTransferProps,
       nftWithdrawProps,
-      // nftDepositProps,
+      nftDepositProps,
+      nftMintProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
       assetsRawData,
       copyToastOpen,
-      setCopyToastOpen,
       openQRCode,
-      setOpenQRCode,
       isShowAccount,
-      account,
       closeBtnInfo,
       accountList,
       currentModal,
@@ -76,18 +78,16 @@ export const ModalAccountInfo = withTranslation("common")(
             vendorMenuProps: vendorProps,
           }}
           nftTransferProps={nftTransferProps}
-          // nftDepositProps={nftDepositProps}
+          nftMintProps={nftMintProps}
+          nftDepositProps={nftDepositProps}
           nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}
           exportAccountProps={exportAccountProps}
-          ammProps={{} as any}
-          swapProps={{} as any}
           assetsData={assetsRawData}
           setExportAccountToastOpen={setExportAccountToastOpen}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}
         />
-
         <Toast
           alertText={t("labelCopyAddClip")}
           open={copyToastOpen}
@@ -97,7 +97,6 @@ export const ModalAccountInfo = withTranslation("common")(
           }}
           severity={"success"}
         />
-
         <ModalQRCode
           open={openQRCode}
           onClose={() => setOpenQRCode(false)}
@@ -105,7 +104,6 @@ export const ModalAccountInfo = withTranslation("common")(
           description={account?.accAddress}
           url={account?.accAddress}
         />
-
         <ModalAccount
           open={isShowAccount.isShow}
           onClose={closeBtnInfo.callback}

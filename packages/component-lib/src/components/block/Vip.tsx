@@ -18,7 +18,8 @@ const TableStyle = styled(Table)`
     border-top: 1px solid var(--color-divide);
     text-align: center;
     min-height: 300px;
-
+    overflow: auto;
+    --template-columns: auto !important;
     .rdg-header-row {
       // background:var(--color-table-header-bg);
     }
@@ -47,6 +48,7 @@ export const VipPanel = withTranslation(["tables"])(
         {
           key: "level",
           name: t("labelVipTableLevel"),
+          frozen: true,
           formatter: ({ row }) => {
             const [_, level] = row.level.split(" ");
             return (

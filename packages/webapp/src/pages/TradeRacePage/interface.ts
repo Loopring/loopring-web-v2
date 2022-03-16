@@ -17,5 +17,10 @@ export type EventData = {
       token: string;
     };
   }[];
+  api?: {
+    url: string;
+    params?: any;
+    column: { key: string; label: string }[];
+  };
   rules: string[];
 };

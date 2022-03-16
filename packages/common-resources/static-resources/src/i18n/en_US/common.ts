@@ -6,6 +6,7 @@ export default {
   tokenEnter: "Enter Token",
   tokenEnterPaymentToken: "From",
   tokenMax: "Available:",
+  tokenNFTMaxMINT: "Max:",
   tokenHave: "Available:",
   tokenEnterReceiveToken: "to",
   tokenSelectToken: "Select Token",
@@ -90,6 +91,7 @@ export default {
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "Layer 2 Total Assets",
+  labelAssetMobileTitle: "L2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
   labelAssetsBtnRamp: "Buy with Card",
   labelBtnDeposit: "Deposit",
@@ -158,6 +160,7 @@ export default {
   labelBack: "Back",
   labelAPR: "APR",
   label24Volume: "24h Volume",
+  label24VolumeSimple: "24h Vol",
   labelTVL: "Total Volume Locked",
   labelAmmTotalToken: "Tokens in AMM",
   labelNoActiveEvent: "No event",
@@ -360,6 +363,7 @@ export default {
   labelOrderTableOpenOrder: "Open Order",
   labelOrderTableOrderHistory: "Order History",
   labelResetLayout: "Reset Layout",
+  labelResetMobileLayout: "Reset",
   labelBtnFix: "reset",
   labelProSell: "Sell",
   labelProBuy: "Buy",
@@ -459,16 +463,28 @@ export default {
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
   labelNoticeForProvider:
-    "Loopring only supports and maintains the MetaMask plugin for WalletConnect, if you've installed other Wallet plugins, please make sure it's through the MetaMask pop-up: <1></1>",
+    "Loopring only support and maintain {{name}} plugins for WalletConnect, if your installed other Wallet plugin, please make sure it's the {{name}} popup.",
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
+  labelYes: "Yes",
+  labelNo: "No",
+  labelNoticeForNoMetaNFT:
+    "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
   labelTransferInvalidAddress: "Invalid address or ENS",
   labelInvalidCID: "Invalid CID",
-  labelWithdrawInvalidAddress:
-    "Invalid address, ENS, special token, or an Counter Factual wallet",
+  labelInvalidAddress: "Invalid address, ENS",
+  labelInvalidisCFAddress:
+    "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
+  labelInvalidisContract1XAddress:
+    "Loopring wallet 1.x is disabled {{way}} {{token}}",
+  labelInvalidisContractAddress:
+    "{{way}} of {{token}} to Contract wallet is not available ",
+  labelInvalidisLoopringAddress:
+    "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled!",
+  labelInvalidisSameAddress: "Cannot {{way}} to your own address",
   labelTransferAddressNotLoopring:
-    "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
+    "This address has not yet active Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
   labelTransferOriginDesc:
     "Please select the address source: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex….)",
@@ -478,13 +494,12 @@ export default {
   labelTransferTokenAmount: "Token Amount",
   labelTransferAddress: "Transfer Address",
   labelTransferMemo: "Memo",
-  labelTransferSameAddress: "Cannot transfer to your own address",
   labelDepositThirdPart: "Buy Crypto with",
   labelTradeRaceRanking: "Trading Leaderboard",
   labelTradeRaceYourVolume: "Your trading volume",
   labelTradeRaceYourRanking: "Your ranking",
   labelTradeRaceGoTrading: "Go to trade",
-  labelTradeReadRule: "Read Rule",
+  labelTradeReadRule: "Read Rules",
   labelTradeRaceRewards: "Rewards",
   labelTradeRaceRules: "Activity Rules",
   labelTradeRaceStart: "Activity ends in:",
@@ -514,8 +529,8 @@ export default {
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "Amount:",
   labelNFTContractAddress: "Token Contract:",
-  labelNFTTId: "NFT Token ID",
-  labelNFTCid: "IPFS CID <1></1>: (Which storage a `metadata.json`)",
+  labelNFTTId: "NFT Token ID:",
+  labelNFTCid: "IPFS CID <1></1>: (Store `metadata Information`)",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
@@ -523,18 +538,22 @@ export default {
   labelNFTTokenDeployWaitForAuth: "Allow Loopring to Deploy {{symbol}}",
   labelDeployFailed: "Deploy {{symbol}} Failed!",
   labelDeploySubmit: "Deploy {{symbol}} Submit",
+  labelMint: "Mint",
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
   labelMintSubmit: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
-  labelNFTMintNoMetaBtn: "No Metadata",
+  labelNFTMintNoMetaBtn: "Wrong Metadata",
+  labelNFTMintNoMetaDetail:
+    "Your NFT metadata should identify <1>name, image & royalty_percentage(Int from 0 to 10)</1>.",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
-  nftMintDescription: "Mint NFT",
+  nftMintDescription:
+    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder populates the Name\n and also the image displays.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
-  labelMintInProgress: "In Progress",
+  labelMintInProgress: "Processing...",
   labelNFTMintInputTitle: "Mint Amount",
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",
@@ -546,12 +565,15 @@ export default {
     "Make an order from Loopring-Partner. Once your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
   labelWalletToWallet:
-    "Current account is an contact wallet, Please use app to add guardian & Protect wallet.",
-  labelWalletAddAsGuardian: "Add as a Guardian",
-  labelWalletScanQRCode: "Scan the QR code with your Loopring Wallet",
+    "The connected wallet is a contract address which cannot be used. If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
+  labelWalletAddAsGuardian: "Add a guardian",
+  labelWalletInputGuardianCode: "Input 6 digital Code and Approve",
+  labelWalletScanQRCode: "Please use your Loopring wallet to scan the QR code",
+  labelWalletInputGuardianCodeDes:
+    "Please contact the owner to obtain the approval code and enter it below.",
   labelWalletGuardianList: "Guardian List",
   labelAddProtector: "add Guardian",
-  labelUnknown: "unknown",
+  labelUnknown: "Unknown",
   labelApprove: "Approve",
   labelReject: "Reject",
   labelWalletApprove: "Approve Signature",
@@ -569,14 +591,25 @@ export default {
   labelTxGuardianGUARDIAN_CONFIRM_ADDITION: "GUARDIAN CONFIRM ADDITION",
   labelTxGuardianGUARDIAN_REJECT_ADDITION: "GUARDIAN REJECT ADDITION",
   labelTxGuardianGUARDIAN_APPROVE: "GUARDIAN APPROVE",
-  labelTxGuardianAPPROVE_RECOVER: "APPROVE RECOVER", // RECOVER  16
-  labelTxGuardianAPPROVE_TRANSFER: "APPROVE TRANSFER", // APPROVE TRANSFER 18
-  labelTxGuardianAPPROVE_TOKEN_APPROVE: "APPROVE TOKEN APPROVE", // 23
-  labelTxGuardianADD_GUARDIAN_WA: "ADD GUARDIAN WA", // 34
-  labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN WA", // 35
-  labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET WA", // 37
-  labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS WA", // 200
+  labelTxGuardianAPPROVE_RECOVER: "RECOVER WALLET", // RECOVER  16
+  labelTxGuardianAPPROVE_TRANSFER: "OVER DAILY QUOTA TRANSFER", // APPROVE TRANSFER 18
+  labelTxGuardianAPPROVE_TOKEN_APPROVE: "TOKEN ACCESS", // 23
+  labelTxGuardianADD_GUARDIAN_WA: "ADD GUARDIAN", // 34
+  labelTxGuardianREMOVE_GUARDIAN_WA: "REMOVE GUARDIAN", // 35
+  labelTxGuardianUNLOCK_WALLET_WA: "UNLOCK WALLET", // 37
+  labelTxGuardianRESET_GUARDIANS_WA: "RESET GUARDIANS", // 200
+  labelTxGuardian_recovery: "recovery wallet",
+  labelTxGuardian_transfer: "over daily quota transfer",
+  labelTxGuardian_add_guardian: "add guardian",
+  labelTxGuardian_remove_guardian: "remove guardian",
+  labelTxGuardian_unlock_wallet: "unlock wallet",
   labelTxGuardianApprove: "APPROVE",
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Active Account",
+  labelWalletSignType: "Request for {{type}}",
+  labelSpotTrading: "Spot Trading Volume (30d in ETH)",
+  labelTradeSpot: "Trade Spot",
+  labelBuyToken: "Buy {{token}}",
+  labelCurrentlyLevel: "Currently {{value}} {{token}}",
+  labelLRCBalance: "LRC Balance",
 };

@@ -38,7 +38,7 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
       });
       return clonedWalletMap;
     }, [walletMap]);
-    const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
+    const props: SwitchPanelProps<string> = {
       index: index, // show default show
       panelList: [
         {
@@ -76,29 +76,34 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
           ),
           toolBarItem: undefined,
         },
-        {
-          key: "tradeMenuList",
-          element: React.useMemo(
-            () => (
-              <TradeMenuList
-                {...{
-                  nonZero: true,
-                  sorted: true,
-                  ...rest,
-                  onChangeEvent,
-                  //rest.walletMap,
-                  selected: switchData.tradeData.belong,
-                  tradeData: switchData.tradeData,
-                  walletMap: getWalletMapWithoutLP(),
-                  //oinMap
-                }}
-              />
-            ),
-            [switchData, rest, onChangeEvent, getWalletMapWithoutLP]
-          ),
-          toolBarItem: undefined,
-        },
-      ],
+      ].concat(
+        type === "TOKEN"
+          ? [
+              {
+                key: "tradeMenuList",
+                element: React.useMemo(
+                  () => (
+                    <TradeMenuList
+                      {...{
+                        nonZero: true,
+                        sorted: true,
+                        ...rest,
+                        onChangeEvent,
+                        //rest.walletMap,
+                        selected: switchData.tradeData.belong,
+                        tradeData: switchData.tradeData,
+                        walletMap: getWalletMapWithoutLP(),
+                        //oinMap
+                      }}
+                    />
+                  ),
+                  [switchData, rest, onChangeEvent, getWalletMapWithoutLP]
+                ),
+                toolBarItem: undefined,
+              },
+            ]
+          : []
+      ),
     };
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }

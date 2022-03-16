@@ -100,10 +100,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isAddressCheckLoading,
   } = useAddressCheck();
 
-  const isNotAvaiableAddress =
-    isCFAddress ||
-    (isContractAddress &&
-      disableWithdrawList.includes(withdrawValue?.belong ?? ""));
+  const isNotAvaiableAddress = isCFAddress
+    ? "isCFAddress"
+    : isContractAddress &&
+      disableWithdrawList.includes(withdrawValue?.belong ?? "")
+    ? `isContractAddress`
+    : undefined;
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 

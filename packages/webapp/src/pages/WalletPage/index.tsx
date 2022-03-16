@@ -3,8 +3,10 @@ import React from "react";
 import {
   AccountStatus,
   i18n,
+  LoadingIcon,
   myLog,
   SagaStatus,
+  SoursURL,
   subMenuGuardian,
 } from "@loopring-web/common-resources";
 import { Box, Link, Typography } from "@mui/material";
@@ -15,6 +17,7 @@ import {
   setShowConnect,
   SubMenu,
   SubMenuList,
+  useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import { changeShowModel, useAccount } from "../../stores/account";
@@ -25,7 +28,7 @@ import {
 } from "../../layouts/connectStatusCallback";
 import store from "../../stores";
 
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
@@ -35,33 +38,39 @@ import { WalletProtector } from "./WalletProtector";
 
 const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
   ({ t }: any) => {
-    const { status: accountStatus, account } = useAccount();
-    const [label, setLabel] = React.useState(undefined);
+    const { status: accountStatus } = useAccount();
+    const [label, setLabel] = React.useState("labelConnectWallet");
     const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
 
     React.useEffect(() => {
       if (accountStatus === SagaStatus.UNSET) {
         setLabel(accountStaticCallBack(_btnLabel));
       }
-    }, [accountStatus, account.readyState, i18n.language]);
+    }, [accountStatus, i18n.language]);
 
     return (
-      <Button
-        variant={"contained"}
-        size={"large"}
-        color={"primary"}
-        fullWidth={true}
-        style={{ maxWidth: "280px" }}
-        onClick={() => {
-          myLog("UN_CONNECT!");
-          store.dispatch(changeShowModel({ _userOnModel: true }));
-          store.dispatch(
-            setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
-          );
-        }}
-      >
-        {t(label)}
-      </Button>
+      <>
+        <Button
+          variant={"contained"}
+          size={"large"}
+          color={"primary"}
+          fullWidth={true}
+          style={{ maxWidth: "280px" }}
+          onClick={() => {
+            myLog("UN_CONNECT!");
+            store.dispatch(changeShowModel({ _userOnModel: true }));
+            store.dispatch(
+              setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
+            );
+          }}
+        >
+          {label !== "" ? (
+            t(label)
+          ) : (
+            <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
+          )}
+        </Button>
+      </>
     );
   }
 ) as typeof Button;
@@ -78,7 +87,7 @@ export const GuardianPage = withTranslation(["common"])(
         marginTop={2}
         component={"div"}
         textAlign={"center"}
-        variant={"body1"}
+        variant={"body2"}
       >
         <Typography
           color={"var(--color-text-secondary)"}
@@ -87,16 +96,8 @@ export const GuardianPage = withTranslation(["common"])(
         >
           {account?.accAddress}
         </Typography>
-        <Typography
-          color={"var(--color-text-third)"}
-          component={"p"}
-          variant={"body2"}
-        >
-          {account?.connectName}
-        </Typography>
       </Typography>
     );
-    const history = useHistory();
     // @ts-ignore
     const selected = match?.params?.item ?? "myProtected";
     const {
@@ -107,8 +108,10 @@ export const GuardianPage = withTranslation(["common"])(
       operationLogList,
       setOpenHebao,
       loadData,
+      isLoading,
       isContractAddress,
     } = useHebaoMain();
+
     const handleOpenModal = ({
       step,
       options,
@@ -126,12 +129,27 @@ export const GuardianPage = withTranslation(["common"])(
         return { ...state };
       });
     };
-    const guardianRouter = () => {
+    const guardianRouter = (isLoading: boolean) => {
       switch (selected) {
         case "guardian-validation-info":
-          return !isContractAddress ? (
+          return !!isLoading ? (
+            <Box
+              flex={1}
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                className="loading-gif"
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          ) : !isContractAddress ? (
             <WalletValidationInfo
               onOpenAdd={onOpenAdd}
+              // isLoading={isLoading}
               {...{ guardiansList, guardianConfig, setOpenHebao }}
               handleOpenModal={handleOpenModal}
               loadData={loadData}
@@ -144,10 +162,13 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+              <Typography
+                margin={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
                 {t("labelWalletToWallet")}
               </Typography>
-              <BtnConnect />
             </Box>
           );
         case "guardian-history":
@@ -159,7 +180,21 @@ export const GuardianPage = withTranslation(["common"])(
           );
         case "guardian-protected":
         default:
-          return !isContractAddress ? (
+          return !!isLoading ? (
+            <Box
+              flex={1}
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                className="loading-gif"
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          ) : !isContractAddress ? (
             <WalletProtector
               onOpenAdd={onOpenAdd}
               protectList={protectList}
@@ -176,14 +211,19 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
-                {t("describeTitleConnectToWallet")}
+              <Typography
+                margin={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
+                {t("labelWalletToWallet")}
               </Typography>
-              <BtnConnect />
             </Box>
           );
       }
     };
+    const { isMobile } = useSettings();
+
     const viewTemplate = React.useMemo(() => {
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
@@ -195,7 +235,11 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginTop={3} variant={"h1"} textAlign={"center"}>
+              <Typography
+                marginTop={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
                 {t("describeTitleConnectToWalletAsGuardian")}
               </Typography>
 
@@ -246,7 +290,7 @@ export const GuardianPage = withTranslation(["common"])(
                 marginBottom={2}
                 className={"MuiPaper-elevation2"}
               >
-                {guardianRouter()}
+                {guardianRouter(isLoading)}
               </StylePaper>
             </>
           );
@@ -260,7 +304,11 @@ export const GuardianPage = withTranslation(["common"])(
               flexDirection={"column"}
               alignItems={"center"}
             >
-              <Typography marginY={3} variant={"h1"} textAlign={"center"}>
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
                 {t("describeTitleOnErrorNetwork", {
                   connectName: account.connectName,
                 })}
@@ -271,7 +319,14 @@ export const GuardianPage = withTranslation(["common"])(
         default:
           break;
       }
-    }, [account.readyState, selected, protectList]);
+    }, [
+      account.readyState,
+      account.connectName,
+      t,
+      selected,
+      isLoading,
+      guardianRouter,
+    ]);
 
     return (
       <>
@@ -279,12 +334,13 @@ export const GuardianPage = withTranslation(["common"])(
           open={openQRCode}
           className={"guardianPop"}
           onClose={() => setOpenQRCode(false)}
-          title={() => (
+          title={
             <Typography component={"p"} textAlign={"center"} marginBottom={1}>
               <Typography
                 color={"var(--color-text-primary)"}
                 component={"p"}
-                variant={"h5"}
+                variant={"h4"}
+                marginBottom={2}
               >
                 {t("labelWalletAddAsGuardian")}
               </Typography>
@@ -292,12 +348,13 @@ export const GuardianPage = withTranslation(["common"])(
                 color={"var(--color-text-secondary)"}
                 component={"p"}
                 variant={"body1"}
+                marginBottom={2}
               >
                 {t("labelWalletScanQRCode")}
               </Typography>
             </Typography>
-          )}
-          size={240}
+          }
+          size={260}
           description={description()}
           url={`ethereum:${account?.accAddress}?type=${account?.connectName}&action=HebaoAddGuardian`}
         />

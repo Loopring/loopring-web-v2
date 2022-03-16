@@ -34,11 +34,12 @@ import { NFTInput } from "./BasicANFTTrade";
 import { AddressError } from "./Interface";
 import { useTheme } from "@emotion/react";
 import { FeeToggle } from "./tool/FeeList";
+import { useSettings } from "../../../stores";
 
 const OriginBoxStyled = styled(Box)`
   background-color: var(--field-opacity);
   // width: 100%;
-  height: ${({ theme }: any) => theme.unit * 4}px;
+  height: 32px;
   border-radius: ${({ theme }: any) => theme.unit / 2}px;
   cursor: pointer;
   color: var(--color-text-primary);
@@ -107,6 +108,8 @@ export const TransferWrap = <
 }: TransferViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
   const inputBtnRef = React.useRef();
   const { mode: themeMode } = useTheme();
+  const { isMobile } = useSettings();
+
   const inputButtonDefaultProps = {
     label: t("transferLabelEnterToken"),
   };
@@ -116,9 +119,8 @@ export const TransferWrap = <
   );
 
   const [memo, setMemo] = React.useState("");
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "down"
-  );
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("down");
   const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] =
     React.useState<"up" | "down">("up");
   const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
@@ -182,6 +184,7 @@ export const TransferWrap = <
           <Typography
             fontSize={16}
             lineHeight={"24px"}
+            style={{ wordBreak: "break-all" }}
             color={"var(--color-text-third)"}
           >
             {label}
@@ -203,13 +206,14 @@ export const TransferWrap = <
   return (
     <Grid
       className={walletMap ? "transfer-wrap" : "loading"}
+      container
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
-      container
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
       height={"100%"}
+      minWidth={240}
       flexWrap={"nowrap"}
     >
       <Grid item>
@@ -307,7 +311,11 @@ export const TransferWrap = <
               address ?? ""
             )}
             {realAddr && (
-              <Typography fontSize={14} color={"var(--color-text-secondary)"}>
+              <Typography
+                variant={isMobile ? "body2" : "body1"}
+                color={"var(--color-text-secondary)"}
+                style={{ wordBreak: "break-all" }}
+              >
                 {realAddr}
               </Typography>
             )}
@@ -362,7 +370,9 @@ export const TransferWrap = <
                   alignSelf={"stretch"}
                   position={"relative"}
                 >
-                  {t("labelTransferSameAddress")}
+                  {t("labelInvalidisSameAddress", {
+                    wat: t("labelTransfer").toLowerCase(),
+                  })}
                 </Typography>
               ) : (
                 <>
@@ -370,7 +380,8 @@ export const TransferWrap = <
                     <Typography
                       color={"var(--color-text-primary)"}
                       variant={"body2"}
-                      marginTop={1 / 4}
+                      marginTop={1 / 2}
+                      style={{ wordBreak: "break-all" }}
                     >
                       {realAddr}
                     </Typography>
@@ -579,7 +590,12 @@ export const TransferWrap = <
         </Grid>
       )}
 
-      <Grid item marginTop={ITEM_MARGIN} alignSelf={"stretch"}>
+      <Grid
+        item
+        marginTop={ITEM_MARGIN}
+        alignSelf={"stretch"}
+        paddingBottom={isMobile ? 0 : 5 / 2}
+      >
         <Button
           fullWidth
           variant={"contained"}

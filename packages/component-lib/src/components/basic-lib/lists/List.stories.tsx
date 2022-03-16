@@ -166,8 +166,7 @@ const LoopringHeader = (wrap: any) => {
               {...wrap}
             >
               <Typography component="div" key={"markets"}>
-                {" "}
-                {wrap.t("markets")}{" "}
+                {wrap.t("markets")}
               </Typography>
             </HeadMenuItem>
             <HeadMenuItem
@@ -178,8 +177,7 @@ const LoopringHeader = (wrap: any) => {
               {...wrap}
             >
               <Typography component="div" key={"layer 2"}>
-                {" "}
-                {wrap.t("layer 2")}{" "}
+                {wrap.t("layer 2")}
               </Typography>
             </HeadMenuItem>
             <HeaderMenuSub
@@ -269,7 +267,6 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
 
   return (
     <Style>
-      {" "}
       <MemoryRouter initialEntries={["/"]}>
         <GlobalStyles styles={globalCss({ theme })} />
         <h4>Tabs List </h4>
@@ -281,7 +278,6 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
         >
           <LoopringHeader t={t} />
           <Grid item sm={2}>
-            {" "}
             <TabPanelBtn />
           </Grid>
         </Grid>

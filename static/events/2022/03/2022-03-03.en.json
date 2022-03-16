@@ -1,0 +1,39 @@
+{
+  "DEPOSIT": {
+    "eventTitle": "🎁 Loophead NFT Drop #2️",
+    "subTitle": "980 Loopheads are up for grabs in the second Loophead dynamic NFT drop!",
+    "local": "en-US",
+    "duration": {
+      "prev": "Activity Period:",
+      "startDate": 1646265600000,
+      "endDate": 1648771200000,
+      "timeZone": "UTC",
+      "middle": "to"
+    },
+   
+    "api": {
+      "url": "https://api.loopring.network/api/v3/user/gaveawayNft2/getAccount",
+      "params": null,
+      "column": [
+        {
+          "key": "accountId",
+          "label": "Account ID"
+        },
+        {
+          "key": "address",
+          "label": "Address"
+        },{
+          "key": "absolute",
+          "label": "Net Deposits(USD)"
+        }
+      ]
+    },
+    "rules": [
+      "Users who make a ETH, LRC, USDC, USDT, ENS, or UNI deposit onto Loopring L2 will have a chance to win a Loophead NFT. To be eligible, users must deposit a minimum of $100 USD during the specified dates while maintaining a positive net deposit on their L2 account by the end of the round.",
+      "Net deposits are calculated as inflows less outflows (withdrawals + transfers sent). There are three ways to make a deposit: <br/><ul><li>Ethereum L1 to Loopring Layer 2</li><li>Withdrawals from CEXs to Loopring via <a href=\"https://www.layerswap.io/\">LayerSwap</a></li><li>FIAT to Loopring via <a href=\"https://ramp.network/\">Ramp</a> or <a href=\"https://banxa.com/\">Banxa</a>.</li>\n</ul>",
+      "Winning addresses will be picked as follows:<br/><ul><li>March 3rd, 2022 (UTC 00:00) &mdash; April 1st (UTC 00:00)</li><li><strong>300 addresses</strong> with the highest net deposits during the eligible dates will receive a Loophead NFT.</li><li><strong>680 addresses&nbsp;</strong>will be selected at random to win a Loophead NFT by Lucky Draw. Addresses that deposit a minimum of $100 USD while maintaining a positive net deposit, will be entered into this draw.</li></ul>",
+      "Users will only be eligible for a Loophead NFT if they maintain a positive net deposit by the end of the round. Token values will be calculated based on the token price on coinmarketcap at the end of the round, measured in $USD.",
+      "<strong><em>Wallet addresses that have already won a Loophead NFT will be excluded.</em></strong>"
+    ]
+  }
+}

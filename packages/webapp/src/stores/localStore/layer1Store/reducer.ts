@@ -73,10 +73,6 @@ const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
         ...state[chainId][domain],
         [uniqueId]: Date.now(),
       };
-      // if (state[chainId][domain] && state[chainId][domain][uniqueId]) {
-      //   // Reflect.ownKeys(state[chainId][domain]).findIndex()
-      //   delete state[chainId][domain][uniqueId];
-      // }
     },
   },
 });

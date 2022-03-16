@@ -257,10 +257,10 @@ export const ModalCloseButton = ({
 export const ModalBackButton = ({
   onBack,
   t,
-  marginTop = -3,
+  marginTop = "-24px",
 }: {
   onBack?: () => void;
-  marginTop?: number;
+  marginTop?: number | string;
 } & WithTranslation) => {
   return (
     <Box alignSelf={"flex-start"} marginTop={marginTop} marginLeft={1.5}>

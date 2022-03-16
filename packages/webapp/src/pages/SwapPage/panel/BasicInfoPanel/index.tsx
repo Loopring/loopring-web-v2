@@ -38,7 +38,7 @@ const BasicInfoPanel = ({
   } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t);
   const { activityInProgressRules } = useAmmActivityMap();
   // const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
-  const { upColor } = useSettings();
+  const { upColor, isMobile } = useSettings();
   const { marketMap } = useTokenMap();
   const baseToken = coinAInfo?.name;
   const quoteToken = coinBInfo?.name;
@@ -64,43 +64,10 @@ const BasicInfoPanel = ({
           ),
         }
       : [];
+
   return (
-    <Box display={"flex"} flexDirection={"column"} alignItems={"stretch"}>
-      <Box
-        display={"flex"}
-        flexDirection={"row"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-      >
-        <TradeTitle
-          {...{
-            baseShow,
-            quoteShow,
-            coinAInfo,
-            coinBInfo,
-            ...rest,
-            t,
-            tradeFloat,
-            activityInProgressRules,
-          }}
-        ></TradeTitle>
-        <ToggleButtonGroup
-          exclusive
-          {...{ ...rest, t, tgItemJSXs, value: chartType }}
-          onChange={handleChange}
-          size={"medium"}
-        />
-      </Box>
-      {/*<Box flex={1} alignItems={'stretch'} flexDirection="row" marginTop={3} position={'relative'}>*/}
-      <BoxStyle
-        flex={1}
-        display={"flex"}
-        flexDirection={"column"}
-        minHeight={"var(--chart-height)"}
-        height={"var(--chart-height)"}
-        maxHeight={420}
-        // style={{height: '100%', width: '101%'}}
-      >
+    <>
+      {isMobile ? (
         <ScaleAreaChart
           type={chartType}
           data={chartType === ChartType.Trend ? trendChartData : depthChartData}
@@ -110,10 +77,56 @@ const BasicInfoPanel = ({
           showXAxis
           marketPrecision={marketPrecision}
         />
-      </BoxStyle>
-
-      {/*</Box>*/}
-    </Box>
+      ) : (
+        <Box display={"flex"} flexDirection={"column"} alignItems={"stretch"}>
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
+            <TradeTitle
+              {...{
+                baseShow,
+                quoteShow,
+                coinAInfo,
+                coinBInfo,
+                ...rest,
+                t,
+                tradeFloat,
+                activityInProgressRules,
+              }}
+            ></TradeTitle>
+            <ToggleButtonGroup
+              exclusive
+              {...{ ...rest, t, tgItemJSXs, value: chartType }}
+              onChange={handleChange}
+              size={"medium"}
+            />
+          </Box>
+          <BoxStyle
+            flex={1}
+            display={"flex"}
+            flexDirection={"column"}
+            minHeight={"var(--chart-height)"}
+            height={"var(--chart-height)"}
+            maxHeight={420}
+          >
+            <ScaleAreaChart
+              type={chartType}
+              data={
+                chartType === ChartType.Trend ? trendChartData : depthChartData
+              }
+              riseColor={upColor as keyof typeof UpColor}
+              extraInfo={quoteToken}
+              handleMove={() => {}}
+              showXAxis
+              marketPrecision={marketPrecision}
+            />
+          </BoxStyle>
+        </Box>
+      )}
+    </>
   );
 };
 

@@ -48,7 +48,7 @@ export const InputSearch = React.forwardRef(
                 onChange("" as any);
               }
             }}
-          />
+          ></CloseIconStyled>
         }
       />
     );

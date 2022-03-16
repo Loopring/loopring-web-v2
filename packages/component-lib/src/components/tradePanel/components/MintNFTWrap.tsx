@@ -10,6 +10,8 @@ import {
   HelpIcon,
   IPFS_META_URL,
   LoadingIcon,
+  myLog,
+  // MINT_LIMIT,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
@@ -32,15 +34,11 @@ import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
+import { useSettings } from "../../../stores";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
-    // .input-wrap {
-    //   //background: var(--field-opacity);
-    //   border-radius: ${({ theme }) => theme.unit / 2}px;
-    //
-    // }
   }
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
@@ -53,12 +51,6 @@ const NFT_TYPE: TGItemData[] = [
     label: "ERC1155",
     disabled: false,
   },
-  // {
-  //   value: NFTType.ERC721,
-  //   key: "ERC721",
-  //   label: "ERC721", // after 18n
-  //   disabled: true,
-  // },
 ];
 export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   disabled,
@@ -78,14 +70,18 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   onNFTMintClick,
 }: NFTMintViewProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);
+  const { isMobile } = useSettings();
+  const styles = isMobile
+    ? { flex: 1, width: "var(--swap-box-width)" }
+    : { width: "var(--modal-width)" };
+
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftMint`,
   });
   const inputBtnRef = React.useRef();
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "down"
-  );
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("down");
   const getDisabled = React.useMemo(() => {
     return !!(disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED);
   }, [disabled, nftMintBtnStatus]);
@@ -100,15 +96,17 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
       handleOnNFTDataChange({ ...tradeData, ..._tradeData });
     }
   };
+  myLog("mint tradeData", tradeData);
 
   // @ts-ignore
   return (
     <GridStyle
       className={walletMap ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
+      style={styles}
       paddingBottom={3}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
@@ -151,8 +149,10 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             whiteSpace={"pre-line"}
           >
             <Trans i18nKey={description ? description : "nftMintDescription"}>
-              Once your nftMint is confirmed on Ethereum, it will be added to
-              your balance within 2 minutes.
+              Paste in the CID that you obtained from uploading the metadata
+              Information file (point 11 above) - if successful, the data from
+              the metadata Information you created contained within the folder
+              populates the Name and also the image displays.
             </Trans>
           </Typography>
         </PopoverPure>
@@ -174,15 +174,12 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             color={"textSecondary"}
             variant={"body2"}
             onClick={() => {
-              window.open(
-                "https://docs.ipfs.io/concepts/content-addressing/#identifier-formats",
-                "_blank"
-              );
+              window.open("./#/document/mint_nft.md", "_blank");
             }}
           >
             <Trans i18nKey={"labelNFTCid"}>
-              IPFS CID: (Which storage a metadata.json as an unique Token ID for
-              NFT)
+              IPFS CID: (Which storage a metadata Information as an unique Token
+              ID for NFT)
               <HelpIcon
                 style={{ cursor: "pointer", marginLeft: "4px" }}
                 fontSize={"medium"}
@@ -201,16 +198,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
                 nftId: "",
               } as T)
             }
-            // helperText={
-            //   <Typography
-            //     variant={"body2"}
-            //     component={"span"}
-            //     textAlign={"left"}
-            //     display={"inherit"}
-            //   >
-            //     {tradeData.nftId}
-            //   </Typography>
-            // }
             fullWidth={true}
           />
           {tradeData.nftIdView && tradeData.nftIdView !== "" ? (
@@ -359,19 +346,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
               >
                 {t("labelNFTType") + " "} {NFT_TYPE[0].label}
               </Typography>
-
-              {/*<ToggleButtonGroup*/}
-              {/*  exclusive*/}
-              {/*  fullWidth*/}
-              {/*  {...{*/}
-              {/*    data: NFT_TYPE,*/}
-              {/*    value: tradeData?.nftType ?? 0,*/}
-              {/*  }}*/}
-              {/*  onChange={(_e, value) => {*/}
-              {/*    _handleOnNFTDataChange({ nftType: value } as T);*/}
-              {/*  }}*/}
-              {/*  size={"medium"}*/}
-              {/*/>*/}
             </Box>
             <Box
               display={"flex"}
@@ -381,9 +355,9 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
               <NFTInput
                 {...({ t } as any)}
                 isThumb={false}
-                isBalanceLimit={false}
+                isBalanceLimit={true}
                 inputNFTDefaultProps={{
-                  subLabel: "",
+                  subLabel: t("tokenNFTMaxMINT"),
                   size: InputSize.small,
                   label: t("labelNFTMintInputTitle"),
                 }}
@@ -398,7 +372,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
                 tradeData={
                   {
                     ...tradeData,
-                    belong: tradeData?.tokenAddress ?? undefined,
+                    belong: tradeData?.tokenAddress ?? "NFT",
                   } as any
                 }
                 walletMap={walletMap}
@@ -443,6 +417,22 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
       </Grid>
 
       <Grid item marginTop={3} alignSelf={"stretch"}>
+        {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
+          <Typography
+            color={"var(--color-warning)"}
+            component={"p"}
+            variant={"body1"}
+            marginBottom={1}
+          >
+            <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
+              Your NFT metadata should identify
+              <em style={{ fontWeight: 600 }}>
+                name, image & royalty_percentage(number from 0 to 10)
+              </em>
+              .
+            </Trans>
+          </Typography>
+        )}
         <Button
           fullWidth
           variant={"contained"}

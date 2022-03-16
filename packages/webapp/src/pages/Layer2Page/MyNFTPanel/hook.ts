@@ -4,12 +4,10 @@ import {
   NFTWholeINFO,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { useAccount } from "stores/account";
 import React, { useState } from "react";
 import { LoopringAPI } from "api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "stores/system";
-import { useWalletLayer2 } from "stores/walletLayer2";
 import {
   ChainId,
   LOOPRING_URLs,
@@ -30,9 +28,8 @@ export const useMyNFT = () => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isShow, setIsShow] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [popItem, setPopItem] = React.useState<
-    Partial<NFTWholeINFO> | undefined
-  >(undefined);
+  const [popItem, setPopItem] =
+    React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
   const {
     status: walletLayer2NFTStatus,
     walletLayer2NFT,
@@ -52,28 +49,19 @@ export const useMyNFT = () => {
     modals: { isShowNFTDeposit, isShowNFTMint },
   } = useOpenModals();
   const { etherscanBaseUrl, chainId } = useSystem();
-  const { nftDepositProps } = useNFTDeposit();
-  const { nftMintProps } = useNFTMint();
   const [page, setPage] = useState(1);
   const onDetailClose = React.useCallback(() => setIsShow(false), []);
   const popNFTDeposit = React.useCallback(
     () => setShowNFTDeposit({ isShow: true }),
     []
   );
-  const onNFTDepositClose = React.useCallback(
-    () => setShowNFTDeposit({ isShow: false }),
-    []
-  );
+
   const onPageChange = (page: number) => {
     setPage(page);
     setIsLoading(true);
   };
   const popNFTMint = React.useCallback(
     () => setShowNFTMint({ isShow: true }),
-    []
-  );
-  const onNFTMintClose = React.useCallback(
-    () => setShowNFTMint({ isShow: false }),
     []
   );
 
@@ -130,7 +118,7 @@ export const useMyNFT = () => {
     if (["no", "unknown"].includes(tokenInfo.isDeployed)) {
       try {
         const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(tokenInfo.nftId);
-        const uri = LOOPRING_URLs.IPFS_META_URL + cid + "/metadata.json";
+        const uri = LOOPRING_URLs.IPFS_META_URL + cid;
         const meta = await fetch(uri)
           .then((response) => response.json())
           .catch((error) => {
@@ -294,10 +282,6 @@ export const useMyNFT = () => {
     onDetailClose,
     isShowNFTDeposit,
     isShowNFTMint,
-    nftDepositProps,
-    onNFTDepositClose,
-    onNFTMintClose,
-    nftMintProps,
     popNFTDeposit,
     popNFTMint,
     onNFTError,

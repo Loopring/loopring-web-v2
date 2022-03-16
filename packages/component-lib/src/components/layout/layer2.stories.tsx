@@ -416,7 +416,6 @@ const Template: Story<any> = () => {
   console.log(theme.mode);
   return (
     <>
-      {" "}
       <MemoryRouter initialEntries={["/"]}>
         <GlobalStyles
           styles={css`

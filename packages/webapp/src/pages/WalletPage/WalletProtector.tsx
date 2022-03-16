@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import {
   Box,
+  Grid,
   ListItem,
   ListItemProps,
   ListItemText,
@@ -17,20 +18,19 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import {
-  ConnectProviders,
   Layer1Action,
   LoadingIcon,
   LockIcon,
+  myLog,
+  RefreshIcon,
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
-  // SoursURL,
 } from "@loopring-web/common-resources";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { ChainId } from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
@@ -38,16 +38,24 @@ const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   overflow: hidden;
   background-color: var(--opacity);
   padding-bottom: 0;
+  &:hover {
+    background-color: var(--opacity);
+  }
   .guardian-content {
-    padding: ${({ theme }) => theme.unit}px 0px;
-  }
-  &:not(:last-child) {
-    .guardian-content {
-      border-bottom: 1px solid var(--color-divide);
+    padding: ${({ theme }) => 2 * theme.unit}px ${({ theme }) => theme.unit}px;
+    border-radius: ${({ theme }) => theme.unit / 2}px;
+    background-color: var(--field-opacity);
+    .description {
+      padding: 0 ${({ theme }) => 1 * theme.unit}px;
     }
-
-    // margin-bottom: ${({ theme }) => theme.unit}px;
   }
+  // &:not(:last-child) {
+  //   .guardian-content {
+  //     border-bottom: 1px solid var(--color-divide);
+  //   }
+  //
+  //   // margin-bottom: ${({ theme }) => theme.unit}px;
+  // }
 
   .MuiListItemText-root {
     margin-top: 0;
@@ -88,20 +96,23 @@ export const useHebaoProtector = <T extends sdk.Protector>({
         (ele: any) => ele.contractName.toUpperCase() === "GUARDIAN_MODULE"
       ).contractAddress;
       if (LoopringAPI?.walletAPI) {
-        const isVersion1 = await LoopringAPI.walletAPI
-          ?.getWalletType({
-            wallet: item.address, //account.accAddress,
-          })
-          .then(({ walletType }) => {
-            if (
-              walletType &&
-              walletType.loopringWalletContractVersion?.startsWith("V1_")
-            ) {
-              return true;
-            } else {
-              return false;
-            }
-          });
+        const [isVersion1, nonce] = await Promise.all([
+          LoopringAPI.walletAPI
+            .getWalletType({
+              wallet: item.address, //account.accAddress,
+            })
+            .then(({ walletType }) => {
+              if (
+                walletType &&
+                walletType.loopringWalletContractVersion?.startsWith("V1_")
+              ) {
+                return true;
+              } else {
+                return false;
+              }
+            }),
+          sdk.getNonce(connectProvides.usedWeb3 as any, account.accAddress),
+        ]);
         const params: sdk.LockHebaoHebaoParam = {
           web3: connectProvides.usedWeb3 as any,
           from: account.accAddress,
@@ -111,9 +122,10 @@ export const useHebaoProtector = <T extends sdk.Protector>({
           gasLimit: config.gasLimit ?? 15000,
           chainId: chainId as any,
           isVersion1,
-          sendByMetaMask:
-            connectProvides.provideName === ConnectProviders.MetaMask,
+          nonce,
+          sendByMetaMask: true,
         };
+        myLog("LockHebaoHebaoParam params", params);
         try {
           const { error } = await LoopringAPI.walletAPI.lockHebaoWallet(params);
           const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
@@ -126,7 +138,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             });
           } else {
             setOneItem({
-              chainId: chainId as ChainId,
+              chainId: chainId as sdk.ChainId,
               uniqueId: item.address,
               domain: Layer1Action.GuardianLock,
             });
@@ -146,7 +158,17 @@ export const useHebaoProtector = <T extends sdk.Protector>({
         }
       }
     },
-    [guardianConfig, handleOpenModal]
+    [
+      guardianConfig.actionGasSettings,
+      guardianConfig.supportContracts,
+      account.accAddress,
+      gasPrice,
+      chainId,
+      handleOpenModal,
+      t,
+      setOneItem,
+      loadData,
+    ]
   );
   return {
     onLock,
@@ -202,6 +224,7 @@ export const HebaoProtectItem = <T extends sdk.Protector>(
             <Typography
               color={"var(--color-warning)"}
               paddingLeft={1}
+              height={32}
               variant={"body1"}
               component={"span"}
               alignItems={"center"}
@@ -235,37 +258,35 @@ export const HebaoProtectItem = <T extends sdk.Protector>(
         className={"guardian-content"}
         component={"section"}
         display={"flex"}
-        alignItems={"center"}
+        alignItems={"flex-start"}
         justifyContent={"space-between"}
-        flexDirection={"row"}
+        flexDirection={"column"}
         overflow={"hidden"}
         paddingX={2}
       >
-        <Box flex={1}>
-          <ListItemText
-            className="description description1"
-            primary={ens ? ens : t("labelUnknown")}
-            primaryTypographyProps={{
-              component: "p",
-              variant: "h5",
-              color: "textPrimary",
-            }}
-          />
-
-          <ListItemText
-            primary={address}
-            primaryTypographyProps={{ component: "p", color: "textSecondary" }}
-          />
-        </Box>
-        <Box
-          width={100}
-          display={"flex"}
-          justifyContent={"flex-end"}
-          title={lockStatus}
+        <ListItemText
+          className="description description1"
+          primary={ens ? ens : t("labelUnknown")}
+          primaryTypographyProps={{
+            component: "p",
+            variant: "h5",
+            color: "textPrimary",
+          }}
+        />
+        <ListItemText
+          primary={address}
+          className="description description1"
+          primaryTypographyProps={{ component: "p", color: "textSecondary" }}
+        />
+        <Typography
+          display={"inline-flex"}
+          className="description description1"
+          alignSelf={"flex-end"}
           alignItems={"center"}
+          height={32}
         >
           {statusView}
-        </Box>
+        </Typography>
       </Box>
     </HebaoProtectStyled>
   );
@@ -276,16 +297,13 @@ export const WalletProtector = <T extends sdk.Protector>({
   handleOpenModal,
   loadData,
   onOpenAdd,
-}: // isContractAddress,
-{
+}: {
   protectList: T[];
   onOpenAdd: () => void;
   guardianConfig: any;
   loadData: () => Promise<void>;
   handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
-  // isContractAddress: boolean;
 }) => {
-  const { account } = useAccount();
   const { t } = useTranslation(["common"]);
   const { onLock } = useHebaoProtector({
     guardianConfig,
@@ -294,73 +312,91 @@ export const WalletProtector = <T extends sdk.Protector>({
   });
 
   return (
-    <>
-      <Box
-        paddingTop={3}
-        borderRadius={2}
-        flex={1}
-        display={"flex"}
-        flexDirection={"column"}
-      >
-        <Box display={"flex"} justifyContent={"space-between"} paddingX={5 / 2}>
-          <Typography component={"h3"} variant={"h5"}>
-            {t("labelWalletGuardianList")}
-          </Typography>
-          <ButtonListRightStyled
-            item
-            xs={5}
-            display={"flex"}
-            flexDirection={"row"}
-            justifyContent={"flex-end"}
+    <Box
+      paddingTop={3}
+      borderRadius={2}
+      flex={1}
+      display={"flex"}
+      flexDirection={"column"}
+    >
+      <Box display={"flex"} justifyContent={"space-between"} paddingX={5 / 2}>
+        <Typography
+          component={"h3"}
+          variant={"h5"}
+          display={"inline-flex"}
+          alignItems={"center"}
+        >
+          {t("labelWalletGuardianList")}
+          <RefreshIcon
+            style={{ marginLeft: 8, cursor: "pointer" }}
+            color={"inherit"}
+            onClick={loadData}
+          />
+        </Typography>
+        <ButtonListRightStyled
+          item
+          xs={5}
+          display={"flex"}
+          flexDirection={"row"}
+          justifyContent={"flex-end"}
+        >
+          <Button
+            variant={"contained"}
+            size={"small"}
+            color={"primary"}
+            startIcon={<SecurityIcon htmlColor={"var(--color-text-button)"} />}
+            onClick={() => onOpenAdd()}
           >
-            <Button
-              variant={"contained"}
-              size={"small"}
-              color={"primary"}
-              startIcon={
-                <SecurityIcon htmlColor={"var(--color-text-button)"} />
-              }
-              onClick={() => onOpenAdd()}
-            >
-              {t("labelAddProtector")}
-            </Button>
-          </ButtonListRightStyled>
-        </Box>
-        <Box flex={1} alignItems={"center"} marginTop={2}>
-          {protectList.length ? (
+            {t("labelAddProtector")}
+          </Button>
+        </ButtonListRightStyled>
+      </Box>
+
+      {
+        <Grid
+          container
+          alignItems={"flex-start"}
+          marginTop={2}
+          flex={1}
+          alignContent={"flex-start"}
+        >
+          {!!protectList.length ? (
             <>
               {protectList.map((item) => (
-                <HebaoProtectItem
-                  key={item.address}
-                  {...{ ...item }}
-                  onClick={() => {
-                    onLock(item);
-                    handleOpenModal({
-                      step: GuardianStep.LockAccount_WaitForAuth,
-                      options: { lockRetry: onLock, lockRetryParams: item },
-                    });
-                  }}
-                />
+                <Grid item xs={12} md={6} lg={6} key={item.address}>
+                  <HebaoProtectItem
+                    {...{ ...item }}
+                    onClick={() => {
+                      onLock(item);
+                      handleOpenModal({
+                        step: GuardianStep.LockAccount_WaitForAuth,
+                        options: { lockRetry: onLock, lockRetryParams: item },
+                      });
+                    }}
+                  />
+                </Grid>
               ))}
             </>
           ) : (
-            <EmptyDefault
-              style={{ alignSelf: "center" }}
-              height={"100%"}
-              message={() => (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                >
-                  {t("labelNoContent")}
-                </Box>
-              )}
-            />
+            <Box flex={1} height={"100%"} width={"100%"}>
+              <EmptyDefault
+                style={{ alignSelf: "center" }}
+                height={"100%"}
+                message={() => (
+                  <Box
+                    flex={1}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                  >
+                    {t("labelNoContent")}
+                  </Box>
+                )}
+              />
+            </Box>
           )}
-        </Box>
-      </Box>
-    </>
+        </Grid>
+      }
+    </Box>
   );
 };

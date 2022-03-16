@@ -1,18 +1,24 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
-import { TFunction, WithTranslation, withTranslation } from "react-i18next";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
+import { WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, TablePagination, Table } from "../../basic-lib";
 import {
   CompleteIcon,
+  DepositIcon,
+  DirectionTag,
   EmptyValueTag,
   EXPLORE_TYPE,
   Explorer,
   getFormattedHash,
+  getShortAddr,
   getValuePrecisionThousand,
+  MintIcon,
+  TransferIcon,
   WaitingIcon,
   WarningIcon,
+  WithdrawIcon,
 } from "@loopring-web/common-resources";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 
@@ -24,6 +30,7 @@ import {
 } from "./Interface";
 import { Filter } from "./components/Filter";
 import { TxNFTType } from "@loopring-web/loopring-sdk";
+import { useSettings } from "../../../stores";
 
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
@@ -58,12 +65,14 @@ const CellStatus = ({ row: { status } }: any) => {
   return RenderValueWrapper;
 };
 
-const TableStyled = styled(Box)`
+const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
+    ${({ isMobile }) =>
+      isMobile ? `--template-columns: 60% 40% !important;` : ``}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -85,7 +94,7 @@ const TableStyled = styled(Box)`
 
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
-` as typeof Box;
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
 export const TsNFTTable = withTranslation(["tables", "common"])(
   <Row extends TxnDetailProps>({
@@ -99,20 +108,17 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     duration,
     showloading,
     etherscanBaseUrl,
+    t,
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
+    const [isDropDown, setIsDropDown] = React.useState(true);
+
     const getColumnModeTransaction = React.useCallback(
-      (t: TFunction): Column<Row, Row>[] => [
+      (): Column<Row, Row>[] => [
         {
           key: "side",
           name: t("labelTxSide"),
           formatter: ({ row }) => {
-            // const renderValue =
-            //   value === TransactionTradeTypes.deposit
-            //     ? t("labelDeposit")
-            //     : value === TransactionTradeTypes.transfer
-            //     ? t("labelTransfer")
-            //     : t("labelWithdraw");
             return (
               <Box className="rdg-cell-value" title={row.nftTxType}>
                 {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
@@ -127,7 +133,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: { row: Row }) => {
             const hasSymbol =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row.receiverAddress?.toUpperCase() ===
+                ? row?.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
@@ -154,31 +160,29 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             );
           },
         },
-        // {
-        //   key: "amount",
-        //   name: t("labelAmount"),
-        //   formatter: ({ row }) => {
-        //     return (
-        //       <>
-        //         <Typography
-        //           variant={"body1"}
-        //           component={"span"}
-        //           marginRight={1}
-        //         >
-        //           {row.amount}
-        //         </Typography>
-        //         <Typography variant={"body1"} component={"span"}>
-        //           {getFormattedHash(row.nftData)}
-        //         </Typography>
-        //       </>
-        //     );
-        //   },
-        // },
+
         {
-          key: "txnHash",
-          name: t("labelTxTxnHash"),
+          key: "from",
+          name: t("labelTxFrom"),
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
+            const receiverAddress =
+              row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : getShortAddr(row.receiverAddress, isMobile);
+            const senderAddress = getShortAddr(row.senderAddress);
+            const [from, to] =
+              row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
+                ? row.receiverAddress?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? [senderAddress, "L2"]
+                  : ["L2", receiverAddress]
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
+                  row.nftTxType === TxNFTType[TxNFTType.MINT]
+                ? ["L2 Mint", "L2"]
+                : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? ["L2", receiverAddress]
+                : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
             let path =
               row.txHash !== ""
@@ -187,19 +191,9 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   `tx/${row.hash}-${
                     EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
                   }`;
-            // let path =
-            //   row.txHash !== ""
-            //     ? etherscanBaseUrl + `/tx/${row.txHash}`
-            //     : row.storageInfo.tokenId || row.storageInfo.storageId
-            //     ? Explorer +
-            //       `tx/${row.storageInfo.accountId}-${row.storageInfo.tokenId}-${row.storageInfo.storageId}`
-            //     : Explorer +
-            //       `tx/${row.hash}-${
-            //         EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
-            //       }`;
             return (
               <Box
-                className="rdg-cell-value"
+                className="rdg-cell-value textAlignRight"
                 display={"inline-flex"}
                 justifyContent={"flex-end"}
                 alignItems={"center"}
@@ -212,7 +206,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   onClick={() => window.open(path, "_blank")}
                   title={hash}
                 >
-                  {hash ? getFormattedHash(hash) : EmptyValueTag}
+                  {from + ` ${DirectionTag} ` + to}
+                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
                 </Typography>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
@@ -258,7 +253,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxTime"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const value = row.createdAt;
+            const value = row.updatedAt;
             const hasValue = Number.isFinite(value);
             const renderValue = hasValue
               ? moment(new Date(value), "YYYYMMDDHHMM").fromNow()
@@ -271,6 +266,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
       ],
       [etherscanBaseUrl]
     );
+    const { isMobile } = useSettings();
+
     const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
       getTxnList({
         page: filter.page ?? page,
@@ -284,38 +281,229 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
         duration: filter.duration ?? duration,
       });
     };
-    // const handleReset = () => {
-    //   getTxnList({ page: 1, txType: undefined });
-    // };
-    // const handlePageChange = ({ page: number }) => {
-    //   getTxnList({ page: 1, txType: undefined });
-    // };
+
+    const getColumnMobileTransaction = React.useCallback(
+      (): Column<any, unknown>[] => [
+        {
+          key: "amount",
+          name: (
+            <Typography
+              height={"100%"}
+              display={"flex"}
+              justifyContent={"space-between"}
+              variant={"inherit"}
+              color={"inherit"}
+              alignItems={"center"}
+            >
+              <span>{t("labelTransactions")}</span>
+              <span>{t("labelTxAmount") + " / " + t("labelTxFee")}</span>
+            </Typography>
+          ),
+          cellClass: "textAlignRight",
+          headerCellClass: "textAlignLeft",
+          formatter: ({ row }) => {
+            // const hasValue = Number.isFinite(row.amount);
+            let side, hasSymbol, sideIcon;
+            switch (row.nftTxType) {
+              case TxNFTType[TxNFTType.DEPOSIT]:
+                side = t("labelDeposit");
+                hasSymbol = "+";
+                sideIcon = <DepositIcon fontSize={"inherit"} />;
+                break;
+              case TxNFTType[TxNFTType.TRANSFER]:
+                side = t("labelTransfer");
+                hasSymbol =
+                  row.receiverAddress?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                    ? "+"
+                    : "-";
+                sideIcon = <TransferIcon fontSize={"inherit"} />;
+                break;
+              case TxNFTType[TxNFTType.MINT]:
+                side = t("labelMint");
+                sideIcon = <MintIcon fontSize={"inherit"} />;
+                hasSymbol = "+";
+                break;
+              case TxNFTType[TxNFTType.WITHDRAW]:
+              default:
+                hasSymbol = "-";
+                sideIcon = <WithdrawIcon fontSize={"inherit"} />;
+                side = t("labelWithdraw");
+            }
+            // const renderValue = hasValue ? row.amount : EmptyValueTag;
+
+            const renderFee = `Fee: ${getValuePrecisionThousand(
+              row.fee.value,
+              undefined,
+              undefined,
+              undefined,
+              false,
+              {
+                floor: false,
+                isTrade: true,
+              }
+            )} ${row.fee.unit}`;
+            return (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"flex-start"}
+                title={side}
+              >
+                {/*{side + " "}*/}
+                <Typography
+                  display={"flex"}
+                  marginRight={1}
+                  variant={"h3"}
+                  alignItems={"center"}
+                  flexDirection={"column"}
+                  width={"60px"}
+                >
+                  <Typography
+                    fontSize={20}
+                    width={"60px"}
+                    justifyContent={"center"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    {sideIcon}
+                  </Typography>
+                  <Typography fontSize={10} marginTop={-1}>
+                    {side}
+                  </Typography>
+                </Typography>
+                <Box display={"flex"} flex={1} flexDirection={"column"}>
+                  <Typography
+                    display={"inline-flex"}
+                    justifyContent={"flex-end"}
+                    alignItems={"center"}
+                  >
+                    {hasSymbol}
+                    {row.amount ?? EmptyValueTag}
+                  </Typography>
+                  <Typography color={"textSecondary"} variant={"body2"}>
+                    {renderFee}
+                  </Typography>
+                </Box>
+              </Box>
+            );
+          },
+        },
+        {
+          key: "from",
+          name: t("labelTxFrom") + " / " + t("labelTxTime"),
+          headerCellClass: "textAlignRight",
+          cellClass: "textAlignRight",
+          formatter: ({ row }) => {
+            const receiverAddress =
+              row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+                : getShortAddr(row.receiverAddress, isMobile);
+
+            const senderAddress = getShortAddr(row.senderAddress, isMobile);
+
+            const [from, to] =
+              row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
+                ? row.receiverAddress?.toUpperCase() ===
+                  accAddress?.toUpperCase()
+                  ? [senderAddress, "L2"]
+                  : ["L2", receiverAddress]
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
+                ? ["L1", "L2"]
+                : row.nftTxType === TxNFTType[TxNFTType.MINT]
+                ? ["Mint", "L2"]
+                : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
+                ? ["L2", receiverAddress]
+                : ["", ""];
+            const hash = row.txHash !== "" ? row.txHash : row.hash;
+            const path =
+              row.txHash !== ""
+                ? etherscanBaseUrl + `/tx/${row.txHash}`
+                : Explorer +
+                  `tx/${row.hash}-${EXPLORE_TYPE[row.nftTxType.toUpperCase()]}`;
+
+            const hasValue = Number.isFinite(row.updatedAt);
+            const renderTime = hasValue
+              ? moment(new Date(row.updatedAt), "YYYYMMDDHHMM").fromNow()
+              : EmptyValueTag;
+
+            return (
+              <Box
+                display={"flex"}
+                flex={1}
+                flexDirection={"column"}
+                onClick={() => window.open(path, "_blank")}
+              >
+                <Typography
+                  display={"inline-flex"}
+                  justifyContent={"flex-end"}
+                  alignItems={"center"}
+                >
+                  <Typography
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    color={"var(--color-primary)"}
+                    title={hash}
+                  >
+                    {from + ` ${DirectionTag} ` + to}
+                    {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
+                  </Typography>
+                  <Typography marginLeft={1}>
+                    <CellStatus {...{ row }} />
+                  </Typography>
+                </Typography>
+                <Typography color={"textSecondary"} variant={"body2"}>
+                  {renderTime}
+                </Typography>
+              </Box>
+            );
+          },
+        },
+      ],
+      [etherscanBaseUrl, isMobile, t]
+    );
     const defaultArgs: any = {
-      columnMode: getColumnModeTransaction(props.t).filter((o) => !o.hidden),
+      columnMode: isMobile
+        ? getColumnMobileTransaction()
+        : getColumnModeTransaction(),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
 
     return (
-      <TableStyled>
-        {showFilter && (
-          <TableFilterStyled>
-            <Filter
-              {...{
-                rawData,
-                handleFilterChange,
-                filterType: txType,
-                filterDate: duration,
-              }}
-            />
-          </TableFilterStyled>
-        )}
+      <TableStyled isMobile={isMobile}>
+        {showFilter &&
+          (isMobile && isDropDown ? (
+            <Link
+              variant={"body1"}
+              display={"inline-flex"}
+              width={"100%"}
+              justifyContent={"flex-end"}
+              paddingRight={2}
+              onClick={() => setIsDropDown(false)}
+            >
+              Show Filter
+            </Link>
+          ) : (
+            <TableFilterStyled>
+              <Filter
+                {...{
+                  rawData,
+                  handleFilterChange,
+                  filterType: txType,
+                  filterDate: duration,
+                }}
+              />
+            </TableFilterStyled>
+          ))}
         <Table
           className={"scrollable"}
           {...{ ...defaultArgs, ...props, rawData, showloading }}
         />
-        {pagination && pagination.total && (
+        {!!(pagination && pagination.total) && (
           <TablePagination
             page={page}
             pageSize={pagination.pageSize}

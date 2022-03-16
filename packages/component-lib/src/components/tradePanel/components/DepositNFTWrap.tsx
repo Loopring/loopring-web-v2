@@ -21,7 +21,7 @@ import {
   TGItemData,
   ToggleButtonGroup,
 } from "../../";
-import { Button } from "../../../index";
+import { Button, useSettings } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
@@ -87,15 +87,20 @@ NFTDepositViewProps<T, I>) => {
     }
   };
   myLog(getDisabled, "getDisabled");
+  const { isMobile } = useSettings();
+  const styles = isMobile
+    ? { flex: 1, width: "var(--swap-box-width)" }
+    : { width: "var(--modal-width)" };
 
   // @ts-ignore
   return (
     <GridStyle
       className={walletMap ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
+      style={styles}
       paddingBottom={3}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
@@ -205,14 +210,19 @@ NFTDepositViewProps<T, I>) => {
               } as T)
             }
             helperText={
-              <Typography
-                variant={"body2"}
-                component={"span"}
-                textAlign={"left"}
-                display={"inherit"}
-              >
-                {tradeData.nftId}
-              </Typography>
+              isMobile ? (
+                <></>
+              ) : (
+                <Typography
+                  variant={"body2"}
+                  component={"span"}
+                  textAlign={"left"}
+                  display={"inherit"}
+                  whiteSpace={"pre-line"}
+                >
+                  {tradeData.nftId}
+                </Typography>
+              )
             }
             fullWidth={true}
           />

@@ -24,10 +24,8 @@ export const InProgressBasic = ({
   const providerDescribe = React.useMemo(() => {
     switch (providerName) {
       case ConnectProviders.MetaMask:
-      case ConnectProviders.WalletLink:
-      case ConnectProviders.GameStop:
         return (
-          <Trans i18nKey={"labelProviderCommonProcessDescribe"}>
+          <Trans i18nKey={"labelMetaMaskProcessDescribe"}>
             {/*Please adding MetaMask to your browser,*/}
             Please click approve button on MetaMask popup window. When MetaMask
             dialog is dismiss, please manually click
@@ -35,11 +33,12 @@ export const InProgressBasic = ({
               alt="MetaMask"
               style={{ verticalAlign: "text-bottom" }}
               src={SoursURL + "images/MetaMaskPlugIn.png"}
-            />{" "}
+            />
             on your browser toolbar.
           </Trans>
         );
       case ConnectProviders.WalletConnect:
+      case ConnectProviders.Coinbase:
         return (
           <Trans i18nKey={"labelWalletConnectProcessDescribe2"}>
             Please click approve on your device.
@@ -65,13 +64,13 @@ export const InProgressBasic = ({
         flexDirection={"column"}
         marginBottom={2}
       >
-          {/*<LoadingIcon color={'primary'} style={{width: 72, height: 72}}/>*/}
-          <img
-            className="loading-gif"
-            alt={"loading"}
-            width="60"
-            src={`${SoursURL}images/loading-line.gif`}
-          />
+        {/*<LoadingIcon color={'primary'} style={{width: 72, height: 72}}/>*/}
+        <img
+          className="loading-gif"
+          alt={"loading"}
+          width="60"
+          src={`${SoursURL}images/loading-line.gif`}
+        />
       </Typography>
       {describe}
       <Typography
@@ -129,7 +128,7 @@ export const CompletedBasic = ({
           size={"medium"}
           onClick={onClose}
         >
-          {t("labelClose")}{" "}
+          {t("labelClose")}
         </Button>
       </Box>
     </Box>
@@ -174,7 +173,7 @@ export const FailedBasic = ({
           size={"medium"}
           onClick={onRetry}
         >
-          {t("labelRetry")}{" "}
+          {t("labelRetry")}
         </Button>
       </Box>
     </Box>
@@ -220,7 +219,7 @@ export const WarningBasic = ({
           size={"medium"}
           onClick={callback}
         >
-          {t("labelRetry")}{" "}
+          {t("labelRetry")}
         </Button>
       </Box>
     </Box>

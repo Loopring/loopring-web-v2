@@ -1,9 +1,7 @@
-import { borderFunc, pxToRem } from "./utils";
+import { borderFunc, pxToRem, unit } from "./utils";
 import { ComponentsOverrides } from "@mui/material";
 import { fontDefault } from "../css/global";
 
-// const opacity = 1;
-export const unit = 8;
 export const radius = 4;
 export const checkBoxSize = 18;
 export const hr = ({ colorBase }: any) => {
@@ -108,6 +106,7 @@ export const MuiTextField = ({
           marginLeft: 0,
           marginRight: 0,
           textAlign: "right",
+          whiteSpace: "pre-line",
         },
         " .MuiFormLabel-root": {
           color: colorBase.textSecondary,

@@ -3,11 +3,7 @@ import Web3 from "web3";
 import { walletServices } from "../walletServices";
 import { ErrorType } from "../command";
 import { ConnectProviders, RPC_URLS } from "@loopring-web/common-resources";
-
-// const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
-
-// myLog('---BRIDGE_URL:', BRIDGE_URL)
-
+import { IsMobile } from "../utilities";
 const POLLING_INTERVAL = 12000;
 
 export const WalletConnectProvide = async (
@@ -29,7 +25,7 @@ export const WalletConnectProvide = async (
       rpc: RPC_URLS,
       bridge: BRIDGE_URL,
       pollingInterval: POLLING_INTERVAL,
-      qrcode: false,
+      qrcode: IsMobile.any() ? true : false,
     });
     const { connector } = provider;
     let web3: Web3 | undefined;
@@ -184,11 +180,10 @@ export const WalletConnectUnsubscribe = async (provider: any) => {
 //     },
 //
 // })
-
 // import { InjectedConnector } from '@web3-react/injected-connector'
 // import { NetworkConnector } from '@web3-react/network-connector'
 // import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-// import { WalletLinkConnector } from '@web3-react/walletlink-connector'
+// import { CoinbaseConnector } from '@web3-react/Coinbase-connector'
 // import { LedgerConnector } from '@web3-react/ledger-connector'
 // import { TrezorConnector } from '@web3-react/trezor-connector'
 // import { AuthereumConnector } from '@web3-react/authereum-connector'
@@ -218,7 +213,7 @@ export const WalletConnectUnsubscribe = async (provider: any) => {
 //     pollingInterval: POLLING_INTERVAL
 // })
 //
-// export const walletlink = new WalletLinkConnector({
+// export const Coinbase = new CoinbaseConnector({
 //     url: RPC_URLS[1],
 //     appName: 'Loopring L2'
 // })

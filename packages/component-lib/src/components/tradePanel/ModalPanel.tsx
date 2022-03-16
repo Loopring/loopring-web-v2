@@ -1,17 +1,11 @@
 import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
-  AmmPanel,
-  AmmProps,
-  // DepositPanel,
   DepositGroup,
   ModalCloseButton,
   ModalPanelProps,
   ResetPanel,
   ExportAccountPanel,
   ResetProps,
-  SwapPanel,
-  SwapProps,
-  // SwitchPanelStyled,
   TransferPanel,
   TransferProps,
   useOpenModals,
@@ -20,13 +14,22 @@ import {
   ActiveAccountPanel,
   DepositGroupProps,
   modalContentBaseStyle,
+  SwitchPanelStyled,
+  DepositNFTWrap,
+  MintNFTWrap,
+  NFTMintProps,
+  NFTDepositProps,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  useTranslation,
+  WithTranslation,
+  withTranslation,
+} from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import React from "react";
-
+//padding-bottom: var(--toolbar-row-padding);
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`
@@ -50,7 +53,6 @@ const BoxStyle = styled(Box)<
           ${({ theme }) => theme.unit * 5}px;
         overflow-x: hidden;
         overflow-y: scroll !important;
-        padding-bottom: var(--toolbar-row-padding);
         background: initial;
         .container {
           height: 100%;
@@ -104,11 +106,10 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   depositGroupProps,
   nftTransferProps,
   nftWithdrawProps,
-  // nftDepositProps,
+  nftDepositProps,
   resetProps,
+  nftMintProps,
   activeAccountProps,
-  ammProps,
-  swapProps,
   assetsData,
   ...rest
 }: {
@@ -119,35 +120,37 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   depositGroupProps: DepositGroupProps<T, I>;
   nftTransferProps: TransferProps<T, I>;
   nftWithdrawProps: WithdrawProps<T, I>;
-  // nftDepositProps: DepositProps<T, I>;
+  nftDepositProps: NFTDepositProps<T, I>;
+  nftMintProps: NFTMintProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
-  ammProps: AmmProps<any, any, T, any>;
-  swapProps: SwapProps<T, I, any>;
   assetsData: any[];
   exportAccountProps: any;
   setExportAccountToastOpen: any;
 }) => {
+  const { t } = useTranslation();
   const {
     modals,
-    setShowAmm,
-    setShowSwap,
+    // setShowAmm,
+    // setShowSwap,
     setShowTransfer,
     setShowDeposit,
     setShowWithdraw,
+    setShowNFTDeposit,
     setShowResetAccount,
     setShowActiveAccount,
     setShowExportAccount,
+    setShowNFTMint,
   } = useOpenModals();
   const {
     isShowTransfer,
     isShowWithdraw,
     isShowDeposit,
+    isShowNFTDeposit,
     isShowResetAccount,
     isShowExportAccount,
-    isShowAmm,
-    isShowSwap,
     isShowActiveAccount,
+    isShowNFTMint,
   } = modals;
   const theme = useTheme();
   return (
@@ -180,9 +183,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               ...withdrawProps,
               assetsData,
             }}
-          >
-            {" "}
-          </WithdrawPanel>
+          />
         }
       />
       <Modal
@@ -211,9 +212,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               ...resetProps,
               assetsData,
             }}
-          >
-            {" "}
-          </ResetPanel>
+          />
         }
       />
       <Modal
@@ -229,9 +228,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
               ...activeAccountProps,
             }}
-          >
-            {" "}
-          </ActiveAccountPanel>
+          />
         }
       />
       <Modal
@@ -246,43 +243,91 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
               _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,
             }}
-          >
-            {" "}
-          </ExportAccountPanel>
+          />
         }
       />
-      <Modal
-        open={isShowAmm.isShow}
-        onClose={() => setShowAmm({ ...isShowAmm, isShow: false } as any)}
-        content={
-          <AmmPanel<any, any, any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: "var(--modal-height)",
-              ...ammProps,
-            }}
+      {/*<Modal*/}
+      {/*  open={isShowAmm.isShow}*/}
+      {/*  onClose={() => setShowAmm({ ...isShowAmm, isShow: false } as any)}*/}
+      {/*  content={*/}
+      {/*    <AmmPanel<any, any, any, any>*/}
+      {/*      {...{*/}
+      {/*        ...rest,*/}
+      {/*        _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
+      {/*        _height: "var(--modal-height)",*/}
+      {/*        ...ammProps,*/}
+      {/*      }}*/}
+      {/*    ></AmmPanel>*/}
+      {/*  }*/}
+      {/*/>*/}
+      {/*<Modal*/}
+      {/*  open={isShowSwap.isShow}*/}
+      {/*  onClose={() => setShowSwap({ ...isShowSwap, isShow: false } as any)}*/}
+      {/*  content={*/}
+      {/*    <SwapPanel<any, any, any>*/}
+      {/*      {...{*/}
+      {/*        ...rest,*/}
+      {/*        _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
+      {/*        _height: "var(--modal-height)",*/}
+      {/*        ...swapProps,*/}
+      {/*      }}*/}
+      {/*    ></SwapPanel>*/}
+      {/*  }*/}
+      {/*/>*/}
+      <MuiModal
+        open={isShowNFTDeposit.isShow}
+        onClose={() => setShowNFTDeposit({ isShow: false })}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <SwitchPanelStyled
+          position={"relative"}
+          style={{ alignItems: "stretch" }}
+        >
+          <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+            <ModalCloseButton
+              onClose={() => setShowNFTDeposit({ isShow: false })}
+              t={t}
+              {...rest}
+            />
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            flex={1}
+            justifyContent={"stretch"}
           >
-            {" "}
-          </AmmPanel>
-        }
-      />
-      <Modal
-        open={isShowSwap.isShow}
-        onClose={() => setShowSwap({ ...isShowSwap, isShow: false } as any)}
-        content={
-          <SwapPanel<any, any, any>
-            {...{
-              ...rest,
-              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              _height: "var(--modal-height)",
-              ...swapProps,
-            }}
+            <DepositNFTWrap {...nftDepositProps} />
+          </Box>
+        </SwitchPanelStyled>
+      </MuiModal>
+      <MuiModal
+        open={isShowNFTMint.isShow}
+        onClose={() => setShowNFTMint({ isShow: false })}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <SwitchPanelStyled
+          position={"relative"}
+          style={{ alignItems: "stretch" }}
+        >
+          <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+            <ModalCloseButton
+              onClose={() => setShowNFTMint({ isShow: false })}
+              t={t}
+              {...rest}
+            />
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            flex={1}
+            justifyContent={"stretch"}
           >
-            {" "}
-          </SwapPanel>
-        }
-      />
+            <MintNFTWrap {...nftMintProps} />
+          </Box>
+        </SwitchPanelStyled>
+      </MuiModal>
     </>
   );
 };

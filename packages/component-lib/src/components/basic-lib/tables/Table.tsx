@@ -13,7 +13,7 @@ import {
   TableProps,
 } from "./";
 import { EmptyDefault } from "../empty";
-import { SoursURL } from "@loopring-web/common-resources";
+import { RowConfig, SoursURL } from "@loopring-web/common-resources";
 import { Box, IconButton } from "@mui/material";
 import { css } from "@emotion/react";
 
@@ -96,8 +96,12 @@ export const DataGridStyled = styled(DataGrid)`
       width: 100%;
       background-color: inherit;
       font-weight: normal;
+      @media only screen and (max-width: 768px) {
+        .rdg-cell {
+          font-size: 12px;
+        }
+      }
     }
-
     &.scrollable .rdg-header-row {
       background: var(--color-box);
     }
@@ -158,10 +162,19 @@ export const DataGridStyled = styled(DataGrid)`
       border-bottom: rgba(0, 0, 0, 0) 2px solid;
       box-sizing: border-box;
       height: 100%;
-
+      padding: 0 ${({ theme }) => theme.unit}px;
       & > span,
       div {
         user-select: text;
+      }
+      &.textAlignRight {
+        text-align: right;
+      }
+      &.textAlignLeft {
+        text-align: left;
+      }
+      &.textAlignCenter {
+        text-align: center;
       }
     }
 
@@ -186,22 +199,6 @@ const LoadingStyled = styled(IconButton)`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
-
-// interface Action {
-//     type: 'toggleSubRow' | 'deleteSubRow' | 'refresh' | 'sort';
-//     id: string;
-//     uniqueKey: string;
-// }
-// function reducer<R extends { children: R[], [ key: string ]: any }, SR>(rows: R[], {type, id, uniqueKey}: Action): R[] {
-//     switch (type) {
-//         case 'toggleSubRow':
-//             return toggleSubRow(rows, id, uniqueKey);
-//         case 'deleteSubRow':
-//             return deleteSubRow(rows, id);
-//         default:
-//             return rows;
-//     }
-// }
 
 export const generateColumns = <Row, SR>({
   columnsRaw,
@@ -339,7 +336,7 @@ export const Table = <R, SR>(
         rows={sortDefaultKey && sortedRows ? sortedRows : rows}
         rowKeyGetter={rowKeyGetter}
         rowClass={(row) => (rowClassFn ? rowClassFn(row, props) : "")}
-        rowHeight={rowHeight ? rowHeight : 44}
+        rowHeight={rowHeight ? rowHeight : RowConfig.rowHeight}
         onRowsChange={setRows}
         onSortColumnsChange={onSortColumnsChange}
         rowRenderer={rowRenderer as any}

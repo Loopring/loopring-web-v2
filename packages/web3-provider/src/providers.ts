@@ -9,9 +9,9 @@ import {
   MetaMaskUnsubscribe,
 } from "./metamask";
 import {
-  WalletLinkProvide,
-  WalletLinkSubscribe,
-  WalletLinkUnsubscribe,
+  CoinbaseProvide,
+  CoinbaseSubscribe,
+  CoinbaseUnsubscribe,
 } from "./coinbase";
 import { GameStop, GameStopSubscribe, GameStopUnsubscribe } from "./gmeWallet";
 
@@ -21,10 +21,19 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { ConnectProviders } from "@loopring-web/common-resources";
 
 export class ConnectProvides {
+  private static _isMobile = false;
   public usedProvide: undefined | IpcProvider | WalletConnectProvider;
   public usedWeb3: undefined | Web3;
 
   private _provideName: string | undefined;
+
+  public static set IsMobile(isMobile: boolean) {
+    ConnectProvides._isMobile = isMobile;
+  }
+
+  public static get IsMobile() {
+    return ConnectProvides._isMobile;
+  }
 
   get provideName(): string | undefined {
     return this._provideName;
@@ -52,10 +61,10 @@ export class ConnectProvides {
     this.subScribe();
   };
 
-  public WalletLink = async () => {
-    this._provideName = ConnectProviders.WalletLink;
+  public Coinbase = async () => {
+    this._provideName = ConnectProviders.Coinbase;
     this.clearProviderSubscribe();
-    const obj = await WalletLinkProvide();
+    const obj = await CoinbaseProvide();
     if (obj) {
       this.usedProvide = obj.provider;
       this.usedWeb3 = obj.web3;
@@ -104,8 +113,8 @@ export class ConnectProvides {
         delete this.usedProvide;
         delete this.usedWeb3;
         break;
-      case ConnectProviders.WalletLink:
-        await WalletLinkUnsubscribe(this.usedProvide);
+      case ConnectProviders.Coinbase:
+        await CoinbaseUnsubscribe(this.usedProvide);
         delete this.usedProvide;
         delete this.usedWeb3;
         break;
@@ -115,23 +124,26 @@ export class ConnectProvides {
   };
 
   private subScribe = (account?: string) => {
-    switch (this._provideName) {
-      case ConnectProviders.WalletConnect:
-        WalletConnectSubscribe(
-          this.usedProvide,
-          this.usedWeb3 as Web3,
-          account
-        );
+    try {
+      switch (this._provideName) {
+        case ConnectProviders.WalletConnect:
+          WalletConnectSubscribe(
+            this.usedProvide,
+            this.usedWeb3 as Web3,
+            account
+          );
         break;
       case ConnectProviders.GameStop:
         GameStopSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-        break;
-      case ConnectProviders.MetaMask:
-        MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-        break;
-      case ConnectProviders.WalletLink:
-        WalletLinkSubscribe(this.usedProvide, this.usedWeb3 as Web3);
-        break;
+        break;case ConnectProviders.MetaMask:
+          MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+          break;
+        case ConnectProviders.Coinbase:
+          CoinbaseSubscribe(this.usedProvide, this.usedWeb3 as Web3);
+          break;
+      }
+    } catch (error) {
+      console.log("subScribe", error);
     }
   };
 }

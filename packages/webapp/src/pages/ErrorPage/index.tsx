@@ -45,7 +45,7 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
               color={"textSecondary"}
             >
               <Trans i18nKey={message}>
-                If you believe this is indeed a bug, please{" "}
+                If you believe this is indeed a bug, please
                 <Link
                   component={"a"}
                   onClick={(e) => {
@@ -54,7 +54,7 @@ export const ErrorPage = ({ messageKey }: ErrorObject) => {
                   }}
                 >
                   contact us
-                </Link>{" "}
+                </Link>
                 <br /> We would appreciate your feedback
               </Trans>
               {/*{t(message)}*/}

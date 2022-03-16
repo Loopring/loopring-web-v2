@@ -415,7 +415,6 @@ export class LoopringSocket {
       data.apiKey = apiKey;
     }
     this._topics = topics;
-    // console.log('Socket>>Socket',JSON.stringify(data));
     return JSON.stringify(data);
     // sendMessage(flat_txt)
   };

@@ -215,8 +215,7 @@ export const WalletConnectBtn = ({
           lineHeight={1}
           color={"inherit"}
         >
-          {" "}
-          {t(label)}{" "}
+          {t(label)}
         </Typography>
       </WalletConnectBtnStyled>
     </>

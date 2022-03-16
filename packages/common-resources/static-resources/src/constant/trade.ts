@@ -73,6 +73,7 @@ export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo & {
     image: string;
     name: string;
+    royaltyPercentage: number; // 0 - 10 for UI
     nftIdView: string;
     description: string;
     nftBalance: number;
@@ -93,3 +94,4 @@ export const TOAST_TIME = 3000;
 export const EmptyValueTag = "--";
 
 export const IPFS_META_URL = "ipfs://";
+export const MINT_LIMIT = 10000;

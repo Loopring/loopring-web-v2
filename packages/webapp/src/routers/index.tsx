@@ -14,11 +14,17 @@ import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
+  myLog,
   SagaStatus,
+  setMyLog,
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import { Footer, useSettings } from "@loopring-web/component-lib";
+import {
+  Footer,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { ReportPage } from "pages/ReportPage";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
@@ -65,6 +71,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
   const location = useLocation();
+  const { setShowAccount } = useOpenModals();
   const query = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (query.has("theme")) {
@@ -78,6 +85,10 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
       window.location.replace(`${window.location.origin}/error`);
     }
   }, [state]);
+  if (query.has("___OhTrustDebugger___")) {
+    // @ts-ignore
+    setMyLog(true);
+  }
   return (
     <>
       <Switch>
@@ -275,7 +286,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
         />
       </Switch>
-      <ModalGroup />
+      <ModalGroup
+        onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
+      />
       {query && query.has("nofooter") ? <></> : <Footer />}
     </>
   );

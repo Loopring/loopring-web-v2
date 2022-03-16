@@ -21,27 +21,33 @@ export const useActiveAccount = <T>(): {
   );
   const { goUpdateAccount } = useUpdateAccount();
   const { updateActiveAccountData, activeAccountValue } = useModalData();
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      isActiveAccount: true,
-      requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
-      updateData: (feeInfo, chargeFeeList) => {
-        updateActiveAccountData({
-          ...activeAccountValue,
-          fee: feeInfo,
-          chargeFeeList:
-            chargeFeeList && chargeFeeList.length
-              ? chargeFeeList
-              : activeAccountValue?.chargeFeeList &&
-                activeAccountValue?.chargeFeeList.length
-              ? activeAccountValue?.chargeFeeList
-              : [],
-        });
-      },
-    });
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    isActiveAccount: true,
+    requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
+    updateData: (feeInfo, chargeFeeList) => {
+      updateActiveAccountData({
+        ...activeAccountValue,
+        fee: feeInfo,
+        chargeFeeList:
+          chargeFeeList && chargeFeeList.length
+            ? chargeFeeList
+            : activeAccountValue?.chargeFeeList &&
+              activeAccountValue?.chargeFeeList.length
+            ? activeAccountValue?.chargeFeeList
+            : [],
+      });
+    },
+  });
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
+    checkFeeIsEnough();
   }, []);
   React.useEffect(() => {
     if (walletLayer2Callback && walletLayer2Status === SagaStatus.UNSET) {

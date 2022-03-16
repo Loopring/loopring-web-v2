@@ -54,7 +54,7 @@ export const IconButtonStyled = styled(IconButton)`
       //width: var(--btn-icon-size-small);
     }
 
-    &.outline {
+    &.outlined {
       background-color: var(--color-box);
       margin: 0 ${({ theme }) => theme.unit / 2}px;
       ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
@@ -130,7 +130,7 @@ export const CountDownStyled = styled(Box)`
   background-repeat: no-repeat;
   background-position: center;
 
-  &.outline {
+  &.outlined {
     background-color: var(--field-opacity);
     margin: 0 ${({ theme }) => theme.unit / 2}px;
     ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};

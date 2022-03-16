@@ -21,9 +21,8 @@ export const ResetWrap = <T extends FeeInfo>({
   walletMap,
   handleFeeChange,
 }: ResetViewProps<T> & WithTranslation) => {
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "down"
-  );
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("down");
 
   const getDisabled = React.useMemo(() => {
     if (disabled || resetBtnStatus === TradeBtnStatus.DISABLED) {
@@ -41,15 +40,15 @@ export const ResetWrap = <T extends FeeInfo>({
 
   return (
     <Grid
-      className={""}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       container
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
       flex={1}
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       height={"100%"}
+      minWidth={320}
     >
       <Grid item marginBottom={2}>
         <Typography
@@ -158,6 +157,7 @@ export const ResetWrap = <T extends FeeInfo>({
                     : t("transferLabelFeeChoose")}
                 </Typography>
                 <FeeToggle
+                  disableNoToken={true}
                   chargeFeeTokenList={chargeFeeTokenList}
                   handleToggleChange={handleToggleChange}
                   feeInfo={feeInfo}

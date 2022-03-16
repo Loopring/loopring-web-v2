@@ -96,6 +96,7 @@ export const MarketView = withTranslation("common")(
     main,
     t,
     market,
+    isOnlyTrade = false,
     ...rest
   }: {
     market: MarketType;
@@ -103,6 +104,7 @@ export const MarketView = withTranslation("common")(
     breakpoint: BreakPoint;
     rowLength: number;
     tableLength: number;
+    isOnlyTrade?: boolean;
   } & WithTranslation) => {
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
@@ -251,7 +253,6 @@ export const MarketView = withTranslation("common")(
                 alignItems={"center"}
                 display={"inline-flex"}
               >
-                {" "}
                 {close}
                 {up && (
                   <UpIcon
@@ -262,7 +263,7 @@ export const MarketView = withTranslation("common")(
                     }}
                   />
                 )}
-              </Typography>{" "}
+              </Typography>
               {value}
             </>
           ) : (
@@ -394,11 +395,14 @@ export const MarketView = withTranslation("common")(
                 setTabIndex(value);
               }}
             >
-              <Tab
-                key={TabMarketIndex.Orderbook}
-                value={TabMarketIndex.Orderbook}
-                label={t(`labelPro${TabMarketIndex.Orderbook}`)}
-              />
+              {!isOnlyTrade && (
+                <Tab
+                  key={TabMarketIndex.Orderbook}
+                  value={TabMarketIndex.Orderbook}
+                  label={t(`labelPro${TabMarketIndex.Orderbook}`)}
+                />
+              )}
+
               <Tab
                 key={TabMarketIndex.Trades}
                 value={TabMarketIndex.Trades}

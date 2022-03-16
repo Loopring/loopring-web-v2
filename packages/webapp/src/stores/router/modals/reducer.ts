@@ -103,7 +103,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetNFTMintData(state) {
       state.lastStep = LAST_STEP.default;
-      state.nftMintValue = initialWithdrawState;
+      state.nftMintValue = initialTradeNFT;
     },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;

@@ -1,6 +1,10 @@
 import React from "react";
 import { AmmPoolActivityRule } from "@loopring-web/loopring-sdk";
-import { ACTIVITY_TYPE, languageMap } from "@loopring-web/common-resources";
+import {
+  ACTIVITY_TYPE,
+  languageMap,
+  myLog,
+} from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
@@ -25,28 +29,42 @@ export const useTradeRace = () => {
   const { i18n } = useTranslation();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [eventData, setEventData] = React.useState<EventData>();
-  const [eventStatus, setEventStatus] = React.useState<
-    EVENT_STATUS | undefined
-  >();
-  const [activityRule, setActivityRule] = React.useState<
-    AmmPoolActivityRule | undefined
-  >();
+  const [eventStatus, setEventStatus] =
+    React.useState<EVENT_STATUS | undefined>();
+  const [activityRule, setActivityRule] =
+    React.useState<
+      | AmmPoolActivityRule
+      | undefined
+      | {
+          event_awardRules: {
+            project: string;
+            pair: string;
+            reward: {
+              count: number;
+              token: string;
+            };
+          }[];
+        }
+    >();
+
   const [currMarketPair, setCurrMarketPair] = React.useState(
     () => searchParams.get("pair") ?? ""
   );
-  const [duration, setDuration] = React.useState<
-    | {
-        startDate?: string;
-        endDate?: string;
-      }
-    | undefined
-  >();
-  const [countDown, setCountDown] = React.useState<{
-    days: undefined | string;
-    hours: undefined | string;
-    seconds: undefined | string;
-    minutes: undefined | string;
-  }>();
+  const [duration, setDuration] =
+    React.useState<
+      | {
+          startDate?: string;
+          endDate?: string;
+        }
+      | undefined
+    >();
+  const [countDown, setCountDown] =
+    React.useState<{
+      days: undefined | string;
+      hours: undefined | string;
+      seconds: undefined | string;
+      minutes: undefined | string;
+    }>();
   const handleMarketPairChange = React.useCallback(
     (e: React.ChangeEvent<{ value: string }>) => {
       setCurrMarketPair(e.target.value);
@@ -82,57 +100,66 @@ export const useTradeRace = () => {
               } else {
                 eventData = input;
               }
+              myLog("useTradeRace eventData", eventData);
 
               if (
                 eventData &&
-                activityDateMap[eventData.duration.startDate] &&
-                searchParams.get("type")
+                searchParams.get("type") &&
+                [
+                  "AMM_MINING",
+                  "SWAP_VOLUME_RANKING",
+                  "ORDERBOOK_MINING",
+                ].includes(searchParams.get("type") ?? "") &&
+                activityDateMap[eventData.duration.startDate]
               ) {
                 setEventData(eventData);
-                if (searchParams.get("type") !== ACTIVITY_TYPE.SPECIAL) {
-                  const activityRule =
-                    activityDateMap[eventData.duration.startDate][
-                      searchParams.get("type") as string
-                    ];
-                  setActivityRule(activityRule);
-                  if (Reflect.ownKeys(activityRule).length) {
-                    const rule: AmmPoolActivityRule =
-                      activityRule[Reflect.ownKeys(activityRule)[0]];
-                    setDuration(() => ({
-                      startDate: moment(rule.rangeFrom).format(
-                        `YYYY-MM-DD HH:mm:ss`
-                      ),
-                      endDate: moment(rule.rangeTo).format(
-                        `YYYY-MM-DD HH:mm:ss`
-                      ),
-                    }));
-                    if (rule.rangeFrom > Date.now()) {
-                      setEventStatus(EVENT_STATUS.EVENT_READY);
-                    } else if (rule.rangeTo > Date.now()) {
-                      setEventStatus(EVENT_STATUS.EVENT_START);
-                    } else {
-                      setEventStatus(EVENT_STATUS.EVENT_END);
-                    }
+                const activityRule =
+                  activityDateMap[eventData.duration.startDate][
+                    searchParams.get("type") as string
+                  ];
+                setActivityRule(activityRule);
+                if (Reflect.ownKeys(activityRule).length) {
+                  const rule: AmmPoolActivityRule =
+                    activityRule[Reflect.ownKeys(activityRule)[0]];
+                  setDuration(() => ({
+                    startDate: moment(rule.rangeFrom).format(
+                      `YYYY-MM-DD HH:mm:ss`
+                    ),
+                    endDate: moment(rule.rangeTo).format(`YYYY-MM-DD HH:mm:ss`),
+                  }));
+                  if (rule.rangeFrom > Date.now()) {
+                    setEventStatus(EVENT_STATUS.EVENT_READY);
+                  } else if (rule.rangeTo > Date.now()) {
+                    setEventStatus(EVENT_STATUS.EVENT_START);
+                  } else {
+                    setEventStatus(EVENT_STATUS.EVENT_END);
+                  }
 
-                    if (!currMarketPair) {
-                      setCurrMarketPair(
-                        Reflect.ownKeys(activityRule)[0] as string
-                      );
-                    }
+                  if (!currMarketPair) {
+                    setCurrMarketPair(
+                      Reflect.ownKeys(activityRule)[0] as string
+                    );
                   }
                 }
-              } else if (eventData) {
+              } else if (eventData && searchParams.get("type")) {
+                setEventData(eventData);
                 setDuration((duration) => ({
                   ...duration,
-                  startDate: moment(eventData.duration.startDate).format(
-                    `YYYY-MM-DD HH:mm:ss`
-                  ),
-                  endDatet: eventData.duration.endDate
-                    ? moment(eventData.duration.endDate).format(
-                        `YYYY-MM-DD HH:mm:ss`
-                      )
+                  startDate:
+                    moment
+                      .utc(eventData.duration.startDate)
+                      .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)",
+                  endDate: eventData.duration.endDate
+                    ? moment
+                        .utc(eventData.duration.endDate)
+                        .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)"
                     : undefined,
                 }));
+                // const activityRule =
+                //   activityDateMap[eventData.duration.startDate][
+                //     searchParams.get("type") as string
+                //   ];
+                setActivityRule({ event_awardRules: eventData.rewards });
                 if (eventData.duration.startDate > Date.now()) {
                   setEventStatus(EVENT_STATUS.EVENT_READY);
                 }

@@ -5,15 +5,15 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
-  EmptyValueTag,
   IBData,
   PriceTag,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import { Box, Tab } from "@mui/material";
 import { TradeProType } from "./Interface";
-import { ButtonStyle, TabsStyle } from "../components/Styled";
+import { TabsStyle } from "../components/Styled";
 import { useCommon } from "./hookCommon";
+import { Button } from "./../../index";
 import React from "react";
 import { useSettings } from "../../../stores";
 import { Currency } from "@loopring-web/loopring-sdk";
@@ -37,7 +37,6 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
       tokenPriceProps,
       handleSubmitEvent,
       onChangeEvent,
-      // ...rest
     } = props;
     const { currency } = useSettings();
     const priceRef = React.useRef();
@@ -82,10 +81,10 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
         t,
       };
     }, [tradeType, TradeProType, handleCountChange]);
-    const fee =
-      tradeCalcProData && tradeCalcProData.fee
-        ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"
-        : EmptyValueTag;
+    // const fee =
+    //   tradeCalcProData && tradeCalcProData.fee
+    //     ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"
+    //     : EmptyValueTag;
 
     return (
       <Box
@@ -214,18 +213,10 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
 
           {/*< label={tradeCalcProData.baseToken} coinMap={tradeCalcProData.coinMap} />*/}
         </Box>
-        <Box className={"info-panel"} paddingX={2} paddingTop={2}>
-          {/* <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
-              marginTop={1 / 2} >
-            <Typography component={'p'} variant="body2"
-                        color={'textSecondary'}> {t('swapFee')} </Typography>
-            <Typography component={'p'}
-                        variant="body2" color={'textPrimary'}>{fee}</Typography>
-        </Grid> */}
-        </Box>
+        <Box className={"info-panel"} paddingX={2} paddingTop={2}></Box>
         <Box paddingX={2} paddingTop={2}>
           {/*{getDisabled()} {tradeBtnBaseStatus}*/}
-          <ButtonStyle
+          <Button
             variant={"contained"}
             size={"medium"}
             color={tradeType === TradeProType.sell ? "error" : "success"}
@@ -251,7 +242,7 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
             fullWidth={true}
           >
             {btnLabel}
-          </ButtonStyle>
+          </Button>
         </Box>
       </Box>
     );

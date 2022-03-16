@@ -139,7 +139,6 @@ const WrapSwitchPanel = (rest: any) => {
 const Template: Story<any> = withTranslation()((props: any) => {
   return (
     <Style>
-      {" "}
       <MemoryRouter initialEntries={["/"]}>
         <Box>
           <h4>Swith Panel</h4>
@@ -202,5 +201,4 @@ export default {
   component: SwitchPanel,
   argTypes: {},
 } as Meta;
-// @ts-ignore
 export const PanelStory = Template.bind({});

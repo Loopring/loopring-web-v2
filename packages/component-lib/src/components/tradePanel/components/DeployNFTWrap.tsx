@@ -59,10 +59,10 @@ export const DeployNFTWrap = <
   return (
     <Grid
       className={assetsData ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       paddingBottom={3}
       container
+      paddingLeft={5 / 2}
+      paddingRight={5 / 2}
       direction={"column"}
       justifyContent={"space-between"}
       alignItems={"center"}
