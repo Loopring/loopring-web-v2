@@ -44,7 +44,7 @@ export const NFTMint_In_Progress = (
   props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
-    iconType: IconType.RefuseIcon,
+    iconType: IconType.LoadingIcon,
     describe1: props.t("labelMintInProgress", {
       symbol: props.symbol,
       value: props.value,
@@ -66,12 +66,12 @@ export const NFTMint_Failed = (
   return <MintBase {...propsPatch} {...props} />;
 };
 
-export const NFTMint_Submit = (
+export const NFTMint_Success = (
   props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
-    iconType: IconType.SubmitIcon,
-    describe1: props.t("labelMintSubmit", {
+    iconType: IconType.DoneIcon,
+    describe1: props.t("labelMintSuccess", {
       symbol: props.symbol,
       value: props.value,
     }),

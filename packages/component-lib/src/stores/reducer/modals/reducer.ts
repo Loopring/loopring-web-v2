@@ -162,13 +162,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow: boolean;
         step?: number;
         error?: RESULT_INFO;
+        info?: { [key: string]: any };
       }>
     ) {
-      const { isShow, step, error } = action.payload;
+      const { isShow, step, error, info } = action.payload;
       state.isShowAccount = {
         isShow,
         step: step ? step : 0,
         error: error ?? undefined,
+        info: info ?? undefined,
       };
     },
     setShowFeeSetting(state, action: PayloadAction<{ isShow: boolean }>) {

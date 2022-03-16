@@ -10,6 +10,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  Explorer,
   IBData,
   SagaStatus,
   UIERROR_CODE,
@@ -372,6 +373,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Withdraw_Success,
+                info: {
+                  hash:
+                    Explorer +
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-withdraw`,
+                },
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);

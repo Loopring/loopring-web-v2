@@ -542,7 +542,7 @@ export default {
   labelMintDenied: "Signature request rejected!",
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
   labelMintFailed: "Mint {{symbol}} Failed",
-  labelMintSubmit: "Mint {{symbol}} Submit",
+  labelMintSuccess: "Mint {{symbol}} Submit",
   labelNFTMintBtn: "Mint My NFT",
   labelNFTMintNoMetaBtn: "Wrong Metadata",
   labelNFTMintNoMetaDetail:

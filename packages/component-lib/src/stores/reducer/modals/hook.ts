@@ -90,8 +90,13 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowAccount: React.useCallback(
-      (state: ModalStatePlayLoad & { step?: number; error?: RESULT_INFO }) =>
-        dispatch(setShowAccount(state)),
+      (
+        state: ModalStatePlayLoad & {
+          step?: number;
+          error?: RESULT_INFO;
+          info?: { [key: string]: any };
+        }
+      ) => dispatch(setShowAccount(state)),
       [dispatch]
     ),
     setShowConnect: React.useCallback(

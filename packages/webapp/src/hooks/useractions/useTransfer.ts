@@ -13,6 +13,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  Explorer,
   IBData,
   SagaStatus,
   UIERROR_CODE,
@@ -58,9 +59,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const [addressOrigin, setAddressOrigin] = React.useState<"Wallet" | null>(
-    null
-  );
+  const [addressOrigin, setAddressOrigin] =
+    React.useState<"Wallet" | null>(null);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -272,6 +272,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Transfer_Success,
+                info: {
+                  hash:
+                    Explorer +
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
+                },
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);

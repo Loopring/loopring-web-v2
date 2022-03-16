@@ -290,13 +290,29 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
         {link && (
           <Box marginTop={marginToplink} alignSelf={"flex-center"} paddingX={0}>
             <Typography
-              variant={"body2"}
+              variant={"body1"}
               color={"textSecondary"}
               component={"div"}
               alignSelf={"flex-center"}
             >
-              <Link color={"textSecondary"} href={link.url}>
+              <Link
+                display={"inline-flex"}
+                alignItems={"center"}
+                color={"textSecondary"}
+                href={link.url}
+              >
                 {link.name}
+                {link.name === "Txn Hash" && (
+                  <Typography
+                    paddingLeft={1}
+                    color={"inherit"}
+                    component={"span"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <LinkIcon color={"primary"} fontSize={"medium"} />
+                  </Typography>
+                )}
               </Link>
             </Typography>
           </Box>

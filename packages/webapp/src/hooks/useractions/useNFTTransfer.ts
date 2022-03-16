@@ -13,6 +13,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  Explorer,
   IBData,
   NFTWholeINFO,
   SagaStatus,
@@ -272,6 +273,11 @@ export const useNFTTransfer = <
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTTransfer_Success,
+                info: {
+                  hash:
+                    Explorer +
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer`,
+                },
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);

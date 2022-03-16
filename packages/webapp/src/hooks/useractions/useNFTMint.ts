@@ -15,6 +15,8 @@ import {
   EmptyValueTag,
   MINT_LIMIT,
   SagaStatus,
+  Explorer,
+  EXPLORE_TYPE,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTokenMap } from "stores/token";
@@ -240,7 +242,12 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
               await sdk.sleep(TOAST_TIME);
               setShowAccount({
                 isShow: true,
-                step: AccountStep.NFTMint_Submit,
+                step: AccountStep.NFTMint_Success,
+                info: {
+                  hash:
+                    Explorer +
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint`,
+                },
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);
