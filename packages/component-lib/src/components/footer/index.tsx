@@ -11,6 +11,7 @@ import {
 import { withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { useLocation } from "react-router-dom";
+import { useSettings } from "../../stores";
 
 const LinkStyle = styled(Link)`
   color: var(--color-text-secondary);
@@ -123,6 +124,7 @@ const mediaList = [
 export const Footer = withTranslation(["layout"])(({ t }: any) => {
   const { mode } = useTheme();
   // const [size, setSize] = React.useState<[number, number]>([1200, 0]);
+  const { isMobile } = useSettings();
   const location = useLocation();
   const isLandingPage =
     location.pathname === "/" || location.pathname === "/wallet";
@@ -208,8 +210,9 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
   return (
     <FooterDiv component={"footer"} fontSize={"body1"}>
       {/*<Divider />*/}
-      <Container>
-        {isLandingPage && (
+
+      {!!(isLandingPage && !isMobile) ? (
+        <Container>
           <>
             <Box
               position={"relative"}
@@ -263,9 +266,8 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
               {t("labelCopyRight", { year: new Date().getFullYear() })}
             </Typography>
           </>
-        )}
-      </Container>
-      {!isLandingPage && (
+        </Container>
+      ) : (
         <Box
           height={48}
           display={"flex"}

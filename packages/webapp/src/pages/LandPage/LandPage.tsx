@@ -18,6 +18,8 @@ import { Card } from "./Card";
 import { useHistory } from "react-router-dom";
 import { LoopringAPI } from "../../api_wrapper";
 import { useSettings } from "@loopring-web/component-lib";
+import { ContainerProps } from "@mui/material/Container/Container";
+import { LAYOUT } from "../../defs/common_defs";
 
 const ButtonStyled = styled(Button)`
   display: flex;
@@ -113,66 +115,128 @@ const TitleTypography = styled(Typography)<
   white-space: pre-line;
   line-height: 5.6rem;
   position: relative;
-
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: flex-start;
+  height: ${({ isMobile }) => (isMobile ? "auto" : "calc(80px + 24px)")};
   &:before {
+    margin-top: 24px;
     content: "";
-    position: absolute;
-    top: ${({ isMobile }) => (isMobile ? "-16px" : "-30px")};
-    left: 0;
+    // top: ${({ isMobile }) => (isMobile ? "-16px" : "-30px")};
+    // left: 0;
     height: 6px;
     width: 96px;
     display: block;
     background: var(--color-primary);
   }
 ` as (props: TypographyProps & { isMobile?: boolean }) => JSX.Element;
-const BoxCard = styled(Box)`
-  position: absolute;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background: var(--box-card-background);
-  box-shadow: var(--box-card-shadow);
 
-  h4 {
-    text-transform: uppercase;
-    font-size: 30px;
-    font-weight: 500;
-  }
+// const TradeInfoStyled = styled(Typography)`
+//   font-size: 6.4rem;
+//   font-weight: 700;
+//   line-height: 8.8rem;
+//   margin-bottom: 2.5rem;
+//   margin-left: 3.2rem;
+// ` as any;
 
-  :before {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 10px;
-    display: block;
-    border-start-end-radius: 4px;
-    border-end-end-radius: 4px;
-
-    background: var(--box-card-decorate);
-  }
-` as typeof Box;
-
-const TradeInfoStyled = styled(Typography)`
-  font-size: 6.4rem;
-  font-weight: 700;
-  line-height: 8.8rem;
-  margin-bottom: 2.5rem;
-  margin-left: 3.2rem;
-` as any;
-
-const ContainerStyled = styled(Container)`
+const ContainerStyled = styled(Container)<
+  ContainerProps & { isMobile?: boolean }
+>`
   padding: 0 !important;
-`;
+  & > .MuiGrid-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    ${({ isMobile }) => `
+      min-height: ${
+        isMobile ? `calc(100vh - ${LAYOUT.HEADER_HEIGHT}px)` : "734px"
+      };
+    `}
+    .boxCard {
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--box-card-background);
+      box-shadow: var(--box-card-shadow);
+      font-size: 1.4rem;
+      h4 {
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-left: 14px;
+        font-size: 2em;
+      }
+      .content {
+        margin-left: 14px;
+        //position: absolute;
+        font-size: 5.6em;
+      }
 
-const ImgWrapperStyled = styled(Box)`
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-`;
+      :before {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 10px;
+        display: block;
+        border-start-end-radius: 4px;
+        border-end-end-radius: 4px;
+        background: var(--box-card-decorate);
+      }
+
+      ${({ isMobile }) =>
+        isMobile
+          ? `
+            position: relative;
+             margin: 24px;
+          `
+          : `
+      position: absolute;
+     
+      &.trade-volume {
+        width: 320px;
+        height: 256px;
+        top: 196px;
+        zindex: 42;
+        
+      }
+      &.trade-tvl {
+        width: 262px;
+        height: 210px;
+        top: 102px;
+        left: 394px;
+        zindex: 42;
+        font-size: 12px;
+      }
+      
+      &.trade-user {
+        width: 262px;
+        height: 210px;
+        top: 102px;
+        left: 798px;
+        zindex: 42;
+        font-size: 12px;
+      }
+      &.trade-trades {
+        width: 399px;
+        height: 319px;
+        top: 351px;
+        left: 798px;
+        zindex: 42;
+        font-size: 24px;
+       
+      }
+      `}
+    }
+  }
+` as (props: ContainerProps & { isMobile?: boolean }) => JSX.Element;
+// .content{
+//   font-size: 9.6em;
+// }
 
 export const LandPage = withTranslation(["landPage", "common"])(
   ({ t }: any) => {
@@ -215,11 +279,11 @@ export const LandPage = withTranslation(["landPage", "common"])(
     return (
       <ContainerStyle>
         <Box>
-          <ContainerStyled>
-            <Grid item xs={12} position={"relative"} height={734}>
+          <ContainerStyled isMobile={isMobile}>
+            <Grid item xs={12}>
               <Box
-                height={"100%"}
                 display={"flex"}
+                flex={1}
                 flexDirection={"column"}
                 justifyContent={"center"}
                 alignItems={"center"}
@@ -272,156 +336,129 @@ export const LandPage = withTranslation(["landPage", "common"])(
             </Grid>
           </ContainerStyled>
         </Box>
-        {!isMobile && (
-          <Box style={{ background: "var(--layer-2)" }}>
-            <ContainerStyled>
-              <Grid item xs={12} position={"relative"} height={734}>
-                <Box
-                  position={"absolute"}
-                  width={"100%"}
-                  height={"100%"}
-                  zIndex={33}
-                  left={0}
-                  top={"50%"}
-                  style={{ transform: "translateY(-50%)" }}
-                >
-                  <TitleTypography
-                    isMobile={isMobile}
-                    marginTop={isMobile ? 4 : 11}
-                    position={"absolute"}
-                    zIndex={42}
-                  >
-                    {t("labelTitleDEX")}
-                  </TitleTypography>
-                  <BoxCard width={320} height={256} top={196} zIndex={42}>
-                    <Typography
-                      whiteSpace={"pre-line"}
-                      component={"h4"}
-                      margin={4}
-                    >
-                      {t("labelTradeVolume")}
-                    </Typography>
-                    <TradeInfoStyled component={"span"}>
-                      $
-                      {value &&
-                        getValuePrecisionThousand(
-                          value.tradeVolume,
-                          1,
-                          1,
-                          1,
-                          false,
-                          { abbreviate: 3, isAbbreviate: true }
-                        )}
-                    </TradeInfoStyled>
-                  </BoxCard>
-                  <BoxCard
-                    width={340}
-                    height={272}
-                    top={247}
-                    left={394}
-                    zIndex={42}
-                  >
-                    <Typography
-                      whiteSpace={"pre-line"}
-                      component={"h4"}
-                      margin={4}
-                    >
-                      {t("labelTradeUser")}
-                    </Typography>
-                    <TradeInfoStyled
-                      component={"span"}
-                      style={{ fontSize: 88, lineHeigh: 121 }}
-                    >
-                      {value &&
-                        getValuePrecisionThousand(
-                          value.totalUserNum,
-                          1,
-                          1,
-                          1,
-                          true,
-                          { abbreviate: 3, isAbbreviate: true }
-                        )}
-                    </TradeInfoStyled>
-                  </BoxCard>
-                  <BoxCard
-                    width={262}
-                    height={210}
-                    top={102}
-                    left={798}
-                    zIndex={42}
-                  >
-                    <Typography
-                      whiteSpace={"pre-line"}
-                      component={"h4"}
-                      margin={4}
-                    >
-                      {t("labelTradeTVL")}
-                    </Typography>
-                    <TradeInfoStyled component={"span"}>
-                      $
-                      {value &&
-                        getValuePrecisionThousand(
-                          value.layerTwoLockedVolume,
-                          1,
-                          1,
-                          1,
-                          true,
-                          { abbreviate: 3, isAbbreviate: true }
-                        )}
-                    </TradeInfoStyled>
-                  </BoxCard>
-                  <BoxCard
-                    width={399}
-                    height={319}
-                    top={351}
-                    left={798}
-                    zIndex={42}
-                  >
-                    <Typography
-                      whiteSpace={"pre-line"}
-                      component={"h4"}
-                      margin={4}
-                    >
-                      {t("labelTradeNofTrades")}
-                    </Typography>
-                    <TradeInfoStyled
-                      component={"span"}
-                      style={{
-                        fontSize: 120,
-                        lineHeigh: 165,
-                        marginBottom: 32,
-                      }}
-                    >
-                      {value &&
-                        getValuePrecisionThousand(
-                          value.tradeNum,
-                          1,
-                          1,
-                          1,
-                          true,
-                          {
-                            abbreviate: 3,
-                            isAbbreviate: true,
-                          }
-                        )}
-                    </TradeInfoStyled>
-                  </BoxCard>
-                </Box>
-              </Grid>
-            </ContainerStyled>
-          </Box>
-        )}
-        <Box marginBottom={12.5}>
-          <ContainerStyled>
-            <Grid item xs={12}>
-              <TitleTypography
-                isMobile={isMobile}
-                marginTop={isMobile ? 4 : 10}
-                marginBottom={isMobile ? 4 : 10}
+        <Box style={{ background: "var(--layer-2)" }}>
+          <ContainerStyled isMobile={isMobile}>
+            <TitleTypography
+              isMobile={isMobile}
+
+              // marginTop={isMobile ? 4 : 11}
+              // position={"absolute"}
+              // zIndex={42}
+            >
+              {t("labelTitleDEX")}
+            </TitleTypography>
+            <Grid item xs={12} position={"relative"}>
+              <Box
+                position={isMobile ? "relative" : "absolute"}
+                width={"100%"}
+                height={"100%"}
+                zIndex={33}
+                left={0}
+                top={"50%"}
+                style={{ transform: isMobile ? "" : "translateY(-50%)" }}
               >
+                <Box className={"boxCard trade-volume"}>
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"h4"}
+                    margin={4}
+                  >
+                    {t("labelTradeVolume")}
+                  </Typography>
+                  <Typography className={"content"} component={"span"}>
+                    $
+                    {value &&
+                      getValuePrecisionThousand(
+                        value.tradeVolume,
+                        1,
+                        1,
+                        1,
+                        false,
+                        { abbreviate: 3, isAbbreviate: true }
+                      )}
+                  </Typography>
+                </Box>
+                <Box className={"boxCard trade-user"}>
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"h4"}
+                    margin={4}
+                  >
+                    {t("labelTradeUser")}
+                  </Typography>
+                  <Typography
+                    className={"content"}
+                    component={"span"}
+                    // style={{ fontSize: 88, lineHeigh: 121 }}
+                  >
+                    {value &&
+                      getValuePrecisionThousand(
+                        value.totalUserNum,
+                        1,
+                        1,
+                        1,
+                        true,
+                        { abbreviate: 3, isAbbreviate: true }
+                      )}
+                  </Typography>
+                </Box>
+                <Box className={"boxCard trade-tvl"}>
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"h4"}
+                    margin={4}
+                  >
+                    {t("labelTradeTVL")}
+                  </Typography>
+                  <Typography className={"content"} component={"span"}>
+                    $
+                    {value &&
+                      getValuePrecisionThousand(
+                        value.layerTwoLockedVolume,
+                        1,
+                        1,
+                        1,
+                        true,
+                        { abbreviate: 3, isAbbreviate: true }
+                      )}
+                  </Typography>
+                </Box>
+                <Box className={"boxCard trade-trades"}>
+                  <Typography
+                    whiteSpace={"pre-line"}
+                    component={"h4"}
+                    margin={4}
+                  >
+                    {t("labelTradeNofTrades")}
+                  </Typography>
+                  <Typography
+                    className={"content"}
+                    component={"span"}
+                    // style={{
+                    //   fontSize: 120,
+                    //   lineHeigh: 165,
+                    //   marginBottom: 32,
+                    // }}
+                  >
+                    {value &&
+                      getValuePrecisionThousand(value.tradeNum, 1, 1, 1, true, {
+                        abbreviate: 3,
+                        isAbbreviate: true,
+                      })}
+                  </Typography>
+                </Box>
+              </Box>
+            </Grid>
+          </ContainerStyled>
+        </Box>
+        {/*)}*/}
+        <Box marginBottom={12.5}>
+          <ContainerStyled isMobile={isMobile}>
+            <Grid item xs={12}>
+              <TitleTypography isMobile={isMobile}>
                 {t("labelZeroKpt")}
               </TitleTypography>
-              <CardBox /* height={640} */ marginLeft={-1} position={"relative"}>
+              <CardBox flex={1} marginLeft={-1} position={"relative"}>
                 <Grid
                   container
                   spacing={6}
@@ -573,10 +610,11 @@ export const LandPage = withTranslation(["landPage", "common"])(
           </ContainerStyled>
         </Box>
         <BottomBanner height={500}>
-          <ContainerStyled>
-            <Grid item xs={12} position={"relative"} height={500}>
+          <ContainerStyled isMobile={isMobile}>
+            <Grid item xs={12} display={"flex"} position={"relative"}>
               <Box
-                height={"100%"}
+                height={isMobile ? 400 : 500}
+                // marginTop={isMobile ? 2 : 4}
                 display={"flex"}
                 flexDirection={"column"}
                 justifyContent={"center"}
