@@ -423,6 +423,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             component={"p"}
             variant={"body1"}
             marginBottom={1}
+            style={{ wordBreak: "break-all" }}
           >
             <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
               Your NFT metadata should identify
