@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { DOMElement, ElementType, useEffect } from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Box, Tab, Tabs } from "@mui/material";
 import {
@@ -11,7 +11,6 @@ import { StylePaper } from "../../styled";
 import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
 import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
-import store from "stores";
 import { TOAST_TIME } from "defs/common_defs";
 import { useToast } from "hooks/common/useToast";
 import { useTokenMap } from "../../../stores/token";
@@ -51,7 +50,7 @@ const HistoryPanel = withTranslation("common")(
     } = useAccount();
 
     const { t } = rest;
-    const container = React.useRef(null);
+    const container = React.useRef<HTMLDivElement>(null);
 
     const handleTabChange = React.useCallback(
       (value: string, _pageSize?: number) => {
@@ -77,13 +76,13 @@ const HistoryPanel = withTranslation("common")(
     );
 
     React.useEffect(() => {
-      // @ts-ignore
       let height = container?.current?.offsetHeight;
       if (height) {
+        const pageSize = Math.floor((height - 120) / RowConfig.rowHeight) - 3;
         setPageSize(Math.floor((height - 120) / RowConfig.rowHeight) - 3);
         handleTabChange(currentTab, pageSize);
       }
-    }, [container]);
+    }, [container?.current?.offsetHeight]);
 
     return (
       <StylePaper ref={container}>
