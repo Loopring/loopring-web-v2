@@ -220,7 +220,7 @@ export const NFTDetail = withTranslation("common")(
                 color={"var(--color-text-secondary)"}
                 title={popItem?.name}
               >
-                {popItem?.total}
+                {Number(popItem.total) - Number(popItem.locked ?? 0)}
               </Typography>
             </Typography>
             <Typography

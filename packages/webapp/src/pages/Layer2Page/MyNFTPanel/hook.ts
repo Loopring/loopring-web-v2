@@ -135,7 +135,9 @@ export const useMyNFT = () => {
     tokenInfo = {
       ...tokenInfo,
       nftIdView: _id.toString(),
-      nftBalance: tokenInfo.total ? Number(tokenInfo.total) : 0,
+      nftBalance: tokenInfo.total
+        ? Number(tokenInfo.total) - Number(tokenInfo.locked ?? 0)
+        : 0,
     };
     if (!tokenInfo.name) {
       const meta = await getMetaFromContractORIpfs(tokenInfo);
@@ -171,9 +173,8 @@ export const useMyNFT = () => {
           updateNFTDeployData({ broker });
         });
         updateNFTDeployData(tokenInfo);
-      } else {
-        updateNFTWithdrawData(tokenInfo);
       }
+      updateNFTWithdrawData(tokenInfo);
       setPopItem(tokenInfo);
       updateNFTTransferData(tokenInfo);
       setShowNFTTransfer({ isShow: false, ...tokenInfo });
