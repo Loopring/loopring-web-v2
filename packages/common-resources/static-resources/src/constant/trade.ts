@@ -77,7 +77,6 @@ export type NFTWholeINFO = NFTTokenInfo &
     nftIdView: string;
     description: string;
     nftBalance: number;
-    isDeployed: "yes" | "no" | "unknown";
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
   } & { fee?: FeeInfo };
