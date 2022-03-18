@@ -1,14 +1,14 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import { IpcProvider } from "web3-core";
 import { ErrorType } from "../command";
 import { ConnectProviders } from "@loopring-web/common-resources";
 import { IsMobile } from "../utilities";
+import { Web3Provider } from "@ethersproject/providers";
 // import { ethers } from "ethers";
 
 export const MetaMaskProvide = async (): Promise<
-  { provider: IpcProvider; web3: Web3 } | undefined
+  { provider: Web3Provider; web3: Web3 } | undefined
 > => {
   try {
     if (!window.ethereum?.isMetaMask && !IsMobile.any()) {
@@ -63,15 +63,13 @@ export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
     });
     provider.on("disconnect", (code: number, reason: string) => {
       walletServices.sendDisconnect(code, reason);
+      console.log("metamask on disconnect");
     });
   }
 };
 
 export const MetaMaskUnsubscribe = async (provider: any) => {
   if (provider && typeof provider.removeAllListeners === "function") {
-    // provider.removeAllListeners('accountsChanged');
-    // provider.removeAllListeners('chainChanged');
-    // provider.removeAllListeners('disconnect');
     await provider.removeAllListeners();
   }
 };

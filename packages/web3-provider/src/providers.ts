@@ -13,14 +13,19 @@ import {
   CoinbaseSubscribe,
   CoinbaseUnsubscribe,
 } from "./coinbase";
-import { IpcProvider } from "web3-core";
 import Web3 from "web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { ConnectProviders } from "@loopring-web/common-resources";
+import { Web3Provider } from "@ethersproject/providers";
+import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk/dist/provider/CoinbaseWalletProvider";
 
 export class ConnectProvides {
   private static _isMobile = false;
-  public usedProvide: undefined | IpcProvider | WalletConnectProvider;
+  public usedProvide:
+    | undefined
+    | WalletConnectProvider
+    | Web3Provider
+    | CoinbaseWalletProvider;
   public usedWeb3: undefined | Web3;
 
   private _provideName: string | undefined;

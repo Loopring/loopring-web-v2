@@ -85,8 +85,8 @@ export function useInit() {
           await connectProvides[account.connectName](account.accAddress);
           updateAccount({});
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-            // @ts-ignore
             let chainId =
+              // @ts-ignore
               Number(connectProvides.usedProvide?.connection?.chainId) ??
               Number(await connectProvides.usedWeb3.eth.getChainId());
             if (ChainId[chainId] === undefined) {

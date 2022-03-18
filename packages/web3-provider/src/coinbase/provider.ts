@@ -8,12 +8,13 @@ import {
   RPC_URLS,
 } from "@loopring-web/common-resources";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
+import { CoinbaseWalletProvider } from "@coinbase/wallet-sdk/dist/provider/CoinbaseWalletProvider";
 
 const APP_NAME = "Loopring App";
 const APP_LOGO_URL = `${SoursURL}/logo.png`;
 
 export const CoinbaseProvide = async (): Promise<
-  { provider: IpcProvider; web3: Web3 } | undefined
+  { provider: CoinbaseWalletProvider; web3: Web3 } | undefined
 > => {
   try {
     const coinbaseWallet = new CoinbaseWalletSDK({
