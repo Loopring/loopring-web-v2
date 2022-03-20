@@ -7,9 +7,9 @@ import { IsMobile } from "../utilities";
 import { Web3Provider } from "@ethersproject/providers";
 // import { ethers } from "ethers";
 
-export const MetaMaskProvide = async (): Promise<
-  { provider: Web3Provider; web3: Web3 } | undefined
-> => {
+export const MetaMaskProvide = async (
+  _props?: any
+): Promise<{ provider: Web3Provider; web3: Web3 } | undefined> => {
   try {
     if (!window.ethereum?.isMetaMask && !IsMobile.any()) {
       throw new Error(
@@ -47,29 +47,5 @@ export const MetaMaskProvide = async (): Promise<
         message: error.message,
       },
     });
-  }
-};
-export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
-  if (provider) {
-    provider.on("accountsChanged", (accounts: Array<string>) => {
-      if (accounts.length) {
-        walletServices.sendConnect(web3, provider);
-      } else {
-        walletServices.sendDisconnect(-1, "disconnect for no account");
-      }
-    });
-    provider.on("chainChanged", (chainId: number) => {
-      walletServices.sendConnect(web3, provider);
-    });
-    provider.on("disconnect", (code: number, reason: string) => {
-      walletServices.sendDisconnect(code, reason);
-      console.log("metamask on disconnect");
-    });
-  }
-};
-
-export const MetaMaskUnsubscribe = async (provider: any) => {
-  if (provider && typeof provider.removeAllListeners === "function") {
-    await provider.removeAllListeners();
   }
 };

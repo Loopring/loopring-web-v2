@@ -2,7 +2,11 @@ import React from "react";
 import { useSystem } from "./stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { useAmmMap } from "./stores/Amm/AmmMap";
-import { SagaStatus } from "@loopring-web/common-resources";
+import {
+  SagaStatus,
+  ThemeKeys,
+  ThemeType,
+} from "@loopring-web/common-resources";
 import { useTokenMap } from "./stores/token";
 import { useAccount } from "./stores/account";
 import {
@@ -19,6 +23,7 @@ import { useSocket } from "./stores/socket";
 import { useNotify } from "./stores/notify";
 import { useLayer1Store } from "./stores/localStore/layer1Store";
 import { useSettings } from "@loopring-web/component-lib";
+import { useTheme } from "@emotion/react";
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -45,6 +50,7 @@ export function useInit() {
     }
   });
   const { isMobile } = useSettings();
+  const theme = useTheme();
 
   const { account, updateAccount, resetAccount } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
@@ -82,7 +88,10 @@ export function useInit() {
       ) {
         try {
           ConnectProvides.IsMobile = isMobile;
-          await connectProvides[account.connectName](account.accAddress);
+          await connectProvides[account.connectName]({
+            account: account.accAddress,
+            darkMode: theme.mode === ThemeType.dark,
+          });
           updateAccount({});
           if (connectProvides.usedProvide && connectProvides.usedWeb3) {
             let chainId =
