@@ -70,7 +70,7 @@ export type LAYER1_ACTION_HISTORY = {
 } & { __timer__: -1 | NodeJS.Timeout };
 
 export type NFTWholeINFO = NFTTokenInfo &
-  UserNFTBalanceInfo & {
+  UserNFTBalanceInfo & {} & {
     image: string;
     name: string;
     royaltyPercentage: number; // 0 - 10 for UI

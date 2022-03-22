@@ -17,7 +17,6 @@ import { useModalData } from "stores/router";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
-// import { useLayer1Store } from "../../../stores/localStore/layer1Store";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
@@ -33,8 +32,6 @@ export const useMyNFT = () => {
     total,
     updateWalletLayer2NFT,
   } = useWalletLayer2NFT();
-  // const { clearOneItem } = useLayer1Store();
-
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
@@ -62,8 +59,20 @@ export const useMyNFT = () => {
     nftId,
     isCounterFactualNFT,
     deploymentStatus,
+    metadata,
   }: loopring_defs.UserNFTBalanceInfo): Promise<any> => {
     if (
+      tokenAddress &&
+      metadata &&
+      metadata.imageSize &&
+      !!metadata.imageSize.original
+    ) {
+      return {
+        imageSize: metadata.imageSize.original,
+        ...metadata.imageSize,
+        ...metadata.base,
+      };
+    } else if (
       tokenAddress &&
       nftId &&
       (!isCounterFactualNFT ||
@@ -93,19 +102,6 @@ export const useMyNFT = () => {
         .catch((error) => {
           return {};
         });
-      // try {
-      // await LoopringAPI?.nftAPI?.getInfoForNFTTokens({
-      //   nftDatas:
-      //   // [item.tokenAddress]
-      //     [nftData],
-      // }),
-
-      // .catch((error) => {
-      //   throw error;
-      // });
-      // } catch (error) {
-      //   throw error;
-      // }
     }
   };
 
@@ -118,14 +114,11 @@ export const useMyNFT = () => {
     const nftData: NftData = item.nftData as NftData;
     let [nftMap] = await Promise.all([
       LoopringAPI?.nftAPI?.getInfoForNFTTokens({
-        nftDatas:
-          // [item.tokenAddress]
-          [nftData],
+        nftDatas: [nftData],
       }),
     ]);
     const nftToken: Partial<NFTTokenInfo> =
       nftMap && nftMap[nftData as NftData] ? nftMap[nftData as NftData] : {};
-    // isDeployed = !isDeployed;
     let tokenInfo: NFTWholeINFO = {
       ...item,
       ...nftToken,
@@ -224,9 +217,6 @@ export const useMyNFT = () => {
       return state;
     });
   };
-  // const loadNFT = React.useCallback(async  (item: Partial<NFTWholeINFO>, index:number)=>{
-  //
-  // },[])
 
   React.useEffect(() => {
     updateWalletLayer2NFT({ page });

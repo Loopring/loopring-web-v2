@@ -83,7 +83,7 @@ export const MyNFTPanel = withTranslation("common")(
       return (
         popItem && (
           <NFTDetail
-            onNFTReload={onNFTReload}
+            // onNFTReload={onNFTReload}
             onNFTError={onNFTError}
             etherscanBaseUrl={etherscanBaseUrl}
             onDetailClose={onDetailClose}
@@ -166,8 +166,9 @@ export const MyNFTPanel = withTranslation("common")(
                           <NFTMedia
                             item={item}
                             index={index}
-                            onNFTReload={onNFTReload}
+                            // onNFTReload={onNFTReload}
                             onNFTError={onNFTError}
+                            isOrigin={false}
                           />
                           <Box
                             padding={2}
