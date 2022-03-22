@@ -457,7 +457,6 @@ export const WithdrawWrap = <
           }
           disabled={getDisabled || withdrawBtnStatus === TradeBtnStatus.LOADING}
         >
-          {}
           {t(
             withdrawI18nKey ??
               ((tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
