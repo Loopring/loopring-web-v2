@@ -39,20 +39,23 @@ export const useDeposit = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
-  const { depositValue, updateDepositData, resetDepositData } = useModalData();
+  const {
+    depositValue,
+    updateDepositData,
+    resetDepositData,
+    activeAccountValue: { chargeFeeList },
+  } = useModalData();
   const {
     modals: {
       isShowDeposit: { symbol, isShow },
     },
+    setShowDeposit,
+    setShowAccount,
   } = useOpenModals();
 
   const { walletLayer1 } = useWalletLayer1();
-  const { setShowDeposit, setShowAccount } = useOpenModals();
   const { updateDepositHash } = useOnChainInfo();
   const { t } = useTranslation("common");
-  const {
-    activeAccountValue: { chargeFeeList },
-  } = useModalData();
   const {
     btnStatus,
     btnInfo,
@@ -144,7 +147,6 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               tradeValue: 0,
               balance: walletInfo.count,
             });
-
             return;
           }
         }
@@ -484,19 +486,14 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     [walletLayer1, updateDepositData]
   );
 
-  const handleAddressError = useCallback(
-    (
-      value: string
-    ):
-      | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-      | undefined => {
-      myLog("handleAddressError:", value);
-      updateDepositData({ reffer: value, tradeValue: -1, balance: -1 });
-      return undefined;
-      return undefined;
-    },
-    []
-  );
+  const handleAddressError = useCallback((value: string):
+    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
+    | undefined => {
+    myLog("handleAddressError:", value);
+    updateDepositData({ reffer: value, tradeValue: -1, balance: -1 });
+    return undefined;
+    return undefined;
+  }, []);
   const title =
     account.readyState === AccountStatus.NO_ACCOUNT
       ? t("labelCreateLayer2Title")

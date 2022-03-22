@@ -54,26 +54,22 @@ export const useMyNFT = () => {
     setPage(page);
     setIsLoading(true);
   };
-  const getMetaFromContractORIpfs = async ({
+
+  const getMetaFromContractORIpfs = ({
     tokenAddress,
     nftId,
     isCounterFactualNFT,
     deploymentStatus,
     metadata,
   }: loopring_defs.UserNFTBalanceInfo): Promise<any> => {
-    if (
-      tokenAddress &&
-      metadata &&
-      metadata.imageSize &&
-      !!metadata.imageSize.original
-    ) {
-      return {
-        imageSize: metadata.imageSize.original,
-        ...metadata.imageSize,
-        ...metadata.base,
-      };
+    if (!!metadata?.imageSize?.original) {
+      return Promise.resolve({});
     } else if (
+      LoopringAPI.nftAPI &&
       tokenAddress &&
+      (!metadata?.imageSize?.original ||
+        tokenAddress.toLowerCase() ==
+          "0x1cACC96e5F01e2849E6036F25531A9A064D2FB5f".toLowerCase()) &&
       nftId &&
       (!isCounterFactualNFT ||
         (isCounterFactualNFT &&
@@ -156,21 +152,20 @@ export const useMyNFT = () => {
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
-      const tokenInfo = await infoDetail(item);
       if (
-        tokenInfo.isCounterFactualNFT &&
-        tokenInfo.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
+        item.isCounterFactualNFT &&
+        item.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
       ) {
         await LoopringAPI.userAPI?.getAvailableBroker().then(({ broker }) => {
           updateNFTDeployData({ broker });
         });
-        updateNFTDeployData(tokenInfo);
+        updateNFTDeployData(item);
       }
-      updateNFTWithdrawData(tokenInfo);
-      setPopItem(tokenInfo);
-      updateNFTTransferData(tokenInfo);
-      setShowNFTTransfer({ isShow: false, ...tokenInfo });
-      setShowNFTWithdraw({ isShow: false, ...tokenInfo });
+      updateNFTWithdrawData(item);
+      setPopItem(item);
+      updateNFTTransferData(item);
+      setShowNFTTransfer({ isShow: false, ...item });
+      setShowNFTWithdraw({ isShow: false, ...item });
       setIsShow(true);
     },
     [setShowNFTTransfer, updateNFTTransferData, updateNFTWithdrawData]
@@ -223,26 +218,38 @@ export const useMyNFT = () => {
   }, [page]);
   const initNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
+    setNFTList(() => {
+      return walletLayer2NFT.map((item) => {
+        return {
+          ...item,
+          image: item.metadata?.uri,
+          ...item.metadata?.base,
+        };
+      });
+    });
+    setIsLoading(false);
     for (const nftBalanceItem of walletLayer2NFT) {
       mediaPromise.push(getMetaFromContractORIpfs(nftBalanceItem));
     }
 
-    const meta: any[] = await Promise.all(mediaPromise);
-    try {
-      setIsLoading(false);
-      setNFTList(
-        walletLayer2NFT.map((item, index) => {
+    // const meta: any[] = await
+    Promise.all(mediaPromise).then((meta: any[]) => {
+      setNFTList(() => {
+        return walletLayer2NFT.map((item, index) => {
           return {
             ...item,
+            ...item.metadata?.base,
             ...meta[index],
             tokenAddress: item.tokenAddress?.toLowerCase(),
             etherscanBaseUrl,
           };
-        })
-      );
-    } catch (eror) {
-      setIsLoading(false);
-    }
+        });
+      });
+    });
+    // try {
+    //
+    //
+    // }
   }, [etherscanBaseUrl, walletLayer2NFT]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET) {

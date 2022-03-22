@@ -36,23 +36,23 @@ export const NFTMedia = React.memo(
   }) => {
     const theme = useTheme();
     const { t } = useTranslation();
+
+    const [previewSrc, setPreviewSrc] = React.useState(
+      isOrigin
+        ? item?.metadata?.imageSize["original"]
+        : item?.metadata?.imageSize["120-120"]
+    );
+    const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
+      useImage(previewSrc ?? "");
+    console.log(
+      isOrigin,
+      item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+    );
     const fullSrc = isOrigin
-      ? !!item?.metadata?.imageSize?.original
-        ? item.metadata.imageSize.original
-        : item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
-      : item?.metadata?.imageSize["375-375"] ?? item.image;
-    const { hasLoaded } = useImage(fullSrc ?? "");
-
-    const [previewSrc, setPreviewSrc] = React.useState(() => {
-      return (
-        item?.metadata?.imageSize["32-32"] ??
-        item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL) ??
-        ""
-      );
-    });
-
-    const { hasLoaded: preHasLoaded, hasError: preHasError } =
-      useImage(previewSrc);
+      ? item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+      : item?.metadata?.imageSize["original"];
+    const { hasLoaded: fullSrcSrcHasLoaded, hasError: fullSrcSrcHasError } =
+      useImage(fullSrc ?? "");
 
     return (
       <BoxStyle
@@ -62,7 +62,7 @@ export const NFTMedia = React.memo(
         alignItems={"center"}
         justifyContent={"center"}
       >
-        {!preHasLoaded ? (
+        {!previewSrcHasLoaded ? (
           <Box
             flex={1}
             height={"100%"}
@@ -78,7 +78,7 @@ export const NFTMedia = React.memo(
           </Box>
         ) : (
           <>
-            {item && preHasError ? (
+            {item && previewSrcHasError ? (
               <Box
                 flex={1}
                 display={"flex"}
@@ -87,7 +87,7 @@ export const NFTMedia = React.memo(
                 onClick={async (event) => {
                   event.stopPropagation();
                   setPreviewSrc(
-                    item?.metadata?.imageSize["32-32"] ??
+                    item?.metadata?.imageSize["160-160"] ??
                       item?.image?.replace(
                         IPFS_META_URL,
                         LOOPRING_URLs.IPFS_META_URL
@@ -105,18 +105,18 @@ export const NFTMedia = React.memo(
                 display={"flex"}
                 style={{ background: "var(--color-white)" }}
               >
-                {hasLoaded && fullSrc ? (
+                {!!fullSrc && fullSrcSrcHasLoaded ? (
                   <NftImage
+                    alt={item?.image}
                     {...item}
-                    onError={() => onNFTError(item, index)}
-                    alt={item.name ?? "NFT"}
+                    onError={() => undefined}
                     src={fullSrc}
                   />
                 ) : !!previewSrc ? (
                   <NftImage
+                    alt={item?.image}
                     {...item}
                     onError={() => onNFTError(item, index)}
-                    alt={item.name ?? "NFT"}
                     src={previewSrc}
                   />
                 ) : (

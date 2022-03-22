@@ -71,7 +71,7 @@ export const MyNFTPanel = withTranslation("common")(
       page,
       total,
       onNFTError,
-      onNFTReload,
+      // onNFTReload,
       onPageChange,
     } = useMyNFT();
     const [currentTab, setCurrentTab] = React.useState<TabKey>(TabKey.ASSETS);
