@@ -1,5 +1,4 @@
 import {
-  Layer1Action,
   myLog,
   NFTWholeINFO,
   SagaStatus,
@@ -18,7 +17,7 @@ import { useModalData } from "stores/router";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
-import { useLayer1Store } from "../../../stores/localStore/layer1Store";
+// import { useLayer1Store } from "../../../stores/localStore/layer1Store";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
@@ -34,7 +33,7 @@ export const useMyNFT = () => {
     total,
     updateWalletLayer2NFT,
   } = useWalletLayer2NFT();
-  const { clearOneItem } = useLayer1Store();
+  // const { clearOneItem } = useLayer1Store();
 
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
