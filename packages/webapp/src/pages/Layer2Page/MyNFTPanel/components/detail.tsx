@@ -115,14 +115,14 @@ export const NFTDetail = withTranslation("common")(
     etherscanBaseUrl,
     onDetailClose,
     onNFTError,
-    onNFTReload,
+    // onNFTReload,
     t,
     ...rest
   }: {
     onDetailClose: () => void;
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
-    onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
+    // onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
     onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
   } & WithTranslation) => {
     const { assetsRawData } = useGetAssets();
@@ -436,8 +436,9 @@ export const NFTDetail = withTranslation("common")(
             <NFTMedia
               // ref={popItem.tokenId}
               item={popItem}
-              onNFTReload={onNFTReload}
+              // onNFTReload={onNFTReload}
               onNFTError={onNFTError}
+              isOrigin={true}
             />
           </BoxNFT>
         )}
