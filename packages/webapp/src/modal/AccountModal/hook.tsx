@@ -240,12 +240,12 @@ export function useAccountModalForUI({
 
   const onBack = React.useCallback(() => {
     switch (account.readyState) {
-      case "NO_ACCOUNT":
-      case "DEPOSITING":
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.DEPOSITING:
         setShowAccount({ isShow: true, step: AccountStep.NoAccount });
         break;
-      case "LOCKED":
-      case "ACTIVATED":
+      case AccountStatus.LOCKED:
+      case AccountStatus.ACTIVATED:
         setShowAccount({ isShow: true, step: AccountStep.HadAccount });
         break;
       default:
@@ -529,7 +529,10 @@ export function useAccountModalForUI({
               onDisconnect,
               addressShort,
               etherscanLink: etherscanBaseUrl + "address/" + account.accAddress,
-              mainBtn: account.readyState === "ACTIVATED" ? lockBtn : unlockBtn,
+              mainBtn:
+                account.readyState === AccountStatus.ACTIVATED
+                  ? lockBtn
+                  : unlockBtn,
             }}
           />
         ),

@@ -1,4 +1,5 @@
 import {
+  AccountStatus,
   myLog,
   NFTWholeINFO,
   SagaStatus,
@@ -14,16 +15,18 @@ import {
   DEPLOYMENT_STATUS,
 } from "@loopring-web/loopring-sdk";
 import { useModalData } from "stores/router";
-import { useOpenModals } from "@loopring-web/component-lib";
+import { account, useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
+import { useAccount } from "stores/account";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isShow, setIsShow] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const { status: accountStatus } = useAccount();
   const [popItem, setPopItem] =
     React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
   const {
@@ -213,9 +216,6 @@ export const useMyNFT = () => {
     });
   };
 
-  React.useEffect(() => {
-    updateWalletLayer2NFT({ page });
-  }, [page]);
   const initNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
     setNFTList(() => {
@@ -246,11 +246,15 @@ export const useMyNFT = () => {
         });
       });
     });
-    // try {
-    //
-    //
-    // }
   }, [etherscanBaseUrl, walletLayer2NFT]);
+  React.useEffect(() => {
+    if (
+      accountStatus === SagaStatus.UNSET &&
+      account.readyState === AccountStatus.ACTIVATED
+    ) {
+      updateWalletLayer2NFT({ page });
+    }
+  }, [page, accountStatus]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET) {
       initNFT();

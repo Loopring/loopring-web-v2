@@ -67,7 +67,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   React.useEffect(() => {
     const account = store.getState().account;
     if (
-      account.readyState === "ACTIVATED" &&
+      account.readyState === AccountStatus.ACTIVATED &&
       accountStatus === SagaStatus.UNSET
     ) {
       setTokenAddress(() => {

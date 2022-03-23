@@ -114,17 +114,15 @@ export const useSwap = <C extends { [key: string]: any }>({
   const [market, setMarket] = React.useState<MarketType>(
     realMarket as MarketType
   );
-  const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<
-    string | undefined
-  >(undefined);
+  const [swapBtnI18nKey, setSwapBtnI18nKey] =
+    React.useState<string | undefined>(undefined);
   const [swapBtnStatus, setSwapBtnStatus] = React.useState(
     TradeBtnStatus.AVAILABLE
   );
   const [isSwapLoading, setIsSwapLoading] = React.useState(false);
   const [sellMinAmt, setSellMinAmt] = React.useState<string>();
-  const [tradeData, setTradeData] = React.useState<
-    SwapTradeData<IBData<C>> | undefined
-  >(undefined);
+  const [tradeData, setTradeData] =
+    React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
   const [tradeCalcData, setTradeCalcData] = React.useState<
     Partial<TradeCalcData<C>>
   >({
@@ -136,9 +134,8 @@ export const useSwap = <C extends { [key: string]: any }>({
   const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>(
     []
   );
-  const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(
-    undefined
-  );
+  const [tradeFloat, setTradeFloat] =
+    React.useState<TradeFloat | undefined>(undefined);
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
 
@@ -448,7 +445,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           );
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
           if (isNaN(Number(minOrderSize))) {
-            return `labelOrderSmall`;
+            return ``;
           } else {
             return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
           }

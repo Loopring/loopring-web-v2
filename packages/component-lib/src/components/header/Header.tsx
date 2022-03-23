@@ -33,6 +33,7 @@ import {
   LoopringLogoIcon,
   subMenuLayer2,
   headerMenuLandingData,
+  AccountStatus,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -339,7 +340,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       } else {
                         if (
                           child &&
-                          (account.readyState === "ACTIVATED" ||
+                          (account.readyState === AccountStatus.ACTIVATED ||
                             label.id !== "Layer2")
                         ) {
                           return [
