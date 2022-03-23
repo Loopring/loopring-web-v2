@@ -3,13 +3,13 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import store, { persistor } from "stores";
-import { getTheme, i18n, IsMobile } from "@loopring-web/common-resources";
+import { getTheme, i18n } from "@loopring-web/common-resources";
 import { ThemeProvider as MuThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/lab";
 import MomentUtils from "@mui/lab/AdapterMoment";
 
 import { ThemeProvider } from "@emotion/react";
-
+import * as sdk from "@loopring-web/loopring-sdk";
 import { I18nextProvider } from "react-i18next";
 import { PersistGate } from "redux-persist/integration/react";
 import {
@@ -34,12 +34,8 @@ const ProviderApp = React.memo(({ children }: { children: JSX.Element }) => {
 });
 const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
   const { themeMode, setIsMobile } = useSettings();
-  let isMobile = false;
-  if (IsMobile.any()) {
-    isMobile = true;
-  }
+  const isMobile = sdk.IsMobile.any() ? true : false;
   setIsMobile(isMobile);
-
   const providers: Array<[TProvider<any>, any]> = [
     provider(MuThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
     provider(ThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),

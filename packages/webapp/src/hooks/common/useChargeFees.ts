@@ -35,6 +35,7 @@ export function useChargeFees({
   tokenAddress,
   updateData,
   isActiveAccount = false,
+  deployInWithdraw = undefined,
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
@@ -45,6 +46,7 @@ export function useChargeFees({
     | ((fee: FeeInfo, chargeFeeTokenList?: FeeInfo[]) => void);
   isActiveAccount?: boolean;
   needAmountRefresh?: boolean;
+  deployInWithdraw?: boolean;
 }) {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: "ETH",
@@ -126,6 +128,10 @@ export function useChargeFees({
                     .times("1e" + tokenInfo.decimals)
                     .toFixed(0, 0)
                 : "0",
+            deployInWithdraw:
+              requestType === OffchainNFTFeeReqType.NFT_WITHDRAWAL
+                ? deployInWithdraw
+                : undefined,
           };
           let fees: any;
           if (isActiveAccount) {
@@ -334,10 +340,13 @@ export function useChargeFees({
           OffchainFeeReqType.UPDATE_ACCOUNT,
           OffchainFeeReqType.UPDATE_ACCOUNT,
           OffchainFeeReqType.TRANSFER,
-          OffchainNFTFeeReqType.NFT_WITHDRAWAL,
           OffchainNFTFeeReqType.NFT_TRANSFER,
           OffchainNFTFeeReqType.NFT_DEPLOY,
         ].includes(Number(requestType))) ||
+      (!isActiveAccount &&
+        walletLayer2Status === "UNSET" &&
+        OffchainNFTFeeReqType.NFT_WITHDRAWAL === requestType &&
+        tokenAddress) ||
       (!isActiveAccount &&
         tokenSymbol &&
         AccountStatus.ACTIVATED === account.readyState &&

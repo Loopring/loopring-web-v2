@@ -13,13 +13,14 @@ import {
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import {
+  account,
   Button,
-  ModalBackButton,
-  TransferPanel,
-  WithdrawPanel,
   DeployNFTWrap,
   InformationForNoMetaNFT,
+  ModalBackButton,
+  TransferPanel,
   useSettings,
+  WithdrawPanel,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -30,7 +31,8 @@ import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { useGetAssets } from "../../AssetPanel/hook";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
+import { DEPLOYMENT_STATUS, LOOPRING_URLs } from "@loopring-web/loopring-sdk";
+import { useAccount } from "../../../../stores/account";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -113,19 +115,19 @@ export const NFTDetail = withTranslation("common")(
     etherscanBaseUrl,
     onDetailClose,
     onNFTError,
-    onNFTReload,
+    // onNFTReload,
     t,
     ...rest
   }: {
     onDetailClose: () => void;
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
-    onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
+    // onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
     onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
   } & WithTranslation) => {
     const { assetsRawData } = useGetAssets();
     const { isMobile } = useSettings();
-
+    const { account } = useAccount();
     const [showDialog, setShowDialog] =
       React.useState<string | undefined>(undefined);
     const [viewPage, setViewPage] = React.useState<number>(0);
@@ -218,7 +220,7 @@ export const NFTDetail = withTranslation("common")(
                 color={"var(--color-text-secondary)"}
                 title={popItem?.name}
               >
-                {popItem?.total}
+                {Number(popItem.total) - Number(popItem.locked ?? 0)}
               </Typography>
             </Typography>
             <Typography
@@ -327,21 +329,13 @@ export const NFTDetail = withTranslation("common")(
               justifyContent={"space-between"}
             >
               <Box display={"flex"} flexDirection={"row"}>
-                <Typography minWidth={100} marginRight={2}>
-                  {popItem.isDeployed === "yes" ? (
-                    <Button
-                      variant={"outlined"}
-                      size={"medium"}
-                      fullWidth
-                      onClick={() => {
-                        isKnowNFTNoMeta
-                          ? handleChangeIndex(2)
-                          : setShowDialog("Withdraw");
-                      }}
-                    >
-                      {t("labelNFTWithdraw")}
-                    </Button>
-                  ) : popItem.isDeployed === "no" ? (
+                {!!(
+                  popItem.isCounterFactualNFT &&
+                  popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+                  popItem.minter?.toLowerCase() ===
+                    account.accAddress.toLowerCase()
+                ) && (
+                  <Typography minWidth={100} marginRight={2}>
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -350,21 +344,48 @@ export const NFTDetail = withTranslation("common")(
                     >
                       {t("labelNFTDeployContract")}
                     </Button>
-                  ) : (
-                    <Button
-                      variant={"outlined"}
-                      size={"medium"}
-                      fullWidth
-                      disabled={true}
-                    >
-                      <LoadingIcon
-                        color={"primary"}
-                        style={{ width: 18, height: 18, marginRight: "8px" }}
-                      />
-                      {t("labelNFTDeploying")}
-                    </Button>
-                  )}
+                  </Typography>
+                )}
+
+                <Typography minWidth={100} marginRight={2}>
+                  <Button
+                    variant={"outlined"}
+                    size={"medium"}
+                    fullWidth
+                    disabled={
+                      popItem.isCounterFactualNFT &&
+                      popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
+                    }
+                    onClick={() => {
+                      isKnowNFTNoMeta
+                        ? handleChangeIndex(2)
+                        : setShowDialog("Withdraw");
+                    }}
+                  >
+                    {popItem.isCounterFactualNFT &&
+                    popItem.deploymentStatus ===
+                      DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
+                      t("labelNFTDeployWithdraw")
+                    ) : popItem.isCounterFactualNFT &&
+                      popItem.deploymentStatus ===
+                        DEPLOYMENT_STATUS.DEPLOYING ? (
+                      <>
+                        <LoadingIcon
+                          color={"primary"}
+                          style={{
+                            width: 18,
+                            height: 18,
+                            marginRight: "8px",
+                          }}
+                        />
+                        {t("labelNFTDeploying")}
+                      </>
+                    ) : (
+                      t("labelNFTWithdraw")
+                    )}
+                  </Button>
                 </Typography>
+
                 <Typography minWidth={100}>
                   <Button
                     variant={"contained"}
@@ -386,21 +407,7 @@ export const NFTDetail = withTranslation("common")(
           </Box>
         </Box>
       );
-    }, [
-      showDialog,
-      popItem.nftId,
-      popItem.name,
-      popItem.total,
-      popItem.nftIdView,
-      popItem.nftType,
-      popItem.tokenAddress,
-      popItem.minter,
-      popItem.description,
-      popItem.isDeployed,
-      t,
-      isKnowNFTNoMeta,
-      etherscanBaseUrl,
-    ]);
+    }, [showDialog, popItem, t, isKnowNFTNoMeta, etherscanBaseUrl]);
     const theme = useTheme();
     const style = isMobile
       ? {
@@ -429,8 +436,9 @@ export const NFTDetail = withTranslation("common")(
             <NFTMedia
               // ref={popItem.tokenId}
               item={popItem}
-              onNFTReload={onNFTReload}
+              // onNFTReload={onNFTReload}
               onNFTError={onNFTError}
+              isOrigin={true}
             />
           </BoxNFT>
         )}

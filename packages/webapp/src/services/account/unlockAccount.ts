@@ -48,6 +48,7 @@ export async function unlockAccount() {
         walletType: connectName,
         chainId: chainId as any,
         accountId: account.accountId,
+        isMobile: isMobile,
       });
       const walletTypePromise: Promise<{ walletType: any }> =
         window.ethereum &&

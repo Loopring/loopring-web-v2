@@ -115,7 +115,6 @@ export const NoAccount = withTranslation("common")(
           display={"flex"}
           marginX={0}
           marginTop={3}
-          marginBottom={"-40"}
           alignSelf={"stretch"}
           paddingX={5}
           padding={0}

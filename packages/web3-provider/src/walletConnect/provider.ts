@@ -6,9 +6,10 @@ import { ConnectProviders, RPC_URLS } from "@loopring-web/common-resources";
 import { IsMobile } from "../utilities";
 const POLLING_INTERVAL = 12000;
 
-export const WalletConnectProvide = async (
-  account?: string
-): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
+export const WalletConnectProvide = async (props?: {
+  account?: string;
+  darkMode?: boolean;
+}): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
   try {
     const BRIDGE_URL = await fetch("https://wcbridge.loopring.network/hello")
       .then(({ status }) => {
@@ -30,7 +31,7 @@ export const WalletConnectProvide = async (
     const { connector } = provider;
     let web3: Web3 | undefined;
 
-    if (!connector.connected && account === undefined) {
+    if (!connector.connected && props?.account === undefined) {
       await connector.createSession();
       const uri = connector.uri;
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -41,17 +42,17 @@ export const WalletConnectProvide = async (
       await provider.enable();
       web3 = new Web3(provider as any);
       walletServices.sendConnect(web3, provider);
-    } else if (!connector.connected && account !== undefined) {
+    } else if (!connector.connected && props?.account !== undefined) {
       console.log(
         "WalletConnect reconnect connected is failed",
-        account,
+        props.account,
         provider
       );
       throw new Error("walletConnect not connect");
-    } else if (account && provider.isWalletConnect) {
+    } else if (props?.account && provider.isWalletConnect) {
       console.log(
         "WalletConnect reconnect connected is true",
-        account,
+        props.account,
         provider,
         connector.session
       );

@@ -18,6 +18,7 @@ import {
 import { ChainId } from "@loopring-web/loopring-sdk";
 import React, { useEffect, useState } from "react";
 import {
+  AccountStatus,
   ConnectProviders,
   copyToClipBoard,
   GatewayItem,
@@ -321,11 +322,11 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         : () => {
             setShowConnect({ isShow: false });
             switch (account.readyState) {
-              case "ACTIVATED":
-              case "LOCKED":
+              case AccountStatus.ACTIVATED:
+              case AccountStatus.LOCKED:
                 setShowAccount({ isShow: true, step: AccountStep.HadAccount });
                 break;
-              case "DEPOSITING":
+              case AccountStatus.DEPOSITING:
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Deposit_Submit,

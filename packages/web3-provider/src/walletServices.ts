@@ -42,6 +42,11 @@ export const walletServices = {
     }
   },
   sendDisconnect: async (code: any, reason: any) => {
+    // if (connectProvides.usedProvide) {
+    //   if (typeof connectProvides.usedProvide?.disconnect === "function") {
+    //     connectProvides.usedProvide?.disconnect();
+    //   }
+    // }
     subject.next({
       status: "DisConnect",
       data: { reason: reason, code: code },

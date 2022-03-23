@@ -33,6 +33,7 @@ import {
   LoopringLogoIcon,
   subMenuLayer2,
   headerMenuLandingData,
+  AccountStatus,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -270,29 +271,24 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               selected: new RegExp(label.id, "ig").test(
                 selected.split("/")[1] ? selected.split("/")[1] : selected
               ),
-              // handleListKeyDown,
               renderList: ({
                 handleListKeyDown,
               }: {
                 handleListKeyDown: ({ ...rest }) => any;
               }) => {
-                return (
-                  <>
-                    {getDrawerChoices({
-                      menuList: child,
-                      layer: layer + 1,
-                      handleListKeyDown: () => {
-                        if (_handleListKeyDown) {
-                          _handleListKeyDown();
-                        }
-                        if (handleListKeyDown) {
-                          handleListKeyDown({ ...rest });
-                        }
-                      },
-                      ...rest,
-                    })}
-                  </>
-                );
+                return getDrawerChoices({
+                  menuList: child,
+                  layer: layer + 1,
+                  handleListKeyDown: () => {
+                    if (_handleListKeyDown) {
+                      _handleListKeyDown();
+                    }
+                    if (handleListKeyDown) {
+                      handleListKeyDown({ ...rest });
+                    }
+                  },
+                  ...rest,
+                });
               },
             }}
           />
@@ -327,8 +323,12 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                 flexDirection={isMobile || layer > 0 ? "column" : "row"}
               >
                 {!!_obj[key].length &&
-                  _obj[key].map(
-                    (props: HeaderMenuItemInterface, l2Index: number) => {
+                  _obj[key].reduce(
+                    (
+                      prev: JSX.Element[],
+                      props: HeaderMenuItemInterface,
+                      l2Index: number
+                    ) => {
                       const { label, child, status } = props;
                       const selectedFlag = new RegExp(label.id, "ig").test(
                         selected.split("/")[1]
@@ -336,27 +336,26 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                           : selected
                       );
                       if (status === HeaderMenuTabStatus.hidden) {
-                        // return <React.Fragment key={label.id + '-' + layer}></React.Fragment>
-                        return (
-                          <React.Fragment
-                            key={key.toString() + "-" + layer + l2Index}
-                          />
-                        );
+                        return prev;
                       } else {
                         if (
                           child &&
-                          (account.readyState === "ACTIVATED" ||
+                          (account.readyState === AccountStatus.ACTIVATED ||
                             label.id !== "Layer2")
                         ) {
-                          return memoized({
-                            ...props,
-                            layer,
-                            divider: index + 1 !== _obj[key].length,
-                            handleListKeyDown,
-                            ...rest,
-                          });
+                          return [
+                            ...prev,
+                            memoized({
+                              ...props,
+                              layer,
+                              divider: index + 1 !== _obj[key].length,
+                              handleListKeyDown,
+                              ...rest,
+                            }),
+                          ];
                         }
-                        return (
+                        return [
+                          ...prev,
                           <HeadMenuItem
                             selected={selectedFlag}
                             {...{
@@ -378,14 +377,15 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                               key: key.toString() + "-" + layer + l2Index,
                             }}
                             // onClick={handleListKeyDown ? handleListKeyDown : ""}
-                          />
-                        );
+                          />,
+                        ];
                       }
-                    }
+                    },
+                    [] as JSX.Element[]
                   )}
 
                 <Box marginX={3}>
-                  <Divider />
+                  {Reflect.ownKeys(_obj).length !== index + 1 && <Divider />}
                 </Box>
               </Box>
             );

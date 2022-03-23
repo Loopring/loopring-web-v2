@@ -9,7 +9,6 @@ import {
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "defs/common_defs";
 import { useAccountModalForUI } from "./hook";
-import { useNFTDeposit } from "../../hooks/useractions/useNFTDeposit";
 
 export const ModalAccountInfo = withTranslation("common")(
   ({

@@ -22,6 +22,7 @@ import {
   IBData,
   LoadingIcon,
   myLog,
+  NFTWholeINFO,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
@@ -39,7 +40,6 @@ import {
 } from "../../../index";
 import { AddressError, WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
-import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
 import styled from "@emotion/styled";
@@ -54,7 +54,7 @@ const LinkStyle = styled(Link)`
   }
 `;
 export const WithdrawWrap = <
-  T extends IBData<I> | (NFTTokenInfo & IBData<I>),
+  T extends IBData<I> | (NFTWholeINFO & IBData<I>),
   I,
   C extends FeeInfo
 >({
@@ -182,7 +182,10 @@ export const WithdrawWrap = <
           alignItems={"center"} /* marginBottom={2} */
         >
           <Typography component={"h4"} variant={"h3"} marginRight={1}>
-            {t("withdrawTitle")}
+            {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
+            (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
+              ? t("withdrawDeployTitle")
+              : t("withdrawTitle")}
           </Typography>
           <HelpIcon
             {...bindHover(popupState)}
@@ -310,7 +313,7 @@ export const WithdrawWrap = <
                 position={"relative"}
                 marginTop={1 / 4}
               >
-                {t("labelTransferInvalidAddress")}
+                {t("labelInvalidAddress")}
               </Typography>
             ) : isNotAvaiableAddress ? (
               <Typography
@@ -322,6 +325,7 @@ export const WithdrawWrap = <
               >
                 {t(`labelInvalid${isNotAvaiableAddress}`, {
                   token: type === "NFT" ? "NFT" : tradeData.belong,
+                  way: t(`labelWithdraw`),
                 })}
               </Typography>
             ) : (
@@ -453,7 +457,14 @@ export const WithdrawWrap = <
           }
           disabled={getDisabled || withdrawBtnStatus === TradeBtnStatus.LOADING}
         >
-          {t(withdrawI18nKey ?? `withdrawLabelBtn`)}
+          {t(
+            withdrawI18nKey ??
+              ((tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
+                (tradeData as NFTWholeINFO)?.deploymentStatus ===
+                  "NOT_DEPLOYED")
+              ? `withdrawDeployLabelBtn`
+              : `withdrawLabelBtn`
+          )}
         </Button>
       </Grid>
       <Toast

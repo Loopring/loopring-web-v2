@@ -81,6 +81,9 @@ export const useNFTWithdraw = <
   } = useChargeFees({
     requestType: OffchainNFTFeeReqType.NFT_WITHDRAWAL,
     tokenAddress: nftWithdrawValue.tokenAddress,
+    deployInWithdraw:
+      nftWithdrawValue.isCounterFactualNFT &&
+      nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
     updateData: (feeInfo, _chargeFeeList) => {
       updateNFTWithdrawData({ ...nftWithdrawValue, fee: feeInfo });
     },

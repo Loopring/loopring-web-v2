@@ -18,14 +18,14 @@ const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
       const symbol = addressIndex[address.toString().toLowerCase()];
       return { ...prev, [symbol]: _tokenPrices[address as keyof R] };
     }, {} as { [key in keyof R]: number });
-    __timer__ = (() => {
+    __timer__ = ((__timer__) => {
       if (__timer__ && __timer__ !== -1) {
         clearInterval(__timer__);
       }
       return setInterval(() => {
         store.dispatch(getTokenPrices({}));
       }, 900000); //15*60*1000 //900000
-    })();
+    })(__timer__);
     return { tokenPrices, __timer__, __rawConfig__: raw_data };
   }
 };
