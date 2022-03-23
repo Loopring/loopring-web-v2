@@ -1,8 +1,12 @@
 import React from "react";
-import { walletServices } from "./walletServices";
-import { Commands, ErrorType, ProcessingType } from "./command";
 import { provider } from "web3-core";
 import { ChainId } from "@loopring-web/loopring-sdk";
+import {
+  walletServices,
+  Commands,
+  ErrorType,
+  ProcessingType,
+} from "@loopring-web/web3-provider";
 
 export function useConnectHook({
   // handleChainChanged,
@@ -33,10 +37,14 @@ export function useConnectHook({
       ({ data, status }: { status: keyof typeof Commands; data?: any }) => {
         switch (status) {
           case "Error":
-            handleError ? handleError(data) : undefined;
+            if (handleError) {
+              handleError(data);
+            }
             break;
           case "Processing":
-            handleProcessing ? handleProcessing(data) : {};
+            if (handleProcessing) {
+              handleProcessing(data);
+            }
             break;
           // case 'ChangeNetwork':
           //     // {chainId} = data ? data : {chainId: undefined};
@@ -50,12 +58,14 @@ export function useConnectHook({
                   provider: undefined,
                   chainId: 1,
                 };
-            !!handleConnect
-              ? handleConnect({ accounts, provider, chainId })
-              : undefined;
+            if (handleConnect) {
+              handleConnect({ accounts, provider, chainId });
+            }
             break;
           case "DisConnect":
-            !!handleAccountDisconnect ? handleAccountDisconnect() : undefined;
+            if (handleAccountDisconnect) {
+              handleAccountDisconnect();
+            }
         }
       }
     );
