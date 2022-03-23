@@ -384,7 +384,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                   )}
 
                 <Box marginX={3}>
-                  <Divider />
+                  {Reflect.ownKeys(_obj).length !== index + 1 && <Divider />}
                 </Box>
               </Box>
             );

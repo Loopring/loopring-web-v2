@@ -325,7 +325,7 @@ export const WithdrawWrap = <
               >
                 {t(`labelInvalid${isNotAvaiableAddress}`, {
                   token: type === "NFT" ? "NFT" : tradeData.belong,
-                  way: t(`labelWithdraw`).toUpperCase(),
+                  way: t(`labelWithdraw`),
                 })}
               </Typography>
             ) : (
