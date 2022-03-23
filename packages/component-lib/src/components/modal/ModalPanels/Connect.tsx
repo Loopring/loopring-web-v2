@@ -1,5 +1,5 @@
 import { WithTranslation } from "react-i18next";
-import { ConnectProviders } from "@loopring-web/common-resources";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 import { ConnectBase, IconType, PanelProps } from "./BasicPanel";
 import { useSettings } from "../../../stores";
 

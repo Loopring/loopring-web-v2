@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Trans, withTranslation, WithTranslation } from "react-i18next";
 import {
-  ConnectProviders,
   DoneIcon,
   FailedIcon,
   RefuseIcon,
@@ -15,6 +14,7 @@ import React from "react";
 import { Button } from "../../basic-lib";
 import { Link } from "@mui/material";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 export enum IconType {
   LoadingIcon,

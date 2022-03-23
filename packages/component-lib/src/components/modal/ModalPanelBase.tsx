@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Trans, WithTranslation } from "react-i18next";
 import {
-  ConnectProviders,
   // LoadingIcon,
   DoneIcon,
   FailedIcon,
@@ -11,6 +10,7 @@ import {
 import React from "react";
 import { useTheme } from "@emotion/react";
 import { Button } from "../basic-lib";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 export const InProgressBasic = ({
   label,

@@ -1,5 +1,5 @@
 import { StateBase } from "./sagaStatus";
-import { ConnectProviders } from "./connect";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 export enum AccountStatus {
   UN_CONNECT = "UN_CONNECT",

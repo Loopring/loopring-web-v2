@@ -5,12 +5,8 @@ import {
   updateAccountStatus,
 } from "./reducer";
 import { PayloadAction } from "@reduxjs/toolkit";
-import {
-  Account,
-  AccountStatus,
-  ConnectProviders,
-} from "@loopring-web/common-resources";
-import { connectProvides } from "@loopring-web/web3-provider";
+import { Account, AccountStatus } from "@loopring-web/common-resources";
+import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
 
 export function* accountUpdateSaga({
   payload,

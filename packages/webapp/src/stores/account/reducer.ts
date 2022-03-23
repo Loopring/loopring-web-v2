@@ -4,9 +4,9 @@ import {
   Account,
   AccountState,
   AccountStatus,
-  ConnectProviders,
   SagaStatus,
 } from "@loopring-web/common-resources";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 const initialState: AccountState = {
   accAddress: "",

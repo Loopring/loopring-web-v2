@@ -19,7 +19,6 @@ import { ChainId } from "@loopring-web/loopring-sdk";
 import React, { useEffect, useState } from "react";
 import {
   AccountStatus,
-  ConnectProviders,
   copyToClipBoard,
   GatewayItem,
   gatewayList as DefaultGatewayList,
@@ -28,6 +27,7 @@ import {
   SagaStatus,
   SoursURL,
 } from "@loopring-web/common-resources";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 import { useAccount } from "stores/account";
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 import { useSystem } from "stores/system";

@@ -2,15 +2,9 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { LoopringAPI } from "api_wrapper";
 import store from "stores";
 import { accountServices } from "./accountServices";
-import {
-  ConnectProviders,
-  myLog,
-  UIERROR_CODE,
-} from "@loopring-web/common-resources";
+import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import { checkErrorInfo } from "hooks/useractions/utils";
-
 import * as sdk from "@loopring-web/loopring-sdk";
-import Web3 from "web3";
 
 export async function unlockAccount() {
   const accoun_old = store.getState().account;

@@ -4,7 +4,7 @@ import { Meta, Story } from "@storybook/react/types-6-0";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
 import { Button, Grid, Typography } from "@mui/material";
-import { ConnectProviders, gatewayList } from "@loopring-web/common-resources";
+import { gatewayList } from "@loopring-web/common-resources";
 import { ModalWalletConnect } from "./WalletConnect";
 
 import {
@@ -146,7 +146,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (
           <Deposit_Approve_WaitForAuth
-            providerName={ConnectProviders.MetaMask}
+            providerName={"MetaMask"}
             {...{
               ...rest,
               symbol: "LRC",
@@ -192,7 +192,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Deposit_WaitForAuth]: {
         view: (
           <Deposit_WaitForAuth
-            providerName={ConnectProviders.WalletConnect}
+            providerName={"WalletConnect"}
             {...{
               ...rest,
               symbol: "LRC",
@@ -514,7 +514,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
           <UpdateAccount_Approve_WaitForAuth
             {...{
               ...rest,
-              providerNam: ConnectProviders.MetaMask,
+              providerNam: "MetaMask",
             }}
           />
         ),
@@ -576,7 +576,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
             patch={{ isReset: true }}
             {...{
               ...rest,
-              providerNam: ConnectProviders.MetaMask,
+              providerNam: "MetaMask",
             }}
           />
         ),

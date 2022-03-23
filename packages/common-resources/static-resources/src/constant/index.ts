@@ -8,7 +8,6 @@ export * from "./table";
 export * from "./loopring";
 
 export * from "./account";
-export * from "./connect";
 export * from "./sagaStatus";
 export * from "./proLayout";
 export * from "./miningOuterLinks";

@@ -11,11 +11,11 @@ import { ProviderMenuProps } from "./Interface";
 import {
   CheckBoxIcon,
   CheckedIcon,
-  ConnectProviders,
   GatewayItem,
 } from "@loopring-web/common-resources";
 import React from "react";
 import { MenuBtnStyled, shake } from "../../styled";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 const CheckboxStyled = styled(Checkbox)`
   &.shake {

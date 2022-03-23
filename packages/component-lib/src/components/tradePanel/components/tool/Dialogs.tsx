@@ -12,7 +12,7 @@ import {
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { Button } from "../../../basic-lib";
 import React from "react";
-import { ConnectProviders } from "@loopring-web/common-resources";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
 
 const DialogStyle = styled(Dialog)`
