@@ -44,10 +44,10 @@ export const NFTMedia = React.memo(
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
       useImage(previewSrc ?? "");
-    console.log(
-      isOrigin,
-      item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
-    );
+    // mylog(
+    //   isOrigin,
+    //   item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+    // );
     const fullSrc = isOrigin
       ? item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
       : item?.metadata?.imageSize["original"];

@@ -234,11 +234,10 @@ export const useMyNFT = () => {
 
     // const meta: any[] = await
     Promise.all(mediaPromise).then((meta: any[]) => {
-      setNFTList(() => {
+      setNFTList((state) => {
         return walletLayer2NFT.map((item, index) => {
           return {
-            ...item,
-            ...item.metadata?.base,
+            ...state[index],
             ...meta[index],
             tokenAddress: item.tokenAddress?.toLowerCase(),
             etherscanBaseUrl,
