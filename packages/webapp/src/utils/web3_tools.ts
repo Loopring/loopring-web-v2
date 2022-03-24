@@ -11,8 +11,8 @@ import ms from "ms.macro";
 
 import { utils } from "ethers";
 import { connectProvides } from "@loopring-web/web3-provider";
-import { AddressError } from "defs/common_defs";
 import { myLog } from "@loopring-web/common-resources";
+import { AddressError } from "../defs/common_defs";
 
 export function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(
