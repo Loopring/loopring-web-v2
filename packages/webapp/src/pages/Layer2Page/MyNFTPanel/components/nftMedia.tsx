@@ -38,9 +38,10 @@ export const NFTMedia = React.memo(
     const { t } = useTranslation();
 
     const [previewSrc, setPreviewSrc] = React.useState(
-      isOrigin
+      (isOrigin
         ? item?.metadata?.imageSize["original"]
-        : item?.metadata?.imageSize["120-120"]
+        : item?.metadata?.imageSize["120-120"]) ??
+        item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
       useImage(previewSrc ?? "");
@@ -48,9 +49,11 @@ export const NFTMedia = React.memo(
     //   isOrigin,
     //   item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
     // );
-    const fullSrc = isOrigin
-      ? item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
-      : item?.metadata?.imageSize["original"];
+    const fullSrc =
+      (isOrigin
+        ? item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+        : item?.metadata?.imageSize["original"]) ??
+      item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL);
     const { hasLoaded: fullSrcSrcHasLoaded, hasError: fullSrcSrcHasError } =
       useImage(fullSrc ?? "");
 
