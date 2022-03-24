@@ -229,7 +229,7 @@ export const useMyNFT = () => {
     });
     setIsLoading(false);
     for (const nftBalanceItem of walletLayer2NFT) {
-      mediaPromise.push(getMetaFromContractORIpfs(nftBalanceItem));
+      mediaPromise.push(infoDetail(nftBalanceItem));
     }
 
     // const meta: any[] = await
