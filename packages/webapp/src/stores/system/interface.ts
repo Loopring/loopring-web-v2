@@ -29,7 +29,16 @@ export type System<C extends { [key: string]: any }> = {
     order: { enable: boolean; reason?: string };
     joinAmm: { enable: boolean; reason?: string };
     dAppTrade: { enable: boolean; reason?: string };
-    raw_data: { enable: boolean; reason?: string };
+    raw_data?: any;
+    exitAmm?: { enable: boolean; reason?: string };
+    transfer?: { enable: boolean; reason?: string };
+    transferNFT?: { enable: boolean; reason?: string };
+    deposit?: { enable: boolean; reason?: string };
+    depositNFT?: { enable: boolean; reason?: string };
+    withdraw?: { enable: boolean; reason?: string };
+    withdrawNFT?: { enable: boolean; reason?: string };
+    mintNFT?: { enable: boolean; reason?: string };
+    deployNFT?: { enable: boolean; reason?: string };
   };
 };
 

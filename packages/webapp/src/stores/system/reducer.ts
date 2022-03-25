@@ -19,7 +19,6 @@ const initialState: SystemStatus = {
     order: { enable: false },
     joinAmm: { enable: false },
     dAppTrade: { enable: false },
-    raw_data: { enable: false },
   },
   exchangeInfo: undefined,
 

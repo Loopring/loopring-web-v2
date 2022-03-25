@@ -36,7 +36,6 @@ export const ModalSettingFee = withTranslation("common", { withRef: true })(
     ...rest
   }: ModalSettingFeeProps & WithTranslation) => {
     const theme = useTheme();
-    // const {w, h} = style ? style : {w: undefined, h: undefined};
     const { feeChargeOrder, setFeeChargeOrder } = useSettings();
     const { setShowFeeSetting } = useOpenModals();
 
@@ -203,17 +202,8 @@ export const ModalSettingFee = withTranslation("common", { withRef: true })(
                 >
                   {t("labelReset")}
                 </Link>
-                {/*<Button fullWidth variant={'text'} size={'medium'} color={'primary'} onClick={() => {*/}
-                {/*    // copyToClipBoard(info)*/}
-                {/*    // setExportAccountToastOpen(true)*/}
-                {/*    setFeeChargeOrder(feeChargeValue)*/}
-                {/*    setShowFeeSetting({isShow:false})*/}
-                {/*}}*/}
-                {/*>{t(`labelExportAccountCopy`)}*/}
-                {/*</Button>*/}
               </Typography>
             </Box>
-            {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> :<></>}*/}
           </Box>
         </SwitchPanelStyled>
       </Modal>

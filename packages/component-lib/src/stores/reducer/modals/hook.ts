@@ -18,14 +18,17 @@ import {
   setShowSwap,
   setShowTransfer,
   setShowWithdraw,
+  setShowTradeIsFrozen,
 } from "./reducer";
 
 import React from "react";
 import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { ToggleState } from "../toggle";
 
 export const useOpenModals = () => {
   const dispatch = useDispatch();
+  const toggle = useSelector((state: any) => state.toggle) as ToggleState;
   return {
     modals: useSelector((state: any) => state.modals) as ModalState,
     setShowSupport: React.useCallback(
@@ -34,50 +37,97 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowTransfer: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) =>
-        dispatch(setShowTransfer(state)),
+      (state: ModalStatePlayLoad & Transaction) => {
+        if (toggle.transfer.enable) {
+          dispatch(setShowTransfer(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Transfer" }));
+        }
+      },
       [dispatch]
     ),
     setShowDeposit: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) =>
-        dispatch(setShowDeposit(state)),
+      (state: ModalStatePlayLoad & Transaction & { partner?: boolean }) => {
+        if (toggle.deposit.enable) {
+          dispatch(setShowDeposit(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Deposit" }));
+        }
+      },
       [dispatch]
     ),
     setShowWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & Transaction) =>
-        dispatch(setShowWithdraw(state)),
+      (state: ModalStatePlayLoad & Transaction) => {
+        if (toggle.withdraw.enable) {
+          dispatch(setShowWithdraw(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Withdraw" }));
+        }
+      },
       [dispatch]
     ),
     setShowNFTTransfer: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) =>
-        dispatch(setShowNFTTransfer(state)),
+      (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
+        if (toggle.transferNFT.enable) {
+          dispatch(setShowNFTTransfer(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Transfer" }));
+        }
+      },
       [dispatch]
     ),
     setShowNFTDeposit: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) =>
-        dispatch(setShowNFTDeposit(state)),
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
+        if (toggle.depositNFT.enable) {
+          dispatch(setShowNFTDeposit(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Deposit" }));
+        }
+      },
       [dispatch]
     ),
     setShowNFTMint: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) =>
-        dispatch(setShowNFTMint(state)),
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
+        if (toggle.mintNFT.enable) {
+          dispatch(setShowNFTMint(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Mint" }));
+        }
+      },
       [dispatch]
     ),
     setShowNFTWithdraw: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) =>
-        dispatch(setShowNFTWithdraw(state)),
+      (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
+        if (toggle.withdrawNFT.enable) {
+          dispatch(setShowNFTWithdraw(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Withdraw" }));
+        }
+      },
       [dispatch]
     ),
 
     setShowResetAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
-        dispatch(setShowResetAccount(state));
+        if (toggle.updateAccount.enable) {
+          dispatch(setShowResetAccount(state));
+        } else {
+          dispatch(
+            setShowTradeIsFrozen({ isShow: true, type: "reset-account" })
+          );
+        }
       },
       [dispatch]
     ),
     setShowActiveAccount: React.useCallback(
       (state: ModalStatePlayLoad) => {
-        dispatch(setShowActiveAccount(state));
+        if (toggle.updateAccount.enable) {
+          dispatch(setShowActiveAccount(state));
+        } else {
+          dispatch(
+            setShowTradeIsFrozen({ isShow: true, type: "active-account" })
+          );
+        }
       },
       [dispatch]
     ),
@@ -115,6 +165,11 @@ export const useOpenModals = () => {
     ),
     setShowFeeSetting: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowFeeSetting(state)),
+      [dispatch]
+    ),
+    setShowTradeIsFrozen: React.useCallback(
+      (state: ModalStatePlayLoad & { type?: string }) =>
+        dispatch(setShowTradeIsFrozen(state)),
       [dispatch]
     ),
   };
