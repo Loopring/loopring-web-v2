@@ -92,6 +92,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     }, [_chainId]);
     const metaMaskCallback = React.useCallback(async () => {
       updateAccount({ connectName: ConnectProviders.MetaMask });
+      debugger;
       await connectProvides.MetaMask();
 
       // statusAccountUnset();

@@ -66,7 +66,7 @@ npm run storybook
 - [Whitepaper](https://loopring.org/resources/en_whitepaper.pdf)
 - [Design Docs](https://github.com/LoopringSecondary/docs/wiki/Loopring3_Design)
 
-## ❓[Help](https://loopring.io/#/newticket)
+## ❓[Help](https://desk.zoho.com/portal/loopring/en/home)
 
 ## 🔑 Security
 
