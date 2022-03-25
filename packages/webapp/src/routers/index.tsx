@@ -1,4 +1,4 @@
-import { Redirect, Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import React from "react";
 import { Box, Container } from "@mui/material";
 import Header from "layouts/header";
@@ -14,7 +14,6 @@ import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
-  myLog,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -25,7 +24,6 @@ import {
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { ReportPage } from "pages/ReportPage";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
@@ -135,26 +133,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Header isHideOnScroll={true} isLandPage />
           )}
           <LandPage />
-        </Route>
-        <Route exact path="/report">
-          <Redirect to="/newticket" />
-        </Route>
-        <Route exact path="/newticket">
-          {query && query.has("noheader") ? (
-            <></>
-          ) : (
-            <Header isHideOnScroll={true} isLandPage />
-          )}
-          <Container
-            maxWidth="lg"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flex: 1,
-            }}
-          >
-            <ReportPage />
-          </Container>
         </Route>
         <Route exact path="/document/:path">
           {query && query.has("noheader") ? (

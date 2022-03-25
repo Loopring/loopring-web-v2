@@ -25,8 +25,6 @@ import { useLayer1Store } from "./stores/localStore/layer1Store";
 import { useSettings } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
 
-// import { statusUnset as accountStatusUnset } from './stores/account';
-
 /**
  * @description
  * @step1 subscribe Connect hook
@@ -52,7 +50,13 @@ export function useInit() {
   const { isMobile } = useSettings();
   const theme = useTheme();
 
-  const { account, updateAccount, resetAccount } = useAccount();
+  const {
+    account,
+    updateAccount,
+    resetAccount,
+    status: accountStatus,
+    statusUnset: accountStatusUnset,
+  } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
     useTokenMap();
   const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap();
@@ -138,6 +142,20 @@ export function useInit() {
       }
     })(account);
   }, []);
+
+  React.useEffect(() => {
+    switch (accountStatus) {
+      case SagaStatus.ERROR:
+        accountStatusUnset();
+        setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        accountStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [accountStatus]);
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:

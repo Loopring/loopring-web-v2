@@ -10,6 +10,8 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { unlockAccount } from "./unlockAccount";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
+import { PublicKey } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
+import { AccountInfo } from "@loopring-web/loopring-sdk";
 
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
@@ -98,32 +100,30 @@ export const accountServices = {
   },
   sendActiveAccountDeposit: () => {},
   sendAccountSigned: ({
-    accountId,
+    // accountId,
     apiKey,
+    // frozen,
     eddsaKey,
-    isReset,
-    keySeed,
-    nonce,
+    // isReset,
+    // keySeed,
+    // nonce,
     isInCounterFactualStatus,
     isContract,
   }: {
-    accountId?: number;
     apiKey?: string;
     eddsaKey?: any;
-    isReset?: boolean;
-    nonce?: number;
-    keySeed?: string;
     isInCounterFactualStatus?: boolean;
     isContract?: boolean;
   }) => {
     const updateInfo =
-      accountId && apiKey && eddsaKey && nonce !== undefined
+      apiKey && eddsaKey
         ? {
-            accountId,
+            // accountId,
             apiKey,
             eddsaKey,
-            nonce,
-            keySeed,
+            // nonce,
+            // frozen,
+            // keySeed,
             publicKey: {
               x: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyX)),
               y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
@@ -136,15 +136,10 @@ export const accountServices = {
         : { readyState: AccountStatus.ACTIVATED };
 
     store.dispatch(updateAccountStatus(updateInfo));
-
-    if (!isReset) {
-      subject.next({
-        status: Commands.AccountUnlocked,
-        data: undefined,
-      });
-    } else {
-      myLog("sendAccountSigned: isReset!!!!!");
-    }
+    subject.next({
+      status: Commands.AccountUnlocked,
+      data: undefined,
+    });
   },
   sendNoAccount: () => {
     store.dispatch(
