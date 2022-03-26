@@ -94,13 +94,17 @@ export const useMyNFT = () => {
         });
     } else {
       myLog("ipfsNftIDToCid", nftId);
-      const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(nftId ?? "");
-      const uri = LOOPRING_URLs.IPFS_META_URL + cid;
-      return fetch(uri)
-        .then((response) => response.json())
-        .catch((error) => {
-          return {};
-        });
+      try {
+        const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(nftId ?? "");
+        const uri = LOOPRING_URLs.IPFS_META_URL + cid;
+        return fetch(uri)
+          .then((response) => response.json())
+          .catch((error) => {
+            return {};
+          });
+      } catch (e) {
+        return Promise.resolve({});
+      }
     }
   };
 

@@ -32,6 +32,7 @@ import {
   TradeBtnStatus,
   useOpenModals,
   useSettings,
+  useToggle,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
@@ -95,9 +96,12 @@ export const useSwap = <C extends { [key: string]: any }>({
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
     useTokenMap();
   const { tickerMap } = useTicker();
-  const { setShowSupport } = useOpenModals();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { ammMap } = useAmmMap();
   const { exchangeInfo, allowTrade } = useSystem();
+  const {
+    toggle: { order },
+  } = useToggle();
   const {
     pageTradeLite,
     updatePageTradeLite,
@@ -475,6 +479,9 @@ export const useSwap = <C extends { [key: string]: any }>({
     myLog("---- swapCalculatorCallback priceLevel:", priceLevel);
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true });
+      setIsSwapLoading(false);
+    } else if (!order.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "Swap" });
       setIsSwapLoading(false);
     } else {
       // {}

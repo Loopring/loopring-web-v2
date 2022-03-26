@@ -15,6 +15,7 @@ import {
   TradeProType,
   useOpenModals,
   useSettings,
+  useToggle,
 } from "@loopring-web/component-lib";
 import { usePageTradePro } from "stores/router";
 import { walletLayer2Service } from "services/socket";
@@ -47,6 +48,10 @@ export const useLimit = <C extends { [key: string]: any }>({
   const { marketMap, tokenMap } = useTokenMap();
   const { tokenPrices } = useTokenPrices();
   const { forex, allowTrade } = useSystem();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
+  const {
+    toggle: { order },
+  } = useToggle();
   const { currency, isMobile } = useSettings();
 
   const { t } = useTranslation("common");
@@ -57,7 +62,6 @@ export const useLimit = <C extends { [key: string]: any }>({
   const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
   const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
   const marketPrecision = marketMap[market].precisionForPrice;
-  const { setShowSupport } = useOpenModals();
   const tradePrice =
     pageTradePro.market === market && pageTradePro.ticker
       ? pageTradePro.ticker.close
@@ -506,34 +510,26 @@ export const useLimit = <C extends { [key: string]: any }>({
     },
     [setLimitTradeData, currency, forex]
   );
-  const handlePriceError = React.useCallback(
-    (
-      data: IBData<any>
-    ):
-      | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-      | undefined => {
-      const tradeValue = data.tradeValue;
-      if (tradeValue) {
-        const [, precision] = tradeValue.toString().split(".");
-        if (
-          precision &&
-          precision.length > marketMap[market].precisionForPrice
-        ) {
-          return {
-            error: true,
-            message: t("labelErrorPricePrecisionLimit", {
-              symbol: data.belong,
-              decimal: marketMap[market].precisionForPrice,
-            }),
-          };
-        }
-        return undefined;
-      } else {
-        return undefined;
+  const handlePriceError = React.useCallback((data: IBData<any>):
+    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
+    | undefined => {
+    const tradeValue = data.tradeValue;
+    if (tradeValue) {
+      const [, precision] = tradeValue.toString().split(".");
+      if (precision && precision.length > marketMap[market].precisionForPrice) {
+        return {
+          error: true,
+          message: t("labelErrorPricePrecisionLimit", {
+            symbol: data.belong,
+            decimal: marketMap[market].precisionForPrice,
+          }),
+        };
       }
-    },
-    []
-  );
+      return undefined;
+    } else {
+      return undefined;
+    }
+  }, []);
 
   const onSubmitBtnClick = React.useCallback(async () => {
     setIsLimitLoading(true);
@@ -544,6 +540,9 @@ export const useLimit = <C extends { [key: string]: any }>({
     );
     if (!allowTrade?.order?.enable) {
       setShowSupport({ isShow: true });
+      setIsLimitLoading(false);
+    } else if (!order.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "Limit" });
       setIsLimitLoading(false);
     } else {
       switch (priceLevel) {

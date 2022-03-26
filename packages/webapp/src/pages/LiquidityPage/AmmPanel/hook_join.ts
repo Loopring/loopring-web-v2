@@ -9,7 +9,11 @@ import {
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
-import { TradeBtnStatus, useOpenModals } from "@loopring-web/component-lib";
+import {
+  TradeBtnStatus,
+  useOpenModals,
+  useToggle,
+} from "@loopring-web/component-lib";
 import { IdMap, useTokenMap } from "../../../stores/token";
 import { useAmmMap } from "../../../stores/Amm/AmmMap";
 import {
@@ -78,11 +82,13 @@ export const useAmmJoin = ({
   const { t } = useTranslation(["common", "error"]);
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const { setShowSupport } = useOpenModals();
-
   const { coinMap, tokenMap } = useTokenMap();
   const { allowTrade } = useSystem();
   const { ammMap } = useAmmMap();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
+  const {
+    toggle: { joinAmm },
+  } = useToggle();
   const { account, status: accountStatus } = useAccount();
   const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
   const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
@@ -409,6 +415,9 @@ export const useAmmJoin = ({
 
       if (!allowTrade.order.enable) {
         setShowSupport({ isShow: true });
+        setIsLoading(false);
+      } else if (!joinAmm.enable) {
+        setShowTradeIsFrozen({ isShow: true });
         setIsLoading(false);
       } else {
         if (
