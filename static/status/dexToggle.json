@@ -13,7 +13,7 @@
   },
   "transfer": {
     "enable": false,
-    "reason": null
+    "reason": "reason"
   },
   "transferNFT": {
     "enable": false,
