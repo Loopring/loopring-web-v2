@@ -3,8 +3,6 @@ import styled from "@emotion/styled";
 import { MuiMenuItemProps } from "./Interface";
 import React from "react";
 
-//backgroundColor: ${theme.colorBase.primaryLight};
-// background-color: ${theme.colorBase.background().hover};
 export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
   ${({ withnocheckicon }) => {
     return withnocheckicon === "true"
@@ -84,6 +82,7 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
   }
 ` as typeof MenuItem;
 
+export * from "./FileListItem";
 export * from "./HeadMenuItem";
 export * from "./Interface";
 export * from "./CoinList";

@@ -471,6 +471,7 @@ export default {
   labelIKnow: "OK",
   labelYes: "Yes",
   labelNo: "No",
+  labelOK: "Ok",
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
@@ -623,4 +624,8 @@ export default {
   labelGoExplore: "View transactions on <1>block explorer</1>",
   labelNOETH: "Need ETH for gas",
   labelBanxaFeeFree: "zero fees for a limited time",
+  labelLoadTitle: "Step1: Upload Media Resource ({{types}})",
+  labelIPFSStep2: "Step2: create NFT metadata information and submit",
+  labelLoadDes: "Drag or click the button to upload files ({{types}})",
+  labelUpload: "upLoad",
 };

@@ -93,7 +93,7 @@ export const useMyNFT = () => {
           return {};
         });
     } else {
-      myLog("ipfsNftIDToCid", nftId);
+      // myLog("ipfsNftIDToCid", nftId);
       try {
         const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(nftId ?? "");
         const uri = LOOPRING_URLs.IPFS_META_URL + cid;
