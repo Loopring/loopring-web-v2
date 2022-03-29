@@ -119,6 +119,7 @@ export function useChargeFees({
             | GetOffchainFeeAmtRequest
             | GetNFTOffchainFeeAmtRequest = {
             accountId: account.accountId,
+            //@ts-ignore
             tokenSymbol,
             tokenAddress,
             requestType,

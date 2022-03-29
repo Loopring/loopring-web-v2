@@ -72,11 +72,8 @@ export type TransferExtendProps<T, I, C> = {
   wait?: number;
 } & TransferInfoProps<C>;
 
-export type TransferViewProps<
-  T,
-  I,
-  C = CoinKey<I> | string
-> = BasicACoinTradeViewProps<T, I> & TransferExtendProps<T, I, C>;
+export type TransferViewProps<T, I, C = CoinKey<I> | string> =
+  BasicACoinTradeViewProps<T, I> & TransferExtendProps<T, I, C>;
 
 /**
  * private props
@@ -171,11 +168,8 @@ export type WithdrawExtendProps<T, I, C> = {
   wait?: number;
 } & WithdrawInfoProps<C>;
 
-export type WithdrawViewProps<
-  T,
-  I,
-  C = CoinKey<I> | string
-> = BasicACoinTradeViewProps<T, I> & WithdrawExtendProps<T, I, C>;
+export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
+  BasicACoinTradeViewProps<T, I> & WithdrawExtendProps<T, I, C>;
 
 export type inputNFTProps<T, I, C = CoinInfo<I>> = RequireOne<
   InputCoinProps<T, I, C>,
@@ -189,8 +183,8 @@ export type inputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
 export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
-  coinMap: CoinMap<I, CoinInfo<I>>;
-  walletMap: WalletMap<I, WalletCoin<I>>;
+  coinMap?: CoinMap<I, CoinInfo<I>>;
+  walletMap?: WalletMap<I, WalletCoin<I>>;
   type?: "TOKEN" | "NFT";
 };
 
