@@ -48,15 +48,12 @@ export const Card = withTranslation(["landPage", "common"], { withRef: true })(
     const [{ zoom, scale, zIndex, boxShadow, border, background }, api] =
       useSpring(() => {
         return {
-          // z:0,
-          // position:'relative',
           scale: 1,
           zoom: 1,
           zIndex: 10,
           border: "var(--border-card)",
           boxShadow: "var(--box-card-shadow)",
           background: "var(--box-card-background)",
-          //(key)=>{ return key=== "zIndex"},
           default: {
             immediate: (key) => {
               return ["zIndex", "boxShadow", "background", "border"].includes(
