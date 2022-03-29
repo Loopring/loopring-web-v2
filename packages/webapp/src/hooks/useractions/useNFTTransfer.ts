@@ -294,7 +294,7 @@ export const useNFTTransfer = <
             resetNFTTransferData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         const code = checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
@@ -398,7 +398,7 @@ export const useNFTTransfer = <
           myLog("nftTransfer req:", req);
 
           processRequest(req, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           // nftTransfer failed
           setShowAccount({

@@ -262,7 +262,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
             resetDefault();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         const code = checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
@@ -311,7 +311,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
             ...shouldUpdate,
           };
           setIsAvaiableId(true);
-        } catch (error) {
+        } catch (error: any) {
           myLog("handleOnNFTDataChange -> data.nftId", error);
           setIsAvaiableId(false);
           shouldUpdate = {
@@ -346,7 +346,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                 ...shouldUpdate,
               };
             }
-          } catch (error) {
+          } catch (error: any) {
             shouldUpdate = {
               nftId: nftId,
               name: undefined,
@@ -444,7 +444,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
           myLog("onNFTMintClick req:", req);
 
           processRequest(req, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           // transfer failed
           setShowAccount({

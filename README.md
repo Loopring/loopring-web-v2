@@ -55,8 +55,9 @@ npm run storybook
 - You are welcome to reuse it or integrate your provider service with our website.
 - Feel free to leave suggestions or ideas.
 
-### 📒 API & SDK
-- [JS SDK](https://loopring.github.io/loopring_sdk)
+### 📒 API & Dependency
+- [Web3-Provider](https://www.npmjs.com/package/@loopring-web/web3-provider)
+- [Loopring-sdk](https://www.npmjs.com/package/@loopring-web/loopring-sdk)
 - [Python](https://github.com/Loopring/hello_loopring)
 - [APIs](https://docs.loopring.io/en/)
 

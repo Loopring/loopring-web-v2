@@ -78,7 +78,7 @@ export async function unlockAccount() {
           isContract: walletType?.isContract,
         });
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log("unlockAccount error:", JSON.stringify(e));
 
       const errType = checkErrorInfo(e, true);

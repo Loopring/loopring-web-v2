@@ -444,7 +444,7 @@ export const useMarket = <C extends { [key: string]: any }>({
             resetTradeData(pageTradePro.tradeType);
             walletLayer2Service.sendUserUpdate();
           }
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,

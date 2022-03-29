@@ -10,6 +10,7 @@ import {
 import { useTokenMap } from "./stores/token";
 import { useAccount } from "./stores/account";
 import {
+  ConnectProviders,
   ConnectProvides,
   connectProvides,
   walletServices,
@@ -88,7 +89,7 @@ export function useInit() {
       if (
         account.accAddress !== "" &&
         account.connectName &&
-        account.connectName !== "unknown"
+        account.connectName !== ConnectProviders.Unknown
       ) {
         try {
           ConnectProvides.IsMobile = isMobile;
@@ -115,7 +116,7 @@ export function useInit() {
             }
             return;
           }
-        } catch (error) {
+        } catch (error: any) {
           walletServices.sendDisconnect(
             "",
             `error at init loading  ${error}, disconnect`
@@ -129,7 +130,10 @@ export function useInit() {
           }
         }
       } else {
-        if (account.accAddress === "" || account.connectName === "unknown") {
+        if (
+          account.accAddress === "" ||
+          account.connectName === ConnectProviders.Unknown
+        ) {
           resetAccount();
         }
         const chainId =

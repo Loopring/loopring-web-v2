@@ -520,7 +520,7 @@ export const useAmmJoin = ({
               content: t("labelJoinAmmSuccess"),
             });
           }
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,

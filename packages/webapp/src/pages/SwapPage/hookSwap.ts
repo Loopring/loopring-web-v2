@@ -338,7 +338,7 @@ export const useSwap = <C extends { [key: string]: any }>({
               },
             });
           }
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
@@ -875,7 +875,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           ammPoolSnapshot,
           ticker: tickerMap[market],
         });
-      } catch (error) {
+      } catch (error: any) {
         myLog(error, "go to LRC-ETH");
         resetTradeCalcData(undefined, market);
       }

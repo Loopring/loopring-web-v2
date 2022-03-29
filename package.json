@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.3.0",
     "@loopring-web/loopring-sdk": "./loopring-web-loopring-sdk-v2.0.0-alpha.tgz",
     "@loopring-web/recharts": "^2.0.10",
-    "@loopring-web/web3-provider": "^1.0.6",
+    "@loopring-web/web3-provider": "^1.0.8",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.0.0-rc.0",
     "@react-spring/parallax": "^9.3.0",
