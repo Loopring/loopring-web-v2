@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { PopoverPure, Button, CancelAllOrdersAlert } from "../../index";
+import {
+  PopoverPure,
+  Button,
+  CancelAllOrdersAlert,
+  QuoteTableRawDataItem,
+} from "../../index";
 import { bindTrigger } from "material-ui-popup-state/es";
 import styled from "@emotion/styled";
 import {
@@ -180,6 +185,11 @@ export interface OrderHistoryTableProps {
     isOpen?: boolean
   ) => Promise<void>;
   clearOrderDetail?: () => void;
+  onRowClick?: (
+    rowIdx: number,
+    row: QuoteTableRawDataItem,
+    column: any
+  ) => void;
 }
 
 export const OrderHistoryTable = withTranslation("tables")(
@@ -202,6 +212,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       cancelOrderByHashList,
       userOrderDetailList,
       getUserOrderDetailTradeList,
+      onRowClick,
     } = props;
     const { isMobile } = useSettings();
 
@@ -254,8 +265,8 @@ export const OrderHistoryTable = withTranslation("tables")(
           start: Number.isNaN(start) ? -1 : start,
           end: Number.isNaN(end) ? -1 : end,
           status: isOpen
-            ? "processing"
-            : "processed,failed,cancelled,cancelling,expired",
+            ? ["processing"]
+            : ["processed", "failed", "cancelled", "cancelling", "expired"],
         });
       },
       [
@@ -1147,6 +1158,7 @@ export const OrderHistoryTable = withTranslation("tables")(
     const defaultArgs: any = {
       columnMode: actualColumns,
       generateRows: (rawData: any) => rawData,
+      onRowClick: isPro ? onRowClick : null,
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<OrderHistoryRawDataItem, unknown>[],
       actionColumns,

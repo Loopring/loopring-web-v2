@@ -3,6 +3,7 @@ import { Box, Container, Link, List, Typography } from "@mui/material";
 import React from "react";
 import {
   DiscordIcon,
+  FEED_BACK_LINK,
   LoopringIcon,
   MediumIcon,
   TwitterIcon,
@@ -64,7 +65,7 @@ const linkListMap = {
     {
       linkName: "Feedback", //❤️ Submit a Request
       // linkHref: 'https://loopring.io/#/newticket'
-      linkHref: "https://desk.zoho.com/portal/loopring/en/home",
+      linkHref: FEED_BACK_LINK,
     },
     {
       linkName: "CreatorGrants", // Creator Grants
@@ -97,7 +98,7 @@ const linkListMap = {
     {
       linkName: "Subgraph", //Subgraph
       linkHref:
-        "https://thegraph.com/hosted-service/subgraph/loopring/loopring",
+        "https://thegraph.com/explorer/subgraph?id=HgnaENC2oG5hJFsWoHvULBbj7djTJ7TZnqa58iTWA3Rd",
     },
   ],
 };
@@ -166,7 +167,9 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
               return (
                 <LinkStyle
                   key={item.linkName}
-                  onClick={() => handleLinkClick(item.linkHref)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={item.linkHref}
                 >
                   {t("label" + "key" + item.linkName)}
                 </LinkStyle>
@@ -178,9 +181,6 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
     });
   }, [linkListMap]);
 
-  const handleLinkClick = React.useCallback((href: string) => {
-    window.open(href);
-  }, []);
   const medias = React.useMemo(() => {
     return (
       <List
@@ -197,7 +197,9 @@ export const Footer = withTranslation(["layout"])(({ t }: any) => {
               fontSize={28}
               display={"inline-block"}
               width={28}
-              onClick={() => handleLinkClick(o.linkHref)}
+              href={o.linkHref}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {o.linkName}
             </LinkStyle>

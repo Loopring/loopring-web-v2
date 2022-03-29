@@ -357,6 +357,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
                   step: AccountStep.Withdraw_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Withdraw_Failed,
@@ -392,7 +399,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             resetWithdrawData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         sdk.dumpError400(reason);
         const code = checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
@@ -422,7 +429,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         }
       }
     },
-    [account, checkHWAddr, chainId, setShowAccount, resetWithdrawData, updateHW]
+    [
+      account,
+      checkHWAddr,
+      chainId,
+      setShowAccount,
+      resetWithdrawData,
+      updateHW,
+      checkFeeIsEnough,
+    ]
   );
 
   const handleWithdraw = React.useCallback(
@@ -495,7 +510,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           myLog("submitOffchainWithdraw:", request);
 
           processRequest(request, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           setShowAccount({
             isShow: true,
@@ -537,6 +552,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   );
 
   const withdrawProps: WithdrawProps<any, any> = {
+    type: "TOKEN",
     isAddressCheckLoading,
     isCFAddress,
     isContractAddress,

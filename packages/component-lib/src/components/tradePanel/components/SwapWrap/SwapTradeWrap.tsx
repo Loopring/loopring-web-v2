@@ -51,7 +51,7 @@ export const SwapTradeWrap = <
   ) as Array<number | string>;
   const [error, setError] = React.useState<{
     error: boolean;
-    message?: string | React.ElementType;
+    message?: string | JSX.Element;
   }>({
     error: false,
     message: "",
@@ -203,10 +203,14 @@ export const SwapTradeWrap = <
   //     : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
   const convertStr = _isStoB
     ? `1${tradeData.sell?.belong} \u2248 ${
-        tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag
+        tradeCalcData.StoB && tradeCalcData.StoB != "NaN"
+          ? tradeCalcData.StoB
+          : EmptyValueTag
       } ${tradeData.buy?.belong}`
     : `1${tradeData.buy?.belong} \u2248 ${
-        tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag
+        tradeCalcData.BtoS && tradeCalcData.BtoS != "NaN"
+          ? tradeCalcData.BtoS
+          : EmptyValueTag
       } ${tradeData.sell?.belong}`;
   const priceImpactColor = tradeCalcData?.priceImpactColor
     ? tradeCalcData.priceImpactColor

@@ -33,8 +33,8 @@ export type AssetTitleProps = {
 };
 
 export type AssetTitleMobileProps = AssetTitleProps & {
-  onShowNFTDeposit: () => void;
-  onShowNFTMINT: () => void;
+  // onShowNFTDeposit: () => void;
+  // onShowNFTMINT: () => void;
   btnShowNFTDepositStatus?: keyof typeof TradeBtnStatus;
   btnShowNFTMINTStatus?: keyof typeof TradeBtnStatus;
 };

@@ -131,7 +131,7 @@ export default css`
     box-sizing: inherit;
   }
   *:focus-visible {
-    outlined: rgba(0, 0, 0, 0);
+    outline: rgba(0, 0, 0, 0);
   }
 
   html {
@@ -190,5 +190,8 @@ export default css`
     overscroll-behavior-x: none;
     overscroll-behavior-y: none;
     text-underline-offset: 3px;
+  }
+  iframe {
+    display: none;
   }
 `;

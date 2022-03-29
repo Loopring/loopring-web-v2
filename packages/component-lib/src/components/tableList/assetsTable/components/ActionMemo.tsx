@@ -107,7 +107,7 @@ const ActionPopContent = React.memo(
                 key={pair}
                 onClick={() =>
                   history.push({
-                    pathname: `/trade/lite/${market}`,
+                    pathname: `/trade/lite/${pair}`,
                   })
                 }
               >

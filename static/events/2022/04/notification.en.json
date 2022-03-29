@@ -1,7 +1,73 @@
 {
-  "activities": [],
-  "notifications": [],
-  "prev": {
-      "endDate": 1649980800000
+  "activities":[
+    {
+      "type": "SPECIAL",
+      "link": "2022-04-15",
+      "startDate":1649894400000,
+      "endDate":1652572800000,
+      "title": "🎁 Loophead NFT Drop #3️",
+      "description1": "1000 Loopheads are up for grabs in this third Loophead dynamic NFT drop!",
+      "description2": "Duration: April 15 0:00 - May 15 0:00(UTC)",
+      "pairs": [
+        "LRC/ETH",
+        "LRC/USDC",
+        "ETH/USDC",
+        "MANA/USDC",
+        "SAND/USDC"
+      ],
+      "config": [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    },
+    {
+      "type": "SWAP_VOLUME_RANKING",
+      "link": "2022-04-15",
+      "startDate":1649894400000,
+      "endDate":1652572800000,
+      "title": "Wearable NFT Drop",
+      "description1": "1000 Wearables are up for grabs in the Wearable NFT drop!",
+      "description2": "Duration: April 15 0:00 - May 15 0:00(UTC)",
+      "pairs": [
+        "LRC/ETH",
+        "LRC/USDC",
+        "ETH/USDC",
+        "MANA/USDC",
+        "SAND/USDC"
+      ],
+      "config": [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    }
+  ],
+  "notifications":[
+    {
+      "id":1649399743607,
+      "title":"🅾️ Zero Fees Promo!",
+      "description1":"Deposit via Banxa for free!",
+      "description2":"Duration: April 11 0:00 —— April 25 0:00（UTC)",
+      "link":"https://loopring.io/#/layer2",
+      "startDate":1649548800000,
+      "endDate":1650844800000
+    },
+    {
+      "id": "2022-04-28-maintain",
+      "title": "Relayer Upgrade Notification",
+      "description1": "Trade & Orderbook will be SUSPENDED from",
+      "description2": "2022-04-28 6AM (UTC), Estimated 3 hours",
+      "link": "https://loopring.io/#/notification/2022-04-28-maintain.{lng}.md",
+      "startDate": 1651104000000,
+      "endDate": 1651104000000
+    }
+  ],
+  "prev":{
+    "endDate":1648771200000
   }
 }

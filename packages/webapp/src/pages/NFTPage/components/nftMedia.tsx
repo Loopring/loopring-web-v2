@@ -1,4 +1,5 @@
 import {
+  IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   NFTWholeINFO,
   RefreshIcon,
@@ -13,7 +14,7 @@ import {
   NftImage,
   useImage,
 } from "@loopring-web/component-lib";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
+import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
@@ -39,21 +40,21 @@ export const NFTMedia = React.memo(
 
     const [previewSrc, setPreviewSrc] = React.useState(
       (isOrigin
-        ? item?.metadata?.imageSize["original"]
-        : item?.metadata?.imageSize["120-120"]) ??
-        item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+        ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
+        : item?.metadata?.imageSize[NFT_IMAGE_SIZES.small]) ??
+        item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
       useImage(previewSrc ?? "");
     // mylog(
     //   isOrigin,
-    //   item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+    //   item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
     // );
     const fullSrc =
       (isOrigin
-        ? item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
-        : item?.metadata?.imageSize["original"]) ??
-      item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL);
+        ? item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
+        : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]) ??
+      item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE);
     const { hasLoaded: fullSrcSrcHasLoaded, hasError: fullSrcSrcHasError } =
       useImage(fullSrc ?? "");
 
@@ -91,10 +92,7 @@ export const NFTMedia = React.memo(
                   event.stopPropagation();
                   setPreviewSrc(
                     item?.metadata?.imageSize["160-160"] ??
-                      item?.image?.replace(
-                        IPFS_META_URL,
-                        LOOPRING_URLs.IPFS_META_URL
-                      ) ??
+                      item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE) ??
                       ""
                   );
                 }}

@@ -7,32 +7,8 @@ import styled from "@emotion/styled";
 import { Box, Toolbar } from "@mui/material";
 import { boxLiner, toolBarPanel } from "../../styled";
 import { useSettings } from "../../../stores";
+import { PanelContent, SwitchPanelProps } from "./Interface";
 
-export type PanelContent<T extends string> = {
-  key: T;
-  element: React.ElementType<any> | JSX.Element;
-  toolBarItem: React.ElementType<any> | JSX.Element | undefined;
-};
-export type SwitchPanelProps<T extends string> = {
-  // swipedBy: T,
-  index: number;
-  // defaultIndex: number,
-  panelList: Array<PanelContent<T>>;
-  size?: string;
-  className?: string;
-  // onChangeIndex?: (index: number,data:any) => void,
-  // onTransitionEnd?: () => void,
-  _height?: number | string;
-  _width?: number | string;
-};
-
-// height: ${_height ? typeof _height === 'number' ?
-//           `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
-//           : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
-// ${({_height, _width}) => `
-//   width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};
-//   height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};
-// `}
 export const SwipeableViewsStyled = styled(SwipeableViews)<
   SwipeableViewsProps & {
     _height?: number | string;
@@ -110,13 +86,13 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<
     justify-content: space-between;
     padding: 0 ${({ theme }) => (theme.unit * 5) / 2}px;
   }
-` as React.ElementType<
-  SwipeableViewsProps & {
+` as (
+  props: SwipeableViewsProps & {
     _height?: number | string;
     _width?: number | string;
     isMobile?: boolean | undefined;
   }
->;
+) => JSX.Element;
 
 function _SwitchPanel<T extends string>(
   {
@@ -127,8 +103,7 @@ function _SwitchPanel<T extends string>(
     // _width,
     size,
     ...rest
-  }: // ...rest
-  SwitchPanelProps<T> & WithTranslation,
+  }: SwitchPanelProps<T> & WithTranslation,
   _ref: React.ForwardedRef<any>
 ) {
   //   {/*{...{ _height, _width }}*/}

@@ -2,13 +2,12 @@
   <a href="https://github.com/Loopring/loopring-web-v2" rel="noopener" target="_blank"><img width="150" src="https://loopring.org/images/logo.svg" alt="Loopring-website"></a>
 </p>
 
-
 <h1 align="center">Loopring Application</h1>
 <div align="center">
 <h2>Ethereum’s First zkRollup Layer2</h2>
 <p>Secure, Fast, and Cheap</p>
 
-[![license](https://img.shields.io/badge/license-GPL-blue)](https://github.com/Loopring/loopring-web-v2/master/LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Loopring/loopring-web-v2/master/LICENSE)
 
 [![type-badge](https://img.shields.io/npm/types/react-data-grid)](https://www.npmjs.com/package/react-data-grid)
  
@@ -55,8 +54,9 @@ npm run storybook
 - You are welcome to reuse it or integrate your provider service with our website.
 - Feel free to leave suggestions or ideas.
 
-### 📒 API & SDK
-- [JS SDK](https://loopring.github.io/loopring_sdk)
+### 📒 API & Dependency
+- [Web3-Provider](https://www.npmjs.com/package/@loopring-web/web3-provider)
+- [Loopring-sdk](https://www.npmjs.com/package/@loopring-web/loopring-sdk)
 - [Python](https://github.com/Loopring/hello_loopring)
 - [APIs](https://docs.loopring.io/en/)
 

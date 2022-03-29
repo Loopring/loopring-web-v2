@@ -46,11 +46,11 @@ const cssBackground = ({
       color = theme.colorBase.error;
       svg =
         encodeURI(`<svg width="87" height="88" viewBox="0 0 87 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
-<path opacity="${opacity}"  fillRule="evenodd" clipRule="evenodd" d="M9.66409 88H77.3127C82.6501 88 86.9767 84.0602 86.9767 79.2V17.6C86.9767 12.7399 82.6501 8.8 77.3127 8.8H67.6486V0H57.9845V8.8H28.9923V0H19.3282V8.8H9.66409C4.32676 8.8 0 12.7399 0 17.6V79.2C0 84.0602 4.32676 88 9.66409 88ZM9.66409 79.2V35.2H77.3127V79.2H9.66409ZM9.66409 26.4V17.6H77.3127V26.4H9.66409ZM28.2823 53.1683L28.2823 53.1683L35.1158 46.9458L41.9493 53.1683L46.0493 56.9017L51.5163 51.9236L44.7886 45.7975L66.3845 44.6081L65.0784 64.2731L58.3498 58.1461L52.8828 63.1242L46.0493 69.3467L39.2158 63.1241L35.1158 59.3908L24.1822 69.3471L17.3487 63.1242L28.2823 53.1683Z"/>
+<path opacity="${opacity}"  fill-rule="evenodd" clip-rule="evenodd" d="M9.66409 88H77.3127C82.6501 88 86.9767 84.0602 86.9767 79.2V17.6C86.9767 12.7399 82.6501 8.8 77.3127 8.8H67.6486V0H57.9845V8.8H28.9923V0H19.3282V8.8H9.66409C4.32676 8.8 0 12.7399 0 17.6V79.2C0 84.0602 4.32676 88 9.66409 88ZM9.66409 79.2V35.2H77.3127V79.2H9.66409ZM9.66409 26.4V17.6H77.3127V26.4H9.66409ZM28.2823 53.1683L28.2823 53.1683L35.1158 46.9458L41.9493 53.1683L46.0493 56.9017L51.5163 51.9236L44.7886 45.7975L66.3845 44.6081L65.0784 64.2731L58.3498 58.1461L52.8828 63.1242L46.0493 69.3467L39.2158 63.1241L35.1158 59.3908L24.1822 69.3471L17.3487 63.1242L28.2823 53.1683Z"/>
 </svg>`);
       break;
     case ACTIVITY_TYPE.SPECIAL:
-    default:
+    case ACTIVITY_TYPE.DEPOSIT:
       color = theme.colorBase.primary;
       svg =
         encodeURI(`<svg width="102" height="88" viewBox="0 0 102 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
@@ -58,6 +58,9 @@ const cssBackground = ({
 </svg>
 `);
       break;
+    default:
+      color = theme.colorBase.box;
+      svg = "";
   }
   return css`
     &,
@@ -101,17 +104,25 @@ const NotificationListItemStyled = styled(ListItem)<
     height: 100%;
   }
   ${(props) => cssBackground(props)}
-` as (prosp: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
+` as (props: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
 
 export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
-  // const { t } = useTranslation(["common"]);
   const history = useHistory();
-  const { title, description1, description2 } = props;
-
+  const { title, description1, description2, account } = props;
   return (
     <NotificationListItemStyled
       alignItems="flex-start"
-      onClick={() => history.replace(`/notification/${props.link}`)}
+      onClick={() => {
+        if (props.link && !!account?.accAddress) {
+          props.link = /\?/.test(props.link)
+            ? `&owner=${account?.accAddress}`
+            : `?owner=${account?.accAddress}`;
+        }
+        props.link?.startsWith("http")
+          ? window.open(props.link, "_blank")
+          : history.replace(`/notification/${props.link}`);
+        window.opener = null;
+      }}
       className={`notification`}
     >
       <ListItemAvatar />
@@ -124,16 +135,15 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         overflow={"hidden"}
       >
         <ListItemText
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: title ?? "" }} />
-          )}
+          className={"title"}
+          primary={<span dangerouslySetInnerHTML={{ __html: title ?? "" }} />}
           primaryTypographyProps={{ component: "h4", color: "textPrimary" }}
         />
         <ListItemText
           className="description description1"
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: description1 ?? "" }} />
-          )}
+          primary={
+            <span dangerouslySetInnerHTML={{ __html: description1 ?? "" }} />
+          }
           primaryTypographyProps={{
             component: "p",
             variant: "body1",
@@ -142,9 +152,9 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         />
         <ListItemText
           className="description description2"
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: description2 ?? "" }} />
-          )}
+          primary={
+            <span dangerouslySetInnerHTML={{ __html: description2 ?? "" }} />
+          }
           primaryTypographyProps={{
             component: "p",
             variant: "body2",
@@ -167,18 +177,25 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
   padding: ${({ theme }) => theme.unit}px;
   ${(props) => cssBackground(props)}
   border-radius: ${({ theme }) => theme.unit}px;
-` as (prosp: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
+` as (props: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
 export const ListItemActivity = (props: ACTIVITY) => {
-  const { type, title, description1, description2, startDate, link } = props;
-  const history = useHistory();
-
+  const { type, title, description1, description2, startDate, link, account } =
+    props;
   if (Date.now() > startDate) {
     return (
       <ListItemActivityStyle
         className={type}
-        onClick={() =>
-          history.replace(`/race-event/${link}?type=${ACTIVITY_TYPE[type]}`)
-        }
+        // onClick={() =>
+        //   history.replace(``)
+        // }
+        onClick={() => {
+          window.open(
+            `#/race-event/${link}?type=${ACTIVITY_TYPE[type]}&owner=${account?.accAddress}`,
+            "_blank"
+          );
+          window.opener = null;
+        }}
+        account={account}
         type={props.type}
       >
         <ListItemAvatar />

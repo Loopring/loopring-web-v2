@@ -1,5 +1,6 @@
 import { Box, IconButton, Link } from "@mui/material";
 import {
+  Account,
   DownloadIcon,
   NotificationIcon,
   Notify,
@@ -29,7 +30,7 @@ export const BtnDownload = ({
     popupId: "download-QRcode",
   });
   const Description = () => (
-    <Link target={"_blank"} href="https://loopring.io">
+    <Link target="_blank" rel="noopener noreferrer" href="https://loopring.io">
       {t(i18nDescription)}
     </Link>
   );
@@ -66,7 +67,13 @@ export const BtnDownload = ({
   );
 };
 
-export const BtnNotification = ({ notification }: { notification: Notify }) => {
+export const BtnNotification = ({
+  notification,
+  account,
+}: {
+  notification: Notify;
+  account: Account;
+}) => {
   const popupState = usePopupState({
     variant: "popover",
     popupId: "notificationPop",
@@ -87,7 +94,7 @@ export const BtnNotification = ({ notification }: { notification: Notify }) => {
           horizontal: "center",
         }}
       >
-        <NotificationPanel notification={notification} />
+        <NotificationPanel notification={{ ...notification, account }} />
       </PopoverPure>
     </Box>
   );

@@ -3,16 +3,15 @@ import React from "react";
 import { LoopringAPI } from "../../api_wrapper";
 import { getTokenNameFromTokenId, volumeToCount } from "../../hooks/help";
 import {
-  AccountStatus,
+  // AccountStatus,
   DropDownIcon,
   getShortAddr,
   getValuePrecisionThousand,
   MarketType,
-  myLog,
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { Box, Button, MenuItem, Typography } from "@mui/material";
+import { Box, Link, MenuItem, Typography } from "@mui/material";
 import {
   Column,
   InputSearch,
@@ -20,13 +19,15 @@ import {
   TablePaddingX,
   TextField,
   TradeRaceTable,
+  useSettings,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
-import { useAccount } from "../../stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory } from "react-router-dom";
-import { useSystem } from "../../stores/system";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useSystem } from "stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
+import { EventAPI } from "./interface";
+import store from "stores";
 
 const TableWrapperStyled = styled(Box)`
   background-color: var(--color-box);
@@ -63,7 +64,13 @@ export const Rank = ({
   pair: MarketType | "";
 }) => {
   const { t } = useTranslation();
-  const { account } = useAccount();
+  const { search } = useLocation();
+  const { isMobile } = useSettings();
+  const searchParams = new URLSearchParams(search);
+  const account = {
+    owner: searchParams.get("owner") ?? "",
+    accountId: searchParams.get("accountId"),
+  };
   const history = useHistory();
   const [rewardToken, setRewardToken] = React.useState("");
   const [currPairUserRank, setCurrPairUserRank] =
@@ -74,7 +81,7 @@ export const Rank = ({
       rewards: [],
     });
   const [volumeToken, setVolumeToken] = React.useState<string>(() => {
-    if (pair && pair !== "") {
+    if (pair && !!pair) {
       // @ts-ignore
       const [, , coinQuote] = pair?.replace("AMM-", "").match(/(\w+)-(\w+)/i);
       return coinQuote;
@@ -112,15 +119,13 @@ export const Rank = ({
 
   const getAmmGameUserRank = React.useCallback(
     async (market: string) => {
-      if (LoopringAPI && LoopringAPI.ammpoolAPI) {
-        const { userRank } =
-          await LoopringAPI.ammpoolAPI.getAmmPoolGameUserRank(
-            {
-              ammPoolMarket: market,
-              owner: account.accAddress,
-            },
-            account.apiKey
-          );
+      if (LoopringAPI && LoopringAPI.globalAPI && !!account.owner) {
+        const { userRank } = await LoopringAPI.globalAPI.getAmmPoolGameUserRank(
+          {
+            ammPoolMarket: market,
+            owner: account.owner,
+          }
+        );
         setCurrPairUserRank(
           userRank || {
             address: "",
@@ -131,18 +136,18 @@ export const Rank = ({
         );
       }
     },
-    [account.accAddress, account.apiKey]
+    [account.owner]
   );
   React.useEffect(() => {
     if (pair) {
       getAmmGameRank(pair);
     }
-  }, [pair]);
+  }, [getAmmGameRank, pair]);
   React.useEffect(() => {
-    if (pair && account.readyState === AccountStatus.ACTIVATED) {
+    if (pair && account.owner) {
       getAmmGameUserRank(pair);
     }
-  }, [pair, account.readyState]);
+  }, [account.owner, pair]);
 
   return (
     <>
@@ -155,7 +160,7 @@ export const Rank = ({
       >
         <TableWrapperStyled paddingY={3} position={"relative"}>
           <Typography
-            variant={"h2"}
+            variant={isMobile ? "h4" : "h2"}
             color={"var(--color-text-secondary)"}
             textAlign={"center"}
             marginBottom={1}
@@ -183,8 +188,13 @@ export const Rank = ({
               ))}
             </StyledTextFiled>
           </BoxSelect>
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Typography fontSize={16} marginRight={2}>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDirection={isMobile ? "column" : "row"}
+          >
+            <Typography variant={"h5"} marginRight={2}>
               {t("labelTradeRaceYourVolume")} ({volumeToken}):
               {currPairUserRank.volume
                 ? getValuePrecisionThousand(
@@ -192,16 +202,17 @@ export const Rank = ({
                   )
                 : "--"}
             </Typography>
-            <Typography fontSize={16}>
+            <Typography variant={"h5"}>
               {t("labelTradeRaceYourRanking")}: {currPairUserRank.rank || "--"}
             </Typography>
-            <Button
-              style={{ fontSize: 16 }}
-              variant={"text"}
-              onClick={() => history.push(`/trade/lite/${pair}`)}
+            <Link
+              variant={"h5"}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`/trade/lite/${pair}`}
             >
               {t("labelTradeRaceGoTrading")} &gt;&gt;
-            </Button>
+            </Link>
           </Box>
           <TradeRaceTable
             {...{
@@ -226,31 +237,49 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as typeof Box;
 
-export const RankRaw = <R extends any>(props: {
-  params?: any;
-  url: string;
-  column: { key: string; label: string }[];
-}) => {
+export const RankRaw = <R extends any>(props: EventAPI) => {
   const [rank, setRank] = React.useState<R[]>([]);
   const [rankView, setRankView] = React.useState<R[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>("");
   const [showLoading, setShowLoading] = React.useState(true);
-  const { chainId } = useSystem();
-  React.useEffect(() => {
-    const url = props.url.replace(
-      "api.loopring.network",
-      chainId === ChainId.MAINNET ? "api.loopring.network" : "uat2.loopring.io"
-    );
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => {
-        setRank(json.data as any[]);
-        setShowLoading(false);
-      })
-      .catch(() => {
-        return [];
+  const { params } = useRouteMatch();
+  const [filter, setFilter] = React.useState<
+    | {
+        value: string;
+        key: string;
+        list: Array<{ label: string; value: string }>;
+      }
+    | undefined
+  >(() => {
+    let value,
+      list = [];
+    if (props.params && props.params.key) {
+      list = props.params.values.map((item) => {
+        try {
+          const state = store.getState();
+          return { label: item.label, value: eval(item.value) };
+        } catch (error) {
+          console.log("eval error", error);
+          return { label: item.label, value: item.value };
+        }
       });
-  }, []);
+      value = list[0].value;
+      if (params) {
+        value =
+          list.find(
+            (item) => props.params && item.label == params[props.params.key]
+          )?.value ?? value;
+      }
+      return {
+        value,
+        list,
+        key: props.params.key,
+      };
+    } else {
+      return undefined;
+    }
+  });
+  const { chainId } = useSystem();
 
   React.useEffect(() => {
     if (searchValue !== "" && rank.length) {
@@ -269,6 +298,12 @@ export const RankRaw = <R extends any>(props: {
       setRankView(rank);
     }
   }, [rank, searchValue]);
+  const onChange = (event: React.ChangeEvent<{ value: string }>) => {
+    if (event.target.value) {
+      setFilter((state) => ({ ...state, value: event.target.value } as any));
+    }
+  };
+
   const defaultArgs: any = {
     columnMode: props.column.length
       ? props.column.map((item, index) => ({
@@ -294,18 +329,82 @@ export const RankRaw = <R extends any>(props: {
       : [],
     generateRows: (rawData: R) => rawData,
     generateColumns: ({ columnsRaw }: any) =>
-      columnsRaw as Column<any, unknown>[],
+      [
+        {
+          key: "No.",
+          name: "No.",
+          width: "auto",
+          headerCellClass: `textAlignCenter`,
+          cellClass: "rdg-cell-value textAlignCenter",
+          formatter: ({ row, column, rowIdx }: any) => {
+            return rowIdx + 1;
+            // if (column.key.toLowerCase() === "address") {
+            //   return getShortAddr(row[column.key]);
+            // } else {
+            //   return row[column.key];
+            // }
+          },
+        },
+        ...columnsRaw,
+      ] as Column<any, unknown>[],
   };
+  React.useEffect(() => {
+    getTableValues();
+  }, [filter?.value]);
+  const getTableValues = React.useCallback(async () => {
+    const url =
+      props.url.replace(
+        "api.loopring.network",
+        chainId === ChainId.MAINNET
+          ? "api.loopring.network"
+          : "uat2.loopring.io"
+      ) + (filter && filter.key ? `?${filter.key}=${filter.value}` : "");
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => {
+        setRank(json.data as any[]);
+        setShowLoading(false);
+      })
+      .catch(() => {
+        return [];
+      });
+  }, [chainId, filter, props]);
 
   return (
     <Box
       flex={1}
       display={"flex"}
       flexDirection={"column"}
+      maxWidth={1200}
       width={"100%"}
       paddingX={3}
     >
-      <Box alignSelf={"flex-end"} marginY={2}>
+      {/*<BoxSelect>*/}
+      {/* */}
+      {/*</BoxSelect>*/}
+      <Box
+        alignSelf={"flex-end"}
+        marginY={2}
+        display={"flex"}
+        justifyContent={"space-between"}
+        width={"100%"}
+      >
+        {filter && (
+          <StyledTextFiled
+            id={"trading-race-filter"}
+            select
+            style={{ width: 150, textAlign: "left" }}
+            value={filter.value}
+            onChange={onChange}
+            inputProps={{ IconComponent: DropDownIcon }}
+          >
+            {filter.list.map((item, index) => (
+              <MenuItem key={item.value + index} value={item.value}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </StyledTextFiled>
+        )}
         <InputSearch
           value={searchValue}
           onChange={(value: any) => {

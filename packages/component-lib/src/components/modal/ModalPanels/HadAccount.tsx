@@ -66,7 +66,7 @@ export const HadAccount = withTranslation("common")(
                 flexDirection={"column"}
                 alignItems={"center"}
               >
-                {mainBtn}
+                {mainBtn as any}
               </Box>
               <Box
                 display={"flex"}

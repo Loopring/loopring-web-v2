@@ -3,6 +3,7 @@ import {
   CoinMap,
   getFormattedHash,
   IBData,
+  IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   myLog,
   NFTWholeINFO,
@@ -13,7 +14,6 @@ import { BasicANFTTradeProps } from "./Interface";
 import { InputCoin, InputSize } from "../../basic-lib";
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 
 const BoxInput = styled(Box)`
   & .main-label {
@@ -56,7 +56,7 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     [onChangeEvent, tradeData]
   );
 
-  myLog("isBalanceLimit", isBalanceLimit, tradeData.balance);
+  myLog("isBalanceLimit", isBalanceLimit, tradeData?.balance);
   if (typeof handleError !== "function") {
     handleError = ({ balance, tradeValue }: T) => {
       if (
@@ -146,7 +146,11 @@ export const NFTInput = React.memo(
                 className={"main-label"}
                 paddingBottom={1 / 2}
               >
-                {t(inputNFTDefaultProps?.label ?? "labelNFTTitle")}
+                {t(
+                  typeof inputNFTDefaultProps?.label === "string"
+                    ? inputNFTDefaultProps?.label
+                    : "labelNFTTitle"
+                )}
               </Typography>
               <Box
                 display={"flex"}
@@ -171,18 +175,19 @@ export const NFTInput = React.memo(
                     height={"100%"}
                     src={tradeData?.image?.replace(
                       IPFS_META_URL,
-                      LOOPRING_URLs.IPFS_META_URL
+                      IPFS_LOOPRING_SITE
                     )}
                   />
                 </Box>
                 <Box marginLeft={1}>
                   <Link
                     variant={"h5"}
-                    onClick={() =>
+                    onClick={() => {
                       window.open(
                         `${tradeData.etherscanBaseUrl}tx/${tradeData.tokenAddress}`
-                      )
-                    }
+                      );
+                      window.opener = null;
+                    }}
                   >
                     {getFormattedHash(tradeData.tokenAddress)}
                   </Link>

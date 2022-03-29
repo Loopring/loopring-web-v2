@@ -97,7 +97,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           coinBInfo,
           amountDollar,
           amountYuan,
-          // isNew,
+          account,
           APR,
           activity: {
             duration,
@@ -123,28 +123,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           setChosenCardInfo,
           ammInfo,
           ...rest
-        }: AmmCardProps<T> &
-          WithTranslation & {
-            popoverIdx: number;
-            precisionA?: number;
-            precisionB?: number;
-            coinAPriceDollar: number;
-            coinBPriceDollar: number;
-            coinAPriceYuan: number;
-            coinBPriceYuan: number;
-            ammRewardRecordList: {
-              amount: string;
-              time: number;
-            }[];
-            getLiquidityMining: (
-              market: string,
-              size?: number
-            ) => Promise<void>;
-            getMiningLinkList: (market: string) => string[];
-            setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>;
-            setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>;
-            ammInfo: any;
-          },
+        }: AmmCardProps<T> & WithTranslation,
         ref: React.ForwardedRef<any>
       ) => {
         const isOrderbook = ruleType === "ORDERBOOK_MINING";
@@ -243,7 +222,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           const day = ("0" + date.getDate().toString()).slice(-2);
           const current_event_date = `${year}-${month}-${day}`;
           history.push(
-            `/race-event/${current_event_date}?pair=${pathname}&type=${ACTIVITY_TYPE[ruleType]}`
+            `/race-event/${current_event_date}?pair=${pathname}&type=${ACTIVITY_TYPE[ruleType]}&owner=${account?.accAddress}`
           );
         }, [history, pathname]);
 

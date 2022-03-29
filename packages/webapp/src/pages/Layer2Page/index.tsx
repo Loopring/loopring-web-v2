@@ -3,20 +3,13 @@ import { useRouteMatch } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import {
   AssetTitleMobile,
-  Button,
   SubMenu,
   SubMenuList,
-  useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useTranslation, withTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   AccountStatus,
-  fnType,
-  i18n,
-  LoadingIcon,
-  myLog,
-  SagaStatus,
   SoursURL,
   subMenuLayer2,
 } from "@loopring-web/common-resources";
@@ -27,79 +20,14 @@ import OrderPanel from "./OrderPanel";
 import MyLiqudityPanel from "./MyLiquidityPanel";
 import React from "react";
 import { useAccount } from "../../stores/account";
-import {
-  accountStaticCallBack,
-  btnClickMap,
-  btnLabel,
-} from "../../layouts/connectStatusCallback";
-import _ from "lodash";
 import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
 import { RedPockPanel } from "./RedPockPanel";
-import { MyNFTPanel } from "./MyNFTPanel";
-import { accountServices } from "services/account/accountServices";
 import { useGetAssets } from "./AssetPanel/hook";
+import { BtnConnect } from "../../layouts/connectStatusCallback";
 
 export const subMenu = subMenuLayer2;
-
-const BtnConnect = withTranslation(["common"], { withRef: true })(
-  ({ t }: any) => {
-    const { status: accountStatus, account } = useAccount();
-    const { setShowDeposit } = useOpenModals();
-
-    // const {setShowAccount} = useOpenModals();
-    const [label, setLabel] = React.useState(undefined);
-
-    const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
-      [fnType.NO_ACCOUNT]: [
-        function () {
-          return `depositTitleAndActive`;
-        },
-      ],
-      [fnType.ERROR_NETWORK]: [
-        function () {
-          return `labelWrongNetwork`;
-        },
-      ],
-    });
-
-    React.useEffect(() => {
-      if (accountStatus === SagaStatus.UNSET) {
-        setLabel(accountStaticCallBack(_btnLabel));
-      }
-    }, [accountStatus, account.readyState, i18n.language]);
-
-    const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {});
-
-    return (
-      <Button
-        variant={"contained"}
-        size={"large"}
-        color={"primary"}
-        fullWidth={true}
-        style={{ maxWidth: "280px" }}
-        onClick={() => {
-          // remove the middle account status panel
-          // make deposite directly to create an account
-          if (account.readyState === AccountStatus.NO_ACCOUNT) {
-            myLog("DEPOSITING! sendCheckAcc");
-            accountServices.sendCheckAcc();
-            setShowDeposit({ isShow: true });
-            return;
-          }
-          accountStaticCallBack(_btnClickMap, []);
-        }}
-      >
-        {label !== "" ? (
-          t(label)
-        ) : (
-          <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
-        )}
-      </Button>
-    );
-  }
-) as typeof Button;
 
 export const Layer2Page = () => {
   let match: any = useRouteMatch("/layer2/:item");
@@ -113,8 +41,6 @@ export const Layer2Page = () => {
         return <AssetPanel />;
       case "my-liquidity":
         return <MyLiqudityPanel />;
-      case "my-nft":
-        return <MyNFTPanel />;
       case "history":
         return <HistoryPanel />;
       case "order":

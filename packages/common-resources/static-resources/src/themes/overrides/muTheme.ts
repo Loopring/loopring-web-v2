@@ -5,6 +5,7 @@ import {
   MuiButton,
   MuiButtonBase,
   MuiCard,
+  MuiTooltip,
   MuiCardContent,
   MuiCardActions,
   MuiCheckbox,
@@ -43,8 +44,6 @@ import {
 import { MuPickDate } from "./overrides-date-pick";
 import { fontDefault } from "../css/global";
 import { LoopringTheme, ThemeKeys } from "../interface";
-// import { shadows } from '@mui/system';
-// import * as _ from "lodash"
 
 export { unit };
 export const getTheme = (
@@ -201,6 +200,7 @@ export const getTheme = (
       MuiDialogTitle: MuiDialogTitle({ colorBase }),
       MuiDialog: MuiDialog({ colorBase }),
       MuiLinearProgress: MuiLinearProgress({ colorBase }),
+      MuiTooltip: MuiTooltip({ colorBase }),
       ...MuPickDate({ colorBase, themeMode }),
     },
     shape: { borderRadius: radius },

@@ -1,10 +1,10 @@
 import {
-  Mark,
   ButtonProps as MuButtonPros,
   ToggleButtonGroupProps as MuToggleButtonGroupProps,
   SliderProps,
 } from "@mui/material";
 import { XOR } from "../../../types/lib";
+import { Mark } from "@mui/base/SliderUnstyled/SliderUnstyledProps";
 
 export type ButtonProps = MuButtonPros & {
   // bg:'',
@@ -56,5 +56,4 @@ export interface TGItemData {
 
 export type ToggleButtonGroupProps = MuToggleButtonGroupProps & {
   value: Array<string | number> | string | number;
-} & // & { handleChange: (event: MouseEvent|InputEvent, newValue: string) => void }
-  XOR<{ tgItemJSXs: TGItemJSXInterface[] }, { data: TGItemData[] }>;
+} & XOR<{ tgItemJSXs: TGItemJSXInterface[] }, { data: TGItemData[] }>; // & { handleChange: (event: MouseEvent|InputEvent, newValue: string) => void }

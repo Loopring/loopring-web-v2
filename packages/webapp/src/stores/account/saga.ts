@@ -138,7 +138,7 @@ export function* cleanAccountSaga({
       yield call(async () => await connectProvides.clear());
       account = {
         ...account,
-        connectName: ConnectProviders.unknown,
+        connectName: ConnectProviders.Unknown,
       };
     }
     yield put(

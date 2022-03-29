@@ -12,13 +12,11 @@ import {
   myLog,
   TradeNFT,
   UIERROR_CODE,
-  WalletMap,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 import { useTokenMap } from "../../stores/token";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useModalData } from "../../stores/router";
-import { makeWalletLayer2 } from "../help";
 import {
   useWalletLayer2Socket,
   walletLayer2Service,
@@ -34,7 +32,6 @@ import { checkErrorInfo } from "./utils";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
-import { ChainId } from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
@@ -106,6 +103,13 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                   step: AccountStep.NFTDeploy_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTDeploy_Failed,
@@ -114,7 +118,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
               setOneItem({
-                chainId: chainId as ChainId,
+                chainId: chainId as sdk.ChainId,
                 uniqueId: request.tokenAddress.toLowerCase(),
                 domain: Layer1Action.NFTDeploy,
               });
@@ -144,8 +148,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
             resetNFTDeployData();
           }
         }
-      } catch (reason) {
-        const code = checkErrorInfo(reason, isFirstTime);
+      } catch (reason: any) {
+        const code = checkErrorInfo(reason as sdk.RESULT_INFO, isFirstTime);
 
         if (isAccActivated()) {
           if (code === sdk.ConnectorError.USER_DENIED) {
@@ -162,7 +166,10 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeploy_Failed,
-              error: { code: UIERROR_CODE.UNKNOWN, msg: reason.message },
+              error: {
+                code: UIERROR_CODE.UNKNOWN,
+                msg: (reason as sdk.RESULT_INFO).message,
+              },
             });
           }
         }
@@ -180,14 +187,19 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       updateHW,
     ]
   );
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      tokenAddress: nftDeployValue.tokenAddress,
-      requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
-      updateData: (feeInfo, _chargeFeeList) => {
-        updateNFTDeployData({ ...nftDeployValue, fee: feeInfo });
-      },
-    });
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    tokenAddress: nftDeployValue.tokenAddress,
+    requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateNFTDeployData({ ...nftDeployValue, fee: feeInfo });
+    },
+  });
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && !isFeeNotEnough) {
@@ -260,13 +272,12 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
         myLog("nftDeploy req:", req);
 
         processRequestNFT(req, isFirsTime);
-      } catch (e) {
-        sdk.dumpError400(e);
+      } catch (e: unknown) {
         // nftTransfer failed
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTDeploy_Failed,
-          error: { code: UIERROR_CODE.UNKNOWN, msg: e.message },
+          error: { code: UIERROR_CODE.UNKNOWN, msg: (e as any).message },
         });
       }
     } else {

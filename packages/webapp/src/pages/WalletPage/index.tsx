@@ -20,13 +20,13 @@ import {
   useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
-import { changeShowModel, useAccount } from "../../stores/account";
+import { changeShowModel, useAccount } from "stores/account";
 import _ from "lodash";
 import {
   accountStaticCallBack,
   btnLabel,
 } from "../../layouts/connectStatusCallback";
-import store from "../../stores";
+import store from "stores";
 
 import { useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
@@ -248,9 +248,9 @@ export const GuardianPage = withTranslation(["common"])(
                 variant={"body1"}
                 textAlign={"center"}
                 color={"textSecondary"}
-                onClick={() =>
-                  window.open("./#/document/walletdesign_en.md", "_blank")
-                }
+                target="_blank"
+                rel="noopener noreferrer"
+                href={"./#/document/walletdesign_en.md"}
               >
                 {t("describeWhatIsGuardian")}
               </Link>

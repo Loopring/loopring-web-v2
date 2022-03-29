@@ -13,7 +13,7 @@ import { DropDownIcon } from "@loopring-web/common-resources";
 
 export const FeeTokenItemWrapper = styled(Box)`
   background-color: var(--color-global-bg);
-`;
+` as typeof Box;
 
 export const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
   transform: rotate(

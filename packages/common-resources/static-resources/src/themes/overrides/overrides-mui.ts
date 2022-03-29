@@ -419,7 +419,7 @@ export const MuiRadio = () => {
 
 export const MuiInputLabel = ({
   colorBase,
-}: any): { styleOverrides: ComponentsOverrides["MuiInputBase"] } => {
+}: any): { styleOverrides: ComponentsOverrides["MuiInputLabel"] } => {
   return {
     styleOverrides: {
       root: {
@@ -990,6 +990,25 @@ export const MuiLinearProgress = ({ colorBase }: any) => {
         backgroundColor: colorBase.borderHover,
         borderRadius: "28px",
       },
+    },
+  };
+};
+
+export const MuiTooltip = ({
+  colorBase,
+}: any): { styleOverrides: ComponentsOverrides["MuiTooltip"] } => {
+  return {
+    styleOverrides: {
+      tooltip: {
+        fontSize: fontDefault.body2,
+        color: colorBase.textThird,
+        background: colorBase.popBg,
+        lineHeight: "1.5em",
+      },
+      // root: {
+      //   fontSize: fontDefault.body1,
+      //   color: colorBase.textSecondary,
+      // },
     },
   };
 };

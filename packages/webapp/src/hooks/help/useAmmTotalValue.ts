@@ -1,11 +1,9 @@
 import React from "react";
-import { LoopringAPI } from "api_wrapper";
-import { useTokenMap } from "stores/token";
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { volumeToCount } from "hooks/help";
 import store from "stores";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { useTokenPrices } from "../../stores/tokenPrices";
+import { useTokenPrices } from "stores/tokenPrices";
 
 export const useAmmTotalValue = () => {
   const { walletLayer2 } = useWalletLayer2();

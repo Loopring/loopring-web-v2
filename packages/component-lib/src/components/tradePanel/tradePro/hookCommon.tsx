@@ -45,7 +45,7 @@ export const useCommon = <
   // const [tabIndex, setTabIndex] = React.useState<TradeProType>(tradeData.type ?? TradeProType.buy);
   const [inputError, setInputError] = React.useState<{
     error: boolean;
-    message?: string | React.ElementType;
+    message?: string | JSX.Element;
   }>({
     error: false,
     message: "",

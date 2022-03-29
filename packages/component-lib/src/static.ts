@@ -25,7 +25,7 @@ export const account: Account = {
   keySeed: "",
   nonce: undefined,
   keyNonce: undefined,
-  connectName: ConnectProviders.unknown,
+  connectName: ConnectProviders.Unknown,
 };
 export const coinMap: CoinMap<CoinType, CoinInfo<CoinType>> = {
   ETH: {

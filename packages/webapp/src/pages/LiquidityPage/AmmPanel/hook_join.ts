@@ -51,7 +51,7 @@ export const useAmmJoin = ({
 }: {
   stob: string;
   btos: string;
-  getFee: (requestType: sdk.OffchainFeeReqType) => any;
+  getFee: (requestType: sdk.OffchainFeeReqType.AMM_JOIN) => any;
   setToastOpen: any;
   pair: {
     coinAInfo: CoinInfo<string> | undefined;
@@ -520,7 +520,7 @@ export const useAmmJoin = ({
               content: t("labelJoinAmmSuccess"),
             });
           }
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,

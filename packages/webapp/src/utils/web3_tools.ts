@@ -158,7 +158,7 @@ export async function isContract(web3: any, address: string) {
   try {
     const code = await web3.eth.getCode(address);
     return code && code.length > 2;
-  } catch (error) {
+  } catch (error: any) {
     myLog(error);
   }
 }
@@ -185,7 +185,7 @@ export async function checkAddr(
       utils.getAddress(address);
       addressErr = AddressError.NoError;
       realAddr = "";
-    } catch (reason) {
+    } catch (reason: any) {
       return new Promise<AddrCheckResult>((resolve) => {
         try {
           connectProvides.usedWeb3?.eth.ens

@@ -11,19 +11,18 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     type = "TOKEN",
     onDepositClick,
     depositBtnStatus,
-    walletMap,
-    coinMap,
+    walletMap = {},
+    coinMap = {},
     addressDefault,
     allowTrade,
     ...rest
   }: DepositProps<T, I> & WithTranslation) => {
-    // const { theme } = useSettings();
-    const {
-      // toolBarItemBack,
-      onChangeEvent,
-      index,
-      switchData,
-    } = useBasicTrade({ ...rest, type, walletMap, coinMap });
+    const { onChangeEvent, index, switchData } = useBasicTrade({
+      ...rest,
+      type,
+      walletMap,
+      coinMap,
+    });
     const getFilteredWalletMap = React.useCallback(() => {
       if (walletMap) {
         const clonedWalletMap = cloneDeep(walletMap);

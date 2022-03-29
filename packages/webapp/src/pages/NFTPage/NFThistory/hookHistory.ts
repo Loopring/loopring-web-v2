@@ -11,7 +11,7 @@ import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TxNFTType } from "@loopring-web/loopring-sdk";
-import { volumeToCountAsBigNumber } from "../../../../hooks/help";
+import { volumeToCountAsBigNumber } from "../../../hooks/help";
 import { RowConfig } from "@loopring-web/common-resources";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
@@ -24,12 +24,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps>() => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const container = React.useRef(null);
 
-  // const [pageSize, setPageSize] = React.useState(10);
-
   const [nftHistory, setNftHistory] = React.useState<{
-    // transfers: Partial<NFTTableProps>;
-    // deposits: Partial<NFTTableProps>;
-    // withdraws: Partial<NFTTableProps>;
     userNFTTxs: Partial<NFTTableProps<Row>>;
   }>({
     userNFTTxs: {
@@ -42,36 +37,6 @@ export const useHistoryNFT = <Row extends TxnDetailProps>() => {
       txType: sdk.UserNFTTxTypes[sdk.TxNFTType.ALL],
       showloading: false,
     },
-    // transfers: {
-    //   etherscanBaseUrl,
-    //   rawData: [],
-    //   pagination: {
-    //     pageSize: LimitNFTHistory,
-    //     total: 0,
-    //   },
-    //   txType: TxType.TRANSFER,
-    //   showloading: false,
-    // },
-    // deposits: {
-    //   etherscanBaseUrl,
-    //   rawData: [],
-    //   pagination: {
-    //     pageSize: LimitNFTHistory,
-    //     total: 0,
-    //   },
-    //   txType: TxType.DEPOSIT,
-    //   showloading: false,
-    // },
-    // withdraws: {
-    //   etherscanBaseUrl,
-    //   rawData: [],
-    //   pagination: {
-    //     pageSize: LimitNFTHistory,
-    //     total: 0,
-    //   },
-    //   txType: TxType.OFFCHAIN_WITHDRAWAL,
-    //   showloading: false,
-    // },
   });
 
   const getTxnList = React.useCallback(
@@ -85,10 +50,13 @@ export const useHistoryNFT = <Row extends TxnDetailProps>() => {
         const _limit = limit
           ? limit
           : nftHistory.userNFTTxs.pagination?.pageSize ?? LimitNFTHistory;
+
         const { totalNum, userNFTTxs } =
           await LoopringAPI.userAPI.getUserNFTTransactionHistory(
             {
               accountId: account.accountId,
+              // @ts-ignore
+              metadata: true,
               offset: (page - 1) * _limit,
               types: txType ? ([txType] as any[]) : undefined,
               // start: (page - 1) * limit,

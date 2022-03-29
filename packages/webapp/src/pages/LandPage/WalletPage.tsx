@@ -91,21 +91,33 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                     marginTop={12}
                     alignItems={"center"}
                   >
-                    <Link href="https://play.google.com/store/apps/details?id=loopring.defi.wallet">
+                    <Link
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://play.google.com/store/apps/details?id=loopring.defi.wallet"
+                    >
                       <img
                         width={260}
                         src={`${SoursURL}images/landPage/appGooglePlay.webp`}
                         alt={"Android"}
                       />
                     </Link>
-                    <Link href="https://download.loopring.io/LoopringWallet.apk">
+                    <Link
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://download.loopring.io/LoopringWallet.apk"
+                    >
                       <img
                         width={260}
                         src={`${SoursURL}images/landPage/appAndroid.webp`}
                         alt={"GooglePlay"}
                       />
                     </Link>
-                    <Link href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126">
+                    <Link
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126"
+                    >
                       <img
                         width={260}
                         src={`${SoursURL}images/landPage/appAppleStore.webp`}
@@ -161,7 +173,11 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                   </Typography>
                   <Grid container width={"600px"} marginTop={8} marginLeft={-2}>
                     <Grid item xs={4}>
-                      <Link href="https://play.google.com/store/apps/details?id=loopring.defi.wallet">
+                      <Link
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="https://play.google.com/store/apps/details?id=loopring.defi.wallet"
+                      >
                         <img
                           style={{ width: "100%" }}
                           src={`${SoursURL}images/landPage/appGooglePlay.webp`}
@@ -170,7 +186,11 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                       </Link>
                     </Grid>
                     <Grid item xs={4}>
-                      <Link href="https://download.loopring.io/LoopringWallet.apk">
+                      <Link
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="https://download.loopring.io/LoopringWallet.apk"
+                      >
                         <img
                           style={{ width: "100%" }}
                           src={`${SoursURL}images/landPage/appAndroid.webp`}
@@ -179,7 +199,11 @@ export const WalletPage = withTranslation(["landPage", "common"])(
                       </Link>
                     </Grid>
                     <Grid item xs={4}>
-                      <Link href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126">
+                      <Link
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126"
+                      >
                         <img
                           style={{ width: "100%" }}
                           src={`${SoursURL}images/landPage/appAppleStore.webp`}

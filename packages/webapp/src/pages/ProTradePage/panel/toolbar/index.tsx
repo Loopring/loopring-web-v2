@@ -47,6 +47,7 @@ import { TableProWrapStyled } from "pages/styled";
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
 import { useTickList } from "../../../QuotePage/hook";
+import { useAccount } from "stores/account";
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -94,7 +95,7 @@ export const Toolbar = withTranslation("common")(
     const { ammPoolBalances } = useToolbar();
     const { tickList } = useTickList();
     const { activityInProgressRules } = useAmmActivityMap();
-
+    const { account } = useAccount();
     const [filteredData, setFilteredData] = React.useState<
       QuoteTableRawDataItem[]
     >([]);
@@ -192,7 +193,7 @@ export const Toolbar = withTranslation("common")(
           };
         });
       }
-    }, [tickerMap, market]);
+    }, [coinMap, tickerMap, tokenPrices, market, forex]);
 
     const getFilteredTickList = React.useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {
@@ -376,6 +377,7 @@ export const Toolbar = withTranslation("common")(
                 <TableProWrapStyled width={isMobile ? "360px" : "580px"}>
                   <QuoteTable
                     isPro
+                    account={account}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
@@ -413,7 +415,7 @@ export const Toolbar = withTranslation("common")(
                   const current_event_date = `${year}-${month}-${day}`;
 
                   history.push(
-                    `/race-event/${current_event_date}?pair=${market}&type=${ruleType}`
+                    `/race-event/${current_event_date}?pair=${market}&type=${ruleType}&owner=${account?.accAddress}`
                   );
                 }}
               >
@@ -438,7 +440,7 @@ export const Toolbar = withTranslation("common")(
                 history.push(
                   `/race-event/${current_event_date}?pair=${market}&type=${
                     activityInProgressRules[`AMM-${market}`].ruleType[0]
-                  }`
+                  }&owner=${account?.accAddress}`
                 );
               }}
             >

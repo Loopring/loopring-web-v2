@@ -10,12 +10,8 @@ import {
   getValuePrecisionThousand,
   myLog,
 } from "@loopring-web/common-resources";
-import { MarketTradeInfo, TradingInterval } from "@loopring-web/loopring-sdk";
-import BigNumber from "bignumber.js";
-import {
-  volumeToCount,
-  volumeToCountAsBigNumber,
-} from "../../../../hooks/help";
+import { TradingInterval } from "@loopring-web/loopring-sdk";
+import { volumeToCount } from "../../../../hooks/help";
 export enum TradingIntervalToTimer {
   "1min" = 60000,
   "5min" = 300000,
@@ -56,14 +52,10 @@ export function useKlineChart(market: string | undefined) {
         const decimals = tokenMap[coinBase] ? tokenMap[coinBase].decimals : -1;
 
         if (decimals > 0) {
-          const rep: sdk.GetCandlestickRequest = {
+          const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick({
             market,
             interval: timeInterval,
-          };
-
-          const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick(
-            rep
-          );
+          });
           setLastMinutes(Date.now());
           let candlestickViewData: IOHLCData[] = [];
 

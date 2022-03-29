@@ -13,10 +13,8 @@ import {
 import { useTokenMap } from "stores/token";
 import { useSocket } from "stores/socket";
 import { useTicker } from "stores/ticker";
-import { tickerService } from "services/socket";
 import { WsTopicType } from "@loopring-web/loopring-sdk";
 import { makeTickView } from "hooks/help";
-import { updatePageTradePro } from "../../../stores/router";
 
 // import { tickerService } from 'services/tickerService';
 type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat };
@@ -93,7 +91,7 @@ export function useAmmMapUI<
           setRawData(rawData);
           resetTableData(rawData);
         }
-      } catch (error) {
+      } catch (error: any) {
         throw new CustomError({ ...ErrorMap.NO_TOKEN_MAP, options: error });
       }
     },

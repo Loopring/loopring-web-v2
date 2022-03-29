@@ -26,12 +26,12 @@ import {
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
 } from "@loopring-web/common-resources";
-import { useAccount } from "../../stores/account";
-import { useSystem } from "../../stores/system";
+import { useAccount } from "stores/account";
+import { useSystem } from "stores/system";
 import { LoopringAPI } from "../../api_wrapper";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useLayer1Store } from "../../stores/localStore/layer1Store";
+import { useLayer1Store } from "stores/localStore/layer1Store";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -147,7 +147,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             });
             loadData();
           }
-        } catch (reason) {
+        } catch (reason: any) {
           // result.code = ActionResultCode.ApproveFailed;
           // result.data = reason;
           sdk.dumpError400(reason);

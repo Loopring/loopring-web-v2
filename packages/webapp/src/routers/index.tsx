@@ -9,7 +9,7 @@ import { Layer2Page } from "pages/Layer2Page";
 import { LiquidityPage } from "pages/LiquidityPage";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import { useTicker } from "../stores/ticker";
+import { useTicker } from "stores/ticker";
 import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
@@ -27,6 +27,7 @@ import {
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
+import { NFTPage } from "../pages/NFTPage";
 
 const ContentWrap = ({
   children,
@@ -64,11 +65,11 @@ const ContentWrap = ({
 };
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
+  const location = useLocation();
   const proFlag =
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
-  const location = useLocation();
   const { setShowAccount } = useOpenModals();
   const query = new URLSearchParams(location.search);
   React.useEffect(() => {
@@ -219,6 +220,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/layer2", "/layer2/*"]}>
           <ContentWrap state={state}>
             <Layer2Page />
+          </ContentWrap>
+        </Route>
+        <Route exact path={["/nft", "/nft/*"]}>
+          <ContentWrap state={state}>
+            <NFTPage />
           </ContentWrap>
         </Route>
         <Route exact path="/liquidity">

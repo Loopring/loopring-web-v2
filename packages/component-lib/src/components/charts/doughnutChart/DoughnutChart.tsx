@@ -84,7 +84,7 @@ export interface DoughnutChartProps {
 export const DoughnutChart = ({ data }: DoughnutChartProps) => {
   const [activeIndex, setActiveIndex] = React.useState(undefined);
 
-  const onPieEnter = React.useCallback((_, index) => {
+  const onPieEnter = React.useCallback((_: any, index: any) => {
     setActiveIndex(index);
   }, []);
 

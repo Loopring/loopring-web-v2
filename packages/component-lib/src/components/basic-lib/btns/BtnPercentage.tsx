@@ -5,6 +5,7 @@ import { Slider } from "@mui/material";
 import { Box } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
+import { Mark } from "@mui/base/SliderUnstyled/SliderUnstyledProps";
 
 const StyledSlider = styled(Slider)`
   && {
@@ -107,8 +108,7 @@ export const BtnPercentage = withTranslation("common")(
         setValue(0);
       }
     }, [selected]);
-
-    const _anchors =
+    const _anchors: Mark[] =
       anchors && anchors.length
         ? anchors
         : [

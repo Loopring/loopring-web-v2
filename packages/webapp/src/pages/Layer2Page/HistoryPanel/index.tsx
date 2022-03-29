@@ -13,8 +13,8 @@ import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import { TOAST_TIME } from "defs/common_defs";
 import { useToast } from "hooks/common/useToast";
-import { useTokenMap } from "../../../stores/token";
-import { useAmmMap } from "../../../stores/Amm/AmmMap";
+import { useTokenMap } from "stores/token";
+import { useAmmMap } from "stores/Amm/AmmMap";
 import { RowConfig } from "@loopring-web/common-resources";
 
 const HistoryPanel = withTranslation("common")(
@@ -46,7 +46,7 @@ const HistoryPanel = withTranslation("common")(
     const { etherscanBaseUrl } = useSystem();
 
     const {
-      account: { accAddress },
+      account: { accAddress, accountId },
     } = useAccount();
 
     const { t } = rest;
@@ -124,6 +124,7 @@ const HistoryPanel = withTranslation("common")(
                 showloading: showTxsLoading,
                 getTxnList: getUserTxnList,
                 accAddress,
+                accountId,
                 ...rest,
               }}
             />
@@ -141,6 +142,8 @@ const HistoryPanel = withTranslation("common")(
                   pageSize: pageSize,
                   total: userTradesTotal,
                 },
+                accAddress,
+                accountId,
                 ...rest,
               }}
             />

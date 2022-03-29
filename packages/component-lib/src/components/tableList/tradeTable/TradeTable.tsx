@@ -1,7 +1,12 @@
 import React from "react";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { TFunction, withTranslation, WithTranslation } from "react-i18next";
+import {
+  TFunction,
+  Trans,
+  withTranslation,
+  WithTranslation,
+} from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
@@ -10,6 +15,7 @@ import { Filter, FilterTradeTypes } from "./components/Filter";
 import {
   DirectionTag,
   EmptyValueTag,
+  Explorer,
   getValuePrecisionThousand,
   RowConfig,
   TableType,
@@ -74,6 +80,8 @@ export type TradeTableProps = {
   isL2Trade?: boolean;
   marketMap?: any;
   showLoading?: boolean;
+  accAddress?: string;
+  accountId?: number;
 } & XOR<{ showFilter: true; filterPairs: string[] }, { showFilter?: false }>;
 
 const TableStyled = styled(Box)<
@@ -266,7 +274,12 @@ const getColumnModeAssets = (
             : EmptyValueTag;
 
           return (
-            <Box className="rdg-cell-value">
+            <Box
+              className="rdg-cell-value"
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+            >
               <Typography>
                 {`${fromValue} ${from.key} ${DirectionTag} ${toValue} ${to.key}`}
               </Typography>
@@ -460,6 +473,8 @@ export const TradeTable = withTranslation("tables")(
     isL2Trade = false,
     getUserTradeList,
     showLoading = false,
+    accAddress,
+    accountId,
     ...rest
   }: WithTranslation & TradeTableProps & { tokenMap?: any }) => {
     const [filterType, setFilterType] = React.useState(
@@ -591,6 +606,28 @@ export const TradeTable = withTranslation("tables")(
             rawData: rawData,
           }}
         />
+        {!!accountId && showFilter && (
+          <Typography
+            display={"flex"}
+            justifyContent={"flex-end"}
+            textAlign={"right"}
+            paddingRight={5 / 2}
+            paddingY={1}
+          >
+            <Trans i18nKey={"labelGoExplore"} ns={"common"}>
+              View transactions on
+              <Link
+                display={"inline-flex"}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={Explorer + `/account/${accountId}`}
+                paddingLeft={1 / 2}
+              >
+                block explorer
+              </Link>
+            </Trans>
+          </Typography>
+        )}
         {pagination && (
           <TablePagination
             height={rowHeight}

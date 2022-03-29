@@ -394,7 +394,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           }
 
           setIsLimitLoading(false);
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
@@ -511,7 +511,7 @@ export const useLimit = <C extends { [key: string]: any }>({
     [setLimitTradeData, currency, forex]
   );
   const handlePriceError = React.useCallback((data: IBData<any>):
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
+    | { error: boolean; message?: string | JSX.Element }
     | undefined => {
     const tradeValue = data.tradeValue;
     if (tradeValue) {

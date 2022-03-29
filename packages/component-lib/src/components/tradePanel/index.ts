@@ -9,5 +9,7 @@ export * from "./tradePro";
 export * from "./ExportAccount";
 export * from "./components/DepositNFTWrap";
 export * from "./components/DeployNFTWrap";
-export * from "./components/MintNFTWrap";
+export * from "./components/MintNFTConfirm";
+export * from "./components/MintNFTBlock";
 export * from "./Deposit";
+export * from "./components/tool/FeeList";

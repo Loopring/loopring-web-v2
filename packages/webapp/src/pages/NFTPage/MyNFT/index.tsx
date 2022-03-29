@@ -1,13 +1,10 @@
 import styled from "@emotion/styled";
 import {
   Box,
-  Button,
   Card,
   Grid,
   Modal as MuiModal,
   Pagination,
-  Tab,
-  Tabs,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -15,20 +12,17 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   EmptyDefault,
   ModalCloseButton,
-  PanelContent,
   SwitchPanelStyled,
   useSettings,
 } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
-import { NFTDetail } from "./components/detail";
+import { NFTDetail } from "../components/detail";
 import {
   EmptyValueTag,
   getShortAddr,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { useTheme } from "@emotion/react";
-import { HistoryNFT } from "./components/history";
-import { NFTMedia } from "./components/nftMedia";
+import { NFTMedia } from "../components/nftMedia";
 import { NFTLimit } from "stores/walletLayer2NFT/saga";
 
 const StyledPaper = styled(Box)`
@@ -41,22 +35,16 @@ const CardStyle = styled(Card)`
   width: 100%;
   cursor: pointer;
   height: 0;
-  padding: 0;
-  padding-bottom: calc(100% + 80px);
+  padding: 0 0 calc(100% + 80px);
   position: relative;
 
   img {
     object-fit: contain;
   }
 ` as typeof Card;
-const enum TabKey {
-  ASSETS,
-  TRANSACTION,
-}
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
-    const theme = useTheme();
     const { isMobile } = useSettings();
     const {
       popItem,
@@ -64,20 +52,16 @@ export const MyNFTPanel = withTranslation("common")(
       onDetailClose,
       isShow,
       nftList,
-      popNFTDeposit,
-      popNFTMint,
+      // popNFTDeposit,
+      // popNFTMint,
       etherscanBaseUrl,
       isLoading,
       page,
       total,
       onNFTError,
-      // onNFTReload,
       onPageChange,
     } = useMyNFT();
-    const [currentTab, setCurrentTab] = React.useState<TabKey>(TabKey.ASSETS);
-    const handleTabChange = React.useCallback((value) => {
-      setCurrentTab(value);
-    }, []);
+
     const modalContent = React.useMemo(() => {
       // @ts-ignore
       return (
@@ -91,15 +75,62 @@ export const MyNFTPanel = withTranslation("common")(
           />
         )
       );
-    }, [popItem, etherscanBaseUrl, onDetailClose]);
-    const panelList: Pick<
-      PanelContent<"ASSETS" | "TRANSACTION">,
-      "key" | "element"
-    >[] = [
-      {
-        key: "ASSETS",
-        element: (
-          <>
+    }, [popItem, onNFTError, etherscanBaseUrl, onDetailClose]);
+
+    return (
+      <>
+        <MuiModal
+          open={isShow}
+          onClose={onDetailClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <SwitchPanelStyled
+            // width={"80%"}
+            width={isMobile ? "360px" : "80%"}
+            position={"relative"}
+            minWidth={isMobile ? "initial" : 1000}
+            style={{ alignItems: "stretch" }}
+          >
+            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+              <ModalCloseButton onClose={onDetailClose} t={t} {...rest} />
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              flex={1}
+              justifyContent={"stretch"}
+            >
+              {modalContent}
+            </Box>
+          </SwitchPanelStyled>
+        </MuiModal>
+
+        <StyledPaper
+          flex={1}
+          className={"MuiPaper-elevation2"}
+          marginTop={0}
+          marginBottom={2}
+          display={"flex"}
+          flexDirection={"column"}
+        >
+          <Box
+            display={"flex"}
+            flexDirection={"row"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography
+              component={"h3"}
+              variant={"h4"}
+              paddingX={5 / 2}
+              paddingTop={5 / 2}
+              paddingBottom={2}
+            >
+              {t("labelNFTMyNFT")}
+            </Typography>
+          </Box>
+          <Box flex={1} display={"flex"} flexDirection={"column"}>
             {isLoading ? (
               <Box
                 flex={1}
@@ -224,7 +255,7 @@ export const MyNFTPanel = withTranslation("common")(
                 </Grid>
               </>
             ) : (
-              <Box flex={1}>
+              <Box flex={1} alignItems={"center"}>
                 <EmptyDefault
                   message={() => (
                     <Box
@@ -263,95 +294,6 @@ export const MyNFTPanel = withTranslation("common")(
                 </Box>
               )}
             </>
-          </>
-        ),
-      },
-      {
-        key: "TRANSACTION",
-        element: <HistoryNFT />,
-      },
-    ];
-    return (
-      <>
-        <MuiModal
-          open={isShow}
-          onClose={onDetailClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <SwitchPanelStyled
-            // width={"80%"}
-            width={isMobile ? "360px" : "80%"}
-            position={"relative"}
-            minWidth={isMobile ? "initial" : 1000}
-            style={{ alignItems: "stretch" }}
-          >
-            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
-              <ModalCloseButton onClose={onDetailClose} t={t} {...rest} />
-            </Box>
-            <Box
-              display={"flex"}
-              flexDirection={isMobile ? "column" : "row"}
-              flex={1}
-              justifyContent={"stretch"}
-            >
-              {modalContent}
-            </Box>
-          </SwitchPanelStyled>
-        </MuiModal>
-
-        <StyledPaper
-          flex={1}
-          className={"MuiPaper-elevation2"}
-          marginTop={0}
-          marginBottom={2}
-          display={"flex"}
-          flexDirection={"column"}
-        >
-          <Box
-            marginY={2}
-            marginLeft={2}
-            marginRight={3}
-            display={"flex"}
-            flexDirection={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Tabs
-              value={currentTab}
-              onChange={(_event, value) => handleTabChange(value)}
-              aria-label="l2-history-tabs"
-            >
-              <Tab
-                label={t("labelNFTMyNFT", { num: 0 })}
-                value={TabKey.ASSETS}
-              />
-              <Tab label={t("labelTransactions")} value={TabKey.TRANSACTION} />
-            </Tabs>
-            {!isMobile && (
-              <Box display={"flex"}>
-                <Button
-                  variant={"contained"}
-                  size={"small"}
-                  style={{ marginLeft: 4 }}
-                  onClick={() => popNFTDeposit()}
-                >
-                  {t("labelNFTDeposit")}
-                </Button>
-                <Button
-                  disabled={false}
-                  variant={"outlined"}
-                  size={"medium"}
-                  style={{ marginLeft: `${theme.unit}px` }}
-                  onClick={() => popNFTMint()}
-                >
-                  {t("nftMintBtn")}
-                </Button>
-              </Box>
-            )}
-          </Box>
-          <Box flex={1} display={"flex"} flexDirection={"column"}>
-            {panelList[currentTab].element}
           </Box>
         </StyledPaper>
       </>

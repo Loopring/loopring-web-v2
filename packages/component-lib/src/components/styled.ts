@@ -3,7 +3,6 @@ import { BoxProps, Grid, Typography } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
-import React from "react";
 import { Button } from "./basic-lib";
 import { useSettings } from "../stores";
 
@@ -219,9 +218,9 @@ export const SwitchPanelStyled: any = styled(Box)<
       height: 100%;
     }
   }
-` as React.ElementType<
-  { _height?: number | string; _width?: number | string } & BoxProps
->;
+` as (
+  props: { _height?: number | string; _width?: number | string } & BoxProps
+) => JSX.Element;
 // height:${
 //   _height
 //     ? typeof _height === "number"
@@ -372,9 +371,23 @@ export const MenuBtnStyled = styled(Button)`
   font-size: 1.4rem;
   background: var(--opacity);
   color: var(--color-text-secondary);
-  justify-content: space-between;
+  display: flex;
+
   padding: 0 ${({ theme }) => theme.unit * 3}px;
   text-indent: 0.5em;
+  position: relative;
+  &.provider {
+    justify-content: space-between;
+    flex-direction: row;
+  }
+  &.vendor {
+    justify-content: center;
+    flex-direction: column;
+    & > .vendorName {
+      text-indent: -999em;
+      justify-content: center;
+    }
+  }
   &:hover {
     background: var(--provider-hover);
     border-color: var(--opacity);
@@ -399,9 +412,5 @@ export const MenuBtnStyled = styled(Button)`
       align-items: center;
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
-  }
-  &.vendor {
-    text-indent: -999em;
-    justify-content: center;
   }
 ` as typeof Button;

@@ -3,6 +3,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
+  Account,
   AmmRankIcon,
   EmptyValueTag,
   FloatTag,
@@ -131,6 +132,7 @@ export interface QuoteTableProps {
     row: QuoteTableRawDataItem,
     column: any
   ) => void;
+  account: Account;
   favoriteMarket: string[];
   addFavoriteMarket: (pair: string) => void;
   removeFavoriteMarket: (pair: string) => void;
@@ -160,6 +162,7 @@ export const QuoteTable = withTranslation("tables")(
       addFavoriteMarket,
       removeFavoriteMarket,
       showLoading,
+      account,
       isPro = false,
       activityInProgressRules,
       ...rest
@@ -245,7 +248,7 @@ export const QuoteTable = withTranslation("tables")(
                             const current_event_date = `${year}-${month}-${day}`;
 
                             history.push(
-                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account?.accAddress}`
                             );
                           }}
                         >
@@ -274,7 +277,7 @@ export const QuoteTable = withTranslation("tables")(
                           history.push(
                             `/race-event/${current_event_date}?pair=${pair}&type=${
                               activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                            }`
+                            }&owner=${account?.accAddress}`
                           );
                         }}
                       >

@@ -1,19 +1,14 @@
-import {
-  Box,
-  BoxProps,
-  Link,
-  TextareaAutosize,
-  Typography,
-} from "@mui/material";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
 import {
   EmptyValueTag,
+  Explorer,
   getShortAddr,
+  IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   LoadingIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import {
-  account,
   Button,
   DeployNFTWrap,
   InformationForNoMetaNFT,
@@ -23,18 +18,20 @@ import {
   useSettings,
   useToggle,
   WithdrawPanel,
+  TextareaAutosizeStyled,
 } from "@loopring-web/component-lib";
+
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
-import { useGetAssets } from "../../AssetPanel/hook";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
-import { DEPLOYMENT_STATUS, LOOPRING_URLs } from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../../../stores/account";
+import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
+import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
+import { useAccount } from "../../../stores/account";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -42,16 +39,7 @@ const BoxNFT = styled(Box)`
     object-fit: contain;
   }
 ` as typeof Box;
-const TextareaAutosizeStyled = styled(TextareaAutosize)`
-  &:disabled {
-    line-height: 1.5em;
-    border: 0;
-    background: (var(--opacity));
-    color: var(--color-text-third);
-  }
-  font-family: inherit;
-  width: 100%;
-` as typeof TextareaAutosize;
+
 const BoxStyle = styled(Box)<
   { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
 >`
@@ -89,9 +77,7 @@ const BoxStyle = styled(Box)<
          position:absolute;
          filter: blur(3px);
          background:url(${
-           image
-             ? image.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
-             : ""
+           image ? image.replace(IPFS_META_URL, IPFS_LOOPRING_SITE) : ""
          }) no-repeat 50% 10px;
           background-size: contain;
          opacity: 0.08;
@@ -239,13 +225,25 @@ export const NFTDetail = withTranslation("common")(
               <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTID")}
               </Typography>
-              <Typography
-                color={"var(--color-text-secondary)"}
+              <Link
+                fontSize={"inherit"}
+                whiteSpace={"break-spaces"}
+                style={{ wordBreak: "break-all" }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={
+                  Explorer +
+                  `nft/${popItem.minter}-${NFTType[popItem.nftType ?? 0]}-${
+                    popItem.tokenAddress
+                  }-${popItem.nftId}-${popItem.royaltyPercentage}`
+                  // ${minterAddress}-0-${tokenAddress}-${nftid}
+                  // -0--0x01348998000000000000000002386f26fc100000000000000000000000000066-0
+                }
                 title={popItem?.nftId}
                 width={"fit-content"}
               >
                 {popItem?.nftIdView ?? ""}
-              </Typography>
+              </Link>
             </Typography>
             <Typography
               display={"inline-flex"}
@@ -276,11 +274,9 @@ export const NFTDetail = withTranslation("common")(
                 fontSize={"inherit"}
                 whiteSpace={"break-spaces"}
                 style={{ wordBreak: "break-all" }}
-                onClick={() =>
-                  window.open(
-                    `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
-                  )
-                }
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`}
               >
                 {popItem.tokenAddress}
               </Link>
@@ -299,9 +295,13 @@ export const NFTDetail = withTranslation("common")(
                 fontSize={"inherit"}
                 whiteSpace={"break-spaces"}
                 style={{ wordBreak: "break-all" }}
-                onClick={() =>
-                  window.open(`${etherscanBaseUrl}address/${popItem.minter}`)
-                }
+                onClick={() => {
+                  window.open(
+                    `${etherscanBaseUrl}address/${popItem.minter}`,
+                    "blank"
+                  );
+                  window.opener = null;
+                }}
               >
                 {popItem.minter}
               </Link>
@@ -322,7 +322,7 @@ export const NFTDetail = withTranslation("common")(
                   aria-label="NFT Description"
                   minRows={5}
                   disabled={true}
-                  value={popItem.description ?? EmptyValueTag}
+                  value={`${popItem.description}` ?? EmptyValueTag}
                 />
               </Box>
             </Typography>
@@ -489,10 +489,8 @@ export const NFTDetail = withTranslation("common")(
               <TransferPanel<any, any>
                 {...{
                   _width: 320,
-                  type: "NFT",
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
-
                   ...{
                     ...nftTransferProps,
                     tradeData: {
@@ -501,6 +499,7 @@ export const NFTDetail = withTranslation("common")(
                       balance: Number(popItem?.nftBalance),
                     },
                   },
+                  type: "NFT",
                   assetsData: assetsRawData,
                 }}
               />
@@ -518,7 +517,6 @@ export const NFTDetail = withTranslation("common")(
               <WithdrawPanel<any, any>
                 {...{
                   _width: 320,
-                  type: "NFT",
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
                   ...{
@@ -529,6 +527,7 @@ export const NFTDetail = withTranslation("common")(
                       balance: Number(popItem?.nftBalance),
                     },
                   },
+                  type: "NFT",
                   assetsData: assetsRawData,
                 }}
               />{" "}

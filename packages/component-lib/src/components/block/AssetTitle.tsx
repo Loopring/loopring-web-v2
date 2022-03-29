@@ -183,17 +183,10 @@ export const AssetTitleMobile = ({
   onShowWithdraw,
   onShowTransfer,
   onShowDeposit,
-  // btnShowDepositStatus,
-  // btnShowTransferStatus,
-  // btnShowWithdrawStatus,
-  // btnShowNFTDepositStatus,
-  // btnShowNFTMINTStatus,
   hideL2Assets,
   setHideL2Assets,
   showPartner,
   legalEnable,
-  onShowNFTDeposit,
-  onShowNFTMINT,
   legalShow,
 }: AssetTitleMobileProps) => {
   const { hideL2Action, setHideL2Action } = useSettings();
@@ -355,28 +348,6 @@ export const AssetTitleMobile = ({
               onClick={() => onShowWithdraw()}
             >
               {t("labelWithdraw")}
-            </Button>
-          </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => onShowNFTDeposit()}
-            >
-              {t("labelNFTDeposit")}
-            </Button>
-          </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => onShowNFTMINT()}
-            >
-              {t("labelNFTMint")}
             </Button>
           </Grid>
         </Grid>

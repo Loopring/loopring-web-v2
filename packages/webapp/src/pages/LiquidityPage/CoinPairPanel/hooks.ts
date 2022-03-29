@@ -113,22 +113,19 @@ export const useCoinPair = <C extends { [key: string]: any }>() => {
 
   const { accountId } = store.getState().account;
   const tokenMapList = tokenMap ? Object.entries(tokenMap) : [];
-  let routerLocation = useLocation();
-
   const { walletLayer2 } = useWalletLayer2();
-  const [walletMap, setWalletMap] = React.useState<
-    WalletMapExtend<C> | undefined
-  >(undefined);
-  const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<
-    AmmUserRewardMap | undefined
-  >(undefined);
-  const [snapShotData, setSnapShotData] = React.useState<
-    | {
-        tickerData: TickerData | undefined;
-        ammPoolSnapshot: AmmPoolSnapshot | undefined;
-      }
-    | undefined
-  >(undefined);
+  const [walletMap, setWalletMap] =
+    React.useState<WalletMapExtend<C> | undefined>(undefined);
+  const [ammUserRewardMap, setAmmUserRewardMap] =
+    React.useState<AmmUserRewardMap | undefined>(undefined);
+  const [snapShotData, setSnapShotData] =
+    React.useState<
+      | {
+          tickerData: TickerData | undefined;
+          ammPoolSnapshot: AmmPoolSnapshot | undefined;
+        }
+      | undefined
+    >(undefined);
 
   const [myAmm, setMyAmm] = React.useState<MyAmmLP<C>>({
     feeA: 0,
@@ -161,9 +158,8 @@ export const useCoinPair = <C extends { [key: string]: any }>() => {
     isActivity: undefined,
     APR: undefined,
   } as unknown as PgAmmDetail<C>);
-  const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(
-    undefined
-  );
+  const [tradeFloat, setTradeFloat] =
+    React.useState<TradeFloat | undefined>(undefined);
   const [pair, setPair] = React.useState<{
     coinAInfo: CoinInfo<C> | undefined;
     coinBInfo: CoinInfo<C> | undefined;
@@ -210,7 +206,7 @@ export const useCoinPair = <C extends { [key: string]: any }>() => {
           setAwardList(formattedList);
         }
       }
-    } catch (reason) {}
+    } catch (reason: any) {}
   }, [accountId]);
 
   React.useEffect(() => {

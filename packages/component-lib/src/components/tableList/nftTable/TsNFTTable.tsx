@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, TablePagination, Table } from "../../basic-lib";
 import {
@@ -15,6 +15,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   MintIcon,
+  RowConfig,
   TransferIcon,
   WaitingIcon,
   WarningIcon,
@@ -29,9 +30,22 @@ import {
   TxnDetailProps,
 } from "./Interface";
 import { Filter } from "./components/Filter";
-import { TxNFTType } from "@loopring-web/loopring-sdk";
+import {
+  NFT_IMAGE_SIZES,
+  SoursURL,
+  TxNFTType,
+} from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 
+const BoxNFT = styled(Box)`
+  background: var(--opacity) no-repeat 50% 50%;
+  background-image: url(${SoursURL + "svg/loopring.svg"});
+  img {
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: ${({ theme }) => theme.unit}px;
+  }
+` as typeof Box;
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
   { type: TsTradeStatus.processing, color: "warning" },
@@ -69,7 +83,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
-
   .rdg {
     ${({ isMobile }) =>
       isMobile ? `--template-columns: 60% 40% !important;` : ``}
@@ -108,10 +121,25 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     duration,
     showloading,
     etherscanBaseUrl,
+    accountId,
     t,
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
     const [isDropDown, setIsDropDown] = React.useState(true);
+    const { isMobile } = useSettings();
+    const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
+      getTxnList({
+        page: filter.page ?? page,
+        txType:
+          filter.txType !== undefined
+            ? // @ts-ignore
+              filter.txType == 0
+              ? undefined
+              : filter.txType
+            : txType,
+        duration: filter.duration ?? duration,
+      });
+    };
 
     const getColumnModeTransaction = React.useCallback(
       (): Column<Row, Row>[] => [
@@ -120,8 +148,34 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxSide"),
           formatter: ({ row }) => {
             return (
-              <Box className="rdg-cell-value" title={row.nftTxType}>
-                {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
+              <Box
+                className="rdg-cell-value"
+                title={row.nftTxType}
+                display={"flex"}
+              >
+                <BoxNFT
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  height={RowConfig.rowHeight + "px"}
+                  width={RowConfig.rowHeight + "px"}
+                >
+                  {row.metadata?.imageSize && (
+                    <img
+                      height={RowConfig.rowHeight - 8}
+                      src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
+                    />
+                  )}
+                </BoxNFT>
+                <Typography
+                  color={"inherit"}
+                  flex={1}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  paddingLeft={1}
+                >
+                  {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
+                </Typography>
               </Box>
             );
           },
@@ -133,8 +187,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: { row: Row }) => {
             const hasSymbol =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row?.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                ? row?.receiverAddress?.toLowerCase().trim() ===
+                  accAddress?.toLowerCase().trim()
                   ? "+"
                   : "-"
                 : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
@@ -173,12 +227,13 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             const senderAddress = getShortAddr(row.senderAddress);
             const [from, to] =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                ? row.receiverAddress?.toLowerCase().trim() ===
+                  accAddress?.toLowerCase().trim()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
-                  row.nftTxType === TxNFTType[TxNFTType.MINT]
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
+                ? ["L1", "L2"]
+                : row.nftTxType === TxNFTType[TxNFTType.MINT]
                 ? ["L2 Mint", "L2"]
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? ["L2", receiverAddress]
@@ -190,6 +245,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 : Explorer +
                   `tx/${row.hash}-${
                     EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
+                  }-${accountId}-${row.storageInfo.tokenId}-${
+                    row.storageInfo.storageId
                   }`;
             return (
               <Box
@@ -198,17 +255,19 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 justifyContent={"flex-end"}
                 alignItems={"center"}
               >
-                <Typography
+                <Link
                   style={{
                     cursor: "pointer",
+                    color: "var(--color-primary)",
                   }}
-                  color={"var(--color-primary)"}
-                  onClick={() => window.open(path, "_blank")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={path}
                   title={hash}
                 >
                   {from + ` ${DirectionTag} ` + to}
                   {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
-                </Typography>
+                </Link>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
                 </Box>
@@ -266,21 +325,6 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
       ],
       [etherscanBaseUrl]
     );
-    const { isMobile } = useSettings();
-
-    const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
-      getTxnList({
-        page: filter.page ?? page,
-        txType:
-          filter.txType !== undefined
-            ? // @ts-ignore
-              filter.txType == 0
-              ? undefined
-              : filter.txType
-            : txType,
-        duration: filter.duration ?? duration,
-      });
-    };
 
     const getColumnMobileTransaction = React.useCallback(
       (): Column<any, unknown>[] => [
@@ -313,8 +357,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               case TxNFTType[TxNFTType.TRANSFER]:
                 side = t("labelTransfer");
                 hasSymbol =
-                  row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                  row.receiverAddress?.toLowerCase() ===
+                  accAddress?.toLowerCase()
                     ? "+"
                     : "-";
                 sideIcon = <TransferIcon fontSize={"inherit"} />;
@@ -367,9 +411,24 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                     display={"inline-flex"}
                     alignItems={"center"}
                   >
-                    {sideIcon}
+                    {row.metadata?.imageSize ? (
+                      <BoxNFT
+                        display={"flex"}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        height={24 + "px"}
+                        width={24 + "px"}
+                      >
+                        <img
+                          height={24}
+                          src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
+                        />
+                      </BoxNFT>
+                    ) : (
+                      sideIcon
+                    )}
                   </Typography>
-                  <Typography fontSize={10} marginTop={-1}>
+                  <Typography fontSize={10} marginTop={0}>
                     {side}
                   </Typography>
                 </Typography>
@@ -405,8 +464,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
 
             const [from, to] =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                ? row.receiverAddress?.toLowerCase() ===
+                  accAddress?.toLowerCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
                 : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
@@ -433,7 +492,10 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 display={"flex"}
                 flex={1}
                 flexDirection={"column"}
-                onClick={() => window.open(path, "_blank")}
+                onClick={() => {
+                  window.open(path, "_blank");
+                  window.opener = null;
+                }}
               >
                 <Typography
                   display={"inline-flex"}
@@ -503,6 +565,29 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           className={"scrollable"}
           {...{ ...defaultArgs, ...props, rawData, showloading }}
         />
+        {!!(accountId && showFilter) && (
+          <Typography
+            display={"flex"}
+            justifyContent={"flex-end"}
+            textAlign={"right"}
+            paddingRight={5 / 2}
+            paddingY={1}
+          >
+            <Trans i18nKey={"labelGoExplore"} ns={"common"}>
+              View transactions on
+              <Link
+                display={"inline-flex"}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={Explorer + `/account/${accountId}`}
+                paddingLeft={1 / 2}
+              >
+                block explorer
+              </Link>
+            </Trans>
+          </Typography>
+        )}
+
         {!!(pagination && pagination.total) && (
           <TablePagination
             page={page}

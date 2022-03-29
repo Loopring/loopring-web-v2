@@ -1,19 +1,21 @@
 import { WithTranslation } from "react-i18next";
 import {
+  Account,
   AmmRankIcon,
   AvatarCoinStyled,
   CoinInfo,
+  EmptyValueTag,
   FloatTag,
   getValuePrecisionThousand,
   PriceTag,
   SoursURL,
   TradeFloat,
   TrophyIcon,
+  UpColor,
 } from "@loopring-web/common-resources";
 import { Box, Grid } from "@mui/material";
 import { Avatar, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import React from "react";
 import { baseTitleCss, useSettings } from "../../index";
 import { NewTagIcon } from "../basic-lib";
 import { Currency } from "@loopring-web/loopring-sdk";
@@ -21,14 +23,15 @@ import { useHistory } from "react-router-dom";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
 
 type StyledProps = {
-  custom: any;
+  custom: { chg: UpColor };
 };
 const TradeTitleStyled = styled(Box)<StyledProps>`
   ${({ theme, custom }) => baseTitleCss({ theme, custom })}
-` as React.ElementType<StyledProps>;
+` as (props: StyledProps) => JSX.Element;
 
 export const TradeTitle = <I extends object>({
   baseShow,
+  account,
   quoteShow,
   coinAInfo,
   coinBInfo,
@@ -45,6 +48,8 @@ export const TradeTitle = <I extends object>({
   isNew,
   activityInProgressRules,
 }: WithTranslation & {
+  account: Account;
+
   baseShow: string;
   quoteShow: string;
   coinAInfo: CoinInfo<I>;
@@ -66,8 +71,7 @@ export const TradeTitle = <I extends object>({
       ? FloatTag.decrease
       : FloatTag.increase;
   const { currency, upColor } = useSettings();
-
-  const close = tradeFloat.close;
+  const close: any = tradeFloat.close;
 
   const value =
     currency === Currency.usd
@@ -100,6 +104,7 @@ export const TradeTitle = <I extends object>({
       ? tradeFloat.change.toFixed(2) + "%"
       : "0.00%";
   return (
+    // @ts-ignore
     <TradeTitleStyled custom={{ chg: upColor }}>
       {coinBInfo && coinAInfo ? (
         <Grid container height={72}>
@@ -222,7 +227,7 @@ export const TradeTitle = <I extends object>({
                         const current_event_date = `${year}-${month}-${day}`;
 
                         history.push(
-                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account?.accAddress}`
                         );
                       }}
                     >
@@ -249,7 +254,7 @@ export const TradeTitle = <I extends object>({
                       history.push(
                         `/race-event/${current_event_date}?pair=${pair}&type=${
                           activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                        }`
+                        }&owner=${account?.accAddress}`
                       );
                     }}
                   >
@@ -271,7 +276,7 @@ export const TradeTitle = <I extends object>({
             marginTop={1}
           >
             <Typography variant={"h1"}>
-              {close} {quoteShow}
+              {close == "NaN" ? EmptyValueTag : close} {quoteShow}
             </Typography>
             <Box
               display={"flex"}

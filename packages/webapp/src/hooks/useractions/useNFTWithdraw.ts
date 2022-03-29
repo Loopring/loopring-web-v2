@@ -13,6 +13,7 @@ import {
   IBData,
   NFTWholeINFO,
   SagaStatus,
+  TradeNFT,
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -45,11 +46,7 @@ import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
 import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
-export const useNFTWithdraw = <
-  R extends IBData<T> &
-    Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>,
-  T
->({
+export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
   isLocalShow = false,
   doWithdrawDone,
 }: {
@@ -281,6 +278,14 @@ export const useNFTWithdraw = <
                   step: AccountStep.NFTWithdraw_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
+
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTWithdraw_Failed,
@@ -300,7 +305,9 @@ export const useNFTWithdraw = <
                 info: {
                   hash:
                     Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw`,
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw${
+                      account.accountId
+                    }-${request.token.tokenId}-${request.storageId}`,
                 },
               });
               if (isHWAddr) {
@@ -318,7 +325,7 @@ export const useNFTWithdraw = <
             resetNFTWithdrawData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         sdk.dumpError400(reason);
         const code = checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
@@ -356,6 +363,7 @@ export const useNFTWithdraw = <
       doWithdrawDone,
       resetNFTWithdrawData,
       updateHW,
+      checkFeeIsEnough,
     ]
   );
 
@@ -421,7 +429,7 @@ export const useNFTWithdraw = <
           myLog("submitNFTWithdraw:", request);
 
           processRequest(request, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           setShowAccount({
             isShow: true,
@@ -468,6 +476,7 @@ export const useNFTWithdraw = <
     handleOnAddressChange: (value: any) => {
       setAddress(value);
     },
+    type: "NFT",
     addressDefault: address,
     accAddr: account.accAddress,
     isNotAvaiableAddress,

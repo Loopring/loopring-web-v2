@@ -48,7 +48,7 @@ export const useAmmExit = ({
 }: {
   stob: string;
   btos: string;
-  getFee: (requestType: sdk.OffchainFeeReqType) => any;
+  getFee: (requestType: sdk.OffchainFeeReqType.AMM_EXIT) => any;
   setToastOpen: any;
   pair: {
     coinAInfo: CoinInfo<string> | undefined;

@@ -3,13 +3,13 @@ import {
   L2HistoryIcon,
   L2MyLiquidityIcon,
   L2OrderIcon,
-  NFTIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
   VipIcon,
   WaitApproveIcon,
 } from "../svg";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 import {
   HeaderMenuItemInterface,
@@ -130,8 +130,15 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     router: { path: "/layer2" },
     status: HeaderMenuTabStatus.default,
   },
+  {
+    label: {
+      id: "NFT",
+      i18nKey: "labelNFT",
+    },
+    router: { path: "/nft" },
+    status: HeaderMenuTabStatus.default,
+  },
 ];
-
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -148,7 +155,6 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
     router: { path: "/wallet" },
   },
 ];
-
 export const subMenuLayer2 = {
   assetsGroup: [
     {
@@ -157,14 +163,6 @@ export const subMenuLayer2 = {
       label: {
         id: "assets",
         i18nKey: "labelAssets",
-      },
-    },
-    {
-      icon: NFTIcon,
-      router: { path: "/layer2/my-nft" },
-      label: {
-        id: "my-nft",
-        i18nKey: "labelMyNFT",
       },
     },
     {
@@ -213,6 +211,26 @@ export const subMenuLayer2 = {
     },
   ],
 };
+export const subMenuNFT = {
+  NFTGroup: [
+    {
+      icon: AssetsIcon,
+      router: { path: "/nft/assetsNFT" },
+      label: {
+        id: "assetsNFT",
+        i18nKey: "labelMyAssetsNFT",
+      },
+    },
+    {
+      icon: L2HistoryIcon,
+      router: { path: "/nft/transactionNFT" },
+      label: {
+        id: "transactionNFT",
+        i18nKey: "labelTransactionNFT",
+      },
+    },
+  ],
+};
 export const subMenuGuardian = {
   assetsGroup: [
     {
@@ -241,7 +259,10 @@ export const subMenuGuardian = {
     },
   ],
 };
-
+export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
+export const LoopringIPFSSiteProtocol = "https";
 export const headerRoot = "Landing-page";
-
+export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const SoursURL = "https://static.loopring.io/assets/";
+export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
+export const IPFS_LOOPRING_SITE = sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;

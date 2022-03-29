@@ -86,4 +86,7 @@ export default {
   labelWalletProtect: "Guardian",
   labelWalletValidation: "Approval Requests",
   labelWalletHistory: "History",
+  labelNFT: "L2 NFT",
+  labelMyAssetsNFT: "My NFT",
+  labelTransactionNFT: "Transactions",
 };

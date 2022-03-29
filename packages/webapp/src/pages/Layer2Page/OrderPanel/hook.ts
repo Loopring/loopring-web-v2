@@ -154,7 +154,7 @@ export const useOrderList = () => {
         );
         setTimeout(() => {
           getOrderList({
-            status: "processing",
+            status: ["processing"],
           });
         }, 100);
         updateWalletLayer2();

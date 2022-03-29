@@ -12,6 +12,7 @@ import { useBasicInfo } from "./hook";
 import { VolToNumberWithPrecision } from "utils/formatter_tool";
 import { useTokenMap } from "stores/token";
 import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
+import { useAccount } from "stores/account";
 
 const BoxStyle = styled(Box)`
   .recharts-responsive-container {
@@ -40,6 +41,7 @@ const BasicInfoPanel = ({
   // const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
   const { upColor, isMobile } = useSettings();
   const { marketMap } = useTokenMap();
+  const { account } = useAccount();
   const baseToken = coinAInfo?.name;
   const quoteToken = coinBInfo?.name;
   const marketPrecision = marketMap
@@ -86,6 +88,7 @@ const BasicInfoPanel = ({
             alignItems={"center"}
           >
             <TradeTitle
+              accoun={account}
               {...{
                 baseShow,
                 quoteShow,
@@ -96,7 +99,7 @@ const BasicInfoPanel = ({
                 tradeFloat,
                 activityInProgressRules,
               }}
-            ></TradeTitle>
+            />
             <ToggleButtonGroup
               exclusive
               {...{ ...rest, t, tgItemJSXs, value: chartType }}

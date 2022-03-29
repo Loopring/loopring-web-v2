@@ -1,5 +1,6 @@
-import { FloatTag, TradeStatus, TradeTypes } from "../constant";
+import { Account, FloatTag, TradeStatus, TradeTypes } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
+import React from "react";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -160,6 +161,23 @@ export type AmmCardProps<T> = AmmDetail<T> & {
   activity: AmmActivity<T>;
   tradeFloat: TradeFloat;
   handleClick: () => void;
+  account: Account;
+  popoverIdx: number;
+  precisionA?: number;
+  precisionB?: number;
+  coinAPriceDollar: number;
+  coinBPriceDollar: number;
+  coinAPriceYuan: number;
+  coinBPriceYuan: number;
+  ammRewardRecordList: {
+    amount: string;
+    time: number;
+  }[];
+  getLiquidityMining: (market: string, size?: number) => Promise<void>;
+  getMiningLinkList: (market: string) => { [key: string]: string };
+  setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>;
+  setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>;
+  ammInfo: any;
 };
 
 export type AmmActivity<I> = {

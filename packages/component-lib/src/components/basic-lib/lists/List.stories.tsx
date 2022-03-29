@@ -22,7 +22,13 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { coinMap, CoinType, layer2ItemData, walletMap } from "../../../static";
+import {
+  account,
+  coinMap,
+  CoinType,
+  layer2ItemData,
+  walletMap,
+} from "../../../static";
 import { CoinMenu } from "./CoinList";
 import {
   ACTIVITY,
@@ -243,6 +249,7 @@ const TabPanelBtn = () => {
 const Template: Story<any> = withTranslation()(({ t }: any) => {
   const theme = useTheme();
   const activity: ACTIVITY = {
+    account,
     id: "unique1",
     type: ACTIVITY_TYPE.SWAP_VOLUME_RANKING,
     link: `2021/12/2021-12-23`,
@@ -258,6 +265,7 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
   const notify: NOTIFICATION_ITEM = {
     id: "unique2", //localStore for visited should be unique
     title: "路印中继系统升级",
+    account,
     description1: "Loopring Relayer System Upgrade Notice",
     description2: "Period: 2021-12-23 12AM to 2021-12-31 12AM (UAT)",
     link: `2021/12/2021-12-23`,

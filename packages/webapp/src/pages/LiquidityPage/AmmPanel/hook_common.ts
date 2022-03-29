@@ -13,7 +13,6 @@ import { myLog } from "@loopring-web/common-resources";
 import { useSocket } from "stores/socket";
 import { useToast } from "hooks/common/useToast";
 import { usePageAmmPool } from "stores/router";
-import { useTokenPrices } from "../../../stores/tokenPrices";
 
 export const useAmmCommon = ({
   pair,
@@ -101,7 +100,11 @@ export const useAmmCommon = ({
   }, []);
 
   const getFee = React.useCallback(
-    async (requestType: sdk.OffchainFeeReqType) => {
+    async (
+      requestType:
+        | sdk.OffchainFeeReqType.AMM_EXIT
+        | sdk.OffchainFeeReqType.AMM_JOIN
+    ) => {
       if (
         accountStatus === SagaStatus.UNSET &&
         LoopringAPI.userAPI &&

@@ -35,12 +35,6 @@ import {
 } from "./klineConfig";
 import { cloneDeepWith } from "lodash";
 
-const ChartWrapperStyled = styled(Box)`
-  flex: 1;
-  width: 100%;
-  // height: 100%;
-`;
-
 const ChartItemStyled = styled(Typography)`
   //font-size: 1.2em;
   cursor: pointer;
@@ -308,7 +302,7 @@ export const ChartView = withTranslation("common")(
             </Box>
           </Box>
           <Divider style={{ marginTop: "-1px" }} />
-          <ChartWrapperStyled>
+          <Box flex={1} width={"100%"}>
             <ScaleAreaChart
               type={isKline ? ChartType.Kline : ChartType.Depth}
               data={isKline ? candlestickViewData : getTrendData()}
@@ -339,7 +333,7 @@ export const ChartView = withTranslation("common")(
                   : undefined
               }
             />
-          </ChartWrapperStyled>
+          </Box>
           {isKline && (
             <>
               <Divider style={{ marginTop: "-1px" }} />

@@ -26,7 +26,7 @@ import {
 } from "./panel";
 import { boxLiner, useSettings } from "@loopring-web/component-lib";
 import styled from "@emotion/styled/";
-import { usePageTradePro } from "../../stores/router";
+import { usePageTradePro } from "stores/router";
 import { useHistory } from "react-router-dom";
 
 const MARKET_ROW_LENGTH: number = 8;
@@ -291,7 +291,12 @@ export const OrderbookPage = withTranslation("common")(() => {
       [market, rowLength]
     ),
     orderTable: React.useMemo(
-      () => <OrderTableView market={market} />,
+      () => (
+        <OrderTableView
+          market={market}
+          handleOnMarketChange={handleOnMarketChange}
+        />
+      ),
       [market]
     ),
   };

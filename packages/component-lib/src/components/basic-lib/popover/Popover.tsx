@@ -114,7 +114,7 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         }
       }
     }
-  ` as React.ElementType<PopoverProps>;
+  ` as (props: PopoverProps) => JSX.Element;
 
   const getRenderChild = React.useCallback(
     (popoverChildren: React.ReactNode) => {
@@ -247,4 +247,4 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
       }
     }
   }
-` as React.ElementType<PopoverProps>;
+` as (props: PopoverProps) => JSX.Element;

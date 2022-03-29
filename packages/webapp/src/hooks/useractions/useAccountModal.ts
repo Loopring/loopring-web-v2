@@ -1,7 +1,7 @@
 import { useAccount } from "../../stores/account";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import React from "react";
-import { sleep } from "@loopring-web/loopring-sdk";
+import { sleep, WalletType } from "@loopring-web/loopring-sdk";
 import { useAccountHook } from "../../services/account/useAccountHook";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -74,11 +74,18 @@ export function useAccountModal() {
     });
   }, [setShowAccount, shouldShow]);
   const handleSignError = React.useCallback(
-    ({ error }: { error?: sdk.RESULT_INFO }) => {
+    ({
+      error,
+      walletType,
+    }: {
+      error?: sdk.RESULT_INFO;
+      walletType?: WalletType;
+    }) => {
       setShowAccount({
         isShow: shouldShow ?? false,
         step: AccountStep.UnlockAccount_Failed,
         error,
+        info: { walletType },
       });
     },
     [setShowAccount, shouldShow]

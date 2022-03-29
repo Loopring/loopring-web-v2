@@ -1,6 +1,7 @@
 import { AMMMarketType, MarketType } from "./market";
 import { myLog } from "../utils";
 import { CoinKey } from "../loopring-interface";
+import { Account } from "./account";
 
 /**
  * export enum RuleType {
@@ -26,6 +27,7 @@ export type NOTIFICATION_ITEM = {
   link: string;
   startDate: number;
   endDate: number;
+  account?: Account;
 };
 export type ACTIVITY = NOTIFICATION_ITEM & {
   type: ACTIVITY_TYPE;
@@ -38,6 +40,7 @@ export type ACTIVITY = NOTIFICATION_ITEM & {
 export type NOTIFICATION = {
   activities: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
+  account?: Account;
   prev?: {
     endDate: number;
     prevMonth: string;
@@ -132,7 +135,7 @@ export async function getNotification(
         );
       }
       return;
-    } catch (e) {
+    } catch (e: any) {
       myLog(e);
       return;
     }
@@ -186,7 +189,7 @@ export async function getNotification(
         //   );
         // }
       }
-    } catch (e) {
+    } catch (e: any) {
       myLog(e);
     }
 

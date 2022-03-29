@@ -36,7 +36,7 @@ export type InputButtonProps<T, R, I> = {
   handleError?: (
     ibData: T & { maxAllow?: boolean },
     ref: React.ForwardedRef<any>
-  ) => { error: boolean; message?: string | React.ElementType<HTMLElement> };
+  ) => { error: boolean; message?: string | JSX.Element };
   focusOnInput?: boolean;
   name?: string;
 };
@@ -46,7 +46,7 @@ export enum InputSize {
 }
 export type InputCoinProps<T, R, I> = {
   inputData?: T | undefined;
-  label: string;
+  label: string | JSX.Element;
   subLabel?: string;
   coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>;
   placeholderText?: string;
@@ -67,7 +67,7 @@ export type InputCoinProps<T, R, I> = {
   handleError?: (
     ibData: T,
     ref: React.ForwardedRef<any>
-  ) => { error: boolean; message?: string | React.ElementType<HTMLElement> };
+  ) => { error: boolean; message?: string | JSX.Element };
   focusOnInput?: boolean;
   size?: InputSize;
   isShowCoinIcon?: boolean;
@@ -81,12 +81,12 @@ export type InputSelectProps<T, I = CoinKey<T>> = {
   // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,
   // walletMap: WalletMap<R,I extends CoinInfo?WalletCoin:WalletCoin> | {},
   placeholder: string;
-  panelRender: (props: any) => React.ElementType<any> | JSX.Element;
+  panelRender: (props: any) => JSX.Element;
   height?: number; //outSide height, default is defined in global.ts file
   inputProps?: InputProps;
   wait?: number;
   disabled?: boolean;
-  backElement?: React.ElementType<any> | JSX.Element;
+  backElement?: JSX.Element;
   focusOnInput?: boolean;
   allowScroll?: boolean;
   selected?: string | undefined;

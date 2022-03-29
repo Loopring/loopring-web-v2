@@ -45,7 +45,7 @@ export const ProviderMenu = ({
   gatewayList,
   termUrl,
   handleSelect,
-  providerName = ConnectProviders.unknown,
+  providerName = ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
   const [checkboxValue, setCheckboxValue] = React.useState(false);
   const [isShake, setIsShake] = React.useState(false);
@@ -82,7 +82,7 @@ export const ProviderMenu = ({
     },
     [checkboxValue, isShake]
   );
-  // const  !==  ConnectProviders.unknown
+  // const  !==  ConnectProviders.Unknown
   return (
     <Box
       flex={1}
@@ -128,6 +128,8 @@ export const ProviderMenu = ({
                 <Link
                   component={"a"}
                   href={termUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={(event) => {
                     //@ts-ignore
                     window?._iub?.badges["0"].linkA.dispatchEvent(
@@ -137,7 +139,6 @@ export const ProviderMenu = ({
                     // set
                     // window?._iub?.loadPPContent({...e, path: termUrl});
                   }}
-                  target={"_blank"}
                 >
                   Terms of Service
                 </Link>
@@ -165,7 +166,9 @@ export const ProviderMenu = ({
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
-                className={providerName === item.key ? "selected" : ""}
+                className={
+                  providerName === item.key ? "selected provider" : "provider"
+                }
                 fullWidth
                 endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
                 onClick={(e) => {

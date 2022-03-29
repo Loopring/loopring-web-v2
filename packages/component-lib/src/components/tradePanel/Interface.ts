@@ -18,6 +18,7 @@ import {
   NFTDepositViewProps,
   NFTMintViewProps,
   NFTDeployViewProps,
+  NFTMetaViewProps,
 } from "./components/Interface";
 import {
   SwapData,
@@ -94,7 +95,14 @@ export type SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
 
 export type NFTDepositProps<T, I> = NFTDepositViewProps<T, I>;
 
-export type NFTMintProps<T, I, C = FeeInfo> = NFTMintViewProps<T, I, C>;
+export type NFTMintProps<ME, MI, I, C = FeeInfo> = Omit<
+  NFTMintViewProps<ME, MI, I, C>,
+  "metaData"
+>;
+export type NFTMetaProps<T, C = FeeInfo> = Omit<
+  NFTMetaViewProps<T, C>,
+  "nftMeta"
+>;
 
 export type NFTDeployProps<T, I, C = FeeInfo> = NFTDeployViewProps<T, I, C>;
 /**
@@ -192,7 +200,9 @@ export type ModalPanelProps = {
   onClose: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
-  content: React.ElementType<any> | JSX.Element;
+  content: JSX.Element;
   _height?: number | string;
   _width?: number | string;
 };
+
+export * from "./components/Interface";

@@ -11,6 +11,7 @@ import {
   TableProps,
 } from "../../basic-lib";
 import {
+  Account,
   AmmDetail,
   AmmRankIcon,
   AvatarCoinStyled,
@@ -60,9 +61,11 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 export const IconColumn = React.memo(
   <R extends AmmDetail<T>, T>({
     row,
+    account,
     activityInProgressRules,
   }: {
     row: R;
+    account: Account;
     activityInProgressRules?: ActivityRulesMap;
   }) => {
     const history = useHistory();
@@ -212,7 +215,7 @@ export const IconColumn = React.memo(
                 history.push(
                   `/race-event/${current_event_date}?pair=${pair}&type=${
                     activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                  }`
+                  }&owner=${account?.accAddress}`
                 );
               }}
             >
@@ -224,8 +227,9 @@ export const IconColumn = React.memo(
       </BoxStyled>
     );
   }
-) as <R extends AmmDetail<T>, T>(props: {
+) as unknown as <R extends AmmDetail<T>, T>(props: {
   row: R;
+  account: Account;
   activityInProgressRules?: ActivityRulesMap;
 }) => JSX.Element;
 
@@ -241,6 +245,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
     wait = globalSetup.wait,
     tableHeight = 350,
     coinJson,
+    account,
     forex,
     tokenPrices,
     showLoading,
@@ -272,6 +277,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             >
               <IconColumn
                 row={row as any}
+                account={account}
                 activityInProgressRules={activityInProgressRules}
               />
             </Box>
@@ -543,13 +549,13 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         width: "auto",
         headerCellClass: `textAlignRight`,
         cellClass: () => `action`,
-        formatter: ({ row }) => {
+        formatter: () => {
           return (
             <Box className={"action"}>
               <Button
-                href={`${window.location.href}/pools/coinPair/${
-                  row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
-                }`}
+                // href={`liquidity/pools/coinPair/${
+                //   row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
+                // }`}
                 className={"btn"}
                 variant={"outlined"}
                 size={"small"}
@@ -576,6 +582,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               display={"flex"}
             >
               <IconColumn
+                account={account}
                 row={row as any}
                 activityInProgressRules={activityInProgressRules}
               />

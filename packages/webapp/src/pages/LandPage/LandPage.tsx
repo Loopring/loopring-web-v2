@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import React from "react";
 import styled from "@emotion/styled/";
 import {
@@ -444,7 +444,9 @@ export const LandPage = withTranslation(["landPage", "common"])(
                 </Typography>
                 <Typography marginTop={8} width={292}>
                   <Button
-                    onClick={() => window.open("https://docs.loopring.io/en/")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://docs.loopring.io/en/"
                     fullWidth={true}
                     size={"large"}
                     variant={"contained"}

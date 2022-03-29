@@ -31,4 +31,4 @@ export const TabItemPlus = styled<any>(MenuItem)`
       }
     }
   }
-` as React.ElementType<MenuItemProps>;
+` as (props: MenuItemProps) => JSX.Element;

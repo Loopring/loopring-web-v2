@@ -3,10 +3,12 @@ import {
   TradeStatus,
   TradeTypes,
   AccountStatus,
+  MarketType,
 } from "@loopring-web/common-resources";
 import {
   OrderHistoryRawDataItem,
   OrderHistoryTableDetailItem,
+  QuoteTableRawDataItem,
 } from "@loopring-web/component-lib";
 import { useAccount } from "stores/account";
 import { useWalletLayer2 } from "stores/walletLayer2";
@@ -160,7 +162,7 @@ export const useOrderList = () => {
       if (status === "UNSET") {
         const data = await getOrderList({
           limit: 50,
-          status: "processing",
+          status: ["processing"],
         });
         setOrderOriginalData(data);
       }
@@ -190,8 +192,8 @@ export const useOrderList = () => {
       const newData = await getOrderList({
         offset: prevData.length,
         status: isOpen
-          ? "processing"
-          : "processed,failed,cancelled,cancelling,expired",
+          ? ["processing"]
+          : ["processed", "failed", "cancelled", "cancelling", "expired"],
       });
       const jointData = [...prevData, ...newData];
       setOrderOriginalData(jointData);
