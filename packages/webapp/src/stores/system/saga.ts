@@ -34,7 +34,7 @@ const initConfig = function* <R extends { [key: string]: any }>(
     call(async () => {
       try {
         return await LoopringAPI.exchangeAPI?.disableWithdrawTokenList();
-      } catch (e) {
+      } catch (e: any) {
         return {
           disableWithdrawTokenList: [],
           raw_data: undefined,
@@ -156,7 +156,7 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
             should15MinutesUpdateDataGroup(),
             LoopringAPI.exchangeAPI.getAccountServices({}),
           ]);
-      } catch (e) {
+      } catch (e: any) {
         allowTrade = {
           register: { enable: false },
           order: { enable: false },

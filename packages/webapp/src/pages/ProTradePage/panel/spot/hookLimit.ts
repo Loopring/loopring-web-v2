@@ -394,7 +394,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           }
 
           setIsLimitLoading(false);
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,

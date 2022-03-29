@@ -41,7 +41,7 @@ export const makeMarketArray = (
       if (tokenMap) {
         tradeArray.push(tradeItemToTableDataItem(item));
       }
-    } catch (error) {
+    } catch (error: any) {
       myError(error);
     }
   });
@@ -164,7 +164,7 @@ export const makeMyAmmMarketArray = <C extends { [key: string]: any }>(
           });
         }
         return tradeArray;
-      } catch (error) {
+      } catch (error: any) {
         //CATCHERROR:
         console.log(error);
         // new CustomError()

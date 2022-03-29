@@ -283,7 +283,7 @@ export function useChargeFees({
             });
             setChargeFeeTokenList(_chargeFeeTokenList ?? []);
           }
-        } catch (reason) {
+        } catch (reason: any) {
           dumpError400(reason);
           myLog("chargeFeeTokenList,error", reason);
         }

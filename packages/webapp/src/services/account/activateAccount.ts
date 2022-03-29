@@ -29,7 +29,7 @@ export async function activateAccount({
   if (
     !system.exchangeInfo?.exchangeAddress ||
     system.chainId === NETWORKEXTEND.NONETWORK ||
-    connectName === ConnectProviders.unknown ||
+    connectName === ConnectProviders.Unknown ||
     !accAddress
   ) {
     return {
@@ -69,7 +69,7 @@ export async function activateAccount({
       chainId: system.chainId as any,
       counterFactualInfo: counterFactualInfo ?? undefined,
     });
-  } catch (error) {
+  } catch (error: any) {
     const data =
       typeof error === "string"
         ? {

@@ -247,7 +247,7 @@ export class LoopringSocket {
         }
         return false;
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new CustomError(ErrorMap.SOCKET_ERROR);
     }
   };
@@ -511,7 +511,7 @@ export class LoopringSocket {
         };
       }
       return;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Socket>>Socket", "connect error, not from reconnect");
       // @ts-ignore
       if (this._ws) {

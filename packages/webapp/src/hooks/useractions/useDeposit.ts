@@ -210,7 +210,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               }
 
               refferId = response.accInfo?.accountId;
-            } catch (reason) {
+            } catch (reason: any) {
               sdk.dumpError400(reason);
             }
           }
@@ -248,7 +248,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
             );
 
             myLog(response);
-          } catch (reason) {
+          } catch (reason: any) {
             sdk.dumpError400(reason);
           }
         }
@@ -330,7 +330,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
                   isMetaMask
                 );
                 nonce += 1;
-              } catch (reason) {
+              } catch (reason: any) {
                 // result.code = ActionResultCode.ApproveFailed;
                 // result.data = reason;
 
