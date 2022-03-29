@@ -1,46 +1,46 @@
 {
   "order": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "joinAmm": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "exitAmm": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "transfer": {
-    "enable": false,
-    "reason": "reason"
+    "enable": true,
+    "reason": null
   },
   "transferNFT": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "deposit": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "depositNFT": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "withdraw": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "withdrawNFT": {
-    "enable": false,
+    "enable": true,
     "reason": null
   },
   "mintNFT": {
-    "enable": false,
+    "enable": true,
     "reason": "test"
   },
   "deployNFT": {
-    "enable": false,
+    "enable": true,
     "reason": null
   }
 }
