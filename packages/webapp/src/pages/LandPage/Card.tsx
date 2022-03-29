@@ -1,8 +1,11 @@
-import { animated, to, useSpring } from "react-spring";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Box, styled, Typography } from "@mui/material";
 import { useSettings } from "@loopring-web/component-lib";
+import { useSpring } from "react-spring";
+import { animated, to } from "@react-spring/web";
+import { useTheme } from "@emotion/react";
+import { ThemeType } from "@loopring-web/common-resources";
 
 export type CardProps = {
   title: string;
@@ -44,31 +47,36 @@ export const Card = withTranslation(["landPage", "common"], { withRef: true })(
     // animationJSON,
     describe: string;
   }) => {
+    const theme = useTheme();
+    const [styles, api] = useSpring(() => ({
+      scale: 1,
+      zoom: 1,
+      zIndex: 10,
+      border: `1px solid ${theme.colorBase.border}`, //"var(--border-card)",
+      boxShadow:
+        theme.mode === ThemeType.dark
+          ? "0px 10px 20px rgba(0, 0, 0, 0.15)"
+          : "0px 10px 20px rgba(87, 129, 236, 0.1)", //theme.colorBase.boxShadow, //"var(--box-card-shadow)",
+      background: theme.mode === ThemeType.dark ? "#283485" : "#fff", //"var(--box-card-background)",
+      default: {
+        immediate: (key) => {
+          return [
+            "scale",
+            "zoom",
+            "zIndex",
+            "border",
+            "boxShadow",
+            "background",
+          ].includes(key);
+        },
+      },
+      config: {
+        mass: 5,
+        tension: 350,
+        friction: 40,
+      },
+    }));
     const { isMobile } = useSettings();
-    const [{ zoom, scale, zIndex, boxShadow, border, background }, api] =
-      useSpring(() => {
-        return {
-          scale: 1,
-          zoom: 1,
-          zIndex: 10,
-          border: "var(--border-card)",
-          boxShadow: "var(--box-card-shadow)",
-          background: "var(--box-card-background)",
-          default: {
-            immediate: (key) => {
-              return ["zIndex", "boxShadow", "background", "border"].includes(
-                key
-              );
-            },
-          },
-          config: {
-            mass: 5,
-            tension: 350,
-            friction: 40,
-          },
-        };
-      });
-
     return (
       <BoxStyle
         onMouseEnter={() =>
@@ -97,11 +105,11 @@ export const Card = withTranslation(["landPage", "common"], { withRef: true })(
           transform: "perspective(600px)",
           height: 480,
           width: isMobile ? 320 : 400,
-          zIndex: to([zIndex], (zIndex) => zIndex),
-          background: to([background], (background) => background),
-          boxShadow: to([boxShadow], (boxShadow) => boxShadow),
-          border: to([border], (border) => border),
-          scale: to([scale, zoom], (s, z) => s * z),
+          zIndex: to([styles.zIndex], (zIndex) => zIndex),
+          background: to([styles.background], (background) => background),
+          boxShadow: to([styles.boxShadow], (boxShadow) => boxShadow),
+          border: to([styles.border], (border) => border),
+          scale: to([styles.scale, styles.zoom], (s, z) => s * z),
         }}
       >
         <Box marginTop={4}>{icon}</Box>
