@@ -459,6 +459,7 @@ export default {
   labelIKnow: "I know",
   labelYes: "Yes",
   labelNo: "No",
+  labelOK: "Ok",
   labelNoticeForNoMetaNFT:
     "Your Mint NFT is without Metadata or media information, \nAre you still want {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
@@ -587,4 +588,8 @@ export default {
   labelNoticeForForAccountFrozen:
     "please waiting a while, {{ type }} is on updating.",
   labelAction: "action",
+  labelLoadTitle: "Step1: Upload Media Resource ({{types}})",
+  labelIPFSStep2: "Step2: create NFT metadata information and submit",
+  labelLoadDes: "Drag or click the button to upload files ({{types}}) ",
+  labelUpload: "upload",
 };

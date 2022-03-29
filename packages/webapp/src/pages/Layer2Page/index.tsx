@@ -40,6 +40,7 @@ import { RedPockPanel } from "./RedPockPanel";
 import { MyNFTPanel } from "./MyNFTPanel";
 import { accountServices } from "services/account/accountServices";
 import { useGetAssets } from "./AssetPanel/hook";
+import { NFTMintPanel } from "./MintNFTPanel";
 
 export const subMenu = subMenuLayer2;
 
@@ -115,6 +116,8 @@ export const Layer2Page = () => {
         return <MyLiqudityPanel />;
       case "my-nft":
         return <MyNFTPanel />;
+      case "nft-mint":
+        return <NFTMintPanel />;
       case "history":
         return <HistoryPanel />;
       case "order":

@@ -471,6 +471,7 @@ export default {
   labelIKnow: "I know",
   labelYes: "Yes",
   labelNo: "No",
+  labelOK: "Ok",
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
@@ -616,6 +617,10 @@ export default {
   labelCurrentlyLevel: "Currently {{value}} {{token}}",
   labelLRCBalance: "LRC Balance",
   labelNoticeForForAccountFrozen:
-    "please waiting a while, {{ type }} is on updating.",
+    "Please wait a moment, {{ type }} is updating",
   labelAction: "action",
+  labelLoadTitle: "Step1: Upload Media Resource ({{types}})",
+  labelIPFSStep2: "Step2: create NFT metadata information and submit",
+  labelLoadDes: "Drag or click the button to upload files ({{types}})",
+  labelUpload: "upLoad",
 };

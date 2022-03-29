@@ -168,6 +168,14 @@ export const subMenuLayer2 = {
       },
     },
     {
+      icon: NFTIcon,
+      router: { path: "/layer2/nft-mint" },
+      label: {
+        id: "nft-mint",
+        i18nKey: "labelNFTMint",
+      },
+    },
+    {
       icon: L2MyLiquidityIcon,
       router: { path: "/layer2/my-liquidity" },
       label: {
