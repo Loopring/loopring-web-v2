@@ -12,6 +12,8 @@ import {
 import { List } from "immutable";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 export const account: Account = {
+  __timer__: -1,
+  frozen: false,
   accAddress: "xxxxxxxxxxxxxxxxxxx",
   qrCodeUrl: "",
   readyState: AccountStatus.UN_CONNECT,

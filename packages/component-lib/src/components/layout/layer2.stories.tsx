@@ -26,9 +26,8 @@ import {
   NavListIndex,
   PriceTag,
   subMenuLayer2,
-  VendorProviders,
+  // VendorProviders,
   ViewIcon,
-  WithdrawType,
   WithdrawTypes,
 } from "@loopring-web/common-resources";
 import { withTranslation } from "react-i18next";
@@ -71,8 +70,6 @@ const OrderHistoryTable = withTranslation("common", { withRef: true })(
 
 let tradeData: any = {};
 let depositProps: DepositProps<any, any> = {
-  vendorForce: VendorProviders.Ramp,
-  vendorList: [],
   isNewAccount: true,
   tradeData,
   coinMap,
@@ -101,7 +98,7 @@ let withdrawProps: WithdrawProps<any, any> = {
   }): void {
     console.log(value);
   },
-  handleWithdrawTypeChange(value: keyof typeof WithdrawType): void {
+  handleWithdrawTypeChange(value): void {
     console.log(value);
   },
   tradeData,
@@ -123,8 +120,8 @@ let withdrawProps: WithdrawProps<any, any> = {
       }, 500);
     });
   },
-  withdrawType: WithdrawType.Fast,
-  withdrawTypes: WithdrawTypes,
+  withdrawType: "Fast",
+  withdrawTypes: ["10","11"],
   // @ts-ignore
   feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" },
   chargeFeeTokenList: [
@@ -241,10 +238,10 @@ const ModalPanelWrap = () => {
   return (
     <ModalPanel
       transferProps={transferProps}
-      withdrawProps={withdrawProps}
-      depositProps={depositProps}
+      withdrawProps={withdrawProps}           å
       resetProps={resetProps}
-      ammProps={ammProps as AmmProps<any, any, any, any>}
+      nftDepositProps={nftDepositProps as any}
+      ammProps={ammProps as any}
       swapProps={swapProps as any}
       assetsData={resetProps as any}
       exportAccountProps={{} as any}
@@ -252,7 +249,7 @@ const ModalPanelWrap = () => {
       setExportAccountToastOpen={{} as any}
       nftTransferProps={{} as any}
       nftWithdrawProps={{} as any}
-    />
+     depositGroupProps={{} as any}/>
   );
 };
 
@@ -261,7 +258,7 @@ const AssetTitleWrap = (rest: any) => {
 
   const AssetTitleProps: AssetTitleProps = {
     accountId: 0,
-    showRamp(): void {},
+    showRamp:()=>void,
     hideL2Assets: false,
     setHideL2Assets(value: boolean): void {
       console.log(value);
@@ -307,6 +304,7 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
     }
   ` as typeof Paper;
   const accountInfoProps: AccountBaseProps = {
+    __timer__: -1, frozen: false,
     keySeed: "",
     qrCodeUrl: "",
     accAddress: "0x123567243o24o242423098784",
@@ -329,7 +327,7 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
       >
         My button
       </Button>
-    ),
+    )
   };
   const hasAccount = true;
   const [showAccountInfo, setShowAccountInfo] = React.useState(hasAccount);

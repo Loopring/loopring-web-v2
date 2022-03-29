@@ -23,6 +23,7 @@ import {
   setLanguage,
   settingsSlice,
   SettingsState,
+  toggleSlice,
 } from "@loopring-web/component-lib";
 import { ammReducer } from "./Amm";
 import { tokenMapSlice } from "./token";
@@ -52,7 +53,6 @@ import { tokenPricesSlice } from "./tokenPrices";
 import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify";
 import { walletLayer2NFTSlice } from "./walletLayer2NFT";
-import { layer1ActionHistorySlice } from "./localStore/layer1Store";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -109,7 +109,7 @@ const reducer = combineReducers({
   amm: ammReducer,
   tokenMap: tokenMapSlice.reducer,
   tokenPrices: tokenPricesSlice.reducer,
-
+  toggle: toggleSlice.reducer,
   walletLayer2: walletLayer2Slice.reducer,
   walletLayer2NFT: walletLayer2NFTSlice.reducer,
   walletLayer1: walletLayer1Slice.reducer,

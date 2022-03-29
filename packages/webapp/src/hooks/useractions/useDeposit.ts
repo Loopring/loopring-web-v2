@@ -331,8 +331,8 @@ export const useDeposit = <R extends IBData<T>, T>() => {
                 );
                 nonce += 1;
               } catch (reason) {
-                result.code = ActionResultCode.ApproveFailed;
-                result.data = reason;
+                // result.code = ActionResultCode.ApproveFailed;
+                // result.data = reason;
 
                 setShowAccount({
                   isShow: true,
@@ -400,13 +400,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
 
           resetDepositData();
         } catch (reason: any) {
-          sdk.dumpError400(reason);
-          result.code = ActionResultCode.DepositFailed;
-          result.data = reason;
-
-          //deposit failed
           const err = checkErrorInfo(reason, true);
-
           myLog(
             "---- deposit reason:",
             reason?.message.indexOf("User denied transaction")

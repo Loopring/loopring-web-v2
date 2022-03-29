@@ -14,8 +14,11 @@ import {
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, Divider, Typography } from "@mui/material";
-import { Button, useSettings } from "@loopring-web/component-lib";
-import { useModals } from "hooks/useractions/useModals";
+import {
+  Button,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { usePageTradePro } from "stores/router";
 import _ from "lodash";
 import {
@@ -288,21 +291,21 @@ const UnLookView = React.memo(
     const tokenAIcon: any = coinJson[coinA];
     const tokenBIcon: any = coinJson[coinB];
     // const walletMap = tradeCalcProData && tradeCalcProData.walletMap ? tradeCalcProData.walletMap : {};
-    const { showDeposit, showTransfer } = useModals();
+    const { setShowDeposit, setShowTransfer } = useOpenModals();
     const onShowDeposit = React.useCallback(
       (token?: any) => {
-        showDeposit({ isShow: true, symbol: token });
+        setShowDeposit({ isShow: true, symbol: token });
       },
-      [showDeposit]
+      [setShowDeposit]
     );
     // const onShowWithdraw = React.useCallback((token?: any) => {
     //     showWithdraw({isShow: true, symbol: token})
     // }, [showWithdraw])
     const onShowTransfer = React.useCallback(
       (token?: any) => {
-        showTransfer({ isShow: true, symbol: token });
+        setShowTransfer({ isShow: true, symbol: token });
       },
-      [showTransfer]
+      [setShowTransfer]
     );
 
     return (

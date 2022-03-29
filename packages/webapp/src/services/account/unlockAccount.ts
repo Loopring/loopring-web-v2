@@ -72,13 +72,10 @@ export async function unlockAccount() {
         accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
       } else {
         accountServices.sendAccountSigned({
-          accountId: account.accountId,
-          nonce,
-          keySeed: account.keySeed,
           apiKey: response.apiKey,
           eddsaKey,
-          isContract: walletType?.isContract,
           isInCounterFactualStatus: walletType?.isInCounterFactualStatus,
+          isContract: walletType?.isContract,
         });
       }
     } catch (e) {

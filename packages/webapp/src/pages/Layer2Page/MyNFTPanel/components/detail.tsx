@@ -19,7 +19,9 @@ import {
   InformationForNoMetaNFT,
   ModalBackButton,
   TransferPanel,
+  useOpenModals,
   useSettings,
+  useToggle,
   WithdrawPanel,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -128,6 +130,11 @@ export const NFTDetail = withTranslation("common")(
     const { assetsRawData } = useGetAssets();
     const { isMobile } = useSettings();
     const { account } = useAccount();
+    const {
+      toggle: { deployNFT, withdrawNFT, transferNFT },
+    } = useToggle();
+    const { setShowTradeIsFrozen } = useOpenModals();
+
     const [showDialog, setShowDialog] =
       React.useState<string | undefined>(undefined);
     const [viewPage, setViewPage] = React.useState<number>(0);
@@ -340,7 +347,11 @@ export const NFTDetail = withTranslation("common")(
                       variant={"outlined"}
                       size={"medium"}
                       fullWidth
-                      onClick={() => handleChangeIndex(3)}
+                      onClick={() =>
+                        deployNFT.enable
+                          ? handleChangeIndex(3)
+                          : setShowTradeIsFrozen({ isShow: true })
+                      }
                     >
                       {t("labelNFTDeployContract")}
                     </Button>
@@ -358,7 +369,9 @@ export const NFTDetail = withTranslation("common")(
                     }
                     onClick={() => {
                       isKnowNFTNoMeta
-                        ? handleChangeIndex(2)
+                        ? withdrawNFT.enable
+                          ? handleChangeIndex(2)
+                          : setShowTradeIsFrozen({ isShow: true })
                         : setShowDialog("Withdraw");
                     }}
                   >
@@ -395,7 +408,9 @@ export const NFTDetail = withTranslation("common")(
                     // disabled={isKnowNFTNoMeta ? true : false}
                     onClick={() =>
                       isKnowNFTNoMeta
-                        ? handleChangeIndex(1)
+                        ? transferNFT.enable
+                          ? handleChangeIndex(1)
+                          : setShowTradeIsFrozen({ isShow: true })
                         : setShowDialog("Transfer")
                     }
                   >

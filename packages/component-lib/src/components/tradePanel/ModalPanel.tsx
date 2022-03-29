@@ -19,6 +19,7 @@ import {
   MintNFTWrap,
   NFTMintProps,
   NFTDepositProps,
+  InformationForAccountFrozen,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import {
@@ -149,6 +150,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     isShowNFTDeposit,
     isShowResetAccount,
     isShowExportAccount,
+    isShowTradeIsFrozen,
     isShowActiveAccount,
     isShowNFTMint,
   } = modals;
@@ -246,34 +248,10 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
           />
         }
       />
-      {/*<Modal*/}
-      {/*  open={isShowAmm.isShow}*/}
-      {/*  onClose={() => setShowAmm({ ...isShowAmm, isShow: false } as any)}*/}
-      {/*  content={*/}
-      {/*    <AmmPanel<any, any, any, any>*/}
-      {/*      {...{*/}
-      {/*        ...rest,*/}
-      {/*        _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
-      {/*        _height: "var(--modal-height)",*/}
-      {/*        ...ammProps,*/}
-      {/*      }}*/}
-      {/*    ></AmmPanel>*/}
-      {/*  }*/}
-      {/*/>*/}
-      {/*<Modal*/}
-      {/*  open={isShowSwap.isShow}*/}
-      {/*  onClose={() => setShowSwap({ ...isShowSwap, isShow: false } as any)}*/}
-      {/*  content={*/}
-      {/*    <SwapPanel<any, any, any>*/}
-      {/*      {...{*/}
-      {/*        ...rest,*/}
-      {/*        _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,*/}
-      {/*        _height: "var(--modal-height)",*/}
-      {/*        ...swapProps,*/}
-      {/*      }}*/}
-      {/*    ></SwapPanel>*/}
-      {/*  }*/}
-      {/*/>*/}
+      <InformationForAccountFrozen
+        open={isShowTradeIsFrozen.isShow}
+        type={isShowTradeIsFrozen.type ?? "Action"}
+      />
       <MuiModal
         open={isShowNFTDeposit.isShow}
         onClose={() => setShowNFTDeposit({ isShow: false })}

@@ -284,9 +284,6 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
             sendByMetaMask: true,
           });
         } catch (reason) {
-          result.code = ActionResultCode.ApproveFailed;
-          result.data = reason;
-
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTDeposit_Approve_Denied,
@@ -340,10 +337,6 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
         }
         resetNFTDepositData();
       } catch (reason) {
-        sdk.dumpError400(reason);
-        result.code = ActionResultCode.DepositFailed;
-        result.data = reason;
-
         //deposit failed
         const err = checkErrorInfo(reason, true);
 

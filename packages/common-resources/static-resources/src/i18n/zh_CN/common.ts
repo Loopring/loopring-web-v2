@@ -584,4 +584,7 @@ export default {
   labelBuyToken: "Buy {{token}}",
   labelCurrentlyLevel: "Currently {{value}} {{token}}",
   labelLRCBalance: "LRC Balance",
+  labelNoticeForForAccountFrozen:
+    "please waiting a while, {{ type }} is on updating.",
+  labelAction: "action",
 };

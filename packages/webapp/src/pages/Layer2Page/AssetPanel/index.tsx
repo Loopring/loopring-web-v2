@@ -4,11 +4,9 @@ import ReactEcharts from "echarts-for-react";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
-  HideIcon,
   PriceTag,
-  ViewIcon,
 } from "@loopring-web/common-resources";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import moment from "moment";
 import {
@@ -22,14 +20,9 @@ import store from "stores";
 import { StylePaper } from "pages/styled";
 import { useGetAssets } from "./hook";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { useSystem } from "stores/system";
-import { useAccount } from "stores/account";
 import { useTokenPrices } from "stores/tokenPrices";
 import { useTokenMap } from "../../../stores/token";
 import React from "react";
-
-const UP_COLOR = "#00BBA8";
-const DOWN_COLOR = "#fb3838";
 
 const StyledChartWrapper = styled(Box)`
   height: 225px;
@@ -106,7 +99,6 @@ const AssetPanel = withTranslation("common")(
       onShowTransfer,
       onShowWithdraw,
       onShowDeposit,
-      lpTokenJump,
       total,
       forex,
       hideLpToken,
@@ -263,11 +255,11 @@ const AssetPanel = withTranslation("common")(
             const renderColor =
               sign !== 1
                 ? upColor === "green"
-                  ? DOWN_COLOR
-                  : UP_COLOR
+                  ? "var(--color-error)"
+                  : "var(--color-success)"
                 : upColor === "green"
-                ? UP_COLOR
-                : DOWN_COLOR;
+                ? "var(--color-success)"
+                : "var(--color-error)";
             let renderHtml = `<div>
                         <div>${moment(name).format("YYYY-MM-DD")}</div>
                         <div>
@@ -393,11 +385,9 @@ const AssetPanel = withTranslation("common")(
                 disableWithdrawList,
                 showFilter: true,
                 allowTrade,
-                onShowDeposit: onShowDeposit,
-                onShowTransfer: onShowTransfer,
-                onShowWithdraw: onShowWithdraw,
-                onLpDeposit: lpTokenJump,
-                onLpWithdraw: lpTokenJump,
+                onShowDeposit,
+                onShowTransfer,
+                onShowWithdraw,
                 getMarketArrayListCallback: getTokenRelatedMarketArray,
                 hideLpToken,
                 hideSmallBalances,

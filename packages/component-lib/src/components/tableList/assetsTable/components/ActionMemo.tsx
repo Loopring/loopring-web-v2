@@ -22,7 +22,6 @@ const GridStyled = styled(Grid)`
 export type ActionProps = {
   tokenValue: any;
   allowTrade?: any;
-  // renderMarket:any,
   market: `${string}-${string}`;
   isWithdraw: boolean;
   isLp: boolean;
@@ -74,39 +73,29 @@ const ActionPopContent = React.memo(
           return first === market;
         });
 
-    const jumpToAmm = React.useCallback(
-      (type: LpTokenAction, market: string) => {
-        const pathname = `/liquidity/pools/coinPair/${market}`;
-
-        history &&
-          history.push({
-            pathname,
-            search: `type=${type}`,
-          });
-      },
-      [history]
-    );
-
-    const jumpToSwapPanel = React.useCallback(
-      (pair: string) => {
-        history &&
-          history.push({
-            pathname: `/trade/lite/${pair}`,
-          });
-      },
-      [history]
-    );
     return (
       <Box borderRadius={"inherit"} minWidth={110}>
         {isMobile && tradeList.map((item) => <>{item}</>)}
         {isLp ? (
           <>
             {allowTrade?.joinAmm?.enable && (
-              <MenuItem onClick={() => jumpToAmm(LpTokenAction.add, market)}>
+              <MenuItem
+                onClick={() =>
+                  history.push(
+                    `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
+                  )
+                }
+              >
                 <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
               </MenuItem>
             )}
-            <MenuItem onClick={() => jumpToAmm(LpTokenAction.remove, market)}>
+            <MenuItem
+              onClick={() =>
+                history.push(
+                  `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
+                )
+              }
+            >
               <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
             </MenuItem>
           </>
@@ -114,7 +103,14 @@ const ActionPopContent = React.memo(
           marketList.map((pair) => {
             const formattedPair = pair.replace("-", " / ");
             return (
-              <MenuItem key={pair} onClick={() => jumpToSwapPanel(pair)}>
+              <MenuItem
+                key={pair}
+                onClick={() =>
+                  history.push({
+                    pathname: `/trade/lite/${market}`,
+                  })
+                }
+              >
                 <ListItemText>{formattedPair}</ListItemText>
               </MenuItem>
             );

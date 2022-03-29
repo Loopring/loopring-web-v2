@@ -1,4 +1,5 @@
 import * as sdk from "@loopring-web/loopring-sdk";
+import { AccountInfo, RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 export enum ActionResultCode {
   NoError,
@@ -6,13 +7,12 @@ export enum ActionResultCode {
   GetAccError,
   GenEddsaKeyError,
   UpdateAccoutError,
-  ApproveFailed,
-  DepositFailed,
 }
 
+export type EddsaKey = { eddsaKey: any; accInfo?: AccountInfo };
 export interface ActionResult {
   code: ActionResultCode;
-  data?: any;
+  data?: RESULT_INFO | EddsaKey;
 }
 export const LAYOUT = {
   HEADER_HEIGHT: 64,

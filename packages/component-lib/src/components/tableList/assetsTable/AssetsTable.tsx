@@ -2,10 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Box, BoxProps, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
-// import { useHistory } from 'react-router-dom'
-// import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { Column, Table } from "../../basic-lib";
-// import { TablePagination } from '../../basic-lib'
 import { Filter } from "./components/Filter";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import {
@@ -53,14 +50,6 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element;
-
-// const IconWrapperStyled = styled(Box)`
-//     margin-top: ${({theme}) => theme.unit * 1.1}px;
-//     svg {
-//         width: ${({theme}) => theme.unit * 2}px;
-//         height: ${({theme}) => theme.unit * 2}px;
-//     }
-// `
 
 interface Row {
   token: {
@@ -126,8 +115,6 @@ export interface AssetsTableProps {
   onShowDeposit: (token: string) => void;
   onShowTransfer: (token: string) => void;
   onShowWithdraw: (token: string) => void;
-  onLpDeposit: (token: string, type: LpTokenAction) => void;
-  onLpWithdraw: (token: string, type: LpTokenAction) => void;
   getMarketArrayListCallback: (token: string) => string[];
   hideLpToken: boolean;
   hideSmallBalances: boolean;
@@ -249,10 +236,6 @@ export const AssetsTable = withTranslation("tables")(
           );
         },
       },
-      // {
-      //     key: 'available',
-      //     name: t('labelAvailable'),
-      // },
       {
         key: "locked",
         name: t("labelLocked"),
