@@ -50,7 +50,7 @@ const GridStyle = styled(Grid)`
 // ];
 export const MintNFTBlock = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   disabled,
-  walletMap,
+  // walletMap,
   tradeData,
   // title,
   // description,
@@ -96,7 +96,7 @@ export const MintNFTBlock = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   // @ts-ignore
   return (
     <GridStyle
-      className={walletMap ? "" : "loading"}
+      // className={walletMap ? "" : "loading"}
       style={styles}
       paddingBottom={3}
       container

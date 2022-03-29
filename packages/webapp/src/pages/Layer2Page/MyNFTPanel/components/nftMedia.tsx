@@ -13,7 +13,7 @@ import {
   NftImage,
   useImage,
 } from "@loopring-web/component-lib";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
+import { LOOPRING_URLs, NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
@@ -39,8 +39,8 @@ export const NFTMedia = React.memo(
 
     const [previewSrc, setPreviewSrc] = React.useState(
       (isOrigin
-        ? item?.metadata?.imageSize["original"]
-        : item?.metadata?.imageSize["120-120"]) ??
+        ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
+        : item?.metadata?.imageSize[NFT_IMAGE_SIZES.small]) ??
         item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
@@ -52,7 +52,7 @@ export const NFTMedia = React.memo(
     const fullSrc =
       (isOrigin
         ? item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
-        : item?.metadata?.imageSize["original"]) ??
+        : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]) ??
       item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL);
     const { hasLoaded: fullSrcSrcHasLoaded, hasError: fullSrcSrcHasError } =
       useImage(fullSrc ?? "");
