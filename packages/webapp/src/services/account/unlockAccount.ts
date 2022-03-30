@@ -36,6 +36,7 @@ export async function unlockAccount() {
               exchangeInfo.exchangeAddress
             ).replace("${nonce}", (nonce - 1).toString());
 
+      console.log("generateKeyPair:", keySeed, chainId, isMobile);
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
