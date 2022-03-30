@@ -7,12 +7,12 @@ import { checkErrorInfo } from "hooks/useractions/utils";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export async function unlockAccount() {
-  myLog("unlockAccount starts");
+  console.log("unlockAccount starts");
   const accoun_old = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
   const { isMobile } = store.getState().settings;
-  myLog("unlockAccount account:", accoun_old);
+  console.log("unlockAccount account:", accoun_old);
 
   if (
     exchangeInfo &&
