@@ -7,6 +7,7 @@ import { checkErrorInfo } from "hooks/useractions/utils";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export async function unlockAccount() {
+  myLog("unlockAccount starts");
   const accoun_old = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
