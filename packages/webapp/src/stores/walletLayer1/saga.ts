@@ -3,7 +3,7 @@ import { getWalletLayer1Status, updateWalletLayer1 } from "./reducer";
 import { CoinKey, PairKey, WalletCoin } from "@loopring-web/common-resources";
 import { LoopringAPI } from "api_wrapper";
 import store from "../index";
-import { fromWEI } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 type WalletLayer1Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
@@ -11,27 +11,31 @@ type WalletLayer1Map<R extends { [key: string]: any }> = {
 
 const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
   const { accAddress } = store.getState().account;
-  const { tokenMap, marketCoins } = store.getState().tokenMap;
+  const { tokenMap, marketCoins, addressIndex } = store.getState().tokenMap;
   if (marketCoins && tokenMap && LoopringAPI.exchangeAPI) {
     const { ethBalance } = await LoopringAPI.exchangeAPI.getEthBalances({
       owner: accAddress,
     });
-    const { tokenBalances } = await LoopringAPI.exchangeAPI.getTokenBalances(
-      {
-        owner: accAddress,
-        token: marketCoins.join(),
-      },
-      tokenMap
+    const { tokenBalances } = await LoopringAPI.exchangeAPI.getTokenBalances({
+      owner: accAddress,
+      token: marketCoins.map((ele) => tokenMap[ele].address), // marketCoins.join(),
+    });
+    tokenBalances.set(
+      tokenMap["ETH"].address as unknown as sdk.TokenAddress,
+      ethBalance
     );
-    tokenBalances["ETH"] = ethBalance;
     let walletLayer1;
-    if (tokenBalances) {
-      walletLayer1 = Reflect.ownKeys(tokenBalances).reduce((prev, item) => {
+    if (tokenBalances.size) {
+      walletLayer1 = Array.from(tokenBalances.keys()).reduce((prev, item) => {
         return {
           ...prev,
-          [item]: {
-            belong: item,
-            count: fromWEI(tokenMap, item, tokenBalances[item as string]),
+          [addressIndex[item]]: {
+            belong: addressIndex[item],
+            count: sdk.fromWEI(
+              tokenMap,
+              addressIndex[item],
+              tokenBalances.get(item)
+            ),
           },
         };
       }, {} as WalletLayer1Map<R>);

@@ -80,6 +80,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
+      sdk.toBig(walletLayer1?.ETH.count ?? 0).gt(BIGO) &&
       sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
       sdk
         .toBig(depositValue?.tradeValue)
@@ -117,6 +118,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     depositValue,
     allowanceInfo,
     chargeFeeList,
+    walletLayer1,
   ]);
 
   React.useEffect(() => {

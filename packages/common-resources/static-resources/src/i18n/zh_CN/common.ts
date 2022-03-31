@@ -587,4 +587,5 @@ export default {
   labelNoticeForForAccountFrozen:
     "please waiting a while, {{ type }} is on updating.",
   labelAction: "action",
+  labelGoExplore: "View transactions on block explorer",
 };

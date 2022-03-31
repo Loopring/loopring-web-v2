@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, TablePagination, Table } from "../../basic-lib";
 import {
@@ -108,6 +108,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     duration,
     showloading,
     etherscanBaseUrl,
+    accountId,
     t,
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
@@ -177,8 +178,9 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
-                  row.nftTxType === TxNFTType[TxNFTType.MINT]
+                : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
+                ? ["L1", "L2"]
+                : row.nftTxType === TxNFTType[TxNFTType.MINT]
                 ? ["L2 Mint", "L2"]
                 : row.nftTxType === TxNFTType[TxNFTType.WITHDRAW]
                 ? ["L2", receiverAddress]
@@ -503,6 +505,28 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           className={"scrollable"}
           {...{ ...defaultArgs, ...props, rawData, showloading }}
         />
+        {!!(accountId && showFilter) && (
+          <Typography
+            display={"flex"}
+            justifyContent={"flex-end"}
+            textAlign={"right"}
+            paddingRight={5 / 2}
+            paddingY={1}
+          >
+            <Trans i18nKey={"labelGoExplore"} ns={"common"}>
+              View transactions on
+              <Link
+                display={"inline-flex"}
+                target={"_blank"}
+                href={Explorer + `/account/${accountId}`}
+                paddingLeft={1 / 2}
+              >
+                block explorer
+              </Link>
+            </Trans>
+          </Typography>
+        )}
+
         {!!(pagination && pagination.total) && (
           <TablePagination
             page={page}

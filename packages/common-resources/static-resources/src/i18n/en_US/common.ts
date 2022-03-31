@@ -466,7 +466,7 @@ export default {
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
   labelNoticeForProvider:
-    "Loopring only support and maintain {{name}} plugins for WalletConnect, if your installed other Wallet plugin, please make sure it's the {{name}} popup.",
+    "Loopring currently supports the following wallet connections: {{name}}. Please make sure to use one of these when attempting to connect.",
   labelGuid: "Go to Guid",
   labelIKnow: "I know",
   labelYes: "Yes",
@@ -618,4 +618,5 @@ export default {
   labelNoticeForForAccountFrozen:
     "please waiting a while, {{ type }} is on updating.",
   labelAction: "action",
+  labelGoExplore: "View transactions on <1>block explorer</1>",
 };

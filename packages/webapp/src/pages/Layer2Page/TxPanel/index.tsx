@@ -35,6 +35,7 @@ const TxPanel = withTranslation("common")((rest: WithTranslation<"common">) => {
             filterTokens: totalCoinMap
               ? (Reflect.ownKeys(totalCoinMap) as string[])
               : [],
+
             showFilter: true,
             showloading: isLoading,
             getTxnList: (): any => {},
