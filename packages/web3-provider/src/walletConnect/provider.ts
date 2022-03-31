@@ -1,29 +1,40 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import { walletServices } from "../walletServices";
-import {  ConnectProviders, ErrorType, RPC_URLS } from "../command";
+import { ConnectProviders, ErrorType, RPC_URLS } from "../command";
 import { IsMobile } from "../utilities";
-import { ConnectProvides } from '../providers';
+import { ConnectProvides } from "../providers";
 const POLLING_INTERVAL = 12000;
-const DEFAULT_BRIDGE = "https://bridge.walletconnect.org"
+const DEFAULT_BRIDGE = "https://bridge.walletconnect.org";
 
 export const WalletConnectProvide = async (props?: {
   account?: string;
   darkMode?: boolean;
 }): Promise<{ provider?: WalletConnectProvider; web3?: Web3 } | undefined> => {
   try {
-     console.log('WALLET_CONNECT_PING:',process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`])
-     const BRIDGE_URL = (await fetch(process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`]??'')
+    console.log(
+      "WALLET_CONNECT_PING:",
+      process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`]
+    );
+    const BRIDGE_URL =
+      (await fetch(
+        process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_PING`] ?? ""
+      )
         .then(({ status }) => {
           return status === 200
-            ? process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`]
+            ? process.env[
+                `${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`
+              ]
             : DEFAULT_BRIDGE;
         })
         .catch(() => {
           return DEFAULT_BRIDGE;
-        }))??DEFAULT_BRIDGE
+        })) ?? DEFAULT_BRIDGE;
 
-    console.log('WALLET_CONNECT_BRIDGE:',process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`])
+    console.log(
+      "WALLET_CONNECT_BRIDGE:",
+      process.env[`${ConnectProvides.APP_FRAMeWORK}WALLET_CONNECT_BRIDGE`]
+    );
 
     // const BRIDGE_URL = "https://bridge.walletconnect.org";
 
@@ -70,7 +81,7 @@ export const WalletConnectProvide = async (props?: {
     console.log("error happen at connect wallet with WalletConnect:", error);
     walletServices.sendError(ErrorType.FailedConnect, {
       connectName: ConnectProviders.WalletConnect,
-      error:( error as any)?.message,
+      error: (error as any)?.message,
     });
   }
 };
@@ -86,7 +97,7 @@ export const WalletConnectSubscribe = (
       if (error) {
         walletServices.sendError(ErrorType.FailedConnect, {
           connectName: ConnectProviders.WalletConnect,
-          error: error.message,
+          error,
         });
       }
       const { accounts, chainId } = payload.params[0];
@@ -103,7 +114,7 @@ export const WalletConnectSubscribe = (
         if (error) {
           walletServices.sendError(ErrorType.FailedConnect, {
             connectName: ConnectProviders.WalletConnect,
-            error: error.message,
+            error,
           });
         }
         connector.updateSession({ accounts, chainId });
