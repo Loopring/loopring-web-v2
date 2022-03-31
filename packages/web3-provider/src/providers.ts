@@ -138,6 +138,7 @@ export class ConnectProvides {
           break;
         case ConnectProviders.MetaMask:
         case ConnectProviders.Coinbase:
+        case ConnectProviders.GameStop:
           ExtensionSubscribe(this.usedProvide, this.usedWeb3 as Web3);
           break;
       }
