@@ -110,6 +110,9 @@ export const useDeposit = <R extends IBData<T>, T>() => {
       }
     }
     myLog("try to disable deposit btn!");
+    if (sdk.toBig(walletLayer1?.ETH.count ?? 0).eq(BIGO)) {
+      setLabelAndParams("labelNOETH", {});
+    }
     disableBtn();
   }, [
     enableBtn,

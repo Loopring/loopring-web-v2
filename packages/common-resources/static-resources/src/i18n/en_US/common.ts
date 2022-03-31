@@ -468,7 +468,7 @@ export default {
   labelNoticeForProvider:
     "Loopring currently supports the following wallet connections: {{name}}. Please make sure to use one of these when attempting to connect.",
   labelGuid: "Go to Guid",
-  labelIKnow: "I know",
+  labelIKnow: "OK",
   labelYes: "Yes",
   labelNo: "No",
   labelNoticeForNoMetaNFT:
@@ -619,4 +619,5 @@ export default {
     "please waiting a while, {{ type }} is on updating.",
   labelAction: "action",
   labelGoExplore: "View transactions on <1>block explorer</1>",
+  labelNOETH: "ETH is required for gas",
 };
