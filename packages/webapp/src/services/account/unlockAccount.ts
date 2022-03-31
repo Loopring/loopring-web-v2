@@ -42,8 +42,8 @@ export async function unlockAccount() {
         address: account.owner,
         keySeed: msg,
         walletType: connectName,
-        chainId: chainId as any,
-        accountId: account.accountId,
+        chainId: Number(chainId),
+        accountId: Number(account.accountId),
         isMobile: isMobile,
       });
       const walletTypePromise: Promise<{ walletType: any }> =
