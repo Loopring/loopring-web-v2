@@ -37,7 +37,7 @@
   },
   "mintNFT": {
     "enable": true,
-    "reason": null
+    "reason": "test"
   },
   "deployNFT": {
     "enable": true,
