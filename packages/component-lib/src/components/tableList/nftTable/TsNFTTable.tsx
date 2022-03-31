@@ -134,8 +134,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           formatter: ({ row }: { row: Row }) => {
             const hasSymbol =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row?.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                ? row?.receiverAddress?.toLowerCase().trim() ===
+                  accAddress?.toLowerCase().trim()
                   ? "+"
                   : "-"
                 : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT] ||
@@ -174,8 +174,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             const senderAddress = getShortAddr(row.senderAddress);
             const [from, to] =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                ? row.receiverAddress?.toLowerCase().trim() ===
+                  accAddress?.toLowerCase().trim()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
                 : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
@@ -315,8 +315,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               case TxNFTType[TxNFTType.TRANSFER]:
                 side = t("labelTransfer");
                 hasSymbol =
-                  row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                  row.receiverAddress?.toLowerCase() ===
+                  accAddress?.toLowerCase()
                     ? "+"
                     : "-";
                 sideIcon = <TransferIcon fontSize={"inherit"} />;
@@ -407,8 +407,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
 
             const [from, to] =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
-                ? row.receiverAddress?.toUpperCase() ===
-                  accAddress?.toUpperCase()
+                ? row.receiverAddress?.toLowerCase() ===
+                  accAddress?.toLowerCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
                 : row.nftTxType === TxNFTType[TxNFTType.DEPOSIT]
