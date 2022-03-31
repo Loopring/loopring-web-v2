@@ -64,11 +64,11 @@ const ContentWrap = ({
 };
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
+  const location = useLocation();
   const proFlag =
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
-  const location = useLocation();
   const { setShowAccount } = useOpenModals();
   const query = new URLSearchParams(location.search);
   React.useEffect(() => {
