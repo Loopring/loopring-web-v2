@@ -31,7 +31,6 @@ import {
 const Style = styled.div`
   flex: 1;
   height: 100%;
-  flex: 1;
 `;
 
 const accountState: AccountFull = {

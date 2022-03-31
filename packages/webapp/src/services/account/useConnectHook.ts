@@ -19,10 +19,7 @@ export function useConnectHook({
     type: keyof typeof ProcessingType;
     opts: any;
   }) => void;
-  handleError?: (props: {
-    type: keyof typeof ErrorType;
-    errorObj: any;
-  }) => void;
+  handleError?: (props: { type: keyof typeof ErrorType; opts?: any }) => void;
   // handleChainChanged?: (chainId: string) => void,
   handleConnect?: (prosp: {
     accounts: string;
