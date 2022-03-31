@@ -619,5 +619,5 @@ export default {
     "please waiting a while, {{ type }} is on updating.",
   labelAction: "action",
   labelGoExplore: "View transactions on <1>block explorer</1>",
-  labelNOETH: "ETH is required for gas",
+  labelNOETH: "Need ETH for gas",
 };
