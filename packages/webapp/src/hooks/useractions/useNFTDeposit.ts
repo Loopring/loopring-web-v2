@@ -277,7 +277,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
             from: account.accAddress,
             depositAddress: exchangeInfo?.exchangeAddress,
             tokenAddress: nftDepositValue.tokenAddress,
-            tokenId: nftDepositValue.nftId,
+            nftId: nftDepositValue.nftId,
             gasPrice: realGasPrice,
             gasLimit,
             chainId: chainId as ChainId,
