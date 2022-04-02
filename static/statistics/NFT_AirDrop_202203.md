@@ -309,7 +309,7 @@
 
 
 
-**2. 680 by random 'Lucky Draw' to anyone with net deposits to L2 of $100**
+**2. 680 by random 'Lucky Draw' to anyone depositing a minimum of $100 USD while maintaining a positive net deposit**
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
