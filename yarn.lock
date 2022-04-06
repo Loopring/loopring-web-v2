@@ -3183,10 +3183,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@^1.10.1":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-1.10.1.tgz#3436893a539600e74cd743f4e6dae4884adb71e4"
-  integrity sha512-RtbaQ8eUkT/yXxKvYC18/z4ha15uwuxslpi8Y+vpqJbziM7uMJSkZKqapT5PPnrHu1k+N7LsijyKu1R6HHioOA==
+"@loopring-web/loopring-sdk@^1.10.4":
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-1.10.4.tgz#2c0f9ba12df7d39d45e5db3d70dba940b53c227e"
+  integrity sha512-WnYg2eg1tRuF+2SE5zOFE9At6/oJrKJUyWjtnim0HRsfsFBINnVx9w1aQ0CnaNqWbhID32xBNkAxrnen8+B8HQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -3893,10 +3893,20 @@
   resolved "https://registry.yarnpkg.com/@redux-saga/types/-/types-1.1.0.tgz#0e81ce56b4883b4b2a3001ebe1ab298b84237204"
   integrity sha512-afmTuJrylUU/0OtqzaRkbyYFFNgCF73Bvel/sw90pvGrWIZ+vyoIJqA6eMSoA6+nb443kTmulmBtC9NerXboNg==
 
-"@reduxjs/toolkit@^1.5.1", "@reduxjs/toolkit@^1.6.1":
+"@reduxjs/toolkit@^1.5.1":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.8.0.tgz#8ae875e481ed97e4a691aafa034f876bfd0413c4"
   integrity sha512-cdfHWfcvLyhBUDicoFwG1u32JqvwKDxLxDd7zSmSoFw/RhYLOygIRtmaMjPRUUHmVmmAGAvquLLsKKU/677kSQ==
+  dependencies:
+    immer "^9.0.7"
+    redux "^4.1.2"
+    redux-thunk "^2.4.1"
+    reselect "^4.1.5"
+
+"@reduxjs/toolkit@^1.6.1":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.8.1.tgz#94ee1981b8cf9227cda40163a04704a9544c9a9f"
+  integrity sha512-Q6mzbTpO9nOYRnkwpDlFOAbQnd3g7zj7CtHAZWz5SzE5lcV97Tf8f3SzOO8BoPOMYBFgfZaqTUZqgGu+a0+Fng==
   dependencies:
     immer "^9.0.7"
     redux "^4.1.2"

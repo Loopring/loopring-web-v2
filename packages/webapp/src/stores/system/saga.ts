@@ -23,7 +23,7 @@ const initConfig = function* <R extends { [key: string]: any }>(
   chainId: ChainId | "unknown"
 ) {
   const [
-    { tokenSymbolMap: tokensMap },
+    { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex },
     { ammpools },
     { pairs, marketArr, tokenArr, markets },
     { disableWithdrawTokenList },
@@ -45,6 +45,10 @@ const initConfig = function* <R extends { [key: string]: any }>(
   store.dispatch(
     getTokenMap({
       tokensMap,
+      coinMap,
+      totalCoinMap,
+      idIndex,
+      addressIndex,
       marketMap: markets,
       pairs,
       marketArr,

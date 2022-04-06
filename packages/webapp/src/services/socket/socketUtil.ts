@@ -1,18 +1,4 @@
-import {
-  ChainId,
-  DepthData,
-  getAccountArg,
-  getAmmpoolArg,
-  getCandlestickArg,
-  getMixOrderArg,
-  getOrderArg,
-  getOrderBookArg,
-  getTickerArg,
-  getTradeArg,
-  MarketTradeInfo,
-  OrderDetail,
-  toBig,
-} from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { walletLayer2Service } from "./services/walletLayer2Service";
 import { tickerService } from "./services/tickerService";
 import { ammPoolService } from "./services/ammPoolService";
@@ -23,33 +9,26 @@ import { bookService } from "./services/bookService";
 import { orderbookService } from "./services/orderbookService";
 import { tradeService } from "./services/tradeService";
 import { mixorderService } from "./services/mixorderService";
+import { mixtradeService } from "./services/mixtradeService";
 
 export type SocketEvent = (e: any, ...props: any[]) => any;
 
-export enum SocketEventType {
+export enum PINGPONG {
   pingpong = "pingpong",
-  account = "account",
-  order = "order",
-  orderbook = "orderbook",
-  trade = "trade",
-  ticker = "ticker",
-  mixorder = "mixorder",
-  candlestick = "candlestick",
-  ammpool = "ammpool",
 }
 
 export type SocketCallbackMap = {
-  // [SocketEventType.pingpong]:  { fn: SocketEvent, deps?: any[] },
-  [key in SocketEventType]?: { fn: SocketEvent; deps: any[] };
+  // [sdk.WsTopicType.pingpong]:  { fn: SocketEvent, deps?: any[] },
+  [key in sdk.WsTopicType | PINGPONG]?: { fn: SocketEvent; deps: any[] };
 };
 //
 export type SocketEventMap = {
-  [key in SocketEventType]: SocketEvent;
+  [key in sdk.WsTopicType | PINGPONG]: SocketEvent;
 };
 
 export class LoopringSocket {
   private static SocketEventMap: SocketEventMap = {
-    [SocketEventType.account]: (data: { [key: string]: any }) => {
+    [sdk.WsTopicType.account]: (data: { [key: string]: any }) => {
       const { totalAmount, tokenId, amountLocked, pending } = data;
       walletLayer2Service.sendAccount({
         tokenId,
@@ -58,12 +37,12 @@ export class LoopringSocket {
         pending,
       });
     },
-    [SocketEventType.order]: (data: OrderDetail) => {
+    [sdk.WsTopicType.order]: (data: sdk.OrderDetail) => {
       bookService.sendBook({
         [data.market]: data as any,
       });
     },
-    [SocketEventType.orderbook]: (data: DepthData, topic) => {
+    [sdk.WsTopicType.orderbook]: (data: sdk.DepthData, topic: any) => {
       // const bids = genAB(data['bids'], true)
       // const asks = genAB(data['asks'])
       const timestamp = Date.now();
@@ -76,13 +55,13 @@ export class LoopringSocket {
         } as any,
       });
     },
-    [SocketEventType.mixorder]: (data: DepthData, topic) => {
+    [sdk.WsTopicType.mixorder]: (data: sdk.DepthData, topic: any) => {
       // const bids = genAB(data['bids'], true)
       // const asks = genAB(data['asks'])
       // const {socket} = store.getState().socket
       if (
         window.loopringSocket?.socketKeyMap &&
-        window.loopringSocket?.socketKeyMap[SocketEventType.mixorder]?.level ===
+        window.loopringSocket?.socketKeyMap[sdk.WsTopicType.mixorder]?.level ===
           topic.level
       ) {
         const timestamp = Date.now();
@@ -95,8 +74,8 @@ export class LoopringSocket {
         });
       }
     },
-    [SocketEventType.trade]: (datas: string[][]) => {
-      const marketTrades: MarketTradeInfo[] = datas.map((data) => {
+    [sdk.WsTopicType.trade]: (datas: string[][]) => {
+      const marketTrades: sdk.MarketTradeInfo[] = datas.map((data) => {
         const [market, tradeTime, tradeId, side, volume, price, fee] = data;
         return {
           market,
@@ -106,7 +85,7 @@ export class LoopringSocket {
           volume,
           price,
           fee,
-        } as unknown as MarketTradeInfo;
+        } as unknown as sdk.MarketTradeInfo;
       });
       tradeService.sendTrade(marketTrades);
       // [
@@ -118,7 +97,30 @@ export class LoopringSocket {
       //     "100"  //fee
       // ]
     },
-    [SocketEventType.ticker]: (data: string[]) => {
+    [sdk.WsTopicType.mixtrade]: (datas: string[][]) => {
+      const marketTrades: sdk.MarketTradeInfo[] = datas.map((data) => {
+        const [tradeTime, tradeId, side, volume, price, market, fee] = data;
+        return {
+          market: market.replace("AMM-", ""),
+          tradeTime,
+          tradeId,
+          side,
+          volume,
+          price,
+          fee,
+        } as unknown as sdk.MarketTradeInfo;
+      });
+      mixtradeService.sendMixtrade(marketTrades);
+      // ["1649258921102",//timestamp
+      // "0",  //tradeId
+      // "SELL", //side
+      // "900000000000000000000", //size
+      // "0.9897",  //price
+      // "AMM-LRC-USDC", //market
+      // "0",//fee
+      // ]
+    },
+    [sdk.WsTopicType.ticker]: (data: string[]) => {
       const [
         symbol,
         timestamp,
@@ -139,7 +141,7 @@ export class LoopringSocket {
       const change =
         open === undefined || Number(open) === 0
           ? undefined
-          : toBig(close).minus(open).div(open);
+          : sdk.toBig(close).minus(open).div(open);
       tickerService.sendTicker({
         [symbol]: {
           symbol,
@@ -161,20 +163,23 @@ export class LoopringSocket {
         } as any,
       });
     },
-    [SocketEventType.candlestick]: (_e: any) => {
+    [sdk.WsTopicType.candlestick]: (_e: any) => {
       //TODO
     },
-    // [ SocketEventType.candlestick ]: (data: string) => {
+    // [ sdk.WsTopicType.candlestick ]: (data: string) => {
     //
     // },
-    [SocketEventType.ammpool]: (data: [[string, string], string], topic) => {
+    [sdk.WsTopicType.ammpool]: (
+      data: [[string, string], string],
+      topic: any
+    ) => {
       if (data.length) {
         ammPoolService.sendAmmPool({
           [topic.poolAddress]: { pooled: data[0], lp: data[1] },
         });
       }
     },
-    [SocketEventType.pingpong]: (data: string, socket: WebSocket) => {
+    [PINGPONG.pingpong]: (data: string, socket: WebSocket) => {
       if (data === "ping" && socket && socket.send && socket.readyState === 1) {
         socket.send("pong");
       } else if (window.loopringSocket.isConnectSocket()) {
@@ -189,7 +194,7 @@ export class LoopringSocket {
   };
   private _baseUrl: string;
   constructor(url: string) {
-    // const url = ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
+    // const url = sdk.ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
     this._baseUrl = url; // baseSocket: string = `wss://ws.${url}/v3/ws?wsApiKey=${wsKey}`;
   }
   private _socketKeyMap: object | undefined;
@@ -216,15 +221,11 @@ export class LoopringSocket {
     return this._ws;
   }
 
-  // private static PingPong = {
-  //     fn:
-  // }
-
   public socketSendMessage = async ({
     socket,
     apiKey,
   }: {
-    chainId: ChainId | "unknown";
+    chainId: sdk.ChainId | "unknown";
     socket: { [key: string]: string[] };
     apiKey?: string;
   }): Promise<boolean> => {
@@ -285,61 +286,55 @@ export class LoopringSocket {
       list: any[] = []; // let registerDispatch = [];
     Reflect.ownKeys(socket).forEach((eventType) => {
       switch (eventType) {
-        case SocketEventType.ticker:
-          const tickerSocket = socket[SocketEventType.ticker];
+        case sdk.WsTopicType.ticker:
+          const tickerSocket = socket[sdk.WsTopicType.ticker];
           if (tickerSocket) {
-            list = tickerSocket.map((key) => getTickerArg(key));
+            list = tickerSocket.map((key) => sdk.getTickerArg(key));
             if (list && list.length) {
-              this.addSocketEvents(SocketEventType.ticker);
+              this.addSocketEvents(sdk.WsTopicType.ticker);
               topics = [...topics, ...list];
             }
           }
           break;
-        case SocketEventType.ammpool:
-          // list = socket[ SocketEventType.ammpool ].map(key => getAmmpoolArg(key))
-          // if (list && list.length) {
-          //     this.addSocketEvents(SocketEventType.ammpool)
-          //     topics = [...topics, ...list];
-          // }
-          // break
-          const ammpoolSocket = socket[SocketEventType.ammpool];
+        case sdk.WsTopicType.ammpool:
+          const ammpoolSocket = socket[sdk.WsTopicType.ammpool];
           if (ammpoolSocket) {
-            list = ammpoolSocket.map((key) => getAmmpoolArg(key));
+            list = ammpoolSocket.map((key) => sdk.getAmmpoolArg(key));
             if (list && list.length) {
-              this.addSocketEvents(SocketEventType.ammpool);
+              this.addSocketEvents(sdk.WsTopicType.ammpool);
               topics = [...topics, ...list];
             }
           }
           break;
-        case SocketEventType.account:
-          if (socket[SocketEventType.account]) {
-            list = [getAccountArg()];
+        case sdk.WsTopicType.account:
+          if (socket[sdk.WsTopicType.account]) {
+            list = [sdk.getAccountArg()];
           }
           if (list && list.length) {
-            this.addSocketEvents(SocketEventType.account);
+            this.addSocketEvents(sdk.WsTopicType.account);
             topics = [...topics, ...list];
           }
           break;
-        case SocketEventType.order:
-          const orderSocket = socket[SocketEventType.order];
+        case sdk.WsTopicType.order:
+          const orderSocket = socket[sdk.WsTopicType.order];
           if (orderSocket) {
-            list = orderSocket.map((key) => getOrderArg(key));
+            list = orderSocket.map((key) => sdk.getOrderArg(key));
             if (list && list.length) {
-              this.addSocketEvents(SocketEventType.order);
+              this.addSocketEvents(sdk.WsTopicType.order);
               topics = [...topics, ...list];
             }
           }
 
           break;
 
-        case SocketEventType.orderbook:
-          const orderbookSocket = socket[SocketEventType.orderbook];
+        case sdk.WsTopicType.orderbook:
+          const orderbookSocket = socket[sdk.WsTopicType.orderbook];
           if (orderbookSocket) {
             const level = orderbookSocket.level ?? 0;
             const snapshot = orderbookSocket.snapshot ?? true;
             const count = orderbookSocket.count ?? 50;
             list = orderbookSocket.markets.map((key) =>
-              getOrderBookArg({
+              sdk.getOrderBookArg({
                 market: key,
                 level,
                 count,
@@ -347,20 +342,20 @@ export class LoopringSocket {
               })
             );
             if (list && list.length) {
-              this.addSocketEvents(SocketEventType.orderbook);
+              this.addSocketEvents(sdk.WsTopicType.orderbook);
               topics = [...topics, ...list];
             }
           }
 
           break;
-        case SocketEventType.mixorder:
-          const mixorderSocket = socket[SocketEventType.mixorder];
+        case sdk.WsTopicType.mixorder:
+          const mixorderSocket = socket[sdk.WsTopicType.mixorder];
           if (mixorderSocket) {
             const level = mixorderSocket.level ?? 0;
             const snapshot = mixorderSocket.snapshot ?? true;
             const count = mixorderSocket.count ?? 50;
             list = mixorderSocket.markets.map((key) =>
-              getMixOrderArg({
+              sdk.getMixOrderArg({
                 market: key,
                 level,
                 count,
@@ -369,28 +364,38 @@ export class LoopringSocket {
               })
             );
             if (list && list.length) {
-              this.addSocketEvents(SocketEventType.mixorder);
+              this.addSocketEvents(sdk.WsTopicType.mixorder);
               topics = [...topics, ...list];
             }
           }
 
           break;
-        case SocketEventType.trade:
-          const tradeSocket = socket[SocketEventType.trade];
+        case sdk.WsTopicType.trade:
+          const tradeSocket = socket[sdk.WsTopicType.trade];
           if (tradeSocket) {
-            list = tradeSocket.map((key) => getTradeArg(key));
+            list = tradeSocket.map((key) => sdk.getTradeArg(key));
             if (list && list.length) {
-              this.addSocketEvents(SocketEventType.trade);
+              this.addSocketEvents(sdk.WsTopicType.trade);
               topics = [...topics, ...list];
             }
           }
           break;
-        case SocketEventType.candlestick:
-          const candlestickSocket = socket[SocketEventType.candlestick];
-          if (candlestickSocket) {
-            list = candlestickSocket.map((key) => getCandlestickArg(key));
+        case sdk.WsTopicType.mixtrade:
+          const mixtradeSocket = socket[sdk.WsTopicType.mixtrade];
+          if (mixtradeSocket) {
+            list = mixtradeSocket.map((key) => sdk.getMixTradeArg(key));
             if (list && list.length) {
-              this.addSocketEvents(SocketEventType.candlestick);
+              this.addSocketEvents(sdk.WsTopicType.mixtrade);
+              topics = [...topics, ...list];
+            }
+          }
+          break;
+        case sdk.WsTopicType.candlestick:
+          const candlestickSocket = socket[sdk.WsTopicType.candlestick];
+          if (candlestickSocket) {
+            list = candlestickSocket.map((key) => sdk.getCandlestickArg(key));
+            if (list && list.length) {
+              this.addSocketEvents(sdk.WsTopicType.candlestick);
               topics = [...topics, ...list];
             }
           }
@@ -420,7 +425,7 @@ export class LoopringSocket {
   };
 
   private addSocketEvents = (
-    type: keyof typeof SocketEventType,
+    type: keyof typeof sdk.WsTopicType | PINGPONG,
     deps?: any[]
   ) => {
     this._socketCallbackMap = {
@@ -436,7 +441,7 @@ export class LoopringSocket {
     topics,
     apiKey,
   }: {
-    // chainId: ChainId | 'unknown',
+    // chainId: sdk.ChainId | 'unknown',
     topics: any[];
     apiKey?: string;
   }) => {
@@ -531,7 +536,6 @@ export class LoopringSocket {
     }
     if (init) {
       this.__wsTimer__ = {
-        //...self.__wsTimer__,
         timer: -1,
         count: 0,
       };
@@ -539,12 +543,6 @@ export class LoopringSocket {
   };
   private resetSocketEvents = () => {
     this._socketCallbackMap = undefined;
-    this.addSocketEvents(SocketEventType.pingpong, [this.ws]);
+    this.addSocketEvents(PINGPONG.pingpong, [this.ws]);
   };
 }
-
-// const socketInstance = new LoopringSocket();
-// // @ts-ignore
-// window.loopringSocket = socketInstance;
-//
-// export default socketInstance;

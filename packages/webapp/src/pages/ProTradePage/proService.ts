@@ -16,7 +16,6 @@ import {
 } from "@loopring-web/common-resources";
 import store from "stores";
 import { debounceTime, map, merge, of, Subject, switchAll } from "rxjs";
-import { bookService } from "services/socket/services/bookService";
 import { updatePageTradePro, usePageTradePro } from "stores/router";
 import { useSocket } from "stores/socket";
 import { useAccount } from "stores/account";
@@ -27,9 +26,10 @@ import { LoopringAPI } from "api_wrapper";
 import { swapDependAsync } from "../SwapPage/help";
 import { useAmmMap } from "stores/Amm/AmmMap";
 import { makeMarketArray } from "hooks/help";
-import { tradeService } from "services/socket/services/tradeService";
 import { useTicker } from "stores/ticker";
+import { bookService } from "services/socket/services/bookService";
 import { mixorderService } from "services/socket/services/mixorderService";
+import { mixtradeService } from "../../services/socket/services/mixtradeService";
 
 const TRADE_ARRAY_MAX_LENGTH = 50;
 
@@ -61,7 +61,8 @@ export const useSocketProService = ({
   const subjectAmmpool = React.useMemo(() => ammPoolService.onSocket(), []);
   const subjectMixorder = React.useMemo(() => mixorderService.onSocket(), []);
   const subjectTicker = React.useMemo(() => tickerService.onSocket(), []);
-  const subjectTrade = React.useMemo(() => tradeService.onSocket(), []);
+  // const subjectTrade = React.useMemo(() => tradeService.onSocket(), []);
+  const subjectMixtrade = React.useMemo(() => mixtradeService.onSocket(), []);
 
   const _accountUpdate = _.throttle(
     ({ walletLayer1Status, walletLayer2Status }) => {
@@ -79,7 +80,7 @@ export const useSocketProService = ({
       subjectAmmpool,
       subjectMixorder,
       subjectTicker,
-      subjectTrade
+      subjectMixtrade
     ).subscribe((value) => {
       const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
       const market = pageTradePro.market;
@@ -146,16 +147,17 @@ export const useSocketProService = ({
           store.dispatch(updatePageTradePro({ market, depth: mixorder }));
         }
       }
+
       if (
         value &&
         // @ts-ignore
-        value.trades &&
+        value.mixtrades &&
         // @ts-ignore
-        value.trades[0].market === pageTradePro.market
+        value.mixtrades[0].market === pageTradePro.market
       ) {
         const market = pageTradePro.market;
         // @ts-ignore
-        const _tradeArray = makeMarketArray(market, value.trades);
+        const _tradeArray = makeMarketArray(market, value.mixtrades);
         let tradeArray = [
           ..._tradeArray,
           ...(pageTradePro.tradeArray ? pageTradePro.tradeArray : []),
@@ -300,7 +302,7 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
         sendSocketTopic({
           ...dataSocket,
           [sdk.WsTopicType.account]: true,
-          [sdk.WsTopicType.order]: marketArray,
+          [sdk.WsTopicType.order]: marketArray, // user order
         });
       } else {
         sendSocketTopic(dataSocket);
@@ -339,15 +341,11 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
             count: 50,
             snapshot: true,
           },
-          [sdk.WsTopicType.trade]: [pageTradePro.market as string],
+          [sdk.WsTopicType.mixtrade]: [pageTradePro.market as string],
         };
         if (socket.mixorder?.markets[0] !== pageTradePro.market) {
           doSend(dataSocket);
-          myLog(
-            "doSocket market update",
-            socket.mixorder?.markets[0],
-            pageTradePro.market
-          );
+          myLog("doSocket market update", dataSocket);
         } else if (socket.mixorder?.markets[0] === pageTradePro.market) {
           if (socket.mixorder.level !== pageTradePro.depthLevel) {
             doSend(dataSocket);
