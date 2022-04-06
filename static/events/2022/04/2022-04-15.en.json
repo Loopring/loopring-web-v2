@@ -1,35 +1,36 @@
 {
-  "SPECIAL": {
-    "eventTitle": "🎁 Loophead NFT Drop #3️",
-    "subTitle": "We have 950 Loopheads up for grabs in this third Loophead dynamic NFT drop.",
-    "local": "en-US",
-    "duration": {
-      "prev": "Activity Period:",
-      "startDate": 1649980800000,
-      "endDate": 1652572800000,
-      "timeZone": "UTC",
-      "middle": "to"
+  "SPECIAL":{
+    "eventTitle":"🎁 Loophead NFT Drop #3️",
+    "subTitle":"We have 950 Loopheads up for grabs in this third Loophead dynamic NFT drop.",
+    "local":"en-US",
+    "duration":{
+      "prev":"Activity Period:",
+      "startDate":1649980800000,
+      "endDate":1652572800000,
+      "timeZone":"UTC",
+      "middle":"to"
     },
-    "api": {
-      "url": "https://api.loopring.network/api/v3/user/gaveawayNft2/xxxxx",
-      "params": null,
-      "column": [
+    "api":{
+      "url":"https://api.loopring.network/api/v3/user/gaveawayNft2/xxxxx",
+      "params":null,
+      "column":[
         {
-          "key": "accountId",
-          "label": "Account ID"
+          "key":"accountId",
+          "label":"Account ID"
         },
         {
-          "key": "address",
-          "label": "Address"
-        },{
-          "key": "absolute",
-          "label": "Net Deposits(USD)"
+          "key":"address",
+          "label":"Address"
+        },
+        {
+          "key":"absolute",
+          "label":"Net Deposits(USD)"
         }
       ]
     },
-    "rules": [
+    "rules":[
       "5 pools（`LRC/USDC`; `ETH/USDC`; `WBTC/USDC`; `MANA/USDC`; `SAND/USDC`)",
-      "950 Loopheads - 700 by way of Lucky Draw and 50 for Top LPs.",
+      "950 Loopheads - 700 by way of Lucky Draw and 50 for Top LPs."
     ]
-  },
+  }
 }
