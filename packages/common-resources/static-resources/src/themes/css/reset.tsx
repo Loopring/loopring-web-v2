@@ -191,4 +191,7 @@ export default css`
     overscroll-behavior-y: none;
     text-underline-offset: 3px;
   }
+  iframe {
+    display: none;
+  }
 `;

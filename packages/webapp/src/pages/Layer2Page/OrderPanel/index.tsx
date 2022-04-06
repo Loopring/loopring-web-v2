@@ -40,8 +40,8 @@ const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
         limit: pageSize,
         status:
           tableValue === 0
-            ? "processing"
-            : "processed,failed,cancelled,cancelling,expired",
+            ? ["processing"]
+            : ["processed", "failed", "cancelled", "cancelling", "expired"],
       });
     }
   }, [pageSize, getOrderList, tableValue]);

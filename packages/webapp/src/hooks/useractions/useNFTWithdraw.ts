@@ -318,7 +318,7 @@ export const useNFTWithdraw = <
             resetNFTWithdrawData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         sdk.dumpError400(reason);
         const code = checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
@@ -421,7 +421,7 @@ export const useNFTWithdraw = <
           myLog("submitNFTWithdraw:", request);
 
           processRequest(request, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           setShowAccount({
             isShow: true,

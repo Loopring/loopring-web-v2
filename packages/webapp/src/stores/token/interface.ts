@@ -4,13 +4,30 @@ import {
   MarketInfo,
   TokenInfo,
   TokenRelatedInfo,
+  TokenAddress,
 } from "@loopring-web/loopring-sdk";
 
 export type TokenMap<R extends { [key: string]: any }> = LoopringMap<
   TokenInfo & { tradePairs: Array<CoinKey<R>> }
 >;
 export type GetTokenMapParams<R extends { [key: string]: any }> = {
-  tokensMap: TokenMap<R>;
+  tokensMap: LoopringMap<TokenInfo>;
+  coinMap: LoopringMap<{
+    icon?: string;
+    name: string;
+    simpleName: string;
+    description?: string;
+    company: string;
+  }>;
+  totalCoinMap: LoopringMap<{
+    icon?: string;
+    name: string;
+    simpleName: string;
+    description?: string;
+    company: string;
+  }>;
+  idIndex: LoopringMap<number>;
+  addressIndex: LoopringMap<TokenAddress>;
   marketMap: LoopringMap<MarketInfo>;
   pairs: LoopringMap<TokenRelatedInfo>;
   marketArr: string[];

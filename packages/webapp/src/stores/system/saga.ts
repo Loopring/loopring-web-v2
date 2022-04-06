@@ -23,7 +23,7 @@ const initConfig = function* <R extends { [key: string]: any }>(
   chainId: ChainId | "unknown"
 ) {
   const [
-    { tokenSymbolMap: tokensMap },
+    { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex },
     { ammpools },
     { pairs, marketArr, tokenArr, markets },
     { disableWithdrawTokenList },
@@ -34,7 +34,7 @@ const initConfig = function* <R extends { [key: string]: any }>(
     call(async () => {
       try {
         return await LoopringAPI.exchangeAPI?.disableWithdrawTokenList();
-      } catch (e) {
+      } catch (e: any) {
         return {
           disableWithdrawTokenList: [],
           raw_data: undefined,
@@ -45,6 +45,10 @@ const initConfig = function* <R extends { [key: string]: any }>(
   store.dispatch(
     getTokenMap({
       tokensMap,
+      coinMap,
+      totalCoinMap,
+      idIndex,
+      addressIndex,
       marketMap: markets,
       pairs,
       marketArr,
@@ -156,7 +160,7 @@ const getSystemsApi = async <R extends { [key: string]: any }>(
             should15MinutesUpdateDataGroup(),
             LoopringAPI.exchangeAPI.getAccountServices({}),
           ]);
-      } catch (e) {
+      } catch (e: any) {
         allowTrade = {
           register: { enable: false },
           order: { enable: false },

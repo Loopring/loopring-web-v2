@@ -277,7 +277,7 @@ export const HeaderMenuSub = React.memo(
     ) => {
       const popupState = usePopupState({
         variant: "popover",
-        popupId: `popupId: 'tradeHeaderSubMenu'`,
+        popupId: `tradeHeaderSubMenu${label.id}`,
       });
       return (
         <>
@@ -286,9 +286,7 @@ export const HeaderMenuSub = React.memo(
             <StyledTabBtn
               disabled={true}
               selected={selected}
-              key={label.id}
               className={className}
-              ref={ref}
             >
               <Typography
                 component={"span"}
@@ -304,7 +302,6 @@ export const HeaderMenuSub = React.memo(
               <StyledTabBtn
                 {...bindHover(popupState)}
                 selected={selected}
-                key={label.id}
                 className={className}
                 ref={ref}
               >

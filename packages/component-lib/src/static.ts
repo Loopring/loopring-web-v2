@@ -12,6 +12,8 @@ import {
 import { List } from "immutable";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 export const account: Account = {
+  __timer__: -1,
+  frozen: false,
   accAddress: "xxxxxxxxxxxxxxxxxxx",
   qrCodeUrl: "",
   readyState: AccountStatus.UN_CONNECT,
@@ -23,7 +25,7 @@ export const account: Account = {
   keySeed: "",
   nonce: undefined,
   keyNonce: undefined,
-  connectName: ConnectProviders.unknown,
+  connectName: ConnectProviders.Unknown,
 };
 export const coinMap: CoinMap<CoinType, CoinInfo<CoinType>> = {
   ETH: {

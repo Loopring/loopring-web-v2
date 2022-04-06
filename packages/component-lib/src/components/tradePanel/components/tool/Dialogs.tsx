@@ -14,6 +14,7 @@ import { Button } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
+import { useOpenModals } from "../../../../stores";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -140,7 +141,7 @@ export const AlertNotSupport = withTranslation("common", { withRef: true })(
         <DialogTitle> {t("labelNotSupportTitle")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelNotAllowTrade"}></Trans>
+            <Trans i18nKey={"labelNotAllowTrade"} />
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -195,7 +196,7 @@ export const ConfirmImpact = withTranslation("common", { withRef: true })(
             </Trans>
           </DialogContentText>
           <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelImpactAgree"} tOptions={value}></Trans>
+            <Trans i18nKey={"labelImpactAgree"} tOptions={value} />
           </DialogContentText>
           <TextField
             autoFocus
@@ -394,6 +395,54 @@ export const InformationForNoMetaNFT = withTranslation("common", {
             color={"primary"}
           >
             {t("labelYes")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
+
+export const InformationForAccountFrozen = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    type,
+  }: // handleClose,
+  WithTranslation & {
+    open: boolean;
+    type: string;
+    // handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    const { setShowTradeIsFrozen } = useOpenModals();
+    return (
+      <DialogStyle
+        open={open}
+        onClose={() => setShowTradeIsFrozen({ isShow: false })}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans
+              i18nKey={"labelNoticeForForAccountFrozen"}
+              tOptions={{ type: t("label" + type).toLowerCase() }}
+            >
+              please waiting a while, {{ type }} is on updating.
+            </Trans>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={() => {
+              setShowTradeIsFrozen({ isShow: false });
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
           </Button>
         </DialogActions>
       </DialogStyle>

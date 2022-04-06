@@ -1,5 +1,4 @@
 import React from "react";
-// import { walletLa } from './walletServices';
 import { Commands } from "./command";
 import { accountServices } from "./accountServices";
 

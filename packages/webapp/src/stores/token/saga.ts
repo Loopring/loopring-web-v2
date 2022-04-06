@@ -7,16 +7,20 @@ import { PayloadAction } from "@reduxjs/toolkit";
 
 const getTokenMapApi = async <R extends { [key: string]: any }>({
   tokensMap,
+  coinMap,
+  totalCoinMap,
+  idIndex,
+  addressIndex,
   pairs,
   marketArr,
   tokenArr,
   disableWithdrawTokenList,
 }: GetTokenMapParams<R>) => {
-  let coinMap: CoinMap<any, CoinInfo<any>> = {};
-  let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
+  // let coinMap: CoinMap<any, CoinInfo<any>> = {};
+  // let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
   let tokenMap: any = tokensMap;
-  let addressIndex: AddressMap = {};
-  let idIndex: IdMap = {};
+  // let addressIndex: AddressMap = {};
+  // let idIndex: IdMap = {};
   let disableWithdrawList: string[] = disableWithdrawTokenList
     ? disableWithdrawTokenList.map((item) => {
         return item.symbol;
@@ -24,33 +28,33 @@ const getTokenMapApi = async <R extends { [key: string]: any }>({
     : [];
 
   Reflect.ownKeys(tokensMap).forEach((key) => {
-    const coinInfo = {
-      icon: getIcon(key as string, tokensMap),
-      name: key as string,
-      simpleName: key as string,
-      description: "",
-      company: "",
-    };
-    if (!(key as string).startsWith("LP-")) {
-      coinMap[key as string] = coinInfo;
-    }
-    totalCoinMap[key as string] = coinInfo;
+    // const coinInfo = {
+    //   icon: getIcon(key as string, tokensMap),
+    //   name: key as string,
+    //   simpleName: key as string,
+    //   description: "",
+    //   company: "",
+    // };
+    // if (!(key as string).startsWith("LP-")) {
+    //   coinMap[key as string] = coinInfo;
+    // }
+    // totalCoinMap[key as string] = coinInfo;
 
     if (pairs[key as string] && pairs[key as string].tokenList) {
       // @ts-ignore
       tokensMap[key].tradePairs = pairs[key as string].tokenList;
     }
-    addressIndex = {
-      ...addressIndex,
-      // @ts-ignore
-      [tokensMap[key].address.toLowerCase()]: key as string,
-    };
-
-    idIndex = {
-      ...idIndex,
-      // @ts-ignore
-      [tokensMap[key].tokenId]: key as string,
-    };
+    // addressIndex = {
+    //   ...addressIndex,
+    //   // @ts-ignore
+    //   [tokensMap[key].address.toLowerCase()]: key as string,
+    // };
+    //
+    // idIndex = {
+    //   ...idIndex,
+    //   // @ts-ignore
+    //   [tokensMap[key].tokenId]: key as string,
+    // };
   });
   return {
     data: {
@@ -72,6 +76,10 @@ export function* getPostsSaga<R extends { [key: string]: any }>({
   try {
     const {
       tokensMap,
+      coinMap,
+      totalCoinMap,
+      idIndex,
+      addressIndex,
       marketMap,
       pairs,
       marketArr,
@@ -81,6 +89,10 @@ export function* getPostsSaga<R extends { [key: string]: any }>({
     // @ts-ignore
     const { data } = yield call(getTokenMapApi, {
       tokensMap,
+      coinMap,
+      totalCoinMap,
+      idIndex,
+      addressIndex,
       pairs,
       marketArr,
       tokenArr,

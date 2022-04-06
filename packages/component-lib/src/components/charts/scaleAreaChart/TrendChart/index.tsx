@@ -16,12 +16,10 @@ import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { useSettings } from "@loopring-web/component-lib/src/stores";
 import { EmptyValueTag } from "@loopring-web/common-resources";
+import { useTheme } from "@emotion/react";
 // import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 
 const DEFAULT_YAXIS_DOMAIN = 0.05;
-const UP_COLOR = "#00BBA8";
-const DOWN_COLOR = "#fb3838";
-const DAILY_TREND_COLOR = "#4169ff";
 
 const TooltipStyled = styled(Box)`
   background: var(--color-pop-bg);
@@ -47,7 +45,11 @@ const TrendChart = ({
   isDailyTrend = false,
   handleMoveOut = undefined,
 }: ScaleAreaChartProps) => {
+  const theme = useTheme();
   const userSettings = useSettings();
+  const UP_COLOR = theme.colorBase.success;
+  const DOWN_COLOR = theme.colorBase.error;
+  const DAILY_TREND_COLOR = theme.colorBase.primary;
   const upColor = userSettings ? userSettings.upColor : "green";
   const renderData = getRenderData(type, data);
   const [priceTrend, setPriceTrend] = useState<"up" | "down">(

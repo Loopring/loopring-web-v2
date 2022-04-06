@@ -30,6 +30,7 @@ export interface ModalState {
   isShowExportAccount: ModalStatePlayLoad;
   isShowSwap: ModalStatePlayLoad;
   isShowAmm: ModalStatePlayLoad;
+  isShowTradeIsFrozen: ModalStatePlayLoad & { type?: string };
   isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO };
   isShowAccount: ModalStatePlayLoad & {
     step: number;

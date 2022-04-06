@@ -30,7 +30,7 @@ export function useTickList<C extends { [key: string]: string }>() {
           await LoopringAPI.exchangeAPI.getRecommendedMarkets();
         setRecommendedPairs(recommended);
         return recommended;
-      } catch (e) {
+      } catch (e: any) {
         myError(e);
       }
       return [] as string[];

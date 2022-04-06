@@ -74,7 +74,7 @@ export const Rank = ({
       rewards: [],
     });
   const [volumeToken, setVolumeToken] = React.useState<string>(() => {
-    if (pair && pair !== "") {
+    if (pair && !!pair) {
       // @ts-ignore
       const [, , coinQuote] = pair?.replace("AMM-", "").match(/(\w+)-(\w+)/i);
       return coinQuote;

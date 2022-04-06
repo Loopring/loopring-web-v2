@@ -101,7 +101,11 @@ export const useAmmCommon = ({
   }, []);
 
   const getFee = React.useCallback(
-    async (requestType: sdk.OffchainFeeReqType) => {
+    async (
+      requestType:
+        | sdk.OffchainFeeReqType.AMM_EXIT
+        | sdk.OffchainFeeReqType.AMM_JOIN
+    ) => {
       if (
         accountStatus === SagaStatus.UNSET &&
         LoopringAPI.userAPI &&

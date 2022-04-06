@@ -11,7 +11,6 @@ import store from "../index";
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
 };
-const NFTLimit = 20;
 
 const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   const { accountId, apiKey, readyState, _accountIdNotActive } =

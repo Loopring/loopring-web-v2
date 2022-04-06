@@ -289,7 +289,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             resetTransferData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         const code = checkErrorInfo(reason, isNotHardwareWallet);
 
         if (isAccActivated()) {
@@ -387,7 +387,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           myLog("transfer req:", req);
 
           processRequest(req, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           // transfer failed
           setShowAccount({

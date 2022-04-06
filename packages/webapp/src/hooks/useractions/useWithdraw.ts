@@ -392,7 +392,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             resetWithdrawData();
           }
         }
-      } catch (reason) {
+      } catch (reason: any) {
         sdk.dumpError400(reason);
         const code = checkErrorInfo(reason, isNotHardwareWallet);
         myLog("code:", code);
@@ -495,7 +495,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           myLog("submitOffchainWithdraw:", request);
 
           processRequest(request, isFirstTime);
-        } catch (e) {
+        } catch (e: any) {
           sdk.dumpError400(e);
           setShowAccount({
             isShow: true,

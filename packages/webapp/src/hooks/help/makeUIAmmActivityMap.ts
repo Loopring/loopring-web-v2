@@ -216,7 +216,7 @@ const makeAsCard = <
     } else {
       return [] as Array<AmmCardProps<I>>;
     }
-  } catch (error) {
+  } catch (error: any) {
     myError(error);
     return [];
   }

@@ -17,6 +17,7 @@ import {
   TradeProType,
   useOpenModals,
   useSettings,
+  useToggle,
 } from "@loopring-web/component-lib";
 import { usePageTradePro } from "stores/router";
 import { useAccount } from "stores/account";
@@ -50,7 +51,10 @@ export const useMarket = <C extends { [key: string]: any }>({
   const { account } = useAccount();
   const { slippage, isMobile } = useSettings();
   const { exchangeInfo, allowTrade } = useSystem();
-  const { setShowSupport } = useOpenModals();
+  const {
+    toggle: { order },
+  } = useToggle();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const autoRefresh = React.useRef<NodeJS.Timeout | -1>(-1);
 
   const {
@@ -440,7 +444,7 @@ export const useMarket = <C extends { [key: string]: any }>({
             resetTradeData(pageTradePro.tradeType);
             walletLayer2Service.sendUserUpdate();
           }
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
@@ -536,6 +540,9 @@ export const useMarket = <C extends { [key: string]: any }>({
     // const isIpValid = true
     if (!allowTrade.order.enable) {
       setShowSupport({ isShow: true });
+      setIsMarketLoading(false);
+    } else if (!order.enable) {
+      setShowTradeIsFrozen({ isShow: true, type: "Limit" });
       setIsMarketLoading(false);
     } else {
       switch (priceLevel) {

@@ -419,7 +419,7 @@ export const MuiRadio = () => {
 
 export const MuiInputLabel = ({
   colorBase,
-}: any): { styleOverrides: ComponentsOverrides["MuiInputBase"] } => {
+}: any): { styleOverrides: ComponentsOverrides["MuiInputLabel"] } => {
   return {
     styleOverrides: {
       root: {

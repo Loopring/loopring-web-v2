@@ -93,7 +93,7 @@ export function useAmmMapUI<
           setRawData(rawData);
           resetTableData(rawData);
         }
-      } catch (error) {
+      } catch (error: any) {
         throw new CustomError({ ...ErrorMap.NO_TOKEN_MAP, options: error });
       }
     },

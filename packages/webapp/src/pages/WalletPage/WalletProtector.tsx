@@ -147,7 +147,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
             });
             loadData();
           }
-        } catch (reason) {
+        } catch (reason: any) {
           // result.code = ActionResultCode.ApproveFailed;
           // result.data = reason;
           sdk.dumpError400(reason);

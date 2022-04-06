@@ -80,6 +80,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
+      sdk.toBig(walletLayer1?.ETH.count ?? 0).gt(BIGO) &&
       sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
       sdk
         .toBig(depositValue?.tradeValue)
@@ -109,6 +110,9 @@ export const useDeposit = <R extends IBData<T>, T>() => {
       }
     }
     myLog("try to disable deposit btn!");
+    if (sdk.toBig(walletLayer1?.ETH.count ?? 0).eq(BIGO)) {
+      setLabelAndParams("labelNOETH", {});
+    }
     disableBtn();
   }, [
     enableBtn,
@@ -117,6 +121,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     depositValue,
     allowanceInfo,
     chargeFeeList,
+    walletLayer1,
   ]);
 
   React.useEffect(() => {
@@ -210,7 +215,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
               }
 
               refferId = response.accInfo?.accountId;
-            } catch (reason) {
+            } catch (reason: any) {
               sdk.dumpError400(reason);
             }
           }
@@ -248,7 +253,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
             );
 
             myLog(response);
-          } catch (reason) {
+          } catch (reason: any) {
             sdk.dumpError400(reason);
           }
         }
@@ -330,9 +335,9 @@ export const useDeposit = <R extends IBData<T>, T>() => {
                   isMetaMask
                 );
                 nonce += 1;
-              } catch (reason) {
-                result.code = ActionResultCode.ApproveFailed;
-                result.data = reason;
+              } catch (reason: any) {
+                // result.code = ActionResultCode.ApproveFailed;
+                // result.data = reason;
 
                 setShowAccount({
                   isShow: true,
@@ -400,13 +405,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
 
           resetDepositData();
         } catch (reason: any) {
-          sdk.dumpError400(reason);
-          result.code = ActionResultCode.DepositFailed;
-          result.data = reason;
-
-          //deposit failed
           const err = checkErrorInfo(reason, true);
-
           myLog(
             "---- deposit reason:",
             reason?.message.indexOf("User denied transaction")

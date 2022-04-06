@@ -1,10 +1,6 @@
 import React from "react";
 import { AmmPoolActivityRule } from "@loopring-web/loopring-sdk";
-import {
-  ACTIVITY_TYPE,
-  languageMap,
-  myLog,
-} from "@loopring-web/common-resources";
+import { languageMap, myLog } from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";

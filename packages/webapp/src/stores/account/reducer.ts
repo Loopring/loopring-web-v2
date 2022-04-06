@@ -20,10 +20,12 @@ const initialState: AccountState = {
   keySeed: "",
   nonce: undefined,
   keyNonce: undefined,
-  connectName: ConnectProviders.unknown,
+  connectName: ConnectProviders.Unknown,
   _chainId: 1,
   status: "PENDING",
   errorMessage: null,
+  frozen: false,
+  __timer__: -1,
 };
 
 const accountSlice: Slice<AccountState> = createSlice<
@@ -33,23 +35,17 @@ const accountSlice: Slice<AccountState> = createSlice<
   name: "account",
   initialState: initialState,
   reducers: {
-    updateAccountStatus(
-      state: AccountState,
-      action: PayloadAction<Partial<Account>>
-    ) {
+    updateAccountStatus(state) {
       state.status = SagaStatus.PENDING;
     },
     changeShowModel(
-      state: AccountState,
+      state,
       action: PayloadAction<{ _userOnModel: boolean | undefined }>
     ) {
       const { _userOnModel } = action.payload;
       state._userOnModel = _userOnModel;
     },
-    nextAccountStatus(
-      state: AccountState,
-      action: PayloadAction<Partial<Account>>
-    ) {
+    nextAccountStatus(state, action: PayloadAction<Partial<Account>>) {
       // @ts-ignore
       if (action.error) {
         state.status = SagaStatus.ERROR;
@@ -68,10 +64,12 @@ const accountSlice: Slice<AccountState> = createSlice<
           _chainId,
           keySeed,
           nonce,
+          frozen,
           _accountIdNotActive,
           connectName,
           isInCounterFactualStatus,
           isContract,
+          __timer__,
         } = action.payload;
         if (_accountIdNotActive) {
           state._accountIdNotActive = _accountIdNotActive;
@@ -114,18 +112,22 @@ const accountSlice: Slice<AccountState> = createSlice<
         if (keySeed !== undefined) {
           state.keySeed = keySeed;
         }
+        if (__timer__ !== undefined) {
+          state.__timer__ = __timer__;
+        }
         state.isInCounterFactualStatus = isInCounterFactualStatus;
         state.isContract = isContract;
+        state.frozen = frozen;
         state.status = SagaStatus.DONE;
       }
     },
     cleanAccountStatus(
-      state: AccountState,
-      action: PayloadAction<{ shouldUpdateProvider?: boolean | undefined }>
+      state,
+      _action: PayloadAction<{ shouldUpdateProvider?: boolean | undefined }>
     ) {
       state.status = SagaStatus.PENDING;
     },
-    statusUnset: (state: AccountState) => {
+    statusUnset: (state) => {
       state.status = SagaStatus.UNSET;
     },
   },

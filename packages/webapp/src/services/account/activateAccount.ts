@@ -1,13 +1,15 @@
 import store from "../../stores";
-import { FeeInfo } from "@loopring-web/common-resources";
+import { FeeInfo, UIERROR_CODE } from "@loopring-web/common-resources";
 import { myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from "api_wrapper";
-import { connectProvides } from "@loopring-web/web3-provider";
+import { connectProvides, ConnectProviders } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ActionResult, ActionResultCode, DAYS } from "defs/common_defs";
 import { getTimestampDaysLater } from "utils/dt_tools";
+import Web3 from "web3";
+import { NETWORKEXTEND } from "../../stores/system";
 
-export async function updateAccountFromServer({
+export async function activateAccount({
   isHWAddr,
   feeInfo,
   isReset,
@@ -15,126 +17,122 @@ export async function updateAccountFromServer({
   isHWAddr: boolean;
   feeInfo?: FeeInfo;
   isReset?: boolean;
-}) {
-  const system = store.getState().system;
-  const account = store.getState().account;
-
+}): Promise<ActionResult> {
+  // let result: ActionResult =;
   let eddsaKey = undefined; //isReset ?  //: account.eddsaKey;
+  const system = store.getState().system;
+  const {
+    accAddress,
+    connectName,
+    eddsaKey: { counterFactualInfo },
+  } = store.getState().account;
+  if (
+    !system.exchangeInfo?.exchangeAddress ||
+    system.chainId === NETWORKEXTEND.NONETWORK ||
+    connectName === ConnectProviders.Unknown ||
+    !accAddress
+  ) {
+    return {
+      code: ActionResultCode.DataNotReady,
+      data: {
+        code: UIERROR_CODE.DATA_NOT_READY,
+        message: "DATA NOT READY",
+      },
+    };
+  }
+  const accountResponse = await LoopringAPI?.exchangeAPI?.getAccount({
+    owner: accAddress,
+  });
 
-  myLog("before check!", account);
-
-  let result: ActionResult = { code: ActionResultCode.NoError };
-
+  if (
+    (accountResponse &&
+      ((accountResponse as sdk.RESULT_INFO).code ||
+        (accountResponse as sdk.RESULT_INFO).message)) ||
+    !accountResponse?.accInfo?.accountId
+  ) {
+    return {
+      code: ActionResultCode.GetAccError,
+      data: accountResponse as sdk.RESULT_INFO,
+    };
+  }
+  const { accInfo } = accountResponse;
+  let keySeed = sdk.GlobalAPI.KEY_MESSAGE.replace(
+    "${exchangeAddress}",
+    system.exchangeInfo.exchangeAddress
+  ).replace("${nonce}", accInfo.nonce.toString());
   try {
-    if (
-      LoopringAPI.userAPI &&
-      LoopringAPI.exchangeAPI &&
-      system.exchangeInfo &&
-      connectProvides.usedWeb3 &&
-      account &&
-      system.chainId !== "unknown" &&
-      account.connectName !== "unknown"
-    ) {
-      const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
-        owner: account.accAddress,
-      });
-
-      if (accInfo?.owner && accInfo?.accountId) {
-        const connectName = account.connectName as sdk.ConnectorNames;
-        let keySeed = sdk.GlobalAPI.KEY_MESSAGE.replace(
-          "${exchangeAddress}",
-          system.exchangeInfo.exchangeAddress
-        ).replace("${nonce}", accInfo.nonce.toString());
-        try {
-          if (!eddsaKey) {
-            myLog("no eddsaKey ！!");
-
-            eddsaKey = await sdk.generateKeyPair({
-              web3: connectProvides.usedWeb3,
-              address: accInfo.owner,
-              keySeed,
-              walletType: connectName,
-              chainId: system.chainId as any,
-              counterFactualInfo:
-                account?.eddsaKey?.counterFactualInfo ?? undefined,
-            });
-            myLog("no eddsaKey! after generateKeyPair");
+    eddsaKey = await sdk.generateKeyPair({
+      web3: connectProvides.usedWeb3,
+      address: accInfo.owner,
+      keySeed,
+      walletType: connectName as sdk.ConnectorNames,
+      chainId: system.chainId as any,
+      counterFactualInfo: counterFactualInfo ?? undefined,
+    });
+  } catch (error: any) {
+    const data =
+      typeof error === "string"
+        ? {
+            code: UIERROR_CODE.GENERATE_EDDSA,
+            message: error,
           }
-          try {
-            let tokenId = 0;
+        : {
+            code: UIERROR_CODE.GENERATE_EDDSA,
+            ...error,
+          };
 
-            let fee = "0";
-            if (feeInfo) {
-              tokenId = feeInfo.__raw__.tokenId;
-              fee = feeInfo.__raw__.feeRaw;
-            }
-            const request: sdk.UpdateAccountRequestV3 = {
-              exchange: system.exchangeInfo.exchangeAddress,
-              owner: accInfo.owner,
-              accountId: accInfo.accountId,
-              publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy },
-              maxFee: {
-                tokenId,
-                volume: fee.toString(),
-              },
-              validUntil: getTimestampDaysLater(DAYS),
-              keySeed,
-              nonce: accInfo.nonce as number,
-            };
-
-            myLog("updateAccountFromServer req:", request);
-
-            const response = await LoopringAPI.userAPI.updateAccount(
-              {
-                request,
-                web3: connectProvides.usedWeb3,
-                chainId: system.chainId,
-                walletType: connectName,
-                isHWAddr,
-              },
-              {
-                accountId: account.accountId,
-                counterFactualInfo: eddsaKey.counterFactualInfo,
-              }
-            );
-
-            myLog("updateAccountResponse:", response);
-
-            if (
-              (response as sdk.RESULT_INFO).code ||
-              (response as sdk.RESULT_INFO).message
-            ) {
-              result.code = ActionResultCode.UpdateAccoutError;
-              result.data = {
-                eddsaKey,
-                ...response,
-              };
-            } else {
-              result.data = {
-                response,
-                eddsaKey,
-              };
-            }
-          } catch (reason) {
-            result.code = ActionResultCode.UpdateAccoutError;
-            result.data = reason;
-            sdk.dumpError400(reason);
-          }
-        } catch (reason) {
-          myLog("GenEddsaKeyError!!!!!! ");
-
-          result.code = ActionResultCode.GenEddsaKeyError;
-          result.data = reason;
-          sdk.dumpError400(reason);
-        }
-      }
-    }
-  } catch (reason) {
-    myLog("other error!!!!!!! ");
-    result.code = ActionResultCode.GetAccError;
-    result.data = reason;
-    sdk.dumpError400(reason);
+    return {
+      code: ActionResultCode.GenEddsaKeyError,
+      data,
+    };
   }
 
-  return result;
+  myLog("generateKeyPair done");
+  const tokenId = feeInfo?.__raw__?.tokenId ?? 0;
+  const fee = feeInfo?.__raw__?.feeRaw ?? "0";
+  const request: sdk.UpdateAccountRequestV3 = {
+    exchange: system.exchangeInfo.exchangeAddress,
+    owner: accInfo.owner,
+    accountId: accInfo.accountId,
+    publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy },
+    maxFee: {
+      tokenId,
+      volume: fee.toString(),
+    },
+    validUntil: getTimestampDaysLater(DAYS),
+    keySeed,
+    nonce: accInfo.nonce as number,
+  };
+  myLog("updateAccountFromServer req:", request);
+
+  const response = await LoopringAPI?.userAPI?.updateAccount(
+    {
+      request,
+      web3: connectProvides.usedWeb3 as Web3,
+      chainId: system.chainId,
+      walletType: connectName as sdk.ConnectorNames,
+      isHWAddr,
+    },
+    {
+      accountId: accInfo.accountId,
+      counterFactualInfo: eddsaKey.counterFactualInfo,
+    }
+  );
+  myLog("updateAccountResponse:", response);
+
+  if (
+    response &&
+    ((response as sdk.RESULT_INFO).code ||
+      (response as sdk.RESULT_INFO).message)
+  ) {
+    return {
+      code: ActionResultCode.UpdateAccoutError,
+      data: response as sdk.RESULT_INFO,
+    };
+  } else {
+    return {
+      code: ActionResultCode.NoError,
+      data: { eddsaKey, accInfo },
+    };
+  }
 }

@@ -10,6 +10,7 @@ import {
 import { useTokenMap } from "./stores/token";
 import { useAccount } from "./stores/account";
 import {
+  ConnectProviders,
   ConnectProvides,
   connectProvides,
   walletServices,
@@ -24,8 +25,6 @@ import { useNotify } from "./stores/notify";
 import { useLayer1Store } from "./stores/localStore/layer1Store";
 import { useSettings } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
-
-// import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
  * @description
@@ -52,7 +51,13 @@ export function useInit() {
   const { isMobile } = useSettings();
   const theme = useTheme();
 
-  const { account, updateAccount, resetAccount } = useAccount();
+  const {
+    account,
+    updateAccount,
+    resetAccount,
+    status: accountStatus,
+    statusUnset: accountStatusUnset,
+  } = useAccount();
   const { status: tokenMapStatus, statusUnset: tokenMapStatusUnset } =
     useTokenMap();
   const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap();
@@ -84,7 +89,7 @@ export function useInit() {
       if (
         account.accAddress !== "" &&
         account.connectName &&
-        account.connectName !== "unknown"
+        account.connectName !== ConnectProviders.Unknown
       ) {
         try {
           ConnectProvides.IsMobile = isMobile;
@@ -111,7 +116,7 @@ export function useInit() {
             }
             return;
           }
-        } catch (error) {
+        } catch (error: any) {
           walletServices.sendDisconnect(
             "",
             `error at init loading  ${error}, disconnect`
@@ -125,7 +130,10 @@ export function useInit() {
           }
         }
       } else {
-        if (account.accAddress === "" || account.connectName === "unknown") {
+        if (
+          account.accAddress === "" ||
+          account.connectName === ConnectProviders.Unknown
+        ) {
           resetAccount();
         }
         const chainId =
@@ -138,6 +146,20 @@ export function useInit() {
       }
     })(account);
   }, []);
+
+  React.useEffect(() => {
+    switch (accountStatus) {
+      case SagaStatus.ERROR:
+        accountStatusUnset();
+        setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        accountStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [accountStatus]);
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:

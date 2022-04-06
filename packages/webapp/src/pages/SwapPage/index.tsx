@@ -9,16 +9,13 @@ import {
   ScaleAreaChart,
   SwapPanel,
   Toast,
+  useToggle,
 } from "@loopring-web/component-lib";
 
 import { TOAST_TIME } from "defs/common_defs";
 import { FixedStyle } from "pages/styled";
 import { useSwap } from "./hookSwap";
-import {
-  getValuePrecisionThousand,
-  UpColor,
-} from "@loopring-web/common-resources";
-import { useBasicInfo } from "./panel/BasicInfoPanel/hook";
+import { getValuePrecisionThousand } from "@loopring-web/common-resources";
 
 export const SwapPage = withTranslation("common")(
   ({ ...rest }: WithTranslation) => {
@@ -48,6 +45,7 @@ export const SwapPage = withTranslation("common")(
       isMobile,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+    const { toggle } = useToggle();
     return (
       <>
         <Toast
@@ -82,7 +80,6 @@ export const SwapPage = withTranslation("common")(
             <Box display={"flex"} style={styles} justifyContent={"center"}>
               <FixedStyle>
                 <SwapPanel
-                  //disabled={isSwapLoading}
                   toPro={toPro}
                   tokenBuyProps={{
                     disabled: isSwapLoading,

@@ -104,7 +104,7 @@ export function useExportAccountInfo() {
           setShowAccount({ isShow: false });
           setShowExportAccount({ isShow: true });
         }
-      } catch (e) {
+      } catch (e: any) {
         myLog("ExportAccount e:", e);
 
         const errType = checkErrorInfo(e, true);
