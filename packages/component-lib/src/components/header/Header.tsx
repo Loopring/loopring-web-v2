@@ -255,6 +255,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           ...rest
         }: any) => (
           <HeaderMenuSub
+            key={layer + "_" + label.id}
             {...{
               ...rest,
               label,

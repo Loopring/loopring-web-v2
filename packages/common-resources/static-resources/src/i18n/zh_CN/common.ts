@@ -588,6 +588,8 @@ export default {
   labelNoticeForForAccountFrozen:
     "please waiting a while, {{ type }} is on updating.",
   labelAction: "action",
+  labelGoExplore: "View transactions on block explorer",
+  labelNOETH: "Need ETH for gas",
   labelLoadTitle: "Step1: Upload Media Resource ({{types}})",
   labelIPFSStep2: "Step2: create NFT metadata information and submit",
   labelLoadDes: "Drag or click the button to upload files ({{types}}) ",

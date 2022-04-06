@@ -254,8 +254,8 @@ export const OrderHistoryTable = withTranslation("tables")(
           start: Number.isNaN(start) ? -1 : start,
           end: Number.isNaN(end) ? -1 : end,
           status: isOpen
-            ? "processing"
-            : "processed,failed,cancelled,cancelling,expired",
+            ? ["processing"]
+            : ["processed", "failed", "cancelled", "cancelling", "expired"],
         });
       },
       [

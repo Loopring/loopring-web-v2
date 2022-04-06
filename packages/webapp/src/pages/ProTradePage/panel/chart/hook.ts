@@ -10,12 +10,8 @@ import {
   getValuePrecisionThousand,
   myLog,
 } from "@loopring-web/common-resources";
-import { MarketTradeInfo, TradingInterval } from "@loopring-web/loopring-sdk";
-import BigNumber from "bignumber.js";
-import {
-  volumeToCount,
-  volumeToCountAsBigNumber,
-} from "../../../../hooks/help";
+import { TradingInterval } from "@loopring-web/loopring-sdk";
+import { volumeToCount } from "../../../../hooks/help";
 export enum TradingIntervalToTimer {
   "1min" = 60000,
   "5min" = 300000,

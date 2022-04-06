@@ -46,7 +46,7 @@ const HistoryPanel = withTranslation("common")(
     const { etherscanBaseUrl } = useSystem();
 
     const {
-      account: { accAddress },
+      account: { accAddress, accountId },
     } = useAccount();
 
     const { t } = rest;
@@ -124,6 +124,7 @@ const HistoryPanel = withTranslation("common")(
                 showloading: showTxsLoading,
                 getTxnList: getUserTxnList,
                 accAddress,
+                accountId,
                 ...rest,
               }}
             />
@@ -141,6 +142,8 @@ const HistoryPanel = withTranslation("common")(
                   pageSize: pageSize,
                   total: userTradesTotal,
                 },
+                accAddress,
+                accountId,
                 ...rest,
               }}
             />

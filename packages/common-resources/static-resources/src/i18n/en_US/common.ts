@@ -466,9 +466,9 @@ export default {
   labelNFTTOTAL: "Amount:",
   labelInformation: "Notification",
   labelNoticeForProvider:
-    "Loopring only support and maintain {{name}} plugins for WalletConnect, if your installed other Wallet plugin, please make sure it's the {{name}} popup.",
+    "Loopring currently supports the following wallet connections: {{name}}. Please make sure to use one of these when attempting to connect.",
   labelGuid: "Go to Guid",
-  labelIKnow: "I know",
+  labelIKnow: "OK",
   labelYes: "Yes",
   labelNo: "No",
   labelOK: "Ok",
@@ -619,6 +619,8 @@ export default {
   labelNoticeForForAccountFrozen:
     "Please wait a moment, {{ type }} is updating",
   labelAction: "action",
+  labelGoExplore: "View transactions on <1>block explorer</1>",
+  labelNOETH: "Need ETH for gas",
   labelLoadTitle: "Step1: Upload Media Resource ({{types}})",
   labelIPFSStep2: "Step2: create NFT metadata information and submit",
   labelLoadDes: "Drag or click the button to upload files ({{types}})",
