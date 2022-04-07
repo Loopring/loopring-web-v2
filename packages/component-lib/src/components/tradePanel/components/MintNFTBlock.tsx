@@ -1,20 +1,22 @@
 import { NFTMintViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, TextareaAutosize, Typography } from "@mui/material";
+import {
+  Box,
+  FormLabel,
+  Grid,
+  GridProps,
+  TextareaAutosize,
+  Typography,
+} from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
   IPFS_META_URL,
   myLog,
-  // MINT_LIMIT,
   TradeNFT,
 } from "@loopring-web/common-resources";
-import {
-  Button,
-  TextField,
-  // TGItemData
-} from "../../basic-lib";
+import { Button, TextField } from "../../basic-lib";
 
 import {
   LOOPRING_URLs,
@@ -32,22 +34,15 @@ const TextareaAutosizeStyled = styled(TextareaAutosize)`
   font-family: inherit;
   width: 100%;
 ` as typeof TextareaAutosize;
-const GridStyle = styled(Grid)`
+const GridStyle = styled(Grid)<GridProps & { isMobile: boolean }>`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
   }
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
   }
-` as typeof Grid;
-// const NFT_TYPE: TGItemData[] = [
-//   {
-//     value: NFTType.ERC1155,
-//     key: "ERC1155",
-//     label: "ERC1155",
-//     disabled: false,
-//   },
-// ];
+` as (props: GridProps & { isMobile: boolean }) => JSX.Element;
+
 export const MintNFTBlock = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   disabled,
   // walletMap,
@@ -67,14 +62,7 @@ export const MintNFTBlock = <T extends TradeNFT<I>, I, C extends FeeInfo>({
 }: NFTMintViewProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
-  const styles = isMobile
-    ? { flex: 1, width: "var(--swap-box-width)" }
-    : { width: "var(--modal-width)" };
 
-  // const popupState = usePopupState({
-  //   variant: "popover",
-  //   popupId: `popupId-nftMint`,
-  // });
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   //
@@ -97,51 +85,26 @@ export const MintNFTBlock = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   return (
     <GridStyle
       // className={walletMap ? "" : "loading"}
-      style={styles}
-      paddingBottom={3}
       container
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
-      direction={"column"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
+      isMobile={isMobile}
+      spacing={2}
+      padding={5 / 2}
       flex={1}
-      height={"100%"}
+      //
     >
-      <Grid item xs={12} height={68} display={"flex"} flexDirection={"row"}>
-        <Box display={"flex"} flexDirection={"column"}>
-          <Grid item xs={12}>
-            <TextField label={"Name"}></TextField>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField type={"number"} label={"royalty Percentage"} />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField type={"number"} label={"amount"} />
-          </Grid>
-        </Box>
-        <Box>
-          <img
-            alt={"NFT"}
-            width={"68"}
-            height={"69"}
-            style={{ objectFit: "contain" }}
-            src={tradeData?.image?.replace(
-              IPFS_META_URL,
-              LOOPRING_URLs.IPFS_META_URL
-            )}
-          />
-        </Box>
+      <Grid item xs={12} md={6}>
+        <TextField fullWidth required label={"name"} type={"text"} />
       </Grid>
       <Grid item xs={12} md={6}>
-        <Typography variant={"body1"}>description</Typography>
-        <TextareaAutosizeStyled
-          aria-label="NFT Description"
-          minRows={5}
-          disabled={false}
-        />
+        <TextField fullWidth select type={"text"} label={"collect"} />
       </Grid>
       <Grid item xs={12} md={6}>
+        <TextField fullWidth type={"number"} label={"amount"} />
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <TextField fullWidth type={"number"} label={"royalty Percentage"} />
+      </Grid>
+      <Grid item xs={12}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
@@ -202,6 +165,32 @@ export const MintNFTBlock = <T extends TradeNFT<I>, I, C extends FeeInfo>({
           </>
         )}
       </Grid>
+      <Grid item xs={12} md={6}>
+        <FormLabel>
+          <Typography variant={"body2"} lineHeight={4}>
+            description
+          </Typography>
+        </FormLabel>
+        <TextareaAutosizeStyled
+          aria-label="NFT Description"
+          minRows={5}
+          disabled={false}
+        />
+      </Grid>
+
+      <Grid item xs={12} md={6}>
+        <img
+          alt={"NFT"}
+          width={"68"}
+          height={"69"}
+          style={{ objectFit: "contain" }}
+          src={tradeData?.image?.replace(
+            IPFS_META_URL,
+            LOOPRING_URLs.IPFS_META_URL
+          )}
+        />
+      </Grid>
+
       <Grid item marginTop={3} alignSelf={"stretch"}>
         {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
           <Typography

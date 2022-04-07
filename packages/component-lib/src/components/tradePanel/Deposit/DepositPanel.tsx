@@ -11,8 +11,8 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     type = "TOKEN",
     onDepositClick,
     depositBtnStatus,
-    walletMap,
-    coinMap,
+    walletMap = {},
+    coinMap = {},
     addressDefault,
     allowTrade,
     ...rest

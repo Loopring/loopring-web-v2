@@ -17,18 +17,20 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
     onWithdrawClick,
     withdrawBtnStatus,
     assetsData,
-    walletMap,
+    walletMap = {},
+    coinMap = {},
     ...rest
   }: WithdrawProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
+      coinMap,
       type,
       walletMap,
     });
 
     // LP token should not exist in withdraw panel for now
     const getWalletMapWithoutLP = React.useCallback(() => {
-      const clonedWalletMap = cloneDeep(walletMap);
+      const clonedWalletMap = cloneDeep(walletMap ?? {});
       const keyList = Object.keys(clonedWalletMap);
       keyList.forEach((key) => {
         const [first] = key.split("-");
@@ -55,6 +57,7 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
                     : [],
                   tradeData: switchData.tradeData,
                   onChangeEvent,
+                  coinMap,
                   disabled: !!rest.disabled,
                   onWithdrawClick,
                   withdrawBtnStatus,
@@ -89,7 +92,7 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
                         sorted: true,
                         ...rest,
                         onChangeEvent,
-                        //rest.walletMap,
+                        coinMap,
                         selected: switchData.tradeData.belong,
                         tradeData: switchData.tradeData,
                         walletMap: getWalletMapWithoutLP(),

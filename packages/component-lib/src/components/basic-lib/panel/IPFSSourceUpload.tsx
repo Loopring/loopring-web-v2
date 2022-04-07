@@ -73,12 +73,14 @@ export const IPFSSourceUpload = ({
   return (
     <BoxStyle {...getRootProps()} paddingTop={1}>
       <FormControl
+        onClick={open}
         error={isFileTooLarge}
         sx={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          cursor: "pointer",
         }}
       >
         <input {...getInputProps()} />
@@ -94,15 +96,15 @@ export const IPFSSourceUpload = ({
         >
           {t(title, { types: types })}
         </Typography>
-        <Button
-          variant="contained"
-          onClick={open}
-          size={"small"}
-          disabled={disabled}
-          sx={{ marginBottom: 1 }}
-        >
-          {t(buttonText)}
-        </Button>
+        {/*<Button*/}
+        {/*  variant="contained"*/}
+        {/*  onClick={open}*/}
+        {/*  size={"small"}*/}
+        {/*  disabled={disabled}*/}
+        {/*  sx={{ marginBottom: 1 }}*/}
+        {/*>*/}
+        {/*  {t(buttonText)}*/}
+        {/*</Button>*/}
         <FormHelperText>{fileRejections[0]?.errors[0]?.message}</FormHelperText>
       </FormControl>
       <Box

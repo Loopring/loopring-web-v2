@@ -183,10 +183,18 @@ export type inputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
 export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
-  coinMap?: CoinMap<I, CoinInfo<I>>;
-  walletMap?: WalletMap<I, WalletCoin<I>>;
-  type?: "TOKEN" | "NFT";
-};
+} & (
+  | {
+      type: "TOKEN";
+      coinMap: CoinMap<I, CoinInfo<I>>;
+      walletMap: WalletMap<I, WalletCoin<I>>;
+    }
+  | {
+      type: "NFT";
+      coinMap?: CoinMap<I, CoinInfo<I>>;
+      walletMap?: WalletMap<I, WalletCoin<I>>;
+    }
+);
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
