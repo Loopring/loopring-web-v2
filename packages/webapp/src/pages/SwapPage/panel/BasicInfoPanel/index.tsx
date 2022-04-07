@@ -96,7 +96,7 @@ const BasicInfoPanel = ({
                 tradeFloat,
                 activityInProgressRules,
               }}
-            ></TradeTitle>
+            />
             <ToggleButtonGroup
               exclusive
               {...{ ...rest, t, tgItemJSXs, value: chartType }}

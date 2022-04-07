@@ -68,7 +68,7 @@ export const TradeTitle = <I extends object>({
       : FloatTag.increase;
   const { currency, upColor } = useSettings();
 
-  const close = tradeFloat.close;
+  const close: any = tradeFloat.close;
 
   const value =
     currency === Currency.usd
@@ -272,7 +272,7 @@ export const TradeTitle = <I extends object>({
             marginTop={1}
           >
             <Typography variant={"h1"}>
-              {close ? close : EmptyValueTag} {quoteShow}
+              {close == "NaN" ? EmptyValueTag : close} {quoteShow}
             </Typography>
             <Box
               display={"flex"}
