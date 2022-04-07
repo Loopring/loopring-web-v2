@@ -183,10 +183,18 @@ export type inputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
 export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
-  coinMap?: CoinMap<I, CoinInfo<I>>;
-  walletMap?: WalletMap<I, WalletCoin<I>>;
-  type?: "TOKEN" | "NFT";
-};
+} & (
+  | {
+      type: "TOKEN";
+      coinMap: CoinMap<I, CoinInfo<I>>;
+      walletMap: WalletMap<I, WalletCoin<I>>;
+    }
+  | {
+      type: "NFT";
+      coinMap?: CoinMap<I, CoinInfo<I>>;
+      walletMap?: WalletMap<I, WalletCoin<I>>;
+    }
+);
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
@@ -266,7 +274,26 @@ export type NFTMintExtendProps<T, I, C = FeeInfo> = {
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
 } & NFTMintInfoProps<T, I, C>;
-export type NFTMintViewProps<T, I, C> = NFTMintExtendProps<T, I, C>;
+export type NFTMintViewProps<T, I, C> = {
+  tradeData: T;
+  disabled?: boolean;
+  coinMap?: CoinMap<I, CoinInfo<I>>;
+  walletMap?: WalletMap<I, WalletCoin<I>>;
+} & NFTMintExtendProps<T, I, C>;
+
+export type NFTMintViewWholeProps<T, C> = {
+  nftMintBtnStatus?: keyof typeof TradeBtnStatus | undefined;
+  chargeFeeTokenList?: Array<C>;
+  feeInfo: C;
+  isNFTCheckLoading?: boolean;
+  isAvaiableId?: boolean;
+  isFeeNotEnough?: boolean;
+  handleFeeChange: (value: C) => void;
+  wait?: number;
+  tradeData: T;
+  disabled?: boolean;
+  type: "NFT";
+} & NFTMintExtendProps<T, C>;
 
 export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   nftDeployBtnStatus?: keyof typeof TradeBtnStatus | undefined;

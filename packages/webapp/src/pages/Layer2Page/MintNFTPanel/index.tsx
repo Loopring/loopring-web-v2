@@ -43,7 +43,14 @@ export const NFTMintPanel = () => {
         columns={{ xs: 4, sm: 8, md: 12 }}
       >
         <Grid item xs={12} md={6}>
-          <StyleWrapper flex={1} paddingBottom={5 / 2}>
+          <StyleWrapper
+            className={"MuiPaper-elevation2"}
+            flex={1}
+            display={"flex"}
+            flexDirection={"column"}
+            paddingBottom={5 / 2}
+            height={"100%"}
+          >
             <Typography component={"h3"} variant={"h5"} padding={5 / 2}>
               {t("labelLoadTitle", { types: TYPES })}
             </Typography>
@@ -55,10 +62,11 @@ export const NFTMintPanel = () => {
                 types={TYPES}
               />
             </Box>
+            <Box></Box>
           </StyleWrapper>
         </Grid>
         <Grid item xs={12} md={6} display={"flex"} flexDirection={"column"}>
-          <StyleWrapper flex={1} className={"MuiPaper-elevation2"}>
+          <StyleWrapper flex={1}>
             {/*<Typography component={"h3"} variant={"h4"} padding={5 / 2}>*/}
             {/*  {t("labelIPFSStep2")}*/}
             {/*</Typography>*/}
@@ -66,7 +74,17 @@ export const NFTMintPanel = () => {
             <MintNFTBlock
               handleOnNFTDataChange={() => {}}
               onNFTMintClick={nftMintProps.onNFTMintClick}
-              tradeData={{}}
+              tradeData={{
+                image:
+                  "ipfs:///bafybeidfjqmasnpu6z7gvn7l6wthdcyzxh5uystkky3xvutddbapchbopi/no-time-to-explain.jpeg",
+                name: "",
+                // royaltyPercentage: 2, // 0 - 10 for UI
+                // nftId: undefined,
+                // nftIdView: undefined,
+                // description: "",
+                // nftBalance: undefined,
+                // collection: undefined,
+              }}
               feeInfo={nftMintProps.feeInfo}
               handleFeeChange={nftMintProps.handleFeeChange}
             />

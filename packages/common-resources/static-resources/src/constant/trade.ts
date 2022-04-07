@@ -69,14 +69,20 @@ export type LAYER1_ACTION_HISTORY = {
   [key in ChainId extends string ? string : string]: Layer1ActionHistory;
 } & { __timer__: -1 | NodeJS.Timeout };
 
+export type NFTMETA = {
+  image: string;
+  name: string;
+  royaltyPercentage: number; // 0 - 10 for UI
+  nftId: string;
+  nftIdView: string;
+  description: string;
+  nftBalance: number;
+  collection: string;
+};
+
 export type NFTWholeINFO = NFTTokenInfo &
-  UserNFTBalanceInfo & {} & {
-    image: string;
-    name: string;
-    royaltyPercentage: number; // 0 - 10 for UI
-    nftIdView: string;
-    description: string;
-    nftBalance: number;
+  UserNFTBalanceInfo &
+  NFTMETA & {
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
   } & { fee?: FeeInfo };
