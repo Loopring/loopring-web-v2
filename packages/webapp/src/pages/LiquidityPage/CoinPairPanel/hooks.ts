@@ -113,8 +113,6 @@ export const useCoinPair = <C extends { [key: string]: any }>() => {
 
   const { accountId } = store.getState().account;
   const tokenMapList = tokenMap ? Object.entries(tokenMap) : [];
-  let routerLocation = useLocation();
-
   const { walletLayer2 } = useWalletLayer2();
   const [walletMap, setWalletMap] =
     React.useState<WalletMapExtend<C> | undefined>(undefined);

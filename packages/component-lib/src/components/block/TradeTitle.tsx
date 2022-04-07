@@ -3,6 +3,7 @@ import {
   AmmRankIcon,
   AvatarCoinStyled,
   CoinInfo,
+  EmptyValueTag,
   FloatTag,
   getValuePrecisionThousand,
   PriceTag,
@@ -271,7 +272,7 @@ export const TradeTitle = <I extends object>({
             marginTop={1}
           >
             <Typography variant={"h1"}>
-              {close} {quoteShow}
+              {close ? close : EmptyValueTag} {quoteShow}
             </Typography>
             <Box
               display={"flex"}

@@ -1,17 +1,14 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import moment from "moment";
-import { useCustomDCEffect } from "hooks/common/useCustomDCEffect";
 
 import {
   Candlestick,
-  dumpError400,
-  GetCandlestickRequest,
   GetDepthRequest,
   getExistedMarket,
   TradingInterval,
 } from "@loopring-web/loopring-sdk";
 
-import { ChartUnit } from "@loopring-web/common-resources";
+import { ChartUnit, myLog } from "@loopring-web/common-resources";
 
 import {
   ChartType,
@@ -100,76 +97,57 @@ export function useBasicInfo(
     });
     return pre;
   }, [] as TGItemJSXInterface[]);
-
-  useCustomDCEffect(async () => {
-    let mounted = true;
-
+  const updateChartData = React.useCallback(async () => {
     if (!LoopringAPI.exchangeAPI || !market || !amm) {
       return;
     }
-
     if (chartType === ChartType.Trend) {
-      const request: GetCandlestickRequest = {
-        market: amm as string,
-        interval: TradingInterval.d1,
-        limit: 30,
-      };
-
       try {
-        const candlesticks = await LoopringAPI.exchangeAPI.getCandlestick(
-          request
+        const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick({
+          market,
+          interval: TradingInterval.d1,
+          limit: 30,
+        });
+        const originData = candlesticks.candlesticks.map(
+          (item: Candlestick) => {
+            return {
+              timeStamp: item.timestamp,
+              low: item.low,
+              high: item.high,
+              open: item.open,
+              close: item.close,
+              volume: item.quoteVol,
+              change: (item.close - item.open) / item.open,
+              date: moment(item.timestamp).format("MMM DD"),
+            };
+          }
         );
-
-        if (mounted) {
-          const originData = candlesticks.candlesticks.map(
-            (item: Candlestick) => {
-              return {
-                timeStamp: item.timestamp,
-                low: item.low,
-                high: item.high,
-                open: item.open,
-                close: item.close,
-                volume: item.quoteVol,
-                change: (item.close - item.open) / item.open,
-                date: moment(item.timestamp).format("MMM DD"),
-              };
-            }
-          );
-          setOriginData(originData);
-        }
+        setOriginData(originData);
       } catch (reason: any) {
-        dumpError400(reason, "ChartPanel getCandlestick");
+        myLog(reason);
       }
     } else {
       const request: GetDepthRequest = {
         market,
       };
-
       try {
         const { depth } = await LoopringAPI.exchangeAPI.getMixDepth(request);
-
-        if (mounted) {
-          const originData: IGetDepthDataParams = {
-            bidsPrices: depth.bids_prices,
-            bidsAmtTotals: depth.bids_amtTotals as any,
-            asksPrices: depth.asks_prices,
-            asksAmtTotals: depth.asks_amtTotals as any,
-          };
-          setOriginData(originData);
-        }
+        const originData: IGetDepthDataParams = {
+          bidsPrices: depth.bids_prices,
+          bidsAmtTotals: depth.bids_amtTotals as any,
+          asksPrices: depth.asks_prices,
+          asksAmtTotals: depth.asks_amtTotals as any,
+        };
+        setOriginData(originData);
       } catch (reason: any) {
-        dumpError400(reason);
+        myLog(reason);
       }
     }
-
-    return () => {
-      mounted = false;
-    };
-  }, [LoopringAPI.exchangeAPI, amm, market, chartType]);
-
+  }, [market, amm, chartType]);
+  React.useEffect(() => {
+    updateChartData();
+  }, [market, chartType]);
   return {
-    // change,
-    // volume,
     baseShow,
     quoteShow,
     chartUnit,
