@@ -52,14 +52,10 @@ export function useKlineChart(market: string | undefined) {
         const decimals = tokenMap[coinBase] ? tokenMap[coinBase].decimals : -1;
 
         if (decimals > 0) {
-          const rep: sdk.GetCandlestickRequest = {
+          const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick({
             market,
             interval: timeInterval,
-          };
-
-          const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick(
-            rep
-          );
+          });
           setLastMinutes(Date.now());
           let candlestickViewData: IOHLCData[] = [];
 
