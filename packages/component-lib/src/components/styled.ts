@@ -372,9 +372,12 @@ export const MenuBtnStyled = styled(Button)`
   font-size: 1.4rem;
   background: var(--opacity);
   color: var(--color-text-secondary);
-  justify-content: space-between;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
   padding: 0 ${({ theme }) => theme.unit * 3}px;
   text-indent: 0.5em;
+  position: relative;
   &:hover {
     background: var(--provider-hover);
     border-color: var(--opacity);
@@ -400,7 +403,7 @@ export const MenuBtnStyled = styled(Button)`
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
-  &.vendor {
+  &.vendor > .vendorName {
     text-indent: -999em;
     justify-content: center;
   }

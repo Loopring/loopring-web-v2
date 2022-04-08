@@ -62,14 +62,40 @@ export const VendorMenu = ({
             size={"large"}
             className={vendorForce === item.key ? "selected vendor" : "vendor"}
             fullWidth
-            endIcon={IconItem({ svgIcon: item.svgIcon })}
+            style={{
+              height:
+                item.flag &&
+                item.flag.startDate < Date.now() &&
+                Date.now() < item.flag.endDate
+                  ? 56
+                  : "",
+            }}
+            startIcon={IconItem({ svgIcon: item.svgIcon })}
             onClick={(e) => {
               if (item.handleSelect) {
                 item.handleSelect(e);
               }
             }}
           >
-            {t(item.key)}
+            <Typography component={"span"} className={"vendorName"} height={0}>
+              {t(item.key)}
+            </Typography>
+            {item.flag &&
+              item.flag.startDate < Date.now() &&
+              Date.now() < item.flag.endDate && (
+                <>
+                  <Typography
+                    component={"span"}
+                    variant={"body2"}
+                    color={"var(--color-warning)"}
+                  >
+                    {t(item.flag.highLight ?? "")}
+                  </Typography>
+                  <Typography position={"absolute"} right={8} top={4}>
+                    {item.flag.tag}
+                  </Typography>
+                </>
+              )}
           </MenuBtnStyled>
         </Box>
       ))}

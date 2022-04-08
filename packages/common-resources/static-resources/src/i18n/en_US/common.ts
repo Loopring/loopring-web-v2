@@ -620,4 +620,5 @@ export default {
   labelAction: "action",
   labelGoExplore: "View transactions on <1>block explorer</1>",
   labelNOETH: "Need ETH for gas",
+  labelBanxaFeeFree: "zero fees for a limited time",
 };

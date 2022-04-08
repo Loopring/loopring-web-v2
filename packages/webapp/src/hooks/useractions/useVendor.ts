@@ -1,4 +1,8 @@
-import { VendorItem, VendorProviders } from "@loopring-web/common-resources";
+import {
+  VendorItem,
+  VendorList,
+  VendorProviders,
+} from "@loopring-web/common-resources";
 
 import { useAccount } from "stores/account";
 import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
@@ -34,8 +38,9 @@ export const useVendor = () => {
   const vendorList: VendorItem[] = legalShow
     ? [
         {
-          key: VendorProviders.Ramp,
-          svgIcon: "RampIcon",
+          // key: VendorProviders.Ramp,
+          // svgIcon: "RampIcon",
+          ...VendorList.Ramp,
           handleSelect: () => {
             setShowDeposit({ isShow: false });
             if (legalEnable) {
@@ -60,8 +65,7 @@ export const useVendor = () => {
           },
         },
         {
-          key: VendorProviders.Banxa,
-          svgIcon: "BanxaIcon",
+          ...VendorList.Banxa,
           handleSelect: () => {
             if (legalEnable) {
               window.open(
