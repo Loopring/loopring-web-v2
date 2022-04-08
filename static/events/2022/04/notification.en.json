@@ -1,7 +1,18 @@
 {
-  "activities": [],
-  "notifications": [],
-  "prev": {
-      "endDate": 1653884073000
+  "activities":[
+  ],
+  "notifications":[
+    {
+      "id":1649399743607,
+      "title":"🅾️ Zero fee Charge!",
+      "description1":"Deposit by Banxa for free!",
+      "description2":"Duration: April 11 0:00 —— April 25 0:00（UTC)",
+      "link":"https://loopring.io/#/layer2",
+      "startDate":1649548800000,
+      "endDate":1650844800000
+    }
+  ],
+  "prev":{
+    "endDate":1653884073000
   }
 }
