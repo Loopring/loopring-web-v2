@@ -32,5 +32,27 @@
       "5 pools（`LRC/USDC`; `ETH/USDC`; `WBTC/USDC`; `MANA/USDC`; `SAND/USDC`)",
       "950 Loopheads - 700 by way of Lucky Draw and 50 for Top LPs."
     ]
-  }
+  },
+  "SWAP_VOLUME_RANKING": {
+    "eventTitle": "Wearable NFT Drop",
+    "subTitle": "950 Wearables up for grabs in the Wearable NFT drop.!",
+    "local": "en-US",
+    "duration":{
+      "prev":"Activity Period:",
+      "startDate":1649980800000,
+      "endDate":1652572800000,
+      "timeZone":"UTC",
+      "middle":"to"
+    },
+    "rules": [
+      "950 Wearables - 700 by way of Lucky Draw and 50 for Top Traders.",
+      "5 pairs（LRC/ETH; LRC/USDC; ETH/USDC; MANA/USDC; SAND/USDC)",
+      "Lucky Draw - 700 Wearables,To be eligible, users must trade in one of the relevant 5 pairs from April 15 0:00(UTC) to May 15 0:00(UTC).",
+      "We will distribute a Wearable to the top 50 Traders in each pair.",
+      "Highest trading volumes per pair are calculated by the sum of $ amount of value (both orderbook and swap).",
+      "Each winner address can only receive one Wearable. If one address ranks top 50 in several pairs, it will only receive one Wearable. We count top 50 traders in LRC/ETH first, and then LRC/USDC, ETH/USDC, MANA/USDC and SAND/USDC sequentially.",
+      "We will need a leaderboard for top 100 traders."
+      ]
+     }
+
 }

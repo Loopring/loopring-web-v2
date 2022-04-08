@@ -1,5 +1,51 @@
 {
   "activities":[
+    {
+      "type": "SPECIAL",
+      "link": "2022-04-15",
+      "startDate":1649980800000,
+      "endDate":1652572800000,
+      "title": "🎁 Loophead NFT Drop #3️",
+      "description1": "950 Loopheads up for grabs in this third Loophead dynamic NFT drop.",
+      "description2": "Duration: April 15 0:00 - May 15 0:00(UTC)",
+      "pairs": [
+        "LRC/ETH",
+        "LRC/USDC",
+        "ETH/USDC",
+        "MANA/USDC",
+        "SAND/USDC"
+      ],
+      "config": [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    },
+    {
+      "type": "SWAP_VOLUME_RANKING",
+      "link": "2022-04-15",
+      "startDate":1649980800000,
+      "endDate":1652572800000,
+      "title": "Wearable NFT Drop",
+      "description1": "950 Wearables up for grabs in the Wearable NFT drop.!",
+      "description2": "Duration: April 15 0:00 - May 15 0:00(UTC)",
+      "pairs": [
+        "LRC/ETH",
+        "LRC/USDC",
+        "ETH/USDC",
+        "MANA/USDC",
+        "SAND/USDC"
+      ],
+      "config": [
+        "#D3F1F8",
+        12,
+        16,
+        11,
+        10
+      ]
+    }
   ],
   "notifications":[
     {
