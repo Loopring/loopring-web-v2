@@ -97,7 +97,7 @@ const linkListMap = {
     {
       linkName: "Subgraph", //Subgraph
       linkHref:
-        "https://thegraph.com/hosted-service/subgraph/loopring/loopring",
+        "https://thegraph.com/explorer/subgraph?id=HgnaENC2oG5hJFsWoHvULBbj7djTJ7TZnqa58iTWA3Rd",
     },
   ],
 };
