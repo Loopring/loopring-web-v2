@@ -25,18 +25,14 @@ import {
   LAST_STEP,
   MintData,
   ModalDataStatus,
+  NFT_MINT_VALUE,
   TransferData,
   WithdrawData,
 } from "./interface";
 import React from "react";
-import {
-  IBData,
-  TradeNFT,
-  NFTWholeINFO,
-  RequireOne,
-} from "@loopring-web/common-resources";
+import { TradeNFT, RequireOne, NFTMETA } from "@loopring-web/common-resources";
 import { RootState } from "stores";
-import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export function useModalData(): {
   lastStep: LAST_STEP;
@@ -48,15 +44,15 @@ export function useModalData(): {
   nftDepositValue: TradeNFT<any>;
   updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
   updateNFTTransferData: (
-    nftTransferData: RequireOne<TransferData & NFTWholeINFO, never>
+    nftTransferData: RequireOne<TransferData & TradeNFT<any>, never>
   ) => void;
   resetTransferData: () => void;
-  nftWithdrawValue: WithdrawData & Partial<NFTWholeINFO>;
+  nftWithdrawValue: WithdrawData & Partial<TradeNFT<any>>;
   transferValue: TransferData;
   updateNFTDepositData: (
     nftDepositData: RequireOne<TradeNFT<any>, never>
   ) => void;
-  nftTransferValue: TransferData & Partial<NFTWholeINFO>;
+  nftTransferValue: TransferData & Partial<TradeNFT<any>>;
   depositValue: DepositData;
   updateDepositData: (depositData: RequireOne<DepositData, never>) => void;
   resetNFTTransferData: () => void;
@@ -66,13 +62,11 @@ export function useModalData(): {
   resetNFTDepositData: () => void;
   resetDepositData: () => void;
   updateNFTWithdrawData: (
-    nftWithdrawData: RequireOne<WithdrawData & NFTWholeINFO, never>
+    nftWithdrawData: RequireOne<WithdrawData & TradeNFT<any>, never>
   ) => void;
   resetNFTWithdrawData: () => void;
-  nftMintValue: TradeNFT<any>;
-  updateNFTMintData: (
-    nftMintData: RequireOne<MintData & NFTWholeINFO, never>
-  ) => void;
+  nftMintValue: NFT_MINT_VALUE<any>;
+  updateNFTMintData: (nftMintData: NFT_MINT_VALUE<any>) => void;
   resetNFTMintData: () => void;
   nftDeployValue: TradeNFT<any> & { broker: string };
   updateNFTDeployData: (
@@ -115,7 +109,11 @@ export function useModalData(): {
       (
         nftWithdrawData: RequireOne<
           WithdrawData &
-            NFTTokenInfo & { image: string; name: string; description: string },
+            sdk.NFTTokenInfo & {
+              image: string;
+              name: string;
+              description: string;
+            },
           never
         >
       ) => {
@@ -127,7 +125,11 @@ export function useModalData(): {
       (
         nftTransferData: RequireOne<
           TransferData &
-            NFTTokenInfo & { image: string; name: string; description: string },
+            sdk.NFTTokenInfo & {
+              image: string;
+              name: string;
+              description: string;
+            },
           never
         >
       ) => {
@@ -148,7 +150,7 @@ export function useModalData(): {
       [dispatch]
     ),
     updateNFTMintData: React.useCallback(
-      (nftMintData: TradeNFT<any>) => {
+      (nftMintData: NFT_MINT_VALUE<any>) => {
         dispatch(updateNFTMintData(nftMintData));
       },
       [dispatch]

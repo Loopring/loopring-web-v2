@@ -1,5 +1,11 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Button, ButtonProps } from "@mui/material";
+import {
+  Box,
+  BoxProps,
+  Button,
+  ButtonProps,
+  TextareaAutosize,
+} from "@mui/material";
 import CurrencyInput from "react-currency-input-field";
 import { InputSize } from "./Interface";
 
@@ -105,6 +111,9 @@ export const IWrap = styled(Box)<
             }
             input[type=text]{
               font-size: ${theme.fontDefault.body1};
+               &:focus {
+                outline: 0;
+              }
             }
           }
          
@@ -216,7 +225,7 @@ export const IInput = styled(CurrencyInput)`
     width: 0;
   }
   :focus {
-    outlined: 0;
+    outline: 0;
     & + label::before {
       content:'';
       position: absolute;
@@ -260,13 +269,34 @@ export const IInput = styled(CurrencyInput)`
     }
   }
 }` as typeof CurrencyInput;
-// border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
-// ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-// ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-// border-top-left-radius: 0px;
-// border-bottom-left-radius: 0px;
-// border-right:  ${theme.border.borderConfig({c_key: 'blur'})};
-// ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-// ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-// border-top-right-radius: 0;
-// border-bottom-right-radius: 0;
+
+export const TextareaAutosizeStyled = styled(TextareaAutosize)`
+  label + & {
+    margin-top: ${({ theme }) => theme.unit}px;
+  }
+  background: (var(--opacity));
+  font-family: inherit;
+  color: inherit;
+  padding: ${({ theme }) => theme.unit}px;
+  width: 100%;
+  ${({ theme }) =>
+    theme.border.defaultFrame({
+      c_key: theme.colorBase.border,
+      d_R: 0.5,
+    })};
+  &:focus {
+    ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
+    outline: transparent;
+  }
+  &:disabled {
+    line-height: 1.5em;
+    border: 0;
+    background: (var(--opacity));
+    color: var(--color-text-third);
+    ${({ theme }) =>
+      theme.border.defaultFrame({
+        c_key: theme.colorBase.opacity,
+        d_R: 0.5,
+      })};
+  }
+` as typeof TextareaAutosize;

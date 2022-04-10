@@ -102,15 +102,14 @@ import { useSystem } from "../../stores/system";
 import { isContract } from "utils/web3_tools";
 import { useNFTWithdraw } from "../../hooks/useractions/useNFTWithdraw";
 import { useNFTTransfer } from "../../hooks/useractions/useNFTTransfer";
-import { useNFTDeposit } from "../../hooks/useractions/useNFTDeposit";
 import { LAST_STEP, useModalData } from "../../stores/router";
 import { useActiveAccount } from "../../hooks/useractions/useActiveAccount";
-import { useNFTMint } from "../../hooks/useractions/useNFTMint";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useVendor } from "../../hooks/useractions/useVendor";
 import { useNFTDeploy } from "../../hooks/useractions/useNFTDeploy";
 import { useLocation } from "react-router-dom";
 import { WalletType } from "@loopring-web/loopring-sdk";
+import { mintService } from "../../services/mintServices";
 
 export function useAccountModalForUI({
   t,
@@ -124,7 +123,6 @@ export function useAccountModalForUI({
   onClose?: any;
 }) {
   const { pathname } = useLocation();
-
   const { goUpdateAccount } = useUpdateAccount();
   const { chainInfos, updateDepositHash, clearDepositHash } = useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
@@ -161,7 +159,7 @@ export function useAccountModalForUI({
   } = useExportAccount();
   const vendorProps = useVendor();
   const { depositProps } = useDeposit();
-  const { nftMintProps } = useNFTMint();
+  // const { nftMintProps } = useNFTMint();
   const { assetsRawData } = useGetAssets();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
@@ -170,7 +168,7 @@ export function useAccountModalForUI({
   const { nftDeployProps } = useNFTDeploy({});
   const { resetProps } = useReset();
   const { activeAccountProps } = useActiveAccount();
-  const { nftDepositProps } = useNFTDeposit();
+  // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
 
   const [openQRCode, setOpenQRCode] = useState(false);
@@ -270,7 +268,7 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        setShowNFTDeposit({ isShow: true });
+        // setShowNFTDeposit({ isShow: true });
         // setShowAccount({isShow: true, step: AccountStep.Deposit});
       },
     };
@@ -281,7 +279,7 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        setShowNFTMint({ isShow: true });
+        // setShowNFTMint({ isShow: true });
         // setShowAccount({isShow: true, step: AccountStep.Deposit});
       },
     };
@@ -788,14 +786,14 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_WaitForAuth]: {
         view: (
           <NFTMint_WaitForAuth
-            symbol={nftMintValue.name}
-            value={nftMintValue.tradeValue}
+            symbol={nftMintValue.nftMETA?.name}
+            value={nftMintValue.mintData.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
             providerName={account.connectName}
             {...{
               ...rest,
-              ...nftMintValue,
+              ...nftMintValue.mintData,
               t,
             }}
           />
@@ -827,9 +825,10 @@ export function useAccountModalForUI({
         view: (
           <NFTMint_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: "labelTryAnother",
               callback: () => {
-                nftMintProps.onNFTMintClick(nftMintValue as any, false);
+                mintService.sendHardwareRetry();
+                // nftMintProps.onNFTMintClick(nftMintValue as any, false);
               },
             }}
             {...{
@@ -1732,7 +1731,6 @@ export function useAccountModalForUI({
   return {
     nftTransferProps,
     nftWithdrawProps,
-    nftDepositProps,
     transferProps,
     withdrawProps,
     depositProps,
@@ -1752,7 +1750,6 @@ export function useAccountModalForUI({
     closeBtnInfo,
     accountList,
     currentModal,
-    nftMintProps,
     vendorProps,
   };
 }

@@ -47,7 +47,13 @@ export function useChargeFees({
   isActiveAccount?: boolean;
   needAmountRefresh?: boolean;
   deployInWithdraw?: boolean;
-}) {
+}): {
+  chargeFeeTokenList: FeeInfo[];
+  isFeeNotEnough: boolean;
+  checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
+  handleFeeChange: (value: FeeInfo) => void;
+  feeInfo: FeeInfo;
+} {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: "ETH",
     fee: 0,
@@ -119,6 +125,7 @@ export function useChargeFees({
             | GetOffchainFeeAmtRequest
             | GetNFTOffchainFeeAmtRequest = {
             accountId: account.accountId,
+            //@ts-ignore
             tokenSymbol,
             tokenAddress,
             requestType,

@@ -4,11 +4,17 @@ import {
   DepositData,
   LAST_STEP,
   ModalDataStatus,
+  NFT_MINT_VALUE,
   TransferData,
   WithdrawData,
 } from "./interface";
 import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
-import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
+import {
+  MINT_LIMIT,
+  NFTMETA,
+  NFTWholeINFO,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined,
@@ -34,10 +40,19 @@ const initialDepositState: DepositData = {
   reffer: undefined,
 };
 
-const initialTradeNFT: TradeNFT<any> = {
+export const initialTradeNFT = {
   belong: undefined,
   tradeValue: 0,
-  balance: 0,
+  balance: MINT_LIMIT,
+  nftBalance: 0,
+};
+export const initialNFTMETA: Partial<NFTMETA> = {
+  image: undefined,
+  name: undefined,
+  royaltyPercentage: 10,
+  description: undefined,
+  collection: undefined,
+  properties: undefined,
 };
 const initialActiveAccountState: ActiveAccountData = {
   chargeFeeList: [],
@@ -52,7 +67,10 @@ const initialState: ModalDataStatus = {
   nftWithdrawValue: initialWithdrawState,
   nftTransferValue: initialTransferState,
   nftDepositValue: initialTradeNFT,
-  nftMintValue: initialTradeNFT,
+  nftMintValue: {
+    mintData: initialTradeNFT,
+    nftMETA: initialNFTMETA,
+  },
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
 };
@@ -103,7 +121,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetNFTMintData(state) {
       state.lastStep = LAST_STEP.default;
-      state.nftMintValue = initialTradeNFT;
+      state.nftMintValue = {
+        mintData: initialTradeNFT,
+        nftMETA: initialNFTMETA,
+      };
     },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;
@@ -264,22 +285,31 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
-    updateNFTMintData(state, action: PayloadAction<Partial<TradeNFT<any>>>) {
-      const { balance, tradeValue, ...rest } = action.payload;
+    updateNFTMintData(state, action: PayloadAction<NFT_MINT_VALUE<any>>) {
+      const mintData = action.payload.mintData;
+      const nftMETA = action.payload.nftMETA;
+      const error = action.payload.error;
+      const { balance, tradeValue, ...rest } = mintData;
+
       state.lastStep = LAST_STEP.nftMint;
 
       if (balance === undefined || balance >= 0) {
-        state.nftMintValue.balance = balance;
+        state.nftMintValue.mintData.balance = balance;
       }
 
       if (tradeValue === undefined || tradeValue >= 0) {
-        state.nftMintValue.tradeValue = tradeValue;
+        state.nftMintValue.mintData.tradeValue = tradeValue;
       }
 
-      state.nftMintValue = {
-        ...state.nftMintValue,
+      state.nftMintValue.mintData = {
+        ...state.nftMintValue.mintData,
         ...rest,
       };
+      state.nftMintValue.nftMETA = {
+        ...state.nftMintValue.nftMETA,
+        ...nftMETA,
+      };
+      state.nftMintValue.error = error;
     },
     updateNFTDeployData(
       state,

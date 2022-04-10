@@ -441,7 +441,7 @@ export const InformationForAccountFrozen = withTranslation("common", {
             }}
             color={"primary"}
           >
-            {t("labelIKnow")}
+            {t("labelOK")}
           </Button>
         </DialogActions>
       </DialogStyle>

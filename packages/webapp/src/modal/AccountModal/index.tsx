@@ -39,8 +39,8 @@ export const ModalAccountInfo = withTranslation("common")(
       depositProps,
       nftTransferProps,
       nftWithdrawProps,
-      nftDepositProps,
-      nftMintProps,
+      // nftDepositProps,
+      // nftMintProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
@@ -70,15 +70,15 @@ export const ModalAccountInfo = withTranslation("common")(
           transferProps={transferProps}
           withdrawProps={withdrawProps}
           depositGroupProps={{
-            depositProps: depositProps,
+            depositProps,
             tabIndex: partner
               ? DepositPanelType.ThirdPart
               : DepositPanelType.Deposit,
             vendorMenuProps: vendorProps,
           }}
           nftTransferProps={nftTransferProps}
-          nftMintProps={nftMintProps}
-          nftDepositProps={nftDepositProps}
+          // nftMintProps={nftMintProps}
+          // nftDepositProps={nftDepositProps}
           nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}

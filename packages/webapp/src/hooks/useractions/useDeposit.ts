@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 
 import {
   AccountStep,
+  DepositProps,
   SwitchData,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -497,10 +498,11 @@ export const useDeposit = <R extends IBData<T>, T>() => {
     account.readyState === AccountStatus.NO_ACCOUNT
       ? t("labelCreateLayer2Title")
       : t("depositTitle");
-  const depositProps = {
+  const depositProps: DepositProps<any, any> = {
     btnInfo,
     isNewAccount,
     title,
+    type: "TOKEN",
     allowTrade,
     chargeFeeTokenList: chargeFeeList ?? [],
     defaultAddress: account?.accAddress,

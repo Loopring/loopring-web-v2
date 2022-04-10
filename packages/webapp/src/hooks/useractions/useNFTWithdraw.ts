@@ -13,6 +13,7 @@ import {
   IBData,
   NFTWholeINFO,
   SagaStatus,
+  TradeNFT,
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -45,11 +46,7 @@ import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
 import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
-export const useNFTWithdraw = <
-  R extends IBData<T> &
-    Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>,
-  T
->({
+export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
   isLocalShow = false,
   doWithdrawDone,
 }: {
@@ -477,6 +474,7 @@ export const useNFTWithdraw = <
     handleOnAddressChange: (value: any) => {
       setAddress(value);
     },
+    type: "NFT",
     addressDefault: address,
     accAddr: account.accAddress,
     isNotAvaiableAddress,

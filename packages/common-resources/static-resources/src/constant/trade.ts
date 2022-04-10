@@ -69,28 +69,49 @@ export type LAYER1_ACTION_HISTORY = {
   [key in ChainId extends string ? string : string]: Layer1ActionHistory;
 } & { __timer__: -1 | NodeJS.Timeout };
 
+export type MetaProperty = {
+  key: string;
+  value: string;
+};
+export type NFTMETA = {
+  image: string;
+  name: string;
+  royaltyPercentage: number; // 0 - 10 for UI
+  description: string;
+  collection?: string;
+  properties?: Array<MetaProperty>;
+};
+
 export type NFTWholeINFO = NFTTokenInfo &
-  UserNFTBalanceInfo & {} & {
-    image: string;
-    name: string;
-    royaltyPercentage: number; // 0 - 10 for UI
-    nftIdView: string;
-    description: string;
-    nftBalance: number;
+  UserNFTBalanceInfo &
+  NFTMETA & {
+    nftBalance?: number;
+    nftIdView?: string;
+    fee?: FeeInfo;
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
-  } & { fee?: FeeInfo };
-export type TradeNFT<I> = {
+  };
+
+export type MintTradeNFT<I> = {
   balance?: number;
   fee?: FeeInfo;
   isApproved?: boolean;
-} & Partial<NFTWholeINFO> &
-  Partial<IBData<I>> &
+  cid?: string;
+  nftId?: string;
+  nftBalance?: number;
+  nftIdView?: string;
+  royaltyPercentage?: number;
+} & Partial<IBData<I>> &
   Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+
+export type TradeNFT<I> = MintTradeNFT<I> & Partial<NFTWholeINFO>;
 
 export const TOAST_TIME = 3000;
 
 export const EmptyValueTag = "--";
 
 export const IPFS_META_URL = "ipfs://";
-export const MINT_LIMIT = 10000;
+export const MINT_LIMIT = 100000;
+export const PROPERTY_LIMIT = 5;
+export const PROPERTY_KET_LIMIT = 20;
+export const PROPERTY_Value_LIMIT = 40;

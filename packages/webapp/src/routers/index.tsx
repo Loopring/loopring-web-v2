@@ -27,6 +27,7 @@ import {
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
+import { NFTPage } from "../pages/NFTPage";
 
 const ContentWrap = ({
   children,
@@ -219,6 +220,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/layer2", "/layer2/*"]}>
           <ContentWrap state={state}>
             <Layer2Page />
+          </ContentWrap>
+        </Route>
+        <Route exact path={["/nft", "/nft/*"]}>
+          <ContentWrap state={state}>
+            <NFTPage />
           </ContentWrap>
         </Route>
         <Route exact path="/liquidity">

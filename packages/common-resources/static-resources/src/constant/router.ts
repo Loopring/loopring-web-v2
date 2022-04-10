@@ -3,7 +3,6 @@ import {
   L2HistoryIcon,
   L2MyLiquidityIcon,
   L2OrderIcon,
-  NFTIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
@@ -130,6 +129,14 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     router: { path: "/layer2" },
     status: HeaderMenuTabStatus.default,
   },
+  {
+    label: {
+      id: "NFT",
+      i18nKey: "labelNFT",
+    },
+    router: { path: "/nft" },
+    status: HeaderMenuTabStatus.default,
+  },
 ];
 
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
@@ -149,6 +156,22 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   },
 ];
 
+// {
+//   icon: NFTIcon,
+//   router: { path: "/layer2/my-nft" },
+//   label: {
+//     id: "my-nft",
+//     i18nKey: "labelMyNFT",
+//   },
+// },
+// {
+//   icon: NFTIcon,
+//   router: { path: "/layer2/nft-mint" },
+//   label: {
+//     id: "nft-mint",
+//     i18nKey: "labelNFTMint",
+//   },
+// },
 export const subMenuLayer2 = {
   assetsGroup: [
     {
@@ -157,14 +180,6 @@ export const subMenuLayer2 = {
       label: {
         id: "assets",
         i18nKey: "labelAssets",
-      },
-    },
-    {
-      icon: NFTIcon,
-      router: { path: "/layer2/my-nft" },
-      label: {
-        id: "my-nft",
-        i18nKey: "labelMyNFT",
       },
     },
     {
@@ -209,6 +224,26 @@ export const subMenuLayer2 = {
       label: {
         id: "vip",
         i18nKey: "labelVipPanel",
+      },
+    },
+  ],
+};
+export const subMenuNFT = {
+  NFTGroup: [
+    {
+      icon: AssetsIcon,
+      router: { path: "/nft/assetsNFT" },
+      label: {
+        id: "assetsNFT",
+        i18nKey: "labelMyAssetsNFT",
+      },
+    },
+    {
+      icon: L2HistoryIcon,
+      router: { path: "/nft/transactionNFT" },
+      label: {
+        id: "transactionNFT",
+        i18nKey: "labelTransactionNFT",
       },
     },
   ],

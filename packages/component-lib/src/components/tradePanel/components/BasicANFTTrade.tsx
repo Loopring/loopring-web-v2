@@ -56,7 +56,7 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     [onChangeEvent, tradeData]
   );
 
-  myLog("isBalanceLimit", isBalanceLimit, tradeData.balance);
+  myLog("isBalanceLimit", isBalanceLimit, tradeData?.balance);
   if (typeof handleError !== "function") {
     handleError = ({ balance, tradeValue }: T) => {
       if (

@@ -131,7 +131,7 @@ export default css`
     box-sizing: inherit;
   }
   *:focus-visible {
-    outlined: rgba(0, 0, 0, 0);
+    outline: rgba(0, 0, 0, 0);
   }
 
   html {
