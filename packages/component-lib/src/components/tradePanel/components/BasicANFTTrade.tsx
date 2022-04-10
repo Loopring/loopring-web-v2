@@ -178,11 +178,12 @@ export const NFTInput = React.memo(
                 <Box marginLeft={1}>
                   <Link
                     variant={"h5"}
-                    onClick={() =>
+                    onClick={() => {
                       window.open(
                         `${tradeData.etherscanBaseUrl}tx/${tradeData.tokenAddress}`
-                      )
-                    }
+                      );
+                      window.opener = null;
+                    }}
                   >
                     {getFormattedHash(tradeData.tokenAddress)}
                   </Link>

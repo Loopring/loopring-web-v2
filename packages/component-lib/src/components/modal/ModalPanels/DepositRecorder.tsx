@@ -92,9 +92,10 @@ WithTranslation & {
                     fontSize={"inherit"}
                     alignItems={"center"}
                     display={"inline-flex"}
-                    onClick={() =>
-                      window.open(`${etherscanUrl}tx/${txInfo.hash}`)
-                    }
+                    onClick={() => {
+                      window.open(`${etherscanUrl}tx/${txInfo.hash}`);
+                      window.opener = null;
+                    }}
                   >
                     {txInfo.symbol ? (
                       <Typography component={"span"} color={"text.secondary"}>

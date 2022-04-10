@@ -514,6 +514,8 @@ export default {
   labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & Deposit it",
   labelNFTDepositBtn: "Deposit NFT",
   nftDepositTitle: "Deposit NFT",
+  nftDepositDescription:
+    "Creates a smart contract on Ethereum L1, which requires a gas fee. NFTs minted here are on L2 only until deployed.",
   labelNFTDescribe: "Description:",
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "NFT Amount:",

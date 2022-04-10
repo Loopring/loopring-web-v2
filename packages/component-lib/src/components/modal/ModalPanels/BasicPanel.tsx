@@ -203,6 +203,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             {txCheck && (
               <Link
                 target="_blank"
+                rel="noopener noreferrer"
                 href={txCheck.route}
                 display={"inline-block"}
                 marginTop={1 / 4}
@@ -295,6 +296,8 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
               alignItems={"center"}
               color={"secondary"}
               href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               {link.name}
               {link.name === "Txn Hash" && (

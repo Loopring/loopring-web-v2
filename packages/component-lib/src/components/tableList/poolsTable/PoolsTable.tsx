@@ -543,13 +543,13 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         width: "auto",
         headerCellClass: `textAlignRight`,
         cellClass: () => `action`,
-        formatter: ({ row }) => {
+        formatter: () => {
           return (
             <Box className={"action"}>
               <Button
-                href={`${window.location.href}/pools/coinPair/${
-                  row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
-                }`}
+                // href={`liquidity/pools/coinPair/${
+                //   row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
+                // }`}
                 className={"btn"}
                 variant={"outlined"}
                 size={"small"}

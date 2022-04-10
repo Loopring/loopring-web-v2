@@ -321,10 +321,9 @@ export const InformationForCoinBase = withTranslation("common", {
               {providers.join(",")} popup.
             </Trans>
             <Link
-              target={"_top"}
-              onClick={() => {
-                window.open("./#/document/plugin_guide.md");
-              }}
+              target="_top"
+              rel="noopener noreferrer"
+              href={"./#/document/plugin_guide.md"}
             >
               {t("labelGuid")}
             </Link>

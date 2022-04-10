@@ -3,10 +3,10 @@
     {
       "type": "SPECIAL",
       "link": "2022-04-15",
-      "startDate":1649980800000,
+      "startDate":1649894400000,
       "endDate":1652572800000,
       "title": "🎁 Loophead NFT Drop #3️",
-      "description1": "950 Loopheads up for grabs in this third Loophead dynamic NFT drop.",
+      "description1": "1000 Loopheads are up for grabs in this third Loophead dynamic NFT drop!",
       "description2": "Duration: April 15 0:00 - May 15 0:00(UTC)",
       "pairs": [
         "LRC/ETH",
@@ -26,10 +26,10 @@
     {
       "type": "SWAP_VOLUME_RANKING",
       "link": "2022-04-15",
-      "startDate":1649980800000,
+      "startDate":1649894400000,
       "endDate":1652572800000,
       "title": "Wearable NFT Drop",
-      "description1": "950 Wearables up for grabs in the Wearable NFT drop.!",
+      "description1": "1000 Wearables are up for grabs in the Wearable NFT drop!",
       "description2": "Duration: April 15 0:00 - May 15 0:00(UTC)",
       "pairs": [
         "LRC/ETH",
@@ -59,6 +59,6 @@
     }
   ],
   "prev":{
-    "endDate":1653884073000
+    "endDate":1648771200000
   }
 }

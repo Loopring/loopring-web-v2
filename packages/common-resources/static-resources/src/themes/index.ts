@@ -35,4 +35,4 @@ export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
     }}
     background-size: auto;
   }
-` as React.ComponentType<AvatarCoinProps>;
+` as (props: AvatarCoinProps) => JSX.Element;

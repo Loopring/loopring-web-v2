@@ -128,6 +128,8 @@ export const ProviderMenu = ({
                 <Link
                   component={"a"}
                   href={termUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={(event) => {
                     //@ts-ignore
                     window?._iub?.badges["0"].linkA.dispatchEvent(
@@ -137,7 +139,6 @@ export const ProviderMenu = ({
                     // set
                     // window?._iub?.loadPPContent({...e, path: termUrl});
                   }}
-                  target={"_blank"}
                 >
                   Terms of Service
                 </Link>

@@ -72,11 +72,8 @@ export type TransferExtendProps<T, I, C> = {
   wait?: number;
 } & TransferInfoProps<C>;
 
-export type TransferViewProps<
-  T,
-  I,
-  C = CoinKey<I> | string
-> = BasicACoinTradeViewProps<T, I> & TransferExtendProps<T, I, C>;
+export type TransferViewProps<T, I, C = CoinKey<I> | string> =
+  BasicACoinTradeViewProps<T, I> & TransferExtendProps<T, I, C>;
 
 /**
  * private props
@@ -122,9 +119,7 @@ export type DepositInfoProps<I> = {
   handleOnAddressChange?: (value: string | undefined | I) => void;
   handleAddressError?: (
     address: string
-  ) =>
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined;
+  ) => { error: boolean; message?: string | JSX.Element } | undefined;
   wait?: number;
 } & BtnInfoProps;
 
@@ -171,11 +166,8 @@ export type WithdrawExtendProps<T, I, C> = {
   wait?: number;
 } & WithdrawInfoProps<C>;
 
-export type WithdrawViewProps<
-  T,
-  I,
-  C = CoinKey<I> | string
-> = BasicACoinTradeViewProps<T, I> & WithdrawExtendProps<T, I, C>;
+export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
+  BasicACoinTradeViewProps<T, I> & WithdrawExtendProps<T, I, C>;
 
 export type inputNFTProps<T, I, C = CoinInfo<I>> = RequireOne<
   InputCoinProps<T, I, C>,
@@ -239,9 +231,7 @@ export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
   handleOnAddressChange?: (value: string | undefined | I) => void;
   handleAddressError?: (
     address: string
-  ) =>
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined;
+  ) => { error: boolean; message?: string | JSX.Element } | undefined;
   wait?: number;
 } & BtnInfoProps;
 export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;

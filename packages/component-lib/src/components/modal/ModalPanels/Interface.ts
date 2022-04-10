@@ -9,7 +9,7 @@ export type AccountBaseProps = {
   // addressShort: string
   // address: string,
   level?: string;
-  mainBtn?: JSX.Element | React.ElementType<ButtonProps>;
+  mainBtn?: ((props: ButtonProps) => JSX.Element) | JSX.Element;
   etherscanUrl: string;
   // connectBy: string,
   onDisconnect?: any;

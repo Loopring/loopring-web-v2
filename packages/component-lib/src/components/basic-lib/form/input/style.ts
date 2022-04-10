@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { Box, BoxProps, Button, ButtonProps } from "@mui/material";
-import React from "react";
 import CurrencyInput from "react-currency-input-field";
 import { InputSize } from "./Interface";
 
@@ -135,9 +134,7 @@ export const IWrap = styled(Box)<
 ` as (
   props: BoxProps & { size: "middle" | "small"; isMobile?: boolean }
 ) => JSX.Element;
-export const CoinWrap: React.ComponentType<
-  BoxProps & { logoColor?: any }
-> = styled(Box)<BoxProps & { logoColor?: any }>`
+export const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
   & {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -163,10 +160,8 @@ export const CoinWrap: React.ComponentType<
     padding-right: ${({ theme }) => (theme.unit / 2) * 3}px;
     align-items: center;
   }
-`;
-export const ISBtn: React.ComponentType<
-  ButtonProps & { logoColor?: any }
-> = styled(Button)<ButtonProps & { logoColor?: any }>`
+` as (props: BoxProps & { logoColor?: any }) => JSX.Element;
+export const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
   && {
     width: 100%;
     height: 100%;
@@ -186,25 +181,13 @@ export const ISBtn: React.ComponentType<
     }
   }
 
-  // .logo-icon svg {
-  //   color: ${({ logoColor }) => logoColor}
-  // }
-  //.MuiAvatar-root {
-  //  width: 24px;
-  //  height: 24px;
-  //}
-
-  // .MuiButton-endIcon svg {
-  //   color: var(--color-text-primary)
-  //     // color: ${({ logoColor }) => logoColor}
-  // }
-
   &:hover,
   &:active {
     color: var(--color-text-primary);
     background: var(--color-box-hover);
   }
-`;
+` as (props: ButtonProps & { logoColor?: any }) => JSX.Element;
+
 export const IInput = styled(CurrencyInput)`
   text-align: right;
   color: var(--color-text-primary);

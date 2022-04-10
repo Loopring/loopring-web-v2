@@ -2,7 +2,7 @@ import { NFTMintViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Link } from "@mui/material";
 import {
   CloseIcon,
   EmptyValueTag,
@@ -165,7 +165,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
           justifyContent={"space-between"}
           position={"relative"}
         >
-          <Typography
+          <Link
             component={"span"}
             display={"flex"}
             alignItems={"center"}
@@ -173,9 +173,9 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             marginBottom={1}
             color={"textSecondary"}
             variant={"body2"}
-            onClick={() => {
-              window.open("./#/document/mint_nft.md", "_blank");
-            }}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={"./#/document/mint_nft.md"}
           >
             <Trans i18nKey={"labelNFTCid"}>
               IPFS CID: (Which storage a metadata Information as an unique Token
@@ -186,7 +186,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
                 htmlColor={"var(--color-text-third)"}
               />
             </Trans>
-          </Typography>
+          </Link>
           <TextField
             value={tradeData.nftIdView}
             label={""}

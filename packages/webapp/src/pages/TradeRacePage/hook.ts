@@ -118,10 +118,12 @@ export const useTradeRace = () => {
                   const rule: AmmPoolActivityRule =
                     activityRule[Reflect.ownKeys(activityRule)[0]];
                   setDuration(() => ({
-                    startDate: moment(rule.rangeFrom).format(
-                      `YYYY-MM-DD HH:mm:ss`
-                    ),
-                    endDate: moment(rule.rangeTo).format(`YYYY-MM-DD HH:mm:ss`),
+                    startDate:
+                      moment.utc(rule.rangeFrom).format(`YYYY-MM-DD HH:mm:ss`) +
+                      "(UTC)",
+                    endDate:
+                      moment.utc(rule.rangeTo).format(`YYYY-MM-DD HH:mm:ss`) +
+                      "(UTC)",
                   }));
                   if (rule.rangeFrom > Date.now()) {
                     setEventStatus(EVENT_STATUS.EVENT_READY);
@@ -151,10 +153,6 @@ export const useTradeRace = () => {
                         .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)"
                     : undefined,
                 }));
-                // const activityRule =
-                //   activityDateMap[eventData.duration.startDate][
-                //     searchParams.get("type") as string
-                //   ];
                 setActivityRule({ event_awardRules: eventData.rewards });
                 if (eventData.duration.startDate > Date.now()) {
                   setEventStatus(EVENT_STATUS.EVENT_READY);
@@ -184,11 +182,9 @@ export const useTradeRace = () => {
   };
 
   const calculateTimeLeft = React.useCallback(() => {
-    if (activityRule && Reflect.ownKeys(activityRule).length && eventStatus) {
-      const rule: AmmPoolActivityRule =
-        activityRule[Reflect.ownKeys(activityRule)[0]];
+    if (eventData && eventStatus) {
       if (eventStatus === EVENT_STATUS.EVENT_READY) {
-        let difference = +new Date(rule.rangeFrom) - Date.now();
+        let difference = +new Date(eventData.duration.startDate) - Date.now();
 
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
@@ -203,7 +199,7 @@ export const useTradeRace = () => {
           ).slice(-2),
         });
       } else if (eventStatus === EVENT_STATUS.EVENT_START) {
-        let difference = +new Date(rule.rangeTo) - Date.now();
+        let difference = +new Date(eventData.duration.endDate) - Date.now();
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
           hours: (
@@ -218,7 +214,7 @@ export const useTradeRace = () => {
         });
       }
     }
-  }, [activityRule, eventStatus]);
+  }, [eventData, eventStatus]);
   React.useEffect(() => {
     if (eventStatus) {
       if (nodeTimer.current !== -1) {

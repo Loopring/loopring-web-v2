@@ -7,7 +7,7 @@
 <h2>Ethereum’s First zkRollup Layer2</h2>
 <p>Secure, Fast, and Cheap</p>
 
-[![license](https://img.shields.io/badge/license-GPL-blue)](https://github.com/Loopring/loopring-web-v2/master/LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Loopring/loopring-web-v2/master/LICENSE)
 
 [![type-badge](https://img.shields.io/npm/types/react-data-grid)](https://www.npmjs.com/package/react-data-grid)
  

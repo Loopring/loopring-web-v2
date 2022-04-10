@@ -50,14 +50,17 @@ const cssBackground = ({
 </svg>`);
       break;
     case ACTIVITY_TYPE.SPECIAL:
-    default:
+    case ACTIVITY_TYPE.DEPOSIT:
       color = theme.colorBase.primary;
       svg =
-        encodeURI(`<svg width="102" height="88" viewBox="0 0 102 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
+          encodeURI(`<svg width="102" height="88" viewBox="0 0 102 88" fill="${fillColor}" xmlns="http://www.w3.org/2000/svg">
 <path opacity="${opacity}" d="M64.8421 2.86449e-05C68.0948 -0.000358379 71.2902 0.85563 74.1072 2.48192C76.9241 4.10822 79.2632 6.4475 80.8893 9.26454C82.5154 12.0816 83.3712 15.2771 83.3706 18.5298C83.37 21.7825 82.513 24.9777 80.8859 27.7941L101.895 27.7895V37.0526H92.6315V83.3684C92.6315 84.5968 92.1436 85.7749 91.275 86.6434C90.4064 87.512 89.2283 88 88 88H13.8947C12.6664 88 11.4883 87.512 10.6197 86.6434C9.75112 85.7749 9.26315 84.5968 9.26315 83.3684V37.0526H0V27.7895L21.0088 27.7941C18.7109 23.8151 17.9737 19.1241 18.9403 14.632C19.9069 10.1399 22.5083 6.16728 26.2394 3.48553C29.9706 0.803779 34.5651 -0.395741 39.131 0.119888C43.6969 0.635517 47.9083 2.8295 50.9473 6.27582C52.6823 4.2999 54.8196 2.71772 57.216 1.63534C59.6125 0.552957 62.2126 -0.00460494 64.8421 2.86449e-05ZM46.3158 37.0526H18.5263V78.7368H46.3158V37.0526ZM83.3684 37.0526H55.5789V78.7368H83.3684V37.0526ZM37.0526 9.26318C34.6489 9.25243 32.3351 10.1765 30.6001 11.8401C28.8651 13.5037 27.8447 15.7766 27.7545 18.1787C27.6643 20.5807 28.5114 22.9238 30.1168 24.7128C31.7222 26.5019 33.9601 27.5968 36.3579 27.7663L37.0526 27.7895H46.3158V18.5263C46.3159 16.3127 45.5232 14.1723 44.0815 12.4926C42.6397 10.8129 40.644 9.70507 38.456 9.36971L37.7427 9.28634L37.0526 9.26318ZM64.8421 9.26318C62.5051 9.26244 60.2542 10.1451 58.5406 11.7341C56.827 13.3232 55.7774 15.5012 55.6021 17.8316L55.5789 18.5263V27.7895H64.8421C67.1791 27.7902 69.43 26.9076 71.1436 25.3186C72.8572 23.7295 73.9068 21.5515 74.0821 19.2211L74.1052 18.5263C74.1052 16.0696 73.1293 13.7135 71.3921 11.9763C69.6549 10.2391 67.2988 9.26318 64.8421 9.26318Z" />
 </svg>
 `);
       break;
+    default:
+      color = theme.colorBase.box;
+      svg = '';
   }
   return css`
     &,
@@ -104,14 +107,17 @@ const NotificationListItemStyled = styled(ListItem)<
 ` as (prosp: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
 
 export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
-  // const { t } = useTranslation(["common"]);
   const history = useHistory();
   const { title, description1, description2 } = props;
-
   return (
     <NotificationListItemStyled
       alignItems="flex-start"
-      onClick={() => history.replace(`/notification/${props.link}`)}
+      onClick={() => {
+        props.link?.startsWith("http")
+          ? window.open(props.link, "_blank")
+          : history.replace(`/notification/${props.link}`);
+        window.opener = null;
+      }}
       className={`notification`}
     >
       <ListItemAvatar />
@@ -124,16 +130,15 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         overflow={"hidden"}
       >
         <ListItemText
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: title ?? "" }} />
-          )}
+          className={"title"}
+          primary={<span dangerouslySetInnerHTML={{ __html: title ?? "" }} />}
           primaryTypographyProps={{ component: "h4", color: "textPrimary" }}
         />
         <ListItemText
           className="description description1"
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: description1 ?? "" }} />
-          )}
+          primary={
+            <span dangerouslySetInnerHTML={{ __html: description1 ?? "" }} />
+          }
           primaryTypographyProps={{
             component: "p",
             variant: "body1",
@@ -142,9 +147,9 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         />
         <ListItemText
           className="description description2"
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: description2 ?? "" }} />
-          )}
+          primary={
+            <span dangerouslySetInnerHTML={{ __html: description2 ?? "" }} />
+          }
           primaryTypographyProps={{
             component: "p",
             variant: "body2",
@@ -170,54 +175,57 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
 ` as (prosp: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
 export const ListItemActivity = (props: ACTIVITY) => {
   const { type, title, description1, description2, startDate, link } = props;
-  const history = useHistory();
 
   if (Date.now() > startDate) {
     return (
-      <ListItemActivityStyle
-        className={type}
-        onClick={() =>
-          history.replace(`/race-event/${link}?type=${ACTIVITY_TYPE[type]}`)
-        }
-        type={props.type}
-      >
-        <ListItemAvatar />
-        <Box
-          className={"activity-content"}
-          component={"section"}
-          display={"flex"}
-          alignItems={"flex-start"}
-          flexDirection={"column"}
-          overflow={"hidden"}
+        <ListItemActivityStyle
+            className={type}
+            // onClick={() =>
+            //   history.replace(``)
+            // }
+            onClick={() => {
+              window.open(`#/race-event/${link}?type=${ACTIVITY_TYPE[ type ]}`, "_blank")
+              window.opener = null;
+            }}
+            type={props.type}
         >
-          <ListItemText
-            primary={title}
-            primaryTypographyProps={{
-              component: "h6",
-              variant: "subtitle1",
-              color: "textPrimary",
-            }}
-          />
-          <ListItemText
-            className="description description1"
-            primary={description1}
-            primaryTypographyProps={{
-              component: "p",
+          <ListItemAvatar/>
+          <Box
+              className={"activity-content"}
+              component={"section"}
+              display={"flex"}
+              alignItems={"flex-start"}
+              flexDirection={"column"}
+              overflow={"hidden"}
+          >
+            <ListItemText
+                primary={title}
+                primaryTypographyProps={{
+                  component: "h6",
+                  variant: "subtitle1",
+                  color: "textPrimary",
+                }}
+            />
+            <ListItemText
+                className="description description1"
+                primary={description1}
+                primaryTypographyProps={{
+                  component: "p",
 
-              variant: "body1",
-              color: "textPrimary",
-            }}
-          />
-          <ListItemText
-            className="description description2"
-            primary={description2}
-            primaryTypographyProps={{
-              component: "p",
-              variant: "body2",
-              color: "textSecondary",
-            }}
-          />
-        </Box>
+                  variant: "body1",
+                  color: "textPrimary",
+                }}
+            />
+            <ListItemText
+                className="description description2"
+                primary={description2}
+                primaryTypographyProps={{
+                  component: "p",
+                  variant: "body2",
+                  color: "textSecondary",
+                }}
+            />
+          </Box>
       </ListItemActivityStyle>
     );
   } else {

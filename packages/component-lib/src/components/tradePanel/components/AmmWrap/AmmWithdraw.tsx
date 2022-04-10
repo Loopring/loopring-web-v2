@@ -77,7 +77,7 @@ export const AmmWithdrawWrap = <
   );
   const [error, setError] = React.useState<{
     error: boolean;
-    message?: string | React.ElementType;
+    message?: string | JSX.Element;
   }>({
     error: false,
     message: "",

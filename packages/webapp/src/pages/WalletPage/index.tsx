@@ -248,9 +248,9 @@ export const GuardianPage = withTranslation(["common"])(
                 variant={"body1"}
                 textAlign={"center"}
                 color={"textSecondary"}
-                onClick={() =>
-                  window.open("./#/document/walletdesign_en.md", "_blank")
-                }
+                target="_blank"
+                rel="noopener noreferrer"
+                href={"./#/document/walletdesign_en.md"}
               >
                 {t("describeWhatIsGuardian")}
               </Link>

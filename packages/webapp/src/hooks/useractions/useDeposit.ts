@@ -486,7 +486,7 @@ export const useDeposit = <R extends IBData<T>, T>() => {
   );
 
   const handleAddressError = useCallback((value: string):
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
+    | { error: boolean; message?: string | JSX.Element }
     | undefined => {
     myLog("handleAddressError:", value);
     updateDepositData({ reffer: value, tradeValue: -1, balance: -1 });

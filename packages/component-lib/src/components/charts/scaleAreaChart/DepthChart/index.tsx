@@ -66,7 +66,7 @@ const DepthChart = withTranslation("common")(
     const hasData = data;
 
     const renderTooltipContent = useCallback(
-      (props) => {
+      (props: any) => {
         // no data
         if (!hasData) return "";
         if (

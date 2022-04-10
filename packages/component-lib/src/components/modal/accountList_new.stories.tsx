@@ -3,55 +3,54 @@ import React from "react";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { MemoryRouter } from "react-router-dom";
-import { Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { gatewayList } from "@loopring-web/common-resources";
 import { ModalWalletConnect } from "./WalletConnect";
 
 import {
   AccountBaseProps,
   AccountStep as AccountStep,
-  NoAccount,
-  UpdateAccount,
-  HadAccount,
-  Deposit_Approve_WaitForAuth,
-  Deposit_Approve_Denied,
-  Deposit_Approve_Submit,
-  Deposit_WaitForAuth,
-  Deposit_Denied,
-  Deposit_Failed,
-  Deposit_Submit,
-  Transfer_WaitForAuth,
-  Transfer_First_Method_Denied,
-  Transfer_User_Denied,
-  Transfer_In_Progress,
-  Transfer_Success,
-  Transfer_Failed,
-  Withdraw_WaitForAuth,
-  Withdraw_First_Method_Denied,
-  Withdraw_User_Denied,
-  Withdraw_In_Progress,
-  Withdraw_Success,
-  Withdraw_Failed,
-  CreateAccount_Approve_WaitForAuth,
   CreateAccount_Approve_Denied,
   CreateAccount_Approve_Submit,
-  CreateAccount_WaitForAuth,
+  CreateAccount_Approve_WaitForAuth,
   CreateAccount_Denied,
   CreateAccount_Failed,
   CreateAccount_Submit,
-  UpdateAccount_Approve_WaitForAuth,
-  UpdateAccount_First_Method_Denied,
-  UpdateAccount_User_Denied,
-  UpdateAccount_Success,
-  UpdateAccount_Success,
-  UpdateAccount_Failed,
+  CreateAccount_WaitForAuth,
+  Deposit_Approve_Denied,
+  Deposit_Approve_Submit,
+  Deposit_Approve_WaitForAuth,
+  Deposit_Denied,
+  Deposit_Failed,
+  Deposit_Submit,
+  Deposit_WaitForAuth,
   ExportAccount_Approve_WaitForAuth,
-  ExportAccount_User_Denied,
-  ExportAccount_Success,
   ExportAccount_Failed,
+  ExportAccount_Success,
+  ExportAccount_User_Denied,
+  HadAccount,
+  NoAccount,
+  Transfer_Failed,
+  Transfer_First_Method_Denied,
+  Transfer_In_Progress,
+  Transfer_Success,
+  Transfer_User_Denied,
+  Transfer_WaitForAuth,
+  UpdateAccount,
+  UpdateAccount_Approve_WaitForAuth,
+  UpdateAccount_Failed,
+  UpdateAccount_First_Method_Denied,
+  UpdateAccount_Success,
+  UpdateAccount_User_Denied,
+  Withdraw_Failed,
+  Withdraw_First_Method_Denied,
+  Withdraw_In_Progress,
+  Withdraw_Success,
+  Withdraw_User_Denied,
+  Withdraw_WaitForAuth,
 } from "./ModalPanels";
 import { account } from "../../static";
-import { Box } from "@mui/material";
+import { ConnectProviders } from "@loopring-web/web3-provider";
 
 const Style = styled.div`
   flex: 1;
@@ -102,6 +101,13 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
+            onClose={function (_e?: any): void {
+              throw new Error("Function not implemented.");
+            }}
+            isSupport={false}
+            clearDepositHash={function (): void {
+              throw new Error("Function not implemented.");
+            }}
             {...{
               chainInfos: { depositHashes: {} },
               ...accountInfoProps,
@@ -113,6 +119,9 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.UpdateAccount]: {
         view: (
           <UpdateAccount
+            clearDepositHash={function (): void {
+              throw new Error("Function not implemented.");
+            }}
             {...{
               ...accountInfoProps,
               chainInfos: { depositHashes: {} },
@@ -125,6 +134,12 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.HadAccount]: {
         view: (
           <HadAccount
+            clearDepositHash={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            onClose={function (_e?: any): void {
+              throw new Error("Function not implemented.");
+            }}
             mainBtn={mainBtn}
             {...{
               ...accountInfoProps,
@@ -146,7 +161,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (
           <Deposit_Approve_WaitForAuth
-            providerName={"MetaMask"}
+            providerName={ConnectProviders.MetaMask}
             {...{
               ...rest,
               symbol: "LRC",
@@ -159,7 +174,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
         view: (
           <Deposit_Approve_Denied
             btnInfo={retryBtn}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -180,7 +195,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
               name: "最近充值记录",
               url: "http://demo.com",
             }}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -192,7 +207,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Deposit_WaitForAuth]: {
         view: (
           <Deposit_WaitForAuth
-            providerName={"WalletConnect"}
+            providerName={ConnectProviders.WalletConnect}
             {...{
               ...rest,
               symbol: "LRC",
@@ -217,7 +232,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
         view: (
           <Deposit_Failed
             btnInfo={closeBtn}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -233,7 +248,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
               route: "",
               callback: () => {},
             }}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -255,7 +270,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
           <Transfer_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -267,7 +282,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Transfer_First_Method_Denied]: {
         view: (
           <Transfer_First_Method_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -279,7 +294,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Transfer_User_Denied]: {
         view: (
           <Transfer_User_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -302,7 +317,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Transfer_Success]: {
         view: (
           <Transfer_Success
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -314,7 +329,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Transfer_Failed]: {
         view: (
           <Transfer_Failed
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -336,7 +351,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Withdraw_WaitForAuth]: {
         view: (
           <Withdraw_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -348,7 +363,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Withdraw_First_Method_Denied]: {
         view: (
           <Withdraw_First_Method_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -360,7 +375,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Withdraw_User_Denied]: {
         view: (
           <Withdraw_User_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -372,7 +387,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Withdraw_In_Progress]: {
         view: (
           <Withdraw_In_Progress
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -384,7 +399,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Withdraw_Success]: {
         view: (
           <Withdraw_Success
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -396,7 +411,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.Withdraw_Failed]: {
         view: (
           <Withdraw_Failed
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -418,7 +433,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.CreateAccount_Approve_WaitForAuth]: {
         view: (
           <CreateAccount_Approve_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -430,7 +445,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.CreateAccount_Approve_Denied]: {
         view: (
           <CreateAccount_Approve_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -442,7 +457,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.CreateAccount_Approve_Submit]: {
         view: (
           <CreateAccount_Approve_Submit
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -454,7 +469,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.CreateAccount_WaitForAuth]: {
         view: (
           <CreateAccount_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -466,7 +481,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.CreateAccount_Denied]: {
         view: (
           <CreateAccount_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -478,7 +493,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.CreateAccount_Failed]: {
         view: (
           <CreateAccount_Failed
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -490,7 +505,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.CreateAccount_Submit]: {
         view: (
           <CreateAccount_Submit
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",

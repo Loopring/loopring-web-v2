@@ -1,6 +1,4 @@
 import React from "react";
-import { LoopringAPI } from "api_wrapper";
-import { useTokenMap } from "stores/token";
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { volumeToCount } from "hooks/help";
 import store from "stores";

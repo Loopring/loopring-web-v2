@@ -105,11 +105,11 @@ export const AccountBasePanel = ({
         <Button
           target={"_blank"}
           href={etherscanLink}
+          rel="noopener noreferrer"
           startIcon={<LinkIcon fontSize={"small"} />}
         >
           <Typography variant={"body2"} marginTop={1 / 2}>
-            {" "}
-            {"Etherscan"}{" "}
+            {"Etherscan"}
           </Typography>
         </Button>
         <Button
