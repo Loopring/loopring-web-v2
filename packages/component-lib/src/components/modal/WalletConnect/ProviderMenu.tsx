@@ -165,7 +165,9 @@ export const ProviderMenu = ({
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
-                className={providerName === item.key ? "selected" : ""}
+                className={
+                  providerName === item.key ? "selected provider" : "provider"
+                }
                 fullWidth
                 endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
                 onClick={(e) => {

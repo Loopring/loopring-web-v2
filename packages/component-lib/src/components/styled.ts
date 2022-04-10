@@ -373,11 +373,22 @@ export const MenuBtnStyled = styled(Button)`
   background: var(--opacity);
   color: var(--color-text-secondary);
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+
   padding: 0 ${({ theme }) => theme.unit * 3}px;
   text-indent: 0.5em;
   position: relative;
+  &.provider {
+    justify-content: space-between;
+    flex-direction: row;
+  }
+  &.vendor {
+    justify-content: center;
+    flex-direction: column;
+    & > .vendorName {
+      text-indent: -999em;
+      justify-content: center;
+    }
+  }
   &:hover {
     background: var(--provider-hover);
     border-color: var(--opacity);
@@ -402,9 +413,5 @@ export const MenuBtnStyled = styled(Button)`
       align-items: center;
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
-  }
-  &.vendor > .vendorName {
-    text-indent: -999em;
-    justify-content: center;
   }
 ` as typeof Button;
