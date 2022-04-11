@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^1.5.1",
     "bignumber.js": "^9.0.1",
     "bn.js": "^5.1.3",
+    "datastore-core": "^7.0.1",
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^7.0.3",
     "easy-template-string": "^1.0.1",

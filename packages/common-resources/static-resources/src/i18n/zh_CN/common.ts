@@ -459,7 +459,6 @@ export default {
   labelIKnow: "I know",
   labelYes: "Yes",
   labelNo: "No",
-  labelOK: "Ok",
   labelNoticeForNoMetaNFT:
     "Your Mint NFT is without Metadata or media information, \nAre you still want {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
