@@ -5,12 +5,15 @@ import {
   FormControl,
   FormHelperText,
   Typography,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import { DropzoneOptions, useDropzone } from "react-dropzone";
 import { FileListItem } from "../lists";
 import styled from "@emotion/styled";
 import { SoursURL } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
+import React, { ForwardedRef } from "react";
 
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
@@ -62,11 +65,7 @@ export const IPFSSourceUpload = ({
     fileRejections.length > 0 &&
     fileRejections[0].file.size > maxSize;
   const files = value?.map((file, i) => (
-    <FileListItem
-      key={file.name}
-      name={file.name}
-      onDelete={() => onDelete(i)}
-    />
+    <FileListItem onDelete={() => onDelete(i)} />
   ));
 
   return (

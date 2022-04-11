@@ -61,7 +61,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
   const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-  //
+
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
       handleFeeChange(value);

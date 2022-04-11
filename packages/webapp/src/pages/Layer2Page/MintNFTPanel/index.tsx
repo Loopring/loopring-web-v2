@@ -14,7 +14,7 @@ const StyleWrapper = styled(Box)`
 ` as typeof Box;
 const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const NFTMintPanel = () => {
-  const ipfsMediaSource: File[] = [];
+  const ipfsMediaSources: File[] = [];
   const { nftMintProps, retryBtn } = useNFTMint();
 
   const { t } = useTranslation();
@@ -54,23 +54,19 @@ export const NFTMintPanel = () => {
             <Typography component={"h3"} variant={"h5"} padding={5 / 2}>
               {t("labelLoadTitle", { types: TYPES })}
             </Typography>
-            <Box paddingX={5 / 2} position={"relative"}>
+            <Box paddingX={5 / 2} position={"relative"} flex={1}>
               <IPFSSourceUpload
-                value={ipfsMediaSource}
+                value={ipfsMediaSources}
                 onChange={() => {}}
                 maxSize={MaxSize}
                 types={TYPES}
               />
             </Box>
-            <Box></Box>
+            {/*<Box>{ipfsMediaSources.map(() => {})}</Box>*/}
           </StyleWrapper>
         </Grid>
         <Grid item xs={12} md={6} display={"flex"} flexDirection={"column"}>
           <StyleWrapper flex={1}>
-            {/*<Typography component={"h3"} variant={"h4"} padding={5 / 2}>*/}
-            {/*  {t("labelIPFSStep2")}*/}
-            {/*</Typography>*/}
-            {/*<Box flex={1}></Box>*/}
             <MintNFTBlock
               handleOnNFTDataChange={() => {}}
               onNFTMintClick={nftMintProps.onNFTMintClick}
@@ -87,6 +83,7 @@ export const NFTMintPanel = () => {
               }}
               feeInfo={nftMintProps.feeInfo}
               handleFeeChange={nftMintProps.handleFeeChange}
+              type={}
             />
           </StyleWrapper>
         </Grid>

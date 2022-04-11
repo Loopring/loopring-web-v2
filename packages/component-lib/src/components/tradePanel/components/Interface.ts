@@ -292,7 +292,6 @@ export type NFTMintViewWholeProps<T, C> = {
   wait?: number;
   tradeData: T;
   disabled?: boolean;
-  type: "NFT";
 } & NFTMintExtendProps<T, C>;
 
 export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
