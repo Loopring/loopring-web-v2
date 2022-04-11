@@ -24,6 +24,18 @@ export const NotificationPanel = ({
 }: {
   notification: NOTIFICATION;
 }) => {
+  // myLog("notifications", notification.notifications);
+  const hasActivities =
+    notification.activities.length &&
+    notification.activities.findIndex(({ startDate }) => {
+      myLog("NotificationPanel", Date.now() > startDate);
+      return Date.now() > startDate;
+    }) !== -1;
+  const hasNotifications =
+    notification.notifications.length &&
+    notification.notifications.findIndex(
+      ({ startDate }) => Date.now() > startDate
+    ) !== -1;
   return (
     <BoxStyle
       display={"flex"}
@@ -33,18 +45,9 @@ export const NotificationPanel = ({
       // minWidth={100}
       overflow={"scroll"}
       // paddingBottom={1}
-      paddingTop={1}
+      paddingTop={hasActivities ? 1 : 0}
     >
-      {(notification.activities.length &&
-        notification.activities.findIndex(({ startDate }) => {
-          myLog("NotificationPanel", Date.now() > startDate);
-
-          return Date.now() > startDate;
-        }) !== -1) ||
-      (notification.notifications.length &&
-        notification.notifications.findIndex(
-          ({ startDate }) => Date.now() > startDate
-        ) !== -1) ? (
+      {hasActivities || hasNotifications ? (
         <>
           <Box
             component={"section"}
@@ -53,25 +56,24 @@ export const NotificationPanel = ({
             marginX={1}
             marginBottom={1}
           >
-            {/*<Typography component={"h4"} variant={"h5"}>{*/}
-            {/*  t('labelActivityTitle')*/}
-            {/*}</Typography>*/}
-            {/*{notification.activities[0].title}*/}
-            {notification.activities.length &&
+            {hasActivities &&
               notification.activities.map((activity, index) => (
-                <ListItemActivity key={activity.id + index} {...activity} />
+                <ListItemActivity key={activity.type + index} {...activity} />
               ))}
           </Box>
-          {notification.notifications.length > 0 && (
+          {hasNotifications && (
             <>
-              <Divider />
+              {hasActivities && <Divider />}
               <Box
                 component={"section"}
                 display={"flex"}
                 flexDirection={"column"}
               >
                 {notification.notifications.map((notify, index) => (
-                  <NotificationListItem key={notify.id + index} {...notify} />
+                  <NotificationListItem
+                    key={notify.id.toString() + index}
+                    {...notify}
+                  />
                 ))}
               </Box>
             </>

@@ -10,6 +10,7 @@ import {
   ACTIVITY,
   ACTIVITY_TYPE,
   hexToRGB,
+  myLog,
   NOTIFICATION_ITEM,
 } from "@loopring-web/common-resources";
 import { css, Theme } from "@emotion/react";
@@ -104,10 +105,9 @@ const NotificationListItemStyled = styled(ListItem)<
 ` as (prosp: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
 
 export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
-  // const { t } = useTranslation(["common"]);
   const history = useHistory();
   const { title, description1, description2 } = props;
-
+  myLog("title, description1, description2", title, description1, description2);
   return (
     <NotificationListItemStyled
       alignItems="flex-start"
@@ -124,16 +124,15 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         overflow={"hidden"}
       >
         <ListItemText
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: title ?? "" }} />
-          )}
+          className={"title"}
+          primary={<span dangerouslySetInnerHTML={{ __html: title ?? "" }} />}
           primaryTypographyProps={{ component: "h4", color: "textPrimary" }}
         />
         <ListItemText
           className="description description1"
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: description1 ?? "" }} />
-          )}
+          primary={
+            <span dangerouslySetInnerHTML={{ __html: description1 ?? "" }} />
+          }
           primaryTypographyProps={{
             component: "p",
             variant: "body1",
@@ -142,9 +141,9 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
         />
         <ListItemText
           className="description description2"
-          primary={() => (
-            <div dangerouslySetInnerHTML={{ __html: description2 ?? "" }} />
-          )}
+          primary={
+            <span dangerouslySetInnerHTML={{ __html: description2 ?? "" }} />
+          }
           primaryTypographyProps={{
             component: "p",
             variant: "body2",
