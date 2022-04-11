@@ -73,6 +73,7 @@ export const useVendor = () => {
                   account.accAddress,
                 "_blank"
               );
+              window.opener = null;
             }
           },
         },

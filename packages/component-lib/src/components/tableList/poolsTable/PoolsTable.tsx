@@ -550,6 +550,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                 href={`${window.location.href}/pools/coinPair/${
                   row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
                 }`}
+                target="_self"
                 className={"btn"}
                 variant={"outlined"}
                 size={"small"}

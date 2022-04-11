@@ -109,11 +109,12 @@ export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
   return (
     <NotificationListItemStyled
       alignItems="flex-start"
-      onClick={() =>
+      onClick={() => {
         props.link?.startsWith("http")
           ? window.open(props.link, "_blank")
-          : history.replace(`/notification/${props.link}`)
-      }
+          : history.replace(`/notification/${props.link}`);
+        window.opener = null;
+      }}
       className={`notification`}
     >
       <ListItemAvatar />

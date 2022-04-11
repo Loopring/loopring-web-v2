@@ -200,17 +200,19 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 justifyContent={"flex-end"}
                 alignItems={"center"}
               >
-                <Typography
+                <Link
                   style={{
                     cursor: "pointer",
+                    color: "var(--color-primary)",
                   }}
-                  color={"var(--color-primary)"}
-                  onClick={() => window.open(path, "_blank")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={path}
                   title={hash}
                 >
                   {from + ` ${DirectionTag} ` + to}
                   {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
-                </Typography>
+                </Link>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
                 </Box>
@@ -435,7 +437,10 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 display={"flex"}
                 flex={1}
                 flexDirection={"column"}
-                onClick={() => window.open(path, "_blank")}
+                onClick={() => {
+                  window.open(path, "_blank");
+                  window.opener = null;
+                }}
               >
                 <Typography
                   display={"inline-flex"}
@@ -517,7 +522,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               View transactions on
               <Link
                 display={"inline-flex"}
-                target={"_blank"}
+                target="_blank"
+                rel="noopener noreferrer"
                 href={Explorer + `/account/${accountId}`}
                 paddingLeft={1 / 2}
               >
