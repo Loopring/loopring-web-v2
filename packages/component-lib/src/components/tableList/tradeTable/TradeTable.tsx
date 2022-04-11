@@ -613,7 +613,8 @@ export const TradeTable = withTranslation("tables")(
               View transactions on
               <Link
                 display={"inline-flex"}
-                target={"_blank"}
+                target="_blank"
+                rel="noopener noreferrer"
                 href={Explorer + `/account/${accountId}`}
                 paddingLeft={1 / 2}
               >

@@ -29,7 +29,7 @@ export const BtnDownload = ({
     popupId: "download-QRcode",
   });
   const Description = () => (
-    <Link target={"_blank"} href="https://loopring.io">
+    <Link target="_blank" rel="noopener noreferrer" href="https://loopring.io">
       {t(i18nDescription)}
     </Link>
   );

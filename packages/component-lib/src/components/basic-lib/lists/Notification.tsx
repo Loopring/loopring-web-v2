@@ -10,7 +10,6 @@ import {
   ACTIVITY,
   ACTIVITY_TYPE,
   hexToRGB,
-  myLog,
   NOTIFICATION_ITEM,
 } from "@loopring-web/common-resources";
 import { css, Theme } from "@emotion/react";
@@ -107,11 +106,15 @@ const NotificationListItemStyled = styled(ListItem)<
 export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
   const history = useHistory();
   const { title, description1, description2 } = props;
-  myLog("title, description1, description2", title, description1, description2);
   return (
     <NotificationListItemStyled
       alignItems="flex-start"
-      onClick={() => history.replace(`/notification/${props.link}`)}
+      onClick={() => {
+        props.link?.startsWith("http")
+          ? window.open(props.link, "_blank")
+          : history.replace(`/notification/${props.link}`);
+        window.opener = null;
+      }}
       className={`notification`}
     >
       <ListItemAvatar />

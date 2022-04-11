@@ -135,9 +135,10 @@ export const TxnDetailPanel = withTranslation("common", { withRef: true })(
                 <InfoValueStyled>
                   <EthHshStyled
                     color={"var(--color-secondary)"}
-                    onClick={() =>
-                      window.open(`${etherscanBaseUrl}tx/${txHash}`)
-                    }
+                    onClick={() => {
+                      window.open(`${etherscanBaseUrl}tx/${txHash}`);
+                      window.opener = null;
+                    }}
                   >
                     {txHash}
                   </EthHshStyled>

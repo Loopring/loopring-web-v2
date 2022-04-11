@@ -276,11 +276,9 @@ export const NFTDetail = withTranslation("common")(
                 fontSize={"inherit"}
                 whiteSpace={"break-spaces"}
                 style={{ wordBreak: "break-all" }}
-                onClick={() =>
-                  window.open(
-                    `${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`
-                  )
-                }
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`${etherscanBaseUrl}token/${popItem.tokenAddress}?a=${popItem.nftId}`}
               >
                 {popItem.tokenAddress}
               </Link>
@@ -299,9 +297,13 @@ export const NFTDetail = withTranslation("common")(
                 fontSize={"inherit"}
                 whiteSpace={"break-spaces"}
                 style={{ wordBreak: "break-all" }}
-                onClick={() =>
-                  window.open(`${etherscanBaseUrl}address/${popItem.minter}`)
-                }
+                onClick={() => {
+                  window.open(
+                    `${etherscanBaseUrl}address/${popItem.minter}`,
+                    "blank"
+                  );
+                  window.opener = null;
+                }}
               >
                 {popItem.minter}
               </Link>
