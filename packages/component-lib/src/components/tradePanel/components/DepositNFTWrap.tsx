@@ -145,8 +145,8 @@ NFTDepositViewProps<T, I>) => {
             <Trans
               i18nKey={description ? description : "nftDepositDescription"}
             >
-              Once your nftDeposit is confirmed on Ethereum, it will be added to
-              your balance within 2 minutes.
+              Creates a smart contract on Ethereum L1, which requires a gas fee.
+              NFTs minted here are on L2 only until deployed.
             </Trans>
           </Typography>
         </PopoverPure>

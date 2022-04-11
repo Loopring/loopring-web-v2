@@ -528,6 +528,8 @@ export default {
   labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & Deposit it",
   labelNFTDepositBtn: "Deposit NFT",
   nftDepositTitle: "Deposit NFT",
+  nftDepositDescription:
+    "Creates a smart contract on Ethereum L1, \n which requires a gas fee. NFTs minted \nhere are on L2 only until deployed.",
   labelNFTDescribe: "Description:",
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "Amount:",
@@ -553,7 +555,7 @@ export default {
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:
-    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder populates the Name\n and also the image displays.",
+    "Paste in the CID that you obtained from uploading \n the xxxx.json file. If successful, the data from the \n xxxx.json file you created populates the Name \n  and also the image will appear.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "Processing...",
