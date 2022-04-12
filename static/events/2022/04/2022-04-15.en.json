@@ -1,7 +1,7 @@
 {
   "SPECIAL":{
     "eventTitle":"🎁 Loophead NFT Drop #3️",
-    "subTitle":"We have 950 Loopheads up for grabs in this third Loophead dynamic NFT drop.",
+    "subTitle":"1000 Loopheads are up for grabs in the third Loophead dynamic NFT drop!",
     "local":"en-US",
     "duration":{
       "prev":"Activity Period:",
@@ -11,8 +11,26 @@
       "middle":"to"
     },
     "api":{
-      "url":"https://api.loopring.network/api/v3/user/gaveawayNft2/xxxxx",
-      "params":null,
+      "url":"api/v3/datacenter/gaveawayNft3/getAccountByTokenAddress",
+      "params": {
+        "key": "tokenAddress",
+        "values": [{
+          "label": "LRC-ETH",
+          "value": "store.getState().tokenMap.tokenMap[`LP-LRC-ETH`].tokenAddress"
+        }, {
+            "label": "LRC-USDC",
+            "value": "store.getState().tokenMap.tokenMap[`LP-LRC-USDC`].tokenAddress"
+        },{
+            "label": "ETH-USDC",
+            "value": "store.getState().tokenMap.tokenMap[`LP-ETH-USDC`].tokenAddress"
+        },{
+          "label": "MANA-USDC",
+          "value": "store.getState().tokenMap.tokenMap[`LP-MANA-USDC`].tokenAddress"
+        },{
+          "label": "SAND-USDC",
+          "value": "store.getState().tokenMap.tokenMap[`LP-SAND-USDC`].tokenAddress"
+        }]
+      },
       "column":[
         {
           "key":"accountId",
@@ -23,19 +41,23 @@
           "label":"Address"
         },
         {
-          "key":"absolute",
-          "label":"Net Deposits(USD)"
+          "key":"usdtValue",
+          "label":"Sum of Liquidity(USD)"
         }
       ]
     },
     "rules":[
-      "5 pools（`LRC/USDC`; `ETH/USDC`; `WBTC/USDC`; `MANA/USDC`; `SAND/USDC`)",
-      "950 Loopheads - 700 by way of Lucky Draw and 50 for Top LPs."
+      "There are two ways to win, either via Lucky Draw or by being a Top 50 LP in LRC/ETH, LRC/USDC, ETH/USDC, MANA/USDC, or SAND/USDC AMM pools.",
+      "To be eligible for the lucky draw, you can provide any amount of liquidity into one of the relevant 5 AMM pools but your position must be sustained for at least 20 days of the eligible dates.",
+      "To calculate the largest LPs, we take the aggregate sum of your daily LP snapshots, measured in $USD. We will distribute a Loophead to the top 50 LPs in each pool.",
+      "We take random snapshots of the relevant 5 AMM pools once per day. LP tokens must stay in your Loopring L2 account. If you withdraw LP tokens to the Ethereum, you will not be eligible.",
+      "Wallet addresses that have already won a Loophead NFT will be excluded. Addresses can only win one Loophead.",
+      "For addresses that rank top 50 in multiple pools, we count the top 50 LPs in LRC/ETH first, and then LRC/USDC, ETH/USDC, MANA/USDC and SAND/USDC sequentially."
     ]
   },
   "SWAP_VOLUME_RANKING": {
     "eventTitle": "Wearable NFT Drop",
-    "subTitle": "950 Wearables up for grabs in the Wearable NFT drop.!",
+    "subTitle": "1000 Wearables are up for grabs in the Wearable NFT drop!",
     "local": "en-US",
     "duration":{
       "prev":"Activity Period:",
@@ -45,13 +67,11 @@
       "middle":"to"
     },
     "rules": [
-      "950 Wearables - 700 by way of Lucky Draw and 50 for Top Traders.",
-      "5 pairs（LRC/ETH; LRC/USDC; ETH/USDC; MANA/USDC; SAND/USDC)",
-      "Lucky Draw - 700 Wearables,To be eligible, users must trade in one of the relevant 5 pairs from April 15 0:00(UTC) to May 15 0:00(UTC).",
-      "We will distribute a Wearable to the top 50 Traders in each pair.",
-      "Highest trading volumes per pair are calculated by the sum of $ amount of value (both orderbook and swap).",
-      "Each winner address can only receive one Wearable. If one address ranks top 50 in several pairs, it will only receive one Wearable. We count top 50 traders in LRC/ETH first, and then LRC/USDC, ETH/USDC, MANA/USDC and SAND/USDC sequentially.",
-      "We will need a leaderboard for top 100 traders."
+      "There are two ways to win, either via Lucky Draw or by being a Top 50 Traders in LRC/ETH, LRC/USDC, ETH/USDC, MANA/USDC, or SAND/USDC pairs.",
+      "Be one of 50 addresses with the highest trading volume per trading pair (5 pairs in total, shown above). To calculate the top 50 highest traders per pair, we take the combined sum of AMM and orderbook volume, measured in $USD.",
+      "Or try your luck as one of 750 addresses selected at random to win. Addresses that make a swap or trade in any of the relevant AMM pools and/or orderbooks will be entered into this Lucky Draw.",
+      "Addresses can only win one Wearable.",
+      "If one address ranks top 50 in several pairs/pools, it will only receive one Wearable. We count top 50 traders in LRC/ETH first, and then LRC/USDC, ETH/USDC, MANA/USDC and SAND/USDC sequentially."
       ]
      }
 }
