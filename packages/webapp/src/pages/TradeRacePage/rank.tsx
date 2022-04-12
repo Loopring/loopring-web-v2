@@ -245,10 +245,10 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
     if (props.params && props.params.key) {
       list = props.params.values.map((item) => {
         try {
-          return { label: eval(item.label), value: eval(item.value) };
+          return { label: item.label, value: eval(item.value) };
         } catch (error) {
           console.log("eval error", error);
-          return { label: eval(item.label), value: item.value };
+          return { label: item.label, value: item.value };
         }
       });
       value = list[0].value;
@@ -347,6 +347,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
         marginY={2}
         display={"flex"}
         justifyContent={"space-between"}
+        width={"100%"}
       >
         {filter && (
           <StyledTextFiled
