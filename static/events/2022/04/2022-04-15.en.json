@@ -16,7 +16,7 @@
         "key": "tokenAddress",
         "values": [{
           "label": "LRC-ETH",
-          "value": "state.tokenMap.tokenMap[`LP-LRC-ETH`].addresss"
+          "value": "state.tokenMap.tokenMap[`LP-LRC-ETH`].address"
         }, {
             "label": "LRC-USDC",
             "value": "state.tokenMap.tokenMap[`LP-LRC-USDC`].address"
