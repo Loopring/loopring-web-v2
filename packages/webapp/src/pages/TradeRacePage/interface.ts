@@ -1,3 +1,11 @@
+export type EventAPI = {
+  url: string;
+  params?: {
+    key: string;
+    values: Array<{ label: string; value: string }>;
+  };
+  column: { key: string; label: string }[];
+};
 export type EventData = {
   eventTitle: string;
   subTitle: string;
@@ -17,10 +25,6 @@ export type EventData = {
       token: string;
     };
   }[];
-  api?: {
-    url: string;
-    params?: any;
-    column: { key: string; label: string }[];
-  };
+  api?: EventAPI;
   rules: string[];
 };
