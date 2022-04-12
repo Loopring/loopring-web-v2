@@ -11,7 +11,7 @@
       "middle":"to"
     },
     "api":{
-      "url":"${looprngDomain}/api/v3/datacenter/gaveawayNft3/getAccount",
+      "url":"https://api.loopring.network/api/v3/datacenter/gaveawayNft3/getAccount",
       "params":null,
       "column":[
         {
@@ -23,7 +23,7 @@
           "label":"Address"
         },
         {
-          "key":"absolute",
+          "key":"usdtValue",
           "label":"Sum of Liquidity(USD)"
         }
       ]

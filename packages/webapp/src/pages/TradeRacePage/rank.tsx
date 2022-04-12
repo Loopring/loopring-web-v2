@@ -229,6 +229,7 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
 export const RankRaw = <R extends any>(props: {
   params?: any;
   url: string;
+  pair?: string;
   column: { key: string; label: string }[];
 }) => {
   const [rank, setRank] = React.useState<R[]>([]);
