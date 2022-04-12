@@ -11,8 +11,26 @@
       "middle":"to"
     },
     "api":{
-      "url":"https://api.loopring.network/api/v3/datacenter/gaveawayNft3/getAccount",
-      "params":null,
+      "url":"api/v3/datacenter/gaveawayNft3/getAccountByTokenAddress",
+      "params": {
+        "key": "tokenAddress",
+        "values": [{
+          "label": "LRC-ETH",
+          "value": "store.getState().tokenMap.tokenMap[`LP-LRC-ETH`].tokenAddress"
+        }, {
+            "label": "LRC-USDC",
+            "value": "store.getState().tokenMap.tokenMap[`LP-LRC-USDC`].tokenAddress"
+        },{
+            "label": "ETH-USDC",
+            "value": "store.getState().tokenMap.tokenMap[`LP-ETH-USDC`].tokenAddress"
+        },{
+          "label": "MANA-USDC",
+          "value": "store.getState().tokenMap.tokenMap[`LP-MANA-USDC`].tokenAddress"
+        },{
+          "label": "SAND-USDC",
+          "value": "store.getState().tokenMap.tokenMap[`LP-SAND-USDC`].tokenAddress"
+        }]
+      },
       "column":[
         {
           "key":"accountId",
