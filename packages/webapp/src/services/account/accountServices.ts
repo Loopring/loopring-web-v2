@@ -10,8 +10,6 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { unlockAccount } from "./unlockAccount";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
-import { PublicKey } from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
-import { AccountInfo } from "@loopring-web/loopring-sdk";
 
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
