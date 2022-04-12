@@ -16,19 +16,19 @@
         "key": "tokenAddress",
         "values": [{
           "label": "LRC-ETH",
-          "value": "store.getState().tokenMap.tokenMap[`LP-LRC-ETH`].tokenAddress"
+          "value": "state.tokenMap.tokenMap[`LP-LRC-ETH`].addresss"
         }, {
             "label": "LRC-USDC",
-            "value": "store.getState().tokenMap.tokenMap[`LP-LRC-USDC`].tokenAddress"
+            "value": "state.tokenMap.tokenMap[`LP-LRC-USDC`].address"
         },{
             "label": "ETH-USDC",
-            "value": "store.getState().tokenMap.tokenMap[`LP-ETH-USDC`].tokenAddress"
+            "value": "state.tokenMap.tokenMap[`LP-ETH-USDC`].address"
         },{
           "label": "MANA-USDC",
-          "value": "store.getState().tokenMap.tokenMap[`LP-MANA-USDC`].tokenAddress"
+          "value": "state.tokenMap.tokenMap[`LP-MANA-USDC`].address"
         },{
           "label": "SAND-USDC",
-          "value": "store.getState().tokenMap.tokenMap[`LP-SAND-USDC`].tokenAddress"
+          "value": "state.tokenMap.tokenMap[`LP-SAND-USDC`].address"
         }]
       },
       "column":[
