@@ -8,7 +8,6 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   MarketType,
-  myLog,
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -240,7 +239,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
         list: Array<{ label: string; value: string }>;
       }
     | undefined
-  >((state) => {
+  >(() => {
     let value,
       list = [];
     if (props.params && props.params.key) {
@@ -255,7 +254,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       value = list[0].value;
       if (params) {
         value = list.find(
-          (item) => item.label == state.params[props.params.key]
+          (item) => props.params && item.label == params[props.params.key]
         )?.value;
       }
       return {
@@ -275,9 +274,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
         chainId === ChainId.MAINNET
           ? "api.loopring.network"
           : "uat2.loopring.io"
-      ) + filter && filter.key
-        ? `${filter.key}=${filter.value}`
-        : "";
+      ) + (filter && filter.key ? `${filter.key}=${filter.value}` : "");
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
@@ -358,7 +355,12 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
             style={{ width: 150, textAlign: "left" }}
             value={filter.value}
             onChange={(event: React.ChangeEvent<{ value: string }>) => {
-              setFilter(event.target.value);
+              setFilter((state) => {
+                if (state) {
+                  state.value = event.target.value;
+                }
+                return state;
+              });
             }}
             inputProps={{ IconComponent: DropDownIcon }}
           >
