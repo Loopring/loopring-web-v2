@@ -3183,16 +3183,15 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@^2.0.0-aplha.2":
-  version "2.0.0-aplha.2"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.0-aplha.2.tgz#27c9517b3620d9f1dcfbd221726b13b475d98d80"
-  integrity sha512-YarXfXL9ihx9LzD8aAAcKPPMNdAC4yxBaWM7r+6PIIhClroiuqxek5IX6Bijohju8JmcNFMJztFSOXQlyO81PA==
+"@loopring-web/loopring-sdk@^2.0.0-aplha.2-ut":
+  version "2.0.0-aplha.2-ut"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.0-aplha.2-ut.tgz#da300c76ff2f67c8dcdb71c86abadcc3a6dae3d8"
+  integrity sha512-ledl91TkxPtIzJ/dTbth6n6Y0XXlFaI0H0h5IyyOw/rh1mh3MNahTHG+EZOll9ff8uw9bXsinPXc/KFWTzIUWg==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
     async "^3.2.0"
     axios "^0.21.1"
-    bigint-mod-arith "^3.0.2"
     bignumber.js "^9.0.1"
     blake-hash "^2.0.0"
     blake2b "^2.1.3"
@@ -3205,7 +3204,7 @@
     ethers "^5.6.2"
     js-sha3 "^0.8.0"
     js-sha512 "^0.8.0"
-    sodium-javascript "^0.8.0"
+    jsbn "^1.1.0"
     web-encoding "^1.1.5"
     web3 "^1.5.1"
 
@@ -8357,11 +8356,6 @@ big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
-bigint-mod-arith@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/bigint-mod-arith/-/bigint-mod-arith-3.0.2.tgz#a25a723af3ee3a79d452c370a55e3adc0e3f0cc3"
-  integrity sha512-tlhD4h/D1sv4pJfZzBesKOlfXRCQTeMMUrGbpc2PAawMAjb/S/OPAQfi667w6COt/UHOfvOW47sCSMaSEj4zIg==
-
 bignumber.js@^9.0.0, bignumber.js@^9.0.1:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"
@@ -8413,7 +8407,7 @@ blake2b-wasm@^2.4.0:
     b4a "^1.0.1"
     nanoassert "^2.0.0"
 
-blake2b@^2.1.1, blake2b@^2.1.3:
+blake2b@^2.1.3:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/blake2b/-/blake2b-2.1.4.tgz#817d278526ddb4cd673bfb1af16d1ad61e393ba3"
   integrity sha512-AyBuuJNI64gIvwx13qiICz6H6hpmjvYS5DGkG6jbXMOT8Z3WUJ3V1X0FlhIoT1b/5JtHE3ki+xjtMvu1nn+t9A==
@@ -9024,13 +9018,6 @@ ccount@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-2.0.1.tgz#17a3bf82302e0870d6da43a01311a8bc02a3ecf5"
   integrity sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==
-
-chacha20-universal@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/chacha20-universal/-/chacha20-universal-1.0.4.tgz#e8a33a386500b1ce5361b811ec5e81f1797883f5"
-  integrity sha512-/IOxdWWNa7nRabfe7+oF+jVkGjlr2xUL4J8l/OvzZhj+c9RpMqoo3Dq+5nU1j/BflRV4BKnaQ4+4oH1yBpQG1Q==
-  dependencies:
-    nanoassert "^2.0.0"
 
 chai@^4.2.0:
   version "4.3.6"
@@ -16444,6 +16431,11 @@ js-yaml@^3.13.0, js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
+jsbn@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-1.1.0.tgz#b01307cb29b618a1ed26ec79e911f803c4da0040"
+  integrity sha1-sBMHyym2GKHtJux56RH4A8TaAEA=
+
 jsbn@~0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
@@ -23377,38 +23369,6 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-sha256-universal@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/sha256-universal/-/sha256-universal-1.2.1.tgz#051d92decce280cd6137d42d496eac88da942c0e"
-  integrity sha512-ghn3muhdn1ailCQqqceNxRgkOeZSVfSE13RQWEg6njB+itsFzGVSJv+O//2hvNXZuxVIRyNzrgsZ37SPDdGJJw==
-  dependencies:
-    b4a "^1.0.1"
-    sha256-wasm "^2.2.1"
-
-sha256-wasm@^2.2.1:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/sha256-wasm/-/sha256-wasm-2.2.2.tgz#4940b6c9ba28f3f08b700efce587ef36d4d516d4"
-  integrity sha512-qKSGARvao+JQlFiA+sjJZhJ/61gmW/3aNLblB2rsgIxDlDxsJPHo8a1seXj12oKtuHVgJSJJ7QEGBUYQN741lQ==
-  dependencies:
-    b4a "^1.0.1"
-    nanoassert "^2.0.0"
-
-sha512-universal@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/sha512-universal/-/sha512-universal-1.2.1.tgz#829505a7586530515cc1a10b78815c99722c4df0"
-  integrity sha512-kehYuigMoRkIngCv7rhgruLJNNHDnitGTBdkcYbCbooL8Cidj/bS78MDxByIjcc69M915WxcQTgZetZ1JbeQTQ==
-  dependencies:
-    b4a "^1.0.1"
-    sha512-wasm "^2.3.1"
-
-sha512-wasm@^2.3.1:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/sha512-wasm/-/sha512-wasm-2.3.4.tgz#b86b37112ff6d1fc3740f2484a6855f17a6e1300"
-  integrity sha512-akWoxJPGCB3aZCrZ+fm6VIFhJ/p8idBv7AWGFng/CZIrQo51oQNsvDbTSRXWAzIiZJvpy16oIDiCCPqTe21sKg==
-  dependencies:
-    b4a "^1.0.1"
-    nanoassert "^2.0.0"
-
 shallow-clone@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/shallow-clone/-/shallow-clone-0.1.2.tgz#5909e874ba77106d73ac414cfec1ffca87d97060"
@@ -23504,13 +23464,6 @@ simple-swizzle@^0.2.2:
   integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
   dependencies:
     is-arrayish "^0.3.1"
-
-siphash24@^1.0.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/siphash24/-/siphash24-1.3.1.tgz#7f87fd2c5db88d8d46335a68f780f281641c8b22"
-  integrity sha512-moemC3ZKiTzH29nbFo3Iw8fbemWWod4vNs/WgKbQ54oEs6mE6XVlguxvinYjB+UmaE0PThgyED9fUkWvirT8hA==
-  dependencies:
-    nanoassert "^2.0.0"
 
 sirv@^1.0.7:
   version "1.0.19"
@@ -23698,19 +23651,6 @@ socks@^2.3.3, socks@^2.6.1:
   dependencies:
     ip "^1.1.5"
     smart-buffer "^4.2.0"
-
-sodium-javascript@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/sodium-javascript/-/sodium-javascript-0.8.0.tgz#0a94d7bb58ab17be82255f3949259af59778fdbc"
-  integrity sha512-rEBzR5mPxPES+UjyMDvKPIXy9ImF17KOJ32nJNi9uIquWpS/nfj+h6m05J5yLJaGXjgM72LmQoUbWZVxh/rmGg==
-  dependencies:
-    blake2b "^2.1.1"
-    chacha20-universal "^1.0.4"
-    nanoassert "^2.0.0"
-    sha256-universal "^1.1.0"
-    sha512-universal "^1.1.0"
-    siphash24 "^1.0.1"
-    xsalsa20 "^1.0.0"
 
 sort-keys@^1.0.0:
   version "1.1.2"
@@ -27239,11 +27179,6 @@ xregexp@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.0.0.tgz#e698189de49dd2a18cc5687b05e17c8e43943020"
   integrity sha512-PHyM+sQouu7xspQQwELlGwwd05mXUFqwFYfqPO0cC7x4fxyHnnuetmQr6CjJiafIDoH4MogHb9dOoJzR/Y4rFg==
-
-xsalsa20@^1.0.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/xsalsa20/-/xsalsa20-1.2.0.tgz#e5a05cb26f8cef723f94a559102ed50c1b44c25c"
-  integrity sha512-FIr/DEeoHfj7ftfylnoFt3rAIRoWXpx2AoDfrT2qD2wtp7Dp+COajvs/Icb7uHqRW9m60f5iXZwdsJJO3kvb7w==
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.2"
