@@ -14,7 +14,7 @@ export type EventData = {
     prev?: string;
     startDate: number;
     middle?: "to";
-    endDate?: number;
+    endDate: number;
     end?: string;
   };
   rewards: {

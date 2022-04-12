@@ -371,7 +371,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
             inputProps={{ IconComponent: DropDownIcon }}
           >
             {filter.list.map((item, index) => (
-              <MenuItem key={item.value.toString() + index} value={item.value}>
+              <MenuItem key={item.value + index} value={item.value}>
                 {item.label}
               </MenuItem>
             ))}
