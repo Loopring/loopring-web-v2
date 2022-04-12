@@ -277,8 +277,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
         chainId === ChainId.MAINNET
           ? "api.loopring.network"
           : "uat2.loopring.io"
-      ) + (filter && filter.key ? `${filter.key}=${filter.value}` : "");
-    debugger;
+      ) + (filter && filter.key ? `?${filter.key}=${filter.value}` : "");
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
@@ -288,7 +287,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       .catch(() => {
         return [];
       });
-  }, [filter]);
+  }, [filter?.value]);
 
   React.useEffect(() => {
     if (searchValue !== "" && rank.length) {
