@@ -26,7 +26,8 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSystem } from "../../stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
-import { EventAPI, EventData } from "./interface";
+import { EventAPI } from "./interface";
+import store from "../../stores";
 
 const TableWrapperStyled = styled(Box)`
   background-color: var(--color-box);
@@ -245,6 +246,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
     if (props.params && props.params.key) {
       list = props.params.values.map((item) => {
         try {
+          const state = store.getState();
           return { label: item.label, value: eval(item.value) };
         } catch (error) {
           console.log("eval error", error);
@@ -253,9 +255,10 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       });
       value = list[0].value;
       if (params) {
-        value = list.find(
-          (item) => props.params && item.label == params[props.params.key]
-        )?.value;
+        value =
+          list.find(
+            (item) => props.params && item.label == params[props.params.key]
+          )?.value ?? value;
       }
       return {
         value,
@@ -275,6 +278,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
           ? "api.loopring.network"
           : "uat2.loopring.io"
       ) + (filter && filter.key ? `${filter.key}=${filter.value}` : "");
+    debugger;
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
@@ -336,6 +340,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       flex={1}
       display={"flex"}
       flexDirection={"column"}
+      maxWidth={1200}
       width={"100%"}
       paddingX={3}
     >
