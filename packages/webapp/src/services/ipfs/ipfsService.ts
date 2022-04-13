@@ -1,8 +1,8 @@
 import { Subject } from "rxjs";
 import { create, IPFS } from "ipfs-core";
-import prop from "dot-prop";
-import { Commands, IPFSCommands } from "../account/command";
-import { result } from "lodash";
+import { IPFSCommands } from "../account/command";
+import { ErrorCode } from "react-dropzone";
+import { UIERROR_CODE } from "@loopring-web/common-resources";
 
 export class IpfsProvides {
   get ipfs(): IPFS | null {
@@ -35,36 +35,110 @@ export class IpfsProvides {
     }
   }
 }
-export const ipfsProvides = new IpfsProvides();
-
-async function callIpfs({
-  ipfs,
-  cmd,
-  opts,
-}: {
-  ipfs: IPFS;
-  cmd: string;
-  opts: object;
-  [key: string]: any;
-}): Promise<any> {
-  if (!ipfs) return null;
-  console.log(`Call ipfs.${cmd}`);
-  const ipfsCmd = prop.get(ipfs, cmd) as (props: any) => Promise<any>;
-  return await ipfsCmd(opts);
-}
+//
+// async function callIpfs({
+//   ipfs,
+//   cmd,
+//   opts,
+// }: {
+//   ipfs: IPFS;
+//   cmd: string;
+//   opts: object;
+//   [key: string]: any;
+// }): Promise<any> {
+//   if (!ipfs) return null;
+//   console.log(`Call ipfs.${cmd}`);
+//   const ipfsCmd = prop.get(ipfs, cmd) as (props: any) => Promise<any>;
+//   return await ipfsCmd(opts);
+// }
 
 const subject = new Subject<{
   status: keyof typeof IPFSCommands;
-  data?: any;
+  data?: {
+    uniqueId: string;
+    [key: string]: any;
+  };
 }>();
 
 export const ipfsService = {
-  sendipfsCmd: async ({ cmd, opts }: { cmd: string; opts: any }) => {
-    if (ipfsProvides.ipfs) {
-      const data = await callIpfs();
-      subject.next({ status: IPFSCommands.IpfsResult, data: data });
+  addJSONStringify: async ({
+    ipfs,
+    str,
+    uniqueId,
+  }: {
+    ipfs: IPFS;
+    str: string;
+    uniqueId: string;
+  }) => {
+    if (ipfs) {
+      try {
+        const data = await ipfs.add(str); //callIpfs({ ipfs, cmd, opts });
+        subject.next({
+          status: IPFSCommands.IpfsResult,
+          data: { ...data, uniqueId },
+        });
+      } catch (error) {
+        subject.next({
+          status: IPFSCommands.IpfsResult,
+          data: {
+            code: UIERROR_CODE.ADD_IPFS_ERROR,
+            ...(error as any),
+            uniqueId,
+          },
+        });
+      }
     } else {
-      subject.next({ status: IPFSCommands.ErrorGetIpfs });
+      subject.next({
+        status: IPFSCommands.ErrorGetIpfs,
+        data: {
+          uniqueId,
+          error: {
+            code: UIERROR_CODE.NO_IPFS_INSTANCE,
+            message: "IPFS is undefined",
+          },
+        },
+      });
+    }
+  },
+  addFile: async ({
+    ipfs,
+    file,
+    uniqueId,
+  }: {
+    ipfs: IPFS;
+    file: File;
+    uniqueId: string;
+  }) => {
+    if (ipfs) {
+      try {
+        const data = await ipfs.add(file); //callIpfs({ ipfs, cmd, opts });
+        subject.next({
+          status: IPFSCommands.IpfsResult,
+          data: { ...data, uniqueId },
+        });
+      } catch (error) {
+        subject.next({
+          status: IPFSCommands.IpfsResult,
+          data: {
+            error: {
+              code: UIERROR_CODE.ADD_IPFS_ERROR,
+              ...(error as any),
+            },
+            uniqueId,
+          },
+        });
+      }
+    } else {
+      subject.next({
+        status: IPFSCommands.ErrorGetIpfs,
+        data: {
+          uniqueId,
+          error: {
+            code: UIERROR_CODE.NO_IPFS_INSTANCE,
+            message: "IPFS is undefined",
+          },
+        },
+      });
     }
   },
 

@@ -175,6 +175,16 @@ export const ErrorMap = {
     messageKey: "errorDataNotReady",
     options: {},
   },
+  NO_IPFS_INSTANCE: {
+    id: "NO_IPFS_INSTANCE",
+    messageKey: "errorNoIpfsInstance",
+    options: {},
+  },
+  ADD_IPFS_ERROR: {
+    id: "ADD_IPFS_ERROR",
+    messageKey: "errorAddIpfsError",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -182,6 +192,8 @@ export enum UIERROR_CODE {
   PROVIDER_ERROR_Unknown = 700003,
   GENERATE_EDDSA = 700004,
   DATA_NOT_READY = 700005,
+  NO_IPFS_INSTANCE = 700007,
+  ADD_IPFS_ERROR = 700008,
 }
 export type ErrorObject = {
   from?: string;
@@ -195,6 +207,8 @@ export const SDK_ERROR_MAP_TO_UI = {
   700003: ErrorMap.ERROR_UNKNOWN,
   700004: ErrorMap.GENERATE_EDDSA,
   700005: ErrorMap.DATA_NOT_READY,
+  700007: ErrorMap.NO_IPFS_INSTANCE,
+  700008: ErrorMap.ADD_IPFS_ERROR,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

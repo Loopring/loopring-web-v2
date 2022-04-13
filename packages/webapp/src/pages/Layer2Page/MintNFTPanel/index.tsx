@@ -83,7 +83,6 @@ export const NFTMintPanel = () => {
               }}
               feeInfo={nftMintProps.feeInfo}
               handleFeeChange={nftMintProps.handleFeeChange}
-              type={}
             />
           </StyleWrapper>
         </Grid>
