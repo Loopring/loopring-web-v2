@@ -8,7 +8,6 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   MarketType,
-  myLog,
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -24,9 +23,11 @@ import {
 import styled from "@emotion/styled";
 import { useAccount } from "../../stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSystem } from "../../stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
+import { EventAPI } from "./interface";
+import store from "../../stores";
 
 const TableWrapperStyled = styled(Box)`
   background-color: var(--color-box);
@@ -226,22 +227,57 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as typeof Box;
 
-export const RankRaw = <R extends any>(props: {
-  params?: any;
-  url: string;
-  pair?: string;
-  column: { key: string; label: string }[];
-}) => {
+export const RankRaw = <R extends any>(props: EventAPI) => {
   const [rank, setRank] = React.useState<R[]>([]);
   const [rankView, setRankView] = React.useState<R[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>("");
   const [showLoading, setShowLoading] = React.useState(true);
+  const { params } = useRouteMatch();
+  const [filter, setFilter] = React.useState<
+    | {
+        value: string;
+        key: string;
+        list: Array<{ label: string; value: string }>;
+      }
+    | undefined
+  >(() => {
+    let value,
+      list = [];
+    if (props.params && props.params.key) {
+      list = props.params.values.map((item) => {
+        try {
+          const state = store.getState();
+          return { label: item.label, value: eval(item.value) };
+        } catch (error) {
+          console.log("eval error", error);
+          return { label: item.label, value: item.value };
+        }
+      });
+      value = list[0].value;
+      if (params) {
+        value =
+          list.find(
+            (item) => props.params && item.label == params[props.params.key]
+          )?.value ?? value;
+      }
+      return {
+        value,
+        list,
+        key: props.params.key,
+      };
+    } else {
+      return undefined;
+    }
+  });
   const { chainId } = useSystem();
   React.useEffect(() => {
-    const url = props.url.replace(
-      "api.loopring.network",
-      chainId === ChainId.MAINNET ? "api.loopring.network" : "uat2.loopring.io"
-    );
+    const url =
+      props.url.replace(
+        "api.loopring.network",
+        chainId === ChainId.MAINNET
+          ? "api.loopring.network"
+          : "uat2.loopring.io"
+      ) + (filter && filter.key ? `?${filter.key}=${filter.value}` : "");
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
@@ -251,7 +287,7 @@ export const RankRaw = <R extends any>(props: {
       .catch(() => {
         return [];
       });
-  }, []);
+  }, [filter?.value]);
 
   React.useEffect(() => {
     if (searchValue !== "" && rank.length) {
@@ -303,10 +339,43 @@ export const RankRaw = <R extends any>(props: {
       flex={1}
       display={"flex"}
       flexDirection={"column"}
+      maxWidth={1200}
       width={"100%"}
       paddingX={3}
     >
-      <Box alignSelf={"flex-end"} marginY={2}>
+      {/*<BoxSelect>*/}
+      {/* */}
+      {/*</BoxSelect>*/}
+      <Box
+        alignSelf={"flex-end"}
+        marginY={2}
+        display={"flex"}
+        justifyContent={"space-between"}
+        width={"100%"}
+      >
+        {filter && (
+          <StyledTextFiled
+            id={"trading-race-filter"}
+            select
+            style={{ width: 150, textAlign: "left" }}
+            value={filter.value}
+            onChange={(event: React.ChangeEvent<{ value: string }>) => {
+              setFilter((state) => {
+                if (state) {
+                  state.value = event.target.value;
+                }
+                return state;
+              });
+            }}
+            inputProps={{ IconComponent: DropDownIcon }}
+          >
+            {filter.list.map((item, index) => (
+              <MenuItem key={item.value + index} value={item.value}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </StyledTextFiled>
+        )}
         <InputSearch
           value={searchValue}
           onChange={(value: any) => {

@@ -184,11 +184,9 @@ export const useTradeRace = () => {
   };
 
   const calculateTimeLeft = React.useCallback(() => {
-    if (activityRule && Reflect.ownKeys(activityRule).length && eventStatus) {
-      const rule: AmmPoolActivityRule =
-        activityRule[Reflect.ownKeys(activityRule)[0]];
+    if (eventData && eventStatus) {
       if (eventStatus === EVENT_STATUS.EVENT_READY) {
-        let difference = +new Date(rule.rangeFrom) - Date.now();
+        let difference = +new Date(eventData.duration.startDate) - Date.now();
 
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
@@ -203,7 +201,7 @@ export const useTradeRace = () => {
           ).slice(-2),
         });
       } else if (eventStatus === EVENT_STATUS.EVENT_START) {
-        let difference = +new Date(rule.rangeTo) - Date.now();
+        let difference = +new Date(eventData.duration.endDate) - Date.now();
         setCountDown({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)).toString(),
           hours: (
@@ -218,7 +216,7 @@ export const useTradeRace = () => {
         });
       }
     }
-  }, [activityRule, eventStatus]);
+  }, [eventData, eventStatus]);
   React.useEffect(() => {
     if (eventStatus) {
       if (nodeTimer.current !== -1) {
