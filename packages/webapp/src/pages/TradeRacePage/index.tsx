@@ -275,8 +275,9 @@ export const TradeRacePage = withTranslation("common")(
             ) : (
               <></>
             )}
-            {eventData.api && <RankRaw {...eventData.api} />}
-
+            {!searchParams.has("rule") && eventData.api && (
+              <RankRaw {...eventData.api} />
+            )}
             {eventData.rewards && (
               <Box
                 ref={anchorRef}
