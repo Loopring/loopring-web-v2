@@ -153,10 +153,6 @@ export const useTradeRace = () => {
                         .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)"
                     : undefined,
                 }));
-                // const activityRule =
-                //   activityDateMap[eventData.duration.startDate][
-                //     searchParams.get("type") as string
-                //   ];
                 setActivityRule({ event_awardRules: eventData.rewards });
                 if (eventData.duration.startDate > Date.now()) {
                   setEventStatus(EVENT_STATUS.EVENT_READY);
