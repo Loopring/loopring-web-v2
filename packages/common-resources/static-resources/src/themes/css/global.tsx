@@ -100,7 +100,6 @@ export const scrollbarDefault = ({ theme }: any) => css`
   .MuiPaper-elevation4 {
     box-shadow: var(--shadow-header);
   }
-
   //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
   // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase
     .textHint};}
@@ -137,7 +136,7 @@ export const globalCss = ({ theme }: any) => css`
     flex-direction: column;
     justify-content: space-between;
   }
-  
+
   html,
   body {
     position: relative;
