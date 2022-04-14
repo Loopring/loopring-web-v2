@@ -1,11 +1,17 @@
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
-import { IPFSSourceUpload, MintNFTBlock } from "@loopring-web/component-lib";
+import {
+  IpfsFile,
+  IPFSSourceUpload,
+  MintNFTBlock,
+} from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import { useChargeFees } from "../../../hooks/common/useChargeFees";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { useNFTMint } from "../../../hooks/useractions/useNFTMint";
-const MaxSize = 50;
+import React from "react";
+import { useIPFS } from "../../../services/ipfs/useIpfs";
+import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
+import { ipfsService } from "../../../services/ipfs/ipfsService";
+const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`
   position: relative;
   width: 100%;
@@ -14,9 +20,14 @@ const StyleWrapper = styled(Box)`
 ` as typeof Box;
 const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const NFTMintPanel = () => {
-  const ipfsMediaSources: File[] = [];
+  const [ipfsMediaSources, setIpfsMediaSources] = React.useState<IpfsFile[]>(
+    []
+  );
   const { nftMintProps, retryBtn } = useNFTMint();
-
+  const { ipfsProvides } = useIPFS({
+    handleSuccessUpload: () => {},
+    handleFailedUpload: () => {},
+  });
   const { t } = useTranslation();
   // const {} = useChargeFees()
   // const {
@@ -35,6 +46,29 @@ export const NFTMintPanel = () => {
   //     });
   //   },
   // });
+  const onFilesAdd = React.useCallback(
+    (value) => {
+      value.map((value, index) => {
+        if(value.)
+        ipfsService.addFile({
+          ipfs: ipfsProvides.ipfs,
+          file: value.file,
+          uniqueId: value.uniqueId,
+        });
+        value.isUpdateIPFS = true;
+      });
+      setIpfsMediaSources((state) => {
+        return [...state];
+      });
+    },
+    [ipfsMediaSources]
+  );
+  const onDelete = (index: number) => {
+    const files = [...value];
+    files.splice(index, 1);
+    // onDropAccepted(files.map((file) => file.file));
+    // onChange(files);
+  };
   return (
     <Box flex={1} marginY={1}>
       <Grid
@@ -57,9 +91,10 @@ export const NFTMintPanel = () => {
             <Box paddingX={5 / 2} position={"relative"} flex={1}>
               <IPFSSourceUpload
                 value={ipfsMediaSources}
-                onChange={() => {}}
                 maxSize={MaxSize}
                 types={TYPES}
+                onChange={onFilesAdd}
+                onDelete={onDelete}
               />
             </Box>
             {/*<Box>{ipfsMediaSources.map(() => {})}</Box>*/}
@@ -83,6 +118,7 @@ export const NFTMintPanel = () => {
               }}
               feeInfo={nftMintProps.feeInfo}
               handleFeeChange={nftMintProps.handleFeeChange}
+              type={"NFT"}
             />
           </StyleWrapper>
         </Grid>

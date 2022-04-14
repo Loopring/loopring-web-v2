@@ -537,6 +537,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   );
 
   const withdrawProps: WithdrawProps<any, any> = {
+    type: "TOKEN",
     isAddressCheckLoading,
     isCFAddress,
     isContractAddress,

@@ -123,7 +123,6 @@ export function useAccountModalForUI({
   onClose?: any;
 }) {
   const { pathname } = useLocation();
-
   const { goUpdateAccount } = useUpdateAccount();
   const { chainInfos, updateDepositHash, clearDepositHash } = useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();

@@ -5,10 +5,10 @@ import { ErrorCode } from "react-dropzone";
 import { UIERROR_CODE } from "@loopring-web/common-resources";
 
 export class IpfsProvides {
-  get ipfs(): IPFS | null {
+  get ipfs(): IPFS | undefined {
     return this._ipfs;
   }
-  private _ipfs: IPFS | null = null;
+  private _ipfs: IPFS | undefined = undefined;
   constructor() {
     try {
       create().then((ipfs) => {
@@ -16,7 +16,7 @@ export class IpfsProvides {
       });
     } catch (error) {
       console.error("IPFS ERROR ON INIT:", error);
-      this._ipfs = null;
+      this._ipfs = undefined;
       // setIpfsInitError(error);
     }
   }
@@ -105,7 +105,7 @@ export const ipfsService = {
     file,
     uniqueId,
   }: {
-    ipfs: IPFS;
+    ipfs: IPFS | undefined;
     file: File;
     uniqueId: string;
   }) => {

@@ -22,6 +22,17 @@ const BoxStyle = styled(Box)`
     })};
   border-style: dashed;
 `;
+export type IpfsFile = {
+  file: File;
+  isProcessing: boolean;
+  error:
+    | {
+        [key: string]: any;
+      }
+    | undefined;
+  uniqueId: string;
+  isUpdateIPFS: boolean;
+};
 
 export const IPFSSourceUpload = ({
   value,
@@ -32,6 +43,7 @@ export const IPFSSourceUpload = ({
   buttonProps,
   disabled,
   maxSize,
+  onDelete,
   types = ["jpeg", "jpg", "gif", "png"],
   ...options
 }: Omit<DropzoneOptions, "onDrop" | "onDropAccepted"> & {
@@ -40,34 +52,51 @@ export const IPFSSourceUpload = ({
   buttonProps?: Omit<ButtonProps, "onClick">;
   title?: string;
   buttonText?: string;
-  value: File[];
+  value: IpfsFile[];
   types?: string[];
-  onChange: (files: File[]) => void;
+  onDelete: (index: number) => void;
+  onChange: (files: IpfsFile[]) => void;
 }) => {
   const { t } = useTranslation();
+  // const
+
+  const onDropAccepted = React.useCallback(
+    (_value: File[]) => {
+      // myLog("onDropAccepted", _value);
+      onChange(
+        _value.reduce((prev, file) => {
+          const ipfsFile: IpfsFile = {
+            file,
+            isProcessing: true,
+            error: undefined,
+            isUpdateIPFS: false,
+            uniqueId: Date.now().toString() + file.lastModified,
+          };
+          prev.push(ipfsFile);
+          return prev;
+        }, [] as IpfsFile[])
+      );
+    },
+    [value]
+  );
   const { fileRejections, getRootProps, getInputProps, open } = useDropzone({
     ...options,
     disabled,
     maxSize,
-    onDropAccepted: onChange,
+    onDropAccepted,
     noClick: true,
     noKeyboard: true,
   });
-  const onDelete = (index: number) => {
-    const files = [...value];
-    files.splice(index, 1);
-    onChange(files);
-  };
+
   const isFileTooLarge =
     maxSize !== undefined &&
     fileRejections.length > 0 &&
     fileRejections[0].file.size > maxSize;
   const files = value?.map((file, i) => (
     <FileListItem
-      file={file}
-      index={i}
-      isProcessing={false}
       isError={false}
+      {...file}
+      index={i}
       onDelete={() => onDelete(i)}
     />
   ));
@@ -87,13 +116,10 @@ export const IPFSSourceUpload = ({
       >
         <input {...getInputProps()} />
         <img alt={"ipfs"} height={36} src={SoursURL + "svg/ipfs.svg"} />
-        {/*<Avatar component={"img"} >*/}
         <Typography
           variant={"h6"}
           textAlign="center"
           paddingY={1}
-          // style={{textDecoration}}
-          // sx={{ paddingY: 1 }}
           {...typographyProps}
         >
           {t(title, { types: types })}

@@ -12,7 +12,7 @@ export function useIPFS({ handleSuccessUpload, handleFailedUpload }: any) {
       ({ data, status }: { status: keyof typeof IPFSCommands; data?: any }) => {
         switch (status) {
           case IPFSCommands.IpfsResult:
-            handleSuccessUpload({ CID: data.cid, unquieID: data.unquieID });
+            handleSuccessUpload({ CID: data.cid, uniqueId: data.uniqueId });
             break;
           case IPFSCommands.ErrorGetIpfs:
             handleFailedUpload({ error: data.error });

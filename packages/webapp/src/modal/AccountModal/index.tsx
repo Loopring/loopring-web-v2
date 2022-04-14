@@ -70,7 +70,7 @@ export const ModalAccountInfo = withTranslation("common")(
           transferProps={transferProps}
           withdrawProps={withdrawProps}
           depositGroupProps={{
-            depositProps: depositProps,
+            depositProps,
             tabIndex: partner
               ? DepositPanelType.ThirdPart
               : DepositPanelType.Deposit,

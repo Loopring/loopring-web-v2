@@ -12,6 +12,7 @@ import {
   LoadingIcon,
 } from "@loopring-web/common-resources";
 import React, { ForwardedRef } from "react";
+import { IpfsFile } from "../panel";
 
 export const FileListItem = React.memo(
   React.forwardRef(
@@ -22,12 +23,9 @@ export const FileListItem = React.memo(
         onDelete,
         isProcessing,
         isError,
-      }: {
-        file: File;
-        index: number;
-        isProcessing: boolean;
-        isError: boolean;
+      }: IpfsFile & {
         onDelete: () => void;
+        index: number;
       },
       ref: ForwardedRef<any>
     ) => {

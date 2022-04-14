@@ -491,10 +491,8 @@ export const NFTDetail = withTranslation("common")(
               <TransferPanel<any, any>
                 {...{
                   _width: 320,
-                  type: "NFT",
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
-
                   ...{
                     ...nftTransferProps,
                     tradeData: {
@@ -503,6 +501,7 @@ export const NFTDetail = withTranslation("common")(
                       balance: Number(popItem?.nftBalance),
                     },
                   },
+                  type: "NFT",
                   assetsData: assetsRawData,
                 }}
               />
@@ -520,7 +519,6 @@ export const NFTDetail = withTranslation("common")(
               <WithdrawPanel<any, any>
                 {...{
                   _width: 320,
-                  type: "NFT",
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
                   ...{
@@ -531,6 +529,7 @@ export const NFTDetail = withTranslation("common")(
                       balance: Number(popItem?.nftBalance),
                     },
                   },
+                  type: "NFT",
                   assetsData: assetsRawData,
                 }}
               />{" "}
