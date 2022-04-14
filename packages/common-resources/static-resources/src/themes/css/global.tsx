@@ -135,7 +135,9 @@ export const globalCss = ({ theme }: any) => css`
   #root {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
   }
+
   html,
   body {
     position: relative;
