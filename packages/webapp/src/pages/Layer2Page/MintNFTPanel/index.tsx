@@ -47,28 +47,38 @@ export const NFTMintPanel = () => {
   //   },
   // });
   const onFilesAdd = React.useCallback(
-    (value) => {
-      value.map((value, index) => {
-        if(value.)
-        ipfsService.addFile({
-          ipfs: ipfsProvides.ipfs,
-          file: value.file,
-          uniqueId: value.uniqueId,
-        });
-        value.isUpdateIPFS = true;
-      });
+    (value: IpfsFile[]) => {
       setIpfsMediaSources((state) => {
-        return [...state];
+        return [
+          ...state,
+          ...value.map((value, index) => {
+            if (!value.isUpdateIPFS) {
+              ipfsService.addFile({
+                ipfs: ipfsProvides.ipfs,
+                file: value.file,
+                uniqueId: value.uniqueId,
+              });
+              value.isUpdateIPFS = true;
+            }
+            return value;
+          }),
+        ];
       });
     },
     [ipfsMediaSources]
   );
-  const onDelete = (index: number) => {
-    const files = [...value];
-    files.splice(index, 1);
-    // onDropAccepted(files.map((file) => file.file));
-    // onChange(files);
-  };
+  const onDelete = React.useCallback(
+    (index: number) => {
+      const files = [...ipfsMediaSources];
+      files.splice(index, 1);
+      setIpfsMediaSources((state) => {
+        return files;
+      });
+      // onDropAccepted(files.map((file) => file.file));
+      // onChange(files);
+    },
+    [ipfsMediaSources]
+  );
   return (
     <Box flex={1} marginY={1}>
       <Grid
