@@ -137,6 +137,7 @@ export const globalCss = ({ theme }: any) => css`
     flex-direction: column;
     justify-content: space-between;
   }
+  
   html,
   body {
     position: relative;
