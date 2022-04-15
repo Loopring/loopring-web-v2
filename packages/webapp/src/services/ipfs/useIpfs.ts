@@ -7,7 +7,6 @@ export function useIPFS({ handleSuccessUpload, handleFailedUpload }: any) {
   const subject = React.useMemo(() => ipfsService.onSocket(), []);
   const start = React.useCallback(async () => {
     await ipfsProvides.init();
-    ipfsProvides.startIpfs();
   }, []);
   React.useEffect(() => {
     start();

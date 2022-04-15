@@ -4,7 +4,6 @@ import { IPFSCommands } from "../account/command";
 import {
   CustomError,
   ErrorMap,
-  myLog,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 
@@ -15,32 +14,20 @@ export class IpfsProvides {
   private _ipfs: IPFSHTTPClient | undefined = undefined;
   async init() {
     try {
-      //https://ipfs.infura.io:5001
-      myLog(
-        "authorization",
-        process.env.REACT_APP_INFURA_PROJECT_ID +
-          ":" +
-          process.env.REACT_APP_INFURA_PROJECT_SECRET,
-        "Basic " +
-          btoa(
-            process.env.REACT_APP_INFURA_PROJECT_ID +
-              ":" +
-              process.env.REACT_APP_INFURA_PROJECT_SECRET
-          )
-      );
       this._ipfs = await create({
-        host: "ipfs.infura.io",
-        port: 5001,
-        protocol: "https",
-        headers: {
-          authorization:
-            "Basic " +
-            btoa(
-              process.env.REACT_APP_INFURA_PROJECT_ID +
-                ":" +
-                process.env.REACT_APP_INFURA_PROJECT_SECRET
-            ),
-        },
+        url: "https://d1vjs0p75nt8te.cloudfront.net",
+        // host: "d1vjs0p75nt8te.cloudfront.net",
+        // port: 443,
+        // protocol: "https",
+        // headers: {
+        //   authorization:
+        //     "Basic " +
+        //     btoa(
+        //       process.env.REACT_APP_INFURA_PROJECT_ID +
+        //         ":" +
+        //         process.env.REACT_APP_INFURA_PROJECT_SECRET
+        //     ),
+        // },
       });
     } catch (error) {
       console.error("IPFSHTTPClient ERROR ON INIT:", error);
@@ -49,14 +36,6 @@ export class IpfsProvides {
     }
     return this._ipfs;
   }
-
-  // startIpfs() {
-  //   if (this._ipfs) {
-  //     this._ipfs.start();
-  //   } else {
-  //     console.error("IPFSHTTPClient ERROR ON START:", "No ipfs");
-  //   }
-  // }
   stop() {
     if (this._ipfs) {
       this._ipfs
@@ -65,22 +44,6 @@ export class IpfsProvides {
     }
   }
 }
-//
-// async function callIpfs({
-//   ipfs,
-//   cmd,
-//   opts,
-// }: {
-//   ipfs: IPFSHTTPClient;
-//   cmd: string;
-//   opts: object;
-//   [key: string]: any;
-// }): Promise<any> {
-//   if (!ipfs) return null;
-//   console.log(`Call ipfs.${cmd}`);
-//   const ipfsCmd = prop.get(ipfs, cmd) as (props: any) => Promise<any>;
-//   return await ipfsCmd(opts);
-// }
 
 const subject = new Subject<{
   status: keyof typeof IPFSCommands;
@@ -183,3 +146,14 @@ export const ipfsService = {
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),
 };
+// port: 5001,
+// protocol: "https",
+// headers: {
+//   authorization:
+//     "Basic " +
+//     btoa(
+//       process.env.REACT_APP_INFURA_PROJECT_ID +
+//         ":" +
+//         process.env.REACT_APP_INFURA_PROJECT_SECRET
+//     ),
+// },
