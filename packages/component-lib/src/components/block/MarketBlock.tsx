@@ -40,7 +40,7 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
   &:hover {
     box-shadow: var(--shadow-hover);
   }
-` as React.ElementType<StyledProps & BoxProps>;
+` as (props: StyledProps & BoxProps) => JSX.Element;
 
 export const MarketBlock = <C extends CoinKey<I>, I>({
   coinAInfo,

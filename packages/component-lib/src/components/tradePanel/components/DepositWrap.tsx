@@ -49,10 +49,10 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   const [address, setAddress] = React.useState<string | undefined>(
     addressDefault || ""
   );
-  const [addressError, setAddressError] = React.useState<
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined
-  >();
+  const [addressError, setAddressError] =
+    React.useState<
+      { error: boolean; message?: string | JSX.Element } | undefined
+    >();
 
   const debounceAddress = _.debounce(({ address }: any) => {
     if (handleOnAddressChange) {

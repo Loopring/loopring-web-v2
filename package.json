@@ -2,7 +2,7 @@
   "name": "loopring-web",
   "version": "0.1.0",
   "author": "Loopring Dex Frontend Team",
-  "description": "dexwebapp new version",
+  "description": "dex web app new version",
   "private": true,
   "license": "GPL-3.0",
   "engines": {
@@ -11,11 +11,11 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "^2.0.0-aplha.3",
+    "@loopring-web/loopring-sdk": "^2.0.0",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.0.9",
     "@mui/lab": "^5.0.0-alpha.45",
-    "@mui/material": "^5.0.0-rc.0",
+    "@mui/material": "^5.6.1",
     "@react-spring/parallax": "^9.4.4",
     "@reduxjs/toolkit": "^1.5.1",
     "bignumber.js": "^9.0.1",

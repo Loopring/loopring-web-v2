@@ -10,11 +10,11 @@ import {
   SoursURL,
   TradeFloat,
   TrophyIcon,
+  UpColor,
 } from "@loopring-web/common-resources";
 import { Box, Grid } from "@mui/material";
 import { Avatar, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import React from "react";
 import { baseTitleCss, useSettings } from "../../index";
 import { NewTagIcon } from "../basic-lib";
 import { Currency } from "@loopring-web/loopring-sdk";
@@ -22,11 +22,11 @@ import { useHistory } from "react-router-dom";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
 
 type StyledProps = {
-  custom: any;
+  custom: { chg: UpColor };
 };
 const TradeTitleStyled = styled(Box)<StyledProps>`
   ${({ theme, custom }) => baseTitleCss({ theme, custom })}
-` as React.ElementType<StyledProps>;
+` as (props: StyledProps) => JSX.Element;
 
 export const TradeTitle = <I extends object>({
   baseShow,
@@ -101,6 +101,7 @@ export const TradeTitle = <I extends object>({
       ? tradeFloat.change.toFixed(2) + "%"
       : "0.00%";
   return (
+    // @ts-ignore
     <TradeTitleStyled custom={{ chg: upColor }}>
       {coinBInfo && coinAInfo ? (
         <Grid container height={72}>

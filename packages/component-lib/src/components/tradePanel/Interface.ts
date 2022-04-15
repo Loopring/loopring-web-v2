@@ -192,7 +192,7 @@ export type ModalPanelProps = {
   onClose: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
-  content: React.ElementType<any> | JSX.Element;
+  content: JSX.Element;
   _height?: number | string;
   _width?: number | string;
 };

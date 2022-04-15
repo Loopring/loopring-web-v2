@@ -8,11 +8,11 @@ export interface GatewayItemQRCode {
  * @param handleSelect default hanldeSelect, if item have no private handleSelect function
  */
 export interface QRCodeProps {
-  title?: React.ElementType<any> | string | JSX.Element;
+  title?: string | JSX.Element;
   size?: number;
   url: string;
   className?: string;
-  description?: React.ElementType<any> | string | JSX.Element;
+  description?: string | JSX.Element;
 }
 
 export type ModalQRCodeProps = QRCodeProps & {

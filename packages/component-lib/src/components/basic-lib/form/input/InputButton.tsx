@@ -45,7 +45,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>(
   );
   const [error, setError] = React.useState<{
     error: boolean;
-    message?: string | React.ElementType;
+    message?: string | JSX.Element;
   }>({
     error: false,
     message: "",
@@ -74,7 +74,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>(
   );
 
   const inputCallback = React.useCallback(
-    ({ current }) => {
+    ({ current }: any) => {
       if (inputData && inputData.tradeValue !== Number(current?.value)) {
         setsValue(inputData.tradeValue);
         _handleError(inputData.tradeValue);

@@ -3,7 +3,6 @@ import { BoxProps, Grid, Typography } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
-import React from "react";
 import { Button } from "./basic-lib";
 import { useSettings } from "../stores";
 
@@ -219,9 +218,9 @@ export const SwitchPanelStyled: any = styled(Box)<
       height: 100%;
     }
   }
-` as React.ElementType<
-  { _height?: number | string; _width?: number | string } & BoxProps
->;
+` as (
+  props: { _height?: number | string; _width?: number | string } & BoxProps
+) => JSX.Element;
 // height:${
 //   _height
 //     ? typeof _height === "number"

@@ -21,7 +21,13 @@ import {
   FeeChargeOrderDefault,
   myLog,
 } from "@loopring-web/common-resources";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+  ResponderProvided,
+} from "react-beautiful-dnd";
 import React from "react";
 import { useTheme } from "@emotion/react";
 
@@ -42,24 +48,27 @@ export const ModalSettingFee = withTranslation("common", { withRef: true })(
     const [feeChargeValue, setFeeChargeValue] = React.useState<string[]>(
       feeChargeOrder ?? FeeChargeOrderDefault
     );
-    const onDragEnd = React.useCallback((dropResult, provider) => {
-      myLog("draggableDone", dropResult, provider);
-      if (dropResult.destination) {
-        const { index: startIndex } = dropResult.source;
-        const { index: endIndex } = dropResult.destination;
-        setFeeChargeValue((state) => {
-          const result = [].slice.call(state);
-          const [removed] = result.splice(startIndex, 1);
-          result.splice(endIndex, 0, removed);
-          return result;
-        });
-        // const result = [].concat(feeChargeValue);
-        // const [removed] = result.splice(startIndex, 1);
-        // result.splice(endIndex, 0, removed);
-      }
+    const onDragEnd = React.useCallback(
+      (dropResult: DropResult, provider: ResponderProvided) => {
+        myLog("draggableDone", dropResult, provider);
+        if (dropResult.destination) {
+          const { index: startIndex } = dropResult.source;
+          const { index: endIndex } = dropResult.destination;
+          setFeeChargeValue((state) => {
+            const result = [].slice.call(state);
+            const [removed] = result.splice(startIndex, 1);
+            result.splice(endIndex, 0, removed);
+            return result;
+          });
+          // const result = [].concat(feeChargeValue);
+          // const [removed] = result.splice(startIndex, 1);
+          // result.splice(endIndex, 0, removed);
+        }
 
-      // result: DropResult, provided: ResponderProvided
-    }, []);
+        // result: DropResult, provided: ResponderProvided
+      },
+      []
+    );
     const getItemStyle = (
       isDragging: any,
       draggableStyle: any,

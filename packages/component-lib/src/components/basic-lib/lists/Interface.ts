@@ -30,7 +30,7 @@ export type NotificationItem = {
   handleClick?: (event: React.MouseEvent) => void;
   startIcon: {
     className: string;
-    iconItem: React.ElementType<any>;
+    iconItem: JSX.Element;
   };
 } & BasicListItem;
 
@@ -39,7 +39,7 @@ export type BasicHeaderItem = {
 } & BasicListItem;
 
 export type HeadMenuType<I extends BasicHeaderItem> = {
-  children?: React.ElementType<any> | JSX.Element;
+  children?: JSX.Element;
   className?: string;
   allowTrade?: object;
   renderList?: (props: { handleListKeyDown: ({ ...rest }) => any }) => any;
