@@ -62,9 +62,9 @@ const BoxStyle = styled(Box)<
       }
     }
   }
-` as React.ElementType<
-  { _height?: number | string; _width?: number | string } & BoxProps
->;
+` as (
+  props: { _height?: number | string; _width?: number | string } & BoxProps
+) => JSX.Element;
 
 const Modal = withTranslation("common")(
   ({

@@ -21,7 +21,10 @@
     "web-vitals": "^0.2.4",
     "@ramp-network/ramp-instant-sdk": "^3.0.0"
   },
-  "resolutions": {},
+  "resolutions": {
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.0"
+  },
   "build": {
     "files": [
       "build/**/*",

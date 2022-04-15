@@ -138,7 +138,7 @@ export const SettingPanel = withTranslation(["common", "layout"], {
     [setCurrency]
   );
   const handleColorChange = React.useCallback(
-    (_e: any, value) => {
+    (_e: any, value: any) => {
       setUpColor(value);
     },
     [setUpColor]
@@ -155,7 +155,7 @@ export const SettingPanel = withTranslation(["common", "layout"], {
     [themeMode]
   );
   const updown = React.useCallback(
-    ({ key }) => {
+    ({ key }: any) => {
       return (
         <>
           <Typography

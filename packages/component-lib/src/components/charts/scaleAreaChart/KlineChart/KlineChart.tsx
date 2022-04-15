@@ -46,7 +46,6 @@ export interface IOHLCData {
   volume: number;
   txs: number;
 }
-
 export enum MainIndicator {
   MA = "MA",
   EMA = "EMA",
@@ -349,6 +348,7 @@ class StockChart extends React.Component<
         xExtents={xExtents}
         zoomAnchor={lastVisibleItemBasedZoomAnchor}
       >
+        {/*// @ts-ignore */}
         <Chart
           id={chartId++}
           height={chartHeight}
@@ -440,13 +440,13 @@ class StockChart extends React.Component<
             y={((height - margin.top - margin.bottom) * 2) / 5}
           />
         </Chart>
-
         {subIndicatorLst &&
           subIndicatorLst.length > 0 &&
           subIndicatorLst.map((item: any, ind: number) => {
             switch (item.type) {
               case SubIndicator.MACD:
                 return (
+                  /* @ts-ignore */
                   <Chart
                     key={SubIndicator.MACD}
                     id={chartId++}
@@ -494,6 +494,7 @@ class StockChart extends React.Component<
                 );
               case SubIndicator.VOLUME:
                 return (
+                  /* @ts-ignore */
                   <Chart
                     key={SubIndicator.VOLUME}
                     id={chartId++}
@@ -541,6 +542,7 @@ class StockChart extends React.Component<
                 );
               case SubIndicator.RSI:
                 return (
+                  /* @ts-ignore */
                   <Chart
                     key={SubIndicator.RSI}
                     id={chartId++}
@@ -585,6 +587,7 @@ class StockChart extends React.Component<
                 );
               case SubIndicator.SAR:
                 return (
+                  /* @ts-ignore */
                   <Chart
                     key={SubIndicator.SAR}
                     id={chartId++}

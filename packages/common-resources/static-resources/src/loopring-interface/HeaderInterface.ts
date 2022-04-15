@@ -18,5 +18,5 @@ export interface HeaderMenuItemInterface {
     | { [key: string]: Array<HeaderMenuItemInterface> };
   router?: { path: string; [key: string]: any };
   status?: keyof typeof HeaderMenuTabStatus;
-  extender?: React.ElementType<any> | JSX.Element | undefined;
+  extender?: JSX.Element | undefined;
 }

@@ -42,7 +42,7 @@ export const TablePagination = ({
   }, [pageSize, total]);
 
   const handleChange = React.useCallback(
-    (_, value: number) => {
+    (_e: any, value: number) => {
       onPageChange(value);
     },
     [onPageChange]

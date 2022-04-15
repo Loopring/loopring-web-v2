@@ -28,7 +28,6 @@ import {
   subMenuLayer2,
   // VendorProviders,
   ViewIcon,
-  WithdrawTypes,
 } from "@loopring-web/common-resources";
 import { withTranslation } from "react-i18next";
 import { OrderHistoryTable as OrderHistoryTableUI } from "../tableList/orderHistoryTable";
@@ -120,7 +119,7 @@ let withdrawProps: WithdrawProps<any, any> = {
       }, 500);
     });
   },
-  withdrawType: "Fast",
+  withdrawType:4,
   withdrawTypes: ["10","11"],
   // @ts-ignore
   feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" },
@@ -238,9 +237,9 @@ const ModalPanelWrap = () => {
   return (
     <ModalPanel
       transferProps={transferProps}
-      withdrawProps={withdrawProps}           å
+      withdrawProps={withdrawProps}
       resetProps={resetProps}
-      nftDepositProps={nftDepositProps as any}
+      nftDepositProps={depositProps as any}
       ammProps={ammProps as any}
       swapProps={swapProps as any}
       assetsData={resetProps as any}

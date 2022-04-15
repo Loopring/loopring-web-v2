@@ -50,7 +50,7 @@ export const Button = styled(MuButton)<ButtonProps>`
       }}
     }
   }
-` as React.ComponentType<ButtonProps>;
+` as (props: ButtonProps) => JSX.Element;
 
 export function ScrollTop(props: {
   window?: () => Window;

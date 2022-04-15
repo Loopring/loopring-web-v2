@@ -1,3 +1,3 @@
 export * from "./SwitchPanel";
 export * from "./SubMenu";
-export * from "./IPFSSourceUpload";
+export * from "./Interface";

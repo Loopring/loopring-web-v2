@@ -119,9 +119,7 @@ export type DepositInfoProps<I> = {
   handleOnAddressChange?: (value: string | undefined | I) => void;
   handleAddressError?: (
     address: string
-  ) =>
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined;
+  ) => { error: boolean; message?: string | JSX.Element } | undefined;
   wait?: number;
 } & BtnInfoProps;
 
@@ -242,9 +240,7 @@ export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
   handleOnAddressChange?: (value: string | undefined | I) => void;
   handleAddressError?: (
     address: string
-  ) =>
-    | { error: boolean; message?: string | React.ElementType<HTMLElement> }
-    | undefined;
+  ) => { error: boolean; message?: string | JSX.Element } | undefined;
   wait?: number;
 } & BtnInfoProps;
 export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;
