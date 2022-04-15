@@ -267,13 +267,11 @@ export const TradeRacePage = withTranslation("common")(
                 eventStatus
               ) &&
               !searchParams.has("rule") && (
-                <>
-                  <Rank
-                    handleMarketPairChange={handleMarketPairChange}
-                    activityRule={activityRule as AmmPoolActivityRule}
-                    pair={currMarketPair as MarketType}
-                  />
-                </>
+                <Rank
+                  handleMarketPairChange={handleMarketPairChange}
+                  activityRule={activityRule as AmmPoolActivityRule}
+                  pair={currMarketPair as MarketType}
+                />
               )}
             {!searchParams.has("rule") && eventData.api && (
               <RankRaw {...eventData.api} />
