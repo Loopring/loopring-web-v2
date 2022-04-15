@@ -118,10 +118,12 @@ export const useTradeRace = () => {
                   const rule: AmmPoolActivityRule =
                     activityRule[Reflect.ownKeys(activityRule)[0]];
                   setDuration(() => ({
-                    startDate: moment(rule.rangeFrom).format(
-                      `YYYY-MM-DD HH:mm:ss`
-                    ),
-                    endDate: moment(rule.rangeTo).format(`YYYY-MM-DD HH:mm:ss`),
+                    startDate:
+                      moment.utc(rule.rangeFrom).format(`YYYY-MM-DD HH:mm:ss`) +
+                      "(UTC)",
+                    endDate:
+                      moment.utc(rule.rangeTo).format(`YYYY-MM-DD HH:mm:ss`) +
+                      "(UTC)",
                   }));
                   if (rule.rangeFrom > Date.now()) {
                     setEventStatus(EVENT_STATUS.EVENT_READY);
@@ -151,10 +153,6 @@ export const useTradeRace = () => {
                         .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)"
                     : undefined,
                 }));
-                // const activityRule =
-                //   activityDateMap[eventData.duration.startDate][
-                //     searchParams.get("type") as string
-                //   ];
                 setActivityRule({ event_awardRules: eventData.rewards });
                 if (eventData.duration.startDate > Date.now()) {
                   setEventStatus(EVENT_STATUS.EVENT_READY);
