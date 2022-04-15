@@ -68,7 +68,7 @@ export const TradeRacePage = withTranslation("common")(
       handleMarketPairChange,
     } = useTradeRace();
     const anchorRef = React.useRef();
-
+    myLog("activityRule", eventStatus, activityRule);
     /*remove: holiday only end
       const flakes = 160;
       const flake = React.useMemo(() => {
@@ -255,26 +255,26 @@ export const TradeRacePage = withTranslation("common")(
               </Typography>
             )}
             {activityRule &&
-            (activityRule as AmmPoolActivityRule)?.ruleType &&
-            searchParams.get("type") &&
-            [
-              RuleType.SWAP_VOLUME_RANKING,
-              RuleType.ORDERBOOK_MINING,
-              RuleType.AMM_MINING,
-            ].includes(searchParams.get("type") as RuleType) &&
-            eventStatus &&
-            [EVENT_STATUS.EVENT_START, EVENT_STATUS.EVENT_END].includes(
-              eventStatus
-            ) &&
-            !searchParams.has("rule") ? (
-              <Rank
-                handleMarketPairChange={handleMarketPairChange}
-                activityRule={activityRule as AmmPoolActivityRule}
-                pair={currMarketPair as MarketType}
-              />
-            ) : (
-              <></>
-            )}
+              // (activityRule as AmmPoolActivityRule)?.ruleType &&
+              searchParams.get("type") &&
+              [
+                RuleType.SWAP_VOLUME_RANKING,
+                RuleType.ORDERBOOK_MINING,
+                RuleType.AMM_MINING,
+              ].includes(searchParams.get("type") as RuleType) &&
+              eventStatus &&
+              [EVENT_STATUS.EVENT_START, EVENT_STATUS.EVENT_END].includes(
+                eventStatus
+              ) &&
+              !searchParams.has("rule") && (
+                <>
+                  <Rank
+                    handleMarketPairChange={handleMarketPairChange}
+                    activityRule={activityRule as AmmPoolActivityRule}
+                    pair={currMarketPair as MarketType}
+                  />
+                </>
+              )}
             {!searchParams.has("rule") && eventData.api && (
               <RankRaw {...eventData.api} />
             )}
