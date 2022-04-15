@@ -22,7 +22,7 @@ export const FileListItem = React.memo(
         // index,
         onDelete,
         isProcessing,
-        isError,
+        error,
       }: IpfsFile & {
         onDelete: () => void;
         index: number;
@@ -66,7 +66,7 @@ export const FileListItem = React.memo(
             <Typography color={"primay"}>
               {isProcessing ? (
                 <LoadingIcon color={"inherit"} />
-              ) : isError ? (
+              ) : error ? (
                 <FailedIcon color={"error"} />
               ) : (
                 <CompleteIcon color={"success"} />

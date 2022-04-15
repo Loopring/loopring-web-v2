@@ -93,12 +93,7 @@ export const IPFSSourceUpload = ({
     fileRejections.length > 0 &&
     fileRejections[0].file.size > maxSize;
   const files = value?.map((file, i) => (
-    <FileListItem
-      isError={false}
-      {...file}
-      index={i}
-      onDelete={() => onDelete(i)}
-    />
+    <FileListItem {...file} index={i} onDelete={() => onDelete(i)} />
   ));
 
   return (

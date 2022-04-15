@@ -186,7 +186,7 @@ export type DefaultProps<T, I> = {
   disabled?: boolean;
 } & (
   | {
-      type: "TOKEN";
+      type?: "TOKEN";
       coinMap: CoinMap<I, CoinInfo<I>>;
       walletMap: WalletMap<I, WalletCoin<I>>;
     }
@@ -206,7 +206,7 @@ export type BasicACoinTradeViewProps<T, I> = Required<
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
-  type?: "TOKEN" | "NFT";
+  type?: "TOKEN";
   inputBtnRef: React.Ref<any>;
   inputButtonProps?: inputButtonDefaultProps<I, CoinInfo<I>>;
   inputButtonDefaultProps: inputButtonDefaultProps<I, CoinInfo<I>>;
@@ -215,7 +215,7 @@ export type BasicANFTTradeProps<T, I> = Omit<
   BasicACoinTradeViewProps<T, I>,
   "coinMap"
 > & {
-  type?: "TOKEN" | "NFT";
+  type?: "NFT";
   isThumb?: boolean;
   isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;

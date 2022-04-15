@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next";
 import { useNFTMint } from "../../../hooks/useractions/useNFTMint";
 import React from "react";
 import { useIPFS } from "../../../services/ipfs/useIpfs";
-import { myLog, UIERROR_CODE } from "@loopring-web/common-resources";
 import { ipfsService } from "../../../services/ipfs/ipfsService";
 const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`
@@ -53,6 +52,7 @@ export const NFTMintPanel = () => {
           ...state,
           ...value.map((value, index) => {
             if (!value.isUpdateIPFS) {
+              debugger;
               ipfsService.addFile({
                 ipfs: ipfsProvides.ipfs,
                 file: value.file,

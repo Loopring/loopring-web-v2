@@ -1,37 +1,67 @@
 import { Subject } from "rxjs";
-import { create, IPFS } from "ipfs-core";
+import { create, IPFSHTTPClient } from "ipfs-http-client";
 import { IPFSCommands } from "../account/command";
-import { ErrorCode } from "react-dropzone";
-import { UIERROR_CODE } from "@loopring-web/common-resources";
+import {
+  CustomError,
+  ErrorMap,
+  myLog,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 
 export class IpfsProvides {
-  get ipfs(): IPFS | undefined {
+  get ipfs(): IPFSHTTPClient | undefined {
     return this._ipfs;
   }
-  private _ipfs: IPFS | undefined = undefined;
-  constructor() {
+  private _ipfs: IPFSHTTPClient | undefined = undefined;
+  async init() {
     try {
-      create().then((ipfs) => {
-        this._ipfs = ipfs;
+      //https://ipfs.infura.io:5001
+      myLog(
+        "authorization",
+        process.env.REACT_APP_INFURA_PROJECT_ID +
+          ":" +
+          process.env.REACT_APP_INFURA_PROJECT_SECRET,
+        "Basic " +
+          btoa(
+            process.env.REACT_APP_INFURA_PROJECT_ID +
+              ":" +
+              process.env.REACT_APP_INFURA_PROJECT_SECRET
+          )
+      );
+      this._ipfs = await create({
+        host: "ipfs.infura.io",
+        port: 5001,
+        protocol: "https",
+        headers: {
+          authorization:
+            "Basic " +
+            btoa(
+              process.env.REACT_APP_INFURA_PROJECT_ID +
+                ":" +
+                process.env.REACT_APP_INFURA_PROJECT_SECRET
+            ),
+        },
       });
     } catch (error) {
-      console.error("IPFS ERROR ON INIT:", error);
-      this._ipfs = undefined;
+      console.error("IPFSHTTPClient ERROR ON INIT:", error);
+      ipfsService.sendError(new CustomError(ErrorMap.CREATE_IPFS_ERROR));
       // setIpfsInitError(error);
     }
+    return this._ipfs;
   }
-  startIpfs() {
-    if (this._ipfs) {
-      this._ipfs.start();
-    } else {
-      console.error("IPFS ERROR ON START:", "No ipfs");
-    }
-  }
+
+  // startIpfs() {
+  //   if (this._ipfs) {
+  //     this._ipfs.start();
+  //   } else {
+  //     console.error("IPFSHTTPClient ERROR ON START:", "No ipfs");
+  //   }
+  // }
   stop() {
     if (this._ipfs) {
       this._ipfs
         .stop()
-        .catch((err) => console.error("IPFS ERROR ON STOP:", err));
+        .catch((err) => console.error("IPFSHTTPClient ERROR ON STOP:", err));
     }
   }
 }
@@ -41,7 +71,7 @@ export class IpfsProvides {
 //   cmd,
 //   opts,
 // }: {
-//   ipfs: IPFS;
+//   ipfs: IPFSHTTPClient;
 //   cmd: string;
 //   opts: object;
 //   [key: string]: any;
@@ -55,18 +85,26 @@ export class IpfsProvides {
 const subject = new Subject<{
   status: keyof typeof IPFSCommands;
   data?: {
-    uniqueId: string;
+    uniqueId?: string;
     [key: string]: any;
   };
 }>();
 
 export const ipfsService = {
+  sendError: (error: CustomError) => {
+    subject.next({
+      status: IPFSCommands.ErrorGetIpfs,
+      data: {
+        error: error,
+      },
+    });
+  },
   addJSONStringify: async ({
     ipfs,
     str,
     uniqueId,
   }: {
-    ipfs: IPFS;
+    ipfs: IPFSHTTPClient;
     str: string;
     uniqueId: string;
   }) => {
@@ -94,7 +132,7 @@ export const ipfsService = {
           uniqueId,
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
-            message: "IPFS is undefined",
+            message: "IPFSHTTPClient is undefined",
           },
         },
       });
@@ -105,7 +143,7 @@ export const ipfsService = {
     file,
     uniqueId,
   }: {
-    ipfs: IPFS | undefined;
+    ipfs: IPFSHTTPClient | undefined;
     file: File;
     uniqueId: string;
   }) => {
@@ -118,7 +156,7 @@ export const ipfsService = {
         });
       } catch (error) {
         subject.next({
-          status: IPFSCommands.IpfsResult,
+          status: IPFSCommands.ErrorGetIpfs,
           data: {
             error: {
               code: UIERROR_CODE.ADD_IPFS_ERROR,
@@ -135,7 +173,7 @@ export const ipfsService = {
           uniqueId,
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
-            message: "IPFS is undefined",
+            message: "IPFSHTTPClient is undefined",
           },
         },
       });

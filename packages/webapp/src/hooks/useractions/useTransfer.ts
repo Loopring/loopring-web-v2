@@ -452,6 +452,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   );
 
   const transferProps: TransferProps<any, any> = {
+    type: "TOKEN",
     addressDefault: address,
     realAddr,
     tradeData: transferValue as any,

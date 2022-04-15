@@ -8,6 +8,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   MarketType,
+  myLog,
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -144,7 +145,7 @@ export const Rank = ({
       getAmmGameUserRank(pair);
     }
   }, [pair, account.readyState]);
-
+  myLog("rank", currPairRankData, pair);
   return (
     <>
       <Box

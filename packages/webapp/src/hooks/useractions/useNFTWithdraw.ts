@@ -468,6 +468,7 @@ export const useNFTWithdraw = <
     handleOnAddressChange: (value: any) => {
       setAddress(value);
     },
+    type: "NFT",
     addressDefault: address,
     accAddr: account.accAddress,
     isNotAvaiableAddress,
