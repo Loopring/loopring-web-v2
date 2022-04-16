@@ -12,7 +12,6 @@ import {
   myLog,
   TradeNFT,
   UIERROR_CODE,
-  WalletMap,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 import { useTokenMap } from "../../stores/token";
@@ -104,6 +103,13 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                   step: AccountStep.NFTDeploy_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTDeploy_Failed,
@@ -181,14 +187,19 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       updateHW,
     ]
   );
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      tokenAddress: nftDeployValue.tokenAddress,
-      requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
-      updateData: (feeInfo, _chargeFeeList) => {
-        updateNFTDeployData({ ...nftDeployValue, fee: feeInfo });
-      },
-    });
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    tokenAddress: nftDeployValue.tokenAddress,
+    requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
+    updateData: (feeInfo, _chargeFeeList) => {
+      updateNFTDeployData({ ...nftDeployValue, fee: feeInfo });
+    },
+  });
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && !isFeeNotEnough) {
@@ -262,7 +273,6 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
 
         processRequestNFT(req, isFirsTime);
       } catch (e: unknown) {
-        sdk.dumpError400(e);
         // nftTransfer failed
         setShowAccount({
           isShow: true,

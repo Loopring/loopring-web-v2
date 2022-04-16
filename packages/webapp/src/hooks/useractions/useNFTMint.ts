@@ -226,6 +226,14 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
                   step: AccountStep.NFTMint_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
+
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTMint_Failed,
@@ -289,7 +297,15 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         }
       }
     },
-    [account, checkHWAddr, chainId, setShowAccount, resetDefault, updateHW]
+    [
+      account,
+      checkHWAddr,
+      chainId,
+      setShowAccount,
+      resetDefault,
+      updateHW,
+      checkFeeIsEnough,
+    ]
   );
 
   const handleOnNFTDataChange = useCallback(

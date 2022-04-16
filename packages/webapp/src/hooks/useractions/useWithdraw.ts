@@ -357,6 +357,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
                   step: AccountStep.Withdraw_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Withdraw_Failed,
@@ -422,7 +429,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         }
       }
     },
-    [account, checkHWAddr, chainId, setShowAccount, resetWithdrawData, updateHW]
+    [
+      account,
+      checkHWAddr,
+      chainId,
+      setShowAccount,
+      resetWithdrawData,
+      updateHW,
+      checkFeeIsEnough,
+    ]
   );
 
   const handleWithdraw = React.useCallback(

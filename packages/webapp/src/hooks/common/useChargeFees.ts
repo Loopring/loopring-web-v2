@@ -284,8 +284,9 @@ export function useChargeFees({
             setChargeFeeTokenList(_chargeFeeTokenList ?? []);
           }
         } catch (reason: any) {
-          dumpError400(reason);
-          myLog("chargeFeeTokenList,error", reason);
+          myLog("chargeFeeTokenList, error", reason);
+          if ((reason as sdk.RESULT_INFO).code) {
+          }
         }
         return;
       } else {
@@ -297,28 +298,34 @@ export function useChargeFees({
     globalSetup.wait,
     { trailing: true }
   );
-  const checkFeeIsEnough = () => {
-    const walletMap =
-      makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
-    if (chargeFeeTokenList && walletMap) {
-      chargeFeeTokenList.map((feeInfo) => {
-        return {
-          ...feeInfo,
-          hasToken: !!(walletMap && walletMap[feeInfo.belong]),
-        };
-      });
-    }
-
-    if (feeInfo && feeInfo.belong && feeInfo.feeRaw) {
-      const { count } = walletMap[feeInfo.belong] ?? { count: 0 };
-      if (
-        sdk.toBig(count).gte(sdk.toBig(feeInfo.fee.toString().replace(",", "")))
-      ) {
-        setIsFeeNotEnough(false);
-        return;
+  const checkFeeIsEnough = (isRequiredAPI?: boolean) => {
+    if (isRequiredAPI) {
+      getFeeList();
+    } else {
+      const walletMap =
+        makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
+      if (chargeFeeTokenList && walletMap) {
+        chargeFeeTokenList.map((feeInfo) => {
+          return {
+            ...feeInfo,
+            hasToken: !!(walletMap && walletMap[feeInfo.belong]),
+          };
+        });
       }
+
+      if (feeInfo && feeInfo.belong && feeInfo.feeRaw) {
+        const { count } = walletMap[feeInfo.belong] ?? { count: 0 };
+        if (
+          sdk
+            .toBig(count)
+            .gte(sdk.toBig(feeInfo.fee.toString().replace(",", "")))
+        ) {
+          setIsFeeNotEnough(false);
+          return;
+        }
+      }
+      setIsFeeNotEnough(true);
     }
-    setIsFeeNotEnough(true);
   };
 
   React.useEffect(() => {
