@@ -242,6 +242,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
 };
+
 export const TransErrorHelp = ({
   error,
   options,

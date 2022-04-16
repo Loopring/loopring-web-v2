@@ -8,7 +8,7 @@ export const checkErrorInfo = (
   const message = errorInfo.message;
   if (isFirstTime && message === "NOT_SUPPORT_ERROR") {
     return ConnectorError.NOT_SUPPORT_ERROR;
-  } else if (message === "USER_DENIED") {
+  } else if (message === "USER_DENIED" || message === "USER_DENIED_2") {
     return ConnectorError.USER_DENIED;
   } else if (
     message &&
