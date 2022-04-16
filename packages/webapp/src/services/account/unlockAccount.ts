@@ -82,8 +82,6 @@ export async function unlockAccount() {
       }
     } catch (e: any) {
       myLog("unlockAccount error:", JSON.stringify(e));
-      // sdk.BaseAPI.ge
-      // const code = checkErrorInfo(e as sdk.RESULT_INFO, true);
       const error = LoopringAPI.globalAPI?.genErr(e);
       const code = checkErrorInfo(error as sdk.RESULT_INFO, true);
       switch (code) {
