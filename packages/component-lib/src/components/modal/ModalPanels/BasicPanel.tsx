@@ -270,7 +270,6 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                 marginY={1}
                 textAlign={"center"}
               >
-                {`${t("labelErrorTitle")}`}
                 {error && (
                   <Typography
                     variant={"inherit"}
@@ -281,6 +280,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                       )
                     }
                   >
+                    {`${t("labelErrorTitle")}`}
                     <TransErrorHelp error={error} options={errorOptions} />
                     <DropdownIconStyled
                       status={dropdownStatus}
