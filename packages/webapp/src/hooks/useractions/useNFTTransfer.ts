@@ -257,6 +257,14 @@ export const useNFTTransfer = <
                   step: AccountStep.NFTTransfer_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
+
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTTransfer_Failed,
@@ -329,6 +337,7 @@ export const useNFTTransfer = <
       doTransferDone,
       resetNFTTransferData,
       updateHW,
+      checkFeeIsEnough,
     ]
   );
 

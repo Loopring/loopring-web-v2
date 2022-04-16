@@ -281,6 +281,14 @@ export const useNFTWithdraw = <
                   step: AccountStep.NFTWithdraw_First_Method_Denied,
                 });
               } else {
+                if (
+                  [102024, 102025, 114001, 114002].includes(
+                    (response as sdk.RESULT_INFO)?.code || 0
+                  )
+                ) {
+                  checkFeeIsEnough(true);
+                }
+
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTWithdraw_Failed,
@@ -356,6 +364,7 @@ export const useNFTWithdraw = <
       doWithdrawDone,
       resetNFTWithdrawData,
       updateHW,
+      checkFeeIsEnough,
     ]
   );
 

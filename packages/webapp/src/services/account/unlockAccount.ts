@@ -82,9 +82,9 @@ export async function unlockAccount() {
       }
     } catch (e: any) {
       myLog("unlockAccount error:", JSON.stringify(e));
-
-      const errType = checkErrorInfo(e, true);
-      switch (errType) {
+      const error = LoopringAPI.globalAPI?.genErr(e);
+      const code = checkErrorInfo(error as sdk.RESULT_INFO, true);
+      switch (code) {
         case sdk.ConnectorError.USER_DENIED:
           accountServices.sendSignDeniedByUser();
           return;
