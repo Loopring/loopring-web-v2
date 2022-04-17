@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import {
   EmptyValueTag,
+  Explorer,
   getShortAddr,
   IPFS_META_URL,
   LoadingIcon,
@@ -239,13 +240,23 @@ export const NFTDetail = withTranslation("common")(
               <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTID")}
               </Typography>
-              <Typography
-                color={"var(--color-text-secondary)"}
+              <Link
+                fontSize={"inherit"}
+                whiteSpace={"break-spaces"}
+                style={{ wordBreak: "break-all" }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={
+                  Explorer +
+                  `nft/${popItem.minter}-0-${popItem.tokenAddress}-${popItem.nftId}-0`
+                  // ${minterAddress}-0-${tokenAddress}-${nftid}
+                  // -0--0x01348998000000000000000002386f26fc100000000000000000000000000066-0
+                }
                 title={popItem?.nftId}
                 width={"fit-content"}
               >
                 {popItem?.nftIdView ?? ""}
-              </Typography>
+              </Link>
             </Typography>
             <Typography
               display={"inline-flex"}
