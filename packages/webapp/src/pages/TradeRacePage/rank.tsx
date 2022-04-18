@@ -138,12 +138,12 @@ export const Rank = ({
     if (pair) {
       getAmmGameRank(pair);
     }
-  }, [pair]);
+  }, [getAmmGameRank, pair]);
   React.useEffect(() => {
     if (pair && account.readyState === AccountStatus.ACTIVATED) {
       getAmmGameUserRank(pair);
     }
-  }, [pair, account.readyState]);
+  }, [pair, account.readyState, getAmmGameUserRank]);
 
   return (
     <>
@@ -270,24 +270,6 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
     }
   });
   const { chainId } = useSystem();
-  React.useEffect(() => {
-    const url =
-      props.url.replace(
-        "api.loopring.network",
-        chainId === ChainId.MAINNET
-          ? "api.loopring.network"
-          : "uat2.loopring.io"
-      ) + (filter && filter.key ? `?${filter.key}=${filter.value}` : "");
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => {
-        setRank(json.data as any[]);
-        setShowLoading(false);
-      })
-      .catch(() => {
-        return [];
-      });
-  }, [filter?.value]);
 
   React.useEffect(() => {
     if (searchValue !== "" && rank.length) {
@@ -306,6 +288,12 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       setRankView(rank);
     }
   }, [rank, searchValue]);
+  const onChange = (event: React.ChangeEvent<{ value: string }>) => {
+    if (event.target.value) {
+      setFilter((state) => ({ ...state, value: event.target.value } as any));
+    }
+  };
+
   const defaultArgs: any = {
     columnMode: props.column.length
       ? props.column.map((item, index) => ({
@@ -333,6 +321,27 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
     generateColumns: ({ columnsRaw }: any) =>
       columnsRaw as Column<any, unknown>[],
   };
+  React.useEffect(() => {
+    getTableValues();
+  }, [filter?.value]);
+  const getTableValues = React.useCallback(async () => {
+    const url =
+      props.url.replace(
+        "api.loopring.network",
+        chainId === ChainId.MAINNET
+          ? "api.loopring.network"
+          : "uat2.loopring.io"
+      ) + (filter && filter.key ? `?${filter.key}=${filter.value}` : "");
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => {
+        setRank(json.data as any[]);
+        setShowLoading(false);
+      })
+      .catch(() => {
+        return [];
+      });
+  }, [chainId, filter, props]);
 
   return (
     <Box
@@ -359,14 +368,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
             select
             style={{ width: 150, textAlign: "left" }}
             value={filter.value}
-            onChange={(event: React.ChangeEvent<{ value: string }>) => {
-              setFilter((state) => {
-                if (state) {
-                  state.value = event.target.value;
-                }
-                return state;
-              });
-            }}
+            onChange={onChange}
             inputProps={{ IconComponent: DropDownIcon }}
           >
             {filter.list.map((item, index) => (
