@@ -34,7 +34,11 @@ import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { useGetAssets } from "../../AssetPanel/hook";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
-import { DEPLOYMENT_STATUS, LOOPRING_URLs } from "@loopring-web/loopring-sdk";
+import {
+  DEPLOYMENT_STATUS,
+  LOOPRING_URLs,
+  NFTType,
+} from "@loopring-web/loopring-sdk";
 import { useAccount } from "../../../../stores/account";
 
 const BoxNFT = styled(Box)`
@@ -248,7 +252,9 @@ export const NFTDetail = withTranslation("common")(
                 rel="noopener noreferrer"
                 href={
                   Explorer +
-                  `nft/${popItem.minter}-0-${popItem.tokenAddress}-${popItem.nftId}-0`
+                  `nft/${popItem.minter}-${NFTType[popItem.nftType ?? 0]}-${
+                    popItem.tokenAddress
+                  }-${popItem.nftId}-${popItem.royaltyPercentage}`
                   // ${minterAddress}-0-${tokenAddress}-${nftid}
                   // -0--0x01348998000000000000000002386f26fc100000000000000000000000000066-0
                 }
