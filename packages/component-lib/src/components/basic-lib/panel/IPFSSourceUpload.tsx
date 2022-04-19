@@ -142,7 +142,7 @@ export const IPFSSourceUpload = ({
           left: 0,
           bottom: 0,
           height: "100%",
-          widht: "100%",
+          width: "100%",
         }}
       >
         {value ? (
