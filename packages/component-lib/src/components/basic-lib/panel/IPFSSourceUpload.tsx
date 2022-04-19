@@ -5,11 +5,13 @@ import {
   FormControl,
   FormHelperText,
   Typography,
+  IconButton,
+  Link,
 } from "@mui/material";
 import { DropzoneOptions, useDropzone } from "react-dropzone";
 // import { FileListItem } from "../lists";
 import styled from "@emotion/styled";
-import { ErrorIcon, SoursURL } from "@loopring-web/common-resources";
+import { CloseIcon, ErrorIcon, SoursURL } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { NftImage } from "../media";
@@ -34,6 +36,7 @@ const BoxStyle = styled(Box)`
 `;
 export type IpfsFile = {
   file: File;
+
   isProcessing: boolean;
   error:
     | {
@@ -43,6 +46,7 @@ export type IpfsFile = {
   uniqueId: string;
   isUpdateIPFS: boolean;
   cid?: string;
+  localSrc?: string;
   fullSrc?: string;
 };
 
@@ -70,7 +74,7 @@ export const IPFSSourceUpload = ({
   buttonText?: string;
   value: IpfsFile | null;
   types?: string[];
-  onDelete: (index: number) => void;
+  onDelete: () => void;
   onChange: (files: IpfsFile) => void;
 }) => {
   const { t } = useTranslation();
@@ -84,22 +88,12 @@ export const IPFSSourceUpload = ({
         file: file[0],
         isProcessing: true,
         error: undefined,
+        localSrc: URL.createObjectURL(file[0]),
         isUpdateIPFS: false,
         uniqueId: Date.now().toString() + file[0].lastModified,
       });
-      // _value.reduce((prev, file) => {
-      //   const ipfsFile: IpfsFile = {
-      //     file,
-      //     isProcessing: true,
-      //     error: undefined,
-      //     isUpdateIPFS: false,
-      //     uniqueId: Date.now().toString() + file.lastModified,
-      //   };
-      //   prev.push(ipfsFile);
-      //   return prev;
-      // }, [] as IpfsFile)
     },
-    [value]
+    [onChange]
   );
   const { fileRejections, getRootProps, getInputProps, open } = useDropzone({
     ...options,
@@ -116,113 +110,143 @@ export const IPFSSourceUpload = ({
     fileRejections[0].file.size > maxSize;
 
   return (
-    <Box
-      flex={1}
-      alignItems={"column"}
-      display={"flex"}
-      sx={{
-        width: width ?? "auto",
-        position: "relative",
-      }}
-    >
-      <img
-        style={{ opacity: 0.1, width: "100%", padding: 16 }}
-        alt={"ipfs"}
-        src={SoursURL + "svg/ipfs.svg"}
-      />
+    <Box display={"flex"} flexDirection={"column"}>
       <Box
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          left: 0,
-          bottom: 0,
-          height: "100%",
-          width: "100%",
-        }}
+        flex={1}
+        display={"flex"}
+        position={"relative"}
+        width={width ?? "auto"}
       >
-        {value ? (
-          value.isProcessing ? (
-            <Box
-              flex={1}
-              height={"100%"}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <img
-                className="loading-gif"
-                width="36"
-                src={`${SoursURL}images/loading-line.gif`}
-              />
-            </Box>
-          ) : value.error ? (
-            <Box
-              flex={1}
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <ErrorIcon style={{ height: 36, width: 36 }} />
-            </Box>
-          ) : (
-            <Box display={"flex"} flexDirection={"column"}>
-              <NftImage
-                alt={value?.file.name}
-                title={value.cid}
-                onError={() => undefined}
-                src={value.fullSrc}
-              />
-              <Typography variant={"body2"} color={"textSecondary"}>
-                {value.cid}
-              </Typography>
-            </Box>
-          )
-        ) : (
-          <BoxStyle {...getRootProps()} paddingTop={1} display={"flex"}>
-            <FormControl
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                width: "100%",
-                height: "100%",
-              }}
-              onClick={open}
-              error={isFileTooLarge}
-            >
-              <input {...getInputProps()} />
-              {/*<img alt={"ipfs"} height={36} src={SoursURL + "svg/ipfs.svg"} />*/}
-              <Typography
-                variant={"h6"}
-                textAlign="center"
-                padding={1}
-                {...typographyProps}
+        <img
+          style={{
+            opacity: 0.1,
+            width: "100%",
+            padding: 16,
+            height: "100%",
+            display: "block",
+          }}
+          alt={"ipfs"}
+          src={SoursURL + "svg/ipfs.svg"}
+        />
+        <Box
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          {value ? (
+            value.isProcessing ? (
+              <Box
+                flex={1}
+                height={"100%"}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
               >
-                {t(title, { types: types })}
-              </Typography>
-              <FormHelperText>
-                {fileRejections[0]?.errors[0]?.message}
-              </FormHelperText>
-            </FormControl>
-          </BoxStyle>
-        )}
-      </Box>
+                <img
+                  className="loading-gif"
+                  width="36"
+                  alt={""}
+                  src={`${SoursURL}images/loading-line.gif`}
+                />
+              </Box>
+            ) : value.error ? (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <ErrorIcon style={{ height: 36, width: 36 }} />
+              </Box>
+            ) : (
+              <Box
+                flex={1}
+                display={"flex"}
+                alignItems={"center"}
+                height={"100%"}
+                justifyContent={"center"}
+              >
+                <Box>
+                  <NftImage
+                    alt={value?.file.name}
+                    title={value.cid}
+                    onError={() => undefined}
+                    src={value.localSrc}
+                  />
+                </Box>
 
-      {/*<Box*/}
-      {/*  height={RowConfig.rowHeight}*/}
-      {/*  component="ul"*/}
-      {/*  display={"flex"}*/}
-      {/*  justifyContent={"center"}*/}
-      {/*  flexWrap={"wrap"}*/}
-      {/*  style={{ listStyle: "none" }}*/}
-      {/*  margin={0}*/}
-      {/*  padding={1 / 2}*/}
-      {/*>*/}
-      {/*  <FileListItem {...value} />*/}
-      {/*</Box>*/}
+                <IconButton
+                  size={"medium"}
+                  aria-label={t("labelClose")}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    background: "var(--color-global-bg)",
+                  }}
+                  color={"inherit"}
+                  onClick={onDelete}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+            )
+          ) : (
+            <BoxStyle {...getRootProps()} paddingTop={1} display={"flex"}>
+              <FormControl
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  width: "100%",
+                  height: "100%",
+                }}
+                onClick={open}
+                error={isFileTooLarge}
+              >
+                <input {...getInputProps()} />
+                {/*<img alt={"ipfs"} height={36} src={SoursURL + "svg/ipfs.svg"} />*/}
+                <Typography
+                  variant={"h6"}
+                  textAlign="center"
+                  padding={1}
+                  {...typographyProps}
+                >
+                  {t(title, { types: types })}
+                </Typography>
+                <FormHelperText>
+                  {fileRejections[0]?.errors[0]?.message}
+                </FormHelperText>
+              </FormControl>
+            </BoxStyle>
+          )}
+        </Box>
+      </Box>
+      {value && value.cid && (
+        <Typography color={"textSecondary"} marginY={1}>
+          CID:
+          {/*Created Success*/}
+          <Link
+            variant={"body2"}
+            marginLeft={1}
+            whiteSpace={"pre-line"}
+            style={{ wordBreak: "break-all" }}
+            href={value.fullSrc}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {value.cid}
+          </Link>
+        </Typography>
+      )}
     </Box>
   );
 };

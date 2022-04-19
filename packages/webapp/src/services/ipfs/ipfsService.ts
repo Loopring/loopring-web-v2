@@ -16,15 +16,13 @@ export class IpfsProvides {
   private _ipfs: IPFSHTTPClient | undefined = undefined;
   async init() {
     try {
+      // this._ipfs = await create({
+      //   url: `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`,
+      // });
       this._ipfs = await create({
-        // url: "https://"+LoopringIPFSSite,
-        //"https://d1vjs0p75nt8te.cloudfront.net",
-        // host: LoopringIPFSSite,
-        // port: 443,
-        // protocol: "https",
+        protocol: "https",
         host: "ipfs.infura.io",
         port: 5001,
-        protocol: "https",
         headers: {
           authorization:
             "Basic " +

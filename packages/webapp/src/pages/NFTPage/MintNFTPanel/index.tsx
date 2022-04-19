@@ -10,14 +10,22 @@ import {
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { useIPFS, ipfsService } from "services/ipfs";
+import {
+  useIPFS,
+  ipfsService,
+  LoopringIPFSSite,
+  LoopringIPFSSiteProtocol,
+  // LoopringIPFSSiteProtocol,
+  // LoopringIPFSSite,
+} from "services/ipfs";
 import {
   EmptyValueTag,
   FeeInfo,
   NFTMETA,
+  TradeNFT,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { useMintAction } from "../../../services/mintServices";
+import { useMintAction } from "services/mintServices";
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`
@@ -28,12 +36,16 @@ const StyleWrapper = styled(Box)`
 ` as typeof Box;
 const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const NFTMintPanel = <
-  T extends Partial<NFTMETA>,
+  T extends Partial<{
+    tradeData: TradeNFT<I>;
+    nftMETA: NFTMETA;
+  }>,
+  I,
   C extends FeeInfo
 >() => {
   const [ipfsMediaSources, setIpfsMediaSources] =
     React.useState<IpfsFile | null>(null);
-  const { nftMintProps } = useMintAction();
+  const { nftMintProps } = useMintAction<T, I, C>();
   const {
     feeInfo,
     chargeFeeTokenList,
@@ -42,6 +54,7 @@ export const NFTMintPanel = <
     handleOnNFTDataChange,
     tradeData,
   } = nftMintProps;
+
   const handleSuccessUpload = React.useCallback(
     (data: any) => {
       setIpfsMediaSources((value) => {
@@ -51,7 +64,9 @@ export const NFTMintPanel = <
           _value = {
             ..._value,
             cid: cid,
-            fullSrc: `${LOOPRING_URLs.IPFS_META_URL}/${cid}`,
+            fullSrc:
+              // `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}/ipfs/${cid}`,
+              `${LOOPRING_URLs.IPFS_META_URL}${cid}`,
             isProcessing: false,
           };
         } else if (value) {
@@ -99,12 +114,9 @@ export const NFTMintPanel = <
     },
     [ipfsMediaSources]
   );
-  const onDelete = React.useCallback(
-    (index: number) => {
-      setIpfsMediaSources(null);
-    },
-    [ipfsMediaSources]
-  );
+  const onDelete = React.useCallback(() => {
+    setIpfsMediaSources(null);
+  }, [ipfsMediaSources]);
   return (
     <StyleWrapper
       flex={1}
