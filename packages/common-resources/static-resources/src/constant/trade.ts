@@ -69,6 +69,9 @@ export type LAYER1_ACTION_HISTORY = {
   [key in ChainId extends string ? string : string]: Layer1ActionHistory;
 } & { __timer__: -1 | NodeJS.Timeout };
 
+export type NFTProperty = {
+  [key: string]: string;
+};
 export type NFTMETA = {
   image: string;
   name: string;
@@ -78,6 +81,7 @@ export type NFTMETA = {
   description: string;
   nftBalance: number;
   collection: string;
+  Properties: [{}];
 };
 
 export type NFTWholeINFO = NFTTokenInfo &

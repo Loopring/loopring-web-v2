@@ -105,11 +105,12 @@ import { useNFTTransfer } from "../../hooks/useractions/useNFTTransfer";
 import { useNFTDeposit } from "../../hooks/useractions/useNFTDeposit";
 import { LAST_STEP, useModalData } from "../../stores/router";
 import { useActiveAccount } from "../../hooks/useractions/useActiveAccount";
-import { useNFTMint } from "../../hooks/useractions/useNFTMint";
+import { useNFTMint } from "../../services/mintServices/useNFTMint";
 import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useVendor } from "../../hooks/useractions/useVendor";
 import { useNFTDeploy } from "../../hooks/useractions/useNFTDeploy";
 import { useLocation } from "react-router-dom";
+import { mintService } from "../../services/mintServices";
 
 export function useAccountModalForUI({
   t,
@@ -159,7 +160,7 @@ export function useAccountModalForUI({
   } = useExportAccount();
   const vendorProps = useVendor();
   const { depositProps } = useDeposit();
-  const { nftMintProps } = useNFTMint();
+  // const { nftMintProps } = useNFTMint();
   const { assetsRawData } = useGetAssets();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
@@ -168,7 +169,7 @@ export function useAccountModalForUI({
   const { nftDeployProps } = useNFTDeploy({});
   const { resetProps } = useReset();
   const { activeAccountProps } = useActiveAccount();
-  const { nftDepositProps } = useNFTDeposit();
+  // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
 
   const [openQRCode, setOpenQRCode] = useState(false);
@@ -268,7 +269,7 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        setShowNFTDeposit({ isShow: true });
+        // setShowNFTDeposit({ isShow: true });
         // setShowAccount({isShow: true, step: AccountStep.Deposit});
       },
     };
@@ -279,7 +280,7 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        setShowNFTMint({ isShow: true });
+        // setShowNFTMint({ isShow: true });
         // setShowAccount({isShow: true, step: AccountStep.Deposit});
       },
     };
@@ -825,9 +826,10 @@ export function useAccountModalForUI({
         view: (
           <NFTMint_First_Method_Denied
             btnInfo={{
-              btnTxt: "labelRetry",
+              btnTxt: "labelTryAnother",
               callback: () => {
-                nftMintProps.onNFTMintClick(nftMintValue as any, false);
+                mintService.sendHardwareRetry();
+                // nftMintProps.onNFTMintClick(nftMintValue as any, false);
               },
             }}
             {...{
@@ -1718,7 +1720,7 @@ export function useAccountModalForUI({
   return {
     nftTransferProps,
     nftWithdrawProps,
-    nftDepositProps,
+    // nftDepositProps,
     transferProps,
     withdrawProps,
     depositProps,
@@ -1738,7 +1740,7 @@ export function useAccountModalForUI({
     closeBtnInfo,
     accountList,
     currentModal,
-    nftMintProps,
+    // nftMintProps,
     vendorProps,
   };
 }

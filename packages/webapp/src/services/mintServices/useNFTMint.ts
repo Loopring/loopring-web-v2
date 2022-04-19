@@ -30,18 +30,16 @@ import {
   DAYS,
   TOAST_TIME,
 } from "../../defs/common_defs";
-import { checkErrorInfo } from "./utils";
-import { isAccActivated } from "./checkAccStatus";
-import {
-  useWalletLayer2Socket,
-  walletLayer2Service,
-} from "../../services/socket";
+import { checkErrorInfo } from "../../hooks/useractions/utils";
+import { isAccActivated } from "../../hooks/useractions/checkAccStatus";
+import { useWalletLayer2Socket, walletLayer2Service } from "../socket";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useChargeFees } from "../common/useChargeFees";
+import { useChargeFees } from "../../hooks/common/useChargeFees";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
 import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 import store from "../../stores";
+import { MintCommands, mintService } from "./mintService";
 export const useNFTMint = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();

@@ -9,15 +9,21 @@ import {
   FeeToggle,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
-import { useNFTMint } from "hooks/useractions/useNFTMint";
 import React from "react";
-import { useIPFS, ipfsService, LoopringIPFSSite } from "services/ipfs";
+import {
+  useIPFS,
+  ipfsService,
+  LoopringIPFSSite,
+  LoopringIPFSSiteProtocol,
+} from "services/ipfs";
 import {
   EmptyValueTag,
   FeeInfo,
   NFTMETA,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
+import { useMintAction } from "../../../services/mintServices";
+import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -32,7 +38,7 @@ export const NFTMintPanel = <
 >() => {
   const [ipfsMediaSources, setIpfsMediaSources] =
     React.useState<IpfsFile | null>(null);
-  const { nftMintProps } = useNFTMint();
+  const { nftMintProps } = useMintAction();
   const {
     feeInfo,
     chargeFeeTokenList,
@@ -41,23 +47,35 @@ export const NFTMintPanel = <
     handleOnNFTDataChange,
     tradeData,
   } = nftMintProps;
-  const { ipfsProvides } = useIPFS({
-    handleSuccessUpload: ({ cid, uniqueId, file }: any) => {
+  const handleSuccessUpload = React.useCallback(
+    (data: any) => {
       setIpfsMediaSources((value) => {
-        if (value && value?.uniqueId === uniqueId) {
-          value.fullSrc = LoopringIPFSSite + `/ipfs/${cid}`;
-          value.cid = cid;
-          value.isProcessing = false;
-        } else if (value) {
-          value.error = {
-            code: UIERROR_CODE.NOT_SAME_IPFS_RESOURCE,
-            message: `current View ${value?.file.name} not equal to ipfsLoad ${file.name}`,
+        let _value = { ...value };
+        if (value && value?.uniqueId === data.uniqueId) {
+          const cid = data.cid.toString();
+          _value = {
+            ..._value,
+            cid: cid,
+            fullSrc: `${LOOPRING_URLs.IPFS_META_URL}/${cid}`,
+            isProcessing: false,
           };
-          value.isProcessing = false;
+        } else if (value) {
+          _value = {
+            ..._value,
+            error: {
+              code: UIERROR_CODE.NOT_SAME_IPFS_RESOURCE,
+              message: `current View ${value?.file.name} not equal to ipfsLoad ${data.file.name}`,
+            },
+            isProcessing: false,
+          };
         }
-        return value;
+        return _value;
       });
     },
+    [setIpfsMediaSources]
+  );
+  const { ipfsProvides } = useIPFS({
+    handleSuccessUpload,
     handleFailedUpload: () => {},
   });
   const { t } = useTranslation();
@@ -82,6 +100,7 @@ export const NFTMintPanel = <
         uniqueId: value.uniqueId,
       });
       value.isUpdateIPFS = true;
+      setIpfsMediaSources(value);
     },
     [ipfsMediaSources]
   );
@@ -98,11 +117,16 @@ export const NFTMintPanel = <
       flexDirection={"column"}
       marginBottom={2}
     >
-      <Typography component={"h3"} variant={"h4"} padding={5 / 2}>
+      <Typography
+        component={"h3"}
+        variant={"h4"}
+        paddingX={5 / 2}
+        paddingTop={5 / 2}
+      >
         {t("labelMINTNFTTitle")}
       </Typography>
-      <Grid container>
-        <Grid item xs={12} md={5} paddingX={5 / 2} position={"relative"}>
+      <Grid container spacing={5 / 2} padding={5 / 2}>
+        <Grid item xs={12} md={5} position={"relative"}>
           <Typography
             color={"var(--color-text-secondary)"}
             component={"h6"}
@@ -189,9 +213,9 @@ export const NFTMintPanel = <
                       {t("transferLabelFeeChoose")}
                     </Typography>
                     <FeeToggle
-                      chargeFeeTokenList={chargeFeeTokenList}
+                      chargeFeeTokenList={chargeFeeTokenList as C[]}
                       handleToggleChange={handleToggleChange}
-                      feeInfo={feeInfo}
+                      feeInfo={feeInfo as C}
                     />
                   </FeeTokenItemWrapper>
                 )}

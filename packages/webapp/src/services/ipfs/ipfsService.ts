@@ -7,7 +7,8 @@ import {
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import { AddResult } from "ipfs-core-types/types/src/root";
-export const LoopringIPFSSite = "https://d1vjs0p75nt8te.cloudfront.net";
+export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
+export const LoopringIPFSSiteProtocol = "https";
 export class IpfsProvides {
   get ipfs(): IPFSHTTPClient | undefined {
     return this._ipfs;
@@ -16,20 +17,23 @@ export class IpfsProvides {
   async init() {
     try {
       this._ipfs = await create({
-        url: LoopringIPFSSite,
+        // url: "https://"+LoopringIPFSSite,
         //"https://d1vjs0p75nt8te.cloudfront.net",
-        // host: "d1vjs0p75nt8te.cloudfront.net",
+        // host: LoopringIPFSSite,
         // port: 443,
         // protocol: "https",
-        // headers: {
-        //   authorization:
-        //     "Basic " +
-        //     btoa(
-        //       process.env.REACT_APP_INFURA_PROJECT_ID +
-        //         ":" +
-        //         process.env.REACT_APP_INFURA_PROJECT_SECRET
-        //     ),
-        // },
+        host: "ipfs.infura.io",
+        port: 5001,
+        protocol: "https",
+        headers: {
+          authorization:
+            "Basic " +
+            btoa(
+              process.env.REACT_APP_INFURA_PROJECT_ID +
+                ":" +
+                process.env.REACT_APP_INFURA_PROJECT_SECRET
+            ),
+        },
       });
     } catch (error) {
       console.error("IPFSHTTPClient ERROR ON INIT:", error);

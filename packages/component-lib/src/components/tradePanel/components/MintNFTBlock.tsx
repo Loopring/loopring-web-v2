@@ -66,7 +66,6 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
       container
       isMobile={isMobile}
       spacing={2}
-      paddingRight={5 / 2}
       flex={1}
       //
     >

@@ -12,3 +12,4 @@ export * from "./components/DeployNFTWrap";
 export * from "./components/MintNFTWrap";
 export * from "./components/MintNFTBlock";
 export * from "./Deposit";
+export * from "./components/tool/FeeList";

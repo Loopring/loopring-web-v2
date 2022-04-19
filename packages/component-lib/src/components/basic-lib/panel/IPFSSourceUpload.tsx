@@ -5,12 +5,11 @@ import {
   FormControl,
   FormHelperText,
   Typography,
-  backdropClasses,
 } from "@mui/material";
 import { DropzoneOptions, useDropzone } from "react-dropzone";
 // import { FileListItem } from "../lists";
 import styled from "@emotion/styled";
-import { ErrorIcon, hexToRGB, SoursURL } from "@loopring-web/common-resources";
+import { ErrorIcon, SoursURL } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { NftImage } from "../media";
@@ -115,9 +114,6 @@ export const IPFSSourceUpload = ({
     maxSize !== undefined &&
     fileRejections.length > 0 &&
     fileRejections[0].file.size > maxSize;
-  // const files = value?.map((file, i) => (
-  //   <FileListItem {...file} index={i} onDelete={() => onDelete(i)} />
-  // ));
 
   return (
     <Box
@@ -202,7 +198,7 @@ export const IPFSSourceUpload = ({
               <Typography
                 variant={"h6"}
                 textAlign="center"
-                paddingY={1}
+                padding={1}
                 {...typographyProps}
               >
                 {t(title, { types: types })}
