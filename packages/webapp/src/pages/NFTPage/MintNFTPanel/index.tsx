@@ -10,12 +10,7 @@ import {
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import {
-  useIPFS,
-  ipfsService,
-  LoopringIPFSSite,
-  LoopringIPFSSiteProtocol,
-} from "services/ipfs";
+import { useIPFS, ipfsService } from "services/ipfs";
 import {
   EmptyValueTag,
   FeeInfo,
@@ -50,7 +45,7 @@ export const NFTMintPanel = <
   const handleSuccessUpload = React.useCallback(
     (data: any) => {
       setIpfsMediaSources((value) => {
-        let _value = { ...value };
+        let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
         if (value && value?.uniqueId === data.uniqueId) {
           const cid = data.cid.toString();
           _value = {

@@ -14,7 +14,6 @@ import {
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import {
-  account,
   Button,
   DeployNFTWrap,
   InformationForNoMetaNFT,
@@ -31,7 +30,6 @@ import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
-import { useGetAssets } from "../../AssetPanel/hook";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
 import {
@@ -39,7 +37,8 @@ import {
   LOOPRING_URLs,
   NFTType,
 } from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../../../stores/account";
+import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
+import { useAccount } from "../../../stores/account";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
