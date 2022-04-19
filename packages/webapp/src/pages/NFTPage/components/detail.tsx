@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import {
   EmptyValueTag,
+  Explorer,
   getShortAddr,
   IPFS_META_URL,
   LoadingIcon,
@@ -30,11 +31,15 @@ import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
-import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
+import { useGetAssets } from "../../AssetPanel/hook";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
-import { DEPLOYMENT_STATUS, LOOPRING_URLs } from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../../stores/account";
+import {
+  DEPLOYMENT_STATUS,
+  LOOPRING_URLs,
+  NFTType,
+} from "@loopring-web/loopring-sdk";
+import { useAccount } from "../../../../stores/account";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -239,13 +244,25 @@ export const NFTDetail = withTranslation("common")(
               <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTID")}
               </Typography>
-              <Typography
-                color={"var(--color-text-secondary)"}
+              <Link
+                fontSize={"inherit"}
+                whiteSpace={"break-spaces"}
+                style={{ wordBreak: "break-all" }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={
+                  Explorer +
+                  `nft/${popItem.minter}-${NFTType[popItem.nftType ?? 0]}-${
+                    popItem.tokenAddress
+                  }-${popItem.nftId}-${popItem.royaltyPercentage}`
+                  // ${minterAddress}-0-${tokenAddress}-${nftid}
+                  // -0--0x01348998000000000000000002386f26fc100000000000000000000000000066-0
+                }
                 title={popItem?.nftId}
                 width={"fit-content"}
               >
                 {popItem?.nftIdView ?? ""}
-              </Typography>
+              </Link>
             </Typography>
             <Typography
               display={"inline-flex"}

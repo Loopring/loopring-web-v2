@@ -8,25 +8,40 @@ import * as sdk from "@loopring-web/loopring-sdk";
 
 export async function unlockAccount() {
   myLog("unlockAccount starts");
-  const accoun_old = store.getState().account;
+  const accounStore = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
   const { isMobile } = store.getState().settings;
-  myLog("unlockAccount account:", accoun_old);
+  myLog("unlockAccount account:", accounStore);
 
   if (
     exchangeInfo &&
     LoopringAPI.userAPI &&
     LoopringAPI.exchangeAPI &&
     LoopringAPI.walletAPI &&
-    accoun_old.nonce !== undefined
+    accounStore.nonce !== undefined
   ) {
+    let walletType, account;
     try {
-      const connectName = accoun_old.connectName as sdk.ConnectorNames;
-      let { accInfo: account } = await LoopringAPI.exchangeAPI.getAccount({
-        owner: accoun_old.accAddress,
-      });
-      const nonce = account ? account.nonce : accoun_old.nonce;
+      const connectName = accounStore.connectName as sdk.ConnectorNames;
+      const walletTypePromise: Promise<{ walletType: any }> =
+        window.ethereum &&
+        connectName === sdk.ConnectorNames.MetaMask &&
+        isMobile
+          ? Promise.resolve({ walletType: undefined })
+          : LoopringAPI.walletAPI.getWalletType({
+              wallet: accounStore.accAddress,
+            });
+      [{ accInfo: account }, { walletType }] = await Promise.all([
+        LoopringAPI.exchangeAPI.getAccount({
+          owner: accounStore.accAddress,
+        }),
+        walletTypePromise.catch((error) => {
+          return { walletType: undefined };
+        }),
+      ]);
+
+      const nonce = account ? account.nonce : accounStore.nonce;
 
       const msg =
         account.keySeed && account.keySeed !== ""
@@ -46,32 +61,23 @@ export async function unlockAccount() {
         accountId: Number(account.accountId),
         isMobile: isMobile,
       });
-      const walletTypePromise: Promise<{ walletType: any }> =
-        window.ethereum &&
-        connectName === sdk.ConnectorNames.MetaMask &&
-        isMobile
-          ? Promise.resolve({ walletType: undefined })
-          : LoopringAPI.walletAPI.getWalletType({
-              wallet: account.owner,
-            });
-      const [response, { walletType }] = await Promise.all([
-        LoopringAPI.userAPI.getUserApiKey(
-          {
-            accountId: account.accountId,
-          },
-          eddsaKey.sk
-        ),
-        walletTypePromise.catch((error) => {
-          return { walletType: undefined };
-        }),
-      ]);
+
+      const response = await LoopringAPI.userAPI.getUserApiKey(
+        {
+          accountId: account.accountId,
+        },
+        eddsaKey.sk
+      );
 
       if (
         !response.apiKey &&
         ((response as sdk.RESULT_INFO).code ||
           (response as sdk.RESULT_INFO).message)
       ) {
-        accountServices.sendErrorUnlock(response as sdk.RESULT_INFO);
+        accountServices.sendErrorUnlock(
+          response as sdk.RESULT_INFO,
+          walletType
+        );
       } else {
         accountServices.sendAccountSigned({
           apiKey: response.apiKey,
@@ -91,10 +97,13 @@ export async function unlockAccount() {
         default:
           break;
       }
-      accountServices.sendErrorUnlock({
-        code: UIERROR_CODE.UNKNOWN,
-        msg: e.message,
-      });
+      accountServices.sendErrorUnlock(
+        {
+          code: UIERROR_CODE.UNKNOWN,
+          msg: e.message,
+        },
+        walletType
+      );
     }
   }
 }

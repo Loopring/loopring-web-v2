@@ -22,40 +22,40 @@ export function useAccountHook({
     const subscription = subject.subscribe(
       ({ data, status }: { status: keyof typeof Commands; data?: any }) => {
         switch (status) {
-          case "ErrorNetwork":
+          case Commands.ErrorNetwork:
             handleErrorAccount(data);
             break; // clear private data
-          case "LockAccount":
+          case Commands.LockAccount:
             handleLockAccount(data);
             break; // clear private data
-          case "NoAccount":
+          case Commands.NoAccount:
             handleNoAccount(data);
             break; //
-          case "DepositingAccount":
+          case Commands.DepositingAccount:
             handleDepositingAccount(data);
             break;
-          case "ErrorApproveToken":
+          case Commands.ErrorApproveToken:
             handleErrorApproveToken(data);
             break;
-          case "ErrorDepositSign":
+          case Commands.ErrorDepositSign:
             handleErrorDepositSign(data);
             break;
-          case "ProcessDeposit":
+          case Commands.ProcessDeposit:
             handleProcessDeposit(data);
             break; // two or one step
-          case "SignAccount":
+          case Commands.SignAccount:
             handleSignAccount(data);
             break; //unlock or update account  assgin
-          case "ProcessSign":
+          case Commands.ProcessSign:
             handleProcessSign(data);
             break;
           case Commands.SignDeniedByUser:
             handleSignDeniedByUser(data);
             break;
-          case "ErrorSign":
+          case Commands.ErrorSign:
             handleSignError(data);
             break;
-          case "AccountUnlocked":
+          case Commands.AccountUnlocked:
             handleAccountActive(data);
             break;
         }
