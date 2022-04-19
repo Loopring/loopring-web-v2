@@ -991,11 +991,11 @@ From 2021/12/21 0:00 AM to 2022/1/30 0:00 AM (UTC), 670 random addresses (by luc
 
 *Lottery mechanism*
 
-1. We take the 14108000  block of the Ethereum mainnet as the initial lottery block number, which is expected to occur at 20:00 pm (UTC+8) on January 30, 2022;
+1. We take the 14499000  block of the Ethereum mainnet as the initial lottery block number, which is expected to occur at 14:30 pm (UTC+8) on April 1, 2022;
 2. Sort all the remaining addresses in the lottery in ascending lexicographical order, starting with 0;
 3. The number of the winners this time is the block hash value corresponding to the current lottery block number and the remainder after taking the modulo of the total number of participants in the lottery;
 4. Remove this winning address, and use the lottery address to generate a new SHA256 hash value for the next lottery;
-5. Each round selects 67 winning addresses;
+5. Each round selects 68 winning addresses;
 6. The lottery block number plus one;
 7. Repeat steps 2-6 for a total of 10 times.
 
@@ -1026,3 +1026,5 @@ The address of the first winner is 0x66dec9b38a4181063444ad66fc32abc6b1146cca an
 $\text{：0x11bf6d21c18bd8ba4680b67812d45beeb5e16c4bbef35af618e66bbdbd6c487e}\mod8=6$
 
 Therefore, the number of the second winner is 6 and the address is 0xcb8a6c0a54f7e60ae48d90ccb63a61b72ea0a0bd.
+
+
