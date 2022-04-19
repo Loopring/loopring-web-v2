@@ -190,6 +190,11 @@ export const ErrorMap = {
     messageKey: "errorCreateIpfsError",
     options: {},
   },
+  NOT_SAME_IPFS_RESOURCE: {
+    id: "NOT_SAME_IPFS_RESOURCE",
+    messageKey: "errorNotSameIpfsResource",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -200,6 +205,7 @@ export enum UIERROR_CODE {
   NO_IPFS_INSTANCE = 700007,
   ADD_IPFS_ERROR = 700008,
   CREATE_IPFS_ERROR = 700009,
+  NOT_SAME_IPFS_RESOURCE = 700010,
 }
 export type ErrorObject = {
   from?: string;
@@ -216,6 +222,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   700007: ErrorMap.NO_IPFS_INSTANCE,
   700008: ErrorMap.ADD_IPFS_ERROR,
   700009: ErrorMap.CREATE_IPFS_ERROR,
+  700010: ErrorMap.NOT_SAME_IPFS_RESOURCE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

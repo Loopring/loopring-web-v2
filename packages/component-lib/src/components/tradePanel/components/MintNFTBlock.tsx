@@ -2,7 +2,7 @@ import { NFTMintViewWholeProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
-  Box,
+  // Box,
   FormLabel,
   Grid,
   GridProps,
@@ -10,23 +10,18 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  EmptyValueTag,
+  // EmptyValueTag,
   FeeInfo,
-  IPFS_META_URL,
   myLog,
   NFTMETA,
 } from "@loopring-web/common-resources";
 import { Button, TextField } from "../../basic-lib";
 
-import {
-  LOOPRING_URLs,
-  // NFTType
-} from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
-import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { FeeToggle } from "./tool/FeeList";
+// import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
+// import { FeeToggle } from "./tool/FeeList";
 const TextareaAutosizeStyled = styled(TextareaAutosize)`
   line-height: 1.5em;
   background: (var(--opacity));
@@ -47,31 +42,18 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
   disabled,
   tradeData,
   btnInfo,
-  handleOnNFTDataChange,
+  // handleOnNFTDataChange,
   nftMintBtnStatus,
-  isFeeNotEnough,
-  handleFeeChange,
-  chargeFeeTokenList,
-  feeInfo,
+  // isFeeNotEnough,
+  // handleFeeChange,
+  // chargeFeeTokenList,
+  // feeInfo,
   // isAvaiableId,
   // isNFTCheckLoading,
   onNFTMintClick,
 }: NFTMintViewWholeProps<T, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
-  const [dropdownStatus, setDropdownStatus] =
-    React.useState<"up" | "down">("down");
-
-  const handleToggleChange = (value: C) => {
-    if (handleFeeChange) {
-      handleFeeChange(value);
-    }
-  };
-  const _handleOnNFTDataChange = (_tradeData: T) => {
-    if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-    }
-  };
   const getDisabled = React.useMemo(() => {
     return !!(disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED);
   }, [disabled, nftMintBtnStatus]);
@@ -84,7 +66,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
       container
       isMobile={isMobile}
       spacing={2}
-      padding={5 / 2}
+      paddingRight={5 / 2}
       flex={1}
       //
     >
@@ -102,7 +84,8 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
           value={tradeData.collection}
           fullWidth
           select
-          label={t("labelMintCollection")}
+          disabled={true}
+          label={t("labelMintCollection") + " " + "coming soon"}
           type={"text"}
         />
       </Grid>
@@ -122,88 +105,37 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
           type={"number"}
         />
       </Grid>
-      <Grid item xs={12}>
-        {!chargeFeeTokenList?.length ? (
-          <Typography>{t("labelFeeCalculating")}</Typography>
-        ) : (
-          <>
-            <Typography
-              component={"span"}
-              display={"flex"}
-              flexWrap={"wrap"}
-              alignItems={"center"}
-              variant={"body1"}
-              color={"var(--color-text-secondary)"}
-              marginBottom={1}
-            >
-              <Typography component={"span"} color={"inherit"} minWidth={28}>
-                {t("transferLabelFee")}：
-              </Typography>
-              <Box
-                component={"span"}
-                display={"flex"}
-                alignItems={"center"}
-                style={{ cursor: "pointer" }}
-                onClick={() =>
-                  setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
-                }
-              >
-                {feeInfo && feeInfo.belong && feeInfo.fee
-                  ? feeInfo.fee + " " + feeInfo.belong
-                  : EmptyValueTag + " " + feeInfo?.belong}
-                <DropdownIconStyled
-                  status={dropdownStatus}
-                  fontSize={"medium"}
-                />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"var(--color-error)"}
-                >
-                  {isFeeNotEnough && t("transferLabelFeeNotEnough")}
-                </Typography>
-              </Box>
-            </Typography>
-            {dropdownStatus === "up" && (
-              <FeeTokenItemWrapper padding={2}>
-                <Typography
-                  variant={"body2"}
-                  color={"var(--color-text-third)"}
-                  marginBottom={1}
-                >
-                  {t("transferLabelFeeChoose")}
-                </Typography>
-                <FeeToggle
-                  chargeFeeTokenList={chargeFeeTokenList}
-                  handleToggleChange={handleToggleChange}
-                  feeInfo={feeInfo}
-                />
-              </FeeTokenItemWrapper>
-            )}
-          </>
-        )}
-      </Grid>
-      <Grid item xs={12} md={6}>
+
+      <Grid item xs={12} md={12}>
         <FormLabel>
-          <Typography variant={"body2"} lineHeight={4}>
+          <Typography variant={"body2"} paddingBottom={1}>
             {t("labelMintDescription")}
           </Typography>
         </FormLabel>
         <TextareaAutosizeStyled aria-label="NFT Description" minRows={5} />
       </Grid>
 
-      <Grid item xs={12} md={6}>
-        <img
-          alt={"NFT"}
-          width={"68"}
-          height={"69"}
-          style={{ objectFit: "contain" }}
-          src={tradeData?.image?.replace(
-            IPFS_META_URL,
-            LOOPRING_URLs.IPFS_META_URL
-          )}
-        />
+      <Grid item xs={12} md={12}>
+        <FormLabel>
+          <Typography variant={"body2"} paddingBottom={1}>
+            {t("labelMintProperty")}
+          </Typography>
+        </FormLabel>
+        <TextareaAutosizeStyled aria-label="NFT Description" minRows={5} />
       </Grid>
+
+      {/*<Grid item xs={12} md={6}>*/}
+      {/*  <img*/}
+      {/*    alt={"NFT"}*/}
+      {/*    width={"68"}*/}
+      {/*    height={"69"}*/}
+      {/*    style={{ objectFit: "contain" }}*/}
+      {/*    src={tradeData?.image?.replace(*/}
+      {/*      IPFS_META_URL,*/}
+      {/*      LOOPRING_URLs.IPFS_META_URL*/}
+      {/*    )}*/}
+      {/*  />*/}
+      {/*</Grid>*/}
 
       <Grid item xs={12} marginTop={3} alignSelf={"stretch"}>
         {btnInfo?.label === "labelNFTMintNoMetaBtn" && (

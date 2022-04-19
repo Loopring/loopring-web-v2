@@ -20,15 +20,15 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
-import { NFTDetail } from "./components/detail";
+import { NFTDetail } from "../components/detail";
 import {
   EmptyValueTag,
   getShortAddr,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
-import { HistoryNFT } from "./components/history";
-import { NFTMedia } from "./components/nftMedia";
+import { HistoryNFT } from "../components/history";
+import { NFTMedia } from "../components/nftMedia";
 import { NFTLimit } from "stores/walletLayer2NFT/saga";
 
 const StyledPaper = styled(Box)`
@@ -71,7 +71,6 @@ export const MyNFTPanel = withTranslation("common")(
       page,
       total,
       onNFTError,
-      // onNFTReload,
       onPageChange,
     } = useMyNFT();
     const [currentTab, setCurrentTab] = React.useState<TabKey>(TabKey.ASSETS);

@@ -11,7 +11,7 @@ import { useSystem } from "stores/system";
 import { useAccount } from "stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TxNFTType } from "@loopring-web/loopring-sdk";
-import { volumeToCountAsBigNumber } from "../../../../hooks/help";
+import { volumeToCountAsBigNumber } from "../../../hooks/help";
 import { RowConfig } from "@loopring-web/common-resources";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });

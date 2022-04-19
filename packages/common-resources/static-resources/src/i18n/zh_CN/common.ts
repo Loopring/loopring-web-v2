@@ -455,7 +455,7 @@ export default {
   labelInformation: "Notification",
   labelNoticeForProvider:
     "Loopring only support and maintain {{name}} plugins for WalletConnect, if your installed other Wallet plugin, please make sure it's the {{name}} popup.",
-  labelGuid: "Go to Guid",
+  labelGuid: "Go to Guide",
   labelIKnow: "I know",
   labelYes: "Yes",
   labelNo: "No",

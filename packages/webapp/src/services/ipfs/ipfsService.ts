@@ -6,7 +6,8 @@ import {
   ErrorMap,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-
+import { AddResult } from "ipfs-core-types/types/src/root";
+export const LoopringIPFSSite = "https://d1vjs0p75nt8te.cloudfront.net";
 export class IpfsProvides {
   get ipfs(): IPFSHTTPClient | undefined {
     return this._ipfs;
@@ -15,7 +16,8 @@ export class IpfsProvides {
   async init() {
     try {
       this._ipfs = await create({
-        url: "https://d1vjs0p75nt8te.cloudfront.net",
+        url: LoopringIPFSSite,
+        //"https://d1vjs0p75nt8te.cloudfront.net",
         // host: "d1vjs0p75nt8te.cloudfront.net",
         // port: 443,
         // protocol: "https",
@@ -112,10 +114,10 @@ export const ipfsService = {
   }) => {
     if (ipfs) {
       try {
-        const data = await ipfs.add(file); //callIpfs({ ipfs, cmd, opts });
+        const data: AddResult = await ipfs.add(file); //callIpfs({ ipfs, cmd, opts });
         subject.next({
           status: IPFSCommands.IpfsResult,
-          data: { ...data, uniqueId },
+          data: { ...data, uniqueId, file },
         });
       } catch (error) {
         subject.next({

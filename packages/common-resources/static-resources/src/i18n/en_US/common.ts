@@ -467,7 +467,7 @@ export default {
   labelInformation: "Notification",
   labelNoticeForProvider:
     "Loopring currently supports the following wallet connections: {{name}}. Please make sure to use one of these when attempting to connect.",
-  labelGuid: "Go to Guid",
+  labelGuid: "Go to Guide",
   labelIKnow: "OK",
   labelYes: "Yes",
   labelNo: "No",
@@ -623,8 +623,8 @@ export default {
   labelGoExplore: "View transactions on <1>block explorer</1>",
   labelNOETH: "Need ETH for gas",
   labelBanxaFeeFree: "zero fees for a limited time",
-  labelLoadTitle: "Step1: Upload Media Resource ({{types}})",
-  labelIPFSStep2: "Step2: create NFT metadata information and submit",
+  labelMINTNFTTitle: "Create NFT (ERC1155)",
+  labelIPFSUploadTitle: "Upload Image <1>*</1> ",
   labelLoadDes: "Drag or click the button to upload files ({{types}})",
   labelUpload: "upLoad",
 };

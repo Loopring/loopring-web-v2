@@ -30,11 +30,11 @@ import styled from "@emotion/styled";
 import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
 import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
-import { useGetAssets } from "../../AssetPanel/hook";
+import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
 import { DEPLOYMENT_STATUS, LOOPRING_URLs } from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../../../stores/account";
+import { useAccount } from "../../../stores/account";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);

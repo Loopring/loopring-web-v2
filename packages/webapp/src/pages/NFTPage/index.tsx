@@ -1,66 +1,36 @@
 import { useRouteMatch } from "react-router-dom";
 
-import { Box, Typography } from "@mui/material";
-import {
-  AssetTitleMobile,
-  SubMenu,
-  SubMenuList,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { Box, Button, Divider, Typography } from "@mui/material";
+import { SubMenu, SubMenuList, useSettings } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import {
   AccountStatus,
   SoursURL,
-  subMenuLayer2,
+  subMenuNFT,
 } from "@loopring-web/common-resources";
 
-import AssetPanel from "./AssetPanel";
-import HistoryPanel from "./HistoryPanel";
-import OrderPanel from "./OrderPanel";
-import MyLiqudityPanel from "./MyLiquidityPanel";
-import React from "react";
-import { useAccount } from "../../stores/account";
-import { SecurityPanel } from "./SecurityPanel";
-import { VipPanel } from "./VipPanel";
-import { RewardPanel } from "./RewardPanel";
-import { RedPockPanel } from "./RedPockPanel";
-import { MyNFTPanel } from "../NFTPage/MyNFT";
-import { useGetAssets } from "./AssetPanel/hook";
-import { NFTMintPanel } from "../NFTPage/MintNFTPanel";
 import { BtnConnect } from "../../layouts/connectStatusCallback";
 
-export const subMenu = subMenuLayer2;
+import React from "react";
+import { useAccount } from "../../stores/account";
+import { MyNFTPanel } from "./MyNFT";
+import { NFTMintPanel } from "./MintNFTPanel";
 
-export const Layer2Page = () => {
-  let match: any = useRouteMatch("/layer2/:item");
-  const selected = match?.params.item ?? "assets";
+export const subMenu = subMenuNFT;
+
+export const NFTPage = () => {
+  let match: any = useRouteMatch("/NFT/:item");
+  const selected = match?.params.item ?? "assetsNFT";
   const { account } = useAccount();
   const { t } = useTranslation(["common", "layout"]);
-  const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
-  const layer2Router = React.useMemo(() => {
+  const routerNFT = React.useMemo(() => {
     switch (selected) {
-      case "assets":
-        return <AssetPanel />;
-      case "my-liquidity":
-        return <MyLiqudityPanel />;
-      case "my-nft":
+      case "myAssetsNFT":
         return <MyNFTPanel />;
-      case "nft-mint":
+      case "transactionNFT":
+        return <MyNFTPanel />;
+      case "mintNFT":
         return <NFTMintPanel />;
-      case "history":
-        return <HistoryPanel />;
-      case "order":
-        return <OrderPanel />;
-      case "redpock":
-        return <RedPockPanel />;
-      case "rewards":
-        return <RewardPanel />;
-      case "security":
-        return <SecurityPanel />;
-      case "vip":
-        return <VipPanel />;
-      default:
-        <AssetPanel />;
     }
   }, [selected]);
   const { isMobile } = useSettings();
@@ -212,6 +182,30 @@ export const Layer2Page = () => {
               >
                 <SubMenu>
                   <SubMenuList selected={selected} subMenu={subMenu as any} />
+                  <Divider />
+                  <Box
+                    marginTop={1}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    alignItems={"center"}
+                  >
+                    <Box marginY={1}>
+                      <Button
+                        variant={"contained"}
+                        color={"primary"}
+                        fullWidth
+                        size={"small"}
+                        href={"/#/nft/mintNFT"}
+                      >
+                        {t("labelMintNFT")}
+                      </Button>
+                    </Box>
+                    <Box marginY={1}>
+                      <Button variant={"outlined"} color={"primary"} fullWidth>
+                        {t("labelDepositNFT")}
+                      </Button>
+                    </Box>
+                  </Box>
                 </SubMenu>
               </Box>
             )}
@@ -224,19 +218,14 @@ export const Layer2Page = () => {
               marginTop={0}
               flex={1}
             >
-              {isMobile && (
-                <AssetTitleMobile
-                  {...{ ...assetTitleProps, ...assetTitleMobileExtendProps }}
-                />
-              )}
-              {layer2Router}
+              {routerNFT}
             </Box>
           </>
         );
       default:
         break;
     }
-  }, [t, account.readyState, selected, assetTitleProps, isMobile]);
+  }, [t, account.readyState, selected, isMobile]);
 
   return <>{viewTemplate}</>;
 };
