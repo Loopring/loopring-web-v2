@@ -80,7 +80,7 @@ export type NFTMETA = {
   nftIdView: string;
   description: string;
   nftBalance: number;
-  collection: string;
+  collection?: string;
   Properties: [{}];
 };
 
@@ -93,6 +93,7 @@ export type NFTWholeINFO = NFTTokenInfo &
 export type TradeNFT<I> = {
   balance?: number;
   fee?: FeeInfo;
+  nftIdView?: string;
   isApproved?: boolean;
 } & Partial<NFTWholeINFO> &
   Partial<IBData<I>> &

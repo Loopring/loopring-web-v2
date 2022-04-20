@@ -34,6 +34,7 @@ import {
   TradeNFT,
   NFTWholeINFO,
   RequireOne,
+  NFTMETA,
 } from "@loopring-web/common-resources";
 import { RootState } from "stores";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
@@ -69,10 +70,14 @@ export function useModalData(): {
     nftWithdrawData: RequireOne<WithdrawData & NFTWholeINFO, never>
   ) => void;
   resetNFTWithdrawData: () => void;
-  nftMintValue: TradeNFT<any>;
-  updateNFTMintData: (
-    nftMintData: RequireOne<MintData & NFTWholeINFO, never>
-  ) => void;
+  nftMintValue: {
+    mintData: Partial<TradeNFT<any>>;
+    nftMETA: Partial<NFTMETA>;
+  };
+  updateNFTMintData: (nftMintData: {
+    mintData: RequireOne<Partial<TradeNFT<any>>, never>;
+    nftMETA: RequireOne<Partial<NFTMETA>, never>;
+  }) => void;
   resetNFTMintData: () => void;
   nftDeployValue: TradeNFT<any> & { broker: string };
   updateNFTDeployData: (
@@ -148,7 +153,10 @@ export function useModalData(): {
       [dispatch]
     ),
     updateNFTMintData: React.useCallback(
-      (nftMintData: TradeNFT<any>) => {
+      (nftMintData: {
+        mintData: Partial<TradeNFT<any>>;
+        nftMETA: Partial<NFTMETA>;
+      }) => {
         dispatch(updateNFTMintData(nftMintData));
       },
       [dispatch]

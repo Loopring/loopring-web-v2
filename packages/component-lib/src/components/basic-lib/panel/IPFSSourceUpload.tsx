@@ -116,6 +116,7 @@ export const IPFSSourceUpload = ({
         display={"flex"}
         position={"relative"}
         width={width ?? "auto"}
+        minHeight={200}
       >
         <img
           style={{

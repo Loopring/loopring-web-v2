@@ -11,9 +11,9 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "./loopring-web-loopring-sdk-v2.0.3-alpha.1.tgz",
+    "@loopring-web/loopring-sdk": "^2.0.3",
     "@loopring-web/recharts": "^2.0.10",
-    "@loopring-web/web3-provider": "^1.0.9",
+    "@loopring-web/web3-provider": "^1.0.10",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.6.1",
     "@react-spring/parallax": "^9.4.4",

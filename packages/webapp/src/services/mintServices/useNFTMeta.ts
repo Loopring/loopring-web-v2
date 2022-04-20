@@ -1,22 +1,28 @@
 import React from "react";
 import { MintCommands, mintService } from "./mintService";
-import { useNFTMint } from "./useNFTMint";
+import { NFTMETA } from "@loopring-web/common-resources";
 import { useModalData } from "../../stores/router";
-import { FeeInfo, NFTMETA, TradeNFT } from "@loopring-web/common-resources";
 
-export function useMintAction<T, I, C extends FeeInfo>() {
+export function useNFTMeta<T extends Partial<NFTMETA>>() {
+  const nftMETA: Partial<NFTMETA> = {};
   const subject = React.useMemo(() => mintService.onSocket(), []);
-  const { nftMintProps } = useNFTMint();
-  const { nftMintValue } = useModalData();
+  const { nftMintValue, updateNFTMintData } = useModalData();
+
   const commonSwitch = React.useCallback(
     async ({ data, status }: { status: MintCommands; data?: any }) => {
       switch (status) {
-        case MintCommands.HardwareSignature:
-          nftMintProps.onNFTMintClick(nftMintValue as any, false);
+        case MintCommands.FailedIPFS:
+        case MintCommands.ProcessingIPFS:
+          break;
       }
     },
-    [nftMintProps]
+    []
   );
+  const handleONMetaChange = React.useCallback(() => {}, []);
+  // ProcessingIPFS,
+  //   //CompleteIPFS,
+  //   FailedIPFS,
+
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
@@ -26,6 +32,7 @@ export function useMintAction<T, I, C extends FeeInfo>() {
     };
   }, []);
   return {
-    nftMintProps,
+    nftMETA,
+    handleONMetaChange,
   };
 }

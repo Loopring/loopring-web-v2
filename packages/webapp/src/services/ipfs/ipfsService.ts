@@ -116,7 +116,7 @@ export const ipfsService = {
   }) => {
     if (ipfs) {
       try {
-        const data: AddResult = await ipfs.add(file); //callIpfs({ ipfs, cmd, opts });
+        const data: AddResult = await ipfs.add({ content: file.stream() }); //callIpfs({ ipfs, cmd, opts });
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId, file },

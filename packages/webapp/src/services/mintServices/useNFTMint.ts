@@ -1,46 +1,44 @@
-import React, { useCallback } from "react";
-
+import React from "react";
+import { MintCommands, mintService } from "./mintService";
+import { useModalData } from "stores/router";
 import {
   AccountStep,
   NFTMintProps,
   useOpenModals,
 } from "@loopring-web/component-lib";
-import {
-  AccountStatus,
-  ErrorType,
-  TradeNFT,
-  myLog,
-  UIERROR_CODE,
-  EmptyValueTag,
-  MINT_LIMIT,
-  SagaStatus,
-  Explorer,
-} from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTokenMap } from "stores/token";
 import { useAccount } from "stores/account";
-import { useBtnStatus } from "hooks/common/useBtnStatus";
-import { useModalData } from "stores/router";
-import { LoopringAPI } from "../../api_wrapper";
-import { connectProvides } from "@loopring-web/web3-provider";
-import { useSystem } from "../../stores/system";
-import {
-  ActionResult,
-  ActionResultCode,
-  DAYS,
-  TOAST_TIME,
-} from "../../defs/common_defs";
-import { checkErrorInfo } from "../../hooks/useractions/utils";
-import { isAccActivated } from "../../hooks/useractions/checkAccStatus";
-import { useWalletLayer2Socket, walletLayer2Service } from "../socket";
-import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useChargeFees } from "../../hooks/common/useChargeFees";
 import { useTranslation } from "react-i18next";
+import { useBtnStatus } from "hooks/common/useBtnStatus";
+import { useSystem } from "stores/system";
+import { useWalletInfo } from "stores/localStore/walletInfo";
+import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
+import store from "stores";
+import { LoopringAPI } from "api_wrapper";
+import { useChargeFees } from "hooks/common/useChargeFees";
+import {
+  AccountStatus,
+  EmptyValueTag,
+  ErrorType,
+  Explorer,
+  FeeInfo,
+  MINT_LIMIT,
+  myLog,
+  NFTMETA,
+  SagaStatus,
+  TOAST_TIME,
+  TradeNFT,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
+import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
+import { connectProvides } from "@loopring-web/web3-provider";
+import { isAccActivated } from "hooks/useractions/checkAccStatus";
+import { checkErrorInfo } from "hooks/useractions/utils";
+import { ActionResult, ActionResultCode, DAYS } from "../../defs/common_defs";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
-import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
-import store from "../../stores";
-import { MintCommands, mintService } from "./mintService";
-export const useNFTMint = <T extends TradeNFT<I>, I>() => {
+
+export function useNFTMint<T extends TradeNFT<I>, I, C extends FeeInfo>() {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -306,7 +304,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     ]
   );
 
-  const handleOnNFTDataChange = useCallback(
+  const handleOnNFTDataChange = React.useCallback(
     async (data: T) => {
       let shouldUpdate = {};
 
@@ -393,8 +391,8 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     [nftMintValue]
   );
 
-  const onNFTMintClick = useCallback(
-    async (_nftMintValue, isFirstTime: boolean = true) => {
+  const onNFTMintClick = React.useCallback(
+    async (_nftMintValue: T, isFirstTime: boolean = true) => {
       let result: ActionResult = { code: ActionResultCode.NoError };
       if (
         account.readyState === AccountStatus.ACTIVATED &&
@@ -459,7 +457,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
 
           processRequest(req, isFirstTime);
         } catch (e: any) {
-          sdk.dumpError400(e);
+          // sdk.dumpError400(e);
           // transfer failed
           setShowAccount({
             isShow: true,
@@ -515,9 +513,33 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
     onNFTMintClick,
     totalCoinMap,
   ]);
+  const subject = React.useMemo(() => mintService.onSocket(), []);
+
+  const commonSwitch = React.useCallback(
+    async ({ data, status }: { status: MintCommands; data?: any }) => {
+      switch (status) {
+        case MintCommands.SignatureMint:
+        case MintCommands.CancelSignature:
+        case MintCommands.HardwareSignature:
+          nftMintProps.onNFTMintClick(nftMintValue as any, false);
+          break;
+        case MintCommands.Complete:
+          break;
+      }
+    },
+    [nftMintProps]
+  );
+  React.useEffect(() => {
+    const subscription = subject.subscribe((props) => {
+      commonSwitch(props);
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return {
     nftMintProps,
     retryBtn,
   };
-};
+}

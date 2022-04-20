@@ -4,6 +4,7 @@ import {
   IBData,
   TradeNFT,
   NFTWholeINFO,
+  NFTMETA,
 } from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
 
@@ -54,7 +55,10 @@ export type ModalDataStatus = {
   nftTransferValue: TransferData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftDepositValue: TradeNFT<any>;
-  nftMintValue: TradeNFT<any>;
+  nftMintValue: {
+    mintData: Partial<TradeNFT<any>>;
+    nftMETA: Partial<NFTMETA>;
+  };
   nftDeployValue: TradeNFT<any> & { broker: string };
 };
 

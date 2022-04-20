@@ -7,12 +7,12 @@ import { checkErrorInfo } from "hooks/useractions/utils";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export async function unlockAccount() {
-  console.log("unlockAccount starts");
+  myLog("unlockAccount starts");
   const accounStore = store.getState().account;
   const { exchangeInfo, chainId } = store.getState().system;
   accountServices.sendSign();
   const { isMobile } = store.getState().settings;
-  console.log("unlockAccount account:", accounStore);
+  myLog("unlockAccount account:", accounStore);
 
   if (
     exchangeInfo &&
@@ -51,7 +51,7 @@ export async function unlockAccount() {
               exchangeInfo.exchangeAddress
             ).replace("${nonce}", (nonce - 1).toString());
 
-      console.log("generateKeyPair:", msg, chainId, isMobile);
+      myLog("generateKeyPair:", msg, chainId, isMobile);
       const eddsaKey = await sdk.generateKeyPair({
         web3: connectProvides.usedWeb3,
         address: account.owner,
@@ -87,7 +87,7 @@ export async function unlockAccount() {
         });
       }
     } catch (e: any) {
-      console.log("unlockAccount error:", JSON.stringify(e));
+      myLog("unlockAccount error:", JSON.stringify(e));
       const error = LoopringAPI.globalAPI?.genErr(e);
       const code = checkErrorInfo(error as sdk.RESULT_INFO, true);
       switch (code) {

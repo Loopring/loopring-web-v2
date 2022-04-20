@@ -1,2 +1,2 @@
 export * from "./mintService";
-export * from "./useMintAction";
+export * from "./useNFTMint";

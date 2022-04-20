@@ -25,8 +25,10 @@ import {
   TradeNFT,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { useMintAction } from "services/mintServices";
+import { useNFTMint } from "services/mintServices";
 import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
+import { AddResult } from "ipfs-core-types/types/src/root";
+import { useNFTMeta } from "../../../services/mintServices/useNFTMeta";
 const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -36,16 +38,19 @@ const StyleWrapper = styled(Box)`
 ` as typeof Box;
 const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const NFTMintPanel = <
-  T extends Partial<{
-    tradeData: TradeNFT<I>;
-    nftMETA: NFTMETA;
-  }>,
+  T extends {
+    mintData: TradeNFT<I>;
+    nftMETA: Partial<NFTMETA>;
+  },
   I,
   C extends FeeInfo
 >() => {
   const [ipfsMediaSources, setIpfsMediaSources] =
     React.useState<IpfsFile | null>(null);
-  const { nftMintProps } = useMintAction<T, I, C>();
+  const { nftMintProps } = useNFTMint<TradeNFT<I>, I, C>();
+  const { nftMETA, handleONMetaChange } = useNFTMeta<Partial<NFTMETA>>();
+  // const { updateNFTMintData } = useModalData();
+
   const {
     feeInfo,
     chargeFeeTokenList,
@@ -56,7 +61,7 @@ export const NFTMintPanel = <
   } = nftMintProps;
 
   const handleSuccessUpload = React.useCallback(
-    (data: any) => {
+    (data: AddResult & { uniqueId: string }) => {
       setIpfsMediaSources((value) => {
         let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
         if (value && value?.uniqueId === data.uniqueId) {
@@ -64,9 +69,9 @@ export const NFTMintPanel = <
           _value = {
             ..._value,
             cid: cid,
-            fullSrc:
-              // `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}/ipfs/${cid}`,
-              `${LOOPRING_URLs.IPFS_META_URL}${cid}`,
+            fullSrc: `${LOOPRING_URLs.IPFS_META_URL}${data.path}`,
+            // `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}/ipfs/${cid}`,
+            // `${LOOPRING_URLs.IPFS_META_URL}${cid}`,
             isProcessing: false,
           };
         } else if (value) {
@@ -74,7 +79,7 @@ export const NFTMintPanel = <
             ..._value,
             error: {
               code: UIERROR_CODE.NOT_SAME_IPFS_RESOURCE,
-              message: `current View ${value?.file.name} not equal to ipfsLoad ${data.file.name}`,
+              message: `current View ${value?.file.name} not equal to ipfsLoad ${value.file.name}`,
             },
             isProcessing: false,
           };
@@ -97,11 +102,11 @@ export const NFTMintPanel = <
       handleFeeChange(value);
     }
   };
-  const _handleOnNFTDataChange = (_tradeData: T) => {
-    if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-    }
-  };
+  // const _handleOnNFTDataChange = (_tradeData: T) => {
+  //   if (handleOnNFTDataChange) {
+  //     handleOnNFTDataChange({ ...tradeData, ..._tradeData });
+  //   }
+  // };
   const onFilesLoad = React.useCallback(
     (value: IpfsFile) => {
       ipfsService.addFile({
@@ -116,6 +121,7 @@ export const NFTMintPanel = <
   );
   const onDelete = React.useCallback(() => {
     setIpfsMediaSources(null);
+    // handleOnNFTDataChange({...tradeValue,tradeValue.me})
   }, [ipfsMediaSources]);
   return (
     <StyleWrapper
