@@ -36,7 +36,6 @@ const BoxStyle = styled(Box)`
 `;
 export type IpfsFile = {
   file: File;
-
   isProcessing: boolean;
   error:
     | {
@@ -48,6 +47,12 @@ export type IpfsFile = {
   cid?: string;
   localSrc?: string;
   fullSrc?: string;
+};
+export const IPFS_INIT: Partial<IpfsFile> = {
+  file: undefined,
+  isProcessing: false,
+  error: undefined,
+  isUpdateIPFS: false,
 };
 
 export const IPFSSourceUpload = ({
@@ -108,7 +113,25 @@ export const IPFSSourceUpload = ({
     maxSize !== undefined &&
     fileRejections.length > 0 &&
     fileRejections[0].file.size > maxSize;
-
+  const close = React.useMemo(
+    () => (
+      <IconButton
+        size={"medium"}
+        aria-label={t("labelClose")}
+        sx={{
+          position: "absolute",
+          right: 8,
+          top: 8,
+          background: "var(--color-global-bg)",
+        }}
+        color={"inherit"}
+        onClick={onDelete}
+      >
+        <CloseIcon />
+      </IconButton>
+    ),
+    [onDelete, t]
+  );
   return (
     <Box display={"flex"} flexDirection={"column"}>
       <Box
@@ -144,9 +167,9 @@ export const IPFSSourceUpload = ({
             value.isProcessing ? (
               <Box
                 flex={1}
-                height={"100%"}
                 display={"flex"}
                 alignItems={"center"}
+                height={"100%"}
                 justifyContent={"center"}
               >
                 <img
@@ -155,15 +178,18 @@ export const IPFSSourceUpload = ({
                   alt={""}
                   src={`${SoursURL}images/loading-line.gif`}
                 />
+                {close}
               </Box>
             ) : value.error ? (
               <Box
                 flex={1}
                 display={"flex"}
                 alignItems={"center"}
+                height={"100%"}
                 justifyContent={"center"}
               >
                 <ErrorIcon style={{ height: 36, width: 36 }} />
+                {close}
               </Box>
             ) : (
               <Box
@@ -181,21 +207,7 @@ export const IPFSSourceUpload = ({
                     src={value.localSrc}
                   />
                 </Box>
-
-                <IconButton
-                  size={"medium"}
-                  aria-label={t("labelClose")}
-                  sx={{
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    background: "var(--color-global-bg)",
-                  }}
-                  color={"inherit"}
-                  onClick={onDelete}
-                >
-                  <CloseIcon />
-                </IconButton>
+                {close}
               </Box>
             )
           ) : (

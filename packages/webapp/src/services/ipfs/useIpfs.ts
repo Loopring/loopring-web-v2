@@ -17,7 +17,7 @@ export function useIPFS({ handleSuccessUpload, handleFailedUpload }: any) {
             handleSuccessUpload(data);
             break;
           case IPFSCommands.ErrorGetIpfs:
-            handleFailedUpload({ error: data.error });
+            handleFailedUpload(data);
         }
       }
     );

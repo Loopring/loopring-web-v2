@@ -20,7 +20,6 @@ import { BigNumber } from "bignumber.js";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 import { useAccount } from "stores/account";
-import { MintCommands, mintService } from "../../../services/mintServices";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {

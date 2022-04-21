@@ -4,7 +4,6 @@ import { NFTMETA } from "@loopring-web/common-resources";
 import { useModalData } from "../../stores/router";
 
 export function useNFTMeta<T extends Partial<NFTMETA>>() {
-  const nftMETA: Partial<NFTMETA> = {};
   const subject = React.useMemo(() => mintService.onSocket(), []);
   const { nftMintValue, updateNFTMintData } = useModalData();
 
@@ -18,11 +17,17 @@ export function useNFTMeta<T extends Partial<NFTMETA>>() {
     },
     []
   );
-  const handleONMetaChange = React.useCallback(() => {}, []);
+  const handleONMetaChange = React.useCallback(
+    (nftMeta: Partial<NFTMETA>) => {},
+    []
+  );
   // ProcessingIPFS,
   //   //CompleteIPFS,
   //   FailedIPFS,
-
+  const nftMetaProps = {
+    nftMeta: {} as Partial<NFTMETA>,
+    handleONMetaChange,
+  };
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
@@ -32,7 +37,7 @@ export function useNFTMeta<T extends Partial<NFTMETA>>() {
     };
   }, []);
   return {
-    nftMETA,
+    nftMetaProps,
     handleONMetaChange,
   };
 }

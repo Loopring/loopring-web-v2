@@ -7,6 +7,7 @@ import {
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import { AddResult } from "ipfs-core-types/types/src/root";
+import * as sdk from "@loopring-web/loopring-sdk";
 export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
 export const LoopringIPFSSiteProtocol = "https";
 export class IpfsProvides {
@@ -100,7 +101,7 @@ export const ipfsService = {
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
             message: "IPFSHTTPClient is undefined",
-          },
+          } as sdk.RESULT_INFO,
         },
       });
     }
