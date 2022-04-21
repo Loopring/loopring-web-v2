@@ -3230,13 +3230,14 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.3.tgz#282c5435319360b0655514e3d07685b9c41e7529"
-  integrity sha512-zXX7WbtKwx6MGla1msaXGl15EVElpVSgCqU5BFs5e4SKTvg7IPju6DPetZcfQFW/CE+XL2UtLy1skKf+w2Um5g==
+"@loopring-web/loopring-sdk@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.5.tgz#651c7067cdba67685be2589563751d4529a1aaab"
+  integrity sha512-3uhLpGJ6ZfVJeNsmp9sKGB9PPPdVZjErbFtHfPyc8DdbSZewaoohTOJ9gOWTvRMdVW7RrkzixnbEvJmsJzzh7Q==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
+    "@types/jsbn" "^1.2.30"
     async "^3.2.0"
     axios "^0.21.1"
     bignumber.js "^9.0.1"
@@ -3274,10 +3275,10 @@
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-"@loopring-web/web3-provider@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.0.9.tgz#6cc4386f2013e1550f47b394bd7151b4fdbae40f"
-  integrity sha512-BTTIHJtXZtRM5yVXBqwTeEqEOymGGT4KjbisgYdurmJgVcPDc+xZBDl4M7GHCxVOQFUw39zdsL0w7EZJdAg1fA==
+"@loopring-web/web3-provider@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.0.10.tgz#dc4c0a0aae94f044b9574fa87722305af4683065"
+  integrity sha512-QMiqbZM5+WgfYu7FDIWFEjq5g1gcA0CwpBxRFFYO5pdxbBc24G/86+DKCNl0V245g+8XELLb+eWOkNiZLeMQzg==
   dependencies:
     "@coinbase/wallet-sdk" "^3.0.4"
     "@ethersproject/providers" "^5.6.1"
@@ -5644,6 +5645,11 @@
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-2.2.7.tgz#226a9e31680835a6188e887f3988e60c04d3f6a3"
   integrity sha512-aLkWa0C0vO5b4Sr798E26QgOkss68Un0bLjs7u9qxzPT5CG+8DuNTffWES58YzJs3hrVAOs1wonycqEBqNJubA==
+
+"@types/jsbn@^1.2.30":
+  version "1.2.30"
+  resolved "https://registry.yarnpkg.com/@types/jsbn/-/jsbn-1.2.30.tgz#76cb3e5b087f9f90a63dbef9afef53b4642f19de"
+  integrity sha512-VZouplBofjq3YOIHLNRBDxILs/nAArdTZ2QP1ooflyhS+yPExWsFE+i2paBIBb7OI3NJShfcde/nogqk4SPB/Q==
 
 "@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.4", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.7", "@types/json-schema@^7.0.8":
   version "7.0.11"
