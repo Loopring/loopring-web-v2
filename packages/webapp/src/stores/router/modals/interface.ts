@@ -5,6 +5,7 @@ import {
   TradeNFT,
   NFTWholeINFO,
   NFTMETA,
+  MintTradeNFT,
 } from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
 
@@ -43,6 +44,10 @@ export type ActiveAccountData = {
   fee?: FeeInfo;
   walletLayer2: WalletLayer2Map<any> | undefined;
 };
+export type NFT_MINT_VALUE<I> = {
+  mintData: Partial<MintTradeNFT<I>>;
+  nftMETA: Partial<NFTMETA>;
+};
 
 export type ModalDataStatus = {
   lastStep: LAST_STEP;
@@ -55,10 +60,7 @@ export type ModalDataStatus = {
   nftTransferValue: TransferData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftDepositValue: TradeNFT<any>;
-  nftMintValue: {
-    mintData: Partial<TradeNFT<any>>;
-    nftMETA: Partial<NFTMETA>;
-  };
+  nftMintValue: NFT_MINT_VALUE<any>;
   nftDeployValue: TradeNFT<any> & { broker: string };
 };
 

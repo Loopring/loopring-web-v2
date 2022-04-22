@@ -1,40 +1,28 @@
 import { NFTMintViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
-import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import React from "react";
 import { Box, Grid, Typography, Link } from "@mui/material";
 import {
-  CloseIcon,
   EmptyValueTag,
   FeeInfo,
-  HelpIcon,
   IPFS_META_URL,
-  LoadingIcon,
   myLog,
-  // MINT_LIMIT,
-  TradeNFT,
 } from "@loopring-web/common-resources";
-import { bindHover } from "material-ui-popup-state/es";
 import {
   Button,
   EmptyDefault,
   InputSize,
-  PopoverPure,
-  TextField,
+  TextareaAutosizeStyled,
   TGItemData,
-  // ToggleButtonGroup,
 } from "../../basic-lib";
-import {
-  DropdownIconStyled,
-  FeeTokenItemWrapper,
-  IconClearStyled,
-} from "./Styled";
+import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { NFTInput } from "./BasicANFTTrade";
 import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
+import { NFT_MINT_VALUE } from "@loopring-web/webapp/src/stores/router";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -52,12 +40,15 @@ const NFT_TYPE: TGItemData[] = [
     disabled: false,
   },
 ];
-export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
+export const MintNFTConfirm = <
+  T extends NFT_MINT_VALUE<I>,
+  I,
+  C extends FeeInfo
+>({
   disabled,
   walletMap,
-  tradeData,
+  tradeData: nftMintData,
   title,
-  description,
   btnInfo,
   handleOnNFTDataChange,
   nftMintBtnStatus,
@@ -65,8 +56,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
   handleFeeChange,
   chargeFeeTokenList,
   feeInfo,
-  isAvaiableId,
-  isNFTCheckLoading,
   onNFTMintClick,
 }: NFTMintViewProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);
@@ -75,10 +64,6 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
     ? { flex: 1, width: "var(--swap-box-width)" }
     : { width: "var(--modal-width)" };
 
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: `popupId-nftMint`,
-  });
   const inputBtnRef = React.useRef();
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
@@ -91,12 +76,12 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
       handleFeeChange(value);
     }
   };
-  const _handleOnNFTDataChange = (_tradeData: T) => {
+  const _handleOnNFTDataChange = (_nftMintData: Partial<T>) => {
     if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ ...tradeData, ..._tradeData });
+      handleOnNFTDataChange({ ...nftMintData, ..._nftMintData });
     }
   };
-  myLog("mint tradeData", tradeData);
+  myLog("mint nftMintData", nftMintData);
 
   // @ts-ignore
   return (
@@ -113,149 +98,113 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
       flex={1}
       height={"100%"}
     >
-      <Grid item>
-        <Box
+      <Grid item xs={12}>
+        <Typography
+          component={"h4"}
+          variant={"h3"}
           display={"flex"}
           flexDirection={"row"}
           justifyContent={"center"}
           alignItems={"center"}
-          /* textAlign={'center'} */ marginBottom={2}
+          marginBottom={2}
         >
-          <Typography component={"h4"} variant={"h3"} marginRight={1}>
-            {title ? title : t("nftMintTitle")}
-          </Typography>
-          <HelpIcon
-            {...bindHover(popupState)}
-            fontSize={"large"}
-            htmlColor={"var(--color-text-third)"}
-          />
-        </Box>
-        <PopoverPure
-          className={"arrow-center"}
-          {...bindPopper(popupState)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-        >
-          <Typography
-            padding={2}
-            component={"p"}
-            variant={"body2"}
-            whiteSpace={"pre-line"}
-          >
-            <Trans i18nKey={description ? description : "nftMintDescription"}>
-              Paste in the CID that you obtained from uploading the metadata
-              Information file (point 11 above) - if successful, the data from
-              the metadata Information you created contained within the folder
-              populates the Name and also the image displays.
-            </Trans>
-          </Typography>
-        </PopoverPure>
+          {title ? title : t("nftMintTitle")}
+        </Typography>
       </Grid>
       <Grid item marginTop={2} alignSelf={"stretch"}>
-        <Box
-          display={"flex"}
-          alignItems={"center"}
-          flexDirection={"column"}
-          justifyContent={"space-between"}
-          position={"relative"}
+        <Typography
+          display={"inline-flex"}
+          flexDirection={isMobile ? "column" : "row"}
+          variant={"body1"}
+          marginTop={2}
         >
-          <Typography
-            component={"span"}
-            display={"flex"}
-            alignItems={"center"}
-            alignSelf={"flex-start"}
-            marginBottom={1}
-            color={"textSecondary"}
-            variant={"body2"}
-          >
-            <Trans i18nKey={"labelNFTCid"}>
-              IPFS CID :(Store Metadata Information),
-              <Link
-                target="_blank"
-                rel="noopener noreferrer"
-                href={"./#/document/mint_nft.md"}
-                paddingLeft={1}
-              >
-                Follow this Guide
-                <HelpIcon
-                  style={{ cursor: "pointer", marginLeft: "4px" }}
-                  fontSize={"medium"}
-                  htmlColor={"var(--color-text-third)"}
-                />
-              </Link>
-            </Trans>
+          <Typography color={"var(--color-text-third)"} width={150}>
+            {t("labelNFTName")}
           </Typography>
-          <TextField
-            value={tradeData.nftIdView}
-            label={""}
-            title={t("labelNFTCid")}
-            placeholder={t("mintNFTAddressLabelPlaceholder")}
-            onChange={(event) =>
-              _handleOnNFTDataChange({
-                nftIdView: event.target?.value,
-                nftId: "",
-              } as T)
-            }
-            fullWidth={true}
-          />
-          {tradeData.nftIdView && tradeData.nftIdView !== "" ? (
-            isNFTCheckLoading ? (
-              <LoadingIcon
-                width={24}
-                style={{ top: "32px", right: "8px", position: "absolute" }}
-              />
-            ) : (
-              <IconClearStyled
-                color={"inherit"}
-                size={"small"}
-                style={{ top: "30px" }}
-                aria-label="Clear"
-                onClick={() =>
-                  _handleOnNFTDataChange({ nftIdView: "", nftId: "" } as T)
-                }
-              >
-                <CloseIcon />
-              </IconClearStyled>
-            )
-          ) : (
-            ""
-          )}
-          {!isAvaiableId &&
-          tradeData.nftIdView &&
-          tradeData.nftIdView !== "" ? (
-            <Typography
-              color={"var(--color-error)"}
-              fontSize={14}
-              alignSelf={"stretch"}
-              position={"relative"}
-            >
-              {t("labelInvalidCID")}
-            </Typography>
-          ) : (
-            <>
-              {tradeData.nftId &&
-                tradeData.tokenAddress &&
-                tradeData.nftIdView !== "" && (
-                  <Typography
-                    color={"var(--color-text-primary)"}
-                    variant={"body2"}
-                    whiteSpace={"break-spaces"}
-                    marginTop={1 / 4}
-                    component={"span"}
-                    style={{ wordBreak: "break-all" }}
-                  >
-                    {tradeData.nftId}
-                  </Typography>
-                )}
-            </>
-          )}
-        </Box>
+          <Typography
+            color={"var(--color-text-secondary)"}
+            title={nftMintData.nftMETA.name}
+          >
+            {nftMintData.nftMETA.name ?? EmptyValueTag}
+          </Typography>
+        </Typography>
+
+        <Typography
+          display={"inline-flex"}
+          flexDirection={isMobile ? "column" : "row"}
+          variant={"body1"}
+          marginTop={2}
+        >
+          <Typography color={"var(--color-text-third)"} width={150}>
+            {t("labelNFTID")}
+          </Typography>
+          <Link
+            fontSize={"inherit"}
+            whiteSpace={"break-spaces"}
+            style={{ wordBreak: "break-all" }}
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`${LOOPRING_URLs.IPFS_META_URL} ${nftMintData.mintData.cid}`}
+            title={nftMintData.mintData.nftId}
+            width={"fit-content"}
+          >
+            {nftMintData.mintData.nftId ? nftMintData.nftMETA?.nftIdView : ""}
+          </Link>
+        </Typography>
+
+        {/*<Typography*/}
+        {/*  display={"inline-flex"}*/}
+        {/*  flexDirection={isMobile ? "column" : "row"}*/}
+        {/*  variant={"body1"}*/}
+        {/*  marginTop={2}*/}
+        {/*>*/}
+        {/*  <Typography color={"var(--color-text-third)"} width={150}>*/}
+        {/*    {t("labelNFTTYPE")}*/}
+        {/*  </Typography>*/}
+        {/*  <Typography*/}
+        {/*    color={"var(--color-text-secondary)"}*/}
+        {/*    title={nftMintData.mintData.nftType}*/}
+        {/*  >*/}
+        {/*    {nftMintData.mintData.nftType}*/}
+        {/*  </Typography>*/}
+        {/*</Typography>*/}
+        <Typography
+          display={"inline-flex"}
+          flexDirection={isMobile ? "column" : "row"}
+          variant={"body1"}
+          marginTop={2}
+        >
+          <Typography color={"var(--color-text-third)"} width={150}>
+            {t("labelNFTContractAddress")}
+          </Typography>
+          <Typography
+            fontSize={"inherit"}
+            whiteSpace={"break-spaces"}
+            style={{ wordBreak: "break-all" }}
+          >
+            {nftMintData.mintData.tokenAddress}
+          </Typography>
+        </Typography>
+
+        <Typography
+          display={"inline-flex"}
+          flexDirection={isMobile ? "column" : "row"}
+          variant={"body1"}
+          marginTop={2}
+          flex={1}
+        >
+          <Typography color={"var(--color-text-third)"} width={150}>
+            {t("labelNFTDescription")}
+          </Typography>
+          <Box flex={1}>
+            <TextareaAutosizeStyled
+              aria-label="NFT Description"
+              minRows={5}
+              disabled={true}
+              value={nftMintData.nftMETA.description ?? EmptyValueTag}
+            />
+          </Box>
+        </Typography>
       </Grid>
       <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
         {!chargeFeeTokenList?.length ? (
@@ -339,8 +288,9 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
               >
                 {t("labelNFTName") +
                   " " +
-                  (tradeData.nftId
-                    ? tradeData.name ?? t("labelUnknown").toUpperCase()
+                  (nftMintData.mintData.nftId
+                    ? nftMintData.nftMETA.name ??
+                      t("labelUnknown").toUpperCase()
                     : EmptyValueTag)}
               </Typography>
               <Typography
@@ -365,18 +315,18 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
                   size: InputSize.small,
                   label: t("labelNFTMintInputTitle"),
                 }}
-                // disabled={!(tradeData.nftId && tradeData.tokenAddress)}
+                // disabled={!(nftMintData.nftId && nftMintData.tokenAddress)}
                 type={"NFT"}
                 inputNFTRef={inputBtnRef}
                 onChangeEvent={(_index, data) =>
                   _handleOnNFTDataChange({
-                    tradeValue: data.tradeData?.tradeValue ?? "0",
-                  } as T)
+                    tradeData: data.tradeData,
+                  } as unknown as Partial<T>)
                 }
-                tradeData={
+                nftMintData={
                   {
-                    ...tradeData,
-                    belong: tradeData?.tokenAddress ?? "NFT",
+                    ...nftMintData,
+                    belong: nftMintData.mintData.tokenAddress ?? "NFT",
                   } as any
                 }
                 walletMap={walletMap}
@@ -389,18 +339,16 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             justifyContent={"center"}
             alignItems={"center"}
           >
-            {tradeData.nftId && tradeData.image ? (
+            {nftMintData.nftMETA.nftId && nftMintData.nftMETA.image ? (
               <img
                 alt={"NFT"}
                 width={"100%"}
                 height={"100%"}
-                src={tradeData?.image?.replace(
+                src={nftMintData.nftMETA.image?.replace(
                   IPFS_META_URL,
                   LOOPRING_URLs.IPFS_META_URL
                 )}
               />
-            ) : isNFTCheckLoading ? (
-              <LoadingIcon fontSize={"large"} />
             ) : (
               <EmptyDefault
                 height={"100%"}
@@ -444,7 +392,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            onNFTMintClick(tradeData);
+            onNFTMintClick(nftMintData);
           }}
           loading={
             !getDisabled && nftMintBtnStatus === TradeBtnStatus.LOADING

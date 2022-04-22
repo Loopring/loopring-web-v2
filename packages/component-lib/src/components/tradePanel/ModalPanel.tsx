@@ -16,7 +16,7 @@ import {
   modalContentBaseStyle,
   // SwitchPanelStyled,
   // DepositNFTWrap,
-  // MintNFTWrap,
+  // MintNFTConfirm,
   // NFTMintProps,
   // NFTDepositProps,
   InformationForAccountFrozen,
@@ -302,7 +302,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
       {/*      flex={1}*/}
       {/*      justifyContent={"stretch"}*/}
       {/*    >*/}
-      {/*      <MintNFTWrap {...nftMintProps} />*/}
+      {/*      <MintNFTConfirm {...nftMintProps} />*/}
       {/*    </Box>*/}
       {/*  </SwitchPanelStyled>*/}
       {/*</MuiModal>*/}

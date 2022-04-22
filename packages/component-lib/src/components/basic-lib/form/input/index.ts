@@ -6,3 +6,4 @@ export * from "./Default";
 export * from "./InputCoin";
 export * from "./InputSearch";
 export * from "./InputCode";
+export { TextareaAutosizeStyled } from "./style";

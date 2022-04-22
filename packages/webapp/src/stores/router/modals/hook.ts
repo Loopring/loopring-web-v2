@@ -25,6 +25,7 @@ import {
   LAST_STEP,
   MintData,
   ModalDataStatus,
+  NFT_MINT_VALUE,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -70,10 +71,7 @@ export function useModalData(): {
     nftWithdrawData: RequireOne<WithdrawData & NFTWholeINFO, never>
   ) => void;
   resetNFTWithdrawData: () => void;
-  nftMintValue: {
-    mintData: Partial<TradeNFT<any>>;
-    nftMETA: Partial<NFTMETA>;
-  };
+  nftMintValue: NFT_MINT_VALUE<any>;
   updateNFTMintData: (nftMintData: {
     mintData: RequireOne<Partial<TradeNFT<any>>, never>;
     nftMETA: RequireOne<Partial<NFTMETA>, never>;
@@ -153,10 +151,7 @@ export function useModalData(): {
       [dispatch]
     ),
     updateNFTMintData: React.useCallback(
-      (nftMintData: {
-        mintData: Partial<TradeNFT<any>>;
-        nftMETA: Partial<NFTMETA>;
-      }) => {
+      (nftMintData: NFT_MINT_VALUE<any>) => {
         dispatch(updateNFTMintData(nftMintData));
       },
       [dispatch]

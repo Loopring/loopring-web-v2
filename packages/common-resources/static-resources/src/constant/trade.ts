@@ -90,11 +90,22 @@ export type NFTWholeINFO = NFTTokenInfo &
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
   } & { fee?: FeeInfo };
+
+export type MintTradeNFT<I> = {
+  balance?: number;
+  fee?: FeeInfo;
+  isApproved?: boolean;
+  cid?: string;
+  royaltyPercentage: number;
+} & Partial<IBData<I>> &
+  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+
 export type TradeNFT<I> = {
   balance?: number;
   fee?: FeeInfo;
   nftIdView?: string;
   isApproved?: boolean;
+  royaltyPercentage?: number;
 } & Partial<NFTWholeINFO> &
   Partial<IBData<I>> &
   Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;

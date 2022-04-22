@@ -38,10 +38,21 @@ const initialDepositState: DepositData = {
   reffer: undefined,
 };
 
-const initialTradeNFT: TradeNFT<any> = {
+export const initialTradeNFT = {
   belong: undefined,
   tradeValue: 0,
   balance: 0,
+};
+export const initialNFTMETA: Partial<NFTMETA> = {
+  image: undefined,
+  name: undefined,
+  royaltyPercentage: undefined,
+  nftId: undefined,
+  nftIdView: undefined,
+  description: undefined,
+  nftBalance: undefined,
+  collection: undefined,
+  Properties: undefined,
 };
 const initialActiveAccountState: ActiveAccountData = {
   chargeFeeList: [],
@@ -58,7 +69,7 @@ const initialState: ModalDataStatus = {
   nftDepositValue: initialTradeNFT,
   nftMintValue: {
     mintData: initialTradeNFT,
-    nftMETA: initialTradeNFT,
+    nftMETA: initialNFTMETA,
   },
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
@@ -112,7 +123,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default;
       state.nftMintValue = {
         mintData: initialTradeNFT,
-        nftMETA: initialTradeNFT,
+        nftMETA: initialNFTMETA,
       };
     },
     resetNFTDeployData(state) {

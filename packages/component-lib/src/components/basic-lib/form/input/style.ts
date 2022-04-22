@@ -1,5 +1,11 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Button, ButtonProps } from "@mui/material";
+import {
+  Box,
+  BoxProps,
+  Button,
+  ButtonProps,
+  TextareaAutosize,
+} from "@mui/material";
 import CurrencyInput from "react-currency-input-field";
 import { InputSize } from "./Interface";
 
@@ -260,13 +266,14 @@ export const IInput = styled(CurrencyInput)`
     }
   }
 }` as typeof CurrencyInput;
-// border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
-// ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-// ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-// border-top-left-radius: 0px;
-// border-bottom-left-radius: 0px;
-// border-right:  ${theme.border.borderConfig({c_key: 'blur'})};
-// ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-// ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-// border-top-right-radius: 0;
-// border-bottom-right-radius: 0;
+
+export const TextareaAutosizeStyled = styled(TextareaAutosize)`
+  &:disabled {
+    line-height: 1.5em;
+    border: 0;
+    background: (var(--opacity));
+    color: var(--color-text-third);
+  }
+  font-family: inherit;
+  width: 100%;
+` as typeof TextareaAutosize;

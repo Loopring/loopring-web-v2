@@ -1,8 +1,7 @@
-import { NFTMintViewWholeProps } from "./Interface";
+import { NFTMetaBlockProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
-  // Box,
   FormLabel,
   Grid,
   GridProps,
@@ -10,18 +9,18 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  // EmptyValueTag,
   FeeInfo,
+  MintTradeNFT,
   myLog,
   NFTMETA,
 } from "@loopring-web/common-resources";
-import { Button, TextField } from "../../basic-lib";
+import { Button, InputSize, TextField } from "../../basic-lib";
 
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
-// import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-// import { FeeToggle } from "./tool/FeeList";
+import { NFTInput } from "./BasicANFTTrade";
+
 const TextareaAutosizeStyled = styled(TextareaAutosize)`
   line-height: 1.5em;
   background: (var(--opacity));
@@ -38,11 +37,15 @@ const GridStyle = styled(Grid)<GridProps & { isMobile: boolean }>`
   }
 ` as (props: GridProps & { isMobile: boolean }) => JSX.Element;
 
-export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
+export const MintNFTBlock = <
+  T extends Partial<NFTMETA>,
+  I extends Partial<MintTradeNFT<any>>,
+  C extends FeeInfo
+>({
   disabled,
-  tradeData,
+  nftMeta,
+  mintData,
   btnInfo,
-  // handleOnNFTDataChange,
   nftMintBtnStatus,
   // isFeeNotEnough,
   // handleFeeChange,
@@ -50,16 +53,31 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
   // feeInfo,
   // isAvaiableId,
   // isNFTCheckLoading,
-  onNFTMintClick,
-}: NFTMintViewWholeProps<T, C>) => {
+  handleOnNFTDataChange,
+  handleOnMetaChange,
+  onMetaClick,
+}: NFTMetaBlockProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
+  const inputBtnRef = React.useRef();
   const getDisabled = React.useMemo(() => {
     return !!(disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED);
   }, [disabled, nftMintBtnStatus]);
-  myLog("mint tradeData", tradeData);
-
-  // @ts-ignore
+  myLog("mint nftMeta", nftMeta);
+  const _handleOnMetaChange = React.useCallback(
+    (_nftMeta: Partial<T>) => {
+      debugger;
+      handleOnMetaChange({ ...nftMeta, ..._nftMeta });
+    },
+    [nftMeta, handleOnMetaChange]
+  );
+  const _handleOnNFTDataChange = React.useCallback(
+    (_mintData: Partial<I>) => {
+      debugger;
+      handleOnNFTDataChange({ ...mintData, ..._mintData });
+    },
+    [handleOnNFTDataChange, mintData]
+  );
   return (
     <GridStyle
       // className={walletMap ? "" : "loading"}
@@ -71,16 +89,19 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
     >
       <Grid item xs={12} md={6}>
         <TextField
-          value={tradeData.name}
+          value={nftMeta.name}
           fullWidth
           required
           label={t("labelMintName")}
           type={"text"}
+          onChange={(event) =>
+            _handleOnMetaChange({ name: event.target.value } as Partial<T>)
+          }
         />
       </Grid>
       <Grid item xs={12} md={6}>
         <TextField
-          value={tradeData.collection}
+          value={nftMeta.collection}
           fullWidth
           select
           disabled={true}
@@ -90,28 +111,66 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
       </Grid>
       <Grid item xs={12} md={6}>
         <TextField
-          value={tradeData.nftBalance}
-          fullWidth
-          label={t("labelMintAmount")}
-          type={"number"}
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <TextField
-          value={tradeData.royaltyPercentage}
+          value={nftMeta.royaltyPercentage}
           label={t("labelMintRoyaltyPercentage")}
           fullWidth
           type={"number"}
+          onChange={(event) =>
+            _handleOnMetaChange({
+              royaltyPercentage: event.target.value,
+            } as unknown as Partial<T>)
+          }
         />
       </Grid>
-
+      <Grid item xs={12} md={6}>
+        <NFTInput
+          {...({ t } as any)}
+          isThumb={false}
+          isBalanceLimit={true}
+          inputNFTDefaultProps={{
+            subLabel: t("tokenNFTMaxMINT"),
+            size: InputSize.small,
+            label: t("labelNFTMintInputTitle"),
+          }}
+          // disabled={!(nftMintData.nftId && nftMintData.tokenAddress)}
+          type={"NFT"}
+          inputNFTRef={inputBtnRef}
+          onChangeEvent={(_index, data) =>
+            _handleOnNFTDataChange({
+              tradeData: data.tradeData,
+            } as unknown as Partial<I>)
+          }
+          nftMintData={
+            {
+              ...mintData,
+              belong: mintData.tokenAddress ?? "NFT",
+            } as any
+          }
+          walletMap={{}}
+        />
+        {/*<TextField*/}
+        {/*  value={nftMeta.nftBalance}*/}
+        {/*  fullWidth*/}
+        {/*  label={t("labelMintAmount")}*/}
+        {/*  type={"number"}*/}
+        {/*/>*/}
+      </Grid>
       <Grid item xs={12} md={12}>
         <FormLabel>
           <Typography variant={"body2"} paddingBottom={1}>
             {t("labelMintDescription")}
           </Typography>
         </FormLabel>
-        <TextareaAutosizeStyled aria-label="NFT Description" minRows={5} />
+        <TextareaAutosizeStyled
+          aria-label="NFT Description"
+          minRows={5}
+          maxLength={2000}
+          onChange={(event) =>
+            _handleOnMetaChange({
+              description: event.target.value,
+            } as unknown as Partial<T>)
+          }
+        />
       </Grid>
 
       <Grid item xs={12} md={12}>
@@ -120,7 +179,15 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
             {t("labelMintProperty")}
           </Typography>
         </FormLabel>
-        <TextareaAutosizeStyled aria-label="NFT Description" minRows={5} />
+        <TextareaAutosizeStyled
+          aria-label="NFT Description"
+          minRows={5}
+          onChange={(event) =>
+            _handleOnMetaChange({
+              description: event.target.value,
+            } as unknown as Partial<T>)
+          }
+        />
       </Grid>
 
       {/*<Grid item xs={12} md={6}>*/}
@@ -129,7 +196,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
       {/*    width={"68"}*/}
       {/*    height={"69"}*/}
       {/*    style={{ objectFit: "contain" }}*/}
-      {/*    src={tradeData?.image?.replace(*/}
+      {/*    src={nftMeta?.image?.replace(*/}
       {/*      IPFS_META_URL,*/}
       {/*      LOOPRING_URLs.IPFS_META_URL*/}
       {/*    )}*/}
@@ -146,7 +213,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
             style={{ wordBreak: "break-all" }}
           >
             <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
-              Your NFT metadata should identify
+              Your NFT nftMeta should identify
               <em style={{ fontWeight: 600 }}>
                 name, image & royalty_percentage(number from 0 to 10)
               </em>
@@ -160,7 +227,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>, C extends FeeInfo>({
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            onNFTMintClick(tradeData);
+            onMetaClick(nftMeta as T);
           }}
           loading={
             !getDisabled && nftMintBtnStatus === TradeBtnStatus.LOADING

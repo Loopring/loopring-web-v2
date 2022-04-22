@@ -246,50 +246,69 @@ export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
 export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;
 export type NFTDepositExtendProps<T, I> = {
   isThumb?: boolean;
-  isNFTCheckLoading?: boolean;
+  // isNFTCheckLoading?: boolean;
   handleOnNFTDataChange: (data: T) => void;
   onNFTDepositClick: (data: T) => void;
   allowTrade?: any;
 } & NFTDepositInfoProps<T, I>;
 
-export type NFTMintInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
+export type NFTMintInfoProps<C> = {
   nftMintBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   title?: string;
   description?: string;
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
-  isNFTCheckLoading?: boolean;
-  isAvaiableId?: boolean;
+  // isAvaiableId?: boolean;
   isFeeNotEnough?: boolean;
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
 
-export type NFTMintExtendProps<T, I, C = FeeInfo> = {
+export type NFTMetaInfoProps<C> = {
+  nftMetaBtnStatus?: keyof typeof TradeBtnStatus | undefined;
+  title?: string;
+  description?: string;
+  chargeFeeTokenList?: Array<C>;
+  feeInfo: C;
+  // isNFTCheckLoading?: boolean;
+  // isAvaiableId?: boolean;
+  isFeeNotEnough?: boolean;
+  handleFeeChange: (value: C) => void;
+  wait?: number;
+} & BtnInfoProps;
+
+export type NFTMintExtendProps<T, C = FeeInfo> = {
   isThumb?: boolean;
   handleOnNFTDataChange: (data: T) => void;
-  onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
+  onNFTMintClick: (data: Partial<T>, isFirstMint?: boolean) => void;
   allowTrade?: any;
-} & NFTMintInfoProps<T, I, C>;
+} & NFTMintInfoProps<C>;
+
+export type NFTMetaExtendProps<T, C = FeeInfo> = {
+  handleOnMetaChange: (data: T) => void;
+  onMetaClick: (data: Partial<T>, isFirstMint?: boolean) => void;
+  allowTrade?: any;
+} & NFTMintInfoProps<C>;
+
 export type NFTMintViewProps<T, I, C> = {
   tradeData: T;
   disabled?: boolean;
   coinMap?: CoinMap<I, CoinInfo<I>>;
   walletMap?: WalletMap<I, WalletCoin<I>>;
-} & NFTMintExtendProps<T, I, C>;
-
-export type NFTMintViewWholeProps<T, C> = {
-  nftMintBtnStatus?: keyof typeof TradeBtnStatus | undefined;
-  chargeFeeTokenList?: Array<C>;
-  feeInfo: C;
-  isNFTCheckLoading?: boolean;
-  isAvaiableId?: boolean;
-  isFeeNotEnough?: boolean;
-  handleFeeChange: (value: C) => void;
-  wait?: number;
-  tradeData: T;
-  disabled?: boolean;
 } & NFTMintExtendProps<T, C>;
+export type NFTMetaViewProps<T, C> = {
+  nftMeta: T;
+  disabled?: boolean;
+} & NFTMetaExtendProps<T, C>;
+export type NFTMetaBlockProps<T, I, C> = NFTMetaViewProps<T, C> & {
+  mintData: I;
+  handleOnNFTDataChange: (data: I) => void;
+};
+
+// export type NFTMintViewWholeProps<T, C> = {
+//   metaData: Partial<T>;
+//   disabled?: boolean;
+// } & NFTMintExtendProps<T, C>;
 
 export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   nftDeployBtnStatus?: keyof typeof TradeBtnStatus | undefined;
@@ -302,6 +321,7 @@ export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
+
 export type NFTDeployExtendProps<T, I, C> = {
   handleOnNFTDataChange: (data: T) => void;
   onNFTDeployClick: (data: T, isFirstTime?: boolean) => void;

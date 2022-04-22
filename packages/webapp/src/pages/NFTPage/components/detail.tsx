@@ -23,6 +23,7 @@ import {
   useSettings,
   useToggle,
   WithdrawPanel,
+  TextareaAutosizeStyled,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -46,16 +47,7 @@ const BoxNFT = styled(Box)`
     object-fit: contain;
   }
 ` as typeof Box;
-const TextareaAutosizeStyled = styled(TextareaAutosize)`
-  &:disabled {
-    line-height: 1.5em;
-    border: 0;
-    background: (var(--opacity));
-    color: var(--color-text-third);
-  }
-  font-family: inherit;
-  width: 100%;
-` as typeof TextareaAutosize;
+
 const BoxStyle = styled(Box)<
   { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
 >`
