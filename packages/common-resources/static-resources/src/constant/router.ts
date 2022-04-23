@@ -234,7 +234,7 @@ export const subMenuNFT = {
       icon: AssetsIcon,
       router: { path: "/nft/assetsNFT" },
       label: {
-        id: "myAssetsNFT",
+        id: "assetsNFT",
         i18nKey: "labelMyAssetsNFT",
       },
     },

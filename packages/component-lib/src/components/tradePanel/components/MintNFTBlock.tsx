@@ -46,13 +46,14 @@ export const MintNFTBlock = <
   nftMeta,
   mintData,
   btnInfo,
-  nftMintBtnStatus,
+  nftMetaBtnStatus,
   // isFeeNotEnough,
   // handleFeeChange,
   // chargeFeeTokenList,
   // feeInfo,
   // isAvaiableId,
   // isNFTCheckLoading,
+  amountHandleError,
   handleOnNFTDataChange,
   handleOnMetaChange,
   onMetaClick,
@@ -61,13 +62,12 @@ export const MintNFTBlock = <
   const { isMobile } = useSettings();
   const inputBtnRef = React.useRef();
   const getDisabled = React.useMemo(() => {
-    return !!(disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED);
-  }, [disabled, nftMintBtnStatus]);
+    return !!(disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED);
+  }, [disabled, nftMetaBtnStatus]);
   myLog("mint nftMeta", nftMeta);
   const _handleOnMetaChange = React.useCallback(
     (_nftMeta: Partial<T>) => {
-      debugger;
-      handleOnMetaChange({ ...nftMeta, ..._nftMeta });
+      handleOnMetaChange({ ..._nftMeta });
     },
     [nftMeta, handleOnMetaChange]
   );
@@ -111,10 +111,10 @@ export const MintNFTBlock = <
       </Grid>
       <Grid item xs={12} md={6}>
         <TextField
-          value={nftMeta.royaltyPercentage}
           label={t("labelMintRoyaltyPercentage")}
+          inputProps={{ inputMode: "numeric", pattern: "[0-10]" }}
+          value={nftMeta.royaltyPercentage}
           fullWidth
-          type={"number"}
           onChange={(event) =>
             _handleOnMetaChange({
               royaltyPercentage: event.target.value,
@@ -140,7 +140,12 @@ export const MintNFTBlock = <
               tradeData: data.tradeData,
             } as unknown as Partial<I>)
           }
-          nftMintData={
+          handleError={(data: I, ref) => {
+            if (amountHandleError) {
+              amountHandleError(data, ref);
+            }
+          }}
+          tradeData={
             {
               ...mintData,
               belong: mintData.tokenAddress ?? "NFT",
@@ -230,11 +235,11 @@ export const MintNFTBlock = <
             onMetaClick(nftMeta as T);
           }}
           loading={
-            !getDisabled && nftMintBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && nftMetaBtnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
-          disabled={getDisabled || nftMintBtnStatus === TradeBtnStatus.LOADING}
+          disabled={getDisabled || nftMetaBtnStatus === TradeBtnStatus.LOADING}
         >
           {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTMintBtn`)}
         </Button>

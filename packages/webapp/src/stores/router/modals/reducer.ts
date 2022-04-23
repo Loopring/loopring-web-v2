@@ -42,17 +42,15 @@ export const initialTradeNFT = {
   belong: undefined,
   tradeValue: 0,
   balance: 0,
+  nftBalance: 0,
 };
 export const initialNFTMETA: Partial<NFTMETA> = {
   image: undefined,
   name: undefined,
-  royaltyPercentage: undefined,
-  nftId: undefined,
-  nftIdView: undefined,
+  royaltyPercentage: 10,
   description: undefined,
-  nftBalance: undefined,
   collection: undefined,
-  Properties: undefined,
+  properties: undefined,
 };
 const initialActiveAccountState: ActiveAccountData = {
   chargeFeeList: [],

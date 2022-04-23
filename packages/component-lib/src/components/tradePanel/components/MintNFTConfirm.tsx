@@ -6,7 +6,9 @@ import {
   EmptyValueTag,
   FeeInfo,
   IPFS_META_URL,
+  MintTradeNFT,
   myLog,
+  NFTMETA,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -22,7 +24,6 @@ import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
-import { NFT_MINT_VALUE } from "@loopring-web/webapp/src/stores/router";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -41,13 +42,16 @@ const NFT_TYPE: TGItemData[] = [
   },
 ];
 export const MintNFTConfirm = <
-  T extends NFT_MINT_VALUE<I>,
+  // T extends NFT_MINT_VALUE<I>,
+  ME extends Partial<NFTMETA>,
+  MI extends Partial<MintTradeNFT<any>>,
   I,
   C extends FeeInfo
 >({
   disabled,
   walletMap,
   tradeData: nftMintData,
+  metaData,
   title,
   btnInfo,
   handleOnNFTDataChange,
@@ -57,7 +61,7 @@ export const MintNFTConfirm = <
   chargeFeeTokenList,
   feeInfo,
   onNFTMintClick,
-}: NFTMintViewProps<T, I, C>) => {
+}: NFTMintViewProps<ME, MI, I, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const styles = isMobile
@@ -76,7 +80,7 @@ export const MintNFTConfirm = <
       handleFeeChange(value);
     }
   };
-  const _handleOnNFTDataChange = (_nftMintData: Partial<T>) => {
+  const _handleOnNFTDataChange = (_nftMintData: Partial<MI>) => {
     if (handleOnNFTDataChange) {
       handleOnNFTDataChange({ ...nftMintData, ..._nftMintData });
     }
@@ -123,9 +127,9 @@ export const MintNFTConfirm = <
           </Typography>
           <Typography
             color={"var(--color-text-secondary)"}
-            title={nftMintData.nftMETA.name}
+            title={metaData.name}
           >
-            {nftMintData.nftMETA.name ?? EmptyValueTag}
+            {metaData.name ?? EmptyValueTag}
           </Typography>
         </Typography>
 
@@ -144,11 +148,11 @@ export const MintNFTConfirm = <
             style={{ wordBreak: "break-all" }}
             target="_blank"
             rel="noopener noreferrer"
-            href={`${LOOPRING_URLs.IPFS_META_URL} ${nftMintData.mintData.cid}`}
-            title={nftMintData.mintData.nftId}
+            href={`${LOOPRING_URLs.IPFS_META_URL} ${nftMintData.cid}`}
+            title={nftMintData.nftId}
             width={"fit-content"}
           >
-            {nftMintData.mintData.nftId ? nftMintData.nftMETA?.nftIdView : ""}
+            {nftMintData.nftId ? nftMintData?.nftIdView : ""}
           </Link>
         </Typography>
 
@@ -163,9 +167,9 @@ export const MintNFTConfirm = <
         {/*  </Typography>*/}
         {/*  <Typography*/}
         {/*    color={"var(--color-text-secondary)"}*/}
-        {/*    title={nftMintData.mintData.nftType}*/}
+        {/*    title={nftMintData.nftType}*/}
         {/*  >*/}
-        {/*    {nftMintData.mintData.nftType}*/}
+        {/*    {nftMintData.nftType}*/}
         {/*  </Typography>*/}
         {/*</Typography>*/}
         <Typography
@@ -182,7 +186,7 @@ export const MintNFTConfirm = <
             whiteSpace={"break-spaces"}
             style={{ wordBreak: "break-all" }}
           >
-            {nftMintData.mintData.tokenAddress}
+            {nftMintData.tokenAddress}
           </Typography>
         </Typography>
 
@@ -201,7 +205,7 @@ export const MintNFTConfirm = <
               aria-label="NFT Description"
               minRows={5}
               disabled={true}
-              value={nftMintData.nftMETA.description ?? EmptyValueTag}
+              value={metaData.description ?? EmptyValueTag}
             />
           </Box>
         </Typography>
@@ -288,9 +292,8 @@ export const MintNFTConfirm = <
               >
                 {t("labelNFTName") +
                   " " +
-                  (nftMintData.mintData.nftId
-                    ? nftMintData.nftMETA.name ??
-                      t("labelUnknown").toUpperCase()
+                  (nftMintData.nftId
+                    ? metaData.name ?? t("labelUnknown").toUpperCase()
                     : EmptyValueTag)}
               </Typography>
               <Typography
@@ -321,12 +324,12 @@ export const MintNFTConfirm = <
                 onChangeEvent={(_index, data) =>
                   _handleOnNFTDataChange({
                     tradeData: data.tradeData,
-                  } as unknown as Partial<T>)
+                  } as unknown as Partial<MI>)
                 }
                 nftMintData={
                   {
                     ...nftMintData,
-                    belong: nftMintData.mintData.tokenAddress ?? "NFT",
+                    belong: nftMintData.tokenAddress ?? "NFT",
                   } as any
                 }
                 walletMap={walletMap}
@@ -339,12 +342,12 @@ export const MintNFTConfirm = <
             justifyContent={"center"}
             alignItems={"center"}
           >
-            {nftMintData.nftMETA.nftId && nftMintData.nftMETA.image ? (
+            {nftMintData.nftId && metaData.image ? (
               <img
                 alt={"NFT"}
                 width={"100%"}
                 height={"100%"}
-                src={nftMintData.nftMETA.image?.replace(
+                src={metaData.image?.replace(
                   IPFS_META_URL,
                   LOOPRING_URLs.IPFS_META_URL
                 )}

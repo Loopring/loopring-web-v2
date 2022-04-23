@@ -39,7 +39,12 @@ import { checkErrorInfo } from "hooks/useractions/utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs/common_defs";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
 
-export function useNFTMint<T extends MintTradeNFT<I>, I, C extends FeeInfo>({
+export function useNFTMint<
+  Me extends NFTMETA,
+  Mi extends MintTradeNFT<I>,
+  I,
+  C extends FeeInfo
+>({
   chargeFeeTokenList,
   isFeeNotEnough,
   checkFeeIsEnough,
@@ -293,7 +298,7 @@ export function useNFTMint<T extends MintTradeNFT<I>, I, C extends FeeInfo>({
       if (
         data.nftId &&
         LoopringAPI.nftAPI &&
-        nftMintValue.nftMETA.nftId !== data.nftId
+        nftMintValue.mintData.nftId !== data.nftId
       ) {
         let nftId: string = "";
         //LoopringAPI.nftAPI.ipfsNftIDToCid()
@@ -316,7 +321,7 @@ export function useNFTMint<T extends MintTradeNFT<I>, I, C extends FeeInfo>({
           try {
             const value = await fetch(
               sdk.LOOPRING_URLs.IPFS_META_URL +
-                `${nftMintValue.nftMETA.nftIdView}`
+                `${nftMintValue.mintData.nftIdView}`
             ).then((response) => response.json());
 
             if (value) {
@@ -351,8 +356,8 @@ export function useNFTMint<T extends MintTradeNFT<I>, I, C extends FeeInfo>({
             myLog(error);
           }
         }
-      } else if (nftMintValue.nftMETA.nftIdView) {
-      } else if (!nftMintValue.nftMETA.nftIdView) {
+      } else if (nftMintValue.mintData.nftIdView) {
+      } else if (!nftMintValue.mintData.nftIdView) {
         shouldUpdate = {
           nftId: "",
           name: undefined,
@@ -370,7 +375,7 @@ export function useNFTMint<T extends MintTradeNFT<I>, I, C extends FeeInfo>({
   );
 
   const onNFTMintClick = React.useCallback(
-    async (_nftMintValue: Partial<T>, isFirstTime: boolean = true) => {
+    async (_nftMintValue: Partial<Mi>, isFirstTime: boolean = true) => {
       let result: ActionResult = { code: ActionResultCode.NoError };
       if (
         account.readyState === AccountStatus.ACTIVATED &&
@@ -462,17 +467,18 @@ export function useNFTMint<T extends MintTradeNFT<I>, I, C extends FeeInfo>({
     [lastRequest, processRequest, setShowAccount]
   );
 
-  const nftMintProps: NFTMintProps<T, I> = React.useMemo(() => {
+  const nftMintProps: NFTMintProps<Me, Mi, I> = React.useMemo(() => {
     return {
       chargeFeeTokenList,
       isFeeNotEnough,
       handleFeeChange,
       feeInfo,
+      metaData: nftMintValue.nftMETA as Me,
       handleOnNFTDataChange,
       onNFTMintClick,
       walletMap: {} as any,
       coinMap: totalCoinMap as any,
-      tradeData: nftMintValue.mintData as T,
+      tradeData: nftMintValue.mintData as Mi,
       nftMintBtnStatus: btnStatus,
       btnInfo,
     };

@@ -2,6 +2,7 @@ import React from "react";
 import { MintCommands, mintService } from "./mintService";
 import {
   AccountStatus,
+  myLog,
   NFTMETA,
   SagaStatus,
 } from "@loopring-web/common-resources";
@@ -19,7 +20,7 @@ import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
 
 export function useNFTMeta<
-  T extends Partial<NFTMETA>
+  T extends NFTMETA
   // I extends Partial<MintTradeNFT>
 >() {
   const subject = React.useMemo(() => mintService.onSocket(), []);
@@ -75,7 +76,36 @@ export function useNFTMeta<
     },
     []
   );
-  const handleOnMetaChange = React.useCallback((nftMeta: Partial<T>) => {}, []);
+  const handleOnMetaChange = React.useCallback(
+    (_newnftMeta: Partial<T>) => {
+      const buildNFTMeta = { ...nftMintValue.nftMETA };
+      Reflect.ownKeys(_newnftMeta).map((key) => {
+        switch (key) {
+          case "image":
+            buildNFTMeta.image = _newnftMeta.image;
+            break;
+          case "name":
+            buildNFTMeta.name = _newnftMeta.name;
+            break;
+          case "royaltyPercentage":
+            buildNFTMeta.royaltyPercentage = _newnftMeta.royaltyPercentage;
+            break;
+          case "description":
+            buildNFTMeta.description = _newnftMeta.description;
+            break;
+          case "collection":
+            buildNFTMeta.collection = _newnftMeta.collection;
+            break;
+          case "properties":
+            buildNFTMeta.collection = _newnftMeta.collection;
+            break;
+        }
+      });
+      updateNFTMintData({ ...nftMintValue, nftMETA: buildNFTMeta });
+      myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
+    },
+    [nftMintValue]
+  );
   // const handleOnNFTDataChange  = React.useCallback(
   //   (m: Partial<I>) => {},
   //   []

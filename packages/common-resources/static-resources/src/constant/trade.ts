@@ -76,12 +76,9 @@ export type NFTMETA = {
   image: string;
   name: string;
   royaltyPercentage: number; // 0 - 10 for UI
-  nftId: string;
-  nftIdView: string;
   description: string;
-  nftBalance: number;
   collection?: string;
-  Properties: [{}];
+  properties: [{}];
 };
 
 export type NFTWholeINFO = NFTTokenInfo &
@@ -96,19 +93,14 @@ export type MintTradeNFT<I> = {
   fee?: FeeInfo;
   isApproved?: boolean;
   cid?: string;
-  royaltyPercentage: number;
+  nftId?: string;
+  nftBalance?: number;
+  nftIdView?: string;
+  royaltyPercentage?: number;
 } & Partial<IBData<I>> &
   Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
-export type TradeNFT<I> = {
-  balance?: number;
-  fee?: FeeInfo;
-  nftIdView?: string;
-  isApproved?: boolean;
-  royaltyPercentage?: number;
-} & Partial<NFTWholeINFO> &
-  Partial<IBData<I>> &
-  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+export type TradeNFT<I> = MintTradeNFT<I> & Partial<NFTWholeINFO>;
 
 export const TOAST_TIME = 3000;
 

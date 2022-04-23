@@ -24,9 +24,7 @@ import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
 import { RedPockPanel } from "./RedPockPanel";
-import { MyNFTPanel } from "../NFTPage/MyNFT";
 import { useGetAssets } from "./AssetPanel/hook";
-import { NFTMintPanel } from "../NFTPage/MintNFTPanel";
 import { BtnConnect } from "../../layouts/connectStatusCallback";
 
 export const subMenu = subMenuLayer2;
@@ -43,10 +41,6 @@ export const Layer2Page = () => {
         return <AssetPanel />;
       case "my-liquidity":
         return <MyLiqudityPanel />;
-      case "my-nft":
-        return <MyNFTPanel />;
-      case "nft-mint":
-        return <NFTMintPanel />;
       case "history":
         return <HistoryPanel />;
       case "order":

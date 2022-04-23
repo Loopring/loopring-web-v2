@@ -246,7 +246,7 @@ export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
 export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;
 export type NFTDepositExtendProps<T, I> = {
   isThumb?: boolean;
-  // isNFTCheckLoading?: boolean;
+  isNFTCheckLoading?: boolean;
   handleOnNFTDataChange: (data: T) => void;
   onNFTDepositClick: (data: T) => void;
   allowTrade?: any;
@@ -279,30 +279,39 @@ export type NFTMetaInfoProps<C> = {
 
 export type NFTMintExtendProps<T, C = FeeInfo> = {
   isThumb?: boolean;
-  handleOnNFTDataChange: (data: T) => void;
+  handleOnNFTDataChange: (data: Partial<T>) => void;
   onNFTMintClick: (data: Partial<T>, isFirstMint?: boolean) => void;
   allowTrade?: any;
+  amountHandleError?: (
+    data: T,
+    ref: React.ForwardedRef<any>
+  ) => { error: boolean; message?: string | JSX.Element } | void;
 } & NFTMintInfoProps<C>;
 
 export type NFTMetaExtendProps<T, C = FeeInfo> = {
-  handleOnMetaChange: (data: T) => void;
+  handleOnMetaChange: (data: Partial<T>) => void;
   onMetaClick: (data: Partial<T>, isFirstMint?: boolean) => void;
   allowTrade?: any;
-} & NFTMintInfoProps<C>;
+} & NFTMetaInfoProps<C>;
 
-export type NFTMintViewProps<T, I, C> = {
-  tradeData: T;
+export type NFTMintViewProps<ME, MI, I, C> = {
+  tradeData: MI;
+  metaData: ME;
   disabled?: boolean;
   coinMap?: CoinMap<I, CoinInfo<I>>;
   walletMap?: WalletMap<I, WalletCoin<I>>;
-} & NFTMintExtendProps<T, C>;
+} & NFTMintExtendProps<MI, C>;
 export type NFTMetaViewProps<T, C> = {
   nftMeta: T;
   disabled?: boolean;
 } & NFTMetaExtendProps<T, C>;
 export type NFTMetaBlockProps<T, I, C> = NFTMetaViewProps<T, C> & {
-  mintData: I;
-  handleOnNFTDataChange: (data: I) => void;
+  mintData: Partial<I>;
+  amountHandleError?: (
+    data: Partial<I>,
+    ref: React.ForwardedRef<any>
+  ) => { error: boolean; message?: string | JSX.Element } | void;
+  handleOnNFTDataChange: (data: Partial<I>) => void;
 };
 
 // export type NFTMintViewWholeProps<T, C> = {

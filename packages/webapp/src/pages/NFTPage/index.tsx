@@ -9,12 +9,13 @@ import {
   subMenuNFT,
 } from "@loopring-web/common-resources";
 
-import { BtnConnect } from "../../layouts/connectStatusCallback";
+import { BtnConnect } from "layouts/connectStatusCallback";
 
 import React from "react";
-import { useAccount } from "../../stores/account";
+import { useAccount } from "stores/account";
 import { MyNFTPanel } from "./MyNFT";
-import { NFTMintPanel } from "./MintNFTPanel";
+import { MyNFTHistory } from "./NFThistory";
+import { MintNFTPanel } from "./MintNFTPanel";
 
 export const subMenu = subMenuNFT;
 
@@ -25,12 +26,12 @@ export const NFTPage = () => {
   const { t } = useTranslation(["common", "layout"]);
   const routerNFT = React.useMemo(() => {
     switch (selected) {
-      case "myAssetsNFT":
+      case "assetsNFT":
         return <MyNFTPanel />;
       case "transactionNFT":
-        return <MyNFTPanel />;
+        return <MyNFTHistory />;
       case "mintNFT":
-        return <NFTMintPanel />;
+        return <MintNFTPanel />;
     }
   }, [selected]);
   const { isMobile } = useSettings();
