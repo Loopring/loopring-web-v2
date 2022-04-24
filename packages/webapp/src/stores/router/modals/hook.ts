@@ -30,13 +30,7 @@ import {
   WithdrawData,
 } from "./interface";
 import React from "react";
-import {
-  IBData,
-  TradeNFT,
-  NFTWholeINFO,
-  RequireOne,
-  NFTMETA,
-} from "@loopring-web/common-resources";
+import { TradeNFT, RequireOne, NFTMETA } from "@loopring-web/common-resources";
 import { RootState } from "stores";
 import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
 
@@ -50,15 +44,15 @@ export function useModalData(): {
   nftDepositValue: TradeNFT<any>;
   updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
   updateNFTTransferData: (
-    nftTransferData: RequireOne<TransferData & NFTWholeINFO, never>
+    nftTransferData: RequireOne<TransferData & TradeNFT<any>, never>
   ) => void;
   resetTransferData: () => void;
-  nftWithdrawValue: WithdrawData & Partial<NFTWholeINFO>;
+  nftWithdrawValue: WithdrawData & Partial<TradeNFT<any>>;
   transferValue: TransferData;
   updateNFTDepositData: (
     nftDepositData: RequireOne<TradeNFT<any>, never>
   ) => void;
-  nftTransferValue: TransferData & Partial<NFTWholeINFO>;
+  nftTransferValue: TransferData & Partial<TradeNFT<any>>;
   depositValue: DepositData;
   updateDepositData: (depositData: RequireOne<DepositData, never>) => void;
   resetNFTTransferData: () => void;
@@ -68,7 +62,7 @@ export function useModalData(): {
   resetNFTDepositData: () => void;
   resetDepositData: () => void;
   updateNFTWithdrawData: (
-    nftWithdrawData: RequireOne<WithdrawData & NFTWholeINFO, never>
+    nftWithdrawData: RequireOne<WithdrawData & TradeNFT<any>, never>
   ) => void;
   resetNFTWithdrawData: () => void;
   nftMintValue: NFT_MINT_VALUE<any>;

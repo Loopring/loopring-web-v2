@@ -111,6 +111,9 @@ export const IWrap = styled(Box)<
             }
             input[type=text]{
               font-size: ${theme.fontDefault.body1};
+               &:focus {
+                outline: 0;
+              }
             }
           }
          
@@ -222,7 +225,7 @@ export const IInput = styled(CurrencyInput)`
     width: 0;
   }
   :focus {
-    outlined: 0;
+    outline: 0;
     & + label::before {
       content:'';
       position: absolute;
@@ -268,12 +271,32 @@ export const IInput = styled(CurrencyInput)`
 }` as typeof CurrencyInput;
 
 export const TextareaAutosizeStyled = styled(TextareaAutosize)`
+  label + & {
+    margin-top: ${({ theme }) => theme.unit}px;
+  }
+  background: (var(--opacity));
+  font-family: inherit;
+  color: inherit;
+  padding: ${({ theme }) => theme.unit}px;
+  width: 100%;
+  ${({ theme }) =>
+    theme.border.defaultFrame({
+      c_key: theme.colorBase.border,
+      d_R: 0.5,
+    })};
+  &:focus {
+    ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
+    outline: transparent;
+  }
   &:disabled {
     line-height: 1.5em;
     border: 0;
     background: (var(--opacity));
     color: var(--color-text-third);
+    ${({ theme }) =>
+      theme.border.defaultFrame({
+        c_key: theme.colorBase.opacity,
+        d_R: 0.5,
+      })};
   }
-  font-family: inherit;
-  width: 100%;
 ` as typeof TextareaAutosize;

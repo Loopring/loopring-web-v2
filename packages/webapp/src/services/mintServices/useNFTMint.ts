@@ -104,12 +104,11 @@ export function useNFTMint<
         return;
       }
       if (
-        // (!nftMintValue.mintData.image && !nftMintValue.mintData.name) ||
         !(
-          nftMintValue.mintData.royaltyPercentage &&
+          !!nftMintValue.mintData.royaltyPercentage &&
           Number.isInteger(nftMintValue.mintData.royaltyPercentage / 1) &&
-          nftMintValue.mintData.royaltyPercentage >= 0 &&
-          nftMintValue.mintData.royaltyPercentage <= 10
+          nftMintValue.mintData.royaltyPercentage / 1 >= 0 &&
+          nftMintValue.mintData.royaltyPercentage / 1 <= 10
         )
       ) {
         setLabelAndParams("labelNFTMintNoMetaBtn", {});
@@ -128,11 +127,10 @@ export function useNFTMint<
     ]
   );
 
-  useWalletLayer2Socket({});
-
   React.useEffect(() => {
     updateBtnStatus();
   }, [isFeeNotEnough, nftMintValue, feeInfo]);
+  useWalletLayer2Socket({});
 
   const resetNFTMINT = React.useCallback(
     (_nftMintValue?: NFT_MINT_VALUE<any>) => {
@@ -295,22 +293,18 @@ export function useNFTMint<
     async (data: Partial<MintTradeNFT<I>>) => {
       let shouldUpdate = {};
 
-      if (
-        data.nftId &&
-        LoopringAPI.nftAPI &&
-        nftMintValue.mintData.nftId !== data.nftId
-      ) {
+      if (data.cid && LoopringAPI.nftAPI) {
         let nftId: string = "";
         //LoopringAPI.nftAPI.ipfsNftIDToCid()
         try {
-          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.nftId);
+          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.cid);
           shouldUpdate = {
             nftId,
-            // nftIdView: data.nftIdView,
+            // nftIdView: data.cidView,
             ...shouldUpdate,
           };
         } catch (error: any) {
-          myLog("handleOnNFTDataChange -> data.nftId", error);
+          myLog("handleOnNFTDataChange ->.cid", error);
           shouldUpdate = {
             nftId: "",
             // nftIdView:'',

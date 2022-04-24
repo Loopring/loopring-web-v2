@@ -560,7 +560,7 @@ export default {
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "Processing...",
-  labelNFTMintInputTitle: "Mint Amount",
+  labelNFTMintInputTitle: "Mint Amount <1>\uFE61</1>",
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",

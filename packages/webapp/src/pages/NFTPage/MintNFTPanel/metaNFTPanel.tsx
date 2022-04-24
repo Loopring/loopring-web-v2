@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, FormLabel, Grid, Typography } from "@mui/material";
 import {
   DropdownIconStyled,
   FeeTokenItemWrapper,
@@ -151,34 +151,28 @@ export const MetaNFTPanel = <
       flexDirection={"column"}
       marginBottom={2}
     >
-      <Typography
-        component={"h3"}
-        variant={"h4"}
+      <Grid
+        container
+        spacing={5 / 2}
         paddingX={5 / 2}
         paddingTop={5 / 2}
+        flex={1}
       >
-        {t("labelMINTNFTTitle")}
-      </Typography>
-      <Grid container spacing={5 / 2} padding={5 / 2}>
         <Grid item xs={12} md={5} position={"relative"}>
-          <Typography
-            color={"var(--color-text-secondary)"}
-            component={"h6"}
-            variant={"body2"}
-            minWidth={28}
-            paddingBottom={1}
-          >
-            <Trans i18nKey={"labelIPFSUploadTitle"}>
-              Upload Image
-              <Typography
-                component={"span"}
-                variant={"inherit"}
-                color={"error"}
-              >
-                *
-              </Typography>
-            </Trans>
-          </Typography>
+          <FormLabel>
+            <Typography variant={"body2"} marginBottom={1}>
+              <Trans i18nKey={"labelIPFSUploadTitle"}>
+                Upload Image
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"error"}
+                >
+                  {"\uFE61"}
+                </Typography>
+              </Trans>
+            </Typography>
+          </FormLabel>
 
           <IPFSSourceUpload
             fullSize={true}
@@ -199,17 +193,24 @@ export const MetaNFTPanel = <
                   display={"flex"}
                   flexWrap={"wrap"}
                   alignItems={"center"}
-                  variant={"body1"}
+                  variant={"body2"}
                   color={"var(--color-text-secondary)"}
                   marginBottom={1}
                 >
-                  <Typography
-                    component={"span"}
-                    color={"inherit"}
-                    minWidth={28}
-                  >
-                    {t("labelMINTNFTFee")}：
-                  </Typography>
+                  <FormLabel>
+                    <Typography variant={"body2"} lineHeight={"20px"}>
+                      <Trans i18nKey={"labelMINTNFTFee"}>
+                        Fee
+                        <Typography
+                          component={"span"}
+                          variant={"inherit"}
+                          color={"error"}
+                        >
+                          {"\uFE61"}
+                        </Typography>
+                      </Trans>
+                    </Typography>
+                  </FormLabel>
                   <Box
                     component={"span"}
                     display={"flex"}
@@ -257,7 +258,7 @@ export const MetaNFTPanel = <
             )}
           </Box>
         </Grid>
-        <Grid item xs={12} md={7}>
+        <Grid item xs={12} md={7} flex={1} display={"flex"}>
           <MintNFTBlock
             handleOnMetaChange={nftMetaProps.handleOnMetaChange}
             handleOnNFTDataChange={nftMintProps.handleOnNFTDataChange}

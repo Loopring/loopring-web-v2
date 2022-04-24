@@ -83,19 +83,15 @@ export const MintNFTPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        <Box flex={1} display={"flex"} flexDirection={"column"}>
-          <Typography
-            component={"h3"}
-            variant={"h4"}
-            paddingX={5 / 2}
-            paddingTop={5 / 2}
-          >
-            {t("labelTransactions")}
-          </Typography>
-          <Box flex={1} display={"flex"} flexDirection={"column"}>
-            {panelList[currentTab].element}
-          </Box>
-        </Box>
+        <Typography
+          component={"h3"}
+          variant={"h4"}
+          paddingX={5 / 2}
+          paddingTop={5 / 2}
+        >
+          {t("labelMINTNFTTitle")}
+        </Typography>
+        {panelList[currentTab].element}
       </StyledPaper>
     </>
   );

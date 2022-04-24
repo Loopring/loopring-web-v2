@@ -2,6 +2,8 @@ import React from "react";
 import { MintCommands, mintService } from "./mintService";
 import {
   AccountStatus,
+  ErrorType,
+  MINT_LIMIT,
   myLog,
   NFTMETA,
   SagaStatus,
@@ -18,6 +20,7 @@ import store from "../../stores";
 import { LoopringAPI } from "../../api_wrapper";
 import { useAccount } from "../../stores/account";
 import { useSystem } from "../../stores/system";
+import { useBtnStatus } from "../../hooks/common/useBtnStatus";
 
 export function useNFTMeta<
   T extends NFTMETA
@@ -66,6 +69,79 @@ export function useNFTMeta<
       });
     },
   });
+  const {
+    btnStatus,
+    btnInfo,
+    enableBtn,
+    disableBtn,
+    setLabelAndParams,
+    resetBtnInfo,
+  } = useBtnStatus();
+  const updateBtnStatus = React.useCallback(
+    (error?: ErrorType & any) => {
+      resetBtnInfo();
+      if (
+        !error &&
+        nftMintValue &&
+        nftMintValue.mintData &&
+        nftMintValue.nftMETA &&
+        tokenAddress &&
+        !!nftMintValue.nftMETA.royaltyPercentage &&
+        Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
+        nftMintValue.nftMETA.royaltyPercentage / 1 >= 0 &&
+        nftMintValue.nftMETA.royaltyPercentage / 1 <= 10 &&
+        nftMintValue.mintData.tradeValue &&
+        Number(nftMintValue.mintData.tradeValue) > 0 &&
+        Number(nftMintValue.mintData.tradeValue) <= MINT_LIMIT &&
+        nftMintValue.nftMETA.name &&
+        nftMintValue.nftMETA.image &&
+        nftMintValue.mintData.fee &&
+        nftMintValue.mintData.fee.belong &&
+        nftMintValue.mintData.fee.__raw__ &&
+        !isFeeNotEnough
+      ) {
+        enableBtn();
+        return;
+      }
+      if (nftMintValue.nftMETA && !nftMintValue.nftMETA.image) {
+        setLabelAndParams("labelMintNoImageBtn", {});
+      }
+      if (nftMintValue.nftMETA && !nftMintValue.nftMETA.name) {
+        setLabelAndParams("labelMintNoNameBtn", {});
+      }
+      if (
+        !(
+          !!nftMintValue.nftMETA.royaltyPercentage &&
+          Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
+          nftMintValue.nftMETA.royaltyPercentage / 1 >= 0 &&
+          nftMintValue.nftMETA.royaltyPercentage / 1 <= 10
+        )
+      ) {
+        setLabelAndParams("labelMintWrongRoyaltyBtn", {});
+      }
+      if (nftMintValue.nftMETA && !nftMintValue.nftMETA.royaltyPercentage) {
+        setLabelAndParams("labelMintNoRoyaltyPercentageBtn", {});
+      }
+      if (nftMintValue.mintData && !nftMintValue.mintData.tradeValue) {
+        setLabelAndParams("labelMintTradeValueBtn", {});
+      }
+      disableBtn();
+      myLog("try to disable nftMint btn!");
+    },
+    [
+      isFeeNotEnough,
+      resetBtnInfo,
+      nftMintValue,
+      tokenAddress,
+      enableBtn,
+      setLabelAndParams,
+      disableBtn,
+    ]
+  );
+
+  React.useEffect(() => {
+    updateBtnStatus();
+  }, [isFeeNotEnough, nftMintValue, feeInfo]);
   const commonSwitch = React.useCallback(
     async ({ data, status }: { status: MintCommands; data?: any }) => {
       switch (status) {
@@ -79,6 +155,7 @@ export function useNFTMeta<
   const handleOnMetaChange = React.useCallback(
     (_newnftMeta: Partial<T>) => {
       const buildNFTMeta = { ...nftMintValue.nftMETA };
+      const buildMint = { ...nftMintValue.mintData };
       Reflect.ownKeys(_newnftMeta).map((key) => {
         switch (key) {
           case "image":
@@ -88,7 +165,14 @@ export function useNFTMeta<
             buildNFTMeta.name = _newnftMeta.name;
             break;
           case "royaltyPercentage":
-            buildNFTMeta.royaltyPercentage = _newnftMeta.royaltyPercentage;
+            const value = Number(_newnftMeta.royaltyPercentage);
+            if (
+              Number.isInteger(value) &&
+              [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(value)
+            ) {
+              buildNFTMeta.royaltyPercentage = value;
+              buildMint.royaltyPercentage = value;
+            }
             break;
           case "description":
             buildNFTMeta.description = _newnftMeta.description;
@@ -97,11 +181,11 @@ export function useNFTMeta<
             buildNFTMeta.collection = _newnftMeta.collection;
             break;
           case "properties":
-            buildNFTMeta.collection = _newnftMeta.collection;
+            buildNFTMeta.properties = _newnftMeta.properties;
             break;
         }
       });
-      updateNFTMintData({ ...nftMintValue, nftMETA: buildNFTMeta });
+      updateNFTMintData({ mintData: buildMint, nftMETA: buildNFTMeta });
       myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
     },
     [nftMintValue]
@@ -121,13 +205,15 @@ export function useNFTMeta<
   };
 
   const nftMetaProps: NFTMetaProps<T> = {
-    nftMeta: initialNFTMETA as T,
+    nftMeta: nftMintValue.nftMETA,
     handleOnMetaChange,
     // handleOnNFTDataChange,
     isFeeNotEnough,
     handleFeeChange,
     chargeFeeTokenList,
     feeInfo,
+    nftMetaBtnStatus: btnStatus,
+    btnInfo,
     // isAvaiableId,
     // isNFTCheckLoading,
     onMetaClick: () => {},

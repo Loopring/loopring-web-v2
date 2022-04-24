@@ -5,10 +5,12 @@ import { Box, Grid, Typography, Link } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
+  IBData,
   IPFS_META_URL,
   MintTradeNFT,
   myLog,
   NFTMETA,
+  NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -80,11 +82,7 @@ export const MintNFTConfirm = <
       handleFeeChange(value);
     }
   };
-  const _handleOnNFTDataChange = (_nftMintData: Partial<MI>) => {
-    if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ ...nftMintData, ..._nftMintData });
-    }
-  };
+
   myLog("mint nftMintData", nftMintData);
 
   // @ts-ignore
@@ -309,7 +307,12 @@ export const MintNFTConfirm = <
               alignItems={"center"}
               justifyContent={"flex-start"}
             >
-              <NFTInput
+              <NFTInput<
+                MI extends IBData<I> & Partial<NFTWholeINFO>
+                  ? MI
+                  : IBData<I> & Partial<NFTWholeINFO>,
+                I
+              >
                 {...({ t } as any)}
                 isThumb={false}
                 isBalanceLimit={true}
@@ -322,9 +325,9 @@ export const MintNFTConfirm = <
                 type={"NFT"}
                 inputNFTRef={inputBtnRef}
                 onChangeEvent={(_index, data) =>
-                  _handleOnNFTDataChange({
-                    tradeData: data.tradeData,
-                  } as unknown as Partial<MI>)
+                  handleOnNFTDataChange({
+                    ...data.tradeData,
+                  } as MI)
                 }
                 nftMintData={
                   {

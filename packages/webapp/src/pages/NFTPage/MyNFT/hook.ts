@@ -229,7 +229,7 @@ export const useMyNFT = () => {
           image: item.metadata?.uri,
           ...item.metadata?.base,
         };
-      });
+      }) as any;
     });
     setIsLoading(false);
     for (const nftBalanceItem of walletLayer2NFT) {

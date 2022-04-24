@@ -17,6 +17,7 @@ import {
   IBData,
   NFTWholeINFO,
   SagaStatus,
+  TradeNFT,
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -42,11 +43,7 @@ import store from "../../stores";
 import { useChargeFees } from "../common/useChargeFees";
 import { useWalletLayer2NFT } from "../../stores/walletLayer2NFT";
 
-export const useNFTTransfer = <
-  R extends IBData<T> &
-    Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>,
-  T
->({
+export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   isLocalShow = false,
   doTransferDone,
 }: {

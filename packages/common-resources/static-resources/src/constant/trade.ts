@@ -78,15 +78,18 @@ export type NFTMETA = {
   royaltyPercentage: number; // 0 - 10 for UI
   description: string;
   collection?: string;
-  properties: [{}];
+  properties?: Array<{ [key: string]: string }>;
 };
 
 export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo &
   NFTMETA & {
+    nftBalance?: number;
+    nftIdView?: string;
+    fee?: FeeInfo;
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
-  } & { fee?: FeeInfo };
+  };
 
 export type MintTradeNFT<I> = {
   balance?: number;
@@ -107,4 +110,4 @@ export const TOAST_TIME = 3000;
 export const EmptyValueTag = "--";
 
 export const IPFS_META_URL = "ipfs://";
-export const MINT_LIMIT = 10000;
+export const MINT_LIMIT = 100000;

@@ -1,33 +1,25 @@
 import { NFTMetaBlockProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import {
-  FormLabel,
-  Grid,
-  GridProps,
-  TextareaAutosize,
-  Typography,
-} from "@mui/material";
+import { Box, FormLabel, Grid, GridProps, Typography } from "@mui/material";
 import {
   FeeInfo,
   MintTradeNFT,
   myLog,
   NFTMETA,
 } from "@loopring-web/common-resources";
-import { Button, InputSize, TextField } from "../../basic-lib";
+import {
+  Button,
+  InputSize,
+  TextField,
+  TextareaAutosizeStyled,
+} from "../../basic-lib";
 
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
 
-const TextareaAutosizeStyled = styled(TextareaAutosize)`
-  line-height: 1.5em;
-  background: (var(--opacity));
-  color: var(--color-text-third);
-  font-family: inherit;
-  width: 100%;
-` as typeof TextareaAutosize;
 const GridStyle = styled(Grid)<GridProps & { isMobile: boolean }>`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
@@ -69,181 +61,211 @@ export const MintNFTBlock = <
     (_nftMeta: Partial<T>) => {
       handleOnMetaChange({ ..._nftMeta });
     },
-    [nftMeta, handleOnMetaChange]
+    [handleOnMetaChange]
   );
   const _handleOnNFTDataChange = React.useCallback(
     (_mintData: Partial<I>) => {
-      debugger;
-      handleOnNFTDataChange({ ...mintData, ..._mintData });
+      handleOnNFTDataChange({ ..._mintData });
     },
-    [handleOnNFTDataChange, mintData]
+    [handleOnNFTDataChange]
   );
   return (
-    <GridStyle
-      // className={walletMap ? "" : "loading"}
-      container
-      isMobile={isMobile}
-      spacing={2}
+    <Box
       flex={1}
-      //
+      flexDirection={"column"}
+      display={"flex"}
+      alignContent={"space-between"}
     >
-      <Grid item xs={12} md={6}>
-        <TextField
-          value={nftMeta.name}
-          fullWidth
-          required
-          label={t("labelMintName")}
-          type={"text"}
-          onChange={(event) =>
-            _handleOnMetaChange({ name: event.target.value } as Partial<T>)
-          }
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <TextField
-          value={nftMeta.collection}
-          fullWidth
-          select
-          disabled={true}
-          label={t("labelMintCollection") + " " + "coming soon"}
-          type={"text"}
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <TextField
-          label={t("labelMintRoyaltyPercentage")}
-          inputProps={{ inputMode: "numeric", pattern: "[0-10]" }}
-          value={nftMeta.royaltyPercentage}
-          fullWidth
-          onChange={(event) =>
-            _handleOnMetaChange({
-              royaltyPercentage: event.target.value,
-            } as unknown as Partial<T>)
-          }
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <NFTInput
-          {...({ t } as any)}
-          isThumb={false}
-          isBalanceLimit={true}
-          inputNFTDefaultProps={{
-            subLabel: t("tokenNFTMaxMINT"),
-            size: InputSize.small,
-            label: t("labelNFTMintInputTitle"),
-          }}
-          // disabled={!(nftMintData.nftId && nftMintData.tokenAddress)}
-          type={"NFT"}
-          inputNFTRef={inputBtnRef}
-          onChangeEvent={(_index, data) =>
-            _handleOnNFTDataChange({
-              tradeData: data.tradeData,
-            } as unknown as Partial<I>)
-          }
-          handleError={(data: I, ref) => {
-            if (amountHandleError) {
-              amountHandleError(data, ref);
+      <GridStyle
+        flex={1}
+        display={"flex"}
+        container
+        isMobile={isMobile}
+        spacing={2}
+        alignContent={"flex-start"}
+      >
+        <Grid item xs={12} md={6}>
+          <TextField
+            value={nftMeta.name}
+            fullWidth
+            label={
+              <Trans i18nKey={"labelMintName"}>
+                Name
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"error"}
+                >
+                  {"\uFE61"}
+                </Typography>
+              </Trans>
             }
-          }}
-          tradeData={
-            {
-              ...mintData,
-              belong: mintData.tokenAddress ?? "NFT",
-            } as any
-          }
-          walletMap={{}}
-        />
-        {/*<TextField*/}
-        {/*  value={nftMeta.nftBalance}*/}
-        {/*  fullWidth*/}
-        {/*  label={t("labelMintAmount")}*/}
-        {/*  type={"number"}*/}
-        {/*/>*/}
-      </Grid>
-      <Grid item xs={12} md={12}>
-        <FormLabel>
-          <Typography variant={"body2"} paddingBottom={1}>
-            {t("labelMintDescription")}
-          </Typography>
-        </FormLabel>
-        <TextareaAutosizeStyled
-          aria-label="NFT Description"
-          minRows={5}
-          maxLength={2000}
-          onChange={(event) =>
-            _handleOnMetaChange({
-              description: event.target.value,
-            } as unknown as Partial<T>)
-          }
-        />
-      </Grid>
-
-      <Grid item xs={12} md={12}>
-        <FormLabel>
-          <Typography variant={"body2"} paddingBottom={1}>
-            {t("labelMintProperty")}
-          </Typography>
-        </FormLabel>
-        <TextareaAutosizeStyled
-          aria-label="NFT Description"
-          minRows={5}
-          onChange={(event) =>
-            _handleOnMetaChange({
-              description: event.target.value,
-            } as unknown as Partial<T>)
-          }
-        />
-      </Grid>
-
-      {/*<Grid item xs={12} md={6}>*/}
-      {/*  <img*/}
-      {/*    alt={"NFT"}*/}
-      {/*    width={"68"}*/}
-      {/*    height={"69"}*/}
-      {/*    style={{ objectFit: "contain" }}*/}
-      {/*    src={nftMeta?.image?.replace(*/}
-      {/*      IPFS_META_URL,*/}
-      {/*      LOOPRING_URLs.IPFS_META_URL*/}
-      {/*    )}*/}
-      {/*  />*/}
-      {/*</Grid>*/}
-
-      <Grid item xs={12} marginTop={3} alignSelf={"stretch"}>
-        {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
-          <Typography
-            color={"var(--color-warning)"}
-            component={"p"}
-            variant={"body1"}
-            marginBottom={1}
-            style={{ wordBreak: "break-all" }}
+            type={"text"}
+            onChange={(event) =>
+              _handleOnMetaChange({ name: event.target.value } as Partial<T>)
+            }
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            value={nftMeta.collection}
+            fullWidth
+            select
+            disabled={true}
+            label={
+              <Trans i18nKey={"labelMintCollection"}>
+                Collection( "coming soon")
+              </Trans>
+            }
+            type={"text"}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            label={
+              <Trans i18nKey={"labelMintRoyaltyPercentage"}>
+                Royalty Percentage
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"error"}
+                >
+                  {"\uFE61"}
+                </Typography>
+              </Trans>
+            }
+            inputProps={{ inputMode: "numeric", pattern: "[0-9]|10" }}
+            value={nftMeta.royaltyPercentage}
+            fullWidth
+            onChange={(event) =>
+              _handleOnMetaChange({
+                royaltyPercentage: event.target.value,
+              } as unknown as Partial<T>)
+            }
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <NFTInput
+            {...({ t } as any)}
+            isThumb={false}
+            isBalanceLimit={true}
+            inputNFTDefaultProps={{
+              subLabel: t("tokenNFTMaxMINT"),
+              size: InputSize.small,
+              label: (
+                <Trans i18nKey={"labelNFTMintInputTitle"}>
+                  Mint Amount
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"error"}
+                  >
+                    {"\uFE61"}
+                  </Typography>
+                </Trans>
+              ),
+            }}
+            // disabled={!(nftMintData.nftId && nftMintData.tokenAddress)}
+            type={"NFT"}
+            inputNFTRef={inputBtnRef}
+            onChangeEvent={(_index, data) =>
+              _handleOnNFTDataChange({
+                tradeData: data.tradeData,
+              } as unknown as Partial<I>)
+            }
+            handleError={(data: I, ref) => {
+              if (amountHandleError) {
+                amountHandleError(data, ref);
+              }
+            }}
+            tradeData={
+              {
+                ...mintData,
+                belong: mintData.tokenAddress ?? "NFT",
+              } as any
+            }
+            walletMap={{}}
+          />
+          {/*<TextField*/}
+          {/*  value={nftMeta.nftBalance}*/}
+          {/*  fullWidth*/}
+          {/*  label={t("labelMintAmount")}*/}
+          {/*  type={"number"}*/}
+          {/*/>*/}
+        </Grid>
+        <Grid item xs={12} md={12} flex={1}>
+          <FormLabel>
+            <Typography variant={"body2"} lineHeight={"20px"}>
+              <Trans i18nKey={"labelMintDescription"}>Description</Trans>
+            </Typography>
+          </FormLabel>
+          <TextareaAutosizeStyled
+            aria-label="NFT Description"
+            minRows={5}
+            maxLength={2000}
+            onChange={(event) =>
+              _handleOnMetaChange({
+                description: event.target.value,
+              } as unknown as Partial<T>)
+            }
+          />
+        </Grid>
+        <Grid item xs={12} display={"flex"}>
+          {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
+            <Typography
+              color={"var(--color-warning)"}
+              component={"p"}
+              variant={"body1"}
+              marginBottom={1}
+              style={{ wordBreak: "break-all" }}
+            >
+              <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
+                Your NFT nftMeta should identify
+                <em style={{ fontWeight: 600 }}>
+                  name, image & royalty_percentage(number from 0 to 10)
+                </em>
+                .
+              </Trans>
+            </Typography>
+          )}
+          <Button
+            fullWidth
+            variant={"contained"}
+            size={"medium"}
+            color={"primary"}
+            onClick={() => {
+              onMetaClick(nftMeta as T);
+            }}
+            loading={
+              !getDisabled && nftMetaBtnStatus === TradeBtnStatus.LOADING
+                ? "true"
+                : "false"
+            }
+            disabled={
+              getDisabled || nftMetaBtnStatus === TradeBtnStatus.LOADING
+            }
           >
-            <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
-              Your NFT nftMeta should identify
-              <em style={{ fontWeight: 600 }}>
-                name, image & royalty_percentage(number from 0 to 10)
-              </em>
-              .
-            </Trans>
-          </Typography>
-        )}
-        <Button
-          fullWidth
-          variant={"contained"}
-          size={"medium"}
-          color={"primary"}
-          onClick={() => {
-            onMetaClick(nftMeta as T);
-          }}
-          loading={
-            !getDisabled && nftMetaBtnStatus === TradeBtnStatus.LOADING
-              ? "true"
-              : "false"
-          }
-          disabled={getDisabled || nftMetaBtnStatus === TradeBtnStatus.LOADING}
-        >
-          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTMintBtn`)}
-        </Button>
-      </Grid>
-    </GridStyle>
+            {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTMintBtn`)}
+          </Button>
+        </Grid>
+        {/* TODO: Properties*/}
+        {/*<Grid item xs={12} md={12}>*/}
+        {/*  <FormLabel>*/}
+        {/*    <Typography variant={"body2"} lineHeight={"20px"}>*/}
+        {/*      <Trans i18nKey={"labelMintProperty"}>Properties</Trans>*/}
+        {/*    </Typography>*/}
+        {/*  </FormLabel>*/}
+        {/*  <TextareaAutosizeStyled*/}
+        {/*    aria-label="NFT Description"*/}
+        {/*    minRows={5}*/}
+        {/*    onChange={(event) =>*/}
+        {/*      _handleOnMetaChange({*/}
+        {/*        description: event.target.value,*/}
+        {/*      } as unknown as Partial<T>)*/}
+        {/*    }*/}
+        {/*  />*/}
+        {/*</Grid>*/}
+      </GridStyle>
+    </Box>
   );
 };
