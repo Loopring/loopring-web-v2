@@ -34,7 +34,6 @@ export const UnlockAccount_Success = (props: PanelProps & WithTranslation) => {
   return <UnlockAccountBase {...propsPatch} {...props} />;
 };
 
-// value symbol
 export const UnlockAccount_Failed = (
   props: PanelProps &
     WithTranslation & { walletType?: WalletType; resetAccount: () => void }
