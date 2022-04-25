@@ -187,7 +187,9 @@ export const NFTPage = () => {
               >
                 <SubMenu>
                   <SubMenuList selected={selected} subMenu={subMenu as any} />
-                  <Divider />
+                  <Box marginX={3}>
+                    <Divider />
+                  </Box>
                   <Box
                     marginTop={1}
                     display={"flex"}
