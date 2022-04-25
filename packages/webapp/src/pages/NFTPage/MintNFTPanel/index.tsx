@@ -1,6 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { Box, Typography } from "@mui/material";
-import { MintNFTConfirm, PanelContent } from "@loopring-web/component-lib";
+import { Box, Typography, useTheme } from "@mui/material";
+import {
+  MintNFTConfirm,
+  PanelContent,
+  SwipeableViewsStyled,
+} from "@loopring-web/component-lib";
 import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
@@ -18,6 +22,7 @@ export const MintNFTPanel = () => {
   const [currentTab, setCurrentTab] = React.useState<MINT_VIEW_STEP>(
     MINT_VIEW_STEP.METADATA
   );
+  const theme = useTheme();
   const handleTabChange = React.useCallback((value) => {
     setCurrentTab(value);
   }, []);
@@ -87,7 +92,28 @@ export const MintNFTPanel = () => {
         >
           {t("labelMINTNFTTitle")}
         </Typography>
-        {panelList[currentTab].element}
+        <Box flex={1} display={"flex"}>
+          <SwipeableViewsStyled
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={currentTab}
+          >
+            {
+              panelList.map((panel, index) => {
+                return (
+                  <Box
+                    flex={1}
+                    display={"flex"}
+                    alignItems={"stretch"}
+                    key={index}
+                  >
+                    {panel.element}
+                  </Box>
+                );
+              })
+              // panelList[currentTab].element
+            }
+          </SwipeableViewsStyled>
+        </Box>
       </StyledPaper>
     </>
   );
