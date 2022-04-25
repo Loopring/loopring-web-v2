@@ -40,15 +40,9 @@ export const MintNFTBlock = <
   mintData,
   btnInfo,
   nftMetaBtnStatus,
-  // isFeeNotEnough,
-  // handleFeeChange,
-  // chargeFeeTokenList,
-  // feeInfo,
-  // isAvaiableId,
-  // isNFTCheckLoading,
   amountHandleError,
-  handleOnNFTDataChange,
   handleOnMetaChange,
+  handleOnNFTDataChange,
   onMetaClick,
 }: NFTMetaBlockProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);

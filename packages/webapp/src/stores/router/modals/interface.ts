@@ -8,6 +8,7 @@ import {
   MintTradeNFT,
 } from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export type WithdrawData = {
   belong: string | undefined;
@@ -47,6 +48,7 @@ export type ActiveAccountData = {
 export type NFT_MINT_VALUE<I> = {
   mintData: Partial<MintTradeNFT<I>>;
   nftMETA: Partial<NFTMETA>;
+  error?: undefined | sdk.RESULT_INFO;
 };
 
 export type ModalDataStatus = {

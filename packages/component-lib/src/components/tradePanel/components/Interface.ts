@@ -307,11 +307,11 @@ export type NFTMetaViewProps<T, C> = {
 } & NFTMetaExtendProps<T, C>;
 export type NFTMetaBlockProps<T, I, C> = NFTMetaViewProps<T, C> & {
   mintData: Partial<I>;
+  handleOnNFTDataChange: (data: Partial<I>) => void;
   amountHandleError?: (
     data: Partial<I>,
     ref: React.ForwardedRef<any>
   ) => { error: boolean; message?: string | JSX.Element } | void;
-  handleOnNFTDataChange: (data: Partial<I>) => void;
 };
 
 // export type NFTMintViewWholeProps<T, C> = {

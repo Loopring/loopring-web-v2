@@ -147,6 +147,47 @@ export const ipfsService = {
       });
     }
   },
+  addJSON: async ({
+    ipfs,
+    json,
+    uniqueId,
+  }: {
+    ipfs: IPFSHTTPClient | undefined;
+    json: string;
+    uniqueId: string;
+  }) => {
+    if (ipfs) {
+      try {
+        const data: AddResult = await ipfs.add({ content: json }); //callIpfs({ ipfs, cmd, opts });
+        subject.next({
+          status: IPFSCommands.IpfsResult,
+          data: { ...data, uniqueId },
+        });
+      } catch (error) {
+        subject.next({
+          status: IPFSCommands.ErrorGetIpfs,
+          data: {
+            error: {
+              code: UIERROR_CODE.ADD_IPFS_ERROR,
+              ...(error as any),
+            },
+            uniqueId,
+          },
+        });
+      }
+    } else {
+      subject.next({
+        status: IPFSCommands.ErrorGetIpfs,
+        data: {
+          uniqueId,
+          error: {
+            code: UIERROR_CODE.NO_IPFS_INSTANCE,
+            message: "IPFSHTTPClient is undefined",
+          },
+        },
+      });
+    }
+  },
 
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),

@@ -34,6 +34,10 @@ export const useMintNFTPanel = <
   C extends FeeInfo
 >() => {
   const {
+    onFilesLoad,
+    onDelete,
+    ipfsMediaSources,
+    ipfsProvides,
     nftMetaProps,
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -53,6 +57,10 @@ export const useMintNFTPanel = <
   });
   const { nftMintValue } = useModalData();
   return {
+    onFilesLoad,
+    onDelete,
+    ipfsMediaSources,
+    ipfsProvides,
     nftMetaProps,
     chargeFeeTokenList,
     isFeeNotEnough,

@@ -12,19 +12,14 @@ import {
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { useIPFS, ipfsService } from "services/ipfs";
 import {
   EmptyValueTag,
   FeeInfo,
-  IPFS_META_URL,
   MintTradeNFT,
   NFTMETA,
-  UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { AddResult } from "ipfs-core-types/types/src/root";
 import { NFT_MINT_VALUE } from "stores/router";
 import { NFTMetaBlockProps } from "@loopring-web/component-lib";
-import * as sdk from "@loopring-web/loopring-sdk";
 const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -41,9 +36,11 @@ export const MetaNFTPanel = <
 >({
   nftMetaProps,
   nftMintProps,
-  nftMintValue,
   handleFeeChange,
   isFeeNotEnough,
+  ipfsMediaSources,
+  onFilesLoad,
+  onDelete,
   chargeFeeTokenList,
   feeInfo,
 }: Partial<NFTMetaBlockProps<Me, Mi, C>> & {
@@ -51,69 +48,12 @@ export const MetaNFTPanel = <
   nftMintValue: NFT_MINT_VALUE<I>;
   nftMintProps: NFTMintProps<Me, Mi, C>;
   nftMetaProps: NFTMetaProps<Me, C>;
+  onFilesLoad: (value: IpfsFile) => void;
+  onDelete: () => void;
+  ipfsMediaSources: IpfsFile | undefined;
 }) => {
-  const [ipfsMediaSources, setIpfsMediaSources] =
-    React.useState<IpfsFile | null>(null);
   const { t } = useTranslation("common");
 
-  const handleFailedUpload = React.useCallback(
-    (data: { uniqueId: string; error: sdk.RESULT_INFO }) => {
-      setIpfsMediaSources((value) => {
-        let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
-        if (value && value?.uniqueId === data.uniqueId) {
-          _value = {
-            ..._value,
-            ...data,
-          };
-          nftMetaProps.handleOnMetaChange({
-            image: undefined,
-          } as Partial<Me>);
-        }
-        return _value;
-      });
-    },
-    [nftMetaProps, nftMintValue.nftMETA]
-  );
-  const handleSuccessUpload = React.useCallback(
-    (data: AddResult & { uniqueId: string }) => {
-      setIpfsMediaSources((value) => {
-        let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
-        if (value && value?.uniqueId === data.uniqueId) {
-          const cid = data.cid.toString();
-          _value = {
-            ..._value,
-            cid: cid,
-            fullSrc: `${sdk.LOOPRING_URLs.IPFS_META_URL}${data.path}`,
-            // `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}/ipfs/${cid}`,
-            // `${LOOPRING_URLs.IPFS_META_URL}${cid}`,
-            isProcessing: false,
-          };
-          nftMetaProps.handleOnMetaChange({
-            image: `${IPFS_META_URL}${data.path}`,
-          } as Me);
-        } else if (value) {
-          _value = {
-            ..._value,
-            error: {
-              code: UIERROR_CODE.NOT_SAME_IPFS_RESOURCE,
-              message: `current View ${value?.file.name} not equal to ipfsLoad ${value.file.name}`,
-            },
-            isProcessing: false,
-          };
-          // nftMetaProps.handleOnMetaChange({
-          //   ...nftMintValue.nftMETA,
-          //   image: null,
-          // });
-        }
-        return _value;
-      });
-    },
-    [nftMetaProps, nftMintValue.nftMETA]
-  );
-  const { ipfsProvides } = useIPFS({
-    handleSuccessUpload,
-    handleFailedUpload,
-  });
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const handleToggleChange = (value: C) => {
@@ -126,24 +66,7 @@ export const MetaNFTPanel = <
   //     handleOnNFTDataChange({ ...tradeData, ..._tradeData });
   //   }
   // };
-  const onFilesLoad = React.useCallback(
-    (value: IpfsFile) => {
-      ipfsService.addFile({
-        ipfs: ipfsProvides.ipfs,
-        file: value.file,
-        uniqueId: value.uniqueId,
-      });
-      value.isUpdateIPFS = true;
-      setIpfsMediaSources(value);
-    },
-    [ipfsProvides.ipfs]
-  );
-  const onDelete = React.useCallback(() => {
-    setIpfsMediaSources(null);
-    nftMetaProps.handleOnMetaChange({
-      image: undefined,
-    } as Partial<Me>);
-  }, [nftMetaProps, nftMintValue.nftMETA]);
+
   return (
     <StyleWrapper
       flex={1}
@@ -260,10 +183,11 @@ export const MetaNFTPanel = <
         </Grid>
         <Grid item xs={12} md={7} flex={1} display={"flex"}>
           <MintNFTBlock
-            handleOnMetaChange={nftMetaProps.handleOnMetaChange}
+            {...nftMetaProps}
             handleOnNFTDataChange={nftMintProps.handleOnNFTDataChange}
-            onMetaClick={nftMetaProps.onMetaClick}
-            nftMeta={nftMetaProps.nftMeta}
+            // handleOnMetaChange={nftMetaProps.handleOnMetaChange}
+            // onMetaClick={nftMetaProps.onMetaClick}
+            // nftMeta={nftMetaProps.nftMeta}
             mintData={nftMintProps.tradeData}
             feeInfo={nftMintProps.feeInfo}
             handleFeeChange={nftMintProps.handleFeeChange}

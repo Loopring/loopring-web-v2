@@ -14,12 +14,9 @@ import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { useSystem } from "stores/system";
 import { useWalletInfo } from "stores/localStore/walletInfo";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
-import store from "stores";
 import { LoopringAPI } from "api_wrapper";
-import { useChargeFees } from "hooks/common/useChargeFees";
 import {
   AccountStatus,
-  EmptyValueTag,
   ErrorType,
   Explorer,
   FeeInfo,
@@ -27,9 +24,7 @@ import {
   MintTradeNFT,
   myLog,
   NFTMETA,
-  SagaStatus,
   TOAST_TIME,
-  TradeNFT,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
@@ -156,7 +151,6 @@ export function useNFTMint<
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
-
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
@@ -291,78 +285,19 @@ export function useNFTMint<
 
   const handleOnNFTDataChange = React.useCallback(
     async (data: Partial<MintTradeNFT<I>>) => {
-      let shouldUpdate = {};
-
-      if (data.cid && LoopringAPI.nftAPI) {
-        let nftId: string = "";
-        //LoopringAPI.nftAPI.ipfsNftIDToCid()
-        try {
-          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.cid);
-          shouldUpdate = {
-            nftId,
-            // nftIdView: data.cidView,
-            ...shouldUpdate,
-          };
-        } catch (error: any) {
-          myLog("handleOnNFTDataChange ->.cid", error);
-          shouldUpdate = {
-            nftId: "",
-            // nftIdView:'',
-          };
-        }
-
-        if (nftId && nftId !== "") {
-          try {
-            const value = await fetch(
-              sdk.LOOPRING_URLs.IPFS_META_URL +
-                `${nftMintValue.mintData.nftIdView}`
-            ).then((response) => response.json());
-
-            if (value) {
-              shouldUpdate = {
-                nftId: nftId,
-                name: value.name ?? t("labelUnknown"),
-                image: value.image,
-                description: value.description ?? EmptyValueTag,
-                balance: MINT_LIMIT,
-                royaltyPercentage: value.royalty_percentage,
-                ...shouldUpdate,
-              };
-            } else {
-              shouldUpdate = {
-                nftId: nftId,
-                name: undefined,
-                image: undefined,
-                description: undefined,
-                balance: undefined,
-                ...shouldUpdate,
-              };
-            }
-          } catch (error: any) {
-            shouldUpdate = {
-              nftId: nftId,
-              name: undefined,
-              image: undefined,
-              description: undefined,
-              balance: undefined,
-              ...shouldUpdate,
-            };
-            myLog(error);
-          }
-        }
-      } else if (nftMintValue.mintData.nftIdView) {
-      } else if (!nftMintValue.mintData.nftIdView) {
-        shouldUpdate = {
-          nftId: "",
-          name: undefined,
-          image: undefined,
-          description: undefined,
-          balance: undefined,
-        };
-      }
+      // let shouldUpdate = {};
+      // if (!nftMintValue.mintData.nftIdView) {
+      //   shouldUpdate = {
+      //     nftId: "",
+      //     name: undefined,
+      //     image: undefined,
+      //     description: undefined,
+      //     balance: undefined,
+      //   };
+      // }
       updateNFTMintData({
         ...nftMintValue,
-        mintData: { ...nftMintValue.mintData, ...data, ...shouldUpdate },
+        mintData: { ...nftMintValue.mintData, ...data },
       });
     },
     [nftMintValue]

@@ -77,7 +77,7 @@ export const IPFSSourceUpload = ({
   buttonProps?: Omit<ButtonProps, "onClick">;
   title?: string;
   buttonText?: string;
-  value: IpfsFile | null;
+  value: IpfsFile | undefined;
   types?: string[];
   onDelete: () => void;
   onChange: (files: IpfsFile) => void;

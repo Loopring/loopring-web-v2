@@ -32,7 +32,7 @@ import {
 import React from "react";
 import { TradeNFT, RequireOne, NFTMETA } from "@loopring-web/common-resources";
 import { RootState } from "stores";
-import { NFTTokenInfo } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export function useModalData(): {
   lastStep: LAST_STEP;
@@ -66,10 +66,7 @@ export function useModalData(): {
   ) => void;
   resetNFTWithdrawData: () => void;
   nftMintValue: NFT_MINT_VALUE<any>;
-  updateNFTMintData: (nftMintData: {
-    mintData: RequireOne<Partial<TradeNFT<any>>, never>;
-    nftMETA: RequireOne<Partial<NFTMETA>, never>;
-  }) => void;
+  updateNFTMintData: (nftMintData: NFT_MINT_VALUE<any>) => void;
   resetNFTMintData: () => void;
   nftDeployValue: TradeNFT<any> & { broker: string };
   updateNFTDeployData: (
@@ -112,7 +109,11 @@ export function useModalData(): {
       (
         nftWithdrawData: RequireOne<
           WithdrawData &
-            NFTTokenInfo & { image: string; name: string; description: string },
+            sdk.NFTTokenInfo & {
+              image: string;
+              name: string;
+              description: string;
+            },
           never
         >
       ) => {
@@ -124,7 +125,11 @@ export function useModalData(): {
       (
         nftTransferData: RequireOne<
           TransferData &
-            NFTTokenInfo & { image: string; name: string; description: string },
+            sdk.NFTTokenInfo & {
+              image: string;
+              name: string;
+              description: string;
+            },
           never
         >
       ) => {

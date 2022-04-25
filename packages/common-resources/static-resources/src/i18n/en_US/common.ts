@@ -638,7 +638,7 @@ export default {
   labelMintCollection: "Collection (coming soon)",
   labelMintRoyaltyPercentage: "Royalty Percentage <1>*</1>",
   labelMintDescription: "Description",
-  labelMintProperty: "Property (Limit 5)",
+  labelMintProperty: "Properties (Limit 5)",
   labelPropertyAdd: "Add property",
   labelMintNFT: "Create NFT",
   labelDepositNFT: "Deposit NFT",

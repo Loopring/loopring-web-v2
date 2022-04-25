@@ -14,12 +14,9 @@ import {
   AccountStatus,
   CoinMap,
   Explorer,
-  IBData,
-  NFTWholeINFO,
   SagaStatus,
   TradeNFT,
   UIERROR_CODE,
-  WalletMap,
 } from "@loopring-web/common-resources";
 
 import { useTokenMap } from "stores/token";
@@ -119,16 +116,19 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     }
     disableBtn();
   }, [
+    tokenMap,
+    nftTransferValue.fee?.belong,
+    nftTransferValue.tradeValue,
+    nftTransferValue.nftBalance,
+    chargeFeeTokenList.length,
+    isFeeNotEnough,
+    isSameAddress,
+    addressOrigin,
     addrStatus,
     address,
-    chargeFeeTokenList,
-    isSameAddress,
+    realAddr,
     disableBtn,
     enableBtn,
-    addressOrigin,
-    isFeeNotEnough,
-    nftTransferValue,
-    tokenMap,
   ]);
 
   React.useEffect(() => {
@@ -331,10 +331,12 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       checkHWAddr,
       chainId,
       setShowAccount,
+      checkFeeIsEnough,
+      updateWalletLayer2NFT,
+      page,
       doTransferDone,
       resetNFTTransferData,
       updateHW,
-      checkFeeIsEnough,
     ]
   );
 

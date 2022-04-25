@@ -52,7 +52,7 @@ export const Properties = ({
   return (
     <Box>
       {properties.map((property, index) => (
-        <Grid container key={index} spacing={2}>
+        <Grid container key={index} spacing={2} marginBottom={1}>
           <Property
             property={property}
             index={index}

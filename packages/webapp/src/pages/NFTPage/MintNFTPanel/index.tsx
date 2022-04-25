@@ -21,18 +21,7 @@ export const MintNFTPanel = () => {
   const handleTabChange = React.useCallback((value) => {
     setCurrentTab(value);
   }, []);
-  const {
-    nftMetaProps,
-    nftMintProps,
-    handleFeeChange,
-    feeInfo,
-    nftMintValue,
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    checkFeeIsEnough,
-    tokenAddress,
-    resetMETADAT,
-  } = useMintNFTPanel();
+  const mintWholeProps = useMintNFTPanel();
   const panelList: Pick<
     PanelContent<"METADATA" | "MINT_CONFIRM">,
     "key" | "element"
@@ -41,15 +30,19 @@ export const MintNFTPanel = () => {
       key: "METADATA",
       element: (
         <MetaNFTPanel
-          feeInfo={feeInfo}
-          handleFeeChange={handleFeeChange}
-          nftMetaProps={nftMetaProps}
-          nftMintProps={nftMintProps}
-          nftMintValue={nftMintValue}
-          isFeeNotEnough={isFeeNotEnough}
-          chargeFeeTokenList={chargeFeeTokenList}
-          nftMetaBtnStatus={nftMetaProps.nftMetaBtnStatus}
-          btnInfo={nftMetaProps.btnInfo}
+          {...mintWholeProps}
+          nftMetaBtnStatus={mintWholeProps.nftMetaProps.nftMetaBtnStatus}
+          btnInfo={mintWholeProps.nftMetaProps.btnInfo}
+          // feeInfo={feeInfo}
+          // handleFeeChange={handleFeeChange}
+          // nftMetaProps={nftMetaProps}
+          // nftMintProps={nftMintProps}
+          // nftMintValue={nftMintValue}
+          // isFeeNotEnough={isFeeNotEnough}
+          // chargeFeeTokenList={chargeFeeTokenList}
+          // ipfsMediaSources={ipfsMediaSources}
+          // ipfsProvides={ipfsProvides}
+          // onDelete
         />
       ),
     },
@@ -59,16 +52,19 @@ export const MintNFTPanel = () => {
         <MintNFTConfirm
           disabled={false}
           walletMap={{}}
-          tradeData={nftMintProps.tradeData}
-          metaData={nftMetaProps.nftMeta}
-          isFeeNotEnough={isFeeNotEnough}
-          handleFeeChange={handleFeeChange}
-          chargeFeeTokenList={chargeFeeTokenList}
-          feeInfo={feeInfo}
-          handleOnNFTDataChange={nftMintProps.handleOnNFTDataChange}
-          onNFTMintClick={nftMintProps.onNFTMintClick}
-          nftMintBtnStatus={nftMintProps.nftMintBtnStatus}
-          btnInfo={nftMintProps.btnInfo}
+          {...mintWholeProps}
+          tradeData={mintWholeProps.nftMintProps.tradeData}
+          metaData={mintWholeProps.nftMetaProps.nftMeta}
+          handleOnNFTDataChange={
+            mintWholeProps.nftMintProps.handleOnNFTDataChange
+          }
+          onNFTMintClick={mintWholeProps.nftMintProps.onNFTMintClick}
+          nftMintBtnStatus={mintWholeProps.nftMintProps.nftMintBtnStatus}
+          btnInfo={mintWholeProps.nftMintProps.btnInfo}
+          // isFeeNotEnough={isFeeNotEnough}
+          // handleFeeChange={handleFeeChange}
+          // chargeFeeTokenList={chargeFeeTokenList}
+          // feeInfo={feeInfo}
         />
       ),
     },

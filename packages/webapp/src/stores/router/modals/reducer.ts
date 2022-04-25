@@ -4,6 +4,7 @@ import {
   DepositData,
   LAST_STEP,
   ModalDataStatus,
+  NFT_MINT_VALUE,
   TransferData,
   WithdrawData,
 } from "./interface";
@@ -284,15 +285,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
-    updateNFTMintData(
-      state,
-      action: PayloadAction<{
-        mintData: Partial<TradeNFT<any>>;
-        nftMETA: Partial<NFTMETA>;
-      }>
-    ) {
+    updateNFTMintData(state, action: PayloadAction<NFT_MINT_VALUE<any>>) {
       const mintData = action.payload.mintData;
       const nftMETA = action.payload.nftMETA;
+      const error = action.payload.error;
       const { balance, tradeValue, ...rest } = mintData;
 
       state.lastStep = LAST_STEP.nftMint;
@@ -313,6 +309,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...state.nftMintValue.nftMETA,
         ...nftMETA,
       };
+      state.nftMintValue.error = error;
     },
     updateNFTDeployData(
       state,
