@@ -60,8 +60,8 @@ export const MyNFTPanel = withTranslation("common")(
       onDetailClose,
       isShow,
       nftList,
-      popNFTDeposit,
-      popNFTMint,
+      // popNFTDeposit,
+      // popNFTMint,
       etherscanBaseUrl,
       isLoading,
       page,
@@ -139,27 +139,27 @@ export const MyNFTPanel = withTranslation("common")(
             >
               {t("labelNFTMyNFT")}
             </Typography>
-            {!isMobile && (
-              <Box display={"flex"}>
-                <Button
-                  variant={"contained"}
-                  size={"small"}
-                  style={{ marginLeft: 4 }}
-                  onClick={() => popNFTDeposit()}
-                >
-                  {t("labelNFTDeposit")}
-                </Button>
-                <Button
-                  disabled={false}
-                  variant={"outlined"}
-                  size={"medium"}
-                  style={{ marginLeft: `${theme.unit}px` }}
-                  onClick={() => popNFTMint()}
-                >
-                  {t("nftMintBtn")}
-                </Button>
-              </Box>
-            )}
+            {/*{!isMobile && (*/}
+            {/*  <Box display={"flex"}>*/}
+            {/*    <Button*/}
+            {/*      variant={"contained"}*/}
+            {/*      size={"small"}*/}
+            {/*      style={{ marginLeft: 4 }}*/}
+            {/*      onClick={() => popNFTDeposit()}*/}
+            {/*    >*/}
+            {/*      {t("labelNFTDeposit")}*/}
+            {/*    </Button>*/}
+            {/*    <Button*/}
+            {/*      disabled={false}*/}
+            {/*      variant={"outlined"}*/}
+            {/*      size={"medium"}*/}
+            {/*      style={{ marginLeft: `${theme.unit}px` }}*/}
+            {/*      onClick={() => popNFTMint()}*/}
+            {/*    >*/}
+            {/*      {t("nftMintBtn")}*/}
+            {/*    </Button>*/}
+            {/*  </Box>*/}
+            {/*)}*/}
           </Box>
           <Box flex={1} display={"flex"} flexDirection={"column"}>
             {isLoading ? (

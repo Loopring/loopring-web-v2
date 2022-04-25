@@ -9,6 +9,7 @@ import {
 } from "./interface";
 import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
+  MINT_LIMIT,
   NFTMETA,
   NFTWholeINFO,
   TradeNFT,
@@ -41,7 +42,7 @@ const initialDepositState: DepositData = {
 export const initialTradeNFT = {
   belong: undefined,
   tradeValue: 0,
-  balance: 0,
+  balance: MINT_LIMIT,
   nftBalance: 0,
 };
 export const initialNFTMETA: Partial<NFTMETA> = {

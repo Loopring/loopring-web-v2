@@ -41,17 +41,17 @@ export const useMyNFT = () => {
   const {
     setShowNFTTransfer,
     setShowNFTWithdraw,
-    setShowNFTDeposit,
+    // setShowNFTDeposit,
     setShowNFTMint,
-    modals: { isShowNFTDeposit, isShowNFTMint },
+    // modals: { isShowNFTDeposit, isShowNFTMint },
   } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
   const [page, setPage] = useState(1);
   const onDetailClose = React.useCallback(() => setIsShow(false), []);
-  const popNFTDeposit = React.useCallback(
-    () => setShowNFTDeposit({ isShow: true }),
-    []
-  );
+  // const popNFTDeposit = React.useCallback(
+  //   () => setShowNFTDeposit({ isShow: true }),
+  //   []
+  // );
 
   const onPageChange = (page: number) => {
     setPage(page);
@@ -271,10 +271,10 @@ export const useMyNFT = () => {
     onDetail,
     etherscanBaseUrl,
     onDetailClose,
-    isShowNFTDeposit,
-    isShowNFTMint,
-    popNFTDeposit,
-    popNFTMint,
+    // isShowNFTDeposit,
+    // isShowNFTMint,
+    // popNFTDeposit,
+    // popNFTMint,
     onNFTError,
     onNFTReload,
     onPageChange,

@@ -86,7 +86,7 @@ export function useNFTMeta<
         nftMintValue.mintData &&
         nftMintValue.nftMETA &&
         tokenAddress &&
-        !!nftMintValue.nftMETA.royaltyPercentage &&
+        nftMintValue.nftMETA.royaltyPercentage !== undefined &&
         Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
         nftMintValue.nftMETA.royaltyPercentage / 1 >= 0 &&
         nftMintValue.nftMETA.royaltyPercentage / 1 <= 10 &&
@@ -111,7 +111,7 @@ export function useNFTMeta<
       }
       if (
         !(
-          !!nftMintValue.nftMETA.royaltyPercentage &&
+          nftMintValue.nftMETA.royaltyPercentage !== undefined &&
           Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
           nftMintValue.nftMETA.royaltyPercentage / 1 >= 0 &&
           nftMintValue.nftMETA.royaltyPercentage / 1 <= 10
@@ -205,7 +205,7 @@ export function useNFTMeta<
   };
 
   const nftMetaProps: NFTMetaProps<T> = {
-    nftMeta: nftMintValue.nftMETA,
+    nftMeta: nftMintValue.nftMETA as T,
     handleOnMetaChange,
     // handleOnNFTDataChange,
     isFeeNotEnough,

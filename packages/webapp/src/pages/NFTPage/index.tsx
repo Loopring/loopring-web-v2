@@ -16,6 +16,7 @@ import { useAccount } from "stores/account";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTPanel } from "./MintNFTPanel";
+import { DepositNFTPanel } from "./NFTDeposit";
 
 export const subMenu = subMenuNFT;
 
@@ -26,12 +27,15 @@ export const NFTPage = () => {
   const { t } = useTranslation(["common", "layout"]);
   const routerNFT = React.useMemo(() => {
     switch (selected) {
-      case "assetsNFT":
-        return <MyNFTPanel />;
       case "transactionNFT":
         return <MyNFTHistory />;
       case "mintNFT":
         return <MintNFTPanel />;
+      case "depositNFT":
+        return <DepositNFTPanel />;
+      case "assetsNFT":
+      default:
+        return <MyNFTPanel />;
     }
   }, [selected]);
   const { isMobile } = useSettings();
@@ -202,7 +206,12 @@ export const NFTPage = () => {
                       </Button>
                     </Box>
                     <Box marginY={1}>
-                      <Button variant={"outlined"} color={"primary"} fullWidth>
+                      <Button
+                        variant={"outlined"}
+                        color={"primary"}
+                        fullWidth
+                        href={"/#/nft/depositNFT"}
+                      >
                         {t("labelDepositNFT")}
                       </Button>
                     </Box>

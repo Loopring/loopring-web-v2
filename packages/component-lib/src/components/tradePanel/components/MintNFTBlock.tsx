@@ -19,6 +19,7 @@ import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
+import { Properties } from "./tool/Property";
 
 const GridStyle = styled(Grid)<GridProps & { isMobile: boolean }>`
   .coinInput-wrap {
@@ -154,7 +155,7 @@ export const MintNFTBlock = <
               size: InputSize.small,
               label: (
                 <Trans i18nKey={"labelNFTMintInputTitle"}>
-                  Mint Amount
+                  Amount
                   <Typography
                     component={"span"}
                     variant={"inherit"}
@@ -210,6 +211,23 @@ export const MintNFTBlock = <
             }
           />
         </Grid>
+        <Grid item xs={12} md={12}>
+          <FormLabel>
+            <Typography variant={"body2"} lineHeight={"20px"}>
+              <Trans i18nKey={"labelMintProperty"}>Properties</Trans>
+            </Typography>
+          </FormLabel>
+          <Box marginTop={1}>
+            <Properties
+              handleChange={(properties) =>
+                _handleOnMetaChange({
+                  properties: properties,
+                } as unknown as Partial<T>)
+              }
+              properties={nftMeta.properties ?? []}
+            />
+          </Box>
+        </Grid>
         <Grid item xs={12} display={"flex"}>
           {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
             <Typography
@@ -245,26 +263,9 @@ export const MintNFTBlock = <
               getDisabled || nftMetaBtnStatus === TradeBtnStatus.LOADING
             }
           >
-            {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTMintBtn`)}
+            {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTMetaBtn`)}
           </Button>
         </Grid>
-        {/* TODO: Properties*/}
-        {/*<Grid item xs={12} md={12}>*/}
-        {/*  <FormLabel>*/}
-        {/*    <Typography variant={"body2"} lineHeight={"20px"}>*/}
-        {/*      <Trans i18nKey={"labelMintProperty"}>Properties</Trans>*/}
-        {/*    </Typography>*/}
-        {/*  </FormLabel>*/}
-        {/*  <TextareaAutosizeStyled*/}
-        {/*    aria-label="NFT Description"*/}
-        {/*    minRows={5}*/}
-        {/*    onChange={(event) =>*/}
-        {/*      _handleOnMetaChange({*/}
-        {/*        description: event.target.value,*/}
-        {/*      } as unknown as Partial<T>)*/}
-        {/*    }*/}
-        {/*  />*/}
-        {/*</Grid>*/}
       </GridStyle>
     </Box>
   );

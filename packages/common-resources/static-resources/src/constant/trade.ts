@@ -69,8 +69,9 @@ export type LAYER1_ACTION_HISTORY = {
   [key in ChainId extends string ? string : string]: Layer1ActionHistory;
 } & { __timer__: -1 | NodeJS.Timeout };
 
-export type NFTProperty = {
-  [key: string]: string;
+export type MetaProperty = {
+  key: string;
+  value: string;
 };
 export type NFTMETA = {
   image: string;
@@ -78,7 +79,7 @@ export type NFTMETA = {
   royaltyPercentage: number; // 0 - 10 for UI
   description: string;
   collection?: string;
-  properties?: Array<{ [key: string]: string }>;
+  properties?: Array<MetaProperty>;
 };
 
 export type NFTWholeINFO = NFTTokenInfo &
@@ -111,3 +112,6 @@ export const EmptyValueTag = "--";
 
 export const IPFS_META_URL = "ipfs://";
 export const MINT_LIMIT = 100000;
+export const PROPERTY_LIMIT = 5;
+export const PROPERTY_KET_LIMIT = 20;
+export const PROPERTY_Value_LIMIT = 40;
