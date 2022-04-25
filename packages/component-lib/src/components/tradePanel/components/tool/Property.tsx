@@ -29,7 +29,9 @@ export const Properties = ({
   const onDelete = React.useCallback(
     (index: number) => {
       let _properties = [...properties];
-      handleChange(_properties.filter((_item, _index) => _index !== index));
+      if (_properties.length > 1) {
+        handleChange(_properties.filter((_item, _index) => _index !== index));
+      }
     },
     [handleChange, properties]
   );
@@ -134,6 +136,7 @@ export const Property = React.memo(
             <IconButton
               sx={{ marginTop: 3 }}
               edge={"end"}
+              // disabled={properties.length === 1 ? true : false}
               onClick={() => onDelete(index)}
             >
               <DeleteIcon color={"error"} />

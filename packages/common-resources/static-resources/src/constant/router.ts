@@ -229,7 +229,7 @@ export const subMenuLayer2 = {
   ],
 };
 export const subMenuNFT = {
-  assetsGroup: [
+  NFTGroup: [
     {
       icon: AssetsIcon,
       router: { path: "/nft/assetsNFT" },
@@ -238,8 +238,6 @@ export const subMenuNFT = {
         i18nKey: "labelMyAssetsNFT",
       },
     },
-  ],
-  transactionsGroup: [
     {
       icon: L2HistoryIcon,
       router: { path: "/nft/transactionNFT" },
