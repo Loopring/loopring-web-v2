@@ -108,7 +108,11 @@ export const MintNFTBlock = <
               </Trans>
             }
             type={"text"}
-          />
+          >
+            {[].map((_item, index) => (
+              <Box key={index} />
+            ))}
+          </TextField>
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField

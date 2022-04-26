@@ -4,12 +4,12 @@ import { IPFSCommands } from "../account/command";
 import {
   CustomError,
   ErrorMap,
+  IPFS_LOOPRING_SITE,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import { AddResult } from "ipfs-core-types/types/src/root";
 import * as sdk from "@loopring-web/loopring-sdk";
-export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
-export const LoopringIPFSSiteProtocol = "https";
+
 export class IpfsProvides {
   get ipfs(): IPFSHTTPClient | undefined {
     return this._ipfs;
@@ -18,7 +18,7 @@ export class IpfsProvides {
   async init() {
     try {
       this._ipfs = await create({
-        url: `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`,
+        url: `${IPFS_LOOPRING_SITE}`,
       });
       // this._ipfs = await create({
       //   protocol: "https",
@@ -43,9 +43,14 @@ export class IpfsProvides {
   }
   stop() {
     if (this._ipfs) {
-      this._ipfs
-        .stop()
-        .catch((err) => console.error("IPFSHTTPClient ERROR ON STOP:", err));
+      try {
+        this._ipfs = undefined;
+        // this._ipfs
+        //   .stop()
+        //   .catch((err) => console.error("IPFSHTTPClient ERROR ON STOP:", err));
+      } catch (err) {
+        console.error("IPFSHTTPClient ERROR ON STOP:", err as any);
+      }
     }
   }
 }
@@ -158,7 +163,7 @@ export const ipfsService = {
   }) => {
     if (ipfs) {
       try {
-        const data: AddResult = await ipfs.add({ content: json }); //callIpfs({ ipfs, cmd, opts });
+        const data: AddResult = await ipfs.add(json); //callIpfs({ ipfs, cmd, opts });
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId },

@@ -405,6 +405,7 @@ export function useNFTMint<
       tradeData: nftMintValue.mintData as Mi,
       nftMintBtnStatus: btnStatus,
       btnInfo,
+      mintService,
     };
   }, [
     btnInfo,
@@ -429,8 +430,6 @@ export function useNFTMint<
         case MintCommands.CancelSignature:
         case MintCommands.HardwareSignature:
           nftMintProps.onNFTMintClick(nftMintValue as any, false);
-          break;
-        case MintCommands.Complete:
           break;
       }
     },

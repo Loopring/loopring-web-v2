@@ -10,16 +10,21 @@ import { IpfsProvides, ipfsService } from "../ipfs";
 import { LoopringAPI } from "../../api_wrapper";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
-import { updateNFTMintData } from "../../stores/router";
+import {
+  initialMintNFT,
+  initialNFTMETA,
+  updateNFTMintData,
+} from "../../stores/router";
 
 export enum MintCommands {
+  EmptyData,
+  MetaDataSetup,
   ProcessingIPFS,
   CompleteIPFS,
   FailedIPFS,
   SignatureMint,
   CancelSignature,
   HardwareSignature,
-  Complete,
 }
 const subject = new Subject<{
   status: MintCommands;
@@ -30,6 +35,43 @@ const subject = new Subject<{
 }>();
 
 export const mintService = {
+  emptyData: () => {
+    subject.next({
+      status: MintCommands.EmptyData,
+    });
+    const {
+      nftMintValue: {
+        mintData: { tokenAddress },
+      },
+    } = store.getState()._router_modalData;
+    store.dispatch(
+      updateNFTMintData({
+        nftMETA: initialNFTMETA,
+        mintData: {
+          ...initialMintNFT,
+          tokenAddress,
+        },
+      })
+    );
+  },
+  metaDataSetup: () => {
+    subject.next({
+      status: MintCommands.MetaDataSetup,
+    });
+    const {
+      nftMintValue: { nftMETA, mintData },
+    } = store.getState()._router_modalData;
+    store.dispatch(
+      updateNFTMintData({
+        nftMETA: nftMETA,
+        mintData: {
+          ...mintData,
+          nftIdView: undefined,
+          nftId: undefined,
+        },
+      })
+    );
+  },
   sendHardwareRetry: (isHardware?: boolean) => {
     subject.next({
       status: MintCommands.HardwareSignature,
@@ -84,6 +126,7 @@ export const mintService = {
           nftMETA: nftMETA,
           mintData: {
             ...mintData,
+            cid,
             nftIdView,
             nftId,
           },

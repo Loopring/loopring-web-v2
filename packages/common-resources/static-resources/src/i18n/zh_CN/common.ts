@@ -520,7 +520,7 @@ export default {
   labelNFTDescribe: "Description:",
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "NFT Amount:",
-  labelNFTContractAddress: "Token Contract:",
+  labelNFTContractAddress: "Contract:",
   labelNFTTId: "NFT Token ID:",
   labelNFTCid: "IPFS CID : <1>(Store `metadata Information`)</1>",
   labelNFTType: "NFT Type:",

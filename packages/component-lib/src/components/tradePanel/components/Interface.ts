@@ -300,6 +300,7 @@ export type NFTMintViewProps<ME, MI, I, C> = {
   disabled?: boolean;
   coinMap?: CoinMap<I, CoinInfo<I>>;
   walletMap?: WalletMap<I, WalletCoin<I>>;
+  mintService: any;
 } & NFTMintExtendProps<MI, C>;
 export type NFTMetaViewProps<T, C> = {
   nftMeta: T;

@@ -1,7 +1,7 @@
 import { NFTMintViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Link } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
@@ -18,7 +18,6 @@ import {
   EmptyDefault,
   InputSize,
   TextareaAutosizeStyled,
-  // TGItemData,
 } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { NFTInput } from "./BasicANFTTrade";
@@ -66,6 +65,7 @@ export const MintNFTConfirm = <
   chargeFeeTokenList,
   feeInfo,
   onNFTMintClick,
+  mintService,
 }: NFTMintViewProps<ME, MI, I, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
@@ -94,10 +94,8 @@ export const MintNFTConfirm = <
       flex={1}
       flexDirection={"column"}
       display={"flex"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       alignContent={"space-between"}
-      paddingTop={5 / 2}
+      padding={5 / 2}
     >
       <GridStyle container flex={1} spacing={2}>
         <Grid item xs={12} md={5} alignItems={"center"}>
@@ -280,7 +278,7 @@ export const MintNFTConfirm = <
                       ...data.tradeData,
                     } as MI)
                   }
-                  nftMintData={
+                  tradeData={
                     {
                       ...nftMintData,
                       belong: nftMintData.tokenAddress ?? "NFT",
@@ -294,6 +292,9 @@ export const MintNFTConfirm = <
           </Box>
         </Grid>
         <Grid item xs={12} md={7}>
+          <Typography component={"h4"} variant={"h5"}>
+            {"Confirm Mint"}
+          </Typography>
           <Box>
             <Grid container maxWidth={"inherit"} spacing={2}>
               <Grid item xs={12} alignSelf={"stretch"}>
@@ -324,14 +325,20 @@ export const MintNFTConfirm = <
                   <Typography color={"textSecondary"} marginRight={1}>
                     {t("labelNFTID")}
                   </Typography>
-                  <Typography
-                    color={"var(--color-text-third)"}
+                  <Link
                     whiteSpace={"break-spaces"}
-                    style={{ wordBreak: "break-all" }}
+                    style={{
+                      wordBreak: "break-all",
+                      color: "var(--color-text-third)",
+                      textDecoration: "underline",
+                    }}
                     title={nftMintData.nftId}
+                    href={`${LOOPRING_URLs.IPFS_META_URL}${nftMintData.cid}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     {nftMintData.nftId ? nftMintData?.nftIdView : ""}
-                  </Typography>
+                  </Link>
                 </Typography>
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
@@ -353,16 +360,46 @@ export const MintNFTConfirm = <
                 </Typography>
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={isMobile ? "column" : "row"}
+                  variant={"body1"}
+                >
+                  <Typography color={"textSecondary"} marginRight={1}>
+                    {t("labelNFTType")}
+                  </Typography>
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    whiteSpace={"break-spaces"}
+                    style={{ wordBreak: "break-all" }}
+                    title={"ERC1155"}
+                  >
+                    {"ERC1155"}
+                  </Typography>
+                </Typography>
+              </Grid>
+              <Grid item xs={12} alignSelf={"stretch"}>
                 <Typography color={"textSecondary"} marginRight={1}>
                   {t("labelNFTDescription")}
                 </Typography>
                 <Box flex={1}>
-                  <TextareaAutosizeStyled
-                    aria-label="NFT Description"
-                    minRows={5}
-                    disabled={true}
-                    value={metaData.description ?? EmptyValueTag}
-                  />
+                  {metaData.description ? (
+                    <TextareaAutosizeStyled
+                      aria-label="NFT Description"
+                      minRows={6}
+                      disabled={true}
+                      value={metaData.description}
+                    />
+                  ) : (
+                    <Typography
+                      color={"var(--color-text-third)"}
+                      whiteSpace={"break-spaces"}
+                      style={{ wordBreak: "break-all" }}
+                      title={"ERC1155"}
+                    >
+                      {EmptyValueTag}
+                    </Typography>
+                  )}
                 </Box>
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
@@ -370,27 +407,46 @@ export const MintNFTConfirm = <
                   {t("labelNFTProperty")}
                 </Typography>
                 <Box marginTop={1}>
-                  {metaData.properties?.map((item, index) => {
-                    return (
-                      item.key && (
-                        <Typography
-                          color={"var(--color-text-third)"}
-                          whiteSpace={"break-spaces"}
-                          style={{ wordBreak: "break-all" }}
-                          component={"p"}
-                          variant={"body1"}
-                          key={index.toString() + item.key}
-                        >
-                          <Typography component={"span"} paddingRight={1}>
-                            {item.key}:
-                          </Typography>
-                          <Typography component={"span"}>
-                            {item.value}
-                          </Typography>
-                        </Typography>
-                      )
-                    );
-                  })}
+                  <Box flex={1}>
+                    {metaData.properties &&
+                    metaData.properties.length &&
+                    metaData.properties[0].key ? (
+                      metaData.properties?.map((item, index) => {
+                        return (
+                          item.key && (
+                            <Typography
+                              color={"var(--color-text-third)"}
+                              whiteSpace={"break-spaces"}
+                              style={{ wordBreak: "break-all" }}
+                              component={"p"}
+                              variant={"body1"}
+                              key={index.toString() + item.key}
+                            >
+                              <Typography
+                                color={"inherit"}
+                                component={"span"}
+                                paddingRight={1}
+                              >
+                                {item.key}:
+                              </Typography>
+                              <Typography color={"inherit"} component={"span"}>
+                                {item.value}
+                              </Typography>
+                            </Typography>
+                          )
+                        );
+                      })
+                    ) : (
+                      <Typography
+                        color={"var(--color-text-third)"}
+                        whiteSpace={"break-spaces"}
+                        style={{ wordBreak: "break-all" }}
+                        title={"ERC1155"}
+                      >
+                        {EmptyValueTag}
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
@@ -411,6 +467,22 @@ export const MintNFTConfirm = <
                     </Trans>
                   </Typography>
                 )}
+              </Grid>
+              <Grid item xs={4} alignSelf={"stretch"}>
+                <Button
+                  fullWidth
+                  variant={"outlined"}
+                  size={"medium"}
+                  sx={{ height: 40 }}
+                  color={"primary"}
+                  onClick={() => {
+                    mintService.metaDataSetup();
+                  }}
+                >
+                  {t("labelCancel")}
+                </Button>
+              </Grid>
+              <Grid item xs={8} alignSelf={"stretch"}>
                 <Button
                   fullWidth
                   variant={"contained"}

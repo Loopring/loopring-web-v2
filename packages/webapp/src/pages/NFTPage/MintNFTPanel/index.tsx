@@ -9,6 +9,7 @@ import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
+import { mintService } from "services/mintServices";
 const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
@@ -51,19 +52,12 @@ export const MintNFTPanel = () => {
         <MintNFTConfirm
           disabled={false}
           walletMap={{}}
-          {...mintWholeProps}
-          tradeData={mintWholeProps.nftMintProps.tradeData}
+          {...mintWholeProps.nftMintProps}
           metaData={mintWholeProps.nftMetaProps.nftMeta}
-          handleMintDataChange={
-            mintWholeProps.nftMintProps.handleMintDataChange
-          }
-          onNFTMintClick={mintWholeProps.nftMintProps.onNFTMintClick}
-          nftMintBtnStatus={mintWholeProps.nftMintProps.nftMintBtnStatus}
-          btnInfo={mintWholeProps.nftMintProps.btnInfo}
-          // isFeeNotEnough={isFeeNotEnough}
-          // handleFeeChange={handleFeeChange}
-          // chargeFeeTokenList={chargeFeeTokenList}
-          // feeInfo={feeInfo}
+          isFeeNotEnough={mintWholeProps.isFeeNotEnough}
+          handleFeeChange={mintWholeProps.handleFeeChange}
+          chargeFeeTokenList={mintWholeProps.chargeFeeTokenList}
+          feeInfo={mintWholeProps.feeInfo}
         />
       ),
     },

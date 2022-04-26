@@ -33,6 +33,10 @@ const BoxStyle = styled(Box)`
   width: 100%;
   height: 100%;
   border-style: dashed;
+  .MuiFormHelperText-sizeMedium {
+    font-size: ${({ theme }) => theme.fontDefault.body2};
+    color: var(--color-error);
+  }
 `;
 export type IpfsFile = {
   file: File;
