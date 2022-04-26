@@ -42,27 +42,22 @@ export const MintNFTBlock = <
   nftMetaBtnStatus,
   amountHandleError,
   handleOnMetaChange,
-  handleOnNFTDataChange,
+  handleMintDataChange,
   onMetaClick,
 }: NFTMetaBlockProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const inputBtnRef = React.useRef();
   const getDisabled = React.useMemo(() => {
-    return !!(disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED);
+    return disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMetaBtnStatus]);
   myLog("mint nftMeta", nftMeta);
-  const _handleOnMetaChange = React.useCallback(
-    (_nftMeta: Partial<T>) => {
-      handleOnMetaChange({ ..._nftMeta });
-    },
-    [handleOnMetaChange]
-  );
-  const _handleOnNFTDataChange = React.useCallback(
+
+  const _handleMintDataChange = React.useCallback(
     (_mintData: Partial<I>) => {
-      handleOnNFTDataChange({ ..._mintData });
+      handleMintDataChange({ ..._mintData });
     },
-    [handleOnNFTDataChange]
+    [handleMintDataChange]
   );
   return (
     <Box
@@ -97,7 +92,7 @@ export const MintNFTBlock = <
             }
             type={"text"}
             onChange={(event) =>
-              _handleOnMetaChange({ name: event.target.value } as Partial<T>)
+              handleOnMetaChange({ name: event.target.value } as Partial<T>)
             }
           />
         </Grid>
@@ -133,7 +128,7 @@ export const MintNFTBlock = <
             value={nftMeta.royaltyPercentage}
             fullWidth
             onChange={(event) =>
-              _handleOnMetaChange({
+              handleOnMetaChange({
                 royaltyPercentage: event.target.value,
               } as unknown as Partial<T>)
             }
@@ -164,8 +159,8 @@ export const MintNFTBlock = <
             type={"NFT"}
             inputNFTRef={inputBtnRef}
             onChangeEvent={(_index, data) =>
-              _handleOnNFTDataChange({
-                tradeData: data.tradeData,
+              _handleMintDataChange({
+                ...data.tradeData,
               } as unknown as Partial<I>)
             }
             handleError={(data: I, ref) => {
@@ -177,6 +172,7 @@ export const MintNFTBlock = <
               {
                 ...mintData,
                 belong: mintData.tokenAddress ?? "NFT",
+                balance: mintData.nftBalance,
               } as any
             }
             walletMap={{}}
@@ -199,7 +195,7 @@ export const MintNFTBlock = <
             minRows={5}
             maxLength={2000}
             onChange={(event) =>
-              _handleOnMetaChange({
+              handleOnMetaChange({
                 description: event.target.value,
               } as unknown as Partial<T>)
             }
@@ -214,7 +210,7 @@ export const MintNFTBlock = <
           <Box marginTop={1}>
             <Properties
               handleChange={(properties) =>
-                _handleOnMetaChange({
+                handleOnMetaChange({
                   properties: properties,
                 } as unknown as Partial<T>)
               }

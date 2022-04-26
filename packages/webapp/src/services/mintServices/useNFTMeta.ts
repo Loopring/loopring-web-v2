@@ -8,9 +8,9 @@ import {
   myLog,
   NFTMETA,
   SagaStatus,
-  UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import {
+  initialMintNFT,
   initialNFTMETA,
   NFT_MINT_VALUE,
   useModalData,
@@ -25,12 +25,11 @@ import { useSystem } from "../../stores/system";
 import { useBtnStatus } from "../../hooks/common/useBtnStatus";
 import { ipfsService, useIPFS } from "../ipfs";
 import { AddResult } from "ipfs-core-types/types/src/root";
-import { BigNumber } from "bignumber.js";
 
 export function useNFTMeta<
   T extends NFTMETA
   // I extends Partial<MintTradeNFT>
->() {
+>({ handleTabChange }: { handleTabChange: (value: 0 | 1) => void }) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
   const { nftMintValue, updateNFTMintData } = useModalData();
   const { status: accountStatus } = useAccount();
@@ -42,45 +41,43 @@ export function useNFTMeta<
   const [ipfsMediaSources, setIpfsMediaSources] =
     React.useState<IpfsFile | undefined>(undefined);
 
-  const handleOnMetaChange = React.useCallback(
-    (_newnftMeta: Partial<T>) => {
-      const buildNFTMeta = { ...nftMintValue.nftMETA };
-      const buildMint = { ...nftMintValue.mintData };
-      Reflect.ownKeys(_newnftMeta).map((key) => {
-        switch (key) {
-          case "image":
-            buildNFTMeta.image = _newnftMeta.image;
-            break;
-          case "name":
-            buildNFTMeta.name = _newnftMeta.name;
-            break;
-          case "royaltyPercentage":
-            const value = Number(_newnftMeta.royaltyPercentage);
-            if (
-              Number.isInteger(value) &&
-              [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(value)
-            ) {
-              buildNFTMeta.royaltyPercentage = value;
-              buildMint.royaltyPercentage = value;
-            }
-            break;
-          case "description":
-            buildNFTMeta.description = _newnftMeta.description;
-            break;
-          case "collection":
-            buildNFTMeta.collection = _newnftMeta.collection;
-            break;
-          case "properties":
-            buildNFTMeta.properties = _newnftMeta.properties;
-
-            break;
-        }
-      });
-      updateNFTMintData({ mintData: buildMint, nftMETA: buildNFTMeta });
-      myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
-    },
-    [nftMintValue]
-  );
+  const handleOnMetaChange = React.useCallback((_newnftMeta: Partial<T>) => {
+    const { nftMETA, mintData } =
+      store.getState()._router_modalData.nftMintValue;
+    const buildNFTMeta = { ...nftMETA };
+    const buildMint = { ...mintData };
+    Reflect.ownKeys(_newnftMeta).map((key) => {
+      switch (key) {
+        case "image":
+          buildNFTMeta.image = _newnftMeta.image;
+          break;
+        case "name":
+          buildNFTMeta.name = _newnftMeta.name;
+          break;
+        case "royaltyPercentage":
+          const value = Number(_newnftMeta.royaltyPercentage);
+          if (
+            Number.isInteger(value) &&
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(value)
+          ) {
+            buildNFTMeta.royaltyPercentage = value;
+            buildMint.royaltyPercentage = value;
+          }
+          break;
+        case "description":
+          buildNFTMeta.description = _newnftMeta.description;
+          break;
+        case "collection":
+          buildNFTMeta.collection = _newnftMeta.collection;
+          break;
+        case "properties":
+          buildNFTMeta.properties = _newnftMeta.properties;
+          break;
+      }
+    });
+    updateNFTMintData({ mintData: buildMint, nftMETA: buildNFTMeta });
+    myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
+  }, []);
   const handleFailedUpload = React.useCallback(
     (data: { uniqueId: string; error: sdk.RESULT_INFO }) => {
       setIpfsMediaSources((value) => {
@@ -101,9 +98,9 @@ export function useNFTMeta<
   );
   const handleSuccessUpload = React.useCallback(
     (data: AddResult & { uniqueId: string }) => {
-      if (ipfsMediaSources && ipfsMediaSources?.uniqueId === data.uniqueId) {
-        setIpfsMediaSources((value) => {
-          let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
+      setIpfsMediaSources((value) => {
+        let _value: IpfsFile = { ...(value ?? {}) } as IpfsFile;
+        if (value && value?.uniqueId === data.uniqueId) {
           const cid = data.cid.toString();
           _value = {
             ..._value,
@@ -116,36 +113,40 @@ export function useNFTMeta<
           handleOnMetaChange({
             image: `${IPFS_META_URL}${data.path}`,
           } as T);
-          return _value;
-        });
-      }
-      if (cidUniqueID && cidUniqueID === data.uniqueId) {
-        if (data.cid && LoopringAPI.nftAPI) {
-          let nftId: string = "";
-          const cid = data.cid.toString();
-          try {
-            nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(cid);
-            let nftIdView = new BigNumber(nftId ?? "0", 16).toString();
-            updateNFTMintData({
-              ...nftMintValue,
-              mintData: {
-                ...nftMintValue.nftMETA,
-                nftIdView,
-                nftId,
-              },
-            });
-          } catch (error: any) {
-            myLog("handleOnNFTDataChange ->.cid", error);
-            updateNFTMintData({
-              ...nftMintValue,
-              error: {
-                code: UIERROR_CODE.IPFS_CID_TO_NFTID_ERROR,
-                message: `CID: ${cid} to nftId: ${nftId} failed`,
-              },
-            });
-          }
         }
-      }
+        return _value;
+      });
+      setCIDUniqueId((cidUniqueID) => {
+        if (cidUniqueID && cidUniqueID === data.uniqueId) {
+          mintService.completedIPFS({ ipfsResult: data });
+          // if (data.cid && LoopringAPI.nftAPI) {
+          //   let nftId: string = "";
+          //   const cid = data.cid.toString();
+          //   try {
+          //     nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(cid);
+          //     let nftIdView = new BigNumber(nftId ?? "0", 16).toString();
+          //     updateNFTMintData({
+          //       ...nftMintValue,
+          //       mintData: {
+          //         ...nftMintValue.nftMETA,
+          //         nftIdView,
+          //         nftId,
+          //       },
+          //     });
+          //   } catch (error: any) {
+          //     myLog("handleMintDataChange ->.cid", error);
+          //     updateNFTMintData({
+          //       ...nftMintValue,
+          //       error: {
+          //         code: UIERROR_CODE.IPFS_CID_TO_NFTID_ERROR,
+          //         message: `CID: ${cid} to nftId: ${nftId} failed`,
+          //       },
+          //     });
+          //   }
+          // }
+        }
+        return cidUniqueID;
+      });
     },
     [handleOnMetaChange, nftMintValue.nftMETA, ipfsMediaSources, cidUniqueID]
   );
@@ -155,13 +156,13 @@ export function useNFTMeta<
   });
   const onFilesLoad = React.useCallback(
     (value: IpfsFile) => {
+      value.isUpdateIPFS = true;
+      setIpfsMediaSources(value);
       ipfsService.addFile({
         ipfs: ipfsProvides.ipfs,
         file: value.file,
         uniqueId: value.uniqueId,
       });
-      value.isUpdateIPFS = true;
-      setIpfsMediaSources(value);
     },
     [ipfsProvides.ipfs]
   );
@@ -298,6 +299,8 @@ export function useNFTMeta<
     async ({ data, status }: { status: MintCommands; data?: any }) => {
       switch (status) {
         case MintCommands.FailedIPFS:
+          handleTabChange(0);
+          break;
         case MintCommands.ProcessingIPFS:
           break;
       }
@@ -305,17 +308,23 @@ export function useNFTMeta<
     []
   );
 
-  // const handleOnNFTDataChange  = React.useCallback(
-  //   (m: Partial<I>) => {},
-  //   []
-  // );
   const resetMETADAT = (_nftMintValue?: NFT_MINT_VALUE<any>) => {
-    if (!_nftMintValue) {
-      _nftMintValue = { ...(nftMintValue ?? {}) };
+    let nftMETA = {},
+      mintData = {};
+    if (_nftMintValue && _nftMintValue.nftMETA) {
+      nftMETA = _nftMintValue.nftMETA;
+      mintData = _nftMintValue.mintData ?? {};
     }
     updateNFTMintData({
-      ..._nftMintValue,
-      nftMETA: initialNFTMETA,
+      mintData: {
+        ...initialMintNFT,
+        ...mintData,
+        tokenAddress,
+      },
+      nftMETA: {
+        ...initialNFTMETA,
+        ...nftMETA,
+      },
     });
   };
   const onMetaClick = React.useCallback(() => {
@@ -326,15 +335,13 @@ export function useNFTMeta<
   const nftMetaProps: NFTMetaProps<T> = {
     nftMeta: nftMintValue.nftMETA as T,
     handleOnMetaChange,
-    // handleOnNFTDataChange,
     isFeeNotEnough,
     handleFeeChange,
     chargeFeeTokenList,
     feeInfo,
     nftMetaBtnStatus: btnStatus,
     btnInfo,
-    // isAvaiableId,
-    // isNFTCheckLoading,
+
     onMetaClick,
   };
   React.useEffect(() => {

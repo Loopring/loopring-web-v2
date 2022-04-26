@@ -1,7 +1,7 @@
 import { NFTMintViewProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography, Link, FormLabel } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
@@ -59,7 +59,7 @@ export const MintNFTConfirm = <
   tradeData: nftMintData,
   metaData,
   btnInfo,
-  handleOnNFTDataChange,
+  handleMintDataChange,
   nftMintBtnStatus,
   isFeeNotEnough,
   handleFeeChange,
@@ -97,263 +97,86 @@ export const MintNFTConfirm = <
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
       alignContent={"space-between"}
+      paddingTop={5 / 2}
     >
-      <GridStyle
-        className={walletMap ? "" : "loading"}
-        container
-        flex={1}
-        spacing={2}
-      >
-        <Grid
-          item
-          xs={12}
-          md={5}
-          order={isMobile ? 1 : 0}
-          // justifyContent={"start"}
-          alignItems={"center"}
-        >
-          <Box
-            flex={1}
-            display={"flex"}
-            position={"relative"}
-            width={"auto"}
-            minHeight={200}
-          >
-            <img
-              style={{
-                opacity: 0,
-                width: "100%",
-                padding: 16,
-                height: "100%",
-                display: "block",
-              }}
-              alt={"ipfs"}
-              src={SoursURL + "svg/ipfs.svg"}
-            />
-            <Box
-              style={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                left: 0,
-                bottom: 0,
-                height: "100%",
-                width: "100%",
-              }}
-            >
-              {metaData.image ? (
+      <GridStyle container flex={1} spacing={2}>
+        <Grid item xs={12} md={5} alignItems={"center"}>
+          <Box>
+            <Grid container maxWidth={"inherit"} spacing={2}>
+              <Grid item xs={12}>
                 <Box
                   flex={1}
                   display={"flex"}
-                  alignItems={"center"}
-                  height={"100%"}
-                  justifyContent={"center"}
+                  position={"relative"}
+                  width={"auto"}
+                  minHeight={200}
                 >
                   <img
-                    alt={"NFT"}
-                    width={"100%"}
-                    height={"100%"}
-                    src={metaData?.image?.replace(
-                      IPFS_META_URL,
-                      LOOPRING_URLs.IPFS_META_URL
-                    )}
+                    style={{
+                      opacity: 0,
+                      width: "100%",
+                      padding: 16,
+                      height: "100%",
+                      display: "block",
+                    }}
+                    alt={"ipfs"}
+                    src={SoursURL + "svg/ipfs.svg"}
                   />
-                </Box>
-              ) : (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  height={"100%"}
-                  justifyContent={"center"}
-                >
-                  <EmptyDefault
-                    // width={"100%"}
-                    height={"100%"}
-                    message={() => (
+                  <Box
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      left: 0,
+                      bottom: 0,
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    {metaData.image ? (
                       <Box
                         flex={1}
                         display={"flex"}
                         alignItems={"center"}
+                        height={"100%"}
                         justifyContent={"center"}
                       >
-                        {t("labelNoContent")}
+                        <img
+                          alt={"NFT"}
+                          width={"100%"}
+                          height={"100%"}
+                          src={metaData?.image?.replace(
+                            IPFS_META_URL,
+                            LOOPRING_URLs.IPFS_META_URL
+                          )}
+                        />
+                      </Box>
+                    ) : (
+                      <Box
+                        flex={1}
+                        display={"flex"}
+                        alignItems={"center"}
+                        height={"100%"}
+                        justifyContent={"center"}
+                      >
+                        <EmptyDefault
+                          // width={"100%"}
+                          height={"100%"}
+                          message={() => (
+                            <Box
+                              flex={1}
+                              display={"flex"}
+                              alignItems={"center"}
+                              justifyContent={"center"}
+                            >
+                              {t("labelNoContent")}
+                            </Box>
+                          )}
+                        />
                       </Box>
                     )}
-                  />
-                </Box>
-              )}
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={7} order={isMobile ? 0 : 1}>
-          <Box>
-            <Grid container maxWidth={"inherit"} spacing={2}>
-              <Grid item xs={12} alignSelf={"stretch"}>
-                <Typography
-                  display={"inline-flex"}
-                  flexDirection={isMobile ? "column" : "row"}
-                  variant={"body1"}
-                >
-                  <Typography color={"textSecondary"} marginRight={2}>
-                    {t("labelNFTName")}
-                  </Typography>
-                  <Typography
-                    color={"var(--color-text-secondary)"}
-                    title={metaData.name}
-                  >
-                    {metaData.name ?? EmptyValueTag}
-                  </Typography>
-                </Typography>
-              </Grid>
-              <Grid item xs={12} alignSelf={"stretch"}>
-                <Typography
-                  display={"inline-flex"}
-                  flexDirection={isMobile ? "column" : "row"}
-                  variant={"body1"}
-                >
-                  <Typography color={"textSecondary"} marginRight={2}>
-                    {t("labelNFTID")}
-                  </Typography>
-                  <Link
-                    fontSize={"inherit"}
-                    whiteSpace={"break-spaces"}
-                    style={{ wordBreak: "break-all" }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`${LOOPRING_URLs.IPFS_META_URL} ${nftMintData.cid}`}
-                    title={nftMintData.nftId}
-                    width={"fit-content"}
-                  >
-                    {nftMintData.nftId ? nftMintData?.nftIdView : ""}
-                  </Link>
-                </Typography>
-              </Grid>
-              <Grid item xs={12} alignSelf={"stretch"}>
-                <Typography
-                  display={"inline-flex"}
-                  flexDirection={isMobile ? "column" : "row"}
-                  variant={"body1"}
-                >
-                  <Typography color={"textSecondary"} marginRight={2}>
-                    {t("labelNFTContractAddress")}
-                  </Typography>
-                  <Typography
-                    fontSize={"inherit"}
-                    whiteSpace={"break-spaces"}
-                    style={{ wordBreak: "break-all" }}
-                  >
-                    {nftMintData.tokenAddress}
-                  </Typography>
-                </Typography>
-              </Grid>
-              <Grid item xs={12} alignSelf={"stretch"}>
-                <Typography
-                  display={"inline-flex"}
-                  flexDirection={isMobile ? "column" : "row"}
-                  variant={"body1"}
-                  flex={1}
-                >
-                  <Typography color={"textSecondary"} marginRight={2}>
-                    {t("labelNFTDescription")}
-                  </Typography>
-                  <Box flex={1}>
-                    <TextareaAutosizeStyled
-                      aria-label="NFT Description"
-                      minRows={5}
-                      disabled={true}
-                      value={metaData.description ?? EmptyValueTag}
-                    />
                   </Box>
-                </Typography>
-              </Grid>
-              <Grid item xs={12} alignSelf={"stretch"}>
-                <FormLabel>
-                  <Typography variant={"body1"} color={"textSecondary"}>
-                    <Trans i18nKey={"labelMintProperty"}>Properties</Trans>
-                  </Typography>
-                </FormLabel>
-                <Box marginTop={1}>
-                  {metaData.properties?.map((item, index) => {
-                    return (
-                      item.key && (
-                        <Typography
-                          component={"p"}
-                          variant={"body1"}
-                          key={index.toString() + item.key}
-                        >
-                          <Typography
-                            component={"span"}
-                            paddingRight={1}
-                            color={"textSecondary"}
-                            marginRight={2}
-                          >
-                            {item.key} :
-                          </Typography>
-                          <Typography
-                            component={"span"}
-                            paddingRight={1}
-                            color={"textSecondary"}
-                            marginRight={2}
-                          >
-                            {item.value}
-                          </Typography>
-                        </Typography>
-                      )
-                    );
-                  })}
-                  {/*<Properties*/}
-                  {/*  handleChange={(properties) =>*/}
-                  {/*    _handleOnMetaChange({*/}
-                  {/*      properties: properties,*/}
-                  {/*    } as unknown as Partial<T>)*/}
-                  {/*  }*/}
-                  {/*  properties={nftMeta.properties ?? []}*/}
-                  {/*/>*/}
                 </Box>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <NFTInput<
-                  MI extends IBData<I> & Partial<NFTWholeINFO>
-                    ? MI
-                    : IBData<I> & Partial<NFTWholeINFO>,
-                  I
-                >
-                  {...({ t } as any)}
-                  isThumb={false}
-                  isBalanceLimit={true}
-                  inputNFTDefaultProps={{
-                    subLabel: t("tokenNFTMaxMINT"),
-                    size: InputSize.small,
-                    label: (
-                      <Trans i18nKey={"labelNFTMintInputTitle"}>
-                        Amount
-                        <Typography
-                          component={"span"}
-                          variant={"inherit"}
-                          color={"error"}
-                        >
-                          {"\uFE61"}
-                        </Typography>
-                      </Trans>
-                    ),
-                  }}
-                  // disabled={!(nftMintData.nftId && nftMintData.tokenAddress)}
-                  type={"NFT"}
-                  inputNFTRef={inputBtnRef}
-                  onChangeEvent={(_index, data) =>
-                    handleOnNFTDataChange({
-                      ...data.tradeData,
-                    } as MI)
-                  }
-                  nftMintData={
-                    {
-                      ...nftMintData,
-                      belong: nftMintData.tokenAddress ?? "NFT",
-                    } as any
-                  }
-                  walletMap={walletMap}
-                />
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
                 {!chargeFeeTokenList?.length ? (
@@ -423,7 +246,153 @@ export const MintNFTConfirm = <
                   </>
                 )}
               </Grid>
-
+              <Grid item xs={12}>
+                <NFTInput<
+                  MI extends IBData<I> & Partial<NFTWholeINFO>
+                    ? MI
+                    : IBData<I> & Partial<NFTWholeINFO>,
+                  I
+                >
+                  {...({ t } as any)}
+                  isThumb={false}
+                  isBalanceLimit={true}
+                  inputNFTDefaultProps={{
+                    subLabel: t("tokenNFTMaxMINT"),
+                    size: InputSize.small,
+                    label: (
+                      <Trans i18nKey={"labelNFTMintInputTitle"}>
+                        Amount
+                        <Typography
+                          component={"span"}
+                          variant={"inherit"}
+                          color={"error"}
+                        >
+                          {"\uFE61"}
+                        </Typography>
+                      </Trans>
+                    ),
+                  }}
+                  // disabled={!(nftMintData.nftId && nftMintData.tokenAddress)}
+                  type={"NFT"}
+                  inputNFTRef={inputBtnRef}
+                  onChangeEvent={(_index, data) =>
+                    handleMintDataChange({
+                      ...data.tradeData,
+                    } as MI)
+                  }
+                  nftMintData={
+                    {
+                      ...nftMintData,
+                      belong: nftMintData.tokenAddress ?? "NFT",
+                      balance: nftMintData.nftBalance,
+                    } as any
+                  }
+                  walletMap={walletMap}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={7}>
+          <Box>
+            <Grid container maxWidth={"inherit"} spacing={2}>
+              <Grid item xs={12} alignSelf={"stretch"}>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={isMobile ? "column" : "row"}
+                  variant={"body1"}
+                >
+                  <Typography color={"textSecondary"} marginRight={1}>
+                    {t("labelNFTName")}
+                  </Typography>
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    whiteSpace={"break-spaces"}
+                    style={{ wordBreak: "break-all" }}
+                    title={metaData.name}
+                  >
+                    {metaData.name ?? EmptyValueTag}
+                  </Typography>
+                </Typography>
+              </Grid>
+              <Grid item xs={12} alignSelf={"stretch"}>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={isMobile ? "column" : "row"}
+                  variant={"body1"}
+                >
+                  <Typography color={"textSecondary"} marginRight={1}>
+                    {t("labelNFTID")}
+                  </Typography>
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    whiteSpace={"break-spaces"}
+                    style={{ wordBreak: "break-all" }}
+                    title={nftMintData.nftId}
+                  >
+                    {nftMintData.nftId ? nftMintData?.nftIdView : ""}
+                  </Typography>
+                </Typography>
+              </Grid>
+              <Grid item xs={12} alignSelf={"stretch"}>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={isMobile ? "column" : "row"}
+                  variant={"body1"}
+                >
+                  <Typography color={"textSecondary"} marginRight={1}>
+                    {t("labelNFTContractAddress")}
+                  </Typography>
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    whiteSpace={"break-spaces"}
+                    style={{ wordBreak: "break-all" }}
+                  >
+                    {nftMintData.tokenAddress}
+                  </Typography>
+                </Typography>
+              </Grid>
+              <Grid item xs={12} alignSelf={"stretch"}>
+                <Typography color={"textSecondary"} marginRight={1}>
+                  {t("labelNFTDescription")}
+                </Typography>
+                <Box flex={1}>
+                  <TextareaAutosizeStyled
+                    aria-label="NFT Description"
+                    minRows={5}
+                    disabled={true}
+                    value={metaData.description ?? EmptyValueTag}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} alignSelf={"stretch"}>
+                <Typography variant={"body1"} color={"textSecondary"}>
+                  {t("labelNFTProperty")}
+                </Typography>
+                <Box marginTop={1}>
+                  {metaData.properties?.map((item, index) => {
+                    return (
+                      item.key && (
+                        <Typography
+                          color={"var(--color-text-third)"}
+                          whiteSpace={"break-spaces"}
+                          style={{ wordBreak: "break-all" }}
+                          component={"p"}
+                          variant={"body1"}
+                          key={index.toString() + item.key}
+                        >
+                          <Typography component={"span"} paddingRight={1}>
+                            {item.key}:
+                          </Typography>
+                          <Typography component={"span"}>
+                            {item.value}
+                          </Typography>
+                        </Typography>
+                      )
+                    );
+                  })}
+                </Box>
+              </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
                 {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
                   <Typography

@@ -17,23 +17,23 @@ export class IpfsProvides {
   private _ipfs: IPFSHTTPClient | undefined = undefined;
   async init() {
     try {
-      // this._ipfs = await create({
-      //   url: `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`,
-      // });
       this._ipfs = await create({
-        protocol: "https",
-        host: "ipfs.infura.io",
-        port: 5001,
-        headers: {
-          authorization:
-            "Basic " +
-            btoa(
-              process.env.REACT_APP_INFURA_PROJECT_ID +
-                ":" +
-                process.env.REACT_APP_INFURA_PROJECT_SECRET
-            ),
-        },
+        url: `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`,
       });
+      // this._ipfs = await create({
+      //   protocol: "https",
+      //   host: "ipfs.infura.io",
+      //   port: 5001,
+      //   headers: {
+      //     authorization:
+      //       "Basic " +
+      //       btoa(
+      //         process.env.REACT_APP_INFURA_PROJECT_ID +
+      //           ":" +
+      //           process.env.REACT_APP_INFURA_PROJECT_SECRET
+      //       ),
+      //   },
+      // });
     } catch (error) {
       console.error("IPFSHTTPClient ERROR ON INIT:", error);
       ipfsService.sendError(new CustomError(ErrorMap.CREATE_IPFS_ERROR));

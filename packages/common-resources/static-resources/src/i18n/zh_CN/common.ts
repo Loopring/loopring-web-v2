@@ -611,4 +611,7 @@ export default {
   labelDepositNFT: "Deposit NFT",
   labelMyAssetsNFT: "My NFT",
   labelTransactionNFT: "Transactions",
+  labelMintPropertyKey: "key",
+  labelMintPropertyValue: "Value",
+  labelNFTProperty: "Properties:",
 };

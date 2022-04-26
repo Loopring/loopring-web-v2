@@ -104,6 +104,11 @@ export const IPFSSourceUpload = ({
     ...options,
     disabled,
     maxSize,
+    accept: types
+      ?.map((item) => {
+        return `image/${item}`;
+      })
+      .join(", "),
     onDropAccepted,
     noClick: true,
     noKeyboard: true,

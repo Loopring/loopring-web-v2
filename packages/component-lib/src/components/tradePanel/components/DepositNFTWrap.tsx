@@ -93,7 +93,12 @@ NFTDepositViewProps<T, I>) => {
       paddingX={5 / 2}
       alignContent={"space-between"}
     >
-      <GridStyle className={walletMap ? "" : "loading"} container flex={1}>
+      <GridStyle
+        className={walletMap ? "" : "loading"}
+        container
+        flex={1}
+        spacing={2}
+      >
         <Grid
           item
           xs={12}
@@ -142,7 +147,6 @@ NFTDepositViewProps<T, I>) => {
                   <img
                     alt={"NFT"}
                     width={"100%"}
-                    height={"100%"}
                     src={tradeData?.image?.replace(
                       IPFS_META_URL,
                       LOOPRING_URLs.IPFS_META_URL
@@ -262,6 +266,7 @@ NFTDepositViewProps<T, I>) => {
                           textAlign={"left"}
                           display={"inherit"}
                           whiteSpace={"pre-line"}
+                          sx={{ wordBreak: "break-all" }}
                         >
                           {tradeData.nftId}
                         </Typography>

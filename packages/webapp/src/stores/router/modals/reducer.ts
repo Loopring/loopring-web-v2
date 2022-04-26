@@ -11,6 +11,7 @@ import {
 import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
   MINT_LIMIT,
+  MintTradeNFT,
   NFTMETA,
   NFTWholeINFO,
   TradeNFT,
@@ -43,13 +44,19 @@ const initialDepositState: DepositData = {
 export const initialTradeNFT = {
   belong: undefined,
   tradeValue: 0,
-  balance: MINT_LIMIT,
+  // balance: MINT_LIMIT,
   nftBalance: 0,
 };
+export const initialMintNFT: Partial<MintTradeNFT<any>> = {
+  belong: undefined,
+  tradeValue: 0,
+  nftBalance: MINT_LIMIT,
+};
+
 export const initialNFTMETA: Partial<NFTMETA> = {
   image: undefined,
   name: undefined,
-  royaltyPercentage: 10,
+  royaltyPercentage: 0,
   description: undefined,
   collection: undefined,
   properties: undefined,
@@ -68,7 +75,7 @@ const initialState: ModalDataStatus = {
   nftTransferValue: initialTransferState,
   nftDepositValue: initialTradeNFT,
   nftMintValue: {
-    mintData: initialTradeNFT,
+    mintData: initialMintNFT,
     nftMETA: initialNFTMETA,
   },
   nftDeployValue: { ...initialTradeNFT, broker: "" },
@@ -122,7 +129,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetNFTMintData(state) {
       state.lastStep = LAST_STEP.default;
       state.nftMintValue = {
-        mintData: initialTradeNFT,
+        mintData: initialMintNFT,
         nftMETA: initialNFTMETA,
       };
     },

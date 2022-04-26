@@ -54,7 +54,7 @@ export const Properties = ({
   return (
     <Box>
       {properties.map((property, index) => (
-        <Grid container key={index} spacing={2} marginBottom={1}>
+        <Grid container key={index} spacing={2} marginBottom={1.5}>
           <Property
             property={property}
             index={index}
@@ -110,7 +110,6 @@ export const Property = React.memo(
             <TextField
               value={property.key}
               fullWidth
-              required
               label={<Trans i18nKey={"labelMintPropertyKey"}>key</Trans>}
               type={"text"}
               onChange={(e) => _handleChange({ key: e.target.value })}
@@ -120,8 +119,7 @@ export const Property = React.memo(
             <TextField
               value={property.value}
               fullWidth
-              required
-              label={<Trans i18nKey={"labelMintPropertyValue"}>Value</Trans>}
+              label={<Trans i18nKey={"labelMintPropertyValue"}>value</Trans>}
               type={"text"}
               onChange={(e) => _handleChange({ value: e.target.value })}
             />

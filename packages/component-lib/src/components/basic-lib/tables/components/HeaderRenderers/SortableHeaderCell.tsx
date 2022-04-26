@@ -47,6 +47,7 @@ const StyledArrowSort = styled(Box)<
   props: BoxProps & { sortdirection: "ASC" | "DESC" | undefined }
 ) => JSX.Element;
 
+// @ts-ignore
 export const ArrowSort = ({
   sortDirection,
   // children,

@@ -13,19 +13,12 @@ const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;
-const enum MINT_VIEW_STEP {
-  METADATA,
-  MINT_CONFIRM,
-}
+
 export const MintNFTPanel = () => {
   const { t } = useTranslation("common");
-  const [currentTab, setCurrentTab] = React.useState<MINT_VIEW_STEP>(
-    MINT_VIEW_STEP.METADATA
-  );
+
   const theme = useTheme();
-  const handleTabChange = React.useCallback((value) => {
-    setCurrentTab(value);
-  }, []);
+
   const mintWholeProps = useMintNFTPanel();
   const panelList: Pick<
     PanelContent<"METADATA" | "MINT_CONFIRM">,
@@ -38,6 +31,7 @@ export const MintNFTPanel = () => {
           {...mintWholeProps}
           nftMetaBtnStatus={mintWholeProps.nftMetaProps.nftMetaBtnStatus}
           btnInfo={mintWholeProps.nftMetaProps.btnInfo}
+
           // feeInfo={feeInfo}
           // handleFeeChange={handleFeeChange}
           // nftMetaProps={nftMetaProps}
@@ -60,8 +54,8 @@ export const MintNFTPanel = () => {
           {...mintWholeProps}
           tradeData={mintWholeProps.nftMintProps.tradeData}
           metaData={mintWholeProps.nftMetaProps.nftMeta}
-          handleOnNFTDataChange={
-            mintWholeProps.nftMintProps.handleOnNFTDataChange
+          handleMintDataChange={
+            mintWholeProps.nftMintProps.handleMintDataChange
           }
           onNFTMintClick={mintWholeProps.nftMintProps.onNFTMintClick}
           nftMintBtnStatus={mintWholeProps.nftMintProps.nftMintBtnStatus}
@@ -95,7 +89,7 @@ export const MintNFTPanel = () => {
         <Box flex={1} display={"flex"}>
           <SwipeableViewsStyled
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={currentTab}
+            index={mintWholeProps.currentTab}
           >
             {
               panelList.map((panel, index) => {

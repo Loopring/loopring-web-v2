@@ -1,11 +1,20 @@
 import { Subject } from "rxjs";
 import store from "../../stores";
-import { MetaProperty, myLog, NFTMETA } from "@loopring-web/common-resources";
+import {
+  MetaProperty,
+  myLog,
+  NFTMETA,
+  UIERROR_CODE,
+} from "@loopring-web/common-resources";
 import { IpfsProvides, ipfsService } from "../ipfs";
+import { LoopringAPI } from "../../api_wrapper";
+import { BigNumber } from "bignumber.js";
+import { AddResult } from "ipfs-core-types/types/src/root";
+import { updateNFTMintData } from "../../stores/router";
 
 export enum MintCommands {
   ProcessingIPFS,
-  //CompleteIPFS,
+  CompleteIPFS,
   FailedIPFS,
   SignatureMint,
   CancelSignature,
@@ -39,7 +48,13 @@ export const mintService = {
     const {
       nftMintValue: { nftMETA, mintData },
     } = store.getState()._router_modalData;
-    const _nftMETA = { ...nftMETA } as NFTMETA;
+    const _nftMETA = {
+      image: nftMETA.image,
+      name: nftMETA.name,
+      royaltyPercentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
+      description: nftMETA.description,
+      collection: nftMETA.collection,
+    } as NFTMETA;
     _nftMETA.properties =
       nftMETA.properties?.reduce((prev, item) => {
         if (!!item.key?.trim() && !!item.value?.trim()) {
@@ -56,12 +71,40 @@ export const mintService = {
       uniqueId, //:),
     });
   },
-  // processingIPFS: (data: any) => {
-  //   subject.next({
-  //     status: MintCommands.ProcessingIPFS,
-  //     data,
-  //   });
-  // },
-  // clearMessages: () => subject.next(),
+  completedIPFS: ({ ipfsResult }: { ipfsResult: AddResult }) => {
+    const {
+      nftMintValue: { nftMETA, mintData },
+    } = store.getState()._router_modalData;
+    try {
+      const cid = ipfsResult.cid.toString();
+      let nftId: string = LoopringAPI?.nftAPI?.ipfsCid0ToNftID(cid) ?? "";
+      let nftIdView = new BigNumber(nftId ?? "0", 16).toString();
+      store.dispatch(
+        updateNFTMintData({
+          nftMETA: nftMETA,
+          mintData: {
+            ...mintData,
+            nftIdView,
+            nftId,
+          },
+        })
+      );
+      subject.next({
+        status: MintCommands.CompleteIPFS,
+      });
+    } catch (error: any) {
+      myLog("handleMintDataChange ->.cid", error);
+      subject.next({
+        status: MintCommands.FailedIPFS,
+        data: {
+          error: {
+            code: UIERROR_CODE.IPFS_CID_TO_NFTID_ERROR,
+            message: `error on decode ipfsResult: ${ipfsResult}`,
+          },
+        },
+      });
+    }
+    // }
+  },
   onSocket: () => subject.asObservable(),
 };

@@ -61,11 +61,6 @@ export const MetaNFTPanel = <
       handleFeeChange(value);
     }
   };
-  // const _handleOnNFTDataChange = (_tradeData: T) => {
-  //   if (handleOnNFTDataChange) {
-  //     handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-  //   }
-  // };
 
   return (
     <StyleWrapper
@@ -184,7 +179,7 @@ export const MetaNFTPanel = <
         <Grid item xs={12} md={7} flex={1} display={"flex"}>
           <MintNFTBlock
             {...nftMetaProps}
-            handleOnNFTDataChange={nftMintProps.handleOnNFTDataChange}
+            handleMintDataChange={nftMintProps.handleMintDataChange}
             // handleOnMetaChange={nftMetaProps.handleOnMetaChange}
             // onMetaClick={nftMetaProps.onMetaClick}
             // nftMeta={nftMetaProps.nftMeta}

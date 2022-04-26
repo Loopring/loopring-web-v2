@@ -1,31 +1,13 @@
-import {
-  AccountStatus,
-  FeeInfo,
-  MintTradeNFT,
-  myLog,
-  NFTMETA,
-  NFTWholeINFO,
-  SagaStatus,
-} from "@loopring-web/common-resources";
-import React, { useState } from "react";
-import { LoopringAPI } from "api_wrapper";
-import { connectProvides } from "@loopring-web/web3-provider";
-import { useSystem } from "stores/system";
-import {
-  LOOPRING_URLs,
-  NftData,
-  NFTTokenInfo,
-  DEPLOYMENT_STATUS,
-} from "@loopring-web/loopring-sdk";
-import { NFT_MINT_VALUE, useModalData } from "stores/router";
-import { useOpenModals } from "@loopring-web/component-lib";
+import { FeeInfo, MintTradeNFT, NFTMETA } from "@loopring-web/common-resources";
+import { useModalData } from "stores/router";
 import { BigNumber } from "bignumber.js";
-import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
-import * as loopring_defs from "@loopring-web/loopring-sdk";
-import { useAccount } from "stores/account";
 import { useNFTMeta } from "../../../services/mintServices/useNFTMeta";
 import { useNFTMint } from "../../../services/mintServices";
-
+import React from "react";
+const enum MINT_VIEW_STEP {
+  METADATA,
+  MINT_CONFIRM,
+}
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMintNFTPanel = <
   Me extends NFTMETA,
@@ -33,6 +15,12 @@ export const useMintNFTPanel = <
   I,
   C extends FeeInfo
 >() => {
+  const [currentTab, setCurrentTab] = React.useState<MINT_VIEW_STEP>(
+    MINT_VIEW_STEP.METADATA
+  );
+  const handleTabChange = React.useCallback((value: MINT_VIEW_STEP) => {
+    setCurrentTab(value);
+  }, []);
   const {
     onFilesLoad,
     onDelete,
@@ -46,7 +34,8 @@ export const useMintNFTPanel = <
     feeInfo,
     tokenAddress,
     resetMETADAT,
-  } = useNFTMeta<Me>();
+  } = useNFTMeta<Me>({ handleTabChange });
+
   const { nftMintProps } = useNFTMint<Me, Mi, I, C>({
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -54,6 +43,7 @@ export const useMintNFTPanel = <
     handleFeeChange,
     feeInfo,
     tokenAddress,
+    handleTabChange,
   });
   const { nftMintValue } = useModalData();
   return {
@@ -71,5 +61,7 @@ export const useMintNFTPanel = <
     resetMETADAT,
     nftMintProps,
     nftMintValue,
+    currentTab,
+    handleTabChange,
   };
 };

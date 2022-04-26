@@ -95,7 +95,6 @@ export type NFTWholeINFO = NFTTokenInfo &
 export type MintTradeNFT<I> = {
   balance?: number;
   fee?: FeeInfo;
-  isApproved?: boolean;
   cid?: string;
   nftId?: string;
   nftBalance?: number;
@@ -103,8 +102,19 @@ export type MintTradeNFT<I> = {
   royaltyPercentage?: number;
 } & Partial<IBData<I>> &
   Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+export type MintReadTradeNFT<I> = {
+  balance?: number;
+  fee?: FeeInfo;
+  readonly cid?: string;
+  readonly nftId?: string;
+  readonly nftIdView?: string;
+  readonly nftBalance?: number;
+  readonly royaltyPercentage?: number;
+} & Partial<IBData<I>> &
+  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
-export type TradeNFT<I> = MintTradeNFT<I> & Partial<NFTWholeINFO>;
+export type TradeNFT<I> = MintTradeNFT<I> &
+  Partial<NFTWholeINFO> & { isApproved?: boolean };
 
 export const TOAST_TIME = 3000;
 

@@ -279,7 +279,7 @@ export type NFTMetaInfoProps<C> = {
 
 export type NFTMintExtendProps<T, C = FeeInfo> = {
   isThumb?: boolean;
-  handleOnNFTDataChange: (data: Partial<T>) => void;
+  handleMintDataChange: (data: Partial<T>) => void;
   onNFTMintClick: (data: Partial<T>, isFirstMint?: boolean) => void;
   allowTrade?: any;
   amountHandleError?: (
@@ -307,7 +307,7 @@ export type NFTMetaViewProps<T, C> = {
 } & NFTMetaExtendProps<T, C>;
 export type NFTMetaBlockProps<T, I, C> = NFTMetaViewProps<T, C> & {
   mintData: Partial<I>;
-  handleOnNFTDataChange: (data: Partial<I>) => void;
+  handleMintDataChange: (data: Partial<I>) => void;
   amountHandleError?: (
     data: Partial<I>,
     ref: React.ForwardedRef<any>
