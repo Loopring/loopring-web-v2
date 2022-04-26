@@ -32,6 +32,7 @@ export const useMintNFTPanel = <
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
+    errorOnMeta,
     tokenAddress,
     resetMETADAT,
   } = useNFTMeta<Me>({ handleTabChange });
@@ -47,6 +48,7 @@ export const useMintNFTPanel = <
   });
   const { nftMintValue } = useModalData();
   return {
+    errorOnMeta,
     onFilesLoad,
     onDelete,
     ipfsMediaSources,

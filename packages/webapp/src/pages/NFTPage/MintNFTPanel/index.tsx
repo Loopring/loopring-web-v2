@@ -32,7 +32,7 @@ export const MintNFTPanel = () => {
           {...mintWholeProps}
           nftMetaBtnStatus={mintWholeProps.nftMetaProps.nftMetaBtnStatus}
           btnInfo={mintWholeProps.nftMetaProps.btnInfo}
-
+          // errorOnMeta={errorOnMeta}
           // feeInfo={feeInfo}
           // handleFeeChange={handleFeeChange}
           // nftMetaProps={nftMetaProps}

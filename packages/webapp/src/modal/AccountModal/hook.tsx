@@ -827,8 +827,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelTryAnother",
               callback: () => {
-                mintService.sendHardwareRetry();
-                // nftMintProps.onNFTMintClick(nftMintValue as any, false);
+                mintService.signatureMint(true);
               },
             }}
             {...{

@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import {
   Box,
-  Button,
   Card,
   Grid,
   Modal as MuiModal,
@@ -23,7 +22,6 @@ import {
   getShortAddr,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { useTheme } from "@emotion/react";
 import { NFTMedia } from "../components/nftMedia";
 import { NFTLimit } from "stores/walletLayer2NFT/saga";
 
@@ -37,22 +35,16 @@ const CardStyle = styled(Card)`
   width: 100%;
   cursor: pointer;
   height: 0;
-  padding: 0;
-  padding-bottom: calc(100% + 80px);
+  padding: 0 0 calc(100% + 80px);
   position: relative;
 
   img {
     object-fit: contain;
   }
 ` as typeof Card;
-const enum TabKey {
-  ASSETS,
-  TRANSACTION,
-}
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
-    const theme = useTheme();
     const { isMobile } = useSettings();
     const {
       popItem,
@@ -83,7 +75,7 @@ export const MyNFTPanel = withTranslation("common")(
           />
         )
       );
-    }, [popItem, etherscanBaseUrl, onDetailClose]);
+    }, [popItem, onNFTError, etherscanBaseUrl, onDetailClose]);
 
     return (
       <>

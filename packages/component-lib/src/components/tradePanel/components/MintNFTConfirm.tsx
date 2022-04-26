@@ -476,7 +476,7 @@ export const MintNFTConfirm = <
                   sx={{ height: 40 }}
                   color={"primary"}
                   onClick={() => {
-                    mintService.metaDataSetup();
+                    mintService.backMetaDataSetup();
                   }}
                 >
                   {t("labelCancel")}

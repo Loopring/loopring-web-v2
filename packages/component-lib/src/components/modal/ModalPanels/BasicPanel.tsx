@@ -1,4 +1,4 @@
-import { Box, TextareaAutosize, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Trans, withTranslation, WithTranslation } from "react-i18next";
 import {
   DoneIcon,
@@ -11,12 +11,11 @@ import {
 } from "@loopring-web/common-resources";
 import React from "react";
 
-import { Button } from "../../basic-lib";
+import { Button, TextareaAutosizeStyled } from "../../basic-lib";
 import { Link } from "@mui/material";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";
-import styled from "@emotion/styled";
 
 export enum IconType {
   LoadingIcon,
@@ -50,16 +49,7 @@ export interface PanelProps {
   error?: RESULT_INFO;
   errorOptions?: any;
 }
-const TextareaAutosizeStyled = styled(TextareaAutosize)`
-  &:disabled {
-    line-height: 1.5em;
-    border: 0;
-    background: (var(--opacity));
-    color: var(--color-text-third);
-  }
-  font-family: inherit;
-  width: 100%;
-` as typeof TextareaAutosize;
+
 export const BasicPanel = withTranslation("common", { withRef: true })(
   ({
     t,
@@ -136,7 +126,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
             />
           );
       }
-    }, [iconType]);
+    }, [iconType, size]);
 
     const providerDescribe = React.useMemo(() => {
       if (providerName) {
@@ -257,7 +247,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                 </Typography>
               </Box>
             )}
-            {iconType == IconType.FailedIcon && error && (
+            {iconType === IconType.FailedIcon && error && (
               <Typography
                 marginX={3}
                 whiteSpace={"pre-line"}

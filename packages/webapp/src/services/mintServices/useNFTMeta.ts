@@ -34,6 +34,8 @@ export function useNFTMeta<
   const subject = React.useMemo(() => mintService.onSocket(), []);
   const { nftMintValue, updateNFTMintData } = useModalData();
   const { status: accountStatus } = useAccount();
+  const [errorOnMeta, setErrorOnMeta] =
+    React.useState<sdk.RESULT_INFO | undefined>(undefined);
   const [_cidUniqueID, setCIDUniqueId] =
     React.useState<string | undefined>(undefined);
   const { chainId } = useSystem();
@@ -308,12 +310,9 @@ export function useNFTMeta<
   const commonSwitch = React.useCallback(
     async ({ data, status }: { status: MintCommands; data?: any }) => {
       switch (status) {
-        case MintCommands.EmptyData:
         case MintCommands.MetaDataSetup:
-        case MintCommands.FailedIPFS:
           handleTabChange(0);
-          break;
-        case MintCommands.ProcessingIPFS:
+          setErrorOnMeta(data?.error);
           break;
       }
     },
@@ -353,7 +352,6 @@ export function useNFTMeta<
     feeInfo,
     nftMetaBtnStatus: btnStatus,
     btnInfo,
-
     onMetaClick,
   };
   React.useEffect(() => {
@@ -377,5 +375,6 @@ export function useNFTMeta<
     feeInfo,
     tokenAddress,
     resetMETADAT,
+    errorOnMeta,
   };
 }

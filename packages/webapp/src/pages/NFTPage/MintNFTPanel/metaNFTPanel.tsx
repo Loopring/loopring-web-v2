@@ -9,6 +9,8 @@ import {
   FeeToggle,
   NFTMintProps,
   NFTMetaProps,
+  NFTMetaBlockProps,
+  TextareaAutosizeStyled,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
@@ -17,9 +19,10 @@ import {
   FeeInfo,
   MintTradeNFT,
   NFTMETA,
+  TransErrorHelp,
 } from "@loopring-web/common-resources";
 import { NFT_MINT_VALUE } from "stores/router";
-import { NFTMetaBlockProps } from "@loopring-web/component-lib";
+import * as sdk from "@loopring-web/loopring-sdk";
 const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -41,10 +44,12 @@ export const MetaNFTPanel = <
   ipfsMediaSources,
   onFilesLoad,
   onDelete,
+  errorOnMeta,
   chargeFeeTokenList,
   feeInfo,
 }: Partial<NFTMetaBlockProps<Me, Mi, C>> & {
   feeInfo: C;
+  errorOnMeta: undefined | sdk.RESULT_INFO;
   nftMintValue: NFT_MINT_VALUE<I>;
   nftMintProps: NFTMintProps<Me, Mi, C>;
   nftMetaProps: NFTMetaProps<Me, C>;
@@ -53,7 +58,8 @@ export const MetaNFTPanel = <
   ipfsMediaSources: IpfsFile | undefined;
 }) => {
   const { t } = useTranslation("common");
-
+  const [dropdownErrorStatus, setDropdownErrorStatus] =
+    React.useState<"up" | "down">("down");
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const handleToggleChange = (value: C) => {
@@ -188,6 +194,50 @@ export const MetaNFTPanel = <
             handleFeeChange={nftMintProps.handleFeeChange}
           />
         </Grid>
+        {errorOnMeta && (
+          <Grid item xs={12} md={7} flex={1} display={"flex"}>
+            <Typography
+              marginX={3}
+              whiteSpace={"pre-line"}
+              variant={"body2"}
+              color={"var(--color-text-third)"}
+              component={"div"}
+              marginBottom={2}
+              alignSelf={"flex-center"}
+              paddingX={1}
+              marginY={1}
+              textAlign={"center"}
+            >
+              <Typography
+                variant={"inherit"}
+                display={"inline-flex"}
+                onClick={() =>
+                  setDropdownErrorStatus((prev) =>
+                    prev === "up" ? "down" : "up"
+                  )
+                }
+              >
+                {`${t("labelErrorTitle")}`}
+                <TransErrorHelp error={errorOnMeta} />
+                <DropdownIconStyled
+                  status={dropdownErrorStatus}
+                  fontSize={"medium"}
+                />
+              </Typography>
+
+              {dropdownErrorStatus === "up" && (
+                <TextareaAutosizeStyled
+                  aria-label="NFT Description"
+                  minRows={5}
+                  disabled={true}
+                  value={`${JSON.stringify(errorOnMeta)}}`}
+                />
+              )}
+
+              {/*{\`Error Description:\\n {code: ${error?.code}, message:${error?.message}}\`}*/}
+            </Typography>
+          </Grid>
+        )}
       </Grid>
     </StyleWrapper>
   );

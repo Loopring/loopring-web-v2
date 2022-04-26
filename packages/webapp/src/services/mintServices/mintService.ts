@@ -17,14 +17,10 @@ import {
 } from "../../stores/router";
 
 export enum MintCommands {
-  EmptyData,
   MetaDataSetup,
-  ProcessingIPFS,
-  CompleteIPFS,
-  FailedIPFS,
+  // FailedIPFS,
+  MintConfirm,
   SignatureMint,
-  CancelSignature,
-  HardwareSignature,
 }
 const subject = new Subject<{
   status: MintCommands;
@@ -37,7 +33,7 @@ const subject = new Subject<{
 export const mintService = {
   emptyData: () => {
     subject.next({
-      status: MintCommands.EmptyData,
+      status: MintCommands.MetaDataSetup,
     });
     const {
       nftMintValue: {
@@ -54,7 +50,7 @@ export const mintService = {
       })
     );
   },
-  metaDataSetup: () => {
+  backMetaDataSetup: () => {
     subject.next({
       status: MintCommands.MetaDataSetup,
     });
@@ -72,11 +68,6 @@ export const mintService = {
       })
     );
   },
-  sendHardwareRetry: (isHardware?: boolean) => {
-    subject.next({
-      status: MintCommands.HardwareSignature,
-    });
-  },
   processingIPFS: ({
     ipfsProvides,
     uniqueId,
@@ -84,9 +75,6 @@ export const mintService = {
     ipfsProvides: IpfsProvides;
     uniqueId: string;
   }) => {
-    subject.next({
-      status: MintCommands.ProcessingIPFS,
-    });
     const {
       nftMintValue: { nftMETA, mintData },
     } = store.getState()._router_modalData;
@@ -106,7 +94,6 @@ export const mintService = {
         }
       }, [] as Array<MetaProperty>) ?? [];
     myLog("_nftMETA", _nftMETA);
-
     ipfsService.addJSON({
       ipfs: ipfsProvides.ipfs,
       json: JSON.stringify(_nftMETA),
@@ -133,12 +120,13 @@ export const mintService = {
         })
       );
       subject.next({
-        status: MintCommands.CompleteIPFS,
+        status: MintCommands.SignatureMint,
+        // data: {isHardware: false},
       });
     } catch (error: any) {
       myLog("handleMintDataChange ->.cid", error);
       subject.next({
-        status: MintCommands.FailedIPFS,
+        status: MintCommands.MetaDataSetup,
         data: {
           error: {
             code: UIERROR_CODE.IPFS_CID_TO_NFTID_ERROR,
@@ -149,5 +137,29 @@ export const mintService = {
     }
     // }
   },
+  goMintConfirm: () => {
+    subject.next({
+      status: MintCommands.MintConfirm,
+    });
+  },
+  signatureMint: (isHardware?: boolean) => {
+    subject.next({
+      status: MintCommands.SignatureMint,
+      data: {
+        isHardware: isHardware,
+      },
+    });
+  },
+  // signatureHardware: () => {
+  //   subject.next({
+  //     status: MintCommands.SignatureHardware,
+  //     data: {
+  //       isHardware: true,
+  //     },
+  //   });
+  //   // subject.next({
+  //   //   status: MintCommands.HardwareSignature,
+  //   // });
+  // },
   onSocket: () => subject.asObservable(),
 };
