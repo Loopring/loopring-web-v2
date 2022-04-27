@@ -22,7 +22,7 @@ import {
 import { Button, useSettings } from "../../../index";
 import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
-import { LOOPRING_URLs, NFTType } from "@loopring-web/loopring-sdk";
+import { NFTType } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -74,11 +74,6 @@ NFTDepositViewProps<T, I>) => {
     return disabled || nftDepositBtnStatus === TradeBtnStatus.DISABLED;
   }, [nftDepositBtnStatus, disabled]);
 
-  const _handleOnNFTDataChange = (_tradeData: T) => {
-    if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-    }
-  };
   myLog(getDisabled, "getDisabled");
   const { isMobile } = useSettings();
   // const styles = isMobile
@@ -206,7 +201,7 @@ NFTDepositViewProps<T, I>) => {
                     label={t("labelNFTContractAddress")}
                     placeholder={t("depositNFTAddressLabelPlaceholder")}
                     onChange={(event) =>
-                      _handleOnNFTDataChange({
+                      handleOnNFTDataChange({
                         tokenAddress: event.target?.value,
                       } as T)
                     }
@@ -229,7 +224,7 @@ NFTDepositViewProps<T, I>) => {
                         style={{ top: "30px" }}
                         aria-label="Clear"
                         onClick={() =>
-                          _handleOnNFTDataChange({ tokenAddress: "" } as T)
+                          handleOnNFTDataChange({ tokenAddress: "" } as T)
                         }
                       >
                         <CloseIcon />
@@ -252,7 +247,7 @@ NFTDepositViewProps<T, I>) => {
                     label={t("labelNFTTId")}
                     placeholder={t("depositNFTAddressLabelPlaceholder")}
                     onChange={(event) =>
-                      _handleOnNFTDataChange({
+                      handleOnNFTDataChange({
                         nftIdView: event.target?.value,
                         nftId: "",
                       } as T)
@@ -292,7 +287,7 @@ NFTDepositViewProps<T, I>) => {
                         style={{ top: "30px" }}
                         aria-label="Clear"
                         onClick={() =>
-                          _handleOnNFTDataChange({
+                          handleOnNFTDataChange({
                             nftIdView: "",
                             nftId: "",
                           } as T)
@@ -330,7 +325,7 @@ NFTDepositViewProps<T, I>) => {
                           value: tradeData?.nftType ?? 0,
                         }}
                         onChange={(_e, value) => {
-                          _handleOnNFTDataChange({ nftType: value } as T);
+                          handleOnNFTDataChange({ nftType: value } as T);
                         }}
                         size={"medium"}
                       />
@@ -361,7 +356,7 @@ NFTDepositViewProps<T, I>) => {
                           type={"NFT"}
                           inputNFTRef={inputBtnRef}
                           onChangeEvent={(_index, data) =>
-                            _handleOnNFTDataChange({
+                            handleOnNFTDataChange({
                               tradeValue: data.tradeData?.tradeValue ?? "0",
                             } as T)
                           }

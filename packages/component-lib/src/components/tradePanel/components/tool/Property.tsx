@@ -2,6 +2,7 @@ import {
   AddIcon,
   DeleteIcon,
   MetaProperty,
+  PROPERTY_LIMIT,
 } from "@loopring-web/common-resources";
 import { Trans, useTranslation } from "react-i18next";
 import { Button, TextField } from "../../../basic-lib";
@@ -66,7 +67,7 @@ export const Properties = ({
       {properties[properties.length - 1] &&
         !!properties[properties.length - 1].key &&
         !!properties[properties.length - 1].value &&
-        properties.length <= 5 && (
+        properties.length <= PROPERTY_LIMIT && (
           <Box paddingTop={1}>
             <Button
               startIcon={<AddIcon />}

@@ -14,7 +14,7 @@ import {
   NftImage,
   useImage,
 } from "@loopring-web/component-lib";
-import { LOOPRING_URLs, NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
+import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
