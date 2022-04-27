@@ -213,7 +213,6 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
       ) {
         debounceCheck(obj);
       }
-    } else if (data.tokenAddress && data.nftIdView && data.nftType) {
     } else if (
       nftDepositValue.balance !== 0 &&
       (!data.tokenAddress || !data.nftIdView || data.nftType === undefined)
