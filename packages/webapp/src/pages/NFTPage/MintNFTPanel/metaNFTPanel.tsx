@@ -44,6 +44,7 @@ export const MetaNFTPanel = <
   ipfsMediaSources,
   onFilesLoad,
   onDelete,
+  nftMintValue,
   errorOnMeta,
   chargeFeeTokenList,
   feeInfo,
@@ -188,8 +189,8 @@ export const MetaNFTPanel = <
             handleMintDataChange={nftMintProps.handleMintDataChange}
             // handleOnMetaChange={nftMetaProps.handleOnMetaChange}
             // onMetaClick={nftMetaProps.onMetaClick}
-            // nftMeta={nftMetaProps.nftMeta}
-            mintData={nftMintProps.tradeData}
+            nftMeta={nftMintValue.nftMETA as Me}
+            mintData={nftMintValue.mintData as Mi}
             feeInfo={nftMintProps.feeInfo}
             handleFeeChange={nftMintProps.handleFeeChange}
           />

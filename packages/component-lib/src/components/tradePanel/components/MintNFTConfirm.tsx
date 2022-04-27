@@ -292,8 +292,8 @@ export const MintNFTConfirm = <
           </Box>
         </Grid>
         <Grid item xs={12} md={7}>
-          <Typography component={"h4"} variant={"h5"}>
-            {"Confirm Mint"}
+          <Typography component={"h4"} variant={"h5"} marginBottom={2}>
+            {t("labelConfirmMint")}
           </Typography>
           <Box>
             <Grid container maxWidth={"inherit"} spacing={2}>
@@ -489,7 +489,7 @@ export const MintNFTConfirm = <
                   size={"medium"}
                   color={"primary"}
                   onClick={() => {
-                    onNFTMintClick(nftMintData);
+                    onNFTMintClick();
                   }}
                   loading={
                     !getDisabled && nftMintBtnStatus === TradeBtnStatus.LOADING

@@ -90,11 +90,14 @@ export const ipfsService = {
         });
       } catch (error) {
         subject.next({
-          status: IPFSCommands.IpfsResult,
+          status: IPFSCommands.ErrorGetIpfs,
           data: {
-            code: UIERROR_CODE.ADD_IPFS_ERROR,
-            ...(error as any),
             uniqueId,
+            error: {
+              code: UIERROR_CODE.ADD_IPFS_ERROR,
+              ...(error as any),
+              uniqueId,
+            },
           },
         });
       }
@@ -122,7 +125,11 @@ export const ipfsService = {
   }) => {
     if (ipfs) {
       try {
-        const data: AddResult = await ipfs.add({ content: file.stream() }); //callIpfs({ ipfs, cmd, opts });
+        const data: AddResult = await ipfs
+          .add({ content: file.stream() })
+          .catch((e) => {
+            throw e;
+          });
         subject.next({
           status: IPFSCommands.IpfsResult,
           data: { ...data, uniqueId, file },

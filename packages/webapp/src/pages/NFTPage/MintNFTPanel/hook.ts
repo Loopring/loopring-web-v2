@@ -1,9 +1,16 @@
-import { FeeInfo, MintTradeNFT, NFTMETA } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  FeeInfo,
+  MintTradeNFT,
+  NFTMETA,
+  SagaStatus,
+} from "@loopring-web/common-resources";
 import { useModalData } from "stores/router";
 import { BigNumber } from "bignumber.js";
 import { useNFTMeta } from "../../../services/mintServices/useNFTMeta";
-import { useNFTMint } from "../../../services/mintServices";
+import { mintService, useNFTMint } from "../../../services/mintServices";
 import React from "react";
+import { useAccount } from "../../../stores/account";
 const enum MINT_VIEW_STEP {
   METADATA,
   MINT_CONFIRM,
@@ -18,9 +25,12 @@ export const useMintNFTPanel = <
   const [currentTab, setCurrentTab] = React.useState<MINT_VIEW_STEP>(
     MINT_VIEW_STEP.METADATA
   );
+  const { account, status: accountStatus } = useAccount();
+
   const handleTabChange = React.useCallback((value: MINT_VIEW_STEP) => {
     setCurrentTab(value);
   }, []);
+  const { nftMintValue } = useModalData();
   const {
     onFilesLoad,
     onDelete,
@@ -33,20 +43,26 @@ export const useMintNFTPanel = <
     handleFeeChange,
     feeInfo,
     errorOnMeta,
-    tokenAddress,
-    resetMETADAT,
-  } = useNFTMeta<Me>({ handleTabChange });
-
+    // resetMETADAT,
+  } = useNFTMeta<Me>({ handleTabChange, nftMintValue });
+  React.useEffect(() => {
+    if (
+      accountStatus === SagaStatus.UNSET &&
+      account.readyState === AccountStatus.ACTIVATED
+    ) {
+      mintService.emptyData();
+    }
+  }, [accountStatus, account.readyState]);
   const { nftMintProps } = useNFTMint<Me, Mi, I, C>({
     chargeFeeTokenList,
     isFeeNotEnough,
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
-    tokenAddress,
     handleTabChange,
+    nftMintValue,
   });
-  const { nftMintValue } = useModalData();
+
   return {
     errorOnMeta,
     onFilesLoad,
@@ -59,8 +75,7 @@ export const useMintNFTPanel = <
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
-    tokenAddress,
-    resetMETADAT,
+    // resetMETADAT,
     nftMintProps,
     nftMintValue,
     currentTab,

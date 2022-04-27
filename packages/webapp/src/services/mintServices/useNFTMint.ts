@@ -1,6 +1,6 @@
 import React from "react";
 import { MintCommands, mintService } from "./mintService";
-import { useModalData } from "stores/router";
+import { NFT_MINT_VALUE, useModalData } from "stores/router";
 import {
   AccountStep,
   NFTMintProps,
@@ -33,7 +33,8 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { checkErrorInfo } from "hooks/useractions/utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs/common_defs";
 import { getTimestampDaysLater } from "../../utils/dt_tools";
-import store from "../../stores";
+import { useHistory } from "react-router-dom";
+import store from "stores";
 
 export function useNFTMint<
   Me extends NFTMETA,
@@ -47,21 +48,22 @@ export function useNFTMint<
   handleFeeChange,
   feeInfo,
   handleTabChange,
-  tokenAddress,
+  nftMintValue,
 }: {
   chargeFeeTokenList: FeeInfo[];
   isFeeNotEnough: boolean;
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
-  tokenAddress: string | undefined;
   handleTabChange: (value: 0 | 1) => void;
+  nftMintValue: NFT_MINT_VALUE<any>;
 }) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
+  const history = useHistory();
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { exchangeInfo, chainId } = useSystem();
   const { account } = useAccount();
-  const { nftMintValue, updateNFTMintData } = useModalData();
+  const { updateNFTMintData } = useModalData();
   const {
     btnStatus,
     btnInfo,
@@ -85,13 +87,10 @@ export function useNFTMint<
         Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
         nftMintValue.nftMETA.royaltyPercentage >= 0 &&
         nftMintValue.nftMETA.royaltyPercentage <= 10 &&
-        nftMintValue &&
-        tokenAddress &&
+        nftMintValue.mintData.tokenAddress &&
         nftMintValue.mintData.tradeValue &&
         Number(nftMintValue.mintData.tradeValue) > 0 &&
         Number(nftMintValue.mintData.tradeValue) <= MINT_LIMIT &&
-        // (nftMintValue.mintData.image !== undefined ||
-        //   nftMintValue.mintData.name !== undefined) &&
         nftMintValue.mintData.fee &&
         nftMintValue.mintData.fee.belong &&
         nftMintValue.mintData.fee.__raw__ &&
@@ -117,7 +116,6 @@ export function useNFTMint<
       isFeeNotEnough,
       resetBtnInfo,
       nftMintValue,
-      tokenAddress,
       enableBtn,
       setLabelAndParams,
       disableBtn,
@@ -131,8 +129,7 @@ export function useNFTMint<
 
   const handleMintDataChange = React.useCallback(
     async (data: Partial<MintReadTradeNFT<I>>) => {
-      const { nftMETA, mintData } =
-        store.getState()._router_modalData.nftMintValue;
+      const { nftMETA, mintData } = nftMintValue;
       const buildNFTMeta = { ...nftMETA };
       const buildMint = { ...mintData };
       Reflect.ownKeys(data).map((key) => {
@@ -143,9 +140,9 @@ export function useNFTMint<
           case "fee":
             buildMint.fee = data.fee;
             break;
-          case "tokenAddress":
-            buildMint.tokenAddress = data.tokenAddress;
-            break;
+          // case "tokenAddress":
+          //   buildMint.tokenAddress = data.tokenAddress;
+          //   break;
         }
       });
       updateNFTMintData({
@@ -159,9 +156,9 @@ export function useNFTMint<
     checkFeeIsEnough();
     handleMintDataChange({
       fee: feeInfo,
-      tokenAddress,
+      tokenAddress: nftMintValue.mintData.tokenAddress,
     });
-  }, [checkFeeIsEnough, tokenAddress, handleMintDataChange, nftMintValue]);
+  }, [checkFeeIsEnough, nftMintValue, handleMintDataChange, nftMintValue]);
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
@@ -220,6 +217,7 @@ export function useNFTMint<
             walletLayer2Service.sendUserUpdate();
             updateWalletLayer2NFT({ page });
             mintService.emptyData();
+            history.push("/nft/");
             // checkFeeIsEnough();
           }
         }
@@ -271,12 +269,13 @@ export function useNFTMint<
   );
 
   const onNFTMintClick = React.useCallback(
-    async (_nftMintValue: Partial<Mi>, isFirstTime: boolean = true) => {
+    async (isFirstTime: boolean = true) => {
       let result: ActionResult = { code: ActionResultCode.NoError };
+      const nftMintValue = store.getState()._router_modalData.nftMintValue;
       if (
         account.readyState === AccountStatus.ACTIVATED &&
         nftMintValue.mintData.tradeValue &&
-        tokenAddress &&
+        nftMintValue.mintData.tokenAddress &&
         nftMintValue.mintData.nftId &&
         nftMintValue.mintData.fee &&
         nftMintValue.mintData.fee.belong &&
@@ -313,7 +312,7 @@ export function useNFTMint<
             toAccountId: accountId,
             toAddress: accAddress,
             nftType: 0,
-            tokenAddress,
+            tokenAddress: nftMintValue.mintData.tokenAddress,
             nftId: nftMintValue.mintData.nftId,
             amount: nftMintValue.mintData.tradeValue.toString(),
             maxFee: {
@@ -347,7 +346,7 @@ export function useNFTMint<
         result.code = ActionResultCode.DataNotReady;
       }
     },
-    [nftMintValue]
+    []
   );
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
@@ -360,50 +359,42 @@ export function useNFTMint<
     [lastRequest, processRequest, setShowAccount]
   );
 
-  const nftMintProps: NFTMintProps<Me, Mi, I> = React.useMemo(() => {
-    return {
-      chargeFeeTokenList,
-      isFeeNotEnough,
-      handleFeeChange,
-      feeInfo,
-      metaData: nftMintValue.nftMETA as Me,
-      handleMintDataChange,
-      onNFTMintClick,
-      walletMap: {} as any,
-      coinMap: totalCoinMap as any,
-      tradeData: nftMintValue.mintData as Mi,
-      nftMintBtnStatus: btnStatus,
-      btnInfo,
-      mintService,
-    };
-  }, [
-    btnInfo,
-    btnStatus,
+  const nftMintProps: NFTMintProps<Me, Mi, I> = {
     chargeFeeTokenList,
-    feeInfo,
-    handleFeeChange,
-    handleMintDataChange,
     isFeeNotEnough,
-    nftMintValue,
+    handleFeeChange,
+    feeInfo,
+    // metaData: nftMintValue.nftMETA as Me,
+    handleMintDataChange,
     onNFTMintClick,
-    totalCoinMap,
-  ]);
+    walletMap: {} as any,
+    coinMap: totalCoinMap as any,
+    tradeData: nftMintValue.mintData as Mi,
+    nftMintBtnStatus: btnStatus,
+    btnInfo,
+    mintService,
+  };
 
-  const commonSwitch = React.useCallback(
-    async ({ data, status }: { status: MintCommands; data?: any }) => {
-      switch (status) {
-        // case MintCommands.CompleteIPFS:
-        case MintCommands.MintConfirm:
-          handleTabChange(1);
-          break;
-        case MintCommands.SignatureMint:
-          handleTabChange(1);
-          nftMintProps.onNFTMintClick(nftMintValue as any, data?.isHardware);
-          break;
-      }
-    },
-    [nftMintProps]
-  );
+  const commonSwitch = ({
+    data,
+    status,
+  }: {
+    status: MintCommands;
+    data?: any;
+  }) => {
+    switch (status) {
+      case MintCommands.MetaDataSetup:
+        resetNFTMINT();
+        break;
+      case MintCommands.MintConfirm:
+        handleTabChange(1);
+        break;
+      case MintCommands.SignatureMint:
+        handleTabChange(1);
+        nftMintProps.onNFTMintClick(data?.isHardware);
+        break;
+    }
+  };
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
@@ -412,11 +403,6 @@ export function useNFTMint<
       subscription.unsubscribe();
     };
   }, []);
-  React.useEffect(() => {
-    if (tokenAddress) {
-      handleMintDataChange({ tokenAddress });
-    }
-  }, [tokenAddress]);
 
   return {
     nftMintProps,

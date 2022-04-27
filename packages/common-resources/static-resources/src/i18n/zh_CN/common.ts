@@ -614,4 +614,5 @@ export default {
   labelMintPropertyKey: "key",
   labelMintPropertyValue: "Value",
   labelNFTProperty: "Properties:",
+  labelConfirmMint: "Confirm Metadata",
 };

@@ -115,9 +115,6 @@ export const MyNFTPanel = withTranslation("common")(
           flexDirection={"column"}
         >
           <Box
-            marginY={2}
-            marginLeft={2}
-            marginRight={3}
             display={"flex"}
             flexDirection={"row"}
             alignItems={"center"}
@@ -128,30 +125,10 @@ export const MyNFTPanel = withTranslation("common")(
               variant={"h4"}
               paddingX={5 / 2}
               paddingTop={5 / 2}
+              paddingBottom={2}
             >
               {t("labelNFTMyNFT")}
             </Typography>
-            {/*{!isMobile && (*/}
-            {/*  <Box display={"flex"}>*/}
-            {/*    <Button*/}
-            {/*      variant={"contained"}*/}
-            {/*      size={"small"}*/}
-            {/*      style={{ marginLeft: 4 }}*/}
-            {/*      onClick={() => popNFTDeposit()}*/}
-            {/*    >*/}
-            {/*      {t("labelNFTDeposit")}*/}
-            {/*    </Button>*/}
-            {/*    <Button*/}
-            {/*      disabled={false}*/}
-            {/*      variant={"outlined"}*/}
-            {/*      size={"medium"}*/}
-            {/*      style={{ marginLeft: `${theme.unit}px` }}*/}
-            {/*      onClick={() => popNFTMint()}*/}
-            {/*    >*/}
-            {/*      {t("nftMintBtn")}*/}
-            {/*    </Button>*/}
-            {/*  </Box>*/}
-            {/*)}*/}
           </Box>
           <Box flex={1} display={"flex"} flexDirection={"column"}>
             {isLoading ? (
@@ -278,7 +255,7 @@ export const MyNFTPanel = withTranslation("common")(
                 </Grid>
               </>
             ) : (
-              <Box flex={1}>
+              <Box flex={1} alignItems={"center"}>
                 <EmptyDefault
                   message={() => (
                     <Box

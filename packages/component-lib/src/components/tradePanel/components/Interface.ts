@@ -280,7 +280,7 @@ export type NFTMetaInfoProps<C> = {
 export type NFTMintExtendProps<T, C = FeeInfo> = {
   isThumb?: boolean;
   handleMintDataChange: (data: Partial<T>) => void;
-  onNFTMintClick: (data: Partial<T>, isFirstMint?: boolean) => void;
+  onNFTMintClick: (isFirstMint?: boolean) => void;
   allowTrade?: any;
   amountHandleError?: (
     data: T,

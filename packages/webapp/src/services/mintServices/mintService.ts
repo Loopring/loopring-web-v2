@@ -1,6 +1,7 @@
 import { Subject } from "rxjs";
 import store from "../../stores";
 import {
+  AccountStatus,
   MetaProperty,
   myLog,
   NFTMETA,
@@ -10,15 +11,11 @@ import { IpfsProvides, ipfsService } from "../ipfs";
 import { LoopringAPI } from "../../api_wrapper";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
-import {
-  initialMintNFT,
-  initialNFTMETA,
-  updateNFTMintData,
-} from "../../stores/router";
+import { resetNFTMintData, updateNFTMintData } from "../../stores/router";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum MintCommands {
   MetaDataSetup,
-  // FailedIPFS,
   MintConfirm,
   SignatureMint,
 }
@@ -32,23 +29,28 @@ const subject = new Subject<{
 
 export const mintService = {
   emptyData: () => {
+    const {
+      account,
+      system: { chainId },
+    } = store.getState();
+    let tokenAddress;
+    if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
+      tokenAddress =
+        LoopringAPI.nftAPI
+          ?.computeNFTAddress({
+            nftOwner: account.accAddress,
+            nftFactory: sdk.NFTFactory[chainId],
+            nftBaseUri: "",
+          })
+          .tokenAddress?.toLowerCase() || undefined;
+    }
+    store.dispatch(resetNFTMintData({ tokenAddress }));
     subject.next({
       status: MintCommands.MetaDataSetup,
-    });
-    const {
-      nftMintValue: {
-        mintData: { tokenAddress },
+      data: {
+        emptyData: true,
       },
-    } = store.getState()._router_modalData;
-    store.dispatch(
-      updateNFTMintData({
-        nftMETA: initialNFTMETA,
-        mintData: {
-          ...initialMintNFT,
-          tokenAddress,
-        },
-      })
-    );
+    });
   },
   backMetaDataSetup: () => {
     subject.next({
@@ -100,7 +102,7 @@ export const mintService = {
       uniqueId, //:),
     });
   },
-  completedIPFS: ({ ipfsResult }: { ipfsResult: AddResult }) => {
+  completedIPFSCallMint: ({ ipfsResult }: { ipfsResult: AddResult }) => {
     const {
       nftMintValue: { nftMETA, mintData },
     } = store.getState()._router_modalData;
@@ -121,7 +123,6 @@ export const mintService = {
       );
       subject.next({
         status: MintCommands.SignatureMint,
-        // data: {isHardware: false},
       });
     } catch (error: any) {
       myLog("handleMintDataChange ->.cid", error);

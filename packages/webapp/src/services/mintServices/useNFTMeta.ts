@@ -1,14 +1,13 @@
 import React from "react";
 import { MintCommands, mintService } from "./mintService";
 import {
-  AccountStatus,
   ErrorType,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   MINT_LIMIT,
   myLog,
   NFTMETA,
-  SagaStatus,
+  UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import {
   initialMintNFT,
@@ -19,35 +18,29 @@ import {
 import { IpfsFile, NFTMetaProps } from "@loopring-web/component-lib";
 import { useChargeFees } from "../../hooks/common/useChargeFees";
 import * as sdk from "@loopring-web/loopring-sdk";
-import store from "../../stores";
-import { LoopringAPI } from "../../api_wrapper";
-import { useAccount } from "../../stores/account";
-import { useSystem } from "../../stores/system";
 import { useBtnStatus } from "../../hooks/common/useBtnStatus";
 import { ipfsService, useIPFS } from "../ipfs";
 import { AddResult } from "ipfs-core-types/types/src/root";
 
-export function useNFTMeta<
-  T extends NFTMETA
-  // I extends Partial<MintTradeNFT>
->({ handleTabChange }: { handleTabChange: (value: 0 | 1) => void }) {
+export function useNFTMeta<T extends NFTMETA>({
+  handleTabChange,
+  nftMintValue,
+}: {
+  nftMintValue: NFT_MINT_VALUE<any>;
+  handleTabChange: (value: 0 | 1) => void;
+}) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
-  const { nftMintValue, updateNFTMintData } = useModalData();
-  const { status: accountStatus } = useAccount();
+  const { updateNFTMintData } = useModalData();
   const [errorOnMeta, setErrorOnMeta] =
     React.useState<sdk.RESULT_INFO | undefined>(undefined);
   const [_cidUniqueID, setCIDUniqueId] =
-    React.useState<string | undefined>(undefined);
-  const { chainId } = useSystem();
-  const [tokenAddress, setTokenAddress] =
     React.useState<string | undefined>(undefined);
   const [ipfsMediaSources, setIpfsMediaSources] =
     React.useState<IpfsFile | undefined>(undefined);
 
   const handleOnMetaChange = React.useCallback(
     (_newnftMeta: Partial<T>) => {
-      const { nftMETA, mintData } =
-        store.getState()._router_modalData.nftMintValue;
+      const { nftMETA, mintData } = nftMintValue;
       const buildNFTMeta = { ...nftMETA };
       const buildMint = { ...mintData };
       Reflect.ownKeys(_newnftMeta).map((key) => {
@@ -82,7 +75,7 @@ export function useNFTMeta<
       updateNFTMintData({ mintData: buildMint, nftMETA: buildNFTMeta });
       myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
     },
-    [updateNFTMintData]
+    [updateNFTMintData, nftMintValue]
   );
   const handleFailedUpload = React.useCallback(
     (data: { uniqueId: string; error: sdk.RESULT_INFO }) => {
@@ -91,7 +84,14 @@ export function useNFTMeta<
         if (value && value?.uniqueId === data.uniqueId) {
           _value = {
             ..._value,
-            ...data,
+            ...{
+              error: data.error
+                ? data.error
+                : {
+                    code: UIERROR_CODE.UNKNOWN,
+                    message: `Ipfs Error ${data}`,
+                  },
+            },
           };
           handleOnMetaChange({
             image: undefined,
@@ -124,32 +124,7 @@ export function useNFTMeta<
       });
       setCIDUniqueId((cidUniqueID) => {
         if (cidUniqueID && cidUniqueID === data.uniqueId) {
-          mintService.completedIPFS({ ipfsResult: data });
-          // if (data.cid && LoopringAPI.nftAPI) {
-          //   let nftId: string = "";
-          //   const cid = data.cid.toString();
-          //   try {
-          //     nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(cid);
-          //     let nftIdView = new BigNumber(nftId ?? "0", 16).toString();
-          //     updateNFTMintData({
-          //       ...nftMintValue,
-          //       mintData: {
-          //         ...nftMintValue.nftMETA,
-          //         nftIdView,
-          //         nftId,
-          //       },
-          //     });
-          //   } catch (error: any) {
-          //     myLog("handleMintDataChange ->.cid", error);
-          //     updateNFTMintData({
-          //       ...nftMintValue,
-          //       error: {
-          //         code: UIERROR_CODE.IPFS_CID_TO_NFTID_ERROR,
-          //         message: `CID: ${cid} to nftId: ${nftId} failed`,
-          //       },
-          //     });
-          //   }
-          // }
+          mintService.completedIPFSCallMint({ ipfsResult: data });
         }
         return cidUniqueID;
       });
@@ -178,27 +153,7 @@ export function useNFTMeta<
       image: undefined,
     } as Partial<T>);
   }, [handleOnMetaChange]);
-  React.useEffect(() => {
-    const account = store.getState().account;
-    if (
-      account.readyState === AccountStatus.ACTIVATED &&
-      accountStatus === SagaStatus.UNSET
-    ) {
-      setTokenAddress(() => {
-        if (account.accAddress && LoopringAPI.nftAPI) {
-          return (
-            LoopringAPI.nftAPI?.computeNFTAddress({
-              nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory[chainId],
-              nftBaseUri: "",
-            }).tokenAddress || undefined
-          );
-        } else {
-          return undefined;
-        }
-      });
-    }
-  }, [accountStatus, chainId]);
+
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -206,7 +161,7 @@ export function useNFTMeta<
     handleFeeChange,
     feeInfo,
   } = useChargeFees({
-    tokenAddress: tokenAddress?.toLowerCase(),
+    tokenAddress: nftMintValue.mintData.tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
     updateData: (feeInfo, _chargeFeeList) => {
       updateNFTMintData({
@@ -237,7 +192,7 @@ export function useNFTMeta<
         nftMintValue &&
         nftMintValue.mintData &&
         nftMintValue.nftMETA &&
-        tokenAddress &&
+        // tokenAddress &&
         nftMintValue.nftMETA.royaltyPercentage !== undefined &&
         Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
         nftMintValue.nftMETA.royaltyPercentage / 1 >= 0 &&
@@ -278,19 +233,24 @@ export function useNFTMeta<
       ) {
         setLabelAndParams("labelMintWrongRoyaltyBtn", {});
       }
-      if (nftMintValue.nftMETA && !nftMintValue.nftMETA.royaltyPercentage) {
-        setLabelAndParams("labelMintNoRoyaltyPercentageBtn", {});
-      }
-      if (nftMintValue.mintData && !nftMintValue.mintData.tradeValue) {
+
+      if (
+        !(
+          nftMintValue.mintData.tradeValue &&
+          Number(nftMintValue.mintData.tradeValue) > 0 &&
+          Number(nftMintValue.mintData.tradeValue) <= MINT_LIMIT
+        )
+      ) {
         setLabelAndParams("labelMintTradeValueBtn", {});
       }
+
       disableBtn();
       myLog("try to disable nftMint btn!");
     },
     [
       resetBtnInfo,
       nftMintValue,
-      tokenAddress,
+      // tokenAddress,
       isFeeNotEnough,
       disableBtn,
       enableBtn,
@@ -307,36 +267,9 @@ export function useNFTMeta<
     feeInfo,
     updateBtnStatus,
   ]);
-  const commonSwitch = React.useCallback(
-    async ({ data, status }: { status: MintCommands; data?: any }) => {
-      switch (status) {
-        case MintCommands.MetaDataSetup:
-          handleTabChange(0);
-          setErrorOnMeta(data?.error);
-          break;
-      }
-    },
-    [handleTabChange]
-  );
 
   const resetMETADAT = (_nftMintValue?: NFT_MINT_VALUE<any>) => {
-    let nftMETA = {},
-      mintData = {};
-    if (_nftMintValue && _nftMintValue.nftMETA) {
-      nftMETA = _nftMintValue.nftMETA;
-      mintData = _nftMintValue.mintData ?? {};
-    }
-    updateNFTMintData({
-      mintData: {
-        ...initialMintNFT,
-        ...mintData,
-        tokenAddress,
-      },
-      nftMETA: {
-        ...initialNFTMETA,
-        ...nftMETA,
-      },
-    });
+    onDelete();
   };
   const onMetaClick = React.useCallback(() => {
     const uniqueId = (nftMintValue.nftMETA as T).name + Date.now();
@@ -344,7 +277,6 @@ export function useNFTMeta<
     mintService.processingIPFS({ ipfsProvides, uniqueId });
   }, [ipfsProvides, nftMintValue.nftMETA]);
   const nftMetaProps: NFTMetaProps<T> = {
-    nftMeta: nftMintValue.nftMETA as T,
     handleOnMetaChange,
     isFeeNotEnough,
     handleFeeChange,
@@ -354,6 +286,20 @@ export function useNFTMeta<
     btnInfo,
     onMetaClick,
   };
+  const commonSwitch = React.useCallback(
+    async ({ data, status }: { status: MintCommands; data?: any }) => {
+      switch (status) {
+        case MintCommands.MetaDataSetup:
+          handleTabChange(0);
+          setErrorOnMeta(data?.error);
+          if (data?.emptyData) {
+            resetMETADAT();
+          }
+          break;
+      }
+    },
+    [handleTabChange]
+  );
   React.useEffect(() => {
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
@@ -373,8 +319,8 @@ export function useNFTMeta<
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
-    tokenAddress,
-    resetMETADAT,
+    // tokenAddress,
+    // resetMETADAT,
     errorOnMeta,
   };
 }

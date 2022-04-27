@@ -630,7 +630,7 @@ export default {
   labelLoadDes: "Drag or click the button to upload files ({{types}})",
   labelUpload: "upLoad",
   labelMintNoImageBtn: "Please upload image",
-  labelMintTradeValueBtn: "Please input amount",
+  labelMintTradeValueBtn: "Please input amount(0 - 10,000)",
   labelMintNoRoyaltyPercentageBtn: "Please input Royalty",
   labelMintWrongRoyaltyBtn: "Royalty should be init(0 - 10)",
   labelMintNoNameBtn: "Please input name",
@@ -648,4 +648,5 @@ export default {
   labelMintPropertyKey: "key",
   labelMintPropertyValue: "Value",
   labelNFTProperty: "Properties:",
+  labelConfirmMint: "Confirm Metadata",
 };

@@ -176,9 +176,12 @@ export function useModalData(): {
     resetActiveAccountData: React.useCallback(() => {
       dispatch(resetActiveAccountData(undefined));
     }, [dispatch]),
-    resetNFTMintData: React.useCallback(() => {
-      dispatch(resetNFTMintData(undefined));
-    }, [dispatch]),
+    resetNFTMintData: React.useCallback(
+      (tokenAddress?: string) => {
+        dispatch(resetNFTMintData(tokenAddress ? { tokenAddress } : undefined));
+      },
+      [dispatch]
+    ),
     resetNFTDeployData: React.useCallback(() => {
       dispatch(resetNFTDeployData(undefined));
     }, [dispatch]),

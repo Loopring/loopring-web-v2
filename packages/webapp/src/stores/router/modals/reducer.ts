@@ -10,12 +10,18 @@ import {
 } from "./interface";
 import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
+  AccountStatus,
   MINT_LIMIT,
   MintTradeNFT,
   NFTMETA,
   NFTWholeINFO,
+  SagaStatus,
   TradeNFT,
 } from "@loopring-web/common-resources";
+import React from "react";
+import store from "../../index";
+import { LoopringAPI } from "../../../api_wrapper";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined,
@@ -73,10 +79,10 @@ const initialState: ModalDataStatus = {
   depositValue: initialDepositState,
   nftWithdrawValue: initialWithdrawState,
   nftTransferValue: initialTransferState,
-  nftDepositValue: initialTradeNFT,
+  nftDepositValue: { ...initialTradeNFT },
   nftMintValue: {
-    mintData: initialMintNFT,
-    nftMETA: initialNFTMETA,
+    mintData: { ...initialMintNFT },
+    nftMETA: { ...initialNFTMETA },
   },
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
@@ -126,11 +132,14 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default;
       state.nftDepositValue = initialDepositState;
     },
-    resetNFTMintData(state) {
+    resetNFTMintData(state, action?: PayloadAction<{ tokenAddress: string }>) {
       state.lastStep = LAST_STEP.default;
       state.nftMintValue = {
-        mintData: initialMintNFT,
-        nftMETA: initialNFTMETA,
+        mintData: {
+          ...initialMintNFT,
+          tokenAddress: action?.payload?.tokenAddress ?? undefined,
+        },
+        nftMETA: { ...initialNFTMETA },
       };
     },
     resetNFTDeployData(state) {

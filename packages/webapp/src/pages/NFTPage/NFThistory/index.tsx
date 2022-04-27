@@ -38,7 +38,7 @@ export const MyNFTHistory = () => {
           >
             {t("labelTransactions")}
           </Typography>
-          <Box flex={1} display={"flex"} ref={container}>
+          <Box flex={1} display={"flex"} ref={container} marginTop={2}>
             <TsNFTTable
               {...{
                 ...(nftHistory.userNFTTxs as any),

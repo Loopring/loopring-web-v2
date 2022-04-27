@@ -218,7 +218,7 @@ export const MintNFTBlock = <
                   properties: properties,
                 } as unknown as Partial<T>)
               }
-              properties={nftMeta.properties ?? []}
+              properties={nftMeta.properties ?? [{ key: "", value: "" }]}
             />
           </Box>
         </Grid>
