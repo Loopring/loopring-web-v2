@@ -15,6 +15,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   MintIcon,
+  RowConfig,
   TransferIcon,
   WaitingIcon,
   WarningIcon,
@@ -29,9 +30,21 @@ import {
   TxnDetailProps,
 } from "./Interface";
 import { Filter } from "./components/Filter";
-import { TxNFTType } from "@loopring-web/loopring-sdk";
+import {
+  NFT_IMAGE_SIZES,
+  SoursURL,
+  TxNFTType,
+} from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 
+const BoxNFT = styled(Box)`
+  background: var(--opacity) no-repeat 50% 50%;
+  background-image: url(${SoursURL + "svg/loopring.svg"});
+  img {
+    object-fit: contain;
+    border-radius: ${({ theme }) => theme.unit}px;
+  }
+` as typeof Box;
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
   { type: TsTradeStatus.processing, color: "warning" },
@@ -69,7 +82,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
-
   .rdg {
     ${({ isMobile }) =>
       isMobile ? `--template-columns: 60% 40% !important;` : ``}
@@ -113,6 +125,20 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
     const [isDropDown, setIsDropDown] = React.useState(true);
+    const { isMobile } = useSettings();
+    const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
+      getTxnList({
+        page: filter.page ?? page,
+        txType:
+          filter.txType !== undefined
+            ? // @ts-ignore
+              filter.txType == 0
+              ? undefined
+              : filter.txType
+            : txType,
+        duration: filter.duration ?? duration,
+      });
+    };
 
     const getColumnModeTransaction = React.useCallback(
       (): Column<Row, Row>[] => [
@@ -121,8 +147,34 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxSide"),
           formatter: ({ row }) => {
             return (
-              <Box className="rdg-cell-value" title={row.nftTxType}>
-                {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
+              <Box
+                className="rdg-cell-value"
+                title={row.nftTxType}
+                display={"flex"}
+              >
+                <BoxNFT
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  height={RowConfig.rowHeight + "px"}
+                  width={RowConfig.rowHeight + "px"}
+                >
+                  {row.metadata?.imageSize && (
+                    <img
+                      height={RowConfig.rowHeight - 8}
+                      src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
+                    />
+                  )}
+                </BoxNFT>
+                <Typography
+                  color={"inherit"}
+                  flex={1}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  paddingLeft={1}
+                >
+                  {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
+                </Typography>
               </Box>
             );
           },
@@ -272,21 +324,6 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
       ],
       [etherscanBaseUrl]
     );
-    const { isMobile } = useSettings();
-
-    const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
-      getTxnList({
-        page: filter.page ?? page,
-        txType:
-          filter.txType !== undefined
-            ? // @ts-ignore
-              filter.txType == 0
-              ? undefined
-              : filter.txType
-            : txType,
-        duration: filter.duration ?? duration,
-      });
-    };
 
     const getColumnMobileTransaction = React.useCallback(
       (): Column<any, unknown>[] => [
@@ -373,9 +410,24 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                     display={"inline-flex"}
                     alignItems={"center"}
                   >
-                    {sideIcon}
+                    {row.metadata?.imageSize ? (
+                      <BoxNFT
+                        display={"flex"}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        height={24 + "px"}
+                        width={24 + "px"}
+                      >
+                        <img
+                          height={24}
+                          src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
+                        />
+                      </BoxNFT>
+                    ) : (
+                      sideIcon
+                    )}
                   </Typography>
-                  <Typography fontSize={10} marginTop={-1}>
+                  <Typography fontSize={10} marginTop={0}>
                     {side}
                   </Typography>
                 </Typography>

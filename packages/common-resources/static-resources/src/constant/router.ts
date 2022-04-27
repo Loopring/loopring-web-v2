@@ -138,7 +138,6 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     status: HeaderMenuTabStatus.default,
   },
 ];
-
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -155,23 +154,6 @@ export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
     router: { path: "/wallet" },
   },
 ];
-
-// {
-//   icon: NFTIcon,
-//   router: { path: "/layer2/my-nft" },
-//   label: {
-//     id: "my-nft",
-//     i18nKey: "labelMyNFT",
-//   },
-// },
-// {
-//   icon: NFTIcon,
-//   router: { path: "/layer2/nft-mint" },
-//   label: {
-//     id: "nft-mint",
-//     i18nKey: "labelNFTMint",
-//   },
-// },
 export const subMenuLayer2 = {
   assetsGroup: [
     {
