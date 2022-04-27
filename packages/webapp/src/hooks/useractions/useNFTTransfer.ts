@@ -281,7 +281,9 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                 info: {
                   hash:
                     Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer`,
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer-${
+                      account.accountId
+                    }-${request.token.tokenId}-${request.storageId}`,
                 },
               });
               if (isHWAddr) {

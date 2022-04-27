@@ -206,7 +206,9 @@ export function useNFTMint<
               info: {
                 hash:
                   Explorer +
-                  `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint`,
+                  `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint-${
+                    account.accountId
+                  }-${request.maxFee.tokenId}-${request.storageId}`,
               },
             });
             if (isHWAddr) {

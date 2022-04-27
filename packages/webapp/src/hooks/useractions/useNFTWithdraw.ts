@@ -305,7 +305,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
                 info: {
                   hash:
                     Explorer +
-                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw`,
+                    `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw${
+                      account.accountId
+                    }-${request.token.tokenId}-${request.storageId}`,
                 },
               });
               if (isHWAddr) {

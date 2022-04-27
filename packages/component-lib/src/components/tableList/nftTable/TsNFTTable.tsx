@@ -192,6 +192,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 : Explorer +
                   `tx/${row.hash}-${
                     EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
+                  }-${accountId}-${row.storageInfo.tokenId}-${
+                    row.storageInfo.storageId
                   }`;
             return (
               <Box
