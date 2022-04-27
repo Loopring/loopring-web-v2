@@ -152,13 +152,12 @@ export function useNFTMint<
     },
     [nftMintValue]
   );
-  const resetNFTMINT = React.useCallback(() => {
+  const resetNFTMINT = () => {
     checkFeeIsEnough();
     handleMintDataChange({
       fee: feeInfo,
-      tokenAddress: nftMintValue.mintData.tokenAddress,
     });
-  }, [checkFeeIsEnough, nftMintValue, handleMintDataChange, nftMintValue]);
+  };
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
@@ -384,7 +383,9 @@ export function useNFTMint<
   }) => {
     switch (status) {
       case MintCommands.MetaDataSetup:
-        resetNFTMINT();
+        if (data?.emptyData) {
+          resetNFTMINT();
+        }
         break;
       case MintCommands.MintConfirm:
         handleTabChange(1);

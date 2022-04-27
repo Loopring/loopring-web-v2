@@ -3,6 +3,7 @@ import {
   CoinMap,
   getFormattedHash,
   IBData,
+  IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   myLog,
   NFTWholeINFO,
@@ -171,7 +172,7 @@ export const NFTInput = React.memo(
                     height={"100%"}
                     src={tradeData?.image?.replace(
                       IPFS_META_URL,
-                      LOOPRING_URLs.IPFS_META_URL
+                      IPFS_LOOPRING_SITE
                     )}
                   />
                 </Box>

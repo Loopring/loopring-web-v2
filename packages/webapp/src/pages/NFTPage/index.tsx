@@ -17,6 +17,7 @@ import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
+import { mintService } from "../../services/mintServices";
 
 export const subMenu = subMenuNFT;
 
@@ -30,6 +31,7 @@ export const NFTPage = () => {
       case "transactionNFT":
         return <MyNFTHistory />;
       case "mintNFT":
+        mintService.emptyData();
         return <MintNFTPanel />;
       case "depositNFT":
         return <DepositNFTPanel />;

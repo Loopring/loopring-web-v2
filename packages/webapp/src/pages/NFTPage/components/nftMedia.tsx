@@ -1,4 +1,5 @@
 import {
+  IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   NFTWholeINFO,
   RefreshIcon,
@@ -41,19 +42,19 @@ export const NFTMedia = React.memo(
       (isOrigin
         ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
         : item?.metadata?.imageSize[NFT_IMAGE_SIZES.small]) ??
-        item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+        item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
       useImage(previewSrc ?? "");
     // mylog(
     //   isOrigin,
-    //   item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+    //   item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
     // );
     const fullSrc =
       (isOrigin
-        ? item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
+        ? item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
         : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]) ??
-      item?.image?.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL);
+      item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE);
     const { hasLoaded: fullSrcSrcHasLoaded, hasError: fullSrcSrcHasError } =
       useImage(fullSrc ?? "");
 
@@ -91,10 +92,7 @@ export const NFTMedia = React.memo(
                   event.stopPropagation();
                   setPreviewSrc(
                     item?.metadata?.imageSize["160-160"] ??
-                      item?.image?.replace(
-                        IPFS_META_URL,
-                        LOOPRING_URLs.IPFS_META_URL
-                      ) ??
+                      item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE) ??
                       ""
                   );
                 }}

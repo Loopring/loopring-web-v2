@@ -9,6 +9,7 @@ import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
+import { mintService } from "../../../services/mintServices";
 const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;

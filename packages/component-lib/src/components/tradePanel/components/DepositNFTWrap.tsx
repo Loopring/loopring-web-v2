@@ -5,6 +5,7 @@ import {
   IPFS_META_URL,
   myLog,
   SoursURL,
+  IPFS_LOOPRING_SITE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";
@@ -149,7 +150,7 @@ NFTDepositViewProps<T, I>) => {
                     width={"100%"}
                     src={tradeData?.image?.replace(
                       IPFS_META_URL,
-                      LOOPRING_URLs.IPFS_META_URL
+                      IPFS_LOOPRING_SITE
                     )}
                   />
                 </Box>

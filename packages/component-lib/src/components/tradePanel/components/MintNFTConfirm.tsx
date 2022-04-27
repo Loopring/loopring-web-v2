@@ -6,6 +6,7 @@ import {
   EmptyValueTag,
   FeeInfo,
   IBData,
+  IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   MintTradeNFT,
   myLog,
@@ -145,7 +146,7 @@ export const MintNFTConfirm = <
                           height={"100%"}
                           src={metaData?.image?.replace(
                             IPFS_META_URL,
-                            LOOPRING_URLs.IPFS_META_URL
+                            IPFS_LOOPRING_SITE
                           )}
                         />
                       </Box>
@@ -333,7 +334,7 @@ export const MintNFTConfirm = <
                       textDecoration: "underline",
                     }}
                     title={nftMintData.nftId}
-                    href={`${LOOPRING_URLs.IPFS_META_URL}${nftMintData.cid}`}
+                    href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

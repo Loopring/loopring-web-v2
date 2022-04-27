@@ -9,6 +9,7 @@ import {
   EmptyValueTag,
   Explorer,
   getShortAddr,
+  IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   LoadingIcon,
   NFTWholeINFO,
@@ -85,9 +86,7 @@ const BoxStyle = styled(Box)<
          position:absolute;
          filter: blur(3px);
          background:url(${
-           image
-             ? image.replace(IPFS_META_URL, LOOPRING_URLs.IPFS_META_URL)
-             : ""
+           image ? image.replace(IPFS_META_URL, IPFS_LOOPRING_SITE) : ""
          }) no-repeat 50% 10px;
           background-size: contain;
          opacity: 0.08;

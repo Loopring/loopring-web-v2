@@ -1,5 +1,6 @@
 import {
   AccountStatus,
+  IPFS_LOOPRING_SITE,
   myLog,
   NFTWholeINFO,
   SagaStatus,
@@ -95,7 +96,7 @@ export const useMyNFT = () => {
       // myLog("ipfsNftIDToCid", nftId);
       try {
         const cid = LoopringAPI?.nftAPI?.ipfsNftIDToCid(nftId ?? "");
-        const uri = LOOPRING_URLs.IPFS_META_URL + cid;
+        const uri = IPFS_LOOPRING_SITE + cid;
         return fetch(uri)
           .then((response) => response.json())
           .catch((error) => {

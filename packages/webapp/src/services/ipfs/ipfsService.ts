@@ -20,24 +20,9 @@ export class IpfsProvides {
       this._ipfs = await create({
         url: `${IPFS_LOOPRING_SITE}`,
       });
-      // this._ipfs = await create({
-      //   protocol: "https",
-      //   host: "ipfs.infura.io",
-      //   port: 5001,
-      //   headers: {
-      //     authorization:
-      //       "Basic " +
-      //       btoa(
-      //         process.env.REACT_APP_INFURA_PROJECT_ID +
-      //           ":" +
-      //           process.env.REACT_APP_INFURA_PROJECT_SECRET
-      //       ),
-      //   },
-      // });
     } catch (error) {
       console.error("IPFSHTTPClient ERROR ON INIT:", error);
       ipfsService.sendError(new CustomError(ErrorMap.CREATE_IPFS_ERROR));
-      // setIpfsInitError(error);
     }
     return this._ipfs;
   }
@@ -45,9 +30,6 @@ export class IpfsProvides {
     if (this._ipfs) {
       try {
         this._ipfs = undefined;
-        // this._ipfs
-        //   .stop()
-        //   .catch((err) => console.error("IPFSHTTPClient ERROR ON STOP:", err));
       } catch (err) {
         console.error("IPFSHTTPClient ERROR ON STOP:", err as any);
       }
