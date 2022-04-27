@@ -629,9 +629,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
 
       const paddingStyle = {
         paddingTop: 0,
-        paddingRight: isLandPage ? theme.unit * 1 : theme.unit * 3,
+        paddingRight: isLandPage ? theme.unit : theme.unit * 3,
         paddingBottom: 0,
-        paddingLeft: isLandPage ? theme.unit * 1 : theme.unit * 3,
+        paddingLeft: isLandPage ? theme.unit : theme.unit * 3,
       };
 
       return (
