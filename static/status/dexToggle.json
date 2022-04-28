@@ -1,6 +1,6 @@
 {
   "order": {
-    "enable": true,
+    "enable": false,
     "reason": null
   },
   "joinAmm": {

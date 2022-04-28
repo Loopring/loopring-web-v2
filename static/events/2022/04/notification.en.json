@@ -60,8 +60,8 @@
     {
       "id": "2022-04-28-maintain",
       "title": "Relayer Upgrade Notification",
-      "description1": "Dex and App will be SUSPENDED from",
-      "description2": "2022-04-28 6AM (UTC) to Upgrade Done",
+      "description1": "Trade & Orderbook will be SUSPENDED from",
+      "description2": "2022-04-28 6AM (UTC), Estimated 3 hours",
       "link": "https://loopring.io/#/notification/2022-04-28-maintain.{lng}.md",
       "startDate": 1651104000000,
       "endDate": 1651154400000
