@@ -592,4 +592,8 @@ export default {
   labelGoExplore: "View transactions on block explorer",
   labelNOETH: "Need ETH for gas",
   labelBanxaFeeFree: "zero fees for a limited time",
+  labellimit: "limit",
+  labelmarket: "Market",
+  labelswap: "Swap",
+  labelamm: "Amm",
 };

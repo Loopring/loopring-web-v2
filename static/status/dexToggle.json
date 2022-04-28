@@ -1,7 +1,7 @@
 {
   "order": {
-    "enable": false,
-    "reason": "Relayer Upgrade Notification"
+    "enable": true,
+    "reason": null
   },
   "joinAmm": {
     "enable": true,
