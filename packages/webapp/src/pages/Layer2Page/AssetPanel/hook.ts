@@ -351,8 +351,6 @@ export const useGetAssets = () => {
     legalShow,
   };
   const assetTitleMobileExtendProps = {
-    onShowNFTDeposit: () => setShowNFTDeposit({ isShow: true }),
-    onShowNFTMINT: () => setShowNFTMint({ isShow: true }),
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   };
