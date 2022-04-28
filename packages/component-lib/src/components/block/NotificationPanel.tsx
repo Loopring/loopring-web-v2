@@ -56,12 +56,12 @@ export const NotificationPanel = ({
             marginX={1}
             marginBottom={1}
           >
-            {hasActivities &&
+            {!!hasActivities &&
               notification.activities.map((activity, index) => (
                 <ListItemActivity key={activity.type + index} {...activity} />
               ))}
           </Box>
-          {hasNotifications && (
+          {!!hasNotifications && (
             <>
               {hasActivities && <Divider />}
               <Box
