@@ -415,7 +415,7 @@ export const Toolbar = withTranslation("common")(
                   const current_event_date = `${year}-${month}-${day}`;
 
                   history.push(
-                    `/race-event/${current_event_date}?pair=${market}&type=${ruleType}&owner=${account.accAddress}`
+                    `/race-event/${current_event_date}?pair=${market}&type=${ruleType}&owner=${account?.accAddress}`
                   );
                 }}
               >
@@ -440,7 +440,7 @@ export const Toolbar = withTranslation("common")(
                 history.push(
                   `/race-event/${current_event_date}?pair=${market}&type=${
                     activityInProgressRules[`AMM-${market}`].ruleType[0]
-                  }&owner=${account.accAddress}`
+                  }&owner=${account?.accAddress}`
                 );
               }}
             >

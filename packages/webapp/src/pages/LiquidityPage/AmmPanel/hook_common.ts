@@ -13,7 +13,6 @@ import { myLog } from "@loopring-web/common-resources";
 import { useSocket } from "stores/socket";
 import { useToast } from "hooks/common/useToast";
 import { usePageAmmPool } from "stores/router";
-import { useTokenPrices } from "../../../stores/tokenPrices";
 
 export const useAmmCommon = ({
   pair,
