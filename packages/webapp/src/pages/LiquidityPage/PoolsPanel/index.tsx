@@ -9,8 +9,8 @@ import { PoolsTable, InputSearch } from "@loopring-web/component-lib";
 import { useSettings } from "@loopring-web/component-lib";
 import { useSystem } from "stores/system";
 import store from "stores";
-import { useAmmActivityMap } from "../../../stores/Amm/AmmActivityMap";
-import { useAccount } from "../../../stores/account";
+import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
+import { useAccount } from "stores/account";
 
 const WrapperStyled = styled(Box)`
   flex: 1;

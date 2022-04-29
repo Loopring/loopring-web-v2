@@ -31,6 +31,7 @@ import { useAmmPool, useCoinPair } from "./hooks";
 import { StylePaper } from "pages/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { makeTickView } from "hooks/help";
+import { useAccount } from "stores/account";
 
 //**************useAmmPool****** page code ************************//
 const BoxWrapperStyled = styled(Grid)`
@@ -89,7 +90,7 @@ export const CoinPairPanel = withTranslation("common")(
       btos,
       tickerMap,
     } = useCoinPair();
-
+    const { account } = useAccount();
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const realMarket = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`;
     const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
@@ -146,6 +147,7 @@ export const CoinPairPanel = withTranslation("common")(
           >
             <Box marginTop={0}>
               <TradeTitle
+                accoun={account}
                 {...{
                   baseShow: coinPairInfo.myCoinA?.simpleName,
                   quoteShow: coinPairInfo.myCoinB?.simpleName,

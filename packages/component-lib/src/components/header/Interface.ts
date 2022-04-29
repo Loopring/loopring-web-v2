@@ -1,4 +1,5 @@
 import {
+  Account,
   HeaderMenuItemInterface,
   Notify,
 } from "@loopring-web/common-resources";
@@ -11,7 +12,8 @@ export interface HeaderToolBarInterface {
 export interface HeaderProps {
   headerToolBarData: HeaderToolBarInterface[];
   headerMenuData: HeaderMenuItemInterface[];
-  notification: Notify;
+  notification?: Notify;
+  account?: Account;
   allowTrade: {
     register: { enable: boolean; reason?: string };
     order: { enable: boolean; reason?: string };

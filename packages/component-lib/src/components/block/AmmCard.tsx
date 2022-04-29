@@ -28,7 +28,6 @@ import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../stores";
 import styled from "@emotion/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { account } from "../../static";
 
 export interface Reward {
   startAt: number;
@@ -98,7 +97,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           coinBInfo,
           amountDollar,
           amountYuan,
-          // isNew,
+          account,
           APR,
           activity: {
             duration,
@@ -124,28 +123,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           setChosenCardInfo,
           ammInfo,
           ...rest
-        }: AmmCardProps<T> &
-          WithTranslation & {
-            popoverIdx: number;
-            precisionA?: number;
-            precisionB?: number;
-            coinAPriceDollar: number;
-            coinBPriceDollar: number;
-            coinAPriceYuan: number;
-            coinBPriceYuan: number;
-            ammRewardRecordList: {
-              amount: string;
-              time: number;
-            }[];
-            getLiquidityMining: (
-              market: string,
-              size?: number
-            ) => Promise<void>;
-            getMiningLinkList: (market: string) => string[];
-            setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>;
-            setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>;
-            ammInfo: any;
-          },
+        }: AmmCardProps<T> & WithTranslation,
         ref: React.ForwardedRef<any>
       ) => {
         const isOrderbook = ruleType === "ORDERBOOK_MINING";

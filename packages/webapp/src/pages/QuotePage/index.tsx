@@ -12,7 +12,7 @@ import { RowConfig } from "@loopring-web/common-resources";
 import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
 import { TableWrapStyled } from "pages/styled";
-import { useAccount } from "../../stores/account";
+import { useAccount } from "stores/account";
 
 const RowStyled = styled(Grid)`
   & .MuiGrid-root:not(:last-of-type) > div {

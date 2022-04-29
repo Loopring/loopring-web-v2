@@ -19,7 +19,7 @@ import { useOverview } from "./hook";
 import { useSystem } from "stores/system";
 import { TableWrapStyled } from "pages/styled";
 import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
-import { useAccount } from "../../../stores/account";
+import { useAccount } from "stores/account";
 
 const StyleWrapper = styled(Grid)`
   position: relative;

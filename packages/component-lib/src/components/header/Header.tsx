@@ -46,7 +46,6 @@ import { bindPopper } from "material-ui-popup-state/es";
 import { bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
 import { useTheme } from "@emotion/react";
 import _ from "lodash";
-import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
@@ -139,13 +138,24 @@ export const LoopringLogo = React.memo(() => {
   );
 });
 
-const ToolBarItem = ({ buttonComponent, notification, ...props }: any) => {
+const ToolBarItem = ({
+  buttonComponent,
+  notification,
+  account,
+  ...props
+}: any) => {
   const render = React.useMemo(() => {
     switch (buttonComponent) {
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />;
       case ButtonComponentsMap.Notification:
-        return <BtnNotification {...props} notification={notification} />;
+        return (
+          <BtnNotification
+            {...props}
+            notification={notification}
+            account={account}
+          />
+        );
       case ButtonComponentsMap.Setting:
         return <BtnSetting {...props} />;
       case ButtonComponentsMap.WalletConnect:
@@ -213,6 +223,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         notification,
         allowTrade,
         selected,
+        account,
         isWrap = true,
         isLandPage = false,
         isMobile = false,
@@ -225,7 +236,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const history = useHistory();
       const theme = useTheme();
       const location = useLocation();
-      const { account } = useAccount();
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -234,7 +244,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           return ToolBarAvailableItem.map((index: number) => {
             return (
               <ToolBarItem
-                {...{ ...toolbarList[index], notification, ...rest }}
+                {...{ ...toolbarList[index], account, notification, ...rest }}
                 key={index}
               />
             );
@@ -338,7 +348,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       } else {
                         if (
                           child &&
-                          (account.readyState === AccountStatus.ACTIVATED ||
+                          (account?.readyState === AccountStatus.ACTIVATED ||
                             label.id !== "Layer2")
                         ) {
                           return [
@@ -389,7 +399,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [isMobile, selected, account.readyState, allowTrade, memoized]
+        [isMobile, selected, account?.readyState, allowTrade, memoized]
       );
 
       // const handleThemeClick = React.useCallback(() => {
