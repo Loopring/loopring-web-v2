@@ -3,6 +3,7 @@ import { Box, Container, Link, List, Typography } from "@mui/material";
 import React from "react";
 import {
   DiscordIcon,
+  FEED_BACK_LINK,
   LoopringIcon,
   MediumIcon,
   TwitterIcon,
@@ -64,7 +65,7 @@ const linkListMap = {
     {
       linkName: "Feedback", //❤️ Submit a Request
       // linkHref: 'https://loopring.io/#/newticket'
-      linkHref: "https://desk.zoho.com/portal/loopring/en/home",
+      linkHref: FEED_BACK_LINK,
     },
     {
       linkName: "CreatorGrants", // Creator Grants

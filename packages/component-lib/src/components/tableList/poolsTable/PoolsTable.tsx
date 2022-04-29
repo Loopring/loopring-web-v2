@@ -29,6 +29,7 @@ import { Currency } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
+import { useAccount } from "@loopring-web/webapp/src/stores/account";
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
@@ -70,6 +71,7 @@ export const IconColumn = React.memo(
     if (!row || !row.coinAInfo || !row.coinBInfo) {
       return <BoxStyled />;
     }
+    const { account } = useAccount();
     const { coinAInfo, coinBInfo, isNew } = row;
     const coinAIcon: any = coinJson[coinAInfo?.simpleName];
     const coinBIcon: any = coinJson[coinBInfo?.simpleName];
@@ -212,7 +214,7 @@ export const IconColumn = React.memo(
                 history.push(
                   `/race-event/${current_event_date}?pair=${pair}&type=${
                     activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                  }`
+                  }&owner=${account.accAddress}`
                 );
               }}
             >

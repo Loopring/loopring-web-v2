@@ -46,6 +46,7 @@ export const useTradeRace = () => {
   const [currMarketPair, setCurrMarketPair] = React.useState(
     () => searchParams.get("pair") ?? ""
   );
+
   const [duration, setDuration] =
     React.useState<
       | {

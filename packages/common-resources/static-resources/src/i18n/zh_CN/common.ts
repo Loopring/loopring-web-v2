@@ -521,7 +521,7 @@ export default {
   labelNFTDepositInputTitle: "NFT Amount:",
   labelNFTContractAddress: "Token Contract:",
   labelNFTTId: "NFT Token ID:",
-  labelNFTCid: "IPFS CID <1></1>: (Store `metadata Information`)",
+  labelNFTCid: "IPFS CID : <1>(Store `metadata Information`)</1>",
   labelNFTType: "NFT Type:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
@@ -592,4 +592,8 @@ export default {
   labelGoExplore: "View transactions on block explorer",
   labelNOETH: "Need ETH for gas",
   labelBanxaFeeFree: "zero fees for a limited time",
+  labellimit: "limit",
+  labelmarket: "Market",
+  labelswap: "Swap",
+  labelamm: "Amm",
 };
