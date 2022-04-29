@@ -291,7 +291,12 @@ export const OrderbookPage = withTranslation("common")(() => {
       [market, rowLength]
     ),
     orderTable: React.useMemo(
-      () => <OrderTableView market={market} />,
+      () => (
+        <OrderTableView
+          market={market}
+          handleOnMarketChange={handleOnMarketChange}
+        />
+      ),
       [market]
     ),
   };

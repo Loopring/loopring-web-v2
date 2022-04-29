@@ -107,7 +107,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       resetBtnInfo();
       if (
         !error &&
-        nftMintValue.royaltyPercentage &&
+        nftMintValue.royaltyPercentage !== undefined &&
         Number.isInteger(nftMintValue.royaltyPercentage / 1) &&
         nftMintValue.royaltyPercentage >= 0 &&
         nftMintValue.royaltyPercentage <= 10 &&
@@ -129,7 +129,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
       if (
         (!nftMintValue.image && !nftMintValue.name) ||
         !(
-          nftMintValue.royaltyPercentage &&
+          nftMintValue.royaltyPercentage !== undefined &&
           Number.isInteger(nftMintValue.royaltyPercentage / 1) &&
           nftMintValue.royaltyPercentage >= 0 &&
           nftMintValue.royaltyPercentage <= 10
@@ -407,7 +407,7 @@ export const useNFTMint = <T extends TradeNFT<I>, I>() => {
         nftMintValue.fee.belong &&
         nftMintValue.fee.__raw__ &&
         (nftMintValue.image !== undefined || nftMintValue.name !== undefined) &&
-        nftMintValue.royaltyPercentage &&
+        nftMintValue.royaltyPercentage !== undefined &&
         Number.isInteger(nftMintValue.royaltyPercentage / 1) &&
         nftMintValue.royaltyPercentage >= 0 &&
         nftMintValue.royaltyPercentage <= 10 &&

@@ -10,6 +10,8 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
 import { unlockAccount } from "./unlockAccount";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
+import { ChainId, WalletType } from "@loopring-web/loopring-sdk";
+import { connectProvides } from "@loopring-web/web3-provider";
 
 const subject = new Subject<{ status: keyof typeof Commands; data: any }>();
 
@@ -27,10 +29,11 @@ export const accountServices = {
       data: undefined,
     });
   },
-  sendErrorUnlock: (error?: sdk.RESULT_INFO) => {
+  sendErrorUnlock: (error?: sdk.RESULT_INFO, walletType?: WalletType) => {
     subject.next({
       status: Commands.ErrorSign,
       data: {
+        walletType,
         error:
           error ??
           ({
@@ -155,6 +158,7 @@ export const accountServices = {
         readyState: AccountStatus.NOT_ACTIVE,
         _accountIdNotActive: accInfo.accountId,
         nonce: accInfo.nonce,
+        keySeed: accInfo.keySeed,
       })
     );
     subject.next({
@@ -167,8 +171,11 @@ export const accountServices = {
     if (store) {
       const account = store.getState().account;
       if (LoopringAPI.exchangeAPI) {
-        if (!account._chainId || LoopringAPI.__chainId__ !== account._chainId) {
-          await sdk.sleep(10);
+        if (connectProvides.usedProvide && connectProvides.usedWeb3) {
+          const chainId = await connectProvides?.usedWeb3.eth.getChainId();
+          if (chainId !== LoopringAPI.__chainId__) {
+            LoopringAPI.InitApi(chainId as ChainId);
+          }
         }
         const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
           owner: account.accAddress,
@@ -194,7 +201,7 @@ export const accountServices = {
   },
   sendCheckAccount: async (
     ethAddress: string,
-    chainId?: sdk.ChainId | undefined
+    _chainId?: sdk.ChainId | undefined
   ) => {
     myLog(
       "After connect >>,sendCheckAccount: step3 processAccountCheck",
@@ -210,11 +217,11 @@ export const accountServices = {
       status: Commands.ProcessAccountCheck,
       data: undefined,
     });
-    if (
-      !LoopringAPI.exchangeAPI ||
-      (chainId && LoopringAPI.__chainId__ !== chainId)
-    ) {
-      await sdk.sleep(20);
+    if (connectProvides.usedProvide && connectProvides.usedWeb3) {
+      const chainId = await connectProvides?.usedWeb3.eth.getChainId();
+      if (chainId !== LoopringAPI.__chainId__) {
+        LoopringAPI.InitApi(chainId as ChainId);
+      }
     }
     if (LoopringAPI.exchangeAPI) {
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({

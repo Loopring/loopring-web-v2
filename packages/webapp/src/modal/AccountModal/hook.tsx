@@ -110,6 +110,7 @@ import { useWalletLayer2 } from "../../stores/walletLayer2";
 import { useVendor } from "../../hooks/useractions/useVendor";
 import { useNFTDeploy } from "../../hooks/useractions/useNFTDeploy";
 import { useLocation } from "react-router-dom";
+import { WalletType } from "@loopring-web/loopring-sdk";
 
 export function useAccountModalForUI({
   t,
@@ -1540,12 +1541,24 @@ export function useAccountModalForUI({
           <UnlockAccount_Failed
             btnInfo={closeBtnInfo}
             resetAccount={() => {
+              if (walletServices)
+                if (isShowAccount.info && isShowAccount.info.walletType) {
+                  const walletType = isShowAccount.info
+                    .walletType as WalletType;
+                  if (
+                    walletType.isContract ||
+                    walletType.isInCounterFactualStatus
+                  ) {
+                    return;
+                  }
+                }
               setShowAccount({ isShow: false });
               setShowActiveAccount({ isShow: true });
             }}
             {...{
               ...rest,
               error: isShowAccount.error,
+              walletType: isShowAccount?.info?.walletType,
               t,
             }}
           />

@@ -274,7 +274,12 @@ const getColumnModeAssets = (
             : EmptyValueTag;
 
           return (
-            <Box className="rdg-cell-value">
+            <Box
+              className="rdg-cell-value"
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+            >
               <Typography>
                 {`${fromValue} ${from.key} ${DirectionTag} ${toValue} ${to.key}`}
               </Typography>

@@ -3,7 +3,7 @@ import React from "react";
 import { LoopringAPI } from "../../api_wrapper";
 import { getTokenNameFromTokenId, volumeToCount } from "../../hooks/help";
 import {
-  AccountStatus,
+  // AccountStatus,
   DropDownIcon,
   getShortAddr,
   getValuePrecisionThousand,
@@ -21,9 +21,8 @@ import {
   TradeRaceTable,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
-import { useAccount } from "../../stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useSystem } from "../../stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { EventAPI } from "./interface";
@@ -64,7 +63,12 @@ export const Rank = ({
   pair: MarketType | "";
 }) => {
   const { t } = useTranslation();
-  const { account } = useAccount();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const account = {
+    owner: searchParams.get("owner") ?? "",
+    accountId: searchParams.get("accountId"),
+  };
   const history = useHistory();
   const [rewardToken, setRewardToken] = React.useState("");
   const [currPairUserRank, setCurrPairUserRank] =
@@ -113,15 +117,13 @@ export const Rank = ({
 
   const getAmmGameUserRank = React.useCallback(
     async (market: string) => {
-      if (LoopringAPI && LoopringAPI.ammpoolAPI) {
-        const { userRank } =
-          await LoopringAPI.ammpoolAPI.getAmmPoolGameUserRank(
-            {
-              ammPoolMarket: market,
-              owner: account.accAddress,
-            },
-            account.apiKey
-          );
+      if (LoopringAPI && LoopringAPI.globalAPI && !!account.owner) {
+        const { userRank } = await LoopringAPI.globalAPI.getAmmPoolGameUserRank(
+          {
+            ammPoolMarket: market,
+            owner: account.owner,
+          }
+        );
         setCurrPairUserRank(
           userRank || {
             address: "",
@@ -132,18 +134,18 @@ export const Rank = ({
         );
       }
     },
-    [account.accAddress, account.apiKey]
+    [account.owner]
   );
   React.useEffect(() => {
     if (pair) {
       getAmmGameRank(pair);
     }
-  }, [pair]);
+  }, [getAmmGameRank, pair]);
   React.useEffect(() => {
-    if (pair && account.readyState === AccountStatus.ACTIVATED) {
+    if (pair && account.owner) {
       getAmmGameUserRank(pair);
     }
-  }, [pair, account.readyState]);
+  }, [account.owner, pair]);
 
   return (
     <>
@@ -270,24 +272,6 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
     }
   });
   const { chainId } = useSystem();
-  React.useEffect(() => {
-    const url =
-      props.url.replace(
-        "api.loopring.network",
-        chainId === ChainId.MAINNET
-          ? "api.loopring.network"
-          : "uat2.loopring.io"
-      ) + (filter && filter.key ? `?${filter.key}=${filter.value}` : "");
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => {
-        setRank(json.data as any[]);
-        setShowLoading(false);
-      })
-      .catch(() => {
-        return [];
-      });
-  }, [filter?.value]);
 
   React.useEffect(() => {
     if (searchValue !== "" && rank.length) {
@@ -306,6 +290,12 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       setRankView(rank);
     }
   }, [rank, searchValue]);
+  const onChange = (event: React.ChangeEvent<{ value: string }>) => {
+    if (event.target.value) {
+      setFilter((state) => ({ ...state, value: event.target.value } as any));
+    }
+  };
+
   const defaultArgs: any = {
     columnMode: props.column.length
       ? props.column.map((item, index) => ({
@@ -333,6 +323,27 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
     generateColumns: ({ columnsRaw }: any) =>
       columnsRaw as Column<any, unknown>[],
   };
+  React.useEffect(() => {
+    getTableValues();
+  }, [filter?.value]);
+  const getTableValues = React.useCallback(async () => {
+    const url =
+      props.url.replace(
+        "api.loopring.network",
+        chainId === ChainId.MAINNET
+          ? "api.loopring.network"
+          : "uat2.loopring.io"
+      ) + (filter && filter.key ? `?${filter.key}=${filter.value}` : "");
+    fetch(url)
+      .then((response) => response.json())
+      .then((json) => {
+        setRank(json.data as any[]);
+        setShowLoading(false);
+      })
+      .catch(() => {
+        return [];
+      });
+  }, [chainId, filter, props]);
 
   return (
     <Box
@@ -359,14 +370,7 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
             select
             style={{ width: 150, textAlign: "left" }}
             value={filter.value}
-            onChange={(event: React.ChangeEvent<{ value: string }>) => {
-              setFilter((state) => {
-                if (state) {
-                  state.value = event.target.value;
-                }
-                return state;
-              });
-            }}
+            onChange={onChange}
             inputProps={{ IconComponent: DropDownIcon }}
           >
             {filter.list.map((item, index) => (

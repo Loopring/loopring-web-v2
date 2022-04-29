@@ -165,7 +165,7 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
           justifyContent={"space-between"}
           position={"relative"}
         >
-          <Link
+          <Typography
             component={"span"}
             display={"flex"}
             alignItems={"center"}
@@ -173,20 +173,24 @@ export const MintNFTWrap = <T extends TradeNFT<I>, I, C extends FeeInfo>({
             marginBottom={1}
             color={"textSecondary"}
             variant={"body2"}
-            target="_blank"
-            rel="noopener noreferrer"
-            href={"./#/document/mint_nft.md"}
           >
             <Trans i18nKey={"labelNFTCid"}>
-              IPFS CID: (Which storage a metadata Information as an unique Token
-              ID for NFT)
-              <HelpIcon
-                style={{ cursor: "pointer", marginLeft: "4px" }}
-                fontSize={"medium"}
-                htmlColor={"var(--color-text-third)"}
-              />
+              IPFS CID :(Store Metadata Information),
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={"./#/document/mint_nft.md"}
+                paddingLeft={1}
+              >
+                Follow this Guide
+                <HelpIcon
+                  style={{ cursor: "pointer", marginLeft: "4px" }}
+                  fontSize={"medium"}
+                  htmlColor={"var(--color-text-third)"}
+                />
+              </Link>
             </Trans>
-          </Link>
+          </Typography>
           <TextField
             value={tradeData.nftIdView}
             label={""}

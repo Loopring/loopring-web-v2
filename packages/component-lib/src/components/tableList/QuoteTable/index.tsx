@@ -20,6 +20,7 @@ import { useDispatch } from "react-redux";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
 import React from "react";
+import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -165,6 +166,7 @@ export const QuoteTable = withTranslation("tables")(
       ...rest
     }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
       let userSettings = useSettings();
+      const { account } = useAccount();
       const upColor = userSettings?.upColor;
       const { currency, isMobile } = userSettings;
       const getColumnMode = (
@@ -245,7 +247,7 @@ export const QuoteTable = withTranslation("tables")(
                             const current_event_date = `${year}-${month}-${day}`;
 
                             history.push(
-                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account.accAddress}`
                             );
                           }}
                         >
@@ -274,7 +276,7 @@ export const QuoteTable = withTranslation("tables")(
                           history.push(
                             `/race-event/${current_event_date}?pair=${pair}&type=${
                               activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                            }`
+                            }&owner=${account.accAddress}`
                           );
                         }}
                       >

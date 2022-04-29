@@ -8,13 +8,21 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import { OrderHistoryTable } from "@loopring-web/component-lib";
-import { CheckBoxIcon, CheckedIcon } from "@loopring-web/common-resources";
+import {
+  OrderHistoryTable,
+  QuoteTableRawDataItem,
+} from "@loopring-web/component-lib";
+import {
+  CheckBoxIcon,
+  CheckedIcon,
+  MarketType,
+} from "@loopring-web/common-resources";
 import { useOrderList } from "./hookTable";
 import { useAccount } from "stores/account";
 import { useTradeProSettings } from "stores/localStore/tradeProSettings";
 import styled from "@emotion/styled";
 import { useGetTrades } from "../../../Layer2Page/TradePanel/hooks";
+import { useHistory } from "react-router-dom";
 
 const CheckboxStyled = styled(Box)`
   position: absolute;
@@ -27,9 +35,11 @@ export const OrderTableView = withTranslation("common")(
   <C extends { [key: string]: any }>({
     t,
     market,
+    handleOnMarketChange,
   }: {
     t: TFunction<"translation">;
     market?: string;
+    handleOnMarketChange: (newMarket: MarketType) => void;
   }) => {
     const {
       getOrderDetail,
@@ -47,6 +57,7 @@ export const OrderTableView = withTranslation("common")(
     } = useOrderList();
     const { userOrderDetailList, getUserOrderDetailTradeList } = useGetTrades();
     const [tabValue, setTabValue] = React.useState(0);
+    const history = useHistory();
     const {
       account: { readyState },
     } = useAccount();
@@ -91,6 +102,15 @@ export const OrderTableView = withTranslation("common")(
       },
       [updateIsHideOtherPairs]
     );
+    const onRowClick = (_rowIdx: number, row: any) => {
+      if (row.market !== market) {
+        handleOnMarketChange(row.market);
+        // history.push(`/trade/pro/${row.market}`);
+      } else {
+        return;
+      }
+      // const _rowMarket = row.pair.coinA +'-' +row.pair.coinB
+    };
 
     return (
       <>
@@ -134,6 +154,7 @@ export const OrderTableView = withTranslation("common")(
             getOrderDetail,
             orderDetailList,
             cancelOrder,
+            onRowClick,
             cancelOrderByHashList,
             showLoading,
             isOpenOrder: tabValue === 0,

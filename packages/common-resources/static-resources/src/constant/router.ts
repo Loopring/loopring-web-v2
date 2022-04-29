@@ -243,5 +243,5 @@ export const subMenuGuardian = {
 };
 
 export const headerRoot = "Landing-page";
-
+export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const SoursURL = "https://static.loopring.io/assets/";
