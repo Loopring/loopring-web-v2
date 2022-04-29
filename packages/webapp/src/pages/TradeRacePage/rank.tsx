@@ -3,7 +3,7 @@ import React from "react";
 import { LoopringAPI } from "../../api_wrapper";
 import { getTokenNameFromTokenId, volumeToCount } from "../../hooks/help";
 import {
-  AccountStatus,
+  // AccountStatus,
   DropDownIcon,
   getShortAddr,
   getValuePrecisionThousand,
@@ -21,9 +21,8 @@ import {
   TradeRaceTable,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
-import { useAccount } from "../../stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useSystem } from "../../stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { EventAPI } from "./interface";
@@ -64,7 +63,12 @@ export const Rank = ({
   pair: MarketType | "";
 }) => {
   const { t } = useTranslation();
-  const { account } = useAccount();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const account = {
+    owner: searchParams.get("owner") ?? "",
+    accountId: searchParams.get("accountId"),
+  };
   const history = useHistory();
   const [rewardToken, setRewardToken] = React.useState("");
   const [currPairUserRank, setCurrPairUserRank] =
@@ -113,15 +117,13 @@ export const Rank = ({
 
   const getAmmGameUserRank = React.useCallback(
     async (market: string) => {
-      if (LoopringAPI && LoopringAPI.ammpoolAPI) {
-        const { userRank } =
-          await LoopringAPI.ammpoolAPI.getAmmPoolGameUserRank(
-            {
-              ammPoolMarket: market,
-              owner: account.accAddress,
-            },
-            account.apiKey
-          );
+      if (LoopringAPI && LoopringAPI.globalAPI && !!account.owner) {
+        const { userRank } = await LoopringAPI.globalAPI.getAmmPoolGameUserRank(
+          {
+            ammPoolMarket: market,
+            owner: account.owner,
+          }
+        );
         setCurrPairUserRank(
           userRank || {
             address: "",
@@ -132,7 +134,7 @@ export const Rank = ({
         );
       }
     },
-    [account.accAddress, account.apiKey]
+    [account.owner]
   );
   React.useEffect(() => {
     if (pair) {
@@ -140,10 +142,10 @@ export const Rank = ({
     }
   }, [getAmmGameRank, pair]);
   React.useEffect(() => {
-    if (pair && account.readyState === AccountStatus.ACTIVATED) {
+    if (pair && account.owner) {
       getAmmGameUserRank(pair);
     }
-  }, [pair, account.readyState, getAmmGameUserRank]);
+  }, [account.owner, pair]);
 
   return (
     <>
