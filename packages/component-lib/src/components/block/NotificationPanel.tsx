@@ -7,7 +7,6 @@ import {
   NotificationListItem,
 } from "../basic-lib";
 import styled from "@emotion/styled";
-import { account } from "../../static";
 
 const BoxStyle = styled(Box)`
   background: var(--color-pop-bg);

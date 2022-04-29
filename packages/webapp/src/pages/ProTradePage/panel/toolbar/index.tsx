@@ -47,7 +47,7 @@ import { TableProWrapStyled } from "pages/styled";
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
 import { useTickList } from "../../../QuotePage/hook";
-import { useAccount } from "../../../../stores/account";
+import { useAccount } from "stores/account";
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -193,7 +193,7 @@ export const Toolbar = withTranslation("common")(
           };
         });
       }
-    }, [tickerMap, market]);
+    }, [coinMap, tickerMap, tokenPrices, market, forex]);
 
     const getFilteredTickList = React.useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {

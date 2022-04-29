@@ -13,6 +13,7 @@ import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import {
+  Account,
   ACTIVITY_TYPE,
   AmmCardProps,
   AvatarCoinStyled,
@@ -28,7 +29,6 @@ import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../stores";
 import styled from "@emotion/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { account } from "../../static";
 
 export interface Reward {
   startAt: number;
@@ -98,7 +98,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           coinBInfo,
           amountDollar,
           amountYuan,
-          // isNew,
+          account,
           APR,
           activity: {
             duration,
@@ -126,6 +126,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           ...rest
         }: AmmCardProps<T> &
           WithTranslation & {
+            account: Account;
             popoverIdx: number;
             precisionA?: number;
             precisionB?: number;

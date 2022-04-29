@@ -83,6 +83,7 @@ const AmmCardWrap = React.memo(
       return props ? (
         <AmmCard
           ref={ref}
+          account={account}
           {...props}
           {...{
             popoverIdx,
