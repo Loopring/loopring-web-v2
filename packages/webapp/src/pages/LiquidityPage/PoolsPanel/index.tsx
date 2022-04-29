@@ -10,6 +10,7 @@ import { useSettings } from "@loopring-web/component-lib";
 import { useSystem } from "stores/system";
 import store from "stores";
 import { useAmmActivityMap } from "../../../stores/Amm/AmmActivityMap";
+import { useAccount } from "../../../stores/account";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -35,6 +36,7 @@ export const PoolsPanel = withTranslation("common")(
     t,
   }: WithTranslation & {}) => {
     const container = React.useRef(null);
+    const { account } = useAccount();
     const {
       filteredData,
       sortMethod,
@@ -43,7 +45,7 @@ export const PoolsPanel = withTranslation("common")(
       filterValue,
       rawData,
     } = useAmmMapUI();
-    const { coinJson, isMobile } = useSettings();
+    const { coinJson } = useSettings();
     const { forex } = useSystem();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
@@ -85,6 +87,7 @@ export const PoolsPanel = withTranslation("common")(
                 activityInProgressRules,
                 coinJson,
                 forex,
+                account,
                 tokenPrices,
               }}
             />
