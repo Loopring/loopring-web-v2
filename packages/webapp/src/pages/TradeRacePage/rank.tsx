@@ -11,7 +11,7 @@ import {
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { Box, Button, MenuItem, Typography } from "@mui/material";
+import { Box, Button, Link, MenuItem, Typography } from "@mui/material";
 import {
   Column,
   InputSearch,
@@ -19,6 +19,7 @@ import {
   TablePaddingX,
   TextField,
   TradeRaceTable,
+  useSettings,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -64,6 +65,7 @@ export const Rank = ({
 }) => {
   const { t } = useTranslation();
   const { search } = useLocation();
+  const { isMobile } = useSettings();
   const searchParams = new URLSearchParams(search);
   const account = {
     owner: searchParams.get("owner") ?? "",
@@ -158,7 +160,7 @@ export const Rank = ({
       >
         <TableWrapperStyled paddingY={3} position={"relative"}>
           <Typography
-            variant={"h2"}
+            variant={isMobile ? "h4" : "h2"}
             color={"var(--color-text-secondary)"}
             textAlign={"center"}
             marginBottom={1}
@@ -186,8 +188,13 @@ export const Rank = ({
               ))}
             </StyledTextFiled>
           </BoxSelect>
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Typography fontSize={16} marginRight={2}>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDirection={isMobile ? "column" : "row"}
+          >
+            <Typography variant={"h5"} marginRight={2}>
               {t("labelTradeRaceYourVolume")} ({volumeToken}):
               {currPairUserRank.volume
                 ? getValuePrecisionThousand(
@@ -195,16 +202,17 @@ export const Rank = ({
                   )
                 : "--"}
             </Typography>
-            <Typography fontSize={16}>
+            <Typography variant={"h5"}>
               {t("labelTradeRaceYourRanking")}: {currPairUserRank.rank || "--"}
             </Typography>
-            <Button
-              style={{ fontSize: 16 }}
-              variant={"text"}
-              onClick={() => history.push(`/trade/lite/${pair}`)}
+            <Link
+              variant={"h5"}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`/trade/lite/${pair}`}
             >
               {t("labelTradeRaceGoTrading")} &gt;&gt;
-            </Button>
+            </Link>
           </Box>
           <TradeRaceTable
             {...{
