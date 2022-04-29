@@ -7,6 +7,7 @@ import { TFunction } from "i18next";
 import { withTranslation } from "react-i18next";
 import {
   FirstPlaceIcon,
+  getShortAddr,
   RowConfig,
   SecondPlaceIcon,
   ThirdPlaceIcon,
@@ -19,7 +20,7 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
 
   .rdg {
     height: ${({ height }) => height}px;
-    --template-columns: 150px 350px auto auto !important;
+    --template-columns: 10% 30% auto auto !important;
     height: auto;
 
     .rdgCellCenter {
@@ -69,14 +70,9 @@ export const TradeRaceTable = withTranslation("tables")(
           name: t("labelTradeRaceAddress"),
           headerCellClass: "textAlignCenter",
           formatter: ({ row }) => {
-            const value = row["address"];
-            // const firstSix = value.substring(0, 6)
-            // const lastFour = value.substring(value.length - 4, value.length)
-            // const formattedAddress = `${firstSix}.f..${lastFour}`
             return (
               <Box className="rdg-cell-value textAlignCenter">
-                {/* {formattedAddress} */}
-                {value}
+                {getShortAddr(row.address)}
               </Box>
             );
           },
