@@ -99,9 +99,8 @@ NFTDepositViewProps<T, I>) => {
           item
           xs={12}
           md={5}
-          order={isMobile ? 1 : 0}
-          // justifyContent={"start"}
           alignItems={"center"}
+          order={isMobile ? 1 : 0}
         >
           <Box
             flex={1}
@@ -186,7 +185,7 @@ NFTDepositViewProps<T, I>) => {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={12} md={7} order={isMobile ? 0 : 1}>
+        <Grid item xs={12} md={7} paddingBottom={2} order={isMobile ? 0 : 1}>
           <Box>
             <Grid container maxWidth={"inherit"}>
               <Grid item xs={12} marginTop={2} alignSelf={"stretch"}>

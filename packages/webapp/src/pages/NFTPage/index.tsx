@@ -18,6 +18,7 @@ import { MyNFTHistory } from "./NFThistory";
 import { MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
 import { mintService } from "../../services/mintServices";
+import { TitleNFTMobile } from "./components/titleNFTMobile";
 
 export const subMenu = subMenuNFT;
 
@@ -232,6 +233,7 @@ export const NFTPage = () => {
               marginTop={0}
               flex={1}
             >
+              {!!isMobile && <TitleNFTMobile />}
               {routerNFT}
             </Box>
           </>
