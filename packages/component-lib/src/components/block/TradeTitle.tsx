@@ -1,5 +1,6 @@
 import { WithTranslation } from "react-i18next";
 import {
+  Account,
   AmmRankIcon,
   AvatarCoinStyled,
   CoinInfo,
@@ -20,7 +21,6 @@ import { NewTagIcon } from "../basic-lib";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
-import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 type StyledProps = {
   custom: { chg: UpColor };
@@ -31,6 +31,7 @@ const TradeTitleStyled = styled(Box)<StyledProps>`
 
 export const TradeTitle = <I extends object>({
   baseShow,
+  account,
   quoteShow,
   coinAInfo,
   coinBInfo,
@@ -47,6 +48,8 @@ export const TradeTitle = <I extends object>({
   isNew,
   activityInProgressRules,
 }: WithTranslation & {
+  account: Account;
+
   baseShow: string;
   quoteShow: string;
   coinAInfo: CoinInfo<I>;
@@ -68,7 +71,6 @@ export const TradeTitle = <I extends object>({
       ? FloatTag.decrease
       : FloatTag.increase;
   const { currency, upColor } = useSettings();
-  const { account } = useAccount();
   const close: any = tradeFloat.close;
 
   const value =

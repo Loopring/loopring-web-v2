@@ -14,7 +14,6 @@ import {
 } from "@loopring-web/common-resources";
 import { css, Theme } from "@emotion/react";
 import { useHistory } from "react-router-dom";
-import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 const cssBackground = ({
   theme,
@@ -109,16 +108,15 @@ const NotificationListItemStyled = styled(ListItem)<
 
 export const NotificationListItem = (props: Partial<NOTIFICATION_ITEM>) => {
   const history = useHistory();
-  const { account } = useAccount();
-  const { title, description1, description2 } = props;
+  const { title, description1, description2, account } = props;
   return (
     <NotificationListItemStyled
       alignItems="flex-start"
       onClick={() => {
-        if (props.link && !!account.accAddress) {
+        if (props.link && !!account?.accAddress) {
           props.link = /\?/.test(props.link)
-            ? `&owner=${account.accAddress}`
-            : `?owner=${account.accAddress}`;
+            ? `&owner=${account?.accAddress}`
+            : `?owner=${account?.accAddress}`;
         }
         props.link?.startsWith("http")
           ? window.open(props.link, "_blank")
@@ -181,8 +179,8 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
   border-radius: ${({ theme }) => theme.unit}px;
 ` as (props: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
 export const ListItemActivity = (props: ACTIVITY) => {
-  const { type, title, description1, description2, startDate, link } = props;
-  const { account } = useAccount();
+  const { type, title, description1, description2, startDate, link, account } =
+    props;
   if (Date.now() > startDate) {
     return (
       <ListItemActivityStyle
@@ -192,11 +190,12 @@ export const ListItemActivity = (props: ACTIVITY) => {
         // }
         onClick={() => {
           window.open(
-            `#/race-event/${link}?type=${ACTIVITY_TYPE[type]}&owner=${account.accAddress}`,
+            `#/race-event/${link}?type=${ACTIVITY_TYPE[type]}&owner=${account?.accAddress}`,
             "_blank"
           );
           window.opener = null;
         }}
+        account={account}
         type={props.type}
       >
         <ListItemAvatar />
