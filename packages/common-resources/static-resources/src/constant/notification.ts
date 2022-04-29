@@ -27,7 +27,7 @@ export type NOTIFICATION_ITEM = {
   link: string;
   startDate: number;
   endDate: number;
-  account: Account;
+  account?: Account;
 };
 export type ACTIVITY = NOTIFICATION_ITEM & {
   type: ACTIVITY_TYPE;
@@ -40,6 +40,7 @@ export type ACTIVITY = NOTIFICATION_ITEM & {
 export type NOTIFICATION = {
   activities: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
+  account?: Account;
   prev?: {
     endDate: number;
     prevMonth: string;

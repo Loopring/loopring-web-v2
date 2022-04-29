@@ -61,7 +61,7 @@ export const NotificationPanel = ({
                 <ListItemActivity
                   key={activity.type + index}
                   {...activity}
-                  account={account}
+                  account={notification.account}
                 />
               ))}
           </Box>
@@ -77,7 +77,7 @@ export const NotificationPanel = ({
                   <NotificationListItem
                     key={notify.id.toString() + index}
                     {...notify}
-                    account={account}
+                    account={notification.account}
                   />
                 ))}
               </Box>

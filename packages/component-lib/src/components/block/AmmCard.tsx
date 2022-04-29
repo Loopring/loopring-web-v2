@@ -13,7 +13,6 @@ import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import {
-  Account,
   ACTIVITY_TYPE,
   AmmCardProps,
   AvatarCoinStyled,
@@ -124,29 +123,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           setChosenCardInfo,
           ammInfo,
           ...rest
-        }: AmmCardProps<T> &
-          WithTranslation & {
-            account: Account;
-            popoverIdx: number;
-            precisionA?: number;
-            precisionB?: number;
-            coinAPriceDollar: number;
-            coinBPriceDollar: number;
-            coinAPriceYuan: number;
-            coinBPriceYuan: number;
-            ammRewardRecordList: {
-              amount: string;
-              time: number;
-            }[];
-            getLiquidityMining: (
-              market: string,
-              size?: number
-            ) => Promise<void>;
-            getMiningLinkList: (market: string) => string[];
-            setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>;
-            setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>;
-            ammInfo: any;
-          },
+        }: AmmCardProps<T> & WithTranslation,
         ref: React.ForwardedRef<any>
       ) => {
         const isOrderbook = ruleType === "ORDERBOOK_MINING";

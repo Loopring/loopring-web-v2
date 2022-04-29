@@ -10,18 +10,14 @@ import {
 
 import { changeShowModel, useAccount } from "stores/account";
 
-import {
-  AccountStep,
-  HeaderToolBarInterface,
-  useOpenModals,
-} from "@loopring-web/component-lib";
+import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 
 import { accountStaticCallBack, btnClickMap } from "hooks/help";
 import { myLog } from "@loopring-web/common-resources";
 
-import store from "../../stores";
+import store from "stores";
 import _ from "lodash";
-import { useNotify } from "../../stores/notify";
+import { useNotify } from "stores/notify";
 
 export const useHeader = () => {
   const accountTotal = useAccount();

@@ -33,7 +33,6 @@ import {
   subMenuLayer2,
   headerMenuLandingData,
   AccountStatus,
-  subMenuNFT,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -138,13 +137,24 @@ export const LoopringLogo = React.memo(() => {
   );
 });
 
-const ToolBarItem = ({ buttonComponent, notification, ...props }: any) => {
+const ToolBarItem = ({
+  buttonComponent,
+  notification,
+  account,
+  ...props
+}: any) => {
   const render = React.useMemo(() => {
     switch (buttonComponent) {
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />;
       case ButtonComponentsMap.Notification:
-        return <BtnNotification {...props} notification={notification} />;
+        return (
+          <BtnNotification
+            {...props}
+            notification={notification}
+            account={account}
+          />
+        );
       case ButtonComponentsMap.Setting:
         return <BtnSetting {...props} />;
       case ButtonComponentsMap.WalletConnect:
@@ -233,7 +243,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
           return ToolBarAvailableItem.map((index: number) => {
             return (
               <ToolBarItem
-                {...{ ...toolbarList[index], notification, ...rest }}
+                {...{ ...toolbarList[index], account, notification, ...rest }}
                 key={index}
               />
             );
@@ -475,8 +485,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             const item = _.cloneDeep(_item);
             if (item.label.id === "Layer2") {
               item.child = { ...subMenuLayer2 };
-            } else if (item.label.id === "NFT") {
-              item.child = { ...subMenuNFT };
             }
             return [...prev, item];
           }, [] as HeaderMenuItemInterface[]);

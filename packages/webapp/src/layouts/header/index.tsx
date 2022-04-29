@@ -15,8 +15,8 @@ import {
 import { withRouter, useHistory, useLocation } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import React from "react";
-import { useSystem } from "../../stores/system";
-import { useAccount } from "../../stores/account";
+import { useSystem } from "stores/system";
+import { useAccount } from "stores/account";
 
 const Header = withTranslation("common")(
   withRouter(

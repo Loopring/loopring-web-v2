@@ -8,7 +8,7 @@ import {
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { useSystem } from '../stores/system';
+import { useSystem } from 'stores/system';
 import { useAccountModal } from 'hooks/useractions/useAccountModal';
 import React from 'react'
 import { useAccount } from 'stores/account';

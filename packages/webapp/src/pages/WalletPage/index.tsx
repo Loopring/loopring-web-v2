@@ -20,13 +20,13 @@ import {
   useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
-import { changeShowModel, useAccount } from "../../stores/account";
+import { changeShowModel, useAccount } from "stores/account";
 import _ from "lodash";
 import {
   accountStaticCallBack,
   btnLabel,
 } from "../../layouts/connectStatusCallback";
-import store from "../../stores";
+import store from "stores";
 
 import { useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";

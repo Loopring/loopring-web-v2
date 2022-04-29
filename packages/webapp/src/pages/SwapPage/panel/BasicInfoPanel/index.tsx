@@ -12,7 +12,7 @@ import { useBasicInfo } from "./hook";
 import { VolToNumberWithPrecision } from "utils/formatter_tool";
 import { useTokenMap } from "stores/token";
 import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
-import { useAccount } from "../../../../stores/account";
+import { useAccount } from "stores/account";
 
 const BoxStyle = styled(Box)`
   .recharts-responsive-container {

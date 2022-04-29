@@ -9,7 +9,7 @@ import { Layer2Page } from "pages/Layer2Page";
 import { LiquidityPage } from "pages/LiquidityPage";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import { useTicker } from "../stores/ticker";
+import { useTicker } from "stores/ticker";
 import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {

@@ -24,10 +24,10 @@ import {
 import styled from "@emotion/styled";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { useSystem } from "../../stores/system";
+import { useSystem } from "stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { EventAPI } from "./interface";
-import store from "../../stores";
+import store from "stores";
 
 const TableWrapperStyled = styled(Box)`
   background-color: var(--color-box);
