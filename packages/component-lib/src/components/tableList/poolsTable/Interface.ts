@@ -11,6 +11,7 @@ export type PoolTableProps<T, R = Row<T>> = {
   wait?: number;
   tableHeight?: number;
   coinJson: any;
+  account: Account;
   forex?: number;
   tokenPrices: any;
   showLoading?: boolean;

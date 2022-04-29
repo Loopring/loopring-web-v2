@@ -19,6 +19,7 @@ import { useOverview } from "./hook";
 import { useSystem } from "stores/system";
 import { TableWrapStyled } from "pages/styled";
 import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
+import { useAccount } from "../../../stores/account";
 
 const StyleWrapper = styled(Grid)`
   position: relative;
@@ -37,6 +38,7 @@ const MyLiquidity: any = withTranslation("common")(
     const { ammActivityMap } = useAmmActivityMap();
     const { currency } = useSettings();
     const { forex, allowTrade } = useSystem();
+    const { account } = useAccount();
     const history = useHistory();
 
     const JumpToLiqudity = React.useCallback(
@@ -193,6 +195,7 @@ const MyLiquidity: any = withTranslation("common")(
             <MyPoolTable
               allowTrade={allowTrade}
               rawData={myPoolRow}
+              account={account}
               pagination={{ pageSize: 10 }}
               showloading={showLoading}
               currency={currency}
