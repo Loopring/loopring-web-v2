@@ -28,6 +28,7 @@ import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../stores";
 import styled from "@emotion/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
+import { account } from "../../static";
 
 export interface Reward {
   startAt: number;
@@ -243,7 +244,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           const day = ("0" + date.getDate().toString()).slice(-2);
           const current_event_date = `${year}-${month}-${day}`;
           history.push(
-            `/race-event/${current_event_date}?pair=${pathname}&type=${ACTIVITY_TYPE[ruleType]}`
+            `/race-event/${current_event_date}?pair=${pathname}&type=${ACTIVITY_TYPE[ruleType]}&owner=${account.accAddress}`
           );
         }, [history, pathname]);
 

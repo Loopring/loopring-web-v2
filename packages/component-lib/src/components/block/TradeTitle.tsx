@@ -20,6 +20,7 @@ import { NewTagIcon } from "../basic-lib";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
+import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 type StyledProps = {
   custom: { chg: UpColor };
@@ -67,7 +68,7 @@ export const TradeTitle = <I extends object>({
       ? FloatTag.decrease
       : FloatTag.increase;
   const { currency, upColor } = useSettings();
-
+  const { account } = useAccount();
   const close: any = tradeFloat.close;
 
   const value =
@@ -224,7 +225,7 @@ export const TradeTitle = <I extends object>({
                         const current_event_date = `${year}-${month}-${day}`;
 
                         history.push(
-                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account.accAddress}`
                         );
                       }}
                     >
@@ -251,7 +252,7 @@ export const TradeTitle = <I extends object>({
                       history.push(
                         `/race-event/${current_event_date}?pair=${pair}&type=${
                           activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                        }`
+                        }&owner=${account.accAddress}`
                       );
                     }}
                   >
