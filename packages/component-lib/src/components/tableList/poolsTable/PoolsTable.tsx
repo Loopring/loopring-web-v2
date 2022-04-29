@@ -11,6 +11,7 @@ import {
   TableProps,
 } from "../../basic-lib";
 import {
+  Account,
   AmmDetail,
   AmmRankIcon,
   AvatarCoinStyled,
@@ -29,7 +30,6 @@ import { Currency } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
-import { useAccount } from "@loopring-web/webapp/src/stores/account";
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
@@ -61,9 +61,11 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 export const IconColumn = React.memo(
   <R extends AmmDetail<T>, T>({
     row,
+    account,
     activityInProgressRules,
   }: {
     row: R;
+    account: Account;
     activityInProgressRules?: ActivityRulesMap;
   }) => {
     const history = useHistory();
@@ -71,7 +73,6 @@ export const IconColumn = React.memo(
     if (!row || !row.coinAInfo || !row.coinBInfo) {
       return <BoxStyled />;
     }
-    const { account } = useAccount();
     const { coinAInfo, coinBInfo, isNew } = row;
     const coinAIcon: any = coinJson[coinAInfo?.simpleName];
     const coinBIcon: any = coinJson[coinBInfo?.simpleName];
@@ -226,8 +227,9 @@ export const IconColumn = React.memo(
       </BoxStyled>
     );
   }
-) as <R extends AmmDetail<T>, T>(props: {
+) as unknown as <R extends AmmDetail<T>, T>(props: {
   row: R;
+  account: Account;
   activityInProgressRules?: ActivityRulesMap;
 }) => JSX.Element;
 
@@ -243,6 +245,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
     wait = globalSetup.wait,
     tableHeight = 350,
     coinJson,
+    account,
     forex,
     tokenPrices,
     showLoading,
@@ -274,6 +277,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             >
               <IconColumn
                 row={row as any}
+                account={account}
                 activityInProgressRules={activityInProgressRules}
               />
             </Box>
@@ -578,6 +582,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               display={"flex"}
             >
               <IconColumn
+                account={account}
                 row={row as any}
                 activityInProgressRules={activityInProgressRules}
               />

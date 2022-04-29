@@ -16,6 +16,7 @@ import { withRouter, useHistory, useLocation } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import React from "react";
 import { useSystem } from "../../stores/system";
+import { useAccount } from "../../stores/account";
 
 const Header = withTranslation("common")(
   withRouter(
@@ -36,12 +37,13 @@ const Header = withTranslation("common")(
       const { pathname } = useLocation();
       const { confirmWrapper } = useConfirmation();
       const { allowTrade } = useSystem();
-
+      const { account } = useAccount();
       return (
         <>
           {isHideOnScroll ? (
             <HideOnScroll window={undefined}>
               <HeaderUI
+                account={account}
                 isWrap={isLandPage}
                 {...rest}
                 isLandPage={isLandPage}
@@ -62,6 +64,7 @@ const Header = withTranslation("common")(
           ) : (
             <HeaderUI
               {...rest}
+              account={account}
               allowTrade={allowTrade}
               isMobile={isMobile}
               headerMenuData={

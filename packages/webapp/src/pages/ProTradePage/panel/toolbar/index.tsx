@@ -377,6 +377,7 @@ export const Toolbar = withTranslation("common")(
                 <TableProWrapStyled width={isMobile ? "360px" : "580px"}>
                   <QuoteTable
                     isPro
+                    account={account}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}

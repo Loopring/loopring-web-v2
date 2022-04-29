@@ -3,6 +3,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
+  Account,
   AmmRankIcon,
   EmptyValueTag,
   FloatTag,
@@ -20,7 +21,6 @@ import { useDispatch } from "react-redux";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
 import React from "react";
-import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -132,6 +132,7 @@ export interface QuoteTableProps {
     row: QuoteTableRawDataItem,
     column: any
   ) => void;
+  account: Account;
   favoriteMarket: string[];
   addFavoriteMarket: (pair: string) => void;
   removeFavoriteMarket: (pair: string) => void;
@@ -161,12 +162,12 @@ export const QuoteTable = withTranslation("tables")(
       addFavoriteMarket,
       removeFavoriteMarket,
       showLoading,
+      account,
       isPro = false,
       activityInProgressRules,
       ...rest
     }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
       let userSettings = useSettings();
-      const { account } = useAccount();
       const upColor = userSettings?.upColor;
       const { currency, isMobile } = userSettings;
       const getColumnMode = (

@@ -28,12 +28,12 @@ import {
   HeaderMenuTabStatus,
   SoursURL,
   ToolBarAvailableItem,
-  ThemeType,
   MenuIcon,
   LoopringLogoIcon,
   subMenuLayer2,
   headerMenuLandingData,
   AccountStatus,
+  subMenuNFT,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -42,12 +42,10 @@ import {
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
-import { useSettings } from "../../stores";
 import { bindPopper } from "material-ui-popup-state/es";
 import { bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
 import { useTheme } from "@emotion/react";
 import _ from "lodash";
-import { useAccount } from "@loopring-web/webapp/src/stores/account";
 
 const ButtonStyled = styled(Button)`
   background: linear-gradient(94.92deg, #4169ff 0.91%, #a016c2 103.55%);
@@ -214,6 +212,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         notification,
         allowTrade,
         selected,
+        account,
         isWrap = true,
         isLandPage = false,
         isMobile = false,
@@ -223,11 +222,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       }: HeaderProps & WithTranslation,
       ref: React.ForwardedRef<any>
     ) => {
-      const { themeMode, setTheme } = useSettings();
       const history = useHistory();
       const theme = useTheme();
       const location = useLocation();
-      const { account } = useAccount();
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -294,9 +291,8 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             }}
           />
         ),
-        [allowTrade, selected, isMobile]
+        [allowTrade, isMobile, selected]
       );
-
       const getDrawerChoices: any = React.useCallback(
         ({
           menuList,
@@ -341,7 +337,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       } else {
                         if (
                           child &&
-                          (account.readyState === AccountStatus.ACTIVATED ||
+                          (account?.readyState === AccountStatus.ACTIVATED ||
                             label.id !== "Layer2")
                         ) {
                           return [
@@ -392,12 +388,12 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [selected, memoized, allowTrade, account.readyState]
+        [isMobile, selected, account?.readyState, allowTrade, memoized]
       );
 
-      const handleThemeClick = React.useCallback(() => {
-        setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
-      }, [themeMode, setTheme]);
+      // const handleThemeClick = React.useCallback(() => {
+      //   setTheme(themeMode === "light" ? ThemeType.dark : ThemeType.light);
+      // }, [themeMode, setTheme]);
 
       const isMaintaining = false;
 
@@ -464,10 +460,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         i18n,
         t,
         rest,
-        location.pathname,
-        notification,
-        handleThemeClick,
-        themeMode,
         isMaintaining,
         getMenuButtons,
         headerToolBarData,
@@ -478,11 +470,17 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         popupId: "mobile",
       });
       const displayMobile = React.useMemo(() => {
-        const _headerMenuData = _.cloneDeep(headerMenuData);
-        let item = _headerMenuData.find((item) => item.label.id === "Layer2");
-        if (item) {
-          item.child = { ...subMenuLayer2 };
-        }
+        const _headerMenuData: HeaderMenuItemInterface[] =
+          headerMenuData.reduce((prev, _item) => {
+            const item = _.cloneDeep(_item);
+            if (item.label.id === "Layer2") {
+              item.child = { ...subMenuLayer2 };
+            } else if (item.label.id === "NFT") {
+              item.child = { ...subMenuNFT };
+            }
+            return [...prev, item];
+          }, [] as HeaderMenuItemInterface[]);
+
         return (
           <ToolBarStyled>
             <Box
@@ -618,9 +616,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         isLandPage,
         location.pathname,
         t,
-        notification,
-        handleThemeClick,
-        themeMode,
         isMaintaining,
         getMenuButtons,
         headerToolBarData,
@@ -633,9 +628,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
 
       const paddingStyle = {
         paddingTop: 0,
-        paddingRight: isLandPage ? theme.unit * 1 : theme.unit * 3,
+        paddingRight: isLandPage ? theme.unit : theme.unit * 3,
         paddingBottom: 0,
-        paddingLeft: isLandPage ? theme.unit * 1 : theme.unit * 3,
+        paddingLeft: isLandPage ? theme.unit : theme.unit * 3,
       };
 
       return (
