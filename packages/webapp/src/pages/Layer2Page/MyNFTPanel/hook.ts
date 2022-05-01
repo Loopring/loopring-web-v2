@@ -1,5 +1,7 @@
 import {
   AccountStatus,
+  LOOPRING_NFT_METADATA,
+  LOOPRING_TAKE_NFT_META_KET,
   myLog,
   NFTWholeINFO,
   SagaStatus,
@@ -20,6 +22,7 @@ import { BigNumber } from "bignumber.js";
 import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 import { useAccount } from "stores/account";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {
@@ -64,13 +67,13 @@ export const useMyNFT = () => {
     isCounterFactualNFT,
     deploymentStatus,
     metadata,
-  }: loopring_defs.UserNFTBalanceInfo): Promise<any> => {
+  }: loopring_defs.UserNFTBalanceInfo): Promise<LOOPRING_NFT_METADATA | {}> => {
     if (!!metadata?.imageSize?.original) {
       return Promise.resolve({});
     } else if (
       LoopringAPI.nftAPI &&
       tokenAddress &&
-      (!metadata?.imageSize?.original ||
+      (!metadata?.uri ||
         tokenAddress.toLowerCase() ==
           "0x1cACC96e5F01e2849E6036F25531A9A064D2FB5f".toLowerCase()) &&
       nftId &&
@@ -88,6 +91,19 @@ export const useMyNFT = () => {
           nftId,
           web3: connectProvides.usedWeb3,
           tokenAddress,
+        })
+        .then((response) => {
+          if ((response as sdk.RESULT_INFO).code) {
+            console.log("Contract NFTMeta error:", response);
+            return {};
+          } else {
+            return Reflect.ownKeys(LOOPRING_TAKE_NFT_META_KET).reduce(
+              (prev, key) => {
+                return { ...prev, [key]: response[key] };
+              },
+              {} as LOOPRING_NFT_METADATA
+            );
+          }
         })
         .catch((error) => {
           return {};
@@ -134,11 +150,13 @@ export const useMyNFT = () => {
         : 0,
     };
     if (!tokenInfo.name) {
-      const meta = await getMetaFromContractORIpfs(tokenInfo);
-      if (meta && (meta.name || meta.image)) {
+      const meta = (await getMetaFromContractORIpfs(
+        tokenInfo
+      )) as LOOPRING_NFT_METADATA;
+      if (meta && meta !== {} && (meta.name || meta.image)) {
         tokenInfo = {
           ...tokenInfo,
-          ...meta,
+          ...(meta as any),
           isFailedLoadMeta: false,
         };
       } else {

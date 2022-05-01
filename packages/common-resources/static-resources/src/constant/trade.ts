@@ -94,3 +94,13 @@ export const EmptyValueTag = "--";
 
 export const IPFS_META_URL = "ipfs://";
 export const MINT_LIMIT = 10000;
+export const LOOPRING_TAKE_NFT_META_KET = {
+  name: "name",
+  image: "image",
+  royaltyPercentage: "royaltyPercentage",
+  description: "description",
+  properties: "properties",
+};
+export type LOOPRING_NFT_METADATA = {
+  [key in keyof typeof LOOPRING_TAKE_NFT_META_KET]?: string | undefined;
+};
