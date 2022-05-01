@@ -126,3 +126,13 @@ export const MINT_LIMIT = 100000;
 export const PROPERTY_LIMIT = 5;
 export const PROPERTY_KET_LIMIT = 20;
 export const PROPERTY_Value_LIMIT = 40;
+export const LOOPRING_TAKE_NFT_META_KET = {
+  name: "name",
+  image: "image",
+  royaltyPercentage: "royaltyPercentage",
+  description: "description",
+  properties: "properties",
+};
+export type LOOPRING_NFT_METADATA = {
+  [key in keyof typeof LOOPRING_TAKE_NFT_META_KET]?: string | undefined;
+};
