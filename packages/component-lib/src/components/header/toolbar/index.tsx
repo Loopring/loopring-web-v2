@@ -1,5 +1,6 @@
 import { Box, IconButton, Link } from "@mui/material";
 import {
+  Account,
   DownloadIcon,
   NotificationIcon,
   Notify,
@@ -66,7 +67,13 @@ export const BtnDownload = ({
   );
 };
 
-export const BtnNotification = ({ notification }: { notification: Notify }) => {
+export const BtnNotification = ({
+  notification,
+  account,
+}: {
+  notification: Notify;
+  account: Account;
+}) => {
   const popupState = usePopupState({
     variant: "popover",
     popupId: "notificationPop",
@@ -87,7 +94,7 @@ export const BtnNotification = ({ notification }: { notification: Notify }) => {
           horizontal: "center",
         }}
       >
-        <NotificationPanel notification={notification} />
+        <NotificationPanel notification={{ ...notification, account }} />
       </PopoverPure>
     </Box>
   );

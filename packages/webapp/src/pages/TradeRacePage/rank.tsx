@@ -3,7 +3,7 @@ import React from "react";
 import { LoopringAPI } from "../../api_wrapper";
 import { getTokenNameFromTokenId, volumeToCount } from "../../hooks/help";
 import {
-  AccountStatus,
+  // AccountStatus,
   DropDownIcon,
   getShortAddr,
   getValuePrecisionThousand,
@@ -11,7 +11,7 @@ import {
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { Box, Button, MenuItem, Typography } from "@mui/material";
+import { Box, Link, MenuItem, Typography } from "@mui/material";
 import {
   Column,
   InputSearch,
@@ -19,15 +19,15 @@ import {
   TablePaddingX,
   TextField,
   TradeRaceTable,
+  useSettings,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
-import { useAccount } from "../../stores/account";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { useSystem } from "../../stores/system";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useSystem } from "stores/system";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { EventAPI } from "./interface";
-import store from "../../stores";
+import store from "stores";
 
 const TableWrapperStyled = styled(Box)`
   background-color: var(--color-box);
@@ -64,7 +64,13 @@ export const Rank = ({
   pair: MarketType | "";
 }) => {
   const { t } = useTranslation();
-  const { account } = useAccount();
+  const { search } = useLocation();
+  const { isMobile } = useSettings();
+  const searchParams = new URLSearchParams(search);
+  const account = {
+    owner: searchParams.get("owner") ?? "",
+    accountId: searchParams.get("accountId"),
+  };
   const history = useHistory();
   const [rewardToken, setRewardToken] = React.useState("");
   const [currPairUserRank, setCurrPairUserRank] =
@@ -113,15 +119,13 @@ export const Rank = ({
 
   const getAmmGameUserRank = React.useCallback(
     async (market: string) => {
-      if (LoopringAPI && LoopringAPI.ammpoolAPI) {
-        const { userRank } =
-          await LoopringAPI.ammpoolAPI.getAmmPoolGameUserRank(
-            {
-              ammPoolMarket: market,
-              owner: account.accAddress,
-            },
-            account.apiKey
-          );
+      if (LoopringAPI && LoopringAPI.globalAPI && !!account.owner) {
+        const { userRank } = await LoopringAPI.globalAPI.getAmmPoolGameUserRank(
+          {
+            ammPoolMarket: market,
+            owner: account.owner,
+          }
+        );
         setCurrPairUserRank(
           userRank || {
             address: "",
@@ -132,7 +136,7 @@ export const Rank = ({
         );
       }
     },
-    [account.accAddress, account.apiKey]
+    [account.owner]
   );
   React.useEffect(() => {
     if (pair) {
@@ -140,10 +144,10 @@ export const Rank = ({
     }
   }, [getAmmGameRank, pair]);
   React.useEffect(() => {
-    if (pair && account.readyState === AccountStatus.ACTIVATED) {
+    if (pair && account.owner) {
       getAmmGameUserRank(pair);
     }
-  }, [pair, account.readyState, getAmmGameUserRank]);
+  }, [account.owner, pair]);
 
   return (
     <>
@@ -156,7 +160,7 @@ export const Rank = ({
       >
         <TableWrapperStyled paddingY={3} position={"relative"}>
           <Typography
-            variant={"h2"}
+            variant={isMobile ? "h4" : "h2"}
             color={"var(--color-text-secondary)"}
             textAlign={"center"}
             marginBottom={1}
@@ -184,8 +188,13 @@ export const Rank = ({
               ))}
             </StyledTextFiled>
           </BoxSelect>
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Typography fontSize={16} marginRight={2}>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            flexDirection={isMobile ? "column" : "row"}
+          >
+            <Typography variant={"h5"} marginRight={2}>
               {t("labelTradeRaceYourVolume")} ({volumeToken}):
               {currPairUserRank.volume
                 ? getValuePrecisionThousand(
@@ -193,16 +202,17 @@ export const Rank = ({
                   )
                 : "--"}
             </Typography>
-            <Typography fontSize={16}>
+            <Typography variant={"h5"}>
               {t("labelTradeRaceYourRanking")}: {currPairUserRank.rank || "--"}
             </Typography>
-            <Button
-              style={{ fontSize: 16 }}
-              variant={"text"}
-              onClick={() => history.push(`/trade/lite/${pair}`)}
+            <Link
+              variant={"h5"}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`/trade/lite/${pair}`}
             >
               {t("labelTradeRaceGoTrading")} &gt;&gt;
-            </Button>
+            </Link>
           </Box>
           <TradeRaceTable
             {...{
@@ -319,7 +329,24 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       : [],
     generateRows: (rawData: R) => rawData,
     generateColumns: ({ columnsRaw }: any) =>
-      columnsRaw as Column<any, unknown>[],
+      [
+        {
+          key: "No.",
+          name: "No.",
+          width: "auto",
+          headerCellClass: `textAlignCenter`,
+          cellClass: "rdg-cell-value textAlignCenter",
+          formatter: ({ row, column, rowIdx }: any) => {
+            return rowIdx + 1;
+            // if (column.key.toLowerCase() === "address") {
+            //   return getShortAddr(row[column.key]);
+            // } else {
+            //   return row[column.key];
+            // }
+          },
+        },
+        ...columnsRaw,
+      ] as Column<any, unknown>[],
   };
   React.useEffect(() => {
     getTableValues();

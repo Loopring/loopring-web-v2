@@ -29,7 +29,7 @@ import {
 import { useAccount } from "stores/account";
 import { HeaderHeight } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useTokenMap } from "../../../../stores/token";
+import { useTokenMap } from "stores/token";
 import {
   volumeToCount,
   volumeToCountAsBigNumber,

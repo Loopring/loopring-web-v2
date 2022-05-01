@@ -19,6 +19,7 @@ import {
 } from "../../basic-lib";
 import { Column, Table } from "../../basic-lib/";
 import {
+  Account,
   AvatarCoinStyled,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -108,6 +109,7 @@ const columnMode = (
   }: WithTranslation & Method<Row<any>>,
   currency: Currency,
   getPopoverState: any,
+  account: Account,
   coinJson: any
 ): Column<Row<any>, unknown>[] => [
   {
@@ -124,7 +126,7 @@ const columnMode = (
           alignContent={"flex-start"}
           justifyContent={"center"}
         >
-          <IconColumn row={row.ammDetail as any} />
+          <IconColumn account={account} row={row.ammDetail as any} />
         </PoolStyle>
       );
     },
@@ -479,6 +481,7 @@ const columnModeMobile = (
   }: WithTranslation & Method<Row<any>>,
   currency: Currency,
   getPopoverState: any,
+  _account: Account,
   coinJson: any
 ): Column<Row<any>, unknown>[] => [
   {
@@ -806,6 +809,7 @@ export const MyPoolTable = withTranslation("tables")(
     pagination,
     showFilter = true,
     rawData,
+    account,
     handleWithdraw,
     handleDeposit,
     wait = globalSetup.wait,
@@ -836,6 +840,7 @@ export const MyPoolTable = withTranslation("tables")(
             },
             currency,
             getPopoverState,
+            account,
             coinJson
           )
         : columnMode(
@@ -849,6 +854,7 @@ export const MyPoolTable = withTranslation("tables")(
             },
             currency,
             getPopoverState,
+            account,
             coinJson
           ),
       generateRows: (rawData: any) => rawData,

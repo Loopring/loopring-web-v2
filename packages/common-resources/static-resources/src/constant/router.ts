@@ -10,6 +10,7 @@ import {
   VipIcon,
   WaitApproveIcon,
 } from "../svg";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 import {
   HeaderMenuItemInterface,
@@ -241,7 +242,10 @@ export const subMenuGuardian = {
     },
   ],
 };
-
+export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
+export const LoopringIPFSSiteProtocol = "https";
 export const headerRoot = "Landing-page";
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const SoursURL = "https://static.loopring.io/assets/";
+export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
+export const IPFS_LOOPRING_SITE = sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;

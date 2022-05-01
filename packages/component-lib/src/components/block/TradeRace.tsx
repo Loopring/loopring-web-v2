@@ -65,6 +65,7 @@ export const TradeRacePanel = ({
   rawData: TradeRaceRow[];
 }) => {
   const { t } = useTranslation(["tables"]);
+
   const getColumnMode = React.useCallback(
     (): Column<any, unknown>[] => [
       {

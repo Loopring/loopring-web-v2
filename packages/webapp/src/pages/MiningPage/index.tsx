@@ -12,7 +12,6 @@ import {
   AmmInData,
   AmmExitData,
   IBData,
-  myLog,
 } from "@loopring-web/common-resources";
 import { Box, Grid, Typography, Modal } from "@mui/material";
 import styled from "@emotion/styled";
@@ -22,6 +21,7 @@ import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { getMiningLinkList } from "@loopring-web/common-resources";
 import store from "stores";
 import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
+import { useAccount } from "../../stores/account";
 
 export enum MiningJumpType {
   orderbook = "orderbook",
@@ -44,7 +44,7 @@ const ContentWrapperStyled = styled(Box)`
   // height: 60%;
   max-height: ${({ theme }) => theme.unit * 30}px;
   background-color: var(--color-box);
-  box-shadow: 0px ${({ theme }) => theme.unit / 2}px
+  box-shadow: 0 ${({ theme }) => theme.unit / 2}px
     ${({ theme }) => theme.unit / 2}px rgba(0, 0, 0, 0.25);
   // padding: 0 ${({ theme }) => theme.unit * 1}px;
   border-radius: ${({ theme }) => theme.unit / 2}px;
@@ -73,6 +73,7 @@ const AmmCardWrap = React.memo(
     ) => {
       const pair = `${props.coinAInfo?.simpleName}-${props.coinBInfo?.simpleName}`;
       const { ruleType } = props.activity;
+      const { account } = useAccount();
       const type =
         ruleType === "ORDERBOOK_MINING"
           ? MiningJumpType.orderbook
@@ -91,6 +92,7 @@ const AmmCardWrap = React.memo(
             setChosenCardInfo,
             ammInfo,
           }}
+          account={account}
           handleClick={() => props.handleClick(pair, type)}
         />
       ) : (

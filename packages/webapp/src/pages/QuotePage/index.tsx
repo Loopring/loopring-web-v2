@@ -12,6 +12,7 @@ import { RowConfig } from "@loopring-web/common-resources";
 import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
 import { TableWrapStyled } from "pages/styled";
+import { useAccount } from "stores/account";
 
 const RowStyled = styled(Grid)`
   & .MuiGrid-root:not(:last-of-type) > div {
@@ -28,7 +29,7 @@ export enum TableFilterParams {
 export const QuotePage = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const tableRef = React.useRef<HTMLDivElement>();
-
+    const { account } = useAccount();
     const {
       recommendations,
       formattedRecommendations,
@@ -152,6 +153,7 @@ export const QuotePage = withTranslation("common")(
               onRowClick={(index: any, row: any, col: any) =>
                 handleRowClick(row)
               }
+              account={account}
               rawData={filteredData}
               favoriteMarket={favoriteMarket}
               addFavoriteMarket={addMarket}
