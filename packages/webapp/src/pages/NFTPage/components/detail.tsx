@@ -1,10 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Link,
-  TextareaAutosize,
-  Typography,
-} from "@mui/material";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   Explorer,
@@ -26,6 +20,7 @@ import {
   WithdrawPanel,
   TextareaAutosizeStyled,
 } from "@loopring-web/component-lib";
+
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
@@ -34,11 +29,7 @@ import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
 import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
-import {
-  DEPLOYMENT_STATUS,
-  LOOPRING_URLs,
-  NFTType,
-} from "@loopring-web/loopring-sdk";
+import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
 import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
 import { useAccount } from "../../../stores/account";
 
@@ -331,7 +322,7 @@ export const NFTDetail = withTranslation("common")(
                   aria-label="NFT Description"
                   minRows={5}
                   disabled={true}
-                  value={popItem.description ?? EmptyValueTag}
+                  value={`${popItem.description}` ?? EmptyValueTag}
                 />
               </Box>
             </Typography>

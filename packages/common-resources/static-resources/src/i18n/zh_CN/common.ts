@@ -610,6 +610,8 @@ export default {
   labelMintName: "Name <1>*</1>",
   labelMintCollection: "Collection (coming soon)",
   labelMintRoyaltyPercentage: "Royalty Percentage <1>*</1>",
+  labelMintRoyaltyPercentageTooltips:
+    "Represents the percentage to be received from each subsequent resale (max 10%)",
   labelMintDescription: "Description",
   labelMintNFT: "Create NFT",
   labelDepositNFT: "Deposit NFT",

@@ -14,7 +14,6 @@ import { BasicANFTTradeProps } from "./Interface";
 import { InputCoin, InputSize } from "../../basic-lib";
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { LOOPRING_URLs } from "@loopring-web/loopring-sdk";
 
 const BoxInput = styled(Box)`
   & .main-label {
@@ -147,7 +146,11 @@ export const NFTInput = React.memo(
                 className={"main-label"}
                 paddingBottom={1 / 2}
               >
-                {t(inputNFTDefaultProps?.label ?? "labelNFTTitle")}
+                {t(
+                  typeof inputNFTDefaultProps?.label === "string"
+                    ? inputNFTDefaultProps?.label
+                    : "labelNFTTitle"
+                )}
               </Typography>
               <Box
                 display={"flex"}

@@ -1,8 +1,17 @@
 import { NFTMetaBlockProps } from "./Interface";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { Box, FormLabel, Grid, GridProps, Typography } from "@mui/material";
 import {
+  Box,
+  FormLabel,
+  Grid,
+  GridProps,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  CoinInfo,
+  CoinMap,
   FeeInfo,
   MintTradeNFT,
   myLog,
@@ -13,6 +22,7 @@ import {
   InputSize,
   TextField,
   TextareaAutosizeStyled,
+  InputCoin,
 } from "../../basic-lib";
 
 import { TradeBtnStatus } from "../Interface";
@@ -28,6 +38,11 @@ const GridStyle = styled(Grid)<GridProps & { isMobile: boolean }>`
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
   }
+  .main-label,
+  .sub-label {
+    color: var(--color-text-secondary);
+    font-size: ${({ theme }) => theme.fontDefault.body2};
+  }
 ` as (props: GridProps & { isMobile: boolean }) => JSX.Element;
 
 export const MintNFTBlock = <
@@ -40,7 +55,6 @@ export const MintNFTBlock = <
   mintData,
   btnInfo,
   nftMetaBtnStatus,
-  amountHandleError,
   handleOnMetaChange,
   handleMintDataChange,
   onMetaClick,
@@ -59,6 +73,7 @@ export const MintNFTBlock = <
     },
     [handleMintDataChange]
   );
+  // @ts-ignore
   return (
     <Box
       flex={1}
@@ -103,9 +118,17 @@ export const MintNFTBlock = <
             select
             disabled={true}
             label={
-              <Trans i18nKey={"labelMintCollection"}>
-                Collection( "coming soon")
-              </Trans>
+              <Tooltip
+                title={t("labelMintCollectionTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography variant={"inherit"}>
+                  <Trans i18nKey={"labelMintCollection"}>
+                    Collection( "coming soon")
+                    <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                  </Trans>
+                </Typography>
+              </Tooltip>
             }
             type={"text"}
           >
@@ -115,27 +138,85 @@ export const MintNFTBlock = <
           </TextField>
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            label={
-              <Trans i18nKey={"labelMintRoyaltyPercentage"}>
-                Royalty Percentage
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"error"}
-                >
-                  {"\uFE61"}
-                </Typography>
-              </Trans>
-            }
-            inputProps={{ inputMode: "numeric", pattern: "[0-9]|10" }}
-            value={nftMeta.royaltyPercentage}
-            fullWidth
-            onChange={(event) =>
+          {/*<TextField*/}
+          {/*  sx={{ paddingTop: 1 / 2 }}*/}
+          {/*  label={*/}
+
+          {/*  }*/}
+          {/*  inputProps={{*/}
+          {/*    inputMode: "numeric",*/}
+          {/*    pattern: "10|[0-9 ]",*/}
+          {/*    startAdornment: <InputAdornment position="end">%</InputAdornment>,*/}
+          {/*  }}*/}
+          {/*  value={nftMeta.royaltyPercentage}*/}
+          {/*  fullWidth*/}
+          {/*  onChange={(event) =>*/}
+
+          {/*  }*/}
+          {/*/>*/}
+          <InputCoin
+            handleCountChange={(data) =>
               handleOnMetaChange({
-                royaltyPercentage: event.target.value,
+                royaltyPercentage: data.tradeValue,
               } as unknown as Partial<T>)
             }
+            {...{
+              maxAllow: true,
+              placeholderText: "0",
+              allowDecimals: false,
+              handleError: (data) => {
+                if (data.tradeValue && data.tradeValue > data.balance) {
+                  return {
+                    error: true,
+                    // message: `Not enough ${belong} perform a deposit`,
+                  };
+                }
+                return {
+                  error: false,
+                };
+              },
+              // size = InputSize.middle,
+              isHideError: true,
+              isShowCoinInfo: false,
+              isShowCoinIcon: false,
+              order: "right",
+              noBalance: "0",
+              coinPrecision: 0,
+              subLabel: t("labelMintRoyaltyPercentageRange"),
+              label: (
+                <Tooltip
+                  title={t("labelMintRoyaltyPercentageTooltips").toString()}
+                  placement={"top"}
+                >
+                  <Typography component={"span"} variant={"inherit"}>
+                    <Trans i18nKey={"labelMintRoyaltyPercentage"}>
+                      Royalty(%)
+                      <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                    </Trans>
+                  </Typography>
+                  {/*<Typography*/}
+                  {/*  // component={"span"}*/}
+                  {/*  variant={"inherit"}*/}
+                  {/*  // display={"flex"}*/}
+                  {/*  // lineHeight={1.5}*/}
+                  {/*  // justifyContent={"space-between"}*/}
+                  {/*>*/}
+                  {/* */}
+                  {/*  /!*<Typography component={"span"} variant={"inherit"}>*!/*/}
+                  {/*  /!*  {t("labelMintRoyaltyPercentageRange")}*!/*/}
+                  {/*  /!*</Typography>*!/*/}
+                  {/*</Typography>*/}
+                </Tooltip>
+              ),
+              size: InputSize.small,
+              inputData: {
+                balance: 10,
+                tradeValue: nftMeta.royaltyPercentage,
+                belong: "royaltyPercentage" as any,
+              },
+
+              coinMap: {} as CoinMap<I, CoinInfo<I>>,
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -146,6 +227,7 @@ export const MintNFTBlock = <
             inputNFTDefaultProps={{
               subLabel: t("tokenNFTMaxMINT"),
               size: InputSize.small,
+              isHideError: false,
               label: (
                 <Trans i18nKey={"labelNFTMintInputTitle"}>
                   Amount
@@ -167,11 +249,22 @@ export const MintNFTBlock = <
                 ...data.tradeData,
               } as unknown as Partial<I>)
             }
-            handleError={(data: I, ref) => {
-              if (amountHandleError) {
-                amountHandleError(data, ref);
+            handleError={(data) => {
+              if (!data.tradeValue || data.tradeValue > data.balance) {
+                return {
+                  error: true,
+                  // message: `Not enough ${belong} perform a deposit`,
+                };
               }
+              return {
+                error: false,
+              };
             }}
+            // handleError={(data: I, ref) => {
+            //   if (amountHandleError) {
+            //     amountHandleError(data, ref);
+            //   }
+            // }}
             tradeData={
               {
                 ...mintData,
@@ -190,9 +283,21 @@ export const MintNFTBlock = <
         </Grid>
         <Grid item xs={12} md={12} flex={1}>
           <FormLabel>
-            <Typography variant={"body2"} lineHeight={"20px"}>
-              <Trans i18nKey={"labelMintDescription"}>Description</Trans>
-            </Typography>
+            <Tooltip
+              title={t("labelMintDescriptionTooltips").toString()}
+              placement={"top"}
+            >
+              <Typography
+                variant={"body2"}
+                component={"span"}
+                lineHeight={"20px"}
+              >
+                <Trans i18nKey={"labelMintDescription"}>
+                  Description
+                  <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                </Trans>
+              </Typography>
+            </Tooltip>
           </FormLabel>
           <TextareaAutosizeStyled
             aria-label="NFT Description"
@@ -207,9 +312,21 @@ export const MintNFTBlock = <
         </Grid>
         <Grid item xs={12} md={12}>
           <FormLabel>
-            <Typography variant={"body2"} lineHeight={"20px"}>
-              <Trans i18nKey={"labelMintProperty"}>Properties</Trans>
-            </Typography>
+            <Tooltip
+              title={t("labelMintPropertyTooltips").toString()}
+              placement={"top"}
+            >
+              <Typography
+                component={"span"}
+                variant={"body2"}
+                lineHeight={"20px"}
+              >
+                <Trans i18nKey={"labelMintProperty"}>
+                  Properties
+                  <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                </Trans>
+              </Typography>
+            </Tooltip>
           </FormLabel>
           <Box marginTop={1}>
             <Properties

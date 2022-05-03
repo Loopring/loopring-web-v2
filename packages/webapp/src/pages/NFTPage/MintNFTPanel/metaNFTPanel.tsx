@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, FormLabel, Grid, Typography } from "@mui/material";
+import { Box, FormLabel, Grid, Tooltip, Typography } from "@mui/material";
 import {
   DropdownIconStyled,
   FeeTokenItemWrapper,
@@ -61,13 +61,6 @@ export const MetaNFTPanel = <
   const { t } = useTranslation("common");
   const [dropdownErrorStatus, setDropdownErrorStatus] =
     React.useState<"up" | "down">("down");
-  const [dropdownStatus, setDropdownStatus] =
-    React.useState<"up" | "down">("down");
-  const handleToggleChange = (value: C) => {
-    if (handleFeeChange) {
-      handleFeeChange(value);
-    }
-  };
 
   return (
     <StyleWrapper
@@ -107,81 +100,6 @@ export const MetaNFTPanel = <
             onChange={onFilesLoad}
             onDelete={onDelete}
           />
-
-          <Box marginTop={1}>
-            {!chargeFeeTokenList?.length ? (
-              <Typography>{t("labelFeeCalculating")}</Typography>
-            ) : (
-              <>
-                <Typography
-                  component={"span"}
-                  display={"flex"}
-                  flexWrap={"wrap"}
-                  alignItems={"center"}
-                  variant={"body2"}
-                  color={"var(--color-text-secondary)"}
-                  marginBottom={1}
-                >
-                  <FormLabel>
-                    <Typography variant={"body2"} lineHeight={"20px"}>
-                      <Trans i18nKey={"labelMINTNFTFee"}>
-                        Fee
-                        <Typography
-                          component={"span"}
-                          variant={"inherit"}
-                          color={"error"}
-                        >
-                          {"\uFE61"}
-                        </Typography>
-                      </Trans>
-                    </Typography>
-                  </FormLabel>
-                  <Box
-                    component={"span"}
-                    display={"flex"}
-                    alignItems={"center"}
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      setDropdownStatus((prev) =>
-                        prev === "up" ? "down" : "up"
-                      )
-                    }
-                  >
-                    {feeInfo && feeInfo.belong && feeInfo.fee
-                      ? feeInfo.fee + " " + feeInfo.belong
-                      : EmptyValueTag + " " + feeInfo?.belong}
-                    <DropdownIconStyled
-                      status={dropdownStatus}
-                      fontSize={"medium"}
-                    />
-                    <Typography
-                      marginLeft={1}
-                      component={"span"}
-                      color={"var(--color-error)"}
-                    >
-                      {isFeeNotEnough && t("transferLabelFeeNotEnough")}
-                    </Typography>
-                  </Box>
-                </Typography>
-                {dropdownStatus === "up" && (
-                  <FeeTokenItemWrapper padding={2}>
-                    <Typography
-                      variant={"body2"}
-                      color={"var(--color-text-third)"}
-                      marginBottom={1}
-                    >
-                      {t("transferLabelFeeChoose")}
-                    </Typography>
-                    <FeeToggle
-                      chargeFeeTokenList={chargeFeeTokenList as C[]}
-                      handleToggleChange={handleToggleChange}
-                      feeInfo={feeInfo as C}
-                    />
-                  </FeeTokenItemWrapper>
-                )}
-              </>
-            )}
-          </Box>
         </Grid>
         <Grid item xs={12} md={7} flex={1} display={"flex"}>
           <MintNFTBlock

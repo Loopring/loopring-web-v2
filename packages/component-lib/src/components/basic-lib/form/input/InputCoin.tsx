@@ -239,7 +239,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               disabled={!(!disabled || belong)}
               placeholder={placeholderText}
               aria-placeholder={placeholderText}
-              aria-label={label}
+              aria-label={typeof label === "string" ? label : ""}
             />
             <label />
           </Grid>

@@ -9,18 +9,14 @@ import {
   NFTMETA,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import {
-  initialMintNFT,
-  initialNFTMETA,
-  NFT_MINT_VALUE,
-  useModalData,
-} from "../../stores/router";
+import { NFT_MINT_VALUE, useModalData } from "../../stores/router";
 import { IpfsFile, NFTMetaProps } from "@loopring-web/component-lib";
 import { useChargeFees } from "../../hooks/common/useChargeFees";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useBtnStatus } from "../../hooks/common/useBtnStatus";
 import { ipfsService, useIPFS } from "../ipfs";
 import { AddResult } from "ipfs-core-types/types/src/root";
+import store from "stores";
 
 export function useNFTMeta<T extends NFTMETA>({
   handleTabChange,
@@ -40,7 +36,8 @@ export function useNFTMeta<T extends NFTMETA>({
 
   const handleOnMetaChange = React.useCallback(
     (_newnftMeta: Partial<T>) => {
-      const { nftMETA, mintData } = nftMintValue;
+      const { nftMETA, mintData } =
+        store.getState()._router_modalData.nftMintValue;
       const buildNFTMeta = { ...nftMETA };
       const buildMint = { ...mintData };
       Reflect.ownKeys(_newnftMeta).map((key) => {
@@ -53,13 +50,15 @@ export function useNFTMeta<T extends NFTMETA>({
             break;
           case "royaltyPercentage":
             const value = Number(_newnftMeta.royaltyPercentage);
-            if (
-              Number.isInteger(value) &&
-              [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(value)
-            ) {
-              buildNFTMeta.royaltyPercentage = value;
-              buildMint.royaltyPercentage = value;
-            }
+            buildMint.royaltyPercentage = value;
+            buildNFTMeta.royaltyPercentage = value;
+            // if (
+            //   Number.isInteger(value) &&
+            //   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(value)
+            // ) {
+            //   buildNFTMeta.royaltyPercentage = value;
+            //   buildMint.royaltyPercentage = value;
+            // }
             break;
           case "description":
             buildNFTMeta.description = _newnftMeta.description;
@@ -75,7 +74,7 @@ export function useNFTMeta<T extends NFTMETA>({
       updateNFTMintData({ mintData: buildMint, nftMETA: buildNFTMeta });
       myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
     },
-    [updateNFTMintData, nftMintValue]
+    [updateNFTMintData]
   );
   const handleFailedUpload = React.useCallback(
     (data: { uniqueId: string; error: sdk.RESULT_INFO }) => {

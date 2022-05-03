@@ -263,4 +263,5 @@ export const LoopringIPFSSiteProtocol = "https";
 export const headerRoot = "Landing-page";
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const SoursURL = "https://static.loopring.io/assets/";
-export const IPFS_LOOPRING_SITE = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
+export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
+export const IPFS_LOOPRING_SITE = `${IPFS_LOOPRING_URL}/ipfs/`;

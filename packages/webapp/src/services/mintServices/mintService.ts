@@ -8,10 +8,10 @@ import {
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import { IpfsProvides, ipfsService } from "../ipfs";
-import { LoopringAPI } from "../../api_wrapper";
+import { LoopringAPI } from "api_wrapper";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
-import { resetNFTMintData, updateNFTMintData } from "../../stores/router";
+import { resetNFTMintData, updateNFTMintData } from "stores/router";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum MintCommands {

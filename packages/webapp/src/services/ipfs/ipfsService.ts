@@ -4,7 +4,7 @@ import { IPFSCommands } from "../account/command";
 import {
   CustomError,
   ErrorMap,
-  IPFS_LOOPRING_SITE,
+  IPFS_LOOPRING_URL,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import { AddResult } from "ipfs-core-types/types/src/root";
@@ -18,7 +18,7 @@ export class IpfsProvides {
   async init() {
     try {
       this._ipfs = await create({
-        url: `${IPFS_LOOPRING_SITE}`,
+        url: `${IPFS_LOOPRING_URL}`,
       });
     } catch (error) {
       console.error("IPFSHTTPClient ERROR ON INIT:", error);

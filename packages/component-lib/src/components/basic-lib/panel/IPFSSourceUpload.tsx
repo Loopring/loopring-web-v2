@@ -91,8 +91,6 @@ export const IPFSSourceUpload = ({
 
   const onDropAccepted = React.useCallback(
     (file: File[]) => {
-      // myLog("onDropAccepted", _value);
-      // const ipfsFile: IpfsFile =;
       onChange({
         file: file[0],
         isProcessing: true,
@@ -239,7 +237,8 @@ export const IPFSSourceUpload = ({
                 <Typography
                   variant={"h6"}
                   textAlign="center"
-                  padding={1}
+                  paddingX={2}
+                  paddingBottom={1}
                   {...typographyProps}
                 >
                   {t(title, { types: types })}

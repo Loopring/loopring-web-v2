@@ -62,7 +62,7 @@ export const initialMintNFT: Partial<MintTradeNFT<any>> = {
 export const initialNFTMETA: Partial<NFTMETA> = {
   image: undefined,
   name: undefined,
-  royaltyPercentage: 0,
+  royaltyPercentage: 10,
   description: undefined,
   collection: undefined,
   properties: undefined,

@@ -993,3 +993,22 @@ export const MuiLinearProgress = ({ colorBase }: any) => {
     },
   };
 };
+
+export const MuiTooltip = ({
+  colorBase,
+}: any): { styleOverrides: ComponentsOverrides["MuiTooltip"] } => {
+  return {
+    styleOverrides: {
+      tooltip: {
+        fontSize: fontDefault.body2,
+        color: colorBase.textThird,
+        background: colorBase.popBg,
+        lineHeight: "1.5em",
+      },
+      // root: {
+      //   fontSize: fontDefault.body1,
+      //   color: colorBase.textSecondary,
+      // },
+    },
+  };
+};

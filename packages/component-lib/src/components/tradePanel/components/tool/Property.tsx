@@ -37,12 +37,7 @@ export const Properties = ({
     [handleChange, properties]
   );
   const addItem = React.useCallback(() => {
-    if (
-      properties.length === 0 ||
-      (properties[properties.length - 1] &&
-        !!properties[properties.length - 1].key &&
-        !!properties[properties.length - 1].value)
-    ) {
+    if (properties.length < PROPERTY_LIMIT) {
       let _properties = [...properties, { key: "", value: "" }];
       handleChange(_properties);
     }
@@ -64,23 +59,20 @@ export const Properties = ({
           />
         </Grid>
       ))}
-      {properties[properties.length - 1] &&
-        !!properties[properties.length - 1].key &&
-        !!properties[properties.length - 1].value &&
-        properties.length <= PROPERTY_LIMIT && (
-          <Box paddingTop={1}>
-            <Button
-              startIcon={<AddIcon />}
-              size={"small"}
-              variant={"outlined"}
-              // variant={"contained"}
-              onClick={addItem}
-              title={t("labelPropertyAdd")}
-            >
-              {t("labelPropertyAdd")}
-            </Button>
-          </Box>
-        )}
+      {properties.length < PROPERTY_LIMIT && (
+        <Box paddingTop={1}>
+          <Button
+            startIcon={<AddIcon />}
+            size={"small"}
+            variant={"outlined"}
+            // variant={"contained"}
+            onClick={addItem}
+            title={t("labelPropertyAdd")}
+          >
+            {t("labelPropertyAdd")}
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
