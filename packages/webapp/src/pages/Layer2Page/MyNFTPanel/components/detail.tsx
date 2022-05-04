@@ -14,7 +14,6 @@ import {
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import {
-  account,
   Button,
   DeployNFTWrap,
   InformationForNoMetaNFT,
@@ -39,7 +38,7 @@ import {
   LOOPRING_URLs,
   NFTType,
 } from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../../../stores/account";
+import { useAccount } from "stores/account";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -511,7 +510,6 @@ export const NFTDetail = withTranslation("common")(
                   type: "NFT",
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
-
                   ...{
                     ...nftTransferProps,
                     tradeData: {

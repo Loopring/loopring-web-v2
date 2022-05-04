@@ -4,7 +4,7 @@ import React from "react";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useExportAccountInfo, useResetAccount } from "./hook";
 import { useOpenModals } from "@loopring-web/component-lib";
-import { useAccount } from "../../../stores/account";
+import { useAccount } from "stores/account";
 
 const StyledPaper = styled(Grid)`
   width: 100%;

@@ -1,5 +1,6 @@
 import { WithTranslation } from "react-i18next";
 import {
+  Account,
   AmmRankIcon,
   AvatarCoinStyled,
   CoinInfo,
@@ -30,6 +31,7 @@ const TradeTitleStyled = styled(Box)<StyledProps>`
 
 export const TradeTitle = <I extends object>({
   baseShow,
+  account,
   quoteShow,
   coinAInfo,
   coinBInfo,
@@ -46,6 +48,8 @@ export const TradeTitle = <I extends object>({
   isNew,
   activityInProgressRules,
 }: WithTranslation & {
+  account: Account;
+
   baseShow: string;
   quoteShow: string;
   coinAInfo: CoinInfo<I>;
@@ -67,7 +71,6 @@ export const TradeTitle = <I extends object>({
       ? FloatTag.decrease
       : FloatTag.increase;
   const { currency, upColor } = useSettings();
-
   const close: any = tradeFloat.close;
 
   const value =
@@ -224,7 +227,7 @@ export const TradeTitle = <I extends object>({
                         const current_event_date = `${year}-${month}-${day}`;
 
                         history.push(
-                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}`
+                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account.accAddress}`
                         );
                       }}
                     >
@@ -251,7 +254,7 @@ export const TradeTitle = <I extends object>({
                       history.push(
                         `/race-event/${current_event_date}?pair=${pair}&type=${
                           activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                        }`
+                        }&owner=${account.accAddress}`
                       );
                     }}
                   >
