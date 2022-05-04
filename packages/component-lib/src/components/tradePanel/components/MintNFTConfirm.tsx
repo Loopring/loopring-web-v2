@@ -5,27 +5,25 @@ import { Box, Grid, Typography, Link } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
-  IBData,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   MintTradeNFT,
   myLog,
   NFTMETA,
-  NFTWholeINFO,
   SoursURL,
 } from "@loopring-web/common-resources";
 import {
   Button,
   EmptyDefault,
-  InputSize,
   TextareaAutosizeStyled,
+  Table,
+  Column,
 } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
-import { NFTInput } from "./BasicANFTTrade";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
-import { useSettings } from "stores";
+import { useSettings } from "../../../stores";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -33,6 +31,9 @@ const GridStyle = styled(Grid)`
   }
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
+  }
+  & .rdg {
+    min-height: 60px;
   }
 ` as typeof Grid;
 // const NFT_TYPE: TGItemData[] = [
@@ -51,11 +52,9 @@ export const MintNFTConfirm = <
   C extends FeeInfo
 >({
   disabled,
-  walletMap,
   tradeData: nftMintData,
   metaData,
   btnInfo,
-  handleMintDataChange,
   nftMintBtnStatus,
   isFeeNotEnough,
   handleFeeChange,
@@ -64,17 +63,12 @@ export const MintNFTConfirm = <
   onNFTMintClick,
   mintService,
 }: NFTMintViewProps<ME, MI, I, C>) => {
-  const { t } = useTranslation(["common"]);
+  const { t, ...rest } = useTranslation(["common"]);
   const { isMobile } = useSettings();
-  // const styles = isMobile
-  //   ? { flex: 1, width: "var(--swap-box-width)" }
-  //   : { width: "var(--modal-width)" };
-
-  const inputBtnRef = React.useRef();
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const getDisabled = React.useMemo(() => {
-    return !!(disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED);
+    return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMintBtnStatus]);
 
   const handleToggleChange = (value: C) => {
@@ -241,50 +235,6 @@ export const MintNFTConfirm = <
                   </>
                 )}
               </Grid>
-              <Grid item xs={12}>
-                <NFTInput<
-                  MI extends IBData<I> & Partial<NFTWholeINFO>
-                    ? MI
-                    : IBData<I> & Partial<NFTWholeINFO>,
-                  I
-                >
-                  {...({ t } as any)}
-                  isThumb={false}
-                  isBalanceLimit={true}
-                  inputNFTDefaultProps={{
-                    subLabel: t("tokenNFTMaxMINT"),
-                    size: InputSize.small,
-                    label: (
-                      <Trans i18nKey={"labelNFTMintInputTitle"}>
-                        Amount
-                        <Typography
-                          component={"span"}
-                          variant={"inherit"}
-                          color={"error"}
-                        >
-                          {"\uFE61"}
-                        </Typography>
-                      </Trans>
-                    ),
-                  }}
-                  // disabled={!(nftMintData.nftId && nftMintData.tokenAddress)}
-                  type={"NFT"}
-                  inputNFTRef={inputBtnRef}
-                  onChangeEvent={(_index, data) =>
-                    handleMintDataChange({
-                      ...data.tradeData,
-                    } as MI)
-                  }
-                  tradeData={
-                    {
-                      ...nftMintData,
-                      belong: nftMintData.tokenAddress ?? "NFT",
-                      balance: nftMintData.nftBalance,
-                    } as any
-                  }
-                  walletMap={walletMap}
-                />
-              </Grid>
             </Grid>
           </Box>
         </Grid>
@@ -375,6 +325,25 @@ export const MintNFTConfirm = <
                   </Typography>
                 </Typography>
               </Grid>
+              <Grid item xs={12}>
+                <Typography
+                  display={"inline-flex"}
+                  flexDirection={isMobile ? "column" : "row"}
+                  variant={"body1"}
+                >
+                  <Typography color={"textSecondary"} marginRight={1}>
+                    {t("labelNFTAmount")}
+                  </Typography>
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    whiteSpace={"break-spaces"}
+                    style={{ wordBreak: "break-all" }}
+                    title={"ERC1155"}
+                  >
+                    {nftMintData.tradeValue}
+                  </Typography>
+                </Typography>
+              </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
                 <Typography color={"textSecondary"} marginRight={1}>
                   {t("labelNFTDescription")}
@@ -404,13 +373,12 @@ export const MintNFTConfirm = <
                   {t("labelNFTProperty")}
                 </Typography>
                 <Box marginTop={1}>
-                  <Box flex={1}>
-                    {metaData.properties &&
-                    metaData.properties.length &&
-                    metaData.properties[0].key ? (
-                      metaData.properties?.map((item, index) => {
+                  {metaData.properties && metaData.properties.length ? (
+                    <Table
+                      rawData={metaData.properties?.map((item, index) => {
                         return (
-                          item.key && (
+                          item.key?.trim() &&
+                          item.value?.trim() && (
                             <Typography
                               color={"var(--color-text-third)"}
                               whiteSpace={"break-spaces"}
@@ -432,18 +400,70 @@ export const MintNFTConfirm = <
                             </Typography>
                           )
                         );
-                      })
-                    ) : (
-                      <Typography
-                        color={"var(--color-text-third)"}
-                        whiteSpace={"break-spaces"}
-                        style={{ wordBreak: "break-all" }}
-                        title={"ERC1155"}
-                      >
-                        {EmptyValueTag}
-                      </Typography>
-                    )}
-                  </Box>
+                      })}
+                      className={"scrollable"}
+                      {...{
+                        ...rest,
+                        tReady: true,
+                        t,
+                        columnMode: [
+                          {
+                            key: "key",
+                            name: t("labelMintPropertyKey"),
+                          },
+                          {
+                            key: "value",
+                            name: t("labelMintPropertyValue"),
+                          },
+                        ],
+                        generateRows: (rawData: any) => rawData,
+                        generateColumns: ({ columnsRaw }: any) =>
+                          columnsRaw as Column<any, unknown>[],
+                      }}
+                    />
+                  ) : (
+                    <Typography
+                      color={"var(--color-text-third)"}
+                      whiteSpace={"break-spaces"}
+                      style={{ wordBreak: "break-all" }}
+                      title={"ERC1155"}
+                    >
+                      {EmptyValueTag}
+                    </Typography>
+                  )}
+                  {/*<Box flex={1}>*/}
+                  {/*  {metaData.properties &&*/}
+                  {/*  metaData.properties.length &&*/}
+                  {/*  metaData.properties[0].key ? (*/}
+                  {/*    metaData.properties?.map((item, index) => {*/}
+                  {/*      return (*/}
+                  {/*        item.key?.trim() &&*/}
+                  {/*        item.value?.trim() && (*/}
+                  {/*          <Typography*/}
+                  {/*            color={"var(--color-text-third)"}*/}
+                  {/*            whiteSpace={"break-spaces"}*/}
+                  {/*            style={{ wordBreak: "break-all" }}*/}
+                  {/*            component={"p"}*/}
+                  {/*            variant={"body1"}*/}
+                  {/*            key={index.toString() + item.key}*/}
+                  {/*          >*/}
+                  {/*            <Typography*/}
+                  {/*              color={"inherit"}*/}
+                  {/*              component={"span"}*/}
+                  {/*              paddingRight={1}*/}
+                  {/*            >*/}
+                  {/*              {item.key}:*/}
+                  {/*            </Typography>*/}
+                  {/*            <Typography color={"inherit"} component={"span"}>*/}
+                  {/*              {item.value}*/}
+                  {/*            </Typography>*/}
+                  {/*          </Typography>*/}
+                  {/*        )*/}
+                  {/*      );*/}
+                  {/*    })*/}
+                  {/*  ) : (*/}
+                  {/*  )}*/}
+                  {/*</Box>*/}
                 </Box>
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>

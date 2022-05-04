@@ -110,7 +110,7 @@ export function useNFTMeta<T extends NFTMETA>({
           _value = {
             ..._value,
             cid: cid,
-            fullSrc: `${IPFS_LOOPRING_SITE}/ipfs/${data.path}`,
+            fullSrc: `${IPFS_LOOPRING_SITE}/${data.path}`,
             isProcessing: false,
           };
           handleOnMetaChange({

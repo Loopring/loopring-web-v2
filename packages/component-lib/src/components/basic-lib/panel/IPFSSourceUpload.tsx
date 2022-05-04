@@ -37,6 +37,10 @@ const BoxStyle = styled(Box)`
     font-size: ${({ theme }) => theme.fontDefault.body2};
     color: var(--color-error);
   }
+  &.focused,
+  &:hover {
+    opacity: 0.5;
+  }
 `;
 export type IpfsFile = {
   file: File;
@@ -102,19 +106,20 @@ export const IPFSSourceUpload = ({
     },
     [onChange]
   );
-  const { fileRejections, getRootProps, getInputProps, open } = useDropzone({
-    ...options,
-    disabled,
-    maxSize,
-    accept: types
-      ?.map((item) => {
-        return `image/${item}`;
-      })
-      .join(", "),
-    onDropAccepted,
-    noClick: true,
-    noKeyboard: true,
-  });
+  const { fileRejections, getRootProps, getInputProps, open, isFocused } =
+    useDropzone({
+      ...options,
+      disabled,
+      maxSize,
+      accept: types
+        ?.map((item) => {
+          return `image/${item}`;
+        })
+        .join(", "),
+      onDropAccepted,
+      noClick: true,
+      noKeyboard: true,
+    });
 
   const isFileTooLarge =
     maxSize !== undefined &&
@@ -208,7 +213,7 @@ export const IPFSSourceUpload = ({
               >
                 <Box>
                   <NftImage
-                    alt={value?.file.name}
+                    alt={value?.file?.name}
                     title={value.cid}
                     onError={() => undefined}
                     src={value.localSrc}
@@ -218,7 +223,12 @@ export const IPFSSourceUpload = ({
               </Box>
             )
           ) : (
-            <BoxStyle {...getRootProps()} paddingTop={1} display={"flex"}>
+            <BoxStyle
+              {...getRootProps()}
+              paddingTop={1}
+              display={"flex"}
+              className={isFocused ? "focused" : ""}
+            >
               <FormControl
                 sx={{
                   display: "flex",

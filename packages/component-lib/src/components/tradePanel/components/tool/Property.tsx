@@ -138,3 +138,65 @@ export const Property = React.memo(
     }
   )
 );
+// export const PropertyReview = React.memo(
+//   React.forwardRef(
+//     ({
+//       property,
+//       index,
+//       handleChange,
+//       onDelete,
+//     }: {
+//       property: MetaProperty;
+//       index: number;
+//       handleChange: (property: Partial<MetaProperty>, index: number) => void;
+//       onDelete: (index: number) => void;
+//     }) => {
+//       // const [,] = React.useState<Partial<MetaProperty>>();
+//       const _handleChange = React.useCallback(
+//         (_property: Partial<MetaProperty>) => {
+//           handleChange({ ...property, ..._property }, index);
+//         },
+//         [handleChange, index, property]
+//       );
+//
+//       return (
+//         <>
+//           <Grid item xs={5}>
+//             <TextField
+//               value={property.key}
+//               fullWidth
+//               label={<Trans i18nKey={"labelMintPropertyKey"}>key</Trans>}
+//               type={"text"}
+//               onChange={(e) => _handleChange({ key: e.target.value })}
+//             />
+//           </Grid>
+//           <Grid item xs={6}>
+//             <TextField
+//               value={property.value}
+//               fullWidth
+//               label={<Trans i18nKey={"labelMintPropertyValue"}>value</Trans>}
+//               type={"text"}
+//               onChange={(e) => _handleChange({ value: e.target.value })}
+//             />
+//           </Grid>
+//           <Grid
+//             item
+//             xs={1}
+//             display={"flex"}
+//             alignItems={"center"}
+//             justifyContent={"center"}
+//           >
+//             <IconButton
+//               sx={{ marginTop: 3 }}
+//               edge={"end"}
+//               // disabled={properties.length === 1 ? true : false}
+//               onClick={() => onDelete(index)}
+//             >
+//               <DeleteIcon color={"error"} />
+//             </IconButton>
+//           </Grid>
+//         </>
+//       );
+//     }
+//   )
+// );

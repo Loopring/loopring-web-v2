@@ -536,6 +536,7 @@ export default {
   labelNFTDepositInputTitle: "Amount:",
   labelNFTContractAddress: "Contract:",
   labelNFTTId: "NFT Token ID:",
+  labelNFTAmount: "Amount:",
   labelNFTCid:
     "IPFS CID :(Store Metadata Information) <1>Follow this Guide </1>",
   labelNFTType: "Token Standard:",
@@ -658,7 +659,7 @@ export default {
   labelDepositNFT: "Deposit NFT",
   labelMyAssetsNFT: "My NFT",
   labelTransactionNFT: "Transactions",
-  labelMintPropertyKey: "key",
+  labelMintPropertyKey: "Key",
   labelMintPropertyValue: "Value",
   labelNFTProperty: "Properties:",
   labelConfirmMint: "Confirm Metadata",
