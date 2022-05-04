@@ -1,5 +1,13 @@
 import styled from "@emotion/styled";
-import { Box, FormLabel, Grid, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  FormLabel,
+  Grid,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import {
   DropdownIconStyled,
   FeeTokenItemWrapper,
@@ -15,6 +23,8 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
+  CheckBoxIcon,
+  CheckedIcon,
   EmptyValueTag,
   FeeInfo,
   MintTradeNFT,
@@ -29,6 +39,12 @@ const StyleWrapper = styled(Box)`
   width: 100%;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
+  .MuiFormControlLabel-root {
+    align-items: flex-start;
+    .MuiFormControlLabel-label {
+      color: var(--color-text-secondary);
+    }
+  }
 ` as typeof Box;
 const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const MetaNFTPanel = <
@@ -39,13 +55,13 @@ export const MetaNFTPanel = <
 >({
   nftMetaProps,
   nftMintProps,
-  handleFeeChange,
-  isFeeNotEnough,
   ipfsMediaSources,
   onFilesLoad,
   onDelete,
   nftMintValue,
   errorOnMeta,
+  handleFeeChange,
+  isFeeNotEnough,
   chargeFeeTokenList,
   feeInfo,
 }: Partial<NFTMetaBlockProps<Me, Mi, C>> & {
@@ -100,6 +116,22 @@ export const MetaNFTPanel = <
             onChange={onFilesLoad}
             onDelete={onDelete}
           />
+          <Box marginTop={1}>
+            <MuiFormControlLabel
+              control={
+                <Checkbox
+                  checked={nftMetaProps.userAgree}
+                  onChange={(_event: any, state: boolean) => {
+                    nftMetaProps.handleUserAgree(state);
+                  }}
+                  checkedIcon={<CheckedIcon />}
+                  icon={<CheckBoxIcon />}
+                  color="default"
+                />
+              }
+              label={t("labelUseIpfsMintAgree")}
+            />
+          </Box>
         </Grid>
         <Grid item xs={12} md={7} flex={1} display={"flex"}>
           <MintNFTBlock
@@ -147,7 +179,7 @@ export const MetaNFTPanel = <
               {dropdownErrorStatus === "up" && (
                 <TextareaAutosizeStyled
                   aria-label="NFT Description"
-                  minRows={5}
+                  minRows={4}
                   disabled={true}
                   value={`${JSON.stringify(errorOnMeta)}}`}
                 />

@@ -603,6 +603,7 @@ export default {
   labelLoadDes: "Drag or click to upload files ({{types}}, ≦10MB)",
   labelUpload: "upLoad",
   labelMintNoImageBtn: "Please upload image",
+  labelMintUserAgree: "Please agree terms of service",
   labelMintTradeValueBtn: "Please input amount(1 - 10,000)",
   labelMintNoRoyaltyPercentageBtn: "Please input Royalty",
   labelMintWrongRoyaltyBtn: "Royalty should be init(0 - 10)",
@@ -631,4 +632,6 @@ export default {
   labelMintPropertyValue: "Value",
   labelNFTProperty: "Properties:",
   labelConfirmMint: "Confirm Metadata",
+  labelUseIpfsMintAgree:
+    "I confirm that the NFT minted does not infringe on copyright laws, and does not contain explicit and sensitive, adult themed or other NSFW content. We reserve the right to delete NFTs or Inappropriate content won't be displayed as is at any time if content is discovered to be harmful.",
 };

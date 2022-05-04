@@ -33,6 +33,7 @@ export function useNFTMeta<T extends NFTMETA>({
     React.useState<string | undefined>(undefined);
   const [ipfsMediaSources, setIpfsMediaSources] =
     React.useState<IpfsFile | undefined>(undefined);
+  const [userAgree, setUserAgree] = React.useState(false);
 
   const handleOnMetaChange = React.useCallback(
     (_newnftMeta: Partial<T>) => {
@@ -110,7 +111,7 @@ export function useNFTMeta<T extends NFTMETA>({
           _value = {
             ..._value,
             cid: cid,
-            fullSrc: `${IPFS_LOOPRING_SITE}/${data.path}`,
+            fullSrc: `${IPFS_LOOPRING_SITE}${data.path}`,
             isProcessing: false,
           };
           handleOnMetaChange({
@@ -189,6 +190,7 @@ export function useNFTMeta<T extends NFTMETA>({
         nftMintValue &&
         nftMintValue.mintData &&
         nftMintValue.nftMETA &&
+        userAgree &&
         // tokenAddress &&
         nftMintValue.nftMETA.royaltyPercentage !== undefined &&
         Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
@@ -206,6 +208,9 @@ export function useNFTMeta<T extends NFTMETA>({
       ) {
         enableBtn();
         return;
+      }
+      if (!userAgree) {
+        setLabelAndParams("labelMintUserAgree", {});
       }
 
       if (
@@ -247,6 +252,7 @@ export function useNFTMeta<T extends NFTMETA>({
     [
       resetBtnInfo,
       nftMintValue,
+      userAgree,
       // tokenAddress,
       isFeeNotEnough,
       disableBtn,
@@ -262,6 +268,7 @@ export function useNFTMeta<T extends NFTMETA>({
     nftMintValue.mintData,
     nftMintValue.nftMETA,
     feeInfo,
+    userAgree,
     updateBtnStatus,
   ]);
 
@@ -273,10 +280,15 @@ export function useNFTMeta<T extends NFTMETA>({
     setCIDUniqueId(uniqueId);
     mintService.processingIPFS({ ipfsProvides, uniqueId });
   }, [ipfsProvides, nftMintValue.nftMETA]);
+  const handleUserAgree = (value: boolean) => {
+    setUserAgree(value);
+  };
   const nftMetaProps: NFTMetaProps<T> = {
     handleOnMetaChange,
     isFeeNotEnough,
     handleFeeChange,
+    userAgree,
+    handleUserAgree,
     chargeFeeTokenList,
     feeInfo,
     nftMetaBtnStatus: btnStatus,

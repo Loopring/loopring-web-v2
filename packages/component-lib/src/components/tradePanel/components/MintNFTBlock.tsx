@@ -62,6 +62,7 @@ export const MintNFTBlock = <
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const inputBtnRef = React.useRef();
+
   const getDisabled = React.useMemo(() => {
     return disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMetaBtnStatus]);
@@ -138,22 +139,6 @@ export const MintNFTBlock = <
           </TextField>
         </Grid>
         <Grid item xs={12} md={6}>
-          {/*<TextField*/}
-          {/*  sx={{ paddingTop: 1 / 2 }}*/}
-          {/*  label={*/}
-
-          {/*  }*/}
-          {/*  inputProps={{*/}
-          {/*    inputMode: "numeric",*/}
-          {/*    pattern: "10|[0-9 ]",*/}
-          {/*    startAdornment: <InputAdornment position="end">%</InputAdornment>,*/}
-          {/*  }}*/}
-          {/*  value={nftMeta.royaltyPercentage}*/}
-          {/*  fullWidth*/}
-          {/*  onChange={(event) =>*/}
-
-          {/*  }*/}
-          {/*/>*/}
           <InputCoin
             handleCountChange={(data) =>
               handleOnMetaChange({
@@ -301,13 +286,19 @@ export const MintNFTBlock = <
           </FormLabel>
           <TextareaAutosizeStyled
             aria-label="NFT Description"
-            minRows={5}
+            minRows={2}
+            maxRows={5}
+            style={{
+              overflowX: "hidden",
+              resize: "auto",
+            }}
             maxLength={2000}
             onChange={(event) =>
               handleOnMetaChange({
                 description: event.target.value,
               } as unknown as Partial<T>)
             }
+            draggable={true}
           />
         </Grid>
         <Grid item xs={12} md={12}>

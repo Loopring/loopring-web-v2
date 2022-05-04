@@ -291,6 +291,8 @@ export type NFTMintExtendProps<T, C = FeeInfo> = {
 export type NFTMetaExtendProps<T, C = FeeInfo> = {
   handleOnMetaChange: (data: Partial<T>) => void;
   onMetaClick: (data: Partial<T>, isFirstMint?: boolean) => void;
+  userAgree: boolean;
+  handleUserAgree: (value: boolean) => void;
   allowTrade?: any;
 } & NFTMetaInfoProps<C>;
 
