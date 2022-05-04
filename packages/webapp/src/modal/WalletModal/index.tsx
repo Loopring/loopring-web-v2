@@ -277,29 +277,29 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 },
               ]
             : []),
-          {
-            ...DefaultGatewayList[1],
-            handleSelect: React.useCallback(
-              async (event, flag?) => {
-                if (
-                  !flag &&
-                  account.connectName === DefaultGatewayList[1].key
-                ) {
-                  setShowConnect({ isShow: false });
-                } else {
-                  walletServices.sendDisconnect("", "should new provider");
-                  setConnectProvider(DefaultGatewayList[1].key);
-                  setShowConnect({
-                    isShow: true,
-                    step: WalletConnectStep.CommonProcessing,
-                  });
-                  setProcessingCallback({ callback: walletConnectCallback });
-                  setStateCheck(true);
-                }
-              },
-              [account]
-            ),
-          },
+          // {
+          //   ...DefaultGatewayList[1],
+          //   handleSelect: React.useCallback(
+          //     async (event, flag?) => {
+          //       if (
+          //         !flag &&
+          //         account.connectName === DefaultGatewayList[1].key
+          //       ) {
+          //         setShowConnect({ isShow: false });
+          //       } else {
+          //         walletServices.sendDisconnect("", "should new provider");
+          //         setConnectProvider(DefaultGatewayList[1].key);
+          //         setShowConnect({
+          //           isShow: true,
+          //           step: WalletConnectStep.CommonProcessing,
+          //         });
+          //         setProcessingCallback({ callback: walletConnectCallback });
+          //         setStateCheck(true);
+          //       }
+          //     },
+          //     [account]
+          //   ),
+          // },
         ];
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
