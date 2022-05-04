@@ -22,14 +22,10 @@ import {
 } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { NFTInput } from "./BasicANFTTrade";
-import {
-  LOOPRING_URLs,
-  // NFTType
-} from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
-import { useSettings } from "../../../stores";
+import { useSettings } from "stores";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
