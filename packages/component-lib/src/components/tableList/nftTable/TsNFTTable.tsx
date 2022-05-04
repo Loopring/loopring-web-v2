@@ -42,6 +42,7 @@ const BoxNFT = styled(Box)`
   background-image: url(${SoursURL + "svg/loopring.svg"});
   img {
     object-fit: contain;
+    overflow: hidden;
     border-radius: ${({ theme }) => theme.unit}px;
   }
 ` as typeof Box;
