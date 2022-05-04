@@ -290,7 +290,7 @@ export const MintNFTBlock = <
             maxRows={5}
             style={{
               overflowX: "hidden",
-              resize: "auto",
+              resize: "vertical",
             }}
             maxLength={2000}
             onChange={(event) =>
