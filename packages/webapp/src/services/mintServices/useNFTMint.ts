@@ -389,12 +389,10 @@ export function useNFTMint<
           resetNFTMINT();
         }
         break;
+      case MintCommands.SignatureMint:
+      // nftMintProps.onNFTMintClick(data?.isHardware);
       case MintCommands.MintConfirm:
         handleTabChange(1);
-        break;
-      case MintCommands.SignatureMint:
-        handleTabChange(1);
-        nftMintProps.onNFTMintClick(data?.isHardware);
         break;
     }
   };

@@ -25,7 +25,7 @@ import { NFTInput } from "./BasicANFTTrade";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
-import { useSettings } from "stores";
+import { useSettings } from "../../../stores";
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
