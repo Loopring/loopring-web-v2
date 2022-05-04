@@ -339,6 +339,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       doTransferDone,
       resetNFTTransferData,
       updateHW,
+      checkFeeIsEnough,
     ]
   );
 
