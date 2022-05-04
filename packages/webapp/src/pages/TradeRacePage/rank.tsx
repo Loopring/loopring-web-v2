@@ -11,7 +11,7 @@ import {
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { Box, Button, Link, MenuItem, Typography } from "@mui/material";
+import { Box, Link, MenuItem, Typography } from "@mui/material";
 import {
   Column,
   InputSearch,
@@ -329,7 +329,24 @@ export const RankRaw = <R extends any>(props: EventAPI) => {
       : [],
     generateRows: (rawData: R) => rawData,
     generateColumns: ({ columnsRaw }: any) =>
-      columnsRaw as Column<any, unknown>[],
+      [
+        {
+          key: "No.",
+          name: "No.",
+          width: "auto",
+          headerCellClass: `textAlignCenter`,
+          cellClass: "rdg-cell-value textAlignCenter",
+          formatter: ({ row, column, rowIdx }: any) => {
+            return rowIdx + 1;
+            // if (column.key.toLowerCase() === "address") {
+            //   return getShortAddr(row[column.key]);
+            // } else {
+            //   return row[column.key];
+            // }
+          },
+        },
+        ...columnsRaw,
+      ] as Column<any, unknown>[],
   };
   React.useEffect(() => {
     getTableValues();

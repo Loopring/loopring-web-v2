@@ -1,4 +1,4 @@
-import store from "../stores";
+import store from "stores";
 import {
   AccountStep,
   Button,

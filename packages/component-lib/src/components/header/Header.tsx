@@ -33,7 +33,6 @@ import {
   subMenuLayer2,
   headerMenuLandingData,
   AccountStatus,
-  subMenuNFT,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -486,8 +485,6 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             const item = _.cloneDeep(_item);
             if (item.label.id === "Layer2") {
               item.child = { ...subMenuLayer2 };
-            } else if (item.label.id === "NFT") {
-              item.child = { ...subMenuNFT };
             }
             return [...prev, item];
           }, [] as HeaderMenuItemInterface[]);
