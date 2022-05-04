@@ -1,5 +1,5 @@
 import { NFTMintViewProps } from "./Interface";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography, Link } from "@mui/material";
 import {
@@ -7,9 +7,11 @@ import {
   FeeInfo,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
+  MetaProperty,
   MintTradeNFT,
   myLog,
   NFTMETA,
+  RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import {
@@ -32,18 +34,20 @@ const GridStyle = styled(Grid)`
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
   }
-  & .rdg {
-    min-height: 60px;
-  }
 ` as typeof Grid;
-// const NFT_TYPE: TGItemData[] = [
-//   {
-//     value: NFTType.ERC1155,
-//     key: "ERC1155",
-//     label: "ERC1155",
-//     disabled: false,
-//   },
-// ];
+const TableStyle = styled(Table)`
+  &.rdg {
+    min-height: 60px;
+    height: ${(props: any) => {
+      if (props.currentheight) {
+        return props.currentheight + 2 + "px";
+      } else {
+        return "100%";
+      }
+    }};
+  }
+` as typeof Table;
+
 export const MintNFTConfirm = <
   // T extends NFT_MINT_VALUE<I>,
   ME extends Partial<NFTMETA>,
@@ -76,6 +80,14 @@ export const MintNFTConfirm = <
       handleFeeChange(value);
     }
   };
+  const rawData =
+    metaData.properties?.reduce((prev, item) => {
+      if (!!item.key?.trim() && !!item.value?.trim()) {
+        return [...prev, item];
+      } else {
+        return prev;
+      }
+    }, [] as Array<MetaProperty>) ?? [];
 
   myLog("mint nftMintData", nftMintData);
 
@@ -352,7 +364,8 @@ export const MintNFTConfirm = <
                   {metaData.description ? (
                     <TextareaAutosizeStyled
                       aria-label="NFT Description"
-                      minRows={6}
+                      minRows={2}
+                      maxRows={5}
                       disabled={true}
                       value={metaData.description}
                     />
@@ -372,48 +385,30 @@ export const MintNFTConfirm = <
                 <Typography variant={"body1"} color={"textSecondary"}>
                   {t("labelNFTProperty")}
                 </Typography>
-                <Box marginTop={1}>
-                  {metaData.properties && metaData.properties.length ? (
-                    <Table
-                      rawData={metaData.properties?.map((item, index) => {
-                        return (
-                          item.key?.trim() &&
-                          item.value?.trim() && (
-                            <Typography
-                              color={"var(--color-text-third)"}
-                              whiteSpace={"break-spaces"}
-                              style={{ wordBreak: "break-all" }}
-                              component={"p"}
-                              variant={"body1"}
-                              key={index.toString() + item.key}
-                            >
-                              <Typography
-                                color={"inherit"}
-                                component={"span"}
-                                paddingRight={1}
-                              >
-                                {item.key}:
-                              </Typography>
-                              <Typography color={"inherit"} component={"span"}>
-                                {item.value}
-                              </Typography>
-                            </Typography>
-                          )
-                        );
-                      })}
-                      className={"scrollable"}
+                {rawData.length ? (
+                  <Box
+                    marginTop={1}
+                    sx={{ backgroundColor: "var(--color-global-bg)" }}
+                  >
+                    <TableStyle
+                      className={"properties_table"}
+                      rawData={rawData}
                       {...{
                         ...rest,
                         tReady: true,
                         t,
+                        currentheight:
+                          (rawData.length + 1) * RowConfig.rowHeight,
                         columnMode: [
                           {
                             key: "key",
                             name: t("labelMintPropertyKey"),
+                            // formatter: ({ row }: any) => <>{row?.key}</>,
                           },
                           {
                             key: "value",
                             name: t("labelMintPropertyValue"),
+                            // formatter: ({ row }: any) => <>{row?.value}</>,
                           },
                         ],
                         generateRows: (rawData: any) => rawData,
@@ -421,67 +416,15 @@ export const MintNFTConfirm = <
                           columnsRaw as Column<any, unknown>[],
                       }}
                     />
-                  ) : (
-                    <Typography
-                      color={"var(--color-text-third)"}
-                      whiteSpace={"break-spaces"}
-                      style={{ wordBreak: "break-all" }}
-                      title={"ERC1155"}
-                    >
-                      {EmptyValueTag}
-                    </Typography>
-                  )}
-                  {/*<Box flex={1}>*/}
-                  {/*  {metaData.properties &&*/}
-                  {/*  metaData.properties.length &&*/}
-                  {/*  metaData.properties[0].key ? (*/}
-                  {/*    metaData.properties?.map((item, index) => {*/}
-                  {/*      return (*/}
-                  {/*        item.key?.trim() &&*/}
-                  {/*        item.value?.trim() && (*/}
-                  {/*          <Typography*/}
-                  {/*            color={"var(--color-text-third)"}*/}
-                  {/*            whiteSpace={"break-spaces"}*/}
-                  {/*            style={{ wordBreak: "break-all" }}*/}
-                  {/*            component={"p"}*/}
-                  {/*            variant={"body1"}*/}
-                  {/*            key={index.toString() + item.key}*/}
-                  {/*          >*/}
-                  {/*            <Typography*/}
-                  {/*              color={"inherit"}*/}
-                  {/*              component={"span"}*/}
-                  {/*              paddingRight={1}*/}
-                  {/*            >*/}
-                  {/*              {item.key}:*/}
-                  {/*            </Typography>*/}
-                  {/*            <Typography color={"inherit"} component={"span"}>*/}
-                  {/*              {item.value}*/}
-                  {/*            </Typography>*/}
-                  {/*          </Typography>*/}
-                  {/*        )*/}
-                  {/*      );*/}
-                  {/*    })*/}
-                  {/*  ) : (*/}
-                  {/*  )}*/}
-                  {/*</Box>*/}
-                </Box>
-              </Grid>
-              <Grid item xs={12} alignSelf={"stretch"}>
-                {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
+                  </Box>
+                ) : (
                   <Typography
-                    color={"var(--color-warning)"}
-                    component={"p"}
-                    variant={"body1"}
-                    marginBottom={1}
+                    color={"var(--color-text-third)"}
+                    whiteSpace={"break-spaces"}
                     style={{ wordBreak: "break-all" }}
+                    title={"ERC1155"}
                   >
-                    <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
-                      Your NFT metadata should identify
-                      <em style={{ fontWeight: 600 }}>
-                        name, image & royalty_percentage(number from 0 to 10)
-                      </em>
-                      .
-                    </Trans>
+                    {EmptyValueTag}
                   </Typography>
                 )}
               </Grid>
