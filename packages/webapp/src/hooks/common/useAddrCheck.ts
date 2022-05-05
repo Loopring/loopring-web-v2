@@ -5,7 +5,7 @@ import { AddressError } from "defs/common_defs";
 import { checkAddr } from "utils/web3_tools";
 import { LoopringAPI } from "api_wrapper";
 import { useAccount } from "stores/account";
-import { globalSetup } from "@loopring-web/common-resources";
+import { globalSetup, myLog } from "@loopring-web/common-resources";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -40,19 +40,22 @@ export const useAddressCheck = () => {
       if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
         if (
           /^0x[a-fA-F0-9]{40}$/g.test(address) ||
-          /.*\.eth$/gi.test(address)
+          /.*\.eth$/gi.test(address) ||
+          (/^\d{5}$/g.test(address) && Number(address) > 10000)
         ) {
           setIsAddressCheckLoading(true);
           const { realAddr, addressErr } = await checkAddr(address, web3);
+
           setRealAddr(realAddr);
           setAddrStatus(addressErr);
-          if (realAddr !== "" || (address !== "" && address.startsWith("0x"))) {
+          //realAddr !== "" || (address !== "" && address.startsWith("0x"))
+          if (addressErr === AddressError.NoError) {
             const [{ walletType }, response] = await Promise.all([
               LoopringAPI.walletAPI.getWalletType({
-                wallet: realAddr != "" ? realAddr : address,
+                wallet: realAddr, //realAddr != "" ? realAddr : address,
               }),
               LoopringAPI.exchangeAPI.getAccount({
-                owner: realAddr != "" ? realAddr : address,
+                owner: realAddr, //realAddr != "" ? realAddr : address,
               }),
             ]);
             if (walletType && walletType?.isInCounterFactualStatus) {
@@ -126,8 +129,7 @@ export const useAddressCheck = () => {
       address.toLowerCase() === accAddress.toLowerCase() ||
         realAddr.toLowerCase() === accAddress.toLowerCase()
     );
-  }, [accAddress, address]);
-
+  }, [realAddr, accAddress, address]);
   return {
     address,
     realAddr,

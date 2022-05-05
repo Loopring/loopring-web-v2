@@ -110,6 +110,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     }
     disableBtn();
   }, [
+    realAddr,
     tokenMap,
     transferValue,
     disableBtn,
@@ -125,6 +126,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   React.useEffect(() => {
     checkBtnStatus();
   }, [
+    realAddr,
     chargeFeeTokenList,
     address,
     addressOrigin,
@@ -170,7 +172,14 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         }
       }
     }
-  }, [symbol, walletMap, updateTransferData, transferValue, feeInfo]);
+  }, [
+    checkFeeIsEnough,
+    symbol,
+    walletMap,
+    updateTransferData,
+    feeInfo,
+    transferValue.belong,
+  ]);
 
   React.useEffect(() => {
     if (isShow) {

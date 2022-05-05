@@ -36,6 +36,7 @@ export interface PanelProps {
     route: string;
     callback: (e?: any) => void;
   };
+  to?: string;
   btnInfo?: {
     btnTxt: any;
     callback: (e?: any) => void;

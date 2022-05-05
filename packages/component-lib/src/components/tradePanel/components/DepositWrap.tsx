@@ -1,8 +1,13 @@
-import { CloseIcon, globalSetup, IBData } from "@loopring-web/common-resources";
+import {
+  CloseIcon,
+  globalSetup,
+  IBData,
+  LoadingIcon,
+} from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { WithTranslation } from "react-i18next";
-import React, { ChangeEvent } from "react";
-import { Grid, Typography } from "@mui/material";
+import React from "react";
+import { Box, Grid, Typography } from "@mui/material";
 import {
   Button,
   IconClearStyled,
@@ -11,11 +16,16 @@ import {
 } from "../../../index";
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
-import * as _ from "lodash";
-import { NFTWholeINFO } from "@loopring-web/common-resources";
 
 //SelectReceiveCoin
-export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
+export const DepositWrap = <
+  T extends {
+    Address?: string;
+    toAddress?: string;
+    addressError?: { error: boolean; message: string };
+  } & IBData<I>,
+  I
+>({
   t,
   disabled,
   walletMap,
@@ -30,8 +40,17 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   handleError,
   addressDefault,
   chargeFeeTokenList,
-  handleOnAddressChange,
-  handleAddressError,
+  onChangeEvent,
+  handleClear,
+  isAllowInputTokenAddress,
+  toIsAddressCheckLoading,
+  toIsLoopringAddress,
+  realToAddress,
+  referIsAddressCheckLoading,
+  referIsLoopringAddress,
+  realReferAddress,
+  // handleOnAddressChange,
+  // handleAddressError,
   wait = globalSetup.wait,
   allowTrade,
   ...rest
@@ -40,40 +59,8 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
   let { feeChargeOrder } = useSettings();
 
   const getDisabled = React.useMemo(() => {
-    if (disabled || depositBtnStatus === TradeBtnStatus.DISABLED) {
-      return true;
-    } else {
-      return false;
-    }
+    return disabled || depositBtnStatus === TradeBtnStatus.DISABLED;
   }, [depositBtnStatus, disabled]);
-  const [address, setAddress] = React.useState<string | undefined>(
-    addressDefault || ""
-  );
-  const [addressError, setAddressError] =
-    React.useState<
-      { error: boolean; message?: string | JSX.Element } | undefined
-    >();
-
-  const debounceAddress = _.debounce(({ address }: any) => {
-    if (handleOnAddressChange) {
-      handleOnAddressChange(address);
-    }
-  }, wait);
-  const handleClear = React.useCallback(() => {
-    // @ts-ignore
-    setAddress("");
-  }, []);
-  const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const address = event.target.value;
-    if (handleAddressError) {
-      const error = handleAddressError(address);
-      if (error?.error) {
-        setAddressError(error);
-      }
-    }
-    setAddress(address);
-    debounceAddress({ address });
-  };
 
   const inputButtonDefaultProps = {
     label: t("depositLabelEnterToken"),
@@ -135,12 +122,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     } else {
       return <></>;
     }
-  }, [
-    isNewAccount,
-    chargeFeeTokenList,
-    tradeData.belong,
-    tradeData.tradeValue,
-  ]);
+  }, [isNewAccount, chargeFeeTokenList, tradeData, t, feeChargeOrder]);
 
   return (
     <Grid
@@ -161,6 +143,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
             t,
             type: "TOKEN",
             disabled,
+            onChangeEvent,
             walletMap,
             tradeData,
             coinMap,
@@ -169,39 +152,140 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
           }}
         />
       </Grid>
-      {isNewAccount ? (
+      {!isAllowInputTokenAddress && isNewAccount ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           <TextField
             className={"text-address"}
-            value={address}
-            error={addressError && addressError.error ? true : false}
-            label={t("depositLabelRefer")}
+            value={tradeData.Address ? tradeData.Address : ""}
+            error={!!(tradeData.addressError && tradeData.addressError?.error)}
+            label={t("depositLabel")}
             placeholder={t("depositLabelPlaceholder")}
-            onChange={_handleOnAddressChange}
-            helperText={
-              <Typography variant={"body2"} component={"span"}>
-                {addressError && addressError.error ? addressError.message : ""}
-              </Typography>
-            }
+            onChange={(event) => {
+              const Address = event.target.value;
+              //...tradeData,
+              onChangeEvent(0, {
+                tradeData: { Address } as T,
+                to: "button",
+              });
+            }}
             fullWidth={true}
           />
-          {address !== "" ? (
-            <IconClearStyled
-              color={"inherit"}
-              size={"small"}
-              style={{ top: "30px" }}
-              aria-label="Clear"
-              onClick={handleClear}
-            >
-              <CloseIcon />
-            </IconClearStyled>
+          {tradeData.Address !== "" ? (
+            referIsAddressCheckLoading ? (
+              <LoadingIcon
+                width={24}
+                style={{ top: "32px", right: "8px", position: "absolute" }}
+              />
+            ) : (
+              <IconClearStyled
+                color={"inherit"}
+                size={"small"}
+                style={{ top: "30px" }}
+                aria-label="Clear"
+                onClick={handleClear}
+              >
+                <CloseIcon />
+              </IconClearStyled>
+            )
           ) : (
             ""
           )}
+          <Box marginLeft={1 / 2}>
+            {tradeData.addressError?.error || !referIsAddressCheckLoading ? (
+              <Typography
+                color={"var(--color-error)"}
+                variant={"body2"}
+                marginTop={1 / 2}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelAddressNotLoopring")}
+              </Typography>
+            ) : tradeData.toAddress &&
+              realReferAddress &&
+              !referIsAddressCheckLoading ? (
+              <Typography
+                color={"var(--color-text-primary)"}
+                variant={"body2"}
+                marginTop={1 / 2}
+                style={{ wordBreak: "break-all" }}
+              >
+                {realReferAddress}
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Box>
         </Grid>
       ) : (
         <></>
       )}
+      {isAllowInputTokenAddress ? (
+        <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
+          <TextField
+            className={"text-address"}
+            value={tradeData.toAddress ? tradeData.toAddress : ""}
+            error={!!(tradeData.addressError && tradeData.addressError?.error)}
+            label={t("depositLabelTo")}
+            placeholder={t("depositLabelPlaceholder")}
+            onChange={(event) => {
+              const toAddress = event.target.value;
+              //...tradeData,
+              onChangeEvent(0, { tradeData: { toAddress } as T, to: "button" });
+            }}
+            fullWidth={true}
+          />
+          {tradeData.toAddress !== "" ? (
+            toIsAddressCheckLoading ? (
+              <LoadingIcon
+                width={24}
+                style={{ top: "32px", right: "8px", position: "absolute" }}
+              />
+            ) : (
+              <IconClearStyled
+                color={"inherit"}
+                size={"small"}
+                style={{ top: "30px" }}
+                aria-label="Clear"
+                onClick={handleClear}
+              >
+                <CloseIcon />
+              </IconClearStyled>
+            )
+          ) : (
+            ""
+          )}
+          <Box marginLeft={1 / 2}>
+            {tradeData.addressError?.error || !toIsLoopringAddress ? (
+              <Typography
+                color={"var(--color-error)"}
+                variant={"body2"}
+                marginTop={1 / 2}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelAddressNotLoopring")}
+              </Typography>
+            ) : tradeData.toAddress &&
+              realToAddress &&
+              !toIsAddressCheckLoading ? (
+              <Typography
+                color={"var(--color-text-primary)"}
+                variant={"body2"}
+                marginTop={1 / 2}
+                style={{ wordBreak: "break-all" }}
+              >
+                {realToAddress}
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Box>
+        </Grid>
+      ) : (
+        <></>
+      )}
+
       <Grid item marginTop={2} alignSelf={"stretch"}>
         {tradeData.belong === "ETH" && (
           <Typography
@@ -227,11 +311,7 @@ export const DepositWrap = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
               ? "true"
               : "false"
           }
-          disabled={
-            getDisabled || depositBtnStatus === TradeBtnStatus.LOADING
-              ? true
-              : false
-          }
+          disabled={getDisabled || depositBtnStatus === TradeBtnStatus.LOADING}
         >
           {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`depositLabelBtn`)}
         </Button>

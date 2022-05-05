@@ -13,6 +13,7 @@ import { utils } from "ethers";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { myLog } from "@loopring-web/common-resources";
 import { AddressError } from "../defs/common_defs";
+import { LoopringAPI } from "../api_wrapper";
 
 export function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(
@@ -182,11 +183,25 @@ export async function checkAddr(
 
   if (address) {
     try {
-      utils.getAddress(address);
+      if (
+        /^\d{5}$/g.test(address) &&
+        Number(address) > 10000 &&
+        LoopringAPI.exchangeAPI
+      ) {
+        const {
+          accInfo: { owner },
+        } = await LoopringAPI.exchangeAPI.getAccount({
+          // @ts-ignore
+          accountId: address,
+        });
+        realAddr = owner;
+      } else {
+        utils.getAddress(address);
+        realAddr = address;
+      }
       addressErr = AddressError.NoError;
-      realAddr = "";
     } catch (reason: any) {
-      return new Promise<AddrCheckResult>((resolve) => {
+      const result = await new Promise<AddrCheckResult>((resolve) => {
         try {
           connectProvides.usedWeb3?.eth.ens
             .getAddress(address)
@@ -210,6 +225,8 @@ export async function checkAddr(
           });
         }
       });
+      realAddr = result.realAddr;
+      addressErr = result.addressErr;
     }
   } else {
     addressErr = AddressError.EmptyAddr;

@@ -44,7 +44,6 @@ const initialDepositState: DepositData = {
   belong: undefined,
   tradeValue: 0,
   balance: 0,
-  reffer: undefined,
 };
 
 export const initialTradeNFT = {
@@ -209,23 +208,30 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       };
     },
     updateDepositData(state, action: PayloadAction<Partial<DepositData>>) {
-      const { belong, balance, tradeValue, reffer } = action.payload;
+      const {
+        belong,
+        balance,
+        tradeValue,
+        referAddress,
+        toAddress,
+        addressError,
+      } = action.payload;
       state.lastStep = LAST_STEP.nftDeposit;
       if (belong) {
         state.depositValue.belong = belong;
       }
 
-      if (balance === undefined || balance >= 0) {
+      if (balance && balance >= 0) {
         state.depositValue.balance = balance;
       }
 
-      if (tradeValue === undefined || tradeValue >= 0) {
+      if (tradeValue && tradeValue >= 0) {
         state.depositValue.tradeValue = tradeValue;
       }
 
-      if (reffer === undefined || reffer !== "*") {
-        state.depositValue.reffer = reffer;
-      }
+      state.depositValue.referAddress = referAddress;
+      state.depositValue.toAddress = toAddress;
+      state.depositValue.addressError = addressError;
     },
     updateNFTWithdrawData(
       state,

@@ -31,7 +31,9 @@ export type DepositData = {
   belong: string | undefined;
   tradeValue: number | undefined;
   balance: number | undefined;
-  reffer: string | undefined;
+  referAddress?: string;
+  toAddress?: string;
+  addressError?: { error: boolean; message?: string | undefined };
 };
 export type MintData = {
   tokenAddress: string | undefined;
