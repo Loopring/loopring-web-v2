@@ -472,7 +472,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  const nftWithdrawProps = {
+  const nftWithdrawProps: WithdrawProps<any, any> = {
     handleOnAddressChange: (value: any) => {
       setAddress(value);
     },

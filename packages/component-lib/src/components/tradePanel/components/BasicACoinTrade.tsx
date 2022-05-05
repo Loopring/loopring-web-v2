@@ -4,7 +4,7 @@ import React from "react";
 import { BasicACoinTradeProps } from "./Interface";
 import { InputButton } from "../../basic-lib";
 
-export const BasicACoinTrade = <T extends IBData<I>, I>({
+export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
   t,
   tradeData,
   onChangeEvent,
@@ -56,7 +56,9 @@ export const BasicACoinTrade = <T extends IBData<I>, I>({
   if (typeof handleError !== "function") {
     handleError = ({ belong, balance, tradeValue }: T) => {
       if (
-        (typeof tradeValue !== "undefined" && balance < tradeValue) ||
+        (typeof tradeValue !== "undefined" &&
+          balance &&
+          balance < tradeValue) ||
         (tradeValue && !balance)
       ) {
         return {
@@ -82,7 +84,7 @@ export const BasicACoinTrade = <T extends IBData<I>, I>({
   };
 
   return (
-    <InputButton<T, I, CoinInfo<I>>
+    <InputButton
       ref={inputBtnRef}
       disabled={getDisabled()}
       {...{
@@ -90,6 +92,6 @@ export const BasicACoinTrade = <T extends IBData<I>, I>({
         inputData: tradeData ? tradeData : ({} as T),
         coinMap: coinMap ? coinMap : ({} as CoinMap<I, CoinInfo<I>>),
       }}
-    ></InputButton>
+    />
   );
 };

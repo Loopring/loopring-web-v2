@@ -76,8 +76,14 @@ import {
   NFTDeploy_In_Progress,
   NFTMint_First_Method_Denied,
   NFTMint_In_Progress,
+  account,
+  Deposit_Sign_WaitForRefer,
 } from "@loopring-web/component-lib";
-import { connectProvides, walletServices } from "@loopring-web/web3-provider";
+import {
+  ConnectProviders,
+  connectProvides,
+  walletServices,
+} from "@loopring-web/web3-provider";
 
 import React, { useState } from "react";
 import {
@@ -550,6 +556,17 @@ export function useAccountModalForUI({
         ),
         onBack,
         noClose: true,
+      },
+      [AccountStep.Deposit_Sign_WaitForRefer]: {
+        view: (
+          <Deposit_Sign_WaitForRefer
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              t,
+            }}
+          />
+        ),
       },
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (

@@ -493,6 +493,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     handleOnAddressChange: (value: any) => {
       setAddress(value || "");
     },
+    addrStatus,
     feeInfo,
     chargeFeeTokenList,
     isFeeNotEnough,

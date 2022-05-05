@@ -1,6 +1,6 @@
 import { Trans, WithTranslation } from "react-i18next";
 import React, { ChangeEvent, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, BoxProps, Grid, Typography } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
@@ -46,6 +46,7 @@ const OriginBoxStyled = styled(Box)`
   padding: 0.3rem 0.3rem 0.3rem 1.6rem;
   display: flex;
   align-items: center;
+  font-size: ${({ theme }) => theme.fontDefault.body1};
   border: 1px solid
     ${({ thememode, status }: any) =>
       status === "down"
@@ -57,15 +58,15 @@ const OriginBoxStyled = styled(Box)`
   &:hover {
     border: 1px solid var(--color-border-hover);
   }
-` as any;
+` as (props: BoxProps & { thememode: any; status: any }) => JSX.Element;
 
 const OriginDropdownStyled = styled(Box)`
   background-color: var(--color-disable);
   width: 100%;
   border-radius: ${({ theme }: any) => theme.unit / 2}px;
   color: var(--color-text-primary);
-  padding: 1.6rem;
-`;
+  font-size: ${({ theme }) => theme.fontDefault.body1};
+` as typeof Box;
 
 const UpIconWrapper = styled(Box)`
   position: absolute;
@@ -197,7 +198,6 @@ export const TransferWrap = <
     },
     []
   );
-
   const isInvalidAddressOrENS =
     !isAddressCheckLoading &&
     address &&
@@ -248,8 +248,7 @@ export const TransferWrap = <
           <Typography
             padding={2}
             maxWidth={450}
-            fontSize={14}
-            variant={"body2"}
+            variant={"body1"}
             whiteSpace={"pre-line"}
           >
             <Trans i18nKey="transferDescription">
@@ -357,7 +356,8 @@ export const TransferWrap = <
               {isInvalidAddressOrENS ? (
                 <Typography
                   color={"var(--color-error)"}
-                  fontSize={14}
+                  variant={"body2"}
+                  marginTop={1 / 4}
                   alignSelf={"stretch"}
                   position={"relative"}
                 >
@@ -366,7 +366,8 @@ export const TransferWrap = <
               ) : isSameAddress ? (
                 <Typography
                   color={"var(--color-error)"}
-                  fontSize={14}
+                  variant={"body2"}
+                  marginTop={1 / 4}
                   alignSelf={"stretch"}
                   position={"relative"}
                 >
@@ -380,7 +381,7 @@ export const TransferWrap = <
                     <Typography
                       color={"var(--color-text-primary)"}
                       variant={"body2"}
-                      marginTop={1 / 2}
+                      marginTop={1 / 4}
                       style={{ wordBreak: "break-all" }}
                     >
                       {realAddr}
@@ -393,7 +394,7 @@ export const TransferWrap = <
                       <Typography
                         color={"var(--color-error)"}
                         lineHeight={1}
-                        fontSize={"1.4rem"}
+                        variant={"body2"}
                         marginTop={1 / 4}
                       >
                         {t("labelTransferAddressNotLoopring")}
@@ -457,13 +458,13 @@ export const TransferWrap = <
             <OriginBoxStyled
               thememode={themeMode}
               status={addressOriginDropdownStatus}
-              fontSize={14}
+              // variant={"body1"}
             >
               {addressOrigin}
             </OriginBoxStyled>
           </Box>
           <OriginDropdownStyled
-            fontSize={14}
+            padding={2}
             style={{
               display:
                 addressOriginDropdownStatus === "down" ? "block" : "none",

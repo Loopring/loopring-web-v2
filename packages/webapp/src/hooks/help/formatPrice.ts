@@ -1,49 +1,41 @@
-import { useState } from "react"
-import { useSelector } from "react-redux"
-
-import { useCustomDCEffect } from "hooks/common/useCustomDCEffect"
-import { getExistedMarket, toBig } from '@loopring-web/loopring-sdk'
-import store, { RootState } from "stores"
+import { getExistedMarket, toBig } from "@loopring-web/loopring-sdk";
+import store from "stores";
 
 export function formatedVal(rawData: string, base: string, quote: string) {
+  const { marketMap, marketArray } = store.getState().tokenMap;
 
-    const {marketMap, marketArray} = store.getState().tokenMap
+  if (!rawData || !base || !quote || !marketMap || !marketArray) {
+    return "";
+  }
 
-    if (!rawData || !base || !quote || !marketMap || !marketArray) {
-        return ''
-    }
+  const { market } = getExistedMarket(marketArray, base, quote);
+  const marketInfo = marketMap[market];
 
-    const {market} = getExistedMarket(marketArray, base, quote)
-    const marketInfo = marketMap[ market ]
+  const showVal = toBig(rawData).toFixed(marketInfo.precisionForPrice);
 
-    const showVal = toBig(rawData).toFixed(marketInfo.precisionForPrice)
-
-    return showVal
-
+  return showVal;
 }
 
-export function useFormatedVal(rawData: string, base: string, quote: string) {
-
-    const {marketMap, marketArray} = useSelector((state: RootState) => state.tokenMap)
-
-    const [showVal, setShowVal] = useState<string>(rawData)
-
-    useCustomDCEffect(() => {
-
-        if (!rawData || !base || !quote || !marketMap || !marketArray) {
-            setShowVal('')
-            return
-        }
-
-        const {market} = getExistedMarket(marketArray, base, quote)
-        const marketInfo = marketMap[ market ]
-
-        setShowVal(toBig(rawData).toFixed(marketInfo.precisionForPrice))
-
-    }, [marketMap, marketArray, base, quote])
-
-    return {
-        formatedVal: showVal,
-    }
-
-}
+// export function useFormatedVal(rawData: string, base: string, quote: string) {
+//   const { marketMap, marketArray } = useSelector(
+//     (state: RootState) => state.tokenMap
+//   );
+//
+//   const [showVal, setShowVal] = useState<string>(rawData);
+//
+//   useDeepCompareEffect(() => {
+//     if (!rawData || !base || !quote || !marketMap || !marketArray) {
+//       setShowVal("");
+//       return;
+//     }
+//
+//     const { market } = getExistedMarket(marketArray, base, quote);
+//     const marketInfo = marketMap[market];
+//
+//     setShowVal(toBig(rawData).toFixed(marketInfo.precisionForPrice));
+//   }, [marketMap, marketArray, base, quote]);
+//
+//   return {
+//     formatedVal: showVal,
+//   };
+// }

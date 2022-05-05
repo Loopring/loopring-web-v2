@@ -35,45 +35,8 @@ import { ModalLock } from "./modal";
 import { WalletHistory } from "./WalletHistory";
 import { WalletValidationInfo } from "./WalletValidationInfo";
 import { WalletProtector } from "./WalletProtector";
+import { BtnConnect } from "layouts/BtnConnect";
 
-const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
-  ({ t }: any) => {
-    const { status: accountStatus } = useAccount();
-    const [label, setLabel] = React.useState("labelConnectWallet");
-    const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
-
-    React.useEffect(() => {
-      if (accountStatus === SagaStatus.UNSET) {
-        setLabel(accountStaticCallBack(_btnLabel));
-      }
-    }, [accountStatus, i18n.language]);
-
-    return (
-      <>
-        <Button
-          variant={"contained"}
-          size={"large"}
-          color={"primary"}
-          fullWidth={true}
-          style={{ maxWidth: "280px" }}
-          onClick={() => {
-            myLog("UN_CONNECT!");
-            store.dispatch(changeShowModel({ _userOnModel: true }));
-            store.dispatch(
-              setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
-            );
-          }}
-        >
-          {label !== "" ? (
-            t(label)
-          ) : (
-            <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
-          )}
-        </Button>
-      </>
-    );
-  }
-) as typeof Button;
 export const GuardianPage = withTranslation(["common"])(
   ({ t, ...rest }: WithTranslation) => {
     const { account } = useAccount();

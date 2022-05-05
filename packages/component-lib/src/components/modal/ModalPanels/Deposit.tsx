@@ -1,6 +1,16 @@
 import { WithTranslation } from "react-i18next";
 import { DepositBase, IconType, PanelProps } from "./BasicPanel";
 
+export const Deposit_Sign_WaitForRefer = (
+  props: PanelProps & WithTranslation
+) => {
+  const propsPatch = {
+    iconType: IconType.LoadingIcon,
+    describe1: props.t("labelWaitingRefer"),
+  };
+  return <DepositBase {...props} {...propsPatch} />;
+};
+
 export const Deposit_Approve_WaitForAuth = (
   props: PanelProps & WithTranslation
 ) => {
