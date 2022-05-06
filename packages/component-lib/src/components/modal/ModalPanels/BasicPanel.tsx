@@ -210,7 +210,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
                   component={"div"}
                   marginTop={0}
                   alignSelf={"flex-center"}
-                  paddingRight={1}
+                  paddingX={2}
                   sx={{ wordBreak: "break-all" }}
                 >
                   {describe1}
