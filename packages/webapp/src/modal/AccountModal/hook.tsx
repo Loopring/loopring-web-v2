@@ -793,8 +793,8 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_WaitForAuth]: {
         view: (
           <NFTMint_WaitForAuth
-            symbol={nftMintValue.nftMETA?.name}
-            value={nftMintValue.mintData.tradeValue}
+            symbol={nftMintValue?.nftMETA?.name}
+            value={nftMintValue?.mintData?.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
             providerName={account.connectName}
