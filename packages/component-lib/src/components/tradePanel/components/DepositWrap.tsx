@@ -20,9 +20,9 @@ import { BasicACoinTrade } from "./BasicACoinTrade";
 //SelectReceiveCoin
 export const DepositWrap = <
   T extends {
-    Address?: string;
+    referAddress?: string;
     toAddress?: string;
-    addressError?: { error: boolean; message: string };
+    addressError?: { error: boolean; message?: string };
   } & IBData<I>,
   I
 >({
@@ -156,21 +156,21 @@ export const DepositWrap = <
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           <TextField
             className={"text-address"}
-            value={tradeData.Address ? tradeData.Address : ""}
+            value={tradeData.referAddress ? tradeData.referAddress : ""}
             error={!!(tradeData.addressError && tradeData.addressError?.error)}
-            label={t("depositLabel")}
+            label={t("depositLabelRefer")}
             placeholder={t("depositLabelPlaceholder")}
             onChange={(event) => {
-              const Address = event.target.value;
+              const referAddress = event.target.value;
               //...tradeData,
               onChangeEvent(0, {
-                tradeData: { Address } as T,
+                tradeData: { referAddress } as T,
                 to: "button",
               });
             }}
             fullWidth={true}
           />
-          {tradeData.Address !== "" ? (
+          {tradeData.referAddress !== "" ? (
             referIsAddressCheckLoading ? (
               <LoadingIcon
                 width={24}
@@ -191,7 +191,7 @@ export const DepositWrap = <
             ""
           )}
           <Box marginLeft={1 / 2}>
-            {tradeData.addressError?.error || !referIsAddressCheckLoading ? (
+            {tradeData.addressError?.error || !referIsLoopringAddress ? (
               <Typography
                 color={"var(--color-error)"}
                 variant={"body2"}
@@ -201,7 +201,7 @@ export const DepositWrap = <
               >
                 {t("labelAddressNotLoopring")}
               </Typography>
-            ) : tradeData.toAddress &&
+            ) : tradeData.referAddress &&
               realReferAddress &&
               !referIsAddressCheckLoading ? (
               <Typography
