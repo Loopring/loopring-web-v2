@@ -38,6 +38,7 @@ const Header = withTranslation("common")(
       const { confirmWrapper } = useConfirmation();
       const { allowTrade } = useSystem();
       const { account } = useAccount();
+      console.log(/(guardian)|(depositto)/gi.test(pathname));
       return (
         <>
           {isHideOnScroll ? (
@@ -50,7 +51,7 @@ const Header = withTranslation("common")(
                 isMobile={isMobile}
                 allowTrade={allowTrade}
                 headerMenuData={
-                  /guardian/gi.test(pathname)
+                  /(guardian)|(depositto)/gi.test(pathname)
                     ? headerMenuLandingData
                     : headerMenuData
                 }
@@ -68,7 +69,7 @@ const Header = withTranslation("common")(
               allowTrade={allowTrade}
               isMobile={isMobile}
               headerMenuData={
-                /guardian/gi.test(pathname)
+                /(guardian)|(depositto)/gi.test(pathname)
                   ? headerMenuLandingData
                   : headerMenuData
               }

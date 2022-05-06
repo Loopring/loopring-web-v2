@@ -17,7 +17,6 @@ import {
 import { DepositViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 
-//SelectReceiveCoin
 export const DepositWrap = <
   T extends {
     referAddress?: string;

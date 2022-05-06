@@ -129,7 +129,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             </Box>
           </Container>
         </Route>
-        <Route exact path={["/depositTo", "/depositTo/*"]}>
+        <Route exact path={["/depositto", "/depositto/*"]}>
           {query && query.has("noheader") ? (
             <></>
           ) : (

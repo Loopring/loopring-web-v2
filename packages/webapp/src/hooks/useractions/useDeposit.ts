@@ -158,7 +158,11 @@ export const useDeposit = <
         chargeFeeList?.findIndex(
           ({ belong }) => belong === depositValue.belong
         ) ?? -1;
-      if ((isNewAccount && index !== -1) || !isNewAccount) {
+      if (
+        isAllowInputTokenAddress ||
+        (isNewAccount && index !== -1) ||
+        !isNewAccount
+      ) {
         enableBtn();
         return;
       }
