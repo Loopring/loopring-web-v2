@@ -119,9 +119,18 @@ export const useDeposit = <
   ].includes(account.readyState as any);
   const updateBtnStatus = React.useCallback(() => {
     resetBtnInfo();
+    myLog(
+      isAllowInputTokenAddress,
+      toIsLoopringAddress,
+      realToAddress,
+      toAddressStatus
+    );
     if (
       (!isAllowInputTokenAddress ||
-        (isAllowInputTokenAddress && toIsLoopringAddress)) &&
+        (toIsLoopringAddress &&
+          !!depositValue.toAddress &&
+          depositValue.toAddress.trim() !== "" &&
+          toAddressStatus === AddressError.NoError)) &&
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
@@ -169,13 +178,15 @@ export const useDeposit = <
     disableBtn();
   }, [
     resetBtnInfo,
-    isAllowInputTokenAddress,
     toIsLoopringAddress,
+    realToAddress,
+    toAddressStatus,
     depositValue.belong,
     depositValue.tradeValue,
     depositValue.balance,
+    depositValue.toAddress,
     allowanceInfo,
-    walletLayer1?.ETH.count,
+    walletLayer1?.ETH?.count,
     disableBtn,
     chargeFeeList,
     isNewAccount,
@@ -191,6 +202,7 @@ export const useDeposit = <
     depositValue?.balance,
     depositValue.toAddress,
     allowanceInfo?.tokenInfo.symbol,
+    toAddressStatus,
   ]);
 
   const walletLayer1Callback = React.useCallback(() => {

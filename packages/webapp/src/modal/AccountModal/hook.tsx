@@ -478,7 +478,7 @@ export function useAccountModalForUI({
       account.accAddress
     );
     setIsSupport(!is_Contract);
-    myLog("isSupportCallback", account.accAddress, !is_Contract);
+    // myLog("isSupportCallback", account.accAddress, !is_Contract);
   }, [account]);
 
   React.useEffect(() => {
