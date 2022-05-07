@@ -215,7 +215,7 @@ export const IPFSSourceUpload = ({
                 alignSelf={"stretch"}
                 flex={1}
                 display={"flex"}
-                style={{ background: "var(--color-white)" }}
+                style={{ background: "var(--field-opacity)" }}
                 height={"100%"}
               >
                 <NftImage

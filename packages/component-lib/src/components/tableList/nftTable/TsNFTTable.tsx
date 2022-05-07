@@ -162,7 +162,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                     height={RowConfig.rowHeight + "px"}
                     width={RowConfig.rowHeight + "px"}
                     padding={1 / 4}
-                    style={{ background: "var(--color-white)" }}
+                    style={{ background: "var(--field-opacity)" }}
                   >
                     {row.metadata?.imageSize && (
                       <NftImage
@@ -179,7 +179,6 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                     justifyContent={"center"}
                     height={RowConfig.rowHeight + "px"}
                     width={RowConfig.rowHeight + "px"}
-                    style={{ background: "var(--color-white)" }}
                   />
                 )}
                 <Typography
