@@ -36,8 +36,8 @@ i18n.use(initReactI18next).init({
   keySeparator: false, // we do not use keys in form messages.welcome
   interpolation: {
     escapeValue: false, // react already safes from xss
+    formatSeparator: ", ",
   },
-  // debug:true,
   react: {
     bindI18n: "languageChanged",
     // bindI18nStore: '',

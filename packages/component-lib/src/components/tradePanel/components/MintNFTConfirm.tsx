@@ -20,6 +20,7 @@ import {
   TextareaAutosizeStyled,
   Table,
   Column,
+  NftImage,
 } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { TradeBtnStatus } from "../Interface";
@@ -136,20 +137,21 @@ export const MintNFTConfirm = <
                   >
                     {metaData.image ? (
                       <Box
+                        alignSelf={"stretch"}
                         flex={1}
                         display={"flex"}
+                        style={{ background: "var(--color-white)" }}
                         alignItems={"center"}
                         height={"100%"}
                         justifyContent={"center"}
                       >
-                        <img
+                        <NftImage
                           alt={"NFT"}
-                          width={"100%"}
-                          height={"100%"}
                           src={metaData?.image?.replace(
                             IPFS_META_URL,
                             IPFS_LOOPRING_SITE
                           )}
+                          onError={() => undefined}
                         />
                       </Box>
                     ) : (

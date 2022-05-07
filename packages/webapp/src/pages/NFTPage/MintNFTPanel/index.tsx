@@ -81,26 +81,29 @@ export const MintNFTPanel = () => {
           {t("labelMINTNFTTitle")}
         </Typography>
         <Box flex={1} display={"flex"}>
-          <SwipeableViewsStyled
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={mintWholeProps.currentTab}
-          >
-            {
-              panelList.map((panel, index) => {
-                return (
-                  <Box
-                    flex={1}
-                    display={"flex"}
-                    alignItems={"stretch"}
-                    key={index}
-                  >
-                    {panel.element}
-                  </Box>
-                );
-              })
-              // panelList[currentTab].element
-            }
-          </SwipeableViewsStyled>
+          {/*<SwipeableViewsStyled*/}
+          {/*  axis={theme.direction === "rtl" ? "x-reverse" : "x"}*/}
+          {/*  index={mintWholeProps.currentTab}*/}
+          {/*>*/}
+          {/*  */}
+          {/*</SwipeableViewsStyled>*/}
+          {
+            panelList.map((panel, index) => {
+              return (
+                <Box
+                  flex={1}
+                  display={
+                    mintWholeProps.currentTab === index ? "flex" : "none"
+                  }
+                  alignItems={"stretch"}
+                  key={index}
+                >
+                  {panel.element}
+                </Box>
+              );
+            })
+            // panelList[currentTab].element
+          }
         </Box>
       </StyledPaper>
     </>
