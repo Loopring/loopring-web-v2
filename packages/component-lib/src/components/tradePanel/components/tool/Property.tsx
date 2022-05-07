@@ -127,6 +127,7 @@ export const Property = React.memo(
             <IconButton
               sx={{ marginTop: 3 }}
               edge={"end"}
+              size={"large"}
               // disabled={properties.length === 1 ? true : false}
               onClick={() => onDelete(index)}
             >

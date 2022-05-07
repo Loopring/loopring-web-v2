@@ -179,24 +179,12 @@ export const MintNFTBlock = <
                       <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
                     </Trans>
                   </Typography>
-                  {/*<Typography*/}
-                  {/*  // component={"span"}*/}
-                  {/*  variant={"inherit"}*/}
-                  {/*  // display={"flex"}*/}
-                  {/*  // lineHeight={1.5}*/}
-                  {/*  // justifyContent={"space-between"}*/}
-                  {/*>*/}
-                  {/* */}
-                  {/*  /!*<Typography component={"span"} variant={"inherit"}>*!/*/}
-                  {/*  /!*  {t("labelMintRoyaltyPercentageRange")}*!/*/}
-                  {/*  /!*</Typography>*!/*/}
-                  {/*</Typography>*/}
                 </Tooltip>
               ),
               size: InputSize.small,
               inputData: {
                 balance: 10,
-                tradeValue: nftMeta.royaltyPercentage,
+                tradeValue: nftMeta.royaltyPercentage ?? 0,
                 belong: "royaltyPercentage" as any,
               },
 
@@ -259,12 +247,6 @@ export const MintNFTBlock = <
             }
             walletMap={{}}
           />
-          {/*<TextField*/}
-          {/*  value={nftMeta.nftBalance}*/}
-          {/*  fullWidth*/}
-          {/*  label={t("labelMintAmount")}*/}
-          {/*  type={"number"}*/}
-          {/*/>*/}
         </Grid>
         <Grid item xs={12} md={12} flex={1}>
           <FormLabel>

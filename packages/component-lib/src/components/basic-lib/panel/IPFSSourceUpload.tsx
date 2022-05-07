@@ -40,7 +40,16 @@ const BoxStyle = styled(Box)`
   &:hover {
     opacity: 0.95;
   }
-`;
+` as typeof Box;
+const BoxStyle1 = styled(Box)`
+  ${({ theme }) =>
+    theme.border.defaultFrame({
+      c_key: theme.colorBase.divide,
+      d_W: 0,
+      d_R: 1,
+    })};
+` as typeof Box;
+
 export type IpfsFile = {
   file: File;
   isProcessing: boolean;
@@ -211,11 +220,11 @@ export const IPFSSourceUpload = ({
                 {close}
               </Box>
             ) : (
-              <Box
+              <BoxStyle1
                 alignSelf={"stretch"}
                 flex={1}
                 display={"flex"}
-                style={{ background: "var(--field-opacity)" }}
+                style={{ background: "var(--color-box-secondary)" }}
                 height={"100%"}
               >
                 <NftImage
@@ -225,7 +234,7 @@ export const IPFSSourceUpload = ({
                   src={value.localSrc}
                 />
                 {close}
-              </Box>
+              </BoxStyle1>
             )
           ) : (
             <BoxStyle
