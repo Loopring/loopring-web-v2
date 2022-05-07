@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, TablePagination, Table } from "../../basic-lib";
+import { Column, TablePagination, Table, NftImage } from "../../basic-lib";
 import {
   CompleteIcon,
   DepositIcon,
@@ -38,7 +38,8 @@ import {
 import { useSettings } from "../../../stores";
 
 const BoxNFT = styled(Box)`
-  background: var(--opacity) no-repeat 50% 50%;
+  background: no-repeat 50% 50%;
+  background-color: var(--opacity);
   background-image: url(${SoursURL + "svg/loopring.svg"});
   img {
     object-fit: contain;
@@ -153,20 +154,34 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 title={row.nftTxType}
                 display={"flex"}
               >
-                <BoxNFT
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
-                  height={RowConfig.rowHeight + "px"}
-                  width={RowConfig.rowHeight + "px"}
-                >
-                  {row.metadata?.imageSize && (
-                    <img
-                      height={RowConfig.rowHeight - 8}
-                      src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
-                    />
-                  )}
-                </BoxNFT>
+                {row.metadata?.imageSize ? (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                    padding={1 / 4}
+                    style={{ background: "var(--color-white)" }}
+                  >
+                    {row.metadata?.imageSize && (
+                      <NftImage
+                        alt={row.metadata.name}
+                        onError={() => undefined}
+                        src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
+                      />
+                    )}
+                  </Box>
+                ) : (
+                  <BoxNFT
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                    style={{ background: "var(--color-white)" }}
+                  />
+                )}
                 <Typography
                   color={"inherit"}
                   flex={1}

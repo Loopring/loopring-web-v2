@@ -38,7 +38,6 @@ const Header = withTranslation("common")(
       const { confirmWrapper } = useConfirmation();
       const { allowTrade } = useSystem();
       const { account } = useAccount();
-      console.log(/(guardian)|(depositto)/gi.test(pathname));
       return (
         <>
           {isHideOnScroll ? (

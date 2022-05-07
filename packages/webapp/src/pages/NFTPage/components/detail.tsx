@@ -196,6 +196,9 @@ export const NFTDetail = withTranslation("common")(
               <Typography
                 color={"var(--color-text-secondary)"}
                 title={popItem?.name}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
               >
                 {popItem?.name ?? EmptyValueTag}
               </Typography>

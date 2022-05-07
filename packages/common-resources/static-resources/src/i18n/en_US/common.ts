@@ -637,7 +637,7 @@ export default {
   labelAddressNotLoopring: "That account not active layer2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
-  labelLoadDes: "Drag or click to upload files ({{types}}, ≦10MB)",
+  labelLoadDes: "Drag or click to upload files ({{types}}, max size: 100MB)",
   labelUpload: "upLoad",
   labelMintNoImageBtn: "Please upload image",
   labelMintUserAgree: "Please agree terms of service",
