@@ -249,7 +249,7 @@ export const useDeposit = <
         handleClear();
       }
     }
-  }, [isShow, isAllowInputTokenAddress]);
+  }, [isShow, isAllowInputTokenAddress, walletLayer1]);
   const signRefer = React.useCallback(async () => {
     if (
       referIsLoopringAddress &&
