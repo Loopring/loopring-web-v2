@@ -263,7 +263,9 @@ export const TransferWrap = <
         {isConfirmTransfer ? (
           getTransferConfirmTemplate(
             t("labelTransferTokenAmount"),
-            `${tradeData?.tradeValue} ${tradeData?.belong}`
+            `${tradeData?.tradeValue} ${
+              type === "NFT" ? "NFT" : tradeData?.belong
+            }`
           )
         ) : type === "NFT" ? (
           <NFTInput

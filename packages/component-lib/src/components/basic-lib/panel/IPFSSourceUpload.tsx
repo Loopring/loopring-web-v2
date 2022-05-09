@@ -220,24 +220,26 @@ export const IPFSSourceUpload = ({
                 {close}
               </Box>
             ) : (
-              <LinkStyle
-                alignSelf={"stretch"}
-                flex={1}
-                display={"flex"}
-                style={{ background: "var(--color-box-secondary)" }}
-                height={"100%"}
-                target="_blank"
-                rel="noopener noreferrer"
-                href={value.fullSrc}
-              >
-                <NftImage
-                  alt={value?.file?.name}
-                  title={value.cid}
-                  onError={() => undefined}
-                  src={value.localSrc}
-                />
+              <>
+                <LinkStyle
+                  alignSelf={"stretch"}
+                  flex={1}
+                  display={"flex"}
+                  style={{ background: "var(--color-box-secondary)" }}
+                  height={"100%"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={value.fullSrc}
+                >
+                  <NftImage
+                    alt={value?.file?.name}
+                    title={value.cid}
+                    onError={() => undefined}
+                    src={value.localSrc}
+                  />
+                </LinkStyle>
                 {close}
-              </LinkStyle>
+              </>
             )
           ) : (
             <BoxStyle

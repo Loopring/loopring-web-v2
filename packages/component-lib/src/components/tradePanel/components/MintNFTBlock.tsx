@@ -95,6 +95,7 @@ export const MintNFTBlock = <
           <TextField
             value={nftMeta.name}
             fullWidth
+            inputProps={{ maxLength: 20 }}
             label={
               <Trans i18nKey={"labelMintName"}>
                 Name
@@ -298,7 +299,7 @@ export const MintNFTBlock = <
               overflowX: "hidden",
               resize: "vertical",
             }}
-            maxLength={2000}
+            maxLength={1000}
             onChange={(event) =>
               handleOnMetaChange({
                 description: event.target.value,

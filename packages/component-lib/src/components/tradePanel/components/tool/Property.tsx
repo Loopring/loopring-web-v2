@@ -102,6 +102,7 @@ export const Property = React.memo(
           <Grid item xs={5}>
             <TextField
               value={property.key}
+              inputProps={{ maxLength: 10 }}
               fullWidth
               label={<Trans i18nKey={"labelMintPropertyKey"}>key</Trans>}
               type={"text"}
@@ -111,6 +112,7 @@ export const Property = React.memo(
           <Grid item xs={6}>
             <TextField
               value={property.value}
+              inputProps={{ maxLength: 20 }}
               fullWidth
               label={<Trans i18nKey={"labelMintPropertyValue"}>value</Trans>}
               type={"text"}
