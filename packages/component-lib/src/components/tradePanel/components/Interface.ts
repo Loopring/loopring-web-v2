@@ -135,6 +135,7 @@ export type DepositExtendProps<T> = {
   referIsLoopringAddress?: boolean;
   realReferAddress?: string;
   handleClear: () => void;
+  isToAddressEditable: boolean;
 } & DepositInfoProps;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &

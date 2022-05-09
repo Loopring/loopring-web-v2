@@ -49,6 +49,7 @@ export const useDeposit = <
 ) => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
+  const [isToAddressEditable, setIsToAddressEditable] = React.useState(false);
   const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
 
   const {
@@ -83,6 +84,7 @@ export const useDeposit = <
   } = useOpenModals();
 
   const { walletLayer1 } = useWalletLayer1();
+
   const { updateDepositHash } = useOnChainInfo();
   const { t } = useTranslation("common");
   const {
@@ -93,21 +95,6 @@ export const useDeposit = <
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus();
-  React.useEffect(() => {
-    if (isAllowInputTokenAddress && walletLayer1 !== undefined) {
-      handlePanelEvent(
-        {
-          to: "button",
-          tradeData: {
-            belong: opts?.token?.toUpperCase() ?? "LRC",
-            toAddress: opts?.owner?.toLowerCase(),
-            addressError: undefined,
-          } as T,
-        },
-        "Tobutton"
-      );
-    }
-  }, [opts?.token, opts?.owner, walletLayer1]);
 
   const { allowanceInfo } = useAllowances({
     owner: account.accAddress,
@@ -238,7 +225,29 @@ export const useDeposit = <
   React.useEffect(() => {
     if (isShow || isAllowInputTokenAddress) {
       walletLayer1Callback();
-      handleClear();
+      if (isAllowInputTokenAddress) {
+        handlePanelEvent(
+          {
+            to: "button",
+            tradeData: {
+              belong:
+                walletLayer1 !== undefined
+                  ? opts?.token?.toUpperCase() ?? "LRC"
+                  : undefined,
+              toAddress: opts?.owner?.toLowerCase(),
+              addressError: undefined,
+            } as T,
+          },
+          "Tobutton"
+        );
+        if (opts?.owner) {
+          setIsToAddressEditable(false);
+        } else {
+          handleClear();
+        }
+      } else {
+        handleClear();
+      }
     }
   }, [isShow, isAllowInputTokenAddress]);
   const signRefer = React.useCallback(async () => {
@@ -524,7 +533,7 @@ export const useDeposit = <
       if (data?.tradeData.hasOwnProperty("addressError")) {
         newValue.addressError = data?.tradeData.addressError;
       }
-      return new Promise<void>((res: any) => {
+      return new Promise<void>((resolve) => {
         if (data.to === "button") {
           if (walletLayer1 && data?.tradeData?.belong) {
             const walletInfo = walletLayer1[data.tradeData.belong];
@@ -551,7 +560,7 @@ export const useDeposit = <
           }
         }
         updateDepositData(newValue);
-        res();
+        resolve();
       });
     },
     [walletLayer1, updateDepositData]
@@ -656,6 +665,7 @@ export const useDeposit = <
     referIsAddressCheckLoading,
     referIsLoopringAddress,
     realReferAddress,
+    isToAddressEditable,
   };
 
   return {

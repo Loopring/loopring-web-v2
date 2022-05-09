@@ -48,8 +48,7 @@ export const DepositWrap = <
   referIsAddressCheckLoading,
   referIsLoopringAddress,
   realReferAddress,
-  // handleOnAddressChange,
-  // handleAddressError,
+  isToAddressEditable,
   wait = globalSetup.wait,
   allowTrade,
   ...rest
@@ -226,9 +225,10 @@ export const DepositWrap = <
             value={tradeData.toAddress ? tradeData.toAddress : ""}
             error={!!(tradeData.addressError && tradeData.addressError?.error)}
             label={t("depositLabelTo")}
+            disabled={getDisabled || !isToAddressEditable}
             placeholder={t("depositLabelPlaceholder")}
-            onChange={(event) => {
-              const toAddress = event.target.value;
+            onChange={(_event) => {
+              const toAddress = _event.target.value;
               //...tradeData,
               onChangeEvent(0, { tradeData: { toAddress } as T, to: "button" });
             }}

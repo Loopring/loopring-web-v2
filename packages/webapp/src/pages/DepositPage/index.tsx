@@ -4,18 +4,21 @@ import {
   AccountStatus,
   fnType,
   IBData,
-  myLog,
+  LoopringIcon,
   SagaStatus,
 } from "@loopring-web/common-resources";
 import {
+  AccountStep,
   boxLiner,
   BtnInfo,
   DepositPanel,
   DepositTitle,
-  SwapTradeData,
+  setShowAccount,
   TradeBtnStatus,
+  useSettings,
+  WalletConnectL1Btn,
 } from "@loopring-web/component-lib";
-import { useAccount } from "stores/account";
+import { changeShowModel, useAccount } from "stores/account";
 import { useDeposit } from "hooks/useractions/useDeposit";
 import { Box } from "@mui/material";
 import styled from "@emotion/styled";
@@ -23,10 +26,11 @@ import { useLocation } from "react-router-dom";
 import {
   accountStaticCallBack,
   btnClickMap,
-  btnLabel,
 } from "../../layouts/connectStatusCallback";
-import * as _ from "lodash";
-import { activateAccount } from "../../services/account/activateAccount";
+import store from "../../stores";
+import _ from "lodash";
+import { WalletConnectBtnL1 } from "../../layouts/BtnConnect";
+
 const BoxStyle = styled(Box)`
   max-height: 400px;
   width: var(--swap-box-width);
@@ -38,6 +42,7 @@ const BoxStyle = styled(Box)`
 export const DepositToPage = withTranslation(["common"])(
   ({ t }: WithTranslation) => {
     const { search } = useLocation();
+    const { isMobile } = useSettings();
     const searchParams = new URLSearchParams(search);
     const token = searchParams.get("token");
     const owner = searchParams.get("owner");
@@ -106,6 +111,21 @@ export const DepositToPage = withTranslation(["common"])(
             flexDirection={"column"}
             alignItems={"center"}
           >
+            <Box
+              display={"flex"}
+              marginBottom={5 / 2}
+              width={"var(--swap-box-width)"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <LoopringIcon
+                htmlColor={"var(--color-primary)"}
+                style={{ height: "40px", width: "120px", marginTop: -10 }}
+              />
+              <Box display={"flex"} alignItems={"center"}>
+                <WalletConnectBtnL1 isShowOnUnConnect={false} />
+              </Box>
+            </Box>
             <BoxStyle display={"flex"} flexDirection={"column"}>
               <Box
                 display={"flex"}
@@ -113,7 +133,7 @@ export const DepositToPage = withTranslation(["common"])(
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                <DepositTitle title={t("depositTitle")} />
+                <DepositTitle title={t("labelDepositTitleBridge")} />
               </Box>
               <DepositPanel
                 {...depositProps}

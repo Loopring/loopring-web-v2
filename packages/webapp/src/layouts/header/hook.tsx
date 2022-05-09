@@ -33,8 +33,10 @@ export const useHeader = () => {
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [
       function () {
-        setShouldShow(true);
-        setShowAccount({ isShow: true, step: AccountStep.HadAccount });
+        store.dispatch(changeShowModel({ _userOnModel: true }));
+        store.dispatch(
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
+        );
       },
     ],
     [fnType.LOCKED]: [
