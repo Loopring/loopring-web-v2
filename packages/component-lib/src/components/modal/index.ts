@@ -10,11 +10,17 @@ export type ModalBasicProps = {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];
   onBack?: () => void;
+  isLayer2Only?: boolean;
   step: number;
   noClose?: boolean;
   style?: any; //{w,h}
   onQRClick?: () => void;
-  panelList: Array<{ view: JSX.Element; onBack?: undefined | (() => void) }>;
+  panelList: Array<{
+    view: JSX.Element;
+    onBack?: undefined | (() => void);
+    height?: any;
+    width?: any;
+  }>;
 };
 export type ModalWalletConnectProps = ModalBasicProps;
 export type ModalAccountProps = ModalWalletConnectProps;

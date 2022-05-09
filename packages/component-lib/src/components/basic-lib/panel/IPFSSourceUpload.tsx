@@ -270,7 +270,7 @@ export const IPFSSourceUpload = ({
                   paddingBottom={1}
                   {...typographyProps}
                 >
-                  {t(title, { types: types })}
+                  {t(title, { types: types?.join(", ") })}
                 </Typography>
                 <FormHelperText>
                   {fileRejections[0]?.errors[0]?.message}

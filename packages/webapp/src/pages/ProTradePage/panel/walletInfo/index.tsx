@@ -19,21 +19,20 @@ import {
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { usePageTradePro } from "stores/router";
 import _ from "lodash";
 import {
+  useTokenMap,
   accountStaticCallBack,
   btnClickMap,
   btnLabel,
-} from "layouts/connectStatusCallback";
-import { useAccount } from "stores/account";
-import { HeaderHeight } from "../../index";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { useTokenMap } from "stores/token";
-import {
+  usePageTradePro,
+  useAccount,
   volumeToCount,
   volumeToCountAsBigNumber,
-} from "../../../../hooks/help";
+} from "@loopring-web/core";
+
+import { HeaderHeight } from "../../index";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
   const { status: accountStatus, account } = useAccount();

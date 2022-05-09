@@ -12,7 +12,7 @@ import { Box, Grid, Tabs, Tab } from "@mui/material";
 import { useAmmMiningUI } from "./hook";
 import { Trans, withTranslation } from "react-i18next";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../../stores/account";
+import { useAccount } from "@loopring-web/core";
 
 type ClickHandler = {
   handleClick: (pair: string) => void;

@@ -8,7 +8,7 @@ import {
 import { withTranslation } from "react-i18next";
 import { Card } from "./Card";
 import { useHistory } from "react-router-dom";
-import { LoopringAPI } from "../../api_wrapper";
+import { LoopringAPI } from "@loopring-web/core";
 import { useSettings } from "@loopring-web/component-lib";
 import { ContainerStyle, TitleTypography, ContainerStyled } from "./style";
 

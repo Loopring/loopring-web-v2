@@ -21,9 +21,9 @@ import {
   EmptyValueTag,
   getShortAddr,
   SoursURL,
+  NFTLimit,
 } from "@loopring-web/common-resources";
 import { NFTMedia } from "../components/nftMedia";
-import { NFTLimit } from "stores/walletLayer2NFT/saga";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);

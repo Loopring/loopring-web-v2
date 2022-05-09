@@ -25,14 +25,14 @@ import {
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
-import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
-import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
+import { useNFTTransfer } from "@loopring-web/core";
+import { useNFTWithdraw } from "@loopring-web/core";
+import { useNFTDeploy } from "@loopring-web/core";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
 import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
-import { useAccount } from "../../../stores/account";
+import { useAccount } from "@loopring-web/core";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);

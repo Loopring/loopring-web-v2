@@ -1,14 +1,34 @@
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
-import { usePairMatch } from "hooks/common/usePairMatch";
-import { useSocket } from "stores/socket";
-import { useAccount } from "stores/account";
-import { useAmount } from "stores/amount";
-import { useTokenMap } from "stores/token";
-import { useAmmMap } from "stores/Amm/AmmMap";
-import { useWalletLayer2 } from "stores/walletLayer2";
-import { useSystem } from "stores/system";
-import { usePageTradeLite } from "stores/router";
+import {
+  usePairMatch,
+  useSocket,
+  useAccount,
+  useAmount,
+  useTokenMap,
+  useWalletLayer2,
+  useSystem,
+  usePageTradeLite,
+  useTicker,
+  store,
+  useAmmMap,
+  useWalletLayer2Socket,
+  walletLayer2Service,
+  VolToNumberWithPrecision,
+  accountStaticCallBack,
+  btnClickMap,
+  btnLabel,
+  makeMarketArray,
+  makeWalletLayer2,
+  useToast,
+  LoopringAPI,
+  getTimestampDaysLater,
+  DefaultFeeBips,
+  getPriceImpactInfo,
+  PriceLevel,
+  BIGO,
+  MAPFEEBIPS,
+} from "@loopring-web/core";
 
 import {
   AccountStatus,
@@ -35,18 +55,7 @@ import {
   useToggle,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
-import { VolToNumberWithPrecision } from "utils/formatter_tool";
 
-import { useToast } from "hooks/common/useToast";
-import {
-  accountStaticCallBack,
-  btnClickMap,
-  btnLabel,
-  makeMarketArray,
-  makeWalletLayer2,
-} from "hooks/help";
-import { LoopringAPI } from "api_wrapper";
 import { myLog } from "@loopring-web/common-resources";
 import {
   calcPriceByAmmTickMapDepth,
@@ -54,17 +63,9 @@ import {
   reCalcStoB,
   swapDependAsync,
 } from "./help";
-import { useTicker } from "stores/ticker";
-import store from "stores";
 import { useHistory } from "react-router-dom";
-import {
-  DefaultFeeBips,
-  getPriceImpactInfo,
-  PriceLevel,
-} from "hooks/common/useTrade";
-import { BIGO, MAPFEEBIPS } from "defs/common_defs";
+
 import * as _ from "lodash";
-import { getTimestampDaysLater } from "utils/dt_tools";
 
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();

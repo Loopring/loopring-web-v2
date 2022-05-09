@@ -57,7 +57,13 @@ const Style = styled.div`
   flex: 1;
 `;
 let tradeData: any = {};
+// @ts-ignore
 let depositProps: DepositProps<any, any> = {
+  toIsLoopringAddress: false,
+  toIsAddressCheckLoading: false,
+  referIsLoopringAddress: false,
+  referIsAddressCheckLoading: false,
+  type: "NFT",
   isNewAccount: false,
   tradeData,
   coinMap,

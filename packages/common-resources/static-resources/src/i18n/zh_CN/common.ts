@@ -638,4 +638,5 @@ export default {
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws, and does not contain explicit and sensitive, adult themed or other NSFW content. We reserve the right to delete NFTs or Inappropriate content won't be displayed as is at any time if content is discovered to be harmful.",
+  labelPayer: "Payer wallet:",
 };

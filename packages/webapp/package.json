@@ -7,6 +7,7 @@
   "dependencies": {
     "@loopring-web/common-resources": "1.0.0",
     "@loopring-web/component-lib": "1.0.0",
+    "@loopring-web/core": "1.0.0",
     "@manaflair/redux-batch": "^1.0.0",
     "clipboard": "^2.0.8",
     "ethers": "^5.5.4",
@@ -39,22 +40,9 @@
   "main": "./public/electron.js",
   "homepage": ".",
   "scripts": {
-    "me_d": "yarn build; yarn deploy_me_dev; sleep 3; yarn dns_d",
-    "dns_d": "dig TXT _dnslink.alpha-dev.loopring.pro | grep 'dnslink=/ipfs/' | awk -F '\"' {'print $2'} | awk -F '/' {'print $3'}",
-    "deploy_me_dev": "bash -ac '. .env.deploy.me.dev; npx ipfs-deploy -t webapp_dex_dev_`git rev-parse --short HEAD` -p pinata -d cloudflare build'",
-    "me": "yarn build; yarn deploy_me; sleep 3; yarn dns",
-    "deploy_lrc": "bash -ac '. .env.deploy; npx ipfs-deploy -p pinata -d cloudflare -t webapp_dex build'",
-    "deploy_me": "bash -ac '. .env.deploy.me; npx ipfs-deploy -t webapp_dex -p pinata -d cloudflare build'",
     "build": "git rev-parse --short HEAD; REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production react-app-rewired build",
-    "deploy_infura": "npx ipfs-deploy build > .testfile",
-    "update_pinata": "bash -ac '. .env.deploy; cat .testfile | xargs -I {} npx ipfs-deploy -p pinata -d cloudflare -c {}'",
-    "deploy:ipfs": "yarn build; yarn deploy_infura; yarn update_pinata",
-    "dns": "dig TXT _dnslink.alpha.loopring.pro | grep 'dnslink=/ipfs/' | awk -F '\"' {'print $2'} | awk -F '/' {'print $3'}",
     "dev": "cross-env REACT_APP_VER=\"git rev-parse --short HEAD\"_dev dotenv -e .env.development react-app-rewired start",
-    "build_dev": "REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development react-app-rewired build",
-    "predocker": "if [ ! -d \"build\" ]; then yarn build; fi",
-    "docker": "docker-compose build",
-    "gh": "yarn build; bash ./deploy.sh"
+    "build_dev": "REACT_APP_VER=`git rev-parse --short HEAD`_dev dotenv -e .env.development react-app-rewired build"
   },
   "browserslist": {
     "production": [

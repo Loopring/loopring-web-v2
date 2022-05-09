@@ -19,13 +19,12 @@ import HistoryPanel from "./HistoryPanel";
 import OrderPanel from "./OrderPanel";
 import MyLiqudityPanel from "./MyLiquidityPanel";
 import React from "react";
-import { useAccount } from "../../stores/account";
+import { useAccount, BtnConnect } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
 import { RedPockPanel } from "./RedPockPanel";
 import { useGetAssets } from "./AssetPanel/hook";
-import { BtnConnect } from "../../layouts/connectStatusCallback";
 
 export const subMenu = subMenuLayer2;
 

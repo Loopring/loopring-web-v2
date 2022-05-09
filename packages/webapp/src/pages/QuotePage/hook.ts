@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import store from "stores";
+
 import {
   MarketBlockProps,
   QuoteTableRawDataItem,
@@ -9,19 +9,22 @@ import {
   TradingInterval,
   WsTopicType,
 } from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "api_wrapper";
-import { tickerService } from "services/socket";
+
 import { myError, RowConfig, SagaStatus } from "@loopring-web/common-resources";
 import _ from "lodash";
-import { TickerMap, useTicker } from "stores/ticker";
-import { useSocket } from "../../stores/socket";
-import { useQueue } from "react-use";
-import { useFavoriteMarket } from "../../stores/localStore/favoriteMarket";
-import { useAmmActivityMap } from "../../stores/Amm/AmmActivityMap";
-import { LAYOUT } from "../../defs/common_defs";
+import {
+  store,
+  LoopringAPI,
+  tickerService,
+  favoriteMarket as favoriteMarketReducer,
+  useAmmActivityMap,
+  LAYOUT,
+  TickerMap,
+  useTicker,
+  useSocket,
+} from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 import { TableFilterParams } from "./index";
-import { useTranslation } from "react-i18next";
 
 export function useTickList<C extends { [key: string]: string }>() {
   const [tickList, setTickList] = React.useState<any>([]);
@@ -258,7 +261,8 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   >([]);
   const [tableHeight, setTableHeight] = React.useState(0);
 
-  const { favoriteMarket, removeMarket, addMarket } = useFavoriteMarket();
+  const { favoriteMarket, removeMarket, addMarket } =
+    favoriteMarketReducer.useFavoriteMarket();
   const { activityInProgressRules } = useAmmActivityMap();
 
   const getSwapRankingList = React.useCallback(async () => {

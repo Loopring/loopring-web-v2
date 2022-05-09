@@ -7,7 +7,7 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import { Button, TextField } from "../../../basic-lib";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
-import React from "react";
+import React, { ForwardedRef } from "react";
 
 export const Properties = ({
   properties = [],
@@ -78,17 +78,20 @@ export const Properties = ({
 };
 export const Property = React.memo(
   React.forwardRef(
-    ({
-      property,
-      index,
-      handleChange,
-      onDelete,
-    }: {
-      property: MetaProperty;
-      index: number;
-      handleChange: (property: Partial<MetaProperty>, index: number) => void;
-      onDelete: (index: number) => void;
-    }) => {
+    (
+      {
+        property,
+        index,
+        handleChange,
+        onDelete,
+      }: {
+        property: MetaProperty;
+        index: number;
+        handleChange: (property: Partial<MetaProperty>, index: number) => void;
+        onDelete: (index: number) => void;
+      },
+      ref: ForwardedRef<any>
+    ) => {
       // const [,] = React.useState<Partial<MetaProperty>>();
       const _handleChange = React.useCallback(
         (_property: Partial<MetaProperty>) => {
@@ -99,7 +102,7 @@ export const Property = React.memo(
 
       return (
         <>
-          <Grid item xs={5}>
+          <Grid item xs={5} ref={ref}>
             <TextField
               value={property.key}
               inputProps={{ maxLength: 10 }}

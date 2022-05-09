@@ -1,11 +1,17 @@
 import React from "react";
-import { useAccount } from "../../stores/account";
+import {
+  useAccount,
+  LoopringAPI,
+  useSystem,
+  layer1Store,
+  store,
+} from "@loopring-web/core";
+
 import {
   Layer1Action,
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { LoopringAPI } from "../../api_wrapper";
 import {
   ChainId,
   Guardian,
@@ -14,10 +20,6 @@ import {
   Protector,
 } from "@loopring-web/loopring-sdk";
 import { GuardianStep } from "@loopring-web/component-lib";
-import { useLayer1Store } from "../../stores/localStore/layer1Store";
-import { useSystem } from "../../stores/system";
-import store from "../../stores";
-
 export enum TxGuardianHistoryType {
   ADD_GUARDIAN = 51,
   GUARDIAN_CONFIRM_ADDITION = 52,
@@ -69,7 +71,7 @@ export const useHebaoMain = <
     step: GuardianStep.LockAccount_WaitForAuth,
     options: undefined,
   });
-  const { clearOneItem } = useLayer1Store();
+  const { clearOneItem } = layer1Store.useLayer1Store();
   const { chainId } = useSystem();
   const [isLoading, setIsLoading] = React.useState(false);
   const loadData = React.useCallback(async () => {

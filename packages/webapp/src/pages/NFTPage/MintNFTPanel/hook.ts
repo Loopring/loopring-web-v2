@@ -5,12 +5,12 @@ import {
   NFTMETA,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import { useModalData } from "stores/router";
+import { useModalData } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
-import { useNFTMeta } from "../../../services/mintServices/useNFTMeta";
-import { mintService, useNFTMint } from "../../../services/mintServices";
+import { useNFTMeta } from "@loopring-web/core";
+import { mintService, useNFTMint } from "@loopring-web/core";
 import React from "react";
-import { useAccount } from "../../../stores/account";
+import { useAccount } from "@loopring-web/core";
 const enum MINT_VIEW_STEP {
   METADATA,
   MINT_CONFIRM,

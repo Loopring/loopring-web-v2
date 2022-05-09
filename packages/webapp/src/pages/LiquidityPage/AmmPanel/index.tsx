@@ -17,11 +17,10 @@ import { useAmmExit } from "./hook_exit";
 import { useAmmCommon } from "./hook_common";
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import { AmmPoolSnapshot, TickerData } from "@loopring-web/loopring-sdk";
-import { TOAST_TIME } from "defs/common_defs";
+import { TOAST_TIME, initSlippage } from "@loopring-web/core";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import store from "stores";
-import { initSlippage } from "stores/router";
+import { store } from "@loopring-web/core";
 import { useDeepCompareEffect } from "react-use";
 
 const MyAmmLPAssets = withTranslation("common")(

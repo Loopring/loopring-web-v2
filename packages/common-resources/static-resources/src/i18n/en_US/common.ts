@@ -637,7 +637,7 @@ export default {
   labelAddressNotLoopring: "That account not active layer2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
-  labelLoadDes: "Drag or click to upload files ({{types}}, max size: 100MB)",
+  labelLoadDes: "Drag or click to upload files ({{types}}, max size: 10MB)",
   labelUpload: "upLoad",
   labelMintNoImageBtn: "Please upload image",
   labelMintUserAgree: "Please agree terms of service",
@@ -672,4 +672,5 @@ export default {
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws, and does not contain explicit and sensitive, adult themed or other NSFW content. We reserve the right to delete NFTs or Inappropriate content won't be displayed as is at any time if content is discovered to be harmful.",
   labelDepositTitleBridge: "Add Loopring L2 Assets",
+  labelPayer: "Payer wallet:",
 };

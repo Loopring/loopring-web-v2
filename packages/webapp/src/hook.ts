@@ -1,14 +1,19 @@
 import React from "react";
-import { useSystem } from "./stores/system";
-import { ChainId } from "@loopring-web/loopring-sdk";
-import { useAmmMap } from "./stores/Amm/AmmMap";
 import {
-  SagaStatus,
-  ThemeKeys,
-  ThemeType,
-} from "@loopring-web/common-resources";
-import { useTokenMap } from "./stores/token";
-import { useAccount } from "./stores/account";
+  useSystem,
+  useAmmMap,
+  useTokenMap,
+  useAccount,
+  useTicker,
+  useAmmActivityMap,
+  useTokenPrices,
+  useAmount,
+  useSocket,
+  useNotify,
+  layer1Store,
+} from "@loopring-web/core";
+import { ChainId } from "@loopring-web/loopring-sdk";
+import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
 import {
   ConnectProviders,
   ConnectProvides,
@@ -16,13 +21,6 @@ import {
   walletServices,
 } from "@loopring-web/web3-provider";
 import { useAccountInit } from "./hookAccountInit";
-import { useAmmActivityMap } from "./stores/Amm/AmmActivityMap";
-import { useTicker } from "./stores/ticker";
-import { useTokenPrices } from "./stores/tokenPrices";
-import { useAmount } from "./stores/amount";
-import { useSocket } from "./stores/socket";
-import { useNotify } from "./stores/notify";
-import { useLayer1Store } from "./stores/localStore/layer1Store";
 import { useSettings } from "@loopring-web/component-lib";
 import { useTheme } from "@emotion/react";
 
@@ -76,7 +74,7 @@ export function useInit() {
   const { status: tickerStatus, statusUnset: tickerStatusUnset } = useTicker();
   const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount();
   const { status: socketStatus, statusUnset: socketUnset } = useSocket();
-  const { circleUpdateLayer1ActionHistory } = useLayer1Store();
+  const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store();
   const {
     getNotify,
     status: notifyStatus,
@@ -146,7 +144,6 @@ export function useInit() {
       }
     })(account);
   }, []);
-
   React.useEffect(() => {
     switch (accountStatus) {
       case SagaStatus.ERROR:
@@ -226,7 +223,6 @@ export function useInit() {
         break;
     }
   }, [tokenPricesStatus]);
-
   React.useEffect(() => {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:
@@ -266,7 +262,6 @@ export function useInit() {
         break;
     }
   }, [amountStatus]);
-
   React.useEffect(() => {
     switch (socketStatus) {
       case "ERROR":

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Box, Container, Typography, TypographyProps } from "@mui/material";
 import { ThemeType } from "@loopring-web/common-resources";
 import { ContainerProps } from "@mui/material/Container/Container";
-import { LAYOUT } from "../../defs/common_defs";
+import { LAYOUT } from "@loopring-web/core";
 
 export const ContainerStyle = styled(Box)`
   .MuiContainer-root {
