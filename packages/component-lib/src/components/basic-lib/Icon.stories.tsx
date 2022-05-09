@@ -75,6 +75,7 @@ import {
   WithdrawIcon,
   DeleteIcon,
   ImageIcon,
+  Info2Icon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -160,6 +161,7 @@ const listIcon = [
   <WithdrawIcon />,
   <ImageIcon />,
   <DeleteIcon />,
+  <Info2Icon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

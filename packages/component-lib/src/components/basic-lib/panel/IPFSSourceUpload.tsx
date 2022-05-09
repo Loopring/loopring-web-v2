@@ -41,14 +41,14 @@ const BoxStyle = styled(Box)`
     opacity: 0.95;
   }
 ` as typeof Box;
-const BoxStyle1 = styled(Box)`
+const LinkStyle = styled(Link)`
   ${({ theme }) =>
     theme.border.defaultFrame({
       c_key: theme.colorBase.divide,
       d_W: 0,
       d_R: 1,
     })};
-` as typeof Box;
+` as typeof Link;
 
 export type IpfsFile = {
   file: File;
@@ -220,12 +220,15 @@ export const IPFSSourceUpload = ({
                 {close}
               </Box>
             ) : (
-              <BoxStyle1
+              <LinkStyle
                 alignSelf={"stretch"}
                 flex={1}
                 display={"flex"}
                 style={{ background: "var(--color-box-secondary)" }}
                 height={"100%"}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={value.fullSrc}
               >
                 <NftImage
                   alt={value?.file?.name}
@@ -234,7 +237,7 @@ export const IPFSSourceUpload = ({
                   src={value.localSrc}
                 />
                 {close}
-              </BoxStyle1>
+              </LinkStyle>
             )
           ) : (
             <BoxStyle
@@ -275,23 +278,6 @@ export const IPFSSourceUpload = ({
           )}
         </Box>
       </Box>
-      {value && value.cid && (
-        <Typography color={"textSecondary"} marginY={1}>
-          CID:
-          {/*Created Success*/}
-          <Link
-            variant={"body2"}
-            marginLeft={1}
-            whiteSpace={"pre-line"}
-            style={{ wordBreak: "break-all" }}
-            href={value.fullSrc}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {value.cid}
-          </Link>
-        </Typography>
-      )}
     </Box>
   );
 };

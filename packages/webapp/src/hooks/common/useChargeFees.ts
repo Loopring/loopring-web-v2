@@ -1,11 +1,5 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import {
-  ChainId,
-  dumpError400,
-  GetOffchainFeeAmtRequest,
-  OffchainFeeReqType,
-  toBig,
-} from "@loopring-web/loopring-sdk";
+
 import React from "react";
 import { LoopringAPI } from "api_wrapper";
 import * as _ from "lodash";
@@ -18,15 +12,13 @@ import {
   myLog,
   WalletMap,
 } from "@loopring-web/common-resources";
-import { useTokenMap } from "../../stores/token";
+import { useTokenMap } from "stores/token";
 import { useSettings } from "@loopring-web/component-lib";
-import { OffchainNFTFeeReqType } from "@loopring-web/loopring-sdk";
-import { GetNFTOffchainFeeAmtRequest } from "@loopring-web/loopring-sdk";
-import { useAccount } from "../../stores/account";
-import { useSystem } from "../../stores/system";
+import { useAccount } from "stores/account";
+import { useSystem } from "stores/system";
 import { makeWalletLayer2 } from "../help";
-import store from "../../stores";
-import { useWalletLayer2 } from "../../stores/walletLayer2";
+import store from "stores";
+import { useWalletLayer2 } from "stores/walletLayer2";
 
 export function useChargeFees({
   tokenSymbol,
@@ -39,7 +31,7 @@ export function useChargeFees({
 }: {
   tokenAddress?: string | undefined;
   tokenSymbol?: string | undefined;
-  requestType: OffchainFeeReqType | OffchainNFTFeeReqType;
+  requestType: sdk.OffchainFeeReqType | sdk.OffchainNFTFeeReqType;
   amount?: number;
   updateData?:
     | undefined
@@ -62,7 +54,7 @@ export function useChargeFees({
   const { chainId } = useSystem();
   let { feeChargeOrder } = useSettings();
   feeChargeOrder =
-    chainId === ChainId.MAINNET
+    chainId === sdk.ChainId.MAINNET
       ? FeeChargeOrderDefault
       : FeeChargeOrderUATDefault;
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -122,8 +114,8 @@ export function useChargeFees({
       ) {
         try {
           const request:
-            | GetOffchainFeeAmtRequest
-            | GetNFTOffchainFeeAmtRequest = {
+            | sdk.GetOffchainFeeAmtRequest
+            | sdk.GetNFTOffchainFeeAmtRequest = {
             accountId: account.accountId,
             //@ts-ignore
             tokenSymbol,
@@ -131,12 +123,13 @@ export function useChargeFees({
             requestType,
             amount:
               tokenInfo && amount
-                ? toBig(amount)
+                ? sdk
+                    .toBig(amount)
                     .times("1e" + tokenInfo.decimals)
                     .toFixed(0, 0)
                 : "0",
             deployInWithdraw:
-              requestType === OffchainNFTFeeReqType.NFT_WITHDRAWAL
+              requestType === sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
                 ? deployInWithdraw
                 : undefined,
           };
@@ -159,17 +152,17 @@ export function useChargeFees({
             }
           } else if (
             [
-              OffchainNFTFeeReqType.NFT_MINT,
-              OffchainNFTFeeReqType.NFT_WITHDRAWAL,
-              OffchainNFTFeeReqType.NFT_TRANSFER,
-              OffchainNFTFeeReqType.NFT_DEPLOY,
+              sdk.OffchainNFTFeeReqType.NFT_MINT,
+              sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL,
+              sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+              sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
             ].includes(requestType as any) &&
             account.accountId &&
             account.accountId !== -1 &&
             account.apiKey
           ) {
             const response = await LoopringAPI.userAPI.getNFTOffchainFeeAmt(
-              request as GetNFTOffchainFeeAmtRequest,
+              request as sdk.GetNFTOffchainFeeAmtRequest,
               account.apiKey
             );
             if (
@@ -185,7 +178,7 @@ export function useChargeFees({
             account.apiKey
           ) {
             const response = await LoopringAPI.userAPI.getOffchainFeeAmt(
-              request as GetOffchainFeeAmtRequest,
+              request as sdk.GetOffchainFeeAmtRequest,
               account.apiKey
             );
             if (
@@ -351,29 +344,29 @@ export function useChargeFees({
         walletLayer2Status === "UNSET" &&
         AccountStatus.ACTIVATED === account.readyState &&
         [
-          OffchainFeeReqType.UPDATE_ACCOUNT,
-          OffchainFeeReqType.UPDATE_ACCOUNT,
-          OffchainFeeReqType.TRANSFER,
-          OffchainNFTFeeReqType.NFT_TRANSFER,
-          OffchainNFTFeeReqType.NFT_DEPLOY,
+          sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
+          sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
+          sdk.OffchainFeeReqType.TRANSFER,
+          sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
+          sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
         ].includes(Number(requestType))) ||
       (!isActiveAccount &&
         walletLayer2Status === "UNSET" &&
-        OffchainNFTFeeReqType.NFT_WITHDRAWAL === requestType &&
+        sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL === requestType &&
         tokenAddress) ||
       (!isActiveAccount &&
         tokenSymbol &&
         AccountStatus.ACTIVATED === account.readyState &&
         walletLayer2Status === "UNSET" &&
         [
-          OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-          OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
+          sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+          sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL,
         ].includes(Number(requestType))) ||
       (!isActiveAccount &&
         tokenAddress &&
         AccountStatus.ACTIVATED === account.readyState &&
         walletLayer2Status === "UNSET" &&
-        [OffchainNFTFeeReqType.NFT_MINT].includes(Number(requestType)))
+        [sdk.OffchainNFTFeeReqType.NFT_MINT].includes(Number(requestType)))
     ) {
       getFeeList();
     }

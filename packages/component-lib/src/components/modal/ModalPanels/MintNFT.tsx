@@ -8,7 +8,10 @@ export const NFTMint_WaitForAuth = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTTokenMintWaitForAuth", {
-      symbol: props.symbol,
+      symbol:
+        props.symbol && props.symbol?.length > 10
+          ? props.symbol?.slice(0, 10) + "..."
+          : props.symbol ?? "",
       value: props.value,
     }),
   };

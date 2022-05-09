@@ -5,15 +5,16 @@ import {
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   MINT_LIMIT,
+  MintTradeNFT,
   myLog,
   NFTMETA,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { NFT_MINT_VALUE, useModalData } from "../../stores/router";
+import { NFT_MINT_VALUE, useModalData } from "stores/router";
 import { IpfsFile, NFTMetaProps } from "@loopring-web/component-lib";
-import { useChargeFees } from "../../hooks/common/useChargeFees";
+import { useChargeFees } from "hooks/common/useChargeFees";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useBtnStatus } from "../../hooks/common/useBtnStatus";
+import { useBtnStatus } from "hooks/common/useBtnStatus";
 import { ipfsService, useIPFS } from "../ipfs";
 import { AddResult } from "ipfs-core-types/types/src/root";
 import store from "stores";
@@ -162,9 +163,11 @@ export function useNFTMeta<T extends NFTMETA>({
     tokenAddress: nftMintValue.mintData.tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
     updateData: (feeInfo, _chargeFeeList) => {
+      const { nftMETA, mintData } =
+        store.getState()._router_modalData.nftMintValue;
       updateNFTMintData({
-        ...nftMintValue,
-        mintData: { ...nftMintValue.mintData, fee: feeInfo },
+        nftMETA: nftMETA,
+        mintData: { ...mintData, fee: feeInfo },
       });
     },
   });
@@ -179,12 +182,12 @@ export function useNFTMeta<T extends NFTMETA>({
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      myLog(
-        "nftMetaBtnStatus nftMintValue",
-        nftMintValue.mintData,
-        nftMintValue.nftMETA
-      );
-
+      // myLog(
+      //   "nftMetaBtnStatus nftMintValue",
+      //   nftMintValue.mintData,
+      //   nftMintValue.nftMETA,
+      //   nftMintValue.mintData.fee
+      // );
       if (
         !error &&
         nftMintValue &&
@@ -254,7 +257,7 @@ export function useNFTMeta<T extends NFTMETA>({
       nftMintValue,
       userAgree,
       // tokenAddress,
-      isFeeNotEnough,
+      // isFeeNotEnough,
       disableBtn,
       enableBtn,
       setLabelAndParams,
@@ -264,10 +267,10 @@ export function useNFTMeta<T extends NFTMETA>({
   React.useEffect(() => {
     updateBtnStatus();
   }, [
-    isFeeNotEnough,
+    // isFeeNotEnough,
     nftMintValue.mintData,
     nftMintValue.nftMETA,
-    feeInfo,
+    // feeInfo,
     userAgree,
     updateBtnStatus,
   ]);

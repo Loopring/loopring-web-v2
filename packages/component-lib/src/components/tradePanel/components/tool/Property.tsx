@@ -6,7 +6,7 @@ import {
 } from "@loopring-web/common-resources";
 import { Trans, useTranslation } from "react-i18next";
 import { Button, TextField } from "../../../basic-lib";
-import { Box, Grid, IconButton } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React from "react";
 
 export const Properties = ({
@@ -124,15 +124,17 @@ export const Property = React.memo(
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <IconButton
-              sx={{ marginTop: 3 }}
-              edge={"end"}
-              size={"large"}
-              // disabled={properties.length === 1 ? true : false}
-              onClick={() => onDelete(index)}
-            >
-              <DeleteIcon color={"error"} />
-            </IconButton>
+            <Typography color={"var(--color-button-icon)"}>
+              <IconButton
+                sx={{ marginTop: 3 }}
+                edge={"end"}
+                size={"large"}
+                // disabled={properties.length === 1 ? true : false}
+                onClick={() => onDelete(index)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Typography>
           </Grid>
         </>
       );
