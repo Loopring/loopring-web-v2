@@ -51,7 +51,7 @@ export interface PanelProps {
   };
   t: TFunction;
   account?: Account;
-  etherscanBaseUrl: string;
+  etherscanBaseUrl?: string;
   patch?: any;
   error?: RESULT_INFO;
   errorOptions?: any;

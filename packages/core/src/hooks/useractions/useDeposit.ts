@@ -226,40 +226,13 @@ export const useDeposit = <
         if (data.to === "button") {
           if (walletLayer1 && data?.tradeData?.belong) {
             const walletInfo = walletLayer1[data.tradeData.belong];
-            myLog("got!!!! data:", data.to, data.tradeData, walletInfo);
             newValue = {
               ...newValue,
               ...data.tradeData,
               balance: walletInfo.count,
             };
           }
-          // if (
-          //   isNewAccount &&
-          //   data?.tradeData.referAddress &&
-          //   data?.tradeData.referAddress !== oldValue.referAddress
-          // ) {
-          //   setReferAddress(data?.tradeData.referAddress);
-          // }
-          // if (
-          //   isAllowInputToAddress &&
-          //   newValue.toAddress &&
-          //   (newValue.toAddress !== oldValue.toAddress || !realToAddress)
-          // ) {
-          //   myLog(
-          //     "set_ToAddress",
-          //     data?.tradeData.toAddress,
-          //     newValue,
-          //     realToAddress
-          //   );
-          //
-          // }
         }
-        myLog(
-          "updateDepositData",
-          data?.tradeData.toAddress,
-          newValue,
-          realToAddress
-        );
         updateDepositData(newValue);
         resolve();
       });

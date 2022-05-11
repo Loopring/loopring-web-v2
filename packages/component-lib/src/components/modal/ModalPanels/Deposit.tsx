@@ -89,7 +89,7 @@ export const Deposit_Submit = (props: PanelProps) => {
         style={{ wordBreak: "break-all" }}
         target="_blank"
         rel="noopener noreferrer"
-        href={`${props.etherscanBaseUrl}/tx/${props?.hash ?? ""}`}
+        href={`${props.etherscanBaseUrl}tx/${props?.hash ?? ""}`}
       >
         <Trans
           i18nKey={"labelDepositSubmit"}
@@ -146,7 +146,7 @@ export const Deposit_Submit = (props: PanelProps) => {
             {props.t("labelDepositTO")}
           </Typography>
           <Typography variant={"body1"} color={"var(--color-text-primary)"}>
-            {"L2:" + getShortAddr(props.to ?? "")}
+            {props.to ? "L2: " + getShortAddr(props.to) : "Loopring L2"}
           </Typography>
         </Typography>
       </Box>
