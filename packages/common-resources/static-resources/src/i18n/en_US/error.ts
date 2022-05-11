@@ -4,7 +4,7 @@ export default {
     "If you believe this is indeed a bug, please <1>contact us</1>. <2/> We would appreciate your feedback.",
   errorBase: "Oops! Something went wrong.",
   errorLoading: "Loading! Please wait...",
-  error404: "404! page can't be reached.",
+  error404: "404! Page can't be reached.",
   errorMaintain: "System update! Please wait...",
   errorMessageNoNetwork: "Oops! Something went wrong at service.",
   errorUnknown: "Unknown Error",
@@ -18,10 +18,10 @@ export default {
   errorOnFrozen: "Some of your assets are frozen, please try again later.",
   errorAboutFee: "Fee token is not enough or incorrect.",
   errorProviderError:
-    "Global ethereum is not {{name}}, please disable other Wallet Plugin.",
+    "Global ethereum is not {{name}}, please disable your other Wallet Plugin.",
   errorOnStorageId: "Error on wrong StorageId",
   errorOnNoRecipient: "Error on no Receiver",
-  errorNoMarket: "Market is not supported",
+  errorNoMarket: "Market is not supported.",
   errorOnGas: "Error on Gas Info",
   errorOnCancelOrders: "Error on cancel order",
   errorInvalidHash: "Invalid Hash",
@@ -31,5 +31,5 @@ export default {
   errorOrderExpired: "Order has expired",
   errorDisableOtherWalletForCurrent:
     "Global ethereum is not {{name}}, please disable other Wallet Plugin.",
-  errorGenerateEddsa: "Generate EdDSA key has failed",
+  errorGenerateEddsa: "Generate EdDSA key has failed.",
 };

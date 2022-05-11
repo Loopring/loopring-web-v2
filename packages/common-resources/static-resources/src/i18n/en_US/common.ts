@@ -507,7 +507,7 @@ export default {
   labelHours: "Hours",
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
-  labelIsNotFeeToken: "Please deposit {{symbol}} to activate Loopring Layer 2",
+  labelIsNotFeeToken: "Please deposit {{symbol}} to activate Loopring Layer 2.",
   labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
   labelIsNotEnoughFeeToken:
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
@@ -520,7 +520,7 @@ export default {
   mintNFTAddressLabelPlaceholder:
     "eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
   depositNFTIdLabelPlaceholder: "please input NFT id...",
-  labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} and deposit it",
+  labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} and deposit it?",
   labelNFTDepositBtn: "Deposit NFT",
   nftDepositTitle: "Deposit NFT",
   nftDepositDescription:
@@ -552,7 +552,7 @@ export default {
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:
-    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder will populate the Name\n and Image below.",
+    "Paste in the CID that you obtained from uploading \n the metadata.json file (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder will populate the Name\n and Image below.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "Processing...",
@@ -615,7 +615,7 @@ export default {
   labelCurrentlyLevel: "Currently {{value}} {{token}}",
   labelLRCBalance: "LRC Balance",
   labelNoticeForForAccountFrozen:
-    "please wait while {{ type }} is updating.",
+    "Please wait while {{ type }} is updating.",
   labelAction: "action",
   labelGoExplore: "View transactions on the <1>Loopring Block Explorer</1>.",
   labelNOETH: "Need ETH for gas",
@@ -659,5 +659,5 @@ export default {
   labelNFTProperty: "Properties:",
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
-    "I confirm that the NFT minted does not infringe on copyright laws or contain explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to delete NFTs or hide inappropriate content if an NFT is discovered to be harmful.",
+    "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to delete NFTs or hide inappropriate content if an NFT is discovered to be harmful.",
 };
