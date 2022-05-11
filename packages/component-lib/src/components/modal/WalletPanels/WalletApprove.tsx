@@ -1,14 +1,14 @@
 import { Trans, WithTranslation } from "react-i18next";
 import { IconType, PanelProps, BasicPanel } from "../ModalPanels/BasicPanel";
 
-export const WalletApprove = (props: PanelProps & WithTranslation) => {
+export const WalletApprove = (props: PanelProps) => {
   const propsPatch = {
     title: "labelWalletApprove",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
 // symbol
-export const Approve_WaitForAuth = (props: PanelProps & WithTranslation) => {
+export const Approve_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelWaitForAuth"),
@@ -16,7 +16,7 @@ export const Approve_WaitForAuth = (props: PanelProps & WithTranslation) => {
   return <WalletApprove {...props} {...propsPatch} />;
 };
 
-export const Approve_User_Denied = (props: PanelProps & WithTranslation) => {
+export const Approve_User_Denied = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: <Trans i18nKey={"labelSignDenied"} />,
@@ -25,7 +25,7 @@ export const Approve_User_Denied = (props: PanelProps & WithTranslation) => {
 };
 
 // symbol
-export const Approve_Success = (props: PanelProps & WithTranslation) => {
+export const Approve_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: <Trans i18nKey={"labelApproveSuccess"} />,
@@ -34,7 +34,7 @@ export const Approve_Success = (props: PanelProps & WithTranslation) => {
 };
 
 // value symbol
-export const Approve_Failed = (props: PanelProps & WithTranslation) => {
+export const Approve_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: <Trans i18nKey={"labelApproveFailed"} />,
@@ -42,7 +42,7 @@ export const Approve_Failed = (props: PanelProps & WithTranslation) => {
   return <WalletApprove {...propsPatch} {...props} />;
 };
 
-export const HebaoReject = (props: PanelProps & WithTranslation) => {
+export const HebaoReject = (props: PanelProps) => {
   const propsPatch = {
     title: "labelWalletReject",
   };
@@ -50,7 +50,7 @@ export const HebaoReject = (props: PanelProps & WithTranslation) => {
 };
 
 // symbol
-export const Reject_WaitForAuth = (props: PanelProps & WithTranslation) => {
+export const Reject_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelWaitForAuth"),
@@ -58,7 +58,7 @@ export const Reject_WaitForAuth = (props: PanelProps & WithTranslation) => {
   return <HebaoReject {...props} {...propsPatch} />;
 };
 
-export const Reject_User_Denied = (props: PanelProps & WithTranslation) => {
+export const Reject_User_Denied = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: <Trans i18nKey={"labelSignDenied"} />,
@@ -67,7 +67,7 @@ export const Reject_User_Denied = (props: PanelProps & WithTranslation) => {
 };
 
 // symbol
-export const Reject_Success = (props: PanelProps & WithTranslation) => {
+export const Reject_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: <Trans i18nKey={"labelRejectSuccess"} />,
@@ -76,7 +76,7 @@ export const Reject_Success = (props: PanelProps & WithTranslation) => {
 };
 
 // value symbol
-export const Reject_Failed = (props: PanelProps & WithTranslation) => {
+export const Reject_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: <Trans i18nKey={"labelRejectFailed"} />,

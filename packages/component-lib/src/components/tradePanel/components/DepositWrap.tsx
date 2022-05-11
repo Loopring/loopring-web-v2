@@ -41,7 +41,7 @@ export const DepositWrap = <
   chargeFeeTokenList,
   onChangeEvent,
   handleClear,
-  isAllowInputTokenAddress,
+  isAllowInputToAddress,
   toIsAddressCheckLoading,
   toIsLoopringAddress,
   realToAddress,
@@ -150,7 +150,7 @@ export const DepositWrap = <
           }}
         />
       </Grid>
-      {!isAllowInputTokenAddress && isNewAccount ? (
+      {!isAllowInputToAddress && isNewAccount ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           <TextField
             className={"text-address"}
@@ -218,14 +218,14 @@ export const DepositWrap = <
       ) : (
         <></>
       )}
-      {isAllowInputTokenAddress ? (
+      {isAllowInputToAddress ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
           <TextField
             className={"text-address"}
             value={tradeData.toAddress ? tradeData.toAddress : ""}
             error={!!(tradeData.addressError && tradeData.addressError?.error)}
             label={t("depositLabelTo")}
-            disabled={getDisabled || !isToAddressEditable}
+            disabled={!isToAddressEditable}
             placeholder={t("depositLabelPlaceholder")}
             onChange={(_event) => {
               const toAddress = _event.target.value;
@@ -241,15 +241,17 @@ export const DepositWrap = <
                 style={{ top: "32px", right: "8px", position: "absolute" }}
               />
             ) : (
-              <IconClearStyled
-                color={"inherit"}
-                size={"small"}
-                style={{ top: "30px" }}
-                aria-label="Clear"
-                onClick={handleClear}
-              >
-                <CloseIcon />
-              </IconClearStyled>
+              isToAddressEditable && (
+                <IconClearStyled
+                  color={"inherit"}
+                  size={"small"}
+                  style={{ top: "30px" }}
+                  aria-label="Clear"
+                  onClick={handleClear}
+                >
+                  <CloseIcon />
+                </IconClearStyled>
+              )
             )
           ) : (
             ""

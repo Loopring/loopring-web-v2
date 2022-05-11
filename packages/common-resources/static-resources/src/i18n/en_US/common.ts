@@ -324,8 +324,8 @@ export default {
   labelDepositWaitForAuth:
     "Please confirm to deposit {{value}} {{symbol}} to {{to}} L2.",
   labelDepositDenied: "You refuse to deposit {{value}} {{symbol}}.",
-  labelDepositFailed: "Deposit {{value}} {{symbol}} failed!",
-  labelDepositSubmit: "Deposit {{value}} {{symbol}} submitted.",
+  labelDepositFailed: "Add asset {{value}} {{symbol}} failed!",
+  labelDepositSubmit: "Add asset submitted. <1></1>",
   labelDepositNeedApprove: "Allow Loopring Exchange to spend {{symbol}}",
   labelWithdrawInProgress: "Processing...",
   labelWithdrawFailed: "Withdraw {{value}} {{symbol}} failed!",
@@ -673,4 +673,7 @@ export default {
     "I confirm that the NFT minted does not infringe on copyright laws, and does not contain explicit and sensitive, adult themed or other NSFW content. We reserve the right to delete NFTs or Inappropriate content won't be displayed as is at any time if content is discovered to be harmful.",
   labelDepositTitleBridge: "Add Loopring L2 Assets",
   labelPayer: "Payer wallet:",
+  labelDepositTokenAmount: "Token Amount",
+  labelDepositFrom: "From",
+  labelDepositTO: "To Loopring L2",
 };

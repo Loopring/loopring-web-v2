@@ -18,6 +18,7 @@ export const ModalAccount = withTranslation("common", { withRef: true })(
     onBack,
     style,
     noClose,
+    etherscanBaseUrl,
     onQRClick,
     panelList,
     ...rest

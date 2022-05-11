@@ -15,6 +15,7 @@ export type ModalBasicProps = {
   noClose?: boolean;
   style?: any; //{w,h}
   onQRClick?: () => void;
+  etherscanBaseUrl: string;
   panelList: Array<{
     view: JSX.Element;
     onBack?: undefined | (() => void);

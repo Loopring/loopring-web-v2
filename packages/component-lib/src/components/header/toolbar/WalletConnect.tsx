@@ -9,6 +9,7 @@ import {
   UnConnectIcon,
   CircleIcon,
   myLog,
+  SagaStatus,
 } from "@loopring-web/common-resources";
 import { Typography } from "@mui/material";
 import { Button } from "../../basic-lib";
@@ -224,59 +225,59 @@ export const WalletConnectL1Btn = ({
   accountState,
   handleClick,
 }: WalletConnectBtnProps) => {
-  const { t, i18n } = useTranslation(["layout", "common"]);
+  const { t } = useTranslation(["layout", "common"]);
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
   const [networkLabel, setNetworkLabel] =
     React.useState<string | undefined>(undefined);
   const [btnClassname, setBtnClassname] =
     React.useState<string | undefined>("");
   const [icon, setIcon] = React.useState<JSX.Element | undefined>();
-
-  useEffect(() => {
-    if (accountState) {
-      const { account } = accountState;
-      const addressShort = account.accAddress
-        ? getShortAddr(account?.accAddress)
-        : undefined;
-      if (addressShort) {
-        setLabel(addressShort);
-      }
-      setIcon(undefined);
-
-      myLog("wallet connect account.readyState:", account.readyState);
-
-      switch (account.readyState) {
-        case AccountStatus.UN_CONNECT:
-          setBtnClassname("un-connect");
-          setLabel("labelConnectWallet");
-          break;
-        case AccountStatus.LOCKED:
-        case AccountStatus.ACTIVATED:
-        case AccountStatus.NO_ACCOUNT:
-        case AccountStatus.DEPOSITING:
-        case AccountStatus.NOT_ACTIVE:
-          setBtnClassname("unlocked");
-          setIcon(
-            <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
-          );
-          break;
-        case AccountStatus.ERROR_NETWORK:
-          setBtnClassname("wrong-network");
-          setLabel("labelWrongNetwork");
-          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />);
-          break;
-        default:
-      }
-
-      if (account && account._chainId === ChainId.GOERLI) {
-        setNetworkLabel("Görli");
-      } else {
-        setNetworkLabel("");
-      }
-    } else {
-      setLabel("labelConnectWallet");
+  const update = React.useCallback(() => {
+    const { account } = accountState;
+    const addressShort = account.accAddress
+      ? getShortAddr(account?.accAddress)
+      : undefined;
+    if (addressShort) {
+      setLabel(addressShort);
     }
-  }, [accountState?.account, i18n]);
+    setIcon(undefined);
+
+    myLog("wallet connect account.readyState:", account.readyState);
+
+    switch (account.readyState) {
+      case AccountStatus.UN_CONNECT:
+        setBtnClassname("un-connect");
+        setLabel("labelConnectWallet");
+        break;
+      case AccountStatus.LOCKED:
+      case AccountStatus.ACTIVATED:
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.DEPOSITING:
+      case AccountStatus.NOT_ACTIVE:
+        setBtnClassname("unlocked");
+        setIcon(
+          <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
+        );
+        break;
+      case AccountStatus.ERROR_NETWORK:
+        setBtnClassname("wrong-network");
+        setLabel("labelWrongNetwork");
+        setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />);
+        break;
+      default:
+    }
+
+    if (account && account._chainId === ChainId.GOERLI) {
+      setNetworkLabel("Görli");
+    } else {
+      setNetworkLabel("");
+    }
+  }, [accountState]);
+  React.useEffect(() => {
+    if (accountState.status === SagaStatus.UNSET) {
+      update();
+    }
+  }, [accountState.status]);
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)

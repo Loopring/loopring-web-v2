@@ -9,7 +9,7 @@ import {
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
 import { useAccountModalForUI } from "./hook";
-import { AssetsRawDataItem } from "@loopring-web/common-resources";
+import { Account, AssetsRawDataItem } from "@loopring-web/common-resources";
 
 export const ModalAccountInfo = withTranslation("common")(
   ({
@@ -23,6 +23,7 @@ export const ModalAccountInfo = withTranslation("common")(
   }: {
     open: boolean;
     isLayer1Only?: boolean;
+    account: Account;
     onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
@@ -60,9 +61,9 @@ export const ModalAccountInfo = withTranslation("common")(
     } = useAccountModalForUI({
       t,
       etherscanBaseUrl,
-      rest,
       onClose,
       isLayer1Only,
+      ...rest,
     });
 
     return (
@@ -121,6 +122,7 @@ export const ModalAccountInfo = withTranslation("common")(
           onBack={currentModal?.onBack}
           onQRClick={currentModal?.onQRClick}
           step={isShowAccount.step}
+          etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
         />
       </>

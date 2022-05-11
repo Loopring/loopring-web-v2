@@ -174,6 +174,7 @@ export const WalletConnectBtnL1 = ({
       function () {
         return (
           <WalletConnectL1Btn
+            accountState={accountState}
             handleClick={() => {
               store.dispatch(
                 accountReducer.changeShowModel({ _userOnModel: true })
@@ -221,7 +222,7 @@ export const BtnConnectL1 = withTranslation(["common", "layout"], {
     if (accountStatus === SagaStatus.UNSET) {
       setLabel(accountStaticCallBack(_btnLabel));
     }
-  }, [accountStatus, i18n.language]);
+  }, [accountStatus]);
 
   return (
     <>

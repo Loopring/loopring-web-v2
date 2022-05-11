@@ -355,7 +355,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             <ProviderMenu
               termUrl={"https://www.iubenda.com/terms-and-conditions/74969935"}
               gatewayList={gatewayList}
-              providerName={account.connectName}
+              providerName={account.connectName as ConnectProviders}
               {...{ t, ...rest }}
             />
           ),
@@ -389,7 +389,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         [WalletConnectStep.SuccessConnect]: {
           view: (
             <ConnectSuccess
-              providerName={account.connectName}
+              providerName={account.connectName as ConnectProviders}
               {...{ t, ...rest }}
             />
           ),

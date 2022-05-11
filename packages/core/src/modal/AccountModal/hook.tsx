@@ -86,7 +86,11 @@ import {
 } from "@loopring-web/web3-provider";
 
 import React, { useState } from "react";
-import { AccountStatus, copyToClipBoard } from "@loopring-web/common-resources";
+import {
+  Account,
+  AccountStatus,
+  copyToClipBoard,
+} from "@loopring-web/common-resources";
 import {
   useAccount,
   lockAccount,
@@ -116,15 +120,14 @@ import { WalletType } from "@loopring-web/loopring-sdk";
 
 export function useAccountModalForUI({
   t,
-  etherscanBaseUrl,
   onClose,
   isLayer1Only = false,
-  rest,
+  ...rest
 }: {
   t: any;
   etherscanBaseUrl: string;
   isLayer1Only?: boolean;
-  rest: any;
+  account: Account;
   onClose?: any;
 }) {
   const { goUpdateAccount } = useUpdateAccount();
@@ -143,6 +146,7 @@ export function useAccountModalForUI({
     setShowResetAccount,
     setShowActiveAccount,
   } = useOpenModals();
+  rest = { ...rest, ...isShowAccount.info };
   const {
     lastStep,
     nftMintValue,
@@ -348,32 +352,6 @@ export function useAccountModalForUI({
     };
   }, [setShowAccount, setShowResetAccount]);
 
-  // const TryNewTransferAuthBtnInfo = React.useMemo(() => {
-  //   return {
-  //     btnTxt: "labelTryNext",
-  //     callback: () => {
-  //       setShowAccount({
-  //         isShow: true,
-  //         step: AccountStep.Transfer_WaitForAuth,
-  //       });
-  //       transferProcessRequest(transferLastRequest.request, false);
-  //     },
-  //   };
-  // }, [setShowAccount, transferProcessRequest, transferLastRequest.request]);
-  //
-  // const TryNewWithdrawAuthBtnInfo = React.useMemo(() => {
-  //   return {
-  //     btnTxt: "labelTryNext",
-  //     callback: () => {
-  //       setShowAccount({
-  //         isShow: true,
-  //         step: AccountStep.Withdraw_WaitForAuth,
-  //       });
-  //       processRequest(lastRequest.request, false);
-  //     },
-  //   };
-  // }, [setShowAccount, processRequest, lastRequest.request]);
-
   const closeBtnInfo = React.useMemo(() => {
     return {
       btnTxt: "labelClose",
@@ -404,6 +382,7 @@ export function useAccountModalForUI({
   const updateDepositStatus = React.useCallback(async () => {
     const chainInfos = store.getState().localStore.chainHashInfos[chainId];
     const { accAddress } = account;
+    clearTimeout(nodeTimer.current as unknown as NodeJS.Timeout);
     if (
       chainInfos &&
       chainInfos.depositHashes &&
@@ -431,9 +410,7 @@ export function useAccountModalForUI({
           flag = true;
         }
       });
-      if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
-      }
+
       if (flag) {
         let wait = 30000;
         if (
@@ -458,7 +435,7 @@ export function useAccountModalForUI({
         updateWalletLayer2();
       }
     }
-  }, [account, chainId, updateDepositHash, updateWalletLayer2]);
+  }, [account, chainId, updateDepositHash, updateWalletLayer2, nodeTimer]);
   React.useEffect(() => {
     if (
       chainInfos?.depositHashes &&
@@ -467,9 +444,9 @@ export function useAccountModalForUI({
       updateDepositStatus();
     }
     return () => {
-      clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+      clearTimeout(nodeTimer.current as unknown as NodeJS.Timeout);
     };
-  }, [account.accAddress, chainInfos?.depositHashes, updateDepositStatus]);
+  }, [account.accAddress, chainInfos?.depositHashes]);
 
   const isSupportCallback = React.useCallback(async () => {
     const is_Contract = await isContract(
@@ -502,7 +479,7 @@ export function useAccountModalForUI({
               updateDepositHash,
               clearDepositHash: clearDeposit,
               ...account,
-              etherscanUrl: etherscanBaseUrl,
+              etherscanUrl: rest.etherscanBaseUrl,
               onSwitch,
               onCopy,
               onViewQRCode,
@@ -528,11 +505,12 @@ export function useAccountModalForUI({
               onSwitch,
               onCopy,
               onClose,
-              etherscanUrl: etherscanBaseUrl,
+              etherscanUrl: rest.etherscanBaseUrl,
               onViewQRCode,
               onDisconnect,
               addressShort,
-              etherscanLink: etherscanBaseUrl + "address/" + account.accAddress,
+              etherscanLink:
+                rest.etherscanBaseUrl + "address/" + account.accAddress,
               mainBtn:
                 account.readyState === AccountStatus.ACTIVATED
                   ? lockBtn
@@ -548,8 +526,9 @@ export function useAccountModalForUI({
           <QRAddressPanel
             {...{
               ...rest,
+              account,
               ...account,
-              etherscanUrl: etherscanBaseUrl,
+              etherscanUrl: rest.etherscanBaseUrl,
               t,
             }}
           />
@@ -563,6 +542,7 @@ export function useAccountModalForUI({
             providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -571,9 +551,10 @@ export function useAccountModalForUI({
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (
           <Deposit_Approve_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -585,6 +566,7 @@ export function useAccountModalForUI({
             btnInfo={backToDepositBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -597,6 +579,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -614,10 +597,10 @@ export function useAccountModalForUI({
             value={depositProps.tradeData.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
-            to={isShowAccount?.info?.to ?? null}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -634,6 +617,7 @@ export function useAccountModalForUI({
             btnInfo={backToDepositBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -650,6 +634,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -667,6 +652,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -680,9 +666,10 @@ export function useAccountModalForUI({
       [AccountStep.NFTDeposit_Approve_WaitForAuth]: {
         view: (
           <NFTDeposit_Approve_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               ...nftDepositValue,
               t,
             }}
@@ -695,6 +682,7 @@ export function useAccountModalForUI({
             btnInfo={backToNFTDepositBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDepositValue,
               t,
             }}
@@ -712,6 +700,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDepositValue,
               t,
             }}
@@ -730,9 +719,10 @@ export function useAccountModalForUI({
             value={nftDepositValue.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               ...nftDepositValue,
               t,
             }}
@@ -750,6 +740,7 @@ export function useAccountModalForUI({
             btnInfo={backToNFTDepositBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDepositValue,
               t,
             }}
@@ -767,6 +758,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDepositValue,
               error: isShowAccount.error,
               t,
@@ -785,6 +777,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDepositValue,
               t,
             }}
@@ -804,9 +797,10 @@ export function useAccountModalForUI({
             value={nftMintValue?.mintData?.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               ...nftMintValue.mintData,
               t,
             }}
@@ -824,6 +818,7 @@ export function useAccountModalForUI({
             btnInfo={backToMintBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftMintValue,
               t,
             }}
@@ -846,6 +841,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               t,
             }}
@@ -857,6 +853,7 @@ export function useAccountModalForUI({
           <NFTMint_In_Progress
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               t,
             }}
@@ -869,6 +866,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftMintValue,
               error: isShowAccount.error,
               t,
@@ -888,6 +886,7 @@ export function useAccountModalForUI({
             {...{
               t,
               ...rest,
+              account,
               ...nftMintValue,
               link: isShowAccount?.info?.hash
                 ? {
@@ -912,9 +911,10 @@ export function useAccountModalForUI({
             value={nftDeployValue.tradeValue}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               t,
             }}
@@ -930,6 +930,7 @@ export function useAccountModalForUI({
             btnInfo={backToDeployBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               t,
             }}
@@ -950,6 +951,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               t,
             }}
@@ -961,6 +963,7 @@ export function useAccountModalForUI({
           <NFTDeploy_In_Progress
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               t,
             }}
@@ -973,6 +976,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               error: isShowAccount.error,
               t,
@@ -989,6 +993,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               ...nftDeployValue,
               t,
             }}
@@ -1003,9 +1008,10 @@ export function useAccountModalForUI({
       [AccountStep.Transfer_WaitForAuth]: {
         view: (
           <Transfer_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1022,6 +1028,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1033,6 +1040,7 @@ export function useAccountModalForUI({
             btnInfo={backToTransferBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1043,6 +1051,7 @@ export function useAccountModalForUI({
           <Transfer_In_Progress
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1054,6 +1063,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1071,6 +1081,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1082,9 +1093,10 @@ export function useAccountModalForUI({
       [AccountStep.Withdraw_WaitForAuth]: {
         view: (
           <Withdraw_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1101,6 +1113,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1112,6 +1125,7 @@ export function useAccountModalForUI({
             btnInfo={backToWithdrawBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1122,6 +1136,7 @@ export function useAccountModalForUI({
           <Withdraw_In_Progress
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1133,6 +1148,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1150,6 +1166,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1161,9 +1178,10 @@ export function useAccountModalForUI({
       [AccountStep.NFTTransfer_WaitForAuth]: {
         view: (
           <NFTTransfer_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1183,6 +1201,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1194,6 +1213,7 @@ export function useAccountModalForUI({
             btnInfo={backToTransferBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1204,6 +1224,7 @@ export function useAccountModalForUI({
           <NFTTransfer_In_Progress
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1215,6 +1236,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1232,6 +1254,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1243,9 +1266,10 @@ export function useAccountModalForUI({
       [AccountStep.NFTWithdraw_WaitForAuth]: {
         view: (
           <NFTWithdraw_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1265,6 +1289,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1276,6 +1301,7 @@ export function useAccountModalForUI({
             btnInfo={backToWithdrawBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1286,6 +1312,7 @@ export function useAccountModalForUI({
           <NFTWithdraw_In_Progress
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1297,6 +1324,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1314,6 +1342,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1326,9 +1355,10 @@ export function useAccountModalForUI({
       [AccountStep.CreateAccount_Approve_WaitForAuth]: {
         view: (
           <CreateAccount_Approve_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1337,9 +1367,10 @@ export function useAccountModalForUI({
       [AccountStep.CreateAccount_Approve_Denied]: {
         view: (
           <CreateAccount_Approve_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1348,9 +1379,10 @@ export function useAccountModalForUI({
       [AccountStep.CreateAccount_Approve_Submit]: {
         view: (
           <CreateAccount_Approve_Submit
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1359,9 +1391,10 @@ export function useAccountModalForUI({
       [AccountStep.CreateAccount_WaitForAuth]: {
         view: (
           <CreateAccount_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1370,9 +1403,10 @@ export function useAccountModalForUI({
       [AccountStep.CreateAccount_Denied]: {
         view: (
           <CreateAccount_Denied
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1381,9 +1415,10 @@ export function useAccountModalForUI({
       [AccountStep.CreateAccount_Failed]: {
         view: (
           <CreateAccount_Failed
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1393,9 +1428,10 @@ export function useAccountModalForUI({
       [AccountStep.CreateAccount_Submit]: {
         view: (
           <CreateAccount_Submit
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1411,7 +1447,7 @@ export function useAccountModalForUI({
               ...account,
               clearDepositHash: clearDeposit,
               chainInfos,
-              etherscanUrl: etherscanBaseUrl,
+              etherscanUrl: rest.etherscanBaseUrl,
               onSwitch,
               onCopy,
               onViewQRCode,
@@ -1423,7 +1459,7 @@ export function useAccountModalForUI({
               setShowActiveAccount({ isShow: true });
               // goUpdateAccount({});
             }}
-            {...{ ...rest, t }}
+            {...{ ...rest, account, t }}
           />
         ),
         onQRClick,
@@ -1431,9 +1467,10 @@ export function useAccountModalForUI({
       [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
         view: (
           <UpdateAccount_Approve_WaitForAuth
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1450,6 +1487,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1464,6 +1502,7 @@ export function useAccountModalForUI({
             btnInfo={backToUpdateAccountBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1475,6 +1514,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1492,6 +1532,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1509,6 +1550,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1521,6 +1563,7 @@ export function useAccountModalForUI({
           <UnlockAccount_WaitForAuth
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1532,6 +1575,7 @@ export function useAccountModalForUI({
             btnInfo={backToUnlockAccountBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1543,6 +1587,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1569,6 +1614,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               walletType: isShowAccount?.info?.walletType,
               t,
@@ -1581,9 +1627,10 @@ export function useAccountModalForUI({
         view: (
           <UpdateAccount_Approve_WaitForAuth
             patch={{ isReset: true }}
-            providerName={account.connectName}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1601,6 +1648,7 @@ export function useAccountModalForUI({
             }}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1616,6 +1664,7 @@ export function useAccountModalForUI({
             btnInfo={backToResetAccountBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1628,6 +1677,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1646,6 +1696,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1659,6 +1710,7 @@ export function useAccountModalForUI({
             patch={{ isReset: true }}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1671,6 +1723,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1683,6 +1736,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               t,
             }}
           />
@@ -1695,6 +1749,7 @@ export function useAccountModalForUI({
             btnInfo={closeBtnInfo}
             {...{
               ...rest,
+              account,
               error: isShowAccount.error,
               t,
             }}
@@ -1703,15 +1758,15 @@ export function useAccountModalForUI({
       },
     });
   }, [
-    // pathname,
     goDeposit,
     chainInfos,
     isSupport,
+    isLayer1Only,
     onClose,
     updateDepositHash,
     clearDeposit,
     account,
-    etherscanBaseUrl,
+    rest,
     onSwitch,
     onCopy,
     onViewQRCode,
@@ -1720,7 +1775,6 @@ export function useAccountModalForUI({
     onQRClick,
     lockBtn,
     unlockBtn,
-    rest,
     t,
     onBack,
     backToDepositBtnInfo,

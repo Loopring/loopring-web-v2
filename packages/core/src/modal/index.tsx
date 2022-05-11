@@ -80,6 +80,7 @@ export const ModalGroup = withTranslation("common", {
             ...rest,
             assetsRawData,
             etherscanBaseUrl,
+            account,
             open: isShowAccount.isShow,
             onClose: onAccountInfoPanelClose,
             isLayer1Only,

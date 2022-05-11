@@ -1,8 +1,7 @@
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import React from "react";
-// import { connectProvides } from '@loopring-web/web3-provider';
-import { WithTranslation } from "react-i18next";
+import { TFunction } from "react-i18next";
 import {
   AccountHashInfo,
   CompleteIcon,
@@ -38,7 +37,7 @@ export const DepositRecorder = ({
   etherscanUrl,
   clear,
 }: // updateDepositHash
-WithTranslation & {
+{ t: TFunction } & {
   accAddress: string;
   etherscanUrl: string;
   chainInfos: AccountHashInfo;

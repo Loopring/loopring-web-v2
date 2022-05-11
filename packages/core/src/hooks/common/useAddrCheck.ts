@@ -1,7 +1,7 @@
 import React from "react";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import { globalSetup } from "@loopring-web/common-resources";
+import { globalSetup, myLog } from "@loopring-web/common-resources";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { AddressError } from "@loopring-web/component-lib";
@@ -111,6 +111,7 @@ export const useAddressCheck = () => {
   );
 
   React.useEffect(() => {
+    myLog("checkAddress", address, _address.current, isAddressCheckLoading);
     if (
       address !== "" &&
       _address.current !== address &&

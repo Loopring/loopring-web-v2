@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
-import { LAYER1_ACTION_HISTORY, Layer1ActionHistory, } from "@loopring-web/common-resources";
+import {
+  LAYER1_ACTION_HISTORY,
+  Layer1ActionHistory,
+} from "@loopring-web/common-resources";
 import { ChainId } from "@loopring-web/loopring-sdk";
 
 // @ts-ignore
@@ -10,7 +13,6 @@ const initialState: LAYER1_ACTION_HISTORY = {
   __timer__: -1,
 };
 
-// @ts-ignore
 const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
   LAYER1_ACTION_HISTORY,
   SliceCaseReducers<LAYER1_ACTION_HISTORY>,
@@ -20,7 +22,9 @@ const layer1ActionHistorySlice: Slice<LAYER1_ACTION_HISTORY> = createSlice<
   initialState,
   reducers: {
     circleUpdateLayer1ActionHistory(
+      // @ts-ignore
       state,
+      // @ts-ignore
       action: PayloadAction<{ chainId: string }>
     ) {},
     layer1ActionHistoryStatus(

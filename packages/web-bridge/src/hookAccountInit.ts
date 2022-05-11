@@ -14,11 +14,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer1Status,
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1();
-  const {
-    updateWalletLayer2,
-    status: walletLayer2Status,
-    statusUnset: wallet2statusUnset,
-  } = useWalletLayer2();
   const { account, status: accountStatus } = useAccount();
 
   React.useEffect(() => {
@@ -29,26 +24,9 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           break;
         case AccountStatus.DEPOSITING:
         case AccountStatus.NOT_ACTIVE:
-        case AccountStatus.LOCKED:
+        default:
           if (walletLayer1Status !== SagaStatus.PENDING) {
             updateWalletLayer1();
-          }
-          if (walletLayer2Status !== SagaStatus.PENDING) {
-            updateWalletLayer2();
-          }
-          break;
-        case AccountStatus.NO_ACCOUNT:
-          if (walletLayer1Status !== SagaStatus.PENDING) {
-            updateWalletLayer1();
-          }
-          break;
-        case AccountStatus.ACTIVATED:
-          // }
-          if (walletLayer1Status !== SagaStatus.PENDING) {
-            updateWalletLayer1();
-          }
-          if (walletLayer2Status !== SagaStatus.PENDING) {
-            updateWalletLayer2();
           }
           break;
       }
@@ -66,16 +44,4 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break;
     }
   }, [walletLayer1Status]);
-  React.useEffect(() => {
-    switch (walletLayer2Status) {
-      case SagaStatus.ERROR:
-        wallet2statusUnset();
-        break;
-      case SagaStatus.DONE:
-        wallet2statusUnset();
-        break;
-      default:
-        break;
-    }
-  }, [walletLayer2Status]);
 }

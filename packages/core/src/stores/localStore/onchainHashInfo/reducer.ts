@@ -17,8 +17,9 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
   name: "chainHashInfos",
   initialState,
   reducers: {
-    clearAll(state: ChainHashInfos, action: PayloadAction<undefined>) {
-      state = initialState;
+    // @ts-ignore
+    clearAll(state: ChainHashInfos, _action: PayloadAction<undefined>) {
+      state = { ...initialState };
     },
     clearDepositHash(
       state: ChainHashInfos,
@@ -31,7 +32,7 @@ const OnChainHashInfoSlice: Slice<ChainHashInfos> = createSlice<
         state[chainId].depositHashes = {};
       }
     },
-    clearWithdrawHash(state: ChainHashInfos) {
+    clearWithdrawHash(_state: ChainHashInfos) {
       // state[chainId].withdrawHashes = {}
     },
     updateDepositHash(
