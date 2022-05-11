@@ -29,7 +29,7 @@ export default {
   labelActiveAccountTitle: "Activate Account",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
-    "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests.",
+    "Each account on Loopring Layer 2 needs an EdDSA private key (the account key) to sign off-chain (L2) requests.",
   labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
   labelActiveAccountBtn: "Reset",
   depositTitle: "充值",
@@ -74,7 +74,6 @@ export default {
   transferLabelFeeNotEnough: "余额不足",
   transferLabelLinkRecent: "最近转账记入",
   labelConnectWallet: "连接钱包",
-
   labelCustomer: "自定义",
   labelChange24h: "{{timeUnit}} 涨幅",
   labelDepth: "深度",
@@ -414,17 +413,17 @@ export default {
   labelConfirm: "确定",
   labelSettingFee: "Fee Charge Token Order",
   descriptionSettingFee:
-    "Pick the token priority order for how fees will be charged",
+    "Change the token priority order to adjust which tokens will be used for fees first.",
   labelBtnEdit: "Edit",
-  labelSettingChargeFeeOrder: "Service charge priority order",
+  labelSettingChargeFeeOrder: "Token Order for Fees",
   desSettingChargeFeeOrder:
-    "Loopring L2 will follow this token priority to charge fees",
+    "Loopring Layer 2 will use this token order when processing fees.",
   labelReset: "Reset",
   labelQueryFeeOK: "Save",
   depositLimit:
-    "Limit orders \n set the maximum or minimum price \n at which you are willing to buy or sell.",
+    "Limit Orders \n Used to set the maximum or minimum price \n at which you are willing to buy or sell.",
   depositMarket:
-    "Market orders \n are transactions meant to execute \n as quickly as possible at the current market price.",
+    "Market Orders \n Used to buy or sell immediately \n at the current market price.",
   labelTransactions: "Transactions",
   labelMyRewards: "My Rewards",
   labelDepositHash: "Deposit Transaction Hash",
@@ -473,9 +472,9 @@ export default {
     "{{token}} is not available {{way}} to Contract wallet",
   labelInvalidisLoopringAddress:
     "This address has not yet active Loopring L2, {{way}} is {{token}} disable!",
-  labelInvalidisSameAddress: "Cannot {{way}} to your own address",
+  labelInvalidisSameAddress: "Cannot {{way}} to your own address.",
   labelTransferAddressNotLoopring:
-    "This address has not yet registered their Loopring L2 account. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
+    "This address has not yet activated Loopring Layer 2. Please make sure that the recipient can access L2 since the funds will be sent there.",
   labelTransferAddressOrigin: "Address Origin",
   labelTransferOriginDesc:
     "Please select the address source: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex….)",
@@ -500,7 +499,7 @@ export default {
   labelHours: "Hours",
   labelMinutes: "Minutes",
   labelSeconds: "Seconds",
-  labelIsNotFeeToken: "Please deposit {{symbol}} to activate Layer 2",
+  labelIsNotFeeToken: "Please deposit {{symbol}} to activate Loopring Layer 2",
   labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
   labelIsNotEnoughFeeToken:
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
@@ -511,37 +510,38 @@ export default {
   labelNFTDeposit: "Deposit NFT",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder: "",
-  depositNFTIdLabelPlaceholder: "please input NFT id",
-  labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & Deposit it",
+  depositNFTIdLabelPlaceholder: "please input NFT id...",
+  labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} and deposit it",
   labelNFTDepositBtn: "Deposit NFT",
   nftDepositTitle: "Deposit NFT",
   nftDepositDescription:
-    "Creates a smart contract on Ethereum L1, which requires a gas fee. NFTs minted here are on L2 only until deployed.",
+    "Creates a smart contract on Ethereum (Layer 1), \n which requires a gas fee. NFTs minted \nhere remain on Loopring Layer 2 until deployed.",
   labelNFTDescribe: "Description:",
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "NFT Amount:",
   labelNFTContractAddress: "Contract:",
   labelNFTTId: "NFT Token ID:",
   labelNFTAmount: "Amount:",
-  labelNFTCid: "IPFS CID : <1>(Store `metadata Information`)</1>",
+  labelNFTCid:
+      "IPFS CID :(Store Metadata Information) <1>Follow this Guide </1>",
   labelNFTType: "NFT Type:",
-  labelNFTAccess: "Allow Loopring to spend {{symbol}}",
-  labelNFTTokenDepositWaitForAuth: "Please confirm to deposit {{symbol}}",
-  labelDeployFailed: "Deploy {{symbol}} Failed!",
-  labelDeploySubmit: "Deploy {{symbol}} Submit",
+  labelNFTAccess: "Allow Loopring to spend {{symbol}}?",
+  labelNFTTokenDepositWaitForAuth: "Please confirm you want to deposit {{symbol}}.",
+  labelDeployFailed: "Deploy of {{symbol}} has failed!",
+  labelDeploySubmit: "Deploy of {{symbol}} has been submitted!",
   labelMint: "Mint",
   labelMintDenied: "Signature request rejected!",
-  labelNFTTokenMintWaitForAuth: "Allow Loopring to Mint {{symbol}}",
-  labelMintFailed: "Mint {{symbol}} Failed",
-  labelMintSuccess: "Mint {{symbol}} Submit",
+  labelNFTTokenMintWaitForAuth: "Allow Loopring to mint {{symbol}}?",
+  labelMintFailed: "Mint of {{symbol}} has failed!",
+  labelMintSuccess: "Mint of {{symbol}} has been submitted!",
   labelNFTMintBtn: "Mint My NFT",
   labelNFTMintNoMetaBtn: "No Metadata",
   labelNFTMintNoMetaDetail:
-    "Your NFT metadata should identify <1>name, image & royalty_percentage(Int from 0 to 10)</1>.",
+    "Your NFT metadata should identify <1>name, image, and royalty_percentage (integer from 0 to 10)</1>.",
   nftDeployDescription: "Deploy NFT",
   nftDeployTitle: "Deploy NFT",
   nftMintDescription:
-    "Mint your own Counter Factual NFT on the Loopring L2 Web DEX!",
+    "Paste in the CID that you obtained from uploading \n the metadata.json folder (point 11 above) - if successful,\n the data from the metadata.json file you created contained\n within the folder will populate the Name\n and Image below.",
   nftMintTitle: "Mint NFT",
   nftMintBtn: "Mint NFT",
   labelMintInProgress: "Processing...",
@@ -553,7 +553,7 @@ export default {
   labelVendor: "Vendor",
   labelAddAsset: "Add Layer 2 Assets",
   labelDepositVendor:
-    " Make an order form third Loopring-parter, Once your order confirmed  by Loopring, it will be added to your balance within 2 minutes.",
+    "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
   labelWalletToWallet:
     "The connected wallet is a contract address which cannot be used. If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
@@ -589,9 +589,9 @@ export default {
   labelCurrentlyLevel: "Currently {{value}} {{token}}",
   labelLRCBalance: "LRC Balance",
   labelNoticeForForAccountFrozen:
-    "please waiting a while, {{ type }} is on updating.",
+    "please wait while {{ type }} is updating.",
   labelAction: "action",
-  labelGoExplore: "View transactions on block explorer",
+  labelGoExplore: "View transactions on the <1>Loopring Block Explorer</1>.",
   labelNOETH: "Need ETH for gas",
   labelBanxaFeeFree: "zero fees for a limited time",
   labellimit: "limit",
@@ -601,14 +601,14 @@ export default {
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
   labelLoadDes: "Drag or click to upload files ({{types}}, ≦10MB)",
-  labelUpload: "upLoad",
+  labelUpload: "upload",
   labelMintNoImageBtn: "Please upload image",
-  labelMintUserAgree: "Please agree terms of service",
+  labelMintUserAgree: "Please agree to the Terms of Service",
   labelMintTradeValueBtn: "Please input amount(1 - 10,000)",
   labelMintNoRoyaltyPercentageBtn: "Please input Royalty",
-  labelMintWrongRoyaltyBtn: "Royalty should be init(0 - 10)",
+  labelMintWrongRoyaltyBtn: "Royalty should be an integer(0 - 10)",
   labelMintNoNameBtn: "Please input name",
-  labelNFTMetaBtn: "Upload meta & mint",
+  labelNFTMetaBtn: "Upload metadata and mint",
   labelMintName: "Name <1>\uFE61</1>",
   labelMintCollection: "Collection (coming soon) <1>\u2139</1>",
   labelMintCollectionTooltips:
@@ -616,10 +616,10 @@ export default {
   labelMintRoyaltyPercentage: "Royalty (%) <1>\u2139</1>",
   labelMintRoyaltyPercentageRange: "Max Int:",
   labelMintRoyaltyPercentageTooltips:
-    "Represents the percentage to be received from each subsequent resale (max 10%)",
-  labelMintDescription: "Description  <1>\u2139</1>",
+    "Represents the percentage to be received from each subsequent resale (max 10%).",
+  labelMintDescription: "Description <1>\u2139</1>",
   labelMintDescriptionTooltips:
-    "The description will be included on the NFT's detail page underneath its image.",
+    "The description will be included on the NFT's detail page beneath its image.",
   labelMintProperty: "Properties (Limit 5) <1>\u2139</1>",
   labelMintPropertyTooltips:
     "Tags can be added to the NFT for easy and Tags can be added to the NFT for distinction",
@@ -633,5 +633,5 @@ export default {
   labelNFTProperty: "Properties:",
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
-    "I confirm that the NFT minted does not infringe on copyright laws, and does not contain explicit and sensitive, adult themed or other NSFW content. We reserve the right to delete NFTs or Inappropriate content won't be displayed as is at any time if content is discovered to be harmful.",
+    "I confirm that the NFT minted does not infringe on copyright laws or contain explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to delete NFTs or hide inappropriate content if an NFT is discovered to be harmful.",
 };

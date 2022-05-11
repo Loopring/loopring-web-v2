@@ -244,7 +244,7 @@ NFTDepositViewProps<T, I>) => {
                   <TextField
                     value={tradeData.nftIdView}
                     label={t("labelNFTTId")}
-                    placeholder={t("depositNFTAddressLabelPlaceholder")}
+                    placeholder={t("depositNFTIdLabelPlaceholder")}
                     onChange={(event) =>
                       handleOnNFTDataChange({
                         nftIdView: event.target?.value,
