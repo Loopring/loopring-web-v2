@@ -27,8 +27,9 @@ import { useLocation } from "react-router-dom";
 import _ from "lodash";
 
 const BoxStyle = styled(Box)`
-  max-height: 400px;
+  max-height: var(--swap-box-height);
   width: var(--swap-box-width);
+  min-height: 320px;
   ${({ theme }) => boxLiner({ theme })};
   .depositTitle {
     font-size: ${({ theme }) => theme.fontDefault.h4};
@@ -84,18 +85,21 @@ export const DepositToPage = withTranslation(["common"])(
         );
       }
     }, [accountStatus, btnInfo, depositBtnStatus]);
-    const _onDepositClick = React.useCallback((data: any) => {
-      accountStaticCallBack(
-        Object.assign(_.cloneDeep(btnClickMap), {
-          [fnType.ACTIVATED]: [onDepositClick],
-          [fnType.LOCKED]: [onDepositClick],
-          [fnType.NO_ACCOUNT]: [onDepositClick],
-          [fnType.NOT_ACTIVE]: [onDepositClick],
-          [fnType.DEPOSITING]: [onDepositClick],
-        }),
-        [data]
-      );
-    }, []);
+    const _onDepositClick = React.useCallback(
+      (data: any) => {
+        accountStaticCallBack(
+          Object.assign(_.cloneDeep(btnClickMap), {
+            [fnType.ACTIVATED]: [onDepositClick],
+            [fnType.LOCKED]: [onDepositClick],
+            [fnType.NO_ACCOUNT]: [onDepositClick],
+            [fnType.NOT_ACTIVE]: [onDepositClick],
+            [fnType.DEPOSITING]: [onDepositClick],
+          }),
+          [data]
+        );
+      },
+      [onDepositClick]
+    );
     return (
       <>
         {
@@ -136,7 +140,11 @@ export const DepositToPage = withTranslation(["common"])(
                 </Box>
               </Box>
             </Box>
-            <BoxStyle display={"flex"} flexDirection={"column"}>
+            <BoxStyle
+              display={"flex"}
+              flexDirection={"column"}
+              paddingY={isMobile ? 2 : undefined}
+            >
               <Box
                 display={"flex"}
                 padding={2}

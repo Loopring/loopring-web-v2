@@ -5,9 +5,13 @@ import {
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import { fnType, myLog } from "@loopring-web/common-resources";
-import { accountReducer, store } from "../../index";
-import { accountServices } from "../../services/account/accountServices";
-import { unlockAccount } from "../../services/account/unlockAccount";
+import {
+  accountReducer,
+  store,
+  accountServices,
+  unlockAccount,
+} from "../../index";
+import { metaMaskCallback } from "../../modal/WalletModal";
 
 export const accountStaticCallBack = (
   onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] },
@@ -72,10 +76,15 @@ export const btnClickMap: {
   [fnType.UN_CONNECT]: [
     function () {
       myLog("UN_CONNECT!");
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
-      store.dispatch(
-        setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
-      );
+      const { isMobile } = store.getState().settings;
+      if (isMobile && window.ethereum) {
+        metaMaskCallback();
+      } else {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        store.dispatch(
+          setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
+        );
+      }
     },
   ],
   [fnType.NO_ACCOUNT]: [

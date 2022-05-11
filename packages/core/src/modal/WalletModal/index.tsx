@@ -30,13 +30,39 @@ import {
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 import {
+  accountReducer,
   useAccount,
   useSystem,
   TOAST_TIME,
   RootState,
+  store,
 } from "@loopring-web/core";
 import { useSelector } from "react-redux";
 
+export const metaMaskCallback = async () => {
+  const { _chainId } = store.getState().system;
+  store.dispatch(
+    accountReducer.updateAccountStatus({
+      connectName: ConnectProviders.MetaMask,
+    })
+  );
+  await connectProvides.MetaMask();
+
+  // statusAccountUnset();
+  if (connectProvides.usedProvide) {
+    let chainId: ChainId = Number(
+      await connectProvides.usedWeb3?.eth.getChainId()
+    );
+    chainId =
+      chainId && chainId === ChainId.GOERLI
+        ? (chainId as ChainId)
+        : ChainId.MAINNET;
+    if (chainId !== _chainId) {
+      store.dispatch(accountReducer.updateAccountStatus({ chainId }));
+    }
+    return;
+  }
+};
 export const ModalWalletConnectPanel = withTranslation("common")(
   ({
     onClose,
@@ -92,25 +118,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         return;
       }
     }, [_chainId]);
-    const metaMaskCallback = React.useCallback(async () => {
-      updateAccount({ connectName: ConnectProviders.MetaMask });
-      await connectProvides.MetaMask();
 
-      // statusAccountUnset();
-      if (connectProvides.usedProvide) {
-        let chainId: ChainId = Number(
-          await connectProvides.usedWeb3?.eth.getChainId()
-        );
-        chainId =
-          chainId && chainId === ChainId.GOERLI
-            ? (chainId as ChainId)
-            : ChainId.MAINNET;
-        if (chainId !== _chainId) {
-          updateSystem({ chainId });
-        }
-        return;
-      }
-    }, [_chainId]);
     const walletConnectCallback = React.useCallback(async () => {
       updateAccount({ connectName: ConnectProviders.WalletConnect });
       await connectProvides.WalletConnect();
