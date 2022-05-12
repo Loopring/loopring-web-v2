@@ -6,21 +6,28 @@ import { bindHover } from "material-ui-popup-state";
 import { Trans, useTranslation } from "react-i18next";
 import { PopoverPure } from "../../basic-lib";
 import { DepositPanelType } from "./Interface";
+import { useSettings } from "../../../stores";
 
-const DepositTitle = ({ title, description }: any) => {
+export const DepositTitle = ({ title, description }: any) => {
   const { t } = useTranslation();
+  const { isMobile } = useSettings();
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-deposit`,
   });
   return (
-    <>
-      <Typography component={"span"} variant={"h5"} marginRight={1}>
+    <Typography display={"inline-flex"} alignItems={"center"}>
+      <Typography
+        component={"span"}
+        variant={isMobile ? "h5" : "h4"}
+        marginRight={1}
+        className={"depositTitle"}
+      >
         {title ? title : t("depositTitle")}
       </Typography>
       <HelpIcon
         {...bindHover(popupState)}
-        fontSize={"medium"}
+        fontSize={isMobile ? "medium" : "large"}
         htmlColor={"var(--color-text-third)"}
       />
       <PopoverPure
@@ -47,7 +54,7 @@ const DepositTitle = ({ title, description }: any) => {
           </Trans>
         </Typography>
       </PopoverPure>
-    </>
+    </Typography>
   );
 };
 const ThirdPartTitle = React.memo(() => {

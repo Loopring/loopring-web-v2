@@ -1001,8 +1001,10 @@ export const MuiTooltip = ({
     styleOverrides: {
       tooltip: {
         fontSize: fontDefault.body2,
-        color: colorBase.textThird,
+        fontWeight: 400,
+        color: colorBase.textSecondary,
         background: colorBase.popBg,
+        boxShadow: colorBase.shadowHover,
         lineHeight: "1.5em",
       },
       // root: {

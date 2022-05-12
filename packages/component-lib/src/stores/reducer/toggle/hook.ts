@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@loopring-web/webapp/src/stores";
+import { RootState } from "@loopring-web/core";
 import { ToggleState } from "./interface";
 import { updateToggleStatus } from "./reducer";
 import React from "react";

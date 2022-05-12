@@ -1,5 +1,6 @@
 import { StateBase } from "./sagaStatus";
 import { ConnectProviders } from "@loopring-web/web3-provider";
+import { TokenType } from "@loopring-web/component-lib";
 
 export enum AccountStatus {
   UN_CONNECT = "UN_CONNECT",
@@ -57,3 +58,17 @@ export type AccountFull = {
 //     CLEAN= 'CLEAN',
 //     UPDATE='UPDATE'
 // }
+
+export type AssetsRawDataItem = {
+  token: {
+    type: TokenType;
+    value: string;
+  };
+  amount: string;
+  available: string;
+  locked: string;
+  smallBalance: boolean;
+  tokenValueDollar: number;
+  name: string;
+  tokenValueYuan: number;
+};

@@ -13,7 +13,7 @@ import { IInput, ISBtn, IWrap } from "./style";
 import { CoinIcon } from "./Default";
 import { Typography } from "@mui/material";
 
-function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>(
+function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   {
     label = "Enter token",
     handleError,
@@ -260,7 +260,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>(
 }
 
 export const InputButton = React.memo(React.forwardRef(_InputButton)) as <
-  T extends IBData<C>,
+  T,
   C,
   I extends CoinInfo<C>
 >(

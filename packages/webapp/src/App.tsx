@@ -5,11 +5,11 @@ import { css, Theme, useTheme } from "@emotion/react";
 import { globalCss } from "@loopring-web/common-resources";
 import { setLanguage } from "@loopring-web/component-lib";
 import { useInit } from "./hook";
-import store from "./stores";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { HashRouter as Router, useLocation } from "react-router-dom";
+import { store } from "@loopring-web/core";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();

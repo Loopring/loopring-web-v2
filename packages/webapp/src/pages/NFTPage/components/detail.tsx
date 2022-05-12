@@ -5,6 +5,7 @@ import {
   getShortAddr,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
+  LinkIcon,
   LoadingIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
@@ -24,14 +25,14 @@ import {
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import { useNFTTransfer } from "hooks/useractions/useNFTTransfer";
-import { useNFTWithdraw } from "hooks/useractions/useNFTWithdraw";
-import { useNFTDeploy } from "hooks/useractions/useNFTDeploy";
+import { useNFTTransfer } from "@loopring-web/core";
+import { useNFTWithdraw } from "@loopring-web/core";
+import { useNFTDeploy } from "@loopring-web/core";
 import { NFTMedia } from "./nftMedia";
 import { useTheme } from "@emotion/react";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
 import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
-import { useAccount } from "../../../stores/account";
+import { useAccount } from "@loopring-web/core";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -151,7 +152,7 @@ export const NFTDetail = withTranslation("common")(
     };
     const detailView = React.useMemo(() => {
       return (
-        <Box flexDirection={"column"} display={"flex"}>
+        <Box flexDirection={"column"} display={"flex"} maxWidth={550}>
           <InformationForNoMetaNFT
             open={!!showDialog}
             method={showDialog}
@@ -190,12 +191,19 @@ export const NFTDetail = withTranslation("common")(
               variant={"body1"}
               marginTop={2}
             >
-              <Typography color={"var(--color-text-third)"} width={150}>
+              <Typography
+                color={"var(--color-text-third)"}
+                width={150}
+                textOverflow={"ellipsis"}
+              >
                 {t("labelNFTName")}
               </Typography>
               <Typography
                 color={"var(--color-text-secondary)"}
                 title={popItem?.name}
+                whiteSpace={"pre"}
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
               >
                 {popItem?.name ?? EmptyValueTag}
               </Typography>
@@ -211,7 +219,7 @@ export const NFTDetail = withTranslation("common")(
               </Typography>
               <Typography
                 color={"var(--color-text-secondary)"}
-                title={popItem?.name}
+                title={popItem?.total}
               >
                 {Number(popItem.total) - Number(popItem.locked ?? 0)}
               </Typography>
@@ -228,6 +236,8 @@ export const NFTDetail = withTranslation("common")(
               <Link
                 fontSize={"inherit"}
                 whiteSpace={"break-spaces"}
+                display={"inline-flex"}
+                alignItems={"center"}
                 style={{ wordBreak: "break-all" }}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -242,7 +252,12 @@ export const NFTDetail = withTranslation("common")(
                 title={popItem?.nftId}
                 width={"fit-content"}
               >
-                {popItem?.nftIdView ?? ""}
+                #
+                {" " +
+                  getShortAddr(
+                    popItem?.nftIdView ? popItem.nftIdView : popItem.nftId ?? ""
+                  )}{" "}
+                <LinkIcon color={"inherit"} fontSize={"medium"} />
               </Link>
             </Typography>
             <Typography
@@ -320,7 +335,8 @@ export const NFTDetail = withTranslation("common")(
               <Box flex={1}>
                 <TextareaAutosizeStyled
                   aria-label="NFT Description"
-                  minRows={5}
+                  minRows={2}
+                  maxRows={5}
                   disabled={true}
                   value={`${popItem.description}` ?? EmptyValueTag}
                 />

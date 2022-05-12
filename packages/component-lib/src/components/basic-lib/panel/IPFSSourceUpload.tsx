@@ -9,19 +9,17 @@ import {
   Link,
 } from "@mui/material";
 import { DropzoneOptions, useDropzone } from "react-dropzone";
-// import { FileListItem } from "../lists";
 import styled from "@emotion/styled";
-import { CloseIcon, ErrorIcon, SoursURL } from "@loopring-web/common-resources";
+import {
+  CloseIcon,
+  ErrorIcon,
+  ImageIcon,
+  SoursURL,
+} from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { NftImage } from "../media";
 
-// ${({ theme }) =>
-//   theme.border.defaultFrame({
-//     c_key: theme.colorBase.divide,
-//     d_W: 2,
-//     d_R: 1,
-//   })};
 const BoxStyle = styled(Box)`
   ${({ theme }) =>
     theme.border.defaultFrame({
@@ -29,7 +27,7 @@ const BoxStyle = styled(Box)`
       d_W: 0,
       d_R: 1,
     })};
-  background: ${({ theme }) => theme.colorBase.fieldOpacity};
+  background: ${({ theme }) => theme.colorBase.globalBg};
   width: 100%;
   height: 100%;
   border-style: dashed;
@@ -37,11 +35,21 @@ const BoxStyle = styled(Box)`
     font-size: ${({ theme }) => theme.fontDefault.body2};
     color: var(--color-error);
   }
+  opacity: 0.8;
   &.focused,
   &:hover {
-    opacity: 0.5;
+    opacity: 0.95;
   }
-`;
+` as typeof Box;
+const LinkStyle = styled(Link)`
+  ${({ theme }) =>
+    theme.border.defaultFrame({
+      c_key: theme.colorBase.divide,
+      d_W: 0,
+      d_R: 1,
+    })};
+` as typeof Link;
+
 export type IpfsFile = {
   file: File;
   isProcessing: boolean;
@@ -67,6 +75,7 @@ export const IPFSSourceUpload = ({
   value,
   onChange,
   width,
+  height,
   fullSize = false,
   title = "labelLoadDes",
   buttonText = "labelUpload",
@@ -81,6 +90,7 @@ export const IPFSSourceUpload = ({
   // sx?: SxProps<Theme>;
   fullSize?: boolean;
   width?: number;
+  height?: number;
   typographyProps?: TypographyProps;
   buttonProps?: Omit<ButtonProps, "onClick">;
   title?: string;
@@ -147,23 +157,28 @@ export const IPFSSourceUpload = ({
   return (
     <Box display={"flex"} flexDirection={"column"}>
       <Box
-        flex={1}
-        display={"flex"}
+        // display={"flex"}
+        overflow={"hidden"}
         position={"relative"}
-        width={width ?? "auto"}
-        minHeight={200}
+        style={{
+          paddingBottom: height ?? "100%",
+          width: width ?? "100%",
+        }}
       >
-        <img
+        <ImageIcon
+          // fontSize={"large"}
           style={{
-            opacity: 0.1,
-            width: "100%",
-            padding: 16,
-            height: "100%",
-            display: "block",
+            position: "absolute",
+            opacity: 1,
+            height: 48,
+            width: 48,
+            top: "50%",
+            left: "50%",
+            transform: "translateY(-50%) translateX(-50%)",
+            zIndex: 60,
           }}
-          alt={"ipfs"}
-          src={SoursURL + "svg/ipfs.svg"}
         />
+
         <Box
           style={{
             position: "absolute",
@@ -173,6 +188,7 @@ export const IPFSSourceUpload = ({
             bottom: 0,
             height: "100%",
             width: "100%",
+            zIndex: 99,
           }}
         >
           {value ? (
@@ -204,23 +220,26 @@ export const IPFSSourceUpload = ({
                 {close}
               </Box>
             ) : (
-              <Box
-                flex={1}
-                display={"flex"}
-                alignItems={"center"}
-                height={"100%"}
-                justifyContent={"center"}
-              >
-                <Box>
+              <>
+                <LinkStyle
+                  alignSelf={"stretch"}
+                  flex={1}
+                  display={"flex"}
+                  style={{ background: "var(--color-box-secondary)" }}
+                  height={"100%"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={value.fullSrc}
+                >
                   <NftImage
                     alt={value?.file?.name}
                     title={value.cid}
                     onError={() => undefined}
                     src={value.localSrc}
                   />
-                </Box>
+                </LinkStyle>
                 {close}
-              </Box>
+              </>
             )
           ) : (
             <BoxStyle
@@ -251,7 +270,7 @@ export const IPFSSourceUpload = ({
                   paddingBottom={1}
                   {...typographyProps}
                 >
-                  {t(title, { types: types })}
+                  {t(title, { types: types?.join(", ") })}
                 </Typography>
                 <FormHelperText>
                   {fileRejections[0]?.errors[0]?.message}
@@ -261,23 +280,6 @@ export const IPFSSourceUpload = ({
           )}
         </Box>
       </Box>
-      {value && value.cid && (
-        <Typography color={"textSecondary"} marginY={1}>
-          CID:
-          {/*Created Success*/}
-          <Link
-            variant={"body2"}
-            marginLeft={1}
-            whiteSpace={"pre-line"}
-            style={{ wordBreak: "break-all" }}
-            href={value.fullSrc}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {value.cid}
-          </Link>
-        </Typography>
-      )}
     </Box>
   );
 };

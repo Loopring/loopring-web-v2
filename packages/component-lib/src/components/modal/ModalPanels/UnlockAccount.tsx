@@ -1,13 +1,11 @@
-import { Trans, WithTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import { UnlockAccountBase, IconType, PanelProps } from "./BasicPanel";
 import { Link, Typography } from "@mui/material";
 import { WalletType } from "@loopring-web/loopring-sdk";
 import { FEED_BACK_LINK } from "@loopring-web/common-resources";
 
 // symbol
-export const UnlockAccount_WaitForAuth = (
-  props: PanelProps & WithTranslation
-) => {
+export const UnlockAccount_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelWaitForAuth"),
@@ -15,9 +13,7 @@ export const UnlockAccount_WaitForAuth = (
   return <UnlockAccountBase {...props} {...propsPatch} />;
 };
 
-export const UnlockAccount_User_Denied = (
-  props: PanelProps & WithTranslation
-) => {
+export const UnlockAccount_User_Denied = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: <Trans i18nKey={"labelSignDenied"} />,
@@ -26,7 +22,7 @@ export const UnlockAccount_User_Denied = (
 };
 
 // symbol
-export const UnlockAccount_Success = (props: PanelProps & WithTranslation) => {
+export const UnlockAccount_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: <Trans i18nKey={"labelUnlockAccountSuccess"} />,
@@ -35,8 +31,7 @@ export const UnlockAccount_Success = (props: PanelProps & WithTranslation) => {
 };
 
 export const UnlockAccount_Failed = (
-  props: PanelProps &
-    WithTranslation & { walletType?: WalletType; resetAccount: () => void }
+  props: PanelProps & { walletType?: WalletType; resetAccount: () => void }
 ) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,

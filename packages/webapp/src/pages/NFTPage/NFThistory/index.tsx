@@ -4,7 +4,7 @@ import React from "react";
 import { TsNFTTable } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistoryNFT } from "./hookHistory";
-import { useAccount } from "stores/account";
+import { useAccount } from "@loopring-web/core";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);

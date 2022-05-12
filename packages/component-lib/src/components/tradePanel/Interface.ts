@@ -78,7 +78,7 @@ export type ModalProps = {
 export type ResetProps<T> = ResetExtendProps<T>;
 export type ExportAccountProps = ExportAccountExtendProps;
 export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> &
-  DepositExtendProps<T, I>;
+  DepositExtendProps<T>;
 export type WithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
   WithdrawExtendProps<T, I, C>;
 export type TransferProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
@@ -86,7 +86,7 @@ export type TransferProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<T, I> &
 
 export type ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
 
-export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps<I>;
+export type DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps;
 
 export type TransferInfoProps<T, I> = DefaultProps<T, I> &
   _TransferInfoProps<CoinKey<I>>;

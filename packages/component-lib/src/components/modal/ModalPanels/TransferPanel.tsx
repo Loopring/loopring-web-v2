@@ -37,8 +37,9 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
           key: "trade",
           element: React.useMemo(
             () => (
-              <TransferWrap<T, I, any>
-                key={"transfer"}
+              // @ts-ignore
+              <TransferWrap
+                key={"trade"}
                 {...{
                   ...rest,
                   type,

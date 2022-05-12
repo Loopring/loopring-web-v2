@@ -7,7 +7,7 @@ import {
   SoursURL,
   ExitIcon,
 } from "@loopring-web/common-resources";
-import { Trans, WithTranslation } from "react-i18next";
+import { TFunction, Trans, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { AccountBaseProps } from "./Interface";
 import { ConnectProviders } from "@loopring-web/web3-provider";
@@ -45,7 +45,7 @@ export const AccountBasePanel = ({
   etherscanUrl,
   onCopy,
   t,
-}: AccountBaseProps & WithTranslation) => {
+}: AccountBaseProps & { t: TFunction }) => {
   const addressShort = getShortAddr(accAddress);
   const etherscanLink = etherscanUrl + "address/" + accAddress;
   const connectBy =

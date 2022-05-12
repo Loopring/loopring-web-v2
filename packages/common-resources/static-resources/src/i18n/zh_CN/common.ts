@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+
 export default {
   labelErrorTitle: "Error Detail:",
   labelNoContent: "No Content",
@@ -94,7 +95,8 @@ export default {
   labelAssetMobileTitle: "Layer 2 Total Assets",
   labelShowAccount: "显示或隐藏总资产",
   labelAssetsBtnRamp: "Buy with Card",
-  labelBtnDeposit: "充值",
+  labelAddAsset: "充值",
+  labelAddAssetBtn: "Send",
   labelBtnTransfer: "转账",
   labelBtnWithdraw: "提现",
   labelLevel: "VIP等级",
@@ -222,6 +224,7 @@ export default {
   labelDepositApproveProcess: "等待用户确认充值",
   // labelTokenAccess: '等待钱包确认{{symbol}}授权！',
   labelTokenAccess: "等待钱包确认授权！",
+  labelWaitingRefer: "Waiting for Refer approval",
   labelFailedTokenAccess: "{{symbol}}授权失败！",
   labelSuccessTokenAccess: "恭喜, 你可以交易 {{symbol}} 了！",
   labelSuccessUnlockDescribe: "恭喜，解锁成功！",
@@ -309,7 +312,7 @@ export default {
   labelWaitForAuth: "等待钱包签名",
   labelSignDenied: "签名已被用户拒绝",
   labelFirstSignDenied: "您的钱包不支持当前签名方法",
-  labelDepositWaitForAuth: "请确认充值 {{value}} {{symbol}}",
+  labelDepositWaitForAuth: "请确认充值 {{value}} {{symbol}} 到 {{to}} L2",
   labelDepositDenied: "充值 {{value}} {{symbol}} 已被用户拒绝",
   labelDepositFailed: "充值 {{value}} {{symbol}} 失败",
   labelDepositSubmit: "充值 {{value}} {{symbol}} 已提交",
@@ -551,7 +554,6 @@ export default {
   labelDeployInProgress: "Processing...",
   labelNFTDeploy: "Deploy NFT",
   labelVendor: "Vendor",
-  labelAddAsset: "Add Layer 2 Assets",
   labelDepositVendor:
     "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
@@ -598,6 +600,8 @@ export default {
   labelmarket: "Market",
   labelswap: "Swap",
   labelamm: "Amm",
+  depositLabelTo: "To address, account id or ENS.",
+  labelAddressNotLoopring: "That account not active layer2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
   labelLoadDes: "Drag or click to upload files ({{types}}, ≦10MB)",
@@ -634,4 +638,15 @@ export default {
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to delete NFTs or hide inappropriate content if an NFT is discovered to be harmful.",
+  labelDepositTitleBridge: "Add Loopring L2 Assets",
+  labelPayer: "Payer wallet:",
+  labelDepositTokenAmount: "Token Amount",
+  labelDepositFrom: "From",
+  labelDepositTO: "To Loopring L2",
+  labelAddAssetTitle: "Add L2 asset",
+  labelFromMyL1: "From My L1",
+  labelFromOtherL1: "From Other L1",
+  labelBuyWithCard: "Buy with Card",
+  labelFromOtherL2: "From Other L2",
+  labelFromExchange: "Buy from Exchange",
 };

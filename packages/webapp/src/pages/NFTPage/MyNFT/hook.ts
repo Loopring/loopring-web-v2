@@ -8,20 +8,19 @@ import {
   SagaStatus,
 } from "@loopring-web/common-resources";
 import React, { useState } from "react";
-import { LoopringAPI } from "api_wrapper";
+import { LoopringAPI } from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
-import { useSystem } from "stores/system";
+import { useSystem } from "@loopring-web/core";
 import {
   NftData,
   NFTTokenInfo,
   DEPLOYMENT_STATUS,
 } from "@loopring-web/loopring-sdk";
-import { useModalData } from "stores/router";
+import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
-import { useWalletLayer2NFT } from "stores/walletLayer2NFT";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
-import { useAccount } from "stores/account";
+import { useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });

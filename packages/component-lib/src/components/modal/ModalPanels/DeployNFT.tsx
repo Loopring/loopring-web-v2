@@ -1,9 +1,8 @@
-import { WithTranslation } from "react-i18next";
 import { DeployBase, IconType, PanelProps } from "./BasicPanel";
 import { NFTWholeINFO } from "@loopring-web/common-resources";
 
 export const NFTDeploy_WaitForAuth = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
@@ -15,9 +14,7 @@ export const NFTDeploy_WaitForAuth = (
   return <DeployBase {...propsPatch} {...props} />;
 };
 
-export const NFTDeploy_Denied = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
-) => {
+export const NFTDeploy_Denied = (props: PanelProps & Partial<NFTWholeINFO>) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelDeployDenied", {
@@ -28,7 +25,7 @@ export const NFTDeploy_Denied = (
   return <DeployBase {...propsPatch} {...props} />;
 };
 export const NFTDeploy_First_Method_Denied = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
@@ -40,7 +37,7 @@ export const NFTDeploy_First_Method_Denied = (
   return <DeployBase {...propsPatch} {...props} />;
 };
 export const NFTDeploy_In_Progress = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
@@ -52,9 +49,7 @@ export const NFTDeploy_In_Progress = (
   return <DeployBase {...propsPatch} {...props} />;
 };
 
-export const NFTDeploy_Failed = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
-) => {
+export const NFTDeploy_Failed = (props: PanelProps & Partial<NFTWholeINFO>) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelDeployFailed", {
@@ -65,9 +60,7 @@ export const NFTDeploy_Failed = (
   return <DeployBase {...propsPatch} {...props} />;
 };
 
-export const NFTDeploy_Submit = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
-) => {
+export const NFTDeploy_Submit = (props: PanelProps & Partial<NFTWholeINFO>) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelDeploySubmit", {

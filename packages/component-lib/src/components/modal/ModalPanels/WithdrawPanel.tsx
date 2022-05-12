@@ -47,7 +47,8 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
           key: "trade",
           element: React.useMemo(
             () => (
-              <WithdrawWrap<T, I, any>
+              // @ts-ignore
+              <WithdrawWrap
                 key={"transfer"}
                 {...{
                   ...rest,

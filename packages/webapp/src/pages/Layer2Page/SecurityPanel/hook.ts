@@ -3,17 +3,17 @@ import {
   myLog,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { useAccount } from "../../../stores/account";
+import { useAccount } from "@loopring-web/core";
 import React from "react";
 
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-import store from "stores";
+import { store } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "api_wrapper";
+import { LoopringAPI } from "@loopring-web/core";
 
 import { connectProvides } from "@loopring-web/web3-provider";
 
-import { checkErrorInfo } from "hooks/useractions/utils";
+import { checkErrorInfo } from "@loopring-web/core";
 
 export function useResetAccount() {
   const { setShowResetAccount } = useOpenModals();

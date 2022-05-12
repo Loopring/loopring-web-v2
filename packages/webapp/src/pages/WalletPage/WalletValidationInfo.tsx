@@ -21,12 +21,12 @@ import {
   ModalCloseButton,
   SwitchPanelStyled,
 } from "@loopring-web/component-lib";
-import { LoopringAPI } from "../../api_wrapper";
+import { LoopringAPI } from "@loopring-web/core";
 import Web3 from "web3";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import { useAccount } from "stores/account";
-import { useSystem } from "stores/system";
+import { useAccount } from "@loopring-web/core";
+import { useSystem } from "@loopring-web/core";
 import {
   myLog,
   RefreshIcon,

@@ -6,8 +6,8 @@ import {
 } from "@loopring-web/common-resources";
 import { Trans, useTranslation } from "react-i18next";
 import { Button, TextField } from "../../../basic-lib";
-import { Box, Grid, IconButton } from "@mui/material";
-import React from "react";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
+import React, { ForwardedRef } from "react";
 
 export const Properties = ({
   properties = [],
@@ -78,17 +78,20 @@ export const Properties = ({
 };
 export const Property = React.memo(
   React.forwardRef(
-    ({
-      property,
-      index,
-      handleChange,
-      onDelete,
-    }: {
-      property: MetaProperty;
-      index: number;
-      handleChange: (property: Partial<MetaProperty>, index: number) => void;
-      onDelete: (index: number) => void;
-    }) => {
+    (
+      {
+        property,
+        index,
+        handleChange,
+        onDelete,
+      }: {
+        property: MetaProperty;
+        index: number;
+        handleChange: (property: Partial<MetaProperty>, index: number) => void;
+        onDelete: (index: number) => void;
+      },
+      ref: ForwardedRef<any>
+    ) => {
       // const [,] = React.useState<Partial<MetaProperty>>();
       const _handleChange = React.useCallback(
         (_property: Partial<MetaProperty>) => {
@@ -99,9 +102,10 @@ export const Property = React.memo(
 
       return (
         <>
-          <Grid item xs={5}>
+          <Grid item xs={5} ref={ref}>
             <TextField
               value={property.key}
+              inputProps={{ maxLength: 10 }}
               fullWidth
               label={<Trans i18nKey={"labelMintPropertyKey"}>key</Trans>}
               type={"text"}
@@ -111,6 +115,7 @@ export const Property = React.memo(
           <Grid item xs={6}>
             <TextField
               value={property.value}
+              inputProps={{ maxLength: 20 }}
               fullWidth
               label={<Trans i18nKey={"labelMintPropertyValue"}>value</Trans>}
               type={"text"}
@@ -124,14 +129,17 @@ export const Property = React.memo(
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <IconButton
-              sx={{ marginTop: 3 }}
-              edge={"end"}
-              // disabled={properties.length === 1 ? true : false}
-              onClick={() => onDelete(index)}
-            >
-              <DeleteIcon color={"error"} />
-            </IconButton>
+            <Typography color={"var(--color-button-icon)"}>
+              <IconButton
+                sx={{ marginTop: 3 }}
+                edge={"end"}
+                size={"large"}
+                // disabled={properties.length === 1 ? true : false}
+                onClick={() => onDelete(index)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Typography>
           </Grid>
         </>
       );

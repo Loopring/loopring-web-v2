@@ -265,7 +265,7 @@ export const IsMobile = {
     );
   },
   Ethereum: function () {
-    //@ts-ignore
+    // @ts-ignore
     return window?.ethereum && window?.ethereum.isImToken;
   },
 
@@ -283,11 +283,11 @@ export const IsMobile = {
 
 export const IsWhichWebView = {
   any: function () {
-    //@ts-ignore
+    // @ts-ignore
     if (window?.ethereum.isImToken) {
       return "isImToken";
     }
-    //@ts-ignore
+    // @ts-ignore
     if (window?.ethereum.isMetaMask) {
       return "isMetaMask";
     }

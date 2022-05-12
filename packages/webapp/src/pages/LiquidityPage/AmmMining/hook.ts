@@ -5,9 +5,7 @@ import {
   LoopringMap,
 } from "@loopring-web/loopring-sdk";
 import React from "react";
-import { makeUIAmmActivityMap } from "hooks/help";
-
-import { useUserRewards } from "stores/userRewards";
+import { makeUIAmmActivityMap, useUserRewards } from "@loopring-web/core";
 
 export const useAmmMiningUI = <
   R extends { [key: string]: any },

@@ -136,3 +136,33 @@ export const LOOPRING_TAKE_NFT_META_KET = {
 export type LOOPRING_NFT_METADATA = {
   [key in keyof typeof LOOPRING_TAKE_NFT_META_KET]?: string | undefined;
 };
+
+export const NFTLimit = 12;
+
+export const AddAssetList = {
+  BuyWithCard: {
+    key: "BuyWithCard",
+    svgIcon: "CardIcon",
+    enableKey: "legal",
+  },
+  FromMyL1: {
+    key: "FromMyL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "deposit",
+  },
+  FromOtherL1: {
+    key: "FromOtherL1",
+    svgIcon: "IncomingIcon",
+    enableKey: null,
+  },
+  FromOtherL2: {
+    key: "FromOtherL2",
+    svgIcon: "IncomingIcon",
+    enableKey: null,
+  },
+  FromExchange: {
+    key: "FromOtherL2",
+    svgIcon: "IncomingIcon",
+    enableKey: null,
+  },
+};

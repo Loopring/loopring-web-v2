@@ -1,6 +1,18 @@
 import React from "react";
-import store from "stores";
 import {
+  store,
+  useAccount,
+  makeWalletLayer2,
+  volumeToCountAsBigNumber,
+  useSocket,
+  useWalletLayer2Socket,
+  useSystem,
+  useTokenMap,
+  LoopringAPI,
+  useTokenPrices,
+} from "@loopring-web/core";
+import {
+  AccountStep,
   AssetTitleProps,
   TokenType,
   TradeBtnStatus,
@@ -10,22 +22,17 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
+  AssetsRawDataItem,
   EmptyValueTag,
   myLog,
   PriceTag,
 } from "@loopring-web/common-resources";
-import { useAccount } from "stores/account";
-import { makeWalletLayer2, volumeToCountAsBigNumber } from "hooks/help";
+
 import { Currency, WsTopicType } from "@loopring-web/loopring-sdk";
-import { useSocket } from "stores/socket";
-import { useWalletLayer2Socket } from "services/socket";
-import { useSystem } from "stores/system";
+
 import BigNumber from "bignumber.js";
-import { useTokenPrices } from "stores/tokenPrices";
-import { LoopringAPI } from "api_wrapper";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useTokenMap } from "../../../stores/token";
 
 export type TrendDataItem = {
   timeStamp: number;
@@ -39,20 +46,6 @@ export type ITokenInfoItem = {
     symbol: string;
     updatedAt: number;
   };
-};
-
-export type AssetsRawDataItem = {
-  token: {
-    type: TokenType;
-    value: string;
-  };
-  amount: string;
-  available: string;
-  locked: string;
-  smallBalance: boolean;
-  tokenValueDollar: number;
-  name: string;
-  tokenValueYuan: number;
 };
 
 export const useGetAssets = () => {
@@ -83,9 +76,9 @@ export const useGetAssets = () => {
   const { forex, allowTrade } = useSystem();
   const { tokenPrices } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
-  const { raw_data } = allowTrade;
-  const legalEnable = (raw_data as any)?.legal?.enable;
-  const legalShow = (raw_data as any)?.legal?.show;
+
+  const { setShowAccount } = useOpenModals();
+
   const {
     themeMode,
     hideL2Assets,
@@ -327,7 +320,7 @@ export const useGetAssets = () => {
   );
 
   const assetTitleProps: AssetTitleProps = {
-    btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
+    // btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
     btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
     setHideL2Assets,
@@ -343,12 +336,14 @@ export const useGetAssets = () => {
     },
     accountId: account.accountId,
     hideL2Assets,
-    onShowDeposit,
+    onShowSend: () => {
+      setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
+    },
     onShowTransfer,
     onShowWithdraw,
     showPartner: () => onShowDeposit(undefined, true),
-    legalEnable,
-    legalShow,
+    // legalEnable,
+    // legalShow,
   };
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,

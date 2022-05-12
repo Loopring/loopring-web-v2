@@ -14,8 +14,6 @@ import {
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
-import { IdMap, useTokenMap } from "../../../stores/token";
-import { useAmmMap } from "../../../stores/Amm/AmmMap";
 import {
   accountStaticCallBack,
   ammPairInit,
@@ -23,21 +21,24 @@ import {
   btnLabel,
   makeCache,
   makeWalletLayer2,
-} from "../../../hooks/help";
+  useAmmMap,
+  IdMap,
+  useTokenMap,
+  useAccount,
+  LoopringAPI,
+  store,
+  useSystem,
+} from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import { useAccount } from "../../../stores/account";
-import store from "stores";
-import { LoopringAPI } from "api_wrapper";
 import { useTranslation } from "react-i18next";
 
-import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
-import { initSlippage, usePageAmmPool } from "stores/router";
+import { useWalletLayer2Socket, walletLayer2Service } from "@loopring-web/core";
+import { initSlippage, usePageAmmPool } from "@loopring-web/core";
 
 import _ from "lodash";
-import { getTimestampDaysLater } from "utils/dt_tools";
-import { DAYS } from "defs/common_defs";
-import { useSystem } from "../../../stores/system";
+import { getTimestampDaysLater } from "@loopring-web/core";
+import { DAYS } from "@loopring-web/core";
 
 // ----------calc hook -------
 

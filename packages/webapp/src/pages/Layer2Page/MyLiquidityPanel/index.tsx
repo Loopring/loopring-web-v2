@@ -16,11 +16,8 @@ import {
   LoopringMap,
 } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
-import { useSystem } from "stores/system";
+import { useSystem, useAmmActivityMap, useAccount } from "@loopring-web/core";
 import { TableWrapStyled } from "pages/styled";
-import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
-import { useAccount } from "stores/account";
-
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;

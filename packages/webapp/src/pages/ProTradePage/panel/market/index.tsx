@@ -32,10 +32,12 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { usePageTradePro } from "stores/router";
-import { useTokenMap } from "stores/token";
-import { useTokenPrices } from "stores/tokenPrices";
-import { useSystem } from "stores/system";
+import {
+  usePageTradePro,
+  useTokenMap,
+  useTokenPrices,
+  useSystem,
+} from "@loopring-web/core";
 import styled from "@emotion/styled/";
 import { Currency } from "@loopring-web/loopring-sdk";
 

@@ -1,7 +1,5 @@
 import React from "react";
-import { LoopringAPI } from "api_wrapper";
-import { useAccount } from "stores/account";
-import { useTokenMap } from "stores/token";
+import { LoopringAPI, useTokenMap, useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { myLog } from "@loopring-web/common-resources";
 

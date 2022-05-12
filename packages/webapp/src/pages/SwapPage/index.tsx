@@ -11,9 +11,8 @@ import {
   Toast,
   useToggle,
 } from "@loopring-web/component-lib";
-
-import { TOAST_TIME } from "defs/common_defs";
-import { FixedStyle } from "pages/styled";
+import { FixedStyle } from "../styled";
+import { TOAST_TIME } from "@loopring-web/core";
 import { useSwap } from "./hookSwap";
 import { getValuePrecisionThousand } from "@loopring-web/common-resources";
 
@@ -78,6 +77,7 @@ export const SwapPage = withTranslation("common")(
             </Box>
 
             <Box display={"flex"} style={styles} justifyContent={"center"}>
+              {/* eslint-disable-next-line react/jsx-no-undef */}
               <FixedStyle>
                 <SwapPanel
                   toPro={toPro}

@@ -308,20 +308,20 @@ export const WithdrawWrap = <
             {isInvalidAddressOrENS ? (
               <Typography
                 color={"var(--color-error)"}
-                fontSize={14}
+                variant={"body2"}
+                marginTop={1 / 4}
                 alignSelf={"stretch"}
                 position={"relative"}
-                marginTop={1 / 4}
               >
                 {t("labelInvalidAddress")}
               </Typography>
             ) : isNotAvaiableAddress ? (
               <Typography
                 color={"var(--color-error)"}
-                fontSize={14}
+                variant={"body2"}
+                marginTop={1 / 4}
                 alignSelf={"stretch"}
                 position={"relative"}
-                marginTop={1 / 4}
               >
                 {t(`labelInvalid${isNotAvaiableAddress}`, {
                   token: type === "NFT" ? "NFT" : tradeData.belong,

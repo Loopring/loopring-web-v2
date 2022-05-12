@@ -1,17 +1,15 @@
-import { Trans, useTranslation, WithTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { IconType, PanelProps, BasicPanel } from "../ModalPanels/BasicPanel";
 import { Box, Typography } from "@mui/material";
 
-export const LockWallet = (props: PanelProps & WithTranslation) => {
+export const LockWallet = (props: PanelProps) => {
   const propsPatch = {
     title: "labelLockWallet",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
 // symbol
-export const LockAccount_WaitForAuth = (
-  props: PanelProps & WithTranslation
-) => {
+export const LockAccount_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelWaitForAuth"),
@@ -19,9 +17,7 @@ export const LockAccount_WaitForAuth = (
   return <LockWallet {...props} {...propsPatch} />;
 };
 
-export const LockAccount_User_Denied = (
-  props: PanelProps & WithTranslation
-) => {
+export const LockAccount_User_Denied = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: <Trans i18nKey={"labelSignDenied"}></Trans>,
@@ -30,7 +26,7 @@ export const LockAccount_User_Denied = (
 };
 
 // symbol
-export const LockAccount_Success = (props: PanelProps & WithTranslation) => {
+export const LockAccount_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
     describe1: <Trans i18nKey={"labelLockAccountSuccess"}></Trans>,
@@ -39,9 +35,7 @@ export const LockAccount_Success = (props: PanelProps & WithTranslation) => {
 };
 
 // value symbol
-export const LockAccount_Failed = (
-  props: PanelProps & WithTranslation & any
-) => {
+export const LockAccount_Failed = (props: PanelProps & any) => {
   const { t } = useTranslation("common");
   const propsPatch = {
     iconType: IconType.FailedIcon,

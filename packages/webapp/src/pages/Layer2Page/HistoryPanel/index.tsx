@@ -1,4 +1,4 @@
-import React, { DOMElement, ElementType, useEffect } from "react";
+import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Box, Tab, Tabs } from "@mui/material";
 import {
@@ -9,12 +9,15 @@ import {
 } from "@loopring-web/component-lib";
 import { StylePaper } from "../../styled";
 import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
-import { useSystem } from "stores/system";
-import { useAccount } from "stores/account";
-import { TOAST_TIME } from "defs/common_defs";
-import { useToast } from "hooks/common/useToast";
-import { useTokenMap } from "stores/token";
-import { useAmmMap } from "stores/Amm/AmmMap";
+
+import {
+  TOAST_TIME,
+  useSystem,
+  useAccount,
+  useToast,
+  useTokenMap,
+  useAmmMap,
+} from "@loopring-web/core";
 import { RowConfig } from "@loopring-web/common-resources";
 
 const HistoryPanel = withTranslation("common")(

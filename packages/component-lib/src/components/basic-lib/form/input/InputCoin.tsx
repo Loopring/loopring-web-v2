@@ -229,7 +229,9 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               ref={inputEle}
               autoComplete="off"
               onValueChange={_handleContChange}
-              value={typeof sValue === "undefined" ? "" : sValue}
+              value={
+                typeof sValue === "undefined" ? "" : isNaN(sValue) ? "" : sValue
+              }
               allowNegativeValue={false}
               decimalSeparator="."
               groupSeparator=","

@@ -57,7 +57,13 @@ const Style = styled.div`
   flex: 1;
 `;
 let tradeData: any = {};
+// @ts-ignore
 let depositProps: DepositProps<any, any> = {
+  toIsLoopringAddress: false,
+  toIsAddressCheckLoading: false,
+  referIsLoopringAddress: false,
+  referIsAddressCheckLoading: false,
+  type: "NFT",
   isNewAccount: false,
   tradeData,
   coinMap,
@@ -420,13 +426,14 @@ const WrapAmmPanel = (rest: any) => {
 const ModalPanelWrap = () => {
   return (
     <ModalPanel
-      depositGroupProps={{
-        depositProps,
-        vendorMenuProps: {
-          vendorList: [],
-          vendorForce: undefined,
-        },
-      }}
+      // depositGroupProps={{
+      //   depositProps,
+      //   vendorMenuProps: {
+      //     vendorList: [],
+      //     vendorForce: undefined,
+      //   },
+      // }}
+      depositProps={depositProps as DepositProps<any, any>}
       transferProps={transferProps as TransferProps<any, any>}
       withdrawProps={withdrawProps as WithdrawProps<any, any>}
       nftTransferProps={transferProps as TransferProps<any, any>}

@@ -158,10 +158,22 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
 
   const { nameList, accountList } = React.useMemo(() => {
     const accountMap = {
+      [AccountStep.Deposit_Sign_WaitForRefer]: {
+        view: (
+          <Deposit_Approve_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              symbol: "LRC",
+              value: "1.2121",
+            }}
+          />
+        ),
+      },
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (
           <Deposit_Approve_WaitForAuth
-            providerName={ConnectProviders.MetaMask}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
