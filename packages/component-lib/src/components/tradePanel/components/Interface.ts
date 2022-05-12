@@ -125,6 +125,7 @@ export type DepositInfoProps = {
 
 export type DepositExtendProps<T> = {
   isThumb?: boolean;
+  title?: string;
   allowTrade?: any;
   isAllowInputToAddress?: boolean;
   onDepositClick: (data: T) => void;

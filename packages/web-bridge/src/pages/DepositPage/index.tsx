@@ -145,16 +145,9 @@ export const DepositToPage = withTranslation(["common"])(
               flexDirection={"column"}
               paddingY={isMobile ? 2 : undefined}
             >
-              <Box
-                display={"flex"}
-                padding={2}
-                alignItems={"center"}
-                justifyContent={"center"}
-              >
-                <DepositTitle title={t("labelDepositTitleBridge")} />
-              </Box>
               <DepositPanel
                 {...depositProps}
+                title={"labelDepositTitleBridge"}
                 btnInfo={_depositBtnI18nKey}
                 depositBtnStatus={_depositBtnStatus}
                 onDepositClick={_onDepositClick}

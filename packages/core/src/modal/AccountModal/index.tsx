@@ -1,11 +1,11 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
-  DepositPanelType,
+  // DepositPanelType,
   ModalAccount,
   ModalPanel,
   ModalQRCode,
   Toast,
-  useOpenModals,
+  // useOpenModals,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
 import { useAccountModalForUI } from "./hook";
@@ -28,11 +28,11 @@ export const ModalAccountInfo = withTranslation("common")(
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
-    const {
-      modals: {
-        isShowDeposit: { partner },
-      },
-    } = useOpenModals();
+    // const {
+    //   modals: {
+    //     isShowDeposit ,
+    //   },
+    // } = useOpenModals();
     const {
       exportAccountAlertText,
       exportAccountToastOpen,
@@ -57,7 +57,6 @@ export const ModalAccountInfo = withTranslation("common")(
       closeBtnInfo,
       accountList,
       currentModal,
-      vendorProps,
     } = useAccountModalForUI({
       t,
       etherscanBaseUrl,
@@ -81,13 +80,14 @@ export const ModalAccountInfo = withTranslation("common")(
         <ModalPanel
           transferProps={transferProps}
           withdrawProps={withdrawProps}
-          depositGroupProps={{
-            depositProps,
-            tabIndex: partner
-              ? DepositPanelType.ThirdPart
-              : DepositPanelType.Deposit,
-            vendorMenuProps: vendorProps,
-          }}
+          // depositGroupProps={{
+          //   depositProps,
+          //   tabIndex: partner
+          //     ? DepositPanelType.ThirdPart
+          //     : DepositPanelType.Deposit,
+          //   vendorMenuProps: vendorProps,
+          // }}
+          depositProps={depositProps}
           nftTransferProps={nftTransferProps}
           // nftMintProps={nftMintProps}
           // nftDepositProps={nftDepositProps}

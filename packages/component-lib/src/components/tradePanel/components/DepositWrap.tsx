@@ -10,6 +10,7 @@ import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import {
   Button,
+  DepositTitle,
   IconClearStyled,
   TextField,
   useSettings,
@@ -134,6 +135,7 @@ export const DepositWrap = <
       flex={1}
       height={"100%"}
     >
+      <DepositTitle title={title ? t(title) : undefined} />
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <BasicACoinTrade
           {...{

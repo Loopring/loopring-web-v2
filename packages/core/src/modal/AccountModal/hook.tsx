@@ -78,6 +78,7 @@ import {
   NFTMint_First_Method_Denied,
   NFTMint_In_Progress,
   Deposit_Sign_WaitForRefer,
+  VendorMenu,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -464,6 +465,19 @@ export function useAccountModalForUI({
   }, [account.accAddress, isSupportCallback]);
   const accountList = React.useMemo(() => {
     return Object.values({
+      [AccountStep.AddAssetGateway]: {
+        view: (
+          <div>
+            <div>buy</div>
+            <div>buy</div>
+            <div>buy</div>
+            <div>buy</div>
+          </div>
+        ),
+      },
+      [AccountStep.PayWithCard]: {
+        view: <VendorMenu {...{ ...vendorProps }} />,
+      },
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
@@ -1833,6 +1847,6 @@ export function useAccountModalForUI({
     closeBtnInfo,
     accountList,
     currentModal,
-    vendorProps,
+    // vendorProps,
   };
 }
