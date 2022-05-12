@@ -182,7 +182,9 @@ export const accountServices = {
           owner: account.accAddress,
         });
         if (accInfo === undefined) {
-          accountServices.sendNoAccount();
+          if (account.readyState !== AccountStatus.NO_ACCOUNT) {
+            accountServices.sendNoAccount();
+          }
         } else {
           if (account.accountId) {
             if (!account.publicKey.x || !account.publicKey.y) {

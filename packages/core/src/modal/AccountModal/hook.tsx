@@ -512,7 +512,13 @@ export function useAccountModalForUI({
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.AddAssetGateway]: {
-        view: <AddAsset addAssetList={addAssetList} allowTrade={allowTrade} />,
+        view: (
+          <AddAsset
+            addAssetList={addAssetList}
+            allowTrade={allowTrade}
+            isNewAccount={depositProps.isNewAccount}
+          />
+        ),
       },
       [AccountStep.PayWithCard]: {
         view: <VendorMenu {...{ ...vendorProps }} />,

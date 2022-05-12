@@ -662,7 +662,7 @@ export const useDeposit = <
 
   const title =
     account.readyState === AccountStatus.NO_ACCOUNT
-      ? t("labelCreateLayer2Title")
+      ? t("depositTitleAndActive")
       : t("depositTitle");
   const depositProps: DepositProps<T, I> = {
     btnInfo,

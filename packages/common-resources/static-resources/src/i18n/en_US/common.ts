@@ -34,6 +34,7 @@ export default {
   labelActiveAccountBtn: "Activate Account",
   depositTitle: "Add Asset from My L1",
   depositTitleAndActive: "Add Asset from My L1 & Activate L2",
+  depositAndActiveBtn: "Activate L2",
   depositTitleActive: "Activate L2",
   depositLabelEnterToken: "Select Layer 1 Token",
   depositDescription:
@@ -520,7 +521,7 @@ export default {
   labelIsETHDepositAlert: "Please reserve enough ETH for gas!",
   labelIsNotEnoughFeeToken:
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
-  labelActiveAccountFeeNotEnough: "Insufficient balance <1>Deposit Now</1>",
+  labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
   labelNFTTransferTX: "L2 \u2192 L2",
   labelNFTWithdrawTX: "L2 \u2192 L1",
   labelNFTDepositTX: "L1 \u2192 L2",
@@ -676,6 +677,7 @@ export default {
   labelDepositFrom: "From",
   labelDepositTO: "To Loopring L2",
   labelAddAssetTitle: "Add L2 asset",
+  labelAddAssetTitleActive: "Add L2 asset & Active",
   labelFromMyL1: "From My L1",
   labelFromOtherL1: "From Other L1",
   labelBuyWithCard: "Buy with Card",

@@ -1,4 +1,8 @@
-import { ResetProps, useOpenModals } from "@loopring-web/component-lib";
+import {
+  AccountStep,
+  ResetProps,
+  useOpenModals,
+} from "@loopring-web/component-lib";
 
 import {
   useBtnStatus,
@@ -16,7 +20,7 @@ export const useActiveAccount = <T>(): {
   activeAccountProps: ResetProps<T>;
 } => {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-  const { setShowActiveAccount, setShowDeposit } = useOpenModals();
+  const { setShowActiveAccount, setShowAccount } = useOpenModals();
   const { status: walletLayer2Status } = useWalletLayer2();
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>)
@@ -81,7 +85,8 @@ export const useActiveAccount = <T>(): {
     resetBtnStatus: btnStatus,
     goToDeposit: () => {
       setShowActiveAccount({ isShow: false });
-      setShowDeposit({ isShow: true });
+      setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
+      // setShowDeposit({ isShow: true });
     },
     walletMap,
     chargeFeeTokenList,

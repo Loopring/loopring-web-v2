@@ -139,6 +139,7 @@ export interface AddAssetItem {
 
 export interface AddAssetProps {
   addAssetList: AddAssetItem[];
+  isNewAccount?: boolean;
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean };
   };

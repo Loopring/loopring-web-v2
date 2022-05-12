@@ -25,11 +25,7 @@ export const ResetWrap = <T extends FeeInfo>({
     React.useState<"up" | "down">("down");
 
   const getDisabled = React.useMemo(() => {
-    if (disabled || resetBtnStatus === TradeBtnStatus.DISABLED) {
-      return true;
-    } else {
-      return false;
-    }
+    return disabled || resetBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, resetBtnStatus]);
 
   const handleToggleChange = (value: T) => {
@@ -115,7 +111,7 @@ export const ResetWrap = <T extends FeeInfo>({
                           }}
                           variant={"body2"}
                         >
-                          Go Deposit
+                          Add assets
                         </Link>
                       </Trans>
                     ) : (
@@ -187,8 +183,6 @@ export const ResetWrap = <T extends FeeInfo>({
             getDisabled ||
             resetBtnStatus === TradeBtnStatus.DISABLED ||
             resetBtnStatus === TradeBtnStatus.LOADING
-              ? true
-              : false
           }
         >
           {isNewAccount ? t(`labelActiveAccountBtn`) : t(`resetLabelBtn`)}
