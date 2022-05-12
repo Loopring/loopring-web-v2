@@ -6,9 +6,11 @@ import { bindHover } from "material-ui-popup-state";
 import { Trans, useTranslation } from "react-i18next";
 import { PopoverPure } from "../../basic-lib";
 import { DepositPanelType } from "./Interface";
+import { useSettings } from "../../../stores";
 
 export const DepositTitle = ({ title, description }: any) => {
   const { t } = useTranslation();
+  const { isMobile } = useSettings();
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-deposit`,
@@ -17,7 +19,7 @@ export const DepositTitle = ({ title, description }: any) => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={"h3"}
+        variant={isMobile ? "h5" : "h4"}
         marginRight={1}
         className={"depositTitle"}
       >
@@ -25,7 +27,7 @@ export const DepositTitle = ({ title, description }: any) => {
       </Typography>
       <HelpIcon
         {...bindHover(popupState)}
-        fontSize={"large"}
+        fontSize={isMobile ? "medium" : "large"}
         htmlColor={"var(--color-text-third)"}
       />
       <PopoverPure

@@ -378,7 +378,8 @@ export const MenuBtnStyled = styled(Button)`
   position: relative;
   &.addAsset {
     font-size: ${({ theme }) => theme.fontDefault.h5};
-    justify-content: flex-start;
+    //justify-content: flex-start;
+    justify-content: space-between;
     flex-direction: row;
   }
   &.provider {
