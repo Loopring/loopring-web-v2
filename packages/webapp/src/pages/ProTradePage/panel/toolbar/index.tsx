@@ -22,8 +22,7 @@ import {
   QuoteTableRawDataItem,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useTicker } from "stores/ticker";
-import { useTokenMap } from "stores/token";
+
 import {
   Box,
   ClickAwayListener,
@@ -35,19 +34,24 @@ import {
 } from "@mui/material";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindTrigger } from "material-ui-popup-state/es";
-import { volumeToCount } from "hooks/help";
+
 import styled from "@emotion/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Layout, Layouts } from "react-grid-layout";
-import { useTokenPrices } from "stores/tokenPrices";
-import { useSystem } from "stores/system";
-import { useFavoriteMarket } from "stores/localStore/favoriteMarket";
-import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
+import {
+  useTicker,
+  useTokenMap,
+  volumeToCount,
+  useTokenPrices,
+  useSystem,
+  favoriteMarket as favoriteMarketRD,
+  useAmmActivityMap,
+  useAccount,
+} from "@loopring-web/core";
 import { TableProWrapStyled } from "pages/styled";
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
 import { useTickList } from "../../../QuotePage/hook";
-import { useAccount } from "stores/account";
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -91,7 +95,8 @@ export const Toolbar = withTranslation("common")(
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
     const { coinMap, marketMap, tokenMap } = useTokenMap();
     const { tickerMap, status: tickerStatus } = useTicker();
-    const { favoriteMarket, removeMarket, addMarket } = useFavoriteMarket();
+    const { favoriteMarket, removeMarket, addMarket } =
+      favoriteMarketRD.useFavoriteMarket();
     const { ammPoolBalances } = useToolbar();
     const { tickList } = useTickList();
     const { activityInProgressRules } = useAmmActivityMap();
@@ -398,30 +403,32 @@ export const Toolbar = withTranslation("common")(
           </PopoverPure>
           {activityInProgressRules &&
             activityInProgressRules[market] &&
-            activityInProgressRules[market].ruleType.map((ruleType, index) => (
-              <Box
-                key={ruleType.toString() + index}
-                style={{ cursor: "pointer", paddingTop: 4 }}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  const date = new Date(
-                    activityInProgressRules[market].rangeFrom
-                  );
-                  const year = date.getFullYear();
-                  const month = ("0" + (date.getMonth() + 1).toString()).slice(
-                    -2
-                  );
-                  const day = ("0" + date.getDate().toString()).slice(-2);
-                  const current_event_date = `${year}-${month}-${day}`;
+            activityInProgressRules[market].ruleType.map(
+              (ruleType: any, index: number) => (
+                <Box
+                  key={ruleType.toString() + index}
+                  style={{ cursor: "pointer", paddingTop: 4 }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    const date = new Date(
+                      activityInProgressRules[market].rangeFrom
+                    );
+                    const year = date.getFullYear();
+                    const month = (
+                      "0" + (date.getMonth() + 1).toString()
+                    ).slice(-2);
+                    const day = ("0" + date.getDate().toString()).slice(-2);
+                    const current_event_date = `${year}-${month}-${day}`;
 
-                  history.push(
-                    `/race-event/${current_event_date}?pair=${market}&type=${ruleType}&owner=${account?.accAddress}`
-                  );
-                }}
-              >
-                <TrophyIcon />
-              </Box>
-            ))}
+                    history.push(
+                      `/race-event/${current_event_date}?pair=${market}&type=${ruleType}&owner=${account?.accAddress}`
+                    );
+                  }}
+                >
+                  <TrophyIcon />
+                </Box>
+              )
+            )}
           {activityInProgressRules && activityInProgressRules[`AMM-${market}`] && (
             <Box
               marginLeft={1 / 2}

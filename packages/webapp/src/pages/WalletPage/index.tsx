@@ -2,32 +2,18 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import React from "react";
 import {
   AccountStatus,
-  i18n,
-  LoadingIcon,
-  myLog,
-  SagaStatus,
   SoursURL,
   subMenuGuardian,
 } from "@loopring-web/common-resources";
 import { Box, Link, Typography } from "@mui/material";
 import {
-  Button,
   GuardianStep,
   ModalQRCode,
-  setShowConnect,
   SubMenu,
   SubMenuList,
   useSettings,
-  WalletConnectStep,
 } from "@loopring-web/component-lib";
-import { changeShowModel, useAccount } from "stores/account";
-import _ from "lodash";
-import {
-  accountStaticCallBack,
-  btnLabel,
-} from "../../layouts/connectStatusCallback";
-import store from "stores";
-
+import { useAccount, BtnConnectL1 } from "@loopring-web/core";
 import { useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
 import { StylePaper } from "pages/styled";
@@ -36,46 +22,8 @@ import { WalletHistory } from "./WalletHistory";
 import { WalletValidationInfo } from "./WalletValidationInfo";
 import { WalletProtector } from "./WalletProtector";
 
-const BtnConnect = withTranslation(["common", "layout"], { withRef: true })(
-  ({ t }: any) => {
-    const { status: accountStatus } = useAccount();
-    const [label, setLabel] = React.useState("labelConnectWallet");
-    const _btnLabel = Object.assign(_.cloneDeep(btnLabel));
-
-    React.useEffect(() => {
-      if (accountStatus === SagaStatus.UNSET) {
-        setLabel(accountStaticCallBack(_btnLabel));
-      }
-    }, [accountStatus, i18n.language]);
-
-    return (
-      <>
-        <Button
-          variant={"contained"}
-          size={"large"}
-          color={"primary"}
-          fullWidth={true}
-          style={{ maxWidth: "280px" }}
-          onClick={() => {
-            myLog("UN_CONNECT!");
-            store.dispatch(changeShowModel({ _userOnModel: true }));
-            store.dispatch(
-              setShowConnect({ isShow: true, step: WalletConnectStep.Provider })
-            );
-          }}
-        >
-          {label !== "" ? (
-            t(label)
-          ) : (
-            <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
-          )}
-        </Button>
-      </>
-    );
-  }
-) as typeof Button;
 export const GuardianPage = withTranslation(["common"])(
-  ({ t, ...rest }: WithTranslation) => {
+  ({ t, ..._rest }: WithTranslation) => {
     const { account } = useAccount();
     let match = useRouteMatch("/guardian/:item");
     const [openQRCode, setOpenQRCode] = React.useState(false);
@@ -254,7 +202,7 @@ export const GuardianPage = withTranslation(["common"])(
               >
                 {t("describeWhatIsGuardian")}
               </Link>
-              <BtnConnect />
+              <BtnConnectL1 />
             </Box>
           );
           break;

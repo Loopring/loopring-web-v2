@@ -24,9 +24,8 @@ import {
   depth2ViewData,
 } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
-import { TradingInterval } from "@loopring-web/loopring-sdk";
-import { usePageTradePro } from "stores/router";
-import { useTokenMap } from "stores/token";
+import { useTokenMap, usePageTradePro } from "@loopring-web/core";
+
 import { useKlineChart } from "./hook";
 import {
   timeIntervalData,

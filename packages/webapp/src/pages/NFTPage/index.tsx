@@ -8,16 +8,13 @@ import {
   SoursURL,
   subMenuNFT,
 } from "@loopring-web/common-resources";
-
-import { BtnConnect } from "layouts/connectStatusCallback";
-
 import React from "react";
-import { useAccount } from "stores/account";
+import { useAccount, BtnConnect } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
-import { mintService } from "../../services/mintServices";
+import { mintService } from "@loopring-web/core";
 import { TitleNFTMobile } from "./components/titleNFTMobile";
 
 export const subMenu = subMenuNFT;

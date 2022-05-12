@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./src",
+    "rootDir": "./src"
+  },
+  "include": [
+    "src",
+    "src/**/*.json",
+    "src/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "example",
+    "rollup.config.js"
+  ]
+}

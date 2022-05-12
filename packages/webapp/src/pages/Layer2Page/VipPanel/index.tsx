@@ -3,8 +3,7 @@ import { Box, Grid, Link, Typography, LinearProgress } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { useAccount } from "stores/account";
-import { LoopringAPI } from "../../../api_wrapper";
+import { LoopringAPI, useAccount } from "@loopring-web/core";
 import {
   SoursURL,
   getValuePrecisionThousand,

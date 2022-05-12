@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Box, Grid } from "@mui/material";
 import { TablePaddingX } from "@loopring-web/component-lib";
-import { LAYOUT } from "../defs/common_defs";
+import { LAYOUT } from "@loopring-web/core";
 
 export const StylePaper = styled(Box)`
   display: flex;

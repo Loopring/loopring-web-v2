@@ -19,9 +19,7 @@ import { useAmmMiningUI, RewardListItem } from "./hook";
 import { Trans, withTranslation } from "react-i18next";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { getMiningLinkList } from "@loopring-web/common-resources";
-import store from "stores";
-import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
-import { useAccount } from "../../stores/account";
+import { store, useAmmActivityMap, useAccount } from "@loopring-web/core";
 
 export enum MiningJumpType {
   orderbook = "orderbook",

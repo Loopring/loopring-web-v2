@@ -18,9 +18,12 @@ import { Avatar, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { baseTitleCss, useSettings } from "../../index";
 import { NewTagIcon } from "../basic-lib";
-import { Currency } from "@loopring-web/loopring-sdk";
+import {
+  AmmPoolInProgressActivityRule,
+  Currency,
+  LoopringMap,
+} from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
-import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
 
 type StyledProps = {
   custom: { chg: UpColor };
@@ -49,14 +52,13 @@ export const TradeTitle = <I extends object>({
   activityInProgressRules,
 }: WithTranslation & {
   account: Account;
-
   baseShow: string;
   quoteShow: string;
   coinAInfo: CoinInfo<I>;
   coinBInfo: CoinInfo<I>;
   tradeFloat: TradeFloat;
   isNew: boolean;
-  activityInProgressRules: ActivityRulesMap;
+  activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
 }) => {
   const { coinJson } = useSettings();
   const history = useHistory();

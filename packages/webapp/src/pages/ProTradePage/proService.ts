@@ -3,10 +3,11 @@ import {
   ammPoolService,
   tickerService,
   walletLayer2Service,
-} from "services/socket";
-import { useWalletLayer2 } from "stores/walletLayer2";
+  useAmmMap,
+  useWalletLayer2,
+  useWalletLayer1,
+} from "@loopring-web/core";
 import React from "react";
-import { useWalletLayer1 } from "stores/walletLayer1";
 import {
   AccountStatus,
   globalSetup,
@@ -14,22 +15,25 @@ import {
   myLog,
   SagaStatus,
 } from "@loopring-web/common-resources";
-import store from "stores";
 import { debounceTime, map, merge, of, Subject, switchAll } from "rxjs";
-import { updatePageTradePro, usePageTradePro } from "stores/router";
-import { useSocket } from "stores/socket";
-import { useAccount } from "stores/account";
-import { useTokenMap } from "stores/token";
-import { SocketMap } from "stores/socket/interface";
+import {
+  store,
+  updatePageTradePro,
+  usePageTradePro,
+  useSocket,
+  useAccount,
+  useTokenMap,
+  SocketMap,
+  LoopringAPI,
+  makeMarketArray,
+  useTicker,
+  bookService,
+  mixorderService,
+  mixtradeService,
+} from "@loopring-web/core";
+
 import * as sdk from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "api_wrapper";
 import { swapDependAsync } from "../SwapPage/help";
-import { useAmmMap } from "stores/Amm/AmmMap";
-import { makeMarketArray } from "hooks/help";
-import { useTicker } from "stores/ticker";
-import { bookService } from "services/socket/services/bookService";
-import { mixorderService } from "services/socket/services/mixorderService";
-import { mixtradeService } from "../../services/socket/services/mixtradeService";
 
 const TRADE_ARRAY_MAX_LENGTH = 50;
 
@@ -222,9 +226,9 @@ export const useProSocket = ({ market }: { market: MarketType }) => {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
     if (
-      (window.loopringSocket === undefined ||
-        window.loopringSocket.ws === undefined ||
-        !window.loopringSocket.isConnectSocket()) &&
+      ((window as any).loopringSocket === undefined ||
+        (window as any).loopringSocket.ws === undefined ||
+        !(window as any).loopringSocket.isConnectSocket()) &&
       pageTradePro.depth
     ) {
       getDependencyData();

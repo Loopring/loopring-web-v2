@@ -16,12 +16,10 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 
-import store from "stores";
+import { store, useTokenPrices, useTokenMap } from "@loopring-web/core";
 import { StylePaper } from "pages/styled";
 import { useGetAssets } from "./hook";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { useTokenPrices } from "stores/tokenPrices";
-import { useTokenMap } from "stores/token";
 import React from "react";
 
 const StyledChartWrapper = styled(Box)`

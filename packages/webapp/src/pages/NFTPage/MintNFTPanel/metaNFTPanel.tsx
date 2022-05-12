@@ -31,7 +31,7 @@ import {
   NFTMETA,
   TransErrorHelp,
 } from "@loopring-web/common-resources";
-import { NFT_MINT_VALUE } from "stores/router";
+import { NFT_MINT_VALUE } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 const MaxSize = 8000000;
 const StyleWrapper = styled(Box)`

@@ -21,9 +21,9 @@ import {
   EmptyValueTag,
   getShortAddr,
   SoursURL,
+  NFTLimit,
 } from "@loopring-web/common-resources";
 import { NFTMedia } from "../components/nftMedia";
-import { NFTLimit } from "stores/walletLayer2NFT/saga";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -208,11 +208,19 @@ export const MyNFTPanel = withTranslation("common")(
                             flexDirection={"row"}
                             alignItems={"center"}
                             justifyContent={"space-between"}
+                            // flexWrap={"wrap"}
                           >
-                            <Box display={"flex"} flexDirection={"column"}>
+                            <Box
+                              display={"flex"}
+                              flexDirection={"column"}
+                              width={"60%"}
+                            >
                               <Typography
                                 color={"text.secondary"}
                                 component={"h6"}
+                                whiteSpace={"pre"}
+                                overflow={"hidden"}
+                                textOverflow={"ellipsis"}
                               >
                                 {item?.name ?? EmptyValueTag}
                               </Typography>

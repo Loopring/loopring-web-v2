@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import React from "react";
 import { DepositNFTWrap, PopoverPure } from "@loopring-web/component-lib";
 
-import { useNFTDeposit } from "../../../hooks/useractions/useNFTDeposit";
+import { useNFTDeposit } from "@loopring-web/core";
 import { HelpIcon } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";

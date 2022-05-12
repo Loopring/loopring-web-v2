@@ -30,8 +30,7 @@ import styled from "@emotion/styled/";
 import { useAmmPool, useCoinPair } from "./hooks";
 import { StylePaper } from "pages/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { makeTickView } from "hooks/help";
-import { useAccount } from "stores/account";
+import { makeTickView, useAccount } from "@loopring-web/core";
 
 //**************useAmmPool****** page code ************************//
 const BoxWrapperStyled = styled(Grid)`

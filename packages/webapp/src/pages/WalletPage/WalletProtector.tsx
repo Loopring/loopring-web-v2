@@ -26,12 +26,14 @@ import {
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
 } from "@loopring-web/common-resources";
-import { useAccount } from "stores/account";
-import { useSystem } from "stores/system";
-import { LoopringAPI } from "../../api_wrapper";
+import {
+  useAccount,
+  layer1Store,
+  useSystem,
+  LoopringAPI,
+} from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useLayer1Store } from "stores/localStore/layer1Store";
 
 const HebaoProtectStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -85,7 +87,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
   const { account } = useAccount();
   const { chainId, gasPrice } = useSystem();
   const { t } = useTranslation(["error"]);
-  const { setOneItem } = useLayer1Store();
+  const { setOneItem } = layer1Store.useLayer1Store();
   const onLock = React.useCallback(
     async (item: T) => {
       // const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);

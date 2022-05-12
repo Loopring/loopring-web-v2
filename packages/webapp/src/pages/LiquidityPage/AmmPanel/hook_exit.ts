@@ -14,29 +14,31 @@ import {
   useOpenModals,
   useToggle,
 } from "@loopring-web/component-lib";
-import { IdMap, useTokenMap } from "../../../stores/token";
-import { useAmmMap } from "../../../stores/Amm/AmmMap";
 import {
+  IdMap,
+  useTokenMap,
+  useAmmMap,
+  useAccount,
+  store,
+  LoopringAPI,
+  useWalletLayer2Socket,
+  walletLayer2Service,
   accountStaticCallBack,
   ammPairInit,
   btnClickMap,
   btnLabel,
   makeCache,
   makeWalletLayer2,
-} from "../../../hooks/help";
+  initSlippage,
+  usePageAmmPool,
+  getTimestampDaysLater,
+  DAYS,
+} from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import { useAccount } from "../../../stores/account";
-import store from "stores";
-import { LoopringAPI } from "api_wrapper";
 import { useTranslation } from "react-i18next";
 
-import { useWalletLayer2Socket, walletLayer2Service } from "services/socket";
-
 import _ from "lodash";
-import { initSlippage, usePageAmmPool } from "stores/router";
-import { getTimestampDaysLater } from "utils/dt_tools";
-import { DAYS } from "defs/common_defs";
 
 export const useAmmExit = ({
   getFee,

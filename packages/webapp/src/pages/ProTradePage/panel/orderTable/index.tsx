@@ -8,18 +8,17 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import {
-  OrderHistoryTable,
-  QuoteTableRawDataItem,
-} from "@loopring-web/component-lib";
+import { OrderHistoryTable } from "@loopring-web/component-lib";
 import {
   CheckBoxIcon,
   CheckedIcon,
   MarketType,
 } from "@loopring-web/common-resources";
 import { useOrderList } from "./hookTable";
-import { useAccount } from "stores/account";
-import { useTradeProSettings } from "stores/localStore/tradeProSettings";
+import {
+  useAccount,
+  tradeProSettings as tradeProSettingsReduce,
+} from "@loopring-web/core";
 import styled from "@emotion/styled";
 import { useGetTrades } from "../../../Layer2Page/TradePanel/hooks";
 import { useHistory } from "react-router-dom";
@@ -62,7 +61,8 @@ export const OrderTableView = withTranslation("common")(
       account: { readyState },
     } = useAccount();
     const isShowHidePairsOption = readyState === "ACTIVATED";
-    const { tradeProSettings, updateIsHideOtherPairs } = useTradeProSettings();
+    const { tradeProSettings, updateIsHideOtherPairs } =
+      tradeProSettingsReduce.useTradeProSettings();
 
     const getFilteredData = React.useCallback(() => {
       return tradeProSettings?.hideOtherTradingPairs

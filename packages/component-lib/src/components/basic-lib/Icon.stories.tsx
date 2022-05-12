@@ -73,6 +73,9 @@ import {
   WaitingIcon,
   WarningIcon,
   WithdrawIcon,
+  DeleteIcon,
+  ImageIcon,
+  Info2Icon,
 } from "@loopring-web/common-resources";
 
 const Styled = styled.div`
@@ -156,6 +159,9 @@ const listIcon = [
   <DepositIcon />,
   <TransferIcon />,
   <WithdrawIcon />,
+  <ImageIcon />,
+  <DeleteIcon />,
+  <Info2Icon />,
 ];
 
 export const IconList: Story<any> = withTranslation()(

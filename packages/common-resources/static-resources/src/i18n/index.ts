@@ -33,11 +33,23 @@ i18n.use(initReactI18next).init({
   load: "currentOnly",
   fallbackLng: LanguageType.en_US,
   // supportedLngs: [LanguageType.en_US, LanguageType.zh_CN],
-  keySeparator: false, // we do not use keys in form messages.welcome
+  keySeparator: ".", // we do not use keys in form messages.welcome
   interpolation: {
-    escapeValue: false, // react already safes from xss
+    escapeValue: true, // react already safes from xss
+    formatSeparator: `, `,
+    // format: function (value, _format, lng) {
+    //
+    //   if (
+    //     Object().toString.call(value) === "[object Array]" &&
+    //     lng === LanguageType.en_US
+    //   ) {
+    //     return value.join(", ");
+    //   }
+    //   return value;
+    //   // if (format === 'uppercase') return value.toUpperCase();
+    //   // return value;
+    // },
   },
-  // debug:true,
   react: {
     bindI18n: "languageChanged",
     // bindI18nStore: '',

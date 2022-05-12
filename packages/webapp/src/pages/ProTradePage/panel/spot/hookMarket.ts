@@ -6,10 +6,7 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import React from "react";
-import { useToast } from "hooks/common/useToast";
-import { LoopringAPI } from "api_wrapper";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { walletLayer2Service } from "services/socket";
 import {
   MarketTradeData,
   TradeBaseType,
@@ -19,10 +16,15 @@ import {
   useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
-import { usePageTradePro } from "stores/router";
-import { useAccount } from "stores/account";
-import { useTokenMap } from "stores/token";
-import { useSystem } from "stores/system";
+import {
+  usePageTradePro,
+  useAccount,
+  useTokenMap,
+  useSystem,
+  useToast,
+  LoopringAPI,
+  walletLayer2Service,
+} from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
 import { useSubmitBtn } from "./hookBtn";
 // import { VolToNumberWithPrecision } from 'utils/formatter_tool';
@@ -30,10 +32,10 @@ import {
   getPriceImpactInfo,
   PriceLevel,
   usePlaceOrder,
-} from "hooks/common/useTrade";
-import store from "stores";
+} from "@loopring-web/core";
+import { store } from "@loopring-web/core";
 import * as _ from "lodash";
-import { BIGO } from "defs/common_defs";
+import { BIGO } from "@loopring-web/core";
 
 export const useMarket = <C extends { [key: string]: any }>({
   market,

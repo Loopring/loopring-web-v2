@@ -1,12 +1,14 @@
 import { NFTMintViewProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography, Link } from "@mui/material";
+import { Box, Grid, Typography, Link, Tooltip } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
+  getShortAddr,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
+  LinkIcon,
   MetaProperty,
   MintTradeNFT,
   myLog,
@@ -20,6 +22,7 @@ import {
   TextareaAutosizeStyled,
   Table,
   Column,
+  NftImage,
 } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { TradeBtnStatus } from "../Interface";
@@ -136,20 +139,21 @@ export const MintNFTConfirm = <
                   >
                     {metaData.image ? (
                       <Box
+                        alignSelf={"stretch"}
                         flex={1}
                         display={"flex"}
+                        style={{ background: "var(--field-opacity)" }}
                         alignItems={"center"}
                         height={"100%"}
                         justifyContent={"center"}
                       >
-                        <img
+                        <NftImage
                           alt={"NFT"}
-                          width={"100%"}
-                          height={"100%"}
                           src={metaData?.image?.replace(
                             IPFS_META_URL,
                             IPFS_LOOPRING_SITE
                           )}
+                          onError={() => undefined}
                         />
                       </Box>
                     ) : (
@@ -284,20 +288,29 @@ export const MintNFTConfirm = <
                   <Typography color={"textSecondary"} marginRight={1}>
                     {t("labelNFTID")}
                   </Typography>
-                  <Link
-                    whiteSpace={"break-spaces"}
-                    style={{
-                      wordBreak: "break-all",
-                      color: "var(--color-text-third)",
-                      textDecoration: "underline",
-                    }}
-                    title={nftMintData.nftId}
-                    href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {nftMintData.nftId ? nftMintData?.nftIdView : ""}
-                  </Link>
+                  <Tooltip title={() => nftMintData.nftId}>
+                    <Link
+                      whiteSpace={"break-spaces"}
+                      style={{
+                        wordBreak: "break-all",
+                        color: "var(--color-text-third)",
+                      }}
+                      display={"inline-flex"}
+                      title={nftMintData.nftId}
+                      href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      #
+                      {" " +
+                        getShortAddr(
+                          nftMintData?.nftIdView
+                            ? nftMintData.nftIdView
+                            : nftMintData.nftId ?? ""
+                        )}{" "}
+                      <LinkIcon color={"inherit"} fontSize={"medium"} />
+                    </Link>
+                  </Tooltip>
                 </Typography>
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>

@@ -16,7 +16,7 @@ import {
   TGItemData,
   TGItemJSXInterface,
 } from "@loopring-web/component-lib";
-import { LoopringAPI } from "api_wrapper";
+import { LoopringAPI } from "@loopring-web/core";
 
 const toggleData: TGItemData[] = [
   {

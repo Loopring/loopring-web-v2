@@ -1,4 +1,4 @@
-import { myLog, UpColor } from "@loopring-web/common-resources";
+import { UpColor } from "@loopring-web/common-resources";
 import {
   ChartType,
   ScaleAreaChart,
@@ -6,13 +6,15 @@ import {
   TradeTitle,
   useSettings,
 } from "@loopring-web/component-lib";
-import { Box, Grid, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { WithTranslation } from "react-i18next";
 import { useBasicInfo } from "./hook";
-import { VolToNumberWithPrecision } from "utils/formatter_tool";
-import { useTokenMap } from "stores/token";
-import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
-import { useAccount } from "stores/account";
+import {
+  VolToNumberWithPrecision,
+  useAmmActivityMap,
+  useTokenMap,
+  useAccount,
+} from "@loopring-web/core";
 
 const BoxStyle = styled(Box)`
   .recharts-responsive-container {

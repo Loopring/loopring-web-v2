@@ -1,6 +1,5 @@
 import { Box, BoxProps, Modal as MuiModal } from "@mui/material";
 import {
-  DepositGroup,
   ModalCloseButton,
   ModalPanelProps,
   ResetPanel,
@@ -12,7 +11,6 @@ import {
   WithdrawPanel,
   WithdrawProps,
   ActiveAccountPanel,
-  DepositGroupProps,
   modalContentBaseStyle,
   // SwitchPanelStyled,
   // DepositNFTWrap,
@@ -20,6 +18,8 @@ import {
   // NFTMintProps,
   // NFTDepositProps,
   InformationForAccountFrozen,
+  DepositPanel,
+  DepositProps,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import {
@@ -104,7 +104,8 @@ const Modal = withTranslation("common")(
 export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   transferProps,
   withdrawProps,
-  depositGroupProps,
+  depositProps,
+  // depositGroupProps,
   nftTransferProps,
   nftWithdrawProps,
   // nftDepositProps,
@@ -118,9 +119,11 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   _height?: number | string;
   transferProps: TransferProps<T, I>;
   withdrawProps: WithdrawProps<T, I>;
-  depositGroupProps: DepositGroupProps<T, I>;
+
   nftTransferProps: TransferProps<T, I>;
   nftWithdrawProps: WithdrawProps<T, I>;
+  depositProps: DepositProps<T, I>;
+  // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
   // nftMintProps: NFTMintProps<T, I>;
   resetProps: ResetProps<F>;
@@ -188,18 +191,31 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
           />
         }
       />
+      {/*<Modal*/}
+      {/*  open={isShowDeposit.isShow}*/}
+      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
+      {/*  content={*/}
+      {/*    <DepositGroup*/}
+      {/*      {...{*/}
+      {/*        ...rest,*/}
+      {/*        ...depositGroupProps,*/}
+      {/*      }}*/}
+      {/*    />*/}
+      {/*  }*/}
+      {/*/>*/}
       <Modal
         open={isShowDeposit.isShow}
         onClose={() => setShowDeposit({ isShow: false })}
-        content={
-          <DepositGroup
-            {...{
-              ...rest,
-              ...depositGroupProps,
-            }}
-          />
-        }
+        content={<DepositPanel {...{ ...rest, ...depositProps }} />}
       />
+      {/*<Modal*/}
+      {/*  open={isShowDeposit.isShow}*/}
+      {/*  onClose={() => setShowDeposit({ isShow: false })}*/}
+      {/*  content={*/}
+      {/*    <DepositPanel {...{ ...rest, ...depositGroupProps.depositProps }} />*/}
+      {/*  }*/}
+      {/*/>*/}
+
       <Modal
         open={isShowResetAccount.isShow}
         onClose={() =>

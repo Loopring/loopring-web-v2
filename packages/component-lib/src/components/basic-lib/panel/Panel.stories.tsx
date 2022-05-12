@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { withTranslation } from "react-i18next";
-import { SwitchPanel, SwitchPanelProps } from "./SwitchPanel";
+import { SwitchPanel } from "./SwitchPanel";
 import { MemoryRouter } from "react-router-dom";
 import {
   Box,
@@ -16,7 +16,7 @@ import {
 
 import { AssetsIcon, DropDownIcon } from "@loopring-web/common-resources";
 import { SubMenuItem } from "../lists";
-import { SubMenu } from ".";
+import { SubMenu, SwitchPanelProps } from ".";
 
 const Style = styled.div`
   background: var(--color-global-bg);
@@ -67,7 +67,7 @@ const SecondWrap = () => {
       height={"100%"}
       width={"100%"}
       style={{ background: "cadetblue" }}
-    ></Box>
+    />
   );
 };
 

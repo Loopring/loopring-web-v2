@@ -16,6 +16,7 @@ import {
   Reject_WaitForAuth,
 } from "@loopring-web/component-lib";
 import React from "react";
+import { useSystem } from "@loopring-web/core";
 
 export const ModalLock = withTranslation("common")(
   ({
@@ -40,6 +41,7 @@ export const ModalLock = withTranslation("common")(
       ): void;
     }["bivarianceHack"];
   } & WithTranslation) => {
+    const { etherscanBaseUrl } = useSystem();
     const backToLockAccountBtnInfo = React.useMemo(() => {
       const _options = options;
       return {
@@ -234,6 +236,7 @@ export const ModalLock = withTranslation("common")(
           panelList={accountList}
           onBack={onBack}
           step={step ?? GuardianStep.LockAccount_WaitForAuth}
+          etherscanBaseUrl={etherscanBaseUrl}
         />
       </>
     );

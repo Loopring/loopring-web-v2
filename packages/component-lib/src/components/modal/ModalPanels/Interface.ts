@@ -20,11 +20,14 @@ export type AccountBaseProps = {
 } & Account;
 
 export enum AccountStep {
+  AddAssetGateway,
+  PayWithCard,
   NoAccount,
   QRCode,
   HadAccount,
   // new
   // Deposit,
+  Deposit_Sign_WaitForRefer,
   Deposit_Approve_WaitForAuth,
   Deposit_Approve_Denied,
   Deposit_Approve_Submit,

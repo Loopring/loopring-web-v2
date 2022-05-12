@@ -7,11 +7,9 @@ import {
   SagaStatus,
   TradeFloat,
 } from "@loopring-web/common-resources";
-import { useTokenMap } from "stores/token";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import moment from "moment";
-import { AmmDetailStore, useAmmMap } from "stores/Amm/AmmMap";
-import { useWalletLayer2 } from "stores/walletLayer2";
+
 import {
   makeWalletLayer2,
   volumeToCount,
@@ -20,20 +18,29 @@ import {
   makeMyAmmWithSnapshot,
   getUserAmmTransaction,
   getRecentAmmTransaction,
-} from "hooks/help";
+  AmmDetailStore,
+  useTokenPrices,
+  useUserRewards,
+  useAmmActivityMap,
+  useSystem,
+  useTicker,
+  useAccount,
+  useTokenMap,
+  useWalletLayer2,
+  useAmmMap,
+} from "@loopring-web/core";
 import {
-  AmmPoolActivityRule,
   AmmPoolSnapshot,
+  AmmPoolTx,
   AmmUserRewardMap,
   getExistedMarket,
-  LoopringMap,
   TickerData,
   TradingInterval,
+  UserAmmPoolTx,
 } from "@loopring-web/loopring-sdk";
-import { useUserRewards } from "stores/userRewards";
-import { LoopringAPI } from "api_wrapper";
-import { useWalletLayer2Socket } from "services/socket/";
-import store from "stores";
+import { LoopringAPI } from "@loopring-web/core";
+import { useWalletLayer2Socket } from "@loopring-web/core";
+import { store } from "@loopring-web/core";
 import {
   calcPriceByAmmTickMapDepth,
   swapDependAsync,
@@ -41,11 +48,6 @@ import {
 import { myLog } from "@loopring-web/common-resources";
 
 import _ from "lodash";
-import { useTicker } from "stores/ticker";
-import { useAmmActivityMap } from "../../../stores/Amm/AmmActivityMap";
-import { useSystem } from "../../../stores/system";
-import { useAccount } from "../../../stores/account";
-import { useTokenPrices } from "../../../stores/tokenPrices";
 import { AmmRecordRow, useSettings } from "@loopring-web/component-lib";
 
 const makeAmmDetailExtendsActivityMap = ({
@@ -468,31 +470,36 @@ export const useAmmPool = <
             limit: limit,
             offset,
             txStatus: "processed",
-          })?.then((res) => {
-            let _myTradeArray = makeMyAmmMarketArray(
-              market,
-              res.userAmmPoolTxs
-            );
-
-            const formattedArray = _myTradeArray.map((o: any) => {
-              const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`;
-              const formattedBalance = Number(
-                volumeToCount(market, o.totalBalance)
+          })?.then(
+            (res: {
+              userAmmPoolTxs: UserAmmPoolTx[];
+              totalNum: React.SetStateAction<number>;
+            }) => {
+              let _myTradeArray = makeMyAmmMarketArray(
+                market,
+                res.userAmmPoolTxs
               );
-              const price = tokenPrices && tokenPrices[market];
-              const totalDollar = ((formattedBalance || 0) *
-                (price || 0)) as any;
-              const totalYuan = totalDollar * forex;
-              return {
-                ...o,
-                totalDollar: totalDollar,
-                totalYuan: totalYuan,
-              };
-            });
-            setMyAmmMarketArray(formattedArray || []);
-            setAmmUserTotal(res.totalNum);
-            setIsLoading(false);
-          });
+
+              const formattedArray = _myTradeArray.map((o: any) => {
+                const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`;
+                const formattedBalance = Number(
+                  volumeToCount(market, o.totalBalance)
+                );
+                const price = tokenPrices && tokenPrices[market];
+                const totalDollar = ((formattedBalance || 0) *
+                  (price || 0)) as any;
+                const totalYuan = totalDollar * forex;
+                return {
+                  ...o,
+                  totalDollar: totalDollar,
+                  totalYuan: totalYuan,
+                };
+              });
+              setMyAmmMarketArray(formattedArray || []);
+              setAmmUserTotal(res.totalNum);
+              setIsLoading(false);
+            }
+          );
         }
       }
     },
@@ -511,28 +518,36 @@ export const useAmmPool = <
             address: addr,
             limit: limit,
             offset,
-          })?.then(({ ammPoolTrades, totalNum }) => {
-            let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades);
+          })?.then(
+            ({
+              ammPoolTrades,
+              totalNum,
+            }: {
+              ammPoolTrades: AmmPoolTx[];
+              totalNum: number;
+            }) => {
+              let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades);
 
-            const formattedArray = _tradeArray.map((o: any) => {
-              const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`;
-              const formattedBalance = Number(
-                volumeToCount(market, o.totalBalance)
-              );
-              const price = tokenPrices && tokenPrices[market];
-              const totalDollar = ((formattedBalance || 0) *
-                (price || 0)) as any;
-              const totalYuan = totalDollar * forex;
-              return {
-                ...o,
-                totalDollar: totalDollar,
-                totalYuan: totalYuan,
-              };
-            });
-            setAmmMarketArray(formattedArray || []);
-            setAmmTotal(totalNum);
-            setIsRecentLoading(false);
-          });
+              const formattedArray = _tradeArray.map((o: any) => {
+                const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`;
+                const formattedBalance = Number(
+                  volumeToCount(market, o.totalBalance)
+                );
+                const price = tokenPrices && tokenPrices[market];
+                const totalDollar = ((formattedBalance || 0) *
+                  (price || 0)) as any;
+                const totalYuan = totalDollar * forex;
+                return {
+                  ...o,
+                  totalDollar: totalDollar,
+                  totalYuan: totalYuan,
+                };
+              });
+              setAmmMarketArray(formattedArray || []);
+              setAmmTotal(totalNum);
+              setIsRecentLoading(false);
+            }
+          );
         }
       }
     },

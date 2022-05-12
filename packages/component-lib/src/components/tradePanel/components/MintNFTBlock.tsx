@@ -13,6 +13,7 @@ import {
   CoinInfo,
   CoinMap,
   FeeInfo,
+  Info2Icon,
   MintTradeNFT,
   myLog,
   NFTMETA,
@@ -94,6 +95,7 @@ export const MintNFTBlock = <
           <TextField
             value={nftMeta.name}
             fullWidth
+            inputProps={{ maxLength: 20 }}
             label={
               <Trans i18nKey={"labelMintName"}>
                 Name
@@ -123,10 +125,18 @@ export const MintNFTBlock = <
                 title={t("labelMintCollectionTooltips").toString()}
                 placement={"top"}
               >
-                <Typography variant={"inherit"}>
+                <Typography
+                  variant={"inherit"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
                   <Trans i18nKey={"labelMintCollection"}>
                     Collection( "coming soon")
-                    <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{ marginX: 1 / 2 }}
+                    />
                   </Trans>
                 </Typography>
               </Tooltip>
@@ -173,30 +183,27 @@ export const MintNFTBlock = <
                   title={t("labelMintRoyaltyPercentageTooltips").toString()}
                   placement={"top"}
                 >
-                  <Typography component={"span"} variant={"inherit"}>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
                     <Trans i18nKey={"labelMintRoyaltyPercentage"}>
                       Royalty(%)
-                      <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                      <Info2Icon
+                        fontSize={"small"}
+                        color={"inherit"}
+                        sx={{ marginX: 1 / 2 }}
+                      />
                     </Trans>
                   </Typography>
-                  {/*<Typography*/}
-                  {/*  // component={"span"}*/}
-                  {/*  variant={"inherit"}*/}
-                  {/*  // display={"flex"}*/}
-                  {/*  // lineHeight={1.5}*/}
-                  {/*  // justifyContent={"space-between"}*/}
-                  {/*>*/}
-                  {/* */}
-                  {/*  /!*<Typography component={"span"} variant={"inherit"}>*!/*/}
-                  {/*  /!*  {t("labelMintRoyaltyPercentageRange")}*!/*/}
-                  {/*  /!*</Typography>*!/*/}
-                  {/*</Typography>*/}
                 </Tooltip>
               ),
               size: InputSize.small,
               inputData: {
                 balance: 10,
-                tradeValue: nftMeta.royaltyPercentage,
+                tradeValue: nftMeta.royaltyPercentage ?? 0,
                 belong: "royaltyPercentage" as any,
               },
 
@@ -259,12 +266,6 @@ export const MintNFTBlock = <
             }
             walletMap={{}}
           />
-          {/*<TextField*/}
-          {/*  value={nftMeta.nftBalance}*/}
-          {/*  fullWidth*/}
-          {/*  label={t("labelMintAmount")}*/}
-          {/*  type={"number"}*/}
-          {/*/>*/}
         </Grid>
         <Grid item xs={12} md={12} flex={1}>
           <FormLabel>
@@ -276,10 +277,16 @@ export const MintNFTBlock = <
                 variant={"body2"}
                 component={"span"}
                 lineHeight={"20px"}
+                display={"inline-flex"}
+                alignItems={"center"}
               >
                 <Trans i18nKey={"labelMintDescription"}>
                   Description
-                  <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
                 </Trans>
               </Typography>
             </Tooltip>
@@ -292,7 +299,7 @@ export const MintNFTBlock = <
               overflowX: "hidden",
               resize: "vertical",
             }}
-            maxLength={2000}
+            maxLength={1000}
             onChange={(event) =>
               handleOnMetaChange({
                 description: event.target.value,
@@ -311,10 +318,16 @@ export const MintNFTBlock = <
                 component={"span"}
                 variant={"body2"}
                 lineHeight={"20px"}
+                display={"inline-flex"}
+                alignItems={"center"}
               >
                 <Trans i18nKey={"labelMintProperty"}>
                   Properties
-                  <i style={{ verticalAlign: "text" }}>{"\u2139"}</i>
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
                 </Trans>
               </Typography>
             </Tooltip>

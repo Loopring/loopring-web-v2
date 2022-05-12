@@ -19,7 +19,11 @@ import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
-  ${(props) => cssBackground(props)}
+  ${(props) => cssBackground(props)};
+  width: 100%;
+  //height: 100vw;
+  position: relative;
+  overflow: hidden;
 ` as (prosp: BoxProps & { theme: Theme }) => JSX.Element;
 export const NFTMedia = React.memo(
   ({
@@ -104,7 +108,12 @@ export const NFTMedia = React.memo(
                 alignSelf={"stretch"}
                 flex={1}
                 display={"flex"}
-                style={{ background: "var(--color-white)" }}
+                style={{
+                  background:
+                    (!!fullSrc && fullSrcSrcHasLoaded) || !!previewSrc
+                      ? "var(--field-opacity)"
+                      : "",
+                }}
               >
                 {!!fullSrc && fullSrcSrcHasLoaded ? (
                   <NftImage

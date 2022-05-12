@@ -5,7 +5,7 @@ import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EventData } from "./interface";
 import { setInterval } from "timers";
-import { useAmmActivityMap } from "../../stores/Amm/AmmActivityMap";
+import { useAmmActivityMap } from "@loopring-web/core";
 import moment from "moment";
 
 const url_path = "https://static.loopring.io/events";
