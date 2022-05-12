@@ -118,7 +118,25 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         return;
       }
     }, [_chainId]);
+    const gameStopCallback = React.useCallback(async () => {
+      updateAccount({ connectName: ConnectProviders.GameStop });
+      await connectProvides.GameStop();
 
+      // statusAccountUnset();
+      if (connectProvides.usedProvide) {
+        let chainId: ChainId = Number(
+          await connectProvides.usedWeb3?.eth.getChainId()
+        );
+        chainId =
+          chainId && chainId === ChainId.GOERLI
+            ? (chainId as ChainId)
+            : ChainId.MAINNET;
+        if (chainId !== _chainId) {
+          updateSystem({ chainId });
+        }
+        return;
+      }
+    }, [_chainId]);
     const walletConnectCallback = React.useCallback(async () => {
       updateAccount({ connectName: ConnectProviders.WalletConnect });
       await connectProvides.WalletConnect();
@@ -237,8 +255,24 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               [account]
             ),
           },
+          {
+            ...DefaultGatewayList[2],
+            handleSelect: React.useCallback(
+              async (event, flag?) => {
+                walletServices.sendDisconnect("", "should new provider");
+                setShowConnect({
+                  isShow: true,
+                  step: WalletConnectStep.CommonProcessing,
+                });
+                setConnectProvider(DefaultGatewayList[2].key);
+                setProcessingCallback({ callback: gameStopCallback });
+                setStateCheck(true);
+              },
+              [account]
+            ),
+          },
           // {
-          //   ...DefaultGatewayList[2],
+          //   ...DefaultGatewayList[3],
           //   handleSelect: React.useCallback(
           //     async (event, flag?) => {
           //       walletServices.sendDisconnect("", "should new provider");
@@ -246,7 +280,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           //         isShow: true,
           //         step: WalletConnectStep.WalletConnectProcessing,
           //       });
-          //       setConnectProvider(DefaultGatewayList[2].key);
+          //       setConnectProvider(DefaultGatewayList[3].key);
           //       setProcessingCallback({ callback: CoinbaseCallback });
           //       setStateCheck(true);
           //     },

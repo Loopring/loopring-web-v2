@@ -206,7 +206,16 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
       <Modal
         open={isShowDeposit.isShow}
         onClose={() => setShowDeposit({ isShow: false })}
-        content={<DepositPanel {...{ ...rest, ...depositProps }} />}
+        content={
+          <DepositPanel
+            {...{
+              ...rest,
+              width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              height: "auto",
+              ...depositProps,
+            }}
+          />
+        }
       />
       {/*<Modal*/}
       {/*  open={isShowDeposit.isShow}*/}

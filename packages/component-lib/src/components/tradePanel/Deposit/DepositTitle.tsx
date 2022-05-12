@@ -14,10 +14,10 @@ export const DepositTitle = ({ title, description }: any) => {
     popupId: `popupId-deposit`,
   });
   return (
-    <>
+    <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={"h5"}
+        variant={"h4"}
         marginRight={1}
         className={"depositTitle"}
       >
@@ -52,7 +52,7 @@ export const DepositTitle = ({ title, description }: any) => {
           </Trans>
         </Typography>
       </PopoverPure>
-    </>
+    </Typography>
   );
 };
 const ThirdPartTitle = React.memo(() => {
