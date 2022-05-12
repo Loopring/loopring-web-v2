@@ -434,7 +434,7 @@ export function useAccountModalForUI({
         }
       });
       if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
       }
       if (flag) {
         let wait = 30000;
@@ -469,7 +469,7 @@ export function useAccountModalForUI({
       updateDepositStatus();
     }
     return () => {
-      clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [chainInfos?.depositHashes]);
 

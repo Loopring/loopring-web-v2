@@ -108,7 +108,7 @@ export function useChargeFees({
       const walletMap =
         makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
       if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
       }
       let tokenInfo;
       if (tokenSymbol && tokenMap) {
@@ -337,7 +337,7 @@ export function useChargeFees({
 
   React.useEffect(() => {
     if (nodeTimer.current !== -1) {
-      clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
     if (
       (isActiveAccount &&
@@ -380,7 +380,7 @@ export function useChargeFees({
 
     return () => {
       if (nodeTimer.current !== -1) {
-        clearTimeout(nodeTimer as unknown as NodeJS.Timeout);
+        clearTimeout(nodeTimer.current as NodeJS.Timeout);
       }
     };
   }, [
