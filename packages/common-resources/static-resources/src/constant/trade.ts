@@ -161,7 +161,7 @@ export const AddAssetList = {
     enableKey: null,
   },
   FromExchange: {
-    key: "FromOtherL2",
+    key: "FromExchange",
     svgIcon: "IncomingIcon",
     enableKey: null,
   },
