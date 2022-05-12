@@ -115,7 +115,7 @@ export const ResetWrap = <T extends FeeInfo>({
                           }}
                           variant={"body2"}
                         >
-                          Go Deposit
+                          Add assets
                         </Link>
                       </Trans>
                     ) : (

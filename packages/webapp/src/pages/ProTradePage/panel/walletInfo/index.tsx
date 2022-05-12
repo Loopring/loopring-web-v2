@@ -40,7 +40,7 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
     [fnType.NO_ACCOUNT]: [
       function () {
-        return `depositTitleAndActive`;
+        return `depositAndActiveBtn`;
       },
     ],
     [fnType.ERROR_NETWORK]: [

@@ -32,7 +32,7 @@ import { changeShowModel } from "../stores/account/reducer";
 export const BtnConnect = withTranslation(["common"], { withRef: true })(
   ({ t }: any) => {
     const { status: accountStatus, account } = useAccount();
-    const { setShowDeposit } = useOpenModals();
+    const { setShowAccount } = useOpenModals();
 
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
@@ -40,7 +40,7 @@ export const BtnConnect = withTranslation(["common"], { withRef: true })(
     const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
       [fnType.NO_ACCOUNT]: [
         function () {
-          return `depositTitleAndActive`;
+          return `depositAndActiveBtn`;
         },
       ],
       [fnType.ERROR_NETWORK]: [
@@ -71,7 +71,9 @@ export const BtnConnect = withTranslation(["common"], { withRef: true })(
           if (account.readyState === AccountStatus.NO_ACCOUNT) {
             myLog("DEPOSITING! sendCheckAcc");
             accountServices.sendCheckAcc();
-            setShowDeposit({ isShow: true });
+            setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
+            // setShowDeposit({ isShow: true });
+
             return;
           }
           accountStaticCallBack(_btnClickMap, []);

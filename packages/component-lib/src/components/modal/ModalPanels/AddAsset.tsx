@@ -19,7 +19,11 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
       return <CardIcon color={"inherit"} />;
   }
 };
-export const AddAsset = ({ addAssetList, allowTrade }: AddAssetProps) => {
+export const AddAsset = ({
+  addAssetList,
+  allowTrade,
+  isNewAccount = false,
+}: AddAssetProps) => {
   const { t } = useTranslation("common");
   return (
     <BoxStyled
@@ -30,7 +34,7 @@ export const AddAsset = ({ addAssetList, allowTrade }: AddAssetProps) => {
       flexDirection={"column"}
     >
       <Typography component={"h3"} variant={"h3"} marginBottom={3}>
-        {t("labelAddAssetTitle")}
+        {isNewAccount ? t("labelAddAssetTitleActive") : t("labelAddAssetTitle")}
       </Typography>
       <Box
         display={"flex"}

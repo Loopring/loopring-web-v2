@@ -40,17 +40,17 @@ export const btnLabel = {
   ],
   [fnType.NO_ACCOUNT]: [
     function () {
-      return `depositTitleAndActive`;
+      return `depositAndActiveBtn`;
     },
   ],
   [fnType.DEFAULT]: [
     function () {
-      return `depositTitleAndActive`;
+      return `depositAndActiveBtn`;
     },
   ],
   [fnType.NOT_ACTIVE]: [
     function () {
-      return `depositTitleActive`;
+      return `depositAndActiveBtn`;
     },
   ],
   [fnType.ACTIVATED]: [
