@@ -649,4 +649,10 @@ export default {
   labelBuyWithCard: "Buy with Card",
   labelFromOtherL2: "From Other L2",
   labelFromExchange: "Buy from Exchange",
+  labelOpenInWalletApp: "Open in wallet app/extension",
+  labelConnectWithDapp: "Connect with Dapp",
+  labelOpenInWalletTitle: "Open in wallet",
+  labelOpenInWalletDetail: `URL for adding fund  has been copied. You can choose either way to continue:`,
+  labelOpenInWalletDetailLi1: `Open your wallet app and paste the url in its internal dapp browser`,
+  labelOpenInWalletDetailLi2: `Open your desktop Chrome browser and paste the url in Chrome`,
 };

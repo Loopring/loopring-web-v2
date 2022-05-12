@@ -58,13 +58,21 @@ export const AddAsset = ({ addAssetList, allowTrade }: AddAssetProps) => {
                     allowTrade[item.enableKey]?.enable === false
                   )
                 }
-                startIcon={IconItem({ svgIcon: item.svgIcon })}
-                endIcon={<BackIcon />}
+                endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
                 onClick={(e) => {
                   item.handleSelect(e);
                 }}
               >
-                {t("label" + item.key)}
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"inherit"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <>{IconItem({ svgIcon: item.svgIcon })}</>
+                  {t("label" + item.key)}
+                </Typography>
               </MenuBtnStyled>
             </Box>
           ))}

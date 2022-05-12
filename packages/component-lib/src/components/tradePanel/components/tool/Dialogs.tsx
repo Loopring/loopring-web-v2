@@ -5,6 +5,8 @@ import {
   DialogContentText,
   DialogTitle,
   Link,
+  List,
+  ListItem,
   TextField,
   Typography,
 } from "@mui/material";
@@ -19,6 +21,15 @@ import { useOpenModals } from "../../../../stores";
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
+  }
+  .MuiList-root {
+    list-style: inside;
+    .MuiListItem-root {
+      display: list-item;
+      marginbottom: 1;
+      height: auto;
+      padding: 0;
+    }
   }
 `;
 
@@ -229,6 +240,62 @@ export const ConfirmImpact = withTranslation("common", { withRef: true })(
           </Button>
         </DialogActions>
       </Dialog>
+    );
+  }
+);
+
+export const ConfirmLinkCopy = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelOpenInWalletTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Typography component={"p"} variant={"body1"} color={"inherit"}>
+              <Trans i18nKey={"labelOpenInWalletDetail"}>
+                labelOpenInWalletDetail URL for adding fund has been copied. You
+                can choose either way to continue:
+              </Trans>
+            </Typography>
+            <List>
+              <ListItem>
+                <Trans i18nKey={"labelOpenInWalletDetailLi1"}>
+                  Open your wallet app and paste the url in its internal dapp
+                  browser
+                </Trans>
+              </ListItem>
+              <ListItem>
+                <Trans i18nKey={"labelOpenInWalletDetailLi2"}>
+                  Open your desktop Chrome browser and paste the url in Chrome
+                </Trans>
+              </ListItem>
+            </List>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelOK")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
     );
   }
 );

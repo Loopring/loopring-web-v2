@@ -134,6 +134,7 @@ export const DepositWrap = <
       alignItems={"center"}
       flex={1}
       height={"100%"}
+      minWidth={"220px"}
     >
       <DepositTitle title={title ? t(title) : undefined} />
       <Grid item marginTop={2} alignSelf={"stretch"}>

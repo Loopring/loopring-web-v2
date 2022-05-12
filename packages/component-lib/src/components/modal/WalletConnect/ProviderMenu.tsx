@@ -16,6 +16,7 @@ import {
 import React from "react";
 import { MenuBtnStyled, shake } from "../../styled";
 import { ConnectProviders } from "@loopring-web/web3-provider";
+import { useSettings } from "../../../stores";
 
 const CheckboxStyled = styled(Checkbox)`
   &.shake {
@@ -47,9 +48,10 @@ export const ProviderMenu = ({
   handleSelect,
   providerName = ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
+  const { isMobile } = useSettings();
   const [checkboxValue, setCheckboxValue] = React.useState(false);
   const [isShake, setIsShake] = React.useState(false);
-  // const theme = useTheme();
+
   React.useEffect(() => {
     const isAgreed = localStorage.getItem("userTermsAgreed");
     setCheckboxValue(isAgreed === "true");
@@ -102,7 +104,7 @@ export const ProviderMenu = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={10}
+        paddingX={isMobile ? 7 : 10}
       >
         <BoxStyle
           paddingX={5 / 3}
@@ -157,7 +159,7 @@ export const ProviderMenu = ({
         alignSelf={"stretch"}
         className="modalContent"
         marginTop={3}
-        paddingX={10}
+        paddingX={isMobile ? 7 : 10}
         paddingBottom={4}
       >
         <>

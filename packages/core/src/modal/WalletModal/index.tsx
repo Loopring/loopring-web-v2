@@ -3,6 +3,8 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   AccountStep,
   CommonConnectInProgress,
+  ConfirmLinkCopy,
+  ConfirmLinkCopyImpact,
   ConnectFailed,
   ConnectSuccess,
   InformationForCoinBase,
@@ -19,12 +21,14 @@ import { ChainId } from "@loopring-web/loopring-sdk";
 import React, { useEffect, useState } from "react";
 import {
   AccountStatus,
+  Bridge,
   copyToClipBoard,
   GatewayItem,
   gatewayList as DefaultGatewayList,
   globalSetup,
   myLog,
   SagaStatus,
+  setMyLog,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { ConnectProviders } from "@loopring-web/web3-provider";
@@ -38,6 +42,7 @@ import {
   store,
 } from "@loopring-web/core";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 export const metaMaskCallback = async () => {
   const { _chainId } = store.getState().system;
@@ -91,7 +96,8 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       setShowConnect,
       setShowAccount,
     } = useOpenModals();
-
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     const qrCodeUrl = useSelector(
       (state: RootState) => state.account.qrCodeUrl
     );
@@ -168,6 +174,8 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     }, []);
     const [isOpenUnknownProvider, setIsOpenUnknownProvider] =
       React.useState(false);
+    const [isConfirmLinkCopy, setIsConfirmLinkCopy] = React.useState(false);
+
     const handleCloseDialog = React.useCallback(
       (_event: any, state?: boolean) => {
         setIsOpenUnknownProvider(false);
@@ -178,6 +186,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
       },
       []
     );
+
     const [processingCallback, setProcessingCallback] =
       React.useState<{ callback: () => Promise<void> } | undefined>(undefined);
     useEffect(() => {
@@ -293,7 +302,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             ? [
                 {
                   ...DefaultGatewayList[0],
-                  key: "Connect with Dapp",
+                  key: t("labelConnectWithDapp"),
                   imgSrc: SoursURL + "svg/loopring.svg",
                   handleSelect: React.useCallback(
                     async (event, flag?) => {
@@ -320,7 +329,27 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                   ),
                 },
               ]
-            : []),
+            : [
+                {
+                  key: t("labelOpenInWalletApp"),
+                  imgSrc: SoursURL + "svg/loopring.svg",
+                  handleSelect: React.useCallback(
+                    async (event, flag?) => {
+                      // setShowConnect({ isShow: false });
+                      const token = searchParams.get("token");
+                      const owner = searchParams.get("owner");
+                      copyToClipBoard(
+                        Bridge +
+                          `?${owner ? `owner=` + owner : ""}&${
+                            token ? `token=` + token : ""
+                          }`
+                      );
+                      setIsConfirmLinkCopy(true);
+                    },
+                    [account]
+                  ),
+                },
+              ]),
           {
             ...DefaultGatewayList[1],
             handleSelect: React.useCallback(
@@ -452,6 +481,10 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         <InformationForCoinBase
           open={isOpenUnknownProvider}
           handleClose={handleCloseDialog}
+        />
+        <ConfirmLinkCopy
+          open={isConfirmLinkCopy}
+          handleClose={() => setIsConfirmLinkCopy(false)}
         />
         <ModalWalletConnect
           open={isShowConnect.isShow}
