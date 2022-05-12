@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+
 export default {
   labelErrorTitle: "Error Detail:",
   labelNoContent: "No Content",
@@ -95,7 +96,8 @@ export default {
   labelAssetMobileTitle: "Layer 2 Total Assets",
   labelShowAccount: "显示或隐藏总资产",
   labelAssetsBtnRamp: "Buy with Card",
-  labelBtnDeposit: "充值",
+  labelAddAsset: "充值",
+  labelAddAssetBtn: "Send",
   labelBtnTransfer: "转账",
   labelBtnWithdraw: "提现",
   labelLevel: "VIP等级",
@@ -552,7 +554,6 @@ export default {
   labelDeployInProgress: "Processing...",
   labelNFTDeploy: "Deploy NFT",
   labelVendor: "Vendor",
-  labelAddAsset: "Add Layer 2 Assets",
   labelDepositVendor:
     " Make an order form third Loopring-parter, Once your order confirmed  by Loopring, it will be added to your balance within 2 minutes.",
   labelLock: "Lock",
@@ -642,4 +643,10 @@ export default {
   labelDepositTokenAmount: "Token Amount",
   labelDepositFrom: "From",
   labelDepositTO: "To Loopring L2",
+  labelAddAssetTitle: "Add L2 asset",
+  labelFromMyL1: "From My L1",
+  labelFromOtherL1: "From Other L1",
+  labelBuyWithCard: "Buy with Card",
+  labelFromOtherL2: "From Other L2",
+  labelFromExchange: "Buy from Exchange",
 };

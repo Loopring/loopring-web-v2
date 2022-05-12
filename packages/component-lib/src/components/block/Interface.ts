@@ -21,15 +21,16 @@ export type AssetTitleProps = {
   accountId: number;
   onShowWithdraw: (token?: string) => void;
   onShowTransfer: (token?: string) => void;
-  onShowDeposit: (token?: string) => void;
-  btnShowDepositStatus?: keyof typeof TradeBtnStatus;
+  onShowSend: (token?: string) => void;
+  // onShowDeposit: (token?: string) => void;
+  // btnShowDepositStatus?: keyof typeof TradeBtnStatus;
   btnShowTransferStatus?: keyof typeof TradeBtnStatus;
   btnShowWithdrawStatus?: keyof typeof TradeBtnStatus;
   hideL2Assets: boolean;
   setHideL2Assets: (value: boolean) => void;
   showPartner: () => void;
-  legalEnable?: boolean;
-  legalShow?: boolean;
+  // legalEnable?: boolean;
+  // legalShow?: boolean;
 };
 
 export type AssetTitleMobileProps = AssetTitleProps & {

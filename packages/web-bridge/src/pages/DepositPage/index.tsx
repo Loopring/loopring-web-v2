@@ -144,6 +144,7 @@ export const DepositToPage = withTranslation(["common"])(
               display={"flex"}
               flexDirection={"column"}
               paddingY={isMobile ? 2 : undefined}
+              paddingTop={5 / 2}
             >
               <DepositPanel
                 {...depositProps}

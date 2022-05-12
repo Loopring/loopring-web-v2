@@ -368,7 +368,7 @@ export const shake = css`
 `;
 
 export const MenuBtnStyled = styled(Button)`
-  font-size: 1.4rem;
+  font-size: ${({ theme }) => theme.fontDefault.body1};
   background: var(--opacity);
   color: var(--color-text-secondary);
   display: flex;
@@ -376,6 +376,11 @@ export const MenuBtnStyled = styled(Button)`
   padding: 0 ${({ theme }) => theme.unit * 3}px;
   text-indent: 0.5em;
   position: relative;
+  &.addAsset {
+    font-size: ${({ theme }) => theme.fontDefault.h5};
+    justify-content: flex-start;
+    flex-direction: row;
+  }
   &.provider {
     justify-content: space-between;
     flex-direction: row;

@@ -12,6 +12,7 @@ import {
   useTokenPrices,
 } from "@loopring-web/core";
 import {
+  AccountStep,
   AssetTitleProps,
   TokenType,
   TradeBtnStatus,
@@ -75,9 +76,9 @@ export const useGetAssets = () => {
   const { forex, allowTrade } = useSystem();
   const { tokenPrices } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
-  const { raw_data } = allowTrade;
-  const legalEnable = (raw_data as any)?.legal?.enable;
-  const legalShow = (raw_data as any)?.legal?.show;
+
+  const { setShowAccount } = useOpenModals();
+
   const {
     themeMode,
     hideL2Assets,
@@ -319,7 +320,7 @@ export const useGetAssets = () => {
   );
 
   const assetTitleProps: AssetTitleProps = {
-    btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
+    // btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
     btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
     setHideL2Assets,
@@ -335,12 +336,14 @@ export const useGetAssets = () => {
     },
     accountId: account.accountId,
     hideL2Assets,
-    onShowDeposit,
+    onShowSend: () => {
+      setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
+    },
     onShowTransfer,
     onShowWithdraw,
     showPartner: () => onShowDeposit(undefined, true),
-    legalEnable,
-    legalShow,
+    // legalEnable,
+    // legalShow,
   };
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,

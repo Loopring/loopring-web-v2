@@ -17,7 +17,7 @@ export const DepositTitle = ({ title, description }: any) => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={"h4"}
+        variant={"h3"}
         marginRight={1}
         className={"depositTitle"}
       >
@@ -25,7 +25,7 @@ export const DepositTitle = ({ title, description }: any) => {
       </Typography>
       <HelpIcon
         {...bindHover(popupState)}
-        fontSize={"medium"}
+        fontSize={"large"}
         htmlColor={"var(--color-text-third)"}
       />
       <PopoverPure

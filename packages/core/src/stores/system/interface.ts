@@ -29,6 +29,7 @@ export type System<C extends { [key: string]: any }> = {
     order: { enable: boolean; reason?: string };
     joinAmm: { enable: boolean; reason?: string };
     dAppTrade: { enable: boolean; reason?: string };
+    legal: { enable: boolean; reason?: string; show?: boolean };
     raw_data?: any;
     exitAmm?: { enable: boolean; reason?: string };
     transfer?: { enable: boolean; reason?: string };

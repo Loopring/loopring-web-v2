@@ -160,7 +160,12 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           await Promise.all([
             LoopringAPI.exchangeAPI.getExchangeInfo(),
             should15MinutesUpdateDataGroup(),
-            LoopringAPI.exchangeAPI.getAccountServices({}),
+            LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
+              return {
+                ...result,
+                legal: (result as any)?.raw_data?.legal ?? { enable: false },
+              };
+            }),
           ]);
       } catch (e: any) {
         allowTrade = {
@@ -169,6 +174,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           joinAmm: { enable: false },
           dAppTrade: { enable: false },
           raw_data: { enable: false },
+          legal: { enable: false },
         };
         throw new CustomError(ErrorMap.NO_SDK);
       }

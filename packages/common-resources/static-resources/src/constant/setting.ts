@@ -22,5 +22,6 @@ export const LandPageHeightConfig = {
 };
 export const FeeChargeOrderUATDefault = ["USDT", "ETH", "LRC", "DAI"];
 export const Explorer = "https://explorer.loopring.io/";
+export const Bridge = "https://bridge.loopring.io/";
 // export const maintainceStatTime = 1639980000000
 // export const maintainceEndTime = 1639987200000

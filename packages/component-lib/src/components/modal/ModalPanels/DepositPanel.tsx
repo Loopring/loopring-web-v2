@@ -1,4 +1,4 @@
-import { DepositProps } from "../Interface";
+import { DepositProps } from "../../tradePanel/Interface";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   CoinInfo,
@@ -7,7 +7,11 @@ import {
   // myLog,
 } from "@loopring-web/common-resources";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
-import { DepositWrap, TradeMenuList, useBasicTrade } from "../components";
+import {
+  DepositWrap,
+  TradeMenuList,
+  useBasicTrade,
+} from "../../tradePanel/components";
 import React from "react";
 import { cloneDeep } from "lodash";
 
@@ -66,8 +70,6 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
 
     const props: SwitchPanelProps<"tradeMenuList" | "trade"> = {
       index: index, // show default show
-      _height: "auto",
-      _width: "auto",
       panelList: [
         {
           key: "trade",

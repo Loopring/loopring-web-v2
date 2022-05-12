@@ -4,6 +4,7 @@ import {
   VendorItem,
   VendorProviders,
 } from "@loopring-web/common-resources";
+import React from "react";
 
 export type AccountBaseProps = {
   // addressShort: string
@@ -127,4 +128,18 @@ export interface VendorMenuProps {
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
+}
+
+export interface AddAssetItem {
+  key: string;
+  svgIcon: string;
+  enableKey?: string | null;
+  handleSelect: (event?: React.MouseEvent) => void;
+}
+
+export interface AddAssetProps {
+  addAssetList: AddAssetItem[];
+  allowTrade: {
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
+  };
 }

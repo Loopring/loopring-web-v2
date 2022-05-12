@@ -33,16 +33,17 @@ export const AssetTitle = withTranslation("common")(
     accountId,
     onShowWithdraw,
     onShowTransfer,
-    onShowDeposit,
-    btnShowDepositStatus,
+    onShowSend,
+    // onShowDeposit,
+    // btnShowDepositStatus,
     btnShowTransferStatus,
     btnShowWithdrawStatus,
     hideL2Assets,
     setHideL2Assets,
-    showPartner,
-    legalEnable,
-    legalShow,
-  }: AssetTitleProps & WithTranslation) => {
+  }: // showPartner,
+  // legalEnable,
+  // legalShow,
+  AssetTitleProps & WithTranslation) => {
     return (
       <Grid
         container
@@ -114,17 +115,17 @@ export const AssetTitle = withTranslation("common")(
           flexDirection={"row"}
           justifyContent={"flex-end"}
         >
-          {legalEnable && legalShow && (
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              style={{ minWidth: 120, textTransform: "none" }}
-              onClick={showPartner}
-            >
-              {t("labelAssetsBtnRamp")}
-            </Button>
-          )}
+          {/*{legalEnable && legalShow && (*/}
+          {/*  <Button*/}
+          {/*    variant={"outlined"}*/}
+          {/*    size={"medium"}*/}
+          {/*    color={"primary"}*/}
+          {/*    style={{ minWidth: 120, textTransform: "none" }}*/}
+          {/*    onClick={showPartner}*/}
+          {/*  >*/}
+          {/*    {t("labelAssetsBtnRamp")}*/}
+          {/*  </Button>*/}
+          {/*)}*/}
           <Button
             variant={"outlined"}
             size={"medium"}
@@ -161,15 +162,15 @@ export const AssetTitle = withTranslation("common")(
             variant={"contained"}
             size={"small"}
             color={"primary"}
-            loading={
-              btnShowDepositStatus === TradeBtnStatus.LOADING ? "true" : "false"
-            }
-            disabled={
-              btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false
-            }
-            onClick={() => onShowDeposit()}
+            // loading={
+            //   btnShowDepositStatus === TradeBtnStatus.LOADING ? "true" : "false"
+            // }
+            // disabled={
+            //   btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false
+            // }
+            onClick={() => onShowSend()}
           >
-            {t("labelBtnDeposit")}
+            {t("labelAddAssetBtn")}
           </Button>
         </ButtonListRightStyled>
       </Grid>
@@ -182,13 +183,14 @@ export const AssetTitleMobile = ({
   accountId,
   onShowWithdraw,
   onShowTransfer,
-  onShowDeposit,
+  onShowSend,
+  // onShowDeposit,
   hideL2Assets,
   setHideL2Assets,
-  showPartner,
-  legalEnable,
-  legalShow,
-}: AssetTitleMobileProps) => {
+}: // showPartner,
+// legalEnable,
+// legalShow,
+AssetTitleMobileProps) => {
   const { hideL2Action, setHideL2Action } = useSettings();
   // const [dropdownStatus, setDropdownStatus] =
   //   React.useState<"up" | "down">(hideL2Action?"up":"down");
@@ -299,33 +301,33 @@ export const AssetTitleMobile = ({
       </Box>
       {!hideL2Action && (
         <Grid container spacing={2}>
-          {legalEnable && legalShow && (
-            <Grid item xs={4}>
-              <Button
-                fullWidth
-                variant={"outlined"}
-                size={"medium"}
-                color={"primary"}
-                style={{
-                  textTransform: "none",
-                  paddingLeft: 0,
-                  paddingRight: 0,
-                }}
-                onClick={showPartner}
-              >
-                {t("labelAssetsBtnRamp")}
-              </Button>
-            </Grid>
-          )}
+          {/*{legalEnable && legalShow && (*/}
+          {/*  <Grid item xs={4}>*/}
+          {/*    <Button*/}
+          {/*      fullWidth*/}
+          {/*      variant={"outlined"}*/}
+          {/*      size={"medium"}*/}
+          {/*      color={"primary"}*/}
+          {/*      style={{*/}
+          {/*        textTransform: "none",*/}
+          {/*        paddingLeft: 0,*/}
+          {/*        paddingRight: 0,*/}
+          {/*      }}*/}
+          {/*      onClick={showPartner}*/}
+          {/*    >*/}
+          {/*      {t("labelAssetsBtnRamp")}*/}
+          {/*    </Button>*/}
+          {/*  </Grid>*/}
+          {/*)}*/}
           <Grid item xs={4}>
             <Button
               fullWidth
               variant={"outlined"}
               size={"medium"}
               color={"primary"}
-              onClick={() => onShowDeposit()}
+              onClick={() => onShowSend()}
             >
-              {t("labelDeposit")}
+              {t("labelAddAssetBtn")}
             </Button>
           </Grid>
           <Grid item xs={4}>

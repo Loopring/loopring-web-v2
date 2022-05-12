@@ -91,10 +91,9 @@ export const DepositRecorder = ({
                     fontSize={"inherit"}
                     alignItems={"center"}
                     display={"inline-flex"}
-                    onClick={() => {
-                      window.open(`${etherscanUrl}tx/${txInfo.hash}`);
-                      window.opener = null;
-                    }}
+                    href={`${etherscanUrl}tx/${txInfo.hash}`}
+                    target={"_blank"}
+                    rel={"noopener noreferrer"}
                   >
                     {txInfo.symbol ? (
                       <Typography component={"span"} color={"text.secondary"}>

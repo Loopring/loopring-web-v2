@@ -15,6 +15,7 @@ const initialState: SystemStatus = {
   status: "PENDING",
   errorMessage: null,
   allowTrade: {
+    legal: { enable: false },
     register: { enable: false },
     order: { enable: false },
     joinAmm: { enable: false },

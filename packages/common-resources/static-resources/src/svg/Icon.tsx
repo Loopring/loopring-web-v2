@@ -1190,3 +1190,21 @@ export const Info2Icon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+export const IncomingIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
+      <path d="M15.0527 11.1289L18.9653 7.19748V10.9013H20.9653V3.03775H18.9653V6.95734L15.0299 3.00302L13.6123 4.41383L15.2565 6.06594H7.9574V17.1894H9.9574V8.06594H15.2793L13.6351 9.71805L15.0527 11.1289Z" />
+      <path d="M6 20.8906H4V18.8906H6V20.8906Z" />
+      <path d="M10 20.8906H8V18.8906H10V20.8906Z" />
+      <path d="M12 20.8906H14V18.8906H12V20.8906Z" />
+    </SvgIcon>
+  );
+};
+
+export const CardIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
+      <path d="M3 3H21C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V20C22 20.2652 21.8946 20.5196 21.7071 20.7071C21.5196 20.8946 21.2652 21 21 21H3C2.73478 21 2.48043 20.8946 2.29289 20.7071C2.10536 20.5196 2 20.2652 2 20V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3ZM20 11H4V19H20V11ZM20 9V5H4V9H20ZM14 15H18V17H14V15Z" />
+    </SvgIcon>
+  );
+};

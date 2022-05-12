@@ -22,15 +22,9 @@ import {
   DepositProps,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
-import {
-  // useTranslation,
-  WithTranslation,
-  withTranslation,
-} from "react-i18next";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-// import React from "react";
-//padding-bottom: var(--toolbar-row-padding);
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`
@@ -210,8 +204,8 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
           <DepositPanel
             {...{
               ...rest,
-              width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-              height: "auto",
+              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              _height: "auto",
               ...depositProps,
             }}
           />

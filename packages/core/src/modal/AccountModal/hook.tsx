@@ -79,6 +79,8 @@ import {
   NFTMint_In_Progress,
   Deposit_Sign_WaitForRefer,
   VendorMenu,
+  AddAsset,
+  AddAssetItem,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -90,6 +92,8 @@ import React, { useState } from "react";
 import {
   Account,
   AccountStatus,
+  AddAssetList,
+  Bridge,
   copyToClipBoard,
 } from "@loopring-web/common-resources";
 import {
@@ -158,7 +162,8 @@ export function useAccountModalForUI({
     transferValue,
     withdrawValue,
   } = useModalData();
-  const { chainId } = useSystem();
+
+  const { chainId, allowTrade } = useSystem();
 
   const { account, addressShort, shouldShow, setShouldShow } = useAccount();
 
@@ -448,7 +453,48 @@ export function useAccountModalForUI({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
-
+  const addAssetList: AddAssetItem[] = [
+    {
+      ...AddAssetList.BuyWithCard,
+      handleSelect: (_e) => {
+        setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
+      },
+    },
+    {
+      ...AddAssetList.FromMyL1,
+      handleSelect: () => {
+        setShowAccount({ isShow: false });
+        setShowDeposit({ isShow: true });
+      },
+    },
+    {
+      ...AddAssetList.FromOtherL1,
+      handleSelect: () => {
+        window.open(
+          Bridge +
+            `?owner=${
+              account.accountId && account.accountId !== -1
+                ? account.accountId
+                : account.accAddress
+            }`
+        );
+        window.opener = null;
+      },
+    },
+    {
+      ...AddAssetList.FromOtherL2,
+      handleSelect: () => {
+        setShowAccount({ isShow: true, step: AccountStep.QRCode });
+      },
+    },
+    {
+      ...AddAssetList.FromExchange,
+      handleSelect: () => {
+        window.open(`https://www.layerswap.io/?destNetwork=loopring_mainnet`);
+        window.opener = null;
+      },
+    },
+  ];
   const isSupportCallback = React.useCallback(async () => {
     const is_Contract = await isContract(
       connectProvides.usedWeb3,
@@ -466,14 +512,7 @@ export function useAccountModalForUI({
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.AddAssetGateway]: {
-        view: (
-          <div>
-            <div>buy</div>
-            <div>buy</div>
-            <div>buy</div>
-            <div>buy</div>
-          </div>
-        ),
+        view: <AddAsset addAssetList={addAssetList} allowTrade={allowTrade} />,
       },
       [AccountStep.PayWithCard]: {
         view: <VendorMenu {...{ ...vendorProps }} />,
