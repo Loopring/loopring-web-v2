@@ -383,7 +383,7 @@ export function useAccountModalForUI({
   const updateDepositStatus = React.useCallback(async () => {
     const chainInfos = store.getState().localStore.chainHashInfos[chainId];
     const { accAddress } = account;
-    clearTimeout(nodeTimer.current as unknown as NodeJS.Timeout);
+    clearTimeout(nodeTimer.current as NodeJS.Timeout);
     if (
       chainInfos &&
       chainInfos.depositHashes &&
@@ -445,7 +445,7 @@ export function useAccountModalForUI({
       updateDepositStatus();
     }
     return () => {
-      clearTimeout(nodeTimer.current as unknown as NodeJS.Timeout);
+      clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
 
