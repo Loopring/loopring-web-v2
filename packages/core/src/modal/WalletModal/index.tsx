@@ -264,22 +264,22 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               [account]
             ),
           },
-          {
-            ...DefaultGatewayList[2],
-            handleSelect: React.useCallback(
-              async (event, flag?) => {
-                walletServices.sendDisconnect("", "should new provider");
-                setShowConnect({
-                  isShow: true,
-                  step: WalletConnectStep.CommonProcessing,
-                });
-                setConnectProvider(DefaultGatewayList[2].key);
-                setProcessingCallback({ callback: gameStopCallback });
-                setStateCheck(true);
-              },
-              [account]
-            ),
-          },
+          // {
+          //   ...DefaultGatewayList[2],
+          //   handleSelect: React.useCallback(
+          //     async (event, flag?) => {
+          //       walletServices.sendDisconnect("", "should new provider");
+          //       setShowConnect({
+          //         isShow: true,
+          //         step: WalletConnectStep.CommonProcessing,
+          //       });
+          //       setConnectProvider(DefaultGatewayList[2].key);
+          //       setProcessingCallback({ callback: gameStopCallback });
+          //       setStateCheck(true);
+          //     },
+          //     [account]
+          //   ),
+          // },
           // {
           //   ...DefaultGatewayList[3],
           //   handleSelect: React.useCallback(
