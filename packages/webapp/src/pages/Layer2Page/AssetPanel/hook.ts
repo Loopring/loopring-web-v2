@@ -336,7 +336,7 @@ export const useGetAssets = () => {
     },
     accountId: account.accountId,
     hideL2Assets,
-    onShowSend: () => {
+    onShowReceive: () => {
       setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
     },
     onShowTransfer,

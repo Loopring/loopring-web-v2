@@ -21,7 +21,7 @@ export type AssetTitleProps = {
   accountId: number;
   onShowWithdraw: (token?: string) => void;
   onShowTransfer: (token?: string) => void;
-  onShowSend: (token?: string) => void;
+  onShowReceive: (token?: string) => void;
   // onShowDeposit: (token?: string) => void;
   // btnShowDepositStatus?: keyof typeof TradeBtnStatus;
   btnShowTransferStatus?: keyof typeof TradeBtnStatus;

@@ -33,7 +33,7 @@ export const AssetTitle = withTranslation("common")(
     accountId,
     onShowWithdraw,
     onShowTransfer,
-    onShowSend,
+    onShowReceive,
     // onShowDeposit,
     // btnShowDepositStatus,
     btnShowTransferStatus,
@@ -168,7 +168,7 @@ export const AssetTitle = withTranslation("common")(
             // disabled={
             //   btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false
             // }
-            onClick={() => onShowSend()}
+            onClick={() => onShowReceive()}
           >
             {t("labelAddAssetBtn")}
           </Button>
@@ -183,7 +183,7 @@ export const AssetTitleMobile = ({
   accountId,
   onShowWithdraw,
   onShowTransfer,
-  onShowSend,
+  onShowReceive,
   // onShowDeposit,
   hideL2Assets,
   setHideL2Assets,
@@ -325,7 +325,7 @@ AssetTitleMobileProps) => {
               variant={"outlined"}
               size={"medium"}
               color={"primary"}
-              onClick={() => onShowSend()}
+              onClick={() => onShowReceive()}
             >
               {t("labelAddAssetBtn")}
             </Button>

@@ -181,7 +181,7 @@ export const ProviderMenu = ({
                   );
                 }}
               >
-                {t(item.key)}
+                {t(item.keyi18n)}
               </MenuBtnStyled>
             </Box>
           ))}

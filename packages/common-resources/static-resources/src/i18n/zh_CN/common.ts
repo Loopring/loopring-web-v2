@@ -98,7 +98,7 @@ export default {
   labelShowAccount: "显示或隐藏总资产",
   labelAssetsBtnRamp: "Buy with Card",
   labelAddAsset: "充值",
-  labelAddAssetBtn: "Send",
+  labelAddAssetBtn: "Receive",
   labelBtnTransfer: "转账",
   labelBtnWithdraw: "提现",
   labelLevel: "VIP等级",
