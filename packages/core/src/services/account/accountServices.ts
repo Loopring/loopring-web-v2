@@ -163,7 +163,7 @@ export const accountServices = {
         _accountIdNotActive: accInfo.accountId,
         nonce: accInfo.nonce,
         keySeed: accInfo.keySeed,
-        isContract,
+        isContract: accInfo.isContract,
       })
     );
     subject.next({
@@ -188,7 +188,6 @@ export const accountServices = {
           }),
           isContract(connectProvides.usedWeb3, account.accAddress),
         ]);
-        // await isContract(connectProvides.usedWeb3, accAddress);
         if (accInfo === undefined) {
           if (account.readyState !== AccountStatus.NO_ACCOUNT) {
             accountServices.sendNoAccount(is_Contract);

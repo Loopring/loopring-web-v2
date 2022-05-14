@@ -27,7 +27,6 @@ export const CheckActiveStatus = ({
 }) => {
   const { t } = useTranslation("common");
   let { feeChargeOrder } = useSettings();
-
   return (
     <Box
       flex={1}
@@ -84,7 +83,7 @@ export const CheckActiveStatus = ({
         {/*  */}
         {/*</Typography>*/}
         <Box onClick={onClick}>
-          {account.isContract ? (
+          {account?.isContract ? (
             <Button size={"large"} fullWidth onClick={goClose}>
               Close
             </Button>

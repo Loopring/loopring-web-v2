@@ -109,7 +109,7 @@ import {
   useReset,
   useExportAccount,
   useSystem,
-  isContract,
+  // isContract,
   useNFTWithdraw,
   useNFTTransfer,
   onchainHashInfo,
@@ -191,8 +191,6 @@ export function useAccountModalForUI({
   const [openQRCode, setOpenQRCode] = useState(false);
 
   const [copyToastOpen, setCopyToastOpen] = useState(false);
-
-  const [isSupport, setIsSupport] = React.useState<boolean>(false);
 
   const onSwitch = React.useCallback(() => {
     setShowAccount({ isShow: false });
@@ -491,20 +489,6 @@ export function useAccountModalForUI({
       },
     },
   ];
-  const isSupportCallback = React.useCallback(async () => {
-    const is_Contract = await isContract(
-      connectProvides.usedWeb3,
-      account.accAddress
-    );
-    setIsSupport(!is_Contract);
-    // myLog("isSupportCallback", account.accAddress, !is_Contract);
-  }, [account]);
-
-  React.useEffect(() => {
-    if (connectProvides && connectProvides.usedWeb3 && account.accAddress) {
-      isSupportCallback();
-    }
-  }, [account.accAddress, isSupportCallback]);
 
   const accountList = React.useMemo(() => {
     return Object.values({
@@ -553,7 +537,7 @@ export function useAccountModalForUI({
             {...{
               goActiveAccount,
               chainInfos,
-              isSupport,
+              // isSupport,
               noButton: isLayer1Only,
               onClose,
               updateDepositHash,
@@ -1840,7 +1824,7 @@ export function useAccountModalForUI({
   }, [
     goActiveAccount,
     chainInfos,
-    isSupport,
+    // isSupport,
     isLayer1Only,
     onClose,
     updateDepositHash,

@@ -14,7 +14,6 @@ export const NoAccount = withTranslation("common")(
     noButton = false,
     t,
     onClose,
-    isSupport = true,
     ...props
   }: WithTranslation &
     AccountBaseProps & {
@@ -23,7 +22,6 @@ export const NoAccount = withTranslation("common")(
       goActiveAccount: () => void;
       onClose: (e?: any) => void;
       chainInfos: AccountHashInfo;
-      isSupport: boolean;
       clearDepositHash: () => void;
     }) => {
     const theme = useTheme();
@@ -63,7 +61,7 @@ export const NoAccount = withTranslation("common")(
           >
             <DepositRecorder {...props} clear={props.clearDepositHash} t={t} />
           </Box>
-        ) : isSupport ? (
+        ) : (
           <Box
             display={"flex"}
             marginTop={2}
@@ -85,32 +83,6 @@ export const NoAccount = withTranslation("common")(
               }}
             >
               {t("labelActiveL2Btn")}
-            </Button>
-          </Box>
-        ) : (
-          <Box
-            display={"flex"}
-            marginTop={2}
-            alignSelf={"stretch"}
-            paddingX={5}
-            flexDirection={"column"}
-            alignItems={"center"}
-          >
-            <Typography variant={"body2"}>
-              {t("labelActivatedAccountNotSupport")}
-            </Typography>
-            <AnimationArrow className={"arrowCta"} />
-            <Button
-              variant={"contained"}
-              fullWidth
-              size={"medium"}
-              onClick={() => {
-                if (props.onDisconnect) {
-                  props.onDisconnect();
-                }
-              }}
-            >
-              {t("labelDisconnect")}
             </Button>
           </Box>
         )}

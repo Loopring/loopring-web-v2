@@ -107,7 +107,6 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
             onClose={function (_e?: any): void {
               throw new Error("Function not implemented.");
             }}
-            isSupport={false}
             clearDepositHash={function (): void {
               throw new Error("Function not implemented.");
             }}
