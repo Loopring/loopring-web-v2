@@ -96,6 +96,7 @@ import {
   AddAssetList,
   Bridge,
   copyToClipBoard,
+  FeeInfo,
   myLog,
 } from "@loopring-web/common-resources";
 import {
@@ -496,8 +497,11 @@ export function useAccountModalForUI({
         view: (
           <CheckActiveStatus
             account={account}
-            isFeeNotEnough={activeAccountProps.isFeeNotEnough}
+            // isFeeNotEnough={activeAccountProps.isFeeNotEnough}
             walletMap={activeAccountProps.walletMap}
+            chargeFeeTokenList={
+              activeAccountProps.chargeFeeTokenList as Array<FeeInfo>
+            }
             onClick={() => {
               // TODO
               myLog(CheckActiveStatus);

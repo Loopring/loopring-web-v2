@@ -2,31 +2,51 @@ import {
   Account,
   AccountStatus,
   EmptyValueTag,
+  FeeInfo,
   WalletMap,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const CheckActiveStatus = ({
   walletMap,
-  isFeeNotEnough,
+  // isFeeNotEnough,
   onClick,
   account,
   goSend,
   goClose,
   goUpdateAccount,
+  chargeFeeTokenList = [],
 }: {
   account: Account;
+  chargeFeeTokenList: FeeInfo[];
   goUpdateAccount: () => void;
   goClose: () => void;
   goSend: () => void;
   walletMap?: WalletMap<any, any>;
-  isFeeNotEnough: boolean;
+  // isFeeNotEnough: boolean;
   onClick: () => void;
 }) => {
   const { t } = useTranslation("common");
   let { feeChargeOrder } = useSettings();
+
+  const isFeeNotEnough = !(
+    walletMap &&
+    chargeFeeTokenList.findIndex((item) => {
+      if (walletMap && walletMap[item.belong]) {
+        if (
+          toBig(walletMap[item.belong].count ?? 0).gt(
+            toBig(item.fee.toString().replace(",", ""))
+          )
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }) !== -1
+  );
   return (
     <Box
       flex={1}
