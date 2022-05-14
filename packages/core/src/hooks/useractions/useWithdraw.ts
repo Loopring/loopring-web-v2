@@ -77,8 +77,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   } = useChargeFees({
     requestType: withdrawType,
     tokenSymbol: withdrawValue.belong,
-    updateData: (feeInfo, _chargeFeeList) => {
-      updateWithdrawData({ ...withdrawValue, fee: feeInfo });
+    updateData: ({ fee }) => {
+      updateWithdrawData({ ...withdrawValue, fee });
     },
   });
 

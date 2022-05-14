@@ -7,7 +7,7 @@ import {
   SoursURL,
   ExitIcon,
 } from "@loopring-web/common-resources";
-import { TFunction, Trans, WithTranslation } from "react-i18next";
+import { TFunction, Trans } from "react-i18next";
 import styled from "@emotion/styled";
 import { AccountBaseProps } from "./Interface";
 import { ConnectProviders } from "@loopring-web/web3-provider";

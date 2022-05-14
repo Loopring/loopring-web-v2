@@ -16,6 +16,7 @@ import {
   WalletConnectConnectInProgress,
   WalletConnectQRCode,
   WalletConnectStep,
+  WrongNetworkGuide,
 } from "@loopring-web/component-lib";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import React, { useEffect, useState } from "react";
@@ -92,9 +93,10 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const { isMobile } = useSettings();
     const { updateSystem, chainId: _chainId } = useSystem();
     const {
-      modals: { isShowConnect },
+      modals: { isShowConnect, isWrongNetworkGuide },
       setShowConnect,
       setShowAccount,
+      setShowWrongNetworkGuide,
     } = useOpenModals();
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);
@@ -175,7 +177,6 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const [isOpenUnknownProvider, setIsOpenUnknownProvider] =
       React.useState(false);
     const [isConfirmLinkCopy, setIsConfirmLinkCopy] = React.useState(false);
-
     const handleCloseDialog = React.useCallback(
       (_event: any, state?: boolean) => {
         setIsOpenUnknownProvider(false);
@@ -485,6 +486,12 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         <ConfirmLinkCopy
           open={isConfirmLinkCopy}
           handleClose={() => setIsConfirmLinkCopy(false)}
+        />
+        <WrongNetworkGuide
+          open={isWrongNetworkGuide.isShow}
+          handleClose={() => {
+            setShowWrongNetworkGuide({ isShow: false });
+          }}
         />
         <ModalWalletConnect
           open={isShowConnect.isShow}

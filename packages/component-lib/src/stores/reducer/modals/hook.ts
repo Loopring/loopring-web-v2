@@ -19,6 +19,7 @@ import {
   setShowTransfer,
   setShowWithdraw,
   setShowTradeIsFrozen,
+  setShowWrongNetworkGuide,
 } from "./reducer";
 
 import React from "react";
@@ -34,6 +35,11 @@ export const useOpenModals = () => {
     setShowSupport: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) =>
         dispatch(setShowSupport(state)),
+      [dispatch]
+    ),
+    setShowWrongNetworkGuide: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) =>
+        dispatch(setShowWrongNetworkGuide(state)),
       [dispatch]
     ),
     setShowTransfer: React.useCallback(

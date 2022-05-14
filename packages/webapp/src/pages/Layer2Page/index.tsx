@@ -19,7 +19,7 @@ import HistoryPanel from "./HistoryPanel";
 import OrderPanel from "./OrderPanel";
 import MyLiqudityPanel from "./MyLiquidityPanel";
 import React from "react";
-import { useAccount, BtnConnect } from "@loopring-web/core";
+import { useAccount, WalletConnectL2Btn } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
@@ -76,7 +76,7 @@ export const Layer2Page = () => {
             >
               {t("describeTitleConnectToWallet")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -96,7 +96,7 @@ export const Layer2Page = () => {
             >
               {t("describeTitleLocked")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -117,7 +117,7 @@ export const Layer2Page = () => {
             >
               {t("describeTitleNoAccount")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -137,7 +137,7 @@ export const Layer2Page = () => {
             >
               {t("describeTitleNotActive")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -164,7 +164,7 @@ export const Layer2Page = () => {
             >
               {t("describeTitleOpenAccounting")}
             </Typography>
-            {/*<BtnConnect/>*/}
+            {/*<WalletConnectL2Btn/>*/}
           </Box>
         );
         break;
@@ -186,7 +186,7 @@ export const Layer2Page = () => {
                 connectName: account.connectName,
               })}
             </Typography>
-            {/*<BtnConnect/>*/}
+            {/*<WalletConnectL2Btn/>*/}
           </Box>
         );
         break;

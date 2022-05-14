@@ -37,7 +37,11 @@ export function useChargeFees({
   amount?: number;
   updateData?:
     | undefined
-    | ((fee: FeeInfo, chargeFeeTokenList?: FeeInfo[]) => void);
+    | ((props: {
+        fee: FeeInfo;
+        chargeFeeTokenList?: FeeInfo[];
+        isFeeNotEnough?: boolean;
+      }) => void);
   isActiveAccount?: boolean;
   needAmountRefresh?: boolean;
   deployInWithdraw?: boolean;
@@ -70,6 +74,7 @@ export function useChargeFees({
   const handleFeeChange = (value: FeeInfo): void => {
     const walletMap =
       makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
+    let isFeeNotEnough = true;
     if (
       walletMap &&
       value?.belong &&
@@ -80,17 +85,21 @@ export function useChargeFees({
         .toBig(walletMap[value.belong].count)
         .gte(sdk.toBig(value.fee.toString().replace(",", "")))
     ) {
-      setIsFeeNotEnough(false);
+      isFeeNotEnough = false;
+      setIsFeeNotEnough(isFeeNotEnough);
     } else {
-      setIsFeeNotEnough(true);
+      setIsFeeNotEnough(isFeeNotEnough);
     }
     if (updateData && value) {
       updateData({
-        ...value,
-        __raw__: {
-          ...value.__raw__,
-          tokenId: tokenMap[value.belong.toString()].tokenId,
+        fee: {
+          ...value,
+          __raw__: {
+            ...value.__raw__,
+            tokenId: tokenMap[value.belong.toString()].tokenId,
+          },
         },
+        isFeeNotEnough,
       });
     }
     setFeeInfo(value);
@@ -195,7 +204,7 @@ export function useChargeFees({
           nodeTimer.current = setTimeout(() => {
             getFeeList();
           }, 900000); //15*60*1000 //900000
-          let feeInfo: any = undefined;
+          let _feeInfo: any = undefined;
           if (fees && feeChargeOrder) {
             const _chargeFeeTokenList = feeChargeOrder?.reduce((pre, item) => {
               let { fee, token } = fees[item] ?? {};
@@ -208,14 +217,14 @@ export function useChargeFees({
                   .toBig(fee)
                   .div("1e" + tokenInfo.decimals)
                   .toString();
-                const _feeInfo = {
+                const feeInfoTemplate = {
                   belong: token,
                   fee,
                   feeRaw,
                   hasToken: !!(walletMap && walletMap[token]),
                   __raw__: { fastWithDraw, feeRaw, tokenId },
                 };
-                pre.push(_feeInfo);
+                pre.push(feeInfoTemplate);
                 if (feeInfo === undefined && walletMap && walletMap[token]) {
                   const { count } = walletMap[token] ?? { count: 0 };
                   if (
@@ -223,63 +232,77 @@ export function useChargeFees({
                       .toBig(count)
                       .gte(sdk.toBig(fee.toString().replace(",", "")))
                   ) {
-                    feeInfo = _.cloneDeep(_feeInfo);
+                    _feeInfo = _.cloneDeep(feeInfoTemplate);
                   }
                 }
               }
               return pre;
             }, [] as Array<FeeInfo>);
+            let _isFeeNotEnough = true;
             setFeeInfo((state) => {
-              if (feeInfo === undefined) {
-                setIsFeeNotEnough(true);
+              if (_feeInfo === undefined) {
+                setIsFeeNotEnough(_isFeeNotEnough);
                 if (!state || state?.feeRaw === undefined) {
-                  feeInfo = _chargeFeeTokenList[0]
+                  _feeInfo = _chargeFeeTokenList[0]
                     ? _.cloneDeep(_chargeFeeTokenList[0])
                     : {
                         belong: "ETH",
                         fee: 0,
                         feeRaw: undefined,
                       };
-                  if (updateData && feeInfo) {
-                    updateData(
-                      {
+                  if (updateData && _feeInfo) {
+                    updateData({
+                      fee: {
                         ...feeInfo,
                         __raw__: {
                           ...feeInfo?.__raw__,
-                          tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                          tokenId:
+                            tokenMap[_feeInfo?.belong.toString()].tokenId,
                         },
                       },
-                      _chargeFeeTokenList
-                    );
+                      chargeFeeTokenList: _chargeFeeTokenList,
+                      isFeeNotEnough: _isFeeNotEnough,
+                    });
                   }
-                  return feeInfo;
+                  return _feeInfo;
                 } else {
                   return state;
                 }
               } else {
-                setIsFeeNotEnough(false);
                 if (isFeeNotEnough || !state || state?.feeRaw === undefined) {
-                  if (updateData && feeInfo) {
-                    updateData(
-                      {
-                        ...feeInfo,
+                  _isFeeNotEnough = false;
+                  setIsFeeNotEnough(_isFeeNotEnough);
+                  if (updateData && _feeInfo) {
+                    updateData({
+                      fee: {
+                        ..._feeInfo,
                         __raw__: {
                           ...feeInfo?.__raw__,
-                          tokenId: tokenMap[feeInfo?.belong.toString()].tokenId,
+                          tokenId:
+                            tokenMap[_feeInfo?.belong.toString()].tokenId,
                         },
                       },
-                      _chargeFeeTokenList
-                    );
+                      chargeFeeTokenList: _chargeFeeTokenList,
+                      isFeeNotEnough: _isFeeNotEnough,
+                    });
                   }
-                  return feeInfo;
+                  return _feeInfo;
                 } else {
-                  const _feeInfo = _chargeFeeTokenList?.find(
+                  const feeInfo = _chargeFeeTokenList?.find(
                     (ele) => ele.belong === state.belong
                   );
-                  if (updateData && _feeInfo) {
-                    updateData({ ..._feeInfo }, _chargeFeeTokenList);
+                  if (updateData && feeInfo) {
+                    updateData({
+                      fee: { ...feeInfo },
+                      chargeFeeTokenList: _chargeFeeTokenList,
+                      isFeeNotEnough: sdk
+                        .toBig(walletMap[state.belong]?.count ?? 0)
+                        .gte(
+                          sdk.toBig(feeInfo.fee.toString().replace(",", ""))
+                        ),
+                    });
                   }
-                  return _feeInfo ?? state;
+                  return feeInfo ?? state;
                 }
               }
             });

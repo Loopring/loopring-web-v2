@@ -72,8 +72,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: (feeInfo, _chargeFeeList) => {
-      updateTransferData({ ...transferValue, fee: feeInfo });
+    updateData: ({ fee }) => {
+      updateTransferData({ ...transferValue, fee });
     },
   });
 

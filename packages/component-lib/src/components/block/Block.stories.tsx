@@ -12,7 +12,7 @@ import { coinMap, CoinType } from "../../static";
 import { withTranslation } from "react-i18next";
 import { AssetTitle, AssetTitleProps, TradeTitle, VipPanel } from "./";
 import { useDispatch } from "react-redux";
-import { setShowDeposit, setShowTransfer, setShowWithdraw } from "../../stores";
+import { setShowTransfer, setShowWithdraw } from "../../stores";
 import { SettingPanel } from "./SettingPanel";
 import { MarketBlock } from "./MarketBlock";
 // import { PoolDetailTitle } from './PoolDetailTitle';
@@ -223,6 +223,7 @@ const SettingPanelWrap = (_rest: any) => {
 const AssetTitleWrap = (rest: any) => {
   const dispatch = useDispatch();
   const AssetTitleProps: AssetTitleProps = {
+    onShowReceive: () => {},
     showPartner(): void {},
     accountId: 0,
     setHideL2Assets: () => undefined,
@@ -231,9 +232,9 @@ const AssetTitleWrap = (rest: any) => {
       totalAsset: 123456.789,
       priceTag: PriceTag.Dollar,
     },
-    onShowWithdraw: () => dispatch(setShowDeposit({ isShow: true })),
+    // onShowDeposit: () => dispatch(setShowDeposit({ isShow: true })),
     onShowTransfer: () => dispatch(setShowTransfer({ isShow: true })),
-    onShowDeposit: () => dispatch(setShowWithdraw({ isShow: true })),
+    onShowWithdraw: () => dispatch(setShowWithdraw({ isShow: true })),
   };
   return (
     <>

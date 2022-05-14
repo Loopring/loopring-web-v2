@@ -76,8 +76,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
     deployInWithdraw:
       nftWithdrawValue.isCounterFactualNFT &&
       nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
-    updateData: (feeInfo, _chargeFeeList) => {
-      updateNFTWithdrawData({ ...nftWithdrawValue, fee: feeInfo });
+    updateData: ({ fee }) => {
+      updateNFTWithdrawData({ ...nftWithdrawValue, fee });
     },
   });
 

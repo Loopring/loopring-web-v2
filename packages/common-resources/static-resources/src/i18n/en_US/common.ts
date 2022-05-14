@@ -204,7 +204,8 @@ export default {
   labelActivatedAccountDeposit:
     "Please deposit to activate your Layer 2 account",
   labelActivatedAccountNotSupport:
-    "Loopring does not currently support your address. We apologize for the inconvenience.",
+    "Loopring does not currently support your address, We apologize for the inconvenience. Please use EOA wallet or Loopring wallet!",
+  labelNotAllowForSmartWalletTitle: "Apologize",
   labelProcessing: "Processing",
   labelProviderProcessing: "Connect Wallet with {{name}}...",
   labelProviderCommonProcessDescribe:
@@ -634,7 +635,7 @@ export default {
   labelswap: "Swap",
   labelamm: "Amm",
   depositLabelTo: "To address, account id or ENS.",
-  labelAddressNotLoopring: "That account not active layer2",
+  labelAddressNotLoopring: "That account not active L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
   labelLoadDes: "Drag or click to upload files ({{types}}, max size: 10MB)",
@@ -676,8 +677,9 @@ export default {
   labelDepositTokenAmount: "Token Amount",
   labelDepositFrom: "From",
   labelDepositTO: "To Loopring L2",
-  labelAddAssetTitle: "Add L2 asset",
-  labelAddAssetTitleActive: "Add L2 asset & Active",
+  labelAddAssetTitle: "Add L2 assets",
+  labelAddAssetHowto: "How would you like to activate L2 account",
+  labelAddAssetTitleActive: "Add L2 assets & Active",
   labelFromMyL1: "From My L1",
   labelFromOtherL1: "From Other L1",
   labelBuyWithCard: "Buy with Card",
@@ -689,4 +691,8 @@ export default {
   labelOpenInWalletDetail: `URL for adding fund  has been copied. You can choose either way to continue:`,
   labelOpenInWalletDetailLi1: `Open your wallet app and paste the url in its internal dapp browser`,
   labelOpenInWalletDetailLi2: `Open your desktop Chrome browser and paste the url in Chrome`,
+  labelActiveL2Btn: "Activate L2",
+  labelWrongNetworkGuideTitle: "Wrong Network",
+  labelWrongNetworkGuide:
+    "Your choose network is not on Loopring support list, Please choose Ethereum Main Network or test Network Goerli",
 };

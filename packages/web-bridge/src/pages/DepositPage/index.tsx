@@ -10,7 +10,6 @@ import {
   boxLiner,
   BtnInfo,
   DepositPanel,
-  DepositTitle,
   TradeBtnStatus,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -19,7 +18,7 @@ import {
   useDeposit,
   accountStaticCallBack,
   btnClickMap,
-  WalletConnectBtnL1,
+  WalletConnectL1Btn,
 } from "@loopring-web/core";
 import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
@@ -136,7 +135,7 @@ export const DepositToPage = withTranslation(["common"])(
                   </Typography>
                 )}
                 <Box display={"flex"} alignItems={"center"}>
-                  <WalletConnectBtnL1 isShowOnUnConnect={false} />
+                  <WalletConnectL1Btn isShowOnUnConnect={false} />
                 </Box>
               </Box>
             </Box>

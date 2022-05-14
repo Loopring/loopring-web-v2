@@ -34,6 +34,27 @@ export const useHeader = () => {
     typeof _initHeaderToolBarData
   >(_initHeaderToolBarData);
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
+    [fnType.NO_ACCOUNT]: [
+      function () {
+        myLog("NO_ACCOUNT! sendCheckAcc");
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
+      },
+    ],
+    [fnType.DEPOSITING]: [
+      function () {
+        myLog("DEPOSITING! sendCheckAcc");
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
+      },
+    ],
+    [fnType.NOT_ACTIVE]: [
+      function () {
+        myLog("NOT_ACTIVE! sendCheckAcc");
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
+      },
+    ],
     [fnType.ACTIVATED]: [
       function () {
         store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
@@ -42,6 +63,7 @@ export const useHeader = () => {
         );
       },
     ],
+
     [fnType.LOCKED]: [
       function () {
         store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));

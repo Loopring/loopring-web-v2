@@ -101,6 +101,9 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
+            goActiveAccount={function (): void {
+              throw new Error("Function not implemented.");
+            }}
             onClose={function (_e?: any): void {
               throw new Error("Function not implemented.");
             }}
@@ -111,7 +114,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
             {...{
               chainInfos: { depositHashes: {} },
               ...accountInfoProps,
-              goDeposit: () => {},
+              goAddAssetsFromL1: () => {},
             }}
           />
         ),

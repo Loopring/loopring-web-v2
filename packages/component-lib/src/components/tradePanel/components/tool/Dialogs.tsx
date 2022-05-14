@@ -243,6 +243,85 @@ export const ConfirmImpact = withTranslation("common", { withRef: true })(
     );
   }
 );
+// export const NotAllowForSmartWallet = withTranslation("common", {
+//   withRef: true,
+// })(
+//   ({
+//     t,
+//     open,
+//     handleClose,
+//   }: WithTranslation & {
+//     open: boolean;
+//     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+//   }) => {
+//     return (
+//       <DialogStyle
+//         open={open}
+//         keepMounted
+//         onClose={(e: MouseEvent) => handleClose(e)}
+//         aria-describedby="alert-dialog-slide-description"
+//       >
+//         <DialogTitle> {t("labelNotAllowForSmartWalletTitle")}</DialogTitle>
+//         <DialogContent>
+//           <DialogContentText>
+//             <Typography component={"p"} variant={"body1"} color={"inherit"}>
+//               {t("labelActivatedAccountNotSupport")}
+//             </Typography>
+//           </DialogContentText>
+//         </DialogContent>
+//         <DialogActions>
+//           <Button
+//             variant={"outlined"}
+//             size={"medium"}
+//             onClick={(e) => handleClose(e as any)}
+//           >
+//             {t("labelOK")}
+//           </Button>
+//         </DialogActions>
+//       </DialogStyle>
+//     );
+//   }
+// );
+
+export const WrongNetworkGuide = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelWrongNetworkGuideTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography component={"p"} variant={"body1"} color={"inherit"}>
+              {t("labelWrongNetworkGuide")}
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelOK")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
 
 export const ConfirmLinkCopy = withTranslation("common", {
   withRef: true,

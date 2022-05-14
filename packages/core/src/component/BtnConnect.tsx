@@ -6,22 +6,19 @@ import {
   accountStaticCallBack,
   btnClickMap,
   btnLabel,
-  accountServices,
 } from "../index";
 import {
   AccountStep,
   Button,
   setShowAccount,
   setShowConnect,
-  useOpenModals,
-  WalletConnectL1Btn,
+  WalletConnectUI,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import React from "react";
 import _ from "lodash";
 
 import {
-  AccountStatus,
   fnType,
   i18n,
   LoadingIcon,
@@ -29,67 +26,67 @@ import {
   SagaStatus,
 } from "@loopring-web/common-resources";
 import { changeShowModel } from "../stores/account/reducer";
-export const BtnConnect = withTranslation(["common"], { withRef: true })(
-  ({ t }: any) => {
-    const { status: accountStatus, account } = useAccount();
-    const { setShowAccount } = useOpenModals();
+export const WalletConnectL2Btn = withTranslation(["common"], {
+  withRef: true,
+})(({ t }: any) => {
+  const { status: accountStatus, account } = useAccount();
+  // const { setShowAccount } = useOpenModals();
 
-    // const {setShowAccount} = useOpenModals();
-    const [label, setLabel] = React.useState(undefined);
+  // const {setShowAccount} = useOpenModals();
+  const [label, setLabel] = React.useState(undefined);
 
-    const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
-      [fnType.NO_ACCOUNT]: [
-        function () {
-          return `depositAndActiveBtn`;
-        },
-      ],
-      [fnType.ERROR_NETWORK]: [
-        function () {
-          return `labelWrongNetwork`;
-        },
-      ],
-    });
+  const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
+    // [fnType.NO_ACCOUNT]: [
+    //   function () {
+    //     return `depositAndActiveBtn`;
+    //   },
+    // ],
+    [fnType.ERROR_NETWORK]: [
+      function () {
+        return `labelWrongNetwork`;
+      },
+    ],
+  });
 
-    React.useEffect(() => {
-      if (accountStatus === SagaStatus.UNSET) {
-        setLabel(accountStaticCallBack(_btnLabel));
-      }
-    }, [accountStatus, account.readyState, i18n.language]);
+  React.useEffect(() => {
+    if (accountStatus === SagaStatus.UNSET) {
+      setLabel(accountStaticCallBack(_btnLabel));
+    }
+  }, [accountStatus, account.readyState, i18n.language]);
 
-    const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {});
+  const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {});
 
-    return (
-      <Button
-        variant={"contained"}
-        size={"large"}
-        color={"primary"}
-        fullWidth={true}
-        style={{ maxWidth: "280px" }}
-        onClick={() => {
-          // remove the middle account status panel
-          // make deposite directly to create an account
-          if (account.readyState === AccountStatus.NO_ACCOUNT) {
-            myLog("DEPOSITING! sendCheckAcc");
-            accountServices.sendCheckAcc();
-            setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
-            // setShowDeposit({ isShow: true });
+  return (
+    <Button
+      variant={"contained"}
+      size={"large"}
+      color={"primary"}
+      fullWidth={true}
+      style={{ maxWidth: "280px" }}
+      onClick={() => {
+        // remove the middle account status panel
+        // make deposite directly to create an account
+        // if (account.readyState === AccountStatus.NO_ACCOUNT) {
+        //   myLog("DEPOSITING! sendCheckAcc");
+        //   accountServices.sendCheckAcc();
+        //   setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
+        //   // setShowDeposit({ isShow: true });
+        //
+        //   return;
+        // }
+        accountStaticCallBack(_btnClickMap, []);
+      }}
+    >
+      {label !== "" ? (
+        t(label)
+      ) : (
+        <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
+      )}
+    </Button>
+  );
+}) as typeof Button;
 
-            return;
-          }
-          accountStaticCallBack(_btnClickMap, []);
-        }}
-      >
-        {label !== "" ? (
-          t(label)
-        ) : (
-          <LoadingIcon color={"primary"} style={{ width: 18, height: 18 }} />
-        )}
-      </Button>
-    );
-  }
-) as typeof Button;
-
-export const WalletConnectBtnL1 = ({
+export const WalletConnectL1Btn = ({
   isShowOnUnConnect,
 }: {
   isShowOnUnConnect: Boolean;
@@ -100,7 +97,7 @@ export const WalletConnectBtnL1 = ({
     [fnType.UN_CONNECT]: [
       function () {
         return isShowOnUnConnect ? (
-          <WalletConnectL1Btn
+          <WalletConnectUI
             handleClick={btnClickMap[fnType.UN_CONNECT][0]}
             accountState={accountState}
           />
@@ -112,7 +109,7 @@ export const WalletConnectBtnL1 = ({
     [fnType.ERROR_NETWORK]: [
       function () {
         return (
-          <WalletConnectL1Btn
+          <WalletConnectUI
             accountState={accountState}
             handleClick={() => {
               myLog("get error network!");
@@ -124,7 +121,7 @@ export const WalletConnectBtnL1 = ({
     [fnType.NO_ACCOUNT]: [
       function () {
         return (
-          <WalletConnectL1Btn
+          <WalletConnectUI
             accountState={accountState}
             handleClick={() => {
               store.dispatch(
@@ -141,7 +138,7 @@ export const WalletConnectBtnL1 = ({
     [fnType.DEFAULT]: [
       function () {
         return (
-          <WalletConnectL1Btn
+          <WalletConnectUI
             accountState={accountState}
             handleClick={() => {
               store.dispatch(
@@ -158,7 +155,7 @@ export const WalletConnectBtnL1 = ({
     [fnType.NOT_ACTIVE]: [
       function () {
         return (
-          <WalletConnectL1Btn
+          <WalletConnectUI
             accountState={accountState}
             handleClick={() => {
               store.dispatch(
@@ -175,7 +172,7 @@ export const WalletConnectBtnL1 = ({
     [fnType.ACTIVATED]: [
       function () {
         return (
-          <WalletConnectL1Btn
+          <WalletConnectUI
             accountState={accountState}
             handleClick={() => {
               store.dispatch(
@@ -192,7 +189,7 @@ export const WalletConnectBtnL1 = ({
     [fnType.LOCKED]: [
       function () {
         return (
-          <WalletConnectL1Btn
+          <WalletConnectUI
             accountState={accountState}
             handleClick={() => {
               store.dispatch(

@@ -143,11 +143,13 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state,
       action: PayloadAction<Partial<ActiveAccountData>>
     ) {
-      const { chargeFeeList, walletLayer2, ...rest } = action.payload;
+      const { chargeFeeList, walletLayer2, isFeeNotEnough, ...rest } =
+        action.payload;
       state.lastStep = LAST_STEP.default;
       if (chargeFeeList) {
         state.activeAccountValue.chargeFeeList = chargeFeeList;
         state.activeAccountValue.walletLayer2 = walletLayer2;
+        state.activeAccountValue.isFeeNotEnough = isFeeNotEnough;
       }
       state.activeAccountValue = {
         ...state.activeAccountValue,

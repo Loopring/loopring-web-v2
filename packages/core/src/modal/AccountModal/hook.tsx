@@ -81,6 +81,7 @@ import {
   VendorMenu,
   AddAsset,
   AddAssetItem,
+  CheckActiveStatus,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -95,6 +96,7 @@ import {
   AddAssetList,
   Bridge,
   copyToClipBoard,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   useAccount,
@@ -119,6 +121,7 @@ import {
   useNFTDeploy,
   store,
   mintService,
+  goActiveAccount,
 } from "@loopring-web/core";
 
 import { WalletType } from "@loopring-web/loopring-sdk";
@@ -211,13 +214,6 @@ export function useAccountModalForUI({
     setShowAccount({ isShow: false });
   }, [setShowAccount]);
 
-  const goDeposit = React.useCallback(() => {
-    setShowAccount({ isShow: false });
-    if (isLayer1Only) {
-      setShowDeposit({ isShow: true });
-    }
-  }, [setShowAccount, setShowDeposit, isLayer1Only]);
-
   const onQRClick = React.useCallback(() => {
     setShowAccount({ isShow: true, step: AccountStep.QRCode });
   }, [setShowAccount]);
@@ -271,9 +267,9 @@ export function useAccountModalForUI({
   const backToDepositBtnInfo = React.useMemo(() => {
     return {
       btnTxt: "labelRetry",
-      callback: goDeposit,
+      callback: goActiveAccount,
     };
-  }, [goDeposit]);
+  }, []);
 
   const backToNFTDepositBtnInfo = React.useMemo(() => {
     return {
@@ -509,8 +505,33 @@ export function useAccountModalForUI({
       isSupportCallback();
     }
   }, [account.accAddress, isSupportCallback]);
+
   const accountList = React.useMemo(() => {
     return Object.values({
+      [AccountStep.CheckingActive]: {
+        view: (
+          <CheckActiveStatus
+            account={account}
+            isFeeNotEnough={activeAccountProps.isFeeNotEnough}
+            walletMap={activeAccountProps.walletMap}
+            onClick={() => {
+              // TODO
+              myLog(CheckActiveStatus);
+            }}
+            goClose={() => setShowAccount({ isShow: false })}
+            goSend={() =>
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.AddAssetGateway,
+              })
+            }
+            goUpdateAccount={() => {
+              setShowAccount({ isShow: false });
+              setShowActiveAccount({ isShow: true });
+            }}
+          />
+        ),
+      },
       [AccountStep.AddAssetGateway]: {
         view: (
           <AddAsset
@@ -530,7 +551,7 @@ export function useAccountModalForUI({
             //   /(guardian)|(depositto)/gi.test(pathname ?? "") ? "guardian" : ""
             // }
             {...{
-              goDeposit,
+              goActiveAccount,
               chainInfos,
               isSupport,
               noButton: isLayer1Only,
@@ -630,7 +651,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: goDeposit,
+        onBack: goActiveAccount,
       },
       [AccountStep.Deposit_Approve_Submit]: {
         view: (
@@ -1817,7 +1838,7 @@ export function useAccountModalForUI({
       },
     });
   }, [
-    goDeposit,
+    goActiveAccount,
     chainInfos,
     isSupport,
     isLayer1Only,

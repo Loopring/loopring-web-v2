@@ -9,6 +9,7 @@ import {
   PopoverPure,
   Toast,
   TradeProType,
+  WrongNetworkGuide,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
 import {
@@ -234,7 +235,6 @@ export const SpotView = withTranslation("common")(
               : "labelPriceCompareLess"
           }
         />
-
         <Box display={"flex"} flexDirection={"column"} alignItems={"stretch"}>
           <Box component={"header"} width={"100%"}>
             <Tabs variant={"fullWidth"} value={tabIndex} onChange={onTabChange}>

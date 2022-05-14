@@ -77,10 +77,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: (feeInfo, _chargeFeeList) => {
+    updateData: ({ fee }) => {
       updateNFTTransferData({
         ...nftTransferValue,
-        fee: feeInfo,
+        fee,
       });
     },
   });

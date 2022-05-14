@@ -9,7 +9,7 @@ import { useTheme } from "@emotion/react";
 
 export const NoAccount = withTranslation("common")(
   ({
-    goDeposit,
+    goActiveAccount,
     className,
     noButton = false,
     t,
@@ -20,7 +20,7 @@ export const NoAccount = withTranslation("common")(
     AccountBaseProps & {
       noButton?: boolean;
       className?: string;
-      goDeposit: () => void;
+      goActiveAccount: () => void;
       onClose: (e?: any) => void;
       chainInfos: AccountHashInfo;
       isSupport: boolean;
@@ -81,10 +81,10 @@ export const NoAccount = withTranslation("common")(
               fullWidth
               size={"medium"}
               onClick={() => {
-                goDeposit();
+                goActiveAccount();
               }}
             >
-              {t("depositLabelBtn")}
+              {t("labelActiveL2Btn")}
             </Button>
           </Box>
         ) : (

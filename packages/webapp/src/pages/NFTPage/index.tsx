@@ -9,7 +9,7 @@ import {
   subMenuNFT,
 } from "@loopring-web/common-resources";
 import React from "react";
-import { useAccount, BtnConnect } from "@loopring-web/core";
+import { useAccount, WalletConnectL2Btn } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTPanel } from "./MintNFTPanel";
@@ -58,7 +58,7 @@ export const NFTPage = () => {
             >
               {t("describeTitleConnectToWallet")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -78,7 +78,7 @@ export const NFTPage = () => {
             >
               {t("describeTitleLocked")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -99,7 +99,7 @@ export const NFTPage = () => {
             >
               {t("describeTitleNoAccount")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -119,7 +119,7 @@ export const NFTPage = () => {
             >
               {t("describeTitleNotActive")}
             </Typography>
-            <BtnConnect />
+            <WalletConnectL2Btn />
           </Box>
         );
         break;
@@ -146,7 +146,7 @@ export const NFTPage = () => {
             >
               {t("describeTitleOpenAccounting")}
             </Typography>
-            {/*<BtnConnect/>*/}
+            {/*<WalletConnectL2Btn/>*/}
           </Box>
         );
         break;
@@ -168,7 +168,7 @@ export const NFTPage = () => {
                 connectName: account.connectName,
               })}
             </Typography>
-            {/*<BtnConnect/>*/}
+            {/*<WalletConnectL2Btn/>*/}
           </Box>
         );
         break;

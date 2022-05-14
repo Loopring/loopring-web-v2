@@ -36,13 +36,14 @@ export const useActiveAccount = <T>(): {
   } = useChargeFees({
     isActiveAccount: true,
     requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
-    updateData: (feeInfo, chargeFeeList) => {
+    updateData: ({ fee, chargeFeeTokenList, isFeeNotEnough }) => {
       updateActiveAccountData({
         ...activeAccountValue,
-        fee: feeInfo,
+        fee,
+        isFeeNotEnough,
         chargeFeeList:
-          chargeFeeList && chargeFeeList.length
-            ? chargeFeeList
+          chargeFeeTokenList && chargeFeeTokenList.length
+            ? chargeFeeTokenList
             : activeAccountValue?.chargeFeeList &&
               activeAccountValue?.chargeFeeList.length
             ? activeAccountValue?.chargeFeeList

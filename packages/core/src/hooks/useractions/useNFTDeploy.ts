@@ -199,8 +199,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   } = useChargeFees({
     tokenAddress: nftDeployValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
-    updateData: (feeInfo, _chargeFeeList) => {
-      updateNFTDeployData({ ...nftDeployValue, fee: feeInfo });
+    updateData: ({ fee }) => {
+      updateNFTDeployData({ ...nftDeployValue, fee });
     },
   });
 

@@ -221,7 +221,7 @@ export const WalletConnectBtn = ({
   );
 };
 
-export const WalletConnectL1Btn = ({
+export const WalletConnectUI = ({
   accountState,
   handleClick,
 }: WalletConnectBtnProps) => {

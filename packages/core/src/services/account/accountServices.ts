@@ -13,6 +13,7 @@ import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
 import { AccountCommands } from "./command";
 import { updateAccountStatus } from "../../stores/account/reducer";
 import { connectProvides } from "@loopring-web/web3-provider";
+import { isContract } from "@loopring-web/loopring-sdk";
 
 const subject = new Subject<{ status: AccountCommands; data: any }>();
 
@@ -143,16 +144,18 @@ export const accountServices = {
       data: undefined,
     });
   },
-  sendNoAccount: () => {
+  sendNoAccount: (isContract: boolean) => {
     store.dispatch(
-      updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT })
+      updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT, isContract })
     );
     subject.next({
       status: AccountCommands.NoAccount,
       data: undefined,
     });
   },
-  sendNeedUpdateAccount: async (accInfo: sdk.AccountInfo) => {
+  sendNeedUpdateAccount: async (
+    accInfo: sdk.AccountInfo & { isContract: boolean }
+  ) => {
     myLog("sendNeedUpdateAccount accInfo:", accInfo);
     store.dispatch(
       updateAccountStatus({
@@ -160,6 +163,7 @@ export const accountServices = {
         _accountIdNotActive: accInfo.accountId,
         nonce: accInfo.nonce,
         keySeed: accInfo.keySeed,
+        isContract,
       })
     );
     subject.next({
@@ -178,18 +182,25 @@ export const accountServices = {
             LoopringAPI.InitApi(chainId as sdk.ChainId);
           }
         }
-        const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
-          owner: account.accAddress,
-        });
+        const [{ accInfo }, is_Contract] = await Promise.all([
+          LoopringAPI.exchangeAPI.getAccount({
+            owner: account.accAddress,
+          }),
+          isContract(connectProvides.usedWeb3, account.accAddress),
+        ]);
+        // await isContract(connectProvides.usedWeb3, accAddress);
         if (accInfo === undefined) {
           if (account.readyState !== AccountStatus.NO_ACCOUNT) {
-            accountServices.sendNoAccount();
+            accountServices.sendNoAccount(is_Contract);
           }
         } else {
           if (account.accountId) {
             if (!account.publicKey.x || !account.publicKey.y) {
               myLog("-------sendCheckAcc need update account!");
-              accountServices.sendNeedUpdateAccount(accInfo);
+              accountServices.sendNeedUpdateAccount({
+                ...accInfo,
+                isContract: is_Contract,
+              });
             } else {
               myLog("-------need unlockAccount!");
               unlockAccount();
@@ -227,17 +238,26 @@ export const accountServices = {
       }
     }
     if (LoopringAPI.exchangeAPI) {
-      const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
-        owner: ethAddress,
-      });
+      // const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
+      //   owner: ethAddress,
+      // });
 
+      const [{ accInfo }, is_Contract] = await Promise.all([
+        LoopringAPI.exchangeAPI.getAccount({
+          owner: ethAddress,
+        }),
+        isContract(connectProvides.usedWeb3, ethAddress),
+      ]);
       if (accInfo === undefined) {
-        accountServices.sendNoAccount();
+        accountServices.sendNoAccount(is_Contract);
       } else {
         if (accInfo.accountId) {
           if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
             myLog("-------sendCheckAccount need update account!");
-            accountServices.sendNeedUpdateAccount(accInfo);
+            accountServices.sendNeedUpdateAccount({
+              ...accInfo,
+              isContract: is_Contract,
+            });
           } else {
             myLog("-------need unlockAccount!");
             accountServices.sendAccountLock(accInfo);

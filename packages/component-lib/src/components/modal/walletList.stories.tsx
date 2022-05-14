@@ -161,7 +161,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
   // const accountList = React.useMemo(() => {
   //     return Object.values({
   //         [ AccountStep.NoAccount ]: <NoAccount {...{
-  //             ...accountInfoProps, goDeposit: () => {
+  //             ...accountInfoProps, goAddAssetsFromL1: () => {
   //             }
   //         }}/>,
   //         [ AccountStep.Deposit ]: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,
@@ -246,6 +246,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
             }}
             panelList={walletList}
             step={WalletConnectStep.WalletConnectQRCode}
+            etherscanBaseUrl={""}
           />
           -----------------------------
           <Button

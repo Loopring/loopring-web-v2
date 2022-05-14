@@ -21,6 +21,7 @@ export type AccountBaseProps = {
 } & Account;
 
 export enum AccountStep {
+  CheckingActive,
   AddAssetGateway,
   PayWithCard,
   NoAccount,

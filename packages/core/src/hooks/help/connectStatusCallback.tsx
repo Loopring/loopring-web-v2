@@ -2,15 +2,11 @@ import {
   AccountStep,
   setShowAccount,
   setShowConnect,
+  setShowWrongNetworkGuide,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import { fnType, myLog } from "@loopring-web/common-resources";
-import {
-  accountReducer,
-  store,
-  accountServices,
-  unlockAccount,
-} from "../../index";
+import { accountReducer, store, unlockAccount } from "../../index";
 import { metaMaskCallback } from "../../modal/WalletModal";
 
 export const accountStaticCallBack = (
@@ -26,6 +22,13 @@ export const accountStaticCallBack = (
     return fn.apply(this, args);
   }
 };
+const activeBtnLabelFn = function () {
+  // const { accAddress } = store.getState().account;
+  // myLog("goActiveAccount");
+  // const is_Contract = await isContract(connectProvides.usedWeb3, accAddress);
+  // is_Contract ? "labelNotAllowActive" :
+  return `depositAndActiveBtn`;
+};
 
 export const btnLabel = {
   [fnType.UN_CONNECT]: [
@@ -38,21 +41,10 @@ export const btnLabel = {
       return `labelWrongNetwork`;
     },
   ],
-  [fnType.NO_ACCOUNT]: [
-    function () {
-      return `depositAndActiveBtn`;
-    },
-  ],
-  [fnType.DEFAULT]: [
-    function () {
-      return `depositAndActiveBtn`;
-    },
-  ],
-  [fnType.NOT_ACTIVE]: [
-    function () {
-      return `depositAndActiveBtn`;
-    },
-  ],
+  [fnType.NO_ACCOUNT]: [activeBtnLabelFn],
+  [fnType.DEFAULT]: [activeBtnLabelFn],
+  [fnType.DEPOSITING]: [activeBtnLabelFn],
+  [fnType.NOT_ACTIVE]: [activeBtnLabelFn],
   [fnType.ACTIVATED]: [
     function () {
       return undefined;
@@ -64,13 +56,20 @@ export const btnLabel = {
     },
   ],
 };
+export const goActiveAccount = async () => {
+  store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }));
+  store.dispatch(
+    setShowAccount({ isShow: true, step: AccountStep.CheckingActive })
+  );
+};
 
 export const btnClickMap: {
   [key: string]: [fn: (props: any) => any, args?: any[]];
 } = {
   [fnType.ERROR_NETWORK]: [
     function () {
-      myLog("get error network!");
+      store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }));
+      store.dispatch(setShowWrongNetworkGuide({ isShow: true }));
     },
   ],
   [fnType.UN_CONNECT]: [
@@ -87,27 +86,9 @@ export const btnClickMap: {
       }
     },
   ],
-  [fnType.NO_ACCOUNT]: [
-    function () {
-      myLog("NO_ACCOUNT! sendCheckAcc");
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
-      accountServices.sendCheckAcc();
-    },
-  ],
-  [fnType.DEPOSITING]: [
-    function () {
-      myLog("DEPOSITING! sendCheckAcc");
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
-      accountServices.sendCheckAcc();
-    },
-  ],
-  [fnType.NOT_ACTIVE]: [
-    function () {
-      myLog("NOT_ACTIVE! sendCheckAcc");
-      store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
-      accountServices.sendCheckAcc();
-    },
-  ],
+  [fnType.NO_ACCOUNT]: [goActiveAccount],
+  [fnType.DEPOSITING]: [goActiveAccount],
+  [fnType.NOT_ACTIVE]: [goActiveAccount],
   [fnType.LOCKED]: [
     function () {
       unlockAccount();

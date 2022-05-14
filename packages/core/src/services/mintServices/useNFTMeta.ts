@@ -165,12 +165,12 @@ export function useNFTMeta<T extends NFTMETA>({
   } = useChargeFees({
     tokenAddress: nftMintValue.mintData.tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
-    updateData: (feeInfo, _chargeFeeList) => {
+    updateData: ({ fee }) => {
       const { nftMETA, mintData } =
         store.getState()._router_modalData.nftMintValue;
       updateNFTMintData({
         nftMETA: nftMETA,
-        mintData: { ...mintData, fee: feeInfo },
+        mintData: { ...mintData, fee },
       });
     },
   });

@@ -44,6 +44,7 @@ export type MintData = {
 export type ActiveAccountData = {
   chargeFeeList: FeeInfo[];
   fee?: FeeInfo;
+  isFeeNotEnough?: boolean;
   walletLayer2: WalletLayer2Map<any> | undefined;
 };
 export type NFT_MINT_VALUE<I> = {

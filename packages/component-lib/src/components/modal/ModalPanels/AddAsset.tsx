@@ -33,7 +33,12 @@ export const AddAsset = ({
       justifyContent={"space-between"}
       flexDirection={"column"}
     >
-      <Typography component={"h3"} variant={"h3"} marginBottom={3}>
+      <Typography
+        component={"h3"}
+        variant={"h3"}
+        marginBottom={3}
+        marginTop={-1}
+      >
         {isNewAccount ? t("labelAddAssetTitleActive") : t("labelAddAssetTitle")}
       </Typography>
       <Box
@@ -44,10 +49,17 @@ export const AddAsset = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        marginTop={3}
         paddingX={10}
         paddingBottom={4}
       >
+        <Typography
+          component={"p"}
+          variant={"body1"}
+          color={"textSecondary"}
+          marginBottom={1}
+        >
+          {t("labelAddAssetHowto")}
+        </Typography>
         <>
           {addAssetList.map((item) => (
             <Box key={item.key} marginTop={1.5}>
