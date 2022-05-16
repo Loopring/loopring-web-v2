@@ -155,7 +155,7 @@ export default {
   labelNFTTypeMINT: "Mint",
   labelTxNFTFilterALL: "All",
   labelTxNFTFilterDEPOSIT: "Receive",
-  labelTxNFTFilterWITHDRAWAL: "Send L2",
+  labelTxNFTFilterWITHDRAW: "Send L2",
   labelTxNFTFilterTRANSFER: "Send L1",
   labelTxNFTFilterMINT: "Mint",
 };

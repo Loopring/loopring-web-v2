@@ -20,10 +20,10 @@ import {
 } from "../loopring-interface";
 
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
-export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
-export const LoopringIPFSSiteProtocol = "https";
 export const headerRoot = "Landing-page";
 export const SoursURL = "https://static.loopring.io/assets/";
+export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
+export const LoopringIPFSSiteProtocol = "https";
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
 export const IPFS_LOOPRING_SITE = sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 
