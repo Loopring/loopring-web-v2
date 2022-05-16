@@ -26,7 +26,7 @@ export default {
     "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests. You can reset the EdDSA keypair at any time.",
   resetFee: "Fee {{count}} GAS ≈ ${{price}}",
   resetLabelBtn: "Reset",
-  labelActiveAccountTitle: "Activate Account",
+  labelActiveAccountTitle: "Activate L2 Account",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
     "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests.",
@@ -88,7 +88,7 @@ export default {
   labelDisconnect: "Disconnect",
   labelLockLayer2: "Lock",
   labelUnLockLayer2: "Unlock",
-  labelActiveLayer2: "Activate Layer 2 Account",
+  labelActiveLayer2: "Activate L2 Account",
   labelSwitchAccount: "Switch",
   labelViewEth: "View on Etherscan",
   labelQRCode: "View QR Code",
@@ -351,12 +351,11 @@ export default {
   // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
   labelCreateAccountApproveDenied: "Signature request rejected!",
   labelAmmSwitch: "switch",
-  labelUpdateAccountFailed: "Activate Layer 2 failed!",
+  labelUpdateAccountFailed: "Activate L2 failed!",
   labelCreateAccountDepositDenied: "Signature request rejected!",
   labelCreateAccountSubmit:
-    "Activate Layer 2, deposit {{value}} {{symbol}} submitted! \n Around {{count}} minutes remaining...',",
-  labelCreateAccountFailed:
-    "Activate Layer 2, deposit {{value}} {{symbol}} failed!",
+    "Activate L2, deposit {{value}} {{symbol}} submitted! \n Around {{count}} minutes remaining...',",
+  labelCreateAccountFailed: "Activate L2, deposit {{value}} {{symbol}} failed!",
   labelSlippageAlert:
     "The slippage tolerance is so high, you may receive less token",
   labelOrderTableOpenOrder: "Open Order",
@@ -437,8 +436,8 @@ export default {
     "Market orders \n are transactions meant to execute \n as quickly as possible at the current market price.",
   labelTransactions: "Transactions",
   labelMyRewards: "My Rewards",
-  labelL1toL2Hash: "L1 \u2192 L2 Transaction Hash",
-  labelL1toL2HashEmpty: "L1 \u2192 L2 transactions will show up here.",
+  labelMyL1toL2Hash: "My L1 \u2192 L2 Transaction Hash",
+  labelMyL1toL2HashEmpty: "My L1 \u2192 L2 transactions will show up here.",
   labelL1toL2Record: "L1 \u2192 L2 {{value}} {{symbol}}",
   labelClearAll: "Clear All",
   labelProviderAgree:

@@ -122,7 +122,6 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   &:focus-visible {
     outline: 0;
   }
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -135,15 +134,11 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   border: 0;
   border-radius: ${theme.unit}px;
 `;
-// height:100%;
-// margin-top: var(--toolbar-row-padding-minus);
-// padding-top: var(--toolbar-row-padding);
-// .menu-panel{
-//     height: ${_height  ?
-//          typeof _height === 'number' ?
-//              ` calc(${_height + 'px'} -  var(--toolbar-row-padding)  ) `
-//              :` calc(${_height} -  var(--toolbar-row-padding)  )`:'210px'};
-// }
+export const ModelPanelStyle = styled(Box)`
+  ${({ theme }) => modalContentBaseStyle({ theme: theme })};
+  background: ${({ theme }) => theme.colorBase.box};
+` as typeof Box;
+
 export const SwitchPanelStyled: any = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`

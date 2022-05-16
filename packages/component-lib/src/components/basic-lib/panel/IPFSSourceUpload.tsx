@@ -203,7 +203,7 @@ export const IPFSSourceUpload = ({
                 <img
                   className="loading-gif"
                   width="36"
-                  alt={""}
+                  alt={"loading"}
                   src={`${SoursURL}images/loading-line.gif`}
                 />
                 {close}

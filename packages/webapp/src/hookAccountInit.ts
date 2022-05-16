@@ -39,16 +39,12 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         case AccountStatus.DEPOSITING:
         case AccountStatus.NOT_ACTIVE:
         case AccountStatus.LOCKED:
+        case AccountStatus.NO_ACCOUNT:
           if (walletLayer1Status !== SagaStatus.PENDING) {
             updateWalletLayer1();
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
-          }
-          break;
-        case AccountStatus.NO_ACCOUNT:
-          if (walletLayer1Status !== SagaStatus.PENDING) {
-            updateWalletLayer1();
           }
           break;
         case AccountStatus.ACTIVATED:

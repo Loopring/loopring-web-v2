@@ -146,7 +146,11 @@ export const accountServices = {
   },
   sendNoAccount: (isContract: boolean) => {
     store.dispatch(
-      updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT, isContract })
+      updateAccountStatus({
+        readyState: AccountStatus.NO_ACCOUNT,
+        isContract,
+        _accountIdNotActive: -1,
+      })
     );
     subject.next({
       status: AccountCommands.NoAccount,
@@ -189,7 +193,10 @@ export const accountServices = {
           isContract(connectProvides.usedWeb3, account.accAddress),
         ]);
         if (accInfo === undefined) {
-          if (account.readyState !== AccountStatus.NO_ACCOUNT) {
+          if (
+            account.readyState !== AccountStatus.NO_ACCOUNT ||
+            account.accountId !== -1
+          ) {
             accountServices.sendNoAccount(is_Contract);
           }
         } else {
@@ -224,6 +231,7 @@ export const accountServices = {
       updateAccountStatus({
         accAddress: ethAddress,
         readyState: AccountStatus.UN_CONNECT,
+        _accountIdNotActive: -1,
       })
     );
     subject.next({

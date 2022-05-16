@@ -7,7 +7,7 @@ export default {
   labelWallet: "Wallet",
   labelZkRollupLayer2: "zkRollup Layer2",
   labelSmartWallet: "Smart Wallet",
-  loopringDomain: "Loopring Layer2 - APP ",
+  loopringDomain: "Loopring L2 - APP ",
   labelClassic: "Simple",
   labelClassicDescription: "Intuitive trading interface.",
   labelAdvanced: "Professional",

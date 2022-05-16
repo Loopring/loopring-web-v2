@@ -18,18 +18,18 @@ export default {
   labelFastTransfer: "High Throughput",
   labelSuperpowers: "Ready for Developers",
   describeSafety:
-    "Assets on Loopring layer2 are equally secure as they are on the Ethereum mainnet.",
+    "Assets on Loopring L2 are equally secure as they are on the Ethereum mainnet.",
   describeLowCost:
-    "Transaction fees are reduced  to 1/30 - 1/100 of the fees  on the Ethereum mainnet.",
+    "Transaction fees are reduced to 1/30 - 1/100 of the fees on the Ethereum mainnet.",
   describeFastTransfer:
-    "Loopring layer2 can settle ~2000 transactions per second with near instant finality.",
+    "Loopring L2 can settle ~2000 transactions per second with near instant finality.",
   describeSuperpowers:
     "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's time-tested zkRollup technology.   Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
   labelBtnStart: "LAUNCH LAYER2 APP",
   labelBtnDeveloper: "Developer Documentation",
   labelFirstWallet: "BETTER THAN BEING SMART",
   labelFirstWalletDetail:
-    "Smart wallets enable limitless extensibility over EOA wallets, but Loopring Wallet takes one step further with native zkRollup layer2 integration.   Now you can transact directly on Loopring layer2, faster and cheaper.",
+    "Smart wallets enable limitless extensibility over EOA wallets, but Loopring Wallet takes one step further with native zkRollup layer2 integration.   Now you can transact directly on Loopring L2, faster and cheaper.",
   labelWalletSecureH1: "SECURE, at its core",
   labelWalletSecureH2: "With social-recovery and guardians",
   labelWalletSecureDetail:

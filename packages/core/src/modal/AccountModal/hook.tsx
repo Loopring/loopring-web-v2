@@ -521,11 +521,16 @@ export function useAccountModalForUI({
             chargeFeeTokenList={
               activeAccountProps.chargeFeeTokenList as Array<FeeInfo>
             }
+            isDepositing={
+              chainInfos?.depositHashes[account?.accAddress]?.length
+                ? true
+                : false
+            }
             onClick={() => {
               // TODO
               myLog(CheckActiveStatus);
             }}
-            goClose={() => setShowAccount({ isShow: false })}
+            goDisconnect={onDisconnect}
             goSend={() =>
               setShowAccount({
                 isShow: true,
@@ -538,6 +543,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
+        height: "auto",
       },
       [AccountStep.AddAssetGateway]: {
         view: (
