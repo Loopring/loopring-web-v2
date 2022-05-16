@@ -133,10 +133,10 @@ export const useDeposit = <
         .times("1e" + allowanceInfo?.tokenInfo.decimals);
       if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
         myLog(
-          "!!---> set labelDepositNeedApprove!!!! belong:",
+          "!!---> set labelL1toL2NeedApprove!!!! belong:",
           depositValue.belong
         );
-        setLabelAndParams("labelDepositNeedApprove", {
+        setLabelAndParams("labelL1toL2NeedApprove", {
           symbol: depositValue.belong as string,
         });
       }

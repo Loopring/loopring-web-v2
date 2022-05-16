@@ -850,8 +850,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
             justifyContent={"center"}
           >
             <Typography fontSize={fontSize} color={color} variant={"body2"}>
-              {" "}
-              Withdraw{" "}
+              Withdraw
             </Typography>
           </Box>
 

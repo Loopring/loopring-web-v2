@@ -61,7 +61,7 @@ const ActionPopContent = React.memo(
       // ...(isToL1
       //   ? [
       //       <MenuItem onClick={() => onShowWithdraw(tokenValue)}>
-      //         <ListItemText>{t("labelWithdrawAction")}</ListItemText>
+      //         <ListItemText>{t("labelL2toL1Action")}</ListItemText>
       //       </MenuItem>,
       //     ]
       //   : []),
@@ -205,7 +205,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             {/*      color={"primary"}*/}
             {/*      onClick={() => onShowWithdraw(tokenValue)}*/}
             {/*    >*/}
-            {/*      {t("labelWithdrawAction")}*/}
+            {/*      {t("labelL2toL1Action")}*/}
             {/*    </Button>*/}
             {/*  </Grid>*/}
             {/*)}*/}

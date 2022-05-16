@@ -15,6 +15,7 @@ import {
 } from "@loopring-web/common-resources";
 import { Avatar, Box, Divider, Typography } from "@mui/material";
 import {
+  AccountStep,
   Button,
   useOpenModals,
   useSettings,
@@ -289,23 +290,24 @@ const UnLookView = React.memo(
     const { coinJson } = useSettings();
     const tokenAIcon: any = coinJson[coinA];
     const tokenBIcon: any = coinJson[coinB];
+    const { setShowAccount } = useOpenModals();
     // const walletMap = tradeCalcProData && tradeCalcProData.walletMap ? tradeCalcProData.walletMap : {};
-    const { setShowDeposit, setShowTransfer } = useOpenModals();
-    const onShowDeposit = React.useCallback(
-      (token?: any) => {
-        setShowDeposit({ isShow: true, symbol: token });
-      },
-      [setShowDeposit]
-    );
+
+    // const onShowDeposit = React.useCallback(
+    //   (token?: any) => {
+    //     setShowDeposit({ isShow: true, symbol: token });
+    //   },
+    //   [setShowDeposit]
+    // );
     // const onShowWithdraw = React.useCallback((token?: any) => {
     //     showWithdraw({isShow: true, symbol: token})
     // }, [showWithdraw])
-    const onShowTransfer = React.useCallback(
-      (token?: any) => {
-        setShowTransfer({ isShow: true, symbol: token });
-      },
-      [setShowTransfer]
-    );
+    // const onShowTransfer = React.useCallback(
+    //   (token?: any) => {
+    //     setShowTransfer({ isShow: true, symbol: token });
+    //   },
+    //   [setShowTransfer]
+    // );
 
     return (
       <Box paddingBottom={2}>
@@ -437,9 +439,15 @@ const UnLookView = React.memo(
                 variant={"contained"}
                 size={"small"}
                 color={"primary"}
-                onClick={() => onShowDeposit(coinA)}
+                onClick={() =>
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.AddAssetGateway,
+                    info: { symbol: coinA },
+                  })
+                }
               >
-                {t("labelDeposit")}
+                {t("labelAddAssetBtn")}
               </Button>
             </Box>
             <Box marginLeft={1}>
@@ -447,9 +455,15 @@ const UnLookView = React.memo(
                 style={{ height: 28, fontSize: "1.4rem" }}
                 variant={"outlined"}
                 size={"small"}
-                onClick={() => onShowTransfer(coinA)}
+                onClick={() =>
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.SendAssetGateway,
+                    info: { symbol: coinA },
+                  })
+                }
               >
-                {t("labelTransfer")}
+                {t("labelSendAssetBtn")}
               </Button>
             </Box>
           </Box>

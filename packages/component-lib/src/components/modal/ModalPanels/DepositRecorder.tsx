@@ -65,7 +65,7 @@ export const DepositRecorder = ({
                 color={"text.primary"}
                 paddingBottom={1}
               >
-                {t("labelDepositHash")}
+                {t("labelL1toL2Hash")}
               </Typography>
               <Link
                 variant={"body2"}
@@ -97,7 +97,7 @@ export const DepositRecorder = ({
                   >
                     {txInfo.symbol ? (
                       <Typography component={"span"} color={"text.secondary"}>
-                        {t("labelDepositRecord", {
+                        {t("labelL1toL2Record", {
                           symbol: txInfo.symbol,
                           value: txInfo.value,
                         })}
@@ -136,7 +136,7 @@ export const DepositRecorder = ({
               variant={"body1"}
               color={"text.secondary"}
             >
-              {t("labelDepositHashEmpty")}
+              {t("labelL1toL2HashEmpty")}
             </Typography>
           </Typography>
         )}

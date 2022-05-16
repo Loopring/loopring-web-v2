@@ -79,7 +79,7 @@ export const ResetWrap = <T extends FeeInfo>({
               color={"var(--color-text-secondary)"}
               marginBottom={1}
             >
-              {t("transferLabelFee")}：
+              {t("labelL2toL2Fee")}：
               <Box
                 component={"span"}
                 display={"flex"}
@@ -115,7 +115,7 @@ export const ResetWrap = <T extends FeeInfo>({
                         </Link>
                       </Trans>
                     ) : (
-                      t("transferLabelFeeNotEnough")
+                      t("labelL2toL2FeeNotEnough")
                     ))}
                 </Typography>
               </Box>
@@ -150,7 +150,7 @@ export const ResetWrap = <T extends FeeInfo>({
                 >
                   {isNewAccount
                     ? t("labelActiveEnterToken")
-                    : t("transferLabelFeeChoose")}
+                    : t("labelL2toL2FeeChoose")}
                 </Typography>
                 <FeeToggle
                   disableNoToken={true}

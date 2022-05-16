@@ -241,7 +241,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
               (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
-              // Withdraw failed
               const code = checkErrorInfo(
                 response as sdk.RESULT_INFO,
                 isNotHardwareWallet
@@ -272,7 +271,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                 });
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
-              // Withdraw success
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTTransfer_In_Progress,

@@ -147,7 +147,7 @@ export const DepositToPage = withTranslation(["common"])(
             >
               <DepositPanel
                 {...depositProps}
-                title={"labelDepositTitleBridge"}
+                title={"labelL1toL2TitleBridge"}
                 btnInfo={_depositBtnI18nKey}
                 depositBtnStatus={_depositBtnStatus}
                 onDepositClick={_onDepositClick}

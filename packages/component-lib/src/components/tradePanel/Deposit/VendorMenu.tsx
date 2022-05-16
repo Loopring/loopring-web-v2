@@ -53,7 +53,7 @@ export const VendorMenu = ({
       alignSelf={"flex-start"}
     >
       <Typography variant={"h6"} component={"h4"} width={"100%"}>
-        {t("labelDepositThirdPart")}
+        {t("labelL1toL2ThirdPart")}
       </Typography>
       {vendorList.map((item) => (
         <Box key={item.key} marginTop={1.5} width={"100%"}>

@@ -310,7 +310,7 @@ AssetTitleMobileProps) => {
           {/*    color={"primary"}*/}
           {/*    onClick={() => onShowTransfer()}*/}
           {/*  >*/}
-          {/*    {t("labelTransfer")}*/}
+          {/*    {t("labelL2toL2")}*/}
           {/*  </Button>*/}
           {/*</Grid>*/}
           {/*<Grid item xs={4}>*/}
@@ -321,7 +321,7 @@ AssetTitleMobileProps) => {
           {/*    color={"primary"}*/}
           {/*    onClick={() => onShowWithdraw()}*/}
           {/*  >*/}
-          {/*    {t("labelWithdraw")}*/}
+          {/*    {t("labelL2toL1")}*/}
           {/*  </Button>*/}
           {/*</Grid>*/}
         </Grid>

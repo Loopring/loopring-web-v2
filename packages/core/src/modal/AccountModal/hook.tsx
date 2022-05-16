@@ -552,7 +552,7 @@ export function useAccountModalForUI({
       [AccountStep.SendAssetGateway]: {
         view: (
           <SendAsset
-            isToL1={isShowAccount?.info?.isToL1}
+            // isToL1={isShowAccount?.info?.isToL1}
             symbol={isShowAccount?.info?.symbol}
             sendAssetList={sendAssetList}
             allowTrade={allowTrade}

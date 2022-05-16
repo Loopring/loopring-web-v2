@@ -394,7 +394,7 @@ export const NFTDetail = withTranslation("common")(
                     {popItem.isCounterFactualNFT &&
                     popItem.deploymentStatus ===
                       DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                      t("labelNFTDeployWithdraw")
+                      t("labelNFTDeploySendL1")
                     ) : popItem.isCounterFactualNFT &&
                       popItem.deploymentStatus ===
                         DEPLOYMENT_STATUS.DEPLOYING ? (
@@ -410,7 +410,7 @@ export const NFTDetail = withTranslation("common")(
                         {t("labelNFTDeploying")}
                       </>
                     ) : (
-                      t("labelNFTWithdraw")
+                      t("labelNFTSendL1")
                     )}
                   </Button>
                 </Typography>
@@ -430,7 +430,7 @@ export const NFTDetail = withTranslation("common")(
                         : setShowDialog("Transfer")
                     }
                   >
-                    {t("labelNFTTransfer")}
+                    {t("labelNFTSendL2")}
                   </Button>
                 </Typography>
               </Box>

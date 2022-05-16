@@ -204,7 +204,6 @@ export function useNFTMint<
           ) {
             throw response;
           } else if ((response as sdk.TX_HASH_API)?.hash) {
-            // Withdraw success
             await sdk.sleep(TOAST_TIME);
             setShowAccount({
               isShow: true,

@@ -151,7 +151,7 @@ export interface AddAssetProps {
 }
 
 export interface SendAssetProps {
-  isToL1: boolean;
+  // isToL1: boolean;
   symbol?: string;
   sendAssetList: AddAssetItem[];
   allowTrade: {

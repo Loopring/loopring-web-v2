@@ -138,7 +138,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         return;
       }
       if (exceedPoolLimit) {
-        setWithdrawI18nKey("withdrawLabelBtnExceed");
+        setWithdrawI18nKey("labelL2toL1BtnExceed");
       } else {
         setWithdrawI18nKey(undefined);
       }
@@ -346,7 +346,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
-              // Withdraw failed
               const code = checkErrorInfo(
                 response as sdk.RESULT_INFO,
                 isNotHardwareWallet
@@ -377,7 +376,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
                 });
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
-              // Withdraw success
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Withdraw_In_Progress,

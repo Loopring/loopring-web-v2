@@ -8,6 +8,7 @@ import {
   CardIcon,
   IncomingIcon,
 } from "@loopring-web/common-resources";
+import React from "react";
 
 const BoxStyled = styled(Box)`` as typeof Box;
 
@@ -25,6 +26,14 @@ export const SendAsset = ({
   symbol,
 }: SendAssetProps) => {
   const { t } = useTranslation("common");
+  const [isToL1, setIsToL1] = React.useState<boolean>(true);
+  React.useEffect(() => {
+    if (symbol && /^LP-/gi.test(symbol)) {
+      setIsToL1(false);
+    }
+    setIsToL1(true);
+  }, [symbol]);
+
   return (
     <BoxStyled
       flex={1}
@@ -61,37 +70,41 @@ export const SendAsset = ({
           {t("labelSendAssetHowto")}
         </Typography>
         <>
-          {sendAssetList.map((item) => (
-            <Box key={item.key} marginTop={1.5}>
-              <MenuBtnStyled
-                variant={"outlined"}
-                size={"large"}
-                className={"sendAsset"}
-                fullWidth
-                disabled={
-                  !!(
-                    item.enableKey &&
-                    allowTrade[item.enableKey]?.enable === false
-                  )
-                }
-                endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
-                onClick={(e) => {
-                  item.handleSelect(e);
-                }}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"inherit"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
+          {sendAssetList.map((item) => {
+            return item.key === "SendToMyL1" && !isToL1 ? (
+              <></>
+            ) : (
+              <Box key={item.key} marginTop={1.5}>
+                <MenuBtnStyled
+                  variant={"outlined"}
+                  size={"large"}
+                  className={"sendAsset"}
+                  fullWidth
+                  disabled={
+                    !!(
+                      item.enableKey &&
+                      allowTrade[item.enableKey]?.enable === false
+                    )
+                  }
+                  endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
+                  onClick={(e) => {
+                    item.handleSelect(e);
+                  }}
                 >
-                  <>{IconItem({ svgIcon: item.svgIcon })}</>
-                  {t("label" + item.key)}
-                </Typography>
-              </MenuBtnStyled>
-            </Box>
-          ))}
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"inherit"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                  >
+                    <>{IconItem({ svgIcon: item.svgIcon })}</>
+                    {t("label" + item.key)}
+                  </Typography>
+                </MenuBtnStyled>
+              </Box>
+            );
+          })}
         </>
       </Box>
     </BoxStyled>

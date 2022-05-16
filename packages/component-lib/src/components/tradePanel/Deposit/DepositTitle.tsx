@@ -91,7 +91,7 @@ const ThirdPartTitle = React.memo(() => {
           variant={"body2"}
           whiteSpace={"pre-line"}
         >
-          <Trans i18nKey={"labelDepositVendor"}>
+          <Trans i18nKey={"labelL1toL2Vendor"}>
             Make an order form third Loopring-parter, Once your order confirmed
             by Loopring, it will be added to your balance within 2 minutes.
           </Trans>

@@ -422,14 +422,14 @@ export const DeployBase = (props: PanelProps) => {
 
 export const TransferBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelTransfer",
+    title: "labelL2toL2",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
 
 export const WithdrawBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelWithdraw",
+    title: "labelL2toL1",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };

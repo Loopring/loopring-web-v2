@@ -202,7 +202,7 @@ export const MintNFTConfirm = <
                         color={"inherit"}
                         minWidth={28}
                       >
-                        {t("transferLabelFee")}：
+                        {t("labelL2toL2Fee")}：
                       </Typography>
                       <Box
                         component={"span"}
@@ -227,7 +227,7 @@ export const MintNFTConfirm = <
                           component={"span"}
                           color={"var(--color-error)"}
                         >
-                          {isFeeNotEnough && t("transferLabelFeeNotEnough")}
+                          {isFeeNotEnough && t("labelL2toL2FeeNotEnough")}
                         </Typography>
                       </Box>
                     </Typography>
@@ -239,7 +239,7 @@ export const MintNFTConfirm = <
                           marginRight={2}
                           marginBottom={1}
                         >
-                          {t("transferLabelFeeChoose")}
+                          {t("labelL2toL2FeeChoose")}
                         </Typography>
                         <FeeToggle
                           chargeFeeTokenList={chargeFeeTokenList}

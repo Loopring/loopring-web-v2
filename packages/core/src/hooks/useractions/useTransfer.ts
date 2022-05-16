@@ -280,7 +280,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               });
             }
           } else if ((response as sdk.TX_HASH_API)?.hash) {
-            // Withdraw success
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_In_Progress,

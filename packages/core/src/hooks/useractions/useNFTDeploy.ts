@@ -90,7 +90,6 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
               (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
-              // Withdraw failed
               const code = checkErrorInfo(
                 response as sdk.RESULT_INFO,
                 isFirstTime
@@ -125,7 +124,6 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                 uniqueId: request.tokenAddress.toLowerCase(),
                 domain: Layer1Action.NFTDeploy,
               });
-              // Withdraw success
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTDeploy_In_Progress,
