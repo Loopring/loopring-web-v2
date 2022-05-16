@@ -165,12 +165,22 @@ export const CheckActiveStatus = ({
                 </Typography>
               </Typography>
             ))}
+
             {account.isContract ? (
               <Typography component={"p"} variant={"body1"} color={"inherit"}>
                 {t("labelActivatedAccountNotSupport")}
               </Typography>
+            ) : !!isFeeNotEnough ? (
+              <Typography
+                color={"var(--color-warning)"}
+                component={"p"}
+                variant={"body1"}
+                marginTop={1}
+              >
+                You have insufficient balance
+              </Typography>
             ) : (
-              isFeeNotEnough &&
+              !!isFeeNotEnough &&
               isDepositing && (
                 <Typography
                   color={"var(--color-warning)"}
@@ -187,14 +197,6 @@ export const CheckActiveStatus = ({
           </>
         )}
 
-        {/*<Typography*/}
-        {/*  component={"p"}*/}
-        {/*  variant={"body1"}*/}
-        {/*  color={"textSecondary"}*/}
-        {/*  marginBottom={1}*/}
-        {/*>*/}
-        {/*  */}
-        {/*</Typography>*/}
         <Box marginTop={3}>
           {account?.isContract ? (
             <Button

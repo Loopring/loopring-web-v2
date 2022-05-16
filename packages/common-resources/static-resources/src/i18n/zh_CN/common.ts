@@ -678,4 +678,6 @@ export default {
   labelSendToOtherL1: "To another L1 account",
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add L2 assets From My L1",
+  labelActivatedAccountChargeFeeList:
+    "Please make sure one of the below tokens with the minimum quantity in your Layer 2 account to proceed:",
 };
