@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { MenuBtnStyled } from "../../styled";
-import { AddAssetProps } from "./Interface";
+import { SendAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import {
   BackIcon,
@@ -19,12 +19,11 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
       return <CardIcon color={"inherit"} />;
   }
 };
-export const AddAsset = ({
-  symbol,
-  addAssetList,
+export const SendAsset = ({
+  sendAssetList,
   allowTrade,
-  isNewAccount = false,
-}: AddAssetProps) => {
+  symbol,
+}: SendAssetProps) => {
   const { t } = useTranslation("common");
   return (
     <BoxStyled
@@ -40,9 +39,7 @@ export const AddAsset = ({
         marginBottom={3}
         marginTop={-1}
       >
-        {isNewAccount
-          ? t("labelAddAssetTitleActive")
-          : t("labelAddAssetTitle", { symbol })}
+        {t("labelSendAssetTitle")}
       </Typography>
       <Box
         display={"flex"}
@@ -61,15 +58,15 @@ export const AddAsset = ({
           color={"textSecondary"}
           marginBottom={1}
         >
-          {t("labelAddAssetHowto")}
+          {t("labelSendAssetHowto")}
         </Typography>
         <>
-          {addAssetList.map((item) => (
+          {sendAssetList.map((item) => (
             <Box key={item.key} marginTop={1.5}>
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
-                className={"addAsset"}
+                className={"sendAsset"}
                 fullWidth
                 disabled={
                   !!(

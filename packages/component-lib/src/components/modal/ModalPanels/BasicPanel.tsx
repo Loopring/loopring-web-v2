@@ -401,7 +401,7 @@ export const ExportAccountBase = (props: PanelProps) => {
 
 export const DepositBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelDeposit",
+    title: "labelL1toL2",
   };
   return <BasicPanel {...props} {...propsPatch} />;
 };

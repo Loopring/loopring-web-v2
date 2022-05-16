@@ -80,8 +80,10 @@ import {
   Deposit_Sign_WaitForRefer,
   VendorMenu,
   AddAsset,
-  AddAssetItem,
+  SendAsset,
   CheckActiveStatus,
+  AddAssetItem,
+  SendAssetItem,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -98,6 +100,7 @@ import {
   copyToClipBoard,
   FeeInfo,
   myLog,
+  SendAssetList,
 } from "@loopring-web/common-resources";
 import {
   useAccount,
@@ -490,6 +493,22 @@ export function useAccountModalForUI({
       },
     },
   ];
+  const sendAssetList: SendAssetItem[] = [
+    {
+      ...SendAssetList.SendAssetToL2,
+      handleSelect: (_e) => {
+        setShowAccount({ isShow: false });
+        setShowTransfer({ isShow: true });
+      },
+    },
+    {
+      ...SendAssetList.SendAssetToMyL1,
+      handleSelect: () => {
+        setShowAccount({ isShow: false });
+        setShowWithdraw({ isShow: true });
+      },
+    },
+  ];
 
   const accountList = React.useMemo(() => {
     return Object.values({
@@ -523,9 +542,20 @@ export function useAccountModalForUI({
       [AccountStep.AddAssetGateway]: {
         view: (
           <AddAsset
+            symbol={isShowAccount?.info?.symbol}
             addAssetList={addAssetList}
             allowTrade={allowTrade}
             isNewAccount={depositProps.isNewAccount}
+          />
+        ),
+      },
+      [AccountStep.SendAssetGateway]: {
+        view: (
+          <SendAsset
+            isToL1={isShowAccount?.info?.isToL1}
+            symbol={isShowAccount?.info?.symbol}
+            sendAssetList={sendAssetList}
+            allowTrade={allowTrade}
           />
         ),
       },
@@ -857,7 +887,6 @@ export function useAccountModalForUI({
           // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
-
       [AccountStep.NFTMint_WaitForAuth]: {
         view: (
           <NFTMint_WaitForAuth
@@ -1826,14 +1855,21 @@ export function useAccountModalForUI({
       },
     });
   }, [
-    goActiveAccount,
+    account,
+    activeAccountProps.walletMap,
+    activeAccountProps.chargeFeeTokenList,
+    addAssetList,
+    allowTrade,
+    depositProps.isNewAccount,
+    depositProps.tradeData.belong,
+    depositProps.tradeData.tradeValue,
+    sendAssetList,
+    vendorProps,
     chainInfos,
-    // isSupport,
     isLayer1Only,
     onClose,
     updateDepositHash,
     clearDeposit,
-    account,
     rest,
     onSwitch,
     onCopy,
@@ -1847,10 +1883,8 @@ export function useAccountModalForUI({
     onBack,
     backToDepositBtnInfo,
     closeBtnInfo,
-    depositProps.tradeData.belong,
-    depositProps.tradeData.tradeValue,
-    isShowAccount.info,
     isShowAccount.error,
+    isShowAccount.info,
     nftDepositValue,
     backToNFTDepositBtnInfo,
     nftMintValue,
@@ -1863,6 +1897,7 @@ export function useAccountModalForUI({
     backToUnlockAccountBtnInfo,
     backToResetAccountBtnInfo,
     setShowAccount,
+    setShowActiveAccount,
     setShowDeposit,
     setShowNFTMint,
     nftDeployProps,
@@ -1874,7 +1909,6 @@ export function useAccountModalForUI({
     nftTransferValue,
     nftWithdrawProps,
     nftWithdrawValue,
-    setShowActiveAccount,
     goUpdateAccount,
   ]);
 

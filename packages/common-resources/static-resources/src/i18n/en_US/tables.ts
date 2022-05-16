@@ -1,10 +1,9 @@
 export default {
   labelStatus: "Status",
   labelAMM: "AMM",
-  labelTransfer: "Transfer",
-  labelWithdraw: "Withdrawal",
   labelWithdrawAction: "Withdraw",
-  labelDeposit: "Deposit",
+  labelSend: "Send",
+  labelReceive: "Receive",
   labelTrade: "Trade",
   labelToken: "Token",
   labelAmount: "Amount",

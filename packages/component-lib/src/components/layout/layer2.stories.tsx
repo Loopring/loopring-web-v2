@@ -245,29 +245,24 @@ const ModalPanelWrap = () => {
       setExportAccountToastOpen={{} as any}
       nftTransferProps={{} as any}
       nftWithdrawProps={{} as any}
-      depositGroupProps={{} as any}
+      depositProps={{} as any}
     />
   );
 };
 
 const AssetTitleWrap = (rest: any) => {
-  const dispatch = useDispatch();
-
   const assetTitleProps: AssetTitleProps = {
-    showPartner(): void {},
+    onShowReceive: () => {},
+    onShowSend: () => {},
     accountId: 0,
+    setHideL2Assets: () => undefined,
     hideL2Assets: false,
-    setHideL2Assets(value: boolean): void {
-      console.log(value);
-    },
     assetInfo: {
       totalAsset: 123456.789,
       priceTag: PriceTag.Dollar,
     },
-    onShowWithdraw: () => dispatch(setShowDeposit({ isShow: true })),
-    onShowTransfer: () => dispatch(setShowTransfer({ isShow: true })),
-    onShowDeposit: () => dispatch(setShowWithdraw({ isShow: true })),
   };
+
   return (
     <>
       <Grid item xs={12}>

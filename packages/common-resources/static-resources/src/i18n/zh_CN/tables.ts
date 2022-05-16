@@ -1,10 +1,9 @@
 export default {
   labelStatus: "状态",
   labelAMM: "AMM",
-  labelTransfer: "转账",
-  labelWithdraw: "提现",
+  labelSend: "Send",
+  labelReceive: "Receive",
   labelWithdrawAction: "提现",
-  labelDeposit: "充值",
   labelTrade: "交易",
   labelToken: "币种",
   labelAmount: "总量",

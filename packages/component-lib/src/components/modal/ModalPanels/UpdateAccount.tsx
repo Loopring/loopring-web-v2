@@ -54,7 +54,7 @@ export const UpdateAccount = ({
             }
           }}
         >
-          {t("labelActivateAccount")}{" "}
+          {t("labelActivateAccount")}
         </Button>
       </Box>
       <Box
