@@ -1,4 +1,3 @@
-import { WithTranslation } from "react-i18next";
 import { IconType, PanelProps, TransferBase } from "./BasicPanel";
 
 // value symbol
@@ -32,7 +31,7 @@ export const Transfer_User_Denied = (props: PanelProps) => {
 export const Transfer_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelTransferInProgress"),
+    describe1: props.t("labelL2toL2InProgress"),
   };
   return <TransferBase {...propsPatch} {...props} />;
 };
@@ -41,7 +40,7 @@ export const Transfer_In_Progress = (props: PanelProps) => {
 export const Transfer_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
-    describe1: props.t("labelTransferSuccess", {
+    describe1: props.t("labelL2toL2Success", {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -53,7 +52,7 @@ export const Transfer_Success = (props: PanelProps) => {
 export const Transfer_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t("labelTransferFailed", {
+    describe1: props.t("labelL2toL2Failed", {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -88,7 +87,7 @@ export const NFTTransfer_User_Denied = (props: PanelProps) => {
 export const NFTTransfer_In_Progress = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelTransferInProgress"),
+    describe1: props.t("labelL2toL2InProgress"),
   };
   return <TransferBase {...propsPatch} {...props} />;
 };
@@ -96,7 +95,7 @@ export const NFTTransfer_In_Progress = (props: PanelProps) => {
 export const NFTTransfer_Success = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.DoneIcon,
-    describe1: props.t("labelTransferSuccess", {
+    describe1: props.t("labelL2toL2Success", {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -107,7 +106,7 @@ export const NFTTransfer_Success = (props: PanelProps) => {
 export const NFTTransfer_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t("labelTransferFailed", {
+    describe1: props.t("labelL2toL2Failed", {
       symbol: props.symbol,
       value: props.value,
     }),

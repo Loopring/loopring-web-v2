@@ -18,12 +18,12 @@ import {
   SagaStatus,
   TradeNFT,
   UIERROR_CODE,
+  AddressError,
 } from "@loopring-web/common-resources";
 
 import {
   useTokenMap,
   useAccount,
-  AddressError,
   BIGO,
   DAYS,
   getTimestampDaysLater,
@@ -62,6 +62,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
 
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
@@ -241,7 +242,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
               (response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message
             ) {
-              // Withdraw failed
               const code = checkErrorInfo(
                 response as sdk.RESULT_INFO,
                 isNotHardwareWallet
@@ -251,6 +251,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                   isShow: true,
                   step: AccountStep.NFTTransfer_User_Denied,
                 });
+                setIsConfirmTransfer(false);
               } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
                 setShowAccount({
                   isShow: true,
@@ -270,9 +271,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                   step: AccountStep.NFTTransfer_Failed,
                   error: response as sdk.RESULT_INFO,
                 });
+                setIsConfirmTransfer(false);
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
-              // Withdraw success
+              setIsConfirmTransfer(false);
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTTransfer_In_Progress,
@@ -484,13 +486,14 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
         setAddressOrigin("Wallet");
       }
     },
+    isConfirmTransfer,
     addressOrigin,
     tradeData: nftTransferValue as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     transferBtnStatus: btnStatus,
     onTransferClick: (trade: R) => {
-      onTransferClick(trade);
+      isConfirmTransfer ? onTransferClick(trade) : setIsConfirmTransfer(true);
     },
     handleFeeChange,
     handleOnAddressChange: (value: any) => {
@@ -505,9 +508,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     isSameAddress,
     isAddressCheckLoading,
   };
-
+  const cancelNFTTransfer = () => {
+    setIsConfirmTransfer(false);
+    resetDefault();
+  };
   return {
     nftTransferProps,
     retryBtn,
+    cancelNFTTransfer,
   };
 };

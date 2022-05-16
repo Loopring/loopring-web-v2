@@ -118,6 +118,7 @@ const reducer = combineReducers({
   localStore: persistedLocalStoreReducer,
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,
+  // feeMap:feeMapSlice.reducer,
   // layer1ActionHistory: layer1ActionHistorySlice.reducer,
   // router redux
   _router_pageTradeLite: pageTradeLiteSlice.reducer,

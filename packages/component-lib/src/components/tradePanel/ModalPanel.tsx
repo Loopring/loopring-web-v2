@@ -20,6 +20,7 @@ import {
   InformationForAccountFrozen,
   DepositPanel,
   DepositProps,
+  useSettings,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -69,6 +70,7 @@ const Modal = withTranslation("common")(
     _width,
     ...rest
   }: ModalPanelProps & WithTranslation) => {
+    const { isMobile } = useSettings();
     return (
       <MuiModal
         open={open}
@@ -87,7 +89,12 @@ const Modal = withTranslation("common")(
             <ModalCloseButton onClose={onClose} {...rest} />
             {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
           </Box>
-          <Box className={"trade-wrap"}>{content}</Box>
+          <Box
+            className={"trade-wrap"}
+            maxWidth={isMobile ? "350px" : "inherit"}
+          >
+            {content}
+          </Box>
         </BoxStyle>
         {/*</>*/}
       </MuiModal>

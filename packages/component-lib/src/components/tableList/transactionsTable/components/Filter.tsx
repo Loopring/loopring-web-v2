@@ -54,15 +54,15 @@ export const Filter = withTranslation("tables", { withRef: true })(
         value: TransactionTradeTypes.allTypes,
       },
       {
-        label: t("labelTxFilterDeposit"),
+        label: t("labelTxFilterReceive"),
         value: TransactionTradeTypes.deposit,
       },
       {
-        label: t("labelTxFilterWithdraw"),
+        label: t("labelTxFilterSendL1"),
         value: TransactionTradeTypes.withdraw,
       },
       {
-        label: t("labelTxFilterTransfer"),
+        label: t("labelTxFilterSendL2"),
         value: TransactionTradeTypes.transfer,
       },
     ];

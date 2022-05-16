@@ -364,12 +364,12 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             let side, hasSymbol, sideIcon;
             switch (row.nftTxType) {
               case TxNFTType[TxNFTType.DEPOSIT]:
-                side = t("labelDeposit");
+                side = t("labelReceive");
                 hasSymbol = "+";
                 sideIcon = <DepositIcon fontSize={"inherit"} />;
                 break;
               case TxNFTType[TxNFTType.TRANSFER]:
-                side = t("labelTransfer");
+                side = t("labelSendL2");
                 hasSymbol =
                   row.receiverAddress?.toLowerCase() ===
                   accAddress?.toLowerCase()
@@ -386,7 +386,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               default:
                 hasSymbol = "-";
                 sideIcon = <WithdrawIcon fontSize={"inherit"} />;
-                side = t("labelWithdraw");
+                side = t("labelSendL1");
             }
             // const renderValue = hasValue ? row.amount : EmptyValueTag;
 

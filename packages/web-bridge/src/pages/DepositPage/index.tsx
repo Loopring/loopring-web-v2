@@ -10,19 +10,18 @@ import {
   boxLiner,
   BtnInfo,
   DepositPanel,
+  DepositProps,
   TradeBtnStatus,
   useSettings,
 } from "@loopring-web/component-lib";
 import {
   useAccount,
-  useDeposit,
   accountStaticCallBack,
   btnClickMap,
   WalletConnectL1Btn,
 } from "@loopring-web/core";
 import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { useLocation } from "react-router-dom";
 import _ from "lodash";
 
 const BoxStyle = styled(Box)`
@@ -35,26 +34,20 @@ const BoxStyle = styled(Box)`
   }
 ` as typeof Box;
 export const DepositToPage = withTranslation(["common"])(
-  ({ t }: WithTranslation) => {
-    const { search } = useLocation();
+  ({
+    t,
+    depositProps,
+  }: { depositProps: DepositProps<any, any> } & WithTranslation) => {
     const { isMobile } = useSettings();
-    const searchParams = new URLSearchParams(search);
-    const token = searchParams.get("token");
-    const owner = searchParams.get("owner");
+
     const [_depositBtnI18nKey, setDepositBtnI18nKey] =
       React.useState<BtnInfo | undefined>(undefined);
     const [_depositBtnStatus, setDepositBtnStatus] = React.useState(
       TradeBtnStatus.AVAILABLE
     );
     const { account, status: accountStatus } = useAccount();
-    const {
-      depositProps: {
-        onDepositClick,
-        btnInfo,
-        depositBtnStatus,
-        ...depositProps
-      },
-    } = useDeposit(true, { token, owner });
+    const { onDepositClick, btnInfo, depositBtnStatus, ...restProps } =
+      depositProps;
     const depositBtnCallback = () => {
       setDepositBtnStatus(depositBtnStatus as TradeBtnStatus);
       return btnInfo;
@@ -146,8 +139,8 @@ export const DepositToPage = withTranslation(["common"])(
               paddingTop={5 / 2}
             >
               <DepositPanel
-                {...depositProps}
-                title={"labelDepositTitleBridge"}
+                {...restProps}
+                title={"labelL1toL2TitleBridge"}
                 btnInfo={_depositBtnI18nKey}
                 depositBtnStatus={_depositBtnStatus}
                 onDepositClick={_onDepositClick}

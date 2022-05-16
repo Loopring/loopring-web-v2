@@ -1,7 +1,7 @@
 import { Route, Switch, useLocation } from "react-router-dom";
 import React from "react";
 import { Box, Container } from "@mui/material";
-import { ModalGroup } from "@loopring-web/core";
+import { ModalGroup, useDeposit } from "@loopring-web/core";
 import { LoadingPage } from "../pages/LoadingPage";
 import {
   SagaStatus,
@@ -14,13 +14,34 @@ import { useOpenModals, useSettings } from "@loopring-web/component-lib";
 import { DepositToPage } from "../pages/DepositPage";
 import { Footer } from "../layouts/footer";
 
-const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
+export const useWrapModal = () => {
+  const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const token = searchParams.get("token");
+  const owner = searchParams.get("owner");
+  const { depositProps } = useDeposit(true, { token, owner });
+  const { setShowAccount } = useOpenModals();
+  return {
+    depositProps,
+    view: (
+      <ModalGroup
+        assetsRawData={[]}
+        depositProps={depositProps}
+        isLayer1Only={true}
+        onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
+      />
+    ),
+  };
+};
+const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation();
-  const proFlag =
-    process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
+  // const proFlag =
+  //   process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { setTheme } = useSettings();
   const { setShowAccount } = useOpenModals();
-  // const { assetsRawData } = useGetAssets();
+  const { depositProps, view: modalView } = useWrapModal();
+
+  // const { depositProps } = useDeposit(true, { token, owner });
   const query = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (query.has("theme")) {
@@ -60,7 +81,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
               flexDirection={"row"}
               marginTop={3}
             >
-              <DepositToPage />
+              <DepositToPage depositProps={depositProps} />
             </Box>
           </Container>
         </Route>
@@ -73,10 +94,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         />
       </Switch>
       <ModalGroup
+        depositProps={depositProps}
         assetsRawData={[]}
         onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
         isLayer1Only={true}
       />
+      {modalView}
       {query && query.has("nofooter") ? <></> : <Footer />}
     </>
   );

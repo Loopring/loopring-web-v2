@@ -15,6 +15,7 @@ import {
   LoadingIcon,
   EmptyValueTag,
   FeeInfo,
+  AddressError,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -31,7 +32,6 @@ import { BasicACoinTrade } from "./BasicACoinTrade";
 import * as _ from "lodash";
 import styled from "@emotion/styled";
 import { NFTInput } from "./BasicANFTTrade";
-import { AddressError } from "./Interface";
 import { useTheme } from "@emotion/react";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
@@ -94,6 +94,7 @@ export const TransferWrap = <
   handleSureItsLayer2,
   handleFeeChange,
   isThumb,
+  isConfirmTransfer,
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,
@@ -112,7 +113,7 @@ export const TransferWrap = <
   const { isMobile } = useSettings();
 
   const inputButtonDefaultProps = {
-    label: t("transferLabelEnterToken"),
+    label: t("labelL2toL2EnterToken"),
   };
 
   const [address, setAddress] = React.useState<string | undefined>(
@@ -124,7 +125,6 @@ export const TransferWrap = <
     React.useState<"up" | "down">("down");
   const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] =
     React.useState<"up" | "down">("up");
-  const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
 
   const ITEM_MARGIN = isConfirmTransfer ? 3 : 2;
 
@@ -207,8 +207,8 @@ export const TransferWrap = <
     <Grid
       className={walletMap ? "transfer-wrap" : "loading"}
       container
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
+      paddingLeft={isMobile ? 2 : 5 / 2}
+      paddingRight={isMobile ? 2 : 5 / 2}
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
@@ -224,8 +224,13 @@ export const TransferWrap = <
           alignItems={"center"}
           marginBottom={2}
         >
-          <Typography component={"h4"} variant={"h3"} marginRight={1}>
-            {t("transferTitle")}
+          <Typography
+            component={"h4"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
+            marginRight={1}
+          >
+            {t("labelL2toL2Title")}
           </Typography>
           <HelpIcon
             {...bindHover(popupState)}
@@ -262,7 +267,7 @@ export const TransferWrap = <
       <Grid item alignSelf={"stretch"}>
         {isConfirmTransfer ? (
           getTransferConfirmTemplate(
-            t("labelTransferTokenAmount"),
+            t("labelL2toL2TokenAmount"),
             `${tradeData?.tradeValue} ${
               type === "NFT" ? "NFT" : tradeData?.belong
             }`
@@ -307,10 +312,7 @@ export const TransferWrap = <
       >
         {isConfirmTransfer ? (
           <>
-            {getTransferConfirmTemplate(
-              t("labelTransferAddress"),
-              address ?? ""
-            )}
+            {getTransferConfirmTemplate(t("labelL2toL2Address"), address ?? "")}
             {realAddr && (
               <Typography
                 variant={isMobile ? "body2" : "body1"}
@@ -327,8 +329,8 @@ export const TransferWrap = <
               className={"text-address"}
               value={address}
               error={!!(isInvalidAddressOrENS || isSameAddress)}
-              label={t("transferLabelAddress")}
-              placeholder={t("transferLabelAddressInput")}
+              label={t("labelL2toL2Address")}
+              placeholder={t("labelL2toL2AddressInput")}
               onChange={_handleOnAddressChange}
               disabled={!chargeFeeTokenList.length}
               SelectProps={{ IconComponent: DropDownIcon }}
@@ -363,7 +365,7 @@ export const TransferWrap = <
                   alignSelf={"stretch"}
                   position={"relative"}
                 >
-                  {t("labelTransferInvalidAddress")}
+                  {t("labelL2toL2InvalidAddress")}
                 </Typography>
               ) : isSameAddress ? (
                 <Typography
@@ -374,7 +376,7 @@ export const TransferWrap = <
                   position={"relative"}
                 >
                   {t("labelInvalidisSameAddress", {
-                    way: t("labelTransfer"),
+                    way: t("labelL2toL2"),
                   })}
                 </Typography>
               ) : (
@@ -384,6 +386,7 @@ export const TransferWrap = <
                       color={"var(--color-text-primary)"}
                       variant={"body2"}
                       marginTop={1 / 4}
+                      whiteSpace={"pre-line"}
                       style={{ wordBreak: "break-all" }}
                     >
                       {realAddr}
@@ -399,7 +402,7 @@ export const TransferWrap = <
                         variant={"body2"}
                         marginTop={1 / 4}
                       >
-                        {t("labelTransferAddressNotLoopring")}
+                        {t("labelL2toL2AddressNotLoopring")}
                       </Typography>
                     )}
                 </>
@@ -417,10 +420,7 @@ export const TransferWrap = <
           position={"relative"}
           marginTop={ITEM_MARGIN}
         >
-          {getTransferConfirmTemplate(
-            t("labelTransferAddressOrigin"),
-            "Wallet"
-          )}
+          {getTransferConfirmTemplate(t("labelL2toL2AddressOrigin"), "Wallet")}
         </Grid>
       ) : (
         <Grid
@@ -434,7 +434,7 @@ export const TransferWrap = <
             marginBottom={1 / 2}
             color={"var(--color-text-secondary)"}
           >
-            {t("labelTransferAddressOrigin")}
+            {t("labelL2toL2AddressOrigin")}
           </Typography>
           <Box
             onClick={() =>
@@ -473,12 +473,12 @@ export const TransferWrap = <
             }}
           >
             <Typography variant={"body2"} color={"var(--color-text-secondary)"}>
-              {t("labelTransferOriginDesc")}
+              {t("labelL2toL2OriginDesc")}
             </Typography>
             <Grid container marginTop={1} spacing={1}>
               <Grid item xs={6}>
                 <Button fullWidth disabled variant={"outlined"}>
-                  {t("labelTransferOriginBtnExchange")}
+                  {t("labelL2toL2OriginBtnExchange")}
                 </Button>
               </Grid>
               <Grid item xs={6}>
@@ -501,7 +501,7 @@ export const TransferWrap = <
                   fullWidth
                   variant={"outlined"}
                 >
-                  {t("labelTransferOriginBtnWallet")}
+                  {t("labelL2toL2OriginBtnWallet")}
                 </Button>
               </Grid>
             </Grid>
@@ -516,13 +516,13 @@ export const TransferWrap = <
         position={"relative"}
       >
         {isConfirmTransfer ? (
-          getTransferConfirmTemplate(t("labelTransferMemo"), memo)
+          getTransferConfirmTemplate(t("labelL2toL2Memo"), memo)
         ) : (
           <TextField
             value={memo}
             // error={addressError && addressError.error ? true : false}
-            label={t("transferLabelMemo")}
-            placeholder={t("transferLabelMemoPlaceholder")}
+            label={t("labelL2toL2Memo")}
+            placeholder={t("labelL2toL2MemoPlaceholder")}
             onChange={_handleOnMemoChange}
             fullWidth={true}
           />
@@ -545,7 +545,7 @@ export const TransferWrap = <
                 marginBottom={1}
               >
                 <Typography component={"span"} color={"inherit"} minWidth={28}>
-                  {t("transferLabelFee")}：
+                  {t("labelL2toL2Fee")}：
                 </Typography>
                 <Box
                   component={"span"}
@@ -568,7 +568,7 @@ export const TransferWrap = <
                     component={"span"}
                     color={"var(--color-error)"}
                   >
-                    {isFeeNotEnough && t("transferLabelFeeNotEnough")}
+                    {isFeeNotEnough && t("labelL2toL2FeeNotEnough")}
                   </Typography>
                 </Box>
               </Typography>
@@ -579,7 +579,7 @@ export const TransferWrap = <
                     color={"var(--color-text-third)"}
                     marginBottom={1}
                   >
-                    {t("transferLabelFeeChoose")}
+                    {t("labelL2toL2FeeChoose")}
                   </Typography>
                   <FeeToggle
                     chargeFeeTokenList={chargeFeeTokenList}
@@ -604,17 +604,11 @@ export const TransferWrap = <
           variant={"contained"}
           size={"medium"}
           color={"primary"}
-          onClick={
-            isConfirmTransfer
-              ? () => {
-                  const tradeDataWithMemo = { ...tradeData, memo: memo };
-                  // onTransferClick(tradeData)
-                  onTransferClick(tradeDataWithMemo);
-                }
-              : () => {
-                  setIsConfirmTransfer(true);
-                }
-          }
+          onClick={() => {
+            const tradeDataWithMemo = { ...tradeData, memo: memo };
+            // onTransferClick(tradeData)
+            onTransferClick(tradeDataWithMemo);
+          }}
           loading={
             !getDisabled && transferBtnStatus === TradeBtnStatus.LOADING
               ? "true"
@@ -624,7 +618,7 @@ export const TransferWrap = <
         >
           {isConfirmTransfer
             ? t("labelConfirm")
-            : t(transferI18nKey ?? `transferLabelBtn`)}
+            : t(transferI18nKey ?? `labelL2toL2Btn`)}
         </Button>
       </Grid>
       <Toast

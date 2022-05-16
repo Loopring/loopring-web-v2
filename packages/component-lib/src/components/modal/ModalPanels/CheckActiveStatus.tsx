@@ -1,52 +1,69 @@
 import {
   Account,
-  AccountStatus,
   EmptyValueTag,
   FeeInfo,
   WalletMap,
 } from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
+import React from "react";
 import { useSettings } from "../../../stores";
-import { toBig } from "@loopring-web/loopring-sdk";
-
 export const CheckActiveStatus = ({
   walletMap,
-  // isFeeNotEnough,
-  onClick,
   account,
   goSend,
-  goClose,
+  goDisconnect,
   goUpdateAccount,
+  isShow,
+  checkFeeIsEnough,
+  isFeeNotEnough,
+  // isDepositing = false,
   chargeFeeTokenList = [],
 }: {
-  account: Account;
+  account: Account & { isContract: boolean | undefined };
   chargeFeeTokenList: FeeInfo[];
   goUpdateAccount: () => void;
-  goClose: () => void;
+  goDisconnect: () => void;
   goSend: () => void;
+  isDepositing: boolean;
   walletMap?: WalletMap<any, any>;
-  // isFeeNotEnough: boolean;
+  isShow: boolean;
+  checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
+  isFeeNotEnough: boolean;
   onClick: () => void;
 }) => {
   const { t } = useTranslation("common");
-  let { feeChargeOrder } = useSettings();
+  const [know, setKnow] = React.useState(false);
+  const [knowDisable, setKnowDisable] = React.useState(true);
+  const { isMobile } = useSettings();
+  const onIKnowClick = () => {
+    if (account.isContract) {
+      setKnow(true);
+    } else if (isFeeNotEnough) {
+      setKnow(true);
+    } else {
+      goUpdateAccount();
+    }
+  };
+  React.useEffect(() => {
+    if (isShow) {
+      checkFeeIsEnough();
+      setKnow(false);
+    }
+  }, [isShow]);
 
-  const isFeeNotEnough = !(
-    walletMap &&
-    chargeFeeTokenList.findIndex((item) => {
-      if (walletMap && walletMap[item.belong]) {
-        if (
-          toBig(walletMap[item.belong].count ?? 0).gt(
-            toBig(item.fee.toString().replace(",", ""))
-          )
-        ) {
-          return true;
-        }
-      }
-      return false;
-    }) !== -1
-  );
+  React.useEffect(() => {
+    if (
+      chargeFeeTokenList !== undefined &&
+      chargeFeeTokenList.length &&
+      account.isContract !== undefined
+    ) {
+      setKnowDisable(false);
+    } else {
+      setKnowDisable(true);
+    }
+  }, [isShow, account.isContract, chargeFeeTokenList]);
+
   return (
     <Box
       flex={1}
@@ -56,83 +73,193 @@ export const CheckActiveStatus = ({
       paddingBottom={4}
       width={"100%"}
     >
-      <Typography
-        component={"h3"}
-        variant={"h3"}
-        marginBottom={3}
-        marginTop={-1}
-      >
-        {t("xxxxxxxx")}
-      </Typography>
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        flex={1}
-        alignItems={"stretch"}
-        alignSelf={"stretch"}
-        className="modalContent"
-        paddingX={10}
-        paddingBottom={4}
-      >
-        {account.isContract ? (
-          <Typography component={"p"} variant={"body1"} color={"inherit"}>
-            {t("labelActivatedAccountNotSupport")}
+      {!know ? (
+        <>
+          <Typography
+            component={"h3"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
+            marginBottom={3}
+            marginTop={-1}
+          >
+            {t("labelActiveAccountTitle")}
           </Typography>
-        ) : (
-          <>
-            {feeChargeOrder?.map((item, index) => (
-              <Typography key={index + item}>
-                <Typography>{item}</Typography>
-                <Typography>
-                  {walletMap && walletMap[item]
-                    ? walletMap[item].count
-                    : EmptyValueTag}
-                </Typography>
-              </Typography>
-            ))}
-          </>
-        )}
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            flex={1}
+            alignItems={"stretch"}
+            alignSelf={"stretch"}
+            className="modalContent"
+            paddingX={5 / 2}
+          >
+            <Typography
+              variant={"body1"}
+              color={"var(--color-text-third)"}
+              whiteSpace={"pre-line"}
+            >
+              {t("labelBenefitL2")}
+            </Typography>
 
-        {/*<Typography*/}
-        {/*  component={"p"}*/}
-        {/*  variant={"body1"}*/}
-        {/*  color={"textSecondary"}*/}
-        {/*  marginBottom={1}*/}
-        {/*>*/}
-        {/*  */}
-        {/*</Typography>*/}
-        <Box onClick={onClick}>
-          {account?.isContract ? (
-            <Button size={"large"} fullWidth onClick={goClose}>
-              Close
-            </Button>
-          ) : isFeeNotEnough ? (
-            account.readyState === AccountStatus.DEPOSITING ? (
-              <Box display={"flex"}>
-                <Box paddingRight={2} width={"50%"}>
-                  <Button size={"large"} fullWidth onClick={goSend}>
-                    waiting
-                  </Button>
-                </Box>
-                <Box width={"50%"}>
-                  <Button size={"large"} fullWidth onClick={goSend}>
-                    add asset
-                  </Button>
-                </Box>
-              </Box>
-            ) : (
-              <Button size={"large"} fullWidth onClick={goSend}>
-                Add asset
+            <Box marginTop={3}>
+              <Button
+                size={"large"}
+                variant={"contained"}
+                fullWidth
+                disabled={knowDisable}
+                onClick={onIKnowClick}
+              >
+                {t("labelIKnow")}
               </Button>
-            )
-          ) : (
-            <Button size={"large"} fullWidth onClick={goUpdateAccount}>
-              Active Account
-            </Button>
-          )}
-        </Box>
-      </Box>
+            </Box>
+          </Box>
+        </>
+      ) : (
+        <>
+          <Typography
+            component={"h3"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
+            marginTop={-1}
+          >
+            {t("labelActiveAccountTitle")}
+          </Typography>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            flex={1}
+            alignItems={"stretch"}
+            alignSelf={"stretch"}
+            className="modalContent"
+            paddingX={5 / 2}
+          >
+            {account.isContract ? (
+              <>
+                <Typography
+                  component={"p"}
+                  variant={"h5"}
+                  color={"error"}
+                  marginTop={1}
+                  textAlign={"center"}
+                >
+                  {t("labelActivatedAccountNotSupport")}
+                </Typography>
+                <Typography
+                  component={"p"}
+                  variant={"body1"}
+                  color={"textPrimary"}
+                  marginTop={1}
+                >
+                  {t("labelActivatedAccountNotSupportDes")}
+                </Typography>
+                <Button
+                  size={"large"}
+                  fullWidth
+                  onClick={goDisconnect}
+                  variant={"contained"}
+                >
+                  {t("labelDisconnect")}
+                </Button>
+              </>
+            ) : (
+              <>
+                {!!isFeeNotEnough ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    component={"p"}
+                    variant={"body1"}
+                    marginTop={1}
+                  >
+                    {t("labelNotBalancePayForActive")}
+                  </Typography>
+                ) : (
+                  <Typography
+                    color={"textPrimary"}
+                    component={"p"}
+                    variant={"body1"}
+                    marginTop={1}
+                  >
+                    {t("labelEnoughBalancePayForActive")}
+                  </Typography>
+                )}
+                <Typography
+                  component={"p"}
+                  variant={"body1"}
+                  color={"var(--color-text-third)"}
+                  marginTop={2}
+                  marginBottom={1}
+                >
+                  {t("labelActivatedAccountChargeFeeList")}
+                </Typography>
+                {chargeFeeTokenList?.map((item, index) => (
+                  <Typography
+                    key={index + item.belong}
+                    color={"textSecondary"}
+                    display={"flex-inline"}
+                    paddingY={1 / 2}
+                    marginLeft={2}
+                  >
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={"inherit"}
+                      display={"inline-block"}
+                      minWidth={60}
+                    >
+                      <Trans
+                        i18nKey={"labelBalanceActiveAccountFee"}
+                        tOptions={{
+                          symbol: item.belong,
+                          fee: item.fee,
+                          count:
+                            walletMap && walletMap[item.belong]
+                              ? walletMap[item.belong].count
+                              : EmptyValueTag,
+                        }}
+                      >
+                        {item.belong}:
+                        <Typography component={"span"} color={"inherit"}>
+                          {`Fee is ${item.fee};`}
+                        </Typography>
+                        <Typography
+                          display={"inline-flex"}
+                          component={"span"}
+                          color={"inherit"}
+                          marginLeft={2}
+                        >
+                          {` Your L2 asset is balance`}
+                        </Typography>
+                      </Trans>
+                    </Typography>
+                  </Typography>
+                ))}
+                {!!isFeeNotEnough && (
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    component={"p"}
+                    variant={"body1"}
+                    marginTop={2}
+                  >
+                    {t("labelHaveInProcessingL1toL2")}
+                  </Typography>
+                )}
+                <Box marginTop={3}>
+                  <Button
+                    size={"large"}
+                    variant={"contained"}
+                    fullWidth
+                    onClick={goSend}
+                  >
+                    {t("labelAddAssetGateBtn")}
+                  </Button>
+                </Box>
+              </>
+            )}
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

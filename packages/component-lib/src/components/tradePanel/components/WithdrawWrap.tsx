@@ -24,6 +24,7 @@ import {
   myLog,
   NFTWholeINFO,
   TOAST_TIME,
+  AddressError,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -38,7 +39,7 @@ import {
   TextField,
   useSettings,
 } from "../../../index";
-import { AddressError, WithdrawViewProps } from "./Interface";
+import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
@@ -119,7 +120,7 @@ export const WithdrawWrap = <
   }, [disabled, withdrawBtnStatus]);
   myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
-    label: t("withdrawLabelEnterToken"),
+    label: t("labelL2toL1EnterToken"),
   };
 
   const handleToggleChange = (value: C) => {
@@ -181,11 +182,16 @@ export const WithdrawWrap = <
           justifyContent={"center"}
           alignItems={"center"} /* marginBottom={2} */
         >
-          <Typography component={"h4"} variant={"h3"} marginRight={1}>
+          <Typography
+            component={"h4"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
+            marginRight={1}
+          >
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
-              ? t("withdrawDeployTitle")
-              : t("withdrawTitle")}
+              ? t("labelL2ToL1DeployTitle")
+              : t("labelL2ToL1Title")}
           </Typography>
           <HelpIcon
             {...bindHover(popupState)}
@@ -261,14 +267,14 @@ export const WithdrawWrap = <
             alignItems={"center"}
             marginBottom={1}
           >
-            <span> {t("withdrawLabelAddress")}</span>
+            <span> {t("labelL2toL1Address")}</span>
             {accAddr && (
               <LinkStyle
                 onClick={(e) => {
                   _handleOnAddressChange(e as any, accAddr);
                 }}
               >
-                {t("labelWithdrawMyAddress")}
+                {t("labelL2toL1MyAddress")}
               </LinkStyle>
             )}
           </Typography>
@@ -325,7 +331,7 @@ export const WithdrawWrap = <
               >
                 {t(`labelInvalid${isNotAvaiableAddress}`, {
                   token: type === "NFT" ? "NFT" : tradeData.belong,
-                  way: t(`labelWithdraw`),
+                  way: t(`labelL2toL1`),
                 })}
               </Typography>
             ) : (
@@ -335,6 +341,8 @@ export const WithdrawWrap = <
                     color={"var(--color-text-primary)"}
                     variant={"body2"}
                     marginTop={1 / 4}
+                    whiteSpace={"pre-line"}
+                    style={{ wordBreak: "break-all" }}
                   >
                     {realAddr}
                   </Typography>
@@ -360,7 +368,7 @@ export const WithdrawWrap = <
               marginBottom={1}
             >
               <Typography component={"span"} color={"inherit"} minWidth={28}>
-                {t("transferLabelFee")}：
+                {t("labelL2toL2Fee")}：
               </Typography>
               <Box
                 component={"span"}
@@ -379,7 +387,7 @@ export const WithdrawWrap = <
                   marginLeft={1}
                   color={"var(--color-text-secondary)"}
                 >
-                  {t(`withdrawLabel${withdrawTypes[withdrawType]}`)}
+                  {t(`labelL2toL1${withdrawTypes[withdrawType]}`)}
                 </Typography>
                 <DropdownIconStyled
                   status={dropdownStatus}
@@ -390,7 +398,7 @@ export const WithdrawWrap = <
                   component={"span"}
                   color={"var(--color-error)"}
                 >
-                  {isFeeNotEnough && t("transferLabelFeeNotEnough")}
+                  {isFeeNotEnough && t("labelL2toL2FeeNotEnough")}
                 </Typography>
               </Box>
             </Typography>
@@ -401,7 +409,7 @@ export const WithdrawWrap = <
                   color={"var(--color-text-third)"}
                   marginBottom={1}
                 >
-                  {t("transferLabelFeeChoose")}
+                  {t("labelL2toL2FeeChoose")}
                 </Typography>
                 <FeeToggle
                   chargeFeeTokenList={chargeFeeTokenList}
@@ -462,8 +470,8 @@ export const WithdrawWrap = <
               ((tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
                 (tradeData as NFTWholeINFO)?.deploymentStatus ===
                   "NOT_DEPLOYED")
-              ? `withdrawDeployLabelBtn`
-              : `withdrawLabelBtn`
+              ? `labelSendL1DeployBtn`
+              : `labelSendL1Btn`
           )}
         </Button>
       </Grid>

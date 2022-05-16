@@ -3,7 +3,7 @@ import { BoxProps, Grid, Typography } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
-import { Button } from "./basic-lib";
+import { Button, ButtonProps } from "./basic-lib";
 import { useSettings } from "../stores";
 
 // @ts-ignore
@@ -122,7 +122,6 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   &:focus-visible {
     outline: 0;
   }
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -135,15 +134,11 @@ export const modalContentBaseStyle = ({ theme }: any) => css`
   border: 0;
   border-radius: ${theme.unit}px;
 `;
-// height:100%;
-// margin-top: var(--toolbar-row-padding-minus);
-// padding-top: var(--toolbar-row-padding);
-// .menu-panel{
-//     height: ${_height  ?
-//          typeof _height === 'number' ?
-//              ` calc(${_height + 'px'} -  var(--toolbar-row-padding)  ) `
-//              :` calc(${_height} -  var(--toolbar-row-padding)  )`:'210px'};
-// }
+export const ModelPanelStyle = styled(Box)`
+  ${({ theme }) => modalContentBaseStyle({ theme: theme })};
+  background: ${({ theme }) => theme.colorBase.box};
+` as typeof Box;
+
 export const SwitchPanelStyled: any = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps
 >`
@@ -367,7 +362,9 @@ export const shake = css`
   }
 `;
 
-export const MenuBtnStyled = styled(Button)`
+export const MenuBtnStyled = styled(Button)<
+  ButtonProps & { isMobile: boolean }
+>`
   font-size: ${({ theme }) => theme.fontDefault.body1};
   background: var(--opacity);
   color: var(--color-text-secondary);
@@ -376,8 +373,11 @@ export const MenuBtnStyled = styled(Button)`
   padding: 0 ${({ theme }) => theme.unit * 3}px;
   text-indent: 0.5em;
   position: relative;
-  &.addAsset {
-    font-size: ${({ theme }) => theme.fontDefault.h5};
+  &.addAsset,
+  &.sendAsset {
+    white-space: pre;
+    font-size: ${({ theme, isMobile }) =>
+      isMobile ? theme.fontDefault.h6 : theme.fontDefault.h5};
     //justify-content: flex-start;
     justify-content: space-between;
     flex-direction: row;
@@ -420,4 +420,4 @@ export const MenuBtnStyled = styled(Button)`
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
-` as typeof Button;
+` as (props: ButtonProps & { isMobile: boolean }) => JSX.Element;

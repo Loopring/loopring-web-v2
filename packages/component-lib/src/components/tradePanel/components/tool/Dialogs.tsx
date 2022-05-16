@@ -24,11 +24,14 @@ const DialogStyle = styled(Dialog)`
   }
   .MuiList-root {
     list-style: inside;
+
     .MuiListItem-root {
       display: list-item;
       marginbottom: 1;
       height: auto;
-      padding: 0;
+      padding: ${({ theme }) => theme.unit}px 0;
+      font-size: ${({ theme }) => theme.fontDefault.body1};
+      line-height: 1.5em;
     }
   }
 `;
@@ -264,7 +267,7 @@ export const ConfirmImpact = withTranslation("common", { withRef: true })(
 //         <DialogTitle> {t("labelNotAllowForSmartWalletTitle")}</DialogTitle>
 //         <DialogContent>
 //           <DialogContentText>
-//             <Typography component={"p"} variant={"body1"} color={"inherit"}>
+//             <Typography component={"span"} variant={"body1"} color={"inherit"}>
 //               {t("labelActivatedAccountNotSupport")}
 //             </Typography>
 //           </DialogContentText>
@@ -304,7 +307,7 @@ export const WrongNetworkGuide = withTranslation("common", {
         <DialogTitle> {t("labelWrongNetworkGuideTitle")}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Typography component={"p"} variant={"body1"} color={"inherit"}>
+            <Typography component={"span"} variant={"body1"} color={"inherit"}>
               {t("labelWrongNetworkGuide")}
             </Typography>
           </DialogContentText>
@@ -344,26 +347,26 @@ export const ConfirmLinkCopy = withTranslation("common", {
         <DialogTitle> {t("labelOpenInWalletTitle")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Typography component={"p"} variant={"body1"} color={"inherit"}>
+            <Typography component={"span"} variant={"body1"} color={"inherit"}>
               <Trans i18nKey={"labelOpenInWalletDetail"}>
                 labelOpenInWalletDetail URL for adding fund has been copied. You
                 can choose either way to continue:
               </Trans>
             </Typography>
-            <List>
-              <ListItem>
-                <Trans i18nKey={"labelOpenInWalletDetailLi1"}>
-                  Open your wallet app and paste the url in its internal dapp
-                  browser
-                </Trans>
-              </ListItem>
-              <ListItem>
-                <Trans i18nKey={"labelOpenInWalletDetailLi2"}>
-                  Open your desktop Chrome browser and paste the url in Chrome
-                </Trans>
-              </ListItem>
-            </List>
           </DialogContentText>
+          <List sx={{ marginTop: 2 }}>
+            <ListItem>
+              <Trans i18nKey={"labelOpenInWalletDetailLi1"}>
+                Open your wallet app and paste the url in its internal dapp
+                browser
+              </Trans>
+            </ListItem>
+            <ListItem>
+              <Trans i18nKey={"labelOpenInWalletDetailLi2"}>
+                Open your desktop Chrome browser and paste the url in Chrome
+              </Trans>
+            </ListItem>
+          </List>
         </DialogContent>
         <DialogActions>
           <Button

@@ -1,13 +1,16 @@
 import {
+  Bridge,
   CloseIcon,
   globalSetup,
   IBData,
   LoadingIcon,
+  SoursURL,
+  AddressError,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
-import { WithTranslation } from "react-i18next";
+import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Link, Typography } from "@mui/material";
 import {
   Button,
   DepositTitle,
@@ -44,18 +47,20 @@ export const DepositWrap = <
   handleClear,
   isAllowInputToAddress,
   toIsAddressCheckLoading,
-  toIsLoopringAddress,
+  // toIsLoopringAddress,
   realToAddress,
   referIsAddressCheckLoading,
   referIsLoopringAddress,
   realReferAddress,
   isToAddressEditable,
+  toAddressStatus,
+  referStatus,
   wait = globalSetup.wait,
   allowTrade,
   ...rest
 }: DepositViewProps<T, I> & WithTranslation) => {
   const inputBtnRef = React.useRef();
-  let { feeChargeOrder } = useSettings();
+  let { feeChargeOrder, isMobile } = useSettings();
 
   const getDisabled = React.useMemo(() => {
     return disabled || depositBtnStatus === TradeBtnStatus.DISABLED;
@@ -127,6 +132,7 @@ export const DepositWrap = <
     <Grid
       className={walletMap ? "depositWrap" : "depositWrap loading"}
       container
+      paddingTop={isMobile ? 1 : "0"}
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
       direction={"column"}
@@ -158,7 +164,11 @@ export const DepositWrap = <
           <TextField
             className={"text-address"}
             value={tradeData.referAddress ? tradeData.referAddress : ""}
-            error={!!(tradeData.addressError && tradeData.addressError?.error)}
+            error={
+              (!!tradeData.referAddress &&
+                referStatus !== AddressError.NoError) ||
+              !referIsLoopringAddress
+            }
             label={t("depositLabelRefer")}
             placeholder={t("depositLabelPlaceholder")}
             onChange={(event) => {
@@ -192,7 +202,7 @@ export const DepositWrap = <
             ""
           )}
           <Box marginLeft={1 / 2}>
-            {tradeData.addressError?.error || !referIsLoopringAddress ? (
+            {referStatus !== AddressError.NoError || !referIsLoopringAddress ? (
               <Typography
                 color={"var(--color-error)"}
                 variant={"body2"}
@@ -223,68 +233,156 @@ export const DepositWrap = <
       )}
       {isAllowInputToAddress ? (
         <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
-          <TextField
-            className={"text-address"}
-            value={tradeData.toAddress ? tradeData.toAddress : ""}
-            error={!!(tradeData.addressError && tradeData.addressError?.error)}
-            label={t("depositLabelTo")}
-            disabled={!isToAddressEditable}
-            placeholder={t("depositLabelPlaceholder")}
-            onChange={(_event) => {
-              const toAddress = _event.target.value;
-              //...tradeData,
-              onChangeEvent(0, { tradeData: { toAddress } as T, to: "button" });
-            }}
-            fullWidth={true}
-          />
-          {tradeData.toAddress !== "" ? (
-            toIsAddressCheckLoading ? (
-              <LoadingIcon
-                width={24}
-                style={{ top: "32px", right: "8px", position: "absolute" }}
-              />
-            ) : (
-              isToAddressEditable && (
-                <IconClearStyled
-                  color={"inherit"}
-                  size={"small"}
-                  style={{ top: "30px" }}
-                  aria-label="Clear"
-                  onClick={handleClear}
-                >
-                  <CloseIcon />
-                </IconClearStyled>
+          <Box display={isToAddressEditable ? "inherit" : "none"}>
+            <TextField
+              className={"text-address"}
+              value={tradeData.toAddress ? tradeData.toAddress : ""}
+              error={toAddressStatus !== AddressError.NoError}
+              label={t("depositLabelTo")}
+              disabled={!isToAddressEditable}
+              placeholder={t("depositLabelPlaceholder")}
+              onChange={(_event) => {
+                const toAddress = _event.target.value;
+                //...tradeData,
+                onChangeEvent(0, {
+                  tradeData: { toAddress } as T,
+                  to: "button",
+                });
+              }}
+              fullWidth={true}
+            />
+            {tradeData.toAddress !== "" ? (
+              toIsAddressCheckLoading ? (
+                <LoadingIcon
+                  width={24}
+                  style={{ top: "32px", right: "8px", position: "absolute" }}
+                />
+              ) : (
+                isToAddressEditable && (
+                  <IconClearStyled
+                    color={"inherit"}
+                    size={"small"}
+                    style={{ top: "30px" }}
+                    aria-label="Clear"
+                    onClick={handleClear}
+                  >
+                    <CloseIcon />
+                  </IconClearStyled>
+                )
               )
-            )
-          ) : (
-            ""
-          )}
-          <Box marginLeft={1 / 2}>
-            {tradeData.addressError?.error || !toIsLoopringAddress ? (
-              <Typography
-                color={"var(--color-error)"}
-                variant={"body2"}
-                marginTop={1 / 2}
-                alignSelf={"stretch"}
-                position={"relative"}
-              >
-                {t("labelAddressNotLoopring")}
-              </Typography>
-            ) : tradeData.toAddress &&
-              realToAddress &&
-              !toIsAddressCheckLoading ? (
-              <Typography
-                color={"var(--color-text-primary)"}
-                variant={"body2"}
-                marginTop={1 / 2}
-                style={{ wordBreak: "break-all" }}
-              >
-                {realToAddress}
-              </Typography>
             ) : (
-              <></>
+              ""
             )}
+            <Box marginLeft={1 / 2}>
+              {toAddressStatus !== AddressError.NoError ? (
+                <Typography
+                  color={"var(--color-error)"}
+                  variant={"body2"}
+                  marginTop={1 / 2}
+                  alignSelf={"stretch"}
+                  position={"relative"}
+                >
+                  {t("labelInvalidAddress")}
+                </Typography>
+              ) : tradeData.toAddress &&
+                realToAddress &&
+                !toIsAddressCheckLoading ? (
+                <Typography
+                  color={"var(--color-text-primary)"}
+                  variant={"body2"}
+                  marginTop={1 / 2}
+                  style={{ wordBreak: "break-all" }}
+                  whiteSpace={"pre-line"}
+                >
+                  {realToAddress}
+                </Typography>
+              ) : (
+                <></>
+              )}
+            </Box>
           </Box>
+          {!isToAddressEditable && (
+            <>
+              <Typography color={"var(--color-text-third)"} variant={"body1"}>
+                {t("labelBridgeSendTo")}
+              </Typography>
+              <Box>
+                <Typography
+                  display={"inline-flex"}
+                  variant={
+                    tradeData.toAddress?.startsWith("0x") ? "body2" : "body1"
+                  }
+                  style={{ wordBreak: "break-all" }}
+                  color={"textSecondary"}
+                >
+                  {tradeData.toAddress}
+                </Typography>
+              </Box>
+              {toIsAddressCheckLoading ? (
+                <Box
+                  display={"flex"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <img
+                    className="loading-gif"
+                    alt={"loading"}
+                    width="36"
+                    src={`${SoursURL}images/loading-line.gif`}
+                  />
+                </Box>
+              ) : realToAddress ? (
+                <>
+                  <Box>
+                    <Typography color={"var(--color-text-third)"} minWidth={40}>
+                      {t("labelReceiveAddress")}
+                    </Typography>
+                    <Typography
+                      display={"inline-flex"}
+                      variant={"body2"}
+                      style={{ wordBreak: "break-all" }}
+                      whiteSpace={"pre-line"}
+                      color={"textSecondary"}
+                    >
+                      {realToAddress}
+                    </Typography>
+                  </Box>
+                </>
+              ) : (
+                !!tradeData.toAddress &&
+                toAddressStatus !== AddressError.NoError && (
+                  <Typography variant={"body1"} color={"var(--color-warning)"}>
+                    {/*This is wrong address, I want input address*/}
+                    {toAddressStatus === AddressError.ENSResolveFailed ? (
+                      <>{t("labelENSShouldConnect")}</>
+                    ) : (
+                      <Trans
+                        i18nKey={"labelInvalidAddressClick"}
+                        tOptions={{
+                          way: "Pay Loopring L2",
+                          token: "ERC20 ",
+                        }}
+                      >
+                        Invalid Wallet Address, Pay Loopring L2 of ERC20 is
+                        disabled!
+                        <Link
+                          alignItems={"center"}
+                          display={"inline-flex"}
+                          href={Bridge}
+                          target={"_blank"}
+                          rel={"noopener noreferrer"}
+                          color={"textSecondary"}
+                        >
+                          Click to input another receive address
+                        </Link>
+                        ,
+                      </Trans>
+                    )}
+                  </Typography>
+                )
+              )}
+            </>
+          )}
         </Grid>
       ) : (
         <></>

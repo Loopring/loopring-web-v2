@@ -23,6 +23,7 @@ export type AccountBaseProps = {
 export enum AccountStep {
   CheckingActive,
   AddAssetGateway,
+  SendAssetGateway,
   PayWithCard,
   NoAccount,
   QRCode,
@@ -130,17 +131,29 @@ export interface VendorMenuProps {
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
 }
-
-export interface AddAssetItem {
+interface InferfaceAssetItem {
   key: string;
   svgIcon: string;
   enableKey?: string | null;
   handleSelect: (event?: React.MouseEvent) => void;
 }
 
+export interface AddAssetItem extends InferfaceAssetItem {}
+export interface SendAssetItem extends InferfaceAssetItem {}
+
 export interface AddAssetProps {
+  symbol?: string;
   addAssetList: AddAssetItem[];
   isNewAccount?: boolean;
+  allowTrade: {
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
+  };
+}
+
+export interface SendAssetProps {
+  // isToL1: boolean;
+  symbol?: string;
+  sendAssetList: AddAssetItem[];
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean };
   };

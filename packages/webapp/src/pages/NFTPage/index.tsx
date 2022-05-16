@@ -214,7 +214,7 @@ export const NFTPage = () => {
                         fullWidth
                         href={"/#/nft/depositNFT"}
                       >
-                        {t("labelDepositNFT")}
+                        {t("labelL1toL2NFT")}
                       </Button>
                     </Box>
                   </Box>

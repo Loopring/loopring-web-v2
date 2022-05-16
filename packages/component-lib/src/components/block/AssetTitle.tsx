@@ -13,7 +13,7 @@ import {
 } from "react-i18next";
 import { AssetTitleMobileProps, AssetTitleProps } from "./Interface";
 import styled from "@emotion/styled";
-import { DropdownIconStyled, TradeBtnStatus } from "../tradePanel";
+import { DropdownIconStyled } from "../tradePanel";
 import { AnimationArrow, Button, ButtonListRightStyled } from "./../";
 import { useRouteMatch } from "react-router-dom";
 import { useSettings } from "../../stores";
@@ -31,16 +31,17 @@ export const AssetTitle = withTranslation("common")(
     t,
     assetInfo,
     accountId,
-    onShowWithdraw,
-    onShowTransfer,
+    // onShowWithdraw,
+    // onShowTransfer,
+    onShowSend,
     onShowReceive,
     // onShowDeposit,
     // btnShowDepositStatus,
-    btnShowTransferStatus,
-    btnShowWithdrawStatus,
+    // btnShowTransferStatus,
+    // btnShowWithdrawStatus,
     hideL2Assets,
     setHideL2Assets,
-  }: // showPartner,
+  }: // showPartnr,
   // legalEnable,
   // legalShow,
   AssetTitleProps & WithTranslation) => {
@@ -115,59 +116,18 @@ export const AssetTitle = withTranslation("common")(
           flexDirection={"row"}
           justifyContent={"flex-end"}
         >
-          {/*{legalEnable && legalShow && (*/}
-          {/*  <Button*/}
-          {/*    variant={"outlined"}*/}
-          {/*    size={"medium"}*/}
-          {/*    color={"primary"}*/}
-          {/*    style={{ minWidth: 120, textTransform: "none" }}*/}
-          {/*    onClick={showPartner}*/}
-          {/*  >*/}
-          {/*    {t("labelAssetsBtnRamp")}*/}
-          {/*  </Button>*/}
-          {/*)}*/}
-          <Button
-            variant={"outlined"}
-            size={"medium"}
-            color={"primary"}
-            loading={
-              btnShowTransferStatus === TradeBtnStatus.LOADING
-                ? "true"
-                : "false"
-            }
-            disabled={
-              btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false
-            }
-            onClick={() => onShowTransfer()}
-          >
-            {t("labelBtnTransfer")}
-          </Button>
           <Button
             variant={"outlined"}
             size={"medium"}
             color={"secondary"}
-            loading={
-              btnShowWithdrawStatus === TradeBtnStatus.LOADING
-                ? "true"
-                : "false"
-            }
-            disabled={
-              btnShowWithdrawStatus === TradeBtnStatus.DISABLED ? true : false
-            }
-            onClick={() => onShowWithdraw()}
+            onClick={() => onShowSend()}
           >
-            {t("labelBtnWithdraw")}
+            {t("labelSendAssetBtn")}
           </Button>
           <Button
             variant={"contained"}
             size={"small"}
             color={"primary"}
-            // loading={
-            //   btnShowDepositStatus === TradeBtnStatus.LOADING ? "true" : "false"
-            // }
-            // disabled={
-            //   btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false
-            // }
             onClick={() => onShowReceive()}
           >
             {t("labelAddAssetBtn")}
@@ -181,8 +141,9 @@ export const AssetTitle = withTranslation("common")(
 export const AssetTitleMobile = ({
   assetInfo,
   accountId,
-  onShowWithdraw,
-  onShowTransfer,
+  // onShowWithdraw,
+  // onShowTransfer,
+  onShowSend,
   onShowReceive,
   // onShowDeposit,
   hideL2Assets,
@@ -325,33 +286,44 @@ AssetTitleMobileProps) => {
               variant={"outlined"}
               size={"medium"}
               color={"primary"}
+              onClick={() => onShowSend()}
+            >
+              {t("labelSendAssetBtn")}
+            </Button>
+          </Grid>
+          <Grid item xs={4}>
+            <Button
+              fullWidth
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
               onClick={() => onShowReceive()}
             >
               {t("labelAddAssetBtn")}
             </Button>
           </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => onShowTransfer()}
-            >
-              {t("labelTransfer")}
-            </Button>
-          </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => onShowWithdraw()}
-            >
-              {t("labelWithdraw")}
-            </Button>
-          </Grid>
+          {/*<Grid item xs={4}>*/}
+          {/*  <Button*/}
+          {/*    fullWidth*/}
+          {/*    variant={"outlined"}*/}
+          {/*    size={"medium"}*/}
+          {/*    color={"primary"}*/}
+          {/*    onClick={() => onShowTransfer()}*/}
+          {/*  >*/}
+          {/*    {t("labelL2toL2")}*/}
+          {/*  </Button>*/}
+          {/*</Grid>*/}
+          {/*<Grid item xs={4}>*/}
+          {/*  <Button*/}
+          {/*    fullWidth*/}
+          {/*    variant={"outlined"}*/}
+          {/*    size={"medium"}*/}
+          {/*    color={"primary"}*/}
+          {/*    onClick={() => onShowWithdraw()}*/}
+          {/*  >*/}
+          {/*    {t("labelL2toL1")}*/}
+          {/*  </Button>*/}
+          {/*</Grid>*/}
         </Grid>
       )}
     </Box>

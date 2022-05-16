@@ -220,11 +220,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       if (balance && balance >= 0) {
         state.depositValue.balance = balance;
       }
-
-      if (tradeValue && tradeValue >= 0) {
-        state.depositValue.tradeValue = tradeValue;
-      }
-
+      state.depositValue.tradeValue = tradeValue;
       state.depositValue.referAddress = referAddress;
       state.depositValue.toAddress = toAddress;
       state.depositValue.addressError = addressError;

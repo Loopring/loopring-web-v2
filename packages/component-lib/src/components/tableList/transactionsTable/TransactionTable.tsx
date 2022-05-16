@@ -264,10 +264,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const value = row["side"];
             const renderValue =
               value === TransactionTradeTypes.deposit
-                ? t("labelDeposit")
+                ? t("labelReceive")
                 : value === TransactionTradeTypes.transfer
-                ? t("labelTransfer")
-                : t("labelWithdraw");
+                ? t("labelSendL2")
+                : t("labelSendL1");
             return <Box className="rdg-cell-value">{renderValue}</Box>;
           },
         },
@@ -441,10 +441,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const hasValue = Number.isFinite(value);
             const side =
               row.side === TransactionTradeTypes.deposit
-                ? t("labelDeposit")
+                ? t("labelReceive")
                 : row.side === TransactionTradeTypes.transfer
-                ? t("labelTransfer")
-                : t("labelWithdraw");
+                ? t("labelSendL2")
+                : t("labelSendL1");
             const hasSymbol =
               row.side === "TRANSFER"
                 ? row["receiverAddress"]?.toUpperCase() ===

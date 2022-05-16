@@ -31,7 +31,7 @@ export const CreateAccount_Approve_Submit = (props: PanelProps) => {
 export const CreateAccount_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelDepositWaitForAuth", { symbol: props.symbol }),
+    describe1: props.t("labelL1toL2WaitForAuth", { symbol: props.symbol }),
   };
   return <CreateAccountBase {...propsPatch} {...props} />;
 };

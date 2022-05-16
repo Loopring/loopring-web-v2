@@ -7,6 +7,7 @@ import { Button } from "../../basic-lib";
 import { ResetViewProps } from "./Interface";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { FeeToggle } from "./tool/FeeList";
+import { useSettings } from "../../../stores";
 
 export const ResetWrap = <T extends FeeInfo>({
   t,
@@ -23,7 +24,7 @@ export const ResetWrap = <T extends FeeInfo>({
 }: ResetViewProps<T> & WithTranslation) => {
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-
+  const { isMobile } = useSettings();
   const getDisabled = React.useMemo(() => {
     return disabled || resetBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, resetBtnStatus]);
@@ -50,7 +51,8 @@ export const ResetWrap = <T extends FeeInfo>({
         <Typography
           component={"h4"}
           textAlign={"center"}
-          variant={"h3"}
+          variant={isMobile ? "h4" : "h3"}
+          whiteSpace={"pre"}
           marginBottom={2}
         >
           {isNewAccount ? t("labelActiveAccountTitle") : t("resetTitle")}
@@ -79,7 +81,7 @@ export const ResetWrap = <T extends FeeInfo>({
               color={"var(--color-text-secondary)"}
               marginBottom={1}
             >
-              {t("transferLabelFee")}：
+              {t("labelL2toL2Fee")}：
               <Box
                 component={"span"}
                 display={"flex"}
@@ -115,7 +117,7 @@ export const ResetWrap = <T extends FeeInfo>({
                         </Link>
                       </Trans>
                     ) : (
-                      t("transferLabelFeeNotEnough")
+                      t("labelL2toL2FeeNotEnough")
                     ))}
                 </Typography>
               </Box>
@@ -150,7 +152,7 @@ export const ResetWrap = <T extends FeeInfo>({
                 >
                   {isNewAccount
                     ? t("labelActiveEnterToken")
-                    : t("transferLabelFeeChoose")}
+                    : t("labelL2toL2FeeChoose")}
                 </Typography>
                 <FeeToggle
                   disableNoToken={true}

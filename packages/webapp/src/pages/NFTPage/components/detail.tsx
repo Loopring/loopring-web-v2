@@ -134,7 +134,7 @@ export const NFTDetail = withTranslation("common")(
       });
     }, [popItem.name, popItem.image]);
 
-    const { nftTransferProps } = useNFTTransfer({
+    const { nftTransferProps, cancelNFTTransfer } = useNFTTransfer({
       isLocalShow: viewPage === 1,
       doTransferDone: onDetailClose,
     });
@@ -149,6 +149,7 @@ export const NFTDetail = withTranslation("common")(
 
     const handleChangeIndex = (index: number) => {
       setViewPage(index);
+      cancelNFTTransfer();
     };
     const detailView = React.useMemo(() => {
       return (
@@ -376,8 +377,9 @@ export const NFTDetail = withTranslation("common")(
 
                 <Typography minWidth={100} marginRight={2}>
                   <Button
-                    variant={"outlined"}
-                    size={"medium"}
+                    variant={"contained"}
+                    size={"small"}
+                    color={"primary"}
                     fullWidth
                     disabled={
                       popItem.isCounterFactualNFT &&
@@ -394,7 +396,7 @@ export const NFTDetail = withTranslation("common")(
                     {popItem.isCounterFactualNFT &&
                     popItem.deploymentStatus ===
                       DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                      t("labelNFTDeployWithdraw")
+                      t("labelNFTDeploySendL1")
                     ) : popItem.isCounterFactualNFT &&
                       popItem.deploymentStatus ===
                         DEPLOYMENT_STATUS.DEPLOYING ? (
@@ -410,7 +412,7 @@ export const NFTDetail = withTranslation("common")(
                         {t("labelNFTDeploying")}
                       </>
                     ) : (
-                      t("labelNFTWithdraw")
+                      t("labelNFTSendL1Btn")
                     )}
                   </Button>
                 </Typography>
@@ -430,7 +432,7 @@ export const NFTDetail = withTranslation("common")(
                         : setShowDialog("Transfer")
                     }
                   >
-                    {t("labelNFTTransfer")}
+                    {t("labelNFTSendL2Btn")}
                   </Button>
                 </Typography>
               </Box>

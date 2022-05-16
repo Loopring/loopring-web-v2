@@ -5,6 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import {
+  AddressError,
   CoinInfo,
   CoinKey,
   CoinMap,
@@ -49,15 +50,9 @@ export type TransferInfoProps<C> = {
   isFeeNotEnough: boolean;
 };
 
-export enum AddressError {
-  NoError,
-  EmptyAddr,
-  InvalidAddr,
-  ENSResolveFailed,
-}
-
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
+  isConfirmTransfer: boolean;
   addressDefault?: string;
   addressOrigin: "Wallet" | null;
   handleSureItsLayer2: (sure: boolean) => void;
@@ -127,10 +122,12 @@ export type DepositExtendProps<T> = {
   isThumb?: boolean;
   title?: string;
   allowTrade?: any;
+  toAddressStatus: AddressError;
+  referStatus: AddressError;
   isAllowInputToAddress?: boolean;
   onDepositClick: (data: T) => void;
   toIsAddressCheckLoading: boolean;
-  toIsLoopringAddress: boolean;
+  // toIsLoopringAddress: boolean;
   realToAddress?: string;
   referIsAddressCheckLoading: boolean;
   referIsLoopringAddress?: boolean;

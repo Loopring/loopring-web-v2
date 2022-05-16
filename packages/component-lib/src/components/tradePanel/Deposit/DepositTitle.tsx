@@ -19,7 +19,8 @@ export const DepositTitle = ({ title, description }: any) => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h4"}
+        variant={isMobile ? "h4" : "h3"}
+        whiteSpace={"pre"}
         marginRight={1}
         className={"depositTitle"}
       >
@@ -91,7 +92,7 @@ const ThirdPartTitle = React.memo(() => {
           variant={"body2"}
           whiteSpace={"pre-line"}
         >
-          <Trans i18nKey={"labelDepositVendor"}>
+          <Trans i18nKey={"labelL1toL2Vendor"}>
             Make an order form third Loopring-parter, Once your order confirmed
             by Loopring, it will be added to your balance within 2 minutes.
           </Trans>

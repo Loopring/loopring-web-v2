@@ -8,7 +8,7 @@ import { Layer2Page } from "pages/Layer2Page";
 import { LiquidityPage } from "pages/LiquidityPage";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import { useTicker, ModalGroup } from "@loopring-web/core";
+import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
 import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
@@ -60,6 +60,22 @@ const ContentWrap = ({
     </>
   );
 };
+const WrapModal = () => {
+  const { depositProps } = useDeposit(false);
+  const { assetsRawData } = useGetAssets();
+  const location = useLocation();
+  const { setShowAccount } = useOpenModals();
+  return (
+    <ModalGroup
+      assetsRawData={assetsRawData}
+      depositProps={depositProps}
+      isLayer1Only={
+        /(guardian)|(depositto)/gi.test(location.pathname ?? "") ? true : false
+      }
+      onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
+    />
+  );
+};
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
@@ -67,7 +83,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
-  const { setShowAccount } = useOpenModals();
+
   // const { pathname } = useLocation();
   const query = new URLSearchParams(location.search);
   React.useEffect(() => {
@@ -77,7 +93,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         : setTheme("light");
     }
   }, [location.search]);
-  const { assetsRawData } = useGetAssets();
 
   React.useEffect(() => {
     if (state === SagaStatus.ERROR) {
@@ -271,15 +286,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
         />
       </Switch>
-      <ModalGroup
-        assetsRawData={assetsRawData}
-        isLayer1Only={
-          /(guardian)|(depositto)/gi.test(location.pathname ?? "")
-            ? true
-            : false
-        }
-        onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
-      />
+      {state === SagaStatus.DONE && <WrapModal />}
       {query && query.has("nofooter") ? <></> : <Footer />}
     </>
   );

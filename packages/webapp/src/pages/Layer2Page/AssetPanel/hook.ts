@@ -54,21 +54,7 @@ export const useGetAssets = () => {
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>(
     []
   );
-  const {
-    setShowTransfer,
-    setShowDeposit,
-    setShowWithdraw,
-    setShowNFTDeposit,
-    setShowNFTMint,
-  } = useOpenModals();
 
-  // const {
-  //   showDeposit,
-  //   showTransfer,
-  //   showWithdraw,
-  //   showNFTDeposit,
-  //   showNFTMint,
-  // } = useModals();
   const [userAssets, setUserAssets] = React.useState<any[]>([]);
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
   const { account } = useAccount();
@@ -294,35 +280,49 @@ export const useGetAssets = () => {
   const total = assetsRawData
     .map((o) => o.tokenValueDollar)
     .reduce((a, b) => a + b, 0);
-  const onShowDeposit = React.useCallback(
-    (token?: any, partner?: boolean) => {
-      if (partner) {
-        setShowDeposit({ isShow: true, partner: true });
-      } else {
-        setShowDeposit({ isShow: true, symbol: token });
-      }
-    },
-    [setShowDeposit]
-  );
-
-  const onShowTransfer = React.useCallback(
-    (token?: any) => {
-      setShowTransfer({ isShow: true, symbol: token });
-    },
-    [setShowTransfer]
-  );
-
-  const onShowWithdraw = React.useCallback(
-    (token?: any) => {
-      setShowWithdraw({ isShow: true, symbol: token });
-    },
-    [setShowWithdraw]
-  );
+  const onReceive = React.useCallback((token?: any) => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.AddAssetGateway,
+      info: { symbol: token },
+    });
+  }, []);
+  const onSend = React.useCallback((token?: any, isToL1?: boolean) => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.SendAssetGateway,
+      info: { symbol: token, isToL1 },
+    });
+  }, []);
+  // const onShowDeposit = React.useCallback(
+  //   (token?: any, partner?: boolean) => {
+  //     if (partner) {
+  //       setShowDeposit({ isShow: true, partner: true });
+  //     } else {
+  //       setShowDeposit({ isShow: true, symbol: token });
+  //     }
+  //   },
+  //   [setShowDeposit]
+  // );
+  //
+  // const onShowTransfer = React.useCallback(
+  //   (token?: any) => {
+  //     setShowTransfer({ isShow: true, symbol: token });
+  //   },
+  //   [setShowTransfer]
+  // );
+  //
+  // const onShowWithdraw = React.useCallback(
+  //   (token?: any) => {
+  //     setShowWithdraw({ isShow: true, symbol: token });
+  //   },
+  //   [setShowWithdraw]
+  // );
 
   const assetTitleProps: AssetTitleProps = {
     // btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
-    btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
-    btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
+    // btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
+    // btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
     setHideL2Assets,
     assetInfo: {
       totalAsset: assetsRawData
@@ -339,9 +339,12 @@ export const useGetAssets = () => {
     onShowReceive: () => {
       setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
     },
-    onShowTransfer,
-    onShowWithdraw,
-    showPartner: () => onShowDeposit(undefined, true),
+    onShowSend: () => {
+      setShowAccount({ isShow: true, step: AccountStep.SendAssetGateway });
+    },
+    // onShowTransfer,
+    // onShowWithdraw,
+    // showPartner: () => onShowDeposit(undefined, true),
     // legalEnable,
     // legalShow,
   };
@@ -360,9 +363,8 @@ export const useGetAssets = () => {
     account,
     currency,
     hideL2Assets,
-    onShowTransfer,
-    onShowWithdraw,
-    onShowDeposit,
+    onSend,
+    onReceive,
     assetTitleProps,
     assetTitleMobileExtendProps,
     marketArray,

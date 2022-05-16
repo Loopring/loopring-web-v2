@@ -8,12 +8,9 @@ import { Subject } from "rxjs";
 import { LoopringAPI, store } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 import _ from "lodash";
-import { unlockAccount } from "./unlockAccount";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
 import { AccountCommands } from "./command";
 import { updateAccountStatus } from "../../stores/account/reducer";
-import { connectProvides } from "@loopring-web/web3-provider";
-import { isContract } from "@loopring-web/loopring-sdk";
 
 const subject = new Subject<{ status: AccountCommands; data: any }>();
 
@@ -82,6 +79,7 @@ export const accountServices = {
             accInfo.tags?.split(";").find((item) => /vip/gi.test(item)) ?? "",
           keyNonce: accInfo.keyNonce,
           keySeed: accInfo.keySeed,
+          accAddress: accInfo.owner,
         }
       : {
           readyState: AccountStatus.LOCKED,
@@ -144,73 +142,34 @@ export const accountServices = {
       data: undefined,
     });
   },
-  sendNoAccount: (isContract: boolean) => {
+  sendNoAccount: (ethAddress: string) => {
     store.dispatch(
-      updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT, isContract })
+      updateAccountStatus({
+        readyState: AccountStatus.NO_ACCOUNT,
+        accAddress: ethAddress,
+        _accountIdNotActive: -1,
+      })
     );
     subject.next({
       status: AccountCommands.NoAccount,
       data: undefined,
     });
   },
-  sendNeedUpdateAccount: async (
-    accInfo: sdk.AccountInfo & { isContract: boolean }
-  ) => {
+  sendNeedUpdateAccount: async (accInfo: sdk.AccountInfo) => {
     myLog("sendNeedUpdateAccount accInfo:", accInfo);
     store.dispatch(
       updateAccountStatus({
         readyState: AccountStatus.NOT_ACTIVE,
+        accAddress: accInfo.owner,
         _accountIdNotActive: accInfo.accountId,
         nonce: accInfo.nonce,
         keySeed: accInfo.keySeed,
-        isContract: accInfo.isContract,
       })
     );
     subject.next({
       status: AccountCommands.SignAccount,
       data: accInfo,
     });
-  },
-  sendCheckAcc: async () => {
-    myLog("-------sendCheckAcc enter!");
-    if (store) {
-      const account = store.getState().account;
-      if (LoopringAPI.exchangeAPI) {
-        if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-          const chainId = await connectProvides?.usedWeb3.eth.getChainId();
-          if (chainId !== LoopringAPI.__chainId__) {
-            LoopringAPI.InitApi(chainId as sdk.ChainId);
-          }
-        }
-        const [{ accInfo }, is_Contract] = await Promise.all([
-          LoopringAPI.exchangeAPI.getAccount({
-            owner: account.accAddress,
-          }),
-          isContract(connectProvides.usedWeb3, account.accAddress),
-        ]);
-        if (accInfo === undefined) {
-          if (account.readyState !== AccountStatus.NO_ACCOUNT) {
-            accountServices.sendNoAccount(is_Contract);
-          }
-        } else {
-          if (account.accountId) {
-            if (!account.publicKey.x || !account.publicKey.y) {
-              myLog("-------sendCheckAcc need update account!");
-              accountServices.sendNeedUpdateAccount({
-                ...accInfo,
-                isContract: is_Contract,
-              });
-            } else {
-              myLog("-------need unlockAccount!");
-              unlockAccount();
-            }
-          } else {
-            myLog("unexpected accInfo:", accInfo);
-            throw Error("unexpected accinfo:" + accInfo);
-          }
-        }
-      }
-    }
   },
   sendCheckAccount: async (
     ethAddress: string,
@@ -220,42 +179,39 @@ export const accountServices = {
       "After connect >>,sendCheckAccount: step3 processAccountCheck",
       ethAddress
     );
-    store.dispatch(
-      updateAccountStatus({
-        accAddress: ethAddress,
-        readyState: AccountStatus.UN_CONNECT,
-      })
-    );
+    const account = store.getState().account;
     subject.next({
       status: AccountCommands.ProcessAccountCheck,
       data: undefined,
     });
-    if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-      const chainId = await connectProvides?.usedWeb3.eth.getChainId();
-      if (chainId !== LoopringAPI.__chainId__) {
-        LoopringAPI.InitApi(chainId as sdk.ChainId);
-      }
-    }
-    if (LoopringAPI.exchangeAPI) {
-      // const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
-      //   owner: ethAddress,
-      // });
 
-      const [{ accInfo }, is_Contract] = await Promise.all([
-        LoopringAPI.exchangeAPI.getAccount({
-          owner: ethAddress,
-        }),
-        isContract(connectProvides.usedWeb3, ethAddress),
-      ]);
+    if (_chainId && _chainId !== LoopringAPI.__chainId__) {
+      LoopringAPI.InitApi(_chainId as sdk.ChainId);
+    }
+
+    if (ethAddress && LoopringAPI.exchangeAPI) {
+      const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
+        owner: ethAddress,
+      });
       if (accInfo === undefined) {
-        accountServices.sendNoAccount(is_Contract);
+        if (
+          account.readyState !== AccountStatus.NO_ACCOUNT ||
+          account.accountId !== -1 ||
+          account.accAddress.toLowerCase() !== ethAddress.toLowerCase()
+        ) {
+          accountServices.sendNoAccount(ethAddress);
+        }
       } else {
-        if (accInfo.accountId) {
+        if (account.accountId == accInfo.accountId && account.publicKey.x) {
+          myLog("-------sendCheckAccount already Unlock!");
+          accountServices.sendAccountSigned({
+            ...account,
+          });
+        } else if (accInfo.accountId) {
           if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
             myLog("-------sendCheckAccount need update account!");
             accountServices.sendNeedUpdateAccount({
               ...accInfo,
-              isContract: is_Contract,
             });
           } else {
             myLog("-------need unlockAccount!");
@@ -268,6 +224,13 @@ export const accountServices = {
       }
     } else {
       myLog("unexpected no ethAddress:" + ethAddress);
+      store.dispatch(
+        updateAccountStatus({
+          accAddress: ethAddress,
+          readyState: AccountStatus.UN_CONNECT,
+          _accountIdNotActive: -1,
+        })
+      );
     }
   },
 

@@ -16,10 +16,11 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
     store.getState().account;
   const { idIndex } = store.getState().tokenMap;
   let walletLayer2;
-  if (apiKey && accountId && LoopringAPI.userAPI) {
+
+  if (apiKey && accountId && accountId >= 10000 && LoopringAPI.userAPI) {
     // @ts-ignore
     const { userBalances } = await LoopringAPI.userAPI.getUserBalances(
-      { accountId: accountId, tokens: "" },
+      { accountId, tokens: "" },
       apiKey
     );
 

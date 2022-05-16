@@ -8,6 +8,7 @@ import {
   CardIcon,
   IncomingIcon,
 } from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
 
 const BoxStyled = styled(Box)`` as typeof Box;
 
@@ -20,11 +21,13 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   }
 };
 export const AddAsset = ({
+  symbol,
   addAssetList,
   allowTrade,
   isNewAccount = false,
 }: AddAssetProps) => {
   const { t } = useTranslation("common");
+  const { isMobile } = useSettings();
   return (
     <BoxStyled
       flex={1}
@@ -35,11 +38,14 @@ export const AddAsset = ({
     >
       <Typography
         component={"h3"}
-        variant={"h3"}
+        variant={isMobile ? "h4" : "h3"}
+        whiteSpace={"pre"}
         marginBottom={3}
         marginTop={-1}
       >
-        {isNewAccount ? t("labelAddAssetTitleActive") : t("labelAddAssetTitle")}
+        {isNewAccount
+          ? t("labelAddAssetTitleActive")
+          : t("labelAddAssetTitle", { symbol })}
       </Typography>
       <Box
         display={"flex"}
@@ -49,7 +55,7 @@ export const AddAsset = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={10}
+        paddingX={isMobile ? 7 : 10}
         paddingBottom={4}
       >
         <Typography
@@ -68,6 +74,7 @@ export const AddAsset = ({
                 size={"large"}
                 className={"addAsset"}
                 fullWidth
+                isMobile={isMobile}
                 disabled={
                   !!(
                     item.enableKey &&

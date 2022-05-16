@@ -71,10 +71,12 @@ export function useChargeFees({
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
-  const handleFeeChange = (value: FeeInfo): void => {
+  const handleFeeChange = (_value: FeeInfo): void => {
     const walletMap =
       makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
     let isFeeNotEnough = true;
+    const value =
+      chargeFeeTokenList.find((ele) => _value?.belong === ele.belong) ?? _value;
     if (
       walletMap &&
       value?.belong &&
@@ -225,7 +227,7 @@ export function useChargeFees({
                   __raw__: { fastWithDraw, feeRaw, tokenId },
                 };
                 pre.push(feeInfoTemplate);
-                if (feeInfo === undefined && walletMap && walletMap[token]) {
+                if (_feeInfo === undefined && walletMap && walletMap[token]) {
                   const { count } = walletMap[token] ?? { count: 0 };
                   if (
                     sdk

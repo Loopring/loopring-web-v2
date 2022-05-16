@@ -166,3 +166,30 @@ export const AddAssetList = {
     enableKey: null,
   },
 };
+
+export const SendAssetList = {
+  SendAssetToL2: {
+    key: "SendTOL2",
+    svgIcon: "IncomingIcon",
+    enableKey: "transfer",
+  },
+  SendAssetToMyL1: {
+    key: "SendToMyL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "withdraw",
+  },
+  // SendAssetToOtherL1:{
+  // key: "SendToOtherL1",
+  // svgIcon: "IncomingIcon",
+  // enableKey: "withdraw",
+  // }
+};
+
+export enum AddressError {
+  NoError = "NoError",
+  EmptyAddr = "EmptyAddr",
+  InvalidAddr = "InvalidAddr",
+  ENSResolveFailed = "ENSResolveFailed",
+  IsNotLoopringContract = "IsNotLoopringContract",
+  TimeOut = "TimeOut",
+}

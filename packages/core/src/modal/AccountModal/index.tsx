@@ -1,5 +1,6 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
+  DepositProps,
   // DepositPanelType,
   ModalAccount,
   ModalPanel,
@@ -18,12 +19,14 @@ export const ModalAccountInfo = withTranslation("common")(
     open,
     assetsRawData,
     isLayer1Only,
+    depositProps,
     t,
     ...rest
   }: {
     open: boolean;
     isLayer1Only?: boolean;
     account: Account;
+    depositProps: DepositProps<any, any>;
     onClose?: (e: MouseEvent) => void;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
@@ -42,7 +45,6 @@ export const ModalAccountInfo = withTranslation("common")(
       account,
       transferProps,
       withdrawProps,
-      depositProps,
       nftTransferProps,
       nftWithdrawProps,
       // nftDepositProps,
@@ -59,6 +61,7 @@ export const ModalAccountInfo = withTranslation("common")(
       currentModal,
     } = useAccountModalForUI({
       t,
+      depositProps,
       etherscanBaseUrl,
       onClose,
       isLayer1Only,

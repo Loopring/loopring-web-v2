@@ -10,7 +10,7 @@ export type WalletMapExtend<C> = {
 
 export const makeWalletLayer2 = <C extends { [key: string]: any }>(
   needFilterZero: boolean,
-  _isWithdraw?: boolean
+  _isToL1?: boolean
 ): { walletMap: WalletMapExtend<C> | undefined } => {
   const { walletLayer2 } = store.getState().walletLayer2;
   const { tokenMap } = store.getState().tokenMap;

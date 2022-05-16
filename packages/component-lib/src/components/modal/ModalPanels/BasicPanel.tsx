@@ -17,6 +17,7 @@ import { Link } from "@mui/material";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import { DropdownIconStyled } from "../../tradePanel";
+import { useSettings } from "../../../stores";
 
 export enum IconType {
   LoadingIcon,
@@ -170,6 +171,7 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
     }, [providerName]);
     const [dropdownStatus, setDropdownStatus] =
       React.useState<"up" | "down">("down");
+    const { isMobile } = useSettings();
     return (
       <Box
         flex={1}
@@ -179,7 +181,11 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
         paddingBottom={4}
         width={"100%"}
       >
-        <Typography component={"h3"} variant={"h3"}>
+        <Typography
+          component={"h3"}
+          variant={isMobile ? "h4" : "h3"}
+          whiteSpace={"pre"}
+        >
           {t(title as string)}
         </Typography>
         <Box
@@ -401,8 +407,9 @@ export const ExportAccountBase = (props: PanelProps) => {
 
 export const DepositBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelDeposit",
+    title: "labelL1toL2",
   };
+
   return <BasicPanel {...props} {...propsPatch} />;
 };
 
@@ -422,14 +429,14 @@ export const DeployBase = (props: PanelProps) => {
 
 export const TransferBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelTransfer",
+    title: "labelL2toL2Title",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };
 
 export const WithdrawBase = (props: PanelProps) => {
   const propsPatch = {
-    title: "labelWithdraw",
+    title: "labelL2ToL1Title",
   };
   return <BasicPanel {...propsPatch} {...props} />;
 };

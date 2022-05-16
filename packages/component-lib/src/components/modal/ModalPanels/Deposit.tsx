@@ -45,7 +45,7 @@ export const Deposit_Approve_Submit = (props: PanelProps) => {
 export const Deposit_WaitForAuth = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
-    describe1: props.t("labelDepositWaitForAuth", {
+    describe1: props.t("labelL1toL2WaitForAuth", {
       symbol: props.symbol,
       value: props.value,
       to: props.to ?? "",
@@ -57,7 +57,7 @@ export const Deposit_WaitForAuth = (props: PanelProps) => {
 export const Deposit_Denied = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
-    describe1: props.t("labelDepositDenied", {
+    describe1: props.t("labelL1toL2Denied", {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -68,7 +68,7 @@ export const Deposit_Denied = (props: PanelProps) => {
 export const Deposit_Failed = (props: PanelProps) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t("labelDepositFailed", {
+    describe1: props.t("labelL1toL2Failed", {
       symbol: props.symbol,
       value: props.value,
     }),
@@ -92,7 +92,7 @@ export const Deposit_Submit = (props: PanelProps) => {
         href={`${props.etherscanBaseUrl}tx/${props?.hash ?? ""}`}
       >
         <Trans
-          i18nKey={"labelDepositSubmit"}
+          i18nKey={"labelL1toL2Submit"}
           tOptions={{
             symbol: props.symbol,
             value: props.value,
@@ -119,7 +119,7 @@ export const Deposit_Submit = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
-            {props.t("labelDepositTokenAmount")}
+            {props.t("labelL1toL2TokenAmount")}
           </Typography>
           <Typography variant={"body1"} color={"var(--color-text-primary)"}>
             {props.value + " " + props.symbol}
@@ -131,7 +131,7 @@ export const Deposit_Submit = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
-            {props.t("labelDepositFrom")}
+            {props.t("labelL1toL2From")}
           </Typography>
           <Typography variant={"body1"} color={"var(--color-text-primary)"}>
             {"L1: " + getShortAddr(props.account?.accAddress ?? "")}
@@ -143,7 +143,7 @@ export const Deposit_Submit = (props: PanelProps) => {
           marginTop={2}
         >
           <Typography variant={"body1"} color={"var(--color-text-secondary)"}>
-            {props.t("labelDepositTO")}
+            {props.t("labelL1toL2TO")}
           </Typography>
           <Typography variant={"body1"} color={"var(--color-text-primary)"}>
             {props.to ? "L2: " + getShortAddr(props.to) : "Loopring L2"}
