@@ -15,7 +15,7 @@ const ListStyle = styled(List)`
   margin-left: ${({ theme }) => 3 * theme.unit}px;
   .MuiListItem-root {
     display: list-item;
-    padding-left: 1em;
+    padding: ${({ theme }) => `${theme.unit / 2}px ${theme.unit}px 0`};
   }
 ` as typeof List;
 

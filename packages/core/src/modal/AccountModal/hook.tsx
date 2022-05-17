@@ -251,20 +251,24 @@ export function useAccountModalForUI({
     );
   }, [t]);
 
-  const onBack = React.useCallback(() => {
-    switch (account.readyState) {
-      case AccountStatus.NO_ACCOUNT:
-      case AccountStatus.DEPOSITING:
-        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
-        break;
-      case AccountStatus.LOCKED:
-      case AccountStatus.ACTIVATED:
-        setShowAccount({ isShow: true, step: AccountStep.HadAccount });
-        break;
-      default:
-        setShowAccount({ isShow: false });
+  const onQRBack = React.useCallback(() => {
+    if (Number.isInteger(isShowAccount.info?.backTo)) {
+      setShowAccount({ isShow: true, step: isShowAccount.info?.backTo });
+    } else {
+      switch (account.readyState) {
+        case AccountStatus.NO_ACCOUNT:
+        case AccountStatus.DEPOSITING:
+          setShowAccount({ isShow: true, step: AccountStep.NoAccount });
+          break;
+        case AccountStatus.LOCKED:
+        case AccountStatus.ACTIVATED:
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount });
+          break;
+        default:
+          setShowAccount({ isShow: false });
+      }
     }
-  }, [account.readyState, setShowAccount]);
+  }, [account.readyState, isShowAccount, setShowAccount]);
 
   const backToDepositBtnInfo = React.useMemo(() => {
     return {
@@ -482,7 +486,11 @@ export function useAccountModalForUI({
     {
       ...AddAssetList.FromOtherL2,
       handleSelect: () => {
-        setShowAccount({ isShow: true, step: AccountStep.QRCode });
+        setShowAccount({
+          isShow: true,
+          step: AccountStep.QRCode,
+          info: { backTo: AccountStep.AddAssetGateway },
+        });
       },
     },
     {
@@ -637,7 +645,7 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack,
+        onBack: onQRBack,
         noClose: true,
       },
       [AccountStep.Deposit_Sign_WaitForRefer]: {
@@ -1886,7 +1894,7 @@ export function useAccountModalForUI({
     lockBtn,
     unlockBtn,
     t,
-    onBack,
+    onQRBack,
     backToDepositBtnInfo,
     closeBtnInfo,
     isShowAccount.error,
