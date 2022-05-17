@@ -273,9 +273,14 @@ export function useAccountModalForUI({
   const backToDepositBtnInfo = React.useMemo(() => {
     return {
       btnTxt: "labelRetry",
-      callback: goActiveAccount,
+      callback: () => {
+        setShowAccount({ isShow: false });
+        if (!isLayer1Only) {
+          setShowDeposit({ isShow: true });
+        }
+      },
     };
-  }, []);
+  }, [setShowAccount, isLayer1Only]);
 
   const backToNFTDepositBtnInfo = React.useMemo(() => {
     return {
