@@ -184,8 +184,8 @@ export const WithdrawWrap = <
           <Typography component={"h4"} variant={"h3"} marginRight={1}>
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
-              ? t("labelSendTol1DeployTitle")
-              : t("labelSendTol1Title")}
+              ? t("labelL2ToL1DeployTitle")
+              : t("labelL2ToL1Title")}
           </Typography>
           <HelpIcon
             {...bindHover(popupState)}

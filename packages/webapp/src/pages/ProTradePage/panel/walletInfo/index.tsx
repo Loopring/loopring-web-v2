@@ -443,7 +443,7 @@ const UnLookView = React.memo(
                   setShowAccount({
                     isShow: true,
                     step: AccountStep.AddAssetGateway,
-                    info: { symbol: coinA },
+                    // info: { symbol: coinA },
                   })
                 }
               >
@@ -459,7 +459,7 @@ const UnLookView = React.memo(
                   setShowAccount({
                     isShow: true,
                     step: AccountStep.SendAssetGateway,
-                    info: { symbol: coinA },
+                    // info: { symbol: coinA },
                   })
                 }
               >

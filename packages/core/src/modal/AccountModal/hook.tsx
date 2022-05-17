@@ -496,7 +496,9 @@ export function useAccountModalForUI({
     {
       ...AddAssetList.FromExchange,
       handleSelect: () => {
-        window.open(`https://www.layerswap.io/?destNetwork=loopring_mainnet`);
+        window.open(
+          `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}`
+        );
         window.opener = null;
       },
     },
@@ -640,6 +642,9 @@ export function useAccountModalForUI({
               ...rest,
               account,
               ...account,
+              isNewAccount: depositProps.isNewAccount,
+              isForL2Send:
+                isShowAccount.info?.backTo === AccountStep.AddAssetGateway,
               etherscanUrl: rest.etherscanBaseUrl,
               t,
             }}

@@ -45,8 +45,8 @@ export default {
   depositLabelLinkRecent: "Recent deposit history",
   depositLabelRefer: "Referral address, account id or ENS. (Optional)",
   depositLabelPlaceholder: "address, account id or ENS",
-  labelSendTol1Title: "Send to L1",
-  labelSendTol1DeployTitle: "Deploy & Send to L1",
+  labelL2ToL1Title: "Send to L1",
+  labelL2ToL1DeployTitle: "Deploy & Send to L1",
   labelL2toL1EnterToken: "Select Token",
   withdrawDescription:
     "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
@@ -448,8 +448,8 @@ export default {
   labelNFTTokenMinted: "Token Minted:",
   labelNFTDescription: "Description:",
   labelNFTDate: "Date:",
-  labelNFTSendL2: "Send L2",
-  labelNFTSendL1: "Send L1",
+  labelNFTSendL2Btn: "Send to another L2",
+  labelNFTSendL1Btn: "Send to L1",
   labelNFTDeploySendL1: "Deploy & Send L1",
   labelNFTDeployContract: "Deploy",
   labelNFTDeploying: "Deploying",
@@ -694,4 +694,10 @@ export default {
   labelL1toL2: "Add L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
     "Please make sure one of the below tokens with the minimum quantity in your Layer 2 account to proceed:",
+  labelReceiveAddress: "Receive Address",
+  labelAssets: "L2 Assets",
+  labelReceiveAddressGuide:
+    "Please using Loopring L2 account to send {{symbol}}",
+  labelL2toL2: "Send to another L2",
+  labelL2toL1: "Send to L1",
 };

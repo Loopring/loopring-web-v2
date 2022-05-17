@@ -94,6 +94,7 @@ export const TransferWrap = <
   handleSureItsLayer2,
   handleFeeChange,
   isThumb,
+  isConfirmTransfer,
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,
@@ -124,7 +125,6 @@ export const TransferWrap = <
     React.useState<"up" | "down">("down");
   const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] =
     React.useState<"up" | "down">("up");
-  const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
 
   const ITEM_MARGIN = isConfirmTransfer ? 3 : 2;
 
@@ -598,17 +598,11 @@ export const TransferWrap = <
           variant={"contained"}
           size={"medium"}
           color={"primary"}
-          onClick={
-            isConfirmTransfer
-              ? () => {
-                  const tradeDataWithMemo = { ...tradeData, memo: memo };
-                  // onTransferClick(tradeData)
-                  onTransferClick(tradeDataWithMemo);
-                }
-              : () => {
-                  setIsConfirmTransfer(true);
-                }
-          }
+          onClick={() => {
+            const tradeDataWithMemo = { ...tradeData, memo: memo };
+            // onTransferClick(tradeData)
+            onTransferClick(tradeDataWithMemo);
+          }}
           loading={
             !getDisabled && transferBtnStatus === TradeBtnStatus.LOADING
               ? "true"

@@ -58,6 +58,7 @@ export enum AddressError {
 
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
+  isConfirmTransfer: boolean;
   addressDefault?: string;
   addressOrigin: "Wallet" | null;
   handleSureItsLayer2: (sure: boolean) => void;
