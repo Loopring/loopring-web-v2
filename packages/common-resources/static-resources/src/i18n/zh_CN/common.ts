@@ -435,8 +435,8 @@ export default {
   labelNFTTokenMinted: "Token Minted:",
   labelNFTDescription: "Description:",
   labelNFTDate: "Date:",
-  labelNFTSendL2Btn: "Send L2",
-  labelNFTSendL1Btn: "Send L1",
+  labelNFTSendL2Btn: "Send to another L2",
+  labelNFTSendL1Btn: "Send to L1",
   labelNFTDeploySendL1: "Deploy & Send L1",
   labelNFTDeployContract: "Deploy",
   labelNFTDeploying: "Deploying",
@@ -654,9 +654,9 @@ export default {
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
   labelL1toL2TO: "To Loopring L2",
-  labelAddAssetTitle: "Add L2 assets",
+  labelAddAssetTitle: "Add L2 {{symbol}} assets",
   labelSendAssetTitle: "Send L2 assets",
-  labelAddAssetHowto: "How would you like to activate L2 account",
+  labelAddAssetHowto: "How would you like to add L2 assets?",
   labelAddAssetTitleActive: "Add L2 assets & Active",
   labelFromMyL1: "From My L1",
   labelFromOtherL1: "From Other L1",
@@ -673,6 +673,7 @@ export default {
   labelWrongNetworkGuideTitle: "Wrong Network",
   labelWrongNetworkGuide:
     "Your choose network is not on Loopring support list, Please choose Ethereum Main Network or test Network Goerli",
+  labelSenAssetTitle: "L2 Send {{symbol}}",
   labelSendTOL2: "To another Loopring L2 account",
   labelSendToMyL1: "To L1 account",
   labelSendToOtherL1: "To another L1 account",
@@ -680,4 +681,18 @@ export default {
   labelL1toL2: "Add L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
     "Please make sure one of the below tokens with the minimum quantity in your Layer 2 account to proceed:",
+  labelReceiveAddress: "Receive Address",
+  labelAssets: "L2 Assets",
+  labelReceiveAddressGuide:
+    "Please using Loopring L2 account to send {{symbol}}",
+  labelL2toL2: "Send to another L2",
+  labelL2toL1: "Send to L1",
+  labelBenefitL2:
+    "By activating Loopring Layer2 account, you will be able to utilize all the cool features of Loopring Layer 2 with up to 100X cheaper gas fee - e.g. token/NFT transfer, DEX buy/sell, AMM investment etc.",
+  labelNotBalancePayForActive: "You have insufficient balance",
+  labelHaveInProcessingL1toL2:
+    "If you have already started depositing, please wait a while then recheck as transaction in Ethereum does take time; else please add assets to Loopring Layer 2 now.",
+  labelWaitingL1toL2: "Waiting",
+  labelAddAssetGateBtn: "add assets",
+  labelActiveLayer2Btn: "Activate L2 Account",
 };

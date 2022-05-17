@@ -127,8 +127,7 @@ import {
   mintService,
   goActiveAccount,
 } from "@loopring-web/core";
-
-import { WalletType } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 export function useAccountModalForUI({
   t,
@@ -524,13 +523,21 @@ export function useAccountModalForUI({
       },
     },
   ];
-
+  const [isAddressContract, setIsAddressContract] =
+    React.useState<undefined | boolean>(undefined);
+  React.useEffect(() => {
+    if (account.accAddress && connectProvides.usedWeb3) {
+      sdk
+        .isContract(connectProvides.usedWeb3, account.accAddress)
+        .then((isContract) => setIsAddressContract(isContract));
+    }
+  }, [account.accAddress, connectProvides.usedWeb3]);
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.CheckingActive]: {
         view: (
           <CheckActiveStatus
-            account={account}
+            account={{ ...account, isContract: isAddressContract }}
             // isFeeNotEnough={activeAccountProps.isFeeNotEnough}
             walletMap={activeAccountProps.walletMap}
             chargeFeeTokenList={
@@ -1722,7 +1729,7 @@ export function useAccountModalForUI({
               if (walletServices)
                 if (isShowAccount.info && isShowAccount.info.walletType) {
                   const walletType = isShowAccount.info
-                    .walletType as WalletType;
+                    .walletType as sdk.WalletType;
                   if (
                     walletType.isContract ||
                     walletType.isInCounterFactualStatus
@@ -1879,6 +1886,7 @@ export function useAccountModalForUI({
       },
     });
   }, [
+    isAddressContract,
     account,
     activeAccountProps.walletMap,
     activeAccountProps.chargeFeeTokenList,

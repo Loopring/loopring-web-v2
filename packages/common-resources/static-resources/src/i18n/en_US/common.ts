@@ -436,8 +436,8 @@ export default {
     "Market orders \n are transactions meant to execute \n as quickly as possible at the current market price.",
   labelTransactions: "Transactions",
   labelMyRewards: "My Rewards",
-  labelMyL1toL2Hash: "My L1 \u2192 L2 Transaction Hash",
-  labelMyL1toL2HashEmpty: "My L1 \u2192 L2 transactions will show up here.",
+  labelL1toL2Hash: "L1 \u2192 L2 Transaction Hash",
+  labelL1toL2HashEmpty: "L1 \u2192 L2 transactions will show up here.",
   labelL1toL2Record: "L1 \u2192 L2 {{value}} {{symbol}}",
   labelClearAll: "Clear All",
   labelProviderAgree:
@@ -700,4 +700,12 @@ export default {
     "Please using Loopring L2 account to send {{symbol}}",
   labelL2toL2: "Send to another L2",
   labelL2toL1: "Send to L1",
+  labelBenefitL2:
+    "By activating Loopring Layer2 account, you will be able to utilize all the cool features of Loopring Layer 2 with up to 100X cheaper gas fee - e.g. token/NFT transfer, DEX buy/sell, AMM investment etc.",
+  labelNotBalancePayForActive: "You have insufficient balance",
+  labelHaveInProcessingL1toL2:
+    "If you have already started depositing, please wait a while then recheck as transaction in Ethereum does take time; else please add assets to Loopring Layer 2 now.",
+  labelWaitingL1toL2: "Waiting",
+  labelAddAssetGateBtn: "add assets",
+  labelActiveLayer2Btn: "Activate L2 Account",
 };

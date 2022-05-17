@@ -7,18 +7,17 @@ import {
   WalletMap,
 } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
-import { Box, Button, List, ListItem, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { toBig } from "@loopring-web/loopring-sdk";
-import styled from "@emotion/styled";
-const ListStyle = styled(List)`
-  list-style: outside;
-  margin-left: ${({ theme }) => 3 * theme.unit}px;
-  .MuiListItem-root {
-    display: list-item;
-    padding: ${({ theme }) => `${theme.unit / 2}px ${theme.unit}px 0`};
-  }
-` as typeof List;
-
+// import styled from "@emotion/styled";
+// const ListStyle = styled(List)`
+//   list-style: outside;
+//   margin-left: ${({ theme }) => 3 * theme.unit}px;
+//   .MuiListItem-root {
+//     display: list-item;
+//     padding: ${({ theme }) => `${theme.unit / 2}px ${theme.unit}px 0`};
+//   }
+// ` as typeof List;
 export const CheckActiveStatus = ({
   walletMap,
   account,
@@ -28,7 +27,7 @@ export const CheckActiveStatus = ({
   isDepositing,
   chargeFeeTokenList = [],
 }: {
-  account: Account;
+  account: Account & { isContract: boolean | undefined };
   chargeFeeTokenList: FeeInfo[];
   goUpdateAccount: () => void;
   goDisconnect: () => void;
@@ -85,30 +84,47 @@ export const CheckActiveStatus = ({
         paddingX={5 / 2}
       >
         <Box marginBottom={1} display={"flex"} flexDirection={"column"}>
-          <Typography variant={"body1"} color={"var(--color-text-third)"}>
-            By activating Loopring Layer2 account, you will be able to:
+          <Typography variant={"body1"} color={"textPrimary"}>
+            {t("labelBenefitL2")}
           </Typography>
-          <ListStyle>
-            <ListItem>
-              <Typography variant={"body1"} color={"textSecondary"}>
-                100X Transaction fees are reduced of Loopring L2
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant={"body1"} color={"textSecondary"}>
-                ~2000 transactions per second of Loopring L2
-              </Typography>
-            </ListItem>
-            <ListItem>
-              <Typography variant={"body1"} color={"textSecondary"}>
-                Assets on Loopring L2 are equally secure as they are on the
-                Ethereum mainnet.
-              </Typography>
-            </ListItem>
-          </ListStyle>
+          {/*<Typography variant={"body1"} color={"var(--color-text-third)"}>*/}
+          {/*  By activating Loopring Layer2 account, you will be able to:*/}
+          {/*</Typography>*/}
+          {/*<ListStyle>*/}
+          {/*  <ListItem>*/}
+          {/*    <Typography*/}
+          {/*      component={"span"}*/}
+          {/*      variant={"body1"}*/}
+          {/*      color={"textSecondary"}*/}
+          {/*    >*/}
+          {/*      100X Transaction fees are reduced of Loopring L2*/}
+          {/*    </Typography>*/}
+          {/*  </ListItem>*/}
+          {/*  <ListItem>*/}
+          {/*    <Typography*/}
+          {/*      component={"span"}*/}
+          {/*      variant={"body1"}*/}
+          {/*      color={"textSecondary"}*/}
+          {/*    >*/}
+          {/*      ~2000 transactions per second of Loopring L2*/}
+          {/*    </Typography>*/}
+          {/*  </ListItem>*/}
+          {/*  <ListItem>*/}
+          {/*    <Typography*/}
+          {/*      component={"span"}*/}
+          {/*      variant={"body1"}*/}
+          {/*      color={"textSecondary"}*/}
+          {/*    >*/}
+          {/*      Assets on Loopring L2 are equally secure as they are on the*/}
+          {/*      Ethereum mainnet.*/}
+          {/*    </Typography>*/}
+          {/*  </ListItem>*/}
+          {/*</ListStyle>*/}
         </Box>
 
-        {chargeFeeTokenList.length === 0 || walletMap === undefined ? (
+        {chargeFeeTokenList.length === 0 ||
+        walletMap === undefined ||
+        account.isContract === undefined ? (
           <Box
             flex={1}
             display={"flex"}
@@ -127,126 +143,131 @@ export const CheckActiveStatus = ({
           </Box>
         ) : (
           <>
-            <Typography
-              component={"p"}
-              variant={"body1"}
-              color={"var(--color-text-third)"}
-              marginTop={2}
-              marginBottom={1}
-            >
-              {t("labelActivatedAccountChargeFeeList")}
-            </Typography>
-            {chargeFeeTokenList?.map((item, index) => (
-              <Typography
-                key={index + item.belong}
-                color={"textSecondary"}
-                display={"flex-inline"}
-                paddingY={1 / 2}
-                marginLeft={2}
-              >
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"inherit"}
-                  display={"inline-block"}
-                  minWidth={60}
-                >
-                  {item.belong + ": "}
-                </Typography>
-                <Typography component={"span"} color={"inherit"}>
-                  {`fee is ${item.fee};`}
-                </Typography>
-                <Typography component={"span"} color={"inherit"}>
-                  {` Your L2 asset is ${
-                    walletMap && walletMap[item.belong]
-                      ? walletMap[item.belong].count
-                      : EmptyValueTag
-                  }`}
-                </Typography>
-              </Typography>
-            ))}
-
             {account.isContract ? (
-              <Typography component={"p"} variant={"body1"} color={"inherit"}>
-                {t("labelActivatedAccountNotSupport")}
-              </Typography>
-            ) : !!isFeeNotEnough ? (
               <Typography
-                color={"var(--color-warning)"}
                 component={"p"}
                 variant={"body1"}
+                color={"error"}
                 marginTop={1}
               >
-                You have insufficient balance
+                {t("labelActivatedAccountNotSupport")}
               </Typography>
             ) : (
-              !!isFeeNotEnough &&
-              isDepositing && (
+              <>
                 <Typography
-                  color={"var(--color-warning)"}
                   component={"p"}
                   variant={"body1"}
+                  color={"var(--color-text-third)"}
                   marginTop={2}
+                  marginBottom={1}
                 >
-                  If you have already started deposting, please wait a while
-                  then recheck as transaction in Ethereum does take time; else
-                  please add assets to Loopring Layer 2 now.
+                  {t("labelActivatedAccountChargeFeeList")}
                 </Typography>
-              )
+                {chargeFeeTokenList?.map((item, index) => (
+                  <Typography
+                    key={index + item.belong}
+                    color={"textSecondary"}
+                    display={"flex-inline"}
+                    paddingY={1 / 2}
+                    marginLeft={2}
+                  >
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={"inherit"}
+                      display={"inline-block"}
+                      minWidth={60}
+                    >
+                      {item.belong + ": "}
+                    </Typography>
+                    <Typography component={"span"} color={"inherit"}>
+                      {`fee is ${item.fee};`}
+                    </Typography>
+                    <Typography component={"span"} color={"inherit"}>
+                      {` Your L2 asset is ${
+                        walletMap && walletMap[item.belong]
+                          ? walletMap[item.belong].count
+                          : EmptyValueTag
+                      }`}
+                    </Typography>
+                  </Typography>
+                ))}
+                {!!isFeeNotEnough ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    component={"p"}
+                    variant={"body1"}
+                    marginTop={1}
+                  >
+                    {t("labelNotBalancePayForActive")}
+                  </Typography>
+                ) : (
+                  !!isFeeNotEnough &&
+                  isDepositing && (
+                    <Typography
+                      color={"var(--color-warning)"}
+                      component={"p"}
+                      variant={"body1"}
+                      marginTop={2}
+                    >
+                      {t("labelHaveInProcessingL1toL2")}
+                    </Typography>
+                  )
+                )}
+              </>
             )}
-          </>
-        )}
-
-        <Box marginTop={3}>
-          {account?.isContract ? (
-            <Button
-              size={"large"}
-              fullWidth
-              onClick={goDisconnect}
-              variant={"contained"}
-            >
-              disconnect
-            </Button>
-          ) : isFeeNotEnough ? (
-            account.readyState === AccountStatus.DEPOSITING ? (
-              <Box display={"flex"}>
-                <Box paddingRight={2} width={"50%"}>
-                  <Button size={"large"} fullWidth onClick={goSend}>
-                    waiting
-                  </Button>
-                </Box>
-                <Box width={"50%"}>
+            <Box marginTop={3}>
+              {account?.isContract ? (
+                <Button
+                  size={"large"}
+                  fullWidth
+                  onClick={goDisconnect}
+                  variant={"contained"}
+                >
+                  {t("labelDisconnect")}
+                </Button>
+              ) : isFeeNotEnough ? (
+                account.readyState === AccountStatus.DEPOSITING ? (
+                  <Box display={"flex"}>
+                    <Box paddingRight={2} width={"50%"}>
+                      <Button size={"large"} fullWidth onClick={goSend}>
+                        {t("labelWaitingL1toL2")}
+                      </Button>
+                    </Box>
+                    <Box width={"50%"}>
+                      <Button
+                        size={"medium"}
+                        fullWidth
+                        onClick={goSend}
+                        variant={"contained"}
+                      >
+                        {t("labelAddAssetGateBtn")}
+                      </Button>
+                    </Box>
+                  </Box>
+                ) : (
                   <Button
-                    size={"medium"}
+                    size={"large"}
                     fullWidth
                     onClick={goSend}
                     variant={"contained"}
                   >
-                    add asset
+                    {t("labelAddAssetGateBtn")}
                   </Button>
-                </Box>
-              </Box>
-            ) : (
-              <Button
-                size={"large"}
-                fullWidth
-                onClick={goSend}
-                variant={"contained"}
-              >
-                Add asset
-              </Button>
-            )
-          ) : (
-            <Button
-              size={"large"}
-              variant={"contained"}
-              fullWidth
-              onClick={goUpdateAccount}
-            >
-              Active Account
-            </Button>
-          )}
-        </Box>
+                )
+              ) : (
+                <Button
+                  size={"large"}
+                  variant={"contained"}
+                  fullWidth
+                  onClick={goUpdateAccount}
+                >
+                  {t("labelActiveLayer2Btn")}
+                </Button>
+              )}
+            </Box>
+          </>
+        )}
       </Box>
     </Box>
   );

@@ -56,7 +56,8 @@ export const btnLabel = {
     },
   ],
 };
-export const goActiveAccount = async () => {
+export const goActiveAccount = () => {
+  // accountServices.sendCheckAcc();
   store.dispatch(accountReducer.changeShowModel({ _userOnModel: false }));
   store.dispatch(
     setShowAccount({ isShow: true, step: AccountStep.CheckingActive })

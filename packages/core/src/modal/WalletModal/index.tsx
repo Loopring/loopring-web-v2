@@ -4,7 +4,6 @@ import {
   AccountStep,
   CommonConnectInProgress,
   ConfirmLinkCopy,
-  ConfirmLinkCopyImpact,
   ConnectFailed,
   ConnectSuccess,
   InformationForCoinBase,
@@ -19,7 +18,7 @@ import {
   WrongNetworkGuide,
 } from "@loopring-web/component-lib";
 import { ChainId } from "@loopring-web/loopring-sdk";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   AccountStatus,
   Bridge,
@@ -29,7 +28,6 @@ import {
   globalSetup,
   myLog,
   SagaStatus,
-  setMyLog,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { ConnectProviders } from "@loopring-web/web3-provider";
@@ -44,16 +42,9 @@ import {
 } from "@loopring-web/core";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-
-export const metaMaskCallback = async () => {
+import { updateSystem } from "../../stores/system/reducer";
+const providerCallback = async () => {
   const { _chainId } = store.getState().system;
-  store.dispatch(
-    accountReducer.updateAccountStatus({
-      connectName: ConnectProviders.MetaMask,
-    })
-  );
-  await connectProvides.MetaMask();
-
   // statusAccountUnset();
   if (connectProvides.usedProvide) {
     let chainId: ChainId = Number(
@@ -64,10 +55,51 @@ export const metaMaskCallback = async () => {
         ? (chainId as ChainId)
         : ChainId.MAINNET;
     if (chainId !== _chainId) {
-      store.dispatch(accountReducer.updateAccountStatus({ chainId }));
+      store.dispatch(updateSystem({ chainId }));
     }
     return;
   }
+};
+
+export const metaMaskCallback = async () => {
+  const { _chainId } = store.getState().system;
+  store.dispatch(
+    accountReducer.updateAccountStatus({
+      connectName: ConnectProviders.MetaMask,
+    })
+  );
+  await connectProvides.MetaMask();
+  providerCallback();
+};
+const CoinbaseCallback = async () => {
+  store.dispatch(
+    accountReducer.updateAccountStatus({
+      connectName: ConnectProviders.Coinbase,
+    })
+  );
+  await connectProvides.Coinbase();
+
+  providerCallback();
+};
+const gameStopCallback = async () => {
+  store.dispatch(
+    accountReducer.updateAccountStatus({
+      connectName: ConnectProviders.GameStop,
+    })
+  );
+  await connectProvides.GameStop();
+  // statusAccountUnset();
+  providerCallback();
+};
+const walletConnectCallback = async () => {
+  // updateAccount({ connectName: ConnectProviders.WalletConnect });
+  store.dispatch(
+    accountReducer.updateAccountStatus({
+      connectName: ConnectProviders.WalletConnect,
+    })
+  );
+  await connectProvides.WalletConnect();
+  providerCallback();
 };
 export const ModalWalletConnectPanel = withTranslation("common")(
   ({
@@ -83,15 +115,8 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     wait?: number;
     onClose?: (e: MouseEvent) => void;
   } & WithTranslation) => {
-    // const [_step, setStep] = React.useState<number>(step === undefined? WalletConnectStep.Provider: step);
-    const {
-      account,
-      updateAccount,
-      setShouldShow,
-      status: accountStatus,
-    } = useAccount();
+    const { account, setShouldShow, status: accountStatus } = useAccount();
     const { isMobile } = useSettings();
-    const { updateSystem, chainId: _chainId } = useSystem();
     const {
       modals: { isShowConnect, isWrongNetworkGuide },
       setShowConnect,
@@ -107,63 +132,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const [stateCheck, setStateCheck] = React.useState<boolean>(false);
     const [connectProvider, setConnectProvider] =
       React.useState<boolean>(false);
-    const CoinbaseCallback = React.useCallback(async () => {
-      updateAccount({ connectName: ConnectProviders.Coinbase });
-      await connectProvides.Coinbase();
 
-      // statusAccountUnset();
-      if (connectProvides.usedProvide) {
-        let chainId: ChainId = Number(
-          await connectProvides.usedWeb3?.eth.getChainId()
-        );
-        chainId =
-          chainId && chainId === ChainId.GOERLI
-            ? (chainId as ChainId)
-            : ChainId.MAINNET;
-        if (chainId !== _chainId) {
-          updateSystem({ chainId });
-        }
-        return;
-      }
-    }, [_chainId]);
-    const gameStopCallback = React.useCallback(async () => {
-      updateAccount({ connectName: ConnectProviders.GameStop });
-      await connectProvides.GameStop();
-
-      // statusAccountUnset();
-      if (connectProvides.usedProvide) {
-        let chainId: ChainId = Number(
-          await connectProvides.usedWeb3?.eth.getChainId()
-        );
-        chainId =
-          chainId && chainId === ChainId.GOERLI
-            ? (chainId as ChainId)
-            : ChainId.MAINNET;
-        if (chainId !== _chainId) {
-          updateSystem({ chainId });
-        }
-        return;
-      }
-    }, [_chainId]);
-    const walletConnectCallback = React.useCallback(async () => {
-      updateAccount({ connectName: ConnectProviders.WalletConnect });
-      await connectProvides.WalletConnect();
-
-      // statusAccountUnset();
-      if (connectProvides.usedProvide) {
-        let chainId: ChainId = Number(
-          await connectProvides.usedWeb3?.eth.getChainId()
-        );
-        chainId =
-          chainId && chainId === ChainId.GOERLI
-            ? (chainId as ChainId)
-            : ChainId.MAINNET;
-        if (chainId !== _chainId) {
-          updateSystem({ chainId });
-        }
-        return;
-      }
-    }, [_chainId]);
     const _onClose = React.useCallback(async (e: any) => {
       setShouldShow(false);
       setShowConnect({ isShow: false });
@@ -190,7 +159,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
 
     const [processingCallback, setProcessingCallback] =
       React.useState<{ callback: () => Promise<void> } | undefined>(undefined);
-    useEffect(() => {
+    React.useEffect(() => {
       if (
         stateCheck === true &&
         [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus) !==
@@ -376,7 +345,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           },
         ];
 
-    const [copyToastOpen, setCopyToastOpen] = useState(false);
+    const [copyToastOpen, setCopyToastOpen] = React.useState(false);
     const onRetry = React.useCallback(async () => {
       const index = gatewayList.findIndex((item) => {
         return item.key === account.connectName;
@@ -406,7 +375,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                   step: AccountStep.Deposit_Submit,
                 });
                 break;
-              case "NO_ACCOUNT":
+              case AccountStatus.NO_ACCOUNT:
                 setShowAccount({ isShow: true, step: AccountStep.NoAccount });
                 break;
             }

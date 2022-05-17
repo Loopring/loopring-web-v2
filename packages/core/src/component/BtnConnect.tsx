@@ -64,16 +64,6 @@ export const WalletConnectL2Btn = withTranslation(["common"], {
       fullWidth={true}
       style={{ maxWidth: "280px" }}
       onClick={() => {
-        // remove the middle account status panel
-        // make deposite directly to create an account
-        // if (account.readyState === AccountStatus.NO_ACCOUNT) {
-        //   myLog("DEPOSITING! sendCheckAcc");
-        //   accountServices.sendCheckAcc();
-        //   setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
-        //   // setShowDeposit({ isShow: true });
-        //
-        //   return;
-        // }
         accountStaticCallBack(_btnClickMap, []);
       }}
     >

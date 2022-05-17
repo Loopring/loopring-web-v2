@@ -1,11 +1,6 @@
 import React from "react";
 import { AccountStatus, SagaStatus } from "@loopring-web/common-resources";
-import {
-  useWalletLayer1,
-  useWalletLayer2,
-  useAccount,
-  useConnect,
-} from "@loopring-web/core";
+import { useWalletLayer1, useAccount, useConnect } from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state });

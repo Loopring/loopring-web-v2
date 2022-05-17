@@ -20,7 +20,13 @@ export const useActiveAccount = <T>(): {
   activeAccountProps: ResetProps<T>;
 } => {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-  const { setShowActiveAccount, setShowAccount } = useOpenModals();
+  const {
+    setShowActiveAccount,
+    setShowAccount,
+    modals: {
+      isShowActiveAccount: { isShow },
+    },
+  } = useOpenModals();
   const { status: walletLayer2Status } = useWalletLayer2();
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>)
@@ -68,6 +74,11 @@ export const useActiveAccount = <T>(): {
       enableBtn();
     }
   }, [isFeeNotEnough]);
+  React.useEffect(() => {
+    if (isShow) {
+      checkFeeIsEnough();
+    }
+  }, [isShow]);
 
   const onActiveAccountClick = () => {
     if (activeAccountValue?.fee?.belong && activeAccountValue?.fee?.__raw__) {
