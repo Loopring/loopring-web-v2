@@ -10,13 +10,23 @@ export const useReset = <T extends FeeInfo>(): {
   resetProps: ResetProps<T>;
 } => {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-  const { setShowResetAccount } = useOpenModals();
+  const {
+    setShowResetAccount,
+    modals: {
+      isShowResetAccount: { isShow },
+    },
+  } = useOpenModals();
 
-  const { chargeFeeTokenList, isFeeNotEnough, handleFeeChange, feeInfo } =
-    useChargeFees({
-      requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
-      updateData: undefined,
-    });
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
+    updateData: undefined,
+  });
   React.useEffect(() => {
     if (isFeeNotEnough) {
       disableBtn();
@@ -24,6 +34,12 @@ export const useReset = <T extends FeeInfo>(): {
       enableBtn();
     }
   }, [isFeeNotEnough]);
+
+  React.useEffect(() => {
+    if (isShow) {
+      checkFeeIsEnough();
+    }
+  }, [isShow]);
 
   const { goUpdateAccount } = useUpdateAccount();
 
