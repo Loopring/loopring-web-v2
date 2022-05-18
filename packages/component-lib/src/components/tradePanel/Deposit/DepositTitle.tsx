@@ -19,7 +19,7 @@ export const DepositTitle = ({ title, description }: any) => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h4"}
+        variant={isMobile ? "h5" : "h3"}
         marginRight={1}
         className={"depositTitle"}
       >
