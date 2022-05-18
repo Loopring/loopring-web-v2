@@ -4,7 +4,7 @@ import {
   FeeInfo,
   WalletMap,
 } from "@loopring-web/common-resources";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 export const CheckActiveStatus = ({
@@ -205,17 +205,30 @@ export const CheckActiveStatus = ({
                       display={"inline-block"}
                       minWidth={60}
                     >
-                      {item.belong + ": "}
-                    </Typography>
-                    <Typography component={"span"} color={"inherit"}>
-                      {`fee is ${item.fee};`}
-                    </Typography>
-                    <Typography component={"span"} color={"inherit"}>
-                      {` Your L2 asset is ${
-                        walletMap && walletMap[item.belong]
-                          ? walletMap[item.belong].count
-                          : EmptyValueTag
-                      }`}
+                      <Trans
+                        i18nKey={"labelBalanceActiveAccountFee"}
+                        tOptions={{
+                          symbol: item.belong,
+                          fee: item.fee,
+                          count:
+                            walletMap && walletMap[item.belong]
+                              ? walletMap[item.belong].count
+                              : EmptyValueTag,
+                        }}
+                      >
+                        {item.belong}:
+                        <Typography component={"span"} color={"inherit"}>
+                          {`Fee is ${item.fee};`}
+                        </Typography>
+                        <Typography
+                          display={"inline-flex"}
+                          component={"span"}
+                          color={"inherit"}
+                          marginLeft={2}
+                        >
+                          {` Your L2 asset is balance`}
+                        </Typography>
+                      </Trans>
                     </Typography>
                   </Typography>
                 ))}

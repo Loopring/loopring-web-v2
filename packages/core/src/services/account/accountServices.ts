@@ -80,6 +80,7 @@ export const accountServices = {
             accInfo.tags?.split(";").find((item) => /vip/gi.test(item)) ?? "",
           keyNonce: accInfo.keyNonce,
           keySeed: accInfo.keySeed,
+          accAddress: accInfo.owner,
         }
       : {
           readyState: AccountStatus.LOCKED,
@@ -142,11 +143,11 @@ export const accountServices = {
       data: undefined,
     });
   },
-  sendNoAccount: (isContract: boolean) => {
+  sendNoAccount: (ethAddress: string) => {
     store.dispatch(
       updateAccountStatus({
         readyState: AccountStatus.NO_ACCOUNT,
-        isContract,
+        accAddress: ethAddress,
         _accountIdNotActive: -1,
       })
     );
@@ -162,6 +163,7 @@ export const accountServices = {
     store.dispatch(
       updateAccountStatus({
         readyState: AccountStatus.NOT_ACTIVE,
+        accAddress: accInfo.owner,
         _accountIdNotActive: accInfo.accountId,
         nonce: accInfo.nonce,
         keySeed: accInfo.keySeed,
@@ -173,53 +175,6 @@ export const accountServices = {
       data: accInfo,
     });
   },
-  // sendCheckAcc: async () => {
-  //   myLog("-------sendCheckAcc enter!");
-  //   if (store) {
-  //     const account = store.getState().account;
-  //     if (LoopringAPI.exchangeAPI) {
-  //       if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-  //         const chainId = await connectProvides?.usedWeb3.eth.getChainId();
-  //         if (chainId !== LoopringAPI.__chainId__) {
-  //           LoopringAPI.InitApi(chainId as sdk.ChainId);
-  //         }
-  //       }
-  //       const [{ accInfo }, isContract] = await Promise.all([
-  //         LoopringAPI.exchangeAPI.getAccount({
-  //           owner: account.accAddress,
-  //         }),
-  //         sdk.isContract(connectProvides.usedWeb3, account.accAddress),
-  //       ]);
-  //       //@ts-ignore
-  //       let is_Contract = true;
-  //       if (accInfo === undefined) {
-  //         if (
-  //           account.readyState !== AccountStatus.NO_ACCOUNT ||
-  //           account.accountId !== -1 ||
-  //           account.isContract != is_Contract
-  //         ) {
-  //           accountServices.sendNoAccount(is_Contract);
-  //         }
-  //       } else {
-  //         if (account.accountId) {
-  //           if (!account.publicKey.x || !account.publicKey.y) {
-  //             myLog("-------sendCheckAcc need update account!");
-  //             accountServices.sendNeedUpdateAccount({
-  //               ...accInfo,
-  //               isContract: is_Contract,
-  //             });
-  //           } else {
-  //             myLog("-------need unlockAccount!");
-  //             unlockAccount();
-  //           }
-  //         } else {
-  //           myLog("unexpected accInfo:", accInfo);
-  //           throw Error("unexpected accinfo:" + accInfo);
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
   sendCheckAccount: async (
     ethAddress: string,
     _chainId?: sdk.ChainId | undefined
@@ -229,13 +184,6 @@ export const accountServices = {
       ethAddress
     );
     const account = store.getState().account;
-    store.dispatch(
-      updateAccountStatus({
-        accAddress: ethAddress,
-        readyState: AccountStatus.UN_CONNECT,
-        _accountIdNotActive: -1,
-      })
-    );
     subject.next({
       status: AccountCommands.ProcessAccountCheck,
       data: undefined,
@@ -246,22 +194,17 @@ export const accountServices = {
     }
     myLog(connectProvides.usedWeb3);
 
-    if (LoopringAPI.exchangeAPI) {
-      // const [{ accInfo }, is_Contract] = await Promise.all([
-      //   ,
-      //   connectProvides.usedWeb3
-      //     ? sdk.isContract(connectProvides.usedWeb3, ethAddress)
-      //     : Promise.resolve(false),
-      // ]);
+    if (ethAddress && LoopringAPI.exchangeAPI) {
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
         owner: ethAddress,
       });
       if (accInfo === undefined) {
         if (
           account.readyState !== AccountStatus.NO_ACCOUNT ||
-          account.accountId !== -1
+          account.accountId !== -1 ||
+          account.accAddress.toLowerCase() !== ethAddress.toLowerCase()
         ) {
-          accountServices.sendNoAccount(false);
+          accountServices.sendNoAccount(ethAddress);
         }
       } else {
         if (accInfo.accountId) {
@@ -282,6 +225,13 @@ export const accountServices = {
       }
     } else {
       myLog("unexpected no ethAddress:" + ethAddress);
+      store.dispatch(
+        updateAccountStatus({
+          accAddress: ethAddress,
+          readyState: AccountStatus.UN_CONNECT,
+          _accountIdNotActive: -1,
+        })
+      );
     }
   },
 

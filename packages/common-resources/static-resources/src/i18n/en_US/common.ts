@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -715,4 +716,6 @@ export default {
   labelAddAssetGateBtn: "Add assets",
   labelActiveLayer2Btn: "Activate Loopring L2",
   labelActiveLayer2PayBtn: "Pay Activation Fee",
+  labelBalanceActiveAccountFee:
+    "{{symbol}}: <2>Fee {{fee}};</2><3>My Loopring L2 balance: {{count}}</3>",
 };
