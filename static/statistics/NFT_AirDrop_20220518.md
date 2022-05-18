@@ -1,6 +1,6 @@
-First 250
+**Loophead NFT Drop #3 Winners List**
 
-
+1. Being a Top 50 LP in 5 incentive AMM pools
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
@@ -255,13 +255,7 @@ First 250
 | 110919    | 0xd379c4ebed4bc895ee6fec308e0e583d5aad8a5a |
 | 110925    | 0x077a4306f77138cf3837683d7d4133e4dc341573 |
 
-
-
-
-
-750
-
-
+2.Lucky Draw
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
@@ -1018,11 +1012,9 @@ First 250
 
 
 
+**Wearable NFT Drop Winners List** 
 
-
-Wearable 250
-
-
+1. Top 50 traders in 5 incentive trading pairs 
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
@@ -1277,11 +1269,7 @@ Wearable 250
 | 110910    | 0x68a589bec4462e6c2b9273801cd63e73d55285ec |
 | 110925    | 0x077a4306f77138cf3837683d7d4133e4dc341573 |
 
-
-
-Wearable 750
-
-
+2. Lucky draw
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
