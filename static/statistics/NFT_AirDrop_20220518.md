@@ -1,6 +1,6 @@
 **Loophead NFT Drop #3 Winners List**
 
-1. Being a Top 50 LP in 5 incentive AMM pools, a total of 250 winner addresses
+**1. Being a Top 50 LP in 5 incentive AMM pools, a total of 250 winner addresses**
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
@@ -255,7 +255,7 @@
 | 110919    | 0xd379c4ebed4bc895ee6fec308e0e583d5aad8a5a |
 | 110925    | 0x077a4306f77138cf3837683d7d4133e4dc341573 |
 
-2.750 by random 'Lucky Draw' to anyone providing any amount of liquidity to the incentives pools for at least 20 days
+**2.750 by random 'Lucky Draw' to anyone providing any amount of liquidity to the incentives pools for at least 20 days**
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
@@ -1012,9 +1012,11 @@
 
 
 
+
+
 **Wearable NFT Drop Winners List** 
 
-1. Top 50 traders in 5 incentive trading pairs, a total of 250 winner addresses
+**1. Top 50 traders in 5 incentive trading pairs, a total of 250 winner addresses**
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
@@ -1269,7 +1271,7 @@
 | 110910    | 0x68a589bec4462e6c2b9273801cd63e73d55285ec |
 | 110925    | 0x077a4306f77138cf3837683d7d4133e4dc341573 |
 
-2. 750 by random 'Lucky Draw' to anyone making a swap or trade in any of incentive pairs
+**2. 750 by random 'Lucky Draw' to anyone making a swap or trade in any of incentive pairs**
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
