@@ -548,6 +548,7 @@ export function useAccountModalForUI({
                 ? true
                 : false
             }
+            isShow={isShowAccount.step === AccountStep.CheckingActive}
             onClick={() => {
               // TODO
               myLog(CheckActiveStatus);
@@ -1892,6 +1893,7 @@ export function useAccountModalForUI({
     activeAccountProps.chargeFeeTokenList,
     addAssetList,
     allowTrade,
+    isShowAccount.step,
     depositProps.isNewAccount,
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,

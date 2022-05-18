@@ -202,8 +202,9 @@ export default {
   labelWrongNetwork: "Wrong network",
   labelActivatedAccountDeposit:
     "Please deposit to activate your Layer 2 account",
-  labelActivatedAccountNotSupport:
-    "Loopring does not currently support your address, We apologize for the inconvenience. Please use EOA wallet or Loopring wallet!",
+  labelActivatedAccountNotSupport: "The connected wallet is not supported",
+  labelActivatedAccountNotSupportDes:
+    "  The wallet you have connected does not support Loopring Layer 2. Please use a different wallet to connect or download the Loopring Wallet app.",
   labelNotAllowForSmartWalletTitle: "Apologize",
   labelProcessing: "Processing",
   labelProviderProcessing: "Connect Wallet with {{name}}...",
@@ -701,11 +702,14 @@ export default {
   labelL2toL2: "Send to another L2",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
-    "By activating Loopring Layer2 account, you will be able to utilize all the cool features of Loopring Layer 2 with up to 100X cheaper gas fee - e.g. token/NFT transfer, DEX buy/sell, AMM investment etc.",
+    "By activating Loopring Layer 2, you will gain access to fast and cheap transactions as well as other features like: Token/NFT Transfer, NFT Minting, DEX Buy/Sell, AMM investment, and more!",
   labelNotBalancePayForActive: "You have insufficient balance",
+  labelEnoughBalancePayForActive:
+    "You have enough balance to pay for Layer 2 creation.",
   labelHaveInProcessingL1toL2:
-    "If you have already started depositing, please wait a while then recheck as transaction in Ethereum does take time; else please add assets to Loopring Layer 2 now.",
-  labelWaitingL1toL2: "Waiting",
+    "If you have already started depost , please be patient and recheck as transaction on Ethereum can take up to 30 minutes.",
+  labelWaitingL1toL2: "Wait and rest",
   labelAddAssetGateBtn: "add assets",
   labelActiveLayer2Btn: "Activate L2 Account",
+  labelActiveLayer2PayBtn: "Pay Activation Fee",
 };
