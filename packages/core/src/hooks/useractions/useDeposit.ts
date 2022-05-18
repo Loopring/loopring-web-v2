@@ -46,7 +46,7 @@ export const useDeposit = <
   I
 >(
   isAllowInputToAddress = false,
-  opts?: { token: string | null; owner?: string | null }
+  opts?: { token?: string | null; owner?: string | null }
 ) => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account } = useAccount();
@@ -195,6 +195,8 @@ export const useDeposit = <
     depositValue.toAddress,
     allowanceInfo?.tokenInfo.symbol,
     toAddressStatus,
+    realToAddress,
+    toIsLoopringAddress,
   ]);
 
   const handlePanelEvent = React.useCallback(
@@ -394,6 +396,9 @@ export const useDeposit = <
         setShowAccount({
           isShow: true,
           step: AccountStep.Deposit_Sign_WaitForRefer,
+          info: {
+            isAllowInputToAddress,
+          },
         });
         await signRefer();
       }
@@ -435,6 +440,9 @@ export const useDeposit = <
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Deposit_Approve_WaitForAuth,
+                info: {
+                  isAllowInputToAddress,
+                },
               });
 
               nonce = await sdk.getNonce(
@@ -464,6 +472,9 @@ export const useDeposit = <
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.Deposit_Approve_Denied,
+                  info: {
+                    isAllowInputToAddress,
+                  },
                 });
                 return;
               }
@@ -477,6 +488,7 @@ export const useDeposit = <
             step: AccountStep.Deposit_WaitForAuth,
             info: {
               to: isAllowInputToAddress ? realToAddress : null,
+              isAllowInputToAddress,
             },
           });
 
@@ -518,6 +530,7 @@ export const useDeposit = <
                 symbol: tokenInfo.symbol,
                 value: inputValue.tradeValue,
                 hash: response.result,
+                isAllowInputToAddress,
               },
               step: AccountStep.Deposit_Submit,
             });
@@ -531,6 +544,9 @@ export const useDeposit = <
             setShowAccount({
               isShow: true,
               step: AccountStep.Deposit_Failed,
+              info: {
+                isAllowInputToAddress,
+              },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
                 msg: "No Response",
@@ -553,12 +569,18 @@ export const useDeposit = <
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Deposit_Denied,
+                info: {
+                  isAllowInputToAddress,
+                },
               });
               break;
             default:
               setShowAccount({
                 isShow: true,
                 step: AccountStep.Deposit_Failed,
+                info: {
+                  isAllowInputToAddress,
+                },
                 error: {
                   code: result.code ?? UIERROR_CODE.UNKNOWN,
                   msg: reason?.message,
@@ -679,6 +701,7 @@ export const useDeposit = <
     depositBtnStatus: btnStatus,
     handlePanelEvent,
     onDepositClick,
+    toAddressStatus,
     toIsAddressCheckLoading,
     toIsLoopringAddress,
     realToAddress,

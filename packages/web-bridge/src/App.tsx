@@ -1,6 +1,6 @@
 import { GlobalStyles } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
-import { globalCss } from "@loopring-web/common-resources";
+import { globalCss, SagaStatus } from "@loopring-web/common-resources";
 import { setLanguage } from "@loopring-web/component-lib";
 import { useInit } from "./hook";
 import React from "react";
@@ -75,7 +75,7 @@ const App = () => {
 
       <Router>
         <ScrollToTop />
-        <RouterView state={state} />
+        <RouterView state={state as SagaStatus} />
         {/*<RouterView state={state} />*/}
       </Router>
     </>

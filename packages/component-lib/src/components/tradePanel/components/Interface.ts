@@ -50,10 +50,10 @@ export type TransferInfoProps<C> = {
 };
 
 export enum AddressError {
-  NoError,
-  EmptyAddr,
-  InvalidAddr,
-  ENSResolveFailed,
+  NoError = "NoError",
+  EmptyAddr = "EmptyAddr",
+  InvalidAddr = "InvalidAddr",
+  ENSResolveFailed = "ENSResolveFailed",
 }
 
 export type TransferExtendProps<T, I, C> = {
@@ -128,6 +128,7 @@ export type DepositExtendProps<T> = {
   isThumb?: boolean;
   title?: string;
   allowTrade?: any;
+  toAddressStatus: AddressError;
   isAllowInputToAddress?: boolean;
   onDepositClick: (data: T) => void;
   toIsAddressCheckLoading: boolean;

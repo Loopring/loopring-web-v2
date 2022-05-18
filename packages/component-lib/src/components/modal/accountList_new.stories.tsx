@@ -71,7 +71,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
         size={"medium"}
         onClick={() => {}}
       >
-        {"unlock"}{" "}
+        {"unlock"}
       </Button>
     );
   }, []);

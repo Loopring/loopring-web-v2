@@ -302,6 +302,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
             : [
                 {
                   key: t("labelOpenInWalletApp"),
+                  keyi18n: "labelOpenInWalletApp",
                   imgSrc: SoursURL + "svg/loopring.svg",
                   handleSelect: React.useCallback(
                     async (event, flag?) => {

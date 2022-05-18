@@ -24,11 +24,14 @@ const DialogStyle = styled(Dialog)`
   }
   .MuiList-root {
     list-style: inside;
+
     .MuiListItem-root {
       display: list-item;
       marginbottom: 1;
       height: auto;
-      padding: 0;
+      padding: ${({ theme }) => theme.unit}px 0;
+      font-size: ${({ theme }) => theme.fontDefault.body1};
+      line-height: 1.5em;
     }
   }
 `;
@@ -351,7 +354,7 @@ export const ConfirmLinkCopy = withTranslation("common", {
               </Trans>
             </Typography>
           </DialogContentText>
-          <List>
+          <List sx={{ marginTop: 2 }}>
             <ListItem>
               <Trans i18nKey={"labelOpenInWalletDetailLi1"}>
                 Open your wallet app and paste the url in its internal dapp

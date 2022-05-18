@@ -21,7 +21,7 @@ export const useAddressCheck = () => {
   const [isAddressCheckLoading, setIsAddressCheckLoading] =
     React.useState(false);
 
-  const [isLoopringAddress, setIsLoopringAddress] = React.useState(true);
+  const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
 
   const [isSameAddress, setIsSameAddress] = React.useState(false);
 
@@ -57,6 +57,7 @@ export const useAddressCheck = () => {
                 owner: realAddr, //realAddr != "" ? realAddr : address,
               }),
             ]);
+
             if (walletType && walletType?.isInCounterFactualStatus) {
               setIsCFAddress(true);
             } else {
@@ -91,6 +92,8 @@ export const useAddressCheck = () => {
           setAddrStatus(
             address === "" ? AddressError.EmptyAddr : AddressError.InvalidAddr
           );
+          setRealAddr("");
+          setIsLoopringAddress(false);
         }
       } else {
         return {

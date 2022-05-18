@@ -84,6 +84,7 @@ import {
   CheckActiveStatus,
   AddAssetItem,
   SendAssetItem,
+  DepositProps,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -106,7 +107,6 @@ import {
   useAccount,
   lockAccount,
   unlockAccount,
-  useDeposit,
   useTransfer,
   useWithdraw,
   useUpdateAccount,
@@ -133,11 +133,13 @@ export function useAccountModalForUI({
   t,
   onClose,
   isLayer1Only = false,
+  depositProps,
   ...rest
 }: {
   t: any;
   etherscanBaseUrl: string;
   isLayer1Only?: boolean;
+  depositProps: DepositProps<any, any>;
   account: Account;
   onClose?: any;
 }) {
@@ -145,7 +147,6 @@ export function useAccountModalForUI({
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
-
   const {
     modals: { isShowAccount },
     setShowConnect,
@@ -179,7 +180,7 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
   } = useExportAccount();
   const vendorProps = useVendor();
-  const { depositProps } = useDeposit();
+
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
@@ -275,12 +276,12 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        if (!isLayer1Only) {
+        if (!depositProps.isAllowInputToAddress) {
           setShowDeposit({ isShow: true });
         }
       },
     };
-  }, [setShowAccount, isLayer1Only]);
+  }, [setShowAccount, depositProps]);
 
   const backToNFTDepositBtnInfo = React.useMemo(() => {
     return {
@@ -703,7 +704,12 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: goActiveAccount,
+        onBack: !depositProps.isAllowInputToAddress
+          ? () => {
+              setShowAccount({ isShow: false });
+              setShowDeposit({ isShow: true });
+            }
+          : undefined,
       },
       [AccountStep.Deposit_Approve_Submit]: {
         view: (
@@ -716,11 +722,12 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
-        },
+        onBack: !depositProps.isAllowInputToAddress
+          ? () => {
+              setShowAccount({ isShow: false });
+              setShowDeposit({ isShow: true });
+            }
+          : undefined,
       },
       [AccountStep.Deposit_WaitForAuth]: {
         view: (
@@ -737,11 +744,12 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
-        },
+        onBack: !depositProps.isAllowInputToAddress
+          ? () => {
+              setShowAccount({ isShow: false });
+              setShowDeposit({ isShow: true });
+            }
+          : undefined,
       },
       [AccountStep.Deposit_Denied]: {
         view: (
@@ -754,11 +762,12 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
-        },
+        onBack: !depositProps.isAllowInputToAddress
+          ? () => {
+              setShowAccount({ isShow: false });
+              setShowDeposit({ isShow: true });
+            }
+          : undefined,
       },
       [AccountStep.Deposit_Failed]: {
         view: (
@@ -772,11 +781,12 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
-        },
+        onBack: !depositProps.isAllowInputToAddress
+          ? () => {
+              setShowAccount({ isShow: false });
+              setShowDeposit({ isShow: true });
+            }
+          : undefined,
       },
       [AccountStep.Deposit_Submit]: {
         view: (
@@ -789,11 +799,6 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
-        },
       },
       [AccountStep.NFTDeposit_Approve_WaitForAuth]: {
         view: (
@@ -822,8 +827,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTDeposit_Approve_Submit]: {
@@ -840,8 +843,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTDeposit_WaitForAuth]: {
@@ -862,8 +863,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTDeposit_Denied]: {
@@ -880,8 +879,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTDeposit_Failed]: {
@@ -899,8 +896,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTDeposit_Submit]: {
@@ -915,11 +910,6 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowDeposit({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
-        },
       },
       [AccountStep.NFTMint_WaitForAuth]: {
         view: (
@@ -939,8 +929,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowNFTMint({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTMint_Denied]: {
@@ -957,8 +945,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowNFTMint({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTMint_First_Method_Denied]: {
@@ -1006,8 +992,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          setShowNFTMint({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       [AccountStep.NFTMint_Success]: {
@@ -1028,11 +1012,6 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-          setShowNFTMint({ isShow: true });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
-        },
       },
 
       [AccountStep.NFTDeploy_WaitForAuth]: {
@@ -1132,7 +1111,6 @@ export function useAccountModalForUI({
         ),
         onBack: () => {
           setShowAccount({ isShow: false });
-          // setShowAccount({isShow: true, step: AccountStep.Deposit});
         },
       },
       // transfer
@@ -1896,6 +1874,7 @@ export function useAccountModalForUI({
     addAssetList,
     allowTrade,
     isShowAccount.step,
+    depositProps.isAllowInputToAddress,
     depositProps.isNewAccount,
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,

@@ -1,5 +1,6 @@
 import {
   AlertNotSupport,
+  DepositProps,
   ModalCloseButton,
   ModalSettingFee,
   SwitchPanelStyled,
@@ -23,10 +24,12 @@ export const ModalGroup = withTranslation("common", {
     isLayer1Only,
     onAccountInfoPanelClose,
     onWalletConnectPanelClose,
+    depositProps,
     assetsRawData,
     ...rest
   }: WithTranslation & {
     isLayer1Only?: boolean;
+    depositProps: DepositProps<any, any>;
     assetsRawData: AssetsRawDataItem[];
     onWalletConnectPanelClose?: (event: MouseEvent) => void;
     onAccountInfoPanelClose?: (event: MouseEvent) => void;
@@ -83,6 +86,7 @@ export const ModalGroup = withTranslation("common", {
             account,
             open: isShowAccount.isShow,
             onClose: onAccountInfoPanelClose,
+            depositProps,
             isLayer1Only,
           }}
         />
