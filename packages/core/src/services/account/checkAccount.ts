@@ -10,7 +10,10 @@ export const checkAccount = (
   // provider?: any
 ) => {
   const account = store.getState().account;
-  if (account.accAddress === "" || account.accAddress !== newAccAddress) {
+  if (
+    account.accAddress === "" ||
+    account.accAddress.toLowerCase() !== newAccAddress.toLowerCase()
+  ) {
     myLog("After connect >>,account part: diff account, clean layer2");
     store.dispatch(cleanAccountStatus(undefined));
     accountServices.sendCheckAccount(newAccAddress, chainId);

@@ -156,9 +156,7 @@ export const accountServices = {
       data: undefined,
     });
   },
-  sendNeedUpdateAccount: async (
-    accInfo: sdk.AccountInfo & { isContract: boolean }
-  ) => {
+  sendNeedUpdateAccount: async (accInfo: sdk.AccountInfo) => {
     myLog("sendNeedUpdateAccount accInfo:", accInfo);
     store.dispatch(
       updateAccountStatus({
@@ -167,7 +165,6 @@ export const accountServices = {
         _accountIdNotActive: accInfo.accountId,
         nonce: accInfo.nonce,
         keySeed: accInfo.keySeed,
-        isContract: accInfo.isContract,
       })
     );
     subject.next({
@@ -207,12 +204,16 @@ export const accountServices = {
           accountServices.sendNoAccount(ethAddress);
         }
       } else {
-        if (accInfo.accountId) {
+        if (account.accountId == accInfo.accountId && account.publicKey.x) {
+          myLog("-------sendCheckAccount already Unlock!");
+          accountServices.sendAccountSigned({
+            ...account,
+          });
+        } else if (accInfo.accountId) {
           if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
             myLog("-------sendCheckAccount need update account!");
             accountServices.sendNeedUpdateAccount({
               ...accInfo,
-              isContract: false,
             });
           } else {
             myLog("-------need unlockAccount!");
