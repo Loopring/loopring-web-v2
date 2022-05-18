@@ -11,7 +11,6 @@ import _ from "lodash";
 import { resetLayer12Data, resetLayer2Data } from "./resetAccount";
 import { AccountCommands } from "./command";
 import { updateAccountStatus } from "../../stores/account/reducer";
-import { connectProvides } from "@loopring-web/web3-provider";
 
 const subject = new Subject<{ status: AccountCommands; data: any }>();
 
@@ -186,10 +185,9 @@ export const accountServices = {
       data: undefined,
     });
 
-    if (_chainId !== LoopringAPI.__chainId__) {
+    if (_chainId && _chainId !== LoopringAPI.__chainId__) {
       LoopringAPI.InitApi(_chainId as sdk.ChainId);
     }
-    myLog(connectProvides.usedWeb3);
 
     if (ethAddress && LoopringAPI.exchangeAPI) {
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({

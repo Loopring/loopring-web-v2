@@ -127,11 +127,7 @@ export const DepositWrap = <
       return <></>;
     }
   }, [isNewAccount, chargeFeeTokenList, tradeData, t, feeChargeOrder]);
-  myLog(
-    "referStatus !== AddressError.NoError || !referIsLoopringAddress",
-    referStatus !== AddressError.NoError,
-    !referIsLoopringAddress
-  );
+
   return (
     <Grid
       className={walletMap ? "depositWrap" : "depositWrap loading"}
@@ -242,7 +238,7 @@ export const DepositWrap = <
               className={"text-address"}
               value={tradeData.toAddress ? tradeData.toAddress : ""}
               error={
-                !!(tradeData.addressError && tradeData.addressError?.error)
+                toAddressStatus !== AddressError.NoError || !toIsLoopringAddress
               }
               label={t("depositLabelTo")}
               disabled={!isToAddressEditable}
@@ -309,6 +305,21 @@ export const DepositWrap = <
           </Box>
           {!isToAddressEditable && (
             <>
+              <Typography color={"var(--color-text-third)"} variant={"body1"}>
+                {t("labelBridgeSendTo")}
+              </Typography>
+              <Box>
+                <Typography
+                  display={"inline-flex"}
+                  variant={
+                    tradeData.toAddress?.startsWith("0x") ? "body2" : "body1"
+                  }
+                  style={{ wordBreak: "break-all" }}
+                  color={"textSecondary"}
+                >
+                  {tradeData.toAddress}
+                </Typography>
+              </Box>
               {toIsAddressCheckLoading ? (
                 <Box
                   display={"flex"}
@@ -324,26 +335,6 @@ export const DepositWrap = <
                 </Box>
               ) : realToAddress && toIsLoopringAddress ? (
                 <>
-                  <Typography
-                    color={"var(--color-text-third)"}
-                    variant={"body1"}
-                  >
-                    {t("labelBridgeSendTo")}
-                  </Typography>
-                  <Box>
-                    <Typography
-                      display={"inline-flex"}
-                      variant={
-                        tradeData.toAddress?.startsWith("0x")
-                          ? "body2"
-                          : "body1"
-                      }
-                      style={{ wordBreak: "break-all" }}
-                      color={"textSecondary"}
-                    >
-                      {tradeData.toAddress}
-                    </Typography>
-                  </Box>
                   <Box>
                     <Typography color={"var(--color-text-third)"} minWidth={40}>
                       {t("labelReceiveAddress")}
@@ -365,28 +356,31 @@ export const DepositWrap = <
                   !toIsLoopringAddress) && (
                   <Typography variant={"body1"} color={"var(--color-warning)"}>
                     {/*This is wrong address, I want input address*/}
-
-                    <Trans
-                      i18nKey={"labelInvalidIsLoopringAddressClick"}
-                      tOptions={{
-                        way: "Pay Loopring L2",
-                        token: "ERC20 ",
-                      }}
-                    >
-                      This address does not yet have an active Loopring L2, Pay
-                      Loopring L2 of ERC20 is disabled!
-                      <Link
-                        alignItems={"center"}
-                        display={"inline-flex"}
-                        href={Bridge}
-                        target={"_self"}
-                        rel={"noopener noreferrer"}
-                        color={"textSecondary"}
+                    {toAddressStatus === AddressError.ENSResolveFailed ? (
+                      <>{t("labelENSShouldConnect")}</>
+                    ) : (
+                      <Trans
+                        i18nKey={"labelInvalidIsLoopringAddressClick"}
+                        tOptions={{
+                          way: "Pay Loopring L2",
+                          token: "ERC20 ",
+                        }}
                       >
-                        Click to input another receive address
-                      </Link>
-                      ,
-                    </Trans>
+                        This address does not yet have an active Loopring L2,
+                        Pay Loopring L2 of ERC20 is disabled!
+                        <Link
+                          alignItems={"center"}
+                          display={"inline-flex"}
+                          href={Bridge}
+                          target={"_self"}
+                          rel={"noopener noreferrer"}
+                          color={"textSecondary"}
+                        >
+                          Click to input another receive address
+                        </Link>
+                        ,
+                      </Trans>
+                    )}
                   </Typography>
                 )
               )}

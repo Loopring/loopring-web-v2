@@ -11,6 +11,7 @@ import {
   CoinMap,
   IBData,
   myLog,
+  SagaStatus,
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
@@ -84,7 +85,11 @@ export const useDeposit = <
     setShowAccount,
   } = useOpenModals();
 
-  const { walletLayer1 } = useWalletLayer1();
+  const {
+    walletLayer1,
+    updateWalletLayer1,
+    status: walletLayer1Status,
+  } = useWalletLayer1();
 
   const { updateDepositHash } = useOnChainInfo();
   const { t } = useTranslation("common");
@@ -122,7 +127,7 @@ export const useDeposit = <
       depositValue.belong === allowanceInfo?.tokenInfo.symbol &&
       depositValue?.tradeValue &&
       allowanceInfo &&
-      sdk.toBig(walletLayer1?.ETH.count ?? 0).gt(BIGO) &&
+      sdk.toBig(walletLayer1?.ETH?.count ?? 0).gt(BIGO) &&
       sdk.toBig(depositValue?.tradeValue).gt(BIGO) &&
       sdk
         .toBig(depositValue?.tradeValue)
@@ -156,7 +161,7 @@ export const useDeposit = <
       }
     }
     myLog("try to disable deposit btn!");
-    if (sdk.toBig(walletLayer1?.ETH.count ?? 0).eq(BIGO)) {
+    if (sdk.toBig(walletLayer1?.ETH?.count ?? 0).eq(BIGO)) {
       setLabelAndParams("labelNOETH", {});
     }
     if (
@@ -259,13 +264,13 @@ export const useDeposit = <
   }, [handlePanelEvent, setReferAddress, setToAddress]);
 
   const walletLayer1Callback = React.useCallback(() => {
-    const _symbol = opts?.token?.toUpperCase() ?? symbol;
+    const _symbol = depositValue.belong ?? opts?.token?.toUpperCase() ?? symbol;
     let updateData = {};
     if (_symbol && walletLayer1) {
       // updateDepositData();
       updateData = {
         belong: _symbol as any,
-        balance: walletLayer1[_symbol]?.count,
+        balance: walletLayer1[_symbol]?.count ?? 0,
         tradeValue: undefined,
       };
     } else if (!depositValue.belong && walletLayer1) {
@@ -273,7 +278,7 @@ export const useDeposit = <
       for (var key in keys) {
         const keyVal = keys[key] as any;
         const walletInfo = walletLayer1[keyVal];
-        if (sdk.toBig(walletInfo.count).gt(0)) {
+        if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
           // updateDepositData();
           updateData = {
             belong: keyVal as any,
@@ -323,10 +328,13 @@ export const useDeposit = <
   ]);
 
   React.useEffect(() => {
-    if (isShow || isAllowInputToAddress) {
+    if (
+      (isShow || isAllowInputToAddress) &&
+      walletLayer1Status === SagaStatus.UNSET
+    ) {
       walletLayer1Callback();
     }
-  }, [isShow, isAllowInputToAddress, walletLayer1]);
+  }, [isShow, isAllowInputToAddress, walletLayer1Status]);
   const signRefer = React.useCallback(async () => {
     if (
       referIsLoopringAddress &&
@@ -553,7 +561,7 @@ export const useDeposit = <
               },
             });
           }
-
+          updateWalletLayer1();
           resetDepositData();
         } catch (reason: any) {
           const err = checkErrorInfo(reason, true);

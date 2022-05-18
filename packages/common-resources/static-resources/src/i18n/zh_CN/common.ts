@@ -708,4 +708,6 @@ export default {
   labelActiveLayer2PayBtn: "Pay Activation Fee",
   labelBalanceActiveAccountFee:
     "{{symbol}}: <2>Fee {{fee}};</2><3>My Loopring L2 balance: {{count}}</3>",
+  labelENSShouldConnect:
+    "Receive address is an ENS, please connect wallet to check real address",
 };

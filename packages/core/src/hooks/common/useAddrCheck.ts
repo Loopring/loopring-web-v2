@@ -1,17 +1,17 @@
 import React from "react";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import { globalSetup, myLog } from "@loopring-web/common-resources";
+import { globalSetup } from "@loopring-web/common-resources";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { AddressError } from "@loopring-web/component-lib";
 import { checkAddr } from "../../utils";
-import { LoopringAPI, useAccount } from "../../index";
+import { LoopringAPI, useAccount, useSystem } from "../../index";
 
 export const useAddressCheck = () => {
   const [address, setAddress] = React.useState<string>("");
   const _address = React.useRef<string>("");
-
+  const { chainId } = useSystem();
   const [realAddr, setRealAddr] = React.useState<string>("");
 
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(
@@ -43,6 +43,7 @@ export const useAddressCheck = () => {
           (/^\d{5}$/g.test(address) && Number(address) > 10000)
         ) {
           setIsAddressCheckLoading(true);
+
           const { realAddr, addressErr } = await checkAddr(address, web3);
 
           setRealAddr(realAddr);
@@ -126,6 +127,9 @@ export const useAddressCheck = () => {
       _address.current = "";
     }
   }, [address, isAddressCheckLoading]);
+  React.useEffect(() => {
+    debounceCheck(address);
+  }, [chainId]);
 
   React.useEffect(() => {
     setIsSameAddress(

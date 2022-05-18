@@ -11,10 +11,10 @@ const walletLayer1Slice: Slice = createSlice({
   name: "walletLayer1",
   initialState,
   reducers: {
-    updateWalletLayer1(state, action: PayloadAction<string | undefined>) {
+    updateWalletLayer1(state, _action: PayloadAction<string | undefined>) {
       state.status = SagaStatus.PENDING;
     },
-    reset(state, action: PayloadAction<string | undefined>) {
+    reset(state, _action: PayloadAction<string | undefined>) {
       state.walletLayer1 = undefined;
       state.status = SagaStatus.UNSET;
     },

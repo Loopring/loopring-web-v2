@@ -203,21 +203,29 @@ export async function checkAddr(
     } catch (reason: any) {
       const result = await new Promise<AddrCheckResult>((resolve) => {
         try {
-          connectProvides.usedWeb3?.eth.ens
-            .getAddress(address)
-            .then((addressResovled) => {
-              myLog("addressResovled:", addressResovled);
-              resolve({
-                realAddr: addressResovled,
-                addressErr: AddressError.NoError,
+          if (web3) {
+            web3.eth.ens
+              .getAddress(address)
+              .then((addressResovled: string) => {
+                myLog("addressResovled:", addressResovled);
+                resolve({
+                  realAddr: addressResovled,
+                  addressErr: AddressError.NoError,
+                });
+              })
+              .catch((e: any) => {
+                myLog("ens catch", e);
+                resolve({
+                  realAddr: "",
+                  addressErr: AddressError.InvalidAddr,
+                });
               });
-            })
-            .catch(() => {
-              resolve({
-                realAddr: "",
-                addressErr: AddressError.InvalidAddr,
-              });
+          } else {
+            resolve({
+              realAddr: "",
+              addressErr: AddressError.ENSResolveFailed,
             });
+          }
         } catch (reason2) {
           resolve({
             realAddr: "",
