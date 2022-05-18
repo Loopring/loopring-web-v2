@@ -2024,3 +2024,40 @@
 | 88880     | 0xfa270e442bb550be2738f82dc83504ef6f0bc5b5 |
 | 24334     | 0x230d749b0bc9e987c059f8830bc38561d028a61c |
 
+*Lottery mechanism*
+
+1. We take the 14789900  block of the Ethereum mainnet as the initial lottery block number, which is expected to occur at 10:00 am (UTC+8) on May 17, 2022;
+2. Sort all the remaining addresses in the lottery in ascending lexicographical order, starting with 0;
+3. The number of the winners this time is the block hash value corresponding to the current lottery block number and the remainder after taking the modulo of the total number of participants in the lottery;
+4. Remove this winning address, and use the lottery address to generate a new SHA256 hash value for the next lottery;
+5. Each round selects 75 winning addresses;
+6. The lottery block number plus one;
+7. Repeat steps 2-6 for a total of 10 times.
+
+*Lottery example*
+
+Assuming that 9 people participated in the lucky draw, there are 2 winners, the lottery block number starts from the 12282650 block of the Ethereum mainnet,
+
+List of addresses for 9 people:
+
+<img width="891" alt="1" src="https://user-images.githubusercontent.com/43159703/151903320-d5de079c-b365-4b81-a2bf-f1dd5d2e1168.png">
+
+After sorting in ascending lexicographical order, and numbering from 0:
+
+<img width="794" alt="2" src="https://user-images.githubusercontent.com/43159703/151903365-aef266e8-e5ec-45e9-b960-be2e168d9670.png">
+
+The hash value of Ethereum **12282650* block: 0x34326756290c7a4bf3857927fef8d7d07423fdaa20e74dd0822838fd482e063e.
+
+$\text{0x34326756290c7a4bf3857927fef8d7d07423fdaa20e74dd0822838fd482e063e}\mod9=3$
+
+Therefore, the number of the first winner is 3 and the address is 0x66dec9b38a4181063444ad66fc32abc6b1146cca.
+
+The second round of the lucky draw list is:
+
+<img width="785" alt="3" src="https://user-images.githubusercontent.com/43159703/151903395-f2dbb38a-4d11-40ae-9055-16c45e69487c.png">
+
+The address of the first winner is 0x66dec9b38a4181063444ad66fc32abc6b1146cca and its SHA256 hash value is 0x11bf6d21c18bd8ba4680b67812d45beeb5e16c4bbef35af618e66bbdbd6c487e.
+
+$\text{：0x11bf6d21c18bd8ba4680b67812d45beeb5e16c4bbef35af618e66bbdbd6c487e}\mod8=6$
+
+Therefore, the number of the second winner is 6 and the address is 0xcb8a6c0a54f7e60ae48d90ccb63a61b72ea0a0bd.
