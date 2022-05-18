@@ -125,6 +125,8 @@ export const useAddressCheck = () => {
       debounceCheck(address);
     } else if (address === "") {
       _address.current = "";
+      setRealAddr("");
+      setIsLoopringAddress(false);
     }
   }, [address, isAddressCheckLoading]);
   React.useEffect(() => {

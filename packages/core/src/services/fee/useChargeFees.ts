@@ -71,10 +71,12 @@ export function useChargeFees({
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
-  const handleFeeChange = (value: FeeInfo): void => {
+  const handleFeeChange = (_value: FeeInfo): void => {
     const walletMap =
       makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
     let isFeeNotEnough = true;
+    const value =
+      chargeFeeTokenList.find((ele) => _value?.belong === ele.belong) ?? _value;
     if (
       walletMap &&
       value?.belong &&

@@ -295,6 +295,7 @@ export const DepositWrap = <
                   variant={"body2"}
                   marginTop={1 / 2}
                   style={{ wordBreak: "break-all" }}
+                  whiteSpace={"pre-line"}
                 >
                   {realToAddress}
                 </Typography>

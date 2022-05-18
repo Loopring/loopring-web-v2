@@ -207,8 +207,8 @@ export const TransferWrap = <
     <Grid
       className={walletMap ? "transfer-wrap" : "loading"}
       container
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
+      paddingLeft={isMobile ? 2 : 5 / 2}
+      paddingRight={isMobile ? 2 : 5 / 2}
       direction={"column"}
       alignItems={"stretch"}
       flex={1}
@@ -386,6 +386,7 @@ export const TransferWrap = <
                       color={"var(--color-text-primary)"}
                       variant={"body2"}
                       marginTop={1 / 4}
+                      whiteSpace={"pre-line"}
                       style={{ wordBreak: "break-all" }}
                     >
                       {realAddr}

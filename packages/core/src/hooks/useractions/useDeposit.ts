@@ -175,13 +175,14 @@ export const useDeposit = <
     disableBtn();
   }, [
     resetBtnInfo,
+    isAllowInputToAddress,
     toIsLoopringAddress,
     realToAddress,
     toAddressStatus,
-    depositValue.belong,
-    depositValue.tradeValue,
-    depositValue.balance,
     depositValue.toAddress,
+    depositValue.belong,
+    depositValue?.tradeValue,
+    depositValue?.balance,
     allowanceInfo,
     walletLayer1?.ETH?.count,
     disableBtn,
@@ -244,7 +245,7 @@ export const useDeposit = <
         resolve();
       });
     },
-    [walletLayer1, updateDepositData]
+    [setReferAddress, setToAddress, updateDepositData, walletLayer1]
   );
   const handleClear = React.useCallback(() => {
     if (isAllowInputToAddress && !isToAddressEditable) {
@@ -261,7 +262,7 @@ export const useDeposit = <
       },
       "Tobutton"
     );
-  }, [handlePanelEvent, setReferAddress, setToAddress]);
+  }, [handlePanelEvent, isAllowInputToAddress, isToAddressEditable]);
 
   const walletLayer1Callback = React.useCallback(() => {
     const _symbol = depositValue.belong ?? opts?.token?.toUpperCase() ?? symbol;
@@ -316,14 +317,14 @@ export const useDeposit = <
       "Tobutton"
     );
   }, [
+    depositValue.belong,
+    opts?.token,
+    opts?.owner,
     symbol,
     walletLayer1,
     isAllowInputToAddress,
-    updateDepositData,
-    depositValue.belong,
     handlePanelEvent,
-    opts?.token,
-    opts?.owner,
+    account.accAddress,
     handleClear,
   ]);
 
@@ -605,16 +606,21 @@ export const useDeposit = <
       return result;
     },
     [
-      signRefer,
+      isNewAccount,
       account,
       tokenMap,
-      exchangeInfo,
+      exchangeInfo?.exchangeAddress,
+      exchangeInfo?.depositAddress,
       isAllowInputToAddress,
       toIsLoopringAddress,
+      setShowAccount,
+      signRefer,
       gasPrice,
       chainId,
-      setShowAccount,
+      allowanceInfo?.needCheck,
+      allowanceInfo?.allowance,
       realToAddress,
+      updateWalletLayer1,
       resetDepositData,
       updateDepositHash,
     ]
@@ -627,7 +633,7 @@ export const useDeposit = <
     if (depositValue && depositValue.belong) {
       await handleDeposit(depositValue as T);
     }
-  }, [depositValue, handleDeposit, setShowDeposit, setShowAccount]);
+  }, [depositValue, handleDeposit, setShowDeposit]);
 
   const handleAddressError = React.useCallback(() => {
     if (
@@ -680,11 +686,11 @@ export const useDeposit = <
       );
     }
   }, [
+    referStatus,
     referIsLoopringAddress,
     toAddressStatus,
-    referStatus,
     toIsLoopringAddress,
-    updateDepositData,
+    handlePanelEvent,
   ]);
   React.useEffect(() => {
     handleAddressError();

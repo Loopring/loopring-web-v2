@@ -340,6 +340,8 @@ export const WithdrawWrap = <
                     color={"var(--color-text-primary)"}
                     variant={"body2"}
                     marginTop={1 / 4}
+                    whiteSpace={"pre-line"}
+                    style={{ wordBreak: "break-all" }}
                   >
                     {realAddr}
                   </Typography>

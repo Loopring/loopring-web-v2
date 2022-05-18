@@ -130,8 +130,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         chargeFeeTokenList.length &&
         !isFeeNotEnough &&
         withdrawValue.fee?.belong &&
+        withdrawValue.fee?.feeRaw &&
         tradeValue.gt(BIGO) &&
-        ((address && address.startsWith("0x")) || realAddr) &&
+        realAddr &&
         (addrStatus as AddressError) === AddressError.NoError
       ) {
         enableBtn();
@@ -147,9 +148,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   }, [
     withdrawType,
     enableBtn,
+    realAddr,
     disableBtn,
     tokenMap,
-    address,
     addrStatus,
     isNotAvaiableAddress,
     chargeFeeTokenList,
@@ -161,8 +162,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     checkBtnStatus();
   }, [
     withdrawType,
-    address,
+    // address,
     addrStatus,
+    realAddr,
     isFeeNotEnough,
     withdrawValue?.fee,
     withdrawValue?.belong,
@@ -285,25 +287,13 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      if (withdrawValue.address) {
-        myLog("addr 1");
-        setAddress(withdrawValue.address);
-      } else {
-        myLog("addr 2");
-        // setAddress(account.accAddress)
-        updateWithdrawData({
-          balance: -1,
-          tradeValue: -1,
-        });
-      }
+      updateWithdrawData({
+        balance: -1,
+        tradeValue: -1,
+      });
+      setAddress("");
     }
-  }, [
-    setAddress,
-    isShow,
-    withdrawValue.address,
-    accountStatus,
-    account.readyState,
-  ]);
+  }, [isShow, accountStatus, account.readyState]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
 
@@ -456,7 +446,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         address &&
         LoopringAPI.userAPI &&
         withdrawValue?.fee?.belong &&
-        withdrawValue.fee?.__raw__ &&
+        withdrawValue.fee?.feeRaw &&
         eddsaKey?.sk
       ) {
         try {
@@ -469,7 +459,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           const withdrawToken = tokenMap[withdrawValue.belong as string];
           const feeToken = tokenMap[withdrawValue.fee.belong];
 
-          const fee = sdk.toBig(withdrawValue.fee?.__raw__?.feeRaw ?? 0);
+          const fee = sdk.toBig(withdrawValue.fee?.feeRaw ?? 0);
           const balance = sdk
             .toBig(inputValue.balance ?? 0)
             .times("1e" + withdrawToken.decimals);
