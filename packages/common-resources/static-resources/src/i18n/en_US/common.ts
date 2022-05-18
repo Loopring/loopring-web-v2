@@ -705,7 +705,7 @@ export default {
   labelL2toL2: "Send to another Loopring L2",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
-    "By activating Loopring L2, you will gain access to fast and cheap transactions as well as other features like: Token/NFT Transfers, NFT Minting, DEX Buy/Sell, AMM investment, and more!",
+    "As Ethereum's first ever zkRollup, Loopring L2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your Loopring L2 account requires a small payment fee. ",
   labelNotBalancePayForActive: "You have an insufficient balance",
   labelEnoughBalancePayForActive:
     "You have enough balance to pay for Loopring L2 creation.",

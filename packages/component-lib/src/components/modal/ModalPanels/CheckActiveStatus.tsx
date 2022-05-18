@@ -29,12 +29,11 @@ export const CheckActiveStatus = ({
   isShow: boolean;
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   isFeeNotEnough: boolean;
-
   onClick: () => void;
 }) => {
   const { t } = useTranslation("common");
   const [know, setKnow] = React.useState(false);
-  const [knowDisable, setKnowDisable] = React.useState(false);
+  const [knowDisable, setKnowDisable] = React.useState(true);
 
   const onIKnowClick = () => {
     if (account.isContract) {
@@ -49,15 +48,20 @@ export const CheckActiveStatus = ({
     if (isShow) {
       checkFeeIsEnough();
       setKnow(false);
-      setKnowDisable(false);
     }
   }, [isShow]);
-  // React.useEffect(() => {
-  //   if (isShow && !isFeeNotEnough) {
-  //     goUpdateAccount();
-  //   }
-  // }, [isFeeNotEnough, isShow]);
-  account.isContract = undefined;
+
+  React.useEffect(() => {
+    if (
+      chargeFeeTokenList !== undefined &&
+      chargeFeeTokenList.length &&
+      account.isContract !== undefined
+    ) {
+      setKnowDisable(false);
+    } else {
+      setKnowDisable(true);
+    }
+  }, [isShow, account.isContract, chargeFeeTokenList]);
   return (
     <Box
       flex={1}
@@ -95,15 +99,17 @@ export const CheckActiveStatus = ({
               {t("labelBenefitL2")}
             </Typography>
 
-            <Button
-              size={"large"}
-              variant={"contained"}
-              fullWidth
-              disabled={!knowDisable}
-              onClick={onIKnowClick}
-            >
-              {t("labelIKnow")}
-            </Button>
+            <Box marginTop={3}>
+              <Button
+                size={"large"}
+                variant={"contained"}
+                fullWidth
+                disabled={knowDisable}
+                onClick={onIKnowClick}
+              >
+                {t("labelIKnow")}
+              </Button>
+            </Box>
           </Box>
         </>
       ) : (
@@ -223,14 +229,16 @@ export const CheckActiveStatus = ({
                     {t("labelHaveInProcessingL1toL2")}
                   </Typography>
                 )}
-                <Button
-                  size={"medium"}
-                  variant={"contained"}
-                  fullWidth
-                  onClick={goSend}
-                >
-                  {t("labelAddAssetGateBtn")}
-                </Button>
+                <Box marginTop={3}>
+                  <Button
+                    size={"large"}
+                    variant={"contained"}
+                    fullWidth
+                    onClick={goSend}
+                  >
+                    {t("labelAddAssetGateBtn")}
+                  </Button>
+                </Box>
               </>
             )}
           </Box>
