@@ -93,7 +93,11 @@ export const ProviderMenu = ({
       justifyContent={"space-between"}
       flexDirection={"column"}
     >
-      <Typography component={"h3"} variant={"h3"} marginBottom={3}>
+      <Typography
+        component={"h3"}
+        variant={isMobile ? "h4" : "h3"}
+        marginBottom={3}
+      >
         {t("labelConnectWallet")}
       </Typography>
       <Box
@@ -168,6 +172,7 @@ export const ProviderMenu = ({
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
+                isMobile={isMobile}
                 className={
                   providerName === item.key ? "selected provider" : "provider"
                 }

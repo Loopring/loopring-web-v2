@@ -43,62 +43,75 @@ export const VendorMenu = ({
     <Box
       flex={1}
       display={"flex"}
-      alignItems={"stretch"}
-      justifyContent={isMobile ? "flex-start" : "center"}
+      alignItems={"center"}
+      justifyContent={"space-between"}
       flexDirection={"column"}
-      paddingTop={2}
-      paddingX={4}
-      paddingBottom={3}
-      height={"100%"}
-      alignSelf={"flex-start"}
     >
-      <Typography variant={"h6"} component={"h4"} width={"100%"}>
+      <Typography variant={isMobile ? "h4" : "h3"} component={"h4"}>
         {t("labelL1toL2ThirdPart")}
       </Typography>
-      {vendorList.map((item) => (
-        <Box key={item.key} marginTop={1.5} width={"100%"}>
-          <MenuBtnStyled
-            variant={"outlined"}
-            size={"large"}
-            className={vendorForce === item.key ? "selected vendor" : "vendor"}
-            fullWidth
-            style={{
-              height:
-                item.flag &&
-                item.flag.startDate < Date.now() &&
-                Date.now() < item.flag.endDate
-                  ? 56
-                  : "",
-            }}
-            startIcon={IconItem({ svgIcon: item.svgIcon })}
-            onClick={(e) => {
-              if (item.handleSelect) {
-                item.handleSelect(e);
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        flex={1}
+        alignItems={"stretch"}
+        alignSelf={"stretch"}
+        className="modalContent"
+        paddingX={isMobile ? 7 : 10}
+      >
+        {vendorList.map((item) => (
+          <Box key={item.key} marginTop={1.5} width={"100%"}>
+            <MenuBtnStyled
+              variant={"outlined"}
+              size={"large"}
+              isMobile={isMobile}
+              className={
+                vendorForce === item.key ? "selected vendor" : "vendor"
               }
-            }}
-          >
-            <Typography component={"span"} className={"vendorName"} height={0}>
-              {t(item.key)}
-            </Typography>
-            {item.flag &&
-              item.flag.startDate < Date.now() &&
-              Date.now() < item.flag.endDate && (
-                <>
-                  <Typography
-                    component={"span"}
-                    variant={"body2"}
-                    color={"var(--color-warning)"}
-                  >
-                    {t(item.flag.highLight ?? "")}
-                  </Typography>
-                  <Typography position={"absolute"} right={8} top={4}>
-                    {item.flag.tag}
-                  </Typography>
-                </>
-              )}
-          </MenuBtnStyled>
-        </Box>
-      ))}
+              fullWidth
+              style={{
+                height:
+                  item.flag &&
+                  item.flag.startDate < Date.now() &&
+                  Date.now() < item.flag.endDate
+                    ? 56
+                    : "",
+              }}
+              startIcon={IconItem({ svgIcon: item.svgIcon })}
+              onClick={(e) => {
+                if (item.handleSelect) {
+                  item.handleSelect(e);
+                }
+              }}
+            >
+              <Typography
+                component={"span"}
+                className={"vendorName"}
+                height={0}
+              >
+                {t(item.key)}
+              </Typography>
+              {item.flag &&
+                item.flag.startDate < Date.now() &&
+                Date.now() < item.flag.endDate && (
+                  <>
+                    <Typography
+                      component={"span"}
+                      variant={"body2"}
+                      color={"var(--color-warning)"}
+                    >
+                      {t(item.flag.highLight ?? "")}
+                    </Typography>
+                    <Typography position={"absolute"} right={8} top={4}>
+                      {item.flag.tag}
+                    </Typography>
+                  </>
+                )}
+            </MenuBtnStyled>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
   {

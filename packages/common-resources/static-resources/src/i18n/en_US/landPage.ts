@@ -1,5 +1,5 @@
 export default {
-  labelH1Title: "Ethereum’s First zkRollup Layer2",
+  labelH1Title: "Ethereum’s First zkRollup Layer 2",
   labelH1TitleDetail: "Secure, Fast, and Cheap",
   labelH1TitleWallet: "Loopring Wallet",
   labelH2TitleWallet: "FREEDOM AT YOUR FINGERTIPS",
@@ -25,11 +25,11 @@ export default {
     "Loopring L2 can settle ~2000 transactions per second with near instant finality.",
   describeSuperpowers:
     "Build scalable payment apps, non-custodial exchanges, and NFT marketplaces on Ethereum with Loopring's time-tested zkRollup technology.   Get started with quick-start guides, protocol documentation, a Javascript SDK, and a fully open source codebase.",
-  labelBtnStart: "LAUNCH LAYER2 APP",
+  labelBtnStart: "LAUNCH LOOPRING L2 APP",
   labelBtnDeveloper: "Developer Documentation",
   labelFirstWallet: "BETTER THAN BEING SMART",
   labelFirstWalletDetail:
-    "Smart wallets enable limitless extensibility over EOA wallets, but Loopring Wallet takes one step further with native zkRollup layer2 integration.   Now you can transact directly on Loopring L2, faster and cheaper.",
+    "Smart wallets enable limitless extensibility over EOA wallets, but Loopring Wallet takes one step further with native zkRollup layer 2 integration.   Now you can transact directly on Loopring L2, faster and cheaper.",
   labelWalletSecureH1: "SECURE, at its core",
   labelWalletSecureH2: "With social-recovery and guardians",
   labelWalletSecureDetail:
@@ -41,7 +41,7 @@ export default {
   labelWalletUsageH1: "EASY TO USE",
   labelWalletUsageH2: "with zkRollup scaling solution",
   labelWalletUsageDetail:
-    "The Loopring Wallet integrates Loopring's layer2 zkRollup technology  to greatly increase speeds and lower fees, while inheriting the same  security guarantees as the Ethereum mainnet.",
+    "The Loopring Wallet integrates Loopring's layer 2 zkRollup technology  to greatly increase speeds and lower fees, while inheriting the same  security guarantees as the Ethereum mainnet.",
   labelWalletFutureH1: "FORWARD LOOKING",
   labelWalletFutureH2: "Easily upgradable to adapt future scenarios",
   labelWalletFutureDetail:

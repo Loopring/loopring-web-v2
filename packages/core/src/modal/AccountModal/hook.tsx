@@ -187,7 +187,8 @@ export function useAccountModalForUI({
   const { nftTransferProps } = useNFTTransfer({});
   const { nftDeployProps } = useNFTDeploy({});
   const { resetProps } = useReset();
-  const { activeAccountProps } = useActiveAccount();
+  const { activeAccountProps, activeAccountCheckFeeIsEnough } =
+    useActiveAccount();
   // const { nftDepositProps } = useNFTDeposit();
   const { exportAccountProps } = useExportAccount();
 
@@ -538,7 +539,8 @@ export function useAccountModalForUI({
         view: (
           <CheckActiveStatus
             account={{ ...account, isContract: isAddressContract }}
-            // isFeeNotEnough={activeAccountProps.isFeeNotEnough}
+            checkFeeIsEnough={activeAccountCheckFeeIsEnough}
+            isFeeNotEnough={activeAccountProps.isFeeNotEnough}
             walletMap={activeAccountProps.walletMap}
             chargeFeeTokenList={
               activeAccountProps.chargeFeeTokenList as Array<FeeInfo>

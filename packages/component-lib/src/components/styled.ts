@@ -3,7 +3,7 @@ import { BoxProps, Grid, Typography } from "@mui/material";
 import { css, Theme, useTheme } from "@emotion/react";
 import { UpColor } from "@loopring-web/common-resources";
 import { Box } from "@mui/material";
-import { Button } from "./basic-lib";
+import { Button, ButtonProps } from "./basic-lib";
 import { useSettings } from "../stores";
 
 // @ts-ignore
@@ -362,7 +362,9 @@ export const shake = css`
   }
 `;
 
-export const MenuBtnStyled = styled(Button)`
+export const MenuBtnStyled = styled(Button)<
+  ButtonProps & { isMobile: boolean }
+>`
   font-size: ${({ theme }) => theme.fontDefault.body1};
   background: var(--opacity);
   color: var(--color-text-secondary);
@@ -374,7 +376,8 @@ export const MenuBtnStyled = styled(Button)`
   &.addAsset,
   &.sendAsset {
     white-space: pre;
-    font-size: ${({ theme }) => theme.fontDefault.h5};
+    font-size: ${({ theme, isMobile }) =>
+      isMobile ? theme.fontDefault.h6 : theme.fontDefault.h5};
     //justify-content: flex-start;
     justify-content: space-between;
     flex-direction: row;
@@ -417,4 +420,4 @@ export const MenuBtnStyled = styled(Button)`
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
-` as typeof Button;
+` as (props: ButtonProps & { isMobile: boolean }) => JSX.Element;

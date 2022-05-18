@@ -9,6 +9,7 @@ import {
   IncomingIcon,
 } from "@loopring-web/common-resources";
 import React from "react";
+import { useSettings } from "../../../stores";
 
 const BoxStyled = styled(Box)`` as typeof Box;
 
@@ -26,6 +27,7 @@ export const SendAsset = ({
   symbol,
 }: SendAssetProps) => {
   const { t } = useTranslation("common");
+  const { isMobile } = useSettings();
   const [isToL1, setIsToL1] = React.useState<boolean>(true);
   React.useEffect(() => {
     if (symbol && /^LP-/gi.test(symbol)) {
@@ -44,7 +46,7 @@ export const SendAsset = ({
     >
       <Typography
         component={"h3"}
-        variant={"h3"}
+        variant={isMobile ? "h4" : "h3"}
         marginBottom={3}
         marginTop={-1}
       >
@@ -58,7 +60,7 @@ export const SendAsset = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={10}
+        paddingX={isMobile ? 7 : 10}
         paddingBottom={4}
       >
         <Typography
@@ -80,6 +82,7 @@ export const SendAsset = ({
                   size={"large"}
                   className={"sendAsset"}
                   fullWidth
+                  isMobile={isMobile}
                   disabled={
                     !!(
                       item.enableKey &&
