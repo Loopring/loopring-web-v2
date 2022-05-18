@@ -255,7 +255,7 @@
 | 110919    | 0xd379c4ebed4bc895ee6fec308e0e583d5aad8a5a |
 | 110925    | 0x077a4306f77138cf3837683d7d4133e4dc341573 |
 
-**2.750 by random 'Lucky Draw' to anyone providing any amount of liquidity to the incentives pools for at least 20 days**
+**2. 750 by random 'Lucky Draw' to anyone providing any amount of liquidity to the incentives pools for at least 20 days**
 
 | accountId | address                                    |
 | --------- | ------------------------------------------ |
