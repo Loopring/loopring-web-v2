@@ -89,7 +89,8 @@ export const CheckActiveStatus = ({
         className="modalContent"
         paddingX={5 / 2}
       >
-        {chargeFeeTokenList.length === 0 ||
+        {chargeFeeTokenList === undefined ||
+        chargeFeeTokenList.length === 0 ||
         walletMap === undefined ||
         account.isContract === undefined ? (
           <Box
