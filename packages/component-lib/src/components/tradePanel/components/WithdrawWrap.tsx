@@ -181,7 +181,12 @@ export const WithdrawWrap = <
           justifyContent={"center"}
           alignItems={"center"} /* marginBottom={2} */
         >
-          <Typography component={"h4"} variant={"h3"} marginRight={1}>
+          <Typography
+            component={"h4"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
+            marginRight={1}
+          >
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
               ? t("labelL2ToL1DeployTitle")

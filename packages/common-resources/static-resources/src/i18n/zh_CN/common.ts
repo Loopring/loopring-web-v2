@@ -526,7 +526,7 @@ export default {
   labelActiveAccountTitle: "Activate Loopring L2 Account",
   depositTitle: "Add Asset from My L1",
   depositTitleAndActive: "Add Asset from My L1 & Activate",
-  depositAndActiveBtn: "Add Asset & Activate",
+  depositAndActiveBtn: "Activate Loopring L2",
   depositTitleActive: "Activate Loopring L2",
   depositLabelBtn: "Receive",
   depositLabelLinkRecent: "Recent receive history from L1",

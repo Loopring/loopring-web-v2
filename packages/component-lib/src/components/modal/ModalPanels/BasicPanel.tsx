@@ -181,7 +181,11 @@ export const BasicPanel = withTranslation("common", { withRef: true })(
         paddingBottom={4}
         width={"100%"}
       >
-        <Typography component={"h3"} variant={isMobile ? "h5" : "h3"}>
+        <Typography
+          component={"h3"}
+          variant={isMobile ? "h4" : "h3"}
+          whiteSpace={"pre"}
+        >
           {t(title as string)}
         </Typography>
         <Box

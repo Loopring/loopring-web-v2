@@ -47,7 +47,11 @@ export const VendorMenu = ({
       justifyContent={"space-between"}
       flexDirection={"column"}
     >
-      <Typography variant={isMobile ? "h5" : "h3"} component={"h4"}>
+      <Typography
+        variant={isMobile ? "h4" : "h3"}
+        whiteSpace={"pre"}
+        component={"h4"}
+      >
         {t("labelL1toL2ThirdPart")}
       </Typography>
       <Box

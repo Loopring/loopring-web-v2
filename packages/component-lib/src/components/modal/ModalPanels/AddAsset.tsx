@@ -39,6 +39,7 @@ export const AddAsset = ({
       <Typography
         component={"h3"}
         variant={isMobile ? "h4" : "h3"}
+        whiteSpace={"pre"}
         marginBottom={3}
         marginTop={-1}
       >

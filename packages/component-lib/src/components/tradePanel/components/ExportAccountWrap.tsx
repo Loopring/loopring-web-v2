@@ -5,6 +5,7 @@ import { Button } from "../../basic-lib";
 import { ExportAccountExtendProps } from "./Interface";
 import styled from "@emotion/styled";
 import { copyToClipBoard, NoPhotosIcon } from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
 
 const TextareaAutosizeStyled = styled(TextareaAutosize)`
   width: 100%;
@@ -22,6 +23,7 @@ export const ExportAccountWrap = ({
   const {
     exportAccountProps: { accountInfo },
   } = rest;
+  const { isMobile } = useSettings();
 
   React.useEffect(() => {
     if (accountInfo) {
@@ -48,7 +50,8 @@ export const ExportAccountWrap = ({
         <Typography
           component={"h4"}
           textAlign={"center"}
-          variant={"h3"}
+          variant={isMobile ? "h4" : "h3"}
+          whiteSpace={"pre"}
           marginBottom={2}
         >
           {t("labelExportAccount")}

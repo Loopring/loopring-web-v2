@@ -4,6 +4,7 @@ import {
   globalSetup,
   IBData,
   LoadingIcon,
+  myLog,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { AddressError, TradeBtnStatus } from "../Interface";
@@ -53,6 +54,7 @@ export const DepositWrap = <
   realReferAddress,
   isToAddressEditable,
   toAddressStatus,
+  referStatus,
   wait = globalSetup.wait,
   allowTrade,
   ...rest
@@ -125,7 +127,11 @@ export const DepositWrap = <
       return <></>;
     }
   }, [isNewAccount, chargeFeeTokenList, tradeData, t, feeChargeOrder]);
-
+  myLog(
+    "referStatus !== AddressError.NoError || !referIsLoopringAddress",
+    referStatus !== AddressError.NoError,
+    !referIsLoopringAddress
+  );
   return (
     <Grid
       className={walletMap ? "depositWrap" : "depositWrap loading"}
@@ -162,7 +168,11 @@ export const DepositWrap = <
           <TextField
             className={"text-address"}
             value={tradeData.referAddress ? tradeData.referAddress : ""}
-            error={!!(tradeData.addressError && tradeData.addressError?.error)}
+            error={
+              (!!tradeData.referAddress &&
+                referStatus !== AddressError.NoError) ||
+              !referIsLoopringAddress
+            }
             label={t("depositLabelRefer")}
             placeholder={t("depositLabelPlaceholder")}
             onChange={(event) => {
@@ -196,7 +206,7 @@ export const DepositWrap = <
             ""
           )}
           <Box marginLeft={1 / 2}>
-            {tradeData.addressError?.error || !referIsLoopringAddress ? (
+            {referStatus !== AddressError.NoError || !referIsLoopringAddress ? (
               <Typography
                 color={"var(--color-error)"}
                 variant={"body2"}
@@ -270,7 +280,8 @@ export const DepositWrap = <
               ""
             )}
             <Box marginLeft={1 / 2}>
-              {tradeData.addressError?.error || !toIsLoopringAddress ? (
+              {toAddressStatus !== AddressError.NoError ||
+              !toIsLoopringAddress ? (
                 <Typography
                   color={"var(--color-error)"}
                   variant={"body2"}

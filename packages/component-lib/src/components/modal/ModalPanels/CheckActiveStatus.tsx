@@ -7,6 +7,7 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import React from "react";
+import { useSettings } from "../../../stores";
 export const CheckActiveStatus = ({
   walletMap,
   account,
@@ -34,7 +35,7 @@ export const CheckActiveStatus = ({
   const { t } = useTranslation("common");
   const [know, setKnow] = React.useState(false);
   const [knowDisable, setKnowDisable] = React.useState(true);
-
+  const { isMobile } = useSettings();
   const onIKnowClick = () => {
     if (account.isContract) {
       setKnow(true);
@@ -62,6 +63,7 @@ export const CheckActiveStatus = ({
       setKnowDisable(true);
     }
   }, [isShow, account.isContract, chargeFeeTokenList]);
+
   return (
     <Box
       flex={1}
@@ -75,7 +77,8 @@ export const CheckActiveStatus = ({
         <>
           <Typography
             component={"h3"}
-            variant={"h3"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
             marginBottom={3}
             marginTop={-1}
           >
@@ -116,8 +119,8 @@ export const CheckActiveStatus = ({
         <>
           <Typography
             component={"h3"}
-            variant={"h3"}
-            marginBottom={3}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
             marginTop={-1}
           >
             {t("labelActiveAccountTitle")}

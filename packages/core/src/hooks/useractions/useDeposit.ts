@@ -708,6 +708,7 @@ export const useDeposit = <
     referIsAddressCheckLoading,
     referIsLoopringAddress,
     realReferAddress,
+    referStatus,
     isToAddressEditable,
   };
 

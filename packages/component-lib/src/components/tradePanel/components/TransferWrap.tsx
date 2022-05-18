@@ -224,7 +224,12 @@ export const TransferWrap = <
           alignItems={"center"}
           marginBottom={2}
         >
-          <Typography component={"h4"} variant={"h3"} marginRight={1}>
+          <Typography
+            component={"h4"}
+            variant={isMobile ? "h4" : "h3"}
+            whiteSpace={"pre"}
+            marginRight={1}
+          >
             {t("labelL2toL2Title")}
           </Typography>
           <HelpIcon

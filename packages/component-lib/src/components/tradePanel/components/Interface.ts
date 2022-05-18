@@ -129,6 +129,7 @@ export type DepositExtendProps<T> = {
   title?: string;
   allowTrade?: any;
   toAddressStatus: AddressError;
+  referStatus: AddressError;
   isAllowInputToAddress?: boolean;
   onDepositClick: (data: T) => void;
   toIsAddressCheckLoading: boolean;

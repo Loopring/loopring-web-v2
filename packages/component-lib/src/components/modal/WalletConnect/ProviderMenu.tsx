@@ -95,7 +95,8 @@ export const ProviderMenu = ({
     >
       <Typography
         component={"h3"}
-        variant={isMobile ? "h5" : "h3"}
+        variant={isMobile ? "h4" : "h3"}
+        whiteSpace={"pre"}
         marginBottom={3}
       >
         {t("labelConnectWallet")}

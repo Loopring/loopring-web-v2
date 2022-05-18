@@ -114,7 +114,7 @@ export const useAddressCheck = () => {
   );
 
   React.useEffect(() => {
-    myLog("checkAddress", address, _address.current, isAddressCheckLoading);
+    // myLog("checkAddress", address, _address.current, isAddressCheckLoading);
     if (
       address !== "" &&
       _address.current !== address &&
