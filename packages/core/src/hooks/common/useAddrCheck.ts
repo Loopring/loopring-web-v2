@@ -1,7 +1,7 @@
 import React from "react";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import { globalSetup } from "@loopring-web/common-resources";
+import { globalSetup, myLog } from "@loopring-web/common-resources";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { AddressError } from "@loopring-web/component-lib";
@@ -37,59 +37,64 @@ export const useAddressCheck = () => {
     async (address: any, web3: any) => {
       // if( address.math)
       if (LoopringAPI.walletAPI && LoopringAPI.exchangeAPI) {
-        if (
-          /^0x[a-fA-F0-9]{40}$/g.test(address) ||
-          /.*\.eth$/gi.test(address) ||
-          (/^\d{5}$/g.test(address) && Number(address) > 10000)
-        ) {
-          setIsAddressCheckLoading(true);
+        try {
+          if (
+            /^0x[a-fA-F0-9]{40}$/g.test(address) ||
+            /.*\.eth$/gi.test(address) ||
+            (/^\d{5}$/g.test(address) && Number(address) > 10000)
+          ) {
+            setIsAddressCheckLoading(true);
 
-          const { realAddr, addressErr } = await checkAddr(address, web3);
+            const { realAddr, addressErr } = await checkAddr(address, web3);
 
-          setRealAddr(realAddr);
-          setAddrStatus(addressErr as AddressError);
-          //realAddr !== "" || (address !== "" && address.startsWith("0x"))
-          if ((addressErr as AddressError) === AddressError.NoError) {
-            const [{ walletType }, response] = await Promise.all([
-              LoopringAPI.walletAPI.getWalletType({
-                wallet: realAddr, //realAddr != "" ? realAddr : address,
-              }),
-              LoopringAPI.exchangeAPI.getAccount({
-                owner: realAddr, //realAddr != "" ? realAddr : address,
-              }),
-            ]);
+            setRealAddr(realAddr);
+            setAddrStatus(addressErr as AddressError);
+            //realAddr !== "" || (address !== "" && address.startsWith("0x"))
+            if ((addressErr as AddressError) === AddressError.NoError) {
+              const [{ walletType }, response] = await Promise.all([
+                LoopringAPI.walletAPI.getWalletType({
+                  wallet: realAddr, //realAddr != "" ? realAddr : address,
+                }),
+                LoopringAPI.exchangeAPI.getAccount({
+                  owner: realAddr, //realAddr != "" ? realAddr : address,
+                }),
+              ]);
 
-            if (walletType && walletType?.isInCounterFactualStatus) {
-              setIsCFAddress(true);
-            } else {
-              setIsCFAddress(false);
-            }
-            if (walletType && walletType.isContract) {
-              setIsContractAddress(true);
-            } else {
-              setIsContractAddress(false);
-            }
-            if (
-              walletType &&
-              walletType.loopringWalletContractVersion?.startsWith("V1_")
-            ) {
-              setIsContract1XAddress(true);
-            } else {
-              setIsContract1XAddress(false);
-            }
+              if (walletType && walletType?.isInCounterFactualStatus) {
+                setIsCFAddress(true);
+              } else {
+                setIsCFAddress(false);
+              }
+              if (walletType && walletType.isContract) {
+                setIsContractAddress(true);
+              } else {
+                setIsContractAddress(false);
+              }
+              if (
+                walletType &&
+                walletType.loopringWalletContractVersion?.startsWith("V1_")
+              ) {
+                setIsContract1XAddress(true);
+              } else {
+                setIsContract1XAddress(false);
+              }
 
-            if (
-              response &&
-              ((response as sdk.RESULT_INFO).code ||
-                (response as sdk.RESULT_INFO).message)
-            ) {
-              setIsLoopringAddress(false);
-            } else {
-              setIsLoopringAddress(true);
+              if (
+                response &&
+                ((response as sdk.RESULT_INFO).code ||
+                  (response as sdk.RESULT_INFO).message)
+              ) {
+                setIsLoopringAddress(false);
+              } else {
+                setIsLoopringAddress(true);
+              }
             }
+            setIsAddressCheckLoading(false);
+          } else {
+            throw Error("No api");
           }
-          setIsAddressCheckLoading(false);
-        } else {
+        } catch (error) {
+          myLog("checkAddressError", error);
           setAddrStatus(
             address === "" ? AddressError.EmptyAddr : AddressError.InvalidAddr
           );
@@ -97,6 +102,7 @@ export const useAddressCheck = () => {
           setIsLoopringAddress(false);
         }
       } else {
+        setIsLoopringAddress(false);
         return {
           lastAddress: address,
           addressErr: undefined,

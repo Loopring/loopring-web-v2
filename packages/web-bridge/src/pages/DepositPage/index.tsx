@@ -9,7 +9,6 @@ import {
 import {
   boxLiner,
   BtnInfo,
-  DefaultProps,
   DepositPanel,
   DepositProps,
   TradeBtnStatus,
@@ -17,14 +16,12 @@ import {
 } from "@loopring-web/component-lib";
 import {
   useAccount,
-  useDeposit,
   accountStaticCallBack,
   btnClickMap,
   WalletConnectL1Btn,
 } from "@loopring-web/core";
 import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { useLocation } from "react-router-dom";
 import _ from "lodash";
 
 const BoxStyle = styled(Box)`

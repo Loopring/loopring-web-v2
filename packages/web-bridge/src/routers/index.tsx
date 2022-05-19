@@ -27,9 +27,7 @@ export const useWrapModal = () => {
       <ModalGroup
         assetsRawData={[]}
         depositProps={depositProps}
-        isLayer1Only={
-          /(guardian)|(depositto)/gi.test(pathname ?? "") ? true : false
-        }
+        isLayer1Only={true}
         onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
       />
     ),

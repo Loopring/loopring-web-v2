@@ -55,7 +55,6 @@ export const useDeposit = <
   const { exchangeInfo, chainId, gasPrice, allowTrade } = useSystem();
 
   const {
-    // address: toAddress,
     realAddr: realToAddress,
     setAddress: setToAddress,
     addrStatus: toAddressStatus,
@@ -288,23 +287,18 @@ export const useDeposit = <
     }
 
     if (isAllowInputToAddress) {
-      if (account.accAddress === "" || (account.accAddress && walletLayer1)) {
+      if (opts?.owner) {
         updateData = {
           ...updateData,
           toAddress: opts?.owner?.toLowerCase(),
           addressError: undefined,
         } as T;
-      }
-      if (opts?.owner) {
+        // setToAddress(opts?.owner?.toLowerCase());
         setIsToAddressEditable(false);
       } else {
         setIsToAddressEditable(true);
-        handleClear();
       }
-    } else {
-      handleClear();
     }
-
     handlePanelEvent(
       {
         to: "button",
