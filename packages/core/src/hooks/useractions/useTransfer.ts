@@ -19,10 +19,10 @@ import {
   SagaStatus,
   UIERROR_CODE,
   WalletMap,
+  AddressError,
 } from "@loopring-web/common-resources";
 
 import {
-  AddressError,
   BIGO,
   DAYS,
   getTimestampDaysLater,

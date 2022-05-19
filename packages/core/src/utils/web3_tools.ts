@@ -11,8 +11,7 @@ import ms from "ms.macro";
 
 import { utils } from "ethers";
 import { connectProvides } from "@loopring-web/web3-provider";
-import { myLog } from "@loopring-web/common-resources";
-import { AddressError } from "../defs";
+import { AddressError, myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from "../api_wrapper";
 
 export function getLibrary(provider: any): Web3Provider {
@@ -240,7 +239,7 @@ export async function checkAddr(
     addressErr = AddressError.EmptyAddr;
   }
 
-  if (realAddr && LoopringAPI.exchangeAPI) {
+  if (realAddr && LoopringAPI.exchangeAPI && web3) {
     const [isContract, response] = await Promise.all([
       sdk.isContract(web3, realAddr),
       LoopringAPI.exchangeAPI.getAccount({

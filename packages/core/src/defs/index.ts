@@ -28,12 +28,4 @@ export const DAYS = 30;
 
 export const BIGO = sdk.toBig(0);
 
-export enum AddressError {
-  NoError = "NoError",
-  EmptyAddr = "EmptyAddr",
-  InvalidAddr = "InvalidAddr",
-  ENSResolveFailed = "ENSResolveFailed",
-  IsNotLoopringContract = "IsNotLoopringContract",
-}
-
 export const MAPFEEBIPS = 63;

@@ -14,6 +14,7 @@ import {
   SagaStatus,
   UIERROR_CODE,
   WalletMap,
+  AddressError,
 } from "@loopring-web/common-resources";
 import { connectProvides } from "@loopring-web/web3-provider";
 
@@ -29,7 +30,6 @@ import {
   useSystem,
   ActionResult,
   ActionResultCode,
-  AddressError,
   BIGO,
   LoopringAPI,
   store,

@@ -24,6 +24,7 @@ import {
   myLog,
   NFTWholeINFO,
   TOAST_TIME,
+  AddressError,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -38,7 +39,7 @@ import {
   TextField,
   useSettings,
 } from "../../../index";
-import { AddressError, WithdrawViewProps } from "./Interface";
+import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";

@@ -184,3 +184,12 @@ export const SendAssetList = {
   // enableKey: "withdraw",
   // }
 };
+
+export enum AddressError {
+  NoError = "NoError",
+  EmptyAddr = "EmptyAddr",
+  InvalidAddr = "InvalidAddr",
+  ENSResolveFailed = "ENSResolveFailed",
+  IsNotLoopringContract = "IsNotLoopringContract",
+  TimeOut = "TimeOut",
+}

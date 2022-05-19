@@ -18,12 +18,12 @@ import {
   WalletMap,
   WithdrawType,
   WithdrawTypes,
+  AddressError,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import {
-  AddressError,
   BIGO,
   DAYS,
   getTimestampDaysLater,

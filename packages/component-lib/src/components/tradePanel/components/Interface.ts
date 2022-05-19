@@ -5,6 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import {
+  AddressError,
   CoinInfo,
   CoinKey,
   CoinMap,
@@ -48,13 +49,6 @@ export type TransferInfoProps<C> = {
   feeInfo: C;
   isFeeNotEnough: boolean;
 };
-
-export enum AddressError {
-  NoError = "NoError",
-  EmptyAddr = "EmptyAddr",
-  InvalidAddr = "InvalidAddr",
-  ENSResolveFailed = "ENSResolveFailed",
-}
 
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;

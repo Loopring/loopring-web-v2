@@ -16,7 +16,7 @@ const walletLayer1Slice: Slice = createSlice({
     },
     reset(state, _action: PayloadAction<string | undefined>) {
       state.walletLayer1 = undefined;
-      state.status = SagaStatus.UNSET;
+      state.status = SagaStatus.DONE;
     },
     getWalletLayer1Status(
       state,

@@ -15,6 +15,7 @@ import {
   LoadingIcon,
   EmptyValueTag,
   FeeInfo,
+  AddressError,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -31,7 +32,6 @@ import { BasicACoinTrade } from "./BasicACoinTrade";
 import * as _ from "lodash";
 import styled from "@emotion/styled";
 import { NFTInput } from "./BasicANFTTrade";
-import { AddressError } from "./Interface";
 import { useTheme } from "@emotion/react";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";

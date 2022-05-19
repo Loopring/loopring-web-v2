@@ -18,12 +18,12 @@ import {
   SagaStatus,
   TradeNFT,
   UIERROR_CODE,
+  AddressError,
 } from "@loopring-web/common-resources";
 
 import {
   useTokenMap,
   useAccount,
-  AddressError,
   BIGO,
   DAYS,
   getTimestampDaysLater,
