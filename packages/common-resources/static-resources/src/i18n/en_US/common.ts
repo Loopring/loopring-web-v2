@@ -575,7 +575,7 @@ export default {
   labelReceive: "Receive",
   labelWaitingRefer: "Waiting for approval",
   labelL1toL2WaitForAuth:
-    "Please confirm to receive {{value}} {{symbol}} to {{to}} Loopring L2.",
+    "Please confirm L1 send {{value}} {{symbol}} to {{to}} Loopring L2.",
   labelL1toL2Denied: "You rejected to receive {{value}} {{symbol}}.",
   labelL1toL2Failed: "Add asset request of {{value}} {{symbol}} failed!",
   labelL1toL2Submit: "Add asset request submitted. <1></1>",
