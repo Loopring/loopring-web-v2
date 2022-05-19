@@ -708,6 +708,10 @@ export default {
   labelActiveLayer2PayBtn: "Pay Activation Fee",
   labelBalanceActiveAccountFee:
     "{{symbol}}: <2>Fee {{fee}};</2><3>My Loopring L2 balance: {{count}}</3>",
+  labelToAddressShouldLoopring: "To address is no Loopring L2",
+  labelBridgeSendTo: "Send to (address, account id or ENS)",
+  labelInvalidIsLoopringAddressClick:
+    "This address does not yet have an active Loopring L2, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
   labelENSShouldConnect:
     "Receive address is an ENS, please connect wallet to check real address",
 };

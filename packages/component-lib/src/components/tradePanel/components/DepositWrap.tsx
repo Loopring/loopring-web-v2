@@ -4,7 +4,6 @@ import {
   globalSetup,
   IBData,
   LoadingIcon,
-  myLog,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { AddressError, TradeBtnStatus } from "../Interface";
@@ -373,7 +372,7 @@ export const DepositWrap = <
                           alignItems={"center"}
                           display={"inline-flex"}
                           href={Bridge}
-                          target={"_self"}
+                          target={"_blank"}
                           rel={"noopener noreferrer"}
                           color={"textSecondary"}
                         >
