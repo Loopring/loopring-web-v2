@@ -33,6 +33,7 @@ export enum AddressError {
   EmptyAddr = "EmptyAddr",
   InvalidAddr = "InvalidAddr",
   ENSResolveFailed = "ENSResolveFailed",
+  IsNotLoopringContract = "IsNotLoopringContract",
 }
 
 export const MAPFEEBIPS = 63;

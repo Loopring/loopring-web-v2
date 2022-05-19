@@ -5,7 +5,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 
-import { ChainId } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 import ms from "ms.macro";
 
@@ -76,7 +76,7 @@ const ETHERSCAN_PREFIXES: { [key: number]: string } = {
 };
 
 export function getEtherscanLink(
-  chainId: ChainId,
+  chainId: sdk.ChainId,
   data: string,
   type: "transaction" | "token" | "address" | "block"
 ): string {
@@ -191,7 +191,7 @@ export async function checkAddr(
         const {
           accInfo: { owner },
         } = await LoopringAPI.exchangeAPI.getAccount({
-          // @ts-ignore
+          //@ts-ignore
           accountId: address,
         });
         realAddr = owner;
@@ -238,6 +238,23 @@ export async function checkAddr(
     }
   } else {
     addressErr = AddressError.EmptyAddr;
+  }
+
+  if (realAddr && LoopringAPI.exchangeAPI) {
+    const [isContract, response] = await Promise.all([
+      sdk.isContract(web3, realAddr),
+      LoopringAPI.exchangeAPI.getAccount({
+        owner: realAddr,
+      }),
+    ]);
+    if (
+      isContract &&
+      ((response as sdk.RESULT_INFO).code ||
+        (response as sdk.RESULT_INFO).message)
+    ) {
+      addressErr = AddressError.IsNotLoopringContract;
+      realAddr = "";
+    }
   }
 
   return {

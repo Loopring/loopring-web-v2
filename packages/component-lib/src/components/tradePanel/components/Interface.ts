@@ -133,7 +133,7 @@ export type DepositExtendProps<T> = {
   isAllowInputToAddress?: boolean;
   onDepositClick: (data: T) => void;
   toIsAddressCheckLoading: boolean;
-  toIsLoopringAddress: boolean;
+  // toIsLoopringAddress: boolean;
   realToAddress?: string;
   referIsAddressCheckLoading: boolean;
   referIsLoopringAddress?: boolean;

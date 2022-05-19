@@ -46,7 +46,7 @@ export const DepositWrap = <
   handleClear,
   isAllowInputToAddress,
   toIsAddressCheckLoading,
-  toIsLoopringAddress,
+  // toIsLoopringAddress,
   realToAddress,
   referIsAddressCheckLoading,
   referIsLoopringAddress,
@@ -236,9 +236,7 @@ export const DepositWrap = <
             <TextField
               className={"text-address"}
               value={tradeData.toAddress ? tradeData.toAddress : ""}
-              error={
-                toAddressStatus !== AddressError.NoError || !toIsLoopringAddress
-              }
+              error={toAddressStatus !== AddressError.NoError}
               label={t("depositLabelTo")}
               disabled={!isToAddressEditable}
               placeholder={t("depositLabelPlaceholder")}
@@ -275,8 +273,7 @@ export const DepositWrap = <
               ""
             )}
             <Box marginLeft={1 / 2}>
-              {toAddressStatus !== AddressError.NoError ||
-              !toIsLoopringAddress ? (
+              {toAddressStatus !== AddressError.NoError ? (
                 <Typography
                   color={"var(--color-error)"}
                   variant={"body2"}
@@ -284,7 +281,7 @@ export const DepositWrap = <
                   alignSelf={"stretch"}
                   position={"relative"}
                 >
-                  {t("labelAddressNotLoopring")}
+                  {t("labelInvalidAddress")}
                 </Typography>
               ) : tradeData.toAddress &&
                 realToAddress &&
@@ -333,7 +330,7 @@ export const DepositWrap = <
                     src={`${SoursURL}images/loading-line.gif`}
                   />
                 </Box>
-              ) : realToAddress && toIsLoopringAddress ? (
+              ) : realToAddress ? (
                 <>
                   <Box>
                     <Typography color={"var(--color-text-third)"} minWidth={40}>
@@ -352,22 +349,21 @@ export const DepositWrap = <
                 </>
               ) : (
                 !!tradeData.toAddress &&
-                (toAddressStatus !== AddressError.NoError ||
-                  !toIsLoopringAddress) && (
+                toAddressStatus !== AddressError.NoError && (
                   <Typography variant={"body1"} color={"var(--color-warning)"}>
                     {/*This is wrong address, I want input address*/}
                     {toAddressStatus === AddressError.ENSResolveFailed ? (
                       <>{t("labelENSShouldConnect")}</>
                     ) : (
                       <Trans
-                        i18nKey={"labelInvalidIsLoopringAddressClick"}
+                        i18nKey={"labelInvalidAddressClick"}
                         tOptions={{
                           way: "Pay Loopring L2",
                           token: "ERC20 ",
                         }}
                       >
-                        This address does not yet have an active Loopring L2,
-                        Pay Loopring L2 of ERC20 is disabled!
+                        Invalid Wallet Address, Pay Loopring L2 of ERC20 is
+                        disabled!
                         <Link
                           alignItems={"center"}
                           display={"inline-flex"}
