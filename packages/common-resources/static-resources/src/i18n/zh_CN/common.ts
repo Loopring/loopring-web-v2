@@ -70,8 +70,6 @@ export default {
   labelBtnReset: "重置",
   labelHadChangPassword: "您在{{passDay}}修改了密码",
   labelTitleForceWithdraw: "强制提现",
-  descriptionForceWithdraw:
-    "xxxxxxxxxxxxxxxxxxxx,xxxxxxxxxxxxxxxx,xxxxxxxxxx,xxxxxxxxxx",
   labelBtnForceWithdraw: "强制提现",
   labelTitleExportAccount: "导出账号",
   descriptionExportAccount: "你可以导出你的API密钥，在脚本中使用。",
