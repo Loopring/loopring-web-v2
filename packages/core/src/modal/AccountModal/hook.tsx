@@ -529,7 +529,7 @@ export function useAccountModalForUI({
     isDepositing: chainInfos?.depositHashes[account?.accAddress]?.length
       ? true
       : false,
-    isShow: isShowAccount.step === AccountStep.CheckingActive,
+    // isShow: isShowAccount.step === AccountStep.CheckingActive,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
     checkFeeIsEnough: activeAccountCheckFeeIsEnough,
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,

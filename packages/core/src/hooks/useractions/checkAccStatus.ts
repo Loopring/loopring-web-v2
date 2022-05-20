@@ -23,15 +23,15 @@ export function isAccActivated() {
   return store.getState().account.readyState === AccountStatus.ACTIVATED;
 }
 
-export const useCheckActiveStatus = <C = FeeInfo>({
-  isFeeNotEnough,
+export const useCheckActiveStatus = <C extends FeeInfo>({
+  // isFeeNotEnough,
   checkFeeIsEnough,
   chargeFeeTokenList,
   onDisconnect,
   isDepositing,
-  isShow,
-}: {
-  isShow: boolean;
+}: // isShow,
+{
+  // isShow: boolean;
   isDepositing: boolean;
   onDisconnect: () => void;
   isFeeNotEnough: boolean;
@@ -40,7 +40,11 @@ export const useCheckActiveStatus = <C = FeeInfo>({
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
   const { account } = useAccount();
   const { status: walletLayer2Status, updateWalletLayer2 } = useWalletLayer2();
-  const { setShowAccount, setShowActiveAccount } = useOpenModals();
+  const {
+    setShowAccount,
+    setShowActiveAccount,
+    modals: { isShowAccount },
+  } = useOpenModals();
   const [know, setKnow] = React.useState(false);
   const [knowDisable, setKnowDisable] = React.useState(true);
   const [isAddressContract, setIsAddressContract] =
@@ -48,6 +52,7 @@ export const useCheckActiveStatus = <C = FeeInfo>({
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>)
   );
+  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(true);
 
   const goUpdateAccount = () => {
     setShowAccount({ isShow: false });
@@ -65,8 +70,20 @@ export const useCheckActiveStatus = <C = FeeInfo>({
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
+    setIsFeeNotEnough(
+      walletMap
+        ? chargeFeeTokenList.findIndex((item) => {
+            if (walletMap[item.belong] && walletMap[item.belong]?.count) {
+              return sdk
+                .toBig(walletMap[item.belong]?.count ?? 0)
+                .gte(sdk.toBig(item.fee.toString().replace(",", "")));
+            }
+            return;
+          }) === -1
+        : false
+    );
     setKnowDisable(false);
-  }, []);
+  }, [chargeFeeTokenList]);
 
   React.useEffect(() => {
     if (walletLayer2Callback && walletLayer2Status === SagaStatus.UNSET) {
@@ -76,7 +93,6 @@ export const useCheckActiveStatus = <C = FeeInfo>({
   }, [walletLayer2Status]);
 
   const init = React.useCallback(async () => {
-    setKnow(false);
     setKnowDisable(true);
     const isContract = await sdk.isContract(
       connectProvides.usedWeb3,
@@ -87,10 +103,14 @@ export const useCheckActiveStatus = <C = FeeInfo>({
   }, [account.accAddress, updateWalletLayer2]);
 
   React.useEffect(() => {
-    if (isShow) {
+    if (
+      isShowAccount.isShow &&
+      isShowAccount.step === AccountStep.CheckingActive
+    ) {
       init();
+      setKnow(false);
     }
-  }, [isShow, account.accAddress]);
+  }, [isShowAccount.step, isShowAccount.isShow]);
 
   const checkActiveStatusProps: CheckActiveStatusProps<C> = {
     know,
