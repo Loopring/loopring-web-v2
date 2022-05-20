@@ -28,7 +28,7 @@ export default {
   resetLabelBtn: "重置",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
-    "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests.",
+    "You have enough balance to pay for Layer 2 creation as below.",
   labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
   labelActiveAccountBtn: "Reset",
   depositLabelEnterToken: "选择充值代币",
