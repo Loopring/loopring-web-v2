@@ -596,7 +596,7 @@ export default {
   labelL1toL2HashEmpty:
     "My L1 \u2192 Loopring L2 transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
-  labelNFTSendL2Btn: "Send to another Loopring L2",
+  labelNFTSendL2Btn: "Send to Another Loopring L2",
   labelNFTSendL1Btn: "Send to L1",
   labelNFTDeploySendL1: "Deploy & Send to L1",
   labelGuid: "Go to Guide",
@@ -692,7 +692,7 @@ export default {
   labelWrongNetworkGuide:
     "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
   labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
-  labelSendTOL2: "To another Loopring L2 account",
+  labelSendTOL2: "To Another Loopring L2 Account",
   labelSendToMyL1: "To L1 account",
   labelSendToOtherL1: "To another L1 account",
   labelSendAssetHowto: "Where would you like to send your crypto to",

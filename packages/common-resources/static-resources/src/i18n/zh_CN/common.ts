@@ -683,7 +683,7 @@ export default {
     "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
   labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
   labelSendTOL2: "To another Loopring L2 account",
-  labelSendToMyL1: "To L1 account",
+  labelSendToMyL1: "To my L1 account",
   labelSendToOtherL1: "To another L1 account",
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
