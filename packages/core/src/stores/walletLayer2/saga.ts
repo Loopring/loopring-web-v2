@@ -6,6 +6,7 @@ import {
 } from "./reducer";
 import { CoinKey, PairKey, WalletCoin } from "@loopring-web/common-resources";
 import { store, LoopringAPI } from "../../index";
+import { account } from "@loopring-web/component-lib";
 
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
@@ -33,32 +34,35 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
   } else if (
     !apiKey &&
     ["DEPOSITING", "NOT_ACTIVE", "LOCKED"].includes(readyState) &&
-    ((_accountIdNotActive && _accountIdNotActive !== -1) ||
-      (accountId && accountId !== -1))
+    account.accAddress &&
+    LoopringAPI.exchangeAPI &&
+    LoopringAPI.globalAPI
   ) {
-    // const {
-    //   activeAccountValue: { chargeFeeList },
-    // } = store.getState()._router_modalData;
-    // let tokens = chargeFeeList
-    //   .map((item) => `${tokenMap[item.belong ?? "ETH"].tokenId}`)
-    //   .join(",");
-    const { userBalances } =
-      (await LoopringAPI?.globalAPI?.getUserBalanceForFee({
-        accountId:
-          _accountIdNotActive && _accountIdNotActive !== -1
-            ? _accountIdNotActive
-            : accountId,
-        tokens: "",
-        // tokens,
-      })) ?? {};
-    if (userBalances) {
-      // @ts-ignore
-      walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
-        return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
-      }, {} as WalletLayer2Map<R>);
+    let _accountId =
+      _accountIdNotActive && _accountIdNotActive !== -1
+        ? _accountIdNotActive
+        : accountId;
+    if (!(_accountId && _accountId !== -1)) {
+      const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
+        owner: account.accAddress,
+      });
+      _accountId = accInfo.accountId;
+    }
+    if (_accountId && _accountId !== -1) {
+      const { userBalances } =
+        (await LoopringAPI.globalAPI.getUserBalanceForFee({
+          accountId: _accountId,
+          tokens: "",
+          // tokens,
+        })) ?? {};
+      if (userBalances) {
+        // @ts-ignore
+        walletLayer2 = Reflect.ownKeys(userBalances).reduce((prev, item) => {
+          return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
+        }, {} as WalletLayer2Map<R>);
+      }
     }
   }
-
   return { walletLayer2 };
 };
 
