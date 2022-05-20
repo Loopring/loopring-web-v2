@@ -48,7 +48,7 @@ export const QRAddressPanel = withTranslation("common")(
             >
               {isNewAccount
                 ? t("labelReceiveAddressGuide", {
-                    symbol: feeChargeOrder.join(", "),
+                    symbol: feeChargeOrder?.join(", "),
                   })
                 : t("labelReceiveAddressGuide", { symbol: t("labelAssets") })}
             </Typography>
