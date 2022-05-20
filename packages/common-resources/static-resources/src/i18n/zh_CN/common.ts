@@ -663,7 +663,7 @@ export default {
   labelL1toL2From: "From",
   labelL1toL2TO: "To Loopring L2",
   labelAddAssetTitle: "Add Loopring L2 {{symbol}} assets",
-  labelSendAssetTitle: "Send Loopring L2 assets",
+  labelSendAssetTitle: "Send Loopring L2 {{symbol}} assets",
   labelAddAssetHowto: "How would you like to add Loopring L2 assets?",
   labelAddAssetTitleActive: "Add assets & Activate",
   labelFromMyL1: "From My L1",
