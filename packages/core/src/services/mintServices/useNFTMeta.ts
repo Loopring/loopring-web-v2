@@ -316,6 +316,7 @@ export function useNFTMeta<T extends NFTMETA>({
     [handleTabChange]
   );
   React.useEffect(() => {
+    checkFeeIsEnough();
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
     });

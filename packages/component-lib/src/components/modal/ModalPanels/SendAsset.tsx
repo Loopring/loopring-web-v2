@@ -51,7 +51,7 @@ export const SendAsset = ({
         marginBottom={3}
         marginTop={-1}
       >
-        {t("labelSendAssetTitle")}
+        {t("labelSendAssetTitle", { symbol })}
       </Typography>
       <Box
         display={"flex"}

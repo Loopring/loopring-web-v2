@@ -386,8 +386,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
           });
 
           const feeToken = tokenMap[nftWithdrawValue.fee.belong];
-          const fee = sdk.toBig(nftWithdrawValue.fee.__raw__?.feeRaw ?? 0);
-
+          const feeRaw =
+            nftWithdrawValue.fee.feeRaw ??
+            nftWithdrawValue.fee.__raw__?.feeRaw ??
+            0;
+          const fee = sdk.toBig(feeRaw);
+          // const fee = sdk.toBig(nftWithdrawValue.fee.__raw__?.feeRaw ?? 0);
           const tradeValue = nftWithdrawToken.tradeValue;
 
           const storageId = await LoopringAPI.userAPI.getNextStorageId(

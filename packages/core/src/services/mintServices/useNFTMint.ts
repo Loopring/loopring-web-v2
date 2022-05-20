@@ -302,7 +302,11 @@ export function useNFTMint<
         });
         try {
           const { accountId, accAddress, apiKey } = account;
-          const fee = sdk.toBig(nftMintValue.mintData.fee.__raw__?.feeRaw ?? 0);
+          const feeRaw =
+            nftMintValue.mintData.fee.feeRaw ??
+            nftMintValue.mintData.fee.__raw__?.feeRaw ??
+            0;
+          const fee = sdk.toBig(feeRaw);
           const feeToken = tokenMap[nftMintValue.mintData.fee.belong];
           const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {

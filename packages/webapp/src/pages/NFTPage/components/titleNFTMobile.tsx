@@ -1,6 +1,5 @@
 import {
   AnimationArrow,
-  AssetTitleMobileProps,
   Button,
   DropdownIconStyled,
   useSettings,
@@ -8,13 +7,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { useRouteMatch } from "react-router-dom";
 import {
-  getValuePrecisionThousand,
   HeaderMenuItemInterface,
-  HideIcon,
   subMenuLayer2,
-  ViewIcon,
 } from "@loopring-web/common-resources";
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 export const TitleNFTMobile = () => {
   const { hideL2Action, setHideL2Action } = useSettings();
@@ -57,7 +53,7 @@ export const TitleNFTMobile = () => {
               color={"primary"}
               href={"/#/nft/mintNFT"}
             >
-              {t("labelNFTMint")}
+              {t("labelMintNFT")}
             </Button>
           </Grid>
           <Grid item xs={4}>
@@ -68,7 +64,7 @@ export const TitleNFTMobile = () => {
               color={"primary"}
               href={"/#/nft/depositNFT"}
             >
-              {t("labelNFTDeposit")}
+              {t("labelL1toL2NFT")}
             </Button>
           </Grid>
         </Grid>

@@ -47,6 +47,7 @@ const BoxStyle = styled(Box)<
   &.nft-detail {
     .react-swipeable-view-container {
       & > div {
+        align-items: center;
         min-width: 400px;
         padding-bottom: 0;
         word-break: break-all;
@@ -98,6 +99,19 @@ const BoxStyle = styled(Box)<
 ` as (
   props: { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
 ) => JSX.Element;
+
+const BoxBtnStyle = styled(Box)<{ isMobile?: boolean } & BoxProps>`
+  flex-direction: row;
+  display: flex;
+  &.isMobile {
+    flex-direction: column;
+    width: 100%;
+    .btn {
+      width: 100%;
+      padding: ${({ theme }) => `${theme.unit}px ${3 * theme.unit}px`};
+    }
+  }
+` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 export const NFTDetail = withTranslation("common")(
   ({
     popItem,
@@ -153,7 +167,11 @@ export const NFTDetail = withTranslation("common")(
     };
     const detailView = React.useMemo(() => {
       return (
-        <Box flexDirection={"column"} display={"flex"} maxWidth={550}>
+        <Box
+          flexDirection={"column"}
+          display={"flex"}
+          maxWidth={isMobile ? "var(--mobile-full-panel-width)" : 550}
+        >
           <InformationForNoMetaNFT
             open={!!showDialog}
             method={showDialog}
@@ -352,14 +370,14 @@ export const NFTDetail = withTranslation("common")(
               marginTop={3}
               justifyContent={"space-between"}
             >
-              <Box display={"flex"} flexDirection={"row"}>
+              <BoxBtnStyle className={isMobile ? "isMobile" : ""}>
                 {!!(
                   popItem.isCounterFactualNFT &&
                   popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
                   popItem.minter?.toLowerCase() ===
                     account.accAddress.toLowerCase()
                 ) && (
-                  <Typography minWidth={100} marginRight={2}>
+                  <Typography className={"btn"} minWidth={100} marginRight={2}>
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -375,7 +393,7 @@ export const NFTDetail = withTranslation("common")(
                   </Typography>
                 )}
 
-                <Typography minWidth={100} marginRight={2}>
+                <Typography className={"btn"} minWidth={100} marginRight={2}>
                   <Button
                     variant={"contained"}
                     size={"small"}
@@ -417,7 +435,7 @@ export const NFTDetail = withTranslation("common")(
                   </Button>
                 </Typography>
 
-                <Typography minWidth={100}>
+                <Typography className={"btn"} minWidth={100}>
                   <Button
                     variant={"contained"}
                     size={"small"}
@@ -435,7 +453,7 @@ export const NFTDetail = withTranslation("common")(
                     {t("labelNFTSendL2Btn")}
                   </Button>
                 </Typography>
-              </Box>
+              </BoxBtnStyle>
             </Typography>
           </Box>
         </Box>
@@ -499,14 +517,14 @@ export const NFTDetail = withTranslation("common")(
           {viewPage === 1 && (
             <Box
               flex={1}
-              width={320}
+              width={440}
               className={"nft-trade"}
               paddingBottom={isMobile ? 3 : 0}
               marginTop={isMobile ? -4 : 0}
             >
               <TransferPanel<any, any>
                 {...{
-                  _width: 320,
+                  _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
                   ...{
@@ -527,14 +545,14 @@ export const NFTDetail = withTranslation("common")(
           {viewPage === 2 && (
             <Box
               flex={1}
-              width={320}
+              width={440}
               className={"nft-trade"}
               paddingBottom={isMobile ? 2 : 0}
               marginTop={isMobile ? -4 : 0}
             >
               <WithdrawPanel<any, any>
                 {...{
-                  _width: 320,
+                  _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
                   ...{

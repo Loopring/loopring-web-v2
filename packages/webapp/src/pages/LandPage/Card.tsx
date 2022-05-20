@@ -104,7 +104,7 @@ export const Card = withTranslation(["landPage", "common"], { withRef: true })(
         style={{
           transform: "perspective(600px)",
           height: 480,
-          width: isMobile ? 320 : 400,
+          width: isMobile ? "var(--mobile-full-panel-width)" : 400,
           zIndex: to([styles.zIndex], (zIndex) => zIndex),
           background: to([styles.background], (background) => background),
           boxShadow: to([styles.boxShadow], (boxShadow) => boxShadow),

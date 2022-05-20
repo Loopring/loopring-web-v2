@@ -244,8 +244,11 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
           step: AccountStep.NFTDeploy_WaitForAuth,
         });
         const feeToken = tokenMap[nftDeployValue.fee.belong];
-        const _fee = sdk.toBig(nftDeployValue.fee.__raw__?.feeRaw ?? 0);
-        // myLog("fee.__raw__", nftDeployValue.fee.__raw__?.feeRaw, feeToken);
+        const feeRaw =
+          nftDeployValue.fee.feeRaw ?? nftDeployValue.fee.__raw__?.feeRaw ?? 0;
+        const _fee = sdk.toBig(feeRaw);
+        // const _fee = sdk.toBig(nftDeployValue.fee.__raw__?.feeRaw ?? 0);
+        myLog("fee.__raw__", _fee);
         const storageId = await LoopringAPI.userAPI?.getNextStorageId(
           {
             accountId,

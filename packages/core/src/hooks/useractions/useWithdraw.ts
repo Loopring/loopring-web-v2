@@ -459,7 +459,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           const withdrawToken = tokenMap[withdrawValue.belong as string];
           const feeToken = tokenMap[withdrawValue.fee.belong];
 
-          const fee = sdk.toBig(withdrawValue.fee?.feeRaw ?? 0);
+          // const fee = sdk.toBig(withdrawValue.fee?.feeRaw ?? 0);
+          const feeRaw =
+            withdrawValue.fee.feeRaw ?? withdrawValue.fee.__raw__?.feeRaw ?? 0;
+          const fee = sdk.toBig(feeRaw);
           const balance = sdk
             .toBig(inputValue.balance ?? 0)
             .times("1e" + withdrawToken.decimals);
