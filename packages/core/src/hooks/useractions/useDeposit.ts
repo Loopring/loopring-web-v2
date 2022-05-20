@@ -209,9 +209,6 @@ export const useDeposit = <
 
       let newValue = {
         ...oldValue,
-        // belong: undefined,
-        // tradeValue: 0,
-        // balance: 0,
       };
       if (data?.tradeData.hasOwnProperty("referAddress")) {
         newValue.referAddress = data?.tradeData.referAddress;
@@ -278,7 +275,7 @@ export const useDeposit = <
           // updateDepositData();
           updateData = {
             belong: keyVal as any,
-            tradeValue: 0,
+            tradeValue: undefined,
             balance: walletInfo.count,
           };
           break;
