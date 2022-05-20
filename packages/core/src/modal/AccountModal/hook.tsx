@@ -351,7 +351,7 @@ export function useAccountModalForUI({
     return {
       btnTxt: "labelRetry",
       callback: () => {
-        setShowAccount({ isShow: true, step: AccountStep.UpdateAccount });
+        setShowAccount({ isShow: true, step: AccountStep.CheckingActive });
       },
     };
   }, [setShowAccount]);
@@ -497,15 +497,15 @@ export function useAccountModalForUI({
         });
       },
     },
-    {
-      ...AddAssetList.FromExchange,
-      handleSelect: () => {
-        window.open(
-          `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}`
-        );
-        window.opener = null;
-      },
-    },
+    // {
+    //   ...AddAssetList.FromExchange,
+    //   handleSelect: () => {
+    //     window.open(
+    //       `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}`
+    //     );
+    //     window.opener = null;
+    //   },
+    // },
   ];
   const sendAssetList: SendAssetItem[] = [
     {
