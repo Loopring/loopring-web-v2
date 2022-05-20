@@ -34,9 +34,8 @@ export const DeployNFTWrap = <
   assetsData = [],
 }: NFTDeployViewProps<T, I, C>) => {
   const { t } = useTranslation(["common"]);
-  const [dropdownStatus, setDropdownStatus] = React.useState<"up" | "down">(
-    "down"
-  );
+  const [dropdownStatus, setDropdownStatus] =
+    React.useState<"up" | "down">("down");
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftDeposit`,
@@ -197,7 +196,7 @@ export const DeployNFTWrap = <
               color={"var(--color-text-secondary)"}
               marginBottom={1}
             >
-              {t("transferLabelFee")}：
+              {t("labelL2toL2Fee")}：
               <Box
                 component={"span"}
                 display={"flex"}
@@ -220,7 +219,7 @@ export const DeployNFTWrap = <
                   color={"var(--color-error)"}
                 >
                   {isFeeNotEnough && (
-                    <Trans i18nKey={"transferLabelFeeNotEnough"}>
+                    <Trans i18nKey={"labelL2toL2FeeNotEnough"}>
                       Insufficient balance
                     </Trans>
                   )}

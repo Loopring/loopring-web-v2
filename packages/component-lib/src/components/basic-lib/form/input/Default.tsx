@@ -45,7 +45,7 @@ export const TextField = styled(MuTextField)`
 
   &:focus {
     ${({ theme }) => theme.border.defaultFrame({ c_key: "focus", d_R: 0.5 })};
-    outlined: transparent;
+    outline: transparent;
   }
 ` as typeof MuTextField;
 

@@ -1,6 +1,18 @@
 import React from "react";
-import store from "stores";
 import {
+  store,
+  useAccount,
+  makeWalletLayer2,
+  volumeToCountAsBigNumber,
+  useSocket,
+  useWalletLayer2Socket,
+  useSystem,
+  useTokenMap,
+  LoopringAPI,
+  useTokenPrices,
+} from "@loopring-web/core";
+import {
+  AccountStep,
   AssetTitleProps,
   TokenType,
   TradeBtnStatus,
@@ -10,22 +22,17 @@ import {
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
+  AssetsRawDataItem,
   EmptyValueTag,
   myLog,
   PriceTag,
 } from "@loopring-web/common-resources";
-import { useAccount } from "stores/account";
-import { makeWalletLayer2, volumeToCountAsBigNumber } from "hooks/help";
+
 import { Currency, WsTopicType } from "@loopring-web/loopring-sdk";
-import { useSocket } from "stores/socket";
-import { useWalletLayer2Socket } from "services/socket";
-import { useSystem } from "stores/system";
+
 import BigNumber from "bignumber.js";
-import { useTokenPrices } from "stores/tokenPrices";
-import { LoopringAPI } from "api_wrapper";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useTokenMap } from "../../../stores/token";
 
 export type TrendDataItem = {
   timeStamp: number;
@@ -41,41 +48,13 @@ export type ITokenInfoItem = {
   };
 };
 
-export type AssetsRawDataItem = {
-  token: {
-    type: TokenType;
-    value: string;
-  };
-  amount: string;
-  available: string;
-  locked: string;
-  smallBalance: boolean;
-  tokenValueDollar: number;
-  name: string;
-  tokenValueYuan: number;
-};
-
 export const useGetAssets = () => {
   // const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
   const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({});
   const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>(
     []
   );
-  const {
-    setShowTransfer,
-    setShowDeposit,
-    setShowWithdraw,
-    setShowNFTDeposit,
-    setShowNFTMint,
-  } = useOpenModals();
 
-  // const {
-  //   showDeposit,
-  //   showTransfer,
-  //   showWithdraw,
-  //   showNFTDeposit,
-  //   showNFTMint,
-  // } = useModals();
   const [userAssets, setUserAssets] = React.useState<any[]>([]);
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
   const { account } = useAccount();
@@ -83,9 +62,9 @@ export const useGetAssets = () => {
   const { forex, allowTrade } = useSystem();
   const { tokenPrices } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
-  const { raw_data } = allowTrade;
-  const legalEnable = (raw_data as any)?.legal?.enable;
-  const legalShow = (raw_data as any)?.legal?.show;
+
+  const { setShowAccount } = useOpenModals();
+
   const {
     themeMode,
     hideL2Assets,
@@ -301,35 +280,49 @@ export const useGetAssets = () => {
   const total = assetsRawData
     .map((o) => o.tokenValueDollar)
     .reduce((a, b) => a + b, 0);
-  const onShowDeposit = React.useCallback(
-    (token?: any, partner?: boolean) => {
-      if (partner) {
-        setShowDeposit({ isShow: true, partner: true });
-      } else {
-        setShowDeposit({ isShow: true, symbol: token });
-      }
-    },
-    [setShowDeposit]
-  );
-
-  const onShowTransfer = React.useCallback(
-    (token?: any) => {
-      setShowTransfer({ isShow: true, symbol: token });
-    },
-    [setShowTransfer]
-  );
-
-  const onShowWithdraw = React.useCallback(
-    (token?: any) => {
-      setShowWithdraw({ isShow: true, symbol: token });
-    },
-    [setShowWithdraw]
-  );
+  const onReceive = React.useCallback((token?: any) => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.AddAssetGateway,
+      info: { symbol: token },
+    });
+  }, []);
+  const onSend = React.useCallback((token?: any, isToL1?: boolean) => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.SendAssetGateway,
+      info: { symbol: token, isToL1 },
+    });
+  }, []);
+  // const onShowDeposit = React.useCallback(
+  //   (token?: any, partner?: boolean) => {
+  //     if (partner) {
+  //       setShowDeposit({ isShow: true, partner: true });
+  //     } else {
+  //       setShowDeposit({ isShow: true, symbol: token });
+  //     }
+  //   },
+  //   [setShowDeposit]
+  // );
+  //
+  // const onShowTransfer = React.useCallback(
+  //   (token?: any) => {
+  //     setShowTransfer({ isShow: true, symbol: token });
+  //   },
+  //   [setShowTransfer]
+  // );
+  //
+  // const onShowWithdraw = React.useCallback(
+  //   (token?: any) => {
+  //     setShowWithdraw({ isShow: true, symbol: token });
+  //   },
+  //   [setShowWithdraw]
+  // );
 
   const assetTitleProps: AssetTitleProps = {
-    btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
-    btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
-    btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
+    // btnShowDepositStatus: TradeBtnStatus.AVAILABLE,
+    // btnShowTransferStatus: TradeBtnStatus.AVAILABLE,
+    // btnShowWithdrawStatus: TradeBtnStatus.AVAILABLE,
     setHideL2Assets,
     assetInfo: {
       totalAsset: assetsRawData
@@ -343,16 +336,19 @@ export const useGetAssets = () => {
     },
     accountId: account.accountId,
     hideL2Assets,
-    onShowDeposit,
-    onShowTransfer,
-    onShowWithdraw,
-    showPartner: () => onShowDeposit(undefined, true),
-    legalEnable,
-    legalShow,
+    onShowReceive: () => {
+      setShowAccount({ isShow: true, step: AccountStep.AddAssetGateway });
+    },
+    onShowSend: () => {
+      setShowAccount({ isShow: true, step: AccountStep.SendAssetGateway });
+    },
+    // onShowTransfer,
+    // onShowWithdraw,
+    // showPartner: () => onShowDeposit(undefined, true),
+    // legalEnable,
+    // legalShow,
   };
   const assetTitleMobileExtendProps = {
-    onShowNFTDeposit: () => setShowNFTDeposit({ isShow: true }),
-    onShowNFTMINT: () => setShowNFTMint({ isShow: true }),
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   };
@@ -367,9 +363,8 @@ export const useGetAssets = () => {
     account,
     currency,
     hideL2Assets,
-    onShowTransfer,
-    onShowWithdraw,
-    onShowDeposit,
+    onSend,
+    onReceive,
     assetTitleProps,
     assetTitleMobileExtendProps,
     marketArray,

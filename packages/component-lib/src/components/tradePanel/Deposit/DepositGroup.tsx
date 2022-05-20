@@ -1,7 +1,7 @@
 import { DepositGroupProps, DepositPanelType } from "./Interface";
 import { IBData } from "@loopring-web/common-resources";
 import { PanelContent } from "../../basic-lib";
-import { DepositPanel } from "./DepositPanel";
+import { DepositPanel } from "../../modal/ModalPanels/DepositPanel";
 import { VendorMenu } from "./VendorMenu";
 import { Box, BoxProps, Toolbar, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";

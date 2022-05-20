@@ -2,14 +2,13 @@ import { Route, Switch, useLocation } from "react-router-dom";
 import React from "react";
 import { Box, Container } from "@mui/material";
 import Header from "layouts/header";
-import { ModalGroup } from "../modal";
 import { QuotePage } from "pages/QuotePage";
 import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
 import { LiquidityPage } from "pages/LiquidityPage";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import { useTicker } from "stores/ticker";
+import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
 import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
@@ -19,14 +18,13 @@ import {
   ThemeType,
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
-import {
-  Footer,
-  useOpenModals,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { useOpenModals, useSettings } from "@loopring-web/component-lib";
 import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
+import { NFTPage } from "../pages/NFTPage";
+import { useGetAssets } from "../pages/Layer2Page/AssetPanel/hook";
+import { Footer } from "../layouts/footer";
 
 const ContentWrap = ({
   children,
@@ -62,6 +60,22 @@ const ContentWrap = ({
     </>
   );
 };
+const WrapModal = () => {
+  const { depositProps } = useDeposit(false);
+  const { assetsRawData } = useGetAssets();
+  const location = useLocation();
+  const { setShowAccount } = useOpenModals();
+  return (
+    <ModalGroup
+      assetsRawData={assetsRawData}
+      depositProps={depositProps}
+      isLayer1Only={
+        /(guardian)|(depositto)/gi.test(location.pathname ?? "") ? true : false
+      }
+      onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
+    />
+  );
+};
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
@@ -69,7 +83,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
   const { setTheme } = useSettings();
-  const { setShowAccount } = useOpenModals();
+
+  // const { pathname } = useLocation();
   const query = new URLSearchParams(location.search);
   React.useEffect(() => {
     if (query.has("theme")) {
@@ -78,6 +93,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         : setTheme("light");
     }
   }, [location.search]);
+
   React.useEffect(() => {
     if (state === SagaStatus.ERROR) {
       window.location.replace(`${window.location.origin}/error`);
@@ -98,6 +114,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
           <WalletPage />
         </Route>
+
         <Route exact path="/loading">
           <LoadingPage />
         </Route>
@@ -221,6 +238,11 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <Layer2Page />
           </ContentWrap>
         </Route>
+        <Route exact path={["/nft", "/nft/*"]}>
+          <ContentWrap state={state}>
+            <NFTPage />
+          </ContentWrap>
+        </Route>
         <Route exact path="/liquidity">
           <ContentWrap state={state}>
             <LiquidityPage />
@@ -264,9 +286,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           )}
         />
       </Switch>
-      <ModalGroup
-        onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
-      />
+      {state === SagaStatus.DONE && <WrapModal />}
       {query && query.has("nofooter") ? <></> : <Footer />}
     </>
   );

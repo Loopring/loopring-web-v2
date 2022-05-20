@@ -5,12 +5,18 @@ import styled from "@emotion/styled";
 import React from "react";
 import { useAmmMapUI } from "./hook";
 
-import { PoolsTable, InputSearch } from "@loopring-web/component-lib";
-import { useSettings } from "@loopring-web/component-lib";
-import { useSystem } from "stores/system";
-import store from "stores";
-import { useAmmActivityMap } from "stores/Amm/AmmActivityMap";
-import { useAccount } from "stores/account";
+import {
+  PoolsTable,
+  InputSearch,
+  useSettings,
+} from "@loopring-web/component-lib";
+
+import {
+  store,
+  useAccount,
+  useSystem,
+  useAmmActivityMap,
+} from "@loopring-web/core";
 
 const WrapperStyled = styled(Box)`
   flex: 1;

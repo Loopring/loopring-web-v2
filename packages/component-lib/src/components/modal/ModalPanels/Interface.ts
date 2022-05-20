@@ -1,9 +1,12 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
+  FeeInfo,
   VendorItem,
   VendorProviders,
+  WalletMap,
 } from "@loopring-web/common-resources";
+import React from "react";
 
 export type AccountBaseProps = {
   // addressShort: string
@@ -20,11 +23,16 @@ export type AccountBaseProps = {
 } & Account;
 
 export enum AccountStep {
+  CheckingActive,
+  AddAssetGateway,
+  SendAssetGateway,
+  PayWithCard,
   NoAccount,
   QRCode,
   HadAccount,
   // new
   // Deposit,
+  Deposit_Sign_WaitForRefer,
   Deposit_Approve_WaitForAuth,
   Deposit_Approve_Denied,
   Deposit_Approve_Submit,
@@ -124,4 +132,44 @@ export interface VendorMenuProps {
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;
+}
+interface InferfaceAssetItem {
+  key: string;
+  svgIcon: string;
+  enableKey?: string | null;
+  handleSelect: (event?: React.MouseEvent) => void;
+}
+
+export interface AddAssetItem extends InferfaceAssetItem {}
+export interface SendAssetItem extends InferfaceAssetItem {}
+
+export interface AddAssetProps {
+  symbol?: string;
+  addAssetList: AddAssetItem[];
+  isNewAccount?: boolean;
+  allowTrade: {
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
+  };
+}
+
+export interface SendAssetProps {
+  // isToL1: boolean;
+  symbol?: string;
+  sendAssetList: AddAssetItem[];
+  allowTrade: {
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
+  };
+}
+
+export interface CheckActiveStatusProps<C = FeeInfo> {
+  account: Account & { isContract: boolean | undefined };
+  chargeFeeTokenList: C[];
+  goDisconnect: () => void;
+  goSend: () => void;
+  isDepositing: boolean;
+  walletMap?: WalletMap<any, any>;
+  isFeeNotEnough: boolean;
+  onIKnowClick: () => void;
+  knowDisable: boolean;
+  know: boolean;
 }

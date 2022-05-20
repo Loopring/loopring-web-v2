@@ -8,11 +8,12 @@ export const NftImage = (props: NftImageProps) => {
       referrerPolicy={"unsafe-url"}
       // loading={"lazy"}
       // crossOrigin={"anonymous"}
+      style={{ objectFit: "contain" }}
       onError={props.onError}
       alt={props.name ?? "NFT"}
       width={props.width ?? "100%"}
       height={props.height ?? "100%"}
-      src={props.src}
+      src={props.src?.replace(/(javascript:)|(data:)/gi, "")}
     />
   );
 };

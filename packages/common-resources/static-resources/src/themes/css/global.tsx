@@ -81,6 +81,7 @@ export const colorBase = ({ theme }: any) => css`
     --network-text: ${theme.colorBase.warning};
     --auto-refresh-color: ${theme.colorBase.primary};
     --opacity: ${theme.colorBase.opacity};
+    --color-white: white;
   }
 `;
 export const scrollbarDefault = ({ theme }: any) => css`
@@ -233,6 +234,7 @@ export const globalCss = ({ theme }: any) => css`
     --modal-width: 480px;
     --modal-height: 400px;
     --swap-box-width: 338px;
+    --mobile-full-panel-width: 352px;
     --toolbar-row-height: 56px; /** js used also  40 + 56 = 96  CoinList.tsx **/
     --toolbar-row-height-minus: -56px;
     --toolbar-row-padding: 40px; /** js used also  40 + 56 = 96  CoinList.tsx **/

@@ -13,12 +13,7 @@ export enum WalletStatus {
 
 export interface GatewayItem {
   key: keyof typeof ConnectProviders;
-  imgSrc: string;
-  handleSelect?: (event?: React.MouseEvent) => void;
-}
-
-export interface GatewayItem {
-  key: keyof typeof ConnectProviders;
+  keyi18n: string;
   imgSrc: string;
   handleSelect?: (event?: React.MouseEvent) => void;
 }

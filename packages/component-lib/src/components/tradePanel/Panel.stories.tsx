@@ -9,9 +9,6 @@ import {
   AmmExitData,
   IBData,
   SlippageTolerance,
-  WithdrawType,
-  WithdrawTypes,
-  vendorList,
 } from "@loopring-web/common-resources";
 import {
   ammCalcData,
@@ -51,6 +48,7 @@ import {
 } from "../../stores";
 import { SlippagePanel } from "./components";
 import React from "react";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const Style = styled.div`
   background: var(--color-global-bg);
@@ -59,7 +57,13 @@ const Style = styled.div`
   flex: 1;
 `;
 let tradeData: any = {};
+// @ts-ignore
 let depositProps: DepositProps<any, any> = {
+  toIsLoopringAddress: false,
+  toIsAddressCheckLoading: false,
+  referIsLoopringAddress: false,
+  referIsAddressCheckLoading: false,
+  type: "NFT",
   isNewAccount: false,
   tradeData,
   coinMap,
@@ -80,7 +84,9 @@ let depositProps: DepositProps<any, any> = {
     });
   },
 };
-let withdrawProps: WithdrawProps<any, any> = {
+let withdrawProps: Partial<WithdrawProps<any, any>> = {
+  disabled: false,
+  type: "TOKEN",
   isContractAddress: false,
   isFeeNotEnough: false,
   isAddressCheckLoading: false,
@@ -104,8 +110,11 @@ let withdrawProps: WithdrawProps<any, any> = {
       }, 500);
     });
   },
-  withdrawType: WithdrawType.Fast,
-  withdrawTypes: WithdrawTypes,
+  withdrawType: sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+  withdrawTypes: {
+    // [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast",
+    [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard",
+  },
   feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" as any },
   // @ts-ignore
   chargeFeeTokenList: [
@@ -125,11 +134,8 @@ let withdrawProps: WithdrawProps<any, any> = {
   handleWithdrawTypeChange: (value: any) => {
     console.log(value);
   },
-  handleAddressError: (_value: any) => {
-    return { error: true, message: "any error" };
-  },
 };
-let transferProps: TransferProps<any, any> = {
+let transferProps: Partial<TransferProps<any, any>> = {
   isFeeNotEnough: false,
   tradeData,
   coinMap,
@@ -165,9 +171,6 @@ let transferProps: TransferProps<any, any> = {
   handleOnAddressChange: (value: any) => {
     console.log("handleOnAddressChange", value);
   },
-  handleAddressError: (_value: any) => {
-    return { error: true, message: "any error" };
-  },
 };
 let resetProps: ResetProps<any> = {
   isFeeNotEnough: false,
@@ -198,21 +201,21 @@ let resetProps: ResetProps<any> = {
 //     });
 //   },
 //   fee: { count: 234, price: 123 },
-let swapProps: SwapProps<IBData<string>, string, any> = {
-  refreshRef: React.createRef(),
-  tradeData: {
-    sell: { belong: undefined },
-    buy: { belong: undefined },
-    slippage: "",
-  } as any,
-  tradeCalcData,
-  onSwapClick: (tradeData) => {
-    console.log("Swap button click", tradeData);
-  },
-  handleSwapPanelEvent: async (data: any, switchType: any) => {
-    console.log(data, switchType);
-  },
-};
+// let swapProps: SwapProps<IBData<string>, string, any> = {
+//   refreshRef: React.createRef(),
+//   tradeData: {
+//     sell: { belong: undefined },
+//     buy: { belong: undefined },
+//     slippage: "",
+//   } as any,
+//   tradeCalcData,
+//   onSwapClick: (tradeData) => {
+//     console.log("Swap button click", tradeData);
+//   },
+//   handleSwapPanelEvent: async (data: any, switchType: any) => {
+//     console.log(data, switchType);
+//   },
+// };
 // @ts-ignore
 let _ammProps: AmmProps<
   AmmJoinData<IBData<any>>,
@@ -423,21 +426,19 @@ const WrapAmmPanel = (rest: any) => {
 const ModalPanelWrap = () => {
   return (
     <ModalPanel
-      transferProps={transferProps}
-      depositGroupProps={{
-        depositProps,
-        vendorMenuProps: {
-          vendorList,
-          vendorForce: undefined,
-        },
-      }}
-      withdrawProps={withdrawProps}
-      nftTransferProps={transferProps}
-      nftDepositProps={{} as any}
-      nftWithdrawProps={withdrawProps}
+      // depositGroupProps={{
+      //   depositProps,
+      //   vendorMenuProps: {
+      //     vendorList: [],
+      //     vendorForce: undefined,
+      //   },
+      // }}
+      depositProps={depositProps as DepositProps<any, any>}
+      transferProps={transferProps as TransferProps<any, any>}
+      withdrawProps={withdrawProps as WithdrawProps<any, any>}
+      nftTransferProps={transferProps as TransferProps<any, any>}
+      nftWithdrawProps={withdrawProps as WithdrawProps<any, any>}
       resetProps={resetProps}
-      ammProps={_ammProps}
-      swapProps={swapProps}
       assetsData={{} as any}
       exportAccountProps={{} as any}
       setExportAccountToastOpen={{} as any}
@@ -514,7 +515,7 @@ const Template: Story<any> = () => {
           >
             <WrapWithdrawPanel />
           </Grid>
-          <h4>AmmpPanel</h4>
+          <h4>AmmPanel</h4>
           <Grid
             container
             spacing={2}

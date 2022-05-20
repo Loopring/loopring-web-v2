@@ -1,12 +1,8 @@
-import { WithTranslation } from "react-i18next";
 import { DepositBase, IconType, PanelProps } from "./BasicPanel";
 import { NFTWholeINFO } from "@loopring-web/common-resources";
 
 export const NFTDeposit_Approve_WaitForAuth = (
-  props: PanelProps &
-    WithTranslation &
-    Partial<NFTWholeINFO> &
-    Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO> & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
@@ -18,10 +14,7 @@ export const NFTDeposit_Approve_WaitForAuth = (
 };
 
 export const NFTDeposit_Approve_Denied = (
-  props: PanelProps &
-    WithTranslation &
-    Partial<NFTWholeINFO> &
-    Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO> & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
@@ -34,10 +27,7 @@ export const NFTDeposit_Approve_Denied = (
 };
 
 export const NFTDeposit_Approve_Submit = (
-  props: PanelProps &
-    WithTranslation &
-    Partial<NFTWholeINFO> &
-    Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO> & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
@@ -50,7 +40,7 @@ export const NFTDeposit_Approve_Submit = (
 };
 
 export const NFTDeposit_WaitForAuth = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.LoadingIcon,
@@ -63,11 +53,11 @@ export const NFTDeposit_WaitForAuth = (
 };
 
 export const NFTDeposit_Denied = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.RefuseIcon,
-    describe1: props.t("labelDepositDenied", {
+    describe1: props.t("labelL1toL2Denied", {
       symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
@@ -76,11 +66,11 @@ export const NFTDeposit_Denied = (
 };
 
 export const NFTDeposit_Failed = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
-    describe1: props.t("labelDepositFailed", {
+    describe1: props.t("labelL1toL2Failed", {
       symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),
@@ -89,11 +79,11 @@ export const NFTDeposit_Failed = (
 };
 
 export const NFTDeposit_Submit = (
-  props: PanelProps & WithTranslation & Partial<NFTWholeINFO>
+  props: PanelProps & Partial<NFTWholeINFO>
 ) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
-    describe1: props.t("labelDepositSubmit", {
+    describe1: props.t("labelL1toL2Submit", {
       symbol: props?.name ?? "unknown NFT",
       value: props.value,
     }),

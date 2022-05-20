@@ -6,21 +6,29 @@ import { bindHover } from "material-ui-popup-state";
 import { Trans, useTranslation } from "react-i18next";
 import { PopoverPure } from "../../basic-lib";
 import { DepositPanelType } from "./Interface";
+import { useSettings } from "../../../stores";
 
-const DepositTitle = ({ title, description }: any) => {
+export const DepositTitle = ({ title, description }: any) => {
   const { t } = useTranslation();
+  const { isMobile } = useSettings();
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-deposit`,
   });
   return (
-    <>
-      <Typography component={"span"} variant={"h5"} marginRight={1}>
+    <Typography display={"inline-flex"} alignItems={"center"}>
+      <Typography
+        component={"span"}
+        variant={isMobile ? "h4" : "h3"}
+        whiteSpace={"pre"}
+        marginRight={1}
+        className={"depositTitle"}
+      >
         {title ? title : t("depositTitle")}
       </Typography>
       <HelpIcon
         {...bindHover(popupState)}
-        fontSize={"medium"}
+        fontSize={isMobile ? "medium" : "large"}
         htmlColor={"var(--color-text-third)"}
       />
       <PopoverPure
@@ -47,7 +55,7 @@ const DepositTitle = ({ title, description }: any) => {
           </Trans>
         </Typography>
       </PopoverPure>
-    </>
+    </Typography>
   );
 };
 const ThirdPartTitle = React.memo(() => {
@@ -84,7 +92,7 @@ const ThirdPartTitle = React.memo(() => {
           variant={"body2"}
           whiteSpace={"pre-line"}
         >
-          <Trans i18nKey={"labelDepositVendor"}>
+          <Trans i18nKey={"labelL1toL2Vendor"}>
             Make an order form third Loopring-parter, Once your order confirmed
             by Loopring, it will be added to your balance within 2 minutes.
           </Trans>

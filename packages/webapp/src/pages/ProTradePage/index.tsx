@@ -26,7 +26,7 @@ import {
 } from "./panel";
 import { boxLiner, useSettings } from "@loopring-web/component-lib";
 import styled from "@emotion/styled/";
-import { usePageTradePro } from "stores/router";
+import { usePageTradePro } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 
 const MARKET_ROW_LENGTH: number = 8;

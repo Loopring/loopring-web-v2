@@ -26,10 +26,13 @@ import { PoolTableProps, Row } from "./Interface";
 import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";
 import { FormatterProps } from "react-data-grid";
-import { Currency } from "@loopring-web/loopring-sdk";
+import {
+  AmmPoolInProgressActivityRule,
+  Currency,
+  LoopringMap,
+} from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
-import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
@@ -66,7 +69,7 @@ export const IconColumn = React.memo(
   }: {
     row: R;
     account: Account;
-    activityInProgressRules?: ActivityRulesMap;
+    activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
   }) => {
     const history = useHistory();
     const { coinJson, isMobile } = useSettings();
@@ -215,7 +218,7 @@ export const IconColumn = React.memo(
                 history.push(
                   `/race-event/${current_event_date}?pair=${pair}&type=${
                     activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                  }&owner=${account.accAddress}`
+                  }&owner=${account?.accAddress}`
                 );
               }}
             >
@@ -230,7 +233,7 @@ export const IconColumn = React.memo(
 ) as unknown as <R extends AmmDetail<T>, T>(props: {
   row: R;
   account: Account;
-  activityInProgressRules?: ActivityRulesMap;
+  activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
 }) => JSX.Element;
 
 export const PoolsTable = withTranslation(["tables", "common"])(

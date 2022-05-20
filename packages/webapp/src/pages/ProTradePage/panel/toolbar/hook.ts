@@ -1,5 +1,5 @@
 import React from "react";
-import { LoopringAPI } from "api_wrapper";
+import { LoopringAPI } from "@loopring-web/core";
 
 export const useToolbar = () => {
   const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);

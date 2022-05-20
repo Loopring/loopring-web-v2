@@ -26,7 +26,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     ${({ isMobile, lan }) =>
       !isMobile
         ? `--template-columns: 200px 150px auto auto ${
-            lan === "en_US" ? "285px" : "240px"
+            lan === "en_US" ? "186px" : "186px"
           } !important;`
         : `--template-columns: 54% 40% 6% !important;`}
 
@@ -112,9 +112,11 @@ export interface AssetsTableProps {
   tableHeight?: number;
   onVisibleRowsChange?: (props: any) => void;
   showFilter?: boolean;
-  onShowDeposit: (token: string) => void;
-  onShowTransfer: (token: string) => void;
-  onShowWithdraw: (token: string) => void;
+  onSend: (token: string, isToL1: boolean) => void;
+  onReceive: (token: string) => void;
+  // onShowDeposit: (token: string) => void;
+  // onShowTransfer: (token: string) => void;
+  // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];
   hideLpToken: boolean;
   hideSmallBalances: boolean;
@@ -135,9 +137,8 @@ export const AssetsTable = withTranslation("tables")(
       rawData,
       allowTrade,
       showFilter,
-      onShowDeposit,
-      onShowTransfer,
-      onShowWithdraw,
+      onReceive,
+      onSend,
       getMarketArrayListCallback,
       disableWithdrawList,
       hideLpToken,
@@ -290,7 +291,7 @@ export const AssetsTable = withTranslation("tables")(
           const isLp = token.type === TokenType.lp;
           const tokenValue = token.value;
 
-          const isWithdraw = token.type !== TokenType.lp;
+          const isToL1 = token.type !== TokenType.lp;
 
           const lpPairList = tokenValue.split("-");
           lpPairList.splice(0, 1);
@@ -306,12 +307,11 @@ export const AssetsTable = withTranslation("tables")(
                 getMarketArrayListCallback,
                 disableWithdrawList,
                 isLp,
-                isWithdraw,
+                isToL1,
                 allowTrade,
                 market: renderMarket,
-                onShowDeposit,
-                onShowTransfer,
-                onShowWithdraw,
+                onReceive,
+                onSend,
               }}
             />
           );
@@ -408,7 +408,7 @@ export const AssetsTable = withTranslation("tables")(
           const isLp = token.type === TokenType.lp;
           const tokenValue = token.value;
 
-          const isWithdraw = token.type !== TokenType.lp;
+          const isToL1 = token.type !== TokenType.lp;
 
           const lpPairList = tokenValue.split("-");
           lpPairList.splice(0, 1);
@@ -424,12 +424,11 @@ export const AssetsTable = withTranslation("tables")(
                 getMarketArrayListCallback,
                 disableWithdrawList,
                 isLp,
-                isWithdraw,
+                isToL1,
                 allowTrade,
                 market: renderMarket,
-                onShowDeposit,
-                onShowTransfer,
-                onShowWithdraw,
+                onReceive,
+                onSend,
               }}
             />
           );

@@ -46,7 +46,7 @@ export enum InputSize {
 }
 export type InputCoinProps<T, R, I> = {
   inputData?: T | undefined;
-  label: string;
+  label: string | JSX.Element;
   subLabel?: string;
   coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>;
   placeholderText?: string;

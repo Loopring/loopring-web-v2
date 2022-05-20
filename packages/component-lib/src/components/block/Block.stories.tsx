@@ -11,8 +11,6 @@ import {
 import { coinMap, CoinType } from "../../static";
 import { withTranslation } from "react-i18next";
 import { AssetTitle, AssetTitleProps, TradeTitle, VipPanel } from "./";
-import { useDispatch } from "react-redux";
-import { setShowDeposit, setShowTransfer, setShowWithdraw } from "../../stores";
 import { SettingPanel } from "./SettingPanel";
 import { MarketBlock } from "./MarketBlock";
 // import { PoolDetailTitle } from './PoolDetailTitle';
@@ -221,9 +219,10 @@ const SettingPanelWrap = (_rest: any) => {
 };
 
 const AssetTitleWrap = (rest: any) => {
-  const dispatch = useDispatch();
-  const AssetTitleProps: AssetTitleProps = {
-    showPartner(): void {},
+  // const dispatch = useDispatch();
+  const assetTitleProps: AssetTitleProps = {
+    onShowReceive: () => {},
+    onShowSend: () => {},
     accountId: 0,
     setHideL2Assets: () => undefined,
     hideL2Assets: false,
@@ -231,9 +230,6 @@ const AssetTitleWrap = (rest: any) => {
       totalAsset: 123456.789,
       priceTag: PriceTag.Dollar,
     },
-    onShowWithdraw: () => dispatch(setShowDeposit({ isShow: true })),
-    onShowTransfer: () => dispatch(setShowTransfer({ isShow: true })),
-    onShowDeposit: () => dispatch(setShowWithdraw({ isShow: true })),
   };
   return (
     <>
@@ -241,7 +237,7 @@ const AssetTitleWrap = (rest: any) => {
         <AssetTitle
           {...{
             ...rest,
-            ...AssetTitleProps,
+            ...assetTitleProps,
           }}
         />
       </Grid>

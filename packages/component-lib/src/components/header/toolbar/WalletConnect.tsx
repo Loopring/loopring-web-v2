@@ -9,6 +9,7 @@ import {
   UnConnectIcon,
   CircleIcon,
   myLog,
+  SagaStatus,
 } from "@loopring-web/common-resources";
 import { Typography } from "@mui/material";
 import { Button } from "../../basic-lib";
@@ -82,12 +83,10 @@ export const WalletConnectBtn = ({
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(["layout", "common"]);
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
-  const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(
-    undefined
-  );
-  const [btnClassname, setBtnClassname] = React.useState<string | undefined>(
-    ""
-  );
+  const [networkLabel, setNetworkLabel] =
+    React.useState<string | undefined>(undefined);
+  const [btnClassname, setBtnClassname] =
+    React.useState<string | undefined>("");
   const [icon, setIcon] = React.useState<JSX.Element | undefined>();
 
   useEffect(() => {
@@ -153,6 +152,132 @@ export const WalletConnectBtn = ({
       setLabel("labelConnectWallet");
     }
   }, [accountState?.account, i18n]);
+
+  const _handleClick = (event: React.MouseEvent) => {
+    // debounceCount(event)
+    if (handleClick) {
+      handleClick(event);
+    }
+  };
+
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId: 'wallet-connect-notification'`,
+  });
+  return (
+    <>
+      {networkLabel ? (
+        <TestNetworkStyle
+          display={"inline-flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          paddingX={1}
+          component={"span"}
+          color={"var(--vip-text)"}
+          marginRight={1}
+        >
+          {networkLabel}
+        </TestNetworkStyle>
+      ) : (
+        <></>
+      )}
+      <WalletConnectBtnStyled
+        variant={
+          ["un-connect", "wrong-network"].findIndex(
+            (ele) => btnClassname === ele
+          ) !== -1
+            ? "contained"
+            : "outlined"
+        }
+        size={
+          ["un-connect", "wrong-network"].findIndex(
+            (ele) => btnClassname === ele
+          ) !== -1
+            ? "small"
+            : "medium"
+        }
+        color={"primary"}
+        className={`wallet-btn ${btnClassname}`}
+        onClick={_handleClick}
+        {...bindHover(popupState)}
+      >
+        {icon ? (
+          <Typography component={"i"} marginLeft={-1}>
+            {icon}
+          </Typography>
+        ) : (
+          <></>
+        )}
+        <Typography
+          component={"span"}
+          variant={"body1"}
+          lineHeight={1}
+          color={"inherit"}
+        >
+          {t(label)}
+        </Typography>
+      </WalletConnectBtnStyled>
+    </>
+  );
+};
+
+export const WalletConnectUI = ({
+  accountState,
+  handleClick,
+}: WalletConnectBtnProps) => {
+  const { t } = useTranslation(["layout", "common"]);
+  const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
+  const [networkLabel, setNetworkLabel] =
+    React.useState<string | undefined>(undefined);
+  const [btnClassname, setBtnClassname] =
+    React.useState<string | undefined>("");
+  const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+  const update = React.useCallback(() => {
+    const { account } = accountState;
+    const addressShort = account.accAddress
+      ? getShortAddr(account?.accAddress)
+      : undefined;
+    if (addressShort) {
+      setLabel(addressShort);
+    }
+    setIcon(undefined);
+
+    myLog("wallet connect account.readyState:", account.readyState);
+
+    switch (account.readyState) {
+      case AccountStatus.UN_CONNECT:
+        setBtnClassname("un-connect");
+        setLabel("labelConnectWallet");
+        break;
+      case AccountStatus.LOCKED:
+      case AccountStatus.ACTIVATED:
+      case AccountStatus.NO_ACCOUNT:
+      case AccountStatus.DEPOSITING:
+      case AccountStatus.NOT_ACTIVE:
+        setBtnClassname("unlocked");
+        setIcon(
+          <CircleIcon fontSize={"large"} htmlColor={"var(--color-success)"} />
+        );
+        break;
+      case AccountStatus.ERROR_NETWORK:
+        setBtnClassname("wrong-network");
+        setLabel("labelWrongNetwork");
+        setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />);
+        break;
+      default:
+    }
+
+    if (account && account._chainId === ChainId.GOERLI) {
+      setNetworkLabel("Görli");
+    } else {
+      setNetworkLabel("");
+    }
+  }, [accountState]);
+  React.useEffect(() => {
+    if (accountState.status === SagaStatus.UNSET) {
+      update();
+    }
+  }, [accountState.status]);
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)

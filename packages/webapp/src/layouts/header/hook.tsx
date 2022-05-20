@@ -8,16 +8,19 @@ import {
   headerToolBarData as _initHeaderToolBarData,
 } from "@loopring-web/common-resources";
 
-import { changeShowModel, useAccount } from "stores/account";
+import {
+  accountReducer,
+  useAccount,
+  store,
+  useNotify,
+  accountStaticCallBack,
+  btnClickMap,
+} from "@loopring-web/core";
 
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-
-import { accountStaticCallBack, btnClickMap } from "hooks/help";
 import { myLog } from "@loopring-web/common-resources";
 
-import store from "stores";
 import _ from "lodash";
-import { useNotify } from "stores/notify";
 
 export const useHeader = () => {
   const accountTotal = useAccount();
@@ -31,15 +34,36 @@ export const useHeader = () => {
     typeof _initHeaderToolBarData
   >(_initHeaderToolBarData);
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
-    [fnType.ACTIVATED]: [
+    [fnType.NO_ACCOUNT]: [
       function () {
-        setShouldShow(true);
-        setShowAccount({ isShow: true, step: AccountStep.HadAccount });
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
       },
     ],
+    [fnType.DEPOSITING]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
+      },
+    ],
+    [fnType.NOT_ACTIVE]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
+      },
+    ],
+    [fnType.ACTIVATED]: [
+      function () {
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
+        store.dispatch(
+          setShowAccount({ isShow: true, step: AccountStep.HadAccount })
+        );
+      },
+    ],
+
     [fnType.LOCKED]: [
       function () {
-        store.dispatch(changeShowModel({ _userOnModel: true }));
+        store.dispatch(accountReducer.changeShowModel({ _userOnModel: true }));
         store.dispatch(
           setShowAccount({ isShow: true, step: AccountStep.HadAccount })
         );

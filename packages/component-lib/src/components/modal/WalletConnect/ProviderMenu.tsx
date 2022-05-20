@@ -16,6 +16,7 @@ import {
 import React from "react";
 import { MenuBtnStyled, shake } from "../../styled";
 import { ConnectProviders } from "@loopring-web/web3-provider";
+import { useSettings } from "../../../stores";
 
 const CheckboxStyled = styled(Checkbox)`
   &.shake {
@@ -47,9 +48,10 @@ export const ProviderMenu = ({
   handleSelect,
   providerName = ConnectProviders.Unknown,
 }: ProviderMenuProps & WithTranslation) => {
+  const { isMobile } = useSettings();
   const [checkboxValue, setCheckboxValue] = React.useState(false);
   const [isShake, setIsShake] = React.useState(false);
-  // const theme = useTheme();
+
   React.useEffect(() => {
     const isAgreed = localStorage.getItem("userTermsAgreed");
     setCheckboxValue(isAgreed === "true");
@@ -91,7 +93,12 @@ export const ProviderMenu = ({
       justifyContent={"space-between"}
       flexDirection={"column"}
     >
-      <Typography component={"h3"} variant={"h3"} marginBottom={3}>
+      <Typography
+        component={"h3"}
+        variant={isMobile ? "h4" : "h3"}
+        whiteSpace={"pre"}
+        marginBottom={3}
+      >
         {t("labelConnectWallet")}
       </Typography>
       <Box
@@ -102,7 +109,7 @@ export const ProviderMenu = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={10}
+        paddingX={isMobile ? 7 : 10}
       >
         <BoxStyle
           paddingX={5 / 3}
@@ -157,7 +164,7 @@ export const ProviderMenu = ({
         alignSelf={"stretch"}
         className="modalContent"
         marginTop={3}
-        paddingX={10}
+        paddingX={isMobile ? 7 : 10}
         paddingBottom={4}
       >
         <>
@@ -166,6 +173,7 @@ export const ProviderMenu = ({
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
+                isMobile={isMobile}
                 className={
                   providerName === item.key ? "selected provider" : "provider"
                 }
@@ -179,7 +187,7 @@ export const ProviderMenu = ({
                   );
                 }}
               >
-                {t(item.key)}
+                {t(item.keyi18n)}
               </MenuBtnStyled>
             </Box>
           ))}

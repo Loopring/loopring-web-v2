@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Box, Container, Typography, TypographyProps } from "@mui/material";
 import { ThemeType } from "@loopring-web/common-resources";
 import { ContainerProps } from "@mui/material/Container/Container";
-import { LAYOUT } from "../../defs/common_defs";
+import { LAYOUT } from "@loopring-web/core";
 
 export const ContainerStyle = styled(Box)`
   .MuiContainer-root {
@@ -58,7 +58,7 @@ export const ContainerStyle = styled(Box)`
   body {
     background: var(--main-page-bg);
   }
-`;
+` as typeof Box;
 export const TitleTypography = styled(Typography)<
   TypographyProps & { isMobile?: boolean }
 >`
@@ -161,7 +161,7 @@ export const ContainerStyled = styled(Container)<
         width: 320px;
         height: 256px;
         top: 196px;
-        zindex: 42;
+        z-index: 42;
         
       }
       &.trade-tvl {
@@ -169,7 +169,7 @@ export const ContainerStyled = styled(Container)<
         height: 210px;
         top: 102px;
         left: 394px;
-        zindex: 42;
+        z-index:  42;
         font-size: 12px;
       }
       
@@ -178,7 +178,7 @@ export const ContainerStyled = styled(Container)<
         height: 210px;
         top: 102px;
         left: 798px;
-        zindex: 42;
+        z-index:  42;
         font-size: 12px;
       }
       &.trade-trades {
@@ -186,7 +186,7 @@ export const ContainerStyled = styled(Container)<
         height: 319px;
         top: 351px;
         left: 798px;
-        zindex: 42;
+        z-index: 42;
         font-size: 24px;
        
       }

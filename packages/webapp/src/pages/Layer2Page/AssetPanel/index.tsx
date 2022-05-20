@@ -16,12 +16,10 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 
-import store from "stores";
+import { store, useTokenPrices, useTokenMap } from "@loopring-web/core";
 import { StylePaper } from "pages/styled";
 import { useGetAssets } from "./hook";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { useTokenPrices } from "stores/tokenPrices";
-import { useTokenMap } from "stores/token";
 import React from "react";
 
 const StyledChartWrapper = styled(Box)`
@@ -96,9 +94,11 @@ const AssetPanel = withTranslation("common")(
       assetsRawData,
       userAssets,
       assetTitleProps,
-      onShowTransfer,
-      onShowWithdraw,
-      onShowDeposit,
+      // onShowTransfer,
+      // onShowWithdraw,
+      // onShowDeposit,
+      onSend,
+      onReceive,
       total,
       forex,
       hideLpToken,
@@ -385,9 +385,8 @@ const AssetPanel = withTranslation("common")(
                 disableWithdrawList,
                 showFilter: true,
                 allowTrade,
-                onShowDeposit,
-                onShowTransfer,
-                onShowWithdraw,
+                onSend,
+                onReceive,
                 getMarketArrayListCallback: getTokenRelatedMarketArray,
                 hideLpToken,
                 hideSmallBalances,

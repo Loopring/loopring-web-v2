@@ -71,7 +71,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
         size={"medium"}
         onClick={() => {}}
       >
-        {"unlock"}{" "}
+        {"unlock"}
       </Button>
     );
   }, []);
@@ -101,17 +101,19 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
+            goActiveAccount={function (): void {
+              throw new Error("Function not implemented.");
+            }}
             onClose={function (_e?: any): void {
               throw new Error("Function not implemented.");
             }}
-            isSupport={false}
             clearDepositHash={function (): void {
               throw new Error("Function not implemented.");
             }}
             {...{
               chainInfos: { depositHashes: {} },
               ...accountInfoProps,
-              goDeposit: () => {},
+              goAddAssetsFromL1: () => {},
             }}
           />
         ),
@@ -158,10 +160,22 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
 
   const { nameList, accountList } = React.useMemo(() => {
     const accountMap = {
+      [AccountStep.Deposit_Sign_WaitForRefer]: {
+        view: (
+          <Deposit_Approve_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              symbol: "LRC",
+              value: "1.2121",
+            }}
+          />
+        ),
+      },
       [AccountStep.Deposit_Approve_WaitForAuth]: {
         view: (
           <Deposit_Approve_WaitForAuth
-            providerName={ConnectProviders.MetaMask}
+            providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               symbol: "LRC",
@@ -836,8 +850,7 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
             justifyContent={"center"}
           >
             <Typography fontSize={fontSize} color={color} variant={"body2"}>
-              {" "}
-              Withdraw{" "}
+              Withdraw
             </Typography>
           </Box>
 

@@ -21,7 +21,7 @@ export enum TxnDetailStatus {
   failed = "FAILED",
 }
 
-export type TxnDetailProps = UserNFTTxsHistory & {
+export type TxnDetailProps = UserNFTTxsHistory & { metadata?: any } & {
   time: string;
   fee: {
     unit: string;

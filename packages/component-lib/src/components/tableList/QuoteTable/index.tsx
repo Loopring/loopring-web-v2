@@ -18,8 +18,11 @@ import { Column, Table } from "../../basic-lib";
 import { TablePaddingX } from "../../styled";
 import { useSettings } from "@loopring-web/component-lib/src/stores";
 import { useDispatch } from "react-redux";
-import { Currency } from "@loopring-web/loopring-sdk";
-import { ActivityRulesMap } from "@loopring-web/webapp/src/stores/Amm/AmmActivityMap";
+import {
+  AmmPoolInProgressActivityRule,
+  Currency,
+  LoopringMap,
+} from "@loopring-web/loopring-sdk";
 import React from "react";
 
 const TableWrapperStyled = styled(Box)`
@@ -139,7 +142,7 @@ export interface QuoteTableProps {
   currentheight?: number;
   showLoading?: boolean;
   isPro?: boolean;
-  activityInProgressRules: ActivityRulesMap;
+  activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
 }
 
 export type VisibleDataItem = {
@@ -173,7 +176,7 @@ export const QuoteTable = withTranslation("tables")(
       const getColumnMode = (
         props: IGetColumnModePros & {
           currency: Currency;
-          activityInProgressRules: ActivityRulesMap;
+          activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
         }
       ): Column<QuoteTableRawDataItem, unknown>[] => {
         const {
@@ -248,7 +251,7 @@ export const QuoteTable = withTranslation("tables")(
                             const current_event_date = `${year}-${month}-${day}`;
 
                             history.push(
-                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account.accAddress}`
+                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account?.accAddress}`
                             );
                           }}
                         >
@@ -277,7 +280,7 @@ export const QuoteTable = withTranslation("tables")(
                           history.push(
                             `/race-event/${current_event_date}?pair=${pair}&type=${
                               activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                            }&owner=${account.accAddress}`
+                            }&owner=${account?.accAddress}`
                           );
                         }}
                       >

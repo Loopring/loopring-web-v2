@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, TablePagination, Table } from "../../basic-lib";
+import { Column, TablePagination, Table, NftImage } from "../../basic-lib";
 import {
   CompleteIcon,
   DepositIcon,
@@ -15,6 +15,7 @@ import {
   getShortAddr,
   getValuePrecisionThousand,
   MintIcon,
+  RowConfig,
   TransferIcon,
   WaitingIcon,
   WarningIcon,
@@ -29,9 +30,23 @@ import {
   TxnDetailProps,
 } from "./Interface";
 import { Filter } from "./components/Filter";
-import { TxNFTType } from "@loopring-web/loopring-sdk";
+import {
+  NFT_IMAGE_SIZES,
+  SoursURL,
+  TxNFTType,
+} from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 
+const BoxNFT = styled(Box)`
+  background: no-repeat 50% 50%;
+  background-color: var(--opacity);
+  background-image: url(${SoursURL + "svg/loopring.svg"});
+  img {
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: ${({ theme }) => theme.unit}px;
+  }
+` as typeof Box;
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
   { type: TsTradeStatus.processing, color: "warning" },
@@ -69,7 +84,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
-
   .rdg {
     ${({ isMobile }) =>
       isMobile ? `--template-columns: 60% 40% !important;` : ``}
@@ -113,6 +127,20 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
     ...props
   }: NFTTableProps<Row> & WithTranslation) => {
     const [isDropDown, setIsDropDown] = React.useState(true);
+    const { isMobile } = useSettings();
+    const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
+      getTxnList({
+        page: filter.page ?? page,
+        txType:
+          filter.txType !== undefined
+            ? // @ts-ignore
+              filter.txType == 0
+              ? undefined
+              : filter.txType
+            : txType,
+        duration: filter.duration ?? duration,
+      });
+    };
 
     const getColumnModeTransaction = React.useCallback(
       (): Column<Row, Row>[] => [
@@ -121,8 +149,47 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
           name: t("labelTxSide"),
           formatter: ({ row }) => {
             return (
-              <Box className="rdg-cell-value" title={row.nftTxType}>
-                {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
+              <Box
+                className="rdg-cell-value"
+                title={row.nftTxType}
+                display={"flex"}
+              >
+                {row.metadata?.imageSize ? (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                    padding={1 / 4}
+                    style={{ background: "var(--field-opacity)" }}
+                  >
+                    {row.metadata?.imageSize && (
+                      <NftImage
+                        alt={row.metadata.name}
+                        onError={() => undefined}
+                        src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
+                      />
+                    )}
+                  </Box>
+                ) : (
+                  <BoxNFT
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    height={RowConfig.rowHeight + "px"}
+                    width={RowConfig.rowHeight + "px"}
+                  />
+                )}
+                <Typography
+                  color={"inherit"}
+                  flex={1}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  paddingLeft={1}
+                >
+                  {t(`labelNFTType${TxNFTType[row.nftTxType]}`)}
+                </Typography>
               </Box>
             );
           },
@@ -192,6 +259,8 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                 : Explorer +
                   `tx/${row.hash}-${
                     EXPLORE_TYPE["NFT" + row.nftTxType.toUpperCase()]
+                  }-${accountId}-${row.storageInfo.tokenId}-${
+                    row.storageInfo.storageId
                   }`;
             return (
               <Box
@@ -270,21 +339,6 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
       ],
       [etherscanBaseUrl]
     );
-    const { isMobile } = useSettings();
-
-    const handleFilterChange = (filter: Partial<NFTTableFilter>) => {
-      getTxnList({
-        page: filter.page ?? page,
-        txType:
-          filter.txType !== undefined
-            ? // @ts-ignore
-              filter.txType == 0
-              ? undefined
-              : filter.txType
-            : txType,
-        duration: filter.duration ?? duration,
-      });
-    };
 
     const getColumnMobileTransaction = React.useCallback(
       (): Column<any, unknown>[] => [
@@ -310,12 +364,12 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             let side, hasSymbol, sideIcon;
             switch (row.nftTxType) {
               case TxNFTType[TxNFTType.DEPOSIT]:
-                side = t("labelDeposit");
+                side = t("labelReceive");
                 hasSymbol = "+";
                 sideIcon = <DepositIcon fontSize={"inherit"} />;
                 break;
               case TxNFTType[TxNFTType.TRANSFER]:
-                side = t("labelTransfer");
+                side = t("labelSendL2");
                 hasSymbol =
                   row.receiverAddress?.toLowerCase() ===
                   accAddress?.toLowerCase()
@@ -332,7 +386,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               default:
                 hasSymbol = "-";
                 sideIcon = <WithdrawIcon fontSize={"inherit"} />;
-                side = t("labelWithdraw");
+                side = t("labelSendL1");
             }
             // const renderValue = hasValue ? row.amount : EmptyValueTag;
 
@@ -371,9 +425,24 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
                     display={"inline-flex"}
                     alignItems={"center"}
                   >
-                    {sideIcon}
+                    {row.metadata?.imageSize ? (
+                      <BoxNFT
+                        display={"flex"}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        height={24 + "px"}
+                        width={24 + "px"}
+                      >
+                        <img
+                          height={24}
+                          src={row.metadata?.imageSize[NFT_IMAGE_SIZES.small]}
+                        />
+                      </BoxNFT>
+                    ) : (
+                      sideIcon
+                    )}
                   </Typography>
-                  <Typography fontSize={10} marginTop={-1}>
+                  <Typography fontSize={10} marginTop={0}>
                     {side}
                   </Typography>
                 </Typography>

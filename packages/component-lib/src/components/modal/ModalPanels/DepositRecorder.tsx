@@ -1,8 +1,7 @@
 import { Box, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import React from "react";
-// import { connectProvides } from '@loopring-web/web3-provider';
-import { WithTranslation } from "react-i18next";
+import { TFunction } from "react-i18next";
 import {
   AccountHashInfo,
   CompleteIcon,
@@ -38,7 +37,7 @@ export const DepositRecorder = ({
   etherscanUrl,
   clear,
 }: // updateDepositHash
-WithTranslation & {
+{ t: TFunction } & {
   accAddress: string;
   etherscanUrl: string;
   chainInfos: AccountHashInfo;
@@ -66,7 +65,7 @@ WithTranslation & {
                 color={"text.primary"}
                 paddingBottom={1}
               >
-                {t("labelDepositHash")}
+                {t("labelL1toL2Hash")}
               </Typography>
               <Link
                 variant={"body2"}
@@ -92,14 +91,13 @@ WithTranslation & {
                     fontSize={"inherit"}
                     alignItems={"center"}
                     display={"inline-flex"}
-                    onClick={() => {
-                      window.open(`${etherscanUrl}tx/${txInfo.hash}`);
-                      window.opener = null;
-                    }}
+                    href={`${etherscanUrl}tx/${txInfo.hash}`}
+                    target={"_blank"}
+                    rel={"noopener noreferrer"}
                   >
                     {txInfo.symbol ? (
                       <Typography component={"span"} color={"text.secondary"}>
-                        {t("labelDepositRecord", {
+                        {t("labelL1toL2Record", {
                           symbol: txInfo.symbol,
                           value: txInfo.value,
                         })}
@@ -138,7 +136,7 @@ WithTranslation & {
               variant={"body1"}
               color={"text.secondary"}
             >
-              {t("labelDepositHashEmpty")}
+              {t("labelL1toL2HashEmpty")}
             </Typography>
           </Typography>
         )}

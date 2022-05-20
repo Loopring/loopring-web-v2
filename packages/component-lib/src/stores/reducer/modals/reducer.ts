@@ -4,6 +4,8 @@ import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 const initialState: ModalState = {
+  isShowSupport: { isShow: false },
+  isWrongNetworkGuide: { isShow: false },
   isShowTransfer: { isShow: false, symbol: undefined },
   isShowWithdraw: { isShow: false, symbol: undefined },
   isShowDeposit: { isShow: false, symbol: undefined },
@@ -14,7 +16,6 @@ const initialState: ModalState = {
   isShowAmm: { isShow: false },
   isShowConnect: { isShow: false, step: 0 },
   isShowAccount: { isShow: false, step: 0 },
-  isShowSupport: { isShow: false },
   isShowFeeSetting: { isShow: false },
   isShowTradeIsFrozen: { isShow: false, type: "" },
   isShowIFrame: { isShow: false, url: "" },
@@ -41,6 +42,10 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowSupport(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;
       state.isShowSupport.isShow = isShow;
+    },
+    setShowWrongNetworkGuide(state, action: PayloadAction<ModalStatePlayLoad>) {
+      const { isShow } = action.payload;
+      state.isWrongNetworkGuide.isShow = isShow;
     },
     setShowAmm(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;
@@ -205,11 +210,11 @@ export const {
   setShowAmm,
   setShowConnect,
   setShowAccount,
-  setShowSupport,
   setShowFeeSetting,
   setShowActiveAccount,
   setShowIFrame,
   setShowNFTMint,
   setShowTradeIsFrozen,
+  setShowSupport,
+  setShowWrongNetworkGuide,
 } = modalsSlice.actions;
-// export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

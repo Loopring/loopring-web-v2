@@ -13,7 +13,7 @@ import {
 } from "react-i18next";
 import { AssetTitleMobileProps, AssetTitleProps } from "./Interface";
 import styled from "@emotion/styled";
-import { DropdownIconStyled, TradeBtnStatus } from "../tradePanel";
+import { DropdownIconStyled } from "../tradePanel";
 import { AnimationArrow, Button, ButtonListRightStyled } from "./../";
 import { useRouteMatch } from "react-router-dom";
 import { useSettings } from "../../stores";
@@ -31,18 +31,20 @@ export const AssetTitle = withTranslation("common")(
     t,
     assetInfo,
     accountId,
-    onShowWithdraw,
-    onShowTransfer,
-    onShowDeposit,
-    btnShowDepositStatus,
-    btnShowTransferStatus,
-    btnShowWithdrawStatus,
+    // onShowWithdraw,
+    // onShowTransfer,
+    onShowSend,
+    onShowReceive,
+    // onShowDeposit,
+    // btnShowDepositStatus,
+    // btnShowTransferStatus,
+    // btnShowWithdrawStatus,
     hideL2Assets,
     setHideL2Assets,
-    showPartner,
-    legalEnable,
-    legalShow,
-  }: AssetTitleProps & WithTranslation) => {
+  }: // showPartnr,
+  // legalEnable,
+  // legalShow,
+  AssetTitleProps & WithTranslation) => {
     return (
       <Grid
         container
@@ -114,62 +116,21 @@ export const AssetTitle = withTranslation("common")(
           flexDirection={"row"}
           justifyContent={"flex-end"}
         >
-          {legalEnable && legalShow && (
-            <Button
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              style={{ minWidth: 120, textTransform: "none" }}
-              onClick={showPartner}
-            >
-              {t("labelAssetsBtnRamp")}
-            </Button>
-          )}
-          <Button
-            variant={"outlined"}
-            size={"medium"}
-            color={"primary"}
-            loading={
-              btnShowTransferStatus === TradeBtnStatus.LOADING
-                ? "true"
-                : "false"
-            }
-            disabled={
-              btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false
-            }
-            onClick={() => onShowTransfer()}
-          >
-            {t("labelBtnTransfer")}
-          </Button>
           <Button
             variant={"outlined"}
             size={"medium"}
             color={"secondary"}
-            loading={
-              btnShowWithdrawStatus === TradeBtnStatus.LOADING
-                ? "true"
-                : "false"
-            }
-            disabled={
-              btnShowWithdrawStatus === TradeBtnStatus.DISABLED ? true : false
-            }
-            onClick={() => onShowWithdraw()}
+            onClick={() => onShowSend()}
           >
-            {t("labelBtnWithdraw")}
+            {t("labelSendAssetBtn")}
           </Button>
           <Button
             variant={"contained"}
             size={"small"}
             color={"primary"}
-            loading={
-              btnShowDepositStatus === TradeBtnStatus.LOADING ? "true" : "false"
-            }
-            disabled={
-              btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false
-            }
-            onClick={() => onShowDeposit()}
+            onClick={() => onShowReceive()}
           >
-            {t("labelBtnDeposit")}
+            {t("labelAddAssetBtn")}
           </Button>
         </ButtonListRightStyled>
       </Grid>
@@ -180,22 +141,17 @@ export const AssetTitle = withTranslation("common")(
 export const AssetTitleMobile = ({
   assetInfo,
   accountId,
-  onShowWithdraw,
-  onShowTransfer,
-  onShowDeposit,
-  // btnShowDepositStatus,
-  // btnShowTransferStatus,
-  // btnShowWithdrawStatus,
-  // btnShowNFTDepositStatus,
-  // btnShowNFTMINTStatus,
+  // onShowWithdraw,
+  // onShowTransfer,
+  onShowSend,
+  onShowReceive,
+  // onShowDeposit,
   hideL2Assets,
   setHideL2Assets,
-  showPartner,
-  legalEnable,
-  onShowNFTDeposit,
-  onShowNFTMINT,
-  legalShow,
-}: AssetTitleMobileProps) => {
+}: // showPartner,
+// legalEnable,
+// legalShow,
+AssetTitleMobileProps) => {
   const { hideL2Action, setHideL2Action } = useSettings();
   // const [dropdownStatus, setDropdownStatus] =
   //   React.useState<"up" | "down">(hideL2Action?"up":"down");
@@ -306,79 +262,68 @@ export const AssetTitleMobile = ({
       </Box>
       {!hideL2Action && (
         <Grid container spacing={2}>
-          {legalEnable && legalShow && (
-            <Grid item xs={4}>
-              <Button
-                fullWidth
-                variant={"outlined"}
-                size={"medium"}
-                color={"primary"}
-                style={{
-                  textTransform: "none",
-                  paddingLeft: 0,
-                  paddingRight: 0,
-                }}
-                onClick={showPartner}
-              >
-                {t("labelAssetsBtnRamp")}
-              </Button>
-            </Grid>
-          )}
+          {/*{legalEnable && legalShow && (*/}
+          {/*  <Grid item xs={4}>*/}
+          {/*    <Button*/}
+          {/*      fullWidth*/}
+          {/*      variant={"outlined"}*/}
+          {/*      size={"medium"}*/}
+          {/*      color={"primary"}*/}
+          {/*      style={{*/}
+          {/*        textTransform: "none",*/}
+          {/*        paddingLeft: 0,*/}
+          {/*        paddingRight: 0,*/}
+          {/*      }}*/}
+          {/*      onClick={showPartner}*/}
+          {/*    >*/}
+          {/*      {t("labelAssetsBtnRamp")}*/}
+          {/*    </Button>*/}
+          {/*  </Grid>*/}
+          {/*)}*/}
           <Grid item xs={4}>
             <Button
               fullWidth
               variant={"outlined"}
               size={"medium"}
               color={"primary"}
-              onClick={() => onShowDeposit()}
+              onClick={() => onShowSend()}
             >
-              {t("labelDeposit")}
+              {t("labelSendAssetBtn")}
             </Button>
           </Grid>
           <Grid item xs={4}>
             <Button
               fullWidth
-              variant={"outlined"}
-              size={"medium"}
+              variant={"contained"}
+              size={"small"}
               color={"primary"}
-              onClick={() => onShowTransfer()}
+              onClick={() => onShowReceive()}
             >
-              {t("labelTransfer")}
+              {t("labelAddAssetBtn")}
             </Button>
           </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => onShowWithdraw()}
-            >
-              {t("labelWithdraw")}
-            </Button>
-          </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => onShowNFTDeposit()}
-            >
-              {t("labelNFTDeposit")}
-            </Button>
-          </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant={"outlined"}
-              size={"medium"}
-              color={"primary"}
-              onClick={() => onShowNFTMINT()}
-            >
-              {t("labelNFTMint")}
-            </Button>
-          </Grid>
+          {/*<Grid item xs={4}>*/}
+          {/*  <Button*/}
+          {/*    fullWidth*/}
+          {/*    variant={"outlined"}*/}
+          {/*    size={"medium"}*/}
+          {/*    color={"primary"}*/}
+          {/*    onClick={() => onShowTransfer()}*/}
+          {/*  >*/}
+          {/*    {t("labelL2toL2")}*/}
+          {/*  </Button>*/}
+          {/*</Grid>*/}
+          {/*<Grid item xs={4}>*/}
+          {/*  <Button*/}
+          {/*    fullWidth*/}
+          {/*    variant={"outlined"}*/}
+          {/*    size={"medium"}*/}
+          {/*    color={"primary"}*/}
+          {/*    onClick={() => onShowWithdraw()}*/}
+          {/*  >*/}
+          {/*    {t("labelL2toL1")}*/}
+          {/*  </Button>*/}
+          {/*</Grid>*/}
         </Grid>
       )}
     </Box>

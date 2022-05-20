@@ -1,11 +1,13 @@
 import React from "react";
 import { AccountStatus, SagaStatus } from "@loopring-web/common-resources";
-import { useWalletLayer1 } from "./stores/walletLayer1";
-import { useWalletLayer2 } from "./stores/walletLayer2";
-import { useAccount } from "./stores/account";
-import { useUserRewards } from "./stores/userRewards";
-import { useConnect } from "./hookConnect";
-import { useWalletLayer2NFT } from "./stores/walletLayer2NFT";
+import {
+  useWalletLayer1,
+  useWalletLayer2,
+  useAccount,
+  useUserRewards,
+  useConnect,
+  useWalletLayer2NFT,
+} from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   useConnect({ state });
@@ -37,16 +39,12 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         case AccountStatus.DEPOSITING:
         case AccountStatus.NOT_ACTIVE:
         case AccountStatus.LOCKED:
+        case AccountStatus.NO_ACCOUNT:
           if (walletLayer1Status !== SagaStatus.PENDING) {
             updateWalletLayer1();
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
-          }
-          break;
-        case AccountStatus.NO_ACCOUNT:
-          if (walletLayer1Status !== SagaStatus.PENDING) {
-            updateWalletLayer1();
           }
           break;
         case AccountStatus.ACTIVATED:

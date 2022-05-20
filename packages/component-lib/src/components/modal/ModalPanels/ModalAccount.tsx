@@ -1,14 +1,12 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Modal } from "@mui/material";
-import { useTheme } from "@emotion/react";
 import { Box } from "@mui/material";
 import {
   ModalAccountProps,
   ModalBackButton,
   ModalCloseButton,
+  ModelPanelStyle,
   QRButtonStyle,
-  SwipeableViewsStyled,
-  SwitchPanelStyled,
 } from "../../../index";
 
 export const ModalAccount = withTranslation("common", { withRef: true })(
@@ -16,15 +14,16 @@ export const ModalAccount = withTranslation("common", { withRef: true })(
     open,
     onClose,
     step,
+    isLayer2Only = false,
     onBack,
     style,
     noClose,
+    etherscanBaseUrl,
     onQRClick,
     panelList,
     ...rest
   }: ModalAccountProps & WithTranslation) => {
-    const theme = useTheme();
-    const { w, h } = style ? style : { w: undefined, h: undefined };
+    // const { w, h } = style ? style : { w: undefined, h: undefined };
 
     return (
       <Modal
@@ -33,13 +32,7 @@ export const ModalAccount = withTranslation("common", { withRef: true })(
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <SwitchPanelStyled
-          style={{ boxShadow: "24" }}
-          {...{
-            _height: h ? h : "var(--modal-height)",
-            _width: w ? w : "var(--modal-width)",
-          }}
-        >
+        <ModelPanelStyle style={{ boxShadow: "24" }}>
           <Box display={"flex"} width={"100%"} flexDirection={"column"}>
             {noClose ? <></> : <ModalCloseButton onClose={onClose} {...rest} />}
             {onBack ? <ModalBackButton onBack={onBack} {...rest} /> : <></>}
@@ -49,30 +42,20 @@ export const ModalAccount = withTranslation("common", { withRef: true })(
               <></>
             )}
           </Box>
-
-          <SwipeableViewsStyled
-            animateTransitions={false}
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={step}
-            {...{
-              _height: h ? h : "var(--modal-height)",
-              _width: w ? w : "var(--modal-width)",
-            }}
-          >
-            {panelList.map((panel, index) => {
-              return (
-                <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"stretch"}
-                  key={index}
-                >
-                  {panel.view}
-                </Box>
-              );
-            })}
-          </SwipeableViewsStyled>
-        </SwitchPanelStyled>
+          {panelList.map((panel, index) => {
+            return (
+              <Box
+                display={step === index ? "flex" : "none"}
+                alignItems={"stretch"}
+                height={panel.height ? panel.height : "var(--modal-height)"}
+                width={panel.width ? panel.width : "var(--modal-width)"}
+                key={index}
+              >
+                {panel.view}
+              </Box>
+            );
+          })}
+        </ModelPanelStyle>
       </Modal>
     );
   }

@@ -11,14 +11,8 @@ import {
 
 export const TransferPanel = withTranslation("common", { withRef: true })(
   <T extends IBData<I>, I>({
-    // tradeData,
-    // disabled,
-    // coinMap,
-    // walletMap,
-    // handleError,
-
-    // walletMap,
-    // coinMap,
+    walletMap = {},
+    coinMap = {},
     isThumb = true,
     type = "TOKEN",
     chargeFeeTokenList,
@@ -31,6 +25,8 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
   }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
+      walletMap,
+      coinMap,
       type,
     });
 
@@ -41,11 +37,14 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
           key: "trade",
           element: React.useMemo(
             () => (
-              <TransferWrap<T, I, any>
-                key={"transfer"}
+              // @ts-ignore
+              <TransferWrap
+                key={"trade"}
                 {...{
                   ...rest,
                   type,
+                  walletMap,
+                  coinMap,
                   chargeFeeTokenList: chargeFeeTokenList || [],
                   tradeData: switchData.tradeData,
                   onChangeEvent,
@@ -88,7 +87,8 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
                         sorted: true,
                         ...rest,
                         onChangeEvent,
-                        //rest.walletMap,
+                        walletMap,
+                        coinMap,
                         selected: switchData.tradeData.belong,
                         tradeData: switchData.tradeData,
                         //oinMap

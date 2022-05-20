@@ -5,6 +5,7 @@ import {
   SwitchPanelProps,
 } from "../../basic-lib";
 import {
+  AddressError,
   CoinInfo,
   CoinKey,
   CoinMap,
@@ -49,15 +50,9 @@ export type TransferInfoProps<C> = {
   isFeeNotEnough: boolean;
 };
 
-export enum AddressError {
-  NoError,
-  EmptyAddr,
-  InvalidAddr,
-  ENSResolveFailed,
-}
-
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
+  isConfirmTransfer: boolean;
   addressDefault?: string;
   addressOrigin: "Wallet" | null;
   handleSureItsLayer2: (sure: boolean) => void;
@@ -65,7 +60,7 @@ export type TransferExtendProps<T, I, C> = {
   isLoopringAddress?: boolean;
   isAddressCheckLoading?: boolean;
   isSameAddress?: boolean;
-  addrStatus?: AddressError;
+  addrStatus: AddressError;
   onTransferClick: (data: T, isFirstTime?: boolean) => void;
   handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
@@ -109,28 +104,40 @@ export type ExportAccountExtendProps = {
 /**
  * private props
  */
-export type DepositInfoProps<I> = {
+export type DepositInfoProps = {
   depositBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   title?: string;
   description?: string;
   chargeFeeTokenList?: FeeInfo[];
   isNewAccount: boolean;
   addressDefault?: string;
-  handleOnAddressChange?: (value: string | undefined | I) => void;
-  handleAddressError?: (
-    address: string
-  ) => { error: boolean; message?: string | JSX.Element } | undefined;
+  // handleOnAddressChange?: (value: string | undefined | I) => void;
+  // handleAddressError?: (
+  //   address: string
+  // ) => { error: boolean; message?: string | JSX.Element } | undefined;
   wait?: number;
 } & BtnInfoProps;
 
-export type DepositExtendProps<T, I> = {
+export type DepositExtendProps<T> = {
   isThumb?: boolean;
+  title?: string;
   allowTrade?: any;
+  toAddressStatus: AddressError;
+  referStatus: AddressError;
+  isAllowInputToAddress?: boolean;
   onDepositClick: (data: T) => void;
-} & DepositInfoProps<I>;
+  toIsAddressCheckLoading: boolean;
+  // toIsLoopringAddress: boolean;
+  realToAddress?: string;
+  referIsAddressCheckLoading: boolean;
+  referIsLoopringAddress?: boolean;
+  realReferAddress?: string;
+  handleClear: () => void;
+  isToAddressEditable: boolean;
+} & DepositInfoProps;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
-  DepositExtendProps<T, I>;
+  DepositExtendProps<T>;
 
 export type WithdrawInfoProps<C> = {
   withdrawI18nKey?: string;
@@ -157,7 +164,7 @@ export type WithdrawExtendProps<T, I, C> = {
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
   isContractAddress: boolean;
-  addrStatus?: AddressError;
+  addrStatus: AddressError;
   disableWithdrawList?: string[];
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
   handleFeeChange: (value: C) => void;
@@ -181,10 +188,18 @@ export type inputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
 export type DefaultProps<T, I> = {
   tradeData: T;
   disabled?: boolean;
-  coinMap: CoinMap<I, CoinInfo<I>>;
-  walletMap: WalletMap<I, WalletCoin<I>>;
-  type?: "TOKEN" | "NFT";
-};
+} & (
+  | {
+      type?: "TOKEN";
+      coinMap: CoinMap<I, CoinInfo<I>>;
+      walletMap: WalletMap<I, WalletCoin<I>>;
+    }
+  | {
+      type: "NFT";
+      coinMap?: CoinMap<I, CoinInfo<I>>;
+      walletMap?: WalletMap<I, WalletCoin<I>>;
+    }
+);
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
@@ -195,7 +210,7 @@ export type BasicACoinTradeViewProps<T, I> = Required<
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
-  type?: "TOKEN" | "NFT";
+  type?: "TOKEN";
   inputBtnRef: React.Ref<any>;
   inputButtonProps?: inputButtonDefaultProps<I, CoinInfo<I>>;
   inputButtonDefaultProps: inputButtonDefaultProps<I, CoinInfo<I>>;
@@ -204,7 +219,7 @@ export type BasicANFTTradeProps<T, I> = Omit<
   BasicACoinTradeViewProps<T, I>,
   "coinMap"
 > & {
-  type?: "TOKEN" | "NFT";
+  type?: "NFT";
   isThumb?: boolean;
   isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;
@@ -243,26 +258,75 @@ export type NFTDepositExtendProps<T, I> = {
   allowTrade?: any;
 } & NFTDepositInfoProps<T, I>;
 
-export type NFTMintInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
+export type NFTMintInfoProps<C> = {
   nftMintBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   title?: string;
   description?: string;
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
-  isNFTCheckLoading?: boolean;
-  isAvaiableId?: boolean;
+  // isAvaiableId?: boolean;
   isFeeNotEnough?: boolean;
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
 
-export type NFTMintExtendProps<T, I, C = FeeInfo> = {
+export type NFTMetaInfoProps<C> = {
+  nftMetaBtnStatus?: keyof typeof TradeBtnStatus | undefined;
+  title?: string;
+  description?: string;
+  chargeFeeTokenList?: Array<C>;
+  feeInfo: C;
+  // isNFTCheckLoading?: boolean;
+  // isAvaiableId?: boolean;
+  isFeeNotEnough?: boolean;
+  handleFeeChange: (value: C) => void;
+  wait?: number;
+} & BtnInfoProps;
+
+export type NFTMintExtendProps<T, C = FeeInfo> = {
   isThumb?: boolean;
-  handleOnNFTDataChange: (data: T) => void;
-  onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
+  handleMintDataChange: (data: Partial<T>) => void;
+  onNFTMintClick: (isFirstMint?: boolean) => void;
   allowTrade?: any;
-} & NFTMintInfoProps<T, I, C>;
-export type NFTMintViewProps<T, I, C> = NFTMintExtendProps<T, I, C>;
+  amountHandleError?: (
+    data: T,
+    ref: React.ForwardedRef<any>
+  ) => { error: boolean; message?: string | JSX.Element } | void;
+} & NFTMintInfoProps<C>;
+
+export type NFTMetaExtendProps<T, C = FeeInfo> = {
+  handleOnMetaChange: (data: Partial<T>) => void;
+  onMetaClick: (data: Partial<T>, isFirstMint?: boolean) => void;
+  userAgree: boolean;
+  handleUserAgree: (value: boolean) => void;
+  allowTrade?: any;
+} & NFTMetaInfoProps<C>;
+
+export type NFTMintViewProps<ME, MI, I, C> = {
+  tradeData: MI;
+  metaData: ME;
+  disabled?: boolean;
+  coinMap?: CoinMap<I, CoinInfo<I>>;
+  walletMap?: WalletMap<I, WalletCoin<I>>;
+  mintService: any;
+} & NFTMintExtendProps<MI, C>;
+export type NFTMetaViewProps<T, C> = {
+  nftMeta: T;
+  disabled?: boolean;
+} & NFTMetaExtendProps<T, C>;
+export type NFTMetaBlockProps<T, I, C> = NFTMetaViewProps<T, C> & {
+  mintData: Partial<I>;
+  handleMintDataChange: (data: Partial<I>) => void;
+  amountHandleError?: (
+    data: Partial<I>,
+    ref: React.ForwardedRef<any>
+  ) => { error: boolean; message?: string | JSX.Element } | void;
+};
+
+// export type NFTMintViewWholeProps<T, C> = {
+//   metaData: Partial<T>;
+//   disabled?: boolean;
+// } & NFTMintExtendProps<T, C>;
 
 export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   nftDeployBtnStatus?: keyof typeof TradeBtnStatus | undefined;
@@ -275,6 +339,7 @@ export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
+
 export type NFTDeployExtendProps<T, I, C> = {
   handleOnNFTDataChange: (data: T) => void;
   onNFTDeployClick: (data: T, isFirstTime?: boolean) => void;

@@ -15,19 +15,20 @@ import { useSettings } from "../../../../stores";
 
 const GridStyled = styled(Grid)`
   .MuiGrid-item {
-    padding: 0;
-    padding-top: ${({ theme }) => theme.unit / 4}px;
+    padding: ${({ theme }) => theme.unit / 4}px 0 0;
   }
 `;
 export type ActionProps = {
   tokenValue: any;
   allowTrade?: any;
   market: `${string}-${string}`;
-  isWithdraw: boolean;
+  isToL1: boolean;
   isLp: boolean;
-  onShowDeposit: (token: string) => void;
-  onShowTransfer: (token: string) => void;
-  onShowWithdraw: (token: string) => void;
+  onSend: (token: string, isToL1: boolean) => void;
+  onReceive: (token: string) => void;
+  // onShowDeposit: (token: string) => void;
+  // onShowTransfer: (token: string) => void;
+  // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];
   t: TFunction;
 };
@@ -36,11 +37,13 @@ const ActionPopContent = React.memo(
     market,
     isLp,
     allowTrade,
-    onShowDeposit,
+    onSend,
+    onReceive,
+    // onShowDeposit,
     tokenValue,
-    isWithdraw,
-    onShowTransfer,
-    onShowWithdraw,
+    isToL1,
+    // onShowTransfer,
+    // onShowWithdraw,
     getMarketArrayListCallback,
     t,
   }: ActionProps) => {
@@ -48,20 +51,20 @@ const ActionPopContent = React.memo(
     const { isMobile } = useSettings();
     const tradeList = [
       ...[
-        <MenuItem onClick={() => onShowDeposit(tokenValue)}>
-          <ListItemText>{t("labelDeposit")}</ListItemText>
+        <MenuItem onClick={() => onReceive(tokenValue)}>
+          <ListItemText>{t("labelReceive")}</ListItemText>
         </MenuItem>,
-        <MenuItem onClick={() => onShowTransfer(tokenValue)}>
-          <ListItemText>{t("labelTransfer")}</ListItemText>
+        <MenuItem onClick={() => onSend(tokenValue, isToL1)}>
+          <ListItemText>{t("labelSend")}</ListItemText>
         </MenuItem>,
       ],
-      ...(isWithdraw
-        ? [
-            <MenuItem onClick={() => onShowWithdraw(tokenValue)}>
-              <ListItemText>{t("labelWithdrawAction")}</ListItemText>
-            </MenuItem>,
-          ]
-        : []),
+      // ...(isToL1
+      //   ? [
+      //       <MenuItem onClick={() => onShowWithdraw(tokenValue)}>
+      //         <ListItemText>{t("labelL2toL1Action")}</ListItemText>
+      //       </MenuItem>,
+      //     ]
+      //   : []),
     ];
     const marketList = isLp
       ? []
@@ -127,11 +130,13 @@ const ActionMemo = React.memo((props: ActionProps) => {
     t,
     allowTrade,
     tokenValue,
-    isWithdraw,
+    isToL1,
+    onSend,
+    onReceive,
     isLp,
-    onShowDeposit,
-    onShowTransfer,
-    onShowWithdraw,
+    // onShowDeposit,
+    // onShowTransfer,
+    // onShowWithdraw,
   } = props;
   const popoverProps: PopoverWrapProps = {
     type: PopoverType.click,
@@ -177,9 +182,9 @@ const ActionMemo = React.memo((props: ActionProps) => {
                 variant={"text"}
                 size={"medium"}
                 color={"primary"}
-                onClick={() => onShowDeposit(tokenValue)}
+                onClick={() => onReceive(tokenValue)}
               >
-                {t("labelDeposit")}
+                {t("labelReceive")}
               </Button>
             </Grid>
             <Grid item>
@@ -187,23 +192,23 @@ const ActionMemo = React.memo((props: ActionProps) => {
                 variant={"text"}
                 size={"medium"}
                 color={"primary"}
-                onClick={() => onShowTransfer(tokenValue)}
+                onClick={() => onSend(tokenValue, isToL1)}
               >
-                {t("labelTransfer")}
+                {t("labelSend")}
               </Button>
             </Grid>
-            {isWithdraw && (
-              <Grid item>
-                <Button
-                  variant={"text"}
-                  size={"medium"}
-                  color={"primary"}
-                  onClick={() => onShowWithdraw(tokenValue)}
-                >
-                  {t("labelWithdrawAction")}
-                </Button>
-              </Grid>
-            )}
+            {/*{isToL1 && (*/}
+            {/*  <Grid item>*/}
+            {/*    <Button*/}
+            {/*      variant={"text"}*/}
+            {/*      size={"medium"}*/}
+            {/*      color={"primary"}*/}
+            {/*      onClick={() => onShowWithdraw(tokenValue)}*/}
+            {/*    >*/}
+            {/*      {t("labelL2toL1Action")}*/}
+            {/*    </Button>*/}
+            {/*  </Grid>*/}
+            {/*)}*/}
           </Box>
           {!isLp && allowTrade?.order?.enable && (
             <Grid item marginTop={1}>

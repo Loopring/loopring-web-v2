@@ -5,6 +5,8 @@ import {
   DialogContentText,
   DialogTitle,
   Link,
+  List,
+  ListItem,
   TextField,
   Typography,
 } from "@mui/material";
@@ -19,6 +21,18 @@ import { useOpenModals } from "../../../../stores";
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
+  }
+  .MuiList-root {
+    list-style: inside;
+
+    .MuiListItem-root {
+      display: list-item;
+      marginbottom: 1;
+      height: auto;
+      padding: ${({ theme }) => theme.unit}px 0;
+      font-size: ${({ theme }) => theme.fontDefault.body1};
+      line-height: 1.5em;
+    }
   }
 `;
 
@@ -232,6 +246,141 @@ export const ConfirmImpact = withTranslation("common", { withRef: true })(
     );
   }
 );
+// export const NotAllowForSmartWallet = withTranslation("common", {
+//   withRef: true,
+// })(
+//   ({
+//     t,
+//     open,
+//     handleClose,
+//   }: WithTranslation & {
+//     open: boolean;
+//     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+//   }) => {
+//     return (
+//       <DialogStyle
+//         open={open}
+//         keepMounted
+//         onClose={(e: MouseEvent) => handleClose(e)}
+//         aria-describedby="alert-dialog-slide-description"
+//       >
+//         <DialogTitle> {t("labelNotAllowForSmartWalletTitle")}</DialogTitle>
+//         <DialogContent>
+//           <DialogContentText>
+//             <Typography component={"span"} variant={"body1"} color={"inherit"}>
+//               {t("labelActivatedAccountNotSupport")}
+//             </Typography>
+//           </DialogContentText>
+//         </DialogContent>
+//         <DialogActions>
+//           <Button
+//             variant={"outlined"}
+//             size={"medium"}
+//             onClick={(e) => handleClose(e as any)}
+//           >
+//             {t("labelOK")}
+//           </Button>
+//         </DialogActions>
+//       </DialogStyle>
+//     );
+//   }
+// );
+
+export const WrongNetworkGuide = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelWrongNetworkGuideTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography component={"span"} variant={"body1"} color={"inherit"}>
+              {t("labelWrongNetworkGuide")}
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelOK")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
+
+export const ConfirmLinkCopy = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelOpenInWalletTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Typography component={"span"} variant={"body1"} color={"inherit"}>
+              <Trans i18nKey={"labelOpenInWalletDetail"}>
+                labelOpenInWalletDetail URL for adding fund has been copied. You
+                can choose either way to continue:
+              </Trans>
+            </Typography>
+          </DialogContentText>
+          <List sx={{ marginTop: 2 }}>
+            <ListItem>
+              <Trans i18nKey={"labelOpenInWalletDetailLi1"}>
+                Open your wallet app and paste the url in its internal dapp
+                browser
+              </Trans>
+            </ListItem>
+            <ListItem>
+              <Trans i18nKey={"labelOpenInWalletDetailLi2"}>
+                Open your desktop Chrome browser and paste the url in Chrome
+              </Trans>
+            </ListItem>
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelOK")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
 
 export const AlertLimitPrice = withTranslation("common", { withRef: true })(
   ({
@@ -441,7 +590,7 @@ export const InformationForAccountFrozen = withTranslation("common", {
             }}
             color={"primary"}
           >
-            {t("labelIKnow")}
+            {t("labelOK")}
           </Button>
         </DialogActions>
       </DialogStyle>

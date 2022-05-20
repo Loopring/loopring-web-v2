@@ -175,6 +175,36 @@ export const ErrorMap = {
     messageKey: "errorDataNotReady",
     options: {},
   },
+  PROVIDER_NOT_INSTALL_GME: {
+    id: "PROVIDER_NOT_INSTALL_GME",
+    messageKey: "errorNotInstallGME",
+    options: {},
+  },
+  NO_IPFS_INSTANCE: {
+    id: "NO_IPFS_INSTANCE",
+    messageKey: "errorNoIpfsInstance",
+    options: {},
+  },
+  ADD_IPFS_ERROR: {
+    id: "ADD_IPFS_ERROR",
+    messageKey: "errorAddIpfsError",
+    options: {},
+  },
+  CREATE_IPFS_ERROR: {
+    id: "CREATE_IPFS_ERROR",
+    messageKey: "errorCreateIpfsError",
+    options: {},
+  },
+  NOT_SAME_IPFS_RESOURCE: {
+    id: "NOT_SAME_IPFS_RESOURCE",
+    messageKey: "errorNotSameIpfsResource",
+    options: {},
+  },
+  IPFS_CID_TO_NFTID_ERROR: {
+    id: "IPFS_CID_TO_NFTID_ERROR",
+    messageKey: "errorIpfsDidToNftidError",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -182,6 +212,12 @@ export enum UIERROR_CODE {
   PROVIDER_ERROR_Unknown = 700003,
   GENERATE_EDDSA = 700004,
   DATA_NOT_READY = 700005,
+  PROVIDER_NOT_INSTALL_GME = 700006,
+  NO_IPFS_INSTANCE = 700007,
+  ADD_IPFS_ERROR = 700008,
+  CREATE_IPFS_ERROR = 700009,
+  NOT_SAME_IPFS_RESOURCE = 700010,
+  IPFS_CID_TO_NFTID_ERROR = 700011,
 }
 export type ErrorObject = {
   from?: string;
@@ -195,6 +231,12 @@ export const SDK_ERROR_MAP_TO_UI = {
   700003: ErrorMap.ERROR_UNKNOWN,
   700004: ErrorMap.GENERATE_EDDSA,
   700005: ErrorMap.DATA_NOT_READY,
+  700006: ErrorMap.PROVIDER_NOT_INSTALL_GME,
+  700007: ErrorMap.NO_IPFS_INSTANCE,
+  700008: ErrorMap.ADD_IPFS_ERROR,
+  700009: ErrorMap.CREATE_IPFS_ERROR,
+  700010: ErrorMap.NOT_SAME_IPFS_RESOURCE,
+  700011: ErrorMap.IPFS_CID_TO_NFTID_ERROR,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found
@@ -242,7 +284,6 @@ export const SDK_ERROR_MAP_TO_UI = {
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
 };
-
 export const TransErrorHelp = ({
   error,
   options,
