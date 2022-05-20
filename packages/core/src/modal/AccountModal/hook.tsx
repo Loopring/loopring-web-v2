@@ -100,7 +100,6 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
-  myLog,
   SendAssetList,
 } from "@loopring-web/common-resources";
 import {
@@ -126,6 +125,7 @@ import {
   store,
   mintService,
   goActiveAccount,
+  useCheckActiveStatus,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -523,50 +523,21 @@ export function useAccountModalForUI({
       },
     },
   ];
-  const [isAddressContract, setIsAddressContract] =
-    React.useState<undefined | boolean>(undefined);
-  React.useEffect(() => {
-    if (account.accAddress && connectProvides.usedWeb3) {
-      sdk
-        .isContract(connectProvides.usedWeb3, account.accAddress)
-        .then((isContract) => setIsAddressContract(isContract));
-    }
-  }, [account.accAddress, connectProvides.usedWeb3]);
+
+  const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
+    onDisconnect,
+    isDepositing: chainInfos?.depositHashes[account?.accAddress]?.length
+      ? true
+      : false,
+    isShow: isShowAccount.step === AccountStep.CheckingActive,
+    chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
+    checkFeeIsEnough: activeAccountCheckFeeIsEnough,
+    isFeeNotEnough: activeAccountProps.isFeeNotEnough,
+  });
   const accountList = React.useMemo(() => {
     return Object.values({
       [AccountStep.CheckingActive]: {
-        view: (
-          <CheckActiveStatus
-            account={{ ...account, isContract: isAddressContract }}
-            checkFeeIsEnough={activeAccountCheckFeeIsEnough}
-            isFeeNotEnough={activeAccountProps.isFeeNotEnough}
-            walletMap={activeAccountProps.walletMap}
-            chargeFeeTokenList={
-              activeAccountProps.chargeFeeTokenList as Array<FeeInfo>
-            }
-            isDepositing={
-              chainInfos?.depositHashes[account?.accAddress]?.length
-                ? true
-                : false
-            }
-            isShow={isShowAccount.step === AccountStep.CheckingActive}
-            onClick={() => {
-              // TODO
-              myLog(CheckActiveStatus);
-            }}
-            goDisconnect={onDisconnect}
-            goSend={() =>
-              setShowAccount({
-                isShow: true,
-                step: AccountStep.AddAssetGateway,
-              })
-            }
-            goUpdateAccount={() => {
-              setShowAccount({ isShow: false });
-              setShowActiveAccount({ isShow: true });
-            }}
-          />
-        ),
+        view: <CheckActiveStatus {...checkActiveStatusProps} />,
         height: "auto",
       },
       [AccountStep.AddAssetGateway]: {
@@ -1865,7 +1836,6 @@ export function useAccountModalForUI({
       },
     });
   }, [
-    isAddressContract,
     account,
     activeAccountProps.walletMap,
     activeAccountProps.chargeFeeTokenList,

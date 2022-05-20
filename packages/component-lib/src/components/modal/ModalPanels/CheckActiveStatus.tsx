@@ -1,68 +1,23 @@
-import {
-  Account,
-  EmptyValueTag,
-  FeeInfo,
-  WalletMap,
-} from "@loopring-web/common-resources";
+import { EmptyValueTag } from "@loopring-web/common-resources";
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
-import React from "react";
 import { useSettings } from "../../../stores";
+import { CheckActiveStatusProps } from "./Interface";
 export const CheckActiveStatus = ({
   walletMap,
   account,
   goSend,
   goDisconnect,
-  goUpdateAccount,
-  isShow,
-  checkFeeIsEnough,
   isFeeNotEnough,
   // isDepositing = false,
+  knowDisable,
+  know,
+  onIKnowClick,
   chargeFeeTokenList = [],
-}: {
-  account: Account & { isContract: boolean | undefined };
-  chargeFeeTokenList: FeeInfo[];
-  goUpdateAccount: () => void;
-  goDisconnect: () => void;
-  goSend: () => void;
-  isDepositing: boolean;
-  walletMap?: WalletMap<any, any>;
-  isShow: boolean;
-  checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
-  isFeeNotEnough: boolean;
-  onClick: () => void;
-}) => {
+}: CheckActiveStatusProps) => {
   const { t } = useTranslation("common");
-  const [know, setKnow] = React.useState(false);
-  const [knowDisable, setKnowDisable] = React.useState(true);
-  const { isMobile } = useSettings();
-  const onIKnowClick = () => {
-    if (account.isContract) {
-      setKnow(true);
-    } else if (isFeeNotEnough) {
-      setKnow(true);
-    } else {
-      goUpdateAccount();
-    }
-  };
-  React.useEffect(() => {
-    if (isShow) {
-      checkFeeIsEnough();
-      setKnow(false);
-    }
-  }, [isShow]);
 
-  React.useEffect(() => {
-    if (
-      chargeFeeTokenList !== undefined &&
-      chargeFeeTokenList.length &&
-      account.isContract !== undefined
-    ) {
-      setKnowDisable(false);
-    } else {
-      setKnowDisable(true);
-    }
-  }, [isShow, account.isContract, chargeFeeTokenList]);
+  const { isMobile } = useSettings();
 
   return (
     <Box
@@ -166,7 +121,7 @@ export const CheckActiveStatus = ({
               </>
             ) : (
               <>
-                {!!isFeeNotEnough ? (
+                {isFeeNotEnough ? (
                   <Typography
                     color={"var(--color-warning)"}
                     component={"p"}
@@ -236,7 +191,7 @@ export const CheckActiveStatus = ({
                     </Typography>
                   </Typography>
                 ))}
-                {!!isFeeNotEnough && (
+                {isFeeNotEnough && (
                   <Typography
                     color={"var(--color-text-third)"}
                     component={"p"}

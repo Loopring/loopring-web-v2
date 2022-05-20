@@ -1,8 +1,10 @@
 import { ButtonProps } from "../../basic-lib";
 import {
   Account,
+  FeeInfo,
   VendorItem,
   VendorProviders,
+  WalletMap,
 } from "@loopring-web/common-resources";
 import React from "react";
 
@@ -157,4 +159,17 @@ export interface SendAssetProps {
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean };
   };
+}
+
+export interface CheckActiveStatusProps<C = FeeInfo> {
+  account: Account & { isContract: boolean | undefined };
+  chargeFeeTokenList: C[];
+  goDisconnect: () => void;
+  goSend: () => void;
+  isDepositing: boolean;
+  walletMap?: WalletMap<any, any>;
+  isFeeNotEnough: boolean;
+  onIKnowClick: () => void;
+  knowDisable: boolean;
+  know: boolean;
 }
