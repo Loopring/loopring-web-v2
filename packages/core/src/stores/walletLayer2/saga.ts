@@ -6,14 +6,13 @@ import {
 } from "./reducer";
 import { CoinKey, PairKey, WalletCoin } from "@loopring-web/common-resources";
 import { store, LoopringAPI } from "../../index";
-import { account } from "@loopring-web/component-lib";
 
 type WalletLayer2Map<R extends { [key: string]: any }> = {
   [key in CoinKey<R> | PairKey<R>]?: WalletCoin<R>;
 };
 
 const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
-  const { accountId, apiKey, readyState, _accountIdNotActive } =
+  const { accountId, apiKey, readyState, _accountIdNotActive, accAddress } =
     store.getState().account;
   const { idIndex } = store.getState().tokenMap;
   let walletLayer2;
@@ -33,8 +32,8 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
     }
   } else if (
     !apiKey &&
-    ["DEPOSITING", "NOT_ACTIVE", "LOCKED"].includes(readyState) &&
-    account.accAddress &&
+    ["DEPOSITING", "NOT_ACTIVE", "LOCKED", "NO_ACCOUNT"].includes(readyState) &&
+    accAddress &&
     LoopringAPI.exchangeAPI &&
     LoopringAPI.globalAPI
   ) {
@@ -42,9 +41,9 @@ const getWalletLayer2Balance = async <R extends { [key: string]: any }>() => {
       _accountIdNotActive && _accountIdNotActive !== -1
         ? _accountIdNotActive
         : accountId;
-    if (!(_accountId && _accountId !== -1)) {
+    if (["NO_ACCOUNT"].includes(readyState) || _accountIdNotActive == -1) {
       const { accInfo } = await LoopringAPI.exchangeAPI.getAccount({
-        owner: account.accAddress,
+        owner: accAddress,
       });
       _accountId = accInfo.accountId;
     }
