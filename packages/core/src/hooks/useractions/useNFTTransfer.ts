@@ -372,10 +372,12 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
             isShow: true,
             step: AccountStep.NFTTransfer_WaitForAuth,
           });
-          // const sellTokenID = nftTransferValue.tokenId
-          // const sellToken = tokenMap[nftTransferValue.belong as string]
           const feeToken = tokenMap[nftTransferValue.fee.belong];
-          const fee = sdk.toBig(nftTransferValue.fee.__raw__?.feeRaw ?? 0);
+          const feeRaw =
+            nftTransferValue.fee.feeRaw ??
+            nftTransferValue.fee.__raw__?.feeRaw ??
+            0;
+          const fee = sdk.toBig(feeRaw);
           const tradeValue = nftTransferValue.tradeValue;
           const balance = nftTransferValue.nftBalance;
           const isExceedBalance = sdk.toBig(tradeValue).gt(balance);

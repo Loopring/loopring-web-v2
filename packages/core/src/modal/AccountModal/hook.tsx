@@ -472,7 +472,7 @@ export function useAccountModalForUI({
       ...AddAssetList.FromMyL1,
       handleSelect: () => {
         setShowAccount({ isShow: false });
-        setShowDeposit({ isShow: true });
+        setShowDeposit({ isShow: true, symbol: isShowAccount?.info?.symbol });
       },
     },
     {
@@ -480,11 +480,9 @@ export function useAccountModalForUI({
       handleSelect: () => {
         window.open(
           Bridge +
-            `?owner=${
-              account.accountId && account.accountId !== -1
-                ? account.accountId
-                : account.accAddress
-            }`
+            `?owner=${account.accAddress}&token=${
+              isShowAccount?.info?.symbol ?? ""
+            }&__trace_isSharedBy=loopringExchange`
         );
         window.opener = null;
       },
@@ -514,14 +512,14 @@ export function useAccountModalForUI({
       ...SendAssetList.SendAssetToL2,
       handleSelect: (_e) => {
         setShowAccount({ isShow: false });
-        setShowTransfer({ isShow: true });
+        setShowTransfer({ isShow: true, symbol: isShowAccount?.info?.symbol });
       },
     },
     {
       ...SendAssetList.SendAssetToMyL1,
       handleSelect: () => {
         setShowAccount({ isShow: false });
-        setShowWithdraw({ isShow: true });
+        setShowWithdraw({ isShow: true, symbol: isShowAccount?.info?.symbol });
       },
     },
   ];

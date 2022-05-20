@@ -371,8 +371,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
           const sellToken = tokenMap[transferValue.belong as string];
           const feeToken = tokenMap[transferValue.fee.belong];
-
-          const fee = sdk.toBig(transferValue.fee.__raw__?.feeRaw ?? 0);
+          const feeRaw =
+            transferValue.fee.feeRaw ?? transferValue.fee.__raw__?.feeRaw ?? 0;
+          const fee = sdk.toBig(feeRaw);
           const balance = sdk
             .toBig(transferValue.balance ?? 0)
             .times("1e" + sellToken.decimals);

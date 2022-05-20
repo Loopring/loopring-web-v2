@@ -63,7 +63,9 @@ export const OrderDetailPanel = withTranslation("tables", { withRef: true })(
       .reduce((prev, curr) => (prev || 0) + (curr || 0), 0);
     const volumeToken = rawData[0]?.volumeToken;
     return (
-      <ContentWrapperStyled width={isMobile ? 340 : 900}>
+      <ContentWrapperStyled
+        width={isMobile ? "var(--mobile-full-panel-width)" : 900}
+      >
         <HeaderStyled
           flexDirection={isMobile ? "column" : "row"}
           alignItems={"flex-start"}
