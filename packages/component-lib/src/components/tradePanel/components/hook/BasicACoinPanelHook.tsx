@@ -66,21 +66,26 @@ export const useBasicTrade = <
           const balance = _newTradeData.belong
             ? walletMap[_newTradeData.belong]?.count
             : 0;
-
+          const tradeValue = _newTradeData.tradeValue
+            ? _newTradeData.tradeValue
+            : undefined;
           setSwitchData({
             tradeData: {
               ..._newTradeData,
-              tradeValue: undefined,
+              tradeValue,
               balance: balance,
             },
             to,
           });
         } else if (to === "button" && type === "NFT") {
           const count = _newTradeData.nftBalance;
+          const tradeValue = _newTradeData.tradeValue
+            ? _newTradeData.tradeValue
+            : undefined;
           setSwitchData({
             tradeData: {
               ..._newTradeData,
-              tradeValue: undefined,
+              tradeValue,
               balance: count,
             },
             to,
