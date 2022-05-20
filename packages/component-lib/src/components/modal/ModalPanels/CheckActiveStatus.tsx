@@ -96,7 +96,7 @@ export const CheckActiveStatus = ({
           >
             <Typography
               variant={"body1"}
-              color={"var(--color-text-third)"}
+              color={"textSecondary"}
               whiteSpace={"pre-line"}
             >
               {t("labelBenefitL2")}
@@ -151,6 +151,7 @@ export const CheckActiveStatus = ({
                   variant={"body1"}
                   color={"textPrimary"}
                   marginTop={1}
+                  marginBottom={2}
                 >
                   {t("labelActivatedAccountNotSupportDes")}
                 </Typography>

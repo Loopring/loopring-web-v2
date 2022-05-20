@@ -165,7 +165,7 @@ export default {
     "Please deposit to activate your Layer 2 account",
   labelActivatedAccountNotSupport: "The connected wallet is not supported",
   labelActivatedAccountNotSupportDes:
-    "  The wallet you have connected does not support Loopring Layer 2. Please use a different wallet to connect or download the Loopring Wallet app.",
+    "Please connect with a different wallet or download the Loopring Wallet mobile app.",
   labelNotAllowForSmartWalletTitle: "Apologize",
   labelProcessing: "Processing",
   labelProviderProcessing: "Connect Wallet with {{name}}...",
