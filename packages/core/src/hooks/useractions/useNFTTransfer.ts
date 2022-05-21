@@ -256,6 +256,9 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTTransfer_First_Method_Denied,
+                  info: {
+                    symbol: nftTransferValue.name,
+                  },
                 });
               } else {
                 if (
@@ -270,6 +273,9 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                   isShow: true,
                   step: AccountStep.NFTTransfer_Failed,
                   error: response as sdk.RESULT_INFO,
+                  info: {
+                    symbol: nftTransferValue.name,
+                  },
                 });
                 setIsConfirmTransfer(false);
               }
@@ -284,6 +290,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                 isShow: true,
                 step: AccountStep.NFTTransfer_Success,
                 info: {
+                  symbol: nftTransferValue.name,
                   hash:
                     Explorer +
                     `tx/${(response as sdk.TX_HASH_API)?.hash}-nftTransfer-${
@@ -319,11 +326,17 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTTransfer_First_Method_Denied,
+              info: {
+                symbol: nftTransferValue.name,
+              },
             });
           } else {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTTransfer_Failed,
+              info: {
+                symbol: nftTransferValue.name,
+              },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,

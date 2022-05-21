@@ -311,7 +311,13 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
         // result.data = response
 
         if (response) {
-          setShowAccount({ isShow: true, step: AccountStep.NFTDeposit_Submit });
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.NFTDeposit_Submit,
+            info: {
+              symbol: nftDepositValue?.name,
+            },
+          });
           updateDepositHash(response.result, account.accAddress, undefined, {
             symbol: nftDepositValue.name,
             type: "Deposit NFT",
@@ -322,6 +328,9 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTDeposit_Failed,
+            info: {
+              symbol: nftDepositValue?.name,
+            },
             error: {
               code: UIERROR_CODE.UNKNOWN,
               msg: "No Response",
@@ -345,12 +354,18 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeposit_Denied,
+              info: {
+                symbol: nftDepositValue?.name,
+              },
             });
             break;
           default:
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeposit_Failed,
+              info: {
+                symbol: nftDepositValue?.name,
+              },
               error: {
                 code: result.code ?? UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,

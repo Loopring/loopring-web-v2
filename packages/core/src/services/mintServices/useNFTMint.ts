@@ -209,6 +209,7 @@ export function useNFTMint<
               isShow: true,
               step: AccountStep.NFTMint_Success,
               info: {
+                symbol: nftMintValue.nftMETA?.name,
                 hash:
                   Explorer +
                   `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint-${
@@ -233,12 +234,18 @@ export function useNFTMint<
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_Denied,
+            info: {
+              symbol: nftMintValue.nftMETA?.name,
+            },
           });
           mintService.goMintConfirm();
         } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_First_Method_Denied,
+            info: {
+              symbol: nftMintValue.nftMETA?.name,
+            },
           });
           mintService.signatureMint(true);
         } else {
@@ -253,6 +260,9 @@ export function useNFTMint<
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_Failed,
+            info: {
+              symbol: nftMintValue.nftMETA?.name,
+            },
             error: {
               code: UIERROR_CODE.UNKNOWN,
               msg: reason?.message,
@@ -266,9 +276,12 @@ export function useNFTMint<
     [
       account,
       checkHWAddr,
-      chainId,
       setShowAccount,
-      resetNFTMINT,
+      chainId,
+      nftMintValue.nftMETA?.name,
+      updateWalletLayer2NFT,
+      page,
+      history,
       updateHW,
       checkFeeIsEnough,
     ]

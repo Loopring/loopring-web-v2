@@ -9,7 +9,6 @@ import {
   AccountStatus,
   MetaProperty,
   myLog,
-  NFTMETA,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import { IpfsProvides, ipfsService } from "../ipfs";
@@ -84,13 +83,13 @@ export const mintService = {
     const {
       nftMintValue: { nftMETA },
     } = store.getState()._router_modalData;
-    const _nftMETA = {
+    const _nftMETA: any = {
       image: nftMETA.image,
       name: nftMETA.name,
-      royaltyPercentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
+      royalty_percentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
       description: nftMETA.description,
       collection: nftMETA.collection,
-    } as NFTMETA;
+    };
     _nftMETA.properties =
       nftMETA.properties?.reduce((prev, item) => {
         if (!!item.key?.trim() && !!item.value?.trim()) {

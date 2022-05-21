@@ -158,8 +158,7 @@ export default {
   labelConnectBy: "当前连接 <1>{{connectBy}}</1>",
   labelWrongNetwork: "未识别网络",
   labelActivatedAccountDeposit: "首次开通二层钱包需充值并激活",
-  labelActivatedAccountNotSupport:
-    "We apologize, loopring app does not support your address currently.",
+  labelActivatedAccountNotSupport: "Your wallet does not support Loopring L2.",
   labelActivatedAccountNotSupportDes:
     "  The wallet you have connected does not support Loopring Layer 2. Please use a different wallet to connect or download the Loopring Wallet app.",
   labelNotAllowForSmartWalletTitle: "Apologize",
@@ -695,7 +694,8 @@ export default {
   labelL2toL1: "Send to L1",
   labelBenefitL2:
     "By activating Loopring L2, you will gain access to fast and cheap transactions as well as other features like: Token/NFT Transfers, NFT Minting, DEX Buy/Sell, AMM investment, and more!",
-  labelNotBalancePayForActive: "You have an insufficient balance",
+  labelNotBalancePayForActive:
+    "Insufficient balance in your Loopring L2 account",
   labelEnoughBalancePayForActive:
     "You have enough balance to pay for Loopring L2 creation.",
   labelHaveInProcessingL1toL2:

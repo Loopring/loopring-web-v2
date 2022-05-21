@@ -162,7 +162,7 @@ export default {
   labelWrongNetwork: "Wrong network",
   labelActivatedAccountDeposit:
     "Please deposit to activate your Layer 2 account",
-  labelActivatedAccountNotSupport: "The connected wallet is not supported",
+  labelActivatedAccountNotSupport: "Your wallet does not support Loopring L2",
   labelActivatedAccountNotSupportDes:
     "Please connect with a different wallet or download the Loopring Wallet mobile app.",
   labelNotAllowForSmartWalletTitle: "Apologize",
@@ -706,7 +706,8 @@ export default {
   labelL2toL1: "Send to L1",
   labelBenefitL2:
     "As Ethereum's first ever zkRollup, Loopring L2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.\n\nActivating your Loopring L2 account requires a small payment fee. ",
-  labelNotBalancePayForActive: "You have an insufficient balance",
+  labelNotBalancePayForActive:
+    "Insufficient balance in your Loopring L2 account",
   labelEnoughBalancePayForActive:
     "You have enough balance to pay for Loopring L2 creation.",
   labelHaveInProcessingL1toL2:
