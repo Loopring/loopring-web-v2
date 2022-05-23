@@ -606,7 +606,7 @@ export default {
   labelNFTDeposit: "Receive Loopring L2 NFT",
   labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & send it",
   labelNFTDepositBtn: "Receive NFT",
-  nftDepositTitle: "Receive NFT from My L1",
+  nftDepositTitle: "Receive NFT from my L1",
   labelNFTContractAddress: "Contract:",
   labelNFTAmount: "Amount:",
   labelNFTTokenDepositWaitForAuth:
@@ -655,7 +655,7 @@ export default {
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe upon copyright laws, and does not contain explicit, sensitive, adult themed or other NSFW content. We reserve the right to remove NFTs or inappropriate content at any time if content is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
-  labelPayer: "Payer wallet:",
+  labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
   labelL1toL2TO: "To Loopring L2",
@@ -689,7 +689,7 @@ export default {
   labelReceiveAddress: "Receive Address",
   labelAssets: "Loopring L2 Assets",
   labelReceiveAddressGuide:
-    "Please using Loopring L2 account to send {{symbol}}",
+    "Please send {{symbol}} funds from a Loopring L2 address",
   labelL2toL2: "Send to another Loopring L2",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
