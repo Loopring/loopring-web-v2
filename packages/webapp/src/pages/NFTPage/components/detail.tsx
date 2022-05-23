@@ -45,13 +45,18 @@ const BoxStyle = styled(Box)<
   { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
 >`
   &.nft-detail {
+    margin-top: -26px;
+    .detail-info {
+      max-height: 520px;
+      overflow-y: scroll;
+    }
     .react-swipeable-view-container {
       & > div {
         align-items: center;
-        min-width: 400px;
         padding-bottom: 0;
         word-break: break-all;
         white-space: break-spaces;
+        min-width: 400px;
       }
     }
     .transfer-wrap {
@@ -59,18 +64,27 @@ const BoxStyle = styled(Box)<
       padding-right: 0;
     }
     .nft-trade {
+      max-height: 520px;
       .container {
         width: 320px;
       }
     }
   }
-  ${({ isMobile, image }) => `
+  &.nft-detail {
+    ${({ isMobile, image }) => `
      ${
        isMobile &&
        `
-       position:relative; 
-       margin-top: -10px;
-      
+       .detail-info{
+          max-height:  initial;
+        }
+       .react-swipeable-view-container {
+          & > div {
+             min-width:  initial;
+          }
+        }
+       position:relative;    
+       width:auto; 
        .MuiBox-root{
         z-index:2
        } 
@@ -96,6 +110,7 @@ const BoxStyle = styled(Box)<
      `
      }
   `}
+  }
 ` as (
   props: { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
 ) => JSX.Element;
@@ -171,6 +186,7 @@ export const NFTDetail = withTranslation("common")(
         <Box
           flexDirection={"column"}
           display={"flex"}
+          className={"detail-info"}
           maxWidth={isMobile ? "var(--mobile-full-panel-width)" : 550}
         >
           <InformationForNoMetaNFT
@@ -498,7 +514,7 @@ export const NFTDetail = withTranslation("common")(
         >
           {viewPage !== 0 && (
             <ModalBackButton
-              marginTop={-3.5}
+              marginTop={0}
               onBack={() => handleChangeIndex(0)}
               {...{ ...rest, t }}
             />
@@ -511,7 +527,6 @@ export const NFTDetail = withTranslation("common")(
               width={440}
               className={"nft-trade"}
               paddingBottom={isMobile ? 3 : 0}
-              marginTop={isMobile ? -4 : 0}
             >
               <TransferPanel<any, any>
                 {...{
@@ -539,7 +554,6 @@ export const NFTDetail = withTranslation("common")(
               width={440}
               className={"nft-trade"}
               paddingBottom={isMobile ? 2 : 0}
-              marginTop={isMobile ? -4 : 0}
             >
               <WithdrawPanel<any, any>
                 {...{

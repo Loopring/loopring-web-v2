@@ -7,7 +7,7 @@ export const NFTDeposit_Approve_WaitForAuth = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTAccess", {
-      symbol: props?.name ?? "unknown NFT",
+      symbol: props?.symbol ?? "NFT",
     }),
   };
   return <DepositBase {...props} {...propsPatch} />;
@@ -19,7 +19,7 @@ export const NFTDeposit_Approve_Denied = (
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelNFTTokenFailedAccess", {
-      symbol: props?.name ?? "unknown NFT",
+      symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -32,7 +32,7 @@ export const NFTDeposit_Approve_Submit = (
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelNFTTokenSuccessAccess", {
-      symbol: props?.name ?? "unknown NFT",
+      symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -45,7 +45,7 @@ export const NFTDeposit_WaitForAuth = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelNFTTokenDepositWaitForAuth", {
-      symbol: props?.name ?? "unknown NFT",
+      symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -58,7 +58,7 @@ export const NFTDeposit_Denied = (
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelL1toL2Denied", {
-      symbol: props?.name ?? "unknown NFT",
+      symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -71,7 +71,7 @@ export const NFTDeposit_Failed = (
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelL1toL2Failed", {
-      symbol: props?.name ?? "unknown NFT",
+      symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -84,7 +84,7 @@ export const NFTDeposit_Submit = (
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelL1toL2Submit", {
-      symbol: props?.name ?? "unknown NFT",
+      symbol: props?.symbol ?? "NFT",
       value: props.value,
     }),
   };

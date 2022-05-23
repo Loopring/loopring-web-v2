@@ -270,6 +270,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTWithdraw_First_Method_Denied,
+                  info: {
+                    symbol: nftWithdrawValue.name,
+                  },
                 });
               } else {
                 if (
@@ -284,6 +287,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
                   isShow: true,
                   step: AccountStep.NFTWithdraw_Failed,
                   error: response as sdk.RESULT_INFO,
+                  info: {
+                    symbol: nftWithdrawValue.name,
+                  },
                 });
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
@@ -296,6 +302,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
                 isShow: true,
                 step: AccountStep.NFTWithdraw_Success,
                 info: {
+                  symbol: nftWithdrawValue.name,
                   hash:
                     Explorer +
                     `tx/${(response as sdk.TX_HASH_API)?.hash}-nftWithdraw${
@@ -328,17 +335,26 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTWithdraw_User_Denied,
+              info: {
+                symbol: nftWithdrawValue.name,
+              },
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
             setLastRequest({ request });
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTWithdraw_First_Method_Denied,
+              info: {
+                symbol: nftWithdrawValue.name,
+              },
             });
           } else {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTWithdraw_Failed,
+              info: {
+                symbol: nftWithdrawValue.name,
+              },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,
@@ -352,11 +368,14 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
       account,
       checkHWAddr,
       chainId,
+      updateWalletLayer2NFT,
+      page,
       setShowAccount,
+      nftWithdrawValue.tokenId,
+      checkFeeIsEnough,
       doWithdrawDone,
       resetNFTWithdrawData,
       updateHW,
-      checkFeeIsEnough,
     ]
   );
 

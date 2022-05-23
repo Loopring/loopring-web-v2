@@ -95,7 +95,7 @@ export const MintNFTBlock = <
           <TextField
             value={nftMeta.name}
             fullWidth
-            inputProps={{ maxLength: 20 }}
+            inputProps={{ maxLength: 32 }}
             label={
               <Trans i18nKey={"labelMintName"}>
                 Name
