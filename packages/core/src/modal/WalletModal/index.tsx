@@ -117,7 +117,6 @@ export const ModalWalletConnectPanel = withTranslation("common")(
   } & WithTranslation) => {
     const { account, setShouldShow, status: accountStatus } = useAccount();
     const { isMobile } = useSettings();
-    const theme = useTheme();
     const {
       modals: { isShowConnect, isWrongNetworkGuide },
       setShowConnect,

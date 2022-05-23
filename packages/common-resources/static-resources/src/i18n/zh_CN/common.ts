@@ -685,7 +685,7 @@ export default {
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
-    "Please make sure one of the below tokens with the minimum quantity is in your Loopring L2 account to proceed:",
+    "You have enough balance to pay for Layer 2 creation as below.",
   labelReceiveAddress: "Receive Address",
   labelAssets: "Loopring L2 Assets",
   labelReceiveAddressGuide:
@@ -712,4 +712,7 @@ export default {
     "I, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
   labelENSShouldConnect:
     "Receive address is an ENS, please connect wallet to check real address",
+  labelToken: "Token",
+  labelMinRequirement: "Min Requirement",
+  labelAvailability: "Availability",
 };

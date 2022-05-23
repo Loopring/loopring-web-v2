@@ -724,4 +724,7 @@ export default {
     "Invalid Wallet Address, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
   labelENSShouldConnect:
     "Receive address is an ENS, please connect wallet to check real address",
+  labelToken: "Token",
+  labelMinRequirement: "Min Requirement",
+  labelAvailability: "Availability",
 };
