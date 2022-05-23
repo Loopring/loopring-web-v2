@@ -1,6 +1,8 @@
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { TOptions } from "i18next";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { Link } from "@mui/material";
+import { myLog } from "../utils";
 
 export const ErrorMap = {
   ERROR_UNKNOWN: {
@@ -178,7 +180,19 @@ export const ErrorMap = {
   PROVIDER_NOT_INSTALL_GME: {
     id: "PROVIDER_NOT_INSTALL_GME",
     messageKey: "errorNotInstallGME",
-    options: {},
+    options: {
+      link: (
+        <Trans i18nKey={"errorLinKWalletApp"} ns={"error"}>
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            href={"https://wallet.gamestop.com/wallets"}
+          >
+            app market
+          </Link>
+        </Trans>
+      ),
+    },
   },
   NO_IPFS_INSTANCE: {
     id: "NO_IPFS_INSTANCE",
@@ -210,9 +224,9 @@ export enum UIERROR_CODE {
   UNKNOWN = 700001,
   PROVIDER_ERROR = 700002,
   PROVIDER_ERROR_Unknown = 700003,
-  GENERATE_EDDSA = 700004,
+  PROVIDER_NOT_INSTALL_GME = 700004,
   DATA_NOT_READY = 700005,
-  PROVIDER_NOT_INSTALL_GME = 700006,
+  GENERATE_EDDSA = 700006,
   NO_IPFS_INSTANCE = 700007,
   ADD_IPFS_ERROR = 700008,
   CREATE_IPFS_ERROR = 700009,
@@ -229,9 +243,9 @@ export const SDK_ERROR_MAP_TO_UI = {
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
   700002: ErrorMap.ERROR_PROVIDER_ERROR,
   700003: ErrorMap.ERROR_UNKNOWN,
-  700004: ErrorMap.GENERATE_EDDSA,
+  700004: ErrorMap.PROVIDER_NOT_INSTALL_GME,
   700005: ErrorMap.DATA_NOT_READY,
-  700006: ErrorMap.PROVIDER_NOT_INSTALL_GME,
+  700006: ErrorMap.GENERATE_EDDSA,
   700007: ErrorMap.NO_IPFS_INSTANCE,
   700008: ErrorMap.ADD_IPFS_ERROR,
   700009: ErrorMap.CREATE_IPFS_ERROR,
@@ -293,8 +307,10 @@ export const TransErrorHelp = ({
 }) => {
   const { t } = useTranslation(["error"]);
   const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
+  const _options = { ...errorItem.options, ...options };
+  myLog(_options);
   if (errorItem) {
-    return <>{t(errorItem.messageKey, options ?? errorItem.options)}</>;
+    return <>{t(errorItem.messageKey, _options)}</>;
   } else {
     return <>{error.message}</>;
   }

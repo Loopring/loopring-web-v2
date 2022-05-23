@@ -32,5 +32,7 @@ export default {
   errorDisableOtherWalletForCurrent:
     "Global ethereum is not {{name}}, please disable other Wallet Plugin.",
   errorGenerateEddsa: "Generate EdDSA key has failed.",
-  errorNotInstallGME: "GameStop Plugin is not install or disabled",
+  errorNotInstallGME:
+    "Please install the Gamestop Wallet browser extension. Then create, deposit, and activate the wallet before connecting to Loopring.io.",
+  errorLinKWalletApp: "<0>app market</0>",
 };
