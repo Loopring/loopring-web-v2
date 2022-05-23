@@ -31,5 +31,7 @@ export default {
   errorDisableOtherWalletForCurrent:
     "Global ethereum is not {{name}}, please disable other Wallet Plugin.",
   errorGenerateEddsa: "Generate EdDSA key has failed.",
-  errorNotInstallGME: "GameStop Plugin is not install or disabled",
+  errorNotInstallGME:
+    "Try Gamestop Wallet Browser Plugin you need install it from app market & create a wallet account.",
+  errorLinKWalletApp: "<0>app market</0>",
 };
