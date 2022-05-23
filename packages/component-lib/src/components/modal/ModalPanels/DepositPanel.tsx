@@ -6,7 +6,11 @@ import {
   IBData,
   // myLog,
 } from "@loopring-web/common-resources";
-import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
+import {
+  ModalBackButton,
+  SwitchPanel,
+  SwitchPanelProps,
+} from "../../basic-lib";
 import {
   DepositWrap,
   TradeMenuList,
@@ -31,6 +35,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
     coinMap = {},
     addressDefault,
     allowTrade,
+    onBack,
     ...rest
   }: DepositProps<T, I> & WithTranslation) => {
     // const { theme } = useSettings();
@@ -73,6 +78,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
       panelList: [
         {
           key: "trade",
+          // onBack,
           element: React.useMemo(
             () => (
               // @ts-ignore
@@ -105,7 +111,25 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
               allowTrade,
             ]
           ),
-          toolBarItem: undefined,
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={0}
+                    onBack={() => {
+                      onBack();
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
         },
         {
           key: "tradeMenuList",

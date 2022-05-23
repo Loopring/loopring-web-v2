@@ -715,4 +715,5 @@ export default {
   labelToken: "Token",
   labelMinRequirement: "Min Requirement",
   labelAvailability: "Availability",
+  labelWhatProvider: "Which provider would you like to use?",
 };

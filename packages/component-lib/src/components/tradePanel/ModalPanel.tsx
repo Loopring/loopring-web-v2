@@ -35,6 +35,9 @@ const BoxStyle = styled(Box)<
   justify-content: center;
   ${({ theme }) => modalContentBaseStyle({ theme: theme })}
   background: ${({ theme }) => theme.colorBase.box};
+  .trade-wrap {
+    margin-top: -26px;
+  }
   .trade-panel {
     position: relative;
     height: ${({ _height }) =>
@@ -67,6 +70,7 @@ const Modal = withTranslation("common")(
     onClose,
     content,
     _height,
+    contentClassName,
     _width,
     ...rest
   }: ModalPanelProps & WithTranslation) => {
@@ -90,7 +94,7 @@ const Modal = withTranslation("common")(
             {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
           </Box>
           <Box
-            className={"trade-wrap"}
+            className={contentClassName}
             maxWidth={isMobile ? "350px" : "inherit"}
           >
             {content}
@@ -163,6 +167,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     <>
       <Modal
         open={isShowTransfer.isShow}
+        contentClassName={"trade-wrap"}
         onClose={() => setShowTransfer({ isShow: false })}
         content={
           <TransferPanel<any, any>
@@ -179,6 +184,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
       />
       <Modal
         open={isShowWithdraw.isShow}
+        contentClassName={"trade-wrap"}
         onClose={() => setShowWithdraw({ isShow: false })}
         content={
           <WithdrawPanel<any, any>
@@ -206,6 +212,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
       {/*/>*/}
       <Modal
         open={isShowDeposit.isShow}
+        contentClassName={"trade-wrap"}
         onClose={() => setShowDeposit({ isShow: false })}
         content={
           <DepositPanel

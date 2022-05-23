@@ -1,5 +1,9 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
+import {
+  ModalBackButton,
+  SwitchPanel,
+  SwitchPanelProps,
+} from "../../basic-lib";
 import { IBData } from "@loopring-web/common-resources";
 import React from "react";
 import { TransferProps } from "../../tradePanel";
@@ -21,6 +25,7 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
     assetsData,
     addrStatus,
     isAddressCheckLoading,
+    onBack,
     ...rest
   }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
@@ -72,11 +77,29 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
               isAddressCheckLoading,
             ]
           ),
-          toolBarItem: undefined,
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={0}
+                    onBack={() => {
+                      onBack();
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
         },
       ].concat(
         type === "TOKEN"
-          ? [
+          ? ([
               {
                 key: "tradeMenuList",
                 element: React.useMemo(
@@ -100,7 +123,7 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
                 toolBarItem: undefined,
                 // toolBarItem: toolBarItemBack
               },
-            ]
+            ] as any)
           : []
       ),
     };

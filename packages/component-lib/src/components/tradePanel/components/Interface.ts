@@ -65,6 +65,7 @@ export type TransferExtendProps<T, I, C> = {
   handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
   wait?: number;
+  onBack?: () => void;
 } & TransferInfoProps<C>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
@@ -134,6 +135,7 @@ export type DepositExtendProps<T> = {
   realReferAddress?: string;
   handleClear: () => void;
   isToAddressEditable: boolean;
+  onBack?: () => void;
 } & DepositInfoProps;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
@@ -171,6 +173,7 @@ export type WithdrawExtendProps<T, I, C> = {
   handleWithdrawTypeChange: (value: WithdrawType) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
   wait?: number;
+  onBack?: () => void;
 } & WithdrawInfoProps<C>;
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =

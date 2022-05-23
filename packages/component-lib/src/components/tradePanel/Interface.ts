@@ -197,6 +197,7 @@ export enum SwapType {
 
 export type ModalPanelProps = {
   open: boolean;
+  contentClassName?: string;
   onClose: {
     bivarianceHack(event: {}, reason: "backdropClick" | "escapeKeyDown"): void;
   }["bivarianceHack"];

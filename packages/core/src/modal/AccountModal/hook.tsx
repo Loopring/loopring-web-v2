@@ -523,6 +523,20 @@ export function useAccountModalForUI({
       },
     },
   ];
+  const onBackReceive = React.useCallback(() => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.AddAssetGateway,
+      info: { ...isShowAccount?.info },
+    });
+  }, [isShowAccount?.info?.symbol]);
+  const onBackSend = React.useCallback(() => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.SendAssetGateway,
+      info: { ...isShowAccount?.info },
+    });
+  }, [isShowAccount?.info?.symbol]);
 
   const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
     onDisconnect,
@@ -562,6 +576,7 @@ export function useAccountModalForUI({
       },
       [AccountStep.PayWithCard]: {
         view: <VendorMenu {...{ ...vendorProps }} />,
+        onBack: onBackReceive,
       },
       [AccountStep.NoAccount]: {
         view: (
@@ -1918,6 +1933,8 @@ export function useAccountModalForUI({
     closeBtnInfo,
     accountList,
     currentModal,
+    onBackReceive,
+    onBackSend,
     // vendorProps,
   };
 }

@@ -6,6 +6,7 @@ import {
   ModalPanel,
   ModalQRCode,
   Toast,
+  useOpenModals,
   // useOpenModals,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
@@ -31,6 +32,17 @@ export const ModalAccountInfo = withTranslation("common")(
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
+    const {
+      // modals: { isShowAccount },
+      // setShowConnect,
+      // setShowAccount,
+      setShowDeposit,
+      // setShowNFTMint,
+      setShowTransfer,
+      setShowWithdraw,
+      // setShowResetAccount,
+      // setShowActiveAccount,
+    } = useOpenModals();
     // const {
     //   modals: {
     //     isShowDeposit ,
@@ -59,6 +71,8 @@ export const ModalAccountInfo = withTranslation("common")(
       closeBtnInfo,
       accountList,
       currentModal,
+      onBackReceive,
+      onBackSend,
     } = useAccountModalForUI({
       t,
       depositProps,
@@ -81,19 +95,28 @@ export const ModalAccountInfo = withTranslation("common")(
         />
 
         <ModalPanel
-          transferProps={transferProps}
-          withdrawProps={withdrawProps}
-          // depositGroupProps={{
-          //   depositProps,
-          //   tabIndex: partner
-          //     ? DepositPanelType.ThirdPart
-          //     : DepositPanelType.Deposit,
-          //   vendorMenuProps: vendorProps,
-          // }}
-          depositProps={depositProps}
+          transferProps={{
+            ...transferProps,
+            onBack: () => {
+              setShowTransfer({ isShow: false });
+              onBackSend();
+            },
+          }}
+          withdrawProps={{
+            ...withdrawProps,
+            onBack: () => {
+              setShowWithdraw({ isShow: false });
+              onBackSend();
+            },
+          }}
+          depositProps={{
+            ...depositProps,
+            onBack: () => {
+              setShowDeposit({ isShow: false });
+              onBackReceive();
+            },
+          }}
           nftTransferProps={nftTransferProps}
-          // nftMintProps={nftMintProps}
-          // nftDepositProps={nftDepositProps}
           nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}
