@@ -28,7 +28,7 @@ export default {
   resetLabelBtn: "重置",
   labelActiveEnterToken: "Select payment token",
   labelActiveAccountDescription:
-    "Each account on Loopring L2 needs an EdDSA private key (the account key) to sign off-chain (aka Layer 2) requests.",
+    "You have enough balance to pay for Layer 2 creation as below.",
   labelActiveAccountFee: "Fee {{count}} GAS ≈ ${{price}}",
   labelActiveAccountBtn: "Reset",
   depositLabelEnterToken: "选择充值代币",
@@ -70,8 +70,6 @@ export default {
   labelBtnReset: "重置",
   labelHadChangPassword: "您在{{passDay}}修改了密码",
   labelTitleForceWithdraw: "强制提现",
-  descriptionForceWithdraw:
-    "xxxxxxxxxxxxxxxxxxxx,xxxxxxxxxxxxxxxx,xxxxxxxxxx,xxxxxxxxxx",
   labelBtnForceWithdraw: "强制提现",
   labelTitleExportAccount: "导出账号",
   descriptionExportAccount: "你可以导出你的API密钥，在脚本中使用。",
@@ -160,8 +158,7 @@ export default {
   labelConnectBy: "当前连接 <1>{{connectBy}}</1>",
   labelWrongNetwork: "未识别网络",
   labelActivatedAccountDeposit: "首次开通二层钱包需充值并激活",
-  labelActivatedAccountNotSupport:
-    "We apologize, loopring app does not support your address currently.",
+  labelActivatedAccountNotSupport: "Your wallet does not support Loopring L2.",
   labelActivatedAccountNotSupportDes:
     "  The wallet you have connected does not support Loopring Layer 2. Please use a different wallet to connect or download the Loopring Wallet app.",
   labelNotAllowForSmartWalletTitle: "Apologize",
@@ -609,7 +606,7 @@ export default {
   labelNFTDeposit: "Receive Loopring L2 NFT",
   labelNFTDepositNeedApprove: "Allow Loopring to spend {{symbol}} & send it",
   labelNFTDepositBtn: "Receive NFT",
-  nftDepositTitle: "Receive NFT from My L1",
+  nftDepositTitle: "Receive NFT from my L1",
   labelNFTContractAddress: "Contract:",
   labelNFTAmount: "Amount:",
   labelNFTTokenDepositWaitForAuth:
@@ -658,7 +655,7 @@ export default {
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe upon copyright laws, and does not contain explicit, sensitive, adult themed or other NSFW content. We reserve the right to remove NFTs or inappropriate content at any time if content is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
-  labelPayer: "Payer wallet:",
+  labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
   labelL1toL2TO: "To Loopring L2",
@@ -688,16 +685,17 @@ export default {
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
-    "Please make sure one of the below tokens with the minimum quantity is in your Loopring L2 account to proceed:",
+    "You have enough balance to pay for Layer 2 creation as below.",
   labelReceiveAddress: "Receive Address",
   labelAssets: "Loopring L2 Assets",
   labelReceiveAddressGuide:
-    "Please using Loopring L2 account to send {{symbol}}",
+    "Please send {{symbol}} funds from a Loopring L2 address",
   labelL2toL2: "Send to another Loopring L2",
   labelL2toL1: "Send to L1",
   labelBenefitL2:
     "By activating Loopring L2, you will gain access to fast and cheap transactions as well as other features like: Token/NFT Transfers, NFT Minting, DEX Buy/Sell, AMM investment, and more!",
-  labelNotBalancePayForActive: "You have an insufficient balance",
+  labelNotBalancePayForActive:
+    "Insufficient balance in your Loopring L2 account",
   labelEnoughBalancePayForActive:
     "You have enough balance to pay for Loopring L2 creation.",
   labelHaveInProcessingL1toL2:
@@ -714,4 +712,7 @@ export default {
     "I, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
   labelENSShouldConnect:
     "Receive address is an ENS, please connect wallet to check real address",
+  labelToken: "Token",
+  labelMinRequirement: "Min Requirement",
+  labelAvailability: "Availability",
 };

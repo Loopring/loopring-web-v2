@@ -30,7 +30,7 @@ export const NFTDeploy_First_Method_Denied = (
   const propsPatch = {
     iconType: IconType.RefuseIcon,
     describe1: props.t("labelFirstSignDenied", {
-      symbol: props.symbol,
+      symbol: props.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -42,7 +42,7 @@ export const NFTDeploy_In_Progress = (
   const propsPatch = {
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelDeployInProgress", {
-      symbol: props.symbol,
+      symbol: props.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -53,7 +53,7 @@ export const NFTDeploy_Failed = (props: PanelProps & Partial<NFTWholeINFO>) => {
   const propsPatch = {
     iconType: IconType.FailedIcon,
     describe1: props.t("labelDeployFailed", {
-      symbol: props.symbol,
+      symbol: props.symbol ?? "NFT",
       value: props.value,
     }),
   };
@@ -64,7 +64,7 @@ export const NFTDeploy_Submit = (props: PanelProps & Partial<NFTWholeINFO>) => {
   const propsPatch = {
     iconType: IconType.SubmitIcon,
     describe1: props.t("labelDeploySubmit", {
-      symbol: props.symbol,
+      symbol: props.symbol ?? "NFT",
       value: props.value,
     }),
   };

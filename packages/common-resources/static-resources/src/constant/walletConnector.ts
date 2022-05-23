@@ -16,7 +16,7 @@ export const gatewayList: Partial<GatewayItem>[] = [
   {
     key: ConnectProviders.GameStop,
     keyi18n: ConnectProviders.GameStop,
-    imgSrc: SoursURL + "svg/loopring.svg",
+    imgSrc: SoursURL + "svg/gs.svg",
   },
   {
     key: ConnectProviders.Coinbase,

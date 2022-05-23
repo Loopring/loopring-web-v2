@@ -35,7 +35,6 @@ import { connectProvides, walletServices } from "@loopring-web/web3-provider";
 import {
   accountReducer,
   useAccount,
-  useSystem,
   TOAST_TIME,
   RootState,
   store,
@@ -43,6 +42,7 @@ import {
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { updateSystem } from "../../stores/system/reducer";
+import { useTheme } from "@emotion/react";
 const providerCallback = async () => {
   const { _chainId } = store.getState().system;
   // statusAccountUnset();
@@ -234,22 +234,23 @@ export const ModalWalletConnectPanel = withTranslation("common")(
               [account]
             ),
           },
-          // {
-          //   ...DefaultGatewayList[2],
-          //   handleSelect: React.useCallback(
-          //     async (event, flag?) => {
-          //       walletServices.sendDisconnect("", "should new provider");
-          //       setShowConnect({
-          //         isShow: true,
-          //         step: WalletConnectStep.CommonProcessing,
-          //       });
-          //       setConnectProvider(DefaultGatewayList[2].key);
-          //       setProcessingCallback({ callback: gameStopCallback });
-          //       setStateCheck(true);
-          //     },
-          //     [account]
-          //   ),
-          // },
+          {
+            ...DefaultGatewayList[2],
+            // imgSrc: SoursURL + `svg/gs-${theme.mode}.svg`,
+            handleSelect: React.useCallback(
+              async (event, flag?) => {
+                walletServices.sendDisconnect("", "should new provider");
+                setShowConnect({
+                  isShow: true,
+                  step: WalletConnectStep.CommonProcessing,
+                });
+                setConnectProvider(DefaultGatewayList[2].key);
+                setProcessingCallback({ callback: gameStopCallback });
+                setStateCheck(true);
+              },
+              [account]
+            ),
+          },
           // {
           //   ...DefaultGatewayList[3],
           //   handleSelect: React.useCallback(

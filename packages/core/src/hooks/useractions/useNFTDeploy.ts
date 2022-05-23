@@ -1,7 +1,6 @@
 import {
   useAccount,
   useTokenMap,
-  useWalletLayer2,
   useModalData,
   useWalletLayer2Socket,
   walletLayer2Service,
@@ -48,14 +47,25 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
-  const { updateWalletLayer2 } = useWalletLayer2();
   const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { setShowAccount } = useOpenModals();
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
-
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+  } = useChargeFees({
+    tokenAddress: nftDeployValue.tokenAddress,
+    requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
+    updateData: ({ fee }) => {
+      updateNFTDeployData({ ...nftDeployValue, fee });
+    },
+  });
   const processRequestNFT = React.useCallback(
     async (request: sdk.OriginDeployNFTRequestV3, isFirstTime: boolean) => {
       const { apiKey, connectName, eddsaKey } = account;
@@ -103,6 +113,9 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTDeploy_First_Method_Denied,
+                  info: {
+                    symbol: nftDeployValue?.tokenAddress,
+                  },
                 });
               } else {
                 if (
@@ -116,6 +129,9 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
                   isShow: true,
                   step: AccountStep.NFTDeploy_Failed,
                   error: response as sdk.RESULT_INFO,
+                  info: {
+                    symbol: nftDeployValue?.tokenAddress,
+                  },
                 });
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
@@ -133,6 +149,9 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTDeploy_Submit,
+                info: {
+                  symbol: nftDeployValue?.tokenAddress,
+                },
               });
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);
@@ -157,16 +176,25 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeploy_Denied,
+              info: {
+                symbol: nftDeployValue?.tokenAddress,
+              },
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeploy_First_Method_Denied,
+              info: {
+                symbol: nftDeployValue?.tokenAddress,
+              },
             });
           } else {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTDeploy_Failed,
+              info: {
+                symbol: nftDeployValue?.tokenAddress,
+              },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
                 msg: (reason as sdk.RESULT_INFO).message,
@@ -181,26 +209,16 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       checkHWAddr,
       chainId,
       setShowAccount,
-      doDeployDone,
+      nftDeployValue?.tokenAddress,
+      checkFeeIsEnough,
       setOneItem,
+      updateWalletLayer2NFT,
+      page,
+      doDeployDone,
       resetNFTDeployData,
-      updateWalletLayer2,
       updateHW,
     ]
   );
-  const {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
-  } = useChargeFees({
-    tokenAddress: nftDeployValue.tokenAddress,
-    requestType: sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
-    updateData: ({ fee }) => {
-      updateNFTDeployData({ ...nftDeployValue, fee });
-    },
-  });
 
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && !isFeeNotEnough) {

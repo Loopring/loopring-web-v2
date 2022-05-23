@@ -1,15 +1,15 @@
-import { EmptyValueTag } from "@loopring-web/common-resources";
-import { Trans, useTranslation } from "react-i18next";
+import { EmptyValueTag, RowConfig } from "@loopring-web/common-resources";
+import { useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import { useSettings } from "../../../stores";
 import { CheckActiveStatusProps } from "./Interface";
 export const CheckActiveStatus = ({
-  walletMap,
   account,
   goSend,
   goDisconnect,
   isFeeNotEnough,
   // isDepositing = false,
+  walletMap,
   knowDisable,
   know,
   onIKnowClick,
@@ -126,7 +126,7 @@ export const CheckActiveStatus = ({
                     color={"var(--color-warning)"}
                     component={"p"}
                     variant={"body1"}
-                    marginTop={1}
+                    marginTop={2}
                   >
                     {t("labelNotBalancePayForActive")}
                   </Typography>
@@ -135,7 +135,7 @@ export const CheckActiveStatus = ({
                     color={"textPrimary"}
                     component={"p"}
                     variant={"body1"}
-                    marginTop={1}
+                    marginTop={2}
                   >
                     {t("labelEnoughBalancePayForActive")}
                   </Typography>
@@ -143,59 +143,83 @@ export const CheckActiveStatus = ({
                 <Typography
                   component={"p"}
                   variant={"body1"}
-                  color={"var(--color-text-third)"}
+                  color={"textPrimary"}
                   marginTop={2}
                   marginBottom={1}
                 >
                   {t("labelActivatedAccountChargeFeeList")}
                 </Typography>
-                {chargeFeeTokenList?.map((item, index) => (
+                <Box marginTop={1}>
                   <Typography
-                    key={index + item.belong}
-                    color={"textSecondary"}
-                    display={"flex-inline"}
-                    paddingY={1 / 2}
-                    marginLeft={2}
+                    height={RowConfig.rowHeight}
+                    color={"var(--color-text-third)"}
+                    display={"flex"}
+                    textAlign={"center"}
                   >
                     <Typography
-                      component={"span"}
-                      variant={"inherit"}
                       color={"inherit"}
-                      display={"inline-block"}
-                      minWidth={60}
+                      variant={"inherit"}
+                      width={"30%"}
+                      textAlign={"left"}
                     >
-                      <Trans
-                        i18nKey={"labelBalanceActiveAccountFee"}
-                        tOptions={{
-                          symbol: item.belong,
-                          fee: item.fee,
-                          count:
-                            walletMap && walletMap[item.belong]
-                              ? walletMap[item.belong].count
-                              : EmptyValueTag,
-                        }}
-                      >
-                        {item.belong}:
-                        <Typography component={"span"} color={"inherit"}>
-                          {`Fee is ${item.fee};`}
-                        </Typography>
-                        <Typography
-                          display={"inline-flex"}
-                          component={"span"}
-                          color={"inherit"}
-                          marginLeft={2}
-                        >
-                          {` Your L2 asset is balance`}
-                        </Typography>
-                      </Trans>
+                      {t("labelToken")}
+                    </Typography>
+                    <Typography
+                      color={"inherit"}
+                      variant={"inherit"}
+                      width={"30%"}
+                    >
+                      {t("labelMinRequirement")}
+                    </Typography>
+                    <Typography
+                      color={"inherit"}
+                      variant={"inherit"}
+                      width={"40%"}
+                    >
+                      {t("labelAvailability")}
                     </Typography>
                   </Typography>
-                ))}
+                  {chargeFeeTokenList?.map((item, index) => (
+                    <Typography
+                      key={index + item.belong}
+                      height={RowConfig.rowHeight}
+                      color={"textPrimary"}
+                      display={"flex"}
+                      textAlign={"center"}
+                    >
+                      <Typography
+                        variant={"inherit"}
+                        color={"inherit"}
+                        width={"30%"}
+                        textAlign={"left"}
+                      >
+                        {item.belong}
+                      </Typography>
+                      <Typography
+                        variant={"inherit"}
+                        color={"inherit"}
+                        width={"30%"}
+                      >
+                        {item.fee}
+                      </Typography>
+                      <Typography
+                        variant={"inherit"}
+                        color={"inherit"}
+                        width={"40%"}
+                      >
+                        {walletMap && walletMap[item.belong]
+                          ? walletMap[item.belong].count
+                          : EmptyValueTag}
+                      </Typography>
+                    </Typography>
+                  ))}
+                </Box>
+
                 {isFeeNotEnough && (
                   <Typography
                     color={"var(--color-text-third)"}
                     component={"p"}
-                    variant={"body1"}
+                    variant={"body2"}
                     marginTop={2}
                   >
                     {t("labelHaveInProcessingL1toL2")}
