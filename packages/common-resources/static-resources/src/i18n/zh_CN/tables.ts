@@ -156,6 +156,7 @@ export default {
   labelTxNFTFilterALL: "All",
   labelTxNFTFilterDEPOSIT: "Receive",
   labelTxNFTFilterWITHDRAW: "Send L1",
+  labelTxNFTFilterWITHDRAWAL: "Send L1",
   labelTxNFTFilterTRANSFER: "Send L2",
   labelTxNFTFilterMINT: "Mint",
 };
