@@ -194,4 +194,9 @@ export default css`
   iframe {
     display: none;
   }
+  #iubenda-pp {
+    iframe {
+      display: initial;
+    }
+  }
 `;
