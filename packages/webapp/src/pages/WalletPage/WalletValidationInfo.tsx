@@ -119,7 +119,7 @@ export const HebaoGuardianItem = <G extends sdk.Guardian>({
               i18nKey={"labelWalletSignType"}
               tOptions={{ type: t("labelTxGuardian_" + type) }}
             >
-              Request for {type.replace("_", " ").toUpperCase()}
+              Request for {type?.replace("_", " ").toUpperCase()}
             </Trans>
           </Typography>
           <ButtonListRightStyled
