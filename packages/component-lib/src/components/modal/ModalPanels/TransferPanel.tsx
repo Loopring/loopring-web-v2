@@ -12,6 +12,7 @@ import {
   TransferWrap,
   useBasicTrade,
 } from "../../tradePanel/components";
+import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
 
 export const TransferPanel = withTranslation("common", { withRef: true })(
   <T extends IBData<I>, I>({
@@ -34,10 +35,63 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
       coinMap,
       type,
     });
+    const [panelIndex, setPanelIndex] = React.useState(index + 1);
+    const handleConfirm = (index: number) => {
+      setPanelIndex(index);
+    };
+    // const hanleConfirm = () => {};
+    React.useEffect(() => {
+      setPanelIndex(index + 1);
+    }, [panelIndex]);
 
     const props: SwitchPanelProps<string> = {
-      index: index, // show default show
+      index: panelIndex, // show default show
       panelList: [
+        {
+          key: "confirm",
+          element: React.useMemo(
+            () => (
+              // @ts-ignore
+              <TransferConfirm
+                {...{
+                  ...rest,
+                  onTransferClick,
+                  type,
+                  tradeData: switchData.tradeData,
+                  isThumb,
+                  handleConfirm,
+                }}
+              />
+            ),
+            [
+              // rest,
+              // type,
+              // chargeFeeTokenList,
+              switchData.tradeData,
+              // onChangeEvent,
+              // isThumb,
+            ]
+          ),
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={0}
+                    onBack={() => {
+                      onBack();
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
+        },
         {
           key: "trade",
           element: React.useMemo(
@@ -55,7 +109,8 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
                   onChangeEvent,
                   isThumb,
                   disabled: !!rest.disabled,
-                  onTransferClick,
+                  handleConfirm,
+                  // onTransferClick,
                   transferBtnStatus,
                   assetsData,
                   addrStatus,

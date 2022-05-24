@@ -77,6 +77,7 @@ const initialState: ModalDataStatus = {
     mintData: { ...initialMintNFT },
     nftMETA: { ...initialNFTMETA },
   },
+  nftMintAdvanceValue: { ...initialTradeNFT },
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
 };
@@ -134,6 +135,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         },
         nftMETA: { ...initialNFTMETA },
       };
+    },
+    resetNFTMintAdvanceData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.nftMintAdvanceValue = initialTradeNFT;
     },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;
@@ -299,6 +304,26 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
+    updateNFTMintAdvanceData(
+      state,
+      action: PayloadAction<Partial<TradeNFT<any>>>
+    ) {
+      const { balance, tradeValue, ...rest } = action.payload;
+      state.lastStep = LAST_STEP.nftMint;
+
+      if (balance === undefined || balance >= 0) {
+        state.nftMintAdvanceValue.balance = balance;
+      }
+
+      if (tradeValue === undefined || tradeValue >= 0) {
+        state.nftMintAdvanceValue.tradeValue = tradeValue;
+      }
+
+      state.nftMintAdvanceValue = {
+        ...state.nftMintAdvanceValue,
+        ...rest,
+      };
+    },
     updateNFTMintData(state, action: PayloadAction<NFT_MINT_VALUE<any>>) {
       const mintData = action.payload.mintData;
       const nftMETA = action.payload.nftMETA;
@@ -363,6 +388,7 @@ export const {
   updateNFTDepositData,
   updateNFTMintData,
   updateNFTDeployData,
+  updateNFTMintAdvanceData,
   resetNFTWithdrawData,
   resetNFTTransferData,
   resetNFTDepositData,
@@ -372,5 +398,6 @@ export const {
   resetDepositData,
   resetActiveAccountData,
   resetNFTDeployData,
+  resetNFTMintAdvanceData,
   resetAll,
 } = modalDataSlice.actions;

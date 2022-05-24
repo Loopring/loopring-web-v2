@@ -178,11 +178,11 @@ export const SendAssetList = {
     svgIcon: "IncomingIcon",
     enableKey: "withdraw",
   },
-  // SendAssetToOtherL1:{
-  // key: "SendToOtherL1",
-  // svgIcon: "IncomingIcon",
-  // enableKey: "withdraw",
-  // }
+  SendAssetToOtherL1: {
+    key: "SendToOtherL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "withdraw",
+  },
 };
 
 export enum AddressError {

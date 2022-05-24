@@ -61,6 +61,7 @@ export const ModalAccountInfo = withTranslation("common")(
       nftWithdrawProps,
       // nftDepositProps,
       // nftMintProps,
+      nftMintAdvanceProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
@@ -117,6 +118,7 @@ export const ModalAccountInfo = withTranslation("common")(
             },
           }}
           nftTransferProps={nftTransferProps}
+          nftMintAdvanceProps={nftMintAdvanceProps as any}
           nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}

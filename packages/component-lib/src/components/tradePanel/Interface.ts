@@ -19,6 +19,7 @@ import {
   NFTMintViewProps,
   NFTDeployViewProps,
   NFTMetaViewProps,
+  NFTMintAdvanceViewProps,
 } from "./components/Interface";
 import {
   SwapData,
@@ -102,6 +103,12 @@ export type NFTMintProps<ME, MI, I, C = FeeInfo> = Omit<
 export type NFTMetaProps<T, C = FeeInfo> = Omit<
   NFTMetaViewProps<T, C>,
   "nftMeta"
+>;
+
+export type NFTMintAdvanceProps<T, I, C = FeeInfo> = NFTMintAdvanceViewProps<
+  T,
+  I,
+  C
 >;
 
 export type NFTDeployProps<T, I, C = FeeInfo> = NFTDeployViewProps<T, I, C>;

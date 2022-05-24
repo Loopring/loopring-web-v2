@@ -21,6 +21,8 @@ import {
   DepositPanel,
   DepositProps,
   useSettings,
+  NFTMintAdvanceProps,
+  MintAdvanceNFTWrap,
 } from "../..";
 import { FeeInfo, IBData } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -113,9 +115,10 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   // depositGroupProps,
   nftTransferProps,
   nftWithdrawProps,
+
   // nftDepositProps,
   resetProps,
-  // nftMintProps,
+  nftMintAdvanceProps,
   activeAccountProps,
   assetsData,
   ...rest
@@ -130,7 +133,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   depositProps: DepositProps<T, I>;
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
-  // nftMintProps: NFTMintProps<T, I>;
+  nftMintAdvanceProps: NFTMintAdvanceProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
   assetsData: any[];
@@ -149,7 +152,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     setShowResetAccount,
     setShowActiveAccount,
     setShowExportAccount,
-    // setShowNFTMint,
+    setShowNFTMintAdvance,
   } = useOpenModals();
   const {
     isShowTransfer,
@@ -160,6 +163,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     isShowExportAccount,
     isShowTradeIsFrozen,
     isShowActiveAccount,
+    isShowNFTMintAdvance,
     // isShowNFTMint,
   } = modals;
   const theme = useTheme();
@@ -312,33 +316,20 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
       {/*    </Box>*/}
       {/*  </SwitchPanelStyled>*/}
       {/*</MuiModal>*/}
-      {/*<MuiModal*/}
-      {/*  open={isShowNFTMint.isShow}*/}
-      {/*  onClose={() => setShowNFTMint({ isShow: false })}*/}
-      {/*  aria-labelledby="modal-modal-title"*/}
-      {/*  aria-describedby="modal-modal-description"*/}
-      {/*>*/}
-      {/*  <SwitchPanelStyled*/}
-      {/*    position={"relative"}*/}
-      {/*    style={{ alignItems: "stretch" }}*/}
-      {/*  >*/}
-      {/*    <Box display={"flex"} width={"100%"} flexDirection={"column"}>*/}
-      {/*      <ModalCloseButton*/}
-      {/*        onClose={() => setShowNFTMint({ isShow: false })}*/}
-      {/*        t={t}*/}
-      {/*        {...rest}*/}
-      {/*      />*/}
-      {/*    </Box>*/}
-      {/*    <Box*/}
-      {/*      display={"flex"}*/}
-      {/*      flexDirection={"column"}*/}
-      {/*      flex={1}*/}
-      {/*      justifyContent={"stretch"}*/}
-      {/*    >*/}
-      {/*      <MintNFTConfirm {...nftMintProps} />*/}
-      {/*    </Box>*/}
-      {/*  </SwitchPanelStyled>*/}
-      {/*</MuiModal>*/}
+      <Modal
+        open={isShowNFTMintAdvance.isShow}
+        onClose={() => setShowNFTMintAdvance({ isShow: false })}
+        content={
+          <MintAdvanceNFTWrap
+            {...{
+              ...rest,
+              // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
+              ...nftMintAdvanceProps,
+            }}
+          />
+        }
+      />
     </>
   );
 };

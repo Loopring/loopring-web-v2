@@ -128,6 +128,7 @@ import {
   useCheckActiveStatus,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
 
 export function useAccountModalForUI({
   t,
@@ -152,7 +153,7 @@ export function useAccountModalForUI({
     setShowConnect,
     setShowAccount,
     setShowDeposit,
-    setShowNFTMint,
+    setShowNFTMintAdvance,
     setShowTransfer,
     setShowWithdraw,
     setShowResetAccount,
@@ -180,7 +181,7 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
   } = useExportAccount();
   const vendorProps = useVendor();
-
+  const { nftMintAdvanceProps } = useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
@@ -297,9 +298,19 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
+        //TODO is advance
       },
     };
-  }, [setShowAccount]);
+  }, [setShowAccount, setShowNFTMintAdvance]);
+  // const backToMintAdvanceBtnInfo = React.useMemo(() => {
+  //   return {
+  //     btnTxt: "labelRetry",
+  //     callback: () => {
+  //       setShowAccount({ isShow: false });
+  //       setShowNFTMintAdvance({ isShow: true });
+  //     },
+  //   };
+  // }, [setShowAccount, setShowNFTMintAdvance]);
 
   const backToDeployBtnInfo = React.useMemo(() => {
     return {
@@ -1897,7 +1908,6 @@ export function useAccountModalForUI({
     setShowAccount,
     setShowActiveAccount,
     setShowDeposit,
-    setShowNFTMint,
     nftDeployProps,
     transferProps,
     transferValue,
@@ -1913,6 +1923,7 @@ export function useAccountModalForUI({
   const currentModal = accountList[isShowAccount.step];
 
   return {
+    nftMintAdvanceProps,
     nftTransferProps,
     nftWithdrawProps,
     transferProps,

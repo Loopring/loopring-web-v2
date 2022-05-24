@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -52,7 +52,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       isShowTransfer: { symbol, isShow },
     },
   } = useOpenModals();
-
+  const [memo, setMemo] = React.useState("");
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -77,6 +77,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       updateTransferData({ ...transferValue, fee });
     },
   });
+  const handleOnMemoChange = React.useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setMemo(e.target.value);
+    },
+    []
+  );
 
   const {
     address,
@@ -195,13 +201,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     if (
       isShow &&
       accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
+      account.readyState === AccountStatus.ACTIVATED &&
+      !transferValue.address
     ) {
-      // myLog('useEffect transferValue.address:', transferValue.address)
-      if (!transferValue.address) {
-        setAddress("");
-      }
-      // setAddress(transferValue.address ? transferValue.address : '')
+      setAddress("");
     }
   }, [
     setAddress,
@@ -489,8 +492,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap as WalletMap<T>,
     transferBtnStatus: btnStatus,
-    onTransferClick: (trade: R) => {
-      isConfirmTransfer ? onTransferClick(trade) : setIsConfirmTransfer(true);
+    onTransferClick: async (trade: R) => {
+      await onTransferClick(trade);
+      // isConfirmTransfer ? : setIsConfirmTransfer(true);
     },
     handlePanelEvent,
     handleFeeChange,
@@ -508,6 +512,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
     isAddressCheckLoading,
     addrStatus,
+    memo,
+    handleOnMemoChange,
     handleOnAddressChange: (value: any) => {
       setAddress(value || "");
     },

@@ -1,11 +1,7 @@
 import React from "react";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import {
-  AddressError,
-  globalSetup,
-  myLog,
-} from "@loopring-web/common-resources";
+import { AddressError, globalSetup } from "@loopring-web/common-resources";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { checkAddr } from "../../utils";
@@ -116,7 +112,6 @@ export const useAddressCheck = () => {
           clearTimeout(nodeTimer.current);
           nodeTimer.current = -1;
         }
-        myLog("checkAddressError", error);
         setAddrStatus(
           address === "" ? AddressError.EmptyAddr : AddressError.InvalidAddr
         );

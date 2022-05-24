@@ -4,6 +4,7 @@ import {
   resetDepositData,
   resetNFTDeployData,
   resetNFTDepositData,
+  resetNFTMintAdvanceData,
   resetNFTMintData,
   resetNFTTransferData,
   resetNFTWithdrawData,
@@ -13,6 +14,7 @@ import {
   updateDepositData,
   updateNFTDeployData,
   updateNFTDepositData,
+  updateNFTMintAdvanceData,
   updateNFTMintData,
   updateNFTTransferData,
   updateNFTWithdrawData,
@@ -23,13 +25,18 @@ import {
   ActiveAccountData,
   DepositData,
   LAST_STEP,
+  MintData,
   ModalDataStatus,
   NFT_MINT_VALUE,
   TransferData,
   WithdrawData,
 } from "./interface";
 import React from "react";
-import { RequireOne, TradeNFT } from "@loopring-web/common-resources";
+import {
+  NFTWholeINFO,
+  RequireOne,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { RootState } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -64,6 +71,11 @@ export function useModalData(): {
     nftWithdrawData: RequireOne<WithdrawData & TradeNFT<any>, never>
   ) => void;
   resetNFTWithdrawData: () => void;
+  nftMintAdvanceValue: TradeNFT<any>;
+  updateNFTMintAdvanceData: (
+    nftMintData: RequireOne<MintData & NFTWholeINFO, never>
+  ) => void;
+  resetNFTMintAdvanceData: () => void;
   nftMintValue: NFT_MINT_VALUE<any>;
   updateNFTMintData: (nftMintData: NFT_MINT_VALUE<any>) => void;
   resetNFTMintData: () => void;
@@ -154,6 +166,12 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateNFTMintAdvanceData: React.useCallback(
+      (nftMintData: TradeNFT<any>) => {
+        dispatch(updateNFTMintAdvanceData(nftMintData));
+      },
+      [dispatch]
+    ),
     resetWithdrawData: React.useCallback(() => {
       dispatch(resetWithdrawData(undefined));
     }, [dispatch]),
@@ -174,6 +192,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetActiveAccountData: React.useCallback(() => {
       dispatch(resetActiveAccountData(undefined));
+    }, [dispatch]),
+    resetNFTMintAdvanceData: React.useCallback(() => {
+      dispatch(resetNFTMintAdvanceData(undefined));
     }, [dispatch]),
     resetNFTMintData: React.useCallback(
       (tokenAddress?: string) => {

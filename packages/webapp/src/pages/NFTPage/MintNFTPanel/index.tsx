@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import {
   MintNFTConfirm,
   PanelContent,
-  SwipeableViewsStyled,
+  useOpenModals,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
@@ -17,8 +17,6 @@ const StyledPaper = styled(Box)`
 export const MintNFTPanel = () => {
   const { t } = useTranslation("common");
 
-  const theme = useTheme();
-
   const mintWholeProps = useMintNFTPanel();
   const panelList: Pick<
     PanelContent<"METADATA" | "MINT_CONFIRM">,
@@ -29,20 +27,8 @@ export const MintNFTPanel = () => {
       element: (
         <MetaNFTPanel
           {...mintWholeProps}
-          // metaData={mintWholeProps.nftMintValue.nftMETA}
           nftMetaBtnStatus={mintWholeProps.nftMetaProps.nftMetaBtnStatus}
           btnInfo={mintWholeProps.nftMetaProps.btnInfo}
-          // errorOnMeta={errorOnMeta}
-          // feeInfo={feeInfo}
-          // handleFeeChange={handleFeeChange}
-          // nftMetaProps={nftMetaProps}
-          // nftMintProps={nftMintProps}
-          // nftMintValue={nftMintValue}
-          // isFeeNotEnough={isFeeNotEnough}
-          // chargeFeeTokenList={chargeFeeTokenList}
-          // ipfsMediaSources={ipfsMediaSources}
-          // ipfsProvides={ipfsProvides}
-          // onDelete
         />
       ),
     },
@@ -72,21 +58,18 @@ export const MintNFTPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        <Typography
-          component={"h3"}
-          variant={"h4"}
+        <Box
+          display={"flex"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
           paddingX={5 / 2}
           paddingTop={5 / 2}
         >
-          {t("labelMINTNFTTitle")}
-        </Typography>
+          <Typography component={"h3"} variant={"h4"}>
+            {t("labelMINTNFTTitle")}
+          </Typography>
+        </Box>
         <Box flex={1} display={"flex"}>
-          {/*<SwipeableViewsStyled*/}
-          {/*  axis={theme.direction === "rtl" ? "x-reverse" : "x"}*/}
-          {/*  index={mintWholeProps.currentTab}*/}
-          {/*>*/}
-          {/*  */}
-          {/*</SwipeableViewsStyled>*/}
           {
             panelList.map((panel, index) => {
               return (

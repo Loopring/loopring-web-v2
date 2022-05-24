@@ -716,4 +716,6 @@ export default {
   labelMinRequirement: "Min Requirement",
   labelAvailability: "Availability",
   labelWhatProvider: "Which provider would you like to use?",
+  labelMemo: "Memo",
+  labelAdvanceMint: "Advance Create",
 };

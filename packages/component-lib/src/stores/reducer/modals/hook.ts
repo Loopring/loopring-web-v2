@@ -12,7 +12,6 @@ import {
   setShowNFTDeposit,
   setShowNFTTransfer,
   setShowNFTWithdraw,
-  setShowNFTMint,
   setShowResetAccount,
   setShowSupport,
   setShowSwap,
@@ -20,6 +19,7 @@ import {
   setShowWithdraw,
   setShowTradeIsFrozen,
   setShowWrongNetworkGuide,
+  setShowNFTMintAdvance,
 } from "./reducer";
 
 import React from "react";
@@ -92,10 +92,10 @@ export const useOpenModals = () => {
       },
       [dispatch]
     ),
-    setShowNFTMint: React.useCallback(
+    setShowNFTMintAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
         if (toggle.mintNFT.enable) {
-          dispatch(setShowNFTMint(state));
+          dispatch(setShowNFTMintAdvance(state));
         } else {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: "Mint" }));
         }
