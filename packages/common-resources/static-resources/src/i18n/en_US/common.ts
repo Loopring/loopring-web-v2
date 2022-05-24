@@ -513,6 +513,7 @@ export default {
   labelTxGuardian_add_guardian: "add guardian",
   labelTxGuardian_remove_guardian: "remove guardian",
   labelTxGuardian_unlock_wallet: "unlock wallet",
+  labelTxGuardian_deposit_wallet: "deposit",
   labelTxGuardianApprove: "APPROVE",
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Activate Account",
