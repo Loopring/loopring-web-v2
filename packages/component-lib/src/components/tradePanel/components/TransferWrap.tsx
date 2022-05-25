@@ -95,7 +95,7 @@ export const TransferWrap = <
   handleSureItsLayer2,
   handleFeeChange,
   isThumb,
-  isConfirmTransfer,
+  // isConfirmTransfer,
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,

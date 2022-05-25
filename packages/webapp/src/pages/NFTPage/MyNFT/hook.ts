@@ -40,8 +40,7 @@ export const useMyNFT = () => {
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
-  const { setShowNFTTransfer, setShowNFTWithdraw, setShowNFTMint } =
-    useOpenModals();
+  const { setShowNFTTransfer, setShowNFTWithdraw } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
   const [page, setPage] = useState(1);
   const onDetailClose = React.useCallback(() => setIsShow(false), []);

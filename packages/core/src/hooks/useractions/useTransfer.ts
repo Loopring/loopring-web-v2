@@ -45,7 +45,6 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
 export const useTransfer = <R extends IBData<T>, T>() => {
   const { setShowAccount, setShowTransfer } = useOpenModals();
-  const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
 
   const {
     modals: {
@@ -264,7 +263,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                 isShow: true,
                 step: AccountStep.Transfer_User_Denied,
               });
-              setIsConfirmTransfer(false);
+              // setIsConfirmTransfer(false);
             } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
               setShowAccount({
                 isShow: true,
@@ -283,10 +282,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                 step: AccountStep.Transfer_Failed,
                 error: response as sdk.RESULT_INFO,
               });
-              setIsConfirmTransfer(false);
+              // setIsConfirmTransfer(false);
             }
           } else if ((response as sdk.TX_HASH_API)?.hash) {
-            setIsConfirmTransfer(false);
+            // setIsConfirmTransfer(false);
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_In_Progress,
@@ -430,7 +429,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           });
         }
       } else {
-        return false;
+        return;
       }
     },
     [
@@ -492,10 +491,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap as WalletMap<T>,
     transferBtnStatus: btnStatus,
-    onTransferClick: async (trade: R) => {
-      await onTransferClick(trade);
-      // isConfirmTransfer ? : setIsConfirmTransfer(true);
-    },
+    onTransferClick,
     handlePanelEvent,
     handleFeeChange,
     feeInfo,
@@ -504,7 +500,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         setAddressOrigin("Wallet");
       }
     },
-    isConfirmTransfer,
+    // isConfirmTransfer,
     addressOrigin,
     chargeFeeTokenList,
     isFeeNotEnough,
