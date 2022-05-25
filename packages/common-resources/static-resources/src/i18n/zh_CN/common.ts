@@ -591,7 +591,7 @@ export default {
   labelL2toL2InvalidAddress: "Invalid address or ENS",
   labelL2toL2AddressNotLoopring:
     "This address has not yet activated Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
-  labelL2toL2AddressOrigin: "Address Origin",
+  labelL2toL2AddressType: "Address Origin",
   labelL2toL2OriginDesc:
     "Please select the address source. Note: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex…)",
   labelL2toL2OriginBtnExchange: "Exchange",
@@ -665,6 +665,7 @@ export default {
   labelAddAssetTitleActive: "Add assets & Activate",
   labelFromMyL1: "From My L1",
   labelFromOtherL1: "From Other L1",
+  labelBuyWithCard: "Buy with Card",
   labelFromOtherL2: "From Other Loopring L2",
   labelFromExchange: "Buy from Exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",

@@ -38,7 +38,7 @@ export const TransferConfirm = <
 // transferBtnStatus,
 // addressDefault,
 // handleOnAddressChange,
-// addressOrigin,
+// sureItsLayer2,
 // wait = globalSetup.wait,
 // assetsData = [],
 // realAddr,
@@ -110,7 +110,7 @@ Partial<TransferViewProps<T, I, C>> & {
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2AddressOrigin")}
+          {t("labelL2toL2AddressType")}
         </Typography>
         <Typography color={"textPrimary"} variant={"h5"}>
           {realAddr}
@@ -118,7 +118,7 @@ Partial<TransferViewProps<T, I, C>> & {
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2AddressOrigin")}
+          {t("labelL2toL2AddressType")}
         </Typography>
         <Typography color={"textPrimary"} variant={"h5"}>
           {realAddr}

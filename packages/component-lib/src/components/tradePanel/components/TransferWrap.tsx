@@ -1,6 +1,6 @@
 import { Trans, WithTranslation } from "react-i18next";
 import React, { ChangeEvent, useState } from "react";
-import { Box, BoxProps, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import {
@@ -30,50 +30,10 @@ import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import * as _ from "lodash";
-import styled from "@emotion/styled";
 import { NFTInput } from "./BasicANFTTrade";
-import { useTheme } from "@emotion/react";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
-
-const OriginBoxStyled = styled(Box)`
-  background-color: var(--field-opacity);
-  // width: 100%;
-  height: 32px;
-  border-radius: ${({ theme }: any) => theme.unit / 2}px;
-  cursor: pointer;
-  color: var(--color-text-primary);
-  padding: 0.3rem 0.3rem 0.3rem 1.6rem;
-  display: flex;
-  align-items: center;
-  font-size: ${({ theme }) => theme.fontDefault.body1};
-  border: 1px solid
-    ${({ thememode, status }: any) =>
-      status === "down"
-        ? "var(--color-border-hover)"
-        : thememode === "dark"
-        ? "#41445E"
-        : "#EEF1FA"};
-
-  &:hover {
-    border: 1px solid var(--color-border-hover);
-  }
-` as (props: BoxProps & { thememode: any; status: any }) => JSX.Element;
-
-const OriginDropdownStyled = styled(Box)`
-  background-color: var(--color-disable);
-  width: 100%;
-  border-radius: ${({ theme }: any) => theme.unit / 2}px;
-  color: var(--color-text-primary);
-  font-size: ${({ theme }) => theme.fontDefault.body1};
-` as typeof Box;
-
-const UpIconWrapper = styled(Box)`
-  position: absolute;
-  right: 0.8rem;
-  top: 28px;
-  transform: translateY(30%);
-`;
+import { TransferAddressType } from "./AddressType";
 
 export const TransferWrap = <
   T extends IBData<I> & Partial<NFTWholeINFO>,
@@ -99,7 +59,7 @@ export const TransferWrap = <
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,
-  addressOrigin,
+  sureItsLayer2,
   wait = globalSetup.wait,
   assetsData = [],
   realAddr,
@@ -116,7 +76,6 @@ export const TransferWrap = <
     handleConfirm: (index: number) => void;
   }) => {
   const inputBtnRef = React.useRef();
-  const { mode: themeMode } = useTheme();
   const { isMobile } = useSettings();
 
   const inputButtonDefaultProps = {
@@ -129,10 +88,6 @@ export const TransferWrap = <
 
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-  const [addressOriginDropdownStatus, setAddressOriginDropdownStatus] =
-    React.useState<"up" | "down">("up");
-
-  // const ITEM_MARGIN = isConfirmTransfer ? 3 : 2;
 
   const popupState = usePopupState({
     variant: "popover",
@@ -176,27 +131,6 @@ export const TransferWrap = <
       handleFeeChange(value);
     }
   };
-
-  // const getTransferConfirmTemplate = React.useCallback(
-  //   (label: string, content: string) => {
-  //     return (
-  //       <>
-  //         <Typography
-  //           fontSize={16}
-  //           lineHeight={"24px"}
-  //           style={{ wordBreak: "break-all" }}
-  //           color={"var(--color-text-third)"}
-  //         >
-  //           {label}
-  //         </Typography>
-  //         <Typography fontSize={16} lineHeight={"24px"}>
-  //           {content}
-  //         </Typography>
-  //       </>
-  //     );
-  //   },
-  //   []
-  // );
   const isInvalidAddressOrENS =
     !isAddressCheckLoading &&
     address &&
@@ -417,7 +351,7 @@ export const TransferWrap = <
       {/*    position={"relative"}*/}
       {/*    marginTop={2}*/}
       {/*  >*/}
-      {/*    {getTransferConfirmTemplate(t("labelL2toL2AddressOrigin"), "Wallet")}*/}
+      {/*    {getTransferConfirmTemplate(t("labelL2toL2AddressType"), "Wallet")}*/}
       {/*  </Grid>*/}
       {/*) : (*/}
       <Grid
@@ -427,78 +361,10 @@ export const TransferWrap = <
         position={"relative"}
         marginTop={2}
       >
-        <Typography marginBottom={1 / 2} color={"var(--color-text-secondary)"}>
-          {t("labelL2toL2AddressOrigin")}
-        </Typography>
-        <Box
-          onClick={() =>
-            setAddressOriginDropdownStatus((prev) =>
-              prev === "down" ? "up" : "down"
-            )
-          }
-        >
-          <UpIconWrapper>
-            {
-              <DropDownIcon
-                htmlColor={"var(--color-text-secondary)"}
-                style={{
-                  cursor: "pointer",
-                  transform:
-                    addressOriginDropdownStatus === "up"
-                      ? ""
-                      : "rotate(-180deg)",
-                }}
-              />
-            }
-          </UpIconWrapper>
-          <OriginBoxStyled
-            thememode={themeMode}
-            status={addressOriginDropdownStatus}
-            // variant={"body1"}
-          >
-            {addressOrigin}
-          </OriginBoxStyled>
-        </Box>
-        <OriginDropdownStyled
-          padding={2}
-          style={{
-            display: addressOriginDropdownStatus === "down" ? "block" : "none",
-          }}
-        >
-          <Typography variant={"body2"} color={"var(--color-text-secondary)"}>
-            {t("labelL2toL2OriginDesc")}
-          </Typography>
-          <Grid container marginTop={1} spacing={1}>
-            <Grid item xs={6}>
-              <Button fullWidth disabled variant={"outlined"}>
-                {t("labelL2toL2OriginBtnExchange")}
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button
-                style={{
-                  borderColor:
-                    addressOrigin === "Wallet"
-                      ? "var(--color-text-primary)"
-                      : "undefined",
-                  color:
-                    addressOrigin === "Wallet"
-                      ? "var(--color-text-primary)"
-                      : "undefined",
-                }}
-                onClick={() => {
-                  // setAddressOrigin("Wallet");
-                  handleSureItsLayer2(true);
-                  setAddressOriginDropdownStatus("up");
-                }}
-                fullWidth
-                variant={"outlined"}
-              >
-                {t("labelL2toL2OriginBtnWallet")}
-              </Button>
-            </Grid>
-          </Grid>
-        </OriginDropdownStyled>
+        <TransferAddressType
+          selectedValue={sureItsLayer2}
+          handleSelected={handleSureItsLayer2}
+        />
       </Grid>
       {/*)}*/}
 

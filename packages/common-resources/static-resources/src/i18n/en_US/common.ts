@@ -602,7 +602,7 @@ export default {
   labelL2toL2InvalidAddress: "Invalid address or ENS",
   labelL2toL2AddressNotLoopring:
     "This address has not yet activated Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
-  labelL2toL2AddressOrigin: "Address Type",
+  labelL2toL2AddressType: "Address Type",
   labelL2toL2OriginDesc:
     "Please select the address source. Note: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex…)",
   labelL2toL2OriginBtnExchange: "Exchange",
@@ -677,6 +677,7 @@ export default {
   labelAddAssetTitleActive: "Add assets & Activate",
   labelFromMyL1: "From My L1",
   labelFromOtherL1: "From Other L1",
+  labelBuyWithCard: "Buy with Card",
   labelFromOtherL2: "From Other  Loopring L2",
   labelFromExchange: "Buy from Exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",
@@ -729,4 +730,32 @@ export default {
   labelWhatProvider: "Which provider would you like to use?",
   labelMemo: "Memo",
   labelAdvanceMint: "Advance Create",
+  labelWalletTypeDes:
+    "Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ",
+  labelWalletTypeOptions: "{{type}} Wallet",
+  labelWalletTypeOtherSmart: "Other Smart",
+  labelWalletTypeLoopring: "Loopring",
+  labelWalletTypeEOA: "EOA",
+  labelWalletTypeExchange: "Exchange",
+  labelEOADes:
+    "There is no smart contract binds with this wallet address. (e.g. MetaMask, imtoken, Ledger, Trezor, etc....) ",
+  labelLoopringDes:
+    "This wallet is created using Loopring Wallet mobile app and binds with Loopring smart contract.",
+  labelOtherSmartDes:
+    "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
+  labelExchangeDes:
+    "The following trading platforms currently do not support Loopring L2 transfers (Binance, Coinbase, FTX, etc...). You will need to send funds to the L1 account. ",
+  labelExchangeTypeDes: "Please select the address source:",
+  labelNonExchangeTypeDes:
+    "eg:Loopring Wallet,Metamask,Coinbase Wallet,imtoken,Ledger,Trezor... EOA wallet",
+  labelNonExchangeType: "Non-Exchange Wallet",
+  labelExchangeType: "Exchange",
+  labelExchangeBinance: "Binance",
+  labelExchangeBinanceDes: "",
+  labelExchangeHuobi: "Huobi",
+  labelExchangeHuobiDes: "Transactions need to wait 24 hours",
+  labelExchangeCoinbase: "Coinbase",
+  labelExchangeOther: "Others",
+  labelExchangeOtherDes: "Others",
+  labelL2toL1AddressType: "Address Type",
 };

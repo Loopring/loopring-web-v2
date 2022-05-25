@@ -15,6 +15,7 @@ import {
   WalletMap,
   WithdrawType,
   WithdrawTypes,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -53,8 +54,8 @@ export type TransferInfoProps<C> = {
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault?: string;
-  addressOrigin: "Wallet" | null;
-  handleSureItsLayer2: (sure: boolean) => void;
+  sureItsLayer2: WALLET_TYPE | null;
+  handleSureItsLayer2: (sure: WALLET_TYPE) => void;
   realAddr?: string;
   isLoopringAddress?: boolean;
   isAddressCheckLoading?: boolean;

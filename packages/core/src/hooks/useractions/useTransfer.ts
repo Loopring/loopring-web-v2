@@ -20,6 +20,7 @@ import {
   UIERROR_CODE,
   WalletMap,
   AddressError,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -62,8 +63,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const [addressOrigin, setAddressOrigin] =
-    React.useState<"Wallet" | null>(null);
+  const [sureItsLayer2, setSureItsLayer2] =
+    React.useState<WALLET_TYPE | null>(null);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -92,6 +93,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isAddressCheckLoading,
     isSameAddress,
   } = useAddressCheck();
+  React.useEffect(() => {
+    if (!realAddr || realAddr === "") {
+      setSureItsLayer2(null);
+    }
+  }, [realAddr]);
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const checkBtnStatus = React.useCallback(() => {
@@ -107,7 +113,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         !isFeeNotEnough &&
         !isSameAddress &&
         // !isAddressCheckLoading &&
-        addressOrigin === "Wallet" &&
+        sureItsLayer2 &&
         transferValue.fee?.belong &&
         tradeValue.gt(BIGO) &&
         ((address && address.startsWith("0x")) || realAddr) &&
@@ -123,7 +129,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     tokenMap,
     transferValue,
     disableBtn,
-    addressOrigin,
+    sureItsLayer2,
     chargeFeeTokenList.length,
     isFeeNotEnough,
     isSameAddress,
@@ -138,7 +144,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     realAddr,
     chargeFeeTokenList,
     address,
-    addressOrigin,
+    sureItsLayer2,
     isFeeNotEnough,
     isAddressCheckLoading,
     transferValue,
@@ -249,7 +255,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           );
 
           myLog("submitInternalTransfer:", response);
-          setAddressOrigin(null);
           if (
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
@@ -495,13 +500,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     handlePanelEvent,
     handleFeeChange,
     feeInfo,
-    handleSureItsLayer2: (sure: boolean) => {
-      if (sure) {
-        setAddressOrigin("Wallet");
-      }
+    handleSureItsLayer2: (sure) => {
+      setSureItsLayer2(sure);
     },
     // isConfirmTransfer,
-    addressOrigin,
+    sureItsLayer2,
     chargeFeeTokenList,
     isFeeNotEnough,
     isLoopringAddress,

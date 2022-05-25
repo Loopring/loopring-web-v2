@@ -423,8 +423,9 @@ export const MuiInputLabel = ({
   return {
     styleOverrides: {
       root: {
-        fontSize: "1.4rem",
+        fontSize: fontDefault.body1,
         height: 20,
+        color: colorBase.textThird,
         transform: "none",
         top: 0,
         left: 0,

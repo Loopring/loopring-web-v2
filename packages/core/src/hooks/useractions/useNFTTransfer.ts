@@ -19,6 +19,7 @@ import {
   TradeNFT,
   UIERROR_CODE,
   AddressError,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -67,8 +68,8 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
 
-  const [addressOrigin, setAddressOrigin] =
-    React.useState<"Wallet" | null>(null);
+  const [sureItsLayer2, setSureItsLayer2] =
+    React.useState<WALLET_TYPE | null>(null);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -95,6 +96,11 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     isAddressCheckLoading,
     isSameAddress,
   } = useAddressCheck();
+  React.useEffect(() => {
+    if (!realAddr || realAddr === "") {
+      setSureItsLayer2(null);
+    }
+  }, [realAddr]);
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const handleOnMemoChange = React.useCallback(
@@ -111,7 +117,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       chargeFeeTokenList.length &&
       !isFeeNotEnough &&
       !isSameAddress &&
-      addressOrigin === "Wallet" &&
+      sureItsLayer2 !== null &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
       sdk
         .toBig(nftTransferValue.tradeValue)
@@ -132,7 +138,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     chargeFeeTokenList.length,
     isFeeNotEnough,
     isSameAddress,
-    addressOrigin,
+    sureItsLayer2,
     addrStatus,
     address,
     realAddr,
@@ -145,7 +151,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   }, [
     address,
     addrStatus,
-    addressOrigin,
+    sureItsLayer2,
     isFeeNotEnough,
     isSameAddress,
     nftTransferValue.tradeValue,
@@ -241,7 +247,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
           );
 
           myLog("submitInternalTransfer:", response);
-          setAddressOrigin(null);
           if (isAccActivated()) {
             if (
               (response as sdk.RESULT_INFO).code ||
@@ -356,13 +361,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       checkHWAddr,
       chainId,
       setShowAccount,
+      nftTransferValue.name,
       checkFeeIsEnough,
       updateWalletLayer2NFT,
       page,
       doTransferDone,
       resetNFTTransferData,
       updateHW,
-      checkFeeIsEnough,
     ]
   );
 
@@ -504,13 +509,11 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     type: "NFT",
     addressDefault: address,
     realAddr,
-    handleSureItsLayer2: (sure: boolean) => {
-      if (sure) {
-        setAddressOrigin("Wallet");
-      }
+    handleSureItsLayer2: (sure: WALLET_TYPE) => {
+      setSureItsLayer2(sure);
     },
     // isConfirmTransfer,
-    addressOrigin,
+    sureItsLayer2,
     tradeData: nftTransferValue as unknown as R,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},

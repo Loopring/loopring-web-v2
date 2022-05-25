@@ -193,3 +193,18 @@ export enum AddressError {
   IsNotLoopringContract = "IsNotLoopringContract",
   TimeOut = "TimeOut",
 }
+
+export enum WALLET_TYPE {
+  EOA = "EOA",
+  Loopring = "Loopring",
+  OtherSmart = "OtherSmart",
+  Exchange = "Exchange",
+}
+
+export enum EXCHANGE_TYPE {
+  NonExchange = "NonExchange",
+  Binance = "Binance",
+  Huobi = "Huobi",
+  Coinbase = "Coinbase",
+  Others = "Others",
+}
