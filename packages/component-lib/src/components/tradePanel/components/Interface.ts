@@ -16,6 +16,7 @@ import {
   WithdrawType,
   WithdrawTypes,
   WALLET_TYPE,
+  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
@@ -176,6 +177,9 @@ export type WithdrawExtendProps<T, I, C> = {
   handleOnAddressChange: (value: string | undefined | I) => void;
   wait?: number;
   onBack?: () => void;
+  isToMyself?: boolean;
+  sureIsAllowAddress: EXCHANGE_TYPE | null;
+  handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => void;
 } & WithdrawInfoProps<C>;
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =

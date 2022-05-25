@@ -202,7 +202,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
   handleSelected: (value: T | any) => void;
 }) => {
   const { t } = useTranslation("common");
-  const nonExchangeList: [] = [
+  const nonExchangeList: AddressItemType<T>[] = [
     {
       label: t(`labelNonExchangeType`),
       value: EXCHANGE_TYPE.NonExchange as T,

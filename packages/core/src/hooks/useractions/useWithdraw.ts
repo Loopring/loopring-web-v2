@@ -19,6 +19,7 @@ import {
   WithdrawType,
   WithdrawTypes,
   AddressError,
+  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -44,7 +45,11 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export const useWithdraw = <R extends IBData<T>, T>() => {
+export const useWithdraw = <R extends IBData<T>, T>({
+  isToMyself = false,
+}: {
+  isToMyself?: boolean;
+}) => {
   const {
     modals: {
       isShowWithdraw: { symbol, isShow },
@@ -63,7 +68,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   const [walletMap2, setWalletMap2] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-
+  const [sureIsAllowAddress, setSureIsAllowAddress] =
+    React.useState<EXCHANGE_TYPE | null>(null);
   const [withdrawType, setWithdrawType] = React.useState<WithdrawType>(
     sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
   );
@@ -103,6 +109,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     isAddressCheckLoading,
   } = useAddressCheck();
+
+  React.useEffect(() => {
+    if (!realAddr || realAddr === "") {
+      setSureIsAllowAddress(null);
+    }
+  }, [realAddr]);
 
   const isNotAvaiableAddress = isCFAddress
     ? "isCFAddress"
@@ -162,7 +174,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     checkBtnStatus();
   }, [
     withdrawType,
-    // address,
     addrStatus,
     realAddr,
     isFeeNotEnough,
@@ -530,6 +541,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       exchangeInfo,
       withdrawValue.fee?.belong,
       withdrawValue.fee?.feeRaw,
+      withdrawValue.fee?.__raw__?.feeRaw,
       withdrawValue.belong,
       setShowWithdraw,
       setShowAccount,
@@ -552,6 +564,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     type: "TOKEN",
     isAddressCheckLoading,
     isCFAddress,
+    isToMyself,
     isContractAddress,
     withdrawI18nKey,
     accAddr: account.accAddress,
@@ -565,6 +578,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     withdrawBtnStatus: btnStatus,
     withdrawType,
     withdrawTypes,
+    sureIsAllowAddress,
+    handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => {
+      setSureIsAllowAddress(value);
+    },
     onWithdrawClick: () => {
       if (withdrawValue && withdrawValue.belong) {
         handleWithdraw(withdrawValue, realAddr ? realAddr : address);

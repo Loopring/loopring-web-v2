@@ -73,6 +73,12 @@ export type MetaProperty = {
   key: string;
   value: string;
 };
+export type MetaDataProperty = { [key: string]: string };
+export type AttributesProperty = {
+  trait_type: string;
+  value: string;
+};
+
 export type NFTMETA = {
   image: string;
   name: string;

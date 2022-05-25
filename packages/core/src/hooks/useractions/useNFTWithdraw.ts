@@ -15,6 +15,7 @@ import {
   TradeNFT,
   UIERROR_CODE,
   AddressError,
+  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -44,7 +45,9 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
   isLocalShow = false,
   doWithdrawDone,
+  isToMyself = false,
 }: {
+  isToMyself?: boolean;
   isLocalShow?: boolean;
   doWithdrawDone?: () => void;
 }) => {
@@ -82,6 +85,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
   });
 
   const { checkHWAddr, updateHW } = useWalletInfo();
+  const [sureIsAllowAddress, setSureIsAllowAddress] =
+    React.useState<EXCHANGE_TYPE | null>(null);
 
   const [lastRequest, setLastRequest] = React.useState<any>({});
 
@@ -95,6 +100,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
     isContract1XAddress,
     isAddressCheckLoading,
   } = useAddressCheck();
+  React.useEffect(() => {
+    if (!realAddr || realAddr === "") {
+      setSureIsAllowAddress(null);
+    }
+  }, [realAddr]);
 
   const isNotAvaiableAddress = isCFAddress
     ? "isCFAddress"
@@ -492,11 +502,16 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
     handleOnAddressChange: (value: any) => {
       setAddress(value);
     },
+    sureIsAllowAddress,
+    handleSureIsAllowAddress: (value) => {
+      setSureIsAllowAddress(value);
+    },
     type: "NFT",
     addressDefault: address,
     accAddr: account.accAddress,
     isNotAvaiableAddress,
     realAddr,
+    isToMyself,
     disableWithdrawList,
     tradeData: nftWithdrawValue as any,
     coinMap: totalCoinMap as CoinMap<T>,

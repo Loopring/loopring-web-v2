@@ -44,6 +44,7 @@ import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
 import styled from "@emotion/styled";
+import { WithdrawAddressType } from "./AddressType";
 
 const LinkStyle = styled(Link)`
   text-decoration: underline dotted;
@@ -88,6 +89,9 @@ export const WithdrawWrap = <
   assetsData = [],
   realAddr,
   isThumb,
+  isMyself = false,
+  sureIsAllowAddress,
+  handleSureIsAllowAddress,
   ...rest
 }: WithdrawViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
   // const [_withdrawType, setWithdrawType] = React.useState(withdrawType);
@@ -225,7 +229,7 @@ export const WithdrawWrap = <
           </Typography>
         </PopoverPure>
       </Grid>
-      <Grid item /* marginTop={3} */ alignSelf={"stretch"}>
+      <Grid item alignSelf={"stretch"}>
         {type === "NFT" ? (
           <NFTInput
             {...{
@@ -258,7 +262,6 @@ export const WithdrawWrap = <
           />
         )}
       </Grid>
-
       <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
         <>
           <Typography
@@ -352,7 +355,18 @@ export const WithdrawWrap = <
           </Box>
         </>
       </Grid>
-
+      <Grid
+        item
+        color={"var(--color-error)"}
+        alignSelf={"stretch"}
+        position={"relative"}
+        marginTop={2}
+      >
+        <WithdrawAddressType
+          selectedValue={sureIsAllowAddress}
+          handleSelected={handleSureIsAllowAddress}
+        />
+      </Grid>
       <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>

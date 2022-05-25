@@ -1,9 +1,11 @@
 import {
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControlLabel as MuiFormControlLabel,
   Link,
   List,
   ListItem,
@@ -17,6 +19,7 @@ import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
 import { useOpenModals } from "../../../../stores";
+import { CheckBoxIcon, CheckedIcon } from "@loopring-web/common-resources";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -27,7 +30,7 @@ const DialogStyle = styled(Dialog)`
 
     .MuiListItem-root {
       display: list-item;
-      marginbottom: 1;
+      margin-bottom: ${({ theme }) => theme.unit}px;
       height: auto;
       padding: ${({ theme }) => theme.unit}px 0;
       font-size: ${({ theme }) => theme.fontDefault.body1};
@@ -591,6 +594,93 @@ export const InformationForAccountFrozen = withTranslation("common", {
             color={"primary"}
           >
             {t("labelOK")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
+export const OtherExchangeDialog = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: MouseEvent, notShow?: boolean) => void;
+  }) => {
+    const providers = Object.keys(ConnectProviders).filter(
+      (item) => item !== "unknown"
+    );
+    const [agree, setAgree] = React.useState(false);
+
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelConfirmCEX")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans
+              i18nKey={"labelNoticeForProvider"}
+              tOptions={{ name: providers.join(",") }}
+            >
+              Loopring only support and maintain {providers.join(",")} plugin
+              for Wallet Connect, if your installed other Wallet plugin, please
+              make sure it's the
+              {providers.join(",")} popup.
+            </Trans>
+            <Link
+              target="_top"
+              rel="noopener noreferrer"
+              href={"./#/document/plugin_guide.md"}
+            >
+              {t("labelGuid")}
+            </Link>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelCEXUnderstand")}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelDisAgreeConfirm")}
+          </Button>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelAgreeConfirm")}
           </Button>
         </DialogActions>
       </DialogStyle>

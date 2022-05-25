@@ -758,4 +758,8 @@ export default {
   labelExchangeOther: "Others",
   labelExchangeOtherDes: "Others",
   labelL2toL1AddressType: "Address Type",
+  labelConfirmCEX: "Confirm CEX Support",
+  labelConfirmDetail:
+    "Before withdrawing, please check with your CEX support that they accept deposits from smart contracts.\n  L2 to L1 withdrawing is via a smart contract. The CEX depositing address may not be able to acknowledge the tokens deposited automatically.\n If the deposited tokens do not appear at the CEX address within 24 hours, please contact your CEX support to manually acknowledge this transaction.",
+  labelCEXUnderstand: "I understand and acknowledge the risk",
 };
