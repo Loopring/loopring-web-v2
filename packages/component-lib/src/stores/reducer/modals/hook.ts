@@ -20,6 +20,7 @@ import {
   setShowTradeIsFrozen,
   setShowWrongNetworkGuide,
   setShowNFTMintAdvance,
+  setShowOtherExchange,
 } from "./reducer";
 
 import React from "react";
@@ -35,6 +36,14 @@ export const useOpenModals = () => {
     setShowSupport: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) =>
         dispatch(setShowSupport(state)),
+      [dispatch]
+    ),
+    setShowOtherExchange: React.useCallback(
+      (
+        state: ModalStatePlayLoad & {
+          agree?: boolean;
+        } & Transaction
+      ) => dispatch(setShowOtherExchange(state)),
       [dispatch]
     ),
     setShowWrongNetworkGuide: React.useCallback(

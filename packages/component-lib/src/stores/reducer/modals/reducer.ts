@@ -5,6 +5,7 @@ import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 const initialState: ModalState = {
   isShowSupport: { isShow: false },
+  isShowOtherExchange: { isShow: false },
   isWrongNetworkGuide: { isShow: false },
   isShowTransfer: { isShow: false, symbol: undefined },
   isShowWithdraw: { isShow: false, symbol: undefined },
@@ -42,6 +43,21 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowSupport(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;
       state.isShowSupport.isShow = isShow;
+    },
+    setShowOtherExchange(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          agree?: boolean;
+        }
+      >
+    ) {
+      const { isShow, agree, ...rest } = action.payload;
+      state.isShowOtherExchange = {
+        isShow,
+        agree,
+        ...rest,
+      };
     },
     setShowWrongNetworkGuide(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;
@@ -217,4 +233,5 @@ export const {
   setShowTradeIsFrozen,
   setShowSupport,
   setShowWrongNetworkGuide,
+  setShowOtherExchange,
 } = modalsSlice.actions;

@@ -18,6 +18,9 @@ export type Transaction = {
 
 export interface ModalState {
   isShowSupport: ModalStatePlayLoad;
+  isShowOtherExchange: ModalStatePlayLoad & {
+    agree?: boolean;
+  };
   isWrongNetworkGuide: ModalStatePlayLoad;
   isShowTransfer: ModalStatePlayLoad & Transaction;
   isShowWithdraw: ModalStatePlayLoad & Transaction;
