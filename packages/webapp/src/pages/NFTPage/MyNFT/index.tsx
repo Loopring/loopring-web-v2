@@ -1,29 +1,15 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  Card,
-  Grid,
-  Modal as MuiModal,
-  Pagination,
-  Typography,
-} from "@mui/material";
+import { Box, Card, Grid, Pagination, Typography } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import {
-  EmptyDefault,
-  ModalCloseButton,
-  SwitchPanelStyled,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { EmptyDefault, NFTMedia } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
-import { NFTDetail } from "../components/detail";
 import {
   EmptyValueTag,
   getShortAddr,
   SoursURL,
   NFTLimit,
 } from "@loopring-web/common-resources";
-import { NFTMedia } from "../components/nftMedia";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -44,68 +30,12 @@ const CardStyle = styled(Card)`
 ` as typeof Card;
 
 export const MyNFTPanel = withTranslation("common")(
-  ({ t, ...rest }: WithTranslation) => {
-    const { isMobile } = useSettings();
-    const {
-      popItem,
-      onDetail,
-      onDetailClose,
-      isShow,
-      nftList,
-      // popNFTDeposit,
-      // popNFTMint,
-      etherscanBaseUrl,
-      isLoading,
-      page,
-      total,
-      onNFTError,
-      onPageChange,
-    } = useMyNFT();
-
-    const modalContent = React.useMemo(() => {
-      // @ts-ignore
-      return (
-        popItem && (
-          <NFTDetail
-            // onNFTReload={onNFTReload}
-            onNFTError={onNFTError}
-            etherscanBaseUrl={etherscanBaseUrl}
-            onDetailClose={onDetailClose}
-            popItem={popItem}
-          />
-        )
-      );
-    }, [popItem, onNFTError, etherscanBaseUrl, onDetailClose]);
+  ({ t }: WithTranslation) => {
+    const { onDetail, nftList, isLoading, page, total, onPageChange } =
+      useMyNFT();
 
     return (
       <>
-        <MuiModal
-          open={isShow}
-          onClose={onDetailClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <SwitchPanelStyled
-            // width={"80%"}
-            width={isMobile ? "360px" : "80%"}
-            position={"relative"}
-            minWidth={isMobile ? "initial" : 1000}
-            style={{ alignItems: "stretch" }}
-          >
-            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
-              <ModalCloseButton onClose={onDetailClose} t={t} {...rest} />
-            </Box>
-            <Box
-              display={"flex"}
-              flexDirection={isMobile ? "column" : "row"}
-              flex={1}
-              justifyContent={"stretch"}
-            >
-              {modalContent}
-            </Box>
-          </SwitchPanelStyled>
-        </MuiModal>
-
         <StyledPaper
           flex={1}
           className={"MuiPaper-elevation2"}
@@ -198,7 +128,7 @@ export const MyNFTPanel = withTranslation("common")(
                             item={item}
                             index={index}
                             // onNFTReload={onNFTReload}
-                            onNFTError={onNFTError}
+                            onNFTError={() => undefined}
                             isOrigin={false}
                           />
                           <Box

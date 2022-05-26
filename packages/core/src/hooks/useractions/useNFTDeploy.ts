@@ -40,7 +40,6 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   doDeployDone,
 }: {
-  isLocalShow?: boolean;
   doDeployDone?: () => void;
 }) {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();

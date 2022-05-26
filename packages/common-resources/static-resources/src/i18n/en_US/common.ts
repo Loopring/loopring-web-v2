@@ -594,8 +594,9 @@ export default {
   labelL1toL2HashEmpty:
     "My L1 \u2192 Loopring L2 transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
-  labelNFTSendL2Btn: "Send to Another Loopring L2",
-  labelNFTSendL1Btn: "Send to L1",
+  labelNFTSendL2Btn: "To Another Loopring L2",
+  labelNFTSendMyL1Btn: "To My L1",
+  labelNFTSendOtherL1Btn: "To Other L1",
   labelNFTDeploySendL1: "Deploy & Send to L1",
   labelGuid: "Go to Guide",
   labelOK: "Ok",

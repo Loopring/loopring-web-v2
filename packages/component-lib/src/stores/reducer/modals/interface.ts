@@ -1,4 +1,4 @@
-import { TradeNFT } from "@loopring-web/common-resources";
+import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 export enum ModalType {
@@ -42,6 +42,7 @@ export interface ModalState {
     error?: RESULT_INFO;
     // info?: { [key: string]: any };
   };
+  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };
 }

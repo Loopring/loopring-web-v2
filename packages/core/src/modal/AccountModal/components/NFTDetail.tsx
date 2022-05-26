@@ -1,5 +1,7 @@
+import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
 import {
+  AssetsRawDataItem,
   EmptyValueTag,
   Explorer,
   getShortAddr,
@@ -9,30 +11,27 @@ import {
   LoadingIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
+import { WithTranslation, withTranslation } from "react-i18next";
 import {
   Button,
   DeployNFTWrap,
   InformationForNoMetaNFT,
   ModalBackButton,
+  NFTDeployProps,
+  TextareaAutosizeStyled,
   TransferPanel,
+  TransferProps,
   useOpenModals,
   useSettings,
   useToggle,
   WithdrawPanel,
-  TextareaAutosizeStyled,
+  WithdrawProps,
+  NFTMedia,
 } from "@loopring-web/component-lib";
-
+import { useAccount } from "../../../stores";
 import React from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { useNFTTransfer } from "@loopring-web/core";
-import { useNFTWithdraw } from "@loopring-web/core";
-import { useNFTDeploy } from "@loopring-web/core";
-import { NFTMedia } from "./nftMedia";
-import { useTheme } from "@emotion/react";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
-import { useGetAssets } from "../../Layer2Page/AssetPanel/hook";
-import { useAccount } from "@loopring-web/core";
+import { useTheme } from "@emotion/react";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -133,18 +132,25 @@ export const NFTDetail = withTranslation("common")(
     popItem,
     etherscanBaseUrl,
     onDetailClose,
-    onNFTError,
-    // onNFTReload,
+    cancelNFTTransfer,
+    cancelNFTWithdraw,
+    nftTransferProps,
+    nftWithdrawProps,
+    nftDeployProps,
+    assetsRawData,
     t,
     ...rest
   }: {
+    nftTransferProps: TransferProps<any, any>;
+    nftWithdrawProps: WithdrawProps<any, any>;
+    nftDeployProps: NFTDeployProps<any, any>;
     onDetailClose: () => void;
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
-    // onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
-    onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
+    assetsRawData: AssetsRawDataItem[];
+    cancelNFTTransfer: () => void;
+    cancelNFTWithdraw: () => void;
   } & WithTranslation) => {
-    const { assetsRawData } = useGetAssets();
     const { isMobile } = useSettings();
     const { account } = useAccount();
     const {
@@ -164,19 +170,6 @@ export const NFTDetail = withTranslation("common")(
       });
     }, [popItem.name, popItem.image]);
 
-    const { nftTransferProps, cancelNFTTransfer } = useNFTTransfer({
-      isLocalShow: viewPage === 1,
-      doTransferDone: onDetailClose,
-    });
-    const { nftWithdrawProps } = useNFTWithdraw({
-      isLocalShow: viewPage === 2,
-      doWithdrawDone: onDetailClose,
-    });
-    const { nftDeployProps } = useNFTDeploy({
-      isLocalShow: viewPage === 3,
-      doDeployDone: onDetailClose,
-    });
-
     const handleChangeIndex = (index: number) => {
       setViewPage(index);
       cancelNFTTransfer();
@@ -192,7 +185,7 @@ export const NFTDetail = withTranslation("common")(
           <InformationForNoMetaNFT
             open={!!showDialog}
             method={showDialog}
-            handleClose={(e, isAgress) => {
+            handleClose={(_e, isAgress) => {
               setShowDialog(undefined);
               if (isAgress && showDialog) {
                 switch (showDialog?.toLowerCase()) {
@@ -438,12 +431,53 @@ export const NFTDetail = withTranslation("common")(
                       {t("labelNFTDeploying")}
                     </>
                   ) : (
-                    t("labelNFTSendL1Btn")
+                    t("labelNFTSendMyL1Btn")
                   )}
                 </Button>
               </Typography>
 
-              <Typography className={"btn"} minWidth={100}>
+              <Typography className={"btn"} minWidth={100} marginRight={2}>
+                <Button
+                  variant={"contained"}
+                  size={"small"}
+                  color={"primary"}
+                  fullWidth
+                  disabled={
+                    popItem.isCounterFactualNFT &&
+                    popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
+                  }
+                  onClick={() => {
+                    isKnowNFTNoMeta
+                      ? withdrawNFT.enable
+                        ? handleChangeIndex(2)
+                        : setShowTradeIsFrozen({ isShow: true })
+                      : setShowDialog("Withdraw");
+                  }}
+                >
+                  {popItem.isCounterFactualNFT &&
+                  popItem.deploymentStatus ===
+                    DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
+                    t("labelNFTDeploySendL1")
+                  ) : popItem.isCounterFactualNFT &&
+                    popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING ? (
+                    <>
+                      <LoadingIcon
+                        color={"primary"}
+                        style={{
+                          width: 18,
+                          height: 18,
+                          marginRight: "8px",
+                        }}
+                      />
+                      {t("labelNFTDeploying")}
+                    </>
+                  ) : (
+                    t("labelNFTSendOtherL1Btn")
+                  )}
+                </Button>
+              </Typography>
+
+              <Typography className={"btn"} minWidth={100} marginRight={2}>
                 <Button
                   variant={"contained"}
                   size={"small"}
@@ -492,10 +526,8 @@ export const NFTDetail = withTranslation("common")(
             justifyContent={"center"}
           >
             <NFTMedia
-              // ref={popItem.tokenId}
               item={popItem}
-              // onNFTReload={onNFTReload}
-              onNFTError={onNFTError}
+              onNFTError={() => undefined}
               isOrigin={true}
             />
           </BoxNFT>

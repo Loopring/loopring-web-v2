@@ -187,8 +187,8 @@ export function useAccountModalForUI({
     isToMyself: isShowWithdraw.info?.isToMyself,
   });
   const { transferProps } = useTransfer();
-  const { nftWithdrawProps } = useNFTWithdraw({});
-  const { nftTransferProps } = useNFTTransfer({});
+  const { nftWithdrawProps, cancelNFTWithdraw } = useNFTWithdraw({});
+  const { nftTransferProps, cancelNFTTransfer } = useNFTTransfer({});
   const { nftDeployProps } = useNFTDeploy({});
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
@@ -1930,6 +1930,7 @@ export function useAccountModalForUI({
   const currentModal = accountList[isShowAccount.step];
 
   return {
+    nftDeployProps,
     nftMintAdvanceProps,
     nftTransferProps,
     nftWithdrawProps,
@@ -1953,6 +1954,8 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
+    cancelNFTTransfer,
+    cancelNFTWithdraw,
     // vendorProps,
   };
 }

@@ -1,17 +1,20 @@
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   DepositProps,
-  // DepositPanelType,
   ModalAccount,
+  ModalCloseButton,
   ModalPanel,
   ModalQRCode,
+  SwitchPanelStyled,
   Toast,
   useOpenModals,
-  // useOpenModals,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
 import { useAccountModalForUI } from "./hook";
 import { Account, AssetsRawDataItem } from "@loopring-web/common-resources";
+import { Box, Modal as MuiModal } from "@mui/material";
+import { NFTDetail } from "./components/NFTDetail";
 
 export const ModalAccountInfo = withTranslation("common")(
   ({
@@ -32,10 +35,13 @@ export const ModalAccountInfo = withTranslation("common")(
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
+    const { isMobile } = useSettings();
     const {
+      modals: { isShowNFTDetail, isShowAccount },
       // modals: { isShowAccount },
       // setShowConnect,
       // setShowAccount,
+      setShowNFTDetail,
       setShowDeposit,
       // setShowNFTMint,
       setShowTransfer,
@@ -59,16 +65,17 @@ export const ModalAccountInfo = withTranslation("common")(
       withdrawProps,
       nftTransferProps,
       nftWithdrawProps,
+      nftDeployProps,
       // nftDepositProps,
       // nftMintProps,
       nftMintAdvanceProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
-      // assetsRawData,
+      cancelNFTTransfer,
+      cancelNFTWithdraw,
       copyToastOpen,
       openQRCode,
-      isShowAccount,
       closeBtnInfo,
       accountList,
       currentModal,
@@ -127,6 +134,7 @@ export const ModalAccountInfo = withTranslation("common")(
           setExportAccountToastOpen={setExportAccountToastOpen}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}
         />
+
         <Toast
           alertText={t("labelCopyAddClip")}
           open={copyToastOpen}
@@ -153,6 +161,53 @@ export const ModalAccountInfo = withTranslation("common")(
           etherscanBaseUrl={etherscanBaseUrl}
           isLayer2Only={isLayer1Only}
         />
+        <MuiModal
+          open={isShowNFTDetail.isShow}
+          onClose={() => {
+            setShowNFTDetail({ isShow: false });
+          }}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <SwitchPanelStyled
+            // width={"80%"}
+            width={isMobile ? "360px" : "80%"}
+            position={"relative"}
+            minWidth={isMobile ? "initial" : 1000}
+            style={{ alignItems: "stretch" }}
+          >
+            <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+              <ModalCloseButton
+                onClose={() => {
+                  setShowNFTDetail({ isShow: false });
+                }}
+                t={t}
+                {...rest}
+              />
+            </Box>
+            <Box
+              display={"flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              flex={1}
+              justifyContent={"stretch"}
+            >
+              <NFTDetail
+                nftTransferProps={nftTransferProps}
+                nftWithdrawProps={nftWithdrawProps}
+                nftDeployProps={nftDeployProps}
+                cancelNFTTransfer={cancelNFTTransfer}
+                cancelNFTWithdraw={cancelNFTWithdraw}
+                // onNFTReload={onNFTReload}
+                etherscanBaseUrl={etherscanBaseUrl}
+                onDetailClose={() => {
+                  setShowNFTDetail({ isShow: false });
+                }}
+                popItem={isShowNFTDetail}
+                assetsRawData={assetsRawData}
+              />
+            </Box>
+          </SwitchPanelStyled>
+        </MuiModal>
       </>
     );
   }

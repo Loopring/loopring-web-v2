@@ -201,8 +201,9 @@ export const NFTPage = () => {
                     display={"flex"}
                     flexDirection={"column"}
                     alignItems={"center"}
+                    marginX={3}
                   >
-                    <Box marginY={1}>
+                    <Box marginY={1} width={"100%"}>
                       <Button
                         variant={"contained"}
                         color={"primary"}
@@ -213,7 +214,7 @@ export const NFTPage = () => {
                         {t("labelMintNFT")}
                       </Button>
                     </Box>
-                    <Box marginY={1}>
+                    <Box marginY={1} width={"100%"}>
                       <Button
                         onClick={() => {
                           setShowNFTMintAdvance({ isShow: true });
@@ -225,8 +226,7 @@ export const NFTPage = () => {
                         {t("labelAdvanceMint")}
                       </Button>
                     </Box>
-
-                    <Box marginY={1}>
+                    <Box marginY={1} width={"100%"}>
                       <Button
                         variant={"outlined"}
                         color={"primary"}

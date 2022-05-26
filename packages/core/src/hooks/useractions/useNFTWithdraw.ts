@@ -45,15 +45,22 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
   isLocalShow = false,
   doWithdrawDone,
-  isToMyself = false,
-}: {
-  isToMyself?: boolean;
+}: // isToMyself = false,
+{
+  // isToMyself?: boolean;
   isLocalShow?: boolean;
   doWithdrawDone?: () => void;
 }) => {
+  const isToMyself = false;
   const {
     modals: {
-      isShowNFTWithdraw: { isShow, nftData, nftBalance, ...nftRest },
+      isShowNFTWithdraw: {
+        isShow,
+        nftData,
+        nftBalance,
+        // isToMyself,
+        ...nftRest
+      },
     },
     setShowAccount,
     setShowNFTWithdraw,
@@ -557,8 +564,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
     chargeFeeTokenList,
     isFeeNotEnough,
   } as WithdrawProps<any, any>;
-
+  const cancelNFTWithdraw = () => {
+    resetDefault();
+  };
   return {
+    cancelNFTWithdraw,
     nftWithdrawProps,
     retryBtn,
   };

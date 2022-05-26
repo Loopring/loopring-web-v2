@@ -24,6 +24,7 @@ const initialState: ModalState = {
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
   isShowNFTMintAdvance: { isShow: false },
+  isShowNFTDetail: { isShow: false },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -70,6 +71,17 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     setShowSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;
       state.isShowSwap.isShow = isShow;
+    },
+    setShowNFTDetail(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Partial<NFTWholeINFO>>
+    ) {
+      const { isShow, ...rest } = action.payload;
+      state.isShowNFTDetail = {
+        isShow,
+
+        ...rest,
+      };
     },
     setShowNFTTransfer(
       state,
@@ -216,6 +228,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   },
 });
 export const {
+  setShowNFTDetail,
   setShowNFTTransfer,
   setShowNFTDeposit,
   setShowNFTWithdraw,

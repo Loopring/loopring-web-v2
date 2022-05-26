@@ -21,6 +21,7 @@ import {
   setShowWrongNetworkGuide,
   setShowNFTMintAdvance,
   setShowOtherExchange,
+  setShowNFTDetail,
 } from "./reducer";
 
 import React from "react";
@@ -78,6 +79,12 @@ export const useOpenModals = () => {
         } else {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: "Withdraw" }));
         }
+      },
+      [dispatch]
+    ),
+    setShowNFTDetail: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
+        dispatch(setShowNFTDetail(state));
       },
       [dispatch]
     ),
