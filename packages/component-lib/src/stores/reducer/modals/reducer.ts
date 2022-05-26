@@ -110,11 +110,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
     ) {
-      const { isShow, nftData, nftType, ...rest } = action.payload;
+      const { isShow, nftData, nftType, info, ...rest } = action.payload;
       state.isShowNFTWithdraw = {
         isShow,
         nftData,
         nftType,
+        info,
         ...rest,
       };
     },
@@ -132,10 +133,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction>
     ) {
-      const { isShow, symbol } = action.payload;
+      const { isShow, symbol, info } = action.payload;
       state.isShowWithdraw = {
         isShow,
         symbol,
+        info,
       };
     },
     setShowDeposit(

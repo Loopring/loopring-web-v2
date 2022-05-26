@@ -64,7 +64,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
   const [sureItsLayer2, setSureItsLayer2] =
-    React.useState<WALLET_TYPE | null>(null);
+    React.useState<WALLET_TYPE | undefined>(undefined);
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -94,12 +96,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isSameAddress,
   } = useAddressCheck();
   React.useEffect(() => {
-    if (!realAddr || realAddr === "") {
-      setSureItsLayer2(null);
-    }
+    setSureItsLayer2(undefined);
   }, [realAddr]);
 
-  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
       const sellToken = tokenMap[transferValue.belong];

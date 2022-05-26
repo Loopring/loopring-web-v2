@@ -3,16 +3,12 @@ import { useTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React, { ForwardedRef } from "react";
 import {
+  AddressItemType,
   EXCHANGE_TYPE,
-  myLog,
+  useAddressTypeLists,
   WALLET_TYPE,
 } from "@loopring-web/common-resources";
-export type AddressItemType<T> = {
-  value: T;
-  label: string;
-  description: string;
-  disabled?: boolean;
-};
+
 const MenuItemStyle = styled(MenuItem)`
   display: flex;
   flex-direction: column;
@@ -43,11 +39,10 @@ export const WalletItemOptions = React.memo(
       }: {
         myValue: T;
         handleSelected: (value: WALLET_TYPE | EXCHANGE_TYPE) => void;
-        selectedValue: T | null;
+        selectedValue: T | undefined;
       } & AddressItemType<T>,
       ref: ForwardedRef<any>
     ) => {
-      myLog("render", myValue, selectedValue);
       return (
         <MenuItemStyle
           ref={ref}
@@ -89,40 +84,11 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
   selectedValue,
   handleSelected,
 }: {
-  selectedValue: T | null;
+  selectedValue: T | undefined;
   handleSelected: (value: T) => void;
 }) => {
   const { t } = useTranslation("common");
-  const walletList: AddressItemType<T>[] = [
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.EOA}`),
-      }),
-      value: WALLET_TYPE.EOA as T,
-      description: t(`label${WALLET_TYPE.EOA}Des`),
-    },
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
-      }),
-      value: WALLET_TYPE.Loopring as T,
-      description: t(`label${WALLET_TYPE.Loopring}Des`),
-    },
-    {
-      label: t("labelWalletTypeOptions", {
-        type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
-      }),
-      disabled: true,
-      value: WALLET_TYPE.OtherSmart as T,
-      description: t(`label${WALLET_TYPE.OtherSmart}Des`),
-    },
-    {
-      label: t(WALLET_TYPE.Exchange),
-      value: WALLET_TYPE.Exchange as T,
-      disabled: true,
-      description: t(`label${WALLET_TYPE.Exchange}Des`),
-    },
-  ];
+  const { walletList } = useAddressTypeLists<T>();
   const desMenuItem = React.useMemo(() => {
     return (
       <MenuItemStyle disabled={true} value={-1}>
@@ -145,7 +111,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
       select
       fullWidth
       variant="outlined"
-      value={selectedValue}
+      value={selectedValue ?? ""}
       SelectProps={{
         open,
         onClose,
@@ -174,23 +140,6 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
         />
       ))}
     </TextField>
-    // <FormControl fullWidth sx={{ minWidth: 300 }}>
-    //   <InputLabel>{t("labelL2toL2AddressType")}</InputLabel>
-    //   <OutlineSelect
-    //     open={open}
-    //     onClose={handleClose}
-    //     onOpen={handleOpen}
-    //     value={selectedValue}
-    //     variant={"outlined"}
-    //     onChange={(e) => {
-    //       debugger;
-    //       handleSelected(e.target.value as T);
-    //     }}
-    //     input={<OutlinedInput value={t(`labelExchange${selectedValue}`)} />}
-    //   >
-    //
-    //   </OutlineSelect>
-    // </FormControl>
   );
 };
 
@@ -198,38 +147,12 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
   selectedValue,
   handleSelected,
 }: {
-  selectedValue: T | null;
+  selectedValue: T | undefined;
   handleSelected: (value: T | any) => void;
 }) => {
   const { t } = useTranslation("common");
-  const nonExchangeList: AddressItemType<T>[] = [
-    {
-      label: t(`labelNonExchangeType`),
-      value: EXCHANGE_TYPE.NonExchange as T,
-      disabled: false,
-      description: t(`labelNonExchangeTypeDes`),
-    },
-  ];
-  const exchangeList: AddressItemType<T>[] = [
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
-      value: EXCHANGE_TYPE.Binance as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`),
-    },
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
-      value: EXCHANGE_TYPE.Huobi as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`),
-    },
-    {
-      label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
-      value: EXCHANGE_TYPE.Others as T,
-      disabled: false,
-      description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`),
-    },
-  ];
+  const { nonExchangeList, exchangeList } = useAddressTypeLists<T>();
+
   const [open, setOpen] = React.useState(false);
   const onClose = () => {
     setOpen(false);
@@ -269,7 +192,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
       select
       fullWidth
       variant="outlined"
-      value={selectedValue}
+      value={selectedValue ?? ""}
       SelectProps={{
         open,
         onClose,

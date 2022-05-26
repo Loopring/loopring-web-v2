@@ -69,7 +69,7 @@ export const useWithdraw = <R extends IBData<T>, T>({
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
   const [sureIsAllowAddress, setSureIsAllowAddress] =
-    React.useState<EXCHANGE_TYPE | null>(null);
+    React.useState<EXCHANGE_TYPE | undefined>(undefined);
   const [withdrawType, setWithdrawType] = React.useState<WithdrawType>(
     sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
   );
@@ -111,10 +111,15 @@ export const useWithdraw = <R extends IBData<T>, T>({
   } = useAddressCheck();
 
   React.useEffect(() => {
-    if (!realAddr || realAddr === "") {
-      setSureIsAllowAddress(null);
-    }
+    setSureIsAllowAddress(undefined);
   }, [realAddr]);
+  React.useEffect(() => {
+    if (isToMyself) {
+      setAddress(account.accAddress);
+    } else {
+      setAddress("");
+    }
+  }, [isToMyself]);
 
   const isNotAvaiableAddress = isCFAddress
     ? "isCFAddress"

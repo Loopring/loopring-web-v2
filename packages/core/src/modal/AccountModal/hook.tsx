@@ -149,7 +149,7 @@ export function useAccountModalForUI({
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
   const {
-    modals: { isShowAccount },
+    modals: { isShowAccount, isShowWithdraw },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -183,7 +183,9 @@ export function useAccountModalForUI({
   const vendorProps = useVendor();
   const { nftMintAdvanceProps } = useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
-  const { withdrawProps } = useWithdraw();
+  const { withdrawProps } = useWithdraw({
+    isToMyself: isShowWithdraw.info?.isToMyself,
+  });
   const { transferProps } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw({});
   const { nftTransferProps } = useNFTTransfer({});
@@ -302,15 +304,6 @@ export function useAccountModalForUI({
       },
     };
   }, [setShowAccount, setShowNFTMintAdvance]);
-  // const backToMintAdvanceBtnInfo = React.useMemo(() => {
-  //   return {
-  //     btnTxt: "labelRetry",
-  //     callback: () => {
-  //       setShowAccount({ isShow: false });
-  //       setShowNFTMintAdvance({ isShow: true });
-  //     },
-  //   };
-  // }, [setShowAccount, setShowNFTMintAdvance]);
 
   const backToDeployBtnInfo = React.useMemo(() => {
     return {
@@ -530,7 +523,22 @@ export function useAccountModalForUI({
       ...SendAssetList.SendAssetToMyL1,
       handleSelect: () => {
         setShowAccount({ isShow: false });
-        setShowWithdraw({ isShow: true, symbol: isShowAccount?.info?.symbol });
+        setShowWithdraw({
+          isShow: true,
+          info: { isToMyself: true },
+          symbol: isShowAccount?.info?.symbol,
+        });
+      },
+    },
+    {
+      ...SendAssetList.SendAssetToOtherL1,
+      handleSelect: () => {
+        setShowAccount({ isShow: false });
+        setShowWithdraw({
+          isShow: true,
+          info: { isToMyself: false },
+          symbol: isShowAccount?.info?.symbol,
+        });
       },
     },
   ];
@@ -554,7 +562,6 @@ export function useAccountModalForUI({
     isDepositing: chainInfos?.depositHashes[account?.accAddress]?.length
       ? true
       : false,
-    // isShow: isShowAccount.step === AccountStep.CheckingActive,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
     checkFeeIsEnough: activeAccountCheckFeeIsEnough,
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,

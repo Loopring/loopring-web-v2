@@ -69,7 +69,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     useModalData();
 
   const [sureItsLayer2, setSureItsLayer2] =
-    React.useState<WALLET_TYPE | null>(null);
+    React.useState<WALLET_TYPE | undefined>(undefined);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -97,9 +97,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     isSameAddress,
   } = useAddressCheck();
   React.useEffect(() => {
-    if (!realAddr || realAddr === "") {
-      setSureItsLayer2(null);
-    }
+    setSureItsLayer2(undefined);
   }, [realAddr]);
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();

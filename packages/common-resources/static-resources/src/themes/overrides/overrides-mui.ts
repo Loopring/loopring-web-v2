@@ -109,7 +109,10 @@ export const MuiTextField = ({
           whiteSpace: "pre-line",
         },
         " .MuiFormLabel-root": {
-          color: colorBase.textSecondary,
+          color: colorBase.textThird,
+          "&.Mui-focused": {
+            color: colorBase.textSecondary,
+          },
         },
       },
     },
@@ -694,7 +697,7 @@ export const MuiFormLabel = ({
         "&.MuiInputLabel-shrink": {
           transform: "none",
         },
-        "&$focused": {
+        "&.Mui-focused": {
           color: colorBase.textSecondary,
         },
       },

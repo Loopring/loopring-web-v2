@@ -3,37 +3,34 @@ import { Box, Grid, Typography } from "@mui/material";
 import {
   IBData,
   NFTWholeINFO,
-  EmptyValueTag,
   FeeInfo,
   useAddressTypeLists,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { Button, Toast, TradeBtnStatus } from "../../index";
-import { TransferViewProps } from "./Interface";
+import { Button, Toast } from "../../index";
+import { WithdrawViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";
 
-export const TransferConfirm = <
+export const WithdrawConfirm = <
   T extends IBData<I> & Partial<NFTWholeINFO>,
   I,
   C extends FeeInfo
 >({
   t,
-  sureItsLayer2,
   handleConfirm,
   tradeData,
-  onTransferClick,
-  transferBtnStatus,
+  onWithdrawClick,
   realAddr,
   type,
   feeInfo,
-  memo,
-}: TransferViewProps<T, I, C> & {
+  sureIsAllowAddress,
+}: Partial<WithdrawViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
   const { isMobile } = useSettings();
-  const { walletList } = useAddressTypeLists();
   const [open, setOpen] = React.useState(false);
+  const { nonExchangeList, exchangeList } = useAddressTypeLists();
   return (
     <Grid
       className={"confirm"}
@@ -96,7 +93,11 @@ export const TransferConfirm = <
           {t("labelL2toL2AddressType")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {walletList.find((item) => item.value === sureItsLayer2)?.label}
+          {
+            [...nonExchangeList, ...exchangeList].find(
+              (item) => item.value === sureIsAllowAddress
+            )?.label
+          }
         </Typography>
       </Grid>
       <Grid item xs={12}>
@@ -105,15 +106,6 @@ export const TransferConfirm = <
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {feeInfo?.fee + " "} {feeInfo?.belong}
-        </Typography>
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelMemo")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {memo ?? EmptyValueTag}
         </Typography>
       </Grid>
 
@@ -129,11 +121,10 @@ export const TransferConfirm = <
           size={"medium"}
           color={"primary"}
           onClick={async () => {
-            if (transferBtnStatus === TradeBtnStatus.AVAILABLE) {
-              await onTransferClick({ ...tradeData, memo } as unknown as T);
-            } else {
-              handleConfirm(1);
+            if (onWithdrawClick) {
+              await onWithdrawClick({ ...tradeData } as unknown as T);
             }
+            handleConfirm(1);
           }}
         >
           {t("labelConfirm")}

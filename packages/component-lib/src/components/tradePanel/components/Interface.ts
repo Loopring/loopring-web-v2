@@ -55,7 +55,7 @@ export type TransferInfoProps<C> = {
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
   addressDefault?: string;
-  sureItsLayer2: WALLET_TYPE | null;
+  sureItsLayer2: WALLET_TYPE | undefined;
   handleSureItsLayer2: (sure: WALLET_TYPE) => void;
   realAddr?: string;
   isLoopringAddress?: boolean;
@@ -178,7 +178,7 @@ export type WithdrawExtendProps<T, I, C> = {
   wait?: number;
   onBack?: () => void;
   isToMyself?: boolean;
-  sureIsAllowAddress: EXCHANGE_TYPE | null;
+  sureIsAllowAddress: EXCHANGE_TYPE | undefined;
   handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => void;
 } & WithdrawInfoProps<C>;
 

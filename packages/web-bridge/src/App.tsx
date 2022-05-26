@@ -30,7 +30,7 @@ const App = () => {
     if (storeLan !== language) {
       store.dispatch(setLanguage(language));
     }
-  }, []);
+  }, [language, storeLan]);
 
   React.useEffect(() => {
     if (window.location.protocol !== "https:") {

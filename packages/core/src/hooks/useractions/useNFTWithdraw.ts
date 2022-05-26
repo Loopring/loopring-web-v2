@@ -86,7 +86,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
 
   const { checkHWAddr, updateHW } = useWalletInfo();
   const [sureIsAllowAddress, setSureIsAllowAddress] =
-    React.useState<EXCHANGE_TYPE | null>(null);
+    React.useState<EXCHANGE_TYPE | undefined>(undefined);
 
   const [lastRequest, setLastRequest] = React.useState<any>({});
 
@@ -101,9 +101,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>({
     isAddressCheckLoading,
   } = useAddressCheck();
   React.useEffect(() => {
-    if (!realAddr || realAddr === "") {
-      setSureIsAllowAddress(null);
-    }
+    setSureIsAllowAddress(undefined);
   }, [realAddr]);
 
   const isNotAvaiableAddress = isCFAddress

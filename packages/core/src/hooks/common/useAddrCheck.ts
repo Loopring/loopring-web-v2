@@ -1,7 +1,11 @@
 import React from "react";
 
 import { connectProvides } from "@loopring-web/web3-provider";
-import { AddressError, globalSetup } from "@loopring-web/common-resources";
+import {
+  AddressError,
+  globalSetup,
+  myLog,
+} from "@loopring-web/common-resources";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { checkAddr } from "../../utils";
@@ -102,7 +106,7 @@ export const useAddressCheck = () => {
             nodeTimer.current = -1;
             setIsAddressCheckLoading(false);
           } else {
-            throw Error("wrong address");
+            throw Error("wrong address format");
           }
         } else {
           throw Error("No API address");
@@ -132,29 +136,19 @@ export const useAddressCheck = () => {
 
   React.useEffect(() => {
     // myLog("checkAddress", address, _address.current, isAddressCheckLoading);
-    if (
-      address !== "" &&
-      _address.current !== address &&
-      isAddressCheckLoading === false
-    ) {
-      _address.current = address;
+    if (_address.current !== address && isAddressCheckLoading === false) {
       debounceCheck(address);
-    } else if (address === "") {
-      _address.current = "";
-      setRealAddr("");
-      setIsLoopringAddress(false);
+      myLog("address", address);
     }
+    _address.current = address;
   }, [address, isAddressCheckLoading]);
   React.useEffect(() => {
     debounceCheck(address);
   }, [chainId]);
 
   React.useEffect(() => {
-    setIsSameAddress(
-      address.toLowerCase() === accAddress.toLowerCase() ||
-        realAddr.toLowerCase() === accAddress.toLowerCase()
-    );
-  }, [realAddr, accAddress, address]);
+    setIsSameAddress(realAddr.toLowerCase() === accAddress.toLowerCase());
+  }, [realAddr, accAddress]);
   return {
     address,
     realAddr,

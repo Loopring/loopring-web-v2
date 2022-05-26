@@ -14,7 +14,9 @@ import {
 } from "../../tradePanel/components";
 import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
 
-export const TransferPanel = withTranslation("common", { withRef: true })(
+export const TransferPanel = withTranslation(["common", "error"], {
+  withRef: true,
+})(
   <T extends IBData<I>, I>({
     walletMap = {},
     coinMap = {},

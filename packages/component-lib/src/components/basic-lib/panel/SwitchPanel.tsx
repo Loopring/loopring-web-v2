@@ -115,7 +115,9 @@ function _SwitchPanel<T extends string>(
       className={hasToolBar ? `${className}` : `noToolBar ${className}`}
       axis={theme.direction === "rtl" ? "x-reverse" : "x"}
       index={index}
-      {...{ ...rest, isMobile }}
+      _height={rest._height}
+      _width={rest._width}
+      isMobile={isMobile}
     >
       {panelList.map((panel: PanelContent<T>) => {
         return (

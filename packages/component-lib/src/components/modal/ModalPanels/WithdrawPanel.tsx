@@ -14,7 +14,9 @@ import {
 import React from "react";
 import { cloneDeep } from "lodash";
 
-export const WithdrawPanel = withTranslation("common", { withRef: true })(
+export const WithdrawPanel = withTranslation(["common", "error"], {
+  withRef: true,
+})(
   <T extends IBData<I>, I>({
     type = "TOKEN",
     chargeFeeTokenList,

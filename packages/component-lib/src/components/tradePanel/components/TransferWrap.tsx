@@ -1,5 +1,5 @@
 import { Trans, WithTranslation } from "react-i18next";
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
@@ -29,7 +29,6 @@ import {
 import { PopoverPure } from "../../";
 import { TransferViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
-import * as _ from "lodash";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
@@ -82,9 +81,9 @@ export const TransferWrap = <
     label: t("labelL2toL2EnterToken"),
   };
 
-  const [address, setAddress] = React.useState<string | undefined>(
-    addressDefault ? addressDefault : ""
-  );
+  // const [address, setAddress] = React.useState<string | undefined>(
+  //   addressDefault ? addressDefault : ""
+  // );
 
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
@@ -98,27 +97,17 @@ export const TransferWrap = <
     return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, transferBtnStatus]);
 
-  const debounceAddress = _.debounce(
-    ({ address }: any) => {
-      if (handleOnAddressChange) {
-        handleOnAddressChange(address);
-      }
-    },
-    500,
-    { trailing: true }
-  );
+  // const debounceAddress = _.debounce(
+  //   ({ address }: any) => {
+  //     if (handleOnAddressChange) {
+  //
+  //     }
+  //   },
+  //   500,
+  //   { trailing: true }
+  // );
 
-  const _handleOnAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const address = event.target.value;
-    setAddress(address);
-    debounceAddress({ address });
-  };
-
-  const handleClear = React.useCallback(() => {
-    setAddress("");
-  }, [setAddress]);
-
-  const [copyToastOpen, setCopyToastOpen] = useState(false);
+  const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const onCopy = React.useCallback(
     async (content: string) => {
       await copyToClipBoard(content);
@@ -133,7 +122,7 @@ export const TransferWrap = <
   };
   const isInvalidAddressOrENS =
     !isAddressCheckLoading &&
-    address &&
+    addressDefault &&
     addrStatus === AddressError.InvalidAddr;
 
   return (
@@ -147,6 +136,7 @@ export const TransferWrap = <
       flex={1}
       height={"100%"}
       minWidth={240}
+      spacing={2}
       flexWrap={"nowrap"}
     >
       <Grid item>
@@ -197,89 +187,67 @@ export const TransferWrap = <
           </Typography>
         </PopoverPure>
       </Grid>
-      <Grid item alignSelf={"stretch"}>
-        {
-          //   isConfirmTransfer ? (
-          //   getTransferConfirmTemplate(
-          //     t("labelL2toL2TokenAmount"),
-          //     `${tradeData?.tradeValue} ${
-          //       type === "NFT" ? "NFT" : tradeData?.belong
-          //     }`
-          //   )
-          // ) :
-          type === "NFT" ? (
-            <NFTInput
-              {...{
-                ...rest,
-                isThumb,
-                type,
-                onCopy,
-                t,
-                disabled,
-                walletMap,
-                tradeData,
-                coinMap,
-                inputNFTDefaultProps: { label: "" },
-                inputNFTRef: inputBtnRef,
-              }}
-            />
-          ) : (
-            <BasicACoinTrade
-              {...{
-                ...rest,
-                type,
-                t,
-                disabled,
-                walletMap,
-                tradeData,
-                coinMap,
-                inputButtonDefaultProps,
-                inputBtnRef: inputBtnRef,
-              }}
-            />
-          )
-        }
+
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        {type === "NFT" ? (
+          <NFTInput
+            {...{
+              ...rest,
+              isThumb,
+              type,
+              onCopy,
+              t,
+              disabled,
+              walletMap,
+              tradeData,
+              coinMap,
+              inputNFTDefaultProps: { label: "" },
+              inputNFTRef: inputBtnRef,
+            }}
+          />
+        ) : (
+          <BasicACoinTrade
+            {...{
+              ...rest,
+              type,
+              t,
+              disabled,
+              walletMap,
+              tradeData,
+              coinMap,
+              inputButtonDefaultProps,
+              inputBtnRef: inputBtnRef,
+            }}
+          />
+        )}
       </Grid>
-      <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
-        {/*{isConfirmTransfer ? (*/}
-        {/*  <>*/}
-        {/*    {getTransferConfirmTemplate(t("labelL2toL2Address"), address ?? "")}*/}
-        {/*    {realAddr && (*/}
-        {/*      <Typography*/}
-        {/*        variant={isMobile ? "body2" : "body1"}*/}
-        {/*        color={"var(--color-text-secondary)"}*/}
-        {/*        style={{ wordBreak: "break-all" }}*/}
-        {/*      >*/}
-        {/*        {realAddr}*/}
-        {/*      </Typography>*/}
-        {/*    )}*/}
-        {/*  </>*/}
-        {/*) : (*/}
-        {/*  <>*/}
+
+      <Grid item alignSelf={"stretch"} position={"relative"}>
         <TextField
           className={"text-address"}
-          value={address}
+          value={addressDefault}
           error={!!(isInvalidAddressOrENS || isSameAddress)}
           label={t("labelL2toL2Address")}
           placeholder={t("labelL2toL2AddressInput")}
-          onChange={_handleOnAddressChange}
+          onChange={(event) => handleOnAddressChange(event?.target?.value)}
           disabled={!chargeFeeTokenList.length}
           SelectProps={{ IconComponent: DropDownIcon }}
           fullWidth={true}
         />
-        {address !== "" ? (
+
+        {addressDefault !== "" ? (
           isAddressCheckLoading ? (
             <LoadingIcon
               width={24}
-              style={{ top: "32px", right: "8px", position: "absolute" }}
+              style={{ top: 48, right: "8px", position: "absolute" }}
             />
           ) : (
             <IconClearStyled
               color={"inherit"}
               size={"small"}
-              style={{ top: "30px" }}
+              style={{ top: 46 }}
               aria-label="Clear"
-              onClick={handleClear}
+              onClick={() => handleOnAddressChange("")}
             >
               <CloseIcon />
             </IconClearStyled>
@@ -312,7 +280,7 @@ export const TransferWrap = <
             </Typography>
           ) : (
             <>
-              {address && realAddr && !isAddressCheckLoading && (
+              {addressDefault && realAddr && !isAddressCheckLoading && (
                 <Typography
                   color={"var(--color-text-primary)"}
                   variant={"body2"}
@@ -324,7 +292,7 @@ export const TransferWrap = <
                 </Typography>
               )}
               {!isAddressCheckLoading &&
-                address &&
+                addressDefault &&
                 addrStatus === AddressError.NoError &&
                 !isLoopringAddress && (
                   <Typography
@@ -343,35 +311,14 @@ export const TransferWrap = <
         {/*)}*/}
       </Grid>
 
-      {/*{isConfirmTransfer ? (*/}
-      {/*  <Grid*/}
-      {/*    item*/}
-      {/*    color={"var(--color-error)"}*/}
-      {/*    alignSelf={"stretch"}*/}
-      {/*    position={"relative"}*/}
-      {/*    marginTop={2}*/}
-      {/*  >*/}
-      {/*    {getTransferConfirmTemplate(t("labelL2toL2AddressType"), "Wallet")}*/}
-      {/*  </Grid>*/}
-      {/*) : (*/}
-      <Grid
-        item
-        color={"var(--color-error)"}
-        alignSelf={"stretch"}
-        position={"relative"}
-        marginTop={2}
-      >
+      <Grid item alignSelf={"stretch"} position={"relative"}>
         <TransferAddressType
           selectedValue={sureItsLayer2}
           handleSelected={handleSureItsLayer2}
         />
       </Grid>
-      {/*)}*/}
 
-      <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
-        {/*{isConfirmTransfer ? (*/}
-        {/*  getTransferConfirmTemplate(t("labelL2toL2Memo"), memo)*/}
-        {/*) : (*/}
+      <Grid item alignSelf={"stretch"} position={"relative"}>
         <TextField
           value={memo}
           // error={addressError && addressError.error ? true : false}
@@ -380,11 +327,9 @@ export const TransferWrap = <
           onChange={handleOnMemoChange}
           fullWidth={true}
         />
-        {/*)}*/}
       </Grid>
 
-      {/*{!isConfirmTransfer && (*/}
-      <Grid item marginTop={2} alignSelf={"stretch"} position={"relative"}>
+      <Grid item alignSelf={"stretch"} position={"relative"}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
@@ -445,14 +390,8 @@ export const TransferWrap = <
           </>
         )}
       </Grid>
-      {/*)}*/}
 
-      <Grid
-        item
-        marginTop={2}
-        alignSelf={"stretch"}
-        paddingBottom={isMobile ? 0 : 5 / 2}
-      >
+      <Grid item alignSelf={"stretch"} paddingBottom={isMobile ? 0 : 5 / 2}>
         <Button
           fullWidth
           variant={"contained"}
@@ -460,9 +399,6 @@ export const TransferWrap = <
           color={"primary"}
           onClick={() => {
             handleConfirm(0);
-            // const tradeDataWithMemo = { ...tradeData, memo };
-            // // onTransferClick(tradeData)
-            // onTransferClick(tradeDataWithMemo);
           }}
           loading={
             !getDisabled && transferBtnStatus === TradeBtnStatus.LOADING
@@ -471,13 +407,10 @@ export const TransferWrap = <
           }
           disabled={getDisabled || transferBtnStatus === TradeBtnStatus.LOADING}
         >
-          {
-            // isConfirmTransfer
-            // ? t("labelConfirm") :
-            t(transferI18nKey ?? `labelL2toL2Btn`)
-          }
+          {t(transferI18nKey ?? `labelL2toL2Btn`)}
         </Button>
       </Grid>
+
       <Toast
         alertText={t("labelCopyAddClip")}
         open={copyToastOpen}

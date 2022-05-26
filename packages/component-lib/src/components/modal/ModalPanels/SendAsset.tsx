@@ -74,7 +74,7 @@ export const SendAsset = ({
         </Typography>
         <>
           {sendAssetList.map((item) => {
-            return item.key === "SendToMyL1" && !isToL1 ? (
+            return /SendTo?(\w)+L1/gi.test(item.key) && !isToL1 ? (
               <></>
             ) : (
               <Box key={item.key} marginTop={1.5}>

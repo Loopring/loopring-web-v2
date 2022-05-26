@@ -11,6 +11,7 @@ export type ModalTypeKeys = keyof typeof ModalType;
 
 export type ModalStatePlayLoad = {
   isShow: boolean;
+  info?: { [key: string]: any };
 };
 export type Transaction = {
   symbol?: undefined | string;
@@ -39,7 +40,7 @@ export interface ModalState {
   isShowAccount: ModalStatePlayLoad & {
     step: number;
     error?: RESULT_INFO;
-    info?: { [key: string]: any };
+    // info?: { [key: string]: any };
   };
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };

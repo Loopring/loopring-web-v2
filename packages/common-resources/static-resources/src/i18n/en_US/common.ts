@@ -141,7 +141,7 @@ export default {
   labelMiningRewards: "Mining Rewards",
   labelLiquidityValue: "Liquidity Value",
   labelCopyAddClip: "Address Copied to Clipboard!",
-  labelPleaseInputWalletAddress: "Please Input Address",
+  labelPleaseInputWalletAddress: "Please input address / ens / account id",
   labelEmptyDefault: "No data to display",
   labelUnlockAccount: "Unlock Account",
   labelLockWallet: "Lock Wallet",
@@ -557,7 +557,7 @@ export default {
     "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n Loopring L2 payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
-  labelL2toL2AddressInput: "Please input the address",
+  labelL2toL2AddressInput: "PPlease input address / ens / account id",
   labelL2toL2Memo: "Memo (Optional)",
   labelL2toL2MemoPlaceholder: "Please input the memo",
   labelL2toL2FeeChoose: "Select payment token",
@@ -760,6 +760,8 @@ export default {
   labelL2toL1AddressType: "Address Type",
   labelConfirmCEX: "Confirm CEX Support",
   labelConfirmDetail:
-    "Before withdrawing, please check with your CEX support that they accept deposits from smart contracts.\n  L2 to L1 withdrawing is via a smart contract. The CEX depositing address may not be able to acknowledge the tokens deposited automatically.\n If the deposited tokens do not appear at the CEX address within 24 hours, please contact your CEX support to manually acknowledge this transaction.",
+    "<0>Before withdrawing, please check with your CEX support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is via a smart contract. The CEX depositing address may not be able to acknowledge the tokens deposited automatically.</1>" +
+    "<2>If the deposited tokens do not appear at the CEX address within 24 hours, please contact your CEX support to manually acknowledge this transaction.</2>",
   labelCEXUnderstand: "I understand and acknowledge the risk",
 };

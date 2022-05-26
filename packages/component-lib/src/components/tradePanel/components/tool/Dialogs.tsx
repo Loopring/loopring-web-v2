@@ -37,6 +37,9 @@ const DialogStyle = styled(Dialog)`
       line-height: 1.5em;
     }
   }
+  .MuiDialogContentText-root {
+    white-space: pre-line;
+  }
 `;
 
 export const AlertImpact = withTranslation("common", { withRef: true })(
@@ -611,9 +614,6 @@ export const OtherExchangeDialog = withTranslation("common", {
     open: boolean;
     handleClose: (event: MouseEvent, notShow?: boolean) => void;
   }) => {
-    const providers = Object.keys(ConnectProviders).filter(
-      (item) => item !== "unknown"
-    );
     const [agree, setAgree] = React.useState(false);
 
     React.useEffect(() => {
@@ -630,24 +630,34 @@ export const OtherExchangeDialog = withTranslation("common", {
       >
         <DialogTitle> {t("labelConfirmCEX")}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <Trans
-              i18nKey={"labelNoticeForProvider"}
-              tOptions={{ name: providers.join(",") }}
+          <Trans i18nKey={"labelConfirmDetail"}>
+            <Typography
+              marginBottom={2}
+              variant={"body1"}
+              color={"textSecondary"}
             >
-              Loopring only support and maintain {providers.join(",")} plugin
-              for Wallet Connect, if your installed other Wallet plugin, please
-              make sure it's the
-              {providers.join(",")} popup.
-            </Trans>
-            <Link
-              target="_top"
-              rel="noopener noreferrer"
-              href={"./#/document/plugin_guide.md"}
+              Before withdrawing, please check with your CEX support that they
+              accept deposits from smart contracts.
+            </Typography>
+            <Typography
+              marginBottom={2}
+              variant={"body1"}
+              color={"textSecondary"}
             >
-              {t("labelGuid")}
-            </Link>
-          </DialogContentText>
+              L2 to L1 withdrawing is via a smart contract. The CEX depositing
+              address may not be able to acknowledge the tokens deposited
+              automatically.
+            </Typography>
+            <Typography
+              marginBottom={2}
+              variant={"body1"}
+              color={"textSecondary"}
+            >
+              If the deposited tokens do not appear at the CEX address within 24
+              hours, please contact your CEX support to manually acknowledge
+              this transaction.
+            </Typography>
+          </Trans>
           <MuiFormControlLabel
             control={
               <Checkbox
