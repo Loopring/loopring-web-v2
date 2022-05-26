@@ -225,7 +225,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
             (item) => item.value === selectedValue
           )?.label ?? "",
       }}
-      label={t("labelL2toL2AddressType")}
+      label={t("labelL2toL1AddressType")}
       // inputProps={{}}
     >
       {desMenuItem}

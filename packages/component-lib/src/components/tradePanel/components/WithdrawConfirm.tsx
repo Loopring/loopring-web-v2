@@ -24,6 +24,7 @@ export const WithdrawConfirm = <
   realAddr,
   type,
   feeInfo,
+  isToMyself,
   sureIsAllowAddress,
 }: Partial<WithdrawViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
@@ -57,10 +58,15 @@ export const WithdrawConfirm = <
             component={"h4"}
             variant={isMobile ? "h4" : "h3"}
             whiteSpace={"pre"}
+            marginRight={1}
           >
-            {t("labelL2toL2Title")}
+            {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
+            (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
+              ? t("labelL2ToL1DeployTitle")
+              : isToMyself
+              ? t("labelL2ToMyL1Title")
+              : t("labelL2ToOtherL1Title")}
           </Typography>
-
           <Typography
             component={"h6"}
             variant={isMobile ? "h5" : "h4"}
@@ -88,18 +94,20 @@ export const WithdrawConfirm = <
           {realAddr}
         </Typography>
       </Grid>
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2AddressType")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {
-            [...nonExchangeList, ...exchangeList].find(
-              (item) => item.value === sureIsAllowAddress
-            )?.label
-          }
-        </Typography>
-      </Grid>
+      {!isToMyself && (
+        <Grid item xs={12}>
+          <Typography color={"var(--color-text-third)"} variant={"body1"}>
+            {t("labelL2toL1AddressType")}
+          </Typography>
+          <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
+            {
+              [...nonExchangeList, ...exchangeList].find(
+                (item) => item.value === sureIsAllowAddress
+              )?.label
+            }
+          </Typography>
+        </Grid>
+      )}
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
           {t("labelL2toL2Fee")}

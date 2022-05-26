@@ -540,6 +540,8 @@ export default {
   depositLabelBtn: "Receive",
   depositLabelLinkRecent: "Recent receive history from L1",
   labelL2ToL1Title: "Send to L1",
+  labelL2ToMyL1Title: "Send to My L1",
+  labelL2ToOtherL1Title: "Send to Another L1",
   labelL2ToL1DeployTitle: "Deploy & Send to L1",
   labelL2toL1EnterToken: "Select Token",
   labelSendL1Btn: "Send",

@@ -317,7 +317,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       account.readyState === AccountStatus.ACTIVATED
     ) {
     } else {
-      setShowWithdraw({ isShow: false });
+      setShowWithdraw({ isShow: false, info });
     }
   }, [accountStatus, account.readyState]);
 
@@ -325,7 +325,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     if (
       isShow &&
       accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
+      account.readyState === AccountStatus.ACTIVATED &&
+      !info?.isRetry
     ) {
       resetDefault();
     }
@@ -495,7 +496,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         (info?.isToMyself || sureIsAllowAddress)
       ) {
         try {
-          setShowWithdraw({ isShow: false });
+          setShowWithdraw({ isShow: false, info });
           setShowAccount({
             isShow: true,
             step: AccountStep.Withdraw_WaitForAuth,
@@ -621,7 +622,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       if (withdrawValue && withdrawValue.belong) {
         handleWithdraw(withdrawValue, realAddr ? realAddr : address);
       }
-      setShowWithdraw({ isShow: false });
+      setShowWithdraw({ isShow: false, info });
     },
     handleWithdrawTypeChange: (value) => {
       // myLog('handleWithdrawTypeChange', value)

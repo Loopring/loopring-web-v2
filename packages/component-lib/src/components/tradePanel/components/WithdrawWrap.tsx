@@ -174,7 +174,9 @@ export const WithdrawWrap = <
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
               ? t("labelL2ToL1DeployTitle")
-              : t("labelL2ToL1Title")}
+              : isToMyself
+              ? t("labelL2ToMyL1Title")
+              : t("labelL2ToOtherL1Title")}
           </Typography>
           <HelpIcon
             {...bindHover(popupState)}

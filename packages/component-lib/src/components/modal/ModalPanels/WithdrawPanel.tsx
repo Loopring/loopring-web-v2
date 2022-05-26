@@ -75,7 +75,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
                 }}
               />
             ),
-            [switchData.tradeData]
+            [onWithdrawClick, rest, switchData.tradeData, type]
           ),
           toolBarItem: React.useMemo(
             () => (
@@ -123,10 +123,12 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
               />
             ),
             [
-              onChangeEvent,
-              chargeFeeTokenList,
               rest,
-              switchData,
+              type,
+              chargeFeeTokenList,
+              switchData.tradeData,
+              onChangeEvent,
+              coinMap,
               onWithdrawClick,
               withdrawBtnStatus,
               assetsData,

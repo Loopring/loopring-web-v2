@@ -149,7 +149,7 @@ export function useAccountModalForUI({
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
   const {
-    modals: { isShowAccount },
+    modals: { isShowAccount, isShowWithdraw },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -332,7 +332,13 @@ export function useAccountModalForUI({
       callback: () => {
         if (lastStep === LAST_STEP.withdraw) {
           setShowAccount({ isShow: false });
-          setShowWithdraw({ isShow: true });
+          setShowWithdraw({
+            isShow: true,
+            info: {
+              ...isShowWithdraw.info,
+              isRetry: true,
+            },
+          });
         } else {
           setShowAccount({ isShow: false });
         }
