@@ -24,6 +24,7 @@ import {
   NFTWholeINFO,
   TOAST_TIME,
   AddressError,
+  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -72,6 +73,7 @@ export const WithdrawWrap = <
   withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
+  handleConfirm,
   isFeeNotEnough,
   onWithdrawClick,
   withdrawBtnStatus,
@@ -91,7 +93,11 @@ export const WithdrawWrap = <
   sureIsAllowAddress,
   handleSureIsAllowAddress,
   ...rest
-}: WithdrawViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
+}: WithdrawViewProps<T, I, C> &
+  WithTranslation & {
+    assetsData: AssetsRawDataItem[];
+    handleConfirm: (index: number) => void;
+  }) => {
   const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
@@ -415,14 +421,15 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid item alignSelf={"stretch"} paddingBottom={isMobile ? 0 : 5 / 2}>
+      <Grid item alignSelf={"stretch"} paddingBottom={0}>
         <Button
           fullWidth
           variant={"contained"}
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            onWithdrawClick(tradeData);
+            handleConfirm(0);
+            // onWithdrawClick(tradeData);
           }}
           loading={
             withdrawBtnStatus === TradeBtnStatus.LOADING && !getDisabled

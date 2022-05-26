@@ -116,15 +116,15 @@ const BoxStyle = styled(Box)<
 
 const BoxBtnStyle = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-self: flex-end;
-  width: 70%;
+  width: 100%;
   .btn {
     width: 100%;
-    padding: ${({ theme }) => `${theme.unit}px ${3 * theme.unit}px`};
+    padding: ${({ theme }) => `${theme.unit}px ${0 * theme.unit}px`};
   }
   &.isMobile {
-    width: 100%;
+    flex-direction: column;
   }
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 export const NFTDetail = withTranslation("common")(
@@ -373,128 +373,135 @@ export const NFTDetail = withTranslation("common")(
             </Typography>
 
             <BoxBtnStyle className={isMobile ? "isMobile" : ""}>
-              {!!(
-                popItem.isCounterFactualNFT &&
-                popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-                popItem.minter?.toLowerCase() ===
-                  account.accAddress.toLowerCase()
-              ) && (
+              <Typography color={"var(--color-text-third)"} width={150}>
+                {t("labelNFTSend")}
+              </Typography>
+              <Box flex={1} display={"flex"} flexDirection={"column"}>
+                {!!(
+                  popItem.isCounterFactualNFT &&
+                  popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+                  popItem.minter?.toLowerCase() ===
+                    account.accAddress.toLowerCase()
+                ) && (
+                  <Typography className={"btn"} minWidth={100} marginRight={2}>
+                    <Button
+                      variant={"outlined"}
+                      size={"medium"}
+                      fullWidth
+                      onClick={() =>
+                        deployNFT.enable
+                          ? handleChangeIndex(3)
+                          : setShowTradeIsFrozen({ isShow: true })
+                      }
+                    >
+                      {t("labelNFTDeployContract")}
+                    </Button>
+                  </Typography>
+                )}
+
                 <Typography className={"btn"} minWidth={100} marginRight={2}>
                   <Button
-                    variant={"outlined"}
-                    size={"medium"}
+                    variant={"contained"}
+                    size={"small"}
+                    color={"primary"}
                     fullWidth
-                    onClick={() =>
-                      deployNFT.enable
-                        ? handleChangeIndex(3)
-                        : setShowTradeIsFrozen({ isShow: true })
+                    disabled={
+                      popItem.isCounterFactualNFT &&
+                      popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
                     }
+                    onClick={() => {
+                      isKnowNFTNoMeta
+                        ? withdrawNFT.enable
+                          ? handleChangeIndex(2)
+                          : setShowTradeIsFrozen({ isShow: true })
+                        : setShowDialog("Withdraw");
+                    }}
                   >
-                    {t("labelNFTDeployContract")}
+                    {popItem.isCounterFactualNFT &&
+                    popItem.deploymentStatus ===
+                      DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
+                      t("labelNFTDeploySendL1")
+                    ) : popItem.isCounterFactualNFT &&
+                      popItem.deploymentStatus ===
+                        DEPLOYMENT_STATUS.DEPLOYING ? (
+                      <>
+                        <LoadingIcon
+                          color={"primary"}
+                          style={{
+                            width: 18,
+                            height: 18,
+                            marginRight: "8px",
+                          }}
+                        />
+                        {t("labelNFTDeploying")}
+                      </>
+                    ) : (
+                      t("labelNFTSendMyL1Btn")
+                    )}
                   </Button>
                 </Typography>
-              )}
 
-              <Typography className={"btn"} minWidth={100} marginRight={2}>
-                <Button
-                  variant={"contained"}
-                  size={"small"}
-                  color={"primary"}
-                  fullWidth
-                  disabled={
-                    popItem.isCounterFactualNFT &&
-                    popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
-                  }
-                  onClick={() => {
-                    isKnowNFTNoMeta
-                      ? withdrawNFT.enable
-                        ? handleChangeIndex(2)
-                        : setShowTradeIsFrozen({ isShow: true })
-                      : setShowDialog("Withdraw");
-                  }}
-                >
-                  {popItem.isCounterFactualNFT &&
-                  popItem.deploymentStatus ===
-                    DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                    t("labelNFTDeploySendL1")
-                  ) : popItem.isCounterFactualNFT &&
-                    popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING ? (
-                    <>
-                      <LoadingIcon
-                        color={"primary"}
-                        style={{
-                          width: 18,
-                          height: 18,
-                          marginRight: "8px",
-                        }}
-                      />
-                      {t("labelNFTDeploying")}
-                    </>
-                  ) : (
-                    t("labelNFTSendMyL1Btn")
-                  )}
-                </Button>
-              </Typography>
+                <Typography className={"btn"} minWidth={100} marginRight={2}>
+                  <Button
+                    variant={"contained"}
+                    size={"small"}
+                    color={"primary"}
+                    fullWidth
+                    disabled={
+                      popItem.isCounterFactualNFT &&
+                      popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
+                    }
+                    onClick={() => {
+                      isKnowNFTNoMeta
+                        ? withdrawNFT.enable
+                          ? handleChangeIndex(2)
+                          : setShowTradeIsFrozen({ isShow: true })
+                        : setShowDialog("Withdraw");
+                    }}
+                  >
+                    {popItem.isCounterFactualNFT &&
+                    popItem.deploymentStatus ===
+                      DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
+                      t("labelNFTDeploySendL1")
+                    ) : popItem.isCounterFactualNFT &&
+                      popItem.deploymentStatus ===
+                        DEPLOYMENT_STATUS.DEPLOYING ? (
+                      <>
+                        <LoadingIcon
+                          color={"primary"}
+                          style={{
+                            width: 18,
+                            height: 18,
+                            marginRight: "8px",
+                          }}
+                        />
+                        {t("labelNFTDeploying")}
+                      </>
+                    ) : (
+                      t("labelNFTSendOtherL1Btn")
+                    )}
+                  </Button>
+                </Typography>
 
-              <Typography className={"btn"} minWidth={100} marginRight={2}>
-                <Button
-                  variant={"contained"}
-                  size={"small"}
-                  color={"primary"}
-                  fullWidth
-                  disabled={
-                    popItem.isCounterFactualNFT &&
-                    popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
-                  }
-                  onClick={() => {
-                    isKnowNFTNoMeta
-                      ? withdrawNFT.enable
-                        ? handleChangeIndex(2)
-                        : setShowTradeIsFrozen({ isShow: true })
-                      : setShowDialog("Withdraw");
-                  }}
-                >
-                  {popItem.isCounterFactualNFT &&
-                  popItem.deploymentStatus ===
-                    DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                    t("labelNFTDeploySendL1")
-                  ) : popItem.isCounterFactualNFT &&
-                    popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING ? (
-                    <>
-                      <LoadingIcon
-                        color={"primary"}
-                        style={{
-                          width: 18,
-                          height: 18,
-                          marginRight: "8px",
-                        }}
-                      />
-                      {t("labelNFTDeploying")}
-                    </>
-                  ) : (
-                    t("labelNFTSendOtherL1Btn")
-                  )}
-                </Button>
-              </Typography>
-
-              <Typography className={"btn"} minWidth={100} marginRight={2}>
-                <Button
-                  variant={"contained"}
-                  size={"small"}
-                  color={"primary"}
-                  fullWidth
-                  // disabled={isKnowNFTNoMeta ? true : false}
-                  onClick={() =>
-                    isKnowNFTNoMeta
-                      ? transferNFT.enable
-                        ? handleChangeIndex(1)
-                        : setShowTradeIsFrozen({ isShow: true })
-                      : setShowDialog("Transfer")
-                  }
-                >
-                  {t("labelNFTSendL2Btn")}
-                </Button>
-              </Typography>
+                <Typography className={"btn"} minWidth={100} marginRight={2}>
+                  <Button
+                    variant={"contained"}
+                    size={"small"}
+                    color={"primary"}
+                    fullWidth
+                    // disabled={isKnowNFTNoMeta ? true : false}
+                    onClick={() =>
+                      isKnowNFTNoMeta
+                        ? transferNFT.enable
+                          ? handleChangeIndex(1)
+                          : setShowTradeIsFrozen({ isShow: true })
+                        : setShowDialog("Transfer")
+                    }
+                  >
+                    {t("labelNFTSendL2Btn")}
+                  </Button>
+                </Typography>
+              </Box>
             </BoxBtnStyle>
           </Box>
         </Box>

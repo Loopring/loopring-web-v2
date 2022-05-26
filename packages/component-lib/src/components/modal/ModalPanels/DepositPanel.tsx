@@ -117,7 +117,7 @@ export const DepositPanel = withTranslation("common", { withRef: true })(
                 {onBack ? (
                   <ModalBackButton
                     marginTop={0}
-                    marginLeft={0}
+                    marginLeft={-2}
                     onBack={() => {
                       onBack();
                     }}

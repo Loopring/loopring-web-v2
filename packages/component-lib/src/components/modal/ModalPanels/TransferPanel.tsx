@@ -44,7 +44,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
     // const hanleConfirm = () => {};
     React.useEffect(() => {
       setPanelIndex(index + 1);
-    }, [panelIndex]);
+    }, [index]);
 
     const props: SwitchPanelProps<string> = {
       index: panelIndex, // show default show
@@ -65,14 +65,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
                 }}
               />
             ),
-            [
-              // rest,
-              // type,
-              // chargeFeeTokenList,
-              switchData.tradeData,
-              // onChangeEvent,
-              // isThumb,
-            ]
+            [switchData.tradeData]
           ),
           toolBarItem: React.useMemo(
             () => (
@@ -80,9 +73,9 @@ export const TransferPanel = withTranslation(["common", "error"], {
                 {onBack ? (
                   <ModalBackButton
                     marginTop={0}
-                    marginLeft={0}
+                    marginLeft={-2}
                     onBack={() => {
-                      onBack();
+                      setPanelIndex(1);
                     }}
                     {...rest}
                   />
@@ -140,7 +133,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
                 {onBack ? (
                   <ModalBackButton
                     marginTop={0}
-                    marginLeft={0}
+                    marginLeft={-2}
                     onBack={() => {
                       onBack();
                     }}

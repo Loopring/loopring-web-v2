@@ -38,7 +38,6 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
   // const proFlag =
   //   process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { setTheme } = useSettings();
-  const { setShowAccount } = useOpenModals();
   const { depositProps, view: modalView } = useWrapModal();
 
   // const { depositProps } = useDeposit(true, { token, owner });
@@ -93,12 +92,6 @@ const RouterView = ({ state }: { state: SagaStatus }) => {
           )}
         />
       </Switch>
-      <ModalGroup
-        depositProps={depositProps}
-        assetsRawData={[]}
-        onAccountInfoPanelClose={() => setShowAccount({ isShow: false })}
-        isLayer1Only={true}
-      />
       {modalView}
       {query && query.has("nofooter") ? <></> : <Footer />}
     </>

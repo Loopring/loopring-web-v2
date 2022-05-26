@@ -221,6 +221,7 @@ export type AddressItemType<T> = {
   label: string;
   description: string;
   disabled?: boolean;
+  maxWidth?: string | number;
 };
 
 export const useAddressTypeLists = <
@@ -271,18 +272,21 @@ export const useAddressTypeLists = <
       value: EXCHANGE_TYPE.Binance as T,
       disabled: false,
       description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`),
+      maxWidth: "initial",
     },
     {
       label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
       value: EXCHANGE_TYPE.Huobi as T,
       disabled: false,
       description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`),
+      maxWidth: "initial",
     },
     {
       label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
       value: EXCHANGE_TYPE.Others as T,
       disabled: false,
       description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`),
+      maxWidth: "initial",
     },
   ];
   return {

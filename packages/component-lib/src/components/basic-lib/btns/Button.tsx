@@ -238,8 +238,8 @@ export const ModalCloseButton = ({
       alignSelf={"flex-end"}
       position={"absolute"}
       zIndex={99}
-      marginTop={"-28px"}
-      marginRight={"12px"}
+      marginTop={"-27px"}
+      marginRight={1}
     >
       <IconButton
         size={"large"}

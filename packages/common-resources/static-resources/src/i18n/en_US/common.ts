@@ -388,6 +388,7 @@ export default {
   labelNFTDescription: "Description:",
   labelNFTDate: "Date:",
   labelNFTDeployContract: "Deploy",
+  labelNFTSend: "Send:",
   labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "ID:",
@@ -756,8 +757,8 @@ export default {
   labelExchangeHuobi: "Huobi",
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
-  labelExchangeOther: "Others",
-  labelExchangeOtherDes: "Others",
+  labelExchangeOthers: "Others",
+  labelExchangeOthersDes: "Others",
   labelL2toL1AddressType: "Address Type",
   labelConfirmCEX: "Confirm CEX Support",
   labelConfirmDetail:

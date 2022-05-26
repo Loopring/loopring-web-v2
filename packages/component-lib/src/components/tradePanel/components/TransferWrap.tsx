@@ -81,10 +81,6 @@ export const TransferWrap = <
     label: t("labelL2toL2EnterToken"),
   };
 
-  // const [address, setAddress] = React.useState<string | undefined>(
-  //   addressDefault ? addressDefault : ""
-  // );
-
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
 
@@ -96,16 +92,6 @@ export const TransferWrap = <
   const getDisabled = React.useMemo(() => {
     return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, transferBtnStatus]);
-
-  // const debounceAddress = _.debounce(
-  //   ({ address }: any) => {
-  //     if (handleOnAddressChange) {
-  //
-  //     }
-  //   },
-  //   500,
-  //   { trailing: true }
-  // );
 
   const [copyToastOpen, setCopyToastOpen] = React.useState(false);
   const onCopy = React.useCallback(
@@ -391,7 +377,7 @@ export const TransferWrap = <
         )}
       </Grid>
 
-      <Grid item alignSelf={"stretch"} paddingBottom={isMobile ? 0 : 5 / 2}>
+      <Grid item alignSelf={"stretch"} paddingBottom={0}>
         <Button
           fullWidth
           variant={"contained"}

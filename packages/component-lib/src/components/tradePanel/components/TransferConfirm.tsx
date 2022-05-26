@@ -117,12 +117,7 @@ export const TransferConfirm = <
         </Typography>
       </Grid>
 
-      <Grid
-        item
-        marginTop={2}
-        alignSelf={"stretch"}
-        paddingBottom={isMobile ? 0 : 5 / 2}
-      >
+      <Grid item marginTop={2} alignSelf={"stretch"} paddingBottom={0}>
         <Button
           fullWidth
           variant={"contained"}

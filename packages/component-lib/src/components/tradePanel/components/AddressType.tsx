@@ -5,17 +5,21 @@ import React, { ForwardedRef } from "react";
 import {
   AddressItemType,
   EXCHANGE_TYPE,
+  myLog,
   useAddressTypeLists,
   WALLET_TYPE,
 } from "@loopring-web/common-resources";
+import { MenuItemProps } from "../../basic-lib";
 
-const MenuItemStyle = styled(MenuItem)`
+const MenuItemStyle = styled(MenuItem)<
+  MenuItemProps<any> & { maxWidth?: string | number }
+>`
   display: flex;
   flex-direction: column;
   height: auto;
   justify-content: center;
   align-items: flex-start;
-  max-width: fit-content;
+  max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : "fit-content")};
   .MuiTypography-root {
     white-space: break-spaces;
   }
@@ -24,7 +28,9 @@ const MenuItemStyle = styled(MenuItem)`
   //  display: flex;
   //  flex-direction: ;
   //}
-` as typeof MenuItem;
+` as (
+  props: MenuItemProps<any> & { maxWidth?: string | number }
+) => JSX.Element;
 
 export const WalletItemOptions = React.memo(
   React.forwardRef(
@@ -34,6 +40,7 @@ export const WalletItemOptions = React.memo(
         label,
         myValue,
         selectedValue,
+        maxWidth,
         disabled = false,
         handleSelected,
       }: {
@@ -43,12 +50,15 @@ export const WalletItemOptions = React.memo(
       } & AddressItemType<T>,
       ref: ForwardedRef<any>
     ) => {
+      myLog("maxWidth", maxWidth);
       return (
         <MenuItemStyle
           ref={ref}
           disabled={disabled}
           value={myValue}
+          maxWidth={maxWidth}
           // onClick={}
+          // sx={{ maxWidth: maxWidth ? maxWidth : "fit-content" }}
           onClick={() => {
             handleSelected(myValue);
           }}
@@ -124,7 +134,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
       // inputProps={{}}
     >
       {desMenuItem}
-      {walletList.map(({ value, label, description, disabled }) => (
+      {walletList.map(({ value, label, description, disabled, maxWidth }) => (
         <WalletItemOptions
           key={value}
           value={value}
@@ -133,6 +143,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
             handleSelected(value as T);
             onClose();
           }}
+          maxWidth={maxWidth}
           selectedValue={selectedValue}
           label={label}
           description={description}
@@ -208,7 +219,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
     >
       {desMenuItem}
       <Divider />
-      {exchangeList.map(({ value, label, description, disabled }) => (
+      {exchangeList.map(({ value, label, description, disabled, maxWidth }) => (
         <WalletItemOptions
           key={value}
           value={value}
@@ -219,6 +230,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
           }}
           selectedValue={selectedValue}
           label={label}
+          maxWidth={maxWidth}
           description={description}
           disabled={disabled}
         />
