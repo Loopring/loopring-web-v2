@@ -56,7 +56,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       const { isShow, agree, ...rest } = action.payload;
       state.isShowOtherExchange = {
         isShow,
-        agree,
+        agree: isShow ? false : agree,
         ...rest,
       };
     },

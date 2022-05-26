@@ -149,7 +149,7 @@ export function useAccountModalForUI({
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
   const {
-    modals: { isShowAccount, isShowWithdraw },
+    modals: { isShowAccount },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -183,9 +183,7 @@ export function useAccountModalForUI({
   const vendorProps = useVendor();
   const { nftMintAdvanceProps } = useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
-  const { withdrawProps } = useWithdraw({
-    isToMyself: isShowWithdraw.info?.isToMyself,
-  });
+  const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
   const { nftWithdrawProps, cancelNFTWithdraw } = useNFTWithdraw({});
   const { nftTransferProps, cancelNFTTransfer } = useNFTTransfer({});

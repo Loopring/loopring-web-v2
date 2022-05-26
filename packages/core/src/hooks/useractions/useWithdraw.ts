@@ -45,19 +45,14 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export const useWithdraw = <R extends IBData<T>, T>({
-  isToMyself = false,
-}: {
-  isToMyself?: boolean;
-}) => {
+export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
-      isShowWithdraw: { symbol, isShow },
+      isShowWithdraw: { symbol, isShow, info },
     },
     setShowAccount,
     setShowWithdraw,
   } = useOpenModals();
-
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -113,23 +108,19 @@ export const useWithdraw = <R extends IBData<T>, T>({
   React.useEffect(() => {
     setSureIsAllowAddress(undefined);
   }, [realAddr]);
-  React.useEffect(() => {
-    if (isToMyself) {
-      setAddress(account.accAddress);
-    } else {
-      setAddress("");
-    }
-  }, [isToMyself]);
 
-  const isNotAvaiableAddress = isCFAddress
-    ? "isCFAddress"
-    : isContractAddress &&
-      disableWithdrawList.includes(withdrawValue?.belong ?? "")
-    ? `isContractAddress`
-    : undefined;
+  const isNotAvaiableAddress =
+    // isCFAddress
+    // ? "isCFAddress"
+    // :
+    isContractAddress &&
+    disableWithdrawList.includes(withdrawValue?.belong ?? "")
+      ? `isContractAddress`
+      : undefined;
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
+  myLog("address", address);
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && withdrawValue.belong && tokenMap[withdrawValue.belong]) {
       const withdrawT = tokenMap[withdrawValue.belong];
@@ -150,6 +141,7 @@ export const useWithdraw = <R extends IBData<T>, T>({
         withdrawValue.fee?.feeRaw &&
         tradeValue.gt(BIGO) &&
         realAddr &&
+        (info?.isToMyself || sureIsAllowAddress) &&
         (addrStatus as AddressError) === AddressError.NoError
       ) {
         enableBtn();
@@ -163,16 +155,22 @@ export const useWithdraw = <R extends IBData<T>, T>({
     }
     disableBtn();
   }, [
-    withdrawType,
-    enableBtn,
-    realAddr,
-    disableBtn,
     tokenMap,
-    addrStatus,
+    withdrawValue.belong,
+    withdrawValue.tradeValue,
+    withdrawValue.fee?.belong,
+    withdrawValue.fee?.feeRaw,
+    disableBtn,
+    address,
+    withdrawType,
     isNotAvaiableAddress,
-    chargeFeeTokenList,
-    withdrawValue,
+    chargeFeeTokenList.length,
     isFeeNotEnough,
+    realAddr,
+    info?.isToMyself,
+    sureIsAllowAddress,
+    addrStatus,
+    enableBtn,
   ]);
 
   React.useEffect(() => {
@@ -181,6 +179,7 @@ export const useWithdraw = <R extends IBData<T>, T>({
     withdrawType,
     addrStatus,
     realAddr,
+    sureIsAllowAddress,
     isFeeNotEnough,
     withdrawValue?.fee,
     withdrawValue?.belong,
@@ -250,7 +249,7 @@ export const useWithdraw = <R extends IBData<T>, T>({
           belong: symbol as any,
           balance: walletMap2[symbol]?.count,
           tradeValue: undefined,
-          address: "*",
+          address: info?.isToMyself ? account.accAddress : "*",
         });
       }
     } else {
@@ -263,16 +262,41 @@ export const useWithdraw = <R extends IBData<T>, T>({
             updateWithdrawData({
               fee: feeInfo,
               belong: keyVal as any,
-              tradeValue: 0,
+              tradeValue: undefined,
               balance: walletInfo.count,
-              address: "*",
+              address: info?.isToMyself ? account.accAddress : "*",
             });
             break;
           }
         }
+      } else if (withdrawValue.belong && walletMap2) {
+        const walletInfo = walletMap2[withdrawValue.belong];
+        updateWithdrawData({
+          fee: feeInfo,
+          belong: withdrawValue.belong,
+          tradeValue: undefined,
+          balance: walletInfo.count,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
+      } else {
+        updateWithdrawData({
+          fee: feeInfo,
+          belong: withdrawValue.belong,
+          tradeValue: undefined,
+          balance: undefined,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
       }
     }
+    if (info?.isToMyself) {
+      setAddress(account.accAddress);
+    } else {
+      setAddress("");
+    }
   }, [
+    account.accAddress,
+    setAddress,
+    info?.isToMyself,
     checkFeeIsEnough,
     symbol,
     walletMap2,
@@ -303,13 +327,17 @@ export const useWithdraw = <R extends IBData<T>, T>({
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      updateWithdrawData({
-        balance: -1,
-        tradeValue: -1,
-      });
-      setAddress("");
+      resetDefault();
     }
   }, [isShow, accountStatus, account.readyState]);
+
+  // React.useEffect(() => {
+  //   if (info?.isToMyself) {
+  //     setAddress(account.accAddress);
+  //   } else {
+  //     setAddress("");
+  //   }
+  // }, [info?.isToMyself, account.accAddress, setAddress]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
 
@@ -463,7 +491,8 @@ export const useWithdraw = <R extends IBData<T>, T>({
         LoopringAPI.userAPI &&
         withdrawValue?.fee?.belong &&
         withdrawValue.fee?.feeRaw &&
-        eddsaKey?.sk
+        eddsaKey?.sk &&
+        (info?.isToMyself || sureIsAllowAddress)
       ) {
         try {
           setShowWithdraw({ isShow: false });
@@ -544,10 +573,11 @@ export const useWithdraw = <R extends IBData<T>, T>({
       account,
       tokenMap,
       exchangeInfo,
-      withdrawValue.fee?.belong,
-      withdrawValue.fee?.feeRaw,
-      withdrawValue.fee?.__raw__?.feeRaw,
+      withdrawValue?.fee?.belong,
+      withdrawValue?.fee?.feeRaw,
       withdrawValue.belong,
+      info?.isToMyself,
+      sureIsAllowAddress,
       setShowWithdraw,
       setShowAccount,
       withdrawType,
@@ -569,7 +599,7 @@ export const useWithdraw = <R extends IBData<T>, T>({
     type: "TOKEN",
     isAddressCheckLoading,
     isCFAddress,
-    isToMyself,
+    isToMyself: info?.isToMyself,
     isContractAddress,
     withdrawI18nKey,
     accAddr: account.accAddress,

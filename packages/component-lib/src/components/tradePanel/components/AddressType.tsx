@@ -10,6 +10,7 @@ import {
   WALLET_TYPE,
 } from "@loopring-web/common-resources";
 import { MenuItemProps } from "../../basic-lib";
+import { useOpenModals } from "../../../stores";
 
 const MenuItemStyle = styled(MenuItem)<
   MenuItemProps<any> & { maxWidth?: string | number }
@@ -51,6 +52,7 @@ export const WalletItemOptions = React.memo(
       ref: ForwardedRef<any>
     ) => {
       myLog("maxWidth", maxWidth);
+
       return (
         <MenuItemStyle
           ref={ref}
@@ -106,8 +108,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
       </MenuItemStyle>
     );
   }, [t]);
-  // const ref = React.createRef();
-  // debugger;
+
   const [open, setOpen] = React.useState(false);
   const onClose = () => {
     setOpen(false);
@@ -163,14 +164,24 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
 }) => {
   const { t } = useTranslation("common");
   const { nonExchangeList, exchangeList } = useAddressTypeLists<T>();
-
+  const {
+    setShowOtherExchange,
+    modals: { isShowOtherExchange },
+  } = useOpenModals();
   const [open, setOpen] = React.useState(false);
   const onClose = () => {
     setOpen(false);
   };
+  React.useEffect(() => {
+    if (isShowOtherExchange.agree) {
+      handleSelected(EXCHANGE_TYPE.Others);
+      onClose();
+    }
+  }, [isShowOtherExchange.agree]);
 
   const onOpen = () => {
     setOpen(true);
+    setShowOtherExchange({ isShow: false, agree: false });
   };
   const desMenuItem = React.useMemo(() => {
     return (
@@ -224,9 +235,13 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
           key={value}
           value={value}
           myValue={value}
-          handleSelected={(value) => {
-            handleSelected(value as T);
-            onClose();
+          handleSelected={async (value) => {
+            if (value === EXCHANGE_TYPE.Others) {
+              setShowOtherExchange({ isShow: true });
+            } else {
+              handleSelected(value as T);
+              onClose();
+            }
           }}
           selectedValue={selectedValue}
           label={label}

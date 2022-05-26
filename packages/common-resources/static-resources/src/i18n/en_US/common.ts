@@ -758,7 +758,7 @@ export default {
   labelExchangeHuobiDes: "Transactions need to wait 24 hours",
   labelExchangeCoinbase: "Coinbase",
   labelExchangeOthers: "Others",
-  labelExchangeOthersDes: "Others",
+  labelExchangeOthersDes: "",
   labelL2toL1AddressType: "Address Type",
   labelConfirmCEX: "Confirm CEX Support",
   labelConfirmDetail:

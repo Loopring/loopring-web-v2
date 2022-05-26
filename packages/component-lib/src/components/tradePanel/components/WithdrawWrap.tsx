@@ -20,7 +20,6 @@ import {
   HelpIcon,
   IBData,
   LoadingIcon,
-  myLog,
   NFTWholeINFO,
   TOAST_TIME,
   AddressError,
@@ -116,12 +115,10 @@ export const WithdrawWrap = <
   );
 
   const inputBtnRef = React.useRef();
-  myLog("withdraw accAddr", accAddr, withdrawType);
 
   const getDisabled = React.useMemo(() => {
     return disabled || withdrawBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, withdrawBtnStatus]);
-  myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
     label: t("labelL2toL1EnterToken"),
   };
