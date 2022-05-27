@@ -152,7 +152,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   ]);
 
   useWalletLayer2Socket({});
-  myLog("");
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
     if (nftData) {
@@ -173,6 +172,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         address: info?.isToMyself ? account.accAddress : "*",
       });
     }
+    debugger;
     if (info?.isToMyself) {
       setAddress(account.accAddress);
     } else {
