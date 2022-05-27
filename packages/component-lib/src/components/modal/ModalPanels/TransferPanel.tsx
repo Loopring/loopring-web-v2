@@ -65,7 +65,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
                 }}
               />
             ),
-            [switchData.tradeData]
+            [rest, onTransferClick, type, switchData.tradeData, isThumb]
           ),
           toolBarItem: React.useMemo(
             () => (

@@ -152,10 +152,12 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    const { nftData, nftBalance, balance, ...nftRest } =
+      store.getState().modals.isShowNFTTransfer;
     if (nftData) {
       updateNFTTransferData({
         belong: nftData as any,
-        balance: nftBalance,
+        balance: balance ?? nftBalance,
         tradeValue: undefined,
         fee: feeInfo,
         ...nftRest,
@@ -170,15 +172,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
         address: "*",
       });
     }
-  }, [
-    checkFeeIsEnough,
-    nftData,
-    updateNFTTransferData,
-    nftBalance,
-    feeInfo,
-    nftRest,
-    address,
-  ]);
+  }, [checkFeeIsEnough, updateNFTTransferData, feeInfo, nftRest, address]);
 
   React.useEffect(() => {
     if ((isShow || info?.isShowLocal) && !info?.isRetry) {
@@ -498,7 +492,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     },
     // isConfirmTransfer,
     sureItsLayer2,
-    tradeData: nftTransferValue as unknown as R,
+    tradeData: { ...nftTransferValue } as unknown as R,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     transferBtnStatus: btnStatus,

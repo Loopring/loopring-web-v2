@@ -57,7 +57,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
     useModalData();
-  myLog("useNFTWithdraw info", info);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -154,10 +153,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   useWalletLayer2Socket({});
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    const { nftData, nftBalance, balance, ...nftRest } =
+      store.getState().modals.isShowNFTWithdraw;
     if (nftData) {
       updateNFTWithdrawData({
         belong: nftData as any,
-        balance: nftBalance,
+        balance: balance ?? nftBalance,
         tradeValue: undefined,
         ...nftRest,
         fee: feeInfo,
@@ -172,7 +173,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         address: info?.isToMyself ? account.accAddress : "*",
       });
     }
-    debugger;
     if (info?.isToMyself) {
       setAddress(account.accAddress);
     } else {
@@ -180,7 +180,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     }
   }, [
     checkFeeIsEnough,
-    nftData,
     info?.isToMyself,
     updateNFTWithdrawData,
     nftBalance,
@@ -471,7 +470,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     realAddr,
     isToMyself: info?.isToMyself,
     disableWithdrawList,
-    tradeData: nftWithdrawValue as any,
+    tradeData: { ...nftWithdrawValue } as any,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     isCFAddress,

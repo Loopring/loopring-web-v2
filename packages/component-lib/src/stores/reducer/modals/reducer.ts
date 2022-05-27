@@ -87,13 +87,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
     ) {
-      const { isShow, nftData, nftType, info, ...rest } = action.payload;
+      const { isShow, nftData, nftType, total, locked, info, ...rest } =
+        action.payload;
       state.isShowNFTTransfer = {
         isShow,
         nftData,
         nftType,
         info,
         ...rest,
+        balance: total ? Number(total) - Number(locked ?? 0) : 0,
       };
     },
     setShowNFTDeposit(
@@ -123,13 +125,15 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
     ) {
-      const { isShow, nftData, nftType, info, ...rest } = action.payload;
+      const { isShow, nftData, nftType, total, locked, info, ...rest } =
+        action.payload;
       state.isShowNFTWithdraw = {
         isShow,
         nftData,
         nftType,
         info,
         ...rest,
+        balance: total ? Number(total) - Number(locked ?? 0) : 0,
       };
     },
     setShowTransfer(

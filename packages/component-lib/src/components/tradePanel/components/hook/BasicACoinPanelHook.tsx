@@ -96,7 +96,7 @@ export const useBasicTrade = <
         setIndex(_index);
       }
     },
-    [handlePanelEvent, tradeData, walletMap, coinMap, rest, index]
+    [handlePanelEvent, rest, index, tradeData, type, walletMap]
   );
 
   React.useEffect(() => {
