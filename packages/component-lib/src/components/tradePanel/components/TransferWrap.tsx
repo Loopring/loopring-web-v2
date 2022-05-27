@@ -293,8 +293,6 @@ export const TransferWrap = <
             </>
           )}
         </Box>
-        {/*  </>*/}
-        {/*)}*/}
       </Grid>
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
