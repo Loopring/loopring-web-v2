@@ -72,12 +72,15 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: ({ fee }) => {
-      updateNFTTransferData({
-        ...nftTransferValue,
-        fee,
-      });
-    },
+    updateData: React.useCallback(
+      ({ fee }) => {
+        updateNFTTransferData({
+          ...nftTransferValue,
+          fee,
+        });
+      },
+      [nftTransferValue]
+    ),
   });
 
   const {
@@ -152,6 +155,9 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    if (info?.isRetry) {
+      return;
+    }
     if (nftData) {
       updateNFTTransferData({
         balance: nftBalance,
@@ -173,6 +179,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   }, [
     checkFeeIsEnough,
     nftData,
+    info?.isRetry,
     updateNFTTransferData,
     nftBalance,
     feeInfo,
@@ -181,10 +188,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   ]);
 
   React.useEffect(() => {
-    if ((isShow || info?.isShowLocal) && !info?.isRetry) {
+    if (isShow || info?.isShowLocal) {
       resetDefault();
     }
-  }, [info]);
+  }, [isShow, info?.isShowLocal]);
 
   React.useEffect(() => {
     if (

@@ -323,6 +323,11 @@ export const WithdrawWrap = <
             <WithdrawAddressType
               selectedValue={sureIsAllowAddress}
               handleSelected={handleSureIsAllowAddress}
+              disabled={
+                isAddressCheckLoading ||
+                addrStatus !== AddressError.NoError ||
+                !realAddr
+              }
             />
           </Grid>
         </>

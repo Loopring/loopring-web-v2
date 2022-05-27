@@ -8,7 +8,7 @@ import {
   useAddressTypeLists,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
-import { Button, Toast, TradeBtnStatus } from "../../index";
+import { Button, Toast } from "../../index";
 import { TransferViewProps } from "./Interface";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -23,7 +23,6 @@ export const TransferConfirm = <
   handleConfirm,
   tradeData,
   onTransferClick,
-  transferBtnStatus,
   realAddr,
   type,
   feeInfo,
@@ -124,11 +123,12 @@ export const TransferConfirm = <
           size={"medium"}
           color={"primary"}
           onClick={async () => {
-            if (transferBtnStatus === TradeBtnStatus.AVAILABLE) {
+            if (onTransferClick) {
               await onTransferClick({ ...tradeData, memo } as unknown as T);
             } else {
-              handleConfirm(1);
+              setOpen(true);
             }
+            handleConfirm(1);
           }}
         >
           {t("labelConfirm")}

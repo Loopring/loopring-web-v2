@@ -49,7 +49,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const {
     modals: {
-      isShowTransfer: { symbol, isShow },
+      isShowTransfer: { symbol, isShow, info },
     },
   } = useOpenModals();
   const [memo, setMemo] = React.useState("");
@@ -75,9 +75,12 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({ fee }) => {
-      updateTransferData({ ...transferValue, fee });
-    },
+    updateData: React.useCallback(
+      ({ fee }) => {
+        updateTransferData({ ...transferValue, fee });
+      },
+      [transferValue]
+    ),
   });
   const handleOnMemoChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -158,6 +161,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    if (info?.isRetry) {
+      return;
+    }
+
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
@@ -176,7 +183,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           if (sdk.toBig(walletInfo.count).gt(0)) {
             updateTransferData({
               belong: keyVal as any,
-              tradeValue: 0,
+              tradeValue: undefined,
               fee: feeInfo,
               balance: walletInfo.count,
               address: "*",
@@ -184,8 +191,26 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             break;
           }
         }
+      } else if (transferValue.belong && walletMap) {
+        const walletInfo = walletMap[transferValue.belong];
+        updateTransferData({
+          fee: feeInfo,
+          belong: transferValue.belong,
+          tradeValue: undefined,
+          balance: walletInfo.count,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
+      } else {
+        updateTransferData({
+          fee: feeInfo,
+          belong: transferValue.belong,
+          tradeValue: undefined,
+          balance: undefined,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
       }
     }
+    setAddress("");
   }, [
     checkFeeIsEnough,
     symbol,
@@ -193,30 +218,18 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     updateTransferData,
     feeInfo,
     transferValue.belong,
+    info?.isRetry,
   ]);
-
-  React.useEffect(() => {
-    if (isShow) {
-      resetDefault();
-    }
-  }, [isShow]);
 
   React.useEffect(() => {
     if (
       isShow &&
       accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      !transferValue.address
+      account.readyState === AccountStatus.ACTIVATED
     ) {
-      setAddress("");
+      resetDefault();
     }
-  }, [
-    setAddress,
-    isShow,
-    transferValue.address,
-    accountStatus,
-    account.readyState,
-  ]);
+  }, [isShow, accountStatus, account.readyState]);
 
   const { checkHWAddr, updateHW } = useWalletInfo();
 

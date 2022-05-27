@@ -301,6 +301,12 @@ export const TransferWrap = <
         <TransferAddressType
           selectedValue={sureItsLayer2}
           handleSelected={handleSureItsLayer2}
+          disabled={
+            isSameAddress ||
+            isAddressCheckLoading ||
+            addrStatus !== AddressError.NoError ||
+            !realAddr
+          }
         />
       </Grid>
 
