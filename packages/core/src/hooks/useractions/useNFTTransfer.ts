@@ -112,7 +112,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
       sdk
         .toBig(nftTransferValue.tradeValue)
-        .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
+        .lte(Number(nftTransferValue.balance) ?? 0) &&
       (addrStatus as AddressError) === AddressError.NoError &&
       realAddr
     ) {
@@ -125,7 +125,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     tokenMap,
     nftTransferValue.fee?.belong,
     nftTransferValue.tradeValue,
-    nftTransferValue.nftBalance,
+    nftTransferValue.balance,
     chargeFeeTokenList.length,
     isFeeNotEnough,
     isSameAddress,
@@ -152,15 +152,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
-    const { nftData, nftBalance, balance, ...nftRest } =
-      store.getState().modals.isShowNFTTransfer;
     if (nftData) {
       updateNFTTransferData({
+        ...nftRest,
         belong: nftData as any,
-        balance: balance ?? nftBalance,
+        balance: nftBalance,
         tradeValue: undefined,
         fee: feeInfo,
-        ...nftRest,
         address: address ? address : "*",
       });
     } else {
@@ -172,7 +170,15 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
         address: "*",
       });
     }
-  }, [checkFeeIsEnough, updateNFTTransferData, feeInfo, nftRest, address]);
+  }, [
+    checkFeeIsEnough,
+    nftData,
+    updateNFTTransferData,
+    nftBalance,
+    feeInfo,
+    nftRest,
+    address,
+  ]);
 
   React.useEffect(() => {
     if ((isShow || info?.isShowLocal) && !info?.isRetry) {
@@ -381,7 +387,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
             0;
           const fee = sdk.toBig(feeRaw);
           const tradeValue = nftTransferValue.tradeValue;
-          const balance = nftTransferValue.nftBalance;
+          const balance = nftTransferValue.balance;
           const isExceedBalance = sdk.toBig(tradeValue).gt(balance);
 
           if (isExceedBalance) {
@@ -452,7 +458,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
           if (data.tradeData.belong) {
             updateNFTTransferData({
               tradeValue: data.tradeData?.tradeValue,
-              balance: data.tradeData.nftBalance,
+              balance: data.tradeData.balance,
               address: "*",
             });
           } else {

@@ -183,28 +183,44 @@ export const NFTDetail = withTranslation("common")(
     const handleChangeIndex = (index: number) => {
       setViewPage(index);
     };
+
     React.useEffect(() => {
       if (isShow) {
-        handleChangeIndex(0);
+        toDetail();
       }
     }, [isShow]);
-    const toWithdraw = (isToMySelf?: boolean) => {
+    const toDetail = React.useCallback(() => {
+      handleChangeIndex(0);
       setShowNFTWithdraw({
-        ...popItem,
         isShow: false,
-        info: { isToMyself: isToMySelf, isShowLocal: true },
+        info: { isShowLocal: false },
       });
-      handleChangeIndex(2);
-    };
+      setShowNFTTransfer({
+        isShow: false,
+        info: { isShowLocal: false },
+      });
+    }, [popItem, setShowNFTWithdraw]);
 
-    const toTransfer = () => {
+    const toWithdraw = React.useCallback(
+      (isToMySelf?: boolean) => {
+        setShowNFTWithdraw({
+          ...popItem,
+          isShow: false,
+          info: { isToMyself: isToMySelf, isShowLocal: true },
+        });
+        handleChangeIndex(2);
+      },
+      [popItem, setShowNFTWithdraw]
+    );
+
+    const toTransfer = React.useCallback(() => {
       setShowNFTTransfer({
         ...popItem,
         isShow: false,
         info: { isShowLocal: true },
       });
       handleChangeIndex(1);
-    };
+    }, [popItem, setShowNFTTransfer]);
 
     const detailView = React.useMemo(() => {
       return (
@@ -598,6 +614,7 @@ export const NFTDetail = withTranslation("common")(
             >
               <TransferPanel<any, any>
                 {...{
+                  ...nftTransferProps,
                   _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
                   _height: isMobile ? "auto" : 540,
                   isThumb: false,
@@ -605,17 +622,15 @@ export const NFTDetail = withTranslation("common")(
                     ...nftTransferProps,
                     tradeData: {
                       ...popItem,
-                      belong: popItem.nftData,
-                      balance: Number(popItem?.nftBalance),
+                      tradeValue: nftTransferProps.tradeData.tradeValue,
+                      belong: nftTransferProps.tradeData.nftData,
+                      balance: nftTransferProps.tradeData.balance,
                     },
                   },
                   type: "NFT",
                   assetsData: assetsRawData,
                 }}
-                onBack={() => {
-                  // cancelNFTTransfer();
-                  handleChangeIndex(0);
-                }}
+                onBack={toDetail}
               />
             </Box>
           )}
@@ -636,17 +651,15 @@ export const NFTDetail = withTranslation("common")(
                     ...nftWithdrawProps,
                     tradeData: {
                       ...popItem,
-                      belong: popItem.nftData,
-                      balance: Number(popItem?.nftBalance),
+                      tradeValue: nftTransferProps.tradeData.tradeValue,
+                      belong: nftWithdrawProps.tradeData.nftData,
+                      balance: nftWithdrawProps.tradeData.balance,
                     },
                   },
                   type: "NFT",
                   assetsData: assetsRawData,
                 }}
-                onBack={() => {
-                  // cancelNFTWithdraw();
-                  handleChangeIndex(0);
-                }}
+                onBack={toDetail}
               />
             </Box>
           )}
@@ -657,8 +670,11 @@ export const NFTDetail = withTranslation("common")(
                   ...nftDeployProps,
                   tradeData: {
                     ...nftDeployProps.tradeData,
-                    belong: popItem.nftData,
-                    balance: Number(popItem?.nftBalance),
+                    tradeData: {
+                      ...popItem,
+                      belong: nftDeployProps.tradeData.nftData,
+                      balance: nftDeployProps.tradeData.balance,
+                    },
                   },
                   assetsData: assetsRawData,
                 }}

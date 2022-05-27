@@ -78,7 +78,7 @@ export const useBasicTrade = <
             to,
           });
         } else if (to === "button" && type === "NFT") {
-          const count = _newTradeData.nftBalance;
+          const count = _newTradeData.balance;
           const tradeValue = _newTradeData.tradeValue
             ? _newTradeData.tradeValue
             : undefined;

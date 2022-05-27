@@ -182,30 +182,41 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         balance,
         belong,
         tradeValue,
-        address,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },
     updateTransferData(state, action: PayloadAction<Partial<TransferData>>) {
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.transfer;
-      if (belong) {
-        state.transferValue.belong = belong;
-      }
-
-      if (balance === undefined || balance >= 0) {
-        state.transferValue.balance = balance;
-      }
-
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.transferValue.tradeValue = tradeValue;
-      }
-
-      if (address === undefined || address !== "*") {
-        state.transferValue.address = address;
-      }
+      // if (belong) {
+      //   state.transferValue.belong = belong;
+      // }
+      //
+      // if (balance === undefined || balance >= 0) {
+      //   state.transferValue.balance = balance;
+      // }
+      //
+      // if (tradeValue === undefined || tradeValue >= 0) {
+      //   state.transferValue.tradeValue = tradeValue;
+      // }
+      //
+      // if (address === undefined || address !== "*") {
+      //   state.transferValue.address = address;
+      // }
+      // state.transferValue = {
+      //   ...state.transferValue,
+      //   ...rest,
+      // };
       state.transferValue = {
         ...state.transferValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.transferValue.balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },
@@ -237,25 +248,19 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         Partial<WithdrawData & UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, ...rest } = action.payload;
+      const { belong, balance, tradeValue, address, total, locked, ...rest } =
+        action.payload;
       state.lastStep = LAST_STEP.nftWithdraw;
-      if (belong) {
-        state.nftWithdrawValue.belong = belong;
-      }
-
-      if (balance === undefined || balance >= 0) {
-        state.nftWithdrawValue.balance = balance;
-      }
-
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.nftWithdrawValue.tradeValue = tradeValue;
-      }
-
-      if (address === undefined || address !== "*") {
-        state.nftWithdrawValue.address = address;
-      }
       state.nftWithdrawValue = {
         ...state.nftWithdrawValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.nftWithdrawValue.balance,
+        belong,
+        tradeValue:
+          tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },
@@ -265,26 +270,20 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         Partial<TransferData & UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, ...rest } = action.payload;
+      const { belong, balance, tradeValue, address, total, locked, ...rest } =
+        action.payload;
       state.lastStep = LAST_STEP.nftTransfer;
 
-      if (belong) {
-        state.nftTransferValue.belong = belong;
-      }
-
-      if (balance === undefined || balance >= 0) {
-        state.nftTransferValue.balance = balance;
-      }
-
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.nftTransferValue.tradeValue = tradeValue;
-      }
-
-      if (address === undefined || address !== "*") {
-        state.nftTransferValue.address = address;
-      }
       state.nftTransferValue = {
         ...state.nftTransferValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.nftTransferValue.balance,
+        belong,
+        tradeValue:
+          tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },

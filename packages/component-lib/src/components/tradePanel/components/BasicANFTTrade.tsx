@@ -129,7 +129,6 @@ export const NFTInput = React.memo(
       onCopy?: (content: string) => Promise<void>;
       type?: "TOKEN" | "NFT";
     }) => {
-    myLog("tradeData", tradeData);
     return (
       <>
         {isThumb ? (
