@@ -16,7 +16,6 @@ import {
   Button,
   DeployNFTWrap,
   InformationForNoMetaNFT,
-  ModalBackButton,
   NFTDeployProps,
   TextareaAutosizeStyled,
   TransferPanel,
@@ -68,6 +67,11 @@ const BoxStyle = styled(Box)<
         width: 320px;
       }
     }
+    .MuiToolbar-root {
+      .back-btn {
+        margin-left: ${({ theme }) => -4 * theme.unit}px;
+      }
+    }
   }
   &.nft-detail {
     ${({ isMobile, image }) => `
@@ -104,7 +108,11 @@ const BoxStyle = styled(Box)<
          width:100%;
          
        }
-       
+       .MuiToolbar-root {
+        .back-btn {
+          margin-left: 0px;
+        }
+       } 
        
      `
      }
@@ -131,15 +139,11 @@ export const NFTDetail = withTranslation("common")(
   ({
     popItem,
     etherscanBaseUrl,
-    onDetailClose,
-    cancelNFTTransfer,
-    cancelNFTWithdraw,
     nftTransferProps,
     nftWithdrawProps,
     nftDeployProps,
     assetsRawData,
     t,
-    ...rest
   }: {
     nftTransferProps: TransferProps<any, any>;
     nftWithdrawProps: WithdrawProps<any, any>;
@@ -148,15 +152,21 @@ export const NFTDetail = withTranslation("common")(
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
-    cancelNFTTransfer: () => void;
-    cancelNFTWithdraw: () => void;
   } & WithTranslation) => {
     const { isMobile } = useSettings();
     const { account } = useAccount();
     const {
       toggle: { deployNFT, withdrawNFT, transferNFT },
     } = useToggle();
-    const { setShowTradeIsFrozen } = useOpenModals();
+    const {
+      setShowNFTWithdraw,
+      setShowNFTTransfer,
+      setShowTradeIsFrozen,
+      modals: {
+        isShowNFTWithdraw,
+        isShowNFTDetail: { isShow },
+      },
+    } = useOpenModals();
 
     const [showDialog, setShowDialog] =
       React.useState<string | undefined>(undefined);
@@ -172,8 +182,30 @@ export const NFTDetail = withTranslation("common")(
 
     const handleChangeIndex = (index: number) => {
       setViewPage(index);
-      cancelNFTTransfer();
     };
+    React.useEffect(() => {
+      if (isShow) {
+        handleChangeIndex(0);
+      }
+    }, [isShow]);
+    const toWithdraw = (isToMySelf?: boolean) => {
+      setShowNFTWithdraw({
+        ...popItem,
+        isShow: false,
+        info: { isToMyself: isToMySelf, isShowLocal: true },
+      });
+      handleChangeIndex(2);
+    };
+
+    const toTransfer = () => {
+      setShowNFTTransfer({
+        ...popItem,
+        isShow: false,
+        info: { isShowLocal: true },
+      });
+      handleChangeIndex(1);
+    };
+
     const detailView = React.useMemo(() => {
       return (
         <Box
@@ -190,10 +222,10 @@ export const NFTDetail = withTranslation("common")(
               if (isAgress && showDialog) {
                 switch (showDialog?.toLowerCase()) {
                   case "withdraw":
-                    handleChangeIndex(2);
+                    toWithdraw(isShowNFTWithdraw.info?.isToMyself);
                     break;
                   case "transfer":
-                    handleChangeIndex(1);
+                    toTransfer();
                     break;
                 }
               }
@@ -371,19 +403,17 @@ export const NFTDetail = withTranslation("common")(
                 />
               </Box>
             </Typography>
-
-            <BoxBtnStyle className={isMobile ? "isMobile" : ""}>
-              <Typography color={"var(--color-text-third)"} width={150}>
-                {t("labelNFTSend")}
-              </Typography>
-              <Box flex={1} display={"flex"} flexDirection={"column"}>
-                {!!(
-                  popItem.isCounterFactualNFT &&
-                  popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-                  popItem.minter?.toLowerCase() ===
-                    account.accAddress.toLowerCase()
-                ) && (
-                  <Typography className={"btn"} minWidth={100} marginRight={2}>
+            {!!(
+              popItem.isCounterFactualNFT &&
+              popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+              popItem.minter?.toLowerCase() === account.accAddress.toLowerCase()
+            ) && (
+              <BoxBtnStyle className={isMobile ? "isMobile" : ""}>
+                <Typography color={"var(--color-text-third)"} width={150}>
+                  {t("labelNFTDeploy")}
+                </Typography>
+                <Typography className={"btn"} minWidth={100} marginRight={2}>
+                  <Box flex={1} display={"flex"} flexDirection={"column"}>
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -396,9 +426,16 @@ export const NFTDetail = withTranslation("common")(
                     >
                       {t("labelNFTDeployContract")}
                     </Button>
-                  </Typography>
-                )}
+                  </Box>
+                </Typography>
+              </BoxBtnStyle>
+            )}
 
+            <BoxBtnStyle className={isMobile ? "isMobile" : ""}>
+              <Typography color={"var(--color-text-third)"} width={150}>
+                {t("labelNFTSend")}
+              </Typography>
+              <Box flex={1} display={"flex"} flexDirection={"column"}>
                 <Typography className={"btn"} minWidth={100} marginRight={2}>
                   <Button
                     variant={"contained"}
@@ -412,7 +449,7 @@ export const NFTDetail = withTranslation("common")(
                     onClick={() => {
                       isKnowNFTNoMeta
                         ? withdrawNFT.enable
-                          ? handleChangeIndex(2)
+                          ? toWithdraw(true)
                           : setShowTradeIsFrozen({ isShow: true })
                         : setShowDialog("Withdraw");
                     }}
@@ -420,7 +457,7 @@ export const NFTDetail = withTranslation("common")(
                     {popItem.isCounterFactualNFT &&
                     popItem.deploymentStatus ===
                       DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                      t("labelNFTDeploySendL1")
+                      t("labelNFTDeploySendMyL1")
                     ) : popItem.isCounterFactualNFT &&
                       popItem.deploymentStatus ===
                         DEPLOYMENT_STATUS.DEPLOYING ? (
@@ -454,7 +491,7 @@ export const NFTDetail = withTranslation("common")(
                     onClick={() => {
                       isKnowNFTNoMeta
                         ? withdrawNFT.enable
-                          ? handleChangeIndex(2)
+                          ? toWithdraw(false)
                           : setShowTradeIsFrozen({ isShow: true })
                         : setShowDialog("Withdraw");
                     }}
@@ -462,7 +499,7 @@ export const NFTDetail = withTranslation("common")(
                     {popItem.isCounterFactualNFT &&
                     popItem.deploymentStatus ===
                       DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                      t("labelNFTDeploySendL1")
+                      t("labelNFTDeploySendAnotherL1")
                     ) : popItem.isCounterFactualNFT &&
                       popItem.deploymentStatus ===
                         DEPLOYMENT_STATUS.DEPLOYING ? (
@@ -493,7 +530,7 @@ export const NFTDetail = withTranslation("common")(
                     onClick={() =>
                       isKnowNFTNoMeta
                         ? transferNFT.enable
-                          ? handleChangeIndex(1)
+                          ? toTransfer()
                           : setShowTradeIsFrozen({ isShow: true })
                         : setShowDialog("Transfer")
                     }
@@ -551,14 +588,6 @@ export const NFTDetail = withTranslation("common")(
           whiteSpace={"break-spaces"}
           style={{ wordBreak: "break-all" }}
         >
-          {viewPage !== 0 && (
-            <ModalBackButton
-              marginTop={0}
-              onBack={() => handleChangeIndex(0)}
-              {...{ ...rest, t }}
-            />
-          )}
-
           {viewPage === 0 && detailView}
           {viewPage === 1 && (
             <Box
@@ -582,6 +611,10 @@ export const NFTDetail = withTranslation("common")(
                   },
                   type: "NFT",
                   assetsData: assetsRawData,
+                }}
+                onBack={() => {
+                  // cancelNFTTransfer();
+                  handleChangeIndex(0);
                 }}
               />
             </Box>
@@ -610,7 +643,11 @@ export const NFTDetail = withTranslation("common")(
                   type: "NFT",
                   assetsData: assetsRawData,
                 }}
-              />{" "}
+                onBack={() => {
+                  // cancelNFTWithdraw();
+                  handleChangeIndex(0);
+                }}
+              />
             </Box>
           )}
           {viewPage === 3 && (
@@ -624,6 +661,9 @@ export const NFTDetail = withTranslation("common")(
                     balance: Number(popItem?.nftBalance),
                   },
                   assetsData: assetsRawData,
+                }}
+                onBack={() => {
+                  handleChangeIndex(0);
                 }}
               />
             </Box>

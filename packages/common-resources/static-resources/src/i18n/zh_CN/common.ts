@@ -379,6 +379,7 @@ export default {
   labelNFTDate: "Date:",
   labelNFTDeployContract: "Deploy",
   labelNFTSend: "Send:",
+  labelNFTDeploy: "Deploy:",
   labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "ID:",
@@ -461,7 +462,7 @@ export default {
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
-  labelNFTDeploy: "Deploy NFT",
+  labelNFTDeployTitle: "Deploy NFT",
   labelVendor: "Buy with Card",
   labelLock: "Lock",
   labelWalletToWallet:

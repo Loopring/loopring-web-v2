@@ -263,10 +263,11 @@ export const ModalBackButton = ({
   onBack?: () => void;
   marginTop?: number | string;
   marginLeft?: number | string;
-} & WithTranslation) => {
+} & Partial<WithTranslation>) => {
   return (
     <Box alignSelf={"flex-start"} marginTop={marginTop} marginLeft={marginLeft}>
       <IconButton
+        className={"back-btn"}
         size={"large"}
         color={"inherit"}
         aria-label={t("labelBack")}

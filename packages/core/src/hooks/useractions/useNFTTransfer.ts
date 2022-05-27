@@ -44,18 +44,13 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export const useNFTTransfer = <R extends TradeNFT<T>, T>({
-  isLocalShow = false,
-  doTransferDone,
-}: {
-  isLocalShow?: boolean;
-  doTransferDone?: () => void;
-}) => {
-  const { setShowAccount, setShowNFTTransfer } = useOpenModals();
+export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   const [memo, setMemo] = React.useState("");
   const {
+    setShowAccount,
+    setShowNFTDetail,
     modals: {
-      isShowNFTTransfer: { nftData, nftBalance, ...nftRest },
+      isShowNFTTransfer: { isShow, nftData, nftBalance, info, ...nftRest },
     },
   } = useOpenModals();
 
@@ -63,8 +58,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  // const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
-
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
 
@@ -115,13 +108,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       chargeFeeTokenList.length &&
       !isFeeNotEnough &&
       !isSameAddress &&
-      sureItsLayer2 !== null &&
+      sureItsLayer2 &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
       sdk
         .toBig(nftTransferValue.tradeValue)
         .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
       (addrStatus as AddressError) === AddressError.NoError &&
-      ((address && address.startsWith("0x")) || realAddr)
+      realAddr
     ) {
       enableBtn();
       myLog("enableBtn");
@@ -177,7 +170,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
         tradeValue: 0,
         address: "*",
       });
-      setShowNFTTransfer({ isShow: false });
     }
   }, [
     checkFeeIsEnough,
@@ -187,14 +179,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     feeInfo,
     nftRest,
     address,
-    setShowNFTTransfer,
   ]);
 
   React.useEffect(() => {
-    if (isLocalShow) {
+    if ((isShow || info?.isShowLocal) && !info?.isRetry) {
       resetDefault();
     }
-  }, [isLocalShow]);
+  }, [info]);
 
   React.useEffect(() => {
     if (
@@ -312,9 +303,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
               }
               walletLayer2Service.sendUserUpdate();
               updateWalletLayer2NFT({ page });
-              if (doTransferDone) {
-                doTransferDone();
-              }
+              setShowNFTDetail({ isShow: false });
               resetNFTTransferData();
             }
           } else {
@@ -363,7 +352,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       checkFeeIsEnough,
       updateWalletLayer2NFT,
       page,
-      doTransferDone,
       resetNFTTransferData,
       updateHW,
     ]
@@ -384,11 +372,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
         connectProvides.usedWeb3 &&
         nftTransferValue?.nftData &&
         nftTransferValue?.fee?.belong &&
-        nftTransferValue?.fee?.__raw__ &&
+        nftTransferValue?.fee?.feeRaw &&
         eddsaKey?.sk
       ) {
         try {
-          setShowNFTTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_WaitForAuth,
@@ -457,7 +444,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       account,
       tokenMap,
       exchangeInfo,
-      setShowNFTTransfer,
       setShowAccount,
       realAddr,
       address,
@@ -530,12 +516,12 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     isSameAddress,
     isAddressCheckLoading,
   };
-  const cancelNFTTransfer = () => {
-    resetDefault();
-  };
+  // const cancelNFTTransfer = () => {
+  //   resetDefault();
+  // };
   return {
     nftTransferProps,
     retryBtn,
-    cancelNFTTransfer,
+    // cancelNFTTransfer,
   };
 };

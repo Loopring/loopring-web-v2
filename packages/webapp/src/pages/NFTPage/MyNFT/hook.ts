@@ -17,7 +17,7 @@ import {
   DEPLOYMENT_STATUS,
 } from "@loopring-web/loopring-sdk";
 import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
-import { setShowNFTDetail, useOpenModals } from "@loopring-web/component-lib";
+import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 import { useAccount } from "@loopring-web/core";

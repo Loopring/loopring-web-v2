@@ -350,6 +350,7 @@ export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
 } & BtnInfoProps;
 
 export type NFTDeployExtendProps<T, I, C> = {
+  onBack: () => void;
   handleOnNFTDataChange: (data: T) => void;
   onNFTDeployClick: (data: T, isFirstTime?: boolean) => void;
   allowTrade?: any;

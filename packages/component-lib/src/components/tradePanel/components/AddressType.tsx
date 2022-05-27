@@ -51,8 +51,6 @@ export const WalletItemOptions = React.memo(
       } & AddressItemType<T>,
       ref: ForwardedRef<any>
     ) => {
-      myLog("maxWidth", maxWidth);
-
       return (
         <MenuItemStyle
           ref={ref}
@@ -183,31 +181,6 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
     setOpen(true);
     setShowOtherExchange({ isShow: false, agree: false });
   };
-  const desMenuItem = React.useMemo(() => {
-    return (
-      <>
-        <MenuItemStyle disabled={true} value={-1}>
-          <Typography component={"span"}>
-            {t("labelExchangeTypeDes")}
-          </Typography>
-        </MenuItemStyle>
-        {
-          <WalletItemOptions
-            selectedValue={selectedValue}
-            value={nonExchangeList[0].value}
-            handleSelected={(value) => {
-              handleSelected(value as T);
-              onClose();
-            }}
-            label={nonExchangeList[0].label}
-            myValue={nonExchangeList[0].value}
-            disabled={nonExchangeList[0].disabled}
-            description={nonExchangeList[0].description}
-          />
-        }
-      </>
-    );
-  }, [handleSelected, nonExchangeList, selectedValue, t]);
 
   return (
     <TextField
@@ -228,7 +201,21 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
       label={t("labelL2toL1AddressType")}
       // inputProps={{}}
     >
-      {desMenuItem}
+      <MenuItemStyle disabled={true} value={-1}>
+        <Typography component={"span"}>{t("labelExchangeTypeDes")}</Typography>
+      </MenuItemStyle>
+      <WalletItemOptions
+        selectedValue={selectedValue}
+        value={nonExchangeList[0].value}
+        handleSelected={(value) => {
+          handleSelected(value as T);
+          onClose();
+        }}
+        label={nonExchangeList[0].label}
+        myValue={nonExchangeList[0].value}
+        disabled={nonExchangeList[0].disabled}
+        description={nonExchangeList[0].description}
+      />
       <Divider />
       {exchangeList.map(({ value, label, description, disabled, maxWidth }) => (
         <WalletItemOptions

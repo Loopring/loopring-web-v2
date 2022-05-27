@@ -120,7 +120,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
-  myLog("address", address);
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && withdrawValue.belong && tokenMap[withdrawValue.belong]) {
       const withdrawT = tokenMap[withdrawValue.belong];
@@ -313,16 +312,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   React.useEffect(() => {
     if (
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
-    ) {
-    } else {
-      setShowWithdraw({ isShow: false, info });
-    }
-  }, [accountStatus, account.readyState]);
-
-  React.useEffect(() => {
-    if (
       isShow &&
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED &&
@@ -331,14 +320,6 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       resetDefault();
     }
   }, [isShow, accountStatus, account.readyState]);
-
-  // React.useEffect(() => {
-  //   if (info?.isToMyself) {
-  //     setAddress(account.accAddress);
-  //   } else {
-  //     setAddress("");
-  //   }
-  // }, [info?.isToMyself, account.accAddress, setAddress]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
 

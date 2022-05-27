@@ -138,7 +138,6 @@ export const useAddressCheck = () => {
     // myLog("checkAddress", address, _address.current, isAddressCheckLoading);
     if (_address.current !== address && isAddressCheckLoading === false) {
       debounceCheck(address);
-      myLog("address", address);
     }
     _address.current = address;
   }, [address, isAddressCheckLoading]);

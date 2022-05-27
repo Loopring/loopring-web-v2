@@ -185,8 +185,8 @@ export function useAccountModalForUI({
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
-  const { nftWithdrawProps, cancelNFTWithdraw } = useNFTWithdraw({});
-  const { nftTransferProps, cancelNFTTransfer } = useNFTTransfer({});
+  const { nftWithdrawProps } = useNFTWithdraw();
+  const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy({});
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
@@ -1958,8 +1958,8 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
-    cancelNFTTransfer,
-    cancelNFTWithdraw,
+    // cancelNFTTransfer,
+    // cancelNFTWithdraw,
     // vendorProps,
   };
 }

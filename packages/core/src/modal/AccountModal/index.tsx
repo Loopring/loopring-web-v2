@@ -72,8 +72,8 @@ export const ModalAccountInfo = withTranslation("common")(
       resetProps,
       activeAccountProps,
       exportAccountProps,
-      cancelNFTTransfer,
-      cancelNFTWithdraw,
+      // cancelNFTTransfer,
+      // cancelNFTWithdraw,
       copyToastOpen,
       openQRCode,
       closeBtnInfo,
@@ -195,8 +195,8 @@ export const ModalAccountInfo = withTranslation("common")(
                 nftTransferProps={nftTransferProps}
                 nftWithdrawProps={nftWithdrawProps}
                 nftDeployProps={nftDeployProps}
-                cancelNFTTransfer={cancelNFTTransfer}
-                cancelNFTWithdraw={cancelNFTWithdraw}
+                // cancelNFTTransfer={cancelNFTTransfer}
+                // cancelNFTWithdraw={cancelNFTWithdraw}
                 // onNFTReload={onNFTReload}
                 etherscanBaseUrl={etherscanBaseUrl}
                 onDetailClose={() => {
