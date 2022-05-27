@@ -154,9 +154,9 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     checkFeeIsEnough();
     if (nftData) {
       updateNFTTransferData({
+        balance: nftBalance,
         ...nftRest,
         belong: nftData as any,
-        balance: nftBalance,
         tradeValue: undefined,
         fee: feeInfo,
         address: address ? address : "*",

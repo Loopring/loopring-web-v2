@@ -155,9 +155,9 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     checkFeeIsEnough();
     if (nftData) {
       updateNFTWithdrawData({
+        balance: nftBalance,
         ...nftRest,
         belong: nftData as any,
-        balance: nftBalance,
         tradeValue: undefined,
         fee: feeInfo,
         address: info?.isToMyself ? account.accAddress : "*",
