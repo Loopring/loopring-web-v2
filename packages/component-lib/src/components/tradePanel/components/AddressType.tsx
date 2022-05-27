@@ -5,7 +5,6 @@ import React, { ForwardedRef } from "react";
 import {
   AddressItemType,
   EXCHANGE_TYPE,
-  myLog,
   useAddressTypeLists,
   WALLET_TYPE,
 } from "@loopring-web/common-resources";

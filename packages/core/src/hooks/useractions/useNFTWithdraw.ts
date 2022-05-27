@@ -126,7 +126,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     disableBtn();
   }, [
     tokenMap,
-    nftWithdrawValue?.fee?.belong,
+    nftWithdrawValue.fee?.belong,
+    nftWithdrawValue.fee?.feeRaw,
     nftWithdrawValue.tradeValue,
     nftWithdrawValue.nftBalance,
     addrStatus,
@@ -134,7 +135,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     isNotAvaiableAddress,
     info?.isToMyself,
     sureIsAllowAddress,
-    address,
     realAddr,
     disableBtn,
     enableBtn,
@@ -181,12 +181,13 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   }, [
     checkFeeIsEnough,
     nftData,
+    info?.isToMyself,
     updateNFTWithdrawData,
     nftBalance,
     nftRest,
     feeInfo,
-    info?.isToMyself,
     account.accAddress,
+    setAddress,
   ]);
 
   React.useEffect(() => {
@@ -340,11 +341,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
       account,
       checkHWAddr,
       chainId,
-      updateWalletLayer2NFT,
-      page,
       setShowAccount,
       nftWithdrawValue.name,
       checkFeeIsEnough,
+      updateWalletLayer2NFT,
+      page,
+      setShowNFTDetail,
       resetNFTWithdrawData,
       updateHW,
     ]

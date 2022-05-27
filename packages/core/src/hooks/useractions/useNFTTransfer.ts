@@ -131,7 +131,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     isSameAddress,
     sureItsLayer2,
     addrStatus,
-    address,
     realAddr,
     disableBtn,
     enableBtn,
@@ -352,6 +351,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
       checkFeeIsEnough,
       updateWalletLayer2NFT,
       page,
+      setShowNFTDetail,
       resetNFTTransferData,
       updateHW,
     ]

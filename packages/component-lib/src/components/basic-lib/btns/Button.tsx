@@ -270,7 +270,7 @@ export const ModalBackButton = ({
         className={"back-btn"}
         size={"large"}
         color={"inherit"}
-        aria-label={t("labelBack")}
+        aria-label={t && t("labelBack")}
         onClick={() => {
           onBack && onBack();
         }}
