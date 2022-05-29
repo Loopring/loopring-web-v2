@@ -191,6 +191,28 @@ export const MyNFTPanel = withTranslation("common")(
                     </Grid>
                   ))}
                 </Grid>
+                {total > NFTLimit && (
+                  <Box
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"right"}
+                    marginRight={3}
+                    marginTop={1}
+                    marginBottom={2}
+                  >
+                    <Pagination
+                      color={"primary"}
+                      count={
+                        parseInt(String(total / NFTLimit)) +
+                        (total % NFTLimit > 0 ? 1 : 0)
+                      }
+                      page={page}
+                      onChange={(_event, value) => {
+                        onPageChange(Number(value));
+                      }}
+                    />
+                  </Box>
+                )}
               </>
             ) : (
               <Box flex={1} alignItems={"center"}>
@@ -208,30 +230,6 @@ export const MyNFTPanel = withTranslation("common")(
                 />
               </Box>
             )}
-            <>
-              {total > NFTLimit && (
-                <Box
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"right"}
-                  marginRight={3}
-                  marginTop={1}
-                  marginBottom={2}
-                >
-                  <Pagination
-                    color={"primary"}
-                    count={
-                      parseInt(String(total / NFTLimit)) +
-                      (total % NFTLimit > 0 ? 1 : 0)
-                    }
-                    page={page}
-                    onChange={(_event, value) => {
-                      onPageChange(Number(value));
-                    }}
-                  />
-                </Box>
-              )}
-            </>
           </Box>
         </StyledPaper>
       </>

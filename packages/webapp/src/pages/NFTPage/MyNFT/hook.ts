@@ -35,6 +35,7 @@ export const useMyNFT = () => {
     status: walletLayer2NFTStatus,
     walletLayer2NFT,
     total,
+    page: page_reudex,
     updateWalletLayer2NFT,
   } = useWalletLayer2NFT();
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
@@ -220,7 +221,7 @@ export const useMyNFT = () => {
     });
   };
 
-  const initNFT = React.useCallback(async () => {
+  const renderNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
     setNFTList(() => {
       return walletLayer2NFT.map((item) => {
@@ -252,16 +253,16 @@ export const useMyNFT = () => {
     });
   }, [etherscanBaseUrl, walletLayer2NFT]);
   React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
-    ) {
+    onPageChange(1);
+  }, []);
+  React.useEffect(() => {
+    if (page_reudex !== page) {
       updateWalletLayer2NFT({ page });
     }
-  }, [page, accountStatus, account.readyState]);
+  }, [page, page_reudex]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET) {
-      initNFT();
+      renderNFT();
     }
   }, [walletLayer2NFTStatus]);
 
