@@ -1,15 +1,18 @@
 export type EventAPI = {
-  url: string;
-  params?: {
-    key: string;
-    values: Array<{ label: string; value: string }>;
-  };
+  version: string;
   column: { key: string; label: string }[];
+};
+export type EventAPIExtender = {
+  tableColumn: string[];
+  filters: string[];
 };
 export type EventData = {
   eventTitle: string;
   subTitle: string;
   local: "en-US";
+  banner: string;
+  rule: string;
+  ruleMarkdown?: string;
   duration: {
     prev?: string;
     startDate: number;
@@ -17,14 +20,11 @@ export type EventData = {
     endDate: number;
     end?: string;
   };
-  rewards: {
-    project: string;
-    pair: string;
-    reward: {
-      count: number;
-      token: string;
-    };
-  }[];
-  api?: EventAPI;
-  rules: string[];
+  api: EventAPI & Partial<EventAPIExtender>;
 };
+
+//TODO:test
+//"https://static.loopring.io/events";
+export const url_path = "https://localhost:3000/static/testEvents/";
+export const Config_INFO_URL = "/api/v3/activity/getFilterInfo/";
+export const Activity_URL = "/api/v3/activity/getActivityList/";
