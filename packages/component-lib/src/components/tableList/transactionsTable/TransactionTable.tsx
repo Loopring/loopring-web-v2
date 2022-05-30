@@ -262,12 +262,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           name: t("labelTxSide"),
           formatter: ({ row }) => {
             const value = row["side"];
-            const renderValue =
-              value === TransactionTradeTypes.deposit
-                ? t("labelReceive")
-                : value === TransactionTradeTypes.transfer
-                ? t("labelSendL2")
-                : t("labelSendL1");
+            const renderValue = t(`labelType${value.toUpperCase()}`);
+            // const renderValue =
+            //   value === TransactionTradeTypes.deposit
+            //     ? t("labelReceive")
+            //     : value === TransactionTradeTypes.transfer
+            //     ? t("labelSendL2")
+            //     : t("labelSendL1");
             return <Box className="rdg-cell-value">{renderValue}</Box>;
           },
         },
