@@ -4,15 +4,11 @@ import BasicInfoPanel from "./panel/BasicInfoPanel";
 import TradePanel from "./panel/TradePanel";
 import {
   AlertImpact,
-  ChartType,
   ConfirmImpact,
-  ScaleAreaChart,
   SwapPanel,
   Toast,
-  useToggle,
 } from "@loopring-web/component-lib";
-import { FixedStyle } from "../styled";
-import { TOAST_TIME } from "@loopring-web/core";
+import { TOAST_TIME, FixedStyle } from "@loopring-web/core";
 import { useSwap } from "./hookSwap";
 import { getValuePrecisionThousand } from "@loopring-web/common-resources";
 
@@ -41,10 +37,10 @@ export const SwapPage = withTranslation("common")(
       isSwapLoading,
       pageTradeLite,
       toPro,
+      updateMyTradeTable,
       isMobile,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
-    const { toggle } = useToggle();
     return (
       <>
         <Toast
@@ -54,7 +50,6 @@ export const SwapPage = withTranslation("common")(
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
-
         {!isMobile ? (
           <>
             <Box
@@ -73,7 +68,11 @@ export const SwapPage = withTranslation("common")(
                   tradeArray,
                 }}
               />
-              <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray} />
+              <TradePanel
+                tradeArray={tradeArray}
+                myTradeArray={myTradeArray}
+                updateMyTradeTable={updateMyTradeTable}
+              />
             </Box>
 
             <Box display={"flex"} style={styles} justifyContent={"center"}>

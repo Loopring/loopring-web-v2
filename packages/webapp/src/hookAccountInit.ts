@@ -16,8 +16,11 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer1Status,
     statusUnset: wallet1statusUnset,
   } = useWalletLayer1();
-  const { status: wallet2statusNFTStatus, statusUnset: wallet2statusNFTUnset } =
-    useWalletLayer2NFT();
+  const {
+    updateWalletLayer2NFT,
+    status: wallet2statusNFTStatus,
+    statusUnset: wallet2statusNFTUnset,
+  } = useWalletLayer2NFT();
   const {
     getUserRewards,
     status: userRewardsStatus,
@@ -55,6 +58,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
+            updateWalletLayer2NFT({});
           }
           break;
       }
@@ -100,7 +104,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
   React.useEffect(() => {
     switch (userRewardsStatus) {
       case SagaStatus.ERROR:
-        console.log("ERROR", "get userRewards");
+        console.log("Network ERROR::", "ammpoolAPI getAmmPoolUserRewards");
         userRewardsUnset();
         break;
       case SagaStatus.DONE:

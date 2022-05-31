@@ -29,10 +29,9 @@ import { useTheme } from "@emotion/react";
  * @step1 subscribe Connect hook
  * @step2 check the session storage ? choose the provider : none provider
  * @step3 decide china ID by step2
- * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, forex, Activities ...)
+ * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, Activities ...)
  * @step5 launch the page
  */
-
 export function useInit() {
   const [, search] = window.location?.hash.split("?") ?? [];
   const query = new URLSearchParams(search);
@@ -75,15 +74,10 @@ export function useInit() {
   const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount();
   const { status: socketStatus, statusUnset: socketUnset } = useSocket();
   const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store();
-  const {
-    getNotify,
-    status: notifyStatus,
-    statusUnset: notifyStatusUnset,
-  } = useNotify();
+  const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify();
 
   React.useEffect(() => {
     (async (account) => {
-      getNotify();
       if (
         account.accAddress !== "" &&
         account.connectName &&
@@ -226,7 +220,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:
-        console.log("ERROR", "get ammActivity error,ui");
+        console.log("Network ERROR::", "getAmmPoolActivityRules");
         ammActivityMapStatusUnset();
         break;
       case SagaStatus.DONE:
@@ -239,7 +233,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (tickerStatus) {
       case "ERROR":
-        console.log("ERROR", "get ticker error,ui");
+        console.log("Network ERROR::", "getMixTicker");
         tickerStatusUnset();
         break;
       case "DONE":
@@ -252,7 +246,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (amountStatus) {
       case SagaStatus.ERROR:
-        console.log("ERROR", "get (amount error,ui");
+        console.log("Network ERROR::", "userAPI getMinimumTokenAmt");
         amountStatusUnset();
         break;
       case SagaStatus.DONE:

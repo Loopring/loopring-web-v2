@@ -17,6 +17,7 @@ import {
   AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import { Box, Modal as MuiModal } from "@mui/material";
+import { ModalCoinPairPanel } from "./AmmPoolModal";
 
 export const ModalGroup = withTranslation("common", {
   withRef: true,
@@ -103,6 +104,7 @@ export const ModalGroup = withTranslation("common", {
             isLayer1Only,
           }}
         />
+        <ModalCoinPairPanel />
         <ModalSettingFee
           open={isShowFeeSetting.isShow}
           onClose={() => setShowFeeSetting({ isShow: false })}

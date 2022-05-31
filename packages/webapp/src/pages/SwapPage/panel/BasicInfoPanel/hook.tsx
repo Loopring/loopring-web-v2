@@ -59,8 +59,6 @@ export function useBasicInfo(
   const handleChange = useCallback(
     (_e: React.MouseEvent, value: any) => {
       if (value === null) return;
-      // Settings.setChartType(value)
-      // console.log('useBasicInfo handleChange:', value)
       setOriginData(undefined);
       setChartType(value === "Trend" ? ChartType.Trend : ChartType.Depth);
     },

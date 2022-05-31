@@ -4,8 +4,10 @@ import {
   AmmRankIcon,
   AvatarCoinStyled,
   CoinInfo,
+  CurrencyToTag,
   EmptyValueTag,
   FloatTag,
+  ForexMap,
   getValuePrecisionThousand,
   PriceTag,
   SoursURL,
@@ -25,7 +27,7 @@ import {
 } from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 
-type StyledProps = {
+export type StyledProps = {
   custom: { chg: UpColor };
 };
 const TradeTitleStyled = styled(Box)<StyledProps>`
@@ -43,12 +45,12 @@ export const TradeTitle = <I extends object>({
     volume: 0,
     change: 0,
     timeUnit: "24h",
-    priceYuan: 0,
     priceDollar: 0,
     floatTag: FloatTag.none,
     close: 0,
   },
   isNew,
+  forexMap,
   activityInProgressRules,
 }: WithTranslation & {
   account: Account;
@@ -58,11 +60,11 @@ export const TradeTitle = <I extends object>({
   coinBInfo: CoinInfo<I>;
   tradeFloat: TradeFloat;
   isNew: boolean;
+  forexMap: ForexMap<Currency>;
   activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
 }) => {
   const { coinJson } = useSettings();
   const history = useHistory();
-
   const sellCoinIcon: any = coinJson[coinAInfo?.simpleName];
   const buyCoinIcon: any = coinJson[coinBInfo?.simpleName];
 
@@ -76,27 +78,18 @@ export const TradeTitle = <I extends object>({
   const close: any = tradeFloat.close;
 
   const value =
-    currency === Currency.usd
-      ? "\u2248 " +
-        PriceTag.Dollar +
-        getValuePrecisionThousand(
-          tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar : 0,
-          undefined,
-          undefined,
-          undefined,
-          true,
-          { isFait: true }
-        )
-      : "\u2248 " +
-        PriceTag.Yuan +
-        getValuePrecisionThousand(
-          tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan : 0,
-          undefined,
-          undefined,
-          undefined,
-          true,
-          { isFait: true }
-        );
+    "\u2248 " +
+    PriceTag[CurrencyToTag[currency]] +
+    getValuePrecisionThousand(
+      tradeFloat && tradeFloat.closeDollar
+        ? tradeFloat.closeDollar * (forexMap[currency] ?? 0)
+        : 0,
+      undefined,
+      undefined,
+      undefined,
+      true,
+      { isFait: true }
+    );
 
   const pair = `${coinAInfo?.simpleName}-${coinBInfo?.simpleName}`;
   const change =
@@ -225,11 +218,11 @@ export const TradeTitle = <I extends object>({
                         const month = (
                           "0" + (date.getMonth() + 1).toString()
                         ).slice(-2);
-                        const day = ("0" + date.getDate().toString()).slice(-2);
-                        const current_event_date = `${year}-${month}-${day}`;
+                        // const day = ("0" + date.getDate().toString()).slice(-2);
+                        const current_event_date = `${year}-${month}`;
 
                         history.push(
-                          `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account?.accAddress}`
+                          `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&l2account=${account?.accAddress}`
                         );
                       }}
                     >
@@ -250,13 +243,13 @@ export const TradeTitle = <I extends object>({
                       const month = (
                         "0" + (date.getMonth() + 1).toString()
                       ).slice(-2);
-                      const day = ("0" + date.getDate().toString()).slice(-2);
-                      const current_event_date = `${year}-${month}-${day}`;
+                      // const day = ("0" + date.getDate().toString()).slice(-2);
+                      const current_event_date = `${year}-${month}`;
 
                       history.push(
-                        `/race-event/${current_event_date}?pair=${pair}&type=${
+                        `/race-event/${current_event_date}?selected=${pair}&type=${
                           activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                        }&owner=${account?.accAddress}`
+                        }&l2account=${account?.accAddress}`
                       );
                     }}
                   >
@@ -278,7 +271,7 @@ export const TradeTitle = <I extends object>({
             marginTop={1}
           >
             <Typography variant={"h1"}>
-              {close == "NaN" ? EmptyValueTag : close} {quoteShow}
+              {close === "NaN" ? EmptyValueTag : close} {quoteShow}
             </Typography>
             <Box
               display={"flex"}
@@ -287,11 +280,6 @@ export const TradeTitle = <I extends object>({
               justifyContent={"center"}
               className={"float-chart"}
             >
-              <Typography
-                variant={"body2"}
-                component={"span"}
-                className={"chart-change"}
-              ></Typography>
               <Typography
                 variant={"h5"}
                 component={"span"}

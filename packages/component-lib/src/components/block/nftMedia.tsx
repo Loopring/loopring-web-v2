@@ -1,6 +1,7 @@
 import {
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
+  myLog,
   NFTWholeINFO,
   RefreshIcon,
   SoursURL,
@@ -34,7 +35,6 @@ export const NFTMedia = React.memo(
   }) => {
     const theme = useTheme();
     const { t } = useTranslation();
-
     const [previewSrc, setPreviewSrc] = React.useState(
       (isOrigin
         ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
@@ -43,7 +43,7 @@ export const NFTMedia = React.memo(
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
       useImage(previewSrc ?? "");
-
+    myLog(item?.metadata);
     const fullSrc =
       (isOrigin
         ? item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)

@@ -303,22 +303,26 @@ export const DepositWrap = <
           </Box>
           {!isToAddressEditable && (
             <>
-              <Typography color={"var(--color-text-third)"} variant={"body1"}>
-                {t("labelBridgeSendTo")}
-              </Typography>
-              <Box>
-                <Typography
-                  display={"inline-flex"}
-                  variant={
-                    tradeData.toAddress?.startsWith("0x") ? "body2" : "body1"
-                  }
-                  style={{ wordBreak: "break-all" }}
-                  color={"textSecondary"}
-                >
-                  {tradeData.toAddress}
-                </Typography>
-              </Box>
-              {toIsAddressCheckLoading ? (
+              {!realToAddress ? (
+                <Box>
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    variant={"body1"}
+                  >
+                    {t("labelBridgeSendTo")}
+                  </Typography>
+                  <Typography
+                    display={"inline-flex"}
+                    variant={
+                      tradeData.toAddress?.startsWith("0x") ? "body2" : "body1"
+                    }
+                    style={{ wordBreak: "break-all" }}
+                    color={"textSecondary"}
+                  >
+                    {tradeData.toAddress}
+                  </Typography>
+                </Box>
+              ) : toIsAddressCheckLoading ? (
                 <Box
                   display={"flex"}
                   alignItems={"center"}

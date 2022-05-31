@@ -428,8 +428,8 @@ export const NFTDetail = withTranslation("common")(
                 <Typography color={"var(--color-text-third)"} width={150}>
                   {t("labelNFTDeploy")}
                 </Typography>
-                <Typography className={"btn"} minWidth={100} marginRight={2}>
-                  <Box flex={1} display={"flex"} flexDirection={"column"}>
+                <Box flex={1} display={"flex"} flexDirection={"column"}>
+                  <Typography className={"btn"} minWidth={100} marginRight={2}>
                     <Button
                       variant={"outlined"}
                       size={"medium"}
@@ -442,8 +442,8 @@ export const NFTDetail = withTranslation("common")(
                     >
                       {t("labelNFTDeployContract")}
                     </Button>
-                  </Box>
-                </Typography>
+                  </Typography>
+                </Box>
               </BoxBtnStyle>
             )}
 

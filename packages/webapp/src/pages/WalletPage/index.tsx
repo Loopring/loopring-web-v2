@@ -13,10 +13,9 @@ import {
   SubMenuList,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useAccount, BtnConnectL1 } from "@loopring-web/core";
+import { useAccount, BtnConnectL1, StylePaper } from "@loopring-web/core";
 import { useRouteMatch } from "react-router-dom";
 import { useHebaoMain } from "./hook";
-import { StylePaper } from "pages/styled";
 import { ModalLock } from "./modal";
 import { WalletHistory } from "./WalletHistory";
 import { WalletValidationInfo } from "./WalletValidationInfo";

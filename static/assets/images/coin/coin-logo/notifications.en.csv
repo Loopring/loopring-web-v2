@@ -1,0 +1,4 @@
+type,version,name,title,description1,description2,link,startShow,endShow,color,banner
+ACTIVITY,2,deposit_2,Loophead NFT Drop,"Deposit to L2, Win a Loophead NFT",Duration: April 15 0:00 - May 15 0:00 (UTC),#/race-event/2022-06?type=deposit_2,06/01/2022 00:00:00,07/20/2022 00:00:00,primary,https://static.loopring.io/events/2022/06/activities/test_1_banner.{lng}.webp
+ACTIVITY,0,ramp_event,🅾️ Zero Fees Promo!,Deposit via Banxa for free!,Duration: April 11 0:00 - April 25 0:00 (UTC),https://loopring.io/#/layer2,06/10/2022 00:00:00,07/11/2022 00:00:00,default,
+NOTIFICATION,0,ramp_event,🅾️ Zero Fees Promo!,Deposit via Banxa for free!,Duration: April 11 0:00 - April 25 0:00 (UTC),https://loopring.io/#/layer2,06/10/2022 00:00:00,07/11/2022 00:00:00,default,

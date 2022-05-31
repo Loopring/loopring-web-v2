@@ -1,17 +1,12 @@
 import {
   AssetsIcon,
-  DiscordIcon,
   L2HistoryIcon,
-  L2MyLiquidityIcon,
   L2OrderIcon,
-  MediumIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
-  TwitterIcon,
   VipIcon,
   WaitApproveIcon,
-  YoutubeIcon,
 } from "../svg";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
@@ -71,7 +66,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelClassic",
       description: "labelClassicDescription",
     },
-    router: { path: "/trade/lite/LRC-ETH" },
+    router: { path: "/trade/lite/${pair}" },
   },
   {
     label: {
@@ -79,7 +74,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelAdvanced",
       description: "labelAdvancedDescription",
     },
-    router: { path: "/trade/pro/LRC-ETH" },
+    router: { path: "/trade/pro/${pair}" },
   },
 ];
 
@@ -119,18 +114,10 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: "Liquidity",
-      i18nKey: "labelLiquidity",
+      id: "Invest",
+      i18nKey: "labelInvest",
     },
-    router: { path: "/liquidity" },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: "Mining",
-      i18nKey: "labelMining",
-    },
-    router: { path: "/mining" },
+    router: { path: "/invest" },
     status: HeaderMenuTabStatus.default,
   },
   {
@@ -174,14 +161,6 @@ export const subMenuLayer2 = {
       label: {
         id: "assets",
         i18nKey: "labelAssets",
-      },
-    },
-    {
-      icon: L2MyLiquidityIcon,
-      router: { path: "/layer2/my-liquidity" },
-      label: {
-        id: "my-liquidity",
-        i18nKey: "labelMyLiquidity",
       },
     },
   ],
@@ -349,19 +328,19 @@ export const FOOTER_LIST_MAP = {
 
 export const MEDIA_LIST = [
   {
-    linkName: DiscordIcon, //color={"inherit"} fontSize={"large"}
+    linkName: "Discord", //color={"inherit"} fontSize={"large"}
     linkHref: "https://discord.com/invite/KkYccYp",
   },
   {
-    linkName: TwitterIcon,
+    linkName: "Twitter",
     linkHref: "https://twitter.com/loopringorg",
   },
   {
-    linkName: YoutubeIcon,
+    linkName: "Youtube",
     linkHref: "https://www.youtube.com/c/Loopring",
   },
   {
-    linkName: MediumIcon,
+    linkName: "Medium",
     linkHref: "https://medium.com/loopring-protocol",
   },
 ];

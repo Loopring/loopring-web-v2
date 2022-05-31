@@ -8,10 +8,11 @@ import {
   PopoverWrapProps,
 } from "../../../basic-lib";
 import { MoreIcon } from "@loopring-web/common-resources";
-import { LpTokenAction } from "../AssetsTable";
+// import { LpTokenAction } from "../AssetsTable";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
-import { useSettings } from "../../../../stores";
+import { useOpenModals, useSettings } from "../../../../stores";
+import { AmmPanelType } from "../../../tradePanel";
 
 const GridStyled = styled(Grid)`
   .MuiGrid-item {
@@ -22,7 +23,6 @@ export type ActionProps = {
   tokenValue: any;
   allowTrade?: any;
   market: `${string}-${string}`;
-  isToL1: boolean;
   isLp: boolean;
   onSend: (token: string, isToL1: boolean) => void;
   onReceive: (token: string) => void;
@@ -41,20 +41,21 @@ const ActionPopContent = React.memo(
     onReceive,
     // onShowDeposit,
     tokenValue,
-    isToL1,
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
     t,
   }: ActionProps) => {
     const history = useHistory();
+    const { setShowAmm } = useOpenModals();
+
     const { isMobile } = useSettings();
     const tradeList = [
       ...[
         <MenuItem onClick={() => onReceive(tokenValue)}>
           <ListItemText>{t("labelReceive")}</ListItemText>
         </MenuItem>,
-        <MenuItem onClick={() => onSend(tokenValue, isToL1)}>
+        <MenuItem onClick={() => onSend(tokenValue, isLp)}>
           <ListItemText>{t("labelSend")}</ListItemText>
         </MenuItem>,
       ],
@@ -83,20 +84,36 @@ const ActionPopContent = React.memo(
           <>
             {allowTrade?.joinAmm?.enable && (
               <MenuItem
-                onClick={() =>
-                  history.push(
-                    `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
-                  )
+                onClick={
+                  () => {
+                    // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                    setShowAmm({
+                      isShow: true,
+                      type: AmmPanelType.Join,
+                      symbol: market,
+                    });
+                  }
+                  // () => undefined
+                  // history.push(
+                  //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
+                  // )
                 }
               >
                 <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
               </MenuItem>
             )}
             <MenuItem
-              onClick={() =>
-                history.push(
-                  `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
-                )
+              onClick={
+                () => {
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Exit,
+                    symbol: market,
+                  });
+                }
+                // history.push(
+                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
+                // )
               }
             >
               <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
@@ -130,7 +147,6 @@ const ActionMemo = React.memo((props: ActionProps) => {
     t,
     allowTrade,
     tokenValue,
-    isToL1,
     onSend,
     onReceive,
     isLp,
@@ -180,7 +196,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             <Grid item>
               <Button
                 variant={"text"}
-                size={"medium"}
+                size={"small"}
                 color={"primary"}
                 onClick={() => onReceive(tokenValue)}
               >
@@ -190,9 +206,9 @@ const ActionMemo = React.memo((props: ActionProps) => {
             <Grid item>
               <Button
                 variant={"text"}
-                size={"medium"}
+                size={"small"}
                 color={"primary"}
-                onClick={() => onSend(tokenValue, isToL1)}
+                onClick={() => onSend(tokenValue, isLp)}
               >
                 {t("labelSend")}
               </Button>

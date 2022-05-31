@@ -14,6 +14,7 @@ import {
   useAmmActivityMap,
   useTokenMap,
   useAccount,
+  useSystem,
 } from "@loopring-web/core";
 
 const BoxStyle = styled(Box)`
@@ -40,6 +41,7 @@ const BasicInfoPanel = ({
     originData,
   } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t);
   const { activityInProgressRules } = useAmmActivityMap();
+  const { forexMap } = useSystem();
   // const tradeRaceList = (ammActivityMap?.SWAP_VOLUME_RANKING?.InProgress || []).map(o => o.market)
   const { upColor, isMobile } = useSettings();
   const { marketMap } = useTokenMap();
@@ -90,7 +92,8 @@ const BasicInfoPanel = ({
             alignItems={"center"}
           >
             <TradeTitle
-              accoun={account}
+              forexMap={forexMap}
+              account={account}
               {...{
                 baseShow,
                 quoteShow,

@@ -254,17 +254,25 @@ export const DeployNFTWrap = <
                       status={dropdownStatus}
                       fontSize={"medium"}
                     />
-                    <Typography
-                      marginLeft={1}
-                      component={"span"}
-                      color={"var(--color-error)"}
-                    >
-                      {isFeeNotEnough && (
-                        <Trans i18nKey={"labelL2toL2FeeNotEnough"}>
-                          Insufficient balance
-                        </Trans>
-                      )}
-                    </Typography>
+                    {isFeeNotEnough.isOnLoading ? (
+                      <Typography
+                        marginLeft={1}
+                        component={"span"}
+                        color={"var(--color-warning)"}
+                      >
+                        {t("labelFeeCalculating")}
+                      </Typography>
+                    ) : (
+                      isFeeNotEnough.isFeeNotEnough && (
+                        <Typography
+                          marginLeft={1}
+                          component={"span"}
+                          color={"var(--color-error)"}
+                        >
+                          {t("labelL2toL2FeeNotEnough")}
+                        </Typography>
+                      )
+                    )}
                   </Box>
                 </Typography>
                 {dropdownStatus === "up" && (

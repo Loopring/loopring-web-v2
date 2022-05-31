@@ -28,12 +28,12 @@ export const useReset = <T extends FeeInfo>(): {
     updateData: undefined,
   });
   React.useEffect(() => {
-    if (isFeeNotEnough) {
+    if (isFeeNotEnough.isFeeNotEnough) {
       disableBtn();
     } else {
       enableBtn();
     }
-  }, [isFeeNotEnough]);
+  }, [isFeeNotEnough.isFeeNotEnough]);
 
   React.useEffect(() => {
     if (isShow) {

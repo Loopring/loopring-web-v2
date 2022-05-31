@@ -1,10 +1,17 @@
-import { CoinInfo, PriceTag, TradeFloat } from "@loopring-web/common-resources";
+import {
+  CoinInfo,
+  PriceTag,
+  TradeFloat,
+  ForexMap,
+} from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../tradePanel";
+import { Currency } from "@loopring-web/loopring-sdk";
 
 export type MarketBlockProps<C> = {
   coinAInfo: CoinInfo<C>;
   coinBInfo: CoinInfo<C>;
   tradeFloat: TradeFloat;
+  forexMap: ForexMap<Currency>;
   chartData?: {
     close: number;
     timeStamp: number;

@@ -5,8 +5,10 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Account,
   AmmRankIcon,
+  CurrencyToTag,
   EmptyValueTag,
   FloatTag,
+  ForexMap,
   getValuePrecisionThousand,
   PriceTag,
   RowConfig,
@@ -84,14 +86,10 @@ export type QuoteTableRawDataItem = {
   floatTag: keyof typeof FloatTag;
   volume: number;
   changeDollar: number;
-  changeYuan: number;
   closeDollar: number;
-  closeYuan: number;
   coinAPriceDollar: number;
-  coinAPriceYuan: number;
   precision?: number;
   priceDollar?: number;
-  priceYuan?: number;
   reward?: number;
   rewardToken?: string;
   timeUnit?: "24h";
@@ -142,6 +140,7 @@ export interface QuoteTableProps {
   currentheight?: number;
   showLoading?: boolean;
   isPro?: boolean;
+  forexMap: ForexMap<Currency>;
   activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
 }
 
@@ -166,6 +165,7 @@ export const QuoteTable = withTranslation("tables")(
       removeFavoriteMarket,
       showLoading,
       account,
+      forexMap,
       isPro = false,
       activityInProgressRules,
       ...rest
@@ -190,7 +190,6 @@ export const QuoteTable = withTranslation("tables")(
           activityInProgressRules,
         } = props;
 
-        const isUSD = currency === Currency.usd;
         const basicRender = [
           {
             key: "pair",
@@ -245,13 +244,13 @@ export const QuoteTable = withTranslation("tables")(
                             const month = (
                               "0" + (date.getMonth() + 1).toString()
                             ).slice(-2);
-                            const day = ("0" + date.getDate().toString()).slice(
-                              -2
-                            );
-                            const current_event_date = `${year}-${month}-${day}`;
+                            // const day = ("0" + date.getDate().toString()).slice(
+                            //   -2
+                            // );
+                            const current_event_date = `${year}-${month}`;
 
                             history.push(
-                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account?.accAddress}`
+                              `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&l2account=${account?.accAddress}`
                             );
                           }}
                         >
@@ -272,15 +271,15 @@ export const QuoteTable = withTranslation("tables")(
                           const month = (
                             "0" + (date.getMonth() + 1).toString()
                           ).slice(-2);
-                          const day = ("0" + date.getDate().toString()).slice(
-                            -2
-                          );
-                          const current_event_date = `${year}-${month}-${day}`;
+                          // const day = ("0" + date.getDate().toString()).slice(
+                          //   -2
+                          // );
+                          const current_event_date = `${year}-${month}`;
 
                           history.push(
                             `/race-event/${current_event_date}?pair=${pair}&type=${
                               activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                            }&owner=${account?.accAddress}`
+                            }&l2account=${account?.accAddress}`
                           );
                         }}
                       >
@@ -312,29 +311,17 @@ export const QuoteTable = withTranslation("tables")(
                 : EmptyValueTag;
 
               const faitPrice = Number.isFinite(value)
-                ? isUSD
-                  ? PriceTag.Dollar +
-                    getValuePrecisionThousand(
-                      row.coinAPriceDollar,
-                      2,
-                      2,
-                      2,
-                      true,
-                      {
-                        isFait: true,
-                      }
-                    )
-                  : PriceTag.Yuan +
-                    getValuePrecisionThousand(
-                      row.coinAPriceYuan,
-                      2,
-                      2,
-                      2,
-                      true,
-                      {
-                        isFait: true,
-                      }
-                    )
+                ? PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    row.coinAPriceDollar * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    2,
+                    true,
+                    {
+                      isFait: true,
+                    }
+                  )
                 : EmptyValueTag;
               return (
                 <Typography

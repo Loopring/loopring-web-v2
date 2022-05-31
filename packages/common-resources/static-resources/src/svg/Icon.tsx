@@ -874,13 +874,13 @@ export const BanxaIcon = ({
         y2="16.4933"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#0172D0" />
-        <stop offset="0.0644" stop-color="#0181CD" />
-        <stop offset="0.2231" stop-color="#019FC8" />
-        <stop offset="0.3899" stop-color="#00B7C3" />
-        <stop offset="0.5666" stop-color="#00C8C0" />
-        <stop offset="0.7597" stop-color="#00D2BF" />
-        <stop offset="1" stop-color="#00D5BE" />
+        <stop stopColor="#0172D0" />
+        <stop offset="0.0644" stopColor="#0181CD" />
+        <stop offset="0.2231" stopColor="#019FC8" />
+        <stop offset="0.3899" stopColor="#00B7C3" />
+        <stop offset="0.5666" stopColor="#00C8C0" />
+        <stop offset="0.7597" stopColor="#00D2BF" />
+        <stop offset="1" stopColor="#00D5BE" />
       </linearGradient>
     </defs>
   </SvgIcon>
@@ -1043,8 +1043,8 @@ export const AmmRankIcon = (props: SvgIconProps) => {
           y2="10.0468"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#8DC9FA" />
-          <stop offset="1" stop-color="#6CB7F9" />
+          <stop stopColor="#8DC9FA" />
+          <stop offset="1" stopColor="#6CB7F9" />
         </linearGradient>
       </defs>
     </SvgIcon>
@@ -1200,11 +1200,52 @@ export const IncomingIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+export const OutputIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
+      <path d="M15.0527 12.8711L18.9653 16.8025V13.0987H20.9653V20.9622H18.9653V17.0427L15.0299 20.997L13.6123 19.5862L15.2565 17.9341H7.9574V6.81059H9.9574V15.9341H15.2793L13.6351 14.2819L15.0527 12.8711Z" />
+      <path d="M6 3.10938H4V5.10938H6V3.10938Z" />
+      <path d="M10 3.10938H8V5.10938H10V3.10938Z" />
+      <path d="M12 3.10938H14V5.10938H12V3.10938Z" />
+    </SvgIcon>
+  );
+};
 
 export const CardIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
       <path d="M3 3H21C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V20C22 20.2652 21.8946 20.5196 21.7071 20.7071C21.5196 20.8946 21.2652 21 21 21H3C2.73478 21 2.48043 20.8946 2.29289 20.7071C2.10536 20.5196 2 20.2652 2 20V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3ZM20 11H4V19H20V11ZM20 9V5H4V9H20ZM14 15H18V17H14V15Z" />
+    </SvgIcon>
+  );
+};
+export const L2l2Icon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M6.25971 1.66588L7.67731 3.0767L5.36513 5.4H22V7.4H5.3919L7.7047 9.72393L6.2871 11.1347L1.56165 6.38655L6.25971 1.66588ZM17.3599 12.8653L15.9423 14.2761L18.2551 16.6H1.89404V18.6H18.2271L15.9149 20.9233L17.3325 22.3341L22.058 17.5859L17.3599 12.8653Z"
+      />
+    </SvgIcon>
+  );
+};
+
+export const L1l2Icon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M1.66589 17.7403L3.07671 16.3227L5.40001 18.6349L5.40001 2H7.40001L7.40001 18.6081L9.72394 16.2953L11.1348 17.7129L6.38656 22.4384L1.66589 17.7403ZM12.8653 6.64008L14.2761 8.05768L16.6 5.74488V22.106H18.6V5.7729L20.9233 8.08507L22.3341 6.66747L17.5859 1.94202L12.8653 6.64008Z"
+      />
+    </SvgIcon>
+  );
+};
+
+export const ExchangeAIcon = (props: SvgIconProps) => {
+  return (
+    <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">
+      <path d="M19.375 15.103C20.0239 13.5613 20.1733 11.855 19.8021 10.224C19.431 8.59305 18.558 7.11939 17.306 6.01025C16.0539 4.90111 14.4857 4.21227 12.8219 4.04056C11.158 3.86886 9.48222 4.22293 8.03004 5.053L7.03804 3.316C8.55567 2.44862 10.2742 1.99437 12.0222 1.99858C13.7703 2.00279 15.4866 2.46531 17 3.34C21.49 5.932 23.21 11.482 21.117 16.11L22.459 16.884L18.294 19.098L18.129 14.384L19.375 15.103V15.103ZM4.62504 8.897C3.97618 10.4387 3.82682 12.145 4.19796 13.776C4.56909 15.407 5.44205 16.8806 6.69411 17.9897C7.94617 19.0989 9.51436 19.7877 11.1782 19.9594C12.842 20.1311 14.5179 19.7771 15.97 18.947L16.962 20.684C15.4444 21.5514 13.7258 22.0056 11.9778 22.0014C10.2298 21.9972 8.51347 21.5347 7.00004 20.66C2.51004 18.068 0.790039 12.518 2.88304 7.89L1.54004 7.117L5.70504 4.903L5.87004 9.617L4.62404 8.898L4.62504 8.897ZM13.415 14.828L10.584 12L7.75604 14.828L6.34204 13.414L10.585 9.172L13.414 12L16.243 9.172L17.657 10.586L13.414 14.828H13.415Z" />
     </SvgIcon>
   );
 };

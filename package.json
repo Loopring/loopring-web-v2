@@ -6,18 +6,19 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">=14.x"
+    "node": ">=16.x"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "^2.0.12",
+    "@loopring-web/loopring-sdk": "^2.0.14",
     "@loopring-web/recharts": "^2.0.10",
-    "@loopring-web/web3-provider": "^1.0.13",
+    "@loopring-web/web3-provider": "^1.0.19",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.6.2",
     "@react-spring/parallax": "^9.4.4",
     "@reduxjs/toolkit": "^1.8.1",
+    "JSONStream": "^1.3.5",
     "bignumber.js": "^9.0.1",
     "bn.js": "^5.1.3",
     "dotenv": "^8.2.0",
@@ -26,6 +27,7 @@
     "echarts": "^5.2.2",
     "echarts-for-react": "^3.0.2",
     "ffjavascript": "^0.1.0",
+    "firebase": "^9.8.3",
     "github-markdown-css": "^5.0.0",
     "i18next": "^20.1.0",
     "ipfs-http-client": "^56.0.2",
@@ -40,8 +42,9 @@
     "react-dropzone": "^12.0.4",
     "react-grid-layout": "^1.3.0",
     "react-i18next": "^11.8.12",
-    "react-markdown": "^7.1.0",
+    "react-markdown": "^8.0.3",
     "react-redux": "^7.2.3",
+    "react-redux-firebase": "^3.11.0",
     "react-resizable": "^3.0.4",
     "react-scripts": "4.0.3",
     "react-spring": "^9.4.4",
@@ -53,10 +56,11 @@
     "redux-observable": "^1.2.0",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.1.3",
+    "rehype-raw": "^6.1.1",
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.5.1"
+    "web3": "^1.7.4"
   },
   "build": {
     "files": [
@@ -134,6 +138,7 @@
     "@types/react-swipeable-views": "^0.13.0",
     "@types/react-virtualized": "^9.21.11",
     "babel-plugin-import": "^1.13.3",
+    "csv-parse": "^5.1.0",
     "eslint": "^7.23.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-flowtype": "^5.4.0",

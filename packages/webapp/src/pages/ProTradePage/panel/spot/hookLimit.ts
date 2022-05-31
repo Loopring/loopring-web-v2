@@ -47,7 +47,7 @@ export const useLimit = <C extends { [key: string]: any }>({
   } = usePageTradePro();
   const { marketMap, tokenMap } = useTokenMap();
   const { tokenPrices } = useTokenPrices();
-  const { forex, allowTrade } = useSystem();
+  const { forexMap, allowTrade } = useSystem();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const {
     toggle: { order },
@@ -71,10 +71,11 @@ export const useLimit = <C extends { [key: string]: any }>({
   let balance =
     tradePrice &&
     tokenPrices &&
-    Number(tradePrice) * tokenPrices[quoteSymbol as string];
-  if (balance && currency === sdk.Currency.cny) {
-    balance = Number(balance) * forex;
-  }
+    forexMap &&
+    Number(tradePrice) *
+      tokenPrices[quoteSymbol as string] *
+      (forexMap[currency] ?? 0);
+
   const [limitTradeData, setLimitTradeData] = React.useState<
     LimitTradeData<IBData<any>>
   >({
@@ -89,14 +90,7 @@ export const useLimit = <C extends { [key: string]: any }>({
     price: {
       belong: pageTradePro.tradeCalcProData.coinQuote,
       tradeValue: tradePrice,
-      balance: getValuePrecisionThousand(
-        balance,
-        undefined,
-        undefined,
-        undefined,
-        true,
-        { isFait: true }
-      ),
+      balance,
     } as IBData<any>,
     type: pageTradePro.tradeType ?? TradeProType.buy,
   });
@@ -110,6 +104,10 @@ export const useLimit = <C extends { [key: string]: any }>({
 
   React.useEffect(() => {
     if (pageTradePro.chooseDepth) {
+      const {
+        system: { forexMap },
+        settings: { currency },
+      } = store.getState();
       //@ts-ignore
       const [, baseSymbol, quoteSymbol] =
         pageTradePro.market.match(/(\w+)-(\w+)/i);
@@ -125,10 +123,11 @@ export const useLimit = <C extends { [key: string]: any }>({
       let balance =
         tradePrice &&
         tokenPrices &&
-        Number(tradePrice) * tokenPrices[quoteSymbol as string];
-      if (balance && currency === sdk.Currency.cny) {
-        balance = Number(balance) * forex;
-      }
+        forexMap &&
+        Number(tradePrice) *
+          tokenPrices[quoteSymbol as string] *
+          (forexMap[currency] ?? 0);
+
       if (
         (pageTradePro.tradeType === TradeProType.buy &&
           pageTradePro.chooseDepth.type === DepthType.ask) ||
@@ -152,14 +151,7 @@ export const useLimit = <C extends { [key: string]: any }>({
             price: {
               ...limitTradeData.price,
               tradeValue: Number(tradePrice),
-              balance: getValuePrecisionThousand(
-                balance,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              ),
+              balance: Number(balance) ?? 0,
             },
           },
           TradeBaseType.price
@@ -195,7 +187,7 @@ export const useLimit = <C extends { [key: string]: any }>({
 
       // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
     }
-  }, [pageTradePro.chooseDepth, currency, forex]);
+  }, [pageTradePro.chooseDepth]);
 
   const resetTradeData = React.useCallback(
     (type?: TradeProType) => {
@@ -213,10 +205,11 @@ export const useLimit = <C extends { [key: string]: any }>({
         let balance =
           tradePrice &&
           tokenPrices &&
-          Number(tradePrice) * tokenPrices[quoteSymbol as string];
-        if (balance && currency === sdk.Currency.cny) {
-          balance = Number(balance) * forex;
-        }
+          forexMap &&
+          Number(tradePrice) *
+            tokenPrices[quoteSymbol as string] *
+            (forexMap[currency] ?? 0);
+
         return {
           ...state,
           type: type ?? pageTradePro.tradeType,
@@ -231,14 +224,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           price: {
             belong: quoteSymbol,
             tradeValue: tradePrice,
-            balance: getValuePrecisionThousand(
-              balance,
-              undefined,
-              undefined,
-              undefined,
-              true,
-              { isFait: true }
-            ),
+            balance,
           } as IBData<any>,
         };
       });
@@ -262,7 +248,14 @@ export const useLimit = <C extends { [key: string]: any }>({
         },
       });
     },
-    [marketPrecision, market, currency, forex]
+    [
+      market,
+      updatePageTradePro,
+      marketPrecision,
+      tokenPrices,
+      forexMap,
+      currency,
+    ]
   );
 
   const limitSubmit = React.useCallback(
@@ -407,7 +400,7 @@ export const useLimit = <C extends { [key: string]: any }>({
         setIsLimitLoading(false);
       }
     },
-    []
+    [__SUBMIT_LOCK_TIMER__, resetTradeData, setToastOpen, t]
   );
 
   const { makeLimitReqInHook } = usePlaceOrder();
@@ -478,23 +471,17 @@ export const useLimit = <C extends { [key: string]: any }>({
           let balance =
             tradePrice &&
             tokenPrices &&
-            Number(tradePrice) * tokenPrices[quoteSymbol as string];
-          if (balance && currency === sdk.Currency.cny) {
-            balance = Number(balance) * forex;
-          }
+            forexMap &&
+            Number(tradePrice) *
+              tokenPrices[quoteSymbol as string] *
+              (forexMap[currency] ?? 0);
+
           return {
             ...state,
             price: {
               belong: quoteSymbol,
               tradeValue: tradePrice,
-              balance: getValuePrecisionThousand(
-                balance,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              ),
+              balance,
             } as IBData<any>,
             base: {
               ...state.base,
@@ -508,28 +495,43 @@ export const useLimit = <C extends { [key: string]: any }>({
         });
       }
     },
-    [setLimitTradeData, currency, forex]
+    [
+      resetTradeData,
+      makeLimitReqInHook,
+      updatePageTradePro,
+      market,
+      tokenPrices,
+      quoteSymbol,
+      forexMap,
+      currency,
+    ]
   );
-  const handlePriceError = React.useCallback((data: IBData<any>):
-    | { error: boolean; message?: string | JSX.Element }
-    | undefined => {
-    const tradeValue = data.tradeValue;
-    if (tradeValue) {
-      const [, precision] = tradeValue.toString().split(".");
-      if (precision && precision.length > marketMap[market].precisionForPrice) {
-        return {
-          error: true,
-          message: t("labelErrorPricePrecisionLimit", {
-            symbol: data.belong,
-            decimal: marketMap[market].precisionForPrice,
-          }),
-        };
+  const handlePriceError = React.useCallback(
+    (
+      data: IBData<any>
+    ): { error: boolean; message?: string | JSX.Element } | undefined => {
+      const tradeValue = data.tradeValue;
+      if (tradeValue) {
+        const [, precision] = tradeValue.toString().split(".");
+        if (
+          precision &&
+          precision.length > marketMap[market].precisionForPrice
+        ) {
+          return {
+            error: true,
+            message: t("labelErrorPricePrecisionLimit", {
+              symbol: data.belong,
+              decimal: marketMap[market].precisionForPrice,
+            }),
+          };
+        }
+        return undefined;
+      } else {
+        return undefined;
       }
-      return undefined;
-    } else {
-      return undefined;
-    }
-  }, []);
+    },
+    [market, marketMap, t]
+  );
 
   const onSubmitBtnClick = React.useCallback(async () => {
     setIsLimitLoading(true);
@@ -554,7 +556,13 @@ export const useLimit = <C extends { [key: string]: any }>({
           break;
       }
     }
-  }, [allowTrade]);
+  }, [
+    allowTrade.order.enable,
+    limitSubmit,
+    order.enable,
+    setShowSupport,
+    setShowTradeIsFrozen,
+  ]);
   const availableTradeCheck = React.useCallback((): {
     tradeBtnStatus: TradeBtnStatus;
     label: string;
@@ -580,7 +588,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       } else if (!minOrderInfo?.minAmtCheck) {
         let minOrderSize = "Error";
         if (minOrderInfo?.symbol) {
-          const basePrecision = tokenMap[minOrderInfo.symbol].precisionForOrder;
+          const basePrecision = tokenMap[minOrderInfo.symbol].precision;
           const showValue = getValuePrecisionThousand(
             minOrderInfo?.minAmtShow,
             undefined,
@@ -614,7 +622,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [limitTradeData, limitSubmit, tokenMap]);
+  }, [limitTradeData, tokenMap]);
 
   const {
     btnStatus: tradeLimitBtnStatus,

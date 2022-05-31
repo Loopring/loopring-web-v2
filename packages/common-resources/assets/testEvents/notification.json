@@ -1,0 +1,51 @@
+{
+  "en": {
+    "activities": [
+      {
+        "type": "ACTIVITY",
+        "version": "2",
+        "title": "deposit_2",
+        "name": "Loophead NFT Drop",
+        "description1": "Deposit to L2, Win a Loophead NFT",
+        "description2": "Duration: April 15 0:00 - May 15 0:00 (UTC)",
+        "link": "#/race-event/2022-06?type=deposit_2",
+        "startShow": 1654041600000,
+        "endShow": 1658275200000,
+        "color": "primary",
+        "banner": "./static/testEvents/2022/06/activities/deposit_2_banner.{lng}.app.png"
+      },
+      {
+        "type": "ACTIVITY",
+        "version": "0",
+        "title": "ramp_event",
+        "name": "🅾️ Zero Fees Promo!",
+        "description1": "Deposit via Banxa for free!",
+        "description2": "Duration: April 11 0:00 - April 25 0:00 (UTC)",
+        "link": "https://loopring.io/#/layer2",
+        "startShow": 1654819200000,
+        "endShow": 1657497600000,
+        "color": "default",
+        "banner": ""
+      }
+    ],
+    "notifications": [
+      {
+        "type": "NOTIFICATION",
+        "version": "0",
+        "title": "ramp_event",
+        "name": "🅾️ Zero Fees Promo!",
+        "description1": "Deposit via Banxa for free!",
+        "description2": "Duration: April 11 0:00 - April 25 0:00 (UTC)",
+        "link": "https://loopring.io/#/layer2",
+        "startShow": 1654819200000,
+        "endShow": 1657497600000,
+        "color": "default",
+        "banner": ""
+      }
+    ],
+    "invest": []
+  },
+  "prev": {
+    "endDate": 1658275200000
+  }
+}

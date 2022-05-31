@@ -5,6 +5,7 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
+  CurrencyToTag,
   IBData,
   PriceTag,
   TradeCalcProData,
@@ -16,7 +17,6 @@ import { useCommon } from "./hookCommon";
 import { Button } from "./../../index";
 import React from "react";
 import { useSettings } from "../../../stores";
-import { Currency } from "@loopring-web/loopring-sdk";
 
 export const LimitTrade = withTranslation("common", { withRef: true })(
   <
@@ -66,13 +66,12 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
     const propsPrice = React.useMemo(() => {
       return {
         label: t("labelProPrice"),
-        subLabel: `\u2248 ${
-          currency == Currency.usd ? PriceTag.Dollar : PriceTag.Yuan
-        }`, //'\u224'
+        subLabel: `\u2248 ${PriceTag[CurrencyToTag[currency]]}`,
         emptyText: t("tokenSelectToken"),
         placeholderText: "0.00",
         size: InputSize.small,
         order: '"right"' as any,
+        coinPrecision: 2,
         coinLabelStyle: { color: "var(--color-text-secondary)" },
         isShowCoinIcon: false,
         ...tokenPriceProps,
@@ -80,7 +79,8 @@ export const LimitTrade = withTranslation("common", { withRef: true })(
         maxAllow: false,
         t,
       };
-    }, [tradeType, TradeProType, handleCountChange]);
+    }, [tradeType, TradeProType, tokenPriceProps, handleCountChange]);
+
     // const fee =
     //   tradeCalcProData && tradeCalcProData.fee
     //     ? (parseFloat(tradeCalcProData.fee) / 100).toString() + "%"

@@ -11,3 +11,4 @@ export * from "./Interface";
 export * from "./DepthRaw";
 export * from "./TradeRace";
 export * from "./nftMedia";
+export * from "./AmmPairDetail";

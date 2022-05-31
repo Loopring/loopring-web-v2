@@ -39,7 +39,10 @@ import {
   TOAST_TIME,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import { useHistory } from "react-router-dom";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
@@ -58,7 +61,10 @@ export function useNFTMint<
   nftMintValue,
 }: {
   chargeFeeTokenList: FeeInfo[];
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
@@ -100,7 +106,7 @@ export function useNFTMint<
         nftMintValue.mintData.fee &&
         nftMintValue.mintData.fee.belong &&
         nftMintValue.mintData.fee.__raw__ &&
-        !isFeeNotEnough
+        !isFeeNotEnough.isFeeNotEnough
       ) {
         enableBtn();
         return;
@@ -130,7 +136,7 @@ export function useNFTMint<
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [isFeeNotEnough, nftMintValue, feeInfo]);
+  }, [isFeeNotEnough.isFeeNotEnough, nftMintValue, feeInfo]);
   useWalletLayer2Socket({});
 
   const handleMintDataChange = React.useCallback(
@@ -185,7 +191,8 @@ export function useNFTMint<
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -305,7 +312,7 @@ export function useNFTMint<
         nftMintValue.nftMETA.royaltyPercentage / 1 <= 10 &&
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
-        !isFeeNotEnough &&
+        !isFeeNotEnough.isFeeNotEnough &&
         exchangeInfo
       ) {
         setShowNFTMintAdvance({ isShow: false });

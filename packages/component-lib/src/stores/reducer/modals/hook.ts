@@ -22,12 +22,14 @@ import {
   setShowNFTMintAdvance,
   setShowOtherExchange,
   setShowNFTDetail,
+  setShowLayerSwapNotice,
 } from "./reducer";
 
 import React from "react";
 import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { ToggleState } from "../toggle";
+import { AmmPanelType } from "../../../components";
 
 export const useOpenModals = () => {
   const dispatch = useDispatch();
@@ -154,7 +156,8 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowAmm: React.useCallback(
-      (state: ModalStatePlayLoad) => dispatch(setShowAmm(state)),
+      (state: ModalStatePlayLoad & Transaction & { type?: AmmPanelType }) =>
+        dispatch(setShowAmm(state)),
       [dispatch]
     ),
     setShowSwap: React.useCallback(
@@ -187,6 +190,10 @@ export const useOpenModals = () => {
     ),
     setShowFeeSetting: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowFeeSetting(state)),
+      [dispatch]
+    ),
+    setShowLayerSwapNotice: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowLayerSwapNotice(state)),
       [dispatch]
     ),
     setShowTradeIsFrozen: React.useCallback(

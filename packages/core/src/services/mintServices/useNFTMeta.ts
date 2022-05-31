@@ -209,8 +209,8 @@ export function useNFTMeta<T extends NFTMETA>({
         !!nftMintValue.nftMETA.image &&
         nftMintValue.mintData.fee &&
         nftMintValue.mintData.fee.belong &&
-        nftMintValue.mintData.fee.__raw__ &&
-        !isFeeNotEnough
+        nftMintValue.mintData.fee.__raw__
+        // && !isFeeNotEnough.isFeeNotEnough
       ) {
         enableBtn();
         return;

@@ -2,7 +2,12 @@ import { Provider } from "react-redux";
 import ReactDOM from "react-dom";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { store, persistor, TimeoutCheckProvider } from "@loopring-web/core";
+import {
+  store,
+  persistor,
+  TimeoutCheckProvider,
+  firebaseProps,
+} from "@loopring-web/core";
 import { getTheme, i18n } from "@loopring-web/common-resources";
 import { ThemeProvider as MuThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/lab";
@@ -18,6 +23,7 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import React, { Provider as TProvider } from "react";
+import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 
 if (process.env.REACT_APP_VER) {
   console.log("VER:", process.env.REACT_APP_VER);
@@ -38,6 +44,7 @@ const ProviderThen = React.memo(({ children }: { children: JSX.Element }) => {
   const providers: Array<[TProvider<any>, any]> = [
     provider(MuThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
     provider(ThemeProvider as any, { theme: getTheme(themeMode, isMobile) }),
+    provider(ReactReduxFirebaseProvider as any, { ...firebaseProps }),
     provider(PersistGate as any, { persistor, loading: null }),
     provider(TimeoutCheckProvider as any),
   ] as any;

@@ -1,6 +1,8 @@
 import { Account, FloatTag, TradeStatus, TradeTypes } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
+import { ForexMap } from "@loopring-web/common-resources";
+import { Currency } from "@loopring-web/loopring-sdk";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -72,6 +74,8 @@ export type TradeCalcData<T> = {
   priceImpactColor: string;
   minimumReceived: string;
   fee: string;
+  feeTakerRate?: number;
+  tradeCost?: string;
 };
 export type TradeCalcProData<T> = {
   coinBase: keyof T; //name
@@ -88,6 +92,8 @@ export type TradeCalcProData<T> = {
   priceImpactColor: string;
   minimumReceived: string;
   fee: string;
+  feeTakerRate?: number;
+  tradeCost?: string;
 };
 
 /**
@@ -135,7 +141,6 @@ export type AmmInData<T> = {
 export type AmmDetailBase<T> = {
   // name?: string,
   amountDollar?: number;
-  amountYuan?: number;
   totalLPToken?: number;
   totalA?: number;
   totalB?: number;
@@ -146,7 +151,6 @@ export type AmmDetailBase<T> = {
   feeA?: number;
   feeB?: number;
   feeDollar?: number;
-  feeYuan?: number;
   isNew?: boolean;
   isActivity?: boolean;
   APR?: number;
@@ -162,13 +166,12 @@ export type AmmCardProps<T> = AmmDetail<T> & {
   tradeFloat: TradeFloat;
   handleClick: () => void;
   account: Account;
+  forexMap: ForexMap<Currency>;
   popoverIdx: number;
   precisionA?: number;
   precisionB?: number;
   coinAPriceDollar: number;
   coinBPriceDollar: number;
-  coinAPriceYuan: number;
-  coinBPriceYuan: number;
   ammRewardRecordList: {
     amount: string;
     time: number;
@@ -193,7 +196,6 @@ export type AmmActivity<I> = {
   };
   isPass?: boolean;
   rewardTokenDollar?: number;
-  rewardTokenYuan?: number;
   maxSpread?: number;
 };
 export type Amount<T> = {
@@ -240,20 +242,19 @@ export type AmmDetailExtendProps<ACD, T> = AmmDetailExtend<ACD, T> & {
   activity?: AmmActivity<any>;
 };
 export type MyAmmLP<T> = {
+  smallBalance?: boolean;
   balanceA: number | undefined;
   balanceB: number | undefined;
-  balanceYuan: number | undefined;
   balanceDollar: number | undefined;
   feeA: number | undefined;
   feeB: number | undefined;
   feeDollar?: number | undefined;
-  feeYuan?: number | undefined;
   reward?: number | undefined;
   rewardToken: CoinInfo<T> | undefined;
   reward2?: number | undefined;
   rewardToken2?: CoinInfo<T> | undefined;
   rewardDollar?: number | undefined;
-  rewardYuan?: number | undefined;
+  totalLpAmount?: number | undefined;
 };
 
 export type TradeFloat = {
@@ -261,7 +262,6 @@ export type TradeFloat = {
   change?: any;
   timeUnit: "24h" | "all";
   priceDollar: number;
-  priceYuan: number;
   floatTag: keyof typeof FloatTag;
   reward?: number;
   rewardToken?: string;
@@ -270,11 +270,7 @@ export type TradeFloat = {
   high?: number;
   low?: number;
   changeDollar?: number;
-  changeYuan?: number;
   closeDollar?: number;
-  closeYuan?: number;
-  // APR?:number
-  // tagNew?: boolean
 };
 
 export enum EXPLORE_TYPE {

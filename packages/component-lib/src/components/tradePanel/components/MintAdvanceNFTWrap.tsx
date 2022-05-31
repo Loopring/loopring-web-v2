@@ -278,7 +278,7 @@ export const MintAdvanceNFTWrap = <
               marginBottom={1}
             >
               <Typography component={"span"} color={"inherit"} minWidth={28}>
-                {t("transferLabelFee")}：
+                {t("labelMintFee")}：
               </Typography>
               <Box
                 component={"span"}
@@ -296,13 +296,25 @@ export const MintAdvanceNFTWrap = <
                   status={dropdownStatus}
                   fontSize={"medium"}
                 />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"var(--color-error)"}
-                >
-                  {isFeeNotEnough && t("transferLabelFeeNotEnough")}
-                </Typography>
+                {isFeeNotEnough.isOnLoading ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    marginLeft={1}
+                    component={"span"}
+                  >
+                    {t("labelFeeCalculating")}
+                  </Typography>
+                ) : (
+                  isFeeNotEnough.isFeeNotEnough && (
+                    <Typography
+                      marginLeft={1}
+                      component={"span"}
+                      color={"var(--color-error)"}
+                    >
+                      {t("labelMintFeeNotEnough")}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Typography>
             {dropdownStatus === "up" && (
@@ -312,7 +324,7 @@ export const MintAdvanceNFTWrap = <
                   color={"var(--color-text-third)"}
                   marginBottom={1}
                 >
-                  {t("transferLabelFeeChoose")}
+                  {t("labelMintFeeChoose")}
                 </Typography>
                 <FeeToggle
                   chargeFeeTokenList={chargeFeeTokenList}
@@ -324,7 +336,6 @@ export const MintAdvanceNFTWrap = <
           </>
         )}
       </Grid>
-
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <Box
           display={"flex"}

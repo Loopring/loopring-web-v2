@@ -5,10 +5,12 @@ import { SendAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import {
   BackIcon,
-  CardIcon,
+  ExchangeAIcon,
   IncomingIcon,
+  L1l2Icon,
+  L2l2Icon,
+  OutputIcon,
 } from "@loopring-web/common-resources";
-import React from "react";
 import { useSettings } from "../../../stores";
 
 const BoxStyled = styled(Box)`` as typeof Box;
@@ -16,25 +18,25 @@ const BoxStyled = styled(Box)`` as typeof Box;
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
     case "IncomingIcon":
-      return <IncomingIcon color={"inherit"} />;
-    case "CardIcon":
-      return <CardIcon color={"inherit"} />;
+      return <IncomingIcon color={"inherit"} sx={{ marginRight: 1 }} />;
+    case "L2l2Icon":
+      return <L2l2Icon color={"inherit"} sx={{ marginRight: 1 }} />;
+    case "L1l2Icon":
+      return <L1l2Icon color={"inherit"} sx={{ marginRight: 1 }} />;
+    case "ExchangeAIcon":
+      return <ExchangeAIcon color={"inherit"} sx={{ marginRight: 1 }} />;
+    case "OutputIcon":
+      return <OutputIcon color={"inherit"} sx={{ marginRight: 1 }} />;
   }
 };
 export const SendAsset = ({
   sendAssetList,
   allowTrade,
   symbol,
+  isToL1,
 }: SendAssetProps) => {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
-  const [isToL1, setIsToL1] = React.useState<boolean>(true);
-  React.useEffect(() => {
-    if (symbol && /^LP-/gi.test(symbol)) {
-      setIsToL1(false);
-    }
-    setIsToL1(true);
-  }, [symbol]);
 
   return (
     <BoxStyled
@@ -72,44 +74,45 @@ export const SendAsset = ({
         >
           {t("labelSendAssetHowto")}
         </Typography>
-        <>
-          {sendAssetList.map((item) => {
-            return /SendTo?(\w)+L1/gi.test(item.key) && !isToL1 ? (
-              <></>
-            ) : (
-              <Box key={item.key} marginTop={1.5}>
-                <MenuBtnStyled
-                  variant={"outlined"}
-                  size={"large"}
-                  className={"sendAsset"}
-                  fullWidth
-                  isMobile={isMobile}
-                  disabled={
-                    !!(
-                      item.enableKey &&
-                      allowTrade[item.enableKey]?.enable === false
-                    )
-                  }
-                  endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
-                  onClick={(e) => {
-                    item.handleSelect(e);
+        {sendAssetList.map((item) => {
+          return (
+            <Box key={item.key} marginTop={1.5}>
+              <MenuBtnStyled
+                variant={"outlined"}
+                size={"large"}
+                className={`sendAsset  ${isMobile ? "isMobile" : ""}`}
+                fullWidth
+                disabled={
+                  !!(
+                    item.enableKey &&
+                    allowTrade[item.enableKey]?.enable === false
+                  ) ||
+                  (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
+                }
+                endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
+                onClick={(e) => {
+                  item.handleSelect(e);
+                }}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"inherit"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                  lineHeight={"1.2em"}
+                  sx={{
+                    textIndent: 0,
+                    textAlign: "left",
                   }}
                 >
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"inherit"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
-                  >
-                    <>{IconItem({ svgIcon: item.svgIcon })}</>
-                    {t("label" + item.key)}
-                  </Typography>
-                </MenuBtnStyled>
-              </Box>
-            );
-          })}
-        </>
+                  <>{IconItem({ svgIcon: item.svgIcon })}</>
+                  {t("label" + item.key)}
+                </Typography>
+              </MenuBtnStyled>
+            </Box>
+          );
+        })}
       </Box>
     </BoxStyled>
   );
