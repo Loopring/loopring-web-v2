@@ -1,6 +1,6 @@
 import { WalletConnectBtnProps } from "./Interface";
 import { useTranslation } from "react-i18next";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   AccountStatus,
   getShortAddr,
@@ -16,6 +16,7 @@ import { Button } from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
+import { useSettings } from "../../../stores";
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
@@ -82,6 +83,7 @@ export const WalletConnectBtn = ({
   handleClick,
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(["layout", "common"]);
+  const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
   const [networkLabel, setNetworkLabel] =
     React.useState<string | undefined>(undefined);
@@ -89,9 +91,9 @@ export const WalletConnectBtn = ({
     React.useState<string | undefined>("");
   const [icon, setIcon] = React.useState<JSX.Element | undefined>();
 
-  useEffect(() => {
-    if (accountState) {
-      const { account } = accountState;
+  React.useEffect(() => {
+    const account = accountState?.account;
+    if (account) {
       const addressShort = account.accAddress
         ? getShortAddr(account?.accAddress)
         : undefined;
@@ -144,14 +146,14 @@ export const WalletConnectBtn = ({
       }
 
       if (account && account._chainId === ChainId.GOERLI) {
-        setNetworkLabel("Görli");
+        setNetworkLabel(isMobile ? "G ö" : "Görli");
       } else {
         setNetworkLabel("");
       }
     } else {
       setLabel("labelConnectWallet");
     }
-  }, [accountState?.account, i18n]);
+  }, [accountState?.account?.readyState, i18n]);
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)

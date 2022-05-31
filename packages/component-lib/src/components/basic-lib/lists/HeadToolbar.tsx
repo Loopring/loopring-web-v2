@@ -8,7 +8,7 @@ export const TabItemPlus = styled<any>(MenuItem)`
     }
 
     margin: 0;
-    padding: 0 8px;
+    padding: 0 ${({ theme }) => theme.unit}px;
 
     &:hover {
       background-color: transparent;
@@ -16,10 +16,19 @@ export const TabItemPlus = styled<any>(MenuItem)`
     }
 
     .MuiIconButton-root {
-      svg {
-        width: var(--header-menu-icon-size);
-        height: var(--header-menu-icon-size);
-        color: var(--color-text-secondary);
+      &.MuiIconButton-sizeMedium {
+        svg {
+          width: var(--header-menu-icon-size);
+          height: var(--header-menu-icon-size);
+          color: var(--color-text-secondary);
+        }
+      }
+      &.MuiIconButton-sizeLarge {
+        svg {
+          width: var(--header-menu-icon-large);
+          height: var(--header-menu-icon-large);
+          color: var(--color-text-secondary);
+        }
       }
 
       :hover {

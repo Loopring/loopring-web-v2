@@ -3,9 +3,8 @@ import { Tab, Tabs, Box } from "@mui/material";
 import { OrderHistoryTable } from "@loopring-web/component-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useOrderList } from "./hook";
-import { StylePaper } from "../../styled";
-import { useGetTrades } from "../TradePanel/hooks";
 import { RowConfig } from "@loopring-web/common-resources";
+import { useGetOrderHistorys, StylePaper } from "@loopring-web/core";
 
 const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
   const { t } = rest;
@@ -22,7 +21,8 @@ const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
     clearRawData,
   } = useOrderList();
 
-  const { userOrderDetailList, getUserOrderDetailTradeList } = useGetTrades();
+  const { userOrderDetailList, getUserOrderDetailTradeList } =
+    useGetOrderHistorys();
 
   React.useEffect(() => {
     // @ts-ignore
@@ -34,17 +34,17 @@ const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
     }
   }, [container, pageSize]);
 
-  React.useEffect(() => {
-    if (pageSize) {
-      getOrderList({
-        limit: pageSize,
-        status:
-          tableValue === 0
-            ? ["processing"]
-            : ["processed", "failed", "cancelled", "cancelling", "expired"],
-      });
-    }
-  }, [pageSize, getOrderList, tableValue]);
+  // React.useEffect(() => {
+  //   if (pageSize) {
+  //     getOrderList({
+  //       limit: pageSize,
+  //       status:
+  //         tableValue === 0
+  //           ? ["processing"]
+  //           : ["processed", "failed", "cancelled", "cancelling", "expired"],
+  //     });
+  //   }
+  // }, [pageSize, getOrderList, tableValue]);
 
   const handleChangeIndex = (index: 0 | 1) => {
     clearRawData();

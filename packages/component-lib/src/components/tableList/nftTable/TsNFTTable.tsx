@@ -197,7 +197,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
         {
           key: "amount",
           name: t("labelTxAmount"),
-          headerCellClass: "textAlignRight",
+          headerCellClass: "textAlignLeft",
           formatter: ({ row }: { row: Row }) => {
             const hasSymbol =
               row.nftTxType === TxNFTType[TxNFTType.TRANSFER]
@@ -228,10 +228,10 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
             );
           },
         },
-
         {
           key: "from",
           name: t("labelTxFrom"),
+          headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const receiverAddress =

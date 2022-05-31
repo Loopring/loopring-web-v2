@@ -1,7 +1,7 @@
 import {
   EmptyValueTag,
   FeeInfo,
-  HelpIcon,
+  Info2Icon,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { NFTDeployViewProps } from "./Interface";
@@ -92,7 +92,7 @@ export const DeployNFTWrap = <
               <Typography component={"h4"} variant={"h3"} marginRight={1}>
                 {title ? title : t("nftDeployTitle")}
               </Typography>
-              <HelpIcon
+              <Info2Icon
                 {...bindHover(popupState)}
                 fontSize={"large"}
                 htmlColor={"var(--color-text-third)"}
@@ -254,17 +254,25 @@ export const DeployNFTWrap = <
                       status={dropdownStatus}
                       fontSize={"medium"}
                     />
-                    <Typography
-                      marginLeft={1}
-                      component={"span"}
-                      color={"var(--color-error)"}
-                    >
-                      {isFeeNotEnough && (
-                        <Trans i18nKey={"labelL2toL2FeeNotEnough"}>
-                          Insufficient balance
-                        </Trans>
-                      )}
-                    </Typography>
+                    {isFeeNotEnough.isOnLoading ? (
+                      <Typography
+                        marginLeft={1}
+                        component={"span"}
+                        color={"var(--color-warning)"}
+                      >
+                        {t("labelFeeCalculating")}
+                      </Typography>
+                    ) : (
+                      isFeeNotEnough.isFeeNotEnough && (
+                        <Typography
+                          marginLeft={1}
+                          component={"span"}
+                          color={"var(--color-error)"}
+                        >
+                          {t("labelL2toL2FeeNotEnough")}
+                        </Typography>
+                      )
+                    )}
                   </Box>
                 </Typography>
                 {dropdownStatus === "up" && (

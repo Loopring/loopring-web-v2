@@ -121,11 +121,11 @@ const AmmList = <I extends { [key: string]: any }>({
   const jumpTo = React.useCallback(
     (pair: string, type: MiningJumpType) => {
       if (history) {
-        if (type === MiningJumpType.amm) {
-          history.push(`/liquidity/pools/coinPair/${pair}`);
-        } else {
-          history.push(`/trade/lite/${pair}`);
-        }
+        // if (type === MiningJumpType.amm) {
+        //   history.push(`/liquidity/pools/coinPair/${pair}`);
+        // } else {
+        //   history.push(`/trade/lite/${pair}`);
+        // }
       }
     },
     [history]

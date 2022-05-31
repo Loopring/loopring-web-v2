@@ -95,7 +95,7 @@ export function useUpdateAccount() {
           await sdk.sleep(1000);
           setShowAccount({ isShow: false });
           break;
-        case ActionResultCode.UpdateAccoutError:
+        case ActionResultCode.UpdateAccountError:
         case ActionResultCode.GenEddsaKeyError:
           const errMsg = checkErrorInfo(
             response?.data as sdk.RESULT_INFO,

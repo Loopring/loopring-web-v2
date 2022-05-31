@@ -10,7 +10,8 @@ export type WalletMapExtend<C> = {
 
 export const makeWalletLayer2 = <C extends { [key: string]: any }>(
   needFilterZero: boolean,
-  _isToL1?: boolean
+  _isToL1?: boolean,
+  _isTotal?: boolean
 ): { walletMap: WalletMapExtend<C> | undefined } => {
   const { walletLayer2 } = store.getState().walletLayer2;
   const { tokenMap } = store.getState().tokenMap;
@@ -26,6 +27,9 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>(
       const countBig = sdk.toBig(total).minus(sdk.toBig(locked));
 
       if (needFilterZero && countBig.eq(BIGO)) {
+        return prev;
+      }
+      if (_isToL1 && /^LP-/gi.test(item.toString())) {
         return prev;
       }
 

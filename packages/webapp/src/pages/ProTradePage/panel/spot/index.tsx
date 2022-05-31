@@ -9,12 +9,11 @@ import {
   PopoverPure,
   Toast,
   TradeProType,
-  WrongNetworkGuide,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
 import {
   getValuePrecisionThousand,
-  HelpIcon,
+  Info2Icon,
   MarketType,
 } from "@loopring-web/common-resources";
 import { usePageTradePro, useTokenMap } from "@loopring-web/core";
@@ -96,7 +95,7 @@ export const SpotView = withTranslation("common")(
       [market]
     );
 
-    const p = (getValuePrecisionThousand(
+    const priceImpact = (getValuePrecisionThousand(
       parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? "0") * 100,
       2
     ) + "%") as any;
@@ -114,10 +113,9 @@ export const SpotView = withTranslation("common")(
         <>
           <Typography display={"inline-flex"} alignItems={"center"}>
             <Typography component={"span"} marginRight={1}>
-              {" "}
-              {t("labelProLimit")}{" "}
+              {t("labelProLimit")}
             </Typography>
-            <HelpIcon
+            <Info2Icon
               {...bindHover(popupLimitState)}
               fontSize={"medium"}
               htmlColor={"var(--color-text-third)"}
@@ -158,7 +156,7 @@ export const SpotView = withTranslation("common")(
             <Typography component={"span"} marginRight={1}>
               {t("labelProMarket")}
             </Typography>
-            <HelpIcon
+            <Info2Icon
               {...bindHover(popupMarketState)}
               fontSize={"medium"}
               htmlColor={"var(--color-text-third)"}
@@ -220,11 +218,15 @@ export const SpotView = withTranslation("common")(
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}
         />
-        <AlertImpact handleClose={marketSubmit} open={alertOpen} value={p} />
+        <AlertImpact
+          handleClose={marketSubmit}
+          open={alertOpen}
+          value={priceImpact}
+        />
         <ConfirmImpact
           handleClose={marketSubmit}
           open={confirmOpen}
-          value={p}
+          value={priceImpact}
         />
         <AlertLimitPrice
           handleClose={limitSubmit}

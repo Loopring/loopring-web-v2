@@ -6,12 +6,17 @@ import { Box, Typography } from "@mui/material";
 // value symbol
 export const CommonConnectInProgress = (props: PanelProps) => {
   const { isMobile } = useSettings();
+
   const providerName = props.providerName;
   const propsPatch = {
     providerName,
     iconType: IconType.LoadingIcon,
     describe1: props.t("labelProviderProcessing", {
-      name: isMobile ? "DApp" : providerName,
+      name: isMobile
+        ? "DApp"
+        : providerName
+        ? providerName
+        : props.t("labelUnknown"),
     }),
   };
   return <ConnectBase {...propsPatch} {...props} />;

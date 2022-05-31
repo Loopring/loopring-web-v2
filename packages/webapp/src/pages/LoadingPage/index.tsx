@@ -68,6 +68,7 @@ export const LoadingBlock = () => {
       {/*style={{height: '100%' }}*/}
       <StyleBlock
         flex={1}
+        className={"loading-block"}
         display={"flex"}
         alignItems={"center"}
         justifyContent={"center"}

@@ -19,6 +19,11 @@ export type WithdrawTypes = {
 
 export type PriceTagType = "$" | "￥";
 
+export enum CurrencyToTag {
+  usd = "Dollar",
+  cny = "Yuan",
+}
+
 export enum PriceTag {
   Dollar = "$",
   Yuan = "￥",
@@ -87,7 +92,14 @@ export type NFTMETA = {
   description: string;
   collection?: string;
   properties?: Array<MetaProperty>;
+  animationUrl?: string;
+  attributes?: AttributesProperty[];
 };
+export enum Media {
+  Audio = "Audio",
+  Image = "Image",
+  Video = "Video",
+}
 
 export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo &
@@ -97,6 +109,7 @@ export type NFTWholeINFO = NFTTokenInfo &
     fee?: FeeInfo;
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
+    __mediaType__?: Media;
   };
 
 export type MintTradeNFT<I> = {
@@ -147,48 +160,66 @@ export type LOOPRING_NFT_METADATA = {
 export const NFTLimit = 12;
 
 export const AddAssetList = {
-  BuyWithCard: {
-    key: "BuyWithCard",
-    svgIcon: "CardIcon",
-    enableKey: "legal",
-  },
   FromMyL1: {
     key: "FromMyL1",
     svgIcon: "IncomingIcon",
     enableKey: "deposit",
   },
-  FromOtherL1: {
-    key: "FromOtherL1",
-    svgIcon: "IncomingIcon",
-    enableKey: null,
+  BuyWithCard: {
+    key: "BuyWithCard",
+    svgIcon: "CardIcon",
+    enableKey: "legal",
   },
   FromOtherL2: {
     key: "FromOtherL2",
-    svgIcon: "IncomingIcon",
+    svgIcon: "L2l2Icon",
+    enableKey: null,
+  },
+  FromOtherL1: {
+    key: "FromOtherL1",
+    svgIcon: "OutputIcon",
     enableKey: null,
   },
   FromExchange: {
     key: "FromExchange",
-    svgIcon: "IncomingIcon",
+    svgIcon: "ExchangeAIcon",
     enableKey: null,
   },
 };
 
 export const SendAssetList = {
-  SendAssetToL2: {
-    key: "SendTOL2",
-    svgIcon: "IncomingIcon",
-    enableKey: "transfer",
-  },
   SendAssetToMyL1: {
     key: "SendToMyL1",
     svgIcon: "IncomingIcon",
     enableKey: "withdraw",
   },
+  SendAssetToL2: {
+    key: "SendTOL2",
+    svgIcon: "L2l2Icon",
+    enableKey: "transfer",
+  },
   SendAssetToOtherL1: {
     key: "SendToOtherL1",
-    svgIcon: "IncomingIcon",
+    svgIcon: "L1l2Icon",
     enableKey: "withdraw",
+  },
+};
+
+export const SendNFTAssetList = {
+  SendAssetToMyL1: {
+    key: "SendToMyL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "withdrawNFT",
+  },
+  SendAssetToL2: {
+    key: "SendTOL2",
+    svgIcon: "L2l2Icon",
+    enableKey: "transferNFT",
+  },
+  SendAssetToOtherL1: {
+    key: "SendToOtherL1",
+    svgIcon: "L1l2Icon",
+    enableKey: "withdrawNFT",
   },
 };
 
@@ -295,3 +326,6 @@ export const useAddressTypeLists = <
     exchangeList,
   };
 };
+
+export const defalutSlipage = 0.1;
+export type ForexMap<C> = { [k in keyof C]?: number };

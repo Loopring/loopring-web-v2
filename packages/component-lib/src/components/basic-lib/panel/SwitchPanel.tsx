@@ -112,7 +112,11 @@ function _SwitchPanel<T extends string>(
   const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined);
   return (
     <SwipeableViewsStyled
-      className={hasToolBar ? `${className}` : `noToolBar ${className}`}
+      className={
+        hasToolBar
+          ? `${className ? className : ""}`
+          : `noToolBar ${className ? className : ""}`
+      }
       axis={theme.direction === "rtl" ? "x-reverse" : "x"}
       index={index}
       _height={rest._height}

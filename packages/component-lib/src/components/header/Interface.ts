@@ -9,8 +9,8 @@ export interface HeaderToolBarInterface {
   args?: any;
 }
 
-export interface HeaderProps {
-  headerToolBarData: HeaderToolBarInterface[];
+export interface HeaderProps<R> {
+  headerToolBarData: { [key: number]: R };
   headerMenuData: HeaderMenuItemInterface[];
   notification?: Notify;
   account?: Account;

@@ -1,5 +1,6 @@
 import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { AmmPanelType } from "../../../components";
 
 export enum ModalType {
   transfer = "transfer",
@@ -28,13 +29,15 @@ export interface ModalState {
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
   isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowResetAccount: ModalStatePlayLoad;
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;
+  isShowLayerSwapNotice: ModalStatePlayLoad;
   isShowSwap: ModalStatePlayLoad;
-  isShowAmm: ModalStatePlayLoad;
+  isShowAmm: ModalStatePlayLoad & Transaction & { type?: AmmPanelType };
   isShowTradeIsFrozen: ModalStatePlayLoad & { type?: string };
   isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO };
   isShowAccount: ModalStatePlayLoad & {

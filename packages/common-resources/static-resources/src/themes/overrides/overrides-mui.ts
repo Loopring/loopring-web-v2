@@ -254,9 +254,11 @@ export const MuiButton = ({
       },
       text: {
         color: colorBase.secondary,
-        fontSize: "1.4rem",
+        fontSize: "1.6rem",
         "&:hover": {
-          color: colorBase.secondaryHover,
+          "svg, &": {
+            color: colorBase.secondaryHover,
+          },
           backgroundColor: "inherit",
         },
         "&:active": {
@@ -267,6 +269,9 @@ export const MuiButton = ({
         },
         "& .MuiButton-endIcon,& .MuiButton-startIcon": {
           color: colorBase.buttonIcon,
+        },
+        "&.MuiButton-sizeSmall": {
+          fontSize: "1.4rem",
         },
       },
       contained: {
@@ -919,7 +924,7 @@ export const MuiAlert = ({ colorBase }: any) => {
         // backgroundColor: colorBase.borderDark,
         // backgroundColor: 'var(--color-pop-bg)',
         backgroundColor: colorBase.popBg,
-        height: `${unit * 10}px`,
+        height: `auto`,
         ".MuiAlertTitle-root": {
           color: colorBase.textPrimary,
           fontSize: pxToRem(16),
@@ -972,9 +977,10 @@ export const MuiSnackbar = () => {
         top: `${unit * 10}px`,
         right: `${unit * 2}px`,
         width: "auto",
-        height: `${unit * 10}px`,
+        minHeight: `${unit * 10}px`,
         justifyContent: "flex-end",
         alignItems: "flex-start",
+        pointerEvents: "none" as any,
       },
     },
   };

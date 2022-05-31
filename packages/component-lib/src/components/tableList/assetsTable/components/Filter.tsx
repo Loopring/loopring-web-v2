@@ -1,4 +1,3 @@
-// import React from 'react'
 import { Checkbox, Grid } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { FormControlLabel, InputSearch } from "../../../";
@@ -13,47 +12,27 @@ export type TokenTypeCol = {
   value: string;
 };
 export interface FilterProps {
-  // searchValue: string;
-  // // originalData: RawDataAssetsItem[];
-  // hideSmallBalance: boolean;
-  // hideLpToken: boolean;
-  hideLpToken: boolean;
+  hideInvestToken: boolean;
   hideSmallBalances: boolean;
   setHideLpToken: (value: boolean) => void;
   setHideSmallBalances: (value: boolean) => void;
   filter: {
     searchValue: string;
-    // hideSmallBalance:boolean,
-    // hideLpToken:boolean,
   };
   handleFilterChange: (props: { searchValue: string }) => void;
 }
 
-// const StyledTextFiled = styled(TextField)`
-//     &.MuiTextField-root {
-//         max-width: initial;
-//     }
-//     .MuiInputBase-root {
-//         width: initial;
-//         max-width: initial;
-//     }
-// `
-
 export enum CheckboxType {
   smallBalance = "smallBalance",
-  lp = "lp",
+  invest = "invest",
 }
 
 export const Filter = withTranslation("tables", { withRef: true })(
   ({
     t,
-    //   originalData,
     handleFilterChange,
     filter,
-    // searchValue,
-    // hideSmallBalance,
-    // hideLpToken,
-    hideLpToken,
+    hideInvestToken,
     hideSmallBalances,
     setHideLpToken,
     setHideSmallBalances,
@@ -64,7 +43,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
           <InputSearch
             value={filter.searchValue}
             onChange={(value: any) => {
-              // setSearchValue(value)
               handleFilterChange({ searchValue: value });
             }}
           />
@@ -74,22 +52,16 @@ export const Filter = withTranslation("tables", { withRef: true })(
           <FormControlLabel
             control={
               <Checkbox
-                checked={hideLpToken}
+                checked={hideInvestToken}
                 checkedIcon={<CheckedIcon />}
                 icon={<CheckBoxIcon />}
                 color="default"
                 onChange={(event) => {
-                  // handleCheckboxChange(CheckboxType.lp, event);
-                  // refHideLPToken.current = event.target.checked;
-                  // handleFilterChange({
-                  //     ...filter,
-                  //     hideLpToken: event.target.checked
-                  // });
                   setHideLpToken(event.target.checked);
                 }}
               />
             }
-            label={t("labelHideLPToken")}
+            label={t("labelHideInvestToken")}
           />
           <FormControlLabel
             style={{ marginRight: 0, paddingRight: 0 }}
@@ -100,12 +72,6 @@ export const Filter = withTranslation("tables", { withRef: true })(
                 icon={<CheckBoxIcon />}
                 color="default"
                 onChange={(event) => {
-                  // handleCheckboxChange(CheckboxType.smallBalance, event);
-                  // refHideSmallBalance.current = event.target.checked;
-                  // handleFilterChange({
-                  //     ...filter,
-                  //     hideSmallBalance: event.target.checked
-                  // });
                   setHideSmallBalances(event.target.checked);
                 }}
               />

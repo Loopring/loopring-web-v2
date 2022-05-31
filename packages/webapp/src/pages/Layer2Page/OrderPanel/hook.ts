@@ -30,8 +30,9 @@ export const useOrderList = () => {
   const { sk: privateKey } = store.getState().account.eddsaKey;
   const { updateWalletLayer2 } = useWalletLayer2();
 
-  const ammPairList = ammMap ? Object.keys(ammMap) : [];
-  const jointPairs = (marketArray || []).concat(ammPairList);
+  // const ammPairList = ammMap ? Object.keys(ammMap) : [];
+
+  const jointPairs = marketArray || []; //.concat([...ammPairList]); //
 
   const getOrderList = React.useCallback(
     async (props: Omit<GetOrdersRequest, "accountId">) => {

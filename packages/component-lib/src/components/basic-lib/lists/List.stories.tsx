@@ -32,7 +32,6 @@ import {
 import { CoinMenu } from "./CoinList";
 import {
   ACTIVITY,
-  ACTIVITY_TYPE,
   AssetsIcon,
   CoinInfo,
   DownloadIcon,
@@ -249,9 +248,8 @@ const TabPanelBtn = () => {
 const Template: Story<any> = withTranslation()(({ t }: any) => {
   const theme = useTheme();
   const activity: ACTIVITY = {
-    account,
     id: "unique1",
-    type: ACTIVITY_TYPE.SWAP_VOLUME_RANKING,
+    type: "",
     link: `2021/12/2021-12-23`,
     title: "🎄 Loopring Holiday Trading Giveaway",
     description1: "Loopring Holiday Trading Giveaway,$600,000 in Prizes!\n",
@@ -263,14 +261,16 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
     // giftIcon?: string;
   };
   const notify: NOTIFICATION_ITEM = {
-    id: "unique2", //localStore for visited should be unique
+    color: undefined,
+    name: "",
+    type: "",
+    version: "",
     title: "路印中继系统升级",
-    account,
     description1: "Loopring Relayer System Upgrade Notice",
     description2: "Period: 2021-12-23 12AM to 2021-12-31 12AM (UAT)",
     link: `2021/12/2021-12-23`,
-    startDate: 1639526400000,
-    endDate: 1612915200000,
+    startShow: 1639526400000,
+    endShow: 1612915200000,
   };
 
   return (
@@ -309,19 +309,9 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
           <Grid item xs={3}>
             <Box width={375} style={{ backgroundColor: "var(--color-pop-bg)" }}>
               <ListItemActivity {...{ ...activity }} />
-              <ListItemActivity
-                {...{ ...activity }}
-                type={ACTIVITY_TYPE.AMM_MINING}
-              />
-              <ListItemActivity
-                {...{ ...activity }}
-                type={ACTIVITY_TYPE.ORDERBOOK_MINING}
-              />
-              <ListItemActivity
-                {...{ ...activity }}
-                type={ACTIVITY_TYPE.SPECIAL}
-                giftIcon={""}
-              />
+              <ListItemActivity {...{ ...activity }} type={""} />
+              <ListItemActivity {...{ ...activity }} type={""} />
+              <ListItemActivity {...{ ...activity }} type={""} />
               <NotificationListItem key={1} {...{ ...notify }} />
               <NotificationListItem key={1} {...{ ...notify }} />
             </Box>

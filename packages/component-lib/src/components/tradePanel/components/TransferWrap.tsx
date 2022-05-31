@@ -8,7 +8,7 @@ import {
   copyToClipBoard,
   DropDownIcon,
   globalSetup,
-  HelpIcon,
+  Info2Icon,
   IBData,
   NFTWholeINFO,
   TOAST_TIME,
@@ -141,7 +141,7 @@ export const TransferWrap = <
           >
             {t("labelL2toL2Title")}
           </Typography>
-          <HelpIcon
+          <Info2Icon
             {...bindHover(popupState)}
             fontSize={"large"}
             htmlColor={"var(--color-text-third)"}
@@ -352,13 +352,25 @@ export const TransferWrap = <
                   status={dropdownStatus}
                   fontSize={"medium"}
                 />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"var(--color-error)"}
-                >
-                  {isFeeNotEnough && t("labelL2toL2FeeNotEnough")}
-                </Typography>
+                {isFeeNotEnough.isOnLoading ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    marginLeft={1}
+                    component={"span"}
+                  >
+                    {t("labelFeeCalculating")}
+                  </Typography>
+                ) : (
+                  isFeeNotEnough.isFeeNotEnough && (
+                    <Typography
+                      marginLeft={1}
+                      component={"span"}
+                      color={"var(--color-error)"}
+                    >
+                      {t("labelL2toL2FeeNotEnough")}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Typography>
             {dropdownStatus === "up" && (

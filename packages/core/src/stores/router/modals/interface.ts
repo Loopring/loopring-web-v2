@@ -16,6 +16,14 @@ export type WithdrawData = {
   address: string | undefined;
   fee: FeeInfo | undefined;
 };
+export type ForceWithdrawData = {
+  belong: string | undefined;
+  tradeValue: number | undefined;
+  balance: number | undefined;
+  // requesterAddress: string | undefined;
+  withdrawAddress: string | undefined;
+  fee: FeeInfo | undefined;
+};
 
 export type TransferData = {
   belong: string | undefined;
@@ -44,7 +52,10 @@ export type MintData = {
 export type ActiveAccountData = {
   chargeFeeList: FeeInfo[];
   fee?: FeeInfo;
-  isFeeNotEnough?: boolean;
+  isFeeNotEnough?: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   walletLayer2: WalletLayer2Map<any> | undefined;
 };
 export type NFT_MINT_VALUE<I> = {
@@ -59,6 +70,8 @@ export type ModalDataStatus = {
   transferValue: TransferData;
   depositValue: DepositData;
   activeAccountValue: ActiveAccountData;
+  forceWithdrawValue: ForceWithdrawData;
+
   nftWithdrawValue: WithdrawData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftTransferValue: TransferData &

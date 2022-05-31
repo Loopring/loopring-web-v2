@@ -18,7 +18,7 @@ export const boxLiner = (_props: { theme: Theme }) => css`
       border-color: var(--color-border-hover);
     }
   }
-  .MuiToolbar-root .MuiButtonBase-root.outline {
+  .MuiToolbar-root .MuiButtonBase-root.outlined {
     background-color: var(--field-opacity);
   }
 `;
@@ -190,6 +190,12 @@ export const SwitchPanelStyled: any = styled(Box)<
               overflow-x: hidden;
               overflow-y: scroll !important;
               background: initial;
+              scrollbar-width: none; /* Firefox */
+              -ms-overflow-style: none; /* Internet Explorer 10+ */
+              &::-webkit-scrollbar {
+                /* WebKit */
+                width: 0;
+              }
            }
        }
       
@@ -200,6 +206,12 @@ export const SwitchPanelStyled: any = styled(Box)<
               padding-bottom:0; 
               overflow-x: hidden;
               overflow-y: scroll !important;
+              scrollbar-width: none; /* Firefox */
+              -ms-overflow-style: none; /* Internet Explorer 10+ */
+              &::-webkit-scrollbar {
+                /* WebKit */
+                width: 0;
+              }
           }
         }
       }
@@ -362,9 +374,7 @@ export const shake = css`
   }
 `;
 
-export const MenuBtnStyled = styled(Button)<
-  ButtonProps & { isMobile: boolean }
->`
+export const MenuBtnStyled = styled(Button)<ButtonProps>`
   font-size: ${({ theme }) => theme.fontDefault.body1};
   background: var(--opacity);
   color: var(--color-text-secondary);
@@ -376,12 +386,15 @@ export const MenuBtnStyled = styled(Button)<
   &.addAsset,
   &.sendAsset {
     white-space: pre;
-    font-size: ${({ theme, isMobile }) =>
-      isMobile ? theme.fontDefault.h6 : theme.fontDefault.h5};
+    font-size: ${({ theme }) => theme.fontDefault.h5};
     //justify-content: flex-start;
     justify-content: space-between;
     flex-direction: row;
+    &.isMobile {
+      font-size: ${({ theme }) => theme.fontDefault.h6};
+    }
   }
+
   &.provider {
     justify-content: space-between;
     flex-direction: row;
@@ -420,4 +433,4 @@ export const MenuBtnStyled = styled(Button)<
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
-` as (props: ButtonProps & { isMobile: boolean }) => JSX.Element;
+` as (props: ButtonProps) => JSX.Element;

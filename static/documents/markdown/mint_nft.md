@@ -11,6 +11,10 @@
 
 4. Upload the NFT folder you created in point 1 that contains your NFT (eg Diamond NFT) to IPFS
 
+Before you begin your IPFS upload, please be aware there are 2 types of CID: CIDv0 (begins with **Qm**) and CIDv1 (begins with **b**).
+
+Loopring supports **CIDv0** which begins with **Qm** as you will see in the examples.
+
 **Using Pinata**
 
 ![ipfs-1.png](https://static.loopring.io/assets/images/ipfs-1.png)

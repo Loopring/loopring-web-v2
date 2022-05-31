@@ -2,7 +2,10 @@ import React, { ChangeEvent, useCallback } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 
 import {
   AccountStep,
@@ -48,9 +51,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   const [memo, setMemo] = React.useState("");
   const {
     setShowAccount,
+    setShowNFTTransfer,
     setShowNFTDetail,
     modals: {
-      isShowNFTTransfer: { isShow, nftData, nftBalance, info, ...nftRest },
+      isShowNFTTransfer: { isShow, info },
     },
   } = useOpenModals();
 
@@ -79,7 +83,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
           fee,
         });
       },
-      [nftTransferValue]
+      [nftTransferValue, updateNFTTransferData]
     ),
   });
 
@@ -109,7 +113,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
       nftTransferValue.fee?.belong &&
       nftTransferValue?.tradeValue &&
       chargeFeeTokenList.length &&
-      !isFeeNotEnough &&
+      !isFeeNotEnough.isFeeNotEnough &&
       !isSameAddress &&
       sureItsLayer2 &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
@@ -145,7 +149,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     address,
     addrStatus,
     sureItsLayer2,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     isSameAddress,
     nftTransferValue.tradeValue,
     nftTransferValue.fee,
@@ -158,11 +162,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     if (info?.isRetry) {
       return;
     }
-    if (nftData) {
+    if (nftTransferValue.nftData) {
       updateNFTTransferData({
-        balance: nftBalance,
-        ...nftRest,
-        belong: nftData as any,
+        balance: sdk
+          .toBig(nftTransferValue.total ?? 0)
+          .minus(nftTransferValue.locked ?? 0)
+          .toNumber(),
+        belong: nftTransferValue.name as any,
         tradeValue: undefined,
         fee: feeInfo,
         address: address ? address : "*",
@@ -178,12 +184,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     }
   }, [
     checkFeeIsEnough,
-    nftData,
+    nftTransferValue,
     info?.isRetry,
     updateNFTTransferData,
-    nftBalance,
     feeInfo,
-    nftRest,
     address,
   ]);
 
@@ -230,7 +234,8 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -383,6 +388,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
         eddsaKey?.sk
       ) {
         try {
+          setShowNFTTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_WaitForAuth,
@@ -464,6 +470,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
         if (data.to === "button") {
           if (data.tradeData.belong) {
             updateNFTTransferData({
+              belong: data.tradeData.belong,
               tradeValue: data.tradeData?.tradeValue,
               balance: data.tradeData.balance,
               address: "*",

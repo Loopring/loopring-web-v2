@@ -18,8 +18,8 @@ import {
   useAmount,
   useAccount,
   useTokenMap,
+  marketInitCheck,
 } from "@loopring-web/core";
-import { marketInitCheck } from "../SwapPage/help";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useOrderList } from "./panel/orderTable/hookTable";
 import { useProSocket, useSocketProService } from "./proService";
@@ -95,13 +95,16 @@ export const usePro = <C extends { [key: string]: any }>(): {
   React.useEffect(() => {
     resetTradeCalcData({ market });
     precisionList(market);
-  }, [market]);
+  }, [market, account.readyState]);
 
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
-      getAmount({ market: market });
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      accountStatus === SagaStatus.UNSET
+    ) {
+      getAmount({ market });
     }
-  }, [market, accountStatus]);
+  }, [market, accountStatus, account.readyState]);
 
   const handleOnMarketChange = React.useCallback(
     async (newMarket: MarketType) => {

@@ -3,16 +3,15 @@ import styled from "@emotion/styled/macro";
 
 import {
   InputSearch,
-  MarketBlock,
-  MarketBlockProps,
+  // MarketBlock,
+  // MarketBlockProps,
   QuoteTable,
 } from "@loopring-web/component-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { RowConfig } from "@loopring-web/common-resources";
 import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
-import { TableWrapStyled } from "pages/styled";
-import { useAccount } from "@loopring-web/core";
+import { useAccount, TableWrapStyled, useSystem } from "@loopring-web/core";
 
 const RowStyled = styled(Grid)`
   & .MuiGrid-root:not(:last-of-type) > div {
@@ -30,11 +29,12 @@ export const QuotePage = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const tableRef = React.useRef<HTMLDivElement>();
     const { account } = useAccount();
+    const { forexMap } = useSystem();
     const {
-      recommendations,
-      formattedRecommendations,
-      getTradeFloatVolumeToCount,
-      handleRecommendBoxClick,
+      // recommendations,
+      // formattedRecommendations,
+      // getTradeFloatVolumeToCount,
+      // handleRecommendBoxClick,
       tableTabValue,
       handleTabChange,
       searchValue,
@@ -50,74 +50,76 @@ export const QuotePage = withTranslation("common")(
     } = useQuotePage({ tableRef });
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
-        <RowStyled container spacing={2}>
-          {(!!recommendations.length
-            ? recommendations
-            : ([
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-              ] as MarketBlockProps<{
-                [key: string]: string;
-              }>[])
-          ).map((item, index) => (
-            <Grid
-              key={`${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}-${index}`}
-              item
-              xs={12}
-              sm={6}
-              lg={3}
-            >
-              <MarketBlock
-                {...{
-                  ...formattedRecommendations[index],
-                  tradeFloat: getTradeFloatVolumeToCount(
-                    formattedRecommendations[index]?.tradeFloat
-                  ),
-                  chartData: formattedRecommendations[index]
-                    ? formattedRecommendations[index].chartData
-                    : [],
-                  handleBlockClick: () =>
-                    handleRecommendBoxClick(formattedRecommendations[index]),
-                  t,
-                  ...rest,
-                }}
-              />
-            </Grid>
-          ))}
-        </RowStyled>
+        {/*<RowStyled container spacing={2}>*/}
+        {/*  {(!!recommendations.length*/}
+        {/*    ? recommendations*/}
+        {/*    : ([*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*      ] as MarketBlockProps<{*/}
+        {/*        [key: string]: string;*/}
+        {/*      }>[])*/}
+        {/*  ).map((item, index) => (*/}
+        {/*    <Grid*/}
+        {/*      key={`${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}-${index}`}*/}
+        {/*      item*/}
+        {/*      xs={12}*/}
+        {/*      sm={6}*/}
+        {/*      lg={3}*/}
+        {/*    >*/}
+        {/*      <MarketBlock*/}
+        {/*        {...{*/}
+        {/*          ...formattedRecommendations[index],*/}
+        {/*          forexMap: forexMap as any,*/}
+        {/*          tradeFloat: getTradeFloatVolumeToCount(*/}
+        {/*            formattedRecommendations[index]?.tradeFloat*/}
+        {/*          ),*/}
+        {/*          chartData: formattedRecommendations[index]*/}
+        {/*            ? formattedRecommendations[index].chartData*/}
+        {/*            : [],*/}
+        {/*          handleBlockClick: () =>*/}
+        {/*            handleRecommendBoxClick(formattedRecommendations[index]),*/}
+        {/*          t,*/}
+        {/*          ...rest,*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*    </Grid>*/}
+        {/*  ))}*/}
+        {/*</RowStyled>*/}
         <TableWrapStyled
           ref={tableRef as any}
-          marginY={3}
+          marginTop={1}
+          marginBottom={3}
           paddingBottom={1}
           flex={1}
           className={"MuiPaper-elevation2"}
@@ -153,6 +155,7 @@ export const QuotePage = withTranslation("common")(
               onRowClick={(index: any, row: any, col: any) =>
                 handleRowClick(row)
               }
+              forexMap={forexMap as any}
               account={account}
               rawData={filteredData}
               favoriteMarket={favoriteMarket}

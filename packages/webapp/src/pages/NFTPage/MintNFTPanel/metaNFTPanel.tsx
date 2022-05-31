@@ -10,11 +10,9 @@ import {
 } from "@mui/material";
 import {
   DropdownIconStyled,
-  FeeTokenItemWrapper,
   IpfsFile,
   IPFSSourceUpload,
   MintNFTBlock,
-  FeeToggle,
   NFTMintProps,
   NFTMetaProps,
   NFTMetaBlockProps,
@@ -25,7 +23,6 @@ import React from "react";
 import {
   CheckBoxIcon,
   CheckedIcon,
-  EmptyValueTag,
   FeeInfo,
   MintTradeNFT,
   NFTMETA,

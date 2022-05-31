@@ -40,14 +40,20 @@ export function useChargeFees({
     | ((props: {
         fee: FeeInfo;
         chargeFeeTokenList?: FeeInfo[];
-        isFeeNotEnough?: boolean;
+        isFeeNotEnough?: {
+          isFeeNotEnough: boolean;
+          isOnLoading: boolean;
+        };
       }) => void);
   isActiveAccount?: boolean;
   needAmountRefresh?: boolean;
   deployInWithdraw?: boolean;
 }): {
   chargeFeeTokenList: FeeInfo[];
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
@@ -67,14 +73,23 @@ export function useChargeFees({
   const [chargeFeeTokenList, setChargeFeeTokenList] = React.useState<FeeInfo[]>(
     []
   );
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<boolean>(false);
+  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState<{
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  }>({
+    isFeeNotEnough: false,
+    isOnLoading: false,
+  });
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
   const { status: walletLayer2Status } = useWalletLayer2();
   const handleFeeChange = (_value: FeeInfo): void => {
     const walletMap =
       makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
-    let isFeeNotEnough = true;
+    let isFeeNotEnough = {
+      isFeeNotEnough: true,
+      isOnLoading: false,
+    };
     const value =
       chargeFeeTokenList.find((ele) => _value?.belong === ele.belong) ?? _value;
     if (
@@ -87,7 +102,10 @@ export function useChargeFees({
         .toBig(walletMap[value.belong].count)
         .gte(sdk.toBig(value.fee.toString().replace(",", "")))
     ) {
-      isFeeNotEnough = false;
+      isFeeNotEnough = {
+        isFeeNotEnough: false,
+        isOnLoading: false,
+      };
       setIsFeeNotEnough(isFeeNotEnough);
     } else {
       setIsFeeNotEnough(isFeeNotEnough);
@@ -101,7 +119,7 @@ export function useChargeFees({
             tokenId: tokenMap[value.belong.toString()].tokenId,
           },
         },
-        isFeeNotEnough,
+        isFeeNotEnough: isFeeNotEnough,
       });
     }
     setFeeInfo(value);
@@ -109,6 +127,7 @@ export function useChargeFees({
 
   const getFeeList = _.debounce(
     async () => {
+      setIsFeeNotEnough((state) => ({ ...state, isOnLoading: true }));
       const { tokenMap } = store.getState().tokenMap;
       const walletMap =
         makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>);
@@ -240,7 +259,10 @@ export function useChargeFees({
               }
               return pre;
             }, [] as Array<FeeInfo>);
-            let _isFeeNotEnough = true;
+            let _isFeeNotEnough = {
+              isFeeNotEnough: true,
+              isOnLoading: false,
+            };
             setFeeInfo((state) => {
               if (_feeInfo === undefined) {
                 setIsFeeNotEnough(_isFeeNotEnough);
@@ -272,7 +294,10 @@ export function useChargeFees({
                 }
               } else {
                 if (isFeeNotEnough || !state || state?.feeRaw === undefined) {
-                  _isFeeNotEnough = false;
+                  _isFeeNotEnough = {
+                    isFeeNotEnough: false,
+                    isOnLoading: false,
+                  };
                   setIsFeeNotEnough(_isFeeNotEnough);
                   if (updateData && _feeInfo) {
                     updateData({
@@ -294,14 +319,19 @@ export function useChargeFees({
                     (ele) => ele.belong === state.belong
                   );
                   if (updateData && feeInfo) {
-                    updateData({
-                      fee: { ...feeInfo },
-                      chargeFeeTokenList: _chargeFeeTokenList,
+                    _isFeeNotEnough = {
                       isFeeNotEnough: sdk
                         .toBig(walletMap[state.belong]?.count ?? 0)
                         .gte(
                           sdk.toBig(feeInfo.fee.toString().replace(",", ""))
                         ),
+                      isOnLoading: false,
+                    };
+                    setIsFeeNotEnough(_isFeeNotEnough);
+                    updateData({
+                      fee: { ...feeInfo },
+                      chargeFeeTokenList: _chargeFeeTokenList,
+                      isFeeNotEnough: _isFeeNotEnough,
                     });
                   }
                   return feeInfo ?? state;
@@ -347,11 +377,11 @@ export function useChargeFees({
             .toBig(count)
             .gte(sdk.toBig(feeInfo.fee.toString().replace(",", "")))
         ) {
-          setIsFeeNotEnough(false);
+          setIsFeeNotEnough({ isFeeNotEnough: false, isOnLoading: false });
           return;
         }
       }
-      setIsFeeNotEnough(true);
+      setIsFeeNotEnough({ isFeeNotEnough: true, isOnLoading: false });
     }
   };
 
@@ -374,6 +404,7 @@ export function useChargeFees({
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.TRANSFER,
+          sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
           sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
           sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
         ].includes(Number(requestType))) ||
@@ -402,6 +433,7 @@ export function useChargeFees({
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer.current as NodeJS.Timeout);
       }
+      getFeeList.cancel();
     };
   }, [
     tokenAddress,

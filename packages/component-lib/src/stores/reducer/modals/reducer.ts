@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
   isShowSupport: { isShow: false },
@@ -14,9 +15,10 @@ const initialState: ModalState = {
   isShowActiveAccount: { isShow: false },
   isShowExportAccount: { isShow: false },
   isShowSwap: { isShow: false },
-  isShowAmm: { isShow: false },
+  isShowAmm: { isShow: false, type: AmmPanelType.Join },
   isShowConnect: { isShow: false, step: 0 },
   isShowAccount: { isShow: false, step: 0 },
+  isShowLayerSwapNotice: { isShow: false },
   isShowFeeSetting: { isShow: false },
   isShowTradeIsFrozen: { isShow: false, type: "" },
   isShowIFrame: { isShow: false, url: "" },
@@ -24,6 +26,7 @@ const initialState: ModalState = {
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
   isShowNFTMintAdvance: { isShow: false },
+  isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
 };
 
@@ -64,9 +67,19 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       const { isShow } = action.payload;
       state.isWrongNetworkGuide.isShow = isShow;
     },
-    setShowAmm(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isShowAmm.isShow = isShow;
+    setShowAmm(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & Transaction & { type: AmmPanelType }
+      >
+    ) {
+      const { isShow, symbol, info, type } = action.payload;
+      state.isShowAmm = {
+        isShow,
+        symbol,
+        info,
+        type,
+      };
     },
     setShowSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;
@@ -98,6 +111,22 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         balance: total ? Number(total) - Number(locked ?? 0) : 0,
       };
     },
+    setShowNFTDeploy(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
+    ) {
+      const { isShow, nftData, nftType, total, locked, info, ...rest } =
+        action.payload;
+      state.isShowNFTDeploy = {
+        isShow,
+        nftData,
+        nftType,
+        info,
+        ...rest,
+        balance: total ? Number(total) - Number(locked ?? 0) : 0,
+      };
+    },
+
     setShowNFTDeposit(
       state,
       action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
@@ -221,6 +250,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         isShow,
       };
     },
+    setShowLayerSwapNotice(state, action: PayloadAction<{ isShow: boolean }>) {
+      const { isShow } = action.payload;
+      state.isShowLayerSwapNotice = {
+        isShow,
+      };
+    },
     setShowTradeIsFrozen(
       state,
       action: PayloadAction<{ isShow: boolean; type: string }>
@@ -234,6 +269,7 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   },
 });
 export const {
+  setShowNFTDeploy,
   setShowNFTDetail,
   setShowNFTTransfer,
   setShowNFTDeposit,
@@ -255,4 +291,5 @@ export const {
   setShowSupport,
   setShowWrongNetworkGuide,
   setShowOtherExchange,
+  setShowLayerSwapNotice,
 } = modalsSlice.actions;

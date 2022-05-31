@@ -20,6 +20,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     subLabel,
     // wait = globalSetup.wait,
     // coinMap,
+    disableInputValue,
     maxAllow,
     disabled,
     decimalsLimit = 8,
@@ -114,7 +115,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   // }, [])
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
-      if (maxAllow) {
+      if (maxAllow && !disabled) {
         _handleContChange(balance, name);
         //setsValue(balance);
       }
@@ -160,7 +161,11 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
             {subLabel && belong ? (
               <Typography
                 fontSize={"inherit"}
-                className={maxAllow && balance > 0 ? "max-allow" : "no-balance"}
+                className={
+                  maxAllow && balance > 0
+                    ? `max-allow ${disabled ? "disabled" : ""}`
+                    : `no-balance ${disabled ? "disabled" : ""}`
+                }
                 onClick={_handleMaxAllowClick}
               >
                 <span>{subLabel}</span>
@@ -172,9 +177,13 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
         <Grid
           container
           className={`btnInput-wrap
-        ${(belong && belong.length) >= FORMAT_STRING_LEN ? "text-small" : ""}  
-        ${error.error ? "error" : ""}
-        `}
+                  ${
+                    (belong && belong.length) >= FORMAT_STRING_LEN
+                      ? "text-small"
+                      : ""
+                  }
+                  ${error.error ? "error" : ""}
+                  `}
           wrap={"nowrap"}
           alignItems={"stretch"}
           alignContent={"stretch"}
@@ -228,7 +237,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
               decimalSeparator="."
               groupSeparator=","
               name={name}
-              disabled={!(!disabled || belong)}
+              disabled={!(!disabled || belong) || disableInputValue}
               placeholder={placeholderText}
               aria-placeholder={placeholderText}
               aria-label={label}

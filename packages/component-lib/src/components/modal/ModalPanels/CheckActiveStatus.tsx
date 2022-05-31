@@ -121,7 +121,16 @@ export const CheckActiveStatus = ({
               </>
             ) : (
               <>
-                {isFeeNotEnough ? (
+                {isFeeNotEnough.isOnLoading ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    component={"p"}
+                    variant={"body1"}
+                    marginTop={2}
+                  >
+                    {t("labelFeeCalculating")}
+                  </Typography>
+                ) : isFeeNotEnough.isFeeNotEnough ? (
                   <Typography
                     color={"var(--color-warning)"}
                     component={"p"}
@@ -215,15 +224,26 @@ export const CheckActiveStatus = ({
                   ))}
                 </Box>
 
-                {isFeeNotEnough && (
+                {isFeeNotEnough.isOnLoading ? (
                   <Typography
-                    color={"var(--color-text-third)"}
+                    color={"var(--color-warning)"}
                     component={"p"}
-                    variant={"body2"}
+                    variant={"body1"}
                     marginTop={2}
                   >
-                    {t("labelHaveInProcessingL1toL2")}
+                    {t("labelFeeCalculating")}
                   </Typography>
+                ) : (
+                  isFeeNotEnough.isFeeNotEnough && (
+                    <Typography
+                      color={"var(--color-text-third)"}
+                      component={"p"}
+                      variant={"body2"}
+                      marginTop={2}
+                    >
+                      {t("labelHaveInProcessingL1toL2")}
+                    </Typography>
+                  )
                 )}
                 <Box marginTop={3}>
                   <Button

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ENV, NETWORKEXTEND, System, SystemStatus } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { ForexMap, SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: SystemStatus = {
   env: ENV.PROD,
@@ -8,13 +8,13 @@ const initialState: SystemStatus = {
   baseURL: "",
   socketURL: "",
   etherscanBaseUrl: "",
-  fiatPrices: {},
   gasPrice: -1,
-  forex: 6.5,
+  forexMap: {} as ForexMap<any>,
   __timer__: -1,
   status: "PENDING",
   errorMessage: null,
   allowTrade: {
+    defi: { enable: false },
     legal: { enable: false },
     register: { enable: false },
     order: { enable: false },
@@ -36,16 +36,11 @@ const systemSlice: Slice<SystemStatus> = createSlice({
 
     updateRealTimeObj(
       state,
-      action: PayloadAction<
-        Partial<{ fiatPrices: any; gasPrice: number; forex: number }>
-      >
+      action: PayloadAction<Partial<{ forexMap: any; gasPrice: number }>>
     ) {
-      const { forex, fiatPrices, gasPrice } = action.payload;
-      if (forex) {
-        state.forex = forex;
-      }
-      if (fiatPrices) {
-        state.fiatPrices = fiatPrices;
+      const { forexMap, gasPrice } = action.payload;
+      if (forexMap) {
+        state.forexMap = forexMap;
       }
       if (gasPrice) {
         state.gasPrice = gasPrice;
@@ -62,9 +57,8 @@ const systemSlice: Slice<SystemStatus> = createSlice({
         env,
         baseURL,
         socketURL,
-        fiatPrices,
         gasPrice,
-        forex,
+        forexMap,
         allowTrade,
         exchangeInfo,
         __timer__,
@@ -85,14 +79,12 @@ const systemSlice: Slice<SystemStatus> = createSlice({
       if (baseURL) {
         state.baseURL = baseURL;
       }
-      if (fiatPrices) {
-        state.fiatPrices = fiatPrices;
-      }
+
       if (gasPrice) {
         state.gasPrice = gasPrice;
       }
-      if (forex) {
-        state.forex = forex;
+      if (forexMap) {
+        state.forexMap = forexMap;
       }
 
       if (exchangeInfo) {

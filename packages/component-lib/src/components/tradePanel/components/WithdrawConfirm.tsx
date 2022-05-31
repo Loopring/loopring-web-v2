@@ -67,14 +67,14 @@ export const WithdrawConfirm = <
               ? t("labelL2ToMyL1Title")
               : t("labelL2ToOtherL1Title")}
           </Typography>
-          <Typography
-            component={"h6"}
-            variant={isMobile ? "h5" : "h4"}
-            whiteSpace={"pre"}
-            marginTop={1}
-          >
-            {t("labelL2toL2Confirm")}
-          </Typography>
+          {/*<Typography*/}
+          {/*  component={"h6"}*/}
+          {/*  variant={isMobile ? "h5" : "h4"}*/}
+          {/*  whiteSpace={"pre"}*/}
+          {/*  marginTop={1}*/}
+          {/*>*/}
+          {/*  {t("labelL2toL2Confirm")}*/}
+          {/*</Typography>*/}
         </Box>
       </Grid>
       <Grid item xs={12}>
@@ -110,7 +110,7 @@ export const WithdrawConfirm = <
       )}
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Fee")}
+          {t("labelForceWithdrawFee")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {feeInfo?.fee + " "} {feeInfo?.belong}

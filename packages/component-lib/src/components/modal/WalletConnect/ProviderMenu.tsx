@@ -173,10 +173,9 @@ export const ProviderMenu = ({
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
-                isMobile={isMobile}
-                className={
-                  providerName === item.key ? "selected provider" : "provider"
-                }
+                className={`${isMobile ? "isMobile" : ""} ${
+                  providerName === item.key ? "selected provider " : "provider"
+                }`}
                 fullWidth
                 endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
                 onClick={(e) => {

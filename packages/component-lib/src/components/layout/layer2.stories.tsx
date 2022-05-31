@@ -34,26 +34,8 @@ import { OrderHistoryTable as OrderHistoryTableUI } from "../tableList/orderHist
 import { AssetTitleProps } from "../block";
 import React from "react";
 import { AssetTitle } from "../block";
-import {
-  AccountBasePanel,
-  AccountBaseProps,
-  ModalPanel,
-  ResetProps,
-  SwapTradeData,
-  SwitchData,
-  TradeBtnStatus,
-  TransferProps,
-  WithdrawProps,
-} from "../";
-import { setShowDeposit, setShowTransfer, setShowWithdraw } from "../../stores";
-import {
-  // ammCalcData,
-  coinMap,
-  CoinType,
-  // tradeCalcData,
-  walletMap,
-} from "../../static";
-import { useDispatch } from "react-redux";
+import { AccountBasePanel, AccountBaseProps } from "../";
+
 import { Typography } from "@mui/material";
 
 const Style = styled.div``;
@@ -63,192 +45,6 @@ const SubMenuList = withTranslation("layout", { withRef: true })(
 const OrderHistoryTable = withTranslation("common", { withRef: true })(
   OrderHistoryTableUI
 );
-
-let tradeData: any = {};
-// let depositProps: DepositProps<any, any> = {
-//   isNewAccount: true,
-//   tradeData,
-//   coinMap,
-//   walletMap,
-//   depositBtnStatus: TradeBtnStatus.AVAILABLE,
-//   onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
-//     console.log("Swap button click", tradeData);
-//   },
-//   handlePanelEvent: async (
-//     props: SwitchData<any>,
-//     switchType: "Tomenu" | "Tobutton"
-//   ) => {
-//     return new Promise((res) => {
-//       setTimeout(() => {
-//         console.log("wait 100, with props", props, switchType);
-//         res();
-//       }, 500);
-//     });
-//   },
-// };
-let withdrawProps: WithdrawProps<any, any> = {
-  handleFeeChange(value: {
-    belong: string;
-    fee: number | string;
-    __raw__?: any;
-  }): void {
-    console.log(value);
-  },
-  handleWithdrawTypeChange(value): void {
-    console.log(value);
-  },
-  tradeData,
-  coinMap,
-  walletMap,
-  withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
-  onWithdrawClick: (tradeData: SwapTradeData<CoinType>) => {
-    console.log("Swap button click", tradeData);
-  },
-
-  handlePanelEvent: async (
-    props: SwitchData<any>,
-    switchType: "Tomenu" | "Tobutton"
-  ) => {
-    return new Promise((res: any) => {
-      setTimeout(() => {
-        console.log("wait 100, with props", props, switchType);
-        res();
-      }, 500);
-    });
-  },
-  withdrawType: 4,
-  withdrawTypes: ["10", "11"],
-  // @ts-ignore
-  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" },
-  chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
-  ] as any,
-  handleOnAddressChange: (value: any) => {
-    console.log("handleOnAddressChange", value);
-  },
-  handleAddressError: (_value: any) => {
-    return { error: true, message: "any error" };
-  },
-};
-let transferProps: TransferProps<any, any> = {
-  tradeData,
-  coinMap,
-  walletMap,
-  transferBtnStatus: TradeBtnStatus.AVAILABLE,
-  onTransferClick: (tradeData: any) => {
-    console.log("Swap button click", tradeData);
-  },
-  handlePanelEvent: async (
-    props: SwitchData<any>,
-    switchType: "Tomenu" | "Tobutton"
-  ) => {
-    return new Promise((res: any) => {
-      setTimeout(() => {
-        console.log("wait 100, with props", props, switchType);
-        res();
-      }, 500);
-    });
-  },
-  handleFeeChange(value: {
-    belong: string;
-    fee: number | string;
-    __raw__?: any;
-  }): void {
-    console.log(value);
-  },
-  // @ts-ignore
-  feeInfo: { belong: "ETH", fee: 0.001, __raw__: "" },
-  chargeFeeTokenList: [
-    { belong: "ETH", fee: 0.001, __raw__: "" },
-    { belong: "LRC", fee: "1", __raw__: "" },
-  ] as any,
-  handleOnAddressChange: (value: any) => {
-    console.log("handleOnAddressChange", value);
-  },
-  handleAddressError: (_value: any) => {
-    return { error: true, message: "any error" };
-  },
-};
-let resetProps: ResetProps<any> = {
-  isFeeNotEnough: false,
-  chargeFeeTokenList: [],
-  // tradeData,
-  assetsData: [],
-  // walletMap,
-  feeInfo: { belong: "ETH", fee: 0.001, __raw__: {} },
-  resetBtnStatus: TradeBtnStatus.AVAILABLE,
-  onResetClick: () => {
-    console.log("Swap button click", tradeData);
-  },
-  handleFeeChange: async (value: any) => {
-    console.log(value);
-  },
-};
-// let swapProps: SwapProps<IBData<string>, string, any> = {
-//   refreshRef: React.createRef(),
-//   tradeData: {
-//     sell: { belong: undefined },
-//     buy: { belong: undefined },
-//     slippage: "",
-//   } as any,
-//   tradeCalcData,
-//   onSwapClick: (tradeData) => {
-//     console.log("Swap button click", tradeData);
-//   },
-//   handleSwapPanelEvent: async (data: any, switchType: any) => {
-//     console.log(data, switchType);
-//   },
-// };
-// let ammProps: AmmProps<AmmExitData<IBData<any>>, any, AmmInData<any>, any> = {
-//   refreshRef: React.createRef(),
-//   ammDepositData: {
-//     coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
-//     coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
-//     coinLP: { belong: "LP-ETH-LRC", balance: 1000, tradeValue: 0 },
-//     slippage: "",
-//   },
-//   ammWithdrawData: {
-//     coinA: { belong: "ETH", balance: 0.3, tradeValue: 0 },
-//     coinB: { belong: "LRC", balance: 1000, tradeValue: 0 },
-//     slippage: "",
-//   },
-//   // tradeCalcData,
-//   ammCalcDataDeposit: ammCalcData,
-//   ammCalcDataWithDraw: ammCalcData,
-//   handleAmmAddChangeEvent: (data: any, type: any) => {
-//     console.log("handleAmmAddChangeEvent", data, type);
-//   },
-//   handleAmmRemoveChangeEvent: (data: any) => {
-//     console.log("handleAmmRemoveChangeEvent", data);
-//   },
-//   onAmmRemoveClick: (data: any) => {
-//     console.log("onAmmRemoveClick", data);
-//   },
-//   onAmmAddClick: (data: any) => {
-//     console.log("onAmmAddClick", data);
-//   },
-// };
-
-const ModalPanelWrap = () => {
-  return (
-    <ModalPanel
-      transferProps={transferProps}
-      withdrawProps={withdrawProps}
-      resetProps={resetProps}
-      // nftDepositProps={depositProps as any}
-      // ammProps={ammProps as any}
-      // swapProps={swapProps as any}
-      assetsData={resetProps as any}
-      exportAccountProps={{} as any}
-      activeAccountProps={{} as any}
-      setExportAccountToastOpen={{} as any}
-      nftTransferProps={{} as any}
-      nftWithdrawProps={{} as any}
-      depositProps={{} as any}
-    />
-  );
-};
 
 const AssetTitleWrap = (rest: any) => {
   const assetTitleProps: AssetTitleProps = {
@@ -357,7 +153,6 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
         />
       </HideOnScroll>
       <Toolbar />
-      <ModalPanelWrap />
       {hasAccount ? (
         <Collapse in={showAccountInfo}>
           <Container maxWidth="lg">

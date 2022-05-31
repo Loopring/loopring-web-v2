@@ -35,7 +35,7 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
         // @ts-ignore
         state.errorMessage = action.error;
       }
-      state.walletLayer2NFT = [...action.payload.walletLayer2NFT];
+      state.walletLayer2NFT = [...(action.payload?.walletLayer2NFT ?? [])];
       state.total = action.payload.total ?? 0;
       state.status = SagaStatus.DONE;
       state.page = action.payload.page ?? 1;

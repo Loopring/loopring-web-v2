@@ -6,7 +6,6 @@ import {
 } from "@reduxjs/toolkit";
 
 import { useDispatch } from "react-redux";
-
 import { persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
 import storage from "redux-persist/lib/storage";
@@ -39,8 +38,12 @@ import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify/reducer";
 import { walletLayer2NFTSlice } from "./walletLayer2NFT/reducer";
 import { localStoreReducer } from "./localStore";
+import { getAnalytics } from "firebase/analytics";
+
 import {
   ChainHashInfos,
+  firebaseBridgeConfig,
+  firebaseIOConfig,
   LAYER1_ACTION_HISTORY,
   myLog,
 } from "@loopring-web/common-resources";
@@ -54,7 +57,13 @@ import {
   pageTradeLiteSlice,
   pageTradeProSlice,
 } from "./router";
-
+import {
+  firebaseReducer,
+  ReactReduxFirebaseProviderProps,
+} from "react-redux-firebase";
+import firebase from "firebase/compat/app";
+import { tradeDefiSlice } from "./router/tradeDefi";
+import { investReducer } from "./invest";
 const sagaMiddleware = createSagaMiddleware();
 
 const DEFAULT_TIMEOUT = 1000 * 60 * 15;
@@ -100,6 +109,19 @@ const persistedLocalStoreReducer = persistReducer<
   }>
 >(persistLocalStoreConfig, localStoreReducer);
 
+// firebase.initializeApp(fbConfig)
+
+// if (process.env.REACT_APP_NAME) {
+//
+//   console.log("VER:", process.env.REACT_APP_VER);
+// }
+
+// let firebaseReducer: any = {
+//   firebase: undefined,
+// };
+
+// Initialize Firebase
+
 const reducer = combineReducers({
   account: persistedAccountReducer,
   socket: socketSlice.reducer,
@@ -108,6 +130,7 @@ const reducer = combineReducers({
   modals: modalsSlice.reducer,
   userRewardsMap: userRewardsMapSlice.reducer,
   amm: ammReducer,
+  invest: investReducer,
   tokenMap: tokenMapSlice.reducer,
   tokenPrices: tokenPricesSlice.reducer,
   toggle: toggleSlice.reducer,
@@ -118,16 +141,16 @@ const reducer = combineReducers({
   localStore: persistedLocalStoreReducer,
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,
+  firebase: firebaseReducer,
   // feeMap:feeMapSlice.reducer,
   // layer1ActionHistory: layer1ActionHistorySlice.reducer,
   // router redux
+  _router_tradeDefi: tradeDefiSlice.reducer,
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
 });
-
-//const persistedReducer = persistReducer(persistConfig ,reducer)
 
 export const store = configureStore({
   reducer,
@@ -143,6 +166,38 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   enhancers: [reduxBatch],
 });
+export const firebaseProps: ReactReduxFirebaseProviderProps = (() => {
+  let firebase_app;
+  switch (process.env.REACT_APP_NAME) {
+    case "bridge":
+      // getAnalytics(firebase);
+      firebase_app = firebase.initializeApp(firebaseBridgeConfig);
+      // myLog(firebase_app);
+      getAnalytics(firebase_app);
+      return {
+        firebase,
+        config: {
+          userProfile: "users",
+
+          // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+        },
+        dispatch: store.dispatch,
+      };
+    case "loopring.io":
+    default:
+      firebase_app = firebase.initializeApp(firebaseIOConfig);
+      // myLog(firebase_app);
+      getAnalytics(firebase_app);
+      return {
+        firebase,
+        config: {
+          userProfile: "users",
+        },
+        dispatch: store.dispatch,
+      };
+  }
+})();
+
 store.dispatch(updateVersion());
 
 store.dispatch(setLanguage(store.getState().settings.language));
@@ -191,3 +246,4 @@ export * from "./userRewards";
 export * from "./walletLayer1";
 export * from "./walletLayer2";
 export * from "./walletLayer2NFT";
+export * from "./invest";

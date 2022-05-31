@@ -19,7 +19,7 @@ const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({
   name: "tokenMap",
   initialState,
   reducers: {
-    getTokenMap(state, action: PayloadAction<GetTokenMapParams<any>>) {
+    getTokenMap(state, _action: PayloadAction<GetTokenMapParams<any>>) {
       state.status = SagaStatus.PENDING;
     },
     getTokenMapStatus(state, action: PayloadAction<TokenMapStates<object>>) {

@@ -2,7 +2,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { TOptions } from "i18next";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { Link } from "@mui/material";
-import { myLog } from "../utils";
 
 export const ErrorMap = {
   ERROR_UNKNOWN: {
@@ -223,6 +222,11 @@ export const ErrorMap = {
     messageKey: "errorIpfsDidToNftidError",
     options: {},
   },
+  ERROR_MINT_OVERLAP: {
+    id: "ERROR_MINT_OVERLAP",
+    messageKey: "errorMintOverlap",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -288,6 +292,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   102120: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order is not valid
   102122: ErrorMap.ERROR_ON_CANCEL_ORDERS, //Order already in cancel
   104001: ErrorMap.ERROR_WRONG_APIKEY, //Empty ApiKey
+  102040: ErrorMap.ERROR_MINT_OVERLAP, //mint record with the same nft token address and token id already exists
   104002: ErrorMap.ERROR_WRONG_APIKEY, //Invalid ApiKey
   104003: ErrorMap.ERROR_WRONG_ACCOUNT, //Invalid Account ID
   104004: ErrorMap.ERROR_ON_FROM_SUBMIT, //No signature information provided
@@ -305,15 +310,14 @@ export const SDK_ERROR_MAP_TO_UI = {
 };
 export const TransErrorHelp = ({
   error,
-  options,
+  options = {},
 }: {
   error: RESULT_INFO;
   options?: TOptions<any> | string;
 }) => {
   const { t } = useTranslation(["error"]);
   const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
-  const _options = { ...errorItem.options, ...options };
-  myLog(_options);
+  const _options = { ...errorItem?.options, ...options };
   if (errorItem) {
     return <>{t(errorItem.messageKey, _options)}</>;
   } else {

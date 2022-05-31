@@ -25,7 +25,7 @@ const initialState: SettingsState = {
   feeChargeOrder: FeeChargeOrderDefault,
   hideL2Assets: false,
   hideL2Action: true,
-  hideLpToken: false,
+  hideInvestToken: false,
   hideSmallBalances: true,
   isMobile: false,
   proLayout: layoutConfigs[0].layouts,
@@ -117,7 +117,7 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
       state.hideL2Action = action.payload;
     },
     setHideLpToken(state, action: PayloadAction<boolean>) {
-      state.hideLpToken = action.payload;
+      state.hideInvestToken = action.payload;
     },
     setHideSmallBalances(state, action: PayloadAction<boolean>) {
       state.hideSmallBalances = action.payload;

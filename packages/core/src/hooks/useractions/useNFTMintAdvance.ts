@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 
 import {
   AccountStep,
@@ -17,8 +17,12 @@ import {
   Explorer,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
+
 import * as sdk from "@loopring-web/loopring-sdk";
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import {
   useTokenMap,
   useAccount,
@@ -40,6 +44,8 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
+const CID = require("cids");
+
 export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
@@ -100,32 +106,49 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       });
     },
   });
+  const checkAvailable = ({
+    nftMintAdvanceValue,
+    isFeeNotEnough,
+    isAvaiableId,
+  }: {
+    nftMintAdvanceValue: TradeNFT<any>;
+    isFeeNotEnough: any;
+    isAvaiableId: boolean;
+  }) => {
+    return (
+      nftMintAdvanceValue.royaltyPercentage !== undefined &&
+      Number.isInteger(nftMintAdvanceValue.royaltyPercentage / 1) &&
+      nftMintAdvanceValue.royaltyPercentage >= 0 &&
+      nftMintAdvanceValue.royaltyPercentage <= 10 &&
+      nftMintAdvanceValue &&
+      tokenAddress &&
+      nftMintAdvanceValue.tradeValue &&
+      Number(nftMintAdvanceValue.tradeValue) > 0 &&
+      Number(nftMintAdvanceValue.tradeValue) <= MINT_LIMIT &&
+      (nftMintAdvanceValue.image !== undefined ||
+        nftMintAdvanceValue.name !== undefined) &&
+      nftMintAdvanceValue.nftId &&
+      nftMintAdvanceValue.fee &&
+      nftMintAdvanceValue.fee.belong &&
+      nftMintAdvanceValue.fee.feeRaw &&
+      !isFeeNotEnough.isFeeNotEnough &&
+      isAvaiableId
+    );
+  };
+
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
       if (
         !error &&
-        nftMintAdvanceValue.royaltyPercentage !== undefined &&
-        Number.isInteger(nftMintAdvanceValue.royaltyPercentage / 1) &&
-        nftMintAdvanceValue.royaltyPercentage >= 0 &&
-        nftMintAdvanceValue.royaltyPercentage <= 10 &&
-        nftMintAdvanceValue &&
-        tokenAddress &&
-        nftMintAdvanceValue.tradeValue &&
-        Number(nftMintAdvanceValue.tradeValue) > 0 &&
-        Number(nftMintAdvanceValue.tradeValue) <= MINT_LIMIT &&
-        (nftMintAdvanceValue.image !== undefined ||
-          nftMintAdvanceValue.name !== undefined) &&
-        nftMintAdvanceValue.fee &&
-        nftMintAdvanceValue.fee.belong &&
-        nftMintAdvanceValue.fee.feeRaw &&
-        !isFeeNotEnough &&
-        isAvaiableId
+        checkAvailable({ nftMintAdvanceValue, isFeeNotEnough, isAvaiableId })
       ) {
         enableBtn();
         return;
       }
-      if (
+      if (!isAvaiableId) {
+        setLabelAndParams("labelNFTMintWrongCIDBtn", {});
+      } else if (
         (!nftMintAdvanceValue.image && !nftMintAdvanceValue.name) ||
         !(
           nftMintAdvanceValue.royaltyPercentage !== undefined &&
@@ -155,7 +178,12 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [isFeeNotEnough, isAvaiableId, nftMintAdvanceValue, feeInfo]);
+  }, [
+    isFeeNotEnough.isFeeNotEnough,
+    isAvaiableId,
+    nftMintAdvanceValue,
+    feeInfo,
+  ]);
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
@@ -183,7 +211,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
             isHWAddr = true;
           }
 
-          setLastRequest({ request });
+          setLastRequest({ ...request });
 
           const response = await LoopringAPI.userAPI?.submitNFTMint(
             {
@@ -191,7 +219,8 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -218,11 +247,21 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTMint_Denied,
+                  info: {
+                    symbol: nftMintAdvanceValue.name,
+                    value: nftMintAdvanceValue.tradeValue,
+                    isAdvanceMint: true,
+                  },
                 });
               } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTMint_First_Method_Denied,
+                  info: {
+                    symbol: nftMintAdvanceValue.name,
+                    value: nftMintAdvanceValue.tradeValue,
+                    isAdvanceMint: true,
+                  },
                 });
               } else {
                 if (
@@ -236,6 +275,10 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
                 setShowAccount({
                   isShow: true,
                   step: AccountStep.NFTMint_Failed,
+                  info: {
+                    symbol: nftMintAdvanceValue.name,
+                    value: nftMintAdvanceValue.tradeValue,
+                  },
                   error: response as sdk.RESULT_INFO,
                 });
                 resetDefault();
@@ -245,12 +288,18 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTMint_In_Progress,
+                info: {
+                  symbol: nftMintAdvanceValue.name,
+                  value: nftMintAdvanceValue.tradeValue,
+                },
               });
               await sdk.sleep(TOAST_TIME);
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTMint_Success,
                 info: {
+                  symbol: nftMintAdvanceValue.name,
+                  value: nftMintAdvanceValue.tradeValue,
                   hash:
                     Explorer +
                     `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMintAdvance`,
@@ -277,16 +326,30 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_Denied,
+              info: {
+                symbol: nftMintAdvanceValue.name,
+                value: nftMintAdvanceValue.tradeValue,
+                isAdvanceMint: true,
+              },
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_First_Method_Denied,
+              info: {
+                symbol: nftMintAdvanceValue.name,
+                value: nftMintAdvanceValue.tradeValue,
+                isAdvanceMint: true,
+              },
             });
           } else {
             setShowAccount({
               isShow: true,
               step: AccountStep.NFTMint_Failed,
+              info: {
+                symbol: nftMintAdvanceValue.name,
+                value: nftMintAdvanceValue.tradeValue,
+              },
               error: {
                 code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,
@@ -301,13 +364,17 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       checkHWAddr,
       chainId,
       setShowAccount,
+      nftMintAdvanceValue.name,
+      nftMintAdvanceValue.tradeValue,
       resetDefault,
-      updateHW,
       checkFeeIsEnough,
+      updateWalletLayer2NFT,
+      page,
+      updateHW,
     ]
   );
 
-  const handleOnNFTDataChange = useCallback(
+  const handleOnNFTDataChange = React.useCallback(
     async (data: T) => {
       let shouldUpdate = {};
 
@@ -319,7 +386,13 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         setIsNFTCheckLoading(true);
         let nftId: string = "";
         try {
-          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.nftIdView);
+          let cid: string;
+          if (/^Qm[a-zA-Z0-9]{44}$/.test(data.nftIdView)) {
+            cid = data.nftIdView;
+          } else {
+            cid = new CID(data.nftIdView).toV0();
+          }
+          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(cid);
           shouldUpdate = {
             nftId,
             // nftIdView: data.nftIdView,
@@ -391,45 +464,39 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         ...shouldUpdate,
       });
     },
-    [nftMintAdvanceValue]
+    [nftMintAdvanceValue, t, updateNFTMintAdvanceData]
   );
 
-  const onNFTMintAdvanceClick = useCallback(
+  const onNFTMintAdvanceClick = React.useCallback(
     async (_nftMintAdvanceValue, isFirstTime: boolean = true) => {
       let result: ActionResult = { code: ActionResultCode.NoError };
+      // pattern="^Qm[a-zA-Z0-9]{44}$"
       if (
-        account.readyState === AccountStatus.ACTIVATED &&
-        nftMintAdvanceValue.tradeValue &&
-        tokenAddress &&
-        nftMintAdvanceValue.nftId &&
-        nftMintAdvanceValue.fee &&
-        nftMintAdvanceValue.fee.belong &&
-        nftMintAdvanceValue.fee.feeRaw &&
-        (nftMintAdvanceValue.image !== undefined ||
-          nftMintAdvanceValue.name !== undefined) &&
-        nftMintAdvanceValue.royaltyPercentage !== undefined &&
-        Number.isInteger(nftMintAdvanceValue.royaltyPercentage / 1) &&
-        nftMintAdvanceValue.royaltyPercentage >= 0 &&
-        nftMintAdvanceValue.royaltyPercentage <= 10 &&
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
-        !isFeeNotEnough &&
         exchangeInfo &&
-        isAvaiableId
+        account.readyState === AccountStatus.ACTIVATED &&
+        nftMintAdvanceValue &&
+        tokenAddress &&
+        checkAvailable({ nftMintAdvanceValue, isFeeNotEnough, isAvaiableId })
       ) {
         setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTMint_WaitForAuth,
+          info: {
+            symbol: nftMintAdvanceValue.name,
+            value: nftMintAdvanceValue.tradeValue,
+          },
         });
         try {
           const { accountId, accAddress, apiKey } = account;
           const fee = sdk.toBig(
-            nftMintAdvanceValue.fee.feeRaw ??
-              nftMintAdvanceValue.fee.__raw__?.feeRaw ??
+            nftMintAdvanceValue?.fee?.feeRaw ??
+              nftMintAdvanceValue?.fee?.__raw__?.feeRaw ??
               0
           );
-          const feeToken = tokenMap[nftMintAdvanceValue.fee.belong];
+          const feeToken = tokenMap[nftMintAdvanceValue?.fee?.belong ?? ""];
           const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId,
@@ -445,8 +512,8 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
             toAddress: accAddress,
             nftType: 0,
             tokenAddress,
-            nftId: nftMintAdvanceValue.nftId,
-            amount: nftMintAdvanceValue.tradeValue.toString(),
+            nftId: nftMintAdvanceValue.nftId ?? "",
+            amount: nftMintAdvanceValue.tradeValue?.toString() ?? "",
             validUntil: getTimestampDaysLater(DAYS),
             storageId: storageId?.offchainId,
             maxFee: {
@@ -458,8 +525,9 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
               nftFactory: sdk.NFTFactory[chainId],
               nftBaseUri: "",
             },
-            royaltyPercentage:
-              Math.floor(nftMintAdvanceValue.royaltyPercentage) ?? 0,
+            royaltyPercentage: Math.floor(
+              nftMintAdvanceValue?.royaltyPercentage ?? 0
+            ),
             forceToMint: false,
           };
           myLog("onNFTMintAdvanceClick req:", req);
@@ -471,6 +539,10 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_Failed,
+            info: {
+              symbol: nftMintAdvanceValue.name,
+              value: nftMintAdvanceValue.tradeValue,
+            },
             error: { code: 400, message: e.message } as sdk.RESULT_INFO,
           });
         }
@@ -479,17 +551,40 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         result.code = ActionResultCode.DataNotReady;
       }
     },
-    [nftMintAdvanceValue]
+    [
+      account,
+      chainId,
+      checkAvailable,
+      exchangeInfo,
+      isAvaiableId,
+      isFeeNotEnough,
+      nftMintAdvanceValue,
+      processRequest,
+      setShowAccount,
+      setShowNFTMintAdvance,
+      tokenAddress,
+      tokenMap,
+    ]
   );
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
       setShowAccount({
         isShow: true,
         step: AccountStep.NFTMint_WaitForAuth,
+        info: {
+          symbol: nftMintAdvanceValue.name,
+          value: nftMintAdvanceValue.tradeValue,
+        },
       });
       processRequest(lastRequest, !isHardwareRetry);
     },
-    [lastRequest, processRequest, setShowAccount]
+    [
+      lastRequest,
+      nftMintAdvanceValue.name,
+      nftMintAdvanceValue.tradeValue,
+      processRequest,
+      setShowAccount,
+    ]
   );
   const nftMintAdvanceProps: NFTMintAdvanceProps<T, I> = {
     chargeFeeTokenList,

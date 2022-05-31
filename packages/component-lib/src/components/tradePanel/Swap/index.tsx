@@ -5,7 +5,7 @@ import { Box, Typography } from "@mui/material";
 import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
 import {
   IBData,
-  ProToLiteIcon,
+  OrderListIcon,
   TradeCalcData,
 } from "@loopring-web/common-resources";
 import { SwapData, SwapMenuList, SwapTradeWrap } from "../components";
@@ -13,6 +13,7 @@ import { CountDownIcon } from "../components/tool/Refresh";
 import * as _ from "lodash";
 import { IconButtonStyled } from "../components/Styled";
 import { debounceTime, Subject } from "rxjs";
+import { useHistory } from "react-router-dom";
 
 export const SwapPanel = withTranslation("common", { withRef: true })(
   <T extends IBData<I>, I, TCD extends TradeCalcData<I>>({
@@ -25,12 +26,13 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
     handleError,
     onSwapClick,
     toPro,
+    market,
     onRefreshData,
     refreshRef,
     ...rest
   }: SwapProps<T, I, TCD> & WithTranslation) => {
     // useSettings()
-
+    let history = useHistory();
     let swapTradeData: SwapTradeData<T>;
     if (tradeCalcData && tradeCalcData.coinInfoMap) {
       swapTradeData = {
@@ -240,12 +242,17 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   />
                   <Typography display={"inline-block"} marginLeft={2}>
                     <IconButtonStyled
-                      onClick={toPro}
+                      onClick={() => {
+                        history.push(
+                          `/l2assets/history/trades?market=${market}`
+                        );
+                      }}
+                      sx={{ backgroundColor: "var(--field-opacity)" }}
                       className={"switch outlined"}
+                      aria-label="to Transaction"
                       size={"large"}
-                      aria-label="to Professional"
                     >
-                      <ProToLiteIcon color={"primary"} fontSize={"large"} />
+                      <OrderListIcon color={"primary"} fontSize={"large"} />
                     </IconButtonStyled>
                   </Typography>
                 </Box>

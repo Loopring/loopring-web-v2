@@ -11,7 +11,7 @@ export const useVendor = () => {
   } = useSystem();
   const legalEnable = (raw_data as any)?.legal?.enable;
   const legalShow = (raw_data as any)?.legal?.show;
-  const { setShowDeposit } = useOpenModals();
+  const { setShowAccount } = useOpenModals();
   // url = Uri.Builder()
   //   .scheme("https")
   //   .authority("buy.ramp.network")
@@ -37,7 +37,7 @@ export const useVendor = () => {
           // svgIcon: "RampIcon",
           ...VendorList.Ramp,
           handleSelect: () => {
-            setShowDeposit({ isShow: false });
+            setShowAccount({ isShow: false });
             if (legalEnable) {
               if (account && account.accountId && account.accountId !== -1) {
                 new RampInstantSDK({
@@ -64,6 +64,7 @@ export const useVendor = () => {
         {
           ...VendorList.Banxa,
           handleSelect: () => {
+            setShowAccount({ isShow: false });
             if (legalEnable) {
               window.open(
                 "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +

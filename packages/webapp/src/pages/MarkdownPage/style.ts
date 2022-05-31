@@ -9,7 +9,7 @@ const style = css`
   ${cssStyle}
 `;
 export const MarkdownStyle = styled(Grid)`
-  ${({ theme }) => `
+  ${({ theme }) => ` 
       .markdown-body{
         border-radius: ${theme.unit / 2}px;
         max-width:1200px;
@@ -104,4 +104,9 @@ export const MarkdownStyle = styled(Grid)`
     list-style: decimal;
   }
   ${style}
+  .markdown-body.no-bg {
+    background-color: initial;
+    box-shadow: initial;
+    padding: 0;
+  }
 ` as typeof Grid;

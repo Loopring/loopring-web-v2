@@ -15,7 +15,7 @@ import { AssetTitleMobileProps, AssetTitleProps } from "./Interface";
 import styled from "@emotion/styled";
 import { DropdownIconStyled } from "../tradePanel";
 import { AnimationArrow, Button, ButtonListRightStyled } from "./../";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSettings } from "../../stores";
 
 const BoxStyled = styled(Box)`
@@ -45,6 +45,7 @@ export const AssetTitle = withTranslation("common")(
   // legalEnable,
   // legalShow,
   AssetTitleProps & WithTranslation) => {
+    const history = useHistory();
     return (
       <Grid
         container
@@ -117,9 +118,9 @@ export const AssetTitle = withTranslation("common")(
           justifyContent={"flex-end"}
         >
           <Button
-            variant={"outlined"}
-            size={"medium"}
-            color={"secondary"}
+            variant={"contained"}
+            size={"small"}
+            color={"primary"}
             onClick={() => onShowSend()}
           >
             {t("labelSendAssetBtn")}
@@ -131,6 +132,14 @@ export const AssetTitle = withTranslation("common")(
             onClick={() => onShowReceive()}
           >
             {t("labelAddAssetBtn")}
+          </Button>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            color={"secondary"}
+            onClick={() => history.push("/l2assets/history")}
+          >
+            {t("labelTransactions")}
           </Button>
         </ButtonListRightStyled>
       </Grid>
@@ -156,7 +165,8 @@ AssetTitleMobileProps) => {
   // const [dropdownStatus, setDropdownStatus] =
   //   React.useState<"up" | "down">(hideL2Action?"up":"down");
   const { t } = useTranslation(["common", "layout"]);
-  let match: any = useRouteMatch("/layer2/:item");
+  let match: any = useRouteMatch("/l2assets/:item");
+  const history = useHistory();
   const label = Reflect.ownKeys(subMenuLayer2)
     .reduce(
       (pre, item) => [...pre, ...subMenuLayer2[item]],
@@ -249,15 +259,7 @@ AssetTitleMobileProps) => {
             fontSize={"medium"}
           />
         ) : (
-          <AnimationArrow
-            className={"arrowCta"}
-            // style={{
-            // transform:
-            //
-            // ? "rotate(-135deg) scale(0.5)"
-            // : "rotate(45deg) scale(0.5)",
-            // }}
-          />
+          <AnimationArrow className={"arrowCta"} />
         )}
       </Box>
       {!hideL2Action && (
@@ -265,8 +267,8 @@ AssetTitleMobileProps) => {
           <Grid item xs={4}>
             <Button
               fullWidth
-              variant={"outlined"}
-              size={"medium"}
+              variant={"contained"}
+              size={"small"}
               color={"primary"}
               onClick={() => onShowSend()}
             >
@@ -282,6 +284,17 @@ AssetTitleMobileProps) => {
               onClick={() => onShowReceive()}
             >
               {t("labelAddAssetBtn")}
+            </Button>
+          </Grid>
+          <Grid item xs={4}>
+            <Button
+              fullWidth
+              variant={"outlined"}
+              size={"medium"}
+              color={"secondary"}
+              onClick={() => history.push("/l2assets/history")}
+            >
+              {t("labelTransactions")}
             </Button>
           </Grid>
           {/*<Grid item xs={4}>*/}

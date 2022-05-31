@@ -4,7 +4,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination, TableProps } from "../../basic-lib";
 import {
+  CurrencyToTag,
   EmptyValueTag,
+  ForexMap,
   getValuePrecisionThousand,
   globalSetup,
   PriceTag,
@@ -22,19 +24,19 @@ import { Currency } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import { TFunction } from "i18next";
 
+// height: ${(props: any) => {
+//       if (props.currentheight && props.currentheight > 350) {
+//         return props.currentheight + "px";
+//       } else {
+//   return "100%";
+// }
+// }};
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    height: ${(props: any) => {
-      if (props.currentheight && props.currentheight > 350) {
-        return props.currentheight + "px";
-      } else {
-        return "100%";
-      }
-    }};
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 280px 240px auto auto !important;`
@@ -58,7 +60,8 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
 
 const columnMode = (
   { t }: { t: TFunction },
-  currency: Currency
+  currency: Currency,
+  forexMap: ForexMap<Currency>
 ): Column<Row<any>, unknown>[] => [
   {
     key: "style",
@@ -107,24 +110,24 @@ const columnMode = (
     key: "totalValue",
     sortable: false,
     width: "auto",
+    headerCellClass: "textAlignCenter",
+    cellClass: "textAlignCenter",
     name: t("labelAmmTotalValue"),
     formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
-      const { totalDollar, totalYuan } = row;
+      const { totalDollar } = row;
       return (
         <Typography component={"span"}>
           {typeof totalDollar === "undefined"
             ? EmptyValueTag
-            : currency === Currency.usd
-            ? PriceTag.Dollar +
+            : PriceTag[CurrencyToTag[currency]] +
               getValuePrecisionThousand(
-                totalDollar,
+                (totalDollar || 0) * (forexMap[currency] ?? 0),
                 undefined,
                 undefined,
-                undefined,
+                2,
                 true,
                 { isFait: true }
-              )
-            : PriceTag.Yuan + getValuePrecisionThousand(totalYuan, 2, 2)}
+              )}
         </Typography>
       );
     },
@@ -149,14 +152,14 @@ const columnMode = (
           {timeString}
         </Typography>
       );
-      // 10 年前
     },
   },
 ];
 
 const columnModeMobile = (
   { t }: { t: TFunction },
-  currency: Currency
+  currency: Currency,
+  forexMap: ForexMap<Currency>
 ): Column<Row<any>, unknown>[] => [
   {
     key: "style",
@@ -206,26 +209,25 @@ const columnModeMobile = (
     sortable: false,
     width: "auto",
     cellClass: "textAlignRight",
+    headerCellClass: "textAlignRight",
     name: t("labelAmmTotalValue") + "/" + t("labelAmmTime"),
     formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
-      const { totalDollar, totalYuan } = row;
+      const { totalDollar } = row;
       const time = moment(new Date(row.time), "YYYYMMDDHHMM").fromNow();
       return (
         <Box display={"flex"} flexDirection={"column"} height={"100%"}>
           <Typography component={"span"}>
             {typeof totalDollar === "undefined"
               ? EmptyValueTag
-              : currency === Currency.usd
-              ? PriceTag.Dollar +
+              : PriceTag[CurrencyToTag[currency]] +
                 getValuePrecisionThousand(
-                  totalDollar,
+                  (totalDollar || 0) * (forexMap[currency] ?? 0),
                   undefined,
                   undefined,
                   undefined,
                   true,
                   { isFait: true }
-                )
-              : PriceTag.Yuan + getValuePrecisionThousand(totalYuan, 2, 2)}
+                )}
           </Typography>
           <Typography component={"span"} textAlign={"right"}>
             {time}
@@ -248,8 +250,10 @@ export const AmmRecordTable = withTranslation("tables")(
     headerRowHeight = RowConfig.rowHeaderHeight,
     showFilter = true,
     rawData,
+    scroll = false,
     wait = globalSetup.wait,
     currency = Currency.usd,
+    forexMap,
     ...rest
   }: AmmRecordTableProps<T> & WithTranslation) => {
     const [page, setPage] = React.useState(1);
@@ -257,8 +261,8 @@ export const AmmRecordTable = withTranslation("tables")(
     const defaultArgs: TableProps<any, any> = {
       rawData,
       columnMode: isMobile
-        ? columnModeMobile({ t }, currency)
-        : columnMode({ t }, currency),
+        ? columnModeMobile({ t }, currency, forexMap)
+        : columnMode({ t }, currency, forexMap),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({ columnsRaw }) =>
         columnsRaw as Column<Row<any>, unknown>[],
@@ -285,9 +289,13 @@ export const AmmRecordTable = withTranslation("tables")(
       (currentheight || 0) + (!!rawData.length ? 0 : RowConfig.rowHeaderHeight);
 
     return (
-      <TableStyled isMobile={isMobile} currentheight={height}>
+      <TableStyled
+        isMobile={isMobile}
+        currentheight={height}
+        className={"amm-record-table"}
+      >
         <Table
-          /* className={'scrollable'}  */ {...{
+          {...{
             ...defaultArgs,
             t,
             i18n,
@@ -295,6 +303,7 @@ export const AmmRecordTable = withTranslation("tables")(
             ...rest,
             rowHeight,
             headerRowHeight,
+            scroll,
             rawData: rawData,
           }}
         />

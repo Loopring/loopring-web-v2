@@ -6,6 +6,7 @@ import {
   headerMenuData,
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
+  SagaStatus,
 } from "@loopring-web/common-resources";
 
 import {
@@ -26,13 +27,10 @@ export const useHeader = () => {
   const accountTotal = useAccount();
   const { account, setShouldShow, status: accountStatus } = accountTotal;
   const { setShowAccount } = useOpenModals();
-  const accountState = React.useMemo(() => {
-    return { account };
-  }, [account]);
+  // const accountState = React.useMemo(() => {
+  //   return { account };
+  // }, [account]);
 
-  const [headerToolBarData, setHeaderToolBarData] = React.useState<
-    typeof _initHeaderToolBarData
-  >(_initHeaderToolBarData);
   const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.NO_ACCOUNT]: [
       function () {
@@ -75,37 +73,23 @@ export const useHeader = () => {
     myLog(`onWalletBtnConnect click: ${account.readyState}`);
     accountStaticCallBack(_btnClickMap, []);
   }, [account, setShouldShow, _btnClickMap]);
-  React.useEffect(() => {
-    setHeaderToolBarData((headerToolBarData) => {
-      headerToolBarData[ButtonComponentsMap.Notification] = {
-        ...headerToolBarData[ButtonComponentsMap.Notification],
-      };
-      headerToolBarData[ButtonComponentsMap.WalletConnect] = {
-        ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-        accountState,
-        handleClick: onWalletBtnConnect,
-      };
-      return headerToolBarData;
-      // return {
-      //   ...headerToolBarData,
-      //   // [ButtonComponentsMap.Notification]: {
-      //   //   ...headerToolBarData[ButtonComponentsMap.Notification],
-      //   // },
-      //   [ButtonComponentsMap.WalletConnect]: {
-      //     ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-      //     accountState,
-      //     handleClick: onWalletBtnConnect,
-      //   },
-      // } as HeaderToolBarInterface[];
-    });
-  }, []);
+
+  const [headerToolBarData, setHeaderToolBarData] = React.useState<
+    typeof _initHeaderToolBarData
+  >({ ..._initHeaderToolBarData });
 
   React.useEffect(() => {
-    if (accountStatus && accountStatus === "UNSET") {
+    if (accountStatus === SagaStatus.UNSET) {
+      const account = store.getState().account;
       setHeaderToolBarData((headerToolBarData) => {
         headerToolBarData[ButtonComponentsMap.WalletConnect] = {
           ...headerToolBarData[ButtonComponentsMap.WalletConnect],
-          accountState,
+          handleClick: onWalletBtnConnect,
+          accountState: { account },
+        };
+        headerToolBarData[ButtonComponentsMap.ProfileMenu] = {
+          ...headerToolBarData[ButtonComponentsMap.ProfileMenu],
+          readyState: account.readyState,
         };
         return headerToolBarData;
       });
@@ -113,7 +97,6 @@ export const useHeader = () => {
     // forceUpdate()
   }, [accountStatus, account.readyState]);
   const { notifyMap } = useNotify();
-
   return {
     headerToolBarData,
     headerMenuData,

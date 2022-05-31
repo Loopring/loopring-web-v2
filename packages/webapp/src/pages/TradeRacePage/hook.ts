@@ -1,14 +1,16 @@
 import React from "react";
-import { AmmPoolActivityRule } from "@loopring-web/loopring-sdk";
 import { languageMap, myLog } from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { EventData } from "./interface";
+import {
+  Config_INFO_URL,
+  EventData,
+  url_path,
+  url_test_path,
+} from "./interface";
 import { setInterval } from "timers";
-import { useAmmActivityMap } from "@loopring-web/core";
+import { useSystem } from "@loopring-web/core";
 import moment from "moment";
-
-const url_path = "https://static.loopring.io/events";
 
 export enum EVENT_STATUS {
   EVENT_START = "labelTradeRaceStart",
@@ -18,43 +20,20 @@ export enum EVENT_STATUS {
 
 export const useTradeRace = () => {
   const match: any = useRouteMatch("/race-event/:path");
-  const { search, pathname } = useLocation();
+  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+  const { i18n } = useTranslation();
+  const { baseURL } = useSystem();
+  const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const history = useHistory();
-  const { activityDateMap } = useAmmActivityMap();
-  const { i18n } = useTranslation();
-  const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+
   const [eventData, setEventData] = React.useState<EventData>();
+  const [eventsList, setEventsList] = React.useState<
+    Array<EventData & { type: string }>
+  >([]);
   const [eventStatus, setEventStatus] =
     React.useState<EVENT_STATUS | undefined>();
-  const [activityRule, setActivityRule] =
-    React.useState<
-      | AmmPoolActivityRule
-      | undefined
-      | {
-          event_awardRules: {
-            project: string;
-            pair: string;
-            reward: {
-              count: number;
-              token: string;
-            };
-          }[];
-        }
-    >();
 
-  const [currMarketPair, setCurrMarketPair] = React.useState(
-    () => searchParams.get("pair") ?? ""
-  );
-
-  const [duration, setDuration] =
-    React.useState<
-      | {
-          startDate?: string;
-          endDate?: string;
-        }
-      | undefined
-    >();
   const [countDown, setCountDown] =
     React.useState<{
       days: undefined | string;
@@ -62,115 +41,166 @@ export const useTradeRace = () => {
       seconds: undefined | string;
       minutes: undefined | string;
     }>();
-  const handleMarketPairChange = React.useCallback(
-    (e: React.ChangeEvent<{ value: string }>) => {
-      setCurrMarketPair(e.target.value);
-      searchParams.set("pair", e.target.value);
-      history.push(pathname + "?" + searchParams.toString());
-    },
-    []
-  );
 
   React.useEffect(() => {
-    if (match?.params.path && Reflect.ownKeys(activityDateMap).length) {
+    if (baseURL) {
       try {
         // follow /2021/01/2021-01-01.en.json
-        const [year, month, day] = match?.params.path.split("-");
-        if (year && month && day) {
-          fetch(
-            url_path +
-              `/${year}/${month}/${year}-${month}-${day}.${
-                languageMap[i18n.language]
-              }.json`
-          )
+        const [year, month] = match?.params.path.split("-");
+        const type = searchParams.get("type");
+        const path = `${
+          /uat/gi.test(baseURL) ? url_test_path : url_path
+        }/${year}/${month}/`;
+        if (year && month && type) {
+          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
             .then((response) => {
               if (response.ok) {
                 return response.json();
               } else {
-                history.replace("/race-event" + `?${searchParams.toString()}`);
+                history.replace(`/race-event?${searchParams.toString()}`);
               }
             })
-            .then((input: EventData) => {
-              let eventData: EventData;
-              if (searchParams.get("type")) {
-                eventData = input[searchParams.get("type") as string];
-              } else {
-                eventData = input;
-              }
+            .then((input: { [key: string]: EventData }) => input[type])
+            .then(async (eventData: EventData) => {
               myLog("useTradeRace eventData", eventData);
+              if (eventData) {
+                // https://uat2.loopring.io/api/v3/activity/getFilterInfo?version=1
+                const configUrl = `${baseURL}/${Config_INFO_URL}?version=${eventData.api?.version}`;
+                myLog("baseURL", configUrl);
+                const config: [{ [key: string]: any }, string] =
+                  await Promise.all([
+                    fetch(configUrl).then((response) => {
+                      if (response.ok) {
+                        return response.json();
+                      } else {
+                        return {};
+                      }
+                    }),
+                    fetch(
+                      `${path}/activities/${eventData.rule?.split("/").pop()}`
+                    )
+                      .then((response) => response.text())
+                      .then((input) => {
+                        return input;
+                      })
+                      .catch(() => {
+                        return "";
+                      }),
+                  ]);
+                const startUnix =
+                  config[0].start ??
+                  moment
+                    .utc(eventData.duration.startDate, "MM/DD/YYYY HH:mm:ss")
+                    .valueOf();
+                const endUnix =
+                  config[0].end ??
+                  moment
+                    .utc(eventData.duration.endDate, "MM/DD/YYYY HH:mm:ss")
+                    .valueOf();
 
-              if (
-                eventData &&
-                searchParams.get("type") &&
-                [
-                  "AMM_MINING",
-                  "SWAP_VOLUME_RANKING",
-                  "ORDERBOOK_MINING",
-                ].includes(searchParams.get("type") ?? "") &&
-                activityDateMap[eventData.duration.startDate]
-              ) {
-                setEventData(eventData);
-                const activityRule =
-                  activityDateMap[eventData.duration.startDate][
-                    searchParams.get("type") as string
-                  ];
-                setActivityRule(activityRule);
-                if (Reflect.ownKeys(activityRule).length) {
-                  const rule: AmmPoolActivityRule =
-                    activityRule[Reflect.ownKeys(activityRule)[0]];
-                  setDuration(() => ({
-                    startDate:
-                      moment.utc(rule.rangeFrom).format(`YYYY-MM-DD HH:mm:ss`) +
-                      "(UTC)",
-                    endDate:
-                      moment.utc(rule.rangeTo).format(`YYYY-MM-DD HH:mm:ss`) +
-                      "(UTC)",
-                  }));
-                  if (rule.rangeFrom > Date.now()) {
-                    setEventStatus(EVENT_STATUS.EVENT_READY);
-                  } else if (rule.rangeTo > Date.now()) {
-                    setEventStatus(EVENT_STATUS.EVENT_START);
-                  } else {
-                    setEventStatus(EVENT_STATUS.EVENT_END);
-                  }
+                setEventData({
+                  ...eventData,
+                  banner: {
+                    pad: eventData.banner?.pad
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/activities/${eventData.banner?.pad
+                            ?.split("/")
+                            .pop()}`
+                        : eventData.banner.pad //`${path}/`
+                      : undefined,
+                    laptop: eventData.banner?.laptop
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/activities/${eventData.banner?.laptop
+                            ?.split("/")
+                            .pop()}`
+                        : eventData.banner.laptop //`${path}/`
+                      : undefined,
+                    mobile: eventData.banner?.mobile
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/activities/${eventData.banner?.mobile
+                            ?.split("/")
+                            .pop()}`
+                        : eventData.banner.mobile
+                      : undefined,
+                  },
+                  duration: {
+                    ...eventData.duration,
+                    startDate: startUnix,
+                    endDate: endUnix,
+                  },
+                  ruleMarkdown: config[1],
+                  api: {
+                    ...eventData.api,
+                    ...config[0],
+                  },
+                });
 
-                  if (!currMarketPair) {
-                    setCurrMarketPair(
-                      Reflect.ownKeys(activityRule)[0] as string
-                    );
-                  }
-                }
-              } else if (eventData && searchParams.get("type")) {
-                setEventData(eventData);
-                setDuration((duration) => ({
-                  ...duration,
-                  startDate:
-                    moment
-                      .utc(eventData.duration.startDate)
-                      .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)",
-                  endDate: eventData.duration.endDate
-                    ? moment
-                        .utc(eventData.duration.endDate)
-                        .format(`YYYY-MM-DD HH:mm:ss`) + "(UTC)"
-                    : undefined,
-                }));
-                setActivityRule({ event_awardRules: eventData.rewards });
-                if (eventData.duration.startDate > Date.now()) {
+                if (startUnix > Date.now()) {
                   setEventStatus(EVENT_STATUS.EVENT_READY);
+                } else if (endUnix > Date.now()) {
+                  setEventStatus(EVENT_STATUS.EVENT_START);
+                } else {
+                  setEventStatus(EVENT_STATUS.EVENT_END);
                 }
+              } else {
+                throw "no EventData";
               }
             })
             .catch((e) => {
-              history.push("/race-event");
+              searchParams.set("type", "");
+              // history.push(match.url + "?" + searchParams.toString());
+              window.open(
+                `./#${match.url}?` + searchParams.toString(),
+                "_self"
+              );
+              window.opener = null;
+              window.location.reload();
+            });
+        } else if (year && month && !type) {
+          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                history.replace(`/race-event?${searchParams.toString()}`);
+              }
+            })
+            .then((input) => {
+              const eventsList = Reflect.ownKeys(input).map((key) => {
+                // input[key]
+                const startUnix = moment
+                  .utc(
+                    input[key].duration?.startDate ?? "",
+                    "MM/DD/YYYY HH:mm:ss"
+                  )
+                  .valueOf();
+                const endUnix = moment
+                  .utc(
+                    input[key].duration?.endDate ?? "",
+                    "MM/DD/YYYY HH:mm:ss"
+                  )
+                  .valueOf();
+                return {
+                  ...input[key],
+                  type: key,
+                  duration: {
+                    ...input[key].duration,
+                    startDate: startUnix,
+                    endDate: endUnix,
+                  },
+                };
+              });
+              setEventsList(eventsList);
             });
         } else {
-          history.push("/race-event");
+          throw "url format wrong";
         }
       } catch (e: any) {
+        myLog(e?.message);
         history.push("/race-event");
       }
     }
-  }, [activityDateMap]);
+  }, [baseURL, i18n.language]);
 
   const scrollToRule = (event: React.MouseEvent<HTMLElement>) => {
     const anchor = (
@@ -232,14 +262,18 @@ export const useTradeRace = () => {
 
   return {
     eventData,
-    currMarketPair,
+    match,
+    // selected,
+    // currMarketPair,
     filteredAmmViewMap: [],
     countDown,
-    handleMarketPairChange,
+    eventsList,
+    // handleFilterChange,
     searchParams,
-    duration,
+    // onChange,
+    // duration,
     scrollToRule,
-    activityRule,
+    // activityRule,
     eventStatus,
   };
 };

@@ -42,5 +42,13 @@
   "deployNFT": {
     "enable": true,
     "reason": null
+  },
+  "forceWithdraw": {
+    "enable": true,
+    "reason": null
+  },
+  "defi":{
+    "enable": true,
+    "reason": null
   }
 }

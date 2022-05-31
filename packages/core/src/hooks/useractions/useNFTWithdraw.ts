@@ -1,5 +1,8 @@
 import React from "react";
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import {
   AccountStep,
   SwitchData,
@@ -44,8 +47,9 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   const {
     modals: {
-      isShowNFTWithdraw: { isShow, nftData, nftBalance, info, ...nftRest },
+      isShowNFTWithdraw: { isShow, info },
     },
+    setShowNFTWithdraw,
     setShowNFTDetail,
     setShowAccount,
   } = useOpenModals();
@@ -116,7 +120,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         .toBig(nftWithdrawValue.tradeValue)
         .lte(Number(nftWithdrawValue.balance) ?? 0) &&
       (addrStatus as AddressError) === AddressError.NoError &&
-      !isFeeNotEnough &&
+      !isFeeNotEnough.isFeeNotEnough &&
       !isNotAvaiableAddress &&
       (info?.isToMyself || sureIsAllowAddress) &&
       realAddr
@@ -147,10 +151,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   }, [
     address,
     addrStatus,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     nftWithdrawValue.fee,
     nftWithdrawValue.tradeValue,
     isNotAvaiableAddress,
+    sureIsAllowAddress,
   ]);
 
   useWalletLayer2Socket({});
@@ -159,11 +164,15 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     if (info?.isRetry) {
       return;
     }
-    if (nftData) {
+
+    if (nftWithdrawValue.nftData) {
       updateNFTWithdrawData({
-        balance: nftBalance,
-        ...nftRest,
-        belong: nftData as any,
+        // ...nftWithdrawValue,
+        balance: sdk
+          .toBig(nftWithdrawValue.total ?? 0)
+          .minus(nftWithdrawValue.locked ?? 0)
+          .toNumber(),
+        belong: nftWithdrawValue.name,
         tradeValue: undefined,
         fee: feeInfo,
         address: info?.isToMyself ? account.accAddress : "*",
@@ -184,12 +193,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     }
   }, [
     checkFeeIsEnough,
-    nftData,
+    nftWithdrawValue,
     info?.isRetry,
     info?.isToMyself,
     updateNFTWithdrawData,
-    nftBalance,
-    nftRest,
     feeInfo,
     account.accAddress,
     setAddress,
@@ -219,7 +226,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
               request,
               web3: connectProvides.usedWeb3,
               chainId: chainId === "unknown" ? 1 : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -376,6 +384,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         eddsaKey?.sk
       ) {
         try {
+          setShowNFTWithdraw({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTWithdraw_WaitForAuth,
@@ -499,6 +508,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         if (data.to === "button") {
           if (data.tradeData.belong) {
             updateNFTWithdrawData({
+              belong: data.tradeData.belong,
               tradeValue: data.tradeData?.tradeValue,
               balance: data.tradeData.balance,
               address: info?.isToMyself ? account.accAddress : "*",

@@ -39,7 +39,10 @@ import {
   TOAST_TIME,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import { useHistory } from "react-router-dom";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
@@ -58,7 +61,10 @@ export function useNFTMint<
   nftMintValue,
 }: {
   chargeFeeTokenList: FeeInfo[];
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
@@ -83,25 +89,33 @@ export function useNFTMint<
   const { checkHWAddr, updateHW } = useWalletInfo();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
-
+  const checkAvailable = ({
+    nftMintValue,
+    isFeeNotEnough,
+  }: {
+    nftMintValue: NFT_MINT_VALUE<any>;
+    isFeeNotEnough: any;
+  }) => {
+    return (
+      nftMintValue.nftMETA.royaltyPercentage !== undefined &&
+      Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
+      nftMintValue.nftMETA.royaltyPercentage / 1 >= 0 &&
+      nftMintValue.nftMETA.royaltyPercentage / 1 <= 10 &&
+      nftMintValue.mintData.tokenAddress &&
+      nftMintValue.mintData.tradeValue &&
+      Number(nftMintValue.mintData.tradeValue) > 0 &&
+      Number(nftMintValue.mintData.tradeValue) <= MINT_LIMIT &&
+      nftMintValue.mintData.nftId &&
+      nftMintValue.mintData.fee &&
+      nftMintValue.mintData.fee.belong &&
+      nftMintValue.mintData.fee.__raw__ &&
+      !isFeeNotEnough.isFeeNotEnough
+    );
+  };
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      if (
-        !error &&
-        nftMintValue.nftMETA.royaltyPercentage !== undefined &&
-        Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
-        nftMintValue.nftMETA.royaltyPercentage >= 0 &&
-        nftMintValue.nftMETA.royaltyPercentage <= 10 &&
-        nftMintValue.mintData.tokenAddress &&
-        nftMintValue.mintData.tradeValue &&
-        Number(nftMintValue.mintData.tradeValue) > 0 &&
-        Number(nftMintValue.mintData.tradeValue) <= MINT_LIMIT &&
-        nftMintValue.mintData.fee &&
-        nftMintValue.mintData.fee.belong &&
-        nftMintValue.mintData.fee.__raw__ &&
-        !isFeeNotEnough
-      ) {
+      if (!error && checkAvailable({ nftMintValue, isFeeNotEnough })) {
         enableBtn();
         return;
       }
@@ -130,7 +144,7 @@ export function useNFTMint<
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [isFeeNotEnough, nftMintValue, feeInfo]);
+  }, [isFeeNotEnough.isFeeNotEnough, nftMintValue, feeInfo]);
   useWalletLayer2Socket({});
 
   const handleMintDataChange = React.useCallback(
@@ -178,6 +192,10 @@ export function useNFTMint<
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_In_Progress,
+            info: {
+              symbol: nftMintValue.nftMETA?.name,
+              value: nftMintValue.mintData?.tradeValue,
+            },
           });
           const response = await LoopringAPI.userAPI?.submitNFTMint(
             {
@@ -185,7 +203,8 @@ export function useNFTMint<
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -210,6 +229,7 @@ export function useNFTMint<
               step: AccountStep.NFTMint_Success,
               info: {
                 symbol: nftMintValue.nftMETA?.name,
+                value: nftMintValue.mintData?.tradeValue,
                 hash:
                   Explorer +
                   `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMint-${
@@ -236,6 +256,7 @@ export function useNFTMint<
             step: AccountStep.NFTMint_Denied,
             info: {
               symbol: nftMintValue.nftMETA?.name,
+              value: nftMintValue.mintData?.tradeValue,
             },
           });
           mintService.goMintConfirm();
@@ -245,6 +266,7 @@ export function useNFTMint<
             step: AccountStep.NFTMint_First_Method_Denied,
             info: {
               symbol: nftMintValue.nftMETA?.name,
+              value: nftMintValue.mintData?.tradeValue,
             },
           });
           mintService.signatureMint(true);
@@ -262,6 +284,7 @@ export function useNFTMint<
             step: AccountStep.NFTMint_Failed,
             info: {
               symbol: nftMintValue.nftMETA?.name,
+              value: nftMintValue.mintData?.tradeValue,
             },
             error: {
               code: UIERROR_CODE.UNKNOWN,
@@ -293,25 +316,21 @@ export function useNFTMint<
       const nftMintValue = store.getState()._router_modalData.nftMintValue;
       if (
         account.readyState === AccountStatus.ACTIVATED &&
-        nftMintValue.mintData.tradeValue &&
-        nftMintValue.mintData.tokenAddress &&
-        nftMintValue.mintData.nftId &&
-        nftMintValue.mintData.fee &&
-        nftMintValue.mintData.fee.belong &&
-        nftMintValue.mintData.fee.__raw__ &&
-        nftMintValue.nftMETA.royaltyPercentage !== undefined &&
-        Number.isInteger(nftMintValue.nftMETA.royaltyPercentage / 1) &&
-        nftMintValue.nftMETA.royaltyPercentage / 1 >= 0 &&
-        nftMintValue.nftMETA.royaltyPercentage / 1 <= 10 &&
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
-        !isFeeNotEnough &&
-        exchangeInfo
+        exchangeInfo &&
+        nftMintValue.mintData &&
+        nftMintValue.mintData.fee &&
+        checkAvailable({ nftMintValue, isFeeNotEnough })
       ) {
         setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTMint_WaitForAuth,
+          info: {
+            symbol: nftMintValue.nftMETA?.name,
+            value: nftMintValue.mintData?.tradeValue,
+          },
         });
         try {
           const { accountId, accAddress, apiKey } = account;
@@ -335,9 +354,9 @@ export function useNFTMint<
             toAccountId: accountId,
             toAddress: accAddress,
             nftType: 0,
-            tokenAddress: nftMintValue.mintData.tokenAddress,
-            nftId: nftMintValue.mintData.nftId,
-            amount: nftMintValue.mintData.tradeValue.toString(),
+            tokenAddress: nftMintValue.mintData.tokenAddress ?? "",
+            nftId: nftMintValue.mintData.nftId ?? "",
+            amount: nftMintValue.mintData.tradeValue?.toString() ?? "",
             maxFee: {
               tokenId: feeToken.tokenId,
               amount: fee.toString(), // TEST: fee.toString(),
@@ -361,6 +380,10 @@ export function useNFTMint<
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_Failed,
+            info: {
+              symbol: nftMintValue.nftMETA?.name,
+              value: nftMintValue.mintData?.tradeValue,
+            },
             error: { code: 400, message: e.message } as sdk.RESULT_INFO,
           });
         }
@@ -376,6 +399,10 @@ export function useNFTMint<
       setShowAccount({
         isShow: true,
         step: AccountStep.NFTMint_WaitForAuth,
+        info: {
+          symbol: nftMintValue.nftMETA?.name,
+          value: nftMintValue.mintData?.tradeValue,
+        },
       });
       processRequest(lastRequest, !isHardwareRetry);
     },

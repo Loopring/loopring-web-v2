@@ -19,7 +19,18 @@ import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
 import { useOpenModals } from "../../../../stores";
-import { CheckBoxIcon, CheckedIcon } from "@loopring-web/common-resources";
+
+import {
+  Account,
+  Bridge,
+  CheckBoxIcon,
+  CheckedIcon,
+  copyToClipBoard,
+  getValuePrecisionThousand,
+} from "@loopring-web/common-resources";
+import { useLocation } from "react-router-dom";
+import { TradeDefi } from "@loopring-web/core";
+import BigNumber from "bignumber.js";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -42,7 +53,7 @@ const DialogStyle = styled(Dialog)`
   }
 `;
 
-export const AlertImpact = withTranslation("common", { withRef: true })(
+export const AlertImpact = withTranslation("common")(
   ({
     t,
     value,
@@ -142,7 +153,7 @@ export const CancelAllOrdersAlert = withTranslation("common", {
     );
   }
 );
-export const AlertNotSupport = withTranslation("common", { withRef: true })(
+export const AlertNotSupport = withTranslation("common")(
   ({
     t,
     open,
@@ -178,7 +189,7 @@ export const AlertNotSupport = withTranslation("common", { withRef: true })(
   }
 );
 
-export const ConfirmImpact = withTranslation("common", { withRef: true })(
+export const ConfirmImpact = withTranslation("common")(
   ({
     t,
     value,
@@ -339,10 +350,14 @@ export const ConfirmLinkCopy = withTranslation("common", {
     t,
     open,
     handleClose,
+    setCopyToastOpen,
   }: WithTranslation & {
     open: boolean;
+    setCopyToastOpen: (vale: boolean) => void;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     return (
       <DialogStyle
         open={open}
@@ -350,7 +365,11 @@ export const ConfirmLinkCopy = withTranslation("common", {
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("labelOpenInWalletTitle")}</DialogTitle>
+        <DialogTitle>
+          <Typography component={"span"} variant={"h4"} textAlign={"center"}>
+            {t("labelOpenInWalletTitle")}
+          </Typography>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Typography component={"span"} variant={"body1"} color={"inherit"}>
@@ -374,21 +393,36 @@ export const ConfirmLinkCopy = withTranslation("common", {
             </ListItem>
           </List>
         </DialogContent>
+
         <DialogActions>
           <Button
-            variant={"outlined"}
-            size={"medium"}
-            onClick={(e) => handleClose(e as any)}
+            variant={"contained"}
+            fullWidth
+            onClick={(e) => {
+              copyToClipBoard(Bridge + `?${searchParams.toString()}`);
+              setCopyToastOpen(true);
+              handleClose(e as any);
+            }}
           >
-            {t("labelOK")}
+            {t("labelCopyClipBoard")}
           </Button>
         </DialogActions>
+        <DialogContent>
+          <Typography component={"p"} marginY={2}>
+            Manually Selected & Copy:
+          </Typography>
+          <TextField
+            disabled={true}
+            fullWidth={true}
+            value={Bridge + `?${searchParams.toString()}`}
+          />
+        </DialogContent>
       </DialogStyle>
     );
   }
 );
 
-export const AlertLimitPrice = withTranslation("common", { withRef: true })(
+export const AlertLimitPrice = withTranslation("common")(
   ({
     t,
     value,
@@ -555,7 +589,6 @@ export const InformationForNoMetaNFT = withTranslation("common", {
     );
   }
 );
-
 export const InformationForAccountFrozen = withTranslation("common", {
   withRef: true,
 })(
@@ -603,6 +636,87 @@ export const InformationForAccountFrozen = withTranslation("common", {
     );
   }
 );
+
+export const LayerswapNotice = withTranslation("common", {
+  withRef: true,
+})(
+  ({
+    t,
+    open,
+    account,
+  }: WithTranslation & {
+    open: boolean;
+    account: Account;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+
+    React.useEffect(() => {
+      if (!open) {
+        setAgree(false);
+      }
+    }, [open]);
+    const { setShowLayerSwapNotice, setShowAccount } = useOpenModals();
+    return (
+      <DialogStyle
+        open={open}
+        onClose={() => setShowLayerSwapNotice({ isShow: false })}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans i18nKey={"labelLayerSwapUnderstandDes"}>
+              LayerSwap is a 3rd party App service provider to help move tokens
+              from exchange to Loopring L2 directly. If you have any concerns
+              regarding their service, please check out their
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={"https://www.layerswap.io/blog/guide/Terms_of_Service"}
+              >
+                TOS
+              </Link>
+              .
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelLayerSwapUnderstand")}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={() => {
+              window.open(
+                `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}&lockNetwork=true&lockAddress=true&addressSource=loopringWeb`
+              );
+              window.opener = null;
+              setShowAccount({ isShow: false });
+              setShowLayerSwapNotice({ isShow: false });
+            }}
+            color={"primary"}
+          >
+            {t("labelIUnderStand")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
+
 export const OtherExchangeDialog = withTranslation("common", {
   withRef: true,
 })(
@@ -694,6 +808,93 @@ export const OtherExchangeDialog = withTranslation("common", {
           </Button>
         </DialogActions>
       </DialogStyle>
+    );
+  }
+);
+
+export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
+  ({
+    t,
+    open,
+    defiData,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    defiData: TradeDefi<any>;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState("");
+
+    React.useEffect(() => {
+      if (!open) {
+        setAgree("");
+      }
+    }, [open]);
+    const maxValue =
+      defiData.sellToken?.symbol &&
+      `${getValuePrecisionThousand(
+        new BigNumber(defiData?.maxSellVol ?? 0).div(
+          "1e" + defiData.sellToken?.decimals
+        ),
+        defiData.sellToken?.precision,
+        defiData.sellToken?.precision,
+        defiData.sellToken?.precision,
+        false,
+        { floor: true }
+      )} ${defiData.sellToken?.symbol}`;
+
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {new BigNumber(defiData?.maxSellVol ?? 0).gte(
+              defiData?.miniSellVol ?? 0
+            ) && (
+              <Typography>
+                <Trans i18nKey={"labelDefiMaxBalance"} tOptions={{ maxValue }}>
+                  Your Redeem order is too large and cannot be withdrawn
+                  immediately, you can only redeem {{ maxValue }}
+                </Trans>
+              </Typography>
+            )}
+            <Typography>
+              <Trans i18nKey={"labelDefiMaxBalance1"}>
+                or you can
+                <ul>
+                  <li>Withdraw to L1 and redeem through crv or lido</li>
+                  <li>Wait some time and wait for pool liquidity</li>
+                </ul>
+              </Trans>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelDisAgreeConfirm")}
+          </Button>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelAgreeConfirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 );

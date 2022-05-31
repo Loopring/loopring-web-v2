@@ -10,7 +10,6 @@ import {
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import { useOpenModals, useSettings } from "@loopring-web/component-lib";
-
 import { DepositToPage } from "../pages/DepositPage";
 import { Footer } from "../layouts/footer";
 
@@ -18,8 +17,8 @@ export const useWrapModal = () => {
   const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
   const token = searchParams.get("token");
-  const owner = searchParams.get("owner");
-  const { depositProps } = useDeposit(true, { token, owner });
+  const l2account = searchParams.get("l2account") || searchParams.get("owner");
+  const { depositProps } = useDeposit(true, { token, owner: l2account });
   const { setShowAccount } = useOpenModals();
   return {
     depositProps,

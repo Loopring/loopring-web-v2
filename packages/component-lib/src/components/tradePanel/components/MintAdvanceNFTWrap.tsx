@@ -7,7 +7,7 @@ import {
   CloseIcon,
   EmptyValueTag,
   FeeInfo,
-  HelpIcon,
+  Info2Icon,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   LoadingIcon,
@@ -130,7 +130,7 @@ export const MintAdvanceNFTWrap = <
           <Typography component={"h4"} variant={"h3"} marginRight={1}>
             {title ? title : t("nftMintTitle")}
           </Typography>
-          <HelpIcon
+          <Info2Icon
             {...bindHover(popupState)}
             fontSize={"large"}
             htmlColor={"var(--color-text-third)"}
@@ -189,7 +189,7 @@ export const MintAdvanceNFTWrap = <
                 paddingLeft={1}
               >
                 Follow this Guide
-                <HelpIcon
+                <Info2Icon
                   style={{ cursor: "pointer", marginLeft: "4px" }}
                   fontSize={"medium"}
                   htmlColor={"var(--color-text-third)"}
@@ -201,6 +201,13 @@ export const MintAdvanceNFTWrap = <
             value={tradeData?.nftIdView}
             label={""}
             title={t("labelNFTCid")}
+            error={
+              !!(
+                tradeData.nftIdView !== "" &&
+                !isNFTCheckLoading &&
+                !isAvaiableId
+              )
+            }
             placeholder={t("mintNFTAddressLabelPlaceholder")}
             onChange={(event) =>
               _handleOnNFTDataChange({
@@ -240,6 +247,7 @@ export const MintAdvanceNFTWrap = <
               fontSize={14}
               alignSelf={"stretch"}
               position={"relative"}
+              component={"span"}
             >
               {t("labelInvalidCID")}
             </Typography>
@@ -278,7 +286,7 @@ export const MintAdvanceNFTWrap = <
               marginBottom={1}
             >
               <Typography component={"span"} color={"inherit"} minWidth={28}>
-                {t("transferLabelFee")}：
+                {t("labelMintFee")}：
               </Typography>
               <Box
                 component={"span"}
@@ -296,13 +304,25 @@ export const MintAdvanceNFTWrap = <
                   status={dropdownStatus}
                   fontSize={"medium"}
                 />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"var(--color-error)"}
-                >
-                  {isFeeNotEnough && t("transferLabelFeeNotEnough")}
-                </Typography>
+                {isFeeNotEnough.isOnLoading ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    marginLeft={1}
+                    component={"span"}
+                  >
+                    {t("labelFeeCalculating")}
+                  </Typography>
+                ) : (
+                  isFeeNotEnough.isFeeNotEnough && (
+                    <Typography
+                      marginLeft={1}
+                      component={"span"}
+                      color={"var(--color-error)"}
+                    >
+                      {t("labelMintFeeNotEnough")}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Typography>
             {dropdownStatus === "up" && (
@@ -311,8 +331,9 @@ export const MintAdvanceNFTWrap = <
                   variant={"body2"}
                   color={"var(--color-text-third)"}
                   marginBottom={1}
+                  component={"span"}
                 >
-                  {t("transferLabelFeeChoose")}
+                  {t("labelMintFeeChoose")}
                 </Typography>
                 <FeeToggle
                   chargeFeeTokenList={chargeFeeTokenList}
@@ -324,7 +345,6 @@ export const MintAdvanceNFTWrap = <
           </>
         )}
       </Grid>
-
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <Box
           display={"flex"}

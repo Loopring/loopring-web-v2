@@ -144,7 +144,6 @@ const makeAsCard = <
   const { coinMap } = store.getState().tokenMap;
   const { ammMap } = store.getState().amm.ammMap;
   const { tokenPrices } = store.getState().tokenPrices;
-  const { forex } = store.getState().system;
   try {
     if (ammActivityViewMap && coinMap) {
       // @ts-ignore
@@ -172,28 +171,22 @@ const makeAsCard = <
                   const coinAPriceDollar = tokenPrices
                     ? tokenPrices[coinAInfo?.simpleName]
                     : 0;
-                  const coinAPriceYuan = coinAPriceDollar * (forex || 6.5);
                   const coinBPriceDollar = tokenPrices
                     ? tokenPrices[coinBInfo?.simpleName]
                     : 0;
-                  const coinBPriceYuan = coinBPriceDollar * (forex || 6.5);
                   const rewardTokenDollar = tokenPrices
                     ? tokenPrices[item?.rewardToken?.simpleName]
                     : 0;
-                  const rewardTokenYuan = rewardTokenDollar * (forex || 6.5);
                   // myLog('matchRes:', matchRes, ' coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
                   return {
                     ..._.cloneDeep(_ammInfo),
                     coinAInfo,
                     coinBInfo,
                     coinAPriceDollar,
-                    coinAPriceYuan,
                     coinBPriceDollar,
-                    coinBPriceYuan,
                     activity: {
                       ...item,
                       rewardTokenDollar: rewardTokenDollar,
-                      rewardTokenYuan: rewardTokenYuan,
                     },
                   };
                 }
@@ -221,9 +214,8 @@ const makeAsCard = <
 type Value = undefined | number;
 export type SummaryMyAmm = {
   rewardDollar: Value;
-  rewardYuan: Value;
   feeDollar: Value;
-  feeYuan: Value;
+  investDollar?: Value;
 };
 export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   userRewardsMap,
@@ -231,47 +223,36 @@ export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   userRewardsMap: LoopringMap<AmmUserReward> | undefined;
 }): SummaryMyAmm | undefined => {
   const { coinMap, idIndex, tokenMap } = store.getState().tokenMap;
-  const { fiatPrices, forex } = store.getState().system;
-  if (userRewardsMap && idIndex && coinMap && tokenMap && fiatPrices && forex) {
-    let summaryMyAmm = Object.keys(userRewardsMap).reduce(
+  const { tokenPrices } = store.getState().tokenPrices;
+  if (userRewardsMap && idIndex && coinMap && tokenMap) {
+    return Object.keys(userRewardsMap).reduce(
       (prev, key) => {
         if (/AMM-/i.test(key)) {
           // @ts-ignore
           const [, coinA, coinB] = key.match(/AMM-(\w+)-(\w+)/i);
           const ammUserReward = userRewardsMap[key];
-          const { rewardDollar, rewardYuan, feeDollar, feeYuan } =
-            getOneRewardInfo({
-              coinB,
-              coinA,
-              ammUserReward,
-              idIndex,
-              fiatPrices,
-              forex,
-            });
+          const { rewardDollar, feeDollar } = getOneRewardInfo({
+            coinB,
+            coinA,
+            ammUserReward,
+            idIndex,
+            tokenPrices,
+          });
           prev.rewardDollar = rewardDollar
             ? toBig(rewardDollar).plus(prev.rewardDollar).toNumber()
-            : 0;
-          prev.rewardYuan = rewardYuan
-            ? toBig(rewardYuan).plus(prev.rewardYuan).toNumber()
-            : 0;
+            : prev.rewardDollar;
+
           prev.feeDollar = feeDollar
             ? toBig(feeDollar).plus(prev.feeDollar).toNumber()
-            : 0;
-          prev.feeYuan = feeYuan
-            ? toBig(feeYuan).plus(prev.feeYuan).toNumber()
-            : 0;
+            : prev.feeDollar;
         }
         return prev;
       },
       {
         rewardDollar: 0,
-        rewardYuan: 0,
         feeDollar: 0,
-        feeYuan: 0,
       }
     );
-
-    return summaryMyAmm;
   }
   return undefined;
 };
@@ -280,8 +261,7 @@ const getOneRewardInfo = <C>({
   coinB,
   ammUserReward,
   idIndex,
-  fiatPrices,
-  forex,
+  tokenPrices,
   walletMap,
   snapShotData,
 }: any) => {
@@ -290,11 +270,9 @@ const getOneRewardInfo = <C>({
     feeA,
     feeB,
     feeDollar,
-    feeYuan,
     reward,
     reward2,
-    rewardDollar,
-    rewardYuan;
+    rewardDollar;
   if (ammUserReward) {
     rewardToken = ammUserReward.currentRewards[0]
       ? idIndex[ammUserReward.currentRewards[0].tokenId as number]
@@ -311,9 +289,8 @@ const getOneRewardInfo = <C>({
     feeA = feeA ? feeA : toBig(0);
     feeB = feeB ? feeB : toBig(0);
     feeDollar = feeA
-      .times(fiatPrices[coinA] ? fiatPrices[coinA].price : 0)
-      .plus(feeB.times(fiatPrices[coinB] ? fiatPrices[coinB].price : 0));
-    feeYuan = feeDollar.times(forex);
+      .times(tokenPrices[coinA] ? tokenPrices[coinA] : 0)
+      .plus(feeB.times(tokenPrices[coinB] ? tokenPrices[coinB] : 0));
     reward = rewardToken
       ? (volumeToCountAsBigNumber(
           rewardToken,
@@ -329,11 +306,10 @@ const getOneRewardInfo = <C>({
     reward = reward ? reward : toBig(0);
     reward2 = reward2 ? reward2 : toBig(0);
     rewardDollar = reward
-      .times(rewardToken ? fiatPrices[rewardToken].price : 1)
-      .plus(reward2.times(rewardToken2 ? fiatPrices[rewardToken2].price : 1));
-    rewardYuan = rewardDollar.times(forex);
+      .times(rewardToken ? tokenPrices[rewardToken] : 1)
+      .plus(reward2.times(rewardToken2 ? tokenPrices[rewardToken2] : 1));
   }
-  let balanceA, balanceB, balanceDollar, balanceYuan;
+  let balanceA, balanceB, balanceDollar;
   if (walletMap && walletMap["LP-" + coinA + "-" + coinB] && snapShotData) {
     // @ts-ignore
     const ratio = new BigNumber(
@@ -353,9 +329,8 @@ const getOneRewardInfo = <C>({
     );
     // @ts-ignore
     balanceDollar = balanceA
-      .times(fiatPrices[coinA].price)
-      .plus(balanceB.times(fiatPrices[coinB].price));
-    balanceYuan = balanceDollar.times(forex);
+      .times(tokenPrices[coinA])
+      .plus(balanceB.times(tokenPrices[coinB]));
   }
 
   return {
@@ -366,9 +341,7 @@ const getOneRewardInfo = <C>({
     reward2: reward2 ? reward2.toNumber() : undefined,
     rewardToken2: rewardToken2 ? coinMap[rewardToken2] : undefined,
     rewardDollar: rewardDollar ? rewardDollar.toNumber() : undefined,
-    rewardYuan: rewardYuan ? rewardYuan.toNumber() : undefined,
     feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
-    feeYuan: feeYuan ? feeYuan.toNumber() : undefined,
     ammDetail: {
       coinAInfo: coinMap[coinA],
       coinBInfo: coinMap[coinB],
@@ -376,7 +349,6 @@ const getOneRewardInfo = <C>({
     balanceA: balanceA ? balanceA.toNumber() : undefined,
     balanceB: balanceB ? balanceB.toNumber() : undefined,
     balanceDollar: balanceDollar ? balanceDollar.toNumber() : undefined,
-    balanceYuan: balanceYuan ? balanceYuan.toNumber() : undefined,
   } as MyAmmLP<C>;
 };
 
@@ -392,7 +364,7 @@ export const makeMyAmmWithSnapshot = <C extends { [key: string]: any }>(
     | undefined
 ) => {
   const { coinMap, idIndex, tokenMap } = store.getState().tokenMap;
-  const { fiatPrices, forex } = store.getState().system;
+  const { tokenPrices } = store.getState().tokenPrices;
   const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
   let _myAmm: Partial<MyAmmLP<C>> = {};
   if (
@@ -402,19 +374,16 @@ export const makeMyAmmWithSnapshot = <C extends { [key: string]: any }>(
     snapShotData.ammPoolSnapshot
   ) {
     const ammUserReward: AmmUserReward = ammUserRewardMap["AMM-" + market];
-    // @ts-ignore
-    if (coinMap && tokenMap && idIndex && forex && fiatPrices) {
+    if (coinMap && tokenMap && idIndex) {
       _myAmm = getOneRewardInfo({
         coinA,
         coinB,
         ammUserReward,
         idIndex,
-        fiatPrices,
-        forex,
+        tokenPrices,
         walletMap: _walletMap,
         snapShotData,
       });
-
       return _myAmm as MyAmmLP<C>;
     }
   }
@@ -422,12 +391,10 @@ export const makeMyAmmWithSnapshot = <C extends { [key: string]: any }>(
     feeA: undefined,
     feeB: undefined,
     feeDollar: undefined,
-    feeYuan: undefined,
     reward: undefined,
     rewardToken: undefined as any,
     balanceA: undefined,
     balanceB: undefined,
-    balanceYuan: undefined,
     balanceDollar: undefined,
   };
 };
@@ -438,12 +405,12 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
   ammUserRewardMap: LoopringMap<AmmUserReward> | undefined,
   ammDetail: AmmDetailStore<C>
 ) => {
-  const { coinMap, idIndex, tokenMap } = store.getState().tokenMap;
-  const { fiatPrices, forex } = store.getState().system;
+  const { coinMap, idIndex } = store.getState().tokenMap;
+  const { tokenPrices } = store.getState().tokenPrices;
   const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
   let _myAmm = {};
-  let balanceA, balanceB, balanceDollar, balanceYuan;
-  if (_walletMap && _walletMap["LP-" + coinA + "-" + coinB] && forex) {
+  let balanceA, balanceB, balanceDollar;
+  if (_walletMap && _walletMap["LP-" + coinA + "-" + coinB] && coinMap) {
     // @ts-ignore
     const totalLpAmount = _walletMap["LP-" + coinA + "-" + coinB].count || 0;
     // const ratio = new BigNumber(_walletMap[ 'LP-' + coinA + '-' + coinB ].count).div(ammDetail.totalLPToken);
@@ -457,115 +424,99 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
 
     // WARNING! NOT ACCERATE
     balanceDollar =
-      balanceA * (fiatPrices[coinA] ? fiatPrices[coinA].price : 0) +
-      balanceB * (fiatPrices[coinB] ? fiatPrices[coinB].price : 0);
-    balanceYuan = balanceDollar * forex;
+      balanceA * (tokenPrices[coinA] ? tokenPrices[coinA] : 0) +
+      balanceB * (tokenPrices[coinB] ? tokenPrices[coinB] : 0);
+    const isSmallBalance = balanceDollar < 1;
 
     _myAmm = {
       // ...ammDetail,
       balanceA: balanceA,
       balanceB: balanceB,
-      balanceYuan: balanceYuan,
       balanceDollar: balanceDollar,
       totalLpAmount: totalLpAmount,
+      smallBalance: isSmallBalance,
+      ammDetail: {
+        ...ammDetail,
+        // @ts-ignore
+        coinAInfo: coinA ? coinMap[coinA] : undefined,
+        // @ts-ignore
+        coinBInfo: coinB ? coinMap[coinB] : undefined,
+      },
     };
   }
   if (
+    ammDetail &&
+    tokenPrices &&
     ammUserRewardMap &&
     ammUserRewardMap["AMM-" + market] &&
-    ammDetail &&
-    forex
+    ammUserRewardMap["AMM-" + market].currentRewards
   ) {
-    const ammUserReward: AmmUserReward = ammUserRewardMap["AMM-" + market];
     let rewardToken,
       rewardToken2,
       feeA,
       feeB,
       feeDollar,
-      feeYuan,
       reward,
       reward2,
-      rewardDollar,
-      rewardYuan;
-
-    if (
-      coinMap &&
-      tokenMap &&
-      idIndex &&
-      forex &&
-      fiatPrices &&
-      ammUserReward
-    ) {
-      rewardToken = ammUserReward.currentRewards[0]
-        ? idIndex[ammUserReward.currentRewards[0].tokenId as number]
-        : undefined;
-      rewardToken2 = ammUserReward.currentRewards[1]
-        ? idIndex[ammUserReward.currentRewards[1].tokenId as number]
-        : undefined;
-      feeA = ammUserReward
-        ? volumeToCountAsBigNumber(coinA, ammUserReward.feeRewards[0])
-        : toBig(0);
-      feeB = ammUserReward
-        ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[1])
-        : toBig(0);
-      feeA = feeA ? feeA : toBig(0);
-      feeB = feeB ? feeB : toBig(0);
-      feeDollar = feeA
-        .times(fiatPrices[coinA] ? fiatPrices[coinA].price : 0)
-        .plus(feeB.times(fiatPrices[coinB] ? fiatPrices[coinB].price : 0));
-      feeYuan = feeDollar.times(forex);
-      reward = rewardToken
-        ? (volumeToCountAsBigNumber(
-            rewardToken,
-            ammUserReward.currentRewards[0].volume
-          ) as BigNumber)
-        : toBig(0);
-      reward2 = rewardToken2
-        ? (volumeToCountAsBigNumber(
-            rewardToken2,
-            ammUserReward.currentRewards[1].volume
-          ) as BigNumber)
-        : toBig(0);
-      reward = reward ? reward : toBig(0);
-      reward2 = reward2 ? reward2 : toBig(0);
-      rewardDollar = reward
-        .times(rewardToken ? fiatPrices[rewardToken].price : 1)
-        .plus(reward2.times(rewardToken2 ? fiatPrices[rewardToken2].price : 1));
-      rewardYuan = rewardDollar.times(forex);
-      _myAmm = {
-        ..._myAmm,
-        feeA: feeA ? feeA.toNumber() : undefined,
-        feeB: feeB ? feeB.toNumber() : undefined,
-        reward: reward ? reward.toNumber() : undefined,
-        // @ts-ignore
-        rewardToken: rewardToken ? coinMap[rewardToken] : undefined,
-        reward2: reward2 ? reward2.toNumber() : undefined,
-        // @ts-ignore
-        rewardToken2: rewardToken2 ? coinMap[rewardToken2] : undefined,
-        rewardDollar: rewardDollar ? rewardDollar.toNumber() : undefined,
-        rewardYuan: rewardYuan ? rewardYuan.toNumber() : undefined,
-        feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
-        feeYuan: feeYuan ? feeYuan.toNumber() : undefined,
-        ammDetail: {
-          // @ts-ignore
-          coinAInfo: coinA ? coinMap[coinA] : undefined,
-          // @ts-ignore
-          coinBInfo: coinB ? coinMap[coinB] : undefined,
-        },
-      };
-    }
-    return _myAmm as MyAmmLP<C>;
+      rewardDollar;
+    const ammUserReward: AmmUserReward = ammUserRewardMap["AMM-" + market];
+    rewardToken = ammUserReward.currentRewards[0]
+      ? idIndex[ammUserReward.currentRewards[0].tokenId as number]
+      : undefined;
+    rewardToken2 = ammUserReward.currentRewards[1]
+      ? idIndex[ammUserReward.currentRewards[1].tokenId as number]
+      : undefined;
+    feeA = ammUserReward
+      ? volumeToCountAsBigNumber(coinA, ammUserReward.feeRewards[0])
+      : toBig(0);
+    feeB = ammUserReward
+      ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[1])
+      : toBig(0);
+    feeA = feeA ? feeA : toBig(0);
+    feeB = feeB ? feeB : toBig(0);
+    feeDollar = feeA
+      .times(tokenPrices[coinA] ? tokenPrices[coinA] : 0)
+      .plus(feeB.times(tokenPrices[coinB] ? tokenPrices[coinB] : 0));
+    reward = rewardToken
+      ? (volumeToCountAsBigNumber(
+          rewardToken,
+          ammUserReward.currentRewards[0].volume
+        ) as BigNumber)
+      : toBig(0);
+    reward2 = rewardToken2
+      ? (volumeToCountAsBigNumber(
+          rewardToken2,
+          ammUserReward.currentRewards[1].volume
+        ) as BigNumber)
+      : toBig(0);
+    reward = reward ? reward : toBig(0);
+    reward2 = reward2 ? reward2 : toBig(0);
+    rewardDollar = reward
+      .times(rewardToken ? tokenPrices[rewardToken] : 1)
+      .plus(reward2.times(rewardToken2 ? tokenPrices[rewardToken2] : 1));
+    _myAmm = {
+      ..._myAmm,
+      feeA: feeA ? feeA.toNumber() : undefined,
+      feeB: feeB ? feeB.toNumber() : undefined,
+      reward: reward ? reward.toNumber() : undefined,
+      // @ts-ignore
+      rewardToken: rewardToken ? coinMap[rewardToken] : undefined,
+      reward2: reward2 ? reward2.toNumber() : undefined,
+      // @ts-ignore
+      rewardToken2: rewardToken2 ? coinMap[rewardToken2] : undefined,
+      rewardDollar: rewardDollar ? rewardDollar.toNumber() : undefined,
+      feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
+    };
   }
   return {
     feeA: undefined,
     feeB: undefined,
     feeDollar: undefined,
-    feeYuan: undefined,
     reward: undefined,
     rewardToken: undefined as any,
     balanceA: undefined,
     balanceB: undefined,
-    balanceYuan: undefined,
     balanceDollar: undefined,
+    ..._myAmm,
   };
 };

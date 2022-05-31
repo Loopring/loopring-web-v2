@@ -132,16 +132,19 @@ export const ModalWalletConnectPanel = withTranslation("common")(
     const [connectProvider, setConnectProvider] =
       React.useState<boolean>(false);
 
-    const _onClose = React.useCallback(async (e: any) => {
-      setShouldShow(false);
-      setShowConnect({ isShow: false });
-      if (account.readyState === "UN_CONNECT") {
-        walletServices.sendDisconnect("", "should new provider");
-      }
-      if (onClose) {
-        onClose(e);
-      }
-    }, []);
+    const _onClose = React.useCallback(
+      async (e: any) => {
+        setShouldShow(false);
+        setShowConnect({ isShow: false });
+        if (account.readyState === "UN_CONNECT") {
+          walletServices.sendDisconnect("", "should new provider");
+        }
+        if (onClose) {
+          onClose(e);
+        }
+      },
+      [account.readyState, onClose, setShouldShow, setShowConnect]
+    );
     const [isOpenUnknownProvider, setIsOpenUnknownProvider] =
       React.useState(false);
     const [isConfirmLinkCopy, setIsConfirmLinkCopy] = React.useState(false);
@@ -207,7 +210,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                   setStateCheck(true);
                 }
               },
-              [account]
+              [account.connectName, setShowConnect]
             ),
           },
           {
@@ -230,7 +233,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                   setStateCheck(true);
                 }
               },
-              [account]
+              [account.connectName, setShowConnect]
             ),
           },
           {
@@ -247,7 +250,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 setProcessingCallback({ callback: gameStopCallback });
                 setStateCheck(true);
               },
-              [account]
+              [setShowConnect]
             ),
           },
           // {
@@ -263,7 +266,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           //       setProcessingCallback({ callback: CoinbaseCallback });
           //       setStateCheck(true);
           //     },
-          //     [account]
+          //     [setShowConnect]
           //   ),
           // },
         ]
@@ -295,7 +298,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                         setStateCheck(true);
                       }
                     },
-                    [account]
+                    [account.connectName, setShowConnect]
                   ),
                 },
               ]
@@ -308,16 +311,18 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                     async (event, flag?) => {
                       // setShowConnect({ isShow: false });
                       const token = searchParams.get("token");
-                      const owner = searchParams.get("owner");
+                      const l2account =
+                        searchParams.get("l2account") ||
+                        searchParams.get("owner");
                       copyToClipBoard(
                         Bridge +
-                          `?${owner ? `owner=` + owner : ""}&${
+                          `?${l2account ? `l2account=` + l2account : ""}&${
                             token ? `token=` + token : ""
                           }`
                       );
                       setIsConfirmLinkCopy(true);
                     },
-                    [account]
+                    [searchParams]
                   ),
                 },
               ]),
@@ -341,7 +346,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                   setStateCheck(true);
                 }
               },
-              [account]
+              [account.connectName, setShowConnect]
             ),
           },
         ];
@@ -358,7 +363,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         walletServices.sendDisconnect("", "should new provider");
         setShowConnect({ isShow: true, step: WalletConnectStep.Provider });
       }
-    }, [gatewayList, account]);
+    }, [gatewayList, account.connectName, setShowConnect]);
     // useConnectHook({handleProcessing});
     const providerBack = React.useMemo(() => {
       return ["UN_CONNECT", "ERROR_NETWORK"].includes(account.readyState)
@@ -381,7 +386,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                 break;
             }
           };
-    }, [account, setShowAccount]);
+    }, [account.readyState, setShowAccount, setShowConnect]);
     const walletList = React.useMemo(() => {
       return Object.values({
         [WalletConnectStep.Provider]: {
@@ -446,7 +451,18 @@ export const ModalWalletConnectPanel = withTranslation("common")(
           },
         },
       });
-    }, [qrCodeUrl, isShowConnect.error, account, t, rest, onClose]);
+    }, [
+      gatewayList,
+      account.connectName,
+      t,
+      rest,
+      providerBack,
+      connectProvider,
+      qrCodeUrl,
+      isShowConnect.error,
+      onRetry,
+      setShowConnect,
+    ]);
     return (
       <>
         <InformationForCoinBase
@@ -455,6 +471,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         />
         <ConfirmLinkCopy
           open={isConfirmLinkCopy}
+          setCopyToastOpen={setCopyToastOpen}
           handleClose={() => setIsConfirmLinkCopy(false)}
         />
         <WrongNetworkGuide
