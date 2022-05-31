@@ -3,6 +3,7 @@ export default {
   labelConnectUs:
     "If you believe this is indeed a bug, please <1>contact us</1>. <2/> We would appreciate your feedback.",
   errorBase: "Oops! Something went wrong.",
+  errorTimeout: "Oops! Something went wrong at network.",
   errorLoading: "Loading! Please wait...",
   error404: "404! Page can't be reached.",
   errorMaintain: "System update! Please wait...",

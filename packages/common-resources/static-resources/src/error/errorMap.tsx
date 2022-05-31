@@ -116,6 +116,10 @@ export const ErrorMap = {
     id: "NO_SDK",
     messageKey: "errorBase",
   },
+  TIME_OUT: {
+    id: "TIME_OUT",
+    messageKey: "errorTimeout",
+  },
   NO_NETWORK_ERROR: {
     id: "NO_NETWORK_ERROR",
     messageKey: "errorMessageNoNetwork",
@@ -251,6 +255,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   700009: ErrorMap.CREATE_IPFS_ERROR,
   700010: ErrorMap.NOT_SAME_IPFS_RESOURCE,
   700011: ErrorMap.IPFS_CID_TO_NFTID_ERROR,
+  700012: ErrorMap.TIME_OUT,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

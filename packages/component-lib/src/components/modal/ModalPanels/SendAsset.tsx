@@ -8,7 +8,6 @@ import {
   CardIcon,
   IncomingIcon,
 } from "@loopring-web/common-resources";
-import React from "react";
 import { useSettings } from "../../../stores";
 
 const BoxStyled = styled(Box)`` as typeof Box;
@@ -25,16 +24,18 @@ export const SendAsset = ({
   sendAssetList,
   allowTrade,
   symbol,
+  isToL1,
 }: SendAssetProps) => {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
-  const [isToL1, setIsToL1] = React.useState<boolean>(true);
-  React.useEffect(() => {
-    if (symbol && /^LP-/gi.test(symbol)) {
-      setIsToL1(false);
-    }
-    setIsToL1(true);
-  }, [symbol]);
+  // const [isToL1, setIsToL1] = React.useState<boolean>(true);
+  // React.useEffect(() => {
+  //   // debugger;
+  //   if (symbol && /^LP-/gi.test(symbol)) {
+  //     setIsToL1(true);
+  //   }
+  //   setIsToL1(false);
+  // }, [symbol]);
 
   return (
     <BoxStyled
@@ -72,44 +73,41 @@ export const SendAsset = ({
         >
           {t("labelSendAssetHowto")}
         </Typography>
-        <>
-          {sendAssetList.map((item) => {
-            return /SendTo?(\w)+L1/gi.test(item.key) && !isToL1 ? (
-              <></>
-            ) : (
-              <Box key={item.key} marginTop={1.5}>
-                <MenuBtnStyled
-                  variant={"outlined"}
-                  size={"large"}
-                  className={"sendAsset"}
-                  fullWidth
-                  isMobile={isMobile}
-                  disabled={
-                    !!(
-                      item.enableKey &&
-                      allowTrade[item.enableKey]?.enable === false
-                    )
-                  }
-                  endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
-                  onClick={(e) => {
-                    item.handleSelect(e);
-                  }}
+        {sendAssetList.map((item) => {
+          return (
+            <Box key={item.key} marginTop={1.5}>
+              <MenuBtnStyled
+                variant={"outlined"}
+                size={"large"}
+                className={"sendAsset"}
+                fullWidth
+                isMobile={isMobile}
+                disabled={
+                  !!(
+                    item.enableKey &&
+                    allowTrade[item.enableKey]?.enable === false
+                  ) ||
+                  (/SendTo?(\w)+L1/gi.test(item.key) && isToL1)
+                }
+                endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
+                onClick={(e) => {
+                  item.handleSelect(e);
+                }}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"inherit"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
                 >
-                  <Typography
-                    component={"span"}
-                    variant={"inherit"}
-                    color={"inherit"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
-                  >
-                    <>{IconItem({ svgIcon: item.svgIcon })}</>
-                    {t("label" + item.key)}
-                  </Typography>
-                </MenuBtnStyled>
-              </Box>
-            );
-          })}
-        </>
+                  <>{IconItem({ svgIcon: item.svgIcon })}</>
+                  {t("label" + item.key)}
+                </Typography>
+              </MenuBtnStyled>
+            </Box>
+          );
+        })}
       </Box>
     </BoxStyled>
   );

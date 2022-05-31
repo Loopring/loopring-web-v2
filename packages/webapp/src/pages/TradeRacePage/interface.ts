@@ -13,6 +13,7 @@ export type EventData = {
   banner: string;
   rule: string;
   ruleMarkdown?: string;
+  rehypeRaw: "0" | "1";
   duration: {
     prev?: string;
     startDate: number;

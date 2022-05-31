@@ -61,7 +61,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     useModalData();
 
   const [walletMap2, setWalletMap2] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
+    makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>)
   );
   const [sureIsAllowAddress, setSureIsAllowAddress] =
     React.useState<EXCHANGE_TYPE | undefined>(undefined);
@@ -78,9 +78,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   } = useChargeFees({
     requestType: withdrawType,
     tokenSymbol: withdrawValue.belong,
-    updateData: ({ fee }) => {
-      updateWithdrawData({ ...withdrawValue, fee });
-    },
+    updateData: React.useCallback(
+      ({ fee }) => {
+        updateWithdrawData({ ...withdrawValue, fee });
+      },
+      [withdrawValue]
+    ),
   });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<
@@ -241,6 +244,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    if (info?.isRetry) {
+      return;
+    }
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({
@@ -302,20 +308,14 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     updateWithdrawData,
     feeInfo,
     withdrawValue.belong,
+    info?.isRetry,
   ]);
-
-  React.useEffect(() => {
-    if (isShow) {
-      resetDefault();
-    }
-  }, [isShow]);
 
   React.useEffect(() => {
     if (
       isShow &&
       accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      !info?.isRetry
+      account.readyState === AccountStatus.ACTIVATED
     ) {
       resetDefault();
     }

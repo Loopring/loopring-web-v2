@@ -293,14 +293,18 @@ export const TransferWrap = <
             </>
           )}
         </Box>
-        {/*  </>*/}
-        {/*)}*/}
       </Grid>
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
         <TransferAddressType
           selectedValue={sureItsLayer2}
           handleSelected={handleSureItsLayer2}
+          disabled={
+            isSameAddress ||
+            isAddressCheckLoading ||
+            addrStatus !== AddressError.NoError ||
+            !realAddr
+          }
         />
       </Grid>
 

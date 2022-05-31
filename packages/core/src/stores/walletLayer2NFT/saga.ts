@@ -1,7 +1,11 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getWalletLayer2NFTStatus, updateWalletLayer2NFT } from "./reducer";
 import { store, LoopringAPI } from "../../index";
-import { NFTLimit } from "@loopring-web/common-resources";
+import {
+  CustomError,
+  ErrorMap,
+  NFTLimit,
+} from "@loopring-web/common-resources";
 
 const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   page,
@@ -11,8 +15,8 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   const offset = (page - 1) * NFTLimit;
   const { accountId, apiKey } = store.getState().account;
   if (apiKey && accountId && LoopringAPI.userAPI) {
-    let { userNFTBalances, totalNum } =
-      await LoopringAPI.userAPI.getUserNFTBalances(
+    let { userNFTBalances, totalNum } = await LoopringAPI.userAPI
+      .getUserNFTBalances(
         {
           accountId: accountId,
           limit: NFTLimit,
@@ -20,7 +24,10 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
           metadata: true, // close metadata
         },
         apiKey
-      );
+      )
+      .catch((_error) => {
+        throw new CustomError(ErrorMap.TIME_OUT);
+      });
     return {
       walletLayer2NFT: userNFTBalances ?? [],
       total: totalNum,

@@ -11,6 +11,7 @@ import { RankRaw } from "./rank";
 import moment from "moment";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { MarkdownStyle } from "pages/MarkdownPage/style";
 import { useTheme } from "@emotion/react";
 
@@ -275,7 +276,10 @@ export const TradeRacePage = withTranslation("common")(
                     className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2 no-bg`}
                   >
                     <ReactMarkdown
-                      plugins={[gfm]}
+                      remarkPlugins={[
+                        gfm,
+                        ...(eventData.rehypeRaw === "1" ? [rehypeRaw] : []),
+                      ]}
                       children={eventData.ruleMarkdown}
                     />
                   </Box>

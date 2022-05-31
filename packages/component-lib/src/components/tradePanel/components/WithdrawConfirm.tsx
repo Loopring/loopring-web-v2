@@ -126,6 +126,8 @@ export const WithdrawConfirm = <
           onClick={async () => {
             if (onWithdrawClick) {
               await onWithdrawClick({ ...tradeData } as unknown as T);
+            } else {
+              setOpen(true);
             }
             handleConfirm(1);
           }}

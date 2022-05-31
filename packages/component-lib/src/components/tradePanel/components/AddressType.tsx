@@ -92,9 +92,11 @@ export const WalletItemOptions = React.memo(
 export const TransferAddressType = <T extends WALLET_TYPE>({
   selectedValue,
   handleSelected,
+  disabled,
 }: {
   selectedValue: T | undefined;
   handleSelected: (value: T) => void;
+  disabled: boolean;
 }) => {
   const { t } = useTranslation("common");
   const { walletList } = useAddressTypeLists<T>();
@@ -117,6 +119,7 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
   return (
     <TextField
       select
+      disabled={disabled}
       fullWidth
       variant="outlined"
       value={selectedValue ?? ""}
@@ -155,9 +158,11 @@ export const TransferAddressType = <T extends WALLET_TYPE>({
 export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
   selectedValue,
   handleSelected,
+  disabled,
 }: {
   selectedValue: T | undefined;
   handleSelected: (value: T | any) => void;
+  disabled: boolean;
 }) => {
   const { t } = useTranslation("common");
   const { nonExchangeList, exchangeList } = useAddressTypeLists<T>();
@@ -184,6 +189,7 @@ export const WithdrawAddressType = <T extends EXCHANGE_TYPE>({
   return (
     <TextField
       select
+      disabled={disabled}
       fullWidth
       variant="outlined"
       value={selectedValue ?? ""}

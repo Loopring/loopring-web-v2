@@ -1,6 +1,7 @@
 eventTitle,TETT_1 TITLE,
 subTitle,TETT_1 SUB TITLE,
 rule,test_1_rule.en.md,
+rehypeRaw,1,
 banner,test_1_banner.en.jpeg,
 local,en-us,
 duration,prev,Activity Period:

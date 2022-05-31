@@ -245,9 +245,9 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      {!isToMyself && (
-        <>
-          <Grid item alignSelf={"stretch"} position={"relative"}>
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        {!isToMyself ? (
+          <>
             <TextField
               className={"text-address"}
               value={addressDefault}
@@ -258,6 +258,7 @@ export const WithdrawWrap = <
               SelectProps={{ IconComponent: DropDownIcon }}
               fullWidth={true}
             />
+
             {addressDefault !== "" ? (
               isAddressCheckLoading ? (
                 <LoadingIcon
@@ -278,54 +279,76 @@ export const WithdrawWrap = <
             ) : (
               ""
             )}
-            <Box marginLeft={1 / 2}>
-              {isInvalidAddressOrENS ? (
+          </>
+        ) : (
+          <Typography
+            variant={"body2"}
+            lineHeight={"20px"}
+            color={"var(--color-text-third)"}
+          >
+            {t("labelL2toL1MyAddress")}
+
+            {!!isAddressCheckLoading && (
+              <LoadingIcon
+                width={24}
+                style={{ top: 20, right: "8px", position: "absolute" }}
+              />
+            )}
+          </Typography>
+        )}
+        <Box marginLeft={1 / 2}>
+          {isInvalidAddressOrENS ? (
+            <Typography
+              color={"var(--color-error)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              alignSelf={"stretch"}
+              position={"relative"}
+            >
+              {t("labelInvalidAddress")}
+            </Typography>
+          ) : isNotAvaiableAddress ? (
+            <Typography
+              color={"var(--color-error)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              alignSelf={"stretch"}
+              position={"relative"}
+            >
+              {t(`labelInvalid${isNotAvaiableAddress}`, {
+                token: type === "NFT" ? "NFT" : tradeData.belong,
+                way: t(`labelL2toL1`),
+              })}
+            </Typography>
+          ) : (
+            <>
+              {addressDefault && realAddr && !isAddressCheckLoading && (
                 <Typography
-                  color={"var(--color-error)"}
+                  color={"var(--color-text-primary)"}
                   variant={"body2"}
                   marginTop={1 / 4}
-                  alignSelf={"stretch"}
-                  position={"relative"}
+                  whiteSpace={"pre-line"}
+                  style={{ wordBreak: "break-all" }}
                 >
-                  {t("labelInvalidAddress")}
+                  {realAddr}
                 </Typography>
-              ) : isNotAvaiableAddress ? (
-                <Typography
-                  color={"var(--color-error)"}
-                  variant={"body2"}
-                  marginTop={1 / 4}
-                  alignSelf={"stretch"}
-                  position={"relative"}
-                >
-                  {t(`labelInvalid${isNotAvaiableAddress}`, {
-                    token: type === "NFT" ? "NFT" : tradeData.belong,
-                    way: t(`labelL2toL1`),
-                  })}
-                </Typography>
-              ) : (
-                <>
-                  {addressDefault && realAddr && !isAddressCheckLoading && (
-                    <Typography
-                      color={"var(--color-text-primary)"}
-                      variant={"body2"}
-                      marginTop={1 / 4}
-                      whiteSpace={"pre-line"}
-                      style={{ wordBreak: "break-all" }}
-                    >
-                      {realAddr}
-                    </Typography>
-                  )}
-                </>
               )}
-            </Box>
-          </Grid>
-          <Grid item alignSelf={"stretch"} position={"relative"}>
-            <WithdrawAddressType
-              selectedValue={sureIsAllowAddress}
-              handleSelected={handleSureIsAllowAddress}
-            />
-          </Grid>
-        </>
+            </>
+          )}
+        </Box>
+      </Grid>
+      {!isToMyself && (
+        <Grid item alignSelf={"stretch"} position={"relative"}>
+          <WithdrawAddressType
+            selectedValue={sureIsAllowAddress}
+            handleSelected={handleSureIsAllowAddress}
+            disabled={
+              isAddressCheckLoading ||
+              addrStatus !== AddressError.NoError ||
+              !realAddr
+            }
+          />
+        </Grid>
       )}
 
       <Grid item alignSelf={"stretch"} position={"relative"}>

@@ -108,7 +108,7 @@ export const MarkdownPage = () => {
               boxSizing={"border-box"}
               className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2`}
             >
-              <ReactMarkdown plugins={[gfm]} children={input} />
+              <ReactMarkdown remarkPlugins={[gfm]} children={input} />
             </Box>
           ) : (
             <LoadingBlock />

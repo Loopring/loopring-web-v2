@@ -9,7 +9,7 @@
 ### Rulse
 1. xxxxxxx
 2. xxxxxxx
-   1. XXXXXX
+   1. XXXXXX![](https://static.loopring.io/assets/images/landPage/img_wallet_address@1x.webp)
    2. xxxxxx
       1. XXXXXX
 3. xxxxxx

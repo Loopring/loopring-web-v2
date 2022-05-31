@@ -69,9 +69,12 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     deployInWithdraw:
       nftWithdrawValue.isCounterFactualNFT &&
       nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
-    updateData: ({ fee }) => {
-      updateNFTWithdrawData({ ...nftWithdrawValue, fee });
-    },
+    updateData: React.useCallback(
+      ({ fee }) => {
+        updateNFTWithdrawData({ ...nftWithdrawValue, fee });
+      },
+      [nftWithdrawValue]
+    ),
   });
 
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -148,11 +151,15 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     nftWithdrawValue.fee,
     nftWithdrawValue.tradeValue,
     isNotAvaiableAddress,
+    sureIsAllowAddress,
   ]);
 
   useWalletLayer2Socket({});
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    if (info?.isRetry) {
+      return;
+    }
     if (nftData) {
       updateNFTWithdrawData({
         balance: nftBalance,
@@ -179,6 +186,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   }, [
     checkFeeIsEnough,
     nftData,
+    info?.isRetry,
     info?.isToMyself,
     updateNFTWithdrawData,
     nftBalance,
@@ -189,10 +197,10 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   ]);
 
   React.useEffect(() => {
-    if ((isShow || info?.isShowLocal) && !info?.isRetry) {
+    if (isShow || info?.isShowLocal) {
       resetDefault();
     }
-  }, [info]);
+  }, [isShow, info?.isShowLocal]);
 
   const processRequest = React.useCallback(
     async (request: sdk.NFTWithdrawRequestV3, isNotHardwareWallet: boolean) => {

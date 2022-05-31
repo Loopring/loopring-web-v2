@@ -140,10 +140,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction>
     ) {
-      const { isShow, symbol } = action.payload;
+      const { isShow, symbol, info } = action.payload;
       state.isShowTransfer = {
         isShow,
         symbol,
+        info,
       };
     },
     setShowWithdraw(
