@@ -210,6 +210,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         });
       }
     }
+    setMemo("");
     setAddress("");
   }, [
     checkFeeIsEnough,

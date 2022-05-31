@@ -753,7 +753,7 @@ export default {
     "The following trading platforms currently do not support Loopring L2 transfers (Binance, Coinbase, FTX, etc...). You will need to send funds to the L1 account. ",
   labelExchangeTypeDes: "Please select the address source:",
   labelNonExchangeTypeDes:
-    "eg:Loopring Wallet,Metamask,Coinbase Wallet,imtoken,Ledger,Trezor... EOA wallet",
+    "eg: Loopring Wallet, Metamask, Coinbase Wallet, imtoken, Ledger, Trezor... EOA wallet",
   labelNonExchangeType: "Non-Exchange Wallet",
   labelExchangeType: "Exchange",
   labelExchangeBinance: "Binance",
@@ -766,8 +766,8 @@ export default {
   labelL2toL1AddressType: "Address Type",
   labelConfirmCEX: "Confirm CEX Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please check with your CEX support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is via a smart contract. The CEX depositing address may not be able to acknowledge the tokens deposited automatically.</1>" +
-    "<2>If the deposited tokens do not appear at the CEX address within 24 hours, please contact your CEX support to manually acknowledge this transaction.</2>",
+    "<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
   labelCEXUnderstand: "I understand and acknowledge the risk",
 };

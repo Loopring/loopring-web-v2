@@ -22,7 +22,6 @@ export type ActionProps = {
   tokenValue: any;
   allowTrade?: any;
   market: `${string}-${string}`;
-  isToL1: boolean;
   isLp: boolean;
   onSend: (token: string, isToL1: boolean) => void;
   onReceive: (token: string) => void;
@@ -41,7 +40,6 @@ const ActionPopContent = React.memo(
     onReceive,
     // onShowDeposit,
     tokenValue,
-    isToL1,
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
@@ -54,7 +52,7 @@ const ActionPopContent = React.memo(
         <MenuItem onClick={() => onReceive(tokenValue)}>
           <ListItemText>{t("labelReceive")}</ListItemText>
         </MenuItem>,
-        <MenuItem onClick={() => onSend(tokenValue, isToL1)}>
+        <MenuItem onClick={() => onSend(tokenValue, isLp)}>
           <ListItemText>{t("labelSend")}</ListItemText>
         </MenuItem>,
       ],
@@ -130,7 +128,6 @@ const ActionMemo = React.memo((props: ActionProps) => {
     t,
     allowTrade,
     tokenValue,
-    isToL1,
     onSend,
     onReceive,
     isLp,
@@ -192,7 +189,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
                 variant={"text"}
                 size={"medium"}
                 color={"primary"}
-                onClick={() => onSend(tokenValue, isToL1)}
+                onClick={() => onSend(tokenValue, isLp)}
               >
                 {t("labelSend")}
               </Button>
