@@ -293,3 +293,5 @@ export const marketInitCheck = (
 
   return { tradePair: "LRC-ETH" };
 };
+
+export const Limit = 14;

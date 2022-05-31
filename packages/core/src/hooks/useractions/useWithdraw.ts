@@ -61,7 +61,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     useModalData();
 
   const [walletMap2, setWalletMap2] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
+    makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>)
   );
   const [sureIsAllowAddress, setSureIsAllowAddress] =
     React.useState<EXCHANGE_TYPE | undefined>(undefined);

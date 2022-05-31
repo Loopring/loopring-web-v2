@@ -1,5 +1,4 @@
 import {
-  AccountStatus,
   IPFS_LOOPRING_SITE,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
@@ -65,7 +64,7 @@ export const useMyNFT = () => {
       LoopringAPI.nftAPI &&
       tokenAddress &&
       (!metadata?.uri ||
-        tokenAddress.toLowerCase() ==
+        tokenAddress.toLowerCase() ===
           "0x1cACC96e5F01e2849E6036F25531A9A064D2FB5f".toLowerCase()) &&
       nftId &&
       (!isCounterFactualNFT ||
@@ -113,7 +112,7 @@ export const useMyNFT = () => {
     }
   };
 
-  const infoDetail = async (item: Partial<NFTWholeINFO>) => {
+  const infoDetail = React.useCallback(async (item: Partial<NFTWholeINFO>) => {
     const nftData: NftData = item.nftData as NftData;
     let [nftMap] = await Promise.all([
       LoopringAPI.nftAPI?.getInfoForNFTTokens({
@@ -156,7 +155,7 @@ export const useMyNFT = () => {
       };
     }
     return tokenInfo;
-  };
+  }, []);
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
@@ -176,7 +175,14 @@ export const useMyNFT = () => {
       setShowNFTWithdraw({ isShow: false, ...item });
       setShowNFTDetail({ isShow: true, ...item });
     },
-    [setShowNFTTransfer, updateNFTTransferData, updateNFTWithdrawData]
+    [
+      setShowNFTDetail,
+      setShowNFTTransfer,
+      setShowNFTWithdraw,
+      updateNFTDeployData,
+      updateNFTTransferData,
+      updateNFTWithdrawData,
+    ]
   );
   // const onNFTError = (item: Partial<NFTWholeINFO>, index?: number) => {
   //   let _index = index;
@@ -251,7 +257,7 @@ export const useMyNFT = () => {
         });
       });
     });
-  }, [etherscanBaseUrl, walletLayer2NFT]);
+  }, [etherscanBaseUrl, infoDetail, walletLayer2NFT]);
   React.useEffect(() => {
     onPageChange(1);
   }, []);

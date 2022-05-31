@@ -11,6 +11,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { TableWrapStyled } from "../../../styled";
 import { Divider } from "@mui/material";
 import { store } from "@loopring-web/core";
+import { Limit } from "../../help";
 
 const TabsStyled = styled(Tabs)`
   margin-left: ${({ theme }) => theme.unit}px;
@@ -25,14 +26,19 @@ const applyProps = (index: number) => {
 const tableHeight = RowConfig.rowHeaderHeight + 15 * RowConfig.rowHeight;
 
 const TradePanel = withTranslation("common")(
-  // withRouter(
   ({
     tradeArray,
     myTradeArray,
+    updateMyTradeTable,
     t,
   }: {
     tradeArray: RawDataTradeItem[];
-    myTradeArray: RawDataTradeItem[];
+    myTradeArray: {
+      data: RawDataTradeItem[];
+      total: number;
+      page: number;
+    };
+    updateMyTradeTable: (props: { page: number }) => Promise<void>;
   } & WithTranslation &
     RouteComponentProps) => {
     const [value, setValue] = useState(0);
@@ -72,8 +78,13 @@ const TradePanel = withTranslation("common")(
           <TradeTable
             rowHeight={RowConfig.rowHeight}
             headerRowHeight={RowConfig.rowHeaderHeight}
-            rawData={myTradeArray}
-            pagination={{ pageSize: 14, total: 14 }}
+            rawData={myTradeArray.data}
+            pagination={{
+              page: myTradeArray.page,
+              pageSize: Limit,
+              total: myTradeArray.total,
+            }}
+            getUserTradeList={updateMyTradeTable}
             tokenMap={tokenMap}
             currentheight={tableHeight - RowConfig.rowHeight}
           />
@@ -83,7 +94,12 @@ const TradePanel = withTranslation("common")(
   }
 ) as (props: {
   tradeArray: RawDataTradeItem[];
-  myTradeArray: RawDataTradeItem[];
+  myTradeArray: {
+    data: RawDataTradeItem[];
+    total: number;
+    page: number;
+  };
+  updateMyTradeTable: (props: { page: number }) => Promise<void>;
 }) => JSX.Element;
 //)
 

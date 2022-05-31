@@ -151,6 +151,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     nftWithdrawValue.fee,
     nftWithdrawValue.tradeValue,
     isNotAvaiableAddress,
+    sureIsAllowAddress,
   ]);
 
   useWalletLayer2Socket({});

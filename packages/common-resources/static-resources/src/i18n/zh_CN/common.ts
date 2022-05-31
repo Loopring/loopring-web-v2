@@ -760,4 +760,7 @@ export default {
     "<1>L2 to L1 withdrawing is via a smart contract. The CEX depositing address may not be able to acknowledge the tokens deposited automatically.</1>" +
     "<2>If the deposited tokens do not appear at the CEX address within 24 hours, please contact your CEX support to manually acknowledge this transaction.</2>",
   labelCEXUnderstand: "I understand and acknowledge the risk",
+  labelMintFee: "Mint Fee",
+  labelMintFeeNotEnough: "Insufficient balance",
+  labelMintFeeChoose: "Select payment token",
 };

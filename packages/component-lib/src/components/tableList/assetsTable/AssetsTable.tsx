@@ -407,9 +407,6 @@ export const AssetsTable = withTranslation("tables")(
           const token = row["token"];
           const isLp = token.type === TokenType.lp;
           const tokenValue = token.value;
-
-          const isToL1 = token.type !== TokenType.lp;
-
           const lpPairList = tokenValue.split("-");
           lpPairList.splice(0, 1);
           const lpPair = lpPairList.join("-");
@@ -424,7 +421,6 @@ export const AssetsTable = withTranslation("tables")(
                 getMarketArrayListCallback,
                 disableWithdrawList,
                 isLp,
-                isToL1,
                 allowTrade,
                 market: renderMarket,
                 onReceive,
