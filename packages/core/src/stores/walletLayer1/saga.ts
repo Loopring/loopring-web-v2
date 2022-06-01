@@ -10,14 +10,16 @@ type WalletLayer1Map<R extends { [key: string]: any }> = {
 
 const getWalletLayer1Balance = async <R extends { [key: string]: any }>() => {
   const { accAddress } = store.getState().account;
-  const { tokenMap, marketCoins, addressIndex } = store.getState().tokenMap;
-  if (marketCoins && tokenMap && LoopringAPI.exchangeAPI) {
+  const { tokenMap, addressIndex } = store.getState().tokenMap;
+  if (tokenMap && LoopringAPI.exchangeAPI) {
     const { ethBalance } = await LoopringAPI.exchangeAPI.getEthBalances({
       owner: accAddress,
     });
     const { tokenBalances } = await LoopringAPI.exchangeAPI.getTokenBalances({
       owner: accAddress,
-      token: marketCoins.map((ele) => tokenMap[ele].address), // marketCoins.join(),
+      token: Reflect.ownKeys(tokenMap).map(
+        (ele) => tokenMap[ele as string].address
+      ), // marketCoins.join(),
     });
     tokenBalances.set(
       tokenMap["ETH"].address as unknown as sdk.TokenAddress,
