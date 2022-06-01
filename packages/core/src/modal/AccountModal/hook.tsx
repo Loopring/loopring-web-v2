@@ -184,7 +184,7 @@ export function useAccountModalForUI({
   const { transferProps } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
-  const { nftDeployProps } = useNFTDeploy({});
+  const { nftDeployProps } = useNFTDeploy();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();

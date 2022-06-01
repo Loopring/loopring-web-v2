@@ -4,12 +4,9 @@ import BasicInfoPanel from "./panel/BasicInfoPanel";
 import TradePanel from "./panel/TradePanel";
 import {
   AlertImpact,
-  ChartType,
   ConfirmImpact,
-  ScaleAreaChart,
   SwapPanel,
   Toast,
-  useToggle,
 } from "@loopring-web/component-lib";
 import { FixedStyle } from "../styled";
 import { TOAST_TIME } from "@loopring-web/core";
@@ -45,7 +42,6 @@ export const SwapPage = withTranslation("common")(
       isMobile,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
-    const { toggle } = useToggle();
     return (
       <>
         <Toast
@@ -55,7 +51,6 @@ export const SwapPage = withTranslation("common")(
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
-
         {!isMobile ? (
           <>
             <Box

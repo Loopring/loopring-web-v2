@@ -84,13 +84,17 @@ const OtherView = React.memo(({ t }: { market: MarketType; t: TFunction }) => {
             flexDirection={"column"}
           >
             <Typography
-              lineHeight={2}
+              lineHeight={1.5}
               paddingX={2}
               color={"text.primary"}
               marginBottom={2}
               variant={"body1"}
+              textOverflow={"ellipsis"}
               whiteSpace={"pre-line"}
               textAlign={"center"}
+              overflow={"hidden"}
+              display={"flex"}
+              sx={{ wordBreak: "break-word", lineClamp: 4 }}
             >
               {t("describeTitleConnectToWallet")}
             </Typography>

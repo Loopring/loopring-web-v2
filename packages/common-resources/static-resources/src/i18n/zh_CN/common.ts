@@ -661,7 +661,7 @@ export default {
   labelNFTProperty: "Properties:",
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
-    "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to delete NFTs or hide inappropriate content if an NFT is discovered to be harmful.",
+    "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",

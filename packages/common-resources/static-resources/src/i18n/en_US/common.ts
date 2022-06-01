@@ -206,14 +206,15 @@ export default {
   labelTryAnother: "Try Another Sig Method",
   labelCancel: "Cancel",
   describeTitleNoAccount:
-    "You need to activate Loopring L2.\n Please make a deposit to create Loopring L2 wallet",
+    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeTitleOpenAccounting:
     "Your deposit has been submitted to Ethereum.\n Please wait...",
   describeTitleOnErrorNetwork:
     "Your current network is not supported by Loopring!\n Please change network via {{connectName}}.",
   describeTitleNotActive:
     "Connect your wallet,\n make a deposit, and enjoy using Loopring L2.",
-  describeTitleConnectToWallet: "Connect wallet to start",
+  describeTitleConnectToWallet:
+    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeWhatIsGuardian: "What is a Loopring guardian",
   describeTitleConnectToWalletAsGuardian:
     "Connect a wallet to assign it as a guardian!",
@@ -671,7 +672,7 @@ export default {
   labelNFTProperty: "Properties:",
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
-    "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to delete NFTs or hide inappropriate content if an NFT is discovered to be harmful.",
+    "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
