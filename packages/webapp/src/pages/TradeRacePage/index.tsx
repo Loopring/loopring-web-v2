@@ -278,7 +278,7 @@ export const TradeRacePage = withTranslation("common")(
                     <ReactMarkdown
                       remarkPlugins={[
                         gfm,
-                        ...(eventData.rehypeRaw === "1" ? [rehypeRaw] : []),
+                        ...(eventData.rehypeRaw == "1" ? [rehypeRaw] : []),
                       ]}
                       children={eventData.ruleMarkdown}
                     />

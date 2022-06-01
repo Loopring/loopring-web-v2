@@ -1,6 +1,7 @@
 import React from "react";
 import {
   DropDownIcon,
+  EmptyValueTag,
   FirstPlaceIcon,
   getShortAddr,
   RowConfig,
@@ -8,20 +9,30 @@ import {
   SoursURL,
   ThirdPlaceIcon,
 } from "@loopring-web/common-resources";
-import { Box, MenuItem } from "@mui/material";
+import { Box, Link, MenuItem, Typography } from "@mui/material";
 import {
   Column,
   InputSearch,
   Table,
   TablePaddingX,
   TextField,
+  useSettings,
 } from "@loopring-web/component-lib";
 import styled from "@emotion/styled";
 import { useHistory, useLocation } from "react-router-dom";
 import { useSystem } from "@loopring-web/core";
-import { Activity_URL, EventAPI, EventAPIExtender } from "./interface";
+import {
+  Activity_URL,
+  API_DATA,
+  EventAPI,
+  EventAPIExtender,
+} from "./interface";
 import { useTranslation } from "react-i18next";
 
+const WrapperStyled = styled(Box)`
+  background-color: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
+`;
 const StyledTextFiled = styled(TextField)`
   &.MuiTextField-root {
     max-width: initial;
@@ -63,17 +74,18 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as typeof Box;
 
-export const RankRaw = <R extends any>({
+export const RankRaw = <R extends object>({
   column,
   version,
   filters,
 }: EventAPI & Partial<EventAPIExtender>) => {
   const history = useHistory();
   const { t } = useTranslation();
+  const { isMobile } = useSettings();
   const { chainId, baseURL } = useSystem();
   const { search, pathname } = useLocation();
-  const [rank, setRank] = React.useState<R[]>([]);
-  const [rankView, setRankView] = React.useState<R[]>([]);
+  const [rank, setRank] = React.useState<API_DATA<R> | undefined>(undefined);
+  const [rankTableData, setRankTableData] = React.useState<R[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>("");
   const [showLoading, setShowLoading] = React.useState(true);
   const searchParams = new URLSearchParams(search);
@@ -145,9 +157,9 @@ export const RankRaw = <R extends any>({
   // });
 
   React.useEffect(() => {
-    if (searchValue !== "" && rank.length) {
-      setRankView((state) =>
-        rank.filter((item: any) => {
+    if (searchValue !== "" && rank?.data.length) {
+      setRankTableData((state) =>
+        rank?.data.filter((item: any) => {
           if (searchValue.startsWith("0x")) {
             const regx = new RegExp(searchValue.toLowerCase(), "ig");
             return regx.test(item?.address);
@@ -157,10 +169,10 @@ export const RankRaw = <R extends any>({
           }
         })
       );
-    } else if (rank.length) {
-      setRankView(rank);
+    } else if (rank?.data.length) {
+      setRankTableData(rank?.data);
     }
-  }, [rank, searchValue]);
+  }, [rank?.data, searchValue]);
 
   const defaultArgs: any = {
     columnMode: column.length
@@ -216,7 +228,7 @@ export const RankRaw = <R extends any>({
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
-        setRank(json.data as any[]);
+        setRank(json.data as API_DATA<R>);
         setShowLoading(false);
       })
       .catch(() => {
@@ -225,7 +237,7 @@ export const RankRaw = <R extends any>({
   }, [chainId, selected]);
 
   return (
-    <Box
+    <WrapperStyled
       flex={1}
       display={"flex"}
       flexDirection={"column"}
@@ -264,13 +276,23 @@ export const RankRaw = <R extends any>({
           }}
         />
       </Box>
-      <TableStyled height={(rankView.length + 1) * RowConfig.rowHeight}>
-        {rank.length ? (
+      <Box
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        flexDirection={isMobile ? "column" : "row"}
+      >
+        <Typography variant={"h5"}>
+          {t("labelTradeRaceYourRanking")}: {rank?.owner?.rank || EmptyValueTag}
+        </Typography>
+      </Box>
+      <TableStyled height={(rankTableData.length + 1) * RowConfig.rowHeight}>
+        {rank?.data.length ? (
           <Table
             className={"scrollable"}
             {...{
               ...defaultArgs,
-              rawData: rankView,
+              rawData: rankTableData,
               showloading: showLoading,
             }}
           />
@@ -291,6 +313,6 @@ export const RankRaw = <R extends any>({
           </Box>
         )}
       </TableStyled>
-    </Box>
+    </WrapperStyled>
   );
 };

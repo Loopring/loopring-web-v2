@@ -57,36 +57,44 @@ export const useTradeRace = () => {
             .then((input: { [key: string]: EventData }) => input[type])
             .then(async (eventData: EventData) => {
               myLog("useTradeRace eventData", eventData);
+              // https://uat2.loopring.io/api/v3/activity/getFilterInfo?version=1
+              const configUrl = `${baseURL}/${Config_INFO_URL}?version=${eventData.api?.version}`;
+              myLog("baseURL", configUrl);
+              const config: [{ [key: string]: any }, string] =
+                await Promise.all([
+                  fetch(configUrl).then((response) => {
+                    if (response.ok) {
+                      return response.json();
+                    } else {
+                      return {};
+                    }
+                  }),
+                  fetch(`${url_path}/${path}/` + eventData.rule)
+                    .then((response) => response.text())
+                    .then((input) => {
+                      return input;
+                    })
+                    .catch(() => {
+                      return "";
+                    }),
+                ]);
               const startUnix = moment(
                 eventData.duration.startDate,
                 "DD/MM/YYYY HH:mm:ss"
-              ).unix();
+              ).valueOf();
               const endUnix = moment(
                 eventData.duration.endDate,
                 "DD/MM/YYYY HH:mm:ss"
-              ).unix();
+              ).valueOf();
               if (startUnix > Date.now()) {
                 setEventStatus(EVENT_STATUS.EVENT_READY);
               }
-              const config = await Promise.all([
-                fetch(
-                  `${baseURL}/${Config_INFO_URL}?version=${eventData.api?.version}`
-                ),
-                fetch(`${url_path}/${path}/` + eventData.rule)
-                  .then((response) => response.text())
-                  .then((input) => {
-                    return input;
-                  })
-                  .catch(() => {
-                    return "";
-                  }),
-              ]);
               setEventData({
                 ...eventData,
                 duration: {
                   ...eventData.duration,
-                  startDate: startUnix,
-                  endDate: endUnix,
+                  startDate: config[0].start ?? startUnix,
+                  endDate: config[0].end ?? endUnix,
                 },
                 ruleMarkdown: config[1],
                 api: {

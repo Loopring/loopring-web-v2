@@ -24,8 +24,20 @@ export type EventData = {
   api: EventAPI & Partial<EventAPIExtender>;
 };
 
+export type API_DATA<R extends object> = {
+  version: number;
+  selected: string;
+  owner: {
+    rank: string;
+    accountId: string;
+    address: string;
+    usdtValue: string;
+  };
+  data: R[];
+};
+
 //TODO:test
 //"https://static.loopring.io/events";
 export const url_path = "https://localhost:3000/static/testEvents/";
-export const Config_INFO_URL = "/api/v3/activity/getFilterInfo/";
+export const Config_INFO_URL = "api/v3/activity/getFilterInfo";
 export const Activity_URL = "/api/v3/activity/getActivityList/";
