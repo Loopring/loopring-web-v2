@@ -6,7 +6,6 @@ import {
   Box,
   FormControlLabel,
   Grid,
-  Link,
   Radio,
   RadioGroup,
   Typography,
@@ -21,10 +20,10 @@ import {
   HelpIcon,
   IBData,
   LoadingIcon,
-  myLog,
   NFTWholeINFO,
   TOAST_TIME,
   AddressError,
+  AssetsRawDataItem,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -43,17 +42,17 @@ import { WithdrawViewProps } from "./Interface";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
-import styled from "@emotion/styled";
+import { WithdrawAddressType } from "./AddressType";
 
-const LinkStyle = styled(Link)`
-  text-decoration: underline dotted;
-  cursor: pointer;
-  color: var(--color-text-secondary);
-  font-size: ${({ theme }) => theme.fontDefault.body2};
-  &:hover {
-    color: var(--color-primary);
-  }
-`;
+// const LinkStyle = styled(Link)`
+//   text-decoration: underline dotted;
+//   cursor: pointer;
+//   color: var(--color-text-secondary);
+//   font-size: ${({ theme }) => theme.fontDefault.body2};
+//   &:hover {
+//     color: var(--color-primary);
+//   }
+// `;
 export const WithdrawWrap = <
   T extends IBData<I> | (NFTWholeINFO & IBData<I>),
   I,
@@ -73,6 +72,7 @@ export const WithdrawWrap = <
   withdrawType,
   chargeFeeTokenList = [],
   feeInfo,
+  handleConfirm,
   isFeeNotEnough,
   onWithdrawClick,
   withdrawBtnStatus,
@@ -88,14 +88,16 @@ export const WithdrawWrap = <
   assetsData = [],
   realAddr,
   isThumb,
+  isToMyself = false,
+  sureIsAllowAddress,
+  handleSureIsAllowAddress,
   ...rest
-}: WithdrawViewProps<T, I, C> & WithTranslation & { assetsData: any[] }) => {
-  // const [_withdrawType, setWithdrawType] = React.useState(withdrawType);
-  const [address, setAddress] = React.useState<string | undefined>(
-    addressDefault ?? ""
-  );
+}: WithdrawViewProps<T, I, C> &
+  WithTranslation & {
+    assetsData: AssetsRawDataItem[];
+    handleConfirm: (index: number) => void;
+  }) => {
   const { isMobile } = useSettings();
-
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const popupState = usePopupState({
@@ -113,12 +115,10 @@ export const WithdrawWrap = <
   );
 
   const inputBtnRef = React.useRef();
-  myLog("withdraw accAddr", accAddr, withdrawType);
 
   const getDisabled = React.useMemo(() => {
     return disabled || withdrawBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, withdrawBtnStatus]);
-  myLog("withdrawWrap", getDisabled);
   const inputButtonDefaultProps = {
     label: t("labelL2toL1EnterToken"),
   };
@@ -138,27 +138,9 @@ export const WithdrawWrap = <
     [handleWithdrawTypeChange]
   );
 
-  const _handleOnAddressChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    _myAddress?: string
-  ) => {
-    let address: string;
-
-    if (_myAddress) {
-      address = _myAddress;
-    } else {
-      address = event.target?.value ?? "";
-    }
-
-    setAddress(address);
-    if (handleOnAddressChange) {
-      handleOnAddressChange(address);
-    }
-  };
-
   const isInvalidAddressOrENS =
     !isAddressCheckLoading &&
-    address &&
+    addressDefault &&
     addrStatus === AddressError.InvalidAddr;
 
   return (
@@ -174,6 +156,7 @@ export const WithdrawWrap = <
       minWidth={240}
       height={"100%"}
       flexWrap={"nowrap"}
+      spacing={2}
     >
       <Grid item>
         <Box
@@ -191,7 +174,9 @@ export const WithdrawWrap = <
             {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
             (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
               ? t("labelL2ToL1DeployTitle")
-              : t("labelL2ToL1Title")}
+              : isToMyself
+              ? t("labelL2ToMyL1Title")
+              : t("labelL2ToOtherL1Title")}
           </Typography>
           <HelpIcon
             {...bindHover(popupState)}
@@ -225,7 +210,8 @@ export const WithdrawWrap = <
           </Typography>
         </PopoverPure>
       </Grid>
-      <Grid item /* marginTop={3} */ alignSelf={"stretch"}>
+
+      <Grid item alignSelf={"stretch"} position={"relative"}>
         {type === "NFT" ? (
           <NFTInput
             {...{
@@ -259,101 +245,113 @@ export const WithdrawWrap = <
         )}
       </Grid>
 
-      <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
-        <>
-          <Typography
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            marginBottom={1}
-          >
-            <span> {t("labelL2toL1Address")}</span>
-            {accAddr && (
-              <LinkStyle
-                onClick={(e) => {
-                  _handleOnAddressChange(e as any, accAddr);
-                }}
-              >
-                {t("labelL2toL1MyAddress")}
-              </LinkStyle>
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        {!isToMyself ? (
+          <>
+            <TextField
+              className={"text-address"}
+              value={addressDefault}
+              error={!!(isNotAvaiableAddress || isInvalidAddressOrENS)}
+              placeholder={t("labelPleaseInputWalletAddress")}
+              onChange={(event) => handleOnAddressChange(event?.target?.value)}
+              label={t("labelL2toL1Address")}
+              SelectProps={{ IconComponent: DropDownIcon }}
+              fullWidth={true}
+            />
+
+            {addressDefault !== "" ? (
+              isAddressCheckLoading ? (
+                <LoadingIcon
+                  width={24}
+                  style={{ top: 48, right: "8px", position: "absolute" }}
+                />
+              ) : (
+                <IconClearStyled
+                  color={"inherit"}
+                  size={"small"}
+                  style={{ top: 46 }}
+                  aria-label="Clear"
+                  onClick={() => handleOnAddressChange("")}
+                >
+                  <CloseIcon />
+                </IconClearStyled>
+              )
+            ) : (
+              ""
             )}
-          </Typography>
-          <TextField
-            className={"text-address"}
-            value={address}
-            error={!!(isNotAvaiableAddress || isInvalidAddressOrENS)}
-            placeholder={t("labelPleaseInputWalletAddress")}
-            onChange={_handleOnAddressChange}
-            // disabled={chargeFeeTokenList.length ? false : true}
-            SelectProps={{ IconComponent: DropDownIcon }}
-            fullWidth={true}
-          />
-          {address !== "" ? (
-            isAddressCheckLoading ? (
+          </>
+        ) : (
+          <Typography
+            variant={"body2"}
+            lineHeight={"20px"}
+            color={"var(--color-text-third)"}
+          >
+            {t("labelL2toL1MyAddress")}
+
+            {!!isAddressCheckLoading && (
               <LoadingIcon
                 width={24}
-                style={{ top: "36px", right: "8px", position: "absolute" }}
+                style={{ top: 20, right: "8px", position: "absolute" }}
               />
-            ) : (
-              <IconClearStyled
-                color={"inherit"}
-                size={"small"}
-                style={{ top: "35px" }}
-                aria-label="Clear"
-                onClick={(e) => {
-                  _handleOnAddressChange(e as any, "");
-                }}
-              >
-                <CloseIcon />
-              </IconClearStyled>
-            )
-          ) : (
-            ""
-          )}
-          <Box marginLeft={1 / 2}>
-            {isInvalidAddressOrENS ? (
-              <Typography
-                color={"var(--color-error)"}
-                variant={"body2"}
-                marginTop={1 / 4}
-                alignSelf={"stretch"}
-                position={"relative"}
-              >
-                {t("labelInvalidAddress")}
-              </Typography>
-            ) : isNotAvaiableAddress ? (
-              <Typography
-                color={"var(--color-error)"}
-                variant={"body2"}
-                marginTop={1 / 4}
-                alignSelf={"stretch"}
-                position={"relative"}
-              >
-                {t(`labelInvalid${isNotAvaiableAddress}`, {
-                  token: type === "NFT" ? "NFT" : tradeData.belong,
-                  way: t(`labelL2toL1`),
-                })}
-              </Typography>
-            ) : (
-              <>
-                {address && realAddr && !isAddressCheckLoading && (
-                  <Typography
-                    color={"var(--color-text-primary)"}
-                    variant={"body2"}
-                    marginTop={1 / 4}
-                    whiteSpace={"pre-line"}
-                    style={{ wordBreak: "break-all" }}
-                  >
-                    {realAddr}
-                  </Typography>
-                )}
-              </>
             )}
-          </Box>
-        </>
+          </Typography>
+        )}
+        <Box marginLeft={1 / 2}>
+          {isInvalidAddressOrENS ? (
+            <Typography
+              color={"var(--color-error)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              alignSelf={"stretch"}
+              position={"relative"}
+            >
+              {t("labelInvalidAddress")}
+            </Typography>
+          ) : isNotAvaiableAddress ? (
+            <Typography
+              color={"var(--color-error)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              alignSelf={"stretch"}
+              position={"relative"}
+            >
+              {t(`labelInvalid${isNotAvaiableAddress}`, {
+                token: type === "NFT" ? "NFT" : tradeData.belong,
+                way: t(`labelL2toL1`),
+              })}
+            </Typography>
+          ) : (
+            <>
+              {addressDefault && realAddr && !isAddressCheckLoading && (
+                <Typography
+                  color={"var(--color-text-primary)"}
+                  variant={"body2"}
+                  marginTop={1 / 4}
+                  whiteSpace={"pre-line"}
+                  style={{ wordBreak: "break-all" }}
+                >
+                  {realAddr}
+                </Typography>
+              )}
+            </>
+          )}
+        </Box>
       </Grid>
+      {!isToMyself && (
+        <Grid item alignSelf={"stretch"} position={"relative"}>
+          <WithdrawAddressType
+            selectedValue={sureIsAllowAddress}
+            handleSelected={handleSureIsAllowAddress}
+            disabled={
+              isAddressCheckLoading ||
+              addrStatus !== AddressError.NoError ||
+              !realAddr
+            }
+          />
+        </Grid>
+      )}
 
-      <Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
+      <Grid item alignSelf={"stretch"} position={"relative"}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
         ) : (
@@ -444,19 +442,16 @@ export const WithdrawWrap = <
           </>
         )}
       </Grid>
-      <Grid
-        item
-        /* marginTop={2} */ alignSelf={"stretch"}
-        marginTop={2}
-        paddingBottom={isMobile ? 0 : 5 / 2}
-      >
+
+      <Grid item alignSelf={"stretch"} paddingBottom={0}>
         <Button
           fullWidth
           variant={"contained"}
           size={"medium"}
           color={"primary"}
           onClick={() => {
-            onWithdrawClick(tradeData);
+            handleConfirm(0);
+            // onWithdrawClick(tradeData);
           }}
           loading={
             withdrawBtnStatus === TradeBtnStatus.LOADING && !getDisabled
@@ -475,6 +470,7 @@ export const WithdrawWrap = <
           )}
         </Button>
       </Grid>
+
       <Toast
         alertText={t("labelCopyAddClip")}
         open={copyToastOpen}

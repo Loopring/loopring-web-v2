@@ -8,12 +8,7 @@ import {
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
 import { Box, BoxProps } from "@mui/material";
-import {
-  cssBackground,
-  EmptyDefault,
-  NftImage,
-  useImage,
-} from "@loopring-web/component-lib";
+import { cssBackground, EmptyDefault, NftImage, useImage } from "../../index";
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
@@ -28,14 +23,12 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
 export const NFTMedia = React.memo(
   ({
     item,
-    // onNFTReload,
     onNFTError,
     index,
     isOrigin = false,
   }: {
     item: Partial<NFTWholeINFO>;
     index?: number;
-    // onNFTReload: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
     onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
     isOrigin?: boolean;
   }) => {
@@ -50,17 +43,13 @@ export const NFTMedia = React.memo(
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
       useImage(previewSrc ?? "");
-    // mylog(
-    //   isOrigin,
-    //   item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
-    // );
+
     const fullSrc =
       (isOrigin
         ? item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
         : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]) ??
       item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE);
-    const { hasLoaded: fullSrcSrcHasLoaded, hasError: fullSrcSrcHasError } =
-      useImage(fullSrc ?? "");
+    const { hasLoaded: fullSrcHasLoaded } = useImage(fullSrc ?? "");
 
     return (
       <BoxStyle
@@ -110,12 +99,12 @@ export const NFTMedia = React.memo(
                 display={"flex"}
                 style={{
                   background:
-                    (!!fullSrc && fullSrcSrcHasLoaded) || !!previewSrc
+                    (!!fullSrc && fullSrcHasLoaded) || !!previewSrc
                       ? "var(--field-opacity)"
                       : "",
                 }}
               >
-                {!!fullSrc && fullSrcSrcHasLoaded ? (
+                {!!fullSrc && fullSrcHasLoaded ? (
                   <NftImage
                     alt={item?.image}
                     {...item}

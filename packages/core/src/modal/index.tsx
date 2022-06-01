@@ -3,6 +3,7 @@ import {
   DepositProps,
   ModalCloseButton,
   ModalSettingFee,
+  OtherExchangeDialog,
   SwitchPanelStyled,
   useOpenModals,
 } from "@loopring-web/component-lib";
@@ -39,11 +40,17 @@ export const ModalGroup = withTranslation("common", {
       modals: { isShowFeeSetting, isShowIFrame },
       setShowFeeSetting,
       setShowIFrame,
+      setShowOtherExchange,
     } = useOpenModals();
     useAccountModal();
 
     const {
-      modals: { isShowAccount, isShowConnect, isShowSupport },
+      modals: {
+        isShowAccount,
+        isShowConnect,
+        isShowSupport,
+        isShowOtherExchange,
+      },
       setShowSupport,
       setShowDeposit,
       setShowTransfer,
@@ -75,6 +82,12 @@ export const ModalGroup = withTranslation("common", {
             ...rest,
             open: isShowConnect.isShow,
             onClose: onWalletConnectPanelClose,
+          }}
+        />
+        <OtherExchangeDialog
+          open={isShowOtherExchange.isShow}
+          handleClose={(_e, agree) => {
+            setShowOtherExchange({ isShow: false, agree });
           }}
         />
 

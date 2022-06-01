@@ -1,5 +1,9 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
+import {
+  ModalBackButton,
+  SwitchPanel,
+  SwitchPanelProps,
+} from "../../basic-lib";
 import { IBData } from "@loopring-web/common-resources";
 import React from "react";
 import { TransferProps } from "../../tradePanel";
@@ -8,8 +12,11 @@ import {
   TransferWrap,
   useBasicTrade,
 } from "../../tradePanel/components";
+import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
 
-export const TransferPanel = withTranslation("common", { withRef: true })(
+export const TransferPanel = withTranslation(["common", "error"], {
+  withRef: true,
+})(
   <T extends IBData<I>, I>({
     walletMap = {},
     coinMap = {},
@@ -21,6 +28,7 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
     assetsData,
     addrStatus,
     isAddressCheckLoading,
+    onBack,
     ...rest
   }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
@@ -29,10 +37,56 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
       coinMap,
       type,
     });
+    const [panelIndex, setPanelIndex] = React.useState(index + 1);
+    const handleConfirm = (index: number) => {
+      setPanelIndex(index);
+    };
+    // const hanleConfirm = () => {};
+    React.useEffect(() => {
+      setPanelIndex(index + 1);
+    }, [index]);
 
     const props: SwitchPanelProps<string> = {
-      index: index, // show default show
+      index: panelIndex, // show default show
       panelList: [
+        {
+          key: "confirm",
+          element: React.useMemo(
+            () => (
+              // @ts-ignore
+              <TransferConfirm
+                {...{
+                  ...rest,
+                  onTransferClick,
+                  type,
+                  tradeData: switchData.tradeData,
+                  isThumb,
+                  handleConfirm,
+                }}
+              />
+            ),
+            [rest, onTransferClick, type, switchData.tradeData, isThumb]
+          ),
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={-2}
+                    onBack={() => {
+                      setPanelIndex(1);
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
+        },
         {
           key: "trade",
           element: React.useMemo(
@@ -50,7 +104,8 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
                   onChangeEvent,
                   isThumb,
                   disabled: !!rest.disabled,
-                  onTransferClick,
+                  handleConfirm,
+                  // onTransferClick,
                   transferBtnStatus,
                   assetsData,
                   addrStatus,
@@ -72,11 +127,29 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
               isAddressCheckLoading,
             ]
           ),
-          toolBarItem: undefined,
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={-2}
+                    onBack={() => {
+                      onBack();
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
         },
       ].concat(
         type === "TOKEN"
-          ? [
+          ? ([
               {
                 key: "tradeMenuList",
                 element: React.useMemo(
@@ -100,7 +173,7 @@ export const TransferPanel = withTranslation("common", { withRef: true })(
                 toolBarItem: undefined,
                 // toolBarItem: toolBarItemBack
               },
-            ]
+            ] as any)
           : []
       ),
     };

@@ -1,5 +1,4 @@
 import {
-  AccountStatus,
   IPFS_LOOPRING_SITE,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
@@ -26,7 +25,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
-  const [isShow, setIsShow] = React.useState(false);
+  // const [isShow, setIsShow] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const { account, status: accountStatus } = useAccount();
   const [popItem, setPopItem] =
@@ -35,16 +34,17 @@ export const useMyNFT = () => {
     status: walletLayer2NFTStatus,
     walletLayer2NFT,
     total,
+    page: page_reudex,
     updateWalletLayer2NFT,
   } = useWalletLayer2NFT();
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
-  const { setShowNFTTransfer, setShowNFTWithdraw, setShowNFTMint } =
+  const { setShowNFTTransfer, setShowNFTWithdraw, setShowNFTDetail } =
     useOpenModals();
   const { etherscanBaseUrl } = useSystem();
   const [page, setPage] = useState(1);
-  const onDetailClose = React.useCallback(() => setIsShow(false), []);
+  // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
   const onPageChange = (page: number) => {
     setPage(page);
@@ -64,7 +64,7 @@ export const useMyNFT = () => {
       LoopringAPI.nftAPI &&
       tokenAddress &&
       (!metadata?.uri ||
-        tokenAddress.toLowerCase() ==
+        tokenAddress.toLowerCase() ===
           "0x1cACC96e5F01e2849E6036F25531A9A064D2FB5f".toLowerCase()) &&
       nftId &&
       (!isCounterFactualNFT ||
@@ -112,7 +112,7 @@ export const useMyNFT = () => {
     }
   };
 
-  const infoDetail = async (item: Partial<NFTWholeINFO>) => {
+  const infoDetail = React.useCallback(async (item: Partial<NFTWholeINFO>) => {
     const nftData: NftData = item.nftData as NftData;
     let [nftMap] = await Promise.all([
       LoopringAPI.nftAPI?.getInfoForNFTTokens({
@@ -155,7 +155,7 @@ export const useMyNFT = () => {
       };
     }
     return tokenInfo;
-  };
+  }, []);
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
@@ -173,30 +173,37 @@ export const useMyNFT = () => {
       updateNFTTransferData(item);
       setShowNFTTransfer({ isShow: false, ...item });
       setShowNFTWithdraw({ isShow: false, ...item });
-      setIsShow(true);
+      setShowNFTDetail({ isShow: true, ...item });
     },
-    [setShowNFTTransfer, updateNFTTransferData, updateNFTWithdrawData]
+    [
+      setShowNFTDetail,
+      setShowNFTTransfer,
+      setShowNFTWithdraw,
+      updateNFTDeployData,
+      updateNFTTransferData,
+      updateNFTWithdrawData,
+    ]
   );
-  const onNFTError = (item: Partial<NFTWholeINFO>, index?: number) => {
-    let _index = index;
-
-    setNFTList((state) => {
-      if (index === undefined) {
-        _index = state.findIndex(
-          (_item) =>
-            _item.tokenAddress?.toLowerCase() ===
-              item.tokenAddress?.toLowerCase() && _item.nftId === item.nftId
-        );
-      }
-      if (_index) {
-        state[_index] = {
-          ...state[_index],
-          isFailedLoadMeta: true,
-        };
-      }
-      return state;
-    });
-  };
+  // const onNFTError = (item: Partial<NFTWholeINFO>, index?: number) => {
+  //   let _index = index;
+  //
+  //   setNFTList((state) => {
+  //     if (index === undefined) {
+  //       _index = state.findIndex(
+  //         (_item) =>
+  //           _item.tokenAddress?.toLowerCase() ===
+  //             item.tokenAddress?.toLowerCase() && _item.nftId === item.nftId
+  //       );
+  //     }
+  //     if (_index) {
+  //       state[_index] = {
+  //         ...state[_index],
+  //         isFailedLoadMeta: true,
+  //       };
+  //     }
+  //     return state;
+  //   });
+  // };
   const onNFTReload = async (item: Partial<NFTWholeINFO>, index?: number) => {
     const tokenInfo = await infoDetail(item);
     let _index = index;
@@ -220,7 +227,7 @@ export const useMyNFT = () => {
     });
   };
 
-  const initNFT = React.useCallback(async () => {
+  const renderNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
     setNFTList(() => {
       return walletLayer2NFT.map((item) => {
@@ -250,29 +257,26 @@ export const useMyNFT = () => {
         });
       });
     });
-  }, [etherscanBaseUrl, walletLayer2NFT]);
+  }, [etherscanBaseUrl, infoDetail, walletLayer2NFT]);
   React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
-    ) {
+    onPageChange(1);
+  }, []);
+  React.useEffect(() => {
+    if (page_reudex !== page) {
       updateWalletLayer2NFT({ page });
     }
-  }, [page, accountStatus, account.readyState]);
+  }, [page, page_reudex]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET) {
-      initNFT();
+      renderNFT();
     }
   }, [walletLayer2NFTStatus]);
 
   return {
     nftList,
-    isShow,
     popItem,
     onDetail,
     etherscanBaseUrl,
-    onDetailClose,
-    onNFTError,
     onNFTReload,
     onPageChange,
     total,

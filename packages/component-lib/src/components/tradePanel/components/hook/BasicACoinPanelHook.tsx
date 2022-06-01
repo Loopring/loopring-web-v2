@@ -78,7 +78,7 @@ export const useBasicTrade = <
             to,
           });
         } else if (to === "button" && type === "NFT") {
-          const count = _newTradeData.nftBalance;
+          const count = _newTradeData.balance;
           const tradeValue = _newTradeData.tradeValue
             ? _newTradeData.tradeValue
             : undefined;
@@ -96,7 +96,7 @@ export const useBasicTrade = <
         setIndex(_index);
       }
     },
-    [handlePanelEvent, tradeData, walletMap, coinMap, rest, index]
+    [handlePanelEvent, rest, index, tradeData, type, walletMap]
   );
 
   React.useEffect(() => {

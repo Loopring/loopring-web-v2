@@ -5,6 +5,7 @@ import {
 } from "@loopring-web/loopring-sdk";
 import { FeeInfo, IBData } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useTranslation } from "react-i18next";
 
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
@@ -73,6 +74,12 @@ export type MetaProperty = {
   key: string;
   value: string;
 };
+export type MetaDataProperty = { [key: string]: string };
+export type AttributesProperty = {
+  trait_type: string;
+  value: string;
+};
+
 export type NFTMETA = {
   image: string;
   name: string;
@@ -178,11 +185,11 @@ export const SendAssetList = {
     svgIcon: "IncomingIcon",
     enableKey: "withdraw",
   },
-  // SendAssetToOtherL1:{
-  // key: "SendToOtherL1",
-  // svgIcon: "IncomingIcon",
-  // enableKey: "withdraw",
-  // }
+  SendAssetToOtherL1: {
+    key: "SendToOtherL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "withdraw",
+  },
 };
 
 export enum AddressError {
@@ -193,3 +200,98 @@ export enum AddressError {
   IsNotLoopringContract = "IsNotLoopringContract",
   TimeOut = "TimeOut",
 }
+
+export enum WALLET_TYPE {
+  EOA = "EOA",
+  Loopring = "Loopring",
+  OtherSmart = "OtherSmart",
+  Exchange = "Exchange",
+}
+
+export enum EXCHANGE_TYPE {
+  NonExchange = "NonExchange",
+  Binance = "Binance",
+  Huobi = "Huobi",
+  Coinbase = "Coinbase",
+  Others = "Others",
+}
+
+export type AddressItemType<T> = {
+  value: T;
+  label: string;
+  description: string;
+  disabled?: boolean;
+  maxWidth?: string | number;
+};
+
+export const useAddressTypeLists = <
+  T extends WALLET_TYPE | EXCHANGE_TYPE
+>() => {
+  const { t } = useTranslation("common");
+  const walletList: AddressItemType<T>[] = [
+    {
+      label: t("labelWalletTypeOptions", {
+        type: t(`labelWalletType${WALLET_TYPE.EOA}`),
+      }),
+      value: WALLET_TYPE.EOA as T,
+      description: t(`label${WALLET_TYPE.EOA}Des`),
+    },
+    {
+      label: t("labelWalletTypeOptions", {
+        type: t(`labelWalletType${WALLET_TYPE.Loopring}`),
+      }),
+      value: WALLET_TYPE.Loopring as T,
+      description: t(`label${WALLET_TYPE.Loopring}Des`),
+    },
+    {
+      label: t("labelWalletTypeOptions", {
+        type: t(`labelWalletType${WALLET_TYPE.OtherSmart}`),
+      }),
+      disabled: true,
+      value: WALLET_TYPE.OtherSmart as T,
+      description: t(`label${WALLET_TYPE.OtherSmart}Des`),
+    },
+    {
+      label: t(WALLET_TYPE.Exchange),
+      value: WALLET_TYPE.Exchange as T,
+      disabled: true,
+      description: t(`label${WALLET_TYPE.Exchange}Des`),
+    },
+  ];
+  const nonExchangeList: AddressItemType<T>[] = [
+    {
+      label: t(`labelNonExchangeType`),
+      value: EXCHANGE_TYPE.NonExchange as T,
+      disabled: false,
+      description: t(`labelNonExchangeTypeDes`),
+    },
+  ];
+  const exchangeList: AddressItemType<T>[] = [
+    {
+      label: t(`labelExchange${EXCHANGE_TYPE.Binance}`),
+      value: EXCHANGE_TYPE.Binance as T,
+      disabled: false,
+      description: t(`labelExchange${EXCHANGE_TYPE.Binance}Des`),
+      maxWidth: "initial",
+    },
+    {
+      label: t(`labelExchange${EXCHANGE_TYPE.Huobi}`),
+      value: EXCHANGE_TYPE.Huobi as T,
+      disabled: false,
+      description: t(`labelExchange${EXCHANGE_TYPE.Huobi}Des`),
+      maxWidth: "initial",
+    },
+    {
+      label: t(`labelExchange${EXCHANGE_TYPE.Others}`),
+      value: EXCHANGE_TYPE.Others as T,
+      disabled: false,
+      description: t(`labelExchange${EXCHANGE_TYPE.Others}Des`),
+      maxWidth: "initial",
+    },
+  ];
+  return {
+    walletList,
+    nonExchangeList,
+    exchangeList,
+  };
+};

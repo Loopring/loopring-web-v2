@@ -28,6 +28,9 @@ export const makeWalletLayer2 = <C extends { [key: string]: any }>(
       if (needFilterZero && countBig.eq(BIGO)) {
         return prev;
       }
+      if (_isToL1 && /^LP-/gi.test(item.toString())) {
+        return prev;
+      }
 
       return {
         ...prev,

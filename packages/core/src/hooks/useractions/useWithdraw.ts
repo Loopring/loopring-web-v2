@@ -19,6 +19,7 @@ import {
   WithdrawType,
   WithdrawTypes,
   AddressError,
+  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -47,12 +48,11 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 export const useWithdraw = <R extends IBData<T>, T>() => {
   const {
     modals: {
-      isShowWithdraw: { symbol, isShow },
+      isShowWithdraw: { symbol, isShow, info },
     },
     setShowAccount,
     setShowWithdraw,
   } = useOpenModals();
-
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -61,9 +61,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     useModalData();
 
   const [walletMap2, setWalletMap2] = React.useState(
-    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
+    makeWalletLayer2(true, true).walletMap ?? ({} as WalletMap<R>)
   );
-
+  const [sureIsAllowAddress, setSureIsAllowAddress] =
+    React.useState<EXCHANGE_TYPE | undefined>(undefined);
   const [withdrawType, setWithdrawType] = React.useState<WithdrawType>(
     sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
   );
@@ -77,9 +78,12 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   } = useChargeFees({
     requestType: withdrawType,
     tokenSymbol: withdrawValue.belong,
-    updateData: ({ fee }) => {
-      updateWithdrawData({ ...withdrawValue, fee });
-    },
+    updateData: React.useCallback(
+      ({ fee }) => {
+        updateWithdrawData({ ...withdrawValue, fee });
+      },
+      [withdrawValue]
+    ),
   });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<
@@ -104,12 +108,18 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     isAddressCheckLoading,
   } = useAddressCheck();
 
-  const isNotAvaiableAddress = isCFAddress
-    ? "isCFAddress"
-    : isContractAddress &&
-      disableWithdrawList.includes(withdrawValue?.belong ?? "")
-    ? `isContractAddress`
-    : undefined;
+  React.useEffect(() => {
+    setSureIsAllowAddress(undefined);
+  }, [realAddr]);
+
+  const isNotAvaiableAddress =
+    // isCFAddress
+    // ? "isCFAddress"
+    // :
+    isContractAddress &&
+    disableWithdrawList.includes(withdrawValue?.belong ?? "")
+      ? `isContractAddress`
+      : undefined;
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
 
@@ -133,6 +143,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         withdrawValue.fee?.feeRaw &&
         tradeValue.gt(BIGO) &&
         realAddr &&
+        (info?.isToMyself || sureIsAllowAddress) &&
         (addrStatus as AddressError) === AddressError.NoError
       ) {
         enableBtn();
@@ -146,25 +157,31 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     }
     disableBtn();
   }, [
-    withdrawType,
-    enableBtn,
-    realAddr,
-    disableBtn,
     tokenMap,
-    addrStatus,
+    withdrawValue.belong,
+    withdrawValue.tradeValue,
+    withdrawValue.fee?.belong,
+    withdrawValue.fee?.feeRaw,
+    disableBtn,
+    address,
+    withdrawType,
     isNotAvaiableAddress,
-    chargeFeeTokenList,
-    withdrawValue,
+    chargeFeeTokenList.length,
     isFeeNotEnough,
+    realAddr,
+    info?.isToMyself,
+    sureIsAllowAddress,
+    addrStatus,
+    enableBtn,
   ]);
 
   React.useEffect(() => {
     checkBtnStatus();
   }, [
     withdrawType,
-    // address,
     addrStatus,
     realAddr,
+    sureIsAllowAddress,
     isFeeNotEnough,
     withdrawValue?.fee,
     withdrawValue?.belong,
@@ -227,6 +244,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    if (info?.isRetry) {
+      return;
+    }
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({
@@ -234,7 +254,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           belong: symbol as any,
           balance: walletMap2[symbol]?.count,
           tradeValue: undefined,
-          address: "*",
+          address: info?.isToMyself ? account.accAddress : "*",
         });
       }
     } else {
@@ -247,39 +267,49 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             updateWithdrawData({
               fee: feeInfo,
               belong: keyVal as any,
-              tradeValue: 0,
+              tradeValue: undefined,
               balance: walletInfo.count,
-              address: "*",
+              address: info?.isToMyself ? account.accAddress : "*",
             });
             break;
           }
         }
+      } else if (withdrawValue.belong && walletMap2) {
+        const walletInfo = walletMap2[withdrawValue.belong];
+        updateWithdrawData({
+          fee: feeInfo,
+          belong: withdrawValue.belong,
+          tradeValue: undefined,
+          balance: walletInfo.count,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
+      } else {
+        updateWithdrawData({
+          fee: feeInfo,
+          belong: withdrawValue.belong,
+          tradeValue: undefined,
+          balance: undefined,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
       }
     }
+    if (info?.isToMyself) {
+      setAddress(account.accAddress);
+    } else {
+      setAddress("");
+    }
   }, [
+    account.accAddress,
+    setAddress,
+    info?.isToMyself,
     checkFeeIsEnough,
     symbol,
     walletMap2,
     updateWithdrawData,
     feeInfo,
     withdrawValue.belong,
+    info?.isRetry,
   ]);
-
-  React.useEffect(() => {
-    if (isShow) {
-      resetDefault();
-    }
-  }, [isShow]);
-
-  React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
-    ) {
-    } else {
-      setShowWithdraw({ isShow: false });
-    }
-  }, [accountStatus, account.readyState]);
 
   React.useEffect(() => {
     if (
@@ -287,11 +317,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      updateWithdrawData({
-        balance: -1,
-        tradeValue: -1,
-      });
-      setAddress("");
+      resetDefault();
     }
   }, [isShow, accountStatus, account.readyState]);
 
@@ -447,10 +473,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         LoopringAPI.userAPI &&
         withdrawValue?.fee?.belong &&
         withdrawValue.fee?.feeRaw &&
-        eddsaKey?.sk
+        eddsaKey?.sk &&
+        (info?.isToMyself || sureIsAllowAddress)
       ) {
         try {
-          setShowWithdraw({ isShow: false });
+          setShowWithdraw({ isShow: false, info });
           setShowAccount({
             isShow: true,
             step: AccountStep.Withdraw_WaitForAuth,
@@ -528,9 +555,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       account,
       tokenMap,
       exchangeInfo,
-      withdrawValue.fee?.belong,
-      withdrawValue.fee?.feeRaw,
+      withdrawValue?.fee?.belong,
+      withdrawValue?.fee?.feeRaw,
       withdrawValue.belong,
+      info?.isToMyself,
+      sureIsAllowAddress,
       setShowWithdraw,
       setShowAccount,
       withdrawType,
@@ -552,6 +581,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     type: "TOKEN",
     isAddressCheckLoading,
     isCFAddress,
+    isToMyself: info?.isToMyself,
     isContractAddress,
     withdrawI18nKey,
     accAddr: account.accAddress,
@@ -565,11 +595,15 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     withdrawBtnStatus: btnStatus,
     withdrawType,
     withdrawTypes,
+    sureIsAllowAddress,
+    handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => {
+      setSureIsAllowAddress(value);
+    },
     onWithdrawClick: () => {
       if (withdrawValue && withdrawValue.belong) {
         handleWithdraw(withdrawValue, realAddr ? realAddr : address);
       }
-      setShowWithdraw({ isShow: false });
+      setShowWithdraw({ isShow: false, info });
     },
     handleWithdrawTypeChange: (value) => {
       // myLog('handleWithdrawTypeChange', value)

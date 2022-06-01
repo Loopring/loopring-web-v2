@@ -15,9 +15,11 @@ import {
   WalletMap,
   WithdrawType,
   WithdrawTypes,
+  WALLET_TYPE,
+  EXCHANGE_TYPE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
 
 /**
@@ -52,19 +54,21 @@ export type TransferInfoProps<C> = {
 
 export type TransferExtendProps<T, I, C> = {
   isThumb?: boolean;
-  isConfirmTransfer: boolean;
   addressDefault?: string;
-  addressOrigin: "Wallet" | null;
-  handleSureItsLayer2: (sure: boolean) => void;
+  sureItsLayer2: WALLET_TYPE | undefined;
+  handleSureItsLayer2: (sure: WALLET_TYPE) => void;
   realAddr?: string;
   isLoopringAddress?: boolean;
   isAddressCheckLoading?: boolean;
   isSameAddress?: boolean;
   addrStatus: AddressError;
-  onTransferClick: (data: T, isFirstTime?: boolean) => void;
+  onTransferClick: (data: T, isFirstTime?: boolean) => Promise<void>;
   handleFeeChange: (value: C) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
   wait?: number;
+  onBack?: () => void;
+  memo: string;
+  handleOnMemoChange: (e: ChangeEvent<HTMLInputElement>) => void;
 } & TransferInfoProps<C>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
@@ -134,6 +138,7 @@ export type DepositExtendProps<T> = {
   realReferAddress?: string;
   handleClear: () => void;
   isToAddressEditable: boolean;
+  onBack?: () => void;
 } & DepositInfoProps;
 
 export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
@@ -171,6 +176,10 @@ export type WithdrawExtendProps<T, I, C> = {
   handleWithdrawTypeChange: (value: WithdrawType) => void;
   handleOnAddressChange: (value: string | undefined | I) => void;
   wait?: number;
+  onBack?: () => void;
+  isToMyself?: boolean;
+  sureIsAllowAddress: EXCHANGE_TYPE | undefined;
+  handleSureIsAllowAddress: (value: EXCHANGE_TYPE) => void;
 } & WithdrawInfoProps<C>;
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
@@ -341,9 +350,35 @@ export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
 } & BtnInfoProps;
 
 export type NFTDeployExtendProps<T, I, C> = {
+  onBack: () => void;
   handleOnNFTDataChange: (data: T) => void;
   onNFTDeployClick: (data: T, isFirstTime?: boolean) => void;
   allowTrade?: any;
 } & NFTDeployInfoProps<T, I, C>;
 
 export type NFTDeployViewProps<T, I, C> = NFTDeployExtendProps<T, I, C>;
+
+export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
+  nftMintBtnStatus?: keyof typeof TradeBtnStatus | undefined;
+  title?: string;
+  description?: string;
+  chargeFeeTokenList?: Array<C>;
+  feeInfo: C;
+  isNFTCheckLoading?: boolean;
+  isAvaiableId?: boolean;
+  isFeeNotEnough?: boolean;
+  handleFeeChange: (value: C) => void;
+  wait?: number;
+} & BtnInfoProps;
+
+export type NFTMintAdvanceExtendProps<T, I, C = FeeInfo> = {
+  isThumb?: boolean;
+  handleOnNFTDataChange: (data: T) => void;
+  onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
+  allowTrade?: any;
+} & NFTMintAdvanceInfoProps<T, I, C>;
+export type NFTMintAdvanceViewProps<T, I, C> = NFTMintAdvanceExtendProps<
+  T,
+  I,
+  C
+>;

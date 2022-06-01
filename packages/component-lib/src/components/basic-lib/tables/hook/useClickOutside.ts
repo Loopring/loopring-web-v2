@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * Detecting outside click on a react component is surprisingly hard.
@@ -50,44 +50,46 @@ import { useEffect, useRef } from 'react';
  */
 
 export function useClickOutside(onClick: () => void) {
-    const frameRequestRef = useRef<number | undefined>();
+  const frameRequestRef = useRef<number | undefined>();
 
-    function cancelAnimationFrameRequest() {
-        if (typeof frameRequestRef.current === 'number') {
-            cancelAnimationFrame(frameRequestRef.current);
-            frameRequestRef.current = undefined;
-        }
+  function cancelAnimationFrameRequest() {
+    if (typeof frameRequestRef.current === "number") {
+      cancelAnimationFrame(frameRequestRef.current);
+      frameRequestRef.current = undefined;
+    }
+  }
+
+  // We need to prevent the `useEffect` from cleaning up between re-renders,
+  // as `handleDocumentClick` might otherwise miss valid click events.
+  // To that end we instead access the latest `onClick` prop via a ref.
+  const onClickRef = useRef((): void => {
+    throw new Error("Cannot call an event handler while rendering.");
+  });
+
+  useEffect(() => {
+    onClickRef.current = onClick;
+  });
+
+  useEffect(() => {
+    function onOutsideClick() {
+      frameRequestRef.current = undefined;
+      onClickRef.current();
     }
 
-    // We need to prevent the `useEffect` from cleaning up between re-renders,
-    // as `handleDocumentClick` might otherwise miss valid click events.
-    // To that end we instead access the latest `onClick` prop via a ref.
-    const onClickRef = useRef((): void => {
-        throw new Error('Cannot call an event handler while rendering.');
-    });
+    function onWindowCaptureClick() {
+      cancelAnimationFrameRequest();
+      frameRequestRef.current = requestAnimationFrame(onOutsideClick);
+    }
 
-    useEffect(() => {
-        onClickRef.current = onClick;
-    });
+    window.addEventListener("click", onWindowCaptureClick, { capture: true });
 
-    useEffect(() => {
-        function onOutsideClick() {
-            frameRequestRef.current = undefined;
-            onClickRef.current();
-        }
+    return () => {
+      window.removeEventListener("click", onWindowCaptureClick, {
+        capture: true,
+      });
+      cancelAnimationFrameRequest();
+    };
+  }, []);
 
-        function onWindowCaptureClick() {
-            cancelAnimationFrameRequest();
-            frameRequestRef.current = requestAnimationFrame(onOutsideClick);
-        }
-
-        window.addEventListener('click', onWindowCaptureClick, {capture: true});
-
-        return () => {
-            window.removeEventListener('click', onWindowCaptureClick, {capture: true});
-            cancelAnimationFrameRequest();
-        };
-    }, []);
-
-    return cancelAnimationFrameRequest;
+  return cancelAnimationFrameRequest;
 }

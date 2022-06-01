@@ -1,5 +1,9 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { SwitchPanel, SwitchPanelProps } from "../../basic-lib";
+import {
+  ModalBackButton,
+  SwitchPanel,
+  SwitchPanelProps,
+} from "../../basic-lib";
 import { WithdrawProps } from "../../tradePanel/Interface";
 import { IBData } from "@loopring-web/common-resources";
 import {
@@ -9,8 +13,11 @@ import {
 } from "../../tradePanel/components";
 import React from "react";
 import { cloneDeep } from "lodash";
+import { WithdrawConfirm } from "../../tradePanel/components/WithdrawConfirm";
 
-export const WithdrawPanel = withTranslation("common", { withRef: true })(
+export const WithdrawPanel = withTranslation(["common", "error"], {
+  withRef: true,
+})(
   <T extends IBData<I>, I>({
     type = "TOKEN",
     chargeFeeTokenList,
@@ -19,6 +26,7 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
     assetsData,
     walletMap = {},
     coinMap = {},
+    onBack,
     ...rest
   }: WithdrawProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
@@ -27,6 +35,15 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
       type,
       walletMap,
     });
+
+    const [panelIndex, setPanelIndex] = React.useState(index + 1);
+    const handleConfirm = (index: number) => {
+      setPanelIndex(index);
+    };
+    // const hanleConfirm = () => {};
+    React.useEffect(() => {
+      setPanelIndex(index + 1);
+    }, [index]);
 
     // LP token should not exist in withdraw panel for now
     const getWalletMapWithoutLP = React.useCallback(() => {
@@ -41,8 +58,45 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
       return clonedWalletMap;
     }, [walletMap]);
     const props: SwitchPanelProps<string> = {
-      index: index, // show default show
+      index: panelIndex, // show default show
       panelList: [
+        {
+          key: "confirm",
+          element: React.useMemo(
+            () => (
+              // @ts-ignore
+              <WithdrawConfirm
+                {...{
+                  ...rest,
+                  onWithdrawClick,
+                  type,
+                  tradeData: switchData.tradeData,
+                  handleConfirm,
+                }}
+              />
+            ),
+            [onWithdrawClick, rest, switchData.tradeData, type]
+          ),
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={-2}
+                    onBack={() => {
+                      setPanelIndex(1);
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
+        },
         {
           key: "trade",
           element: React.useMemo(
@@ -53,6 +107,7 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
                 {...{
                   ...rest,
                   type,
+                  handleConfirm,
                   chargeFeeTokenList: chargeFeeTokenList
                     ? chargeFeeTokenList
                     : [],
@@ -68,21 +123,41 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
               />
             ),
             [
-              onChangeEvent,
-              chargeFeeTokenList,
               rest,
-              switchData,
+              type,
+              chargeFeeTokenList,
+              switchData.tradeData,
+              onChangeEvent,
+              coinMap,
               onWithdrawClick,
               withdrawBtnStatus,
               assetsData,
               walletMap,
             ]
           ),
-          toolBarItem: undefined,
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={-2}
+                    onBack={() => {
+                      onBack();
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
         },
       ].concat(
         type === "TOKEN"
-          ? [
+          ? ([
               {
                 key: "tradeMenuList",
                 element: React.useMemo(
@@ -105,7 +180,7 @@ export const WithdrawPanel = withTranslation("common", { withRef: true })(
                 ),
                 toolBarItem: undefined,
               },
-            ]
+            ] as any)
           : []
       ),
     };

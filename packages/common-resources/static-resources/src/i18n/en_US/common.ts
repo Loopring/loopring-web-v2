@@ -63,7 +63,6 @@ export default {
   labelAssetTitle: "Loopring L2 Total Assets",
   labelAssetMobileTitle: "Loopring L2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
-  labelAssetsBtnRamp: "Buy with Card",
   labelLevel: "VIP Level",
   labelOrderbook: "Orderbook",
   labelSetPublicKey: "Set EdDSA Public Key",
@@ -142,7 +141,7 @@ export default {
   labelMiningRewards: "Mining Rewards",
   labelLiquidityValue: "Liquidity Value",
   labelCopyAddClip: "Address Copied to Clipboard!",
-  labelPleaseInputWalletAddress: "Please Input Address",
+  labelPleaseInputWalletAddress: "Please input address / ens / account id",
   labelEmptyDefault: "No data to display",
   labelUnlockAccount: "Unlock Account",
   labelLockWallet: "Lock Wallet",
@@ -207,14 +206,15 @@ export default {
   labelTryAnother: "Try Another Sig Method",
   labelCancel: "Cancel",
   describeTitleNoAccount:
-    "You need to activate Loopring L2.\n Please make a deposit to create Loopring L2 wallet",
+    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeTitleOpenAccounting:
     "Your deposit has been submitted to Ethereum.\n Please wait...",
   describeTitleOnErrorNetwork:
     "Your current network is not supported by Loopring!\n Please change network via {{connectName}}.",
   describeTitleNotActive:
-    "Connect your wallet,\n make a deposit, and enjoy using Loopring L2.",
-  describeTitleConnectToWallet: "Connect wallet to start",
+    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
+  describeTitleConnectToWallet:
+    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeWhatIsGuardian: "What is a Loopring guardian",
   describeTitleConnectToWalletAsGuardian:
     "Connect a wallet to assign it as a guardian!",
@@ -389,6 +389,8 @@ export default {
   labelNFTDescription: "Description:",
   labelNFTDate: "Date:",
   labelNFTDeployContract: "Deploy",
+  labelNFTSend: "Send:",
+  labelNFTDeploy: "Deploy:",
   labelNFTDeploying: "Deploying",
   labelNFTMyNFT: "My NFT",
   labelNFTTokenID: "ID:",
@@ -471,7 +473,7 @@ export default {
   labelNFTDeployBtn: "Deploy NFT",
   labelNFTDeployBroker: "Deploy Broker:",
   labelDeployInProgress: "Processing...",
-  labelNFTDeploy: "Deploy NFT",
+  labelNFTDeployTitle: "Deploy NFT",
   labelVendor: "Buy with Card",
   labelLock: "Lock",
   labelWalletToWallet:
@@ -513,6 +515,7 @@ export default {
   labelTxGuardian_add_guardian: "add guardian",
   labelTxGuardian_remove_guardian: "remove guardian",
   labelTxGuardian_unlock_wallet: "unlock wallet",
+  labelTxGuardian_deposit_wallet: "deposit",
   labelTxGuardianApprove: "APPROVE",
   labelTxGuardianReject: "REJECT",
   labelReActiveAccount: "Re-Activate Account",
@@ -539,6 +542,8 @@ export default {
   depositLabelBtn: "Receive",
   depositLabelLinkRecent: "Recent receive history from L1",
   labelL2ToL1Title: "Send to L1",
+  labelL2ToMyL1Title: "Send to My L1",
+  labelL2ToOtherL1Title: "Send to Another L1",
   labelL2ToL1DeployTitle: "Deploy & Send to L1",
   labelL2toL1EnterToken: "Select Token",
   labelSendL1Btn: "Send",
@@ -557,7 +562,7 @@ export default {
     "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n Loopring L2 payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
-  labelL2toL2AddressInput: "Please input the address",
+  labelL2toL2AddressInput: "PPlease input address / ens / account id",
   labelL2toL2Memo: "Memo (Optional)",
   labelL2toL2MemoPlaceholder: "Please input the memo",
   labelL2toL2FeeChoose: "Select payment token",
@@ -594,15 +599,17 @@ export default {
   labelL1toL2HashEmpty:
     "My L1 \u2192 Loopring L2 transactions will show up here.",
   labelL1toL2Record: "Receive {{value}} {{symbol}}",
-  labelNFTSendL2Btn: "Send to Another Loopring L2",
-  labelNFTSendL1Btn: "Send to L1",
-  labelNFTDeploySendL1: "Deploy & Send to L1",
+  labelNFTSendL2Btn: "To Another Loopring L2",
+  labelNFTSendMyL1Btn: "To My L1",
+  labelNFTSendOtherL1Btn: "To Other L1",
+  labelNFTDeploySendMyL1: "To My L1 & Deploy Contract",
+  labelNFTDeploySendAnotherL1: "To another L1 & Deploy Contract",
   labelGuid: "Go to Guide",
   labelOK: "Ok",
   labelL2toL2InvalidAddress: "Invalid address or ENS",
   labelL2toL2AddressNotLoopring:
     "This address has not yet activated Loopring L2. Please make sure that the recipient can access Loopring L2 since the funds will be sent there.",
-  labelL2toL2AddressOrigin: "Address Origin",
+  labelL2toL2AddressType: "Address Type",
   labelL2toL2OriginDesc:
     "Please select the address source. Note: the following trading platforms currently do not support Loopring L2 transfers (Binance, Huobi, Okex…)",
   labelL2toL2OriginBtnExchange: "Exchange",
@@ -665,7 +672,7 @@ export default {
   labelNFTProperty: "Properties:",
   labelConfirmMint: "Confirm Metadata",
   labelUseIpfsMintAgree:
-    "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to delete NFTs or hide inappropriate content if an NFT is discovered to be harmful.",
+    "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
@@ -692,7 +699,7 @@ export default {
     "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
   labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
   labelSendTOL2: "To Another Loopring L2 Account",
-  labelSendToMyL1: "To L1 account",
+  labelSendToMyL1: "To my L1 account",
   labelSendToOtherL1: "To another L1 account",
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
@@ -727,4 +734,44 @@ export default {
   labelToken: "Token",
   labelMinRequirement: "Min Requirement",
   labelAvailability: "Availability",
+  labelWhatProvider: "Which provider would you like to use?",
+  labelMemo: "Memo",
+  labelAdvanceMint: "Advance Create",
+  labelWalletTypeDes:
+    "Please confirm the address origin again to ensure the assets are not mistakenly sent to the exchange address. ",
+  labelWalletTypeOptions: "{{type}} Wallet",
+  labelWalletTypeOtherSmart: "Other Smart",
+  labelWalletTypeLoopring: "Loopring",
+  labelWalletTypeEOA: "EOA",
+  labelWalletTypeExchange: "Exchange",
+  labelEOADes:
+    "There is no smart contract binds with this wallet address. (e.g. MetaMask, imtoken, Ledger, Trezor, etc....) ",
+  labelLoopringDes:
+    "This wallet is created using Loopring Wallet mobile app and binds with Loopring smart contract.",
+  labelOtherSmartDes:
+    "This wallet binds with smart contract that does not support Loopring Layer 2. You will need to send funds to the L1 account. ",
+  labelExchangeDes:
+    "The following trading platforms currently do not support Loopring L2 transfers (Binance, Coinbase, FTX, etc...). You will need to send funds to the L1 account. ",
+  labelExchangeTypeDes: "Please select the address source:",
+  labelNonExchangeTypeDes:
+    "eg: Loopring Wallet, Metamask, Coinbase Wallet, imtoken, Ledger, Trezor... EOA wallet",
+  labelNonExchangeType: "Non-Exchange Wallet",
+  labelExchangeType: "Exchange",
+  labelExchangeBinance: "Binance",
+  labelExchangeBinanceDes: "",
+  labelExchangeHuobi: "Huobi",
+  labelExchangeHuobiDes: "Transactions need to wait 24 hours",
+  labelExchangeCoinbase: "Coinbase",
+  labelExchangeOthers: "Others",
+  labelExchangeOthersDes: "",
+  labelL2toL1AddressType: "Address Type",
+  labelConfirmCEX: "Confirm CEX Support",
+  labelConfirmDetail:
+    "<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
+  labelCEXUnderstand: "I understand and acknowledge the risk",
+  labelMintFee: "Mint Fee",
+  labelMintFeeNotEnough: "Insufficient balance",
+  labelMintFeeChoose: "Select payment token",
 };

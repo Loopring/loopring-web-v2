@@ -1,7 +1,12 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box, Button, Divider, Typography } from "@mui/material";
-import { SubMenu, SubMenuList, useSettings } from "@loopring-web/component-lib";
+import {
+  SubMenu,
+  SubMenuList,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import {
   AccountStatus,
@@ -23,6 +28,7 @@ export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
   const selected = match?.params.item ?? "assetsNFT";
   const { account } = useAccount();
+  const { setShowNFTMintAdvance } = useOpenModals();
   const { t } = useTranslation(["common", "layout"]);
   const routerNFT = React.useMemo(() => {
     switch (selected) {
@@ -195,8 +201,9 @@ export const NFTPage = () => {
                     display={"flex"}
                     flexDirection={"column"}
                     alignItems={"center"}
+                    marginX={3}
                   >
-                    <Box marginY={1}>
+                    <Box marginY={1} width={"100%"}>
                       <Button
                         variant={"contained"}
                         color={"primary"}
@@ -207,7 +214,19 @@ export const NFTPage = () => {
                         {t("labelMintNFT")}
                       </Button>
                     </Box>
-                    <Box marginY={1}>
+                    <Box marginY={1} width={"100%"}>
+                      <Button
+                        onClick={() => {
+                          setShowNFTMintAdvance({ isShow: true });
+                        }}
+                        variant={"outlined"}
+                        color={"primary"}
+                        fullWidth
+                      >
+                        {t("labelAdvanceMint")}
+                      </Button>
+                    </Box>
+                    <Box marginY={1} width={"100%"}>
                       <Button
                         variant={"outlined"}
                         color={"primary"}

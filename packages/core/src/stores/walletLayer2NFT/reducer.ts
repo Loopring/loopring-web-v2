@@ -7,20 +7,20 @@ const initialState: WalletLayer2NFTStates = {
   total: 0,
   status: "DONE",
   errorMessage: null,
-  page: 1,
+  page: -1,
 };
 const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
   name: "walletLayer2NFT",
   initialState,
   reducers: {
-    updateWalletLayer2NFT(state, action: PayloadAction<{ page?: number }>) {
+    updateWalletLayer2NFT(state, _action: PayloadAction<{ page?: number }>) {
       state.status = SagaStatus.PENDING;
     },
     reset(state) {
       state = {
         ...initialState,
-        status: SagaStatus.UNSET,
       };
+      state.status = SagaStatus.UNSET;
     },
     socketUpdateBalance(state) {
       state.status = SagaStatus.PENDING;
