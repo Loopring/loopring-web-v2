@@ -5,6 +5,8 @@
     "rule": "test_1_rule.en.md",
     "rehypeRaw": "0",
     "banner": {
+      "laptop": "test_1_banner.en.jpeg",
+      "mobile": "test_1_banner.en.jpeg",
       "pad": "test_1_banner.en.jpeg"
     },
     "showBannerOrTitle": "0",

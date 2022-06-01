@@ -9,6 +9,7 @@ let json = {},
   column = [],
   duration = {},
   api = {};
+banner = {};
 fs.createReadStream(filePath)
   .pipe(parse({ delimiter: ",", from_line: 1 }))
   .on("data", (data) => {
@@ -19,14 +20,17 @@ fs.createReadStream(filePath)
           return item;
         } else if (item === "duration") {
           duration = { ...duration, ...prev };
-          return { duration: duration };
+          return { duration };
+        } else if (item === "banner") {
+          banner = { ...banner, ...prev };
+          return { banner };
         } else if (item === "api") {
           api = { ...api, ...prev };
-          return { api: api };
+          return { api };
         } else if (item === "column") {
           const item = prev.split(":");
           column = [...column, { key: item[0], label: item[1] }];
-          return { column: column };
+          return { column };
         } else {
           return { [item]: prev };
         }
@@ -41,7 +45,7 @@ fs.createReadStream(filePath)
   .on("end", () => {
     console.log(json);
     console.log("-----------");
-    console.log(`\"${path.basename(filePath).replace(".csv", "")}\":`);
+    console.log(`\"${path.basename(filePath).replace(/\..*/, "")}\":`);
     console.log(JSON.stringify(json));
     // csvTable.reduce((prev, item) => {
     //   Object.keys(item)[0];

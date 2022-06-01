@@ -1,6 +1,6 @@
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Box, Fab, Link, Typography } from "@mui/material";
+import { Box, BoxProps, Fab, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { ScrollTop } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
@@ -14,12 +14,41 @@ import gfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { MarkdownStyle } from "pages/MarkdownPage/style";
 import { useTheme } from "@emotion/react";
+import { EventData } from "./interface";
 
-const LayoutStyled = styled(Box)`
+const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  .title-banner {
+    ${({ eventData: { showBannerOrTitle, banner } }) => {
+      if (showBannerOrTitle == "1" && banner.laptop) {
+        return `
+        h1,
+        h2 {
+         overflow: hidden;
+         text-indent:-999999em; 
+        }
+        width:100%;
+        background-position:50%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        @media only screen and (max-width: 600px) {
+          min-height: 30vw;
+          background-image: url(${banner.mobile});
+        }
+        @media only screen and (max-width: 992px) {
+          min-height: 30vw; 
+          background-image: url(${banner.pad});
+        };
+        @media only screen and (min-width: 1200px) {
+          background-image: url(${banner.laptop});
+          min-height: 380px;
+        }`;
+      }
+    }}
+  }
 
   ol,
   ul {
@@ -50,7 +79,7 @@ const LayoutStyled = styled(Box)`
       top: 0;
     }
   }
-`;
+` as (props: BoxProps & { eventData: EventData }) => JSX.Element;
 // ${cssStyle}
 
 export const TradeRacePage = withTranslation("common")(
@@ -75,24 +104,32 @@ export const TradeRacePage = withTranslation("common")(
           </Fab>
         </ScrollTop>
         {eventData ? (
-          <LayoutStyled marginY={4}>
-            <Typography
-              marginY={1}
-              component={"h1"}
-              variant={"h1"}
-              whiteSpace={"pre-line"}
-              textAlign={"center"}
-              dangerouslySetInnerHTML={{ __html: eventData.eventTitle }}
-            />
+          <LayoutStyled marginY={4} eventData={eventData}>
+            <Box className={"title-banner"}>
+              <Typography
+                // sx={{
+                //   textIndent:
+                //     eventData.banner && eventData.showBannerOrTitle == "1"
+                //       ? "-99999em"
+                //       : "in",
+                // }}
+                marginY={1}
+                component={"h1"}
+                variant={"h1"}
+                whiteSpace={"pre-line"}
+                textAlign={"center"}
+                dangerouslySetInnerHTML={{ __html: eventData.eventTitle }}
+              />
 
-            <Typography
-              component={"h2"}
-              variant={"h2"}
-              whiteSpace={"pre-line"}
-              textAlign={"center"}
-              marginBottom={4}
-              dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
-            />
+              <Typography
+                component={"h2"}
+                variant={"h2"}
+                whiteSpace={"pre-line"}
+                textAlign={"center"}
+                marginBottom={4}
+                dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
+              />
+            </Box>
 
             {eventStatus && (
               <Box

@@ -77,7 +77,7 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
 export const RankRaw = <R extends object>({
   column,
   version,
-  filters,
+  filters = [],
 }: EventAPI & Partial<EventAPIExtender>) => {
   const history = useHistory();
   const { t } = useTranslation();
@@ -90,7 +90,7 @@ export const RankRaw = <R extends object>({
   const [showLoading, setShowLoading] = React.useState(true);
   const searchParams = new URLSearchParams(search);
   const [selected, setSelected] = React.useState<string>(
-    searchParams.get("selected") ?? ""
+    searchParams.get("selected") ?? filters[0]
   );
   const onChange = (event: React.ChangeEvent<{ value: string }>) => {
     if (event.target.value) {
@@ -100,61 +100,6 @@ export const RankRaw = <R extends object>({
       history.push(pathname + "?" + searchParams.toString());
     }
   };
-  // const handleFilterChange = React.useCallback(
-  //   (e: React.ChangeEvent<{ value: string }>) => {
-  //     history.push(pathname + "?" + searchParams.toString());
-  //   },
-  //   []
-  // );
-  // const { params } = useRouteMatch();
-  // const { search, pathname } = useLocation();
-  // const searchParams = new URLSearchParams(search);
-  // const [selected, setSelected] = React.useState();
-  // const [filter, setFilter] = React.useState<
-  //   | {
-  //       value: string;
-  //       list: Array<{ label: string; value: string }>;
-  //     }
-  //   | undefined
-  // >(() => {
-  //   const value
-  //   selected
-  //     value = list[0].value;
-  //     if (params) {
-  //       value =
-  //         list.find(
-  //           (item) => props.params && item.label == params[props.params.key]
-  //         )?.value ?? value;
-  //     }
-  //   return column.
-  //   // let value,
-  //   //   list = [];
-  //   // if (props.params && props.params.key) {
-  //   //   list = props.params.values.map((item) => {
-  //   //     try {
-  //   //       const state = store.getState();
-  //   //       return { label: item.label, value: eval(item.value) };
-  //   //     } catch (error) {
-  //   //       console.log("eval error", error);
-  //   //       return { label: item.label, value: item.value };
-  //   //     }
-  //   //   });
-  //   //   value = list[0].value;
-  //   //   if (params) {
-  //   //     value =
-  //   //       list.find(
-  //   //         (item) => props.params && item.label == params[props.params.key]
-  //   //       )?.value ?? value;
-  //   //   }
-  //   //   return {
-  //   //     value,
-  //   //     list,
-  //   //     key: props.params.key,
-  //   //   };
-  //   // } else {
-  //   //   return undefined;
-  //   // }
-  // });
 
   React.useEffect(() => {
     if (searchValue !== "" && rank?.data.length) {
@@ -237,82 +182,85 @@ export const RankRaw = <R extends object>({
   }, [chainId, selected]);
 
   return (
-    <WrapperStyled
+    <Box
       flex={1}
       display={"flex"}
       flexDirection={"column"}
       maxWidth={1200}
       width={"100%"}
-      paddingX={3}
+      paddingX={isMobile ? 1 : 3}
     >
-      <Box
-        alignSelf={"flex-end"}
-        marginY={2}
-        display={"flex"}
-        justifyContent={"space-between"}
-        width={"100%"}
-      >
-        {filters && (
-          <StyledTextFiled
-            id={"trading-race-filter"}
-            select
-            style={{ width: 150, textAlign: "left" }}
-            value={selected}
-            onChange={onChange}
-            inputProps={{ IconComponent: DropDownIcon }}
-          >
-            {filters.map((item, index) => (
-              <MenuItem key={item + index} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </StyledTextFiled>
-        )}
-        <InputSearch
-          value={searchValue}
-          onChange={(value: any) => {
-            // setSearchValue(value)
-            setSearchValue(value);
-          }}
-        />
-      </Box>
-      <Box
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        flexDirection={isMobile ? "column" : "row"}
-      >
-        <Typography variant={"h5"}>
-          {t("labelTradeRaceYourRanking")}: {rank?.owner?.rank || EmptyValueTag}
-        </Typography>
-      </Box>
-      <TableStyled height={(rankTableData.length + 1) * RowConfig.rowHeight}>
-        {rank?.data.length ? (
-          <Table
-            className={"scrollable"}
-            {...{
-              ...defaultArgs,
-              rawData: rankTableData,
-              showloading: showLoading,
+      <WrapperStyled flex={1} padding={isMobile ? 1 : 3}>
+        <Box
+          alignSelf={"flex-end"}
+          marginY={2}
+          display={"flex"}
+          justifyContent={"space-between"}
+          width={"100%"}
+        >
+          {filters && (
+            <StyledTextFiled
+              id={"trading-race-filter"}
+              select
+              style={{ width: 150, textAlign: "left" }}
+              value={selected}
+              onChange={onChange}
+              inputProps={{ IconComponent: DropDownIcon }}
+            >
+              {filters.map((item, index) => (
+                <MenuItem key={item + index} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </StyledTextFiled>
+          )}
+          <InputSearch
+            value={searchValue}
+            onChange={(value: any) => {
+              // setSearchValue(value)
+              setSearchValue(value);
             }}
           />
-        ) : (
-          <Box
-            flex={1}
-            height={"100%"}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            <img
-              className="loading-gif"
-              alt={"loading"}
-              width="60"
-              src={`${SoursURL}images/loading-line.gif`}
+        </Box>
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flexDirection={isMobile ? "column" : "row"}
+        >
+          <Typography variant={"h5"}>
+            {t("labelTradeRaceYourRanking")}:{" "}
+            {rank?.owner?.rank || EmptyValueTag}
+          </Typography>
+        </Box>
+        <TableStyled height={(rankTableData.length + 1) * RowConfig.rowHeight}>
+          {rank?.data.length ? (
+            <Table
+              className={"scrollable"}
+              {...{
+                ...defaultArgs,
+                rawData: rankTableData,
+                showloading: showLoading,
+              }}
             />
-          </Box>
-        )}
-      </TableStyled>
-    </WrapperStyled>
+          ) : (
+            <Box
+              flex={1}
+              height={"100%"}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <img
+                className="loading-gif"
+                alt={"loading"}
+                width="60"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </Box>
+          )}
+        </TableStyled>
+      </WrapperStyled>
+    </Box>
   );
 };

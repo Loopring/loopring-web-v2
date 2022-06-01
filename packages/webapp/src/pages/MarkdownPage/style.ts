@@ -107,5 +107,6 @@ export const MarkdownStyle = styled(Grid)`
   .markdown-body.no-bg {
     background-color: initial;
     box-shadow: initial;
+    padding: 0;
   }
 ` as typeof Grid;

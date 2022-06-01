@@ -5,9 +5,11 @@
     "rule": "test_1_rule.en.md",
     "rehypeRaw": "0",
     "banner": {
-      "pad": "test_1_banner.en.jpeg"
+      "laptop": "test_1_banner.en.webp",
+      "mobile":"test_1_banner.en.webp",
+      "pad": "test_1_banner.en.webp"
     },
-    "showBannerOrTitle": "0",
+    "showBannerOrTitle": "1",
     "local": "en-us",
     "duration": {
       "prev": "Activity Period:",
@@ -17,7 +19,7 @@
       "middle": "to"
     },
     "api": {
-      "version": "3",
+      "version": "1",
       "column": [
         {
           "key": "key1",

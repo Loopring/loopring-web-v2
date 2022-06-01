@@ -40,12 +40,10 @@ export const useTradeRace = () => {
         // follow /2021/01/2021-01-01.en.json
         const [year, month, day] = match?.params.path.split("-");
         const type = searchParams.get("type");
-        const path = `/${year}/${month}/`;
+        const path = `${url_path}/${year}/${month}/`;
         if (year && month && day && type) {
           fetch(
-            `${url_path}/${path}/${year}-${month}-${day}.${
-              languageMap[i18n.language]
-            }.json`
+            `${path}/${year}-${month}-${day}.${languageMap[i18n.language]}.json`
           )
             .then((response) => {
               if (response.ok) {
@@ -57,51 +55,66 @@ export const useTradeRace = () => {
             .then((input: { [key: string]: EventData }) => input[type])
             .then(async (eventData: EventData) => {
               myLog("useTradeRace eventData", eventData);
-              // https://uat2.loopring.io/api/v3/activity/getFilterInfo?version=1
-              const configUrl = `${baseURL}/${Config_INFO_URL}?version=${eventData.api?.version}`;
-              myLog("baseURL", configUrl);
-              const config: [{ [key: string]: any }, string] =
-                await Promise.all([
-                  fetch(configUrl).then((response) => {
-                    if (response.ok) {
-                      return response.json();
-                    } else {
-                      return {};
-                    }
-                  }),
-                  fetch(`${url_path}/${path}/` + eventData.rule)
-                    .then((response) => response.text())
-                    .then((input) => {
-                      return input;
-                    })
-                    .catch(() => {
-                      return "";
+              if (eventData) {
+                // https://uat2.loopring.io/api/v3/activity/getFilterInfo?version=1
+                const configUrl = `${baseURL}/${Config_INFO_URL}?version=${eventData.api?.version}`;
+                myLog("baseURL", configUrl);
+                const config: [{ [key: string]: any }, string] =
+                  await Promise.all([
+                    fetch(configUrl).then((response) => {
+                      if (response.ok) {
+                        return response.json();
+                      } else {
+                        return {};
+                      }
                     }),
-                ]);
-              const startUnix = moment(
-                eventData.duration.startDate,
-                "DD/MM/YYYY HH:mm:ss"
-              ).valueOf();
-              const endUnix = moment(
-                eventData.duration.endDate,
-                "DD/MM/YYYY HH:mm:ss"
-              ).valueOf();
-              if (startUnix > Date.now()) {
-                setEventStatus(EVENT_STATUS.EVENT_READY);
+                    fetch(`${path}/` + eventData.rule)
+                      .then((response) => response.text())
+                      .then((input) => {
+                        return input;
+                      })
+                      .catch(() => {
+                        return "";
+                      }),
+                  ]);
+                const startUnix = moment(
+                  eventData.duration.startDate,
+                  "DD/MM/YYYY HH:mm:ss"
+                ).valueOf();
+                const endUnix = moment(
+                  eventData.duration.endDate,
+                  "DD/MM/YYYY HH:mm:ss"
+                ).valueOf();
+                if (startUnix > Date.now()) {
+                  setEventStatus(EVENT_STATUS.EVENT_READY);
+                }
+                setEventData({
+                  ...eventData,
+                  banner: {
+                    pad: eventData.banner?.pad
+                      ? `${path}/` + eventData.banner.pad
+                      : undefined,
+                    laptop: eventData.banner?.laptop
+                      ? `${path}/` + eventData.banner.laptop
+                      : undefined,
+                    mobile: eventData.banner?.mobile
+                      ? `${path}/` + eventData.banner.mobile
+                      : undefined,
+                  },
+                  duration: {
+                    ...eventData.duration,
+                    startDate: config[0].start ?? startUnix,
+                    endDate: config[0].end ?? endUnix,
+                  },
+                  ruleMarkdown: config[1],
+                  api: {
+                    ...eventData.api,
+                    ...config[0],
+                  },
+                });
+              } else {
+                throw "no EventData";
               }
-              setEventData({
-                ...eventData,
-                duration: {
-                  ...eventData.duration,
-                  startDate: config[0].start ?? startUnix,
-                  endDate: config[0].end ?? endUnix,
-                },
-                ruleMarkdown: config[1],
-                api: {
-                  ...eventData.api,
-                  ...config[0],
-                },
-              });
             })
             .catch((e) => {
               throw e;

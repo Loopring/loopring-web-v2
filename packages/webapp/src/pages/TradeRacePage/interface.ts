@@ -10,7 +10,12 @@ export type EventData = {
   eventTitle: string;
   subTitle: string;
   local: "en-US";
-  banner: string;
+  banner: {
+    laptop?: string;
+    mobile?: string;
+    pad?: string;
+  };
+  showBannerOrTitle: "0" | "1";
   rule: string;
   ruleMarkdown?: string;
   rehypeRaw: "0" | "1";
