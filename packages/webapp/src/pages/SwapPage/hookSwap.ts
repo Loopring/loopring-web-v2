@@ -59,6 +59,7 @@ import { useTranslation } from "react-i18next";
 import { myLog } from "@loopring-web/common-resources";
 import {
   calcPriceByAmmTickMapDepth,
+  Limit,
   marketInitCheck,
   reCalcStoB,
   swapDependAsync,
@@ -136,9 +137,15 @@ export const useSwap = <C extends { [key: string]: any }>({
     }, {} as CoinMap<C>),
   });
   const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
-  const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>(
-    []
-  );
+  const [myTradeArray, setMyTradeArray] = React.useState<{
+    data: RawDataTradeItem[];
+    total: number;
+    page: number;
+  }>({
+    data: [],
+    total: 0,
+    page: -1,
+  });
   const [tradeFloat, setTradeFloat] =
     React.useState<TradeFloat | undefined>(undefined);
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
@@ -519,41 +526,59 @@ export const useSwap = <C extends { [key: string]: any }>({
   /*** Btn related end ***/
 
   /*** table related function ***/
-  const myTradeTableCallback = React.useCallback(async () => {
-    if (market && account.accountId && account.apiKey && LoopringAPI.userAPI) {
-      const { userTrades } = await LoopringAPI.userAPI.getUserTrades(
-        {
-          accountId: account.accountId,
+  const updateMyTradeTable = React.useCallback(
+    async ({ page }: { page: number }) => {
+      if (
+        market &&
+        account.accountId &&
+        account.apiKey &&
+        LoopringAPI.userAPI
+      ) {
+        const { userTrades, totalNum } =
+          await LoopringAPI.userAPI.getUserTrades(
+            {
+              accountId: account.accountId,
+              market,
+              offset: (page - 1) * Limit,
+              limit: Limit,
+            },
+            account.apiKey
+          );
+        let _myTradeArray = makeMarketArray(
           market,
-          limit: 100,
-        },
-        account.apiKey
-      );
-      let _myTradeArray = makeMarketArray(
-        market,
-        userTrades
-      ) as RawDataTradeItem[];
-      const formattedTradeArray = _myTradeArray.map((o) => {
-        return {
-          ...o,
-          precision: marketMap
-            ? marketMap[market]?.precisionForPrice
-            : undefined,
-        };
-      }) as RawDataTradeItem[];
-      // setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-      setMyTradeArray(_myTradeArray ? formattedTradeArray : []);
-    } else {
-      setMyTradeArray([]);
-    }
-  }, [market, account.accountId, account.apiKey, setMyTradeArray]);
+          userTrades
+        ) as RawDataTradeItem[];
+        const formattedTradeArray = _myTradeArray.map((o) => {
+          return {
+            ...o,
+            precision: marketMap
+              ? marketMap[market]?.precisionForPrice
+              : undefined,
+          };
+        }) as RawDataTradeItem[];
+        // setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+        setMyTradeArray({
+          page,
+          total: totalNum,
+          data: _myTradeArray ? formattedTradeArray : [],
+        });
+      } else {
+        setMyTradeArray({
+          page: -1,
+          total: 0,
+          data: [],
+        });
+      }
+    },
+    [market, account.accountId, account.apiKey, setMyTradeArray]
+  );
   React.useEffect(() => {
     if (
       market &&
       accountStatus === SagaStatus.UNSET &&
       walletLayer2Status === SagaStatus.UNSET
     ) {
-      myTradeTableCallback();
+      updateMyTradeTable({ page: 1 });
     }
   }, [market, accountStatus, walletLayer2Status]);
 
@@ -1186,6 +1211,7 @@ export const useSwap = <C extends { [key: string]: any }>({
     market,
     toPro,
     isMobile,
+    updateMyTradeTable,
     // buyPrecision,
     // sellPrecision,
   };

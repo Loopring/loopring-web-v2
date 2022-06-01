@@ -17,10 +17,10 @@ import {
 import { useOrderList } from "./hookTable";
 import {
   useAccount,
+  useGetOrderHistorys,
   tradeProSettings as tradeProSettingsReduce,
 } from "@loopring-web/core";
 import styled from "@emotion/styled";
-import { useGetTrades } from "../../../Layer2Page/TradePanel/hooks";
 import { useHistory } from "react-router-dom";
 
 const CheckboxStyled = styled(Box)`
@@ -54,7 +54,8 @@ export const OrderTableView = withTranslation("common")(
       showDetailLoading,
       cancelOrderByHashList,
     } = useOrderList();
-    const { userOrderDetailList, getUserOrderDetailTradeList } = useGetTrades();
+    const { userOrderDetailList, getUserOrderDetailTradeList } =
+      useGetOrderHistorys();
     const [tabValue, setTabValue] = React.useState(0);
     const history = useHistory();
     const {

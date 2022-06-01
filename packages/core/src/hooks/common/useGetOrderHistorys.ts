@@ -1,22 +1,17 @@
 import React from "react";
 import { RawDataTradeItem } from "@loopring-web/component-lib";
 
-import {
-  Side,
-  toBig,
-  GetUserTradesRequest,
-  MarketTradeInfo,
-} from "@loopring-web/loopring-sdk";
+import { Side, toBig, GetUserTradesRequest } from "@loopring-web/loopring-sdk";
 import {
   store,
   LoopringAPI,
   useAccount,
   volumeToCount,
   volumeToCountAsBigNumber,
-} from "@loopring-web/core";
-import { TradeTypes } from "@loopring-web/common-resources";
+} from "../../index";
+import { TradeTypes } from "@loopring-web//common-resources";
 
-export function useGetTrades() {
+export function useGetOrderHistorys() {
   const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([]);
   const [showLoading, setShowLoading] = React.useState(true);
   const [userOrderDetailList, setUserOrderDetailList] = React.useState<any[]>(

@@ -278,7 +278,7 @@ export const MintAdvanceNFTWrap = <
               marginBottom={1}
             >
               <Typography component={"span"} color={"inherit"} minWidth={28}>
-                {t("transferLabelFee")}：
+                {t("labelMintFee")}：
               </Typography>
               <Box
                 component={"span"}
@@ -301,7 +301,7 @@ export const MintAdvanceNFTWrap = <
                   component={"span"}
                   color={"var(--color-error)"}
                 >
-                  {isFeeNotEnough && t("transferLabelFeeNotEnough")}
+                  {isFeeNotEnough && t("labelMintFeeNotEnough")}
                 </Typography>
               </Box>
             </Typography>
@@ -312,7 +312,7 @@ export const MintAdvanceNFTWrap = <
                   color={"var(--color-text-third)"}
                   marginBottom={1}
                 >
-                  {t("transferLabelFeeChoose")}
+                  {t("labelMintFeeChoose")}
                 </Typography>
                 <FeeToggle
                   chargeFeeTokenList={chargeFeeTokenList}
@@ -324,7 +324,6 @@ export const MintAdvanceNFTWrap = <
           </>
         )}
       </Grid>
-
       <Grid item marginTop={2} alignSelf={"stretch"}>
         <Box
           display={"flex"}

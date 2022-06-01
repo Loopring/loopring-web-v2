@@ -68,8 +68,19 @@ export type TradeTableProps = {
   rawData: RawDataTradeItem[];
 
   // getUserTradeList?: (param: Omit<GetUserTradesRequest, 'accountId'>) => void;
-  getUserTradeList?: (param: any) => void;
+  getUserTradeList?: (param: {
+    market?: string;
+    page: number;
+    total?: number;
+    pageSize: number;
+    // offset: (page - 1) * pageSize,
+    // limit: pageSize,
+    orderHash?: any;
+    fillTypes?: any;
+    fromId?: any;
+  }) => void;
   pagination?: {
+    page: number;
     pageSize: number;
     total: number;
   };
@@ -484,7 +495,7 @@ export const TradeTable = withTranslation("tables")(
       DateRange<string | Date>
     >([null, null]);
     const [filterPair, setFilterPair] = React.useState("all");
-    const [page, setPage] = React.useState(1);
+    // const [page, setPage] = React.useState(1);
     // const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
     const { currency, isMobile } = useSettings();
     const defaultArgs: any = {
@@ -505,24 +516,25 @@ export const TradeTable = withTranslation("tables")(
       ({
         TableType,
         currFilterPair = filterPair,
-        currPage = page,
+        currPage = pagination?.page || 1,
         currFilterType = filterType,
       }) => {
         if (TableType === "filter") {
-          setPage(1);
+          currPage = 1;
         }
         const market =
           currFilterPair === "all" ? "" : currFilterPair.replace(/\s+/g, "");
         if (getUserTradeList) {
           getUserTradeList({
+            ...pagination,
+            pageSize,
             market,
-            offset: (currPage - 1) * pageSize,
-            limit: pageSize,
+            page: currPage,
             fillTypes: currFilterType !== "all" ? currFilterType : "",
           });
         }
       },
-      [filterPair, getUserTradeList, page, pageSize]
+      [filterPair, filterType, pageSize, getUserTradeList, pagination]
     );
 
     const handleFilterChange = React.useCallback(
@@ -542,7 +554,6 @@ export const TradeTable = withTranslation("tables")(
 
     const handlePageChange = React.useCallback(
       (page: number) => {
-        setPage(page);
         updateData({ TableType: TableType.page, currPage: page });
       },
       [updateData]
@@ -631,7 +642,7 @@ export const TradeTable = withTranslation("tables")(
         {pagination && (
           <TablePagination
             height={rowHeight}
-            page={page}
+            page={pagination.page}
             pageSize={pageSize}
             total={pagination.total}
             onPageChange={handlePageChange}

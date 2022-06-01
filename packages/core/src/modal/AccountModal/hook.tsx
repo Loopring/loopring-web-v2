@@ -184,7 +184,7 @@ export function useAccountModalForUI({
   const { transferProps } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
-  const { nftDeployProps } = useNFTDeploy({});
+  const { nftDeployProps } = useNFTDeploy();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -295,7 +295,6 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        //TODO is advance
       },
     };
   }, [setShowAccount]);
@@ -1337,7 +1336,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTTransfer_User_Denied]: {
         view: (
           <NFTTransfer_User_Denied
-            btnInfo={backToTransferBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftTransferProps.onTransferClick(nftTransferValue as any);
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1425,7 +1429,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTWithdraw_User_Denied]: {
         view: (
           <NFTWithdraw_User_Denied
-            btnInfo={backToWithdrawBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftWithdrawProps.onWithdrawClick(nftWithdrawValue as any);
+              },
+            }}
             {...{
               ...rest,
               account,
