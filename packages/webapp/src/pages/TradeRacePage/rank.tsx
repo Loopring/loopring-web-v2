@@ -134,6 +134,22 @@ export const RankRaw = <R extends object>({
           formatter: ({ row, column }: any) => {
             if (/address/gi.test(column.key.toLowerCase())) {
               return getShortAddr(row[column.key]);
+            } else if (column.key === "rank") {
+              const value = row.rank;
+              const formattedValue =
+                value === "1" ? (
+                  <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
+                ) : value === "2" ? (
+                  <SecondPlaceIcon
+                    style={{ marginTop: 8 }}
+                    fontSize={"large"}
+                  />
+                ) : value === "3" ? (
+                  <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
+                ) : (
+                  <Box paddingLeft={1}>{value}</Box>
+                );
+              return <Box className="rdg-cell-value">{formattedValue}</Box>;
             } else {
               return row[column.key];
             }
@@ -141,28 +157,7 @@ export const RankRaw = <R extends object>({
         }))
       : [],
     generateRows: (rawData: R) => rawData,
-    generateColumns: ({ columnsRaw }: any) =>
-      [
-        {
-          key: "rank",
-          name: t("labelTradeRaceRank"),
-          formatter: ({ row }) => {
-            const value = row["rank"];
-            const formattedValue =
-              value === "1" ? (
-                <FirstPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-              ) : value === "2" ? (
-                <SecondPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-              ) : value === "3" ? (
-                <ThirdPlaceIcon style={{ marginTop: 8 }} fontSize={"large"} />
-              ) : (
-                <Box paddingLeft={1}>{value}</Box>
-              );
-            return <Box className="rdg-cell-value">{formattedValue}</Box>;
-          },
-        },
-        ...columnsRaw,
-      ] as Column<any, unknown>[],
+    generateColumns: ({ columnsRaw }: any) => columnsRaw,
   };
   React.useEffect(() => {
     getTableValues();
