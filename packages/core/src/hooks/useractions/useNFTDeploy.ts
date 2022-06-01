@@ -37,12 +37,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
-  doDeployDone,
-}: {
-  isLocalShow?: boolean;
-  doDeployDone?: () => void;
-}) {
+export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
@@ -50,7 +45,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
   const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const { setShowAccount } = useOpenModals();
+  const { setShowAccount, setShowNFTDetail } = useOpenModals();
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const {
@@ -159,9 +154,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
               }
               walletLayer2Service.sendUserUpdate();
               updateWalletLayer2NFT({ page });
-              if (doDeployDone) {
-                doDeployDone();
-              }
+              setShowNFTDetail({ isShow: false });
               resetNFTDeployData();
             }
           } else {
@@ -214,7 +207,6 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>({
       setOneItem,
       updateWalletLayer2NFT,
       page,
-      doDeployDone,
       resetNFTDeployData,
       updateHW,
     ]

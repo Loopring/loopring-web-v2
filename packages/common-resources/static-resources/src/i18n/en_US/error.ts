@@ -3,6 +3,7 @@ export default {
   labelConnectUs:
     "If you believe this is indeed a bug, please <1>contact us</1>. <2/> We would appreciate your feedback.",
   errorBase: "Oops! Something went wrong.",
+  errorTimeout: "Oops! Something went wrong at network.",
   errorLoading: "Loading! Please wait...",
   error404: "404! Page can't be reached.",
   errorMaintain: "System update! Please wait...",
@@ -35,4 +36,5 @@ export default {
   errorNotInstallGME:
     "Please install the Gamestop Wallet browser extension. Then create, deposit, and activate the wallet before connecting to Loopring.io.",
   errorLinKWalletApp: "<0>app market</0>",
+  errorMintOverlap: "This NFT metadata is already minted in your Wallet!",
 };

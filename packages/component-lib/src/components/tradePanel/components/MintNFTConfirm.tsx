@@ -13,6 +13,7 @@ import {
   MintTradeNFT,
   myLog,
   NFTMETA,
+  RefreshIcon,
   RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
@@ -77,7 +78,13 @@ export const MintNFTConfirm = <
   const getDisabled = React.useMemo(() => {
     return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMintBtnStatus]);
-
+  const [error, setError] = React.useState(false);
+  const [src, setSrc] = React.useState(
+    metaData?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
+  );
+  React.useEffect(() => {
+    setSrc(metaData?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE));
+  }, [metaData?.image]);
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
       handleFeeChange(value);
@@ -147,14 +154,33 @@ export const MintNFTConfirm = <
                         height={"100%"}
                         justifyContent={"center"}
                       >
-                        <NftImage
-                          alt={"NFT"}
-                          src={metaData?.image?.replace(
-                            IPFS_META_URL,
-                            IPFS_LOOPRING_SITE
-                          )}
-                          onError={() => undefined}
-                        />
+                        {error ? (
+                          <Box
+                            flex={1}
+                            display={"flex"}
+                            alignItems={"center"}
+                            justifyContent={"center"}
+                            sx={{ cursor: "pointer" }}
+                            onClick={async (event) => {
+                              event.stopPropagation();
+                              setError(false);
+                              setSrc(
+                                metaData?.image?.replace(
+                                  IPFS_META_URL,
+                                  IPFS_LOOPRING_SITE
+                                )
+                              );
+                            }}
+                          >
+                            <RefreshIcon style={{ height: 36, width: 36 }} />
+                          </Box>
+                        ) : (
+                          <NftImage
+                            alt={src}
+                            src={src}
+                            onError={() => setError(true)}
+                          />
+                        )}
                       </Box>
                     ) : (
                       <Box

@@ -82,7 +82,7 @@ export function useNFTMint<
   const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const { setShowAccount, setShowNFTMint } = useOpenModals();
+  const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
 
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
@@ -308,7 +308,7 @@ export function useNFTMint<
         !isFeeNotEnough &&
         exchangeInfo
       ) {
-        setShowNFTMint({ isShow: false });
+        setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTMint_WaitForAuth,

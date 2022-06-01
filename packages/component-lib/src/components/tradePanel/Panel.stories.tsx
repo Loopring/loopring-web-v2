@@ -59,7 +59,6 @@ const Style = styled.div`
 let tradeData: any = {};
 // @ts-ignore
 let depositProps: DepositProps<any, any> = {
-  toIsLoopringAddress: false,
   toIsAddressCheckLoading: false,
   referIsLoopringAddress: false,
   referIsAddressCheckLoading: false,
@@ -141,7 +140,7 @@ let transferProps: Partial<TransferProps<any, any>> = {
   coinMap,
   walletMap,
   transferBtnStatus: TradeBtnStatus.AVAILABLE,
-  onTransferClick: (tradeData: any) => {
+  onTransferClick: async (tradeData: any) => {
     console.log("Swap button click", tradeData);
   },
   handlePanelEvent: async (
@@ -443,6 +442,7 @@ const ModalPanelWrap = () => {
       exportAccountProps={{} as any}
       setExportAccountToastOpen={{} as any}
       activeAccountProps={{} as any}
+      nftMintAdvanceProps={{} as any}
     />
   );
 };

@@ -238,8 +238,8 @@ export const ModalCloseButton = ({
       alignSelf={"flex-end"}
       position={"absolute"}
       zIndex={99}
-      marginTop={"-28px"}
-      marginRight={"12px"}
+      marginTop={"-27px"}
+      marginRight={1}
     >
       <IconButton
         size={"large"}
@@ -258,16 +258,19 @@ export const ModalBackButton = ({
   onBack,
   t,
   marginTop = "-24px",
+  marginLeft = 1.5,
 }: {
   onBack?: () => void;
   marginTop?: number | string;
-} & WithTranslation) => {
+  marginLeft?: number | string;
+} & Partial<WithTranslation>) => {
   return (
-    <Box alignSelf={"flex-start"} marginTop={marginTop} marginLeft={1.5}>
+    <Box alignSelf={"flex-start"} marginTop={marginTop} marginLeft={marginLeft}>
       <IconButton
+        className={"back-btn"}
         size={"large"}
         color={"inherit"}
-        aria-label={t("labelBack")}
+        aria-label={t && t("labelBack")}
         onClick={() => {
           onBack && onBack();
         }}

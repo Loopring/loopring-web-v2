@@ -38,6 +38,7 @@ const HistoryPanel = withTranslation("common")(
       userTrades,
       getUserTradeList,
       userTradesTotal,
+      page: tradePage,
       showLoading: showTradeLoading,
     } = useGetTrades(setToastOpen);
     const {
@@ -66,7 +67,7 @@ const HistoryPanel = withTranslation("common")(
         }
         if (value === "trades") {
           getUserTradeList({
-            limit: _pageSize ? _pageSize : pageSize,
+            pageSize: _pageSize ? _pageSize : pageSize,
           });
         }
         if (value === "ammRecords") {
@@ -142,6 +143,7 @@ const HistoryPanel = withTranslation("common")(
                 tokenMap: tokenMap,
                 isL2Trade: true,
                 pagination: {
+                  page: tradePage,
                   pageSize: pageSize,
                   total: userTradesTotal,
                 },

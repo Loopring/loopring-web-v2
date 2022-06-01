@@ -42,7 +42,6 @@ import {
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { updateSystem } from "../../stores/system/reducer";
-import { useTheme } from "@emotion/react";
 const providerCallback = async () => {
   const { _chainId } = store.getState().system;
   // statusAccountUnset();

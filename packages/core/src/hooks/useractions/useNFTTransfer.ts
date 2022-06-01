@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -19,6 +19,7 @@ import {
   TradeNFT,
   UIERROR_CODE,
   AddressError,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -43,18 +44,13 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export const useNFTTransfer = <R extends TradeNFT<T>, T>({
-  isLocalShow = false,
-  doTransferDone,
-}: {
-  isLocalShow?: boolean;
-  doTransferDone?: () => void;
-}) => {
-  const { setShowAccount, setShowNFTTransfer } = useOpenModals();
-
+export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
+  const [memo, setMemo] = React.useState("");
   const {
+    setShowAccount,
+    setShowNFTDetail,
     modals: {
-      isShowNFTTransfer: { nftData, nftBalance, ...nftRest },
+      isShowNFTTransfer: { isShow, nftData, nftBalance, info, ...nftRest },
     },
   } = useOpenModals();
 
@@ -62,13 +58,11 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
-
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
 
-  const [addressOrigin, setAddressOrigin] =
-    React.useState<"Wallet" | null>(null);
+  const [sureItsLayer2, setSureItsLayer2] =
+    React.useState<WALLET_TYPE | undefined>(undefined);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -78,12 +72,15 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: ({ fee }) => {
-      updateNFTTransferData({
-        ...nftTransferValue,
-        fee,
-      });
-    },
+    updateData: React.useCallback(
+      ({ fee }) => {
+        updateNFTTransferData({
+          ...nftTransferValue,
+          fee,
+        });
+      },
+      [nftTransferValue]
+    ),
   });
 
   const {
@@ -95,9 +92,17 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     isAddressCheckLoading,
     isSameAddress,
   } = useAddressCheck();
+  React.useEffect(() => {
+    setSureItsLayer2(undefined);
+  }, [realAddr]);
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-
+  const handleOnMemoChange = React.useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setMemo(e.target.value);
+    },
+    []
+  );
   const checkBtnStatus = React.useCallback(() => {
     if (
       tokenMap &&
@@ -106,13 +111,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       chargeFeeTokenList.length &&
       !isFeeNotEnough &&
       !isSameAddress &&
-      addressOrigin === "Wallet" &&
+      sureItsLayer2 &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
       sdk
         .toBig(nftTransferValue.tradeValue)
-        .lte(Number(nftTransferValue.nftBalance) ?? 0) &&
+        .lte(Number(nftTransferValue.balance) ?? 0) &&
       (addrStatus as AddressError) === AddressError.NoError &&
-      ((address && address.startsWith("0x")) || realAddr)
+      realAddr
     ) {
       enableBtn();
       myLog("enableBtn");
@@ -123,13 +128,12 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     tokenMap,
     nftTransferValue.fee?.belong,
     nftTransferValue.tradeValue,
-    nftTransferValue.nftBalance,
+    nftTransferValue.balance,
     chargeFeeTokenList.length,
     isFeeNotEnough,
     isSameAddress,
-    addressOrigin,
+    sureItsLayer2,
     addrStatus,
-    address,
     realAddr,
     disableBtn,
     enableBtn,
@@ -140,7 +144,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
   }, [
     address,
     addrStatus,
-    addressOrigin,
+    sureItsLayer2,
     isFeeNotEnough,
     isSameAddress,
     nftTransferValue.tradeValue,
@@ -151,13 +155,16 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    if (info?.isRetry) {
+      return;
+    }
     if (nftData) {
       updateNFTTransferData({
-        belong: nftData as any,
         balance: nftBalance,
+        ...nftRest,
+        belong: nftData as any,
         tradeValue: undefined,
         fee: feeInfo,
-        ...nftRest,
         address: address ? address : "*",
       });
     } else {
@@ -168,24 +175,23 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
         tradeValue: 0,
         address: "*",
       });
-      setShowNFTTransfer({ isShow: false });
     }
   }, [
     checkFeeIsEnough,
     nftData,
+    info?.isRetry,
     updateNFTTransferData,
     nftBalance,
     feeInfo,
     nftRest,
     address,
-    setShowNFTTransfer,
   ]);
 
   React.useEffect(() => {
-    if (isLocalShow) {
+    if (isShow || info?.isShowLocal) {
       resetDefault();
     }
-  }, [isLocalShow]);
+  }, [isShow, info?.isShowLocal]);
 
   React.useEffect(() => {
     if (
@@ -236,7 +242,6 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
           );
 
           myLog("submitInternalTransfer:", response);
-          setAddressOrigin(null);
           if (isAccActivated()) {
             if (
               (response as sdk.RESULT_INFO).code ||
@@ -251,7 +256,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                   isShow: true,
                   step: AccountStep.NFTTransfer_User_Denied,
                 });
-                setIsConfirmTransfer(false);
+                // setIsConfirmTransfer(false);
               } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
                 setShowAccount({
                   isShow: true,
@@ -277,10 +282,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
                     symbol: nftTransferValue.name,
                   },
                 });
-                setIsConfirmTransfer(false);
+                // setIsConfirmTransfer(false);
               }
             } else if ((response as sdk.TX_HASH_API)?.hash) {
-              setIsConfirmTransfer(false);
+              // setIsConfirmTransfer(false);
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTTransfer_In_Progress,
@@ -304,9 +309,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
               }
               walletLayer2Service.sendUserUpdate();
               updateWalletLayer2NFT({ page });
-              if (doTransferDone) {
-                doTransferDone();
-              }
+              setShowNFTDetail({ isShow: false });
               resetNFTTransferData();
             }
           } else {
@@ -351,13 +354,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
       checkHWAddr,
       chainId,
       setShowAccount,
+      nftTransferValue.name,
       checkFeeIsEnough,
       updateWalletLayer2NFT,
       page,
-      doTransferDone,
+      setShowNFTDetail,
       resetNFTTransferData,
       updateHW,
-      checkFeeIsEnough,
     ]
   );
 
@@ -376,11 +379,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
         connectProvides.usedWeb3 &&
         nftTransferValue?.nftData &&
         nftTransferValue?.fee?.belong &&
-        nftTransferValue?.fee?.__raw__ &&
+        nftTransferValue?.fee?.feeRaw &&
         eddsaKey?.sk
       ) {
         try {
-          setShowNFTTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_WaitForAuth,
@@ -392,7 +394,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
             0;
           const fee = sdk.toBig(feeRaw);
           const tradeValue = nftTransferValue.tradeValue;
-          const balance = nftTransferValue.nftBalance;
+          const balance = nftTransferValue.balance;
           const isExceedBalance = sdk.toBig(tradeValue).gt(balance);
 
           if (isExceedBalance) {
@@ -442,14 +444,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
           });
         }
       } else {
-        return false;
+        return;
       }
     },
     [
       account,
       tokenMap,
       exchangeInfo,
-      setShowNFTTransfer,
       setShowAccount,
       realAddr,
       address,
@@ -464,7 +465,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
           if (data.tradeData.belong) {
             updateNFTTransferData({
               tradeValue: data.tradeData?.tradeValue,
-              balance: data.tradeData.nftBalance,
+              balance: data.tradeData.balance,
               address: "*",
             });
           } else {
@@ -493,23 +494,22 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     },
     [lastRequest, processRequest, setShowAccount]
   );
-  const nftTransferProps: TransferProps<any, any> = {
+  const nftTransferProps: TransferProps<R, T> = {
+    handleOnMemoChange,
+    memo,
+    type: "NFT",
     addressDefault: address,
     realAddr,
-    handleSureItsLayer2: (sure: boolean) => {
-      if (sure) {
-        setAddressOrigin("Wallet");
-      }
+    handleSureItsLayer2: (sure: WALLET_TYPE) => {
+      setSureItsLayer2(sure);
     },
-    isConfirmTransfer,
-    addressOrigin,
-    tradeData: nftTransferValue as any,
+    // isConfirmTransfer,
+    sureItsLayer2,
+    tradeData: { ...nftTransferValue } as unknown as R,
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     transferBtnStatus: btnStatus,
-    onTransferClick: (trade: R) => {
-      isConfirmTransfer ? onTransferClick(trade) : setIsConfirmTransfer(true);
-    },
+    onTransferClick,
     handleFeeChange,
     handleOnAddressChange: (value: any) => {
       setAddress(value || "");
@@ -523,13 +523,12 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>({
     isSameAddress,
     isAddressCheckLoading,
   };
-  const cancelNFTTransfer = () => {
-    setIsConfirmTransfer(false);
-    resetDefault();
-  };
+  // const cancelNFTTransfer = () => {
+  //   resetDefault();
+  // };
   return {
     nftTransferProps,
     retryBtn,
-    cancelNFTTransfer,
+    // cancelNFTTransfer,
   };
 };

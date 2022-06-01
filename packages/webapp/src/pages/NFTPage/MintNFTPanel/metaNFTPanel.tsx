@@ -60,10 +60,6 @@ export const MetaNFTPanel = <
   onDelete,
   nftMintValue,
   errorOnMeta,
-  handleFeeChange,
-  isFeeNotEnough,
-  chargeFeeTokenList,
-  feeInfo,
 }: Partial<NFTMetaBlockProps<Me, Mi, C>> & {
   feeInfo: C;
   errorOnMeta: undefined | sdk.RESULT_INFO;

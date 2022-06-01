@@ -14,7 +14,7 @@ export enum TransactionStatus {
 export enum TransactionTradeTypes {
   allTypes = "all",
   deposit = "DEPOSIT",
-  withdraw = "WITHDRAW",
+  withdraw = "OFFCHAIN_WITHDRAWAL",
   transfer = "TRANSFER",
 }
 

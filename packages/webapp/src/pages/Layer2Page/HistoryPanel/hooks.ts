@@ -138,6 +138,7 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
   const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([]);
   const [userTradesTotal, setUserTradesTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
+  const [page, setPage] = React.useState(1);
   const {
     account: { accountId, apiKey },
   } = useAccount();
@@ -146,7 +147,24 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
   const { t } = useTranslation(["error"]);
 
   const getUserTradeList = React.useCallback(
-    async ({ market, orderHash, offset, limit, fromId, fillTypes }) => {
+    async ({
+      market,
+      orderHash,
+      page = 1,
+      pageSize,
+      fromId,
+      fillTypes,
+    }: {
+      market?: string;
+      page?: number;
+      total?: number;
+      pageSize: number;
+      // offset: (page - 1) * pageSize,
+      // limit: pageSize,
+      fromId?: any;
+      orderHash?: any;
+      fillTypes?: any;
+    }) => {
       if (
         LoopringAPI &&
         LoopringAPI.userAPI &&
@@ -155,13 +173,14 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
         tokenMap
       ) {
         setShowLoading(true);
+        setPage(page);
         const response = await LoopringAPI.userAPI.getUserTrades(
           {
             accountId,
             market,
             orderHash,
-            offset,
-            limit,
+            offset: (page - 1) * pageSize,
+            limit: pageSize,
             fromId,
             fillTypes,
           },
@@ -200,6 +219,7 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
     userTradesTotal,
     getUserTradeList,
     showLoading,
+    page,
   };
 }
 
