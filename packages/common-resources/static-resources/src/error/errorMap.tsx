@@ -1,6 +1,8 @@
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { TOptions } from "i18next";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { Link } from "@mui/material";
+import { myLog } from "../utils";
 
 export const ErrorMap = {
   ERROR_UNKNOWN: {
@@ -114,6 +116,10 @@ export const ErrorMap = {
     id: "NO_SDK",
     messageKey: "errorBase",
   },
+  TIME_OUT: {
+    id: "TIME_OUT",
+    messageKey: "errorTimeout",
+  },
   NO_NETWORK_ERROR: {
     id: "NO_NETWORK_ERROR",
     messageKey: "errorMessageNoNetwork",
@@ -178,7 +184,19 @@ export const ErrorMap = {
   PROVIDER_NOT_INSTALL_GME: {
     id: "PROVIDER_NOT_INSTALL_GME",
     messageKey: "errorNotInstallGME",
-    options: {},
+    options: {
+      link: (
+        <Trans i18nKey={"errorLinKWalletApp"} ns={"error"}>
+          <Link
+            target="_blank"
+            rel="noopener noreferrer"
+            href={"https://wallet.gamestop.com/wallets"}
+          >
+            app market
+          </Link>
+        </Trans>
+      ),
+    },
   },
   NO_IPFS_INSTANCE: {
     id: "NO_IPFS_INSTANCE",
@@ -205,14 +223,19 @@ export const ErrorMap = {
     messageKey: "errorIpfsDidToNftidError",
     options: {},
   },
+  ERROR_MINT_OVERLAP: {
+    id: "ERROR_MINT_OVERLAP",
+    messageKey: "errorMintOverlap",
+    options: {},
+  },
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
   PROVIDER_ERROR = 700002,
   PROVIDER_ERROR_Unknown = 700003,
-  GENERATE_EDDSA = 700004,
+  PROVIDER_NOT_INSTALL_GME = 700004,
   DATA_NOT_READY = 700005,
-  PROVIDER_NOT_INSTALL_GME = 700006,
+  GENERATE_EDDSA = 700006,
   NO_IPFS_INSTANCE = 700007,
   ADD_IPFS_ERROR = 700008,
   CREATE_IPFS_ERROR = 700009,
@@ -229,14 +252,15 @@ export const SDK_ERROR_MAP_TO_UI = {
   700001: ErrorMap.ERROR_UNKNOWN, //UI Unknown error =>
   700002: ErrorMap.ERROR_PROVIDER_ERROR,
   700003: ErrorMap.ERROR_UNKNOWN,
-  700004: ErrorMap.GENERATE_EDDSA,
+  700004: ErrorMap.PROVIDER_NOT_INSTALL_GME,
   700005: ErrorMap.DATA_NOT_READY,
-  700006: ErrorMap.PROVIDER_NOT_INSTALL_GME,
+  700006: ErrorMap.GENERATE_EDDSA,
   700007: ErrorMap.NO_IPFS_INSTANCE,
   700008: ErrorMap.ADD_IPFS_ERROR,
   700009: ErrorMap.CREATE_IPFS_ERROR,
   700010: ErrorMap.NOT_SAME_IPFS_RESOURCE,
   700011: ErrorMap.IPFS_CID_TO_NFTID_ERROR,
+  700012: ErrorMap.TIME_OUT,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found
@@ -269,6 +293,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   102120: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order is not valid
   102122: ErrorMap.ERROR_ON_CANCEL_ORDERS, //Order already in cancel
   104001: ErrorMap.ERROR_WRONG_APIKEY, //Empty ApiKey
+  102040: ErrorMap.ERROR_MINT_OVERLAP, //mint record with the same nft token address and token id already exists
   104002: ErrorMap.ERROR_WRONG_APIKEY, //Invalid ApiKey
   104003: ErrorMap.ERROR_WRONG_ACCOUNT, //Invalid Account ID
   104004: ErrorMap.ERROR_ON_FROM_SUBMIT, //No signature information provided
@@ -286,15 +311,17 @@ export const SDK_ERROR_MAP_TO_UI = {
 };
 export const TransErrorHelp = ({
   error,
-  options,
+  options = {},
 }: {
   error: RESULT_INFO;
   options?: TOptions<any> | string;
 }) => {
   const { t } = useTranslation(["error"]);
   const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
+  const _options = { ...errorItem?.options, ...options };
+  myLog(_options);
   if (errorItem) {
-    return <>{t(errorItem.messageKey, options ?? errorItem.options)}</>;
+    return <>{t(errorItem.messageKey, _options)}</>;
   } else {
     return <>{error.message}</>;
   }

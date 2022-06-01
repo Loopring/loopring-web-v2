@@ -77,6 +77,7 @@ const initialState: ModalDataStatus = {
     mintData: { ...initialMintNFT },
     nftMETA: { ...initialNFTMETA },
   },
+  nftMintAdvanceValue: { ...initialTradeNFT },
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
 };
@@ -135,6 +136,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         nftMETA: { ...initialNFTMETA },
       };
     },
+    resetNFTMintAdvanceData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.nftMintAdvanceValue = initialTradeNFT;
+    },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;
       state.nftDeployValue = { ...initialTradeNFT, broker: "" };
@@ -160,46 +165,58 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     updateWithdrawData(state, action: PayloadAction<Partial<WithdrawData>>) {
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.withdraw;
-      if (belong) {
-        state.withdrawValue.belong = belong;
-      }
-
-      if (balance === undefined || balance >= 0) {
-        state.withdrawValue.balance = balance;
-      }
-
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.withdrawValue.tradeValue = tradeValue;
-      }
-
-      if (address === undefined || address !== "*") {
-        state.withdrawValue.address = address;
-      }
+      // if (belong) {
+      //   state.withdrawValue.belong = belong;
+      // }
+      //
+      // if (balance === undefined || balance >= 0) {
+      //   state.withdrawValue.balance = balance;
+      // }
+      //
+      // state.withdrawValue.tradeValue = tradeValue;
+      // if (address === undefined || address !== "*") {
+      //   state.withdrawValue.address = address;
+      // }
       state.withdrawValue = {
         ...state.withdrawValue,
+        balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },
     updateTransferData(state, action: PayloadAction<Partial<TransferData>>) {
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.transfer;
-      if (belong) {
-        state.transferValue.belong = belong;
-      }
-
-      if (balance === undefined || balance >= 0) {
-        state.transferValue.balance = balance;
-      }
-
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.transferValue.tradeValue = tradeValue;
-      }
-
-      if (address === undefined || address !== "*") {
-        state.transferValue.address = address;
-      }
+      // if (belong) {
+      //   state.transferValue.belong = belong;
+      // }
+      //
+      // if (balance === undefined || balance >= 0) {
+      //   state.transferValue.balance = balance;
+      // }
+      //
+      // if (tradeValue === undefined || tradeValue >= 0) {
+      //   state.transferValue.tradeValue = tradeValue;
+      // }
+      //
+      // if (address === undefined || address !== "*") {
+      //   state.transferValue.address = address;
+      // }
+      // state.transferValue = {
+      //   ...state.transferValue,
+      //   ...rest,
+      // };
       state.transferValue = {
         ...state.transferValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.transferValue.balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },
@@ -231,25 +248,19 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         Partial<WithdrawData & UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, ...rest } = action.payload;
+      const { belong, balance, tradeValue, address, total, locked, ...rest } =
+        action.payload;
       state.lastStep = LAST_STEP.nftWithdraw;
-      if (belong) {
-        state.nftWithdrawValue.belong = belong;
-      }
-
-      if (balance === undefined || balance >= 0) {
-        state.nftWithdrawValue.balance = balance;
-      }
-
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.nftWithdrawValue.tradeValue = tradeValue;
-      }
-
-      if (address === undefined || address !== "*") {
-        state.nftWithdrawValue.address = address;
-      }
       state.nftWithdrawValue = {
         ...state.nftWithdrawValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.nftWithdrawValue.balance,
+        belong,
+        tradeValue:
+          tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },
@@ -259,26 +270,20 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         Partial<TransferData & UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, ...rest } = action.payload;
+      const { belong, balance, tradeValue, address, total, locked, ...rest } =
+        action.payload;
       state.lastStep = LAST_STEP.nftTransfer;
 
-      if (belong) {
-        state.nftTransferValue.belong = belong;
-      }
-
-      if (balance === undefined || balance >= 0) {
-        state.nftTransferValue.balance = balance;
-      }
-
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.nftTransferValue.tradeValue = tradeValue;
-      }
-
-      if (address === undefined || address !== "*") {
-        state.nftTransferValue.address = address;
-      }
       state.nftTransferValue = {
         ...state.nftTransferValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.nftTransferValue.balance,
+        belong,
+        tradeValue:
+          tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
+        address: address !== "*" ? address : undefined,
         ...rest,
       };
     },
@@ -296,6 +301,26 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
 
       state.nftDepositValue = {
         ...state.nftDepositValue,
+        ...rest,
+      };
+    },
+    updateNFTMintAdvanceData(
+      state,
+      action: PayloadAction<Partial<TradeNFT<any>>>
+    ) {
+      const { balance, tradeValue, ...rest } = action.payload;
+      state.lastStep = LAST_STEP.nftMint;
+
+      if (balance === undefined || balance >= 0) {
+        state.nftMintAdvanceValue.balance = balance;
+      }
+
+      if (tradeValue === undefined || tradeValue >= 0) {
+        state.nftMintAdvanceValue.tradeValue = tradeValue;
+      }
+
+      state.nftMintAdvanceValue = {
+        ...state.nftMintAdvanceValue,
         ...rest,
       };
     },
@@ -363,6 +388,7 @@ export const {
   updateNFTDepositData,
   updateNFTMintData,
   updateNFTDeployData,
+  updateNFTMintAdvanceData,
   resetNFTWithdrawData,
   resetNFTTransferData,
   resetNFTDepositData,
@@ -372,5 +398,6 @@ export const {
   resetDepositData,
   resetActiveAccountData,
   resetNFTDeployData,
+  resetNFTMintAdvanceData,
   resetAll,
 } = modalDataSlice.actions;

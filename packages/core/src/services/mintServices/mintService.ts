@@ -7,7 +7,8 @@ import {
 } from "../../index";
 import {
   AccountStatus,
-  MetaProperty,
+  AttributesProperty,
+  MetaDataProperty,
   myLog,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
@@ -83,21 +84,36 @@ export const mintService = {
     const {
       nftMintValue: { nftMETA },
     } = store.getState()._router_modalData;
-    const _nftMETA: any = {
+    let _nftMETA: any = {
       image: nftMETA.image,
       name: nftMETA.name,
       royalty_percentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
       description: nftMETA.description,
       collection: nftMETA.collection,
     };
-    _nftMETA.properties =
-      nftMETA.properties?.reduce((prev, item) => {
-        if (!!item.key?.trim() && !!item.value?.trim()) {
-          return [...prev, item];
-        } else {
-          return prev;
+    // const attributes = [];
+    const obj =
+      nftMETA.properties?.reduce(
+        (prev, item) => {
+          if (!!item.key?.trim() && !!item.value?.trim()) {
+            const obj = { trait_type: item.key, value: item.value };
+            prev.attributes = [...prev.attributes, obj];
+            prev.properties = { ...prev.properties, [item.key]: item.value };
+            return prev;
+          } else {
+            return prev;
+          }
+        },
+        {
+          properties: {} as MetaDataProperty,
+          attributes: [] as AttributesProperty[],
         }
-      }, [] as Array<MetaProperty>) ?? [];
+      ) ?? {};
+
+    _nftMETA = {
+      ..._nftMETA,
+      ...obj,
+    };
     myLog("_nftMETA", _nftMETA);
     ipfsService.addJSON({
       ipfs: ipfsProvides.ipfs,

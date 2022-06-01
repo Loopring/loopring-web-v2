@@ -45,7 +45,8 @@ export const useVendor = () => {
                   hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
                   swapAsset: "LOOPRING_*",
                   userAddress: account.accAddress,
-                  hostApiKey: "syxdszpr5q6c9vcnuz8sanr77ammsph59umop68d",
+                  //574 - Loopring Web - r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7
+                  hostApiKey: "r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7",
                 }).show();
               } else {
                 new RampInstantSDK({
@@ -53,7 +54,8 @@ export const useVendor = () => {
                   hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
                   swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
                   userAddress: account.accAddress,
-                  hostApiKey: "v6955rqfuvny5ts6sjh5y2eedjgc3sobjswhzw65",
+                  //575 - Loopring Web - 1st transaction Flat fee - xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz
+                  hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
                 }).show();
               }
             }

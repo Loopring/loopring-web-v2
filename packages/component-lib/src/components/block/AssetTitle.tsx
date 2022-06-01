@@ -262,24 +262,6 @@ AssetTitleMobileProps) => {
       </Box>
       {!hideL2Action && (
         <Grid container spacing={2}>
-          {/*{legalEnable && legalShow && (*/}
-          {/*  <Grid item xs={4}>*/}
-          {/*    <Button*/}
-          {/*      fullWidth*/}
-          {/*      variant={"outlined"}*/}
-          {/*      size={"medium"}*/}
-          {/*      color={"primary"}*/}
-          {/*      style={{*/}
-          {/*        textTransform: "none",*/}
-          {/*        paddingLeft: 0,*/}
-          {/*        paddingRight: 0,*/}
-          {/*      }}*/}
-          {/*      onClick={showPartner}*/}
-          {/*    >*/}
-          {/*      {t("labelAssetsBtnRamp")}*/}
-          {/*    </Button>*/}
-          {/*  </Grid>*/}
-          {/*)}*/}
           <Grid item xs={4}>
             <Button
               fullWidth

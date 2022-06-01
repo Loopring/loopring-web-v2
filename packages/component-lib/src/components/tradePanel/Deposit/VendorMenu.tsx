@@ -64,6 +64,9 @@ export const VendorMenu = ({
         className="modalContent"
         paddingX={isMobile ? 7 : 10}
       >
+        <Typography color={"textSecondary"} variant={"body1"} marginBottom={1}>
+          {t("labelWhatProvider")}
+        </Typography>
         {vendorList.map((item) => (
           <Box key={item.key} marginTop={1.5} width={"100%"}>
             <MenuBtnStyled

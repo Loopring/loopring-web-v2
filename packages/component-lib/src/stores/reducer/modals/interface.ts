@@ -1,4 +1,4 @@
-import { TradeNFT } from "@loopring-web/common-resources";
+import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 export enum ModalType {
@@ -11,6 +11,7 @@ export type ModalTypeKeys = keyof typeof ModalType;
 
 export type ModalStatePlayLoad = {
   isShow: boolean;
+  info?: { [key: string]: any };
 };
 export type Transaction = {
   symbol?: undefined | string;
@@ -18,6 +19,9 @@ export type Transaction = {
 
 export interface ModalState {
   isShowSupport: ModalStatePlayLoad;
+  isShowOtherExchange: ModalStatePlayLoad & {
+    agree?: boolean;
+  };
   isWrongNetworkGuide: ModalStatePlayLoad;
   isShowTransfer: ModalStatePlayLoad & Transaction;
   isShowWithdraw: ModalStatePlayLoad & Transaction;
@@ -25,7 +29,7 @@ export interface ModalState {
   isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any>>;
-  isShowNFTMint: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowResetAccount: ModalStatePlayLoad;
   isShowActiveAccount: ModalStatePlayLoad;
   isShowExportAccount: ModalStatePlayLoad;
@@ -36,8 +40,9 @@ export interface ModalState {
   isShowAccount: ModalStatePlayLoad & {
     step: number;
     error?: RESULT_INFO;
-    info?: { [key: string]: any };
+    // info?: { [key: string]: any };
   };
+  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };
 }

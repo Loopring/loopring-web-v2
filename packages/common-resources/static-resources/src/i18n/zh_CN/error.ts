@@ -2,6 +2,7 @@ export default {
   labelConnectUsSimple: "Please <1>contact us</1>.",
   labelConnectUs: "这有可能时候一个错误,<2/> 如需帮助请<1>联系我们</1>~",
   errorBase: "奥哦! 遇到了一些问题",
+  errorTimeout: "Oops! Something went wrong at network.",
   errorLoading: "不要着急, 不要着急马上就好",
   error404: "四〇四! 这是页面不存在呢.",
   errorMaintain: "系统维护中...",
@@ -31,5 +32,8 @@ export default {
   errorDisableOtherWalletForCurrent:
     "Global ethereum is not {{name}}, please disable other Wallet Plugin.",
   errorGenerateEddsa: "Generate EdDSA key has failed.",
-  errorNotInstallGME: "GameStop Plugin is not install or disabled",
+  errorNotInstallGME:
+    "Please install the Gamestop Wallet browser extension. Then create, deposit, and activate the wallet before connecting to Loopring.io.",
+  errorLinKWalletApp: "<0>app market</0>",
+  errorMintOverlap: "This NFT metadata is already minted in your Wallet!",
 };

@@ -50,19 +50,19 @@ export const Filter = withTranslation("tables", { withRef: true })(
     const { isMobile } = useSettings();
     const transactionTypeList = [
       {
-        label: t("labelTxFilterAllTypes"),
+        label: t("labelTxFilterALL"),
         value: TransactionTradeTypes.allTypes,
       },
       {
-        label: t("labelTxFilterReceive"),
+        label: t("labelTxFilterDEPOSIT"),
         value: TransactionTradeTypes.deposit,
       },
       {
-        label: t("labelTxFilterSendL1"),
+        label: t("labelTxFilterWITHDRAW"),
         value: TransactionTradeTypes.withdraw,
       },
       {
-        label: t("labelTxFilterSendL2"),
+        label: t("labelTxFilterTRANSFER"),
         value: TransactionTradeTypes.transfer,
       },
     ];

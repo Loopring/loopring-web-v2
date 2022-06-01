@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -20,6 +20,7 @@ import {
   UIERROR_CODE,
   WalletMap,
   AddressError,
+  WALLET_TYPE,
 } from "@loopring-web/common-resources";
 
 import {
@@ -45,14 +46,13 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
 export const useTransfer = <R extends IBData<T>, T>() => {
   const { setShowAccount, setShowTransfer } = useOpenModals();
-  const [isConfirmTransfer, setIsConfirmTransfer] = React.useState(false);
 
   const {
     modals: {
-      isShowTransfer: { symbol, isShow },
+      isShowTransfer: { symbol, isShow, info },
     },
   } = useOpenModals();
-
+  const [memo, setMemo] = React.useState("");
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -63,8 +63,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   );
-  const [addressOrigin, setAddressOrigin] =
-    React.useState<"Wallet" | null>(null);
+  const [sureItsLayer2, setSureItsLayer2] =
+    React.useState<WALLET_TYPE | undefined>(undefined);
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -73,10 +75,19 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: ({ fee }) => {
-      updateTransferData({ ...transferValue, fee });
-    },
+    updateData: React.useCallback(
+      ({ fee }) => {
+        updateTransferData({ ...transferValue, fee });
+      },
+      [transferValue]
+    ),
   });
+  const handleOnMemoChange = React.useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setMemo(e.target.value);
+    },
+    []
+  );
 
   const {
     address,
@@ -87,8 +98,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     isAddressCheckLoading,
     isSameAddress,
   } = useAddressCheck();
+  React.useEffect(() => {
+    setSureItsLayer2(undefined);
+  }, [realAddr]);
 
-  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const checkBtnStatus = React.useCallback(() => {
     if (tokenMap && transferValue.belong && tokenMap[transferValue.belong]) {
       const sellToken = tokenMap[transferValue.belong];
@@ -102,7 +115,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
         !isFeeNotEnough &&
         !isSameAddress &&
         // !isAddressCheckLoading &&
-        addressOrigin === "Wallet" &&
+        sureItsLayer2 &&
         transferValue.fee?.belong &&
         tradeValue.gt(BIGO) &&
         ((address && address.startsWith("0x")) || realAddr) &&
@@ -118,7 +131,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     tokenMap,
     transferValue,
     disableBtn,
-    addressOrigin,
+    sureItsLayer2,
     chargeFeeTokenList.length,
     isFeeNotEnough,
     isSameAddress,
@@ -133,7 +146,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     realAddr,
     chargeFeeTokenList,
     address,
-    addressOrigin,
+    sureItsLayer2,
     isFeeNotEnough,
     isAddressCheckLoading,
     transferValue,
@@ -148,6 +161,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
+    if (info?.isRetry) {
+      return;
+    }
+
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
@@ -166,7 +183,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           if (sdk.toBig(walletInfo.count).gt(0)) {
             updateTransferData({
               belong: keyVal as any,
-              tradeValue: 0,
+              tradeValue: undefined,
               fee: feeInfo,
               balance: walletInfo.count,
               address: "*",
@@ -174,8 +191,27 @@ export const useTransfer = <R extends IBData<T>, T>() => {
             break;
           }
         }
+      } else if (transferValue.belong && walletMap) {
+        const walletInfo = walletMap[transferValue.belong];
+        updateTransferData({
+          fee: feeInfo,
+          belong: transferValue.belong,
+          tradeValue: undefined,
+          balance: walletInfo.count,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
+      } else {
+        updateTransferData({
+          fee: feeInfo,
+          belong: transferValue.belong,
+          tradeValue: undefined,
+          balance: undefined,
+          address: info?.isToMyself ? account.accAddress : "*",
+        });
       }
     }
+    setMemo("");
+    setAddress("");
   }, [
     checkFeeIsEnough,
     symbol,
@@ -183,13 +219,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     updateTransferData,
     feeInfo,
     transferValue.belong,
+    info?.isRetry,
   ]);
-
-  React.useEffect(() => {
-    if (isShow) {
-      resetDefault();
-    }
-  }, [isShow]);
 
   React.useEffect(() => {
     if (
@@ -197,19 +228,9 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      // myLog('useEffect transferValue.address:', transferValue.address)
-      if (!transferValue.address) {
-        setAddress("");
-      }
-      // setAddress(transferValue.address ? transferValue.address : '')
+      resetDefault();
     }
-  }, [
-    setAddress,
-    isShow,
-    transferValue.address,
-    accountStatus,
-    account.readyState,
-  ]);
+  }, [isShow, accountStatus, account.readyState]);
 
   const { checkHWAddr, updateHW } = useWalletInfo();
 
@@ -247,7 +268,6 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           );
 
           myLog("submitInternalTransfer:", response);
-          setAddressOrigin(null);
           if (
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
@@ -261,7 +281,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                 isShow: true,
                 step: AccountStep.Transfer_User_Denied,
               });
-              setIsConfirmTransfer(false);
+              // setIsConfirmTransfer(false);
             } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
               setShowAccount({
                 isShow: true,
@@ -280,10 +300,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
                 step: AccountStep.Transfer_Failed,
                 error: response as sdk.RESULT_INFO,
               });
-              setIsConfirmTransfer(false);
+              // setIsConfirmTransfer(false);
             }
           } else if ((response as sdk.TX_HASH_API)?.hash) {
-            setIsConfirmTransfer(false);
+            // setIsConfirmTransfer(false);
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_In_Progress,
@@ -427,7 +447,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           });
         }
       } else {
-        return false;
+        return;
       }
     },
     [
@@ -489,25 +509,23 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: walletMap as WalletMap<T>,
     transferBtnStatus: btnStatus,
-    onTransferClick: (trade: R) => {
-      isConfirmTransfer ? onTransferClick(trade) : setIsConfirmTransfer(true);
-    },
+    onTransferClick,
     handlePanelEvent,
     handleFeeChange,
     feeInfo,
-    handleSureItsLayer2: (sure: boolean) => {
-      if (sure) {
-        setAddressOrigin("Wallet");
-      }
+    handleSureItsLayer2: (sure) => {
+      setSureItsLayer2(sure);
     },
-    isConfirmTransfer,
-    addressOrigin,
+    // isConfirmTransfer,
+    sureItsLayer2,
     chargeFeeTokenList,
     isFeeNotEnough,
     isLoopringAddress,
     isSameAddress,
     isAddressCheckLoading,
     addrStatus,
+    memo,
+    handleOnMemoChange,
     handleOnAddressChange: (value: any) => {
       setAddress(value || "");
     },

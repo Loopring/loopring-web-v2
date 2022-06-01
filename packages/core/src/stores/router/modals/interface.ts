@@ -64,6 +64,7 @@ export type ModalDataStatus = {
   nftTransferValue: TransferData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftDepositValue: TradeNFT<any>;
+  nftMintAdvanceValue: TradeNFT<any>;
   nftMintValue: NFT_MINT_VALUE<any>;
   nftDeployValue: TradeNFT<any> & { broker: string };
 };

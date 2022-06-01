@@ -12,7 +12,6 @@ import {
   setShowNFTDeposit,
   setShowNFTTransfer,
   setShowNFTWithdraw,
-  setShowNFTMint,
   setShowResetAccount,
   setShowSupport,
   setShowSwap,
@@ -20,6 +19,9 @@ import {
   setShowWithdraw,
   setShowTradeIsFrozen,
   setShowWrongNetworkGuide,
+  setShowNFTMintAdvance,
+  setShowOtherExchange,
+  setShowNFTDetail,
 } from "./reducer";
 
 import React from "react";
@@ -35,6 +37,14 @@ export const useOpenModals = () => {
     setShowSupport: React.useCallback(
       (state: ModalStatePlayLoad & Transaction) =>
         dispatch(setShowSupport(state)),
+      [dispatch]
+    ),
+    setShowOtherExchange: React.useCallback(
+      (
+        state: ModalStatePlayLoad & {
+          agree?: boolean;
+        } & Transaction
+      ) => dispatch(setShowOtherExchange(state)),
       [dispatch]
     ),
     setShowWrongNetworkGuide: React.useCallback(
@@ -72,6 +82,12 @@ export const useOpenModals = () => {
       },
       [dispatch]
     ),
+    setShowNFTDetail: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
+        dispatch(setShowNFTDetail(state));
+      },
+      [dispatch]
+    ),
     setShowNFTTransfer: React.useCallback(
       (state: ModalStatePlayLoad & Partial<NFTWholeINFO>) => {
         if (toggle.transferNFT.enable) {
@@ -92,10 +108,10 @@ export const useOpenModals = () => {
       },
       [dispatch]
     ),
-    setShowNFTMint: React.useCallback(
+    setShowNFTMintAdvance: React.useCallback(
       (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
         if (toggle.mintNFT.enable) {
-          dispatch(setShowNFTMint(state));
+          dispatch(setShowNFTMintAdvance(state));
         } else {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: "Mint" }));
         }

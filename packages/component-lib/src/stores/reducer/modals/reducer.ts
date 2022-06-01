@@ -5,6 +5,7 @@ import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 
 const initialState: ModalState = {
   isShowSupport: { isShow: false },
+  isShowOtherExchange: { isShow: false },
   isWrongNetworkGuide: { isShow: false },
   isShowTransfer: { isShow: false, symbol: undefined },
   isShowWithdraw: { isShow: false, symbol: undefined },
@@ -22,7 +23,8 @@ const initialState: ModalState = {
   isShowNFTTransfer: { isShow: false },
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
-  isShowNFTMint: { isShow: false },
+  isShowNFTMintAdvance: { isShow: false },
+  isShowNFTDetail: { isShow: false },
 };
 
 export const modalsSlice: Slice<ModalState> = createSlice({
@@ -43,6 +45,21 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       const { isShow } = action.payload;
       state.isShowSupport.isShow = isShow;
     },
+    setShowOtherExchange(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & {
+          agree?: boolean;
+        }
+      >
+    ) {
+      const { isShow, agree, ...rest } = action.payload;
+      state.isShowOtherExchange = {
+        isShow,
+        agree: isShow ? false : agree,
+        ...rest,
+      };
+    },
     setShowWrongNetworkGuide(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;
       state.isWrongNetworkGuide.isShow = isShow;
@@ -55,16 +72,30 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       const { isShow } = action.payload;
       state.isShowSwap.isShow = isShow;
     },
+    setShowNFTDetail(
+      state,
+      action: PayloadAction<ModalStatePlayLoad & Partial<NFTWholeINFO>>
+    ) {
+      const { isShow, ...rest } = action.payload;
+      state.isShowNFTDetail = {
+        isShow,
+
+        ...rest,
+      };
+    },
     setShowNFTTransfer(
       state,
       action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
     ) {
-      const { isShow, nftData, nftType, ...rest } = action.payload;
+      const { isShow, nftData, nftType, total, locked, info, ...rest } =
+        action.payload;
       state.isShowNFTTransfer = {
         isShow,
         nftData,
         nftType,
+        info,
         ...rest,
+        balance: total ? Number(total) - Number(locked ?? 0) : 0,
       };
     },
     setShowNFTDeposit(
@@ -78,12 +109,12 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         ...rest,
       };
     },
-    setShowNFTMint(
+    setShowNFTMintAdvance(
       state,
       action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
     ) {
       const { isShow, nftData, nftType, ...rest } = action.payload;
-      state.isShowNFTMint = {
+      state.isShowNFTMintAdvance = {
         isShow,
         nftData,
         nftType,
@@ -94,32 +125,37 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       state,
       action: PayloadAction<ModalStatePlayLoad & NFTWholeINFO>
     ) {
-      const { isShow, nftData, nftType, ...rest } = action.payload;
+      const { isShow, nftData, nftType, total, locked, info, ...rest } =
+        action.payload;
       state.isShowNFTWithdraw = {
         isShow,
         nftData,
         nftType,
+        info,
         ...rest,
+        balance: total ? Number(total) - Number(locked ?? 0) : 0,
       };
     },
     setShowTransfer(
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction>
     ) {
-      const { isShow, symbol } = action.payload;
+      const { isShow, symbol, info } = action.payload;
       state.isShowTransfer = {
         isShow,
         symbol,
+        info,
       };
     },
     setShowWithdraw(
       state,
       action: PayloadAction<ModalStatePlayLoad & Transaction>
     ) {
-      const { isShow, symbol } = action.payload;
+      const { isShow, symbol, info } = action.payload;
       state.isShowWithdraw = {
         isShow,
         symbol,
+        info,
       };
     },
     setShowDeposit(
@@ -198,9 +234,11 @@ export const modalsSlice: Slice<ModalState> = createSlice({
   },
 });
 export const {
+  setShowNFTDetail,
   setShowNFTTransfer,
   setShowNFTDeposit,
   setShowNFTWithdraw,
+  setShowNFTMintAdvance,
   setShowTransfer,
   setShowWithdraw,
   setShowDeposit,
@@ -213,8 +251,8 @@ export const {
   setShowFeeSetting,
   setShowActiveAccount,
   setShowIFrame,
-  setShowNFTMint,
   setShowTradeIsFrozen,
   setShowSupport,
   setShowWrongNetworkGuide,
+  setShowOtherExchange,
 } = modalsSlice.actions;

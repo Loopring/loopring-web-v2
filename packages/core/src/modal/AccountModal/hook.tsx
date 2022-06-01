@@ -116,7 +116,6 @@ import {
   useNFTWithdraw,
   useNFTTransfer,
   onchainHashInfo,
-  LAST_STEP,
   useActiveAccount,
   useWalletLayer2,
   useVendor,
@@ -128,6 +127,7 @@ import {
   useCheckActiveStatus,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
 
 export function useAccountModalForUI({
   t,
@@ -148,11 +148,10 @@ export function useAccountModalForUI({
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
   const {
-    modals: { isShowAccount },
+    modals: { isShowAccount, isShowWithdraw, isShowTransfer },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
-    setShowNFTMint,
     setShowTransfer,
     setShowWithdraw,
     setShowResetAccount,
@@ -160,7 +159,6 @@ export function useAccountModalForUI({
   } = useOpenModals();
   rest = { ...rest, ...isShowAccount.info };
   const {
-    lastStep,
     nftMintValue,
     nftDepositValue,
     nftTransferValue,
@@ -180,13 +178,13 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
   } = useExportAccount();
   const vendorProps = useVendor();
-
+  const { nftMintAdvanceProps } = useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
-  const { nftWithdrawProps } = useNFTWithdraw({});
-  const { nftTransferProps } = useNFTTransfer({});
-  const { nftDeployProps } = useNFTDeploy({});
+  const { nftWithdrawProps } = useNFTWithdraw();
+  const { nftTransferProps } = useNFTTransfer();
+  const { nftDeployProps } = useNFTDeploy();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -281,7 +279,7 @@ export function useAccountModalForUI({
         }
       },
     };
-  }, [setShowAccount, depositProps]);
+  }, [setShowAccount, depositProps.isAllowInputToAddress, setShowDeposit]);
 
   const backToNFTDepositBtnInfo = React.useMemo(() => {
     return {
@@ -314,29 +312,33 @@ export function useAccountModalForUI({
     return {
       btnTxt: "labelRetry",
       callback: () => {
-        if (lastStep === LAST_STEP.transfer) {
-          setShowAccount({ isShow: false });
-          setShowTransfer({ isShow: true });
-        } else {
-          setShowAccount({ isShow: false });
-        }
+        setShowAccount({ isShow: false });
+        setShowTransfer({
+          isShow: true,
+          info: {
+            ...isShowTransfer.info,
+            isRetry: true,
+          },
+        });
       },
     };
-  }, [lastStep, setShowAccount, setShowTransfer]);
+  }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
 
   const backToWithdrawBtnInfo = React.useMemo(() => {
     return {
       btnTxt: "labelRetry",
       callback: () => {
-        if (lastStep === LAST_STEP.withdraw) {
-          setShowAccount({ isShow: false });
-          setShowWithdraw({ isShow: true });
-        } else {
-          setShowAccount({ isShow: false });
-        }
+        setShowAccount({ isShow: false });
+        setShowWithdraw({
+          isShow: true,
+          info: {
+            ...isShowWithdraw.info,
+            isRetry: true,
+          },
+        });
       },
     };
-  }, [lastStep, setShowAccount, setShowWithdraw]);
+  }, [isShowWithdraw, setShowAccount, setShowWithdraw]);
 
   const backToUnlockAccountBtnInfo = React.useMemo(() => {
     return {
@@ -461,75 +463,120 @@ export function useAccountModalForUI({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
-  const addAssetList: AddAssetItem[] = [
-    {
-      ...AddAssetList.BuyWithCard,
-      handleSelect: (_e) => {
-        setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
+  const addAssetList: AddAssetItem[] = React.useMemo(
+    () => [
+      {
+        ...AddAssetList.BuyWithCard,
+        handleSelect: (_e) => {
+          setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
+        },
       },
-    },
-    {
-      ...AddAssetList.FromMyL1,
-      handleSelect: () => {
-        setShowAccount({ isShow: false });
-        setShowDeposit({ isShow: true, symbol: isShowAccount?.info?.symbol });
+      {
+        ...AddAssetList.FromMyL1,
+        handleSelect: () => {
+          setShowAccount({ isShow: false });
+          setShowDeposit({ isShow: true, symbol: isShowAccount?.info?.symbol });
+        },
       },
-    },
-    {
-      ...AddAssetList.FromOtherL1,
-      handleSelect: () => {
-        window.open(
-          Bridge +
-            `?owner=${account.accAddress}&token=${
-              isShowAccount?.info?.symbol ?? ""
-            }&__trace_isSharedBy=loopringExchange`
-        );
-        window.opener = null;
+      {
+        ...AddAssetList.FromOtherL1,
+        handleSelect: () => {
+          window.open(
+            Bridge +
+              `?owner=${account.accAddress}&token=${
+                isShowAccount?.info?.symbol ?? ""
+              }&__trace_isSharedBy=loopringExchange`
+          );
+          window.opener = null;
+        },
       },
-    },
-    {
-      ...AddAssetList.FromOtherL2,
-      handleSelect: () => {
-        setShowAccount({
-          isShow: true,
-          step: AccountStep.QRCode,
-          info: { backTo: AccountStep.AddAssetGateway },
-        });
+      {
+        ...AddAssetList.FromOtherL2,
+        handleSelect: () => {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.QRCode,
+            info: { backTo: AccountStep.AddAssetGateway },
+          });
+        },
       },
-    },
-    // {
-    //   ...AddAssetList.FromExchange,
-    //   handleSelect: () => {
-    //     window.open(
-    //       `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}`
-    //     );
-    //     window.opener = null;
-    //   },
-    // },
-  ];
-  const sendAssetList: SendAssetItem[] = [
-    {
-      ...SendAssetList.SendAssetToL2,
-      handleSelect: (_e) => {
-        setShowAccount({ isShow: false });
-        setShowTransfer({ isShow: true, symbol: isShowAccount?.info?.symbol });
+      // {
+      //   ...AddAssetList.FromExchange,
+      //   handleSelect: () => {
+      //     window.open(
+      //       `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}`
+      //     );
+      //     window.opener = null;
+      //   },
+      // },
+    ],
+    [
+      account.accAddress,
+      isShowAccount?.info?.symbol,
+      setShowAccount,
+      setShowDeposit,
+    ]
+  );
+  const sendAssetList: SendAssetItem[] = React.useMemo(
+    () => [
+      {
+        ...SendAssetList.SendAssetToL2,
+        handleSelect: (_e) => {
+          setShowAccount({ isShow: false });
+          setShowTransfer({
+            isShow: true,
+            symbol: isShowAccount?.info?.symbol,
+          });
+        },
       },
-    },
-    {
-      ...SendAssetList.SendAssetToMyL1,
-      handleSelect: () => {
-        setShowAccount({ isShow: false });
-        setShowWithdraw({ isShow: true, symbol: isShowAccount?.info?.symbol });
+      {
+        ...SendAssetList.SendAssetToMyL1,
+        handleSelect: () => {
+          setShowAccount({ isShow: false });
+          setShowWithdraw({
+            isShow: true,
+            info: { isToMyself: true },
+            symbol: isShowAccount?.info?.symbol,
+          });
+        },
       },
-    },
-  ];
+      {
+        ...SendAssetList.SendAssetToOtherL1,
+        handleSelect: () => {
+          setShowAccount({ isShow: false });
+          setShowWithdraw({
+            isShow: true,
+            info: { isToMyself: false },
+            symbol: isShowAccount?.info?.symbol,
+          });
+        },
+      },
+    ],
+    [
+      isShowAccount?.info?.symbol,
+      setShowAccount,
+      setShowTransfer,
+      setShowWithdraw,
+    ]
+  );
+  const onBackReceive = React.useCallback(() => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.AddAssetGateway,
+      info: { ...isShowAccount?.info },
+    });
+  }, [isShowAccount?.info, setShowAccount]);
+  const onBackSend = React.useCallback(() => {
+    setShowAccount({
+      isShow: true,
+      step: AccountStep.SendAssetGateway,
+      info: { ...isShowAccount?.info },
+    });
+  }, [isShowAccount?.info, setShowAccount]);
 
   const { checkActiveStatusProps } = useCheckActiveStatus<FeeInfo>({
     onDisconnect,
-    isDepositing: chainInfos?.depositHashes[account?.accAddress]?.length
-      ? true
-      : false,
-    // isShow: isShowAccount.step === AccountStep.CheckingActive,
+    isDepositing: !!chainInfos?.depositHashes[account?.accAddress]?.length,
     chargeFeeTokenList: activeAccountProps.chargeFeeTokenList as FeeInfo[],
     checkFeeIsEnough: activeAccountCheckFeeIsEnough,
     isFeeNotEnough: activeAccountProps.isFeeNotEnough,
@@ -553,7 +600,7 @@ export function useAccountModalForUI({
       [AccountStep.SendAssetGateway]: {
         view: (
           <SendAsset
-            // isToL1={isShowAccount?.info?.isToL1}
+            isToL1={isShowAccount?.info?.isToL1}
             symbol={isShowAccount?.info?.symbol}
             sendAssetList={sendAssetList}
             allowTrade={allowTrade}
@@ -562,6 +609,7 @@ export function useAccountModalForUI({
       },
       [AccountStep.PayWithCard]: {
         view: <VendorMenu {...{ ...vendorProps }} />,
+        onBack: onBackReceive,
       },
       [AccountStep.NoAccount]: {
         view: (
@@ -1288,7 +1336,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTTransfer_User_Denied]: {
         view: (
           <NFTTransfer_User_Denied
-            btnInfo={backToTransferBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftTransferProps.onTransferClick(nftTransferValue as any);
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1376,7 +1429,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTWithdraw_User_Denied]: {
         view: (
           <NFTWithdraw_User_Denied
-            btnInfo={backToWithdrawBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                nftWithdrawProps.onWithdrawClick(nftWithdrawValue as any);
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1836,23 +1894,24 @@ export function useAccountModalForUI({
       },
     });
   }, [
-    account,
-    activeAccountProps.walletMap,
-    activeAccountProps.chargeFeeTokenList,
+    checkActiveStatusProps,
+    isShowAccount.info,
+    isShowAccount.error,
     addAssetList,
     allowTrade,
-    isShowAccount.step,
-    depositProps.isAllowInputToAddress,
     depositProps.isNewAccount,
+    depositProps.isAllowInputToAddress,
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
     vendorProps,
+    onBackReceive,
     chainInfos,
     isLayer1Only,
     onClose,
     updateDepositHash,
     clearDeposit,
+    account,
     rest,
     onSwitch,
     onCopy,
@@ -1866,8 +1925,6 @@ export function useAccountModalForUI({
     onQRBack,
     backToDepositBtnInfo,
     closeBtnInfo,
-    isShowAccount.error,
-    isShowAccount.info,
     nftDepositValue,
     backToNFTDepositBtnInfo,
     nftMintValue,
@@ -1880,9 +1937,7 @@ export function useAccountModalForUI({
     backToUnlockAccountBtnInfo,
     backToResetAccountBtnInfo,
     setShowAccount,
-    setShowActiveAccount,
     setShowDeposit,
-    setShowNFTMint,
     nftDeployProps,
     transferProps,
     transferValue,
@@ -1892,12 +1947,15 @@ export function useAccountModalForUI({
     nftTransferValue,
     nftWithdrawProps,
     nftWithdrawValue,
+    setShowActiveAccount,
     goUpdateAccount,
   ]);
 
   const currentModal = accountList[isShowAccount.step];
 
   return {
+    nftDeployProps,
+    nftMintAdvanceProps,
     nftTransferProps,
     nftWithdrawProps,
     transferProps,
@@ -1918,6 +1976,10 @@ export function useAccountModalForUI({
     closeBtnInfo,
     accountList,
     currentModal,
+    onBackReceive,
+    onBackSend,
+    // cancelNFTTransfer,
+    // cancelNFTWithdraw,
     // vendorProps,
   };
 }

@@ -76,8 +76,8 @@
 // //
 // // function CellAction({ icon, actions, callback, isFirst }: CellActionProps) {
 // //   const [isOpen, setIsOpen] = useState(false);
-// //   const [reference, setReference] = useState<HTMLDivElement | null>(null);
-// //   const [popper, setPopper] = useState<HTMLDivElement | null>(null);
+// //   const [reference, setReference] = useState<HTMLDivElement | undefined>(undefined);
+// //   const [popper, setPopper] = useState<HTMLDivElement | undefined>(undefined);
 // //   const { styles } = usePopper(reference, popper, {
 // //     placement: 'bottom-start',
 // //     modifiers: [{ name: 'offset', options: { offset: [0, -8] } }]
@@ -123,4 +123,4 @@
 // //
 // //   return <>{actionButtons}</>;
 // // }
-export default {}
+export default {};
