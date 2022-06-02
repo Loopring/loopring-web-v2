@@ -155,14 +155,6 @@ export const useDeposit = <
     if (sdk.toBig(walletLayer1?.ETH?.count ?? 0).eq(BIGO)) {
       setLabelAndParams("labelNOETH", {});
     }
-    // if (
-    //   !(
-    //     !isAllowInputToAddress ||
-    //     (isAllowInputToAddress && toIsLoopringAddress)
-    //   )
-    // ) {
-    //   setLabelAndParams("labelToAddressShouldLoopring", {});
-    // }
     disableBtn();
   }, [
     resetBtnInfo,
@@ -282,6 +274,12 @@ export const useDeposit = <
             break;
           }
         }
+      } else if (depositValue.belong && walletLayer1) {
+        updateData = {
+          belong: depositValue.belong,
+          balance: walletLayer1[depositValue.belong].count ?? 0,
+          tradeValue,
+        };
       }
 
       if (isAllowInputToAddress) {
