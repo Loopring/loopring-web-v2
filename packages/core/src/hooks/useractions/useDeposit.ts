@@ -11,7 +11,6 @@ import {
   CoinMap,
   IBData,
   myLog,
-  SagaStatus,
   UIERROR_CODE,
   WalletMap,
   AddressError,
@@ -58,11 +57,9 @@ export const useDeposit = <
     realAddr: realToAddress,
     setAddress: setToAddress,
     addrStatus: toAddressStatus,
-    // isLoopringAddress: toIsLoopringAddress,
     isAddressCheckLoading: toIsAddressCheckLoading,
   } = useAddressCheck();
   const {
-    // address: referAddress,
     realAddr: realReferAddress,
     setAddress: setReferAddress,
     addrStatus: referStatus,
@@ -256,73 +253,82 @@ export const useDeposit = <
     );
   }, [handlePanelEvent, isAllowInputToAddress, isToAddressEditable]);
 
-  const walletLayer1Callback = React.useCallback(() => {
-    const _symbol = depositValue.belong ?? opts?.token?.toUpperCase() ?? symbol;
-    let updateData = {};
-    if (_symbol && walletLayer1) {
-      // updateDepositData();
-      updateData = {
-        belong: _symbol as any,
-        balance: walletLayer1[_symbol]?.count ?? 0,
-        tradeValue: undefined,
-      };
-    } else if (!depositValue.belong && walletLayer1) {
-      const keys = Reflect.ownKeys(walletLayer1);
-      for (var key in keys) {
-        const keyVal = keys[key] as any;
-        const walletInfo = walletLayer1[keyVal];
-        if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
-          // updateDepositData();
-          updateData = {
-            belong: keyVal as any,
-            tradeValue: undefined,
-            balance: walletInfo.count,
-          };
-          break;
+  const walletLayer1Callback = React.useCallback(
+    (isClean?: boolean) => {
+      const _symbol = isClean
+        ? opts?.token?.toUpperCase() ?? symbol
+        : depositValue.belong;
+      const tradeValue = isClean ? undefined : depositValue.tradeValue;
+      let updateData = {};
+      if (_symbol && walletLayer1) {
+        // updateDepositData();
+        updateData = {
+          belong: _symbol as any,
+          balance: walletLayer1[_symbol]?.count ?? 0,
+          tradeValue,
+        };
+      } else if (!depositValue.belong && walletLayer1) {
+        const keys = Reflect.ownKeys(walletLayer1);
+        for (var key in keys) {
+          const keyVal = keys[key] as any;
+          const walletInfo = walletLayer1[keyVal];
+          if (sdk.toBig(walletInfo?.count ?? 0).gt(0)) {
+            // updateDepositData();
+            updateData = {
+              belong: keyVal as any,
+              tradeValue: undefined,
+              balance: walletInfo.count,
+            };
+            break;
+          }
         }
       }
-    }
 
-    if (isAllowInputToAddress) {
-      if (opts?.owner) {
-        updateData = {
-          ...updateData,
-          toAddress: opts?.owner?.toLowerCase(),
-          addressError: undefined,
-        } as T;
-        // setToAddress(opts?.owner?.toLowerCase());
-        setIsToAddressEditable(false);
-      } else {
-        setIsToAddressEditable(true);
+      if (isAllowInputToAddress) {
+        if (opts?.owner) {
+          updateData = {
+            ...updateData,
+            toAddress: opts?.owner?.toLowerCase(),
+            addressError: undefined,
+          } as T;
+          // setToAddress(opts?.owner?.toLowerCase());
+          setIsToAddressEditable(false);
+        } else {
+          setIsToAddressEditable(true);
+        }
       }
-    }
-    handlePanelEvent(
-      {
-        to: "button",
-        tradeData: updateData,
-      },
-      "Tobutton"
-    );
-  }, [
-    depositValue.belong,
-    opts?.token,
-    opts?.owner,
-    symbol,
-    walletLayer1,
-    isAllowInputToAddress,
-    handlePanelEvent,
-    account.accAddress,
-    handleClear,
-  ]);
+      handlePanelEvent(
+        {
+          to: "button",
+          tradeData: updateData,
+        },
+        "Tobutton"
+      );
+    },
+    [
+      depositValue.belong,
+      depositValue.tradeValue,
+      opts?.token,
+      opts?.owner,
+      symbol,
+      walletLayer1,
+      isAllowInputToAddress,
+      handlePanelEvent,
+      account.accAddress,
+      handleClear,
+    ]
+  );
 
   React.useEffect(() => {
-    if (
-      (isShow || isAllowInputToAddress) &&
-      walletLayer1Status === SagaStatus.UNSET
-    ) {
-      walletLayer1Callback();
+    walletLayer1Callback();
+  }, [walletLayer1Status]);
+
+  React.useEffect(() => {
+    if (isShow || isAllowInputToAddress) {
+      walletLayer1Callback(true);
     }
-  }, [isShow, isAllowInputToAddress, walletLayer1Status]);
+  }, [isShow, isAllowInputToAddress]);
+
   const signRefer = React.useCallback(async () => {
     if (
       referIsLoopringAddress &&

@@ -1,6 +1,8 @@
 export type EventAPI = {
   version: string;
   column: { key: string; label: string }[];
+  start: number;
+  end: number;
 };
 export type EventAPIExtender = {
   tableColumn: string[];
