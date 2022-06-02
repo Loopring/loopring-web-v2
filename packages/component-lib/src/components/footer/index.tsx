@@ -210,7 +210,7 @@ export const Footer = withTranslation(["layout"])(
           </Container>
         ) : (
           <Box
-            height={48}
+            height={isMobile ? "auto" : 48}
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
@@ -229,16 +229,18 @@ export const Footer = withTranslation(["layout"])(
                 width={"100%"}
                 justifyContent={"space-between"}
                 alignItems={"center"}
+                flexDirection={isMobile ? "column" : "row"}
               >
                 <Typography
                   fontSize={12}
                   component={"span"}
                   color={"var(--color-text-third)"}
                   paddingLeft={2}
+                  paddingTop={isMobile ? 2 : 0}
                 >
                   {t("labelCopyRight", { year: new Date().getFullYear() })}
                 </Typography>
-                <Box>{medias}</Box>
+                <Box paddingY={isMobile ? 2 : 0}>{medias}</Box>
               </Box>
             </Container>
           </Box>

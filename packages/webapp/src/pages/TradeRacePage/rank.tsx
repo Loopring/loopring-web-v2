@@ -9,9 +9,8 @@ import {
   SoursURL,
   ThirdPlaceIcon,
 } from "@loopring-web/common-resources";
-import { Box, Link, MenuItem, Typography } from "@mui/material";
+import { Box, MenuItem, Typography } from "@mui/material";
 import {
-  Column,
   InputSearch,
   Table,
   TablePaddingX,
@@ -240,7 +239,7 @@ export const RankRaw = <R extends object>({
         <TableStyled
           minHeight={120}
           height={
-            ((rankTableData && rankTableData?.length) ?? 0 + 1) *
+            (((rankTableData && rankTableData?.length) ?? 0) + 1) *
             RowConfig.rowHeight
           }
         >
