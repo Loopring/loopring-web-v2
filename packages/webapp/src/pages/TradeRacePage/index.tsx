@@ -1,26 +1,56 @@
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Box, Fab, Link, Typography } from "@mui/material";
+import { Box, BoxProps, Fab, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import { ScrollTop, TradeRacePanel } from "@loopring-web/component-lib";
+import { ScrollTop } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
-import {
-  EmptyValueTag,
-  GoTopIcon,
-  MarketType,
-  myLog,
-} from "@loopring-web/common-resources";
+import { EmptyValueTag, GoTopIcon } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
-//@ts-ignore
-// import cssStyle from "./snow.css";
-import { AmmPoolActivityRule, RuleType } from "@loopring-web/loopring-sdk";
-import { Rank, RankRaw } from "./rank";
 
-const LayoutStyled = styled(Box)`
+import { RankRaw } from "./rank";
+import moment from "moment";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import { MarkdownStyle } from "pages/MarkdownPage/style";
+import { useTheme } from "@emotion/react";
+import { EventData } from "./interface";
+
+const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  ${({ eventData: { showBannerOrTitle, banner } }) => {
+    if (showBannerOrTitle == "1" && banner.laptop) {
+      return `
+          margin-top:0;
+          .title-banner {        
+            h1,
+            h2 {
+             overflow: hidden;
+             text-indent:-999999em; 
+            }
+            width:100%;
+            min-height: 30vw; 
+            background-position:50%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-image: url(${banner.pad});
+            @media only screen and (max-width: 600px) {
+                background-image: url(${banner.mobile});
+            }
+            @media only screen and (max-width: 992px) {
+              background-image: url(${banner.pad});
+            };
+            @media only screen and (min-width: 1200px) {
+              background-image: url(${banner.laptop});
+              min-height: 380px;
+            }
+          }`;
+    }
+  }}
 
   ol,
   ul {
@@ -51,24 +81,16 @@ const LayoutStyled = styled(Box)`
       top: 0;
     }
   }
-`;
+` as (props: BoxProps & { eventData: EventData }) => JSX.Element;
 // ${cssStyle}
 
 export const TradeRacePage = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    const {
-      activityRule,
-      searchParams,
-      eventData,
-      countDown,
-      eventStatus,
-      scrollToRule,
-      currMarketPair,
-      duration,
-      handleMarketPairChange,
-    } = useTradeRace();
+    const { eventData, countDown, searchParams, scrollToRule, eventStatus } =
+      useTradeRace();
+    const theme = useTheme();
     const anchorRef = React.useRef();
-    myLog("activityRule", eventStatus, activityRule);
+    // myLog("activityRule", eventStatus, activityRule);
     /*remove: holiday only end
       const flakes = 160;
       const flake = React.useMemo(() => {
@@ -84,24 +106,31 @@ export const TradeRacePage = withTranslation("common")(
           </Fab>
         </ScrollTop>
         {eventData ? (
-          <LayoutStyled marginY={4}>
-            <Typography
-              marginY={1}
-              component={"h1"}
-              variant={"h1"}
-              whiteSpace={"pre-line"}
-              textAlign={"center"}
-              dangerouslySetInnerHTML={{ __html: eventData.eventTitle }}
-            />
+          <LayoutStyled marginY={4} eventData={eventData}>
+            <Box className={"title-banner"} marginBottom={4}>
+              <Typography
+                // sx={{
+                //   textIndent:
+                //     eventData.banner && eventData.showBannerOrTitle == "1"
+                //       ? "-99999em"
+                //       : "in",
+                // }}
+                marginY={1}
+                component={"h1"}
+                variant={"h1"}
+                whiteSpace={"pre-line"}
+                textAlign={"center"}
+                dangerouslySetInnerHTML={{ __html: eventData.eventTitle }}
+              />
 
-            <Typography
-              component={"h2"}
-              variant={"h2"}
-              whiteSpace={"pre-line"}
-              textAlign={"center"}
-              marginBottom={4}
-              dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
-            />
+              <Typography
+                component={"h2"}
+                variant={"h2"}
+                whiteSpace={"pre-line"}
+                textAlign={"center"}
+                dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
+              />
+            </Box>
 
             {eventStatus && (
               <Box
@@ -137,7 +166,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.days}
+                        {Number(countDown?.days) >= 0
+                          ? countDown?.days
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -161,7 +192,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.hours}
+                        {Number(countDown?.hours) >= 0
+                          ? countDown?.hours
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -185,7 +218,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.minutes}
+                        {Number(countDown?.minutes) >= 0
+                          ? countDown?.minutes
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -209,7 +244,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.seconds}
+                        {Number(countDown?.seconds) >= 0
+                          ? countDown?.seconds
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -224,16 +261,18 @@ export const TradeRacePage = withTranslation("common")(
                 )}
               </Box>
             )}
-            {duration && (
+            {eventData.duration && (
               <Typography marginBottom={2} paddingX={3} variant={"body1"}>
                 {eventData?.duration?.prev}
                 <Typography
                   component={"time"}
                   paddingX={1}
                   variant={"h5"}
-                  dateTime={duration.startDate}
+                  dateTime={eventData.duration.startDate.toFixed()}
                 >
-                  {duration.startDate}
+                  {moment(eventData.duration.startDate)
+                    .utc()
+                    .format(`YYYY-MM-DD HH:mm:ss`)}
                 </Typography>
                 <Typography component={"span"} variant={"h5"}>
                   {eventData?.duration?.middle}
@@ -242,10 +281,14 @@ export const TradeRacePage = withTranslation("common")(
                   component={"time"}
                   paddingX={1}
                   variant={"h5"}
-                  dateTime={duration.endDate}
+                  dateTime={eventData.duration.endDate.toFixed()}
                 >
-                  {duration.endDate ? duration.endDate : EmptyValueTag}
+                  {moment(eventData.duration.endDate)
+                    .utc()
+                    .format(`YYYY-MM-DD HH:mm:ss`)}
                 </Typography>
+                {eventData?.duration?.timeZone &&
+                  `(${eventData?.duration?.timeZone})`}{" "}
                 {eventData?.duration?.end}
                 <Typography marginLeft={1} component={"span"}>
                   <Link onClick={(e) => scrollToRule(e)}>
@@ -254,79 +297,44 @@ export const TradeRacePage = withTranslation("common")(
                 </Typography>
               </Typography>
             )}
-            {activityRule &&
-              // (activityRule as AmmPoolActivityRule)?.ruleType &&
-              searchParams.get("type") &&
-              [
-                RuleType.SWAP_VOLUME_RANKING,
-                RuleType.ORDERBOOK_MINING,
-                RuleType.AMM_MINING,
-              ].includes(searchParams.get("type") as RuleType) &&
-              eventStatus &&
-              [EVENT_STATUS.EVENT_START, EVENT_STATUS.EVENT_END].includes(
-                eventStatus
-              ) &&
-              !searchParams.has("rule") && (
-                <Rank
-                  handleMarketPairChange={handleMarketPairChange}
-                  activityRule={activityRule as AmmPoolActivityRule}
-                  pair={currMarketPair as MarketType}
-                />
-              )}
-            {!searchParams.has("rule") && eventData.api && (
-              <RankRaw {...eventData.api} />
-            )}
-            {eventData.rewards && (
-              <Box
-                ref={anchorRef}
-                maxWidth={1200}
-                width={"100%"}
-                paddingX={3}
-                marginX={"auto"}
-                alignSelf={"self-start"}
-                marginTop={3}
-              >
-                <Typography
-                  marginBottom={1}
-                  variant={"h4"}
-                  color={"var(--color-text-secondary)"}
-                >
-                  {t("labelTradeRaceRewards")}
-                </Typography>
-                <TradeRacePanel rawData={eventData.rewards} /> )
-              </Box>
-            )}
+            {!searchParams.has("rule") &&
+              eventData.api &&
+              eventData.api.version && <RankRaw {...eventData.api} />}
+
             <Box
+              ref={anchorRef}
               maxWidth={1200}
               width={"100%"}
               paddingX={3}
               marginTop={3}
               id={"event-rule"}
             >
-              <Box>
-                <Typography
+              {eventData.ruleMarkdown ? (
+                <MarkdownStyle
+                  container
+                  minHeight={"calc(100% - 260px)"}
+                  flex={1}
+                  marginTop={3}
                   marginBottom={2}
-                  variant={"h4"}
-                  color={"var(--color-text-secondary)"}
                 >
-                  {t("labelTradeRaceRules")}
-                </Typography>
-                <ol>
-                  {eventData.rules.map((item, index) => (
-                    <li key={index}>
-                      <Typography
-                        whiteSpace={"pre-line"}
-                        color={"inherit"}
-                        component={"p"}
-                        variant={"body1"}
-                        marginBottom={2}
-                        paddingLeft={1}
-                        dangerouslySetInnerHTML={{ __html: item }}
-                      />
-                    </li>
-                  ))}
-                </ol>
-              </Box>
+                  <Box
+                    flex={1}
+                    padding={3}
+                    boxSizing={"border-box"}
+                    className={`${theme.mode}  ${theme.mode}-scheme markdown-body MuiPaper-elevation2 no-bg`}
+                  >
+                    <ReactMarkdown
+                      remarkPlugins={[
+                        gfm,
+                        ...(eventData.rehypeRaw == "1" ? [rehypeRaw] : []),
+                      ]}
+                      children={eventData.ruleMarkdown}
+                    />
+                  </Box>
+                </MarkdownStyle>
+              ) : (
+                <LoadingBlock />
+              )}
             </Box>
           </LayoutStyled>
         ) : (

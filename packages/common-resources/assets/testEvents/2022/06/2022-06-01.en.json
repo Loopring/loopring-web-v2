@@ -1,0 +1,39 @@
+{
+  "TEST_1": {
+    "eventTitle": "TETT_1 TITLE",
+    "subTitle": "TETT_1 SUB TITLE",
+    "rule": "test_1_rule.en.md",
+    "rehypeRaw": "0",
+    "banner": {
+      "laptop": "test_1_banner.en.webp",
+      "mobile":"test_1_banner.en.webp",
+      "pad": "test_1_banner.en.webp"
+    },
+    "showBannerOrTitle": "1",
+    "local": "en-us",
+    "duration": {
+      "prev": "Activity Period:",
+      "startDate": "01/06/2022 00:00:00",
+      "endDate": "03/06/2022 00:00:00",
+      "timeZone": "UTC",
+      "middle": "to"
+    },
+    "api": {
+      "version": "1",
+      "column": [
+        {
+          "key": "rank",
+          "label": "Rank"
+        },
+        {
+          "key": "address",
+          "label": "Address"
+        },
+        {
+          "key": "usdtValue",
+          "label": "Amount (USDT)"
+        }
+      ]
+    }
+  }
+}

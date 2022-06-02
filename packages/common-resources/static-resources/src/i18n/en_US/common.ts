@@ -212,7 +212,7 @@ export default {
   describeTitleOnErrorNetwork:
     "Your current network is not supported by Loopring!\n Please change network via {{connectName}}.",
   describeTitleNotActive:
-    "Connect your wallet,\n make a deposit, and enjoy using Loopring L2.",
+    "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeTitleConnectToWallet:
     "As Ethereum's first ever zkRollup, Loopring Layer 2 allows you to avoid costly gas fees and network congestion with the same security as mainnet - 100x cheaper and faster.",
   describeWhatIsGuardian: "What is a Loopring guardian",
@@ -562,7 +562,7 @@ export default {
     "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n Loopring L2 payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
-  labelL2toL2AddressInput: "PPlease input address / ens / account id",
+  labelL2toL2AddressInput: "Please input address / ens / account id",
   labelL2toL2Memo: "Memo (Optional)",
   labelL2toL2MemoPlaceholder: "Please input the memo",
   labelL2toL2FeeChoose: "Select payment token",

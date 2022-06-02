@@ -139,7 +139,7 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
       const baseURL =
         ChainId.MAINNET === chainId
           ? `https://${process.env.REACT_APP_API_URL}`
-          : `https:/${process.env.REACT_APP_API_URL_UAT}`;
+          : `https://${process.env.REACT_APP_API_URL_UAT}`;
       const socketURL =
         ChainId.MAINNET === chainId
           ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws`

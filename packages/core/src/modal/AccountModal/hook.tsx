@@ -295,7 +295,6 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
-        //TODO is advance
       },
     };
   }, [setShowAccount]);
