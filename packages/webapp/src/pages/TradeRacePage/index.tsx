@@ -4,7 +4,7 @@ import { Box, BoxProps, Fab, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { ScrollTop } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
-import { GoTopIcon } from "@loopring-web/common-resources";
+import { EmptyValueTag, GoTopIcon } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 
 import { RankRaw } from "./rank";
@@ -21,34 +21,36 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  .title-banner {
-    ${({ eventData: { showBannerOrTitle, banner } }) => {
-      if (showBannerOrTitle == "1" && banner.laptop) {
-        return `
-        h1,
-        h2 {
-         overflow: hidden;
-         text-indent:-999999em; 
-        }
-        width:100%;
-        background-position:50%;
-        background-size: cover;
-        background-repeat: no-repeat;
-        @media only screen and (max-width: 600px) {
-          min-height: 30vw;
-          background-image: url(${banner.mobile});
-        }
-        @media only screen and (max-width: 992px) {
+
+  ${({ eventData: { showBannerOrTitle, banner } }) => {
+    if (showBannerOrTitle == "1" && banner.laptop) {
+      return `
+          margin-top:0;
           min-height: 30vw; 
-          background-image: url(${banner.pad});
-        };
-        @media only screen and (min-width: 1200px) {
-          background-image: url(${banner.laptop});
-          min-height: 380px;
-        }`;
-      }
-    }}
-  }
+          .title-banner {        
+            h1,
+            h2 {
+             overflow: hidden;
+             text-indent:-999999em; 
+            }
+            width:100%;
+            background-position:50%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-image: url(${banner.pad});
+            @media only screen and (max-width: 600px) {
+                background-image: url(${banner.mobile});
+            }
+            @media only screen and (max-width: 992px) {
+              background-image: url(${banner.pad});
+            };
+            @media only screen and (min-width: 1200px) {
+              background-image: url(${banner.laptop});
+              min-height: 380px;
+            }
+          }`;
+    }
+  }}
 
   ol,
   ul {
@@ -105,7 +107,7 @@ export const TradeRacePage = withTranslation("common")(
         </ScrollTop>
         {eventData ? (
           <LayoutStyled marginY={4} eventData={eventData}>
-            <Box className={"title-banner"}>
+            <Box className={"title-banner"} marginBottom={4}>
               <Typography
                 // sx={{
                 //   textIndent:
@@ -126,7 +128,6 @@ export const TradeRacePage = withTranslation("common")(
                 variant={"h2"}
                 whiteSpace={"pre-line"}
                 textAlign={"center"}
-                marginBottom={4}
                 dangerouslySetInnerHTML={{ __html: eventData.subTitle }}
               />
             </Box>
@@ -165,7 +166,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.days}
+                        {Number(countDown?.days) >= 0
+                          ? countDown?.days
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -189,7 +192,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.hours}
+                        {Number(countDown?.hours) >= 0
+                          ? countDown?.hours
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -213,7 +218,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.minutes}
+                        {Number(countDown?.minutes) >= 0
+                          ? countDown?.minutes
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -237,7 +244,9 @@ export const TradeRacePage = withTranslation("common")(
                         component={"span"}
                         color={"var(--color-text-primary)"}
                       >
-                        {countDown?.seconds}
+                        {Number(countDown?.seconds) >= 0
+                          ? countDown?.seconds
+                          : EmptyValueTag}
                       </Typography>
                       <Typography
                         variant={"h4"}
@@ -278,6 +287,8 @@ export const TradeRacePage = withTranslation("common")(
                     .utc()
                     .format(`YYYY-MM-DD HH:mm:ss`)}
                 </Typography>
+                {eventData?.duration?.timeZone &&
+                  `(${eventData?.duration?.timeZone})`}{" "}
                 {eventData?.duration?.end}
                 <Typography marginLeft={1} component={"span"}>
                   <Link onClick={(e) => scrollToRule(e)}>
@@ -286,9 +297,9 @@ export const TradeRacePage = withTranslation("common")(
                 </Typography>
               </Typography>
             )}
-            {!searchParams.has("rule") && eventData.api && (
-              <RankRaw {...eventData.api} />
-            )}
+            {!searchParams.has("rule") &&
+              eventData.api &&
+              eventData.api.version && <RankRaw {...eventData.api} />}
 
             <Box
               ref={anchorRef}

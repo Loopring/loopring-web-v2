@@ -2,7 +2,12 @@ import React from "react";
 import { languageMap, myLog } from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Config_INFO_URL, EventData, url_path } from "./interface";
+import {
+  Config_INFO_URL,
+  EventData,
+  url_path,
+  url_test_path,
+} from "./interface";
 import { setInterval } from "timers";
 import { useSystem } from "@loopring-web/core";
 import moment from "moment";
@@ -40,7 +45,9 @@ export const useTradeRace = () => {
         // follow /2021/01/2021-01-01.en.json
         const [year, month, day] = match?.params.path.split("-");
         const type = searchParams.get("type");
-        const path = `${url_path}/${year}/${month}/`;
+        const path = `${
+          /uat/gi.test(baseURL) ? url_test_path : url_path
+        }/${year}/${month}/`;
         if (year && month && day && type) {
           fetch(
             `${path}/${year}-${month}-${day}.${languageMap[i18n.language]}.json`
@@ -77,17 +84,17 @@ export const useTradeRace = () => {
                         return "";
                       }),
                   ]);
-                const startUnix = moment(
-                  eventData.duration.startDate,
-                  "DD/MM/YYYY HH:mm:ss"
-                ).valueOf();
-                const endUnix = moment(
-                  eventData.duration.endDate,
-                  "DD/MM/YYYY HH:mm:ss"
-                ).valueOf();
-                if (startUnix > Date.now()) {
-                  setEventStatus(EVENT_STATUS.EVENT_READY);
-                }
+                const startUnix =
+                  config[0].start ??
+                  moment
+                    .utc(eventData.duration.startDate, "DD/MM/YYYY HH:mm:ss")
+                    .valueOf();
+                const endUnix =
+                  config[0].end ??
+                  moment
+                    .utc(eventData.duration.endDate, "DD/MM/YYYY HH:mm:ss")
+                    .valueOf();
+
                 setEventData({
                   ...eventData,
                   banner: {
@@ -103,8 +110,8 @@ export const useTradeRace = () => {
                   },
                   duration: {
                     ...eventData.duration,
-                    startDate: config[0].start ?? startUnix,
-                    endDate: config[0].end ?? endUnix,
+                    startDate: startUnix,
+                    endDate: endUnix,
                   },
                   ruleMarkdown: config[1],
                   api: {
@@ -112,6 +119,14 @@ export const useTradeRace = () => {
                     ...config[0],
                   },
                 });
+
+                if (startUnix > Date.now()) {
+                  setEventStatus(EVENT_STATUS.EVENT_READY);
+                } else if (endUnix > Date.now()) {
+                  setEventStatus(EVENT_STATUS.EVENT_START);
+                } else {
+                  setEventStatus(EVENT_STATUS.EVENT_END);
+                }
               } else {
                 throw "no EventData";
               }
@@ -127,7 +142,7 @@ export const useTradeRace = () => {
         history.push("/race-event");
       }
     }
-  }, [baseURL]);
+  }, [baseURL, i18n.language]);
 
   const scrollToRule = (event: React.MouseEvent<HTMLElement>) => {
     const anchor = (

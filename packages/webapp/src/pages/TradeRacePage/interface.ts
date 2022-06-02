@@ -25,6 +25,7 @@ export type EventData = {
     middle?: "to";
     endDate: number;
     end?: string;
+    timeZone?: string;
   };
   api: EventAPI & Partial<EventAPIExtender>;
 };
@@ -41,8 +42,7 @@ export type API_DATA<R extends object> = {
   data: R[];
 };
 
-//TODO:test
-//"https://static.loopring.io/events";
-export const url_path = "/static/testEvents/";
+export const url_path = "https://static.loopring.io/events";
+export const url_test_path = "/static/testEvents/";
 export const Config_INFO_URL = "api/v3/activity/getFilterInfo";
-export const Activity_URL = "/api/v3/activity/getActivityList/";
+export const Activity_URL = "/api/v3/activity/getActivityList";

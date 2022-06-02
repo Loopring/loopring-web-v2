@@ -22,20 +22,16 @@
       "version": "1",
       "column": [
         {
-          "key": "key1",
-          "label": "label1"
+          "key": "rank",
+          "label": "Rank"
         },
         {
-          "key": "key2",
-          "label": "label2"
+          "key": "address",
+          "label": "Address"
         },
         {
-          "key": "key3",
-          "label": "label3"
-        },
-        {
-          "key": "key4",
-          "label": "label4"
+          "key": "usdtValue",
+          "label": "Amount (USDT)"
         }
       ]
     }

@@ -19,23 +19,19 @@
       "middle": "to"
     },
     "api": {
-      "version": "3",
+      "version": "1",
       "column": [
         {
-          "key": "key1",
-          "label": "label1"
+          "key": "rank",
+          "label": "rank"
         },
         {
-          "key": "key2",
-          "label": "label2"
+          "key": "address",
+          "label": "account addr"
         },
         {
-          "key": "key3",
-          "label": "label3"
-        },
-        {
-          "key": "key4",
-          "label": "label4"
+          "key": "usdtValue",
+          "label": "amount (usdt)"
         }
       ]
     }

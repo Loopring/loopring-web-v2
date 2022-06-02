@@ -102,9 +102,9 @@ export const RankRaw = <R extends object>({
   };
 
   React.useEffect(() => {
-    if (searchValue !== "" && rank?.data.length) {
+    if (searchValue !== "" && rank?.data?.length) {
       setRankTableData((state) =>
-        rank?.data.filter((item: any) => {
+        rank?.data?.filter((item: any) => {
           if (searchValue.startsWith("0x")) {
             const regx = new RegExp(searchValue.toLowerCase(), "ig");
             return regx.test(item?.address);
@@ -114,8 +114,10 @@ export const RankRaw = <R extends object>({
           }
         })
       );
-    } else if (rank?.data.length) {
-      setRankTableData(rank?.data);
+    } else if (rank?.data?.length) {
+      setRankTableData([...rank?.data]);
+    } else {
+      setRankTableData([]);
     }
   }, [rank?.data, searchValue]);
 
@@ -131,10 +133,10 @@ export const RankRaw = <R extends object>({
             column.length == index + 1
               ? "rdg-cell-value textAlignRight"
               : "rdg-cell-value textAlignCenter",
-          formatter: ({ row, column }: any) => {
-            if (/address/gi.test(column.key.toLowerCase())) {
-              return getShortAddr(row[column.key]);
-            } else if (column.key === "rank") {
+          formatter: ({ row }: any) => {
+            if (/address/gi.test(item.key.toLowerCase())) {
+              return getShortAddr(row[item.key]);
+            } else if (/rank/gi.test(item.key.toLowerCase())) {
               const value = row.rank;
               const formattedValue =
                 value === "1" ? (
@@ -151,7 +153,7 @@ export const RankRaw = <R extends object>({
                 );
               return <Box className="rdg-cell-value">{formattedValue}</Box>;
             } else {
-              return row[column.key];
+              return row[item.key];
             }
           },
         }))
@@ -168,7 +170,9 @@ export const RankRaw = <R extends object>({
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
-        setRank(json.data as API_DATA<R>);
+        setRank(() => {
+          return { ...json } as API_DATA<R>;
+        });
         setShowLoading(false);
       })
       .catch(() => {
@@ -228,8 +232,14 @@ export const RankRaw = <R extends object>({
             {rank?.owner?.rank || EmptyValueTag}
           </Typography>
         </Box>
-        <TableStyled height={(rankTableData.length + 1) * RowConfig.rowHeight}>
-          {rank?.data.length ? (
+        <TableStyled
+          minHeight={120}
+          height={
+            ((rankTableData && rankTableData?.length) ?? 0 + 1) *
+            RowConfig.rowHeight
+          }
+        >
+          {rank?.data?.length ? (
             <Table
               className={"scrollable"}
               {...{

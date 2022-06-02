@@ -1,17 +1,13 @@
 import {
   AssetsIcon,
-  DiscordIcon,
   L2HistoryIcon,
   L2MyLiquidityIcon,
   L2OrderIcon,
-  MediumIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
-  TwitterIcon,
   VipIcon,
   WaitApproveIcon,
-  YoutubeIcon,
 } from "../svg";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
@@ -349,19 +345,19 @@ export const FOOTER_LIST_MAP = {
 
 export const MEDIA_LIST = [
   {
-    linkName: DiscordIcon, //color={"inherit"} fontSize={"large"}
+    linkName: "Discord", //color={"inherit"} fontSize={"large"}
     linkHref: "https://discord.com/invite/KkYccYp",
   },
   {
-    linkName: TwitterIcon,
+    linkName: "Twitter",
     linkHref: "https://twitter.com/loopringorg",
   },
   {
-    linkName: YoutubeIcon,
+    linkName: "Youtube",
     linkHref: "https://www.youtube.com/c/Loopring",
   },
   {
-    linkName: MediumIcon,
+    linkName: "Medium",
     linkHref: "https://medium.com/loopring-protocol",
   },
 ];

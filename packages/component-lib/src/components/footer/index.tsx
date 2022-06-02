@@ -1,7 +1,15 @@
 import styled from "@emotion/styled/macro";
 import { Box, Container, Link, List, Typography } from "@mui/material";
 import React from "react";
-import { FooterInterface, LoopringIcon } from "@loopring-web/common-resources";
+import {
+  FooterInterface,
+  LoopringIcon,
+  DiscordIcon,
+  TwitterIcon,
+  YoutubeIcon,
+  MediumIcon,
+} from "@loopring-web/common-resources";
+
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import { useSettings } from "../../stores";
@@ -33,10 +41,7 @@ export const Footer = withTranslation(["layout"])(
     const { mode } = useTheme();
     const { isMobile } = useSettings();
     React.useLayoutEffect(() => {
-      function updateSize() {
-        // setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
-      }
-
+      function updateSize() {}
       window.addEventListener("resize", updateSize);
       updateSize();
       return () => window.removeEventListener("resize", updateSize);
@@ -84,6 +89,38 @@ export const Footer = withTranslation(["layout"])(
     }, [linkListMap]);
 
     const medias = React.useMemo(() => {
+      const renderIcon = (name: string) => {
+        switch (name) {
+          case "Discord":
+            return (
+              <DiscordIcon
+                fontSize={"large"}
+                htmlColor={"var(--text-color-third)"}
+              />
+            );
+          case "Twitter":
+            return (
+              <TwitterIcon
+                fontSize={"large"}
+                htmlColor={"var(--text-color-third)"}
+              />
+            );
+          case "Youtube":
+            return (
+              <YoutubeIcon
+                fontSize={"large"}
+                htmlColor={"var(--text-color-third)"}
+              />
+            );
+          case "Medium":
+            return (
+              <MediumIcon
+                fontSize={"large"}
+                htmlColor={"var(--text-color-third)"}
+              />
+            );
+        }
+      };
       return (
         <List
           style={{
@@ -103,7 +140,7 @@ export const Footer = withTranslation(["layout"])(
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {o.linkName}
+                {renderIcon(o.linkName)}
               </LinkStyle>
             </Typography>
           ))}
