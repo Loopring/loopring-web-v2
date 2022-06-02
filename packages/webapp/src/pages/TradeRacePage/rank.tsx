@@ -51,7 +51,6 @@ const TableStyled = styled(Box)<{ height: number | undefined | string }>`
 
   .rdg {
     height: ${({ height }) => height}px;
-    --template-columns: 10% 30% auto auto !important;
     height: auto;
 
     .rdgCellCenter {
@@ -128,9 +127,15 @@ export const RankRaw = <R extends object>({
           name: item.label,
           width: "auto",
           headerCellClass:
-            column.length == index + 1 ? "textAlignRight" : `textAlignCenter`,
+            index == 0
+              ? "textAlignLeft"
+              : column.length == index + 1
+              ? "textAlignRight"
+              : `textAlignCenter`,
           cellClass:
-            column.length == index + 1
+            index == 0
+              ? "textAlignLeft"
+              : column.length == index + 1
               ? "rdg-cell-value textAlignRight"
               : "rdg-cell-value textAlignCenter",
           formatter: ({ row }: any) => {
