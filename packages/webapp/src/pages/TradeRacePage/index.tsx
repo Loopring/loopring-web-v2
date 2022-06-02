@@ -26,7 +26,6 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
     if (showBannerOrTitle == "1" && banner.laptop) {
       return `
           margin-top:0;
-          min-height: 30vw; 
           .title-banner {        
             h1,
             h2 {
@@ -34,6 +33,7 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
              text-indent:-999999em; 
             }
             width:100%;
+            min-height: 30vw; 
             background-position:50%;
             background-size: cover;
             background-repeat: no-repeat;
