@@ -1447,10 +1447,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@coinbase/wallet-sdk@^3.0.4":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.0.5.tgz#d9eb49b482570e93ef9fd0bfe15c5582e28b3063"
-  integrity sha512-MsPhgS9b9DpNQdbuYEFDZToPVhh8OQZFkLH59LpYHXRxRIjQDsGGjXcLC50jfW06ElBbtB9adl5RlJTmXb9KbA==
+"@coinbase/wallet-sdk@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.2.0.tgz#cceda6c2ed213b663c5cbb35fcf65a57c24323f0"
+  integrity sha512-uw9rdsfzXsdmC9FblMt2UH4094vLl9h3i1za5A2MaC8Ak1X/E1QbGr1oi64QAx9HD+M75zmy506F+zT0/s5dpQ==
   dependencies:
     "@metamask/safe-event-emitter" "2.0.0"
     bind-decorator "^1.0.11"
@@ -1463,6 +1463,7 @@
     json-rpc-engine "6.1.0"
     keccak "^3.0.1"
     preact "^10.5.9"
+    qs "^6.10.3"
     rxjs "^6.6.3"
     stream-browserify "^3.0.0"
 
@@ -3261,10 +3262,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@^2.0.12":
-  version "2.0.12"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.12.tgz#af2157afab1a7904313040ca809769dbe221b9a5"
-  integrity sha512-cFJ0jv7jdoGsS3/r+HCoOHV7X4TVe+VaPx/fxMAqwUWFW5tfFo0hdwe9sflnW4vgFz3iptmqEITGFLM++e1azg==
+"@loopring-web/loopring-sdk@^2.0.13-beta":
+  version "2.0.13-beta"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.13-beta.tgz#828d3b4d30043b36f4019a5b64a56a76a2621454"
+  integrity sha512-kTL8APBEFh+qyz06RmLTbCXXQAcnmBRsjEbuutU9bdryBXAZCU+NH6yIiJ7tJZoyBcvL7l5h8l9XX66bs/YU2A==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -3306,12 +3307,12 @@
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-"@loopring-web/web3-provider@^1.0.13":
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.0.13.tgz#2d85e0e3342cea0226039a22a3fe101c6a419857"
-  integrity sha512-SELmV+Jzf89JGQVzZ8b1ZdNH/AHahAONlm8QoGs5y9y03bmG++t8mLSspD8iXcCuyMSn92lzOAMqTIkNi0odpw==
+"@loopring-web/web3-provider@^1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.0.16.tgz#b09d04a6e663f2b717ee231e2183d7b033126203"
+  integrity sha512-rQTn2gzV9CTD4UOnlaJJpf4O7OJUdzoll43spJbzoeyHCuQVdC3LvvxF+L1Kz9SEFzUCiAHYqNA2fnLsyM5iMA==
   dependencies:
-    "@coinbase/wallet-sdk" "^3.0.4"
+    "@coinbase/wallet-sdk" "^3.2.0"
     "@ethersproject/providers" "^5.6.1"
     "@metamask/detect-provider" "^1.2.0"
     "@reduxjs/toolkit" "^1.6.1"
@@ -21710,7 +21711,7 @@ qs@6.9.7:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.7.tgz#4610846871485e1e048f44ae3b94033f0e675afe"
   integrity sha512-IhMFgUmuNpyRfxA90umL7ByLlgRXu6tIfKPpF5TmcfRLlLCckfP/g3IQmju6jjpu+Hh8rA+2p6A27ZSPOOHdKw==
 
-qs@^6.10.0, qs@^6.9.4:
+qs@^6.10.0, qs@^6.10.3, qs@^6.9.4:
   version "6.10.3"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.3.tgz#d6cde1b2ffca87b5aa57889816c5f81535e22e8e"
   integrity sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==
