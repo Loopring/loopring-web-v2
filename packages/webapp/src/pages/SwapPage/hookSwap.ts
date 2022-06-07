@@ -67,6 +67,7 @@ import {
 import { useHistory } from "react-router-dom";
 
 import * as _ from "lodash";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();
@@ -448,20 +449,22 @@ export const useSwap = <C extends { [key: string]: any }>({
           // myLog('buy maxOrderSize:', maxOrderSize)
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
           return `labelLimitMax| ${maxOrderSize}`;
-        } else if (!validAmt) {
-          const sellSymbol = tradeData?.sell.belong;
-          //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
-          const minOrderSize = VolToNumberWithPrecision(
-            sellMinAmt ?? "",
-            sellSymbol as any
-          );
-          setSwapBtnStatus(TradeBtnStatus.DISABLED);
-          if (isNaN(Number(minOrderSize))) {
-            return ``;
-          } else {
-            return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
-          }
-        } else {
+        }
+        // else if (!validAmt) {
+        //   const sellSymbol = tradeData?.sell.belong;
+        //   //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
+        //   const minOrderSize = VolToNumberWithPrecision(
+        //     sellMinAmt ?? "",
+        //     sellSymbol as any
+        //   );
+        //   setSwapBtnStatus(TradeBtnStatus.DISABLED);
+        //   if (isNaN(Number(minOrderSize))) {
+        //     return ``;
+        //   } else {
+        //     return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
+        //   }
+        // }
+        else {
           setSwapBtnStatus(TradeBtnStatus.AVAILABLE);
           return undefined;
         }
@@ -933,15 +936,18 @@ export const useSwap = <C extends { [key: string]: any }>({
           .times(100)
           .toString();
         let totalFee = undefined;
+        let feeTakerRate = undefined;
         let feeBips = undefined;
         let takerRate = undefined;
         let buyMinAmtInfo = undefined;
         let sellMinAmtInfo = undefined;
+        let tradeCost = undefined;
         if (amountMap && amountMap[market as string] && ammMap) {
           const ammMarket = `AMM-${market}`;
           const amount = ammMap[ammMarket]
             ? amountMap[ammMarket]
             : amountMap[market as string];
+          const amountMarket = amountMap[market as string];
 
           buyMinAmtInfo = amount[_tradeData["buy"].belong as string];
           sellMinAmtInfo = amount[_tradeData["sell"].belong as string];
@@ -951,7 +957,15 @@ export const useSwap = <C extends { [key: string]: any }>({
           feeBips = ammMap[ammMarket]
             ? ammMap[ammMarket].__rawConfig__.feeBips
             : 1;
-          totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
+
+          feeTakerRate =
+            amountMarket[_tradeData["buy"].belong as string] &&
+            amountMarket[_tradeData["buy"].belong as string].userOrderInfo
+              .takerRate;
+          tradeCost =
+            amountMarket[_tradeData["buy"].belong as string].tradeCost;
+          // amountMarket[_tradeData["buy"].belong as string];
+          //sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
 
           const buyToken = tokenMap[_tradeData["buy"].belong as string];
 
@@ -994,26 +1008,50 @@ export const useSwap = <C extends { [key: string]: any }>({
           takerRate: takerRate ? takerRate.toString() : "0",
           slipBips: slippage,
         });
-        debugger;
 
-        // myLog('depth:', depth)
-        // myLog('calcTradeParams:', calcTradeParams)
         const minSymbol = _tradeData.buy.belong;
+        const minimumReceived =
+          calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal
+            ? getValuePrecisionThousand(
+                calcTradeParams.amountBOutSlip?.minReceivedVal,
+                tokenMap[minSymbol].precision,
+                tokenMap[minSymbol].precision,
+                tokenMap[minSymbol].precision,
+                false,
+                { floor: true }
+              )
+            : undefined;
+        if (
+          tradeCost &&
+          calcTradeParams &&
+          calcTradeParams.amountBOutSlip?.minReceived &&
+          feeTakerRate
+        ) {
+          let value = toBig(calcTradeParams.amountBOutSlip?.minReceived)
+            .times(feeTakerRate)
+            .div(100);
+
+          totalFee = getValuePrecisionThousand(
+            (value.gte(tradeCost) ? value : toBig(tradeCost))
+              .div("1e" + tokenMap[minSymbol].decimals)
+              .toString(),
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            false,
+            { floor: true }
+          );
+          // if() {
+          //
+          // }
+          // toBig().times()
+        }
+        //  totalFee = feeTakerRate?toBig(feeTakerRate).div(100)* minimumReceived
         const priceImpactObj = getPriceImpactInfo(calcTradeParams);
         const _tradeCalcData: Partial<TradeCalcData<C>> = {
           priceImpact: priceImpactObj.value,
           priceImpactColor: priceImpactObj.priceImpactColor,
-          minimumReceived:
-            calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal
-              ? getValuePrecisionThousand(
-                  calcTradeParams.amountBOutSlip?.minReceivedVal,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  false,
-                  { floor: true }
-                )
-              : undefined,
+          minimumReceived,
           fee: totalFee,
         };
 

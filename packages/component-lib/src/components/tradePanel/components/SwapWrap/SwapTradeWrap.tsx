@@ -227,7 +227,7 @@ export const SwapTradeWrap = <
 
   const fee =
     tradeCalcData && tradeCalcData.fee
-      ? (parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+      ? `${tradeCalcData.fee} ${tradeData.buy?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
       : EmptyValueTag;
 
   const minimumReceived =
