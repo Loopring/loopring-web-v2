@@ -418,7 +418,7 @@ export const Toolbar = withTranslation("common")(
                       "0" + (date.getMonth() + 1).toString()
                     ).slice(-2);
                     const day = ("0" + date.getDate().toString()).slice(-2);
-                    const current_event_date = `${year}-${month}-${day}`;
+                    const current_event_date = `${year}-${month}`;
 
                     history.push(
                       `/race-event/${current_event_date}?pair=${market}&type=${ruleType}&owner=${account?.accAddress}`
@@ -443,7 +443,7 @@ export const Toolbar = withTranslation("common")(
                   -2
                 );
                 const day = ("0" + date.getDate().toString()).slice(-2);
-                const current_event_date = `${year}-${month}-${day}`;
+                const current_event_date = `${year}-${month}`;
                 history.push(
                   `/race-event/${current_event_date}?pair=${market}&type=${
                     activityInProgressRules[`AMM-${market}`].ruleType[0]

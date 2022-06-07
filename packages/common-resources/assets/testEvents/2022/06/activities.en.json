@@ -1,0 +1,40 @@
+{
+  "test_1": {
+    "name": "test_1",
+    "eventTitle": "TETT_1 TITLE",
+    "subTitle": "TETT_1 SUB TITLE",
+    "rule": "test_1_rule.en.md",
+    "rehypeRaw": "0",
+    "banner": {
+      "laptop": "https://static.loopring.io/events/2022/06/activities/test_1_banner.en.webp",
+      "mobile": "https://static.loopring.io/events/2022/06/activities/test_1_banner.en.webp",
+      "pad": "https://static.loopring.io/events/2022/06/activities/test_1_banner.en.webp"
+    },
+    "showBannerOrTitle": "0",
+    "local": "en-us",
+    "duration": {
+      "prev": "Activity Period:",
+      "startDate": "06/01/2022 00:00:00",
+      "endDate": "07/01/2022 00:00:00",
+      "timeZone": "UTC",
+      "middle": "to"
+    },
+    "api": {
+      "version": "1",
+      "column": [
+        {
+          "key": "rank",
+          "label": "rank"
+        },
+        {
+          "key": "address",
+          "label": "account addr"
+        },
+        {
+          "key": "usdtValue",
+          "label": "amount (usdt)"
+        }
+      ]
+    }
+  }
+}

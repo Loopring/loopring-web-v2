@@ -33,7 +33,7 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
              text-indent:-999999em; 
             }
             width:100%;
-            min-height: 30vw; 
+            min-height: 65.6vw; 
             background-position:50%;
             background-size: cover;
             background-repeat: no-repeat;
@@ -46,7 +46,7 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
             };
             @media only screen and (min-width: 1200px) {
               background-image: url(${banner.laptop});
-              min-height: 380px;
+              min-height: 280px;
             }
           }`;
     }

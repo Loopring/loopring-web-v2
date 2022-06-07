@@ -1,8 +1,12 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getNotify, getNotifyStatus } from "./reducer";
 
-import { getNotification, myLog, Notify } from "@loopring-web/common-resources";
+import { Notify } from "@loopring-web/common-resources";
 import { store } from "../index";
+import {
+  url_path,
+  url_test_path,
+} from "@loopring-web/webapp/src/pages/TradeRacePage/interface";
 
 const Lang = {
   en_US: "en",
@@ -12,9 +16,32 @@ const getNotifyApi = async <_R extends { [key: string]: any }>(): Promise<{
   notifyMap: Notify;
 }> => {
   const lng = store.getState().settings.language;
-  const notifyMap = await getNotification(Lang[lng] as any);
-  myLog("getNotification notifyMap", notifyMap);
-  return { notifyMap: notifyMap };
+  const baseURL = store.getState().system.baseURL;
+  let notifyMap = {
+    activities: [],
+    notifications: [],
+    invest: [],
+  };
+  //TEST: url_test_path
+  //MAIN: url_path
+  // const path = url_test_path;
+  // debugger;
+  const path = `${/uat/gi.test(baseURL) ? url_test_path : url_path}`;
+  const notify = await fetch(`${path}/notification.json`).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return { prev: null };
+    }
+  });
+  return {
+    notifyMap: {
+      ...notifyMap,
+      ...notify["en"],
+      ...notify[Lang[lng]],
+      prev: { ...notify?.prev },
+    },
+  };
 };
 
 export function* getPostsSaga() {

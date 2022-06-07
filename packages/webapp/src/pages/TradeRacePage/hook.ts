@@ -43,15 +43,13 @@ export const useTradeRace = () => {
     if (baseURL) {
       try {
         // follow /2021/01/2021-01-01.en.json
-        const [year, month, day] = match?.params.path.split("-");
+        const [year, month] = match?.params.path.split("-");
         const type = searchParams.get("type");
         const path = `${
           /uat/gi.test(baseURL) ? url_test_path : url_path
         }/${year}/${month}/`;
-        if (year && month && day && type) {
-          fetch(
-            `${path}/${year}-${month}-${day}.${languageMap[i18n.language]}.json`
-          )
+        if (year && month && type) {
+          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
             .then((response) => {
               if (response.ok) {
                 return response.json();
@@ -75,7 +73,11 @@ export const useTradeRace = () => {
                         return {};
                       }
                     }),
-                    fetch(`${path}/` + eventData.rule)
+                    fetch(
+                      /uat/gi.test(baseURL)
+                        ? `${path}/activities/test_1_rule.en.md`
+                        : eventData.rule
+                    )
                       .then((response) => response.text())
                       .then((input) => {
                         return input;
@@ -87,25 +89,31 @@ export const useTradeRace = () => {
                 const startUnix =
                   config[0].start ??
                   moment
-                    .utc(eventData.duration.startDate, "DD/MM/YYYY HH:mm:ss")
+                    .utc(eventData.duration.startDate, "MM/DD/YYYY HH:mm:ss")
                     .valueOf();
                 const endUnix =
                   config[0].end ??
                   moment
-                    .utc(eventData.duration.endDate, "DD/MM/YYYY HH:mm:ss")
+                    .utc(eventData.duration.endDate, "MM/DD/YYYY HH:mm:ss")
                     .valueOf();
 
                 setEventData({
                   ...eventData,
                   banner: {
                     pad: eventData.banner?.pad
-                      ? `${path}/` + eventData.banner.pad
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/2022/06/activities/test_1_banner.en.webp`
+                        : eventData.banner.pad //`${path}/`
                       : undefined,
                     laptop: eventData.banner?.laptop
-                      ? `${path}/` + eventData.banner.laptop
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/2022/06/activities/test_1_banner.en.webp`
+                        : eventData.banner.laptop //`${path}/`
                       : undefined,
                     mobile: eventData.banner?.mobile
-                      ? `${path}/` + eventData.banner.mobile
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/2022/06/activities/test_1_banner.en.webp`
+                        : eventData.banner.mobile
                       : undefined,
                   },
                   duration: {

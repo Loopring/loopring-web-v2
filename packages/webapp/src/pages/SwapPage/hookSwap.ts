@@ -994,6 +994,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           takerRate: takerRate ? takerRate.toString() : "0",
           slipBips: slippage,
         });
+        debugger;
 
         // myLog('depth:', depth)
         // myLog('calcTradeParams:', calcTradeParams)

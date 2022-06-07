@@ -20,6 +20,7 @@ import { getTickers } from "../ticker/reducer";
 import { getAmmActivityMap } from "../Amm/AmmActivityMap/reducer";
 import { updateWalletLayer1 } from "../walletLayer1/reducer";
 import { getTokenMap } from "../token/reducer";
+import { getNotify } from "../notify/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -58,6 +59,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       disableWithdrawTokenList,
     })
   );
+  store.dispatch(getNotify({}));
   store.dispatch(initAmmMap({ ammpools }));
   yield take("tokenMap/getTokenMapStatus");
   store.dispatch(getTokenPrices(undefined));

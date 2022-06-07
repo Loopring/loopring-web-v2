@@ -75,15 +75,10 @@ export function useInit() {
   const { status: amountStatus, statusUnset: amountStatusUnset } = useAmount();
   const { status: socketStatus, statusUnset: socketUnset } = useSocket();
   const { circleUpdateLayer1ActionHistory } = layer1Store.useLayer1Store();
-  const {
-    getNotify,
-    status: notifyStatus,
-    statusUnset: notifyStatusUnset,
-  } = useNotify();
+  const { status: notifyStatus, statusUnset: notifyStatusUnset } = useNotify();
 
   React.useEffect(() => {
     (async (account) => {
-      getNotify();
       if (
         account.accAddress !== "" &&
         account.connectName &&
