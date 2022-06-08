@@ -33,6 +33,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  EmptyValueTag,
   fnType,
   getShowStr,
   getValuePrecisionThousand,
@@ -68,6 +69,7 @@ import { useHistory } from "react-router-dom";
 
 import * as _ from "lodash";
 import { toBig } from "@loopring-web/loopring-sdk";
+import BigNumber from "bignumber.js";
 
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();
@@ -452,21 +454,21 @@ export const useSwap = <C extends { [key: string]: any }>({
           // myLog('buy maxOrderSize:', maxOrderSize)
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
           return `labelLimitMax| ${maxOrderSize}`;
-        } else if (!calcTradeParams.takerRate) {
+        } else if (!validAmt) {
           //!validAmt) {
-          // const sellSymbol = tradeData?.sell.belong;
+          const sellSymbol = tradeData?.sell.belong;
           // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
-          // const minOrderSize = VolToNumberWithPrecision(
-          //   sellMinAmt ?? "",
-          //   sellSymbol as any
-          // );
+          const minOrderSize = VolToNumberWithPrecision(
+            sellMinAmt ?? "",
+            sellSymbol as any
+          );
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
-          return ``;
-          // if (isNaN(Number(minOrderSize))) {
-          //   return ``;
-          // } else {
-          //   return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
-          // }
+          // return ``;
+          if (isNaN(Number(minOrderSize))) {
+            return `labelLimitMin| ${EmptyValueTag + " " + sellSymbol}`;
+          } else {
+            return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
+          }
         } else {
           setSwapBtnStatus(TradeBtnStatus.AVAILABLE);
           return undefined;
@@ -938,8 +940,9 @@ export const useSwap = <C extends { [key: string]: any }>({
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const { ammPoolSnapshot, depth, tradePair, close } = pageTradeLite;
-      const amountMap = store.getState().amountMap;
-      let calcForMinAmt;
+      const { amountMap } = store.getState().amountMap;
+      let calcForMinAmt, calcForMinCost;
+
       // @ts-ignore
       // myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
       //checkMarketDataValid(ammPoolSnapshot, tickMap, market, depth) &&
@@ -968,9 +971,11 @@ export const useSwap = <C extends { [key: string]: any }>({
         let buyMinAmtInfo = undefined;
         let sellMinAmtInfo = undefined;
         let tradeCost = undefined;
+
         let maxFeeBips = MAPFEEBIPS;
-        myLog("amountMap[market as string]", amountMap[market as string]);
         if (amountMap && amountMap[market as string] && ammMap) {
+          myLog("amountMap[market as string]", amountMap[market as string]);
+
           const ammMarket = `AMM-${market}`;
           const amount = ammMap[ammMarket]
             ? amountMap[ammMarket]
@@ -1017,8 +1022,33 @@ export const useSwap = <C extends { [key: string]: any }>({
             slipBips: slippage,
           });
 
-          setSellMinAmt(calcForMinAmt?.amountS);
-          // myLog('calcForMinAmt?.amountS:', calcForMinAmt?.amountS)
+          let calcForMinCostInput = BigNumber.max(
+            toBig(tradeCost).times(2),
+            buyToken.orderAmounts.dust
+          );
+
+          const tradeCostInput = sdk
+            .toBig(calcForMinCostInput)
+            .div("1e" + buyToken.decimals)
+            .toString();
+
+          calcForMinCost = sdk.getOutputAmount({
+            input: tradeCostInput,
+            sell: coinA,
+            buy: coinB,
+            isAtoB: false,
+            marketArr: marketArray as string[],
+            tokenMap: tokenMap as any,
+            marketMap: marketMap as any,
+            depth,
+            ammPoolSnapshot: ammPoolSnapshot,
+            feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+            takerRate: takerRate ? takerRate.toString() : "0",
+            slipBips: slippage,
+          });
+          debugger;
+          setSellMinAmt(calcForMinCost?.amountS);
+          myLog("calcForMinCost?.amountS:", calcForMinCost?.amountS);
           // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
           // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
         }
@@ -1067,8 +1097,12 @@ export const useSwap = <C extends { [key: string]: any }>({
               .gte(sdk.toBig(calcForMinAmt?.amountS))
           );
           let totalFeeRaw;
-          if (!validAmt && toBig(tradeCost).gte(value)) {
-            totalFeeRaw = toBig(tradeCost);
+          if (!validAmt) {
+            if (toBig(tradeCost).gte(value)) {
+              totalFeeRaw = toBig(tradeCost);
+            } else {
+              totalFeeRaw = value;
+            }
             myLog("maxFeeBips update for tradeCost before value:", maxFeeBips);
             maxFeeBips = Math.ceil(
               totalFeeRaw
