@@ -974,7 +974,7 @@ export const useSwap = <C extends { [key: string]: any }>({
 
         let maxFeeBips = MAPFEEBIPS;
         if (amountMap && amountMap[market as string] && ammMap) {
-          myLog("amountMap[market as string]", amountMap[market as string]);
+          console.log(`amountMap[${market}]:`, amountMap[market as string]);
 
           const ammMarket = `AMM-${market}`;
           const amount = ammMap[ammMarket]
