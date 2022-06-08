@@ -1032,6 +1032,15 @@ export const useSwap = <C extends { [key: string]: any }>({
             .div("1e" + buyToken.decimals)
             .toString();
 
+          console.log(
+            "tradeCost*2:",
+            toBig(tradeCost).times(2).toString(),
+            "buyToken.orderAmounts.dust",
+            buyToken.orderAmounts.dust,
+            "calcForMinCost, Input",
+            tradeCostInput
+          );
+
           calcForMinCost = sdk.getOutputAmount({
             input: tradeCostInput,
             sell: coinA,
@@ -1046,9 +1055,8 @@ export const useSwap = <C extends { [key: string]: any }>({
             takerRate: takerRate ? takerRate.toString() : "0",
             slipBips: slippage,
           });
-          debugger;
           setSellMinAmt(calcForMinCost?.amountS);
-          myLog("calcForMinCost?.amountS:", calcForMinCost?.amountS);
+          console.log("calcForMinCost?.amountS:", calcForMinCost?.amountS);
           // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
           // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
         }
@@ -1097,20 +1105,38 @@ export const useSwap = <C extends { [key: string]: any }>({
               .gte(sdk.toBig(calcForMinAmt?.amountS))
           );
           let totalFeeRaw;
+
+          console.log(
+            `${minSymbol} tradeCost:`,
+            tradeCost,
+            "useTakeRate Fee:",
+            value.toString(),
+            `is setup minTrade amount ${calcForMinAmt?.amountS}:`,
+            validAmt
+          );
+
           if (!validAmt) {
             if (toBig(tradeCost).gte(value)) {
               totalFeeRaw = toBig(tradeCost);
             } else {
               totalFeeRaw = value;
             }
-            myLog("maxFeeBips update for tradeCost before value:", maxFeeBips);
+            console.log(
+              "maxFeeBips update for tradeCost before value:",
+              maxFeeBips,
+              "totalFeeRaw",
+              totalFeeRaw.toString()
+            );
             maxFeeBips = Math.ceil(
               totalFeeRaw
                 .times(10000)
                 .div(calcTradeParams.amountBOutSlip?.minReceived)
                 .toNumber()
             );
-            myLog("maxFeeBips update for tradeCost after value:", maxFeeBips);
+            console.log(
+              "maxFeeBips update for tradeCost after value:",
+              maxFeeBips
+            );
           } else {
             totalFeeRaw = toBig(value);
           }
@@ -1123,6 +1149,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             false,
             { floor: true }
           );
+          console.log("totalFee view value:", totalFee);
           // if() {
           //
           // }
