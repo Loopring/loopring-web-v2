@@ -16,9 +16,17 @@ export default {
   tokenSearchCoin: "Search Token Symbol",
   swapTitle: "Swap",
   swapTolerance: "Slippage Tolerance",
+  labelSwapToleranceTooltips:
+    "Your trade will revert if the price changes unfavorably by more than this percentage.",
   swapPriceImpact: "Price Impact",
-  swapMinReceive: "Minimum Received",
-  swapFee: "Fee",
+  labelSwapPriceImpactTooltips:
+    "The difference between market price and estimated price due to trade size",
+  swapMinReceive: "Est. Received",
+  labelSwapMinReceiveTooltips:
+    "Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price, but the protocol can guarantee that you will receive at least this amount.",
+  swapFee: "Est. Fee",
+  labelSwapFeeTooltips:
+    "The trading fee depends on your VIP level and your current configuration is {{rate}}%. Also the fee is with a minimum quantity requirement and can’t be less than {{value}}",
   swapBtn: "swap",
   goBack: "go back",
   resetTitle: "Reset Layer 2 Keypair",

@@ -53,6 +53,8 @@ export type PageTradeLite = {
   lastStepAt?: "sell" | "buy" | undefined;
   close?: string;
   maxFeeBips?: number;
+  feeTakerRate?: number;
+  tradeCost?: string;
 };
 
 export type PageTradeLiteStatus = {

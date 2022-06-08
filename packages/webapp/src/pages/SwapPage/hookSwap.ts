@@ -423,9 +423,6 @@ export const useSwap = <C extends { [key: string]: any }>({
       .toBig(buyToken?.orderAmounts?.maximum)
       .div("1e" + buyToken.decimals);
 
-    // myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
-    // myLog('calcTradeParams:', calcTradeParams?.amountS, sellMinAmt)
-
     if (isSwapLoading) {
       setSwapBtnStatus(TradeBtnStatus.LOADING);
       return undefined;
@@ -532,7 +529,12 @@ export const useSwap = <C extends { [key: string]: any }>({
       setSwapBtnStatus(TradeBtnStatus.AVAILABLE);
       setSwapBtnI18nKey(accountStaticCallBack(_btnLabel));
     }
-  }, [accountStatus, isSwapLoading, pageTradeLite.calcTradeParams?.amountS]);
+  }, [
+    accountStatus,
+    isSwapLoading,
+    pageTradeLite.calcTradeParams?.amountS,
+    // pageTradeLite.calcTradeParams?.isAtoB,
+  ]);
   /*** Btn related end ***/
 
   /*** table related function ***/
@@ -795,13 +797,13 @@ export const useSwap = <C extends { [key: string]: any }>({
         setTradeCalcData((state) => {
           state.StoB = result.stob;
           state.BtoS = result.btos;
-          return state;
+          return { ...state };
         });
       } else {
         setTradeCalcData((state) => {
           state.StoB = stob;
           state.BtoS = btos;
-          return state;
+          return { ...state };
         });
       }
       updatePageTradeLite({ market, close });
@@ -884,6 +886,8 @@ export const useSwap = <C extends { [key: string]: any }>({
             StoB: undefined,
             BtoS: undefined,
             fee: undefined,
+            feeTakerRate: undefined,
+            tradeCost: undefined,
           };
         });
         setTradeData({ ...tradeDataTmp });
@@ -1149,7 +1153,19 @@ export const useSwap = <C extends { [key: string]: any }>({
             false,
             { floor: true }
           );
-          console.log("totalFee view value:", totalFee);
+          tradeCost = getValuePrecisionThousand(
+            toBig(tradeCost)
+              .div("1e" + tokenMap[minSymbol].decimals)
+              .toString(),
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            false,
+            { floor: true }
+          );
+
+          console.log("totalFee view value:", totalFee, tradeCost);
+          console.log("tradeCost view value:", tradeCost);
           // if() {
           //
           // }
@@ -1162,6 +1178,8 @@ export const useSwap = <C extends { [key: string]: any }>({
           priceImpactColor: priceImpactObj.priceImpactColor,
           minimumReceived,
           fee: totalFee,
+          feeTakerRate,
+          tradeCost,
         };
 
         // myLog('calcTradeParams?.output:', calcTradeParams?.output, getShowStr(calcTradeParams?.output))
@@ -1218,6 +1236,8 @@ export const useSwap = <C extends { [key: string]: any }>({
           sellMinAmtInfo: sellMinAmtInfo as any,
           buyMinAmtInfo: buyMinAmtInfo as any,
           maxFeeBips,
+          feeTakerRate,
+          tradeCost,
         });
         //setOutput(calcTradeParams)
         setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData });
@@ -1315,6 +1335,8 @@ export const useSwap = <C extends { [key: string]: any }>({
           priceImpactColor: "inherit",
           minimumReceived: undefined,
           fee: undefined,
+          feeTakerRate: undefined,
+          tradeCost: undefined,
         };
 
         myLog(
@@ -1326,6 +1348,7 @@ export const useSwap = <C extends { [key: string]: any }>({
         updatePageTradeLite({
           market,
           tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
+          calcTradeParams: {},
         });
         setTradeCalcData(_tradeCalcData);
         break;
