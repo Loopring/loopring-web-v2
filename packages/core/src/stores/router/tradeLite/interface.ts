@@ -52,6 +52,7 @@ export type PageTradeLite = {
   sellMinAmtInfo?: undefined | sdk.OrderInfo;
   lastStepAt?: "sell" | "buy" | undefined;
   close?: string;
+  maxFeeBips?: number;
 };
 
 export type PageTradeLiteStatus = {

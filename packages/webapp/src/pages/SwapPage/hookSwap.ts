@@ -92,12 +92,13 @@ export const useSwap = <C extends { [key: string]: any }>({
   //High: No not Move!!!!!!
   const { realPair, realMarket } = usePairMatch(path);
   /** get store value **/
-  const { amountMap, getAmount } = useAmount();
+  const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { isMobile } = useSettings();
   const { account, status: accountStatus } = useAccount();
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
     useTokenMap();
+  // const [] = React.useState(MAPFEEBIPS)
   const { tickerMap } = useTicker();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { ammMap } = useAmmMap();
@@ -155,7 +156,8 @@ export const useSwap = <C extends { [key: string]: any }>({
   /*** Btn related function ***/
   const swapFunc = React.useCallback(
     async (event: MouseEvent, isAgree?: boolean) => {
-      let { calcTradeParams, tradeChannel, orderType } = pageTradeLite;
+      let { calcTradeParams, tradeChannel, orderType, maxFeeBips } =
+        pageTradeLite;
       setAlertOpen(false);
       setConfirmOpen(false);
 
@@ -209,14 +211,14 @@ export const useSwap = <C extends { [key: string]: any }>({
             allOrNone: false,
             validUntil: getTimestampDaysLater(__DAYS__),
             // maxFeeBips: parseInt(totalFee as string),
-            maxFeeBips: MAPFEEBIPS,
+            maxFeeBips: maxFeeBips ?? MAPFEEBIPS,
             fillAmountBOrS: false, // amm only false
             orderType,
             tradeChannel,
             eddsaSignature: "",
           };
 
-          myLog(request);
+          myLog("submitOrder request", request);
 
           const response: { hash: string } | any =
             await LoopringAPI.userAPI.submitOrder(
@@ -332,6 +334,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             });
             updatePageTradeLite({
               market,
+              maxFeeBips: MAPFEEBIPS,
               calcTradeParams: {
                 ...calcTradeParams,
                 // takerRate: undefined,
@@ -449,22 +452,22 @@ export const useSwap = <C extends { [key: string]: any }>({
           // myLog('buy maxOrderSize:', maxOrderSize)
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
           return `labelLimitMax| ${maxOrderSize}`;
-        }
-        // else if (!validAmt) {
-        //   const sellSymbol = tradeData?.sell.belong;
-        //   //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
-        //   const minOrderSize = VolToNumberWithPrecision(
-        //     sellMinAmt ?? "",
-        //     sellSymbol as any
-        //   );
-        //   setSwapBtnStatus(TradeBtnStatus.DISABLED);
-        //   if (isNaN(Number(minOrderSize))) {
-        //     return ``;
-        //   } else {
-        //     return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
-        //   }
-        // }
-        else {
+        } else if (!calcTradeParams.takerRate) {
+          //!validAmt) {
+          // const sellSymbol = tradeData?.sell.belong;
+          // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
+          // const minOrderSize = VolToNumberWithPrecision(
+          //   sellMinAmt ?? "",
+          //   sellSymbol as any
+          // );
+          setSwapBtnStatus(TradeBtnStatus.DISABLED);
+          return ``;
+          // if (isNaN(Number(minOrderSize))) {
+          //   return ``;
+          // } else {
+          //   return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
+          // }
+        } else {
           setSwapBtnStatus(TradeBtnStatus.AVAILABLE);
           return undefined;
         }
@@ -473,11 +476,13 @@ export const useSwap = <C extends { [key: string]: any }>({
       }
     }
   }, [
-    account.readyState,
+    tokenMap,
+    tradeData?.sell?.belong,
+    tradeData?.buy?.belong,
     pageTradeLite,
-    isSwapLoading,
     sellMinAmt,
-    setSwapBtnStatus,
+    isSwapLoading,
+    account.readyState,
   ]);
 
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
@@ -618,15 +623,6 @@ export const useSwap = <C extends { [key: string]: any }>({
   }, [market, ammMap]);
   /*** table related end ***/
 
-  /*** account related function ***/
-  React.useEffect(() => {
-    if (
-      account.readyState === AccountStatus.ACTIVATED &&
-      accountStatus === SagaStatus.UNSET
-    ) {
-      getAmount({ market });
-    }
-  }, [accountStatus]);
   React.useEffect(() => {
     if (
       accountStatus === SagaStatus.UNSET &&
@@ -634,6 +630,9 @@ export const useSwap = <C extends { [key: string]: any }>({
       tradeCalcData?.coinBuy
     ) {
       walletLayer2Callback();
+      if (account.readyState === AccountStatus.ACTIVATED) {
+        getAmount({ market });
+      }
     }
   }, [
     account.readyState,
@@ -642,6 +641,19 @@ export const useSwap = <C extends { [key: string]: any }>({
     tradeCalcData?.coinSell,
     tradeCalcData?.coinBuy,
   ]);
+
+  /*** account related function ***/
+  // React.useEffect(() => {
+  //   if (
+  //     account.readyState === AccountStatus.ACTIVATED &&
+  //     amountStatus === SagaStatus.UNSET
+  //   ) {
+  //     const amountMap = store.getState().amountMap;
+  //     if (amountMap[market]) {
+  //       setIsSwapLoading(false);
+  //     }
+  //   }
+  // }, [account.readyState, amountStatus, market]);
 
   const walletLayer2Callback = React.useCallback(async () => {
     let walletMap: WalletMap<any> | undefined = undefined;
@@ -723,9 +735,22 @@ export const useSwap = <C extends { [key: string]: any }>({
   React.useEffect(() => {
     if (pageTradeLite.depth) {
       refreshAmmPoolSnapshot();
-      setIsSwapLoading(false);
+      if (
+        account.readyState === AccountStatus.ACTIVATED &&
+        amountStatus === SagaStatus.UNSET
+      ) {
+        setIsSwapLoading(false);
+      } else {
+        setIsSwapLoading(false);
+      }
     }
-  }, [pageTradeLite.depth, tradeCalcData.coinBuy]);
+  }, [
+    pageTradeLite.depth,
+    tradeCalcData.coinBuy,
+    account.readyState,
+    amountStatus,
+    market,
+  ]);
 
   React.useEffect(() => {
     if (market) {
@@ -913,7 +938,8 @@ export const useSwap = <C extends { [key: string]: any }>({
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const { ammPoolSnapshot, depth, tradePair, close } = pageTradeLite;
-
+      const amountMap = store.getState().amountMap;
+      let calcForMinAmt;
       // @ts-ignore
       // myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
       //checkMarketDataValid(ammPoolSnapshot, tickMap, market, depth) &&
@@ -942,6 +968,8 @@ export const useSwap = <C extends { [key: string]: any }>({
         let buyMinAmtInfo = undefined;
         let sellMinAmtInfo = undefined;
         let tradeCost = undefined;
+        let maxFeeBips = MAPFEEBIPS;
+        myLog("amountMap[market as string]", amountMap[market as string]);
         if (amountMap && amountMap[market as string] && ammMap) {
           const ammMarket = `AMM-${market}`;
           const amount = ammMap[ammMarket]
@@ -974,7 +1002,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             .div("1e" + buyToken.decimals)
             .toString();
 
-          const calcForMinAmt = sdk.getOutputAmount({
+          calcForMinAmt = sdk.getOutputAmount({
             input: minAmountInput,
             sell: coinA,
             buy: coinB,
@@ -1029,12 +1057,32 @@ export const useSwap = <C extends { [key: string]: any }>({
         ) {
           let value = toBig(calcTradeParams.amountBOutSlip?.minReceived)
             .times(feeTakerRate)
-            .div(100);
+            .div(10000);
+
+          let validAmt = !!(
+            calcTradeParams?.amountS &&
+            calcForMinAmt?.amountS &&
+            sdk
+              .toBig(calcTradeParams?.amountS)
+              .gte(sdk.toBig(calcForMinAmt?.amountS))
+          );
+          let totalFeeRaw;
+          if (!validAmt && toBig(tradeCost).gte(value)) {
+            totalFeeRaw = toBig(tradeCost);
+            myLog("maxFeeBips update for tradeCost before value:", maxFeeBips);
+            maxFeeBips = Math.ceil(
+              totalFeeRaw
+                .times(10000)
+                .div(calcTradeParams.amountBOutSlip?.minReceived)
+                .toNumber()
+            );
+            myLog("maxFeeBips update for tradeCost after value:", maxFeeBips);
+          } else {
+            totalFeeRaw = toBig(value);
+          }
 
           totalFee = getValuePrecisionThousand(
-            (value.gte(tradeCost) ? value : toBig(tradeCost))
-              .div("1e" + tokenMap[minSymbol].decimals)
-              .toString(),
+            totalFeeRaw.div("1e" + tokenMap[minSymbol].decimals).toString(),
             tokenMap[minSymbol].precision,
             tokenMap[minSymbol].precision,
             tokenMap[minSymbol].precision,
@@ -1092,6 +1140,7 @@ export const useSwap = <C extends { [key: string]: any }>({
 
         // const tradeChannel = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined
         // const orderType = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined
+        myLog("updatePageTradeLite feeBips:", feeBips);
 
         updatePageTradeLite({
           market,
@@ -1107,6 +1156,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           takerRate,
           sellMinAmtInfo: sellMinAmtInfo as any,
           buyMinAmtInfo: buyMinAmtInfo as any,
+          maxFeeBips,
         });
         //setOutput(calcTradeParams)
         setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData });

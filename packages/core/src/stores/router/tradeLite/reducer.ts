@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { PageTradeLite, PageTradeLiteStatus } from "./interface";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { MAPFEEBIPS } from "../../../defs";
 
 const initState = {
   market: undefined,
   tradePair: undefined,
   calcTradeParams: undefined,
   priceImpactObj: undefined,
+  maxFeeBips: MAPFEEBIPS,
 };
 
 const initialState: PageTradeLiteStatus = {
@@ -41,6 +43,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
         sellMinAmtInfo,
         lastStepAt,
         close,
+        maxFeeBips,
       } = action.payload;
       if (market !== state.pageTradeLite.market) {
         state.pageTradeLite = {
@@ -71,6 +74,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
           minOrderInfo,
           lastStepAt: undefined,
           close,
+          maxFeeBips,
         };
       } else {
         if (lastStepAt) {
@@ -124,6 +128,9 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
         }
         if (minOrderInfo) {
           state.pageTradeLite.minOrderInfo = minOrderInfo;
+        }
+        if (maxFeeBips) {
+          state.pageTradeLite.maxFeeBips = maxFeeBips;
         }
       }
     },

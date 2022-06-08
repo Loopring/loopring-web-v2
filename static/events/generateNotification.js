@@ -207,6 +207,7 @@ async function createNotifyJSON(lng) {
               linkRule: item[5],
               startShow: startShow,
               endShow: endShow,
+              link: item[8],
             };
             json.invest = json.invest.concat(_item);
             if (json.prev.endDate <= endShow) {

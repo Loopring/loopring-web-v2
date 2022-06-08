@@ -28,6 +28,7 @@ export type INVEST_ITEM = {
   linkRule: string;
   startShow: number;
   endShow: number;
+  link: string;
 };
 
 export type NOTIFICATION_ITEM = {

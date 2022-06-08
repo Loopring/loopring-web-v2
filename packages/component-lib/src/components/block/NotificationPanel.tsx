@@ -27,12 +27,14 @@ export const NotificationPanel = ({
 }) => {
   // myLog("notifications", notification.notifications);
   const hasActivities =
-    notification.activities.length &&
+    notification.activities &&
+    notification.activities?.length &&
     notification.activities.findIndex(({ startShow }) => {
       myLog("NotificationPanel", Date.now() > startShow);
       return Date.now() > startShow;
     }) !== -1;
   const hasNotifications =
+    notification.notifications &&
     notification.notifications.length &&
     notification.notifications.findIndex(
       ({ startShow }) => Date.now() > startShow

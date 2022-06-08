@@ -30,14 +30,15 @@
     ],
     "invest": [
       {
-        "name": "invest_test",
+        "name": "invest_1",
         "version": "1",
         "type": "amm",
         "bannerMobile": "https://static.loopring.io/events/2022/06/invest/invest_1_banner.en.webp",
         "bannerLaptop": "https://static.loopring.io/events/2022/06/invest/invest_1_banner_laptop.en.webp",
-        "linkRule": "https://static.loopring.io/events/2022/06/activities/invest_1_rule.en.md",
+        "linkRule": "https://static.loopring.io/events/2022/06/invest/invest_1_rule.en.md",
         "startShow": 1654041600000,
-        "endShow": 1658275200000
+        "endShow": 1658275200000,
+        "link": "#/invest/2022-06?type=invest_1"
       }
     ]
   },
