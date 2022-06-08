@@ -1064,15 +1064,15 @@ export const useSwap = <C extends { [key: string]: any }>({
 
           setSellMinAmt(
             toBig(calcForMinCost?.amountS ?? 0)
-              .div(toBig(100).minus(slippage).div(100))
+              .div(toBig(10000).minus(slippage).div(1000))
               .toString()
           );
           console.log(
             "calcForMinCost?.amountS, no slippage:",
             calcForMinCost?.amountS,
-            "calcForMinCost?.amountS, with slippage:",
+            `calcForMinCost?.amountS, with slippage:${slippage}`,
             toBig(calcForMinCost?.amountS ?? 0)
-              .div(toBig(100).minus(slippage).div(100))
+              .div(toBig(10000).minus(slippage).div(10000))
               .toString()
           );
           // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
@@ -1122,7 +1122,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             calcForMinAmt?.amountS,
             "100 U calcForMinAmt withd slipage",
             toBig(calcForMinAmt?.amountS ?? 0)
-              .div(toBig(100).minus(slippage).div(100))
+              .div(toBig(10000).minus(slippage).div(10000))
               .toString()
           );
           // minCostLRCSlip = minCostLRC / (1 - slippage)
@@ -1134,7 +1134,7 @@ export const useSwap = <C extends { [key: string]: any }>({
               .toBig(calcTradeParams?.amountS)
               .gte(
                 toBig(calcForMinAmt.amountS ?? 0).div(
-                  toBig(100).minus(slippage).div(100)
+                  toBig(10000).minus(slippage).div(10000)
                 )
               )
           );
@@ -1145,8 +1145,12 @@ export const useSwap = <C extends { [key: string]: any }>({
             tradeCost,
             "useTakeRate Fee:",
             value.toString(),
-            `is setup minTrade amount ${toBig(calcForMinAmt?.amountS ?? 0)
-              .div(toBig(100).minus(slippage).div(100))
+            "calcForMinAmt?.amountS:",
+            calcForMinAmt?.amountS,
+            `is setup minTrade amount with slipage: ${slippage}, ${toBig(
+              calcForMinAmt?.amountS ?? 0
+            )
+              .div(toBig(10000).minus(slippage).div(10000))
               .toString()}:`,
             validAmt
           );
