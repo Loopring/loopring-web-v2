@@ -1010,6 +1010,7 @@ export const useSwap = <C extends { [key: string]: any }>({
 
           const minAmountInput = sdk
             .toBig(buyMinAmtInfo.userOrderInfo.minAmount)
+            .div(toBig(10000).minus(slippage).div(1000))
             .div("1e" + buyToken.decimals)
             .toString();
 
@@ -1028,13 +1029,23 @@ export const useSwap = <C extends { [key: string]: any }>({
             slipBips: slippage,
           });
 
+          console.log(
+            "buyMinAmtInfo.userOrderInfo.minAmount:",
+            buyMinAmtInfo.userOrderInfo.minAmount,
+            `buyMinAmtInfo.userOrderInfo.minAmount, with slippage:${slippage}`,
+            sdk
+              .toBig(buyMinAmtInfo.userOrderInfo.minAmount)
+              .div(toBig(10000).minus(slippage).div(1000))
+              .toString()
+          );
+
           let calcForMinCostInput = BigNumber.max(
             toBig(tradeCost).times(2),
             buyToken.orderAmounts.dust
           );
 
-          const tradeCostInput = sdk
-            .toBig(calcForMinCostInput)
+          const tradeCostInput = toBig(calcForMinCostInput)
+            .div(toBig(10000).minus(slippage).div(1000))
             .div("1e" + buyToken.decimals)
             .toString();
 
@@ -1043,6 +1054,12 @@ export const useSwap = <C extends { [key: string]: any }>({
             toBig(tradeCost).times(2).toString(),
             "buyToken.orderAmounts.dust",
             buyToken.orderAmounts.dust,
+            "calcForMinCostInput",
+            calcForMinCostInput.toString(),
+            `calcForMinCostInput, with slippage:${slippage}`,
+            toBig(calcForMinCostInput ?? 0)
+              .div(toBig(10000).minus(slippage).div(10000))
+              .toString(),
             "calcForMinCost, Input",
             tradeCostInput
           );
@@ -1062,17 +1079,19 @@ export const useSwap = <C extends { [key: string]: any }>({
             slipBips: slippage,
           });
 
-          setSellMinAmt(
-            toBig(calcForMinCost?.amountS ?? 0)
-              .div(toBig(10000).minus(slippage).div(1000))
-              .toString()
-          );
+          setSellMinAmt(calcForMinCost?.amountS);
           console.log(
-            "calcForMinCost?.amountS, no slippage:",
-            calcForMinCost?.amountS,
-            `calcForMinCost?.amountS, with slippage:${slippage}`,
+            `calcForMinAmt.amountS`,
+            toBig(calcForMinAmt?.amountS ?? 0)
+              .div(
+                "1e" + tokenMap[_tradeData["sell"].belong as string].decimals
+              )
+              .toString(),
+            "calcForMinCost.amountS",
             toBig(calcForMinCost?.amountS ?? 0)
-              .div(toBig(10000).minus(slippage).div(10000))
+              .div(
+                "1e" + tokenMap[_tradeData["sell"].belong as string].decimals
+              )
               .toString()
           );
           // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
@@ -1118,25 +1137,14 @@ export const useSwap = <C extends { [key: string]: any }>({
           myLog(
             "input Accounts",
             calcTradeParams?.amountS,
-            "100 U calcForMinAmt no slipage:",
-            calcForMinAmt?.amountS,
-            "100 U calcForMinAmt withd slipage",
-            toBig(calcForMinAmt?.amountS ?? 0)
-              .div(toBig(10000).minus(slippage).div(10000))
-              .toString()
+            "100 U calcForMinAmt:",
+            calcForMinAmt?.amountS
           );
-          // minCostLRCSlip = minCostLRC / (1 - slippage)
-          // minCostETHSlip = minCostETH / (1 - slippage)
+
           let validAmt = !!(
             calcTradeParams?.amountS &&
             calcForMinAmt?.amountS &&
-            sdk
-              .toBig(calcTradeParams?.amountS)
-              .gte(
-                toBig(calcForMinAmt.amountS ?? 0).div(
-                  toBig(10000).minus(slippage).div(10000)
-                )
-              )
+            sdk.toBig(calcTradeParams?.amountS).gte(calcForMinAmt.amountS)
           );
           let totalFeeRaw;
 
@@ -1147,11 +1155,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             value.toString(),
             "calcForMinAmt?.amountS:",
             calcForMinAmt?.amountS,
-            `is setup minTrade amount with slipage: ${slippage}, ${toBig(
-              calcForMinAmt?.amountS ?? 0
-            )
-              .div(toBig(10000).minus(slippage).div(10000))
-              .toString()}:`,
+            `is setup minTrade amount, ${calcForMinAmt?.amountS}:`,
             validAmt
           );
 
