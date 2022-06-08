@@ -460,8 +460,9 @@ export const useSwap = <C extends { [key: string]: any }>({
             sellSymbol as any
           );
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
-          // return ``;
-          if (isNaN(Number(minOrderSize))) {
+          if (sellMinAmt === undefined) {
+            return ``;
+          } else if (isNaN(Number(minOrderSize))) {
             return `labelLimitMin| ${EmptyValueTag + " " + sellSymbol}`;
           } else {
             return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
@@ -533,6 +534,7 @@ export const useSwap = <C extends { [key: string]: any }>({
     accountStatus,
     isSwapLoading,
     pageTradeLite.calcTradeParams?.amountS,
+    sellMinAmt,
     // pageTradeLite.calcTradeParams?.isAtoB,
   ]);
   /*** Btn related end ***/
@@ -1059,8 +1061,20 @@ export const useSwap = <C extends { [key: string]: any }>({
             takerRate: takerRate ? takerRate.toString() : "0",
             slipBips: slippage,
           });
-          setSellMinAmt(calcForMinCost?.amountS);
-          console.log("calcForMinCost?.amountS:", calcForMinCost?.amountS);
+
+          setSellMinAmt(
+            toBig(calcForMinCost?.amountS ?? 0)
+              .div(toBig(100).minus(slippage).div(100))
+              .toString()
+          );
+          console.log(
+            "calcForMinCost?.amountS, no slippage:",
+            calcForMinCost?.amountS,
+            "calcForMinCost?.amountS, with slippage:",
+            toBig(calcForMinCost?.amountS ?? 0)
+              .div(toBig(100).minus(slippage).div(100))
+              .toString()
+          );
           // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
           // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
         }
@@ -1101,12 +1115,28 @@ export const useSwap = <C extends { [key: string]: any }>({
             .times(feeTakerRate)
             .div(10000);
 
+          myLog(
+            "input Accounts",
+            calcTradeParams?.amountS,
+            "100 U calcForMinAmt no slipage:",
+            calcForMinAmt?.amountS,
+            "100 U calcForMinAmt withd slipage",
+            toBig(calcForMinAmt?.amountS ?? 0)
+              .div(toBig(100).minus(slippage).div(100))
+              .toString()
+          );
+          // minCostLRCSlip = minCostLRC / (1 - slippage)
+          // minCostETHSlip = minCostETH / (1 - slippage)
           let validAmt = !!(
             calcTradeParams?.amountS &&
             calcForMinAmt?.amountS &&
             sdk
               .toBig(calcTradeParams?.amountS)
-              .gte(sdk.toBig(calcForMinAmt?.amountS))
+              .gte(
+                toBig(calcForMinAmt.amountS ?? 0).div(
+                  toBig(100).minus(slippage).div(100)
+                )
+              )
           );
           let totalFeeRaw;
 
@@ -1115,7 +1145,9 @@ export const useSwap = <C extends { [key: string]: any }>({
             tradeCost,
             "useTakeRate Fee:",
             value.toString(),
-            `is setup minTrade amount ${calcForMinAmt?.amountS}:`,
+            `is setup minTrade amount ${toBig(calcForMinAmt?.amountS ?? 0)
+              .div(toBig(100).minus(slippage).div(100))
+              .toString()}:`,
             validAmt
           );
 
@@ -1348,8 +1380,14 @@ export const useSwap = <C extends { [key: string]: any }>({
         updatePageTradeLite({
           market,
           tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
-          calcTradeParams: {},
+          calcTradeParams: {
+            ...pageTradeLite.calcTradeParams,
+            isReverse: !pageTradeLite.calcTradeParams,
+            amountS: undefined,
+            output: undefined,
+          },
         });
+        setSellMinAmt(undefined);
         setTradeCalcData(_tradeCalcData);
         break;
       default:
