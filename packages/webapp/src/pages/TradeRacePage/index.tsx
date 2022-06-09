@@ -1,6 +1,18 @@
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Box, BoxProps, Fab, Link, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  BoxProps,
+  Card,
+  CardActions,
+  CardContent,
+  Divider,
+  Fab,
+  Grid,
+  Link,
+  Typography,
+} from "@mui/material";
 import styled from "@emotion/styled";
 import { ScrollTop } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
@@ -15,7 +27,15 @@ import rehypeRaw from "rehype-raw";
 import { MarkdownStyle } from "pages/MarkdownPage/style";
 import { useTheme } from "@emotion/react";
 import { EventData } from "./interface";
+import { useHistory, useLocation } from "react-router-dom";
 
+const CardStyled = styled(Card)`
+  // min-height: ${({ theme }) => theme.unit * 61.5}px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+`;
 const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
   width: 100%;
   display: flex;
@@ -86,10 +106,19 @@ const LayoutStyled = styled(Box)<BoxProps & { eventData: EventData }>`
 
 export const TradeRacePage = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    const { eventData, countDown, searchParams, scrollToRule, eventStatus } =
-      useTradeRace();
+    const {
+      eventData,
+      countDown,
+      scrollToRule,
+      eventStatus,
+      eventsList,
+      searchParams,
+      match,
+    } = useTradeRace();
     const theme = useTheme();
     const anchorRef = React.useRef();
+    const history = useHistory();
+
     // myLog("activityRule", eventStatus, activityRule);
     /*remove: holiday only end
       const flakes = 160;
@@ -299,7 +328,11 @@ export const TradeRacePage = withTranslation("common")(
             )}
             {!searchParams.has("rule") &&
               eventData.api &&
-              eventData.api.version && <RankRaw {...eventData.api} />}
+              eventData.api.version && (
+                //TODO  after bk fixed
+                // eventStatus !== EVENT_STATUS.EVENT_READY &&
+                <RankRaw {...eventData.api} />
+              )}
 
             <Box
               ref={anchorRef}
@@ -337,6 +370,93 @@ export const TradeRacePage = withTranslation("common")(
               )}
             </Box>
           </LayoutStyled>
+        ) : eventsList.length ? (
+          <Grid container spacing={2} flex={1} marginTop={2}>
+            {eventsList.map((item, index) => (
+              <Grid item sm={12} md={6} lg={4} key={item.type}>
+                <Link
+                  onClick={() => {
+                    searchParams.set("type", item.type);
+                    // window.opene
+                    window.open(
+                      `./#${match.url}?` + searchParams.toString(),
+                      "_self"
+                    );
+                    window.opener = null;
+                    window.location.reload();
+                    // history.push(match.url + "?" );
+                  }}
+                >
+                  <CardStyled>
+                    <CardContent style={{ paddingBottom: 0 }}>
+                      <Box
+                        display={"flex"}
+                        flexDirection={"column"}
+                        justifyContent={"space-between"}
+                        alignItems={"flex-start"}
+                      >
+                        <Typography
+                          variant={"h3"}
+                          component={"p"}
+                          color={"textPrimary"}
+                          fontFamily={"Roboto"}
+                          textAlign={"center"}
+                          width={"100%"}
+                          dangerouslySetInnerHTML={{ __html: item.eventTitle }}
+                        />
+                        <Typography
+                          component={"h2"}
+                          variant={"body1"}
+                          whiteSpace={"pre-line"}
+                          textAlign={"left"}
+                          marginTop={2}
+                          paddingX={3}
+                          dangerouslySetInnerHTML={{ __html: item.subTitle }}
+                        />
+                        {item.duration && (
+                          <Typography
+                            marginBottom={2}
+                            paddingX={3}
+                            variant={"body1"}
+                            marginTop={1}
+                            textAlign={"left"}
+                          >
+                            {item?.duration?.prev}
+                            <Typography
+                              component={"time"}
+                              paddingX={1}
+                              variant={"inherit"}
+                              dateTime={item.duration.startDate.toFixed()}
+                            >
+                              {moment(item.duration.startDate)
+                                .utc()
+                                .format(`YYYY-MM-DD HH:mm:ss`)}
+                            </Typography>
+                            <Typography component={"span"} variant={"inherit"}>
+                              {item?.duration?.middle}
+                            </Typography>
+                            <Typography
+                              component={"time"}
+                              paddingX={1}
+                              variant={"inherit"}
+                              dateTime={item.duration.endDate.toFixed()}
+                            >
+                              {moment(item.duration.endDate)
+                                .utc()
+                                .format(`YYYY-MM-DD HH:mm:ss`)}
+                            </Typography>
+                            {item?.duration?.timeZone &&
+                              `(${item?.duration?.timeZone})`}{" "}
+                            {item?.duration?.end}
+                          </Typography>
+                        )}
+                      </Box>
+                    </CardContent>
+                  </CardStyled>
+                </Link>
+              </Grid>
+            ))}
+          </Grid>
         ) : (
           <LoadingBlock />
         )}

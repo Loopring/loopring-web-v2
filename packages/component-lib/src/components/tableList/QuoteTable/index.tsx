@@ -251,7 +251,7 @@ export const QuoteTable = withTranslation("tables")(
                             const current_event_date = `${year}-${month}`;
 
                             history.push(
-                              `/race-event/${current_event_date}?pair=${pair}&type=${ruleType}&owner=${account?.accAddress}`
+                              `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&owner=${account?.accAddress}`
                             );
                           }}
                         >

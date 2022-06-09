@@ -28,6 +28,9 @@ export const useTradeRace = () => {
   const history = useHistory();
 
   const [eventData, setEventData] = React.useState<EventData>();
+  const [eventsList, setEventsList] = React.useState<
+    Array<EventData & { type: string }>
+  >([]);
   const [eventStatus, setEventStatus] =
     React.useState<EVENT_STATUS | undefined>();
 
@@ -144,7 +147,50 @@ export const useTradeRace = () => {
               }
             })
             .catch((e) => {
-              throw e;
+              searchParams.set("type", "");
+              // history.push(match.url + "?" + searchParams.toString());
+              window.open(
+                `./#${match.url}?` + searchParams.toString(),
+                "_self"
+              );
+              window.opener = null;
+              window.location.reload();
+            });
+        } else if (year && month && !type) {
+          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                history.replace(`/race-event?${searchParams.toString()}`);
+              }
+            })
+            .then((input) => {
+              const eventsList = Reflect.ownKeys(input).map((key) => {
+                // input[key]
+                const startUnix = moment
+                  .utc(
+                    input[key].duration?.startDate ?? "",
+                    "MM/DD/YYYY HH:mm:ss"
+                  )
+                  .valueOf();
+                const endUnix = moment
+                  .utc(
+                    input[key].duration?.endDate ?? "",
+                    "MM/DD/YYYY HH:mm:ss"
+                  )
+                  .valueOf();
+                return {
+                  ...input[key],
+                  type: key,
+                  duration: {
+                    ...input[key].duration,
+                    startDate: startUnix,
+                    endDate: endUnix,
+                  },
+                };
+              });
+              setEventsList(eventsList);
             });
         } else {
           throw "url format wrong";
@@ -216,10 +262,12 @@ export const useTradeRace = () => {
 
   return {
     eventData,
+    match,
     // selected,
     // currMarketPair,
     filteredAmmViewMap: [],
     countDown,
+    eventsList,
     // handleFilterChange,
     searchParams,
     // onChange,

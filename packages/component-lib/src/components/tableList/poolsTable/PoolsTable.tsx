@@ -216,7 +216,7 @@ export const IconColumn = React.memo(
                 const current_event_date = `${year}-${month}`;
 
                 history.push(
-                  `/race-event/${current_event_date}?pair=${pair}&type=${
+                  `/race-event/${current_event_date}?selected=${pair}&type=${
                     activityInProgressRules[`AMM-${pair}`].ruleType[0]
                   }&owner=${account?.accAddress}`
                 );
