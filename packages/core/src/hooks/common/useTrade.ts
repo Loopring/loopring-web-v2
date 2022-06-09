@@ -168,6 +168,12 @@ export function makeMarketReq({
       // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
       const minInput = sdk
         .toBig(buyUserOrderInfo?.minAmount ?? "")
+        .div(
+          sdk
+            .toBig(10000)
+            .minus(slippage ?? 0)
+            .div(1000)
+        )
         .div("1e" + buyTokenInfo.decimals)
         .toString();
 
@@ -198,6 +204,12 @@ export function makeMarketReq({
     } else {
       minOrderInfo.minAmtShow = sdk
         .toBig(minOrderInfo.minAmount)
+        .div(
+          sdk
+            .toBig(10000)
+            .minus(slippage ?? 0)
+            .div(1000)
+        )
         .div("1e" + buyTokenInfo.decimals)
         .toNumber();
       minOrderInfo.symbol = buy;

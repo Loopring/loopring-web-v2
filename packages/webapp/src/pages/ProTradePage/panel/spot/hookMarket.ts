@@ -32,10 +32,10 @@ import {
   getPriceImpactInfo,
   PriceLevel,
   usePlaceOrder,
+  store,
+  BIGO,
 } from "@loopring-web/core";
-import { store } from "@loopring-web/core";
 import * as _ from "lodash";
-import { BIGO } from "@loopring-web/core";
 
 export const useMarket = <C extends { [key: string]: any }>({
   market,

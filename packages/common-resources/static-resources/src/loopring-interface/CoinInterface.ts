@@ -90,6 +90,8 @@ export type TradeCalcProData<T> = {
   priceImpactColor: string;
   minimumReceived: string;
   fee: string;
+  feeTakerRate?: number;
+  tradeCost?: string;
 };
 
 /**
