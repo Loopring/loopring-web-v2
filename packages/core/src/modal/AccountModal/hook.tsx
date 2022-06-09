@@ -500,15 +500,15 @@ export function useAccountModalForUI({
           });
         },
       },
-      // {
-      //   ...AddAssetList.FromExchange,
-      //   handleSelect: () => {
-      //     window.open(
-      //       `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}`
-      //     );
-      //     window.opener = null;
-      //   },
-      // },
+      {
+        ...AddAssetList.FromExchange,
+        handleSelect: () => {
+          window.open(
+            `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}`
+          );
+          window.opener = null;
+        },
+      },
     ],
     [
       account.accAddress,
