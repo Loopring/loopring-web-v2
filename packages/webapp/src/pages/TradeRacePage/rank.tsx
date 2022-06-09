@@ -170,7 +170,9 @@ export const RankRaw = <R extends object>({
   }, [selected]);
   const getTableValues = React.useCallback(async () => {
     const owner = searchParams.get("owner");
-    const url = `${baseURL}/${Activity_URL}?selected=${selected}&owner=${owner}&version=${version}`;
+    const url = `${baseURL}/${Activity_URL}?${
+      selected ? `selected=${selected}` : ""
+    }${owner ? `owner=${owner}` : ""}&version=${version}`;
     fetch(url)
       .then((response) => response.json())
       .then((json) => {
