@@ -461,11 +461,11 @@ export const useSwap = <C extends { [key: string]: any }>({
             // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
             const minOrderSize = getValuePrecisionThousand(
               sdk.toBig(sellMinAmt ?? 0).div("1e" + sellToken.decimals),
-              sellToken.precision,
-              sellToken.precision,
-              sellToken.precision,
+              sellToken.precisionForOrder,
+              sellToken.precisionForOrder,
+              sellToken.precisionForOrder,
               false,
-              { floor: false }
+              { floor: false, isAbbreviate: true }
             );
             if (isNaN(Number(minOrderSize))) {
               return `labelLimitMin| ${EmptyValueTag + " " + sellSymbol}`;
@@ -1044,16 +1044,16 @@ export const useSwap = <C extends { [key: string]: any }>({
               .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
               .toString()
           );
-
+          const dustToken = buyToken;
           let calcForMinCostInput = BigNumber.max(
             sdk.toBig(tradeCost).times(2),
-            buyToken.orderAmounts.dust
+            dustToken.orderAmounts.dust
           );
 
           const tradeCostInput = sdk
             .toBig(calcForMinCostInput)
             .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
-            .div("1e" + buyToken.decimals)
+            .div("1e" + dustToken.decimals)
             .toString();
 
           console.log(
@@ -1283,10 +1283,10 @@ export const useSwap = <C extends { [key: string]: any }>({
           priceImpactObj,
           lastStepAt: type,
           feeBips,
-          totalFee,
           takerRate,
           sellMinAmtInfo: sellMinAmtInfo as any,
           buyMinAmtInfo: buyMinAmtInfo as any,
+          totalFee,
           maxFeeBips,
           feeTakerRate,
           tradeCost,

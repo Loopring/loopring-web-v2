@@ -45,13 +45,13 @@ export type PageTradeLite = {
   tradeChannel?: undefined | sdk.TradeChannel;
   orderType?: undefined | sdk.OrderType;
   feeBips?: number | string;
-  totalFee?: number | string;
   takerRate?: number | string;
   quoteMinAmtInfo?: number | string;
   buyMinAmtInfo?: undefined | sdk.OrderInfo;
   sellMinAmtInfo?: undefined | sdk.OrderInfo;
   lastStepAt?: "sell" | "buy" | undefined;
   close?: string;
+  totalFee?: number | string;
   maxFeeBips?: number;
   feeTakerRate?: number;
   tradeCost?: string;

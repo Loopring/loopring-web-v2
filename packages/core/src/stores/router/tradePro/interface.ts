@@ -42,7 +42,7 @@ export type limitCalcParams = {
 };
 
 export type OrderInfoPatch = {
-  minAmtShow?: number;
+  minAmtShow?: number | string;
   symbol?: string;
   minAmtCheck?: boolean;
 };
@@ -72,16 +72,19 @@ export type PageTradePro<C> = {
   ticker?: Ticker | undefined;
   ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined;
   feeBips?: number | string;
-  totalFee?: number | string;
   takerRate?: number | string;
   sellUserOrderInfo?: undefined | null | sdk.OrderInfo;
   buyUserOrderInfo?: undefined | null | sdk.OrderInfo;
-  minOrderInfo?: undefined | null | (sdk.OrderInfo & OrderInfoPatch);
+  minOrderInfo?: undefined | null | Partial<sdk.OrderInfo & OrderInfoPatch>;
   lastStepAt?: "base" | "quote" | undefined;
   tradeArray?: RawDataTradeItem[];
   tradeMapByTimeStamp?: {
     [key: string]: RawDataTradeItem;
   };
+  totalFee?: number | string;
+  maxFeeBips?: number;
+  feeTakerRate?: number;
+  tradeCost?: string;
 };
 
 export type PageTradeProStatus<C extends { [key: string]: any }> = {

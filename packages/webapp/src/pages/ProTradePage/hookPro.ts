@@ -95,13 +95,13 @@ export const usePro = <C extends { [key: string]: any }>(): {
   React.useEffect(() => {
     resetTradeCalcData({ market });
     precisionList(market);
-  }, [market]);
+  }, [market, account.readyState]);
 
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       getAmount({ market: market });
     }
-  }, [market, accountStatus]);
+  }, [market, accountStatus, account.readyState]);
 
   const handleOnMarketChange = React.useCallback(
     async (newMarket: MarketType) => {

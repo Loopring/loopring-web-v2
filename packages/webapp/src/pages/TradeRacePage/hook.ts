@@ -74,9 +74,7 @@ export const useTradeRace = () => {
                       }
                     }),
                     fetch(
-                      /uat/gi.test(baseURL)
-                        ? `${path}/activities/test_1_rule.en.md`
-                        : eventData.rule
+                      `${path}/activities/${eventData.rule?.split("/").pop()}`
                     )
                       .then((response) => response.text())
                       .then((input) => {
@@ -102,17 +100,23 @@ export const useTradeRace = () => {
                   banner: {
                     pad: eventData.banner?.pad
                       ? /uat/gi.test(baseURL)
-                        ? `${path}/2022/06/activities/test_1_banner.en.webp`
+                        ? `${path}/activities/${eventData.banner?.pad
+                            ?.split("/")
+                            .pop()}`
                         : eventData.banner.pad //`${path}/`
                       : undefined,
                     laptop: eventData.banner?.laptop
                       ? /uat/gi.test(baseURL)
-                        ? `${path}/2022/06/activities/test_1_banner.en.webp`
+                        ? `${path}/activities/${eventData.banner?.laptop
+                            ?.split("/")
+                            .pop()}`
                         : eventData.banner.laptop //`${path}/`
                       : undefined,
                     mobile: eventData.banner?.mobile
                       ? /uat/gi.test(baseURL)
-                        ? `${path}/2022/06/activities/test_1_banner.en.webp`
+                        ? `${path}/activities/${eventData.banner?.mobile
+                            ?.split("/")
+                            .pop()}`
                         : eventData.banner.mobile
                       : undefined,
                   },

@@ -1,5 +1,6 @@
 import {
   AccountStatus,
+  EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
   MarketType,
@@ -175,6 +176,10 @@ export const useMarket = <C extends { [key: string]: any }>({
         sellUserOrderInfo,
         buyUserOrderInfo,
         minOrderInfo,
+        totalFee,
+        maxFeeBips,
+        feeTakerRate,
+        tradeCost,
       } = makeMarketReqInHook({
         isBuy: tradeData.type === "buy",
         base: tradeData.base.belong,
@@ -203,10 +208,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         calcTradeParams: calcTradeParams,
         tradeCalcProData: {
           ...pageTradePro.tradeCalcProData,
-          fee:
-            calcTradeParams && calcTradeParams.maxFeeBips
-              ? calcTradeParams.maxFeeBips.toString()
-              : undefined,
+          fee: totalFee,
           minimumReceived:
             calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal
               ? getValuePrecisionThousand(
@@ -222,6 +224,10 @@ export const useMarket = <C extends { [key: string]: any }>({
           priceImpactColor: priceImpactObj?.priceImpactColor,
         },
         lastStepAt,
+        totalFee,
+        maxFeeBips,
+        feeTakerRate,
+        tradeCost,
       });
 
       setMarketTradeData((state) => {
@@ -298,6 +304,10 @@ export const useMarket = <C extends { [key: string]: any }>({
           minimumReceived: undefined,
           fee: undefined,
         },
+        totalFee: undefined,
+        maxFeeBips: undefined,
+        feeTakerRate: undefined,
+        tradeCost: undefined,
       });
     },
     [baseSymbol, quoteSymbol]
@@ -494,25 +504,29 @@ export const useMarket = <C extends { [key: string]: any }>({
           label: "labelEnterAmount",
         };
       } else if (!minOrderInfo?.minAmtCheck) {
-        // const symbol: string = marketTradeData[ 'base' ].belong;
-        // const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
         let minOrderSize = "Error";
-        if (minOrderInfo?.symbol) {
-          const basePrecision = tokenMap[minOrderInfo.symbol].precisionForOrder;
+        if (minOrderInfo && minOrderInfo?.symbol) {
+          const baseSymbol = minOrderInfo.symbol;
+          const baseToken = tokenMap[baseSymbol];
           const showValue = getValuePrecisionThousand(
             minOrderInfo?.minAmtShow,
-            undefined,
-            undefined,
-            basePrecision,
-            true,
-            { isAbbreviate: true }
+            baseToken.precision,
+            baseToken.precision,
+            baseToken.precision,
+            false,
+            { isAbbreviate: true, floor: false }
           );
           minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
+          return {
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+            label: `labelLimitMin| ${minOrderSize}`,
+          };
+        } else {
+          return {
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+            label: ``,
+          };
         }
-        return {
-          tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: `labelLimitMin| ${minOrderSize}`,
-        };
       } else if (
         sdk
           .toBig(

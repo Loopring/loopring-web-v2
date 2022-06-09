@@ -106,7 +106,7 @@ export const TradeRacePage = withTranslation("common")(
           </Fab>
         </ScrollTop>
         {eventData ? (
-          <LayoutStyled marginY={4} eventData={eventData}>
+          <LayoutStyled marginY={4} eventData={eventData} flex={1}>
             <Box className={"title-banner"} marginBottom={4}>
               <Typography
                 // sx={{

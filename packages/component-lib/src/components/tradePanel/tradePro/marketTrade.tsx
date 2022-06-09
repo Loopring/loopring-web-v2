@@ -143,7 +143,11 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
 
     const fee =
       tradeCalcProData && tradeCalcProData.fee
-        ? `${tradeCalcProData.fee} ${tradeData.quote?.belong}` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
+        ? `${tradeCalcProData.fee} ${
+            tradeType === TradeProType.sell
+              ? tradeData.quote?.belong
+              : tradeData.base?.belong
+          }` //(parseFloat(tradeCalcData.fee) / 100).toString() + "%"
         : EmptyValueTag;
 
     const userTakerRate =
