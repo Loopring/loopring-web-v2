@@ -7,6 +7,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  Container,
   Divider,
   Fab,
   Grid,
@@ -371,92 +372,106 @@ export const TradeRacePage = withTranslation("common")(
             </Box>
           </LayoutStyled>
         ) : eventsList.length ? (
-          <Grid container spacing={2} flex={1} marginTop={2}>
-            {eventsList.map((item, index) => (
-              <Grid item sm={12} md={6} lg={4} key={item.type}>
-                <Link
-                  onClick={() => {
-                    searchParams.set("type", item.type);
-                    // window.opene
-                    window.open(
-                      `./#${match.url}?` + searchParams.toString(),
-                      "_self"
-                    );
-                    window.opener = null;
-                    window.location.reload();
-                    // history.push(match.url + "?" );
-                  }}
-                >
-                  <CardStyled>
-                    <CardContent style={{ paddingBottom: 0 }}>
-                      <Box
-                        display={"flex"}
-                        flexDirection={"column"}
-                        justifyContent={"space-between"}
-                        alignItems={"flex-start"}
-                      >
-                        <Typography
-                          variant={"h3"}
-                          component={"p"}
-                          color={"textPrimary"}
-                          fontFamily={"Roboto"}
-                          textAlign={"center"}
-                          width={"100%"}
-                          dangerouslySetInnerHTML={{ __html: item.eventTitle }}
-                        />
-                        <Typography
-                          component={"h2"}
-                          variant={"body1"}
-                          whiteSpace={"pre-line"}
-                          textAlign={"left"}
-                          marginTop={2}
-                          paddingX={3}
-                          dangerouslySetInnerHTML={{ __html: item.subTitle }}
-                        />
-                        {item.duration && (
+          <Container
+            maxWidth="lg"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: 1,
+            }}
+          >
+            <Grid container spacing={2} flex={1} marginTop={2}>
+              {eventsList.map((item, index) => (
+                <Grid item sm={12} md={6} lg={4} key={item.type}>
+                  <Link
+                    onClick={() => {
+                      searchParams.set("type", item.type);
+                      // window.opene
+                      window.open(
+                        `./#${match.url}?` + searchParams.toString(),
+                        "_self"
+                      );
+                      window.opener = null;
+                      window.location.reload();
+                      // history.push(match.url + "?" );
+                    }}
+                  >
+                    <CardStyled>
+                      <CardContent style={{ paddingBottom: 0 }}>
+                        <Box
+                          display={"flex"}
+                          flexDirection={"column"}
+                          justifyContent={"space-between"}
+                          alignItems={"flex-start"}
+                        >
                           <Typography
-                            marginBottom={2}
-                            paddingX={3}
+                            variant={"h3"}
+                            component={"p"}
+                            color={"textPrimary"}
+                            fontFamily={"Roboto"}
+                            textAlign={"center"}
+                            width={"100%"}
+                            dangerouslySetInnerHTML={{
+                              __html: item.eventTitle,
+                            }}
+                          />
+                          <Typography
+                            component={"h2"}
                             variant={"body1"}
-                            marginTop={1}
+                            whiteSpace={"pre-line"}
                             textAlign={"left"}
-                          >
-                            {item?.duration?.prev}
+                            marginTop={2}
+                            paddingX={3}
+                            dangerouslySetInnerHTML={{ __html: item.subTitle }}
+                          />
+                          {item.duration && (
                             <Typography
-                              component={"time"}
-                              paddingX={1}
-                              variant={"inherit"}
-                              dateTime={item.duration.startDate.toFixed()}
+                              marginBottom={2}
+                              paddingX={3}
+                              variant={"body1"}
+                              marginTop={1}
+                              textAlign={"left"}
                             >
-                              {moment(item.duration.startDate)
-                                .utc()
-                                .format(`YYYY-MM-DD HH:mm:ss`)}
+                              {item?.duration?.prev}
+                              <Typography
+                                component={"time"}
+                                paddingX={1}
+                                variant={"inherit"}
+                                dateTime={item.duration.startDate.toFixed()}
+                              >
+                                {moment(item.duration.startDate)
+                                  .utc()
+                                  .format(`YYYY-MM-DD HH:mm:ss`)}
+                              </Typography>
+                              <Typography
+                                component={"span"}
+                                variant={"inherit"}
+                              >
+                                {item?.duration?.middle}
+                              </Typography>
+                              <Typography
+                                component={"time"}
+                                paddingX={1}
+                                variant={"inherit"}
+                                dateTime={item.duration.endDate.toFixed()}
+                              >
+                                {moment(item.duration.endDate)
+                                  .utc()
+                                  .format(`YYYY-MM-DD HH:mm:ss`)}
+                              </Typography>
+                              {item?.duration?.timeZone &&
+                                `(${item?.duration?.timeZone})`}{" "}
+                              {item?.duration?.end}
                             </Typography>
-                            <Typography component={"span"} variant={"inherit"}>
-                              {item?.duration?.middle}
-                            </Typography>
-                            <Typography
-                              component={"time"}
-                              paddingX={1}
-                              variant={"inherit"}
-                              dateTime={item.duration.endDate.toFixed()}
-                            >
-                              {moment(item.duration.endDate)
-                                .utc()
-                                .format(`YYYY-MM-DD HH:mm:ss`)}
-                            </Typography>
-                            {item?.duration?.timeZone &&
-                              `(${item?.duration?.timeZone})`}{" "}
-                            {item?.duration?.end}
-                          </Typography>
-                        )}
-                      </Box>
-                    </CardContent>
-                  </CardStyled>
-                </Link>
-              </Grid>
-            ))}
-          </Grid>
+                          )}
+                        </Box>
+                      </CardContent>
+                    </CardStyled>
+                  </Link>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
         ) : (
           <LoadingBlock />
         )}
