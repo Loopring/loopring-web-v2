@@ -22,10 +22,7 @@ const getNotifyApi = async <_R extends { [key: string]: any }>(): Promise<{
     notifications: [],
     invest: [],
   };
-  //TEST: url_test_path
-  //MAIN: url_path
-  // const path = url_test_path;
-  // debugger;
+
   const path = `${/uat/gi.test(baseURL) ? url_test_path : url_path}`;
   const notify = await fetch(`${path}/notification.json`).then((response) => {
     if (response.ok) {

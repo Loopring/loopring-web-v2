@@ -28,14 +28,6 @@ export const SendAsset = ({
 }: SendAssetProps) => {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
-  // const [isToL1, setIsToL1] = React.useState<boolean>(true);
-  // React.useEffect(() => {
-  //   // debugger;
-  //   if (symbol && /^LP-/gi.test(symbol)) {
-  //     setIsToL1(true);
-  //   }
-  //   setIsToL1(false);
-  // }, [symbol]);
 
   return (
     <BoxStyled
