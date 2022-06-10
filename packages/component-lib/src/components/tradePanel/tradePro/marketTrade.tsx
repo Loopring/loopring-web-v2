@@ -125,16 +125,17 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
     const priceImpactColor = tradeCalcProData?.priceImpactColor
       ? tradeCalcProData.priceImpactColor
       : "textPrimary";
-    const priceImpact = tradeCalcProData?.priceImpact
-      ? getValuePrecisionThousand(
-          tradeCalcProData.priceImpact,
-          2,
-          undefined,
-          undefined,
-          false,
-          { floor: true }
-        ) + " %"
-      : EmptyValueTag;
+    const priceImpact =
+      tradeCalcProData?.priceImpact !== undefined
+        ? getValuePrecisionThousand(
+            tradeCalcProData.priceImpact,
+            2,
+            undefined,
+            undefined,
+            false,
+            { floor: true }
+          ) + " %"
+        : EmptyValueTag;
 
     // const fee =
     //   tradeCalcProData && tradeCalcProData.fee
