@@ -6,7 +6,10 @@ import { useTranslation } from "react-i18next";
 import {
   BackIcon,
   CardIcon,
+  ExchangeAIcon,
   IncomingIcon,
+  L1l2Icon,
+  L2l2Icon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 
@@ -18,6 +21,12 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
       return <IncomingIcon color={"inherit"} />;
     case "CardIcon":
       return <CardIcon color={"inherit"} />;
+    case "L2l2Icon":
+      return <L2l2Icon color={"inherit"} />;
+    case "L1l2Icon":
+      return <L1l2Icon color={"inherit"} />;
+    case "ExchangeAIcon":
+      return <ExchangeAIcon color={"inherit"} />;
   }
 };
 export const AddAsset = ({

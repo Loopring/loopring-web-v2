@@ -159,17 +159,17 @@ export const AddAssetList = {
   },
   FromOtherL1: {
     key: "FromOtherL1",
-    svgIcon: "IncomingIcon",
+    svgIcon: "L2l2Icon",
     enableKey: null,
   },
   FromOtherL2: {
     key: "FromOtherL2",
-    svgIcon: "IncomingIcon",
+    svgIcon: "L1l2Icon",
     enableKey: null,
   },
   FromExchange: {
     key: "FromExchange",
-    svgIcon: "IncomingIcon",
+    svgIcon: "ExchangeAIcon",
     enableKey: null,
   },
 };
@@ -177,17 +177,17 @@ export const AddAssetList = {
 export const SendAssetList = {
   SendAssetToL2: {
     key: "SendTOL2",
-    svgIcon: "IncomingIcon",
+    svgIcon: "L2l2Icon",
     enableKey: "transfer",
   },
   SendAssetToMyL1: {
     key: "SendToMyL1",
-    svgIcon: "IncomingIcon",
+    svgIcon: "OutputIcon",
     enableKey: "withdraw",
   },
   SendAssetToOtherL1: {
     key: "SendToOtherL1",
-    svgIcon: "IncomingIcon",
+    svgIcon: "L1l2Icon",
     enableKey: "withdraw",
   },
 };
