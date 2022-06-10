@@ -16,9 +16,17 @@ export default {
   tokenSearchCoin: "搜索交易币种",
   swapTitle: "兑换",
   swapTolerance: "滑点范围",
+  labelSwapToleranceTooltips:
+    "Your trade will revert if the price changes unfavorably by more than this percentage.",
   swapPriceImpact: "价格影响",
+  labelSwapPriceImpactTooltips:
+    "The difference between market price and estimated price due to trade size",
   swapMinReceive: "最少买入",
+  labelSwapMinReceiveTooltips:
+    "Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price, but the protocol can guarantee that you will receive at least this amount.",
   swapFee: "费用",
+  labelSwapFeeTooltips:
+    "The trading fee is determined by your VIP level and the size of your trade. Small trades (below ~$100) incur a higher fee. Please review the fee before confirming.",
   swapBtn: "兑换",
   goBack: "返回",
   resetTitle: "重置二层账号密钥",

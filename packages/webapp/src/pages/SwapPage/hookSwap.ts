@@ -461,9 +461,9 @@ export const useSwap = <C extends { [key: string]: any }>({
             // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
             const minOrderSize = getValuePrecisionThousand(
               sdk.toBig(sellMinAmt ?? 0).div("1e" + sellToken.decimals),
-              sellToken.precisionForOrder,
-              sellToken.precisionForOrder,
-              sellToken.precisionForOrder,
+              sellToken.precision,
+              sellToken.precision,
+              sellToken.precision,
               false,
               { floor: false, isAbbreviate: true }
             );
