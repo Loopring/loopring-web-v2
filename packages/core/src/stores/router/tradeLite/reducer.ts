@@ -112,6 +112,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
             ? sdk.TradeChannel.BLANK
             : sdk.TradeChannel.MIXED;
         }
+
         if (priceImpactObj) {
           state.pageTradeLite.priceImpactObj = priceImpactObj;
         }

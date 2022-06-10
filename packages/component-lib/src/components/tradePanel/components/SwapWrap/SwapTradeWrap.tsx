@@ -216,15 +216,16 @@ export const SwapTradeWrap = <
   const priceImpactColor = tradeCalcData?.priceImpactColor
     ? tradeCalcData.priceImpactColor
     : "textPrimary";
-  const priceImpact = tradeCalcData?.priceImpact
-    ? getValuePrecisionThousand(
-        tradeCalcData.priceImpact,
-        undefined,
-        undefined,
-        2,
-        true
-      ) + " %"
-    : EmptyValueTag;
+  const priceImpact =
+    tradeCalcData?.priceImpact !== undefined
+      ? getValuePrecisionThousand(
+          tradeCalcData.priceImpact,
+          undefined,
+          undefined,
+          2,
+          true
+        ) + " %"
+      : EmptyValueTag;
 
   const fee =
     tradeCalcData && tradeCalcData.fee

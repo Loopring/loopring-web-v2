@@ -145,10 +145,6 @@ export function makeMarketReq({
 
   const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0;
 
-  // const maxFeeBips = parseInt(
-  //   sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-  // );
-
   const calcTradeParams = sdk.getOutputAmount({
     input,
     sell,
@@ -219,6 +215,7 @@ export function makeMarketReq({
     );
     tradeCost = tokenMarketMap[buy].tradeCost;
     let dustToken = tokenMap[buy];
+    let sellToken = tokenMap[sell];
     let calcForMinCostInput = BigNumber.max(
       sdk.toBig(tradeCost).times(2),
       dustToken.orderAmounts.dust
@@ -245,33 +242,21 @@ export function makeMarketReq({
       takerRate: takerRate ? takerRate.toString() : "0",
       slipBips: slippage as string,
     });
+    const minAmt = BigNumber.max(
+      sellToken.orderAmounts.dust,
+      calcForMinCost?.amountS ?? 0
+    );
     minOrderInfo = {
-      minAmount: calcForMinCost?.amountS,
+      minAmount: minAmt,
       minAmtShow:
-        calcForMinCost?.amountS &&
+        minAmt &&
         sdk
-          .toBig(calcForMinCost?.amountS)
+          .toBig(minAmt)
           .div("1e" + tokenMap[sell].decimals)
           .toNumber(),
       symbol: sell,
-      minAmtCheck: sdk
-        .toBig(
-          // isBuy ? calcTradeParams?.sellAmt ?? 0 : calcTradeParams?.buyAmt ?? 0
-          // calcTradeParams?.amountS
-          calcTradeParams?.amountS ?? 0
-        )
-        .gte(
-          calcForMinCost?.amountS ?? 0
-          // sdk
-          //   .toBig(calcForMinCost?.amountS ?? 0)
-          // .div("1e" + tokenMap[sell].decimals)
-        ),
+      minAmtCheck: sdk.toBig(calcTradeParams?.amountS ?? 0).gte(minAmt ?? 0),
     };
-    // let validAmt = !!(
-    //   calcTradeParams?.amountS &&
-    //   sellMinAmt &&
-    //   sdk.toBig(calcTradeParams?.amountS).gte(sdk.toBig(sellMinAmt))
-    // );
 
     if (
       tradeCost &&
@@ -361,32 +346,6 @@ export function makeMarketReq({
   } else {
     myError("undefined minOrderInfo");
   }
-
-  // if (minOrderInfo) {
-  // if (!isBuy) {
-  // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
-
-  // minOrderInfo.minAmount = calcTradeParamsForMin?.amountS as string;
-  // minOrderInfo.minAmtShow = sdk
-  //   .toBig(minOrderInfo.minAmount)
-  //   .div("1e" + sellTokenInfo.decimals)
-  //   .toNumber();
-  // minOrderInfo.symbol = sell;
-  // minOrderInfo.minAmtCheck = sdk
-  //   .toBig(calcTradeParams?.sellAmt ?? "")
-  //   .gte(sdk.toBig(minOrderInfo.minAmtShow));
-
-  // } else {
-  //   minOrderInfo.minAmtShow = sdk
-  //     .toBig(minOrderInfo.minAmount)
-  //     .div(sdk.toBig(1).minus(sdk.toBig(slippage ?? 0).div(10000)))
-  //     .div("1e" + buyTokenInfo.decimals)
-  //     .toNumber();
-  //   minOrderInfo.symbol = buy;
-  //   minOrderInfo.minAmtCheck = sdk
-  //     .toBig(calcTradeParams?.buyAmt ?? "")
-  //     .gte(sdk.toBig(minOrderInfo.minAmtShow));
-  // }
 
   const tradeChannel = calcTradeParams
     ? calcTradeParams.exceedDepth

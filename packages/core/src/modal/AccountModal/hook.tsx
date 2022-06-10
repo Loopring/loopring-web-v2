@@ -504,7 +504,7 @@ export function useAccountModalForUI({
         ...AddAssetList.FromExchange,
         handleSelect: () => {
           window.open(
-            `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}&lockNetwork=true&lockAddress=true&addressSource=loopring`
+            `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}&lockNetwork=true&lockAddress=true&addressSource=loopringWeb`
           );
           window.opener = null;
         },

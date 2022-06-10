@@ -62,7 +62,6 @@ export const TradeTitle = <I extends object>({
 }) => {
   const { coinJson } = useSettings();
   const history = useHistory();
-
   const sellCoinIcon: any = coinJson[coinAInfo?.simpleName];
   const buyCoinIcon: any = coinJson[coinBInfo?.simpleName];
 

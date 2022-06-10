@@ -11,7 +11,7 @@ import {
   TradeProType,
 } from "@loopring-web/component-lib";
 
-export type marketCalcParams = {
+export type MarketCalcParams = {
   exceedDepth: boolean;
   isReverse: boolean;
   isAtoB: boolean;
@@ -52,7 +52,7 @@ export type PageTradePro<C> = {
   // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
   request?: sdk.SubmitOrderRequestV3 | null | undefined;
   tradeCalcProData: Partial<TradeCalcProData<keyof C>>;
-  calcTradeParams?: Partial<marketCalcParams> | null | undefined;
+  calcTradeParams?: Partial<MarketCalcParams> | null | undefined;
   limitCalcTradeParams?: Partial<limitCalcParams> | null | undefined;
   priceImpactObj?:
     | {

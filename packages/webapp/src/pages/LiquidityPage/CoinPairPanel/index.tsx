@@ -146,7 +146,7 @@ export const CoinPairPanel = withTranslation("common")(
           >
             <Box marginTop={0}>
               <TradeTitle
-                accoun={account}
+                account={account}
                 {...{
                   baseShow: coinPairInfo.myCoinA?.simpleName,
                   quoteShow: coinPairInfo.myCoinB?.simpleName,

@@ -330,7 +330,7 @@ export const TradeRacePage = withTranslation("common")(
             {!searchParams.has("rule") &&
               eventData.api &&
               eventData.api.version && (
-                //TODO  after bk fixed
+                // TODO  after bk fixed
                 // eventStatus !== EVENT_STATUS.EVENT_READY &&
                 <RankRaw {...eventData.api} />
               )}

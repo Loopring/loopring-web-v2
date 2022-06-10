@@ -203,7 +203,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         market,
         sellUserOrderInfo,
         buyUserOrderInfo,
-        minOrderInfo,
+        minOrderInfo: minOrderInfo as any,
         request: marketRequest as any,
         calcTradeParams: calcTradeParams,
         tradeCalcProData: {
