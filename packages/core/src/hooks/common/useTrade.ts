@@ -20,6 +20,7 @@ import {
 } from "../../index";
 import * as _ from "lodash";
 import BigNumber from "bignumber.js";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const DefaultFeeBips = "1";
 
@@ -159,6 +160,8 @@ export function makeMarketReq({
     takerRate: takerRate ? takerRate.toString() : "0",
     slipBips: slippage as string,
   });
+  const tradePrice = toBig(calcTradeParams?.output).div(input.toString());
+
   let minOrderInfo,
     totalFeeRaw,
     totalFee,
@@ -182,6 +185,7 @@ export function makeMarketReq({
   if (tokenAmtMap && tokenAmtMap[sell] && tokenMarketMap && slippage) {
     const minSymbol = buy;
     const inputAmount = tokenAmtMap[minSymbol].userOrderInfo;
+
     const minInput = sdk
       .toBig(inputAmount?.minAmount ?? "")
       .div(sdk.toBig(1).minus(sdk.toBig(slippage ?? 0).div(10000)))
@@ -202,6 +206,7 @@ export function makeMarketReq({
       takerRate: takerRate ? takerRate.toString() : "0",
       slipBips: slippage as string,
     });
+
     console.log(
       `inputAmount ${minSymbol} minAmount:`,
       inputAmount?.minAmount,
@@ -213,6 +218,58 @@ export function makeMarketReq({
       `, dustToken:`,
       sell
     );
+
+    /*** calc for Price Impact ****/
+    const sellMinAmtInfo = tokenMarketMap[sellTokenInfo.symbol];
+    const sellMinAmtInput = sdk
+      .toBig(sellMinAmtInfo.baseOrderInfo.minAmount)
+      .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
+      .div("1e" + sellTokenInfo.decimals)
+      .toString();
+
+    const calcForPriceImpact = sdk.getOutputAmount({
+      input: sellMinAmtInput,
+      sell,
+      buy,
+      isAtoB,
+      marketArr: marketArray,
+      tokenMap: tokenMap as any,
+      marketMap: marketMap as any,
+      depth: depth as sdk.DepthData,
+      ammPoolSnapshot,
+      feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+      takerRate: takerRate ? takerRate.toString() : "0",
+      slipBips: slippage as string,
+    });
+    console.log(
+      "calcForPriceImpact input:",
+      sellMinAmtInput,
+      ", calcForPriceImpact basePrice: ",
+      toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber()
+    );
+    const basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
+    if (
+      basePrice &&
+      tradePrice &&
+      basePrice.gt(tradePrice ?? 0) &&
+      calcTradeParams
+    ) {
+      calcTradeParams.priceImpact = toBig(1)
+        .minus(toBig(tradePrice).div(basePrice))
+        .toFixed(4);
+    } else {
+      calcTradeParams && (calcTradeParams.priceImpact = "0");
+    }
+    console.log(
+      "tradePrice",
+      tradePrice.toString(),
+      "basePrice",
+      basePrice?.toString(),
+      "alcTradeParams.priceImpact",
+      calcTradeParams?.priceImpact
+    );
+
+    /**** calc for min Cost ****/
     tradeCost = tokenMarketMap[buy].tradeCost;
     let dustToken = tokenMap[buy];
     let sellToken = tokenMap[sell];

@@ -184,6 +184,7 @@ export default {
   labelSuccessConnect: "Successfully Connected with {{providerName}}",
   labelSuccessConnectDescribe: "Congratulations, Connection Successful!",
   labelCopyClipBoard: "Copy",
+  labelCopyManually: "Manually Selected & Copy:",
   labelRejectOrError:
     "Request was rejected or some unknown error occurred, please retry",
   labelWalletConnectProcessDescribe2: "Please click ‘Approve’ on your device.",

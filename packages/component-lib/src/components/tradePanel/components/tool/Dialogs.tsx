@@ -19,7 +19,13 @@ import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
 import { useOpenModals } from "../../../../stores";
-import { CheckBoxIcon, CheckedIcon } from "@loopring-web/common-resources";
+import {
+  Bridge,
+  CheckBoxIcon,
+  CheckedIcon,
+  copyToClipBoard,
+} from "@loopring-web/common-resources";
+import { useLocation } from "react-router-dom";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -339,10 +345,14 @@ export const ConfirmLinkCopy = withTranslation("common", {
     t,
     open,
     handleClose,
+    setCopyToastOpen,
   }: WithTranslation & {
     open: boolean;
+    setCopyToastOpen: (vale: boolean) => void;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     return (
       <DialogStyle
         open={open}
@@ -350,7 +360,11 @@ export const ConfirmLinkCopy = withTranslation("common", {
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle> {t("labelOpenInWalletTitle")}</DialogTitle>
+        <DialogTitle>
+          <Typography variant={"h4"} textAlign={"center"}>
+            {t("labelOpenInWalletTitle")}
+          </Typography>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Typography component={"span"} variant={"body1"} color={"inherit"}>
@@ -374,15 +388,30 @@ export const ConfirmLinkCopy = withTranslation("common", {
             </ListItem>
           </List>
         </DialogContent>
+
         <DialogActions>
           <Button
-            variant={"outlined"}
-            size={"medium"}
-            onClick={(e) => handleClose(e as any)}
+            variant={"contained"}
+            fullWidth
+            onClick={(e) => {
+              copyToClipBoard(Bridge + `?${searchParams.toString()}`);
+              setCopyToastOpen(true);
+              handleClose(e as any);
+            }}
           >
-            {t("labelOK")}
+            {t("labelCopyClipBoard")}
           </Button>
         </DialogActions>
+        <DialogContent>
+          <Typography component={"p"} marginY={2}>
+            Manually Selected & Copy:
+          </Typography>
+          <TextField
+            disabled={true}
+            fullWidth={true}
+            value={Bridge + `?${searchParams.toString()}`}
+          />
+        </DialogContent>
       </DialogStyle>
     );
   }

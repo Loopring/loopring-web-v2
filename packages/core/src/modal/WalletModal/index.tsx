@@ -455,6 +455,7 @@ export const ModalWalletConnectPanel = withTranslation("common")(
         />
         <ConfirmLinkCopy
           open={isConfirmLinkCopy}
+          setCopyToastOpen={setCopyToastOpen}
           handleClose={() => setIsConfirmLinkCopy(false)}
         />
         <WrongNetworkGuide

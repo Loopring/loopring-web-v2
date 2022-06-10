@@ -303,11 +303,14 @@ export const DepositWrap = <
           </Box>
           {!isToAddressEditable && (
             <>
-              <Typography color={"var(--color-text-third)"} variant={"body1"}>
-                {t("labelBridgeSendTo")}
-              </Typography>
               {!realToAddress ? (
                 <Box>
+                  <Typography
+                    color={"var(--color-text-third)"}
+                    variant={"body1"}
+                  >
+                    {t("labelBridgeSendTo")}
+                  </Typography>
                   <Typography
                     display={"inline-flex"}
                     variant={
