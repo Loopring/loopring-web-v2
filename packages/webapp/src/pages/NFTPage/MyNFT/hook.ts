@@ -19,7 +19,6 @@ import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
-import { useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
