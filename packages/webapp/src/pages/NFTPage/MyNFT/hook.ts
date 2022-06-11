@@ -16,20 +16,16 @@ import {
   DEPLOYMENT_STATUS,
 } from "@loopring-web/loopring-sdk";
 import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
-import { SwitchData, useOpenModals } from "@loopring-web/component-lib";
+import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 import { useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { debounceTime, Subject } from "rxjs";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = () => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
-  // const [isShow, setIsShow] = React.useState(false);
-  const renderNFTSubject = new Subject<number>();
   const [isLoading, setIsLoading] = React.useState(true);
-  const { account, status: accountStatus } = useAccount();
   const [popItem, setPopItem] =
     React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
   const {
@@ -186,26 +182,7 @@ export const useMyNFT = () => {
       updateNFTWithdrawData,
     ]
   );
-  // const onNFTError = (item: Partial<NFTWholeINFO>, index?: number) => {
-  //   let _index = index;
-  //
-  //   setNFTList((state) => {
-  //     if (index === undefined) {
-  //       _index = state.findIndex(
-  //         (_item) =>
-  //           _item.tokenAddress?.toLowerCase() ===
-  //             item.tokenAddress?.toLowerCase() && _item.nftId === item.nftId
-  //       );
-  //     }
-  //     if (_index) {
-  //       state[_index] = {
-  //         ...state[_index],
-  //         isFailedLoadMeta: true,
-  //       };
-  //     }
-  //     return state;
-  //   });
-  // };
+
   const onNFTReload = async (item: Partial<NFTWholeINFO>, index?: number) => {
     const tokenInfo = await infoDetail(item);
     let _index = index;
@@ -247,7 +224,6 @@ export const useMyNFT = () => {
       mediaPromise.push(infoDetail(nftBalanceItem));
     }
 
-    // const meta: any[] = await
     Promise.all(mediaPromise).then((meta: any[]) => {
       const { walletLayer2NFT, page: page_reudex } =
         store.getState().walletLayer2NFT;
@@ -265,40 +241,18 @@ export const useMyNFT = () => {
         });
       }
     });
-    // if (page === page_reudex) {
-    //
-    // }
   }, [etherscanBaseUrl, infoDetail, page, walletLayer2NFT]);
   React.useEffect(() => {
     onPageChange(1);
   }, []);
   React.useEffect(() => {
-    // if (page_reudex !== page) {
-    //
-    // }
     updateWalletLayer2NFT({ page });
   }, [page]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET && page_reudex === page) {
       renderNFT();
-      // const { walletLayer2NFT, page: page_reudex } =
-      //   store.getState().walletLayer2NFT;
-      // renderNFTSubject.next(page_reudex);
-      // renderNFT();
     }
   }, [walletLayer2NFTStatus, page, page_reudex]);
-  // React.useEffect(() => {
-  //   // renderNFTSubject.pipe(debounceTime(200)).subscribe(() => {
-  //   //
-  //   // });
-  //   renderNFTSubject.subscribe((page) => {
-  //     myLog("walletLayer2NFT renderNFT");
-  //     renderNFT(page);
-  //   });
-  //   return () => {
-  //     renderNFTSubject.unsubscribe();
-  //   };
-  // }, [renderNFTSubject]);
 
   return {
     nftList,
