@@ -172,9 +172,11 @@ export const RankRaw = <R extends object>({
     const owner = searchParams.get("owner");
     const _selected = filters?.find((item) => selected === item);
     const url = `${baseURL}/${Activity_URL}?${
-      _selected ? `selected=${_selected}` : ""
+      _selected ? `&selected=${_selected}` : ""
     }${
-      owner && owner !== "undefined" && owner !== "null" ? `owner=${owner}` : ""
+      owner && owner !== "undefined" && owner !== "null"
+        ? `&owner=${owner}`
+        : ""
     }&version=${version}`;
     fetch(url)
       .then((response) => response.json())
