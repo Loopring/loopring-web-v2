@@ -327,13 +327,12 @@ export const TradeRacePage = withTranslation("common")(
                 </Typography>
               </Typography>
             )}
-            {!searchParams.has("rule") &&
+            {!!(
+              !searchParams.has("rule") &&
               eventData.api &&
-              eventData.api.version && (
-                // TODO  after bk fixed
-                // eventStatus !== EVENT_STATUS.EVENT_READY &&
-                <RankRaw {...eventData.api} />
-              )}
+              eventData.api.version &&
+              eventStatus !== EVENT_STATUS.EVENT_READ
+            ) && <RankRaw {...eventData.api} />}
 
             <Box
               ref={anchorRef}
