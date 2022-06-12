@@ -1,14 +1,11 @@
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
-  Avatar,
   Box,
   BoxProps,
   Card,
-  CardActions,
   CardContent,
   Container,
-  Divider,
   Fab,
   Grid,
   Link,
@@ -28,7 +25,7 @@ import rehypeRaw from "rehype-raw";
 import { MarkdownStyle } from "pages/MarkdownPage/style";
 import { useTheme } from "@emotion/react";
 import { EventData } from "./interface";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const CardStyled = styled(Card)`
   // min-height: ${({ theme }) => theme.unit * 61.5}px;
@@ -331,7 +328,7 @@ export const TradeRacePage = withTranslation("common")(
               !searchParams.has("rule") &&
               eventData.api &&
               eventData.api.version &&
-              eventStatus !== EVENT_STATUS.EVENT_READ
+              eventStatus !== EVENT_STATUS.EVENT_READY
             ) && <RankRaw {...eventData.api} />}
 
             <Box
