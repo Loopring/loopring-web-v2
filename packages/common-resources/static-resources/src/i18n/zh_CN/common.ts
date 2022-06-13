@@ -22,9 +22,11 @@ export default {
   labelSwapPriceImpactTooltips:
     "The difference between market price and estimated price due to trade size",
   swapMinReceive: "最少买入",
+  swapMinReceiveS: "Min. Received",
   labelSwapMinReceiveTooltips:
     "Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price, but the protocol can guarantee that you will receive at least this amount.",
   swapFee: "费用",
+  swapFeeS: "Est. Fee",
   labelSwapFeeTooltips:
     "The trading fee is determined by your VIP level and the size of your trade. Small trades (below ~$100) incur a higher fee. Please review the fee before confirming.",
   swapBtn: "兑换",

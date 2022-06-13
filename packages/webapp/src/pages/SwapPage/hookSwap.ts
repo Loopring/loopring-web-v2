@@ -890,7 +890,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             buyCoinInfoMap,
             priceImpact: "",
             priceImpactColor: "inherit",
-            minimumReceived: "",
+            minimumReceived: undefined,
             StoB: undefined,
             BtoS: undefined,
             fee: undefined,
@@ -1016,8 +1016,10 @@ export const useSwap = <C extends { [key: string]: any }>({
           // amountMarket[_tradeData["buy"].belong as string];
           //sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
 
-          const minAmountInput = sdk
-            .toBig(buyMinAmtInfo.userOrderInfo.minAmount)
+          const minAmountInput = BigNumber.max(
+            buyMinAmtInfo.userOrderInfo.minAmount,
+            tokenMap[buyToken.symbol].orderAmounts.dust
+          )
             .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
             .div("1e" + buyToken.decimals)
             .toString();
@@ -1050,7 +1052,6 @@ export const useSwap = <C extends { [key: string]: any }>({
           /*** calc for Price Impact ****/
           const sellMinAmtInput = sdk
             .toBig(sellMinAmtInfo.baseOrderInfo.minAmount)
-            .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
             .div("1e" + sellToken.decimals)
             .toString();
 
@@ -1066,25 +1067,8 @@ export const useSwap = <C extends { [key: string]: any }>({
             ammPoolSnapshot: ammPoolSnapshot,
             feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
             takerRate: takerRate ? takerRate.toString() : "0",
-            slipBips: slippage,
+            slipBips: "50",
           });
-
-          // const minimumReceivedBase =
-          //   calcForPriceImpact &&
-          //   calcForPriceImpact.amountBOutSlip?.minReceivedVal
-          //     ? getValuePrecisionThousand(
-          //         calcForPriceImpact.amountBOutSlip?.minReceivedVal,
-          //         tokenMap[buyToken.symbol].precision,
-          //         tokenMap[buyToken.symbol].precision,
-          //         tokenMap[buyToken.symbol].precision,
-          //         false,
-          //         { floor: true }
-          //       )
-          //     : undefined;
-
-          // basePrice = toBig(
-          //   calcForPriceImpact?.amountBOutSlip?.minReceivedVal ?? 0
-          // ).div(sellMinAmtInput);
 
           basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
 
@@ -1093,9 +1077,8 @@ export const useSwap = <C extends { [key: string]: any }>({
             sellMinAmtInput,
             ", output: ",
             toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber(),
-            ", calcForPriceImpact minimumReceived:",
+            ", calcForPriceImpact minimumSwap:",
             calcForPriceImpact?.amountBOutSlip?.minReceivedVal,
-            // minimumReceivedBase,
             ", calcForPriceImpact basePrice: ",
             basePrice.toNumber()
           );
@@ -1183,33 +1166,18 @@ export const useSwap = <C extends { [key: string]: any }>({
         });
 
         const minSymbol = _tradeData.buy.belong;
-        const minimumReceived =
-          calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal
-            ? getValuePrecisionThousand(
-                calcTradeParams.amountBOutSlip?.minReceivedVal,
-                tokenMap[minSymbol].precision,
-                tokenMap[minSymbol].precision,
-                tokenMap[minSymbol].precision,
-                false,
-                { floor: true }
-              )
-            : undefined;
-
         tradePrice = toBig(
           calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0
         ).div(isAtoB ? input.toString() : calcTradeParams?.output);
-        if (
-          basePrice &&
-          tradePrice &&
-          basePrice.gt(tradePrice ?? 0) &&
-          calcTradeParams
-        ) {
-          calcTradeParams.priceImpact = toBig(1)
-            .minus(toBig(tradePrice).div(basePrice))
-            .toFixed(2, 1);
+        const priceImpact = toBig(1)
+          .minus(toBig(tradePrice).div(basePrice ?? 1))
+          .minus(0.005);
+        if (calcTradeParams && priceImpact.gte(0)) {
+          calcTradeParams.priceImpact = priceImpact.toFixed(2, 1);
         } else {
           calcTradeParams && (calcTradeParams.priceImpact = "0");
         }
+
         console.log(
           "calcTradeParams input:",
           input.toString(),
@@ -1227,7 +1195,9 @@ export const useSwap = <C extends { [key: string]: any }>({
           toBig(tradePrice)
             .div(basePrice ?? 1)
             .toNumber(),
-          "priceImpact (1-tradePrice2/basePrice)",
+          "priceImpact (1-tradePrice/basePrice) - 0.005",
+          priceImpact.toNumber(),
+          "priceImpact view",
           calcTradeParams?.priceImpact
         );
 
@@ -1315,18 +1285,26 @@ export const useSwap = <C extends { [key: string]: any }>({
 
           console.log("totalFee view value:", totalFee, tradeCost);
           console.log("tradeCost view value:", tradeCost);
-          // if() {
-          //
-          // }
-          // sdk.toBig().times()
         }
-        //  totalFee = feeTakerRate?toBig(feeTakerRate).div(100)* minimumReceived
+
+        const minimumReceived = getValuePrecisionThousand(
+          toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+            .minus(totalFee)
+            .toString(),
+          tokenMap[minSymbol].precision,
+          tokenMap[minSymbol].precision,
+          tokenMap[minSymbol].precision,
+          false,
+          { floor: true }
+        );
 
         const priceImpactObj = getPriceImpactInfo(calcTradeParams);
         const _tradeCalcData: Partial<TradeCalcData<C>> = {
           priceImpact: priceImpactObj.value.toString(),
           priceImpactColor: priceImpactObj.priceImpactColor,
-          minimumReceived,
+          minimumReceived: !minimumReceived?.toString().startsWith("-")
+            ? minimumReceived
+            : undefined,
           fee: totalFee,
           feeTakerRate,
           tradeCost,

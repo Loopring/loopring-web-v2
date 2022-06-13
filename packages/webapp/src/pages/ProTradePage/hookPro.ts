@@ -98,8 +98,11 @@ export const usePro = <C extends { [key: string]: any }>(): {
   }, [market, account.readyState]);
 
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED) {
-      getAmount({ market: market });
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      accountStatus === SagaStatus.UNSET
+    ) {
+      getAmount({ market });
     }
   }, [market, accountStatus, account.readyState]);
 

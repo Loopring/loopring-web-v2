@@ -314,7 +314,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                       color={"inherit"}
                       sx={{ marginX: 1 / 2 }}
                     />
-                    {" " + t("swapFee")}
+                    {" " + t("swapFeeS")}
                   </Typography>
                 </Tooltip>
                 <Typography
@@ -458,7 +458,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                       color={"inherit"}
                       sx={{ marginX: 1 / 2 }}
                     />
-                    {" " + t("swapMinReceive")}
+                    {" " + t("swapMinReceiveS")}
                   </Typography>
                 </Tooltip>
                 <Typography

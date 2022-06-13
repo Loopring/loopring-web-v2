@@ -160,7 +160,6 @@ export function makeMarketReq({
     takerRate: takerRate ? takerRate.toString() : "0",
     slipBips: slippage as string,
   });
-  const tradePrice = toBig(calcTradeParams?.output).div(input.toString());
 
   let minOrderInfo,
     totalFeeRaw,
@@ -223,7 +222,6 @@ export function makeMarketReq({
     const sellMinAmtInfo = tokenMarketMap[sellTokenInfo.symbol];
     const sellMinAmtInput = sdk
       .toBig(sellMinAmtInfo.baseOrderInfo.minAmount)
-      .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
       .div("1e" + sellTokenInfo.decimals)
       .toString();
 
@@ -231,7 +229,7 @@ export function makeMarketReq({
       input: sellMinAmtInput,
       sell,
       buy,
-      isAtoB,
+      isAtoB: true,
       marketArr: marketArray,
       tokenMap: tokenMap as any,
       marketMap: marketMap as any,
@@ -239,7 +237,7 @@ export function makeMarketReq({
       ammPoolSnapshot,
       feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
       takerRate: takerRate ? takerRate.toString() : "0",
-      slipBips: slippage as string,
+      slipBips: "50",
     });
     console.log(
       "calcForPriceImpact input:",
@@ -248,24 +246,37 @@ export function makeMarketReq({
       toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber()
     );
     const basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
-    if (
-      basePrice &&
-      tradePrice &&
-      basePrice.gt(tradePrice ?? 0) &&
-      calcTradeParams
-    ) {
-      calcTradeParams.priceImpact = toBig(1)
-        .minus(toBig(tradePrice).div(basePrice))
-        .toFixed(4);
+    const tradePrice = toBig(
+      calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0
+    ).div(isAtoB ? input.toString() : calcTradeParams?.output);
+    const priceImpact = toBig(1)
+      .minus(toBig(tradePrice).div(basePrice ?? 1))
+      .minus(0.005);
+    if (calcTradeParams && priceImpact.gte(0)) {
+      calcTradeParams.priceImpact = priceImpact.toFixed(2, 1);
     } else {
       calcTradeParams && (calcTradeParams.priceImpact = "0");
     }
     console.log(
-      "tradePrice",
+      "calcTradeParams input:",
+      input.toString(),
+      ", calcTradeParams Price: ",
+      toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+        .div(input.toString())
+        .toNumber(),
+      `isAtoB:${isAtoB}, ${
+        isAtoB ? input.toString() : calcTradeParams?.output
+      } tradePrice: `,
       tradePrice.toString(),
-      "basePrice",
+      "basePrice: ",
       basePrice?.toString(),
-      "alcTradeParams.priceImpact",
+      "toBig(tradePrice).div(basePrice)",
+      toBig(tradePrice)
+        .div(basePrice ?? 1)
+        .toNumber(),
+      "priceImpact (1-tradePrice/basePrice) - 0.005",
+      priceImpact.toNumber(),
+      "priceImpact view",
       calcTradeParams?.priceImpact
     );
 
@@ -735,7 +746,7 @@ export function usePlaceOrder() {
         };
       }
     },
-    [marketArray]
+    [ammMap, marketArray]
   );
 
   // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
@@ -766,7 +777,7 @@ export function usePlaceOrder() {
         };
       }
     },
-    [account, tokenMap, marketArray, exchangeInfo]
+    [getTokenAmtMap, exchangeInfo, account.accountId, tokenMap]
   );
 
   // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
@@ -797,7 +808,7 @@ export function usePlaceOrder() {
         };
       }
     },
-    [account, tokenMap, marketArray, exchangeInfo]
+    [getTokenAmtMap, exchangeInfo, account.accountId, tokenMap]
   );
 
   return {

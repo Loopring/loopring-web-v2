@@ -28,7 +28,6 @@ import {
 } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
 import { useSubmitBtn } from "./hookBtn";
-// import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import {
   getPriceImpactInfo,
   PriceLevel,
@@ -37,6 +36,7 @@ import {
   BIGO,
 } from "@loopring-web/core";
 import * as _ from "lodash";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const useMarket = <C extends { [key: string]: any }>({
   market,
@@ -198,6 +198,16 @@ export const useMarket = <C extends { [key: string]: any }>({
         tradeData.type === TradeProType.buy
           ? tradeData.base.belong
           : tradeData.quote.belong;
+      const minimumReceived = getValuePrecisionThousand(
+        toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+          .minus(totalFee)
+          .toString(),
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        false,
+        { floor: true }
+      );
       const priceImpactObj = getPriceImpactInfo(calcTradeParams);
       updatePageTradePro({
         market,
@@ -209,17 +219,9 @@ export const useMarket = <C extends { [key: string]: any }>({
         tradeCalcProData: {
           ...pageTradePro.tradeCalcProData,
           fee: totalFee,
-          minimumReceived:
-            calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal
-              ? getValuePrecisionThousand(
-                  calcTradeParams.amountBOutSlip?.minReceivedVal,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  true,
-                  { floor: true }
-                )
-              : undefined,
+          minimumReceived: !minimumReceived?.toString().startsWith("-")
+            ? minimumReceived
+            : undefined,
           priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
           priceImpactColor: priceImpactObj?.priceImpactColor,
         },
