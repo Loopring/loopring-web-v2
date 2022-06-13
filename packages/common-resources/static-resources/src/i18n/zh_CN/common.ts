@@ -698,7 +698,7 @@ export default {
   labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
   labelSendTOL2: "To Another Loopring L2 Account",
   labelSendToMyL1: "To my L1 account",
-  labelSendToOtherL1: "To another L1 account",
+  labelSendToOtherL1: "To another L1 account \n(incl. exchange)",
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
   labelActivatedAccountChargeFeeList:

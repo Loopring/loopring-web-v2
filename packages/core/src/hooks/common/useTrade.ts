@@ -811,7 +811,7 @@ export const getPriceImpactInfo = (
   isMarket: boolean = true
 ) => {
   let priceImpact: any = calcTradeParams?.priceImpact
-    ? parseFloat(calcTradeParams?.priceImpact) * 100
+    ? parseFloat(calcTradeParams?.priceImpact) //* 100
     : undefined;
   let priceImpactColor = "var(--color-success)";
 

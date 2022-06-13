@@ -147,19 +147,19 @@ export type LOOPRING_NFT_METADATA = {
 export const NFTLimit = 12;
 
 export const AddAssetList = {
-  BuyWithCard: {
-    key: "BuyWithCard",
-    svgIcon: "CardIcon",
-    enableKey: "legal",
-  },
   FromMyL1: {
     key: "FromMyL1",
     svgIcon: "IncomingIcon",
     enableKey: "deposit",
   },
+  BuyWithCard: {
+    key: "BuyWithCard",
+    svgIcon: "CardIcon",
+    enableKey: "legal",
+  },
   FromOtherL1: {
     key: "FromOtherL1",
-    svgIcon: "L2l2Icon",
+    svgIcon: "OutputIcon",
     enableKey: null,
   },
   FromOtherL2: {
@@ -175,15 +175,15 @@ export const AddAssetList = {
 };
 
 export const SendAssetList = {
+  SendAssetToMyL1: {
+    key: "SendToMyL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "withdraw",
+  },
   SendAssetToL2: {
     key: "SendTOL2",
     svgIcon: "L2l2Icon",
     enableKey: "transfer",
-  },
-  SendAssetToMyL1: {
-    key: "SendToMyL1",
-    svgIcon: "OutputIcon",
-    enableKey: "withdraw",
   },
   SendAssetToOtherL1: {
     key: "SendToOtherL1",

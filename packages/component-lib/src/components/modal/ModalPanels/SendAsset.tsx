@@ -18,15 +18,15 @@ const BoxStyled = styled(Box)`` as typeof Box;
 const IconItem = ({ svgIcon }: { svgIcon: string }) => {
   switch (svgIcon) {
     case "IncomingIcon":
-      return <IncomingIcon color={"inherit"} />;
+      return <IncomingIcon color={"inherit"} sx={{ marginRight: 1 }} />;
     case "L2l2Icon":
-      return <L2l2Icon color={"inherit"} />;
+      return <L2l2Icon color={"inherit"} sx={{ marginRight: 1 }} />;
     case "L1l2Icon":
-      return <L1l2Icon color={"inherit"} />;
+      return <L1l2Icon color={"inherit"} sx={{ marginRight: 1 }} />;
     case "ExchangeAIcon":
-      return <ExchangeAIcon color={"inherit"} />;
+      return <ExchangeAIcon color={"inherit"} sx={{ marginRight: 1 }} />;
     case "OutputIcon":
-      return <OutputIcon color={"inherit"} />;
+      return <OutputIcon color={"inherit"} sx={{ marginRight: 1 }} />;
   }
 };
 export const SendAsset = ({
@@ -101,6 +101,11 @@ export const SendAsset = ({
                   color={"inherit"}
                   display={"inline-flex"}
                   alignItems={"center"}
+                  lineHeight={"1.2em"}
+                  sx={{
+                    textIndent: 0,
+                    textAlign: "left",
+                  }}
                 >
                   <>{IconItem({ svgIcon: item.svgIcon })}</>
                   {t("label" + item.key)}
