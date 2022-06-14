@@ -17,7 +17,6 @@ import {
 import AssetPanel from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
 import OrderPanel from "./OrderPanel";
-import MyLiqudityPanel from "./MyLiquidityPanel";
 import React from "react";
 import { useAccount, WalletConnectL2Btn } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";
@@ -38,8 +37,8 @@ export const Layer2Page = () => {
     switch (selected) {
       case "assets":
         return <AssetPanel />;
-      case "my-liquidity":
-        return <MyLiqudityPanel />;
+      // case "my-liquidity":
+      //   return <MyLiqudityPanel />;
       case "history":
         return <HistoryPanel />;
       case "order":

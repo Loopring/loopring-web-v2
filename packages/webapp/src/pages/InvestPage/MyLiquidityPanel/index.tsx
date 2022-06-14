@@ -8,7 +8,7 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
-} from "@loopring-web/common-resources";
+} from "../../common-resources";
 
 import {
   AmmPoolActivityRule,

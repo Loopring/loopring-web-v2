@@ -17,7 +17,7 @@ import {
   useSystem,
   store,
 } from "@loopring-web/core";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { SagaStatus } from "../../common-resources";
 export const useOverview = <
   R extends { [key: string]: any },
   I extends { [key: string]: any }

@@ -157,14 +157,14 @@ export const AddAssetList = {
     svgIcon: "CardIcon",
     enableKey: "legal",
   },
-  FromOtherL1: {
-    key: "FromOtherL1",
-    svgIcon: "OutputIcon",
-    enableKey: null,
-  },
   FromOtherL2: {
     key: "FromOtherL2",
     svgIcon: "L1l2Icon",
+    enableKey: null,
+  },
+  FromOtherL1: {
+    key: "FromOtherL1",
+    svgIcon: "OutputIcon",
     enableKey: null,
   },
   FromExchange: {
