@@ -10,6 +10,7 @@ import {
   IncomingIcon,
   L1l2Icon,
   L2l2Icon,
+  OutputIcon,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 
@@ -27,6 +28,8 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
       return <L1l2Icon color={"inherit"} sx={{ marginRight: 1 }} />;
     case "ExchangeAIcon":
       return <ExchangeAIcon color={"inherit"} sx={{ marginRight: 1 }} />;
+    case "OutputIcon":
+      return <OutputIcon color={"inherit"} sx={{ marginRight: 1 }} />;
   }
 };
 export const AddAsset = ({
