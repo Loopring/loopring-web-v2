@@ -221,7 +221,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (ammActivityMapStatus) {
       case SagaStatus.ERROR:
-        console.log("ERROR", "get ammActivity error,ui");
+        console.log("Network ERROR::", "getAmmPoolActivityRules");
         ammActivityMapStatusUnset();
         break;
       case SagaStatus.DONE:
@@ -234,7 +234,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (tickerStatus) {
       case "ERROR":
-        console.log("ERROR", "get ticker error,ui");
+        console.log("Network ERROR::", "getMixTicker");
         tickerStatusUnset();
         break;
       case "DONE":
@@ -247,7 +247,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (amountStatus) {
       case SagaStatus.ERROR:
-        console.log("ERROR", "get (amount error,ui");
+        console.log("Network ERROR::", "userAPI getMinimumTokenAmt");
         amountStatusUnset();
         break;
       case SagaStatus.DONE:

@@ -206,7 +206,7 @@ export function makeMarketReq({
       slipBips: slippage as string,
     });
 
-    console.log(
+    myLog(
       `inputAmount ${minSymbol} minAmount:`,
       inputAmount?.minAmount,
       `, Market minAmount: with slippage:${slippage}:`,
@@ -239,7 +239,7 @@ export function makeMarketReq({
       takerRate: takerRate ? takerRate.toString() : "0",
       slipBips: "50",
     });
-    console.log(
+    myLog(
       "calcForPriceImpact input:",
       sellMinAmtInput,
       ", calcForPriceImpact basePrice: ",
@@ -257,7 +257,7 @@ export function makeMarketReq({
     } else {
       calcTradeParams && (calcTradeParams.priceImpact = "0");
     }
-    console.log(
+    myLog(
       "calcTradeParams input:",
       input.toString(),
       ", calcTradeParams Price: ",
@@ -289,7 +289,7 @@ export function makeMarketReq({
       dustToken.orderAmounts.dust
     );
 
-    console.log(dustToken.symbol);
+    myLog("dustToken.symbol:", dustToken.symbol);
 
     const tradeCostInput = sdk
       .toBig(calcForMinCostInput)
@@ -351,7 +351,7 @@ export function makeMarketReq({
         sdk.toBig(calcTradeParams?.amountS).gte(calcForMinAmt.amountS)
       );
 
-      console.log(
+      myLog(
         `${minSymbol} tradeCost:`,
         tradeCost,
         "useTakeRate Fee:",
@@ -368,7 +368,7 @@ export function makeMarketReq({
         } else {
           totalFeeRaw = value;
         }
-        console.log(
+        myLog(
           "maxFeeBips update for tradeCost before value:",
           maxFeeBips,
           "totalFeeRaw",
@@ -380,7 +380,7 @@ export function makeMarketReq({
             .div(calcTradeParams.amountBOutSlip?.minReceived)
             .toNumber()
         );
-        console.log("maxFeeBips update for tradeCost after value:", maxFeeBips);
+        myLog("maxFeeBips update for tradeCost after value:", maxFeeBips);
       } else {
         totalFeeRaw = sdk.toBig(value);
       }
@@ -405,8 +405,8 @@ export function makeMarketReq({
         { floor: true }
       );
 
-      console.log("totalFee view value:", totalFee, tradeCost);
-      console.log("tradeCost view value:", tradeCost);
+      myLog("totalFee view value:", totalFee, tradeCost);
+      myLog("tradeCost view value:", tradeCost);
     }
   } else {
     myError("undefined minOrderInfo");

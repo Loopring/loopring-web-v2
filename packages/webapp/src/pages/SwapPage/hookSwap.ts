@@ -987,7 +987,7 @@ export const useSwap = <C extends { [key: string]: any }>({
         let maxFeeBips = MAPFEEBIPS;
 
         if (amountMap && amountMap[market as string] && ammMap) {
-          console.log(`amountMap[${market}]:`, amountMap[market as string]);
+          myLog(`amountMap[${market}]:`, amountMap[market as string]);
 
           const ammMarket = `AMM-${market}`;
           const amount = ammMap[ammMarket]
@@ -1036,7 +1036,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             slipBips: slippage,
           });
 
-          console.log(
+          myLog(
             "buyMinAmtInfo.userOrderInfo.minAmount:",
             buyMinAmtInfo.userOrderInfo.minAmount,
             `buyMinAmtInfo.userOrderInfo.minAmount, with slippage:${slippage}`,
@@ -1069,7 +1069,7 @@ export const useSwap = <C extends { [key: string]: any }>({
 
           basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
 
-          console.log(
+          myLog(
             "calcForPriceImpact input: ",
             sellMinAmtInput,
             ", output: ",
@@ -1093,7 +1093,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             .div("1e" + dustToken.decimals)
             .toString();
 
-          console.log(
+          myLog(
             "tradeCost*2:",
             sdk.toBig(tradeCost).times(2).toString(),
             "buyToken.orderAmounts.dust",
@@ -1128,7 +1128,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             calcForMinCost?.amountS ?? 0
           );
           setSellMinAmt(minAmt.toString());
-          console.log(
+          myLog(
             `calcForMinAmt.amountS`,
             sdk
               .toBig(calcForMinAmt?.amountS ?? 0)
@@ -1175,7 +1175,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           calcTradeParams && (calcTradeParams.priceImpact = "0");
         }
 
-        console.log(
+        myLog(
           "calcTradeParams input:",
           input.toString(),
           ", calcTradeParams Price: ",
@@ -1223,7 +1223,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           );
           let totalFeeRaw;
 
-          console.log(
+          myLog(
             `${minSymbol} tradeCost:`,
             tradeCost,
             "useTakeRate Fee:",
@@ -1240,7 +1240,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             } else {
               totalFeeRaw = value;
             }
-            console.log(
+            myLog(
               "maxFeeBips update for tradeCost before value:",
               maxFeeBips,
               "totalFeeRaw",
@@ -1252,10 +1252,7 @@ export const useSwap = <C extends { [key: string]: any }>({
                 .div(calcTradeParams.amountBOutSlip?.minReceived)
                 .toNumber()
             );
-            console.log(
-              "maxFeeBips update for tradeCost after value:",
-              maxFeeBips
-            );
+            myLog("maxFeeBips update for tradeCost after value:", maxFeeBips);
           } else {
             totalFeeRaw = sdk.toBig(value);
           }
@@ -1280,8 +1277,8 @@ export const useSwap = <C extends { [key: string]: any }>({
             { floor: true }
           );
 
-          console.log("totalFee view value:", totalFee, tradeCost);
-          console.log("tradeCost view value:", tradeCost);
+          myLog("totalFee view value:", totalFee, tradeCost);
+          myLog("tradeCost view value:", tradeCost);
         }
 
         const minimumReceived = getValuePrecisionThousand(
