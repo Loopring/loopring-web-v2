@@ -463,6 +463,8 @@ export function useAccountModalForUI({
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     };
   }, [account.accAddress, chainInfos?.depositHashes]);
+  const { setShowLayerSwapNotice } = useOpenModals();
+
   const addAssetList: AddAssetItem[] = React.useMemo(
     () => [
       {
@@ -503,10 +505,7 @@ export function useAccountModalForUI({
       {
         ...AddAssetList.FromExchange,
         handleSelect: () => {
-          window.open(
-            `https://www.layerswap.io/?destNetwork=loopring_mainnet&destAddress=${account.accAddress}&lockNetwork=true&lockAddress=true&addressSource=loopringWeb`
-          );
-          window.opener = null;
+          setShowLayerSwapNotice({ isShow: true });
         },
       },
     ],
@@ -1030,7 +1029,6 @@ export function useAccountModalForUI({
           />
         ),
       },
-
       [AccountStep.NFTDeploy_WaitForAuth]: {
         view: (
           <NFTDeploy_WaitForAuth
