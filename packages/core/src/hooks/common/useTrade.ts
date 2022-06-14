@@ -253,7 +253,7 @@ export function makeMarketReq({
       .minus(toBig(tradePrice).div(basePrice ?? 1))
       .minus(0.005);
     if (calcTradeParams && priceImpact.gte(0)) {
-      calcTradeParams.priceImpact = priceImpact.toFixed(2, 1);
+      calcTradeParams.priceImpact = priceImpact.toFixed(4, 1);
     } else {
       calcTradeParams && (calcTradeParams.priceImpact = "0");
     }
@@ -822,7 +822,7 @@ export const getPriceImpactInfo = (
   isMarket: boolean = true
 ) => {
   let priceImpact: any = calcTradeParams?.priceImpact
-    ? parseFloat(calcTradeParams?.priceImpact) //* 100
+    ? parseFloat(calcTradeParams?.priceImpact) * 100
     : undefined;
   let priceImpactColor = "var(--color-success)";
 

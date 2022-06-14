@@ -1173,7 +1173,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           .minus(toBig(tradePrice).div(basePrice ?? 1))
           .minus(0.005);
         if (calcTradeParams && priceImpact.gte(0)) {
-          calcTradeParams.priceImpact = priceImpact.toFixed(2, 1);
+          calcTradeParams.priceImpact = priceImpact.toFixed(4, 1);
         } else {
           calcTradeParams && (calcTradeParams.priceImpact = "0");
         }
