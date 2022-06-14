@@ -460,7 +460,10 @@ export const useSwap = <C extends { [key: string]: any }>({
             const sellToken = tokenMap[sellSymbol];
             // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
             const minOrderSize = getValuePrecisionThousand(
-              sdk.toBig(sellMinAmt ?? 0).div("1e" + sellToken.decimals),
+              sdk
+                .toBig(sellMinAmt ?? 0)
+                .times(1.1)
+                .div("1e" + sellToken.decimals),
               sellToken.precision,
               sellToken.precision,
               sellToken.precision,
@@ -872,18 +875,12 @@ export const useSwap = <C extends { [key: string]: any }>({
           {} as CoinMap<C>
         );
 
-        // const tokenA = tokenMap[ coinA ]
-        // const tokenB = tokenMap[ coinB ]
-
         setTradeCalcData((state) => {
           return {
             ...state,
             walletMap,
             coinSell: coinA,
             coinBuy: coinB,
-            // tokenA,
-            // tokenB,
-            // marketPrecision,
             sellPrecision: tokenMap[coinA as string].precision,
             buyPrecision: tokenMap[coinB as string].precision,
             sellCoinInfoMap,
@@ -1067,7 +1064,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             ammPoolSnapshot: ammPoolSnapshot,
             feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
             takerRate: takerRate ? takerRate.toString() : "0",
-            slipBips: "50",
+            slipBips: "10",
           });
 
           basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
@@ -1077,7 +1074,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             sellMinAmtInput,
             ", output: ",
             toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber(),
-            ", calcForPriceImpact minimumSwap:",
+            ", calcForPriceImpact:",
             calcForPriceImpact?.amountBOutSlip?.minReceivedVal,
             ", calcForPriceImpact basePrice: ",
             basePrice.toNumber()

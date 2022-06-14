@@ -508,13 +508,13 @@ export const useMarket = <C extends { [key: string]: any }>({
       } else if (!minOrderInfo?.minAmtCheck) {
         let minOrderSize = "Error";
         if (minOrderInfo && minOrderInfo?.symbol) {
-          const baseSymbol = minOrderInfo.symbol;
-          const baseToken = tokenMap[baseSymbol];
+          const symbol = minOrderInfo.symbol;
+          const minToken = tokenMap[symbol];
           const showValue = getValuePrecisionThousand(
             minOrderInfo?.minAmtShow,
-            baseToken.precision,
-            baseToken.precision,
-            baseToken.precision,
+            minToken.precision,
+            minToken.precision,
+            minToken.precision,
             false,
             { isAbbreviate: true, floor: false }
           );

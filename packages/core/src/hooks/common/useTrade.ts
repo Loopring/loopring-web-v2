@@ -320,6 +320,7 @@ export function makeMarketReq({
         minAmt &&
         sdk
           .toBig(minAmt)
+          .times(1.1)
           .div("1e" + tokenMap[sell].decimals)
           .toNumber(),
       symbol: sell,
