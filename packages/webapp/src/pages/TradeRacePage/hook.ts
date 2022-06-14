@@ -28,6 +28,9 @@ export const useTradeRace = () => {
   const history = useHistory();
 
   const [eventData, setEventData] = React.useState<EventData>();
+  const [eventsList, setEventsList] = React.useState<
+    Array<EventData & { type: string }>
+  >([]);
   const [eventStatus, setEventStatus] =
     React.useState<EVENT_STATUS | undefined>();
 
@@ -43,15 +46,13 @@ export const useTradeRace = () => {
     if (baseURL) {
       try {
         // follow /2021/01/2021-01-01.en.json
-        const [year, month, day] = match?.params.path.split("-");
+        const [year, month] = match?.params.path.split("-");
         const type = searchParams.get("type");
         const path = `${
           /uat/gi.test(baseURL) ? url_test_path : url_path
         }/${year}/${month}/`;
-        if (year && month && day && type) {
-          fetch(
-            `${path}/${year}-${month}-${day}.${languageMap[i18n.language]}.json`
-          )
+        if (year && month && type) {
+          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
             .then((response) => {
               if (response.ok) {
                 return response.json();
@@ -75,7 +76,9 @@ export const useTradeRace = () => {
                         return {};
                       }
                     }),
-                    fetch(`${path}/` + eventData.rule)
+                    fetch(
+                      `${path}/activities/${eventData.rule?.split("/").pop()}`
+                    )
                       .then((response) => response.text())
                       .then((input) => {
                         return input;
@@ -87,25 +90,37 @@ export const useTradeRace = () => {
                 const startUnix =
                   config[0].start ??
                   moment
-                    .utc(eventData.duration.startDate, "DD/MM/YYYY HH:mm:ss")
+                    .utc(eventData.duration.startDate, "MM/DD/YYYY HH:mm:ss")
                     .valueOf();
                 const endUnix =
                   config[0].end ??
                   moment
-                    .utc(eventData.duration.endDate, "DD/MM/YYYY HH:mm:ss")
+                    .utc(eventData.duration.endDate, "MM/DD/YYYY HH:mm:ss")
                     .valueOf();
 
                 setEventData({
                   ...eventData,
                   banner: {
                     pad: eventData.banner?.pad
-                      ? `${path}/` + eventData.banner.pad
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/activities/${eventData.banner?.pad
+                            ?.split("/")
+                            .pop()}`
+                        : eventData.banner.pad //`${path}/`
                       : undefined,
                     laptop: eventData.banner?.laptop
-                      ? `${path}/` + eventData.banner.laptop
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/activities/${eventData.banner?.laptop
+                            ?.split("/")
+                            .pop()}`
+                        : eventData.banner.laptop //`${path}/`
                       : undefined,
                     mobile: eventData.banner?.mobile
-                      ? `${path}/` + eventData.banner.mobile
+                      ? /uat/gi.test(baseURL)
+                        ? `${path}/activities/${eventData.banner?.mobile
+                            ?.split("/")
+                            .pop()}`
+                        : eventData.banner.mobile
                       : undefined,
                   },
                   duration: {
@@ -132,7 +147,50 @@ export const useTradeRace = () => {
               }
             })
             .catch((e) => {
-              throw e;
+              searchParams.set("type", "");
+              // history.push(match.url + "?" + searchParams.toString());
+              window.open(
+                `./#${match.url}?` + searchParams.toString(),
+                "_self"
+              );
+              window.opener = null;
+              window.location.reload();
+            });
+        } else if (year && month && !type) {
+          fetch(`${path}/activities.${languageMap[i18n.language]}.json`)
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                history.replace(`/race-event?${searchParams.toString()}`);
+              }
+            })
+            .then((input) => {
+              const eventsList = Reflect.ownKeys(input).map((key) => {
+                // input[key]
+                const startUnix = moment
+                  .utc(
+                    input[key].duration?.startDate ?? "",
+                    "MM/DD/YYYY HH:mm:ss"
+                  )
+                  .valueOf();
+                const endUnix = moment
+                  .utc(
+                    input[key].duration?.endDate ?? "",
+                    "MM/DD/YYYY HH:mm:ss"
+                  )
+                  .valueOf();
+                return {
+                  ...input[key],
+                  type: key,
+                  duration: {
+                    ...input[key].duration,
+                    startDate: startUnix,
+                    endDate: endUnix,
+                  },
+                };
+              });
+              setEventsList(eventsList);
             });
         } else {
           throw "url format wrong";
@@ -204,10 +262,12 @@ export const useTradeRace = () => {
 
   return {
     eventData,
+    match,
     // selected,
     // currMarketPair,
     filteredAmmViewMap: [],
     countDown,
+    eventsList,
     // handleFilterChange,
     searchParams,
     // onChange,

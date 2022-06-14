@@ -14,7 +14,6 @@ import {
   useAmmMap,
   useWalletLayer2Socket,
   walletLayer2Service,
-  VolToNumberWithPrecision,
   accountStaticCallBack,
   btnClickMap,
   btnLabel,
@@ -33,6 +32,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  EmptyValueTag,
   fnType,
   getShowStr,
   getValuePrecisionThousand,
@@ -67,6 +67,8 @@ import {
 import { useHistory } from "react-router-dom";
 
 import * as _ from "lodash";
+import BigNumber from "bignumber.js";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 const useSwapSocket = () => {
   const { sendSocketTopic, socketEnd } = useSocket();
@@ -91,12 +93,13 @@ export const useSwap = <C extends { [key: string]: any }>({
   //High: No not Move!!!!!!
   const { realPair, realMarket } = usePairMatch(path);
   /** get store value **/
-  const { amountMap, getAmount } = useAmount();
+  const { amountMap, getAmount, status: amountStatus } = useAmount();
   const { isMobile } = useSettings();
   const { account, status: accountStatus } = useAccount();
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { coinMap, tokenMap, marketArray, marketCoins, marketMap } =
     useTokenMap();
+  // const [] = React.useState(MAPFEEBIPS)
   const { tickerMap } = useTicker();
   const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const { ammMap } = useAmmMap();
@@ -154,7 +157,8 @@ export const useSwap = <C extends { [key: string]: any }>({
   /*** Btn related function ***/
   const swapFunc = React.useCallback(
     async (event: MouseEvent, isAgree?: boolean) => {
-      let { calcTradeParams, tradeChannel, orderType } = pageTradeLite;
+      let { calcTradeParams, tradeChannel, orderType, maxFeeBips } =
+        pageTradeLite;
       setAlertOpen(false);
       setConfirmOpen(false);
 
@@ -208,14 +212,14 @@ export const useSwap = <C extends { [key: string]: any }>({
             allOrNone: false,
             validUntil: getTimestampDaysLater(__DAYS__),
             // maxFeeBips: parseInt(totalFee as string),
-            maxFeeBips: MAPFEEBIPS,
+            maxFeeBips: maxFeeBips ?? MAPFEEBIPS,
             fillAmountBOrS: false, // amm only false
             orderType,
             tradeChannel,
             eddsaSignature: "",
           };
 
-          myLog(request);
+          myLog("submitOrder request", request);
 
           const response: { hash: string } | any =
             await LoopringAPI.userAPI.submitOrder(
@@ -331,6 +335,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             });
             updatePageTradeLite({
               market,
+              maxFeeBips: MAPFEEBIPS,
               calcTradeParams: {
                 ...calcTradeParams,
                 // takerRate: undefined,
@@ -417,9 +422,6 @@ export const useSwap = <C extends { [key: string]: any }>({
       .toBig(buyToken?.orderAmounts?.maximum)
       .div("1e" + buyToken.decimals);
 
-    // myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
-    // myLog('calcTradeParams:', calcTradeParams?.amountS, sellMinAmt)
-
     if (isSwapLoading) {
       setSwapBtnStatus(TradeBtnStatus.LOADING);
       return undefined;
@@ -449,17 +451,30 @@ export const useSwap = <C extends { [key: string]: any }>({
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
           return `labelLimitMax| ${maxOrderSize}`;
         } else if (!validAmt) {
+          //!validAmt) {
           const sellSymbol = tradeData?.sell.belong;
-          //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
-          const minOrderSize = VolToNumberWithPrecision(
-            sellMinAmt ?? "",
-            sellSymbol as any
-          );
           setSwapBtnStatus(TradeBtnStatus.DISABLED);
-          if (isNaN(Number(minOrderSize))) {
+          if (sellMinAmt === undefined || !sellSymbol) {
             return ``;
           } else {
-            return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
+            const sellToken = tokenMap[sellSymbol];
+            // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
+            const minOrderSize = getValuePrecisionThousand(
+              sdk
+                .toBig(sellMinAmt ?? 0)
+                .times(1.1)
+                .div("1e" + sellToken.decimals),
+              sellToken.precision,
+              sellToken.precision,
+              sellToken.precision,
+              false,
+              { floor: false, isAbbreviate: true }
+            );
+            if (isNaN(Number(minOrderSize))) {
+              return `labelLimitMin| ${EmptyValueTag + " " + sellSymbol}`;
+            } else {
+              return `labelLimitMin| ${minOrderSize + " " + sellSymbol}`;
+            }
           }
         } else {
           setSwapBtnStatus(TradeBtnStatus.AVAILABLE);
@@ -470,11 +485,13 @@ export const useSwap = <C extends { [key: string]: any }>({
       }
     }
   }, [
-    account.readyState,
+    tokenMap,
+    tradeData?.sell?.belong,
+    tradeData?.buy?.belong,
     pageTradeLite,
-    isSwapLoading,
     sellMinAmt,
-    setSwapBtnStatus,
+    isSwapLoading,
+    account.readyState,
   ]);
 
   const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
@@ -522,7 +539,13 @@ export const useSwap = <C extends { [key: string]: any }>({
       setSwapBtnStatus(TradeBtnStatus.AVAILABLE);
       setSwapBtnI18nKey(accountStaticCallBack(_btnLabel));
     }
-  }, [accountStatus, isSwapLoading, pageTradeLite.calcTradeParams?.amountS]);
+  }, [
+    accountStatus,
+    isSwapLoading,
+    pageTradeLite.calcTradeParams?.amountS,
+    sellMinAmt,
+    // pageTradeLite.calcTradeParams?.isAtoB,
+  ]);
   /*** Btn related end ***/
 
   /*** table related function ***/
@@ -615,15 +638,6 @@ export const useSwap = <C extends { [key: string]: any }>({
   }, [market, ammMap]);
   /*** table related end ***/
 
-  /*** account related function ***/
-  React.useEffect(() => {
-    if (
-      account.readyState === AccountStatus.ACTIVATED &&
-      accountStatus === SagaStatus.UNSET
-    ) {
-      getAmount({ market });
-    }
-  }, [accountStatus]);
   React.useEffect(() => {
     if (
       accountStatus === SagaStatus.UNSET &&
@@ -631,6 +645,9 @@ export const useSwap = <C extends { [key: string]: any }>({
       tradeCalcData?.coinBuy
     ) {
       walletLayer2Callback();
+      if (account.readyState === AccountStatus.ACTIVATED) {
+        getAmount({ market });
+      }
     }
   }, [
     account.readyState,
@@ -639,6 +656,19 @@ export const useSwap = <C extends { [key: string]: any }>({
     tradeCalcData?.coinSell,
     tradeCalcData?.coinBuy,
   ]);
+
+  /*** account related function ***/
+  // React.useEffect(() => {
+  //   if (
+  //     account.readyState === AccountStatus.ACTIVATED &&
+  //     amountStatus === SagaStatus.UNSET
+  //   ) {
+  //     const amountMap = store.getState().amountMap;
+  //     if (amountMap[market]) {
+  //       setIsSwapLoading(false);
+  //     }
+  //   }
+  // }, [account.readyState, amountStatus, market]);
 
   const walletLayer2Callback = React.useCallback(async () => {
     let walletMap: WalletMap<any> | undefined = undefined;
@@ -720,9 +750,22 @@ export const useSwap = <C extends { [key: string]: any }>({
   React.useEffect(() => {
     if (pageTradeLite.depth) {
       refreshAmmPoolSnapshot();
-      setIsSwapLoading(false);
+      if (
+        account.readyState === AccountStatus.ACTIVATED &&
+        amountStatus === SagaStatus.UNSET
+      ) {
+        setIsSwapLoading(false);
+      } else {
+        setIsSwapLoading(false);
+      }
     }
-  }, [pageTradeLite.depth, tradeCalcData.coinBuy]);
+  }, [
+    pageTradeLite.depth,
+    tradeCalcData.coinBuy,
+    account.readyState,
+    amountStatus,
+    market,
+  ]);
 
   React.useEffect(() => {
     if (market) {
@@ -765,13 +808,13 @@ export const useSwap = <C extends { [key: string]: any }>({
         setTradeCalcData((state) => {
           state.StoB = result.stob;
           state.BtoS = result.btos;
-          return state;
+          return { ...state };
         });
       } else {
         setTradeCalcData((state) => {
           state.StoB = stob;
           state.BtoS = btos;
-          return state;
+          return { ...state };
         });
       }
       updatePageTradeLite({ market, close });
@@ -832,28 +875,24 @@ export const useSwap = <C extends { [key: string]: any }>({
           {} as CoinMap<C>
         );
 
-        // const tokenA = tokenMap[ coinA ]
-        // const tokenB = tokenMap[ coinB ]
-
         setTradeCalcData((state) => {
           return {
             ...state,
             walletMap,
             coinSell: coinA,
             coinBuy: coinB,
-            // tokenA,
-            // tokenB,
-            // marketPrecision,
             sellPrecision: tokenMap[coinA as string].precision,
             buyPrecision: tokenMap[coinB as string].precision,
             sellCoinInfoMap,
             buyCoinInfoMap,
             priceImpact: "",
             priceImpactColor: "inherit",
-            minimumReceived: "",
+            minimumReceived: undefined,
             StoB: undefined,
             BtoS: undefined,
             fee: undefined,
+            feeTakerRate: undefined,
+            tradeCost: undefined,
           };
         });
         setTradeData({ ...tradeDataTmp });
@@ -910,6 +949,8 @@ export const useSwap = <C extends { [key: string]: any }>({
   const reCalculateDataWhenValueChange = React.useCallback(
     (_tradeData, _tradePair?, type?) => {
       const { ammPoolSnapshot, depth, tradePair, close } = pageTradeLite;
+      const { amountMap } = store.getState().amountMap;
+      let calcForMinAmt, calcForMinCost, calcForPriceImpact;
 
       // @ts-ignore
       // myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
@@ -917,6 +958,8 @@ export const useSwap = <C extends { [key: string]: any }>({
       if (depth && market && _tradePair === tradePair) {
         const coinA = _tradeData.sell.belong;
         const coinB = _tradeData.buy.belong;
+        const sellToken = tokenMap[coinA as string];
+        const buyToken = tokenMap[coinB as string];
 
         const isAtoB = type === "sell";
 
@@ -933,15 +976,24 @@ export const useSwap = <C extends { [key: string]: any }>({
           .times(100)
           .toString();
         let totalFee = undefined;
+        let feeTakerRate = undefined;
         let feeBips = undefined;
         let takerRate = undefined;
         let buyMinAmtInfo = undefined;
         let sellMinAmtInfo = undefined;
+        let tradeCost = undefined;
+        let basePrice = undefined;
+        let tradePrice = undefined;
+        let maxFeeBips = MAPFEEBIPS;
+
         if (amountMap && amountMap[market as string] && ammMap) {
+          console.log(`amountMap[${market}]:`, amountMap[market as string]);
+
           const ammMarket = `AMM-${market}`;
           const amount = ammMap[ammMarket]
             ? amountMap[ammMarket]
             : amountMap[market as string];
+          const amountMarket = amountMap[market as string];
 
           buyMinAmtInfo = amount[_tradeData["buy"].belong as string];
           sellMinAmtInfo = amount[_tradeData["sell"].belong as string];
@@ -951,16 +1003,25 @@ export const useSwap = <C extends { [key: string]: any }>({
           feeBips = ammMap[ammMarket]
             ? ammMap[ammMarket].__rawConfig__.feeBips
             : 1;
-          totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
 
-          const buyToken = tokenMap[_tradeData["buy"].belong as string];
+          feeTakerRate =
+            amountMarket[_tradeData["buy"].belong as string] &&
+            amountMarket[_tradeData["buy"].belong as string].userOrderInfo
+              .takerRate;
+          tradeCost =
+            amountMarket[_tradeData["buy"].belong as string].tradeCost;
+          // amountMarket[_tradeData["buy"].belong as string];
+          //sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
 
-          const minAmountInput = sdk
-            .toBig(buyMinAmtInfo.userOrderInfo.minAmount)
+          const minAmountInput = BigNumber.max(
+            buyMinAmtInfo.userOrderInfo.minAmount,
+            tokenMap[buyToken.symbol].orderAmounts.dust
+          )
+            .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
             .div("1e" + buyToken.decimals)
             .toString();
 
-          const calcForMinAmt = sdk.getOutputAmount({
+          calcForMinAmt = sdk.getOutputAmount({
             input: minAmountInput,
             sell: coinA,
             buy: coinB,
@@ -975,8 +1036,114 @@ export const useSwap = <C extends { [key: string]: any }>({
             slipBips: slippage,
           });
 
-          setSellMinAmt(calcForMinAmt?.amountS);
-          // myLog('calcForMinAmt?.amountS:', calcForMinAmt?.amountS)
+          console.log(
+            "buyMinAmtInfo.userOrderInfo.minAmount:",
+            buyMinAmtInfo.userOrderInfo.minAmount,
+            `buyMinAmtInfo.userOrderInfo.minAmount, with slippage:${slippage}`,
+            sdk
+              .toBig(buyMinAmtInfo.userOrderInfo.minAmount)
+              .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
+              .toString()
+          );
+
+          /*** calc for Price Impact ****/
+          const sellMinAmtInput = sdk
+            .toBig(sellMinAmtInfo.baseOrderInfo.minAmount)
+            .div("1e" + sellToken.decimals)
+            .toString();
+
+          calcForPriceImpact = sdk.getOutputAmount({
+            input: sellMinAmtInput,
+            sell: coinA,
+            buy: coinB,
+            isAtoB: true,
+            marketArr: marketArray as string[],
+            tokenMap: tokenMap as any,
+            marketMap: marketMap as any,
+            depth,
+            ammPoolSnapshot: ammPoolSnapshot,
+            feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+            takerRate: takerRate ? takerRate.toString() : "0",
+            slipBips: "10",
+          });
+
+          basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
+
+          console.log(
+            "calcForPriceImpact input: ",
+            sellMinAmtInput,
+            ", output: ",
+            toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber(),
+            ", calcForPriceImpact:",
+            calcForPriceImpact?.amountBOutSlip?.minReceivedVal,
+            ", calcForPriceImpact basePrice: ",
+            basePrice.toNumber()
+          );
+
+          /**** calc for min Cost ****/
+          const dustToken = buyToken;
+          let calcForMinCostInput = BigNumber.max(
+            sdk.toBig(tradeCost).times(2),
+            dustToken.orderAmounts.dust
+          );
+
+          const tradeCostInput = sdk
+            .toBig(calcForMinCostInput)
+            .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
+            .div("1e" + dustToken.decimals)
+            .toString();
+
+          console.log(
+            "tradeCost*2:",
+            sdk.toBig(tradeCost).times(2).toString(),
+            "buyToken.orderAmounts.dust",
+            buyToken.orderAmounts.dust,
+            "calcForMinCostInput",
+            calcForMinCostInput.toString(),
+            `calcForMinCostInput, with slippage:${slippage}`,
+            sdk
+              .toBig(calcForMinCostInput ?? 0)
+              .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
+              .toString(),
+            "calcForMinCost, Input",
+            tradeCostInput
+          );
+
+          calcForMinCost = sdk.getOutputAmount({
+            input: tradeCostInput,
+            sell: coinA,
+            buy: coinB,
+            isAtoB: false,
+            marketArr: marketArray as string[],
+            tokenMap: tokenMap as any,
+            marketMap: marketMap as any,
+            depth,
+            ammPoolSnapshot: ammPoolSnapshot,
+            feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+            takerRate: takerRate ? takerRate.toString() : "0",
+            slipBips: slippage,
+          });
+          const minAmt = BigNumber.max(
+            sellToken.orderAmounts.dust,
+            calcForMinCost?.amountS ?? 0
+          );
+          setSellMinAmt(minAmt.toString());
+          console.log(
+            `calcForMinAmt.amountS`,
+            sdk
+              .toBig(calcForMinAmt?.amountS ?? 0)
+              .div(
+                "1e" + tokenMap[_tradeData["sell"].belong as string].decimals
+              )
+              .toString(),
+            "calcForMinCost.amountS",
+            sdk
+              .toBig(calcForMinCost?.amountS ?? 0)
+              .div(
+                "1e" + tokenMap[_tradeData["sell"].belong as string].decimals
+              )
+              .toString()
+          );
           // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
           // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
         }
@@ -995,25 +1162,149 @@ export const useSwap = <C extends { [key: string]: any }>({
           slipBips: slippage,
         });
 
-        // myLog('depth:', depth)
-        // myLog('calcTradeParams:', calcTradeParams)
         const minSymbol = _tradeData.buy.belong;
+        tradePrice = toBig(
+          calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0
+        ).div(isAtoB ? input.toString() : calcTradeParams?.output);
+        const priceImpact = toBig(1)
+          .minus(toBig(tradePrice).div(basePrice ?? 1))
+          .minus(0.005);
+        if (calcTradeParams && priceImpact.gte(0)) {
+          calcTradeParams.priceImpact = priceImpact.toFixed(4, 1);
+        } else {
+          calcTradeParams && (calcTradeParams.priceImpact = "0");
+        }
+
+        console.log(
+          "calcTradeParams input:",
+          input.toString(),
+          ", calcTradeParams Price: ",
+          toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+            .div(input.toString())
+            .toNumber(),
+          `isAtoB:${isAtoB}, ${
+            isAtoB ? input.toString() : calcTradeParams?.output
+          } tradePrice: `,
+          tradePrice.toString(),
+          "basePrice: ",
+          basePrice?.toString(),
+          "toBig(tradePrice).div(basePrice)",
+          toBig(tradePrice)
+            .div(basePrice ?? 1)
+            .toNumber(),
+          "priceImpact (1-tradePrice/basePrice) - 0.005",
+          priceImpact.toNumber(),
+          "priceImpact view",
+          calcTradeParams?.priceImpact
+        );
+
+        if (
+          tradeCost &&
+          calcTradeParams &&
+          calcTradeParams.amountBOutSlip?.minReceived &&
+          feeTakerRate
+        ) {
+          let value = sdk
+            .toBig(calcTradeParams.amountBOutSlip?.minReceived)
+            .times(feeTakerRate)
+            .div(10000);
+
+          myLog(
+            "input Accounts",
+            calcTradeParams?.amountS,
+            "100 U calcForMinAmt:",
+            calcForMinAmt?.amountS
+          );
+
+          let validAmt = !!(
+            calcTradeParams?.amountS &&
+            calcForMinAmt?.amountS &&
+            sdk.toBig(calcTradeParams?.amountS).gte(calcForMinAmt.amountS)
+          );
+          let totalFeeRaw;
+
+          console.log(
+            `${minSymbol} tradeCost:`,
+            tradeCost,
+            "useTakeRate Fee:",
+            value.toString(),
+            "calcForMinAmt?.amountS:",
+            calcForMinAmt?.amountS,
+            `is setup minTrade amount, ${calcForMinAmt?.amountS}:`,
+            validAmt
+          );
+
+          if (!validAmt) {
+            if (sdk.toBig(tradeCost).gte(value)) {
+              totalFeeRaw = sdk.toBig(tradeCost);
+            } else {
+              totalFeeRaw = value;
+            }
+            console.log(
+              "maxFeeBips update for tradeCost before value:",
+              maxFeeBips,
+              "totalFeeRaw",
+              totalFeeRaw.toString()
+            );
+            maxFeeBips = Math.ceil(
+              totalFeeRaw
+                .times(10000)
+                .div(calcTradeParams.amountBOutSlip?.minReceived)
+                .toNumber()
+            );
+            console.log(
+              "maxFeeBips update for tradeCost after value:",
+              maxFeeBips
+            );
+          } else {
+            totalFeeRaw = sdk.toBig(value);
+          }
+
+          totalFee = getValuePrecisionThousand(
+            totalFeeRaw.div("1e" + tokenMap[minSymbol].decimals).toString(),
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            false,
+            { floor: true }
+          );
+          tradeCost = getValuePrecisionThousand(
+            sdk
+              .toBig(tradeCost)
+              .div("1e" + tokenMap[minSymbol].decimals)
+              .toString(),
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            tokenMap[minSymbol].precision,
+            false,
+            { floor: true }
+          );
+
+          console.log("totalFee view value:", totalFee, tradeCost);
+          console.log("tradeCost view value:", tradeCost);
+        }
+
+        const minimumReceived = getValuePrecisionThousand(
+          toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+            .minus(totalFee)
+            .toString(),
+          tokenMap[minSymbol].precision,
+          tokenMap[minSymbol].precision,
+          tokenMap[minSymbol].precision,
+          false,
+          { floor: true }
+        );
+
         const priceImpactObj = getPriceImpactInfo(calcTradeParams);
         const _tradeCalcData: Partial<TradeCalcData<C>> = {
-          priceImpact: priceImpactObj.value,
+          priceImpact: priceImpactObj.value.toString(),
           priceImpactColor: priceImpactObj.priceImpactColor,
-          minimumReceived:
-            calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal
-              ? getValuePrecisionThousand(
-                  calcTradeParams.amountBOutSlip?.minReceivedVal,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  false,
-                  { floor: true }
-                )
-              : undefined,
+          minimumReceived: !minimumReceived?.toString().startsWith("-")
+            ? minimumReceived
+            : undefined,
           fee: totalFee,
+          feeTakerRate,
+          tradeCost,
         };
 
         // myLog('calcTradeParams?.output:', calcTradeParams?.output, getShowStr(calcTradeParams?.output))
@@ -1053,6 +1344,7 @@ export const useSwap = <C extends { [key: string]: any }>({
 
         // const tradeChannel = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined
         // const orderType = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined
+        myLog("updatePageTradeLite feeBips:", feeBips);
 
         updatePageTradeLite({
           market,
@@ -1064,10 +1356,13 @@ export const useSwap = <C extends { [key: string]: any }>({
           priceImpactObj,
           lastStepAt: type,
           feeBips,
-          totalFee,
           takerRate,
           sellMinAmtInfo: sellMinAmtInfo as any,
           buyMinAmtInfo: buyMinAmtInfo as any,
+          totalFee,
+          maxFeeBips,
+          feeTakerRate,
+          tradeCost,
         });
         //setOutput(calcTradeParams)
         setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData });
@@ -1165,6 +1460,8 @@ export const useSwap = <C extends { [key: string]: any }>({
           priceImpactColor: "inherit",
           minimumReceived: undefined,
           fee: undefined,
+          feeTakerRate: undefined,
+          tradeCost: undefined,
         };
 
         myLog(
@@ -1176,7 +1473,14 @@ export const useSwap = <C extends { [key: string]: any }>({
         updatePageTradeLite({
           market,
           tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`,
+          calcTradeParams: {
+            ...pageTradeLite.calcTradeParams,
+            isReverse: !pageTradeLite.calcTradeParams,
+            amountS: undefined,
+            output: undefined,
+          },
         });
+        setSellMinAmt(undefined);
         setTradeCalcData(_tradeCalcData);
         break;
       default:

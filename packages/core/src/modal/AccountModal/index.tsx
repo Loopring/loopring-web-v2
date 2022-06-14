@@ -132,6 +132,7 @@ export const ModalAccountInfo = withTranslation("common")(
           exportAccountProps={exportAccountProps}
           assetsData={assetsRawData}
           setExportAccountToastOpen={setExportAccountToastOpen}
+          account={account}
           {...{ _height: "var(--modal-height)", _width: "var(--modal-width)" }}
         />
 

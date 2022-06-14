@@ -446,7 +446,7 @@ export const AmmTable = withTranslation("tables")(
             </TableFilterStyled>
           ))}
         <Table {...{ ...defaultArgs, ...props, rawData }} />
-        {pagination && pagination.total && (
+        {!!(pagination && pagination.total) && (
           <TablePagination
             page={page}
             pageSize={pagination.pageSize}

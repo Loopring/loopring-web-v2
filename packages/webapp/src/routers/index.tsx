@@ -19,7 +19,11 @@ import {
 } from "@loopring-web/common-resources";
 import { ErrorPage } from "../pages/ErrorPage";
 import { useOpenModals, useSettings } from "@loopring-web/component-lib";
-import { MarkdownPage, NotifyMarkdownPage } from "../pages/MarkdownPage";
+import {
+  InvestMarkdownPage,
+  MarkdownPage,
+  NotifyMarkdownPage,
+} from "../pages/MarkdownPage";
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
 import { NFTPage } from "../pages/NFTPage";
@@ -186,7 +190,28 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </Container>
         </Route>
 
-        <Route exact path={["/document", "/race-event", "/notification"]}>
+        <Route exact path="/invest/:path">
+          {query && query.has("noheader") ? (
+            <></>
+          ) : (
+            <Header isHideOnScroll={true} isLandPage />
+          )}
+          <Container
+            maxWidth="lg"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: 1,
+            }}
+          >
+            <InvestMarkdownPage />
+          </Container>
+        </Route>
+
+        <Route
+          exact
+          path={["/document", "/race-event", "/notification", "/invest"]}
+        >
           {query && query.has("noheader") ? (
             <></>
           ) : (

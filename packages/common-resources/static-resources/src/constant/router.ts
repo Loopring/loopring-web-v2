@@ -121,14 +121,14 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     router: { path: "/liquidity" },
     status: HeaderMenuTabStatus.default,
   },
-  {
-    label: {
-      id: "Mining",
-      i18nKey: "labelMining",
-    },
-    router: { path: "/mining" },
-    status: HeaderMenuTabStatus.default,
-  },
+  // {
+  //   label: {
+  //     id: "Mining",
+  //     i18nKey: "labelMining",
+  //   },
+  //   router: { path: "/mining" },
+  //   status: HeaderMenuTabStatus.default,
+  // },
   {
     label: {
       id: "Layer2",

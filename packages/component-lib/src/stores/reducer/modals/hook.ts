@@ -22,6 +22,7 @@ import {
   setShowNFTMintAdvance,
   setShowOtherExchange,
   setShowNFTDetail,
+  setShowLayerSwapNotice,
 } from "./reducer";
 
 import React from "react";
@@ -187,6 +188,10 @@ export const useOpenModals = () => {
     ),
     setShowFeeSetting: React.useCallback(
       (state: ModalStatePlayLoad) => dispatch(setShowFeeSetting(state)),
+      [dispatch]
+    ),
+    setShowLayerSwapNotice: React.useCallback(
+      (state: ModalStatePlayLoad) => dispatch(setShowLayerSwapNotice(state)),
       [dispatch]
     ),
     setShowTradeIsFrozen: React.useCallback(

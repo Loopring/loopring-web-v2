@@ -11,7 +11,7 @@ import {
   TradeProType,
 } from "@loopring-web/component-lib";
 
-export type marketCalcParams = {
+export type MarketCalcParams = {
   exceedDepth: boolean;
   isReverse: boolean;
   isAtoB: boolean;
@@ -42,7 +42,7 @@ export type limitCalcParams = {
 };
 
 export type OrderInfoPatch = {
-  minAmtShow?: number;
+  minAmtShow?: number | string;
   symbol?: string;
   minAmtCheck?: boolean;
 };
@@ -52,7 +52,7 @@ export type PageTradePro<C> = {
   // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
   request?: sdk.SubmitOrderRequestV3 | null | undefined;
   tradeCalcProData: Partial<TradeCalcProData<keyof C>>;
-  calcTradeParams?: Partial<marketCalcParams> | null | undefined;
+  calcTradeParams?: Partial<MarketCalcParams> | null | undefined;
   limitCalcTradeParams?: Partial<limitCalcParams> | null | undefined;
   priceImpactObj?:
     | {
@@ -72,16 +72,19 @@ export type PageTradePro<C> = {
   ticker?: Ticker | undefined;
   ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined;
   feeBips?: number | string;
-  totalFee?: number | string;
   takerRate?: number | string;
   sellUserOrderInfo?: undefined | null | sdk.OrderInfo;
   buyUserOrderInfo?: undefined | null | sdk.OrderInfo;
-  minOrderInfo?: undefined | null | (sdk.OrderInfo & OrderInfoPatch);
+  minOrderInfo?: undefined | null | Partial<sdk.OrderInfo & OrderInfoPatch>;
   lastStepAt?: "base" | "quote" | undefined;
   tradeArray?: RawDataTradeItem[];
   tradeMapByTimeStamp?: {
     [key: string]: RawDataTradeItem;
   };
+  totalFee?: number | string;
+  maxFeeBips?: number;
+  feeTakerRate?: number;
+  tradeCost?: string;
 };
 
 export type PageTradeProStatus<C extends { [key: string]: any }> = {

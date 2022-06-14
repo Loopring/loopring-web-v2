@@ -338,8 +338,7 @@ export const AmmDepositWrap = <
                 variant="body2"
                 color={"textSecondary"}
               >
-                {" "}
-                {t("swapFee")}{" "}
+                {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
                 {t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}

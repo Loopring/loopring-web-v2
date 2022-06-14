@@ -580,7 +580,7 @@ export const useLimit = <C extends { [key: string]: any }>({
       } else if (!minOrderInfo?.minAmtCheck) {
         let minOrderSize = "Error";
         if (minOrderInfo?.symbol) {
-          const basePrecision = tokenMap[minOrderInfo.symbol].precisionForOrder;
+          const basePrecision = tokenMap[minOrderInfo.symbol].precision;
           const showValue = getValuePrecisionThousand(
             minOrderInfo?.minAmtShow,
             undefined,

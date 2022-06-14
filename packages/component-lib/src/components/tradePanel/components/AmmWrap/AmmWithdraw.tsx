@@ -533,8 +533,7 @@ export const AmmWithdrawWrap = <
                 variant="body2"
                 color={"textSecondary"}
               >
-                {" "}
-                {t("swapFee")}{" "}
+                {t("swapFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
                 {ammCalcData ? ammCalcData?.fee : EmptyValueTag}
