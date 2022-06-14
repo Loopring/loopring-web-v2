@@ -29,26 +29,26 @@ export default {
   labelBtnDeveloper: "Developer Documentation",
   labelFirstWallet: "BETTER THAN BEING SMART",
   labelFirstWalletDetail:
-    "Smart wallets enable limitless extensibility over EOA wallets, but Loopring Wallet takes one step further with native zkRollup layer 2 integration.   Now you can transact directly on Loopring L2, faster and cheaper.",
+    "Smart wallets enable limitless extensibility over EOA wallets, but Loopring Wallet takes it one step further with native zkRollup L2 integration.   Now you can transact directly on Loopring L2, faster and cheaper.",
   labelWalletSecureH1: "SECURE, at its core",
   labelWalletSecureH2: "With social-recovery and guardians",
   labelWalletSecureDetail:
-    "Completely self-custodial, only you control your assets.   You can choose people, institutions, and hardware that you trust to be the guardians of your wallet.  You can also set quota for daily transfers, and lock it down if ever needed.",
+    "Completely self-custodial, only you control your assets.   You can choose people, institutions, and hardware that you trust to be the guardians of your wallet.  You can also set a quota for daily transfers, and lock your wallet if ever needed.",
   labelWalletIdentityH1: "OWN YOUR IDENTITY",
   labelWalletIdentityH2: "Your wallet is your continuous Web3 identity.",
   labelWalletIdentityDetail:
     "The Loopring Wallet decouples identity and security. You can choose your wallet name and address, and maintain this identity forever with renewable transaction signing keys.",
   labelWalletUsageH1: "EASY TO USE",
-  labelWalletUsageH2: "with zkRollup scaling solution",
+  labelWalletUsageH2: "With zkRollup scaling solution",
   labelWalletUsageDetail:
-    "The Loopring Wallet integrates Loopring's Layer 2 zkRollup technology  to greatly increase speeds and lower fees, while inheriting the same  security guarantees as the Ethereum mainnet.",
+    "The Loopring Wallet integrates Loopring's L2 zkRollup technology  to greatly increase speeds and lower fees, while inheriting the same  security guarantees as the Ethereum mainnet.",
   labelWalletFutureH1: "FORWARD LOOKING",
-  labelWalletFutureH2: "Easily upgradable to adapt future scenarios",
+  labelWalletFutureH2: "Easily upgradeable to adapt future scenarios",
   labelWalletFutureDetail:
     "Based on smart contracts, the Loopring Wallet adopts a pluggable, modular design which can be continuously upgraded under your authorization to use future standards and new technologies.",
   labelWalletUnleashed: "ETHEREUM UNLEASHED",
   labelWalletUnleashedDetail:
-    "Your mobile gateway to Ethereum DeFi, collectables, and more.",
+    "Your mobile gateway to Ethereum DeFi, collectibles, and more.",
   labelLaunchApp: "LAUNCH APP",
   labelLaunchMobileApp: "Exchange",
   labelUpgradeHide:
