@@ -295,3 +295,5 @@ export const useAddressTypeLists = <
     exchangeList,
   };
 };
+
+export const defalutSlipage = 0.1;

@@ -2,6 +2,7 @@ import { SwapTradeData, TradeBtnStatus } from "../../Interface";
 import {
   CoinInfo,
   CoinMap,
+  defalutSlipage,
   EmptyValueTag,
   ExchangeIcon,
   getValuePrecisionThousand,
@@ -413,7 +414,7 @@ export const SwapTradeWrap = <
                           ? tradeData.slippage
                           : tradeCalcData.slippage
                           ? tradeCalcData.slippage
-                          : 0.5}
+                          : defalutSlipage}
                         %
                       </LinkActionStyle>
                       <PopoverPure
@@ -440,7 +441,7 @@ export const SwapTradeWrap = <
                               ? tradeData.slippage
                               : tradeCalcData.slippage
                               ? tradeCalcData.slippage
-                              : 0.5,
+                              : defalutSlipage,
                           }}
                         />
                       </PopoverPure>
