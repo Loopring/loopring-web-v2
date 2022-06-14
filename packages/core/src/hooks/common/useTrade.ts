@@ -264,7 +264,7 @@ export function makeMarketReq({
       toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
         .div(input.toString())
         .toNumber(),
-      `isAtoB:${isAtoB}, ${
+      `isBuy:${isAtoB}, ${
         isAtoB ? input.toString() : calcTradeParams?.output
       } tradePrice: `,
       tradePrice.toString(),
