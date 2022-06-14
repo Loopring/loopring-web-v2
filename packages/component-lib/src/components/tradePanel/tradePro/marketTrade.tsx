@@ -9,6 +9,7 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
+  defalutSlipage,
   EmptyValueTag,
   getValuePrecisionThousand,
   IBData,
@@ -390,7 +391,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                                 ? tradeData.slippage
                                 : tradeCalcProData.slippage
                                 ? tradeCalcProData.slippage
-                                : 0.5,
+                                : defalutSlipage,
                             }}
                           />
                         </PopoverPure>

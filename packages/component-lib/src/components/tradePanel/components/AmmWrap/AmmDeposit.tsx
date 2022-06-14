@@ -6,6 +6,7 @@ import {
   LinkedIcon,
   SlippageTolerance,
   AccountStatus,
+  defalutSlipage,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import { AmmDepositWrapProps } from "./Interface";
@@ -315,7 +316,7 @@ export const AmmDepositWrap = <
                             ? ammData.slippage
                             : ammCalcData.slippage
                             ? ammCalcData.slippage
-                            : 0.5,
+                            : defalutSlipage,
                         }}
                       />
                     </PopoverPure>
