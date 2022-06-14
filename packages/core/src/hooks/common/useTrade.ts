@@ -264,7 +264,7 @@ export function makeMarketReq({
       toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
         .div(input.toString())
         .toNumber(),
-      `isAtoB:${isAtoB}, ${
+      `isBuy:${isAtoB}, ${
         isAtoB ? input.toString() : calcTradeParams?.output
       } tradePrice: `,
       tradePrice.toString(),
@@ -407,10 +407,6 @@ export function makeMarketReq({
 
       console.log("totalFee view value:", totalFee, tradeCost);
       console.log("tradeCost view value:", tradeCost);
-      // if() {
-      //
-      // }
-      // sdk.toBig().times()
     }
   } else {
     myError("undefined minOrderInfo");
