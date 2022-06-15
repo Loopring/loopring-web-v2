@@ -789,5 +789,5 @@ export default {
   labelLayerSwapUnderstand: "Acknowledge and understand the risk",
   labelIUnderStand: "I Understand",
   labelLayerSwapUnderstandDes:
-    "Layswap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their TOS here.",
+    "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
 };

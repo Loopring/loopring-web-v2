@@ -662,9 +662,17 @@ export const LayerswapNotice = withTranslation("common", {
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Trans i18nKey={"labelLayerSwapUnderstandDes"}>
-              Layswap is a 3rd party App service provider to help move tokens
+              LayerSwap is a 3rd party App service provider to help move tokens
               from exchange to Loopring L2 directly. If you have any concerns
-              regarding their service, please check out their TOS here.
+              regarding their service, please check out their
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={"https://www.layerswap.io/blog/guide/Terms_of_Service"}
+              >
+                TOS
+              </Link>
+              .
             </Trans>
           </DialogContentText>
           <MuiFormControlLabel
