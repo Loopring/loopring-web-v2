@@ -1039,7 +1039,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             depth,
             ammPoolSnapshot: ammPoolSnapshot,
             feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-            takerRate: takerRate ? takerRate.toString() : "0",
+            takerRate: "0",
             slipBips: slippage,
           });
 
@@ -1070,7 +1070,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             depth,
             ammPoolSnapshot: ammPoolSnapshot,
             feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-            takerRate: takerRate ? takerRate.toString() : "0",
+            takerRate: "0",
             slipBips: "10",
           });
 
@@ -1127,7 +1127,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             depth,
             ammPoolSnapshot: ammPoolSnapshot,
             feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-            takerRate: takerRate ? takerRate.toString() : "0",
+            takerRate: "0",
             slipBips: slippage,
           });
           const minAmt = BigNumber.max(
@@ -1165,7 +1165,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           depth,
           ammPoolSnapshot: ammPoolSnapshot,
           feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-          takerRate: takerRate ? takerRate.toString() : "0",
+          takerRate: "0",
           slipBips: slippage,
         });
 
@@ -1175,7 +1175,7 @@ export const useSwap = <C extends { [key: string]: any }>({
         ).div(isAtoB ? input.toString() : calcTradeParams?.output);
         const priceImpact = toBig(1)
           .minus(toBig(tradePrice).div(basePrice ?? 1))
-          .minus(0.005);
+          .minus(0.001);
         if (calcTradeParams && priceImpact.gte(0)) {
           calcTradeParams.priceImpact = priceImpact.toFixed(4, 1);
         } else {

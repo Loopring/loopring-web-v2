@@ -145,7 +145,7 @@ export function makeMarketReq({
       ? tokenAmtMap[buy].userOrderInfo
       : undefined;
 
-  const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0;
+  // const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0;
 
   const calcTradeParams = sdk.getOutputAmount({
     input,
@@ -158,7 +158,7 @@ export function makeMarketReq({
     depth: depth as sdk.DepthData,
     ammPoolSnapshot: ammPoolSnapshot,
     feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-    takerRate: takerRate ? takerRate.toString() : "0",
+    takerRate: "0",
     slipBips: slippage,
   });
 
@@ -203,7 +203,7 @@ export function makeMarketReq({
       depth: depth as sdk.DepthData,
       ammPoolSnapshot,
       feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-      takerRate: takerRate ? takerRate.toString() : "0",
+      takerRate: "0",
       slipBips: slippage,
     });
 
@@ -237,8 +237,8 @@ export function makeMarketReq({
       depth: depth as sdk.DepthData,
       ammPoolSnapshot,
       feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-      takerRate: takerRate ? takerRate.toString() : "0",
-      slipBips: "50",
+      takerRate: "0",
+      slipBips: "10",
     });
     myLog(
       "calcForPriceImpact input:",
@@ -252,7 +252,7 @@ export function makeMarketReq({
     ).div(isAtoB ? input.toString() : calcTradeParams?.output);
     const priceImpact = toBig(1)
       .minus(toBig(tradePrice).div(basePrice ?? 1))
-      .minus(0.005);
+      .minus(0.001);
     if (calcTradeParams && priceImpact.gte(0)) {
       calcTradeParams.priceImpact = priceImpact.toFixed(4, 1);
     } else {
@@ -308,7 +308,7 @@ export function makeMarketReq({
       depth: depth as sdk.DepthData,
       ammPoolSnapshot,
       feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-      takerRate: takerRate ? takerRate.toString() : "0",
+      takerRate: "0",
       slipBips: slippage,
     });
     const minAmt = BigNumber.max(
