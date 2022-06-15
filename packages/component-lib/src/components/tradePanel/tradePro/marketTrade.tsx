@@ -365,7 +365,7 @@ export const MarketTrade = withTranslation("common", { withRef: true })(
                             ? tradeData.slippage
                             : tradeCalcProData.slippage
                             ? tradeCalcProData.slippage
-                            : 0.5}
+                            : defalutSlipage}
                           %
                         </LinkActionStyle>
                         <PopoverPure
