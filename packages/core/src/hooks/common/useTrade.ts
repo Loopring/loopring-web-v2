@@ -159,7 +159,7 @@ export function makeMarketReq({
     ammPoolSnapshot: ammPoolSnapshot,
     feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
     takerRate: takerRate ? takerRate.toString() : "0",
-    slipBips: slippage as string,
+    slipBips: slippage,
   });
 
   let minOrderInfo,
@@ -188,7 +188,7 @@ export function makeMarketReq({
 
     const minInput = sdk
       .toBig(inputAmount?.minAmount ?? "")
-      .div(sdk.toBig(1).minus(sdk.toBig(slippage ?? defalutSlipage).div(10000)))
+      .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
       .div("1e" + buyTokenInfo.decimals)
       .toString();
     feeTakerRate = tokenMarketMap[minSymbol].userOrderInfo?.takerRate;
@@ -204,18 +204,16 @@ export function makeMarketReq({
       ammPoolSnapshot,
       feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
       takerRate: takerRate ? takerRate.toString() : "0",
-      slipBips: (slippage ?? defalutSlipage) as string,
+      slipBips: slippage,
     });
 
     console.log(
       `inputAmount ${minSymbol} minAmount:`,
       inputAmount?.minAmount,
-      `, Market minAmount: with slippage:${slippage ?? defalutSlipage}:`,
+      `, Market minAmount: with slippage:${slippage}:`,
       sdk
         .toBig(inputAmount?.minAmount ?? "")
-        .div(
-          sdk.toBig(1).minus(sdk.toBig(slippage ?? defalutSlipage).div(10000))
-        )
+        .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
         .toString(),
       `, dustToken:`,
       sell
@@ -311,7 +309,7 @@ export function makeMarketReq({
       ammPoolSnapshot,
       feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
       takerRate: takerRate ? takerRate.toString() : "0",
-      slipBips: slippage as string,
+      slipBips: slippage,
     });
     const minAmt = BigNumber.max(
       sellToken.orderAmounts.dust,
