@@ -29,6 +29,7 @@ import { GuardianPage } from "../pages/WalletPage";
 import { NFTPage } from "../pages/NFTPage";
 import { useGetAssets } from "../pages/Layer2Page/AssetPanel/hook";
 import { Footer } from "../layouts/footer";
+import { InvestPage } from "../pages/InvestPage";
 
 const ContentWrap = ({
   children,
@@ -268,31 +269,44 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NFTPage />
           </ContentWrap>
         </Route>
-        <Route exact path="/liquidity">
+        <Route exact path={["/liquidity", "/liquidity/pools/*"]}>
           <ContentWrap state={state}>
             <LiquidityPage />
           </ContentWrap>
         </Route>
-        <Route exact path="/liquidity/pools/*">
+        <Route
+          exact
+          path={[
+            "/invest",
+            "/invest/mybalance",
+            "/invest/balance",
+            "/invest/ammpool",
+          ]}
+        >
           <ContentWrap state={state}>
-            <LiquidityPage />
+            <InvestPage />
           </ContentWrap>
         </Route>
-        <Route exact path="/liquidity/pools">
-          <ContentWrap state={state}>
-            <LiquidityPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/liquidity/amm-mining">
-          <ContentWrap state={state}>
-            <LiquidityPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/liquidity/my-liquidity">
-          <ContentWrap state={state}>
-            <LiquidityPage />
-          </ContentWrap>
-        </Route>
+        {/*<Route exact path="/liquidity/pools/*">*/}
+        {/*  <ContentWrap state={state}>*/}
+        {/*    <LiquidityPage />*/}
+        {/*  </ContentWrap>*/}
+        {/*</Route>*/}
+        {/*<Route exact path="/liquidity/pools">*/}
+        {/*  <ContentWrap state={state}>*/}
+        {/*    <LiquidityPage />*/}
+        {/*  </ContentWrap>*/}
+        {/*</Route>*/}
+        {/*<Route exact path="/liquidity/amm-mining">*/}
+        {/*  <ContentWrap state={state}>*/}
+        {/*    <LiquidityPage />*/}
+        {/*  </ContentWrap>*/}
+        {/*</Route>*/}
+        {/*<Route exact path="/liquidity/my-liquidity">*/}
+        {/*  <ContentWrap state={state}>*/}
+        {/*    <LiquidityPage />*/}
+        {/*  </ContentWrap>*/}
+        {/*</Route>*/}
         <Route
           path={["/error/:messageKey", "/error"]}
           component={() => (
