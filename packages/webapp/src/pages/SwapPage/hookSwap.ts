@@ -32,6 +32,7 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  defalutSlipage,
   EmptyValueTag,
   fnType,
   getShowStr,
@@ -971,7 +972,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           .toBig(
             _tradeData.slippage && !isNaN(_tradeData.slippage)
               ? _tradeData.slippage
-              : "0.5"
+              : defalutSlipage
           )
           .times(100)
           .toString();

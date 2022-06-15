@@ -24,7 +24,7 @@ export default {
   swapMinReceive: "Minimum Received",
   swapMinReceiveS: "Min. Received",
   labelSwapMinReceiveTooltips:
-    "Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transation price, but the protocol can guarantee that the converted token is at least this amount. The received amount needs to deduct the fees from swapped amount",
+    "The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
   swapFee: "Estimate Fee",
   swapFeeS: "Est. Fee",
   labelSwapFeeTooltips:
@@ -710,7 +710,7 @@ export default {
   labelWrongNetworkGuide:
     "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
   labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
-  labelSendTOL2: "To Another Loopring L2 Account",
+  labelSendTOL2: "To another Loopring L2 account",
   labelSendToMyL1: "To my L1 account",
   labelSendToOtherL1: "To another L1 account \n(incl. exchange)",
   labelSendAssetHowto: "Where would you like to send your crypto to",
