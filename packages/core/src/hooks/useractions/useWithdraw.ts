@@ -1,6 +1,9 @@
 import React from "react";
 
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import {
   AccountStep,
   SwitchData,
@@ -82,7 +85,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       ({ fee }) => {
         updateWithdrawData({ ...withdrawValue, fee });
       },
-      [withdrawValue]
+      [updateWithdrawData, withdrawValue]
     ),
   });
 
@@ -344,7 +347,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               request,
               web3: connectProvides.usedWeb3,
               chainId: chainId === "unknown" ? 1 : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -557,8 +561,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       exchangeInfo,
       withdrawValue?.fee?.belong,
       withdrawValue?.fee?.feeRaw,
-      withdrawValue.belong,
-      info?.isToMyself,
+      withdrawValue?.fee?.__raw__?.feeRaw,
+      withdrawValue?.belong,
+      info,
       sureIsAllowAddress,
       setShowWithdraw,
       setShowAccount,

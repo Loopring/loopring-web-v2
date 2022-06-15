@@ -1,5 +1,8 @@
 import React from "react";
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import {
   AccountStep,
   SwitchData,
@@ -220,7 +223,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
               request,
               web3: connectProvides.usedWeb3,
               chainId: chainId === "unknown" ? 1 : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,

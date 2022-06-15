@@ -39,7 +39,10 @@ import {
   TOAST_TIME,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import { useHistory } from "react-router-dom";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
@@ -185,7 +188,8 @@ export function useNFTMint<
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,

@@ -374,14 +374,23 @@ export const useSwap = <C extends { [key: string]: any }>({
       }
     },
     [
-      account.readyState,
       pageTradeLite,
       tokenMap,
-      tradeData,
-      setIsSwapLoading,
+      exchangeInfo,
+      account.readyState,
+      account.accountId,
+      account.apiKey,
+      account.eddsaKey.sk,
+      tradeData?.sell?.belong,
+      tradeData?.buy?.belong,
+      __SUBMIT_LOCK_TIMER__,
       setToastOpen,
-      setTradeData,
+      t,
+      __DAYS__,
+      getAmount,
       market,
+      __TOAST_AUTO_CLOSE_TIMER__,
+      updatePageTradeLite,
     ]
   );
 
@@ -487,8 +496,8 @@ export const useSwap = <C extends { [key: string]: any }>({
     }
   }, [
     tokenMap,
-    tradeData?.sell?.belong,
-    tradeData?.buy?.belong,
+    tradeData?.sell.belong,
+    tradeData?.buy.belong,
     pageTradeLite,
     sellMinAmt,
     isSwapLoading,
@@ -523,7 +532,14 @@ export const useSwap = <C extends { [key: string]: any }>({
           break;
       }
     }
-  }, [pageTradeLite, allowTrade]);
+  }, [
+    pageTradeLite.calcTradeParams,
+    allowTrade?.order.enable,
+    order.enable,
+    setShowSupport,
+    setShowTradeIsFrozen,
+    swapFunc,
+  ]);
   const swapBtnClickArray = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [swapCalculatorCallback],
   });
