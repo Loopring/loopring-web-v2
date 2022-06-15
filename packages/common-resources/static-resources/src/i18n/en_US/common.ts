@@ -600,7 +600,7 @@ export default {
   labelL2toL1Success: "Sent {{value}} {{symbol}} to L1 was successful!",
   labelL2toL2InProgress: "Processing...",
   labelL2toL2Failed:
-    "Sent {{value}} {{symbol}} from my Loopring L2 to anther Loopring L2 failed!",
+    "Sent {{value}} {{symbol}} from my Loopring L2 to another Loopring L2 failed!",
   labelL2toL2Success: "Sent {{value}} {{symbol}} was successful!",
   labelUpdateAccountFailed: "Activate Loopring L2 has failed!",
   labelCreateAccountSubmit:
@@ -695,9 +695,9 @@ export default {
   labelAddAssetHowto: "How would you like to add Loopring L2 assets?",
   labelAddAssetTitleActive: "Add assets & Activate",
   labelFromMyL1: "From my L1 account",
-  labelFromOtherL1: "From anther L1 account",
+  labelFromOtherL1: "From another L1 account",
   labelBuyWithCard: "Buy with Card",
-  labelFromOtherL2: "From anther Loopring L2 account",
+  labelFromOtherL2: "From another Loopring L2 account",
   labelFromExchange: "Buy from Exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",
   labelConnectWithDapp: "Connect with Dapp",
