@@ -25,6 +25,7 @@ import {
   useToast,
   LoopringAPI,
   walletLayer2Service,
+  useAmount,
 } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
 import { useSubmitBtn } from "./hookBtn";
@@ -47,6 +48,7 @@ export const useMarket = <C extends { [key: string]: any }>({
   // marketTicker: MarketBlockProps<C> |undefined,
 } => {
   const { t } = useTranslation();
+  const { getAmount } = useAmount();
   const { tokenMap, marketArray, marketMap } = useTokenMap();
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
@@ -372,6 +374,10 @@ export const useMarket = <C extends { [key: string]: any }>({
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
+            if ((response as sdk.RESULT_INFO).code === 114002) {
+              getAmount({ market });
+              resetTradeData(pageTradePro.tradeType);
+            }
             setToastOpen({
               open: true,
               type: "error",
