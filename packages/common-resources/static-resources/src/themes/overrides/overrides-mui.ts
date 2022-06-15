@@ -975,7 +975,7 @@ export const MuiSnackbar = () => {
         minHeight: `${unit * 10}px`,
         justifyContent: "flex-end",
         alignItems: "flex-start",
-        pointerEvents: "none",
+        pointerEvents: "none" as any,
       },
     },
   };
