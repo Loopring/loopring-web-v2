@@ -190,7 +190,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </Container>
         </Route>
 
-        <Route exact path="/invest/:path">
+        <Route exact path="/investrule/:path">
           {query && query.has("noheader") ? (
             <></>
           ) : (
@@ -210,7 +210,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
 
         <Route
           exact
-          path={["/document", "/race-event", "/notification", "/invest"]}
+          path={["/document", "/race-event", "/notification", "/investrule"]}
         >
           {query && query.has("noheader") ? (
             <></>
