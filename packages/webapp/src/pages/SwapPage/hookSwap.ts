@@ -236,6 +236,9 @@ export const useSwap = <C extends { [key: string]: any }>({
               SDK_ERROR_MAP_TO_UI[
                 (response as sdk.RESULT_INFO)?.code ?? 700001
               ];
+            if ((response as sdk.RESULT_INFO).code === 114002) {
+              getAmount({ market });
+            }
             setToastOpen({
               open: true,
               type: "error",
@@ -460,10 +463,7 @@ export const useSwap = <C extends { [key: string]: any }>({
             const sellToken = tokenMap[sellSymbol];
             // //VolToNumberWithPrecision(sellMinAmt ?? '', sellSymbol as any)
             const minOrderSize = getValuePrecisionThousand(
-              sdk
-                .toBig(sellMinAmt ?? 0)
-                .times(1.1)
-                .div("1e" + sellToken.decimals),
+              sdk.toBig(sellMinAmt ?? 0).div("1e" + sellToken.decimals),
               sellToken.precision,
               sellToken.precision,
               sellToken.precision,
@@ -1126,7 +1126,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           const minAmt = BigNumber.max(
             sellToken.orderAmounts.dust,
             calcForMinCost?.amountS ?? 0
-          );
+          ).times(1.1);
           setSellMinAmt(minAmt.toString());
           console.log(
             `calcForMinAmt.amountS`,

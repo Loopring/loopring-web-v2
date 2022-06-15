@@ -159,7 +159,7 @@ export const AddAssetList = {
   },
   FromOtherL2: {
     key: "FromOtherL2",
-    svgIcon: "L1l2Icon",
+    svgIcon: "L2l2Icon",
     enableKey: null,
   },
   FromOtherL1: {
