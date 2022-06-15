@@ -1199,7 +1199,7 @@ export const useSwap = <C extends { [key: string]: any }>({
           toBig(tradePrice)
             .div(basePrice ?? 1)
             .toNumber(),
-          "priceImpact (1-tradePrice/basePrice) - 0.005",
+          "priceImpact (1-tradePrice/basePrice) - 0.001",
           priceImpact.toNumber(),
           "priceImpact view",
           calcTradeParams?.priceImpact
