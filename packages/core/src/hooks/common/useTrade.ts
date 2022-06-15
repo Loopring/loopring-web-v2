@@ -81,7 +81,7 @@ export function makeMarketReq({
   tokenMarketMap,
   depth,
   ammPoolSnapshot,
-  slippage = defalutSlipage.toString(),
+  slippage = (defalutSlipage * 100).toString(),
 }: ReqParams) {
   if (
     !tokenMap ||
