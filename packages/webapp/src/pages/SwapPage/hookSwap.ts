@@ -27,6 +27,7 @@ import {
   PriceLevel,
   BIGO,
   MAPFEEBIPS,
+  MarketCalcParams,
 } from "@loopring-web/core";
 
 import {
@@ -155,6 +156,42 @@ export const useSwap = <C extends { [key: string]: any }>({
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
 
+  const clearData = (
+    calcTradeParams: Partial<MarketCalcParams> | null | undefined
+  ) => {
+    setTradeData((state) => {
+      return {
+        ...state,
+        sell: { ...state?.sell, tradeValue: 0 },
+        buy: { ...state?.buy, tradeValue: 0 },
+      } as SwapTradeData<IBData<C>>;
+    });
+    setTradeCalcData((state) => {
+      return {
+        ...state,
+        minimumReceived: undefined,
+        priceImpact: undefined,
+        fee: undefined,
+      };
+    });
+    updatePageTradeLite({
+      market,
+      maxFeeBips: MAPFEEBIPS,
+      calcTradeParams: {
+        ...calcTradeParams,
+        // takerRate: undefined,
+        // feeBips: undefined,
+        output: undefined,
+        sellAmt: undefined,
+        buyAmt: undefined,
+        amountS: undefined,
+        amountBOut: undefined,
+        amountBOutWithoutFee: undefined,
+        amountBOutSlip: undefined,
+        priceImpact: undefined,
+      },
+    });
+  };
   /*** Btn related function ***/
   const swapFunc = React.useCallback(
     async (event: MouseEvent, isAgree?: boolean) => {
@@ -239,6 +276,7 @@ export const useSwap = <C extends { [key: string]: any }>({
               ];
             if ((response as sdk.RESULT_INFO).code === 114002) {
               getAmount({ market });
+              clearData(calcTradeParams);
             }
             setToastOpen({
               open: true,
@@ -320,40 +358,8 @@ export const useSwap = <C extends { [key: string]: any }>({
                   });
               }
             }
-
             walletLayer2Service.sendUserUpdate();
-            setTradeData((state) => {
-              return {
-                ...state,
-                sell: { ...state?.sell, tradeValue: 0 },
-                buy: { ...state?.buy, tradeValue: 0 },
-              } as SwapTradeData<IBData<C>>;
-            });
-            setTradeCalcData((state) => {
-              return {
-                ...state,
-                minimumReceived: undefined,
-                priceImpact: undefined,
-                fee: undefined,
-              };
-            });
-            updatePageTradeLite({
-              market,
-              maxFeeBips: MAPFEEBIPS,
-              calcTradeParams: {
-                ...calcTradeParams,
-                // takerRate: undefined,
-                // feeBips: undefined,
-                output: undefined,
-                sellAmt: undefined,
-                buyAmt: undefined,
-                amountS: undefined,
-                amountBOut: undefined,
-                amountBOutWithoutFee: undefined,
-                amountBOutSlip: undefined,
-                priceImpact: undefined,
-              },
-            });
+            clearData(calcTradeParams);
           }
         } catch (reason: any) {
           sdk.dumpError400(reason);
