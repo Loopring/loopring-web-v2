@@ -28,6 +28,11 @@ import {
   BIGO,
   MAPFEEBIPS,
   MarketCalcParams,
+  calcPriceByAmmTickMapDepth,
+  Limit,
+  marketInitCheck,
+  reCalcStoB,
+  swapDependAsync,
 } from "@loopring-web/core";
 
 import {
@@ -45,6 +50,7 @@ import {
   TradeCalcData,
   TradeFloat,
   WalletMap,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   RawDataTradeItem,
@@ -57,15 +63,6 @@ import {
   useToggle,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-
-import { myLog } from "@loopring-web/common-resources";
-import {
-  calcPriceByAmmTickMapDepth,
-  Limit,
-  marketInitCheck,
-  reCalcStoB,
-  swapDependAsync,
-} from "./help";
 import { useHistory } from "react-router-dom";
 
 import * as _ from "lodash";

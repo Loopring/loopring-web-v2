@@ -6,6 +6,7 @@ import {
   useAmmMap,
   useWalletLayer2,
   useWalletLayer1,
+  swapDependAsync,
 } from "@loopring-web/core";
 import React from "react";
 import {
@@ -33,7 +34,6 @@ import {
 } from "@loopring-web/core";
 
 import * as sdk from "@loopring-web/loopring-sdk";
-import { swapDependAsync } from "../SwapPage/help";
 
 const TRADE_ARRAY_MAX_LENGTH = 50;
 

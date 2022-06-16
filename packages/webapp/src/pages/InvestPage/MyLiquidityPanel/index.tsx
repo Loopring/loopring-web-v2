@@ -41,9 +41,9 @@ const MyLiquidity: any = withTranslation("common")(
 
     const JumpToLiqudity = React.useCallback(
       (pair, type) => {
-        if (history) {
-          history.push(`/liquidity/pools/coinPair/${pair}?type=${type}`);
-        }
+        // if (history) {
+        //   history.push(`/liquidity/pools/coinPair/${pair}?type=${type}`);
+        // }
       },
       [history]
     );

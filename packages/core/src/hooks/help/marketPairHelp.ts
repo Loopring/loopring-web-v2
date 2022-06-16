@@ -4,7 +4,7 @@ import {
   tickerReducer,
   LoopringAPI,
   volumeToCountAsBigNumber,
-} from "@loopring-web/core";
+} from "../../index";
 
 import {
   CustomError,
@@ -49,7 +49,7 @@ export const swapDependAsync = (
   });
 };
 
-export const calcPriceByAmmTickMapDepth = <C>({
+export const calcPriceByAmmTickMapDepth = <_C>({
   market,
   tradePair,
   dependencyData: { ticker, ammPoolSnapshot, depth },

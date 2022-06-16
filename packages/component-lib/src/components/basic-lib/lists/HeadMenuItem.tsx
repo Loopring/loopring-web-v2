@@ -28,7 +28,7 @@ import {
 } from "@loopring-web/common-resources";
 import Menu from "material-ui-popup-state/HoverMenu";
 import React, { ForwardedRef, RefAttributes } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 export const HeaderMenu = styled(Container)`
   display: flex;
   justify-content: space-between;
@@ -199,6 +199,10 @@ export const HeadMenuItem = React.memo(
       ref: ForwardedRef<any>
     ) => {
       const history = useHistory();
+      const match = useRouteMatch("/trade/:item/:pair");
+      //@ts-ignore
+      const pair = match?.params?.pair ?? "LRC-ETH";
+
       return (
         <StyledHeadMenuItem
           selected={selected}
@@ -211,8 +215,7 @@ export const HeadMenuItem = React.memo(
             handleListKeyDown
               ? handleListKeyDown
               : () => {
-                  // history.push(router.path )
-                  history.push(router?.path ?? "");
+                  history.push(router?.path.replace("${pair}", pair) ?? "");
                 }
           }
         >

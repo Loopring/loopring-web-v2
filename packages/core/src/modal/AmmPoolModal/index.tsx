@@ -15,7 +15,7 @@ import {
   PriceTag,
   RowConfig,
   SoursURL,
-} from "@loopring-web/common-resources";
+} from "../../common-resources";
 import {
   Avatar,
   Box,
@@ -25,12 +25,12 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { AmmPanelView } from "../AmmPanel";
+import { AmmPanelView } from "modal/AmmPoolModal/AmmPanel";
 import styled from "@emotion/styled/";
 import { useAmmPool, useCoinPair } from "./hooks";
-import { StylePaper } from "pages/styled";
+import { StylePaper } from "@loopring-web/webapp/src/pages/styled";
 import { Currency } from "@loopring-web/loopring-sdk";
-import { makeTickView, useAccount } from "@loopring-web/core";
+import { makeTickView, useAccount } from "index";
 
 //**************useAmmPool****** page code ************************//
 const BoxWrapperStyled = styled(Grid)`

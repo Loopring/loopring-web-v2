@@ -11,7 +11,12 @@ import {
   ClickAwayListener,
   Divider,
 } from "@mui/material";
-import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useHistory,
+  useLocation,
+  useRouteMatch,
+} from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   HeadMenuItem,
@@ -162,7 +167,7 @@ const ToolBarItem = ({
       default:
         return undefined;
     }
-  }, [props, buttonComponent, notification]);
+  }, [buttonComponent, props, notification, account]);
   return <TabItemPlus>{render}</TabItemPlus>;
 };
 
@@ -171,6 +176,7 @@ export const HideOnScroll = React.forwardRef(
     const trigger = useScrollTrigger({
       target: window ? window() : undefined,
     });
+
     return (
       <Slide
         {...rest}
@@ -235,6 +241,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const history = useHistory();
       const theme = useTheme();
       const location = useLocation();
+      const match = useRouteMatch("/trade/:item/:pair");
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
@@ -249,7 +256,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [notification]
+        [account, notification]
       );
       const memoized: any = React.useCallback(
         ({
@@ -488,7 +495,8 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             }
             return [...prev, item];
           }, [] as HeaderMenuItemInterface[]);
-
+        // @ts-ignore
+        const pair = match?.params?.pair ?? "LRC-ETH";
         return (
           <ToolBarStyled>
             <Box
@@ -513,14 +521,26 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     <NodeMenuItem
                       {...{ ...headerMenuLandingData[0], ...rest, t }}
                       handleListKeyDown={() =>
-                        history.push("" + headerMenuLandingData[0].router?.path)
+                        history.push(
+                          "" +
+                            headerMenuLandingData[0].router?.path.replace(
+                              "${pair}",
+                              pair
+                            )
+                        )
                       }
                     />
                   ) : (
                     <NodeMenuItem
                       {...{ ...headerMenuLandingData[1], ...rest, t }}
                       handleListKeyDown={() =>
-                        history.push("" + headerMenuLandingData[1].router?.path)
+                        history.push(
+                          "" +
+                            headerMenuLandingData[1].router?.path.replace(
+                              "${pair}",
+                              pair
+                            )
+                        )
                       }
                     />
                   )}
@@ -621,14 +641,15 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         );
       }, [
         headerMenuData,
+        match?.params,
         isLandPage,
         location.pathname,
+        rest,
         t,
-        isMaintaining,
         getMenuButtons,
         headerToolBarData,
         i18n,
-        rest,
+        isMaintaining,
         popupState,
         getDrawerChoices,
         history,

@@ -33,7 +33,7 @@ import {
   usePageAmmPool,
   getTimestampDaysLater,
   DAYS,
-} from "@loopring-web/core";
+} from "index";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import { useTranslation } from "react-i18next";
@@ -65,7 +65,6 @@ export const useAmmExit = ({
 }) => {
   const {
     ammExit: {
-      fee,
       fees,
       request,
       btnI18nKey,

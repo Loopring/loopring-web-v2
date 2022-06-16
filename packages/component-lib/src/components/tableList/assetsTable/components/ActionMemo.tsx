@@ -8,7 +8,7 @@ import {
   PopoverWrapProps,
 } from "../../../basic-lib";
 import { MoreIcon } from "@loopring-web/common-resources";
-import { LpTokenAction } from "../AssetsTable";
+// import { LpTokenAction } from "../AssetsTable";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
 import { useSettings } from "../../../../stores";
@@ -81,20 +81,22 @@ const ActionPopContent = React.memo(
           <>
             {allowTrade?.joinAmm?.enable && (
               <MenuItem
-                onClick={() =>
-                  history.push(
-                    `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
-                  )
+                onClick={
+                  () => undefined
+                  // history.push(
+                  //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
+                  // )
                 }
               >
                 <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
               </MenuItem>
             )}
             <MenuItem
-              onClick={() =>
-                history.push(
-                  `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
-                )
+              onClick={
+                () => undefined
+                // history.push(
+                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
+                // )
               }
             >
               <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
@@ -177,7 +179,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             <Grid item>
               <Button
                 variant={"text"}
-                size={"medium"}
+                size={"small"}
                 color={"primary"}
                 onClick={() => onReceive(tokenValue)}
               >
@@ -187,7 +189,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             <Grid item>
               <Button
                 variant={"text"}
-                size={"medium"}
+                size={"small"}
                 color={"primary"}
                 onClick={() => onSend(tokenValue, isLp)}
               >

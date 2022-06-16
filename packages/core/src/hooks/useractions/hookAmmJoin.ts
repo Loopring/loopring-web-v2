@@ -8,7 +8,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
-} from "@loopring-web/common-resources";
+} from "../../common-resources";
 import {
   TradeBtnStatus,
   useOpenModals,
@@ -28,17 +28,17 @@ import {
   LoopringAPI,
   store,
   useSystem,
-} from "@loopring-web/core";
+} from "index";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import { useTranslation } from "react-i18next";
 
-import { useWalletLayer2Socket, walletLayer2Service } from "@loopring-web/core";
-import { initSlippage, usePageAmmPool } from "@loopring-web/core";
+import { useWalletLayer2Socket, walletLayer2Service } from "index";
+import { initSlippage, usePageAmmPool } from "index";
 
 import _ from "lodash";
-import { getTimestampDaysLater } from "@loopring-web/core";
-import { DAYS } from "@loopring-web/core";
+import { getTimestampDaysLater } from "index";
+import { DAYS } from "index";
 
 // ----------calc hook -------
 

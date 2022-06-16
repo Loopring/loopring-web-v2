@@ -11,16 +11,16 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   WalletMap,
-} from "@loopring-web/common-resources";
-import { useAmmJoin } from "./hook_join";
-import { useAmmExit } from "./hook_exit";
-import { useAmmCommon } from "./hook_common";
+} from "../../common-resources";
+import { useAmmJoin } from "../../../hooks/useractions/hookAmmJoin";
+import { useAmmExit } from "../../../hooks/useractions/hookAmmExit";
+import { useAmmCommon } from "./hookAmmCommon";
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import { AmmPoolSnapshot, TickerData } from "@loopring-web/loopring-sdk";
-import { TOAST_TIME, initSlippage } from "@loopring-web/core";
+import { TOAST_TIME, initSlippage } from "index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import { store } from "@loopring-web/core";
+import { store } from "index";
 import { useDeepCompareEffect } from "react-use";
 
 const MyAmmLPAssets = withTranslation("common")(

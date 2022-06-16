@@ -66,7 +66,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelClassic",
       description: "labelClassicDescription",
     },
-    router: { path: "/trade/lite/LRC-ETH" },
+    router: { path: "/trade/lite/${pair}" },
   },
   {
     label: {
@@ -74,7 +74,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelAdvanced",
       description: "labelAdvancedDescription",
     },
-    router: { path: "/trade/pro/LRC-ETH" },
+    router: { path: "/trade/pro/${pair}" },
   },
 ];
 

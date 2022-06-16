@@ -254,7 +254,7 @@ export const MuiButton = ({
       },
       text: {
         color: colorBase.secondary,
-        fontSize: "1.4rem",
+        fontSize: "1.6rem",
         "&:hover": {
           color: colorBase.secondaryHover,
           backgroundColor: "inherit",
@@ -267,6 +267,9 @@ export const MuiButton = ({
         },
         "& .MuiButton-endIcon,& .MuiButton-startIcon": {
           color: colorBase.buttonIcon,
+        },
+        "&.MuiButton-sizeSmall": {
+          fontSize: "1.4rem",
         },
       },
       contained: {
