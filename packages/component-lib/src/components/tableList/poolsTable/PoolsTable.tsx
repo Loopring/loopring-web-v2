@@ -310,7 +310,10 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                   {...bindHover(popoverState)}
                   paddingTop={1}
                   component={"span"}
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    textDecoration: "underline dotted",
+                  }}
                 >
                   {typeof liquidityLpToken === "undefined"
                     ? EmptyValueTag
