@@ -5,20 +5,30 @@ export default {
   labelNoContent: "No Content",
   labelError: "Error",
   tokenEnter: "Enter Token",
-  tokenEnterPaymentToken: "From",
+  tokenEnterPaymentToken: "",
   tokenMax: "Available:",
   tokenNFTMaxMINT: "Max:",
   tokenHave: "Available:",
-  tokenEnterReceiveToken: "to",
+  tokenEnterReceiveToken: "",
   tokenSelectToken: "Select Token",
   tokenExchange: "exchange",
   tokenNotEnough: "Insufficient {{belong}} balance",
   tokenSearchCoin: "Search Token Symbol",
   swapTitle: "Swap",
   swapTolerance: "Slippage Tolerance",
+  labelSwapToleranceTooltips:
+    "Your trade will revert if the price changes unfavorably by more than this percentage.",
   swapPriceImpact: "Price Impact",
+  labelSwapPriceImpactTooltips:
+    "The difference between market price and estimated price due to trade size",
   swapMinReceive: "Minimum Received",
-  swapFee: "Fee",
+  swapMinReceiveS: "Min. Received",
+  labelSwapMinReceiveTooltips:
+    "The pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price; also the received amount needs to deduct the fees from converted amount. The protocol can guarantee that the received token is at least this amount.",
+  swapFee: "Estimate Fee",
+  swapFeeS: "Est. Fee",
+  labelSwapFeeTooltips:
+    "The trading fee is determined by your VIP level and the size of your trade. Small trades (below ~$100) incur a higher fee. Please review the fee before confirming.",
   swapBtn: "swap",
   goBack: "go back",
   resetTitle: "Reset Layer 2 Keypair",
@@ -176,6 +186,7 @@ export default {
   labelSuccessConnect: "Successfully Connected with {{providerName}}",
   labelSuccessConnectDescribe: "Congratulations, Connection Successful!",
   labelCopyClipBoard: "Copy",
+  labelCopyManually: "Manually Selected & Copy:",
   labelRejectOrError:
     "Request was rejected or some unknown error occurred, please retry",
   labelWalletConnectProcessDescribe2: "Please click ‘Approve’ on your device.",
@@ -236,6 +247,7 @@ export default {
   labelMiningReward: "Reward",
   labelCookiesAgree: "Agree",
   labelLimitMin: "Minimum of {{arg}}",
+  labelLimitMinUnknown: "Order too small",
   labelLimitMax: "Maximum of {{arg}}",
   labelOrderSmall: "Order too small (>= 100.5LRC)",
   labelEnterAmount: "Enter amount",
@@ -588,7 +600,7 @@ export default {
   labelL2toL1Success: "Sent {{value}} {{symbol}} to L1 was successful!",
   labelL2toL2InProgress: "Processing...",
   labelL2toL2Failed:
-    "Sent {{value}} {{symbol}} from my Loopring L2 to anther Loopring L2 failed!",
+    "Sent {{value}} {{symbol}} from my Loopring L2 to another Loopring L2 failed!",
   labelL2toL2Success: "Sent {{value}} {{symbol}} was successful!",
   labelUpdateAccountFailed: "Activate Loopring L2 has failed!",
   labelCreateAccountSubmit:
@@ -682,10 +694,10 @@ export default {
   labelSendAssetTitle: "Send Loopring L2 {{symbol}} assets",
   labelAddAssetHowto: "How would you like to add Loopring L2 assets?",
   labelAddAssetTitleActive: "Add assets & Activate",
-  labelFromMyL1: "From My L1",
-  labelFromOtherL1: "From Other L1",
+  labelFromMyL1: "From my L1 account",
+  labelFromOtherL1: "From another L1 account",
   labelBuyWithCard: "Buy with Card",
-  labelFromOtherL2: "From Other  Loopring L2",
+  labelFromOtherL2: "From another Loopring L2 account",
   labelFromExchange: "Buy from Exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",
   labelConnectWithDapp: "Connect with Dapp",
@@ -698,9 +710,9 @@ export default {
   labelWrongNetworkGuide:
     "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
   labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
-  labelSendTOL2: "To Another Loopring L2 Account",
+  labelSendTOL2: "To another Loopring L2 account",
   labelSendToMyL1: "To my L1 account",
-  labelSendToOtherL1: "To another L1 account",
+  labelSendToOtherL1: "To another L1 account \n(incl. exchange)",
   labelSendAssetHowto: "Where would you like to send your crypto to",
   labelL1toL2: "Add Loopring L2 assets From My L1",
   labelActivatedAccountChargeFeeList:
@@ -774,4 +786,8 @@ export default {
   labelMintFee: "Mint Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
+  labelLayerSwapUnderstand: "Acknowledge and understand the risk",
+  labelIUnderStand: "I Understand",
+  labelLayerSwapUnderstandDes:
+    "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
 };

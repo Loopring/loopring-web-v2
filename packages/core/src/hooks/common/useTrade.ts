@@ -2,7 +2,12 @@ import React from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import { myError, myLog } from "@loopring-web/common-resources";
+import {
+  defalutSlipage,
+  getValuePrecisionThousand,
+  myError,
+  myLog,
+} from "@loopring-web/common-resources";
 import {
   DAYS,
   getTimestampDaysLater,
@@ -15,6 +20,8 @@ import {
   useSystem,
 } from "../../index";
 import * as _ from "lodash";
+import BigNumber from "bignumber.js";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const DefaultFeeBips = "1";
 
@@ -46,6 +53,7 @@ export interface ReqParams {
 
   // key is ETH or USDT
   tokenAmtMap?: { [key: string]: sdk.TokenAmount };
+  tokenMarketMap?: { [key: string]: sdk.TokenAmount };
 
   ammPoolSnapshot?: sdk.AmmPoolSnapshot;
   depth?: sdk.DepthData;
@@ -70,10 +78,10 @@ export function makeMarketReq({
 
   feeBips,
   tokenAmtMap,
-
+  tokenMarketMap,
   depth,
   ammPoolSnapshot,
-  slippage,
+  slippage = (defalutSlipage * 100).toString(),
 }: ReqParams) {
   if (
     !tokenMap ||
@@ -137,13 +145,7 @@ export function makeMarketReq({
       ? tokenAmtMap[buy].userOrderInfo
       : undefined;
 
-  const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0;
-
-  // myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB, ' feeBips:', feeBips, ' takerRate:', takerRate)
-
-  const maxFeeBips = parseInt(
-    sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-  );
+  // const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0;
 
   const calcTradeParams = sdk.getOutputAmount({
     input,
@@ -156,60 +158,260 @@ export function makeMarketReq({
     depth: depth as sdk.DepthData,
     ammPoolSnapshot: ammPoolSnapshot,
     feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-    takerRate: takerRate ? takerRate.toString() : "0",
-    slipBips: slippage as string,
+    takerRate: "0",
+    slipBips: slippage,
   });
 
-  const minOrderInfo: (sdk.OrderInfo & OrderInfoPatch) | undefined =
-    _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo);
+  let minOrderInfo,
+    totalFeeRaw,
+    totalFee,
+    tradeCost,
+    feeTakerRate,
+    maxFeeBips: number = MAPFEEBIPS;
+  // const minOrderInfo: (sdk.OrderInfo & OrderInfoPatch) | undefined = tokenAmtMap
+  //   ? _.cloneDeep(
+  //       isBuy ? tokenAmtMap[buy].userOrderInfo : tokenAmtMap[sell].userOrderInfo
+  //     )
+  //   : undefined;
+  // const buyUserOrderInfo =
+  //   tokenAmtMap && tokenAmtMap[buy]
+  //     ? tokenAmtMap[buy].userOrderInfo
+  //     : undefined;
+  // const sellUserOrderInfo =
+  //   tokenAmtMap && tokenAmtMap[sell]
+  //     ? tokenAmtMap[sell].userOrderInfo
+  //     : undefined;
 
-  if (minOrderInfo) {
-    if (!isBuy) {
-      // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
-      const minInput = sdk
-        .toBig(buyUserOrderInfo?.minAmount ?? "")
-        .div("1e" + buyTokenInfo.decimals)
-        .toString();
+  if (tokenAmtMap && tokenAmtMap[sell] && tokenMarketMap && slippage) {
+    const minSymbol = buy;
+    const inputAmount = tokenAmtMap[minSymbol].userOrderInfo;
 
-      const calcTradeParamsForMin = sdk.getOutputAmount({
-        input: minInput,
-        sell,
-        buy,
-        isAtoB: false,
-        marketArr: marketArray,
-        tokenMap: tokenMap as any,
-        marketMap: marketMap as any,
-        depth: depth as sdk.DepthData,
-        ammPoolSnapshot,
-        feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-        takerRate: takerRate ? takerRate.toString() : "0",
-        slipBips: slippage as string,
-      });
+    const minInput = sdk
+      .toBig(inputAmount?.minAmount ?? "")
+      .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
+      .div("1e" + buyTokenInfo.decimals)
+      .toString();
+    feeTakerRate = tokenMarketMap[minSymbol].userOrderInfo?.takerRate;
+    const calcForMinAmt = sdk.getOutputAmount({
+      input: minInput,
+      sell,
+      buy,
+      isAtoB: false,
+      marketArr: marketArray,
+      tokenMap: tokenMap as any,
+      marketMap: marketMap as any,
+      depth: depth as sdk.DepthData,
+      ammPoolSnapshot,
+      feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+      takerRate: "0",
+      slipBips: slippage,
+    });
 
-      minOrderInfo.minAmount = calcTradeParamsForMin?.amountS as string;
-      minOrderInfo.minAmtShow = sdk
-        .toBig(minOrderInfo.minAmount)
-        .div("1e" + sellTokenInfo.decimals)
-        .toNumber();
-      minOrderInfo.symbol = sell;
-      minOrderInfo.minAmtCheck = sdk
-        .toBig(calcTradeParams?.sellAmt ?? "")
-        .gte(sdk.toBig(minOrderInfo.minAmtShow));
+    myLog(
+      `inputAmount ${minSymbol} minAmount:`,
+      inputAmount?.minAmount,
+      `, Market minAmount: with slippage:${slippage}:`,
+      sdk
+        .toBig(inputAmount?.minAmount ?? "")
+        .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
+        .toString(),
+      `, dustToken:`,
+      sell
+    );
+
+    /*** calc for Price Impact ****/
+    const sellMinAmtInfo = tokenMarketMap[sellTokenInfo.symbol];
+    const sellMinAmtInput = sdk
+      .toBig(sellMinAmtInfo.baseOrderInfo.minAmount)
+      .div("1e" + sellTokenInfo.decimals)
+      .toString();
+
+    const calcForPriceImpact = sdk.getOutputAmount({
+      input: sellMinAmtInput,
+      sell,
+      buy,
+      isAtoB: true,
+      marketArr: marketArray,
+      tokenMap: tokenMap as any,
+      marketMap: marketMap as any,
+      depth: depth as sdk.DepthData,
+      ammPoolSnapshot,
+      feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+      takerRate: "0",
+      slipBips: "10",
+    });
+    myLog(
+      "calcForPriceImpact input:",
+      sellMinAmtInput,
+      ", calcForPriceImpact basePrice: ",
+      toBig(calcForPriceImpact?.output).div(sellMinAmtInput).toNumber()
+    );
+    const basePrice = toBig(calcForPriceImpact?.output).div(sellMinAmtInput);
+    const tradePrice = toBig(
+      calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0
+    ).div(isAtoB ? input.toString() : calcTradeParams?.output);
+    const priceImpact = toBig(1)
+      .minus(toBig(tradePrice).div(basePrice ?? 1))
+      .minus(0.001);
+    if (calcTradeParams && priceImpact.gte(0)) {
+      calcTradeParams.priceImpact = priceImpact.toFixed(4, 1);
     } else {
-      minOrderInfo.minAmtShow = sdk
-        .toBig(minOrderInfo.minAmount)
-        .div("1e" + buyTokenInfo.decimals)
-        .toNumber();
-      minOrderInfo.symbol = buy;
-      minOrderInfo.minAmtCheck = sdk
-        .toBig(calcTradeParams?.buyAmt ?? "")
-        .gte(sdk.toBig(minOrderInfo.minAmtShow));
+      calcTradeParams && (calcTradeParams.priceImpact = "0");
+    }
+    myLog(
+      "calcTradeParams input:",
+      input.toString(),
+      ", calcTradeParams Price: ",
+      toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+        .div(input.toString())
+        .toNumber(),
+      `isBuy:${isAtoB}, ${
+        isAtoB ? input.toString() : calcTradeParams?.output
+      } tradePrice: `,
+      tradePrice.toString(),
+      "basePrice: ",
+      basePrice?.toString(),
+      "toBig(tradePrice).div(basePrice)",
+      toBig(tradePrice)
+        .div(basePrice ?? 1)
+        .toNumber(),
+      "priceImpact (1-tradePrice/basePrice) - 0.001",
+      priceImpact.toNumber(),
+      "priceImpact view",
+      calcTradeParams?.priceImpact
+    );
+
+    /**** calc for min Cost ****/
+    tradeCost = tokenMarketMap[buy].tradeCost;
+    let dustToken = tokenMap[buy];
+    let sellToken = tokenMap[sell];
+    let calcForMinCostInput = BigNumber.max(
+      sdk.toBig(tradeCost).times(2),
+      dustToken.orderAmounts.dust
+    );
+
+    myLog("dustToken.symbol:", dustToken.symbol);
+
+    const tradeCostInput = sdk
+      .toBig(calcForMinCostInput)
+      .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
+      .div("1e" + tokenMap[buy].decimals)
+      .toString();
+    const calcForMinCost = sdk.getOutputAmount({
+      input: tradeCostInput,
+      sell,
+      buy,
+      isAtoB: false,
+      marketArr: marketArray,
+      tokenMap: tokenMap as any,
+      marketMap: marketMap as any,
+      depth: depth as sdk.DepthData,
+      ammPoolSnapshot,
+      feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
+      takerRate: "0",
+      slipBips: slippage,
+    });
+    const minAmt = BigNumber.max(
+      sellToken.orderAmounts.dust,
+      calcForMinCost?.amountS ?? 0
+    );
+    minOrderInfo = {
+      minAmount: minAmt,
+      minAmtShow:
+        minAmt &&
+        sdk
+          .toBig(minAmt)
+          .times(1.1)
+          .div("1e" + tokenMap[sell].decimals)
+          .toNumber(),
+      symbol: sell,
+      minAmtCheck: sdk.toBig(calcTradeParams?.amountS ?? 0).gte(minAmt ?? 0),
+    };
+
+    if (
+      tradeCost &&
+      calcTradeParams &&
+      calcTradeParams.amountBOutSlip?.minReceived &&
+      feeTakerRate
+    ) {
+      let value = sdk
+        .toBig(calcTradeParams.amountBOutSlip?.minReceived)
+        .times(feeTakerRate)
+        .div(10000);
+
+      myLog(
+        "input Accounts",
+        calcTradeParams?.amountS,
+        "100 U calcForMinAmt:",
+        calcForMinAmt?.amountS
+      );
+
+      let validAmt = !!(
+        calcTradeParams?.amountS &&
+        calcForMinAmt?.amountS &&
+        sdk.toBig(calcTradeParams?.amountS).gte(calcForMinAmt.amountS)
+      );
+
+      myLog(
+        `${minSymbol} tradeCost:`,
+        tradeCost,
+        "useTakeRate Fee:",
+        value.toString(),
+        "calcForMinAmt?.amountS:",
+        calcForMinAmt?.amountS,
+        `is setup minTrade amount, ${calcForMinAmt?.amountS}:`,
+        validAmt
+      );
+
+      if (!validAmt) {
+        if (sdk.toBig(tradeCost).gte(value)) {
+          totalFeeRaw = sdk.toBig(tradeCost);
+        } else {
+          totalFeeRaw = value;
+        }
+        myLog(
+          "maxFeeBips update for tradeCost before value:",
+          maxFeeBips,
+          "totalFeeRaw",
+          totalFeeRaw.toString()
+        );
+        maxFeeBips = Math.ceil(
+          totalFeeRaw
+            .times(10000)
+            .div(calcTradeParams.amountBOutSlip?.minReceived)
+            .toNumber()
+        );
+        myLog("maxFeeBips update for tradeCost after value:", maxFeeBips);
+      } else {
+        totalFeeRaw = sdk.toBig(value);
+      }
+
+      totalFee = getValuePrecisionThousand(
+        totalFeeRaw.div("1e" + tokenMap[minSymbol].decimals).toString(),
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        false,
+        { floor: true }
+      );
+      tradeCost = getValuePrecisionThousand(
+        sdk
+          .toBig(tradeCost)
+          .div("1e" + tokenMap[minSymbol].decimals)
+          .toString(),
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        false,
+        { floor: true }
+      );
+
+      myLog("totalFee view value:", totalFee, tradeCost);
+      myLog("tradeCost view value:", tradeCost);
     }
   } else {
     myError("undefined minOrderInfo");
   }
-
-  // myLog('makeMarketReq calcTradeParams:', calcTradeParams)
 
   const tradeChannel = calcTradeParams
     ? calcTradeParams.exceedDepth
@@ -240,7 +442,7 @@ export function makeMarketReq({
     buyToken: buyTokenVol3,
     allOrNone: false,
     validUntil: getTimestampDaysLater(DAYS),
-    maxFeeBips: MAPFEEBIPS,
+    maxFeeBips,
     fillAmountBOrS: false, // amm only false
     orderType,
     tradeChannel,
@@ -256,6 +458,10 @@ export function makeMarketReq({
       maxFeeBips,
     },
     marketRequest,
+    totalFee,
+    maxFeeBips,
+    feeTakerRate,
+    tradeCost,
   };
 }
 
@@ -518,6 +724,9 @@ export function usePlaceOrder() {
             ? amountMap[ammMarket]
             : amountMap[market as string]
           : undefined;
+        const tokenMarketMap = amountMap
+          ? amountMap[market as string]
+          : undefined;
 
         const feeBips = ammMap[ammMarket]
           ? ammMap[ammMarket].__rawConfig__.feeBips
@@ -525,21 +734,23 @@ export function usePlaceOrder() {
         return {
           feeBips,
           tokenAmtMap,
+          tokenMarketMap,
         };
       } else {
         return {
           feeBips: undefined,
           tokenAmtMap: undefined,
+          tokenMarketMap: undefined,
         };
       }
     },
-    [marketArray]
+    [ammMap, marketArray]
   );
 
   // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
   const makeMarketReqInHook = React.useCallback(
     (params: ReqParams) => {
-      const { tokenAmtMap, feeBips } = getTokenAmtMap(params);
+      const { tokenAmtMap, tokenMarketMap, feeBips } = getTokenAmtMap(params);
 
       // myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
 
@@ -550,7 +761,8 @@ export function usePlaceOrder() {
           accountId: account.accountId,
           tokenMap,
           feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
-          tokenAmtMap: tokenAmtMap,
+          tokenAmtMap,
+          tokenMarketMap,
         };
         return makeMarketReq(fullParams);
       } else {
@@ -563,7 +775,7 @@ export function usePlaceOrder() {
         };
       }
     },
-    [account, tokenMap, marketArray, exchangeInfo]
+    [getTokenAmtMap, exchangeInfo, account.accountId, tokenMap]
   );
 
   // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
@@ -594,7 +806,7 @@ export function usePlaceOrder() {
         };
       }
     },
-    [account, tokenMap, marketArray, exchangeInfo]
+    [getTokenAmtMap, exchangeInfo, account.accountId, tokenMap]
   );
 
   return {

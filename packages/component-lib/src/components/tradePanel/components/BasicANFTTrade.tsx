@@ -165,7 +165,7 @@ export const NFTInput = React.memo(
                   minWidth={48}
                   borderRadius={1 / 2}
                   style={{ background: "var(--field-opacity)" }}
-                  display={"flex-inline"}
+                  display={"inline-flex"}
                   alignItems={"center"}
                   justifyContent={"center"}
                 >

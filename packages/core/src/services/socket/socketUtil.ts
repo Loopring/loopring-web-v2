@@ -2,7 +2,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { walletLayer2Service } from "./services/walletLayer2Service";
 import { tickerService } from "./services/tickerService";
 import { ammPoolService } from "./services/ammPoolService";
-import { CustomError, ErrorMap } from "@loopring-web/common-resources";
+import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
 import { LoopringAPI, SocketMap } from "../../index";
 import { bookService } from "./services/bookService";
 import { orderbookService } from "./services/orderbookService";
@@ -458,7 +458,6 @@ export class LoopringSocket {
           const { data } = e;
           // data.topic.topic;
           if (data === "ping" && self._socketCallbackMap) {
-            // console.log('Socket>>Socket ping:', e);
             self._socketCallbackMap?.pingpong?.fn.call(
               self,
               data,
@@ -468,7 +467,7 @@ export class LoopringSocket {
             const result = JSON.parse(data);
             const { topics, topic } = result;
             if (topics) {
-              // console.log('Socket>>Socket topics first return', topics);
+              myLog("Socket>>Socket topics first return", topics);
             }
             if (topic && topic.topic && self._socketCallbackMap) {
               const {
@@ -491,7 +490,7 @@ export class LoopringSocket {
             self._ws = undefined;
           }
           console.log(
-            "Socket>>Socket",
+            "Socket>>Socket::",
             "Socket is closed. Reconnect will be attempted in 1 second.",
             e.reason
           );

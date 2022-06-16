@@ -96,7 +96,7 @@ export const SpotView = withTranslation("common")(
       [market]
     );
 
-    const p = (getValuePrecisionThousand(
+    const priceImpact = (getValuePrecisionThousand(
       parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? "0") * 100,
       2
     ) + "%") as any;
@@ -220,11 +220,15 @@ export const SpotView = withTranslation("common")(
           autoHideDuration={TOAST_TIME}
           onClose={closeToastL}
         />
-        <AlertImpact handleClose={marketSubmit} open={alertOpen} value={p} />
+        <AlertImpact
+          handleClose={marketSubmit}
+          open={alertOpen}
+          value={priceImpact}
+        />
         <ConfirmImpact
           handleClose={marketSubmit}
           open={confirmOpen}
-          value={p}
+          value={priceImpact}
         />
         <AlertLimitPrice
           handleClose={limitSubmit}

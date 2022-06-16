@@ -45,7 +45,8 @@ fs.createReadStream(filePath)
   .on("end", () => {
     console.log(json);
     console.log("-----------");
-    console.log(`\"${path.basename(filePath).replace(/\..*/, "")}\":`);
+    // console.log(`\"${path.basename(filePath).replace(/\..*/, "")}\":`);
+    console.log(`\"${json.name}\":`);
     console.log(JSON.stringify(json));
     // csvTable.reduce((prev, item) => {
     //   Object.keys(item)[0];

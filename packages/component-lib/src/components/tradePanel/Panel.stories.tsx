@@ -443,6 +443,7 @@ const ModalPanelWrap = () => {
       setExportAccountToastOpen={{} as any}
       activeAccountProps={{} as any}
       nftMintAdvanceProps={{} as any}
+      account={{} as any}
     />
   );
 };

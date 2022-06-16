@@ -1,6 +1,7 @@
 import {
   AmmExitData,
   AmmJoinData,
+  defalutSlipage,
   IBData,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "@loopring-web/component-lib";
@@ -10,7 +11,7 @@ import { PageAmmExit, PageAmmJoin, PageAmmPoolStatus } from "./interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { BIGO } from "../../../defs";
 
-export const initSlippage = 0.5;
+export const initSlippage = defalutSlipage;
 
 const initJoinState: PageAmmJoin = {
   fees: {},

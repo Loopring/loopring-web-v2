@@ -1,7 +1,7 @@
 import { TGItemJSXInterface, ToggleButtonGroup } from "../../../basic-lib";
 import React from "react";
 import CurrencyInput from "react-currency-input-field";
-import { globalSetup } from "@loopring-web/common-resources";
+import { globalSetup, myLog } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { Box, FormHelperText, InputAdornment } from "@mui/material";
 import { TFunction } from "react-i18next";
@@ -96,9 +96,8 @@ export const SlippagePanel = ({
   handleChange: (newValue: any, customValue: any) => void;
 }) => {
   let { slippage: _slippage } = useSettings();
-  const [customSlippage, setCustomSlippage] = React.useState<
-    string | number | "N"
-  >(_slippage);
+  const [customSlippage, setCustomSlippage] =
+    React.useState<string | number | "N">(_slippage);
   const [showAlert, setShowAlert] = React.useState<boolean>(
     _slippage !== "N" && _slippage > 5
   );
@@ -148,13 +147,19 @@ export const SlippagePanel = ({
     event.preventDefault();
   };
   const handleOnBlur = React.useCallback(() => {
-    if (customSlippage !== "N" && value !== "N") {
-      handleChange(
-        value,
-        customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1
-          ? customSlippage
-          : undefined
-      );
+    try {
+      if (customSlippage !== "N" && value !== "N") {
+        handleChange(
+          value,
+          customSlippage !== 0.1 &&
+            customSlippage !== 0.5 &&
+            customSlippage !== 1
+            ? customSlippage
+            : undefined
+        );
+      }
+    } catch (e) {
+      myLog("ignore handleOnBlur", e);
     }
   }, [value, customSlippage]);
 
@@ -182,8 +187,12 @@ export const SlippagePanel = ({
                   groupSeparator=","
                   placeholder={rest.t("labelCustomer")}
                   onChange={_handleChange as any}
-                  onMouseOut={handleOnBlur}
-                  onBlur={handleOnBlur}
+                  onMouseOut={(_e) => {
+                    handleOnBlur();
+                  }}
+                  onBlur={() => {
+                    handleOnBlur();
+                  }}
                   defaultValue={customSlippage === "N" ? "" : customSlippage}
                   maxLength={5}
                   autoComplete={"off"}

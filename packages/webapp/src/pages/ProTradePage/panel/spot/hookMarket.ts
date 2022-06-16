@@ -1,5 +1,6 @@
 import {
   AccountStatus,
+  defalutSlipage,
   getValuePrecisionThousand,
   IBData,
   MarketType,
@@ -24,18 +25,19 @@ import {
   useToast,
   LoopringAPI,
   walletLayer2Service,
+  useAmount,
 } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
 import { useSubmitBtn } from "./hookBtn";
-// import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import {
   getPriceImpactInfo,
   PriceLevel,
   usePlaceOrder,
+  store,
+  BIGO,
 } from "@loopring-web/core";
-import { store } from "@loopring-web/core";
 import * as _ from "lodash";
-import { BIGO } from "@loopring-web/core";
+import { toBig } from "@loopring-web/loopring-sdk";
 
 export const useMarket = <C extends { [key: string]: any }>({
   market,
@@ -46,6 +48,7 @@ export const useMarket = <C extends { [key: string]: any }>({
   // marketTicker: MarketBlockProps<C> |undefined,
 } => {
   const { t } = useTranslation();
+  const { getAmount } = useAmount();
   const { tokenMap, marketArray, marketMap } = useTokenMap();
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
@@ -85,7 +88,7 @@ export const useMarket = <C extends { [key: string]: any }>({
         belong: quoteSymbol,
         balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
       } as IBData<any>,
-      slippage: slippage && slippage !== "N" ? slippage : 0.5,
+      slippage: slippage && slippage !== "N" ? slippage : defalutSlipage,
       type: TradeProType.buy,
     }
   );
@@ -156,7 +159,7 @@ export const useMarket = <C extends { [key: string]: any }>({
       // setMarketTradeData(tradeData)
 
       let slippage = sdk
-        .toBig(tradeData.slippage ? tradeData.slippage : "0.5")
+        .toBig(tradeData.slippage ? tradeData.slippage : defalutSlipage)
         .times(100)
         .toString();
 
@@ -175,6 +178,10 @@ export const useMarket = <C extends { [key: string]: any }>({
         sellUserOrderInfo,
         buyUserOrderInfo,
         minOrderInfo,
+        totalFee,
+        maxFeeBips,
+        feeTakerRate,
+        tradeCost,
       } = makeMarketReqInHook({
         isBuy: tradeData.type === "buy",
         base: tradeData.base.belong,
@@ -193,35 +200,38 @@ export const useMarket = <C extends { [key: string]: any }>({
         tradeData.type === TradeProType.buy
           ? tradeData.base.belong
           : tradeData.quote.belong;
+      const minimumReceived = getValuePrecisionThousand(
+        toBig(calcTradeParams?.amountBOutSlip?.minReceivedVal ?? 0)
+          .minus(totalFee)
+          .toString(),
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        tokenMap[minSymbol].precision,
+        false,
+        { floor: true }
+      );
       const priceImpactObj = getPriceImpactInfo(calcTradeParams);
       updatePageTradePro({
         market,
         sellUserOrderInfo,
         buyUserOrderInfo,
-        minOrderInfo,
+        minOrderInfo: minOrderInfo as any,
         request: marketRequest as any,
         calcTradeParams: calcTradeParams,
         tradeCalcProData: {
           ...pageTradePro.tradeCalcProData,
-          fee:
-            calcTradeParams && calcTradeParams.maxFeeBips
-              ? calcTradeParams.maxFeeBips.toString()
-              : undefined,
-          minimumReceived:
-            calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal
-              ? getValuePrecisionThousand(
-                  calcTradeParams.amountBOutSlip?.minReceivedVal,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  tokenMap[minSymbol].precision,
-                  true,
-                  { floor: true }
-                )
-              : undefined,
+          fee: totalFee,
+          minimumReceived: !minimumReceived?.toString().startsWith("-")
+            ? minimumReceived
+            : undefined,
           priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
           priceImpactColor: priceImpactObj?.priceImpactColor,
         },
         lastStepAt,
+        totalFee,
+        maxFeeBips,
+        feeTakerRate,
+        tradeCost,
       });
 
       setMarketTradeData((state) => {
@@ -298,6 +308,10 @@ export const useMarket = <C extends { [key: string]: any }>({
           minimumReceived: undefined,
           fee: undefined,
         },
+        totalFee: undefined,
+        maxFeeBips: undefined,
+        feeTakerRate: undefined,
+        tradeCost: undefined,
       });
     },
     [baseSymbol, quoteSymbol]
@@ -360,6 +374,10 @@ export const useMarket = <C extends { [key: string]: any }>({
             (response as sdk.RESULT_INFO).code ||
             (response as sdk.RESULT_INFO).message
           ) {
+            if ((response as sdk.RESULT_INFO).code === 114002) {
+              getAmount({ market });
+              resetTradeData(pageTradePro.tradeType);
+            }
             setToastOpen({
               open: true,
               type: "error",
@@ -494,25 +512,29 @@ export const useMarket = <C extends { [key: string]: any }>({
           label: "labelEnterAmount",
         };
       } else if (!minOrderInfo?.minAmtCheck) {
-        // const symbol: string = marketTradeData[ 'base' ].belong;
-        // const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
         let minOrderSize = "Error";
-        if (minOrderInfo?.symbol) {
-          const basePrecision = tokenMap[minOrderInfo.symbol].precisionForOrder;
+        if (minOrderInfo && minOrderInfo?.symbol) {
+          const symbol = minOrderInfo.symbol;
+          const minToken = tokenMap[symbol];
           const showValue = getValuePrecisionThousand(
             minOrderInfo?.minAmtShow,
-            undefined,
-            undefined,
-            basePrecision,
-            true,
-            { isAbbreviate: true }
+            minToken.precision,
+            minToken.precision,
+            minToken.precision,
+            false,
+            { isAbbreviate: true, floor: false }
           );
           minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
+          return {
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+            label: `labelLimitMin| ${minOrderSize}`,
+          };
+        } else {
+          return {
+            tradeBtnStatus: TradeBtnStatus.DISABLED,
+            label: ``,
+          };
         }
-        return {
-          tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: `labelLimitMin| ${minOrderSize}`,
-        };
       } else if (
         sdk
           .toBig(

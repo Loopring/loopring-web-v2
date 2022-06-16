@@ -213,10 +213,10 @@ export const IconColumn = React.memo(
                   -2
                 );
                 const day = ("0" + date.getDate().toString()).slice(-2);
-                const current_event_date = `${year}-${month}-${day}`;
+                const current_event_date = `${year}-${month}`;
 
                 history.push(
-                  `/race-event/${current_event_date}?pair=${pair}&type=${
+                  `/race-event/${current_event_date}?selected=${pair}&type=${
                     activityInProgressRules[`AMM-${pair}`].ruleType[0]
                   }&owner=${account?.accAddress}`
                 );
