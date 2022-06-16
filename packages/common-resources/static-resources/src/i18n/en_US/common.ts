@@ -142,11 +142,11 @@ export default {
   labelMe: "My Liquidity",
   labelMyTrade: "My Trades",
   labelRecent: "Market Trades",
-  labelMyAmm: "My AMM Liquidity",
+  labelMyAmm: "AMM Pool",
   labelMyAmmRecord: "My AMM Records",
   labelCurrentActivities: "Current Activities",
   labelPastActivities: "Past Activities",
-  labelTotalPositionValue: "Total Position Value",
+  labelTotalPositionValue: "Total Invest",
   labelFeeRewards: "Fee Rewards",
   labelMiningRewards: "Mining Rewards",
   labelLiquidityValue: "Liquidity Value",
@@ -790,4 +790,6 @@ export default {
   labelIUnderStand: "I Understand",
   labelLayerSwapUnderstandDes:
     "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
+  labelInvestAmmTitle: "AMM Pool",
+  labelInvestBalanceTitle: "Balance",
 };

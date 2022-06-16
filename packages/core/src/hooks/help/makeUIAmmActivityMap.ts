@@ -438,12 +438,12 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
   ammUserRewardMap: LoopringMap<AmmUserReward> | undefined,
   ammDetail: AmmDetailStore<C>
 ) => {
-  const { coinMap, idIndex, tokenMap } = store.getState().tokenMap;
+  const { coinMap, idIndex } = store.getState().tokenMap;
   const { fiatPrices, forex } = store.getState().system;
   const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
   let _myAmm = {};
   let balanceA, balanceB, balanceDollar, balanceYuan;
-  if (_walletMap && _walletMap["LP-" + coinA + "-" + coinB] && forex) {
+  if (_walletMap && _walletMap["LP-" + coinA + "-" + coinB]) {
     // @ts-ignore
     const totalLpAmount = _walletMap["LP-" + coinA + "-" + coinB].count || 0;
     // const ratio = new BigNumber(_walletMap[ 'LP-' + coinA + '-' + coinB ].count).div(ammDetail.totalLPToken);
@@ -474,6 +474,7 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
     ammUserRewardMap &&
     ammUserRewardMap["AMM-" + market] &&
     ammDetail &&
+    fiatPrices &&
     forex
   ) {
     const ammUserReward: AmmUserReward = ammUserRewardMap["AMM-" + market];
@@ -488,14 +489,7 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
       rewardDollar,
       rewardYuan;
 
-    if (
-      coinMap &&
-      tokenMap &&
-      idIndex &&
-      forex &&
-      fiatPrices &&
-      ammUserReward
-    ) {
+    if (ammUserReward) {
       rewardToken = ammUserReward.currentRewards[0]
         ? idIndex[ammUserReward.currentRewards[0].tokenId as number]
         : undefined;
@@ -554,7 +548,6 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
         },
       };
     }
-    return _myAmm as MyAmmLP<C>;
   }
   return {
     feeA: undefined,
@@ -567,5 +560,6 @@ export const makeMyAmmWithStat = <C extends { [key: string]: any }>(
     balanceB: undefined,
     balanceYuan: undefined,
     balanceDollar: undefined,
+    ..._myAmm,
   };
 };

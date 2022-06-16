@@ -5,7 +5,6 @@ import Header from "layouts/header";
 import { QuotePage } from "pages/QuotePage";
 import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
-import { LiquidityPage } from "pages/LiquidityPage";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
@@ -267,11 +266,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path={["/nft", "/nft/*"]}>
           <ContentWrap state={state}>
             <NFTPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={["/liquidity", "/liquidity/pools/*"]}>
-          <ContentWrap state={state}>
-            <LiquidityPage />
           </ContentWrap>
         </Route>
         <Route

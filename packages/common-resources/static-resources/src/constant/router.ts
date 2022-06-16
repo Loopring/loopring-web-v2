@@ -1,7 +1,6 @@
 import {
   AssetsIcon,
   L2HistoryIcon,
-  // L2MyLiquidityIcon,
   L2OrderIcon,
   RecordIcon,
   // NFTIcon,
@@ -112,14 +111,6 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     },
     status: HeaderMenuTabStatus.default,
     child: layer2ItemData,
-  },
-  {
-    label: {
-      id: "Liquidity",
-      i18nKey: "labelLiquidity",
-    },
-    router: { path: "/liquidity" },
-    status: HeaderMenuTabStatus.default,
   },
   {
     label: {

@@ -2,10 +2,16 @@ import React from "react";
 import {
   setShowAccount,
   useOpenModals,
+  useSettings,
   WalletConnectStep,
 } from "@loopring-web/component-lib";
 import { ErrorType, ProcessingType } from "@loopring-web/web3-provider";
-import { myLog, SagaStatus } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  myLog,
+  SagaStatus,
+  SoursURL,
+} from "@loopring-web/common-resources";
 import { ChainId, RESULT_INFO, sleep } from "@loopring-web/loopring-sdk";
 
 import { accountReducer, useAccount } from "./stores/account";
@@ -14,9 +20,11 @@ import { networkUpdate } from "./services/account/networkUpdate";
 import { checkAccount } from "./services/account/checkAccount";
 import { REFRESH_RATE } from "./defs";
 import { resetLayer12Data } from "./services/account/resetAccount";
-import { store } from "./index";
+import { store, WalletConnectL2Btn } from "./index";
 import { useModalData } from "./stores/router";
 import { useConnectHook } from "./services/connect/useConnectHook";
+import { useTranslation } from "react-i18next";
+import { Box, Typography } from "@mui/material";
 
 export function useConnect(_props: { state: keyof typeof SagaStatus }) {
   const {
@@ -170,3 +178,159 @@ export function useConnect(_props: { state: keyof typeof SagaStatus }) {
     handleConnect,
   });
 }
+
+export const ViewAccountTemplate = React.memo(
+  ({ activeViewTemplate }: { activeViewTemplate: JSX.Element }) => {
+    const { account } = useAccount();
+    const { t } = useTranslation(["common", "layout"]);
+    const { isMobile } = useSettings();
+
+    // const { assetTitleProps, assetTitleMobileExtendProps } = useGetAssets();
+    const viewTemplate = React.useMemo(() => {
+      switch (account.readyState) {
+        case AccountStatus.UN_CONNECT:
+          return (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
+                {t("describeTitleConnectToWallet")}
+              </Typography>
+              <WalletConnectL2Btn />
+            </Box>
+          );
+          break;
+        case AccountStatus.LOCKED:
+          return (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
+                {t("describeTitleLocked")}
+              </Typography>
+              <WalletConnectL2Btn />
+            </Box>
+          );
+          break;
+        case AccountStatus.NO_ACCOUNT:
+          return (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                whiteSpace={"pre-line"}
+                textAlign={"center"}
+              >
+                {t("describeTitleNoAccount")}
+              </Typography>
+              <WalletConnectL2Btn />
+            </Box>
+          );
+          break;
+        case AccountStatus.NOT_ACTIVE:
+          return (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
+                {t("describeTitleNotActive")}
+              </Typography>
+              <WalletConnectL2Btn />
+            </Box>
+          );
+          break;
+        case AccountStatus.DEPOSITING:
+          return (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <img
+                className="loading-gif"
+                alt={"loading"}
+                width="60"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+              {/*<LoadingIcon color={"primary"} style={{ width: 60, height: 60 }} />*/}
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
+                {t("describeTitleOpenAccounting")}
+              </Typography>
+              {/*<WalletConnectL2Btn/>*/}
+            </Box>
+          );
+          break;
+        case AccountStatus.ERROR_NETWORK:
+          return (
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              flexDirection={"column"}
+              alignItems={"center"}
+            >
+              <Typography
+                marginY={3}
+                variant={isMobile ? "h4" : "h1"}
+                textAlign={"center"}
+              >
+                {t("describeTitleOnErrorNetwork", {
+                  connectName: account.connectName,
+                })}
+              </Typography>
+              {/*<WalletConnectL2Btn/>*/}
+            </Box>
+          );
+          break;
+        case AccountStatus.ACTIVATED:
+          return activeViewTemplate;
+        default:
+          break;
+      }
+    }, [
+      account.readyState,
+      account.connectName,
+      isMobile,
+      t,
+      activeViewTemplate,
+    ]);
+
+    return <>{viewTemplate}</>;
+  }
+);

@@ -116,10 +116,14 @@ const MyLiquidity: any = withTranslation("common")(
       ? {
           title: "body1",
           count: "h5",
+          title2: "body1",
+          count2: "h5",
         }
       : {
-          title: "h5",
-          count: "h3",
+          title: "body1",
+          count: "h1",
+          title2: "body1",
+          count2: "h5",
         };
     return (
       <>
@@ -131,13 +135,9 @@ const MyLiquidity: any = withTranslation("common")(
           margin={0}
           display={"flex"}
         >
-          <Grid container spacing={2}>
-            <Grid item display={"flex"} flexDirection={"column"} sm={6}>
-              <Typography
-                variant={fontSize.title}
-                color={"textSecondary"}
-                fontFamily={"Roboto"}
-              >
+          <Grid container spacing={2} alignItems={"flex-end"}>
+            <Grid item display={"flex"} flexDirection={"column"} sm={6} md={5}>
+              <Typography variant={fontSize.title} color={"textSecondary"}>
                 {t("labelTotalPositionValue")}
               </Typography>
               <Typography
@@ -152,12 +152,12 @@ const MyLiquidity: any = withTranslation("common")(
                   : renderPositionValueYuan}
               </Typography>
             </Grid>
-            <Grid item marginRight={6}>
-              <Divider orientation={"vertical"} />
-            </Grid>
-            <Grid item display={"flex"} flexDirection={"column"} sm={3}>
+            {/*<Grid item marginRight={6}>*/}
+            {/*  <Divider orientation={"vertical"} />*/}
+            {/*</Grid>*/}
+            <Grid item display={"flex"} flexDirection={"column"} sm={3} md={4}>
               <Typography
-                variant={fontSize.title}
+                variant={fontSize.title2}
                 component={"h3"}
                 fontFamily={"Roboto"}
                 color={"textSecondary"}
@@ -165,7 +165,7 @@ const MyLiquidity: any = withTranslation("common")(
                 {t("labelFeeRewards")}
               </Typography>
               <Typography
-                variant={fontSize.count}
+                variant={fontSize.count2}
                 marginTop={1}
                 fontFamily={"Roboto"}
               >

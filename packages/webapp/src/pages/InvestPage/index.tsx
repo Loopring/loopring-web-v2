@@ -2,24 +2,14 @@ import { useRouteMatch } from "react-router-dom";
 
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 
-import { Trans, useTranslation, withTranslation } from "react-i18next";
+import { useTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import {
-  DepositPanelType,
-  DepositTitle,
-  LimitTrade,
-  MarketTrade,
-  PopoverPure,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { useSettings } from "@loopring-web/component-lib";
 import React from "react";
-import { useAccount } from "@loopring-web/core";
-import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
-import { HelpIcon } from "@loopring-web/common-resources";
-import { bindHover } from "material-ui-popup-state";
-import { TabIndex } from "../ProTradePage/panel";
+import { useAccount, ViewAccountTemplate } from "@loopring-web/core";
+import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
-import { PoolsPanel } from "../LiquidityPage/PoolsPanel";
+import { PoolsPanel } from "./PoolsPanel";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -126,7 +116,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   });
 
   return (
-    <Box flex={1} flexDirection={"column"}>
+    <Box flex={1} flexDirection={"column"} display={"flex"}>
       <Tabs
         variant={"standard"}
         value={tabIndex}
@@ -135,8 +125,17 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
         <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
       </Tabs>
-      <Box flex={1} component={"section"} marginTop={1}>
-        {tabIndex === InvestType.MyBalance && <MyLiquidityPanel />}
+      <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
+        {tabIndex === InvestType.MyBalance && (
+          <Box
+            flex={1}
+            alignItems={"stretch"}
+            display={"flex"}
+            flexDirection={"column"}
+          >
+            <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
+          </Box>
+        )}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
       </Box>
     </Box>

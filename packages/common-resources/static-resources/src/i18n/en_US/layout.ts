@@ -88,4 +88,5 @@ export default {
   labelNFT: "L2 NFT",
   labelMyAssetsNFT: "My NFT",
   labelTransactionNFT: "Transactions",
+  labelInvest: "Invest",
 };
