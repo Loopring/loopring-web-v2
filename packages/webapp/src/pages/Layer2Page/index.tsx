@@ -93,7 +93,13 @@ export const Layer2Page = () => {
         </Box>
       </>
     ),
-    []
+    [
+      assetTitleMobileExtendProps,
+      assetTitleProps,
+      isMobile,
+      layer2Router,
+      selected,
+    ]
   );
   return <ViewAccountTemplate activeViewTemplate={activeView} />;
   // <>{viewTemplate}</>;

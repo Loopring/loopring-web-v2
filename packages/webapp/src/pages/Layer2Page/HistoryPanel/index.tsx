@@ -19,11 +19,14 @@ import {
   useAmmMap,
 } from "@loopring-web/core";
 import { RowConfig } from "@loopring-web/common-resources";
+import { useRouteMatch } from "react-router-dom";
 
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
+    let match: any = useRouteMatch("/layer2/:item/:tab");
+    const tab = match?.params.tab ?? "transactions";
     const [pageSize, setPageSize] = React.useState(0);
-    const [currentTab, setCurrentTab] = React.useState("transactions");
+    const [currentTab, setCurrentTab] = React.useState(tab);
     const { toastOpen, setToastOpen, closeToast } = useToast();
     const { totalCoinMap, tokenMap, marketArray } = useTokenMap();
     const { ammMap } = useAmmMap();

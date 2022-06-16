@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Grid, Typography } from "@mui/material";
+import { Grid, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { MyPoolTable, useSettings } from "@loopring-web/component-lib";
@@ -18,6 +18,7 @@ import {
 import { useOverview } from "./hook";
 import { useSystem, useAmmActivityMap, useAccount } from "@loopring-web/core";
 import { TableWrapStyled } from "pages/styled";
+import { useTheme } from "@emotion/react";
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
@@ -111,6 +112,7 @@ const MyLiquidity: any = withTranslation("common")(
           floor: true,
         }
       );
+    const theme = useTheme();
     const { isMobile } = useSettings();
     const fontSize: any = isMobile
       ? {
@@ -134,6 +136,7 @@ const MyLiquidity: any = withTranslation("common")(
           paddingX={4}
           margin={0}
           display={"flex"}
+          position={"relative"}
         >
           <Grid container spacing={2} alignItems={"flex-end"}>
             <Grid item display={"flex"} flexDirection={"column"} sm={6} md={5}>
@@ -177,6 +180,19 @@ const MyLiquidity: any = withTranslation("common")(
               </Typography>
             </Grid>
           </Grid>
+          <Link
+            position={"absolute"}
+            variant={"body1"}
+            sx={{
+              right: 2 * theme.unit,
+              top: 2 * theme.unit,
+            }}
+            target="_self"
+            rel="noopener noreferrer"
+            href={"./#/layer2/history/ammRecords"}
+          >
+            {t("labelTransactions")}
+          </Link>
         </StyleWrapper>
         <TableWrapStyled
           className={"table-divide-short MuiPaper-elevation2"}
