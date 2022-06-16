@@ -11,17 +11,21 @@ export type Method<R> = {
   allowTrade?: any;
 };
 
-export type MyPoolTableProps<T, R = MyPoolRow<T>> = {
+export type MyPoolTableProps<R> = {
   rawData: R[];
+  account: Account;
+  title: string | (() => JSX.Element) | JSX.Element;
   pagination?: {
     pageSize: number;
   };
   allowTrade?: any;
   page?: number;
-  account: Account;
-  handlePageChange: (page: number) => void;
+  tableHeight?: number;
   showFilter?: boolean;
+  hideSmallBalances?: boolean;
   wait?: number;
   showloading?: boolean;
   currency?: Currency;
+  handlePageChange: (page: number) => void;
+  setHideSmallBalances: (value: boolean) => void;
 } & Method<R>;

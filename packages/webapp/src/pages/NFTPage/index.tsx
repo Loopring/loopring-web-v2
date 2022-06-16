@@ -14,11 +14,7 @@ import {
   subMenuNFT,
 } from "@loopring-web/common-resources";
 import React from "react";
-import {
-  useAccount,
-  ViewAccountTemplate,
-  WalletConnectL2Btn,
-} from "@loopring-web/core";
+import { useAccount, ViewAccountTemplate } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTPanel } from "./MintNFTPanel";

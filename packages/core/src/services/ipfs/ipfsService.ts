@@ -27,7 +27,7 @@ export class IpfsProvides {
         url: `${IPFS_LOOPRING_URL}`,
       });
     } catch (error) {
-      console.error("IPFSHTTPClient ERROR ON INIT:", error);
+      console.error("IPFSHTTPClient ERROR ON INIT::", error);
       ipfsService.sendError(new CustomError(ErrorMap.CREATE_IPFS_ERROR));
     }
     return this._ipfs;
@@ -38,7 +38,7 @@ export class IpfsProvides {
       try {
         this._ipfs = undefined;
       } catch (err) {
-        console.error("IPFSHTTPClient ERROR ON STOP:", err as any);
+        console.error("IPFSHTTPClient ERROR ON STOP::", err as any);
       }
     }
   }

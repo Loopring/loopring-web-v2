@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { Box, BoxProps, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import {
   getValuePrecisionThousand,
   MarketType,
   PriceTag,
+  RowConfig,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
@@ -125,10 +126,10 @@ export interface AssetsTableProps {
   setHideSmallBalances: (value: boolean) => void;
 }
 
-const RowConfig = {
-  rowHeight: 44,
-  headerRowHeight: 44,
-};
+// const RowConfig = {
+//   rowHeight: 44,
+//   headerRowHeight: 44,
+// };
 
 export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
@@ -148,31 +149,59 @@ export const AssetsTable = withTranslation("tables")(
       ...rest
     } = props;
 
-    const [filter, setFilter] = useState({
+    const [filter, setFilter] = React.useState({
       searchValue: "",
     });
-    const [totalData, setTotalData] = useState<RawDataAssetsItem[]>(rawData);
-    const [viewData, setViewData] = useState<RawDataAssetsItem[]>(rawData);
+    const [totalData, setTotalData] =
+      React.useState<RawDataAssetsItem[]>(rawData);
+    const [viewData, setViewData] =
+      React.useState<RawDataAssetsItem[]>(rawData);
     const [tableHeight, setTableHeight] = React.useState(props.tableHeight);
-
+    const { language, isMobile } = useSettings();
+    const { coinJson, currency } = useSettings();
+    const isUSD = currency === Currency.usd;
     const resetTableData = React.useCallback(
       (viewData) => {
         setViewData(viewData);
         setTableHeight(
-          RowConfig.headerRowHeight + viewData.length * RowConfig.rowHeight
+          RowConfig.rowHeaderHeight + viewData.length * RowConfig.rowHeight
         );
       },
       [setViewData, setTableHeight]
     );
-    const { language, isMobile } = useSettings();
-    const { coinJson, currency } = useSettings();
-    const isUSD = currency === Currency.usd;
-    useEffect(() => {
+    const updateData = React.useCallback(() => {
+      let resultData = totalData && !!totalData.length ? totalData : [];
+      // if (filter.hideSmallBalance) {
+      if (hideSmallBalances) {
+        resultData = resultData.filter((o) => !o.smallBalance);
+      }
+      // if (filter.hideLpToken) {
+      if (hideLpToken) {
+        resultData = resultData.filter(
+          (o) => o.token.type === TokenType.single
+        );
+      }
+      if (filter.searchValue) {
+        resultData = resultData.filter((o) =>
+          o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase())
+        );
+      }
+      resetTableData(resultData);
+    }, [totalData, filter, hideSmallBalances, hideLpToken, resetTableData]);
+
+    React.useEffect(() => {
       setTotalData(rawData);
     }, [rawData]);
-    useEffect(() => {
+    React.useEffect(() => {
       updateData();
     }, [totalData, filter, hideLpToken, hideSmallBalances]);
+
+    const handleFilterChange = React.useCallback(
+      (filter) => {
+        setFilter(filter);
+      },
+      [setFilter]
+    );
 
     const getColumnModeAssets = (
       t: TFunction,
@@ -431,32 +460,6 @@ export const AssetsTable = withTranslation("tables")(
         },
       },
     ];
-    const updateData = useCallback(() => {
-      let resultData = totalData && !!totalData.length ? totalData : [];
-      // if (filter.hideSmallBalance) {
-      if (hideSmallBalances) {
-        resultData = resultData.filter((o) => !o.smallBalance);
-      }
-      // if (filter.hideLpToken) {
-      if (hideLpToken) {
-        resultData = resultData.filter(
-          (o) => o.token.type === TokenType.single
-        );
-      }
-      if (filter.searchValue) {
-        resultData = resultData.filter((o) =>
-          o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase())
-        );
-      }
-      resetTableData(resultData);
-    }, [totalData, filter, hideSmallBalances, hideLpToken, resetTableData]);
-
-    const handleFilterChange = useCallback(
-      (filter) => {
-        setFilter(filter);
-      },
-      [setFilter]
-    );
 
     return (
       <TableWrap lan={language} isMobile={isMobile}>
@@ -491,7 +494,7 @@ export const AssetsTable = withTranslation("tables")(
           {...{ ...rest, t }}
           style={{ height: tableHeight }}
           rowHeight={RowConfig.rowHeight}
-          headerRowHeight={RowConfig.headerRowHeight}
+          headerRowHeight={RowConfig.rowHeaderHeight}
           rawData={viewData}
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) =>

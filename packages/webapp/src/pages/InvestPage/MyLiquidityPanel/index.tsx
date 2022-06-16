@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Divider, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { MyPoolTable, useSettings } from "@loopring-web/component-lib";
@@ -33,10 +33,10 @@ const MyLiquidity: any = withTranslation("common")(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     const { ammActivityMap } = useAmmActivityMap();
-    const { currency } = useSettings();
     const { forex, allowTrade } = useSystem();
     const { account } = useAccount();
     const history = useHistory();
+    const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
 
     const JumpToLiqudity = React.useCallback(
       (pair, type) => {
@@ -182,25 +182,34 @@ const MyLiquidity: any = withTranslation("common")(
           className={"table-divide-short MuiPaper-elevation2"}
           marginY={2}
           paddingY={2}
-          paddingX={3}
+          paddingX={0}
           flex={1}
         >
           <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
-            <Typography variant={"h5"} marginBottom={3}>
-              {t("labelMyAmm")}
-            </Typography>
             <MyPoolTable
+              title={
+                <Typography
+                  variant={"h5"}
+                  marginBottom={isMobile ? 3 : 0}
+                  // paddingLeft={3}
+                >
+                  {t("labelMyAmm")}
+                </Typography>
+              }
+              hideSmallBalances={hideSmallBalances}
+              setHideSmallBalances={setHideSmallBalances}
               allowTrade={allowTrade}
               rawData={myPoolRow}
+              showFilter={true}
               account={account}
               pagination={{ pageSize: 10 }}
               showloading={showLoading}
               currency={currency}
-              handleDeposit={(row: any) => {
+              handleDeposit={(row) => {
                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                 JumpToLiqudity(pair, "add");
               }}
-              handleWithdraw={(row: any) => {
+              handleWithdraw={(row) => {
                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                 JumpToLiqudity(pair, "remove");
               }}

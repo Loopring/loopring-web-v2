@@ -244,6 +244,7 @@ export type AmmDetailExtendProps<ACD, T> = AmmDetailExtend<ACD, T> & {
   activity?: AmmActivity<any>;
 };
 export type MyAmmLP<T> = {
+  smallBalance?: boolean;
   balanceA: number | undefined;
   balanceB: number | undefined;
   balanceYuan: number | undefined;
