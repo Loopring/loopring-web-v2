@@ -46,6 +46,10 @@ const BoxLinear = styled(SwitchPanelStyled)`
         height: initial;
       }
     }
+    @media only screen and (max-height: 680px) {
+      height: 100vh;
+      overflow: scroll;
+    }
   }
 `;
 

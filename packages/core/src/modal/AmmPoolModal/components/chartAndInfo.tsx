@@ -109,7 +109,12 @@ export const ChartAndInfoPanel = ({
       display={"flex"}
       flexDirection={"column"}
     >
-      <Box width={"100%"} height={"var(--chart-height)"} maxHeight={420}>
+      <Box
+        width={"100%"}
+        // height={"60%"}
+        height={"calc(var(--swap-box-height) - 296px)"}
+        maxHeight={420}
+      >
         <ScaleAreaChart
           type={ChartType.Trend}
           data={pairHistory}

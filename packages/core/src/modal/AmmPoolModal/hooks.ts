@@ -8,7 +8,6 @@ import {
   TradeFloat,
   myLog,
 } from "@loopring-web/common-resources";
-import { useLocation } from "react-router-dom";
 import moment from "moment";
 
 import {
@@ -46,7 +45,11 @@ import {
 } from "@loopring-web/loopring-sdk";
 
 import _ from "lodash";
-import { AmmRecordRow, useSettings } from "@loopring-web/component-lib";
+import {
+  AmmRecordRow,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 
 const makeAmmDetailExtendsActivityMap = ({
   ammMap,
@@ -115,7 +118,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
   const { tickerMap } = useTicker();
 
   const { accountId } = store.getState().account;
-  const tokenMapList = tokenMap ? Object.entries(tokenMap) : [];
   const { walletLayer2 } = useWalletLayer2();
   const [walletMap, setWalletMap] =
     React.useState<WalletMapExtend<C> | undefined>(undefined);
@@ -196,7 +198,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
             market: o.market,
             accountId: o.account_id,
             awardList: o.awards.map((item) => {
-              const market = tokenMapList.find(
+              const market = Reflect.ownKeys(tokenMap).find(
                 (o) => o[1].tokenId === item.tokenId
               )?.[0];
               return {
@@ -210,7 +212,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
         }
       }
     } catch (reason: any) {}
-  }, [accountId, tokenMapList]);
+  }, [accountId, tokenMap]);
 
   const walletLayer2DoIt = React.useCallback(() => {
     const { walletMap: _walletMap } = makeWalletLayer2(false);
@@ -342,7 +344,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
           throw Error;
         });
     }
-  }, []);
+  }, [selectedMarket]);
 
   const walletLayer2Callback = React.useCallback(() => {
     const { market } = getExistedMarket(
@@ -455,9 +457,14 @@ export const useAmmPool = <
   const [isLoading, setIsLoading] = React.useState(false);
   const [isRecentLoading, setIsRecentLoading] = React.useState(false);
 
-  const routerLocation = useLocation();
-  const list = routerLocation.pathname.split("/");
-  const market = list[list.length - 1];
+  // const routerLocation = useLocation();
+  const {
+    modals: {
+      isShowAmm: { symbol: market },
+    },
+  } = useOpenModals();
+  // const list = routerLocation.pathname.split("/");
+  // const market = list[list.length - 1];
 
   // init AmmMap at begin
   React.useEffect(() => {
@@ -517,7 +524,7 @@ export const useAmmPool = <
   const getRecentAmmPoolTxs = React.useCallback(
     ({ limit = 15, offset = 0 }) => {
       if (ammMap && forex) {
-        const market = list[list.length - 1];
+        // const market = list[list.length - 1];
         const addr = ammMap["AMM-" + market]?.address;
 
         if (addr) {
@@ -559,7 +566,7 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, forex, list, tokenPrices]
+    [ammMap, forex, market, tokenPrices]
   );
   React.useEffect(() => {
     if (
