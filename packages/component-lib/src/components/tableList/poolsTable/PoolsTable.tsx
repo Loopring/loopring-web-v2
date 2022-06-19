@@ -252,6 +252,8 @@ export const PoolsTable = withTranslation(["tables", "common"])(
     forex,
     tokenPrices,
     showLoading,
+    handleWithdraw,
+    handleDeposit,
     ...rest
   }: WithTranslation & PoolTableProps<T>) => {
     const { currency, isMobile } = useSettings();
@@ -555,7 +557,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         width: "auto",
         headerCellClass: `textAlignRight`,
         cellClass: () => `action`,
-        formatter: () => {
+        formatter: ({ row }) => {
           return (
             <Box className={"action"} marginRight={-1}>
               <Button
@@ -566,6 +568,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                 variant={"text"}
                 size={"small"}
                 onClick={() => {
+                  handleDeposit(row as any);
                   // handleWithdraw(row);
                 }}
               >
@@ -575,7 +578,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                 variant={"text"}
                 size={"small"}
                 onClick={() => {
-                  // handleWithdraw(row);
+                  handleWithdraw(row as any);
                 }}
               >
                 {t("labelPoolTableRemoveLiqudity")}

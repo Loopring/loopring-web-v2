@@ -8,8 +8,7 @@ import {
   SwapPanel,
   Toast,
 } from "@loopring-web/component-lib";
-import { FixedStyle } from "../styled";
-import { TOAST_TIME } from "@loopring-web/core";
+import { TOAST_TIME, FixedStyle } from "@loopring-web/core";
 import { useSwap } from "./hookSwap";
 import { getValuePrecisionThousand } from "@loopring-web/common-resources";
 

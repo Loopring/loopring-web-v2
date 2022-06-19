@@ -115,7 +115,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       if (
         tradeValue &&
         chargeFeeTokenList.length &&
-        !isFeeNotEnough &&
+        !isFeeNotEnough.isFeeNotEnough &&
         !isSameAddress &&
         // !isAddressCheckLoading &&
         sureItsLayer2 &&
@@ -150,7 +150,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     chargeFeeTokenList,
     address,
     sureItsLayer2,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     isAddressCheckLoading,
     transferValue,
   ]);

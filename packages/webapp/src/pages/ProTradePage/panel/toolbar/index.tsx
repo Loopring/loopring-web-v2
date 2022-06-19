@@ -47,8 +47,8 @@ import {
   favoriteMarket as favoriteMarketRD,
   useAmmActivityMap,
   useAccount,
+  TableProWrapStyled,
 } from "@loopring-web/core";
-import { TableProWrapStyled } from "pages/styled";
 import { useToolbar } from "./hook";
 import { useHistory } from "react-router-dom";
 import { useTickList } from "../../../QuotePage/hook";

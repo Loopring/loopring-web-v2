@@ -194,8 +194,6 @@ export const AmmDepositWrap = <
   return (
     <Grid
       className={ammCalcData ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       container
       direction={"column"}
       justifyContent={"space-between"}

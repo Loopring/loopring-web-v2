@@ -9,6 +9,8 @@ import {
   PoolsTable,
   InputSearch,
   useSettings,
+  useOpenModals,
+  AmmPanelType,
 } from "@loopring-web/component-lib";
 
 import {
@@ -50,6 +52,7 @@ export const PoolsPanel = withTranslation("common")(
       filterValue,
       rawData,
     } = useAmmMapUI();
+    const { setShowAmm } = useOpenModals();
     const { coinJson } = useSettings();
     const { forex } = useSystem();
     const { tokenPrices } = store.getState().tokenPrices;
@@ -97,6 +100,25 @@ export const PoolsPanel = withTranslation("common")(
                 forex,
                 account,
                 tokenPrices,
+                handleWithdraw: (row) => {
+                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                  const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
+
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Exit,
+                    symbol: pair,
+                  });
+                },
+
+                handleDeposit: (row) => {
+                  const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Join,
+                    symbol: pair,
+                  });
+                },
               }}
             />
           </StylePaper>

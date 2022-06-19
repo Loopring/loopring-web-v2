@@ -98,28 +98,61 @@ export const ResetWrap = <T extends FeeInfo>({
                   status={dropdownStatus}
                   fontSize={"medium"}
                 />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"var(--color-error)"}
-                >
-                  {isFeeNotEnough &&
-                    (isNewAccount && goToDeposit ? (
-                      <Trans i18nKey={"labelActiveAccountFeeNotEnough"}>
-                        Insufficient balance
-                        <Link
-                          onClick={() => {
-                            goToDeposit();
-                          }}
-                          variant={"body2"}
-                        >
-                          Add assets
-                        </Link>
-                      </Trans>
-                    ) : (
-                      t("labelL2toL2FeeNotEnough")
-                    ))}
-                </Typography>
+                {/*<Typography*/}
+                {/*  marginLeft={1}*/}
+                {/*  component={"span"}*/}
+                {/*  color={"var(--color-error)"}*/}
+                {/*>*/}
+                {/*  {isFeeNotEnough &&*/}
+                {/*    (isNewAccount && goToDeposit ? (*/}
+                {/*      <Trans i18nKey={"labelActiveAccountFeeNotEnough"}>*/}
+                {/*        Insufficient balance*/}
+                {/*        <Link*/}
+                {/*          onClick={() => {*/}
+                {/*            goToDeposit();*/}
+                {/*          }}*/}
+                {/*          variant={"body2"}*/}
+                {/*        >*/}
+                {/*          Add assets*/}
+                {/*        </Link>*/}
+                {/*      </Trans>*/}
+                {/*    ) : (*/}
+                {/*      t("labelL2toL2FeeNotEnough")*/}
+                {/*    ))}*/}
+                {/*</Typography>*/}
+                {isFeeNotEnough.isOnLoading ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    marginLeft={1}
+                    component={"span"}
+                  >
+                    {t("labelFeeCalculating")}
+                  </Typography>
+                ) : (
+                  isFeeNotEnough.isFeeNotEnough && (
+                    <Typography
+                      marginLeft={1}
+                      component={"span"}
+                      color={"var(--color-error)"}
+                    >
+                      {isNewAccount && goToDeposit ? (
+                        <Trans i18nKey={"labelActiveAccountFeeNotEnough"}>
+                          Insufficient balance
+                          <Link
+                            onClick={() => {
+                              goToDeposit();
+                            }}
+                            variant={"body2"}
+                          >
+                            Add assets
+                          </Link>
+                        </Trans>
+                      ) : (
+                        t("labelL2toL2FeeNotEnough")
+                      )}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Typography>
             {isNewAccount && (

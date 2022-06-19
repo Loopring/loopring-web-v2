@@ -112,7 +112,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
       nftTransferValue.fee?.belong &&
       nftTransferValue?.tradeValue &&
       chargeFeeTokenList.length &&
-      !isFeeNotEnough &&
+      !isFeeNotEnough.isFeeNotEnough &&
       !isSameAddress &&
       sureItsLayer2 &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
@@ -148,7 +148,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     address,
     addrStatus,
     sureItsLayer2,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     isSameAddress,
     nftTransferValue.tradeValue,
     nftTransferValue.fee,

@@ -8,7 +8,7 @@ import {
   myLog,
   SagaStatus,
   SDK_ERROR_MAP_TO_UI,
-} from "../../common-resources";
+} from "@loopring-web/common-resources";
 import {
   TradeBtnStatus,
   useOpenModals,
@@ -28,17 +28,18 @@ import {
   LoopringAPI,
   store,
   useSystem,
-} from "index";
+  DAYS,
+  getTimestampDaysLater,
+  initSlippage,
+  usePageAmmPool,
+  useWalletLayer2Socket,
+  walletLayer2Service,
+} from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import { useTranslation } from "react-i18next";
 
-import { useWalletLayer2Socket, walletLayer2Service } from "index";
-import { initSlippage, usePageAmmPool } from "index";
-
 import _ from "lodash";
-import { getTimestampDaysLater } from "index";
-import { DAYS } from "index";
 
 // ----------calc hook -------
 
@@ -67,7 +68,7 @@ export const useAmmJoin = ({
 }) => {
   const {
     ammJoin: {
-      fee,
+      // fee,
       fees,
       request,
       btnStatus,

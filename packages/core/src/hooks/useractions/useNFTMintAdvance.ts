@@ -122,7 +122,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         nftMintAdvanceValue.fee &&
         nftMintAdvanceValue.fee.belong &&
         nftMintAdvanceValue.fee.feeRaw &&
-        !isFeeNotEnough &&
+        !isFeeNotEnough.isFeeNotEnough &&
         isAvaiableId
       ) {
         enableBtn();
@@ -158,7 +158,12 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [isFeeNotEnough, isAvaiableId, nftMintAdvanceValue, feeInfo]);
+  }, [
+    isFeeNotEnough.isFeeNotEnough,
+    isAvaiableId,
+    nftMintAdvanceValue,
+    feeInfo,
+  ]);
 
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();

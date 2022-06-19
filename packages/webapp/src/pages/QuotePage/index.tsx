@@ -11,8 +11,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { RowConfig } from "@loopring-web/common-resources";
 import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
-import { TableWrapStyled } from "pages/styled";
-import { useAccount } from "@loopring-web/core";
+import { useAccount, TableWrapStyled } from "@loopring-web/core";
 
 const RowStyled = styled(Grid)`
   & .MuiGrid-root:not(:last-of-type) > div {

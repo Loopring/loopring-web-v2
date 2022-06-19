@@ -217,17 +217,17 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
   );
 
   const checkBtnStatus = React.useCallback(() => {
-    if (tokenMap && !isFeeNotEnough) {
+    if (tokenMap && !isFeeNotEnough.isFeeNotEnough) {
       enableBtn();
       myLog("enableBtn");
       return;
     }
     disableBtn();
-  }, [disableBtn, enableBtn, isFeeNotEnough, tokenMap]);
+  }, [disableBtn, enableBtn, isFeeNotEnough.isFeeNotEnough, tokenMap]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [checkBtnStatus, nftDeployValue]);
+  }, [checkBtnStatus, nftDeployValue, isFeeNotEnough.isFeeNotEnough]);
 
   const onNFTDeployClick = async (
     _nftDeployValue: T,
@@ -241,7 +241,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
       tokenMap &&
       LoopringAPI.userAPI &&
       exchangeInfo &&
-      !isFeeNotEnough &&
+      !isFeeNotEnough.isFeeNotEnough &&
       nftDeployValue &&
       nftDeployValue.broker &&
       nftDeployValue.tokenAddress &&

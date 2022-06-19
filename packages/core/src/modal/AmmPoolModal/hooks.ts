@@ -29,7 +29,12 @@ import {
   useTokenMap,
   useWalletLayer2,
   useAmmMap,
-} from "index";
+  LoopringAPI,
+  useWalletLayer2Socket,
+  store,
+  calcPriceByAmmTickMapDepth,
+  swapDependAsync,
+} from "../../index";
 import {
   AmmPoolSnapshot,
   AmmPoolTx,
@@ -39,10 +44,6 @@ import {
   TradingInterval,
   UserAmmPoolTx,
 } from "@loopring-web/loopring-sdk";
-import { LoopringAPI } from "index";
-import { useWalletLayer2Socket } from "index";
-import { store } from "index";
-import { calcPriceByAmmTickMapDepth, swapDependAsync } from "hooks";
 
 import _ from "lodash";
 import { AmmRecordRow, useSettings } from "@loopring-web/component-lib";
@@ -211,10 +212,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     } catch (reason: any) {}
   }, [accountId, tokenMapList]);
 
-  React.useEffect(() => {
-    getAwardList();
-  }, [getAwardList]);
-
   const walletLayer2DoIt = React.useCallback(() => {
     const { walletMap: _walletMap } = makeWalletLayer2(false);
     setWalletMap(_walletMap as WalletMapExtend<any>);
@@ -249,9 +246,10 @@ export const useCoinPair = <C extends { [key: string]: any }>({
   );
 
   React.useEffect(() => {
+    getAwardList();
+
     // @ts-ignore
     let [, coinA, coinB] = (selectedMarket ?? "").match(/(\w+)-(\w+)/i);
-
     if (ammMap && !ammMap[`AMM-${coinA}-${coinB}`]) {
       coinA = "LRC";
       coinB = "ETH";
@@ -344,7 +342,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
           throw Error;
         });
     }
-  }, [selectedMarket]);
+  }, []);
 
   const walletLayer2Callback = React.useCallback(() => {
     const { market } = getExistedMarket(
@@ -446,6 +444,8 @@ export const useAmmPool = <
   const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<R>[]>(
     []
   );
+  const [pageSize, setPageSize] = React.useState(14);
+
   const [ammTotal, setAmmTotal] = React.useState(0);
   const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<
     AmmRecordRow<R>[]
@@ -467,7 +467,8 @@ export const useAmmPool = <
   }, []);
 
   const getUserAmmPoolTxs = React.useCallback(
-    ({ limit = 14, offset = 0 }) => {
+    ({ limit = pageSize, offset = 0 }) => {
+      // limit = pageSize;
       if (ammMap && forex) {
         const addr = ammMap["AMM-" + market]?.address;
         if (addr) {
@@ -510,7 +511,7 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, market, forex, tokenPrices]
+    [ammMap, market, forex, tokenPrices, pageSize]
   );
 
   const getRecentAmmPoolTxs = React.useCallback(
@@ -567,9 +568,9 @@ export const useAmmPool = <
       accountStatus === SagaStatus.UNSET &&
       account.readyState === AccountStatus.ACTIVATED
     ) {
-      getUserAmmPoolTxs({});
+      getUserAmmPoolTxs({ pageSize, offset: 0 });
     }
-  }, [walletLayer2Status]);
+  }, [pageSize, walletLayer2Status]);
 
   return {
     ammActivityMap,
@@ -587,5 +588,7 @@ export const useAmmPool = <
     currency,
     coinJson,
     forex,
+    pageSize,
+    setPageSize,
   };
 };

@@ -581,12 +581,10 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                         ) : (
                           <>
                             <Typography component={"span"}>
-                              {" "}
-                              {myAmm.reward}{" "}
-                            </Typography>
-                            <Typography component={"span"}>
-                              {" "}
-                              {titleInfo.activity.rewardToken.simpleName}
+                              {myAmm.reward}
+                              <Typography component={"span"}>
+                                {titleInfo.activity.rewardToken.simpleName}
+                              </Typography>
                             </Typography>
                           </>
                         )}

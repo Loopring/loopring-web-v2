@@ -7,7 +7,7 @@ import {
   TradeTable,
   TransactionTable,
 } from "@loopring-web/component-lib";
-import { StylePaper } from "../../styled";
+import { StylePaper } from "@loopring-web/core";
 import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
 
 import {

@@ -14,7 +14,7 @@ import {
   useSocket,
   useToast,
   usePageAmmPool,
-} from "index";
+} from "../../../index";
 
 export const useAmmCommon = ({
   pair,

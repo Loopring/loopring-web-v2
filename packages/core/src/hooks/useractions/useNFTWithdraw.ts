@@ -119,7 +119,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         .toBig(nftWithdrawValue.tradeValue)
         .lte(Number(nftWithdrawValue.balance) ?? 0) &&
       (addrStatus as AddressError) === AddressError.NoError &&
-      !isFeeNotEnough &&
+      !isFeeNotEnough.isFeeNotEnough &&
       !isNotAvaiableAddress &&
       (info?.isToMyself || sureIsAllowAddress) &&
       realAddr
@@ -150,7 +150,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   }, [
     address,
     addrStatus,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     nftWithdrawValue.fee,
     nftWithdrawValue.tradeValue,
     isNotAvaiableAddress,

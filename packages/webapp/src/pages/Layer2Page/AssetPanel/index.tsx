@@ -16,8 +16,12 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 
-import { store, useTokenPrices, useTokenMap } from "@loopring-web/core";
-import { StylePaper } from "pages/styled";
+import {
+  store,
+  useTokenPrices,
+  useTokenMap,
+  StylePaper,
+} from "@loopring-web/core";
 import { useGetAssets } from "./hook";
 import { Currency } from "@loopring-web/loopring-sdk";
 import React from "react";

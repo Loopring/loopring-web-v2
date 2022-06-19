@@ -25,7 +25,7 @@ import {
 } from "@loopring-web/loopring-sdk";
 import { useHistory } from "react-router-dom";
 
-type StyledProps = {
+export type StyledProps = {
   custom: { chg: UpColor };
 };
 const TradeTitleStyled = styled(Box)<StyledProps>`

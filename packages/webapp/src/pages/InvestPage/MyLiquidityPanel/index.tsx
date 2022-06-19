@@ -3,7 +3,12 @@ import styled from "@emotion/styled";
 import { Grid, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
-import { MyPoolTable, useSettings } from "@loopring-web/component-lib";
+import {
+  AmmPanelType,
+  MyPoolTable,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -16,8 +21,12 @@ import {
   LoopringMap,
 } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
-import { useSystem, useAmmActivityMap, useAccount } from "@loopring-web/core";
-import { TableWrapStyled } from "pages/styled";
+import {
+  useSystem,
+  useAmmActivityMap,
+  useAccount,
+  TableWrapStyled,
+} from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 const StyleWrapper = styled(Grid)`
   position: relative;
@@ -38,15 +47,15 @@ const MyLiquidity: any = withTranslation("common")(
     const { account } = useAccount();
     const history = useHistory();
     const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
-
-    const JumpToLiqudity = React.useCallback(
-      (pair, type) => {
-        // if (history) {
-        //   history.push(`/liquidity/pools/coinPair/${pair}?type=${type}`);
-        // }
-      },
-      [history]
-    );
+    const { setShowAmm } = useOpenModals();
+    // const JumpToLiqudity = React.useCallback(
+    //   (pair, type) => {
+    //     // if (history) {
+    //     //   history.push(`/liquidity/pools/coinPair/${pair}?type=${type}`);
+    //     // }
+    //   },
+    //   [history]
+    // );
 
     const { summaryReward, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
@@ -191,7 +200,7 @@ const MyLiquidity: any = withTranslation("common")(
             rel="noopener noreferrer"
             href={"./#/layer2/history/ammRecords"}
           >
-            {t("labelTransactions")}
+            {t("labelTransactionsLink")}
           </Link>
         </StyleWrapper>
         <TableWrapStyled
@@ -221,13 +230,29 @@ const MyLiquidity: any = withTranslation("common")(
               pagination={{ pageSize: 10 }}
               showloading={showLoading}
               currency={currency}
-              handleDeposit={(row) => {
-                const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                JumpToLiqudity(pair, "add");
-              }}
+              // handleDeposit={(row) => {
+              //
+              //   JumpToLiqudity(pair, "add");
+              // }}
+              // handleWithdraw={(row) => {
+              //   const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+              //   JumpToLiqudity(pair, "remove");
+              // }}
               handleWithdraw={(row) => {
                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                JumpToLiqudity(pair, "remove");
+                setShowAmm({
+                  isShow: true,
+                  type: AmmPanelType.Exit,
+                  symbol: pair,
+                });
+              }}
+              handleDeposit={(row) => {
+                const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                setShowAmm({
+                  isShow: true,
+                  type: AmmPanelType.Join,
+                  symbol: pair,
+                });
               }}
               handlePageChange={() => {}}
             />

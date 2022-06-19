@@ -792,4 +792,5 @@ export default {
     "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelInvestAmmTitle: "AMM Pools",
   labelInvestBalanceTitle: "Balance",
+  labelTransactionsLink: "Transactions",
 };

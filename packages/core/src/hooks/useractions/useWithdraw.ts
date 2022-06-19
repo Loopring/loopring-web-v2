@@ -141,7 +141,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         !exceedPoolLimit &&
         !isNotAvaiableAddress &&
         chargeFeeTokenList.length &&
-        !isFeeNotEnough &&
+        !isFeeNotEnough.isFeeNotEnough &&
         withdrawValue.fee?.belong &&
         withdrawValue.fee?.feeRaw &&
         tradeValue.gt(BIGO) &&
@@ -185,7 +185,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     realAddr,
     sureIsAllowAddress,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,

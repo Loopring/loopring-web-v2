@@ -3,9 +3,7 @@ import { useTokenMap } from "../../stores/token";
 import { getExistedMarket } from "@loopring-web/loopring-sdk";
 import { MarketType } from "@loopring-web/common-resources";
 
-export function usePairMatch<C extends { [key: string]: any }>(
-  path: string
-): {
+export function usePairMatch(path: string): {
   realMarket: MarketType | undefined;
   realPair: any;
 } {

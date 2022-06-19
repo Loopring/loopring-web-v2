@@ -61,7 +61,10 @@ export function useNFTMint<
   nftMintValue,
 }: {
   chargeFeeTokenList: FeeInfo[];
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
@@ -103,7 +106,7 @@ export function useNFTMint<
         nftMintValue.mintData.fee &&
         nftMintValue.mintData.fee.belong &&
         nftMintValue.mintData.fee.__raw__ &&
-        !isFeeNotEnough
+        !isFeeNotEnough.isFeeNotEnough
       ) {
         enableBtn();
         return;
@@ -133,7 +136,7 @@ export function useNFTMint<
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [isFeeNotEnough, nftMintValue, feeInfo]);
+  }, [isFeeNotEnough.isFeeNotEnough, nftMintValue, feeInfo]);
   useWalletLayer2Socket({});
 
   const handleMintDataChange = React.useCallback(
@@ -309,7 +312,7 @@ export function useNFTMint<
         nftMintValue.nftMETA.royaltyPercentage / 1 <= 10 &&
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
-        !isFeeNotEnough &&
+        !isFeeNotEnough.isFeeNotEnough &&
         exchangeInfo
       ) {
         setShowNFTMintAdvance({ isShow: false });

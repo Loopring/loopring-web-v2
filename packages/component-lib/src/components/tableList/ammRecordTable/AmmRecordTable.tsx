@@ -22,19 +22,19 @@ import { Currency } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import { TFunction } from "i18next";
 
+// height: ${(props: any) => {
+//       if (props.currentheight && props.currentheight > 350) {
+//         return props.currentheight + "px";
+//       } else {
+//   return "100%";
+// }
+// }};
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
 
   .rdg {
-    height: ${(props: any) => {
-      if (props.currentheight && props.currentheight > 350) {
-        return props.currentheight + "px";
-      } else {
-        return "100%";
-      }
-    }};
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 280px 240px auto auto !important;`
@@ -248,6 +248,7 @@ export const AmmRecordTable = withTranslation("tables")(
     headerRowHeight = RowConfig.rowHeaderHeight,
     showFilter = true,
     rawData,
+    scroll = false,
     wait = globalSetup.wait,
     currency = Currency.usd,
     ...rest
@@ -295,6 +296,7 @@ export const AmmRecordTable = withTranslation("tables")(
             ...rest,
             rowHeight,
             headerRowHeight,
+            scroll,
             rawData: rawData,
           }}
         />

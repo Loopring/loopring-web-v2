@@ -33,7 +33,7 @@ import {
   usePageAmmPool,
   getTimestampDaysLater,
   DAYS,
-} from "index";
+} from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import { useTranslation } from "react-i18next";

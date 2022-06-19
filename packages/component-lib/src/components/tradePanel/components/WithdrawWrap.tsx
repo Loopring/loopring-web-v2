@@ -391,13 +391,25 @@ export const WithdrawWrap = <
                   status={dropdownStatus}
                   fontSize={"medium"}
                 />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"var(--color-error)"}
-                >
-                  {isFeeNotEnough && t("labelL2toL2FeeNotEnough")}
-                </Typography>
+                {isFeeNotEnough.isOnLoading ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    marginLeft={1}
+                    component={"span"}
+                  >
+                    {t("labelFeeCalculating")}
+                  </Typography>
+                ) : (
+                  isFeeNotEnough.isFeeNotEnough && (
+                    <Typography
+                      marginLeft={1}
+                      component={"span"}
+                      color={"var(--color-error)"}
+                    >
+                      {t("labelL2toL2FeeNotEnough")}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Typography>
             {dropdownStatus === "up" && (

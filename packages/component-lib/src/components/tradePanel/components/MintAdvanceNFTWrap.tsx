@@ -296,13 +296,25 @@ export const MintAdvanceNFTWrap = <
                   status={dropdownStatus}
                   fontSize={"medium"}
                 />
-                <Typography
-                  marginLeft={1}
-                  component={"span"}
-                  color={"var(--color-error)"}
-                >
-                  {isFeeNotEnough && t("labelMintFeeNotEnough")}
-                </Typography>
+                {isFeeNotEnough.isOnLoading ? (
+                  <Typography
+                    color={"var(--color-warning)"}
+                    marginLeft={1}
+                    component={"span"}
+                  >
+                    {t("labelFeeCalculating")}
+                  </Typography>
+                ) : (
+                  isFeeNotEnough.isFeeNotEnough && (
+                    <Typography
+                      marginLeft={1}
+                      component={"span"}
+                      color={"var(--color-error)"}
+                    >
+                      {t("labelMintFeeNotEnough")}
+                    </Typography>
+                  )
+                )}
               </Box>
             </Typography>
             {dropdownStatus === "up" && (

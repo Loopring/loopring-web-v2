@@ -9,6 +9,8 @@ export type Row<T> = AmmDetail<T> & {
 };
 export type PoolTableProps<T, R = Row<T>> = {
   rawData: R[];
+  handleWithdraw: (row: R) => void;
+  handleDeposit: (row: R) => void;
   activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
   showFilter?: boolean;
   wait?: number;
