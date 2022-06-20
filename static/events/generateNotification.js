@@ -132,6 +132,8 @@ const _router = path.resolve(__dirname);
 async function createNotifyJSON(lng) {
   const notificationPath = `${_router}/${notifyPath}/notification.${lng}.csv`;
   const investPath = `${_router}/${notifyPath}/invest.${lng}.csv`;
+
+  console.log(notificationPath);
   /****create notification json****/
   if (fs.existsSync(notificationPath)) {
     await new Promise((resolve, reject) => {

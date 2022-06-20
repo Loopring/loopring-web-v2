@@ -42,7 +42,7 @@ export type NOTIFICATION_ITEM = {
   startShow: number;
   endShow: number;
   color: NOTIFY_COLOR;
-  banner: string;
+  banner?: string;
 };
 export type ACTIVITY = NOTIFICATION_ITEM;
 export type NOTIFICATION = {
