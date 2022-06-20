@@ -281,26 +281,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <InvestPage />
           </ContentWrap>
         </Route>
-        {/*<Route exact path="/liquidity/pools/*">*/}
-        {/*  <ContentWrap state={state}>*/}
-        {/*    <LiquidityPage />*/}
-        {/*  </ContentWrap>*/}
-        {/*</Route>*/}
-        {/*<Route exact path="/liquidity/pools">*/}
-        {/*  <ContentWrap state={state}>*/}
-        {/*    <LiquidityPage />*/}
-        {/*  </ContentWrap>*/}
-        {/*</Route>*/}
-        {/*<Route exact path="/liquidity/amm-mining">*/}
-        {/*  <ContentWrap state={state}>*/}
-        {/*    <LiquidityPage />*/}
-        {/*  </ContentWrap>*/}
-        {/*</Route>*/}
-        {/*<Route exact path="/liquidity/my-liquidity">*/}
-        {/*  <ContentWrap state={state}>*/}
-        {/*    <LiquidityPage />*/}
-        {/*  </ContentWrap>*/}
-        {/*</Route>*/}
         <Route
           path={["/error/:messageKey", "/error"]}
           component={() => (

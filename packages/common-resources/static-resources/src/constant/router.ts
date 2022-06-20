@@ -163,14 +163,6 @@ export const subMenuLayer2 = {
         i18nKey: "labelAssets",
       },
     },
-    // {
-    //   icon: L2MyLiquidityIcon,
-    //   router: { path: "/layer2/my-liquidity" },
-    //   label: {
-    //     id: "my-liquidity",
-    //     i18nKey: "labelMyLiquidity",
-    //   },
-    // },
   ],
   transactionsGroup: [
     {
