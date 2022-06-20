@@ -107,6 +107,8 @@ const columnMode = (
     key: "totalValue",
     sortable: false,
     width: "auto",
+    headerCellClass: "textAlignCenter",
+    cellClass: "textAlignCenter",
     name: t("labelAmmTotalValue"),
     formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
       const { totalDollar, totalYuan } = row;
@@ -286,7 +288,11 @@ export const AmmRecordTable = withTranslation("tables")(
       (currentheight || 0) + (!!rawData.length ? 0 : RowConfig.rowHeaderHeight);
 
     return (
-      <TableStyled isMobile={isMobile} currentheight={height}>
+      <TableStyled
+        isMobile={isMobile}
+        currentheight={height}
+        className={"amm-record-table"}
+      >
         <Table
           /* className={'scrollable'}  */ {...{
             ...defaultArgs,

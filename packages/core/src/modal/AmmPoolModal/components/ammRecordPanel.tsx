@@ -14,6 +14,11 @@ const AMMPanelStyled = styled(StylePaper)`
   && {
     margin-bottom: 0;
   }
+  .amm-record-table {
+    .rdg {
+      --template-columns: 50% 30% 20% !important;
+    }
+  }
 `;
 
 const applyProps = (index: number) => {
