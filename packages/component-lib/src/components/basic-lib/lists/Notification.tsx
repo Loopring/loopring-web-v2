@@ -94,7 +94,7 @@ const cssBackground = ({
 };
 
 const NotificationListItemStyled = styled(ListItem)<
-  ListItemProps & Partial<ACTIVITY> & { lng: string }
+  ListItemProps & Partial<ACTIVITY> & { lng?: string }
 >`
   cursor: pointer;
   height: var(--notification-activited-heigth);
@@ -121,7 +121,9 @@ const NotificationListItemStyled = styled(ListItem)<
     height: 100%;
   }
   ${(props) => cssBackground(props)}
-` as (props: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
+` as (
+  props: ListItemProps & Partial<ACTIVITY> & { lng: string }
+) => JSX.Element;
 
 export const NotificationListItem = (
   props: Partial<NOTIFICATION_ITEM> & { account?: Account }
@@ -199,7 +201,9 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
   padding: ${({ theme }) => theme.unit}px;
   ${(props) => cssBackground(props)}
   border-radius: ${({ theme }) => theme.unit}px;
-` as (props: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
+` as (
+  props: ListItemProps & Partial<ACTIVITY> & { lng: string }
+) => JSX.Element;
 export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
   const {
     type,
