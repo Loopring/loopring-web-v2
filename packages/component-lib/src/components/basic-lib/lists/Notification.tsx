@@ -94,7 +94,7 @@ const cssBackground = ({
 };
 
 const NotificationListItemStyled = styled(ListItem)<
-  ListItemProps & Partial<ACTIVITY> & { lng?: string }
+  ListItemProps & Partial<ACTIVITY> & { lng: string }
 >`
   cursor: pointer;
   height: var(--notification-activited-heigth);
