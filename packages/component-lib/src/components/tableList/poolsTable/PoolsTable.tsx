@@ -218,7 +218,7 @@ export const IconColumn = React.memo(
                 history.push(
                   `/race-event/${current_event_date}?selected=${pair}&type=${
                     activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                  }&owner=${account?.accAddress}`
+                  }&l2account=${account?.accAddress}`
                 );
               }}
             >

@@ -220,7 +220,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           const month = ("0" + (date.getMonth() + 1).toString()).slice(-2);
           const current_event_date = `${year}-${month}`;
           history.push(
-            `/race-event/${current_event_date}?selected=${pathname}&type=${""}&owner=${
+            `/race-event/${current_event_date}?selected=${pathname}&type=${""}&l2account=${
               account?.accAddress
             }`
           );

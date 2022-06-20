@@ -228,7 +228,7 @@ export const TradeTitle = <I extends object>({
                         const current_event_date = `${year}-${month}`;
 
                         history.push(
-                          `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&owner=${account?.accAddress}`
+                          `/race-event/${current_event_date}?selected=${pair}&type=${ruleType}&l2account=${account?.accAddress}`
                         );
                       }}
                     >
@@ -255,7 +255,7 @@ export const TradeTitle = <I extends object>({
                       history.push(
                         `/race-event/${current_event_date}?selected=${pair}&type=${
                           activityInProgressRules[`AMM-${pair}`].ruleType[0]
-                        }&owner=${account?.accAddress}`
+                        }&l2account=${account?.accAddress}`
                       );
                     }}
                   >

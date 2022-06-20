@@ -18,8 +18,8 @@ export const useWrapModal = () => {
   const { search, pathname } = useLocation();
   const searchParams = new URLSearchParams(search);
   const token = searchParams.get("token");
-  const owner = searchParams.get("owner");
-  const { depositProps } = useDeposit(true, { token, owner });
+  const l2account = searchParams.get("l2account") || searchParams.get("owner");
+  const { depositProps } = useDeposit(true, { token, owner: l2account });
   const { setShowAccount } = useOpenModals();
   return {
     depositProps,

@@ -117,8 +117,8 @@ export const NotificationListItem = (
       onClick={() => {
         if (props.link && !!account?.accAddress) {
           props.link = /\?/.test(props.link)
-            ? `&owner=${account?.accAddress}`
-            : `?owner=${account?.accAddress}`;
+            ? `&l2account=${account?.accAddress}`
+            : `?l2account=${account?.accAddress}`;
         }
         props.link?.startsWith("http")
           ? window.open(props.link, "_blank")
@@ -191,7 +191,7 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
         //   history.replace(``)
         // }
         onClick={() => {
-          window.open(`${link}&owner=${account?.accAddress}`, "_blank");
+          window.open(`${link}&l2account=${account?.accAddress}`, "_blank");
           window.opener = null;
         }}
         type={props.type}

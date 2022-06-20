@@ -311,10 +311,12 @@ export const ModalWalletConnectPanel = withTranslation("common")(
                     async (event, flag?) => {
                       // setShowConnect({ isShow: false });
                       const token = searchParams.get("token");
-                      const owner = searchParams.get("owner");
+                      const l2account =
+                        searchParams.get("l2account") ||
+                        searchParams.get("owner");
                       copyToClipBoard(
                         Bridge +
-                          `?${owner ? `owner=` + owner : ""}&${
+                          `?${l2account ? `l2account=` + l2account : ""}&${
                             token ? `token=` + token : ""
                           }`
                       );
