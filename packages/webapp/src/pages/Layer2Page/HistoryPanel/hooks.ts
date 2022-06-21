@@ -28,8 +28,8 @@ export type TxsFilterProps = {
   types?: sdk.UserTxTypes[] | string;
 };
 enum TxTypeAMM {
-  Join = "join_pool",
-  Exit = "exit_pool",
+  Add = "join_pool",
+  Remove = "exit_pool",
 }
 
 export function useGetTxs(setToastOpen: (state: any) => void) {
@@ -254,6 +254,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       const ammPoolAddress = tokenMap[tokenSymbol]?.address;
       setShowLoading(true);
       if (LoopringAPI.ammpoolAPI && accountId && apiKey) {
+        debugger;
         const response = await LoopringAPI.ammpoolAPI.getUserAmmPoolTxs(
           {
             accountId,

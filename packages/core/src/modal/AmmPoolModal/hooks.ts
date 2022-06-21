@@ -346,14 +346,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
         userRewardsMap,
         ammData
       );
-      // const _myAmmFee: MyAmmLP<C> = makeMyAmmWithSnapshot(
-      //   `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`,
-      //   _walletMap,
-      //   userRewardsMap,
-      //   snapShotData
-      // );
-      // debugger;
-      // myLog(_myAmmFee, _myAmm);
       setMyAmm(_myAmm);
     }
   }, [

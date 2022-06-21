@@ -146,7 +146,7 @@ export default {
   labelMyAmmRecord: "My AMM Records",
   labelCurrentActivities: "Current Activities",
   labelPastActivities: "Past Activities",
-  labelTotalPositionValue: "Total Position Value",
+  labelTotalPositionValue: "Total Invest",
   labelFeeRewards: "Fee Rewards",
   labelMiningRewards: "Mining Rewards",
   labelLiquidityValue: "Liquidity Value",

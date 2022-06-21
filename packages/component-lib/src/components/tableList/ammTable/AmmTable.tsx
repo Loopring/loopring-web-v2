@@ -331,17 +331,26 @@ export const AmmTable = withTranslation("tables")(
   (props: WithTranslation & AmmTableProps) => {
     const { t, pagination, showFilter, rawData, filterPairs, getAmmpoolList } =
       props;
-    const [filterType, setFilterType] = React.useState(
-      FilterTradeTypes.allTypes
-    );
+    // const [filterType, setFilterType] = React.useState(
+    //
+    // );
     const [isDropDown, setIsDropDown] = React.useState(true);
-    const [filterDate, setFilterDate] = React.useState<DateRange<Date | null>>([
-      null,
-      null,
-    ]);
+    // const [filterDate, setFilterDate] = React.useState<DateRange<Date | null>>([
+    //   null,
+    //   null,
+    // ]);
     const [page, setPage] = React.useState(1);
-    const [filterPair, setFilterPair] = React.useState("all");
+    // const [filterPair, setFilterPair] = React.useState("all");
 
+    const [filterItems, setFilterItems] = React.useState<{
+      filterType: FilterTradeTypes;
+      filterDate: DateRange<Date | null>;
+      filterPair: string;
+    }>({
+      filterType: FilterTradeTypes.allTypes,
+      filterDate: [null, null],
+      filterPair: "all",
+    });
     const { currency, isMobile } = useSettings();
     const defaultArgs: any = {
       columnMode: isMobile
@@ -356,18 +365,28 @@ export const AmmTable = withTranslation("tables")(
     };
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    const setFilterItems = React.useCallback(({ type, date, pair }) => {
-      setFilterType(type);
-      setFilterDate(date);
-      setFilterPair(pair);
-    }, []);
+    // const setFilterItems = React.useCallback(({ type, date, pair }) => {
+    //   setFilterType(type);
+    //   setFilterDate(date);
+    //   setFilterPair(pair);
+    // }, []);
 
     const handleFilterChange = React.useCallback(
-      ({ type = filterType, date = filterDate, pair = filterPair }) => {
-        setFilterItems({ type, date, pair });
-        handlePageChange({ type, date, pair, page: 1 });
+      ({ type, date, pair }) => {
+        let filters = {
+          filterType: type ? type : filterItems.filterType,
+          filterDate: date ? date : filterItems.filterDate,
+          filterPair: pair ? pair : filterItems.filterPair,
+        };
+        setFilterItems(filters);
+        handlePageChange({
+          type: filters.filterType,
+          date: filters.filterDate,
+          pair: filters.filterPair,
+          page: 1,
+        });
       },
-      [setFilterItems, filterType, filterDate, filterPair]
+      [setFilterItems, filterItems]
     );
 
     const handlePageChange = React.useCallback(
@@ -395,8 +414,8 @@ export const AmmTable = withTranslation("tables")(
     const handleReset = React.useCallback(() => {
       handleFilterChange({
         type: FilterTradeTypes.allTypes,
-        date: null,
-        pair: filterPair,
+        date: [null, null],
+        pair: "all",
       });
     }, [handleFilterChange]);
 
@@ -418,10 +437,10 @@ export const AmmTable = withTranslation("tables")(
             <TableFilterStyled>
               <Filter
                 filterPairs={filterPairs}
+                filterPair={filterItems.filterPair}
+                filterType={filterItems.filterType}
+                filterDate={filterItems.filterDate}
                 handleFilterChange={handleFilterChange}
-                filterType={filterType}
-                filterDate={filterDate}
-                filterPair={filterPair}
                 handleReset={handleReset}
               />
             </TableFilterStyled>
