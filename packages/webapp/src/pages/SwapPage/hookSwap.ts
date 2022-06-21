@@ -1029,8 +1029,6 @@ export const useSwap = <C extends { [key: string]: any }>({
               .takerRate;
           tradeCost =
             amountMarket[_tradeData["buy"].belong as string].tradeCost;
-          // amountMarket[_tradeData["buy"].belong as string];
-          //sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
 
           const minAmountInput = BigNumber.max(
             buyMinAmtInfo.userOrderInfo.minAmount,
