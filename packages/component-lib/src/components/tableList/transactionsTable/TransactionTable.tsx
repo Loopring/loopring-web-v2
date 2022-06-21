@@ -623,7 +623,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               paddingRight={2}
               onClick={() => setIsDropDown(false)}
             >
-              Show Filter
+              {t("labelShowFilter")}
             </Link>
           ) : (
             <TableFilterStyled>

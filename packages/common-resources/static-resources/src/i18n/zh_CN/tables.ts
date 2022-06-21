@@ -182,4 +182,5 @@ export default {
   labelTypeOFFCHAIN_WITHDRAWAL: "Withdraw",
   labelTypeTRANSFER: "Transfer",
   labelTxNFTFilterMINT: "Mint",
+  labelShowFilter: "Show Filter",
 };

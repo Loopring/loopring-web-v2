@@ -9,7 +9,7 @@ import { TableFilterStyled, TablePaddingX } from "../../styled";
 import { Filter, FilterTradeTypes } from "./components/Filter";
 import {
   getValuePrecisionThousand,
-  TableType,
+  myLog,
 } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { Row } from "../poolsTable/Interface";
@@ -41,6 +41,7 @@ export type AmmTableProps = {
   getAmmpoolList: (props: any) => void;
   rawData: RawDataAmmItem[];
   filterPairs: string[];
+  showloading: boolean;
   pagination?: {
     pageSize: number;
     total: number;
@@ -355,36 +356,6 @@ export const AmmTable = withTranslation("tables")(
     };
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    const updateData = React.useCallback(
-      ({
-        TableType,
-        currFilterType = filterType,
-        currFilterDate = filterDate,
-        currFilterPair = filterPair,
-      }) => {
-        const start =
-          currFilterDate[0] && Number(moment(currFilterDate[0]).format("x"));
-        const end =
-          currFilterDate[1] && Number(moment(currFilterDate[1]).format("x"));
-        let currPage = page;
-        if (TableType === "filter") {
-          setPage(1);
-          currPage = 1;
-        }
-        getAmmpoolList({
-          tokenSymbol: currFilterPair,
-          start,
-          end,
-          txTypes:
-            currFilterType !== FilterTradeTypes.allTypes ? currFilterType : "",
-          offset: (currPage - 1) * pageSize,
-          limit: pageSize,
-        });
-        // setTotalData(resultData);
-      },
-      [rawData, filterDate, filterType, filterPair, page, page]
-    );
-
     const setFilterItems = React.useCallback(({ type, date, pair }) => {
       setFilterType(type);
       setFilterDate(date);
@@ -394,21 +365,31 @@ export const AmmTable = withTranslation("tables")(
     const handleFilterChange = React.useCallback(
       ({ type = filterType, date = filterDate, pair = filterPair }) => {
         setFilterItems({ type, date, pair });
-        updateData({
-          TableType: TableType.filter,
-          currFilterType: type,
-          currFilterDate: date,
-        });
+        handlePageChange({ type, date, pair, page: 1 });
       },
-      [updateData, setFilterItems, filterType, filterDate, filterPair]
+      [setFilterItems, filterType, filterDate, filterPair]
     );
 
     const handlePageChange = React.useCallback(
-      (page: number) => {
+      ({ page = 1, type, date, pair }: any) => {
         setPage(page);
-        updateData({ TableType: TableType.page, currPage: page });
+        const start = date
+          ? date[0] && Number(moment(date[0]).format("x"))
+          : undefined;
+        const end = date
+          ? date[1] && Number(moment(date[1]).format("x"))
+          : undefined;
+        getAmmpoolList({
+          tokenSymbol: pair,
+          txTypes: type !== FilterTradeTypes.allTypes ? type : "",
+          start,
+          end,
+          offset: (page - 1) * pageSize,
+          limit: pageSize,
+        });
+        myLog("AmmTable page,", page);
       },
-      [updateData]
+      [getAmmpoolList, pageSize]
     );
 
     const handleReset = React.useCallback(() => {
@@ -431,7 +412,7 @@ export const AmmTable = withTranslation("tables")(
               paddingRight={2}
               onClick={() => setIsDropDown(false)}
             >
-              Show Filter
+              {t("labelShowFilter")}
             </Link>
           ) : (
             <TableFilterStyled>
@@ -451,7 +432,7 @@ export const AmmTable = withTranslation("tables")(
             page={page}
             pageSize={pagination.pageSize}
             total={pagination.total}
-            onPageChange={handlePageChange}
+            onPageChange={(page) => handlePageChange({ page })}
           />
         )}
       </TableStyled>

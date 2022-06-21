@@ -46,7 +46,7 @@ const HistoryPanel = withTranslation("common")(
     } = useGetTrades(setToastOpen);
     const {
       ammRecordList,
-      showLoading: ammLoading,
+      showLoading: showAmmloading,
       ammRecordTotal,
       getAmmpoolList,
     } = useGetAmmRecord(setToastOpen);
@@ -168,7 +168,7 @@ const HistoryPanel = withTranslation("common")(
                 filterPairs: Reflect.ownKeys(ammMap ?? {}).map((item) =>
                   item.toString().replace("AMM", "LP")
                 ),
-                showLoading: ammLoading,
+                showloading: showAmmloading,
                 ...rest,
               }}
             />
