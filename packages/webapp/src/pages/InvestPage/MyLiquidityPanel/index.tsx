@@ -26,6 +26,7 @@ import {
   useAmmActivityMap,
   useAccount,
   TableWrapStyled,
+  useTokenMap,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
 const StyleWrapper = styled(Grid)`
@@ -44,6 +45,7 @@ const MyLiquidity: any = withTranslation("common")(
   }) => {
     const { ammActivityMap } = useAmmActivityMap();
     const { forex, allowTrade } = useSystem();
+    const { tokenMap } = useTokenMap();
     const { account } = useAccount();
     const history = useHistory();
     const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
@@ -230,6 +232,7 @@ const MyLiquidity: any = withTranslation("common")(
               pagination={{ pageSize: 10 }}
               showloading={showLoading}
               currency={currency}
+              tokenMap={tokenMap as any}
               handleWithdraw={(row) => {
                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                 setShowAmm({

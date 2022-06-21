@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Avatar,
   Box,
   BoxProps,
   Grid,
@@ -19,14 +18,12 @@ import {
 import { Column, Table } from "../../basic-lib/";
 import {
   Account,
-  AvatarCoinStyled,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
   MoreIcon,
   PriceTag,
   RowConfig,
-  SoursURL,
 } from "@loopring-web/common-resources";
 import { Method, MyPoolRow, MyPoolTableProps } from "./Interface";
 import styled from "@emotion/styled";
@@ -37,6 +34,7 @@ import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../../stores";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Filter } from "./components/Filter";
+import { AmmPairDetail } from "../../block/AmmPairDetail";
 
 export enum PoolTradeType {
   add = "add",
@@ -104,7 +102,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
   currency: Currency,
   getPopoverState: any,
   account: Account,
-  coinJson: any
+  tokenMap: { [key: string]: any }
 ): Column<R, unknown>[] => [
   {
     key: "pools",
@@ -166,14 +164,16 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
         );
       }
       const {
-        totalAmmValueDollar,
-        totalAmmValueYuan,
+        // totalAmmValueDollar,
+        // totalAmmValueYuan,
+        balanceDollar,
+        balanceYuan,
         balanceA,
         balanceB,
         ammDetail: { coinAInfo, coinBInfo },
       } = row as any;
-      const coinAIcon: any = coinJson[coinAInfo.simpleName];
-      const coinBIcon: any = coinJson[coinBInfo.simpleName];
+      // const coinAIcon: any = coinJson[coinAInfo.simpleName];
+      // const coinBIcon: any = coinJson[coinBInfo.simpleName];
       // const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
       // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
       return (
@@ -188,12 +188,12 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
               component={"span"}
               style={{ cursor: "pointer", textDecoration: "underline dotted" }}
             >
-              {typeof totalAmmValueDollar === "undefined"
+              {typeof balanceDollar === "undefined"
                 ? EmptyValueTag
                 : currency === Currency.usd
                 ? PriceTag.Dollar +
                   getValuePrecisionThousand(
-                    totalAmmValueDollar,
+                    balanceDollar,
                     undefined,
                     undefined,
                     undefined,
@@ -205,7 +205,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
                   )
                 : PriceTag.Yuan +
                   getValuePrecisionThousand(
-                    totalAmmValueYuan,
+                    balanceYuan,
                     undefined,
                     undefined,
                     undefined,
@@ -229,144 +229,14 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
               horizontal: "center",
             }}
           >
-            <Box padding={1.5} paddingLeft={1}>
-              <Typography
-                component={"span"}
-                display={"flex"}
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                style={{ textTransform: "capitalize" }}
-                color={"textPrimary"}
-              >
-                <Box
-                  component={"span"}
-                  className={"logo-icon"}
-                  display={"flex"}
-                  height={"var(--list-menu-coin-size)"}
-                  width={"var(--list-menu-coin-size)"}
-                  alignItems={"center"}
-                  justifyContent={"flex-start"}
-                >
-                  {coinAIcon ? (
-                    <AvatarCoinStyled
-                      imgx={coinAIcon.x}
-                      imgy={coinAIcon.y}
-                      imgheight={coinAIcon.h}
-                      imgwidth={coinAIcon.w}
-                      size={20}
-                      variant="circular"
-                      style={{ marginTop: 2 }}
-                      alt={coinAInfo.simpleName as string}
-                      src={
-                        "data:image/svg+xml;utf8," +
-                        '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                      }
-                    />
-                  ) : (
-                    <Avatar
-                      variant="circular"
-                      alt={coinAInfo.simpleName as string}
-                      style={{
-                        height: "var(--list-menu-coin-size))",
-                        width: "var(--list-menu-coin-size)",
-                      }}
-                      src={SoursURL + "images/icon-default.png"}
-                    />
-                  )}
-                  <Typography
-                    component={"span"}
-                    color={"var(--color-text-primary)"}
-                    variant={"body2"}
-                    marginLeft={1 / 2}
-                    height={20}
-                    lineHeight={"20px"}
-                  >
-                    {coinAInfo.simpleName}
-                  </Typography>
-                </Box>
-
-                <Typography
-                  component={"span"}
-                  color={"var(--color-text-primary)"}
-                  variant={"body2"}
-                  height={20}
-                  marginLeft={10}
-                  lineHeight={"20px"}
-                >
-                  {getValuePrecisionThousand(balanceA, 4, 4)}
-                </Typography>
-              </Typography>
-              <Typography
-                component={"span"}
-                display={"flex"}
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                marginTop={1 / 2}
-                style={{ textTransform: "capitalize" }}
-              >
-                <Box
-                  component={"span"}
-                  className={"logo-icon"}
-                  display={"flex"}
-                  height={"var(--list-menu-coin-size)"}
-                  width={"var(--list-menu-coin-size)"}
-                  alignItems={"center"}
-                  justifyContent={"flex-start"}
-                >
-                  {coinBIcon ? (
-                    <AvatarCoinStyled
-                      style={{ marginTop: 2 }}
-                      imgx={coinBIcon.x}
-                      imgy={coinBIcon.y}
-                      imgheight={coinBIcon.h}
-                      imgwidth={coinBIcon.w}
-                      size={20}
-                      variant="circular"
-                      alt={coinBInfo.simpleName as string}
-                      src={
-                        "data:image/svg+xml;utf8," +
-                        '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                      }
-                    />
-                  ) : (
-                    <Avatar
-                      variant="circular"
-                      alt={coinBInfo.simpleName as string}
-                      style={{
-                        height: "var(--list-menu-coin-size)",
-                        width: "var(--list-menu-coin-size)",
-                      }}
-                      src={SoursURL + "images/icon-default.png"}
-                    />
-                  )}
-                  <Typography
-                    variant={"body2"}
-                    color={"var(--color-text-primary)"}
-                    component={"span"}
-                    marginRight={5}
-                    marginLeft={1 / 2}
-                    alignSelf={"right"}
-                    height={20}
-                    lineHeight={"20px"}
-                  >
-                    {coinBInfo.simpleName}
-                  </Typography>
-                </Box>
-
-                <Typography
-                  variant={"body2"}
-                  color={"var(--color-text-primary)"}
-                  component={"span"}
-                  height={20}
-                  marginLeft={10}
-                  lineHeight={"20px"}
-                >
-                  {getValuePrecisionThousand(balanceB, 4, 4)}
-                </Typography>
-              </Typography>
-            </Box>
+            <AmmPairDetail
+              coinA={coinAInfo.simpleName}
+              coinB={coinBInfo.simpleName}
+              balanceA={balanceA}
+              balanceB={balanceB}
+              precisionA={tokenMap[coinAInfo.simpleName].precision}
+              precisionB={tokenMap[coinBInfo.simpleName].precision}
+            />
           </PopoverPure>
         </Box>
       );
@@ -496,7 +366,8 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
   currency: Currency,
   getPopoverState: any,
   _account: Account,
-  coinJson: any
+  tokenMap: { [key: string]: any }
+  // coinJson: any
 ): Column<R, unknown>[] => [
   {
     key: "pools",
@@ -545,8 +416,10 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
         );
       }
       const {
-        totalAmmValueDollar,
-        totalAmmValueYuan,
+        // totalAmmValueDollar, //total for history
+        // totalAmmValueYuan,
+        balanceDollar,
+        balanceYuan,
         balanceA,
         balanceB,
         ammDetail: { coinAInfo, coinBInfo },
@@ -555,8 +428,8 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
         // precisionA,
         // precisionB,
       } = row as any;
-      const coinAIcon: any = coinJson[coinAInfo.simpleName];
-      const coinBIcon: any = coinJson[coinBInfo.simpleName];
+      // const coinAIcon: any = coinJson[coinAInfo.simpleName];
+      // const coinBIcon: any = coinJson[coinBInfo.simpleName];
       return (
         <Box
           height={"100%"}
@@ -567,12 +440,12 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
           {...bindHover(popState)}
         >
           <Typography component={"span"} style={{ cursor: "pointer" }}>
-            {typeof totalAmmValueDollar === "undefined"
+            {typeof balanceDollar === "undefined"
               ? EmptyValueTag
               : currency === Currency.usd
               ? PriceTag.Dollar +
                 getValuePrecisionThousand(
-                  totalAmmValueDollar,
+                  balanceDollar,
                   undefined,
                   undefined,
                   undefined,
@@ -584,7 +457,7 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
                 )
               : PriceTag.Yuan +
                 getValuePrecisionThousand(
-                  totalAmmValueYuan,
+                  balanceYuan,
                   undefined,
                   undefined,
                   undefined,
@@ -637,144 +510,14 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
               horizontal: "center",
             }}
           >
-            <Box padding={1.5} paddingLeft={1}>
-              <Typography
-                component={"span"}
-                display={"flex"}
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                style={{ textTransform: "capitalize" }}
-                color={"textPrimary"}
-              >
-                <Box
-                  component={"span"}
-                  className={"logo-icon"}
-                  display={"flex"}
-                  height={"var(--list-menu-coin-size)"}
-                  width={"var(--list-menu-coin-size)"}
-                  alignItems={"center"}
-                  justifyContent={"flex-start"}
-                >
-                  {coinAIcon ? (
-                    <AvatarCoinStyled
-                      imgx={coinAIcon.x}
-                      imgy={coinAIcon.y}
-                      imgheight={coinAIcon.h}
-                      imgwidth={coinAIcon.w}
-                      size={20}
-                      variant="circular"
-                      style={{ marginTop: 2 }}
-                      alt={coinAInfo.simpleName as string}
-                      src={
-                        "data:image/svg+xml;utf8," +
-                        '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                      }
-                    />
-                  ) : (
-                    <Avatar
-                      variant="circular"
-                      alt={coinAInfo.simpleName as string}
-                      style={{
-                        height: "var(--list-menu-coin-size))",
-                        width: "var(--list-menu-coin-size)",
-                      }}
-                      src={SoursURL + "images/icon-default.png"}
-                    />
-                  )}
-                  <Typography
-                    component={"span"}
-                    color={"var(--color-text-primary)"}
-                    variant={"body2"}
-                    marginLeft={1 / 2}
-                    height={20}
-                    lineHeight={"20px"}
-                  >
-                    {coinAInfo.simpleName}
-                  </Typography>
-                </Box>
-
-                <Typography
-                  component={"span"}
-                  color={"var(--color-text-primary)"}
-                  variant={"body2"}
-                  height={20}
-                  marginLeft={10}
-                  lineHeight={"20px"}
-                >
-                  {getValuePrecisionThousand(balanceA, 4, 4)}
-                </Typography>
-              </Typography>
-              <Typography
-                component={"span"}
-                display={"flex"}
-                flexDirection={"row"}
-                justifyContent={"space-between"}
-                alignItems={"center"}
-                marginTop={1 / 2}
-                style={{ textTransform: "capitalize" }}
-              >
-                <Box
-                  component={"span"}
-                  className={"logo-icon"}
-                  display={"flex"}
-                  height={"var(--list-menu-coin-size)"}
-                  width={"var(--list-menu-coin-size)"}
-                  alignItems={"center"}
-                  justifyContent={"flex-start"}
-                >
-                  {coinBIcon ? (
-                    <AvatarCoinStyled
-                      style={{ marginTop: 2 }}
-                      imgx={coinBIcon.x}
-                      imgy={coinBIcon.y}
-                      imgheight={coinBIcon.h}
-                      imgwidth={coinBIcon.w}
-                      size={20}
-                      variant="circular"
-                      alt={coinBInfo.simpleName as string}
-                      src={
-                        "data:image/svg+xml;utf8," +
-                        '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'
-                      }
-                    />
-                  ) : (
-                    <Avatar
-                      variant="circular"
-                      alt={coinBInfo.simpleName as string}
-                      style={{
-                        height: "var(--list-menu-coin-size)",
-                        width: "var(--list-menu-coin-size)",
-                      }}
-                      src={SoursURL + "images/icon-default.png"}
-                    />
-                  )}
-                  <Typography
-                    variant={"body2"}
-                    color={"var(--color-text-primary)"}
-                    component={"span"}
-                    marginRight={5}
-                    marginLeft={1 / 2}
-                    alignSelf={"right"}
-                    height={20}
-                    lineHeight={"20px"}
-                  >
-                    {coinBInfo.simpleName}
-                  </Typography>
-                </Box>
-
-                <Typography
-                  variant={"body2"}
-                  color={"var(--color-text-primary)"}
-                  component={"span"}
-                  height={20}
-                  marginLeft={10}
-                  lineHeight={"20px"}
-                >
-                  {getValuePrecisionThousand(balanceB, 4, 4)}
-                </Typography>
-              </Typography>
-            </Box>
+            <AmmPairDetail
+              coinA={coinAInfo.simpleName}
+              coinB={coinBInfo.simpleName}
+              balanceA={balanceA}
+              balanceB={balanceB}
+              precisionA={tokenMap[coinAInfo.simpleName].precision}
+              precisionB={tokenMap[coinBInfo.simpleName].precision}
+            />
           </PopoverPure>
         </Box>
       );
@@ -832,9 +575,10 @@ export const MyPoolTable = withTranslation("tables")(
     wait = globalSetup.wait,
     currency = Currency.usd,
     showloading,
+    tokenMap,
     ...rest
   }: MyPoolTableProps<R> & WithTranslation) => {
-    const { coinJson, isMobile } = useSettings();
+    const { isMobile } = useSettings();
     const [filter, setFilter] = React.useState({
       searchValue: "",
     });
@@ -945,7 +689,8 @@ export const MyPoolTable = withTranslation("tables")(
                   currency,
                   getPopoverState,
                   account,
-                  coinJson
+                  tokenMap
+                  // coinJson
                 ) as any)
               : (columnMode(
                   {
@@ -959,7 +704,7 @@ export const MyPoolTable = withTranslation("tables")(
                   currency,
                   getPopoverState,
                   account,
-                  coinJson
+                  tokenMap
                 ) as any)
           }
           sortDefaultKey={"liquidity"}

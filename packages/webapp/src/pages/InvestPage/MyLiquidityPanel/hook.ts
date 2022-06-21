@@ -110,7 +110,7 @@ export const useOverview = <
       }
       return [];
     },
-    [ammMap, userRewardsMap, getAmmLiquidity, tokenPrices, forex]
+    [ammMap, userRewardsMap, tokenPrices, forex, tokenMap]
   );
 
   const walletLayer2Callback = React.useCallback(async () => {
