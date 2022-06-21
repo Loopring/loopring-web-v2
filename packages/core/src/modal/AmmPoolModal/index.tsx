@@ -91,7 +91,9 @@ export const ModalCoinPairPanel = withTranslation("common")(
       btos,
       tickerMap,
       myAmm,
-    } = useCoinPair({ selectedMarket: symbol ?? "LRC-ETH" });
+    } = useCoinPair({
+      selectedMarket: symbol?.replace("AMM-", "") ?? "LRC-ETH",
+    });
     // const { account } = useAccount();
     const [panelIndex, setPanelIndex] = React.useState<0 | 1>(0);
 
@@ -188,7 +190,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
                   setPanelIndex(1);
                 }}
               >
-                {t("labelTransactionsLink")}
+                {t("labelAMMTransactionsLink")}
               </Link>
               <Box marginBottom={2}>
                 <AmmPanelView

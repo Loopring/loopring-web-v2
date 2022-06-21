@@ -230,14 +230,6 @@ const MyLiquidity: any = withTranslation("common")(
               pagination={{ pageSize: 10 }}
               showloading={showLoading}
               currency={currency}
-              // handleDeposit={(row) => {
-              //
-              //   JumpToLiqudity(pair, "add");
-              // }}
-              // handleWithdraw={(row) => {
-              //   const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-              //   JumpToLiqudity(pair, "remove");
-              // }}
               handleWithdraw={(row) => {
                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                 setShowAmm({

@@ -294,7 +294,7 @@ export const AmmRecordTable = withTranslation("tables")(
         className={"amm-record-table"}
       >
         <Table
-          /* className={'scrollable'}  */ {...{
+          {...{
             ...defaultArgs,
             t,
             i18n,

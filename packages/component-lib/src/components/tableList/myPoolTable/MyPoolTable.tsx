@@ -153,7 +153,7 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
     sortable: true,
     width: "auto",
     headerCellClass: "textAlignRightSortable",
-    name: t("labelLiquidity"),
+    name: t("labelMyLiquidity"),
     formatter: ({ row, rowIdx }) => {
       const popState = getPopoverState(rowIdx);
       if (!row || !row.ammDetail) {
@@ -532,7 +532,7 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
     key: "liquidity",
     sortable: true,
     headerCellClass: "textAlignRightSortable",
-    name: t("labelLiquidity") + "/" + t("labelFeeEarned"),
+    name: t("labelMyLiquidity") + "/" + t("labelFeeEarned"),
     formatter: ({ row, rowIdx }) => {
       const popState = getPopoverState(rowIdx);
       if (!row || !row.ammDetail) {

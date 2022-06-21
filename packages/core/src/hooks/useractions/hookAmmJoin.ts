@@ -169,7 +169,7 @@ export const useAmmJoin = ({
               btnStatus: TradeBtnStatus.DISABLED,
               btnI18nKey: `labelLimitMin| ${times * baseMinAmt} ${
                 ammData?.coinA.belong
-              } / ${times * quoteMinAmt} ${ammData?.coinB.belong}`,
+              } + ${times * quoteMinAmt} ${ammData?.coinB.belong}`,
             };
           }
         } else {

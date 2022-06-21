@@ -11,166 +11,20 @@ import styled from "@emotion/styled";
 import { useDeepCompareEffect } from "react-use";
 import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";
 
-// export const MyAmmLPAssets = withTranslation("common")(
-//   ({ ammCalcData, t }: { ammCalcData: AmmInData<any> } & WithTranslation) => {
-//     const { tokenMap } = store.getState().tokenMap;
-//
-//     const getTokenPrecision = React.useCallback(
-//       (token: string) => {
-//         if (tokenMap) {
-//           return tokenMap[token]?.precision;
-//         }
-//       },
-//       [tokenMap]
-//     );
-//     const coinAPrecision = getTokenPrecision(ammCalcData?.lpCoinA?.belong);
-//     const coinBPrecision = getTokenPrecision(ammCalcData?.lpCoinB?.belong);
-//     return (
-//       <Box className={"MuiPaper-elevation2"} paddingX={3} paddingY={2}>
-//         <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-//           <Box
-//             display={"flex"}
-//             className={"logo-icon"}
-//             height={"var(--list-menu-coin-size)"}
-//             alignItems={"center"}
-//             justifyContent={"center"}
-//           >
-//             <CoinIcon
-//               symbol={
-//                 "LP-" +
-//                 ammCalcData.lpCoinA.belong +
-//                 "-" +
-//                 ammCalcData.lpCoinB.belong
-//               }
-//             />
-//           </Box>
-//           <Box paddingLeft={1}>
-//             <Typography
-//               variant={"h4"}
-//               component={"h3"}
-//               paddingRight={1}
-//               fontWeight={700}
-//             >
-//               <Typography
-//                 component={"span"}
-//                 title={"sell"}
-//                 className={"next-coin"}
-//               >
-//                 {ammCalcData.lpCoinA.belong}
-//               </Typography>
-//               <Typography component={"i"}>/</Typography>
-//               <Typography component={"span"} title={"buy"}>
-//                 {ammCalcData.lpCoinB.belong}
-//               </Typography>
-//             </Typography>
-//           </Box>
-//         </Box>
-//         <Divider style={{ margin: "16px 0" }} />
-//         <Box display={"flex"} flexDirection={"column"}>
-//           <Box
-//             display={"flex"}
-//             flexDirection={"row"}
-//             justifyContent={"space-between"}
-//             alignItems={"center"}
-//           >
-//             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-//               {t("labelMyLPToken")}
-//             </Typography>
-//             <Typography component={"p"} variant="body2">
-//               {ammCalcData && ammCalcData?.lpCoin?.balance !== undefined
-//                 ? getValuePrecisionThousand(
-//                     ammCalcData.lpCoin.balance,
-//                     undefined,
-//                     undefined,
-//                     undefined,
-//                     false,
-//                     { isTrade: true }
-//                   )
-//                 : EmptyValueTag}
-//             </Typography>
-//           </Box>
-//           <Box
-//             display={"flex"}
-//             flexDirection={"row"}
-//             justifyContent={"space-between"}
-//             alignItems={"center"}
-//             marginTop={1 / 2}
-//           >
-//             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-//               {t("labelMyLPAToken", {
-//                 symbol: ammCalcData.lpCoinA.belong,
-//               })}
-//             </Typography>
-//             <Typography component={"p"} variant="body2">
-//               {ammCalcData && ammCalcData.lpCoinA.balance
-//                 ? getValuePrecisionThousand(
-//                     ammCalcData.lpCoinA.balance,
-//                     coinAPrecision,
-//                     2,
-//                     undefined,
-//                     false,
-//                     { floor: true }
-//                   )
-//                 : EmptyValueTag}
-//             </Typography>
-//           </Box>
-//           <Box
-//             display={"flex"}
-//             flexDirection={"row"}
-//             justifyContent={"space-between"}
-//             alignItems={"center"}
-//             marginTop={1 / 2}
-//           >
-//             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-//               {t("labelMyLPBToken", {
-//                 symbol: ammCalcData.lpCoinB.belong,
-//               })}
-//             </Typography>
-//             <Typography component={"p"} variant="body2">
-//               {ammCalcData && ammCalcData.lpCoinB.balance
-//                 ? getValuePrecisionThousand(
-//                     ammCalcData.lpCoinB.balance,
-//                     coinBPrecision,
-//                     2,
-//                     undefined,
-//                     false,
-//                     { floor: true }
-//                   )
-//                 : EmptyValueTag}
-//             </Typography>
-//           </Box>
-//           <Box
-//             display={"flex"}
-//             flexDirection={"row"}
-//             justifyContent={"space-between"}
-//             alignItems={"center"}
-//             marginTop={1 / 2}
-//           >
-//             <Typography component={"p"} variant="body2" color={"textSecondary"}>
-//               {t("labelMyLPAmountFor")}
-//             </Typography>
-//             <Typography component={"p"} variant="body2">
-//               {ammCalcData && ammCalcData.percentage
-//                 ? getValuePrecisionThousand(
-//                     Number(ammCalcData.percentage) * 100,
-//                     4,
-//                     2,
-//                     undefined,
-//                     false,
-//                     { floor: true, isExponential: true }
-//                   ) + "%"
-//                 : EmptyValueTag}
-//             </Typography>
-//           </Box>
-//         </Box>
-//       </Box>
-//     );
-//   }
-// );
-
 export const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
+  .divider-item {
+    border-right: 0;
+  }
+  @media only screen and (min-width: 900px) {
+    .divider-item {
+      height: 0;
+      padding-top: 42%;
+      margin-left: 8px;
+      border-right: 1px solid var(--color-divide);
+    }
+  }
 ` as typeof Grid;
 
 export const AmmPanelView = ({

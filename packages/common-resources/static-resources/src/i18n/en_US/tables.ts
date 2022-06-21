@@ -83,6 +83,7 @@ export default {
   labelTradePair: "Trade Pair",
   labelPool: "Pool",
   labelLiquidity: "Liquidity",
+  labelMyLiquidity: "My Liquidity",
   label24TradeVolume: "24h Volume",
   label24Reward: "24h Reward",
   labelAPR: "APR",

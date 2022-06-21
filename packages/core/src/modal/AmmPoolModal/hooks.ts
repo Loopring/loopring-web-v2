@@ -15,7 +15,6 @@ import {
   volumeToCount,
   WalletMapExtend,
   makeMyAmmMarketArray,
-  makeMyAmmWithSnapshot,
   getUserAmmTransaction,
   getRecentAmmTransaction,
   AmmDetailStore,
@@ -33,11 +32,11 @@ import {
   store,
   calcPriceByAmmTickMapDepth,
   swapDependAsync,
+  makeMyAmmWithStat,
 } from "../../index";
 import {
   AmmPoolSnapshot,
   AmmPoolTx,
-  AmmUserRewardMap,
   getExistedMarket,
   TickerData,
   TradingInterval,
@@ -121,8 +120,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
   const { walletLayer2 } = useWalletLayer2();
   const [walletMap, setWalletMap] =
     React.useState<WalletMapExtend<C> | undefined>(undefined);
-  const [ammUserRewardMap, setAmmUserRewardMap] =
-    React.useState<AmmUserRewardMap | undefined>(undefined);
   const [snapShotData, setSnapShotData] =
     React.useState<
       | {
@@ -168,14 +165,18 @@ export const useCoinPair = <C extends { [key: string]: any }>({
   const [pair, setPair] = React.useState<{
     coinAInfo: CoinInfo<C> | undefined;
     coinBInfo: CoinInfo<C> | undefined;
-  }>({
-    coinAInfo: undefined,
-    coinBInfo: undefined,
+  }>(() => {
+    // @ts-ignore
+    let [, coinA, coinB] = (selectedMarket ?? "").match(/(\w+)-(\w+)/i);
+    const coinAInfo = coinMap[coinA];
+    const coinBInfo = coinMap[coinB];
+    return {
+      coinAInfo,
+      coinBInfo,
+    };
   });
   const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([]);
   const [awardList, setAwardList] = React.useState<AwardItme[]>([]);
-  // const [isLoading, setIsLoading] = React.useState(false)
-  // const [isRecentLoading, setIsRecentLoading] = React.useState(false)
 
   const [stobPair, setStobPair] = React.useState<{
     stob: string | undefined;
@@ -249,16 +250,9 @@ export const useCoinPair = <C extends { [key: string]: any }>({
 
   React.useEffect(() => {
     getAwardList();
-
     // @ts-ignore
     let [, coinA, coinB] = (selectedMarket ?? "").match(/(\w+)-(\w+)/i);
-    if (ammMap && !ammMap[`AMM-${coinA}-${coinB}`]) {
-      coinA = "LRC";
-      coinB = "ETH";
-    }
-
     let { market } = getExistedMarket(marketArray, coinA, coinB);
-
     const {
       amm: realAmm,
       market: realMarket,
@@ -292,9 +286,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     if (coinMap) {
       const coinAInfo = coinMap[coinA];
       const coinBInfo = coinMap[coinB];
-
-      // myLog('coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
-
       setPair({
         coinAInfo,
         coinBInfo,
@@ -306,7 +297,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     }
 
     if (realAmm && realMarket && ammMap) {
-      //TODO should add it into websocket
       getAmmMap();
       swapDependAsync(realMarket)
         .then(({ ammPoolSnapshot, tickMap, depth }) => {
@@ -346,27 +336,32 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     }
   }, [selectedMarket]);
 
-  const walletLayer2Callback = React.useCallback(() => {
-    const { market } = getExistedMarket(
-      marketArray,
-      pair.coinAInfo?.simpleName as string,
-      pair.coinBInfo?.simpleName as string
-    );
-    if (market && snapShotData && snapShotData.ammPoolSnapshot) {
+  const walletLayer2Callback = React.useCallback(async () => {
+    const ammData = ammMap && ammMap["AMM-" + selectedMarket];
+    if (selectedMarket && ammData) {
       const _walletMap = walletLayer2DoIt();
-      const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(
-        market,
+      const _myAmm: MyAmmLP<C> = makeMyAmmWithStat(
+        selectedMarket,
         _walletMap,
-        ammUserRewardMap,
-        snapShotData
+        userRewardsMap,
+        ammData
       );
+      // const _myAmmFee: MyAmmLP<C> = makeMyAmmWithSnapshot(
+      //   `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`,
+      //   _walletMap,
+      //   userRewardsMap,
+      //   snapShotData
+      // );
+      // debugger;
+      // myLog(_myAmmFee, _myAmm);
       setMyAmm(_myAmm);
     }
   }, [
-    ammUserRewardMap,
+    pair,
+    ammMap,
+    userRewardsMap,
     marketArray,
-    pair.coinAInfo?.simpleName,
-    pair.coinBInfo?.simpleName,
+    selectedMarket,
     snapShotData,
     walletLayer2DoIt,
   ]);
@@ -374,23 +369,10 @@ export const useCoinPair = <C extends { [key: string]: any }>({
   useWalletLayer2Socket({ walletLayer2Callback });
 
   React.useEffect(() => {
-    const { market } = getExistedMarket(
-      marketArray,
-      pair.coinAInfo?.simpleName as string,
-      pair.coinBInfo?.simpleName as string
-    );
-    if (useUserRewardsStatus === SagaStatus.UNSET && market) {
-      // const {userRewardsMap} = store.getState().userRewardsMap
-      setAmmUserRewardMap(userRewardsMap);
-      const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(
-        market,
-        walletMap,
-        ammUserRewardMap,
-        snapShotData
-      );
-      setMyAmm(_myAmm);
+    if (useUserRewardsStatus === SagaStatus.UNSET && selectedMarket) {
+      walletLayer2Callback();
     }
-  }, [useUserRewardsStatus]);
+  }, [selectedMarket, useUserRewardsStatus]);
 
   React.useEffect(() => {
     if (

@@ -56,12 +56,14 @@ export const ChartAndInfoPanel = ({
 
   const precisionA = tokenMap[coinPairInfo.coinA]?.precision;
   const precisionB = tokenMap[coinPairInfo.coinB]?.precision;
-
+  console.log("myAmm", myAmm);
   const {
-    totalAmmValueDollar,
-    totalAmmValueYuan,
-    balanceA,
-    balanceB,
+    // totalAmmValueDollar,
+    // totalAmmValueYuan,
+    balanceA: myBalanceA,
+    balanceB: myBalanceB,
+    balanceDollar: myBalanceDollar,
+    balanceYuan: myBalanceYuan,
     // ammDetail: { coinAInfo, coinBInfo },
   } = myAmm as any;
   const tradeFloatType =
@@ -112,7 +114,7 @@ export const ChartAndInfoPanel = ({
       <Box
         width={"100%"}
         // height={"60%"}
-        height={"calc(var(--swap-box-height) - 296px)"}
+        height={"calc(var(--swap-box-height) - 262px)"}
         maxHeight={420}
       >
         <ScaleAreaChart
@@ -130,11 +132,12 @@ export const ChartAndInfoPanel = ({
         alignItems={"center"}
         margin={2}
         width={"auto"}
+        spacing={2}
       >
         <Grid
           item
-          paddingLeft={2}
-          paddingY={3}
+          // paddingLeft={2}
+          // paddingY={3}
           xs={12}
           md={6}
           display={"flex"}
@@ -328,15 +331,7 @@ export const ChartAndInfoPanel = ({
               </Typography>
             </Typography>
           </Box>
-          <Divider
-            style={{
-              height: 0,
-              paddingTop: "48%",
-              marginLeft: "8px",
-              borderRight: "1px solid var(--color-divide)",
-            }}
-            orientation={"vertical"}
-          />
+          <Divider className={"divider-item"} orientation={"vertical"} />
         </Grid>
 
         <Grid item paddingX={2} paddingY={3} xs={12} md={6}>
@@ -351,6 +346,7 @@ export const ChartAndInfoPanel = ({
               component={"span"}
               color={"var(--color-text-third)"}
               display={"flex"}
+              title={"Total Volume Locked"}
             >
               {t("labelTVL")}
             </Typography>
@@ -426,7 +422,7 @@ export const ChartAndInfoPanel = ({
             >
               {t("labelMe")}
             </Typography>
-            {typeof totalAmmValueDollar === "undefined" ? (
+            {typeof myBalanceDollar === "undefined" ? (
               <Typography component={"span"}>{EmptyValueTag}</Typography>
             ) : (
               <Typography
@@ -437,12 +433,10 @@ export const ChartAndInfoPanel = ({
                   textDecoration: "underline dotted",
                 }}
               >
-                {typeof totalAmmValueDollar === "undefined"
-                  ? EmptyValueTag
-                  : currency === Currency.usd
+                {currency === Currency.usd
                   ? PriceTag.Dollar +
                     getValuePrecisionThousand(
-                      totalAmmValueDollar,
+                      myBalanceDollar,
                       undefined,
                       undefined,
                       undefined,
@@ -454,7 +448,7 @@ export const ChartAndInfoPanel = ({
                     )
                   : PriceTag.Yuan +
                     getValuePrecisionThousand(
-                      totalAmmValueYuan,
+                      myBalanceYuan,
                       undefined,
                       undefined,
                       undefined,
@@ -543,7 +537,11 @@ export const ChartAndInfoPanel = ({
                     marginLeft={10}
                     lineHeight={"20px"}
                   >
-                    {getValuePrecisionThousand(balanceA, 4, 4)}
+                    {getValuePrecisionThousand(
+                      myBalanceA,
+                      precisionA,
+                      precisionA
+                    )}
                   </Typography>
                 </Typography>
                 <Typography
@@ -612,7 +610,11 @@ export const ChartAndInfoPanel = ({
                     marginLeft={10}
                     lineHeight={"20px"}
                   >
-                    {getValuePrecisionThousand(balanceB, 4, 4)}
+                    {getValuePrecisionThousand(
+                      myBalanceB,
+                      precisionB,
+                      precisionB
+                    )}
                   </Typography>
                 </Typography>
               </Box>

@@ -41,7 +41,9 @@ export function useAmmViewData({
     }
     if (i18nKey) {
       const key = i18nKey.split("|");
-      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+      // debugger;
+
+      return t(key[0], key && key[1] ? { arg: key[1].toString() } : undefined);
     } else {
       return isAdd ? t(`labelAddLiquidityBtn`) : t(`labelRemoveLiquidityBtn`);
     }
@@ -70,8 +72,7 @@ export function useAmmViewData({
       }
       return (
         <>
-          {" "}
-          {price}{" "}
+          {price}
           <IconButtonStyled
             size={"small"}
             aria-label={t("tokenExchange")}
