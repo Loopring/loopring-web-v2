@@ -224,6 +224,8 @@ export type SummaryMyAmm = {
   rewardYuan: Value;
   feeDollar: Value;
   feeYuan: Value;
+  investDollar?: Value;
+  investYuan?: Value;
 };
 export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   userRewardsMap,

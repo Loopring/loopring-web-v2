@@ -259,6 +259,7 @@ export type MyAmmLP<T> = {
   rewardToken2?: CoinInfo<T> | undefined;
   rewardDollar?: number | undefined;
   rewardYuan?: number | undefined;
+  totalLpAmount?: number | undefined;
 };
 
 export type TradeFloat = {

@@ -21,12 +21,13 @@ import { SagaStatus } from "@loopring-web/common-resources";
 export const useOverview = <
   R extends { [key: string]: any },
   I extends { [key: string]: any }
->({}: // ammActivityMap
-{
+>({
+  ammActivityMap,
+}: {
   ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
 }): {
   myAmmMarketArray: AmmRecordRow<R>[];
-  summaryReward: SummaryMyAmm | undefined;
+  summaryMyAmm: Partial<SummaryMyAmm>;
   myPoolRow: MyPoolRow<R>[];
   showLoading: boolean;
 } => {
@@ -34,12 +35,13 @@ export const useOverview = <
   const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
   const { tokenMap } = useTokenMap();
   const { status: ammMapStatus, ammMap } = useAmmMap();
-  const { getAmmLiquidity } = useAmmTotalValue();
   const { forex } = useSystem();
   const { tokenPrices } = store.getState().tokenPrices;
 
-  const [summaryReward, setSummaryReward] =
-    React.useState<SummaryMyAmm | undefined>(undefined);
+  const [summaryMyAmm, setSummaryMyAmm] = React.useState<Partial<SummaryMyAmm>>(
+    {}
+  );
+
   const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([]);
   const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<
     AmmRecordRow<R>[]
@@ -64,6 +66,10 @@ export const useOverview = <
 
   const makeMyPoolRow = React.useCallback(
     async (_walletMap): Promise<MyPoolRow<R>[]> => {
+      let totalCurrentInvest = {
+        investDollar: 0,
+        investYuan: 0,
+      };
       if (_walletMap && ammMap && userRewardsMap && tokenPrices && forex) {
         // @ts-ignore
         const _myPoolRow: MyPoolRow<R>[] = Reflect.ownKeys(_walletMap).reduce(
@@ -88,16 +94,20 @@ export const useOverview = <
           [] as MyPoolRow<R>[]
         );
 
-        const formattedPoolRow = _myPoolRow.map((o: any) => {
+        const formattedPoolRow = _myPoolRow.map((o: MyPoolRow<R>) => {
           const market = `LP-${o.ammDetail?.coinAInfo.simpleName}-${o.ammDetail?.coinBInfo.simpleName}`;
-          const totalAmount = o.totalLpAmount;
+          const totalAmount = o.totalLpAmount ?? 0;
           const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount;
           const totalAmmValueYuan = (totalAmmValueDollar || 0) * forex;
           const coinA = o.ammDetail?.coinAInfo?.simpleName;
           const coinB = o.ammDetail?.coinBInfo?.simpleName;
           const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
           const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
-
+          totalCurrentInvest = {
+            investDollar:
+              totalCurrentInvest.investDollar + (o.balanceDollar ?? 0),
+            investYuan: totalCurrentInvest.investYuan + (o.balanceYuan ?? 0),
+          };
           return {
             ...o,
             totalAmmValueDollar,
@@ -106,11 +116,17 @@ export const useOverview = <
             precisionB,
           };
         });
+        setSummaryMyAmm((state) => {
+          return {
+            ...state,
+            totalCurrentInvest,
+          } as SummaryMyAmm;
+        });
         return formattedPoolRow as any;
       }
       return [];
     },
-    [ammMap, userRewardsMap, getAmmLiquidity, tokenPrices, forex]
+    [ammMap, userRewardsMap, tokenPrices, forex, tokenMap]
   );
 
   const walletLayer2Callback = React.useCallback(async () => {
@@ -145,13 +161,18 @@ export const useOverview = <
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
       const summaryReward = makeSummaryMyAmm({ userRewardsMap });
-      setSummaryReward(summaryReward);
+      setSummaryMyAmm((state) => {
+        return {
+          ...state,
+          ...summaryReward,
+        };
+      });
       walletLayer2Callback();
     }
   }, [userRewardsStatus]);
   return {
     myAmmMarketArray,
-    summaryReward,
+    summaryMyAmm,
     myPoolRow,
     showLoading,
   };

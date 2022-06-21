@@ -1,5 +1,10 @@
-import { Account, AmmDetail, MyAmmLP } from "@loopring-web/common-resources";
-import { Currency } from "@loopring-web/loopring-sdk";
+import {
+  Account,
+  AmmDetail,
+  CoinKey,
+  MyAmmLP,
+} from "@loopring-web/common-resources";
+import { Currency, LoopringMap, TokenInfo } from "@loopring-web/loopring-sdk";
 
 export type MyPoolRow<R> = MyAmmLP<R> & {
   ammDetail: AmmDetail<R>;
@@ -18,6 +23,7 @@ export type MyPoolTableProps<R> = {
   pagination?: {
     pageSize: number;
   };
+  tokenMap: LoopringMap<TokenInfo & { tradePairs: Array<CoinKey<R>> }>;
   allowTrade?: any;
   page?: number;
   tableHeight?: number;

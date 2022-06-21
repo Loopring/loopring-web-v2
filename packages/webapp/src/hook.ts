@@ -32,7 +32,6 @@ import { useTheme } from "@emotion/react";
  * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, forex, Activities ...)
  * @step5 launch the page
  */
-
 export function useInit() {
   const [, search] = window.location?.hash.split("?") ?? [];
   const query = new URLSearchParams(search);

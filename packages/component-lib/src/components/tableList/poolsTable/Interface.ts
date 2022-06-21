@@ -20,5 +20,6 @@ export type PoolTableProps<T, R = Row<T>> = {
   forex?: number;
   tokenPrices: any;
   showLoading?: boolean;
+  tokenMap: { [key: string]: any };
   sortMethod: (sortedRows: any[], sortColumn: string) => any[];
 };

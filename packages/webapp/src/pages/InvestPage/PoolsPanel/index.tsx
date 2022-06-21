@@ -18,6 +18,7 @@ import {
   useAccount,
   useSystem,
   useAmmActivityMap,
+  useTokenMap,
 } from "@loopring-web/core";
 
 const WrapperStyled = styled(Box)`
@@ -55,6 +56,7 @@ export const PoolsPanel = withTranslation("common")(
     const { setShowAmm } = useOpenModals();
     const { coinJson } = useSettings();
     const { forex } = useSystem();
+    const { tokenMap } = useTokenMap();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
     const { activityInProgressRules } = useAmmActivityMap();
@@ -90,6 +92,7 @@ export const PoolsPanel = withTranslation("common")(
             className={"table-divide"}
           >
             <PoolsTable
+              tokenMap={tokenMap as any}
               {...{
                 rawData: filteredData,
                 showLoading: showLoading,
@@ -100,6 +103,7 @@ export const PoolsPanel = withTranslation("common")(
                 forex,
                 account,
                 tokenPrices,
+
                 handleWithdraw: (row) => {
                   // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                   const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;

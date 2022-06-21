@@ -348,15 +348,7 @@ export const useCoinPair = <C extends { [key: string]: any }>({
       );
       setMyAmm(_myAmm);
     }
-  }, [
-    pair,
-    ammMap,
-    userRewardsMap,
-    marketArray,
-    selectedMarket,
-    snapShotData,
-    walletLayer2DoIt,
-  ]);
+  }, [ammMap, userRewardsMap, selectedMarket, walletLayer2DoIt]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
 
