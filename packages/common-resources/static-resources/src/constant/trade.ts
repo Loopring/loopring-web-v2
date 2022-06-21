@@ -136,7 +136,7 @@ export const PROPERTY_Value_LIMIT = 40;
 export const LOOPRING_TAKE_NFT_META_KET = {
   name: "name",
   image: "image",
-  royaltyPercentage: "royaltyPercentage",
+  royalty_percentage: "royalty_percentage",
   description: "description",
   properties: "properties",
 };

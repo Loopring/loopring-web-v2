@@ -100,6 +100,14 @@ export const useMyNFT = () => {
         const uri = IPFS_LOOPRING_SITE + cid;
         return fetch(uri)
           .then((response) => response.json())
+          .then((metaFromIpfs) => {
+            return Reflect.ownKeys(LOOPRING_TAKE_NFT_META_KET).reduce(
+              (prev, key) => {
+                return { ...prev, [key]: metaFromIpfs[key] };
+              },
+              {} as LOOPRING_NFT_METADATA
+            );
+          })
           .catch((error) => {
             return {};
           });
