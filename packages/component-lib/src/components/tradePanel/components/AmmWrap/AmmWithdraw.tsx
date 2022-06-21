@@ -269,7 +269,7 @@ export const AmmWithdrawWrap = <
             >
               {showLP}
             </Typography>
-            <Box alignSelf={"stretch"} marginTop={1} marginX={1} height={49}>
+            <Box alignSelf={"stretch"} marginTop={1} marginX={2} height={49}>
               <BtnPercentage
                 selected={_selectedPercentage}
                 anchors={[

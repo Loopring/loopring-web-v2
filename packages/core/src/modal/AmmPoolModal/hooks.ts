@@ -546,12 +546,15 @@ export const useAmmPool = <
     if (
       walletLayer2Status === SagaStatus.UNSET &&
       walletLayer2 !== undefined &&
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
+      accountStatus === SagaStatus.UNSET
     ) {
-      getUserAmmPoolTxs({ pageSize, offset: 0 });
+      if (account.readyState === AccountStatus.ACTIVATED && market) {
+        getUserAmmPoolTxs({ pageSize, offset: 0 });
+      } else {
+        setMyAmmMarketArray([]);
+      }
     }
-  }, [pageSize, walletLayer2Status]);
+  }, [pageSize, walletLayer2Status, market]);
 
   return {
     ammActivityMap,
