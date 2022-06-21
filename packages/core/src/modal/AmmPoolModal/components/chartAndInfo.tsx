@@ -56,7 +56,6 @@ export const ChartAndInfoPanel = ({
 
   const precisionA = tokenMap[coinPairInfo.coinA]?.precision;
   const precisionB = tokenMap[coinPairInfo.coinB]?.precision;
-  console.log("myAmm", myAmm);
   const {
     // totalAmmValueDollar,
     // totalAmmValueYuan,
