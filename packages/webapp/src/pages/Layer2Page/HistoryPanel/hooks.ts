@@ -254,7 +254,6 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       const ammPoolAddress = tokenMap[tokenSymbol]?.address;
       setShowLoading(true);
       if (LoopringAPI.ammpoolAPI && accountId && apiKey) {
-        debugger;
         const response = await LoopringAPI.ammpoolAPI.getUserAmmPoolTxs(
           {
             accountId,
