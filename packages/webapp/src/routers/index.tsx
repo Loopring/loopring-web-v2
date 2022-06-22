@@ -12,6 +12,8 @@ import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
+  firebaseIOConfig,
+  myLog,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -29,6 +31,9 @@ import { NFTPage } from "../pages/NFTPage";
 import { useGetAssets } from "../pages/Layer2Page/AssetPanel/hook";
 import { Footer } from "../layouts/footer";
 import { InvestPage } from "../pages/InvestPage";
+import { ExtendedFirebaseInstance, useFirebase } from "react-redux-firebase";
+import { getAnalytics, logEvent } from "firebase/analytics";
+import { FirebaseApp } from "@firebase/app";
 
 const ContentWrap = ({
   children,
@@ -83,6 +88,17 @@ const WrapModal = () => {
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
+  // const firebase: ExtendedFirebaseInstance = useFirebase();
+  // firebase.initializeAuth()
+  // firebaseIOConfig
+  // try {
+  //   // const analytics = firebase.analytics();
+  //   // debugger;
+  //   // firebase.analytics;
+  //   const analytics = getAnalytics(firebase.apps[0]);
+  // } catch (e) {
+  //   myLog(e);
+  // }
   const proFlag =
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
@@ -107,6 +123,19 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     // @ts-ignore
     setMyLog(true);
   }
+  const analytics = getAnalytics();
+
+  logEvent(analytics, "Route", {
+    protocol: window.location.protocol,
+    pathname: window.location.pathname,
+    query: query,
+  });
+  // firebase.push("Route", {
+  //   protocol: window.location.protocol,
+  //   pathname: window.location.pathname,
+  //   query: query,
+  // });
+
   return (
     <>
       <Switch>

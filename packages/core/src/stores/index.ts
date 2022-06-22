@@ -6,7 +6,6 @@ import {
 } from "@reduxjs/toolkit";
 
 import { useDispatch } from "react-redux";
-import * as firebase from "firebase/app";
 import { persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
 import storage from "redux-persist/lib/storage";
@@ -39,6 +38,8 @@ import { TradeProSettings } from "./localStore/tradeProSettings";
 import { notifyMapSlice } from "./notify/reducer";
 import { walletLayer2NFTSlice } from "./walletLayer2NFT/reducer";
 import { localStoreReducer } from "./localStore";
+import { getAnalytics } from "firebase/analytics";
+
 import {
   ChainHashInfos,
   firebaseBridgeConfig,
@@ -56,8 +57,11 @@ import {
   pageTradeLiteSlice,
   pageTradeProSlice,
 } from "./router";
-import { firebaseReducer } from "react-redux-firebase";
-
+import {
+  firebaseReducer,
+  ReactReduxFirebaseProviderProps,
+} from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 const sagaMiddleware = createSagaMiddleware();
 
 const DEFAULT_TIMEOUT = 1000 * 60 * 15;
@@ -116,21 +120,6 @@ const persistedLocalStoreReducer = persistReducer<
 
 // Initialize Firebase
 
-const firebaseConfig = {
-  userProfile: "users",
-  // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
-};
-
-switch (process.env.REACT_APP_NAME) {
-  case "bridge":
-    firebase.initializeApp(firebaseBridgeConfig);
-    // getAnalytics(firebase);
-    break;
-  case "loopring.io":
-  default:
-    firebase.initializeApp(firebaseIOConfig);
-}
-
 const reducer = combineReducers({
   account: persistedAccountReducer,
   socket: socketSlice.reducer,
@@ -173,15 +162,39 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   enhancers: [reduxBatch],
 });
+export const firebaseProps: ReactReduxFirebaseProviderProps = (() => {
+  let firebase_app;
+  switch (process.env.REACT_APP_NAME) {
+    case "bridge":
+      // getAnalytics(firebase);
+      firebase_app = firebase.initializeApp(firebaseBridgeConfig);
+      // myLog(firebase_app);
+      getAnalytics(firebase_app);
+      return {
+        firebase,
+        config: {
+          userProfile: "users",
+
+          // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+        },
+        dispatch: store.dispatch,
+      };
+    case "loopring.io":
+    default:
+      firebase_app = firebase.initializeApp(firebaseIOConfig);
+      // myLog(firebase_app);
+      getAnalytics(firebase_app);
+      return {
+        firebase,
+        config: {
+          userProfile: "users",
+        },
+        dispatch: store.dispatch,
+      };
+  }
+})();
 
 store.dispatch(updateVersion());
-
-export const firebaseProps = {
-  firebase,
-  config: firebaseConfig,
-  dispatch: store.dispatch,
-  // createFirestoreInstance // <- needed if using firestore
-};
 
 store.dispatch(setLanguage(store.getState().settings.language));
 fetch(`./static/coin/loopring.json`)
