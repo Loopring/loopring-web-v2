@@ -16,6 +16,7 @@ import {
   useWalletLayer2Socket,
   useSystem,
   store,
+  useTokenPrices,
 } from "@loopring-web/core";
 import { SagaStatus } from "@loopring-web/common-resources";
 export const useOverview = <
@@ -36,7 +37,7 @@ export const useOverview = <
   const { tokenMap } = useTokenMap();
   const { status: ammMapStatus, ammMap } = useAmmMap();
   const { forex } = useSystem();
-  const { tokenPrices } = store.getState().tokenPrices;
+  const { tokenPrices } = useTokenPrices();
 
   const [summaryMyAmm, setSummaryMyAmm] = React.useState<Partial<SummaryMyAmm>>(
     {}
@@ -137,7 +138,14 @@ export const useOverview = <
       setMyPoolRow(_myPoolRow);
       setShowLoading(false);
     }
-  }, [ammMap, makeMyPoolRow, walletLayer2DoIt, tokenPrices]);
+  }, [
+    ammMap,
+    tokenPrices,
+    userRewardsMap,
+    forex,
+    walletLayer2DoIt,
+    makeMyPoolRow,
+  ]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
   React.useEffect(() => {

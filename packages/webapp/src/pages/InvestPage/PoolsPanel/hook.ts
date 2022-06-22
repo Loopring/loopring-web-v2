@@ -16,6 +16,7 @@ import {
   useTokenMap,
   useSocket,
   useTicker,
+  useTokenPrices,
 } from "@loopring-web/core";
 
 import { WsTopicType } from "@loopring-web/loopring-sdk";
@@ -30,12 +31,12 @@ export function useAmmMapUI<
   const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>(
     []
   );
-  const { coinMap, marketArray } = useTokenMap();
+  const { coinMap, marketArray, status: tokenMapStatus } = useTokenMap();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [filterValue, setFilterValue] = React.useState("");
   const [tableHeight, setTableHeight] = React.useState(0);
-  const { ammMap } = useAmmMap();
-  const { tokenPrices } = store.getState().tokenPrices;
+  const { ammMap, status: ammStatus } = useAmmMap();
+  const { tokenPrices } = useTokenPrices();
   const { tickerMap, status: tickerStatus } = useTicker();
   const { sendSocketTopic, socketEnd } = useSocket();
 
@@ -47,7 +48,7 @@ export function useAmmMapUI<
   }, []);
   const socketSendTicker = React.useCallback(() => {
     sendSocketTopic({ [WsTopicType.ticker]: marketArray });
-  }, []);
+  }, [marketArray, sendSocketTopic]);
 
   const resetTableData = React.useCallback(
     (tableData) => {
@@ -99,7 +100,7 @@ export function useAmmMapUI<
         throw new CustomError({ ...ErrorMap.NO_TOKEN_MAP, options: error });
       }
     },
-    [ammMap]
+    [ammMap, coinMap, resetTableData]
   );
   const sortMethod = React.useCallback(
     (_sortedRows, sortColumn) => {
@@ -178,10 +179,14 @@ export function useAmmMapUI<
   }, [nodeTimer.current]);
 
   React.useEffect(() => {
-    if (tickerStatus === SagaStatus.UNSET) {
+    if (
+      tickerStatus === SagaStatus.UNSET &&
+      ammStatus === SagaStatus.UNSET &&
+      tokenMapStatus === SagaStatus.UNSET
+    ) {
       updateRawData(tickerMap);
     }
-  }, [tickerStatus]);
+  }, [tickerStatus, ammStatus, tokenMapStatus]);
 
   const getFilteredData = React.useCallback(
     (value: string) => {
@@ -200,7 +205,7 @@ export function useAmmMapUI<
         resetTableData(rawData);
       }
     },
-    [rawData]
+    [rawData, resetTableData]
   );
   return {
     // page,

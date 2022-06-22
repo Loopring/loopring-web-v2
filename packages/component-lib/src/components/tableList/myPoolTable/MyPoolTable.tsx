@@ -710,13 +710,29 @@ export const MyPoolTable = withTranslation("tables")(
           sortDefaultKey={"liquidity"}
           generateRows={(rawData) => rawData}
           generateColumns={({ columnsRaw }) => columnsRaw as Column<any, any>[]}
-          sortMethod={(sortedRows: R[], sortColumn: string) => {
+          sortMethod={(sortedRows: MyPoolRow<any>[], sortColumn: string) => {
             switch (sortColumn) {
               case "liquidity":
                 sortedRows = sortedRows.sort((a, b) => {
                   const valueA = a.balanceDollar;
                   const valueB = b.balanceDollar;
 
+                  if (valueA && valueB) {
+                    return valueB - valueA;
+                  }
+                  if (valueA && !valueB) {
+                    return -1;
+                  }
+                  if (!valueA && valueB) {
+                    return 1;
+                  }
+                  return 0;
+                });
+                break;
+              case "APR":
+                sortedRows = sortedRows.sort((a, b) => {
+                  const valueA = a.ammDetail.APR || 0;
+                  const valueB = b.ammDetail.APR || 0;
                   if (valueA && valueB) {
                     return valueB - valueA;
                   }
