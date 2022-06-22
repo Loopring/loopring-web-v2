@@ -34,7 +34,7 @@ import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../../stores";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Filter } from "./components/Filter";
-import { AmmPairDetail } from "../../block/AmmPairDetail";
+import { AmmPairDetail } from "../../block";
 
 export enum PoolTradeType {
   add = "add",
@@ -709,9 +709,7 @@ export const MyPoolTable = withTranslation("tables")(
           }
           sortDefaultKey={"liquidity"}
           generateRows={(rawData) => rawData}
-          generateColumns={({ columnsRaw }) =>
-            columnsRaw as Column<MyPoolTableProps<R>, unknown>[]
-          }
+          generateColumns={({ columnsRaw }) => columnsRaw as Column<any, any>[]}
           sortMethod={(sortedRows: R[], sortColumn: string) => {
             switch (sortColumn) {
               case "liquidity":
