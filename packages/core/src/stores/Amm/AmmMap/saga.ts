@@ -21,8 +21,10 @@ export const setAmmState = ({
   const { idIndex } = store.getState().tokenMap;
   // @ts-ignore
   const [, coinA, coinB] = keyPair.match(/(\w+)-(\w+)/i);
-  const { forex, fiatPrices } = store.getState().system;
-  if (idIndex && coinA && coinB && fiatPrices && forex) {
+  const { forex } = store.getState().system;
+  // debugger;
+  const { tokenPrices } = store.getState().tokenPrices;
+  if (idIndex && coinA && coinB && tokenPrices && forex) {
     let result = {
       amountDollar: parseFloat(ammPoolState?.liquidityUSD || ""),
       amountYuan:
@@ -53,10 +55,10 @@ export const setAmmState = ({
     const feeA = volumeToCountAsBigNumber(coinA, ammPoolState.fees[0]);
     const feeB = volumeToCountAsBigNumber(coinB, ammPoolState.fees[1]);
     const feeDollar =
-      fiatPrices[coinA] && fiatPrices[coinB]
+      tokenPrices[coinA] && tokenPrices[coinB]
         ? toBig(feeA || 0)
-            .times(fiatPrices[coinA].price)
-            .plus(toBig(feeB || 0).times(fiatPrices[coinB].price))
+            .times(tokenPrices[coinA])
+            .plus(toBig(feeB || 0).times(tokenPrices[coinB]))
         : undefined;
     const feeYuan = feeDollar ? feeDollar.times(forex) : undefined;
 

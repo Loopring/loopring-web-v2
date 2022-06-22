@@ -26,11 +26,13 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
 ) {
   const [
+    // { tokenPrices, __timer__, __rawConfig__ },
     { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex },
     { ammpools },
     { pairs, marketArr, tokenArr, markets },
     { disableWithdrawTokenList },
   ] = yield all([
+    // call(getTokenPricesApi),
     call(async () => LoopringAPI.exchangeAPI?.getTokens()),
     call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
     call(async () => LoopringAPI.exchangeAPI?.getMixMarkets()),
@@ -59,6 +61,9 @@ const initConfig = function* <_R extends { [key: string]: any }>(
       disableWithdrawTokenList,
     })
   );
+  // store.dispatch(
+  //   getTokenPricesStatus({ tokenPrices, __timer__, __rawConfig__ })
+  // );
   store.dispatch(getNotify({}));
   store.dispatch(initAmmMap({ ammpools }));
   yield take("tokenMap/getTokenMapStatus");

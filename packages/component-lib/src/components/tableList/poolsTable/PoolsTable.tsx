@@ -86,7 +86,7 @@ export const IconColumn = React.memo(
       <BoxStyled
         display={"flex"}
         flexDirection={"row"}
-        justifyContent={"space-between"}
+        justifyContent={"flex-start"}
         alignItems={"center"}
       >
         <Box display={"flex"} alignContent={"center"} height={"initial"}>

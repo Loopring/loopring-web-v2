@@ -712,15 +712,13 @@ export const MyPoolTable = withTranslation("tables")(
           generateColumns={({ columnsRaw }) =>
             columnsRaw as Column<MyPoolTableProps<R>, unknown>[]
           }
-          sortMethod={(
-            sortedRows: MyPoolTableProps<R>[],
-            sortColumn: string
-          ) => {
+          sortMethod={(sortedRows: R[], sortColumn: string) => {
             switch (sortColumn) {
               case "liquidity":
                 sortedRows = sortedRows.sort((a, b) => {
-                  const valueA = a["liquidity"];
-                  const valueB = b["liquidity"];
+                  const valueA = a.balanceDollar;
+                  const valueB = b.balanceDollar;
+
                   if (valueA && valueB) {
                     return valueB - valueA;
                   }
