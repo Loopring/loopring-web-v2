@@ -221,7 +221,7 @@ export const useDeposit = <
             newValue = {
               ...newValue,
               ...data.tradeData,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
             };
           }
         }
@@ -272,7 +272,7 @@ export const useDeposit = <
             updateData = {
               belong: keyVal as any,
               tradeValue: undefined,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
             };
             break;
           }

@@ -49,6 +49,7 @@ export const ChartAndInfoPanel = ({
 }: any) => {
   const { t } = useTranslation("common");
   const { tokenMap } = useTokenMap();
+
   const popState = usePopupState({
     variant: "popover",
     popupId: `popup-My-LP`,
@@ -154,19 +155,6 @@ export const ChartAndInfoPanel = ({
               justifyContent={"center"}
               className={"float-chart float-group"}
             >
-              {/*<Typography variant={"h5"}>*/}
-              {/*  {close == "NaN" ? EmptyValueTag : close} {coinPairInfo.coinB}*/}
-              {/*</Typography>*/}
-              {/*<Typography*/}
-              {/*  variant={"h5"}*/}
-              {/*  component={"span"}*/}
-              {/*  display={"flex"}*/}
-              {/*  alignItems={"flex-end"}*/}
-              {/*>*/}
-              {/*<Typography variant={"h5"} component={"span"}>*/}
-              {/*  {value}*/}
-              {/*</Typography>*/}
-              {/*</Typography>*/}
               <Typography
                 variant={"h5"}
                 component={"span"}
@@ -479,8 +467,12 @@ export const ChartAndInfoPanel = ({
                 coinB={coinPairInfo.coinB}
                 balanceA={myBalanceA}
                 balanceB={myBalanceB}
-                precisionA={tokenMap[coinPairInfo.coinA].precision}
-                precisionB={tokenMap[coinPairInfo.coinB].precision}
+                precisionA={
+                  tokenMap ? tokenMap[coinPairInfo.coinA]?.precision ?? 4 : 4
+                }
+                precisionB={
+                  tokenMap ? tokenMap[coinPairInfo.coinB]?.precision ?? 4 : 4
+                }
               />
             </PopoverPure>
           </Typography>

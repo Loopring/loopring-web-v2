@@ -188,7 +188,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               belong: keyVal as any,
               tradeValue: undefined,
               fee: feeInfo,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
               address: "*",
             });
             break;
@@ -200,7 +200,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           fee: feeInfo,
           belong: transferValue.belong,
           tradeValue: undefined,
-          balance: walletInfo.count,
+          balance: walletInfo?.count,
           address: info?.isToMyself ? account.accAddress : "*",
         });
       } else {

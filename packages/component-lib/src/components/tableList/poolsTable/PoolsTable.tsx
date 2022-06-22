@@ -42,7 +42,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 240px auto auto auto 200px !important;`
-        : ` --template-columns: 16% 62% 22% !important;
+        : ` --template-columns: 16% 60% 24% !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -67,11 +67,12 @@ export const IconColumn = React.memo(
     row,
     account,
     activityInProgressRules,
+    size = 24,
   }: {
     row: R;
     account: Account;
+    size?: number;
     activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
-    tokenMap: { [key: string]: any };
   }) => {
     const history = useHistory();
     const { coinJson, isMobile } = useSettings();
@@ -106,7 +107,7 @@ export const IconColumn = React.memo(
                 imgy={coinAIcon.y}
                 imgheight={coinAIcon.h}
                 imgwidth={coinAIcon.w}
-                size={24}
+                size={size}
                 variant="circular"
                 alt={coinAInfo?.simpleName as string}
                 // src={sellData?.icon}
@@ -145,7 +146,7 @@ export const IconColumn = React.memo(
                 imgy={coinBIcon.y}
                 imgheight={coinBIcon.h}
                 imgwidth={coinBIcon.w}
-                size={24}
+                size={size}
                 variant="circular"
                 alt={coinBInfo?.simpleName as string}
                 // src={sellData?.icon}
@@ -235,6 +236,7 @@ export const IconColumn = React.memo(
 ) as unknown as <R extends AmmDetail<T>, T>(props: {
   row: R;
   account: Account;
+  size?: number;
   activityInProgressRules?: LoopringMap<AmmPoolInProgressActivityRule>;
 }) => JSX.Element;
 
@@ -480,6 +482,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               <IconColumn
                 account={account}
                 row={row as any}
+                size={20}
                 activityInProgressRules={activityInProgressRules}
               />
             </Box>
@@ -501,6 +504,8 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               className={"textAlignRight"}
               display={"flex"}
               flexDirection={"column"}
+              height={"100%"}
+              justifyContent={"center"}
             >
               <Typography component={"span"}>
                 {typeof liquidityLpToken === "undefined"

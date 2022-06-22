@@ -208,6 +208,7 @@ const columnModeMobile = (
     sortable: false,
     width: "auto",
     cellClass: "textAlignRight",
+    headerCellClass: "textAlignRight",
     name: t("labelAmmTotalValue") + "/" + t("labelAmmTime"),
     formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
       const { totalDollar, totalYuan } = row;

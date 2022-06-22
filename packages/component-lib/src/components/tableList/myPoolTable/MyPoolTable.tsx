@@ -47,7 +47,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 200px 80px auto auto !important;`
-        : `--template-columns: 30% auto 8% !important;`}
+        : `--template-columns: 16% 60% auto 8% !important;`}
     height: calc(86px * 5 + var(--header-row-height));
 
     .rdg-cell.action {
@@ -364,10 +364,9 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
 const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
   { t, handleWithdraw, handleDeposit, allowTrade }: WithTranslation & Method<R>,
   currency: Currency,
-  getPopoverState: any,
-  _account: Account,
-  tokenMap: { [key: string]: any }
-  // coinJson: any
+  _getPopoverState: any,
+  account: Account,
+  _tokenMap: { [key: string]: any }
 ): Column<R, unknown>[] => [
   {
     key: "pools",
@@ -375,27 +374,15 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
     width: "auto",
     name: t("labelPool"),
     formatter: ({ row }) => {
-      // const {
-      //   ammDetail: { coinAInfo, coinBInfo },
-      // } = row;
-      let coinAInfo, coinBInfo;
-      if (row.ammDetail) {
-        coinAInfo = row.ammDetail.coinAInfo;
-        coinBInfo = row.ammDetail.coinBInfo;
-      }
       return (
-        <Box
+        <PoolStyle
           display={"flex"}
           flexDirection={"column"}
           alignContent={"flex-start"}
           justifyContent={"center"}
-          height={"100%"}
         >
-          {/*<IconColumn row={row.ammDetail as any} />*/}
-          <Typography variant={"body1"}>
-            {coinAInfo?.simpleName + "/" + coinBInfo?.simpleName}
-          </Typography>
-        </Box>
+          <IconColumn account={account} row={row.ammDetail as any} size={20} />
+        </PoolStyle>
       );
     },
   },
@@ -403,9 +390,8 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
     key: "liquidity",
     sortable: true,
     headerCellClass: "textAlignRightSortable",
-    name: t("labelMyLiquidity") + "/" + t("labelFeeEarned"),
-    formatter: ({ row, rowIdx }) => {
-      const popState = getPopoverState(rowIdx);
+    name: t("labelMyLiquidity"), //+ "/" + t("labelFeeEarned")
+    formatter: ({ row }) => {
       if (!row || !row.ammDetail) {
         return (
           <Box
@@ -416,30 +402,22 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
         );
       }
       const {
-        // totalAmmValueDollar, //total for history
-        // totalAmmValueYuan,
         balanceDollar,
         balanceYuan,
         balanceA,
         balanceB,
         ammDetail: { coinAInfo, coinBInfo },
-        // feeA,
-        // feeB,
-        // precisionA,
-        // precisionB,
       } = row as any;
-      // const coinAIcon: any = coinJson[coinAInfo.simpleName];
-      // const coinBIcon: any = coinJson[coinBInfo.simpleName];
+
       return (
         <Box
-          height={"100%"}
+          className={"textAlignRight"}
           display={"flex"}
-          justifyContent={"center"}
-          alignItems={"flex-end"}
           flexDirection={"column"}
-          {...bindHover(popState)}
+          height={"100%"}
+          justifyContent={"center"}
         >
-          <Typography component={"span"} style={{ cursor: "pointer" }}>
+          <Typography component={"span"}>
             {typeof balanceDollar === "undefined"
               ? EmptyValueTag
               : currency === Currency.usd
@@ -450,10 +428,7 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
                   undefined,
                   undefined,
                   true,
-                  {
-                    isFait: true,
-                    floor: true,
-                  }
+                  { isFait: true, floor: true }
                 )
               : PriceTag.Yuan +
                 getValuePrecisionThousand(
@@ -468,57 +443,48 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
                   }
                 )}
           </Typography>
-          {/*<Box*/}
-          {/*  width={"100%"}*/}
-          {/*  display={"flex"}*/}
-          {/*  justifyContent={"flex-end"}*/}
-          {/*  alignItems={"center"}*/}
-          {/*>*/}
-          {/*  <Typography*/}
-          {/*    variant={"body2"}*/}
-          {/*    component={"span"}*/}
-          {/*    color={"textSecondary"}*/}
-          {/*  >*/}
-          {/*    {`Fee: ${getValuePrecisionThousand(*/}
-          {/*      feeA,*/}
-          {/*      undefined,*/}
-          {/*      undefined,*/}
-          {/*      precisionA,*/}
-          {/*      false,*/}
-          {/*      { floor: true }*/}
-          {/*    )} ${coinAInfo?.simpleName as string} */}
-          {/*    + ${getValuePrecisionThousand(*/}
-          {/*      feeB,*/}
-          {/*      undefined,*/}
-          {/*      undefined,*/}
-          {/*      precisionB,*/}
-          {/*      false,*/}
-          {/*      { floor: true }*/}
-          {/*    )} ${coinBInfo?.simpleName as string}`}*/}
-          {/*  </Typography>*/}
-          {/*</Box>*/}
-
-          <PopoverPure
-            className={"arrow-top-center"}
-            {...bindPopper(popState)}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
+          <Typography
+            component={"span"}
+            variant={"body2"}
+            color={"textSecondary"}
           >
-            <AmmPairDetail
-              coinA={coinAInfo.simpleName}
-              coinB={coinBInfo.simpleName}
-              balanceA={balanceA}
-              balanceB={balanceB}
-              precisionA={tokenMap[coinAInfo.simpleName].precision}
-              precisionB={tokenMap[coinBInfo.simpleName].precision}
-            />
-          </PopoverPure>
+            {getValuePrecisionThousand(balanceA, undefined, 2, 2, true, {
+              isAbbreviate: true,
+              abbreviate: 3,
+            }) +
+              " " +
+              coinAInfo.simpleName +
+              `  +  ` +
+              getValuePrecisionThousand(balanceB, undefined, 2, 2, true, {
+                isAbbreviate: true,
+                abbreviate: 3,
+              }) +
+              " " +
+              coinBInfo.simpleName}
+          </Typography>
+        </Box>
+      );
+    },
+  },
+  {
+    key: "APR",
+    sortable: true,
+    name: t("labelAPR"),
+    width: "auto",
+    maxWidth: 80,
+    headerCellClass: "textAlignRightSortable",
+    formatter: ({ row }) => {
+      const APR =
+        typeof row?.ammDetail?.APR !== undefined && row.ammDetail.APR
+          ? row.ammDetail.APR
+          : EmptyValueTag;
+      return (
+        <Box className={"textAlignRight"}>
+          <Typography component={"span"}>
+            {APR === EmptyValueTag || typeof APR === "undefined"
+              ? EmptyValueTag
+              : getValuePrecisionThousand(APR, 2, 2, 2, true) + "%"}
+          </Typography>
         </Box>
       );
     },
@@ -710,13 +676,29 @@ export const MyPoolTable = withTranslation("tables")(
           sortDefaultKey={"liquidity"}
           generateRows={(rawData) => rawData}
           generateColumns={({ columnsRaw }) => columnsRaw as Column<any, any>[]}
-          sortMethod={(sortedRows: R[], sortColumn: string) => {
+          sortMethod={(sortedRows: MyPoolRow<any>[], sortColumn: string) => {
             switch (sortColumn) {
               case "liquidity":
                 sortedRows = sortedRows.sort((a, b) => {
                   const valueA = a.balanceDollar;
                   const valueB = b.balanceDollar;
 
+                  if (valueA && valueB) {
+                    return valueB - valueA;
+                  }
+                  if (valueA && !valueB) {
+                    return -1;
+                  }
+                  if (!valueA && valueB) {
+                    return 1;
+                  }
+                  return 0;
+                });
+                break;
+              case "APR":
+                sortedRows = sortedRows.sort((a, b) => {
+                  const valueA = a.ammDetail.APR || 0;
+                  const valueB = b.ammDetail.APR || 0;
                   if (valueA && valueB) {
                     return valueB - valueA;
                   }

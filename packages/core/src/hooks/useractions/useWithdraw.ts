@@ -271,7 +271,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               fee: feeInfo,
               belong: keyVal as any,
               tradeValue: undefined,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
               address: info?.isToMyself ? account.accAddress : "*",
             });
             break;
@@ -283,7 +283,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           fee: feeInfo,
           belong: withdrawValue.belong,
           tradeValue: undefined,
-          balance: walletInfo.count,
+          balance: walletInfo?.count,
           address: info?.isToMyself ? account.accAddress : "*",
         });
       } else {
@@ -625,7 +625,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             updateWithdrawData({
               belong: data.tradeData?.belong,
               tradeValue: data.tradeData?.tradeValue,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
               address: "*",
             });
           } else {

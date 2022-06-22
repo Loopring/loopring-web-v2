@@ -50,6 +50,10 @@ const BoxLinear = styled(SwitchPanelStyled)`
       height: 100vh;
       overflow: scroll;
     }
+    @media only screen and (max-width: 768px) {
+      height: 86%;
+      overflow: scroll;
+    }
   }
 `;
 
@@ -148,7 +152,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
           style={{ alignItems: "stretch" }}
         >
           <Box display={"flex"} width={"100%"} flexDirection={"column"}>
-            {panelIndex === 1 && (
+            {panelIndex === 1 ? (
               <ModalBackButton
                 marginTop={"-27px"}
                 marginLeft={1}
@@ -157,6 +161,25 @@ export const ModalCoinPairPanel = withTranslation("common")(
                 }}
                 {...rest}
               />
+            ) : (
+              <>
+                {isMobile && (
+                  <Link
+                    position={"absolute"}
+                    variant={"body1"}
+                    sx={{
+                      left: 2 * theme.unit,
+                      top: 2 * theme.unit,
+                      zIndex: 999,
+                    }}
+                    onClick={() => {
+                      setPanelIndex(1);
+                    }}
+                  >
+                    {t("labelAMMTransactionsLink")}
+                  </Link>
+                )}
+              </>
             )}
             <ModalCloseButton
               onClose={() => {
@@ -178,20 +201,22 @@ export const ModalCoinPairPanel = withTranslation("common")(
               position={"relative"}
               display={"flex"}
             >
-              <Link
-                position={"absolute"}
-                variant={"body1"}
-                sx={{
-                  right: 2 * theme.unit,
-                  top: 2 * theme.unit,
-                  zIndex: 999,
-                }}
-                onClick={() => {
-                  setPanelIndex(1);
-                }}
-              >
-                {t("labelAMMTransactionsLink")}
-              </Link>
+              {!isMobile && (
+                <Link
+                  position={"absolute"}
+                  variant={"body1"}
+                  sx={{
+                    right: 2 * theme.unit,
+                    top: 2 * theme.unit,
+                    zIndex: 999,
+                  }}
+                  onClick={() => {
+                    setPanelIndex(1);
+                  }}
+                >
+                  {t("labelAMMTransactionsLink")}
+                </Link>
+              )}
               <Box marginBottom={2}>
                 <AmmPanelView
                   pair={pair}
@@ -203,19 +228,17 @@ export const ModalCoinPairPanel = withTranslation("common")(
                   snapShotData={snapShotData}
                 />
               </Box>
-              {!isMobile && (
-                <ChartAndInfoPanel
-                  pairHistory={pairHistory}
-                  pair={pair}
-                  tradeFloat={tradeFloat}
-                  myAmm={myAmm}
-                  currency={currency}
-                  coinAIcon={coinAIcon}
-                  coinBIcon={coinBIcon}
-                  coinPairInfo={coinPairInfo}
-                  render24hVolume={render24hVolume}
-                />
-              )}
+              <ChartAndInfoPanel
+                pairHistory={pairHistory}
+                pair={pair}
+                tradeFloat={tradeFloat}
+                myAmm={myAmm}
+                currency={currency}
+                coinAIcon={coinAIcon}
+                coinBIcon={coinBIcon}
+                coinPairInfo={coinPairInfo}
+                render24hVolume={render24hVolume}
+              />
             </Box>
             <BoxStyle
               display={"flex"}

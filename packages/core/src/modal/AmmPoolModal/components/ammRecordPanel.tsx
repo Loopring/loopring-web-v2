@@ -1,6 +1,6 @@
 import React from "react";
 import { StylePaper } from "../../../component";
-import { Divider, Tab, Tabs } from "@mui/material";
+import { BoxProps, Divider, Tab, Tabs } from "@mui/material";
 import { AmmRecordTable, useSettings } from "@loopring-web/component-lib";
 import { RowConfig } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
@@ -9,17 +9,20 @@ import { useTranslation } from "react-i18next";
 const TabsStyled = styled(Tabs)`
   padding-left: ${({ theme }) => theme.unit}px;
 `;
-const AMMPanelStyled = styled(StylePaper)`
+const AMMPanelStyled = styled(StylePaper)<BoxProps & { isMobile: boolean }>`
   background: initial;
   && {
     margin-bottom: 0;
   }
   .amm-record-table {
     .rdg {
-      --template-columns: 50% 30% 20% !important;
+      ${({ isMobile }) =>
+        !isMobile
+          ? `--template-columns: 50% 30% 20% !important;`
+          : `--template-columns: 86% 14% !important;`}
     }
   }
-`;
+` as (props: BoxProps & { isMobile: boolean }) => JSX.Element;
 
 const applyProps = (index: number) => {
   return {
@@ -42,7 +45,7 @@ export const AmmRecordPanel = ({
   const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
 
   const { t } = useTranslation("common");
-  const { currency } = useSettings();
+  const { currency, isMobile } = useSettings();
   const tableHeight =
     RowConfig.rowHeaderHeight +
     (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
@@ -62,6 +65,7 @@ export const AmmRecordPanel = ({
   }, []);
   return (
     <AMMPanelStyled
+      isMobile={isMobile}
       // className={"MuiPaper-elevation2"}
       // paddingBottom={1}
       ref={container}
