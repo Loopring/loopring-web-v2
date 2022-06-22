@@ -362,7 +362,7 @@ export const ConfirmLinkCopy = withTranslation("common", {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle>
-          <Typography variant={"h4"} textAlign={"center"}>
+          <Typography component={"span"} variant={"h4"} textAlign={"center"}>
             {t("labelOpenInWalletTitle")}
           </Typography>
         </DialogTitle>

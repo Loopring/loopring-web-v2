@@ -11,33 +11,33 @@ import { PanelContent, SwitchPanelProps } from "./Interface";
 
 export const SwipeableViewsStyled = styled(SwipeableViews)<
   SwipeableViewsProps & {
-    _height?: number | string;
-    _width?: number | string;
-    isMobile?: boolean | undefined;
-  }
->`
+  _height?: number | string;
+  _width?: number | string;
+  isMobile?: boolean | undefined;
+}
+  >`
   position: relative;
   flex: 1;
   ${({ _height, _width, isMobile }) => ` 
     height: ${
-      typeof _height === "string"
-        ? _height
-        : typeof _height === "number"
-        ? _height + "px"
-        : `var(--swap-box-height)`
-    };     
+  typeof _height === "string"
+    ? _height
+    : typeof _height === "number"
+      ? _height + "px"
+      : `var(--swap-box-height)`
+};     
     ${
-      isMobile
-        ? ``
-        : `   
+  isMobile
+    ? ``
+    : `   
       width: ${
-        typeof _width === "string"
-          ? _width
-          : typeof _width === "number"
+      typeof _width === "string"
+        ? _width
+        : typeof _width === "number"
           ? _width + "px"
           : `var(--swap-box-width)`
-      };`
-    }  
+    };`
+}  
          
   `}
   ${({ theme }) => toolBarPanel({ theme })}
