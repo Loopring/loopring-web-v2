@@ -235,7 +235,7 @@ export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   const { coinMap, idIndex, tokenMap } = store.getState().tokenMap;
   const { fiatPrices, forex } = store.getState().system;
   if (userRewardsMap && idIndex && coinMap && tokenMap && fiatPrices && forex) {
-    let summaryMyAmm = Object.keys(userRewardsMap).reduce(
+    return Object.keys(userRewardsMap).reduce(
       (prev, key) => {
         if (/AMM-/i.test(key)) {
           // @ts-ignore
@@ -252,16 +252,16 @@ export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
             });
           prev.rewardDollar = rewardDollar
             ? toBig(rewardDollar).plus(prev.rewardDollar).toNumber()
-            : 0;
+            : prev.rewardDollar;
           prev.rewardYuan = rewardYuan
             ? toBig(rewardYuan).plus(prev.rewardYuan).toNumber()
-            : 0;
+            : prev.rewardYuan;
           prev.feeDollar = feeDollar
             ? toBig(feeDollar).plus(prev.feeDollar).toNumber()
-            : 0;
+            : prev.feeDollar;
           prev.feeYuan = feeYuan
             ? toBig(feeYuan).plus(prev.feeYuan).toNumber()
-            : 0;
+            : prev.feeYuan;
         }
         return prev;
       },
@@ -272,8 +272,6 @@ export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
         feeYuan: 0,
       }
     );
-
-    return summaryMyAmm;
   }
   return undefined;
 };

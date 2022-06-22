@@ -119,8 +119,8 @@ export const useOverview = <
         setSummaryMyAmm((state) => {
           return {
             ...state,
-            totalCurrentInvest,
-          } as SummaryMyAmm;
+            ...totalCurrentInvest,
+          };
         });
         return formattedPoolRow as any;
       }
