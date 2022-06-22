@@ -59,8 +59,8 @@ export const AmmWithdrawWrap = <
 }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
   const { coinJson, slippage } = useSettings();
   const coinLPRef = React.useRef();
-  const tokenAIcon: any = coinJson[ammCalcData?.lpCoinA?.belong];
-  const tokenBIcon: any = coinJson[ammCalcData?.lpCoinB?.belong];
+  const tokenAIcon = coinJson[ammCalcData?.lpCoinA?.belong as string];
+  const tokenBIcon = coinJson[ammCalcData?.lpCoinB?.belong as string];
   const slippageArray: Array<number | string> = SlippageTolerance.concat(
     `slippage:${slippage}`
   ) as Array<number | string>;
@@ -360,8 +360,8 @@ export const AmmWithdrawWrap = <
                 <AvatarCoinStyled
                   imgx={tokenAIcon.x}
                   imgy={tokenAIcon.y}
-                  imgheight={tokenAIcon.height}
-                  imgwidth={tokenAIcon.width}
+                  imgheight={tokenAIcon.h}
+                  imgwidth={tokenAIcon.w}
                   size={16}
                   variant="circular"
                   style={{ marginLeft: "-8px" }}
@@ -410,8 +410,8 @@ export const AmmWithdrawWrap = <
                 <AvatarCoinStyled
                   imgx={tokenBIcon.x}
                   imgy={tokenBIcon.y}
-                  imgheight={tokenBIcon.height}
-                  imgwidth={tokenBIcon.width}
+                  imgheight={tokenBIcon.h}
+                  imgwidth={tokenBIcon.w}
                   size={16}
                   variant="circular"
                   style={{ marginLeft: "-8px" }}

@@ -13,3 +13,4 @@ export * from "./proLayout";
 export * from "./miningOuterLinks";
 export * from "./notification";
 export * from "./vendor";
+export * from "./firebase";

@@ -12,23 +12,6 @@ import { ErrorPage } from "../pages/ErrorPage";
 import { useOpenModals, useSettings } from "@loopring-web/component-lib";
 import { DepositToPage } from "../pages/DepositPage";
 import { Footer } from "../layouts/footer";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC484SNh-OZWco7o1xUC4UGVGVf0yZU__s",
-  authDomain: "loopring-d0829.firebaseapp.com",
-  projectId: "loopring-d0829",
-  storageBucket: "loopring-d0829.appspot.com",
-  messagingSenderId: "372617031978",
-  appId: "1:372617031978:web:bcc50f63d79ef868dc6e53",
-  measurementId: "G-P4XEJ3CY0J",
-};
-// Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
-const firebaseFunc = {
-  analytics: getAnalytics(firebaseApp),
-};
 
 export const useWrapModal = () => {
   const { search, pathname } = useLocation();

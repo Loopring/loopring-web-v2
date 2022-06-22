@@ -44,6 +44,7 @@
     "react-i18next": "^11.8.12",
     "react-markdown": "^8.0.3",
     "react-redux": "^7.2.3",
+    "react-redux-firebase": "^3.11.0",
     "react-resizable": "^3.0.4",
     "react-scripts": "4.0.3",
     "react-spring": "^9.4.4",

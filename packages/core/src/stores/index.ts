@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 
 import { useDispatch } from "react-redux";
-
+import * as firebase from "firebase/app";
 import { persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
 import storage from "redux-persist/lib/storage";
@@ -41,6 +41,8 @@ import { walletLayer2NFTSlice } from "./walletLayer2NFT/reducer";
 import { localStoreReducer } from "./localStore";
 import {
   ChainHashInfos,
+  firebaseBridgeConfig,
+  firebaseIOConfig,
   LAYER1_ACTION_HISTORY,
   myLog,
 } from "@loopring-web/common-resources";
@@ -54,6 +56,7 @@ import {
   pageTradeLiteSlice,
   pageTradeProSlice,
 } from "./router";
+import { firebaseReducer } from "react-redux-firebase";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -100,6 +103,34 @@ const persistedLocalStoreReducer = persistReducer<
   }>
 >(persistLocalStoreConfig, localStoreReducer);
 
+// firebase.initializeApp(fbConfig)
+
+// if (process.env.REACT_APP_NAME) {
+//
+//   console.log("VER:", process.env.REACT_APP_VER);
+// }
+
+// let firebaseReducer: any = {
+//   firebase: undefined,
+// };
+
+// Initialize Firebase
+
+const firebaseConfig = {
+  userProfile: "users",
+  // useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+};
+
+switch (process.env.REACT_APP_NAME) {
+  case "bridge":
+    firebase.initializeApp(firebaseBridgeConfig);
+    // getAnalytics(firebase);
+    break;
+  case "loopring.io":
+  default:
+    firebase.initializeApp(firebaseIOConfig);
+}
+
 const reducer = combineReducers({
   account: persistedAccountReducer,
   socket: socketSlice.reducer,
@@ -118,6 +149,7 @@ const reducer = combineReducers({
   localStore: persistedLocalStoreReducer,
   amountMap: amountMapSlice.reducer,
   notifyMap: notifyMapSlice.reducer,
+  firebase: firebaseReducer,
   // feeMap:feeMapSlice.reducer,
   // layer1ActionHistory: layer1ActionHistorySlice.reducer,
   // router redux
@@ -126,8 +158,6 @@ const reducer = combineReducers({
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
   _router_modalData: modalDataSlice.reducer,
 });
-
-//const persistedReducer = persistReducer(persistConfig ,reducer)
 
 export const store = configureStore({
   reducer,
@@ -143,7 +173,15 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   enhancers: [reduxBatch],
 });
+
 store.dispatch(updateVersion());
+
+export const firebaseProps = {
+  firebase,
+  config: firebaseConfig,
+  dispatch: store.dispatch,
+  // createFirestoreInstance // <- needed if using firestore
+};
 
 store.dispatch(setLanguage(store.getState().settings.language));
 fetch(`./static/coin/loopring.json`)
