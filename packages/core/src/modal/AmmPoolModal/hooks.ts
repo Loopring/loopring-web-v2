@@ -317,12 +317,14 @@ export const useCoinPair = <C extends { [key: string]: any }>({
 
             const coinPairInfoWithPrecision = {
               ..._coinPairInfo,
-              precisionA: tokenMap
-                ? tokenMap[_coinPairInfo.coinA]?.precision
-                : undefined,
-              precisionB: tokenMap
-                ? tokenMap[_coinPairInfo.coinB]?.precision
-                : undefined,
+              precisionA:
+                tokenMap && _coinPairInfo
+                  ? tokenMap[_coinPairInfo?.coinA]?.precision
+                  : undefined,
+              precisionB:
+                tokenMap && _coinPairInfo
+                  ? tokenMap[_coinPairInfo?.coinB]?.precision
+                  : undefined,
             };
 
             setCoinPairInfo({ ...coinPairInfoWithPrecision });
