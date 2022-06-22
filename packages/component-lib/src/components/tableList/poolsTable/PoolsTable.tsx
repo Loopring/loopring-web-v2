@@ -347,14 +347,16 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                   horizontal: "center",
                 }}
               >
-                <AmmPairDetail
-                  coinA={coinA}
-                  coinB={coinB}
-                  balanceA={totalA}
-                  balanceB={totalB}
-                  precisionA={tokenMap[coinA].precision}
-                  precisionB={tokenMap[coinB].precision}
-                />
+                {coinA && coinB && (
+                  <AmmPairDetail
+                    coinA={coinA}
+                    coinB={coinB}
+                    balanceA={totalA}
+                    balanceB={totalB}
+                    precisionA={tokenMap[coinA]?.precision}
+                    precisionB={tokenMap[coinB]?.precision}
+                  />
+                )}
               </PopoverPure>
             </>
           );
