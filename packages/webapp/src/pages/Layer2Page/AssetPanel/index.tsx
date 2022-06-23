@@ -2,6 +2,7 @@ import { useDeepCompareEffect } from "react-use";
 import { WithTranslation, withTranslation } from "react-i18next";
 import ReactEcharts from "echarts-for-react";
 import {
+  CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
@@ -21,9 +22,9 @@ import {
   useTokenPrices,
   useTokenMap,
   StylePaper,
+  useSystem,
 } from "@loopring-web/core";
 import { useGetAssets } from "./hook";
-import { Currency } from "@loopring-web/loopring-sdk";
 import React from "react";
 
 const StyledChartWrapper = styled(Box)`
@@ -88,10 +89,9 @@ const AssetPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const container = React.useRef(null);
     const { disableWithdrawList } = useTokenMap();
-
-    const { isMobile } = useSettings();
+    const { forexMap } = useSystem();
+    const { isMobile, upColor } = useSettings();
     const { tokenPrices } = useTokenPrices();
-    const { upColor } = useSettings();
 
     const {
       marketArray,
@@ -104,7 +104,6 @@ const AssetPanel = withTranslation("common")(
       onSend,
       onReceive,
       total,
-      forex,
       hideLpToken,
       hideSmallBalances,
       allowTrade,
@@ -179,17 +178,8 @@ const AssetPanel = withTranslation("common")(
     );
 
     const ethFaitPriceDollar = tokenPrices ? tokenPrices["ETH"] : 0;
-    const ethFaitPriceYuan = ethFaitPriceDollar * forex;
     const currAssetsEthDollar = getValuePrecisionThousand(
       (ethFaitPriceDollar || 0) * (currAssetsEth || 0),
-      undefined,
-      undefined,
-      undefined,
-      false,
-      { isFait: true, floor: true }
-    );
-    const currAssetsEthYuan = getValuePrecisionThousand(
-      (ethFaitPriceYuan || 0) * (currAssetsEth || 0),
       undefined,
       undefined,
       undefined,
@@ -355,9 +345,15 @@ const AssetPanel = withTranslation("common")(
                   color={"var(--color-text-third)"}
                 >
                   &nbsp;&#8776;&nbsp;
-                  {currency === Currency.usd
-                    ? PriceTag.Dollar + currAssetsEthDollar
-                    : PriceTag.Yuan + currAssetsEthYuan}
+                  {PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      (currAssetsEthDollar || 0) * (forexMap[currency] ?? 0),
+                      undefined,
+                      undefined,
+                      2,
+                      true,
+                      { isFait: true }
+                    )}
                 </Typography>
               </Box>
               {!!userAssets.length ? (
@@ -393,6 +389,7 @@ const AssetPanel = withTranslation("common")(
                 onReceive,
                 getMarketArrayListCallback: getTokenRelatedMarketArray,
                 hideLpToken,
+                forexMap: forexMap as any,
                 hideSmallBalances,
                 setHideLpToken,
                 setHideSmallBalances,

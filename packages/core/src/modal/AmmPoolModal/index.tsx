@@ -9,14 +9,13 @@ import {
   useOpenModals,
 } from "@loopring-web/component-lib";
 import {
-  abbreviateNumber,
+  CurrencyToTag,
   getValuePrecisionThousand,
   PriceTag,
 } from "@loopring-web/common-resources";
 import { Box, Link, Modal as MuiModal } from "@mui/material";
 import styled from "@emotion/styled";
-import { Currency } from "@loopring-web/loopring-sdk";
-import { makeTickView } from "../../index";
+import { makeTickView, useSystem } from "../../index";
 import { AmmPanelView } from "./components/ammPanel";
 import { useAmmPool, useCoinPair } from "./hooks";
 import SwipeableViews from "react-swipeable-views";
@@ -65,6 +64,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
       },
       setShowAmm,
     } = useOpenModals();
+    const { forexMap } = useSystem();
     const theme = useTheme();
 
     const {
@@ -82,7 +82,6 @@ export const ModalCoinPairPanel = withTranslation("common")(
       tokenPrices,
       currency,
       coinJson,
-      forex,
     } = useAmmPool();
     const {
       tradeFloat,
@@ -113,22 +112,19 @@ export const ModalCoinPairPanel = withTranslation("common")(
       pair.coinAInfo?.simpleName && tokenPrices
         ? tokenPrices[pair.coinAInfo?.simpleName]
         : 0;
-    const priceCoinAYuan = priceCoinADollar * (forex || 6.5);
-    const totalAmountValueCoinA =
-      (tickerFloat?.volume || 0) *
-      (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan);
+
     const render24hVolume =
-      (currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) +
-      (totalAmountValueCoinA >= 1000000
-        ? abbreviateNumber(totalAmountValueCoinA, 2)
-        : getValuePrecisionThousand(
-            totalAmountValueCoinA,
-            undefined,
-            undefined,
-            undefined,
-            true,
-            { isFait: true, floor: false }
-          ));
+      PriceTag[CurrencyToTag[currency]] +
+      getValuePrecisionThousand(
+        (tickerFloat?.volume || 0) *
+          priceCoinADollar *
+          (forexMap[currency] ?? 0),
+        undefined,
+        undefined,
+        undefined,
+        true,
+        { isFait: true, floor: false, isAbbreviate: true, abbreviate: 6 }
+      );
     React.useEffect(() => {
       if (isShow) {
         setPanelIndex(0);
@@ -217,7 +213,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
                   {t("labelAMMTransactionsLink")}
                 </Link>
               )}
-              <Box marginBottom={2}>
+              <Box marginBottom={2} width={isMobile ? "100%" : "initial"}>
                 <AmmPanelView
                   pair={pair}
                   stob={stob}
@@ -231,6 +227,7 @@ export const ModalCoinPairPanel = withTranslation("common")(
               <ChartAndInfoPanel
                 pairHistory={pairHistory}
                 pair={pair}
+                forexMap={forexMap}
                 tradeFloat={tradeFloat}
                 myAmm={myAmm}
                 currency={currency}

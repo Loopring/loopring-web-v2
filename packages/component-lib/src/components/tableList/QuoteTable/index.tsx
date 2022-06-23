@@ -5,8 +5,10 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Account,
   AmmRankIcon,
+  CurrencyToTag,
   EmptyValueTag,
   FloatTag,
+  ForexMap,
   getValuePrecisionThousand,
   PriceTag,
   RowConfig,
@@ -84,14 +86,10 @@ export type QuoteTableRawDataItem = {
   floatTag: keyof typeof FloatTag;
   volume: number;
   changeDollar: number;
-  changeYuan: number;
   closeDollar: number;
-  closeYuan: number;
   coinAPriceDollar: number;
-  coinAPriceYuan: number;
   precision?: number;
   priceDollar?: number;
-  priceYuan?: number;
   reward?: number;
   rewardToken?: string;
   timeUnit?: "24h";
@@ -142,6 +140,7 @@ export interface QuoteTableProps {
   currentheight?: number;
   showLoading?: boolean;
   isPro?: boolean;
+  forexMap: ForexMap<Currency>;
   activityInProgressRules: LoopringMap<AmmPoolInProgressActivityRule>;
 }
 
@@ -166,6 +165,7 @@ export const QuoteTable = withTranslation("tables")(
       removeFavoriteMarket,
       showLoading,
       account,
+      forexMap,
       isPro = false,
       activityInProgressRules,
       ...rest
@@ -190,7 +190,7 @@ export const QuoteTable = withTranslation("tables")(
           activityInProgressRules,
         } = props;
 
-        const isUSD = currency === Currency.usd;
+        // const isUSD = currency === Currency.usd;
         const basicRender = [
           {
             key: "pair",
@@ -312,29 +312,17 @@ export const QuoteTable = withTranslation("tables")(
                 : EmptyValueTag;
 
               const faitPrice = Number.isFinite(value)
-                ? isUSD
-                  ? PriceTag.Dollar +
-                    getValuePrecisionThousand(
-                      row.coinAPriceDollar,
-                      2,
-                      2,
-                      2,
-                      true,
-                      {
-                        isFait: true,
-                      }
-                    )
-                  : PriceTag.Yuan +
-                    getValuePrecisionThousand(
-                      row.coinAPriceYuan,
-                      2,
-                      2,
-                      2,
-                      true,
-                      {
-                        isFait: true,
-                      }
-                    )
+                ? PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    row.coinAPriceDollar * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    2,
+                    true,
+                    {
+                      isFait: true,
+                    }
+                  )
                 : EmptyValueTag;
               return (
                 <Typography

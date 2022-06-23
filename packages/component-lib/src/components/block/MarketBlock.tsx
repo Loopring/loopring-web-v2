@@ -1,18 +1,17 @@
 import { WithTranslation } from "react-i18next";
 import {
   CoinKey,
+  CurrencyToTag,
   EmptyValueTag,
-  PriceTag,
   getValuePrecisionThousand,
+  PriceTag,
 } from "@loopring-web/common-resources";
 import { Box, BoxProps, Grid } from "@mui/material";
 import { Typography } from "@mui/material";
 import styled from "@emotion/styled";
-import React from "react";
 import { floatTag, MarketBlockProps, useSettings } from "./../../index";
 import { ScaleAreaChart } from "../charts";
 import { ChartType } from "../charts";
-import { Currency } from "@loopring-web/loopring-sdk";
 
 type StyledProps = {
   custom: any;
@@ -49,20 +48,14 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
   tradeFloat,
   chartData = [],
   handleBlockClick,
+  forexMap,
 }: WithTranslation &
   MarketBlockProps<C> & { handleBlockClick: () => void }) => {
   const { upColor, currency } = useSettings();
-  const isUSD = currency === Currency.usd;
-  const {
-    volume,
-    coinAPriceDollar,
-    coinAPriceYuan,
-    marketPrecision,
-    coinBPrecision,
-  } = tradeFloat as any;
-  const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan;
+  const { volume, coinAPriceDollar, marketPrecision, coinBPrecision } =
+    tradeFloat as any;
   const baseFaitPrice = getValuePrecisionThousand(
-    isUSD ? coinAPriceDollar : coinAPriceYuan,
+    coinAPriceDollar * (forexMap[currency] ?? 0),
     undefined,
     undefined,
     undefined,
@@ -158,7 +151,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                     variant={"body2"}
                     color={"var(--color-text-secondary)"}
                   >
-                    {currencyUnit} {baseFaitPrice}
+                    {PriceTag[CurrencyToTag[currency]]} {baseFaitPrice}
                   </Typography>
                 </Box>
               ) : (

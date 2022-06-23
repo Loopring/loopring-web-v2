@@ -19,6 +19,11 @@ export type WithdrawTypes = {
 
 export type PriceTagType = "$" | "￥";
 
+export enum CurrencyToTag {
+  usd = "Dollar",
+  cny = "Yuan",
+}
+
 export enum PriceTag {
   Dollar = "$",
   Yuan = "￥",
@@ -297,3 +302,4 @@ export const useAddressTypeLists = <
 };
 
 export const defalutSlipage = 0.1;
+export type ForexMap<C> = { [k in keyof C]?: number };

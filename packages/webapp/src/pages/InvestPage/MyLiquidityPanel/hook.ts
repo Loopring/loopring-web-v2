@@ -36,7 +36,7 @@ export const useOverview = <
   const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
   const { tokenMap } = useTokenMap();
   const { status: ammMapStatus, ammMap } = useAmmMap();
-  const { forex } = useSystem();
+  const { forexMap } = useSystem();
   const { tokenPrices } = useTokenPrices();
 
   const [summaryMyAmm, setSummaryMyAmm] = React.useState<Partial<SummaryMyAmm>>(
@@ -69,9 +69,8 @@ export const useOverview = <
     async (_walletMap): Promise<MyPoolRow<R>[]> => {
       let totalCurrentInvest = {
         investDollar: 0,
-        investYuan: 0,
       };
-      if (_walletMap && ammMap && userRewardsMap && tokenPrices && forex) {
+      if (_walletMap && ammMap && userRewardsMap && tokenPrices) {
         // @ts-ignore
         const _myPoolRow: MyPoolRow<R>[] = Reflect.ownKeys(_walletMap).reduce(
           (prev, walletKey) => {
@@ -99,7 +98,6 @@ export const useOverview = <
           const market = `LP-${o.ammDetail?.coinAInfo.simpleName}-${o.ammDetail?.coinBInfo.simpleName}`;
           const totalAmount = o.totalLpAmount ?? 0;
           const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount;
-          const totalAmmValueYuan = (totalAmmValueDollar || 0) * forex;
           const coinA = o.ammDetail?.coinAInfo?.simpleName;
           const coinB = o.ammDetail?.coinBInfo?.simpleName;
           const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
@@ -107,12 +105,10 @@ export const useOverview = <
           totalCurrentInvest = {
             investDollar:
               totalCurrentInvest.investDollar + (o.balanceDollar ?? 0),
-            investYuan: totalCurrentInvest.investYuan + (o.balanceYuan ?? 0),
           };
           return {
             ...o,
             totalAmmValueDollar,
-            totalAmmValueYuan,
             precisionA,
             precisionB,
           };
@@ -127,25 +123,18 @@ export const useOverview = <
       }
       return [];
     },
-    [ammMap, userRewardsMap, tokenPrices, forex, tokenMap]
+    [ammMap, userRewardsMap, tokenPrices, tokenMap]
   );
 
   const walletLayer2Callback = React.useCallback(async () => {
-    if (ammMap && tokenPrices && userRewardsMap && forex) {
+    if (ammMap && tokenPrices && userRewardsMap) {
       setShowLoading(true);
       const _walletMap = await walletLayer2DoIt();
       const _myPoolRow = await makeMyPoolRow(_walletMap);
       setMyPoolRow(_myPoolRow);
       setShowLoading(false);
     }
-  }, [
-    ammMap,
-    tokenPrices,
-    userRewardsMap,
-    forex,
-    walletLayer2DoIt,
-    makeMyPoolRow,
-  ]);
+  }, [ammMap, tokenPrices, userRewardsMap, walletLayer2DoIt, makeMyPoolRow]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
   React.useEffect(() => {

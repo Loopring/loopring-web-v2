@@ -21,14 +21,10 @@ export const setAmmState = ({
   const { idIndex } = store.getState().tokenMap;
   // @ts-ignore
   const [, coinA, coinB] = keyPair.match(/(\w+)-(\w+)/i);
-  const { forex } = store.getState().system;
-  // debugger;
   const { tokenPrices } = store.getState().tokenPrices;
-  if (idIndex && coinA && coinB && tokenPrices && forex) {
+  if (idIndex && coinA && coinB && tokenPrices) {
     let result = {
       amountDollar: parseFloat(ammPoolState?.liquidityUSD || ""),
-      amountYuan:
-        parseFloat(ammPoolState?.liquidityUSD || "") * (forex ? forex : 6.5),
       totalLPToken: volumeToCount("LP-" + keyPair, ammPoolState.lpLiquidity),
       totalA: volumeToCount(coinA, ammPoolState.liquidity[0]), //parseInt(ammPoolState.liquidity[ 0 ]),
       totalB: volumeToCount(coinB, ammPoolState.liquidity[1]), //parseInt(ammPoolState.liquidity[ 1 ]),
@@ -60,14 +56,12 @@ export const setAmmState = ({
             .times(tokenPrices[coinA])
             .plus(toBig(feeB || 0).times(tokenPrices[coinB]))
         : undefined;
-    const feeYuan = feeDollar ? feeDollar.times(forex) : undefined;
 
     return {
       ...result,
       feeA: feeA?.toNumber(),
       feeB: feeB?.toNumber(),
       feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
-      feeYuan: feeYuan ? feeYuan.toNumber() : undefined,
       tradeFloat: {
         change: undefined,
         timeUnit: "24h",

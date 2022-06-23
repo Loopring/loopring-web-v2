@@ -5,6 +5,7 @@ import { AmmRecordTable, useSettings } from "@loopring-web/component-lib";
 import { RowConfig } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
+import { useSystem } from "../../../stores";
 
 const TabsStyled = styled(Tabs)`
   padding-left: ${({ theme }) => theme.unit}px;
@@ -46,6 +47,7 @@ export const AmmRecordPanel = ({
 
   const { t } = useTranslation("common");
   const { currency, isMobile } = useSettings();
+  const { forexMap } = useSystem();
   const tableHeight =
     RowConfig.rowHeaderHeight +
     (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
@@ -89,6 +91,7 @@ export const AmmRecordPanel = ({
           currentheight={tableHeight}
           showloading={isRecentLoading}
           currency={currency}
+          forexMap={forexMap as any}
           scroll={true}
         />
       ) : (
@@ -102,7 +105,7 @@ export const AmmRecordPanel = ({
           showloading={isMyAmmLoading}
           rowHeight={RowConfig.rowHeight}
           headerRowHeight={RowConfig.rowHeaderHeight}
-          // currentheight={tableHeight}
+          forexMap={forexMap as any}
           currency={currency}
         />
       )}

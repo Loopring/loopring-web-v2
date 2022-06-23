@@ -2,37 +2,36 @@ import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
 import { ENV, NETWORKEXTEND } from "./interface";
 import { store, LoopringSocket, LoopringAPI } from "../../index";
-import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
+import {
+  CustomError,
+  ErrorMap,
+  ForexMap,
+  myLog,
+} from "@loopring-web/common-resources";
 import { delay } from "rxjs/operators";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
-import {
-  ChainId,
-  FiatPriceInfo,
-  LoopringMap,
-} from "@loopring-web/loopring-sdk";
+import { ChainId, Currency } from "@loopring-web/loopring-sdk";
 import {
   getAmmMap,
   initAmmMap,
   updateRealTimeAmmMap,
 } from "../Amm/AmmMap/reducer";
-import { getTokenPrices } from "../tokenPrices/reducer";
 import { getTickers } from "../ticker/reducer";
 import { getAmmActivityMap } from "../Amm/AmmActivityMap/reducer";
 import { updateWalletLayer1 } from "../walletLayer1/reducer";
 import { getTokenMap } from "../token/reducer";
 import { getNotify } from "../notify/reducer";
+import { getTokenPrices } from "../tokenPrices/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
 ) {
   const [
-    // { tokenPrices, __timer__, __rawConfig__ },
     { tokensMap, coinMap, totalCoinMap, idIndex, addressIndex },
     { ammpools },
     { pairs, marketArr, tokenArr, markets },
     { disableWithdrawTokenList },
   ] = yield all([
-    // call(getTokenPricesApi),
     call(async () => LoopringAPI.exchangeAPI?.getTokens()),
     call(async () => LoopringAPI.ammpoolAPI?.getAmmPoolConf()),
     call(async () => LoopringAPI.exchangeAPI?.getMixMarkets()),
@@ -82,43 +81,54 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   }
   store.dispatch(accountStatusUnset(undefined));
 };
-const should15MinutesUpdateDataGroup = async (): Promise<{
-  fiatPrices: LoopringMap<FiatPriceInfo> | undefined;
-  fiatPricesY: LoopringMap<FiatPriceInfo> | undefined;
+const should15MinutesUpdateDataGroup = async (
+  chainId: ChainId
+): Promise<{
   gasPrice: number | undefined;
-  forex: number | undefined;
+  forexMap: ForexMap<Currency>;
 }> => {
   myLog("loop get getFiatPrice getGasPrice");
-  if (LoopringAPI.exchangeAPI && LoopringAPI.walletAPI) {
-    const [fiatPrices, fiatPricesY, gasPrice]: [
-      LoopringMap<FiatPriceInfo>,
-      LoopringMap<FiatPriceInfo>,
-      number
-    ] = await Promise.all([
-      LoopringAPI.exchangeAPI.getFiatPrice({ legal: "USD" }),
-      LoopringAPI.exchangeAPI.getFiatPrice({ legal: "CNY" }),
-      LoopringAPI.exchangeAPI.getGasPrice(),
-    ]).then((results) => {
-      return [
-        results[0].fiatPrices,
-        results[1].fiatPrices,
-        results[2].gasPrice / 1e9,
-      ];
+  if (LoopringAPI.exchangeAPI) {
+    let indexUSD = 0;
+    const tokenId =
+      chainId === ChainId.GOERLI
+        ? "0x47525e6a5def04c9a56706e93f54cc70c2e8f165"
+        : "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+    const promiseArray = Reflect.ownKeys(Currency).map((key, index) => {
+      if (key.toString().toUpperCase() === Currency.usd.toUpperCase()) {
+        indexUSD = index;
+      }
+
+      return (
+        LoopringAPI?.walletAPI?.getLatestTokenPrices({
+          currency: key.toString().toUpperCase(),
+          tokens: tokenId,
+        }) ?? Promise.resolve({ tokenPrices: null })
+      );
     });
 
-    const forex = fiatPricesY["USDT"].price;
+    const [{ gasPrice }, ...restForexs] = await Promise.all([
+      LoopringAPI.exchangeAPI.getGasPrice(),
+      ...promiseArray,
+    ]);
+    const baseUsd = restForexs[indexUSD].tokenPrices[tokenId] ?? 1;
+    const forexMap: ForexMap<Currency> = Reflect.ownKeys(Currency).reduce<
+      ForexMap<Currency>
+    >((prev, key, index) => {
+      if (restForexs[index] && key && restForexs[index].tokenPrices) {
+        prev[key] = restForexs[index].tokenPrices[tokenId] / baseUsd;
+      }
+      return prev;
+    }, {} as ForexMap<Currency>);
+
     return {
-      fiatPrices,
-      fiatPricesY,
       gasPrice,
-      forex,
+      forexMap,
     };
   }
   return {
-    fiatPrices: undefined,
-    fiatPricesY: undefined,
+    forexMap: {} as ForexMap<Currency>,
     gasPrice: undefined,
-    forex: undefined,
   };
 };
 
@@ -155,18 +165,12 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         ChainId.MAINNET === chainId
           ? `https://etherscan.io/`
           : `https://goerli.etherscan.io/`;
-      let allowTrade,
-        // disableWithdrawTokenList,
-        exchangeInfo,
-        fiatPrices,
-        gasPrice,
-        forex;
-
+      let allowTrade, exchangeInfo, gasPrice, forexMap;
       try {
-        [{ exchangeInfo }, { fiatPrices, gasPrice, forex }, allowTrade] =
+        [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =
           await Promise.all([
             LoopringAPI.exchangeAPI.getExchangeInfo(),
-            should15MinutesUpdateDataGroup(),
+            should15MinutesUpdateDataGroup(chainId),
             LoopringAPI.exchangeAPI.getAccountServices({}).then((result) => {
               return {
                 ...result,
@@ -196,10 +200,11 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         }
         return setInterval(async () => {
           if (LoopringAPI.exchangeAPI) {
-            const { fiatPrices, gasPrice, forex } =
-              await should15MinutesUpdateDataGroup();
+            const { forexMap, gasPrice } = await should15MinutesUpdateDataGroup(
+              chainId
+            );
             store.dispatch(updateRealTimeAmmMap(undefined));
-            store.dispatch(updateRealTimeObj({ fiatPrices, gasPrice, forex }));
+            store.dispatch(updateRealTimeObj({ forexMap, gasPrice }));
           }
         }, 300000); //
       })(__timer__);
@@ -210,9 +215,8 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         env,
         baseURL,
         socketURL,
-        fiatPrices,
+        forexMap,
         gasPrice,
-        forex,
         exchangeInfo,
         __timer__,
       };
@@ -228,9 +232,9 @@ export function* getUpdateSystem({ payload }: any) {
       baseURL,
       allowTrade,
       fiatPrices,
-      gasPrice,
-      forex,
       exchangeInfo,
+      gasPrice,
+      forexMap,
       etherscanBaseUrl,
       __timer__,
     } = yield call(getSystemsApi, chainId);
@@ -242,7 +246,7 @@ export function* getUpdateSystem({ payload }: any) {
         allowTrade,
         fiatPrices,
         gasPrice,
-        forex,
+        forexMap,
         exchangeInfo,
         etherscanBaseUrl,
         __timer__,

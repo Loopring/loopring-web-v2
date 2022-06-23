@@ -41,7 +41,6 @@ export const useAmmMiningUI = <
   const { apiKey, accountId } = store.getState().account;
   const { tokenPrices } = store.getState().tokenPrices;
   const { tokenMap } = store.getState().tokenMap;
-  const { forex } = useSystem();
   const { ammMap } = useAmmMap();
   const { walletMap: _walletMap } = makeWalletLayer2(false);
   const [ammActivityViewMap, setAmmActivityViewMap] = React.useState<
@@ -81,14 +80,7 @@ export const useAmmMiningUI = <
 
   const getMyAmmShare = React.useCallback(
     (market: string) => {
-      if (
-        _walletMap &&
-        ammMap &&
-        userRewardsMap &&
-        tokenPrices &&
-        forex &&
-        tokenMap
-      ) {
+      if (_walletMap && ammMap && userRewardsMap && tokenPrices && tokenMap) {
         const ammKey = market.replace("LP-", "AMM-");
         const marketKey = market.replace("LP-", "");
         const rawData = makeMyPoolRowWithPoolState({
@@ -101,7 +93,6 @@ export const useAmmMiningUI = <
           const market = `LP-${o?.ammDetail?.coinAInfo.simpleName}-${o?.ammDetail?.coinBInfo.simpleName}`;
           const totalAmount = o.totalLpAmount;
           const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount;
-          const totalAmmValueYuan = (totalAmmValueDollar || 0) * forex;
           const coinA = o?.ammDetail?.coinAInfo?.simpleName;
           const coinB = o?.ammDetail?.coinBInfo?.simpleName;
           const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
@@ -110,7 +101,6 @@ export const useAmmMiningUI = <
           return {
             ...o,
             totalAmmValueDollar,
-            totalAmmValueYuan,
             precisionA,
             precisionB,
           };
@@ -119,7 +109,7 @@ export const useAmmMiningUI = <
       }
       return [];
     },
-    [_walletMap, ammMap, forex, tokenPrices, userRewardsMap, tokenMap]
+    [_walletMap, ammMap, tokenPrices, userRewardsMap, tokenMap]
   );
 
   // );

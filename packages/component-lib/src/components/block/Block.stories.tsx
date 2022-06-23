@@ -57,7 +57,6 @@ const TradeTitleWrap = withTranslation("common")((rest) => {
             ...props,
             tradeFloat: {
               priceDollar: +123,
-              priceYuan: 2343232,
               timeUnit: "24h",
               change: 100,
               close: 121,
@@ -72,7 +71,6 @@ const TradeTitleWrap = withTranslation("common")((rest) => {
             ...props,
             tradeFloat: {
               priceDollar: -123,
-              priceYuan: -2343232,
               timeUnit: "24h",
               change: 100,
               close: 121,
@@ -83,31 +81,6 @@ const TradeTitleWrap = withTranslation("common")((rest) => {
     </>
   );
 });
-// const PoolDetailTitleWrap = withTranslation('common')((rest) => {
-//     // let tradeData: any = {sell: {belong: undefined}, buy: {belong: undefined}};
-//     let ammProps: any = {
-//         // swapTradeData: tradeData,
-//         ammCalcData,
-//     }
-//     return <>
-//         <Grid item> <PoolDetailTitle  {...{
-//             ...rest, ...ammProps,
-//         }} /></Grid>
-//         <Grid item> <PoolDetailTitle  {...{
-//             ...rest, ...{
-//                 ...ammProps,
-//                 // swapTradeData: {sell: {belong: 'ETH'}, buy: {belong: 'LRC'}}
-//             }, tradeFloat: {priceDollar: +123, priceYuan: 2343232, change: '+15%', timeUnit: "24h"}
-//         }} /></Grid>
-//         <Grid item> <PoolDetailTitle  {...{
-//             ...rest, ...{
-//                 ...ammProps,
-//                 // swapTradeData: {sell: {belong: 'ETH'}, buy: {belong: 'LRC'}}
-//             }, tradeFloat: {priceDollar: -123, priceYuan: -2343232, change: '-15%', timeUnit: "24h"}
-//         }} /></Grid>
-//
-//     </>
-// })
 
 const AmmCardWrap = () => {
   const ref = React.createRef();
@@ -129,14 +102,12 @@ const AmmCardWrap = () => {
     APR: 56,
     tradeFloat: {
       priceDollar: 123,
-      priceYuan: 2343232,
       change: "0%",
       timeUnit: "24h",
       volume: Number("112312312"),
       floatTag: FloatTag.none,
     },
     amountDollar: 197764.89,
-    amountYuan: 194.89,
     totalLPToken: 12132131,
     totalA: 0.002,
     totalB: 12344,
@@ -158,7 +129,6 @@ const MarketWrap = withTranslation("common")((rest) => {
     coinBInfo: coinMap.LRC,
     tradeFloat: {
       priceDollar: +123,
-      priceYuan: 2343232,
       change: "+15%",
       timeUnit: "24h",
       volume: "112312312 USBD",
@@ -182,7 +152,6 @@ const MarketWrap = withTranslation("common")((rest) => {
               ...props,
               tradeFloat: {
                 priceDollar: 123,
-                priceYuan: 2343232,
                 change: "0%",
                 timeUnit: "24h",
                 volume: "112312312 USBD",
@@ -197,7 +166,6 @@ const MarketWrap = withTranslation("common")((rest) => {
               ...props,
               tradeFloat: {
                 priceDollar: 123,
-                priceYuan: 2343232,
                 change: "-15%",
                 timeUnit: "24h",
                 volume: "112312312 USBD",

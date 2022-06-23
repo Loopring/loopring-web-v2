@@ -29,7 +29,7 @@ import { useTheme } from "@emotion/react";
  * @step1 subscribe Connect hook
  * @step2 check the session storage ? choose the provider : none provider
  * @step3 decide china ID by step2
- * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, forex, Activities ...)
+ * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, Activities ...)
  * @step5 launch the page
  */
 export function useInit() {

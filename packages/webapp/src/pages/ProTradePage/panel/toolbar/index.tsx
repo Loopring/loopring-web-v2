@@ -4,6 +4,7 @@ import * as _ from "lodash";
 import {
   AmmRankIcon,
   CoinInfo,
+  CurrencyToTag,
   DropDownIcon,
   EmptyValueTag,
   getValuePrecisionThousand,
@@ -115,7 +116,7 @@ export const Toolbar = withTranslation("common")(
       tradeFloat: tickerMap[market],
     });
     const { currency } = useSettings();
-    const { forex } = useSystem();
+    const { forexMap } = useSystem();
     const { tokenPrices } = useTokenPrices();
     const history = useHistory();
 
@@ -140,11 +141,7 @@ export const Toolbar = withTranslation("common")(
       },
       [tokenMap]
     );
-    React.useEffect(() => {
-      if (tickerStatus === SagaStatus.UNSET) {
-        setDefaultData();
-      }
-    }, [tickerStatus, market]);
+
     const setDefaultData = React.useCallback(() => {
       if (
         coinMap &&
@@ -169,7 +166,6 @@ export const Toolbar = withTranslation("common")(
 
         const basePriceDollar =
           ticker.close * (tokenPrices[quote] ?? 0) ?? tokenPrices[base] ?? 0;
-        const basePriceYuan = basePriceDollar * forex;
         setMarketTicker((state: any) => {
           return {
             ...state,
@@ -179,27 +175,16 @@ export const Toolbar = withTranslation("common")(
             isRise,
             baseVol,
             quoteVol,
-            basePriceDollar: getValuePrecisionThousand(
-              basePriceDollar,
-              undefined,
-              undefined,
-              undefined,
-              true,
-              { isFait: true }
-            ),
-            basePriceYuan: getValuePrecisionThousand(
-              basePriceYuan,
-              undefined,
-              undefined,
-              undefined,
-              true,
-              { isFait: true }
-            ),
+            basePriceDollar,
           };
         });
       }
-    }, [coinMap, tickerMap, tokenPrices, market, forex]);
-
+    }, [coinMap, tickerMap, tokenPrices, market]);
+    React.useEffect(() => {
+      if (tickerStatus === SagaStatus.UNSET && market !== undefined) {
+        setDefaultData();
+      }
+    }, [tickerStatus, market]);
     const getFilteredTickList = React.useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {
         return tickList.filter((o: any) => {
@@ -382,6 +367,7 @@ export const Toolbar = withTranslation("common")(
                 <TableProWrapStyled width={isMobile ? "360px" : "580px"}>
                   <QuoteTable
                     isPro
+                    forexMap={forexMap as any}
                     account={account}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
@@ -475,17 +461,21 @@ export const Toolbar = withTranslation("common")(
                 {marketTicker?.tradeFloat?.close ?? EmptyValueTag}
               </Typography>
               <PriceValueStyled>
-                {isUSD ? PriceTag.Dollar : PriceTag.Yuan}
-                {getValuePrecisionThousand(
-                  isUSD
-                    ? marketTicker.basePriceDollar
-                    : marketTicker.basePriceYuan,
-                  undefined,
-                  undefined,
-                  undefined,
-                  true,
-                  { isFait: true }
-                )}
+                {PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (marketTicker.basePriceDollar || 0) *
+                      (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    2,
+                    true,
+                    {
+                      isFait: true,
+                      floor: false,
+                      isAbbreviate: true,
+                      abbreviate: 6,
+                    }
+                  )}
               </PriceValueStyled>
             </Grid>
             <Grid item>

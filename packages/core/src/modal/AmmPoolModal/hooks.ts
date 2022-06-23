@@ -21,7 +21,6 @@ import {
   useTokenPrices,
   useUserRewards,
   useAmmActivityMap,
-  useSystem,
   useTicker,
   useAccount,
   useTokenMap,
@@ -133,12 +132,10 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     feeA: 0,
     feeB: 0,
     feeDollar: 0,
-    feeYuan: 0,
     reward: 0,
     rewardToken: undefined as any,
     balanceA: 0,
     balanceB: 0,
-    balanceYuan: 0,
     balanceDollar: 0,
   });
 
@@ -148,7 +145,6 @@ export const useCoinPair = <C extends { [key: string]: any }>({
     activity: undefined,
     totalRewards: undefined,
     amountDollar: undefined,
-    amountYuan: undefined,
     totalLPToken: undefined,
     totalA: undefined,
     totalB: undefined,
@@ -404,7 +400,6 @@ export const useAmmPool = <
   R extends { [key: string]: any },
   _I extends { [key: string]: any }
 >() => {
-  const { forex } = useSystem();
   const { account, status: accountStatus } = useAccount();
   const { tokenPrices } = useTokenPrices();
   const { currency, coinJson, isMobile } = useSettings();
@@ -446,7 +441,7 @@ export const useAmmPool = <
   const getUserAmmPoolTxs = React.useCallback(
     ({ limit = pageSize, offset = 0 }) => {
       // limit = pageSize;
-      if (ammMap && forex) {
+      if (ammMap) {
         const addr = ammMap["AMM-" + market]?.address;
         if (addr) {
           setIsLoading(true);
@@ -473,11 +468,9 @@ export const useAmmPool = <
                 const price = tokenPrices && tokenPrices[market];
                 const totalDollar = ((formattedBalance || 0) *
                   (price || 0)) as any;
-                const totalYuan = totalDollar * forex;
                 return {
                   ...o,
                   totalDollar: totalDollar,
-                  totalYuan: totalYuan,
                 };
               });
               setMyAmmMarketArray(formattedArray || []);
@@ -488,12 +481,12 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, market, forex, tokenPrices, pageSize]
+    [ammMap, market, tokenPrices, pageSize]
   );
 
   const getRecentAmmPoolTxs = React.useCallback(
     ({ limit = 15, offset = 0 }) => {
-      if (ammMap && forex) {
+      if (ammMap) {
         // const market = list[list.length - 1];
         const addr = ammMap["AMM-" + market]?.address;
 
@@ -521,11 +514,9 @@ export const useAmmPool = <
                 const price = tokenPrices && tokenPrices[market];
                 const totalDollar = ((formattedBalance || 0) *
                   (price || 0)) as any;
-                const totalYuan = totalDollar * forex;
                 return {
                   ...o,
                   totalDollar: totalDollar,
-                  totalYuan: totalYuan,
                 };
               });
               setAmmMarketArray(formattedArray || []);
@@ -536,7 +527,7 @@ export const useAmmPool = <
         }
       }
     },
-    [ammMap, forex, market, tokenPrices]
+    [ammMap, market, tokenPrices]
   );
   React.useEffect(() => {
     if (
@@ -567,7 +558,6 @@ export const useAmmPool = <
     tokenPrices,
     currency,
     coinJson,
-    forex,
     pageSize,
     setPageSize,
   };

@@ -9,6 +9,7 @@ import {
 } from "@loopring-web/component-lib";
 import {
   BreakPoint,
+  CurrencyToTag,
   depth2ViewData,
   DepthFIcon,
   DepthHIcon,
@@ -117,8 +118,7 @@ export const MarketView = withTranslation("common")(
     const { marketMap, tokenMap } = useTokenMap();
     const { upColor, currency } = useSettings();
     const { tokenPrices } = useTokenPrices();
-    // @ts-ignore
-    const { forex } = useSystem();
+    const { forexMap } = useSystem();
 
     const [depthViewData, setDepthViewData] = React.useState<{
       asks: DepthViewData[];
@@ -207,28 +207,18 @@ export const MarketView = withTranslation("common")(
               ? "var(--color-error)"
               : "var(--color-success)";
         }
+
         value =
-          currency === Currency.usd
-            ? "\u2248 " +
-              PriceTag.Dollar +
-              getValuePrecisionThousand(
-                close * (quotePrice ?? 0),
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              )
-            : "\u2248 " +
-              PriceTag.Yuan +
-              getValuePrecisionThousand(
-                close * (quotePrice ?? 0) * forex,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              );
+          "\u2248 " +
+          PriceTag[CurrencyToTag[currency]] +
+          getValuePrecisionThousand(
+            close * (quotePrice ?? 0) * (forexMap[currency] ?? 0),
+            undefined,
+            undefined,
+            2,
+            true,
+            { isFait: true }
+          );
       }
       close = close
         ? close.toFixed(marketMap[market]?.precisionForPrice)

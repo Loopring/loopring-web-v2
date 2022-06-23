@@ -61,47 +61,44 @@ export function useAmmMapUI<
     },
     [setFilteredData, setTableHeight, tokenPrices]
   );
-  const updateRawData = React.useCallback(
-    (tickerMap) => {
-      try {
-        const _ammMap: any = _.cloneDeep(ammMap);
-        if (_ammMap) {
-          for (let tickerMapKey in tickerMap) {
-            if (_ammMap["AMM-" + tickerMapKey]) {
-              _ammMap["AMM-" + tickerMapKey].tradeFloat = {
-                ..._ammMap["AMM-" + tickerMapKey].tradeFloat,
-                ...tickerMap[tickerMapKey],
-                // APR: _ammMap['AMM-' + tickerMapKey ].APR
-              };
-            }
-          }
-          const rawData = Object.keys(_ammMap).map((ammKey: string) => {
-            const [_, coinA, coinB] = ammKey.split("-");
-            const realMarket = `${coinA}-${coinB}`;
-            const _tickerMap = tickerMap[realMarket].__rawTicker__;
-            const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
-
-            if (coinMap) {
-              _ammMap[ammKey]["coinAInfo"] = coinMap[_ammMap[ammKey]["coinA"]];
-              _ammMap[ammKey]["coinBInfo"] = coinMap[_ammMap[ammKey]["coinB"]];
-            }
-            return {
-              ..._ammMap[ammKey],
-              tradeFloat: {
-                ..._ammMap[ammKey].tradtradeFloat,
-                volume: tickerFloat?.volume || 0,
-              },
+  const updateRawData = React.useCallback(() => {
+    try {
+      const _ammMap: any = _.cloneDeep(ammMap);
+      if (_ammMap && tickerMap) {
+        for (let tickerMapKey in tickerMap) {
+          if (_ammMap["AMM-" + tickerMapKey]) {
+            _ammMap["AMM-" + tickerMapKey].tradeFloat = {
+              ..._ammMap["AMM-" + tickerMapKey].tradeFloat,
+              ...tickerMap[tickerMapKey],
+              // APR: _ammMap['AMM-' + tickerMapKey ].APR
             };
-          });
-          setRawData(rawData);
-          resetTableData(rawData);
+          }
         }
-      } catch (error: any) {
-        throw new CustomError({ ...ErrorMap.NO_TOKEN_MAP, options: error });
+        const rawData = Object.keys(_ammMap).map((ammKey: string) => {
+          const [_, coinA, coinB] = ammKey.split("-");
+          const realMarket = `${coinA}-${coinB}`;
+          const _tickerMap = tickerMap[realMarket]?.__rawTicker__;
+          const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {});
+
+          if (coinMap) {
+            _ammMap[ammKey]["coinAInfo"] = coinMap[_ammMap[ammKey]["coinA"]];
+            _ammMap[ammKey]["coinBInfo"] = coinMap[_ammMap[ammKey]["coinB"]];
+          }
+          return {
+            ..._ammMap[ammKey],
+            tradeFloat: {
+              ..._ammMap[ammKey].tradtradeFloat,
+              volume: tickerFloat?.volume || 0,
+            },
+          };
+        });
+        setRawData(rawData);
+        resetTableData(rawData);
       }
-    },
-    [ammMap, coinMap, resetTableData]
-  );
+    } catch (error: any) {
+      throw new CustomError({ ...ErrorMap.NO_TOKEN_MAP, options: error });
+    }
+  }, [ammMap, coinMap, resetTableData, tickerMap]);
   const sortMethod = React.useCallback(
     (_sortedRows, sortColumn) => {
       let _rawData: Row<R>[] = [];
@@ -184,7 +181,7 @@ export function useAmmMapUI<
       ammStatus === SagaStatus.UNSET &&
       tokenMapStatus === SagaStatus.UNSET
     ) {
-      updateRawData(tickerMap);
+      updateRawData();
     }
   }, [tickerStatus, ammStatus, tokenMapStatus]);
 

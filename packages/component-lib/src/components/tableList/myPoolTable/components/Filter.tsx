@@ -1,9 +1,16 @@
-import { Box, Checkbox, FormControlLabel } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  ListItemText,
+  MenuItem,
+} from "@mui/material";
 import { InputSearch } from "../../../basic-lib";
 import { CheckBoxIcon, CheckedIcon } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../../../stores";
 import { useTheme } from "@emotion/react";
+import React from "react";
 
 export interface FilterProps {
   hideSmallBalances: boolean;

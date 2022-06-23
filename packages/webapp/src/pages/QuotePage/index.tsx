@@ -11,7 +11,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { RowConfig } from "@loopring-web/common-resources";
 import { Box, Container, Divider, Grid, Tab, Tabs } from "@mui/material";
 import { useQuotePage } from "./hook";
-import { useAccount, TableWrapStyled } from "@loopring-web/core";
+import { useAccount, TableWrapStyled, useSystem } from "@loopring-web/core";
 
 const RowStyled = styled(Grid)`
   & .MuiGrid-root:not(:last-of-type) > div {
@@ -29,6 +29,7 @@ export const QuotePage = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
     const tableRef = React.useRef<HTMLDivElement>();
     const { account } = useAccount();
+    const { forexMap } = useSystem();
     const {
       recommendations,
       formattedRecommendations,
@@ -99,6 +100,7 @@ export const QuotePage = withTranslation("common")(
               <MarketBlock
                 {...{
                   ...formattedRecommendations[index],
+                  forexMap: forexMap as any,
                   tradeFloat: getTradeFloatVolumeToCount(
                     formattedRecommendations[index]?.tradeFloat
                   ),
@@ -152,6 +154,7 @@ export const QuotePage = withTranslation("common")(
               onRowClick={(index: any, row: any, col: any) =>
                 handleRowClick(row)
               }
+              forexMap={forexMap as any}
               account={account}
               rawData={filteredData}
               favoriteMarket={favoriteMarket}

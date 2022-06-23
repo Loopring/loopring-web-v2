@@ -34,8 +34,6 @@ const rawData: RawDataTradeItem[] = [
       key: "ETH",
       value: 1200,
     },
-    // priceDollar: number;
-    // priceYuan: number;
     fee: {
       key: "LRC",
       value: 0.1,
@@ -61,8 +59,6 @@ const rawData: RawDataTradeItem[] = [
       key: "ETH",
       value: 1200,
     },
-    // priceDollar: number;
-    // priceYuan: number;
     fee: {
       key: "LRC",
       value: 0.1,
@@ -88,8 +84,7 @@ const rawData: RawDataTradeItem[] = [
       key: "ETH",
       value: 1200,
     },
-    // priceDollar: number;
-    // priceYuan: number;
+
     fee: {
       key: "LRC",
       value: 0.1,
@@ -115,8 +110,6 @@ const rawData: RawDataTradeItem[] = [
       key: "ETH",
       value: 1200,
     },
-    // priceDollar: number;
-    // priceYuan: number;
     fee: {
       key: "LRC",
       value: 0.1,
