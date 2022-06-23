@@ -258,7 +258,7 @@ export const useGetAssets = () => {
 
   React.useEffect(() => {
     getAssetsRawData();
-  }, []);
+  }, [assetsMap]);
 
   const total = assetsRawData
     .map((o) => o.tokenValueDollar)
