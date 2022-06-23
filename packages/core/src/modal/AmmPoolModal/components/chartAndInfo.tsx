@@ -16,15 +16,14 @@ import {
   AmmPairDetail,
 } from "@loopring-web/component-lib";
 import {
-  abbreviateNumber,
   AvatarCoinStyled,
+  CurrencyToTag,
   EmptyValueTag,
   FloatTag,
   getValuePrecisionThousand,
   PriceTag,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { Currency } from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { useTokenMap } from "../../../stores";
 import { BoxWrapperStyled } from "./ammPanel";
@@ -46,6 +45,7 @@ export const ChartAndInfoPanel = ({
   coinPairInfo,
   render24hVolume,
   myAmm,
+  forexMap,
 }: any) => {
   const { t } = useTranslation("common");
   const { tokenMap } = useTokenMap();
@@ -60,13 +60,10 @@ export const ChartAndInfoPanel = ({
   const precisionB = tokenMap[coinPairInfo.coinB]?.precision;
   const {
     // totalAmmValueDollar,
-    // totalAmmValueYuan,
     balanceA: myBalanceA,
     balanceB: myBalanceB,
     balanceDollar: myBalanceDollar,
-    balanceYuan: myBalanceYuan,
     // totalAmmValueDollar,
-    // totalAmmValueYuan,
     // ammDetail: { coinAInfo, coinBInfo },
   } = myAmm as any;
   const tradeFloatType =
@@ -75,30 +72,6 @@ export const ChartAndInfoPanel = ({
       : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0
       ? FloatTag.decrease
       : FloatTag.increase;
-  // const close: any = tradeFloat?.close;
-  // const value =
-  //   currency === Currency.usd
-  //     ? "\u2248 " +
-  //       PriceTag.Dollar +
-  //       getValuePrecisionThousand(
-  //         tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar : 0,
-  //         undefined,
-  //         undefined,
-  //         undefined,
-  //         true,
-  //         { isFait: true }
-  //       )
-  //     : "\u2248 " +
-  //       PriceTag.Yuan +
-  //       getValuePrecisionThousand(
-  //         tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan : 0,
-  //         undefined,
-  //         undefined,
-  //         undefined,
-  //         true,
-  //         { isFait: true }
-  //       );
-
   const change =
     tradeFloat?.change &&
     tradeFloat.change.toFixed &&
@@ -343,11 +316,16 @@ export const ChartAndInfoPanel = ({
             <Typography variant={"body1"} component={"span"}>
               {typeof coinPairInfo.amountDollar === "undefined"
                 ? EmptyValueTag
-                : currency === Currency.usd
-                ? PriceTag.Dollar +
-                  abbreviateNumber(coinPairInfo.amountDollar || 0, 2)
-                : PriceTag.Yuan +
-                  abbreviateNumber(coinPairInfo.amountYuan || 0, 2)}
+                : PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (coinPairInfo.amountDollar || 0) *
+                      (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    2,
+                    true,
+                    { isFait: true, floor: true, isAbbreviate: true }
+                  )}
             </Typography>
           </Typography>
 
@@ -423,31 +401,15 @@ export const ChartAndInfoPanel = ({
                   textDecoration: "underline dotted",
                 }}
               >
-                {currency === Currency.usd
-                  ? PriceTag.Dollar +
-                    getValuePrecisionThousand(
-                      myBalanceDollar,
-                      undefined,
-                      undefined,
-                      undefined,
-                      true,
-                      {
-                        isFait: true,
-                        floor: true,
-                      }
-                    )
-                  : PriceTag.Yuan +
-                    getValuePrecisionThousand(
-                      myBalanceYuan,
-                      undefined,
-                      undefined,
-                      undefined,
-                      true,
-                      {
-                        isFait: true,
-                        floor: true,
-                      }
-                    )}
+                {PriceTag[CurrencyToTag[currency]] +
+                  getValuePrecisionThousand(
+                    (myBalanceDollar || 0) * (forexMap[currency] ?? 0),
+                    undefined,
+                    undefined,
+                    2,
+                    true,
+                    { isFait: true, floor: true }
+                  )}
               </Typography>
             )}
             <PopoverPure

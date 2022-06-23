@@ -2,6 +2,7 @@ import {
   Account,
   AmmDetail,
   CoinKey,
+  ForexMap,
   MyAmmLP,
 } from "@loopring-web/common-resources";
 import { Currency, LoopringMap, TokenInfo } from "@loopring-web/loopring-sdk";
@@ -23,6 +24,7 @@ export type MyPoolTableProps<R> = {
   pagination?: {
     pageSize: number;
   };
+  forexMap: ForexMap<Currency>;
   tokenMap: LoopringMap<TokenInfo & { tradePairs: Array<CoinKey<R>> }>;
   allowTrade?: any;
   page?: number;

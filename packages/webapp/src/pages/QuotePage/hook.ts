@@ -22,6 +22,9 @@ import {
   TickerMap,
   useTicker,
   useSocket,
+  useTokenPrices,
+  useTokenMap,
+  useSystem,
 } from "@loopring-web/core";
 import { useHistory } from "react-router-dom";
 import { TableFilterParams } from "./index";
@@ -29,14 +32,19 @@ import { TableFilterParams } from "./index";
 export function useTickList<C extends { [key: string]: string }>() {
   const [tickList, setTickList] = React.useState<any>([]);
   const [recommendedPairs, setRecommendedPairs] = React.useState<string[]>([]);
-  const { marketArray, coinMap, marketMap, tokenMap } =
-    store.getState().tokenMap;
+  const {
+    marketArray,
+    coinMap,
+    marketMap,
+    tokenMap,
+    status: tokenMapStatus,
+  } = useTokenMap();
   const [recommendations, setRecommendations] = React.useState<
     MarketBlockProps<C>[]
   >([]);
+  const { forexMap } = useSystem();
   const { tickerMap, status: tickerStatus } = useTicker();
-  const { forex } = store.getState().system;
-  const { tokenPrices } = store.getState().tokenPrices;
+  const { tokenPrices } = useTokenPrices();
   const getRecommendPairs = React.useCallback(async () => {
     if (LoopringAPI.exchangeAPI) {
       try {
@@ -59,129 +67,124 @@ export function useTickList<C extends { [key: string]: string }>() {
     },
     [recommendations, setRecommendations]
   );
-  const updateRawData = React.useCallback(
-    async (tickerMap: TickerMap<C>) => {
-      const marketPairs: string[] = (await getRecommendPairs()) ?? [];
-      let _recommendationsFloat: QuoteTableRawDataItem[] = [];
-      let defaultRecommendationsFloat: QuoteTableRawDataItem[] = [];
-      const _tickList =
-        tickerMap && Object.keys(tickerMap)
-          ? Reflect.ownKeys(tickerMap).reduce((prev, key) => {
-              // @ts-ignore
-              const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
-              const ticker = tickerMap[key as string];
-              const coinAPriceDollar =
-                ticker.close * (tokenPrices[coinB] ?? 0) ??
-                tokenPrices[coinB] ??
-                0;
-              const coinAPriceYuan = coinAPriceDollar * forex;
-              let _item: QuoteTableRawDataItem = {
-                ...ticker,
-                pair: {
-                  coinA,
-                  coinB,
-                },
-                coinAPriceDollar,
-                coinAPriceYuan,
-              } as QuoteTableRawDataItem;
-
-              if (marketPairs.findIndex((m) => m === key) !== -1) {
-                _recommendationsFloat.push(_.cloneDeep(_item));
-              }
-              if (
-                marketArray &&
-                marketArray.findIndex((m) => m === key) !== -1
-              ) {
-                defaultRecommendationsFloat.push(_.cloneDeep(_item));
-              }
-              prev.push(_item);
-              return prev;
-            }, [] as QuoteTableRawDataItem[])
-          : [];
-
-      const newTickListWithPrecision = _tickList.map((o: any) => {
-        const pair = o.__rawTicker__.symbol;
-        const precision = marketMap
-          ? marketMap[pair]?.precisionForPrice
-          : undefined;
-        return {
-          ...o,
-          precision,
-        };
-      });
-
-      setTickList(newTickListWithPrecision);
-      _recommendationsFloat = _recommendationsFloat.filter((o) => {
-        const { coinA, coinB } = o.pair;
-        return coinMap && coinMap[coinA] && coinMap[coinB];
-      });
-
-      if (_recommendationsFloat.length < 4) {
-        const filteredFloat = defaultRecommendationsFloat.filter((o) => {
-          const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-          return !marketPairs.includes(pair);
-        });
-        _recommendationsFloat = _recommendationsFloat.concat(
-          filteredFloat.slice(0, 4 - _recommendationsFloat.length)
-        );
-      }
-
-      while (_recommendationsFloat.length < 4) {
-        _recommendationsFloat.push(_.cloneDeep(_recommendationsFloat[0]));
-      }
-
-      const _recommendations = _recommendationsFloat.reduce((prev, item) => {
-        if (coinMap && item) {
-          const { coinA, coinB } = item.pair;
-          const _item: MarketBlockProps<C> = {
-            tradeFloat: item as any,
+  const updateRawData = React.useCallback(async () => {
+    const marketPairs: string[] = (await getRecommendPairs()) ?? [];
+    let _recommendationsFloat: QuoteTableRawDataItem[] = [];
+    let defaultRecommendationsFloat: QuoteTableRawDataItem[] = [];
+    const _tickList =
+      tickerMap && Object.keys(tickerMap)
+        ? Reflect.ownKeys(tickerMap).reduce((prev, key) => {
             // @ts-ignore
-            coinAInfo: coinMap[coinA],
-            // @ts-ignore
-            coinBInfo: coinMap[coinB],
-          } as MarketBlockProps<C>;
-          prev.push(_item);
-        }
-        return prev;
-      }, [] as MarketBlockProps<C>[]);
+            const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
+            const ticker = tickerMap[key as string];
+            const coinAPriceDollar =
+              ticker.close * (tokenPrices[coinB] ?? 0) ??
+              tokenPrices[coinB] ??
+              0;
+            let _item: QuoteTableRawDataItem = {
+              ...ticker,
+              pair: {
+                coinA,
+                coinB,
+              },
+              coinAPriceDollar,
+            } as QuoteTableRawDataItem;
 
-      const _recommendationsWithPrecision = _recommendations.map((o) => {
-        const pair = o.tradeFloat["__rawTicker__"]?.symbol;
-        const coinB = o.tradeFloat["pair"]?.coinB;
-        const marketPrecision = marketMap
-          ? marketMap[pair]?.precisionForPrice
-          : undefined;
-        const coinBPrecision = tokenMap
-          ? tokenMap[coinB]?.precision
-          : undefined;
-        return {
-          ...o,
-          tradeFloat: {
-            ...o.tradeFloat,
-            marketPrecision,
-            coinBPrecision,
-          },
-        };
+            if (marketPairs.findIndex((m) => m === key) !== -1) {
+              _recommendationsFloat.push(_.cloneDeep(_item));
+            }
+            if (marketArray && marketArray.findIndex((m) => m === key) !== -1) {
+              defaultRecommendationsFloat.push(_.cloneDeep(_item));
+            }
+            prev.push(_item);
+            return prev;
+          }, [] as QuoteTableRawDataItem[])
+        : [];
+
+    const newTickListWithPrecision = _tickList.map((o: any) => {
+      const pair = o.__rawTicker__.symbol;
+      const precision = marketMap
+        ? marketMap[pair]?.precisionForPrice
+        : undefined;
+      return {
+        ...o,
+        precision,
+      };
+    });
+
+    setTickList(newTickListWithPrecision);
+    _recommendationsFloat = _recommendationsFloat.filter((o) => {
+      const { coinA, coinB } = o.pair;
+      return coinMap && coinMap[coinA] && coinMap[coinB];
+    });
+
+    if (_recommendationsFloat.length < 4) {
+      const filteredFloat = defaultRecommendationsFloat.filter((o) => {
+        const pair = `${o.pair.coinA}-${o.pair.coinB}`;
+        return !marketPairs.includes(pair);
       });
+      _recommendationsFloat = _recommendationsFloat.concat(
+        filteredFloat.slice(0, 4 - _recommendationsFloat.length)
+      );
+    }
 
-      setRecommendations(_recommendationsWithPrecision);
-    },
-    [
-      coinMap,
-      forex,
-      getRecommendPairs,
-      marketArray,
-      marketMap,
-      tokenMap,
-      tokenPrices,
-    ]
-  );
+    while (_recommendationsFloat.length < 4) {
+      _recommendationsFloat.push(_.cloneDeep(_recommendationsFloat[0]));
+    }
+
+    const _recommendations = _recommendationsFloat.reduce((prev, item) => {
+      if (coinMap && item) {
+        const { coinA, coinB } = item.pair;
+        const _item: MarketBlockProps<C> = {
+          tradeFloat: item as any,
+          forexMap: forexMap as any,
+          // @ts-ignore
+          coinAInfo: coinMap[coinA],
+          // @ts-ignore
+          coinBInfo: coinMap[coinB],
+        } as MarketBlockProps<C>;
+        prev.push(_item);
+      }
+      return prev;
+    }, [] as MarketBlockProps<C>[]);
+
+    const _recommendationsWithPrecision = _recommendations.map((o) => {
+      const pair = o.tradeFloat["__rawTicker__"]?.symbol;
+      const coinB = o.tradeFloat["pair"]?.coinB;
+      const marketPrecision = marketMap
+        ? marketMap[pair]?.precisionForPrice
+        : undefined;
+      const coinBPrecision = tokenMap ? tokenMap[coinB]?.precision : undefined;
+      return {
+        ...o,
+        tradeFloat: {
+          ...o.tradeFloat,
+          marketPrecision,
+          coinBPrecision,
+        },
+      };
+    });
+
+    setRecommendations(_recommendationsWithPrecision);
+  }, [
+    coinMap,
+    forexMap,
+    getRecommendPairs,
+    marketArray,
+    marketMap,
+    tokenMap,
+    tokenPrices,
+    tickerMap,
+  ]);
 
   React.useEffect(() => {
-    if (tickerStatus === SagaStatus.UNSET) {
-      updateRawData(tickerMap as TickerMap<C>);
+    if (
+      tickerStatus === SagaStatus.UNSET &&
+      tokenMapStatus === SagaStatus.UNSET
+    ) {
+      updateRawData();
     }
-  }, [tickerStatus]);
+  }, [tickerStatus, tokenMapStatus]);
   return {
     recommendedPairs,
     tickList,
@@ -228,7 +231,11 @@ export function useQuote<C extends { [key: string]: string }>() {
 
   React.useEffect(() => {
     getRecommendPairs();
-  }, [getRecommendPairs]);
+  }, []);
+
+  const socketSendTicker = React.useCallback(() => {
+    sendSocketTopic({ [WsTopicType.ticker]: marketArray });
+  }, [marketArray, sendSocketTopic]);
 
   React.useEffect(() => {
     socketSendTicker();
@@ -236,10 +243,6 @@ export function useQuote<C extends { [key: string]: string }>() {
       socketEnd();
     };
   }, []);
-
-  const socketSendTicker = React.useCallback(() => {
-    sendSocketTopic({ [WsTopicType.ticker]: marketArray });
-  }, [marketArray, sendSocketTopic]);
 
   return {
     tickList,
@@ -249,6 +252,7 @@ export function useQuote<C extends { [key: string]: string }>() {
 
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
   // const { t } = useTranslation("common");
+  const { status: tickerStatus } = useTicker();
   const [candlestickList, setCandlestickList] = React.useState<any[]>([]);
   const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);
   const [tableTabValue, setTableTabValue] = React.useState("all");
@@ -326,7 +330,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     (event) => {
       handleCurrentScroll(event.currentTarget, tableRef);
     },
-    [tableRef]
+    [handleCurrentScroll, tableRef]
   );
   const resetTableData = React.useCallback(
     (tableData) => {
@@ -342,7 +346,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     return () => {
       window.removeEventListener("scroll", currentScroll);
     };
-  }, []);
+  }, [currentScroll]);
 
   React.useEffect(() => {
     const list = recommendations.map((item) => {
@@ -354,9 +358,9 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       getMixCandlestick(list[2]);
       getMixCandlestick(list[3]);
     }
-  }, [recommendations, getMixCandlestick]);
+  }, [recommendations]);
 
-  const getAmmPoolBalances = useCallback(async () => {
+  const getAmmPoolBalances = React.useCallback(async () => {
     if (LoopringAPI.ammpoolAPI) {
       const ammRes = await LoopringAPI.ammpoolAPI?.getAmmPoolBalances<any[]>();
       const fomattedRes = ammRes?.raw_data.map((o: any) => ({
@@ -369,16 +373,16 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
 
   React.useEffect(() => {
     getAmmPoolBalances();
-  }, [getAmmPoolBalances]);
+  }, []);
 
   React.useEffect(() => {
     getSwapRankingList();
-  }, [getSwapRankingList]);
+  }, []);
 
   let history = useHistory();
 
   // prevent amm risky pair
-  const getFilteredTickList = useCallback(() => {
+  const getFilteredTickList = React.useCallback(() => {
     if (!!ammPoolBalances.length && tickList && !!tickList.length) {
       return tickList.filter((o: any) => {
         const pair = `${o.pair.coinA}-${o.pair.coinB}`;
@@ -391,10 +395,16 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     return [];
   }, [tickList, ammPoolBalances]);
 
-  useEffect(() => {
-    const data = getFilteredTickList();
-    resetTableData(data);
-  }, [getFilteredTickList]);
+  React.useEffect(() => {
+    if (
+      tickerStatus === SagaStatus.UNSET &&
+      ammPoolBalances.length &&
+      tickList.length
+    ) {
+      const data = getFilteredTickList();
+      resetTableData(data);
+    }
+  }, [ammPoolBalances, tickerStatus, tickList]);
 
   const handleTableFilterChange = useCallback(
     ({
@@ -433,7 +443,13 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
       }
       resetTableData(data);
     },
-    [getFilteredTickList, favoriteMarket, swapRankingList, tickList]
+    [
+      tickList,
+      resetTableData,
+      favoriteMarket,
+      swapRankingList,
+      getFilteredTickList,
+    ]
   );
 
   const handleRowClick = useCallback(

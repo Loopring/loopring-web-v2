@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Box,
-  BoxProps,
-  Grid,
-  ListItemText,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Box, BoxProps, Grid, Typography } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   Button,
@@ -18,7 +11,9 @@ import {
 import { Column, Table } from "../../basic-lib/";
 import {
   Account,
+  CurrencyToTag,
   EmptyValueTag,
+  ForexMap,
   getValuePrecisionThousand,
   globalSetup,
   MoreIcon,
@@ -35,6 +30,7 @@ import { useSettings } from "../../../stores";
 import { Currency } from "@loopring-web/loopring-sdk";
 import { Filter } from "./components/Filter";
 import { AmmPairDetail } from "../../block";
+import { ActionPopContent } from "./components/ActionPop";
 
 export enum PoolTradeType {
   add = "add",
@@ -70,23 +66,6 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 
-const ActionPopContent = React.memo(
-  ({ row, allowTrade, handleWithdraw, handleDeposit, t }: any) => {
-    return (
-      <Box borderRadius={"inherit"} minWidth={110}>
-        {allowTrade?.joinAmm?.enable && (
-          <MenuItem onClick={() => handleDeposit(row)}>
-            <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
-          </MenuItem>
-        )}
-        <MenuItem onClick={() => handleWithdraw(row)}>
-          <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
-        </MenuItem>
-      </Box>
-    );
-  }
-);
-
 const PoolStyle = styled(Box)`
   height: calc(${RowConfig.rowHeight}px);
   &.MuiTypography-body1 {
@@ -102,7 +81,8 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
   currency: Currency,
   getPopoverState: any,
   account: Account,
-  tokenMap: { [key: string]: any }
+  tokenMap: { [key: string]: any },
+  forexMap: ForexMap<Currency>
 ): Column<R, unknown>[] => [
   {
     key: "pools",
@@ -165,17 +145,13 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
       }
       const {
         // totalAmmValueDollar,
-        // totalAmmValueYuan,
         balanceDollar,
-        balanceYuan,
         balanceA,
         balanceB,
         ammDetail: { coinAInfo, coinBInfo },
       } = row as any;
       // const coinAIcon: any = coinJson[coinAInfo.simpleName];
       // const coinBIcon: any = coinJson[coinBInfo.simpleName];
-      // const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
-      // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
       return (
         <Box
           height={"100%"}
@@ -190,30 +166,14 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
             >
               {typeof balanceDollar === "undefined"
                 ? EmptyValueTag
-                : currency === Currency.usd
-                ? PriceTag.Dollar +
+                : PriceTag[CurrencyToTag[currency]] +
                   getValuePrecisionThousand(
-                    balanceDollar,
+                    (balanceDollar || 0) * (forexMap[currency] ?? 0),
                     undefined,
                     undefined,
-                    undefined,
+                    2,
                     true,
-                    {
-                      isFait: true,
-                      floor: true,
-                    }
-                  )
-                : PriceTag.Yuan +
-                  getValuePrecisionThousand(
-                    balanceYuan,
-                    undefined,
-                    undefined,
-                    undefined,
-                    true,
-                    {
-                      isFait: true,
-                      floor: true,
-                    }
+                    { isFait: true, floor: true }
                   )}
             </Typography>
           </Box>
@@ -242,87 +202,6 @@ const columnMode = <R extends MyPoolRow<{ [key: string]: any }>>(
       );
     },
   },
-  // {
-  //   key: "feesEarned",
-  //   sortable: false,
-  //   width: "auto",
-  //   name: t("labelFeeEarned"),
-  //   headerCellClass: "textAlignRight",
-  //   formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
-  //     if (!row.ammDetail || !row.ammDetail.coinAInfo) {
-  //       return (
-  //         <Box
-  //           display={"flex"}
-  //           justifyContent={"flex-end"}
-  //           alignItems={"center"}
-  //         />
-  //       );
-  //     }
-  //     const {
-  //       ammDetail: { coinAInfo, coinBInfo },
-  //       feeA,
-  //       feeB,
-  //       precisionA,
-  //       precisionB,
-  //     } = row as any;
-  //     return (
-  //       <Box
-  //         width={"100%"}
-  //         height={"100%"}
-  //         display={"flex"}
-  //         justifyContent={"flex-end"}
-  //         alignItems={"center"}
-  //       >
-  //         {/* <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'}>
-  //                   {feeDollar === undefined ? EmptyValueTag : currency === Currency.usd ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
-  //                       : 'CNY' + PriceTag.Yuan + getThousandFormattedNumbers(feeYuan as number)}
-  //               </TypogStyle> */}
-  //         <Typography variant={"body2"} component={"p"} color={"textPrimary"}>
-  //           <Typography component={"span"}>
-  //             {getValuePrecisionThousand(
-  //               feeA,
-  //               undefined,
-  //               undefined,
-  //               precisionA,
-  //               false,
-  //               { floor: true }
-  //             )}
-  //           </Typography>
-  //           <Typography component={"span"}>{` ${
-  //             coinAInfo?.simpleName as string
-  //           }`}</Typography>
-  //         </Typography>
-  //         <Typography
-  //           variant={"body2"}
-  //           component={"p"}
-  //           color={"textPrimary"}
-  //           marginX={1 / 2}
-  //         >
-  //           +
-  //         </Typography>
-  //         <Typography
-  //           variant={"body2"}
-  //           component={"span"}
-  //           color={"textPrimary"}
-  //         >
-  //           <Typography component={"span"}>
-  //             {getValuePrecisionThousand(
-  //               feeB,
-  //               undefined,
-  //               undefined,
-  //               precisionB,
-  //               false,
-  //               { floor: true }
-  //             )}
-  //           </Typography>
-  //           <Typography component={"span"}>{` ${
-  //             coinBInfo?.simpleName as string
-  //           }`}</Typography>
-  //         </Typography>
-  //       </Box>
-  //     );
-  //   },
-  // },
   {
     key: "action",
     name: t("labelActions"),
@@ -366,7 +245,8 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
   currency: Currency,
   _getPopoverState: any,
   account: Account,
-  _tokenMap: { [key: string]: any }
+  _tokenMap: { [key: string]: any },
+  forexMap: ForexMap<Currency>
 ): Column<R, unknown>[] => [
   {
     key: "pools",
@@ -403,7 +283,6 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
       }
       const {
         balanceDollar,
-        balanceYuan,
         balanceA,
         balanceB,
         ammDetail: { coinAInfo, coinBInfo },
@@ -420,27 +299,14 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
           <Typography component={"span"}>
             {typeof balanceDollar === "undefined"
               ? EmptyValueTag
-              : currency === Currency.usd
-              ? PriceTag.Dollar +
+              : PriceTag[CurrencyToTag[currency]] +
                 getValuePrecisionThousand(
-                  balanceDollar,
+                  (balanceDollar || 0) * (forexMap[currency] ?? 0),
                   undefined,
                   undefined,
-                  undefined,
+                  2,
                   true,
                   { isFait: true, floor: true }
-                )
-              : PriceTag.Yuan +
-                getValuePrecisionThousand(
-                  balanceYuan,
-                  undefined,
-                  undefined,
-                  undefined,
-                  true,
-                  {
-                    isFait: true,
-                    floor: true,
-                  }
                 )}
           </Typography>
           <Typography
@@ -542,6 +408,7 @@ export const MyPoolTable = withTranslation("tables")(
     currency = Currency.usd,
     showloading,
     tokenMap,
+    forexMap,
     ...rest
   }: MyPoolTableProps<R> & WithTranslation) => {
     const { isMobile } = useSettings();
@@ -655,7 +522,8 @@ export const MyPoolTable = withTranslation("tables")(
                   currency,
                   getPopoverState,
                   account,
-                  tokenMap
+                  tokenMap,
+                  forexMap
                   // coinJson
                 ) as any)
               : (columnMode(
@@ -670,7 +538,8 @@ export const MyPoolTable = withTranslation("tables")(
                   currency,
                   getPopoverState,
                   account,
-                  tokenMap
+                  tokenMap,
+                  forexMap
                 ) as any)
           }
           sortDefaultKey={"liquidity"}

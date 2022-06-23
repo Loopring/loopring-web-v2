@@ -103,7 +103,6 @@ export const makeMyAmmMarketArray = <C extends { [key: string]: any }>(
   const tradeArray: Array<Partial<AmmRecordRow<C>> & { totalBalance: number }> =
     [];
   const { tokenMap, coinMap, idIndex } = store.getState().tokenMap;
-  const { forex } = store.getState().system;
 
   if (marketTransaction) {
     marketTransaction.forEach((item: sdk.UserAmmPoolTx) => {
@@ -125,7 +124,6 @@ export const makeMyAmmMarketArray = <C extends { [key: string]: any }>(
                 ? AmmTradeType.add
                 : AmmTradeType.remove,
             totalDollar: 0,
-            totalYuan: 0 / Number(forex),
             totalBalance: Number(balance),
             amountA: volumeToCount(coinA, item.poolTokens[0]?.actualAmount),
             amountB: volumeToCount(coinB, item.poolTokens[1]?.actualAmount),

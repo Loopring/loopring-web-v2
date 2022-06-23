@@ -54,8 +54,6 @@ export type RawDataTradeItem = {
     key: string;
     value: number | undefined;
   };
-  // priceDollar: number;
-  // priceYuan: number;
   fee: {
     key: string;
     value: number | undefined;
@@ -316,12 +314,7 @@ const getColumnModeAssets = (
               )
             : EmptyValueTag;
           return (
-            <Box className="rdg-cell-value textAlignRight">
-              {renderValue}
-              {/*{currency === Currency.usd ?*/}
-              {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
-              {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
-            </Box>
+            <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
           );
         },
       },

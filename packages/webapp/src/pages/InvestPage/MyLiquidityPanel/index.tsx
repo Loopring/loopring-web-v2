@@ -10,16 +10,13 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import {
+  CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
 } from "@loopring-web/common-resources";
 
-import {
-  AmmPoolActivityRule,
-  Currency,
-  LoopringMap,
-} from "@loopring-web/loopring-sdk";
+import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useOverview } from "./hook";
 import {
   useSystem,
@@ -44,85 +41,17 @@ const MyLiquidity: any = withTranslation("common")(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     const { ammActivityMap } = useAmmActivityMap();
-    const { forex, allowTrade } = useSystem();
+    const { forexMap, allowTrade } = useSystem();
     const { tokenMap } = useTokenMap();
     const { account } = useAccount();
     const history = useHistory();
     const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
     const { setShowAmm } = useOpenModals();
-    // const JumpToLiqudity = React.useCallback(
-    //   (pair, type) => {
-    //     // if (history) {
-    //     //   history.push(`/liquidity/pools/coinPair/${pair}?type=${type}`);
-    //     // }
-    //   },
-    //   [history]
-    // );
 
     const { summaryMyAmm, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
     });
-    // const totalValueDollar = myPoolRow
-    //   .map((o: any) => {
-    //     return o.totalAmmValueDollar as number;
-    //   })
-    //   .reduce((a, b) => a + b, 0);
-    // const totalRewardDollar = myPoolRow
-    //   .map((o) => o.feeDollar)
-    //   .reduce((a, b) => (a || 0) + (b || 0), 0);
 
-    // const renderPositionValueDollar =
-    //   PriceTag.Dollar +
-    //   getValuePrecisionThousand(
-    //     totalValueDollar,
-    //     undefined,
-    //     undefined,
-    //     undefined,
-    //     true,
-    //     {
-    //       isFait: true,
-    //       floor: true,
-    //     }
-    //   );
-    // const renderPositionValueYuan =
-    //   PriceTag.Yuan +
-    //   getValuePrecisionThousand(
-    //     totalValueDollar * (forex || 6.5),
-    //     undefined,
-    //     undefined,
-    //     undefined,
-    //     true,
-    //     {
-    //       isFait: true,
-    //       floor: true,
-    //     }
-    //   );
-    // const renderRewardsDollar =
-    //   PriceTag.Dollar +
-    //   getValuePrecisionThousand(
-    //     totalRewardDollar || 0,
-    //     undefined,
-    //     undefined,
-    //     undefined,
-    //     true,
-    //     {
-    //       isFait: true,
-    //       floor: true,
-    //     }
-    //   );
-    // const renderRewardsYuan =
-    //   PriceTag.Yuan +
-    //   getValuePrecisionThousand(
-    //     (totalRewardDollar || 0) * (forex || 6.5),
-    //     undefined,
-    //     undefined,
-    //     undefined,
-    //     true,
-    //     {
-    //       isFait: true,
-    //       floor: true,
-    //     }
-    //   );
     const theme = useTheme();
     const { isMobile } = useSettings();
     const fontSize: any = isMobile
@@ -160,31 +89,16 @@ const MyLiquidity: any = withTranslation("common")(
                 fontFamily={"Roboto"}
               >
                 {summaryMyAmm?.investDollar
-                  ? currency === Currency.usd
-                    ? PriceTag.Dollar +
-                      getValuePrecisionThousand(
-                        summaryMyAmm.investDollar,
-                        undefined,
-                        undefined,
-                        undefined,
-                        true,
-                        {
-                          isFait: true,
-                          floor: true,
-                        }
-                      )
-                    : PriceTag.Yuan +
-                      getValuePrecisionThousand(
-                        summaryMyAmm.investYuan,
-                        undefined,
-                        undefined,
-                        undefined,
-                        true,
-                        {
-                          isFait: true,
-                          floor: true,
-                        }
-                      )
+                  ? PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      (summaryMyAmm.investDollar || 0) *
+                        (forexMap[currency] ?? 0),
+                      undefined,
+                      undefined,
+                      2,
+                      true,
+                      { isFait: true, floor: true }
+                    )
                   : EmptyValueTag}
               </Typography>
             </Grid>
@@ -206,31 +120,15 @@ const MyLiquidity: any = withTranslation("common")(
                 fontFamily={"Roboto"}
               >
                 {summaryMyAmm?.feeDollar
-                  ? currency === Currency.usd
-                    ? PriceTag.Dollar +
-                      getValuePrecisionThousand(
-                        summaryMyAmm.feeDollar,
-                        undefined,
-                        undefined,
-                        undefined,
-                        true,
-                        {
-                          isFait: true,
-                          floor: true,
-                        }
-                      )
-                    : PriceTag.Yuan +
-                      getValuePrecisionThousand(
-                        summaryMyAmm.feeYuan,
-                        undefined,
-                        undefined,
-                        undefined,
-                        true,
-                        {
-                          isFait: true,
-                          floor: true,
-                        }
-                      )
+                  ? PriceTag[CurrencyToTag[currency]] +
+                    getValuePrecisionThousand(
+                      (summaryMyAmm.feeDollar || 0) * (forexMap[currency] ?? 0),
+                      undefined,
+                      undefined,
+                      2,
+                      true,
+                      { isFait: true, floor: true }
+                    )
                   : EmptyValueTag}
               </Typography>
             </Grid>
@@ -258,6 +156,7 @@ const MyLiquidity: any = withTranslation("common")(
         >
           <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
             <MyPoolTable
+              forexMap={forexMap as any}
               title={
                 <Typography
                   variant={"h5"}

@@ -6,7 +6,10 @@ import {
   Button,
   Column,
   NewTagIcon,
+  Popover,
   PopoverPure,
+  PopoverType,
+  PopoverWrapProps,
   Table,
   TableProps,
 } from "../../basic-lib";
@@ -15,25 +18,27 @@ import {
   AmmDetail,
   AmmRankIcon,
   AvatarCoinStyled,
+  CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   globalSetup,
+  MoreIcon,
   PriceTag,
   SoursURL,
 } from "@loopring-web/common-resources";
-import { Avatar, Box, BoxProps, Typography } from "@mui/material";
+import { Avatar, Box, BoxProps, Grid, Typography } from "@mui/material";
 import { PoolTableProps, Row } from "./Interface";
 import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";
 import { FormatterProps } from "react-data-grid";
 import {
   AmmPoolInProgressActivityRule,
-  Currency,
   LoopringMap,
 } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 import { TablePaddingX } from "../../styled";
 import { AmmPairDetail } from "../../block";
+import { ActionPopContent } from "../myPoolTable/components/ActionPop";
 const BoxStyled = styled(Box)`` as typeof Box;
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
@@ -42,7 +47,7 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 240px auto auto auto 200px !important;`
-        : ` --template-columns: 16% 60% 24% !important;
+        : ` --template-columns: 16% 60% auto 8% !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -253,12 +258,13 @@ export const PoolsTable = withTranslation(["tables", "common"])(
     tableHeight = 350,
     coinJson,
     account,
-    forex,
     tokenPrices,
     showLoading,
     handleWithdraw,
     handleDeposit,
     tokenMap,
+    forexMap,
+    allowTrade,
     ...rest
   }: WithTranslation & PoolTableProps<T>) => {
     const { currency, isMobile } = useSettings();
@@ -301,15 +307,9 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         headerCellClass: "textAlignRight",
         name: t("labelLiquidity"),
         formatter: ({ row, rowIdx }) => {
-          const { coinA, coinB, totalA, totalB, amountDollar, amountYuan } =
-            row as any;
+          const { coinA, coinB, totalA, totalB, amountDollar } = row as any;
           const popoverState = getPopoverState(rowIdx.toString());
 
-          // const coinAIcon: any = coinJson[coinA];
-          // const coinBIcon: any = coinJson[coinB];
-
-          const liquidityLpToken =
-            currency === Currency.usd ? amountDollar : amountYuan;
           return (
             <>
               <Box className={"textAlignRight"}>
@@ -322,19 +322,31 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                     textDecoration: "underline dotted",
                   }}
                 >
-                  {typeof liquidityLpToken === "undefined"
-                    ? EmptyValueTag
-                    : (currency === Currency.usd
-                        ? PriceTag.Dollar
-                        : PriceTag.Yuan) +
-                      getValuePrecisionThousand(
-                        liquidityLpToken,
-                        undefined,
-                        undefined,
-                        undefined,
-                        true,
-                        { isFait: true }
-                      )}
+                  {
+                    typeof amountDollar === "undefined"
+                      ? EmptyValueTag
+                      : PriceTag[CurrencyToTag[currency]] +
+                        getValuePrecisionThousand(
+                          amountDollar * (forexMap[currency] ?? 0),
+                          undefined,
+                          undefined,
+                          undefined,
+                          true,
+                          { isFait: true }
+                        )
+                    // ;
+                    // (currency === Currency.usd
+                    //     ? PriceTag.Dollar
+                    //     : PriceTag.Yuan) +
+                    //   getValuePrecisionThousand(
+                    //     liquidityLpToken,
+                    //     undefined,
+                    //     undefined,
+                    //     undefined,
+                    //     true,
+                    //     { isFait: true }
+                    //   )
+                  }
                 </Typography>
               </Box>
               <PopoverPure
@@ -379,21 +391,13 @@ export const PoolsTable = withTranslation(["tables", "common"])(
           const totalAmountDollar =
             (Number(volume) || 0) *
             (tokenPrices[row.coinAInfo?.simpleName] || 0);
-          const totalAmountYuan =
-            (Number(volume) || 0) *
-            (tokenPrices[row.coinAInfo?.simpleName] || 0) *
-            (forex || 6.5);
-          const renderValue =
-            currency === Currency.usd ? totalAmountDollar : totalAmountYuan;
-          const renderUnit =
-            currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan;
           return (
             <Box className={"textAlignRight"}>
               <Typography component={"span"}>
                 {volume && Number.isFinite(volume)
-                  ? renderUnit +
+                  ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      renderValue,
+                      totalAmountDollar * (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
                       undefined,
@@ -441,6 +445,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                 // href={`liquidity/pools/coinPair/${
                 //   row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
                 // }`}
+                disabled={!allowTrade?.joinAmm?.enable}
                 className={"btn"}
                 variant={"text"}
                 size={"small"}
@@ -495,10 +500,7 @@ export const PoolsTable = withTranslation(["tables", "common"])(
         headerCellClass: "textAlignRight",
         name: t("labelLiquidity"),
         formatter: ({ row }) => {
-          const { coinA, coinB, totalA, totalB, amountDollar, amountYuan } =
-            row as any;
-          const liquidityLpToken =
-            currency === Currency.usd ? amountDollar : amountYuan;
+          const { coinA, coinB, totalA, totalB, amountDollar } = row as any;
           return (
             <Box
               className={"textAlignRight"}
@@ -508,13 +510,11 @@ export const PoolsTable = withTranslation(["tables", "common"])(
               justifyContent={"center"}
             >
               <Typography component={"span"}>
-                {typeof liquidityLpToken === "undefined"
+                {typeof amountDollar === "undefined"
                   ? EmptyValueTag
-                  : (currency === Currency.usd
-                      ? PriceTag.Dollar
-                      : PriceTag.Yuan) +
+                  : PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      liquidityLpToken,
+                      amountDollar * (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
                       undefined,
@@ -559,14 +559,6 @@ export const PoolsTable = withTranslation(["tables", "common"])(
           const totalAmountDollar =
             (Number(volume) || 0) *
             (tokenPrices[row.coinAInfo?.simpleName] || 0);
-          const totalAmountYuan =
-            (Number(volume) || 0) *
-            (tokenPrices[row.coinAInfo?.simpleName] || 0) *
-            (forex || 6.5);
-          const renderValue =
-            currency === Currency.usd ? totalAmountDollar : totalAmountYuan;
-          const renderUnit =
-            currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan;
           const APR =
             typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag;
 
@@ -584,14 +576,14 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                 color={"textPrimary"}
               >
                 {volume && Number.isFinite(volume)
-                  ? renderUnit +
+                  ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      renderValue,
+                      totalAmountDollar * (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
                       2,
                       true,
-                      { isFait: true, abbreviate: 3, isAbbreviate: true }
+                      { isFait: true }
                     )
                   : EmptyValueTag}
               </Typography>
@@ -606,6 +598,37 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                   : getValuePrecisionThousand(APR, 2, 2, 2, true) + "%"}
               </Typography>
             </Box>
+          );
+        },
+      },
+      {
+        key: "action",
+        name: "",
+        headerCellClass: "textAlignRight",
+        formatter: ({ row }) => {
+          const popoverProps: PopoverWrapProps = {
+            type: PopoverType.click,
+            popupId: "testPopup",
+            className: "arrow-none",
+            children: <MoreIcon cursor={"pointer"} />,
+            popoverContent: (
+              <ActionPopContent
+                {...{ row, allowTrade, handleWithdraw, handleDeposit, t }}
+              />
+            ),
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "right",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "right",
+            },
+          } as PopoverWrapProps;
+          return (
+            <Grid item marginTop={1}>
+              <Popover {...{ ...popoverProps }} />
+            </Grid>
           );
         },
       },

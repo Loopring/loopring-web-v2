@@ -55,7 +55,7 @@ export const PoolsPanel = withTranslation("common")(
     } = useAmmMapUI();
     const { setShowAmm } = useOpenModals();
     const { coinJson } = useSettings();
-    const { forex } = useSystem();
+    const { forexMap, allowTrade } = useSystem();
     const { tokenMap } = useTokenMap();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
@@ -95,15 +95,15 @@ export const PoolsPanel = withTranslation("common")(
               tokenMap={tokenMap as any}
               {...{
                 rawData: filteredData,
-                showLoading: showLoading,
-                tableHeight: tableHeight,
-                sortMethod: sortMethod,
+                showLoading,
+                tableHeight,
+                sortMethod,
                 activityInProgressRules,
                 coinJson,
-                forex,
                 account,
                 tokenPrices,
-
+                allowTrade,
+                forexMap: forexMap as any,
                 handleWithdraw: (row) => {
                   // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                   const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;

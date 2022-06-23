@@ -6,6 +6,8 @@ import { Column, Table } from "../../basic-lib";
 import { Filter } from "./components/Filter";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import {
+  CurrencyToTag,
+  ForexMap,
   getValuePrecisionThousand,
   MarketType,
   PriceTag,
@@ -85,11 +87,6 @@ export type TradePairItem = {
   last: string;
 };
 
-export enum LpTokenAction {
-  add = "add",
-  remove = "remove",
-}
-
 export type RawDataAssetsItem = {
   token: {
     type: TokenType;
@@ -101,7 +98,6 @@ export type RawDataAssetsItem = {
   tradePairList?: TradePairItem[];
   smallBalance: boolean;
   tokenValueDollar: number;
-  tokenValueYuan: number;
 };
 
 export interface AssetsTableProps {
@@ -124,6 +120,7 @@ export interface AssetsTableProps {
   disableWithdrawList: string[];
   setHideLpToken: (value: boolean) => void;
   setHideSmallBalances: (value: boolean) => void;
+  forexMap: ForexMap<Currency>;
 }
 
 // const RowConfig = {
@@ -146,6 +143,7 @@ export const AssetsTable = withTranslation("tables")(
       hideSmallBalances,
       setHideLpToken,
       setHideSmallBalances,
+      forexMap,
       ...rest
     } = props;
 
@@ -159,7 +157,6 @@ export const AssetsTable = withTranslation("tables")(
     const [tableHeight, setTableHeight] = React.useState(props.tableHeight);
     const { language, isMobile } = useSettings();
     const { coinJson, currency } = useSettings();
-    const isUSD = currency === Currency.usd;
     const resetTableData = React.useCallback(
       (viewData) => {
         setViewData(viewData);
@@ -206,7 +203,7 @@ export const AssetsTable = withTranslation("tables")(
     const getColumnModeAssets = (
       t: TFunction,
       allowTrade?: any
-    ): Column<Row, unknown>[] => [
+    ): Column<RawDataAssetsItem, unknown>[] => [
       {
         key: "token",
         name: t("labelToken"),
@@ -292,20 +289,17 @@ export const AssetsTable = withTranslation("tables")(
         name: t("labelAssetsTableValue"),
         headerCellClass: "textAlignRight",
         formatter: ({ row }) => {
-          const tokenValueDollar = row["tokenValueDollar"];
-          const tokenValueYuan = row["tokenValueYuan"];
-          const renderValue = isUSD ? tokenValueDollar : tokenValueYuan;
           return (
             <Box className={"textAlignRight"}>
-              {isUSD ? PriceTag.Dollar : PriceTag.Yuan}
-              {getValuePrecisionThousand(
-                renderValue,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true, floor: true }
-              )}
+              {PriceTag[CurrencyToTag[currency]] +
+                getValuePrecisionThousand(
+                  (row?.tokenValueDollar || 0) * (forexMap[currency] ?? 0),
+                  undefined,
+                  undefined,
+                  undefined,
+                  true,
+                  { isFait: true, floor: true }
+                )}
             </Box>
           );
         },

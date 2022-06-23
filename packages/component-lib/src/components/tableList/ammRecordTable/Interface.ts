@@ -1,4 +1,4 @@
-import { CoinInfo } from "@loopring-web/common-resources";
+import { CoinInfo, ForexMap } from "@loopring-web/common-resources";
 import { Currency } from "@loopring-web/loopring-sdk";
 
 export enum AmmTradeType {
@@ -16,7 +16,6 @@ enum TxStatus {
 
 export interface AmmRecordRow<C> {
   totalDollar: number;
-  totalYuan: number;
   amountA: number;
   amountB: number;
   time: number;
@@ -42,6 +41,7 @@ export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
   rowHeight?: number;
   headerRowHeight?: number;
   currency?: Currency;
+  forexMap: ForexMap<Currency>;
 };
 // rowHeight={RowConfig.rowHeight}
 // headerRowHeight={RowConfig.headerRowHeight}

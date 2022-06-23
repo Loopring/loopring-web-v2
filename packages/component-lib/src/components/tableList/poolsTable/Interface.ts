@@ -1,7 +1,13 @@
-import { Account, AmmDetail, TradeFloat } from "@loopring-web/common-resources";
+import {
+  Account,
+  AmmDetail,
+  TradeFloat,
+  ForexMap,
+} from "@loopring-web/common-resources";
 import {
   LoopringMap,
   AmmPoolInProgressActivityRule,
+  Currency,
 } from "@loopring-web/loopring-sdk";
 
 export type Row<T> = AmmDetail<T> & {
@@ -17,9 +23,10 @@ export type PoolTableProps<T, R = Row<T>> = {
   tableHeight?: number;
   coinJson: any;
   account: Account;
-  forex?: number;
   tokenPrices: any;
+  allowTrade?: { [key: string]: { enable: boolean; reason?: string } };
   showLoading?: boolean;
   tokenMap: { [key: string]: any };
+  forexMap: ForexMap<Currency>;
   sortMethod: (sortedRows: any[], sortColumn: string) => any[];
 };

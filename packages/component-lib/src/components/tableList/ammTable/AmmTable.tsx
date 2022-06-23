@@ -156,14 +156,7 @@ const getColumnModeAssets = (
               false,
               { isTrade: true }
             )}`;
-      return (
-        <Box className="rdg-cell-value textAlignRight">
-          {renderValue}
-          {/*{currency === Currency.usd ?*/}
-          {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
-          {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
-        </Box>
-      );
+      return <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>;
     },
   },
   {

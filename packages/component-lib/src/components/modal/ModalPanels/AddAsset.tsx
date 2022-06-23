@@ -86,7 +86,7 @@ export const AddAsset = ({
                 size={"large"}
                 className={"addAsset"}
                 fullWidth
-                isMobile={isMobile}
+                ismobile={isMobile}
                 disabled={
                   !!(
                     item.enableKey &&

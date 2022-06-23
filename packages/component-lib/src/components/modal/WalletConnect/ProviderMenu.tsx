@@ -173,7 +173,7 @@ export const ProviderMenu = ({
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
-                isMobile={isMobile}
+                ismobile={isMobile}
                 className={
                   providerName === item.key ? "selected provider" : "provider"
                 }

@@ -363,7 +363,7 @@ export const shake = css`
 `;
 
 export const MenuBtnStyled = styled(Button)<
-  ButtonProps & { isMobile: boolean }
+  ButtonProps & { ismobile: boolean }
 >`
   font-size: ${({ theme }) => theme.fontDefault.body1};
   background: var(--opacity);
@@ -376,8 +376,8 @@ export const MenuBtnStyled = styled(Button)<
   &.addAsset,
   &.sendAsset {
     white-space: pre;
-    font-size: ${({ theme, isMobile }) =>
-      isMobile ? theme.fontDefault.h6 : theme.fontDefault.h5};
+    font-size: ${({ theme, ismobile }) =>
+      ismobile ? theme.fontDefault.h6 : theme.fontDefault.h5};
     //justify-content: flex-start;
     justify-content: space-between;
     flex-direction: row;
@@ -420,4 +420,4 @@ export const MenuBtnStyled = styled(Button)<
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
-` as (props: ButtonProps & { isMobile: boolean }) => JSX.Element;
+` as (props: ButtonProps & { ismobile: boolean }) => JSX.Element;

@@ -117,6 +117,7 @@ export const AmmWithdrawWrap = <
 
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _ref: any) => {
+      myLog(_ref?.current, coinLPRef.current);
       if (_ref) {
         if (
           ammData?.coinLP.tradeValue !== ibData.tradeValue &&
@@ -141,7 +142,7 @@ export const AmmWithdrawWrap = <
         });
       }
     },
-    [ammData, onRemoveChangeEvent]
+    [ammData, onRemoveChangeEvent, coinLPRef]
   );
 
   const onPercentage = (value: any) => {
@@ -189,7 +190,6 @@ export const AmmWithdrawWrap = <
     maxAllow: true,
     ...tokenLPProps,
     handleError,
-    handleCountChange,
     ...rest,
   };
 
@@ -306,6 +306,8 @@ export const AmmWithdrawWrap = <
             disabled={getDisabled()}
             {...{
               ...propsLP,
+              handleCountChange: (data, _name, ref) =>
+                handleCountChange(data, ref),
               isHideError: true,
               isShowCoinInfo: false,
               order: "right",

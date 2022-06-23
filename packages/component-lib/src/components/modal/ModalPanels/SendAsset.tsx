@@ -82,7 +82,7 @@ export const SendAsset = ({
                 size={"large"}
                 className={"sendAsset"}
                 fullWidth
-                isMobile={isMobile}
+                ismobile={isMobile}
                 disabled={
                   !!(
                     item.enableKey &&
