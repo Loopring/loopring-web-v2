@@ -72,10 +72,9 @@ export const VendorMenu = ({
             <MenuBtnStyled
               variant={"outlined"}
               size={"large"}
-              ismobile={isMobile}
-              className={
+              className={`${isMobile ? "isMobile" : ""} ${
                 vendorForce === item.key ? "selected vendor" : "vendor"
-              }
+              }`}
               fullWidth
               style={{
                 height:

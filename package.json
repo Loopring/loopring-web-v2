@@ -6,14 +6,14 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">=14.x"
+    "node": ">=16.x"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "^2.0.13",
+    "@loopring-web/loopring-sdk": "^2.0.14",
     "@loopring-web/recharts": "^2.0.10",
-    "@loopring-web/web3-provider": "^1.0.18",
+    "@loopring-web/web3-provider": "^1.0.19",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.6.2",
     "@react-spring/parallax": "^9.4.4",
@@ -60,7 +60,7 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.5.1"
+    "web3": "^1.7.4"
   },
   "build": {
     "files": [
