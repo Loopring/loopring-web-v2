@@ -92,7 +92,7 @@ const should15MinutesUpdateDataGroup = async (
     let indexUSD = 0;
     const tokenId =
       chainId === ChainId.GOERLI
-        ? "0x47525e6a5def04c9a56706e93f54cc70c2e8f165"
+        ? "0xd4e71c4bb48850f5971ce40aa428b09f242d3e8a"
         : "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
     const promiseArray = Reflect.ownKeys(Currency).map((key, index) => {
       if (key.toString().toUpperCase() === Currency.usd.toUpperCase()) {

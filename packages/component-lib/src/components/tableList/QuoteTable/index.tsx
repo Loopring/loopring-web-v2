@@ -190,7 +190,6 @@ export const QuoteTable = withTranslation("tables")(
           activityInProgressRules,
         } = props;
 
-        // const isUSD = currency === Currency.usd;
         const basicRender = [
           {
             key: "pair",

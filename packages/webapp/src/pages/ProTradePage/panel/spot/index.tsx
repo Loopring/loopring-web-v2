@@ -9,7 +9,6 @@ import {
   PopoverPure,
   Toast,
   TradeProType,
-  WrongNetworkGuide,
 } from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
 import {
@@ -114,8 +113,7 @@ export const SpotView = withTranslation("common")(
         <>
           <Typography display={"inline-flex"} alignItems={"center"}>
             <Typography component={"span"} marginRight={1}>
-              {" "}
-              {t("labelProLimit")}{" "}
+              {t("labelProLimit")}
             </Typography>
             <HelpIcon
               {...bindHover(popupLimitState)}

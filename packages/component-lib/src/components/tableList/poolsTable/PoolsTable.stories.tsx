@@ -41,7 +41,6 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
     amountDollar: 17764.89,
     totalLPToken: 12132131,
     totalA: 0.002,
@@ -61,7 +60,6 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
     amountDollar: 19774.89,
 
     totalLPToken: 12132131,
@@ -82,7 +80,6 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
     amountDollar: 497764.89,
 
     totalLPToken: 12132131,
@@ -103,7 +100,6 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
     amountDollar: 196764.89,
 
     totalLPToken: 12132131,
@@ -124,7 +120,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -145,7 +141,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -166,7 +162,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -187,7 +183,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    // currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -208,7 +204,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -229,7 +225,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -250,7 +246,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -271,7 +267,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -292,7 +288,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -313,7 +309,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -334,7 +330,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -355,7 +351,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -376,7 +372,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -397,7 +393,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,
@@ -418,7 +414,7 @@ const rawData: PoolsRow<any>[] = [
       reward: 12312,
     },
     APR: 56,
-    //currency:Currency.usd,
+
     amountDollar: 197764.89,
 
     totalLPToken: 12132131,

@@ -322,31 +322,17 @@ export const PoolsTable = withTranslation(["tables", "common"])(
                     textDecoration: "underline dotted",
                   }}
                 >
-                  {
-                    typeof amountDollar === "undefined"
-                      ? EmptyValueTag
-                      : PriceTag[CurrencyToTag[currency]] +
-                        getValuePrecisionThousand(
-                          amountDollar * (forexMap[currency] ?? 0),
-                          undefined,
-                          undefined,
-                          undefined,
-                          true,
-                          { isFait: true }
-                        )
-                    // ;
-                    // (currency === Currency.usd
-                    //     ? PriceTag.Dollar
-                    //     : PriceTag.Yuan) +
-                    //   getValuePrecisionThousand(
-                    //     liquidityLpToken,
-                    //     undefined,
-                    //     undefined,
-                    //     undefined,
-                    //     true,
-                    //     { isFait: true }
-                    //   )
-                  }
+                  {typeof amountDollar === "undefined"
+                    ? EmptyValueTag
+                    : PriceTag[CurrencyToTag[currency]] +
+                      getValuePrecisionThousand(
+                        amountDollar * (forexMap[currency] ?? 0),
+                        undefined,
+                        undefined,
+                        undefined,
+                        true,
+                        { isFait: true }
+                      )}
                 </Typography>
               </Box>
               <PopoverPure
