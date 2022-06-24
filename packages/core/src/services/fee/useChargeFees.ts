@@ -432,6 +432,7 @@ export function useChargeFees({
       if (nodeTimer.current !== -1) {
         clearTimeout(nodeTimer.current as NodeJS.Timeout);
       }
+      getFeeList.cancel();
     };
   }, [
     tokenAddress,
