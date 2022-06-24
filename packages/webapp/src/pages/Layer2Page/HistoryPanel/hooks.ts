@@ -28,8 +28,8 @@ export type TxsFilterProps = {
   types?: sdk.UserTxTypes[] | string;
 };
 enum TxTypeAMM {
-  Join = "join_pool",
-  Exit = "exit_pool",
+  Add = "join_pool",
+  Remove = "exit_pool",
 }
 
 export function useGetTxs(setToastOpen: (state: any) => void) {

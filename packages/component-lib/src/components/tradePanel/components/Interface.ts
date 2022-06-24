@@ -49,7 +49,10 @@ export type TransferInfoProps<C> = {
   transferBtnStatus?: keyof typeof TradeBtnStatus | undefined;
   chargeFeeTokenList: Array<C>;
   feeInfo: C;
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
 };
 
 export type TransferExtendProps<T, I, C> = {
@@ -83,7 +86,10 @@ export type ResetInfoProps<C> = {
   chargeFeeTokenList: Array<C>;
   feeInfo: C;
   disabled?: boolean;
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   handleFeeChange: (value: C) => void;
 } & XOR<
   {
@@ -151,7 +157,10 @@ export type WithdrawInfoProps<C> = {
   withdrawTypes: Partial<WithdrawTypes>;
   chargeFeeTokenList: Array<C>;
   feeInfo: C;
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
 };
 
 export type WithdrawExtendProps<T, I, C> = {
@@ -274,7 +283,10 @@ export type NFTMintInfoProps<C> = {
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
   // isAvaiableId?: boolean;
-  isFeeNotEnough?: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
@@ -287,7 +299,10 @@ export type NFTMetaInfoProps<C> = {
   feeInfo: C;
   // isNFTCheckLoading?: boolean;
   // isAvaiableId?: boolean;
-  isFeeNotEnough?: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
@@ -344,7 +359,10 @@ export type NFTDeployInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   assetsData?: any[];
   chargeFeeTokenList: Array<C>;
   feeInfo: C;
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;
@@ -366,7 +384,10 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   feeInfo: C;
   isNFTCheckLoading?: boolean;
   isAvaiableId?: boolean;
-  isFeeNotEnough?: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   handleFeeChange: (value: C) => void;
   wait?: number;
 } & BtnInfoProps;

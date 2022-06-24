@@ -31,7 +31,10 @@ import {
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
@@ -77,7 +80,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -213,17 +217,17 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
   );
 
   const checkBtnStatus = React.useCallback(() => {
-    if (tokenMap && !isFeeNotEnough) {
+    if (tokenMap && !isFeeNotEnough.isFeeNotEnough) {
       enableBtn();
       myLog("enableBtn");
       return;
     }
     disableBtn();
-  }, [disableBtn, enableBtn, isFeeNotEnough, tokenMap]);
+  }, [disableBtn, enableBtn, isFeeNotEnough.isFeeNotEnough, tokenMap]);
 
   React.useEffect(() => {
     checkBtnStatus();
-  }, [checkBtnStatus, nftDeployValue]);
+  }, [checkBtnStatus, nftDeployValue, isFeeNotEnough.isFeeNotEnough]);
 
   const onNFTDeployClick = async (
     _nftDeployValue: T,
@@ -237,7 +241,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
       tokenMap &&
       LoopringAPI.userAPI &&
       exchangeInfo &&
-      !isFeeNotEnough &&
+      !isFeeNotEnough.isFeeNotEnough &&
       nftDeployValue &&
       nftDeployValue.broker &&
       nftDeployValue.tokenAddress &&

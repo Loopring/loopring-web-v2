@@ -9,6 +9,8 @@ import {
   PoolsTable,
   InputSearch,
   useSettings,
+  useOpenModals,
+  AmmPanelType,
 } from "@loopring-web/component-lib";
 
 import {
@@ -16,22 +18,22 @@ import {
   useAccount,
   useSystem,
   useAmmActivityMap,
+  useTokenMap,
 } from "@loopring-web/core";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
 `;
 
 const StylePaper = styled(Box)`
   width: 100%;
   //height: 100%;
   flex: 1;
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
   padding-bottom: ${({ theme }) => theme.unit}px;
-
   .rdg {
     flex: 1;
   }
@@ -51,8 +53,10 @@ export const PoolsPanel = withTranslation("common")(
       filterValue,
       rawData,
     } = useAmmMapUI();
+    const { setShowAmm } = useOpenModals();
     const { coinJson } = useSettings();
-    const { forex } = useSystem();
+    const { forexMap, allowTrade } = useSystem();
+    const { tokenMap } = useTokenMap();
     const { tokenPrices } = store.getState().tokenPrices;
     const showLoading = rawData && !rawData.length;
     const { activityInProgressRules } = useAmmActivityMap();
@@ -62,11 +66,14 @@ export const PoolsPanel = withTranslation("common")(
         <WrapperStyled flex={1} marginBottom={3}>
           <Box
             marginBottom={3}
-            display={"flex"}
+            display={"inline-flex"}
             flexDirection={"row"}
             justifyContent={"space-between"}
+            paddingX={3}
+            paddingTop={3}
+            alignItems={"center"}
           >
-            <Typography variant={"h2"} component={"h2"}>
+            <Typography variant={"h5"} color={"textSecondary"} component={"h2"}>
               {t("labelLiquidityPageTitle")}
             </Typography>
             <InputSearch
@@ -85,16 +92,37 @@ export const PoolsPanel = withTranslation("common")(
             className={"table-divide"}
           >
             <PoolsTable
+              tokenMap={tokenMap as any}
               {...{
                 rawData: filteredData,
-                showLoading: showLoading,
-                tableHeight: tableHeight,
-                sortMethod: sortMethod,
+                showLoading,
+                tableHeight,
+                sortMethod,
                 activityInProgressRules,
                 coinJson,
-                forex,
                 account,
                 tokenPrices,
+                allowTrade,
+                forexMap: forexMap as any,
+                handleWithdraw: (row) => {
+                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                  const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
+
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Exit,
+                    symbol: pair,
+                  });
+                },
+
+                handleDeposit: (row) => {
+                  const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Join,
+                    symbol: pair,
+                  });
+                },
               }}
             />
           </StylePaper>

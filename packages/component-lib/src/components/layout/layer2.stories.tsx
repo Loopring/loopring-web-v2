@@ -171,7 +171,7 @@ let transferProps: TransferProps<any, any> = {
   },
 };
 let resetProps: ResetProps<any> = {
-  isFeeNotEnough: false,
+  isFeeNotEnough: { isFeeNotEnough: false, isOnLoading: false },
   chargeFeeTokenList: [],
   // tradeData,
   assetsData: [],

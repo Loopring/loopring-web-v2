@@ -69,13 +69,11 @@ const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
   tradeFloat: {
     change: 1000,
     timeUnit: "24h",
-    priceYuan: 100,
     priceDollar: 1.23123,
     floatTag: FloatTag.increase,
     // tagNew: false,
   },
   amountDollar: 197764.89,
-  amountYuan: 194.89,
   totalLPToken: 12132131,
   totalA: 0.002,
   totalB: 12344,
@@ -91,12 +89,10 @@ const myAmm: MyAmmLP<any> = {
   feeA: 122,
   feeB: 21,
   feeDollar: 0.0012,
-  feeYuan: 0.0312,
   reward: 123,
   rewardToken: coinMap.DPR as CoinInfo<any>,
   balanceA: 12131,
   balanceB: 0.0012,
-  balanceYuan: 1232131,
   balanceDollar: 232,
 };
 const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
@@ -217,7 +213,6 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                 tradeCalcData,
                 tradeFloat: {
                   priceDollar: +123,
-                  priceYuan: 2343232,
                   change: "+15%",
                   timeUnit: "24h",
                 },
@@ -292,8 +287,6 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                           ? EmptyValueTag
                           : currency === Currency.usd
                           ? PriceTag.Dollar + titleInfo.amountDollar
-                          : PriceTag.Yuan + titleInfo.amountYuan
-                          ? titleInfo.amountYuan
                           : 0}
                       </Typography>
                       <Typography component={"span"}>
@@ -387,9 +380,7 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                       variant={"h5"}
                       color={"textPrimary"}
                     >
-                      {currency === Currency.usd
-                        ? PriceTag.Dollar + titleInfo.tradeFloat.priceDollar
-                        : PriceTag.Yuan + titleInfo.tradeFloat.priceYuan}
+                      {PriceTag.Dollar + titleInfo.tradeFloat.priceDollar}
                     </Typography>
                     <Typography
                       noWrap
@@ -581,12 +572,10 @@ const AmmDetailWrap = withTranslation("common")(({ t, ...rest }: any) => {
                         ) : (
                           <>
                             <Typography component={"span"}>
-                              {" "}
-                              {myAmm.reward}{" "}
-                            </Typography>
-                            <Typography component={"span"}>
-                              {" "}
-                              {titleInfo.activity.rewardToken.simpleName}
+                              {myAmm.reward}
+                              <Typography component={"span"}>
+                                {titleInfo.activity.rewardToken.simpleName}
+                              </Typography>
                             </Typography>
                           </>
                         )}

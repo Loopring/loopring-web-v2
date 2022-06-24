@@ -59,8 +59,8 @@ export const AmmWithdrawWrap = <
 }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
   const { coinJson, slippage } = useSettings();
   const coinLPRef = React.useRef();
-  const tokenAIcon: any = coinJson[ammCalcData?.lpCoinA?.belong];
-  const tokenBIcon: any = coinJson[ammCalcData?.lpCoinB?.belong];
+  const tokenAIcon = coinJson[ammCalcData?.lpCoinA?.belong as string];
+  const tokenBIcon = coinJson[ammCalcData?.lpCoinB?.belong as string];
   const slippageArray: Array<number | string> = SlippageTolerance.concat(
     `slippage:${slippage}`
   ) as Array<number | string>;
@@ -117,6 +117,7 @@ export const AmmWithdrawWrap = <
 
   const handleCountChange = React.useCallback(
     (ibData: IBData<I>, _ref: any) => {
+      myLog(_ref?.current, coinLPRef.current);
       if (_ref) {
         if (
           ammData?.coinLP.tradeValue !== ibData.tradeValue &&
@@ -141,7 +142,7 @@ export const AmmWithdrawWrap = <
         });
       }
     },
-    [ammData, onRemoveChangeEvent]
+    [ammData, onRemoveChangeEvent, coinLPRef]
   );
 
   const onPercentage = (value: any) => {
@@ -189,7 +190,6 @@ export const AmmWithdrawWrap = <
     maxAllow: true,
     ...tokenLPProps,
     handleError,
-    handleCountChange,
     ...rest,
   };
 
@@ -231,8 +231,6 @@ export const AmmWithdrawWrap = <
   return (
     <Grid
       className={ammCalcData ? "" : "loading"}
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
       container
       direction={"column"}
       justifyContent={"space-between"}
@@ -271,7 +269,7 @@ export const AmmWithdrawWrap = <
             >
               {showLP}
             </Typography>
-            <Box alignSelf={"stretch"} marginTop={1} marginX={1} height={49}>
+            <Box alignSelf={"stretch"} marginTop={1} marginX={2} height={49}>
               <BtnPercentage
                 selected={_selectedPercentage}
                 anchors={[
@@ -308,6 +306,8 @@ export const AmmWithdrawWrap = <
             disabled={getDisabled()}
             {...{
               ...propsLP,
+              handleCountChange: (data, _name, ref) =>
+                handleCountChange(data, ref),
               isHideError: true,
               isShowCoinInfo: false,
               order: "right",
@@ -362,8 +362,8 @@ export const AmmWithdrawWrap = <
                 <AvatarCoinStyled
                   imgx={tokenAIcon.x}
                   imgy={tokenAIcon.y}
-                  imgheight={tokenAIcon.height}
-                  imgwidth={tokenAIcon.width}
+                  imgheight={tokenAIcon.h}
+                  imgwidth={tokenAIcon.w}
                   size={16}
                   variant="circular"
                   style={{ marginLeft: "-8px" }}
@@ -412,8 +412,8 @@ export const AmmWithdrawWrap = <
                 <AvatarCoinStyled
                   imgx={tokenBIcon.x}
                   imgy={tokenBIcon.y}
-                  imgheight={tokenBIcon.height}
-                  imgwidth={tokenBIcon.width}
+                  imgheight={tokenBIcon.h}
+                  imgwidth={tokenBIcon.w}
                   size={16}
                   variant="circular"
                   style={{ marginLeft: "-8px" }}

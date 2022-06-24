@@ -2,7 +2,10 @@ import React, { ChangeEvent, useCallback } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 
 import {
   AccountStep,
@@ -112,7 +115,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
       if (
         tradeValue &&
         chargeFeeTokenList.length &&
-        !isFeeNotEnough &&
+        !isFeeNotEnough.isFeeNotEnough &&
         !isSameAddress &&
         // !isAddressCheckLoading &&
         sureItsLayer2 &&
@@ -147,7 +150,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     chargeFeeTokenList,
     address,
     sureItsLayer2,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     isAddressCheckLoading,
     transferValue,
   ]);
@@ -185,7 +188,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               belong: keyVal as any,
               tradeValue: undefined,
               fee: feeInfo,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
               address: "*",
             });
             break;
@@ -197,7 +200,7 @@ export const useTransfer = <R extends IBData<T>, T>() => {
           fee: feeInfo,
           belong: transferValue.belong,
           tradeValue: undefined,
-          balance: walletInfo.count,
+          balance: walletInfo?.count,
           address: info?.isToMyself ? account.accAddress : "*",
         });
       } else {
@@ -256,7 +259,8 @@ export const useTransfer = <R extends IBData<T>, T>() => {
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,

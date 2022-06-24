@@ -874,13 +874,13 @@ export const BanxaIcon = ({
         y2="16.4933"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#0172D0" />
-        <stop offset="0.0644" stop-color="#0181CD" />
-        <stop offset="0.2231" stop-color="#019FC8" />
-        <stop offset="0.3899" stop-color="#00B7C3" />
-        <stop offset="0.5666" stop-color="#00C8C0" />
-        <stop offset="0.7597" stop-color="#00D2BF" />
-        <stop offset="1" stop-color="#00D5BE" />
+        <stop stopColor="#0172D0" />
+        <stop offset="0.0644" stopColor="#0181CD" />
+        <stop offset="0.2231" stopColor="#019FC8" />
+        <stop offset="0.3899" stopColor="#00B7C3" />
+        <stop offset="0.5666" stopColor="#00C8C0" />
+        <stop offset="0.7597" stopColor="#00D2BF" />
+        <stop offset="1" stopColor="#00D5BE" />
       </linearGradient>
     </defs>
   </SvgIcon>
@@ -1043,8 +1043,8 @@ export const AmmRankIcon = (props: SvgIconProps) => {
           y2="10.0468"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#8DC9FA" />
-          <stop offset="1" stop-color="#6CB7F9" />
+          <stop stopColor="#8DC9FA" />
+          <stop offset="1" stopColor="#6CB7F9" />
         </linearGradient>
       </defs>
     </SvgIcon>

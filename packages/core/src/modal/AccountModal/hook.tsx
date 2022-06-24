@@ -485,7 +485,7 @@ export function useAccountModalForUI({
         handleSelect: () => {
           window.open(
             Bridge +
-              `?owner=${account.accAddress}&token=${
+              `?l2account=${account.accAddress}&token=${
                 isShowAccount?.info?.symbol ?? ""
               }&__trace_isSharedBy=loopringExchange`
           );

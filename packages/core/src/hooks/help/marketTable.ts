@@ -103,31 +103,6 @@ export const makeMyAmmMarketArray = <C extends { [key: string]: any }>(
   const tradeArray: Array<Partial<AmmRecordRow<C>> & { totalBalance: number }> =
     [];
   const { tokenMap, coinMap, idIndex } = store.getState().tokenMap;
-  const { forex } = store.getState().system;
-
-  // if (ammpool && ammpool.userAmmPoolTxs) {
-  //     const result = ammpool.userAmmPoolTxs.map(o => ({
-  //         side: o.txType === AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
-  //         amount: {
-  //             from: {
-  //                 key: getTokenName(o.poolTokens[0]?.tokenId),
-  //                 value: String(volumeToCount(getTokenName(o.poolTokens[0]?.tokenId), o.poolTokens[0]?.actualAmount))
-  //             },
-  //             to: {
-  //                 key: getTokenName(o.poolTokens[1]?.tokenId),
-  //                 value: String(volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.actualAmount))
-  //             }
-  //         },
-  //         lpTokenAmount: String(volumeToCount(getTokenName(o.lpToken?.tokenId), o.lpToken?.actualAmount)),
-  //         fee: {
-  //             key: getTokenName(o.poolTokens[1]?.tokenId),
-  //             value: volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.feeAmount)?.toFixed(6)
-  //         },
-  //         time: o.updatedAt
-  //     }))
-  //     setAmmRecordList(result)
-  //     setShowLoading(false)
-  // }
 
   if (marketTransaction) {
     marketTransaction.forEach((item: sdk.UserAmmPoolTx) => {
@@ -149,7 +124,6 @@ export const makeMyAmmMarketArray = <C extends { [key: string]: any }>(
                 ? AmmTradeType.add
                 : AmmTradeType.remove,
             totalDollar: 0,
-            totalYuan: 0 / Number(forex),
             totalBalance: Number(balance),
             amountA: volumeToCount(coinA, item.poolTokens[0]?.actualAmount),
             amountB: volumeToCount(coinB, item.poolTokens[1]?.actualAmount),

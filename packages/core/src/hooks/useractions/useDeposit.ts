@@ -15,7 +15,10 @@ import {
   WalletMap,
   AddressError,
 } from "@loopring-web/common-resources";
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  connectProvides,
+  ConnectProvidersSignMap,
+} from "@loopring-web/web3-provider";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
@@ -218,7 +221,7 @@ export const useDeposit = <
             newValue = {
               ...newValue,
               ...data.tradeData,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
             };
           }
         }
@@ -269,7 +272,7 @@ export const useDeposit = <
             updateData = {
               belong: keyVal as any,
               tradeValue: undefined,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
             };
             break;
           }
@@ -356,7 +359,8 @@ export const useDeposit = <
           web3: connectProvides.usedWeb3,
           address: account.accAddress,
           keySeed,
-          walletType: account.connectName as sdk.ConnectorNames,
+          walletType: (ConnectProvidersSignMap[account.connectName] ??
+            account.connectName) as unknown as sdk.ConnectorNames,
           chainId: chainId as any,
           accountId: account.accountId,
         });

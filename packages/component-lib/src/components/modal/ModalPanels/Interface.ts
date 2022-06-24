@@ -168,7 +168,10 @@ export interface CheckActiveStatusProps<C = FeeInfo> {
   goSend: () => void;
   isDepositing: boolean;
   walletMap?: WalletMap<any, any>;
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   onIKnowClick: () => void;
   knowDisable: boolean;
   know: boolean;

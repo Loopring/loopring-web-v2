@@ -1,7 +1,7 @@
 import { NFTMintViewProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import React from "react";
-import { Box, Grid, Typography, Link, Tooltip } from "@mui/material";
+import { Box, Grid, Typography, Link } from "@mui/material";
 import {
   EmptyValueTag,
   FeeInfo,
@@ -248,13 +248,25 @@ export const MintNFTConfirm = <
                           status={dropdownStatus}
                           fontSize={"medium"}
                         />
-                        <Typography
-                          marginLeft={1}
-                          component={"span"}
-                          color={"var(--color-error)"}
-                        >
-                          {isFeeNotEnough && t("labelL2toL2FeeNotEnough")}
-                        </Typography>
+                        {isFeeNotEnough.isOnLoading ? (
+                          <Typography
+                            color={"var(--color-warning)"}
+                            marginLeft={1}
+                            component={"span"}
+                          >
+                            {t("labelFeeCalculating")}
+                          </Typography>
+                        ) : (
+                          isFeeNotEnough.isFeeNotEnough && (
+                            <Typography
+                              marginLeft={1}
+                              component={"span"}
+                              color={"var(--color-error)"}
+                            >
+                              {t("labelL2toL2FeeNotEnough")}
+                            </Typography>
+                          )
+                        )}
                       </Box>
                     </Typography>
                     {dropdownStatus === "up" && (
@@ -314,29 +326,27 @@ export const MintNFTConfirm = <
                   <Typography color={"textSecondary"} marginRight={1}>
                     {t("labelNFTID")}
                   </Typography>
-                  <Tooltip title={() => nftMintData.nftId}>
-                    <Link
-                      whiteSpace={"break-spaces"}
-                      style={{
-                        wordBreak: "break-all",
-                        color: "var(--color-text-third)",
-                      }}
-                      display={"inline-flex"}
-                      title={nftMintData.nftId}
-                      href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      #
-                      {" " +
-                        getShortAddr(
-                          nftMintData?.nftIdView
-                            ? nftMintData.nftIdView
-                            : nftMintData.nftId ?? ""
-                        )}{" "}
-                      <LinkIcon color={"inherit"} fontSize={"medium"} />
-                    </Link>
-                  </Tooltip>
+                  <Link
+                    whiteSpace={"break-spaces"}
+                    style={{
+                      wordBreak: "break-all",
+                      color: "var(--color-text-third)",
+                    }}
+                    display={"inline-flex"}
+                    title={nftMintData.nftId}
+                    href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    #
+                    {" " +
+                      getShortAddr(
+                        nftMintData?.nftIdView
+                          ? nftMintData.nftIdView
+                          : nftMintData.nftId ?? ""
+                      )}{" "}
+                    <LinkIcon color={"inherit"} fontSize={"medium"} />
+                  </Link>
                 </Typography>
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>

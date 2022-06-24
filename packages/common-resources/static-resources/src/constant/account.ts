@@ -70,5 +70,4 @@ export type AssetsRawDataItem = {
   smallBalance: boolean;
   tokenValueDollar: number;
   name: string;
-  tokenValueYuan: number;
 };

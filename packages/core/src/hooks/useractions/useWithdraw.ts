@@ -1,6 +1,9 @@
 import React from "react";
 
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 import {
   AccountStep,
   SwitchData,
@@ -82,7 +85,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       ({ fee }) => {
         updateWithdrawData({ ...withdrawValue, fee });
       },
-      [withdrawValue]
+      [updateWithdrawData, withdrawValue]
     ),
   });
 
@@ -138,7 +141,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
         !exceedPoolLimit &&
         !isNotAvaiableAddress &&
         chargeFeeTokenList.length &&
-        !isFeeNotEnough &&
+        !isFeeNotEnough.isFeeNotEnough &&
         withdrawValue.fee?.belong &&
         withdrawValue.fee?.feeRaw &&
         tradeValue.gt(BIGO) &&
@@ -182,7 +185,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
     addrStatus,
     realAddr,
     sureIsAllowAddress,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     withdrawValue?.fee,
     withdrawValue?.belong,
     withdrawValue?.tradeValue,
@@ -268,7 +271,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               fee: feeInfo,
               belong: keyVal as any,
               tradeValue: undefined,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
               address: info?.isToMyself ? account.accAddress : "*",
             });
             break;
@@ -280,7 +283,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
           fee: feeInfo,
           belong: withdrawValue.belong,
           tradeValue: undefined,
-          balance: walletInfo.count,
+          balance: walletInfo?.count,
           address: info?.isToMyself ? account.accAddress : "*",
         });
       } else {
@@ -344,7 +347,8 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
               request,
               web3: connectProvides.usedWeb3,
               chainId: chainId === "unknown" ? 1 : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,
@@ -557,8 +561,9 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
       exchangeInfo,
       withdrawValue?.fee?.belong,
       withdrawValue?.fee?.feeRaw,
-      withdrawValue.belong,
-      info?.isToMyself,
+      withdrawValue?.fee?.__raw__?.feeRaw,
+      withdrawValue?.belong,
+      info,
       sureIsAllowAddress,
       setShowWithdraw,
       setShowAccount,
@@ -620,7 +625,7 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
             updateWithdrawData({
               belong: data.tradeData?.belong,
               tradeValue: data.tradeData?.tradeValue,
-              balance: walletInfo.count,
+              balance: walletInfo?.count,
               address: "*",
             });
           } else {

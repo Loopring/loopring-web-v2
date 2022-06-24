@@ -14,36 +14,9 @@ import styled from "@emotion/styled";
 import { TablePaddingX } from "../../styled";
 import { MarketInfo } from "@loopring-web/loopring-sdk/dist";
 import { Currency } from "@loopring-web/loopring-sdk";
-// export type RawDataTradeItem = {
-//     side: keyof typeof TradeTypes;
-//     amount: {
-//         from: {
-//             key: string;
-//             value: number | undefined;
-//         },
-//         to: {
-//             key: string;
-//             value: number | undefined;
-//         }
-//         volume: number
-//     };
-//     price: {
-//         key: string
-//         value: number | undefined,
-//     }
-//     // priceDollar: number;
-//     // priceYuan: number;
-//     fee: {
-//         key: string;
-//         value: number | undefined;
-//     };
-//     time: number;
-// }
-//<C extends {[key:string]:MarketType}>
+
 export type TradeProTableProps = {
   rawData: RawDataTradeItem[];
-  // tokenMap:TokenMap<C>
-  // quotePrecision: number,
   precision: number;
   marketInfo: MarketInfo;
   currentheight?: number;

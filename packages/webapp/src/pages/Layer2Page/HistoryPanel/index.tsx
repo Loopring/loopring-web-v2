@@ -7,7 +7,7 @@ import {
   TradeTable,
   TransactionTable,
 } from "@loopring-web/component-lib";
-import { StylePaper } from "../../styled";
+import { StylePaper } from "@loopring-web/core";
 import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
 
 import {
@@ -19,11 +19,14 @@ import {
   useAmmMap,
 } from "@loopring-web/core";
 import { RowConfig } from "@loopring-web/common-resources";
+import { useRouteMatch } from "react-router-dom";
 
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
+    let match: any = useRouteMatch("/layer2/:item/:tab");
+    const tab = match?.params.tab ?? "transactions";
     const [pageSize, setPageSize] = React.useState(0);
-    const [currentTab, setCurrentTab] = React.useState("transactions");
+    const [currentTab, setCurrentTab] = React.useState(tab);
     const { toastOpen, setToastOpen, closeToast } = useToast();
     const { totalCoinMap, tokenMap, marketArray } = useTokenMap();
     const { ammMap } = useAmmMap();
@@ -43,7 +46,7 @@ const HistoryPanel = withTranslation("common")(
     } = useGetTrades(setToastOpen);
     const {
       ammRecordList,
-      showLoading: ammLoading,
+      showLoading: showAmmloading,
       ammRecordTotal,
       getAmmpoolList,
     } = useGetAmmRecord(setToastOpen);
@@ -165,7 +168,7 @@ const HistoryPanel = withTranslation("common")(
                 filterPairs: Reflect.ownKeys(ammMap ?? {}).map((item) =>
                   item.toString().replace("AMM", "LP")
                 ),
-                showLoading: ammLoading,
+                showloading: showAmmloading,
                 ...rest,
               }}
             />

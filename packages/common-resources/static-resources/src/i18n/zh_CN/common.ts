@@ -774,4 +774,6 @@ export default {
   labelMintFee: "Mint Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
+  labelTransactionsLink: "Transactions",
+  labelAMMTransactionsLink: "View Pool Transactions",
 };

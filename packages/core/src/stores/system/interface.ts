@@ -1,5 +1,5 @@
-import { StateBase } from "@loopring-web/common-resources";
-import { ChainId, ExchangeInfo } from "@loopring-web/loopring-sdk";
+import { ForexMap, StateBase } from "@loopring-web/common-resources";
+import { ChainId, Currency, ExchangeInfo } from "@loopring-web/loopring-sdk";
 
 export enum ENV {
   DEV = "DEV",
@@ -12,17 +12,15 @@ export enum NETWORKEXTEND {
 }
 
 export type NETWORK = NETWORKEXTEND | ChainId;
-
-export type System<C extends { [key: string]: any }> = {
+export type System<R = Currency> = {
   env: keyof typeof ENV;
   chainId: NETWORK;
   // network: keyof typeof NETWORK,
   etherscanBaseUrl: string;
   socketURL: string;
   baseURL: string;
-  fiatPrices: { [k in keyof C]: { price: any; [key: string]: any } };
   gasPrice: number;
-  forex: number;
+  forexMap: ForexMap<R>;
   exchangeInfo: ExchangeInfo | undefined;
   allowTrade: {
     register: { enable: boolean; reason?: string };

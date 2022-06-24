@@ -89,4 +89,5 @@ export default {
   labelNFT: "Loopring L2 NFT",
   labelMyAssetsNFT: "My NFT",
   labelTransactionNFT: "Transactions",
+  labelInvest: "Invest",
 };

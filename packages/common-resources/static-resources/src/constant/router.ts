@@ -1,7 +1,6 @@
 import {
   AssetsIcon,
   L2HistoryIcon,
-  L2MyLiquidityIcon,
   L2OrderIcon,
   RecordIcon,
   // NFTIcon,
@@ -67,7 +66,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelClassic",
       description: "labelClassicDescription",
     },
-    router: { path: "/trade/lite/LRC-ETH" },
+    router: { path: "/trade/lite/${pair}" },
   },
   {
     label: {
@@ -75,7 +74,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
       i18nKey: "labelAdvanced",
       description: "labelAdvancedDescription",
     },
-    router: { path: "/trade/pro/LRC-ETH" },
+    router: { path: "/trade/pro/${pair}" },
   },
 ];
 
@@ -115,20 +114,12 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: "Liquidity",
-      i18nKey: "labelLiquidity",
+      id: "Invest",
+      i18nKey: "labelInvest",
     },
-    router: { path: "/liquidity" },
+    router: { path: "/invest" },
     status: HeaderMenuTabStatus.default,
   },
-  // {
-  //   label: {
-  //     id: "Mining",
-  //     i18nKey: "labelMining",
-  //   },
-  //   router: { path: "/mining" },
-  //   status: HeaderMenuTabStatus.default,
-  // },
   {
     label: {
       id: "Layer2",
@@ -170,14 +161,6 @@ export const subMenuLayer2 = {
       label: {
         id: "assets",
         i18nKey: "labelAssets",
-      },
-    },
-    {
-      icon: L2MyLiquidityIcon,
-      router: { path: "/layer2/my-liquidity" },
-      label: {
-        id: "my-liquidity",
-        i18nKey: "labelMyLiquidity",
       },
     },
   ],

@@ -34,7 +34,10 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   // isShow: boolean;
   isDepositing: boolean;
   onDisconnect: () => void;
-  isFeeNotEnough: boolean;
+  isFeeNotEnough: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  };
   chargeFeeTokenList: C[];
   checkFeeIsEnough: () => void;
 }): { checkActiveStatusProps: CheckActiveStatusProps<C> } => {
@@ -52,7 +55,10 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   const [walletMap, setWalletMap] = React.useState(
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>)
   );
-  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(true);
+  const [isFeeNotEnough, setIsFeeNotEnough] = React.useState({
+    isFeeNotEnough: true,
+    isOnLoading: false,
+  });
 
   const goUpdateAccount = () => {
     setShowAccount({ isShow: false });
@@ -61,7 +67,7 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   const onIKnowClick = () => {
     if (account.isContract) {
       setKnow(true);
-    } else if (isFeeNotEnough) {
+    } else if (isFeeNotEnough.isFeeNotEnough) {
       setKnow(true);
     } else {
       goUpdateAccount();
@@ -70,8 +76,9 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
   const walletLayer2Callback = React.useCallback(() => {
     const walletMap = makeWalletLayer2(true).walletMap ?? {};
     setWalletMap(walletMap);
-    setIsFeeNotEnough(
-      walletMap
+    setIsFeeNotEnough((state) => ({
+      ...state,
+      isFeeNotEnough: walletMap
         ? chargeFeeTokenList.findIndex((item) => {
             if (walletMap[item.belong] && walletMap[item.belong]?.count) {
               return sdk
@@ -80,8 +87,8 @@ export const useCheckActiveStatus = <C extends FeeInfo>({
             }
             return;
           }) === -1
-        : false
-    );
+        : false,
+    }));
     setKnowDisable(false);
   }, [chargeFeeTokenList]);
 

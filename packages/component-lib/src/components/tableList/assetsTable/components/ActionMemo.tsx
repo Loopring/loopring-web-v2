@@ -8,10 +8,11 @@ import {
   PopoverWrapProps,
 } from "../../../basic-lib";
 import { MoreIcon } from "@loopring-web/common-resources";
-import { LpTokenAction } from "../AssetsTable";
+// import { LpTokenAction } from "../AssetsTable";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
-import { useSettings } from "../../../../stores";
+import { useOpenModals, useSettings } from "../../../../stores";
+import { AmmPanelType } from "../../../tradePanel";
 
 const GridStyled = styled(Grid)`
   .MuiGrid-item {
@@ -46,6 +47,8 @@ const ActionPopContent = React.memo(
     t,
   }: ActionProps) => {
     const history = useHistory();
+    const { setShowAmm } = useOpenModals();
+
     const { isMobile } = useSettings();
     const tradeList = [
       ...[
@@ -81,20 +84,36 @@ const ActionPopContent = React.memo(
           <>
             {allowTrade?.joinAmm?.enable && (
               <MenuItem
-                onClick={() =>
-                  history.push(
-                    `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
-                  )
+                onClick={
+                  () => {
+                    // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                    setShowAmm({
+                      isShow: true,
+                      type: AmmPanelType.Join,
+                      symbol: market,
+                    });
+                  }
+                  // () => undefined
+                  // history.push(
+                  //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
+                  // )
                 }
               >
                 <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
               </MenuItem>
             )}
             <MenuItem
-              onClick={() =>
-                history.push(
-                  `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
-                )
+              onClick={
+                () => {
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Exit,
+                    symbol: market,
+                  });
+                }
+                // history.push(
+                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.remove}`
+                // )
               }
             >
               <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
@@ -177,7 +196,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             <Grid item>
               <Button
                 variant={"text"}
-                size={"medium"}
+                size={"small"}
                 color={"primary"}
                 onClick={() => onReceive(tokenValue)}
               >
@@ -187,7 +206,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
             <Grid item>
               <Button
                 variant={"text"}
-                size={"medium"}
+                size={"small"}
                 color={"primary"}
                 onClick={() => onSend(tokenValue, isLp)}
               >

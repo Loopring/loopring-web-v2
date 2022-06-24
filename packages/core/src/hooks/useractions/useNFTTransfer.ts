@@ -2,7 +2,10 @@ import React, { ChangeEvent, useCallback } from "react";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 
 import {
   AccountStep,
@@ -109,7 +112,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
       nftTransferValue.fee?.belong &&
       nftTransferValue?.tradeValue &&
       chargeFeeTokenList.length &&
-      !isFeeNotEnough &&
+      !isFeeNotEnough.isFeeNotEnough &&
       !isSameAddress &&
       sureItsLayer2 &&
       sdk.toBig(nftTransferValue.tradeValue).gt(BIGO) &&
@@ -145,7 +148,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     address,
     addrStatus,
     sureItsLayer2,
-    isFeeNotEnough,
+    isFeeNotEnough.isFeeNotEnough,
     isSameAddress,
     nftTransferValue.tradeValue,
     nftTransferValue.fee,
@@ -230,7 +233,8 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: connectName as sdk.ConnectorNames,
+              walletType: (ConnectProvidersSignMap[connectName] ??
+                connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
               isHWAddr,

@@ -18,8 +18,8 @@ import {
   useAmount,
   useAccount,
   useTokenMap,
+  marketInitCheck,
 } from "@loopring-web/core";
-import { marketInitCheck } from "../SwapPage/help";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useOrderList } from "./panel/orderTable/hookTable";
 import { useProSocket, useSocketProService } from "./proService";

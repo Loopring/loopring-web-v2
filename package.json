@@ -6,14 +6,14 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">=14.x"
+    "node": ">=16.x"
   },
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "^2.0.13-beta",
+    "@loopring-web/loopring-sdk": "^2.0.14",
     "@loopring-web/recharts": "^2.0.10",
-    "@loopring-web/web3-provider": "^1.0.16",
+    "@loopring-web/web3-provider": "^1.0.19",
     "@mui/lab": "^5.0.0-alpha.45",
     "@mui/material": "^5.6.2",
     "@react-spring/parallax": "^9.4.4",
@@ -27,6 +27,7 @@
     "echarts": "^5.2.2",
     "echarts-for-react": "^3.0.2",
     "ffjavascript": "^0.1.0",
+    "firebase": "^9.8.3",
     "github-markdown-css": "^5.0.0",
     "i18next": "^20.1.0",
     "ipfs-http-client": "^56.0.2",
@@ -43,6 +44,7 @@
     "react-i18next": "^11.8.12",
     "react-markdown": "^8.0.3",
     "react-redux": "^7.2.3",
+    "react-redux-firebase": "^3.11.0",
     "react-resizable": "^3.0.4",
     "react-scripts": "4.0.3",
     "react-spring": "^9.4.4",
@@ -58,7 +60,7 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.5.1"
+    "web3": "^1.7.4"
   },
   "build": {
     "files": [

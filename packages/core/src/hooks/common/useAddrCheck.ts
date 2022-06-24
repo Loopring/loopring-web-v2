@@ -136,10 +136,10 @@ export const useAddressCheck = () => {
       debounceCheck(address);
     }
     _address.current = address;
-  }, [address, isAddressCheckLoading]);
-  React.useEffect(() => {
-    debounceCheck(address);
-  }, [chainId]);
+    return () => {
+      debounceCheck.cancel();
+    };
+  }, [address, isAddressCheckLoading, chainId]);
 
   React.useEffect(() => {
     setIsSameAddress(realAddr.toLowerCase() === accAddress.toLowerCase());

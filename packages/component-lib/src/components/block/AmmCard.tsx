@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import {
   AmmCardProps,
   AvatarCoinStyled,
+  CurrencyToTag,
   EmptyValueTag,
   getValuePrecisionThousand,
   myLog,
@@ -26,7 +27,6 @@ import { PopoverPure } from "../basic-lib";
 import { bindHover } from "material-ui-popup-state/es";
 import { useSettings } from "../../stores";
 import styled from "@emotion/styled";
-import { Currency } from "@loopring-web/loopring-sdk";
 
 export interface Reward {
   startAt: number;
@@ -95,7 +95,6 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           coinAInfo,
           coinBInfo,
           amountDollar,
-          amountYuan,
           account,
           APR,
           activity: {
@@ -106,7 +105,6 @@ export const AmmCard = withTranslation("common", { withRef: true })(
             ruleType,
             totalRewards,
             rewardTokenDollar,
-            rewardTokenYuan,
             maxSpread,
           },
           handleClick,
@@ -121,6 +119,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           setShowRewardDetail,
           setChosenCardInfo,
           ammInfo,
+          forexMap,
           ...rest
         }: AmmCardProps<T> & WithTranslation,
         ref: React.ForwardedRef<any>
@@ -132,8 +131,6 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           rewardValue2,
           coinAPriceDollar,
           coinBPriceDollar,
-          coinAPriceYuan,
-          coinBPriceYuan,
           rewardToken2,
         } = rest;
         const { coinJson, currency } = useSettings();
@@ -145,58 +142,39 @@ export const AmmCard = withTranslation("common", { withRef: true })(
         const myBalanceA = ammInfo?.balanceA;
         const myBalanceB = ammInfo?.balanceB;
         const myTotalAmmValueDollar = ammInfo?.totalAmmValueDollar;
-        const myTotalAmmValueYuan = ammInfo?.totalAmmValueYuan;
+        const totalAmmReward =
+          PriceTag[CurrencyToTag[currency]] +
+          getValuePrecisionThousand(
+            (rewardValue || 0) *
+              ((coinAPriceDollar || 0) * (forexMap[currency] ?? 0)) +
+              (rewardValue2 || 0) *
+                ((coinBPriceDollar || 0) * (forexMap[currency] ?? 0)),
+            undefined,
+            undefined,
+            2,
+            true,
+            { isFait: true }
+          );
 
-        const totalAmmRewardDollar =
-          PriceTag.Dollar +
-          getValuePrecisionThousand(
-            (rewardValue || 0) * (coinAPriceDollar || 0) +
-              (rewardValue2 || 0) * (coinBPriceDollar || 0),
-            undefined,
-            undefined,
-            2,
-            true,
-            { isFait: true }
-          );
-        const totalAmmRewardYuan =
-          PriceTag.Yuan +
-          getValuePrecisionThousand(
-            (rewardValue || 0) * (coinAPriceYuan || 0) +
-              (rewardValue2 || 0) * (coinBPriceYuan || 0),
-            undefined,
-            undefined,
-            2,
-            true,
-            { isFait: true }
-          );
         myLog({
-          totalAmmRewardDollar,
-          totalAmmRewardYuan,
+          totalAmmReward,
           rewardValue,
           rewardValue2,
           coinAPriceDollar,
           coinBPriceDollar,
         });
-        const orderbookRewardDollar =
-          PriceTag.Dollar +
+        const orderbookReward =
+          CurrencyToTag[currency] +
           getValuePrecisionThousand(
-            (totalRewards || 0) * (rewardTokenDollar || 0),
+            (totalRewards || 0) *
+              ((rewardTokenDollar || 0) * (forexMap[currency] ?? 0)),
             undefined,
             undefined,
             2,
             true,
             { isFait: true }
           );
-        const orderbookRewardYuan =
-          PriceTag.Yuan +
-          getValuePrecisionThousand(
-            (totalRewards || 0) * (rewardTokenYuan || 0),
-            undefined,
-            undefined,
-            2,
-            true,
-            { isFait: true }
-          );
+
         const isComing = moment(duration.from).unix() * 1000 > moment.now();
 
         const popLiquidityState = usePopupState({
@@ -220,7 +198,7 @@ export const AmmCard = withTranslation("common", { withRef: true })(
           const month = ("0" + (date.getMonth() + 1).toString()).slice(-2);
           const current_event_date = `${year}-${month}`;
           history.push(
-            `/race-event/${current_event_date}?selected=${pathname}&type=${""}&owner=${
+            `/race-event/${current_event_date}?selected=${pathname}&type=${""}&l2account=${
               account?.accAddress
             }`
           );
@@ -433,29 +411,15 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                     >
                       {t("labelLiquidity") + " " + amountDollar === undefined
                         ? EmptyValueTag
-                        : currency === Currency.usd
-                        ? PriceTag.Dollar +
+                        : PriceTag[CurrencyToTag[currency]] +
                           getValuePrecisionThousand(
-                            amountDollar,
-                            undefined,
-                            undefined,
-                            undefined,
-                            true,
-                            { isFait: true }
-                          )
-                        : PriceTag.Yuan +
-                          getValuePrecisionThousand(
-                            amountYuan,
+                            (amountDollar || 0) * (forexMap[currency] ?? 0),
                             undefined,
                             undefined,
                             undefined,
                             true,
                             { isFait: true }
                           )}
-                      {/* <Typography
-                                component={'span'} style={{ cursor: 'pointer' }}> {
-                                    typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, undefined, undefined, undefined, true, { isFait: true, floor: true }))}
-                            </Typography> */}
                     </Typography>
                     <PopoverPure
                       className={"arrow-top-center"}
@@ -714,34 +678,6 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                         style={{ textTransform: "capitalize" }}
                         color={"textPrimary"}
                       >
-                        {/* <Box component={'span'} className={'logo-icon'} display={'flex'}
-                                        height={'var(--list-menu-coin-size)'}
-                                        width={'var(--list-menu-coin-size)'} alignItems={'center'}
-                                        
-                                        justifyContent={'flex-start'}>
-                                        {coinAIcon ?
-                                            <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
-                                                imgheight={coinAIcon.h}
-                                                imgwidth={coinAIcon.w} size={20}
-                                                variant="circular"
-                                                style={{ marginTop: 2 }}
-                                                alt={coinAInfo?.simpleName as string}
-                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
-                                            :
-                                            <Avatar variant="circular" alt={coinAInfo?.simpleName as string}
-                                                style={{
-                                                    height: 'var(--list-menu-coin-size))',
-                                                    width: 'var(--list-menu-coin-size)'
-                                                }}
-                                                src={SoursURL+'images/icon-default.png'} />
-                                        }
-                                        <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
-                                            height={20}
-                                            lineHeight={'20px'}>
-                                            {coinAInfo?.simpleName}
-                                        </Typography>
-                                    </Box> */}
-
                         <Typography
                           component={"span"}
                           color={"var(--color-text-primary)"}
@@ -750,17 +686,10 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           lineHeight={"20px"}
                         >
                           {isOrderbook
-                            ? currency === Currency.usd
-                              ? orderbookRewardDollar
-                              : orderbookRewardYuan
+                            ? orderbookReward
                             : isAmm
-                            ? currency === Currency.usd
-                              ? totalAmmRewardDollar
-                              : totalAmmRewardYuan
-                            : currency === Currency.usd
-                            ? orderbookRewardDollar
-                            : orderbookRewardYuan}
-                          {/* {getValuePrecisionThousand((isOrderbook ? totalRewards : rewardValue), undefined, undefined, precisionA, false, {floor: true})} */}
+                            ? totalAmmReward
+                            : orderbookReward}
                         </Typography>
                       </Typography>
                       {rewardToken2 && (
@@ -870,25 +799,15 @@ export const AmmCard = withTranslation("common", { withRef: true })(
                           : "none",
                       }}
                     >
-                      {currency === Currency.usd
-                        ? PriceTag.Dollar +
-                          getValuePrecisionThousand(
-                            myTotalAmmValueDollar,
-                            undefined,
-                            undefined,
-                            undefined,
-                            false,
-                            { isFait: true, floor: true }
-                          )
-                        : PriceTag.Yuan +
-                          getValuePrecisionThousand(
-                            myTotalAmmValueYuan,
-                            undefined,
-                            undefined,
-                            undefined,
-                            false,
-                            { isFait: true, floor: true }
-                          )}
+                      {CurrencyToTag[currency] +
+                        getValuePrecisionThousand(
+                          myTotalAmmValueDollar * (forexMap[currency] ?? 0),
+                          undefined,
+                          undefined,
+                          2,
+                          true,
+                          { isFait: true }
+                        )}
                     </Typography>
                   ) : (
                     <Typography>{EmptyValueTag}</Typography>

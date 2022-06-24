@@ -11,7 +11,10 @@ import { store } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from "@loopring-web/core";
 
-import { connectProvides } from "@loopring-web/web3-provider";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
 
 import { checkErrorInfo } from "@loopring-web/core";
 
@@ -62,7 +65,7 @@ export function useExportAccountInfo() {
           step: AccountStep.ExportAccount_Approve_WaitForAuth,
         });
 
-        const connectName = account.connectName as sdk.ConnectorNames;
+        // const connectName = account.connectName as sdk.ConnectorNames;
 
         const eddsaKey = await sdk.generateKeyPair({
           web3: connectProvides.usedWeb3,
@@ -75,7 +78,8 @@ export function useExportAccountInfo() {
                   "${exchangeAddress}",
                   exchangeInfo.exchangeAddress
                 ).replace("${nonce}", (account.nonce - 1).toString()),
-          walletType: connectName,
+          walletType: (ConnectProvidersSignMap[account.connectName] ??
+            account.connectName) as unknown as sdk.ConnectorNames,
           accountId: account.accountId,
         });
 

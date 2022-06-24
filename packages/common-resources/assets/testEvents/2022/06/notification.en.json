@@ -1,1 +1,46 @@
-{"activities":[{"type":"ACTIVITY","version":"1","title":"test_1","name":"TETT_1 TITLE","description1":"TETT_1 SUB TITLE","description2":"Duration: April 15 0:00 - May 15 0:00 (UTC)","link":"#/race-event/2022-06?type=test_1","startShow":1654041600000,"endShow":1658275200000,"color":"primary"}],"notifications":[{"type":"NOTIFICATION","version":"0","title":"ramp_event","name":"🅾️ Zero Fees Promo!","description1":"Deposit via Banxa for free!","description2":"Duration: April 11 0:00 - April 25 0:00 (UTC)","link":"https://loopring.io/#/layer2","startShow":1654819200000,"endShow":1654905600000,"color":"default"}],"invest":[{"name":"invest_1","version":"1","type":"amm","bannerMobile":"https://static.loopring.io/events/2022/06/invest/invest_1_banner.en.webp","bannerLaptop":"https://static.loopring.io/events/2022/06/invest/invest_1_banner_laptop.en.webp","linkRule":"https://static.loopring.io/events/2022/06/invest/invest_1_rule.en.md","startShow":1654041600000,"endShow":1658275200000,"link":"#/invest/2022-06?type=invest_1"}],"prev":{"endDate":1658275200000}}
+{
+  "activities": [
+    {
+      "type": "ACTIVITY",
+      "version": "1",
+      "title": "test_1",
+      "name": "TETT_1 TITLE",
+      "description1": "TETT_1 SUB TITLE",
+      "description2": "Duration: April 15 0:00 - May 15 0:00 (UTC)",
+      "link": "#/race-event/2022-06?type=test_1",
+      "startShow": 1654041600000,
+      "endShow": 1658275200000,
+      "color": "primary"
+    }
+  ],
+  "notifications": [
+    {
+      "type": "NOTIFICATION",
+      "version": "0",
+      "title": "ramp_event",
+      "name": "🅾️ Zero Fees Promo!",
+      "description1": "Deposit via Banxa for free!",
+      "description2": "Duration: April 11 0:00 - April 25 0:00 (UTC)",
+      "link": "https://loopring.io/#/layer2",
+      "startShow": 1654819200000,
+      "endShow": 1654905600000,
+      "color": "default"
+    }
+  ],
+  "invest": [
+    {
+      "name": "invest_1",
+      "version": "1",
+      "type": "amm",
+      "bannerMobile": "https://static.loopring.io/events/2022/06/invest/invest_1_banner.en.webp",
+      "bannerLaptop": "https://static.loopring.io/events/2022/06/invest/invest_1_banner_laptop.en.webp",
+      "linkRule": "https://static.loopring.io/events/2022/06/invest/invest_1_rule.en.md",
+      "startShow": 1654041600000,
+      "endShow": 1658275200000,
+      "link": "#/invest/2022-06?type=invest_1"
+    }
+  ],
+  "prev": {
+    "endDate": 1658275200000
+  }
+}

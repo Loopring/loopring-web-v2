@@ -1,7 +1,7 @@
 import React from "react";
 import {
   AccountStatus,
-  AmmExitData,
+  AmmJoinData,
   CoinInfo,
   fnType,
   IBData,
@@ -15,32 +15,35 @@ import {
   useToggle,
 } from "@loopring-web/component-lib";
 import {
-  IdMap,
-  useTokenMap,
-  useAmmMap,
-  useAccount,
-  store,
-  LoopringAPI,
-  useWalletLayer2Socket,
-  walletLayer2Service,
   accountStaticCallBack,
   ammPairInit,
   btnClickMap,
   btnLabel,
   makeCache,
   makeWalletLayer2,
+  useAmmMap,
+  IdMap,
+  useTokenMap,
+  useAccount,
+  LoopringAPI,
+  store,
+  useSystem,
+  DAYS,
+  getTimestampDaysLater,
   initSlippage,
   usePageAmmPool,
-  getTimestampDaysLater,
-  DAYS,
-} from "@loopring-web/core";
+  useWalletLayer2Socket,
+  walletLayer2Service,
+} from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 import { useTranslation } from "react-i18next";
 
 import _ from "lodash";
 
-export const useAmmExit = ({
+// ----------calc hook -------
+
+export const useAmmJoin = ({
   getFee,
   setToastOpen,
   pair,
@@ -50,7 +53,7 @@ export const useAmmExit = ({
 }: {
   stob: string;
   btos: string;
-  getFee: (requestType: sdk.OffchainFeeReqType.AMM_EXIT) => any;
+  getFee: (requestType: sdk.OffchainFeeReqType.AMM_JOIN) => any;
   setToastOpen: any;
   pair: {
     coinAInfo: CoinInfo<string> | undefined;
@@ -64,63 +67,138 @@ export const useAmmExit = ({
     | undefined;
 }) => {
   const {
-    ammExit: {
-      fee,
+    ammJoin: {
+      // fee,
       fees,
       request,
-      btnI18nKey,
       btnStatus,
+      btnI18nKey,
       ammCalcData,
       ammData,
-      volA_show,
-      volB_show,
     },
-    updatePageAmmExit,
-    updatePageAmmExitBtn,
+    updatePageAmmJoin,
+    updatePageAmmJoinBtn,
     common: { ammInfo, ammPoolSnapshot },
   } = usePageAmmPool();
 
   const { t } = useTranslation(["common", "error"]);
 
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const { idIndex, marketArray, marketMap, coinMap, tokenMap } = useTokenMap();
+  const { coinMap, tokenMap } = useTokenMap();
+  const { allowTrade } = useSystem();
   const { ammMap } = useAmmMap();
-  const { account, status: accountStatus } = useAccount();
-  const { setShowTradeIsFrozen } = useOpenModals();
+  const { setShowSupport, setShowTradeIsFrozen } = useOpenModals();
   const {
-    toggle: { exitAmm },
+    toggle: { joinAmm },
   } = useToggle();
+  const { account, status: accountStatus } = useAccount();
   const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
   const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
   const [baseMinAmt, setBaseMinAmt] = React.useState<any>();
   const [quoteMinAmt, setQuoteMinAmt] = React.useState<any>();
-  const [lpMinAmt, setLpMinAmt] = React.useState<any>();
 
   React.useEffect(() => {
     if (account.readyState !== AccountStatus.ACTIVATED && pair) {
       const btnInfo = accountStaticCallBack(btnLabelNew);
 
+      myLog("btnInfo:", btnInfo);
+
       if (typeof btnInfo === "string") {
-        updatePageAmmExitBtn({ btnI18nKey: btnInfo });
+        updatePageAmmJoinBtn({
+          btnStatus: TradeBtnStatus.AVAILABLE,
+          btnI18nKey: btnInfo,
+        });
       }
 
       initAmmData(pair, undefined, true);
     }
-  }, [account.readyState, pair, stob, updatePageAmmExitBtn]);
+  }, [account.readyState, pair, stob, updatePageAmmJoinBtn]);
 
   React.useEffect(() => {
-    if (account.readyState === AccountStatus.ACTIVATED && ammData) {
-      const btnInfo = accountStaticCallBack(btnLabelNew, [
-        { ammData, volA_show, volB_show },
-      ]);
-      updatePageAmmExitBtn(btnInfo);
+    if (
+      account.readyState === AccountStatus.ACTIVATED &&
+      ammData?.coinA.belong &&
+      ammData.coinB.belong
+    ) {
+      updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]));
     }
-  }, [account.readyState, ammData, volA_show, volB_show, updatePageAmmExitBtn]);
+  }, [account.readyState, ammData, updatePageAmmJoinBtn]);
+
+  const btnLabelActiveCheck = React.useCallback(
+    ({
+      ammData,
+    }): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
+      const times = 10;
+
+      const validAmt1 = ammData?.coinA?.tradeValue
+        ? ammData?.coinA?.tradeValue >= times * baseMinAmt
+        : false;
+      const validAmt2 = ammData?.coinB?.tradeValue
+        ? ammData?.coinB?.tradeValue >= times * quoteMinAmt
+        : false;
+
+      myLog(
+        "btnLabelActiveCheck validAmt1:",
+        validAmt1,
+        " validAmt2:",
+        validAmt2
+      );
+
+      if (isLoading) {
+        return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
+      } else {
+        if (account.readyState === AccountStatus.ACTIVATED) {
+          if (
+            ammData === undefined ||
+            ammData?.coinA.tradeValue === undefined ||
+            ammData?.coinB.tradeValue === undefined ||
+            ammData?.coinA.tradeValue === 0 ||
+            ammData?.coinB.tradeValue === 0
+          ) {
+            return {
+              btnStatus: TradeBtnStatus.DISABLED,
+              btnI18nKey: "labelEnterAmount",
+            };
+          } else if (validAmt1 && validAmt2) {
+            return {
+              btnStatus: TradeBtnStatus.AVAILABLE,
+              btnI18nKey: undefined,
+            };
+          } else {
+            return {
+              btnStatus: TradeBtnStatus.DISABLED,
+              btnI18nKey: `labelLimitMin| ${times * baseMinAmt} ${
+                ammData?.coinA.belong
+              } + ${times * quoteMinAmt} ${ammData?.coinB.belong}`,
+            };
+          }
+        } else {
+        }
+      }
+
+      return {
+        btnStatus: TradeBtnStatus.AVAILABLE,
+        btnI18nKey: undefined,
+      };
+    },
+    [
+      account.readyState,
+      baseToken,
+      quoteToken,
+      baseMinAmt,
+      quoteMinAmt,
+      isLoading,
+      updatePageAmmJoin,
+    ]
+  );
+
+  const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
+    [fnType.ACTIVATED]: [btnLabelActiveCheck],
+  });
 
   const initAmmData = React.useCallback(
     async (pair: any, walletMap: any, isReset: boolean = false) => {
-      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
+      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_JOIN);
 
       let fee = undefined;
       let fees = [];
@@ -149,31 +227,23 @@ export const useAmmExit = ({
         fees,
       };
 
-      myLog("exit feePatch:", feePatch);
-
       if (isReset) {
-        updatePageAmmExit({ ammCalcData: _ammCalcData, ...feePatch });
+        updatePageAmmJoin({ ammCalcData: _ammCalcData, ...feePatch });
       } else {
-        updatePageAmmExit({
+        updatePageAmmJoin({
           ammCalcData: { ...ammCalcData, ..._ammCalcData },
           ...feePatch,
         });
       }
 
-      if (
-        _ammCalcData.lpCoin &&
-        _ammCalcData.myCoinA &&
-        _ammCalcData.myCoinB &&
-        tokenMap
-      ) {
+      if (_ammCalcData.myCoinA && tokenMap) {
         const baseT = tokenMap[_ammCalcData.myCoinA.belong];
 
         const quoteT = tokenMap[_ammCalcData.myCoinB.belong];
 
-        const lpToken = tokenMap[_ammCalcData.lpCoin.belong];
-
         setBaseToken(baseT);
         setQuoteToken(quoteT);
+
         setBaseMinAmt(
           baseT
             ? sdk
@@ -190,29 +260,14 @@ export const useAmmExit = ({
                 .toNumber()
             : undefined
         );
-        setLpMinAmt(
-          lpToken
-            ? sdk
-                .toBig(lpToken.orderAmounts.minimum)
-                .div("1e" + lpToken.decimals)
-                .toNumber()
-            : undefined
-        );
 
         const newAmmData = {
-          coinA: _ammCalcData.myCoinA,
-          coinB: _ammCalcData.myCoinB,
-          coinLP: _ammCalcData.lpCoin,
+          coinA: { ..._ammCalcData.myCoinA, tradeValue: undefined },
+          coinB: { ..._ammCalcData.myCoinB, tradeValue: undefined },
           slippage: initSlippage,
         };
 
-        updatePageAmmExit({ ammData: newAmmData });
-      } else {
-        myLog(
-          "check:",
-          _ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB
-        );
-        myLog("tokenMap:", tokenMap);
+        updatePageAmmJoin({ ammData: newAmmData });
       }
     },
     [
@@ -221,7 +276,8 @@ export const useAmmExit = ({
       tokenMap,
       ammCalcData,
       ammMap,
-      updatePageAmmExit,
+      getFee,
+      updatePageAmmJoin,
       setBaseToken,
       setQuoteToken,
       setBaseMinAmt,
@@ -229,74 +285,9 @@ export const useAmmExit = ({
     ]
   );
 
-  const btnLabelActiveCheck = React.useCallback(
-    ({
-      ammData,
-    }): { btnStatus?: TradeBtnStatus; btnI18nKey: string | undefined } => {
-      const times = 1;
-
-      const validAmt = ammData?.coinLP?.tradeValue
-        ? sdk
-            .toBig(ammData?.coinLP?.tradeValue)
-            .gte(sdk.toBig(times * lpMinAmt))
-        : false;
-
-      if (isLoading) {
-        return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined };
-      } else {
-        if (account.readyState === AccountStatus.ACTIVATED) {
-          if (
-            ammData === undefined ||
-            ammData?.coinLP?.tradeValue === undefined ||
-            ammData?.coinLP?.tradeValue === 0
-          ) {
-            myLog("will DISABLED! ", ammData);
-
-            return {
-              btnStatus: TradeBtnStatus.DISABLED,
-              btnI18nKey: "labelEnterAmount",
-            };
-          } else if (validAmt) {
-            return {
-              btnStatus: TradeBtnStatus.AVAILABLE,
-              btnI18nKey: undefined,
-            };
-          } else {
-            return {
-              btnStatus: TradeBtnStatus.DISABLED,
-              btnI18nKey: `labelLimitMin| ${times * lpMinAmt} ${
-                ammData?.coinLP?.belong
-              } `,
-            };
-          }
-        } else {
-        }
-      }
-
-      return {
-        btnStatus: TradeBtnStatus.AVAILABLE,
-        btnI18nKey: undefined,
-      };
-    },
-    [
-      account.readyState,
-      baseToken,
-      quoteToken,
-      baseMinAmt,
-      quoteMinAmt,
-      lpMinAmt,
-      isLoading,
-      updatePageAmmExit,
-    ]
-  );
-
-  const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
-    [fnType.ACTIVATED]: [btnLabelActiveCheck],
-  });
-
-  const updateExitFee = React.useCallback(async () => {
+  const updateJoinFee = React.useCallback(async () => {
     if (pair?.coinBInfo?.simpleName && ammCalcData) {
-      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT);
+      const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_JOIN);
 
       if (feeInfo?.fee && feeInfo?.fees) {
         const newAmmCalcData = {
@@ -304,24 +295,25 @@ export const useAmmExit = ({
           fee: feeInfo?.fee.toString() + " " + pair.coinBInfo.simpleName,
         };
 
-        updatePageAmmExit({
+        updatePageAmmJoin({
           fee: feeInfo?.fee.toNumber(),
           fees: feeInfo?.fees,
           ammCalcData: newAmmCalcData,
         });
       }
     }
-  }, [updatePageAmmExit, ammCalcData, pair]);
+  }, [updatePageAmmJoin, ammCalcData, pair]);
 
-  const handleExit = React.useCallback(
-    async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
+  const handleJoin = React.useCallback(
+    async ({ data, type, fees, ammPoolSnapshot, tokenMap, account }) => {
       if (
+        !data ||
         !tokenMap ||
-        !ammMap ||
-        !baseToken ||
-        !quoteToken ||
+        !data.coinA.belong ||
+        !data.coinB.belong ||
         !ammPoolSnapshot
       ) {
+        myLog("handleJoin return ", data, ammPoolSnapshot);
         return;
       }
 
@@ -329,66 +321,85 @@ export const useAmmExit = ({
 
       const slippageReal = sdk.toBig(slippage).div(100).toString();
 
+      const isAtoB = type === "coinA";
+
+      const { idIndex, marketArray, marketMap } = store.getState().tokenMap;
+
+      // const {ammMap} = store.getState().amm.ammMap
+
       const { market, amm } = sdk.getExistedMarket(
         marketArray,
-        baseToken.symbol,
-        quoteToken.symbol
+        data.coinA.belong as string,
+        data.coinB.belong as string
       );
 
       if (!market || !amm || !marketMap) {
         return;
       }
 
-      let newAmmData = {
-        slippage: ammData.slippage,
-      };
+      const marketInfo: sdk.MarketInfo = marketMap[market];
 
-      let rawVal = data.coinLP.tradeValue;
+      const coinA = tokenMap[data.coinA.belong as string];
+      const coinB = tokenMap[data.coinB.belong as string];
 
-      let ammDataPatch = {};
+      const rawA = data.coinA.tradeValue ? data.coinA.tradeValue.toString() : 0;
+      const rawB = data.coinB.tradeValue ? data.coinB.tradeValue.toString() : 0;
+      const rawVal = isAtoB ? rawA : rawB;
+      const rawValMatchForRawVal = isAtoB ? rawB : rawA;
+      const { request } = sdk.makeJoinAmmPoolRequest(
+        rawVal,
+        isAtoB,
+        slippageReal,
+        account.accAddress,
+        fees,
+        ammPoolSnapshot,
+        tokenMap as any,
+        idIndex as IdMap,
+        0,
+        0,
+        rawValMatchForRawVal
+      );
 
-      if (rawVal === undefined) {
-        rawVal = "0";
+      const newData = _.cloneDeep(data);
+
+      if (ammPoolSnapshot.lp && ammPoolSnapshot.lp.volume !== "0") {
+        if (isAtoB) {
+          newData.coinB.tradeValue = parseFloat(
+            sdk
+              .toBig(request.joinTokens.pooled[1].volume)
+              .div("1e" + coinB.decimals)
+              .toFixed(marketInfo.precisionForPrice)
+          );
+        } else {
+          newData.coinA.tradeValue = parseFloat(
+            sdk
+              .toBig(request.joinTokens.pooled[0].volume)
+              .div("1e" + coinA.decimals)
+              .toFixed(marketInfo.precisionForPrice)
+          );
+        }
       }
 
-      if (rawVal) {
-        const { volA_show, volB_show, request } = sdk.makeExitAmmPoolRequest2(
-          rawVal.toString(),
-          slippageReal,
-          account.accAddress,
-          fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
-          ammPoolSnapshot,
-          tokenMap as any,
-          idIndex as IdMap,
-          0
-        );
+      myLog("raw request:", request);
 
-        newAmmData["coinA"] = { ...ammData.coinA, tradeValue: volA_show };
-        newAmmData["coinB"] = { ...ammData.coinB, tradeValue: volB_show };
-
-        ammDataPatch = { request, volA_show, volB_show };
-      }
-
-      updatePageAmmExit({
-        ...ammDataPatch,
+      updatePageAmmJoin({
+        request,
         ammData: {
-          ...ammData,
-          ...newAmmData,
-          coinLP: data.coinLP,
-          slippage: data.slippage,
+          coinA: newData.coinA as IBData<string>,
+          coinB: newData.coinB as IBData<string>,
+          slippage,
         },
       });
     },
-    [updatePageAmmExit, idIndex, marketArray, marketMap, baseToken, quoteToken]
+    []
   );
 
   const handleAmmPoolEvent = (
-    data: AmmExitData<IBData<any>>,
+    data: AmmJoinData<IBData<any>>,
     _type: "coinA" | "coinB"
   ) => {
-    handleExit({
+    handleJoin({
       data,
-      requestOut: request,
       ammData,
       type: _type,
       fees,
@@ -401,8 +412,13 @@ export const useAmmExit = ({
   const ammCalculator = React.useCallback(
     async function (props) {
       setIsLoading(true);
-      updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING });
-      if (!exitAmm.enable) {
+
+      updatePageAmmJoinBtn({ btnStatus: TradeBtnStatus.LOADING });
+
+      if (!allowTrade.order.enable) {
+        setShowSupport({ isShow: true });
+        setIsLoading(false);
+      } else if (!joinAmm.enable) {
         setShowTradeIsFrozen({ isShow: true });
         setIsLoading(false);
       } else {
@@ -429,8 +445,6 @@ export const useAmmExit = ({
           return;
         }
 
-        let req = _.cloneDeep(request);
-
         const patch: sdk.AmmPoolRequestPatch = {
           chainId: store.getState().system.chainId as sdk.ChainId,
           ammName: ammInfo.__rawConfig__.name,
@@ -438,40 +452,50 @@ export const useAmmExit = ({
           eddsaKey: account.eddsaKey.sk,
         };
 
-        const burnedReq: sdk.GetNextStorageIdRequest = {
-          accountId: account.accountId,
-          sellTokenId: req.exitTokens.burned.tokenId as number,
-        };
-        const storageId0 = await LoopringAPI.userAPI.getNextStorageId(
-          burnedReq,
-          account.apiKey
-        );
-
-        req.storageId = storageId0.offchainId;
+        let req = _.cloneDeep(request);
 
         try {
-          myLog("---- try to exit req:", req);
+          const request0: sdk.GetNextStorageIdRequest = {
+            accountId: account.accountId,
+            sellTokenId: req.joinTokens.pooled[0].tokenId as number,
+          };
+          const storageId0 = await LoopringAPI.userAPI.getNextStorageId(
+            request0,
+            account.apiKey
+          );
 
-          updatePageAmmExit({
-            ammData: {
-              ...ammData,
-              ...{
-                coinLP: { ...ammData.coinLP, tradeValue: 0 },
-              },
-            },
-          });
+          const request_1: sdk.GetNextStorageIdRequest = {
+            accountId: account.accountId,
+            sellTokenId: req.joinTokens.pooled[1].tokenId as number,
+          };
+          const storageId1 = await LoopringAPI.userAPI.getNextStorageId(
+            request_1,
+            account.apiKey
+          );
+
+          req.storageIds = [storageId0.offchainId, storageId1.offchainId];
 
           req.validUntil = getTimestampDaysLater(DAYS);
 
-          myLog("exit ammpool req:", req);
+          myLog("join ammpool req:", req);
 
-          const response = await LoopringAPI.ammpoolAPI.exitAmmPool(
+          const response = await LoopringAPI.ammpoolAPI.joinAmmPool(
             req,
             patch,
             account.apiKey
           );
 
-          myLog("exit ammpool response:", response);
+          myLog("join ammpool response:", response);
+
+          updatePageAmmJoin({
+            ammData: {
+              ...ammData,
+              ...{
+                coinA: { ...ammData.coinA, tradeValue: 0 },
+                coinB: { ...ammData.coinB, tradeValue: 0 },
+              },
+            },
+          });
 
           if (
             (response as sdk.RESULT_INFO).code ||
@@ -485,7 +509,7 @@ export const useAmmExit = ({
               open: true,
               type: "error",
               content:
-                t("labelExitAmmFailed") +
+                t("labelJoinAmmFailed") +
                 " error: " +
                 (errorItem
                   ? t(errorItem.messageKey, { ns: "error" })
@@ -495,20 +519,20 @@ export const useAmmExit = ({
             setToastOpen({
               open: true,
               type: "success",
-              content: t("labelExitAmmSuccess"),
+              content: t("labelJoinAmmSuccess"),
             });
           }
-        } catch (reason) {
+        } catch (reason: any) {
           sdk.dumpError400(reason);
           setToastOpen({
             open: true,
             type: "error",
-            content: t("labelExitAmmFailed"),
+            content: t("labelJoinAmmFailed"),
           });
         } finally {
           setIsLoading(false);
-          updateExitFee();
           walletLayer2Service.sendUserUpdate();
+          await updateJoinFee();
         }
 
         if (props.__cache__) {
@@ -516,17 +540,18 @@ export const useAmmExit = ({
         }
       }
     },
-    [request, ammData, account, t, updatePageAmmExit]
+    [request, ammData, account, t, allowTrade]
   );
 
   const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
     [fnType.ACTIVATED]: [ammCalculator],
   });
+
   const onAmmClick = React.useCallback(
-    (props: AmmExitData<IBData<any>>) => {
+    (props: AmmJoinData<IBData<any>>) => {
       accountStaticCallBack(onAmmClickMap, [props]);
     },
-    [onAmmClickMap, updatePageAmmExitBtn]
+    [onAmmClickMap]
   );
 
   const walletLayer2Callback = React.useCallback(async () => {
@@ -565,6 +590,7 @@ export const useAmmExit = ({
     btnStatus,
     onAmmClick,
     btnI18nKey,
-    updateExitFee,
+    updateJoinFee,
+    updatePageAmmJoin,
   };
 };

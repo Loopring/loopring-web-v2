@@ -15,7 +15,7 @@ import {
   IBData,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
-import React, { useEffect } from "react";
+import React from "react";
 import { useDeepCompareEffect } from "react-use";
 import { Box } from "@mui/material";
 import { useTheme } from "@emotion/react";
@@ -140,7 +140,7 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
     });
     let routerLocation = useLocation();
 
-    useEffect(() => {
+    React.useEffect(() => {
       if (routerLocation) {
         const search = routerLocation?.search;
         const customType = qs.parse(search)?.type;
@@ -149,6 +149,9 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
         setIndex(index);
       }
     }, [routerLocation]);
+    React.useEffect(() => {
+      setIndex(tabSelected);
+    }, [tabSelected]);
     //
     useDeepCompareEffect(() => {
       if (ammDepositData !== ammChgDepositData.tradeData) {
@@ -240,18 +243,22 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
             />
           ),
           [
+            t,
             rest,
-            ammChgDepositData,
-            tokenDepositAProps,
-            tokenDepositBProps,
             anchors,
             disableDeposit,
             ammDepositBtnStatus,
             ammDepositBtnI18nKey,
             ammCalcDataDeposit,
-            accStatus,
             onAmmAddClick,
             handleError,
+            _onChangeAddEvent,
+            ammDepositData,
+            tokenDepositAProps,
+            tokenDepositBProps,
+            accStatus,
+            coinAPrecision,
+            coinBPrecision,
           ]
         ),
       },
@@ -280,10 +287,8 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
             />
           ),
           [
+            t,
             rest,
-            ammChgWithdrawData,
-            tokenWithDrawAProps,
-            tokenWithDrawBProps,
             anchors,
             disableWithdraw,
             ammWithdrawBtnStatus,
@@ -291,6 +296,10 @@ export const AmmPanel = withTranslation("common", { withRef: true })(
             ammCalcDataWithDraw,
             onAmmRemoveClick,
             handleError,
+            _onChangeRemoveEvent,
+            ammWithdrawData,
+            tokenWithDrawAProps,
+            tokenWithDrawBProps,
           ]
         ),
       },

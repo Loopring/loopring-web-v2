@@ -8,10 +8,8 @@ import { RawDataTradeItem, TradeTable } from "@loopring-web/component-lib";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RowConfig } from "@loopring-web/common-resources";
 import { RouteComponentProps } from "react-router-dom";
-import { TableWrapStyled } from "../../../styled";
 import { Divider } from "@mui/material";
-import { store } from "@loopring-web/core";
-import { Limit } from "../../help";
+import { store, Limit, TableWrapStyled } from "@loopring-web/core";
 
 const TabsStyled = styled(Tabs)`
   margin-left: ${({ theme }) => theme.unit}px;

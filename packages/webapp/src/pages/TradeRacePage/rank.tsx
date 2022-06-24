@@ -169,13 +169,14 @@ export const RankRaw = <R extends object>({
     getTableValues();
   }, [selected]);
   const getTableValues = React.useCallback(async () => {
-    const owner = searchParams.get("owner");
+    const l2account =
+      searchParams.get("l2account") || searchParams.get("owner");
     const _selected = filters?.find((item) => selected === item);
     const url = `${baseURL}/${Activity_URL}?${
       _selected ? `&selected=${_selected}` : ""
     }${
-      owner && owner !== "undefined" && owner !== "null"
-        ? `&owner=${owner}`
+      l2account && l2account !== "undefined" && l2account !== "null"
+        ? `&l2account=${l2account}`
         : ""
     }&version=${version}`;
     fetch(url)

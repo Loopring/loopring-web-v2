@@ -5,7 +5,7 @@ export enum ActionResultCode {
   DataNotReady,
   GetAccError,
   GenEddsaKeyError,
-  UpdateAccoutError,
+  UpdateAccountError,
 }
 
 export type EddsaKey = { eddsaKey: any; accInfo?: sdk.AccountInfo };

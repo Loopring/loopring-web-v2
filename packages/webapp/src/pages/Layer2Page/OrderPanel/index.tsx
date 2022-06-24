@@ -3,9 +3,8 @@ import { Tab, Tabs, Box } from "@mui/material";
 import { OrderHistoryTable } from "@loopring-web/component-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useOrderList } from "./hook";
-import { StylePaper } from "../../styled";
 import { RowConfig } from "@loopring-web/common-resources";
-import { useGetOrderHistorys } from "@loopring-web/core";
+import { useGetOrderHistorys, StylePaper } from "@loopring-web/core";
 
 const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
   const { t } = rest;

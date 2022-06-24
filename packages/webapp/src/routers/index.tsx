@@ -5,7 +5,6 @@ import Header from "layouts/header";
 import { QuotePage } from "pages/QuotePage";
 import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
-import { LiquidityPage } from "pages/LiquidityPage";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
 import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
@@ -13,6 +12,8 @@ import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
   ErrorMap,
+  firebaseIOConfig,
+  myLog,
   SagaStatus,
   setMyLog,
   ThemeType,
@@ -29,6 +30,10 @@ import { GuardianPage } from "../pages/WalletPage";
 import { NFTPage } from "../pages/NFTPage";
 import { useGetAssets } from "../pages/Layer2Page/AssetPanel/hook";
 import { Footer } from "../layouts/footer";
+import { InvestPage } from "../pages/InvestPage";
+import { ExtendedFirebaseInstance, useFirebase } from "react-redux-firebase";
+import { getAnalytics, logEvent } from "firebase/analytics";
+import { FirebaseApp } from "@firebase/app";
 
 const ContentWrap = ({
   children,
@@ -83,6 +88,17 @@ const WrapModal = () => {
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
+  // const firebase: ExtendedFirebaseInstance = useFirebase();
+  // firebase.initializeAuth()
+  // firebaseIOConfig
+  // try {
+  //   // const analytics = firebase.analytics();
+  //   // debugger;
+  //   // firebase.analytics;
+  //   const analytics = getAnalytics(firebase.apps[0]);
+  // } catch (e) {
+  //   myLog(e);
+  // }
   const proFlag =
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();
@@ -107,6 +123,19 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
     // @ts-ignore
     setMyLog(true);
   }
+  const analytics = getAnalytics();
+
+  logEvent(analytics, "Route", {
+    protocol: window.location.protocol,
+    pathname: window.location.pathname,
+    query: query,
+  });
+  // firebase.push("Route", {
+  //   protocol: window.location.protocol,
+  //   pathname: window.location.pathname,
+  //   query: query,
+  // });
+
   return (
     <>
       <Switch>
@@ -190,7 +219,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </Container>
         </Route>
 
-        <Route exact path="/invest/:path">
+        <Route exact path="/investrule/:path">
           {query && query.has("noheader") ? (
             <></>
           ) : (
@@ -210,7 +239,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
 
         <Route
           exact
-          path={["/document", "/race-event", "/notification", "/invest"]}
+          path={["/document", "/race-event", "/notification", "/investrule"]}
         >
           {query && query.has("noheader") ? (
             <></>
@@ -268,29 +297,17 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NFTPage />
           </ContentWrap>
         </Route>
-        <Route exact path="/liquidity">
+        <Route
+          exact
+          path={[
+            "/invest",
+            "/invest/mybalance",
+            "/invest/balance",
+            "/invest/ammpool",
+          ]}
+        >
           <ContentWrap state={state}>
-            <LiquidityPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/liquidity/pools/*">
-          <ContentWrap state={state}>
-            <LiquidityPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/liquidity/pools">
-          <ContentWrap state={state}>
-            <LiquidityPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/liquidity/amm-mining">
-          <ContentWrap state={state}>
-            <LiquidityPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path="/liquidity/my-liquidity">
-          <ContentWrap state={state}>
-            <LiquidityPage />
+            <InvestPage />
           </ContentWrap>
         </Route>
         <Route

@@ -77,7 +77,7 @@ export function makeMarketReq({
   storageId,
 
   feeBips,
-  tokenAmtMap,
+  // tokenAmtMap,
   tokenMarketMap,
   depth,
   ammPoolSnapshot,
@@ -135,15 +135,15 @@ export function makeMarketReq({
     (isBuy && amountQuote !== undefined) ||
     (!isBuy && amountBase !== undefined);
 
-  const sellUserOrderInfo =
-    tokenAmtMap && tokenAmtMap[sell]
-      ? tokenAmtMap[sell].userOrderInfo
-      : undefined;
-
-  const buyUserOrderInfo =
-    tokenAmtMap && tokenAmtMap[buy]
-      ? tokenAmtMap[buy].userOrderInfo
-      : undefined;
+  // const sellUserOrderInfo =
+  //   tokenAmtMap && tokenAmtMap[sell]
+  //     ? tokenAmtMap[sell].userOrderInfo
+  //     : undefined;
+  //
+  // const buyUserOrderInfo =
+  //   tokenAmtMap && tokenAmtMap[buy]
+  //     ? tokenAmtMap[buy].userOrderInfo
+  //     : undefined;
 
   // const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0;
 
@@ -167,31 +167,25 @@ export function makeMarketReq({
     totalFee,
     tradeCost,
     feeTakerRate,
-    maxFeeBips: number = MAPFEEBIPS;
-  // const minOrderInfo: (sdk.OrderInfo & OrderInfoPatch) | undefined = tokenAmtMap
-  //   ? _.cloneDeep(
-  //       isBuy ? tokenAmtMap[buy].userOrderInfo : tokenAmtMap[sell].userOrderInfo
-  //     )
-  //   : undefined;
-  // const buyUserOrderInfo =
-  //   tokenAmtMap && tokenAmtMap[buy]
-  //     ? tokenAmtMap[buy].userOrderInfo
-  //     : undefined;
-  // const sellUserOrderInfo =
-  //   tokenAmtMap && tokenAmtMap[sell]
-  //     ? tokenAmtMap[sell].userOrderInfo
-  //     : undefined;
-
-  if (tokenAmtMap && tokenAmtMap[sell] && tokenMarketMap && slippage) {
+    maxFeeBips: number = MAPFEEBIPS,
+    buyUserOrderInfo,
+    sellUserOrderInfo;
+  if (tokenMarketMap && slippage) {
+    buyUserOrderInfo = tokenMarketMap[buy]
+      ? tokenMarketMap[buy].userOrderInfo
+      : undefined;
+    sellUserOrderInfo = tokenMarketMap[sell]
+      ? tokenMarketMap[sell].userOrderInfo
+      : undefined;
     const minSymbol = buy;
-    const inputAmount = tokenAmtMap[minSymbol].userOrderInfo;
+    const inputAmount = buyUserOrderInfo;
 
     const minInput = sdk
       .toBig(inputAmount?.minAmount ?? "")
       .div(sdk.toBig(1).minus(sdk.toBig(slippage).div(10000)))
       .div("1e" + buyTokenInfo.decimals)
       .toString();
-    feeTakerRate = tokenMarketMap[minSymbol].userOrderInfo?.takerRate;
+    feeTakerRate = buyUserOrderInfo?.takerRate;
     const calcForMinAmt = sdk.getOutputAmount({
       input: minInput,
       sell,
@@ -290,7 +284,7 @@ export function makeMarketReq({
       dustToken.orderAmounts.dust
     );
 
-    myLog("dustToken.symbol:", dustToken.symbol);
+    myLog(dustToken.symbol);
 
     const tradeCostInput = sdk
       .toBig(calcForMinCostInput)
@@ -325,7 +319,9 @@ export function makeMarketReq({
           .div("1e" + tokenMap[sell].decimals)
           .toNumber(),
       symbol: sell,
-      minAmtCheck: sdk.toBig(calcTradeParams?.amountS ?? 0).gte(minAmt ?? 0),
+      minAmtCheck: sdk
+        .toBig(calcTradeParams?.amountS ?? 0)
+        .gte(sdk.toBig(minAmt).times(1.1) ?? 0),
     };
 
     if (

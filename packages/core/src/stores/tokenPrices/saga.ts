@@ -3,7 +3,7 @@ import { getTokenPrices, getTokenPricesStatus } from "./reducer";
 import { store, LoopringAPI } from "../../index";
 import { myLog } from "@loopring-web/common-resources";
 
-const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
+export const getTokenPricesApi = async <R extends { [key: string]: any }>() => {
   const { addressIndex } = store.getState().tokenMap;
   if (LoopringAPI?.walletAPI && addressIndex) {
     myLog("loop get getLatestTokenPrices");

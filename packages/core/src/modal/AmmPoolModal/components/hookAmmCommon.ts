@@ -3,6 +3,7 @@ import {
   AccountStatus,
   CoinInfo,
   SagaStatus,
+  myLog,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
@@ -13,8 +14,7 @@ import {
   useSocket,
   useToast,
   usePageAmmPool,
-} from "@loopring-web/core";
-import { myLog } from "@loopring-web/common-resources";
+} from "../../../index";
 
 export const useAmmCommon = ({
   pair,
@@ -25,11 +25,8 @@ export const useAmmCommon = ({
   };
 }) => {
   const { toastOpen, setToastOpen, closeToast } = useToast();
-
   const { sendSocketTopic, socketEnd } = useSocket();
-
   const { account, status: accountStatus } = useAccount();
-
   const { marketArray, marketMap, tokenMap } = useTokenMap();
   const { ammMap } = useAmmMap();
 

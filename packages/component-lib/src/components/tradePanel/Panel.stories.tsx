@@ -87,7 +87,10 @@ let withdrawProps: Partial<WithdrawProps<any, any>> = {
   disabled: false,
   type: "TOKEN",
   isContractAddress: false,
-  isFeeNotEnough: false,
+  isFeeNotEnough: {
+    isFeeNotEnough: false,
+    isOnLoading: false,
+  },
   isAddressCheckLoading: false,
   isCFAddress: false,
   tradeData,
@@ -135,7 +138,10 @@ let withdrawProps: Partial<WithdrawProps<any, any>> = {
   },
 };
 let transferProps: Partial<TransferProps<any, any>> = {
-  isFeeNotEnough: false,
+  isFeeNotEnough: {
+    isFeeNotEnough: false,
+    isOnLoading: false,
+  },
   tradeData,
   coinMap,
   walletMap,
@@ -172,7 +178,10 @@ let transferProps: Partial<TransferProps<any, any>> = {
   },
 };
 let resetProps: ResetProps<any> = {
-  isFeeNotEnough: false,
+  isFeeNotEnough: {
+    isFeeNotEnough: false,
+    isOnLoading: false,
+  },
   chargeFeeTokenList: [
     { belong: "ETH", fee: 0.001, __raw__: "" as any },
     { belong: "LRC", fee: "1", __raw__: "" as any },
@@ -600,7 +609,8 @@ const Template: Story<any> = () => {
                   dispatch(
                     setShowAmm({
                       isShow: true,
-                      props: { tabSelected: AmmPanelType.Exit },
+                      type: AmmPanelType.Exit,
+                      // props: { tabSelected: AmmPanelType.Exit },
                     })
                   )
                 }
@@ -613,7 +623,11 @@ const Template: Story<any> = () => {
                 variant={"contained"}
                 size={"small"}
                 color={"primary"}
-                onClick={() => dispatch(setShowAmm({ isShow: true }))}
+                onClick={() =>
+                  dispatch(
+                    setShowAmm({ isShow: true, type: AmmPanelType.Join })
+                  )
+                }
               >
                 Open Amm Deposit
               </Button>

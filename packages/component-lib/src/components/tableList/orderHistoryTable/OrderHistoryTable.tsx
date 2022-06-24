@@ -1191,7 +1191,7 @@ export const OrderHistoryTable = withTranslation("tables")(
               paddingRight={2}
               onClick={() => setIsDropDown(false)}
             >
-              Show Filter
+              {t("labelShowFilter")}
             </Link>
           ) : (
             <TableFilterStyled>

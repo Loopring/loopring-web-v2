@@ -13,7 +13,7 @@ const tokenPricesSlice: Slice = createSlice({
   name: "tokenPrices",
   initialState,
   reducers: {
-    getTokenPrices(state, action: PayloadAction<undefined>) {
+    getTokenPrices(state, _action: PayloadAction<undefined>) {
       state.status = SagaStatus.PENDING;
     },
     getTokenPricesStatus(state, action: PayloadAction<TokenPricesStates<any>>) {

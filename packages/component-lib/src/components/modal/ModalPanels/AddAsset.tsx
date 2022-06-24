@@ -84,9 +84,8 @@ export const AddAsset = ({
               <MenuBtnStyled
                 variant={"outlined"}
                 size={"large"}
-                className={"addAsset"}
+                className={`addAsset ${isMobile ? "isMobile" : ""}`}
                 fullWidth
-                isMobile={isMobile}
                 disabled={
                   !!(
                     item.enableKey &&

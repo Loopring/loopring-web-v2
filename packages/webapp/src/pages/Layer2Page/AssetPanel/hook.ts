@@ -18,35 +18,21 @@ import {
   TradeBtnStatus,
   useOpenModals,
   useSettings,
-  useToggle,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
   AssetsRawDataItem,
+  CurrencyToTag,
   EmptyValueTag,
   myLog,
   PriceTag,
 } from "@loopring-web/common-resources";
 
-import { Currency, WsTopicType } from "@loopring-web/loopring-sdk";
+import { WsTopicType } from "@loopring-web/loopring-sdk";
 
 import BigNumber from "bignumber.js";
 import moment from "moment";
 import * as sdk from "@loopring-web/loopring-sdk";
-
-export type TrendDataItem = {
-  timeStamp: number;
-  close: number;
-};
-
-export type ITokenInfoItem = {
-  token: string;
-  detail: {
-    price: string;
-    symbol: string;
-    updatedAt: number;
-  };
-};
 
 export const useGetAssets = () => {
   // const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
@@ -59,7 +45,7 @@ export const useGetAssets = () => {
   // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
   const { account } = useAccount();
   const { sendSocketTopic, socketEnd } = useSocket();
-  const { forex, allowTrade } = useSystem();
+  const { forexMap, allowTrade } = useSystem();
   const { tokenPrices } = useTokenPrices();
   const { ammMap } = store.getState().amm.ammMap;
 
@@ -216,9 +202,6 @@ export const useGetAssets = () => {
             smallBalance: isSmallBalance,
             tokenValueDollar,
             name: tokenInfo.token,
-            tokenValueYuan: Number(
-              (tokenValueDollar * (Number(forex) || 6.5)).toFixed(2)
-            ),
           };
         } else {
           item = {
@@ -271,29 +254,35 @@ export const useGetAssets = () => {
       });
       setAssetsRawData(dataWithPrecision);
     }
-  }, [assetsMap, tokenMap, tokenPrices]);
+  }, [ammMap, assetsMap, tokenMap, tokenPriceList, tokenPrices]);
 
   React.useEffect(() => {
     getAssetsRawData();
-  }, [getAssetsRawData]);
+  }, [assetsMap]);
 
   const total = assetsRawData
     .map((o) => o.tokenValueDollar)
     .reduce((a, b) => a + b, 0);
-  const onReceive = React.useCallback((token?: any) => {
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.AddAssetGateway,
-      info: { symbol: token },
-    });
-  }, []);
-  const onSend = React.useCallback((token?: any, isToL1?: boolean) => {
-    setShowAccount({
-      isShow: true,
-      step: AccountStep.SendAssetGateway,
-      info: { symbol: token, isToL1 },
-    });
-  }, []);
+  const onReceive = React.useCallback(
+    (token?: any) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.AddAssetGateway,
+        info: { symbol: token },
+      });
+    },
+    [setShowAccount]
+  );
+  const onSend = React.useCallback(
+    (token?: any, isToL1?: boolean) => {
+      setShowAccount({
+        isShow: true,
+        step: AccountStep.SendAssetGateway,
+        info: { symbol: token, isToL1 },
+      });
+    },
+    [setShowAccount]
+  );
   // const onShowDeposit = React.useCallback(
   //   (token?: any, partner?: boolean) => {
   //     if (partner) {
@@ -326,13 +315,11 @@ export const useGetAssets = () => {
     setHideL2Assets,
     assetInfo: {
       totalAsset: assetsRawData
-        .map((o) =>
-          currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan
-        )
+        .map((o) => o.tokenValueDollar * (forexMap[currency] ?? 0))
         .reduce((prev, next) => {
           return prev + next;
         }, 0),
-      priceTag: currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan,
+      priceTag: PriceTag[CurrencyToTag[currency]],
     },
     accountId: account.accountId,
     hideL2Assets,
@@ -359,7 +346,6 @@ export const useGetAssets = () => {
   return {
     assetsRawData,
     total,
-    forex,
     account,
     currency,
     hideL2Assets,

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { ModalState, ModalStatePlayLoad, Transaction } from "./interface";
 import { NFTWholeINFO, TradeNFT } from "@loopring-web/common-resources";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
+import { AmmPanelType } from "../../../components";
 
 const initialState: ModalState = {
   isShowSupport: { isShow: false },
@@ -14,7 +15,7 @@ const initialState: ModalState = {
   isShowActiveAccount: { isShow: false },
   isShowExportAccount: { isShow: false },
   isShowSwap: { isShow: false },
-  isShowAmm: { isShow: false },
+  isShowAmm: { isShow: false, type: AmmPanelType.Join },
   isShowConnect: { isShow: false, step: 0 },
   isShowAccount: { isShow: false, step: 0 },
   isShowLayerSwapNotice: { isShow: false },
@@ -65,9 +66,19 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       const { isShow } = action.payload;
       state.isWrongNetworkGuide.isShow = isShow;
     },
-    setShowAmm(state, action: PayloadAction<ModalStatePlayLoad>) {
-      const { isShow } = action.payload;
-      state.isShowAmm.isShow = isShow;
+    setShowAmm(
+      state,
+      action: PayloadAction<
+        ModalStatePlayLoad & Transaction & { type: AmmPanelType }
+      >
+    ) {
+      const { isShow, symbol, info, type } = action.payload;
+      state.isShowAmm = {
+        isShow,
+        symbol,
+        info,
+        type,
+      };
     },
     setShowSwap(state, action: PayloadAction<ModalStatePlayLoad>) {
       const { isShow } = action.payload;

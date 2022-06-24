@@ -10,19 +10,36 @@ import {
   Account,
   ACTIVITY,
   hexToRGB,
+  languageMap,
   NOTIFICATION_ITEM,
   NOTIFY_COLOR,
 } from "@loopring-web/common-resources";
 import { css, Theme } from "@emotion/react";
 import { useHistory } from "react-router-dom";
+import { useSettings } from "../../../stores";
 
 const cssBackground = ({
   theme,
   color,
-}: { theme: Theme } & Partial<NOTIFICATION_ITEM>) => {
+  banner,
+  lng,
+}: { theme: Theme; lng: string } & Partial<NOTIFICATION_ITEM>) => {
   let svg: string, _color: string;
   const fillColor = theme.colorBase.textDisable;
   const opacity = 0.2;
+  if (banner) {
+    return css`
+      text-indent: -99999em;
+      &,
+      &:hover {
+        background: url("${banner.replace("{lng}", lng)}");
+        background-size: cover;
+      }
+      &:hover {
+        filter: blur(1.5px);
+      }
+    `;
+  }
   switch (color) {
     case NOTIFY_COLOR.primary:
       _color = theme.colorBase.warning;
@@ -77,7 +94,7 @@ const cssBackground = ({
 };
 
 const NotificationListItemStyled = styled(ListItem)<
-  ListItemProps & Partial<ACTIVITY>
+  ListItemProps & Partial<ACTIVITY> & { lng: string }
 >`
   cursor: pointer;
   height: var(--notification-activited-heigth);
@@ -104,21 +121,26 @@ const NotificationListItemStyled = styled(ListItem)<
     height: 100%;
   }
   ${(props) => cssBackground(props)}
-` as (props: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
+` as (
+  props: ListItemProps & Partial<ACTIVITY> & { lng: string }
+) => JSX.Element;
 
 export const NotificationListItem = (
   props: Partial<NOTIFICATION_ITEM> & { account?: Account }
 ) => {
   const history = useHistory();
-  const { title, description1, description2, account } = props;
+  const { language } = useSettings();
+  const lng = languageMap[language];
+  const { title, description1, description2, account, banner } = props;
   return (
     <NotificationListItemStyled
+      {...{ lng, banner }}
       alignItems="flex-start"
       onClick={() => {
         if (props.link && !!account?.accAddress) {
           props.link = /\?/.test(props.link)
-            ? `&owner=${account?.accAddress}`
-            : `?owner=${account?.accAddress}`;
+            ? `&l2account=${account?.accAddress}`
+            : `?l2account=${account?.accAddress}`;
         }
         props.link?.startsWith("http")
           ? window.open(props.link, "_blank")
@@ -169,7 +191,7 @@ export const NotificationListItem = (
 };
 
 const ListItemActivityStyle = styled(NotificationListItemStyled)<
-  ListItemProps & Partial<ACTIVITY>
+  ListItemProps & Partial<ACTIVITY> & { lng: string }
 >`
   &:not(:last-child) {
     border-bottom: 0;
@@ -179,19 +201,33 @@ const ListItemActivityStyle = styled(NotificationListItemStyled)<
   padding: ${({ theme }) => theme.unit}px;
   ${(props) => cssBackground(props)}
   border-radius: ${({ theme }) => theme.unit}px;
-` as (props: ListItemProps & Partial<ACTIVITY>) => JSX.Element;
+` as (
+  props: ListItemProps & Partial<ACTIVITY> & { lng: string }
+) => JSX.Element;
 export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
-  const { type, title, description1, description2, startShow, link, account } =
-    props;
+  const {
+    type,
+    title,
+    description1,
+    description2,
+    startShow,
+    link,
+    account,
+    banner,
+    color,
+  } = props;
+  const { language } = useSettings();
+  const lng = languageMap[language];
   if (Date.now() > startShow) {
     return (
       <ListItemActivityStyle
+        {...{ banner, color, lng }}
         className={type}
         // onClick={() =>
         //   history.replace(``)
         // }
         onClick={() => {
-          window.open(`${link}&owner=${account?.accAddress}`, "_blank");
+          window.open(`${link}&l2account=${account?.accAddress}`, "_blank");
           window.opener = null;
         }}
         type={props.type}
