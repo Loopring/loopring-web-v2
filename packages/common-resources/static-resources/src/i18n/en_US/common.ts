@@ -74,7 +74,7 @@ export default {
   labelAssetMobileTitle: "Loopring L2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
   labelLevel: "VIP Level",
-  labelOrderbook: "Orderbook",
+  labelOrderbook: "Order book",
   labelSetPublicKey: "Set EdDSA Public Key",
   labelTitleSecurity: "Security",
   labelTitleResetL2Keypair: "Reset Loopring L2 Keypair",
