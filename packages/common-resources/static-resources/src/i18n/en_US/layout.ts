@@ -89,4 +89,5 @@ export default {
   labelMyAssetsNFT: "My NFT",
   labelTransactionNFT: "Transactions",
   labelInvest: "Invest",
+  labelForceWithdraw: "Force Withdrawal",
 };
