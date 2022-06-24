@@ -88,17 +88,7 @@ const WrapModal = () => {
 
 const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const location = useLocation();
-  // const firebase: ExtendedFirebaseInstance = useFirebase();
-  // firebase.initializeAuth()
-  // firebaseIOConfig
-  // try {
-  //   // const analytics = firebase.analytics();
-  //   // debugger;
-  //   // firebase.analytics;
-  //   const analytics = getAnalytics(firebase.apps[0]);
-  // } catch (e) {
-  //   myLog(e);
-  // }
+
   const proFlag =
     process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { tickerMap } = useTicker();

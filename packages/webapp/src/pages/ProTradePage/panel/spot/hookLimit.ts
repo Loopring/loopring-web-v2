@@ -71,9 +71,11 @@ export const useLimit = <C extends { [key: string]: any }>({
   let balance =
     tradePrice &&
     tokenPrices &&
-    Number(tradePrice) * tokenPrices[quoteSymbol as string];
+    forexMap &&
+    Number(tradePrice) *
+      tokenPrices[quoteSymbol as string] *
+      (forexMap[currency] ?? 0);
 
-  balance = Number(balance) * (forexMap[currency] ?? 0);
   const [limitTradeData, setLimitTradeData] = React.useState<
     LimitTradeData<IBData<any>>
   >({
@@ -88,14 +90,7 @@ export const useLimit = <C extends { [key: string]: any }>({
     price: {
       belong: pageTradePro.tradeCalcProData.coinQuote,
       tradeValue: tradePrice,
-      balance: getValuePrecisionThousand(
-        balance,
-        undefined,
-        undefined,
-        undefined,
-        true,
-        { isFait: true }
-      ),
+      balance,
     } as IBData<any>,
     type: pageTradePro.tradeType ?? TradeProType.buy,
   });
@@ -109,6 +104,10 @@ export const useLimit = <C extends { [key: string]: any }>({
 
   React.useEffect(() => {
     if (pageTradePro.chooseDepth) {
+      const {
+        system: { forexMap },
+        settings: { currency },
+      } = store.getState();
       //@ts-ignore
       const [, baseSymbol, quoteSymbol] =
         pageTradePro.market.match(/(\w+)-(\w+)/i);
@@ -124,9 +123,10 @@ export const useLimit = <C extends { [key: string]: any }>({
       let balance =
         tradePrice &&
         tokenPrices &&
-        Number(tradePrice) * tokenPrices[quoteSymbol as string];
-
-      balance = Number(balance) * (forexMap[currency] ?? 0);
+        forexMap &&
+        Number(tradePrice) *
+          tokenPrices[quoteSymbol as string] *
+          (forexMap[currency] ?? 0);
 
       if (
         (pageTradePro.tradeType === TradeProType.buy &&
@@ -151,14 +151,7 @@ export const useLimit = <C extends { [key: string]: any }>({
             price: {
               ...limitTradeData.price,
               tradeValue: Number(tradePrice),
-              balance: getValuePrecisionThousand(
-                balance,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              ),
+              balance: Number(balance) ?? 0,
             },
           },
           TradeBaseType.price
@@ -194,7 +187,7 @@ export const useLimit = <C extends { [key: string]: any }>({
 
       // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
     }
-  }, [pageTradePro.chooseDepth, currency, forexMap]);
+  }, [pageTradePro.chooseDepth]);
 
   const resetTradeData = React.useCallback(
     (type?: TradeProType) => {
@@ -212,9 +205,10 @@ export const useLimit = <C extends { [key: string]: any }>({
         let balance =
           tradePrice &&
           tokenPrices &&
-          Number(tradePrice) * tokenPrices[quoteSymbol as string];
-
-        balance = Number(balance) * (forexMap[currency] ?? 0);
+          forexMap &&
+          Number(tradePrice) *
+            tokenPrices[quoteSymbol as string] *
+            (forexMap[currency] ?? 0);
 
         return {
           ...state,
@@ -230,14 +224,7 @@ export const useLimit = <C extends { [key: string]: any }>({
           price: {
             belong: quoteSymbol,
             tradeValue: tradePrice,
-            balance: getValuePrecisionThousand(
-              balance,
-              undefined,
-              undefined,
-              undefined,
-              true,
-              { isFait: true }
-            ),
+            balance,
           } as IBData<any>,
         };
       });
@@ -484,23 +471,17 @@ export const useLimit = <C extends { [key: string]: any }>({
           let balance =
             tradePrice &&
             tokenPrices &&
-            Number(tradePrice) * tokenPrices[quoteSymbol as string];
-
-          balance = Number(balance) * (forexMap[currency] ?? 0);
+            forexMap &&
+            Number(tradePrice) *
+              tokenPrices[quoteSymbol as string] *
+              (forexMap[currency] ?? 0);
 
           return {
             ...state,
             price: {
               belong: quoteSymbol,
               tradeValue: tradePrice,
-              balance: getValuePrecisionThousand(
-                balance,
-                undefined,
-                undefined,
-                undefined,
-                true,
-                { isFait: true }
-              ),
+              balance,
             } as IBData<any>,
             base: {
               ...state.base,

@@ -4,6 +4,7 @@ import {
   AmmJoinData,
   CoinInfo,
   fnType,
+  getValuePrecisionThousand,
   IBData,
   myLog,
   SagaStatus,
@@ -165,11 +166,25 @@ export const useAmmJoin = ({
               btnI18nKey: undefined,
             };
           } else {
+            const viewBaseMintAmt = getValuePrecisionThousand(
+              times * baseMinAmt,
+              tokenMap[ammData?.coinA]?.precisionForOrder ?? 4,
+              tokenMap[ammData?.coinA]?.precisionForOrder ?? 4,
+              tokenMap[ammData?.coinA]?.precisionForOrder ?? 2,
+              false,
+              { floor: false, isAbbreviate: true }
+            );
+            const viewQuoteMintAmt = getValuePrecisionThousand(
+              times * quoteMinAmt,
+              tokenMap[ammData?.coinB]?.precisionForOrder ?? 4,
+              tokenMap[ammData?.coinB]?.precisionForOrder ?? 4,
+              tokenMap[ammData?.coinB]?.precisionForOrder ?? 2,
+              false,
+              { floor: false, isAbbreviate: true }
+            );
             return {
               btnStatus: TradeBtnStatus.DISABLED,
-              btnI18nKey: `labelLimitMin| ${times * baseMinAmt} ${
-                ammData?.coinA.belong
-              } + ${times * quoteMinAmt} ${ammData?.coinB.belong}`,
+              btnI18nKey: `labelLimitMin| ${viewBaseMintAmt} ${ammData?.coinA.belong} or ${viewQuoteMintAmt} ${ammData?.coinB.belong}`,
             };
           }
         } else {
