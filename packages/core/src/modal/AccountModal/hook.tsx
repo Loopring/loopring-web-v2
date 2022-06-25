@@ -159,7 +159,6 @@ export function useAccountModalForUI({
   } = useOpenModals();
   rest = { ...rest, ...isShowAccount.info };
   const {
-    nftMintValue,
     nftDepositValue,
     nftTransferValue,
     nftWithdrawValue,
@@ -178,7 +177,8 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
   } = useExportAccount();
   const vendorProps = useVendor();
-  const { nftMintAdvanceProps } = useNFTMintAdvance();
+  const { nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn } =
+    useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
@@ -295,9 +295,16 @@ export function useAccountModalForUI({
       btnTxt: "labelRetry",
       callback: () => {
         setShowAccount({ isShow: false });
+        if (isShowAccount.info?.isAdvanceMint) {
+          nftMintAdvanceRetryBtn();
+        }
       },
     };
-  }, [setShowAccount]);
+  }, [
+    isShowAccount.info?.isAdvanceMint,
+    nftMintAdvanceRetryBtn,
+    setShowAccount,
+  ]);
 
   const backToDeployBtnInfo = React.useMemo(() => {
     return {
@@ -930,15 +937,14 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_WaitForAuth]: {
         view: (
           <NFTMint_WaitForAuth
-            symbol={nftMintValue?.nftMETA?.name}
-            value={nftMintValue?.mintData?.tradeValue}
+            symbol={isShowAccount.info?.name}
+            value={isShowAccount.info?.value}
             chainInfos={chainInfos}
             updateDepositHash={updateDepositHash}
             providerName={account.connectName as ConnectProviders}
             {...{
               ...rest,
               account,
-              ...nftMintValue.mintData,
               t,
             }}
           />
@@ -950,11 +956,12 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_Denied]: {
         view: (
           <NFTMint_Denied
+            symbol={isShowAccount.info?.name}
+            value={isShowAccount.info?.value}
             btnInfo={backToMintBtnInfo}
             {...{
               ...rest,
               account,
-              ...nftMintValue,
               t,
             }}
           />
@@ -969,13 +976,18 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelTryAnother",
               callback: () => {
-                mintService.signatureMint(true);
+                if (isShowAccount.info?.isAdvanceMint) {
+                  nftMintAdvanceRetryBtn(true);
+                } else {
+                  mintService.signatureMint(true);
+                }
               },
             }}
+            symbol={isShowAccount.info?.name}
+            value={isShowAccount.info?.value}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               t,
             }}
           />
@@ -984,10 +996,11 @@ export function useAccountModalForUI({
       [AccountStep.NFTMint_In_Progress]: {
         view: (
           <NFTMint_In_Progress
+            symbol={isShowAccount.info?.name}
+            value={isShowAccount.info?.value}
             {...{
               ...rest,
               account,
-              ...nftDeployValue,
               t,
             }}
           />
@@ -997,10 +1010,11 @@ export function useAccountModalForUI({
         view: (
           <NFTMint_Failed
             btnInfo={closeBtnInfo}
+            symbol={isShowAccount.info?.name}
+            value={isShowAccount.info?.value}
             {...{
               ...rest,
               account,
-              ...nftMintValue,
               error: isShowAccount.error,
               t,
             }}
@@ -1014,11 +1028,12 @@ export function useAccountModalForUI({
         view: (
           <NFTMint_Success
             btnInfo={closeBtnInfo}
+            symbol={isShowAccount.info?.name}
+            value={isShowAccount.info?.value}
             {...{
               t,
               ...rest,
               account,
-              ...nftMintValue,
               link: isShowAccount?.info?.hash
                 ? {
                     name: "Txn Hash",
@@ -1925,7 +1940,6 @@ export function useAccountModalForUI({
     closeBtnInfo,
     nftDepositValue,
     backToNFTDepositBtnInfo,
-    nftMintValue,
     backToMintBtnInfo,
     nftDeployValue,
     backToDeployBtnInfo,
@@ -1936,6 +1950,7 @@ export function useAccountModalForUI({
     backToResetAccountBtnInfo,
     setShowAccount,
     setShowDeposit,
+    nftMintAdvanceRetryBtn,
     nftDeployProps,
     transferProps,
     transferValue,
