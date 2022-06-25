@@ -206,7 +206,9 @@ export const IInput = styled(CurrencyInput)`
   ::placeholder {
     color: var(--color-text-secondary);;
   }
-
+  :disabled{
+    color: var(--color-text-disable);
+  }
   width: 100%; //calc(100% - 2rem);
   height: 100%; //var(--btn-Input-height);
   border: 0;

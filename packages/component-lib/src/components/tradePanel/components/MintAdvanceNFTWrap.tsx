@@ -201,6 +201,13 @@ export const MintAdvanceNFTWrap = <
             value={tradeData?.nftIdView}
             label={""}
             title={t("labelNFTCid")}
+            error={
+              !!(
+                tradeData.nftIdView !== "" &&
+                !isNFTCheckLoading &&
+                !isAvaiableId
+              )
+            }
             placeholder={t("mintNFTAddressLabelPlaceholder")}
             onChange={(event) =>
               _handleOnNFTDataChange({

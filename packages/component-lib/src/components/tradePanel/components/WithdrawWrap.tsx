@@ -43,6 +43,7 @@ import { BasicACoinTrade } from "./BasicACoinTrade";
 import { NFTInput } from "./BasicANFTTrade";
 import { FeeToggle } from "./tool/FeeList";
 import { WithdrawAddressType } from "./AddressType";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 // const LinkStyle = styled(Link)`
 //   text-decoration: underline dotted;
@@ -68,8 +69,8 @@ export const WithdrawWrap = <
   addressDefault,
   accAddr,
   isNotAvaiableAddress,
-  withdrawTypes,
-  withdrawType,
+  withdrawTypes = { [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard" },
+  withdrawType = sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
   chargeFeeTokenList = [],
   feeInfo,
   handleConfirm,

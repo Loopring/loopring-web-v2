@@ -75,6 +75,12 @@ import {
   NFTDeploy_Submit,
   NFTDeploy_First_Method_Denied,
   NFTDeploy_In_Progress,
+  ForceWithdraw_WaitForAuth,
+  ForceWithdraw_Denied,
+  ForceWithdraw_Failed,
+  ForceWithdraw_Submit,
+  ForceWithdraw_First_Method_Denied,
+  ForceWithdraw_In_Progress,
   NFTMint_First_Method_Denied,
   NFTMint_In_Progress,
   Deposit_Sign_WaitForRefer,
@@ -165,6 +171,7 @@ export function useAccountModalForUI({
     nftDeployValue,
     transferValue,
     withdrawValue,
+    forceWithdrawValue,
   } = useModalData();
 
   const { chainId, allowTrade } = useSystem();
@@ -305,6 +312,14 @@ export function useAccountModalForUI({
     nftMintAdvanceRetryBtn,
     setShowAccount,
   ]);
+  const backToForceWithdrawBtnInfo = React.useMemo(() => {
+    return {
+      btnTxt: "labelRetry",
+      callback: () => {
+        setShowAccount({ isShow: false });
+      },
+    };
+  }, [setShowAccount]);
 
   const backToDeployBtnInfo = React.useMemo(() => {
     return {
@@ -1135,6 +1150,101 @@ export function useAccountModalForUI({
               ...rest,
               account,
               ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+
+      [AccountStep.ForceWithdraw_WaitForAuth]: {
+        view: (
+          <ForceWithdraw_WaitForAuth
+            symbol={nftDeployValue.name}
+            value={nftDeployValue.tradeValue}
+            chainInfos={chainInfos}
+            updateDepositHash={updateDepositHash}
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+      [AccountStep.ForceWithdraw_Denied]: {
+        view: (
+          <ForceWithdraw_Denied
+            btnInfo={backToForceWithdrawBtnInfo}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+      [AccountStep.ForceWithdraw_First_Method_Denied]: {
+        view: (
+          <ForceWithdraw_First_Method_Denied
+            btnInfo={backToWithdrawBtnInfo}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ForceWithdraw_In_Progress]: {
+        view: (
+          <ForceWithdraw_In_Progress
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ForceWithdraw_Failed]: {
+        view: (
+          <ForceWithdraw_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        onBack: () => {
+          setShowAccount({ isShow: false });
+        },
+      },
+      [AccountStep.ForceWithdraw_Submit]: {
+        view: (
+          <ForceWithdraw_Submit
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
               t,
             }}
           />

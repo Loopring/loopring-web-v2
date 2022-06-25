@@ -22,6 +22,9 @@ export const useAddressCheck = () => {
     React.useState(false);
 
   const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
+  const [isActiveAccount, setIsActiveAccount] = React.useState(false);
+  const [checkAddAccountId, setCheckAddaccountId] =
+    React.useState<number | undefined>();
 
   const [isSameAddress, setIsSameAddress] = React.useState(false);
 
@@ -96,6 +99,8 @@ export const useAddressCheck = () => {
                 setIsLoopringAddress(false);
               } else {
                 setIsLoopringAddress(true);
+                setIsActiveAccount(response.accInfo.nonce !== 0);
+                setCheckAddaccountId(response.accInfo.accountId);
               }
             }
             clearTimeout(nodeTimer.current);
@@ -147,10 +152,12 @@ export const useAddressCheck = () => {
   return {
     address,
     realAddr,
+    checkAddAccountId,
     setAddress,
     addrStatus,
     isAddressCheckLoading,
     isLoopringAddress,
+    isActiveAccount,
     isCFAddress,
     isSameAddress,
     isContract1XAddress,
