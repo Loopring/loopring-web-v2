@@ -409,7 +409,7 @@ export default {
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
-  labelInvalidCID: "Invalid CID",
+  labelInvalidCID: "Invalid CIDv0. CIDv0 start with `Qm`",
   labelInvalidAddress: "Invalid address, ENS",
   labelInvalidisCFAddress:
     "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
@@ -776,4 +776,5 @@ export default {
   labelMintFeeChoose: "Select payment token",
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
+  labelNFTMintWrongCIDBtn: "CIDv0 should start with Qm",
 };

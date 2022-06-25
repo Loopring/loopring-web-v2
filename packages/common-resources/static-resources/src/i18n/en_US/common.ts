@@ -421,7 +421,7 @@ export default {
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
-  labelInvalidCID: "Invalid CID",
+  labelInvalidCID: "Invalid CIDv0. CIDv0 is start with `Qm`",
   labelInvalidAddress: "Invalid address, ENS",
   labelInvalidisCFAddress:
     "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
@@ -452,7 +452,7 @@ export default {
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder:
-    "eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
+    "(CIDv0) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
   depositNFTIdLabelPlaceholder: "please input NFT id...",
   nftDepositDescription:
     "Creates a smart contract on Ethereum L1, \n which requires a gas fee. NFTs minted \nhere remain on Loopring L2 until deployed.",
@@ -461,7 +461,7 @@ export default {
   labelNFTDepositInputTitle: "Amount:",
   labelNFTTId: "NFT Token ID:",
   labelNFTCid:
-    "IPFS CID :(Store Metadata Information) <1>Follow this Guide </1>",
+    "IPFS CID :(Store Metadata Information,CIDv0 start with `Qm`) <1>Follow this Guide </1>",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelDeployDenied: "Signature request was rejected",
@@ -794,4 +794,5 @@ export default {
   labelInvestBalanceTitle: "Balance",
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
+  labelNFTMintWrongCIDBtn: "Wrong MetaData format",
 };
