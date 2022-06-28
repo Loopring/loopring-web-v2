@@ -133,12 +133,21 @@ export const useMyNFT = () => {
       const meta = (await getMetaFromContractORIpfs(
         tokenInfo
       )) as LOOPRING_NFT_METADATA;
+      let metadata_tokenId: number | undefined = undefined;
+      if (meta.hasOwnProperty("tokenId")) {
+        metadata_tokenId = meta["tokenId"];
+        delete meta["tokenId"];
+      }
+
       if (meta && meta !== {} && (meta.name || meta.image)) {
-        tokenInfo = {
-          ...tokenInfo,
-          ...(meta as any),
-          isFailedLoadMeta: false,
-        };
+        tokenInfo = Object.assign(
+          metadata_tokenId !== undefined ? { metadata_tokenId } : {},
+          {
+            ...tokenInfo,
+            ...(meta as any),
+            isFailedLoadMeta: false,
+          }
+        );
       } else {
         tokenInfo = {
           ...tokenInfo,
@@ -217,6 +226,7 @@ export const useMyNFT = () => {
           nftIdView: new BigNumber(item?.nftId ?? "0", 16).toString(),
           image: item.metadata?.uri,
           ...item.metadata?.base,
+          ...item.metadata?.extra,
         };
       }) as any;
     });

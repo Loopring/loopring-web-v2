@@ -116,15 +116,6 @@ export const WithdrawConfirm = <
           {feeInfo?.fee + " "} {feeInfo?.belong}
         </Typography>
       </Grid>
-      <Grid item xs={12}>
-        <Typography
-          color={"var(--color-warning)"}
-          marginTop={1}
-          variant={"body1"}
-        >
-          {t("labelForceWithdrawWaiting")}
-        </Typography>
-      </Grid>
 
       <Grid item marginTop={2} alignSelf={"stretch"} paddingBottom={0}>
         <Button

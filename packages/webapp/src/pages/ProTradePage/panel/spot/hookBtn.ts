@@ -48,8 +48,6 @@ export const useSubmitBtn = ({
     } else {
       return { backgroundColor: "var(--color-primary)" };
     }
-
-    // }
   }, [account.readyState]);
 
   const _btnLabelArray = Object.assign(_.cloneDeep(btnLabel), {

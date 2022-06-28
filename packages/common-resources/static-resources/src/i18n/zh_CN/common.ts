@@ -799,5 +799,4 @@ export default {
   labelForceWithdrawAddress: "Request force withdraw address",
   labelForceWithdrawDes:
     "If the receipt account doesn't activate the Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. Usually only when you sent the token to the L2 account of a wrong CEX address that doesn't support Loopring L2, you will need to do this so that you will be able to claim the token back.",
-  labelForceWithdrawWaiting: "",
 };
