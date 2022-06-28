@@ -67,24 +67,15 @@ export const TransferPanel = withTranslation(["common", "error"], {
             ),
             [rest, onTransferClick, type, switchData.tradeData, isThumb]
           ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      setPanelIndex(1);
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
+          toolBarItem: (
+            <ModalBackButton
+              marginTop={0}
+              marginLeft={-2}
+              onBack={() => {
+                setPanelIndex(1);
+              }}
+              {...rest}
+            />
           ),
         },
         {
@@ -127,25 +118,7 @@ export const TransferPanel = withTranslation(["common", "error"], {
               isAddressCheckLoading,
             ]
           ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      onBack();
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
-          ),
+          toolBarItem: undefined,
         },
       ].concat(
         type === "TOKEN"
@@ -170,8 +143,8 @@ export const TransferPanel = withTranslation(["common", "error"], {
                   ),
                   [switchData, rest, onChangeEvent]
                 ),
+                // toolBarItem: undefined,
                 toolBarItem: undefined,
-                // toolBarItem: toolBarItemBack
               },
             ] as any)
           : []

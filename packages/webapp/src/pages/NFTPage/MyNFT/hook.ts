@@ -160,9 +160,11 @@ export const useMyNFT = () => {
         item.isCounterFactualNFT &&
         item.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
       ) {
-        await LoopringAPI.userAPI?.getAvailableBroker().then(({ broker }) => {
-          updateNFTDeployData({ broker });
-        });
+        await LoopringAPI.userAPI
+          ?.getAvailableBroker({ type: 0 })
+          .then(({ broker }) => {
+            updateNFTDeployData({ broker });
+          });
         updateNFTDeployData(item);
       }
       updateNFTWithdrawData(item);

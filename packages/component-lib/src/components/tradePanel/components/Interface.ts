@@ -216,7 +216,7 @@ export type inputNFTProps<T, I, C = CoinInfo<I>> = RequireOne<
   "label"
 >;
 export type InputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
-  InputButtonProps<T, I, C>,
+  Partial<InputButtonProps<T, I, C>>,
   "label"
 >;
 
@@ -248,7 +248,7 @@ export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   type?: "TOKEN";
   inputBtnRef: React.Ref<any>;
   inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
-  InputButtonDefaultProps: InputButtonDefaultProps<I, CoinInfo<I>>;
+  inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
 };
 export type BasicANFTTradeProps<T, I> = Omit<
   BasicACoinTradeViewProps<T, I>,

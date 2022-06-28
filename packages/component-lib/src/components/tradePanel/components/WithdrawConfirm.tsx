@@ -110,10 +110,19 @@ export const WithdrawConfirm = <
       )}
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Fee")}
+          {t("labelForceWithdrawFee")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {feeInfo?.fee + " "} {feeInfo?.belong}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography
+          color={"var(--color-warning)"}
+          marginTop={1}
+          variant={"body1"}
+        >
+          {t("labelForceWithdrawWaiting")}
         </Typography>
       </Grid>
 

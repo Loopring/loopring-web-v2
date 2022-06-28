@@ -807,5 +807,11 @@ export default {
   labelForceWithdrawToken: "Token Amount",
   labelForceWithdrawFee: "Fee",
   labelForceWithdrawEnterToken: "Select Token",
-  labelPleaseInputAddress: "Please input address",
+  labelPleaseInputAddress: "Please enter the address you want to operate",
+  labelForceWithdrawAddress: "Request force withdraw address",
+  labelForceWithdrawDes:
+    "If the receipt account doesn't activate the Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. Usually only when you sent the token to the L2 account of a wrong CEX address that doesn't support Loopring L2, you will need to do this so that you will be able to claim the token back.",
+  labelForceWithdrawConfirm:
+    "Force withdraw requisition will immediately submit to Loopring service, but it should waiting 12 blocks from blockchain confirm, please do not duplicate submit ",
+  labelForceWithdrawWaiting: "",
 };

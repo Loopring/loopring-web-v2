@@ -409,7 +409,7 @@ export default {
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
-  labelInvalidCID: "Invalid CIDv0. CIDv0 start with `Qm`",
+  labelInvalidCID: "Invalid CIDv0. CIDv0 is start with `Qm`",
   labelInvalidAddress: "Invalid address, ENS",
   labelInvalidisCFAddress:
     "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
@@ -440,7 +440,7 @@ export default {
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder:
-    "eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
+    "(CIDv0) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
   depositNFTIdLabelPlaceholder: "please input NFT id...",
   nftDepositDescription:
     "Creates a smart contract on Ethereum L1, \n which requires a gas fee. NFTs minted \nhere remain on Loopring L2 until deployed.",
@@ -449,7 +449,7 @@ export default {
   labelNFTDepositInputTitle: "Amount:",
   labelNFTTId: "NFT Token ID:",
   labelNFTCid:
-    "IPFS CID :(Store Metadata Information) <1>Follow this Guide </1>",
+    "IPFS CID :(Store Metadata Information,CIDv0 start with `Qm`) <1>Follow this Guide </1>",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelDeployDenied: "Signature request was rejected",
@@ -588,7 +588,7 @@ export default {
   labelL2toL1Success: "Sent {{value}} {{symbol}} to L1 was successful!",
   labelL2toL2InProgress: "Processing...",
   labelL2toL2Failed:
-    "Sent {{value}} {{symbol}} from my Loopring L2 to anther Loopring L2 failed!",
+    "Sent {{value}} {{symbol}} from my Loopring L2 to another Loopring L2 failed!",
   labelL2toL2Success: "Sent {{value}} {{symbol}} was successful!",
   labelUpdateAccountFailed: "Activate Loopring L2 has failed!",
   labelCreateAccountSubmit:
@@ -683,9 +683,9 @@ export default {
   labelAddAssetHowto: "How would you like to add Loopring L2 assets?",
   labelAddAssetTitleActive: "Add assets & Activate",
   labelFromMyL1: "From my L1 account",
-  labelFromOtherL1: "From anther L1 account",
+  labelFromOtherL1: "From another L1 account",
   labelBuyWithCard: "Buy with Card",
-  labelFromOtherL2: "From anther Loopring L2 account",
+  labelFromOtherL2: "From another Loopring L2 account",
   labelFromExchange: "Buy from Exchange",
   labelOpenInWalletApp: "Open in wallet app/extension",
   labelConnectWithDapp: "Connect with Dapp",
@@ -698,7 +698,7 @@ export default {
   labelWrongNetworkGuide:
     "Your chosen network is not currently supported on Loopring. Please choose Ethereum main Network or test Network Goerli",
   labelSenAssetTitle: "Send {{symbol}} from Loopring L2",
-  labelSendTOL2: "To Another Loopring L2 Account",
+  labelSendTOL2: "To another Loopring L2 account",
   labelSendToMyL1: "To my L1 account",
   labelSendToOtherL1: "To another L1 account \n(incl. exchange)",
   labelSendAssetHowto: "Where would you like to send your crypto to",
@@ -767,16 +767,22 @@ export default {
   labelL2toL1AddressType: "Address Type",
   labelConfirmCEX: "Confirm CEX Support",
   labelConfirmDetail:
-    "<0>Before withdrawing, please check with your CEX support that they accept deposits from smart contracts.</0>" +
-    "<1>L2 to L1 withdrawing is via a smart contract. The CEX depositing address may not be able to acknowledge the tokens deposited automatically.</1>" +
-    "<2>If the deposited tokens do not appear at the CEX address within 24 hours, please contact your CEX support to manually acknowledge this transaction.</2>",
+    "<0>Before withdrawing, please confirm with your CEX support that they accept deposits from smart contracts.</0>" +
+    "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
+    "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
   labelCEXUnderstand: "I understand and acknowledge the risk",
   labelMintFee: "Mint Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
+  labelLayerSwapUnderstand: "Acknowledge and understand the risk",
+  labelIUnderStand: "I Understand",
+  labelLayerSwapUnderstandDes:
+    "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
+  labelInvestAmmTitle: "AMM Pools",
+  labelInvestBalanceTitle: "Balance",
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
-  labelNFTMintWrongCIDBtn: "CIDv0 should start with Qm",
+  labelNFTMintWrongCIDBtn: "Wrong MetaData format",
   labelWithdrawBtn: "Withdraw",
   labelForceWithdrawTitle: "Force Withdraw",
   labelFWithdrawFee: "Fee",
@@ -789,5 +795,9 @@ export default {
   labelForceWithdrawToken: "Token Amount",
   labelForceWithdrawFee: "Fee",
   labelForceWithdrawEnterToken: "Select Token",
-  labelPleaseInputAddress: "Please input address",
+  labelPleaseInputAddress: "Please enter the address you want to operate",
+  labelForceWithdrawAddress: "Request force withdraw address",
+  labelForceWithdrawDes:
+    "If the receipt account doesn't activate the Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. Usually only when you sent the token to the L2 account of a wrong CEX address that doesn't support Loopring L2, you will need to do this so that you will be able to claim the token back.",
+  labelForceWithdrawWaiting: "",
 };

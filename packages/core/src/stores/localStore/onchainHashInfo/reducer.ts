@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
 import { ChainHashInfos, TxInfo } from "@loopring-web/common-resources";
-import { ChainId } from "@loopring-web/loopring-sdk/dist";
+import { ChainId } from "@loopring-web/loopring-sdk";
 
 const initialState: ChainHashInfos = {
   [ChainId.GOERLI]: { depositHashes: {} },

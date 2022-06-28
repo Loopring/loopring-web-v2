@@ -183,4 +183,6 @@ export default {
   labelTypeTRANSFER: "Transfer",
   labelTxNFTFilterMINT: "Mint",
   labelShowFilter: "Show Filter",
+  labelTxFilterFORCEWITHDRAW: "Force Withdraw",
+  labelTypeDELEGATED_FORCE_WITHDRAW: "Force Withdraw",
 };

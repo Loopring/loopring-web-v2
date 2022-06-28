@@ -4,7 +4,7 @@ import React from "react";
 import { DepositNFTWrap, PopoverPure } from "@loopring-web/component-lib";
 
 import { useNFTDeposit } from "@loopring-web/core";
-import { HelpIcon } from "@loopring-web/common-resources";
+import { Info2Icon } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { Trans, useTranslation } from "react-i18next";
@@ -45,7 +45,7 @@ export const DepositNFTPanel = () => {
               ? nftDepositProps.title
               : t("nftDepositTitle")}
           </Typography>
-          <HelpIcon
+          <Info2Icon
             {...bindHover(popupState)}
             fontSize={"large"}
             htmlColor={"var(--color-text-third)"}

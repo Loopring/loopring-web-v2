@@ -4,7 +4,7 @@ import {
   SwitchPanel,
   SwitchPanelProps,
 } from "../../basic-lib";
-import { ForceWithdrawProps } from "../../tradePanel/Interface";
+import { ForceWithdrawProps } from "../../tradePanel";
 import { IBData } from "@loopring-web/common-resources";
 import { TradeMenuList, useBasicTrade } from "../../tradePanel/components";
 import React from "react";
@@ -74,24 +74,17 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
             ),
             [onWithdrawClick, rest, switchData.tradeData, type]
           ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      setPanelIndex(1);
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
+          toolBarItem: (
+            <>
+              <ModalBackButton
+                marginTop={0}
+                marginLeft={-2}
+                onBack={() => {
+                  setPanelIndex(1);
+                }}
+                {...rest}
+              />
+            </>
           ),
         },
         {
@@ -132,25 +125,7 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
               walletMap,
             ]
           ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      onBack();
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
-          ),
+          toolBarItem: undefined,
         },
       ].concat(
         type === "TOKEN"

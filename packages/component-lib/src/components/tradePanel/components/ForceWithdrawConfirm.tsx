@@ -55,7 +55,7 @@ export const ForceWithdrawConfirm = <
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Address")}
+          {t("labelForceWithdrawAddress")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {realAddr}
@@ -67,7 +67,7 @@ export const ForceWithdrawConfirm = <
           {t("labelForceWithdrawToken")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {tradeData?.tradeValue + " " + tradeData?.belong}
+          {tradeData?.balance + " " + tradeData?.belong}
         </Typography>
       </Grid>
       <Grid item xs={12}>
@@ -76,6 +76,12 @@ export const ForceWithdrawConfirm = <
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {feeInfo?.fee + " "} {feeInfo?.belong}
+        </Typography>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography color={"var(--color-warning)"} variant={"body1"}>
+          {t("labelForceWithdrawConfirm")}
         </Typography>
       </Grid>
 

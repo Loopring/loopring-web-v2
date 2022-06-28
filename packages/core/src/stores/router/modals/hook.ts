@@ -21,6 +21,7 @@ import {
   updateNFTWithdrawData,
   updateTransferData,
   updateWithdrawData,
+  updateForceWithdrawData,
 } from "./reducer";
 import {
   ActiveAccountData,
@@ -181,7 +182,7 @@ export function useModalData(): {
     ),
     updateForceWithdrawData: React.useCallback(
       (forceWithdrawData: Partial<ForceWithdrawData>) => {
-        dispatch(updateNFTMintAdvanceData(forceWithdrawData));
+        dispatch(updateForceWithdrawData(forceWithdrawData));
       },
       [dispatch]
     ),

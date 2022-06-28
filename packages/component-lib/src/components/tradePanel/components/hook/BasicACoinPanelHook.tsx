@@ -51,7 +51,7 @@ export const useBasicTrade = <
           `To${to}` as any
         );
       }
-      if (typeof rest.onChangeEvent == "function") {
+      if (typeof rest?.onChangeEvent == "function") {
         setSwitchData(
           rest.onChangeEvent(_index, { to, tradeData: newTradeData })
         );

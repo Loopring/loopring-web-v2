@@ -9,11 +9,10 @@ import {
   EmptyValueTag,
   FeeInfo,
   globalSetup,
-  HelpIcon,
   IBData,
   LoadingIcon,
   AssetsRawDataItem,
-  myLog,
+  Info2Icon,
 } from "@loopring-web/common-resources";
 import {
   DropdownIconStyled,
@@ -94,7 +93,6 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
       handleFeeChange(value);
     }
   };
-  myLog("walletMap", walletMap);
   // @ts-ignore
   return (
     <Grid
@@ -126,7 +124,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           >
             {t("labelForceWithdrawTitle")}
           </Typography>
-          <HelpIcon
+          <Info2Icon
             {...bindHover(popupState)}
             fontSize={"large"}
             htmlColor={"var(--color-text-third)"}
@@ -150,11 +148,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             variant={"body2"}
             whiteSpace={"pre-line"}
           >
-            <Trans i18nKey="withdrawDescription">
-              Your withdrawal will be processed in the next batch, which usually
-              takes 30 minutes to 2 hours. (There will be a large delay if the
-              Ethereum gas price exceeds 500 GWei.）
-            </Trans>
+            <Trans i18nKey="labelForceWithdrawDes">...</Trans>
           </Typography>
         </PopoverPure>
       </Grid>
@@ -163,10 +157,10 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           <TextField
             className={"text-address"}
             value={addressDefault}
-            error={!!isNotAvaiableAddress}
+            error={realAddr !== "" && !!isNotAvaiableAddress}
             placeholder={t("labelPleaseInputAddress")}
             onChange={(event) => handleOnAddressChange(event?.target?.value)}
-            label={t("labelL2toL1Address")}
+            label={t("labelForceWithdrawAddress")}
             SelectProps={{ IconComponent: DropDownIcon }}
             fullWidth={true}
           />

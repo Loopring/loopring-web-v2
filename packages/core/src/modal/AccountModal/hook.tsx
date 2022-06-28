@@ -131,6 +131,7 @@ import {
   mintService,
   goActiveAccount,
   useCheckActiveStatus,
+  useForceWithdraw,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
@@ -192,6 +193,7 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
+  const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -312,14 +314,6 @@ export function useAccountModalForUI({
     nftMintAdvanceRetryBtn,
     setShowAccount,
   ]);
-  const backToForceWithdrawBtnInfo = React.useMemo(() => {
-    return {
-      btnTxt: "labelRetry",
-      callback: () => {
-        setShowAccount({ isShow: false });
-      },
-    };
-  }, [setShowAccount]);
 
   const backToDeployBtnInfo = React.useMemo(() => {
     return {
@@ -1175,14 +1169,19 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-        },
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
       },
       [AccountStep.ForceWithdraw_Denied]: {
         view: (
           <ForceWithdraw_Denied
-            btnInfo={backToForceWithdrawBtnInfo}
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                forceWithdrawRetry();
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1191,14 +1190,20 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-        },
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
       },
       [AccountStep.ForceWithdraw_First_Method_Denied]: {
         view: (
           <ForceWithdraw_First_Method_Denied
-            btnInfo={backToWithdrawBtnInfo}
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                // setShowAccount({ isShow: false });
+                forceWithdrawRetry(true);
+              },
+            }}
             {...{
               ...rest,
               account,
@@ -1233,9 +1238,9 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-        },
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
       },
       [AccountStep.ForceWithdraw_Submit]: {
         view: (
@@ -1249,9 +1254,9 @@ export function useAccountModalForUI({
             }}
           />
         ),
-        onBack: () => {
-          setShowAccount({ isShow: false });
-        },
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
       },
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
@@ -2046,6 +2051,7 @@ export function useAccountModalForUI({
     unlockBtn,
     t,
     onQRBack,
+    forceWithdrawRetry,
     backToDepositBtnInfo,
     closeBtnInfo,
     nftDepositValue,

@@ -204,8 +204,11 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       } = action.payload;
       state.lastStep = LAST_STEP.withdraw;
       state.forceWithdrawValue = {
-        ...state.withdrawValue,
-        balance,
+        ...state.forceWithdrawValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.forceWithdrawValue.balance,
         belong,
         tradeValue,
         // requesterAddress: requesterAddress !== "*" ? requesterAddress : undefined,
@@ -216,25 +219,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     updateTransferData(state, action: PayloadAction<Partial<TransferData>>) {
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.transfer;
-      // if (belong) {
-      //   state.transferValue.belong = belong;
-      // }
-      //
-      // if (balance === undefined || balance >= 0) {
-      //   state.transferValue.balance = balance;
-      // }
-      //
-      // if (tradeValue === undefined || tradeValue >= 0) {
-      //   state.transferValue.tradeValue = tradeValue;
-      // }
-      //
-      // if (address === undefined || address !== "*") {
-      //   state.transferValue.address = address;
-      // }
-      // state.transferValue = {
-      //   ...state.transferValue,
-      //   ...rest,
-      // };
+
       state.transferValue = {
         ...state.transferValue,
         balance:

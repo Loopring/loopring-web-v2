@@ -12,10 +12,9 @@ import {
 import {
   AccountStatus,
   CoinMap,
+  IBData,
   myLog,
-  TradeNFT,
   UIERROR_CODE,
-  AddressError,
   WalletMap,
 } from "@loopring-web/common-resources";
 
@@ -44,7 +43,7 @@ import {
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useRouteMatch } from "react-router-dom";
 
-export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
+export const useForceWithdraw = <R extends IBData<T>, T>() => {
   const { tokenMap, totalCoinMap, idIndex } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
@@ -79,7 +78,6 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
   // const [walletMap, setWalletMap] = React.useState(
   //   makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
   // );
-  const [lastRequest, setLastRequest] = React.useState<any>({});
 
   const {
     address,
@@ -99,15 +97,9 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
       tokenMap &&
       forceWithdrawValue?.fee?.belong &&
       forceWithdrawValue.fee?.feeRaw &&
-      forceWithdrawValue?.tradeValue &&
-      sdk.toBig(forceWithdrawValue.tradeValue).gt(BIGO) &&
-      sdk
-        .toBig(forceWithdrawValue.tradeValue)
-        .lte(Number(forceWithdrawValue.balance) ?? 0) &&
-      (addrStatus as AddressError) === AddressError.NoError &&
-      !isFeeNotEnough.isFeeNotEnough &&
-      !(isLoopringAddress && !isActiveAccount) &&
-      realAddr
+      forceWithdrawValue.belong &&
+      forceWithdrawValue?.withdrawAddress &&
+      !isFeeNotEnough.isFeeNotEnough
     ) {
       enableBtn();
       myLog("enableBtn");
@@ -118,13 +110,9 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
     tokenMap,
     forceWithdrawValue.fee?.belong,
     forceWithdrawValue.fee?.feeRaw,
-    forceWithdrawValue.tradeValue,
-    forceWithdrawValue.balance,
-    addrStatus,
-    isFeeNotEnough,
-    isLoopringAddress,
-    isActiveAccount,
-    realAddr,
+    forceWithdrawValue.belong,
+    forceWithdrawValue?.withdrawAddress,
+    isFeeNotEnough.isFeeNotEnough,
     disableBtn,
     enableBtn,
   ]);
@@ -135,14 +123,14 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
     address,
     addrStatus,
     isFeeNotEnough.isFeeNotEnough,
-    forceWithdrawValue.fee,
-    forceWithdrawValue.tradeValue,
+    forceWithdrawValue.fee?.belong,
+    forceWithdrawValue.fee?.feeRaw,
+    forceWithdrawValue.belong,
     isLoopringAddress,
     isActiveAccount,
   ]);
 
   const walletLayer2Callback = React.useCallback(async () => {
-    // ,,is
     if (
       LoopringAPI.userAPI &&
       realAddr &&
@@ -174,9 +162,6 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
           if (countBig.eq(BIGO)) {
             return prev;
           }
-          if (/^LP-/gi.test(item.toString())) {
-            return prev;
-          }
 
           return {
             ...prev,
@@ -188,12 +173,15 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
           };
         }, {} as WalletMapExtend<T>);
       }
-      setWalletItsMap((_state) => ({ ...walletMap }));
+      const key = Reflect.ownKeys(walletMap).length
+        ? Reflect.ownKeys(walletMap)[0]
+        : undefined;
+      const _value = key ? walletMap[key] : undefined;
       updateForceWithdrawData({
         withdrawAddress: realAddr,
-        belong: "",
-        tradeValue: undefined,
-        balance: undefined,
+        belong: _value?.belong ?? "",
+        tradeValue: _value?.count,
+        balance: _value?.count,
       });
     } else {
       setWalletItsMap({});
@@ -225,7 +213,6 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
         tradeValue: undefined,
         balance: undefined,
       });
-      updateForceWithdrawData({});
     }
   }, [isLoopringAddress, isActiveAccount, checkAddAccountId, realAddr]);
   // useWalletLayer2Socket({ walletLayer2Callback });
@@ -289,13 +276,13 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
               if (code === sdk.ConnectorError.USER_DENIED) {
                 setShowAccount({
                   isShow: true,
-                  step: AccountStep.NFTWithdraw_User_Denied,
+                  step: AccountStep.ForceWithdraw_Denied,
                 });
               } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-                setLastRequest({ request });
+                // setLastRequest({ request });
                 setShowAccount({
                   isShow: true,
-                  step: AccountStep.NFTWithdraw_First_Method_Denied,
+                  step: AccountStep.ForceWithdraw_First_Method_Denied,
                   info: {
                     symbol: forceWithdrawValue.belong,
                   },
@@ -311,7 +298,7 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
 
                 setShowAccount({
                   isShow: true,
-                  step: AccountStep.NFTWithdraw_Failed,
+                  step: AccountStep.ForceWithdraw_Failed,
                   error: response as sdk.RESULT_INFO,
                   info: {
                     symbol: forceWithdrawValue.belong,
@@ -321,7 +308,7 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
             } else if ((response as sdk.TX_HASH_API)?.hash) {
               setShowAccount({
                 isShow: true,
-                step: AccountStep.NFTWithdraw_In_Progress,
+                step: AccountStep.ForceWithdraw_In_Progress,
               });
               await sdk.sleep(TOAST_TIME);
               setShowAccount({
@@ -336,10 +323,10 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              resetForceWithdrawData();
+              resetDefault();
             }
           } else {
-            resetForceWithdrawData();
+            resetDefault();
           }
         }
       } catch (reason: any) {
@@ -357,7 +344,6 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
               },
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
-            setLastRequest({ request });
             setShowAccount({
               isShow: true,
               step: AccountStep.ForceWithdraw_First_Method_Denied,
@@ -388,30 +374,27 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
       setShowAccount,
       forceWithdrawValue,
       checkFeeIsEnough,
-
       resetForceWithdrawData,
       updateHW,
     ]
   );
 
-  const handleNFTWithdraw = React.useCallback(
-    async (_nftWithdrawToken: any, address, isFirstTime: boolean = true) => {
+  const handleForceWithdraw = React.useCallback(
+    async (_inputValue: R, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
-      const nftWithdrawToken = {
-        ...store.getState()._router_modalData.forceWithdrawValue,
-        ..._nftWithdrawToken,
-      };
+      const forceWithdrawValue =
+        store.getState()._router_modalData.forceWithdrawValue;
+
       if (
         readyState === AccountStatus.ACTIVATED &&
         tokenMap &&
-        exchangeInfo &&
-        connectProvides.usedWeb3 &&
-        address &&
         LoopringAPI.userAPI &&
-        forceWithdrawValue.belong &&
-        forceWithdrawValue.fee?.belong &&
-        forceWithdrawValue?.fee?.feeRaw &&
-        realAddr &&
+        exchangeInfo &&
+        forceWithdrawValue?.fee?.belong &&
+        forceWithdrawValue.fee?.feeRaw &&
+        forceWithdrawValue?.belong &&
+        forceWithdrawValue?.withdrawAddress &&
+        !isFeeNotEnough.isFeeNotEnough &&
         eddsaKey?.sk
       ) {
         try {
@@ -428,14 +411,16 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
           const fee = sdk.toBig(feeRaw);
           // const fee = sdk.toBig(forceWithdrawValue.fee.__raw__?.feeRaw ?? 0);
 
-          const storageId = await LoopringAPI.userAPI.getNextStorageId(
+          const storageId = await LoopringAPI.userAPI?.getNextStorageId(
             {
-              accountId: accountId,
-              sellTokenId: nftWithdrawToken.tokenId,
+              accountId,
+              sellTokenId: Number(feeToken.tokenId),
             },
             apiKey
           );
-          const { broker } = await LoopringAPI.userAPI?.getAvailableBroker();
+          const { broker } = await LoopringAPI.userAPI?.getAvailableBroker({
+            type: 1,
+          });
 
           const request: sdk.OriginForcesWithdrawalsV3 = {
             transfer: {
@@ -452,7 +437,7 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
             },
             requesterAddress: accAddress,
             tokenId: tokenMap[forceWithdrawValue.belong].tokenId,
-            withdrawAddress: realAddr,
+            withdrawAddress: forceWithdrawValue.withdrawAddress ?? realAddr,
           };
 
           myLog("ForcesWithdrawals request:", request);
@@ -479,12 +464,9 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
       account,
       tokenMap,
       exchangeInfo,
-      forceWithdrawValue.belong,
-      forceWithdrawValue?.fee?.belong,
-      forceWithdrawValue?.fee?.feeRaw,
-      forceWithdrawValue?.fee?.__raw__?.feeRaw,
-      realAddr,
+      isFeeNotEnough.isFeeNotEnough,
       setShowAccount,
+      realAddr,
       processRequest,
     ]
   );
@@ -495,14 +477,20 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
         isShow: true,
         step: AccountStep.ForceWithdraw_WaitForAuth,
       });
-      processRequest(lastRequest, !isHardwareRetry);
+      handleForceWithdraw(
+        {
+          belong: forceWithdrawValue.belong,
+          balance: forceWithdrawValue.balance,
+          tradeValue: forceWithdrawValue.tradeValue,
+        } as R,
+        !isHardwareRetry
+      );
     },
-    [lastRequest, processRequest, setShowAccount]
+    [forceWithdrawValue, handleForceWithdraw, setShowAccount]
   );
   // myLog("walletItsMap", walletItsMap);
   // @ts-ignore
   const forceWithdrawProps: ForceWithdrawProps<any, any> = React.useMemo(() => {
-    myLog("walletItsMap", walletItsMap);
     return {
       disabled: false,
       // onChangeEvent: undefined,
@@ -519,11 +507,7 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
       walletMap: walletItsMap,
       addrStatus,
       withdrawBtnStatus: btnStatus,
-      onWithdrawClick: (tradeData: R) => {
-        if (forceWithdrawValue && forceWithdrawValue.tradeValue) {
-          handleNFTWithdraw(tradeData, realAddr ? realAddr : address);
-        }
-      },
+      onWithdrawClick: handleForceWithdraw,
       handlePanelEvent: async (data: SwitchData<R>) => {
         return new Promise((res: any) => {
           if (data.to === "button") {
@@ -532,18 +516,17 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
                 belong: data.tradeData.belong,
                 tradeValue: data.tradeData.balance, //data.tradeData?.tradeValue,
                 balance: data.tradeData.balance,
-                withdrawAddress: address,
+                // withdrawAddress: realAddr,
               });
             } else {
               updateForceWithdrawData({
-                belong: undefined,
+                belong: "",
                 tradeValue: undefined,
                 balance: undefined,
-                withdrawAddress: address,
+                // withdrawAddress: realAddr,
               });
             }
           }
-
           res();
         });
       },
@@ -560,7 +543,7 @@ export const useForceWithdraw = <R extends TradeNFT<any>, T>() => {
     feeInfo,
     forceWithdrawValue,
     handleFeeChange,
-    handleNFTWithdraw,
+    handleForceWithdraw,
     isActiveAccount,
     isAddressCheckLoading,
     isFeeNotEnough,
