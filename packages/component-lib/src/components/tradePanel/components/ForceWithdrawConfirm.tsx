@@ -1,37 +1,26 @@
 import { WithTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
-import {
-  IBData,
-  NFTWholeINFO,
-  FeeInfo,
-  useAddressTypeLists,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
-import { Button, Toast } from "../../index";
-import { WithdrawViewProps } from "./Interface";
+import { IBData, FeeInfo, TOAST_TIME } from "@loopring-web/common-resources";
+import { Button, ForceWithdrawViewProps, Toast } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
 
-export const WithdrawConfirm = <
-  T extends IBData<I> & Partial<NFTWholeINFO>,
+export const ForceWithdrawConfirm = <
+  T extends IBData<I>,
   I,
   C extends FeeInfo
 >({
   t,
   handleConfirm,
   tradeData,
-  onWithdrawClick,
   realAddr,
-  type,
+  onWithdrawClick,
   feeInfo,
-  isToMyself,
-  sureIsAllowAddress,
-}: Partial<WithdrawViewProps<T, I, C>> & {
+}: Partial<ForceWithdrawViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
   const { isMobile } = useSettings();
   const [open, setOpen] = React.useState(false);
-  const { nonExchangeList, exchangeList } = useAddressTypeLists();
   return (
     <Grid
       className={"confirm"}
@@ -60,54 +49,27 @@ export const WithdrawConfirm = <
             whiteSpace={"pre"}
             marginRight={1}
           >
-            {(tradeData as NFTWholeINFO)?.isCounterFactualNFT &&
-            (tradeData as NFTWholeINFO)?.deploymentStatus === "NOT_DEPLOYED"
-              ? t("labelL2ToL1DeployTitle")
-              : isToMyself
-              ? t("labelL2ToMyL1Title")
-              : t("labelL2ToOtherL1Title")}
+            {t("labelForceWithdrawTitle")}
           </Typography>
-          {/*<Typography*/}
-          {/*  component={"h6"}*/}
-          {/*  variant={isMobile ? "h5" : "h4"}*/}
-          {/*  whiteSpace={"pre"}*/}
-          {/*  marginTop={1}*/}
-          {/*>*/}
-          {/*  {t("labelL2toL2Confirm")}*/}
-          {/*</Typography>*/}
         </Box>
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2TokenAmount")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {tradeData?.tradeValue + " "}
-          {type === "NFT" ? tradeData?.name ?? "NFT" : tradeData?.belong}
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Address")}
+          {t("labelForceWithdrawAddress")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {realAddr}
         </Typography>
       </Grid>
-      {!isToMyself && (
-        <Grid item xs={12}>
-          <Typography color={"var(--color-text-third)"} variant={"body1"}>
-            {t("labelL2toL1AddressType")}
-          </Typography>
-          <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-            {
-              [...nonExchangeList, ...exchangeList].find(
-                (item) => item.value === sureIsAllowAddress
-              )?.label
-            }
-          </Typography>
-        </Grid>
-      )}
+
+      <Grid item xs={12}>
+        <Typography color={"var(--color-text-third)"} variant={"body1"}>
+          {t("labelForceWithdrawToken")}
+        </Typography>
+        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
+          {tradeData?.balance + " " + tradeData?.belong}
+        </Typography>
+      </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
           {t("labelForceWithdrawFee")}
@@ -116,13 +78,10 @@ export const WithdrawConfirm = <
           {feeInfo?.fee + " "} {feeInfo?.belong}
         </Typography>
       </Grid>
+
       <Grid item xs={12}>
-        <Typography
-          color={"var(--color-warning)"}
-          marginTop={1}
-          variant={"body1"}
-        >
-          {t("labelForceWithdrawWaiting")}
+        <Typography color={"var(--color-warning)"} variant={"body1"}>
+          {t("labelForceWithdrawConfirm")}
         </Typography>
       </Grid>
 

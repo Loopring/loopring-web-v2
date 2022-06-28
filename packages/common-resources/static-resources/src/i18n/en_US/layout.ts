@@ -8,9 +8,9 @@ export default {
   labelZkRollupLayer2: "zkRollup Layer 2",
   labelSmartWallet: "Smart Wallet",
   loopringDomain: "Loopring L2 - APP ",
-  labelClassic: "Simple",
+  labelClassic: "Swap",
   labelClassicDescription: "Intuitive trading interface.",
-  labelAdvanced: "Professional",
+  labelAdvanced: "Order Book",
   labelAdvancedDescription: "Full access to all trading tools",
   labelDownloadApp: "Download Loopring Wallet Mobile Application",
   labelDownloadAppTitle: "Download Loopring Wallet",
@@ -89,4 +89,5 @@ export default {
   labelMyAssetsNFT: "My NFT",
   labelTransactionNFT: "Transactions",
   labelInvest: "Invest",
+  labelForceWithdraw: "Force Withdraw",
 };

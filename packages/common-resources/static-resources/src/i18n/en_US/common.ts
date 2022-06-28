@@ -74,7 +74,7 @@ export default {
   labelAssetMobileTitle: "Loopring L2 Total Assets",
   labelShowAccount: "Show or Hide Assets",
   labelLevel: "VIP Level",
-  labelOrderbook: "Orderbook",
+  labelOrderbook: "Order book",
   labelSetPublicKey: "Set EdDSA Public Key",
   labelTitleSecurity: "Security",
   labelTitleResetL2Keypair: "Reset Loopring L2 Keypair",
@@ -421,7 +421,7 @@ export default {
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
-  labelInvalidCID: "Invalid CID",
+  labelInvalidCID: "Invalid CIDv0. CIDv0 is start with `Qm`",
   labelInvalidAddress: "Invalid address, ENS",
   labelInvalidisCFAddress:
     "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
@@ -452,7 +452,7 @@ export default {
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder:
-    "eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
+    "(CIDv0) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
   depositNFTIdLabelPlaceholder: "please input NFT id...",
   nftDepositDescription:
     "Creates a smart contract on Ethereum L1, \n which requires a gas fee. NFTs minted \nhere remain on Loopring L2 until deployed.",
@@ -461,7 +461,7 @@ export default {
   labelNFTDepositInputTitle: "Amount:",
   labelNFTTId: "NFT Token ID:",
   labelNFTCid:
-    "IPFS CID :(Store Metadata Information) <1>Follow this Guide </1>",
+    "IPFS CID :(Store Metadata Information,CIDv0 start with `Qm`) <1>Follow this Guide </1>",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelDeployDenied: "Signature request was rejected",
@@ -794,4 +794,24 @@ export default {
   labelInvestBalanceTitle: "Balance",
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
+  labelNFTMintWrongCIDBtn: "Wrong MetaData format",
+  labelWithdrawBtn: "Withdraw",
+  labelForceWithdrawTitle: "Force Withdraw",
+  labelFWithdrawFee: "Fee",
+  labelFWithdrawNotEnough: "Insufficient balance",
+  labelForceWithdrawWaitForAuth: "Please confirm to force withdraw {{symbol}}",
+  labelForceWithdrawDenied: "You rejected to force withdraw {{symbol}}.",
+  labelForceWithdrawInProgress: "Processing...",
+  labelForceWithdrawFailed: "Force withdraw has failed!",
+  labelForceWithdrawSubmit: "Force withdraw has been submitted",
+  labelForceWithdrawToken: "Token Amount",
+  labelForceWithdrawFee: "Fee",
+  labelForceWithdrawEnterToken: "Select Token",
+  labelPleaseInputAddress: "Please enter the address you want to operate",
+  labelForceWithdrawAddress: "Request force withdraw address",
+  labelForceWithdrawDes:
+    "If the receipt account doesn't activate the Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. Usually only when you sent the token to the L2 account of a wrong CEX address that doesn't support Loopring L2, you will need to do this so that you will be able to claim the token back.",
+  labelForceWithdrawConfirm:
+    "Force withdraw requisition will immediately submit to Loopring service, but it should waiting 12 blocks from blockchain confirm, please do not duplicate submit ",
+  labelForceWithdrawWaiting: "",
 };

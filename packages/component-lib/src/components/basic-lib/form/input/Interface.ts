@@ -18,6 +18,7 @@ export type InputButtonProps<T, R, I> = {
   allowDecimals?: boolean;
   isAllowBalanceClick?: boolean;
   maxAllow?: boolean;
+  disableInputValue?: boolean;
   disabled?: boolean;
   logoColor?: string;
   wait?: number;

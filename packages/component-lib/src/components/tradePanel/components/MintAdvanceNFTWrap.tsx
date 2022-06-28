@@ -7,7 +7,7 @@ import {
   CloseIcon,
   EmptyValueTag,
   FeeInfo,
-  HelpIcon,
+  Info2Icon,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   LoadingIcon,
@@ -130,7 +130,7 @@ export const MintAdvanceNFTWrap = <
           <Typography component={"h4"} variant={"h3"} marginRight={1}>
             {title ? title : t("nftMintTitle")}
           </Typography>
-          <HelpIcon
+          <Info2Icon
             {...bindHover(popupState)}
             fontSize={"large"}
             htmlColor={"var(--color-text-third)"}
@@ -189,7 +189,7 @@ export const MintAdvanceNFTWrap = <
                 paddingLeft={1}
               >
                 Follow this Guide
-                <HelpIcon
+                <Info2Icon
                   style={{ cursor: "pointer", marginLeft: "4px" }}
                   fontSize={"medium"}
                   htmlColor={"var(--color-text-third)"}
@@ -201,6 +201,13 @@ export const MintAdvanceNFTWrap = <
             value={tradeData?.nftIdView}
             label={""}
             title={t("labelNFTCid")}
+            error={
+              !!(
+                tradeData.nftIdView !== "" &&
+                !isNFTCheckLoading &&
+                !isAvaiableId
+              )
+            }
             placeholder={t("mintNFTAddressLabelPlaceholder")}
             onChange={(event) =>
               _handleOnNFTDataChange({

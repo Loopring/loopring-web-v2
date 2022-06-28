@@ -10,6 +10,7 @@ import {
   resetNFTWithdrawData,
   resetTransferData,
   resetWithdrawData,
+  resetForceWithdrawData,
   updateActiveAccountData,
   updateDepositData,
   updateNFTDeployData,
@@ -20,10 +21,12 @@ import {
   updateNFTWithdrawData,
   updateTransferData,
   updateWithdrawData,
+  updateForceWithdrawData,
 } from "./reducer";
 import {
   ActiveAccountData,
   DepositData,
+  ForceWithdrawData,
   LAST_STEP,
   MintData,
   ModalDataStatus,
@@ -43,6 +46,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 export function useModalData(): {
   lastStep: LAST_STEP;
   activeAccountValue: ActiveAccountData;
+  forceWithdrawValue: ForceWithdrawData;
   updateActiveAccountData: (
     activeAccountData: RequireOne<ActiveAccountData, never>
   ) => void;
@@ -84,6 +88,10 @@ export function useModalData(): {
     nftDeployData: Partial<TradeNFT<any> & { broker: string }>
   ) => void;
   resetNFTDeployData: () => void;
+  updateForceWithdrawData: (
+    forceWithdrawData: Partial<ForceWithdrawData>
+  ) => void;
+  resetForceWithdrawData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -172,6 +180,15 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateForceWithdrawData: React.useCallback(
+      (forceWithdrawData: Partial<ForceWithdrawData>) => {
+        dispatch(updateForceWithdrawData(forceWithdrawData));
+      },
+      [dispatch]
+    ),
+    resetForceWithdrawData: React.useCallback(() => {
+      dispatch(resetForceWithdrawData(undefined));
+    }, [dispatch]),
     resetWithdrawData: React.useCallback(() => {
       dispatch(resetWithdrawData(undefined));
     }, [dispatch]),

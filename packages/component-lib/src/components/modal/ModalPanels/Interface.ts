@@ -63,6 +63,13 @@ export enum AccountStep {
   NFTDeploy_Failed,
   NFTDeploy_Submit,
 
+  ForceWithdraw_WaitForAuth,
+  ForceWithdraw_First_Method_Denied,
+  ForceWithdraw_In_Progress,
+  ForceWithdraw_Denied,
+  ForceWithdraw_Failed,
+  ForceWithdraw_Submit,
+
   Transfer_WaitForAuth,
   Transfer_First_Method_Denied,
   Transfer_User_Denied,

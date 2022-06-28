@@ -62,15 +62,6 @@ export const TransferConfirm = <
           >
             {t("labelL2toL2Title")}
           </Typography>
-
-          {/*<Typography*/}
-          {/*  component={"h6"}*/}
-          {/*  variant={isMobile ? "h5" : "h4"}*/}
-          {/*  whiteSpace={"pre"}*/}
-          {/*  marginTop={1}*/}
-          {/*>*/}
-          {/*  {t("labelL2toL2Confirm")}*/}
-          {/*</Typography>*/}
         </Box>
       </Grid>
       <Grid item xs={12}>

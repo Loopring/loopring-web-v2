@@ -8,7 +8,7 @@ import {
   copyToClipBoard,
   DropDownIcon,
   globalSetup,
-  HelpIcon,
+  Info2Icon,
   IBData,
   NFTWholeINFO,
   TOAST_TIME,
@@ -141,7 +141,7 @@ export const TransferWrap = <
           >
             {t("labelL2toL2Title")}
           </Typography>
-          <HelpIcon
+          <Info2Icon
             {...bindHover(popupState)}
             fontSize={"large"}
             htmlColor={"var(--color-text-third)"}

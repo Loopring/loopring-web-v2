@@ -191,12 +191,14 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         const formattedType = currFilterType.toUpperCase();
         const types =
           currFilterType === TransactionTradeTypes.allTypes
-            ? "deposit,transfer,offchain_withdrawal"
+            ? `${UserTxTypes.DEPOSIT},${UserTxTypes.TRANSFER},${UserTxTypes.DELEGATED_FORCE_WITHDRAW},${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`
             : formattedType === TransactionTradeTypes.deposit
-            ? "deposit"
+            ? UserTxTypes.DEPOSIT
             : formattedType === TransactionTradeTypes.transfer
-            ? "transfer"
-            : "offchain_withdrawal";
+            ? UserTxTypes.TRANSFER
+            : formattedType === TransactionTradeTypes.forceWithdraw
+            ? UserTxTypes.DELEGATED_FORCE_WITHDRAW
+            : `${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`;
         const start = Number(moment(currFilterDate[0]).format("x"));
         const end = Number(moment(currFilterDate[1]).format("x"));
         getTxnList({

@@ -13,7 +13,7 @@ import {
 import { TOAST_TIME } from "@loopring-web/core";
 import {
   getValuePrecisionThousand,
-  HelpIcon,
+  Info2Icon,
   MarketType,
 } from "@loopring-web/common-resources";
 import { usePageTradePro, useTokenMap } from "@loopring-web/core";
@@ -115,7 +115,7 @@ export const SpotView = withTranslation("common")(
             <Typography component={"span"} marginRight={1}>
               {t("labelProLimit")}
             </Typography>
-            <HelpIcon
+            <Info2Icon
               {...bindHover(popupLimitState)}
               fontSize={"medium"}
               htmlColor={"var(--color-text-third)"}
@@ -156,7 +156,7 @@ export const SpotView = withTranslation("common")(
             <Typography component={"span"} marginRight={1}>
               {t("labelProMarket")}
             </Typography>
-            <HelpIcon
+            <Info2Icon
               {...bindHover(popupMarketState)}
               fontSize={"medium"}
               htmlColor={"var(--color-text-third)"}

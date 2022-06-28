@@ -77,24 +77,15 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
             ),
             [onWithdrawClick, rest, switchData.tradeData, type]
           ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      setPanelIndex(1);
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
+          toolBarItem: (
+            <ModalBackButton
+              marginTop={0}
+              marginLeft={-2}
+              onBack={() => {
+                setPanelIndex(1);
+              }}
+              {...rest}
+            />
           ),
         },
         {
@@ -135,25 +126,7 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
               walletMap,
             ]
           ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      onBack();
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
-          ),
+          toolBarItem: undefined,
         },
       ].concat(
         type === "TOKEN"

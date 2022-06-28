@@ -78,6 +78,7 @@ export const BasicACoinTrade = <T extends Partial<IBData<I>>, I>({
     handleError: handleError as any,
     handleCountChange,
     handleOnClick,
+    label: t("labelInput"),
     ...inputButtonDefaultProps,
     ...inputButtonProps,
     ...rest,

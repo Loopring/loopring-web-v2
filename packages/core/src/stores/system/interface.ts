@@ -38,6 +38,7 @@ export type System<R = Currency> = {
     withdrawNFT?: { enable: boolean; reason?: string };
     mintNFT?: { enable: boolean; reason?: string };
     deployNFT?: { enable: boolean; reason?: string };
+    forceWithdraw?: { enable: boolean; reason?: string };
   };
 };
 
