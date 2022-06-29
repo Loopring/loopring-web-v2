@@ -584,6 +584,7 @@ export const NFTDetail = withTranslation("common")(
             style={style}
             alignItems={"center"}
             justifyContent={"center"}
+            position={"relative"}
           >
             <NFTMedia
               item={popItem}

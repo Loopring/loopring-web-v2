@@ -92,7 +92,14 @@ export type NFTMETA = {
   description: string;
   collection?: string;
   properties?: Array<MetaProperty>;
+  animationUrl?: string;
+  attributes?: AttributesProperty[];
 };
+export enum Media {
+  Audio = "Audio",
+  Image = "Image",
+  Video = "Video",
+}
 
 export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo &
@@ -102,6 +109,7 @@ export type NFTWholeINFO = NFTTokenInfo &
     fee?: FeeInfo;
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
+    __mediaType__?: Media;
   };
 
 export type MintTradeNFT<I> = {

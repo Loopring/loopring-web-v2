@@ -1,10 +1,15 @@
 import {
+  AudioIcon,
+  hexToRGB,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
+  Media,
   myLog,
   NFTWholeINFO,
+  PlayIcon,
   RefreshIcon,
   SoursURL,
+  VideoIcon,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
@@ -21,6 +26,9 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   position: relative;
   overflow: hidden;
 ` as (prosp: BoxProps & { theme: Theme }) => JSX.Element;
+const PlayIconStyle = styled(PlayIcon)`
+  color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
+`;
 export const NFTMedia = React.memo(
   ({
     item,
@@ -35,6 +43,7 @@ export const NFTMedia = React.memo(
   }) => {
     const theme = useTheme();
     const { t } = useTranslation();
+    const [play, setPlay] = React.useState(false);
     const [previewSrc, setPreviewSrc] = React.useState(
       (isOrigin
         ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
@@ -43,13 +52,96 @@ export const NFTMedia = React.memo(
     );
     const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
       useImage(previewSrc ?? "");
-    myLog(item?.metadata);
     const fullSrc =
       (isOrigin
         ? item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
         : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]) ??
       item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE);
     const { hasLoaded: fullSrcHasLoaded } = useImage(fullSrc ?? "");
+    // if()
+    myLog("item.__mediaType__", item.__mediaType__, item.animationUrl);
+    const typeSvg = React.useMemo(() => {
+      myLog("item.__mediaType__", item.__mediaType__);
+      switch (item.__mediaType__) {
+        case Media.Audio:
+          return (
+            <>
+              <Box
+                position={"absolute"}
+                left={theme.unit}
+                top={theme.unit}
+                borderRadius={"50%"}
+                sx={{ background: "var(--color-box)" }}
+                padding={3 / 2}
+                display={"inline-flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <AudioIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
+              </Box>
+              {item.animationUrl && (
+                <Box
+                  position={"absolute"}
+                  left={"50%"}
+                  bottom={theme.unit}
+                  sx={{ transform: "translateX(-50%)" }}
+                >
+                  <audio
+                    src={item.animationUrl?.replace(
+                      IPFS_META_URL,
+                      IPFS_LOOPRING_SITE
+                    )}
+                    controls
+                    loop
+                    className="w-full rounded-none h-12"
+                    controlsList="nodownload"
+                  />
+                </Box>
+              )}
+            </>
+          );
+        case Media.Video:
+          return (
+            <>
+              <Box
+                position={"absolute"}
+                left={theme.unit}
+                top={theme.unit}
+                borderRadius={"50%"}
+                sx={{ background: "var(--color-box)" }}
+                padding={3 / 2}
+                display={"inline-flex"}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <VideoIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
+              </Box>
+
+              {item.animationUrl && !play && (
+                <Box
+                  position={"absolute"}
+                  left={"50%"}
+                  top={"50%"}
+                  sx={{
+                    transform: "translate(-50% , -50%)",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setPlay(true)}
+                >
+                  <PlayIconStyle
+                    sx={{ minHeight: 72, minWidth: 72 }}
+                    // width={60}
+                    // height={60}
+                    // htmlColor={"var(--color-text-disable)"}
+                  />
+                </Box>
+              )}
+            </>
+          );
+        default:
+          return <></>;
+      }
+    }, [item.__mediaType__, item.animationUrl, play, theme.unit]);
 
     return (
       <BoxStyle
@@ -93,48 +185,66 @@ export const NFTMedia = React.memo(
                 <RefreshIcon style={{ height: 36, width: 36 }} />
               </Box>
             ) : (
-              <Box
-                alignSelf={"stretch"}
-                flex={1}
-                display={"flex"}
-                style={{
-                  background:
-                    (!!fullSrc && fullSrcHasLoaded) || !!previewSrc
-                      ? "var(--field-opacity)"
-                      : "",
-                }}
-              >
-                {!!fullSrc && fullSrcHasLoaded ? (
-                  <NftImage
-                    alt={item?.image}
-                    {...item}
-                    onError={() => undefined}
-                    src={fullSrc}
-                  />
-                ) : !!previewSrc ? (
-                  <NftImage
-                    alt={item?.image}
-                    {...item}
-                    onError={() => onNFTError(item, index)}
-                    src={previewSrc}
-                  />
-                ) : (
-                  <EmptyDefault
-                    style={{ flex: 1 }}
-                    height={"100%"}
-                    message={() => (
-                      <Box
-                        flex={1}
-                        display={"flex"}
-                        alignItems={"center"}
-                        justifyContent={"center"}
-                      >
-                        {t("labelNoContent")}
-                      </Box>
-                    )}
-                  />
-                )}
-              </Box>
+              <>
+                {typeSvg}
+                <Box
+                  alignSelf={"stretch"}
+                  flex={1}
+                  display={"flex"}
+                  style={{
+                    background:
+                      (!!fullSrc && fullSrcHasLoaded) || !!previewSrc
+                        ? "var(--field-opacity)"
+                        : "",
+                  }}
+                >
+                  {play ? (
+                    <Box position={"absolute"}>
+                      <video
+                        src={item.animationUrl?.replace(
+                          IPFS_META_URL,
+                          IPFS_LOOPRING_SITE
+                        )}
+                        autoPlay
+                        muted
+                        controls
+                        loop
+                        className="z-10 h-full"
+                        controlsList="nodownload"
+                      />
+                    </Box>
+                  ) : !!fullSrc && fullSrcHasLoaded ? (
+                    <NftImage
+                      alt={item?.image}
+                      {...item}
+                      onError={() => undefined}
+                      src={fullSrc}
+                    />
+                  ) : !!previewSrc ? (
+                    <NftImage
+                      alt={item?.image}
+                      {...item}
+                      onError={() => onNFTError(item, index)}
+                      src={previewSrc}
+                    />
+                  ) : (
+                    <EmptyDefault
+                      style={{ flex: 1 }}
+                      height={"100%"}
+                      message={() => (
+                        <Box
+                          flex={1}
+                          display={"flex"}
+                          alignItems={"center"}
+                          justifyContent={"center"}
+                        >
+                          {t("labelNoContent")}
+                        </Box>
+                      )}
+                    />
+                  )}
+                </Box>
+              </>
             )}
           </>
         )}

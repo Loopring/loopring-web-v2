@@ -1447,14 +1447,15 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@coinbase/wallet-sdk@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.2.0.tgz#cceda6c2ed213b663c5cbb35fcf65a57c24323f0"
-  integrity sha512-uw9rdsfzXsdmC9FblMt2UH4094vLl9h3i1za5A2MaC8Ak1X/E1QbGr1oi64QAx9HD+M75zmy506F+zT0/s5dpQ==
+"@coinbase/wallet-sdk@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-3.3.0.tgz#e77383bce1388e5367dc35f8309702e73be47503"
+  integrity sha512-Prmxs5eYRxe5i+kDSsny97oPG4Pa5PhLmNDx8f7UQrvlPowGy5Tg0gHOqCie6ck2shVMdW8sKJ+RCLIRZ9kIjA==
   dependencies:
     "@metamask/safe-event-emitter" "2.0.0"
     bind-decorator "^1.0.11"
     bn.js "^5.1.1"
+    buffer "^6.0.3"
     clsx "^1.1.0"
     eth-block-tracker "4.4.3"
     eth-json-rpc-filters "4.2.2"
@@ -1466,6 +1467,7 @@
     qs "^6.10.3"
     rxjs "^6.6.3"
     stream-browserify "^3.0.0"
+    util "^0.12.4"
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -3834,12 +3836,12 @@
     recharts-scale "^0.4.4"
     reduce-css-calc "^2.1.8"
 
-"@loopring-web/web3-provider@^1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.0.19.tgz#79cd62a33e3c9652c679bd585652a2d75fcc7c43"
-  integrity sha512-B6A2uU9NkPMADuKxecsYKTrlpCRvIA0fERYfDzJTbLbdhQaxwAU5WrmcxGYJpylochFP37JEPgkNsza0wdjGYA==
+"@loopring-web/web3-provider@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@loopring-web/web3-provider/-/web3-provider-1.1.0.tgz#2dfb4418fcd5e30f9075505a963d375af0c603ce"
+  integrity sha512-l0v6JNLM4YCefguSc41ZEgYVYqcM+5N88P11ls4YrYwAxSjnBkFHqOakXu7cDqNWDz3X0FyR4nwYdwMeANFDTQ==
   dependencies:
-    "@coinbase/wallet-sdk" "^3.2.0"
+    "@coinbase/wallet-sdk" "^3.3.0"
     "@ethersproject/providers" "^5.6.1"
     "@metamask/detect-provider" "^1.2.0"
     "@reduxjs/toolkit" "^1.6.1"
@@ -27002,7 +27004,7 @@ util@^0.11.0:
   dependencies:
     inherits "2.0.3"
 
-util@^0.12.0, util@^0.12.3:
+util@^0.12.0, util@^0.12.3, util@^0.12.4:
   version "0.12.4"
   resolved "https://registry.yarnpkg.com/util/-/util-0.12.4.tgz#66121a31420df8f01ca0c464be15dfa1d1850253"
   integrity sha512-bxZ9qtSlGUWSOy9Qa9Xgk11kSslpuZwaxCg4sNIDj6FLucDab2JxnHwyNTCpHMtK1MjoQiWQ6DiUMZYbSrO+Sw==

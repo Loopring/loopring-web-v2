@@ -379,11 +379,16 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         data.nftIdView &&
         LoopringAPI.nftAPI &&
         nftMintAdvanceValue.nftIdView !== data.nftIdView &&
-        /^Qm[a-zA-Z0-9]{44}$/.test(data.nftIdView)
       ) {
         setIsNFTCheckLoading(true);
         let nftId: string = "";
         try {
+          let cid;
+          if(/^Qm[a-zA-Z0-9]{44}$/.test(data.nftIdView)){
+            cid = data.nftIdView;
+          }else{
+            const CID = require('cids');
+          }
           nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.nftIdView);
           shouldUpdate = {
             nftId,
