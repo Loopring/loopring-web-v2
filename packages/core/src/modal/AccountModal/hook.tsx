@@ -608,7 +608,6 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
           setShowNFTTransfer({
             isShow: true,
-            info: { ...isShowAccount?.info },
           });
         },
       },
@@ -618,17 +617,18 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
           setShowNFTWithdraw({
             isShow: true,
-            info: { ...isShowAccount?.info },
           });
         },
       },
       {
         ...SendNFTAssetList.SendAssetToOtherL1,
         handleSelect: () => {
-          setShowAccount({ isShow: false });
+          setShowAccount({
+            isShow: false,
+          });
           setShowNFTWithdraw({
             isShow: true,
-            info: { isToMyself: false, ...isShowAccount?.info },
+            info: { isToMyself: false },
           });
         },
       },

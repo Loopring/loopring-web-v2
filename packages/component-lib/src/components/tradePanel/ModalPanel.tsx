@@ -249,15 +249,6 @@ export const ModalPanel = <
               _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
               _height: isMobile ? "auto" : 540,
               isThumb: false,
-              ...{
-                ...nftTransferProps,
-                tradeData: {
-                  ...isShowNFTTransfer.info,
-                  tradeValue: nftTransferProps.tradeData.tradeValue,
-                  belong: nftTransferProps.tradeData.nftData,
-                  balance: nftTransferProps.tradeData.balance,
-                },
-              },
               type: "NFT",
               assetsData,
             }}
@@ -284,15 +275,7 @@ export const ModalPanel = <
               //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
               _height: "auto",
               isThumb: false,
-              ...{
-                ...nftWithdrawProps,
-                tradeData: {
-                  ...isShowNFTWithdraw.info,
-                  tradeValue: nftTransferProps.tradeData.tradeValue,
-                  belong: nftWithdrawProps.tradeData.nftData,
-                  balance: nftWithdrawProps.tradeData.balance,
-                },
-              },
+              ...nftWithdrawProps,
               type: "NFT",
               assetsData,
             }}
@@ -314,14 +297,6 @@ export const ModalPanel = <
           <DeployNFTWrap<any, any, any>
             {...{
               ...nftDeployProps,
-              tradeData: {
-                ...nftDeployProps.tradeData,
-                tradeData: {
-                  ...isShowNFTDeploy.info,
-                  belong: nftDeployProps.tradeData.nftData,
-                  balance: nftDeployProps.tradeData.balance,
-                },
-              },
               assetsData,
             }}
             onBack={() => {

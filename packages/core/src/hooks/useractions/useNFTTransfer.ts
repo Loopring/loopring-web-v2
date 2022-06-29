@@ -53,7 +53,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     setShowAccount,
     setShowNFTDetail,
     modals: {
-      isShowNFTTransfer: { isShow, nftData, nftBalance, info, ...nftRest },
+      isShowNFTTransfer: { isShow, info },
     },
   } = useOpenModals();
 
@@ -161,11 +161,13 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     if (info?.isRetry) {
       return;
     }
-    if (nftData) {
+    if (nftTransferValue.nftData) {
       updateNFTTransferData({
-        balance: nftBalance,
-        ...nftRest,
-        belong: nftData as any,
+        balance: sdk
+          .toBig(nftTransferValue.total ?? 0)
+          .minus(nftTransferValue.locked ?? 0)
+          .toNumber(),
+        belong: nftTransferValue.name as any,
         tradeValue: undefined,
         fee: feeInfo,
         address: address ? address : "*",
@@ -181,12 +183,10 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
     }
   }, [
     checkFeeIsEnough,
-    nftData,
+    nftTransferValue,
     info?.isRetry,
     updateNFTTransferData,
-    nftBalance,
     feeInfo,
-    nftRest,
     address,
   ]);
 
@@ -468,6 +468,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
         if (data.to === "button") {
           if (data.tradeData.belong) {
             updateNFTTransferData({
+              belong: data.tradeData.belong,
               tradeValue: data.tradeData?.tradeValue,
               balance: data.tradeData.balance,
               address: "*",
