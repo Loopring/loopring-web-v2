@@ -148,9 +148,31 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             variant={"body2"}
             whiteSpace={"pre-line"}
           >
-            <Trans i18nKey="labelForceWithdrawDes">...</Trans>
+            <Trans i18nKey="labelForceWithdrawDes">
+              If the receipt account doesn't activate the Loopring L2 account,
+              you will be able to withdraw the token from L2 to Ethereum L1.
+              Usually only when you sent the token to the L2 account of a wrong
+              CEX address that doesn't support Loopring L2, you will need to do
+              this so that you will be able to claim the token back.
+            </Trans>
           </Typography>
         </PopoverPure>
+      </Grid>
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        <Typography display={"inline-flex"}>
+          <Typography component={"span"} lineHeight={2}>
+            <Info2Icon color={"warning"} fontSize={"medium"} />
+          </Typography>
+          <Typography
+            color={"var(--color-warning)"}
+            variant={"body1"}
+            alignItems={"center"}
+            component={"span"}
+            marginLeft={1}
+          >
+            {t("labelForceWithdrawConfirm")}
+          </Typography>
+        </Typography>
       </Grid>
       <Grid item alignSelf={"stretch"} position={"relative"}>
         <>

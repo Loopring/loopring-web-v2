@@ -126,7 +126,25 @@ export const WithdrawPanel = withTranslation(["common", "error"], {
               walletMap,
             ]
           ),
-          toolBarItem: undefined,
+          toolBarItem: React.useMemo(
+            () => (
+              <>
+                {onBack ? (
+                  <ModalBackButton
+                    marginTop={0}
+                    marginLeft={-2}
+                    onBack={() => {
+                      onBack();
+                    }}
+                    {...rest}
+                  />
+                ) : (
+                  <></>
+                )}
+              </>
+            ),
+            [onBack]
+          ),
         },
       ].concat(
         type === "TOKEN"

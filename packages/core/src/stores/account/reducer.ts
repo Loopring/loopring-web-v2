@@ -68,6 +68,9 @@ const accountSlice: Slice<AccountState> = createSlice<
           _accountIdNotActive,
           connectName,
           isInCounterFactualStatus,
+          isContract1XAddress,
+          isContractAddress,
+          isCFAddress,
           isContract,
           __timer__,
         } = action.payload;
@@ -116,6 +119,9 @@ const accountSlice: Slice<AccountState> = createSlice<
           state.__timer__ = __timer__;
         }
         state.isInCounterFactualStatus = isInCounterFactualStatus;
+        state.isContract1XAddress = isContract1XAddress;
+        state.isContractAddress = isContractAddress;
+        state.isCFAddress = isCFAddress;
         state.isContract = isContract;
         state.frozen = frozen;
         state.status = SagaStatus.DONE;

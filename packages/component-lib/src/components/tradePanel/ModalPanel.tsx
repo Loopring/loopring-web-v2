@@ -24,8 +24,17 @@ import {
   NFTMintAdvanceProps,
   MintAdvanceNFTWrap,
   LayerswapNotice,
+  DeployNFTWrap,
+  NFTDeployProps,
+  setShowAccount,
+  AccountStep,
 } from "../..";
-import { Account, FeeInfo, IBData } from "@loopring-web/common-resources";
+import {
+  Account,
+  FeeInfo,
+  IBData,
+  TradeNFT,
+} from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
@@ -109,12 +118,18 @@ const Modal = withTranslation("common")(
   }
 );
 
-export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
+export const ModalPanel = <
+  T extends IBData<I>,
+  N extends IBData<I> & TradeNFT<I>,
+  I,
+  F = FeeInfo
+>({
   transferProps,
   withdrawProps,
   depositProps,
   nftTransferProps,
   nftWithdrawProps,
+  nftDeployProps,
   resetProps,
   nftMintAdvanceProps,
   activeAccountProps,
@@ -127,8 +142,9 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   transferProps: TransferProps<T, I>;
   withdrawProps: WithdrawProps<T, I>;
 
-  nftTransferProps: TransferProps<T, I>;
-  nftWithdrawProps: WithdrawProps<T, I>;
+  nftTransferProps: TransferProps<N, I>;
+  nftWithdrawProps: WithdrawProps<N, I>;
+  nftDeployProps: NFTDeployProps<N & { broker: string }, I, F>;
   depositProps: DepositProps<T, I>;
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
@@ -140,6 +156,7 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
   account: Account;
   setExportAccountToastOpen: any;
 }) => {
+  const { isMobile } = useSettings();
   // const { t } = useTranslation();
   const {
     modals,
@@ -153,11 +170,18 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
     setShowActiveAccount,
     setShowExportAccount,
     setShowNFTMintAdvance,
+    setShowNFTTransfer,
+    setShowNFTWithdraw,
+    setShowNFTDeploy,
+    setShowAccount,
   } = useOpenModals();
   const {
     isShowTransfer,
     isShowWithdraw,
     isShowDeposit,
+    isShowNFTTransfer,
+    isShowNFTWithdraw,
+    isShowNFTDeploy,
     // isShowNFTDeposit,
     isShowResetAccount,
     isShowExportAccount,
@@ -215,6 +239,101 @@ export const ModalPanel = <T extends IBData<I>, I, F = FeeInfo>({
       {/*    />*/}
       {/*  }*/}
       {/*/>*/}
+      <Modal
+        open={isShowNFTTransfer.isShow}
+        contentClassName={"trade-wrap"}
+        onClose={() => setShowNFTTransfer({ isShow: false })}
+        content={
+          <TransferPanel<any, any>
+            {...{
+              ...nftTransferProps,
+              _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
+              _height: isMobile ? "auto" : 540,
+              isThumb: false,
+              ...{
+                ...nftTransferProps,
+                tradeData: {
+                  ...isShowNFTTransfer.info,
+                  tradeValue: nftTransferProps.tradeData.tradeValue,
+                  belong: nftTransferProps.tradeData.nftData,
+                  balance: nftTransferProps.tradeData.balance,
+                },
+              },
+              type: "NFT",
+              assetsData,
+            }}
+            onBack={() => {
+              setShowNFTTransfer({ isShow: false });
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.SendNFTGateway,
+              });
+            }}
+          />
+        }
+      />
+      <Modal
+        open={isShowNFTWithdraw.isShow}
+        contentClassName={"trade-wrap"}
+        onClose={() => setShowNFTWithdraw({ isShow: false })}
+        content={
+          <WithdrawPanel<any, any>
+            {...{
+              // _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
+              // _height: isMobile ? "auto" : 540,
+              _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              //    _height: DEFAULT_TRANSFER_HEIGHT + 100, ...transferProps, assetsData,
+              _height: "auto",
+              isThumb: false,
+              ...{
+                ...nftWithdrawProps,
+                tradeData: {
+                  ...isShowNFTWithdraw.info,
+                  tradeValue: nftTransferProps.tradeData.tradeValue,
+                  belong: nftWithdrawProps.tradeData.nftData,
+                  balance: nftWithdrawProps.tradeData.balance,
+                },
+              },
+              type: "NFT",
+              assetsData,
+            }}
+            onBack={() => {
+              setShowNFTWithdraw({ isShow: false });
+              setShowAccount({
+                isShow: true,
+                step: AccountStep.SendNFTGateway,
+              });
+            }}
+          />
+        }
+      />
+      <Modal
+        open={isShowNFTDeploy.isShow}
+        contentClassName={"trade-wrap"}
+        onClose={() => setShowNFTDeploy({ isShow: false })}
+        content={
+          <DeployNFTWrap<any, any, any>
+            {...{
+              ...nftDeployProps,
+              tradeData: {
+                ...nftDeployProps.tradeData,
+                tradeData: {
+                  ...isShowNFTDeploy.info,
+                  belong: nftDeployProps.tradeData.nftData,
+                  balance: nftDeployProps.tradeData.balance,
+                },
+              },
+              assetsData,
+            }}
+            onBack={() => {
+              setShowNFTDeploy({ isShow: false });
+              // setShowNFTWithdraw({isShow:false});
+              // setShowAccount({isShow:false,step:AccountStep.SendNFTGateway})
+            }}
+          />
+        }
+      />
+
       <Modal
         open={isShowDeposit.isShow}
         contentClassName={"trade-wrap"}

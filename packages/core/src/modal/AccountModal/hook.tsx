@@ -91,6 +91,7 @@ import {
   AddAssetItem,
   SendAssetItem,
   DepositProps,
+  SendNFTAsset,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -106,7 +107,9 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  NFTWholeINFO,
   SendAssetList,
+  SendNFTAssetList,
 } from "@loopring-web/common-resources";
 import {
   useAccount,
@@ -155,7 +158,13 @@ export function useAccountModalForUI({
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
   const {
-    modals: { isShowAccount, isShowWithdraw, isShowTransfer },
+    modals: {
+      isShowAccount,
+      isShowWithdraw,
+      isShowTransfer,
+      // isShowNFTTransfer,
+      // isShowNFTWithdraw,
+    },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -163,6 +172,8 @@ export function useAccountModalForUI({
     setShowWithdraw,
     setShowResetAccount,
     setShowActiveAccount,
+    setShowNFTTransfer,
+    setShowNFTWithdraw,
   } = useOpenModals();
   rest = { ...rest, ...isShowAccount.info };
   const {
@@ -339,6 +350,21 @@ export function useAccountModalForUI({
       },
     };
   }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
+  // const backToNFTTransferBtnInfo = React.useMemo(() => {
+  //   return {
+  //     btnTxt: "labelRetry",
+  //     callback: () => {
+  //       setShowAccount({ isShow: false });
+  //       setShowNFTTransfer({
+  //         isShow: true,
+  //         info: {
+  //           ...isShowNFTTransfer.info,
+  //           isRetry: true,
+  //         },
+  //       });
+  //     },
+  //   };
+  // }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
 
   const backToWithdrawBtnInfo = React.useMemo(() => {
     return {
@@ -574,6 +600,46 @@ export function useAccountModalForUI({
       setShowWithdraw,
     ]
   );
+  const sendNFTAssetList: SendAssetItem[] = React.useMemo(
+    () => [
+      {
+        ...SendNFTAssetList.SendAssetToL2,
+        handleSelect: (_e) => {
+          setShowAccount({ isShow: false });
+          setShowNFTTransfer({
+            isShow: true,
+            info: { ...isShowAccount?.info },
+          });
+        },
+      },
+      {
+        ...SendNFTAssetList.SendAssetToMyL1,
+        handleSelect: () => {
+          setShowAccount({ isShow: false });
+          setShowNFTWithdraw({
+            isShow: true,
+            info: { ...isShowAccount?.info },
+          });
+        },
+      },
+      {
+        ...SendNFTAssetList.SendAssetToOtherL1,
+        handleSelect: () => {
+          setShowAccount({ isShow: false });
+          setShowNFTWithdraw({
+            isShow: true,
+            info: { isToMyself: false, ...isShowAccount?.info },
+          });
+        },
+      },
+    ],
+    [
+      isShowAccount?.info?.symbol,
+      setShowAccount,
+      setShowTransfer,
+      setShowWithdraw,
+    ]
+  );
   const onBackReceive = React.useCallback(() => {
     setShowAccount({
       isShow: true,
@@ -619,6 +685,16 @@ export function useAccountModalForUI({
             symbol={isShowAccount?.info?.symbol}
             sendAssetList={sendAssetList}
             allowTrade={allowTrade}
+          />
+        ),
+      },
+      [AccountStep.SendNFTGateway]: {
+        view: (
+          <SendNFTAsset
+            nftData={{ ...isShowAccount?.info } as Partial<NFTWholeINFO>}
+            sendAssetList={sendNFTAssetList}
+            allowTrade={allowTrade}
+            isNotAllowToL1={account.isContract1XAddress}
           />
         ),
       },

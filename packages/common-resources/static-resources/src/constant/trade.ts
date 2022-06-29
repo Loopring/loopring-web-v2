@@ -205,6 +205,24 @@ export const SendAssetList = {
   },
 };
 
+export const SendNFTAssetList = {
+  SendAssetToMyL1: {
+    key: "SendToMyL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "withdrawNFT",
+  },
+  SendAssetToL2: {
+    key: "SendTOL2",
+    svgIcon: "L2l2Icon",
+    enableKey: "transferNFT",
+  },
+  SendAssetToOtherL1: {
+    key: "SendToOtherL1",
+    svgIcon: "L1l2Icon",
+    enableKey: "withdrawNFT",
+  },
+};
+
 export enum AddressError {
   NoError = "NoError",
   EmptyAddr = "EmptyAddr",

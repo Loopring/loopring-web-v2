@@ -59,7 +59,7 @@ export const NFTMedia = React.memo(
       item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE);
     const { hasLoaded: fullSrcHasLoaded } = useImage(fullSrc ?? "");
     // if()
-    myLog("item.__mediaType__", item.__mediaType__, item.animationUrl);
+    // myLog("item.__mediaType__", item.__mediaType__, item.animationUrl);
     const typeSvg = React.useMemo(() => {
       myLog("item.__mediaType__", item.__mediaType__);
       switch (item.__mediaType__) {
@@ -76,6 +76,7 @@ export const NFTMedia = React.memo(
                 display={"inline-flex"}
                 alignItems={"center"}
                 justifyContent={"center"}
+                zIndex={100}
               >
                 <AudioIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
               </Box>
@@ -85,6 +86,7 @@ export const NFTMedia = React.memo(
                   left={"50%"}
                   bottom={theme.unit}
                   sx={{ transform: "translateX(-50%)" }}
+                  zIndex={100}
                 >
                   <audio
                     src={item.animationUrl?.replace(
@@ -113,6 +115,7 @@ export const NFTMedia = React.memo(
                 display={"inline-flex"}
                 alignItems={"center"}
                 justifyContent={"center"}
+                zIndex={100}
               >
                 <VideoIcon fontSize={"large"} htmlColor={"var(--text-third)"} />
               </Box>
@@ -122,11 +125,15 @@ export const NFTMedia = React.memo(
                   position={"absolute"}
                   left={"50%"}
                   top={"50%"}
+                  zIndex={100}
                   sx={{
                     transform: "translate(-50% , -50%)",
                     cursor: "pointer",
                   }}
-                  onClick={() => setPlay(true)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPlay(true);
+                  }}
                 >
                   <PlayIconStyle
                     sx={{ minHeight: 72, minWidth: 72 }}
@@ -189,6 +196,7 @@ export const NFTMedia = React.memo(
                 {typeSvg}
                 <Box
                   alignSelf={"stretch"}
+                  position={"relative"}
                   flex={1}
                   display={"flex"}
                   style={{
@@ -199,7 +207,12 @@ export const NFTMedia = React.memo(
                   }}
                 >
                   {play ? (
-                    <Box position={"absolute"}>
+                    <Box
+                      display={"flex"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      flex={1}
+                    >
                       <video
                         src={item.animationUrl?.replace(
                           IPFS_META_URL,
@@ -209,8 +222,8 @@ export const NFTMedia = React.memo(
                         muted
                         controls
                         loop
-                        className="z-10 h-full"
                         controlsList="nodownload"
+                        style={{ width: "100%" }}
                       />
                     </Box>
                   ) : !!fullSrc && fullSrcHasLoaded ? (

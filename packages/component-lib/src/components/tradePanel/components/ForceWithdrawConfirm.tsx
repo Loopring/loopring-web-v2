@@ -1,6 +1,11 @@
 import { WithTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
-import { IBData, FeeInfo, TOAST_TIME } from "@loopring-web/common-resources";
+import {
+  IBData,
+  FeeInfo,
+  TOAST_TIME,
+  Info2Icon,
+} from "@loopring-web/common-resources";
 import { Button, ForceWithdrawViewProps, Toast } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -34,6 +39,7 @@ export const ForceWithdrawConfirm = <
       minWidth={240}
       flexWrap={"nowrap"}
       spacing={2}
+      width={"100%"}
     >
       <Grid item xs={12}>
         <Box
@@ -79,9 +85,20 @@ export const ForceWithdrawConfirm = <
         </Typography>
       </Grid>
 
-      <Grid item xs={12}>
-        <Typography color={"var(--color-warning)"} variant={"body1"}>
-          {t("labelForceWithdrawConfirm")}
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        <Typography display={"inline-flex"}>
+          <Typography component={"span"} lineHeight={2}>
+            <Info2Icon color={"warning"} fontSize={"medium"} />
+          </Typography>
+          <Typography
+            color={"var(--color-warning)"}
+            variant={"body1"}
+            alignItems={"center"}
+            component={"span"}
+            marginLeft={1}
+          >
+            {t("labelForceWithdrawConfirm")}
+          </Typography>
         </Typography>
       </Grid>
 

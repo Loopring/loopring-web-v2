@@ -23,7 +23,7 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
         marginBottom={2}
       >
         <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
-          <ForceWithdrawPanel {...forceWithdrawProps} />
+          <ForceWithdrawPanel {...forceWithdrawProps} _width={420} />
         </Box>
       </StylePaper>
     );

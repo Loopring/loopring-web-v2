@@ -17,6 +17,7 @@ import {
   Explorer,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
+
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
   ConnectProvidersSignMap,
@@ -43,6 +44,8 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useTranslation } from "react-i18next";
 import { getTimestampDaysLater } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
+const CID = require("cids");
+
 export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
@@ -378,18 +381,18 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       if (
         data.nftIdView &&
         LoopringAPI.nftAPI &&
-        nftMintAdvanceValue.nftIdView !== data.nftIdView &&
+        nftMintAdvanceValue.nftIdView !== data.nftIdView
       ) {
         setIsNFTCheckLoading(true);
         let nftId: string = "";
         try {
-          let cid;
-          if(/^Qm[a-zA-Z0-9]{44}$/.test(data.nftIdView)){
+          let cid: string;
+          if (/^Qm[a-zA-Z0-9]{44}$/.test(data.nftIdView)) {
             cid = data.nftIdView;
-          }else{
-            const CID = require('cids');
+          } else {
+            cid = new CID(data.nftIdView).toV0();
           }
-          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(data.nftIdView);
+          nftId = LoopringAPI.nftAPI.ipfsCid0ToNftID(cid);
           shouldUpdate = {
             nftId,
             // nftIdView: data.nftIdView,

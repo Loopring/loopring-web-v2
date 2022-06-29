@@ -8,24 +8,18 @@ import {
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
   LinkIcon,
-  LoadingIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   Button,
-  DeployNFTWrap,
   InformationForNoMetaNFT,
-  NFTDeployProps,
   TextareaAutosizeStyled,
-  TransferPanel,
-  TransferProps,
   useOpenModals,
   useSettings,
   useToggle,
-  WithdrawPanel,
-  WithdrawProps,
   NFTMedia,
+  AccountStep,
 } from "@loopring-web/component-lib";
 import { useAccount } from "../../../stores";
 import React from "react";
@@ -122,32 +116,32 @@ const BoxStyle = styled(Box)<
   props: { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
 ) => JSX.Element;
 
-const BoxBtnStyle = styled(Box)<{ isMobile?: boolean } & BoxProps>`
-  display: flex;
-  flex-direction: row;
-  align-self: flex-end;
-  width: 100%;
-  .btn {
-    width: 100%;
-    padding: ${({ theme }) => `${theme.unit}px ${0 * theme.unit}px`};
-  }
-  &.isMobile {
-    flex-direction: column;
-  }
-` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
+// const BoxBtnStyle = styled(Box)<{ isMobile?: boolean } & BoxProps>`
+//   display: flex;
+//   flex-direction: row;
+//   align-self: flex-end;
+//   width: 100%;
+//   .btn {
+//     width: 100%;
+//     padding: ${({ theme }) => `${theme.unit}px ${0 * theme.unit}px`};
+//   }
+//   &.isMobile {
+//     flex-direction: column;
+//   }
+// ` as (props: { isMobile?: boolean } & BoxProps) => JSX.Element;
 export const NFTDetail = withTranslation("common")(
   ({
     popItem,
     etherscanBaseUrl,
-    nftTransferProps,
-    nftWithdrawProps,
-    nftDeployProps,
-    assetsRawData,
+    // nftTransferProps,
+    // nftWithdrawProps,
+    // nftDeployProps,
+    // assetsRawData,
     t,
   }: {
-    nftTransferProps: TransferProps<any, any>;
-    nftWithdrawProps: WithdrawProps<any, any>;
-    nftDeployProps: NFTDeployProps<any, any>;
+    // nftTransferProps: TransferProps<any, any>;
+    // nftWithdrawProps: WithdrawProps<any, any>;
+    // nftDeployProps: NFTDeployProps<any, any>;
     onDetailClose: () => void;
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
@@ -156,71 +150,75 @@ export const NFTDetail = withTranslation("common")(
     const { isMobile } = useSettings();
     const { account } = useAccount();
     const {
-      toggle: { deployNFT, withdrawNFT, transferNFT },
+      toggle: { deployNFT },
     } = useToggle();
     const {
-      setShowNFTWithdraw,
-      setShowNFTTransfer,
+      // setShowNFTWithdraw,
+      // setShowNFTTransfer,
+      setShowAccount,
+      setShowNFTDeploy,
       setShowTradeIsFrozen,
-      modals: {
-        isShowNFTWithdraw,
-        isShowNFTDetail: { isShow },
-      },
     } = useOpenModals();
 
     const [showDialog, setShowDialog] =
       React.useState<string | undefined>(undefined);
-    const [viewPage, setViewPage] = React.useState<number>(0);
+    // const [viewPage, setViewPage] = React.useState<number>(0);
     const [isKnowNFTNoMeta, setIsKnowNFTNoMeta] = React.useState<boolean>(
       !!(popItem?.name !== "" && popItem.image && popItem.image !== "")
     );
+
+    const properties = popItem.properties
+      ? typeof popItem.properties === "string"
+        ? JSON.parse(popItem.properties)
+        : popItem.properties
+      : undefined;
     React.useEffect(() => {
       setIsKnowNFTNoMeta((_state) => {
         return !!(popItem.name !== "" && popItem.image && popItem.image !== "");
       });
     }, [popItem.name, popItem.image]);
 
-    const handleChangeIndex = (index: number) => {
-      setViewPage(index);
-    };
+    // const handleChangeIndex = (index: number) => {
+    //   setView(index);
+    // };
 
-    React.useEffect(() => {
-      if (isShow) {
-        toDetail();
-      }
-    }, [isShow]);
-    const toDetail = React.useCallback(() => {
-      handleChangeIndex(0);
-      setShowNFTWithdraw({
-        isShow: false,
-        info: { isShowLocal: false },
-      });
-      setShowNFTTransfer({
-        isShow: false,
-        info: { isShowLocal: false },
-      });
-    }, [popItem, setShowNFTWithdraw]);
+    // React.useEffect(() => {
+    //   if (isShow) {
+    //     toDetail();
+    //   }
+    // }, [isShow]);
+    // const toDetail = React.useCallback(() => {
+    //   // handleChangeIndex(0);
+    //   setShowNFTWithdraw({
+    //     isShow: false,
+    //     info: { isShowLocal: false },
+    //   });
+    //   setShowNFTTransfer({
+    //     isShow: false,
+    //     info: { isShowLocal: false },
+    //   });
+    // }, [popItem, setShowNFTWithdraw]);
 
-    const toWithdraw = React.useCallback(
-      (isToMySelf?: boolean) => {
-        setShowNFTWithdraw({
-          ...popItem,
-          isShow: false,
-          info: { isToMyself: isToMySelf, isShowLocal: true },
-        });
-        handleChangeIndex(2);
-      },
-      [popItem, setShowNFTWithdraw]
-    );
+    // const toWithdraw = React.useCallback(
+    //   (isToMySelf?: boolean) => {
+    //     setShowNFTWithdraw({
+    //       ...popItem,
+    //       isShow: false,
+    //       info: { isToMyself: isToMySelf, isShowLocal: true },
+    //     });
+    //     handleChangeIndex(2);
+    //   },
+    //   [popItem, setShowNFTWithdraw]
+    // );
 
-    const toTransfer = React.useCallback(() => {
-      setShowNFTTransfer({
-        ...popItem,
-        isShow: false,
-        info: { isShowLocal: true },
-      });
-      handleChangeIndex(1);
-    }, [popItem, setShowNFTTransfer]);
+    // const toTransfer = React.useCallback(() => {
+    //   setShowNFTTransfer({
+    //     ...popItem,
+    //     isShow: false,
+    //     info: { isShowLocal: true },
+    //   });
+    //   handleChangeIndex(1);
+    // }, [popItem, setShowNFTTransfer]);
 
     const detailView = React.useMemo(() => {
       return (
@@ -236,60 +234,119 @@ export const NFTDetail = withTranslation("common")(
             handleClose={(_e, isAgress) => {
               setShowDialog(undefined);
               if (isAgress && showDialog) {
-                switch (showDialog?.toLowerCase()) {
-                  case "withdraw":
-                    toWithdraw(isShowNFTWithdraw.info?.isToMyself);
-                    break;
-                  case "transfer":
-                    toTransfer();
-                    break;
-                }
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.SendNFTGateway,
+                });
+                //
+                // switch (showDialog?.toLowerCase()) {
+                //   case "withdraw":
+                //     toWithdraw(isShowNFTWithdraw.info?.isToMyself);
+                //     break;
+                //   case "transfer":
+                //     toTransfer();
+                //     break;
+                // }
               }
             }}
           />
-
           <Box marginBottom={3} display={"flex"} alignItems={"center"}>
-            <Typography color={"text.primary"} variant={"h2"} marginTop={2}>
-              # {" " + getShortAddr(popItem?.nftId ?? "")}
+            <Typography color={"text.primary"} variant={"h2"} marginBottom={1}>
+              {popItem?.name ?? EmptyValueTag}
             </Typography>
           </Box>
+
+          <Box
+            display={"flex"}
+            flexDirection={isMobile ? "column" : "row"}
+            justifyContent={"flex-end"}
+            marginBottom={2}
+            paddingRight={3}
+          >
+            {!!(
+              popItem.isCounterFactualNFT &&
+              popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+              popItem.minter?.toLowerCase() === account.accAddress.toLowerCase()
+            ) && (
+              <Box>
+                <Button
+                  variant={"outlined"}
+                  size={"medium"}
+                  fullWidth
+                  onClick={() =>
+                    deployNFT.enable
+                      ? setShowNFTDeploy({
+                          isShow: true,
+                          info: { ...popItem },
+                        })
+                      : setShowTradeIsFrozen({ isShow: true })
+                  }
+                >
+                  {t("labelNFTDeployContract")}
+                </Button>
+              </Box>
+            )}
+            <Box className={isMobile ? "isMobile" : ""} width={"40%"}>
+              <Button
+                variant={"contained"}
+                size={"small"}
+                fullWidth
+                onClick={() =>
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.SendNFTGateway,
+                    info: { ...popItem },
+                  })
+                }
+                // deployNFT.enable
+                //   ? setShowNFTDeploy({
+                //     isShow: true,
+                //     info: { ...popItem },
+                //   })
+                //   : setShowTradeIsFrozen({ isShow: true })
+              >
+                {t("labelNFTSendBtn")}
+              </Button>
+            </Box>
+          </Box>
+
           <Box
             display={"flex"}
             flexDirection={"column"}
-            marginBottom={4}
+            marginBottom={2}
             paddingRight={3}
           >
             <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
               {t("labelNFTDetail")}
             </Typography>
+            {/*<Typography*/}
+            {/*  display={"inline-flex"}*/}
+            {/*  flexDirection={isMobile ? "column" : "row"}*/}
+            {/*  variant={"body1"}*/}
+            {/*  marginBottom={1}*/}
+            {/*>*/}
+            {/*  <Typography*/}
+            {/*    color={"var(--color-text-third)"}*/}
+            {/*    width={150}*/}
+            {/*    textOverflow={"ellipsis"}*/}
+            {/*  >*/}
+            {/*    {t("labelNFTName")}*/}
+            {/*  </Typography>*/}
+            {/*  <Typography*/}
+            {/*    color={"var(--color-text-secondary)"}*/}
+            {/*    title={popItem?.name}*/}
+            {/*    whiteSpace={"pre"}*/}
+            {/*    overflow={"hidden"}*/}
+            {/*    textOverflow={"ellipsis"}*/}
+            {/*  >*/}
+            {/*    {popItem?.name ?? EmptyValueTag}*/}
+            {/*  </Typography>*/}
+            {/*</Typography>*/}
             <Typography
               display={"inline-flex"}
               flexDirection={isMobile ? "column" : "row"}
               variant={"body1"}
-              marginTop={2}
-            >
-              <Typography
-                color={"var(--color-text-third)"}
-                width={150}
-                textOverflow={"ellipsis"}
-              >
-                {t("labelNFTName")}
-              </Typography>
-              <Typography
-                color={"var(--color-text-secondary)"}
-                title={popItem?.name}
-                whiteSpace={"pre"}
-                overflow={"hidden"}
-                textOverflow={"ellipsis"}
-              >
-                {popItem?.name ?? EmptyValueTag}
-              </Typography>
-            </Typography>
-            <Typography
-              display={"inline-flex"}
-              flexDirection={isMobile ? "column" : "row"}
-              variant={"body1"}
-              marginTop={2}
+              marginBottom={1}
             >
               <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTTOTAL")}
@@ -305,7 +362,7 @@ export const NFTDetail = withTranslation("common")(
               display={"inline-flex"}
               flexDirection={isMobile ? "column" : "row"}
               variant={"body1"}
-              marginTop={2}
+              marginTop={1}
             >
               <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTID")}
@@ -341,23 +398,7 @@ export const NFTDetail = withTranslation("common")(
               display={"inline-flex"}
               flexDirection={isMobile ? "column" : "row"}
               variant={"body1"}
-              marginTop={2}
-            >
-              <Typography color={"var(--color-text-third)"} width={150}>
-                {t("labelNFTTYPE")}
-              </Typography>
-              <Typography
-                color={"var(--color-text-secondary)"}
-                title={popItem?.nftType}
-              >
-                {popItem?.nftType}
-              </Typography>
-            </Typography>
-            <Typography
-              display={"inline-flex"}
-              flexDirection={isMobile ? "column" : "row"}
-              variant={"body1"}
-              marginTop={2}
+              marginTop={1}
             >
               <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTContractAddress")}
@@ -377,7 +418,24 @@ export const NFTDetail = withTranslation("common")(
               display={"inline-flex"}
               flexDirection={isMobile ? "column" : "row"}
               variant={"body1"}
-              marginTop={2}
+              marginTop={1}
+            >
+              <Typography color={"var(--color-text-third)"} width={150}>
+                {t("labelNFTTYPE")}
+              </Typography>
+              <Typography
+                color={"var(--color-text-secondary)"}
+                title={popItem?.nftType}
+              >
+                {popItem?.nftType}
+              </Typography>
+            </Typography>
+
+            <Typography
+              display={"inline-flex"}
+              flexDirection={isMobile ? "column" : "row"}
+              variant={"body1"}
+              marginTop={1}
             >
               <Typography color={"var(--color-text-third)"} width={150}>
                 {t("labelNFTMinter")}
@@ -399,164 +457,189 @@ export const NFTDetail = withTranslation("common")(
               </Link>
             </Typography>
 
-            <Typography
-              display={"inline-flex"}
-              flexDirection={isMobile ? "column" : "row"}
-              variant={"body1"}
-              marginTop={2}
-              flex={1}
-            >
-              <Typography color={"var(--color-text-third)"} width={150}>
-                {t("labelNFTDescription")}
-              </Typography>
-              <Box flex={1}>
-                <TextareaAutosizeStyled
-                  aria-label="NFT Description"
-                  minRows={2}
-                  maxRows={5}
-                  disabled={true}
-                  value={`${popItem.description}` ?? EmptyValueTag}
-                />
-              </Box>
-            </Typography>
-            {!!(
-              popItem.isCounterFactualNFT &&
-              popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-              popItem.minter?.toLowerCase() === account.accAddress.toLowerCase()
-            ) && (
-              <BoxBtnStyle className={isMobile ? "isMobile" : ""}>
-                <Typography color={"var(--color-text-third)"} width={150}>
-                  {t("labelNFTDeploy")}
-                </Typography>
-                <Box flex={1} display={"flex"} flexDirection={"column"}>
-                  <Typography className={"btn"} minWidth={100} marginRight={2}>
-                    <Button
-                      variant={"outlined"}
-                      size={"medium"}
-                      fullWidth
-                      onClick={() =>
-                        deployNFT.enable
-                          ? handleChangeIndex(3)
-                          : setShowTradeIsFrozen({ isShow: true })
-                      }
-                    >
-                      {t("labelNFTDeployContract")}
-                    </Button>
-                  </Typography>
-                </Box>
-              </BoxBtnStyle>
-            )}
+            {/*<BoxBtnStyle className={isMobile ? "isMobile" : ""}>*/}
+            {/*  <Typography color={"var(--color-text-third)"} width={150}>*/}
+            {/*    {t("labelNFTSend")}*/}
+            {/*  </Typography>*/}
+            {/*  <Box flex={1} display={"flex"} flexDirection={"column"}>*/}
+            {/*    <Typography className={"btn"} minWidth={100} marginRight={2}>*/}
+            {/*      <Button*/}
+            {/*        variant={"contained"}*/}
+            {/*        size={"small"}*/}
+            {/*        color={"primary"}*/}
+            {/*        fullWidth*/}
+            {/*        disabled={*/}
+            {/*          popItem.isCounterFactualNFT &&*/}
+            {/*          popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING*/}
+            {/*        }*/}
+            {/*        onClick={() => {*/}
+            {/*          isKnowNFTNoMeta*/}
+            {/*            ? withdrawNFT.enable*/}
+            {/*              ? toWithdraw(true)*/}
+            {/*              : setShowTradeIsFrozen({ isShow: true })*/}
+            {/*            : setShowDialog("Withdraw");*/}
+            {/*        }}*/}
+            {/*      >*/}
+            {/*        {popItem.isCounterFactualNFT &&*/}
+            {/*        popItem.deploymentStatus ===*/}
+            {/*          DEPLOYMENT_STATUS.NOT_DEPLOYED ? (*/}
+            {/*          t("labelNFTDeploySendMyL1")*/}
+            {/*        ) : popItem.isCounterFactualNFT &&*/}
+            {/*          popItem.deploymentStatus ===*/}
+            {/*            DEPLOYMENT_STATUS.DEPLOYING ? (*/}
+            {/*          <>*/}
+            {/*            <LoadingIcon*/}
+            {/*              color={"primary"}*/}
+            {/*              style={{*/}
+            {/*                width: 18,*/}
+            {/*                height: 18,*/}
+            {/*                marginRight: "8px",*/}
+            {/*              }}*/}
+            {/*            />*/}
+            {/*            {t("labelNFTDeploying")}*/}
+            {/*          </>*/}
+            {/*        ) : (*/}
+            {/*          t("labelNFTSendMyL1Btn")*/}
+            {/*        )}*/}
+            {/*      </Button>*/}
+            {/*    </Typography>*/}
 
-            <BoxBtnStyle className={isMobile ? "isMobile" : ""}>
-              <Typography color={"var(--color-text-third)"} width={150}>
-                {t("labelNFTSend")}
-              </Typography>
-              <Box flex={1} display={"flex"} flexDirection={"column"}>
-                <Typography className={"btn"} minWidth={100} marginRight={2}>
-                  <Button
-                    variant={"contained"}
-                    size={"small"}
-                    color={"primary"}
-                    fullWidth
-                    disabled={
-                      popItem.isCounterFactualNFT &&
-                      popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
-                    }
-                    onClick={() => {
-                      isKnowNFTNoMeta
-                        ? withdrawNFT.enable
-                          ? toWithdraw(true)
-                          : setShowTradeIsFrozen({ isShow: true })
-                        : setShowDialog("Withdraw");
-                    }}
-                  >
-                    {popItem.isCounterFactualNFT &&
-                    popItem.deploymentStatus ===
-                      DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                      t("labelNFTDeploySendMyL1")
-                    ) : popItem.isCounterFactualNFT &&
-                      popItem.deploymentStatus ===
-                        DEPLOYMENT_STATUS.DEPLOYING ? (
-                      <>
-                        <LoadingIcon
-                          color={"primary"}
-                          style={{
-                            width: 18,
-                            height: 18,
-                            marginRight: "8px",
-                          }}
-                        />
-                        {t("labelNFTDeploying")}
-                      </>
-                    ) : (
-                      t("labelNFTSendMyL1Btn")
-                    )}
-                  </Button>
-                </Typography>
+            {/*    /!*<Typography className={"btn"} minWidth={100} marginRight={2}>*!/*/}
+            {/*    /!*  <Button*!/*/}
+            {/*    /!*    variant={"contained"}*!/*/}
+            {/*    /!*    size={"small"}*!/*/}
+            {/*    /!*    color={"primary"}*!/*/}
+            {/*    /!*    fullWidth*!/*/}
+            {/*    /!*    disabled={*!/*/}
+            {/*    /!*      popItem.isCounterFactualNFT &&*!/*/}
+            {/*    /!*      popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING*!/*/}
+            {/*    /!*    }*!/*/}
+            {/*    /!*    onClick={() => {*!/*/}
+            {/*    /!*      isKnowNFTNoMeta*!/*/}
+            {/*    /!*        ? withdrawNFT.enable*!/*/}
+            {/*    /!*          ? toWithdraw(false)*!/*/}
+            {/*    /!*          : setShowTradeIsFrozen({ isShow: true })*!/*/}
+            {/*    /!*        : setShowDialog("Withdraw");*!/*/}
+            {/*    /!*    }}*!/*/}
+            {/*    /!*  >*!/*/}
+            {/*    /!*    {popItem.isCounterFactualNFT &&*!/*/}
+            {/*    /!*    popItem.deploymentStatus ===*!/*/}
+            {/*    /!*      DEPLOYMENT_STATUS.NOT_DEPLOYED ? (*!/*/}
+            {/*    /!*      t("labelNFTDeploySendAnotherL1")*!/*/}
+            {/*    /!*    ) : popItem.isCounterFactualNFT &&*!/*/}
+            {/*    /!*      popItem.deploymentStatus ===*!/*/}
+            {/*    /!*        DEPLOYMENT_STATUS.DEPLOYING ? (*!/*/}
+            {/*    /!*      <>*!/*/}
+            {/*    /!*        <LoadingIcon*!/*/}
+            {/*    /!*          color={"primary"}*!/*/}
+            {/*    /!*          style={{*!/*/}
+            {/*    /!*            width: 18,*!/*/}
+            {/*    /!*            height: 18,*!/*/}
+            {/*    /!*            marginRight: "8px",*!/*/}
+            {/*    /!*          }}*!/*/}
+            {/*    /!*        />*!/*/}
+            {/*    /!*        {t("labelNFTDeploying")}*!/*/}
+            {/*    /!*      </>*!/*/}
+            {/*    /!*    ) : (*!/*/}
+            {/*    /!*      t("labelNFTSendOtherL1Btn")*!/*/}
+            {/*    /!*    )}*!/*/}
+            {/*    /!*  </Button>*!/*/}
+            {/*    /!*</Typography>*!/*/}
 
-                <Typography className={"btn"} minWidth={100} marginRight={2}>
-                  <Button
-                    variant={"contained"}
-                    size={"small"}
-                    color={"primary"}
-                    fullWidth
-                    disabled={
-                      popItem.isCounterFactualNFT &&
-                      popItem.deploymentStatus === DEPLOYMENT_STATUS.DEPLOYING
-                    }
-                    onClick={() => {
-                      isKnowNFTNoMeta
-                        ? withdrawNFT.enable
-                          ? toWithdraw(false)
-                          : setShowTradeIsFrozen({ isShow: true })
-                        : setShowDialog("Withdraw");
-                    }}
-                  >
-                    {popItem.isCounterFactualNFT &&
-                    popItem.deploymentStatus ===
-                      DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                      t("labelNFTDeploySendAnotherL1")
-                    ) : popItem.isCounterFactualNFT &&
-                      popItem.deploymentStatus ===
-                        DEPLOYMENT_STATUS.DEPLOYING ? (
-                      <>
-                        <LoadingIcon
-                          color={"primary"}
-                          style={{
-                            width: 18,
-                            height: 18,
-                            marginRight: "8px",
-                          }}
-                        />
-                        {t("labelNFTDeploying")}
-                      </>
-                    ) : (
-                      t("labelNFTSendOtherL1Btn")
-                    )}
-                  </Button>
-                </Typography>
-
-                <Typography className={"btn"} minWidth={100} marginRight={2}>
-                  <Button
-                    variant={"contained"}
-                    size={"small"}
-                    color={"primary"}
-                    fullWidth
-                    // disabled={isKnowNFTNoMeta ? true : false}
-                    onClick={() =>
-                      isKnowNFTNoMeta
-                        ? transferNFT.enable
-                          ? toTransfer()
-                          : setShowTradeIsFrozen({ isShow: true })
-                        : setShowDialog("Transfer")
-                    }
-                  >
-                    {t("labelNFTSendL2Btn")}
-                  </Button>
-                </Typography>
-              </Box>
-            </BoxBtnStyle>
+            {/*    /!*<Typography className={"btn"} minWidth={100} marginRight={2}>*!/*/}
+            {/*    /!*  <Button*!/*/}
+            {/*    /!*    variant={"contained"}*!/*/}
+            {/*    /!*    size={"small"}*!/*/}
+            {/*    /!*    color={"primary"}*!/*/}
+            {/*    /!*    fullWidth*!/*/}
+            {/*    /!*    // disabled={isKnowNFTNoMeta ? true : false}*!/*/}
+            {/*    /!*    onClick={() =>*!/*/}
+            {/*    /!*      isKnowNFTNoMeta*!/*/}
+            {/*    /!*        ? transferNFT.enable*!/*/}
+            {/*    /!*          ? setShowNFTTransfer()*!/*/}
+            {/*    /!*          : setShowTradeIsFrozen({ isShow: true })*!/*/}
+            {/*    /!*        : setShowDialog("Transfer")*!/*/}
+            {/*    /!*    }*!/*/}
+            {/*    /!*  >*!/*/}
+            {/*    /!*    {t("labelNFTSendL2Btn")}*!/*/}
+            {/*    /!*  </Button>*!/*/}
+            {/*    /!*</Typography>*!/*/}
+            {/*  </Box>*/}
+            {/*</BoxBtnStyle>*/}
           </Box>
+
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            marginBottom={2}
+            paddingRight={3}
+          >
+            <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
+              {t("labelNFTProperties")}
+            </Typography>
+            <Box
+              flex={1}
+              marginBottom={1}
+              display={"flex"}
+              flexDirection={"column"}
+            >
+              {!!properties
+                ? Object.keys(properties).map((key, index) => {
+                    // @ts-ignore
+                    return (
+                      <Typography
+                        key={key.toString() + index}
+                        display={"inline-flex"}
+                        flexDirection={isMobile ? "column" : "row"}
+                        variant={"body1"}
+                        marginTop={1}
+                      >
+                        <Typography
+                          color={"var(--color-text-third)"}
+                          width={150}
+                        >
+                          {key.toString()}
+                        </Typography>
+                        <Typography
+                          color={"var(--color-text-secondary)"}
+                          title={key.toString()}
+                        >
+                          {
+                            // @ts-ignore
+                            properties[key.toString()] ?? EmptyValueTag
+                          }
+                        </Typography>
+                      </Typography>
+                    );
+                  })
+                : EmptyValueTag}
+            </Box>
+          </Box>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            marginBottom={2}
+            paddingRight={3}
+          >
+            <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
+              {t("labelNFTDescription")}
+            </Typography>
+            <Box flex={1}>
+              <TextareaAutosizeStyled
+                aria-label="NFT Description"
+                minRows={2}
+                maxRows={5}
+                disabled={true}
+                value={`${popItem.description}` ?? EmptyValueTag}
+              />
+            </Box>
+          </Box>
+
+          {/*<Box marginBottom={3} display={"flex"} alignItems={"center"}>*/}
+          {/*  <Typography color={"text.primary"} variant={"h2"} marginBottom={1}>*/}
+          {/*    # {" " + getShortAddr(popItem?.nftId ?? "")}*/}
+          {/*  </Typography>*/}
+          {/*</Box>*/}
         </Box>
       );
     }, [showDialog, popItem, t, isKnowNFTNoMeta, etherscanBaseUrl]);
@@ -605,86 +688,8 @@ export const NFTDetail = withTranslation("common")(
           whiteSpace={"break-spaces"}
           style={{ wordBreak: "break-all" }}
         >
-          {viewPage === 0 && detailView}
-          {viewPage === 1 && (
-            <Box
-              flex={1}
-              width={440}
-              className={"nft-trade"}
-              paddingBottom={isMobile ? 3 : 0}
-            >
-              <TransferPanel<any, any>
-                {...{
-                  ...nftTransferProps,
-                  _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
-                  _height: isMobile ? "auto" : 540,
-                  isThumb: false,
-                  ...{
-                    ...nftTransferProps,
-                    tradeData: {
-                      ...popItem,
-                      tradeValue: nftTransferProps.tradeData.tradeValue,
-                      belong: nftTransferProps.tradeData.nftData,
-                      balance: nftTransferProps.tradeData.balance,
-                    },
-                  },
-                  type: "NFT",
-                  assetsData: assetsRawData,
-                }}
-                onBack={toDetail}
-              />
-            </Box>
-          )}
-
-          {viewPage === 2 && (
-            <Box
-              flex={1}
-              width={440}
-              className={"nft-trade"}
-              paddingBottom={isMobile ? 2 : 0}
-            >
-              <WithdrawPanel<any, any>
-                {...{
-                  _width: isMobile ? "var(--mobile-full-panel-width)" : 440,
-                  _height: isMobile ? "auto" : 540,
-                  isThumb: false,
-                  ...{
-                    ...nftWithdrawProps,
-                    tradeData: {
-                      ...popItem,
-                      tradeValue: nftTransferProps.tradeData.tradeValue,
-                      belong: nftWithdrawProps.tradeData.nftData,
-                      balance: nftWithdrawProps.tradeData.balance,
-                    },
-                  },
-                  type: "NFT",
-                  assetsData: assetsRawData,
-                }}
-                onBack={toDetail}
-              />
-            </Box>
-          )}
-          {viewPage === 3 && (
-            <Box height={540} width={"100%"} paddingX={3} flex={1}>
-              <DeployNFTWrap
-                {...{
-                  ...nftDeployProps,
-                  tradeData: {
-                    ...nftDeployProps.tradeData,
-                    tradeData: {
-                      ...popItem,
-                      belong: nftDeployProps.tradeData.nftData,
-                      balance: nftDeployProps.tradeData.balance,
-                    },
-                  },
-                  assetsData: assetsRawData,
-                }}
-                onBack={() => {
-                  handleChangeIndex(0);
-                }}
-              />
-            </Box>
-          )}
+          {/*{viewPage === 0 && detailView}*/}
+          {detailView}
         </BoxStyle>
       </>
     );
