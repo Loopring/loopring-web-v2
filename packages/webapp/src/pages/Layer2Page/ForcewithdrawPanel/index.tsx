@@ -15,6 +15,7 @@ const StylePaper = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
   &.isMobile {
     .content {
+      flex: 1;
       width: var(--swap-box-width);
     }
   }
@@ -53,7 +54,6 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          flex={1}
           className={"content"}
         >
           <ForceWithdrawPanel {...{ ...forceWithdrawProps, ...extendsProps }} />
