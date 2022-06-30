@@ -13,6 +13,9 @@ import { useTheme } from "@emotion/react";
 const StylePaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
+  .content {
+    width: 420px;
+  }
   &.isMobile {
     .content {
       flex: 1;
