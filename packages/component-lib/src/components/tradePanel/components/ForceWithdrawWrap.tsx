@@ -180,7 +180,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             className={"text-address"}
             value={addressDefault}
             error={realAddr !== "" && !!isNotAvaiableAddress}
-            placeholder={t("labelPleaseInputAddress")}
+            placeholder={t("labelPleaseForceWithdrawAddress")}
             onChange={(event) => handleOnAddressChange(event?.target?.value)}
             label={t("labelForceWithdrawAddress")}
             SelectProps={{ IconComponent: DropDownIcon }}
