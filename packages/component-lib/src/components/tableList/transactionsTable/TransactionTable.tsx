@@ -178,8 +178,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       memo: "",
     });
 
-    const pageSize = pagination ? pagination.pageSize : 10;
-
     const updateData = _.debounce(
       ({
         TableType,
@@ -187,6 +185,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         currFilterDate = filterDate,
         currFilterToken = filterToken,
         currPage = page,
+        pageSize = pagination?.pageSize ?? 10,
       }) => {
         if (TableType === "filter") {
           currPage = 1;
@@ -637,7 +636,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       return () => {
         updateData.cancel();
       };
-    }, []);
+    }, [pagination?.pageSize]);
 
     return (
       <TableStyled isMobile={isMobile}>
@@ -703,7 +702,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         {pagination && (
           <TablePagination
             page={page}
-            pageSize={pageSize}
+            pageSize={pagination.pageSize}
             total={pagination.total}
             onPageChange={handlePageChange}
           />
