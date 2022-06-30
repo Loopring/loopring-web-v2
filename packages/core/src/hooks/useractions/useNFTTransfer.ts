@@ -51,6 +51,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   const [memo, setMemo] = React.useState("");
   const {
     setShowAccount,
+    setShowNFTTransfer,
     setShowNFTDetail,
     modals: {
       isShowNFTTransfer: { isShow, info },
@@ -387,6 +388,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
         eddsaKey?.sk
       ) {
         try {
+          setShowNFTTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTTransfer_WaitForAuth,
