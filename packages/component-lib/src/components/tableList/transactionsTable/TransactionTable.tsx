@@ -287,14 +287,16 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
             const hasSymbol =
-              row.row === TransactionTradeTypes.transfer
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? EmptyValueTag
+                : row.side === TransactionTradeTypes.transfer
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
-                : row.row === TransactionTradeTypes.deposit
+                : row.side === TransactionTradeTypes.deposit
                 ? "+"
-                : row.row === TransactionTradeTypes.withdraw
+                : row.side === TransactionTradeTypes.withdraw
                 ? "-"
                 : "";
 
@@ -311,7 +313,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             return (
               <Box className="rdg-cell-value textAlignRight">
                 {hasSymbol}
-                {renderValue} {unit || ""}
+                {row.side !== TransactionTradeTypes.forceWithdraw &&
+                  `${renderValue} ${unit}`}
               </Box>
             );
           },
@@ -345,7 +348,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const receiverAddress =
-              row.row === TransactionTradeTypes.withdraw
+              row.side === TransactionTradeTypes.withdraw
                 ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
                 : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
@@ -450,7 +453,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
             const side =
-              row.side === TransactionTradeTypes.deposit
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? EmptyValueTag
+                : row.side === TransactionTradeTypes.deposit
                 ? t("labelReceive")
                 : row.side === TransactionTradeTypes.transfer
                 ? t("labelSendL2")
@@ -526,7 +531,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     alignItems={"center"}
                   >
                     {hasSymbol}
-                    {renderValue} {unit || ""}
+                    {row.side !== TransactionTradeTypes.forceWithdraw &&
+                      `${renderValue} ${unit}`}
                   </Typography>
                   <Typography color={"textSecondary"} variant={"body2"}>
                     {renderFee}
@@ -543,7 +549,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const receiverAddress =
-              row.row === TransactionTradeTypes.withdraw
+              row.side === TransactionTradeTypes.withdraw
                 ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
                 : getShortAddr(row.receiverAddress, isMobile);
 
@@ -556,9 +562,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row.row === TransactionTradeTypes.deposit
+                : row.side === TransactionTradeTypes.deposit
                 ? ["L1", "L2"]
-                : row.row === TransactionTradeTypes.withdraw
+                : row.side === TransactionTradeTypes.withdraw
                 ? ["L2", receiverAddress]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
