@@ -5,27 +5,34 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   ForceWithdrawPanel,
   TransactionTradeTypes,
+  useSettings,
 } from "@loopring-web/component-lib";
 import { useForceWithdraw } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
-import { UserTxTypes } from "@loopring-web/loopring-sdk";
 
 const StylePaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
+  &.isMobile {
+    .content {
+      width: var(--swap-box-width);
+    }
+  }
 `;
 
 export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
   ({ t }: WithTranslation) => {
+    const { isMobile } = useSettings();
     const { forceWithdrawProps } = useForceWithdraw();
     const theme = useTheme();
+    const extendsProps = isMobile ? { _width: 420 } : { _width: "auto" };
     return (
       <StylePaper
         flex={1}
         display={"flex"}
         alignItems={"center"}
         justifyContent={"center"}
-        className={"MuiPaper-elevation2"}
+        className={isMobile ? "isMobile" : "MuiPaper-elevation2"}
         marginBottom={2}
         position={"relative"}
       >
@@ -42,8 +49,14 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
         >
           {t("labelTransactionsLink")}
         </Link>
-        <Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
-          <ForceWithdrawPanel {...forceWithdrawProps} _width={420} />
+        <Box
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          flex={1}
+          className={"content"}
+        >
+          <ForceWithdrawPanel {...{ ...forceWithdrawProps, ...extendsProps }} />
         </Box>
       </StylePaper>
     );

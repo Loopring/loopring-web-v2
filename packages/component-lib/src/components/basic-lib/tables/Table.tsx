@@ -376,6 +376,4 @@ export const Table = <R, SR>(
       )}
     </TableWrapperStyled>
   );
-  //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{
-  //  return <>Go to <Link to={'./path'}> link or event</Link> at here</>} } />   }
 };

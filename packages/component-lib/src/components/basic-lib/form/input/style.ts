@@ -209,8 +209,8 @@ export const IInput = styled(CurrencyInput)`
   :disabled{
     color: var(--color-text-disable);
   }
-  width: 100%; //calc(100% - 2rem);
-  height: 100%; //var(--btn-Input-height);
+  width: 100%; 
+  height: 100%;
   border: 0;
   margin: 0;
 

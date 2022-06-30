@@ -50,14 +50,9 @@ const InputStyled = styled(CurrencyInput)`
   ::placeholder {
     color: var(--color-text-secondary);
   }
-
-  //width: 100%;
   height: 2.4rem;
-  width: 92px; //calc(100% - 2rem);
-  // height: 100%; //var(--btn-Input-height);
-  // min-height:24px;
+  width: 92px; 
   padding: .3rem .3rem .3rem .8rem;
-  //fontSize: 1.4rem;
   background: var(--color-box);
   ${({ theme }) =>
     theme.border.defaultFrame({ d_R: 1 / 2, c_key: "var(--color-border)" })};
