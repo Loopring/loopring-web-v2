@@ -12,6 +12,7 @@ import {
   Explorer,
   getShortAddr,
   getValuePrecisionThousand,
+  globalSetup,
   TableType,
   TransferIcon,
   WaitingIcon,
@@ -30,6 +31,8 @@ import { DateRange } from "@mui/lab";
 import { UserTxTypes } from "@loopring-web/loopring-sdk";
 import React from "react";
 import { useSettings } from "../../../stores";
+import { useLocation } from "react-router-dom";
+import _ from "lodash";
 
 export type TxsFilterProps = {
   tokenSymbol?: string;
@@ -152,8 +155,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       t,
     } = props;
     const { isMobile } = useSettings();
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     const [page, setPage] = React.useState(1);
-    const [filterType, setFilterType] = React.useState(
+    const [filterType, setFilterType] = React.useState<TransactionTradeTypes>(
       TransactionTradeTypes.allTypes
     );
     const [filterDate, setFilterDate] = React.useState<
@@ -175,7 +180,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    const updateData = React.useCallback(
+    const updateData = _.debounce(
       ({
         TableType,
         currFilterType = filterType,
@@ -210,7 +215,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           end: Number.isNaN(end) ? -1 : end,
         });
       },
-      [filterDate, filterType, filterToken, getTxnList, page, pageSize]
+      globalSetup.wait
     );
 
     const handleFilterChange = React.useCallback(
@@ -612,6 +617,17 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
+    React.useEffect(() => {
+      let filters: any = {};
+      updateData.cancel();
+      if (searchParams.get("types")) {
+        filters.type = searchParams.get("types");
+      }
+      handleFilterChange(filters);
+      return () => {
+        updateData.cancel();
+      };
+    }, []);
 
     return (
       <TableStyled isMobile={isMobile}>

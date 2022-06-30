@@ -34,10 +34,11 @@ import { useTheme } from "@emotion/react";
  */
 export function useInit() {
   const [, search] = window.location?.hash.split("?") ?? [];
-  const query = new URLSearchParams(search);
+  const searchParams = new URLSearchParams(search);
   const [, pathname1] = window.location.hash.match(/#\/([\w\d\-]+)\??/) ?? [];
   const isNoServer: boolean =
-    query.has("noheader") && ["notification", "document"].includes(pathname1);
+    searchParams.has("noheader") &&
+    ["notification", "document"].includes(pathname1);
   const [state, setState] = React.useState<keyof typeof SagaStatus>(() => {
     if (isNoServer) {
       return SagaStatus.DONE;
@@ -154,7 +155,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:
-        if (!query.has("noheader") && state !== SagaStatus.PENDING) {
+        if (!searchParams.has("noheader") && state !== SagaStatus.PENDING) {
           setState(SagaStatus.PENDING);
         }
         break;
