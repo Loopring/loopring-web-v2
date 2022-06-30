@@ -1,7 +1,9 @@
 import {
   IPFS_LOOPRING_SITE,
+  IPFS_META_URL,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
+  Media,
   myLog,
   NFTWholeINFO,
   SagaStatus,
@@ -37,8 +39,7 @@ export const useMyNFT = () => {
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
-  const { setShowNFTTransfer, setShowNFTWithdraw, setShowNFTDetail } =
-    useOpenModals();
+  const { setShowNFTDetail } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
   const [page, setPage] = useState(1);
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
@@ -120,6 +121,8 @@ export const useMyNFT = () => {
       nftMap && nftMap[nftData as NftData] ? nftMap[nftData as NftData] : {};
     let tokenInfo: NFTWholeINFO = {
       ...item,
+      ...item.metadata?.base,
+      ...item.metadata?.extra,
       ...nftToken,
     } as NFTWholeINFO;
     tokenInfo = {
@@ -160,6 +163,30 @@ export const useMyNFT = () => {
         isFailedLoadMeta: false,
       };
     }
+    if (
+      tokenInfo.hasOwnProperty("animationUrl") &&
+      tokenInfo.animationUrl &&
+      tokenInfo?.animationUrl !== ""
+    ) {
+      const req = await fetch(
+        tokenInfo.animationUrl.replace(IPFS_META_URL, IPFS_LOOPRING_SITE),
+        {
+          method: "HEAD",
+        }
+      );
+      // myLog("animationUrl", "content-type", req.headers.get("content-type"));
+
+      if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
+        tokenInfo.__mediaType__ = Media.Audio;
+      }
+      if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
+        tokenInfo.__mediaType__ = Media.Video;
+      }
+      if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
+        tokenInfo.__mediaType__ = Media.Image;
+      }
+    }
+
     return tokenInfo;
   }, []);
 
@@ -177,16 +204,14 @@ export const useMyNFT = () => {
         updateNFTDeployData(item);
       }
       updateNFTWithdrawData(item);
-      setPopItem(item);
       updateNFTTransferData(item);
-      setShowNFTTransfer({ isShow: false, ...item });
-      setShowNFTWithdraw({ isShow: false, ...item });
+      setPopItem(item);
       setShowNFTDetail({ isShow: true, ...item });
     },
     [
       setShowNFTDetail,
-      setShowNFTTransfer,
-      setShowNFTWithdraw,
+      // setShowNFTTransfer,
+      // setShowNFTWithdraw,
       updateNFTDeployData,
       updateNFTTransferData,
       updateNFTWithdrawData,
@@ -218,7 +243,6 @@ export const useMyNFT = () => {
 
   const renderNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
-
     setNFTList(() => {
       return walletLayer2NFT.map((item) => {
         return {

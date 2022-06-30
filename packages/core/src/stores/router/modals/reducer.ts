@@ -9,7 +9,6 @@ import {
   TransferData,
   WithdrawData,
 } from "./interface";
-import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
   MINT_LIMIT,
   MintTradeNFT,
@@ -17,6 +16,7 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined,
@@ -257,45 +257,52 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     updateNFTWithdrawData(
       state,
       action: PayloadAction<
-        Partial<WithdrawData & UserNFTBalanceInfo & NFTWholeINFO>
+        Partial<WithdrawData & sdk.UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, total, locked, ...rest } =
-        action.payload;
+      const { belong, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.nftWithdraw;
       state.nftWithdrawValue = {
         ...state.nftWithdrawValue,
-        balance:
-          balance === undefined || balance >= 0
-            ? balance
-            : state.nftWithdrawValue.balance,
         belong,
+        // balance: balance
+        //   ? balance
+        //   : rest.total !== undefined
+        //   ? sdk
+        //       .toBig(rest.total ?? 0)
+        //       .minus(rest.locked ?? 0)
+        //       .toNumber()
+        //   : state.nftWithdrawValue.balance,
         tradeValue:
           tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
         address: address !== "*" ? address : undefined,
+
         ...rest,
       };
     },
     updateNFTTransferData(
       state,
       action: PayloadAction<
-        Partial<TransferData & UserNFTBalanceInfo & NFTWholeINFO>
+        Partial<TransferData & sdk.UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, total, locked, ...rest } =
-        action.payload;
+      const { belong, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.nftTransfer;
-
       state.nftTransferValue = {
         ...state.nftTransferValue,
-        balance:
-          balance === undefined || balance >= 0
-            ? balance
-            : state.nftTransferValue.balance,
         belong,
+        // balance: balance
+        //   ? balance
+        //   : rest.total !== undefined
+        //   ? sdk
+        //       .toBig(rest.total ?? 0)
+        //       .minus(rest.locked ?? 0)
+        //       .toNumber()
+        //   : state.nftTransferValue.balance,
         tradeValue:
           tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
         address: address !== "*" ? address : undefined,
+
         ...rest,
       };
     },

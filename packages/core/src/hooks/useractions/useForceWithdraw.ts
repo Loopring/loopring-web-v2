@@ -17,6 +17,7 @@ import {
   UIERROR_CODE,
   WalletMap,
 } from "@loopring-web/common-resources";
+import { updateForceWithdrawData as updateForceWithdrawDataStore } from "@loopring-web/core";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -62,12 +63,12 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateForceWithdrawData({ ...forceWithdrawValue, fee });
-      },
-      [forceWithdrawValue, updateForceWithdrawData]
-    ),
+    updateData: ({ fee }) => {
+      const { forceWithdrawValue } = store.getState()._router_modalData;
+      store.dispatch(
+        updateForceWithdrawDataStore({ ...forceWithdrawValue, fee })
+      );
+    },
   });
 
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -75,9 +76,6 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
   //   React.useState<by>();
 
   const [walletItsMap, setWalletItsMap] = React.useState<WalletMap<T>>({});
-  // const [walletMap, setWalletMap] = React.useState(
-  //   makeWalletLayer2(true).walletMap ?? ({} as WalletMap<R>)
-  // );
 
   const {
     address,

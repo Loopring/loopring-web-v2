@@ -76,7 +76,6 @@ const ContentWrap = ({
 };
 const WrapModal = () => {
   const { depositProps } = useDeposit(false);
-  const { forceWithdrawProps } = useForceWithdraw();
   const { assetsRawData } = useGetAssets();
   const location = useLocation();
   const { setShowAccount } = useOpenModals();

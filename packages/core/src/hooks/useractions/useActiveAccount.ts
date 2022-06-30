@@ -11,7 +11,9 @@ import {
   useModalData,
   makeWalletLayer2,
   useWalletLayer2,
+  store,
 } from "../../index";
+import { updateActiveAccountData as updateActiveAccountDataRedux } from "@loopring-web/core";
 
 import { SagaStatus, WalletMap } from "@loopring-web/common-resources";
 import React from "react";
@@ -33,7 +35,7 @@ export const useActiveAccount = <T>(): {
     makeWalletLayer2(true).walletMap ?? ({} as WalletMap<any>)
   );
   const { goUpdateAccount } = useUpdateAccount();
-  const { updateActiveAccountData, activeAccountValue } = useModalData();
+  const { activeAccountValue } = useModalData();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -44,18 +46,21 @@ export const useActiveAccount = <T>(): {
     isActiveAccount: true,
     requestType: "UPDATE_ACCOUNT_BY_NEW" as any,
     updateData: ({ fee, chargeFeeTokenList, isFeeNotEnough }) => {
-      updateActiveAccountData({
-        ...activeAccountValue,
-        fee,
-        isFeeNotEnough,
-        chargeFeeList:
-          chargeFeeTokenList && chargeFeeTokenList.length
-            ? chargeFeeTokenList
-            : activeAccountValue?.chargeFeeList &&
-              activeAccountValue?.chargeFeeList.length
-            ? activeAccountValue?.chargeFeeList
-            : [],
-      });
+      const { activeAccountValue } = store.getState()._router_modalData;
+      store.dispatch(
+        updateActiveAccountDataRedux({
+          ...activeAccountValue,
+          fee,
+          isFeeNotEnough,
+          chargeFeeList:
+            chargeFeeTokenList && chargeFeeTokenList.length
+              ? chargeFeeTokenList
+              : activeAccountValue?.chargeFeeList &&
+                activeAccountValue?.chargeFeeList.length
+              ? activeAccountValue?.chargeFeeList
+              : [],
+        })
+      );
     },
   });
   const walletLayer2Callback = React.useCallback(() => {

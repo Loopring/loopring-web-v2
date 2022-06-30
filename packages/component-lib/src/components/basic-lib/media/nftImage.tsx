@@ -1,7 +1,7 @@
 import { NftImageProps } from "./Interface";
 import { css, Theme } from "@emotion/react";
 
-export const NftImage = (props: NftImageProps) => {
+export const NftImage = (props: NftImageProps & any) => {
   return (
     <img
       // contentEditable={true}

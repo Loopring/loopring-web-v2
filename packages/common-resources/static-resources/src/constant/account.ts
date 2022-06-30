@@ -41,6 +41,9 @@ export type Account = {
   connectName: keyof typeof ConnectProviders;
   wrongChain?: boolean | undefined;
   isInCounterFactualStatus?: boolean;
+  isContract1XAddress?: boolean;
+  isContractAddress?: boolean;
+  isCFAddress?: boolean;
   isContract?: boolean;
   _chainId?: 1 | 5 | "unknown";
   _accountIdNotActive?: number;
