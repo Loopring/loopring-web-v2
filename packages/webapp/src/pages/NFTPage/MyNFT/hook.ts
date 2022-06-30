@@ -210,8 +210,6 @@ export const useMyNFT = () => {
     },
     [
       setShowNFTDetail,
-      // setShowNFTTransfer,
-      // setShowNFTWithdraw,
       updateNFTDeployData,
       updateNFTTransferData,
       updateNFTWithdrawData,

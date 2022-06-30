@@ -350,21 +350,6 @@ export function useAccountModalForUI({
       },
     };
   }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
-  // const backToNFTTransferBtnInfo = React.useMemo(() => {
-  //   return {
-  //     btnTxt: "labelRetry",
-  //     callback: () => {
-  //       setShowAccount({ isShow: false });
-  //       setShowNFTTransfer({
-  //         isShow: true,
-  //         info: {
-  //           ...isShowNFTTransfer.info,
-  //           isRetry: true,
-  //         },
-  //       });
-  //     },
-  //   };
-  // }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
 
   const backToWithdrawBtnInfo = React.useMemo(() => {
     return {

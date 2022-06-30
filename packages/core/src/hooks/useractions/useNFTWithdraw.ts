@@ -49,6 +49,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     modals: {
       isShowNFTWithdraw: { isShow, info },
     },
+    setShowNFTWithdraw,
     setShowNFTDetail,
     setShowAccount,
   } = useOpenModals();
@@ -383,6 +384,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
         eddsaKey?.sk
       ) {
         try {
+          setShowNFTWithdraw({ isShow: false });
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTWithdraw_WaitForAuth,
