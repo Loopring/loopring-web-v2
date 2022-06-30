@@ -804,4 +804,7 @@ export default {
     "This operation requires interaction with Ethereum mainnet. Usually it takes more than 30 mintues to take effect. Please be patient.",
   labelNFTSendBtn: "Send",
   labelNFTProperties: "Properties",
+  labelForceWithdrawNotAvailable:
+    "The Loopring L2 account has already been activated at this address. You cannot use Force Withdraw to move the funds to Ethereum L1.",
+  labelForceWithdrawBtn: "Force Withdraw",
 };

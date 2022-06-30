@@ -812,9 +812,12 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "Request force withdraw address",
   labelForceWithdrawDes:
-    "If the receipt account doesn't activate the Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. Usually only when you sent the token to the L2 account of a wrong CEX address that doesn't support Loopring L2, you will need to do this so that you will be able to claim the token back.",
+    "An address that does not support Loopring L2 can use the Force Withdraw method to move tokens from Loopring L2 to Ethereum L1.\n In order to be eligible for a Force Withdraw, an account must not already have been activated for L2.\n Only in the case of sending a token to an L2 account associated with a CEX address that does not support Loopring L2, will you need to do this in order to recover the token.",
   labelForceWithdrawConfirm:
     "This operation requires interaction with Ethereum mainnet. Usually it takes more than 30 minutes to take effect. Please be patient.",
   labelNFTSendBtn: "Send",
   labelNFTProperties: "Properties",
+  labelForceWithdrawNotAvailable:
+    "The Loopring L2 account has already been activated at this address. You cannot use Force Withdraw to move the funds to Ethereum L1.",
+  labelForceWithdrawBtn: "Force Withdraw",
 };

@@ -85,6 +85,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
     label: t("labelForceWithdrawEnterToken"),
     disableInputValue: true,
     maxAllow: false,
+    disabled: !Object.keys(walletMap).length,
     subLabel: "",
   };
 
@@ -207,6 +208,19 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           ) : (
             ""
           )}
+          {addressDefault !== "" &&
+            !isAddressCheckLoading &&
+            !!isNotAvaiableAddress && (
+              <Typography
+                color={"var(--color-error)"}
+                variant={"body2"}
+                marginTop={1 / 4}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelForceWithdrawNotAvailable")}
+              </Typography>
+            )}
         </>
       </Grid>
 
@@ -219,7 +233,6 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
                 ...rest,
                 type: "TOKEN",
                 t,
-                disabled: !Object.keys(walletMap).length,
                 walletMap,
                 tradeData: {
                   ...tradeData,
@@ -325,7 +338,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           }
           disabled={getDisabled || withdrawBtnStatus === TradeBtnStatus.LOADING}
         >
-          {t(withdrawI18nKey ?? "labelWithdrawBtn")}
+          {t(withdrawI18nKey ?? "labelForceWithdrawBtn")}
         </Button>
       </Grid>
     </Grid>

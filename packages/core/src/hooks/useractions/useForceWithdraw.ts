@@ -182,6 +182,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
         tradeValue: _value?.count,
         balance: _value?.count,
       });
+      setWalletItsMap({ ...walletMap });
     } else {
       setWalletItsMap({});
     }
@@ -517,6 +518,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
           if (data.to === "button") {
             if (data.tradeData.belong) {
               updateForceWithdrawData({
+                ...forceWithdrawValue,
                 belong: data.tradeData.belong,
                 tradeValue: data.tradeData.balance, //data.tradeData?.tradeValue,
                 balance: data.tradeData.balance,
