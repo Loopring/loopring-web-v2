@@ -96,7 +96,8 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       forceWithdrawValue?.fee?.belong &&
       forceWithdrawValue.fee?.feeRaw &&
       forceWithdrawValue.belong &&
-      forceWithdrawValue?.withdrawAddress &&
+      forceWithdrawValue.balance &&
+      !!forceWithdrawValue?.withdrawAddress &&
       !isFeeNotEnough.isFeeNotEnough
     ) {
       enableBtn();
@@ -496,6 +497,11 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       addressDefault: address,
       handleOnAddressChange: (value: any) => {
         setAddress(value);
+        updateForceWithdrawData({
+          belong: "",
+          tradeValue: undefined,
+          balance: undefined,
+        });
       },
       isNotAvaiableAddress: !(isLoopringAddress && !isActiveAccount),
       realAddr,
