@@ -617,6 +617,7 @@ export function useAccountModalForUI({
           setShowAccount({ isShow: false });
           setShowNFTWithdraw({
             isShow: true,
+            info: { isToMyself: true },
           });
         },
       },

@@ -82,7 +82,7 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
           fee,
         });
       },
-      [nftTransferValue]
+      [nftTransferValue, updateNFTTransferData]
     ),
   });
 
