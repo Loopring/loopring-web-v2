@@ -268,8 +268,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           key: "side",
           name: t("labelTxSide"),
           formatter: ({ row }) => {
-            const value = row["side"];
-            const renderValue = t(`labelType${value.toUpperCase()}`);
+            const value = row.side;
+            const renderValue = t(`labelType${value?.toUpperCase()}`);
             // const renderValue =
             //   value === TransactionTradeTypes.deposit
             //     ? t("labelReceive")
@@ -287,14 +287,14 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
             const hasSymbol =
-              row["side"] === "TRANSFER"
-                ? row["receiverAddress"]?.toUpperCase() ===
+              row.row === TransactionTradeTypes.transfer
+                ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
-                : row["side"] === "DEPOSIT"
+                : row.row === TransactionTradeTypes.deposit
                 ? "+"
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                : row.row === TransactionTradeTypes.withdraw
                 ? "-"
                 : "";
 
@@ -345,19 +345,21 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const receiverAddress =
-              row["side"] === "OFFCHAIN_WITHDRAWAL"
+              row.row === TransactionTradeTypes.withdraw
                 ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
                 : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             const [from, to] =
-              row["side"] === "TRANSFER"
-                ? row["receiverAddress"]?.toUpperCase() ===
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? ["L2", "Force Withdraw"]
+                : row.side === TransactionTradeTypes.transfer
+                ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row["side"] === "DEPOSIT"
+                : row.side === TransactionTradeTypes.deposit
                 ? ["L1", "L2"]
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                : row.side === TransactionTradeTypes.withdraw
                 ? ["L2", receiverAddress]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
@@ -541,20 +543,22 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const receiverAddress =
-              row["side"] === "OFFCHAIN_WITHDRAWAL"
+              row.row === TransactionTradeTypes.withdraw
                 ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
                 : getShortAddr(row.receiverAddress, isMobile);
 
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
             const [from, to] =
-              row["side"] === "TRANSFER"
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? ["L2", "Force Withdraw"]
+                : row.side === TransactionTradeTypes.transfer
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row["side"] === "DEPOSIT"
+                : row.row === TransactionTradeTypes.deposit
                 ? ["L1", "L2"]
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                : row.row === TransactionTradeTypes.withdraw
                 ? ["L2", receiverAddress]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
