@@ -20,10 +20,12 @@ import {
 } from "@loopring-web/core";
 import { RowConfig } from "@loopring-web/common-resources";
 import { useRouteMatch } from "react-router-dom";
+import { UserTxTypes } from "@loopring-web/loopring-sdk";
+import { useLocation } from "react-use";
 
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
-    let match: any = useRouteMatch("/layer2/:item/:tab");
+    const match: any = useRouteMatch("/layer2/:item/:tab");
     const tab = match?.params.tab ?? "transactions";
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(tab);
@@ -62,12 +64,12 @@ const HistoryPanel = withTranslation("common")(
     const handleTabChange = React.useCallback(
       (value: string, _pageSize?: number) => {
         setCurrentTab(value);
-        if (value === "transactions") {
-          getUserTxnList({
-            limit: _pageSize ? _pageSize : pageSize,
-            types: "deposit,transfer,offchain_withdrawal",
-          });
-        }
+        // if (value === "transactions") {
+        //   getUserTxnList({
+        //     limit: _pageSize ? _pageSize : pageSize,
+        //     types: `${UserTxTypes.DEPOSIT},${UserTxTypes.TRANSFER},${UserTxTypes.DELEGATED_FORCE_WITHDRAW},${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`,
+        //   });
+        // }
         if (value === "trades") {
           getUserTradeList({
             pageSize: _pageSize ? _pageSize : pageSize,
