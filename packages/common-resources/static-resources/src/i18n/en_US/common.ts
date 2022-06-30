@@ -814,7 +814,7 @@ export default {
   labelForceWithdrawDes:
     "An address that does not support Loopring L2 can use the Force Withdraw method to move tokens from Loopring L2 to Ethereum L1.\n In order to be eligible for a Force Withdraw, an account must not already have been activated for L2.\n Only in the case of sending a token to an L2 account associated with a CEX address that does not support Loopring L2, will you need to do this in order to recover the token.",
   labelForceWithdrawConfirm:
-    "This operation requires interaction with Ethereum mainnet. Usually it takes more than 30 minutes to take effect. Please be patient.",
+    "This operation requires interaction with Ethereum Mainnet. Usually it takes more than 30 minutes to take effect. Please be patient.",
   labelNFTSendBtn: "Send",
   labelNFTProperties: "Properties",
   labelForceWithdrawNotAvailable:
