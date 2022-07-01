@@ -180,35 +180,12 @@ export const NFTDetail = withTranslation("common")(
 
           <Box
             display={"flex"}
-            flexDirection={isMobile ? "column" : "row"}
-            justifyContent={"flex-end"}
+            flexDirection={isMobile ? "column" : "row-reverse"}
+            justifyContent={"space-between"}
             marginBottom={2}
             paddingRight={3}
           >
-            {!!(
-              popItem.isCounterFactualNFT &&
-              popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-              popItem.minter?.toLowerCase() === account.accAddress.toLowerCase()
-            ) && (
-              <Box>
-                <Button
-                  variant={"outlined"}
-                  size={"medium"}
-                  fullWidth
-                  onClick={() =>
-                    deployNFT.enable
-                      ? setShowNFTDeploy({
-                          isShow: true,
-                          info: { ...popItem },
-                        })
-                      : setShowTradeIsFrozen({ isShow: true })
-                  }
-                >
-                  {t("labelNFTDeployContract")}
-                </Button>
-              </Box>
-            )}
-            <Box className={isMobile ? "isMobile" : ""} width={"40%"}>
+            <Box className={isMobile ? "isMobile" : ""} width={"48%"}>
               <Button
                 variant={"contained"}
                 size={"small"}
@@ -224,6 +201,29 @@ export const NFTDetail = withTranslation("common")(
                 {t("labelNFTSendBtn")}
               </Button>
             </Box>
+            {!!(
+              popItem.isCounterFactualNFT &&
+              popItem.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+              popItem.minter?.toLowerCase() === account.accAddress.toLowerCase()
+            ) && (
+              <Box className={isMobile ? "isMobile" : ""} width={"48%"}>
+                <Button
+                  variant={"contained"}
+                  size={"small"}
+                  fullWidth
+                  onClick={() =>
+                    deployNFT.enable
+                      ? setShowNFTDeploy({
+                          isShow: true,
+                          info: { ...popItem },
+                        })
+                      : setShowTradeIsFrozen({ isShow: true })
+                  }
+                >
+                  {t("labelNFTDeployContract")}
+                </Button>
+              </Box>
+            )}
           </Box>
 
           <Box
@@ -232,7 +232,12 @@ export const NFTDetail = withTranslation("common")(
             marginBottom={2}
             paddingRight={3}
           >
-            <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
+            <Typography
+              component={"h6"}
+              color={"text.primary"}
+              variant={"h4"}
+              marginBottom={1}
+            >
               {t("labelNFTDetail")}
             </Typography>
 
@@ -356,7 +361,12 @@ export const NFTDetail = withTranslation("common")(
             marginBottom={2}
             paddingRight={3}
           >
-            <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
+            <Typography
+              component={"h6"}
+              color={"text.primary"}
+              variant={"h4"}
+              marginBottom={1}
+            >
               {t("labelNFTProperties")}
             </Typography>
             <Box
@@ -403,8 +413,13 @@ export const NFTDetail = withTranslation("common")(
             marginBottom={2}
             paddingRight={3}
           >
-            <Typography component={"h6"} color={"text.primary"} variant={"h4"}>
-              {t("labelNFTDescription")}
+            <Typography
+              component={"h6"}
+              color={"text.primary"}
+              variant={"h4"}
+              marginBottom={1}
+            >
+              {t("labelNFTDescription2")}
             </Typography>
             <Box flex={1}>
               <TextareaAutosizeStyled
