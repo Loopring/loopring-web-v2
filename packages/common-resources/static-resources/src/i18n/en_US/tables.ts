@@ -185,5 +185,7 @@ export default {
   labelShowFilter: "Show Filter",
   labelTxFilterFORCEWITHDRAW: "Force Withdraw",
   labelTypeDELEGATED_FORCE_WITHDRAW: "Force Withdraw",
-  labelForceWithdrawTotalDes: "{{address}}'s all {{symbol}}",
+  labelForceWithdrawTotalDes: "All {{symbol}}",
+  labelForceWithdrawDes:
+    "{{address}} (Address that the token is withdrawn from L2 to L1)",
 };

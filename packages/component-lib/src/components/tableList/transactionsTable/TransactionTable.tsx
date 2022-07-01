@@ -93,7 +93,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 124px auto auto auto 120px 150px !important;`
+        ? `--template-columns: 124px auto auto auto 120px 120px !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -362,7 +362,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const senderAddress = getShortAddr(row.senderAddress);
             const [from, to] =
               row.side === TransactionTradeTypes.forceWithdraw
-                ? ["L2", "Force Withdraw"]
+                ? [
+                    t("labelForceWithdrawDes", {
+                      address: getShortAddr(row.withdrawalInfo?.recipient),
+                    }),
+                    "",
+                  ]
                 : row.side === TransactionTradeTypes.transfer
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
@@ -385,19 +390,24 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 display={"inline-flex"}
                 justifyContent={"flex-end"}
                 alignItems={"center"}
+                title={hash}
               >
                 <Link
                   style={{
                     cursor: "pointer",
                     color: "var(--color-primary)",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
                   }}
+                  maxWidth={148}
                   target="_blank"
                   rel="noopener noreferrer"
                   href={path}
-                  title={hash}
+                  title={
+                    from && to ? from + ` ${DirectionTag} ` + to : from + to
+                  }
                 >
-                  {from + ` ${DirectionTag} ` + to}
-                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
+                  {from && to ? from + ` ${DirectionTag} ` + to : from + to}
                 </Link>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
@@ -462,17 +472,19 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const hasValue = Number.isFinite(value);
             const side =
               row.side === TransactionTradeTypes.forceWithdraw
-                ? t("labelForceWithdrawTotalDes", {
-                    address: getShortAddr(row.withdrawalInfo?.recipient),
-                    symbol: row.symbol,
-                  })
+                ? t("labelTxFilterFORCEWITHDRAW")
                 : row.side === TransactionTradeTypes.deposit
                 ? t("labelReceive")
                 : row.side === TransactionTradeTypes.transfer
                 ? t("labelSendL2")
                 : t("labelSendL1");
             const hasSymbol =
-              row.side === "TRANSFER"
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? t("labelForceWithdrawTotalDes", {
+                    address: getShortAddr(row.withdrawalInfo?.recipient),
+                    symbol: row.symbol,
+                  })
+                : row.side === "TRANSFER"
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
@@ -483,7 +495,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? "-"
                 : "";
             const sideIcon =
-              row.side === TransactionTradeTypes.deposit ? (
+              row.side === TransactionTradeTypes.forceWithdraw ? (
+                <WithdrawIcon fontSize={"inherit"} />
+              ) : row.side === TransactionTradeTypes.deposit ? (
                 <DepositIcon fontSize={"inherit"} />
               ) : row.side === TransactionTradeTypes.transfer ? (
                 <TransferIcon fontSize={"inherit"} />
@@ -531,10 +545,15 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   variant={"h3"}
                   alignItems={"center"}
                   flexDirection={"column"}
-                  width={"50px"}
+                  width={"62px"}
                 >
                   {sideIcon}
-                  <Typography fontSize={10} marginTop={-1}>
+                  <Typography
+                    component={"span"}
+                    fontSize={10}
+                    marginTop={-1}
+                    textOverflow={"ellipsis"}
+                  >
                     {side}
                   </Typography>
                 </Typography>
@@ -570,7 +589,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
             const [from, to] =
               row.side === TransactionTradeTypes.forceWithdraw
-                ? ["L2", "Force Withdraw"]
+                ? [
+                    t("labelForceWithdrawDes", {
+                      address: getShortAddr(row.withdrawalInfo?.recipient),
+                    }),
+                    "",
+                  ]
                 : row.side === TransactionTradeTypes.transfer
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
@@ -597,6 +621,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               <Box
                 display={"flex"}
                 flex={1}
+                title={hash}
                 flexDirection={"column"}
                 onClick={() => {
                   window.open(path, "_blank");
@@ -608,15 +633,32 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   justifyContent={"flex-end"}
                   alignItems={"center"}
                 >
-                  <Typography
+                  {/*<Typography*/}
+                  {/*  style={{*/}
+                  {/*    cursor: "pointer",*/}
+                  {/*  }}*/}
+                  {/*  color={"var(--color-primary)"}*/}
+                  {/*  title={hash}*/}
+                  {/*>*/}
+                  {/*  {from + ` ${DirectionTag} ` + to}*/}
+                  {/*</Typography>*/}
+                  <Link
                     style={{
                       cursor: "pointer",
+                      color: "var(--color-primary)",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
                     }}
-                    color={"var(--color-primary)"}
-                    title={hash}
+                    maxWidth={148}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={path}
+                    title={
+                      from && to ? from + ` ${DirectionTag} ` + to : from + to
+                    }
                   >
-                    {from + ` ${DirectionTag} ` + to}
-                  </Typography>
+                    {from && to ? from + ` ${DirectionTag} ` + to : from + to}
+                  </Link>
                   <Typography marginLeft={1}>
                     <CellStatus {...{ row }} />
                   </Typography>
