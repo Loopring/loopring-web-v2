@@ -287,7 +287,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const hasValue = Number.isFinite(value);
             const hasSymbol =
               row.side === TransactionTradeTypes.forceWithdraw
-                ? EmptyValueTag
+                ? t("labelForceWithdrawTotalDes", {
+                    address: getShortAddr(row.withdrawalInfo?.recipient),
+                    symbol: row.symbol,
+                  })
                 : row.side === TransactionTradeTypes.transfer
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
@@ -310,7 +313,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 )}`
               : EmptyValueTag;
             return (
-              <Box className="rdg-cell-value textAlignRight">
+              <Box
+                className="rdg-cell-value textAlignRight"
+                title={`${hasSymbol}  ${
+                  row.side !== TransactionTradeTypes.forceWithdraw &&
+                  `${renderValue} ${unit}`
+                }`}
+              >
                 {hasSymbol}
                 {row.side !== TransactionTradeTypes.forceWithdraw &&
                   `${renderValue} ${unit}`}
@@ -453,7 +462,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const hasValue = Number.isFinite(value);
             const side =
               row.side === TransactionTradeTypes.forceWithdraw
-                ? EmptyValueTag
+                ? t("labelForceWithdrawTotalDes", {
+                    address: getShortAddr(row.withdrawalInfo?.recipient),
+                    symbol: row.symbol,
+                  })
                 : row.side === TransactionTradeTypes.deposit
                 ? t("labelReceive")
                 : row.side === TransactionTradeTypes.transfer
@@ -506,8 +518,11 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 display={"flex"}
                 alignItems={"center"}
                 justifyContent={"flex-start"}
-                title={side}
                 height={"100%"}
+                title={`${hasSymbol}  ${
+                  row.side !== TransactionTradeTypes.forceWithdraw &&
+                  `${renderValue} ${unit}`
+                }`}
               >
                 {/*{side + " "}*/}
                 <Typography

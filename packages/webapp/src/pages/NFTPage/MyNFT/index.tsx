@@ -127,6 +127,7 @@ export const MyNFTPanel = withTranslation("common")(
                           <NFTMedia
                             item={item}
                             index={index}
+                            shouldPlay={false}
                             // onNFTReload={onNFTReload}
                             onNFTError={() => undefined}
                             isOrigin={false}

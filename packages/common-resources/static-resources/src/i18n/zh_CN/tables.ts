@@ -185,4 +185,5 @@ export default {
   labelShowFilter: "Show Filter",
   labelTxFilterFORCEWITHDRAW: "Force Withdraw",
   labelTypeDELEGATED_FORCE_WITHDRAW: "Force Withdraw",
+  labelForceWithdrawTotalDes: "{{address}}'s all {{symbol}}",
 };

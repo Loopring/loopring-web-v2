@@ -70,7 +70,7 @@ export default {
   labelTxFilterAllTokens: "All Tokens",
   labelTxSide: "Transactions",
   labelTxToken: "Token",
-  labelTxFrom: "From",
+  labelTxFrom: "Description",
   labelTxTo: "To",
   labelTxAmount: "Amount",
   labelTxFee: "Fee",
@@ -185,4 +185,5 @@ export default {
   labelShowFilter: "Show Filter",
   labelTxFilterFORCEWITHDRAW: "Force Withdraw",
   labelTypeDELEGATED_FORCE_WITHDRAW: "Force Withdraw",
+  labelForceWithdrawTotalDes: "{{address}}'s all {{symbol}}",
 };

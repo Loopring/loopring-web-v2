@@ -191,16 +191,7 @@ export const ModalAccountInfo = withTranslation("common")(
               justifyContent={"stretch"}
             >
               <NFTDetail
-                // nftTransferProps={nftTransferProps}
-                // nftWithdrawProps={nftWithdrawProps}
-                // nftDeployProps={nftDeployProps}
-                // cancelNFTTransfer={cancelNFTTransfer}
-                // cancelNFTWithdraw={cancelNFTWithdraw}
-                // onNFTReload={onNFTReload}
                 etherscanBaseUrl={etherscanBaseUrl}
-                onDetailClose={() => {
-                  setShowNFTDetail({ isShow: false });
-                }}
                 popItem={isShowNFTDetail}
                 assetsRawData={assetsRawData}
               />

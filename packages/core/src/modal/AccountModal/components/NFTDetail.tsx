@@ -122,7 +122,6 @@ export const NFTDetail = withTranslation("common")(
     etherscanBaseUrl,
     t,
   }: {
-    onDetailClose: () => void;
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
@@ -442,6 +441,7 @@ export const NFTDetail = withTranslation("common")(
           height: 570,
           cursor: "pointer",
         };
+    const ref = React.useRef();
     return (
       <>
         {!isMobile && (
@@ -453,7 +453,9 @@ export const NFTDetail = withTranslation("common")(
             position={"relative"}
           >
             <NFTMedia
-              item={popItem}
+              ref={ref}
+              item={popItem as Partial<NFTWholeINFO>}
+              shouldPlay={true}
               onNFTError={() => undefined}
               isOrigin={true}
             />
