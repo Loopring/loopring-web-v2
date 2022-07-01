@@ -8,7 +8,6 @@ import { ForceWithdrawProps } from "../../tradePanel";
 import { IBData } from "@loopring-web/common-resources";
 import { TradeMenuList, useBasicTrade } from "../../tradePanel/components";
 import React from "react";
-import { cloneDeep } from "lodash";
 import { ForceWithdrawConfirm } from "../../tradePanel/components/ForceWithdrawConfirm";
 import { ForceWithdrawWrap } from "../../tradePanel/components/ForceWithdrawWrap";
 
@@ -43,17 +42,7 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
     }, [index]);
 
     // LP token should not exist in withdraw panel for now
-    const getWalletMapWithoutLP = React.useCallback(() => {
-      const clonedWalletMap = cloneDeep(walletMap ?? {});
-      const keyList = Object.keys(clonedWalletMap);
-      keyList.forEach((key) => {
-        const [first] = key.split("-");
-        if (first === "LP") {
-          delete clonedWalletMap[key];
-        }
-      });
-      return clonedWalletMap;
-    }, [walletMap]);
+
     const props: SwitchPanelProps<string> = {
       index: panelIndex, // show default show
       panelList: [
@@ -143,12 +132,12 @@ export const ForceWithdrawPanel = withTranslation(["common", "error"], {
                         coinMap,
                         selected: switchData.tradeData.belong,
                         tradeData: switchData.tradeData,
-                        walletMap: getWalletMapWithoutLP(),
+                        walletMap,
                         //oinMap
                       }}
                     />
                   ),
-                  [switchData, rest, onChangeEvent, getWalletMapWithoutLP]
+                  [switchData, rest, onChangeEvent]
                 ),
                 toolBarItem: undefined,
               },
