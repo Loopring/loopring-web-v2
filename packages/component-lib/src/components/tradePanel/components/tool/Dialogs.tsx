@@ -49,7 +49,7 @@ const DialogStyle = styled(Dialog)`
   }
 `;
 
-export const AlertImpact = withTranslation("common", { withRef: true })(
+export const AlertImpact = withTranslation("common")(
   ({
     t,
     value,
@@ -149,7 +149,7 @@ export const CancelAllOrdersAlert = withTranslation("common", {
     );
   }
 );
-export const AlertNotSupport = withTranslation("common", { withRef: true })(
+export const AlertNotSupport = withTranslation("common")(
   ({
     t,
     open,
@@ -185,7 +185,7 @@ export const AlertNotSupport = withTranslation("common", { withRef: true })(
   }
 );
 
-export const ConfirmImpact = withTranslation("common", { withRef: true })(
+export const ConfirmImpact = withTranslation("common")(
   ({
     t,
     value,
@@ -418,7 +418,7 @@ export const ConfirmLinkCopy = withTranslation("common", {
   }
 );
 
-export const AlertLimitPrice = withTranslation("common", { withRef: true })(
+export const AlertLimitPrice = withTranslation("common")(
   ({
     t,
     value,

@@ -247,10 +247,15 @@ export const NFTDetail = withTranslation("common")(
               variant={"body1"}
               marginBottom={1}
             >
-              <Typography color={"var(--color-text-third)"} width={150}>
+              <Typography
+                component={"span"}
+                color={"var(--color-text-third)"}
+                width={150}
+              >
                 {t("labelNFTTOTAL")}
               </Typography>
               <Typography
+                component={"span"}
                 color={"var(--color-text-secondary)"}
                 title={popItem?.total}
               >
@@ -263,7 +268,11 @@ export const NFTDetail = withTranslation("common")(
               variant={"body1"}
               marginTop={1}
             >
-              <Typography color={"var(--color-text-third)"} width={150}>
+              <Typography
+                component={"span"}
+                color={"var(--color-text-third)"}
+                width={150}
+              >
                 {t("labelNFTID")}
               </Typography>
               <Link
@@ -297,7 +306,11 @@ export const NFTDetail = withTranslation("common")(
               variant={"body1"}
               marginTop={1}
             >
-              <Typography color={"var(--color-text-third)"} width={150}>
+              <Typography
+                component={"span"}
+                color={"var(--color-text-third)"}
+                width={150}
+              >
                 {t("labelNFTContractAddress")}
               </Typography>
               <Link
@@ -317,10 +330,15 @@ export const NFTDetail = withTranslation("common")(
               variant={"body1"}
               marginTop={1}
             >
-              <Typography color={"var(--color-text-third)"} width={150}>
+              <Typography
+                component={"span"}
+                color={"var(--color-text-third)"}
+                width={150}
+              >
                 {t("labelNFTTYPE")}
               </Typography>
               <Typography
+                component={"span"}
                 color={"var(--color-text-secondary)"}
                 title={popItem?.nftType}
               >
@@ -334,7 +352,11 @@ export const NFTDetail = withTranslation("common")(
               variant={"body1"}
               marginTop={1}
             >
-              <Typography color={"var(--color-text-third)"} width={150}>
+              <Typography
+                component={"span"}
+                color={"var(--color-text-third)"}
+                width={150}
+              >
                 {t("labelNFTMinter")}
               </Typography>
 
@@ -387,12 +409,14 @@ export const NFTDetail = withTranslation("common")(
                         marginTop={1}
                       >
                         <Typography
+                          component={"span"}
                           color={"var(--color-text-third)"}
                           width={150}
                         >
                           {key.toString()}
                         </Typography>
                         <Typography
+                          component={"span"}
                           color={"var(--color-text-secondary)"}
                           title={key.toString()}
                         >

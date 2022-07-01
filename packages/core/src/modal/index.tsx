@@ -19,9 +19,7 @@ import {
 import { Box, Modal as MuiModal } from "@mui/material";
 import { ModalCoinPairPanel } from "./AmmPoolModal";
 
-export const ModalGroup = withTranslation("common", {
-  withRef: true,
-})(
+export const ModalGroup = withTranslation("common")(
   ({
     isLayer1Only,
     onAccountInfoPanelClose,
