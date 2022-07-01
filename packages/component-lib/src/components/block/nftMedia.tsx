@@ -174,7 +174,7 @@ export const NFTMedia = React.memo(
           default:
             return <></>;
         }
-      }, [item.__mediaType__, item.animationUrl, play, theme.unit]);
+      }, [item.__mediaType__, item.animationUrl, play, shouldPlay, theme.unit]);
       React.useEffect(() => {
         if (isShow === false && shouldPlay) {
           if (vidRef.current) {
