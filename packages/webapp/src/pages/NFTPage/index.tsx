@@ -8,13 +8,9 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import {
-  AccountStatus,
-  SoursURL,
-  subMenuNFT,
-} from "@loopring-web/common-resources";
+import { subMenuNFT } from "@loopring-web/common-resources";
 import React from "react";
-import { useAccount, ViewAccountTemplate } from "@loopring-web/core";
+import { ViewAccountTemplate } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTPanel } from "./MintNFTPanel";
@@ -27,7 +23,6 @@ export const subMenu = subMenuNFT;
 export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
   const selected = match?.params.item ?? "assetsNFT";
-  const { account } = useAccount();
   const { setShowNFTMintAdvance } = useOpenModals();
   const { t } = useTranslation(["common", "layout"]);
   const routerNFT = React.useMemo(() => {
@@ -44,7 +39,20 @@ export const NFTPage = () => {
         return <MyNFTPanel />;
     }
   }, [selected]);
+  // React.useEffect(() => {
+  //   if (store) {
+  //     setMyMintService(mintService);
+  //   }
+  //   return () => {
+  //     setMyMintService(null);
+  //   };
+  // }, [store]);
   const { isMobile } = useSettings();
+  // React.useEffect(() => {
+  //   return () => {
+  //     mintService.onSocket();
+  //   };
+  // });
   // myLog("assetTitleProps", assetTitleProps.assetInfo);
   const activeViewTemplate = React.useMemo(
     () => (

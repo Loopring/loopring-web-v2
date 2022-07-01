@@ -247,6 +247,7 @@ export const MintAdvanceNFTWrap = <
               fontSize={14}
               alignSelf={"stretch"}
               position={"relative"}
+              component={"span"}
             >
               {t("labelInvalidCID")}
             </Typography>
@@ -330,6 +331,7 @@ export const MintAdvanceNFTWrap = <
                   variant={"body2"}
                   color={"var(--color-text-third)"}
                   marginBottom={1}
+                  component={"span"}
                 >
                   {t("labelMintFeeChoose")}
                 </Typography>
