@@ -819,6 +819,6 @@ export default {
   labelNFTProperties: "Properties",
   labelNFTDescription2: "Description",
   labelForceWithdrawNotAvailable:
-    "The Loopring L2 account has already been activated at this address. You cannot use Force Withdraw to move the funds to Ethereum L1.",
+    "Please input a non-activate Loopring L2 address",
   labelForceWithdrawBtn: "Force Withdraw",
 };
