@@ -140,7 +140,7 @@ export const NFTDetail = withTranslation("common")(
       !!(popItem?.name !== "" && popItem.image && popItem.image !== "")
     );
 
-    const properties = popItem.properties
+    let properties = popItem.properties
       ? typeof popItem.properties === "string"
         ? JSON.parse(popItem.properties)
         : popItem.properties
@@ -397,10 +397,34 @@ export const NFTDetail = withTranslation("common")(
               display={"flex"}
               flexDirection={"column"}
             >
-              {!!properties
-                ? Object.keys(properties).map((key, index) => {
+              {!!properties ? (
+                typeof properties === "string" ? (
+                  <Typography
+                    display={"inline-flex"}
+                    flexDirection={isMobile ? "column" : "row"}
+                    variant={"body1"}
+                    marginTop={1}
+                  >
+                    {properties.toString()}
+                  </Typography>
+                ) : (
+                  [
+                    ...(Array.isArray(properties)
+                      ? properties
+                      : Object.keys(properties)),
+                  ].map((key, index) => {
                     // @ts-ignore
-                    return (
+                    return Array.isArray(properties) ? (
+                      <Typography
+                        key={key.toString() + index}
+                        display={"inline-flex"}
+                        flexDirection={isMobile ? "column" : "row"}
+                        variant={"body1"}
+                        marginTop={1}
+                      >
+                        {JSON.stringify(key)}
+                      </Typography>
+                    ) : (
                       <Typography
                         key={key.toString() + index}
                         display={"inline-flex"}
@@ -428,7 +452,10 @@ export const NFTDetail = withTranslation("common")(
                       </Typography>
                     );
                   })
-                : EmptyValueTag}
+                )
+              ) : (
+                EmptyValueTag
+              )}
             </Box>
           </Box>
           <Box
