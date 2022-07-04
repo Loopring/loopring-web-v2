@@ -7,7 +7,7 @@ import {
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Account, AccountStatus, myLog } from "@loopring-web/common-resources";
 import { ConnectProviders, connectProvides } from "@loopring-web/web3-provider";
-import { AccountInfo, ChainId } from "@loopring-web/loopring-sdk";
+import { AccountInfo, ChainId, WalletType } from "@loopring-web/loopring-sdk";
 import { store } from "../index";
 import { LoopringAPI } from "../../api_wrapper";
 import { updateToggleStatus } from "@loopring-web/component-lib";
@@ -16,15 +16,24 @@ const LoopFrozenFlag = true;
 export const DexToggle = "https://static.loopring.io/status/dexToggle.json";
 const getAccount = async (): Promise<{
   account: AccountInfo;
+  walletType: WalletType;
   __timer__: NodeJS.Timer | -1;
 }> => {
   let { accAddress, __timer__ } = store.getState().account;
   let { chainId } = store.getState().system;
-  const { accInfo: account } = await (accAddress && LoopringAPI.exchangeAPI
-    ? LoopringAPI?.exchangeAPI.getAccount({
-        owner: accAddress,
-      })
-    : Promise.resolve({ accInfo: {} } as any));
+  const [{ accInfo: account }, { walletType }] = await Promise.all([
+    LoopringAPI?.exchangeAPI?.getAccount({
+      owner: accAddress,
+    }) ?? Promise.resolve({ accInfo: {} } as any),
+    LoopringAPI?.walletAPI?.getWalletType({
+      wallet: accAddress, //realAddr != "" ? realAddr : address,
+    }) ?? Promise.resolve({ walletType: {} } as any),
+  ]);
+  // .then(({walletType})=>{
+  //    store.dispatch(updateAccountStatus({
+  //      ...walletType,
+  //    }));
+  //  })
   if (account.frozen === LoopFrozenFlag) {
     myLog("account.frozen ___timer___", account.accountId);
     store.dispatch(
@@ -53,6 +62,7 @@ const getAccount = async (): Promise<{
     })(__timer__);
     return {
       account,
+      walletType,
       __timer__,
     };
   } else {
@@ -90,6 +100,11 @@ const getAccount = async (): Promise<{
   }
   return {
     account,
+    walletType: {
+      ...walletType,
+      isContract1XAddress:
+        walletType?.loopringWalletContractVersion?.startsWith("V1_") ?? false,
+    },
     __timer__: __timer__ ?? -1,
   };
 };
@@ -98,7 +113,7 @@ export function* accountUpdateSaga({
   payload,
 }: PayloadAction<Partial<Account>>) {
   try {
-    let data = { account: {}, __timer__: -1 };
+    let data = { account: {}, walletType: {}, __timer__: -1 };
     if (payload.apiKey || payload.frozen === LoopFrozenFlag) {
       data = yield call(getAccount);
     }
@@ -106,6 +121,7 @@ export function* accountUpdateSaga({
       nextAccountStatus({
         ...payload,
         ...data.account,
+        ...data.walletType,
         __timer__: data.__timer__,
       })
     );
@@ -132,6 +148,7 @@ export function* cleanAccountSaga({
       _accountIdNotActive: -1,
       isInCounterFactualStatus: undefined,
       isContract: undefined,
+      isContract1XAddress: undefined,
     };
 
     if (payload && payload.shouldUpdateProvider) {

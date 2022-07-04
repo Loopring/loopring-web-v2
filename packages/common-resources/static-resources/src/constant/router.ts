@@ -2,6 +2,7 @@ import {
   AssetsIcon,
   L2HistoryIcon,
   L2OrderIcon,
+  OutputIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
@@ -189,6 +190,14 @@ export const subMenuLayer2 = {
       label: {
         id: "security",
         i18nKey: "labelSecurity",
+      },
+    },
+    {
+      icon: OutputIcon,
+      router: { path: "/layer2/forcewithdraw" },
+      label: {
+        id: "forcewithdraw",
+        i18nKey: "labelForceWithdraw",
       },
     },
     {

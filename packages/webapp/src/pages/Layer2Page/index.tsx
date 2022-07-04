@@ -7,27 +7,19 @@ import {
   SubMenuList,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
-import {
-  AccountStatus,
-  SoursURL,
-  subMenuLayer2,
-} from "@loopring-web/common-resources";
+import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import AssetPanel from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
 import OrderPanel from "./OrderPanel";
 import React from "react";
-import {
-  useAccount,
-  ViewAccountTemplate,
-  WalletConnectL2Btn,
-} from "@loopring-web/core";
+import { ViewAccountTemplate } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
 import { RedPockPanel } from "./RedPockPanel";
 import { useGetAssets } from "./AssetPanel/hook";
+import { ForcewithdrawPanel } from "./ForcewithdrawPanel";
 
 export const subMenu = subMenuLayer2;
 
@@ -49,6 +41,8 @@ export const Layer2Page = () => {
         return <RedPockPanel />;
       case "rewards":
         return <RewardPanel />;
+      case "forcewithdraw":
+        return <ForcewithdrawPanel />;
       case "security":
         return <SecurityPanel />;
       case "vip":

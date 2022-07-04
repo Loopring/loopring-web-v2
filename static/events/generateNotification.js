@@ -154,8 +154,8 @@ async function createNotifyJSON(lng) {
             const _item = {
               type: item[0],
               version: item[1], //localStore for visited should be unique
-              title: item[2],
-              name: item[3],
+              name: item[2],
+              title: item[3],
               description1: item[4],
               description2: item[5],
               link: item[6],

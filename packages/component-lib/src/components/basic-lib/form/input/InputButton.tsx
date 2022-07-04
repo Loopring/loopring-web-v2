@@ -20,6 +20,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
     subLabel,
     // wait = globalSetup.wait,
     // coinMap,
+    disableInputValue,
     maxAllow,
     disabled,
     decimalsLimit = 8,
@@ -236,7 +237,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
               decimalSeparator="."
               groupSeparator=","
               name={name}
-              disabled={!(!disabled || belong)}
+              disabled={!(!disabled || belong) || disableInputValue}
               placeholder={placeholderText}
               aria-placeholder={placeholderText}
               aria-label={label}

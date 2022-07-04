@@ -70,7 +70,7 @@ export default {
   labelTxFilterAllTokens: "All Tokens",
   labelTxSide: "Transactions",
   labelTxToken: "Token",
-  labelTxFrom: "From",
+  labelTxFrom: "Description",
   labelTxTo: "To",
   labelTxAmount: "Amount",
   labelTxFee: "Fee",
@@ -183,4 +183,9 @@ export default {
   labelTypeTRANSFER: "Transfer",
   labelTxNFTFilterMINT: "Mint",
   labelShowFilter: "Show Filter",
+  labelTxFilterFORCEWITHDRAW: "Force Withdraw",
+  labelTypeDELEGATED_FORCE_WITHDRAW: "Force Withdraw",
+  labelForceWithdrawTotalDes: "All {{symbol}}",
+  labelForceWithdrawDes:
+    "{{address}} (Address that the token is withdrawn from L2 to L1)",
 };

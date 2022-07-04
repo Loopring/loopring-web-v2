@@ -13,6 +13,7 @@ import React from "react";
 import { BasicANFTTradeProps } from "./Interface";
 import { InputCoin, InputSize } from "../../basic-lib";
 import { Box, Link, Typography } from "@mui/material";
+import * as sdk from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 
 const BoxInput = styled(Box)`
@@ -56,17 +57,18 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     [onChangeEvent, tradeData]
   );
 
-  myLog("isBalanceLimit", isBalanceLimit, tradeData?.balance);
   if (typeof handleError !== "function") {
     handleError = ({ balance, tradeValue }: T) => {
+      myLog("handleError", balance, tradeValue);
+
       if (
         (isBalanceLimit &&
-          !balance &&
+          balance &&
           typeof tradeValue !== "undefined" &&
           isBalanceLimit &&
-          balance < tradeValue) ||
+          sdk.toBig(balance).lt(tradeValue)) ||
         !tradeValue ||
-        tradeValue < 1
+        Number(tradeValue) < 1
       ) {
         return {
           error: true,
@@ -97,7 +99,7 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     ...inputNFTProps,
     ...rest,
   };
-
+  myLog("tradeData", tradeData);
   return (
     // @ts-ignore
     <InputCoin<T, I, CoinInfo<I>>

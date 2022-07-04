@@ -12,6 +12,7 @@ import {
   Explorer,
   getShortAddr,
   getValuePrecisionThousand,
+  globalSetup,
   TableType,
   TransferIcon,
   WaitingIcon,
@@ -30,6 +31,8 @@ import { DateRange } from "@mui/lab";
 import { UserTxTypes } from "@loopring-web/loopring-sdk";
 import React from "react";
 import { useSettings } from "../../../stores";
+import { useLocation } from "react-router-dom";
+import _ from "lodash";
 
 export type TxsFilterProps = {
   tokenSymbol?: string;
@@ -90,7 +93,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 120px auto auto auto 120px 150px !important;`
+        ? `--template-columns: 124px auto auto auto 120px 120px !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -152,8 +155,10 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       t,
     } = props;
     const { isMobile } = useSettings();
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     const [page, setPage] = React.useState(1);
-    const [filterType, setFilterType] = React.useState(
+    const [filterType, setFilterType] = React.useState<TransactionTradeTypes>(
       TransactionTradeTypes.allTypes
     );
     const [filterDate, setFilterDate] = React.useState<
@@ -173,15 +178,14 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       memo: "",
     });
 
-    const pageSize = pagination ? pagination.pageSize : 10;
-
-    const updateData = React.useCallback(
+    const updateData = _.debounce(
       ({
         TableType,
         currFilterType = filterType,
         currFilterDate = filterDate,
         currFilterToken = filterToken,
         currPage = page,
+        pageSize = pagination?.pageSize ?? 10,
       }) => {
         if (TableType === "filter") {
           currPage = 1;
@@ -191,12 +195,14 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         const formattedType = currFilterType.toUpperCase();
         const types =
           currFilterType === TransactionTradeTypes.allTypes
-            ? "deposit,transfer,offchain_withdrawal"
+            ? `${UserTxTypes.DEPOSIT},${UserTxTypes.TRANSFER},${UserTxTypes.DELEGATED_FORCE_WITHDRAW},${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`
             : formattedType === TransactionTradeTypes.deposit
-            ? "deposit"
+            ? UserTxTypes.DEPOSIT
             : formattedType === TransactionTradeTypes.transfer
-            ? "transfer"
-            : "offchain_withdrawal";
+            ? UserTxTypes.TRANSFER
+            : formattedType === TransactionTradeTypes.forceWithdraw
+            ? UserTxTypes.DELEGATED_FORCE_WITHDRAW
+            : `${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`;
         const start = Number(moment(currFilterDate[0]).format("x"));
         const end = Number(moment(currFilterDate[1]).format("x"));
         getTxnList({
@@ -208,7 +214,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           end: Number.isNaN(end) ? -1 : end,
         });
       },
-      [filterDate, filterType, filterToken, getTxnList, page, pageSize]
+      globalSetup.wait
     );
 
     const handleFilterChange = React.useCallback(
@@ -261,8 +267,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           key: "side",
           name: t("labelTxSide"),
           formatter: ({ row }) => {
-            const value = row["side"];
-            const renderValue = t(`labelType${value.toUpperCase()}`);
+            const value = row.side;
+            const renderValue = t(`labelType${value?.toUpperCase()}`);
             // const renderValue =
             //   value === TransactionTradeTypes.deposit
             //     ? t("labelReceive")
@@ -280,14 +286,19 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
             const hasSymbol =
-              row["side"] === "TRANSFER"
-                ? row["receiverAddress"]?.toUpperCase() ===
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? t("labelForceWithdrawTotalDes", {
+                    address: getShortAddr(row.withdrawalInfo?.recipient),
+                    symbol: row.symbol,
+                  })
+                : row.side === TransactionTradeTypes.transfer
+                ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
-                : row["side"] === "DEPOSIT"
+                : row.side === TransactionTradeTypes.deposit
                 ? "+"
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                : row.side === TransactionTradeTypes.withdraw
                 ? "-"
                 : "";
 
@@ -302,9 +313,17 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 )}`
               : EmptyValueTag;
             return (
-              <Box className="rdg-cell-value textAlignRight">
+              <Box
+                className="rdg-cell-value textAlignRight"
+                title={`${hasSymbol}  ${
+                  row.side !== TransactionTradeTypes.forceWithdraw
+                    ? `${renderValue} ${unit}`
+                    : ""
+                }`}
+              >
                 {hasSymbol}
-                {renderValue} {unit || ""}
+                {row.side !== TransactionTradeTypes.forceWithdraw &&
+                  `${renderValue} ${unit}`}
               </Box>
             );
           },
@@ -338,19 +357,26 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const receiverAddress =
-              row["side"] === "OFFCHAIN_WITHDRAWAL"
+              row.side === TransactionTradeTypes.withdraw
                 ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
                 : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
             const [from, to] =
-              row["side"] === "TRANSFER"
-                ? row["receiverAddress"]?.toUpperCase() ===
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? [
+                    t("labelForceWithdrawDes", {
+                      address: getShortAddr(row.withdrawalInfo?.recipient),
+                    }),
+                    "",
+                  ]
+                : row.side === TransactionTradeTypes.transfer
+                ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row["side"] === "DEPOSIT"
+                : row.side === TransactionTradeTypes.deposit
                 ? ["L1", "L2"]
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                : row.side === TransactionTradeTypes.withdraw
                 ? ["L2", receiverAddress]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
@@ -365,19 +391,24 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 display={"inline-flex"}
                 justifyContent={"flex-end"}
                 alignItems={"center"}
+                title={hash}
               >
                 <Link
                   style={{
                     cursor: "pointer",
                     color: "var(--color-primary)",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
                   }}
+                  maxWidth={148}
                   target="_blank"
                   rel="noopener noreferrer"
                   href={path}
-                  title={hash}
+                  title={
+                    from && to ? from + ` ${DirectionTag} ` + to : from + to
+                  }
                 >
-                  {from + ` ${DirectionTag} ` + to}
-                  {/*{hash ? getFormattedHash(hash) : EmptyValueTag}*/}
+                  {from && to ? from + ` ${DirectionTag} ` + to : from + to}
                 </Link>
                 <Box marginLeft={1}>
                   <CellStatus {...{ row }} />
@@ -441,13 +472,20 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
             const side =
-              row.side === TransactionTradeTypes.deposit
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? t("labelTxFilterFORCEWITHDRAW")
+                : row.side === TransactionTradeTypes.deposit
                 ? t("labelReceive")
                 : row.side === TransactionTradeTypes.transfer
                 ? t("labelSendL2")
                 : t("labelSendL1");
             const hasSymbol =
-              row.side === "TRANSFER"
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? t("labelForceWithdrawTotalDes", {
+                    address: getShortAddr(row.withdrawalInfo?.recipient),
+                    symbol: row.symbol,
+                  })
+                : row.side === "TRANSFER"
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
@@ -458,7 +496,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? "-"
                 : "";
             const sideIcon =
-              row.side === TransactionTradeTypes.deposit ? (
+              row.side === TransactionTradeTypes.forceWithdraw ? (
+                <WithdrawIcon fontSize={"inherit"} />
+              ) : row.side === TransactionTradeTypes.deposit ? (
                 <DepositIcon fontSize={"inherit"} />
               ) : row.side === TransactionTradeTypes.transfer ? (
                 <TransferIcon fontSize={"inherit"} />
@@ -493,8 +533,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 display={"flex"}
                 alignItems={"center"}
                 justifyContent={"flex-start"}
-                title={side}
                 height={"100%"}
+                title={`${hasSymbol}  ${
+                  row.side !== TransactionTradeTypes.forceWithdraw
+                    ? `${renderValue} ${unit}`
+                    : ""
+                }`}
               >
                 {/*{side + " "}*/}
                 <Typography
@@ -503,10 +547,15 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   variant={"h3"}
                   alignItems={"center"}
                   flexDirection={"column"}
-                  width={"50px"}
+                  width={"62px"}
                 >
                   {sideIcon}
-                  <Typography fontSize={10} marginTop={-1}>
+                  <Typography
+                    component={"span"}
+                    fontSize={10}
+                    marginTop={-1}
+                    textOverflow={"ellipsis"}
+                  >
                     {side}
                   </Typography>
                 </Typography>
@@ -517,7 +566,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     alignItems={"center"}
                   >
                     {hasSymbol}
-                    {renderValue} {unit || ""}
+                    {row.side !== TransactionTradeTypes.forceWithdraw &&
+                      `${renderValue} ${unit}`}
                   </Typography>
                   <Typography color={"textSecondary"} variant={"body2"}>
                     {renderFee}
@@ -534,20 +584,27 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
             const receiverAddress =
-              row["side"] === "OFFCHAIN_WITHDRAWAL"
+              row.side === TransactionTradeTypes.withdraw
                 ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
                 : getShortAddr(row.receiverAddress, isMobile);
 
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
             const [from, to] =
-              row["side"] === "TRANSFER"
+              row.side === TransactionTradeTypes.forceWithdraw
+                ? [
+                    t("labelForceWithdrawDes", {
+                      address: getShortAddr(row.withdrawalInfo?.recipient),
+                    }),
+                    "",
+                  ]
+                : row.side === TransactionTradeTypes.transfer
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row["side"] === "DEPOSIT"
+                : row.side === TransactionTradeTypes.deposit
                 ? ["L1", "L2"]
-                : row["side"] === "OFFCHAIN_WITHDRAWAL"
+                : row.side === TransactionTradeTypes.withdraw
                 ? ["L2", receiverAddress]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
@@ -566,6 +623,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               <Box
                 display={"flex"}
                 flex={1}
+                title={hash}
                 flexDirection={"column"}
                 onClick={() => {
                   window.open(path, "_blank");
@@ -577,15 +635,32 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   justifyContent={"flex-end"}
                   alignItems={"center"}
                 >
-                  <Typography
+                  {/*<Typography*/}
+                  {/*  style={{*/}
+                  {/*    cursor: "pointer",*/}
+                  {/*  }}*/}
+                  {/*  color={"var(--color-primary)"}*/}
+                  {/*  title={hash}*/}
+                  {/*>*/}
+                  {/*  {from + ` ${DirectionTag} ` + to}*/}
+                  {/*</Typography>*/}
+                  <Link
                     style={{
                       cursor: "pointer",
+                      color: "var(--color-primary)",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
                     }}
-                    color={"var(--color-primary)"}
-                    title={hash}
+                    maxWidth={148}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={path}
+                    title={
+                      from && to ? from + ` ${DirectionTag} ` + to : from + to
+                    }
                   >
-                    {from + ` ${DirectionTag} ` + to}
-                  </Typography>
+                    {from && to ? from + ` ${DirectionTag} ` + to : from + to}
+                  </Link>
                   <Typography marginLeft={1}>
                     <CellStatus {...{ row }} />
                   </Typography>
@@ -610,6 +685,17 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
+    React.useEffect(() => {
+      let filters: any = {};
+      updateData.cancel();
+      if (searchParams.get("types")) {
+        filters.type = searchParams.get("types");
+      }
+      handleFilterChange(filters);
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
 
     return (
       <TableStyled isMobile={isMobile}>
@@ -675,7 +761,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         {pagination && (
           <TablePagination
             page={page}
-            pageSize={pageSize}
+            pageSize={pagination.pageSize}
             total={pagination.total}
             onPageChange={handlePageChange}
           />

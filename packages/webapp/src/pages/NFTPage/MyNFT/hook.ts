@@ -1,7 +1,9 @@
 import {
   IPFS_LOOPRING_SITE,
+  IPFS_META_URL,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
+  Media,
   myLog,
   NFTWholeINFO,
   SagaStatus,
@@ -37,8 +39,7 @@ export const useMyNFT = () => {
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
-  const { setShowNFTTransfer, setShowNFTWithdraw, setShowNFTDetail } =
-    useOpenModals();
+  const { setShowNFTDetail } = useOpenModals();
   const { etherscanBaseUrl } = useSystem();
   const [page, setPage] = useState(1);
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
@@ -120,6 +121,8 @@ export const useMyNFT = () => {
       nftMap && nftMap[nftData as NftData] ? nftMap[nftData as NftData] : {};
     let tokenInfo: NFTWholeINFO = {
       ...item,
+      ...item.metadata?.base,
+      ...item.metadata?.extra,
       ...nftToken,
     } as NFTWholeINFO;
     tokenInfo = {
@@ -133,12 +136,21 @@ export const useMyNFT = () => {
       const meta = (await getMetaFromContractORIpfs(
         tokenInfo
       )) as LOOPRING_NFT_METADATA;
+      let metadata_tokenId: number | undefined = undefined;
+      if (meta.hasOwnProperty("tokenId")) {
+        metadata_tokenId = meta["tokenId"];
+        delete meta["tokenId"];
+      }
+
       if (meta && meta !== {} && (meta.name || meta.image)) {
-        tokenInfo = {
-          ...tokenInfo,
-          ...(meta as any),
-          isFailedLoadMeta: false,
-        };
+        tokenInfo = Object.assign(
+          metadata_tokenId !== undefined ? { metadata_tokenId } : {},
+          {
+            ...tokenInfo,
+            ...(meta as any),
+            isFailedLoadMeta: false,
+          }
+        );
       } else {
         tokenInfo = {
           ...tokenInfo,
@@ -151,6 +163,30 @@ export const useMyNFT = () => {
         isFailedLoadMeta: false,
       };
     }
+    if (
+      tokenInfo.hasOwnProperty("animationUrl") &&
+      tokenInfo.animationUrl &&
+      tokenInfo?.animationUrl !== ""
+    ) {
+      const req = await fetch(
+        tokenInfo.animationUrl.replace(IPFS_META_URL, IPFS_LOOPRING_SITE),
+        {
+          method: "HEAD",
+        }
+      );
+      // myLog("animationUrl", "content-type", req.headers.get("content-type"));
+
+      if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
+        tokenInfo.__mediaType__ = Media.Audio;
+      }
+      if (/video/gi.test(req?.headers?.get("content-type") ?? "")) {
+        tokenInfo.__mediaType__ = Media.Video;
+      }
+      if (/image/gi.test(req?.headers?.get("content-type") ?? "")) {
+        tokenInfo.__mediaType__ = Media.Image;
+      }
+    }
+
     return tokenInfo;
   }, []);
 
@@ -160,22 +196,20 @@ export const useMyNFT = () => {
         item.isCounterFactualNFT &&
         item.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
       ) {
-        await LoopringAPI.userAPI?.getAvailableBroker().then(({ broker }) => {
-          updateNFTDeployData({ broker });
-        });
+        await LoopringAPI.userAPI
+          ?.getAvailableBroker({ type: 0 })
+          .then(({ broker }) => {
+            updateNFTDeployData({ broker });
+          });
         updateNFTDeployData(item);
       }
       updateNFTWithdrawData(item);
-      setPopItem(item);
       updateNFTTransferData(item);
-      setShowNFTTransfer({ isShow: false, ...item });
-      setShowNFTWithdraw({ isShow: false, ...item });
+      setPopItem(item);
       setShowNFTDetail({ isShow: true, ...item });
     },
     [
       setShowNFTDetail,
-      setShowNFTTransfer,
-      setShowNFTWithdraw,
       updateNFTDeployData,
       updateNFTTransferData,
       updateNFTWithdrawData,
@@ -207,7 +241,6 @@ export const useMyNFT = () => {
 
   const renderNFT = React.useCallback(async () => {
     let mediaPromise: any[] = [];
-
     setNFTList(() => {
       return walletLayer2NFT.map((item) => {
         return {
@@ -215,6 +248,7 @@ export const useMyNFT = () => {
           nftIdView: new BigNumber(item?.nftId ?? "0", 16).toString(),
           image: item.metadata?.uri,
           ...item.metadata?.base,
+          ...item.metadata?.extra,
         };
       }) as any;
     });

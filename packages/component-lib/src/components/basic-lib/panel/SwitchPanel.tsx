@@ -11,33 +11,33 @@ import { PanelContent, SwitchPanelProps } from "./Interface";
 
 export const SwipeableViewsStyled = styled(SwipeableViews)<
   SwipeableViewsProps & {
-  _height?: number | string;
-  _width?: number | string;
-  isMobile?: boolean | undefined;
-}
-  >`
+    _height?: number | string;
+    _width?: number | string;
+    isMobile?: boolean | undefined;
+  }
+>`
   position: relative;
   flex: 1;
   ${({ _height, _width, isMobile }) => ` 
     height: ${
-  typeof _height === "string"
-    ? _height
-    : typeof _height === "number"
-      ? _height + "px"
-      : `var(--swap-box-height)`
-};     
+      typeof _height === "string"
+        ? _height
+        : typeof _height === "number"
+        ? _height + "px"
+        : `var(--swap-box-height)`
+    };     
     ${
-  isMobile
-    ? ``
-    : `   
+      isMobile
+        ? ``
+        : `   
       width: ${
-      typeof _width === "string"
-        ? _width
-        : typeof _width === "number"
+        typeof _width === "string"
+          ? _width
+          : typeof _width === "number"
           ? _width + "px"
           : `var(--swap-box-width)`
-    };`
-}  
+      };`
+    }  
          
   `}
   ${({ theme }) => toolBarPanel({ theme })}
@@ -112,7 +112,11 @@ function _SwitchPanel<T extends string>(
   const hasToolBar = panelList.find((item) => item.toolBarItem !== undefined);
   return (
     <SwipeableViewsStyled
-      className={hasToolBar ? `${className}` : `noToolBar ${className}`}
+      className={
+        hasToolBar
+          ? `${className ? className : ""}`
+          : `noToolBar ${className ? className : ""}`
+      }
       axis={theme.direction === "rtl" ? "x-reverse" : "x"}
       index={index}
       _height={rest._height}

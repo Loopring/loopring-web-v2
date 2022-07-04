@@ -29,6 +29,7 @@ export interface ModalState {
   isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
   isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any>>;
+  isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any>>;
   isShowResetAccount: ModalStatePlayLoad;

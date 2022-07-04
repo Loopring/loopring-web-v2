@@ -427,6 +427,13 @@ export const DeployBase = (props: PanelProps) => {
   return <BasicPanel {...props} {...propsPatch} />;
 };
 
+export const ForceWithdrawBase = (props: PanelProps) => {
+  const propsPatch = {
+    title: "labelForceWithdrawTitle",
+  };
+  return <BasicPanel {...props} {...propsPatch} />;
+};
+
 export const TransferBase = (props: PanelProps) => {
   const propsPatch = {
     title: "labelL2toL2Title",

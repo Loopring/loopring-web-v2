@@ -7,7 +7,12 @@ import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
+import {
+  useTicker,
+  ModalGroup,
+  useDeposit,
+  useForceWithdraw,
+} from "@loopring-web/core";
 import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
@@ -95,10 +100,10 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   const { setTheme } = useSettings();
 
   // const { pathname } = useLocation();
-  const query = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(location.search);
   React.useEffect(() => {
-    if (query.has("theme")) {
-      query.get("theme") === ThemeType.dark
+    if (searchParams.has("theme")) {
+      searchParams.get("theme") === ThemeType.dark
         ? setTheme("dark")
         : setTheme("light");
     }
@@ -109,7 +114,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
       window.location.replace(`${window.location.origin}/error`);
     }
   }, [state]);
-  if (query.has("___OhTrustDebugger___")) {
+  if (searchParams.has("___OhTrustDebugger___")) {
     // @ts-ignore
     setMyLog(true);
   }
@@ -118,19 +123,14 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
   logEvent(analytics, "Route", {
     protocol: window.location.protocol,
     pathname: window.location.pathname,
-    query: query,
+    query: searchParams,
   });
-  // firebase.push("Route", {
-  //   protocol: window.location.protocol,
-  //   pathname: window.location.pathname,
-  //   query: query,
-  // });
 
   return (
     <>
       <Switch>
         <Route exact path="/wallet">
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} isLandPage />
@@ -142,7 +142,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <LoadingPage />
         </Route>
         <Route path={["/guardian", "/guardian/*"]}>
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={false} />
@@ -167,7 +167,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </Container>
         </Route>
         <Route exact path="/">
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} isLandPage />
@@ -175,7 +175,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <LandPage />
         </Route>
         <Route exact path="/document/:path">
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} isLandPage />
@@ -192,7 +192,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           </Container>
         </Route>
         <Route exact path="/notification/:path">
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} isLandPage />
@@ -210,7 +210,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
 
         <Route exact path="/investrule/:path">
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} isLandPage />
@@ -231,7 +231,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           exact
           path={["/document", "/race-event", "/notification", "/investrule"]}
         >
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} />
@@ -239,7 +239,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           <ErrorPage messageKey={"error404"} />
         </Route>
         <Route exact path={["/race-event/:path"]}>
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} />
@@ -248,7 +248,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         </Route>
 
         <Route path="/trade/pro">
-          {query && query.has("noheader") ? (
+          {searchParams && searchParams.has("noheader") ? (
             <></>
           ) : (
             <Header isHideOnScroll={true} />
@@ -319,7 +319,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         />
       </Switch>
       {state === SagaStatus.DONE && <WrapModal />}
-      {query && query.has("nofooter") ? <></> : <Footer />}
+      {searchParams && searchParams.has("nofooter") ? <></> : <Footer />}
     </>
   );
 };

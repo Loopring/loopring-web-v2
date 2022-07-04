@@ -23,6 +23,7 @@ import {
   setShowOtherExchange,
   setShowNFTDetail,
   setShowLayerSwapNotice,
+  setShowNFTDeploy,
 } from "./reducer";
 
 import React from "react";
@@ -61,6 +62,12 @@ export const useOpenModals = () => {
         } else {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: "Transfer" }));
         }
+      },
+      [dispatch]
+    ),
+    setShowNFTDeploy: React.useCallback(
+      (state: ModalStatePlayLoad & Transaction) => {
+        dispatch(setShowNFTDeploy(state));
       },
       [dispatch]
     ),

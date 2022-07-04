@@ -404,6 +404,7 @@ export function useChargeFees({
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.UPDATE_ACCOUNT,
           sdk.OffchainFeeReqType.TRANSFER,
+          sdk.OffchainFeeReqType.FORCE_WITHDRAWAL,
           sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
           sdk.OffchainNFTFeeReqType.NFT_DEPLOY,
         ].includes(Number(requestType))) ||

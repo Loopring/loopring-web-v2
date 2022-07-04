@@ -16,6 +16,7 @@ export enum TransactionTradeTypes {
   deposit = "DEPOSIT",
   withdraw = "OFFCHAIN_WITHDRAWAL",
   transfer = "TRANSFER",
+  forceWithdraw = "DELEGATED_FORCE_WITHDRAW",
 }
 
 export type RawDataTransactionItem = {
