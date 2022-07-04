@@ -272,6 +272,7 @@ export const MintNFTConfirm = <
                     {dropdownStatus === "up" && (
                       <FeeTokenItemWrapper padding={2}>
                         <Typography
+                          component={"span"}
                           variant={"body2"}
                           color={"textSecondary"}
                           marginRight={2}
@@ -300,14 +301,20 @@ export const MintNFTConfirm = <
             <Grid container maxWidth={"inherit"} spacing={2}>
               <Grid item xs={12} alignSelf={"stretch"}>
                 <Typography
+                  component={"span"}
                   display={"inline-flex"}
                   flexDirection={isMobile ? "column" : "row"}
                   variant={"body1"}
                 >
-                  <Typography color={"textSecondary"} marginRight={1}>
+                  <Typography
+                    color={"textSecondary"}
+                    component={"span"}
+                    marginRight={1}
+                  >
                     {t("labelNFTName")}
                   </Typography>
                   <Typography
+                    component={"span"}
                     color={"var(--color-text-third)"}
                     whiteSpace={"break-spaces"}
                     style={{ wordBreak: "break-all" }}
@@ -319,11 +326,16 @@ export const MintNFTConfirm = <
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
                 <Typography
+                  component={"span"}
                   display={"inline-flex"}
                   flexDirection={isMobile ? "column" : "row"}
                   variant={"body1"}
                 >
-                  <Typography color={"textSecondary"} marginRight={1}>
+                  <Typography
+                    component={"span"}
+                    color={"textSecondary"}
+                    marginRight={1}
+                  >
                     {t("labelNFTID")}
                   </Typography>
                   <Link
@@ -351,14 +363,20 @@ export const MintNFTConfirm = <
               </Grid>
               <Grid item xs={12} alignSelf={"stretch"}>
                 <Typography
+                  component={"span"}
                   display={"inline-flex"}
                   flexDirection={isMobile ? "column" : "row"}
                   variant={"body1"}
                 >
-                  <Typography color={"textSecondary"} marginRight={1}>
+                  <Typography
+                    component={"span"}
+                    color={"textSecondary"}
+                    marginRight={1}
+                  >
                     {t("labelNFTContractAddress")}
                   </Typography>
                   <Typography
+                    component={"span"}
                     color={"var(--color-text-third)"}
                     whiteSpace={"break-spaces"}
                     style={{ wordBreak: "break-all" }}
@@ -373,10 +391,15 @@ export const MintNFTConfirm = <
                   flexDirection={isMobile ? "column" : "row"}
                   variant={"body1"}
                 >
-                  <Typography color={"textSecondary"} marginRight={1}>
+                  <Typography
+                    component={"span"}
+                    color={"textSecondary"}
+                    marginRight={1}
+                  >
                     {t("labelNFTType")}
                   </Typography>
                   <Typography
+                    component={"span"}
                     color={"var(--color-text-third)"}
                     whiteSpace={"break-spaces"}
                     style={{ wordBreak: "break-all" }}
@@ -392,10 +415,15 @@ export const MintNFTConfirm = <
                   flexDirection={isMobile ? "column" : "row"}
                   variant={"body1"}
                 >
-                  <Typography color={"textSecondary"} marginRight={1}>
+                  <Typography
+                    component={"span"}
+                    color={"textSecondary"}
+                    marginRight={1}
+                  >
                     {t("labelNFTAmount")}
                   </Typography>
                   <Typography
+                    component={"span"}
                     color={"var(--color-text-third)"}
                     whiteSpace={"break-spaces"}
                     style={{ wordBreak: "break-all" }}
@@ -424,6 +452,7 @@ export const MintNFTConfirm = <
                       whiteSpace={"break-spaces"}
                       style={{ wordBreak: "break-all" }}
                       title={"ERC1155"}
+                      component={"span"}
                     >
                       {EmptyValueTag}
                     </Typography>
@@ -472,6 +501,7 @@ export const MintNFTConfirm = <
                     whiteSpace={"break-spaces"}
                     style={{ wordBreak: "break-all" }}
                     title={"ERC1155"}
+                    component={"span"}
                   >
                     {EmptyValueTag}
                   </Typography>

@@ -153,8 +153,6 @@ export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> &
 export type WithdrawInfoProps<C> = {
   withdrawI18nKey?: string;
   withdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined;
-  withdrawType: WithdrawType;
-  withdrawTypes: Partial<WithdrawTypes>;
   chargeFeeTokenList: Array<C>;
   feeInfo: C;
   isFeeNotEnough: {
@@ -174,6 +172,8 @@ export type WithdrawExtendProps<T, I, C> = {
     | "isLoopringAddress"
     | "isSameAddress"
     | undefined;
+  withdrawType?: WithdrawType;
+  withdrawTypes?: Partial<WithdrawTypes>;
   realAddr?: string;
   isAddressCheckLoading: boolean;
   isCFAddress: boolean;
@@ -194,12 +194,29 @@ export type WithdrawExtendProps<T, I, C> = {
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
   BasicACoinTradeViewProps<T, I> & WithdrawExtendProps<T, I, C>;
 
+export type ForceWithdrawExtendProps<T, I, C> = {
+  addressDefault: string;
+  // accAddr: string;
+  realAddr: string;
+  isNotAvaiableAddress: boolean;
+  isAddressCheckLoading: boolean;
+  addrStatus: AddressError;
+  // disableWithdrawList?: string[];
+  onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
+  handleFeeChange: (value: C) => void;
+  handleOnAddressChange: (value: string | undefined | I) => void;
+  wait?: number;
+  onBack?: () => void;
+} & WithdrawInfoProps<C>;
+export type ForceWithdrawViewProps<T, I, C = CoinKey<I> | string> =
+  BasicACoinTradeViewProps<T, I> & ForceWithdrawExtendProps<T, I, C>;
+
 export type inputNFTProps<T, I, C = CoinInfo<I>> = RequireOne<
   InputCoinProps<T, I, C>,
   "label"
 >;
-export type inputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
-  InputButtonProps<T, I, C>,
+export type InputButtonDefaultProps<T, I, C = CoinInfo<I>> = RequireOne<
+  Partial<InputButtonProps<T, I, C>>,
   "label"
 >;
 
@@ -230,8 +247,8 @@ export type BasicACoinTradeViewProps<T, I> = Required<
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
   type?: "TOKEN";
   inputBtnRef: React.Ref<any>;
-  inputButtonProps?: inputButtonDefaultProps<I, CoinInfo<I>>;
-  inputButtonDefaultProps: inputButtonDefaultProps<I, CoinInfo<I>>;
+  inputButtonProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
+  inputButtonDefaultProps?: InputButtonDefaultProps<I, CoinInfo<I>>;
 };
 export type BasicANFTTradeProps<T, I> = Omit<
   BasicACoinTradeViewProps<T, I>,
@@ -252,7 +269,7 @@ export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
     switchType: "Tomenu" | "Tobutton"
   ) => Promise<void>;
   onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>;
-  inputButtonProps?: inputButtonDefaultProps<T, I>;
+  inputButtonProps?: InputButtonDefaultProps<T, I>;
 } & Partial<SwitchPanelProps<any>>;
 
 export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {

@@ -20,6 +20,7 @@ import {
   NFTDeployViewProps,
   NFTMetaViewProps,
   NFTMintAdvanceViewProps,
+  ForceWithdrawViewProps,
 } from "./components/Interface";
 import {
   SwapData,
@@ -112,6 +113,12 @@ export type NFTMintAdvanceProps<T, I, C = FeeInfo> = NFTMintAdvanceViewProps<
 >;
 
 export type NFTDeployProps<T, I, C = FeeInfo> = NFTDeployViewProps<T, I, C>;
+export type ForceWithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<
+  T,
+  I
+> &
+  ForceWithdrawViewProps<T, I, C>;
+
 /**
  *  @type SwapProps
  *  @param swapTradeData: SwapTradeData<T>

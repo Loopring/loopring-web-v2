@@ -66,14 +66,10 @@ export const ModalAccountInfo = withTranslation("common")(
       nftTransferProps,
       nftWithdrawProps,
       nftDeployProps,
-      // nftDepositProps,
-      // nftMintProps,
       nftMintAdvanceProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
-      // cancelNFTTransfer,
-      // cancelNFTWithdraw,
       copyToastOpen,
       openQRCode,
       closeBtnInfo,
@@ -124,9 +120,11 @@ export const ModalAccountInfo = withTranslation("common")(
               onBackReceive();
             },
           }}
-          nftTransferProps={nftTransferProps}
+          nftTransferProps={nftTransferProps as any}
+          nftWithdrawProps={nftWithdrawProps as any}
+          nftDeployProps={nftDeployProps as any}
           nftMintAdvanceProps={nftMintAdvanceProps as any}
-          nftWithdrawProps={nftWithdrawProps}
+          // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}
           exportAccountProps={exportAccountProps}
@@ -193,16 +191,7 @@ export const ModalAccountInfo = withTranslation("common")(
               justifyContent={"stretch"}
             >
               <NFTDetail
-                nftTransferProps={nftTransferProps}
-                nftWithdrawProps={nftWithdrawProps}
-                nftDeployProps={nftDeployProps}
-                // cancelNFTTransfer={cancelNFTTransfer}
-                // cancelNFTWithdraw={cancelNFTWithdraw}
-                // onNFTReload={onNFTReload}
                 etherscanBaseUrl={etherscanBaseUrl}
-                onDetailClose={() => {
-                  setShowNFTDetail({ isShow: false });
-                }}
                 popItem={isShowNFTDetail}
                 assetsRawData={assetsRawData}
               />

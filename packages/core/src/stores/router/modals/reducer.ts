@@ -2,13 +2,13 @@ import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import {
   ActiveAccountData,
   DepositData,
+  ForceWithdrawData,
   LAST_STEP,
   ModalDataStatus,
   NFT_MINT_VALUE,
   TransferData,
   WithdrawData,
 } from "./interface";
-import { UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
   MINT_LIMIT,
   MintTradeNFT,
@@ -16,12 +16,21 @@ import {
   NFTWholeINFO,
   TradeNFT,
 } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined,
   tradeValue: 0,
   balance: 0,
   address: undefined,
+  fee: undefined,
+};
+const initialForceWithdrawState: ForceWithdrawData = {
+  belong: undefined,
+  tradeValue: 0,
+  balance: 0,
+  // requesterAddress: string | undefined;
+  withdrawAddress: undefined,
   fee: undefined,
 };
 
@@ -80,6 +89,7 @@ const initialState: ModalDataStatus = {
   nftMintAdvanceValue: { ...initialTradeNFT },
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
+  forceWithdrawValue: { ...initialForceWithdrawState },
 };
 
 const modalDataSlice: Slice<ModalDataStatus> = createSlice({
@@ -96,6 +106,11 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       this.resetActiveAccountData(state);
       this.resetNFTMintData(state);
       this.resetNFTDeployData(state);
+      this.resetForceWithdrawData(state);
+    },
+    resetForceWithdrawData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.forceWithdrawValue = initialForceWithdrawState;
     },
 
     resetWithdrawData(state) {
@@ -165,18 +180,6 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     updateWithdrawData(state, action: PayloadAction<Partial<WithdrawData>>) {
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.withdraw;
-      // if (belong) {
-      //   state.withdrawValue.belong = belong;
-      // }
-      //
-      // if (balance === undefined || balance >= 0) {
-      //   state.withdrawValue.balance = balance;
-      // }
-      //
-      // state.withdrawValue.tradeValue = tradeValue;
-      // if (address === undefined || address !== "*") {
-      //   state.withdrawValue.address = address;
-      // }
       state.withdrawValue = {
         ...state.withdrawValue,
         balance,
@@ -186,28 +189,37 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
+
+    updateForceWithdrawData(
+      state,
+      action: PayloadAction<Partial<ForceWithdrawData>>
+    ) {
+      const {
+        belong,
+        balance,
+        tradeValue,
+        withdrawAddress,
+        // requesterAddress,
+        ...rest
+      } = action.payload;
+      state.lastStep = LAST_STEP.withdraw;
+      state.forceWithdrawValue = {
+        ...state.forceWithdrawValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.forceWithdrawValue.balance,
+        belong,
+        tradeValue,
+        // requesterAddress: requesterAddress !== "*" ? requesterAddress : undefined,
+        withdrawAddress: withdrawAddress !== "*" ? withdrawAddress : undefined,
+        ...rest,
+      };
+    },
     updateTransferData(state, action: PayloadAction<Partial<TransferData>>) {
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.transfer;
-      // if (belong) {
-      //   state.transferValue.belong = belong;
-      // }
-      //
-      // if (balance === undefined || balance >= 0) {
-      //   state.transferValue.balance = balance;
-      // }
-      //
-      // if (tradeValue === undefined || tradeValue >= 0) {
-      //   state.transferValue.tradeValue = tradeValue;
-      // }
-      //
-      // if (address === undefined || address !== "*") {
-      //   state.transferValue.address = address;
-      // }
-      // state.transferValue = {
-      //   ...state.transferValue,
-      //   ...rest,
-      // };
+
       state.transferValue = {
         ...state.transferValue,
         balance:
@@ -245,45 +257,52 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     updateNFTWithdrawData(
       state,
       action: PayloadAction<
-        Partial<WithdrawData & UserNFTBalanceInfo & NFTWholeINFO>
+        Partial<WithdrawData & sdk.UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, total, locked, ...rest } =
-        action.payload;
+      const { belong, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.nftWithdraw;
       state.nftWithdrawValue = {
         ...state.nftWithdrawValue,
-        balance:
-          balance === undefined || balance >= 0
-            ? balance
-            : state.nftWithdrawValue.balance,
         belong,
+        // balance: balance
+        //   ? balance
+        //   : rest.total !== undefined
+        //   ? sdk
+        //       .toBig(rest.total ?? 0)
+        //       .minus(rest.locked ?? 0)
+        //       .toNumber()
+        //   : state.nftWithdrawValue.balance,
         tradeValue:
           tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
         address: address !== "*" ? address : undefined,
+
         ...rest,
       };
     },
     updateNFTTransferData(
       state,
       action: PayloadAction<
-        Partial<TransferData & UserNFTBalanceInfo & NFTWholeINFO>
+        Partial<TransferData & sdk.UserNFTBalanceInfo & NFTWholeINFO>
       >
     ) {
-      const { belong, balance, tradeValue, address, total, locked, ...rest } =
-        action.payload;
+      const { belong, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.nftTransfer;
-
       state.nftTransferValue = {
         ...state.nftTransferValue,
-        balance:
-          balance === undefined || balance >= 0
-            ? balance
-            : state.nftTransferValue.balance,
         belong,
+        // balance: balance
+        //   ? balance
+        //   : rest.total !== undefined
+        //   ? sdk
+        //       .toBig(rest.total ?? 0)
+        //       .minus(rest.locked ?? 0)
+        //       .toNumber()
+        //   : state.nftTransferValue.balance,
         tradeValue:
           tradeValue === undefined || tradeValue >= 0 ? tradeValue : undefined,
         address: address !== "*" ? address : undefined,
+
         ...rest,
       };
     },
@@ -379,6 +398,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
 export { modalDataSlice };
 
 export const {
+  updateForceWithdrawData,
   updateActiveAccountData,
   updateWithdrawData,
   updateTransferData,
@@ -389,6 +409,7 @@ export const {
   updateNFTMintData,
   updateNFTDeployData,
   updateNFTMintAdvanceData,
+  resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,
   resetNFTDepositData,

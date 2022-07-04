@@ -4,39 +4,34 @@ import {
   SwitchPanel,
   SwitchPanelProps,
 } from "../../basic-lib";
+import { ForceWithdrawProps } from "../../tradePanel";
 import { IBData } from "@loopring-web/common-resources";
+import { TradeMenuList, useBasicTrade } from "../../tradePanel/components";
 import React from "react";
-import { TransferProps } from "../../tradePanel";
-import {
-  TradeMenuList,
-  TransferWrap,
-  useBasicTrade,
-} from "../../tradePanel/components";
-import { TransferConfirm } from "../../tradePanel/components/TransferConfirm";
+import { ForceWithdrawConfirm } from "../../tradePanel/components/ForceWithdrawConfirm";
+import { ForceWithdrawWrap } from "../../tradePanel/components/ForceWithdrawWrap";
 
-export const TransferPanel = withTranslation(["common", "error"], {
+export const ForceWithdrawPanel = withTranslation(["common", "error"], {
   withRef: true,
 })(
   <T extends IBData<I>, I>({
-    walletMap = {},
-    coinMap = {},
-    isThumb = true,
     type = "TOKEN",
     chargeFeeTokenList,
-    onTransferClick,
-    transferBtnStatus,
+    onWithdrawClick,
+    withdrawBtnStatus,
     assetsData,
-    addrStatus,
-    isAddressCheckLoading,
+    walletMap = {},
+    coinMap = {},
     onBack,
     ...rest
-  }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
+  }: ForceWithdrawProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const { onChangeEvent, index, switchData } = useBasicTrade({
       ...rest,
-      walletMap,
       coinMap,
       type,
+      walletMap,
     });
+
     const [panelIndex, setPanelIndex] = React.useState(index + 1);
     const handleConfirm = (index: number) => {
       setPanelIndex(index);
@@ -46,6 +41,8 @@ export const TransferPanel = withTranslation(["common", "error"], {
       setPanelIndex(index + 1);
     }, [index]);
 
+    // LP token should not exist in withdraw panel for now
+
     const props: SwitchPanelProps<string> = {
       index: panelIndex, // show default show
       panelList: [
@@ -54,28 +51,29 @@ export const TransferPanel = withTranslation(["common", "error"], {
           element: React.useMemo(
             () => (
               // @ts-ignore
-              <TransferConfirm
+              <ForceWithdrawConfirm
                 {...{
                   ...rest,
-                  onTransferClick,
+                  onWithdrawClick,
                   type,
                   tradeData: switchData.tradeData,
-                  isThumb,
                   handleConfirm,
                 }}
               />
             ),
-            [rest, onTransferClick, type, switchData.tradeData, isThumb]
+            [onWithdrawClick, rest, switchData.tradeData, type]
           ),
           toolBarItem: (
-            <ModalBackButton
-              marginTop={0}
-              marginLeft={-2}
-              onBack={() => {
-                setPanelIndex(1);
-              }}
-              {...rest}
-            />
+            <>
+              <ModalBackButton
+                marginTop={0}
+                marginLeft={-2}
+                onBack={() => {
+                  setPanelIndex(1);
+                }}
+                {...rest}
+              />
+            </>
           ),
         },
         {
@@ -83,24 +81,23 @@ export const TransferPanel = withTranslation(["common", "error"], {
           element: React.useMemo(
             () => (
               // @ts-ignore
-              <TransferWrap
-                key={"trade"}
+              <ForceWithdrawWrap
+                key={"transfer"}
                 {...{
                   ...rest,
                   type,
-                  walletMap,
-                  coinMap,
-                  chargeFeeTokenList: chargeFeeTokenList || [],
+                  handleConfirm,
+                  chargeFeeTokenList: chargeFeeTokenList
+                    ? chargeFeeTokenList
+                    : [],
                   tradeData: switchData.tradeData,
                   onChangeEvent,
-                  isThumb,
+                  coinMap,
                   disabled: !!rest.disabled,
-                  handleConfirm,
-                  // onTransferClick,
-                  transferBtnStatus,
+                  onWithdrawClick,
+                  withdrawBtnStatus,
                   assetsData,
-                  addrStatus,
-                  isAddressCheckLoading,
+                  walletMap,
                 }}
               />
             ),
@@ -110,33 +107,14 @@ export const TransferPanel = withTranslation(["common", "error"], {
               chargeFeeTokenList,
               switchData.tradeData,
               onChangeEvent,
-              isThumb,
-              onTransferClick,
-              transferBtnStatus,
+              coinMap,
+              onWithdrawClick,
+              withdrawBtnStatus,
               assetsData,
-              addrStatus,
-              isAddressCheckLoading,
+              walletMap,
             ]
           ),
-          toolBarItem: React.useMemo(
-            () => (
-              <>
-                {onBack ? (
-                  <ModalBackButton
-                    marginTop={0}
-                    marginLeft={-2}
-                    onBack={() => {
-                      onBack();
-                    }}
-                    {...rest}
-                  />
-                ) : (
-                  <></>
-                )}
-              </>
-            ),
-            [onBack]
-          ),
+          toolBarItem: undefined,
         },
       ].concat(
         type === "TOKEN"
@@ -151,17 +129,16 @@ export const TransferPanel = withTranslation(["common", "error"], {
                         sorted: true,
                         ...rest,
                         onChangeEvent,
-                        walletMap,
                         coinMap,
                         selected: switchData.tradeData.belong,
                         tradeData: switchData.tradeData,
+                        walletMap,
                         //oinMap
                       }}
                     />
                   ),
                   [switchData, rest, onChangeEvent]
                 ),
-                // toolBarItem: undefined,
                 toolBarItem: undefined,
               },
             ] as any)
@@ -171,5 +148,5 @@ export const TransferPanel = withTranslation(["common", "error"], {
     return <SwitchPanel {...{ ...rest, ...props }} />;
   }
 ) as <T, I>(
-  props: TransferProps<T, I> & React.RefAttributes<any>
+  props: ForceWithdrawProps<T, I> & React.RefAttributes<any>
 ) => JSX.Element;

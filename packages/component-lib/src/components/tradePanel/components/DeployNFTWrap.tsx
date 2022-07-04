@@ -1,7 +1,7 @@
 import {
   EmptyValueTag,
   FeeInfo,
-  HelpIcon,
+  Info2Icon,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { NFTDeployViewProps } from "./Interface";
@@ -92,7 +92,7 @@ export const DeployNFTWrap = <
               <Typography component={"h4"} variant={"h3"} marginRight={1}>
                 {title ? title : t("nftDeployTitle")}
               </Typography>
-              <HelpIcon
+              <Info2Icon
                 {...bindHover(popupState)}
                 fontSize={"large"}
                 htmlColor={"var(--color-text-third)"}

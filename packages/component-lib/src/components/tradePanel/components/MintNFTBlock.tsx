@@ -32,7 +32,7 @@ import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
 import { Properties } from "./tool/Property";
 
-const GridStyle = styled(Grid)<GridProps & { isMobile: boolean }>`
+const GridStyle = styled(Grid)<GridProps>`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
   }
@@ -44,7 +44,7 @@ const GridStyle = styled(Grid)<GridProps & { isMobile: boolean }>`
     color: var(--color-text-secondary);
     font-size: ${({ theme }) => theme.fontDefault.body2};
   }
-` as (props: GridProps & { isMobile: boolean }) => JSX.Element;
+` as (props: GridProps) => JSX.Element;
 
 export const MintNFTBlock = <
   T extends Partial<NFTMETA>,
@@ -84,10 +84,10 @@ export const MintNFTBlock = <
       alignContent={"space-between"}
     >
       <GridStyle
+        className={isMobile ? "isMobile" : ""}
         flex={1}
         display={"flex"}
         container
-        isMobile={isMobile}
         spacing={2}
         alignContent={"flex-start"}
       >
@@ -116,7 +116,7 @@ export const MintNFTBlock = <
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
-            value={nftMeta.collection}
+            value={nftMeta.collection ?? ""}
             fullWidth
             select
             disabled={true}

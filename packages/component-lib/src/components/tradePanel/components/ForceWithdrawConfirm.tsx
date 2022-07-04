@@ -2,36 +2,29 @@ import { WithTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
   IBData,
-  NFTWholeINFO,
-  EmptyValueTag,
   FeeInfo,
-  useAddressTypeLists,
   TOAST_TIME,
+  Info2Icon,
 } from "@loopring-web/common-resources";
-import { Button, Toast } from "../../index";
-import { TransferViewProps } from "./Interface";
+import { Button, ForceWithdrawViewProps, Toast } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
 
-export const TransferConfirm = <
-  T extends IBData<I> & Partial<NFTWholeINFO>,
+export const ForceWithdrawConfirm = <
+  T extends IBData<I>,
   I,
   C extends FeeInfo
 >({
   t,
-  sureItsLayer2,
   handleConfirm,
   tradeData,
-  onTransferClick,
   realAddr,
-  type,
+  onWithdrawClick,
   feeInfo,
-  memo,
-}: TransferViewProps<T, I, C> & {
+}: Partial<ForceWithdrawViewProps<T, I, C>> & {
   handleConfirm: (index: number) => void;
 } & WithTranslation) => {
   const { isMobile } = useSettings();
-  const { walletList } = useAddressTypeLists();
   const [open, setOpen] = React.useState(false);
   return (
     <Grid
@@ -46,6 +39,7 @@ export const TransferConfirm = <
       minWidth={240}
       flexWrap={"nowrap"}
       spacing={2}
+      width={"100%"}
     >
       <Grid item xs={12}>
         <Box
@@ -59,51 +53,52 @@ export const TransferConfirm = <
             component={"h4"}
             variant={isMobile ? "h4" : "h3"}
             whiteSpace={"pre"}
+            marginRight={1}
           >
-            {t("labelL2toL2Title")}
+            {t("labelForceWithdrawTitle")}
           </Typography>
         </Box>
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2TokenAmount")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {tradeData?.tradeValue + " "}
-          {type === "NFT" ? tradeData?.name ?? "NFT" : tradeData?.belong}
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Address")}
+          {t("labelForceWithdrawAddress")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {realAddr}
         </Typography>
       </Grid>
+
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2AddressType")}
+          {t("labelForceWithdrawToken")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {walletList.find((item) => item.value === sureItsLayer2)?.label}
+          {tradeData?.balance + " " + tradeData?.belong}
         </Typography>
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelL2toL2Fee")}
+          {t("labelForceWithdrawFee")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
           {feeInfo?.fee + " "} {feeInfo?.belong}
         </Typography>
       </Grid>
 
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelMemo")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {memo ?? EmptyValueTag}
+      <Grid item alignSelf={"stretch"} position={"relative"}>
+        <Typography display={"inline-flex"}>
+          <Typography component={"span"} lineHeight={2}>
+            <Info2Icon color={"warning"} fontSize={"medium"} />
+          </Typography>
+          <Typography
+            color={"var(--color-warning)"}
+            variant={"body1"}
+            alignItems={"center"}
+            component={"span"}
+            marginLeft={1}
+          >
+            {t("labelForceWithdrawConfirm")}
+          </Typography>
         </Typography>
       </Grid>
 
@@ -114,8 +109,8 @@ export const TransferConfirm = <
           size={"medium"}
           color={"primary"}
           onClick={async () => {
-            if (onTransferClick) {
-              await onTransferClick({ ...tradeData, memo } as unknown as T);
+            if (onWithdrawClick) {
+              await onWithdrawClick({ ...tradeData } as unknown as T);
             } else {
               setOpen(true);
             }
