@@ -38,11 +38,13 @@ import {
   subMenuLayer2,
   headerMenuLandingData,
   AccountStatus,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
   BtnNotification,
   BtnSetting,
+  ProfileMenu,
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
@@ -148,10 +150,12 @@ const ToolBarItem = ({
   account,
   ...props
 }: any) => {
+  const match = useRouteMatch("/layer2/:item");
   const render = React.useMemo(() => {
     switch (buttonComponent) {
-      case ButtonComponentsMap.Download:
-        return <BtnDownload {...props} />;
+      case ButtonComponentsMap.ProfileMenu:
+        // @ts-ignore
+        return <ProfileMenu rounter={match?.params?.item as any} {...props} />;
       case ButtonComponentsMap.Notification:
         return (
           <BtnNotification
@@ -162,7 +166,10 @@ const ToolBarItem = ({
         );
       case ButtonComponentsMap.Setting:
         return <BtnSetting {...props} />;
+      case ButtonComponentsMap.Download:
+        return <BtnDownload {...props} />;
       case ButtonComponentsMap.WalletConnect:
+        console.log(props);
         return <WalletConnectBtn {...props} />;
       default:
         return undefined;
@@ -242,6 +249,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
       const theme = useTheme();
       const location = useLocation();
       const match = useRouteMatch("/trade/:item/:pair");
+      myLog("headerToolBarData", headerToolBarData);
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,

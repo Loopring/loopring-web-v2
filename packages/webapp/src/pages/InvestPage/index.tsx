@@ -10,6 +10,7 @@ import { useAccount, ViewAccountTemplate } from "@loopring-web/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
+import { DeFiPanel } from "./DeFiPanel";
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
@@ -21,6 +22,7 @@ const TableWrapperStyled = styled(Box)`
 export enum InvestType {
   MyBalance = 0,
   AmmPool = 1,
+  DeFi = 2,
 }
 export const BalanceTitle = () => {
   const { t } = useTranslation();
@@ -124,6 +126,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       >
         <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
         <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
+        <Tab value={InvestType.DeFi} label={<AmmTitle />} />
       </Tabs>
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.MyBalance && (
@@ -137,6 +140,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           </Box>
         )}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
+        {tabIndex === InvestType.DeFi && <DeFiPanel />}
       </Box>
     </Box>
   );

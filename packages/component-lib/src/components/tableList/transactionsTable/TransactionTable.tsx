@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, BoxProps, Link, Modal, Typography } from "@mui/material";
+import { Box, BoxProps, Link, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
 import { Column, Table, TablePagination } from "../../basic-lib";
@@ -20,7 +20,6 @@ import {
   WithdrawIcon,
 } from "@loopring-web/common-resources";
 import { Filter } from "./components/Filter";
-import { TxnDetailPanel, TxnDetailProps } from "./components/modal";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import {
   RawDataTransactionItem,
@@ -165,18 +164,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       DateRange<Date | string>
     >(["", ""]);
     const [filterToken, setFilterToken] = React.useState<string>("all");
-    const [modalState, setModalState] = React.useState(false);
-    const [txnDetailInfo, setTxnDetailInfo] = React.useState<TxnDetailProps>({
-      hash: "",
-      txHash: "",
-      status: "processed",
-      time: "",
-      from: "",
-      to: "",
-      amount: "",
-      fee: "",
-      memo: "",
-    });
 
     const updateData = _.debounce(
       ({
@@ -253,14 +240,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       [updateData, page]
     );
 
-    const handleTxnDetail = React.useCallback(
-      (prop: TxnDetailProps) => {
-        setModalState(true);
-        setTxnDetailInfo(prop);
-      },
-      [setModalState, setTxnDetailInfo]
-    );
-
     const getColumnModeTransaction = React.useCallback(
       (): Column<any, unknown>[] => [
         {
@@ -333,18 +312,21 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           name: t("labelTxFee"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const fee = row["fee"];
-            const renderValue = `${getValuePrecisionThousand(
-              fee.value,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              {
-                floor: false,
-                isTrade: true,
-              }
-            )} ${fee.unit}`;
+            const fee = row.fee;
+            const renderValue =
+              fee.value === 0 || fee.value === undefined
+                ? EmptyValueTag
+                : `${getValuePrecisionThousand(
+                    fee.value,
+                    undefined,
+                    undefined,
+                    undefined,
+                    false,
+                    {
+                      floor: false,
+                      isTrade: true,
+                    }
+                  )} ${fee.unit}`;
             return (
               <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
             );
@@ -446,7 +428,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [handleTxnDetail, etherscanBaseUrl, t]
+      [t, accAddress, isMobile, etherscanBaseUrl]
     );
 
     const getColumnMobileTransaction = React.useCallback(
@@ -673,7 +655,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [handleTxnDetail, etherscanBaseUrl, isMobile, t]
+      [t, accAddress, isMobile, etherscanBaseUrl]
     );
     const [isDropDown, setIsDropDown] = React.useState(true);
 
@@ -724,9 +706,6 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               />
             </TableFilterStyled>
           ))}
-        <Modal open={modalState} onClose={() => setModalState(false)}>
-          <TxnDetailPanel {...{ ...txnDetailInfo }} />
-        </Modal>
         <Table
           {...{
             ...defaultArgs,

@@ -1,15 +1,17 @@
 import { Box, IconButton } from "@mui/material";
 import {
   Account,
+  AccountStatus,
   DownloadIcon,
   NotificationIcon,
   Notify,
+  ProfileIcon,
   SettingIcon,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import { bindPopper } from "material-ui-popup-state/es";
-import { PopoverPure } from "../../basic-lib";
+import { PopoverPure, SubMenu, SubMenuList } from "../../basic-lib";
 import { SettingPanel } from "../../block/SettingPanel";
 import { NotificationPanel } from "../../block/NotificationPanel";
 
@@ -17,22 +19,11 @@ export const BtnDownload = ({
   t,
   url,
   i18nTitle,
-}: // i18nDescription,
-{
+}: {
   i18nTitle: string;
   i18nDescription: string;
   url: string;
 } & WithTranslation) => {
-  // const popupState = usePopupState({
-  //   variant: "popover",
-  //   popupId: "download-QRcode",
-  // });
-  // const Description = () => (
-  //   <Link target="_blank" rel="noopener noreferrer" href="https://loopring.io">
-  //     {t(i18nDescription)}
-  //   </Link>
-  // );
-
   return (
     <Box>
       <IconButton
@@ -44,29 +35,6 @@ export const BtnDownload = ({
       >
         <DownloadIcon />
       </IconButton>
-      {/*<PopoverPure*/}
-      {/*  {...bindPopper(popupState)}*/}
-      {/*  anchorOrigin={{*/}
-      {/*    vertical: "bottom",*/}
-      {/*    horizontal: "center",*/}
-      {/*  }}*/}
-      {/*  transformOrigin={{*/}
-      {/*    vertical: "top",*/}
-      {/*    horizontal: "center",*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  <Box margin={3}>*/}
-      {/*    <QRCodePanel*/}
-      {/*      {...{*/}
-      {/*        ...rest,*/}
-      {/*        title: t(i18nTitle),*/}
-      {/*        description: <Description />,*/}
-      {/*        url,*/}
-      {/*        t,*/}
-      {/*      }}*/}
-      {/*    />*/}
-      {/*  </Box>*/}
-      {/*</PopoverPure>*/}
     </Box>
   );
 };
@@ -133,15 +101,19 @@ export const BtnSetting = ({ t, label }: any) => {
   );
 };
 
-export const ProfileMenu = ({ t, label }: any) => {
+export const ProfileMenu = ({ t, label, readyState, router, subMenu }: any) => {
   const popupState = usePopupState({
     variant: "popover",
     popupId: "settingPop",
   });
-  return (
+  return readyState == AccountStatus.ACTIVATED ? (
     <Box>
-      <IconButton aria-label={t(label)} {...bindHover(popupState)}>
-        <SettingIcon />
+      <IconButton
+        aria-label={t(label)}
+        size={"large"}
+        {...bindHover(popupState)}
+      >
+        <ProfileIcon />
       </IconButton>
       <PopoverPure
         {...bindPopper(popupState)}
@@ -155,10 +127,19 @@ export const ProfileMenu = ({ t, label }: any) => {
         }}
       >
         <Box margin={2} minWidth={320}>
-          <SettingPanel />
+          <SubMenu>
+            <SubMenuList selected={router} subMenu={{ ...subMenu } as any} />
+          </SubMenu>
+          {/*  <MuiList>*/}
+          {/*  {[...router].map(() => {*/}
+          {/*    return <SubMenuItem />;*/}
+          {/*  })}*/}
+          {/*</MuiList>*/}
         </Box>
       </PopoverPure>
     </Box>
+  ) : (
+    <></>
   );
 };
 

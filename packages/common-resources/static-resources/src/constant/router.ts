@@ -16,7 +16,6 @@ import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
 } from "../loopring-interface";
-import { ProfileMenu } from "@loopring-web/component-lib";
 
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const headerRoot = "Landing-page";
@@ -27,18 +26,18 @@ export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSi
 export const IPFS_LOOPRING_SITE = sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 
 export enum ButtonComponentsMap {
-  Profile,
   Download,
   Notification,
   Setting,
+  ProfileMenu,
   WalletConnect,
 }
 
 export const ToolBarAvailableItem = [
-  ButtonComponentsMap.ProfileMenu,
   ButtonComponentsMap.Download,
   ButtonComponentsMap.Notification,
   ButtonComponentsMap.Setting,
+  ButtonComponentsMap.ProfileMenu,
   ButtonComponentsMap.WalletConnect,
 ];
 
@@ -47,11 +46,6 @@ export let headerToolBarData: Array<{
   handleClick?: (props: any) => void;
   [key: string]: any;
 }> = [
-  {
-    buttonComponent: ButtonComponentsMap.ProfileMenu,
-    i18nDescription: "labelProfile",
-    status: undefined,
-  },
   {
     buttonComponent: ButtonComponentsMap.Download,
     url: "https://loopring.io/#/wallet",
@@ -65,9 +59,14 @@ export let headerToolBarData: Array<{
   },
   { buttonComponent: ButtonComponentsMap.Setting, label: "labelSetting" },
   {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: "labelProfile",
+    readyState: undefined,
+  },
+  {
     buttonComponent: ButtonComponentsMap.WalletConnect,
     label: "labelConnectWallet",
-    status: undefined,
+    accountState: undefined,
     handleClick: undefined,
   },
 ];
