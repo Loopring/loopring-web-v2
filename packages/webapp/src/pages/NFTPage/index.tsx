@@ -1,6 +1,6 @@
 import { useRouteMatch } from "react-router-dom";
 
-import { Box, Button, Divider, Typography } from "@mui/material";
+import { Box, Button, Divider } from "@mui/material";
 import {
   SubMenu,
   SubMenuList,
@@ -39,82 +39,70 @@ export const NFTPage = () => {
         return <MyNFTPanel />;
     }
   }, [selected]);
-  // React.useEffect(() => {
-  //   if (store) {
-  //     setMyMintService(mintService);
-  //   }
-  //   return () => {
-  //     setMyMintService(null);
-  //   };
-  // }, [store]);
+
   const { isMobile } = useSettings();
-  // React.useEffect(() => {
-  //   return () => {
-  //     mintService.onSocket();
-  //   };
-  // });
-  // myLog("assetTitleProps", assetTitleProps.assetInfo);
+
   const activeViewTemplate = React.useMemo(
     () => (
       <>
-        {!isMobile && (
-          <Box
-            width={"200px"}
-            display={"flex"}
-            justifyContent={"stretch"}
-            marginRight={3}
-            marginBottom={2}
-            className={"MuiPaper-elevation2"}
-          >
-            <SubMenu>
-              <SubMenuList selected={selected} subMenu={subMenu as any} />
-              <Box marginX={3}>
-                <Divider />
-              </Box>
-              <Box
-                marginTop={1}
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
-                marginX={3}
-              >
-                <Box marginY={1} width={"100%"}>
-                  <Button
-                    variant={"contained"}
-                    color={"primary"}
-                    fullWidth
-                    size={"small"}
-                    href={"/#/nft/mintNFT"}
-                  >
-                    {t("labelMintNFT")}
-                  </Button>
-                </Box>
-                <Box marginY={1} width={"100%"}>
-                  <Button
-                    onClick={() => {
-                      setShowNFTMintAdvance({ isShow: true });
-                    }}
-                    variant={"outlined"}
-                    color={"primary"}
-                    fullWidth
-                  >
-                    {t("labelAdvanceMint")}
-                  </Button>
-                </Box>
-                <Box marginY={1} width={"100%"}>
-                  <Button
-                    variant={"outlined"}
-                    color={"primary"}
-                    fullWidth
-                    href={"/#/nft/depositNFT"}
-                  >
-                    {t("labelL1toL2NFT")}
-                  </Button>
-                </Box>
-              </Box>
-            </SubMenu>
-          </Box>
-        )}
+        {/*{!isMobile && (*/}
+        {/*  <Box*/}
+        {/*    width={"200px"}*/}
+        {/*    display={"flex"}*/}
+        {/*    justifyContent={"stretch"}*/}
+        {/*    marginRight={3}*/}
+        {/*    marginBottom={2}*/}
+        {/*    className={"MuiPaper-elevation2"}*/}
+        {/*  >*/}
+        {/*    <SubMenu>*/}
+        {/*      <SubMenuList selected={selected} subMenu={subMenu as any} />*/}
+        {/*      <Box marginX={3}>*/}
+        {/*        <Divider />*/}
+        {/*      </Box>*/}
+        {/*      <Box*/}
+        {/*        marginTop={1}*/}
+        {/*        display={"flex"}*/}
+        {/*        flexDirection={"column"}*/}
+        {/*        alignItems={"center"}*/}
+        {/*        marginX={3}*/}
+        {/*      >*/}
+        {/*        <Box marginY={1} width={"100%"}>*/}
+        {/*          <Button*/}
+        {/*            variant={"contained"}*/}
+        {/*            color={"primary"}*/}
+        {/*            fullWidth*/}
+        {/*            size={"small"}*/}
+        {/*            href={"/#/nft/mintNFT"}*/}
+        {/*          >*/}
+        {/*            {t("labelMintNFT")}*/}
+        {/*          </Button>*/}
+        {/*        </Box>*/}
+        {/*        <Box marginY={1} width={"100%"}>*/}
+        {/*          <Button*/}
+        {/*            onClick={() => {*/}
+        {/*              setShowNFTMintAdvance({ isShow: true });*/}
+        {/*            }}*/}
+        {/*            variant={"outlined"}*/}
+        {/*            color={"primary"}*/}
+        {/*            fullWidth*/}
+        {/*          >*/}
+        {/*            {t("labelAdvanceMint")}*/}
+        {/*          </Button>*/}
+        {/*        </Box>*/}
+        {/*        <Box marginY={1} width={"100%"}>*/}
+        {/*          <Button*/}
+        {/*            variant={"outlined"}*/}
+        {/*            color={"primary"}*/}
+        {/*            fullWidth*/}
+        {/*            href={"/#/nft/depositNFT"}*/}
+        {/*          >*/}
+        {/*            {t("labelL1toL2NFT")}*/}
+        {/*          </Button>*/}
+        {/*        </Box>*/}
+        {/*      </Box>*/}
+        {/*    </SubMenu>*/}
+        {/*  </Box>*/}
+        {/*)}*/}
 
         <Box
           // minHeight={420}

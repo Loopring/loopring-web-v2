@@ -12,7 +12,7 @@ import {
   HideOnScroll,
   useSettings,
 } from "@loopring-web/component-lib";
-import { withRouter, useHistory, useLocation } from "react-router-dom";
+import { withRouter, useLocation } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import React from "react";
 
@@ -25,12 +25,8 @@ const Header = withTranslation("common")(
       isLandPage = false,
       ...rest
     }: any & RouteComponentProps) => {
-      const {
-        headerToolBarData,
-        headerMenuData,
-        notifyMap,
-        headerMenuLandingData,
-      } = useHeader();
+      const { headerToolBarData, notifyMap, headerMenuLandingData } =
+        useHeader();
       const { isMobile } = useSettings();
       const { pathname } = useLocation();
       const { confirmWrapper } = confirmation.useConfirmation();
@@ -47,11 +43,7 @@ const Header = withTranslation("common")(
                 isLandPage={isLandPage}
                 isMobile={isMobile}
                 allowTrade={allowTrade}
-                headerMenuData={
-                  /(guardian)|(depositto)/gi.test(pathname)
-                    ? headerMenuLandingData
-                    : headerMenuData
-                }
+                headerMenuData={headerMenuLandingData}
                 headerToolBarData={headerToolBarData}
                 notification={notifyMap}
                 selected={
@@ -65,11 +57,7 @@ const Header = withTranslation("common")(
               account={account}
               allowTrade={allowTrade}
               isMobile={isMobile}
-              headerMenuData={
-                /(guardian)|(depositto)/gi.test(pathname)
-                  ? headerMenuLandingData
-                  : headerMenuData
-              }
+              headerMenuData={headerMenuLandingData}
               headerToolBarData={headerToolBarData}
               notification={notifyMap}
               selected={

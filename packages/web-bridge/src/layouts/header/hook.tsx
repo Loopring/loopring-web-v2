@@ -3,7 +3,6 @@ import React from "react";
 import {
   ButtonComponentsMap,
   fnType,
-  headerMenuData,
   headerMenuLandingData,
   headerToolBarData as _initHeaderToolBarData,
 } from "@loopring-web/common-resources";
@@ -97,7 +96,6 @@ export const useHeader = () => {
 
   return {
     headerToolBarData,
-    headerMenuData,
     headerMenuLandingData,
     account,
     notifyMap,

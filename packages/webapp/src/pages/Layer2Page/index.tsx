@@ -1,12 +1,8 @@
 import { useRouteMatch } from "react-router-dom";
 
-import { Box, Typography } from "@mui/material";
-import {
-  AssetTitleMobile,
-  SubMenu,
-  SubMenuList,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { Box } from "@mui/material";
+
+import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
 import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import AssetPanel from "./AssetPanel";
@@ -31,8 +27,6 @@ export const Layer2Page = () => {
     switch (selected) {
       case "assets":
         return <AssetPanel />;
-      // case "my-liquidity":
-      //   return <MyLiqudityPanel />;
       case "history":
         return <HistoryPanel />;
       case "order":
@@ -55,20 +49,20 @@ export const Layer2Page = () => {
   const activeView = React.useMemo(
     () => (
       <>
-        {!isMobile && (
-          <Box
-            width={"200px"}
-            display={"flex"}
-            justifyContent={"stretch"}
-            marginRight={3}
-            marginBottom={2}
-            className={"MuiPaper-elevation2"}
-          >
-            <SubMenu>
-              <SubMenuList selected={selected} subMenu={subMenu as any} />
-            </SubMenu>
-          </Box>
-        )}
+        {/*{!isMobile && (*/}
+        {/*  <Box*/}
+        {/*    width={"200px"}*/}
+        {/*    display={"flex"}*/}
+        {/*    justifyContent={"stretch"}*/}
+        {/*    marginRight={3}*/}
+        {/*    marginBottom={2}*/}
+        {/*    className={"MuiPaper-elevation2"}*/}
+        {/*  >*/}
+        {/*    <SubMenu>*/}
+        {/*      <SubMenuList selected={selected} subMenu={subMenu as any} />*/}
+        {/*    </SubMenu>*/}
+        {/*  </Box>*/}
+        {/*)}*/}
 
         <Box
           // minHeight={420}
