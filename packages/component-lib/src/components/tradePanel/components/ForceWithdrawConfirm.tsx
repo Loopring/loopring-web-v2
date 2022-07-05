@@ -1,14 +1,10 @@
 import { WithTranslation } from "react-i18next";
-import { Box, Grid, Typography } from "@mui/material";
-import {
-  IBData,
-  FeeInfo,
-  TOAST_TIME,
-  Info2Icon,
-} from "@loopring-web/common-resources";
+import { Box, Grid, ListItem, ListItemText, Typography } from "@mui/material";
+import { IBData, FeeInfo, TOAST_TIME } from "@loopring-web/common-resources";
 import { Button, ForceWithdrawViewProps, Toast } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
+import { ListStyle } from "./ForceWithdrawWrap";
 
 export const ForceWithdrawConfirm = <
   T extends IBData<I>,
@@ -87,18 +83,17 @@ export const ForceWithdrawConfirm = <
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
         <Typography display={"inline-flex"}>
-          <Typography component={"span"} lineHeight={2}>
-            <Info2Icon color={"warning"} fontSize={"medium"} />
-          </Typography>
-          <Typography
-            color={"var(--color-warning)"}
-            variant={"body1"}
-            alignItems={"center"}
-            component={"span"}
-            marginLeft={1}
-          >
-            {t("labelForceWithdrawConfirm")}
-          </Typography>
+          {/*<Typography component={"span"} lineHeight={2}>*/}
+          {/*  <Info2Icon color={"warning"} fontSize={"medium"} />*/}
+          {/*</Typography>*/}
+          <ListStyle>
+            <ListItem>
+              <ListItemText>{t("labelForceWithdrawConfirm")}</ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>{t("labelForceWithdrawConfirm1")}</ListItemText>
+            </ListItem>
+          </ListStyle>
         </Typography>
       </Grid>
 

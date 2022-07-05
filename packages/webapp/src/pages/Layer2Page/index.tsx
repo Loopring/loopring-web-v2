@@ -1,8 +1,12 @@
 import { useRouteMatch } from "react-router-dom";
 
-import { Box } from "@mui/material";
-
-import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
+import { Box, Typography } from "@mui/material";
+import {
+  AssetTitleMobile,
+  SubMenu,
+  SubMenuList,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import AssetPanel from "./AssetPanel";

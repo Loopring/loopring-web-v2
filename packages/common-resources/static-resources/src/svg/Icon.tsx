@@ -1284,7 +1284,6 @@ export const PlayIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
-
 export const ProfileIcon = (props: SvgIconProps) => {
   return (
     <SvgIcon

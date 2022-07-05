@@ -98,4 +98,5 @@ export default {
   labelInvestBalanceDes: "The deposition you hold",
   labelInvestAmm: "AMM Pool",
   labelInvestAmmDes: "Add liquidity and earn rewards",
+  labelForceWithdraw: "Force Withdraw",
 };

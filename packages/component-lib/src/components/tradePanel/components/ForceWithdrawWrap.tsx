@@ -2,7 +2,14 @@ import { Trans, WithTranslation } from "react-i18next";
 import React from "react";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
-import { Box, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  ListItem,
+  List,
+  Typography,
+  ListItemText,
+} from "@mui/material";
 import {
   CloseIcon,
   DropDownIcon,
@@ -30,16 +37,35 @@ import {
 } from "../../../index";
 import { BasicACoinTrade } from "./BasicACoinTrade";
 import { FeeToggle } from "./tool/FeeList";
+import styled from "@emotion/styled";
 
-// const LinkStyle = styled(Link)`
-//   text-decoration: underline dotted;
-//   cursor: pointer;
-//   color: var(--color-text-secondary);
-//   font-size: ${({ theme }) => theme.fontDefault.body2};
-//   &:hover {
-//     color: var(--color-primary);
-//   }
-// `;
+export const ListStyle = styled(List)`
+  li {
+    height: auto;
+    padding: 0;
+    &:before {
+      content: "•";
+      padding-top: ${({ theme }) => theme.unit}px;
+      color: var(--color-warning);
+      display: inline-flex;
+      padding-right: ${({ theme }) => theme.unit}px;
+    }
+    display: inline-flex;
+    &:hover {
+      background-color: initial;
+    }
+  }
+
+  //list-style: disc outside;
+  //list-style: ;
+  .MuiListItemText-root span {
+    color: var(--color-warning);
+    line-height: 1.2em;
+    padding-bottom: 0;
+  }
+
+  font-size: ${({ theme }) => theme.fontDefault.body1};
+` as typeof List;
 export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
   t,
   disabled,
@@ -49,6 +75,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
   withdrawI18nKey,
   addressDefault,
   isNotAvaiableAddress,
+  isLoopringAddress = false,
   chargeFeeTokenList = [],
   feeInfo,
   handleConfirm,
@@ -161,18 +188,17 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
       </Grid>
       <Grid item alignSelf={"stretch"} position={"relative"}>
         <Typography display={"inline-flex"}>
-          <Typography component={"span"} lineHeight={2}>
-            <Info2Icon color={"warning"} fontSize={"medium"} />
-          </Typography>
-          <Typography
-            color={"var(--color-warning)"}
-            variant={"body1"}
-            alignItems={"center"}
-            component={"span"}
-            marginLeft={1}
-          >
-            {t("labelForceWithdrawConfirm")}
-          </Typography>
+          {/*<Typography component={"span"} lineHeight={2}>*/}
+          {/*  <Info2Icon color={"warning"} fontSize={"medium"} />*/}
+          {/*</Typography>*/}
+          <ListStyle>
+            <ListItem>
+              <ListItemText>{t("labelForceWithdrawConfirm")}</ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>{t("labelForceWithdrawConfirm1")}</ListItemText>
+            </ListItem>
+          </ListStyle>
         </Typography>
       </Grid>
       <Grid item alignSelf={"stretch"} position={"relative"}>
@@ -180,7 +206,11 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           <TextField
             className={"text-address"}
             value={addressDefault}
-            error={realAddr !== "" && !!isNotAvaiableAddress}
+            error={
+              realAddr !== "" &&
+              isNotAvaiableAddress &&
+              (walletMap !== {} || walletMap !== undefined)
+            }
             placeholder={t("labelPleaseForceWithdrawAddress")}
             onChange={(event) => handleOnAddressChange(event?.target?.value)}
             label={t("labelForceWithdrawAddress")}
@@ -210,7 +240,9 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           )}
           {addressDefault !== "" &&
             !isAddressCheckLoading &&
-            !!isNotAvaiableAddress && (
+            (walletMap !== {} || walletMap !== undefined) &&
+            isNotAvaiableAddress &&
+            (isLoopringAddress ? (
               <Typography
                 color={"var(--color-error)"}
                 variant={"body2"}
@@ -220,32 +252,44 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
               >
                 {t("labelForceWithdrawNotAvailable")}
               </Typography>
-            )}
+            ) : (
+              <Typography
+                color={"var(--color-error)"}
+                variant={"body2"}
+                marginTop={1 / 4}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelForceWithdrawNoToken")}
+              </Typography>
+            ))}
         </>
       </Grid>
 
-      {!isAddressCheckLoading && !isNotAvaiableAddress && (
-        <Grid item alignSelf={"stretch"} position={"relative"}>
-          {
-            // @ts-ignore
-            <BasicACoinTrade
-              {...{
-                ...rest,
-                type: "TOKEN",
-                t,
-                walletMap,
-                tradeData: {
-                  ...tradeData,
-                  tradeValue: tradeData.balance,
-                },
-                coinMap,
-                inputButtonDefaultProps,
-                inputBtnRef: inputBtnRef,
-              }}
-            />
-          }
-        </Grid>
-      )}
+      {!isAddressCheckLoading &&
+        !isNotAvaiableAddress &&
+        (walletMap !== {} || walletMap !== undefined) && (
+          <Grid item alignSelf={"stretch"} position={"relative"}>
+            {
+              // @ts-ignore
+              <BasicACoinTrade
+                {...{
+                  ...rest,
+                  type: "TOKEN",
+                  t,
+                  walletMap,
+                  tradeData: {
+                    ...tradeData,
+                    tradeValue: tradeData.balance,
+                  },
+                  coinMap,
+                  inputButtonDefaultProps,
+                  inputBtnRef: inputBtnRef,
+                }}
+              />
+            }
+          </Grid>
+        )}
 
       <Grid item alignSelf={"stretch"} position={"relative"}>
         {!chargeFeeTokenList?.length ? (

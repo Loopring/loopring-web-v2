@@ -110,6 +110,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
     forceWithdrawValue.fee?.belong,
     forceWithdrawValue.fee?.feeRaw,
     forceWithdrawValue.belong,
+    forceWithdrawValue.balance,
     forceWithdrawValue?.withdrawAddress,
     isFeeNotEnough.isFeeNotEnough,
     disableBtn,
@@ -372,9 +373,9 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       checkHWAddr,
       chainId,
       setShowAccount,
-      forceWithdrawValue,
+      forceWithdrawValue.belong,
       checkFeeIsEnough,
-      resetForceWithdrawData,
+      resetDefault,
       updateHW,
     ]
   );
@@ -507,6 +508,7 @@ export const useForceWithdraw = <R extends IBData<T>, T>() => {
       isNotAvaiableAddress: !(isLoopringAddress && !isActiveAccount),
       realAddr,
       isAddressCheckLoading,
+      isLoopringAddress,
       tradeData: forceWithdrawValue as any,
       coinMap: totalCoinMap as CoinMap<T>,
       walletMap: walletItsMap,

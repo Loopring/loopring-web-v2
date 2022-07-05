@@ -200,6 +200,7 @@ export type ForceWithdrawExtendProps<T, I, C> = {
   realAddr: string;
   isNotAvaiableAddress: boolean;
   isAddressCheckLoading: boolean;
+  isLoopringAddress: boolean;
   addrStatus: AddressError;
   // disableWithdrawList?: string[];
   onWithdrawClick: (data: T, isFirstTime?: boolean) => void;
