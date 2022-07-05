@@ -800,13 +800,19 @@ export default {
     "Please enter the address you wish to withdraw from",
   labelForceWithdrawAddress: "The address you wish to withdraw from",
   labelForceWithdrawDes:
-    "An address that does not support Loopring L2 can use the Force Withdraw method to move tokens from Loopring L2 to Ethereum L1.\n In order to be eligible for a Force Withdraw, an account must not already have been activated for L2.\n Only in the case of sending a token to an L2 account associated with a CEX address that does not support Loopring L2, will you need to do this in order to recover the token.",
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a CEX address using Loopring L2. Since the CEX does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
   labelForceWithdrawConfirm:
-    "This operation requires interaction with Ethereum Mainnet. Usually it takes more than 30 minutes to take effect. Please be patient.",
+    "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
+  labelForceWithdrawConfirm1:
+    "This operation usually requires more than 30 minutes to take effect, as it needs to interact with Ethereum Mainnet. Please be patient.",
   labelNFTSendBtn: "Send",
   labelNFTProperties: "Properties",
   labelNFTDescription2: "Description",
   labelForceWithdrawNotAvailable:
-    "The Loopring L2 account has already been activated at this address. You cannot use Force Withdraw to move the funds to Ethereum L1.",
+    "Loopring L2 account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its L2 to L1 anymore",
+  labelForceWithdrawNoToken:
+    "No token is detected from this address to operate",
   labelForceWithdrawBtn: "Force Withdraw",
+  labelInvestDefiTitle: "Defi Invest",
+  labelNFTDepositLabel: "Receive NFT",
 };
