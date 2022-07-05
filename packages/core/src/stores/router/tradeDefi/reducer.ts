@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { TradeDefi, TradeDefiStatus } from "./interface";
-import { CoinInfo, RequireOne } from "@loopring-web/common-resources";
+import { CoinInfo, IBData, RequireOne } from "@loopring-web/common-resources";
 
 const initState: TradeDefi<any> = {
   type: "LIDO",
@@ -16,20 +16,20 @@ const initState: TradeDefi<any> = {
   feeRaw: "0",
 };
 type R = { [key: string]: any };
-const initialState: TradeDefiStatus<R> = {
+const initialState: TradeDefiStatus<IBData<R>> = {
   tradeDefi: initState,
   __DAYS__: 30,
   // __API_REFRESH__: 15000,
   __SUBMIT_LOCK_TIMER__: 1000,
   __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
-const tradeDefiSlice: Slice<TradeDefiStatus<R>> = createSlice({
+const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
   name: "_router_tradeDefi",
   initialState,
   reducers: {
     updateTradeDefi(
       state,
-      action: PayloadAction<RequireOne<TradeDefi<R>, "market">>
+      action: PayloadAction<RequireOne<TradeDefi<IBData<any>>, "market">>
     ) {
       const {
         type,
@@ -41,12 +41,17 @@ const tradeDefiSlice: Slice<TradeDefiStatus<R>> = createSlice({
         buyVol,
         deFiCalcData,
         fee,
+        defiBalances,
         depositPrice,
         withdrawPrice,
         request,
         feeRaw,
+        maxSellVol,
+        maxFeeBips,
+        miniSellVol,
       } = action.payload;
       if (market !== state.tradeDefi.market) {
+        // @ts-ignore
         state.tradeDefi = {
           ...initState,
           type: type ?? "LIDO",
@@ -57,8 +62,21 @@ const tradeDefiSlice: Slice<TradeDefiStatus<R>> = createSlice({
           request,
         };
       }
+
       if (isStoB) {
         state.tradeDefi.isStoB = isStoB;
+      }
+      if (defiBalances) {
+        state.tradeDefi.defiBalances = defiBalances;
+      }
+      if (maxSellVol) {
+        state.tradeDefi.maxSellVol = maxSellVol;
+      }
+      if (maxFeeBips) {
+        state.tradeDefi.maxFeeBips = maxFeeBips;
+      }
+      if (miniSellVol) {
+        state.tradeDefi.miniSellVol = miniSellVol;
       }
       if (sellVol !== undefined) {
         state.tradeDefi.sellVol = sellVol;

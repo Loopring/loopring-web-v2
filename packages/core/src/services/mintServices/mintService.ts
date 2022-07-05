@@ -91,6 +91,7 @@ export const mintService = {
       royalty_percentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
       description: nftMETA.description,
       collection: nftMETA.collection,
+      mint_channel: "Loopring",
     };
     // const attributes = [];
     const obj =

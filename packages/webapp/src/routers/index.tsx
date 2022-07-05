@@ -286,7 +286,8 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             "/invest",
             "/invest/balance",
             "/invest/ammpool",
-            "/invest/defi",
+            "/invest/defi/",
+            "/invest/defi/*",
           ]}
         >
           <ContentWrap state={state}>

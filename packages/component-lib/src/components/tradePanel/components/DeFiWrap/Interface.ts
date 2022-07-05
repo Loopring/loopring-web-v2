@@ -1,5 +1,9 @@
 import { BtnInfo, InputButtonProps } from "../../../basic-lib";
-import { AccountStatus, CoinInfo } from "@loopring-web/common-resources";
+import {
+  AccountStatus,
+  CoinInfo,
+  MarketType,
+} from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../../Interface";
 import React from "react";
@@ -16,22 +20,24 @@ export type DeFiChgData<T> = {
 };
 export type DeFiWrapProps<T, I, ACD> = {
   isStoB?: boolean;
+  isJoin: boolean;
   disabled?: boolean;
   btnInfo?: BtnInfo;
   refreshRef: React.Ref<any>;
   onRefreshData?: () => void;
   isLoading: boolean;
+  market: MarketType;
   // btnStatus: keyof typeof TradeBtnStatus | undefined;
   onSubmitClick: () => void;
   onConfirm: () => void;
   switchStobEvent?: (_isStoB: boolean) => void;
   onChangeEvent: (data: DeFiChgData<T>) => void;
   handleError?: (data: T) => void;
-  tokenAProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
-  tokenBProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
+  tokenSellProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
+  tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>;
   deFiCalcData: ACD;
-  tokenA: TokenInfo;
-  tokenB: TokenInfo;
+  tokenSell: TokenInfo;
+  tokenBuy: TokenInfo;
   btnStatus?: keyof typeof TradeBtnStatus | undefined;
   accStatus?: AccountStatus;
 };

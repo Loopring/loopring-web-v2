@@ -1,5 +1,4 @@
 import {
-  AccountStatus,
   DeFiCalcData,
   EmptyValueTag,
   ExchangeIcon,
@@ -19,6 +18,7 @@ import { useHistory } from "react-router-dom";
 
 export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   disabled,
+  isJoin,
   isStoB,
   btnInfo,
   refreshRef,
@@ -31,12 +31,13 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   handleError,
   deFiCalcData,
   accStatus,
-  tokenA,
-  tokenB,
+  tokenSell,
+  tokenBuy,
   isLoading,
   btnStatus,
-  tokenAProps,
-  tokenBProps,
+  tokenSellProps,
+  tokenBuyProps,
+  market,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
   const coinSellRef = React.useRef();
@@ -68,21 +69,31 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   );
 
   const showVal =
-    deFiCalcData.coinSell && deFiCalcData.coinBuy && deFiCalcData?.AtoB;
+    deFiCalcData.coinSell?.belong &&
+    deFiCalcData.coinBuy?.belong &&
+    deFiCalcData?.AtoB;
 
-  const convertStr = isStoB
-    ? `1${deFiCalcData.coinSell} \u2248 ${
-        // @ts-ignore
-        deFiCalcData?.AtoB && deFiCalcData?.AtoB != "NaN"
-          ? deFiCalcData?.AtoB
-          : EmptyValueTag
-      } ${deFiCalcData.coinBuy}`
-    : `1${deFiCalcData.coinBuy}  \u2248 ${
-        // @ts-ignore
-        deFiCalcData.BtoA && deFiCalcData?.BtoA != "NaN"
-          ? deFiCalcData.BtoA
-          : EmptyValueTag
-      } ${deFiCalcData.coinSell}`;
+  const convertStr = React.useMemo(() => {
+    return isStoB
+      ? `1${deFiCalcData.coinSell.belong} \u2248 ${
+          // @ts-ignore
+          deFiCalcData?.AtoB && deFiCalcData?.AtoB != "NaN"
+            ? deFiCalcData?.AtoB
+            : EmptyValueTag
+        } ${deFiCalcData.coinBuy.belong}`
+      : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
+          // @ts-ignore
+          deFiCalcData.BtoA && deFiCalcData?.BtoA != "NaN"
+            ? deFiCalcData.BtoA
+            : EmptyValueTag
+        } ${deFiCalcData.coinSell.belong}`;
+  }, [
+    deFiCalcData?.AtoB,
+    deFiCalcData.BtoA,
+    deFiCalcData.coinBuy.belong,
+    deFiCalcData.coinSell.belong,
+    isStoB,
+  ]);
 
   // const getDisabled = () => {
   //   return (
@@ -92,39 +103,36 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   );
   // };
   const getDisabled = React.useMemo(() => {
-    return (
-      disabled ||
-      isLoading ||
-      deFiCalcData === undefined ||
-      deFiCalcData.coinMap === undefined
-    );
+    return disabled || isLoading || deFiCalcData === undefined;
   }, [btnStatus, deFiCalcData, disabled]);
 
-  if (typeof handleError !== "function") {
-    handleError = (iBData: any) => {
-      if (accStatus === AccountStatus.ACTIVATED) {
-        // const iscoinSell = belong === deFiCalcData.mycoinSell.belong;
-        // if (balance < tradeValue || (tradeValue && !balance)) {
-        //   const _error = {                                 o
-        //     error: true,
-        //     message: t("tokenNotEnough", {belong: belong}),
-        //   };
-        //   if (iscoinSell) {
-        //     setErrorA(_error);
-        //   } else {
-        //     setErrorB(_error);
-        //   }
-        //   return _error;
-        // }
-        // if (iscoinSell) {
-        //   setErrorA({error: false, message: ""});
-        // } else {
-        //   setErrorB({error: false, message: ""});
-        // }
-      }
-      return { error: false, message: "" };
-    };
-  }
+  // if (typeof handleError !== "function") {
+  //   handleError = (iBData: any) => {
+  //     if (accStatus === AccountStatus.ACTIVATED) {
+  //       // const iscoinSell = _ref?.current === coinSellRef.current;
+  //       const { tradeValue, balance, belong } = deFiCalcData.coinSell;
+  //       if (balance < tradeValue || (tradeValue && !balance)) {
+  //         const _error = {
+  //           error: true,
+  //           message: t("tokenNotEnough", { belong: deFiCalcData.coinSell }),
+  //         };
+  //         if (iscoinSell) {
+  //           setErrorA(_error);
+  //         } else {
+  //           setErrorB(_error);
+  //         }
+  //         return _error;
+  //       }
+  //       if (iscoinSell) {
+  //         setErrorA({ error: false, message: "" });
+  //       } else {
+  //         setErrorB({ error: false, message: "" });
+  //       }
+  //     }
+  //   };
+  //   return { error: false, message: "" };
+  // }
+
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
       const focus: DeFiChgType =
@@ -146,26 +154,48 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       type: DeFiChgType.exchange,
     });
   }, [onChangeEvent]);
-  const propsA: any = {
-    label: t("labelTokenAmount"),
-    subLabel: t("labelAvailable"),
+  const propsSell = {
+    label: t("tokenEnterPaymentToken"),
+    subLabel: t("tokenMax"),
+    emptyText: t("tokenSelectToken"),
     placeholderText: "0.00",
     maxAllow: true,
-    ...tokenAProps,
-    handleError,
+    ...tokenSellProps,
+    handleError: handleError as any,
     handleCountChange,
     ...rest,
   };
-  const propsB: any = {
-    label: t("labelTokenAmount"),
-    subLabel: t("labelAvailable"),
+  const propsBuy = {
+    label: t("tokenEnterReceiveToken"),
+    // subLabel: t('tokenHave'),
+    emptyText: t("tokenSelectToken"),
     placeholderText: "0.00",
-    maxAllow: true,
-    ...tokenBProps,
-    handleError,
+    maxAllow: false,
+    ...tokenBuyProps,
+    // handleError,
     handleCountChange,
     ...rest,
   };
+  // const propsA: any = {
+  //   label: t("labelTokenAmount"),
+  //   subLabel: t("labelAvailable"),
+  //   placeholderText: "0.00",
+  //   maxAllow: true,
+  //   ...tokenBuyProps,
+  //   handleError,
+  //   handleCountChange,
+  //   ...rest,
+  // };
+  // const propsB: any = {
+  //   label: t("labelTokenAmount"),
+  //   subLabel: t("labelAvailable"),
+  //   placeholderText: "0.00",
+  //   maxAllow: true,
+  //   ...tokenBProps,
+  //   // handleError,
+  //   handleCountChange,
+  //   ...rest,
+  // };
   return (
     <Grid
       className={deFiCalcData ? "" : "loading"}
@@ -183,6 +213,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         alignItems={"center"}
         flexDirection={"row"}
         width={"100%"}
+        className={"MuiToolbar-root"}
       >
         <Typography
           height={"100%"}
@@ -198,7 +229,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           <Typography display={"inline-block"} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/layer2/history/ammRecord`);
+                history.push(`/layer2/history/ammRecords?market=${market}`);
               }}
               sx={{ backgroundColor: "var(--field-opacity)" }}
               className={"switch outlined"}
@@ -222,25 +253,25 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           ref={coinSellRef}
           disabled={getDisabled}
           {...{
-            ...propsA,
+            ...propsSell,
             name: "coinSell",
             isHideError: true,
             order: "right",
-            disabled: isLoading,
             inputData: deFiCalcData ? deFiCalcData.coinSell : ({} as any),
-            coinMap: deFiCalcData ? deFiCalcData.coinMap : ({} as any),
-            coinPrecision: tokenA.precision,
+            coinMap: {},
+            coinPrecision: tokenSell.precision,
           }}
         />
         <Box alignSelf={"center"} marginY={1}>
           <IconButtonStyled
             size={"large"}
             onClick={covertOnClick}
+            disabled={true}
             aria-label={t("tokenExchange")}
           >
             <ExchangeIcon
               fontSize={"large"}
-              htmlColor={"var(--color-text-primary)"}
+              htmlColor={"var(--color-text-disable)"}
             />
           </IconButtonStyled>
         </Box>
@@ -248,14 +279,13 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           ref={coinBuyRef}
           disabled={getDisabled}
           {...{
-            ...propsB,
+            ...propsBuy,
             name: "coinBuy",
             isHideError: true,
-            disabled: isLoading,
             order: "right",
             inputData: deFiCalcData ? deFiCalcData.coinBuy : ({} as any),
-            coinMap: deFiCalcData ? deFiCalcData.coinMap : ({} as any),
-            coinPrecision: tokenB.precision,
+            coinMap: {},
+            coinPrecision: tokenBuy.precision,
           }}
         />
       </Grid>
@@ -302,7 +332,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 {t("labelDefiFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {t(deFiCalcData ? deFiCalcData.fee : EmptyValueTag)}
+                {t(
+                  deFiCalcData
+                    ? deFiCalcData.fee + ` ${tokenBuy.symbol}`
+                    : EmptyValueTag
+                )}
               </Typography>
             </Grid>
           </Grid>
@@ -324,6 +358,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             >
               {btnInfo
                 ? t(btnInfo.label, btnInfo.params)
+                : isJoin
+                ? t(`depositLabelBtn`)
                 : t(`depositLabelBtn`)}
             </ButtonStyle>
           </Grid>

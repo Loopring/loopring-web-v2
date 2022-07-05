@@ -26,9 +26,9 @@ import {
   LoopringAPI,
   walletLayer2Service,
   useAmount,
+  useSubmitBtn,
 } from "@loopring-web/core";
 import { useTranslation } from "react-i18next";
-import { useSubmitBtn } from "./hookBtn";
 import {
   getPriceImpactInfo,
   PriceLevel,

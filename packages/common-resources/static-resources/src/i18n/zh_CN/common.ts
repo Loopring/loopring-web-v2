@@ -814,5 +814,7 @@ export default {
     "No token is detected from this address to operate",
   labelForceWithdrawBtn: "Force Withdraw",
   labelInvestDefiTitle: "Defi Invest",
+  labelInvestDefDeposit: "Invest",
+  labelInvestDefWithdraw: "Redeem",
   labelNFTDepositLabel: "Receive NFT",
 };
