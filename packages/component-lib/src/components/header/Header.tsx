@@ -169,7 +169,6 @@ const ToolBarItem = ({
       case ButtonComponentsMap.Download:
         return <BtnDownload {...props} />;
       case ButtonComponentsMap.WalletConnect:
-        console.log(props);
         return <WalletConnectBtn {...props} />;
       default:
         return undefined;
@@ -456,7 +455,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             >
               {getMenuButtons({
                 toolbarList: isLandPage
-                  ? headerToolBarData.filter(
+                  ? [...headerToolBarData].filter(
                       (_item, index) =>
                         index !== ButtonComponentsMap.WalletConnect
                     )

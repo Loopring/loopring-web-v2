@@ -31,7 +31,6 @@ import { TableFilterParams } from "./index";
 
 export function useTickList<C extends { [key: string]: string }>() {
   const [tickList, setTickList] = React.useState<any>([]);
-  const [recommendedPairs, setRecommendedPairs] = React.useState<string[]>([]);
   const {
     marketArray,
     coinMap,
@@ -39,36 +38,11 @@ export function useTickList<C extends { [key: string]: string }>() {
     tokenMap,
     status: tokenMapStatus,
   } = useTokenMap();
-  const [recommendations, setRecommendations] = React.useState<
-    MarketBlockProps<C>[]
-  >([]);
+
   const { forexMap } = useSystem();
   const { tickerMap, status: tickerStatus } = useTicker();
   const { tokenPrices } = useTokenPrices();
-  const getRecommendPairs = React.useCallback(async () => {
-    if (LoopringAPI.exchangeAPI) {
-      try {
-        const { recommended } =
-          await LoopringAPI.exchangeAPI.getRecommendedMarkets();
-        setRecommendedPairs(recommended);
-        return recommended;
-      } catch (e: any) {
-        myError(e);
-      }
-      return [] as string[];
-    }
-  }, [setRecommendedPairs]);
-  const updateRecommendation = React.useCallback(
-    (recommendationIndex, ticker) => {
-      if (recommendations.length) {
-        recommendations[recommendationIndex].tradeFloat = ticker;
-        setRecommendations(recommendations);
-      }
-    },
-    [recommendations, setRecommendations]
-  );
   const updateRawData = React.useCallback(async () => {
-    const marketPairs: string[] = (await getRecommendPairs()) ?? [];
     let _recommendationsFloat: QuoteTableRawDataItem[] = [];
     let defaultRecommendationsFloat: QuoteTableRawDataItem[] = [];
     const _tickList =
@@ -90,9 +64,6 @@ export function useTickList<C extends { [key: string]: string }>() {
               coinAPriceDollar,
             } as QuoteTableRawDataItem;
 
-            if (marketPairs.findIndex((m) => m === key) !== -1) {
-              _recommendationsFloat.push(_.cloneDeep(_item));
-            }
             if (marketArray && marketArray.findIndex((m) => m === key) !== -1) {
               defaultRecommendationsFloat.push(_.cloneDeep(_item));
             }
@@ -113,63 +84,12 @@ export function useTickList<C extends { [key: string]: string }>() {
     });
 
     setTickList(newTickListWithPrecision);
-    _recommendationsFloat = _recommendationsFloat.filter((o) => {
-      const { coinA, coinB } = o.pair;
-      return coinMap && coinMap[coinA] && coinMap[coinB];
-    });
-
-    if (_recommendationsFloat.length < 4) {
-      const filteredFloat = defaultRecommendationsFloat.filter((o) => {
-        const pair = `${o.pair.coinA}-${o.pair.coinB}`;
-        return !marketPairs.includes(pair);
-      });
-      _recommendationsFloat = _recommendationsFloat.concat(
-        filteredFloat.slice(0, 4 - _recommendationsFloat.length)
-      );
-    }
-
     while (_recommendationsFloat.length < 4) {
       _recommendationsFloat.push(_.cloneDeep(_recommendationsFloat[0]));
     }
-
-    const _recommendations = _recommendationsFloat.reduce((prev, item) => {
-      if (coinMap && item) {
-        const { coinA, coinB } = item.pair;
-        const _item: MarketBlockProps<C> = {
-          tradeFloat: item as any,
-          forexMap: forexMap as any,
-          // @ts-ignore
-          coinAInfo: coinMap[coinA],
-          // @ts-ignore
-          coinBInfo: coinMap[coinB],
-        } as MarketBlockProps<C>;
-        prev.push(_item);
-      }
-      return prev;
-    }, [] as MarketBlockProps<C>[]);
-
-    const _recommendationsWithPrecision = _recommendations.map((o) => {
-      const pair = o.tradeFloat["__rawTicker__"]?.symbol;
-      const coinB = o.tradeFloat["pair"]?.coinB;
-      const marketPrecision = marketMap
-        ? marketMap[pair]?.precisionForPrice
-        : undefined;
-      const coinBPrecision = tokenMap ? tokenMap[coinB]?.precision : undefined;
-      return {
-        ...o,
-        tradeFloat: {
-          ...o.tradeFloat,
-          marketPrecision,
-          coinBPrecision,
-        },
-      };
-    });
-
-    setRecommendations(_recommendationsWithPrecision);
   }, [
     coinMap,
     forexMap,
-    getRecommendPairs,
     marketArray,
     marketMap,
     tokenMap,
@@ -186,52 +106,25 @@ export function useTickList<C extends { [key: string]: string }>() {
     }
   }, [tickerStatus, tokenMapStatus]);
   return {
-    recommendedPairs,
     tickList,
     tickerMap,
-    updateRecommendation,
-    recommendations,
     updateRawData,
-    getRecommendPairs,
   };
 }
 
 export function useQuote<C extends { [key: string]: string }>() {
   const { sendSocketTopic, socketEnd } = useSocket();
   const { marketArray } = store.getState().tokenMap;
-  const {
-    recommendedPairs,
-    tickList,
-    recommendations,
-    tickerMap,
-    getRecommendPairs,
-    updateRecommendation,
-  } = useTickList();
+  const { tickList, tickerMap } = useTickList();
   const subject = React.useMemo(() => tickerService.onSocket(), []);
 
+  const socketCallback = React.useCallback(() => {}, [tickerMap]);
   React.useEffect(() => {
     const subscription = subject.subscribe(({ tickerMap }) => {
       socketCallback();
     });
     return () => subscription.unsubscribe();
   }, [subject]);
-
-  const socketCallback = React.useCallback(() => {
-    if (tickerMap && recommendedPairs) {
-      Reflect.ownKeys(tickerMap).forEach((key) => {
-        let recommendationIndex = recommendedPairs.findIndex(
-          (ele) => ele === key
-        );
-        if (recommendationIndex !== -1) {
-          updateRecommendation(recommendationIndex, tickerMap[key as string]);
-        }
-      });
-    }
-  }, [recommendedPairs, updateRecommendation, tickerMap]);
-
-  React.useEffect(() => {
-    getRecommendPairs();
-  }, []);
 
   const socketSendTicker = React.useCallback(() => {
     sendSocketTopic({ [WsTopicType.ticker]: marketArray });
@@ -246,14 +139,11 @@ export function useQuote<C extends { [key: string]: string }>() {
 
   return {
     tickList,
-    recommendations,
   };
 }
 
 export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
-  // const { t } = useTranslation("common");
   const { status: tickerStatus } = useTicker();
-  const [candlestickList, setCandlestickList] = React.useState<any[]>([]);
   const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([]);
   const [tableTabValue, setTableTabValue] = React.useState("all");
   const [searchValue, setSearchValue] = React.useState<string>("");
@@ -283,36 +173,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     }
   }, []);
 
-  const getMixCandlestick = React.useCallback(async (market: string) => {
-    if (LoopringAPI.exchangeAPI) {
-      const res = await LoopringAPI.exchangeAPI.getMixCandlestick({
-        market: market,
-        interval: TradingInterval.d1,
-        limit: 30,
-      });
-      if (res && res.candlesticks && !!res.candlesticks.length) {
-        const data = res.candlesticks.map((o) => ({
-          timeStamp: o.timestamp,
-          low: o.low,
-          high: o.high,
-          open: o.open,
-          close: o.close,
-          // volume: o.baseVol,
-          volume: o.quoteVol,
-          sign: o.close < o.open ? -1 : 1,
-        }));
-        setCandlestickList((prev) => [
-          ...prev,
-          {
-            market: market,
-            data: data,
-          },
-        ]);
-      }
-    }
-  }, []);
-
-  const { recommendations, tickList } = useQuote();
+  const { tickList } = useQuote();
   const handleCurrentScroll = React.useCallback((currentTarget, tableRef) => {
     if (currentTarget && tableRef.current) {
       const calcHeight =
@@ -348,17 +209,17 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     };
   }, [currentScroll]);
 
-  React.useEffect(() => {
-    const list = recommendations.map((item) => {
-      return `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`;
-    });
-    if (!!list.length) {
-      getMixCandlestick(list[0]);
-      getMixCandlestick(list[1]);
-      getMixCandlestick(list[2]);
-      getMixCandlestick(list[3]);
-    }
-  }, [recommendations]);
+  // React.useEffect(() => {
+  //   const list = recommendations.map((item) => {
+  //     return `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`;
+  //   });
+  //   if (!!list.length) {
+  //     getMixCandlestick(list[0]);
+  //     getMixCandlestick(list[1]);
+  //     getMixCandlestick(list[2]);
+  //     getMixCandlestick(list[3]);
+  //   }
+  // }, [recommendations]);
 
   const getAmmPoolBalances = React.useCallback(async () => {
     if (LoopringAPI.ammpoolAPI) {
@@ -494,41 +355,7 @@ export const useQuotePage = ({ tableRef }: { tableRef: React.Ref<any> }) => {
     [handleTableFilterChange, tableTabValue]
   );
 
-  const formattedRecommendations = recommendations.map((item) => {
-    const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`;
-    return {
-      ...item,
-      market,
-      chartData: candlestickList
-        .find((o) => o.market === market)
-        ?.data.sort((a: any, b: any) => a.timeStamp - b.timeStamp),
-    };
-  });
-
-  const handleRecommendBoxClick = React.useCallback(
-    (recommendation: any) => {
-      if (recommendation && recommendation.market) {
-        history &&
-          history.push({
-            pathname: `/trade/lite/${recommendation.market}`,
-          });
-      }
-    },
-    [history]
-  );
-
-  const getTradeFloatVolumeToCount = React.useCallback((tradeFloat: any) => {
-    return {
-      ...tradeFloat,
-      volume: tradeFloat ? tradeFloat.volume : 0,
-    };
-  }, []);
-
   return {
-    recommendations,
-    formattedRecommendations,
-    getTradeFloatVolumeToCount,
-    handleRecommendBoxClick,
     tableTabValue,
     handleTabChange,
     searchValue,

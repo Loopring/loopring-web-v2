@@ -18,17 +18,18 @@ export const DeFiPanel: any = withTranslation("common")(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     return (
-      <>
-        <StyleWrapper
-          container
-          className={"MuiPaper-elevation2"}
-          paddingY={3}
-          paddingX={4}
-          margin={0}
-          display={"flex"}
-          position={"relative"}
-        ></StyleWrapper>
-      </>
+      <StyleWrapper
+        container
+        className={"MuiPaper-elevation2"}
+        paddingY={3}
+        paddingX={4}
+        margin={0}
+        marginBottom={2}
+        display={"flex"}
+        position={"relative"}
+      >
+        {/*<DeFiWrap />*/}
+      </StyleWrapper>
     );
   }
 );

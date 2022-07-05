@@ -126,16 +126,9 @@ export const ProfileMenu = ({ t, label, readyState, router, subMenu }: any) => {
           horizontal: "center",
         }}
       >
-        <Box margin={2} minWidth={320}>
-          <SubMenu>
-            <SubMenuList selected={router} subMenu={{ ...subMenu } as any} />
-          </SubMenu>
-          {/*  <MuiList>*/}
-          {/*  {[...router].map(() => {*/}
-          {/*    return <SubMenuItem />;*/}
-          {/*  })}*/}
-          {/*</MuiList>*/}
-        </Box>
+        <SubMenu className={"color-light"}>
+          <SubMenuList selected={router} subMenu={{ ...subMenu } as any} />
+        </SubMenu>
       </PopoverPure>
     </Box>
   ) : (

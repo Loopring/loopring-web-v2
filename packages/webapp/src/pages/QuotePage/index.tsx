@@ -3,8 +3,8 @@ import styled from "@emotion/styled/macro";
 
 import {
   InputSearch,
-  MarketBlock,
-  MarketBlockProps,
+  // MarketBlock,
+  // MarketBlockProps,
   QuoteTable,
 } from "@loopring-web/component-lib";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -31,10 +31,10 @@ export const QuotePage = withTranslation("common")(
     const { account } = useAccount();
     const { forexMap } = useSystem();
     const {
-      recommendations,
-      formattedRecommendations,
-      getTradeFloatVolumeToCount,
-      handleRecommendBoxClick,
+      // recommendations,
+      // formattedRecommendations,
+      // getTradeFloatVolumeToCount,
+      // handleRecommendBoxClick,
       tableTabValue,
       handleTabChange,
       searchValue,
@@ -50,75 +50,76 @@ export const QuotePage = withTranslation("common")(
     } = useQuotePage({ tableRef });
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1}>
-        <RowStyled container spacing={2}>
-          {(!!recommendations.length
-            ? recommendations
-            : ([
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-                {
-                  coinAInfo: {
-                    simpleName: "",
-                  },
-                  coinBInfo: {
-                    simpleName: "",
-                  },
-                },
-              ] as MarketBlockProps<{
-                [key: string]: string;
-              }>[])
-          ).map((item, index) => (
-            <Grid
-              key={`${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}-${index}`}
-              item
-              xs={12}
-              sm={6}
-              lg={3}
-            >
-              <MarketBlock
-                {...{
-                  ...formattedRecommendations[index],
-                  forexMap: forexMap as any,
-                  tradeFloat: getTradeFloatVolumeToCount(
-                    formattedRecommendations[index]?.tradeFloat
-                  ),
-                  chartData: formattedRecommendations[index]
-                    ? formattedRecommendations[index].chartData
-                    : [],
-                  handleBlockClick: () =>
-                    handleRecommendBoxClick(formattedRecommendations[index]),
-                  t,
-                  ...rest,
-                }}
-              />
-            </Grid>
-          ))}
-        </RowStyled>
+        {/*<RowStyled container spacing={2}>*/}
+        {/*  {(!!recommendations.length*/}
+        {/*    ? recommendations*/}
+        {/*    : ([*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*        {*/}
+        {/*          coinAInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*          coinBInfo: {*/}
+        {/*            simpleName: "",*/}
+        {/*          },*/}
+        {/*        },*/}
+        {/*      ] as MarketBlockProps<{*/}
+        {/*        [key: string]: string;*/}
+        {/*      }>[])*/}
+        {/*  ).map((item, index) => (*/}
+        {/*    <Grid*/}
+        {/*      key={`${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}-${index}`}*/}
+        {/*      item*/}
+        {/*      xs={12}*/}
+        {/*      sm={6}*/}
+        {/*      lg={3}*/}
+        {/*    >*/}
+        {/*      <MarketBlock*/}
+        {/*        {...{*/}
+        {/*          ...formattedRecommendations[index],*/}
+        {/*          forexMap: forexMap as any,*/}
+        {/*          tradeFloat: getTradeFloatVolumeToCount(*/}
+        {/*            formattedRecommendations[index]?.tradeFloat*/}
+        {/*          ),*/}
+        {/*          chartData: formattedRecommendations[index]*/}
+        {/*            ? formattedRecommendations[index].chartData*/}
+        {/*            : [],*/}
+        {/*          handleBlockClick: () =>*/}
+        {/*            handleRecommendBoxClick(formattedRecommendations[index]),*/}
+        {/*          t,*/}
+        {/*          ...rest,*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*    </Grid>*/}
+        {/*  ))}*/}
+        {/*</RowStyled>*/}
         <TableWrapStyled
           ref={tableRef as any}
-          marginY={3}
+          marginTop={1}
+          marginBottom={3}
           paddingBottom={1}
           flex={1}
           className={"MuiPaper-elevation2"}

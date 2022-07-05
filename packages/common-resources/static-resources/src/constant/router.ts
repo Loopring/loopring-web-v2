@@ -25,6 +25,39 @@ export const LoopringIPFSSiteProtocol = "https";
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
 export const IPFS_LOOPRING_SITE = sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 
+export const profile = {
+  security: [
+    {
+      icon: SecurityIcon,
+      router: { path: "/layer2/security" },
+      label: {
+        id: "security",
+        i18nKey: "labelSecurity",
+      },
+    },
+  ],
+  forcewithdraw: [
+    {
+      icon: OutputIcon,
+      router: { path: "/layer2/forcewithdraw" },
+      label: {
+        id: "forcewithdraw",
+        i18nKey: "labelForceWithdraw",
+      },
+    },
+  ],
+  vip: [
+    {
+      icon: VipIcon,
+      router: { path: "/layer2/vip" },
+      label: {
+        id: "vip",
+        i18nKey: "labelVipPanel",
+      },
+    },
+  ],
+};
+
 export enum ButtonComponentsMap {
   Download,
   Notification,
@@ -61,6 +94,7 @@ export let headerToolBarData: Array<{
   {
     buttonComponent: ButtonComponentsMap.ProfileMenu,
     i18nDescription: "labelProfile",
+    subMenu: profile,
     readyState: undefined,
   },
   {
@@ -152,32 +186,6 @@ export const subMenuLayer2 = {
     },
   ],
 };
-export const profile = [
-  {
-    icon: SecurityIcon,
-    router: { path: "/layer2/security" },
-    label: {
-      id: "security",
-      i18nKey: "labelSecurity",
-    },
-  },
-  {
-    icon: OutputIcon,
-    router: { path: "/layer2/forcewithdraw" },
-    label: {
-      id: "forcewithdraw",
-      i18nKey: "labelForceWithdraw",
-    },
-  },
-  {
-    icon: VipIcon,
-    router: { path: "/layer2/vip" },
-    label: {
-      id: "vip",
-      i18nKey: "labelVipPanel",
-    },
-  },
-];
 
 export const subMenuInvest = [
   {

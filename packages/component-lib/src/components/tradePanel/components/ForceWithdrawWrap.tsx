@@ -238,7 +238,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           ) : (
             ""
           )}
-          {addressDefault !== "" &&
+          {realAddr !== "" &&
             !isAddressCheckLoading &&
             (walletMap !== {} || walletMap !== undefined) &&
             isNotAvaiableAddress &&

@@ -813,4 +813,5 @@ export default {
   labelForceWithdrawNoToken:
     "No token is detected from this address to operate",
   labelForceWithdrawBtn: "Force Withdraw",
+  labelInvestDefiTitle: "Defi Invest",
 };

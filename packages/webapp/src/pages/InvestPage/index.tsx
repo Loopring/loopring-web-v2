@@ -1,4 +1,4 @@
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 
@@ -24,6 +24,8 @@ export enum InvestType {
   AmmPool = 1,
   DeFi = 2,
 }
+
+export const InvestRouter = ["balance", "ammpool", "defi"];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
@@ -95,17 +97,77 @@ export const AmmTitle = () => {
   );
 };
 
+export const DefiTitle = () => {
+  const { t } = useTranslation();
+  const { isMobile } = useSettings();
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId-deposit`,
+  });
+  return (
+    <Typography display={"inline-flex"} alignItems={"center"}>
+      <Typography
+        component={"span"}
+        variant={isMobile ? "h5" : "h5"}
+        whiteSpace={"pre"}
+        marginRight={1}
+        className={"invest-defi-Title"}
+      >
+        {t("labelInvestDefiTitle")}
+      </Typography>
+      {/* // TODO */}
+      {/*<HelpIcon*/}
+      {/*  {...bindHover(popupState)}*/}
+      {/*  fontSize={isMobile ? "medium" : "large"}*/}
+      {/*  htmlColor={"var(--color-text-third)"}*/}
+      {/*/>*/}
+      {/*<PopoverPure*/}
+      {/*  className={"arrow-center"}*/}
+      {/*  {...bindPopper(popupState)}*/}
+      {/*  anchorOrigin={{*/}
+      {/*    vertical: "bottom",*/}
+      {/*    horizontal: "center",*/}
+      {/*  }}*/}
+      {/*  transformOrigin={{*/}
+      {/*    vertical: "top",*/}
+      {/*    horizontal: "center",*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <Typography*/}
+      {/*    padding={2}*/}
+      {/*    component={"p"}*/}
+      {/*    variant={"body2"}*/}
+      {/*    whiteSpace={"pre-line"}*/}
+      {/*  >*/}
+      {/*    <Trans*/}
+      {/*      i18nKey={description ? description : "labelInvestAmmDescription"}*/}
+      {/*    >*/}
+      {/*      Once your deposit is confirmed on Ethereum, it will be added to your*/}
+      {/*      balance within 2 minutes.*/}
+      {/*    </Trans>*/}
+      {/*  </Typography>*/}
+      {/*</PopoverPure>*/}
+    </Typography>
+  );
+};
+
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
   let match: any = useRouteMatch(["/invest/:item", ":subItem"]);
+  const history = useHistory();
+  // const { search } = useLocation();
+  // const searchParams = new URLSearchParams(search);
   const { account } = useAccount();
   const [tabIndex, setTabIndex] = React.useState<InvestType>(() => {
     let index = undefined;
     switch (match?.params.item) {
-      case "balance":
+      case InvestRouter[InvestType.MyBalance]:
         index = InvestType.MyBalance;
         break;
-      case "ammpool":
+      case InvestRouter[InvestType.MyBalance]:
         index = InvestType.AmmPool;
+        break;
+      case InvestRouter[InvestType.DeFi]:
+        index = InvestType.DeFi;
         break;
     }
 
@@ -122,11 +184,14 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       <Tabs
         variant={"standard"}
         value={tabIndex}
-        onChange={(_e, value) => setTabIndex(value)}
+        onChange={(_e, value) => {
+          history.push(`/invest/${InvestRouter[value]}`);
+          setTabIndex(value);
+        }}
       >
         <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
         <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
-        <Tab value={InvestType.DeFi} label={<AmmTitle />} />
+        <Tab value={InvestType.DeFi} label={<DefiTitle />} />
       </Tabs>
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.MyBalance && (

@@ -126,6 +126,7 @@ export type DeFiCalcData<T> = {
   AtoB: number;
   BtoA: number;
   fee: string;
+  coinMap: CoinMap<T, CoinInfo<T>>;
 };
 
 export type AmmInData<T> = {
