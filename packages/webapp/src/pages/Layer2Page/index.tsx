@@ -1,12 +1,7 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box, Typography } from "@mui/material";
-import {
-  AssetTitleMobile,
-  SubMenu,
-  SubMenuList,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
 import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import AssetPanel from "./AssetPanel";
@@ -33,10 +28,10 @@ export const Layer2Page = () => {
         return <AssetPanel />;
       case "history":
         return <HistoryPanel />;
-      case "order":
-        return <OrderPanel />;
-      case "redpock":
-        return <RedPockPanel />;
+      // case "order":
+      //   return <OrderPanel />;
+      // case "redpock":
+      //   return <RedPockPanel />;
       case "rewards":
         return <RewardPanel />;
       case "forcewithdraw":

@@ -90,7 +90,7 @@ export default {
   labelMyAssetsNFTDes: "Receive, send NFTs ",
   labelInvest: "Invest",
   labelMintNFT: "Mint NFT",
-  labelMintNFTDes: "Mint NFT des",
+  labelMintNFTDes: "Create your own NFTs",
   labelTransactionNFT: "NFT Transactions",
   labelTransactionNFTDes: "NFT Transactions History",
   labelForceWithdraw: "Force Withdraw",
@@ -98,4 +98,8 @@ export default {
   labelInvestBalanceDes: "The deposition you hold",
   labelInvestAmm: "AMM Pool",
   labelInvestAmmDes: "Add liquidity and earn rewards",
+  labelInvestDefi: "Defi Invest",
+  labelInvestDefiDes: "More investments, higher returns",
+  labelDepositNFT: "Receive NFT",
+  // labelDepositNFTDes:"Receive NFT"
 };

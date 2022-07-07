@@ -23,7 +23,6 @@ export const subMenu = subMenuNFT;
 export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
   const selected = match?.params.item ?? "assetsNFT";
-  const { setShowNFTMintAdvance } = useOpenModals();
   const { t } = useTranslation(["common", "layout"]);
   const routerNFT = React.useMemo(() => {
     switch (selected) {
@@ -117,7 +116,7 @@ export const NFTPage = () => {
         </Box>
       </>
     ),
-    [isMobile, selected, t, routerNFT, setShowNFTMintAdvance]
+    [isMobile, routerNFT]
   );
 
   return <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />;

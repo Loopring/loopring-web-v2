@@ -36,7 +36,7 @@ const Header = withTranslation("common")(
       const { confirmWrapper } = confirmation.useConfirmation();
       const { allowTrade } = useSystem();
       const { account } = useAccount();
-      myLog("headerToolBarData", headerToolBarData);
+      // myLog("headerToolBarData", headerToolBarData);
       return (
         <>
           {isHideOnScroll ? (

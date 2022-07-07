@@ -4,15 +4,17 @@ import { TokenInfo } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../../Interface";
 
 export type DeFiChgData<T> = {
-  type: "coinA" | "coinB";
+  type: "coinSell" | "coinBuy";
   tradeData: T;
 };
 export type DeFiWrapProps<T, I, ACD> = {
   isStoB?: boolean;
   disabled?: boolean;
   btnInfo?: BtnInfo;
+  isLoading: boolean;
   // btnStatus: keyof typeof TradeBtnStatus | undefined;
   onSubmitClick: () => void;
+  onConfirm: () => void;
   switchStobEvent?: (_isStoB: boolean) => void;
   onChangeEvent: (data: DeFiChgData<T>) => void;
   handleError?: (data: T) => void;

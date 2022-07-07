@@ -53,7 +53,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
   FilterProps & WithTranslation) => {
     const rawPairList = [].slice
       .call(filterPairs)
-      .map((item: string) => item.replace("-", " - "))
+      // .map((item: string) => item.replace("-", " - "))
       .sort((a: string, b: string) => {
         return a.localeCompare(b);
       });
@@ -64,7 +64,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
         value: "all",
       },
       ...Array.from(new Set(rawPairList)).map((pair: string) => ({
-        label: pair,
+        label: pair.replace("-", " - "),
         value: pair,
       })),
     ];

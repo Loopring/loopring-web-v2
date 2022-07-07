@@ -14,3 +14,4 @@ export * from "./useVendor";
 export * from "./useWithdraw";
 export * from "./utils";
 export * from "./useForceWithdraw";
+export * from "./useDefiTrade";

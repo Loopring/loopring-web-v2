@@ -62,6 +62,8 @@ import {
   ReactReduxFirebaseProviderProps,
 } from "react-redux-firebase";
 import firebase from "firebase/compat/app";
+import { tradeDefiSlice } from "./router/tradeDefi";
+import { investReducer } from "./invest";
 const sagaMiddleware = createSagaMiddleware();
 
 const DEFAULT_TIMEOUT = 1000 * 60 * 15;
@@ -128,6 +130,7 @@ const reducer = combineReducers({
   modals: modalsSlice.reducer,
   userRewardsMap: userRewardsMapSlice.reducer,
   amm: ammReducer,
+  invest: investReducer,
   tokenMap: tokenMapSlice.reducer,
   tokenPrices: tokenPricesSlice.reducer,
   toggle: toggleSlice.reducer,
@@ -142,6 +145,7 @@ const reducer = combineReducers({
   // feeMap:feeMapSlice.reducer,
   // layer1ActionHistory: layer1ActionHistorySlice.reducer,
   // router redux
+  _router_tradeDefi: tradeDefiSlice.reducer,
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
@@ -242,3 +246,4 @@ export * from "./userRewards";
 export * from "./walletLayer1";
 export * from "./walletLayer2";
 export * from "./walletLayer2NFT";
+export * from "./invest";

@@ -22,6 +22,7 @@ import { updateWalletLayer1 } from "../walletLayer1/reducer";
 import { getTokenMap } from "../token/reducer";
 import { getNotify } from "../notify/reducer";
 import { getTokenPrices } from "../tokenPrices/reducer";
+import { getDefiMap } from "../invest/DefiMap/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -63,7 +64,8 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   // store.dispatch(
   //   getTokenPricesStatus({ tokenPrices, __timer__, __rawConfig__ })
   // );
-  store.dispatch(getNotify({}));
+  store.dispatch(getNotify(undefined));
+  store.dispatch(getDefiMap(undefined));
   store.dispatch(initAmmMap({ ammpools }));
   yield take("tokenMap/getTokenMapStatus");
   store.dispatch(getTokenPrices(undefined));

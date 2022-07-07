@@ -2,6 +2,7 @@ import {
   CoinKey,
   FeeInfo,
   IBData,
+  MarketType,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import {
@@ -153,6 +154,7 @@ export type SwapProps<T, I, TCD> = {
       | "buyTobutton"
       | "sellTobutton"
   ) => Promise<void>;
+  market?: MarketType;
   onChangeEvent?: (
     index: 0 | 1,
     data: SwapData<SwapTradeData<T>>

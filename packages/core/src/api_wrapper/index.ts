@@ -1,6 +1,7 @@
 import {
   AmmpoolAPI,
   ChainId,
+  DefiAPI,
   DelegateAPI,
   ExchangeAPI,
   GlobalAPI,
@@ -19,9 +20,11 @@ export class LoopringAPI {
   public static nftAPI: NFTAPI | undefined = undefined;
   public static delegate: DelegateAPI | undefined = undefined;
   public static globalAPI: GlobalAPI | undefined = undefined;
+  public static defiAPI: DefiAPI | undefined = undefined;
   public static __chainId__: ChainId | undefined = undefined;
   public static InitApi = (chainId: ChainId) => {
     LoopringAPI.userAPI = new UserAPI({ chainId });
+    LoopringAPI.defiAPI = new DefiAPI({ chainId });
     LoopringAPI.exchangeAPI = new ExchangeAPI({ chainId });
     LoopringAPI.globalAPI = new GlobalAPI({ chainId });
     LoopringAPI.ammpoolAPI = new AmmpoolAPI({ chainId });

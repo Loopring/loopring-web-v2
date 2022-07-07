@@ -9,6 +9,7 @@ import {
 } from "@loopring-web/component-lib";
 import { useForceWithdraw } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
+import { useHistory } from "react-router-dom";
 
 const StylePaper = styled(Box)`
   background: var(--color-box);
@@ -27,6 +28,7 @@ const StylePaper = styled(Box)`
 export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
   ({ t }: WithTranslation) => {
     const { isMobile } = useSettings();
+    const history = useHistory();
     const { forceWithdrawProps } = useForceWithdraw();
     const theme = useTheme();
     const extendsProps = isMobile ? { _width: 420 } : { _width: "auto" };
@@ -49,7 +51,11 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
           }}
           target="_self"
           rel="noopener noreferrer"
-          href={`./#/layer2/history/transactions?types=${TransactionTradeTypes.forceWithdraw}`}
+          onClick={() =>
+            history.push(
+              `/layer2/history/transactions?types=${TransactionTradeTypes.forceWithdraw}`
+            )
+          }
         >
           {t("labelTransactionsLink")}
         </Link>

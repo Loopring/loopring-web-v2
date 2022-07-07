@@ -11,6 +11,7 @@ import {
   useSocket,
   useNotify,
   layer1Store,
+  useDefiMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
@@ -61,6 +62,8 @@ export function useInit() {
   const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap();
   const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } =
     useTokenPrices();
+  const { status: defiMapStatus, statusUnset: defiMapStatusUnset } =
+    useDefiMap();
 
   const {
     updateSystem,
@@ -205,6 +208,7 @@ export function useInit() {
         break;
     }
   }, [ammMapStatus]);
+
   React.useEffect(() => {
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:
@@ -281,6 +285,19 @@ export function useInit() {
         break;
     }
   }, [notifyStatus]);
+  React.useEffect(() => {
+    switch (defiMapStatus) {
+      case SagaStatus.ERROR:
+        defiMapStatusUnset();
+        // setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        defiMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [defiMapStatus]);
 
   useAccountInit({ state });
   return {

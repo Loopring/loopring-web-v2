@@ -284,9 +284,9 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
           exact
           path={[
             "/invest",
-            "/invest/mybalance",
             "/invest/balance",
             "/invest/ammpool",
+            "/invest/defi",
           ]}
         >
           <ContentWrap state={state}>

@@ -34,17 +34,17 @@ const OrderPanel = withTranslation("common")((rest: WithTranslation) => {
     }
   }, [container, pageSize]);
 
-  React.useEffect(() => {
-    if (pageSize) {
-      getOrderList({
-        limit: pageSize,
-        status:
-          tableValue === 0
-            ? ["processing"]
-            : ["processed", "failed", "cancelled", "cancelling", "expired"],
-      });
-    }
-  }, [pageSize, getOrderList, tableValue]);
+  // React.useEffect(() => {
+  //   if (pageSize) {
+  //     getOrderList({
+  //       limit: pageSize,
+  //       status:
+  //         tableValue === 0
+  //           ? ["processing"]
+  //           : ["processed", "failed", "cancelled", "cancelling", "expired"],
+  //     });
+  //   }
+  // }, [pageSize, getOrderList, tableValue]);
 
   const handleChangeIndex = (index: 0 | 1) => {
     clearRawData();

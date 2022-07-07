@@ -25,9 +25,11 @@ import {
   RawDataTransactionItem,
   TransactionStatus,
   TransactionTradeTypes,
+  TransactionTradeViews,
 } from "./Interface";
 import { DateRange } from "@mui/lab";
-import { UserTxTypes } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
+
 import React from "react";
 import { useSettings } from "../../../stores";
 import { useLocation } from "react-router-dom";
@@ -39,7 +41,7 @@ export type TxsFilterProps = {
   end?: number;
   offset?: number;
   limit?: number;
-  types?: UserTxTypes[] | string;
+  types?: sdk.UserTxTypes[] | string;
 };
 
 const TYPE_COLOR_MAPPING = [
@@ -72,8 +74,7 @@ const CellStatus = ({ row }: any) => {
     ) : (
       <WarningIcon />
     );
-  const RenderValueWrapper = <RenderValue>{svg}</RenderValue>;
-  return RenderValueWrapper;
+  return <RenderValue>{svg}</RenderValue>;
 };
 
 const MemoCellStyled = styled(Box)`
@@ -157,8 +158,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);
     const [page, setPage] = React.useState(1);
-    const [filterType, setFilterType] = React.useState<TransactionTradeTypes>(
-      TransactionTradeTypes.allTypes
+    const [filterType, setFilterType] = React.useState<TransactionTradeViews>(
+      TransactionTradeViews.allTypes
     );
     const [filterDate, setFilterDate] = React.useState<
       DateRange<Date | string>
@@ -167,35 +168,40 @@ export const TransactionTable = withTranslation(["tables", "common"])(
 
     const updateData = _.debounce(
       ({
-        TableType,
+        tableType,
         currFilterType = filterType,
         currFilterDate = filterDate,
         currFilterToken = filterToken,
         currPage = page,
         pageSize = pagination?.pageSize ?? 10,
+      }: {
+        tableType: TableType;
+        currFilterType?: TransactionTradeViews;
+        currFilterDate?: DateRange<Date | string>;
+        currFilterToken?: string;
+        currPage?: number;
+        pageSize?: number;
       }) => {
-        if (TableType === "filter") {
+        if (tableType === "filter") {
           currPage = 1;
           setPage(1);
         }
         const tokenSymbol = currFilterToken === "all" ? "" : currFilterToken;
         const formattedType = currFilterType.toUpperCase();
         const types =
-          currFilterType === TransactionTradeTypes.allTypes
-            ? `${UserTxTypes.DEPOSIT},${UserTxTypes.TRANSFER},${UserTxTypes.DELEGATED_FORCE_WITHDRAW},${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`
-            : formattedType === TransactionTradeTypes.deposit
-            ? UserTxTypes.DEPOSIT
-            : formattedType === TransactionTradeTypes.transfer
-            ? UserTxTypes.TRANSFER
-            : formattedType === TransactionTradeTypes.forceWithdraw
-            ? UserTxTypes.DELEGATED_FORCE_WITHDRAW
-            : `${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`;
+          formattedType === TransactionTradeViews.receive
+            ? TransactionTradeTypes.receive //UserTxTypes.DEPOSIT
+            : formattedType === TransactionTradeViews.send
+            ? TransactionTradeTypes.send
+            : formattedType === TransactionTradeViews.forceWithdraw
+            ? TransactionTradeTypes.forceWithdraw
+            : TransactionTradeTypes.allTypes;
         const start = Number(moment(currFilterDate[0]).format("x"));
         const end = Number(moment(currFilterDate[1]).format("x"));
         getTxnList({
           limit: pageSize,
           offset: (currPage - 1) * pageSize,
-          types: types,
+          types,
           tokenSymbol: tokenSymbol,
           start: Number.isNaN(start) ? -1 : start,
           end: Number.isNaN(end) ? -1 : end,
@@ -210,7 +216,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         setFilterDate(date);
         setFilterToken(token);
         updateData({
-          TableType: TableType.filter,
+          tableType: TableType.filter,
           currFilterType: type,
           currFilterDate: date,
           currFilterToken: token,
@@ -220,12 +226,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
     );
 
     const handleReset = React.useCallback(() => {
-      setFilterType(TransactionTradeTypes.allTypes);
+      setFilterType(TransactionTradeViews.allTypes);
       setFilterDate([null, null]);
       setFilterToken("all");
       updateData({
-        TableType: TableType.filter,
-        currFilterType: TransactionTradeTypes.allTypes,
+        tableType: TableType.filter,
+        currFilterType: TransactionTradeViews.allTypes,
         currFilterDate: [null, null],
         currFilterToken: "all",
       });
@@ -235,7 +241,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
       (currPage: number) => {
         if (currPage === page) return;
         setPage(currPage);
-        updateData({ TableType: TableType.page, currPage: currPage });
+        updateData({ tableType: TableType.page, currPage: currPage });
       },
       [updateData, page]
     );
@@ -247,13 +253,11 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           name: t("labelTxSide"),
           formatter: ({ row }) => {
             const value = row.side;
-            const renderValue = t(`labelType${value?.toUpperCase()}`);
-            // const renderValue =
-            //   value === TransactionTradeTypes.deposit
-            //     ? t("labelReceive")
-            //     : value === TransactionTradeTypes.transfer
-            //     ? t("labelSendL2")
-            //     : t("labelSendL1");
+            const renderValue =
+              value.toLowerCase() === sdk.UserTxTypes.TRANSFER &&
+              row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
+                ? t(`labelTypeReceive`)
+                : t(`labelType${value?.toUpperCase()}`);
             return <Box className="rdg-cell-value">{renderValue}</Box>;
           },
         },
@@ -265,19 +269,19 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
             const hasSymbol =
-              row.side === TransactionTradeTypes.forceWithdraw
+              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
                 ? t("labelForceWithdrawTotalDes", {
                     address: getShortAddr(row.withdrawalInfo?.recipient),
                     symbol: row.symbol,
                   })
-                : row.side === TransactionTradeTypes.transfer
+                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER // TransactionTradeTypes.transfer
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
-                : row.side === TransactionTradeTypes.deposit
+                : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT //TransactionTradeTypes.deposit
                 ? "+"
-                : row.side === TransactionTradeTypes.withdraw
+                : /chain_withdrawal/i.test(row.side.toLowerCase()) //TransactionTradeTypes.withdraw
                 ? "-"
                 : "";
 
@@ -295,13 +299,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               <Box
                 className="rdg-cell-value textAlignRight"
                 title={`${hasSymbol}  ${
-                  row.side !== TransactionTradeTypes.forceWithdraw
+                  row.side !== sdk.UserTxTypes.FORCE_WITHDRAWAL
                     ? `${renderValue} ${unit}`
                     : ""
                 }`}
               >
                 {hasSymbol}
-                {row.side !== TransactionTradeTypes.forceWithdraw &&
+                {row.side !== sdk.UserTxTypes.FORCE_WITHDRAWAL &&
                   `${renderValue} ${unit}`}
               </Box>
             );
@@ -338,28 +342,45 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const receiverAddress =
-              row.side === TransactionTradeTypes.withdraw
-                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
-                : getShortAddr(row.receiverAddress, isMobile);
+            const receiverAddress = /chain_withdrawal/i.test(
+              row.side.toLowerCase()
+            )
+              ? // row.side.toLowerCase() === sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
+                getShortAddr(row.withdrawalInfo.recipient, isMobile)
+              : getShortAddr(row.receiverAddress, isMobile);
             const senderAddress = getShortAddr(row.senderAddress);
+            // myLog("receiverAddress", row.receiverAddress);
+            // if (/chain_withdrawal/i.test(row.side.toLowerCase())) {
+            //   myLog("receiverAddress", row.receiverAddress);
+            // }
             const [from, to] =
-              row.side === TransactionTradeTypes.forceWithdraw
+              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
                     }),
                     "",
                   ]
-                : row.side === TransactionTradeTypes.transfer
+                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row.side === TransactionTradeTypes.deposit
-                ? ["L1", "L2"]
-                : row.side === TransactionTradeTypes.withdraw
-                ? ["L2", receiverAddress]
+                : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
+                ? [
+                    row.senderAddress.toLowerCase() !== accAddress
+                      ? "L1 " + senderAddress
+                      : "L1",
+                    "L2",
+                  ]
+                : /chain_withdrawal/i.test(row.side.toLowerCase()) //sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
+                ? [
+                    "L2",
+                    row.withdrawalInfo?.recipient?.toUpperCase() ===
+                    accAddress.toUpperCase()
+                      ? "L1"
+                      : "L1 " + receiverAddress,
+                  ]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
             const path =
@@ -453,36 +474,42 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           formatter: ({ row }) => {
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
+
             const side =
-              row.side === TransactionTradeTypes.forceWithdraw
-                ? t("labelTxFilterFORCEWITHDRAW")
-                : row.side === TransactionTradeTypes.deposit
-                ? t("labelReceive")
-                : row.side === TransactionTradeTypes.transfer
-                ? t("labelSendL2")
-                : t("labelSendL1");
+              row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER &&
+              row.receiverAddress?.toUpperCase() === accAddress?.toUpperCase()
+                ? t(`labelTypeReceive`)
+                : t(`labelType${row.side?.toUpperCase()}`);
+
+            // row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
+            //   ? t("labelTxFilterFORCEWITHDRAW")
+            //   : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
+            //   ? t("labelReceive")
+            //   : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
+            //   ? t("labelSendL2")
+            //   : t("labelSendL1");
             const hasSymbol =
-              row.side === TransactionTradeTypes.forceWithdraw
+              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
                 ? t("labelForceWithdrawTotalDes", {
                     address: getShortAddr(row.withdrawalInfo?.recipient),
                     symbol: row.symbol,
                   })
-                : row.side === "TRANSFER"
+                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
                   : "-"
-                : row.side === "DEPOSIT"
+                : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
                 ? "+"
-                : row.side === "OFFCHAIN_WITHDRAWAL"
+                : row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
                 ? "-"
                 : "";
             const sideIcon =
-              row.side === TransactionTradeTypes.forceWithdraw ? (
+              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL ? (
                 <WithdrawIcon fontSize={"inherit"} />
-              ) : row.side === TransactionTradeTypes.deposit ? (
+              ) : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT ? (
                 <DepositIcon fontSize={"inherit"} />
-              ) : row.side === TransactionTradeTypes.transfer ? (
+              ) : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER ? (
                 <TransferIcon fontSize={"inherit"} />
               ) : (
                 <WithdrawIcon fontSize={"inherit"} />
@@ -565,29 +592,42 @@ export const TransactionTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const receiverAddress =
-              row.side === TransactionTradeTypes.withdraw
-                ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
-                : getShortAddr(row.receiverAddress, isMobile);
+            // row.side.toLowerCase() === sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
+            const receiverAddress = /chain_withdrawal/i.test(
+              row.side.toLowerCase()
+            )
+              ? getShortAddr(row.withdrawalInfo.recipient, isMobile)
+              : getShortAddr(row.receiverAddress, isMobile);
 
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
             const [from, to] =
-              row.side === TransactionTradeTypes.forceWithdraw
+              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
                     }),
                     "",
                   ]
-                : row.side === TransactionTradeTypes.transfer
+                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? [senderAddress, "L2"]
                   : ["L2", receiverAddress]
-                : row.side === TransactionTradeTypes.deposit
-                ? ["L1", "L2"]
-                : row.side === TransactionTradeTypes.withdraw
-                ? ["L2", receiverAddress]
+                : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
+                ? [
+                    row.senderAddress.toLowerCase() !== accAddress
+                      ? "L1 " + senderAddress
+                      : "L1",
+                    "L2",
+                  ]
+                : /chain_withdrawal/i.test(row.side.toLowerCase()) //sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL
+                ? [
+                    "L2",
+                    row.withdrawalInfo?.recipient?.toUpperCase() ===
+                    accAddress.toUpperCase()
+                      ? "L1"
+                      : "L1 " + receiverAddress,
+                  ]
                 : ["", ""];
             const hash = row.txHash !== "" ? row.txHash : row.hash;
             const path =

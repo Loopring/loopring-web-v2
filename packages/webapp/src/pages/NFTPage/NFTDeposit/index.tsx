@@ -1,13 +1,18 @@
 import styled from "@emotion/styled";
 import { Box, Grid, Typography } from "@mui/material";
 import React from "react";
-import { DepositNFTWrap, PopoverPure } from "@loopring-web/component-lib";
+import {
+  Button,
+  DepositNFTWrap,
+  PopoverPure,
+} from "@loopring-web/component-lib";
 
 import { useNFTDeposit } from "@loopring-web/core";
-import { Info2Icon } from "@loopring-web/common-resources";
+import { BackIcon, Info2Icon } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { Trans, useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -17,13 +22,27 @@ const StyledPaper = styled(Box)`
 export const DepositNFTPanel = () => {
   const { nftDepositProps } = useNFTDeposit();
   const { t } = useTranslation(["common"]);
+  const history = useHistory();
 
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftDeposit`,
   });
   return (
-    <>
+    <Box flex={1} display={"flex"} flexDirection={"column"}>
+      <Box marginBottom={2}>
+        <Button
+          startIcon={<BackIcon fontSize={"small"} />}
+          variant={"text"}
+          size={"medium"}
+          sx={{ color: "var(--color-text-secondary)" }}
+          color={"inherit"}
+          onClick={history.goBack}
+        >
+          {t("labelNFTDepositLabel")}
+          {/*<Typography color={"textPrimary"}></Typography>*/}
+        </Button>
+      </Box>
       <StyledPaper
         flex={1}
         className={"MuiPaper-elevation2"}
@@ -85,6 +104,6 @@ export const DepositNFTPanel = () => {
 
         <DepositNFTWrap {...nftDepositProps} />
       </StyledPaper>
-    </>
+    </Box>
   );
 };

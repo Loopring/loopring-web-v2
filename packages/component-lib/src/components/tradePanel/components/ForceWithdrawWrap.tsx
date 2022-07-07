@@ -238,31 +238,41 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
           ) : (
             ""
           )}
-          {realAddr !== "" &&
-            !isAddressCheckLoading &&
-            (walletMap !== {} || walletMap !== undefined) &&
-            isNotAvaiableAddress &&
-            (isLoopringAddress ? (
-              <Typography
-                color={"var(--color-error)"}
-                variant={"body2"}
-                marginTop={1 / 4}
-                alignSelf={"stretch"}
-                position={"relative"}
-              >
-                {t("labelForceWithdrawNotAvailable")}
-              </Typography>
-            ) : (
-              <Typography
-                color={"var(--color-error)"}
-                variant={"body2"}
-                marginTop={1 / 4}
-                alignSelf={"stretch"}
-                position={"relative"}
-              >
-                {t("labelForceWithdrawNoToken")}
-              </Typography>
-            ))}
+          {addressDefault !== "" &&
+          !isAddressCheckLoading &&
+          (walletMap !== {} || walletMap !== undefined) &&
+          isNotAvaiableAddress &&
+          realAddr === "" ? (
+            <Typography
+              color={"var(--color-error)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              alignSelf={"stretch"}
+              position={"relative"}
+            >
+              {t("labelInvalidAddress")}
+            </Typography>
+          ) : isLoopringAddress ? (
+            <Typography
+              color={"var(--color-error)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              alignSelf={"stretch"}
+              position={"relative"}
+            >
+              {t("labelForceWithdrawNotAvailable")}
+            </Typography>
+          ) : (
+            <Typography
+              color={"var(--color-error)"}
+              variant={"body2"}
+              marginTop={1 / 4}
+              alignSelf={"stretch"}
+              position={"relative"}
+            >
+              {t("labelForceWithdrawNoToken")}
+            </Typography>
+          )}
         </>
       </Grid>
 

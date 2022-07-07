@@ -3,6 +3,10 @@ import styled from "@emotion/styled";
 import { Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
+import { useDeFiHook } from "./hook";
+import { ConfirmImpact, DeFiWrap, Toast } from "@loopring-web/component-lib";
+import { TOAST_TIME } from "@loopring-web/core";
+import { getValuePrecisionThousand } from "@loopring-web/common-resources";
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
@@ -17,6 +21,13 @@ export const DeFiPanel: any = withTranslation("common")(
   }: WithTranslation & {
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
+    const {
+      deFiWrapProps,
+      closeToast,
+      toastOpen,
+      confirmShow,
+      setConfirmShow,
+    } = useDeFiHook();
     return (
       <StyleWrapper
         container
@@ -28,6 +39,19 @@ export const DeFiPanel: any = withTranslation("common")(
         display={"flex"}
         position={"relative"}
       >
+        <Toast
+          alertText={toastOpen?.content ?? ""}
+          severity={toastOpen?.type ?? "success"}
+          open={toastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={closeToast}
+        />
+        <ConfirmImpact
+          handleClose={() => setConfirmShow(false)}
+          open={confirmShow}
+          value={""}
+        />
+        <DeFiWrap {...(deFiWrapProps as any)} />
         {/*<DeFiWrap />*/}
       </StyleWrapper>
     );

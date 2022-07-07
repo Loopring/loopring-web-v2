@@ -206,6 +206,15 @@ export const subMenuInvest = [
       description: "labelInvestAmmDes",
     },
   },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/defi" },
+    label: {
+      id: "defi",
+      i18nKey: "labelInvestDefi",
+      description: "labelInvestDefiDes",
+    },
+  },
   // {
   //   icon: OutputIcon,
   //   router: { path: "/layer2/forcewithdraw" },
@@ -246,6 +255,15 @@ export const subMenuNFT = {
         description: "labelTransactionNFTDes",
       },
     },
+    // {
+    //   icon: L2HistoryIcon,
+    //   router: { path: "/nft/depositNFT" },
+    //   label: {
+    //     id: "depositNFT",
+    //     i18nKey: "labelDepositNFT",
+    //     description: "labelTransactionNFTDes",
+    //   },
+    // },
   ],
 };
 

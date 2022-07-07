@@ -1,8 +1,12 @@
 import styled from "@emotion/styled";
-import { Box, Card, Grid, Pagination, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, Pagination, Typography } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { EmptyDefault, NFTMedia } from "@loopring-web/component-lib";
+import {
+  EmptyDefault,
+  NFTMedia,
+  useOpenModals,
+} from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
 import {
   EmptyValueTag,
@@ -10,6 +14,7 @@ import {
   SoursURL,
   NFTLimit,
 } from "@loopring-web/common-resources";
+import { useHistory } from "react-router-dom";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -33,6 +38,8 @@ export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
     const { onDetail, nftList, isLoading, page, total, onPageChange } =
       useMyNFT();
+    const { setShowNFTMintAdvance } = useOpenModals();
+    const history = useHistory();
 
     return (
       <>
@@ -59,6 +66,28 @@ export const MyNFTPanel = withTranslation("common")(
             >
               {t("labelNFTMyNFT")}
             </Typography>
+            <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
+              <Box marginLeft={1}>
+                <Button
+                  onClick={() => {
+                    setShowNFTMintAdvance({ isShow: true });
+                  }}
+                  variant={"outlined"}
+                  color={"primary"}
+                >
+                  {t("labelAdvanceMint")}
+                </Button>
+              </Box>
+              <Box marginLeft={1}>
+                <Button
+                  variant={"outlined"}
+                  color={"primary"}
+                  onClick={() => history.push("/nft/depositNFT")}
+                >
+                  {t("labelL1toL2NFT")}
+                </Button>
+              </Box>
+            </Box>
           </Box>
           <Box flex={1} display={"flex"} flexDirection={"column"}>
             {isLoading ? (

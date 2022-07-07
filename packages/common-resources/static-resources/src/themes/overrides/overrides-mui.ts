@@ -256,7 +256,9 @@ export const MuiButton = ({
         color: colorBase.secondary,
         fontSize: "1.6rem",
         "&:hover": {
-          color: colorBase.secondaryHover,
+          "svg, &": {
+            color: colorBase.secondaryHover,
+          },
           backgroundColor: "inherit",
         },
         "&:active": {

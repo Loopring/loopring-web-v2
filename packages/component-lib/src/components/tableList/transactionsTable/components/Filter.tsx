@@ -7,12 +7,12 @@ import { Button } from "../../../basic-lib/btns";
 import { DropDownIcon } from "@loopring-web/common-resources";
 import { DateRange } from "@mui/lab";
 import { useSettings } from "../../../../stores";
-import { TransactionTradeTypes } from "../Interface";
+import { TransactionTradeViews } from "../Interface";
 
 export interface FilterProps {
   filterTokens: string[];
   filterDate: DateRange<Date | string>;
-  filterType: TransactionTradeTypes;
+  filterType: TransactionTradeViews;
   filterToken: string;
   handleFilterChange: ({ type, date }: any) => void;
   handleReset: () => void;
@@ -51,25 +51,37 @@ export const Filter = withTranslation("tables", { withRef: true })(
     const transactionTypeList = [
       {
         label: t("labelTxFilterALL"),
-        value: TransactionTradeTypes.allTypes,
+        value: TransactionTradeViews.allTypes,
       },
       {
-        label: t("labelTxFilterDEPOSIT"),
-        value: TransactionTradeTypes.deposit,
-      },
-
-      {
-        label: t("labelTxFilterTRANSFER"),
-        value: TransactionTradeTypes.transfer,
+        label: t("labelTxFilterRECEIVE"),
+        value: TransactionTradeViews.receive,
       },
       {
-        label: t("labelTxFilterWITHDRAW"),
-        value: TransactionTradeTypes.withdraw,
+        label: t("labelTxFilterSEND"),
+        value: TransactionTradeViews.send,
       },
       {
         label: t("labelTxFilterFORCEWITHDRAW"),
-        value: TransactionTradeTypes.forceWithdraw,
+        value: TransactionTradeViews.forceWithdraw,
       },
+      // {
+      //   label: t("labelTxFilterDEPOSIT"),
+      //   value: TransactionTradeTypes.deposit,
+      // },
+      //
+      // {
+      //   label: t("labelTxFilterTRANSFER"),
+      //   value: TransactionTradeTypes.transfer,
+      // },
+      // {
+      //   label: t("labelTxFilterWITHDRAW"),
+      //   value: TransactionTradeTypes.withdraw,
+      // },
+      // {
+      //   label: t("labelTxFilterFORCEWITHDRAW"),
+      //   value: TransactionTradeTypes.forceWithdraw,
+      // },
     ];
 
     const tokenTypeList: { label: string; value: string }[] = [

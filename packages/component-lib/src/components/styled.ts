@@ -18,7 +18,7 @@ export const boxLiner = (_props: { theme: Theme }) => css`
       border-color: var(--color-border-hover);
     }
   }
-  .MuiToolbar-root .MuiButtonBase-root.outline {
+  .MuiToolbar-root .MuiButtonBase-root.outlined {
     background-color: var(--field-opacity);
   }
 `;
