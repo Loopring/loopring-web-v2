@@ -49,7 +49,7 @@ export const DeFiPanel: any = withTranslation("common")(
         <ConfirmImpact
           handleClose={() => setConfirmShow(false)}
           open={confirmShow}
-          value={""}
+          value={1}
         />
         <DeFiWrap {...(deFiWrapProps as any)} />
         {/*<DeFiWrap />*/}

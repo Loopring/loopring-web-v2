@@ -49,7 +49,7 @@ export const useDefiTrade = <
   // @ts-ignore
   const [, coinSellSymbol, coinBuySymbol] = market.match(/(\w+)-(\w+)/i);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [confirmShow, setConfirmShow] = React.useState();
+  const [confirmShow, setConfirmShow] = React.useState<boolean>(true);
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo } = useSystem();
