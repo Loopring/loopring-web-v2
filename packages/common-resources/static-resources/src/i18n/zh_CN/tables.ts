@@ -130,7 +130,7 @@ export default {
   labelOrderLimitOrder: "限价单",
   labelOrderMarketOrder: "市价单",
   // labelOrderMaker: '挂单',
-  // labelOrderTaker: '吃单',
+  labelOrderTaker: "吃单",
   labelOrderChannelsMixed: "混合订单",
   // labelOrderChannelsAMM: 'AMM 订单',
   labelOrderChannelsSwap: "闪兑",

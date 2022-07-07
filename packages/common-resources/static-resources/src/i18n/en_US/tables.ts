@@ -130,7 +130,7 @@ export default {
   labelOrderLimitOrder: "Limit",
   labelOrderMarketOrder: "Market",
   // labelOrderMaker: 'Maker',
-  // labelOrderTaker: 'Taker',
+  labelOrderTaker: "Taker",
   labelOrderChannelsMixed: "Merged",
   // labelOrderChannelsAMM: 'AMM',
   labelOrderChannelsSwap: "Swap",

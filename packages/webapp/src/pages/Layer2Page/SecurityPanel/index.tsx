@@ -5,6 +5,7 @@ import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useExportAccountInfo, useResetAccount } from "./hook";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { useAccount } from "@loopring-web/core";
+import { useHistory } from "react-router-dom";
 
 const StyledPaper = styled(Grid)`
   width: 100%;
@@ -23,7 +24,7 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
     const { resetKeypair } = useResetAccount();
     const { setShowFeeSetting } = useOpenModals();
     const { exportAccount } = useExportAccountInfo();
-
+    const history = useHistory();
     return (
       <StyledPaper container className={"MuiPaper-elevation2"} marginBottom={2}>
         <Grid
@@ -192,6 +193,64 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
                     disabled={false}
                   >
                     {t("labelBtnEdit")}
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+          <StyledDivider />
+          <Box
+            component={"section"}
+            display={"flex"}
+            flexDirection={"column"}
+            paddingY={3}
+            paddingX={4}
+          >
+            <Grid
+              container
+              display={"flex"}
+              flexDirection={"row"}
+              justifyContent={"stretch"}
+              alignItems={"flex-start"}
+            >
+              <Grid item xs={7} display={"flex"} flexDirection={"column"}>
+                <Typography
+                  variant={"h4"}
+                  color={"text.primary"}
+                  component={"h4"}
+                  marginBottom={1}
+                >
+                  {t("labelForceWithdrawTitle")}
+                </Typography>
+                <Typography
+                  variant={"body1"}
+                  color={"text.secondary"}
+                  component={"p"}
+                >
+                  {t("labelForceWithdrawDes")}
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                xs={5}
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"flex-start"}
+                alignItems={"flex-end"}
+                alignSelf={"stretch"}
+              >
+                <Grid item>
+                  <Button
+                    onClick={() => {
+                      // exportAccInfo()
+                      history.push(`/layer2/forcewithdraw`);
+                    }}
+                    variant={"outlined"}
+                    size={"medium"}
+                    color={"primary"}
+                    disabled={false}
+                  >
+                    {t("labelForceWithdrawBtn")}
                   </Button>
                 </Grid>
               </Grid>

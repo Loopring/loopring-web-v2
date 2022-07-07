@@ -36,16 +36,16 @@ export const profile = {
       },
     },
   ],
-  forcewithdraw: [
-    {
-      icon: OutputIcon,
-      router: { path: "/layer2/forcewithdraw" },
-      label: {
-        id: "forcewithdraw",
-        i18nKey: "labelForceWithdraw",
-      },
-    },
-  ],
+  // forcewithdraw: [
+  //   {
+  //     icon: OutputIcon,
+  //     router: { path: "/layer2/forcewithdraw" },
+  //     label: {
+  //       id: "forcewithdraw",
+  //       i18nKey: "labelForceWithdraw",
+  //     },
+  //   },
+  // ],
   vip: [
     {
       icon: VipIcon,
