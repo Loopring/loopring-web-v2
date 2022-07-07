@@ -12,7 +12,6 @@ import { ViewAccountTemplate } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
-import { RedPockPanel } from "./RedPockPanel";
 import { useGetAssets } from "./AssetPanel/hook";
 import { ForcewithdrawPanel } from "./ForcewithdrawPanel";
 

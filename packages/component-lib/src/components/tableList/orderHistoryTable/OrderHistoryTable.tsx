@@ -28,6 +28,7 @@ import {
   TradeTypes,
   getValuePrecisionThousand,
   DirectionTag,
+  globalSetup,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Filter, FilterOrderTypes } from "./components/Filter";
@@ -40,6 +41,8 @@ import {
   GetUserTradesRequest,
 } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
+import _ from "lodash";
+import { useLocation } from "react-router-dom";
 
 const CancelColHeaderStyled = styled(Typography)`
   display: flex;
@@ -194,6 +197,8 @@ export interface OrderHistoryTableProps {
 
 export const OrderHistoryTable = withTranslation("tables")(
   (props: OrderHistoryTableProps & WithTranslation) => {
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     const {
       t,
       rawData,
@@ -236,7 +241,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       }
     }, [isOpenOrder]);
 
-    const updateData = React.useCallback(
+    const updateData = _.debounce(
       async ({
         isOpen = isOpenOrder,
         actionType,
@@ -270,27 +275,8 @@ export const OrderHistoryTable = withTranslation("tables")(
             : ["processed", "failed", "cancelled", "cancelling", "expired"],
         });
       },
-      [
-        filterDate,
-        filterType,
-        filterToken,
-        getOrderList,
-        page,
-        pageSize,
-        isOpenOrder,
-      ]
+      globalSetup.wait
     );
-    React.useEffect(() => {
-      // if (pageSize) {
-      //   getOrderList({
-      //     limit: pageSize,
-      //     status: isOpenOrder
-      //       ? ["processing"]
-      //       : ["processed", "failed", "cancelled", "cancelling", "expired"],
-      //   });
-      // }
-      updateData({});
-    }, [pageSize]);
 
     const handleFilterChange = React.useCallback(
       async ({
@@ -347,6 +333,17 @@ export const OrderHistoryTable = withTranslation("tables")(
       },
       [clearOrderDetail, getUserOrderDetailTradeList]
     );
+    React.useEffect(() => {
+      let filters: any = {};
+      updateData.cancel();
+      if (searchParams.get("market")) {
+        filters.token = searchParams.get("market");
+      }
+      handleFilterChange(filters);
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
 
     const CellStatus = React.useCallback(
       ({ row, rowIdx }: any) => {

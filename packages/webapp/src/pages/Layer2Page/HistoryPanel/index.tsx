@@ -21,7 +21,7 @@ import {
   useAmmMap,
 } from "@loopring-web/core";
 import { BackIcon, RowConfig } from "@loopring-web/common-resources";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { useOrderList } from "../OrderPanel/hook";
 
 enum TabIndex {
@@ -34,7 +34,7 @@ enum TabIndex {
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
-
+    const { search } = useLocation();
     const match: any = useRouteMatch("/layer2/:item/:tab");
     const tab = match?.params.tab ?? TabIndex.transactions;
     const [pageSize, setPageSize] = React.useState(0);
@@ -85,33 +85,17 @@ const HistoryPanel = withTranslation("common")(
     const handleTabChange = React.useCallback(
       (value: TabIndex, _pageSize?: number) => {
         setCurrentTab(value);
-
-        // if (value === "transactions") {
-        //   getUserTxnList({
-        //     limit: _pageSize ? _pageSize : pageSize,
-        //     types: `${UserTxTypes.DEPOSIT},${UserTxTypes.TRANSFER},${UserTxTypes.DELEGATED_FORCE_WITHDRAW},${UserTxTypes.OFFCHAIN_WITHDRAWAL},${UserTxTypes.FORCE_WITHDRAWAL}`,
-        //   });
-        // }
-        // if (value === TabIndex.trades) {
-        //   getUserTradeList({
-        //     pageSize: _pageSize ? _pageSize : pageSize,
-        //   });
-        // }
-        if (value === TabIndex.ammRecords) {
-          getAmmpoolList({
-            limit: _pageSize ? _pageSize : pageSize,
-          });
-        }
-        // if (value === "orderOpenTable") {
+        history.push(`/layer2/history/${value}?${search.replace("?", "")}`);
+        // if (value === TabIndex.ammRecords) {
         //   getAmmpoolList({
         //     limit: _pageSize ? _pageSize : pageSize,
         //   });
         // }
-        if (
-          [TabIndex.orderHistoryTable, TabIndex.orderOpenTable].includes(value)
-        ) {
-          clearRawData();
-        }
+        // if (
+        //   [TabIndex.orderHistoryTable, TabIndex.orderOpenTable].includes(value)
+        // ) {
+        //   clearRawData();
+        // }
       },
       [clearRawData, getAmmpoolList, getUserTradeList, pageSize]
     );

@@ -64,7 +64,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
         value: "all",
       },
       ...Array.from(new Set(rawPairList)).map((pair: string) => ({
-        label: pair.replace("-", " - "),
+        label: pair, //.replace("-", " - "),
         value: pair,
       })),
     ];
