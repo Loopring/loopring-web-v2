@@ -15,6 +15,7 @@ export type TradeDefi<C> = {
   buyCoin: CoinInfo<any>;
   deFiCalcData?: DeFiCalcData<C>;
   fee: string;
+  feeRaw: string;
   depositPrice?: string;
   withdrawPrice?: string;
   request?: sdk.DefiOrderRequest;

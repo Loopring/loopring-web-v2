@@ -2,25 +2,30 @@ import {
   AccountStatus,
   DeFiCalcData,
   EmptyValueTag,
+  ExchangeIcon,
   IBData,
-  LinkedIcon,
+  OrderListIcon,
   ReverseIcon,
 } from "@loopring-web/common-resources";
-import { DeFiWrapProps } from "./Interface";
+import { DeFiChgType, DeFiWrapProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
-import { SvgStyled } from "../AmmWrap/styled";
 import { ButtonStyle, IconButtonStyled } from "../Styled";
 import { TradeBtnStatus } from "../../Interface";
+import { CountDownIcon } from "../tool/Refresh";
+import { useHistory } from "react-router-dom";
 
 export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   disabled,
   isStoB,
   btnInfo,
+  refreshRef,
+  onRefreshData,
   onSubmitClick,
   onConfirm,
+  // covertOnClick,
   switchStobEvent,
   onChangeEvent,
   handleError,
@@ -37,6 +42,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinSellRef = React.useRef();
   const coinBuyRef = React.useRef();
   const { t } = useTranslation();
+  const history = useHistory();
   // const [errorA, setErrorA] = React.useState<{
   //   error: boolean;
   //   message?: string | JSX.Element;
@@ -95,7 +101,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   }, [btnStatus, deFiCalcData, disabled]);
 
   if (typeof handleError !== "function") {
-    handleError = ({ belong, balance, tradeValue }: any) => {
+    handleError = (iBData: any) => {
       if (accStatus === AccountStatus.ACTIVATED) {
         // const iscoinSell = belong === deFiCalcData.mycoinSell.belong;
         // if (balance < tradeValue || (tradeValue && !balance)) {
@@ -121,8 +127,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   }
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
-      const focus: "coinSell" | "coinBuy" =
-        _ref?.current === coinSellRef.current ? "coinSell" : "coinBuy";
+      const focus: DeFiChgType =
+        _ref?.current === coinSellRef.current
+          ? DeFiChgType.coinSell
+          : DeFiChgType.coinBuy;
       if (deFiCalcData[focus].tradeValue !== ibData.tradeValue) {
         onChangeEvent({
           tradeData: { ...ibData },
@@ -132,6 +140,12 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     },
     [deFiCalcData]
   );
+  const covertOnClick = React.useCallback(() => {
+    onChangeEvent({
+      tradeData: undefined,
+      type: DeFiChgType.exchange,
+    });
+  }, [onChangeEvent]);
   const propsA: any = {
     label: t("labelTokenAmount"),
     subLabel: t("labelAvailable"),
@@ -164,12 +178,45 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     >
       <Grid
         item
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        flexDirection={"row"}
+        width={"100%"}
+      >
+        <Typography
+          height={"100%"}
+          display={"inline-flex"}
+          variant={"h5"}
+          alignItems={"center"}
+          alignSelf={"self-start"}
+        >
+          {t("labelInvestDefiTitle")}
+        </Typography>
+        <Box alignSelf={"flex-end"} display={"flex"}>
+          <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef} />
+          <Typography display={"inline-block"} marginLeft={2}>
+            <IconButtonStyled
+              onClick={() => {
+                history.push(`/layer2/history/ammRecord`);
+              }}
+              sx={{ backgroundColor: "var(--field-opacity)" }}
+              className={"switch outlined"}
+              aria-label="to Transaction"
+              size={"large"}
+            >
+              <OrderListIcon color={"primary"} fontSize={"large"} />
+            </IconButtonStyled>
+          </Typography>
+        </Box>
+      </Grid>
+      <Grid
+        item
         marginTop={3}
+        flexDirection={"column"}
         display={"flex"}
         alignSelf={"stretch"}
-        justifyContent={""}
         alignItems={"stretch"}
-        flexDirection={"column"}
       >
         <InputCoin<any, I, any>
           ref={coinSellRef}
@@ -186,13 +233,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           }}
         />
         <Box alignSelf={"center"} marginY={1}>
-          <SvgStyled>
-            {/* <LinkedIcon /> */}
-            <LinkedIcon
+          <IconButtonStyled
+            size={"large"}
+            onClick={covertOnClick}
+            aria-label={t("tokenExchange")}
+          >
+            <ExchangeIcon
               fontSize={"large"}
-              htmlColor={"var(--color-text-third)"}
+              htmlColor={"var(--color-text-primary)"}
             />
-          </SvgStyled>
+          </IconButtonStyled>
         </Box>
         <InputCoin<any, I, any>
           ref={coinBuyRef}

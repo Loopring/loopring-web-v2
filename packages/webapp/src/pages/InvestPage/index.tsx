@@ -158,25 +158,22 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   // const searchParams = new URLSearchParams(search);
   const { account } = useAccount();
   const [tabIndex, setTabIndex] = React.useState<InvestType>(() => {
-    let index = undefined;
+    // let index = undefined;
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
-        index = InvestType.MyBalance;
-        break;
+        return InvestType.MyBalance;
       case InvestRouter[InvestType.MyBalance]:
-        index = InvestType.AmmPool;
-        break;
+        return InvestType.AmmPool;
       case InvestRouter[InvestType.DeFi]:
-        index = InvestType.DeFi;
-        break;
+        return InvestType.DeFi;
+      default:
+        return account.readyState === "ACTIVATED"
+          ? InvestType.MyBalance
+          : InvestType.AmmPool;
     }
-
-    const selected =
-      index ?? account.readyState === "ACTIVATED"
-        ? InvestType.MyBalance
-        : InvestType.AmmPool;
-
-    return selected;
+    return account.readyState === "ACTIVATED"
+      ? InvestType.MyBalance
+      : InvestType.AmmPool;
   });
 
   return (

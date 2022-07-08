@@ -2,15 +2,24 @@ import { BtnInfo, InputButtonProps } from "../../../basic-lib";
 import { AccountStatus, CoinInfo } from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../../Interface";
+import React from "react";
+
+export enum DeFiChgType {
+  coinSell = "coinSell",
+  coinBuy = "coinBuy",
+  exchange = "exchange",
+}
 
 export type DeFiChgData<T> = {
-  type: "coinSell" | "coinBuy";
-  tradeData: T;
+  type: DeFiChgType;
+  tradeData?: undefined | T;
 };
 export type DeFiWrapProps<T, I, ACD> = {
   isStoB?: boolean;
   disabled?: boolean;
   btnInfo?: BtnInfo;
+  refreshRef: React.Ref<any>;
+  onRefreshData?: () => void;
   isLoading: boolean;
   // btnStatus: keyof typeof TradeBtnStatus | undefined;
   onSubmitClick: () => void;

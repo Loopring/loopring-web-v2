@@ -11,7 +11,7 @@ export const useDeFiHook = () => {
   const { deFiWrapProps, confirmShow, setConfirmShow } = useDefiTrade({
     isJoin: true,
     setToastOpen: setToastOpen as any,
-    market: marketArray[1] as MarketType,
+    market: "WSTETH-ETH", // marketArray[1] as MarketType,
   });
   return { deFiWrapProps, toastOpen, closeToast, confirmShow, setConfirmShow };
 };

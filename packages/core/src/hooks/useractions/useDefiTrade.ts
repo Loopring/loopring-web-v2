@@ -6,6 +6,7 @@ import {
   IBData,
   MarketType,
   myLog,
+  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
 import { useTradeDefi, useWalletLayer2Socket } from "@loopring-web/core";
@@ -23,7 +24,6 @@ import {
   walletLayer2Service,
   useSystem,
 } from "../../index";
-import { useRouteMatch } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDefiMap } from "../../stores";
 
@@ -34,7 +34,7 @@ export const useDefiTrade = <
 >({
   isJoin,
   setToastOpen,
-  market,
+  market = "",
 }: {
   market: string;
   isJoin: boolean;
@@ -47,13 +47,12 @@ export const useDefiTrade = <
   const { t } = useTranslation(["common"]);
   const { marketMap } = useDefiMap();
   // @ts-ignore
-  const [, coinSellSymbol, coinBuySymbol] = market.match(/(\w+)-(\w+)/i);
+  const [, coinSellSymbol, coinBuySymbol] = market.match(/(\w+)-(\w+)/i) ?? [];
   const [isLoading, setIsLoading] = React.useState(false);
-  const [confirmShow, setConfirmShow] = React.useState<boolean>(true);
+  const [confirmShow, setConfirmShow] = React.useState<boolean>(false);
   const { tokenMap } = useTokenMap();
-  const { account } = useAccount();
+  const { account, status: accountStatus } = useAccount();
   const { exchangeInfo } = useSystem();
-  const match = useRouteMatch("/layer2/:forceWithdraw");
   const { tradeDefi, updateTradeDefi } = useTradeDefi();
 
   // const {
@@ -76,7 +75,7 @@ export const useDefiTrade = <
       requestType:
         | sdk.OffchainFeeReqType.DEFI_JOIN
         | sdk.OffchainFeeReqType.DEFI_EXIT
-    ) => {
+    ): Promise<{ fee: string; feeRaw: string } | undefined> => {
       if (
         LoopringAPI.userAPI &&
         coinSellSymbol &&
@@ -88,7 +87,8 @@ export const useDefiTrade = <
         const request: sdk.GetOffchainFeeAmtRequest = {
           accountId: account.accountId,
           requestType,
-          tokenSymbol: coinBuySymbol as string,
+          //@ts-ignore
+          market, //coinBuySymbol as string,
         };
 
         const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(
@@ -96,13 +96,17 @@ export const useDefiTrade = <
           account.apiKey
         );
 
-        const feeRaw = fees[coinBuySymbol] ? fees[coinBuySymbol].fee : 0;
-        const fee = sdk.toBig(feeRaw).div("1e" + feeToken.decimals);
+        const feeRaw = fees[coinBuySymbol] ? fees[coinBuySymbol].fee : "0";
+        const fee = sdk
+          .toBig(feeRaw)
+          .div("1e" + feeToken.decimals)
+          .toString();
 
         myLog("new fee:", fee.toString());
         return {
-          fee,
-          fees,
+          fee: fee ?? "0.001",
+          feeRaw: feeRaw ?? "1000000",
+          // fees,
         };
       }
     },
@@ -224,58 +228,69 @@ export const useDefiTrade = <
   );
   const [isStoB, setIsStoB] = React.useState(true);
   // useWalletLayer2Socket({ walletLayer2Callback });
-  const resetDefault = React.useCallback(async () => {
-    const { fee } = (await getFee(
-      isJoin
-        ? sdk.OffchainFeeReqType.DEFI_JOIN
-        : sdk.OffchainFeeReqType.DEFI_EXIT
-    )) ?? { fee: 0 };
-    const deFiCalcDataInit = tradeDefi.deFiCalcData;
-    const marketInfo = marketMap[market];
-    const [AtoB, BtoA] = marketInfo
-      ? isJoin
-        ? [marketInfo.depositPrice, marketInfo.withdrawPrice]
-        : [marketInfo.withdrawPrice, marketInfo.depositPrice]
-      : ["0", "0"];
-    updateTradeDefi({
-      type: "LIDO",
-      market: market as MarketType,
+  const resetDefault = React.useCallback(
+    async (shouldFeeUpdate?: boolean) => {
+      let feeInfo;
+      if (
+        account.readyState === AccountStatus.ACTIVATED &&
+        (shouldFeeUpdate || market !== tradeDefi.market)
+      ) {
+        feeInfo = await getFee(
+          isJoin
+            ? sdk.OffchainFeeReqType.DEFI_JOIN
+            : sdk.OffchainFeeReqType.DEFI_EXIT
+        );
+      }
+
+      const deFiCalcDataInit = tradeDefi.deFiCalcData;
+      const marketInfo = marketMap[market];
+      const [AtoB, BtoA] = marketInfo
+        ? isJoin
+          ? [marketInfo.depositPrice, marketInfo.withdrawPrice]
+          : [marketInfo.withdrawPrice, marketInfo.depositPrice]
+        : ["0", "0"];
+
+      updateTradeDefi({
+        type: "LIDO",
+        market: market as MarketType,
+        isStoB,
+        sellVol: "0",
+        buyVol: "0",
+        sellCoin: coinMap[coinSellSymbol],
+        buyCoin: coinMap[coinBuySymbol],
+        deFiCalcData: {
+          ...deFiCalcDataInit,
+          coinSell: coinMap[coinSellSymbol],
+          coinBuy: coinMap[coinBuySymbol],
+          AtoB,
+          BtoA,
+          fee: feeInfo?.fee?.toString() ?? "",
+          coinMap: coinMap as any,
+        },
+        fee: feeInfo?.fee.toString(),
+        feeRaw: feeInfo?.feeRaw.toString(),
+        depositPrice: marketInfo?.depositPrice ?? "0",
+        withdrawPrice: marketInfo?.withdrawPrice ?? "0",
+      });
+    },
+    [
+      coinBuySymbol,
+      coinSellSymbol,
+      marketMap,
+      getFee,
+      isJoin,
       isStoB,
-      sellVol: "0",
-      buyVol: "0",
-      sellCoin: coinMap[coinSellSymbol],
-      buyCoin: coinMap[coinBuySymbol],
-      deFiCalcData: {
-        ...deFiCalcDataInit,
-        coinSell: coinMap[coinSellSymbol],
-        coinBuy: coinMap[coinBuySymbol],
-        AtoB,
-        BtoA,
-        fee: fee.toString(),
-        coinMap: coinMap as any,
-      },
-      fee: fee.toString(),
-      depositPrice: marketInfo?.depositPrice ?? "0",
-      withdrawPrice: marketInfo?.withdrawPrice ?? "0",
-    });
-  }, [
-    coinBuySymbol,
-    coinSellSymbol,
-    marketMap,
-    getFee,
-    isJoin,
-    isStoB,
-    market,
-    tradeDefi.deFiCalcData,
-    updateTradeDefi,
-  ]);
+      market,
+      tradeDefi.deFiCalcData,
+      updateTradeDefi,
+    ]
+  );
 
   React.useEffect(() => {
-    // @ts-ignore
-    if (match?.params?.forcewithdraw?.toLowerCase() === "forcewithdraw") {
-      resetDefault();
+    if (market && market !== "" && accountStatus === SagaStatus.UNSET) {
+      resetDefault(account.readyState === AccountStatus.ACTIVATED);
     }
-  }, [match?.params]);
+  }, [market, isJoin, accountStatus, account.readyState]);
 
   const sendRequest = React.useCallback(async () => {
     try {
@@ -360,7 +375,7 @@ export const useDefiTrade = <
       });
     } finally {
       setIsLoading(false);
-      resetDefault();
+      resetDefault(false);
       walletLayer2Service.sendUserUpdate();
     }
   }, [
@@ -372,11 +387,7 @@ export const useDefiTrade = <
     setToastOpen,
     t,
     tokenMap,
-    tradeDefi.buyCoin.name,
-    tradeDefi.buyVol,
-    tradeDefi.fee,
-    tradeDefi.sellCoin.name,
-    tradeDefi.sellVol,
+    tradeDefi,
   ]);
 
   const handleSubmit = React.useCallback(async () => {

@@ -13,6 +13,7 @@ const initState: TradeDefi<any> = {
   buyVol: "0",
   deFiCalcData: undefined,
   fee: "0",
+  feeRaw: "0",
 };
 type R = { [key: string]: any };
 const initialState: TradeDefiStatus<R> = {
@@ -43,6 +44,7 @@ const tradeDefiSlice: Slice<TradeDefiStatus<R>> = createSlice({
         depositPrice,
         withdrawPrice,
         request,
+        feeRaw,
       } = action.payload;
       if (market !== state.tradeDefi.market) {
         state.tradeDefi = {
@@ -66,6 +68,9 @@ const tradeDefiSlice: Slice<TradeDefiStatus<R>> = createSlice({
       }
       if (fee) {
         state.tradeDefi.fee = fee;
+      }
+      if (feeRaw) {
+        state.tradeDefi.feeRaw = feeRaw;
       }
       if (depositPrice) {
         state.tradeDefi.depositPrice = depositPrice;

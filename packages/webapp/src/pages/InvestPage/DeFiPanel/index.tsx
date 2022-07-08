@@ -1,16 +1,28 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
 import { useDeFiHook } from "./hook";
-import { ConfirmImpact, DeFiWrap, Toast } from "@loopring-web/component-lib";
+import {
+  boxLiner,
+  ConfirmImpact,
+  DeFiWrap,
+  Toast,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { TOAST_TIME } from "@loopring-web/core";
-import { getValuePrecisionThousand } from "@loopring-web/common-resources";
-const StyleWrapper = styled(Grid)`
+import { LoadingBlock } from "../../LoadingPage";
+//  //background: vavarr(--color-box);
+const StyleWrapper = styled(Box)`
   position: relative;
-  width: 100%;
-  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
+  .loading-block {
+    background: initial;
+  }
+  .hasLinerBg {
+    ${({ theme }) => boxLiner({ theme })}
+  }
   border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid;
 
@@ -28,17 +40,33 @@ export const DeFiPanel: any = withTranslation("common")(
       confirmShow,
       setConfirmShow,
     } = useDeFiHook();
+    const { isMobile } = useSettings();
+    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+
     return (
       <StyleWrapper
-        container
-        className={"MuiPaper-elevation2"}
-        paddingY={3}
-        paddingX={4}
-        margin={0}
-        marginBottom={2}
         display={"flex"}
-        position={"relative"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        flex={1}
+        sx={{ background: "var(--color-box)" }}
       >
+        {deFiWrapProps.deFiCalcData ? (
+          <Box
+            className={"hasLinerBg"}
+            display={"flex"}
+            style={styles}
+            justifyContent={"center"}
+            padding={5 / 2}
+          >
+            <DeFiWrap {...(deFiWrapProps as any)} />
+          </Box>
+        ) : (
+          <LoadingBlock />
+        )}
+
+        {/*<DeFiWrap />*/}
         <Toast
           alertText={toastOpen?.content ?? ""}
           severity={toastOpen?.type ?? "success"}
@@ -51,8 +79,6 @@ export const DeFiPanel: any = withTranslation("common")(
           open={confirmShow}
           value={1}
         />
-        <DeFiWrap {...(deFiWrapProps as any)} />
-        {/*<DeFiWrap />*/}
       </StyleWrapper>
     );
   }
