@@ -21,14 +21,14 @@ export class LoopringAPI {
   public static globalAPI: GlobalAPI | undefined = undefined;
   public static __chainId__: ChainId | undefined = undefined;
   public static InitApi = (chainId: ChainId) => {
-    LoopringAPI.userAPI = new UserAPI({ chainId });
-    LoopringAPI.exchangeAPI = new ExchangeAPI({ chainId });
-    LoopringAPI.globalAPI = new GlobalAPI({ chainId });
-    LoopringAPI.ammpoolAPI = new AmmpoolAPI({ chainId });
-    LoopringAPI.walletAPI = new WalletAPI({ chainId });
-    LoopringAPI.wsAPI = new WsAPI({ chainId });
-    LoopringAPI.nftAPI = new NFTAPI({ chainId });
-    LoopringAPI.delegate = new DelegateAPI({ chainId });
+    LoopringAPI.userAPI = new UserAPI({ chainId }, 6000);
+    LoopringAPI.exchangeAPI = new ExchangeAPI({ chainId }, 6000);
+    LoopringAPI.globalAPI = new GlobalAPI({ chainId }, 6000);
+    LoopringAPI.ammpoolAPI = new AmmpoolAPI({ chainId }, 6000);
+    LoopringAPI.walletAPI = new WalletAPI({ chainId }, 6000);
+    LoopringAPI.wsAPI = new WsAPI({ chainId }, 6000);
+    LoopringAPI.nftAPI = new NFTAPI({ chainId }, 6000);
+    LoopringAPI.delegate = new DelegateAPI({ chainId }, 6000);
     LoopringAPI.__chainId__ = chainId;
   };
 }
