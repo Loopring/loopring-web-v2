@@ -190,6 +190,12 @@ export const SwitchPanelStyled: any = styled(Box)<
               overflow-x: hidden;
               overflow-y: scroll !important;
               background: initial;
+              scrollbar-width: none; /* Firefox */
+              -ms-overflow-style: none; /* Internet Explorer 10+ */
+              &::-webkit-scrollbar {
+                /* WebKit */
+                width: 0;
+              }
            }
        }
       
@@ -200,6 +206,12 @@ export const SwitchPanelStyled: any = styled(Box)<
               padding-bottom:0; 
               overflow-x: hidden;
               overflow-y: scroll !important;
+              scrollbar-width: none; /* Firefox */
+              -ms-overflow-style: none; /* Internet Explorer 10+ */
+              &::-webkit-scrollbar {
+                /* WebKit */
+                width: 0;
+              }
           }
         }
       }

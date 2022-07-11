@@ -64,6 +64,12 @@ const BoxStyle = styled(Box)<
         overflow-x: hidden;
         overflow-y: scroll !important;
         background: initial;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+        &::-webkit-scrollbar {
+          /* WebKit */
+          width: 0;
+        }
         .container {
           height: 100%;
           padding-top: 0;

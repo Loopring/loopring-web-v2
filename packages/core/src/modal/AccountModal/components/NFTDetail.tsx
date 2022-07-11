@@ -41,6 +41,12 @@ const BoxStyle = styled(Box)<
     .detail-info {
       max-height: 520px;
       overflow-y: scroll;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* Internet Explorer 10+ */
+      &::-webkit-scrollbar {
+        /* WebKit */
+        width: 0;
+      }
     }
     .react-swipeable-view-container {
       & > div {

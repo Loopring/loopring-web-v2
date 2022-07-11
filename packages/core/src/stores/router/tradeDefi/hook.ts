@@ -5,12 +5,11 @@ import {
 } from "./reducer";
 import { TradeDefi, TradeDefiStatus } from "./interface";
 import React from "react";
-import { RequireOne } from "@loopring-web/common-resources";
 
 export function useTradeDefi<
   C extends { [key: string]: any }
 >(): TradeDefiStatus<C> & {
-  updateTradeDefi: (tradeDefi: RequireOne<TradeDefi<C>, "market">) => void;
+  updateTradeDefi: (tradeDefi: Partial<TradeDefi<C>>) => void;
   // resetTradeDefi: (tradeDefi: TradeDefi<C>) => void;
 } {
   const tradeDefiStatus: TradeDefiStatus<C> = useSelector(
@@ -20,7 +19,7 @@ export function useTradeDefi<
   return {
     ...tradeDefiStatus,
     updateTradeDefi: React.useCallback(
-      (tradeDefi: RequireOne<TradeDefi<C>, "market">) => {
+      (tradeDefi: Partial<TradeDefi<C>>) => {
         dispatch(updateTradeDefi(tradeDefi));
       },
       [dispatch]

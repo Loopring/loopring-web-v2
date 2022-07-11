@@ -265,7 +265,7 @@ export const globalCss = ({ theme }: any) => css`
 
   select {
     appearance: none;
-    -moz-appearance: none;
+    -moz-appearance: none;                 v
     -webkit-appearance: none;
 
     &::-ms-expand {

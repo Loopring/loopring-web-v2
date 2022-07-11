@@ -3,6 +3,7 @@ import {
   EmptyValueTag,
   ExchangeIcon,
   IBData,
+  myLog,
   OrderListIcon,
   ReverseIcon,
 } from "@loopring-web/common-resources";
@@ -196,6 +197,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   handleCountChange,
   //   ...rest,
   // };
+  myLog("deFiCalcData.coinSell ", deFiCalcData.coinSell);
   return (
     <Grid
       className={deFiCalcData ? "" : "loading"}

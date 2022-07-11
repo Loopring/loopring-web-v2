@@ -46,7 +46,7 @@ export const NotificationPanel = ({
       maxHeight={600}
       // minHeight={100}
       // minWidth={100}
-      overflow={"scroll"}
+      sx={{ overflowY: "scroll" }}
       // paddingBottom={1}
       paddingTop={hasActivities ? 1 : 0}
     >

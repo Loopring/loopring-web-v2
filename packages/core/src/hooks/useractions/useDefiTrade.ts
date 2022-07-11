@@ -19,7 +19,6 @@ import {
   useSubmitBtn,
   makeWalletLayer2,
   useWalletLayer2Socket,
-  WalletLayer2Map,
   useWalletLayer2,
 } from "@loopring-web/core";
 import _ from "lodash";
@@ -64,7 +63,7 @@ export const useDefiTrade = <
   const [isLoading, setIsLoading] = React.useState(false);
   const [isStoB, setIsStoB] = React.useState(true);
   const [confirmShow, setConfirmShow] = React.useState<boolean>(false);
-  const { tokenMap, coinMap, idIndex } = useTokenMap();
+  const { tokenMap, coinMap } = useTokenMap();
   const { account } = useAccount();
   const { walletLayer2, status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo } = useSystem();
@@ -185,7 +184,6 @@ export const useDefiTrade = <
         }
       }
       updateTradeDefi({
-        market: market as any,
         ...calcValue,
         deFiCalcData: _deFiCalcData,
       });
@@ -235,36 +233,40 @@ export const useDefiTrade = <
   }, [tradeDefi, tokenMap]);
   const resetDefault = _.debounce(async (shouldFeeUpdate?: boolean) => {
     let feeInfo,
-      defiBalances,
-      userBalances: any = {},
+      // defiBalances,
+      // userBalances: any = {},
       walletMap: any = {};
+    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i) ?? [];
     const marketInfo = defiMarketMap[market];
     if (
       account.readyState === AccountStatus.ACTIVATED &&
       (shouldFeeUpdate || market !== tradeDefi.market)
     ) {
       walletMap = makeWalletLayer2(true).walletMap;
-      [feeInfo, { userBalances }] = await Promise.all([
+      [
+        feeInfo,
+        // { userBalances }
+      ] = await Promise.all([
         getFee(
           isJoin
             ? sdk.OffchainFeeReqType.DEFI_JOIN
             : sdk.OffchainFeeReqType.DEFI_EXIT
         ),
-        LoopringAPI.userAPI?.getUserBalances(
-          {
-            accountId: marketInfo.accountId,
-            tokens: `${marketInfo.quoteTokenId},${marketInfo.baseTokenId}`,
-          },
-          account.apiKey
-        ) ?? { userBalances: {} },
+        // LoopringAPI.userAPI?.getUserBalances(
+        //   {
+        //     accountId: marketInfo.accountId,
+        //     tokens: `${marketInfo.quoteTokenId},${marketInfo.baseTokenId}`,
+        //   },
+        //   account.apiKey
+        // ) ?? { userBalances: {} },
       ]);
-      defiBalances = Reflect.ownKeys(userBalances ?? []).reduce(
-        (prev, item) => {
-          // @ts-ignore
-          return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
-        },
-        {} as WalletLayer2Map<any>
-      );
+      // defiBalances = Reflect.ownKeys(userBalances ?? []).reduce(
+      //   (prev, item) => {
+      //     // @ts-ignore
+      //     return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
+      //   },
+      //   {} as WalletLayer2Map<any>
+      // );
     }
     const deFiCalcDataInit = tradeDefi.deFiCalcData;
 
@@ -273,6 +275,8 @@ export const useDefiTrade = <
         ? [marketInfo.depositPrice, marketInfo.withdrawPrice]
         : [marketInfo.withdrawPrice, marketInfo.depositPrice]
       : ["0", "0"];
+    myLog();
+
     updateTradeDefi({
       type: "LIDO",
       market: market as MarketType,
@@ -297,7 +301,12 @@ export const useDefiTrade = <
         BtoA,
         fee: feeInfo?.fee?.toString() ?? "",
       },
-      defiBalances,
+      defiBalances: {
+        // @ts-ignore
+        [baseSymbol]: marketInfo.baseVolume,
+        // @ts-ignore
+        [quoteSymbol]: marketInfo.quoteVolume,
+      },
       fee: feeInfo?.fee.toString(),
       feeRaw: feeInfo?.feeRaw.toString(),
       depositPrice: marketInfo?.depositPrice ?? "0",
@@ -459,7 +468,6 @@ export const useDefiTrade = <
       isJoin !== undefined
     ) {
       resetDefault.cancel();
-      debugger;
       setSymbol(() => {
         if (isJoin) {
           const [, coinBuySymbol, coinSellSymbol] =

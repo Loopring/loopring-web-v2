@@ -16,7 +16,13 @@ import { useTheme } from "@emotion/react";
 const BoxStyled = styled(Box)`
   background: var(--color-global-bg);
   position: relative;
-
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  &::-webkit-scrollbar {
+    /* WebKit */
+    width: 0;
+  }
   &:before {
     content: "";
     position: absolute;
@@ -148,7 +154,6 @@ export const DepositRecorder = ({
     <BoxStyled
       minHeight={60}
       maxHeight={180}
-      overflow={"scroll"}
       component={"div"}
       display={"flex"}
       paddingX={5}
