@@ -6,6 +6,7 @@ import {
   Button,
   ForceWithdrawPanel,
   TransactionTradeTypes,
+  TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";
 import { useForceWithdraw } from "@loopring-web/core";
@@ -69,7 +70,7 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
             rel="noopener noreferrer"
             onClick={() =>
               history.push(
-                `/layer2/history/transactions?types=${TransactionTradeTypes.forceWithdraw}`
+                `/layer2/history/transactions?types=${TransactionTradeViews.forceWithdraw}`
               )
             }
           >

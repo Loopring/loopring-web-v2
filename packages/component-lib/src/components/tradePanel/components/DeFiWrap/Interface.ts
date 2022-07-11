@@ -24,7 +24,7 @@ export type DeFiWrapProps<T, I, ACD> = {
   disabled?: boolean;
   btnInfo?: BtnInfo;
   refreshRef: React.Ref<any>;
-  onRefreshData?: () => void;
+  onRefreshData?: (shouldFeeUpdate?: boolean, clearTrade?: boolean) => void;
   isLoading: boolean;
   market: MarketType;
   // btnStatus: keyof typeof TradeBtnStatus | undefined;

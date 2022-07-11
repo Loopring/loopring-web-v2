@@ -35,7 +35,6 @@ export const DeFiPanel: any = withTranslation("common")(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     const match: any = useRouteMatch("/invest/defi/:market/:isJoin");
-
     //TODO: list
     const market = match?.params?.market?.toUpperCase() ?? "WSTETH-ETH";
     const isJoin =

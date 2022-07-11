@@ -193,7 +193,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             ? TransactionTradeTypes.receive //UserTxTypes.DEPOSIT
             : formattedType === TransactionTradeViews.send
             ? TransactionTradeTypes.send
-            : formattedType === TransactionTradeViews.forceWithdraw
+            : formattedType.toUpperCase() ===
+              TransactionTradeViews.forceWithdraw
             ? TransactionTradeTypes.forceWithdraw
             : TransactionTradeTypes.allTypes;
         const start = Number(moment(currFilterDate[0]).format("x"));
@@ -215,6 +216,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
         setFilterType(type);
         setFilterDate(date);
         setFilterToken(token);
+
         updateData({
           tableType: TableType.filter,
           currFilterType: type,

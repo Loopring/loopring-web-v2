@@ -1,8 +1,8 @@
 import React from "react";
 import { TradeBtnStatus } from "@loopring-web/component-lib";
-import { AccountStatus, fnType } from "@loopring-web/common-resources";
+import { AccountStatus, fnType, myLog } from "@loopring-web/common-resources";
 import * as _ from "lodash";
-import { accountStaticCallBack, btnClickMap, btnLabel } from "../index";
+import { accountStaticCallBack, btnClickMap, btnLabel } from "../help";
 import { useAccount } from "../../stores";
 
 export const useSubmitBtn = ({
@@ -28,12 +28,13 @@ export const useSubmitBtn = ({
         return TradeBtnStatus.LOADING;
       } else {
         const { tradeBtnStatus } = availableTradeCheck(rest);
+        myLog("tradeBtnStatus", tradeBtnStatus);
         return tradeBtnStatus;
       }
     } else {
       return TradeBtnStatus.AVAILABLE;
     }
-  }, [account.readyState, availableTradeCheck, rest]);
+  }, [account.readyState, availableTradeCheck, isLoading, rest]);
 
   const btnStyle: Partial<React.CSSProperties> | undefined = React.useMemo(():
     | Partial<React.CSSProperties>

@@ -58,11 +58,15 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
           market,
           sellCoin: sellCoin as CoinInfo<R>,
           buyCoin: buyCoin as CoinInfo<R>,
-          deFiCalcData,
-          request,
         };
       }
+      if (request) {
+        state.tradeDefi.request = request;
+      }
 
+      if (deFiCalcData) {
+        state.tradeDefi.deFiCalcData = deFiCalcData;
+      }
       if (isStoB) {
         state.tradeDefi.isStoB = isStoB;
       }

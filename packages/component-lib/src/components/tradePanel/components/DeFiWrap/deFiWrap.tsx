@@ -75,25 +75,28 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     deFiCalcData?.AtoB;
 
   const convertStr = React.useMemo(() => {
-    return isStoB
-      ? `1${deFiCalcData.coinSell.belong} \u2248 ${
-          // @ts-ignore
-          deFiCalcData?.AtoB && deFiCalcData?.AtoB != "NaN"
-            ? deFiCalcData?.AtoB
-            : EmptyValueTag
-        } ${deFiCalcData.coinBuy.belong}`
-      : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
-          // @ts-ignore
-          deFiCalcData.BtoA && deFiCalcData?.BtoA != "NaN"
-            ? deFiCalcData.BtoA
-            : EmptyValueTag
-        } ${deFiCalcData.coinSell.belong}`;
+    return deFiCalcData.coinSell && deFiCalcData.coinBuy
+      ? isStoB
+        ? `1${deFiCalcData.coinSell.belong} \u2248 ${
+            // @ts-ignore
+            deFiCalcData?.AtoB && deFiCalcData?.AtoB != "NaN"
+              ? deFiCalcData?.AtoB
+              : EmptyValueTag
+          } ${deFiCalcData.coinBuy.belong}`
+        : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
+            // @ts-ignore
+            deFiCalcData.BtoA && deFiCalcData?.BtoA != "NaN"
+              ? deFiCalcData.BtoA
+              : EmptyValueTag
+          } ${deFiCalcData.coinSell.belong}`
+      : t("labelCalculating");
   }, [
     deFiCalcData?.AtoB,
     deFiCalcData.BtoA,
-    deFiCalcData.coinBuy.belong,
-    deFiCalcData.coinSell.belong,
+    deFiCalcData.coinBuy,
+    deFiCalcData.coinSell,
     isStoB,
+    t,
   ]);
 
   // const getDisabled = () => {
@@ -104,8 +107,15 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   );
   // };
   const getDisabled = React.useMemo(() => {
-    return disabled || isLoading || deFiCalcData === undefined;
-  }, [btnStatus, deFiCalcData, disabled]);
+    return (
+      disabled ||
+      isLoading ||
+      deFiCalcData === undefined ||
+      btnStatus === TradeBtnStatus.DISABLED
+    );
+  }, [btnStatus, deFiCalcData, disabled, isLoading]);
+
+  myLog("DefiTrade btnStatus", btnStatus);
 
   // if (typeof handleError !== "function") {
   //   handleError = (iBData: any) => {
@@ -147,7 +157,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         });
       }
     },
-    [deFiCalcData]
+    [deFiCalcData, onChangeEvent]
   );
   const covertOnClick = React.useCallback(() => {
     onChangeEvent({
@@ -334,11 +344,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                 {t("labelDefiFee")}
               </Typography>
               <Typography component={"p"} variant="body2" color={"textPrimary"}>
-                {t(
-                  deFiCalcData
-                    ? deFiCalcData.fee + ` ${tokenBuy.symbol}`
-                    : EmptyValueTag
-                )}
+                {deFiCalcData?.fee
+                  ? deFiCalcData.fee + ` ${tokenBuy.symbol}`
+                  : EmptyValueTag}
               </Typography>
             </Grid>
           </Grid>
@@ -361,8 +369,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               {btnInfo
                 ? t(btnInfo.label, btnInfo.params)
                 : isJoin
-                ? t(`depositLabelBtn`)
-                : t(`depositLabelBtn`)}
+                ? t(`labelInvestBtn`)
+                : t(`labelRedeemBtn`)}
             </ButtonStyle>
           </Grid>
         </Grid>

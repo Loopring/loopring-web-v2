@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
-import { RootState } from "../../index";
+import { DefiMap, RootState } from "../../index";
 import { getDefiMap, statusUnset } from "./reducer";
 import { DefiMapStates } from "./interface";
 
 export const useDefiMap = (): DefiMapStates & {
   getDefiMap: () => void;
   statusUnset: () => void;
+  updateDefiSyncMap: (props: { defiMap: DefiMap }) => void;
 } => {
   const defiMap: DefiMapStates = useSelector(
     (state: RootState) => state.invest.defiMap
@@ -20,6 +21,10 @@ export const useDefiMap = (): DefiMapStates & {
     ),
     getDefiMap: React.useCallback(
       () => dispatch(getDefiMap(undefined)),
+      [dispatch]
+    ),
+    updateDefiSyncMap: React.useCallback(
+      ({ defiMap }: { defiMap: DefiMap }) => dispatch(getDefiMap(defiMap)),
       [dispatch]
     ),
   };

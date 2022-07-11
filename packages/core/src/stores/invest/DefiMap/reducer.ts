@@ -40,10 +40,20 @@ const defiMapSlice: Slice = createSlice({
     // updateRealTimeDefiMap(state, _action: PayloadAction<undefined>) {
     //   state.status = SagaStatus.PENDING;
     // },
+    updateDefiSyncMap(state, _action: PayloadAction<DefiMapStates>) {
+      state.status = SagaStatus.PENDING;
+    },
     statusUnset: (state) => {
       state.status = SagaStatus.UNSET;
     },
   },
 });
-const { getDefiMap, getDefiMapStatus, statusUnset } = defiMapSlice.actions;
-export { defiMapSlice, getDefiMap, getDefiMapStatus, statusUnset };
+const { getDefiMap, updateDefiSyncMap, getDefiMapStatus, statusUnset } =
+  defiMapSlice.actions;
+export {
+  defiMapSlice,
+  getDefiMap,
+  getDefiMapStatus,
+  statusUnset,
+  updateDefiSyncMap,
+};

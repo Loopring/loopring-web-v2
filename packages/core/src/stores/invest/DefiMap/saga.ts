@@ -1,7 +1,8 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
-import { getDefiMap, getDefiMapStatus } from "./reducer";
-import { store } from "../../index";
+import { getDefiMap, getDefiMapStatus, updateDefiSyncMap } from "./reducer";
+import { DefiMap, store } from "../../index";
 import { LoopringAPI } from "../../../api_wrapper";
+import { PayloadAction } from "@reduxjs/toolkit";
 
 // type DefiMap<R extends { [key: string]: any }> =
 //   | { [key: string]: AmmDetail<R> }
@@ -110,9 +111,23 @@ export function* getPostsSaga() {
     yield put(getDefiMapStatus(err));
   }
 }
+export function* getDefiSyncSaga({
+  payload,
+}: PayloadAction<{ defiMap: DefiMap }>) {
+  try {
+    if (payload.defiMap) {
+      yield put(getDefiMapStatus({ defiMap: payload.defiMap }));
+    }
+  } catch (err) {
+    yield put(getDefiMapStatus(err));
+  }
+}
 
 export function* defiMapInitSaga() {
   yield all([takeLatest(getDefiMap, getPostsSaga)]);
 }
+export function* defiMapSyncSaga() {
+  yield all([takeLatest(updateDefiSyncMap, getPostsSaga)]);
+}
 
-export const defiMapSaga = [fork(defiMapInitSaga)];
+export const defiMapSaga = [fork(defiMapInitSaga), fork];

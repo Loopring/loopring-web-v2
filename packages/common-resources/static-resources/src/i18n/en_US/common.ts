@@ -830,4 +830,6 @@ export default {
   labelInvestDefWithdraw: "Redeem",
   labelNFTDepositLabel: "Receive NFT",
   labelDefiFee: "Fee",
+  labelDefiMin: "Minimum of {{arg}}",
+  labelDefiNoEnough: "Not enough {{arg}}",
 };

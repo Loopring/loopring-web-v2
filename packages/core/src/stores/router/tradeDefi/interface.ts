@@ -4,7 +4,6 @@ import {
   MarketType,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { WalletLayer2Map } from "../../walletLayer2";
 
 export type TradeDefi<C> = {
   type: string;
@@ -23,7 +22,7 @@ export type TradeDefi<C> = {
   maxFeeBips?: number;
   miniSellVol?: string;
   request?: sdk.DefiOrderRequest;
-  defiBalances?: WalletLayer2Map<C>;
+  defiBalances?: { [key: string]: string };
 };
 
 export type TradeDefiStatus<C> = {

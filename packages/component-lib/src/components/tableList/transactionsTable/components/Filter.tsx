@@ -109,7 +109,13 @@ export const Filter = withTranslation("tables", { withRef: true })(
             }}
           />
         </Grid>
-        <Grid item xs={4} order={isMobile ? 1 : 0} lg={2}>
+        <Grid
+          item
+          xs={4}
+          order={isMobile ? 1 : 0}
+          lg={2}
+          sx={{ display: "none" }}
+        >
           <StyledTextFiled
             id="table-transaction-trade-types"
             select

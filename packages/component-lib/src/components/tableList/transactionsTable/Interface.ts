@@ -22,13 +22,13 @@ export const TransactionTradeTypes = {
   allTypes: `${sdk.UserTxTypes.DEPOSIT},${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},${sdk.UserTxTypes.FORCE_WITHDRAWAL}`,
   receive: `${sdk.UserTxTypes.DEPOSIT}`,
   send: `${sdk.UserTxTypes.TRANSFER},${sdk.UserTxTypes.OFFCHAIN_WITHDRAWAL},onchain_withdrawal`,
-  forceWithdraw: `${sdk.UserTxTypes.FORCE_WITHDRAWAL}`,
+  forceWithdraw: `${sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW}`,
 };
 export enum TransactionTradeViews {
   allTypes = "ALL",
   receive = "RECEIVE",
   send = "SEND",
-  forceWithdraw = "FORCEWITHDRAW",
+  forceWithdraw = "FORCE_WITHDRAWAL",
 }
 
 export type RawDataTransactionItem = {
