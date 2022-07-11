@@ -177,13 +177,20 @@ export const useDefiTrade = <
         // @ts-ignore
         _deFiCalcData = {
           ..._deFiCalcData,
-          coinSell: { ..._deFiCalcData?.coinSell, tradeValue: sellAmount },
-          coinBuy: { ..._deFiCalcData?.coinBuy, tradeValue: buyAmount },
+          coinSell:
+            type === DeFiChgType.coinSell
+              ? tradeData
+              : { ..._deFiCalcData?.coinSell, tradeValue: sellAmount },
+          coinBuy:
+            type === DeFiChgType.coinBuy
+              ? tradeData
+              : { ..._deFiCalcData?.coinBuy, tradeValue: buyAmount },
         };
         if (type === DeFiChgType.coinSell) {
         }
       }
       updateTradeDefi({
+        ...tradeDefi,
         ...calcValue,
         deFiCalcData: _deFiCalcData,
       });
@@ -243,30 +250,13 @@ export const useDefiTrade = <
       (shouldFeeUpdate || market !== tradeDefi.market)
     ) {
       walletMap = makeWalletLayer2(true).walletMap;
-      [
-        feeInfo,
-        // { userBalances }
-      ] = await Promise.all([
+      [feeInfo] = await Promise.all([
         getFee(
           isJoin
             ? sdk.OffchainFeeReqType.DEFI_JOIN
             : sdk.OffchainFeeReqType.DEFI_EXIT
         ),
-        // LoopringAPI.userAPI?.getUserBalances(
-        //   {
-        //     accountId: marketInfo.accountId,
-        //     tokens: `${marketInfo.quoteTokenId},${marketInfo.baseTokenId}`,
-        //   },
-        //   account.apiKey
-        // ) ?? { userBalances: {} },
       ]);
-      // defiBalances = Reflect.ownKeys(userBalances ?? []).reduce(
-      //   (prev, item) => {
-      //     // @ts-ignore
-      //     return { ...prev, [idIndex[item]]: userBalances[Number(item)] };
-      //   },
-      //   {} as WalletLayer2Map<any>
-      // );
     }
     const deFiCalcDataInit = tradeDefi.deFiCalcData;
 
@@ -302,11 +292,9 @@ export const useDefiTrade = <
         fee: feeInfo?.fee?.toString() ?? "",
       },
       defiBalances: {
-        // @ts-ignore
-        [baseSymbol]: marketInfo.baseVolume,
-        // @ts-ignore
-        [quoteSymbol]: marketInfo.quoteVolume,
-      },
+        [baseSymbol]: marketInfo?.baseVolume ?? "",
+        [quoteSymbol]: marketInfo?.quoteVolume ?? "",
+      } as any,
       fee: feeInfo?.fee.toString(),
       feeRaw: feeInfo?.feeRaw.toString(),
       depositPrice: marketInfo?.depositPrice ?? "0",
