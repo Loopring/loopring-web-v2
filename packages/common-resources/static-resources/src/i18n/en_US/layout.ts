@@ -76,7 +76,7 @@ export default {
   labelkeyLoopringSmartWallet: "Loopring Smart Wallet",
   labelkeyAPIs: "APIs",
   labelkeyReportIssue: "Report Issue",
-  labelMyNFT: "My NFT",
+  labelMyNFT: "My NFTs",
   labelLaunchApp: "Launch App",
   labelLaunchMobileApp: "Exchange",
   labelLandingHeaderLayer2: "zkRollup Layer 2",

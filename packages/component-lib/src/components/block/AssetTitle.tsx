@@ -137,7 +137,7 @@ export const AssetTitle = withTranslation("common")(
             variant={"outlined"}
             size={"medium"}
             color={"secondary"}
-            onClick={() => history.push("/layer2/history")}
+            onClick={() => history.push("/l2assets/history")}
           >
             {t("labelTransactions")}
           </Button>
@@ -165,7 +165,7 @@ AssetTitleMobileProps) => {
   // const [dropdownStatus, setDropdownStatus] =
   //   React.useState<"up" | "down">(hideL2Action?"up":"down");
   const { t } = useTranslation(["common", "layout"]);
-  let match: any = useRouteMatch("/layer2/:item");
+  let match: any = useRouteMatch("/l2assets/:item");
   const history = useHistory();
   const label = Reflect.ownKeys(subMenuLayer2)
     .reduce(
@@ -292,7 +292,7 @@ AssetTitleMobileProps) => {
               variant={"outlined"}
               size={"medium"}
               color={"secondary"}
-              onClick={() => history.push("/layer2/history")}
+              onClick={() => history.push("/l2assets/history")}
             >
               {t("labelTransactions")}
             </Button>

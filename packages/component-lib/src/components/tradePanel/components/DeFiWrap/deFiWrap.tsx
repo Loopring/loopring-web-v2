@@ -214,7 +214,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           <Typography display={"inline-block"} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/layer2/history/ammRecords?market=${market}`);
+                history.push(`/l2assets/history/ammRecords?market=${market}`);
               }}
               sx={{ backgroundColor: "var(--field-opacity)" }}
               className={"switch outlined"}

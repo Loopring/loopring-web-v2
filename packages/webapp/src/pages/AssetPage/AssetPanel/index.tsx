@@ -1,24 +1,15 @@
 import { useDeepCompareEffect } from "react-use";
 import { WithTranslation, withTranslation } from "react-i18next";
-import ReactEcharts from "echarts-for-react";
-import {
-  CurrencyToTag,
-  EmptyValueTag,
-  getValuePrecisionThousand,
-  PriceTag,
-} from "@loopring-web/common-resources";
-import { Box, Typography } from "@mui/material";
+
+import { Box } from "@mui/material";
 import styled from "@emotion/styled";
-import moment from "moment";
 import {
   AssetsTable,
   AssetTitle,
-  DoughnutChart,
   useSettings,
 } from "@loopring-web/component-lib";
 
 import {
-  store,
   useTokenPrices,
   useTokenMap,
   StylePaper,

@@ -26,12 +26,13 @@ import {
 import { TradeRacePage } from "../pages/TradeRacePage";
 import { GuardianPage } from "../pages/WalletPage";
 import { NFTPage } from "../pages/NFTPage";
-import { useGetAssets } from "../pages/Layer2Page/AssetPanel/hook";
+import { useGetAssets } from "../pages/AssetPage/AssetPanel/hook";
 import { Footer } from "../layouts/footer";
 import { InvestPage } from "../pages/InvestPage";
 import { ExtendedFirebaseInstance, useFirebase } from "react-redux-firebase";
 import { getAnalytics, logEvent } from "firebase/analytics";
 import { FirebaseApp } from "@firebase/app";
+import { AssetPage } from "../pages/AssetPage";
 
 const ContentWrap = ({
   children,
@@ -268,6 +269,12 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route exact path="/mining">
           <ContentWrap state={state}>
             <MiningPage />
+          </ContentWrap>
+        </Route>
+
+        <Route exact path={["/l2assets", "/l2assets/*"]}>
+          <ContentWrap state={state}>
+            <AssetPage />
           </ContentWrap>
         </Route>
         <Route exact path={["/layer2", "/layer2/*"]}>

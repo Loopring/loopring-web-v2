@@ -22,7 +22,7 @@ import {
 } from "@loopring-web/core";
 import { BackIcon, RowConfig } from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { useOrderList } from "../OrderPanel/hook";
+import { useOrderList } from "../../Layer2Page/OrderPanel/hook";
 
 enum TabIndex {
   transactions = "transactions",
@@ -35,7 +35,7 @@ const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
     const { search } = useLocation();
-    const match: any = useRouteMatch("/layer2/:item/:tab");
+    const match: any = useRouteMatch("/l2assets/:item/:tab");
     const tab = match?.params.tab ?? TabIndex.transactions;
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(tab);
@@ -85,7 +85,9 @@ const HistoryPanel = withTranslation("common")(
     const handleTabChange = React.useCallback(
       (value: TabIndex, _pageSize?: number) => {
         setCurrentTab(value);
-        history.replace(`/layer2/history/${value}?${search.replace("?", "")}`);
+        history.replace(
+          `/l2assets/history/${value}?${search.replace("?", "")}`
+        );
       },
       [clearRawData, getAmmpoolList, getUserTradeList, pageSize]
     );

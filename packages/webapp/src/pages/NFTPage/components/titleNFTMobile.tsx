@@ -15,7 +15,7 @@ import { Box, Grid } from "@mui/material";
 export const TitleNFTMobile = () => {
   const { hideL2Action, setHideL2Action } = useSettings();
   const { t } = useTranslation(["common", "layout"]);
-  let match: any = useRouteMatch("/layer2/:item");
+  let match: any = useRouteMatch("/nft/:item");
   const label = Reflect.ownKeys(subMenuLayer2)
     .reduce(
       (pre, item) => [...pre, ...subMenuLayer2[item]],

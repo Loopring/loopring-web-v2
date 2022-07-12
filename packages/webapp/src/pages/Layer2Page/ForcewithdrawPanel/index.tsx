@@ -70,7 +70,7 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
             rel="noopener noreferrer"
             onClick={() =>
               history.push(
-                `/layer2/history/transactions?types=${TransactionTradeViews.forceWithdraw}`
+                `/l2assets/history/transactions?types=${TransactionTradeViews.forceWithdraw}`
               )
             }
           >
