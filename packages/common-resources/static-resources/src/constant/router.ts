@@ -1,7 +1,10 @@
 import {
   AssetsIcon,
   L2HistoryIcon,
+  L2MyLiquidityIcon,
   L2OrderIcon,
+  MintIcon,
+  OutputIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
@@ -22,17 +25,52 @@ export const LoopringIPFSSiteProtocol = "https";
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
 export const IPFS_LOOPRING_SITE = sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 
+export const profile = {
+  security: [
+    {
+      icon: SecurityIcon,
+      router: { path: "/layer2/security" },
+      label: {
+        id: "security",
+        i18nKey: "labelSecurity",
+      },
+    },
+  ],
+  // forcewithdraw: [
+  //   {
+  //     icon: OutputIcon,
+  //     router: { path: "/layer2/forcewithdraw" },
+  //     label: {
+  //       id: "forcewithdraw",
+  //       i18nKey: "labelForceWithdraw",
+  //     },
+  //   },
+  // ],
+  vip: [
+    {
+      icon: VipIcon,
+      router: { path: "/layer2/vip" },
+      label: {
+        id: "vip",
+        i18nKey: "labelVipPanel",
+      },
+    },
+  ],
+};
+
 export enum ButtonComponentsMap {
   Download,
   Notification,
   Setting,
+  ProfileMenu,
   WalletConnect,
 }
 
 export const ToolBarAvailableItem = [
-  // ButtonComponentsMap.Download,
+  ButtonComponentsMap.Download,
   ButtonComponentsMap.Notification,
   ButtonComponentsMap.Setting,
+  ButtonComponentsMap.ProfileMenu,
   ButtonComponentsMap.WalletConnect,
 ];
 
@@ -43,9 +81,10 @@ export let headerToolBarData: Array<{
 }> = [
   {
     buttonComponent: ButtonComponentsMap.Download,
-    url: "https://loopring.io",
+    url: "https://loopring.io/#/wallet",
     i18nTitle: "labelDownloadAppTitle",
-    i18nDescription: "labelDownloadBtn",
+    // handleClick: undefined,
+    // i18nDescription: "labelDownloadBtn",
   },
   {
     buttonComponent: ButtonComponentsMap.Notification,
@@ -53,9 +92,15 @@ export let headerToolBarData: Array<{
   },
   { buttonComponent: ButtonComponentsMap.Setting, label: "labelSetting" },
   {
+    buttonComponent: ButtonComponentsMap.ProfileMenu,
+    i18nDescription: "labelProfile",
+    subMenu: profile,
+    readyState: undefined,
+  },
+  {
     buttonComponent: ButtonComponentsMap.WalletConnect,
     label: "labelConnectWallet",
-    status: undefined,
+    accountState: undefined,
     handleClick: undefined,
   },
 ];
@@ -95,48 +140,6 @@ export enum NavListIndex {
 export const orderDisableList = ["Liquidity", "Markets", "Trading", "Mining"];
 export const ammDisableList = ["Liquidity"];
 
-export const headerMenuData: Array<HeaderMenuItemInterface> = [
-  {
-    label: {
-      id: "Markets",
-      i18nKey: "labelMarkets",
-    },
-    router: { path: "/markets" },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: "Trade",
-      i18nKey: "labelTrade",
-    },
-    status: HeaderMenuTabStatus.default,
-    child: layer2ItemData,
-  },
-  {
-    label: {
-      id: "Invest",
-      i18nKey: "labelInvest",
-    },
-    router: { path: "/invest" },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: "Layer2",
-      i18nKey: "labelLayer2",
-    },
-    router: { path: "/layer2" },
-    status: HeaderMenuTabStatus.default,
-  },
-  {
-    label: {
-      id: "NFT",
-      i18nKey: "labelNFT",
-    },
-    router: { path: "/nft" },
-    status: HeaderMenuTabStatus.default,
-  },
-];
 export const headerMenuLandingData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -182,25 +185,38 @@ export const subMenuLayer2 = {
       },
     },
   ],
-  settingGroup: [
-    {
-      icon: SecurityIcon,
-      router: { path: "/layer2/security" },
-      label: {
-        id: "security",
-        i18nKey: "labelSecurity",
-      },
-    },
-    {
-      icon: VipIcon,
-      router: { path: "/layer2/vip" },
-      label: {
-        id: "vip",
-        i18nKey: "labelVipPanel",
-      },
-    },
-  ],
 };
+
+export const subMenuInvest = [
+  {
+    icon: AssetsIcon,
+    router: { path: "/invest/balance" },
+    label: {
+      id: "balance",
+      i18nKey: "labelInvestBalance",
+      description: "labelInvestBalanceDes",
+    },
+  },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/ammpool" },
+    label: {
+      id: "ammpool",
+      i18nKey: "labelInvestAmm",
+      description: "labelInvestAmmDes",
+    },
+  },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: "/invest/defi" },
+  //   label: {
+  //     id: "defi",
+  //     i18nKey: "labelInvestDefi",
+  //     description: "labelInvestDefiDes",
+  //   },
+  // },
+];
+
 export const subMenuNFT = {
   NFTGroup: [
     {
@@ -209,6 +225,16 @@ export const subMenuNFT = {
       label: {
         id: "assetsNFT",
         i18nKey: "labelMyAssetsNFT",
+        description: "labelMyAssetsNFTDes",
+      },
+    },
+    {
+      icon: MintIcon,
+      router: { path: "/nft/mintNFT" },
+      label: {
+        id: "mintNFT",
+        i18nKey: "labelMintNFT",
+        description: "labelMintNFTDes",
       },
     },
     {
@@ -217,10 +243,21 @@ export const subMenuNFT = {
       label: {
         id: "transactionNFT",
         i18nKey: "labelTransactionNFT",
+        description: "labelTransactionNFTDes",
       },
     },
+    // {
+    //   icon: L2HistoryIcon,
+    //   router: { path: "/nft/depositNFT" },
+    //   label: {
+    //     id: "depositNFT",
+    //     i18nKey: "labelDepositNFT",
+    //     description: "labelTransactionNFTDes",
+    //   },
+    // },
   ],
 };
+
 export const subMenuGuardian = {
   assetsGroup: [
     {
@@ -249,6 +286,7 @@ export const subMenuGuardian = {
     },
   ],
 };
+
 export const FOOTER_LIST_MAP = {
   About: [
     {
@@ -342,5 +380,50 @@ export const MEDIA_LIST = [
   {
     linkName: "Medium",
     linkHref: "https://medium.com/loopring-protocol",
+  },
+];
+
+export const headerMenuData: Array<HeaderMenuItemInterface> = [
+  {
+    label: {
+      id: "Layer2",
+      i18nKey: "labelAssets",
+    },
+    router: { path: "/layer2" },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: "Markets",
+      i18nKey: "labelMarkets",
+    },
+    router: { path: "/markets" },
+    status: HeaderMenuTabStatus.default,
+  },
+  {
+    label: {
+      id: "Trade",
+      i18nKey: "labelTrade",
+    },
+    status: HeaderMenuTabStatus.default,
+    child: layer2ItemData,
+  },
+  {
+    label: {
+      id: "Invest",
+      i18nKey: "labelInvest",
+    },
+    router: { path: "/invest" },
+    status: HeaderMenuTabStatus.default,
+    child: subMenuInvest,
+  },
+  {
+    label: {
+      id: "NFT",
+      i18nKey: "labelNFT",
+    },
+    router: { path: "/nft" },
+    status: HeaderMenuTabStatus.default,
+    child: subMenuNFT,
   },
 ];

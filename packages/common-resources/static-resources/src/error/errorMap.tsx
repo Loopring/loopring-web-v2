@@ -2,7 +2,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { TOptions } from "i18next";
 import { RESULT_INFO } from "@loopring-web/loopring-sdk";
 import { Link } from "@mui/material";
-import { myLog } from "../utils";
 
 export const ErrorMap = {
   ERROR_UNKNOWN: {
@@ -319,7 +318,6 @@ export const TransErrorHelp = ({
   const { t } = useTranslation(["error"]);
   const errorItem = SDK_ERROR_MAP_TO_UI[error?.code ?? 700001];
   const _options = { ...errorItem?.options, ...options };
-  myLog(_options);
   if (errorItem) {
     return <>{t(errorItem.messageKey, _options)}</>;
   } else {

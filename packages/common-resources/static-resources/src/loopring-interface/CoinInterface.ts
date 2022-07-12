@@ -120,6 +120,13 @@ export type AmmExitData<C extends IBData<I>, I = any> = {
     [key: string]: any;
   };
 };
+export type DeFiCalcData<T> = {
+  coinSell: T;
+  coinBuy: T;
+  AtoB: string;
+  BtoA: string;
+  fee: string;
+};
 
 export type AmmInData<T> = {
   myCoinA: IBData<T>;

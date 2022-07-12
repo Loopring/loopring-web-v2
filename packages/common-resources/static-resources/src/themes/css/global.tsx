@@ -217,12 +217,14 @@ export const globalCss = ({ theme }: any) => css`
     --list-coin-item: 44px;
     --withdraw-coin-size: 16px;
     --header-menu-icon-size: 20px;
+    --header-menu-icon-large: 28px;
     --list-menu-coin-size: 24px;
     --slippage-pop-width: 308px;
     //--slippage-pop-height: 88px ;
     --chart-title-coin-size: 28px;
     --btn-icon-size-small: 20px;
     --btn-icon-size-medium: 24px;
+    --btn-icon-size-large: 28px;
     --btn-icon-size: 36px;
     --svg-size: 14px;
     --svg-size-medium: 16px;
@@ -253,7 +255,7 @@ export const globalCss = ({ theme }: any) => css`
     --row-header-height: 44px;
     --chart-height: 396px;
     --nft-height: 396px;
-    --notification-activited-heigth: 88px;
+    --notification-activited-heigth: 80px;
     @media only screen and (max-width: 768px) {
       --modal-width: 320px;
       --lage-modal-width: 460px;
@@ -263,7 +265,7 @@ export const globalCss = ({ theme }: any) => css`
 
   select {
     appearance: none;
-    -moz-appearance: none;
+    -moz-appearance: none;                 v
     -webkit-appearance: none;
 
     &::-ms-expand {

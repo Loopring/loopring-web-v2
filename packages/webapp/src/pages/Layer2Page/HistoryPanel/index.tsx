@@ -3,11 +3,13 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { Box, Tab, Tabs } from "@mui/material";
 import {
   AmmTable,
+  Button,
+  OrderHistoryTable,
   Toast,
   TradeTable,
   TransactionTable,
 } from "@loopring-web/component-lib";
-import { StylePaper } from "@loopring-web/core";
+import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
 import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
 
 import {
@@ -18,13 +20,23 @@ import {
   useTokenMap,
   useAmmMap,
 } from "@loopring-web/core";
-import { RowConfig } from "@loopring-web/common-resources";
-import { useRouteMatch } from "react-router-dom";
+import { BackIcon, RowConfig } from "@loopring-web/common-resources";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useOrderList } from "../OrderPanel/hook";
 
+enum TabIndex {
+  transactions = "transactions",
+  trades = "trades",
+  ammRecords = "ammRecords",
+  orderOpenTable = "orderOpenTable",
+  orderHistoryTable = "orderHistoryTable",
+}
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
-    let match: any = useRouteMatch("/layer2/:item/:tab");
-    const tab = match?.params.tab ?? "transactions";
+    const history = useHistory();
+    const { search } = useLocation();
+    const match: any = useRouteMatch("/layer2/:item/:tab");
+    const tab = match?.params.tab ?? TabIndex.transactions;
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(tab);
     const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -50,6 +62,17 @@ const HistoryPanel = withTranslation("common")(
       ammRecordTotal,
       getAmmpoolList,
     } = useGetAmmRecord(setToastOpen);
+    const {
+      rawData,
+      getOrderList,
+      totalNum,
+      showLoading,
+      marketArray: orderRaw,
+      cancelOrder,
+      clearRawData,
+    } = useOrderList();
+    const { userOrderDetailList, getUserOrderDetailTradeList } =
+      useGetOrderHistorys();
     const { etherscanBaseUrl } = useSystem();
 
     const {
@@ -60,26 +83,21 @@ const HistoryPanel = withTranslation("common")(
     const container = React.useRef<HTMLDivElement>(null);
 
     const handleTabChange = React.useCallback(
-      (value: string, _pageSize?: number) => {
+      (value: TabIndex, _pageSize?: number) => {
         setCurrentTab(value);
-        if (value === "transactions") {
-          getUserTxnList({
-            limit: _pageSize ? _pageSize : pageSize,
-            types: "deposit,transfer,offchain_withdrawal",
-          });
-        }
-        if (value === "trades") {
-          getUserTradeList({
-            pageSize: _pageSize ? _pageSize : pageSize,
-          });
-        }
-        if (value === "ammRecords") {
-          getAmmpoolList({
-            limit: _pageSize ? _pageSize : pageSize,
-          });
-        }
+        history.push(`/layer2/history/${value}?${search.replace("?", "")}`);
+        // if (value === TabIndex.ammRecords) {
+        //   getAmmpoolList({
+        //     limit: _pageSize ? _pageSize : pageSize,
+        //   });
+        // }
+        // if (
+        //   [TabIndex.orderHistoryTable, TabIndex.orderOpenTable].includes(value)
+        // ) {
+        //   clearRawData();
+        // }
       },
-      [getAmmpoolList, getUserTradeList, getUserTxnList, pageSize]
+      [clearRawData, getAmmpoolList, getUserTradeList, pageSize]
     );
 
     React.useEffect(() => {
@@ -90,91 +108,150 @@ const HistoryPanel = withTranslation("common")(
         handleTabChange(currentTab, pageSize);
       }
     }, [container?.current?.offsetHeight]);
-
     return (
-      <StylePaper ref={container}>
-        <Toast
-          alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
-          open={toastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-        />
-        <Box marginTop={2} marginLeft={2}>
-          <Tabs
-            value={currentTab}
-            onChange={(_event, value) => handleTabChange(value)}
-            aria-label="l2-history-tabs"
+      <Box flex={1} display={"flex"} flexDirection={"column"}>
+        <Box marginBottom={2}>
+          <Button
+            startIcon={<BackIcon fontSize={"small"} />}
+            variant={"text"}
+            size={"medium"}
+            sx={{ color: "var(--color-text-secondary)" }}
+            color={"inherit"}
+            onClick={history.goBack}
           >
-            <Tab
-              label={t("labelLayer2HistoryTransactions")}
-              value="transactions"
-            />
-            <Tab label={t("labelLayer2HistoryTrades")} value="trades" />
-            <Tab label={t("labelLayer2HistoryAmmRecords")} value="ammRecords" />
-          </Tabs>
+            {t("labelTransactions")}
+            {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
         </Box>
-        <div className="tableWrapper table-divide-short">
-          {currentTab === "transactions" ? (
-            <TransactionTable
-              {...{
-                etherscanBaseUrl,
-                rawData: txTableData,
-                pagination: {
-                  pageSize: pageSize,
-                  total: txsTotal,
-                },
-                filterTokens: totalCoinMap
-                  ? (Reflect.ownKeys(totalCoinMap) as string[])
-                  : [],
-                showFilter: true,
-                showloading: showTxsLoading,
-                getTxnList: getUserTxnList,
-                accAddress,
-                accountId,
-                ...rest,
-              }}
-            />
-          ) : currentTab === "trades" ? (
-            <TradeTable
-              getUserTradeList={getUserTradeList}
-              {...{
-                rawData: userTrades,
-                showFilter: true,
-                filterPairs: marketArray,
-                showloading: showTradeLoading,
-                tokenMap: tokenMap,
-                isL2Trade: true,
-                pagination: {
-                  page: tradePage,
-                  pageSize: pageSize,
-                  total: userTradesTotal,
-                },
-                accAddress,
-                accountId,
-                ...rest,
-              }}
-            />
-          ) : (
-            <AmmTable
-              {...{
-                rawData: ammRecordList,
-                pagination: {
-                  pageSize: pageSize,
-                  total: ammRecordTotal,
-                },
-                getAmmpoolList,
-                showFilter: true,
-                filterPairs: Reflect.ownKeys(ammMap ?? {}).map((item) =>
-                  item.toString().replace("AMM", "LP")
-                ),
-                showloading: showAmmloading,
-                ...rest,
-              }}
-            />
-          )}
-        </div>
-      </StylePaper>
+        {/*<IconButton*/}
+        {/*  className={"back-btn"}*/}
+        {/*  size={"large"}*/}
+        {/*  color={"inherit"}*/}
+        {/*  aria-label={t && t("labelBack")}*/}
+        {/*  onClick={() => {*/}
+        {/*    onBack && onBack();*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <BackIcon />*/}
+        {/*</IconButton>*/}
+        <StylePaper ref={container}>
+          <Toast
+            alertText={toastOpen?.content ?? ""}
+            severity={toastOpen?.type ?? "success"}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
+          <Box marginTop={2} marginLeft={2}>
+            <Tabs
+              value={currentTab}
+              onChange={(_event, value) => handleTabChange(value)}
+              aria-label="l2-history-tabs"
+            >
+              <Tab
+                label={t("labelLayer2HistoryTransactions")}
+                value={TabIndex.transactions}
+              />
+              <Tab label={t("labelLayer2HistoryTrades")} value="trades" />
+              <Tab
+                label={t("labelLayer2HistoryAmmRecords")}
+                value={TabIndex.ammRecords}
+              />
+              <Tab
+                label={t("labelOrderTableOpenOrder")}
+                value={TabIndex.orderOpenTable}
+              />
+              <Tab
+                label={t("labelOrderTableOrderHistory")}
+                value={TabIndex.orderHistoryTable}
+              />
+            </Tabs>
+          </Box>
+          <div className="tableWrapper table-divide-short">
+            {currentTab === TabIndex.transactions ? (
+              <TransactionTable
+                {...{
+                  etherscanBaseUrl,
+                  rawData: txTableData,
+                  pagination: {
+                    pageSize: pageSize,
+                    total: txsTotal,
+                  },
+                  filterTokens: totalCoinMap
+                    ? (Reflect.ownKeys(totalCoinMap) as string[])
+                    : [],
+                  showFilter: true,
+                  showloading: showTxsLoading,
+                  getTxnList: getUserTxnList,
+                  accAddress,
+                  accountId,
+                  ...rest,
+                }}
+              />
+            ) : currentTab === TabIndex.trades ? (
+              <TradeTable
+                getUserTradeList={getUserTradeList}
+                {...{
+                  rawData: userTrades,
+                  showFilter: true,
+                  filterPairs: marketArray,
+                  showloading: showTradeLoading,
+                  tokenMap: tokenMap,
+                  isL2Trade: true,
+                  pagination: {
+                    page: tradePage,
+                    pageSize: pageSize,
+                    total: userTradesTotal,
+                  },
+                  accAddress,
+                  accountId,
+                  ...rest,
+                }}
+              />
+            ) : currentTab === TabIndex.ammRecords ? (
+              <AmmTable
+                {...{
+                  rawData: ammRecordList,
+                  pagination: {
+                    pageSize: pageSize,
+                    total: ammRecordTotal,
+                  },
+                  getAmmpoolList,
+                  showFilter: true,
+                  filterPairs: Reflect.ownKeys(ammMap ?? {}).map((item) =>
+                    item.toString().replace("AMM", "LP")
+                  ),
+                  showloading: showAmmloading,
+                  ...rest,
+                }}
+              />
+            ) : (
+              <OrderHistoryTable
+                {...{
+                  pagination:
+                    currentTab === TabIndex.orderOpenTable
+                      ? undefined
+                      : {
+                          pageSize: pageSize,
+                          total: totalNum,
+                        },
+                  rawData: rawData,
+                  showFilter: true,
+                  getOrderList,
+                  marketArray: orderRaw,
+                  showDetailLoading: false,
+                  userOrderDetailList,
+                  getUserOrderDetailTradeList,
+                  ...rest,
+                  showLoading,
+                  isOpenOrder: currentTab === TabIndex.orderOpenTable,
+                  cancelOrder,
+                }}
+              />
+            )}
+          </div>
+        </StylePaper>
+      </Box>
     );
   }
 );

@@ -18,7 +18,7 @@ export const boxLiner = (_props: { theme: Theme }) => css`
       border-color: var(--color-border-hover);
     }
   }
-  .MuiToolbar-root .MuiButtonBase-root.outline {
+  .MuiToolbar-root .MuiButtonBase-root.outlined {
     background-color: var(--field-opacity);
   }
 `;
@@ -190,6 +190,12 @@ export const SwitchPanelStyled: any = styled(Box)<
               overflow-x: hidden;
               overflow-y: scroll !important;
               background: initial;
+              scrollbar-width: none; /* Firefox */
+              -ms-overflow-style: none; /* Internet Explorer 10+ */
+              &::-webkit-scrollbar {
+                /* WebKit */
+                width: 0;
+              }
            }
        }
       
@@ -200,6 +206,12 @@ export const SwitchPanelStyled: any = styled(Box)<
               padding-bottom:0; 
               overflow-x: hidden;
               overflow-y: scroll !important;
+              scrollbar-width: none; /* Firefox */
+              -ms-overflow-style: none; /* Internet Explorer 10+ */
+              &::-webkit-scrollbar {
+                /* WebKit */
+                width: 0;
+              }
           }
         }
       }

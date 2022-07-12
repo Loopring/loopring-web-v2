@@ -19,14 +19,18 @@ import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
 import { useOpenModals } from "../../../../stores";
+
 import {
   Account,
   Bridge,
   CheckBoxIcon,
   CheckedIcon,
   copyToClipBoard,
+  getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
 import { useLocation } from "react-router-dom";
+import { TradeDefi } from "@loopring-web/core";
+import BigNumber from "bignumber.js";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
@@ -49,7 +53,7 @@ const DialogStyle = styled(Dialog)`
   }
 `;
 
-export const AlertImpact = withTranslation("common", { withRef: true })(
+export const AlertImpact = withTranslation("common")(
   ({
     t,
     value,
@@ -149,7 +153,7 @@ export const CancelAllOrdersAlert = withTranslation("common", {
     );
   }
 );
-export const AlertNotSupport = withTranslation("common", { withRef: true })(
+export const AlertNotSupport = withTranslation("common")(
   ({
     t,
     open,
@@ -185,7 +189,7 @@ export const AlertNotSupport = withTranslation("common", { withRef: true })(
   }
 );
 
-export const ConfirmImpact = withTranslation("common", { withRef: true })(
+export const ConfirmImpact = withTranslation("common")(
   ({
     t,
     value,
@@ -418,7 +422,7 @@ export const ConfirmLinkCopy = withTranslation("common", {
   }
 );
 
-export const AlertLimitPrice = withTranslation("common", { withRef: true })(
+export const AlertLimitPrice = withTranslation("common")(
   ({
     t,
     value,
@@ -804,6 +808,93 @@ export const OtherExchangeDialog = withTranslation("common", {
           </Button>
         </DialogActions>
       </DialogStyle>
+    );
+  }
+);
+
+export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
+  ({
+    t,
+    open,
+    defiData,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    defiData: TradeDefi<any>;
+    handleClose: (event: MouseEvent, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState("");
+
+    React.useEffect(() => {
+      if (!open) {
+        setAgree("");
+      }
+    }, [open]);
+    const maxValue =
+      defiData.sellToken?.symbol &&
+      `${getValuePrecisionThousand(
+        new BigNumber(defiData?.maxSellVol ?? 0).div(
+          "1e" + defiData.sellToken?.decimals
+        ),
+        defiData.sellToken?.precision,
+        defiData.sellToken?.precision,
+        defiData.sellToken?.precision,
+        false,
+        { floor: true }
+      )} ${defiData.sellToken?.symbol}`;
+
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {new BigNumber(defiData?.maxSellVol ?? 0).gte(
+              defiData?.miniSellVol ?? 0
+            ) && (
+              <Typography>
+                <Trans i18nKey={"labelDefiMaxBalance"} tOptions={{ maxValue }}>
+                  Your Redeem order is too large and cannot be withdrawn
+                  immediately, you can only redeem {{ maxValue }}
+                </Trans>
+              </Typography>
+            )}
+            <Typography>
+              <Trans i18nKey={"labelDefiMaxBalance1"}>
+                or you can
+                <ul>
+                  <li>Withdraw to L1 and redeem through crv or lido</li>
+                  <li>Wait some time and wait for pool liquidity</li>
+                </ul>
+              </Trans>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelDisAgreeConfirm")}
+          </Button>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelAgreeConfirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 );

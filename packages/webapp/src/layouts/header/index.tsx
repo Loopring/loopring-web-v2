@@ -1,4 +1,4 @@
-import { headerRoot } from "@loopring-web/common-resources";
+import { headerRoot, myLog } from "@loopring-web/common-resources";
 
 import { Toolbar } from "@mui/material";
 
@@ -12,7 +12,7 @@ import {
   HideOnScroll,
   useSettings,
 } from "@loopring-web/component-lib";
-import { withRouter, useHistory, useLocation } from "react-router-dom";
+import { withRouter, useLocation } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import React from "react";
 
@@ -36,6 +36,7 @@ const Header = withTranslation("common")(
       const { confirmWrapper } = confirmation.useConfirmation();
       const { allowTrade } = useSystem();
       const { account } = useAccount();
+      // myLog("headerToolBarData", headerToolBarData);
       return (
         <>
           {isHideOnScroll ? (

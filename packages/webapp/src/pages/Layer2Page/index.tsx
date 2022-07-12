@@ -1,33 +1,19 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box, Typography } from "@mui/material";
-import {
-  AssetTitleMobile,
-  SubMenu,
-  SubMenuList,
-  useSettings,
-} from "@loopring-web/component-lib";
-import { useTranslation } from "react-i18next";
-import {
-  AccountStatus,
-  SoursURL,
-  subMenuLayer2,
-} from "@loopring-web/common-resources";
+import { AssetTitleMobile, useSettings } from "@loopring-web/component-lib";
+import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import AssetPanel from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
 import OrderPanel from "./OrderPanel";
 import React from "react";
-import {
-  useAccount,
-  ViewAccountTemplate,
-  WalletConnectL2Btn,
-} from "@loopring-web/core";
+import { ViewAccountTemplate } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
-import { RedPockPanel } from "./RedPockPanel";
 import { useGetAssets } from "./AssetPanel/hook";
+import { ForcewithdrawPanel } from "./ForcewithdrawPanel";
 
 export const subMenu = subMenuLayer2;
 
@@ -39,16 +25,16 @@ export const Layer2Page = () => {
     switch (selected) {
       case "assets":
         return <AssetPanel />;
-      // case "my-liquidity":
-      //   return <MyLiqudityPanel />;
       case "history":
         return <HistoryPanel />;
-      case "order":
-        return <OrderPanel />;
-      case "redpock":
-        return <RedPockPanel />;
+      // case "order":
+      //   return <OrderPanel />;
+      // case "redpock":
+      //   return <RedPockPanel />;
       case "rewards":
         return <RewardPanel />;
+      case "forcewithdraw":
+        return <ForcewithdrawPanel />;
       case "security":
         return <SecurityPanel />;
       case "vip":
@@ -61,20 +47,20 @@ export const Layer2Page = () => {
   const activeView = React.useMemo(
     () => (
       <>
-        {!isMobile && (
-          <Box
-            width={"200px"}
-            display={"flex"}
-            justifyContent={"stretch"}
-            marginRight={3}
-            marginBottom={2}
-            className={"MuiPaper-elevation2"}
-          >
-            <SubMenu>
-              <SubMenuList selected={selected} subMenu={subMenu as any} />
-            </SubMenu>
-          </Box>
-        )}
+        {/*{!isMobile && (*/}
+        {/*  <Box*/}
+        {/*    width={"200px"}*/}
+        {/*    display={"flex"}*/}
+        {/*    justifyContent={"stretch"}*/}
+        {/*    marginRight={3}*/}
+        {/*    marginBottom={2}*/}
+        {/*    className={"MuiPaper-elevation2"}*/}
+        {/*  >*/}
+        {/*    <SubMenu>*/}
+        {/*      <SubMenuList selected={selected} subMenu={subMenu as any} />*/}
+        {/*    </SubMenu>*/}
+        {/*  </Box>*/}
+        {/*)}*/}
 
         <Box
           // minHeight={420}

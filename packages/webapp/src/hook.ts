@@ -11,6 +11,7 @@ import {
   useSocket,
   useNotify,
   layer1Store,
+  useDefiMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
@@ -34,10 +35,11 @@ import { useTheme } from "@emotion/react";
  */
 export function useInit() {
   const [, search] = window.location?.hash.split("?") ?? [];
-  const query = new URLSearchParams(search);
+  const searchParams = new URLSearchParams(search);
   const [, pathname1] = window.location.hash.match(/#\/([\w\d\-]+)\??/) ?? [];
   const isNoServer: boolean =
-    query.has("noheader") && ["notification", "document"].includes(pathname1);
+    searchParams.has("noheader") &&
+    ["notification", "document"].includes(pathname1);
   const [state, setState] = React.useState<keyof typeof SagaStatus>(() => {
     if (isNoServer) {
       return SagaStatus.DONE;
@@ -60,6 +62,8 @@ export function useInit() {
   const { status: ammMapStatus, statusUnset: ammMapStatusUnset } = useAmmMap();
   const { status: tokenPricesStatus, statusUnset: tokenPricesUnset } =
     useTokenPrices();
+  const { status: defiMapStatus, statusUnset: defiMapStatusUnset } =
+    useDefiMap();
 
   const {
     updateSystem,
@@ -154,7 +158,7 @@ export function useInit() {
   React.useEffect(() => {
     switch (systemStatus) {
       case SagaStatus.PENDING:
-        if (!query.has("noheader") && state !== SagaStatus.PENDING) {
+        if (!searchParams.has("noheader") && state !== SagaStatus.PENDING) {
           setState(SagaStatus.PENDING);
         }
         break;
@@ -204,6 +208,7 @@ export function useInit() {
         break;
     }
   }, [ammMapStatus]);
+
   React.useEffect(() => {
     switch (tokenPricesStatus) {
       case SagaStatus.ERROR:
@@ -280,6 +285,19 @@ export function useInit() {
         break;
     }
   }, [notifyStatus]);
+  React.useEffect(() => {
+    switch (defiMapStatus) {
+      case SagaStatus.ERROR:
+        defiMapStatusUnset();
+        // setState("ERROR");
+        break;
+      case SagaStatus.DONE:
+        defiMapStatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [defiMapStatus]);
 
   useAccountInit({ state });
   return {

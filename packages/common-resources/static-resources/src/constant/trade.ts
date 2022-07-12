@@ -92,7 +92,14 @@ export type NFTMETA = {
   description: string;
   collection?: string;
   properties?: Array<MetaProperty>;
+  animationUrl?: string;
+  attributes?: AttributesProperty[];
 };
+export enum Media {
+  Audio = "Audio",
+  Image = "Image",
+  Video = "Video",
+}
 
 export type NFTWholeINFO = NFTTokenInfo &
   UserNFTBalanceInfo &
@@ -102,6 +109,7 @@ export type NFTWholeINFO = NFTTokenInfo &
     fee?: FeeInfo;
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
+    __mediaType__?: Media;
   };
 
 export type MintTradeNFT<I> = {
@@ -194,6 +202,24 @@ export const SendAssetList = {
     key: "SendToOtherL1",
     svgIcon: "L1l2Icon",
     enableKey: "withdraw",
+  },
+};
+
+export const SendNFTAssetList = {
+  SendAssetToMyL1: {
+    key: "SendToMyL1",
+    svgIcon: "IncomingIcon",
+    enableKey: "withdrawNFT",
+  },
+  SendAssetToL2: {
+    key: "SendTOL2",
+    svgIcon: "L2l2Icon",
+    enableKey: "transferNFT",
+  },
+  SendAssetToOtherL1: {
+    key: "SendToOtherL1",
+    svgIcon: "L1l2Icon",
+    enableKey: "withdrawNFT",
   },
 };
 

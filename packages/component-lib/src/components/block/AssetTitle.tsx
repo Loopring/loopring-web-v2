@@ -15,7 +15,7 @@ import { AssetTitleMobileProps, AssetTitleProps } from "./Interface";
 import styled from "@emotion/styled";
 import { DropdownIconStyled } from "../tradePanel";
 import { AnimationArrow, Button, ButtonListRightStyled } from "./../";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { useSettings } from "../../stores";
 
 const BoxStyled = styled(Box)`
@@ -45,6 +45,7 @@ export const AssetTitle = withTranslation("common")(
   // legalEnable,
   // legalShow,
   AssetTitleProps & WithTranslation) => {
+    const history = useHistory();
     return (
       <Grid
         container
@@ -117,9 +118,9 @@ export const AssetTitle = withTranslation("common")(
           justifyContent={"flex-end"}
         >
           <Button
-            variant={"outlined"}
-            size={"medium"}
-            color={"secondary"}
+            variant={"contained"}
+            size={"small"}
+            color={"primary"}
             onClick={() => onShowSend()}
           >
             {t("labelSendAssetBtn")}
@@ -131,6 +132,14 @@ export const AssetTitle = withTranslation("common")(
             onClick={() => onShowReceive()}
           >
             {t("labelAddAssetBtn")}
+          </Button>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            color={"secondary"}
+            onClick={() => history.push("/layer2/history")}
+          >
+            {t("labelTransactions")}
           </Button>
         </ButtonListRightStyled>
       </Grid>

@@ -1,6 +1,6 @@
 import { WalletConnectBtnProps } from "./Interface";
 import { useTranslation } from "react-i18next";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   AccountStatus,
   getShortAddr,
@@ -89,9 +89,9 @@ export const WalletConnectBtn = ({
     React.useState<string | undefined>("");
   const [icon, setIcon] = React.useState<JSX.Element | undefined>();
 
-  useEffect(() => {
-    if (accountState) {
-      const { account } = accountState;
+  React.useEffect(() => {
+    const account = accountState?.account;
+    if (account) {
       const addressShort = account.accAddress
         ? getShortAddr(account?.accAddress)
         : undefined;
@@ -151,7 +151,7 @@ export const WalletConnectBtn = ({
     } else {
       setLabel("labelConnectWallet");
     }
-  }, [accountState?.account, i18n]);
+  }, [accountState?.account?.readyState, i18n]);
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)

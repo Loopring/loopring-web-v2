@@ -2,6 +2,7 @@ import { ButtonProps } from "../../basic-lib";
 import {
   Account,
   FeeInfo,
+  NFTWholeINFO,
   VendorItem,
   VendorProviders,
   WalletMap,
@@ -26,6 +27,7 @@ export enum AccountStep {
   CheckingActive,
   AddAssetGateway,
   SendAssetGateway,
+  SendNFTGateway,
   PayWithCard,
   NoAccount,
   QRCode,
@@ -62,6 +64,13 @@ export enum AccountStep {
   NFTDeploy_Denied,
   NFTDeploy_Failed,
   NFTDeploy_Submit,
+
+  ForceWithdraw_WaitForAuth,
+  ForceWithdraw_First_Method_Denied,
+  ForceWithdraw_In_Progress,
+  ForceWithdraw_Denied,
+  ForceWithdraw_Failed,
+  ForceWithdraw_Submit,
 
   Transfer_WaitForAuth,
   Transfer_First_Method_Denied,
@@ -156,6 +165,14 @@ export interface SendAssetProps {
   isToL1?: boolean;
   symbol?: string;
   sendAssetList: AddAssetItem[];
+  allowTrade: {
+    [key: string]: { enable?: boolean; reason?: string; show?: boolean };
+  };
+}
+export interface SendNFTAssetProps {
+  nftData: Partial<NFTWholeINFO>;
+  sendAssetList: AddAssetItem[];
+  isNotAllowToL1?: boolean;
   allowTrade: {
     [key: string]: { enable?: boolean; reason?: string; show?: boolean };
   };

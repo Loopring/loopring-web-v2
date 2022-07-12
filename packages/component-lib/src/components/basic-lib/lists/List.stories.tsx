@@ -261,6 +261,10 @@ const Template: Story<any> = withTranslation()(({ t }: any) => {
     // giftIcon?: string;
   };
   const notify: NOTIFICATION_ITEM = {
+    color: undefined,
+    name: "",
+    type: "",
+    version: "",
     title: "路印中继系统升级",
     description1: "Loopring Relayer System Upgrade Notice",
     description2: "Period: 2021-12-23 12AM to 2021-12-31 12AM (UAT)",

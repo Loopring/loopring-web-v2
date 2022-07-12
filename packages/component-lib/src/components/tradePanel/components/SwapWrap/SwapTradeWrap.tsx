@@ -486,7 +486,7 @@ export const SwapTradeWrap = <
                 {priceImpact}
               </Typography>
             </Grid>
-            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips              */}
+            {/*,labelSwapMinReceiveTooltips,labelSwapFeeTooltips */}
 
             <Grid
               container

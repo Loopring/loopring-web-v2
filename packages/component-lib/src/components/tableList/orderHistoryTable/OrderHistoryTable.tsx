@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import {
   PopoverPure,
   Button,
@@ -28,6 +28,7 @@ import {
   TradeTypes,
   getValuePrecisionThousand,
   DirectionTag,
+  globalSetup,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Filter, FilterOrderTypes } from "./components/Filter";
@@ -40,6 +41,8 @@ import {
   GetUserTradesRequest,
 } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
+import _ from "lodash";
+import { useLocation } from "react-router-dom";
 
 const CancelColHeaderStyled = styled(Typography)`
   display: flex;
@@ -194,6 +197,8 @@ export interface OrderHistoryTableProps {
 
 export const OrderHistoryTable = withTranslation("tables")(
   (props: OrderHistoryTableProps & WithTranslation) => {
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
     const {
       t,
       rawData,
@@ -217,25 +222,26 @@ export const OrderHistoryTable = withTranslation("tables")(
     const { isMobile } = useSettings();
 
     const actionColumns = ["status"];
-    const [filterType, setFilterType] = useState(FilterOrderTypes.allTypes);
-    const [filterDate, setFilterDate] = useState<DateRange<Date | string>>([
-      null,
-      null,
-    ]);
-    const [filterToken, setFilterToken] = useState<string>("all");
-    const [page, setPage] = useState(1);
-    const [modalState, setModalState] = useState(false);
-    const [currOrderId, setCurrOrderId] = useState("");
-    const [showCancelAllAlert, setShowCancelAllAlert] = useState(false);
+    const [filterType, setFilterType] = React.useState(
+      FilterOrderTypes.allTypes
+    );
+    const [filterDate, setFilterDate] = React.useState<
+      DateRange<Date | string>
+    >([null, null]);
+    const [filterToken, setFilterToken] = React.useState<string>("all");
+    const [page, setPage] = React.useState(1);
+    const [modalState, setModalState] = React.useState(false);
+    const [currOrderId, setCurrOrderId] = React.useState("");
+    const [showCancelAllAlert, setShowCancelAllAlert] = React.useState(false);
     const pageSize = pagination ? pagination.pageSize : 0;
 
-    useEffect(() => {
+    React.useEffect(() => {
       if (isOpenOrder) {
         setPage(1);
       }
     }, [isOpenOrder]);
 
-    const updateData = useCallback(
+    const updateData = _.debounce(
       async ({
         isOpen = isOpenOrder,
         actionType,
@@ -269,18 +275,10 @@ export const OrderHistoryTable = withTranslation("tables")(
             : ["processed", "failed", "cancelled", "cancelling", "expired"],
         });
       },
-      [
-        filterDate,
-        filterType,
-        filterToken,
-        getOrderList,
-        page,
-        pageSize,
-        isOpenOrder,
-      ]
+      globalSetup.wait
     );
 
-    const handleFilterChange = useCallback(
+    const handleFilterChange = React.useCallback(
       async ({
         type = filterType,
         date = filterDate,
@@ -301,7 +299,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       [updateData, filterDate, filterType, filterToken, page]
     );
 
-    const handlePageChange = useCallback(
+    const handlePageChange = React.useCallback(
       async (page: number) => {
         setPage(page);
         await updateData({ actionType: TableType.page, currPage: page });
@@ -309,7 +307,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       [updateData]
     );
 
-    const handleReset = useCallback(async () => {
+    const handleReset = React.useCallback(async () => {
       setFilterType(FilterOrderTypes.allTypes);
       setFilterDate([null, null]);
       setFilterToken("all");
@@ -320,20 +318,34 @@ export const OrderHistoryTable = withTranslation("tables")(
         currFilterToken: "all",
       });
     }, [updateData]);
-    const handleOrderClick = async (row: OrderHistoryRawDataItem) => {
-      if (clearOrderDetail) {
-        clearOrderDetail();
+    const handleOrderClick = React.useCallback(
+      async (row: OrderHistoryRawDataItem) => {
+        if (clearOrderDetail) {
+          clearOrderDetail();
+        }
+        setCurrOrderId(row.orderId);
+        setModalState(true);
+        if (getUserOrderDetailTradeList) {
+          await getUserOrderDetailTradeList({
+            orderHash: row.hash,
+          });
+        }
+      },
+      [clearOrderDetail, getUserOrderDetailTradeList]
+    );
+    React.useEffect(() => {
+      let filters: any = {};
+      updateData.cancel();
+      if (searchParams.get("market")) {
+        filters.token = searchParams.get("market");
       }
-      setCurrOrderId(row.orderId);
-      setModalState(true);
-      if (getUserOrderDetailTradeList) {
-        await getUserOrderDetailTradeList({
-          orderHash: row.hash,
-        });
-      }
-    };
+      handleFilterChange(filters);
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
 
-    const CellStatus = useCallback(
+    const CellStatus = React.useCallback(
       ({ row, rowIdx }: any) => {
         const value = row.status;
         const popupId = `status-orderTable-${rowIdx}`;
@@ -423,10 +435,10 @@ export const OrderHistoryTable = withTranslation("tables")(
           </>
         );
       },
-      [clearOrderDetail, getUserOrderDetailTradeList, t]
+      [handleOrderClick, isMobile, t]
     );
 
-    const getPopoverState = useCallback((label: number) => {
+    const getPopoverState = React.useCallback((label: number) => {
       return usePopupState({
         variant: "popover",
         popupId: `popup-cancel-order-${label}`,
@@ -1164,7 +1176,7 @@ export const OrderHistoryTable = withTranslation("tables")(
       actionColumns,
     };
 
-    const handleCancelAll = useCallback(async () => {
+    const handleCancelAll = React.useCallback(async () => {
       const openOrdresList = rawData
         .filter((o) => o.status === "processing")
         .map((o) => o.hash)

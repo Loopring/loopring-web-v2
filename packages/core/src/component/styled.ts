@@ -61,7 +61,6 @@ export const TableWrapStyled = styled(Box)`
         max-width: calc(1200px - 48px);
       }
       max-width: calc(100% - ${({ theme }) => 6 * theme.unit}px);
-      // width: calc(100% - ${({ theme }) => 6 * theme.unit}px);
       z-index: 209;
       background: var(--color-box);
     }
@@ -102,8 +101,6 @@ export const TableProWrapStyled = styled(Box)`
       }
 
       max-width: calc(100% - ${({ theme }) => 6 * theme.unit}px);
-
-      // width: calc(100% - ${({ theme }) => 6 * theme.unit}px);
       z-index: 209;
       background: var(--color-box);
     }

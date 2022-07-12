@@ -43,6 +43,7 @@ import {
   BtnDownload,
   BtnNotification,
   BtnSetting,
+  ProfileMenu,
   WalletConnectBtn,
 } from "./toolbar";
 import React from "react";
@@ -148,10 +149,12 @@ const ToolBarItem = ({
   account,
   ...props
 }: any) => {
+  const match = useRouteMatch("/layer2/:item");
   const render = React.useMemo(() => {
     switch (buttonComponent) {
-      case ButtonComponentsMap.Download:
-        return <BtnDownload {...props} />;
+      case ButtonComponentsMap.ProfileMenu:
+        // @ts-ignore
+        return <ProfileMenu rounter={match?.params?.item as any} {...props} />;
       case ButtonComponentsMap.Notification:
         return (
           <BtnNotification
@@ -162,12 +165,14 @@ const ToolBarItem = ({
         );
       case ButtonComponentsMap.Setting:
         return <BtnSetting {...props} />;
+      case ButtonComponentsMap.Download:
+        return <BtnDownload {...props} />;
       case ButtonComponentsMap.WalletConnect:
         return <WalletConnectBtn {...props} />;
       default:
         return undefined;
     }
-  }, [buttonComponent, props, notification, account]);
+  }, [buttonComponent, match?.params, props, notification, account]);
   return <TabItemPlus>{render}</TabItemPlus>;
 };
 
@@ -221,7 +226,7 @@ const NodeMenuItem = React.memo(
 
 export const Header = withTranslation(["layout", "common"], { withRef: true })(
   React.forwardRef(
-    (
+    <R extends HeaderToolBarInterface>(
       {
         headerMenuData,
         headerToolBarData,
@@ -235,18 +240,31 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         i18n,
         t,
         ...rest
-      }: HeaderProps & WithTranslation,
+      }: HeaderProps<R> & WithTranslation,
       ref: React.ForwardedRef<any>
     ) => {
       const history = useHistory();
       const theme = useTheme();
       const location = useLocation();
       const match = useRouteMatch("/trade/:item/:pair");
+      const _headerToolBarData = isLandPage
+        ? Reflect.ownKeys(headerToolBarData).reduce((prev, key) => {
+            if (
+              (key as unknown as ButtonComponentsMap) !==
+              ButtonComponentsMap.WalletConnect
+            ) {
+              return (prev[key] = headerToolBarData[key]);
+            }
+            return prev;
+          }, {} as { [key: number]: R })
+        : headerToolBarData;
       const getMenuButtons = React.useCallback(
         ({
           toolbarList,
           ...rest
-        }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
+        }: {
+          toolbarList: { [key: number]: R };
+        } & WithTranslation) => {
           return ToolBarAvailableItem.map((index: number) => {
             return (
               <ToolBarItem
@@ -447,12 +465,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
               color={"textColorSecondary"}
             >
               {getMenuButtons({
-                toolbarList: isLandPage
-                  ? headerToolBarData.filter(
-                      (_item, index) =>
-                        index !== ButtonComponentsMap.WalletConnect
-                    )
-                  : headerToolBarData,
+                toolbarList: _headerToolBarData,
                 i18n,
                 t,
                 ...rest,
@@ -546,12 +559,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                   )}
 
                   {getMenuButtons({
-                    toolbarList: isLandPage
-                      ? headerToolBarData.filter(
-                          (_item, index) =>
-                            index !== ButtonComponentsMap.WalletConnect
-                        )
-                      : headerToolBarData,
+                    toolbarList: _headerToolBarData,
                     i18n,
                     t,
                     ...rest,

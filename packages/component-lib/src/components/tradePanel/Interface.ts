@@ -2,6 +2,7 @@ import {
   CoinKey,
   FeeInfo,
   IBData,
+  MarketType,
   TradeCalcProData,
 } from "@loopring-web/common-resources";
 import {
@@ -20,6 +21,7 @@ import {
   NFTDeployViewProps,
   NFTMetaViewProps,
   NFTMintAdvanceViewProps,
+  ForceWithdrawViewProps,
 } from "./components/Interface";
 import {
   SwapData,
@@ -112,6 +114,12 @@ export type NFTMintAdvanceProps<T, I, C = FeeInfo> = NFTMintAdvanceViewProps<
 >;
 
 export type NFTDeployProps<T, I, C = FeeInfo> = NFTDeployViewProps<T, I, C>;
+export type ForceWithdrawProps<T, I, C = FeeInfo> = BasicACoinTradeHookProps<
+  T,
+  I
+> &
+  ForceWithdrawViewProps<T, I, C>;
+
 /**
  *  @type SwapProps
  *  @param swapTradeData: SwapTradeData<T>
@@ -146,6 +154,7 @@ export type SwapProps<T, I, TCD> = {
       | "buyTobutton"
       | "sellTobutton"
   ) => Promise<void>;
+  market?: MarketType;
   onChangeEvent?: (
     index: 0 | 1,
     data: SwapData<SwapTradeData<T>>

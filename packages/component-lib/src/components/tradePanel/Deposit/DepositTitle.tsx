@@ -1,5 +1,5 @@
 import { Tab, Tabs, Typography } from "@mui/material";
-import { HelpIcon } from "@loopring-web/common-resources";
+import { Info2Icon } from "@loopring-web/common-resources";
 import React from "react";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { bindHover } from "material-ui-popup-state";
@@ -26,7 +26,7 @@ export const DepositTitle = ({ title, description }: any) => {
       >
         {title ? title : t("depositTitle")}
       </Typography>
-      <HelpIcon
+      <Info2Icon
         {...bindHover(popupState)}
         fontSize={isMobile ? "medium" : "large"}
         htmlColor={"var(--color-text-third)"}
@@ -69,7 +69,7 @@ const ThirdPartTitle = React.memo(() => {
       <Typography component={"span"} variant={"h5"} marginRight={1}>
         {t("labelVendor")}
       </Typography>
-      <HelpIcon
+      <Info2Icon
         {...bindHover(popupState)}
         fontSize={"medium"}
         htmlColor={"var(--color-text-third)"}

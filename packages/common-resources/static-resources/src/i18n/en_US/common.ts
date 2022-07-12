@@ -71,7 +71,7 @@ export default {
   labelQRCode: "View QR Code",
   labelShowAccountInfo: "Show account information",
   labelAssetTitle: "Loopring L2 Total Assets",
-  labelAssetMobileTitle: "Loopring L2 Total Assets",
+  labelAssetMobileTitle: "L2 Assets",
   labelShowAccount: "Show or Hide Assets",
   labelLevel: "VIP Level",
   labelOrderbook: "Order book",
@@ -252,7 +252,7 @@ export default {
   labelOrderSmall: "Order too small (>= 100.5LRC)",
   labelEnterAmount: "Enter amount",
   labelAgreeLoopringTxt: "Allow Loopring to use Cookies.",
-  labelLayer2HistoryTransactions: "Transactions",
+  labelLayer2HistoryTransactions: "Transfer",
   labelLayer2HistoryTrades: "Trades",
   labelLayer2HistoryAmmRecords: "AMM Records",
   labelTxnDetailHeader: "Transaction",
@@ -421,7 +421,8 @@ export default {
   labelNoticeForNoMetaNFT:
     "Your Minted NFT does not contain Metadata or media information. \n Are you sure you still wish to {{ method }} this NFT?",
   labelAgreeConfirmNotShowAgain: "I know & not show again",
-  labelInvalidCID: "Invalid CIDv0. CIDv0 is start with `Qm`",
+  labelInvalidCID:
+    "Invalid CID. CIDv0 is start with `Qm`, CIDv1 only works for dag-pb",
   labelInvalidAddress: "Invalid address, ENS",
   labelInvalidisCFAddress:
     "Loopring Counterfactual wallet is disabled {{way}} {{token}}",
@@ -452,7 +453,7 @@ export default {
     "Please deposit {{fee}} {{symbol}} to cover the Layer 2 activation fee",
   depositNFTAddressLabelPlaceholder: "please input NFT contract address...",
   mintNFTAddressLabelPlaceholder:
-    "(CIDv0) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
+    "(CIDv0 or dag-pb CIDv1) eg: QmbWqxBEKC3P8tqsKc98xmWNzrzDtRLMiMPL8wBuTGsMnR",
   depositNFTIdLabelPlaceholder: "please input NFT id...",
   nftDepositDescription:
     "Creates a smart contract on Ethereum L1, \n which requires a gas fee. NFTs minted \nhere remain on Loopring L2 until deployed.",
@@ -461,7 +462,7 @@ export default {
   labelNFTDepositInputTitle: "Amount:",
   labelNFTTId: "NFT Token ID:",
   labelNFTCid:
-    "IPFS CID :(Store Metadata Information,CIDv0 start with `Qm`) <1>Follow this Guide </1>",
+    "IPFS CIDv0 or dag-pb CIDv1:(Store Metadata Information) <1>Follow this Guide </1>",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelDeployDenied: "Signature request was rejected",
@@ -630,7 +631,7 @@ export default {
   labelL2toL2TokenAmount: "Token Amount",
   labelL1toL2ThirdPart: "Buy Crypto with",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
-  labelNFTTransferTX: "L2 \u2192  L2",
+  labelNFTTransferTX: "L2 \u2192 L2",
   labelNFTWithdrawTX: "L2 \u2192 L1",
   labelNFTDepositTX: "L1 \u2192 L2",
   labelNFTDeposit: "Receive Loopring L2 NFT",
@@ -795,4 +796,46 @@ export default {
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
   labelNFTMintWrongCIDBtn: "Wrong MetaData format",
+  labelWithdrawBtn: "Withdraw",
+  labelForceWithdrawTitle: "Force Withdraw",
+  labelFWithdrawFee: "Fee",
+  labelFWithdrawNotEnough: "Insufficient balance",
+  labelForceWithdrawWaitForAuth: "Please confirm to force withdraw {{symbol}}",
+  labelForceWithdrawDenied: "You rejected to force withdraw {{symbol}}.",
+  labelForceWithdrawInProgress: "Processing...",
+  labelForceWithdrawFailed: "Force withdraw has failed!",
+  labelForceWithdrawSubmit: "Force withdraw has been submitted",
+  labelForceWithdrawToken: "Token Amount",
+  labelForceWithdrawFee: "Fee",
+  labelForceWithdrawEnterToken: "Select Token",
+  labelPleaseForceWithdrawAddress:
+    "Please enter the address you wish to withdraw from",
+  labelForceWithdrawAddress: "The address you wish to withdraw from",
+  labelForceWithdrawDes:
+    "If the recipient doesn't have an active Loopring L2 account, you will be able to withdraw the token from L2 to Ethereum L1. This process is usually only needed when tokens were sent to a CEX address using Loopring L2. Since the CEX does not have access to the L2 account, you will need to perform this action to reclaim the tokens.",
+  labelForceWithdrawConfirm:
+    "This feature allows a user to move their L2 tokens to the L1 address. The target address must either be a wallet or exchange address",
+  labelForceWithdrawConfirm1:
+    "This operation usually requires more than 30 minutes to take effect, as it needs to interact with Ethereum Mainnet. Please be patient.",
+  labelNFTSendBtn: "Send",
+  labelNFTProperties: "Properties",
+  labelNFTDescription2: "Description",
+  labelForceWithdrawNotAvailable:
+    "Loopring L2 account is activated in this address. For security reason, Loopring would not allow other user to force withdraw token from its L2 to L1 anymore",
+  labelForceWithdrawNoToken:
+    "No token is detected from this address to operate",
+  labelForceWithdrawBtn: "Force Withdraw",
+  labelInvestDefiTitle: "Defi Invest",
+  labelInvestDefDeposit: "Invest",
+  labelInvestDefWithdraw: "Redeem",
+  labelNFTDepositLabel: "Receive NFT",
+  labelDefiFee: "Fee",
+  labelDefiMin: "Minimum of {{arg}}",
+  labelDefiNoEnough: "Not enough {{arg}}",
+  labelDefiMaxBalance:
+    "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
+  labelDefiMaxBalance1:
+    "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
+  labelInvestBtn: "Invest",
+  labelRedeemBtn: "Redeem",
 };

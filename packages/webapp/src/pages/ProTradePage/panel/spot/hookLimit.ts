@@ -17,8 +17,7 @@ import {
   useSettings,
   useToggle,
 } from "@loopring-web/component-lib";
-import { usePageTradePro } from "@loopring-web/core";
-import { useSubmitBtn } from "./hookBtn";
+import { usePageTradePro, useSubmitBtn } from "@loopring-web/core";
 import {
   walletLayer2Service,
   useSystem,

@@ -75,6 +75,12 @@ import {
   NFTDeploy_Submit,
   NFTDeploy_First_Method_Denied,
   NFTDeploy_In_Progress,
+  ForceWithdraw_WaitForAuth,
+  ForceWithdraw_Denied,
+  ForceWithdraw_Failed,
+  ForceWithdraw_Submit,
+  ForceWithdraw_First_Method_Denied,
+  ForceWithdraw_In_Progress,
   NFTMint_First_Method_Denied,
   NFTMint_In_Progress,
   Deposit_Sign_WaitForRefer,
@@ -85,6 +91,7 @@ import {
   AddAssetItem,
   SendAssetItem,
   DepositProps,
+  SendNFTAsset,
 } from "@loopring-web/component-lib";
 import {
   ConnectProviders,
@@ -100,7 +107,9 @@ import {
   Bridge,
   copyToClipBoard,
   FeeInfo,
+  NFTWholeINFO,
   SendAssetList,
+  SendNFTAssetList,
 } from "@loopring-web/common-resources";
 import {
   useAccount,
@@ -125,6 +134,7 @@ import {
   mintService,
   goActiveAccount,
   useCheckActiveStatus,
+  useForceWithdraw,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
@@ -148,7 +158,13 @@ export function useAccountModalForUI({
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
   const {
-    modals: { isShowAccount, isShowWithdraw, isShowTransfer },
+    modals: {
+      isShowAccount,
+      isShowWithdraw,
+      isShowTransfer,
+      // isShowNFTTransfer,
+      // isShowNFTWithdraw,
+    },
     setShowConnect,
     setShowAccount,
     setShowDeposit,
@@ -156,6 +172,8 @@ export function useAccountModalForUI({
     setShowWithdraw,
     setShowResetAccount,
     setShowActiveAccount,
+    setShowNFTTransfer,
+    setShowNFTWithdraw,
   } = useOpenModals();
   rest = { ...rest, ...isShowAccount.info };
   const {
@@ -165,6 +183,7 @@ export function useAccountModalForUI({
     nftDeployValue,
     transferValue,
     withdrawValue,
+    forceWithdrawValue,
   } = useModalData();
 
   const { chainId, allowTrade } = useSystem();
@@ -185,6 +204,7 @@ export function useAccountModalForUI({
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
+  const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -565,6 +585,47 @@ export function useAccountModalForUI({
       setShowWithdraw,
     ]
   );
+  const sendNFTAssetList: SendAssetItem[] = React.useMemo(
+    () => [
+      {
+        ...SendNFTAssetList.SendAssetToL2,
+        handleSelect: (_e) => {
+          setShowAccount({ isShow: false });
+          setShowNFTTransfer({
+            isShow: true,
+          });
+        },
+      },
+      {
+        ...SendNFTAssetList.SendAssetToMyL1,
+        handleSelect: () => {
+          setShowAccount({ isShow: false });
+          setShowNFTWithdraw({
+            isShow: true,
+            info: { isToMyself: true },
+          });
+        },
+      },
+      {
+        ...SendNFTAssetList.SendAssetToOtherL1,
+        handleSelect: () => {
+          setShowAccount({
+            isShow: false,
+          });
+          setShowNFTWithdraw({
+            isShow: true,
+            info: { isToMyself: false },
+          });
+        },
+      },
+    ],
+    [
+      isShowAccount?.info?.symbol,
+      setShowAccount,
+      setShowTransfer,
+      setShowWithdraw,
+    ]
+  );
   const onBackReceive = React.useCallback(() => {
     setShowAccount({
       isShow: true,
@@ -610,6 +671,16 @@ export function useAccountModalForUI({
             symbol={isShowAccount?.info?.symbol}
             sendAssetList={sendAssetList}
             allowTrade={allowTrade}
+          />
+        ),
+      },
+      [AccountStep.SendNFTGateway]: {
+        view: (
+          <SendNFTAsset
+            nftData={{ ...isShowAccount?.info } as Partial<NFTWholeINFO>}
+            sendAssetList={sendNFTAssetList}
+            allowTrade={allowTrade}
+            isNotAllowToL1={account.isContract1XAddress}
           />
         ),
       },
@@ -1142,6 +1213,112 @@ export function useAccountModalForUI({
         onBack: () => {
           setShowAccount({ isShow: false });
         },
+      },
+
+      [AccountStep.ForceWithdraw_WaitForAuth]: {
+        view: (
+          <ForceWithdraw_WaitForAuth
+            symbol={nftDeployValue.name}
+            value={nftDeployValue.tradeValue}
+            chainInfos={chainInfos}
+            updateDepositHash={updateDepositHash}
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              ...nftDeployValue,
+              t,
+            }}
+          />
+        ),
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
+      },
+      [AccountStep.ForceWithdraw_Denied]: {
+        view: (
+          <ForceWithdraw_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                forceWithdrawRetry();
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              t,
+            }}
+          />
+        ),
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
+      },
+      [AccountStep.ForceWithdraw_First_Method_Denied]: {
+        view: (
+          <ForceWithdraw_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                // setShowAccount({ isShow: false });
+                forceWithdrawRetry(true);
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ForceWithdraw_In_Progress]: {
+        view: (
+          <ForceWithdraw_In_Progress
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.ForceWithdraw_Failed]: {
+        view: (
+          <ForceWithdraw_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
+      },
+      [AccountStep.ForceWithdraw_Submit]: {
+        view: (
+          <ForceWithdraw_Submit
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              ...forceWithdrawValue,
+              t,
+            }}
+          />
+        ),
+        // onBack: () => {
+        //   setShowAccount({ isShow: false });
+        // },
       },
       // transfer
       [AccountStep.Transfer_WaitForAuth]: {
@@ -1936,6 +2113,7 @@ export function useAccountModalForUI({
     unlockBtn,
     t,
     onQRBack,
+    forceWithdrawRetry,
     backToDepositBtnInfo,
     closeBtnInfo,
     nftDepositValue,
