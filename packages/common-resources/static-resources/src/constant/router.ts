@@ -204,15 +204,15 @@ export const subMenuInvest = [
       description: "labelInvestAmmDes",
     },
   },
-  {
-    icon: L2MyLiquidityIcon,
-    router: { path: "/invest/defi" },
-    label: {
-      id: "defi",
-      i18nKey: "labelInvestDefi",
-      description: "labelInvestDefiDes",
-    },
-  },
+  // {
+  //   icon: L2MyLiquidityIcon,
+  //   router: { path: "/invest/defi" },
+  //   label: {
+  //     id: "defi",
+  //     i18nKey: "labelInvestDefi",
+  //     description: "labelInvestDefiDes",
+  //   },
+  // },
 ];
 
 export const subMenuNFT = {
