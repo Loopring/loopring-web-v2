@@ -44,7 +44,6 @@ export const DeFiPanel: any = withTranslation("common")(
     const { marketArray } = useDefiMap();
     const { tokenMap } = useTokenMap();
     const match: any = useRouteMatch("/invest/defi/:market/:isJoin");
-    //TODO: list
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
         const value = match?.params?.market

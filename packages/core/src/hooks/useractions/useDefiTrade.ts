@@ -480,7 +480,6 @@ export const useDefiTrade = <
         exchangeInfo &&
         account.eddsaKey?.sk,
       tradeDefi.buyVol)
-      //TODO: is samll than MAX
     ) {
       try {
         sendRequest();

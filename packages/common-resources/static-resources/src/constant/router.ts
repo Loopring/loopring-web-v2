@@ -4,7 +4,6 @@ import {
   L2MyLiquidityIcon,
   L2OrderIcon,
   MintIcon,
-  OutputIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
@@ -36,16 +35,6 @@ export const profile = {
       },
     },
   ],
-  // forcewithdraw: [
-  //   {
-  //     icon: OutputIcon,
-  //     router: { path: "/layer2/forcewithdraw" },
-  //     label: {
-  //       id: "forcewithdraw",
-  //       i18nKey: "labelForceWithdraw",
-  //     },
-  //   },
-  // ],
   vip: [
     {
       icon: VipIcon,
@@ -188,15 +177,15 @@ export const subMenuLayer2 = {
 };
 
 export const subMenuInvest = [
-  {
-    icon: AssetsIcon,
-    router: { path: "/invest/balance" },
-    label: {
-      id: "balance",
-      i18nKey: "labelInvestBalance",
-      description: "labelInvestBalanceDes",
-    },
-  },
+  // {
+  //   icon: AssetsIcon,
+  //   router: { path: "/invest/balance" },
+  //   label: {
+  //     id: "balance",
+  //     i18nKey: "labelInvestBalance",
+  //     description: "labelInvestBalanceDes",
+  //   },
+  // },
   {
     icon: L2MyLiquidityIcon,
     router: { path: "/invest/ammpool" },
@@ -214,16 +203,7 @@ export const subMenuInvest = [
       i18nKey: "labelInvestDefi",
       description: "labelInvestDefiDes",
     },
-  },
-  // {
-  //   icon: OutputIcon,
-  //   router: { path: "/layer2/forcewithdraw" },
-  //   label: {
-  //     id: "forcewithdraw",
-  //     i18nKey: "labelForceWithdraw",
-  //     description: "labelAdvancedDescription",
-  //   },
-  // },
+  }
 ];
 
 export const subMenuNFT = {
@@ -255,18 +235,8 @@ export const subMenuNFT = {
         description: "labelTransactionNFTDes",
       },
     },
-    // {
-    //   icon: L2HistoryIcon,
-    //   router: { path: "/nft/depositNFT" },
-    //   label: {
-    //     id: "depositNFT",
-    //     i18nKey: "labelDepositNFT",
-    //     description: "labelTransactionNFTDes",
-    //   },
-    // },
   ],
 };
-
 export const subMenuGuardian = {
   assetsGroup: [
     {
@@ -295,7 +265,6 @@ export const subMenuGuardian = {
     },
   ],
 };
-
 export const FOOTER_LIST_MAP = {
   About: [
     {
