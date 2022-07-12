@@ -25,7 +25,7 @@ const initialState: SettingsState = {
   feeChargeOrder: FeeChargeOrderDefault,
   hideL2Assets: false,
   hideL2Action: true,
-  hideLpToken: false,
+  hideInvestToken: false,
   hideSmallBalances: true,
   isMobile: false,
   proLayout: layoutConfigs[0].layouts,
