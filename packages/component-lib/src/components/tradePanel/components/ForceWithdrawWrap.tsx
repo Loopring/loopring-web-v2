@@ -75,6 +75,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
   withdrawI18nKey,
   addressDefault,
   isNotAvaiableAddress,
+  isActiveAccount,
   isLoopringAddress = false,
   chargeFeeTokenList = [],
   feeInfo,
@@ -209,7 +210,7 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             error={
               realAddr !== "" &&
               isNotAvaiableAddress &&
-              (walletMap !== {} || walletMap !== undefined)
+              (walletMap != {} || walletMap !== undefined)
             }
             placeholder={t("labelPleaseForceWithdrawAddress")}
             onChange={(event) => handleOnAddressChange(event?.target?.value)}
@@ -239,46 +240,46 @@ export const ForceWithdrawWrap = <T extends IBData<I>, I, C extends FeeInfo>({
             ""
           )}
           {addressDefault !== "" &&
-          !isAddressCheckLoading &&
-          (walletMap !== {} || walletMap !== undefined) &&
-          isNotAvaiableAddress &&
-          realAddr === "" ? (
-            <Typography
-              color={"var(--color-error)"}
-              variant={"body2"}
-              marginTop={1 / 4}
-              alignSelf={"stretch"}
-              position={"relative"}
-            >
-              {t("labelInvalidAddress")}
-            </Typography>
-          ) : isLoopringAddress ? (
-            <Typography
-              color={"var(--color-error)"}
-              variant={"body2"}
-              marginTop={1 / 4}
-              alignSelf={"stretch"}
-              position={"relative"}
-            >
-              {t("labelForceWithdrawNotAvailable")}
-            </Typography>
-          ) : (
-            <Typography
-              color={"var(--color-error)"}
-              variant={"body2"}
-              marginTop={1 / 4}
-              alignSelf={"stretch"}
-              position={"relative"}
-            >
-              {t("labelForceWithdrawNoToken")}
-            </Typography>
-          )}
+            !isAddressCheckLoading &&
+            (walletMap === undefined || !Object.keys(walletMap).length) &&
+            (isNotAvaiableAddress && realAddr === "" ? (
+              <Typography
+                color={"var(--color-error)"}
+                variant={"body2"}
+                marginTop={1 / 4}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelInvalidAddress")}
+              </Typography>
+            ) : isLoopringAddress && isActiveAccount ? (
+              <Typography
+                color={"var(--color-error)"}
+                variant={"body2"}
+                marginTop={1 / 4}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelForceWithdrawNotAvailable")}
+              </Typography>
+            ) : (
+              <Typography
+                color={"var(--color-error)"}
+                variant={"body2"}
+                marginTop={1 / 4}
+                alignSelf={"stretch"}
+                position={"relative"}
+              >
+                {t("labelForceWithdrawNoToken")}
+              </Typography>
+            ))}
         </>
       </Grid>
 
       {!isAddressCheckLoading &&
         !isNotAvaiableAddress &&
-        (walletMap !== {} || walletMap !== undefined) && (
+        walletMap !== undefined &&
+        !!Object.keys(walletMap).length && (
           <Grid item alignSelf={"stretch"} position={"relative"}>
             {
               // @ts-ignore

@@ -70,7 +70,7 @@ export const useDefiTrade = <
   const [isStoB, setIsStoB] = React.useState(true);
   const [confirmShow, setConfirmShow] = React.useState<boolean>(false);
 
-  const { tokenMap, coinMap } = useTokenMap();
+  const { tokenMap } = useTokenMap();
   const { account } = useAccount();
   const { walletLayer2, status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo } = useSystem();
@@ -166,7 +166,7 @@ export const useDefiTrade = <
           tradeDefi?.defiBalances[coinBuySymbol] ?? "";
         calcValue = sdk.calcDefi({
           isJoin,
-          isInputSell: type === DeFiChgType.coinSell ? true : false,
+          isInputSell: type === DeFiChgType.coinSell,
           ...inputValue,
           feeVol: tradeDefi.feeRaw,
           marketInfo,
@@ -362,16 +362,51 @@ export const useDefiTrade = <
     [
       account.readyState,
       coinBuySymbol,
-      coinMap,
       coinSellSymbol,
       defiMarketMap,
       isJoin,
       isStoB,
       market,
-      tradeDefi?.deFiCalcData,
+      tokenMap,
+      tradeDefi.deFiCalcData,
+      tradeDefi.market,
       updateTradeDefi,
     ]
   );
+  const should15sRefresh = _.debounce(async (clearTrade: boolean = false) => {
+    // myLog('should15sRefresh', market);
+    let _feeInfo;
+    if (market && LoopringAPI.defiAPI) {
+      // updateDepth()
+      // getDefiMap();
+      const {
+        markets: marketMap,
+        tokenArr: marketCoins,
+        marketArr: marketArray,
+      } = await LoopringAPI.defiAPI?.getDefiMarkets();
+      updateDefiSyncMap({
+        defiMap: {
+          marketMap,
+          marketCoins,
+          marketArray,
+        },
+      });
+      if (
+        account.readyState === AccountStatus.ACTIVATED &&
+        market !== tradeDefi.market
+      ) {
+        [_feeInfo] = await Promise.all([
+          getFee(
+            isJoin
+              ? sdk.OffchainFeeReqType.DEFI_JOIN
+              : sdk.OffchainFeeReqType.DEFI_EXIT
+          ),
+        ]);
+        // setFeeInfo(feeInfo);
+      }
+      resetDefault(clearTrade, _feeInfo);
+    }
+  }, globalSetup.wait);
 
   const sendRequest = React.useCallback(async () => {
     try {
@@ -465,11 +500,15 @@ export const useDefiTrade = <
     account.apiKey,
     account.eddsaKey.sk,
     exchangeInfo,
-    resetDefault,
     setToastOpen,
+    should15sRefresh,
     t,
-    tokenMap,
-    tradeDefi,
+    tradeDefi.buyToken?.tokenId,
+    tradeDefi.buyVol,
+    tradeDefi.fee,
+    tradeDefi.sellToken.symbol,
+    tradeDefi.sellToken?.tokenId,
+    tradeDefi.sellVol,
   ]);
 
   const handleSubmit = React.useCallback(async () => {
@@ -529,40 +568,6 @@ export const useDefiTrade = <
     isLoading,
     submitCallback: onSubmitBtnClick,
   });
-  const should15sRefresh = _.debounce(async (clearTrade: boolean = false) => {
-    // myLog('should15sRefresh', market);
-    let _feeInfo;
-    if (market && LoopringAPI.defiAPI) {
-      // updateDepth()
-      // getDefiMap();
-      const {
-        markets: marketMap,
-        tokenArr: marketCoins,
-        marketArr: marketArray,
-      } = await LoopringAPI.defiAPI?.getDefiMarkets();
-      updateDefiSyncMap({
-        defiMap: {
-          marketMap,
-          marketCoins,
-          marketArray,
-        },
-      });
-      if (
-        account.readyState === AccountStatus.ACTIVATED &&
-        market !== tradeDefi.market
-      ) {
-        [_feeInfo] = await Promise.all([
-          getFee(
-            isJoin
-              ? sdk.OffchainFeeReqType.DEFI_JOIN
-              : sdk.OffchainFeeReqType.DEFI_EXIT
-          ),
-        ]);
-        // setFeeInfo(feeInfo);
-      }
-      resetDefault(clearTrade, _feeInfo);
-    }
-  }, globalSetup.wait);
   React.useEffect(() => {
     if (
       market &&
@@ -586,11 +591,6 @@ export const useDefiTrade = <
         // @ts-ignore
         refreshRef.current.firstElementChild.click();
       }
-      // else{
-      //   should15sRefresh(true);
-      // }
-
-      //
     }
     return () => {
       return should15sRefresh.cancel();
@@ -603,21 +603,6 @@ export const useDefiTrade = <
     walletLayer2,
     account.readyState,
   ]);
-  // React.useEffect(() => {
-  //   if (market) {
-  //     //@ts-ignore
-  //     if (refreshRef.current) {
-  //       // @ts-ignore
-  //
-  //     }
-  //     if (
-  //       (tradeData && tradeData.sell.belong == undefined) ||
-  //       tradeData === undefined
-  //     ) {
-  //       resetSwap(undefined, undefined);
-  //     }
-  //   }
-  // }, [market]);
 
   const deFiWrapProps = React.useMemo(() => {
     return {
@@ -650,8 +635,6 @@ export const useDefiTrade = <
     };
   }, [
     isStoB,
-    market,
-    isJoin,
     sendRequest,
     refreshRef,
     tradeMarketI18nKey,

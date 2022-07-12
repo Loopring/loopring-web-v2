@@ -31,6 +31,23 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
           item
           xs={12}
           display={"flex"}
+          flexDirection={"row"}
+          alignItems={"center"}
+        >
+          <Typography
+            component={"h3"}
+            variant={"h4"}
+            paddingX={5 / 2}
+            paddingTop={5 / 2}
+            paddingBottom={2}
+          >
+            {t("labelSecurity")}
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          display={"flex"}
           flexDirection={"column"}
           paddingY={1}
         >

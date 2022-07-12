@@ -32,12 +32,13 @@ import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
   SoursURL,
-  ToolBarAvailableItem,
   MenuIcon,
   LoopringLogoIcon,
   subMenuLayer2,
   headerMenuLandingData,
   AccountStatus,
+  toolBarAvailableItem,
+  toolBarMobileAvailableItem,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,
@@ -265,7 +266,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         }: {
           toolbarList: { [key: number]: R };
         } & WithTranslation) => {
-          return ToolBarAvailableItem.map((index: number) => {
+          return [
+            ...(isMobile ? toolBarMobileAvailableItem : toolBarAvailableItem),
+          ].map((index: number) => {
             return (
               <ToolBarItem
                 {...{ ...toolbarList[index], account, notification, ...rest }}
@@ -274,7 +277,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
             );
           });
         },
-        [account, notification]
+        [account, isMobile, notification]
       );
       const memoized: any = React.useCallback(
         ({
@@ -490,9 +493,9 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         i18n,
         t,
         rest,
-        isMaintaining,
         getMenuButtons,
-        headerToolBarData,
+        _headerToolBarData,
+        isMaintaining,
         history,
       ]);
       const popupState = usePopupState({

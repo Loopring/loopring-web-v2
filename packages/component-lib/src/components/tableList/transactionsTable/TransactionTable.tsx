@@ -271,7 +271,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const { unit, value } = row["amount"];
             const hasValue = Number.isFinite(value);
             const hasSymbol =
-              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
+              row.side.toLowerCase() ===
+              sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? t("labelForceWithdrawTotalDes", {
                     address: getShortAddr(row.withdrawalInfo?.recipient),
                     symbol: row.symbol,
@@ -301,13 +302,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
               <Box
                 className="rdg-cell-value textAlignRight"
                 title={`${hasSymbol}  ${
-                  row.side !== sdk.UserTxTypes.FORCE_WITHDRAWAL
+                  row.side !== sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                     ? `${renderValue} ${unit}`
                     : ""
                 }`}
               >
                 {hasSymbol}
-                {row.side !== sdk.UserTxTypes.FORCE_WITHDRAWAL &&
+                {row.side !== sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW &&
                   `${renderValue} ${unit}`}
               </Box>
             );
@@ -356,7 +357,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             //   myLog("receiverAddress", row.receiverAddress);
             // }
             const [from, to] =
-              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
+              row.side.toLowerCase() == sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),
@@ -483,15 +484,9 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 ? t(`labelTypeReceive`)
                 : t(`labelType${row.side?.toUpperCase()}`);
 
-            // row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
-            //   ? t("labelTxFilterFORCEWITHDRAW")
-            //   : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
-            //   ? t("labelReceive")
-            //   : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
-            //   ? t("labelSendL2")
-            //   : t("labelSendL1");
             const hasSymbol =
-              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
+              row.side.toLowerCase() ===
+              sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? t("labelForceWithdrawTotalDes", {
                     address: getShortAddr(row.withdrawalInfo?.recipient),
                     symbol: row.symbol,
@@ -503,11 +498,13 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                   : "-"
                 : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT
                 ? "+"
-                : row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
+                : row.side.toLowerCase() ===
+                  sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? "-"
                 : "";
             const sideIcon =
-              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL ? (
+              row.side.toLowerCase() ===
+              sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW ? (
                 <WithdrawIcon fontSize={"inherit"} />
               ) : row.side.toLowerCase() === sdk.UserTxTypes.DEPOSIT ? (
                 <DepositIcon fontSize={"inherit"} />
@@ -603,7 +600,8 @@ export const TransactionTable = withTranslation(["tables", "common"])(
 
             const senderAddress = getShortAddr(row.senderAddress, isMobile);
             const [from, to] =
-              row.side.toLowerCase() === sdk.UserTxTypes.FORCE_WITHDRAWAL
+              row.side.toLowerCase() ===
+              sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
                 ? [
                     t("labelForceWithdrawDes", {
                       address: getShortAddr(row.withdrawalInfo?.recipient),

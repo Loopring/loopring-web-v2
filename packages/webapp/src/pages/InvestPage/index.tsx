@@ -162,7 +162,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
         return InvestType.MyBalance;
-      case InvestRouter[InvestType.MyBalance]:
+      case InvestRouter[InvestType.AmmPool]:
         return InvestType.AmmPool;
       case InvestRouter[InvestType.DeFi]:
         return InvestType.DeFi;

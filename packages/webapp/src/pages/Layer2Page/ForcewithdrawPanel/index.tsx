@@ -5,7 +5,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   Button,
   ForceWithdrawPanel,
-  TransactionTradeTypes,
   TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";

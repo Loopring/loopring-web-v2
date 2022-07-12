@@ -198,6 +198,7 @@ export type ForceWithdrawExtendProps<T, I, C> = {
   addressDefault: string;
   // accAddr: string;
   realAddr: string;
+  isActiveAccount: boolean;
   isNotAvaiableAddress: boolean;
   isAddressCheckLoading: boolean;
   isLoopringAddress: boolean;

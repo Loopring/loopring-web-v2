@@ -1,5 +1,12 @@
 import styled from "@emotion/styled";
-import { Box, Grid, Link, Typography, LinearProgress } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Link,
+  Typography,
+  LinearProgress,
+  Button,
+} from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
@@ -11,9 +18,9 @@ import {
 import { useSettings, VipPanel as VipView } from "@loopring-web/component-lib";
 import { useGetVIPInfo } from "./hooks";
 
-const StylePaper = styled(Grid)`
+const StyledPaper = styled(Grid)`
   width: 100%;
-  //height: 100%;
+  height: 100%;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;
@@ -294,16 +301,19 @@ export const VipPanel = withTranslation(["common", "layout"])(
 
     return (
       <>
-        <StylePaper
-          flex={1}
+        <StyledPaper
           container
           className={"MuiPaper-elevation2"}
-          padding={isMobile ? "" : 4}
           margin={0}
-          marginBottom={1}
-          marginTop={isMobile ? 1 : 0}
-          spacing={2}
+          marginBottom={2}
+          paddingBottom={5 / 2}
+          spacing={3}
         >
+          <Grid item xs={12}>
+            <Typography component={"h3"} variant={"h4"}>
+              {t("labelVipTitle")}
+            </Typography>
+          </Grid>
           <Grid item xs={12}>
             <Typography
               variant={isMobile ? "body1" : "h5"}
@@ -518,32 +528,32 @@ export const VipPanel = withTranslation(["common", "layout"])(
               you can access the corresponding fee discount in the table below.
             </Typography>
           </Grid>
-        </StylePaper>
+        </StyledPaper>
         {isMobile ? (
           <Typography variant={"body1"} paddingY={2} textAlign={"center"}>
             For details, please view on desktop.
           </Typography>
         ) : (
-          <StylePaper
+          <StyledPaper
             container
             className={"MuiPaper-elevation2"}
-            marginTop={1}
-            padding={4}
+            margin={0}
             marginBottom={2}
+            spacing={3}
           >
             <Grid item xs={12}>
               <Typography
-                component={"h3"}
-                variant={isMobile ? "h5" : "h4"}
+                component={"h4"}
+                variant={isMobile ? "h6" : "h5"}
                 color={"text.secondary"}
               >
-                Fee List
+                {t("labelFeeTitleList")}
               </Typography>
-              <Box marginTop={3} flex={1}>
-                <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
-              </Box>
             </Grid>
-          </StylePaper>
+            <Grid item xs={12} paddingRight={2}>
+              <VipView rawData={rawData} currentLevel={getViewTableLevel()} />
+            </Grid>
+          </StyledPaper>
         )}
       </>
     );

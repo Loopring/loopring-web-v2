@@ -27,63 +27,11 @@ import {
 import { useGetAssets } from "./hook";
 import React from "react";
 
-const StyledChartWrapper = styled(Box)`
-  height: 225px;
-
-  > section {
-    //position: relative;
-    //width: calc(50% - 6px);
-    //height: 100%;
-    background: var(--color-box);
-    border-radius: ${({ theme }) => theme.unit}px;
-    padding: ${({ theme }) => theme.unit * 2.5}px
-      ${({ theme }) => theme.unit * 3}px;
-  }
-  .recharts-pie {
-    @media only screen and (max-width: 768px) {
-      transform: scale(0.9) translate(10px, 10px);
-    }
-  }
-`;
 const StyleTitlePaper = styled(Box)`
   width: 100%;
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;
-
-const ChartWrapper = styled(Box)`
-  background-image: url("https://static.loopring.io/assets/images/${({
-    dark,
-  }: any) => (dark === "true" ? "noDataDark" : "noDataLight")}.png");
-  background-repeat: no-repeat;
-` as any;
-
-// const StyledBtnGroupWrapper = styled(Box)`
-//     position: absolute;
-//     z-index: 10;
-//     right: ${({theme}) => theme.unit * 3}px;
-//     bottom: ${({theme}) => theme.unit * 2.5}px;
-// `
-//
-// const toggleData = [
-//     // {value: '24 H', key: '24 H'},
-//     {value: 'week', key: '1 W'},
-//     {value: 'all', key: 'ALL'},
-// ]
-
-export type ITokenInfoItem = {
-  token: string;
-  detail: {
-    price: string;
-    symbol: string;
-    updatedAt: number;
-  };
-};
-
-export type TrendDataItem = {
-  timeStamp: number;
-  close: number;
-};
 
 const AssetPanel = withTranslation("common")(
   ({ t, ...rest }: WithTranslation) => {
@@ -109,11 +57,9 @@ const AssetPanel = withTranslation("common")(
       allowTrade,
       setHideLpToken,
       setHideSmallBalances,
-      isThemeDark,
-      currency,
     } = useGetAssets();
 
-    const { walletLayer2 } = store.getState().walletLayer2;
+    // const { walletLayer2 } = store.getState().walletLayer2;
 
     const [currAssetsEth, setCurrAssetsEth] = React.useState(0);
 
@@ -288,91 +234,6 @@ const AssetPanel = withTranslation("common")(
           </StyleTitlePaper>
         )}
 
-        {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
-
-        <StyledChartWrapper
-          flexDirection={"row"}
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"stretch"}
-          marginTop={2}
-        >
-          <Box
-            flex={1}
-            component={"section"}
-            className={"MuiPaper-elevation2"}
-            marginRight={isMobile ? 0 : 2}
-            display={"flex"}
-            flexDirection={"column"}
-          >
-            <Typography
-              component="span"
-              color="textSecondary"
-              variant="body1"
-              display={"flex"}
-              justifyContent={"space-between"}
-            >
-              <Typography component={"span"}>
-                {t("labelAssetsDistribution")}
-              </Typography>
-            </Typography>
-            <Box flex={1} marginLeft={isMobile ? 2 : 0}>
-              <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []} />
-            </Box>
-          </Box>
-          {!isMobile && (
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              flex={1}
-              component={"section"}
-              className={"MuiPaper-elevation2"}
-            >
-              <Typography
-                component="span"
-                color="textSecondary"
-                variant="body1"
-              >
-                {t("labelTotalAssets")}
-              </Typography>
-              <Box display={"flex"} alignItems={"center"}>
-                <Typography component={"span"} variant={"h5"}>
-                  {getCurrAssetsEth()} ETH
-                </Typography>
-                <Typography
-                  component={"span"}
-                  variant={"body2"}
-                  color={"var(--color-text-third)"}
-                >
-                  &nbsp;&#8776;&nbsp;
-                  {PriceTag[CurrencyToTag[currency]] +
-                    getValuePrecisionThousand(
-                      (currAssetsEthDollar || 0) * (forexMap[currency] ?? 0),
-                      undefined,
-                      undefined,
-                      2,
-                      true,
-                      { isFait: true }
-                    )}
-                </Typography>
-              </Box>
-              {!!userAssets.length ? (
-                <ReactEcharts
-                  notMerge={true}
-                  lazyUpdate={true}
-                  option={getAssetsTrendChartOption()}
-                />
-              ) : (
-                <ChartWrapper
-                  marginTop={2}
-                  dark={isThemeDark ? "true" : "false"}
-                  flex={1}
-                  component={"div"}
-                />
-              )}
-            </Box>
-          )}
-        </StyledChartWrapper>
         <StylePaper
           marginTop={2}
           ref={container}
