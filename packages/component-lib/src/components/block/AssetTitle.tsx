@@ -259,15 +259,7 @@ AssetTitleMobileProps) => {
             fontSize={"medium"}
           />
         ) : (
-          <AnimationArrow
-            className={"arrowCta"}
-            // style={{
-            // transform:
-            //
-            // ? "rotate(-135deg) scale(0.5)"
-            // : "rotate(45deg) scale(0.5)",
-            // }}
-          />
+          <AnimationArrow className={"arrowCta"} />
         )}
       </Box>
       {!hideL2Action && (
