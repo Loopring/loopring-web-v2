@@ -5,7 +5,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import {
   Button,
   ForceWithdrawPanel,
-  TransactionTradeTypes,
   TransactionTradeViews,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -65,6 +64,7 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
             sx={{
               right: 2 * theme.unit,
               top: 2 * theme.unit,
+              zIndex: 999,
             }}
             target="_self"
             rel="noopener noreferrer"

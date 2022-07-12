@@ -43,7 +43,12 @@ export const SwapPage = withTranslation("common")(
         alignItems={"center"}
         flex={1}
       >
-        <Box display={"flex"} style={styles} justifyContent={"center"}>
+        <Box
+          paddingBottom={isMobile ? 2 : "initial"}
+          display={"flex"}
+          style={styles}
+          justifyContent={"center"}
+        >
           <SwapPanel
             toPro={toPro}
             tokenBuyProps={{

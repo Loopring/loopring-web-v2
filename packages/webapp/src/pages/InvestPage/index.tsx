@@ -162,7 +162,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
         return InvestType.MyBalance;
-      case InvestRouter[InvestType.MyBalance]:
+      case InvestRouter[InvestType.AmmPool]:
         return InvestType.AmmPool;
       case InvestRouter[InvestType.DeFi]:
         return InvestType.DeFi;
@@ -186,11 +186,13 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           setTabIndex(value);
         }}
       >
-        <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
         <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
         <Tab value={InvestType.DeFi} label={<DefiTitle />} />
+        <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
       </Tabs>
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
+        {tabIndex === InvestType.AmmPool && <PoolsPanel />}
+        {tabIndex === InvestType.DeFi && <DeFiPanel />}
         {tabIndex === InvestType.MyBalance && (
           <Box
             flex={1}
@@ -201,8 +203,6 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
             <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
           </Box>
         )}
-        {tabIndex === InvestType.AmmPool && <PoolsPanel />}
-        {tabIndex === InvestType.DeFi && <DeFiPanel />}
       </Box>
     </Box>
   );

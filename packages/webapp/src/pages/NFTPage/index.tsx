@@ -111,7 +111,6 @@ export const NFTPage = () => {
           marginTop={0}
           flex={1}
         >
-          {!!isMobile && <TitleNFTMobile />}
           {routerNFT}
         </Box>
       </>
@@ -121,3 +120,4 @@ export const NFTPage = () => {
 
   return <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />;
 };
+// {!!isMobile && <TitleNFTMobile />}

@@ -85,17 +85,7 @@ const HistoryPanel = withTranslation("common")(
     const handleTabChange = React.useCallback(
       (value: TabIndex, _pageSize?: number) => {
         setCurrentTab(value);
-        history.push(`/layer2/history/${value}?${search.replace("?", "")}`);
-        // if (value === TabIndex.ammRecords) {
-        //   getAmmpoolList({
-        //     limit: _pageSize ? _pageSize : pageSize,
-        //   });
-        // }
-        // if (
-        //   [TabIndex.orderHistoryTable, TabIndex.orderOpenTable].includes(value)
-        // ) {
-        //   clearRawData();
-        // }
+        history.replace(`/layer2/history/${value}?${search.replace("?", "")}`);
       },
       [clearRawData, getAmmpoolList, getUserTradeList, pageSize]
     );

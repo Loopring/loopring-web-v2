@@ -94,7 +94,7 @@ export default {
   labelTransactionNFT: "NFT Transactions",
   labelTransactionNFTDes: "NFT Transactions History",
   labelForceWithdraw: "Force Withdraw",
-  labelInvestBalance: "My Invest",
+  labelInvestBalance: "My Investment",
   labelInvestBalanceDes: "The deposition you hold",
   labelInvestAmm: "AMM Pool",
   labelInvestAmmDes: "Add liquidity and earn rewards",

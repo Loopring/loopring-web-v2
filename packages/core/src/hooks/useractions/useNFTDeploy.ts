@@ -48,7 +48,8 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
   const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const { setShowAccount, setShowNFTDetail } = useOpenModals();
+  const { setShowAccount, setShowNFTDetail, setShowNFTDeploy } =
+    useOpenModals();
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const {
@@ -158,6 +159,7 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
               }
               walletLayer2Service.sendUserUpdate();
               updateWalletLayer2NFT({ page });
+              setShowNFTDeploy({ isShow: false });
               setShowNFTDetail({ isShow: false });
               resetNFTDeployData();
             }

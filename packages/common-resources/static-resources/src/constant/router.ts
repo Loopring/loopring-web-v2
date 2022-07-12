@@ -2,8 +2,8 @@ import {
   AssetsIcon,
   L2HistoryIcon,
   L2MyLiquidityIcon,
-  L2OrderIcon,
   MintIcon,
+  ProfileIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
@@ -55,7 +55,7 @@ export enum ButtonComponentsMap {
   WalletConnect,
 }
 
-export const ToolBarAvailableItem = [
+export const toolBarAvailableItem = [
   ButtonComponentsMap.Download,
   ButtonComponentsMap.Notification,
   ButtonComponentsMap.Setting,
@@ -93,6 +93,14 @@ export let headerToolBarData: Array<{
     handleClick: undefined,
   },
 ];
+
+export const toolBarMobileAvailableItem = [
+  ButtonComponentsMap.Download,
+  ButtonComponentsMap.Notification,
+  ButtonComponentsMap.Setting,
+  ButtonComponentsMap.WalletConnect,
+];
+
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -156,36 +164,37 @@ export const subMenuLayer2 = {
       },
     },
   ],
-  transactionsGroup: [
+  // transactionsGroup: [
+  //   {
+  //     icon: L2HistoryIcon,
+  //     router: { path: "/layer2/history" },
+  //     label: {
+  //       id: "history",
+  //       i18nKey: "labelHistory",
+  //     },
+  //   },
+  // ],
+  profileGroup: [
     {
-      icon: L2HistoryIcon,
-      router: { path: "/layer2/history" },
+      icon: ProfileIcon,
+      router: { path: "/layer2/security" },
       label: {
-        id: "history",
-        i18nKey: "labelHistory",
+        id: "security",
+        i18nKey: "labelSecurity",
       },
     },
     {
-      icon: L2OrderIcon,
-      router: { path: "/layer2/order" },
+      icon: VipIcon,
+      router: { path: "/layer2/vip" },
       label: {
-        id: "order",
-        i18nKey: "labelOrder",
+        id: "vip",
+        i18nKey: "labelVipPanel",
       },
     },
   ],
 };
 
 export const subMenuInvest = [
-  // {
-  //   icon: AssetsIcon,
-  //   router: { path: "/invest/balance" },
-  //   label: {
-  //     id: "balance",
-  //     i18nKey: "labelInvestBalance",
-  //     description: "labelInvestBalanceDes",
-  //   },
-  // },
   {
     icon: L2MyLiquidityIcon,
     router: { path: "/invest/ammpool" },
