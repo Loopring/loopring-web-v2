@@ -7,7 +7,12 @@ import { SwapPage } from "pages/SwapPage";
 import { Layer2Page } from "pages/Layer2Page";
 import { MiningPage } from "pages/MiningPage";
 import { OrderbookPage } from "pages/ProTradePage";
-import { useTicker, ModalGroup, useDeposit } from "@loopring-web/core";
+import {
+  useTicker,
+  ModalGroup,
+  useDeposit,
+  useForceWithdraw,
+} from "@loopring-web/core";
 import { LoadingBlock, LoadingPage } from "../pages/LoadingPage";
 import { LandPage, WalletPage } from "../pages/LandPage";
 import {
