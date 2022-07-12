@@ -143,7 +143,7 @@ const MyLiquidity: any = withTranslation("common")(
             target="_self"
             rel="noopener noreferrer"
             //?tokenSymbol=${market}
-            onClick={() => history.push(`/layer2/history/ammRecords`)}
+            onClick={() => history.push(`/l2assets/history/ammRecords`)}
             // href={"./#/layer2/history/ammRecords"}
           >
             {t("labelTransactionsLink")}

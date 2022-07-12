@@ -157,7 +157,7 @@ export const subMenuLayer2 = {
   assetsGroup: [
     {
       icon: AssetsIcon,
-      router: { path: "/layer2/assets" },
+      router: { path: "/l2assets/assets" },
       label: {
         id: "assets",
         i18nKey: "labelAssets",
@@ -204,15 +204,15 @@ export const subMenuInvest = [
       description: "labelInvestAmmDes",
     },
   },
-  // {
-  //   icon: L2MyLiquidityIcon,
-  //   router: { path: "/invest/defi" },
-  //   label: {
-  //     id: "defi",
-  //     i18nKey: "labelInvestDefi",
-  //     description: "labelInvestDefiDes",
-  //   },
-  // },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/defi" },
+    label: {
+      id: "defi",
+      i18nKey: "labelInvestDefi",
+      description: "labelInvestDefiDes",
+    },
+  },
 ];
 
 export const subMenuNFT = {
@@ -373,10 +373,10 @@ export const MEDIA_LIST = [
 export const headerMenuData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: "Layer2",
+      id: "L2Assets",
       i18nKey: "labelAssets",
     },
-    router: { path: "/layer2" },
+    router: { path: "/l2assets" },
     status: HeaderMenuTabStatus.default,
   },
   {

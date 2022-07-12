@@ -273,11 +273,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const hasSymbol =
               row.side.toLowerCase() ===
               sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
-                ? t("labelForceWithdrawTotalDes", {
-                    address: getShortAddr(row.withdrawalInfo?.recipient),
-                    symbol: row.symbol,
-                  })
-                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER // TransactionTradeTypes.transfer
+                ? ""
+                : // t("labelForceWithdrawTotalDes", {
+                //     address: getShortAddr(row.withdrawalInfo?.recipient),
+                //     symbol: row.symbol,
+                //   })
+                row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER // TransactionTradeTypes.transfer
                 ? row.receiverAddress?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
@@ -487,11 +488,12 @@ export const TransactionTable = withTranslation(["tables", "common"])(
             const hasSymbol =
               row.side.toLowerCase() ===
               sdk.UserTxTypes.DELEGATED_FORCE_WITHDRAW
-                ? t("labelForceWithdrawTotalDes", {
-                    address: getShortAddr(row.withdrawalInfo?.recipient),
-                    symbol: row.symbol,
-                  })
-                : row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
+                ? ""
+                : // t("labelForceWithdrawTotalDes", {
+                //     address: getShortAddr(row.withdrawalInfo?.recipient),
+                //     symbol: row.symbol,
+                //   })
+                row.side.toLowerCase() === sdk.UserTxTypes.TRANSFER
                 ? row["receiverAddress"]?.toUpperCase() ===
                   accAddress?.toUpperCase()
                   ? "+"
@@ -542,11 +544,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                 alignItems={"center"}
                 justifyContent={"flex-start"}
                 height={"100%"}
-                title={`${hasSymbol}  ${
-                  row.side !== TransactionTradeTypes.forceWithdraw
-                    ? `${renderValue} ${unit}`
-                    : ""
-                }`}
+                title={`${hasSymbol}  ${renderValue} ${unit}`}
               >
                 {/*{side + " "}*/}
                 <Typography
@@ -574,8 +572,7 @@ export const TransactionTable = withTranslation(["tables", "common"])(
                     alignItems={"center"}
                   >
                     {hasSymbol}
-                    {row.side !== TransactionTradeTypes.forceWithdraw &&
-                      `${renderValue} ${unit}`}
+                    `${renderValue} ${unit}`
                   </Typography>
                   <Typography color={"textSecondary"} variant={"body2"}>
                     {renderFee}

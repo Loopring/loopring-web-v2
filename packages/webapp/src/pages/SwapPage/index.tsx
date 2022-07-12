@@ -22,7 +22,6 @@ export const SwapPage = withTranslation("common")(
       toastOpen,
       closeToast,
       should15sRefresh,
-      // debugInfo,
       market,
       alertOpen,
       confirmOpen,
@@ -31,7 +30,6 @@ export const SwapPage = withTranslation("common")(
       isSwapLoading,
       pageTradeLite,
       toPro,
-      // updateMyTradeTable,
       isMobile,
     } = useSwap({ path: "/trade/lite" });
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
@@ -101,5 +99,3 @@ export const SwapPage = withTranslation("common")(
     );
   }
 );
-
-// SwapPage

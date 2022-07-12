@@ -105,7 +105,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
             onClick={() => {
               handleFilterChange({
                 duration: [null, null],
-                txType: undefined,
+                txType: "" as any,
               });
             }}
           >

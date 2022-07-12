@@ -187,8 +187,8 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         }}
       >
         <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
+        <Tab value={InvestType.DeFi} label={<DefiTitle />} />
         <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
-        {/*<Tab value={InvestType.DeFi} label={<DefiTitle />} />*/}
       </Tabs>
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}

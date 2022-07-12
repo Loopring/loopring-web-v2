@@ -243,7 +243,9 @@ export const SwapPanel = withTranslation("common", { withRef: true })(
                   <Typography display={"inline-block"} marginLeft={2}>
                     <IconButtonStyled
                       onClick={() => {
-                        history.push(`/layer2/history/trades?market=${market}`);
+                        history.push(
+                          `/l2assets/history/trades?market=${market}`
+                        );
                       }}
                       sx={{ backgroundColor: "var(--field-opacity)" }}
                       className={"switch outlined"}

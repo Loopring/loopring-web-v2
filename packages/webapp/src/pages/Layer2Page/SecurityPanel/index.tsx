@@ -15,7 +15,8 @@ const StyledPaper = styled(Grid)`
 `;
 
 const StyledDivider = styled(Divider)`
-  margin: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit * 4}px;
+  margin: ${({ theme }) => theme.unit}px
+    ${({ theme }) => (theme.unit * 5) / 2}px;
 `;
 
 export const SecurityPanel = withTranslation(["common", "layout"])(
@@ -56,8 +57,7 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
               component={"section"}
               display={"flex"}
               flexDirection={"column"}
-              paddingX={4}
-              paddingY={3}
+              padding={5 / 2}
             >
               <Grid container display={"flex"}>
                 <Grid item xs={7}>
@@ -113,8 +113,7 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
             component={"section"}
             display={"flex"}
             flexDirection={"column"}
-            paddingX={4}
-            paddingY={3}
+            padding={5 / 2}
           >
             <Grid container display={"flex"}>
               <Grid item xs={7}>
@@ -162,8 +161,7 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
             component={"section"}
             display={"flex"}
             flexDirection={"column"}
-            paddingY={3}
-            paddingX={4}
+            padding={5 / 2}
           >
             <Grid
               container
@@ -220,8 +218,7 @@ export const SecurityPanel = withTranslation(["common", "layout"])(
             component={"section"}
             display={"flex"}
             flexDirection={"column"}
-            paddingY={3}
-            paddingX={4}
+            padding={5 / 2}
           >
             <Grid
               container
