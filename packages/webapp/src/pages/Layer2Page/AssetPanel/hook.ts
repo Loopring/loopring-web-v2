@@ -336,17 +336,11 @@ export const useGetAssets = () => {
     onShowSend: () => {
       setShowAccount({ isShow: true, step: AccountStep.SendAssetGateway });
     },
-    // onShowTransfer,
-    // onShowWithdraw,
-    // showPartner: () => onShowDeposit(undefined, true),
-    // legalEnable,
-    // legalShow,
   };
   const assetTitleMobileExtendProps = {
     btnShowNFTDepositStatus: TradeBtnStatus.AVAILABLE,
     btnShowNFTMINTStatus: TradeBtnStatus.AVAILABLE,
   };
-  const isThemeDark = themeMode === "dark";
   React.useEffect(() => {
     getUserAssets();
   }, []);
@@ -354,7 +348,6 @@ export const useGetAssets = () => {
     assetsRawData,
     total,
     account,
-    currency,
     hideL2Assets,
     onSend,
     onReceive,
@@ -366,7 +359,6 @@ export const useGetAssets = () => {
     hideInvestToken,
     allowTrade,
     setHideL2Assets,
-    isThemeDark,
     setHideLpToken,
     setHideSmallBalances,
     themeMode,

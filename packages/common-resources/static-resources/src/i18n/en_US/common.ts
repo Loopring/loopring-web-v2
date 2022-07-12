@@ -792,7 +792,7 @@ export default {
   labelLayerSwapUnderstandDes:
     "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelInvestAmmTitle: "AMM Pools",
-  labelInvestBalanceTitle: "Balance",
+  labelInvestBalanceTitle: "My Investment",
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
   labelNFTMintWrongCIDBtn: "Wrong MetaData format",
@@ -838,4 +838,7 @@ export default {
     "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
   labelInvestBtn: "Invest",
   labelRedeemBtn: "Redeem",
+  labelVipTitle: "VIP",
+  labelSecurity: "Security",
+  labelFeeTitleList: "Fee",
 };

@@ -16,6 +16,7 @@ import { Button } from "../../basic-lib";
 import { bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
+import { useSettings } from "../../../stores";
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
@@ -82,6 +83,7 @@ export const WalletConnectBtn = ({
   handleClick,
 }: WalletConnectBtnProps) => {
   const { t, i18n } = useTranslation(["layout", "common"]);
+  const { isMobile } = useSettings();
   const [label, setLabel] = React.useState<string>(t("labelConnectWallet"));
   const [networkLabel, setNetworkLabel] =
     React.useState<string | undefined>(undefined);
@@ -144,7 +146,7 @@ export const WalletConnectBtn = ({
       }
 
       if (account && account._chainId === ChainId.GOERLI) {
-        setNetworkLabel("Görli");
+        setNetworkLabel(isMobile ? "G ö" : "Görli");
       } else {
         setNetworkLabel("");
       }

@@ -2,9 +2,8 @@ import {
   AssetsIcon,
   L2HistoryIcon,
   L2MyLiquidityIcon,
-  L2OrderIcon,
   MintIcon,
-  OutputIcon,
+  ProfileIcon,
   RecordIcon,
   // NFTIcon,
   SecurityIcon,
@@ -36,16 +35,6 @@ export const profile = {
       },
     },
   ],
-  // forcewithdraw: [
-  //   {
-  //     icon: OutputIcon,
-  //     router: { path: "/layer2/forcewithdraw" },
-  //     label: {
-  //       id: "forcewithdraw",
-  //       i18nKey: "labelForceWithdraw",
-  //     },
-  //   },
-  // ],
   vip: [
     {
       icon: VipIcon,
@@ -66,7 +55,7 @@ export enum ButtonComponentsMap {
   WalletConnect,
 }
 
-export const ToolBarAvailableItem = [
+export const toolBarAvailableItem = [
   ButtonComponentsMap.Download,
   ButtonComponentsMap.Notification,
   ButtonComponentsMap.Setting,
@@ -104,6 +93,14 @@ export let headerToolBarData: Array<{
     handleClick: undefined,
   },
 ];
+
+export const toolBarMobileAvailableItem = [
+  ButtonComponentsMap.Download,
+  ButtonComponentsMap.Notification,
+  ButtonComponentsMap.Setting,
+  ButtonComponentsMap.WalletConnect,
+];
+
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
@@ -176,27 +173,29 @@ export const subMenuLayer2 = {
         i18nKey: "labelHistory",
       },
     },
+  ],
+  profileGroup: [
     {
-      icon: L2OrderIcon,
-      router: { path: "/layer2/order" },
+      icon: ProfileIcon,
+      router: { path: "/layer2/security" },
       label: {
-        id: "order",
-        i18nKey: "labelOrder",
+        id: "security",
+        i18nKey: "labelSecurity",
       },
     },
   ],
 };
 
+// {
+//   icon: AssetsIcon,
+//   router: { path: "/invest/balance" },
+//   label: {
+//     id: "balance",
+//     i18nKey: "labelInvestBalance",
+//     description: "labelInvestBalanceDes",
+//   },
+// },
 export const subMenuInvest = [
-  {
-    icon: AssetsIcon,
-    router: { path: "/invest/balance" },
-    label: {
-      id: "balance",
-      i18nKey: "labelInvestBalance",
-      description: "labelInvestBalanceDes",
-    },
-  },
   {
     icon: L2MyLiquidityIcon,
     router: { path: "/invest/ammpool" },
@@ -246,18 +245,8 @@ export const subMenuNFT = {
         description: "labelTransactionNFTDes",
       },
     },
-    // {
-    //   icon: L2HistoryIcon,
-    //   router: { path: "/nft/depositNFT" },
-    //   label: {
-    //     id: "depositNFT",
-    //     i18nKey: "labelDepositNFT",
-    //     description: "labelTransactionNFTDes",
-    //   },
-    // },
   ],
 };
-
 export const subMenuGuardian = {
   assetsGroup: [
     {
@@ -286,7 +275,6 @@ export const subMenuGuardian = {
     },
   ],
 };
-
 export const FOOTER_LIST_MAP = {
   About: [
     {
