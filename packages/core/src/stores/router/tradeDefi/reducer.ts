@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { TradeDefi, TradeDefiStatus } from "./interface";
-import { CoinInfo, IBData, RequireOne } from "@loopring-web/common-resources";
+import { IBData, RequireOne } from "@loopring-web/common-resources";
+import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 const initState: TradeDefi<any> = {
   type: "LIDO",
   isStoB: true,
-  sellCoin: {} as any,
-  buyCoin: {} as any,
+  sellToken: {} as any,
+  buyToken: {} as any,
   depositPrice: "0",
   withdrawPrice: "0",
   sellVol: "0",
@@ -35,8 +36,8 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
         type,
         market,
         isStoB,
-        sellCoin,
-        buyCoin,
+        sellToken,
+        buyToken,
         sellVol,
         buyVol,
         deFiCalcData,
@@ -56,8 +57,8 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
           ...initState,
           type: type ?? "LIDO",
           market,
-          sellCoin: sellCoin as CoinInfo<R>,
-          buyCoin: buyCoin as CoinInfo<R>,
+          sellToken: sellToken as TokenInfo,
+          buyToken: buyToken as TokenInfo,
         };
       }
       if (request) {

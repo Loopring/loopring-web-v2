@@ -10,6 +10,7 @@ import {
   useTokenMap,
   LoopringAPI,
   useTokenPrices,
+  useDefiMap,
 } from "@loopring-web/core";
 import {
   AccountStep,
@@ -54,7 +55,7 @@ export const useGetAssets = () => {
   const {
     themeMode,
     hideL2Assets,
-    hideLpToken,
+    hideInvestToken,
     hideSmallBalances,
     currency,
     setHideLpToken,
@@ -63,6 +64,7 @@ export const useGetAssets = () => {
   } = useSettings();
 
   const { marketArray, tokenMap } = useTokenMap();
+  const { marketCoins: defiCoinArray } = useDefiMap();
   React.useEffect(() => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       sendSocketTopic({ [WsTopicType.account]: true });
@@ -138,6 +140,7 @@ export const useGetAssets = () => {
       let data: any[] = [];
       tokenKeys.forEach((key, index) => {
         let item = undefined;
+        const isDefi = [...(defiCoinArray ? defiCoinArray : [])].includes(key);
         if (assetsMap[key]) {
           const tokenInfo = assetsMap[key];
           const isLpToken = tokenInfo.token.split("-")[0] === "LP";
@@ -187,10 +190,11 @@ export const useGetAssets = () => {
             .plus(depositAmount || 0);
           item = {
             token: {
-              type:
-                tokenInfo.token.split("-")[0] === "LP"
-                  ? TokenType.lp
-                  : TokenType.single,
+              type: isDefi
+                ? TokenType.defi
+                : tokenInfo.token.split("-")[0] === "LP"
+                ? TokenType.lp
+                : TokenType.single,
               value: tokenInfo.token,
             },
             // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
@@ -206,8 +210,11 @@ export const useGetAssets = () => {
         } else {
           item = {
             token: {
-              type:
-                key.split("-")[0] === "LP" ? TokenType.lp : TokenType.single,
+              type: isDefi
+                ? TokenType.defi
+                : key.split("-")[0] === "LP"
+                ? TokenType.lp
+                : TokenType.single,
               value: key,
             },
             amount: EmptyValueTag,
@@ -356,7 +363,7 @@ export const useGetAssets = () => {
     marketArray,
     userAssets,
     getUserAssets,
-    hideLpToken,
+    hideInvestToken,
     allowTrade,
     setHideL2Assets,
     isThemeDark,

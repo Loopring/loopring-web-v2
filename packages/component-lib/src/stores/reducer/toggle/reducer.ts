@@ -4,6 +4,7 @@ import { ToggleState } from "./interface";
 
 const initialState: ToggleState = {
   order: { enable: true },
+  defi: { enable: true },
   joinAmm: { enable: true },
   exitAmm: { enable: true },
   transfer: { enable: true },
@@ -28,6 +29,7 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       const {
         order,
         joinAmm,
+        defi,
         exitAmm,
         transfer,
         transferNFT,
@@ -41,6 +43,9 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       } = action.payload;
       if (order !== undefined) {
         state.order = order;
+      }
+      if (defi !== undefined) {
+        state.defi = defi;
       }
       if (joinAmm !== undefined) {
         state.joinAmm = joinAmm;

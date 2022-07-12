@@ -14,6 +14,7 @@ const initialState: SystemStatus = {
   status: "PENDING",
   errorMessage: null,
   allowTrade: {
+    defi: { enable: false },
     legal: { enable: false },
     register: { enable: false },
     order: { enable: false },

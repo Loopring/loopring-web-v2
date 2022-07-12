@@ -35,7 +35,7 @@ export interface SettingsState {
   };
   hideL2Assets: boolean;
   hideL2Action: boolean;
-  hideLpToken: boolean;
+  hideInvestToken: boolean;
   isMobile: boolean;
   hideSmallBalances: boolean;
   proLayout: Layouts;

@@ -38,7 +38,6 @@ import {
   subMenuLayer2,
   headerMenuLandingData,
   AccountStatus,
-  myLog,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,

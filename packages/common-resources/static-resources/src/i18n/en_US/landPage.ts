@@ -33,7 +33,7 @@ export default {
   labelWalletSecureH1: "SECURE, at its core",
   labelWalletSecureH2: "With social-recovery and guardians",
   labelWalletSecureDetail:
-    "Completely self-custodial, only you control your assets.   You can choose people, institutions, and hardware that you trust to be the guardians of your wallet.  You can also set quota for daily transfers, and lock it down if ever needed.",
+    "Completely self-custodial, only you control your assets. You can choose people, institutions, and hardware that you trust to be the guardians of your wallet.  You can also set quota for daily transfers, and lock it down if ever needed.",
   labelWalletIdentityH1: "OWN YOUR IDENTITY",
   labelWalletIdentityH2: "Your wallet is your continuous Web3 identity.",
   labelWalletIdentityDetail:
@@ -41,7 +41,7 @@ export default {
   labelWalletUsageH1: "EASY TO USE",
   labelWalletUsageH2: "with zkRollup scaling solution",
   labelWalletUsageDetail:
-    "The Loopring Wallet integrates Loopring's Layer 2 zkRollup technology  to greatly increase speeds and lower fees, while inheriting the same  security guarantees as the Ethereum mainnet.",
+    "The Loopring Wallet integrates Loopring's Layer 2 zkRollup technology to greatly increase speeds and lower fees, while inheriting the same security guarantees as the Ethereum mainnet.",
   labelWalletFutureH1: "FORWARD LOOKING",
   labelWalletFutureH2: "Easily upgradable to adapt future scenarios",
   labelWalletFutureDetail:

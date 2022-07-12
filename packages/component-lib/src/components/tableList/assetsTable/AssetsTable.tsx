@@ -80,6 +80,7 @@ interface Row {
 export enum TokenType {
   single = "single",
   lp = "lp",
+  defi = "defi",
 }
 
 export type TradePairItem = {
@@ -115,7 +116,7 @@ export interface AssetsTableProps {
   // onShowTransfer: (token: string) => void;
   // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];
-  hideLpToken: boolean;
+  hideInvestToken: boolean;
   hideSmallBalances: boolean;
   disableWithdrawList: string[];
   setHideLpToken: (value: boolean) => void;
@@ -132,6 +133,7 @@ export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
     const {
       t,
+
       rawData,
       allowTrade,
       showFilter,
@@ -139,7 +141,7 @@ export const AssetsTable = withTranslation("tables")(
       onSend,
       getMarketArrayListCallback,
       disableWithdrawList,
-      hideLpToken,
+      hideInvestToken,
       hideSmallBalances,
       setHideLpToken,
       setHideSmallBalances,
@@ -173,25 +175,30 @@ export const AssetsTable = withTranslation("tables")(
         resultData = resultData.filter((o) => !o.smallBalance);
       }
       // if (filter.hideLpToken) {
-      if (hideLpToken) {
+      if (hideInvestToken) {
         resultData = resultData.filter(
           (o) => o.token.type === TokenType.single
         );
       }
+      // if (hideIToken) {
+      //   resultData = resultData.filter(
+      //     (o) => o.token.type === TokenType.single
+      //   );
+      // }
       if (filter.searchValue) {
         resultData = resultData.filter((o) =>
           o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase())
         );
       }
       resetTableData(resultData);
-    }, [totalData, filter, hideSmallBalances, hideLpToken, resetTableData]);
+    }, [totalData, filter, hideSmallBalances, hideInvestToken, resetTableData]);
 
     React.useEffect(() => {
       setTotalData(rawData);
     }, [rawData]);
     React.useEffect(() => {
       updateData();
-    }, [totalData, filter, hideLpToken, hideSmallBalances]);
+    }, [totalData, filter, hideInvestToken, hideSmallBalances]);
 
     const handleFilterChange = React.useCallback(
       (filter) => {
@@ -312,6 +319,7 @@ export const AssetsTable = withTranslation("tables")(
         formatter: ({ row }) => {
           const token = row["token"];
           const isLp = token.type === TokenType.lp;
+          const isDefi = token.type === TokenType.defi;
           const tokenValue = token.value;
 
           const isToL1 = token.type !== TokenType.lp;
@@ -330,6 +338,7 @@ export const AssetsTable = withTranslation("tables")(
                 getMarketArrayListCallback,
                 disableWithdrawList,
                 isLp,
+                isDefi,
                 isToL1,
                 allowTrade,
                 market: renderMarket,
@@ -429,6 +438,7 @@ export const AssetsTable = withTranslation("tables")(
         formatter: ({ row }) => {
           const token = row["token"];
           const isLp = token.type === TokenType.lp;
+          const isDefi = token.type === TokenType.defi;
           const tokenValue = token.value;
           const lpPairList = tokenValue.split("-");
           lpPairList.splice(0, 1);
@@ -444,6 +454,7 @@ export const AssetsTable = withTranslation("tables")(
                 getMarketArrayListCallback,
                 disableWithdrawList,
                 isLp,
+                isDefi,
                 allowTrade,
                 market: renderMarket,
                 onReceive,
@@ -475,7 +486,7 @@ export const AssetsTable = withTranslation("tables")(
               {...{
                 handleFilterChange,
                 filter,
-                hideLpToken,
+                hideInvestToken,
                 hideSmallBalances,
                 setHideLpToken,
                 setHideSmallBalances,

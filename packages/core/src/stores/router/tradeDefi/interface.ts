@@ -1,9 +1,6 @@
-import {
-  CoinInfo,
-  DeFiCalcData,
-  MarketType,
-} from "@loopring-web/common-resources";
+import { DeFiCalcData, MarketType } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { TokenInfo } from "@loopring-web/loopring-sdk";
 
 export type TradeDefi<C> = {
   type: string;
@@ -11,8 +8,8 @@ export type TradeDefi<C> = {
   isStoB: boolean;
   sellVol: string;
   buyVol: string;
-  sellCoin: CoinInfo<any>;
-  buyCoin: CoinInfo<any>;
+  sellToken: TokenInfo;
+  buyToken: TokenInfo;
   deFiCalcData?: DeFiCalcData<C>;
   fee: string;
   feeRaw: string;

@@ -26,6 +26,7 @@ export type System<R = Currency> = {
     register: { enable: boolean; reason?: string };
     order: { enable: boolean; reason?: string };
     joinAmm: { enable: boolean; reason?: string };
+    defi: { enable: boolean; reason?: string };
     dAppTrade: { enable: boolean; reason?: string };
     legal: { enable: boolean; reason?: string; show?: boolean };
     raw_data?: any;

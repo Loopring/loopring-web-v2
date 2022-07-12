@@ -2,19 +2,28 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Box, Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
+import * as sdk from "@loopring-web/loopring-sdk";
 import { useDeFiHook } from "./hook";
 import {
   boxLiner,
-  ConfirmImpact,
+  ConfirmDefiBalanceIsLimit,
   DeFiWrap,
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/core";
+import {
+  TOAST_TIME,
+  useDefiMap,
+  useTokenMap,
+  useTradeDefi,
+} from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
 import { useRouteMatch } from "react-router-dom";
-// background: var(--color-box);
+import {
+  getValuePrecisionThousand,
+  MarketType,
+} from "@loopring-web/common-resources";
+
 const StyleWrapper = styled(Box)`
   position: relative;
   border-radius: ${({ theme }) => theme.unit}px;
@@ -30,24 +39,35 @@ const StyleWrapper = styled(Box)`
 export const DeFiPanel: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
-    /* ammActivityMap, */ ...rest
-  }: WithTranslation & {
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
-  }) => {
+    ...rest
+  }: WithTranslation) => {
+    const { marketArray } = useDefiMap();
+    const { tokenMap } = useTokenMap();
     const match: any = useRouteMatch("/invest/defi/:market/:isJoin");
     //TODO: list
-    const market = match?.params?.market?.toUpperCase() ?? "WSTETH-ETH";
+    const _market: MarketType = [...(marketArray ? marketArray : [])].find(
+      (_item) => {
+        const value = match?.params?.market
+          ?.replace(/null|-/gi, "")
+          ?.toUpperCase();
+        return new RegExp(value, "ig").test(_item);
+      }
+    ) as MarketType;
+
     const isJoin =
-      match?.params?.isJoin?.toUpperCase() === "Redeem".toUpperCase()
-        ? false
-        : true;
+      match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
+
     const {
       deFiWrapProps,
       closeToast,
       toastOpen,
       confirmShow,
       setConfirmShow,
-    } = useDeFiHook({ market, isJoin });
+    } = useDeFiHook({
+      market: _market ?? ("WSTETH-ETH" as MarketType),
+      isJoin,
+    });
+    const { tradeDefi } = useTradeDefi();
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 
@@ -68,7 +88,7 @@ export const DeFiPanel: any = withTranslation("common")(
             padding={5 / 2}
           >
             <DeFiWrap
-              market={market}
+              market={_market}
               isJoin={isJoin}
               {...(deFiWrapProps as any)}
             />
@@ -85,10 +105,10 @@ export const DeFiPanel: any = withTranslation("common")(
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
-        <ConfirmImpact
+        <ConfirmDefiBalanceIsLimit
           handleClose={() => setConfirmShow(false)}
           open={confirmShow}
-          value={1}
+          defiData={tradeDefi}
         />
       </StyleWrapper>
     );

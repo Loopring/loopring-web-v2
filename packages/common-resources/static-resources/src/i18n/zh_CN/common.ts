@@ -755,7 +755,7 @@ export default {
     "The following trading platforms currently do not support Loopring L2 transfers (Binance, Coinbase, FTX, etc...). You will need to send funds to the L1 account. ",
   labelExchangeTypeDes: "Please select the address source:",
   labelNonExchangeTypeDes:
-    "eg:Loopring Wallet,Metamask,Coinbase Wallet,imtoken,Ledger,Trezor... EOA wallet",
+    "eg: Loopring Wallet, Metamask, Coinbase Wallet, imtoken, Ledger, Trezor... EOA wallet",
   labelNonExchangeType: "Non-Exchange Wallet",
   labelExchangeType: "Exchange",
   labelExchangeBinance: "Binance",
@@ -817,4 +817,13 @@ export default {
   labelInvestDefDeposit: "Invest",
   labelInvestDefWithdraw: "Redeem",
   labelNFTDepositLabel: "Receive NFT",
+  labelDefiFee: "Fee",
+  labelDefiMin: "Minimum of {{arg}}",
+  labelDefiNoEnough: "Not enough {{arg}}",
+  labelDefiMaxBalance:
+    "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
+  labelDefiMaxBalance1:
+    "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
+  labelInvestBtn: "Invest",
+  labelRedeemBtn: "Redeem",
 };

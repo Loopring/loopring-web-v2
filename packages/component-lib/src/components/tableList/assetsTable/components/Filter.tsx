@@ -12,7 +12,7 @@ export type TokenTypeCol = {
   value: string;
 };
 export interface FilterProps {
-  hideLpToken: boolean;
+  hideInvestToken: boolean;
   hideSmallBalances: boolean;
   setHideLpToken: (value: boolean) => void;
   setHideSmallBalances: (value: boolean) => void;
@@ -24,7 +24,7 @@ export interface FilterProps {
 
 export enum CheckboxType {
   smallBalance = "smallBalance",
-  lp = "lp",
+  invest = "invest",
 }
 
 export const Filter = withTranslation("tables", { withRef: true })(
@@ -32,7 +32,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
     t,
     handleFilterChange,
     filter,
-    hideLpToken,
+    hideInvestToken,
     hideSmallBalances,
     setHideLpToken,
     setHideSmallBalances,
@@ -52,7 +52,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
           <FormControlLabel
             control={
               <Checkbox
-                checked={hideLpToken}
+                checked={hideInvestToken}
                 checkedIcon={<CheckedIcon />}
                 icon={<CheckBoxIcon />}
                 color="default"

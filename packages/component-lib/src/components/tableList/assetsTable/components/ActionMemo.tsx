@@ -24,6 +24,7 @@ export type ActionProps = {
   allowTrade?: any;
   market: `${string}-${string}`;
   isLp: boolean;
+  isDefi: boolean;
   onSend: (token: string, isToL1: boolean) => void;
   onReceive: (token: string) => void;
   // onShowDeposit: (token: string) => void;
@@ -36,6 +37,7 @@ const ActionPopContent = React.memo(
   ({
     market,
     isLp,
+    isDefi,
     allowTrade,
     onSend,
     onReceive,
@@ -119,6 +121,27 @@ const ActionPopContent = React.memo(
               <ListItemText>{t("labelPoolTableRemoveLiqudity")}</ListItemText>
             </MenuItem>
           </>
+        ) : isDefi ? (
+          <>
+            {allowTrade?.defi?.enable && (
+              <>
+                <MenuItem
+                  onClick={() => {
+                    history.push(`./invest/defi/${tokenValue}-null/invest`);
+                  }}
+                >
+                  <ListItemText>{t("labelDefiInvest")}</ListItemText>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    history.push(`./invest/defi/${tokenValue}-null/redeem`);
+                  }}
+                >
+                  <ListItemText>{t("labelDefiRedeem")}</ListItemText>
+                </MenuItem>
+              </>
+            )}
+          </>
         ) : (
           marketList.map((pair) => {
             const formattedPair = pair.replace("-", " / ");
@@ -150,6 +173,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     onSend,
     onReceive,
     isLp,
+    isDefi,
     // onShowDeposit,
     // onShowTransfer,
     // onShowWithdraw,
@@ -179,12 +203,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     >
       {isMobile ? (
         <>
-          {!isLp && allowTrade?.order?.enable && (
-            <Grid item marginTop={1}>
-              <Popover {...{ ...popoverProps }} />
-            </Grid>
-          )}
-          {isLp && (
+          {((!isLp && allowTrade?.order?.enable) || isLp || isDefi) && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>
@@ -231,7 +250,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
               <Popover {...{ ...popoverProps }} />
             </Grid>
           )}
-          {isLp && (
+          {(isLp || isDefi) && (
             <Grid item marginTop={1}>
               <Popover {...{ ...popoverProps }} />
             </Grid>

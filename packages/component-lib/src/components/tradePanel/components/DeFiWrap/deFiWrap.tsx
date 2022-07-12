@@ -79,13 +79,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
       ? isStoB
         ? `1${deFiCalcData.coinSell.belong} \u2248 ${
             // @ts-ignore
-            deFiCalcData?.AtoB && deFiCalcData?.AtoB != "NaN"
+            // eslint-disable-next-line eqeqeq
+            deFiCalcData?.AtoB && deFiCalcData?.AtoB !== "NaN"
               ? deFiCalcData?.AtoB
               : EmptyValueTag
           } ${deFiCalcData.coinBuy.belong}`
         : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
             // @ts-ignore
-            deFiCalcData.BtoA && deFiCalcData?.BtoA != "NaN"
+            deFiCalcData.BtoA && deFiCalcData?.BtoA !== "NaN"
               ? deFiCalcData.BtoA
               : EmptyValueTag
           } ${deFiCalcData.coinSell.belong}`
@@ -115,34 +116,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     );
   }, [btnStatus, deFiCalcData, disabled, isLoading]);
 
-  myLog("DefiTrade btnStatus", btnStatus);
-
-  // if (typeof handleError !== "function") {
-  //   handleError = (iBData: any) => {
-  //     if (accStatus === AccountStatus.ACTIVATED) {
-  //       // const iscoinSell = _ref?.current === coinSellRef.current;
-  //       const { tradeValue, balance, belong } = deFiCalcData.coinSell;
-  //       if (balance < tradeValue || (tradeValue && !balance)) {
-  //         const _error = {
-  //           error: true,
-  //           message: t("tokenNotEnough", { belong: deFiCalcData.coinSell }),
-  //         };
-  //         if (iscoinSell) {
-  //           setErrorA(_error);
-  //         } else {
-  //           setErrorB(_error);
-  //         }
-  //         return _error;
-  //       }
-  //       if (iscoinSell) {
-  //         setErrorA({ error: false, message: "" });
-  //       } else {
-  //         setErrorB({ error: false, message: "" });
-  //       }
-  //     }
-  //   };
-  //   return { error: false, message: "" };
-  // }
+  myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
@@ -207,7 +181,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   handleCountChange,
   //   ...rest,
   // };
-  myLog("deFiCalcData.coinSell ", deFiCalcData.coinSell);
   return (
     <Grid
       className={deFiCalcData ? "" : "loading"}
@@ -366,7 +339,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               }
               disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
             >
-              {btnInfo
+              {btnInfo?.label
                 ? t(btnInfo.label, btnInfo.params)
                 : isJoin
                 ? t(`labelInvestBtn`)

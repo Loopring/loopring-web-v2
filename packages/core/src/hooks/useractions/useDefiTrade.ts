@@ -58,8 +58,7 @@ export const useDefiTrade = <
   }) => void;
 }) => {
   const { t } = useTranslation(["common"]);
-  // const history = useHistory();
-  // const { search } = useLocation();
+  const refreshRef = React.createRef();
   const match: any = useRouteMatch("/invest/:defi/:market/:isJoin");
 
   const {
@@ -342,8 +341,8 @@ export const useDefiTrade = <
         isStoB,
         sellVol: "0",
         buyVol: "0",
-        sellCoin: coinMap[coinSellSymbol],
-        buyCoin: coinMap[coinBuySymbol],
+        sellToken: tokenMap[coinSellSymbol],
+        buyToken: tokenMap[coinBuySymbol],
         deFiCalcData: {
           ...deFiCalcDataInit,
           AtoB,
@@ -379,12 +378,12 @@ export const useDefiTrade = <
       if (
         LoopringAPI.userAPI &&
         LoopringAPI.defiAPI &&
-        tradeDefi.sellCoin.name &&
+        tradeDefi.sellToken.symbol &&
         exchangeInfo
       ) {
         const req: sdk.GetNextStorageIdRequest = {
           accountId: account.accountId,
-          sellTokenId: tokenMap[tradeDefi.sellCoin.name]?.tokenId ?? 0,
+          sellTokenId: tradeDefi.sellToken?.tokenId ?? 0,
         };
         const storageId = await LoopringAPI.userAPI.getNextStorageId(
           req,
@@ -395,11 +394,11 @@ export const useDefiTrade = <
           storageId: storageId.orderId,
           accountId: account.accountId,
           sellToken: {
-            tokenId: tokenMap[tradeDefi.sellCoin.name]?.tokenId ?? 0,
+            tokenId: tradeDefi.sellToken?.tokenId ?? 0,
             volume: tradeDefi.sellVol,
           },
           buyToken: {
-            tokenId: tokenMap[tradeDefi.buyCoin.name]?.tokenId ?? 0,
+            tokenId: tradeDefi.buyToken?.tokenId ?? 0,
             volume: tradeDefi.buyVol,
           },
           validUntil: getTimestampDaysLater(DAYS),
@@ -584,7 +583,15 @@ export const useDefiTrade = <
           return { coinBuySymbol, coinSellSymbol };
         }
       });
-      should15sRefresh(true);
+      if (refreshRef.current) {
+        // @ts-ignore
+        refreshRef.current.firstElementChild.click();
+      }
+      // else{
+      //   should15sRefresh(true);
+      // }
+
+      //
     }
     return () => {
       return should15sRefresh.cancel();
@@ -597,15 +604,27 @@ export const useDefiTrade = <
     walletLayer2,
     account.readyState,
   ]);
-  const refreshRef = React.createRef();
+  // React.useEffect(() => {
+  //   if (market) {
+  //     //@ts-ignore
+  //     if (refreshRef.current) {
+  //       // @ts-ignore
+  //
+  //     }
+  //     if (
+  //       (tradeData && tradeData.sell.belong == undefined) ||
+  //       tradeData === undefined
+  //     ) {
+  //       resetSwap(undefined, undefined);
+  //     }
+  //   }
+  // }, [market]);
 
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,
-      // market: market as MarketType,
-      // isJoin,
-      onConfirm: sendRequest,
       refreshRef,
+      onConfirm: sendRequest,
       disabled: false,
       btnInfo: {
         label: tradeMarketI18nKey,
@@ -618,10 +637,8 @@ export const useDefiTrade = <
         setIsStoB(_isStoB);
       },
       onRefreshData: should15sRefresh,
-      // btnStatus: keyof typeof TradeBtnStatus | undefined;
       onSubmitClick: onBtnClick as () => void,
       onChangeEvent: handleOnchange,
-      // handleError?: (data: T) => void;
       tokenAProps: {},
       tokenBProps: {},
       deFiCalcData: {
