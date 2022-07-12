@@ -6,7 +6,7 @@ import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import AssetPanel from "./AssetPanel";
 import HistoryPanel from "./HistoryPanel";
-import OrderPanel from "./OrderPanel";
+// import OrderPanel from "./OrderPanel";
 import React from "react";
 import { ViewAccountTemplate } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";

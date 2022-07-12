@@ -164,16 +164,16 @@ export const subMenuLayer2 = {
       },
     },
   ],
-  transactionsGroup: [
-    {
-      icon: L2HistoryIcon,
-      router: { path: "/layer2/history" },
-      label: {
-        id: "history",
-        i18nKey: "labelHistory",
-      },
-    },
-  ],
+  // transactionsGroup: [
+  //   {
+  //     icon: L2HistoryIcon,
+  //     router: { path: "/layer2/history" },
+  //     label: {
+  //       id: "history",
+  //       i18nKey: "labelHistory",
+  //     },
+  //   },
+  // ],
   profileGroup: [
     {
       icon: ProfileIcon,
@@ -183,18 +183,17 @@ export const subMenuLayer2 = {
         i18nKey: "labelSecurity",
       },
     },
+    {
+      icon: VipIcon,
+      router: { path: "/layer2/vip" },
+      label: {
+        id: "vip",
+        i18nKey: "labelVipPanel",
+      },
+    },
   ],
 };
 
-// {
-//   icon: AssetsIcon,
-//   router: { path: "/invest/balance" },
-//   label: {
-//     id: "balance",
-//     i18nKey: "labelInvestBalance",
-//     description: "labelInvestBalanceDes",
-//   },
-// },
 export const subMenuInvest = [
   {
     icon: L2MyLiquidityIcon,

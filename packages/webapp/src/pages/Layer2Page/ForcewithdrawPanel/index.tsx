@@ -64,6 +64,7 @@ export const ForcewithdrawPanel = withTranslation(["common", "layout"])(
             sx={{
               right: 2 * theme.unit,
               top: 2 * theme.unit,
+              zIndex: 999,
             }}
             target="_self"
             rel="noopener noreferrer"

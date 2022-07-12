@@ -166,6 +166,7 @@ AssetTitleMobileProps) => {
   //   React.useState<"up" | "down">(hideL2Action?"up":"down");
   const { t } = useTranslation(["common", "layout"]);
   let match: any = useRouteMatch("/layer2/:item");
+  const history = useHistory();
   const label = Reflect.ownKeys(subMenuLayer2)
     .reduce(
       (pre, item) => [...pre, ...subMenuLayer2[item]],
@@ -274,8 +275,8 @@ AssetTitleMobileProps) => {
           <Grid item xs={4}>
             <Button
               fullWidth
-              variant={"outlined"}
-              size={"medium"}
+              variant={"contained"}
+              size={"small"}
               color={"primary"}
               onClick={() => onShowSend()}
             >
@@ -291,6 +292,17 @@ AssetTitleMobileProps) => {
               onClick={() => onShowReceive()}
             >
               {t("labelAddAssetBtn")}
+            </Button>
+          </Grid>
+          <Grid item xs={4}>
+            <Button
+              fullWidth
+              variant={"outlined"}
+              size={"medium"}
+              color={"secondary"}
+              onClick={() => history.push("/layer2/history")}
+            >
+              {t("labelTransactions")}
             </Button>
           </Grid>
           {/*<Grid item xs={4}>*/}
