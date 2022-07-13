@@ -66,25 +66,26 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   //   getTokenPricesStatus({ tokenPrices, __timer__, __rawConfig__ })
   // );
   store.dispatch(getNotify(undefined));
-  store.dispatch(getDefiMap(undefined));
   store.dispatch(initAmmMap({ ammpools }));
   yield take("tokenMap/getTokenMapStatus");
   store.dispatch(getTokenPrices(undefined));
   yield take("tokenPrices/getTokenPricesStatus");
   store.dispatch(getTickers({ tickerKeys: marketArr }));
+  yield take("ammMap/getAmmMapStatus");
   store.dispatch(getAmmMap({ ammpools }));
   store.dispatch(getAmmActivityMap({ ammpools }));
   if (store.getState().tokenMap.status === "ERROR") {
     throw "tokenMap Error";
   }
+  store.dispatch(getDefiMap(undefined));
+  yield take("defiMap/getDefiMapStatus");
+  store.dispatch(getInvestTokenTypeMap(undefined));
   yield delay(5);
   const { account, walletLayer1 } = store.getState();
   if (account.accAddress && walletLayer1.walletLayer1 === undefined) {
     store.dispatch(updateWalletLayer1(undefined));
   }
   store.dispatch(accountStatusUnset(undefined));
-  yield take("invest/defiMap/getDefiMapStatus");
-  store.dispatch(getInvestTokenTypeMap(undefined));
 };
 const should15MinutesUpdateDataGroup = async (
   chainId: ChainId

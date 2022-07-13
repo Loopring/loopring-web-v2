@@ -128,7 +128,7 @@ export default {
   labelMyReward: "我的奖励",
   labelDate: "日期",
   labelBack: "返回",
-  labelAPR: "APY",
+  labelAPR: "APR",
   label24Volume: "24h 交易量",
   label24VolumeSimple: "24h Vol",
   labelTVL: "总锁仓量",
@@ -829,4 +829,6 @@ export default {
   labelVipTitle: "VIP",
   labelSecurity: "Security",
   labelFeeTitleList: "Fee",
+  labelInvestOverviewTitle: "Overview",
+  labelTitleOverviewToken: "Investment Token",
 };

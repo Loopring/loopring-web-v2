@@ -1,3 +1,5 @@
+import { StateBase } from "@loopring-web/common-resources";
+
 export const enum InvestMapType {
   AMM = "AMM",
   DEFI = "DEFI",
@@ -22,4 +24,4 @@ export type InvestTokenTypeMap = {
 
 export type InvestTokenTypeMapStates = {
   investTokenTypeMap: InvestTokenTypeMap;
-};
+} & StateBase;

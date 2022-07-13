@@ -15,7 +15,7 @@ function calcApr(
 ): [start: number, end: number] {
   let [start, end] = investItem.apr;
   const apr = ammInfo.APR;
-  if (apr && apr < start) {
+  if (apr !== undefined && apr > 0 && apr < start) {
     start = apr;
   } else if (apr && apr > end) {
     end = apr;
@@ -37,8 +37,8 @@ function calcDefiApr(
 }
 
 const getInvestMapApi = async () => {
-  const { ammMap } = store.getState().amm;
-  const defiMap = store.getState().invest.defiMap;
+  const { ammMap } = store.getState().amm.ammMap;
+  const { marketMap } = store.getState().invest.defiMap;
   let investTokenTypeMap: InvestTokenTypeMap = Object.keys(ammMap).reduce(
     (prev, key) => {
       // @ts-ignore
@@ -52,7 +52,7 @@ const getInvestMapApi = async () => {
           prev[coinA][InvestMapType.AMM] = {
             type: InvestMapType.AMM,
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
-            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
             durationType: InvestDuration.Flexible,
             duration: "",
           };
@@ -98,10 +98,10 @@ const getInvestMapApi = async () => {
     {} as InvestTokenTypeMap
   );
 
-  investTokenTypeMap = Object.keys(defiMap).reduce((prev, key) => {
+  investTokenTypeMap = Object.keys(marketMap).reduce((prev, key) => {
     // @ts-ignore
     const [, _, coinB] = key.match(/(\w+)-(\w+)/i);
-    const defiInfo = defiMap[key];
+    const defiInfo = marketMap[key];
     if (prev[coinB] && prev[coinB]) {
       let investItem = prev[coinB][InvestMapType.DEFI];
       if (investItem) {
@@ -110,7 +110,7 @@ const getInvestMapApi = async () => {
         prev[coinB][InvestMapType.DEFI] = {
           type: InvestMapType.DEFI,
           i18nKey: `labelInvestType_${InvestMapType.DEFI}`,
-          apr: [defiInfo.apr ?? 0, defiInfo.apr ?? 0],
+          apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
           durationType: InvestDuration.Flexible,
           duration: "",
         };
@@ -120,7 +120,7 @@ const getInvestMapApi = async () => {
         [InvestMapType.DEFI]: {
           type: InvestMapType.DEFI,
           i18nKey: `labelInvestType_${InvestMapType.DEFI}`,
-          apr: [defiInfo.apr ?? 0, defiInfo.apr ?? 0],
+          apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
           durationType: InvestDuration.Flexible,
           duration: "",
         },

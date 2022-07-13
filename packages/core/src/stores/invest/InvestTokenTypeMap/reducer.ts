@@ -4,6 +4,8 @@ import { SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: Required<InvestTokenTypeMapStates> = {
   investTokenTypeMap: {},
+  status: SagaStatus.PENDING,
+  errorMessage: null,
 };
 const investTokenTypeMapSlice: Slice = createSlice({
   name: "investTokenTypeMap",
@@ -18,11 +20,15 @@ const investTokenTypeMapSlice: Slice = createSlice({
     ) {
       state.investTokenTypeMap = _action.payload.investTokenTypeMap;
     },
+    statusUnset: (state) => {
+      state.status = SagaStatus.UNSET;
+    },
   },
 });
-const { getInvestTokenTypeMapStatus, getInvestTokenTypeMap } =
+const { getInvestTokenTypeMapStatus, getInvestTokenTypeMap, statusUnset } =
   investTokenTypeMapSlice.actions;
 export {
+  statusUnset,
   investTokenTypeMapSlice,
   getInvestTokenTypeMapStatus,
   getInvestTokenTypeMap,

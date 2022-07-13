@@ -197,6 +197,15 @@ export const subMenuLayer2 = {
 export const subMenuInvest = [
   {
     icon: L2MyLiquidityIcon,
+    router: { path: "/invest" },
+    label: {
+      id: "overview",
+      i18nKey: "labelInvestOverview",
+      description: "labelInvestAmmDes",
+    },
+  },
+  {
+    icon: L2MyLiquidityIcon,
     router: { path: "/invest/ammpool" },
     label: {
       id: "ammpool",

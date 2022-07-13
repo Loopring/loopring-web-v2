@@ -130,7 +130,7 @@ export default {
   labelMyReward: "My Rewards",
   labelDate: "Date",
   labelBack: "Back",
-  labelAPR: "APY",
+  labelAPR: "APR",
   label24Volume: "24h Volume",
   label24VolumeSimple: "24h Vol",
   labelTVL: "TVL",
@@ -841,4 +841,6 @@ export default {
   labelVipTitle: "VIP",
   labelSecurity: "Security",
   labelFeeTitleList: "Fee",
+  labelInvestOverviewTitle: "Overview",
+  labelTitleOverviewToken: "Investment Token",
 };

@@ -9,11 +9,7 @@ export const investReducer = combineReducers({
   defiMap: defiReducer.defiMapSlice.reducer,
   investTokenTypeMap: investTokenTypeMapReducer.investTokenTypeMapSlice.reducer,
 });
-export const investForks = [
-  ...defiMapFork,
-  ...investTokenTypeForks,
-  // fork(investRecordSaga),
-  // fork(investTradesSaga)
-];
+export const investForks = [...defiMapFork, ...investTokenTypeForks];
 
 export * from "./DefiMap";
+export * from "./InvestTokenTypeMap";

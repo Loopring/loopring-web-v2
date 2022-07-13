@@ -12,20 +12,14 @@ import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 
-const TableWrapperStyled = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-  flex: 1;
-`;
 export enum InvestType {
   MyBalance = 0,
   AmmPool = 1,
   DeFi = 2,
+  Overview = 3,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi"];
+export const InvestRouter = ["balance", "ammpool", "defi", ""];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
@@ -39,6 +33,23 @@ export const BalanceTitle = () => {
         className={"invest-Balance-Title"}
       >
         {t("labelInvestBalanceTitle")}
+      </Typography>
+    </Typography>
+  );
+};
+export const OverviewTitle = () => {
+  const { t } = useTranslation();
+  const { isMobile } = useSettings();
+  return (
+    <Typography display={"inline-flex"} alignItems={"center"}>
+      <Typography
+        component={"span"}
+        variant={isMobile ? "h5" : "h5"}
+        whiteSpace={"pre"}
+        marginRight={1}
+        className={"invest-Overview-Title"}
+      >
+        {t("labelInvestOverviewTitle")}
       </Typography>
     </Typography>
   );
@@ -166,10 +177,9 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         return InvestType.AmmPool;
       case InvestRouter[InvestType.DeFi]:
         return InvestType.DeFi;
+      case InvestRouter[InvestType.Overview]:
       default:
-        return account.readyState === "ACTIVATED"
-          ? InvestType.MyBalance
-          : InvestType.AmmPool;
+        return InvestType.Overview;
     }
     return account.readyState === "ACTIVATED"
       ? InvestType.MyBalance
@@ -186,11 +196,13 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           setTabIndex(value);
         }}
       >
+        <Tab value={InvestType.Overview} label={<OverviewTitle />} />
         <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
         <Tab value={InvestType.DeFi} label={<DefiTitle />} />
         <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
       </Tabs>
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
+        {tabIndex === InvestType.Overview && <PoolsPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
         {tabIndex === InvestType.MyBalance && (
