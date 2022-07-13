@@ -23,6 +23,7 @@ import {
 import { Box, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import _ from "lodash";
+import { useLocation } from "react-router-dom";
 
 const BoxStyle = styled(Box)`
   max-height: var(--swap-box-height);
@@ -39,6 +40,14 @@ export const DepositToPage = withTranslation(["common"])(
     depositProps,
   }: { depositProps: DepositProps<any, any> } & WithTranslation) => {
     const { isMobile } = useSettings();
+    /** TODO: fix for IO bug  **/
+    const { search } = useLocation();
+    React.useEffect(() => {
+      if (/WalletIOS/gi.test(search)) {
+        window.location.replace(`${window.location.origin}/#/404`);
+      }
+    }, [search]);
+    /** fix for IO bug End **/
 
     const [_depositBtnI18nKey, setDepositBtnI18nKey] =
       React.useState<BtnInfo | undefined>(undefined);
