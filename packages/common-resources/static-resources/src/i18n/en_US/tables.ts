@@ -19,7 +19,7 @@ export default {
   labelActions: "Actions",
   labelAllToken: "All Tokens",
   labelHideSmallBalances: "Hide Small Balances",
-  labelHideLPToken: "Hide LP Tokens",
+  labelHideInvestToken: "Hide Invest Tokens",
   labelOrderFilterAllTypes: "All Types",
   labelOrderFilterBuy: "Buy",
   labelOrderFilterSell: "Sell",

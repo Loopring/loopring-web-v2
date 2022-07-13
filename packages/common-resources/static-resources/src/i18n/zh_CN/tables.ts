@@ -19,7 +19,7 @@ export default {
   labelActions: "操作",
   labelAllToken: "所有币种",
   labelHideSmallBalances: "隐藏小额资产",
-  labelHideLPToken: "隐藏流动性凭证",
+  labelHideInvestToken: "隐藏流动性凭证",
   labelOrderFilterAllTypes: "所有类型",
   labelOrderFilterBuy: "买入",
   labelOrderFilterSell: "卖出",
