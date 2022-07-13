@@ -130,4 +130,4 @@ export function* defiMapSyncSaga() {
   yield all([takeLatest(updateDefiSyncMap, getPostsSaga)]);
 }
 
-export const defiMapSaga = [fork(defiMapInitSaga), fork];
+export const defiMapFork = [fork(defiMapInitSaga), fork];

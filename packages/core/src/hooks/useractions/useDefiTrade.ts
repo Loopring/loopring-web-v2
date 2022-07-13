@@ -157,7 +157,11 @@ export const useDefiTrade = <
       let _deFiCalcData: DeFiCalcData<T> | undefined =
         tradeDefi.deFiCalcData as DeFiCalcData<T>;
       let calcValue;
-      let _oldTradeDefi = _.cloneDeep({ ...tradeDefi, ..._tradeDefi });
+      let _oldTradeDefi = {
+        ...store.getState()._router_tradeDefi.tradeDefi,
+        ..._tradeDefi,
+      };
+      //_.cloneDeep({ ...tradeDefi, ..._tradeDefi });
       myLog("defi ", _oldTradeDefi.defiBalances);
 
       if (
@@ -379,24 +383,21 @@ export const useDefiTrade = <
           tradeValue: tradeDefi.deFiCalcData[type]?.tradeValue ?? undefined,
         };
         handleOnchange({ tradeData, type, _tradeDefi });
-        // deFiCalcDataInit.coinSell = {
-        //   ...deFiCalcDataInit.coinSell,
-        //   tradeValue: clearTrade
-        //     ? undefined
-        //     : tradeDefi.deFiCalcData?.coinSell?.tradeValue ?? undefined,
-        // };
       }
+      setIsLoading(false);
     },
     [
       account.readyState,
       coinBuySymbol,
       coinSellSymbol,
       defiMarketMap,
+      handleOnchange,
       isJoin,
       isStoB,
       market,
       tokenMap,
       tradeDefi.deFiCalcData,
+      tradeDefi.lastInput,
       tradeDefi.market,
       updateTradeDefi,
     ]
@@ -407,6 +408,9 @@ export const useDefiTrade = <
     if (market && LoopringAPI.defiAPI) {
       // updateDepth()
       // getDefiMap();
+      if (clearTrade) {
+        setIsLoading(true);
+      }
       const {
         markets: marketMap,
         tokenArr: marketCoins,
@@ -438,6 +442,7 @@ export const useDefiTrade = <
 
   const sendRequest = React.useCallback(async () => {
     try {
+      setIsLoading(true);
       if (
         LoopringAPI.userAPI &&
         LoopringAPI.defiAPI &&
@@ -472,7 +477,10 @@ export const useDefiTrade = <
               .div(tradeDefi.buyVol)
               .toNumber()
           ),
-          fillAmountBOrS: 0,
+          fillAmountBOrS: false,
+          action: isJoin ? sdk.DefiAction.Deposit : sdk.DefiAction.Withdraw,
+          fee: tradeDefi.feeRaw,
+          type: tradeDefi.type,
           taker: "",
           eddsaSignature: "",
           // taker:
@@ -518,7 +526,6 @@ export const useDefiTrade = <
         content: t("labelInvestFailed"),
       });
     } finally {
-      setIsLoading(false);
       should15sRefresh(true);
       // resetDefault(true);
       walletLayer2Service.sendUserUpdate();
@@ -528,15 +535,18 @@ export const useDefiTrade = <
     account.apiKey,
     account.eddsaKey.sk,
     exchangeInfo,
+    isJoin,
     setToastOpen,
     should15sRefresh,
     t,
     tradeDefi.buyToken?.tokenId,
     tradeDefi.buyVol,
     tradeDefi.fee,
+    tradeDefi.feeRaw,
     tradeDefi.sellToken?.symbol,
     tradeDefi.sellToken?.tokenId,
     tradeDefi.sellVol,
+    tradeDefi.type,
   ]);
 
   const handleSubmit = React.useCallback(async () => {
@@ -572,7 +582,6 @@ export const useDefiTrade = <
   ]);
 
   const onSubmitBtnClick = React.useCallback(async () => {
-    setIsLoading(true);
     const tradeDefi = store.getState()._router_tradeDefi.tradeDefi;
     if (
       tradeDefi?.maxSellVol &&
@@ -668,18 +677,20 @@ export const useDefiTrade = <
     };
   }, [
     isStoB,
-    sendRequest,
     refreshRef,
+    sendRequest,
+    account.readyState,
+    tradeDefi?.maxFeeBips,
+    tradeDefi.deFiCalcData,
     tradeMarketI18nKey,
     isLoading,
     should15sRefresh,
     onBtnClick,
-    tradeDefi.deFiCalcData,
+    handleOnchange,
     tokenMap,
     coinSellSymbol,
     coinBuySymbol,
     btnStatus,
-    account.readyState,
   ]); // as ForceWithdrawProps<any, any>;
   return {
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,

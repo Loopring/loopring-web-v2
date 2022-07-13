@@ -128,7 +128,7 @@ export default {
   labelMyReward: "我的奖励",
   labelDate: "日期",
   labelBack: "返回",
-  labelAPR: "APR",
+  labelAPR: "APY",
   label24Volume: "24h 交易量",
   label24VolumeSimple: "24h Vol",
   labelTVL: "总锁仓量",

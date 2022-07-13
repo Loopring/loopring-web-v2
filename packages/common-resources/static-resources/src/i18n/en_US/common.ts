@@ -130,7 +130,7 @@ export default {
   labelMyReward: "My Rewards",
   labelDate: "Date",
   labelBack: "Back",
-  labelAPR: "APR",
+  labelAPR: "APY",
   label24Volume: "24h Volume",
   label24VolumeSimple: "24h Vol",
   labelTVL: "TVL",
