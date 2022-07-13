@@ -29,20 +29,19 @@ const AssetPanel = withTranslation("common")(
     const container = React.useRef(null);
     const { disableWithdrawList } = useTokenMap();
     const { forexMap } = useSystem();
-    const { isMobile, upColor } = useSettings();
-    const { tokenPrices } = useTokenPrices();
+    const { isMobile } = useSettings();
 
     const {
       marketArray,
       assetsRawData,
-      userAssets,
+      // userAssets,
       assetTitleProps,
       // onShowTransfer,
       // onShowWithdraw,
       // onShowDeposit,
       onSend,
       onReceive,
-      total,
+      // total,
       hideInvestToken,
       hideSmallBalances,
       allowTrade,
@@ -52,18 +51,18 @@ const AssetPanel = withTranslation("common")(
 
     // const { walletLayer2 } = store.getState().walletLayer2;
 
-    const [currAssetsEth, setCurrAssetsEth] = React.useState(0);
+    // const [currAssetsEth, setCurrAssetsEth] = React.useState(0);
 
-    const percentList = assetsRawData.map((o) => ({
-      ...o,
-      value: o.tokenValueDollar && total ? o.tokenValueDollar / total : 0,
-    }));
+    // const percentList = assetsRawData.map((o) => ({
+    //   ...o,
+    //   value: o.tokenValueDollar && total ? o.tokenValueDollar / total : 0,
+    // }));
 
-    useDeepCompareEffect(() => {
-      if (!!userAssets.length) {
-        setCurrAssetsEth(userAssets[userAssets.length - 1].close);
-      }
-    }, [userAssets]);
+    // useDeepCompareEffect(() => {
+    //   if (!!userAssets.length) {
+    //     setCurrAssetsEth(userAssets[userAssets.length - 1].close);
+    //   }
+    // }, [userAssets]);
 
     // const lpTotalData = percentList
     //   .filter((o) => o.token.value.split("-")[0] === "LP")

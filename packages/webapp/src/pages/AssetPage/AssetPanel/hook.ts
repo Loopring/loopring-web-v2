@@ -267,9 +267,9 @@ export const useGetAssets = () => {
     getAssetsRawData();
   }, [assetsMap]);
 
-  const total = assetsRawData
-    .map((o) => o.tokenValueDollar)
-    .reduce((a, b) => a + b, 0);
+  // const total = assetsRawData
+  //   .map((o) => o.tokenValueDollar)
+  //   .reduce((a, b) => a + b, 0);
   const onReceive = React.useCallback(
     (token?: any) => {
       setShowAccount({
@@ -346,7 +346,7 @@ export const useGetAssets = () => {
   }, []);
   return {
     assetsRawData,
-    total,
+    // total,
     account,
     hideL2Assets,
     onSend,

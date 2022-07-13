@@ -61,7 +61,7 @@ export const Filter = withTranslation("tables", { withRef: true })(
                 }}
               />
             }
-            label={t("labelHideLPToken")}
+            label={t("labelHideInvestToken")}
           />
           <FormControlLabel
             style={{ marginRight: 0, paddingRight: 0 }}

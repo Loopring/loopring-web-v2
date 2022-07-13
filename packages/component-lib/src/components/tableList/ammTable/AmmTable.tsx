@@ -3,7 +3,7 @@ import { Box, BoxProps, Link, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { TFunction, withTranslation, WithTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, Table } from "../../basic-lib/tables";
+import { Column, Table } from "../../basic-lib";
 import { TablePagination } from "../../basic-lib";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
 import { Filter, FilterTradeTypes } from "./components/Filter";
@@ -329,14 +329,8 @@ export const AmmTable = withTranslation("tables")(
     const searchParams = new URLSearchParams(search);
     const { t, pagination, showFilter, rawData, filterPairs, getAmmpoolList } =
       props;
-    // const [filterType, setFilterType] = React.useState(
-    //
-    // );
     const [isDropDown, setIsDropDown] = React.useState(true);
-    // const [filterDate, setFilterDate] = React.useState<DateRange<Date | null>>([
-    //   null,
-    //   null,
-    // ]);
+
     const [page, setPage] = React.useState(1);
     // const [filterPair, setFilterPair] = React.useState("all");
 
@@ -361,7 +355,6 @@ export const AmmTable = withTranslation("tables")(
         backgroundColor: ({ colorBase }: any) => `${colorBase.box}`,
       },
     };
-    const pageSize = pagination ? pagination.pageSize : 10;
 
     const updateData = _.debounce(
       async ({
@@ -376,13 +369,14 @@ export const AmmTable = withTranslation("tables")(
         const end = date
           ? date[1] && Number(moment(date[1]).format("x"))
           : undefined;
+
         await getAmmpoolList({
           tokenSymbol: pair,
           txTypes: type !== FilterTradeTypes.allTypes ? type : "",
           start,
           end,
-          offset: (page - 1) * pageSize,
-          limit: pageSize,
+          offset: (page - 1) * (pagination?.pageSize ?? 10),
+          limit: pagination?.pageSize ?? 10,
         });
       },
       globalSetup.wait
@@ -403,7 +397,12 @@ export const AmmTable = withTranslation("tables")(
           page: 1,
         });
       },
-      [setFilterItems, filterItems]
+      [
+        filterItems.filterDate,
+        filterItems.filterPair,
+        filterItems.filterType,
+        updateData,
+      ]
     );
 
     const handlePageChange = React.useCallback(
@@ -412,7 +411,7 @@ export const AmmTable = withTranslation("tables")(
         myLog("AmmTable page,", page);
         updateData({ page, type, date, pair });
       },
-      [getAmmpoolList, pageSize]
+      [updateData]
     );
 
     const handleReset = React.useCallback(() => {
@@ -427,7 +426,7 @@ export const AmmTable = withTranslation("tables")(
         date: [null, null],
         pair: "",
       });
-    }, [handleFilterChange]);
+    }, [updateData]);
 
     React.useEffect(() => {
       let filters: any = {};
