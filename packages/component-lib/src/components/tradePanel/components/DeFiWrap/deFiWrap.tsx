@@ -45,6 +45,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinBuyRef = React.useRef();
   const { t } = useTranslation();
   const history = useHistory();
+
   // const [errorA, setErrorA] = React.useState<{
   //   error: boolean;
   //   message?: string | JSX.Element;
@@ -116,7 +117,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     );
   }, [btnStatus, deFiCalcData, disabled, isLoading]);
 
-  myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
+  // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
     (ibData: T, _name: string, _ref: any) => {
@@ -124,7 +125,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
         _ref?.current === coinSellRef.current
           ? DeFiChgType.coinSell
           : DeFiChgType.coinBuy;
+
       if (deFiCalcData[focus].tradeValue !== ibData.tradeValue) {
+        myLog("defi handleCountChange", _name, ibData);
+
         onChangeEvent({
           tradeData: { ...ibData },
           type: focus,
