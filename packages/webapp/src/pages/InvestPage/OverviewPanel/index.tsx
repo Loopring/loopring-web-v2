@@ -1,9 +1,9 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Box, Typography } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 
 import React from "react";
-import { useAmmMapUI, useOverview } from "./hook";
+import { useOverview } from "./hook";
 
 import {
   PoolsTable,
@@ -46,8 +46,21 @@ export const OverviewPanel = withTranslation("common")(
       <>
         {/*<WrapperStyled>banner</WrapperStyled>*/}
         <WrapperStyled>
-          <Box></Box>
-          <Typography>{t("labelTitleOverviewToken")}</Typography>
+          <Box marginTop={2} marginLeft={2}>
+            <Tabs aria-label="l2-history-tabs" variant="scrollable">
+              <Tab label={t("labelAmmPool")} />
+              <Tab label={t("labelDefi")} value="trades" />
+              {/*<Tab label={t("labelLayer2HistoryAmmRecords")} />*/}
+              {/*<Tab label={t("labelOrderTableOpenOrder")} />*/}
+              {/*<Tab label={t("labelOrderTableOrderHistory")} />*/}
+            </Tabs>
+          </Box>
+          <Box marginTop={2} marginLeft={2}>
+            <Typography variant={"h5"}>
+              {t("labelTitleOverviewToken")}
+            </Typography>
+            <Box flex={1}>{/*<Table></Table>*/}</Box>
+          </Box>
         </WrapperStyled>
       </>
     );
