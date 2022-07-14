@@ -168,24 +168,28 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   const history = useHistory();
   // const { search } = useLocation();
   // const searchParams = new URLSearchParams(search);
-  const { account } = useAccount();
-  const [tabIndex, setTabIndex] = React.useState<InvestType>(() => {
-    // let index = undefined;
+  // const { account } = useAccount();
+  const [tabIndex, setTabIndex] = React.useState<InvestType>(
+    InvestType.Overview
+  );
+  React.useEffect(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
-        return InvestType.MyBalance;
+        setTabIndex(InvestType.MyBalance);
+        return;
+      // return ;
       case InvestRouter[InvestType.AmmPool]:
-        return InvestType.AmmPool;
+        setTabIndex(InvestType.AmmPool);
+        return;
       case InvestRouter[InvestType.DeFi]:
-        return InvestType.DeFi;
+        setTabIndex(InvestType.DeFi);
+        return;
       case InvestRouter[InvestType.Overview]:
       default:
-        return InvestType.Overview;
+        setTabIndex(InvestType.Overview);
+        return;
     }
-    return account.readyState === "ACTIVATED"
-      ? InvestType.MyBalance
-      : InvestType.AmmPool;
-  });
+  }, [match?.params.item]);
 
   return (
     <Box flex={1} flexDirection={"column"} display={"flex"}>

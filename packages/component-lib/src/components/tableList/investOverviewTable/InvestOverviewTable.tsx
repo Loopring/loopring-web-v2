@@ -6,7 +6,6 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   InvestMapType,
-  myLog,
   RowConfig,
 } from "@loopring-web/common-resources";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
@@ -248,13 +247,13 @@ export const InvestOverviewTable = <R extends RowInvest>({
                   onClick={(_e) => {
                     switch (row.type) {
                       case InvestMapType.AMM:
-                        history.replace(
-                          `./invest/ammpool?search=${row.token.symbol}`
+                        history.push(
+                          `/invest/ammpool?search=${row.token.symbol}`
                         );
                         return;
                       case InvestMapType.DEFI:
-                        history.replace(
-                          `./invest/defi?search=${row.token.symbol}`
+                        history.push(
+                          `/invest/defi/${row.token.symbol}-null/invest`
                         );
                         return;
                     }

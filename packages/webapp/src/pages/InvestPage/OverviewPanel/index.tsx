@@ -68,14 +68,14 @@ export const OverviewPanel = withTranslation("common")(
         <WrapperStyled>
           <Grid container spacing={2} padding={3}>
             <Grid item xs={6} md={4} lg={3}>
-              <Card onClick={() => history.push("./invest/ammpools")}>
+              <Card onClick={() => history.push("/invest/ammpool")}>
                 <CardContent>
                   <Typography>{t("labelAmmPool")}</Typography>
                 </CardContent>
               </Card>
             </Grid>
             <Grid item xs={6} md={4} lg={3}>
-              <Card onClick={() => history.push("./invest/defi")}>
+              <Card onClick={() => history.push("/invest/defi")}>
                 <CardContent>
                   <Typography>{t("labelDefi")}</Typography>
                 </CardContent>
