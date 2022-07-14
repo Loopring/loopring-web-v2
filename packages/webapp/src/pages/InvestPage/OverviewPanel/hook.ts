@@ -21,50 +21,22 @@ export function useOverview<R extends RowInvest>() {
   const [filteredData, setFilteredData] = React.useState<R[]>(rawData);
 
   const sortMethod = React.useCallback(
-    (_sortedRows, sortColumn) => {
-      let _rawData: R[] = filteredData;
+    (_sortedRows, sortColumn, direction) => {
+      let _rawData = [...filteredData];
       switch (sortColumn) {
         case InvestColumnKey.TYPE:
-          //TODO:
-          // _rawData = filteredData.sort((a, b) => {
-          //   const valueA = a.coinAInfo.simpleName;
-          //   const valueB = b.coinAInfo.simpleName;
-          //   return valueB.localeCompare(valueA);
-          // });
+          // TODO:
+          _rawData = filteredData.sort((a, b) => {
+            const valueA = a.token.symbol;
+            const valueB = b.token.symbol;
+            return valueB.localeCompare(valueA);
+          });
           break;
         case InvestColumnKey.APR:
-          //TODO:
-          // _rawData = filteredData.sort((a, b) => {
-          //   const valueA = a.APR || 0;
-          //   const valueB = b.APR || 0;
-          //   if (valueA && valueB) {
-          //     return valueB - valueA;
-          //   }
-          //   if (valueA && !valueB) {
-          //     return -1;
-          //   }
-          //   if (!valueA && valueB) {
-          //     return 1;
-          //   }
-          //   return 0;
-          // });
-          break;
-        case InvestColumnKey.DURATION:
-          //TODO:
-          // _rawData = filteredData.sort((a, b) => {
-          //   const valueA = a.amountDollar;
-          //   const valueB = b.amountDollar;
-          //   if (valueA && valueB) {
-          //     return valueB - valueA;
-          //   }
-          //   if (valueA && !valueB) {
-          //     return -1;
-          //   }
-          //   if (!valueA && valueB) {
-          //     return 1;
-          //   }
-          //   return 0;
-          // });
+          _rawData = filteredData.sort((a, b) => {
+            // myLog("a.apr[1]", a.apr[1]);
+            return Number(a.apr[1] ?? 0) - Number(b.apr[1] ?? 0);
+          });
           break;
         default:
           break;
@@ -79,14 +51,6 @@ export function useOverview<R extends RowInvest>() {
       setFilterValue(value);
       if (value) {
         const _rawData = [...rawData];
-        // const _rawData = rawData.filter((o) => {
-        //   const coinA = o.coinAInfo.name.toLowerCase();
-        //   const coinB = o.coinBInfo.name.toLowerCase();
-        //   const formattedValue = value.toLowerCase();
-        //   return (
-        //     coinA.includes(formattedValue) || coinB.includes(formattedValue)
-        //   );
-        // });
         setFilteredData(_rawData);
       } else {
         // debugger;

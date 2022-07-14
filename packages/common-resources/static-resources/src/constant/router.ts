@@ -5,7 +5,6 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
-  // NFTIcon,
   SecurityIcon,
   VipIcon,
   WaitApproveIcon,
@@ -15,6 +14,7 @@ import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
 } from "../loopring-interface";
+import { InvestMapType } from "./trade";
 
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const headerRoot = "Landing-page";
@@ -423,3 +423,24 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     child: subMenuNFT,
   },
 ];
+export type InvestAdvice = {
+  type: InvestMapType;
+  banner: string;
+  titleI18n: string;
+  desI18n: string;
+  router: string;
+};
+export const ammAdvice: InvestAdvice = {
+  type: InvestMapType.AMM,
+  router: "/invest/ammpool",
+  banner: SoursURL + "images/icon-default.png",
+  titleI18n: "labelInvestAmm",
+  desI18n: "labelInvestAmmDes",
+};
+export const defiAdvice: InvestAdvice = {
+  type: InvestMapType.DEFI,
+  router: "/invest/defi",
+  banner: SoursURL + "images/icon-default.png",
+  titleI18n: "labelInvestDefi",
+  desI18n: "labelInvestDefiDes",
+};

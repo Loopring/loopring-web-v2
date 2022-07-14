@@ -26,7 +26,11 @@ export type InvestOverviewTableProps<R = DepartmentRow> = {
   showLoading?: boolean;
   filterValue: string;
   getFilteredData: (filterValue: string) => void;
-  sortMethod: (sortedRows: any[], sortColumn: string) => any[];
+  sortMethod: (
+    sortedRows: any[],
+    sortColumn: string,
+    des: "DESC" | "ASC" | undefined
+  ) => any[];
   // hideSmallBalances: boolean;
   // setHideSmallBalances: (value: boolean) => void;
 };

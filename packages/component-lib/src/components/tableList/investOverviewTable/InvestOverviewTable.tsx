@@ -23,6 +23,7 @@ import { investRowReducer } from "./components/expends";
 import { Filter } from "./components/Filter";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
+import { InvestColumnKey } from "./index";
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
   .rdg {
     border-radius: ${({ theme }) => theme.unit}px;
@@ -37,10 +38,13 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
       justify-content: flex-end;
       align-items: center;
     }
-    .rdg-row.child_row {
+    & > .rdg-row.child_row {
       background-color: var(--color-global-bg);
       .rdg-cell:first-of-type {
         margin-left: ${({ theme }) => 4 * theme.unit}px;
+      }
+      &:hover {
+        background-color: var(--color-global-bg);
       }
     }
     .rdg-row.expends {
@@ -164,10 +168,10 @@ export const InvestOverviewTable = <R extends RowInvest>({
         return (
           <Box className={"textAlignLeft"}>
             <Typography component={"span"}>
-              {start === undefined
+              {!end
                 ? EmptyValueTag
                 : start == end
-                ? getValuePrecisionThousand(start, 2, 2, 2, true) + "%"
+                ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
                 : getValuePrecisionThousand(start, 2, 2, 2, true) +
                   "% - " +
                   getValuePrecisionThousand(end, 2, 2, 2, true) +
@@ -210,21 +214,15 @@ export const InvestOverviewTable = <R extends RowInvest>({
               <Typography
                 variant={"inherit"}
                 display={"inline-flex"}
-                justifyContent={"center"}
+                justifyContent={"space-between"}
                 alignItems={"center"}
                 className={"textAlignRight"}
-                onClick={
-                  () =>
-                    dispatch({
-                      symbol: row.token.symbol,
-                      type: SubRowAction.ToggleSubRow,
-                    })
-                  // setDropdownStatus((prev) =>
-                  //   prev === "up" ? "down" : "up"
-                  // )
-                }
+                width={"100%"}
+                sx={{ cursor: "pointer" }}
               >
-                {`${t("labelSelect")}`}
+                <Typography component={"span"} color={"inherit"}>{`${t(
+                  "labelSelect"
+                )}`}</Typography>
                 <DropdownIconStyled
                   status={row.isExpanded ? "up" : "down"}
                   fontSize={"medium"}
@@ -282,7 +280,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
             paddingRight={2}
             onClick={() => setIsDropDown(false)}
           >
-            Show Filter
+            {t("labelShowFilter")}
           </Link>
         ) : (
           <Box
@@ -326,14 +324,22 @@ export const InvestOverviewTable = <R extends RowInvest>({
 
           return "";
         }}
+        onRowClick={(_, row) => {
+          dispatch({
+            symbol: row.token.symbol,
+            type: SubRowAction.ToggleSubRow,
+          });
+        }}
         style={{ height: tableHeight }}
         rowHeight={RowConfig.rowHeight}
         headerRowHeight={RowConfig.rowHeaderHeight}
         rawData={rows}
+        sortMethod={sortMethod}
         generateRows={(rowData: any) => rowData}
         generateColumns={({ columnsRaw }: any) =>
           columnsRaw as Column<any, unknown>[]
         }
+        sortDefaultKey={InvestColumnKey.APR}
         columnMode={isMobile ? getColumnMode() : getColumnMode()}
       />
     </TableStyled>
