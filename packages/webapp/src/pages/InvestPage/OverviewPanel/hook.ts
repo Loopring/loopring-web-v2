@@ -35,7 +35,7 @@ export function useOverview<R extends RowInvest>() {
         case InvestColumnKey.APR:
           _rawData = filteredData.sort((a, b) => {
             // myLog("a.apr[1]", a.apr[1]);
-            return Number(a.apr[1] ?? 0) - Number(b.apr[1] ?? 0);
+            return Number(b.apr[1] ?? 0) - Number(a.apr[1] ?? 0);
           });
           break;
         default:

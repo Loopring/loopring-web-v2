@@ -89,7 +89,7 @@ export const OverviewPanel = withTranslation("common")(
                             {t(item.titleI18n, { ns: "layout" })}
                           </Typography>
                           <Typography
-                            variant={"body1"}
+                            variant={"body2"}
                             textOverflow={"ellipsis"}
                             whiteSpace={"pre"}
                             overflow={"hidden"}

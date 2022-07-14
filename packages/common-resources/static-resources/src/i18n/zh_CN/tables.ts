@@ -202,5 +202,5 @@ export default {
   labelDuration: "Duration",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
-  labelInvestAll: "Both",
+  labelInvestAll: "Mixed",
 };

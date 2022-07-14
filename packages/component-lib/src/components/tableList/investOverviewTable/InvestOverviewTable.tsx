@@ -110,6 +110,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
   const getColumnMode = (): Column<R, unknown>[] => [
     {
       key: ColumnKey.TYPE,
+      sortable: true,
       name: t("labelToken"),
       formatter: ({ row }) => {
         switch (row.type) {
