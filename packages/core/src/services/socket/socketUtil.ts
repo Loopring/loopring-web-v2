@@ -2,7 +2,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { walletLayer2Service } from "./services/walletLayer2Service";
 import { tickerService } from "./services/tickerService";
 import { ammPoolService } from "./services/ammPoolService";
-import { CustomError, ErrorMap, myLog } from "@loopring-web/common-resources";
+import { CustomError, ErrorMap } from "@loopring-web/common-resources";
 import { LoopringAPI, SocketMap } from "../../index";
 import { bookService } from "./services/bookService";
 import { orderbookService } from "./services/orderbookService";
