@@ -37,9 +37,7 @@ export function useAmmMapUI<
   );
   const { coinMap, marketArray, status: tokenMapStatus } = useTokenMap();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-  const [filterValue, setFilterValue] = React.useState(
-    searchParams.get("search")
-  );
+  const [filterValue, setFilterValue] = React.useState("");
   const [tableHeight, setTableHeight] = React.useState(0);
   const { ammMap, status: ammStatus } = useAmmMap();
   const { tokenPrices } = useTokenPrices();
@@ -210,6 +208,13 @@ export function useAmmMapUI<
     },
     [rawData, resetTableData]
   );
+  React.useEffect(() => {
+    const search = searchParams.get("search");
+    if (search && rawData.length) {
+      getFilteredData(search);
+    }
+  }, [search, rawData]);
+
   return {
     // page,
     rawData,
