@@ -50,6 +50,7 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
         maxSellVol,
         maxFeeBips,
         miniSellVol,
+        lastInput,
       } = action.payload;
       if (market !== state.tradeDefi.market) {
         // @ts-ignore
@@ -60,6 +61,9 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
           sellToken: sellToken as TokenInfo,
           buyToken: buyToken as TokenInfo,
         };
+      }
+      if (lastInput) {
+        state.tradeDefi.lastInput = lastInput;
       }
       if (request) {
         state.tradeDefi.request = request;

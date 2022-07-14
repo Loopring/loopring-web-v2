@@ -829,4 +829,10 @@ export default {
   labelVipTitle: "VIP",
   labelSecurity: "Security",
   labelFeeTitleList: "Fee",
+  labelInvestOverviewTitle: "Overview",
+  labelTitleOverviewToken: "Tokens",
+  labelInvestType_AMM: "AMM Pool",
+  labelInvestType_DEFI: "Lido Stake",
+  labelInvestFlexible: "Flexible",
+  labelInvestDuration: "Duration",
 };

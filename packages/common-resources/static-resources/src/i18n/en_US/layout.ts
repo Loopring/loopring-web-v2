@@ -97,6 +97,8 @@ export default {
   labelInvestBalance: "My Investment",
   labelInvestBalanceDes: "The deposition you hold",
   labelInvestAmm: "AMM Pool",
+  labelInvestOverview: "Overview",
+  labelInvestOverviewDes: "A variety of financial investments",
   labelInvestAmmDes: "Add liquidity and earn rewards",
   labelInvestDefi: "Defi Invest",
   labelInvestDefiDes: "More investments, higher returns",

@@ -4,7 +4,6 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
-  myLog,
 } from "@loopring-web/common-resources";
 import { InputCoinProps, InputSize } from "./Interface";
 import React from "react";
@@ -44,7 +43,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const { balance, belong, tradeValue } = (
     inputData ? inputData : {}
   ) as IBData<C>;
-  myLog("InputCoin", balance, belong, tradeValue);
+  // myLog("InputCoin", balance, belong, tradeValue);
   const { isMobile } = useSettings();
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined

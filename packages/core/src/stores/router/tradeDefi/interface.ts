@@ -1,6 +1,7 @@
 import { DeFiCalcData, MarketType } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
+import { DeFiChgType } from "@loopring-web/component-lib";
 
 export type TradeDefi<C> = {
   type: string;
@@ -20,6 +21,7 @@ export type TradeDefi<C> = {
   miniSellVol?: string;
   request?: sdk.DefiOrderRequest;
   defiBalances?: { [key: string]: string };
+  lastInput?: DeFiChgType;
 };
 
 export type TradeDefiStatus<C> = {

@@ -3792,10 +3792,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@2.0.19-io-pro":
-  version "2.0.19-io-pro"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.19-io-pro.tgz#003fb81690d26f3fc8e23e850bfb49c630f02cbf"
-  integrity sha512-bJ6JmBWrgeAzrLZBi2khqT29etIizaUVvhsJxppc8fm6KLdeL9wrqm8dzjZq74O0dkAprCnQ3WsfwAeR666OqQ==
+"@loopring-web/loopring-sdk@2.0.20-io":
+  version "2.0.20-io"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.20-io.tgz#c011d9546d68c34dd5e9092ca1e2cafd5c2ed083"
+  integrity sha512-/doAiF+Ire4ljRfVsAiNc2px0l/FyLo7vVd0woMGEkZulyHp5h/vhAVN+sTC6vzc4t+CfGuxNYBaFceXOUSORA==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -22578,6 +22578,13 @@ react-currency-input-field@^3.3.1:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/react-currency-input-field/-/react-currency-input-field-3.6.4.tgz#8063f9a445ba246063f0254ced4015210c90593a"
   integrity sha512-0SifhqMirGt5+inzHslfbf71ZYoBt420pkMM6oBSGS40CsuPcLIOV19B1LPSCz7dWPGYi/kw5TOFQ0qALrn6Wg==
+
+react-data-grid@^7.0.0-beta.13:
+  version "7.0.0-beta.13"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-7.0.0-beta.13.tgz#c0728258cbbb033af611eed50ed124744a76ee76"
+  integrity sha512-vhBdkC2KqAawmmzYTcNlfhfjcYFQsinNr5pPTUG6/3DzLfYWo1S6nl48wgPWgyD9uDclV3H5NWvKSSwQTTsYMQ==
+  dependencies:
+    clsx "^1.1.1"
 
 react-data-grid@^7.0.0-canary.49:
   version "7.0.0-canary.49"

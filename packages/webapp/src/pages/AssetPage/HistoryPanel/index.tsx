@@ -139,6 +139,7 @@ const HistoryPanel = withTranslation("common")(
               value={currentTab}
               onChange={(_event, value) => handleTabChange(value)}
               aria-label="l2-history-tabs"
+              variant="scrollable"
             >
               <Tab
                 label={t("labelLayer2HistoryTransactions")}

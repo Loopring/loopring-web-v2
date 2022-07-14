@@ -8,10 +8,9 @@ import {
   PopoverWrapProps,
 } from "../../../basic-lib";
 import { MoreIcon } from "@loopring-web/common-resources";
-// import { LpTokenAction } from "../AssetsTable";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
-import { useOpenModals, useSettings } from "../../../../stores";
+import { useOpenModals, useSettings, useToggle } from "../../../../stores";
 import { AmmPanelType } from "../../../tradePanel";
 
 const GridStyled = styled(Grid)`
@@ -50,7 +49,11 @@ const ActionPopContent = React.memo(
   }: ActionProps) => {
     const history = useHistory();
     const { setShowAmm } = useOpenModals();
-
+    const { toggle } = useToggle();
+    const _allowTrade = {
+      ...toggle,
+      allowTrade,
+    };
     const { isMobile } = useSettings();
     const tradeList = [
       ...[
@@ -84,26 +87,25 @@ const ActionPopContent = React.memo(
         {isMobile && tradeList.map((item) => <>{item}</>)}
         {isLp ? (
           <>
-            {allowTrade?.joinAmm?.enable && (
-              <MenuItem
-                onClick={
-                  () => {
-                    // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                    setShowAmm({
-                      isShow: true,
-                      type: AmmPanelType.Join,
-                      symbol: market,
-                    });
-                  }
-                  // () => undefined
-                  // history.push(
-                  //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
-                  // )
+            <MenuItem
+              disabled={!_allowTrade?.joinAmm?.enable}
+              onClick={
+                () => {
+                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Join,
+                    symbol: market,
+                  });
                 }
-              >
-                <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
-              </MenuItem>
-            )}
+                // () => undefined
+                // history.push(
+                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
+                // )
+              }
+            >
+              <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
+            </MenuItem>
             <MenuItem
               onClick={
                 () => {
@@ -123,24 +125,22 @@ const ActionPopContent = React.memo(
           </>
         ) : isDefi ? (
           <>
-            {allowTrade?.defi?.enable && (
-              <>
-                <MenuItem
-                  onClick={() => {
-                    history.push(`./invest/defi/${tokenValue}-null/invest`);
-                  }}
-                >
-                  <ListItemText>{t("labelDefiInvest")}</ListItemText>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    history.push(`./invest/defi/${tokenValue}-null/redeem`);
-                  }}
-                >
-                  <ListItemText>{t("labelDefiRedeem")}</ListItemText>
-                </MenuItem>
-              </>
-            )}
+            <MenuItem
+              disabled={!_allowTrade?.defi?.enable}
+              onClick={() => {
+                history.push(`./invest/defi/${tokenValue}-null/invest`);
+              }}
+            >
+              <ListItemText>{t("labelDefiInvest")}</ListItemText>
+            </MenuItem>
+            <MenuItem
+              disabled={!_allowTrade?.defi?.enable}
+              onClick={() => {
+                history.push(`./invest/defi/${tokenValue}-null/redeem`);
+              }}
+            >
+              <ListItemText>{t("labelDefiRedeem")}</ListItemText>
+            </MenuItem>
           </>
         ) : (
           marketList.map((pair) => {
