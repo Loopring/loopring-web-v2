@@ -1,13 +1,12 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getInvestTokenTypeMap, getInvestTokenTypeMapStatus } from "./reducer";
-import { AmmDetailStore, store } from "../../index";
-import {
-  InvestItem,
-  InvestTokenTypeMap,
-  InvestMapType,
-  InvestDuration,
-} from "./interface";
+import { AmmDetailStore, InvestTokenTypeMap, store } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
+import {
+  InvestDuration,
+  InvestItem,
+  InvestMapType,
+} from "@loopring-web/common-resources";
 
 function calcApr(
   ammInfo: AmmDetailStore<any>,
@@ -15,7 +14,7 @@ function calcApr(
 ): [start: number, end: number] {
   let [start, end] = investItem.apr;
   const apr = ammInfo.APR;
-  if (apr !== undefined && apr > 0 && apr < start) {
+  if ((!start && apr) || (apr && apr < start)) {
     start = apr;
   } else if (apr && apr > end) {
     end = apr;
@@ -28,7 +27,7 @@ function calcDefiApr(
 ): [start: number, end: number] {
   let [start, end] = investItem.apr;
   const apr = Number(defiinfo.apy);
-  if (apr && apr < start) {
+  if ((!start && apr) || (apr && apr < start)) {
     start = apr;
   } else if (apr && apr > end) {
     end = apr;
@@ -39,6 +38,7 @@ function calcDefiApr(
 const getInvestMapApi = async () => {
   const { ammMap } = store.getState().amm.ammMap;
   const { marketMap } = store.getState().invest.defiMap;
+  const { tokenMap } = store.getState().tokenMap;
   let investTokenTypeMap: InvestTokenTypeMap = Object.keys(ammMap).reduce(
     (prev, key) => {
       // @ts-ignore
@@ -50,6 +50,7 @@ const getInvestMapApi = async () => {
           investItem.apr = calcApr(ammInfo, investItem);
         } else {
           prev[coinA][InvestMapType.AMM] = {
+            // token: tokenMap[coinA],
             type: InvestMapType.AMM,
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
             apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
@@ -59,8 +60,15 @@ const getInvestMapApi = async () => {
         }
       } else {
         prev[coinA] = {
+          detail: {
+            token: tokenMap[coinA],
+            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            durationType: InvestDuration.Flexible,
+            duration: "",
+          },
           [InvestMapType.AMM]: {
             type: InvestMapType.AMM,
+            // token: tokenMap[coinA],
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
             apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
             durationType: InvestDuration.Flexible,
@@ -76,6 +84,7 @@ const getInvestMapApi = async () => {
         } else {
           prev[coinB][InvestMapType.AMM] = {
             type: InvestMapType.AMM,
+            // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
             apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
             durationType: InvestDuration.Flexible,
@@ -84,8 +93,15 @@ const getInvestMapApi = async () => {
         }
       } else {
         prev[coinB] = {
+          detail: {
+            token: tokenMap[coinB],
+            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            durationType: InvestDuration.Flexible,
+            duration: "",
+          },
           [InvestMapType.AMM]: {
             type: InvestMapType.AMM,
+            // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
             apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
             durationType: InvestDuration.Flexible,
@@ -93,6 +109,25 @@ const getInvestMapApi = async () => {
           },
         };
       }
+
+      if (prev[coinA]?.detail && ammInfo.APR) {
+        prev[coinA].detail.apr = [
+          prev[coinA]?.detail?.apr[0] === 0
+            ? ammInfo.APR
+            : Math.min(ammInfo.APR, prev[coinA]?.detail?.apr[0]),
+          Math.max(ammInfo.APR, prev[coinA]?.detail?.apr[1]),
+        ];
+      }
+
+      if (prev[coinB]?.detail && ammInfo.APR) {
+        prev[coinB].detail.apr = [
+          prev[coinB]?.detail?.apr[0] === 0
+            ? ammInfo.APR
+            : Math.min(ammInfo.APR, prev[coinB]?.detail?.apr[0]),
+          Math.max(ammInfo.APR, prev[coinB]?.detail?.apr[1]),
+        ];
+      }
+
       return prev;
     },
     {} as InvestTokenTypeMap
@@ -109,6 +144,7 @@ const getInvestMapApi = async () => {
       } else {
         prev[coinB][InvestMapType.DEFI] = {
           type: InvestMapType.DEFI,
+          // token: tokenMap[coinB],
           i18nKey: `labelInvestType_${InvestMapType.DEFI}`,
           apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
           durationType: InvestDuration.Flexible,
@@ -117,8 +153,15 @@ const getInvestMapApi = async () => {
       }
     } else {
       prev[coinB] = {
+        detail: {
+          token: tokenMap[coinB],
+          apr: [defiInfo.apr ?? 0, defiInfo.apr ?? 0],
+          durationType: InvestDuration.Flexible,
+          duration: "",
+        },
         [InvestMapType.DEFI]: {
           type: InvestMapType.DEFI,
+          // token: tokenMap[coinB],
           i18nKey: `labelInvestType_${InvestMapType.DEFI}`,
           apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
           durationType: InvestDuration.Flexible,
@@ -126,8 +169,22 @@ const getInvestMapApi = async () => {
         },
       };
     }
+    if (prev[coinB]?.detail && defiInfo.apy) {
+      prev[coinB].detail.apr = [
+        prev[coinB]?.detail?.apr[0] === 0
+          ? defiInfo.apy
+          : Math.min(defiInfo.apy, prev[coinB]?.detail?.apr[0]),
+        Math.max(defiInfo.apy, prev[coinB]?.detail?.apr[1]),
+      ];
+    }
     return prev;
   }, investTokenTypeMap);
+  // investTokenTypeMap = Object(investTokenTypeMap).map((item,index)=>{
+  //   item.detail.apr =
+  //
+  //   return
+  // });
+
   return {
     investTokenTypeMap,
   };

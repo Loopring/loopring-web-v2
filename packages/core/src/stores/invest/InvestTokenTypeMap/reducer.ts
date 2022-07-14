@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { InvestTokenTypeMap, InvestTokenTypeMapStates } from "./interface";
+import { InvestTokenTypeMapStates } from "./interface";
 import { SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: Required<InvestTokenTypeMapStates> = {
@@ -16,9 +16,16 @@ const investTokenTypeMapSlice: Slice = createSlice({
     },
     getInvestTokenTypeMapStatus(
       state,
-      _action: PayloadAction<{ investTokenTypeMap: InvestTokenTypeMap }>
+      action: PayloadAction<InvestTokenTypeMapStates>
     ) {
-      state.investTokenTypeMap = _action.payload.investTokenTypeMap;
+      // @ts-ignore
+      if (action.error) {
+        state.status = SagaStatus.ERROR;
+        // @ts-ignore
+        state.errorMessage = action.error;
+      }
+      state.investTokenTypeMap = action.payload.investTokenTypeMap;
+      state.status = SagaStatus.DONE;
     },
     statusUnset: (state) => {
       state.status = SagaStatus.UNSET;

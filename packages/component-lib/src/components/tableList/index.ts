@@ -13,3 +13,4 @@ export * from "./ammTable";
 export * from "./rewardTable";
 export * from "./tradeRaceTable";
 export * from "./nftTable";
+export * from "./investOverviewTable";

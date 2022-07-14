@@ -467,7 +467,7 @@ export class LoopringSocket {
             const result = JSON.parse(data);
             const { topics, topic } = result;
             if (topics) {
-              myLog("Socket>>Socket topics first return", topics);
+              // myLog("Socket>>Socket topics first return", topics);
             }
             if (topic && topic.topic && self._socketCallbackMap) {
               const {

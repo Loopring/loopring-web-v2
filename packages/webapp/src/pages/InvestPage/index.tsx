@@ -11,6 +11,7 @@ import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
+import { OverviewPanel } from "./OverviewPanel";
 
 export enum InvestType {
   MyBalance = 0,
@@ -197,12 +198,12 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         }}
       >
         <Tab value={InvestType.Overview} label={<OverviewTitle />} />
-        <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
-        <Tab value={InvestType.DeFi} label={<DefiTitle />} />
+        {/*<Tab value={InvestType.AmmPool} label={<AmmTitle />} />*/}
+        {/*<Tab value={InvestType.DeFi} label={<DefiTitle />} />*/}
         <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
       </Tabs>
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
-        {tabIndex === InvestType.Overview && <PoolsPanel />}
+        {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
         {tabIndex === InvestType.DeFi && <DeFiPanel />}
         {tabIndex === InvestType.MyBalance && (

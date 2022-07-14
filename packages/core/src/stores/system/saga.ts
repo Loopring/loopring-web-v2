@@ -71,8 +71,8 @@ const initConfig = function* <_R extends { [key: string]: any }>(
   store.dispatch(getTokenPrices(undefined));
   yield take("tokenPrices/getTokenPricesStatus");
   store.dispatch(getTickers({ tickerKeys: marketArr }));
-  yield take("ammMap/getAmmMapStatus");
   store.dispatch(getAmmMap({ ammpools }));
+  yield take("ammMap/getAmmMapStatus");
   store.dispatch(getAmmActivityMap({ ammpools }));
   if (store.getState().tokenMap.status === "ERROR") {
     throw "tokenMap Error";

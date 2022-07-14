@@ -17,17 +17,14 @@ export const useAddressCheck = () => {
   const [addrStatus, setAddrStatus] = React.useState<AddressError>(
     AddressError.NoError
   );
-
-  const [isAddressCheckLoading, setIsAddressCheckLoading] =
-    React.useState(false);
-
-  const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
-  const [isActiveAccount, setIsActiveAccount] = React.useState(false);
   const [checkAddAccountId, setCheckAddaccountId] =
     React.useState<number | undefined>();
 
+  const [isAddressCheckLoading, setIsAddressCheckLoading] =
+    React.useState(false);
+  const [isLoopringAddress, setIsLoopringAddress] = React.useState(false);
+  const [isActiveAccount, setIsActiveAccount] = React.useState(false);
   const [isSameAddress, setIsSameAddress] = React.useState(false);
-
   const [isCFAddress, setIsCFAddress] = React.useState(false);
   const [isContractAddress, setIsContractAddress] = React.useState(false);
   const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);

@@ -25,23 +25,6 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   display: flex;
   position: relative;
   flex: 1;
-
-  // &::after {
-  //   visibility: ${({ showloading }) =>
-    showloading === "true" ? "visible" : "hidden"};
-  //   position: absolute;
-  //   z-index: 20;
-  //   top: 0;
-  //   right: 0;
-  //   bottom: 0;
-  //   left: 0;
-  //   width: 100%;
-  //   height: 100%;
-  //   opacity: 0.2;
-  //   background-color: var(--color-global-bg);
-  //   content: '';
-  //   pointer-events: auto;
-  // }
 ` as any;
 const hr = ({ theme }: any) => css`
   border-radius: ${theme.unit / 2}px;
@@ -62,7 +45,6 @@ const hrShort = ({ theme }: any) => css`
   display: block;
   height: 1px;
   width: calc(100% - ${theme.unit * 6}px);
-  //margin-bottom: -2px;
   background: var(--color-divide);
   position: absolute;
   left: ${theme.unit * 3}px;
@@ -243,8 +225,6 @@ export type ExtraTableProps = {
   showloading?: boolean;
 };
 
-//TODO:
-// {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>
 export const Table = <R, SR>(
   props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps
 ) => {
@@ -286,8 +266,6 @@ export const Table = <R, SR>(
     },
   ]);
 
-  // const [[sortColumn, sortDirection], setSort] = React.useState<[string | undefined, SortDirection]>([sortDefaultKey, sortInitDirection ? sortInitDirection : undefined]);
-
   const sortedRows: readonly R[] = React.useMemo(() => {
     if (sortColumns.length === 0) return rows;
     const { columnKey, direction } = sortColumns[0];
@@ -297,7 +275,6 @@ export const Table = <R, SR>(
       : rows;
     return direction === "DESC" ? sortedRows.reverse() : sortedRows;
   }, [rows, sortColumns, sortMethod]);
-  // const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([]);
   const onSortColumnsChange = React.useCallback((sortColumns: SortColumn[]) => {
     setSortColumns(sortColumns.slice(-1));
   }, []);
@@ -325,7 +302,6 @@ export const Table = <R, SR>(
   `;
 
   /*** sort handle end ***/
-
   return (
     <TableWrapperStyled showloading={!!showloading ? "true" : "false"}>
       <DataGridStyled

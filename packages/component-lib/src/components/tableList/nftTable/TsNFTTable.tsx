@@ -357,7 +357,7 @@ export const TsNFTTable = withTranslation(["tables", "common"])(
               <span>{t("labelTxAmount") + " / " + t("labelTxFee")}</span>
             </Typography>
           ),
-          cellClass: "textAlignRight",
+          cellClass: "textAlignLeft",
           headerCellClass: "textAlignLeft",
           formatter: ({ row }) => {
             // const hasValue = Number.isFinite(row.amount);
