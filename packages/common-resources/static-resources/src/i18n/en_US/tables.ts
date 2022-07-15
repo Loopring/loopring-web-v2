@@ -202,4 +202,6 @@ export default {
   labelDuration: "Duration",
 
   labelInvestAll: "Both",
+  labelDefiExit: "Redeem",
+  labelDefiJoin: "Invest",
 };

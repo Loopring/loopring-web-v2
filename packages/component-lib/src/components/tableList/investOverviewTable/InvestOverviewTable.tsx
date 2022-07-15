@@ -19,12 +19,15 @@ import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
-import { investRowReducer } from "./components/expends";
+import { investRowReducer, sortMethod } from "./components/expends";
 import { Filter } from "./components/Filter";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { InvestColumnKey } from "./index";
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
+  & .rdg.rdg {
+    min-height: initial;
+  }
   .rdg {
     border-radius: ${({ theme }) => theme.unit}px;
 
@@ -76,9 +79,10 @@ export const InvestOverviewTable = <R extends RowInvest>({
   // account,
   // tokenPrices,
   showLoading,
+  showFilter,
   // tokenMap,
   // forexMap,
-  sortMethod,
+  // sortMethod,
   // hideSmallBalances,
   // setHideSmallBalances,
   ...rest
@@ -97,8 +101,10 @@ export const InvestOverviewTable = <R extends RowInvest>({
 
   // myLog("Overview", rows);
   const handleFilterChange = React.useCallback(
-    (filter) => {
-      getFilteredData(filter);
+    ({ searchValue }: any) => {
+      if (getFilteredData) {
+        getFilteredData(searchValue);
+      }
     },
     [getFilteredData]
   );
@@ -110,7 +116,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
   const getColumnMode = (): Column<R, unknown>[] => [
     {
       key: ColumnKey.TYPE,
-      sortable: true,
+      sortable: false,
       name: t("labelToken"),
       formatter: ({ row }) => {
         switch (row.type) {
@@ -158,7 +164,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
     },
     {
       key: ColumnKey.APR,
-      sortable: true,
+      sortable: false,
       name: t("labelAPR"),
       width: "auto",
       maxWidth: 80,
@@ -166,13 +172,17 @@ export const InvestOverviewTable = <R extends RowInvest>({
       headerCellClass: "textAlignLeftSortable",
       formatter: ({ row }) => {
         const [start, end] = row.apr;
+        // myLog("end", end);
         return (
           <Box className={"textAlignLeft"}>
             <Typography component={"span"}>
-              {!end
+              {end == 0 && start == 0
                 ? EmptyValueTag
                 : start == end
                 ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
+                : end === 0 || start === 0
+                ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
+                  "%"
                 : getValuePrecisionThousand(start, 2, 2, 2, true) +
                   "% - " +
                   getValuePrecisionThousand(end, 2, 2, 2, true) +
@@ -270,9 +280,8 @@ export const InvestOverviewTable = <R extends RowInvest>({
 
   return (
     <TableStyled isMobile={isMobile} marginX={2}>
-      {
-        // showFilter && (
-        isMobile && isDropDown ? (
+      {showFilter &&
+        (isMobile && isDropDown ? (
           <Link
             variant={"body1"}
             display={"inline-flex"}
@@ -304,8 +313,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
               />
             </TableFilterStyled>
           </Box>
-        )
-      }
+        ))}
 
       <Table
         i18n={i18n}
@@ -326,16 +334,18 @@ export const InvestOverviewTable = <R extends RowInvest>({
           return "";
         }}
         onRowClick={(_, row) => {
-          dispatch({
-            symbol: row.token.symbol,
-            type: SubRowAction.ToggleSubRow,
-          });
+          if (row.children) {
+            dispatch({
+              symbol: row.token.symbol,
+              type: SubRowAction.ToggleSubRow,
+            });
+          }
         }}
         style={{ height: tableHeight }}
         rowHeight={RowConfig.rowHeight}
         headerRowHeight={RowConfig.rowHeaderHeight}
         rawData={rows}
-        sortMethod={sortMethod}
+        // sortMethod={sortMethod}
         generateRows={(rowData: any) => rowData}
         generateColumns={({ columnsRaw }: any) =>
           columnsRaw as Column<any, unknown>[]

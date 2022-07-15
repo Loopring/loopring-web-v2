@@ -823,13 +823,6 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
     defiData: TradeDefi<any>;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
-    const [agree, setAgree] = React.useState("");
-
-    React.useEffect(() => {
-      if (!open) {
-        setAgree("");
-      }
-    }, [open]);
     const maxValue =
       defiData.sellToken?.symbol &&
       `${getValuePrecisionThousand(
@@ -885,7 +878,6 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
-            disabled={!agree}
             onClick={(e) => {
               handleClose(e as any, true);
             }}

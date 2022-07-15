@@ -1,16 +1,22 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import {
   AmmTable,
   Button,
+  DefiTXsTable,
   OrderHistoryTable,
   Toast,
   TradeTable,
   TransactionTable,
 } from "@loopring-web/component-lib";
 import { StylePaper, useGetOrderHistorys } from "@loopring-web/core";
-import { useGetAmmRecord, useGetTrades, useGetTxs } from "./hooks";
+import {
+  useGetAmmRecord,
+  useGetDefiRecord,
+  useGetTrades,
+  useGetTxs,
+} from "./hooks";
 
 import {
   TOAST_TIME,
@@ -30,6 +36,7 @@ enum TabIndex {
   ammRecords = "ammRecords",
   orderOpenTable = "orderOpenTable",
   orderHistoryTable = "orderHistoryTable",
+  defiRecords = "defiRecords",
 }
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
@@ -40,7 +47,7 @@ const HistoryPanel = withTranslation("common")(
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(tab);
     const { toastOpen, setToastOpen, closeToast } = useToast();
-    const { totalCoinMap, tokenMap, marketArray } = useTokenMap();
+    const { totalCoinMap, tokenMap, addressIndex, marketArray } = useTokenMap();
     const { ammMap } = useAmmMap();
 
     const {
@@ -56,6 +63,12 @@ const HistoryPanel = withTranslation("common")(
       page: tradePage,
       showLoading: showTradeLoading,
     } = useGetTrades(setToastOpen);
+    const {
+      defiList,
+      showLoading: showDefiLoading,
+      getDefiTxList,
+      defiTotal,
+    } = useGetDefiRecord(setToastOpen);
     const {
       ammRecordList,
       showLoading: showAmmloading,
@@ -89,7 +102,7 @@ const HistoryPanel = withTranslation("common")(
           `/l2assets/history/${value}?${search.replace("?", "")}`
         );
       },
-      [clearRawData, getAmmpoolList, getUserTradeList, pageSize]
+      [history, search]
     );
 
     React.useEffect(() => {
@@ -158,6 +171,10 @@ const HistoryPanel = withTranslation("common")(
                 label={t("labelOrderTableOrderHistory")}
                 value={TabIndex.orderHistoryTable}
               />
+              <Tab
+                label={t("labelDefiOrderTable")}
+                value={TabIndex.defiRecords}
+              />
             </Tabs>
           </Box>
           <div className="tableWrapper table-divide-short">
@@ -218,7 +235,27 @@ const HistoryPanel = withTranslation("common")(
                   ...rest,
                 }}
               />
+            ) : currentTab === TabIndex.defiRecords ? (
+              <Box flex={1} alignItems={"center"} justifyContent={"center"}>
+                <Typography component={"h4"} textAlign={"center"}>
+                  {t("labelComingSoon")}
+                </Typography>
+              </Box>
             ) : (
+              // <DefiTXsTable
+              //   {...{
+              //     rawData: defiList,
+              //     pagination: {
+              //       pageSize: pageSize,
+              //       total: ammRecordTotal,
+              //     },
+              //     getDefiTxList,
+              //     showloading: showDefiLoading,
+              //     ...rest,
+              //   }}
+              //   tokenMap={tokenMap}
+              //   addressIndex={addressIndex}
+              // />
               <OrderHistoryTable
                 {...{
                   pagination:

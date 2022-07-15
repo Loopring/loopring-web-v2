@@ -1,104 +1,111 @@
-import { useInvestTokenTypeMap } from "@loopring-web/core";
 import {
-  DepartmentRow,
-  InvestColumnKey,
-  RowInvest,
-} from "@loopring-web/component-lib";
-import {
-  InvestMapType,
-  InvestOpenType,
-  myLog,
-  SagaStatus,
-} from "@loopring-web/common-resources";
+  makeInvestRow,
+  useInvestTokenTypeMap,
+  useWalletLayer2,
+} from "@loopring-web/core";
+import { RowInvest } from "@loopring-web/component-lib";
+import { SagaStatus } from "@loopring-web/common-resources";
 import React from "react";
 
 export function useOverview<R extends RowInvest>() {
   const { investTokenTypeMap, status: investTokenTypeMapStatus } =
     useInvestTokenTypeMap();
-  const [filterValue, setFilterValue] = React.useState("");
-
+  const { status: walletLayer2Status, walletLayer2 } = useWalletLayer2();
+  const [filterValue, setFilterValue] = React.useState<string>("");
   const [rawData, setRawData] = React.useState<R[]>([]);
   const [filteredData, setFilteredData] = React.useState<R[]>(rawData);
+  const [myMapLoading, setMyMapLoading] = React.useState(false);
 
-  const sortMethod = React.useCallback(
-    (_sortedRows, sortColumn, direction) => {
-      let _rawData = [...filteredData];
-      switch (sortColumn) {
-        case InvestColumnKey.TYPE:
-          // TODO:
-          _rawData = filteredData.sort((a, b) => {
-            const valueA = a.token.symbol;
-            const valueB = b.token.symbol;
-            return valueB.localeCompare(valueA);
-          });
-          break;
-        case InvestColumnKey.APR:
-          _rawData = filteredData.sort((a, b) => {
-            // myLog("a.apr[1]", a.apr[1]);
-            return Number(b.apr[1] ?? 0) - Number(a.apr[1] ?? 0);
-          });
-          break;
-        default:
-          break;
-      }
-      // resetTableData(_rawData)
-      return _rawData;
-    },
-    [filteredData]
-  );
+  const [myRawData, setMyRawData] = React.useState<R[]>([]);
+  const [myFilteredData, setMyFilteredData] = React.useState<R[]>(rawData);
+
+  const filterData = (rawData: R[], value: string) => {
+    return rawData.filter((item) => {
+      const regx = new RegExp(value.toLowerCase(), "ig");
+      return regx.test(item?.token?.symbol ?? "");
+    });
+  };
   const getFilteredData = React.useCallback(
     (value: string) => {
       setFilterValue(value);
       if (value) {
-        const _rawData = [...rawData];
+        const _rawData = [...filterData(rawData, value)];
+        // if (walletLayer2 && walletLayer2 !== {}) {
+        //   const _myAawData = [...filterData(myRawData, value)];
+        //   setMyFilteredData(_myAawData);
+        // }
         setFilteredData(_rawData);
       } else {
         // debugger;
         setFilteredData(rawData);
+        // if (walletLayer2 && walletLayer2 !== {}) {
+        //   setMyFilteredData(myRawData);
+        // }
       }
     },
-    [rawData]
+    [filterData, myRawData, rawData, walletLayer2]
   );
 
   React.useEffect(() => {
     if (investTokenTypeMapStatus === SagaStatus.UNSET) {
-      const rawData = Object.keys(investTokenTypeMap).reduce(
-        (prev, key, index) => {
-          let item = {
-            ...investTokenTypeMap[key].detail,
-            i18nKey: "" as any,
-            children: [],
-            isExpanded: false,
-            type: InvestMapType.Token,
-          } as unknown as R;
-          const children = InvestOpenType.reduce((prev, type) => {
-            if (investTokenTypeMap[key][type]) {
-              let _row: any = investTokenTypeMap[key][type];
-              _row = { ..._row, token: item.token };
-              prev.push(_row as DepartmentRow);
-            }
-            return prev;
-          }, [] as DepartmentRow[]);
-          item.children = children;
-
-          prev.push(item);
-          // return investTokenTypeMap[key]
-          // myLog("rawData", prev);
+      const _rawData = Object.keys(investTokenTypeMap)
+        .reduce((prev, key) => {
+          prev.push(makeInvestRow(investTokenTypeMap, key) as R);
           return prev;
-        },
-        [] as R[]
+        }, [] as R[])
+        .sort((a, b) => {
+          return b.apr[1] - a.apr[1];
+        });
+      setRawData(_rawData);
+      setFilteredData(
+        _rawData.filter((a) => {
+          return !!a.apr[1];
+        })
       );
-      setRawData(rawData);
-      setFilteredData(rawData);
     }
     // getFilteredData("");
   }, [investTokenTypeMapStatus]);
+  const getMyInvestTokenMap = React.useCallback(() => {
+    if (walletLayer2 && walletLayer2 !== {}) {
+      const _rawData = Object.keys(walletLayer2)
+        .reduce((prev, key) => {
+          if (investTokenTypeMap[key]) {
+            prev.push(makeInvestRow(investTokenTypeMap, key) as R);
+          }
+          return prev;
+        }, [] as R[])
+        .sort((a, b) => {
+          return b.apr[1] - a.apr[1];
+        });
+      setMyRawData(_rawData);
+      setMyFilteredData(
+        _rawData.filter((a) => {
+          return !!a.apr[1];
+        })
+      );
+    } else {
+      setMyRawData([]);
+      setMyFilteredData([]);
+    }
+    setMyMapLoading(false);
+  }, [walletLayer2, investTokenTypeMap]);
+  React.useEffect(() => {
+    if (walletLayer2Status === "UNSET") {
+      setMyMapLoading(true);
+      getMyInvestTokenMap();
+    }
+  }, [walletLayer2Status]);
   // myLog("rawData", filteredData);
   return {
     filteredData,
-    sortMethod,
+    // sortMethod,
     filterValue,
     getFilteredData,
+
+    myRawData,
+    myFilteredData,
+    myMapLoading,
+    rawData,
     // rawData,
     //
     // // tableHeight,

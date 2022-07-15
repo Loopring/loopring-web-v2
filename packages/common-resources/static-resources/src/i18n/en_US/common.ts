@@ -842,9 +842,12 @@ export default {
   labelSecurity: "Security",
   labelFeeTitleList: "Fee",
   labelInvestOverviewTitle: "Overview",
-  labelTitleOverviewToken: "Tokens",
+  labelTitleOverviewToken: "Investment Tokens",
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_DEFI: "Lido Stake",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
+  labelDefiOrderTable: "Defi History",
+  labelTitleMyInvestAvaiable: "My Tokens",
+  labelViewMore: "View more",
 };

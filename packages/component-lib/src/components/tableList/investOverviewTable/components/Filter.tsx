@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { InputSearch } from "../../../";
+import { myLog } from "@loopring-web/common-resources";
 
 export interface FilterProps {
   // hideInvestToken: boolean;
@@ -26,6 +27,8 @@ export const Filter = withTranslation("tables", { withRef: true })(
   // // setHideLpToken,
   // setHideSmallBalances,
   FilterProps & WithTranslation) => {
+    // myLog(searchValue, "searchValue");
+
     return (
       <Grid container spacing={4} justifyContent={"space-between"}>
         <Grid item>
