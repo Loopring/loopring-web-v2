@@ -12,7 +12,6 @@ import {
   IBData,
   MarketType,
   myLog,
-  SagaStatus,
   SDK_ERROR_MAP_TO_UI,
 } from "@loopring-web/common-resources";
 
@@ -20,7 +19,6 @@ import {
   useSubmitBtn,
   makeWalletLayer2,
   useWalletLayer2Socket,
-  useWalletLayer2,
   TradeDefi,
 } from "@loopring-web/core";
 import _ from "lodash";
@@ -39,7 +37,7 @@ import {
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useDefiMap, useTradeDefi } from "../../stores";
-import { useRouteMatch } from "react-router-dom";
+// import { useRouteMatch } from "react-router-dom";
 
 export const useDefiTrade = <
   T extends IBData<I>,
@@ -60,7 +58,7 @@ export const useDefiTrade = <
 }) => {
   const { t } = useTranslation(["common"]);
   const refreshRef = React.createRef();
-  const match: any = useRouteMatch("/invest/:defi/:market/:isJoin");
+  // const match: any = useRouteMatch("/invest/:defi/:market/:isJoin");
 
   const {
     marketMap: defiMarketMap,
@@ -73,7 +71,9 @@ export const useDefiTrade = <
 
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
-  const { walletLayer2, status: walletLayer2Status } = useWalletLayer2();
+  // const {
+  //   status: walletLayer2Status,
+  // } = useWalletLayer2();
   const { exchangeInfo } = useSystem();
   const { tradeDefi, updateTradeDefi } = useTradeDefi();
 
@@ -139,10 +139,6 @@ export const useDefiTrade = <
     ]
   );
 
-  const walletLayer2Callback = React.useCallback(async () => {}, []);
-
-  useWalletLayer2Socket({ walletLayer2Callback });
-
   const handleOnchange = _.debounce(
     ({
       tradeData,
@@ -154,15 +150,16 @@ export const useDefiTrade = <
       _tradeDefi?: Partial<TradeDefi<T>>;
     }) => {
       const marketInfo = defiMarketMap[market];
-      let _deFiCalcData: DeFiCalcData<T> | undefined =
-        tradeDefi.deFiCalcData as DeFiCalcData<T>;
+      const tradeDefi = store.getState()._router_tradeDefi.tradeDefi;
+      let _deFiCalcData: DeFiCalcData<T> =
+        tradeDefi.deFiCalcData as unknown as DeFiCalcData<T>;
       let calcValue;
       let _oldTradeDefi = {
         ...store.getState()._router_tradeDefi.tradeDefi,
         ..._tradeDefi,
       };
       //_.cloneDeep({ ...tradeDefi, ..._tradeDefi });
-      myLog("defi ", _oldTradeDefi.defiBalances);
+      myLog("defi handleOnchange", _oldTradeDefi.defiBalances, _oldTradeDefi);
 
       if (
         tradeData &&
@@ -191,26 +188,32 @@ export const useDefiTrade = <
           buyTokenBalanceVol,
         });
 
-        const sellAmount = getValuePrecisionThousand(
-          sdk
-            .toBig(calcValue?.sellVol ?? 0)
-            .div("1e" + tokenMap[coinSellSymbol]?.decimals),
-          tokenMap[coinSellSymbol].precision,
-          tokenMap[coinSellSymbol].precision,
-          tokenMap[coinSellSymbol].precision,
-          false,
-          { floor: false }
-        );
-        const buyAmount = getValuePrecisionThousand(
-          sdk
-            .toBig(calcValue?.buyVol ?? 0)
-            .div("1e" + tokenMap[coinBuySymbol]?.decimals),
-          tokenMap[coinBuySymbol].precision,
-          tokenMap[coinBuySymbol].precision,
-          tokenMap[coinBuySymbol].precision,
-          true,
-          { floor: false }
-        );
+        const sellAmount =
+          tradeData?.tradeValue === undefined
+            ? undefined
+            : getValuePrecisionThousand(
+                sdk
+                  .toBig(calcValue?.sellVol ?? 0)
+                  .div("1e" + tokenMap[coinSellSymbol]?.decimals),
+                tokenMap[coinSellSymbol].precision,
+                tokenMap[coinSellSymbol].precision,
+                tokenMap[coinSellSymbol].precision,
+                false,
+                { floor: false }
+              );
+        const buyAmount =
+          tradeData?.tradeValue === undefined
+            ? undefined
+            : getValuePrecisionThousand(
+                sdk
+                  .toBig(calcValue?.buyVol ?? 0)
+                  .div("1e" + tokenMap[coinBuySymbol]?.decimals),
+                tokenMap[coinBuySymbol].precision,
+                tokenMap[coinBuySymbol].precision,
+                tokenMap[coinBuySymbol].precision,
+                true,
+                { floor: false }
+              );
 
         // @ts-ignore
         _deFiCalcData = {
@@ -226,7 +229,7 @@ export const useDefiTrade = <
         };
       }
       updateTradeDefi({
-        ...tradeDefi,
+        ..._oldTradeDefi,
         ...calcValue,
         deFiCalcData: {
           ..._deFiCalcData,
@@ -305,15 +308,19 @@ export const useDefiTrade = <
         ...tradeDefi.deFiCalcData,
       };
       if (account.readyState === AccountStatus.ACTIVATED) {
-        walletMap = makeWalletLayer2(true).walletMap;
-        deFiCalcDataInit.coinSell = {
-          belong: coinSellSymbol,
-          balance: walletMap[coinSellSymbol]?.count,
-        };
-        deFiCalcDataInit.coinBuy = {
-          belong: coinBuySymbol,
-          balance: walletMap[coinBuySymbol]?.count,
-        };
+        if (clearTrade === true) {
+          walletLayer2Service.sendUserUpdate();
+        } else {
+          walletMap = makeWalletLayer2(true).walletMap;
+          deFiCalcDataInit.coinSell = {
+            belong: coinSellSymbol,
+            balance: walletMap[coinSellSymbol]?.count,
+          };
+          deFiCalcDataInit.coinBuy = {
+            belong: coinBuySymbol,
+            balance: walletMap[coinBuySymbol]?.count,
+          };
+        }
       } else {
         deFiCalcDataInit.coinSell = {
           belong: coinSellSymbol,
@@ -324,7 +331,13 @@ export const useDefiTrade = <
           balance: undefined,
         };
       }
-      myLog("clearTrade", deFiCalcDataInit.coinSell);
+      myLog(
+        "resetDefault defi clearTrade",
+        deFiCalcDataInit.coinSell,
+        tradeDefi.deFiCalcData?.coinSell?.tradeValue,
+        clearTrade,
+        feeInfo
+      );
       if (
         tradeDefi.market !== market ||
         clearTrade ||
@@ -384,6 +397,7 @@ export const useDefiTrade = <
         };
         handleOnchange({ tradeData, type, _tradeDefi });
       }
+
       setIsLoading(false);
     },
     [
@@ -402,6 +416,7 @@ export const useDefiTrade = <
       updateTradeDefi,
     ]
   );
+
   const should15sRefresh = _.debounce(async (clearTrade: boolean = false) => {
     myLog("should15sRefresh", market, clearTrade);
     let _feeInfo;
@@ -436,10 +451,58 @@ export const useDefiTrade = <
         ]);
         // setFeeInfo(feeInfo);
       }
-      resetDefault(clearTrade, _feeInfo);
+      resetDefault(clearTrade, {
+        fee: tradeDefi.fee,
+        feeRaw: tradeDefi.feeRaw,
+        ..._feeInfo,
+      });
     }
   }, globalSetup.wait);
 
+  const walletLayer2Callback = React.useCallback(async () => {
+    const type = tradeDefi.lastInput ?? DeFiChgType.coinSell;
+    let tradeValue: any = undefined;
+
+    let deFiCalcDataInit: Partial<DeFiCalcData<any>> = {
+      coinSell: {},
+      coinBuy: {},
+      ...(tradeDefi?.deFiCalcData ?? {}),
+    };
+    if (tradeDefi.deFiCalcData) {
+      tradeValue = tradeDefi?.deFiCalcData[type]?.tradeValue ?? undefined;
+    }
+    if (deFiCalcDataInit[type]?.belong) {
+      let walletMap: any;
+      if (account.readyState === AccountStatus.ACTIVATED) {
+        walletMap = makeWalletLayer2(true).walletMap;
+        deFiCalcDataInit.coinSell = {
+          belong: coinSellSymbol,
+          balance: walletMap[coinSellSymbol]?.count,
+        };
+        deFiCalcDataInit.coinBuy = {
+          belong: coinBuySymbol,
+          balance: walletMap[coinBuySymbol]?.count,
+        };
+      } else {
+        deFiCalcDataInit.coinSell = {
+          belong: coinSellSymbol,
+          balance: undefined,
+        };
+        deFiCalcDataInit.coinBuy = {
+          belong: coinBuySymbol,
+          balance: undefined,
+        };
+      }
+      const tradeData = {
+        ...deFiCalcDataInit[type],
+        tradeValue,
+      };
+      myLog("Defi walletLayer2Callback", tradeData);
+      handleOnchange({ tradeData, type });
+    }
+  }, [handleOnchange, tradeDefi]);
+
+  useWalletLayer2Socket({ walletLayer2Callback });
   const sendRequest = React.useCallback(async () => {
     try {
       setIsLoading(true);
@@ -447,6 +510,7 @@ export const useDefiTrade = <
         LoopringAPI.userAPI &&
         LoopringAPI.defiAPI &&
         tradeDefi.sellToken?.symbol &&
+        tradeDefi.maxFeeBips &&
         exchangeInfo
       ) {
         const req: sdk.GetNextStorageIdRequest = {
@@ -470,13 +534,7 @@ export const useDefiTrade = <
             volume: tradeDefi.buyVol,
           },
           validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips: Math.ceil(
-            sdk
-              .toBig(tradeDefi.fee)
-              .times(10000)
-              .div(tradeDefi.buyVol)
-              .toNumber()
-          ),
+          maxFeeBips: tradeDefi.maxFeeBips,
           fillAmountBOrS: false,
           action: isJoin ? sdk.DefiAction.Deposit : sdk.DefiAction.Withdraw,
           fee: tradeDefi.feeRaw,
@@ -527,8 +585,6 @@ export const useDefiTrade = <
       });
     } finally {
       should15sRefresh(true);
-      // resetDefault(true);
-      walletLayer2Service.sendUserUpdate();
     }
   }, [
     account.accountId,
@@ -541,8 +597,8 @@ export const useDefiTrade = <
     t,
     tradeDefi.buyToken?.tokenId,
     tradeDefi.buyVol,
-    tradeDefi.fee,
     tradeDefi.feeRaw,
+    tradeDefi.maxFeeBips,
     tradeDefi.sellToken?.symbol,
     tradeDefi.sellToken?.tokenId,
     tradeDefi.sellVol,
@@ -605,44 +661,55 @@ export const useDefiTrade = <
     isLoading,
     submitCallback: onSubmitBtnClick,
   });
-  React.useEffect(() => {
-    if (
-      market &&
-      market !== "" &&
-      walletLayer2Status === SagaStatus.UNSET &&
-      isJoin !== undefined
-    ) {
-      setSymbol(() => {
-        if (isJoin) {
-          const [, coinBuySymbol, coinSellSymbol] =
-            market.match(/(\w+)-(\w+)/i) ?? [];
-          return { coinBuySymbol, coinSellSymbol };
+  React.useEffect(
+    () => {
+      if (
+        market &&
+        market !== "" &&
+        // walletLayer2Status === SagaStatus.UNSET &&
+        isJoin !== undefined
+      ) {
+        setSymbol(() => {
+          if (isJoin) {
+            const [, coinBuySymbol, coinSellSymbol] =
+              market.match(/(\w+)-(\w+)/i) ?? [];
+            return { coinBuySymbol, coinSellSymbol };
+          } else {
+            const [, coinSellSymbol, coinBuySymbol] =
+              market.match(/(\w+)-(\w+)/i) ?? [];
+            return { coinBuySymbol, coinSellSymbol };
+          }
+        });
+        if (refreshRef.current) {
+          if (!should15sRefresh.flush()) {
+            myLog("should15sRefresh refreshRef.current call", market);
+            should15sRefresh(true);
+            // @ts-ignore
+            refreshRef.current.firstElementChild.click();
+          } else {
+            myLog("should15sRefresh refreshRef.current click only", market);
+            // @ts-ignore
+            refreshRef.current.firstElementChild.click();
+          }
         } else {
-          const [, coinSellSymbol, coinBuySymbol] =
-            market.match(/(\w+)-(\w+)/i) ?? [];
-          return { coinBuySymbol, coinSellSymbol };
+          should15sRefresh(true);
         }
-      });
-      if (refreshRef.current) {
-        should15sRefresh.cancel();
-        myLog("should15sRefresh refreshRef.current", market);
-        // @ts-ignore
-        refreshRef.current.firstElementChild.click();
-        should15sRefresh(true);
       }
-    }
-    return () => {
-      should15sRefresh.cancel();
-      handleOnchange.cancel();
-    };
-  }, [
-    market,
-    isJoin,
-    match?.param?.defi,
-    walletLayer2Status,
-    walletLayer2,
-    account.readyState,
-  ]);
+      return () => {
+        should15sRefresh.cancel();
+        handleOnchange.cancel();
+      };
+    },
+    [
+      // market,
+      // isJoin,
+      // match?.param?.defi,
+      // walletLayer2Status,
+      // walletLayer2,
+      // account.readyState,
+    ]
+  );
+  // React.useEffect(() => {}, []);
 
   const deFiWrapProps = React.useMemo(() => {
     return {
