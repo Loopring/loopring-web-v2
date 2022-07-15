@@ -37,6 +37,7 @@ import {
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useDefiMap, useTradeDefi } from "../../stores";
+import { useRouteMatch } from "react-router-dom";
 // import { useRouteMatch } from "react-router-dom";
 
 export const useDefiTrade = <
@@ -58,7 +59,7 @@ export const useDefiTrade = <
 }) => {
   const { t } = useTranslation(["common"]);
   const refreshRef = React.createRef();
-  // const match: any = useRouteMatch("/invest/:defi/:market/:isJoin");
+  const match: any = useRouteMatch("/invest/:defi/:market/:isJoin");
 
   const {
     marketMap: defiMarketMap,
@@ -661,54 +662,54 @@ export const useDefiTrade = <
     isLoading,
     submitCallback: onSubmitBtnClick,
   });
-  React.useEffect(
-    () => {
-      if (
-        market &&
-        market !== "" &&
-        // walletLayer2Status === SagaStatus.UNSET &&
-        isJoin !== undefined
-      ) {
-        setSymbol(() => {
-          if (isJoin) {
-            const [, coinBuySymbol, coinSellSymbol] =
-              market.match(/(\w+)-(\w+)/i) ?? [];
-            return { coinBuySymbol, coinSellSymbol };
-          } else {
-            const [, coinSellSymbol, coinBuySymbol] =
-              market.match(/(\w+)-(\w+)/i) ?? [];
-            return { coinBuySymbol, coinSellSymbol };
-          }
-        });
-        if (refreshRef.current) {
-          if (!should15sRefresh.flush()) {
-            myLog("should15sRefresh refreshRef.current call", market);
-            should15sRefresh(true);
-            // @ts-ignore
-            refreshRef.current.firstElementChild.click();
-          } else {
-            myLog("should15sRefresh refreshRef.current click only", market);
-            // @ts-ignore
-            refreshRef.current.firstElementChild.click();
-          }
+  React.useEffect(() => {
+    if (
+      market &&
+      market !== "" &&
+      // walletLayer2Status === SagaStatus.UNSET &&
+      isJoin !== undefined
+    ) {
+      setSymbol(() => {
+        if (isJoin) {
+          const [, coinBuySymbol, coinSellSymbol] =
+            market.match(/(\w+)-(\w+)/i) ?? [];
+          return { coinBuySymbol, coinSellSymbol };
         } else {
-          should15sRefresh(true);
+          const [, coinSellSymbol, coinBuySymbol] =
+            market.match(/(\w+)-(\w+)/i) ?? [];
+          return { coinBuySymbol, coinSellSymbol };
         }
+      });
+      if (refreshRef.current) {
+        if (!should15sRefresh.flush()) {
+          myLog("should15sRefresh refreshRef.current call", market);
+          should15sRefresh(true);
+          // @ts-ignore
+          refreshRef.current.firstElementChild.click();
+        } else {
+          myLog("should15sRefresh refreshRef.current click only", market);
+          // @ts-ignore
+          refreshRef.current.firstElementChild.click();
+        }
+      } else {
+        should15sRefresh(true);
       }
-      return () => {
-        should15sRefresh.cancel();
-        handleOnchange.cancel();
-      };
-    },
-    [
-      // market,
-      // isJoin,
-      // match?.param?.defi,
-      // walletLayer2Status,
-      // walletLayer2,
-      // account.readyState,
-    ]
-  );
+    }
+    return () => {
+      should15sRefresh.cancel();
+      handleOnchange.cancel();
+    };
+  }, [
+    match?.param,
+    // market,
+    // match?.param?.defi,
+    // market,
+    // isJoin,
+    // match?.param?.defi,
+    // walletLayer2Status,
+    // walletLayer2,
+    // account.readyState,
+  ]);
   // React.useEffect(() => {}, []);
 
   const deFiWrapProps = React.useMemo(() => {
