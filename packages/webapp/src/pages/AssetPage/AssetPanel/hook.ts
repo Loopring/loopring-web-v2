@@ -128,7 +128,16 @@ export const useGetAssets = () => {
     }
     setUserAssets([]);
   }, [account, tokenMap]);
-
+  const getTokenRelatedMarketArray = React.useCallback(
+    (token: string) => {
+      if (!marketArray) return [];
+      return marketArray.filter((market) => {
+        const [coinA, coinB] = market.split("-");
+        return token === coinA || token === coinB;
+      });
+    },
+    [marketArray]
+  );
   const getAssetsRawData = React.useCallback(() => {
     if (
       tokenMap &&
@@ -362,6 +371,7 @@ export const useGetAssets = () => {
     setHideLpToken,
     setHideSmallBalances,
     themeMode,
+    getTokenRelatedMarketArray,
     hideSmallBalances,
   };
 };

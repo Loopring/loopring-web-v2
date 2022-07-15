@@ -19,7 +19,7 @@ import styled from "@emotion/styled";
 import { useHistory } from "react-router-dom";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
 import { TableFilterStyled, TablePaddingX } from "../../styled";
-import { investRowReducer, sortMethod } from "./components/expends";
+import { investRowReducer } from "./components/expends";
 import { Filter } from "./components/Filter";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
@@ -176,9 +176,9 @@ export const InvestOverviewTable = <R extends RowInvest>({
         return (
           <Box className={"textAlignLeft"}>
             <Typography component={"span"}>
-              {end == 0 && start == 0
+              {end === 0 && start === 0
                 ? EmptyValueTag
-                : start == end
+                : start === end
                 ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
                 : end === 0 || start === 0
                 ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +

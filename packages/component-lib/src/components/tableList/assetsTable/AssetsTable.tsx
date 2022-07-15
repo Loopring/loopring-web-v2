@@ -16,7 +16,7 @@ import {
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo from "./components/ActionMemo";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { Currency, XOR } from "@loopring-web/loopring-sdk";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -101,7 +101,7 @@ export type RawDataAssetsItem = {
   tokenValueDollar: number;
 };
 
-export interface AssetsTableProps {
+export type AssetsTableProps = {
   rawData: RawDataAssetsItem[];
   pagination?: {
     pageSize: number;
@@ -116,13 +116,18 @@ export interface AssetsTableProps {
   // onShowTransfer: (token: string) => void;
   // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];
-  hideInvestToken: boolean;
-  hideSmallBalances: boolean;
+
   disableWithdrawList: string[];
-  setHideLpToken: (value: boolean) => void;
-  setHideSmallBalances: (value: boolean) => void;
   forexMap: ForexMap<Currency>;
-}
+} & XOR<
+  {
+    hideInvestToken: boolean;
+    hideSmallBalances: boolean;
+    setHideLpToken: (value: boolean) => void;
+    setHideSmallBalances: (value: boolean) => void;
+  },
+  {}
+>;
 
 // const RowConfig = {
 //   rowHeight: 44,
