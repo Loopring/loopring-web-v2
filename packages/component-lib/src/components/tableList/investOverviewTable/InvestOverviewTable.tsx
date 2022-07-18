@@ -68,28 +68,19 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 
 export const InvestOverviewTable = <R extends RowInvest>({
   rawData,
-  // handleWithdraw,
-  // handleDeposit,
-  // showFilter,
   wait,
-  // tableHeight,
   coinJson,
   filterValue,
   getFilteredData,
-  // account,
-  // tokenPrices,
   showLoading,
   showFilter,
-  // tokenMap,
-  // forexMap,
-  // sortMethod,
-  // hideSmallBalances,
-  // setHideSmallBalances,
+  rowConfig = RowConfig,
   ...rest
 }: InvestOverviewTableProps<R>) => {
   const { t, i18n } = useTranslation(["tables", "common"]);
   const [rows, dispatch] = React.useReducer(investRowReducer, rawData);
   const history = useHistory();
+
   React.useEffect(() => {
     if (rawData.length) {
       dispatch({
@@ -109,8 +100,8 @@ export const InvestOverviewTable = <R extends RowInvest>({
     [getFilteredData]
   );
   const tableHeight = React.useMemo(() => {
-    return (rows.length + 1) * RowConfig.rowHeight;
-  }, [rows.length]);
+    return (rows.length + 1) * rowConfig.rowHeight;
+  }, [rows.length, rowConfig]);
   const [isDropDown, setIsDropDown] = React.useState(true);
 
   const getColumnMode = (): Column<R, unknown>[] => [
@@ -277,7 +268,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
     },
   ];
   const { isMobile } = useSettings();
-
+  // myLog("rowConfig", rowConfig);
   return (
     <TableStyled isMobile={isMobile} marginX={2}>
       {showFilter &&
@@ -342,8 +333,8 @@ export const InvestOverviewTable = <R extends RowInvest>({
           }
         }}
         style={{ height: tableHeight }}
-        rowHeight={RowConfig.rowHeight}
-        headerRowHeight={RowConfig.rowHeaderHeight}
+        rowHeight={rowConfig.rowHeight}
+        headerRowHeight={rowConfig.rowHeaderHeight}
         rawData={rows}
         // sortMethod={sortMethod}
         generateRows={(rowData: any) => rowData}

@@ -20,6 +20,7 @@ import {
   useAmmActivityMap,
   useTokenMap,
 } from "@loopring-web/core";
+import { RowConfig, RowInvestConfig } from "@loopring-web/common-resources";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -104,6 +105,7 @@ export const PoolsPanel = withTranslation("common")(
                 tokenPrices,
                 allowTrade,
                 forexMap: forexMap as any,
+                rowConfig: RowInvestConfig,
                 handleWithdraw: (row) => {
                   // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
                   const pair = `${row.coinAInfo.name}-${row.coinBInfo.name}`;

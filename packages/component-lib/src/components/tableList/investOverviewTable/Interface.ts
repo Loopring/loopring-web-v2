@@ -1,4 +1,4 @@
-import { InvestItem } from "@loopring-web/common-resources";
+import { InvestItem, RowConfig } from "@loopring-web/common-resources";
 import { TokenInfo, XOR } from "@loopring-web/loopring-sdk";
 
 export type DepartmentRow = Required<InvestItem & { token: TokenInfo }>;
@@ -26,19 +26,10 @@ type FilterExtend = {
 };
 export type InvestOverviewTableProps<R = DepartmentRow> = {
   rawData: R[];
-  // showFilter?: boolean;
   wait?: number;
-  // tableHeight?: number;
   coinJson: any;
-  // allowTrade?: { [key: string]: { enable: boolean; reason?: string } };
   showLoading?: boolean;
-  // sortMethod: (
-  //   sortedRows: any[],
-  //   sortColumn: string,
-  //   des: "DESC" | "ASC" | undefined
-  // ) => any[];
-  // hideSmallBalances: boolean;
-  // setHideSmallBalances: (value: boolean) => void;
+  rowConfig?: typeof RowConfig;
 } & XOR<FilterExtend, {}>;
 
 export enum ColumnKey {

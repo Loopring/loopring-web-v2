@@ -934,3 +934,43 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
     );
   }
 );
+export const ConfirmInvestDefiRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Typography>
+              <Trans i18nKey={"labelDefiRisk"}>Risk alert</Trans>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);

@@ -4,6 +4,7 @@ import { Confirmation } from "./interface";
 
 const initialState: Confirmation = {
   confirmed: false,
+  confirmedDefiInvest: false,
 };
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -14,11 +15,14 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
   name: "confirmation",
   initialState,
   reducers: {
-    confirm(state: Confirmation, action: PayloadAction<string>) {
+    confirm(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmed = true;
+    },
+    confirmDefiInvest(state: Confirmation, _action: PayloadAction<string>) {
+      state.confirmedDefiInvest = true;
     },
   },
 });
 
 export { confirmationSlice };
-export const { confirm } = confirmationSlice.actions;
+export const { confirm, confirmDefiInvest } = confirmationSlice.actions;

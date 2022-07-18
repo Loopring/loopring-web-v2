@@ -116,7 +116,7 @@ export type AssetsTableProps = {
   // onShowTransfer: (token: string) => void;
   // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];
-
+  rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
   forexMap: ForexMap<Currency>;
 } & XOR<
@@ -128,11 +128,6 @@ export type AssetsTableProps = {
   },
   {}
 >;
-
-// const RowConfig = {
-//   rowHeight: 44,
-//   headerRowHeight: 44,
-// };
 
 export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
@@ -151,6 +146,7 @@ export const AssetsTable = withTranslation("tables")(
       setHideLpToken,
       setHideSmallBalances,
       forexMap,
+      rowConfig = RowConfig,
       ...rest
     } = props;
 
@@ -168,10 +164,10 @@ export const AssetsTable = withTranslation("tables")(
       (viewData) => {
         setViewData(viewData);
         setTableHeight(
-          RowConfig.rowHeaderHeight + viewData.length * RowConfig.rowHeight
+          rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
         );
       },
-      [setViewData, setTableHeight]
+      [setViewData, setTableHeight, rowConfig]
     );
     const updateData = React.useCallback(() => {
       let resultData = totalData && !!totalData.length ? totalData : [];
@@ -503,8 +499,8 @@ export const AssetsTable = withTranslation("tables")(
         <Table
           {...{ ...rest, t }}
           style={{ height: tableHeight }}
-          rowHeight={RowConfig.rowHeight}
-          headerRowHeight={RowConfig.rowHeaderHeight}
+          rowHeight={rowConfig.rowHeight}
+          headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) =>

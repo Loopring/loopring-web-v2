@@ -13,18 +13,14 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 import {
+  confirmation,
   TOAST_TIME,
   useDefiMap,
-  useDefiTrade,
-  useTokenMap,
   useTradeDefi,
 } from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
 import { useRouteMatch } from "react-router-dom";
-import {
-  getValuePrecisionThousand,
-  MarketType,
-} from "@loopring-web/common-resources";
+import { MarketType } from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -41,9 +37,15 @@ const StyleWrapper = styled(Box)`
 export const DeFiPanel: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
-    ...rest
-  }: WithTranslation) => {
+    setConfirmDefiInvest,
+  }: WithTranslation & {
+    setConfirmDefiInvest: (state: any) => void;
+  }) => {
     const { marketArray } = useDefiMap();
+    const {
+      confirmation: { confirmedDefiInvest },
+    } = confirmation.useConfirmation();
+    setConfirmDefiInvest(!confirmedDefiInvest);
     const match: any = useRouteMatch("/invest/defi/:market/:isJoin");
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
@@ -109,6 +111,7 @@ export const DeFiPanel: any = withTranslation("common")(
           autoHideDuration={TOAST_TIME}
           onClose={closeToast}
         />
+
         <ConfirmDefiBalanceIsLimit
           handleClose={(_e, isAgree) => {
             setConfirmShow(false);

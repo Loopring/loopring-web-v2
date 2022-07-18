@@ -4,6 +4,7 @@ import {
   CoinKey,
   ForexMap,
   MyAmmLP,
+  RowConfig,
 } from "@loopring-web/common-resources";
 import { Currency, LoopringMap, TokenInfo } from "@loopring-web/loopring-sdk";
 
@@ -34,6 +35,6 @@ export type MyPoolTableProps<R> = {
   wait?: number;
   showloading?: boolean;
   currency?: Currency;
-  handlePageChange: (page: number) => void;
+  rowConfig?: typeof RowConfig;
   setHideSmallBalances: (value: boolean) => void;
 } & Method<R>;

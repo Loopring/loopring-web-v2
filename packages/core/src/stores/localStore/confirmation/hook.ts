@@ -2,11 +2,12 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../index";
 import { Confirmation } from "./interface";
-import { confirm } from "./reducer";
+import { confirm, confirmDefiInvest } from "./reducer";
 
 export const useConfirmation = (): {
   confirmation: Confirmation;
   confirmWrapper: () => void;
+  confirmDefiInvest: () => void;
 } => {
   const confirmation: Confirmation = useSelector(
     (state: RootState) => state.localStore.confirmation
@@ -20,5 +21,8 @@ export const useConfirmation = (): {
   return {
     confirmation,
     confirmWrapper,
+    confirmDefiInvest: React.useCallback(() => {
+      dispatch(confirmDefiInvest(undefined));
+    }, [dispatch]),
   };
 };

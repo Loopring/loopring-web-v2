@@ -16,6 +16,8 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
+  RowConfig,
+  RowInvestConfig,
 } from "@loopring-web/common-resources";
 
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
@@ -204,7 +206,7 @@ const MyLiquidity: any = withTranslation("common")(
                   symbol: pair,
                 });
               }}
-              handlePageChange={() => {}}
+              rowConfig={RowInvestConfig}
             />
           </Grid>
         </TableWrapStyled>
@@ -237,6 +239,7 @@ const MyLiquidity: any = withTranslation("common")(
                 onReceive,
                 getMarketArrayListCallback: getTokenRelatedMarketArray,
                 // hideInvestToken,
+                rowConfig: RowInvestConfig,
                 forexMap: forexMap as any,
                 // hideSmallBalances,
                 // setHideLpToken,

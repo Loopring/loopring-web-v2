@@ -22,6 +22,7 @@ import {
   defiAdvice,
   myLog,
   AccountStatus,
+  RowInvestConfig,
 } from "@loopring-web/common-resources";
 import { useAccount } from "@loopring-web/core";
 
@@ -42,16 +43,6 @@ const WrapperStyled = styled(Box)`
     }
   }
 `;
-
-const StylePaper = styled(Box)`
-  width: 100%;
-  //height: 100%;
-  flex: 1;
-  padding-bottom: ${({ theme }) => theme.unit}px;
-  .rdg {
-    flex: 1;
-  }
-` as typeof Box;
 
 export const OverviewPanel = withTranslation("common")(
   ({ t }: WithTranslation & {}) => {
@@ -132,14 +123,9 @@ export const OverviewPanel = withTranslation("common")(
                 </Typography>
                 <InvestOverviewTable
                   showLoading={myMapLoading}
-                  // showFilter={true}
-                  // sortMethod={sortMethod}
-                  // filterValue={filterValue}
-                  // getFilteredData={getFilteredData}
-                  // hideSmallBalances={hideSmallBalances}
-                  // setHideSmallBalances={setHideSmallBalances}
                   coinJson={coinJson}
                   rawData={myRawData}
+                  rowConfig={RowInvestConfig}
                 />
               </Box>
               <Box marginTop={3} marginBottom={2} marginX={2}>
@@ -157,13 +143,11 @@ export const OverviewPanel = withTranslation("common")(
             <InvestOverviewTable
               showLoading={showLoading}
               showFilter={true}
-              // sortMethod={sortMethod}
               filterValue={filterValue}
               getFilteredData={getFilteredData}
-              // hideSmallBalances={hideSmallBalances}
-              // setHideSmallBalances={setHideSmallBalances}
               coinJson={coinJson}
               rawData={filteredData}
+              rowConfig={RowInvestConfig}
             />
             {rawData.length !== filteredData.length && (
               <Link
