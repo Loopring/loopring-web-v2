@@ -825,6 +825,8 @@ export default {
     "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
   labelDefiMaxBalance1:
     "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
+  labelDefiNoBalance:
+    "No quota available. Loopring will setup the pool soon, please revisit for subscription later. ",
   labelInvestBtn: "Invest",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",

@@ -890,3 +890,47 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
     );
   }
 );
+
+export const ConfirmDefiNOBalance = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any) => void;
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Typography>
+              <Trans i18nKey={"labelDefiNoBalance"}>
+                No quota available. Loopring will setup the pool soon, please
+                revisit for subscription later.
+              </Trans>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);

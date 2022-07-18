@@ -570,7 +570,12 @@ export const useDefiTrade = <
           setToastOpen({
             open: true,
             type: "success",
-            content: t("labelInvestSuccess"),
+            content: t("labelInvestSuccess", {
+              type: isJoin
+                ? t("labelInvestDefDeposit")
+                : t("labelInvestDefWithdraw"),
+              symbol: coinBuySymbol,
+            }),
           });
         }
       } else {

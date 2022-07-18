@@ -7,6 +7,7 @@ import { useDeFiHook } from "./hook";
 import {
   boxLiner,
   ConfirmDefiBalanceIsLimit,
+  ConfirmDefiNOBalance,
   DeFiWrap,
   Toast,
   useSettings,
@@ -14,6 +15,7 @@ import {
 import {
   TOAST_TIME,
   useDefiMap,
+  useDefiTrade,
   useTokenMap,
   useTradeDefi,
 } from "@loopring-web/core";
@@ -54,7 +56,12 @@ export const DeFiPanel: any = withTranslation("common")(
 
     const isJoin =
       match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
-
+    const { tradeDefi } = useTradeDefi();
+    const isNoBalance = sdk
+      .toBig(tradeDefi?.maxSellVol ?? 0)
+      .minus(tradeDefi.miniSellVol ?? 0)
+      .toString()
+      .startsWith("-");
     const {
       deFiWrapProps,
       closeToast,
@@ -65,7 +72,6 @@ export const DeFiPanel: any = withTranslation("common")(
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
     });
-    const { tradeDefi } = useTradeDefi();
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 
@@ -110,8 +116,17 @@ export const DeFiPanel: any = withTranslation("common")(
               deFiWrapProps.onConfirm();
             }
           }}
-          open={confirmShow}
+          open={confirmShow && !isNoBalance}
           defiData={tradeDefi}
+        />
+        <ConfirmDefiNOBalance
+          handleClose={(_e) => {
+            setConfirmShow(false);
+            if (deFiWrapProps?.onRefreshData) {
+              deFiWrapProps?.onRefreshData(true, true);
+            }
+          }}
+          open={confirmShow && isNoBalance}
         />
       </StyleWrapper>
     );
