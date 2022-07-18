@@ -302,6 +302,7 @@ export default {
   labelCreateAccountDepositDenied:
     "您以拒绝充值 {{value}} {{symbol}}, 账户未激活",
   labelSlippageAlert: "滑点过大将会影响您出金后收到的token数量",
+  labelOrderGroup: "Order Records",
   labelOrderTableOpenOrder: "当前委托",
   labelOrderTableOrderHistory: "历史委托",
   labelResetLayout: "重置布局",

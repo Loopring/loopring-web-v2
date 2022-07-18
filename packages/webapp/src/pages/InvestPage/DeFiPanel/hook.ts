@@ -11,10 +11,6 @@ export const useDeFiHook = ({
   market: MarketType;
   isJoin: boolean;
 }) => {
-  // const [toastOpen, setToastOpen] =
-  //   React.useState<{ open?: boolean; type: any; content: string } | undefined>(
-  //     undefined
-  //   );
   const { toastOpen, setToastOpen, closeToast } = useToast();
   const { marketArray } = useDefiMap();
   myLog("isJoin", isJoin, "market", market);

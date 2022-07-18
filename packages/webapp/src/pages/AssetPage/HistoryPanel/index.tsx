@@ -34,20 +34,32 @@ enum TabIndex {
   transactions = "transactions",
   trades = "trades",
   ammRecords = "ammRecords",
-  orderOpenTable = "orderOpenTable",
-  orderHistoryTable = "orderHistoryTable",
+  orders = "orders",
+  // orderOpenTable = "orderOpenTable",
+  // orderHistoryTable = "orderHistoryTable",
   defiRecords = "defiRecords",
 }
+
+enum TabOrderIndex {
+  orderOpenTable = "orderOpenTable",
+  orderHistoryTable = "orderHistoryTable",
+}
+
 const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
     const { search } = useLocation();
-    const match: any = useRouteMatch("/l2assets/:item/:tab");
-    const tab = match?.params.tab ?? TabIndex.transactions;
+    const match: any = useRouteMatch("/l2assets/history/:tab/:orderTab");
     const [pageSize, setPageSize] = React.useState(0);
-    const [currentTab, setCurrentTab] = React.useState(tab);
+    const [currentTab, setCurrentTab] = React.useState(() => {
+      return match?.params.tab ?? TabIndex.transactions;
+    });
+    const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
+      return match?.params.orderTab ?? TabOrderIndex.orderOpenTable;
+    });
+
     const { toastOpen, setToastOpen, closeToast } = useToast();
-    const { totalCoinMap, tokenMap, addressIndex, marketArray } = useTokenMap();
+    const { totalCoinMap, tokenMap, idIndex, marketArray } = useTokenMap();
     const { ammMap } = useAmmMap();
 
     const {
@@ -163,14 +175,7 @@ const HistoryPanel = withTranslation("common")(
                 label={t("labelLayer2HistoryAmmRecords")}
                 value={TabIndex.ammRecords}
               />
-              <Tab
-                label={t("labelOrderTableOpenOrder")}
-                value={TabIndex.orderOpenTable}
-              />
-              <Tab
-                label={t("labelOrderTableOrderHistory")}
-                value={TabIndex.orderHistoryTable}
-              />
+              <Tab label={t("labelOrderGroup")} value={TabIndex.orders} />
               <Tab
                 label={t("labelDefiOrderTable")}
                 value={TabIndex.defiRecords}
@@ -236,48 +241,82 @@ const HistoryPanel = withTranslation("common")(
                 }}
               />
             ) : currentTab === TabIndex.defiRecords ? (
-              <Box flex={1} alignItems={"center"} justifyContent={"center"}>
-                <Typography component={"h4"} textAlign={"center"}>
-                  {t("labelComingSoon")}
-                </Typography>
-              </Box>
-            ) : (
-              // <DefiTXsTable
-              //   {...{
-              //     rawData: defiList,
-              //     pagination: {
-              //       pageSize: pageSize,
-              //       total: ammRecordTotal,
-              //     },
-              //     getDefiTxList,
-              //     showloading: showDefiLoading,
-              //     ...rest,
-              //   }}
-              //   tokenMap={tokenMap}
-              //   addressIndex={addressIndex}
-              // />
-              <OrderHistoryTable
+              <DefiTXsTable
                 {...{
-                  pagination:
-                    currentTab === TabIndex.orderOpenTable
-                      ? undefined
-                      : {
-                          pageSize: pageSize,
-                          total: totalNum,
-                        },
-                  rawData: rawData,
-                  showFilter: true,
-                  getOrderList,
-                  marketArray: orderRaw,
-                  showDetailLoading: false,
-                  userOrderDetailList,
-                  getUserOrderDetailTradeList,
+                  rawData: defiList,
+                  pagination: {
+                    pageSize: pageSize,
+                    total: defiTotal,
+                  },
+                  getDefiTxList,
+                  showloading: showDefiLoading,
                   ...rest,
-                  showLoading,
-                  isOpenOrder: currentTab === TabIndex.orderOpenTable,
-                  cancelOrder,
                 }}
+                tokenMap={tokenMap}
+                idIndex={idIndex}
               />
+            ) : (
+              // <Box flex={1} alignItems={"center"} justifyContent={"center"}>
+              //   <Typography component={"h4"} textAlign={"center"}>
+              //     {t("labelComingSoon")}
+              //   </Typography>
+              // </Box>
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={"column"}
+                marginTop={-2}
+              >
+                <Box marginBottom={2} marginLeft={3}>
+                  <Tabs
+                    value={currentOrderTab}
+                    onChange={(_event, value) => {
+                      setCurrentOrderTab(value);
+                      history.replace(
+                        `/l2assets/history/orders/${value}?${search.replace(
+                          "?",
+                          ""
+                        )}`
+                      );
+                    }}
+                    aria-label="l2-history-tabs"
+                    variant="scrollable"
+                  >
+                    <Tab
+                      label={t("labelOrderTableOpenOrder")}
+                      value={TabOrderIndex.orderOpenTable}
+                    />
+                    <Tab
+                      label={t("labelOrderTableOrderHistory")}
+                      value={TabOrderIndex.orderHistoryTable}
+                    />
+                  </Tabs>
+                </Box>
+
+                <OrderHistoryTable
+                  {...{
+                    pagination:
+                      currentOrderTab === TabOrderIndex.orderOpenTable
+                        ? undefined
+                        : {
+                            pageSize: pageSize,
+                            total: totalNum,
+                          },
+                    rawData: rawData,
+                    showFilter: true,
+                    getOrderList,
+                    marketArray: orderRaw,
+                    showDetailLoading: false,
+                    userOrderDetailList,
+                    getUserOrderDetailTradeList,
+                    ...rest,
+                    showLoading,
+                    isOpenOrder:
+                      currentOrderTab === TabOrderIndex.orderOpenTable,
+                    cancelOrder,
+                  }}
+                />
+              </Box>
             )}
           </div>
         </StylePaper>

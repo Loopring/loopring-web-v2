@@ -36,7 +36,6 @@ export function useOverview<R extends RowInvest>() {
         // }
         setFilteredData(_rawData);
       } else {
-        // debugger;
         setFilteredData(rawData);
         // if (walletLayer2 && walletLayer2 !== {}) {
         //   setMyFilteredData(myRawData);

@@ -15,7 +15,6 @@ import { RawDataDefiTxsItem } from "./Interface";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
-import { AmmRecordRow as Row } from "../ammRecordTable";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 // export type TxsFilterProps = {
@@ -73,7 +72,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 124px auto auto auto 120px 120px !important;`
+        ? `--template-columns: 40% 20% auto !important;`
         : `--template-columns: 60% 40% !important;`}
     .rdgCellCenter {
       height: 100%;
@@ -105,7 +104,7 @@ export interface DefiTxsTableProps<R = RawDataDefiTxsItem> {
     pageSize: number;
     total: number;
   };
-  addressIndex: { [key: string]: string };
+  idIndex: { [key: string]: string };
   tokenMap: { [key: string]: any };
 
   getDefiTxList: (props: any) => Promise<void>;
@@ -121,7 +120,7 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
   ) => {
     const {
       rawData,
-      addressIndex,
+      idIndex,
       pagination,
       tokenMap,
       // showFilter,
@@ -179,7 +178,7 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
     );
 
     const getColumnModeTransaction = React.useCallback(
-      (): Column<any, unknown>[] => [
+      (): Column<R, unknown>[] => [
         {
           key: "style",
           sortable: false,
@@ -188,14 +187,18 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
           name: t("labelAmmTableType"),
           formatter: ({ row }: FormatterProps<R, unknown>) => {
             const { action, sellToken, buyToken } = row;
-            const isJoin = action === sdk.DefiAction.Deposit;
+            const isJoin = !new RegExp(sdk.DefiAction.Withdraw, "ig").test(
+              action ?? " "
+            );
             const sellTokenInfo =
-              sellToken?.tokenId && tokenMap[addressIndex[sellToken?.tokenId]];
+              sellToken?.tokenId !== undefined &&
+              tokenMap[idIndex[sellToken?.tokenId]];
             const sellVolume = sdk
               .toBig(sellToken?.volume ?? 0)
               .div("1e" + sellTokenInfo.decimals);
             const buyTokenInfo =
-              buyToken?.tokenId && tokenMap[addressIndex[buyToken?.tokenId]];
+              buyToken?.tokenId !== undefined &&
+              tokenMap[idIndex[buyToken?.tokenId]];
             const buyVolume = sdk
               .toBig(buyToken?.volume ?? 0)
               .div("1e" + buyTokenInfo.decimals);
@@ -216,9 +219,9 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
                     sellTokenInfo?.precision,
                     false,
                     { isTrade: true, floor: false }
-                  )} ${sellTokenInfo.name}`}
+                  )} ${sellTokenInfo.symbol}`}
                 </Typography>
-                &nbsp; ${DirectionTag} &nbsp;
+                &nbsp;{DirectionTag} &nbsp;
                 <Typography component={"span"}>
                   {`${getValuePrecisionThousand(
                     buyVolume,
@@ -227,7 +230,7 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
                     buyTokenInfo?.precision,
                     false,
                     { isTrade: true, floor: false }
-                  )} ${buyTokenInfo.name}`}
+                  )} ${buyTokenInfo.symbol}`}
                 </Typography>
               </Box>
             );
@@ -238,13 +241,14 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
           name: t("labelTxFee"),
           headerCellClass: "textAlignRight",
           formatter: ({ row }) => {
-            const fee = row.fee;
-            const feeTokenInfo = tokenMap[addressIndex[fee?.tokenId]];
+            const { fee } = row;
+            const feeTokenInfo = tokenMap[idIndex[fee?.tokenId ?? ""]];
             const feeVolume = sdk
               .toBig(fee?.volume ?? 0)
-              .div("1e" + feeTokenInfo.decimals);
+              .div("1e" + feeTokenInfo.decimals)
+              .toNumber();
             const renderValue =
-              fee.value === 0 || fee.value === undefined
+              feeVolume === 0 || feeVolume === undefined
                 ? EmptyValueTag
                 : `${getValuePrecisionThousand(
                     feeVolume,
@@ -253,12 +257,38 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
                     feeTokenInfo?.precision,
                     false,
                     { isTrade: true, floor: false }
-                  )} ${feeTokenInfo.name}`;
+                  )} ${feeTokenInfo.symbol}`;
             return (
               <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
             );
           },
         },
+        // {
+        //   key: "status",
+        //   name: t("labelTxFee"),
+        //   headerCellClass: "textAlignRight",
+        //   formatter: ({ row }) => {
+        //     const fee = row.fee;
+        //     const feeTokenInfo = tokenMap[idIndex[fee?.tokenId]];
+        //     const feeVolume = sdk
+        //       .toBig(fee?.volume ?? 0)
+        //       .div("1e" + feeTokenInfo.decimals);
+        //     const renderValue =
+        //       fee.value === 0 || fee.value === undefined
+        //         ? EmptyValueTag
+        //         : `${getValuePrecisionThousand(
+        //             feeVolume,
+        //             feeTokenInfo?.precision,
+        //             feeTokenInfo?.precision,
+        //             feeTokenInfo?.precision,
+        //             false,
+        //             { isTrade: true, floor: false }
+        //           )} ${feeTokenInfo.name}`;
+        //     return (
+        //       <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
+        //     );
+        //   },
+        // },
         {
           key: "time",
           sortable: false,
@@ -266,8 +296,8 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
           name: t("labelAmmTime"),
-          formatter: ({ row }: FormatterProps<Row<any>, unknown>) => {
-            const { time } = row;
+          formatter: ({ row }) => {
+            const { updatedAt: time } = row;
             let timeString;
             if (typeof time === "undefined") {
               timeString = EmptyValueTag;
@@ -282,7 +312,7 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
           },
         },
       ],
-      [t, tokenMap, addressIndex]
+      [t, tokenMap, idIndex]
     );
 
     // const [isDropDown, setIsDropDown] = React.useState(true);
@@ -295,17 +325,19 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }: any) =>
         columnsRaw as Column<any, unknown>[],
     };
-    // React.useEffect(() => {
-    //   let filters: any = {};
-    //   updateData.cancel();
-    //   if (searchParams.get("types")) {
-    //     filters.type = searchParams.get("types");
-    //   }
-    //   handleFilterChange(filters);
-    //   return () => {
-    //     updateData.cancel();
-    //   };
-    // }, [pagination?.pageSize]);
+    React.useEffect(() => {
+      // let filters: any = {};
+      updateData.cancel();
+      updateData({ currPage: 1 });
+      // handlePageChange(1);
+      // if (searchParams.get("types")) {
+      //   filters.type = searchParams.get("types");
+      // }
+      // handleFilterChange(filters);
+      return () => {
+        updateData.cancel();
+      };
+    }, [pagination?.pageSize]);
 
     return (
       <TableStyled isMobile={isMobile}>

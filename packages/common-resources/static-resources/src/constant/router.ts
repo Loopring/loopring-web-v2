@@ -13,6 +13,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
+  InvestAdvice,
 } from "../loopring-interface";
 import { InvestMapType } from "./trade";
 
@@ -423,24 +424,22 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     child: subMenuNFT,
   },
 ];
-export type InvestAdvice = {
-  type: InvestMapType;
-  banner: string;
-  titleI18n: string;
-  desI18n: string;
-  router: string;
-};
+
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
   router: "/invest/ammpool",
   banner: SoursURL + "images/icon-default.png",
   titleI18n: "labelInvestAmm",
   desI18n: "labelInvestAmmDes",
+  notification: "",
+  enable: true,
 };
 export const defiAdvice: InvestAdvice = {
   type: InvestMapType.DEFI,
   router: "/invest/defi",
+  notification: "",
   banner: SoursURL + "images/icon-default.png",
   titleI18n: "labelInvestDefi",
   desI18n: "labelInvestDefiDes",
+  enable: true,
 };

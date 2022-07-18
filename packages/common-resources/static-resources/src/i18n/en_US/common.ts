@@ -314,6 +314,7 @@ export default {
   labelCreateAccountDepositDenied: "Signature request was rejected",
   labelSlippageAlert:
     "Your slippage tolerance is rather high which could result in less tokens received.",
+  labelOrderGroup: "Order Records",
   labelOrderTableOpenOrder: "Open Order",
   labelOrderTableOrderHistory: "Order History",
   labelResetLayout: "Reset Layout",

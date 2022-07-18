@@ -42,7 +42,6 @@ export const DeFiPanel: any = withTranslation("common")(
     ...rest
   }: WithTranslation) => {
     const { marketArray } = useDefiMap();
-    const { tokenMap } = useTokenMap();
     const match: any = useRouteMatch("/invest/defi/:market/:isJoin");
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
@@ -105,7 +104,12 @@ export const DeFiPanel: any = withTranslation("common")(
           onClose={closeToast}
         />
         <ConfirmDefiBalanceIsLimit
-          handleClose={() => setConfirmShow(false)}
+          handleClose={(_e, isAgree) => {
+            setConfirmShow(false);
+            if (isAgree) {
+              deFiWrapProps.onConfirm();
+            }
+          }}
           open={confirmShow}
           defiData={tradeDefi}
         />
