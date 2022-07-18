@@ -60,7 +60,7 @@ const MyLiquidity: any = withTranslation("common")(
     const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
     const { setShowAmm } = useOpenModals();
 
-    const { summaryMyAmm, myPoolRow, showLoading } = useOverview({
+    const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
     });
 
@@ -100,10 +100,10 @@ const MyLiquidity: any = withTranslation("common")(
                 marginTop={1}
                 fontFamily={"Roboto"}
               >
-                {summaryMyAmm?.investDollar
+                {summaryMyInvest?.investDollar
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      (summaryMyAmm.investDollar || 0) *
+                      (summaryMyInvest.investDollar || 0) *
                         (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
@@ -131,10 +131,11 @@ const MyLiquidity: any = withTranslation("common")(
                 marginTop={1}
                 fontFamily={"Roboto"}
               >
-                {summaryMyAmm?.feeDollar
+                {summaryMyInvest?.feeDollar
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      (summaryMyAmm.feeDollar || 0) * (forexMap[currency] ?? 0),
+                      (summaryMyInvest.feeDollar || 0) *
+                        (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
                       2,

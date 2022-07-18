@@ -1,6 +1,7 @@
 import { InvestMapType, InvestOpenType } from "@loopring-web/common-resources";
 import { DepartmentRow, RowInvest } from "@loopring-web/component-lib";
-import { InvestTokenTypeMap } from "../../stores";
+import { InvestTokenTypeMap, store } from "../../stores";
+import { LoopringAPI } from "../../api_wrapper";
 
 export const makeInvestRow = <R extends RowInvest>(
   investTokenTypeMap: InvestTokenTypeMap,
@@ -23,4 +24,17 @@ export const makeInvestRow = <R extends RowInvest>(
   }, [] as DepartmentRow[]);
   item.children = children;
   return item;
+};
+
+export const makeDefiInvestReward = async () => {
+  const { apiKey, accountId } = store.getState().account;
+  if (LoopringAPI.defiAPI && apiKey && accountId) {
+    // @ts-ignore
+    const { totalRewards } = await LoopringAPI.defiAPI.getDefiReward(
+      { accountId },
+      apiKey
+    );
+    return totalRewards ?? 0;
+  }
+  return "0";
 };
