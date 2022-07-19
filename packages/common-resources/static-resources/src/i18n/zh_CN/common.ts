@@ -302,6 +302,7 @@ export default {
   labelCreateAccountDepositDenied:
     "您以拒绝充值 {{value}} {{symbol}}, 账户未激活",
   labelSlippageAlert: "滑点过大将会影响您出金后收到的token数量",
+  labelOrderGroup: "Order Records",
   labelOrderTableOpenOrder: "当前委托",
   labelOrderTableOrderHistory: "历史委托",
   labelResetLayout: "重置布局",
@@ -824,15 +825,20 @@ export default {
     "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
   labelDefiMaxBalance1:
     "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
+  labelDefiNoBalance:
+    "No quota available. Loopring will setup the pool soon, please revisit for subscription later. ",
   labelInvestBtn: "Invest",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
   labelSecurity: "Security",
   labelFeeTitleList: "Fee",
   labelInvestOverviewTitle: "Overview",
-  labelTitleOverviewToken: "Tokens",
+  labelTitleOverviewToken: "Investment Tokens",
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_DEFI: "Lido Stake",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
+  labelDefiOrderTable: "Defi History",
+  labelTitleMyInvestAvaiable: "My Tokens",
+  labelViewMore: "View more",
 };

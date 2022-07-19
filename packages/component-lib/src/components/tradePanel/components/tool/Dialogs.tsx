@@ -823,13 +823,6 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
     defiData: TradeDefi<any>;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
-    const [agree, setAgree] = React.useState("");
-
-    React.useEffect(() => {
-      if (!open) {
-        setAgree("");
-      }
-    }, [open]);
     const maxValue =
       defiData.sellToken?.symbol &&
       `${getValuePrecisionThousand(
@@ -885,13 +878,132 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
-            disabled={!agree}
             onClick={(e) => {
               handleClose(e as any, true);
             }}
             color={"primary"}
           >
             {t("labelAgreeConfirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+
+export const ConfirmDefiNOBalance = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any) => void;
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Typography>
+              <Trans i18nKey={"labelDefiNoBalance"}>
+                No quota available. Loopring will setup the pool soon, please
+                revisit for subscription later.
+              </Trans>
+            </Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+export const ConfirmInvestDefiRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelDefiRiskTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans i18nKey={"labelDefiRisk"}>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                Lido is a liquid staking solution for ETH 2.0 backed by
+                industry-leading staking providers. Lido lets users stake their
+                ETH - without locking assets or maintaining infrastructure.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                When using Lido to stake your ETH on the Ethereum beacon chain,
+                users will receive a token (stETH), which represents their ETH
+                on the Ethereum beacon chain on a 1:1 basis. It effectively acts
+                as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                wstETH is the wrapped version of stETH. The total amount of
+                wstETH doesn’t change after users receive the token. Instead,
+                the token’s value increase over time to reflect ETH staking
+                rewards earned.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
           </Button>
         </DialogActions>
       </Dialog>

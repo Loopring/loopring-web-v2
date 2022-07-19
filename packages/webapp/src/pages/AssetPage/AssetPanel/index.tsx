@@ -39,6 +39,7 @@ const AssetPanel = withTranslation("common")(
       // onShowTransfer,
       // onShowWithdraw,
       // onShowDeposit,
+      getTokenRelatedMarketArray,
       onSend,
       onReceive,
       // total,
@@ -101,17 +102,6 @@ const AssetPanel = withTranslation("common")(
     //   }
     //   return 0;
     // }, [currAssetsEth]);
-
-    const getTokenRelatedMarketArray = React.useCallback(
-      (token: string) => {
-        if (!marketArray) return [];
-        return marketArray.filter((market) => {
-          const [coinA, coinB] = market.split("-");
-          return token === coinA || token === coinB;
-        });
-      },
-      [marketArray]
-    );
 
     // const ethFaitPriceDollar = tokenPrices ? tokenPrices["ETH"] : 0;
     // const currAssetsEthDollar = getValuePrecisionThousand(

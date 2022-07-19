@@ -25,12 +25,15 @@ import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { InvestColumnKey } from "./index";
 const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
+  & .rdg.rdg {
+    min-height: initial;
+  }
   .rdg {
     border-radius: ${({ theme }) => theme.unit}px;
 
     ${({ isMobile }) =>
       !isMobile
-        ? `--template-columns: 240px auto auto 100px !important;`
+        ? `--template-columns: 240px auto auto 124px !important;`
         : ` --template-columns: 16% auto auto 8% !important;
 `}
     .rdg-cell.action {
@@ -65,27 +68,19 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
 
 export const InvestOverviewTable = <R extends RowInvest>({
   rawData,
-  // handleWithdraw,
-  // handleDeposit,
-  // showFilter,
   wait,
-  // tableHeight,
   coinJson,
   filterValue,
   getFilteredData,
-  // account,
-  // tokenPrices,
   showLoading,
-  // tokenMap,
-  // forexMap,
-  sortMethod,
-  // hideSmallBalances,
-  // setHideSmallBalances,
+  showFilter,
+  rowConfig = RowConfig,
   ...rest
 }: InvestOverviewTableProps<R>) => {
   const { t, i18n } = useTranslation(["tables", "common"]);
   const [rows, dispatch] = React.useReducer(investRowReducer, rawData);
   const history = useHistory();
+
   React.useEffect(() => {
     if (rawData.length) {
       dispatch({
@@ -97,20 +92,22 @@ export const InvestOverviewTable = <R extends RowInvest>({
 
   // myLog("Overview", rows);
   const handleFilterChange = React.useCallback(
-    (filter) => {
-      getFilteredData(filter);
+    ({ searchValue }: any) => {
+      if (getFilteredData) {
+        getFilteredData(searchValue);
+      }
     },
     [getFilteredData]
   );
   const tableHeight = React.useMemo(() => {
-    return (rows.length + 1) * RowConfig.rowHeight;
-  }, [rows.length]);
+    return (rows.length + 1) * rowConfig.rowHeight;
+  }, [rows.length, rowConfig]);
   const [isDropDown, setIsDropDown] = React.useState(true);
 
   const getColumnMode = (): Column<R, unknown>[] => [
     {
       key: ColumnKey.TYPE,
-      sortable: true,
+      sortable: false,
       name: t("labelToken"),
       formatter: ({ row }) => {
         switch (row.type) {
@@ -158,7 +155,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
     },
     {
       key: ColumnKey.APR,
-      sortable: true,
+      sortable: false,
       name: t("labelAPR"),
       width: "auto",
       maxWidth: 80,
@@ -166,13 +163,17 @@ export const InvestOverviewTable = <R extends RowInvest>({
       headerCellClass: "textAlignLeftSortable",
       formatter: ({ row }) => {
         const [start, end] = row.apr;
+        // myLog("end", end);
         return (
           <Box className={"textAlignLeft"}>
             <Typography component={"span"}>
-              {!end
+              {end === 0 && start === 0
                 ? EmptyValueTag
-                : start == end
+                : start === end
                 ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
+                : end === 0 || start === 0
+                ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
+                  "%"
                 : getValuePrecisionThousand(start, 2, 2, 2, true) +
                   "% - " +
                   getValuePrecisionThousand(end, 2, 2, 2, true) +
@@ -267,12 +268,11 @@ export const InvestOverviewTable = <R extends RowInvest>({
     },
   ];
   const { isMobile } = useSettings();
-
+  // myLog("rowConfig", rowConfig);
   return (
     <TableStyled isMobile={isMobile} marginX={2}>
-      {
-        // showFilter && (
-        isMobile && isDropDown ? (
+      {showFilter &&
+        (isMobile && isDropDown ? (
           <Link
             variant={"body1"}
             display={"inline-flex"}
@@ -304,8 +304,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
               />
             </TableFilterStyled>
           </Box>
-        )
-      }
+        ))}
 
       <Table
         i18n={i18n}
@@ -326,16 +325,18 @@ export const InvestOverviewTable = <R extends RowInvest>({
           return "";
         }}
         onRowClick={(_, row) => {
-          dispatch({
-            symbol: row.token.symbol,
-            type: SubRowAction.ToggleSubRow,
-          });
+          if (row.children) {
+            dispatch({
+              symbol: row.token.symbol,
+              type: SubRowAction.ToggleSubRow,
+            });
+          }
         }}
         style={{ height: tableHeight }}
-        rowHeight={RowConfig.rowHeight}
-        headerRowHeight={RowConfig.rowHeaderHeight}
+        rowHeight={rowConfig.rowHeight}
+        headerRowHeight={rowConfig.rowHeaderHeight}
         rawData={rows}
-        sortMethod={sortMethod}
+        // sortMethod={sortMethod}
         generateRows={(rowData: any) => rowData}
         generateColumns={({ columnsRaw }: any) =>
           columnsRaw as Column<any, unknown>[]

@@ -123,7 +123,7 @@ export function useGetTxs(setToastOpen: (state: any) => void) {
         }
       }
     },
-    [accountId, apiKey, tokenMap]
+    [accountId, apiKey, setToastOpen, t, tokenMap]
   );
 
   return {
@@ -211,7 +211,7 @@ export function useGetTrades(setToastOpen: (state: any) => void) {
         setShowLoading(false);
       }
     },
-    [accountId, apiKey, tokenMap]
+    [accountId, apiKey, setToastOpen, t, tokenMap]
   );
 
   return {
@@ -328,7 +328,7 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
       }
       setShowLoading(false);
     },
-    [accountId, apiKey, getTokenName]
+    [accountId, apiKey, getTokenName, setToastOpen, t, tokenMap]
   );
 
   return {
@@ -336,5 +336,80 @@ export function useGetAmmRecord(setToastOpen: (props: any) => void) {
     showLoading,
     getAmmpoolList,
     ammRecordTotal,
+  };
+}
+
+export function useGetDefiRecord(setToastOpen: (props: any) => void) {
+  const { t } = useTranslation(["error"]);
+  const [defiList, setDefiRecordList] = React.useState<
+    sdk.UserDefiTxsHistory[]
+  >([]);
+  const [defiTotal, setDefiTotal] = React.useState(0);
+  const [showLoading, setShowLoading] = React.useState(true);
+  const { accountId, apiKey } = store.getState().account;
+  const { tokenMap } = useTokenMap();
+
+  // const getTokenName = React.useCallback(
+  //   (tokenId?: number) => {
+  //     if (tokenMap) {
+  //       const keys = Object.keys(tokenMap);
+  //       const values = Object.values(tokenMap);
+  //       const index = values.findIndex((o) => o.tokenId === tokenId);
+  //       if (index > -1) {
+  //         return keys[index];
+  //       }
+  //       return "";
+  //     }
+  //     return "";
+  //   },
+  //   [tokenMap]
+  // );
+
+  const getDefiTxList = React.useCallback(
+    async ({ start, end, offset, limit }: any) => {
+      setShowLoading(true);
+      if (LoopringAPI.defiAPI && accountId && apiKey) {
+        const response = await LoopringAPI.defiAPI.getDefiTransaction(
+          {
+            accountId,
+            offset,
+            start,
+            end,
+            limit,
+          } as any,
+          apiKey
+        );
+        if (
+          (response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message
+        ) {
+          const errorItem =
+            SDK_ERROR_MAP_TO_UI[(response as sdk.RESULT_INFO)?.code ?? 700001];
+          setToastOpen({
+            open: true,
+            type: "error",
+            content:
+              "error : " + errorItem
+                ? t(errorItem.messageKey)
+                : (response as sdk.RESULT_INFO).message,
+          });
+        } else {
+          // @ts-ignore
+          const result = (response as any).userDefiTxs;
+          setDefiRecordList(result);
+          setShowLoading(false);
+          setDefiTotal((response as any).totalNum);
+        }
+      }
+      setShowLoading(false);
+    },
+    [accountId, apiKey, setToastOpen, t]
+  );
+
+  return {
+    defiList,
+    showLoading,
+    getDefiTxList,
+    defiTotal,
   };
 }

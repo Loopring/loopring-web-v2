@@ -24,6 +24,7 @@ import {
   globalSetup,
   MoreIcon,
   PriceTag,
+  RowConfig,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Avatar, Box, BoxProps, Grid, Typography } from "@mui/material";
@@ -265,10 +266,10 @@ export const PoolsTable = withTranslation(["tables", "common"])(
     tokenMap,
     forexMap,
     allowTrade,
+    rowConfig = RowConfig,
     ...rest
   }: WithTranslation & PoolTableProps<T>) => {
     const { currency, isMobile } = useSettings();
-    // const history = useHistory();
 
     const getPopoverState = React.useCallback((label: string) => {
       return usePopupState({
@@ -626,19 +627,6 @@ export const PoolsTable = withTranslation(["tables", "common"])(
       generateColumns: ({ columnsRaw }) =>
         columnsRaw as Column<Row<any>, unknown>[],
     };
-    // const onRowClick = React.useCallback(
-    //   (_rowIdx: any, row: any) => {
-    //     const pathname = `/liquidity/pools/coinPair/${
-    //       row?.coinAInfo?.simpleName + "-" + row?.coinBInfo?.simpleName
-    //     }`;
-    //
-    //     history &&
-    //       history.push({
-    //         pathname,
-    //       });
-    //   },
-    //   [history]
-    // );
 
     return (
       <TableStyled
@@ -656,9 +644,8 @@ export const PoolsTable = withTranslation(["tables", "common"])(
             tReady,
             ...rest,
             rawData: rawData,
-            // onRowClick: (index, row) => {
-            //   onRowClick(index, row);
-            // },
+            rowHeight: rowConfig.rowHeight,
+            rowHeaderHeight: rowConfig.rowHeaderHeight,
             showloading: showLoading,
             sortMethod: (sortedRows: any[], sortColumn: string) =>
               sortMethod(sortedRows, sortColumn),

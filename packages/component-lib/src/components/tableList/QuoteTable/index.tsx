@@ -293,7 +293,7 @@ export const QuoteTable = withTranslation("tables")(
           {
             key: "close",
             name: t("labelQuotaLastPrice"),
-            headerCellClass: "textAlignCenter",
+            headerCellClass: "textAlignRight",
             cellClass: "textAlignRight",
             sortable: true,
             formatter: ({ row }: any) => {

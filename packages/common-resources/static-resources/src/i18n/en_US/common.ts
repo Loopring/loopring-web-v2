@@ -108,7 +108,7 @@ export default {
   labelAssetsTitle: "Assets",
   labelVolume: "volume",
   labelAmount: "Amount",
-  labelLiquidityDeposit: "Invest",
+  labelLiquidityDeposit: "Subscribe",
   labelLiquidityWithdraw: "Redeem",
   labelAvailable: "Available:",
   labelTokenAmount: "Amount",
@@ -146,7 +146,7 @@ export default {
   labelMyAmmRecord: "My AMM Records",
   labelCurrentActivities: "Current Activities",
   labelPastActivities: "Past Activities",
-  labelTotalPositionValue: "Total Invest",
+  labelTotalPositionValue: "Total Subscribe",
   labelFeeRewards: "Fee Rewards",
   labelMiningRewards: "Mining Rewards",
   labelLiquidityValue: "Liquidity Value",
@@ -314,6 +314,7 @@ export default {
   labelCreateAccountDepositDenied: "Signature request was rejected",
   labelSlippageAlert:
     "Your slippage tolerance is rather high which could result in less tokens received.",
+  labelOrderGroup: "Order Records",
   labelOrderTableOpenOrder: "Open Order",
   labelOrderTableOrderHistory: "Order History",
   labelResetLayout: "Reset Layout",
@@ -825,8 +826,8 @@ export default {
   labelForceWithdrawNoToken:
     "No token is detected from this address to operate",
   labelForceWithdrawBtn: "Force Withdraw",
-  labelInvestDefiTitle: "Defi Invest",
-  labelInvestDefDeposit: "Invest",
+  labelInvestDefiTitle: "Defi Investment",
+  labelInvestDefDeposit: "Subscribe",
   labelInvestDefWithdraw: "Redeem",
   labelNFTDepositLabel: "Receive NFT",
   labelDefiFee: "Fee",
@@ -836,15 +837,27 @@ export default {
     "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
   labelDefiMaxBalance1:
     "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
-  labelInvestBtn: "Invest",
+  labelDefiNoBalance:
+    "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
+  labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
   labelSecurity: "Security",
   labelFeeTitleList: "Fee",
   labelInvestOverviewTitle: "Overview",
-  labelTitleOverviewToken: "Tokens",
+  labelTitleOverviewToken: "Investment Tokens",
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_DEFI: "Lido Stake",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
+  labelDefiOrderTable: "Defi History",
+  labelTitleMyInvestAvaiable: "My Tokens",
+  labelViewMore: "View more",
+  labelInvestSuccess: "Successfully {{type}} {{symbol}}",
+  labelInvestFailed: "Subscribe Failed",
+  labelDefiRiskTitle: "What is ETH Staking via Lido?",
+  labelDefiRisk:
+    "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
+    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>\n" +
+    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn’t change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
 };

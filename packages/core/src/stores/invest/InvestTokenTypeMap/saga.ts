@@ -16,7 +16,8 @@ function calcApr(
   const apr = ammInfo.APR;
   if ((!start && apr) || (apr && apr < start)) {
     start = apr;
-  } else if (apr && apr > end) {
+  }
+  if (apr && apr > end) {
     end = apr;
   }
   return [start, end];
@@ -29,7 +30,8 @@ function calcDefiApr(
   const apr = Number(defiinfo.apy);
   if ((!start && apr) || (apr && apr < start)) {
     start = apr;
-  } else if (apr && apr > end) {
+  }
+  if (apr && apr > end) {
     end = apr;
   }
   return [start, end];

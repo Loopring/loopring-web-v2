@@ -121,12 +121,12 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   // }, [])
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
-      if (maxAllow) {
+      if (maxAllow && !disabled) {
         _handleContChange(balance, name);
         //setsValue(balance);
       }
     },
-    [_handleContChange, balance, name, maxAllow]
+    [_handleContChange, balance, name, maxAllow, disabled]
   );
 
   // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
@@ -239,7 +239,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               name={name}
               decimalsLimit={decimalsLimit}
               allowDecimals={allowDecimals}
-              disabled={!(!disabled || belong)}
+              disabled={disabled || !belong}
               placeholder={placeholderText}
               aria-placeholder={placeholderText}
               aria-label={typeof label === "string" ? label : ""}

@@ -2,13 +2,14 @@ import {
   DeFiCalcData,
   EmptyValueTag,
   ExchangeIcon,
+  getValuePrecisionThousand,
   IBData,
   myLog,
   OrderListIcon,
   ReverseIcon,
 } from "@loopring-web/common-resources";
 import { DeFiChgType, DeFiWrapProps } from "./Interface";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { InputCoin } from "../../../basic-lib";
@@ -16,6 +17,7 @@ import { ButtonStyle, IconButtonStyled } from "../Styled";
 import { TradeBtnStatus } from "../../Interface";
 import { CountDownIcon } from "../tool/Refresh";
 import { useHistory } from "react-router-dom";
+import BigNumber from "bignumber.js";
 
 export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   disabled,
@@ -26,7 +28,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   onRefreshData,
   onSubmitClick,
   onConfirm,
-  // covertOnClick,
+  confirmShowLimitBalance,
   switchStobEvent,
   onChangeEvent,
   handleError,
@@ -38,6 +40,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   btnStatus,
   tokenSellProps,
   tokenBuyProps,
+  maxSellVol,
   market,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
@@ -45,22 +48,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinBuyRef = React.useRef();
   const { t } = useTranslation();
   const history = useHistory();
-
-  // const [errorA, setErrorA] = React.useState<{
-  //   error: boolean;
-  //   message?: string | JSX.Element;
-  // }>({
-  //   error: false,
-  //   message: "",
-  // });
-  // const [errorB, setErrorB] = React.useState<{
-  //   error: boolean;
-  //   message?: string | JSX.Element;
-  // }>({
-  //   error: false,
-  //   message: "",
-  // });
-
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
       if (typeof switchStobEvent === "function") {
@@ -109,14 +96,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   );
   // };
   const getDisabled = React.useMemo(() => {
-    return (
-      disabled ||
-      isLoading ||
-      deFiCalcData === undefined ||
-      btnStatus === TradeBtnStatus.DISABLED
-    );
+    return disabled || isLoading || deFiCalcData === undefined;
   }, [btnStatus, deFiCalcData, disabled, isLoading]);
-
   // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
@@ -165,26 +146,27 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     handleCountChange,
     ...rest,
   };
-  // const propsA: any = {
-  //   label: t("labelTokenAmount"),
-  //   subLabel: t("labelAvailable"),
-  //   placeholderText: "0.00",
-  //   maxAllow: true,
-  //   ...tokenBuyProps,
-  //   handleError,
-  //   handleCountChange,
-  //   ...rest,
-  // };
-  // const propsB: any = {
-  //   label: t("labelTokenAmount"),
-  //   subLabel: t("labelAvailable"),
-  //   placeholderText: "0.00",
-  //   maxAllow: true,
-  //   ...tokenBProps,
-  //   // handleError,
-  //   handleCountChange,
-  //   ...rest,
-  // };
+  const label = React.useMemo(() => {
+    if (btnInfo?.label) {
+      const key = btnInfo?.label.split("|");
+      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+    } else {
+      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+    }
+  }, [isJoin, t, btnInfo]);
+
+  const maxValue =
+    tokenSell.symbol &&
+    maxSellVol &&
+    `${getValuePrecisionThousand(
+      new BigNumber(maxSellVol ?? 0).div("1e" + tokenSell.decimals),
+      tokenSell.precision,
+      tokenSell.precision,
+      tokenSell.precision,
+      false,
+      { floor: true }
+    )} ${tokenSell.symbol}`;
+
   return (
     <Grid
       className={deFiCalcData ? "" : "loading"}
@@ -218,7 +200,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
           <Typography display={"inline-block"} marginLeft={2}>
             <IconButtonStyled
               onClick={() => {
-                history.push(`/l2assets/history/ammRecords?market=${market}`);
+                history.push(`/l2assets/history/defiRecords?market=${market}`);
               }}
               sx={{ backgroundColor: "var(--field-opacity)" }}
               className={"switch outlined"}
@@ -341,15 +323,55 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   ? "true"
                   : "false"
               }
-              disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
+              disabled={
+                getDisabled ||
+                btnStatus === TradeBtnStatus.LOADING ||
+                btnStatus === TradeBtnStatus.DISABLED
+              }
             >
-              {btnInfo?.label
-                ? t(btnInfo.label, btnInfo.params)
-                : isJoin
-                ? t(`labelInvestBtn`)
-                : t(`labelRedeemBtn`)}
+              {label}
             </ButtonStyle>
           </Grid>
+          {confirmShowLimitBalance && (
+            <Grid item>
+              <Typography
+                variant={"body1"}
+                component={"p"}
+                display={"flex"}
+                marginTop={1}
+                flexDirection={"column"}
+                color={"var(--color-warning)"}
+              >
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"inherit"}
+                >
+                  <Trans
+                    i18nKey={"labelDefiMaxBalance"}
+                    tOptions={{ maxValue }}
+                  >
+                    Your Redeem order is too large and cannot be withdrawn
+                    immediately, you can only redeem {{ maxValue }}
+                  </Trans>
+                </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"inherit"}
+                  marginTop={1}
+                >
+                  <Trans i18nKey={"labelDefiMaxBalance1"}>
+                    or you can
+                    <ul>
+                      <li>Withdraw to L1 and redeem through crv or lido</li>
+                      <li>Wait some time and wait for pool liquidity</li>
+                    </ul>
+                  </Trans>
+                </Typography>
+              </Typography>
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Grid>

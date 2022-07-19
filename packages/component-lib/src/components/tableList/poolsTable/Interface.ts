@@ -3,6 +3,7 @@ import {
   AmmDetail,
   TradeFloat,
   ForexMap,
+  RowConfig,
 } from "@loopring-web/common-resources";
 import {
   LoopringMap,
@@ -29,4 +30,5 @@ export type PoolTableProps<T, R = Row<T>> = {
   tokenMap: { [key: string]: any };
   forexMap: ForexMap<Currency>;
   sortMethod: (sortedRows: any[], sortColumn: string) => any[];
+  rowConfig?: typeof RowConfig;
 };

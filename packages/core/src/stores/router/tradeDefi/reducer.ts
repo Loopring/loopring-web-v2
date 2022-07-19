@@ -52,7 +52,7 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
         miniSellVol,
         lastInput,
       } = action.payload;
-      if (market !== state.tradeDefi.market) {
+      if (market !== undefined && market !== state.tradeDefi.market) {
         // @ts-ignore
         state.tradeDefi = {
           ...initState,

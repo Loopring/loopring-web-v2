@@ -4,7 +4,9 @@ import {
   Box,
   Card,
   CardContent,
+  Divider,
   Grid,
+  Link,
   Typography,
 } from "@mui/material";
 import styled from "@emotion/styled";
@@ -18,8 +20,10 @@ import {
   BackIcon,
   ammAdvice,
   defiAdvice,
-  myLog,
+  AccountStatus,
+  RowInvestConfig,
 } from "@loopring-web/common-resources";
+import { useAccount } from "@loopring-web/core";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -39,21 +43,19 @@ const WrapperStyled = styled(Box)`
   }
 `;
 
-const StylePaper = styled(Box)`
-  width: 100%;
-  //height: 100%;
-  flex: 1;
-  padding-bottom: ${({ theme }) => theme.unit}px;
-  .rdg {
-    flex: 1;
-  }
-` as typeof Box;
-
 export const OverviewPanel = withTranslation("common")(
   ({ t }: WithTranslation & {}) => {
-    const { filteredData, sortMethod, filterValue, getFilteredData } =
-      useOverview();
+    const {
+      filteredData,
+      filterValue,
+      getFilteredData,
+      // myFilteredData,
+      rawData,
+      myMapLoading,
+      myRawData,
+    } = useOverview();
     const { coinJson } = useSettings();
+    const { account } = useAccount();
     const showLoading = filteredData && !filteredData.length;
     const history = useHistory();
     const investAdviceList = [ammAdvice, defiAdvice];
@@ -112,17 +114,54 @@ export const OverviewPanel = withTranslation("common")(
               );
             })}
           </Grid>
-          <Box flex={1} marginBottom={1}>
+          {!!(account.readyState === AccountStatus.ACTIVATED) && (
+            <>
+              <Box display={"flex"} flexDirection={"column"}>
+                <Typography variant={"h5"} marginBottom={1} marginX={5}>
+                  {t("labelTitleMyInvestAvaiable", { ns: "common" })}
+                </Typography>
+                <InvestOverviewTable
+                  showLoading={myMapLoading}
+                  coinJson={coinJson}
+                  rawData={myRawData}
+                  rowConfig={RowInvestConfig}
+                />
+              </Box>
+              <Box marginTop={3} marginBottom={2} marginX={2}>
+                <Divider />
+              </Box>
+            </>
+          )}
+
+          <Box
+            display={"flex"}
+            flex={1}
+            marginBottom={1}
+            flexDirection={"column"}
+          >
             <InvestOverviewTable
               showLoading={showLoading}
-              sortMethod={sortMethod}
+              showFilter={true}
               filterValue={filterValue}
               getFilteredData={getFilteredData}
-              // hideSmallBalances={hideSmallBalances}
-              // setHideSmallBalances={setHideSmallBalances}
               coinJson={coinJson}
               rawData={filteredData}
+              rowConfig={RowInvestConfig}
             />
+            {rawData.length !== filteredData.length && (
+              <Link
+                variant={"body1"}
+                marginY={1}
+                textAlign={"center"}
+                display={"inline-flex"}
+                justifyContent={"center"}
+                onClick={() => {
+                  getFilteredData("");
+                }}
+              >
+                {t("labelViewMore")}
+              </Link>
+            )}
           </Box>
         </WrapperStyled>
       </>

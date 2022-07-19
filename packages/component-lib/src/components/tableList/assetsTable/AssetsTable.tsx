@@ -16,7 +16,7 @@ import {
 import { useSettings } from "../../../stores";
 import { CoinIcons } from "./components/CoinIcons";
 import ActionMemo from "./components/ActionMemo";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { Currency, XOR } from "@loopring-web/loopring-sdk";
 
 const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
   display: flex;
@@ -101,7 +101,7 @@ export type RawDataAssetsItem = {
   tokenValueDollar: number;
 };
 
-export interface AssetsTableProps {
+export type AssetsTableProps = {
   rawData: RawDataAssetsItem[];
   pagination?: {
     pageSize: number;
@@ -116,18 +116,18 @@ export interface AssetsTableProps {
   // onShowTransfer: (token: string) => void;
   // onShowWithdraw: (token: string) => void;
   getMarketArrayListCallback: (token: string) => string[];
-  hideInvestToken: boolean;
-  hideSmallBalances: boolean;
+  rowConfig?: typeof RowConfig;
   disableWithdrawList: string[];
-  setHideLpToken: (value: boolean) => void;
-  setHideSmallBalances: (value: boolean) => void;
   forexMap: ForexMap<Currency>;
-}
-
-// const RowConfig = {
-//   rowHeight: 44,
-//   headerRowHeight: 44,
-// };
+} & XOR<
+  {
+    hideInvestToken: boolean;
+    hideSmallBalances: boolean;
+    setHideLpToken: (value: boolean) => void;
+    setHideSmallBalances: (value: boolean) => void;
+  },
+  {}
+>;
 
 export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
@@ -146,6 +146,7 @@ export const AssetsTable = withTranslation("tables")(
       setHideLpToken,
       setHideSmallBalances,
       forexMap,
+      rowConfig = RowConfig,
       ...rest
     } = props;
 
@@ -163,10 +164,10 @@ export const AssetsTable = withTranslation("tables")(
       (viewData) => {
         setViewData(viewData);
         setTableHeight(
-          RowConfig.rowHeaderHeight + viewData.length * RowConfig.rowHeight
+          rowConfig.rowHeaderHeight + viewData.length * rowConfig.rowHeight
         );
       },
-      [setViewData, setTableHeight]
+      [setViewData, setTableHeight, rowConfig]
     );
     const updateData = React.useCallback(() => {
       let resultData = totalData && !!totalData.length ? totalData : [];
@@ -498,8 +499,8 @@ export const AssetsTable = withTranslation("tables")(
         <Table
           {...{ ...rest, t }}
           style={{ height: tableHeight }}
-          rowHeight={RowConfig.rowHeight}
-          headerRowHeight={RowConfig.rowHeaderHeight}
+          rowHeight={rowConfig.rowHeight}
+          headerRowHeight={rowConfig.rowHeaderHeight}
           rawData={viewData}
           generateRows={(rowData: any) => rowData}
           generateColumns={({ columnsRaw }: any) =>

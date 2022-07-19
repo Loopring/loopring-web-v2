@@ -1,12 +1,14 @@
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 
 import { useTranslation, withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { useSettings } from "@loopring-web/component-lib";
+import {
+  ConfirmInvestDefiRisk,
+  useSettings,
+} from "@loopring-web/component-lib";
 import React from "react";
-import { useAccount, ViewAccountTemplate } from "@loopring-web/core";
+import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
@@ -166,9 +168,9 @@ export const DefiTitle = () => {
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
   let match: any = useRouteMatch(["/invest/:item", ":subItem"]);
   const history = useHistory();
-  // const { search } = useLocation();
-  // const searchParams = new URLSearchParams(search);
-  // const { account } = useAccount();
+  const { confirmDefiInvest: confirmDefiInvestFun } =
+    confirmation.useConfirmation();
+  const [confirmDefiInvest, setConfirmDefiInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     InvestType.Overview
   );
@@ -202,14 +204,24 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         }}
       >
         <Tab value={InvestType.Overview} label={<OverviewTitle />} />
-        {/*<Tab value={InvestType.AmmPool} label={<AmmTitle />} />*/}
-        {/*<Tab value={InvestType.DeFi} label={<DefiTitle />} />*/}
         <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
+        <Tab
+          sx={{ visibility: "hidden" }}
+          value={InvestType.AmmPool}
+          label={<AmmTitle />}
+        />
+        <Tab
+          sx={{ visibility: "hidden" }}
+          value={InvestType.DeFi}
+          label={<DefiTitle />}
+        />
       </Tabs>
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
-        {tabIndex === InvestType.DeFi && <DeFiPanel />}
+        {tabIndex === InvestType.DeFi && (
+          <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest} />
+        )}
         {tabIndex === InvestType.MyBalance && (
           <Box
             flex={1}
@@ -221,6 +233,17 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           </Box>
         )}
       </Box>
+      <ConfirmInvestDefiRisk
+        open={confirmDefiInvest}
+        handleClose={(_e, isAgree) => {
+          setConfirmDefiInvest(false);
+          if (!isAgree) {
+            history.goBack();
+          } else {
+            confirmDefiInvestFun();
+          }
+        }}
+      />
     </Box>
   );
 });

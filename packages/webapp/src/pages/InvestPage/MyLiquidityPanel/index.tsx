@@ -5,7 +5,9 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import {
   AmmPanelType,
+  AssetsTable,
   MyPoolTable,
+  TokenType,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -14,6 +16,8 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
+  RowConfig,
+  RowInvestConfig,
 } from "@loopring-web/common-resources";
 
 import { AmmPoolActivityRule, LoopringMap } from "@loopring-web/loopring-sdk";
@@ -26,6 +30,7 @@ import {
   useTokenMap,
 } from "@loopring-web/core";
 import { useTheme } from "@emotion/react";
+import { useGetAssets } from "../../AssetPage/AssetPanel/hook";
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
@@ -41,14 +46,21 @@ const MyLiquidity: any = withTranslation("common")(
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
   }) => {
     const { ammActivityMap } = useAmmActivityMap();
-    const { forexMap, allowTrade } = useSystem();
-    const { tokenMap } = useTokenMap();
+    const { forexMap } = useSystem();
+    const { tokenMap, disableWithdrawList } = useTokenMap();
+    const {
+      assetsRawData,
+      onSend,
+      onReceive,
+      allowTrade,
+      getTokenRelatedMarketArray,
+    } = useGetAssets();
     const { account } = useAccount();
     const history = useHistory();
     const { currency, hideSmallBalances, setHideSmallBalances } = useSettings();
     const { setShowAmm } = useOpenModals();
 
-    const { summaryMyAmm, myPoolRow, showLoading } = useOverview({
+    const { summaryMyInvest, myPoolRow, showLoading } = useOverview({
       ammActivityMap,
     });
 
@@ -88,10 +100,10 @@ const MyLiquidity: any = withTranslation("common")(
                 marginTop={1}
                 fontFamily={"Roboto"}
               >
-                {summaryMyAmm?.investDollar
+                {summaryMyInvest?.investDollar
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      (summaryMyAmm.investDollar || 0) *
+                      (summaryMyInvest.investDollar || 0) *
                         (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
@@ -119,10 +131,11 @@ const MyLiquidity: any = withTranslation("common")(
                 marginTop={1}
                 fontFamily={"Roboto"}
               >
-                {summaryMyAmm?.feeDollar
+                {summaryMyInvest?.feeDollar
                   ? PriceTag[CurrencyToTag[currency]] +
                     getValuePrecisionThousand(
-                      (summaryMyAmm.feeDollar || 0) * (forexMap[currency] ?? 0),
+                      (summaryMyInvest.feeDollar || 0) *
+                        (forexMap[currency] ?? 0),
                       undefined,
                       undefined,
                       2,
@@ -150,8 +163,8 @@ const MyLiquidity: any = withTranslation("common")(
           </Link>
         </StyleWrapper>
         <TableWrapStyled
-          className={"table-divide-short MuiPaper-elevation2"}
-          marginY={2}
+          className={"table-divide-short MuiPaper-elevation2 min-height"}
+          marginTop={2}
           paddingY={2}
           paddingX={0}
           flex={1}
@@ -194,7 +207,46 @@ const MyLiquidity: any = withTranslation("common")(
                   symbol: pair,
                 });
               }}
-              handlePageChange={() => {}}
+              rowConfig={RowInvestConfig}
+            />
+          </Grid>
+        </TableWrapStyled>
+
+        <TableWrapStyled
+          className={"table-divide-short MuiPaper-elevation2 min-height"}
+          marginTop={2}
+          marginBottom={3}
+          paddingY={2}
+          paddingX={0}
+          flex={1}
+        >
+          <Grid item xs={12}>
+            <Typography variant={"h5"} marginBottom={1} marginX={5}>
+              {t("labelInvestType_DEFI")}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} display={"flex"} flexDirection={"column"} flex={1}>
+            <AssetsTable
+              {...{
+                disableWithdrawList,
+                rawData: assetsRawData.filter(
+                  (o) =>
+                    o.token.type !== TokenType.single &&
+                    o.token.type !== TokenType.lp
+                ),
+                showFilter: false,
+                allowTrade,
+                onSend,
+                onReceive,
+                getMarketArrayListCallback: getTokenRelatedMarketArray,
+                // hideInvestToken,
+                rowConfig: RowInvestConfig,
+                forexMap: forexMap as any,
+                // hideSmallBalances,
+                // setHideLpToken,
+                // setHideSmallBalances,
+                ...rest,
+              }}
             />
           </Grid>
         </TableWrapStyled>
