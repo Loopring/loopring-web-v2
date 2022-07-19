@@ -953,20 +953,45 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         <DialogTitle> {t("labelDefiRiskTitle")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Typography whiteSpace={"pre-line"} component={"span"}>
-              <Trans i18nKey={"labelDefiRisk"}>
+            <Trans i18nKey={"labelDefiRisk"}>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                color={"textSecondary"}
+              >
                 Lido is a liquid staking solution for ETH 2.0 backed by
                 industry-leading staking providers. Lido lets users stake their
-                ETH - without locking assets or maintaining infrastructure. When
-                using Lido to stake your ETH on the Ethereum beacon chain, users
-                will receive a token (stETH), which represents their ETH on the
-                Ethereum beacon chain on a 1:1 basis. It effectively acts as a
-                bridge bringing ETH 2.0’s staking rewards to ETH 1.0. wstETH is
-                the wrapped version of stETH. The total amount of wstETH doesn’t
-                change after users receive the token. Instead, the token’s value
-                increase over time to reflect ETH staking rewards earned.
-              </Trans>
-            </Typography>
+                ETH - without locking assets or maintaining infrastructure.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                When using Lido to stake your ETH on the Ethereum beacon chain,
+                users will receive a token (stETH), which represents their ETH
+                on the Ethereum beacon chain on a 1:1 basis. It effectively acts
+                as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                wstETH is the wrapped version of stETH. The total amount of
+                wstETH doesn’t change after users receive the token. Instead,
+                the token’s value increase over time to reflect ETH staking
+                rewards earned.
+              </Typography>
+            </Trans>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

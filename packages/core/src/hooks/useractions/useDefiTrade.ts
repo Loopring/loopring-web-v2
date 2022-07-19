@@ -265,7 +265,7 @@ export const useDefiTrade = <
         tradeDefi.feeRaw,
         "buy market balance",
         //@ts-ignore
-        defiMarketMap && coinBuySymbol && defiMarketMap[market].baseVolume
+        defiMarketMap && defiMarketMap[market]?.baseVolume
       );
       if (
         tradeDefi?.sellVol === undefined ||
@@ -538,7 +538,7 @@ export const useDefiTrade = <
             volume: tradeDefi.buyVol,
           },
           validUntil: getTimestampDaysLater(DAYS),
-          maxFeeBips: tradeDefi.maxFeeBips,
+          maxFeeBips: tradeDefi.maxFeeBips <= 5 ? 5 : tradeDefi.maxFeeBips,
           fillAmountBOrS: false,
           action: isJoin ? sdk.DefiAction.Deposit : sdk.DefiAction.Withdraw,
           fee: tradeDefi.feeRaw,
