@@ -48,7 +48,6 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   const coinBuyRef = React.useRef();
   const { t } = useTranslation();
   const history = useHistory();
-
   const _onSwitchStob = React.useCallback(
     (_event: any) => {
       if (typeof switchStobEvent === "function") {
@@ -97,14 +96,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   );
   // };
   const getDisabled = React.useMemo(() => {
-    return (
-      disabled ||
-      isLoading ||
-      deFiCalcData === undefined ||
-      btnStatus === TradeBtnStatus.DISABLED
-    );
+    return disabled || isLoading || deFiCalcData === undefined;
   }, [btnStatus, deFiCalcData, disabled, isLoading]);
-
   // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
@@ -153,6 +146,14 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
     handleCountChange,
     ...rest,
   };
+  const label = React.useMemo(() => {
+    if (btnInfo?.label) {
+      const key = btnInfo?.label.split("|");
+      return t(key[0], key && key[1] ? { arg: key[1] } : undefined);
+    } else {
+      return isJoin ? t(`labelInvestBtn`) : t(`labelRedeemBtn`);
+    }
+  }, [isJoin, t, btnInfo]);
 
   const maxValue =
     tokenSell.symbol &&
@@ -322,16 +323,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   ? "true"
                   : "false"
               }
-              disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
+              disabled={
+                getDisabled ||
+                btnStatus === TradeBtnStatus.LOADING ||
+                btnStatus === TradeBtnStatus.DISABLED
+              }
             >
-              {btnInfo?.label
-                ? t(btnInfo.label, btnInfo.params)
-                : isJoin
-                ? t(`labelInvestBtn`)
-                : t(`labelRedeemBtn`)}
+              {label}
             </ButtonStyle>
           </Grid>
-          {!!confirmShowLimitBalance && (
+          {confirmShowLimitBalance && (
             <Grid item>
               <Typography
                 variant={"body1"}

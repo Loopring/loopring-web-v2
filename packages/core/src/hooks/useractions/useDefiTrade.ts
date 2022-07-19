@@ -233,6 +233,8 @@ export const useDefiTrade = <
         };
       }
       updateTradeDefi({
+        market:
+          _oldTradeDefi.market !== market ? (market as MarketType) : undefined,
         ..._oldTradeDefi,
         ...calcValue,
         deFiCalcData: {
@@ -298,17 +300,20 @@ export const useDefiTrade = <
       } else if (sellExceed) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
-          label: "labelDefiNoEnough| ${coinSellSymbol}",
+          label: `labelDefiNoEnough| ${coinSellSymbol}`,
         };
       } else {
         return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" }; // label: ''}
       }
     }
     return { tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: "" };
-  }, [tradeDefi.deFiCalcData, tokenMap, coinSellSymbol]);
+  }, [defiMarketMap, market, tradeDefi.deFiCalcData, tokenMap, coinSellSymbol]);
 
   const resetDefault = React.useCallback(
-    async (clearTrade: boolean = false, feeInfo: any) => {
+    async (
+      clearTrade: boolean = false,
+      feeInfo: undefined | { fee: any; feeRaw: any }
+    ) => {
       let walletMap: any = {};
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i) ?? [];
       const marketInfo = defiMarketMap[market];
@@ -317,6 +322,13 @@ export const useDefiTrade = <
         coinBuy: {},
         ...tradeDefi.deFiCalcData,
       };
+      let _feeInfo = feeInfo
+        ? feeInfo
+        : {
+            fee: tradeDefi.fee,
+            feeRaw: tradeDefi.feeRaw,
+          };
+
       if (account.readyState === AccountStatus.ACTIVATED) {
         if (clearTrade === true) {
           walletLayer2Service.sendUserUpdate();
@@ -384,8 +396,8 @@ export const useDefiTrade = <
             [baseSymbol]: marketInfo?.baseVolume ?? "",
             [quoteSymbol]: marketInfo?.quoteVolume ?? "",
           } as any,
-          fee: feeInfo?.fee.toString(),
-          feeRaw: feeInfo?.feeRaw.toString(),
+          fee: _feeInfo?.fee.toString(),
+          feeRaw: _feeInfo?.feeRaw.toString(),
           depositPrice: marketInfo?.depositPrice ?? "0",
           withdrawPrice: marketInfo?.withdrawPrice ?? "0",
         });
@@ -396,8 +408,8 @@ export const useDefiTrade = <
             [baseSymbol]: marketInfo?.baseVolume ?? "",
             [quoteSymbol]: marketInfo?.quoteVolume ?? "",
           } as any,
-          fee: feeInfo?.fee.toString(),
-          feeRaw: feeInfo?.feeRaw.toString(),
+          fee: _feeInfo?.fee.toString(),
+          feeRaw: _feeInfo?.feeRaw.toString(),
           depositPrice: marketInfo?.depositPrice ?? "0",
           withdrawPrice: marketInfo?.withdrawPrice ?? "0",
         };
@@ -421,6 +433,8 @@ export const useDefiTrade = <
       market,
       tokenMap,
       tradeDefi.deFiCalcData,
+      tradeDefi.fee,
+      tradeDefi.feeRaw,
       tradeDefi.lastInput,
       tradeDefi.market,
       updateTradeDefi,
@@ -435,8 +449,7 @@ export const useDefiTrade = <
       if (clearTrade) {
         setIsLoading(true);
       }
-
-      const [defiMapInfo, _feeInfo] = await Promise.all([
+      Promise.all([
         LoopringAPI.defiAPI?.getDefiMarkets(),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
@@ -445,21 +458,23 @@ export const useDefiTrade = <
                 : sdk.OffchainFeeReqType.DEFI_EXIT
             )
           : Promise.resolve(undefined),
-      ]);
-
-      updateDefiSyncMap({
-        defiMap: {
-          marketMap: defiMapInfo.markets,
-          marketCoins: defiMapInfo.tokenArr,
-          marketArray: defiMapInfo.marketArr,
-        },
+      ]).then(([defiMapInfo, _feeInfo]) => {
+        updateDefiSyncMap({
+          defiMap: {
+            marketMap: defiMapInfo.markets,
+            marketCoins: defiMapInfo.tokenArr,
+            marketArray: defiMapInfo.marketArr,
+          },
+        });
+        resetDefault(clearTrade, {
+          fee: tradeDefi.fee,
+          feeRaw: tradeDefi.feeRaw,
+          ..._feeInfo,
+        });
       });
-
-      resetDefault(clearTrade, {
-        fee: tradeDefi.fee,
-        feeRaw: tradeDefi.feeRaw,
-        ..._feeInfo,
-      });
+      if (account.readyState === AccountStatus.ACTIVATED) {
+        resetDefault(clearTrade, undefined);
+      }
     }
   }, globalSetup.wait);
 
@@ -504,7 +519,14 @@ export const useDefiTrade = <
       myLog("Defi walletLayer2Callback", tradeData);
       handleOnchange({ tradeData, type });
     }
-  }, [handleOnchange, tradeDefi]);
+  }, [
+    account.readyState,
+    coinBuySymbol,
+    coinSellSymbol,
+    handleOnchange,
+    tradeDefi.deFiCalcData,
+    tradeDefi.lastInput,
+  ]);
 
   useWalletLayer2Socket({ walletLayer2Callback });
   const sendRequest = React.useCallback(async () => {
@@ -713,16 +735,19 @@ export const useDefiTrade = <
         }
       });
       if (refreshRef.current) {
-        if (!should15sRefresh.flush()) {
-          myLog("should15sRefresh refreshRef.current call", market);
-          should15sRefresh(true);
-          // @ts-ignore
-          refreshRef.current.firstElementChild.click();
-        } else {
-          myLog("should15sRefresh refreshRef.current click only", market);
-          // @ts-ignore
-          refreshRef.current.firstElementChild.click();
-        }
+        // if (!should15sRefresh.flush()) {
+        //   myLog("should15sRefresh refreshRef.current call", market);
+        //   // @ts-ignore
+        //
+        // } else {
+        //   myLog("should15sRefresh refreshRef.current click only", market);
+        //   should15sRefresh(true);
+        //   // @ts-ignore
+        //   // refreshRef.current.firstElementChild.click();
+        // }
+        // @ts-ignore
+        refreshRef.current.firstElementChild.click();
+        should15sRefresh(true);
       } else {
         should15sRefresh(true);
       }
@@ -743,17 +768,15 @@ export const useDefiTrade = <
     // account.readyState,
   ]);
   // React.useEffect(() => {}, []);
-
+  myLog("isLoading", isLoading);
   const deFiWrapProps = React.useMemo(() => {
     return {
       isStoB,
       refreshRef,
       onConfirm: sendRequest,
       disabled:
-        isLoading ||
         !tradeDefi.deFiCalcData?.AtoB ||
-        (account.readyState === AccountStatus.ACTIVATED &&
-          tradeDefi?.feeRaw === undefined),
+        (account.readyState === AccountStatus.ACTIVATED && !tradeDefi?.feeRaw),
       btnInfo: {
         label: tradeMarketI18nKey,
         params: {},
@@ -783,10 +806,10 @@ export const useDefiTrade = <
     isStoB,
     refreshRef,
     sendRequest,
-    account.readyState,
-    tradeDefi?.maxFeeBips,
     tradeDefi.deFiCalcData,
+    tradeDefi?.feeRaw,
     tradeDefi.maxSellVol,
+    account.readyState,
     tradeMarketI18nKey,
     isLoading,
     should15sRefresh,
