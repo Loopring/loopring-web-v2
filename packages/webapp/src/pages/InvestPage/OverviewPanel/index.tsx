@@ -20,7 +20,6 @@ import {
   BackIcon,
   ammAdvice,
   defiAdvice,
-  myLog,
   AccountStatus,
   RowInvestConfig,
 } from "@loopring-web/common-resources";

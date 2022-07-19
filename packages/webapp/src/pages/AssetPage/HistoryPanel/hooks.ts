@@ -376,7 +376,7 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
             start,
             end,
             limit,
-          },
+          } as any,
           apiKey
         );
         if (

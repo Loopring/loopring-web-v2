@@ -2,22 +2,15 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Box, Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { useDeFiHook } from "./hook";
 import {
   boxLiner,
-  ConfirmDefiBalanceIsLimit,
   ConfirmDefiNOBalance,
   DeFiWrap,
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import {
-  confirmation,
-  TOAST_TIME,
-  useDefiMap,
-  useTradeDefi,
-} from "@loopring-web/core";
+import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
 import { useRouteMatch } from "react-router-dom";
 import { MarketType } from "@loopring-web/common-resources";
@@ -58,18 +51,13 @@ export const DeFiPanel: any = withTranslation("common")(
 
     const isJoin =
       match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
-    const { tradeDefi } = useTradeDefi();
-    const isNoBalance = sdk
-      .toBig(tradeDefi?.maxSellVol ?? 0)
-      .minus(tradeDefi.miniSellVol ?? 0)
-      .toString()
-      .startsWith("-");
+
     const {
       deFiWrapProps,
       closeToast,
       toastOpen,
-      confirmShow,
-      setConfirmShow,
+      confirmShowNoBalance,
+      setConfirmShowNoBalance,
     } = useDeFiHook({
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
@@ -112,24 +100,24 @@ export const DeFiPanel: any = withTranslation("common")(
           onClose={closeToast}
         />
 
-        <ConfirmDefiBalanceIsLimit
-          handleClose={(_e, isAgree) => {
-            setConfirmShow(false);
-            if (isAgree) {
-              deFiWrapProps.onConfirm();
-            }
-          }}
-          open={confirmShow && !isNoBalance}
-          defiData={tradeDefi}
-        />
+        {/*<ConfirmDefiBalanceIsLimit*/}
+        {/*  handleClose={(_e, isAgree) => {*/}
+        {/*    setConfirmShow(false);*/}
+        {/*    if (isAgree) {*/}
+        {/*      deFiWrapProps.onConfirm();*/}
+        {/*    }*/}
+        {/*  }}*/}
+        {/*  open={confirmShow && !isNoBalance}*/}
+        {/*  defiData={tradeDefi}*/}
+        {/*/>*/}
         <ConfirmDefiNOBalance
           handleClose={(_e) => {
-            setConfirmShow(false);
+            setConfirmShowNoBalance(false);
             if (deFiWrapProps?.onRefreshData) {
               deFiWrapProps?.onRefreshData(true, true);
             }
           }}
-          open={confirmShow && isNoBalance}
+          open={confirmShowNoBalance}
         />
       </StyleWrapper>
     );

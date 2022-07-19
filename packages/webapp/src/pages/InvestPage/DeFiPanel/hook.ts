@@ -15,17 +15,18 @@ export const useDeFiHook = ({
   const { marketArray } = useDefiMap();
   myLog("isJoin", isJoin, "market", market);
 
-  const { deFiWrapProps, confirmShow, setConfirmShow } = useDefiTrade({
-    isJoin,
-    setToastOpen: setToastOpen as any,
-    market: market ? market : marketArray[0], // marketArray[1] as MarketType,
-  });
+  const { deFiWrapProps, confirmShowNoBalance, setConfirmShowNoBalance } =
+    useDefiTrade({
+      isJoin,
+      setToastOpen: setToastOpen as any,
+      market: market ? market : marketArray[0], // marketArray[1] as MarketType,
+    });
 
   return {
     deFiWrapProps,
     toastOpen,
     closeToast,
-    confirmShow,
-    setConfirmShow,
+    confirmShowNoBalance,
+    setConfirmShowNoBalance,
   };
 };

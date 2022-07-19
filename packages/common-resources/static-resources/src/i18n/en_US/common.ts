@@ -855,4 +855,9 @@ export default {
   labelViewMore: "View more",
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
+  labelDefiRiskTitle: "What is ETH Staking via Lido?",
+  labelDefiRisk:
+    "Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.\n" +
+    "When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.\n" +
+    "wstETH is the wrapped version of stETH. The total amount of wstETH doesn’t change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.\n",
 };
