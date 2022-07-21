@@ -90,7 +90,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
   const { setOneItem } = layer1Store.useLayer1Store();
   const onLock = React.useCallback(
     async (item: T) => {
-      // const [isContract1XAddress, setIsContract1XAddress] = React.useState(false);
+      //
       const config = guardianConfig.actionGasSettings.find(
         (item: any) => item.action === "META_TX_LOCK_WALLET_WA"
       );

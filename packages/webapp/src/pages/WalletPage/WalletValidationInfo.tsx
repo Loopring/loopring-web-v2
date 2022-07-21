@@ -28,11 +28,9 @@ import { connectProvides } from "@loopring-web/web3-provider";
 import { useAccount } from "@loopring-web/core";
 import { useSystem } from "@loopring-web/core";
 import {
-  myLog,
   RefreshIcon,
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
-  SoursURL,
 } from "@loopring-web/common-resources";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
@@ -175,7 +173,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
 
   const VCODE_UNIT = 6;
 
-  const submitApprove = (code: string) => {
+  const submitApprove = async (code: string) => {
     setOpenCode(false);
     handleOpenModal({
       step: GuardianStep.Approve_WaitForAuth,
@@ -186,6 +184,19 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
       },
     });
     if (LoopringAPI.walletAPI && selected) {
+      const { walletType } = await LoopringAPI.walletAPI.getWalletType({
+        wallet: selected.address,
+      });
+      let isContract1XAddress = undefined,
+        guardians = undefined;
+      if (
+        walletType &&
+        walletType.loopringWalletContractVersion?.startsWith("V1_")
+      ) {
+        isContract1XAddress = true;
+      } else if (walletType && walletType.isContract) {
+        guardians = [];
+      }
       const request: sdk.ApproveSignatureRequest = {
         approveRecordId: selected.id,
         txAwareHash: selected.messageHash,
@@ -193,17 +204,22 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
         signer: account.accAddress,
         signature: "",
       };
+      debugger;
       LoopringAPI.walletAPI
-        .submitApproveSignature({
-          request: request,
-          guardian: selected,
-          web3: connectProvides.usedWeb3 as Web3,
-          chainId: chainId as any,
-          eddsaKey: "",
-          apiKey: "",
-          isHWAddr: !isFirstTime,
-          walletType: account.connectName as any,
-        })
+        .submitApproveSignature(
+          {
+            request: request,
+            guardian: selected,
+            web3: connectProvides.usedWeb3 as Web3,
+            chainId: chainId as any,
+            eddsaKey: "",
+            apiKey: "",
+            isHWAddr: !isFirstTime,
+            walletType: account.connectName as any,
+          },
+          guardians,
+          isContract1XAddress
+        )
         .then((response) => {
           if (
             (response as sdk.RESULT_INFO).code ||
