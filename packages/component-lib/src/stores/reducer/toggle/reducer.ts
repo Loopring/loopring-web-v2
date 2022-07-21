@@ -16,6 +16,7 @@ const initialState: ToggleState = {
   mintNFT: { enable: true },
   deployNFT: { enable: true },
   updateAccount: { enable: true },
+  collectionNFT: { enable: true },
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
@@ -40,6 +41,7 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
         mintNFT,
         deployNFT,
         updateAccount,
+        collectionNFT,
       } = action.payload;
       if (order !== undefined) {
         state.order = order;
@@ -79,6 +81,9 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       }
       if (updateAccount !== undefined) {
         state.updateAccount = updateAccount;
+      }
+      if (collectionNFT !== undefined) {
+        state.collectionNFT = collectionNFT;
       }
     },
   },

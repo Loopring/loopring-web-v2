@@ -87,6 +87,7 @@ const initialState: ModalDataStatus = {
     nftMETA: { ...initialNFTMETA },
   },
   nftMintAdvanceValue: { ...initialTradeNFT },
+  collectionAdvanceValue: {},
   nftDeployValue: { ...initialTradeNFT, broker: "" },
   activeAccountValue: initialActiveAccountState,
   forceWithdrawValue: { ...initialForceWithdrawState },
@@ -154,6 +155,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetNFTMintAdvanceData(state) {
       state.lastStep = LAST_STEP.default;
       state.nftMintAdvanceValue = initialTradeNFT;
+    },
+    resetCollectionAdvanceData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.collectionAdvanceValue = {};
     },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;
@@ -343,6 +348,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
+    updateCollectionAdvanceData(state, _action: PayloadAction<any>) {
+      state.lastStep = LAST_STEP.LAST_STEP;
+      state.collectionAdvanceValue = {};
+    },
     updateNFTMintData(state, action: PayloadAction<NFT_MINT_VALUE<any>>) {
       const mintData = action.payload.mintData;
       const nftMETA = action.payload.nftMETA;
@@ -409,6 +418,7 @@ export const {
   updateNFTMintData,
   updateNFTDeployData,
   updateNFTMintAdvanceData,
+  updateCollectionAdvanceData,
   resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,
@@ -420,5 +430,6 @@ export const {
   resetActiveAccountData,
   resetNFTDeployData,
   resetNFTMintAdvanceData,
+  resetCollectionAdvanceData,
   resetAll,
 } = modalDataSlice.actions;

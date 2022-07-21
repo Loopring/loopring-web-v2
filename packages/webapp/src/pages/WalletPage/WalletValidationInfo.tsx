@@ -184,17 +184,21 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
       },
     });
     if (LoopringAPI.walletAPI && selected) {
-      const { walletType } = await LoopringAPI.walletAPI.getWalletType({
+      const { contractType } = await LoopringAPI.walletAPI.getContractType({
         wallet: selected.address,
       });
       let isContract1XAddress = undefined,
+        forwarderModuleAddress = undefined,
         guardians = undefined;
-      if (
-        walletType &&
-        walletType.loopringWalletContractVersion?.startsWith("V1_")
-      ) {
+      if (contractType && contractType.contractVersion?.startsWith("V1_")) {
         isContract1XAddress = true;
-      } else if (walletType && walletType.isContract) {
+        const {
+          walletModule: { moduleAddress: forwarderModuleAddress },
+          // @ts-ignore
+        } = await LoopringAPI.walletAPI.getWalletModules({
+          wallet: selected.address,
+        });
+      } else if (contractType && contractType.walletType === 0) {
         guardians = [];
       }
       const request: sdk.ApproveSignatureRequest = {
@@ -204,7 +208,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
         signer: account.accAddress,
         signature: "",
       };
-      debugger;
+
       LoopringAPI.walletAPI
         .submitApproveSignature(
           {
@@ -218,7 +222,10 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
             walletType: account.connectName as any,
           },
           guardians,
-          isContract1XAddress
+          isContract1XAddress,
+          contractType?.masterCopy ?? undefined,
+          // @ts-ignore
+          forwarderModuleAddress ?? undefined
         )
         .then((response) => {
           if (

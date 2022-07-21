@@ -20,6 +20,7 @@ import {
   setShowTradeIsFrozen,
   setShowWrongNetworkGuide,
   setShowNFTMintAdvance,
+  setShowCollectionAdvance,
   setShowOtherExchange,
   setShowNFTDetail,
   setShowLayerSwapNotice,
@@ -113,6 +114,18 @@ export const useOpenModals = () => {
           dispatch(setShowNFTDeposit(state));
         } else {
           dispatch(setShowTradeIsFrozen({ isShow: true, type: "Deposit" }));
+        }
+      },
+      [dispatch]
+    ),
+    setShowCollectionAdvance: React.useCallback(
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
+        if (toggle.collectionNFT.enable) {
+          dispatch(setShowCollectionAdvance(state));
+        } else {
+          dispatch(
+            setShowCollectionAdvance({ isShow: true, type: "Collection" })
+          );
         }
       },
       [dispatch]

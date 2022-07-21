@@ -13,6 +13,7 @@ import {
   getShortAddr,
   SoursURL,
   NFTLimit,
+  L2HistoryIcon,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 
@@ -38,7 +39,6 @@ export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
     const { onDetail, nftList, isLoading, page, total, onPageChange } =
       useMyNFT();
-    const { setShowNFTMintAdvance } = useOpenModals();
     const history = useHistory();
 
     return (
@@ -66,25 +66,34 @@ export const MyNFTPanel = withTranslation("common")(
             >
               {t("labelNFTMyNFT")}
             </Typography>
+
+            {/*{*/}
+            {/*  icon: L2HistoryIcon,*/}
+            {/*  router: { path: "/nft/transactionNFT" },*/}
+            {/*  label: {*/}
+            {/*  id: "transactionNFT",*/}
+            {/*  i18nKey: "labelTransactionNFT",*/}
+            {/*  description: "labelTransactionNFTDes",*/}
+            {/*},*/}
+            {/*},*/}
             <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
               <Box marginLeft={1}>
                 <Button
-                  onClick={() => {
-                    setShowNFTMintAdvance({ isShow: true });
-                  }}
-                  variant={"outlined"}
+                  variant={"contained"}
+                  size={"small"}
                   color={"primary"}
+                  onClick={() => history.push("/nft/depositNFT")}
                 >
-                  {t("labelAdvanceMint")}
+                  {t("labelL1toL2NFT")}
                 </Button>
               </Box>
               <Box marginLeft={1}>
                 <Button
                   variant={"outlined"}
                   color={"primary"}
-                  onClick={() => history.push("/nft/depositNFT")}
+                  onClick={() => history.push("/nft/transactionNFT")}
                 >
-                  {t("labelL1toL2NFT")}
+                  {t("labelTransactionNFT")}
                 </Button>
               </Box>
             </Box>

@@ -11,7 +11,6 @@ import {
   ButtonListRightStyled,
   EmptyDefault,
   Button,
-  ModalQRCode,
   GuardianStep,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -97,6 +96,7 @@ export const useHebaoProtector = <T extends sdk.Protector>({
       const guardianModule = guardianConfig.supportContracts.find(
         (ele: any) => ele.contractName.toUpperCase() === "GUARDIAN_MODULE"
       ).contractAddress;
+
       if (LoopringAPI?.walletAPI) {
         const [isVersion1, nonce] = await Promise.all([
           LoopringAPI.walletAPI

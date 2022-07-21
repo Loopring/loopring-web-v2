@@ -6,6 +6,7 @@ export type ToggleState = {
   transferNFT: { enable: boolean; reason?: string };
   deposit: { enable: boolean; reason?: string };
   depositNFT: { enable: boolean; reason?: string };
+  collectionNFT: { enable: boolean; reason?: string };
   withdraw: { enable: boolean; reason?: string };
   withdrawNFT: { enable: boolean; reason?: string };
   mintNFT: { enable: boolean; reason?: string };

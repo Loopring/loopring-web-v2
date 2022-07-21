@@ -137,6 +137,11 @@ export type MintReadTradeNFT<I> = {
 export type TradeNFT<I> = MintTradeNFT<I> &
   Partial<NFTWholeINFO> & { isApproved?: boolean };
 
+
+export type CollectionMetaData = {
+  
+}
+
 export const TOAST_TIME = 3000;
 
 export const EmptyValueTag = "--";

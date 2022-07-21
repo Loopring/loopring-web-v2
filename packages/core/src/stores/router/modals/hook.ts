@@ -5,6 +5,7 @@ import {
   resetNFTDeployData,
   resetNFTDepositData,
   resetNFTMintAdvanceData,
+  resetCollectionAdvanceData,
   resetNFTMintData,
   resetNFTTransferData,
   resetNFTWithdrawData,
@@ -16,6 +17,7 @@ import {
   updateNFTDeployData,
   updateNFTDepositData,
   updateNFTMintAdvanceData,
+  updateCollectionAdvanceData,
   updateNFTMintData,
   updateNFTTransferData,
   updateNFTWithdrawData,
@@ -76,10 +78,13 @@ export function useModalData(): {
   ) => void;
   resetNFTWithdrawData: () => void;
   nftMintAdvanceValue: TradeNFT<any>;
+  collectionAdvanceValue: any;
   updateNFTMintAdvanceData: (
     nftMintData: RequireOne<MintData & NFTWholeINFO, never>
   ) => void;
+  updateCollectionAdvanceData: (collectionAdvanceData: any) => void;
   resetNFTMintAdvanceData: () => void;
+  resetCollectionAdvanceData: () => void;
   nftMintValue: NFT_MINT_VALUE<any>;
   updateNFTMintData: (nftMintData: NFT_MINT_VALUE<any>) => void;
   resetNFTMintData: () => void;
@@ -174,6 +179,12 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateCollectionAdvanceData: React.useCallback(
+      (collectionAdvanceDat: any) => {
+        dispatch(updateCollectionAdvanceData(collectionAdvanceDat));
+      },
+      [dispatch]
+    ),
     updateNFTMintAdvanceData: React.useCallback(
       (nftMintData: TradeNFT<any>) => {
         dispatch(updateNFTMintAdvanceData(nftMintData));
@@ -212,6 +223,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetNFTMintAdvanceData: React.useCallback(() => {
       dispatch(resetNFTMintAdvanceData(undefined));
+    }, [dispatch]),
+    resetCollectionAdvanceData: React.useCallback(() => {
+      dispatch(resetCollectionAdvanceData(undefined));
     }, [dispatch]),
     resetNFTMintData: React.useCallback(
       (tokenAddress?: string) => {
