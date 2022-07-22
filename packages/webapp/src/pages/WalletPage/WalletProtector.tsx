@@ -297,12 +297,14 @@ export const WalletProtector = <T extends sdk.Protector>({
   protectList,
   guardianConfig,
   handleOpenModal,
+  isContractAddress,
   loadData,
   onOpenAdd,
 }: {
   protectList: T[];
   onOpenAdd: () => void;
   guardianConfig: any;
+  isContractAddress: boolean;
   loadData: () => Promise<void>;
   handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
 }) => {
@@ -335,23 +337,27 @@ export const WalletProtector = <T extends sdk.Protector>({
             onClick={loadData}
           />
         </Typography>
-        <ButtonListRightStyled
-          item
-          xs={5}
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"flex-end"}
-        >
-          <Button
-            variant={"contained"}
-            size={"small"}
-            color={"primary"}
-            startIcon={<SecurityIcon htmlColor={"var(--color-text-button)"} />}
-            onClick={() => onOpenAdd()}
+        {isContractAddress && (
+          <ButtonListRightStyled
+            item
+            xs={5}
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"flex-end"}
           >
-            {t("labelAddProtector")}
-          </Button>
-        </ButtonListRightStyled>
+            <Button
+              variant={"contained"}
+              size={"small"}
+              color={"primary"}
+              startIcon={
+                <SecurityIcon htmlColor={"var(--color-text-button)"} />
+              }
+              onClick={() => onOpenAdd()}
+            >
+              {t("labelAddProtector")}
+            </Button>
+          </ButtonListRightStyled>
+        )}
       </Box>
 
       {

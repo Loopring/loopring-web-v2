@@ -491,7 +491,7 @@ export default {
   labelVendor: "Buy with Card",
   labelLock: "Lock",
   labelWalletToWallet:
-    "The connected wallet is a contract address which cannot be used. If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
+    "The connected wallet is a contract address which cannot be used (Except Recover Wallet). If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
   labelWalletAddAsGuardian: "Add a guardian",
   labelWalletInputGuardianCode: "Input 6 digital Code and Approve",
   labelWalletScanQRCode: "Please use your Loopring wallet to scan the QR code",

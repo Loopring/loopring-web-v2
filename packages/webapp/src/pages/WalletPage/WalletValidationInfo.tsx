@@ -1,5 +1,6 @@
 import {
   Box,
+  Dialog,
   Grid,
   ListItem,
   ListItemProps,
@@ -16,12 +17,14 @@ import {
   Button,
   ButtonListRightStyled,
   EmptyDefault,
+  GuardianNotSupport,
   GuardianStep,
   InputCode,
   ModalCloseButton,
   SwitchPanelStyled,
+  Toast,
 } from "@loopring-web/component-lib";
-import { LoopringAPI } from "@loopring-web/core";
+import { LoopringAPI, TOAST_TIME } from "@loopring-web/core";
 import Web3 from "web3";
 
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -32,6 +35,7 @@ import {
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
 } from "@loopring-web/common-resources";
+import { HEBAO_META_TYPE } from "@loopring-web/loopring-sdk/dist/defs/loopring_constants";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);
@@ -153,18 +157,21 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
   guardiansList,
   loadData,
   onOpenAdd,
+  guardianConfig,
+  isContractAddress,
   // isLoading,
   handleOpenModal,
 }: {
   guardiansList: G[];
   guardianConfig: any;
+  isContractAddress: boolean;
   // isLoading: boolean;
   loadData: () => Promise<void>;
   onOpenAdd: () => void;
   handleOpenModal: (props: { step: GuardianStep; options?: any }) => void;
 }) => {
   const { t } = useTranslation(["common", "error"]);
-
+  const [notSupportOpen, setNotSupportOpen] = React.useState(false);
   const [openCode, setOpenCode] = React.useState(false);
   const [selected, setSelected] = React.useState<G | undefined>();
   const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true);
@@ -188,14 +195,19 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
         wallet: selected.address,
       });
       let isContract1XAddress = undefined,
-        forwarderModuleAddress = undefined,
+        guardianModuleAddress = undefined,
         guardians = undefined;
       if (contractType && contractType.contractVersion?.startsWith("V1_")) {
         isContract1XAddress = true;
-        const { walletModule } = await LoopringAPI.walletAPI.getWalletModules({
-          wallet: selected.address,
-        });
-        forwarderModuleAddress = walletModule?.moduleAddress;
+        // const { walletModule } = await LoopringAPI.walletAPI.getWalletModules({
+        //   wallet: selected.address,
+        // });
+        const walletModule = guardianConfig?.supportContracts?.find(
+          (item: any) => {
+            return item.contractName === "GUARDIAN_MODULE";
+          }
+        );
+        guardianModuleAddress = walletModule?.contractAddress;
       } else if (contractType && contractType.walletType === 0) {
         guardians = [];
       }
@@ -222,8 +234,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
           guardians,
           isContract1XAddress,
           contractType?.masterCopy ?? undefined,
-
-          forwarderModuleAddress ?? undefined
+          guardianModuleAddress ?? undefined
         )
         .then((response) => {
           if (
@@ -312,11 +323,19 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
     }
   };
   const handleOpenApprove = (guardians: G) => {
+    if (isContractAddress && guardians.type !== "recovery") {
+      setNotSupportOpen(true);
+      return;
+    }
     setOpenCode(true);
     setSelected(guardians);
   };
   return (
     <>
+      <GuardianNotSupport
+        open={notSupportOpen}
+        handleClose={() => setNotSupportOpen(false)}
+      />
       <Modal open={openCode} onClose={() => setOpenCode(false)}>
         <SwitchPanelStyled>
           <Box display={"flex"} flexDirection={"column"}>
@@ -398,32 +417,34 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
               onClick={loadData}
             />
           </Typography>
-          <ButtonListRightStyled
-            item
-            xs={5}
-            display={"flex"}
-            flexDirection={"row"}
-            justifyContent={"flex-end"}
-          >
-            <Button
-              variant={"contained"}
-              size={"small"}
-              color={"primary"}
-              startIcon={
-                <SecurityIcon htmlColor={"var(--color-text-button)"} />
-              }
-              onClick={() => onOpenAdd()}
+          {isContractAddress && (
+            <ButtonListRightStyled
+              item
+              xs={5}
+              display={"flex"}
+              flexDirection={"row"}
+              justifyContent={"flex-end"}
             >
-              {t("labelAddProtector")}
-            </Button>
-          </ButtonListRightStyled>
+              <Button
+                variant={"contained"}
+                size={"small"}
+                color={"primary"}
+                startIcon={
+                  <SecurityIcon htmlColor={"var(--color-text-button)"} />
+                }
+                onClick={() => onOpenAdd()}
+              >
+                {t("labelAddProtector")}
+              </Button>
+            </ButtonListRightStyled>
+          )}
         </Box>
         <>
           {!!guardiansList.length ? (
             <Grid
               container
               alignItems={"flex-start"}
-              marginTop={2}
+              marginY={2}
               flex={1}
               alignContent={"flex-start"}
             >
