@@ -417,7 +417,7 @@ export const WalletValidationInfo = <G extends sdk.Guardian>({
               onClick={loadData}
             />
           </Typography>
-          {isContractAddress && (
+          {!isContractAddress && (
             <ButtonListRightStyled
               item
               xs={5}
