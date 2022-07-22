@@ -347,23 +347,6 @@ export function useGetDefiRecord(setToastOpen: (props: any) => void) {
   const [defiTotal, setDefiTotal] = React.useState(0);
   const [showLoading, setShowLoading] = React.useState(true);
   const { accountId, apiKey } = store.getState().account;
-  const { tokenMap } = useTokenMap();
-
-  // const getTokenName = React.useCallback(
-  //   (tokenId?: number) => {
-  //     if (tokenMap) {
-  //       const keys = Object.keys(tokenMap);
-  //       const values = Object.values(tokenMap);
-  //       const index = values.findIndex((o) => o.tokenId === tokenId);
-  //       if (index > -1) {
-  //         return keys[index];
-  //       }
-  //       return "";
-  //     }
-  //     return "";
-  //   },
-  //   [tokenMap]
-  // );
 
   const getDefiTxList = React.useCallback(
     async ({ start, end, offset, limit }: any) => {

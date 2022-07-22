@@ -233,13 +233,6 @@ export const OrderHistoryTable = withTranslation("tables")(
     const [modalState, setModalState] = React.useState(false);
     const [currOrderId, setCurrOrderId] = React.useState("");
     const [showCancelAllAlert, setShowCancelAllAlert] = React.useState(false);
-    const pageSize = pagination ? pagination.pageSize : 0;
-
-    React.useEffect(() => {
-      if (isOpenOrder) {
-        setPage(1);
-      }
-    }, [isOpenOrder]);
 
     const updateData = _.debounce(
       async ({
@@ -250,9 +243,8 @@ export const OrderHistoryTable = withTranslation("tables")(
         currFilterToken = filterToken,
         currPage = page,
       }) => {
-        let actualPage = currPage;
         if (actionType === TableType.filter) {
-          actualPage = 1;
+          currPage = 1;
           setPage(1);
         }
         const types =
@@ -264,8 +256,8 @@ export const OrderHistoryTable = withTranslation("tables")(
         const start = Number(moment(currFilterDate[0]).format("x"));
         const end = Number(moment(currFilterDate[1]).format("x"));
         await getOrderList({
-          limit: pageSize,
-          offset: (actualPage - 1) * pageSize,
+          limit: pagination?.pageSize ?? 10,
+          offset: (currPage - 1) * (pagination?.pageSize ?? 10),
           side: [types] as Side[],
           market: currFilterToken === "all" ? "" : currFilterToken,
           start: Number.isNaN(start) ? -1 : start,
@@ -280,6 +272,7 @@ export const OrderHistoryTable = withTranslation("tables")(
 
     const handleFilterChange = React.useCallback(
       async ({
+        isOpen = isOpenOrder,
         type = filterType,
         date = filterDate,
         token = filterToken,
@@ -289,6 +282,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         setFilterDate(date);
         setFilterToken(token);
         await updateData({
+          isOpen: isOpen,
           actionType: TableType.filter,
           currFilterType: type,
           currFilterDate: date,
@@ -333,17 +327,30 @@ export const OrderHistoryTable = withTranslation("tables")(
       },
       [clearOrderDetail, getUserOrderDetailTradeList]
     );
+
+    // React.useEffect(() => {
+    //   let filters: any = {};
+    //   updateData.cancel();
+    //   if (searchParams.get("pair")) {
+    //     filters.pair = searchParams.get("pair");
+    //   }
+    //   handleFilterChange(filters);
+    //   return () => {
+    //     updateData.cancel();
+    //   };
+    // }, [pagination?.pageSize]);
     React.useEffect(() => {
       let filters: any = {};
       updateData.cancel();
       if (searchParams.get("market")) {
         filters.token = searchParams.get("market");
       }
+      filters.isOpen = isOpenOrder;
       handleFilterChange(filters);
       return () => {
         updateData.cancel();
       };
-    }, [pagination?.pageSize]);
+    }, [pagination?.pageSize, isOpenOrder]);
 
     const CellStatus = React.useCallback(
       ({ row, rowIdx }: any) => {
@@ -1244,7 +1251,7 @@ export const OrderHistoryTable = withTranslation("tables")(
         {pagination && !!rawData.length && (
           <TablePagination
             page={page}
-            pageSize={pageSize}
+            pageSize={pagination.pageSize}
             total={pagination.total}
             onPageChange={handlePageChange}
           />

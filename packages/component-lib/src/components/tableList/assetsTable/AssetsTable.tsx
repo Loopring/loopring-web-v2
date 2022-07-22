@@ -181,11 +181,6 @@ export const AssetsTable = withTranslation("tables")(
           (o) => o.token.type === TokenType.single
         );
       }
-      // if (hideIToken) {
-      //   resultData = resultData.filter(
-      //     (o) => o.token.type === TokenType.single
-      //   );
-      // }
       if (filter.searchValue) {
         resultData = resultData.filter((o) =>
           o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase())
@@ -470,18 +465,6 @@ export const AssetsTable = withTranslation("tables")(
     return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
-          // (isMobile && isDropDown ? (
-          //   <Link
-          //     variant={"body1"}
-          //     display={"inline-flex"}
-          //     width={"100%"}
-          //     justifyContent={"flex-end"}
-          //     paddingRight={2}
-          //     onClick={() => setIsDropDown(false)}
-          //   >
-          //     Show Filter
-          //   </Link>
-          // ) :
           <TableFilterStyled>
             <Filter
               {...{

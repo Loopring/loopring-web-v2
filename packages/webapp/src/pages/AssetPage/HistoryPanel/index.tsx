@@ -1,6 +1,6 @@
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import {
   AmmTable,
   Button,
@@ -49,13 +49,17 @@ const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
     const { search } = useLocation();
-    const match: any = useRouteMatch("/l2assets/history/:tab/:orderTab");
+    const match: any = useRouteMatch("/l2assets/:history/:tab");
+    const orderTabMatch: any = useRouteMatch(
+      "/l2assets/:history/:tab/:orderTab"
+    );
+
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(() => {
       return match?.params.tab ?? TabIndex.transactions;
     });
     const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
-      return match?.params.orderTab ?? TabOrderIndex.orderOpenTable;
+      return orderTabMatch?.params.orderTab ?? TabOrderIndex.orderOpenTable;
     });
 
     const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -94,7 +98,6 @@ const HistoryPanel = withTranslation("common")(
       showLoading,
       marketArray: orderRaw,
       cancelOrder,
-      clearRawData,
     } = useOrderList();
     const { userOrderDetailList, getUserOrderDetailTradeList } =
       useGetOrderHistorys();
@@ -125,6 +128,7 @@ const HistoryPanel = withTranslation("common")(
         handleTabChange(currentTab, pageSize);
       }
     }, [container?.current?.offsetHeight]);
+    // React.useEffect(()=>{},[])
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
         <Box marginBottom={2}>
@@ -302,7 +306,7 @@ const HistoryPanel = withTranslation("common")(
                             pageSize: pageSize,
                             total: totalNum,
                           },
-                    rawData: rawData,
+                    rawData,
                     showFilter: true,
                     getOrderList,
                     marketArray: orderRaw,
