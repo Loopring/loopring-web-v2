@@ -103,6 +103,7 @@ export type RawDataAssetsItem = {
 
 export type AssetsTableProps = {
   rawData: RawDataAssetsItem[];
+  isInvest?: boolean;
   pagination?: {
     pageSize: number;
   };
@@ -133,7 +134,7 @@ export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
     const {
       t,
-
+      isInvest = false,
       rawData,
       allowTrade,
       showFilter,
@@ -330,6 +331,7 @@ export const AssetsTable = withTranslation("tables")(
             <ActionMemo
               {...{
                 t,
+                isInvest,
                 tokenValue,
                 getMarketArrayListCallback,
                 disableWithdrawList,
@@ -451,6 +453,7 @@ export const AssetsTable = withTranslation("tables")(
                 disableWithdrawList,
                 isLp,
                 isDefi,
+                isInvest,
                 allowTrade,
                 market: renderMarket,
                 onReceive,

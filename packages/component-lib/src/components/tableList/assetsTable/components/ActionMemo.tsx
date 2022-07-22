@@ -24,6 +24,7 @@ export type ActionProps = {
   market: `${string}-${string}`;
   isLp: boolean;
   isDefi: boolean;
+  isInvest: boolean;
   onSend: (token: string, isToL1: boolean) => void;
   onReceive: (token: string) => void;
   // onShowDeposit: (token: string) => void;
@@ -166,6 +167,7 @@ const ActionPopContent = React.memo(
 
 const ActionMemo = React.memo((props: ActionProps) => {
   const { isMobile } = useSettings();
+  const history = useHistory();
   const {
     t,
     allowTrade,
@@ -173,6 +175,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     onSend,
     onReceive,
     isLp,
+    isInvest = false,
     isDefi,
     // onShowDeposit,
     // onShowTransfer,
@@ -201,7 +204,51 @@ const ActionMemo = React.memo((props: ActionProps) => {
       justifyContent={"space-between"}
       alignItems={"center"}
     >
-      {isMobile ? (
+      {isInvest ? (
+        <Box
+          display={"flex"}
+          flex={1}
+          justifyContent={"flex-end"}
+          marginRight={-1}
+        >
+          <Grid item>
+            <Button
+              variant={"text"}
+              size={"small"}
+              color={"primary"}
+              onClick={() => {
+                history.push(`/invest/defi/${tokenValue}-null/invest`);
+              }}
+            >
+              {t("labelDefiInvest")}
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              variant={"text"}
+              size={"small"}
+              color={"primary"}
+              onClick={() => {
+                history.push(`/invest/defi/${tokenValue}-null/redeem`);
+              }}
+            >
+              {t("labelDefiRedeem")}
+            </Button>
+          </Grid>
+          {/*{isToL1 && (*/}
+          {/*  <Grid item>*/}
+          {/*    <Button*/}
+          {/*      variant={"text"}*/}
+          {/*      size={"medium"}*/}
+          {/*      color={"primary"}*/}
+          {/*      onClick={() => onShowWithdraw(tokenValue)}*/}
+          {/*    >*/}
+          {/*      {t("labelL2toL1Action")}*/}
+          {/*    </Button>*/}
+          {/*  </Grid>*/}
+          {/*)}*/}
+        </Box>
+      ) : isMobile ? (
         <>
           {((!isLp && allowTrade?.order?.enable) || isLp || isDefi) && (
             <Grid item marginTop={1}>
