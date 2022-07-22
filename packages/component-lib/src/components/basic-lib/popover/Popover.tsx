@@ -30,7 +30,6 @@ const DEFAULT_TRANSFORM_ORIGIN: PopoverOrigin = {
 export const Popover: React.FC<PopoverWrapProps> = ({
   type,
   popupId,
-  isInvest,
   className,
   children,
   popoverContent,

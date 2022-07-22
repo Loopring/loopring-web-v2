@@ -29,6 +29,7 @@ import {
   getValuePrecisionThousand,
   DirectionTag,
   globalSetup,
+  RowConfig,
 } from "@loopring-web/common-resources";
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Filter, FilterOrderTypes } from "./components/Filter";
@@ -220,6 +221,11 @@ export const OrderHistoryTable = withTranslation("tables")(
       onRowClick,
     } = props;
     const { isMobile } = useSettings();
+    // const [tableHeight] = React.useState(() => {
+    //   if (isOpenOrder) {
+    //     return ;
+    //   }
+    // });
 
     const actionColumns = ["status"];
     const [filterType, setFilterType] = React.useState(
@@ -1234,6 +1240,11 @@ export const OrderHistoryTable = withTranslation("tables")(
           onScroll={
             handleScroll ? (e) => handleScroll(e, isOpenOrder) : undefined
           }
+          style={{
+            height: isOpenOrder
+              ? RowConfig.rowHeaderHeight + rawData.length * RowConfig.rowHeight
+              : "initial",
+          }}
           {...{ ...defaultArgs, ...props, rawData, showloading: showLoading }}
         />
         <CancelAllOrdersAlert

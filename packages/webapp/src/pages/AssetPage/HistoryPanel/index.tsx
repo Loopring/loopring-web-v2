@@ -16,6 +16,7 @@ import {
   useGetDefiRecord,
   useGetTrades,
   useGetTxs,
+  useOrderList,
 } from "./hooks";
 
 import {
@@ -28,7 +29,6 @@ import {
 } from "@loopring-web/core";
 import { BackIcon, RowConfig } from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
-import { useOrderList } from "../../Layer2Page/OrderPanel/hook";
 
 enum TabIndex {
   transactions = "transactions",
@@ -174,12 +174,15 @@ const HistoryPanel = withTranslation("common")(
                 label={t("labelLayer2HistoryTransactions")}
                 value={TabIndex.transactions}
               />
-              <Tab label={t("labelLayer2HistoryTrades")} value="trades" />
+              <Tab
+                label={t("labelLayer2HistoryTrades")}
+                value={TabIndex.trades}
+              />
+              <Tab label={t("labelOrderGroup")} value={TabIndex.orders} />
               <Tab
                 label={t("labelLayer2HistoryAmmRecords")}
                 value={TabIndex.ammRecords}
               />
-              <Tab label={t("labelOrderGroup")} value={TabIndex.orders} />
               <Tab
                 label={t("labelDefiOrderTable")}
                 value={TabIndex.defiRecords}
@@ -303,7 +306,7 @@ const HistoryPanel = withTranslation("common")(
                       currentOrderTab === TabOrderIndex.orderOpenTable
                         ? undefined
                         : {
-                            pageSize: pageSize,
+                            pageSize: pageSize - 1,
                             total: totalNum,
                           },
                     rawData,
