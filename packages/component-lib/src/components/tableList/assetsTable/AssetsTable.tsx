@@ -103,6 +103,7 @@ export type RawDataAssetsItem = {
 
 export type AssetsTableProps = {
   rawData: RawDataAssetsItem[];
+  isInvest?: boolean;
   pagination?: {
     pageSize: number;
   };
@@ -133,7 +134,7 @@ export const AssetsTable = withTranslation("tables")(
   (props: WithTranslation & AssetsTableProps) => {
     const {
       t,
-
+      isInvest = false,
       rawData,
       allowTrade,
       showFilter,
@@ -181,11 +182,6 @@ export const AssetsTable = withTranslation("tables")(
           (o) => o.token.type === TokenType.single
         );
       }
-      // if (hideIToken) {
-      //   resultData = resultData.filter(
-      //     (o) => o.token.type === TokenType.single
-      //   );
-      // }
       if (filter.searchValue) {
         resultData = resultData.filter((o) =>
           o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase())
@@ -335,6 +331,7 @@ export const AssetsTable = withTranslation("tables")(
             <ActionMemo
               {...{
                 t,
+                isInvest,
                 tokenValue,
                 getMarketArrayListCallback,
                 disableWithdrawList,
@@ -456,6 +453,7 @@ export const AssetsTable = withTranslation("tables")(
                 disableWithdrawList,
                 isLp,
                 isDefi,
+                isInvest,
                 allowTrade,
                 market: renderMarket,
                 onReceive,
@@ -470,18 +468,6 @@ export const AssetsTable = withTranslation("tables")(
     return (
       <TableWrap lan={language} isMobile={isMobile}>
         {showFilter && (
-          // (isMobile && isDropDown ? (
-          //   <Link
-          //     variant={"body1"}
-          //     display={"inline-flex"}
-          //     width={"100%"}
-          //     justifyContent={"flex-end"}
-          //     paddingRight={2}
-          //     onClick={() => setIsDropDown(false)}
-          //   >
-          //     Show Filter
-          //   </Link>
-          // ) :
           <TableFilterStyled>
             <Filter
               {...{

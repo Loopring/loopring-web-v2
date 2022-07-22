@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 import { useSettings } from "@loopring-web/component-lib";
 import { subMenuLayer2 } from "@loopring-web/common-resources";
 
-// import OrderPanel from "./OrderPanel";
 import React from "react";
 import { ViewAccountTemplate } from "@loopring-web/core";
 import { SecurityPanel } from "./SecurityPanel";

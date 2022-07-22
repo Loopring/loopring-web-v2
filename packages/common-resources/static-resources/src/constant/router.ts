@@ -202,7 +202,7 @@ export const subMenuInvest = [
     label: {
       id: "overview",
       i18nKey: "labelInvestOverview",
-      description: "labelInvestAmmDes",
+      description: "labelInvestOverviewDes",
     },
   },
   {

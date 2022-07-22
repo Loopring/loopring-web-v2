@@ -9,12 +9,7 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 
-import {
-  useTokenPrices,
-  useTokenMap,
-  StylePaper,
-  useSystem,
-} from "@loopring-web/core";
+import { useTokenMap, StylePaper, useSystem } from "@loopring-web/core";
 import { useGetAssets } from "./hook";
 import React from "react";
 

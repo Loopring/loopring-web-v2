@@ -70,7 +70,12 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
       }
 
       if (deFiCalcData) {
+        // let _deFiCalcData = { ...deFiCalcData };
         state.tradeDefi.deFiCalcData = deFiCalcData;
+        // if (_deFiCalcData.AtoB === undefined) {
+        //   _deFiCalcData.AtoB = state.tradeDefi.deFiCalcData.AtoB;
+        //   _deFiCalcData.BtoA = state.tradeDefi.deFiCalcData.BtoA;
+        // }
       }
       if (isStoB) {
         state.tradeDefi.isStoB = isStoB;

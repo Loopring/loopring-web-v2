@@ -41,14 +41,20 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
       justify-content: flex-end;
       align-items: center;
     }
+
     & > .rdg-row.child_row {
       background-color: var(--color-global-bg);
+      border-top: 1px solid var(--color-box-hover);
+
       .rdg-cell:first-of-type {
         margin-left: ${({ theme }) => 4 * theme.unit}px;
       }
       &:hover {
         background-color: var(--color-global-bg);
       }
+    }
+    & > .rdg-row.child_row:first-of-type {
+      border-top: 0px solid var(--color-box-hover);
     }
     .rdg-row.expends {
       background-color: var(--color-pop-bg);

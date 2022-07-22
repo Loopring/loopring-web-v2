@@ -242,6 +242,7 @@ const MyLiquidity: any = withTranslation("common")(
                 // hideInvestToken,
                 rowConfig: RowInvestConfig,
                 forexMap: forexMap as any,
+                isInvest: true,
                 // hideSmallBalances,
                 // setHideLpToken,
                 // setHideSmallBalances,

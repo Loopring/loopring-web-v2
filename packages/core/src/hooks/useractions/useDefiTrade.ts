@@ -75,9 +75,7 @@ export const useDefiTrade = <
 
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
-  // const {
-  //   status: walletLayer2Status,
-  // } = useWalletLayer2();
+  // const { status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo } = useSystem();
   const { tradeDefi, updateTradeDefi } = useTradeDefi();
 
@@ -316,10 +314,17 @@ export const useDefiTrade = <
     ) => {
       let walletMap: any = {};
       const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i) ?? [];
+      const defiMarketMap = store.getState().invest.defiMap?.marketMap;
       const marketInfo = defiMarketMap[market];
       let deFiCalcDataInit: Partial<DeFiCalcData<any>> = {
-        coinSell: {},
-        coinBuy: {},
+        coinSell: {
+          belong: coinSellSymbol,
+          balance: undefined,
+        },
+        coinBuy: {
+          belong: coinBuySymbol,
+          balance: undefined,
+        },
         ...tradeDefi.deFiCalcData,
       };
       let _feeInfo = feeInfo
@@ -332,27 +337,27 @@ export const useDefiTrade = <
       if (account.readyState === AccountStatus.ACTIVATED) {
         if (clearTrade === true) {
           walletLayer2Service.sendUserUpdate();
-        } else {
-          walletMap = makeWalletLayer2(true).walletMap;
-          deFiCalcDataInit.coinSell = {
-            belong: coinSellSymbol,
-            balance: walletMap[coinSellSymbol]?.count,
-          };
-          deFiCalcDataInit.coinBuy = {
-            belong: coinBuySymbol,
-            balance: walletMap[coinBuySymbol]?.count,
-          };
         }
-      } else {
+        walletMap = makeWalletLayer2(true).walletMap;
         deFiCalcDataInit.coinSell = {
           belong: coinSellSymbol,
-          balance: undefined,
+          balance: walletMap[coinSellSymbol]?.count,
         };
         deFiCalcDataInit.coinBuy = {
           belong: coinBuySymbol,
-          balance: undefined,
+          balance: walletMap[coinBuySymbol]?.count,
         };
       }
+      // else {
+      //   deFiCalcDataInit.coinSell = {
+      //     belong: coinSellSymbol,
+      //     balance: undefined,
+      //   };
+      //   deFiCalcDataInit.coinBuy = {
+      //     belong: coinBuySymbol,
+      //     balance: undefined,
+      //   };
+      // }
       myLog(
         "resetDefault defi clearTrade",
         deFiCalcDataInit.coinSell,
@@ -401,6 +406,7 @@ export const useDefiTrade = <
           depositPrice: marketInfo?.depositPrice ?? "0",
           withdrawPrice: marketInfo?.withdrawPrice ?? "0",
         });
+        myLog("resetDefault defi clearTrade", deFiCalcDataInit, marketInfo);
       } else {
         const type = tradeDefi.lastInput ?? DeFiChgType.coinSell;
         const _tradeDefi = {
@@ -483,8 +489,14 @@ export const useDefiTrade = <
     let tradeValue: any = undefined;
 
     let deFiCalcDataInit: Partial<DeFiCalcData<any>> = {
-      coinSell: {},
-      coinBuy: {},
+      coinSell: {
+        belong: coinSellSymbol,
+        balance: undefined,
+      },
+      coinBuy: {
+        belong: coinBuySymbol,
+        balance: undefined,
+      },
       ...(tradeDefi?.deFiCalcData ?? {}),
     };
     if (tradeDefi.deFiCalcData) {
@@ -516,7 +528,7 @@ export const useDefiTrade = <
         ...deFiCalcDataInit[type],
         tradeValue,
       };
-      myLog("Defi walletLayer2Callback", tradeData);
+      myLog("resetDefault Defi walletLayer2Callback", tradeData);
       handleOnchange({ tradeData, type });
     }
   }, [
@@ -748,25 +760,17 @@ export const useDefiTrade = <
         // @ts-ignore
         refreshRef.current.firstElementChild.click();
         should15sRefresh(true);
+        myLog("should15sRefresh refreshRef.current click only", market);
       } else {
         should15sRefresh(true);
       }
     }
     return () => {
+      myLog("should15sRefresh cancel", market);
       should15sRefresh.cancel();
       handleOnchange.cancel();
     };
-  }, [
-    match?.param,
-    // market,
-    // match?.param?.defi,
-    // market,
-    // isJoin,
-    // match?.param?.defi,
-    // walletLayer2Status,
-    // walletLayer2,
-    // account.readyState,
-  ]);
+  }, [match?.param]);
   // React.useEffect(() => {}, []);
   myLog("isLoading", isLoading);
   const deFiWrapProps = React.useMemo(() => {

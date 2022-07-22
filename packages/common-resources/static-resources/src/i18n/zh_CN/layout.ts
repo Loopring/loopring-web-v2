@@ -101,7 +101,7 @@ export default {
   labelInvestOverview: "Overview",
   labelInvestOverviewDes: "A variety of financial investments",
   labelInvestAmmDes: "Add liquidity and earn rewards",
-  labelInvestDefi: "Defi Invest",
+  labelInvestDefi: "ETH Staking",
   labelInvestDefiDes: "More investments, higher returns",
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
