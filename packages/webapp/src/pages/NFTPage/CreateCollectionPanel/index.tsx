@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React from "react";
+import { useOpenModals } from "@loopring-web/component-lib";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -10,6 +11,8 @@ const StyledPaper = styled(Box)`
 
 export const CreateCollectPanel = () => {
   const { t } = useTranslation("common");
+  // const { setShowAccount, setSho } = useOpenModals();
+
   return (
     <>
       <StyledPaper
@@ -32,7 +35,11 @@ export const CreateCollectPanel = () => {
           </Typography>
         </Box>
         <Box flex={1} display={"flex"}>
-          Coming soom
+          <Box marginLeft={1}>
+            <Button onClick={() => {}} variant={"outlined"} color={"primary"}>
+              {t("labelAdvanceCreateCollection")}
+            </Button>
+          </Box>
         </Box>
       </StyledPaper>
     </>

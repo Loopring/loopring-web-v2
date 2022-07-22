@@ -104,5 +104,8 @@ export default {
   labelInvestDefi: "Defi Invest",
   labelInvestDefiDes: "More investments, higher returns",
   labelDepositNFT: "Receive NFT",
+  labelMyCollection: "My Collections",
+  labelMyCollectionDes: "Group NFT as a series",
+
   // labelDepositNFTDes:"Receive NFT"
 };
