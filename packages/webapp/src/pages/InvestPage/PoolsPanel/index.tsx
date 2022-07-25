@@ -66,7 +66,7 @@ export const PoolsPanel = withTranslation("common")(
     const { activityInProgressRules } = useAmmActivityMap();
 
     return (
-      <>
+      <Box display={'flex'} flexDirection={"column"} flex={1}>
        <Box marginBottom={2}>
           <Button
             startIcon={<BackIcon fontSize={"small"} />}
@@ -76,7 +76,7 @@ export const PoolsPanel = withTranslation("common")(
             color={"inherit"}
             onClick={history.goBack}
           >
-            {t("labelTransactions")}
+            {t("labelLiquidityPageTitle")}
             {/*<Typography color={"textPrimary"}></Typography>*/}
           </Button>
         </Box>
@@ -91,7 +91,7 @@ export const PoolsPanel = withTranslation("common")(
             alignItems={"center"}
           >
             <Typography variant={"h5"} color={"textSecondary"} component={"h2"}>
-              {t("labelLiquidityPageTitle")}
+              {/* {t("labelLiquidityPageTitle")} */}
             </Typography>
             <InputSearch
               key={"search"}
@@ -145,7 +145,7 @@ export const PoolsPanel = withTranslation("common")(
             />
           </StylePaper>
         </WrapperStyled>
-      </>
+      </Box>
     );
   }
 );

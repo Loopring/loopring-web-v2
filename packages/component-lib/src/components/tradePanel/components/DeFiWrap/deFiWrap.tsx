@@ -69,13 +69,26 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             // @ts-ignore
             // eslint-disable-next-line eqeqeq
             deFiCalcData?.AtoB && deFiCalcData?.AtoB !== "NaN"
-              ? deFiCalcData?.AtoB
-              : EmptyValueTag
+              ? getValuePrecisionThousand(
+                deFiCalcData?.AtoB,
+                tokenBuy.precision,
+                tokenBuy.precision,
+                tokenBuy.precision,
+                false,
+                { floor: true }
+              ): EmptyValueTag
           } ${deFiCalcData.coinBuy.belong}`
         : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
             // @ts-ignore
             deFiCalcData.BtoA && deFiCalcData?.BtoA !== "NaN"
-              ? deFiCalcData.BtoA
+              ? getValuePrecisionThousand(
+                deFiCalcData?.AtoB,
+                tokenSell.precision,
+                tokenSell.precision,
+                tokenSell.precision,
+                false,
+                { floor: true }
+              )
               : EmptyValueTag
           } ${deFiCalcData.coinSell.belong}`
       : t("labelCalculating");
