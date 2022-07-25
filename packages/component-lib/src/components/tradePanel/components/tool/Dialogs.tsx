@@ -979,6 +979,7 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
     open: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
+    const [agree,setAgree]=React.useState(false);
     return (
       <Dialog
         open={open}
@@ -1029,13 +1030,51 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelDefiAgree")}
+          />
+        </DialogContent>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-defiRisk2">
+            <Trans i18nKey={"labelDefiRisk2"}>
+            <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body2"}
+                marginTop={2}
+                display={"block"}
+                color={"textThird"}
+              >It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices. </Typography>
+             <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body2"}
+                marginTop={2}
+                display={"block"}
+                color={"textThird"}
+              >Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch. </Typography>
+             </Trans>
+            
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
             variant={"contained"}
             size={"small"}
+            disabled={!agree}
             onClick={(e) => {
-              handleClose(e, true);
+              handleClose(e as any, true);
             }}
             color={"primary"}
           >

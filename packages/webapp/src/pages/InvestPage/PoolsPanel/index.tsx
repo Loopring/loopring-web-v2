@@ -11,6 +11,7 @@ import {
   useSettings,
   useOpenModals,
   AmmPanelType,
+  Button,
 } from "@loopring-web/component-lib";
 
 import {
@@ -20,7 +21,8 @@ import {
   useAmmActivityMap,
   useTokenMap,
 } from "@loopring-web/core";
-import { RowConfig, RowInvestConfig } from "@loopring-web/common-resources";
+import { BackIcon, RowConfig, RowInvestConfig } from "@loopring-web/common-resources";
+import { useHistory } from "react-router-dom";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -46,6 +48,7 @@ export const PoolsPanel = withTranslation("common")(
   }: WithTranslation & {}) => {
     const container = React.useRef(null);
     const { account } = useAccount();
+    const history = useHistory();
     const {
       filteredData,
       sortMethod,
@@ -64,6 +67,19 @@ export const PoolsPanel = withTranslation("common")(
 
     return (
       <>
+       <Box marginBottom={2}>
+          <Button
+            startIcon={<BackIcon fontSize={"small"} />}
+            variant={"text"}
+            size={"medium"}
+            sx={{ color: "var(--color-text-secondary)" }}
+            color={"inherit"}
+            onClick={history.goBack}
+          >
+            {t("labelTransactions")}
+            {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+        </Box>
         <WrapperStyled flex={1} marginBottom={3}>
           <Box
             marginBottom={3}
