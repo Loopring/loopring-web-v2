@@ -771,7 +771,7 @@ export const useDefiTrade = <
       should15sRefresh.cancel();
       handleOnchange.cancel();
     };
-  }, [match?.param]);
+  }, [isJoin, market]);
   // React.useEffect(() => {}, []);
   myLog("isLoading", isLoading);
   const deFiWrapProps = React.useMemo(() => {
