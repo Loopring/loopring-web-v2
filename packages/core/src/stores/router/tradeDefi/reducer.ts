@@ -28,6 +28,9 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
   name: "_router_tradeDefi",
   initialState,
   reducers: {
+    resetTradeDefi(state){
+      state.tradeDefi = initState;
+    },
     updateTradeDefi(
       state,
       action: PayloadAction<RequireOne<TradeDefi<IBData<any>>, "market">>

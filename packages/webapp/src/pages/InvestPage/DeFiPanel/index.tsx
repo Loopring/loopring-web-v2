@@ -40,7 +40,7 @@ export const DeFiPanel: any = withTranslation("common")(
       confirmation: { confirmedDefiInvest },
     } = confirmation.useConfirmation();
     setConfirmDefiInvest(!confirmedDefiInvest);
-    const match: any = useRouteMatch("/invest/defi/:market/:isJoin");
+    const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
     const history = useHistory();
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
