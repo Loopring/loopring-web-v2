@@ -59,7 +59,7 @@ export const useDefiTrade = <
 }) => {
   const { t } = useTranslation(["common"]);
   const refreshRef = React.createRef();
-  const match: any = useRouteMatch("/invest/:defi/:market/:isJoin");
+  const match: any = useRouteMatch("/invest/:defi?/:market?/:isJoin?");
 
   const {
     marketMap: defiMarketMap,
