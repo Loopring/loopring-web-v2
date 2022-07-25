@@ -1,6 +1,6 @@
 import { useHistory, useRouteMatch } from "react-router-dom";
 
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, fabClasses, formControlLabelClasses, Tab, Tabs, Typography } from "@mui/material";
 
 import { useTranslation, withTranslation } from "react-i18next";
 import {
@@ -174,28 +174,35 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     InvestType.Overview
   );
+  const [isShowTab, setIsShowTab] = React.useState<Boolean>(
+    false
+  );
   React.useEffect(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
         setTabIndex(InvestType.MyBalance);
+        setIsShowTab(true)
         return;
       // return ;
       case InvestRouter[InvestType.AmmPool]:
         setTabIndex(InvestType.AmmPool);
+        setIsShowTab(false)
         return;
       case InvestRouter[InvestType.DeFi]:
         setTabIndex(InvestType.DeFi);
+        setIsShowTab(false)
         return;
       case InvestRouter[InvestType.Overview]:
       default:
         setTabIndex(InvestType.Overview);
+        setIsShowTab(true)
         return;
     }
   }, [match?.params.item]);
 
   return (
-    <Box flex={1} flexDirection={"column"} display={"flex"}>
-      <Tabs
+   <Box flex={1} flexDirection={"column"} display={"flex"}>
+     {isShowTab && <Tabs
         variant={"standard"}
         value={tabIndex}
         onChange={(_e, value) => {
@@ -215,7 +222,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
           value={InvestType.DeFi}
           label={<DefiTitle />}
         />
-      </Tabs>
+      </Tabs>}
       <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
         {tabIndex === InvestType.Overview && <OverviewPanel />}
         {tabIndex === InvestType.AmmPool && <PoolsPanel />}
@@ -245,5 +252,6 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         }}
       />
     </Box>
+  
   );
 });
