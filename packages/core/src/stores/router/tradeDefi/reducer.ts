@@ -12,7 +12,13 @@ const initState: TradeDefi<any> = {
   withdrawPrice: "0",
   sellVol: "0",
   buyVol: "0",
-  deFiCalcData: undefined,
+  deFiCalcData: {
+    coinSell: undefined,
+    coinBuy:undefined,
+    AtoB: undefined as any,
+    BtoA: undefined as any,
+    fee: undefined as any,
+  },
   fee: "0",
   feeRaw: "0",
 };
