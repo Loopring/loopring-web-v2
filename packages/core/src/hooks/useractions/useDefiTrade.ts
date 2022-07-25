@@ -767,6 +767,7 @@ export const useDefiTrade = <
     }
     return () => {
       myLog("should15sRefresh cancel", market);
+      resetDefault(true);
       should15sRefresh.cancel();
       handleOnchange.cancel();
     };
