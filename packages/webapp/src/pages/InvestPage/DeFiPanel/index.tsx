@@ -76,7 +76,7 @@ export const DeFiPanel: any = withTranslation("common")(
        color={"inherit"}
        onClick={history.goBack}
      >
-       {t("labelTransactions")}
+       {t("labelInvestDefiTitle")}
        {/*<Typography color={"textPrimary"}></Typography>*/}
      </Button>
    </Box>
