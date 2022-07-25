@@ -280,7 +280,7 @@ export const useDefiTrade = <
           label: "labelEnterAmount",
         };
       } else if (
-        sdk.toBig(tradeDefi?.sellVol).lt(tradeDefi?.miniSellVol ?? 0)
+        sdk.toBig(tradeDefi?.sellVol).lte(tradeDefi?.miniSellVol ?? 0)
       ) {
         return {
           tradeBtnStatus: TradeBtnStatus.DISABLED,
