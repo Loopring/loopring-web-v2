@@ -59,12 +59,12 @@ export const useDefiTrade = <
 }) => {
   const { t } = useTranslation(["common"]);
   const refreshRef = React.createRef();
-  const match: any = useRouteMatch("/invest/:defi?/:market?/:isJoin?");
+  // const match: any = useRouteMatch("/invest/:defi?/:market?/:isJoin?");
 
   const {
     marketMap: defiMarketMap,
     updateDefiSyncMap,
-    // status: defiMarketStatus,
+       // status: defiMarketStatus,
   } = useDefiMap();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isStoB, setIsStoB] = React.useState(true);
@@ -77,7 +77,7 @@ export const useDefiTrade = <
   const { account } = useAccount();
   // const { status: walletLayer2Status } = useWalletLayer2();
   const { exchangeInfo } = useSystem();
-  const { tradeDefi, updateTradeDefi } = useTradeDefi();
+  const { tradeDefi, updateTradeDefi,resetTradeDefi } = useTradeDefi();
 
   const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
     if (isJoin) {
@@ -767,7 +767,7 @@ export const useDefiTrade = <
     }
     return () => {
       myLog("should15sRefresh cancel", market);
-      resetDefault(true,{fee:undefined,feeRaw:undefined});
+      resetTradeDefi();
       should15sRefresh.cancel();
       handleOnchange.cancel();
     };
