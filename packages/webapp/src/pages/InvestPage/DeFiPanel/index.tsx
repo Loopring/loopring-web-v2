@@ -125,6 +125,7 @@ export const DeFiPanel: any = withTranslation("common")(
        {/*  defiData={tradeDefi}*/}
        {/*/>*/}
        <ConfirmDefiNOBalance
+         isJoin={isJoin}
          handleClose={(_e) => {
            setConfirmShowNoBalance(false);
            if (deFiWrapProps?.onRefreshData) {
