@@ -92,7 +92,7 @@ const getInvestMapApi = async () => {
             type: InvestMapType.AMM,
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
-            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
             durationType: InvestDuration.Flexible,
             duration: "",
           };
@@ -101,7 +101,7 @@ const getInvestMapApi = async () => {
         prev[coinB] = {
           detail: {
             token: tokenMap[coinB],
-            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
             durationType: InvestDuration.Flexible,
             duration: "",
           },
@@ -109,7 +109,7 @@ const getInvestMapApi = async () => {
             type: InvestMapType.AMM,
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
-            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
             durationType: InvestDuration.Flexible,
             duration: "",
           },
