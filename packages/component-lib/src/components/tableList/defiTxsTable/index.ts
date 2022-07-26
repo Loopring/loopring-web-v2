@@ -1,2 +1,2 @@
-export * from "./defiTxsTable";
+export * from "./DefiTxsTable";
 export * from "./Interface";
