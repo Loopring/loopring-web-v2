@@ -252,7 +252,7 @@ export const useDefiTrade = <
 
     if (account.readyState === AccountStatus.ACTIVATED) {
       const sellExceed = sdk
-        .toBig(tradeDefi.deFiCalcData?.coinSell.tradeValue ?? 0)
+        .toBig(tradeDefi.deFiCalcData?.coinSell?.tradeValue ?? 0)
         .gt(tradeDefi.deFiCalcData?.coinSell?.balance ?? 0);
       myLog(
         "sellExceed",

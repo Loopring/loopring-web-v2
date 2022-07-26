@@ -13,8 +13,8 @@ const initState: TradeDefi<any> = {
   sellVol: "0",
   buyVol: "0",
   deFiCalcData: {
-    coinSell: undefined,
-    coinBuy:undefined,
+    coinSell: {},
+    coinBuy: {},
     AtoB: undefined as any,
     BtoA: undefined as any,
     fee: undefined as any,

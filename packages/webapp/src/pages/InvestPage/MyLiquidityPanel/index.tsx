@@ -221,7 +221,7 @@ const MyLiquidity: any = withTranslation("common")(
           flex={1}
         >
           <Grid item xs={12}>
-            <Typography variant={"h5"} marginBottom={1} marginX={5}>
+            <Typography variant={"h5"} marginBottom={1} marginX={3}>
               {t("labelInvestType_DEFI")}
             </Typography>
           </Grid>
