@@ -4,7 +4,7 @@ import { Box, Tab, Tabs } from "@mui/material";
 import {
   AmmTable,
   Button,
-  DefiTXsTable,
+  DefiTxsTable,
   OrderHistoryTable,
   Toast,
   TradeTable,
@@ -248,7 +248,7 @@ const HistoryPanel = withTranslation("common")(
                 }}
               />
             ) : currentTab === TabIndex.defiRecords ? (
-              <DefiTXsTable
+              <DefiTxsTable
                 {...{
                   rawData: defiList,
                   pagination: {
@@ -263,11 +263,7 @@ const HistoryPanel = withTranslation("common")(
                 idIndex={idIndex}
               />
             ) : (
-              // <Box flex={1} alignItems={"center"} justifyContent={"center"}>
-              //   <Typography component={"h4"} textAlign={"center"}>
-              //     {t("labelComingSoon")}
-              //   </Typography>
-              // </Box>
+              
               <Box
                 flex={1}
                 display={"flex"}

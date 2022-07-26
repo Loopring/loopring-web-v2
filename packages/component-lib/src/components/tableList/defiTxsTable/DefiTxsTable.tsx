@@ -11,58 +11,11 @@ import {
 import { Column, Table, TablePagination } from "../../basic-lib";
 import { Box, BoxProps, Typography } from "@mui/material";
 import moment from "moment";
-import { RawDataDefiTxsItem } from "./Interface";
 import { TablePaddingX } from "../../styled";
 import styled from "@emotion/styled";
 import { FormatterProps } from "react-data-grid";
 import * as sdk from "@loopring-web/loopring-sdk";
-
-// export type TxsFilterProps = {
-//   tokenSymbol?: string;
-//   start?: number;
-//   end?: number;
-//   offset?: number;
-//   limit?: number;
-//   types?: sdk.UserTxTypes[] | string;
-// };
-// const TYPE_COLOR_MAPPING = [
-//   { type: TransactionStatus.processed, color: "success" },
-//   { type: TransactionStatus.processing, color: "warning" },
-//   { type: TransactionStatus.received, color: "warning" },
-//   { type: TransactionStatus.failed, color: "error" },
-// ];
-// const CellStatus = ({ row }: any) => {
-//   const status = row["status"];
-//   const RenderValue = styled.div`
-//     display: flex;
-//     align-items: center;
-//     color: ${({ theme }) =>
-//       theme.colorBase[
-//         `${TYPE_COLOR_MAPPING.find((o) => o.type === status)?.color}`
-//       ]};
-//
-//     & svg {
-//       width: 24px;
-//       height: 24px;
-//     }
-//   `;
-//   const svg =
-//     status === "processed" ? (
-//       <CompleteIcon />
-//     ) : status === "processing" || status === "received" ? (
-//       <WaitingIcon />
-//     ) : (
-//       <WarningIcon />
-//     );
-//   return <RenderValue>{svg}</RenderValue>;
-// };
-// const MemoCellStyled = styled(Box)`
-//   max-width: 100px;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   white-space: nowrap;
-//   text-align: right;
-// `;
+import { RawDataDefiTxsItem } from "./Interface";
 
 const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   display: flex;
@@ -123,20 +76,12 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
       idIndex,
       pagination,
       tokenMap,
-      // showFilter,
       getDefiTxList,
-      // filterTokens,
       showloading,
-      // etherscanBaseUrl,
-      // accAddress,
-      // accountId,
       t,
     } = props;
     const { isMobile } = useSettings();
-    // const { search } = useLocation();
-    // const searchParams = new URLSearchParams(search);
     const [page, setPage] = React.useState(1);
-    // const [filterToken, setFilterToken] = React.useState<string>("all");
 
     const updateData = _.debounce(
       ({
@@ -148,21 +93,11 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
         currPage?: number;
         pageSize?: number;
       }) => {
-        // if (tableType === "filter") {
-        //   currPage = 1;
-        //   setPage(1);
-        // }
-        // const tokenSymbol = currFilterToken === "all" ? "" : currFilterToken;
-        // const formattedType = currFilterType.toUpperCase();
-        // const start = Number(moment(currFilterDate[0]).format("x"));
-        // const end = Number(moment(currFilterDate[1]).format("x"));
+      
         getDefiTxList({
           limit: pageSize,
           offset: (currPage - 1) * pageSize,
-          // types,
-          // tokenSymbol: tokenSymbol,
-          // start: Number.isNaN(start) ? -1 : start,
-          // end: Number.isNaN(end) ? -1 : end,
+      
         });
       },
       globalSetup.wait
@@ -256,7 +191,7 @@ export const DefiTXsTable = withTranslation(["tables", "common"])(
                     feeTokenInfo?.precision,
                     feeTokenInfo?.precision,
                     false,
-                    { isTrade: true, floor: false }
+                    { isTrade: false, floor: false }
                   )} ${feeTokenInfo.symbol}`;
             return (
               <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
