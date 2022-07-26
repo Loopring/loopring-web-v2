@@ -815,7 +815,7 @@ export default {
     "No token is detected from this address to operate",
   labelForceWithdrawBtn: "Force Withdraw",
   labelInvestDefiTitle: "ETH Staking",
-  labelInvestDefDeposit: "Invest",
+  labelInvestDefDeposit: "Subscribe",
   labelInvestDefWithdraw: "Redeem",
   labelNFTDepositLabel: "Receive NFT",
   labelDefiFee: "Fee",
@@ -827,7 +827,7 @@ export default {
     "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
   labelDefiNoBalance:
     "No quota available. Loopring will setup the pool soon, please revisit for subscription later. ",
-  labelInvestBtn: "Invest",
+  labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
   labelSecurity: "Security",

@@ -67,7 +67,7 @@ export interface DefiTxsTableProps<R = RawDataDefiTxsItem> {
   // accAddress: string;
   // accountId: number;
 }
-export const DefiTXsTable = withTranslation(["tables", "common"])(
+export const DefiTxsTable = withTranslation(["tables", "common"])(
   <R extends RawDataDefiTxsItem>(
     props: DefiTxsTableProps<R> & WithTranslation
   ) => {
