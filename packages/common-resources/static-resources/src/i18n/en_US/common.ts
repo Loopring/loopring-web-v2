@@ -851,7 +851,7 @@ export default {
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
   labelDefiOrderTable: "ETH Staking",
-  labelTitleMyInvestAvaiable: "My holding tokens",
+  labelTitleMyInvestAvaiable: "My Holding Tokens",
   labelViewMore: "View more",
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
