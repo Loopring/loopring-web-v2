@@ -29,7 +29,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     ${({ isMobile, lan }) =>
       !isMobile
         ? `--template-columns: 200px 150px auto auto ${
-            lan === "en_US" ? "192px" : "192px"
+            lan === "en_US" ? "184px" : "184px"
           } !important;`
         : `--template-columns: 54% 40% 6% !important;`}
 
@@ -49,7 +49,14 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
       text-align: right;
     }
   }
-
+  .inVestAsset{
+    .rdg {
+      ${({ isMobile }) =>
+      !isMobile
+        ? `--template-columns: 200px 150px auto auto 205px !important;`
+        : `--template-columns: 54% 40% 6% !important;`}
+    }
+  }
   ${({ theme }) =>
     TablePaddingX({ pLeft: theme.unit * 3, pRight: theme.unit * 3 })}
 ` as (props: { isMobile?: boolean; lan: string } & BoxProps) => JSX.Element;
@@ -483,6 +490,7 @@ export const AssetsTable = withTranslation("tables")(
         )}
 
         <Table
+        className={isInvest?"inVestAsset":""}
           {...{ ...rest, t }}
           style={{ height: tableHeight }}
           rowHeight={rowConfig.rowHeight}

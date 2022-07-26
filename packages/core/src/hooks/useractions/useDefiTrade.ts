@@ -616,7 +616,11 @@ export const useDefiTrade = <
         throw new Error("api not ready");
       }
     } catch (reason) {
-      throw reason;
+      setToastOpen({
+        open: true,
+        type: "error",
+        content: t("labelExitAmmFailed") + ` error: ${(reason as any)?.message}`,
+      });
     } finally {
       setConfirmShowLimitBalance(false);
       should15sRefresh(true);
@@ -650,16 +654,7 @@ export const useDefiTrade = <
         account.eddsaKey?.sk,
       tradeDefi.buyVol)
     ) {
-      try {
-        sendRequest();
-      } catch (e: any) {
-        // const errorItem = sdk.dumpError400(e);
-        setToastOpen({
-          open: true,
-          type: "error",
-          content: t("labelExitAmmFailed") + ` error: ${e.message}`,
-        });
-      }
+      sendRequest();
     } else {
       return false;
     }
@@ -747,16 +742,6 @@ export const useDefiTrade = <
         }
       });
       if (refreshRef.current) {
-        // if (!should15sRefresh.flush()) {
-        //   myLog("should15sRefresh refreshRef.current call", market);
-        //   // @ts-ignore
-        //
-        // } else {
-        //   myLog("should15sRefresh refreshRef.current click only", market);
-        //   should15sRefresh(true);
-        //   // @ts-ignore
-        //   // refreshRef.current.firstElementChild.click();
-        // }
         // @ts-ignore
         refreshRef.current.firstElementChild.click();
         should15sRefresh(true);
@@ -772,7 +757,6 @@ export const useDefiTrade = <
       handleOnchange.cancel();
     };
   }, [isJoin, market]);
-  // React.useEffect(() => {}, []);
   myLog("isLoading", isLoading);
   const deFiWrapProps = React.useMemo(() => {
     return {
