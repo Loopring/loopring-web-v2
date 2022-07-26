@@ -239,13 +239,10 @@ const MyLiquidity: any = withTranslation("common")(
                 onSend,
                 onReceive,
                 getMarketArrayListCallback: getTokenRelatedMarketArray,
-                // hideInvestToken,
                 rowConfig: RowInvestConfig,
                 forexMap: forexMap as any,
                 isInvest: true,
-                // hideSmallBalances,
-                // setHideLpToken,
-                // setHideSmallBalances,
+          
                 ...rest,
               }}
             />
