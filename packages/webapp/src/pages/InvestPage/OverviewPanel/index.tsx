@@ -33,6 +33,7 @@ const WrapperStyled = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
   .MuiCard-root {
     padding: ${({ theme }) => 2 * theme.unit}px;
+    cursor: pointer;
     background: var(--color-pop-bg);
     .MuiCardContent-root {
       padding: 0;
