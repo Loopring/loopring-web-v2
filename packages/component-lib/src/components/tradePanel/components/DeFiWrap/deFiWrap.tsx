@@ -109,8 +109,8 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   );
   // };
   const getDisabled = React.useMemo(() => {
-    return disabled || isLoading || deFiCalcData === undefined;
-  }, [btnStatus, deFiCalcData, disabled, isLoading]);
+    return disabled || deFiCalcData === undefined || deFiCalcData.AtoB === undefined ;
+  }, [btnStatus, deFiCalcData, disabled]);
   // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
   const handleCountChange = React.useCallback(
