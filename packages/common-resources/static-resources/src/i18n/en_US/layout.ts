@@ -88,7 +88,7 @@ export default {
   labelNFT: "L2 NFT",
   labelMyAssetsNFT: "My NFTs",
   labelMyAssetsNFTDes: "Receive, send NFTs ",
-  labelInvest: "Subscribe",
+  labelInvest: "Invest",
   labelMintNFT: "Mint NFT",
   labelMintNFTDes: "Create your own NFTs",
   labelTransactionNFT: "NFT Transactions",
