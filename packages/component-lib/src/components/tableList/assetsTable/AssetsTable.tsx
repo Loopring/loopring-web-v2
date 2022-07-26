@@ -29,7 +29,7 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
     ${({ isMobile, lan }) =>
       !isMobile
         ? `--template-columns: 200px 150px auto auto ${
-            lan === "en_US" ? "186px" : "186px"
+            lan === "en_US" ? "192px" : "192px"
           } !important;`
         : `--template-columns: 54% 40% 6% !important;`}
 
