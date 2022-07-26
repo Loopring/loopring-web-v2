@@ -30,16 +30,9 @@ export function useOverview<R extends RowInvest>() {
       setFilterValue(value);
       if (value) {
         const _rawData = [...filterData(rawData, value)];
-        // if (walletLayer2 && walletLayer2 !== {}) {
-        //   const _myAawData = [...filterData(myRawData, value)];
-        //   setMyFilteredData(_myAawData);
-        // }
         setFilteredData(_rawData);
       } else {
-        setFilteredData(rawData);
-        // if (walletLayer2 && walletLayer2 !== {}) {
-        //   setMyFilteredData(myRawData);
-        // }
+        setFilteredData(rawData);    
       }
     },
     [filterData, myRawData, rawData, walletLayer2]
@@ -62,7 +55,6 @@ export function useOverview<R extends RowInvest>() {
         })
       );
     }
-    // getFilteredData("");
   }, [investTokenTypeMapStatus]);
   const getMyInvestTokenMap = React.useCallback(() => {
     if (walletLayer2 && walletLayer2 !== {}) {
@@ -94,24 +86,13 @@ export function useOverview<R extends RowInvest>() {
       getMyInvestTokenMap();
     }
   }, [walletLayer2Status]);
-  // myLog("rawData", filteredData);
   return {
     filteredData,
-    // sortMethod,
     filterValue,
     getFilteredData,
-
     myRawData,
     myFilteredData,
     myMapLoading,
     rawData,
-    // rawData,
-    //
-    // // tableHeight,
-    // showFilter,
-    // showLoading,
-    // sortMethod,
-    // hideSmallBalances,
-    // setHideSmallBalances,
   };
 }

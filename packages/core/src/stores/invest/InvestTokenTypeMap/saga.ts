@@ -28,10 +28,14 @@ function calcDefiApr(
 ): [start: number, end: number] {
   let [start, end] = investItem.apr;
   const apr = Number(defiinfo.apy);
-  if ((!start && apr) || (apr && apr < start)) {
+  if(start === 0 && apr!==0){
+    start = apr;
+  }else if(apr!==0 && apr < start){
     start = apr;
   }
-  if (apr && apr > end) {
+  if(end === 0 && apr!==0){
+    end = apr;
+  }else if(apr!==0 && apr > end){
     end = apr;
   }
   return [start, end];
@@ -64,7 +68,7 @@ const getInvestMapApi = async () => {
         prev[coinA] = {
           detail: {
             token: tokenMap[coinA],
-            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
             durationType: InvestDuration.Flexible,
             duration: "",
           },
@@ -72,7 +76,7 @@ const getInvestMapApi = async () => {
             type: InvestMapType.AMM,
             // token: tokenMap[coinA],
             i18nKey: `labelInvestType_${InvestMapType.AMM}`,
-            apr: [ammInfo.apr ?? 0, ammInfo.apr ?? 0],
+            apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
             durationType: InvestDuration.Flexible,
             duration: "",
           },
