@@ -930,10 +930,12 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
 export const ConfirmDefiNOBalance = withTranslation("common")(
   ({
     t,
+    isJoin,
     open,
     handleClose,
   }: WithTranslation & {
     open: boolean;
+    isJoin:boolean;
     handleClose: (event: any) => void;
   }) => {
     return (
@@ -946,12 +948,24 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Typography>
+          
+            {isJoin?
+              <Typography component={"span"}>
+                <Trans i18nKey={"labelDefiNoBalanceJoin"}>
+                  No quota available. Loopring will setup the pool soon, please
+                  revisit for subscription later.
+                </Trans>
+              </Typography>:
+            <Typography component={"span"} display={"flex"} flexDirection={"column"}>
               <Trans i18nKey={"labelDefiNoBalance"}>
-                No quota available. Loopring will setup the pool soon, please
-                revisit for subscription later.
-              </Trans>
-            </Typography>
+                <Typography component={"span"} marginBottom={1}>Loopring rebalance pool can't satisfy your complete request now.</Typography>
+                <Typography component={"span"} marginBottom={1}>For the remaining investment, you can choose one of the approaches.</Typography>
+                <ul>
+                  <li>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</li>
+                  <li>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</li>
+                </ul>
+            </Trans></Typography>}
+              
           </DialogContentText>
         </DialogContent>
         <DialogActions>

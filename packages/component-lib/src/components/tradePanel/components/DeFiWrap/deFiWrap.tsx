@@ -345,46 +345,61 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               {label}
             </ButtonStyle>
           </Grid>
-          {confirmShowLimitBalance && (
+          {confirmShowLimitBalance && 
             <Grid item>
-              <Typography
+              {
+                isJoin? <Typography
                 variant={"body1"}
                 component={"p"}
                 display={"flex"}
                 marginTop={1}
                 flexDirection={"column"}
                 color={"var(--color-warning)"}
-              >
+                ><Trans
+                i18nKey={"labelDefiMaxBalanceJoin"}
+                tOptions={{ maxValue }}> The quota is almost sold out and can't fulfil your complete order. You can only subscribe ** now. Loopring will setup the pool soon, please revisit for subscription later. 
+
+                </Trans>
+                </Typography> :
                 <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"inherit"}
-                >
-                  <Trans
-                    i18nKey={"labelDefiMaxBalance"}
-                    tOptions={{ maxValue }}
-                  >
-                    Your Redeem order is too large and cannot be withdrawn
-                    immediately, you can only redeem {{ maxValue }}
-                  </Trans>
-                </Typography>
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"inherit"}
+                  variant={"body1"}
+                  component={"p"}
+                  display={"flex"}
                   marginTop={1}
+                  flexDirection={"column"}
+                  color={"var(--color-warning)"}
                 >
-                  <Trans i18nKey={"labelDefiMaxBalance1"}>
-                    or you can
-                    <ul>
-                      <li>Withdraw to L1 and redeem through crv or lido</li>
-                      <li>Wait some time and wait for pool liquidity</li>
-                    </ul>
-                  </Trans>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"inherit"}
+                  >
+                    <Trans
+                      i18nKey={"labelDefiMaxBalance"}
+                      tOptions={{ maxValue }}
+                    >
+                      Your Redeem order is too large and cannot be withdrawn
+                      immediately, you can only redeem {{ maxValue }}
+                    </Trans>
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"inherit"}
+                    marginTop={1}
+                  >
+                    <Trans i18nKey={"labelDefiMaxBalance1"}>
+                      or you can
+                      <ul>
+                        <li>Withdraw to L1 and redeem through crv or lido</li>
+                        <li>Wait some time and wait for pool liquidity</li>
+                      </ul>
+                    </Trans>
+                  </Typography>
                 </Typography>
-              </Typography>
-            </Grid>
-          )}
+              }
+            
+            </Grid>}
         </Grid>
       </Grid>
     </Grid>
