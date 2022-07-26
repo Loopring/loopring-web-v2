@@ -234,7 +234,7 @@ export const getValuePrecisionThousand = (
       .toLocaleString("en-US", { minimumFractionDigits: fixed || minDigit });
   } else if (result.isLessThanOrEqualTo(1)) {
     if(floor === false) {
-      result = getFloatCeil(result,fixed || precision)
+      result = getFloatCeil(result,fixed || precision).toString();
     }else{
       result = fixed
       ? result.toFixed(fixed)
