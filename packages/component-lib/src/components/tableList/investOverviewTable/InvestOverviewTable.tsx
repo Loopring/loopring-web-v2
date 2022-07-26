@@ -24,7 +24,7 @@ import { Filter } from "./components/Filter";
 import { DropdownIconStyled } from "../../tradePanel";
 import { useSettings } from "../../../stores";
 import { InvestColumnKey } from "./index";
-const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
+const TableStyled = styled(Box) <{ isMobile?: boolean } & BoxProps>`
   & .rdg.rdg {
     min-height: initial;
   }
@@ -32,9 +32,9 @@ const TableStyled = styled(Box)<{ isMobile?: boolean } & BoxProps>`
     border-radius: ${({ theme }) => theme.unit}px;
 
     ${({ isMobile }) =>
-      !isMobile
-        ? `--template-columns: 240px auto auto 124px !important;`
-        : ` --template-columns: 16% auto auto 8% !important;
+    !isMobile
+      ? `--template-columns: 240px auto auto 124px !important;`
+      : ` --template-columns: 16% auto auto 8% !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -176,14 +176,14 @@ export const InvestOverviewTable = <R extends RowInvest>({
               {end === 0 && start === 0
                 ? EmptyValueTag
                 : start === end
-                ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
-                : end === 0 || start === 0
-                ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
-                  "%"
-                : getValuePrecisionThousand(start, 2, 2, 2, true) +
-                  "% - " +
-                  getValuePrecisionThousand(end, 2, 2, 2, true) +
-                  "%"}
+                  ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
+                  : end === 0 || start === 0
+                    ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
+                    "%"
+                    : getValuePrecisionThousand(start, 2, 2, 2, true) +
+                    "% - " +
+                    getValuePrecisionThousand(end, 2, 2, 2, true) +
+                    "%"}
             </Typography>
           </Box>
         );
@@ -248,7 +248,8 @@ export const InvestOverviewTable = <R extends RowInvest>({
                 component={"span"}
               >
                 <Button
-                  variant={"outlined"}
+                  variant={"contained"}
+                  color={"primary"}
                   size={"small"}
                   onClick={(_e) => {
                     switch (row.type) {

@@ -12,7 +12,7 @@
       "mobile": "",
       "laptop": ""
     },
-    "InvestAdvice": [
+    "investAdvice": [
       {
         "type": "AMM",
         "router": "/invest/ammpool",
