@@ -2,7 +2,7 @@
 var exports = module.exports;
 exports.investJson = {
   banner: { mobile: "", laptop: "" },
-  InvestAdvice: [
+  investAdvice: [
     {
       type: "AMM",
       router: "/invest/ammpool",
