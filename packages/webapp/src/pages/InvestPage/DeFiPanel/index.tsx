@@ -114,16 +114,7 @@ export const DeFiPanel: any = withTranslation("common")(
          onClose={closeToast}
        />
 
-       {/*<ConfirmDefiBalanceIsLimit*/}
-       {/*  handleClose={(_e, isAgree) => {*/}
-       {/*    setConfirmShow(false);*/}
-       {/*    if (isAgree) {*/}
-       {/*      deFiWrapProps.onConfirm();*/}
-       {/*    }*/}
-       {/*  }}*/}
-       {/*  open={confirmShow && !isNoBalance}*/}
-       {/*  defiData={tradeDefi}*/}
-       {/*/>*/}
+  
        <ConfirmDefiNOBalance
          isJoin={isJoin}
          handleClose={(_e) => {

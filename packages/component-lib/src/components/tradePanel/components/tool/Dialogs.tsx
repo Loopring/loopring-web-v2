@@ -895,10 +895,10 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
             <Typography>
               <Trans i18nKey={"labelDefiMaxBalance1"}>
                 or you can
-                <ul>
-                  <li>Withdraw to L1 and redeem through crv or lido</li>
-                  <li>Wait some time and wait for pool liquidity</li>
-                </ul>
+                <List sx={{ marginTop: 2 }}>
+                  <ListItem>Withdraw to L1 and redeem through crv or lido</ListItem>
+                  <ListItem>Wait some time and wait for pool liquidity</ListItem>
+                </List>
               </Trans>
             </Typography>
           </DialogContentText>
@@ -960,10 +960,10 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
               <Trans i18nKey={"labelDefiNoBalance"}>
                 <Typography component={"span"} marginBottom={1}>Loopring rebalance pool can't satisfy your complete request now.</Typography>
                 <Typography component={"span"} marginBottom={1}>For the remaining investment, you can choose one of the approaches.</Typography>
-                <ul>
-                  <li>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</li>
-                  <li>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</li>
-                </ul>
+                <List sx={{ marginTop: 2 }}>
+                  <ListItem>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</ListItem>
+                  <ListItem>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</ListItem>
+                </List>
             </Trans></Typography>}
               
           </DialogContentText>
