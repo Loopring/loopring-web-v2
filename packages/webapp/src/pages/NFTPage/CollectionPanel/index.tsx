@@ -4,12 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, TextField } from "@mui/material";
 import React from "react";
 import styled from "@emotion/styled/";
-import { OverviewPanel } from "../../InvestPage/OverviewPanel";
 import { PoolsPanel } from "../../InvestPage/PoolsPanel";
-import { DeFiPanel } from "../../InvestPage/DeFiPanel";
-import { ViewAccountTemplate } from "@loopring-web/core";
-import MyLiquidityPanel from "../../InvestPage/MyLiquidityPanel";
-import { InvestType } from "../../InvestPage";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -27,16 +22,16 @@ const CreateUrlPanel = ({
   setStep: (props: CreateCollectionStep) => void;
 }) => {
   const { t } = useTranslation();
-  const [vaule, setValue] = React.useState();
+  const [vaule, setValue] = React.useState("");
   return (
     <>
       <TextField
-        value={""}
+        value={vaule}
         inputProps={{ maxLength: 10 }}
         fullWidth
         label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
         type={"text"}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
       />
       <Button
         onClick={() => setStep(CreateCollectionStep.AdvancePanel)}
@@ -52,8 +47,6 @@ const CommonPanel = () => {
   return <></>;
 };
 export const NFTCollectPanel = () => {
-  const history = useHistory();
-  const { setShowCollectionAdvance } = useOpenModals();
   const { t } = useTranslation(["common"]);
   const [step, setStep] = React.useState<CreateCollectionStep>(
     CreateCollectionStep.CreateUrl
