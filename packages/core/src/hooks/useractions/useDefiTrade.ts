@@ -317,15 +317,19 @@ export const useDefiTrade = <
       const defiMarketMap = store.getState().invest.defiMap?.marketMap;
       const marketInfo = defiMarketMap[market];
       let deFiCalcDataInit: Partial<DeFiCalcData<any>> = {
+        ...tradeDefi.deFiCalcData,
         coinSell: {
           belong: coinSellSymbol,
           balance: undefined,
+          tradeValue:tradeDefi.deFiCalcData?.coinSell?.belong === coinSellSymbol
+          ? tradeDefi.deFiCalcData?.coinSell?.tradeValue: undefined,
         },
         coinBuy: {
           belong: coinBuySymbol,
           balance: undefined,
+          tradeValue:tradeDefi.deFiCalcData?.coinBuy?.belong === coinBuySymbol
+          ? tradeDefi.deFiCalcData?.coinBuy?.tradeValue: undefined,
         },
-        ...tradeDefi.deFiCalcData,
       };
       let _feeInfo = feeInfo
         ? feeInfo
@@ -339,26 +343,11 @@ export const useDefiTrade = <
           walletLayer2Service.sendUserUpdate();
         }
         walletMap = makeWalletLayer2(true).walletMap;
-        deFiCalcDataInit.coinSell = {
-          belong: coinSellSymbol,
-          balance: walletMap[coinSellSymbol]?.count,
-        };
-        deFiCalcDataInit.coinBuy = {
-          belong: coinBuySymbol,
-          balance: walletMap[coinBuySymbol]?.count,
-        };
+        deFiCalcDataInit.coinSell.balance= walletMap[coinSellSymbol]?.count;
+        deFiCalcDataInit.coinBuy.balance= walletMap[coinBuySymbol]?.count;
       }
-      // else {
-      //   deFiCalcDataInit.coinSell = {
-      //     belong: coinSellSymbol,
-      //     balance: undefined,
-      //   };
-      //   deFiCalcDataInit.coinBuy = {
-      //     belong: coinBuySymbol,
-      //     balance: undefined,
-      //   };
-      // }
-      myLog(
+     
+      console.log(
         "resetDefault defi clearTrade",
         deFiCalcDataInit.coinSell,
         tradeDefi.deFiCalcData?.coinSell?.tradeValue,
@@ -370,14 +359,8 @@ export const useDefiTrade = <
         clearTrade ||
         tradeDefi.deFiCalcData?.coinSell?.tradeValue === undefined
       ) {
-        deFiCalcDataInit.coinSell = {
-          ...deFiCalcDataInit.coinSell,
-          tradeValue: undefined,
-        };
-        deFiCalcDataInit.coinSell = {
-          ...deFiCalcDataInit.coinSell,
-          tradeValue: undefined,
-        };
+        deFiCalcDataInit.coinSell.tradeValue = undefined;
+        deFiCalcDataInit.coinSell.tradeValue = undefined;
         const [AtoB, BtoA] = marketInfo
           ? isJoin
             ? [marketInfo.depositPrice, marketInfo.withdrawPrice]
