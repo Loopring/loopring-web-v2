@@ -93,34 +93,31 @@ export const GuardianPage = withTranslation(["common"])(
                 src={`${SoursURL}images/loading-line.gif`}
               />
             </Box>
-          ) : (
+          ) :  !isContractAddress ? (
             <WalletValidationInfo
-              onOpenAdd={onOpenAdd}
-              isContractAddress={isContractAddress}
-              // isLoading={isLoading}
-              {...{ guardiansList, guardianConfig, setOpenHebao }}
-              handleOpenModal={handleOpenModal}
-              loadData={loadData}
-            />
-            //   !isContractAddress ? (
-            //
-            // ) : (
-            //   <Box
-            //     flex={1}
-            //     display={"flex"}
-            //     justifyContent={"center"}
-            //     flexDirection={"column"}
-            //     alignItems={"center"}
-            //   >
-            //     <Typography
-            //       margin={3}
-            //       variant={isMobile ? "h4" : "h1"}
-            //       textAlign={"center"}
-            //     >
-            //       {t("labelWalletToWallet")}
-            //     </Typography>
-            //   </Box>
-          );
+            onOpenAdd={onOpenAdd}
+            isContractAddress={isContractAddress}
+            // isLoading={isLoading}
+            {...{ guardiansList, guardianConfig, setOpenHebao }}
+            handleOpenModal={handleOpenModal}
+            loadData={loadData}
+          />
+        ) : (
+          <Box
+            flex={1}
+            display={"flex"}
+            justifyContent={"center"}
+            flexDirection={"column"}
+            alignItems={"center"}
+          >
+            <Typography
+              margin={3}
+              variant={isMobile ? "h4" : "h1"}
+              textAlign={"center"}
+            >
+              {t("labelWalletToWallet")}
+            </Typography>
+          </Box> ) ;
         case "guardian-history":
           return (
             <WalletHistory
