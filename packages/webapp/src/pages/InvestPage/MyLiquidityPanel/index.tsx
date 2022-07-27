@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "@emotion/styled";
 import { Grid, Link, Typography } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -16,7 +15,6 @@ import {
   EmptyValueTag,
   getValuePrecisionThousand,
   PriceTag,
-  RowConfig,
   RowInvestConfig,
 } from "@loopring-web/common-resources";
 
@@ -79,6 +77,11 @@ const MyLiquidity: any = withTranslation("common")(
           title2: "body1",
           count2: "h5",
         };
+    const lidoAssets= assetsRawData.filter(
+      (o) =>
+        o.token.type !== TokenType.single &&
+        o.token.type !== TokenType.lp
+    )    
     return (
       <>
         <StyleWrapper
@@ -163,7 +166,7 @@ const MyLiquidity: any = withTranslation("common")(
           </Link>
         </StyleWrapper>
         <TableWrapStyled
-          className={"table-divide-short MuiPaper-elevation2 min-height"}
+          className={`table-divide-short MuiPaper-elevation2 ${myPoolRow?.length?"min-height":""}`}
           marginTop={2}
           paddingY={2}
           paddingX={0}
@@ -213,7 +216,7 @@ const MyLiquidity: any = withTranslation("common")(
         </TableWrapStyled>
 
         <TableWrapStyled
-          className={"table-divide-short MuiPaper-elevation2 min-height"}
+          className={`table-divide-short MuiPaper-elevation2 ${lidoAssets?.length?"min-height":""}`}
           marginTop={2}
           marginBottom={3}
           paddingY={2}
@@ -229,11 +232,7 @@ const MyLiquidity: any = withTranslation("common")(
             <AssetsTable
               {...{
                 disableWithdrawList,
-                rawData: assetsRawData.filter(
-                  (o) =>
-                    o.token.type !== TokenType.single &&
-                    o.token.type !== TokenType.lp
-                ),
+                rawData:lidoAssets,
                 showFilter: false,
                 allowTrade,
                 onSend,

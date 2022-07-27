@@ -113,11 +113,11 @@ export const useOverview = <
             precisionB,
           };
         });
-        defiCoinArray.map((defiCoinKey) => {
+        defiCoinArray.forEach((defiCoinKey) => {
           totalCurrentInvest = {
             investDollar:
               totalCurrentInvest.investDollar +
-              (_walletMap[defiCoinKey]?.count * tokenPrices[defiCoinKey] ?? 0),
+              _walletMap[defiCoinKey]?.count?? 0 * tokenPrices[defiCoinKey]??0,
           };
         }, []);
 
