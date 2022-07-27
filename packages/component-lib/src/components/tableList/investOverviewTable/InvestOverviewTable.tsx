@@ -47,7 +47,7 @@ const TableStyled = styled(Box) <{ isMobile?: boolean } & BoxProps>`
       border-top: 1px solid var(--color-box-hover);
 
       .rdg-cell:first-of-type {
-        margin-left: ${({ theme }) => 4 * theme.unit}px;
+        margin-left: ${({ theme }) => 2 * theme.unit}px;
       }
       &:hover {
         background-color: var(--color-global-bg);
@@ -223,13 +223,13 @@ export const InvestOverviewTable = <R extends RowInvest>({
               <Typography
                 variant={"inherit"}
                 display={"inline-flex"}
-                justifyContent={"space-between"}
+                justifyContent={"flex-end"}
                 alignItems={"center"}
                 className={"textAlignRight"}
                 width={"100%"}
                 sx={{ cursor: "pointer" }}
               >
-                <Typography component={"span"} color={"inherit"}>{`${t(
+                <Typography display={"inline-flex"} marginRight={1} component={"span"} color={"inherit"}>{`${t(
                   "labelSelect"
                 )}`}</Typography>
                 <DropdownIconStyled
