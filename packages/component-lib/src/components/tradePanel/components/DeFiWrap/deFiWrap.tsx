@@ -391,7 +391,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                     <Trans i18nKey={"labelDefiMaxBalance1"}>
                       <ul>
                         <li>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</li>
-                        <li>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</li>
+                        <li>Wait some time for Loopring to seto for redeem</li>
                       </ul>
                     </Trans>
                   </Typography>

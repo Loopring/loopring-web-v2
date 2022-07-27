@@ -280,8 +280,8 @@ export const useSwap = <C extends { [key: string]: any }>({
                   : (response as sdk.RESULT_INFO).message),
             });
           } else {
+            getStorageId();
             await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);
-
             const resp = await LoopringAPI.userAPI.getOrderDetails(
               {
                 accountId: account.accountId,

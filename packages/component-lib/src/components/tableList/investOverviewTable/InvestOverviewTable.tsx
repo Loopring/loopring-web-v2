@@ -33,7 +33,7 @@ const TableStyled = styled(Box) <{ isMobile?: boolean } & BoxProps>`
 
     ${({ isMobile }) =>
     !isMobile
-      ? `--template-columns: 240px auto auto 124px !important;`
+      ? `--template-columns: 320px auto auto 124px !important;`
       : ` --template-columns: 16% auto auto 8% !important;
 `}
     .rdg-cell.action {
@@ -215,6 +215,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
       key: ColumnKey.ACTION,
       name: t("labelActions"),
       headerCellClass: "textAlignRight",
+      cellClass: "action",
       formatter: ({ row }) => {
         switch (row.type) {
           case InvestMapType.Token:

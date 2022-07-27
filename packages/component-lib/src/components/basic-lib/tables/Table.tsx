@@ -163,6 +163,9 @@ export const DataGridStyled = styled(DataGrid)`
     .rdg-cell[aria-selected="true"] {
       box-shadow: none;
     }
+    .rdg-cell.action{
+      text-overflow:initial;
+    }
 
     .rdg-cell.success {
       color: var(--color-success);
@@ -193,6 +196,7 @@ export const generateColumns = <Row, SR>({
     (prev: RdgColumn<Row, SR>[], column: Column<Row, SR>) => {
       const { name, isHidden } = column;
       if (typeof name === "string" && !isHidden) {
+        //@ts-ignore
         column.name = t(name);
         prev.push(column);
       }

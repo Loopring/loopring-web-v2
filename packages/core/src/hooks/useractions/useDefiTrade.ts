@@ -602,7 +602,7 @@ export const useDefiTrade = <
       setToastOpen({
         open: true,
         type: "error",
-        content: t("labelExitAmmFailed") + ` error: ${(reason as any)?.message}`,
+        content: t("labelInvestFailed") + ` error: ${(reason as any)?.message}`,
       });
     } finally {
       setConfirmShowLimitBalance(false);
