@@ -349,7 +349,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       };
     },
     updateCollectionAdvanceData(state, _action: PayloadAction<any>) {
-      state.lastStep = LAST_STEP.LAST_STEP;
+      state.lastStep = LAST_STEP.collecionAdv;
       state.collectionAdvanceValue = {};
     },
     updateNFTMintData(state, action: PayloadAction<NFT_MINT_VALUE<any>>) {
