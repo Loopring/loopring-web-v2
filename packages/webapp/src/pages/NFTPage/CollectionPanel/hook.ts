@@ -43,7 +43,6 @@ export const useMintNFTPanel = <
     handleFeeChange,
     feeInfo,
     errorOnMeta,
-    // resetMETADAT,
   } = useNFTMeta<Me>({ handleTabChange, nftMintValue });
   React.useEffect(() => {
     if (
@@ -75,7 +74,6 @@ export const useMintNFTPanel = <
     checkFeeIsEnough,
     handleFeeChange,
     feeInfo,
-    // resetMETADAT,
     nftMintProps,
     nftMintValue,
     currentTab,

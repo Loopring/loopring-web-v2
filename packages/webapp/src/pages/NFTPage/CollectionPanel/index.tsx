@@ -24,23 +24,29 @@ const CreateUrlPanel = ({
   const { t } = useTranslation();
   const [vaule, setValue] = React.useState("");
   return (
-    <>
-      <TextField
-        value={vaule}
-        inputProps={{ maxLength: 10 }}
-        fullWidth
-        label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
-        type={"text"}
-        onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
-      />
+    <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
+      <Box marginBottom={2} width={'var(--modal-width)'} >
+        <TextField
+          value={vaule}
+          inputProps={{ maxLength: 10 }}
+          fullWidth
+          label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
+          type={"text"}
+          onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
+        />
+      </Box>
+      <Box width={'var(--modal-width)'} >
       <Button
         onClick={() => setStep(CreateCollectionStep.AdvancePanel)}
         variant={"outlined"}
+        fullWidth
         color={"primary"}
       >
         {t("labelCreateCollection")}
       </Button>
-    </>
+      </Box>
+     
+    </Box>
   );
 };
 const CommonPanel = () => {
