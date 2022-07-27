@@ -834,14 +834,14 @@ export default {
   labelDefiMin: "Minimum of {{arg}}",
   labelDefiNoEnough: "Not enough {{arg}}",
   labelDefiMaxBalance:
-    "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
+    "Loopring rebalance pool can't satisfy your complete request. You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches",
   labelDefiMaxBalance1:
-    "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
+    "<0><1>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</1><2>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</2></0>",
   labelDefiNoBalance:
-  "<0>Loopring rebalance pool can't satisfy your complete request now.</0>"+
-  "<1>For the remaining investment, you can choose one of the approaches</1>"+  
-  "<2>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</1>"+
-  "<3>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</3>",
+  "<0><1>Loopring rebalance pool can't satisfy your complete request now.</1>"+
+  "<2>For the remaining investment, you can choose one of the approaches</2>"+  
+  "<3>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</3>"+
+  "<4>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</4></0>",
   labelDefiMaxBalanceJoin:"The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit for subscription later.",
   labelDefiNoBalanceJoin:"No quota available. Loopring will setup the pool soon, please revisit for subscription later.",
   labelInvestBtn: "Subscribe",

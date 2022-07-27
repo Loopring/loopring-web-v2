@@ -41,6 +41,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   tokenSellProps,
   tokenBuyProps,
   maxSellVol,
+  maxBuyVol,
   market,
   ...rest
 }: DeFiWrapProps<T, I, ACD>) => {
@@ -169,16 +170,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   }, [isJoin, t, btnInfo]);
 
   const maxValue =
-    tokenSell.symbol &&
-    maxSellVol &&
+    tokenBuy.symbol &&
+    maxBuyVol &&
     `${getValuePrecisionThousand(
-      new BigNumber(maxSellVol ?? 0).div("1e" + tokenSell.decimals),
-      tokenSell.precision,
-      tokenSell.precision,
-      tokenSell.precision,
+      new BigNumber(maxBuyVol ?? 0).div("1e" + tokenBuy.decimals),
+      tokenBuy.precision,
+      tokenBuy.precision,
+      tokenBuy.precision,
       false,
       { floor: true }
-    )} ${tokenSell.symbol}`;
+    )} ${tokenBuy.symbol}`;
 
   return (
     <Grid
@@ -378,8 +379,7 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                       i18nKey={"labelDefiMaxBalance"}
                       tOptions={{ maxValue }}
                     >
-                      Your Redeem order is too large and cannot be withdrawn
-                      immediately, you can only redeem {{ maxValue }}
+                      Loopring rebalance pool can't satisfy your complete request. You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches                  
                     </Trans>
                   </Typography>
                   <Typography
@@ -389,10 +389,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                     marginTop={1}
                   >
                     <Trans i18nKey={"labelDefiMaxBalance1"}>
-                      or you can
                       <ul>
-                        <li>Withdraw to L1 and redeem through crv or lido</li>
-                        <li>Wait some time and wait for pool liquidity</li>
+                        <li>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</li>
+                        <li>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</li>
                       </ul>
                     </Trans>
                   </Typography>

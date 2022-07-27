@@ -767,6 +767,7 @@ export const useDefiTrade = <
       deFiCalcData: {
         ...tradeDefi.deFiCalcData,
       },
+      maxBuyVol: tradeDefi.defiBalances? tradeDefi.defiBalances[coinBuySymbol]: undefined,
       maxSellVol: tradeDefi.maxSellVol,
       confirmShowLimitBalance,
       tokenSell: tokenMap[coinSellSymbol],
