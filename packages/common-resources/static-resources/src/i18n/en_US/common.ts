@@ -838,10 +838,10 @@ export default {
   labelDefiMaxBalance1:
     "<0><1>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</1><2>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</2></0>",
   labelDefiNoBalance:
-  "<0><1>Loopring rebalance pool can't satisfy your complete request now.</1>"+
-  "<2>For the remaining investment, you can choose one of the approaches</2>"+  
-  "<3>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</3>"+
-  "<4>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</4></0>",
+  "<0>Loopring rebalance pool can't satisfy your complete request now.</0>"+
+  "<1>For the remaining investment, you can choose one of the approaches</1>"+  
+  "<2><3>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</3>"+
+  "<4>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</4></2>",
   labelDefiMaxBalanceJoin:"The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit for subscription later.",
   labelDefiNoBalanceJoin:"No quota available. Loopring will setup the pool soon, please revisit for subscription later.",
   labelInvestBtn: "Subscribe",
