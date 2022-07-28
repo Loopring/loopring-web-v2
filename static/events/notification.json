@@ -1,12 +1,34 @@
 {
   "en": {
-    "activities": [
-    ],
-    "notifications": [
-    ],
+    "activities": [],
+    "notifications": [],
     "invest": []
   },
   "prev": {
-    "endDate": 1658275200000
+    "endDate": 1658120296683
+  },
+  "invest": {
+    "banner": {
+      "mobile": "",
+      "laptop": ""
+    },
+    "investAdvice": [
+      {
+        "type": "AMM",
+        "router": "/invest/ammpool",
+        "banner": "https://static.loopring.io/assets/images/icon-default.png",
+        "titleI18n": "labelInvestAmm",
+        "desI18n": "labelInvestAmmDes",
+        "enable": true
+      },
+      {
+        "type": "STAKE",
+        "router": "/invest/defi",
+        "banner": "https://static.loopring.io/assets/images/icon-default.png",
+        "titleI18n": "labelInvestDefi",
+        "desI18n": "labelInvestDefiDes",
+        "enable": true
+      }
+    ]
   }
 }

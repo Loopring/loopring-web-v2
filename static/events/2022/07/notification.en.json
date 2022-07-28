@@ -1,5 +1,8 @@
 {
   "activities": [],
   "notifications": [],
-  "prev": {}
+  "invest": [],
+  "prev": {
+    "endDate": 1658120296683
+  }
 }
