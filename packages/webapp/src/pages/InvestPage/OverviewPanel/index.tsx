@@ -23,7 +23,7 @@ import {
   AccountStatus,
   RowInvestConfig,
 } from "@loopring-web/common-resources";
-import { useAccount } from "@loopring-web/core";
+import { useAccount, useNotify } from "@loopring-web/core";
 
 const WrapperStyled = styled(Box)`
   flex: 1;
@@ -56,10 +56,11 @@ export const OverviewPanel = withTranslation("common")(
       myRawData,
     } = useOverview();
     const { coinJson } = useSettings();
-    const { account } = useAccount();
+    const {account} = useAccount();
+    const {notifyMap} = useNotify();
     const showLoading = filteredData && !filteredData.length;
     const history = useHistory();
-    const investAdviceList = [ammAdvice, defiAdvice];
+    const investAdviceList = [{...ammAdvice, ...notifyMap?.invest?.investAdvice[ 0 ]}, {...defiAdvice, ...notifyMap?.invest?.investAdvice[ 1 ]}];
     return (
       <>
         <WrapperStyled marginBottom={3}>
