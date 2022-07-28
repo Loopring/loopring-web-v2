@@ -22,7 +22,7 @@
         "enable": true
       },
       {
-        "type": "DEFI",
+        "type": "STAKE",
         "router": "/invest/defi",
         "banner": "https://static.loopring.io/assets/images/icon-default.png",
         "titleI18n": "labelInvestDefi",

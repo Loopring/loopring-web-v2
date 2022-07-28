@@ -860,17 +860,17 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
     const maxValue =
-      defiData.sellToken?.symbol &&
+      defiData.buyToken?.symbol &&
       `${getValuePrecisionThousand(
-        new BigNumber(defiData?.maxSellVol ?? 0).div(
-          "1e" + defiData.sellToken?.decimals
+        new BigNumber(defiData?.maxBuyVol ?? 0).div(
+          "1e" + defiData.buyToken?.decimals
         ),
-        defiData.sellToken?.precision,
-        defiData.sellToken?.precision,
-        defiData.sellToken?.precision,
+        defiData.buyToken?.precision,
+        defiData.buyToken?.precision,
+        defiData.buyToken?.precision,
         false,
-        { floor: true }
-      )} ${defiData.sellToken?.symbol}`;
+        {floor: true}
+      )} ${defiData.buyToken?.symbol}`;
 
     return (
       <Dialog
@@ -939,7 +939,7 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
     handleClose: (event: any) => void;
   }) => {
     return (
-      <Dialog
+      <DialogStyle
         open={open}
         keepMounted
         onClose={(e: MouseEvent) => handleClose(e)}
@@ -948,24 +948,31 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-          
-            {isJoin?
+
+            {isJoin ?
               <Typography component={"span"}>
                 <Trans i18nKey={"labelDefiNoBalanceJoin"}>
                   No quota available. Loopring will setup the pool soon, please
                   revisit for subscription later.
                 </Trans>
-              </Typography>:
-            <Typography component={"span"} display={"flex"} flexDirection={"column"}>
-              <Trans i18nKey={"labelDefiNoBalance"}>
-                <Typography component={"span"} marginBottom={1}>Loopring rebalance pool can't satisfy your complete request now.</Typography>
-                <Typography component={"span"} marginBottom={1}>For the remaining investment, you can choose one of the approaches.</Typography>
-                <List sx={{ marginTop: 2 }}>
-                  <ListItem>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</ListItem>
-                  <ListItem>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</ListItem>
+              </Typography> :
+              <Typography component={"span"} display={"flex"} flexDirection={"column"}>
+                <Trans i18nKey={"labelDefiNoBalance"}>
+                  <Typography component={"span"} marginBottom={3}>Loopring rebalance pool can't satisfy your
+                    complete request now.</Typography>
+                  <Typography component={"span"}>For the remaining investment, you can choose one of the
+                    approaches.</Typography>
+                </Trans>
+                <List sx={{marginTop: 1}}>
+                  <Trans i18nKey={"labelDefiNoBalanceList"}>
+                    <ListItem style={{marginBottom: 0}}>Withdraw wSTETH to L1 and trade through CRV or LIDO
+                      directly</ListItem>
+                    <ListItem style={{marginBottom: 0}}>Wait some time for Loopring to setup the rebalance pool
+                      again, then revist the page for redeem</ListItem>
+                  </Trans>
                 </List>
-            </Trans></Typography>}
-              
+              </Typography>}
+
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -980,7 +987,7 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
             {t("labelIKnow")}
           </Button>
         </DialogActions>
-      </Dialog>
+      </DialogStyle>
     );
   }
 );

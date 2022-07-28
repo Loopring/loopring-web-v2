@@ -2,7 +2,7 @@ import React from "react";
 import {
   DeFiChgType,
   DeFiWrapProps,
-  TradeBtnStatus,
+  TradeBtnStatus, useOpenModals, useToggle,
 } from "@loopring-web/component-lib";
 import {
   AccountStatus,
@@ -38,7 +38,6 @@ import {
 } from "../../index";
 import { useTranslation } from "react-i18next";
 import { useDefiMap, useTradeDefi } from "../../stores";
-import { useRouteMatch } from "react-router-dom";
 
 export const useDefiTrade = <
   T extends IBData<I>,
@@ -64,7 +63,7 @@ export const useDefiTrade = <
   const {
     marketMap: defiMarketMap,
     updateDefiSyncMap,
-       // status: defiMarketStatus,
+    // status: defiMarketStatus,
   } = useDefiMap();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isStoB, setIsStoB] = React.useState(true);
@@ -73,21 +72,22 @@ export const useDefiTrade = <
   const [confirmShowLimitBalance, setConfirmShowLimitBalance] =
     React.useState<boolean>(false);
 
-  const { tokenMap } = useTokenMap();
-  const { account } = useAccount();
+  const {tokenMap} = useTokenMap();
+  const {account} = useAccount();
   // const { status: walletLayer2Status } = useWalletLayer2();
-  const { exchangeInfo } = useSystem();
-  const { tradeDefi, updateTradeDefi,resetTradeDefi } = useTradeDefi();
-
-  const [{ coinSellSymbol, coinBuySymbol }, setSymbol] = React.useState(() => {
+  const {exchangeInfo, allowTrade} = useSystem();
+  const {tradeDefi, updateTradeDefi, resetTradeDefi} = useTradeDefi();
+  const {setShowSupport, setShowTradeIsFrozen} = useOpenModals();
+  const {toggle: {defiInvest}} = useToggle();
+  const [{coinSellSymbol, coinBuySymbol}, setSymbol] = React.useState(() => {
     if (isJoin) {
       const [, coinBuySymbol, coinSellSymbol] =
-        market.match(/(\w+)-(\w+)/i) ?? [];
-      return { coinBuySymbol, coinSellSymbol };
+      market.match(/(\w+)-(\w+)/i) ?? [];
+      return {coinBuySymbol, coinSellSymbol};
     } else {
       const [, coinSellSymbol, coinBuySymbol] =
-        market.match(/(\w+)-(\w+)/i) ?? [];
-      return { coinBuySymbol, coinSellSymbol };
+      market.match(/(\w+)-(\w+)/i) ?? [];
+      return {coinBuySymbol, coinSellSymbol};
     }
   });
 
@@ -336,18 +336,18 @@ export const useDefiTrade = <
         : {
             fee: tradeDefi.fee,
             feeRaw: tradeDefi.feeRaw,
-          };
+        };
 
       if (account.readyState === AccountStatus.ACTIVATED) {
         if (clearTrade === true) {
           walletLayer2Service.sendUserUpdate();
         }
         walletMap = makeWalletLayer2(true).walletMap;
-        deFiCalcDataInit.coinSell.balance= walletMap[coinSellSymbol]?.count;
-        deFiCalcDataInit.coinBuy.balance= walletMap[coinBuySymbol]?.count;
+        deFiCalcDataInit.coinSell.balance = walletMap[ coinSellSymbol ]?.count;
+        deFiCalcDataInit.coinBuy.balance = walletMap[ coinBuySymbol ]?.count;
       }
-     
-      console.log(
+
+      myLog(
         "resetDefault defi clearTrade",
         deFiCalcDataInit.coinSell,
         tradeDefi.deFiCalcData?.coinSell?.tradeValue,
@@ -602,7 +602,7 @@ export const useDefiTrade = <
       setToastOpen({
         open: true,
         type: "error",
-        content: t("labelInvestFailed") + ` error: ${(reason as any)?.message}`,
+        content: t("labelInvestFailed"),//+ ` error: ${(reason as any)?.message}`,
       });
     } finally {
       setConfirmShowLimitBalance(false);
@@ -630,6 +630,7 @@ export const useDefiTrade = <
 
   const handleSubmit = React.useCallback(async () => {
     const { tradeDefi } = store.getState()._router_tradeDefi;
+
     if (
       (account.readyState === AccountStatus.ACTIVATED &&
         tokenMap &&
@@ -637,7 +638,14 @@ export const useDefiTrade = <
         account.eddsaKey?.sk,
       tradeDefi.buyVol)
     ) {
-      sendRequest();
+      if (!allowTrade.defiInvest.enable) {
+        setShowSupport({isShow: true});
+      } else if (defiInvest.enable) {
+        setShowTradeIsFrozen({isShow: true, type: "Defi Invest"})
+      } else {
+        sendRequest();
+      }
+
     } else {
       return false;
     }
@@ -779,6 +787,7 @@ export const useDefiTrade = <
     isStoB,
     refreshRef,
     sendRequest,
+    tradeDefi.defiBalances,
     tradeDefi.deFiCalcData,
     tradeDefi?.feeRaw,
     tradeDefi.maxSellVol,

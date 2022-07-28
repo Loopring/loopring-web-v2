@@ -204,4 +204,9 @@ export default {
   labelInvestAll: "Both",
   labelDefiExit: "Redeem",
   labelDefiJoin: "Subscribe",
+  labelDefiType: "Subscribe/Redeem",
+  labelDefiFee: "Fee",
+  labelDefiTime: "Time",
+  labelDefiAmount: "Amount"
+
 };

@@ -33,8 +33,8 @@ const TableStyled = styled(Box) <{ isMobile?: boolean } & BoxProps>`
 
     ${({ isMobile }) =>
     !isMobile
-      ? `--template-columns: 320px auto auto 124px !important;`
-      : ` --template-columns: 16% auto auto 8% !important;
+            ? `--template-columns: 320px auto auto 124px !important;`
+            : ` --template-columns: 46% auto auto !important;
 `}
     .rdg-cell.action {
       display: flex;
@@ -259,7 +259,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
                           `/invest/ammpool?search=${row.token.symbol}`
                         );
                         return;
-                      case InvestMapType.DEFI:
+                      case InvestMapType.STAKE:
                         history.push(
                           `/invest/defi/${row.token.symbol}-null/invest`
                         );
@@ -267,7 +267,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
                     }
                   }}
                 >
-                  {t("labelInvestBtn", { ns: "common" })}
+                  {t("labelInvestBtn", {ns: "common"})}
                 </Button>
               </Typography>
             );
@@ -275,25 +275,128 @@ export const InvestOverviewTable = <R extends RowInvest>({
       },
     },
   ];
-  const { isMobile } = useSettings();
-  // myLog("rowConfig", rowConfig);
+  const getColumnMobileMode = (): Column<R, unknown>[] => [
+    {
+      key: ColumnKey.TYPE,
+      sortable: false,
+      name: t("labelToken"),
+      formatter: ({row}) => {
+        switch (row.type) {
+          case InvestMapType.Token:
+            const token: TokenInfo = row.token;
+            return (
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                alignItems={"center"}
+                height={"100%"}
+              >
+                {token?.symbol && <CoinIcon symbol={token?.symbol}/>}
+                <Typography component={"span"} className={"next-coin"}>
+                  {token?.symbol}
+                </Typography>
+                <Typography
+                  marginLeft={1}
+                  component={"span"}
+                  className={"next-company"}
+                  color={"textSecondary"}
+                >
+                  {token?.name}
+                </Typography>
+              </Box>
+            );
+          default:
+            return (
+              <Typography
+                variant={"inherit"}
+                color={"textPrimary"}
+                display={"inline-flex"}
+                flexDirection={"column"}
+                marginLeft={2}
+                component={"span"}
+                paddingRight={1}
+              >
+                <Typography component={"span"} className={"next-type"}>
+                  {t(row.i18nKey, {ns: "common"})}
+                </Typography>
+              </Typography>
+            );
+        }
+      },
+    },
+    {
+      key: ColumnKey.APR,
+      sortable: false,
+      name: t("labelAPR"),
+      width: "auto",
+      maxWidth: 80,
+      cellClass: "textAlignLeft",
+      headerCellClass: "textAlignLeftSortable",
+      formatter: ({row}) => {
+        const [start, end] = row.apr;
+        // myLog("end", end);
+        return (
+          <Box className={"textAlignLeft"}>
+            <Typography component={"span"}>
+              {end === 0 && start === 0
+                ? EmptyValueTag
+                : start === end
+                  ? getValuePrecisionThousand(end, 2, 2, 2, true) + "%"
+                  : end === 0 || start === 0
+                    ? getValuePrecisionThousand(end ? end : start, 2, 2, 2, true) +
+                    "%"
+                    : getValuePrecisionThousand(start, 2, 2, 2, true) +
+                    "% - " +
+                    getValuePrecisionThousand(end, 2, 2, 2, true) +
+                    "%"}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      key: ColumnKey.DURATION,
+      sortable: false,
+      width: "auto",
+      cellClass: "textAlignCenter",
+      headerCellClass: "textAlignCenter",
+      name: t("labelDuration"),
+      formatter: ({row}) => {
+        return (
+          <Box
+            height={"100%"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Typography component={"span"}>
+              {t("labelInvest" + row.durationType, {ns: "common"})}
+            </Typography>
+          </Box>
+        );
+      },
+    }
+  ];
+
+  const {isMobile} = useSettings();
+
   return (
     <TableStyled isMobile={isMobile} marginX={2}>
       {showFilter &&
-        (isMobile && isDropDown ? (
-          <Link
-            variant={"body1"}
-            display={"inline-flex"}
-            width={"100%"}
-            justifyContent={"flex-end"}
-            paddingRight={2}
-            onClick={() => setIsDropDown(false)}
-          >
-            {t("labelShowFilter")}
-          </Link>
-        ) : (
-          <Box
-            display={"flex"}
+      (isMobile && isDropDown ? (
+        <Link
+          variant={"body1"}
+          display={"inline-flex"}
+          width={"100%"}
+          justifyContent={"flex-end"}
+          paddingRight={2}
+          onClick={() => setIsDropDown(false)}
+        >
+          {t("labelShowFilter")}
+        </Link>
+      ) : (
+        <Box
+          display={"flex"}
             flexDirection={"row"}
             justifyContent={"space-between"}
             marginLeft={3}
@@ -321,7 +424,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
         // rowGrouper={_.groupBy}
         rowClassFn={(row) => {
           if (
-            row.type === InvestMapType.DEFI ||
+            row.type === InvestMapType.STAKE ||
             row.type === InvestMapType.AMM
           ) {
             return "child_row";
@@ -350,7 +453,7 @@ export const InvestOverviewTable = <R extends RowInvest>({
           columnsRaw as Column<any, unknown>[]
         }
         sortDefaultKey={InvestColumnKey.APR}
-        columnMode={isMobile ? getColumnMode() : getColumnMode()}
+        columnMode={isMobile ? getColumnMobileMode() : getColumnMode()}
       />
     </TableStyled>
   );

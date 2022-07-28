@@ -23,10 +23,10 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   flex: 1;
 
   .rdg {
-    ${({ isMobile }) =>
-      !isMobile
-        ? `--template-columns: auto 20% 120px !important;`
-        : `--template-columns: 60% 40% !important;`}
+    ${({isMobile}) =>
+            !isMobile
+                    ? `--template-columns: auto 20% 120px !important;`
+                    : `--template-columns: 100% !important;`}
     .rdgCellCenter {
       height: 100%;
       justify-content: center;
@@ -119,15 +119,15 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
           sortable: false,
           width: "auto",
           minWidth: 240,
-          name: t("labelAmmTableType"),
-          formatter: ({ row }: FormatterProps<R, unknown>) => {
-            const { action, sellToken, buyToken } = row;
+          name: t("labelDefiType") + ' ' + t("labelDefiAmount"),
+          formatter: ({row}: FormatterProps<R, unknown>) => {
+            const {action, sellToken, buyToken} = row;
             const isJoin = !new RegExp(sdk.DefiAction.Withdraw, "ig").test(
               action ?? " "
             );
             const sellTokenInfo =
               sellToken?.tokenId !== undefined &&
-              tokenMap[idIndex[sellToken?.tokenId]];
+              tokenMap[ idIndex[ sellToken?.tokenId ] ];
             const sellVolume = sdk
               .toBig(sellToken?.volume ?? 0)
               .div("1e" + sellTokenInfo.decimals);
@@ -173,11 +173,11 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
         },
         {
           key: "fee",
-          name: t("labelTxFee"),
+          name: t("labelDefiFee"),
           headerCellClass: "textAlignRight",
-          formatter: ({ row }) => {
-            const { fee } = row;
-            const feeTokenInfo = tokenMap[idIndex[fee?.tokenId ?? ""]];
+          formatter: ({row}) => {
+            const {fee} = row;
+            const feeTokenInfo = tokenMap[ idIndex[ fee?.tokenId ?? "" ] ];
             const feeVolume = sdk
               .toBig(fee?.volume ?? 0)
               .div("1e" + feeTokenInfo.decimals)
@@ -186,8 +186,8 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
               feeVolume === 0 || feeVolume === undefined
                 ? EmptyValueTag
                 : `${getValuePrecisionThousand(
-                    feeVolume,
-                    feeTokenInfo?.precision,
+                  feeVolume,
+                  feeTokenInfo?.precision,
                     feeTokenInfo?.precision,
                     feeTokenInfo?.precision,
                     false,
@@ -198,41 +198,15 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
             );
           },
         },
-        // {
-        //   key: "status",
-        //   name: t("labelTxFee"),
-        //   headerCellClass: "textAlignRight",
-        //   formatter: ({ row }) => {
-        //     const fee = row.fee;
-        //     const feeTokenInfo = tokenMap[idIndex[fee?.tokenId]];
-        //     const feeVolume = sdk
-        //       .toBig(fee?.volume ?? 0)
-        //       .div("1e" + feeTokenInfo.decimals);
-        //     const renderValue =
-        //       fee.value === 0 || fee.value === undefined
-        //         ? EmptyValueTag
-        //         : `${getValuePrecisionThousand(
-        //             feeVolume,
-        //             feeTokenInfo?.precision,
-        //             feeTokenInfo?.precision,
-        //             feeTokenInfo?.precision,
-        //             false,
-        //             { isTrade: true, floor: false }
-        //           )} ${feeTokenInfo.name}`;
-        //     return (
-        //       <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
-        //     );
-        //   },
-        // },
         {
           key: "time",
           sortable: false,
           width: "auto",
           headerCellClass: "textAlignRight",
           cellClass: "textAlignRight",
-          name: t("labelAmmTime"),
-          formatter: ({ row }) => {
-            const { updatedAt: time } = row;
+          name: t("labelDefiTime"),
+          formatter: ({row}) => {
+            const {updatedAt: time} = row;
             let timeString;
             if (typeof time === "undefined") {
               timeString = EmptyValueTag;
@@ -250,14 +224,134 @@ export const DefiTxsTable = withTranslation(["tables", "common"])(
       [t, tokenMap, idIndex]
     );
 
+    const getColumnMobileTransaction = React.useCallback(
+      (): Column<R, unknown>[] => [
+        {
+          key: "side",
+          name: (
+            <Typography
+              height={"100%"}
+              display={"flex"}
+              justifyContent={"space-between"}
+              variant={"inherit"}
+              color={"inherit"}
+              alignItems={"center"}
+            >
+              <span>{t("labelDefiType")}</span>
+              <span>{t("labelDefiTime") + '/' + t("labelDefiFee")}</span>
+            </Typography>
+          ),
+          headerCellClass: "textAlignRight",
+          formatter: ({row}: FormatterProps<R, unknown>) => {
+            const {action, sellToken, buyToken} = row;
+            const isJoin = !new RegExp(sdk.DefiAction.Withdraw, "ig").test(
+              action ?? " "
+            );
+            const sellTokenInfo =
+              sellToken?.tokenId !== undefined &&
+              tokenMap[ idIndex[ sellToken?.tokenId ] ];
+            const sellVolume = sdk
+              .toBig(sellToken?.volume ?? 0)
+              .div("1e" + sellTokenInfo.decimals);
+            const buyTokenInfo =
+              buyToken?.tokenId !== undefined &&
+              tokenMap[ idIndex[ buyToken?.tokenId ] ];
+            const buyVolume = sdk
+              .toBig(buyToken?.volume ?? 0)
+              .div("1e" + buyTokenInfo.decimals);
+            const side = isJoin ? t("labelDefiJoin") : t("labelDefiExit");
+            const {fee} = row;
+            const feeTokenInfo = tokenMap[ idIndex[ fee?.tokenId ?? "" ] ];
+            const feeVolume = sdk
+              .toBig(fee?.volume ?? 0)
+              .div("1e" + feeTokenInfo.decimals)
+              .toNumber();
+            const renderFee =
+              feeVolume === 0 || feeVolume === undefined
+                ? EmptyValueTag
+                : `${getValuePrecisionThousand(
+                  feeVolume,
+                  feeTokenInfo?.precision,
+                  feeTokenInfo?.precision,
+                  feeTokenInfo?.precision,
+                  false,
+                  {isTrade: false, floor: false}
+                )} ${feeTokenInfo.symbol}`;
+            const {updatedAt: time} = row;
+            let timeString;
+            if (typeof time === "undefined") {
+              timeString = EmptyValueTag;
+            } else {
+              timeString = moment(new Date(time), "YYYYMMDDHHMM").fromNow();
+            }
+            return (
+              <Box display={"flex"} alignItems={"stretch"} justifyContent={'center'} flexDirection={'column'}
+                   height={"100%"}>
+                <Typography component={'span'} display={'flex'} flexDirection={'row'} variant={'body2'}
+                            justifyContent={'space-between'}>
+                  <Typography
+                    color={isJoin ? "var(--color-success)" : "var(--color-error)"}
+                  >
+                    {side}
+                  </Typography>
+                  &nbsp;
+                  <Typography component={"span"}>
+                    <Typography component={"span"}>
+                      {`${getValuePrecisionThousand(
+                        sellVolume,
+                        sellTokenInfo?.precision,
+                        sellTokenInfo?.precision,
+                        sellTokenInfo?.precision,
+                        false,
+                        {isTrade: false, floor: false}
+                      )} ${sellTokenInfo.symbol}`}
+                    </Typography>
+                    &nbsp;{DirectionTag} &nbsp;
+                    <Typography component={"span"}>
+                      {`${getValuePrecisionThousand(
+                        buyVolume,
+                        buyTokenInfo?.precision,
+                        buyTokenInfo?.precision,
+                        buyTokenInfo?.precision,
+                        false,
+                        {isTrade: false, floor: false}
+                      )} ${buyTokenInfo.symbol}`}
+                    </Typography>
+
+                  </Typography>
+                </Typography>
+                <Typography component={'span'} display={'flex'} flexDirection={'row'} variant={'body2'}
+                            justifyContent={'space-between'}>
+                  <Typography
+                    variant={"inherit"}
+                    component={"span"}
+                    color={"textSecondary"}
+                    alignSelf={'flex-end'}
+                  >
+                    {`Fee: ${renderFee}`}
+                  </Typography>
+                  <Typography component={"span"} textAlign={"right"} variant={"inherit"}>
+                    {timeString}
+                  </Typography>
+                </Typography>
+              </Box>
+
+            );
+          },
+        }
+      ],
+      [t, tokenMap, idIndex]
+    );
+
+
     // const [isDropDown, setIsDropDown] = React.useState(true);
 
     const defaultArgs: any = {
       columnMode: isMobile
-        ? getColumnModeTransaction()
+        ? getColumnMobileTransaction()
         : getColumnModeTransaction(),
       generateRows: (rawData: any) => rawData,
-      generateColumns: ({ columnsRaw }: any) =>
+      generateColumns: ({columnsRaw}: any) =>
         columnsRaw as Column<any, unknown>[],
     };
     React.useEffect(() => {

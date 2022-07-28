@@ -280,10 +280,10 @@ const getColumnModeMobileAssets = (
     },
   },
   {
-    key: "lpTokenAmount",
+    key: "lpTokenAmmTime",
     name: t("labelAmmTime"),
     headerCellClass: "textAlignRight",
-    formatter: ({ row }) => {
+    formatter: ({row}) => {
       // const amount = row["lpTokenAmount"];
       // const renderValue =
       //   row["side"] === AmmSideTypes.Join

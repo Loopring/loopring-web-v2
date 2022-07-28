@@ -3,14 +3,7 @@ import styled from "@emotion/styled";
 import { Box, Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useDeFiHook } from "./hook";
-import {
-  boxLiner,
-  Button,
-  ConfirmDefiNOBalance,
-  DeFiWrap,
-  Toast,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { boxLiner, Button, ConfirmDefiNOBalance, DeFiWrap, Toast, useSettings, } from "@loopring-web/component-lib";
 import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -18,26 +11,29 @@ import { BackIcon, MarketType } from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
   position: relative;
-  border-radius: ${({ theme }) => theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
+
   .loading-block {
     background: initial;
   }
+
   .hasLinerBg {
-    ${({ theme }) => boxLiner({ theme })}
+    ${({theme}) => boxLiner({theme})}
   }
-  border-radius: ${({ theme }) => theme.unit}px;
+
+  border-radius: ${({theme}) => theme.unit}px;
 ` as typeof Grid;
 
 export const DeFiPanel: any = withTranslation("common")(
-  <R extends { [key: string]: any }, I extends { [key: string]: any }>({
-    t,
-    setConfirmDefiInvest,
-  }: WithTranslation & {
+  <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({
+                                                                             t,
+                                                                             setConfirmDefiInvest,
+                                                                           }: WithTranslation & {
     setConfirmDefiInvest: (state: any) => void;
   }) => {
-    const { marketArray } = useDefiMap();
+    const {marketArray} = useDefiMap();
     const {
-      confirmation: { confirmedDefiInvest },
+      confirmation: {confirmedDefiInvest},
     } = confirmation.useConfirmation();
     setConfirmDefiInvest(!confirmedDefiInvest);
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
@@ -63,69 +59,70 @@ export const DeFiPanel: any = withTranslation("common")(
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
     });
-    const { isMobile } = useSettings();
-    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+    const {isMobile} = useSettings();
+    const styles = isMobile ? {flex: 1} : {width: "var(--swap-box-width)"};
 
     return (
-     <> <Box marginBottom={2}>
-     <Button
-       startIcon={<BackIcon fontSize={"small"} />}
-       variant={"text"}
-       size={"medium"}
-       sx={{ color: "var(--color-text-secondary)" }}
-       color={"inherit"}
-       onClick={history.goBack}
-     >
-       {t("labelInvestDefiTitle")}
-       {/*<Typography color={"textPrimary"}></Typography>*/}
-     </Button>
-   </Box>
-     <StyleWrapper
-       display={"flex"}
-       flexDirection={"column"}
-       justifyContent={"center"}
-       alignItems={"center"}
-       flex={1}
-     >
-       {deFiWrapProps.deFiCalcData ? (
-         <Box
-           className={"hasLinerBg"}
-           display={"flex"}
-           style={styles}
-           justifyContent={"center"}
-           padding={5 / 2}
-         >
-           <DeFiWrap
-             market={_market}
-             isJoin={isJoin}
-             {...(deFiWrapProps as any)}
-           />
-         </Box>
-       ) : (
-         <LoadingBlock />
-       )}
+      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+        <Box marginBottom={2}>
+          <Button
+            startIcon={<BackIcon fontSize={"small"}/>}
+            variant={"text"}
+            size={"medium"}
+            sx={{color: "var(--color-text-secondary)"}}
+            color={"inherit"}
+            onClick={history.goBack}
+          >
+            {t("labelInvestDefiTitle")}
+            {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+        </Box>
+        <StyleWrapper
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flex={1}
+        >
+          {deFiWrapProps.deFiCalcData ? (
+            <Box
+              className={"hasLinerBg"}
+              display={"flex"}
+              style={styles}
+              justifyContent={"center"}
+              padding={5 / 2}
+            >
+              <DeFiWrap
+                market={_market}
+                isJoin={isJoin}
+                {...(deFiWrapProps as any)}
+              />
+            </Box>
+          ) : (
+            <LoadingBlock/>
+          )}
 
-       {/*<DeFiWrap />*/}
-       <Toast
-         alertText={toastOpen?.content ?? ""}
-         severity={toastOpen?.type ?? "success"}
-         open={toastOpen?.open ?? false}
-         autoHideDuration={TOAST_TIME}
-         onClose={closeToast}
-       />
+          {/*<DeFiWrap />*/}
+          <Toast
+            alertText={toastOpen?.content ?? ""}
+            severity={toastOpen?.type ?? "success"}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
 
-  
-       <ConfirmDefiNOBalance
-         isJoin={isJoin}
-         handleClose={(_e) => {
-           setConfirmShowNoBalance(false);
-           if (deFiWrapProps?.onRefreshData) {
-             deFiWrapProps?.onRefreshData(true, true);
-           }
-         }}
-         open={confirmShowNoBalance}
-       />
-     </StyleWrapper></>
+
+          <ConfirmDefiNOBalance
+            isJoin={isJoin}
+            handleClose={(_e) => {
+              setConfirmShowNoBalance(false);
+              if (deFiWrapProps?.onRefreshData) {
+                deFiWrapProps?.onRefreshData(true, true);
+              }
+            }}
+            open={confirmShowNoBalance}
+          />
+        </StyleWrapper></Box>
     );
   }
 );

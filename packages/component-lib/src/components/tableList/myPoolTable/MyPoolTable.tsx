@@ -261,6 +261,7 @@ const columnModeMobile = <R extends MyPoolRow<{ [key: string]: any }>>(
           flexDirection={"column"}
           alignContent={"flex-start"}
           justifyContent={"center"}
+          height={"100%"}
         >
           <IconColumn account={account} row={row.ammDetail as any} size={20} />
         </PoolStyle>
