@@ -49,9 +49,9 @@ const TableWrap = styled(Box)<BoxProps & { isMobile?: boolean; lan: string }>`
       text-align: right;
     }
   }
-  .inVestAsset{
-    .rdg {
-      ${({ isMobile }) =>
+
+  .investAsset.rdg {
+    ${({ isMobile }) =>
       !isMobile
         ? `--template-columns: 200px 150px auto auto 205px !important;`
         : `--template-columns: 54% 40% 6% !important;`}
@@ -490,7 +490,7 @@ export const AssetsTable = withTranslation("tables")(
         )}
 
         <Table
-        className={isInvest?"inVestAsset":""}
+          className={isInvest ? "investAsset" : ""}
           {...{ ...rest, t }}
           style={{ height: tableHeight }}
           rowHeight={rowConfig.rowHeight}
