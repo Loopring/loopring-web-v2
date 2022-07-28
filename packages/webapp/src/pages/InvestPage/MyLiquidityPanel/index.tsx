@@ -241,7 +241,6 @@ const MyLiquidity: any = withTranslation("common")(
                 rowConfig: RowInvestConfig,
                 forexMap: forexMap as any,
                 isInvest: true,
-          
                 ...rest,
               }}
             />

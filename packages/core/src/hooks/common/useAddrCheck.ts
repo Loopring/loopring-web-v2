@@ -47,14 +47,13 @@ export const useAddressCheck = () => {
               clearTimeout(nodeTimer.current);
             }
             setIsAddressCheckLoading(true);
+            const {realAddr, addressErr} = await checkAddr(address, web3);
             nodeTimer.current = setTimeout(() => {
               _address.current = "";
               setAddrStatus(AddressError.TimeOut);
               setRealAddr("");
               setIsAddressCheckLoading(false);
-            }, 3000);
-
-            const { realAddr, addressErr } = await checkAddr(address, web3);
+            }, 6000);
 
             setRealAddr(realAddr);
             setAddrStatus(addressErr);
