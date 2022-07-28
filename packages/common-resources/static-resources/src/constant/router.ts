@@ -435,7 +435,7 @@ export const ammAdvice: InvestAdvice = {
   enable: true,
 };
 export const defiAdvice: InvestAdvice = {
-  type: InvestMapType.DEFI,
+  type: InvestMapType.STAKE,
   router: "/invest/defi",
   notification: "",
   banner: SoursURL + "images/icon-default.png",

@@ -135,7 +135,7 @@ const ActionPopContent = React.memo(
           ) : (
             <>
               <MenuItem
-                disabled={!_allowTrade?.defi?.enable}
+                disabled={!_allowTrade?.defiInvest?.enable}
                 onClick={() => {
                   history.push(`/invest/defi/${tokenValue}-null/invest`);
                 }}
@@ -143,7 +143,7 @@ const ActionPopContent = React.memo(
                 <ListItemText>{t("labelDefiInvest")}</ListItemText>
               </MenuItem>
               <MenuItem
-                disabled={!_allowTrade?.defi?.enable}
+                disabled={!_allowTrade?.defiInvest?.enable}
                 onClick={() => {
                   history.push(`/invest/defi/${tokenValue}-null/redeem`);
                 }}

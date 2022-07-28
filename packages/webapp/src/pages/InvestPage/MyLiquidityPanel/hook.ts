@@ -102,10 +102,7 @@ export const useOverview = <
           const coinB = o.ammDetail?.coinBInfo?.simpleName;
           const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
           const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
-          totalCurrentInvest = {
-            investDollar:
-              totalCurrentInvest.investDollar + (o.balanceDollar ?? 0),
-          };
+          totalCurrentInvest.investDollar += Number(o.balanceDollar ?? 0);
           return {
             ...o,
             totalAmmValueDollar,
@@ -114,11 +111,7 @@ export const useOverview = <
           };
         });
         defiCoinArray.forEach((defiCoinKey) => {
-          totalCurrentInvest = {
-            investDollar:
-              totalCurrentInvest.investDollar +
-              _walletMap[defiCoinKey]?.count?? 0 * tokenPrices[defiCoinKey]??0,
-          };
+          totalCurrentInvest.investDollar += Number(_walletMap[ defiCoinKey ]?.count ?? 0 * tokenPrices[ defiCoinKey ] ?? 0);
         }, []);
 
         setSummaryMyInvest((state) => {

@@ -836,14 +836,14 @@ export default {
   labelDefiMaxBalance:
     "Loopring rebalance pool can't satisfy your complete request. You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches",
   labelDefiMaxBalance1:
-    "<0><1>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</1><2>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</2></0>",
+    "<0><1>Withdraw wstETH to L1 and trade through CRV or LIDO directly</1><2>Wait some time for Loopring to setup the rebalance pool again, then revisit the page for redeem</2></0>",
   labelDefiNoBalance:
-  "<0>Loopring rebalance pool can't satisfy your complete request now.</0>"+
-  "<1>For the remaining investment, you can choose one of the approaches</1>"+  
-  "<2><3>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</3>"+
-  "<4>Wait some time for Loopring to setup the rebalance pool again, then revist the page for redeem</4></2>",
-  labelDefiMaxBalanceJoin:"The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit for subscription later.",
-  labelDefiNoBalanceJoin:"No quota available. Loopring will setup the pool soon, please revisit for subscription later.",
+    "<0>Loopring rebalance pool can't satisfy your complete request now.</0>" +
+    "<1>For the remaining investment, you can choose one of the approaches</1>",
+  labelDefiNoBalanceList: "<0>Withdraw wstETH to L1 and trade through CRV or LIDO directly</0>" +
+    "<1>Wait some time for Loopring to setup the rebalance pool again, then revisit the page for redeem</1>",
+  labelDefiMaxBalanceJoin: "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit for subscription later.",
+  labelDefiNoBalanceJoin: "No quota available. Loopring will setup the pool soon, please revisit for subscription later.",
   labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
@@ -856,7 +856,7 @@ export default {
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
   labelDefiOrderTable: "ETH Staking",
-  labelTitleMyInvestAvaiable: "My Holding Tokens",
+  labelTitleMyInvestAvailable: "My Holding Tokens",
   labelViewMore: "View more",
   labelInvestSuccess: "Successfully {{type}} {{symbol}}",
   labelInvestFailed: "Subscribe Failed",
@@ -864,9 +864,9 @@ export default {
   labelDefiRisk:
     "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
     "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>\n" +
-    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn’t change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
+    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
   labelDefiRisk2:
-    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>"+
-    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>", 
-  labelDefiAgree:"I have read risk warning",
-  };
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
+    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
+  labelDefiAgree: "I have read risk warning",
+};

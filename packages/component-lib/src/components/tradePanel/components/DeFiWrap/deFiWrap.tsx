@@ -346,19 +346,20 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               {label}
             </ButtonStyle>
           </Grid>
-          {confirmShowLimitBalance && 
-            <Grid item>
-              {
-                isJoin? <Typography
-                variant={"body1"}
-                component={"p"}
-                display={"flex"}
-                marginTop={1}
-                flexDirection={"column"}
-                color={"var(--color-warning)"}
+          {confirmShowLimitBalance &&
+          <Grid item>
+            {
+              isJoin ? <Typography
+                  variant={"body1"}
+                  component={"p"}
+                  display={"flex"}
+                  marginTop={1}
+                  flexDirection={"column"}
+                  color={"var(--color-warning)"}
                 ><Trans
-                i18nKey={"labelDefiMaxBalanceJoin"}
-                tOptions={{ maxValue }}> The quota is almost sold out and can't fulfil your complete order. You can only subscribe ** now. Loopring will setup the pool soon, please revisit for subscription later. 
+                  i18nKey={"labelDefiMaxBalanceJoin"}
+                  tOptions={{maxValue}}> The quota is almost sold out and can't fulfil your complete order. You can only
+                  subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later.
 
                 </Trans>
                 </Typography> :
@@ -377,9 +378,10 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   >
                     <Trans
                       i18nKey={"labelDefiMaxBalance"}
-                      tOptions={{ maxValue }}
+                      tOptions={{maxValue}}
                     >
-                      Loopring rebalance pool can't satisfy your complete request. You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches                  
+                      Loopring rebalance pool can't satisfy your complete request. You can only redeem {{maxValue}} now.
+                      For the remaining investment, you can choose one of the approaches
                     </Trans>
                   </Typography>
                   <Typography
@@ -390,15 +392,16 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   >
                     <Trans i18nKey={"labelDefiMaxBalance1"}>
                       <ul>
-                        <li>Withdraw wSTETH to L1 and trade through CRV or LIDO directly</li>
+                        <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
                         <li>Wait some time for Loopring to seto for redeem</li>
                       </ul>
                     </Trans>
                   </Typography>
                 </Typography>
-              }
-            
-            </Grid>}
+            }
+
+          </Grid>
+          }
         </Grid>
       </Grid>
     </Grid>

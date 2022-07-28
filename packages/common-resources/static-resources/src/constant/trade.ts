@@ -339,14 +339,17 @@ export type ForexMap<C> = { [k in keyof C]?: number };
 export const enum InvestMapType {
   Token = "Token",
   AMM = "AMM",
-  DEFI = "DEFI",
+  STAKE = "STAKE",
 }
-export const InvestOpenType = [InvestMapType.AMM, InvestMapType.DEFI];
+
+export const InvestOpenType = [InvestMapType.AMM, InvestMapType.STAKE];
+
 export const enum InvestDuration {
   Flexible = "Flexible",
   Duration = "Duration",
   All = "All",
 }
+
 export type InvestItem = {
   type: InvestMapType;
   i18nKey: `labelInvestType_${InvestMapType}` | "";

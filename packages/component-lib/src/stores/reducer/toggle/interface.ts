@@ -12,5 +12,5 @@ export type ToggleState = {
   mintNFT: { enable: boolean; reason?: string };
   deployNFT: { enable: boolean; reason?: string };
   updateAccount: { enable: boolean; reason?: string };
-  defi: { enable: boolean; reason?: string };
+  defiInvest: { enable: boolean; reason?: string };
 };

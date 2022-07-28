@@ -17,10 +17,11 @@ export type TradeDefi<C> = {
   depositPrice?: string;
   withdrawPrice?: string;
   maxSellVol?: string;
+  maxBuyVol?: string;
   maxFeeBips?: number;
   miniSellVol?: string;
   request?: sdk.DefiOrderRequest;
-  defiBalances?: { [key: string]: string };
+  defiBalances?: { [ key: string ]: string };
   lastInput?: DeFiChgType;
 };
 

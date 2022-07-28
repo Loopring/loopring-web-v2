@@ -186,12 +186,13 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
           ]);
       } catch (e: any) {
         allowTrade = {
-          register: { enable: false },
-          order: { enable: false },
-          joinAmm: { enable: false },
-          dAppTrade: { enable: false },
-          raw_data: { enable: false },
-          legal: { enable: false },
+          defiInvest: {enable: false},
+          register: {enable: false},
+          order: {enable: false},
+          joinAmm: {enable: false},
+          dAppTrade: {enable: false},
+          raw_data: {enable: false},
+          legal: {enable: false},
         };
         throw new CustomError(ErrorMap.NO_SDK);
       }
