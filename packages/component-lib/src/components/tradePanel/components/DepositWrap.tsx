@@ -60,8 +60,8 @@ export const DepositWrap = <
   ...rest
 }: DepositViewProps<T, I> & WithTranslation) => {
   const inputBtnRef = React.useRef();
-  let { feeChargeOrder, isMobile } = useSettings();
-
+  let {feeChargeOrder, isMobile} = useSettings();
+  const [_toAddress, setToAddress] = React.useState(tradeData.toAddress);
   const getDisabled = React.useMemo(() => {
     return disabled || depositBtnStatus === TradeBtnStatus.DISABLED;
   }, [depositBtnStatus, disabled]);
@@ -236,18 +236,23 @@ export const DepositWrap = <
           <Box display={isToAddressEditable ? "inherit" : "none"}>
             <TextField
               className={"text-address"}
-              value={tradeData.toAddress ? tradeData.toAddress : ""}
+              value={_toAddress ? _toAddress : ""}
               error={toAddressStatus !== AddressError.NoError}
               label={t("depositLabelTo")}
               disabled={!isToAddressEditable}
               placeholder={t("depositLabelPlaceholder")}
               onChange={(_event) => {
-                const toAddress = _event.target.value;
-                //...tradeData,
-                onChangeEvent(0, {
-                  tradeData: { toAddress } as T,
-                  to: "button",
-                });
+                if (_event.target.value !== _toAddress) {
+                  const toAddress = _event.target.value;
+                  setToAddress(() => {
+                    return toAddress;
+                  })
+                  onChangeEvent(0, {
+                    tradeData: {toAddress} as T,
+                    to: "button",
+                  });
+                }
+
               }}
               fullWidth={true}
             />
@@ -262,11 +267,14 @@ export const DepositWrap = <
                   <IconClearStyled
                     color={"inherit"}
                     size={"small"}
-                    style={{ top: "30px" }}
+                    style={{top: "30px"}}
                     aria-label="Clear"
-                    onClick={handleClear}
+                    onClick={() => {
+                      setToAddress('')
+                      handleClear()
+                    }}
                   >
-                    <CloseIcon />
+                    <CloseIcon/>
                   </IconClearStyled>
                 )
               )

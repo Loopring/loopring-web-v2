@@ -111,7 +111,7 @@ export const useOverview = <
           };
         });
         defiCoinArray.forEach((defiCoinKey) => {
-          totalCurrentInvest.investDollar += Number(_walletMap[ defiCoinKey ]?.count ?? 0 * tokenPrices[ defiCoinKey ] ?? 0);
+          totalCurrentInvest.investDollar += Number((_walletMap[ defiCoinKey ]?.count.replace(',', '') ?? 0) * tokenPrices[ defiCoinKey ] ?? 0);
         }, []);
 
         setSummaryMyInvest((state) => {
