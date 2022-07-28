@@ -360,7 +360,7 @@ export const useDefiTrade = <
         tradeDefi.deFiCalcData?.coinSell?.tradeValue === undefined
       ) {
         deFiCalcDataInit.coinSell.tradeValue = undefined;
-        deFiCalcDataInit.coinSell.tradeValue = undefined;
+        deFiCalcDataInit.coinBuy.tradeValue = undefined;
         const [AtoB, BtoA] = marketInfo
           ? isJoin
             ? [marketInfo.depositPrice, marketInfo.withdrawPrice]
