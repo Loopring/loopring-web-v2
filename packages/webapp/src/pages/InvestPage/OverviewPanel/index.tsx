@@ -60,7 +60,7 @@ export const OverviewPanel = withTranslation("common")(
     const {notifyMap} = useNotify();
     const showLoading = filteredData && !filteredData.length;
     const history = useHistory();
-    const investAdviceList = [{...ammAdvice, ...notifyMap?.invest?.investAdvice[ 0 ]}, {...defiAdvice, ...notifyMap?.invest?.investAdvice[ 0 ]}];
+    const investAdviceList = [{...ammAdvice, ...notifyMap?.invest?.investAdvice[ 0 ]}, {...defiAdvice, ...notifyMap?.invest?.investAdvice[ 1 ]}];
     return (
       <>
         <WrapperStyled marginBottom={3}>
