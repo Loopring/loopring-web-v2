@@ -4,6 +4,7 @@ import { AMMMarketType, MarketType } from "./market";
 // import { CoinKey } from "../loopring-interface";
 
 import { Account } from "./account";
+import { InvestAdvice } from '../loopring-interface';
 
 /**
  * export enum RuleType {
@@ -48,7 +49,13 @@ export type ACTIVITY = NOTIFICATION_ITEM;
 export type NOTIFICATION = {
   activities: ACTIVITY[];
   notifications: NOTIFICATION_ITEM[];
-  invest: INVEST_ITEM[];
+  invest: {
+    banner: {
+      mobile: string,
+      laptop: string,
+    }
+    investAdvice: InvestAdvice[],
+  }
   account?: Account;
   prev?: {
     endDate: number;

@@ -20,7 +20,7 @@ export const NotificationPanel = ({
   notification = {
     activities: [],
     notifications: [],
-    invest: [],
+    invest: {} as any,
   },
 }: {
   notification: NOTIFICATION;

@@ -428,7 +428,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
 export const ammAdvice: InvestAdvice = {
   type: InvestMapType.AMM,
   router: "/invest/ammpool",
-  banner: SoursURL + "images/icon-default.png",
+  banner: SoursURL + "images/icon-amm.png",
   titleI18n: "labelInvestAmm",
   desI18n: "labelInvestAmmDes",
   notification: "",
@@ -438,7 +438,7 @@ export const defiAdvice: InvestAdvice = {
   type: InvestMapType.STAKE,
   router: "/invest/defi",
   notification: "",
-  banner: SoursURL + "images/icon-default.png",
+  banner: SoursURL + "images/icon-lido.png",
   titleI18n: "labelInvestDefi",
   desI18n: "labelInvestDefiDes",
   enable: true,
