@@ -346,7 +346,8 @@ NFTDepositViewProps<T, I>) => {
                             label: t("labelNFTDepositInputTitle"),
                           }}
                           disabled={
-                            !!(
+                            !(
+                              tradeData.nftIdView &&
                               tradeData.nftId &&
                               tradeData.tokenAddress &&
                               tradeData.balance !== undefined

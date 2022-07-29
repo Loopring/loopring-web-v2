@@ -169,16 +169,23 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
         (data.nftIdView && data.nftIdView.toLowerCase().startsWith("0x"))
       ) {
         _nftId = data.nftIdView ?? "";
-      } else if (data.nftIdView) {
+      } else if (data.nftIdView !== undefined) {
         try {
-          _nftId = web3.utils
-            .toHex(sdk.toBN(data.nftIdView) as any)
-            .replace("0x", "");
-          const prev = DEAULT_NFTID_STRING.substring(
-            0,
-            DEAULT_NFTID_STRING.length - _nftId.toString().length
-          );
-          _nftId = prev + _nftId.toString();
+          if (data.nftIdView === "") {
+            _nftId = "";
+            shouldUpdate.balance = '';
+            shouldUpdate.tradeValue = undefined;
+          } else {
+            _nftId = web3.utils
+              .toHex(sdk.toBN(data.nftIdView) as any)
+              .replace("0x", "");
+            const prev = DEAULT_NFTID_STRING.substring(
+              0,
+              DEAULT_NFTID_STRING.length - _nftId.toString().length
+            );
+            _nftId = prev + _nftId.toString();
+          }
+
         } catch (error: any) {
           const errorView: ErrorType = ErrorMap.NTF_ID_ENCODE_ERROR;
           updateBtnStatus({ errorView, ...(error as any) });
