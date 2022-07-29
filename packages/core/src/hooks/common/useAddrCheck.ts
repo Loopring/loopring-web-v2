@@ -47,20 +47,19 @@ export const useAddressCheck = () => {
               clearTimeout(nodeTimer.current);
             }
             setIsAddressCheckLoading(true);
+            const {realAddr, addressErr} = await checkAddr(address, web3);
             nodeTimer.current = setTimeout(() => {
               _address.current = "";
               setAddrStatus(AddressError.TimeOut);
               setRealAddr("");
               setIsAddressCheckLoading(false);
             }, 6000);
-            const {realAddr, addressErr} = await checkAddr(address, web3);
-
 
             setRealAddr(realAddr);
             setAddrStatus(addressErr);
             //realAddr !== "" || (address !== "" && address.startsWith("0x"))
             if (addressErr === AddressError.NoError) {
-              const [{walletType}, response] = await Promise.all([
+              const [{ walletType }, response] = await Promise.all([
                 LoopringAPI.walletAPI.getWalletType({
                   wallet: realAddr, //realAddr != "" ? realAddr : address,
                 }),
