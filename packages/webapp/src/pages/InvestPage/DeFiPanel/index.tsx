@@ -111,8 +111,6 @@ export const DeFiPanel: any = withTranslation("common")(
           ) : (
             <LoadingBlock/>
           )}
-
-          {/*<DeFiWrap />*/}
           <Toast
             alertText={toastOpen?.content ?? ""}
             severity={toastOpen?.type ?? "success"}
