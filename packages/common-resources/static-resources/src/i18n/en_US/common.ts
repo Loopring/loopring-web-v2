@@ -869,4 +869,5 @@ export default {
     "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
   labelDefiAgree: "I have read risk warning",
+  labelDefiInvest: "Defi Earn",
 };

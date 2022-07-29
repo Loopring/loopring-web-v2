@@ -641,7 +641,7 @@ export const useDefiTrade = <
       if (!allowTrade.defiInvest.enable) {
         setShowSupport({isShow: true});
       } else if (defiInvest.enable) {
-        setShowTradeIsFrozen({isShow: true, type: "Defi Invest"})
+        setShowTradeIsFrozen({isShow: true, type: "DefiInvest"})
       } else {
         sendRequest();
       }

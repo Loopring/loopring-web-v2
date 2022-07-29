@@ -4,7 +4,6 @@ import { ToggleState } from "./interface";
 
 const initialState: ToggleState = {
   order: {enable: true},
-  defiInvest: {enable: true},
   joinAmm: {enable: true},
   exitAmm: {enable: true},
   transfer: {enable: true},
@@ -17,6 +16,7 @@ const initialState: ToggleState = {
   deployNFT: {enable: true},
   updateAccount: {enable: true},
   collectionNFT: {enable: true},
+  defiInvest: {enable: true},
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
@@ -46,9 +46,7 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       if (order !== undefined) {
         state.order = order;
       }
-      if (defiInvest !== undefined) {
-        state.defiInvest = defiInvest;
-      }
+
       if (joinAmm !== undefined) {
         state.joinAmm = joinAmm;
       }
@@ -81,6 +79,9 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       }
       if (updateAccount !== undefined) {
         state.updateAccount = updateAccount;
+      }
+      if (defiInvest !== undefined) {
+        state.defiInvest = defiInvest;
       }
       if (collectionNFT !== undefined) {
         state.collectionNFT = collectionNFT;
