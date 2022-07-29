@@ -78,6 +78,8 @@ export const useDefiTrade = <
   const {exchangeInfo, allowTrade} = useSystem();
   const {tradeDefi, updateTradeDefi, resetTradeDefi} = useTradeDefi();
   const {setShowSupport, setShowTradeIsFrozen} = useOpenModals();
+  const [serverUpdate, setServerUpdate] = React.useState(false)
+
   const {toggle: {defiInvest}} = useToggle();
   const [{coinSellSymbol, coinBuySymbol}, setSymbol] = React.useState(() => {
     if (isJoin) {
@@ -448,13 +450,25 @@ export const useDefiTrade = <
             )
           : Promise.resolve(undefined),
       ]).then(([defiMapInfo, _feeInfo]) => {
-        updateDefiSyncMap({
-          defiMap: {
-            marketMap: defiMapInfo.markets,
-            marketCoins: defiMapInfo.tokenArr,
-            marketArray: defiMapInfo.marketArr,
-          },
-        });
+        if ((defiMapInfo as sdk.RESULT_INFO).code ||
+          (defiMapInfo as sdk.RESULT_INFO).message) {
+          setServerUpdate(true);
+        } else {
+          let status: any = defiMapInfo.markets[ market ]?.status ?? 0;
+          status = ("00000000" + (status).toString(2)).split('');
+          if (!(isJoin ? status[ status.length - 2 ] === "1" : status[ status.length - 4 ] === "1")) {
+            setServerUpdate(true);
+          } else {
+            updateDefiSyncMap({
+              defiMap: {
+                marketMap: defiMapInfo.markets,
+                marketCoins: defiMapInfo.tokenArr,
+                marketArray: defiMapInfo.marketArr,
+              },
+            });
+          }
+
+        }
         resetDefault(clearTrade, {
           fee: tradeDefi.fee,
           feeRaw: tradeDefi.feeRaw,
@@ -640,7 +654,7 @@ export const useDefiTrade = <
     ) {
       if (!allowTrade.defiInvest.enable) {
         setShowSupport({isShow: true});
-      } else if (defiInvest.enable) {
+      } else if (!defiInvest.enable) {
         setShowTradeIsFrozen({isShow: true, type: "DefiInvest"})
       } else {
         sendRequest();
@@ -807,5 +821,7 @@ export const useDefiTrade = <
     deFiWrapProps: deFiWrapProps as unknown as DeFiWrapProps<T, I, ACD>,
     confirmShowNoBalance,
     setConfirmShowNoBalance,
+    serverUpdate,
+    setServerUpdate,
   };
 };

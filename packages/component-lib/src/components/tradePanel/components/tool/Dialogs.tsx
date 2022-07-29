@@ -28,7 +28,7 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { TradeDefi } from "@loopring-web/core";
 import BigNumber from "bignumber.js";
 
@@ -991,16 +991,66 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
     );
   }
 );
+
+export const ConfirmInvestDefiServiceUpdate = withTranslation("common")(
+  ({
+     t,
+     open,
+     handleClose,
+   }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any) => void;
+  }) => {
+    const history = useHistory();
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Typography
+              whiteSpace={"pre-line"}
+              component={"span"}
+              variant={"body1"}
+              display={"block"}
+              color={"textSecondary"}
+            >
+              {t('labelDefiClose')}
+            </Typography>
+          </DialogContentText>
+
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              history.goBack()
+              handleClose(e);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
 export const ConfirmInvestDefiRisk = withTranslation("common")(
   ({
-    t,
-    open,
-    handleClose,
-  }: WithTranslation & {
+     t,
+     open,
+     handleClose,
+   }: WithTranslation & {
     open: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
-    const [agree,setAgree]=React.useState(false);
+    const [agree, setAgree] = React.useState(false);
     return (
       <Dialog
         open={open}

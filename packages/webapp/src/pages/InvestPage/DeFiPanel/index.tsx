@@ -3,7 +3,15 @@ import styled from "@emotion/styled";
 import { Box, Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useDeFiHook } from "./hook";
-import { boxLiner, Button, ConfirmDefiNOBalance, DeFiWrap, Toast, useSettings, } from "@loopring-web/component-lib";
+import {
+  boxLiner,
+  Button,
+  ConfirmDefiNOBalance,
+  ConfirmInvestDefiServiceUpdate,
+  DeFiWrap,
+  Toast,
+  useSettings,
+} from "@loopring-web/component-lib";
 import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
 import { useHistory, useRouteMatch } from "react-router-dom";
@@ -55,6 +63,8 @@ export const DeFiPanel: any = withTranslation("common")(
       toastOpen,
       confirmShowNoBalance,
       setConfirmShowNoBalance,
+      serverUpdate,
+      setServerUpdate,
     } = useDeFiHook({
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
@@ -111,7 +121,7 @@ export const DeFiPanel: any = withTranslation("common")(
             onClose={closeToast}
           />
 
-
+          <ConfirmInvestDefiServiceUpdate open={serverUpdate} handleClose={() => setServerUpdate(false)}/>
           <ConfirmDefiNOBalance
             isJoin={isJoin}
             handleClose={(_e) => {
