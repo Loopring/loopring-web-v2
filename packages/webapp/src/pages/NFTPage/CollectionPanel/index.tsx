@@ -19,6 +19,35 @@ enum CreateCollectionStep {
   AdvancePanel,
   CommonPanel,
 }
+const CreateNamePanel = ({setStep}: { setStep: (step: CreateCollectionStep) => void }) => {
+  const [value, setValue] = React.useState("");
+  const {t} = useTranslation('common');
+  const {u} = useM
+  return <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
+    <Box marginBottom={2} width={'var(--modal-width)'}>
+      <TextField
+        value={value}
+        inputProps={{maxLength: 28}}
+        fullWidth
+        label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
+        type={"text"}
+        onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
+      />
+    </Box>
+    <Box width={'var(--modal-width)'} alignItems={'center'} display={'flex'} justifyContent={'center'}>
+      <Button
+        onClick={() => setStep(CreateCollectionStep.AdvancePanel)}
+        variant={"contained"}
+        disabled={value.trim() === ''}
+        fullWidth
+        color={"primary"}
+      >
+        {t("labelCreateCollection")}
+      </Button>
+    </Box>
+
+  </Box>
+}
 
 const CreateUrlPanel = ({
                           open,
@@ -29,7 +58,6 @@ const CreateUrlPanel = ({
   // setStep: (props: CreateCollectionStep) => void;
 }) => {
   const {t} = useTranslation();
-  const [vaule, setValue] = React.useState("");
   const {setShowCollectionAdvance} = useOpenModals();
   const history = useHistory();
   const [step, setStep] = React.useState(CreateCollectionStep.CreateUrl);
@@ -42,29 +70,7 @@ const CreateUrlPanel = ({
   }> = React.useMemo(() => {
     return [
       {
-        view: <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
-          <Box marginBottom={2} width={'var(--modal-width)'}>
-            <TextField
-              value={vaule}
-              inputProps={{maxLength: 10}}
-              fullWidth
-              label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
-              type={"text"}
-              onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
-            />
-          </Box>
-          <Box width={'var(--modal-width)'}>
-            <Button
-              onClick={() => setStep(CreateCollectionStep.AdvancePanel)}
-              variant={"outlined"}
-              fullWidth
-              color={"primary"}
-            >
-              {t("labelCreateCollection")}
-            </Button>
-          </Box>
-
-        </Box>,
+        view: <CreateNamePanel/>,
       },
       {
         view: <Box
@@ -109,23 +115,24 @@ const CreateUrlPanel = ({
       aria-describedby="modal-modal-description"
     >
       <ModelPanelStyle style={{boxShadow: "24"}}>
+
         {panelList.map((panel, index) => {
           return (
-            <Box display={'flex'} flex={1} key={index + '0'}>
-              <Box display={"flex"} width={"100%"} flexDirection={"column"}>
+            <React.Fragment key={index + '0'}>
+              <Box display={step === index ? "flex" : "none"} width={"100%"} flexDirection={"column"}>
                 <ModalCloseButton onClose={onClose} t={t}/>
                 {panel.onBack ? <ModalBackButton onBack={panel.onBack}/> : <></>}
               </Box>
               <Box
                 display={step === index ? "flex" : "none"}
                 alignItems={"stretch"}
-                height={panel.height ? panel.height : "var(--modal-height)"}
-                width={panel.width ? panel.width : "var(--modal-width)"}
+                flex={1}
                 key={index}
+                margin={5 / 2}
               >
                 {panel.view}
               </Box>
-            </Box>
+            </React.Fragment>
           );
         })}
       </ModelPanelStyle>
@@ -144,22 +151,23 @@ export const NFTCollectPanel = () => {
       flex={1}
       alignItems={"center"}
       display={"flex"}
+      flexDirection={'column'}
       justifyContent={"center"}
+      component={"section"}
+      marginTop={1}
     >
-      <Box flex={1} component={"section"} marginTop={1} display={"flex"} flexDirection={'column'}>
-        <Box>
-          <Button
-            onClick={() => {
-              setCreateOpen(true)
-            }}
-            variant={"outlined"}
-            color={"primary"}
-          >
-            {t("labelCreateCollection")}
-          </Button>
-        </Box>
-        <Box flex={1}></Box>
+      <Box display={'flex'} alignSelf={"flex-end"}>
+        <Button
+          onClick={() => {
+            setCreateOpen(true)
+          }}
+          variant={"outlined"}
+          color={"primary"}
+        >
+          {t("labelCreateCollection")}
+        </Button>
       </Box>
+      <Box flex={1}></Box>
       <CreateUrlPanel open={showCreateOpen} onClose={() => {
         setCreateOpen(false);
       }}

@@ -11,7 +11,6 @@ const StyledPaper = styled(Box)`
 
 export const CreateCollectPanel = () => {
   const { t } = useTranslation("common");
-  // const { setShowAccount, setSho } = useOpenModals();
 
   return (
     <>

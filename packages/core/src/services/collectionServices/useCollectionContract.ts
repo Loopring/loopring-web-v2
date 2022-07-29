@@ -46,20 +46,18 @@ import {
 import { useHistory } from "react-router-dom";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export function useNFTMint<
-  Me extends NFTMETA,
+export function useCollectionContract<Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
   I,
-  _C extends FeeInfo
->({
-  chargeFeeTokenList,
-  isFeeNotEnough,
-  checkFeeIsEnough,
-  handleFeeChange,
-  feeInfo,
-  handleTabChange,
-  nftMintValue,
-}: {
+  _C extends FeeInfo>({
+                        chargeFeeTokenList,
+                        isFeeNotEnough,
+                        checkFeeIsEnough,
+                        handleFeeChange,
+                        feeInfo,
+                        handleTabChange,
+                        nftMintValue,
+                      }: {
   chargeFeeTokenList: FeeInfo[];
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
@@ -73,10 +71,10 @@ export function useNFTMint<
 }) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
   const history = useHistory();
-  const { tokenMap, totalCoinMap } = useTokenMap();
-  const { exchangeInfo, chainId } = useSystem();
-  const { account } = useAccount();
-  const { updateNFTMintData } = useModalData();
+  const {tokenMap, totalCoinMap} = useTokenMap();
+  const {exchangeInfo, chainId} = useSystem();
+  const {account} = useAccount();
+  const {updateNFTMintData} = useModalData();
   const {
     btnStatus,
     btnInfo,
@@ -86,13 +84,13 @@ export function useNFTMint<
     resetBtnInfo,
   } = useBtnStatus();
   const [lastRequest, setLastRequest] = React.useState<any>({});
-  const { checkHWAddr, updateHW } = useWalletInfo();
-  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
+  const {checkHWAddr, updateHW} = useWalletInfo();
+  const {page, updateWalletLayer2NFT} = useWalletLayer2NFT();
+  const {setShowAccount, setShowNFTMintAdvance} = useOpenModals();
   const checkAvailable = ({
-    nftMintValue,
-    isFeeNotEnough,
-  }: {
+                            nftMintValue,
+                            isFeeNotEnough,
+                          }: {
     nftMintValue: NFT_MINT_VALUE<any>;
     isFeeNotEnough: any;
   }) => {
@@ -115,7 +113,7 @@ export function useNFTMint<
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      if (!error && checkAvailable({ nftMintValue, isFeeNotEnough })) {
+      if (!error && checkAvailable({nftMintValue, isFeeNotEnough})) {
         enableBtn();
         return;
       }
@@ -149,9 +147,9 @@ export function useNFTMint<
 
   const handleMintDataChange = React.useCallback(
     async (data: Partial<MintReadTradeNFT<I>>) => {
-      const { nftMETA, mintData } = nftMintValue;
-      const buildNFTMeta = { ...nftMETA };
-      const buildMint = { ...mintData };
+      const {nftMETA, mintData} = nftMintValue;
+      const buildNFTMeta = {...nftMETA};
+      const buildMint = {...mintData};
       Reflect.ownKeys(data).map((key) => {
         switch (key) {
           case "tradeValue":
@@ -180,7 +178,7 @@ export function useNFTMint<
   };
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
-      const { apiKey, connectName, eddsaKey } = account;
+      const {apiKey, connectName, eddsaKey} = account;
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
           let isHWAddr = checkHWAddr(account.accAddress);
@@ -188,7 +186,7 @@ export function useNFTMint<
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
           }
-          setLastRequest({ request });
+          setLastRequest({request});
           setShowAccount({
             isShow: true,
             step: AccountStep.NFTMint_In_Progress,
@@ -203,7 +201,7 @@ export function useNFTMint<
               web3: connectProvides.usedWeb3,
               chainId:
                 chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-              walletType: (ConnectProvidersSignMap[connectName] ??
+              walletType: (ConnectProvidersSignMap[ connectName ] ??
                 connectName) as unknown as sdk.ConnectorNames,
               eddsaKey: eddsaKey.sk,
               apiKey,
@@ -239,10 +237,10 @@ export function useNFTMint<
             });
             if (isHWAddr) {
               myLog("......try to set isHWAddr", isHWAddr);
-              updateHW({ wallet: account.accAddress, isHWAddr });
+              updateHW({wallet: account.accAddress, isHWAddr});
             }
             walletLayer2Service.sendUserUpdate();
-            updateWalletLayer2NFT({ page });
+            updateWalletLayer2NFT({page});
             mintService.emptyData();
             history.push("/nft/");
             // checkFeeIsEnough();
@@ -312,7 +310,7 @@ export function useNFTMint<
 
   const onNFTMintClick = React.useCallback(
     async (isFirstTime: boolean = true) => {
-      let result: ActionResult = { code: ActionResultCode.NoError };
+      let result: ActionResult = {code: ActionResultCode.NoError};
       const nftMintValue = store.getState()._router_modalData.nftMintValue;
       if (
         account.readyState === AccountStatus.ACTIVATED &&
@@ -321,9 +319,9 @@ export function useNFTMint<
         exchangeInfo &&
         nftMintValue.mintData &&
         nftMintValue.mintData.fee &&
-        checkAvailable({ nftMintValue, isFeeNotEnough })
+        checkAvailable({nftMintValue, isFeeNotEnough})
       ) {
-        setShowNFTMintAdvance({ isShow: false });
+        setShowNFTMintAdvance({isShow: false});
         setShowAccount({
           isShow: true,
           step: AccountStep.NFTMint_WaitForAuth,
@@ -333,13 +331,13 @@ export function useNFTMint<
           },
         });
         try {
-          const { accountId, accAddress, apiKey } = account;
+          const {accountId, accAddress, apiKey} = account;
           const feeRaw =
             nftMintValue.mintData.fee.feeRaw ??
             nftMintValue.mintData.fee.__raw__?.feeRaw ??
             0;
           const fee = sdk.toBig(feeRaw);
-          const feeToken = tokenMap[nftMintValue.mintData.fee.belong];
+          const feeToken = tokenMap[ nftMintValue.mintData.fee.belong ];
           const storageId = await LoopringAPI.userAPI.getNextStorageId(
             {
               accountId,
@@ -363,7 +361,7 @@ export function useNFTMint<
             },
             counterFactualNftInfo: {
               nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory[chainId],
+              nftFactory: sdk.NFTFactory[ chainId ],
               nftBaseUri: "",
             },
             royaltyPercentage: nftMintValue.nftMETA.royaltyPercentage ?? 0,
@@ -384,7 +382,7 @@ export function useNFTMint<
               symbol: nftMintValue.nftMETA?.name,
               value: nftMintValue.mintData?.tradeValue,
             },
-            error: { code: 400, message: e.message } as sdk.RESULT_INFO,
+            error: {code: 400, message: e.message} as sdk.RESULT_INFO,
           });
         }
         return;
@@ -426,9 +424,9 @@ export function useNFTMint<
   };
 
   const commonSwitch = ({
-    data,
-    status,
-  }: {
+                          data,
+                          status,
+                        }: {
     status: MintCommands;
     data?: any;
   }) => {

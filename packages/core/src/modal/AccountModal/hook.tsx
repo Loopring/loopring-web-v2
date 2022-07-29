@@ -198,7 +198,6 @@ export function useAccountModalForUI({
   const vendorProps = useVendor();
   const { nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn } =
     useNFTMintAdvance();
-  // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
   const { transferProps } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw();

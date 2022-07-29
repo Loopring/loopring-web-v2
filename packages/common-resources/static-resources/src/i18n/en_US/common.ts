@@ -871,4 +871,5 @@ export default {
   labelDefiAgree: "I have read risk warning",
   labelDefiInvest: "Defi Earn",
   labelDefiClose: "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
+  labelCreateCollection: "New My Collection"
 };

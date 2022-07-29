@@ -12,7 +12,6 @@ import {
   IPFS_META_URL,
   LoadingIcon,
   myLog,
-  // MINT_LIMIT,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
@@ -24,7 +23,6 @@ import {
   PopoverPure,
   TextField,
   TGItemData,
-  // ToggleButtonGroup,
 } from "../../basic-lib";
 import {
   DropdownIconStyled,

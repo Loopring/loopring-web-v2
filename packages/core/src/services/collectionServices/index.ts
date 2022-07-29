@@ -1,3 +1,3 @@
-export * from "./mintService";
-export * from "./useNFTMint";
-export * from "./useNFTMeta";
+export * from "./collectionService";
+export * from "./useCollectionContract";
+export * from "./useCollectionMeta";
