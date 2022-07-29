@@ -25,7 +25,7 @@ const TableStyled = styled(Box)<BoxProps & { isMobile?: boolean }>`
   .rdg {
     ${({isMobile}) =>
             !isMobile
-                    ? `--template-columns: auto 20% 120px !important;`
+                    ? `--template-columns: auto 20% 180px !important;`
                     : `--template-columns: 100% !important;`}
     .rdgCellCenter {
       height: 100%;
