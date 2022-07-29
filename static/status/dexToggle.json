@@ -50,5 +50,9 @@
   "defiInvest": {
     "enable": true,
     "reason": null
+  },
+  "collectionNFT": {
+    "enable": true,
+    "reason": null
   }
 }
