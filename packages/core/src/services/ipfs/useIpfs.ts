@@ -1,7 +1,7 @@
 import React from "react";
 import { IPFSCommands, IpfsProvides, ipfsService } from "./ipfsService";
 
-const ipfsProvides = new IpfsProvides();
+export const ipfsProvides = new IpfsProvides();
 
 export function useIPFS({ handleSuccessUpload, handleFailedUpload }: any) {
   const subject = React.useMemo(() => ipfsService.onSocket(), []);

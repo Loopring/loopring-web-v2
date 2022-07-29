@@ -1,28 +1,27 @@
 import {
-  CoinIcon, ModalBackButton,
+  ModalBackButton,
   ModalCloseButton,
-  ModelPanelStyle, QRButtonStyle, useOpenModals,
+  ModelPanelStyle, useOpenModals,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
-import { Box, Button, Modal, TextField } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button, Modal, TextField, Typography } from "@mui/material";
+import React from "react";
 import styled from "@emotion/styled/";
 import { useHistory } from 'react-router-dom';
+import { CreateCollectionStep, useCollectionContract } from '@loopring-web/core';
+import { LoadingBlock } from '../../LoadingPage';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 `;
 
-enum CreateCollectionStep {
-  CreateUrl,
-  AdvancePanel,
-  CommonPanel,
-}
+
 const CreateNamePanel = ({setStep}: { setStep: (step: CreateCollectionStep) => void }) => {
   const [value, setValue] = React.useState("");
   const {t} = useTranslation('common');
-  const {u} = useM
+
+  const {createContract} = useCollectionContract({setStep});
   return <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
     <Box marginBottom={2} width={'var(--modal-width)'}>
       <TextField
@@ -36,7 +35,10 @@ const CreateNamePanel = ({setStep}: { setStep: (step: CreateCollectionStep) => v
     </Box>
     <Box width={'var(--modal-width)'} alignItems={'center'} display={'flex'} justifyContent={'center'}>
       <Button
-        onClick={() => setStep(CreateCollectionStep.AdvancePanel)}
+        onClick={() => {
+          createContract({name: value})
+          setStep(CreateCollectionStep.Loading)
+        }}
         variant={"contained"}
         disabled={value.trim() === ''}
         fullWidth
@@ -60,7 +62,7 @@ const CreateUrlPanel = ({
   const {t} = useTranslation();
   const {setShowCollectionAdvance} = useOpenModals();
   const history = useHistory();
-  const [step, setStep] = React.useState(CreateCollectionStep.CreateUrl);
+  const [step, setStep] = React.useState(CreateCollectionStep.CreateTokenAddress);
 
   const panelList: Array<{
     view: JSX.Element;
@@ -70,7 +72,30 @@ const CreateUrlPanel = ({
   }> = React.useMemo(() => {
     return [
       {
-        view: <CreateNamePanel/>,
+        view: <CreateNamePanel setStep={setStep}/>,
+      },
+      {
+        view: <Box minHeight={"280px"} flex={1}
+                   display={'flex'} flexDirection={'column'} alignItems={'center'} width={'var(--modal-width)'}>
+          <Typography component={'h5'}>
+            {t('Waiting for create Collection token Address')}
+          </Typography>
+          <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            <LoadingBlock/>
+          </Box>
+        </Box>
+      },
+      {
+        view: <Box minHeight={"280px"} flex={1}
+                   display={'flex'} flexDirection={'column'} alignItems={'center'} width={'var(--modal-width)'}>
+          <Typography component={'h5'}>
+            {t('Waiting for create Collection token Address')}
+          </Typography>
+          <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            {t('Collection Failed')}
+          </Box>
+        </Box>,
+        onBack: () => setStep(CreateCollectionStep.CreateTokenAddress)
       },
       {
         view: <Box
@@ -103,7 +128,7 @@ const CreateUrlPanel = ({
             </Button>
           </Box>
         </Box>,
-        onBack: () => setStep(CreateCollectionStep.CreateUrl)
+        onBack: () => setStep(CreateCollectionStep.CreateTokenAddress)
       }
     ]
   }, [])
