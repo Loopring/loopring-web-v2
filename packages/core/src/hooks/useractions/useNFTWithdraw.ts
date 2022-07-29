@@ -73,12 +73,18 @@ export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
     deployInWithdraw:
       nftWithdrawValue.isCounterFactualNFT &&
       nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateNFTWithdrawData({ ...nftWithdrawValue, fee });
+    updateData:
+      ({fee}) => {
+        const {nftWithdrawValue} = store.getState()._router_modalData;
+        updateNFTWithdrawData({
+          ...nftWithdrawValue,
+          balance: sdk
+            .toBig(nftWithdrawValue.total ?? 0)
+            .minus(nftWithdrawValue.locked ?? 0)
+            .toNumber(),
+          fee
+        });
       },
-      [nftWithdrawValue]
-    ),
   });
 
   const { checkHWAddr, updateHW } = useWalletInfo();
