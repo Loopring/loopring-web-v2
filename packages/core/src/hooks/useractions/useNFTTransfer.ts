@@ -76,15 +76,17 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateNFTTransferData({
-          ...nftTransferValue,
-          fee,
-        });
-      },
-      [nftTransferValue, updateNFTTransferData]
-    ),
+    updateData: ({fee}) => {
+      const {nftTransferValue} = store.getState()._router_modalData;
+      updateNFTTransferData({
+        ...nftTransferValue,
+        balance: sdk
+          .toBig(nftTransferValue.total ?? 0)
+          .minus(nftTransferValue.locked ?? 0)
+          .toNumber(),
+        fee,
+      });
+    },
   });
 
   const {
