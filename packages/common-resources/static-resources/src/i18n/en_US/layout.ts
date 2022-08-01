@@ -103,5 +103,6 @@ export default {
   labelInvestDefi: "ETH Staking",
   labelInvestDefiDes: "Easy stake, stable returns",
   labelDepositNFT: "Receive NFT",
+  labelMyCollection: "My Collections",
   // labelDepositNFTDes:"Receive NFT"
 };

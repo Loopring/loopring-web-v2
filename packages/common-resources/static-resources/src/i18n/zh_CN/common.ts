@@ -822,16 +822,20 @@ export default {
   labelDefiMin: "Minimum of {{arg}}",
   labelDefiNoEnough: "Not enough {{arg}}",
   labelDefiMaxBalance:
-    "Loopring rebalance pool can't satisfy your complete request. You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches",
+    "Loopring rebalance pool can't satisfy your complete request. " +
+    "You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches",
   labelDefiMaxBalance1:
-    "<0><1>Withdraw wstETH to L1 and trade through CRV or LIDO directly</1><2>Wait some time for Loopring to setup the rebalance pool again, then revisit the page for redeem</2></0>",
+    "<0>" +
+    "<1>Withdraw WSTETH to L1 and trade through CRV or LIDO directly</1>" +
+    "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
+    "</0>",
   labelDefiNoBalance:
     "<0>Loopring rebalance pool can't satisfy your complete request now.</0>" +
-    "<1>For the remaining investment, you can choose one of the approaches</1>" +
-    "<2>Withdraw wstETH to L1 and trade through CRV or LIDO directly</2>" +
-    "<3>Wait some time for Loopring to setup the rebalance pool again, then revisit the page for redeem</3>",
+    "<1>For the remaining investment, you can choose one of the approaches</1>",
+  labelDefiNoBalanceList: "<0>Withdraw wstETH to L1 and trade through CRV or LIDO directly</0>" +
+    "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
   labelDefiMaxBalanceJoin: "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit for subscription later.",
-  labelDefiNoBalanceJoin: "No quota available. Loopring will setup the pool soon, please revisit for subscription later.",
+  labelDefiNoBalanceJoin: "Loopring will set up the pool soon. Please come back later to subscribe.",
   labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
@@ -857,4 +861,10 @@ export default {
     "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
   labelDefiAgree: "I have read risk warning",
+  labelDefiInvest: "Defi Earn",
+  labelDefiClose: "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
+  labelCreateCollection: "New My Collection",
+  labelCollectionCreateName: "Contract address for your collection",
+  labelCollectionCreateERC1155: "Collection ERC-1155",
+  labelCollectionCreateWaiting: "Waiting for create Collection token Address"
 };
