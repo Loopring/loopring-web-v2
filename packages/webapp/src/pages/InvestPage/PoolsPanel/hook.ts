@@ -20,6 +20,7 @@ import {
 } from "@loopring-web/core";
 
 import { WsTopicType } from "@loopring-web/loopring-sdk";
+import { useLocation } from "react-router-dom";
 
 // import { tickerService } from 'services/tickerService';
 type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat };
@@ -27,6 +28,9 @@ export function useAmmMapUI<
   R extends { [key: string]: any },
   I extends { [key: string]: any }
 >() {
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+
   const [rawData, setRawData] = React.useState<Array<Row<R>> | []>([]);
   const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>(
     []
@@ -204,6 +208,13 @@ export function useAmmMapUI<
     },
     [rawData, resetTableData]
   );
+  React.useEffect(() => {
+    const search = searchParams.get("search");
+    if (search && rawData.length) {
+      getFilteredData(search);
+    }
+  }, [search, rawData]);
+
   return {
     // page,
     rawData,

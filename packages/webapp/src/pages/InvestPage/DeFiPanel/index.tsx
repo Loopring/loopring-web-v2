@@ -2,48 +2,50 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Box, Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { useDeFiHook } from "./hook";
 import {
   boxLiner,
-  ConfirmDefiBalanceIsLimit,
+  Button,
+  ConfirmDefiNOBalance,
+  ConfirmInvestDefiServiceUpdate,
   DeFiWrap,
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import {
-  TOAST_TIME,
-  useDefiMap,
-  useTokenMap,
-  useTradeDefi,
-} from "@loopring-web/core";
+import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
-import { useRouteMatch } from "react-router-dom";
-import {
-  getValuePrecisionThousand,
-  MarketType,
-} from "@loopring-web/common-resources";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { BackIcon, MarketType } from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
   position: relative;
-  border-radius: ${({ theme }) => theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
+
   .loading-block {
     background: initial;
   }
+
   .hasLinerBg {
-    ${({ theme }) => boxLiner({ theme })}
+    ${({theme}) => boxLiner({theme})}
   }
-  border-radius: ${({ theme }) => theme.unit}px;
+
+  border-radius: ${({theme}) => theme.unit}px;
 ` as typeof Grid;
 
 export const DeFiPanel: any = withTranslation("common")(
-  <R extends { [key: string]: any }, I extends { [key: string]: any }>({
-    t,
-    ...rest
-  }: WithTranslation) => {
-    const { marketArray } = useDefiMap();
-    const { tokenMap } = useTokenMap();
-    const match: any = useRouteMatch("/invest/defi/:market/:isJoin");
+  <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({
+                                                                             t,
+                                                                             setConfirmDefiInvest,
+                                                                           }: WithTranslation & {
+    setConfirmDefiInvest: (state: any) => void;
+  }) => {
+    const {marketArray} = useDefiMap();
+    const {
+      confirmation: {confirmedDefiInvest},
+    } = confirmation.useConfirmation();
+    setConfirmDefiInvest(!confirmedDefiInvest);
+    const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
+    const history = useHistory();
     const _market: MarketType = [...(marketArray ? marketArray : [])].find(
       (_item) => {
         const value = match?.params?.market
@@ -55,61 +57,80 @@ export const DeFiPanel: any = withTranslation("common")(
 
     const isJoin =
       match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
-
     const {
       deFiWrapProps,
       closeToast,
       toastOpen,
-      confirmShow,
-      setConfirmShow,
+      confirmShowNoBalance,
+      setConfirmShowNoBalance,
+      serverUpdate,
+      setServerUpdate,
     } = useDeFiHook({
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
     });
-    const { tradeDefi } = useTradeDefi();
-    const { isMobile } = useSettings();
-    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
+    const {isMobile} = useSettings();
+    const styles = isMobile ? {flex: 1} : {width: "var(--swap-box-width)"};
 
     return (
-      <StyleWrapper
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        flex={1}
-      >
-        {deFiWrapProps.deFiCalcData ? (
-          <Box
-            className={"hasLinerBg"}
-            display={"flex"}
-            style={styles}
-            justifyContent={"center"}
-            padding={5 / 2}
+      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+        <Box marginBottom={2}>
+          <Button
+            startIcon={<BackIcon fontSize={"small"}/>}
+            variant={"text"}
+            size={"medium"}
+            sx={{color: "var(--color-text-secondary)"}}
+            color={"inherit"}
+            onClick={history.goBack}
           >
-            <DeFiWrap
-              market={_market}
-              isJoin={isJoin}
-              {...(deFiWrapProps as any)}
-            />
-          </Box>
-        ) : (
-          <LoadingBlock />
-        )}
+            {t("labelInvestDefiTitle")}
+            {/*<Typography color={"textPrimary"}></Typography>*/}
+          </Button>
+        </Box>
+        <StyleWrapper
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          flex={1}
+        >
+          {deFiWrapProps.deFiCalcData ? (
+            <Box
+              className={"hasLinerBg"}
+              display={"flex"}
+              style={styles}
+              justifyContent={"center"}
+              padding={5 / 2}
+            >
+              <DeFiWrap
+                market={_market}
+                isJoin={isJoin}
+                {...(deFiWrapProps as any)}
+              />
+            </Box>
+          ) : (
+            <LoadingBlock/>
+          )}
+          <Toast
+            alertText={toastOpen?.content ?? ""}
+            severity={toastOpen?.type ?? "success"}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
 
-        {/*<DeFiWrap />*/}
-        <Toast
-          alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
-          open={toastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-        />
-        <ConfirmDefiBalanceIsLimit
-          handleClose={() => setConfirmShow(false)}
-          open={confirmShow}
-          defiData={tradeDefi}
-        />
-      </StyleWrapper>
+          <ConfirmInvestDefiServiceUpdate open={serverUpdate} handleClose={() => setServerUpdate(false)}/>
+          <ConfirmDefiNOBalance
+            isJoin={isJoin}
+            handleClose={(_e) => {
+              setConfirmShowNoBalance(false);
+              if (deFiWrapProps?.onRefreshData) {
+                deFiWrapProps?.onRefreshData(true, true);
+              }
+            }}
+            open={confirmShowNoBalance}
+          />
+        </StyleWrapper></Box>
     );
   }
 );

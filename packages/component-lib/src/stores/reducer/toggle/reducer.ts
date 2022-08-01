@@ -3,19 +3,20 @@ import { SliceCaseReducers } from "@reduxjs/toolkit/src/createSlice";
 import { ToggleState } from "./interface";
 
 const initialState: ToggleState = {
-  order: { enable: true },
-  defi: { enable: true },
-  joinAmm: { enable: true },
-  exitAmm: { enable: true },
-  transfer: { enable: true },
-  transferNFT: { enable: true },
-  deposit: { enable: true },
-  depositNFT: { enable: true },
-  withdraw: { enable: true },
-  withdrawNFT: { enable: true },
-  mintNFT: { enable: true },
-  deployNFT: { enable: true },
-  updateAccount: { enable: true },
+  order: {enable: true},
+  joinAmm: {enable: true},
+  exitAmm: {enable: true},
+  transfer: {enable: true},
+  transferNFT: {enable: true},
+  deposit: {enable: true},
+  depositNFT: {enable: true},
+  withdraw: {enable: true},
+  withdrawNFT: {enable: true},
+  mintNFT: {enable: true},
+  deployNFT: {enable: true},
+  updateAccount: {enable: true},
+  collectionNFT: {enable: true},
+  defiInvest: {enable: true},
 };
 
 export const toggleSlice: Slice<ToggleState> = createSlice<
@@ -29,7 +30,7 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       const {
         order,
         joinAmm,
-        defi,
+        defiInvest,
         exitAmm,
         transfer,
         transferNFT,
@@ -40,13 +41,12 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
         mintNFT,
         deployNFT,
         updateAccount,
+        collectionNFT,
       } = action.payload;
       if (order !== undefined) {
         state.order = order;
       }
-      if (defi !== undefined) {
-        state.defi = defi;
-      }
+
       if (joinAmm !== undefined) {
         state.joinAmm = joinAmm;
       }
@@ -80,6 +80,13 @@ export const toggleSlice: Slice<ToggleState> = createSlice<
       if (updateAccount !== undefined) {
         state.updateAccount = updateAccount;
       }
+      if (defiInvest !== undefined) {
+        state.defiInvest = defiInvest;
+      }
+      if (collectionNFT !== undefined) {
+        state.collectionNFT = collectionNFT;
+      }
+
     },
   },
 });

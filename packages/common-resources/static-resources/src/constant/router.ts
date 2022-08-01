@@ -5,7 +5,6 @@ import {
   MintIcon,
   ProfileIcon,
   RecordIcon,
-  // NFTIcon,
   SecurityIcon,
   VipIcon,
   WaitApproveIcon,
@@ -14,7 +13,9 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
+  InvestAdvice,
 } from "../loopring-interface";
+import { InvestMapType } from "./trade";
 
 export const FEED_BACK_LINK = "https://desk.zoho.com/portal/loopring/en/home";
 export const headerRoot = "Landing-page";
@@ -197,6 +198,15 @@ export const subMenuLayer2 = {
 export const subMenuInvest = [
   {
     icon: L2MyLiquidityIcon,
+    router: { path: "/invest" },
+    label: {
+      id: "overview",
+      i18nKey: "labelInvestOverview",
+      description: "labelInvestOverviewDes",
+    },
+  },
+  {
+    icon: L2MyLiquidityIcon,
     router: { path: "/invest/ammpool" },
     label: {
       id: "ammpool",
@@ -204,15 +214,15 @@ export const subMenuInvest = [
       description: "labelInvestAmmDes",
     },
   },
-  // {
-  //   icon: L2MyLiquidityIcon,
-  //   router: { path: "/invest/defi" },
-  //   label: {
-  //     id: "defi",
-  //     i18nKey: "labelInvestDefi",
-  //     description: "labelInvestDefiDes",
-  //   },
-  // },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/defi" },
+    label: {
+      id: "defi",
+      i18nKey: "labelInvestDefi",
+      description: "labelInvestDefiDes",
+    },
+  },
 ];
 
 export const subMenuNFT = {
@@ -414,3 +424,22 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
     child: subMenuNFT,
   },
 ];
+
+export const ammAdvice: InvestAdvice = {
+  type: InvestMapType.AMM,
+  router: "/invest/ammpool",
+  banner: SoursURL + "images/icon-amm.png",
+  titleI18n: "labelInvestAmm",
+  desI18n: "labelInvestAmmDes",
+  notification: "",
+  enable: true,
+};
+export const defiAdvice: InvestAdvice = {
+  type: InvestMapType.STAKE,
+  router: "/invest/defi",
+  notification: "",
+  banner: SoursURL + "images/icon-lido.png",
+  titleI18n: "labelInvestDefi",
+  desI18n: "labelInvestDefiDes",
+  enable: true,
+};

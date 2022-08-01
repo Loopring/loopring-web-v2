@@ -291,9 +291,11 @@ export const NFTDetail = withTranslation("common")(
                 rel="noopener noreferrer"
                 href={
                   Explorer +
-                  `nft/${popItem.minter}-${NFTType[popItem.nftType ?? 0]}-${
-                    popItem.tokenAddress
-                  }-${popItem.nftId}-${popItem.royaltyPercentage}`
+                  `nft/${popItem.minter?.toLowerCase()}-${
+                    NFTType[popItem.nftType ?? 0]
+                  }-${popItem.tokenAddress?.toLowerCase()}-${popItem.nftId?.toLowerCase()}-${
+                    popItem.royaltyPercentage
+                  }`
                 }
                 title={popItem?.nftId}
                 width={"fit-content"}

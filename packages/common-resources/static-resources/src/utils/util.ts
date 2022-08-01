@@ -233,9 +233,13 @@ export const getValuePrecisionThousand = (
       .toNumber()
       .toLocaleString("en-US", { minimumFractionDigits: fixed || minDigit });
   } else if (result.isLessThanOrEqualTo(1)) {
-    result = fixed
+    if(floor === false) {
+      result = getFloatCeil(result,fixed || precision).toString();
+    }else{
+      result = fixed
       ? result.toFixed(fixed)
       : toBig(result).toPrecision(precision);
+    }
   }
 
   if (result && !notRemoveEndZero) {

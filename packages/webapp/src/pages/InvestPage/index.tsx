@@ -1,31 +1,28 @@
-import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, fabClasses, formControlLabelClasses, Tab, Tabs, Typography } from "@mui/material";
 
 import { useTranslation, withTranslation } from "react-i18next";
-import styled from "@emotion/styled";
-import { useSettings } from "@loopring-web/component-lib";
+import {
+  ConfirmInvestDefiRisk,
+  useSettings,
+} from "@loopring-web/component-lib";
 import React from "react";
-import { useAccount, ViewAccountTemplate } from "@loopring-web/core";
+import { confirmation, ViewAccountTemplate } from "@loopring-web/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
+import { OverviewPanel } from "./OverviewPanel";
 
-const TableWrapperStyled = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-  flex: 1;
-`;
 export enum InvestType {
   MyBalance = 0,
   AmmPool = 1,
   DeFi = 2,
+  Overview = 3,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi"];
+export const InvestRouter = ["balance", "ammpool", "defi", ""];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
@@ -39,6 +36,23 @@ export const BalanceTitle = () => {
         className={"invest-Balance-Title"}
       >
         {t("labelInvestBalanceTitle")}
+      </Typography>
+    </Typography>
+  );
+};
+export const OverviewTitle = () => {
+  const { t } = useTranslation();
+  const { isMobile } = useSettings();
+  return (
+    <Typography display={"inline-flex"} alignItems={"center"}>
+      <Typography
+        component={"span"}
+        variant={isMobile ? "h5" : "h5"}
+        whiteSpace={"pre"}
+        marginRight={1}
+        className={"invest-Overview-Title"}
+      >
+        {t("labelInvestOverviewTitle")}
       </Typography>
     </Typography>
   );
@@ -154,56 +168,94 @@ export const DefiTitle = () => {
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
   let match: any = useRouteMatch(["/invest/:item", ":subItem"]);
   const history = useHistory();
-  // const { search } = useLocation();
-  // const searchParams = new URLSearchParams(search);
-  const { account } = useAccount();
-  const [tabIndex, setTabIndex] = React.useState<InvestType>(() => {
-    // let index = undefined;
+  const { confirmDefiInvest: confirmDefiInvestFun } =
+    confirmation.useConfirmation();
+  const [confirmDefiInvest, setConfirmDefiInvest] = React.useState(false);
+  const [tabIndex, setTabIndex] = React.useState<InvestType>(
+    InvestType.Overview
+  );
+  const [isShowTab, setIsShowTab] = React.useState<Boolean>(
+    false
+  );
+  React.useEffect(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
-        return InvestType.MyBalance;
+        setTabIndex(InvestType.MyBalance);
+        setIsShowTab(true)
+        return;
+      // return ;
       case InvestRouter[InvestType.AmmPool]:
-        return InvestType.AmmPool;
+        setTabIndex(InvestType.AmmPool);
+        setIsShowTab(false)
+        return;
       case InvestRouter[InvestType.DeFi]:
-        return InvestType.DeFi;
+        setTabIndex(InvestType.DeFi);
+        setIsShowTab(false)
+        return;
+      case InvestRouter[InvestType.Overview]:
       default:
-        return account.readyState === "ACTIVATED"
-          ? InvestType.MyBalance
-          : InvestType.AmmPool;
+        setTabIndex(InvestType.Overview);
+        setIsShowTab(true)
+        return;
     }
-    return account.readyState === "ACTIVATED"
-      ? InvestType.MyBalance
-      : InvestType.AmmPool;
-  });
+  }, [match?.params.item]);
 
   return (
-    <Box flex={1} flexDirection={"column"} display={"flex"}>
-      <Tabs
-        variant={"standard"}
-        value={tabIndex}
-        onChange={(_e, value) => {
-          history.push(`/invest/${InvestRouter[value]}`);
-          setTabIndex(value);
+   <Box flex={1} flexDirection={"column"} display={"flex"}>
+     {isShowTab && <Box display={'flex'}>
+       <Tabs
+         variant={"scrollable"}
+         value={tabIndex}
+         onChange={(_e, value) => {
+           history.push(`/invest/${InvestRouter[ value ]}`);
+           setTabIndex(value);
+         }}
+
+       >
+         <Tab value={InvestType.Overview} label={<OverviewTitle/>}/>
+         <Tab value={InvestType.MyBalance} label={<BalanceTitle/>}/>
+         <Tab
+           sx={{visibility: "hidden", width: 0}}
+           value={InvestType.AmmPool}
+           label={<AmmTitle/>}
+         />
+         <Tab
+           sx={{visibility: "hidden", width: 0}}
+           value={InvestType.DeFi}
+           label={<DefiTitle/>}
+         />
+       </Tabs>
+     </Box>
+     }
+     <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
+       {tabIndex === InvestType.Overview && <OverviewPanel/>}
+       {tabIndex === InvestType.AmmPool && <PoolsPanel/>}
+       {tabIndex === InvestType.DeFi && (
+         <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest}/>
+       )}
+       {tabIndex === InvestType.MyBalance && (
+         <Box
+           flex={1}
+           alignItems={"stretch"}
+           display={"flex"}
+           flexDirection={"column"}
+         >
+           <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel/>}/>
+         </Box>
+       )}
+     </Box>
+     <ConfirmInvestDefiRisk
+       open={confirmDefiInvest}
+       handleClose={(_e, isAgree) => {
+          setConfirmDefiInvest(false);
+          if (!isAgree) {
+            history.goBack();
+          } else {
+            confirmDefiInvestFun();
+          }
         }}
-      >
-        <Tab value={InvestType.AmmPool} label={<AmmTitle />} />
-        {/*<Tab value={InvestType.DeFi} label={<DefiTitle />} />*/}
-        <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
-      </Tabs>
-      <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
-        {tabIndex === InvestType.AmmPool && <PoolsPanel />}
-        {tabIndex === InvestType.DeFi && <DeFiPanel />}
-        {tabIndex === InvestType.MyBalance && (
-          <Box
-            flex={1}
-            alignItems={"stretch"}
-            display={"flex"}
-            flexDirection={"column"}
-          >
-            <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
-          </Box>
-        )}
-      </Box>
+      />
     </Box>
+  
   );
 });

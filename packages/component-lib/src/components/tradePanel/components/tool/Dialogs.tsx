@@ -28,7 +28,7 @@ import {
   copyToClipBoard,
   getValuePrecisionThousand,
 } from "@loopring-web/common-resources";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { TradeDefi } from "@loopring-web/core";
 import BigNumber from "bignumber.js";
 
@@ -182,6 +182,42 @@ export const AlertNotSupport = withTranslation("common")(
             onClick={(e) => handleClose(e as any)}
           >
             {t("labelConfirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+
+export const GuardianNotSupport = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: MouseEvent) => void;
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelNotSupportTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans i18nKey={"labelWalletToWallet"} />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"outlined"}
+            size={"medium"}
+            onClick={(e) => handleClose(e as any)}
+          >
+            {t("labelOK")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -823,25 +859,18 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
     defiData: TradeDefi<any>;
     handleClose: (event: MouseEvent, isAgree?: boolean) => void;
   }) => {
-    const [agree, setAgree] = React.useState("");
-
-    React.useEffect(() => {
-      if (!open) {
-        setAgree("");
-      }
-    }, [open]);
     const maxValue =
-      defiData.sellToken?.symbol &&
+      defiData.buyToken?.symbol &&
       `${getValuePrecisionThousand(
-        new BigNumber(defiData?.maxSellVol ?? 0).div(
-          "1e" + defiData.sellToken?.decimals
+        new BigNumber(defiData?.maxBuyVol ?? 0).div(
+          "1e" + defiData.buyToken?.decimals
         ),
-        defiData.sellToken?.precision,
-        defiData.sellToken?.precision,
-        defiData.sellToken?.precision,
+        defiData.buyToken?.precision,
+        defiData.buyToken?.precision,
+        defiData.buyToken?.precision,
         false,
-        { floor: true }
-      )} ${defiData.sellToken?.symbol}`;
+        {floor: true}
+      )} ${defiData.buyToken?.symbol}`;
 
     return (
       <Dialog
@@ -866,10 +895,10 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
             <Typography>
               <Trans i18nKey={"labelDefiMaxBalance1"}>
                 or you can
-                <ul>
-                  <li>Withdraw to L1 and redeem through crv or lido</li>
-                  <li>Wait some time and wait for pool liquidity</li>
-                </ul>
+                <List sx={{ marginTop: 2 }}>
+                  <ListItem>Withdraw to L1 and redeem through crv or lido</ListItem>
+                  <ListItem>Wait some time and wait for pool liquidity</ListItem>
+                </List>
               </Trans>
             </Typography>
           </DialogContentText>
@@ -885,13 +914,242 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
           <Button
             variant={"contained"}
             size={"small"}
-            disabled={!agree}
             onClick={(e) => {
               handleClose(e as any, true);
             }}
             color={"primary"}
           >
             {t("labelAgreeConfirm")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+
+export const ConfirmDefiNOBalance = withTranslation("common")(
+  ({
+    t,
+    isJoin,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    isJoin:boolean;
+    handleClose: (event: any) => void;
+  }) => {
+    return (
+      <DialogStyle
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+
+            {isJoin ?
+              <Typography component={"span"}>
+                <Trans i18nKey={"labelDefiNoBalanceJoin"}>
+                  No quota available. Loopring will setup the pool soon, please
+                  revisit for subscription later.
+                </Trans>
+              </Typography> :
+              <Typography component={"span"} display={"flex"} flexDirection={"column"}>
+                <Trans i18nKey={"labelDefiNoBalance"}>
+                  <Typography component={"span"} marginBottom={3}>Loopring rebalance pool can't satisfy your
+                    complete request now.</Typography>
+                  <Typography component={"span"}>For the remaining investment, you can choose one of the
+                    approaches.</Typography>
+                </Trans>
+                <List sx={{marginTop: 1}}>
+                  <Trans i18nKey={"labelDefiNoBalanceList"}>
+                    <ListItem style={{marginBottom: 0}}>Withdraw wSTETH to L1 and trade through CRV or LIDO
+                      directly</ListItem>
+                    <ListItem style={{marginBottom: 0}}>Wait some time for Loopring to setup the rebalance pool
+                      again, then revist the page for redeem</ListItem>
+                  </Trans>
+                </List>
+              </Typography>}
+
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              handleClose(e);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </DialogStyle>
+    );
+  }
+);
+
+export const ConfirmInvestDefiServiceUpdate = withTranslation("common")(
+  ({
+     t,
+     open,
+     handleClose,
+   }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any) => void;
+  }) => {
+    const history = useHistory();
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelInformation")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Typography
+              whiteSpace={"pre-line"}
+              component={"span"}
+              variant={"body1"}
+              display={"block"}
+              color={"textSecondary"}
+            >
+              {t('labelDefiClose')}
+            </Typography>
+          </DialogContentText>
+
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            onClick={(e) => {
+              history.goBack()
+              handleClose(e);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+export const ConfirmInvestDefiRisk = withTranslation("common")(
+  ({
+     t,
+     open,
+     handleClose,
+   }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelDefiRiskTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans i18nKey={"labelDefiRisk"}>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                Lido is a liquid staking solution for ETH 2.0 backed by
+                industry-leading staking providers. Lido lets users stake their
+                ETH - without locking assets or maintaining infrastructure.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                When using Lido to stake your ETH on the Ethereum beacon chain,
+                users will receive a token (stETH), which represents their ETH
+                on the Ethereum beacon chain on a 1:1 basis. It effectively acts
+                as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                wstETH is the wrapped version of stETH. The total amount of
+                wstETH doesn’t change after users receive the token. Instead,
+                the token’s value increase over time to reflect ETH staking
+                rewards earned.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelDefiAgree")}
+          />
+        </DialogContent>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-defiRisk2">
+            <Trans i18nKey={"labelDefiRisk2"}>
+            <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body2"}
+                marginTop={2}
+                display={"block"}
+                color={"textThird"}
+              >It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices. </Typography>
+             <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body2"}
+                marginTop={2}
+                display={"block"}
+                color={"textThird"}
+              >Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch. </Typography>
+             </Trans>
+            
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
           </Button>
         </DialogActions>
       </Dialog>

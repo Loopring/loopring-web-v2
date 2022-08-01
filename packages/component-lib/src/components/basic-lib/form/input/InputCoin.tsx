@@ -4,7 +4,6 @@ import {
   FORMAT_STRING_LEN,
   getValuePrecisionThousand,
   IBData,
-  myLog,
 } from "@loopring-web/common-resources";
 import { InputCoinProps, InputSize } from "./Interface";
 import React from "react";
@@ -44,7 +43,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   const { balance, belong, tradeValue } = (
     inputData ? inputData : {}
   ) as IBData<C>;
-  myLog("InputCoin", balance, belong, tradeValue);
+  // myLog("InputCoin", balance, belong, tradeValue);
   const { isMobile } = useSettings();
   const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined
@@ -122,12 +121,12 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
   // }, [])
   const _handleMaxAllowClick = React.useCallback(
     (_event: React.MouseEvent) => {
-      if (maxAllow) {
+      if (maxAllow && !disabled) {
         _handleContChange(balance, name);
         //setsValue(balance);
       }
     },
-    [_handleContChange, balance, name, maxAllow]
+    [_handleContChange, balance, name, maxAllow, disabled]
   );
 
   // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
@@ -240,7 +239,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>(
               name={name}
               decimalsLimit={decimalsLimit}
               allowDecimals={allowDecimals}
-              disabled={!(!disabled || belong)}
+              disabled={disabled || !belong}
               placeholder={placeholderText}
               aria-placeholder={placeholderText}
               aria-label={typeof label === "string" ? label : ""}

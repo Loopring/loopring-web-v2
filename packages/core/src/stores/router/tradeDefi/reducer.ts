@@ -12,7 +12,13 @@ const initState: TradeDefi<any> = {
   withdrawPrice: "0",
   sellVol: "0",
   buyVol: "0",
-  deFiCalcData: undefined,
+  deFiCalcData: {
+    coinSell: {},
+    coinBuy: {},
+    AtoB: undefined as any,
+    BtoA: undefined as any,
+    fee: undefined as any,
+  },
   fee: "0",
   feeRaw: "0",
 };
@@ -28,6 +34,9 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
   name: "_router_tradeDefi",
   initialState,
   reducers: {
+    resetTradeDefi(state){
+      state.tradeDefi = initState;
+    },
     updateTradeDefi(
       state,
       action: PayloadAction<RequireOne<TradeDefi<IBData<any>>, "market">>
@@ -50,8 +59,9 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
         maxSellVol,
         maxFeeBips,
         miniSellVol,
+        lastInput,
       } = action.payload;
-      if (market !== state.tradeDefi.market) {
+      if (market !== undefined && market !== state.tradeDefi.market) {
         // @ts-ignore
         state.tradeDefi = {
           ...initState,
@@ -61,12 +71,20 @@ const tradeDefiSlice: Slice<TradeDefiStatus<IBData<R>>> = createSlice({
           buyToken: buyToken as TokenInfo,
         };
       }
+      if (lastInput) {
+        state.tradeDefi.lastInput = lastInput;
+      }
       if (request) {
         state.tradeDefi.request = request;
       }
 
       if (deFiCalcData) {
+        // let _deFiCalcData = { ...deFiCalcData };
         state.tradeDefi.deFiCalcData = deFiCalcData;
+        // if (_deFiCalcData.AtoB === undefined) {
+        //   _deFiCalcData.AtoB = state.tradeDefi.deFiCalcData.AtoB;
+        //   _deFiCalcData.BtoA = state.tradeDefi.deFiCalcData.BtoA;
+        // }
       }
       if (isStoB) {
         state.tradeDefi.isStoB = isStoB;

@@ -9,12 +9,7 @@ import {
   useSettings,
 } from "@loopring-web/component-lib";
 
-import {
-  useTokenPrices,
-  useTokenMap,
-  StylePaper,
-  useSystem,
-} from "@loopring-web/core";
+import { useTokenMap, StylePaper, useSystem } from "@loopring-web/core";
 import { useGetAssets } from "./hook";
 import React from "react";
 
@@ -39,6 +34,7 @@ const AssetPanel = withTranslation("common")(
       // onShowTransfer,
       // onShowWithdraw,
       // onShowDeposit,
+      getTokenRelatedMarketArray,
       onSend,
       onReceive,
       // total,
@@ -101,17 +97,6 @@ const AssetPanel = withTranslation("common")(
     //   }
     //   return 0;
     // }, [currAssetsEth]);
-
-    const getTokenRelatedMarketArray = React.useCallback(
-      (token: string) => {
-        if (!marketArray) return [];
-        return marketArray.filter((market) => {
-          const [coinA, coinB] = market.split("-");
-          return token === coinA || token === coinB;
-        });
-      },
-      [marketArray]
-    );
 
     // const ethFaitPriceDollar = tokenPrices ? tokenPrices["ETH"] : 0;
     // const currAssetsEthDollar = getValuePrecisionThousand(

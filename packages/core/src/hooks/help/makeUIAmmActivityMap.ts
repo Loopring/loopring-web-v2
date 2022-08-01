@@ -212,7 +212,7 @@ const makeAsCard = <
   }
 };
 type Value = undefined | number;
-export type SummaryMyAmm = {
+export type SummaryMyInvest = {
   rewardDollar: Value;
   feeDollar: Value;
   investDollar?: Value;
@@ -221,7 +221,7 @@ export const makeSummaryMyAmm = <_C extends { [key: string]: any }>({
   userRewardsMap,
 }: {
   userRewardsMap: LoopringMap<AmmUserReward> | undefined;
-}): SummaryMyAmm | undefined => {
+}): SummaryMyInvest | undefined => {
   const { coinMap, idIndex, tokenMap } = store.getState().tokenMap;
   const { tokenPrices } = store.getState().tokenPrices;
   if (userRewardsMap && idIndex && coinMap && tokenMap) {

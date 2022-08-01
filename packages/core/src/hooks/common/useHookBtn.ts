@@ -25,6 +25,7 @@ export const useSubmitBtn = ({
   const btnStatus = React.useMemo((): string | undefined => {
     if (account.readyState === AccountStatus.ACTIVATED) {
       if (isLoading) {
+        myLog("tradeBtnStatus", TradeBtnStatus.LOADING);
         return TradeBtnStatus.LOADING;
       } else {
         const { tradeBtnStatus } = availableTradeCheck(rest);

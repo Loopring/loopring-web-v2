@@ -12,10 +12,10 @@ export type TokenTypeCol = {
   value: string;
 };
 export interface FilterProps {
-  hideInvestToken: boolean;
-  hideSmallBalances: boolean;
-  setHideLpToken: (value: boolean) => void;
-  setHideSmallBalances: (value: boolean) => void;
+  hideInvestToken?: boolean;
+  hideSmallBalances?: boolean;
+  setHideLpToken?: (value: boolean) => void;
+  setHideSmallBalances?: (value: boolean) => void;
   filter: {
     searchValue: string;
   };
@@ -57,7 +57,9 @@ export const Filter = withTranslation("tables", { withRef: true })(
                 icon={<CheckBoxIcon />}
                 color="default"
                 onChange={(event) => {
-                  setHideLpToken(event.target.checked);
+                  if (setHideLpToken) {
+                    setHideLpToken(event.target.checked);
+                  }
                 }}
               />
             }
@@ -72,7 +74,9 @@ export const Filter = withTranslation("tables", { withRef: true })(
                 icon={<CheckBoxIcon />}
                 color="default"
                 onChange={(event) => {
-                  setHideSmallBalances(event.target.checked);
+                  if (setHideSmallBalances) {
+                    setHideSmallBalances(event.target.checked);
+                  }
                 }}
               />
             }

@@ -136,6 +136,11 @@ export const useSwap = <C extends { [key: string]: any }>({
       return { ...prev, [item]: coinMap ? coinMap[item] : {} };
     }, {} as CoinMap<C>),
   });
+  const [storageId, setStorageId] = React.useState<{
+    orderId: number;
+    offchainId: number;
+  }>({} as any);
+
   // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
   // const [myTradeArray, setMyTradeArray] = React.useState<{
   //   data: RawDataTradeItem[];
@@ -148,6 +153,7 @@ export const useSwap = <C extends { [key: string]: any }>({
   // });
   // const [tradeFloat, setTradeFloat] =
   //   React.useState<TradeFloat | undefined>(undefined);
+
   const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
   const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
 
@@ -219,16 +225,6 @@ export const useSwap = <C extends { [key: string]: any }>({
         const sellToken = tokenMap[sell];
         const buyToken = tokenMap[buy];
 
-        const request: sdk.GetNextStorageIdRequest = {
-          accountId: account.accountId,
-          sellTokenId: sellToken.tokenId,
-        };
-
-        const storageId = await LoopringAPI.userAPI.getNextStorageId(
-          request,
-          account.apiKey
-        );
-
         try {
           const request: sdk.SubmitOrderRequestV3 = {
             exchange: exchangeInfo.exchangeAddress,
@@ -284,8 +280,8 @@ export const useSwap = <C extends { [key: string]: any }>({
                   : (response as sdk.RESULT_INFO).message),
             });
           } else {
+            getStorageId();
             await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__);
-
             const resp = await LoopringAPI.userAPI.getOrderDetails(
               {
                 accountId: account.accountId,
@@ -580,7 +576,23 @@ export const useSwap = <C extends { [key: string]: any }>({
     }
   }, [market, ammMap]);
   /*** table related end ***/
-
+  const getStorageId = React.useCallback(async () => {
+    if (
+      tradeCalcData?.coinSell &&
+      tokenMap &&
+      tokenMap[tradeCalcData?.coinSell] &&
+      LoopringAPI.userAPI
+    ) {
+      const storageId = await LoopringAPI.userAPI.getNextStorageId(
+        {
+          accountId: account.accountId,
+          sellTokenId: tokenMap[tradeCalcData?.coinSell].tokenId,
+        },
+        account.apiKey
+      );
+      setStorageId(storageId);
+    }
+  }, [tradeCalcData?.coinSell, account, tokenMap]);
   React.useEffect(() => {
     if (
       accountStatus === SagaStatus.UNSET &&
@@ -590,6 +602,7 @@ export const useSwap = <C extends { [key: string]: any }>({
       walletLayer2Callback();
       if (account.readyState === AccountStatus.ACTIVATED) {
         getAmount({ market });
+        getStorageId();
       }
     }
   }, [

@@ -207,27 +207,29 @@ export const useDeposit = <
         setReferAddress(newValue.referAddress ?? "");
       }
       if (data?.tradeData.hasOwnProperty("toAddress")) {
-        // myLog("toAddress", toAddress);
         newValue.toAddress = data?.tradeData.toAddress;
         setToAddress(newValue.toAddress ?? "");
       }
       if (data?.tradeData.hasOwnProperty("addressError")) {
         newValue.addressError = data?.tradeData.addressError;
       }
-      return new Promise<void>((resolve) => {
-        if (data.to === "button") {
-          if (walletLayer1 && data?.tradeData?.belong) {
-            const walletInfo = walletLayer1[data.tradeData.belong];
-            newValue = {
-              ...newValue,
-              ...data.tradeData,
-              balance: walletInfo?.count,
-            };
-          }
+      if (data.to === "button") {
+        if (walletLayer1 && data?.tradeData?.belong) {
+          const walletInfo = walletLayer1[ data.tradeData.belong ];
+          newValue = {
+            ...newValue,
+            ...data.tradeData,
+            balance: walletInfo?.count,
+          };
         }
-        updateDepositData(newValue);
-        resolve();
-      });
+      }
+      updateDepositData(newValue);
+      return Promise.resolve();
+
+      // return new Promise<void>((resolve) => {
+      //
+      //   resolve();
+      // });
     },
     [setReferAddress, setToAddress, updateDepositData, walletLayer1]
   );

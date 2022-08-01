@@ -27,6 +27,9 @@ export type DeFiWrapProps<T, I, ACD> = {
   onRefreshData?: (shouldFeeUpdate?: boolean, clearTrade?: boolean) => void;
   isLoading: boolean;
   market: MarketType;
+  maxBuyVol?: string;
+  maxSellVol?: string;
+  confirmShowLimitBalance: boolean;
   // btnStatus: keyof typeof TradeBtnStatus | undefined;
   onSubmitClick: () => void;
   onConfirm: () => void;

@@ -302,6 +302,7 @@ export default {
   labelCreateAccountDepositDenied:
     "您以拒绝充值 {{value}} {{symbol}}, 账户未激活",
   labelSlippageAlert: "滑点过大将会影响您出金后收到的token数量",
+  labelOrderGroup: "Order Records",
   labelOrderTableOpenOrder: "当前委托",
   labelOrderTableOrderHistory: "历史委托",
   labelResetLayout: "重置布局",
@@ -478,7 +479,7 @@ export default {
   labelVendor: "Buy with Card",
   labelLock: "Lock",
   labelWalletToWallet:
-    "The connected wallet is a contract address which cannot be used. If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
+    "The connected wallet is a contract address which cannot be used (Except Recover Wallet). If you are connecting a mobile Loopring Smart Wallet, you can protect it and manage guardians within the app.",
   labelWalletAddAsGuardian: "Add a guardian",
   labelWalletInputGuardianCode: "Input 6 digital Code and Approve",
   labelWalletScanQRCode: "Please use your Loopring wallet to scan the QR code",
@@ -813,20 +814,57 @@ export default {
   labelForceWithdrawNoToken:
     "No token is detected from this address to operate",
   labelForceWithdrawBtn: "Force Withdraw",
-  labelInvestDefiTitle: "Defi Invest",
-  labelInvestDefDeposit: "Invest",
+  labelInvestDefiTitle: "ETH Staking",
+  labelInvestDefDeposit: "Subscribe",
   labelInvestDefWithdraw: "Redeem",
   labelNFTDepositLabel: "Receive NFT",
   labelDefiFee: "Fee",
   labelDefiMin: "Minimum of {{arg}}",
   labelDefiNoEnough: "Not enough {{arg}}",
   labelDefiMaxBalance:
-    "Your Redeem order is too large and cannot be withdrawn immediately, you can only redeem {{ maxValue }}",
+    "Loopring rebalance pool can't satisfy your complete request. " +
+    "You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches",
   labelDefiMaxBalance1:
-    "or you can<1><2>Withdraw to L1 and redeem through crv or lido</2><3>Wait some time and wait for pool liquidity</3></1>",
-  labelInvestBtn: "Invest",
+    "<0>" +
+    "<1>Withdraw WSTETH to L1 and trade through CRV or LIDO directly</1>" +
+    "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
+    "</0>",
+  labelDefiNoBalance:
+    "<0>Loopring rebalance pool can't satisfy your complete request now.</0>" +
+    "<1>For the remaining investment, you can choose one of the approaches</1>",
+  labelDefiNoBalanceList: "<0>Withdraw wstETH to L1 and trade through CRV or LIDO directly</0>" +
+    "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
+  labelDefiMaxBalanceJoin: "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit for subscription later.",
+  labelDefiNoBalanceJoin: "Loopring will set up the pool soon. Please come back later to subscribe.",
+  labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
   labelSecurity: "Security",
   labelFeeTitleList: "Fee",
+  labelInvestOverviewTitle: "Overview",
+  labelTitleOverviewToken: "Total Investment Tokens",
+  labelInvestType_AMM: "AMM Pool",
+  labelInvestType_STAKE: "ETH Staking",
+  labelInvestFlexible: "Flexible",
+  labelInvestDuration: "Duration",
+  labelDefiOrderTable: "ETH Staking",
+  labelTitleMyInvestAvailable: "My Holding Tokens",
+  labelViewMore: "View more",
+  labelInvestSuccess: "Successfully {{type}} {{symbol}}",
+  labelInvestFailed: "Subscribe Failed",
+  labelDefiRiskTitle: "What is ETH Staking via Lido?",
+  labelDefiRisk:
+    "<0>Lido is a liquid staking solution for ETH 2.0 backed by industry-leading staking providers. Lido lets users stake their ETH - without locking assets or maintaining infrastructure.</0>\n" +
+    "<1>When using Lido to stake your ETH on the Ethereum beacon chain, users will receive a token (stETH), which represents their ETH on the Ethereum beacon chain on a 1:1 basis. It effectively acts as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.</1>\n" +
+    "<2>wstETH is the wrapped version of stETH. The total amount of wstETH doesn't change after users receive the token. Instead, the token’s value increase over time to reflect ETH staking rewards earned.</2>\n",
+  labelDefiRisk2:
+    "<0>It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices.</0>" +
+    "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
+  labelDefiAgree: "I have read risk warning",
+  labelDefiInvest: "Defi Earn",
+  labelDefiClose: "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
+  labelCreateCollection: "New My Collection",
+  labelCollectionCreateName: "Contract address for your collection",
+  labelCollectionCreateERC1155: "Collection ERC-1155",
+  labelCollectionCreateWaiting: "Waiting for create Collection token Address"
 };

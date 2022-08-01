@@ -82,11 +82,11 @@ export const RankRaw = <R extends object>({
   const { isMobile } = useSettings();
   const { chainId, baseURL } = useSystem();
   const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
   const [rank, setRank] = React.useState<API_DATA<R> | undefined>(undefined);
   const [rankTableData, setRankTableData] = React.useState<R[]>([]);
   const [searchValue, setSearchValue] = React.useState<string>("");
   const [showLoading, setShowLoading] = React.useState(true);
-  const searchParams = new URLSearchParams(search);
   const [selected, setSelected] = React.useState<string>(
     searchParams.get("selected") ?? filters[0]
   );

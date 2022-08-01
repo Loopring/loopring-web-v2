@@ -1,7 +1,7 @@
 "use strict";
 var exports = module.exports;
 exports.investJson = {
-  banner: {mobile: "", laptop: ""},
+  banner: { mobile: "", laptop: "" },
   investAdvice: [
     {
       type: "AMM",

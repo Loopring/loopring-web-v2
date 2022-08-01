@@ -8,10 +8,9 @@ import {
   PopoverWrapProps,
 } from "../../../basic-lib";
 import { MoreIcon } from "@loopring-web/common-resources";
-// import { LpTokenAction } from "../AssetsTable";
 import { useHistory } from "react-router-dom";
 import { TFunction } from "i18next";
-import { useOpenModals, useSettings } from "../../../../stores";
+import { useOpenModals, useSettings, useToggle } from "../../../../stores";
 import { AmmPanelType } from "../../../tradePanel";
 
 const GridStyled = styled(Grid)`
@@ -25,6 +24,7 @@ export type ActionProps = {
   market: `${string}-${string}`;
   isLp: boolean;
   isDefi: boolean;
+  isInvest: boolean;
   onSend: (token: string, isToL1: boolean) => void;
   onReceive: (token: string) => void;
   // onShowDeposit: (token: string) => void;
@@ -43,6 +43,7 @@ const ActionPopContent = React.memo(
     onReceive,
     // onShowDeposit,
     tokenValue,
+    isInvest,
     // onShowTransfer,
     // onShowWithdraw,
     getMarketArrayListCallback,
@@ -50,14 +51,18 @@ const ActionPopContent = React.memo(
   }: ActionProps) => {
     const history = useHistory();
     const { setShowAmm } = useOpenModals();
-
+    const { toggle } = useToggle();
+    const _allowTrade = {
+      ...toggle,
+      allowTrade,
+    };
     const { isMobile } = useSettings();
     const tradeList = [
       ...[
-        <MenuItem onClick={() => onReceive(tokenValue)}>
+        <MenuItem key={"token-Receive"} onClick={() => onReceive(tokenValue)}>
           <ListItemText>{t("labelReceive")}</ListItemText>
         </MenuItem>,
-        <MenuItem onClick={() => onSend(tokenValue, isLp)}>
+        <MenuItem key={"token-Send"} onClick={() => onSend(tokenValue, isLp)}>
           <ListItemText>{t("labelSend")}</ListItemText>
         </MenuItem>,
       ],
@@ -84,26 +89,25 @@ const ActionPopContent = React.memo(
         {isMobile && tradeList.map((item) => <>{item}</>)}
         {isLp ? (
           <>
-            {allowTrade?.joinAmm?.enable && (
-              <MenuItem
-                onClick={
-                  () => {
-                    // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
-                    setShowAmm({
-                      isShow: true,
-                      type: AmmPanelType.Join,
-                      symbol: market,
-                    });
-                  }
-                  // () => undefined
-                  // history.push(
-                  //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
-                  // )
+            <MenuItem
+              disabled={!_allowTrade?.joinAmm?.enable}
+              onClick={
+                () => {
+                  // const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`;
+                  setShowAmm({
+                    isShow: true,
+                    type: AmmPanelType.Join,
+                    symbol: market,
+                  });
                 }
-              >
-                <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
-              </MenuItem>
-            )}
+                // () => undefined
+                // history.push(
+                //   `/liquidity/pools/coinPair/${market}?type=${LpTokenAction.add}`
+                // )
+              }
+            >
+              <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>
+            </MenuItem>
             <MenuItem
               onClick={
                 () => {
@@ -122,26 +126,32 @@ const ActionPopContent = React.memo(
             </MenuItem>
           </>
         ) : isDefi ? (
-          <>
-            {allowTrade?.defi?.enable && (
-              <>
-                <MenuItem
-                  onClick={() => {
-                    history.push(`./invest/defi/${tokenValue}-null/invest`);
-                  }}
-                >
-                  <ListItemText>{t("labelDefiInvest")}</ListItemText>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    history.push(`./invest/defi/${tokenValue}-null/redeem`);
-                  }}
-                >
-                  <ListItemText>{t("labelDefiRedeem")}</ListItemText>
-                </MenuItem>
-              </>
-            )}
-          </>
+          isInvest && !isMobile ? (
+            <>
+              {tradeList.map((item) => (
+                <>{item}</>
+              ))}
+            </>
+          ) : (
+            <>
+              <MenuItem
+                disabled={!_allowTrade?.defiInvest?.enable}
+                onClick={() => {
+                  history.push(`/invest/defi/${tokenValue}-null/invest`);
+                }}
+              >
+                <ListItemText>{t("labelDefiInvest")}</ListItemText>
+              </MenuItem>
+              <MenuItem
+                disabled={!_allowTrade?.defiInvest?.enable}
+                onClick={() => {
+                  history.push(`/invest/defi/${tokenValue}-null/redeem`);
+                }}
+              >
+                <ListItemText>{t("labelDefiRedeem")}</ListItemText>
+              </MenuItem>
+            </>
+          )
         ) : (
           marketList.map((pair) => {
             const formattedPair = pair.replace("-", " / ");
@@ -166,6 +176,7 @@ const ActionPopContent = React.memo(
 
 const ActionMemo = React.memo((props: ActionProps) => {
   const { isMobile } = useSettings();
+  const history = useHistory();
   const {
     t,
     allowTrade,
@@ -173,6 +184,7 @@ const ActionMemo = React.memo((props: ActionProps) => {
     onSend,
     onReceive,
     isLp,
+    isInvest = false,
     isDefi,
     // onShowDeposit,
     // onShowTransfer,
@@ -212,26 +224,59 @@ const ActionMemo = React.memo((props: ActionProps) => {
       ) : (
         <>
           <Box display={"flex"}>
-            <Grid item>
-              <Button
-                variant={"text"}
-                size={"small"}
-                color={"primary"}
-                onClick={() => onReceive(tokenValue)}
-              >
-                {t("labelReceive")}
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                variant={"text"}
-                size={"small"}
-                color={"primary"}
-                onClick={() => onSend(tokenValue, isLp)}
-              >
-                {t("labelSend")}
-              </Button>
-            </Grid>
+            {isInvest ? (
+              <>
+                <Grid item>
+                  <Button
+                    variant={"text"}
+                    size={"small"}
+                    color={"primary"}
+                    onClick={() => {
+                      history.push(`/invest/defi/${tokenValue}-null/invest`);
+                    }}
+                  >
+                    {t("labelDefiInvest")}
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant={"text"}
+                    size={"small"}
+                    color={"primary"}
+                    onClick={() => {
+                      history.push(`/invest/defi/${tokenValue}-null/redeem`);
+                    }}
+                  >
+                    {t("labelDefiRedeem")}
+                  </Button>
+                </Grid>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Grid item>
+                  <Button
+                    variant={"text"}
+                    size={"small"}
+                    color={"primary"}
+                    onClick={() => onReceive(tokenValue)}
+                  >
+                    {t("labelReceive")}
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant={"text"}
+                    size={"small"}
+                    color={"primary"}
+                    onClick={() => onSend(tokenValue, isLp)}
+                  >
+                    {t("labelSend")}
+                  </Button>
+                </Grid>
+              </>
+            )}
+
             {/*{isToL1 && (*/}
             {/*  <Grid item>*/}
             {/*    <Button*/}

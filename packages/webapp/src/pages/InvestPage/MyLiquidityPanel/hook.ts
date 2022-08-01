@@ -11,37 +11,37 @@ import {
   makeMyAmmMarketArray,
   makeMyPoolRowWithPoolState,
   makeSummaryMyAmm,
-  SummaryMyAmm,
-  useAmmTotalValue,
   useWalletLayer2Socket,
-  useSystem,
-  store,
   useTokenPrices,
+  SummaryMyInvest,
+  useDefiMap,
+  makeDefiInvestReward,
 } from "@loopring-web/core";
 import { SagaStatus } from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
+
 export const useOverview = <
   R extends { [key: string]: any },
   I extends { [key: string]: any }
->({
-  ammActivityMap,
-}: {
+>(_: {
   ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined;
 }): {
   myAmmMarketArray: AmmRecordRow<R>[];
-  summaryMyAmm: Partial<SummaryMyAmm>;
+  summaryMyInvest: Partial<SummaryMyInvest>;
   myPoolRow: MyPoolRow<R>[];
   showLoading: boolean;
 } => {
   const { status: walletLayer2Status } = useWalletLayer2();
   const { status: userRewardsStatus, userRewardsMap } = useUserRewards();
   const { tokenMap } = useTokenMap();
+  const { marketCoins: defiCoinArray } = useDefiMap();
+
   const { status: ammMapStatus, ammMap } = useAmmMap();
-  const { forexMap } = useSystem();
   const { tokenPrices } = useTokenPrices();
 
-  const [summaryMyAmm, setSummaryMyAmm] = React.useState<Partial<SummaryMyAmm>>(
-    {}
-  );
+  const [summaryMyInvest, setSummaryMyInvest] = React.useState<
+    Partial<SummaryMyInvest>
+  >({});
 
   const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([]);
   const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<
@@ -102,10 +102,7 @@ export const useOverview = <
           const coinB = o.ammDetail?.coinBInfo?.simpleName;
           const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined;
           const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined;
-          totalCurrentInvest = {
-            investDollar:
-              totalCurrentInvest.investDollar + (o.balanceDollar ?? 0),
-          };
+          totalCurrentInvest.investDollar += Number(o.balanceDollar ?? 0);
           return {
             ...o,
             totalAmmValueDollar,
@@ -113,7 +110,11 @@ export const useOverview = <
             precisionB,
           };
         });
-        setSummaryMyAmm((state) => {
+        defiCoinArray.forEach((defiCoinKey) => {
+          totalCurrentInvest.investDollar += Number((_walletMap[ defiCoinKey ]?.count.replace(',', '') ?? 0) * tokenPrices[ defiCoinKey ] ?? 0);
+        }, []);
+
+        setSummaryMyInvest((state) => {
           return {
             ...state,
             ...totalCurrentInvest,
@@ -157,19 +158,26 @@ export const useOverview = <
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
-      const summaryReward = makeSummaryMyAmm({ userRewardsMap });
-      setSummaryMyAmm((state) => {
-        return {
-          ...state,
-          ...summaryReward,
-        };
+      let summaryReward: any = makeSummaryMyAmm({ userRewardsMap });
+      makeDefiInvestReward().then((summaryDefiReward) => {
+        summaryReward.rewardDollar = sdk
+          .toBig(summaryReward.rewardDollar)
+          .plus(summaryDefiReward ?? 0)
+          .toString();
+        setSummaryMyInvest((state) => {
+          return {
+            ...state,
+            ...summaryReward,
+          };
+        });
       });
+
       walletLayer2Callback();
     }
   }, [userRewardsStatus]);
   return {
     myAmmMarketArray,
-    summaryMyAmm,
+    summaryMyInvest,
     myPoolRow,
     showLoading,
   };

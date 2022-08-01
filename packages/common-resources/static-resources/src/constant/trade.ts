@@ -1,6 +1,7 @@
 import {
   ChainId,
   NFTTokenInfo,
+  TokenInfo,
   UserNFTBalanceInfo,
 } from "@loopring-web/loopring-sdk";
 import { FeeInfo, IBData } from "../loopring-interface";
@@ -329,3 +330,31 @@ export const useAddressTypeLists = <
 
 export const defalutSlipage = 0.1;
 export type ForexMap<C> = { [k in keyof C]?: number };
+
+export const enum InvestMapType {
+  Token = "Token",
+  AMM = "AMM",
+  STAKE = "STAKE",
+}
+
+export const InvestOpenType = [InvestMapType.AMM, InvestMapType.STAKE];
+
+export const enum InvestDuration {
+  Flexible = "Flexible",
+  Duration = "Duration",
+  All = "All",
+}
+
+export type InvestItem = {
+  type: InvestMapType;
+  i18nKey: `labelInvestType_${InvestMapType}` | "";
+  apr: [start: number, end: number];
+  durationType: InvestDuration;
+  duration: string;
+};
+export type InvestDetail = {
+  token: TokenInfo;
+  apr: [start: number, end: number];
+  durationType: InvestDuration;
+  duration: string;
+};

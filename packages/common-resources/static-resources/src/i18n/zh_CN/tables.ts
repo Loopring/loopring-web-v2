@@ -196,6 +196,11 @@ export default {
   labelForceWithdrawTotalDes: "All {{symbol}}",
   labelForceWithdrawDes:
     "{{address}} (Address that the token is withdrawn from L2 to L1)",
-  labelDefiInvest: "Invest",
+  labelDefiInvest: "Subscribe",
   labelDefiRedeem: "Redeem",
+  labelSelect: "Select",
+  labelDuration: "Duration",
+  labelInvestFlexible: "Flexible",
+  labelInvestDuration: "Duration",
+  labelInvestAll: "Mixed",
 };

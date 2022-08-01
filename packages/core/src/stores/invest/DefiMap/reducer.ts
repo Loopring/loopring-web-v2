@@ -37,9 +37,6 @@ const defiMapSlice: Slice = createSlice({
       }
       state.status = SagaStatus.DONE;
     },
-    // updateRealTimeDefiMap(state, _action: PayloadAction<undefined>) {
-    //   state.status = SagaStatus.PENDING;
-    // },
     updateDefiSyncMap(state, _action: PayloadAction<DefiMapStates>) {
       state.status = SagaStatus.PENDING;
     },
