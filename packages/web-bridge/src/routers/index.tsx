@@ -34,8 +34,6 @@ export const useWrapModal = () => {
 };
 const RouterView = ({ state }: { state: SagaStatus }) => {
   const location = useLocation();
-  // const proFlag =
-  //   process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === "true";
   const { setTheme } = useSettings();
   const { depositProps, view: modalView } = useWrapModal();
 
