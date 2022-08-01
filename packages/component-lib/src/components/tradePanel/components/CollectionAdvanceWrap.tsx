@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, TextareaAutosize, Typography } from "@mui/material";
 import { Info2Icon, } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { Button, PopoverPure, TextField, TGItemData, } from "../../basic-lib";
@@ -14,49 +14,23 @@ const GridStyle = styled(Grid)`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
   }
-
   .MuiInputLabel-root {
     font-size: ${({theme}) => theme.fontDefault.body2};
   }
 ` as typeof Grid;
-const NFT_TYPE: TGItemData[] = [
-  {
-    value: NFTType.ERC1155,
-    key: "ERC1155",
-    label: "ERC1155",
-    disabled: false,
-  },
-];
 export const CollectionAdvanceWrap = <T extends any,
   >({
       handleDataChange,
-      onSubmitClick,
-      allowTrade,
       btnInfo,
       btnStatus,
       tradeData,
-      // disabled,
-      // walletMap,
-      // tradeData,
-      // title,
-      // description,
-      // btnInfo,
-      // handleOnNFTDataChange,
-      // nftMintBtnStatus,
-      // isFeeNotEnough,
-      // handleFeeChange,
-      // chargeFeeTokenList,
-      // feeInfo,
-      // isAvaiableId,
-      // isNFTCheckLoading,
-      // onNFTMintClick,
     }: CollectionAdvanceProps<T>) => {
   const {t} = useTranslation(["common"]);
   const {isMobile} = useSettings();
   const styles = isMobile
     ? {flex: 1, width: "var(--swap-box-width)"}
     : {width: "var(--modal-width)"};
-  const inputBtnRef = React.useRef();
+  // const inputBtnRef = React.useRef();
 
   //
   const popupState = usePopupState({
@@ -131,12 +105,8 @@ export const CollectionAdvanceWrap = <T extends any,
             variant={"body2"}
             whiteSpace={"pre-line"}
           >
-            {/*<Trans i18nKey={description ? description : "nftMintDescription"}>*/}
-            {/*  /!*Paste in the CID that you obtained from uploading the metadata*!/*/}
-            {/*  /!*Information file (point 11 above) - if successful, the data from*!/*/}
-            {/*  /!*the metadata Information you created contained within the folder*!/*/}
-            {/*  /!*populates the Name and also the image displays.*!/*/}
-            {/*</Trans>*/}
+            This is a quick way to import Collection metaData information,
+            please make sure the metaData json include name & tileUri
           </Typography>
         </PopoverPure>
       </Grid>
@@ -153,28 +123,32 @@ export const CollectionAdvanceWrap = <T extends any,
           IPFS CID
         </Trans>
       </Typography>
-      <TextField
-        label={""}
-        value={tradeData}
+      <TextareaAutosize
+        placeholder={`\{ 
+         "name" :"", // If empty will use the collection token address create Name 
+         "tileUri:"ipfs://xxxxxxxxx", // Required
+          // "nftFactory*\n" 
+          "baseUri":"ipfs://xxxxxxxxx", 
+          "collectionTitle":"COLLECTION TITLE", 
+          "description:"COLLECTION  description" 
+          "avatar:"ipfs://xxxxxxxxx",
+          "banner":"ipfs://xxxxxxxxx",
+          "thumbnail:"ipfs://xxxxxxxxx",}`}
         // title={t("labelCollectionAdvanceCID")}
         error={
           !!(
             btnStatus !== TradeBtnStatus.AVAILABLE,
-            tradeData.cid !== '',
-            // tradeData.nftIdView !== "" &&
-            // !isNFTCheckLoading &&
-            // !isAvaiableId
+            tradeData.name !== ''
           )
         }
-        placeholder={t("mintNFTAddressLabelPlaceholder")}
         onChange={(event) =>
-          handleDataChange({
+          handleMetaChange({
             // nftIdView: event.target?.value,
             // nftId: "",
           } as T)
         }
         fullWidth={true}
-      />
+      >
       <Grid item marginTop={3} alignSelf={"stretch"}>
         {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
           <Typography
