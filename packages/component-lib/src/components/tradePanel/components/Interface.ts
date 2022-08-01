@@ -422,3 +422,15 @@ export type NFTMintAdvanceViewProps<T, I, C> = NFTMintAdvanceExtendProps<
   I,
   C
 >;
+
+export type CollectionAdvanceProps<T extends {
+  cid: CID,
+  name: string,
+  [ key: string ]: any,
+}> = {
+  handleDataChange: (data: T) => void;
+  onSubmitClick: (data: T) => void;
+  allowTrade?: any;
+  btnStatus: TradeBtnStatus;
+  tradeData: T,
+} & BtnInfoProps;

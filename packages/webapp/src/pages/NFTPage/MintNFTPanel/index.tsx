@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Box, Button, Card, Typography, useTheme } from "@mui/material";
 import {
   MintNFTConfirm,
   PanelContent,
-  useOpenModals,
+  useOpenModals, useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
@@ -11,9 +11,18 @@ import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
 import { useHistory } from "react-router-dom";
 import { BackIcon } from "@loopring-web/common-resources";
+
 const StyledPaper = styled(Box)`
   background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
+`;
+const CardStyled = styled(Card)`
+  min-height: ${({theme}) => theme.unit * 61.5}px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  width: var(--nft-card);
 `;
 
 export const MintNFTPanel = () => {
@@ -111,35 +120,57 @@ export const MintNFTPanel = () => {
 export const MintLandingPage = () => {
   const history = useHistory();
   const { setShowNFTMintAdvance } = useOpenModals();
-  const { t } = useTranslation(["common"]);
+  const {t} = useTranslation(["common"]);
+  const {isMobile} = useSettings()
   return (
     <Box
       flex={1}
-      alignItems={"center"}
       display={"flex"}
-      justifyContent={"center"}
+      justifyContent={"stretch"}
+      flexDirection={'column'}
     >
-      <Box marginLeft={1}>
-        <Button
-          onClick={() => {
-            setShowNFTMintAdvance({ isShow: true });
-          }}
-          variant={"outlined"}
-          color={"primary"}
-        >
-          {t("labelAdvanceMint")}
-        </Button>
+      <Box marginBottom={2}>
+        <Typography component={"h3"} variant={"h4"} marginBottom={1}>
+          {t('labelMintSelect')}
+        </Typography>
+        <Typography component={"h3"} variant={"body1"} color={"textSecondary"}>
+          {t('labelMintSelectDes')}
+        </Typography>
       </Box>
-      <Box marginLeft={1}>
-        <Button
-          onClick={() => {
-            history.push("/nft/mintNFT");
-          }}
-          variant={"outlined"}
-          color={"primary"}
-        >
-          {t("labelMintNFT")}
-        </Button>
+      <Box flex={1}
+           alignItems={"center"}
+           display={"flex"}
+           flexDirection={isMobile ? "column" : "row"}
+           justifyContent={"center"}>
+        <CardStyled onClick={() => {
+          setShowNFTMintAdvance({isShow: true});
+        }}>
+          <Box flex={1}>
+            lalalala
+          </Box>
+          <Button
+            variant={"outlined"}
+            color={"primary"}
+          >
+            {t("labelAdvanceMint")}
+          </Button>
+        </CardStyled>
+        <CardStyled sx={{marginLeft: isMobile ? 0 : 4}} onClick={() => {
+          setShowNFTMintAdvance({isShow: true});
+        }}>
+          <Box flex={1}>
+            lalalala
+          </Box>
+          <Button
+            onClick={() => {
+              history.push("/nft/mintNFT");
+            }}
+            variant={"outlined"}
+            color={"primary"}
+          >
+            {t("labelMintNFT")}
+          </Button>
+        </CardStyled>
       </Box>
     </Box>
   );

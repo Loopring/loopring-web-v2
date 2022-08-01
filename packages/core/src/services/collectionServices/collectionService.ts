@@ -1,5 +1,7 @@
 import { Subject } from "rxjs";
 import {
+  IpfsProvides,
+  ipfsService,
   LoopringAPI,
   store,
 } from "../../index";
@@ -28,39 +30,13 @@ const subject = new Subject<{
 // const socket =  ipfsService.onSocket();
 
 export const collectionService = {
-  // emptyData: () => {
-  //   // const {
-  //   //   account,
-  //   //   system: { chainId },
-  //   // } = store.getState();
-  //   // let tokenAddress;
-  //   // if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
-  //   //   tokenAddress =
-  //   //     LoopringAPI.nftAPI
-  //   //       ?.computeNFTAddress({
-  //   //         nftOwner: account.accAddress,
-  //   //         nftFactory: sdk.NFTFactory[chainId],
-  //   //         nftBaseUri: "",
-  //   //       })
-  //   //       .tokenAddress?.toLowerCase() || undefined;
-  //   // }
-  //   // store.dispatch(resetNFTMintData({ tokenAddress }));
-  //   // subject.next({
-  //   //   status: MintCommands.MetaDataSetup,
-  //   //   data: {
-  //   //     emptyData: true,
-  //   //   },
-  //   // });
-  // },
-  // generateCollectionIPFS:({name}:{name: string})=>{
-  //   const uniqueId = Date.now() + name;
-  //   ipfsService.addJSON({
-  //     ipfs: ipfsProvides.ipfs,
-  //     json: JSON.stringify({name:name}),
-  //     uniqueId, //:),
-  //   });
-  //
-  // },
+  updateIpfsGetTokenAddress: (ipfsProvides: IpfsProvides, uniqueId: string) => {
+    ipfsService.addJSON({
+      ipfs: ipfsProvides.ipfs,
+      json: JSON.stringify({name: name}),
+      uniqueId, //:),
+    });
+  },
   generateCollectionTokenAddress: async ({cid}: { cid: CID }) => {
     const {
       account,
@@ -86,6 +62,7 @@ export const collectionService = {
           data: undefined,
         });
 
+        return Promise.resolve();
         // return undefined;
       }
     }

@@ -10,6 +10,7 @@ import styled from "@emotion/styled/";
 import { useHistory } from 'react-router-dom';
 import { CreateCollectionStep, useCollectionContract } from '@loopring-web/core';
 import { LoadingBlock } from '../../LoadingPage';
+import { SoursURL } from '@loopring-web/common-resources';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -23,6 +24,11 @@ const CreateNamePanel = ({setStep}: { setStep: (step: CreateCollectionStep) => v
 
   const {createContract} = useCollectionContract({setStep});
   return <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
+    <Box marginBottom={3} width={'var(--modal-width)'}>
+      <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={2}>
+        {t('labelCollectionCreateERC1155')}
+      </Typography>
+    </Box>
     <Box marginBottom={2} width={'var(--modal-width)'}>
       <TextField
         value={value}
@@ -75,21 +81,29 @@ const CreateUrlPanel = ({
         view: <CreateNamePanel setStep={setStep}/>,
       },
       {
-        view: <Box minHeight={"280px"} flex={1}
+        view: <Box minHeight={"148px"} flex={1}
                    display={'flex'} flexDirection={'column'} alignItems={'center'} width={'var(--modal-width)'}>
-          <Typography component={'h5'}>
+          <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={3}>
             {t('Waiting for create Collection token Address')}
           </Typography>
           <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-            <LoadingBlock/>
+            <div className="loader loader--style3" title="2">
+              <img
+                className="loading-gif"
+                alt={"loading"}
+                width="36"
+                src={`${SoursURL}images/loading-line.gif`}
+              />
+            </div>
           </Box>
-        </Box>
+        </Box>,
+        onBack: () => setStep(CreateCollectionStep.CreateTokenAddress)
       },
       {
         view: <Box minHeight={"280px"} flex={1}
                    display={'flex'} flexDirection={'column'} alignItems={'center'} width={'var(--modal-width)'}>
-          <Typography component={'h5'}>
-            {t('Waiting for create Collection token Address')}
+          <Typography component={'h4'} variant={'h4'} textAlign={'center'}>
+            {t('labelCollectionCreateFailed')}
           </Typography>
           <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
             {t('Collection Failed')}
@@ -103,7 +117,11 @@ const CreateUrlPanel = ({
           alignItems={"center"}
           display={"flex"}
           justifyContent={"center"}
+          flexDirection={"column"}
         >
+          <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={3}>
+            {t('labelMintSelect')}
+          </Typography>
           <Box marginLeft={1}>
             <Button
               onClick={() => {

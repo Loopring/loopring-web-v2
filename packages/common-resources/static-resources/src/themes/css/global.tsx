@@ -256,6 +256,7 @@ export const globalCss = ({ theme }: any) => css`
     --row-header-height: 44px;
     --chart-height: 396px;
     --nft-height: 396px;
+    --nft-card: 320px;
     --notification-activited-heigth: 80px;
     @media only screen and (max-width: 768px) {
       --modal-width: 320px;
@@ -266,13 +267,14 @@ export const globalCss = ({ theme }: any) => css`
 
   select {
     appearance: none;
-    -moz-appearance: none;                 v
+    -moz-appearance: none;
     -webkit-appearance: none;
 
     &::-ms-expand {
       display: none;
     }
   }
+
   .rdg.rdg {
     --background-color: inherit;
   }

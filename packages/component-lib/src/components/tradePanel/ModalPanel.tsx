@@ -179,6 +179,7 @@ export const ModalPanel = <
     setShowNFTWithdraw,
     setShowNFTDeploy,
     setShowAccount,
+    setShowCollectionAdvance,
   } = useOpenModals();
   const {
     isShowTransfer,
@@ -187,13 +188,12 @@ export const ModalPanel = <
     isShowNFTTransfer,
     isShowNFTWithdraw,
     isShowNFTDeploy,
-    // isShowNFTDeposit,
     isShowResetAccount,
     isShowExportAccount,
     isShowTradeIsFrozen,
     isShowActiveAccount,
     isShowNFTMintAdvance,
-    // isShowNFTMint,
+    isShowCollectionAdvance,
     isShowLayerSwapNotice,
   } = modals;
   const theme = useTheme();
@@ -408,6 +408,20 @@ export const ModalPanel = <
       <Modal
         open={isShowNFTMintAdvance.isShow}
         onClose={() => setShowNFTMintAdvance({ isShow: false })}
+        content={
+          <MintAdvanceNFTWrap
+            {...{
+              ...rest,
+              // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+              // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
+              ...nftMintAdvanceProps,
+            }}
+          />
+        }
+      />
+      <Modal
+        open={isShowCollectionAdvance.isShow}
+        onClose={() => setShowCollectionAdvance({isShow: false})}
         content={
           <MintAdvanceNFTWrap
             {...{

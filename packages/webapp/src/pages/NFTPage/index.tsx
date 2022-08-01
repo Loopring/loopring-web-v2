@@ -11,7 +11,7 @@ import { MintLandingPage, MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
 import { mintService } from "@loopring-web/core";
 import { NFTCollectPanel } from "./CollectionPanel";
-import { CreateCollectPanel } from "./CreateCollectionPanel";
+import { CreateCollectionPanel } from './CreateCollectionPanel';
 
 export const subMenu = subMenuNFT;
 
@@ -33,7 +33,7 @@ export const NFTPage = () => {
       case "myCollection":
         return <NFTCollectPanel />;
       case "addCollection":
-        return <CreateCollectPanel />;
+        return <CreateCollectionPanel/>;
       case "assetsNFT":
       default:
         return <MyNFTPanel />;
