@@ -110,4 +110,4 @@ Please review this Privacy Policy regularly to ensure that you are aware of its 
 ---
 
 
-Last Updated: January 16, 2021.
+Last Updated: August 4, 2022.
