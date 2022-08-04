@@ -882,5 +882,15 @@ export default {
   labelMintSelect: "Choose Creation Method",
   labelMintSelectDes: "Choose the most suitable approach for your needs.",
   labelCollectionCreateFailed: "Create Collection token Address Failed",
-  labelCollectionMetaTitle: "Import Metadata from IPFS"
+  labelCollectionMetaTitle: "Import Metadata from IPFS",
+  labelAdvanceCreateCollection: "Advance Create Collection",
+  labelCreateCollectionSuccess: "Collection create was successful",
+  labelCreateCollectionFailed: "Collection create has failed",
+  labelCollectionAdvanceJSON: "NFT Collection information follow this format: ",
+  labelCopyDemo: "Click to copy the demo",
+  labelCollectionCreatBtn: "Create Collection",
+  labelEnterMeta: "Enter Collection Metadata",
+
+
 };
+

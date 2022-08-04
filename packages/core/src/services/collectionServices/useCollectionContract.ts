@@ -1,21 +1,9 @@
-import {
-  ContractCommands,
-  useIPFS, useModalData,
-} from "../../index";
-import { collectionService } from './collectionService';
 import { AddResult } from 'ipfs-core-types/types/src/root';
+import { useIPFS } from '../ipfs';
+import { collectionService, ContractCommands } from './collectionService';
 import React from 'react';
+import { CreateCollectionStep } from '@loopring-web/common-resources';
 import CID from 'cids';
-
-export enum CreateCollectionStep {
-  CreateTokenAddress,
-  Loading,
-  CreateTokenAddressFailed,
-  ChooseMethod,
-
-  AdvancePanel,
-  CommonPanel,
-}
 
 export function useCollectionContract({setStep}: { setStep: (step: CreateCollectionStep) => void }) {
   const [collectionInfo, setCollectionInfo] = React.useState<{
@@ -26,8 +14,7 @@ export function useCollectionContract({setStep}: { setStep: (step: CreateCollect
     name: "",
   });
   const subject = React.useMemo(() => collectionService.onSocket(), []);
-
-  const {updateCollectionAdvanceData} = useModalData();
+  // const {updateCollectionAdvanceData} = useModalData();
   const handleSuccessUpload = React.useCallback((data: AddResult & { uniqueId: string }) => {
     // @ts-ignore
     setCollectionInfo((state) => {
@@ -45,21 +32,15 @@ export function useCollectionContract({setStep}: { setStep: (step: CreateCollect
           //TODO：
           break;
         case ContractCommands.CreateMetaData:
-          const {tokenAddress} = data;
-          updateCollectionAdvanceData({tokenAddress})
+          // const {tokenAddress} = data;
+          // updateCollectionAdvanceDatanceData({tokenAddress})
           setStep(CreateCollectionStep.ChooseMethod)
-          // handleSuccessUpload(data)
-          // handleTabChange(0);
-          // setErrorOnMeta(data?.error);
-          // if (data?.emptyData) {
-          //   resetMETADAT();
-          // }
           break;
       }
     },
     []
   );
-
+  //
   const handleFailedUpload = (data: AddResult & { uniqueId: string }) => {
     // if (uniqueId == data.uniqueId) {
     //   //TODO：
@@ -69,7 +50,7 @@ export function useCollectionContract({setStep}: { setStep: (step: CreateCollect
     setCollectionInfo((state) => {
       if (state.uniqueId == data.uniqueId) {
         // collectionService.generateCollectionTokenAddress({cid: data.cid as any})
-        setStep(CreateCollectionStep.ChooseMethod)
+        // setStep(CreateCollectionStep.ChooseMethod)
         return {uniqueId: ""}
       }
       return state;
@@ -79,15 +60,16 @@ export function useCollectionContract({setStep}: { setStep: (step: CreateCollect
     handleSuccessUpload,
     handleFailedUpload,
   });
-
-
-  const createContract = ({name}: { name: string }) => {
-    const uniqueId = Date.now() + name;
-    setCollectionInfo({uniqueId, name});
-    collectionService.updateIpfsGetTokenAddress(ipfsProvides, uniqueId);
-  }
+//
+//
+//   const createContract = ({name}: { name: string }) => {
+//     const uniqueId = Date.now() + name;
+//     setCollectionInfo({uniqueId, name});
+//     collectionService.updateIpfsGetTokenAddress(ipfsProvides, uniqueId);
+//   }
   React.useEffect(() => {
     // checkFeeIsEnough();
+
     const subscription = subject.subscribe((props) => {
       commonSwitch(props);
     });
@@ -96,8 +78,8 @@ export function useCollectionContract({setStep}: { setStep: (step: CreateCollect
       subscription.unsubscribe();
     };
   }, [commonSwitch, subject]);
-
+//
   return {
-    createContract,
+    // createContract,
   };
 }

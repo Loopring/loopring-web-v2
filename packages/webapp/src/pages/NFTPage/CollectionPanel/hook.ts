@@ -1,82 +1,76 @@
-import {
-  AccountStatus,
-  FeeInfo,
-  MintTradeNFT,
-  NFTMETA,
-  SagaStatus,
-} from "@loopring-web/common-resources";
-import { useModalData } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
-import { useNFTMeta } from "@loopring-web/core";
-import { mintService, useNFTMint } from "@loopring-web/core";
-import React from "react";
-import { useAccount } from "@loopring-web/core";
-const enum MINT_VIEW_STEP {
-  METADATA,
-  MINT_CONFIRM,
-}
-BigNumber.config({ EXPONENTIAL_AT: 100 });
-export const useMintNFTPanel = <
-  Me extends NFTMETA,
-  Mi extends MintTradeNFT<I>,
-  I,
-  C extends FeeInfo
->() => {
-  const [currentTab, setCurrentTab] = React.useState<MINT_VIEW_STEP>(
-    MINT_VIEW_STEP.METADATA
-  );
-  const { account, status: accountStatus } = useAccount();
+import React, { useState } from 'react';
+import {
+  SagaStatus
+} from '@loopring-web/common-resources';
+import {
 
-  const handleTabChange = React.useCallback((value: MINT_VIEW_STEP) => {
-    setCurrentTab(value);
-  }, []);
-  const { nftMintValue } = useModalData();
+  useSystem,
+  useWalletL2Collection,
+} from '@loopring-web/core';
+import { useOpenModals } from '@loopring-web/component-lib';
+import * as sdk from '@loopring-web/loopring-sdk';
+
+// const enum MINT_VIEW_STEP {
+//   METADATA,
+//   MINT_CONFIRM,
+// }
+BigNumber.config({EXPONENTIAL_AT: 100});
+
+export const useMyCollection = () => {
+  const [collectionList, setCollectionList] = React.useState<sdk.NFTCollection[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  // const [popItem, setPopItem] =
+  //   React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
   const {
-    onFilesLoad,
-    onDelete,
-    ipfsMediaSources,
-    ipfsProvides,
-    nftMetaProps,
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    checkFeeIsEnough,
-    handleFeeChange,
-    feeInfo,
-    errorOnMeta,
-  } = useNFTMeta<Me>({ handleTabChange, nftMintValue });
+    status: walletL2CollectionStatus,
+    walletL2Collection,
+    total,
+    page: page_reudex,
+    updateWalletL2Collection,
+  } = useWalletL2Collection();
+  // const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
+  //   useModalData();
+
+  const {setShowNFTDetail} = useOpenModals();
+  const {etherscanBaseUrl} = useSystem();
+  const [page, setPage] = useState(1);
+  // const onDetailClose = React.useCallback(() => setIsShow(false), []);
+
+  const onPageChange = (page: number) => {
+    setPage(page);
+    setIsLoading(true);
+  };
+
+
+  const renderCollection = React.useCallback(async () => {
+    // let mediaPromise: any[] = [];
+    setCollectionList(walletL2Collection);
+    setIsLoading(false);
+  }, [etherscanBaseUrl, page, walletL2Collection]);
   React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
-    ) {
-      mintService.emptyData();
+    onPageChange(1);
+  }, []);
+  React.useEffect(() => {
+    updateWalletL2Collection({page});
+  }, [page]);
+  React.useEffect(() => {
+    if (walletL2CollectionStatus === SagaStatus.UNSET && page_reudex === page) {
+      renderCollection();
     }
-  }, [accountStatus, account.readyState]);
-  const { nftMintProps } = useNFTMint<Me, Mi, I, C>({
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    checkFeeIsEnough,
-    handleFeeChange,
-    feeInfo,
-    handleTabChange,
-    nftMintValue,
-  });
+  }, [walletL2CollectionStatus, page, page_reudex]);
+
 
   return {
-    errorOnMeta,
-    onFilesLoad,
-    onDelete,
-    ipfsMediaSources,
-    ipfsProvides,
-    nftMetaProps,
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    checkFeeIsEnough,
-    handleFeeChange,
-    feeInfo,
-    nftMintProps,
-    nftMintValue,
-    currentTab,
-    handleTabChange,
+    // nftList,
+    // popItem,
+    // onDetail,
+
+    collectionList,
+    etherscanBaseUrl,
+    onPageChange,
+    total,
+    page,
+    isLoading,
   };
 };

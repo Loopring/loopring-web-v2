@@ -3,6 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import React from "react";
 import { useOpenModals } from "@loopring-web/component-lib";
+import { useHistory } from 'react-router-dom';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -11,36 +12,83 @@ const StyledPaper = styled(Box)`
 
 export const CreateCollectionPanel = () => {
   const {t} = useTranslation("common");
-
+  const {setShowCollectionAdvance} = useOpenModals();
+  const history = useHistory();
   return (
     <>
-      <StyledPaper
-        flex={1}
-        className={"MuiPaper-elevation2"}
-        marginTop={0}
-        marginBottom={2}
+      <Box
         display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        paddingX={5 / 2}
+        paddingTop={5 / 2}
+      >
+        <Typography component={"h3"} variant={"h4"}>
+          {t("labelCreateCollectionTitle")}
+        </Typography>
+      </Box>
+      <Box
+        flex={1}
+        alignItems={"center"}
+        display={"flex"}
+        justifyContent={"center"}
         flexDirection={"column"}
       >
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          paddingX={5 / 2}
-          paddingTop={5 / 2}
-        >
-          <Typography component={"h3"} variant={"h4"}>
-            {t("labelCreateCollectionTitle")}
-          </Typography>
+
+        <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={3}>
+          {t('labelMintSelect')}
+        </Typography>
+        <Box marginLeft={1}>
+          <Button
+            onClick={() => {
+              // onClose();
+              setShowCollectionAdvance({isShow: true});
+            }}
+            variant={"outlined"}
+            color={"primary"}
+          >
+            {t("labelAdvanceCreate")}
+          </Button>
         </Box>
-        <Box flex={1} display={"flex"}>
-          <Box marginLeft={1}>
-            <Button onClick={() => {}} variant={"outlined"} color={"primary"}>
-              {t("labelAdvanceCreateCollection")}
-            </Button>
-          </Box>
+        <Box marginLeft={1}>
+          <Button
+            onClick={() => {
+              history.push("/nft/CreateCollection");
+            }}
+            variant={"outlined"}
+            color={"primary"}
+          >
+            {t("labelMintNFT")}
+          </Button>
         </Box>
-      </StyledPaper>
+      </Box>
+      {/*<StyledPaper*/}
+      {/*  flex={1}*/}
+      {/*  className={"MuiPaper-elevation2"}*/}
+      {/*  marginTop={0}*/}
+      {/*  marginBottom={2}*/}
+      {/*  display={"flex"}*/}
+      {/*  flexDirection={"column"}*/}
+      {/*>*/}
+      {/*  <Box*/}
+      {/*    display={"flex"}*/}
+      {/*    justifyContent={"space-between"}*/}
+      {/*    alignItems={"center"}*/}
+      {/*    paddingX={5 / 2}*/}
+      {/*    paddingTop={5 / 2}*/}
+      {/*  >*/}
+      {/*    <Typography component={"h3"} variant={"h4"}>*/}
+      {/*      {t("labelCreateCollectionTitle")}*/}
+      {/*    </Typography>*/}
+      {/*  </Box>*/}
+      {/*  <Box flex={1} display={"flex"}>*/}
+      {/*    <Box marginLeft={1}>*/}
+      {/*      <Button onClick={() => {}} variant={"outlined"} color={"primary"}>*/}
+      {/*        {t("labelAdvanceCreateCollection")}*/}
+      {/*      </Button>*/}
+      {/*    </Box>*/}
+      {/*  </Box>*/}
+      {/*</StyledPaper>*/}
     </>
   );
 };

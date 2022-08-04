@@ -289,3 +289,35 @@ export enum EXPLORE_TYPE {
   NFTWITHDRAW = "nftWithdraw",
   NFTTRANSFER = "nftTransfer",
 }
+
+
+/**
+ * CollectionMeta
+ * @property name string useToCreate Collection
+ * @property name string
+ * @property tileUri string option
+ * @property owner? string option
+ * @property nftFactory? string option
+ * @property baseUri? string option
+ * @property collectionTitle? string option
+ * @property description? string option
+ * @property avatar? string option
+ * @property banner? string option
+ * @property thumbnail? string option
+ * @property cid? string option
+ *
+ */
+export type CollectionMeta = {
+  name: string,
+  tileUri: string,
+  owner: string,
+  nftFactory?: string,
+  baseUri?: string,
+  collectionTitle?: string,
+  description?: string,
+  avatar?: string,
+  banner?: string,
+  thumbnail?: string,
+  cid?: string,
+};
+

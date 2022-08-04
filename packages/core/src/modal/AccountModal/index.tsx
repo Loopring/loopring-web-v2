@@ -61,6 +61,7 @@ export const ModalAccountInfo = withTranslation("common")(
       setCopyToastOpen,
       setOpenQRCode,
       account,
+      collectionAdvanceProps,
       transferProps,
       withdrawProps,
       nftTransferProps,
@@ -77,6 +78,8 @@ export const ModalAccountInfo = withTranslation("common")(
       currentModal,
       onBackReceive,
       onBackSend,
+      collectionToastOpen,
+      collectionToastClose,
     } = useAccountModalForUI({
       t,
       depositProps,
@@ -97,12 +100,20 @@ export const ModalAccountInfo = withTranslation("common")(
           }}
           severity={"success"}
         />
+        <Toast
+          alertText={collectionToastOpen?.content ?? ""}
+          severity={collectionToastOpen?.type ?? "success"}
+          open={collectionToastOpen?.open ?? false}
+          autoHideDuration={TOAST_TIME}
+          onClose={collectionToastClose}
+        />
+
 
         <ModalPanel
           transferProps={{
             ...transferProps,
             onBack: () => {
-              setShowTransfer({ isShow: false });
+              setShowTransfer({isShow: false});
               onBackSend();
             },
           }}
@@ -116,10 +127,11 @@ export const ModalAccountInfo = withTranslation("common")(
           depositProps={{
             ...depositProps,
             onBack: () => {
-              setShowDeposit({ isShow: false });
+              setShowDeposit({isShow: false});
               onBackReceive();
             },
           }}
+          collectionAdvanceProps={collectionAdvanceProps as any}
           nftTransferProps={nftTransferProps as any}
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
@@ -202,3 +214,4 @@ export const ModalAccountInfo = withTranslation("common")(
     );
   }
 );
+

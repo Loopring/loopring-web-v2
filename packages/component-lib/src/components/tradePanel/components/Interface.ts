@@ -301,7 +301,7 @@ export type NFTMintInfoProps<C> = {
   description?: string;
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
-  // isAvaiableId?: boolean;
+  // isAvailableId?: boolean;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
@@ -317,7 +317,7 @@ export type NFTMetaInfoProps<C> = {
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
   // isNFTCheckLoading?: boolean;
-  // isAvaiableId?: boolean;
+  // isAvailableId?: boolean;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
@@ -402,7 +402,7 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
   isNFTCheckLoading?: boolean;
-  isAvaiableId?: boolean;
+  isAvailableId?: boolean;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
@@ -423,14 +423,12 @@ export type NFTMintAdvanceViewProps<T, I, C> = NFTMintAdvanceExtendProps<
   C
 >;
 
-export type CollectionAdvanceProps<T extends {
-  cid: CID,
-  name: string,
-  [ key: string ]: any,
-}> = {
-  handleDataChange: (data: T) => void;
-  onSubmitClick: (data: T) => void;
+export type CollectionAdvanceProps<_T> = {
+  handleDataChange: (data: string) => void;
+  onSubmitClick: () => void;
   allowTrade?: any;
+  disabled?: boolean;
   btnStatus: TradeBtnStatus;
-  tradeData: T,
+  handleError: (error: { code: number, message: string }) => void,
+  metaData: string,
 } & BtnInfoProps;

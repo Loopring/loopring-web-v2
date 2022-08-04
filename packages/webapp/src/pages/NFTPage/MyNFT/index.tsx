@@ -3,6 +3,7 @@ import { Box, Button, Card, Grid, Pagination, Typography } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
+  CardStyleItem,
   EmptyDefault,
   NFTMedia,
   useOpenModals,
@@ -22,18 +23,7 @@ const StyledPaper = styled(Box)`
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-const CardStyle = styled(Card)`
-  background: var(--color-global-bg);
-  width: 100%;
-  cursor: pointer;
-  height: 0;
-  padding: 0 0 calc(100% + 80px);
-  position: relative;
 
-  img {
-    object-fit: contain;
-  }
-` as typeof Card;
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
@@ -148,7 +138,7 @@ export const MyNFTPanel = withTranslation("common")(
                       lg={4}
                       flex={"1 1 120%"}
                     >
-                      <CardStyle
+                      <CardStyleItem
                         // sx={{ maxWidth: 345 }}
                         onClick={() => {
                           onDetail(item);
@@ -226,7 +216,7 @@ export const MyNFTPanel = withTranslation("common")(
                             </Box>
                           </Box>
                         </Box>
-                      </CardStyle>
+                      </CardStyleItem>
                     </Grid>
                   ))}
                 </Grid>

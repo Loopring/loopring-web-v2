@@ -52,32 +52,30 @@ const NFT_TYPE: TGItemData[] = [
     disabled: false,
   },
 ];
-export const MintAdvanceNFTWrap = <
-  T extends TradeNFT<I>,
+export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
   I,
-  C extends FeeInfo
->({
-  disabled,
-  walletMap,
-  tradeData,
-  title,
-  description,
-  btnInfo,
-  handleOnNFTDataChange,
-  nftMintBtnStatus,
-  isFeeNotEnough,
-  handleFeeChange,
-  chargeFeeTokenList,
-  feeInfo,
-  isAvaiableId,
-  isNFTCheckLoading,
-  onNFTMintClick,
-}: NFTMintAdvanceViewProps<T, I, C>) => {
-  const { t } = useTranslation(["common"]);
-  const { isMobile } = useSettings();
+  C extends FeeInfo>({
+                       disabled,
+                       walletMap,
+                       tradeData,
+                       title,
+                       description,
+                       btnInfo,
+                       handleOnNFTDataChange,
+                       nftMintBtnStatus,
+                       isFeeNotEnough,
+                       handleFeeChange,
+                       chargeFeeTokenList,
+                       feeInfo,
+                       isAvailableId,
+                       isNFTCheckLoading,
+                       onNFTMintClick,
+                     }: NFTMintAdvanceViewProps<T, I, C>) => {
+  const {t} = useTranslation(["common"]);
+  const {isMobile} = useSettings();
   const styles = isMobile
-    ? { flex: 1, width: "var(--swap-box-width)" }
-    : { width: "var(--modal-width)" };
+    ? {flex: 1, width: "var(--swap-box-width)"}
+    : {width: "var(--modal-width)"};
 
   const popupState = usePopupState({
     variant: "popover",
@@ -203,7 +201,7 @@ export const MintAdvanceNFTWrap = <
               !!(
                 tradeData.nftIdView !== "" &&
                 !isNFTCheckLoading &&
-                !isAvaiableId
+                !isAvailableId
               )
             }
             placeholder={t("mintNFTAddressLabelPlaceholder")}
@@ -228,16 +226,16 @@ export const MintAdvanceNFTWrap = <
                 style={{ top: "30px" }}
                 aria-label="Clear"
                 onClick={() =>
-                  _handleOnNFTDataChange({ nftIdView: "", nftId: "" } as T)
+                  _handleOnNFTDataChange({nftIdView: "", nftId: ""} as T)
                 }
               >
-                <CloseIcon />
+                <CloseIcon/>
               </IconClearStyled>
             )
           ) : (
             ""
           )}
-          {!isAvaiableId &&
+          {!isAvailableId &&
           tradeData?.nftIdView &&
           tradeData?.nftIdView !== "" ? (
             <Typography

@@ -138,9 +138,6 @@ export type TradeNFT<I> = MintTradeNFT<I> &
   Partial<NFTWholeINFO> & { isApproved?: boolean };
 
 
-export type CollectionMetaData = {
-  
-}
 
 export const TOAST_TIME = 3000;
 
@@ -163,7 +160,8 @@ export type LOOPRING_NFT_METADATA = {
   [key in keyof typeof LOOPRING_TAKE_NFT_META_KET]?: string | undefined;
 };
 
-export const NFTLimit = 12;
+export const NFTLimit = 12, CollectionLimit = 12;
+
 
 export const AddAssetList = {
   FromMyL1: {
@@ -363,3 +361,13 @@ export type InvestDetail = {
   durationType: InvestDuration;
   duration: string;
 };
+
+
+export enum CreateCollectionStep {
+  // CreateTokenAddress,
+  // Loading,
+  // CreateTokenAddressFailed,
+  ChooseMethod,
+  // AdvancePanel,
+  CommonPanel,
+}

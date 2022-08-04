@@ -15,3 +15,4 @@ export * from "./components/MintNFTBlock";
 export * from "./Deposit";
 export * from "./components/tool/FeeList";
 export * from "./components/DeFiWrap";
+export * from "./components/CollectionAdvanceWrap";

@@ -134,7 +134,7 @@ import {
   mintService,
   goActiveAccount,
   useCheckActiveStatus,
-  useForceWithdraw,
+  useForceWithdraw, useCollectionAdvanceMeta, useToast,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
@@ -186,9 +186,9 @@ export function useAccountModalForUI({
     forceWithdrawValue,
   } = useModalData();
 
-  const { chainId, allowTrade } = useSystem();
+  const {chainId, allowTrade} = useSystem();
 
-  const { account, addressShort, shouldShow, setShouldShow } = useAccount();
+  const {account, addressShort, shouldShow, setShouldShow} = useAccount();
 
   const {
     exportAccountAlertText,
@@ -196,14 +196,20 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
   } = useExportAccount();
   const vendorProps = useVendor();
-  const { nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn } =
+  const {
+    toastOpen: collectionToastOpen,
+    setToastOpen: setCollectionToastOpen, closeToast: collectionToastClose
+  } = useToast();
+
+  const {nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn} =
     useNFTMintAdvance();
-  const { withdrawProps } = useWithdraw();
-  const { transferProps } = useTransfer();
-  const { nftWithdrawProps } = useNFTWithdraw();
-  const { nftTransferProps } = useNFTTransfer();
-  const { nftDeployProps } = useNFTDeploy();
-  const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
+  const {collectionAdvanceProps} = useCollectionAdvanceMeta({setCollectionToastOpen});
+  const {withdrawProps} = useWithdraw();
+  const {transferProps} = useTransfer();
+  const {nftWithdrawProps} = useNFTWithdraw();
+  const {nftTransferProps} = useNFTTransfer();
+  const {nftDeployProps} = useNFTDeploy();
+  const {retryBtn: forceWithdrawRetry} = useForceWithdraw();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -2152,6 +2158,7 @@ export function useAccountModalForUI({
     withdrawProps,
     depositProps,
     resetProps,
+    collectionAdvanceProps,
     activeAccountProps,
     exportAccountProps,
     exportAccountAlertText,
@@ -2168,6 +2175,8 @@ export function useAccountModalForUI({
     currentModal,
     onBackReceive,
     onBackSend,
+    collectionToastOpen,
+    collectionToastClose,
     // cancelNFTTransfer,
     // cancelNFTWithdraw,
     // vendorProps,

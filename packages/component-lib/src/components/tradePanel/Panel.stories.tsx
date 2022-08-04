@@ -23,7 +23,7 @@ import { useTranslation } from "react-i18next";
 import {
   AmmPanel,
   AmmPanelType,
-  AmmProps,
+  AmmProps, CollectionAdvanceProps,
   DepositProps,
   ModalPanel,
   ResetProps,

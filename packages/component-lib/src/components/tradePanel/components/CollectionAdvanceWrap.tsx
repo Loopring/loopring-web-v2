@@ -1,60 +1,47 @@
 import { Trans, useTranslation } from "react-i18next";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
-import React from "react";
-import { Box, Grid, TextareaAutosize, Typography } from "@mui/material";
-import { Info2Icon, } from "@loopring-web/common-resources";
+import React, { useState } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import { CollectionMeta, copyToClipBoard, Info2Icon, } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
-import { Button, PopoverPure, TextField, TGItemData, } from "../../basic-lib";
-import { NFTType } from "@loopring-web/loopring-sdk";
+import { Button, PopoverPure, TextareaAutosizeStyled } from "../../basic-lib";
 import { CollectionAdvanceProps, TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
+import { Toast } from '../../toast';
+import { TOAST_TIME } from '@loopring-web/core';
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
   }
+
   .MuiInputLabel-root {
     font-size: ${({theme}) => theme.fontDefault.body2};
   }
 ` as typeof Grid;
-export const CollectionAdvanceWrap = <T extends any,
-  >({
-      handleDataChange,
-      btnInfo,
-      btnStatus,
-      tradeData,
-    }: CollectionAdvanceProps<T>) => {
+export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>({
+                                                                           handleDataChange,
+                                                                           btnInfo,
+                                                                           btnStatus,
+                                                                           disabled = false,
+                                                                           allowTrade,
+                                                                           metaData,
+                                                                           onSubmitClick,
+                                                                         }: CollectionAdvanceProps<T>) => {
   const {t} = useTranslation(["common"]);
   const {isMobile} = useSettings();
   const styles = isMobile
     ? {flex: 1, width: "var(--swap-box-width)"}
     : {width: "var(--modal-width)"};
-  // const inputBtnRef = React.useRef();
-
-  //
+  const [copyToastOpen, setCopyToastOpen] = useState(false);
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftMint`,
   });
-  // const [dropdownStatus, setDropdownStatus] =
-  //   React.useState<"up" | "down">("down");
-  // const getDisabled = React.useMemo(() => {
-  //   return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
-  // }, [disabled, nftMintBtnStatus]);
-
-  // const handleToggleChange = (value: C) => {
-  //   if (handleFeeChange) {
-  //     handleFeeChange(value);
-  //   }
-  // };
-  // const _handleOnNFTDataChange = (_tradeData: T) => {
-  //   if (handleOnNFTDataChange) {
-  //     handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-  //   }
-  // };
-  // myLog("mint tradeData", tradeData);
-
+  const getDisabled = React.useMemo(() => {
+    return disabled || allowTrade.collectionNFT === true || btnStatus === TradeBtnStatus.DISABLED;
+  }, [disabled, btnStatus]);
   // @ts-ignore
   return (
     <GridStyle
@@ -119,72 +106,83 @@ export const CollectionAdvanceWrap = <T extends any,
         color={"textSecondary"}
         variant={"body2"}
       >
-        <Trans i18nKey={"labelCollectionAdvanceCID"}>
-          IPFS CID
+        <Trans i18nKey={"labelCollectionAdvanceJSON"}>
+          NFT Collection information follow this format
         </Trans>
+        <Typography variant={"inherit"} color={'var(--color-primary)'} marginLeft={1} onClick={() => {
+          const metaDemo = {
+            name: "`${COLLECTION_NAME (string, required)}`",
+            tileUri: "ipfs://`${cid (storage image type media, required)}`",
+            collectionTitle: "`${COLLECTION_TITLE (string)}`",
+            description: "`${COLLECTION_DESCRIPTION}",
+            avatar: "ipfs://`${cid  (storage image type media)}",
+            banner: "ipfs://`${cid  (storage image type media)}",
+            thumbnail: "ipfs://`${cid  (storage image type media)}",
+          }
+          copyToClipBoard(JSON.stringify(metaDemo));
+          setCopyToastOpen(true);
+
+        }}>
+          {t('labelCopyDemo')}
+        </Typography>
       </Typography>
-      <TextareaAutosize
-        placeholder={`\{ 
-         "name" :"", // If empty will use the collection token address create Name 
-         "tileUri:"ipfs://xxxxxxxxx", // Required
-          // "nftFactory*\n" 
-          "baseUri":"ipfs://xxxxxxxxx", 
-          "collectionTitle":"COLLECTION TITLE", 
-          "description:"COLLECTION  description" 
-          "avatar:"ipfs://xxxxxxxxx",
-          "banner":"ipfs://xxxxxxxxx",
-          "thumbnail:"ipfs://xxxxxxxxx",}`}
-        // title={t("labelCollectionAdvanceCID")}
-        error={
-          !!(
-            btnStatus !== TradeBtnStatus.AVAILABLE,
-            tradeData.name !== ''
-          )
-        }
-        onChange={(event) =>
-          handleMetaChange({
-            // nftIdView: event.target?.value,
-            // nftId: "",
-          } as T)
-        }
-        fullWidth={true}
-      >
+      <TextareaAutosizeStyled
+        minRows={15}
+        maxRows={20}
+        style={{
+          overflowX: "hidden",
+          resize: "vertical",
+          width: "100%"
+        }}
+        placeholder={`Please input a validate JSON format collection metadata information, name and tileUri is required.`}
+        onChange={(_event) => {
+          const value = _event.target.value;
+          handleDataChange(value ?? '')
+        }}
+        // fullWidth={true}
+        value={metaData}
+      />
       <Grid item marginTop={3} alignSelf={"stretch"}>
-        {btnInfo?.label === "labelNFTMintNoMetaBtn" && (
-          <Typography
-            color={"var(--color-warning)"}
-            component={"p"}
-            variant={"body1"}
-            marginBottom={1}
-            style={{wordBreak: "break-all"}}
-          >
-            <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
-              Your NFT metadata should identify
-              <em style={{fontWeight: 600}}>
-                name, image & royalty_percentage(number from 0 to 10)
-              </em>
-              .
-            </Trans>
-          </Typography>
-        )}
+        {/*{btnInfo?.label === "errorCollectionMetadataNoTileUri" && (*/}
+        {/*  <Typography*/}
+        {/*    color={"var(--color-warning)"}*/}
+        {/*    component={"p"}*/}
+        {/*    variant={"body1"}*/}
+        {/*    marginBottom={1}*/}
+        {/*    style={{wordBreak: "break-all"}}*/}
+        {/*  >*/}
+        {/*    <Trans i18nKey={"labelNFTMintNoMetaDetail"}>*/}
+        {/*     */}
+        {/*    </Trans>*/}
+        {/*  </Typography>*/}
+        {/*)}*/}
         <Button
           fullWidth
           variant={"contained"}
           size={"medium"}
           color={"primary"}
           onClick={async () => {
-            await onNFTMintClick(tradeData);
+            await onSubmitClick();
           }}
           loading={
-            !getDisabled && nftMintBtnStatus === TradeBtnStatus.LOADING
+            !getDisabled && btnStatus === TradeBtnStatus.LOADING
               ? "true"
               : "false"
           }
-          disabled={getDisabled || nftMintBtnStatus === TradeBtnStatus.LOADING}
+          disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
         >
-          {btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTMintBtn`)}
+          {btnInfo ? t(btnInfo.label, {ns: ["error", 'common'], ...btnInfo.params}) : t(`labelCollectionCreatBtn`)}
         </Button>
       </Grid>
+      <Toast
+        alertText={t("labelCopyAddClip")}
+        open={copyToastOpen}
+        autoHideDuration={TOAST_TIME}
+        onClose={() => {
+          setCopyToastOpen(false);
+        }}
+        severity={"success"}
+      />
     </GridStyle>
   );
 };

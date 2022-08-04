@@ -26,7 +26,7 @@ import {
   LayerswapNotice,
   DeployNFTWrap,
   NFTDeployProps,
-  AccountStep,
+  AccountStep, CollectionAdvanceProps,
 } from "../..";
 import {
   Account,
@@ -37,15 +37,17 @@ import {
 import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
-const BoxStyle = styled(Box)<
-  { _height?: number | string; _width?: number | string } & BoxProps
->`
+import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap';
+import { CollectionMeta } from "@loopring-web/loopring-sdk";
+
+const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  ${({ theme }) => modalContentBaseStyle({ theme: theme })}
-  background: ${({ theme }) => theme.colorBase.box};
+  ${({theme}) => modalContentBaseStyle({theme: theme})}
+  background: ${({theme}) => theme.colorBase.box};
+
   .trade-wrap {
     margin-top: -26px;
   }
@@ -123,25 +125,25 @@ const Modal = withTranslation("common")(
   }
 );
 
-export const ModalPanel = <
-  T extends IBData<I>,
+export const ModalPanel = <T extends IBData<I>,
   N extends IBData<I> & TradeNFT<I>,
+  C extends CollectionMeta,
   I,
-  F = FeeInfo
->({
-  transferProps,
-  withdrawProps,
-  depositProps,
-  nftTransferProps,
-  nftWithdrawProps,
-  nftDeployProps,
-  resetProps,
-  nftMintAdvanceProps,
-  activeAccountProps,
-  assetsData,
-  account,
-  ...rest
-}: {
+  F = FeeInfo>({
+                 transferProps,
+                 withdrawProps,
+                 depositProps,
+                 nftTransferProps,
+                 nftWithdrawProps,
+                 nftDeployProps,
+                 resetProps,
+                 nftMintAdvanceProps,
+                 activeAccountProps,
+                 collectionAdvanceProps,
+                 assetsData,
+                 account,
+                 ...rest
+               }: {
   _width?: number | string;
   _height?: number | string;
   transferProps: TransferProps<T, I>;
@@ -153,6 +155,7 @@ export const ModalPanel = <
   depositProps: DepositProps<T, I>;
   // depositGroupProps: DepositGroupProps<T, I>;
   // nftDepositProps: NFTDepositProps<T, I>;
+  collectionAdvanceProps: CollectionAdvanceProps<C>
   nftMintAdvanceProps: NFTMintAdvanceProps<T, I>;
   resetProps: ResetProps<F>;
   activeAccountProps: ResetProps<F>;
@@ -423,12 +426,12 @@ export const ModalPanel = <
         open={isShowCollectionAdvance.isShow}
         onClose={() => setShowCollectionAdvance({isShow: false})}
         content={
-          <MintAdvanceNFTWrap
+          <CollectionAdvanceWrap
             {...{
               ...rest,
               // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
               // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
-              ...nftMintAdvanceProps,
+              ...collectionAdvanceProps,
             }}
           />
         }

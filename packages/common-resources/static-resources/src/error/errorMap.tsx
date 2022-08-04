@@ -227,6 +227,26 @@ export const ErrorMap = {
     messageKey: "errorMintOverlap",
     options: {},
   },
+  ERROR_JSON_STRINGIFY: {
+    id: "ERROR_JSON_STRINGIFY",
+    messageKey: "errorJSONStringify",
+    options: {},
+  },
+  ERROR_COLLECTION_METADATA_NO_TILEURI: {
+    id: "ERROR_COLLECTION_METADATA_NO_TILEURI",
+    messageKey: "errorCollectionMetadataNoTileUri",
+    options: {},
+  },
+  ERROR_COLLECTION_NO_NAME: {
+    id: "ERROR_COLLECTION_NO_NAME",
+    messageKey: "errorCollectionNoName",
+    options: {},
+  },
+  ERROR_COLLECTION_SAME_NAME: {
+    id: "ERROR_COLLECTION_SAME_NAME",
+    messageKey: "errorCollectionSameName",
+    options: {},
+  }
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -240,6 +260,12 @@ export enum UIERROR_CODE {
   CREATE_IPFS_ERROR = 700009,
   NOT_SAME_IPFS_RESOURCE = 700010,
   IPFS_CID_TO_NFTID_ERROR = 700011,
+  TIME_OUT = 700012,
+  ERROR_JSON_STRINGIFY = 700013,
+  ERROR_COLLECTION_METADATA_NO_TILEURI = 700014,
+  ERROR_COLLECTION_NO_NAME = 700015,
+
+
 }
 export type ErrorObject = {
   from?: string;
@@ -260,6 +286,8 @@ export const SDK_ERROR_MAP_TO_UI = {
   700010: ErrorMap.NOT_SAME_IPFS_RESOURCE,
   700011: ErrorMap.IPFS_CID_TO_NFTID_ERROR,
   700012: ErrorMap.TIME_OUT,
+  700013: ErrorMap.ERROR_JSON_STRINGIFY,
+  700014: ErrorMap.ERROR_COLLECTION_NO_NAME,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found
@@ -304,6 +332,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   107002: ErrorMap.ERROR_INVALID_HASH, //Order Hash cannot be empty
   107003: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order does not exist
   108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
+  102127: ErrorMap.ERROR_COLLECTION_SAME_NAME,
   108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
   114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
   114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins

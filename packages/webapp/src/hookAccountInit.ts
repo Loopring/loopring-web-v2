@@ -6,7 +6,7 @@ import {
   useAccount,
   useUserRewards,
   useConnect,
-  useWalletLayer2NFT,
+  useWalletLayer2NFT, useWalletL2Collection,
 } from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -31,7 +31,12 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletLayer2Status,
     statusUnset: wallet2statusUnset,
   } = useWalletLayer2();
-  const { account, status: accountStatus } = useAccount();
+  const {
+    updateWalletL2Collection,
+    status: walletL2CollectionStatus,
+    statusUnset: walletL2CollectionstatusUnset,
+  } = useWalletL2Collection();
+  const {account, status: accountStatus} = useAccount();
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
@@ -58,7 +63,8 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
-            updateWalletLayer2NFT({ page: 1 });
+            updateWalletLayer2NFT({page: 1});
+            updateWalletL2Collection({page: 1});
           }
           break;
       }
@@ -83,12 +89,23 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break;
       case SagaStatus.DONE:
         wallet2statusUnset();
-        //setWalletMap1(walletLayer1State.walletLayer1);
         break;
       default:
         break;
     }
   }, [walletLayer2Status]);
+  React.useEffect(() => {
+    switch (walletL2CollectionStatus) {
+      case SagaStatus.ERROR:
+        walletL2CollectionstatusUnset();
+        break;
+      case SagaStatus.DONE:
+        walletL2CollectionstatusUnset();
+        break;
+      default:
+        break;
+    }
+  }, [walletL2CollectionStatus]);
   React.useEffect(() => {
     switch (wallet2statusNFTStatus) {
       case SagaStatus.ERROR:
@@ -114,4 +131,6 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break;
     }
   }, [userRewardsStatus]);
+
+
 }

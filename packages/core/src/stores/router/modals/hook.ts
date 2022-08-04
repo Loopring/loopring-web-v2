@@ -38,6 +38,7 @@ import {
 } from "./interface";
 import React from "react";
 import {
+  CollectionMeta,
   NFTWholeINFO,
   RequireOne,
   TradeNFT,
@@ -78,11 +79,11 @@ export function useModalData(): {
   ) => void;
   resetNFTWithdrawData: () => void;
   nftMintAdvanceValue: TradeNFT<any>;
-  collectionAdvanceValue: any;
+  collectionAdvanceValue: Partial<CollectionMeta>;
   updateNFTMintAdvanceData: (
     nftMintData: RequireOne<MintData & NFTWholeINFO, never>
   ) => void;
-  updateCollectionAdvanceData: (collectionAdvanceData: any) => void;
+  updateCollectionAdvanceData: (collectionAdvanceData: Partial<CollectionMeta>) => void;
   resetNFTMintAdvanceData: () => void;
   resetCollectionAdvanceData: () => void;
   nftMintValue: NFT_MINT_VALUE<any>;
@@ -180,8 +181,8 @@ export function useModalData(): {
       [dispatch]
     ),
     updateCollectionAdvanceData: React.useCallback(
-      (collectionAdvanceDat: any) => {
-        dispatch(updateCollectionAdvanceData(collectionAdvanceDat));
+      (collectionAdvanceDate: Partial<CollectionMeta>) => {
+        dispatch(updateCollectionAdvanceData(collectionAdvanceDate));
       },
       [dispatch]
     ),
