@@ -23,45 +23,6 @@ const StyledPaper = styled(Box)`
   border-radius: ${({theme}) => theme.unit}px;
 `;
 
-// const CreateNamePanel = ({setStep}: { setStep: (step: CreateCollectionStep) => void }) => {
-//   const [value, setValue] = React.useState("");
-//   const {t} = useTranslation('common');
-//
-//   const {createContract} = useCollectionContractTs({setStep});
-//   return <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
-//     <Box marginBottom={3} width={'var(--modal-width)'}>
-//       <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={2}>
-//         {t('labelCollectionCreateERC1155')}
-//       </Typography>
-//     </Box>
-//     <Box marginBottom={2} width={'var(--modal-width)'}>
-//       <TextField
-//         value={value}
-//         inputProps={{maxLength: 28}}
-//         fullWidth
-//         label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
-//         type={"text"}
-//         onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
-//       />
-//     </Box>
-//     <Box width={'var(--modal-width)'} alignItems={'center'} display={'flex'} justifyContent={'center'}>
-//       <Button
-//         onClick={() => {
-//           createContract({name: value})
-//           setStep(CreateCollectionStep.Loading)
-//         }}
-//         variant={"contained"}
-//         disabled={value.trim() === ''}
-//         fullWidth
-//         color={"primary"}
-//       >
-//         {t("labelCreateCollection")}
-//       </Button>
-//     </Box>
-//
-//   </Box>
-// }
-
 const CreateUrlPanel = ({
                           open,
                           onClose,
@@ -276,11 +237,9 @@ export const NFTCollectPanel = () => {
   const [showCreateOpen, setCreateOpen] = React.useState(false);
   const {
     collectionList,
-    etherscanBaseUrl,
     onPageChange,
     total,
     page,
-    isLoading,
   } = useMyCollection()
   return (
     <Box

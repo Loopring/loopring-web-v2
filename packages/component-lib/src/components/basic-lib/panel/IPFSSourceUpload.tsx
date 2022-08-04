@@ -89,7 +89,7 @@ export const IPFSSourceUpload = ({
 }: Omit<DropzoneOptions, "onDrop" | "onDropAccepted"> & {
   // sx?: SxProps<Theme>;
   fullSize?: boolean;
-  width?: number;
+  width?: number | string;
   height?: number;
   typographyProps?: TypographyProps;
   buttonProps?: Omit<ButtonProps, "onClick">;
