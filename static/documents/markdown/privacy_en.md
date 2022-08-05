@@ -107,8 +107,10 @@ Derivative Data should consist of anonymized data and must not contain data that
 
 We reserve the right to update and revise this Privacy Policy at any time.  We occasionally review this Privacy Policy to make sure it complies with Applicable Laws and conforms to the changes in our business. Without your consent, we will not reduce your right under this Privacy Policy.  If we do revise this Privacy Policy, we will notify you the change of this Privacy Policy via Wallet.  Regarding major changes, we will also provide more noticeable notices, including page prompts and other methods, to explain the specific changes to this Privacy Policy.  The major changes of this Privacy Policy include, without limitation:
 
-- (a) A major change in our service model, such as the purpose of processing user information, the type of personal information processed, and the way in which personal information is used.
-- (b) Significant changes have taken place in our ownership structure and organizational structure, such as changes of ownership via business adjustments, bankruptcy mergers, etc.
+- (a) A major change in our service model, such as the purpose of processing user information, the type of personal
+  information processed, and the way in which personal information is used.
+- (b) Significant changes have taken place in our ownership structure and organizational structure, such as changes of
+  ownership via business adjustments, bankruptcy mergers, etc.
 - (c) The main objects of personal information sharing, transfer or public disclosure have changed.
 - (d) Your right to participate in the processing of personal information and how to exercise it has undergone major
   changes.
