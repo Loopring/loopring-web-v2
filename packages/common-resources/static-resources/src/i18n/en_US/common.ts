@@ -890,6 +890,10 @@ export default {
   labelCopyDemo: "Click to copy the demo",
   labelCollectionCreatBtn: "Create Collection",
   labelEnterMeta: "Enter Collection Metadata",
+  labelMintGuid: "Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use \"Mint\" to create your NFT.",
+  labelAdMintGuid: "Generate all the required metadata and upload to IPFS by yourself first, then use \"Advanced Mint\" to create your NFT.",
+  labelFilterTradeNFTSell: "Sell",
+  labelFilterTradeNFTBuy: "Buy",
 
 
 };

@@ -207,6 +207,10 @@ export default {
   labelDefiType: "Subscribe/Redeem",
   labelDefiFee: "Fee",
   labelDefiTime: "Time",
-  labelDefiAmount: "Amount"
+  labelDefiAmount: "Amount",
+  labelFilterTradeNFTAll: "All",
+  labelFilterTradeNFTSell: "Sell",
+  labelFilterTradeNFTBuy: "Buy",
+  labelTradeNFTSide: "Trade",
 
 };

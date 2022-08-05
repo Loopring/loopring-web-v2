@@ -11,7 +11,7 @@ import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
 import { useHistory } from "react-router-dom";
-import { BackIcon } from "@loopring-web/common-resources";
+import { BackIcon, SoursURL } from "@loopring-web/common-resources";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -142,10 +142,15 @@ export const MintLandingPage = () => {
                justifyContent={"center"}
                marginBottom={2}
           >
+            {/*<NftImage*/}
+            {/*  */}
+            {/*  onError={() => undefined}*/}
+            {/*  src={"https://static.loopring.io/assets/images/nft-mint.png"}*/}
+            {/*/>*/}
             <NftImage
-              alt={"Collection Created"}
+              alt={"NFT Created"}
               onError={() => undefined}
-              src={"https://static.loopring.io/assets/images/nft-mint.png"}
+              src={`${SoursURL}images/nft_guid1.webp`}
             />
           </Box>
           <Typography
@@ -158,15 +163,16 @@ export const MintLandingPage = () => {
             minHeight={"160px"}
             marginBottom={3}
           >
-            Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use
-            "Mint" to create your NFT.
-            <Button
-              variant={"contained"}
-              color={"primary"}
-              fullWidth={true}
-            >
-              {t("labelAdvanceMint")}
-            </Button>
+            <>{t('labelAdMintGuid')}
+
+              <Button
+                variant={"contained"}
+                color={"primary"}
+                fullWidth={true}
+              >
+                {t("labelAdvanceMint")}
+              </Button>
+            </>
           </Typography>
         </CardNFTStyled>
         <CardNFTStyled sx={{marginLeft: isMobile ? 0 : 4}} onClick={() => {
@@ -178,9 +184,9 @@ export const MintLandingPage = () => {
                marginBottom={2}
           >
             <NftImage
-              alt={"Collection Created"}
+              alt={"NFT Created"}
               onError={() => undefined}
-              src={"https://static.loopring.io/assets/images/nft-mint.png"}
+              src={`${SoursURL}images/nft_guid2.webp`}
             />
           </Box>
           <Typography
@@ -193,15 +199,16 @@ export const MintLandingPage = () => {
             minHeight={"160px"}
             marginBottom={3}
           >
-            Generate all the required metadata and upload to IPFS by yourself first, then use "Advanced Mint" to create
-            your NFT.
-            <Button
-              variant={"contained"}
-              color={"primary"}
-              fullWidth={true}
-            >
-              {t("labelMintNFT")}
-            </Button>
+            <>{t('labelMintGuid')}
+
+              <Button
+                variant={"contained"}
+                color={"primary"}
+                fullWidth={true}
+              >
+                {t("labelMintNFT")}
+              </Button>
+            </>
           </Typography>
         </CardNFTStyled>
       </Box>

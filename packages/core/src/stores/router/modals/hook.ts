@@ -6,6 +6,7 @@ import {
   resetNFTDepositData,
   resetNFTMintAdvanceData,
   resetCollectionAdvanceData,
+  resetCollectionData,
   resetNFTMintData,
   resetNFTTransferData,
   resetNFTWithdrawData,
@@ -18,6 +19,7 @@ import {
   updateNFTDepositData,
   updateNFTMintAdvanceData,
   updateCollectionAdvanceData,
+  updateCollectionData,
   updateNFTMintData,
   updateNFTTransferData,
   updateNFTWithdrawData,
@@ -80,12 +82,15 @@ export function useModalData(): {
   resetNFTWithdrawData: () => void;
   nftMintAdvanceValue: TradeNFT<any>;
   collectionAdvanceValue: Partial<CollectionMeta>;
+  collectionValue: Partial<CollectionMeta>;
   updateNFTMintAdvanceData: (
     nftMintData: RequireOne<MintData & NFTWholeINFO, never>
   ) => void;
   updateCollectionAdvanceData: (collectionAdvanceData: Partial<CollectionMeta>) => void;
+  updateCollectionData: (collectionAdvanceData: Partial<CollectionMeta>) => void;
   resetNFTMintAdvanceData: () => void;
   resetCollectionAdvanceData: () => void;
+  resetCollectionData: () => void;
   nftMintValue: NFT_MINT_VALUE<any>;
   updateNFTMintData: (nftMintData: NFT_MINT_VALUE<any>) => void;
   resetNFTMintData: () => void;
@@ -186,6 +191,12 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateCollectionData: React.useCallback(
+      (collectionDate: Partial<CollectionMeta>) => {
+        dispatch(updateCollectionData(collectionDate));
+      },
+      [dispatch]
+    ),
     updateNFTMintAdvanceData: React.useCallback(
       (nftMintData: TradeNFT<any>) => {
         dispatch(updateNFTMintAdvanceData(nftMintData));
@@ -228,9 +239,12 @@ export function useModalData(): {
     resetCollectionAdvanceData: React.useCallback(() => {
       dispatch(resetCollectionAdvanceData(undefined));
     }, [dispatch]),
+    resetCollectionData: React.useCallback(() => {
+      dispatch(resetCollectionData(undefined));
+    }, [dispatch]),
     resetNFTMintData: React.useCallback(
       (tokenAddress?: string) => {
-        dispatch(resetNFTMintData(tokenAddress ? { tokenAddress } : undefined));
+        dispatch(resetNFTMintData(tokenAddress ? {tokenAddress} : undefined));
       },
       [dispatch]
     ),

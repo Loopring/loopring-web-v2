@@ -321,3 +321,17 @@ export type CollectionMeta = {
   cid?: string,
 };
 
+export enum CollectionMetaKey {
+  name = 'name',
+  tileUri = 'tileUri',
+  owner = 'owner',
+  nftFactory = 'nftFactory',
+  baseUri = 'baseUri',
+  collectionTitle = 'collectionTitle',
+  description = 'description',
+  avatar = 'avatar',
+  banner = 'banner',
+  thumbnail = 'thumbnail',
+  cid = 'cid',
+}
+

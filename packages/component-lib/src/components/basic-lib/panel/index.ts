@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Card } from '@mui/material';
+import { Box, Card } from '@mui/material';
 
 export * from "./SwitchPanel";
 export * from "./SubMenu";
@@ -28,3 +28,18 @@ export const CardStyleItem = styled(Card)`
     object-fit: contain;
   }
 ` as typeof Card;
+
+export const ImageUploadWrapper = styled(Box)`
+  position: relative;
+  width: 100%;
+  background: var(--color-box);
+  border-radius: ${({theme}) => theme.unit}px;
+
+  .MuiFormControlLabel-root {
+    align-items: flex-start;
+
+    .MuiFormControlLabel-label {
+      color: var(--color-text-secondary);
+    }
+  }
+` as typeof Box;

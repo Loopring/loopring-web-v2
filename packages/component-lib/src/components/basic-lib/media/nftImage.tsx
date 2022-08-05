@@ -1,5 +1,8 @@
 import { NftImageProps } from "./Interface";
 import { css, Theme } from "@emotion/react";
+import styled from '@emotion/styled';
+import { Box } from '@mui/material';
+import { SoursURL } from '@loopring-web/loopring-sdk';
 
 export const NftImage = (props: NftImageProps & any) => {
   return (
@@ -8,7 +11,7 @@ export const NftImage = (props: NftImageProps & any) => {
       referrerPolicy={"unsafe-url"}
       // loading={"lazy"}
       // crossOrigin={"anonymous"}
-      style={{ objectFit: "contain" }}
+      style={{objectFit: "contain"}}
       onError={props.onError}
       alt={props.name ?? "NFT"}
       width={props.width ?? "100%"}
@@ -39,3 +42,15 @@ export const cssBackground = ({ theme }: { theme: Theme }) => {
     align-self: stretch;
   `;
 };
+
+export const BoxNFT = styled(Box)`
+  background: no-repeat 50% 50%;
+  background-color: var(--opacity);
+  background-image: url(${SoursURL + "svg/loopring.svg"});
+
+  img {
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: ${({theme}) => theme.unit}px;
+  }
+` as typeof Box;

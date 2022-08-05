@@ -1,11 +1,9 @@
-import styled from "@emotion/styled";
 import {
   Box,
   Checkbox,
   FormControlLabel as MuiFormControlLabel,
   FormLabel,
   Grid,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -17,6 +15,7 @@ import {
   NFTMetaProps,
   NFTMetaBlockProps,
   TextareaAutosizeStyled,
+  ImageUploadWrapper,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
@@ -30,34 +29,22 @@ import {
 } from "@loopring-web/common-resources";
 import { NFT_MINT_VALUE } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-const MaxSize = 8000000;
-const StyleWrapper = styled(Box)`
-  position: relative;
-  width: 100%;
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-  .MuiFormControlLabel-root {
-    align-items: flex-start;
-    .MuiFormControlLabel-label {
-      color: var(--color-text-secondary);
-    }
-  }
-` as typeof Box;
+
+const MaxSize = 10000000;
+
 const TYPES = ["jpeg", "jpg", "gif", "png"];
-export const MetaNFTPanel = <
-  Me extends NFTMETA,
+export const MetaNFTPanel = <Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
   I,
-  C extends FeeInfo
->({
-  nftMetaProps,
-  nftMintProps,
-  ipfsMediaSources,
-  onFilesLoad,
-  onDelete,
-  nftMintValue,
-  errorOnMeta,
-}: Partial<NFTMetaBlockProps<Me, Mi, C>> & {
+  C extends FeeInfo>({
+                       nftMetaProps,
+                       nftMintProps,
+                       ipfsMediaSources,
+                       onFilesLoad,
+                       onDelete,
+                       nftMintValue,
+                       errorOnMeta,
+                     }: Partial<NFTMetaBlockProps<Me, Mi, C>> & {
   feeInfo: C;
   errorOnMeta: undefined | sdk.RESULT_INFO;
   nftMintValue: NFT_MINT_VALUE<I>;
@@ -72,7 +59,7 @@ export const MetaNFTPanel = <
     React.useState<"up" | "down">("down");
 
   return (
-    <StyleWrapper
+    <ImageUploadWrapper
       flex={1}
       display={"flex"}
       flexDirection={"column"}
@@ -183,6 +170,6 @@ export const MetaNFTPanel = <
           </Grid>
         )}
       </Grid>
-    </StyleWrapper>
+    </ImageUploadWrapper>
   );
 };

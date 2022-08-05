@@ -26,7 +26,8 @@ import {
   LayerswapNotice,
   DeployNFTWrap,
   NFTDeployProps,
-  AccountStep, CollectionAdvanceProps,
+  AccountStep,
+  CollectionAdvanceProps,
 } from "../..";
 import {
   Account,

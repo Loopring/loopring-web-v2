@@ -1,5 +1,5 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
+import { CollectionMeta, NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
   FeeInfo,
   MintTradeNFT,
@@ -78,7 +78,8 @@ export type ModalDataStatus = {
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftDepositValue: TradeNFT<any>;
   nftMintAdvanceValue: TradeNFT<any>;
-  collectionAdvanceValue: any;
+  collectionAdvanceValue: Partial<CollectionMeta>;
+  collectionValue: Partial<CollectionMeta>;
   nftMintValue: NFT_MINT_VALUE<any>;
   nftDeployValue: TradeNFT<any> & { broker: string };
 };

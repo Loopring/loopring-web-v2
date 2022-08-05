@@ -14,7 +14,7 @@ import {
   CreateCollectionStep,
   EmptyValueTag,
   getShortAddr,
-  NFTLimit
+  NFTLimit, SoursURL
 } from "@loopring-web/common-resources"
 import { useMyCollection } from './hook';
 
@@ -22,6 +22,45 @@ const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 `;
+
+// const CreateNamePanel = ({setStep}: { setStep: (step: CreateCollectionStep) => void }) => {
+//   const [value, setValue] = React.useState("");
+//   const {t} = useTranslation('common');
+//
+//   const {createContract} = useCollectionContractTs({setStep});
+//   return <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
+//     <Box marginBottom={3} width={'var(--modal-width)'}>
+//       <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={2}>
+//         {t('labelCollectionCreateERC1155')}
+//       </Typography>
+//     </Box>
+//     <Box marginBottom={2} width={'var(--modal-width)'}>
+//       <TextField
+//         value={value}
+//         inputProps={{maxLength: 28}}
+//         fullWidth
+//         label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
+//         type={"text"}
+//         onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
+//       />
+//     </Box>
+//     <Box width={'var(--modal-width)'} alignItems={'center'} display={'flex'} justifyContent={'center'}>
+//       <Button
+//         onClick={() => {
+//           createContract({name: value})
+//           setStep(CreateCollectionStep.Loading)
+//         }}
+//         variant={"contained"}
+//         disabled={value.trim() === ''}
+//         fullWidth
+//         color={"primary"}
+//       >
+//         {t("labelCreateCollection")}
+//       </Button>
+//     </Box>
+//
+//   </Box>
+// }
 
 const CreateUrlPanel = ({
                           open,
@@ -108,7 +147,7 @@ const CreateUrlPanel = ({
                 <NftImage
                   alt={"Collection Created"}
                   onError={() => undefined}
-                  src={"https://static.loopring.io/assets/images/nft-mint.png"}
+                  src={`${SoursURL}images/nft_guid1.webp`}
                 />
               </Box>
               <Typography
@@ -145,8 +184,9 @@ const CreateUrlPanel = ({
                 <NftImage
                   alt={"Collection Created"}
                   onError={() => undefined}
-                  src={"https://static.loopring.io/assets/images/nft-mint.png"}
+                  src={`${SoursURL}images/nft_guid2.webp`}
                 />
+
               </Box>
               {/*<Typography component={'p'} variant={'body1'} height={"48px"} marginBottom={1}*/}
               {/*>*/}

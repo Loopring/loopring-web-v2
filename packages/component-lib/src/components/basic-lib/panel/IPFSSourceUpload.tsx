@@ -90,7 +90,7 @@ export const IPFSSourceUpload = ({
   // sx?: SxProps<Theme>;
   fullSize?: boolean;
   width?: number | string;
-  height?: number;
+  height?: number | string;
   typographyProps?: TypographyProps;
   buttonProps?: Omit<ButtonProps, "onClick">;
   title?: string;

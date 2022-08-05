@@ -1,18 +1,24 @@
 import styled from "@emotion/styled";
-import { Box, Button, Typography } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import { Box, Button, FormLabel, Grid, TextField, Tooltip, Typography } from "@mui/material";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { IPFSSourceUpload, useOpenModals } from "@loopring-web/component-lib";
+import { ImageUploadWrapper, IPFSSourceUpload, TextareaAutosizeStyled } from "@loopring-web/component-lib";
 import { useHistory } from 'react-router-dom';
+import { useModalData } from '@loopring-web/core';
+import { useCollectionPanel } from './hook';
+import { BackIcon, Info2Icon } from '@loopring-web/common-resources';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
 `;
 
 export const CreateCollectionPanel = () => {
   const {t} = useTranslation("common");
-  const {setShowCollectionAdvance} = useOpenModals();
+  const {collectionValue} = useModalData();
+  // const [banner,setBanner] = React.useState('');
+  // const [banner,setBanner] = React.useState('')
+  const {ipfsProvides, handleOnDataChange, keys} = useCollectionPanel({isEdit: false});
   const history = useHistory();
   return (
     <>
@@ -20,63 +26,208 @@ export const CreateCollectionPanel = () => {
         display={"flex"}
         justifyContent={"space-between"}
         alignItems={"center"}
-        paddingX={5 / 2}
-        paddingTop={5 / 2}
+        marginBottom={2}
       >
-        <Typography component={"h3"} variant={"h4"}>
-          {t("labelCreateCollectionTitle")}
-        </Typography>
+        <Button
+          startIcon={<BackIcon fontSize={"small"}/>}
+          variant={"text"}
+          size={"medium"}
+          sx={{color: "var(--color-text-secondary)"}}
+          color={"inherit"}
+          onClick={history.goBack}
+        >
+          {t("labelCollectionCreateERC1155")}
+          {/*<Typography color={"textPrimary"}></Typography>*/}
+        </Button>
       </Box>
-      <Box
+      <ImageUploadWrapper
         flex={1}
-        alignItems={"center"}
+        alignItems={"stretch"}
         display={"flex"}
-        justifyContent={"center"}
+        justifyContent={"flex-start"}
         flexDirection={"column"}
+        marginBottom={2}
+        padding={5 / 2}
       >
-        <Box display={'flex'} width={"100%"}>
-          {/*<IPFSSourceUpload*/}
-          {/*  fullSize*/}
-          {/*  width*/}
-          {/*  height*/}
-          {/*  typographyProps*/}
-          {/*  buttonProps*/}
-          {/*  title*/}
-          {/*  buttonText*/}
-          {/*  value*/}
-          {/*  types*/}
-          {/*  onDelete*/}
-          {/*  onChange*/}
-          {/*/>*/}
-        </Box>
 
-        {/*<Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={3}>*/}
-        {/*  {t('labelMintSelect')}*/}
-        {/*</Typography>*/}
-        {/*<Box marginLeft={1}>*/}
-        {/*  <Button*/}
-        {/*    onClick={() =<> {*/}
-        {/*      // onClose();*/}
-        {/*      setShowCollectionAdvance({isShow: true});*/}
-        {/*    }}*/}
-        {/*    variant={"outlined"}*/}
-        {/*    color={"primary"}*/}
-        {/*  >*/}
-        {/*    {t("labelAdvanceCreate")}*/}
-        {/*  </Button>*/}
-        {/*</Box>*/}
-        {/*<Box marginLeft={1}>*/}
-        {/*  <Button*/}
-        {/*    onClick={() => {*/}
-        {/*      history.push("/nft/CreateCollection");*/}
-        {/*    }}*/}
-        {/*    variant={"outlined"}*/}
-        {/*    color={"primary"}*/}
-        {/*  >*/}
-        {/*    {t("labelMintNFT")}*/}
-        {/*  </Button>*/}
-        {/*</Box>*/}
-      </Box>
+        <Typography
+          component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1} color={"var(--color-text-third)"}>
+          {t('Banner (1500px * 500px)')}
+        </Typography>
+
+        <Grid
+          container
+          flex={1}
+          marginBottom={2}
+        >
+          <Grid item xs={12} position={"relative"}>
+            <IPFSSourceUpload
+              height={"30vw"}
+              typographyProps={{}}
+              buttonProps={{}}
+              maxSize={10000000}
+              title={"Banner  (1500 x 500) size "}
+              buttonText={''}
+              value={keys?.banner ?? undefined}
+              onDelete={() => {
+                handleOnDataChange('banner', {banner: ''})
+              }}
+              onChange={(value) => {
+                // handleOnDataChange('banner',{banner:_e.})
+                handleOnDataChange('banner', {banner: value})
+              }}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container marginBottom={2} spacing={2} alignItems={"flex-start"}>
+          <Grid item xs={6}>
+            <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+
+              <TextField
+                value={collectionValue?.name ?? ''}
+                inputProps={{maxLength: 28}}
+                fullWidth
+                label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
+                type={"text"}
+                onChange={(e: React.ChangeEvent<{ value: string }>) => handleOnDataChange('name', e.target.value)}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={6}>
+            <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+              {/*<Typography component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1} color={"var(--color-text-third)"}>*/}
+              {/*  {t('labelCollectionTitle')}*/}
+              {/*</Typography>*/}
+              <TextField
+                value={collectionValue?.collectionTitle ?? ''}
+                inputProps={{maxLength: 28}}
+                fullWidth
+                label={<Trans i18nKey={"labelCollectionName"}>Collection Title</Trans>}
+                type={"text"}
+                onChange={(e: React.ChangeEvent<{ value: string }>) => handleOnDataChange('collectionTitle', e.target.value)}
+              />
+            </Box>
+          </Grid>
+        </Grid>
+
+        <Grid
+          container
+          flex={1}
+        >
+
+          <Grid item xs={12} md={8} position={"relative"}>
+            <Box>
+              <Typography
+                component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
+                color={"var(--color-text-third)"}>
+                {t('avatar (500px * 500px)')}
+              </Typography>
+
+              <IPFSSourceUpload
+                typographyProps={{}}
+                buttonProps={{}}
+                maxSize={10000000}
+                title={"Tile (500px * 700px)"}
+                buttonText={''}
+                value={keys?.avatar ?? undefined}
+                onDelete={() => {
+                  handleOnDataChange('avatar', {avatar: ''})
+                }}
+                onChange={(value) => {
+                  // handleOnDataChange('banner',{banner:_e.})
+                  handleOnDataChange('avatar', {avatar: value})
+                }}
+              />
+            </Box>
+            <Box>
+
+              <Typography
+                component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
+                color={"var(--color-text-third)"}>
+                {t('Tile (500px * 500px)')}
+              </Typography>
+
+              <IPFSSourceUpload
+                typographyProps={{}}
+                buttonProps={{}}
+                maxSize={10000000}
+                title={"Tile (500px * 700px)"}
+                buttonText={''}
+                value={keys?.tileUri ?? undefined}
+                onDelete={() => {
+                  handleOnDataChange('tileUri', {tileUri: ''})
+                }}
+                onChange={(value) => {
+                  // handleOnDataChange('banner',{banner:_e.})
+                  handleOnDataChange('tileUri', {tileUri: value})
+                }}
+              />
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} md={4} position={"relative"}>
+            <FormLabel>
+              <Tooltip
+                title={t("labelMintDescriptionTooltips").toString()}
+                placement={"top"}
+              >
+                <Typography
+                  variant={"body2"}
+                  component={"span"}
+                  lineHeight={"20px"}
+                  display={"inline-flex"}
+                  alignItems={"center"}
+                >
+                  <Trans i18nKey={"labelMintDescription"}>
+                    Description
+                    <Info2Icon
+                      fontSize={"small"}
+                      color={"inherit"}
+                      sx={{marginX: 1 / 2}}
+                    />
+                  </Trans>
+                </Typography>
+              </Tooltip>
+            </FormLabel>
+            <TextareaAutosizeStyled
+              aria-label="Description"
+              minRows={2}
+              maxRows={5}
+              style={{
+                overflowX: "hidden",
+                resize: "vertical",
+              }}
+              maxLength={1000}
+              onChange={(event) =>
+                handleOnDataChange('description', {
+                  description: event.target.value,
+                })
+              }
+              draggable={true}
+            />
+
+            {/*<IPFSSourceUpload*/}
+            {/*    typographyProps={{}}*/}
+            {/*    buttonProps={{}}*/}
+            {/*    maxSize={10000000}*/}
+            {/*    title={"Tile (500px * 700px)"}*/}
+            {/*    buttonText={''}*/}
+            {/*    value={keys?.avatar ?? undefined}*/}
+            {/*    onDelete={() => {*/}
+            {/*      handleOnDataChange('avatar', {avatar: ''})*/}
+            {/*    }}*/}
+            {/*    onChange={(value) => {*/}
+            {/*      // handleOnDataChange('banner',{banner:_e.})*/}
+            {/*      handleOnDataChange('avatar', {avatar: value})*/}
+            {/*    }}*/}
+            {/*  />*/}
+          </Grid>
+
+
+        </Grid>
+
+      </ImageUploadWrapper>
       {/*<StyledPaper*/}
       {/*  flex={1}*/}
       {/*  className={"MuiPaper-elevation2"}*/}

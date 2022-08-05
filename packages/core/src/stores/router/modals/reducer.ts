@@ -81,16 +81,17 @@ const initialState: ModalDataStatus = {
   depositValue: initialDepositState,
   nftWithdrawValue: initialWithdrawState,
   nftTransferValue: initialTransferState,
-  nftDepositValue: { ...initialTradeNFT },
+  nftDepositValue: {...initialTradeNFT},
   nftMintValue: {
-    mintData: { ...initialMintNFT },
-    nftMETA: { ...initialNFTMETA },
+    mintData: {...initialMintNFT},
+    nftMETA: {...initialNFTMETA},
   },
-  nftMintAdvanceValue: { ...initialTradeNFT },
+  nftMintAdvanceValue: {...initialTradeNFT},
   collectionAdvanceValue: {},
-  nftDeployValue: { ...initialTradeNFT, broker: "" },
+  collectionValue: {},
+  nftDeployValue: {...initialTradeNFT, broker: ""},
   activeAccountValue: initialActiveAccountState,
-  forceWithdrawValue: { ...initialForceWithdrawState },
+  forceWithdrawValue: {...initialForceWithdrawState},
 };
 
 const modalDataSlice: Slice<ModalDataStatus> = createSlice({
@@ -160,15 +161,19 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default;
       state.collectionAdvanceValue = {};
     },
+    resetCollectionData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.collectionValue = {};
+    },
     resetNFTDeployData(state) {
       state.lastStep = LAST_STEP.default;
-      state.nftDeployValue = { ...initialTradeNFT, broker: "" };
+      state.nftDeployValue = {...initialTradeNFT, broker: ""};
     },
     updateActiveAccountData(
       state,
       action: PayloadAction<Partial<ActiveAccountData>>
     ) {
-      const { chargeFeeList, walletLayer2, isFeeNotEnough, ...rest } =
+      const {chargeFeeList, walletLayer2, isFeeNotEnough, ...rest} =
         action.payload;
       state.lastStep = LAST_STEP.default;
       if (chargeFeeList) {
@@ -353,11 +358,16 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       const _collectionAdvanceValue = action.payload;
       state.collectionAdvanceValue = {..._collectionAdvanceValue};
     },
+    updateCollectionData(state, action: PayloadAction<any>) {
+      state.lastStep = LAST_STEP.collecionAdv;
+      const _collectionValue = action.payload;
+      state.collectionValue = {..._collectionValue};
+    },
     updateNFTMintData(state, action: PayloadAction<NFT_MINT_VALUE<any>>) {
       const mintData = action.payload.mintData;
       const nftMETA = action.payload.nftMETA;
       const error = action.payload.error;
-      const { balance, tradeValue, ...rest } = mintData;
+      const {balance, tradeValue, ...rest} = mintData;
 
       state.lastStep = LAST_STEP.nftMint;
 
@@ -420,6 +430,7 @@ export const {
   updateNFTDeployData,
   updateNFTMintAdvanceData,
   updateCollectionAdvanceData,
+  updateCollectionData,
   resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,
@@ -432,5 +443,6 @@ export const {
   resetNFTDeployData,
   resetNFTMintAdvanceData,
   resetCollectionAdvanceData,
+  resetCollectionData,
   resetAll,
 } = modalDataSlice.actions;
