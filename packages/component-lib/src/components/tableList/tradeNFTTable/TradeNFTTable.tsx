@@ -151,7 +151,7 @@ const getColumnModeAssets = (
               <StyledSideCell value={tradeType}
                               marginRight={1}>{tradeType === FilterTradeNFTTypes.buy ? t("labelFilterTradeNFTBuy") : t("labelFilterTradeNFTSell")}</StyledSideCell>
               <span>
-                 {`${Number(nftAmount)} * ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown')} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : t('labelTo')} ${getShortAddr(fromAddr)}`}
+                 {`${Number(nftAmount)} * ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown', {ns: "common"})} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : t('labelTo')} ${getShortAddr(fromAddr)}`}
                </span>
             </Typography>
           </Box>
@@ -316,7 +316,7 @@ const getColumnModeMobileAssets = (
                 <StyledSideCell value={tradeType}
                                 marginRight={1}>{tradeType === FilterTradeNFTTypes.buy ? t("labelFilterTradeNFTBuy") : t("labelFilterTradeNFTSell")}</StyledSideCell>
                 <span>
-                 {`${Number(nftAmount)}  ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown')} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : t('labelTo')} ${getShortAddr(fromAddr)}`}
+                 {`${Number(nftAmount)}  ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown', {ns: "common"})} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : t('labelTo')} ${getShortAddr(fromAddr)}`}
                </span>
               </Typography>
               <Typography
