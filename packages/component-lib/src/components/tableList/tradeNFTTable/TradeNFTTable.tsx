@@ -17,7 +17,7 @@ import {
   EmptyValueTag,
   Explorer, getShortAddr,
   getValuePrecisionThousand,
-  globalSetup, myLog,
+  globalSetup,
   RowConfig,
   TableType,
 } from "@loopring-web/common-resources";
@@ -28,7 +28,7 @@ const StyledSideCell: any = styled(Typography)`
       value,
       theme: {colorBase},
     } = props;
-    return value === FilterTradeNFTTypes.buy ? colorBase.success : colorBase.error;
+    return value === FilterTradeNFTTypes.sell ? colorBase.success : colorBase.error;
   }};
 `;
 
@@ -83,22 +83,27 @@ const getColumnModeAssets = (
   _currency: Currency,
   tokenMap: any,
   accountId: number,
+  filterType: FilterTradeNFTTypes,
 ): Column<sdk.UserNFTTradeHistory, unknown>[] => {
   return [
     {
       key: "side",
       name: t("labelTradeNFTSide"),
       formatter: ({row}) => {
-        let {sInfo, nftAmount, metadata} = row;
-        // let tradeType = t("labelFilterTradeNFTSell");
-        const {accountId: sAccountId} = sInfo;
-        // const {accountId:bAccountId} = bInfo;
+        let {nftAmount, metadata, bInfo, sInfo} = row;
         metadata = {
           ...metadata,
           ...metadata?.base
         }
-        const tradeType = (sAccountId === accountId ? t("labelFilterTradeNFTSell") : t("labelFilterTradeNFTBuy"));
-        const amount = Number(nftAmount ?? 0);// getValuePrecisionThousand( Number(nftAmount??0) , 0, 0, 0);
+        let tradeType, fromAddr;
+        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.buy;
+          fromAddr = sInfo.address
+        } else {
+          tradeType = FilterTradeNFTTypes.sell;
+          fromAddr = bInfo.address
+        }
+        // const amount = Number(nftAmount ?? 0);// getValuePrecisionThousand( Number(nftAmount??0) , 0, 0, 0);
         return (
           <Box
             className="rdg-cell-value"
@@ -139,9 +144,15 @@ const getColumnModeAssets = (
               display={"inline-flex"}
               alignItems={"center"}
               paddingLeft={1}
+              overflow={'hidden'}
+              textOverflow={'ellipsis'}
+              component={'span'}
             >
-              <StyledSideCell value={tradeType} marginRight={1}>{tradeType}</StyledSideCell>
-              {amount + ' *  ' + getShortAddr(metadata?.base?.name)}
+              <StyledSideCell value={tradeType}
+                              marginRight={1}>{tradeType === FilterTradeNFTTypes.buy ? t("labelFilterTradeNFTBuy") : t("labelFilterTradeNFTSell")}</StyledSideCell>
+              <span>
+                 {`${Number(nftAmount)} * ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown')} ${t('labelFrom')} ${getShortAddr(fromAddr)}`}
+               </span>
             </Typography>
           </Box>
         );
@@ -177,7 +188,13 @@ const getColumnModeAssets = (
       name: t("labelTradeFee"),
       headerCellClass: "textAlignRight",
       formatter: ({row}) => {
-        let {feeAmount, feeTokenSymbol} = row;
+        let {sInfo, bInfo, feeTokenSymbol} = row;
+        let feeAmount;
+        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          feeAmount = bInfo.feeAmount;
+        } else {
+          feeAmount = sInfo.feeAmount;
+        }
         let feeTokenInfo = tokenMap[ feeTokenSymbol ];
         const fee = feeAmount ? sdk
           .toBig(feeAmount ?? 0)
@@ -219,20 +236,27 @@ const getColumnModeMobileAssets = (
   t: TFunction,
   _currency: Currency,
   tokenMap: any,
-  accountId: number
+  accountId: number,
+  filterType: FilterTradeNFTTypes,
 ): Column<sdk.UserNFTTradeHistory, unknown>[] => {
   return [
     {
       key: "side",
       name: t("labelTradeNFTSide"),
       formatter: ({row}) => {
-        let {sInfo, nftAmount, metadata, price, feeTokenSymbol,} = row;
-        const {accountId: sAccountId} = sInfo;
+        let {nftAmount, metadata, price, feeTokenSymbol, bInfo, sInfo} = row;
         metadata = {
           ...metadata,
           ...metadata?.base
         }
-        const tradeType = (sAccountId === accountId ? t("labelFilterTradeNFTSell") : t("labelFilterTradeNFTBuy"));
+        let tradeType, fromAddr;
+        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.buy;
+          fromAddr = sInfo.address
+        } else {
+          tradeType = FilterTradeNFTTypes.sell;
+          fromAddr = bInfo.address
+        }
         let erc20Info = tokenMap[ feeTokenSymbol ];
         const renderValue = price
           ? getValuePrecisionThousand(
@@ -285,9 +309,15 @@ const getColumnModeMobileAssets = (
                 display={"inline-flex"}
                 alignItems={"center"}
                 paddingLeft={1}
+                overflow={'hidden'}
+                textOverflow={'ellipsis'}
+                component={'span'}
               >
-                {tradeType + ' ' + Number(nftAmount) + getShortAddr(metadata?.base?.name)}
-
+                <StyledSideCell value={tradeType}
+                                marginRight={1}>{tradeType === FilterTradeNFTTypes.buy ? t("labelFilterTradeNFTBuy") : t("labelFilterTradeNFTSell")}</StyledSideCell>
+                <span>
+                 {`${Number(nftAmount)}  ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown')} ${t('labelFrom')} ${getShortAddr(fromAddr)}`}
+               </span>
               </Typography>
               <Typography
                 color={"inherit"}
@@ -295,6 +325,7 @@ const getColumnModeMobileAssets = (
                 display={"inline-flex"}
                 alignItems={"center"}
                 paddingLeft={1}
+                component={'span'}
               >
                 {" * " + renderValue}
 
@@ -311,8 +342,14 @@ const getColumnModeMobileAssets = (
       cellClass: "textAlignRight",
       headerCellClass: "textAlignRight",
       formatter: ({row}) => {
-        let {feeAmount, feeTokenSymbol} = row;
+        let {sInfo, bInfo, feeTokenSymbol} = row;
         const time = moment(new Date(row.createdAt), "YYYYMMDDHHMM").fromNow();
+        let feeAmount;
+        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          feeAmount = bInfo.feeAmount;
+        } else {
+          feeAmount = sInfo.feeAmount;
+        }
         let feeTokenInfo = tokenMap[ feeTokenSymbol ];
         const fee = sdk
           .toBig(feeAmount)
@@ -376,8 +413,8 @@ export const TradeNFTTable = withTranslation("tables")(
     const {currency, isMobile} = useSettings();
     const defaultArgs: any = {
       columnMode: isMobile
-        ? getColumnModeMobileAssets(t, currency, tokenMap, accountId)
-        : getColumnModeAssets(t, currency, tokenMap, accountId),
+        ? getColumnModeMobileAssets(t, currency, tokenMap, accountId, filterType)
+        : getColumnModeAssets(t, currency, tokenMap, accountId, filterType),
       generateRows: (rawData: any) => rawData,
       generateColumns: ({columnsRaw}: any) =>
         columnsRaw as Column<Row, unknown>[],
@@ -385,7 +422,7 @@ export const TradeNFTTable = withTranslation("tables")(
         backgroundColor: ({colorBase}: any) => `${colorBase.box}`,
       },
     };
-    myLog('TradeNFTTable', rawData, pagination)
+    // myLog('TradeNFTTable', rawData, pagination)
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
@@ -499,7 +536,7 @@ export const TradeNFTTable = withTranslation("tables")(
             headerRowHeight,
             showloading: showLoading,
             ...rest,
-            rawData: rawData,
+            rawData,
           }}
         />
         {!!accountId && showFilter && (
@@ -509,6 +546,7 @@ export const TradeNFTTable = withTranslation("tables")(
             textAlign={"right"}
             paddingRight={5 / 2}
             paddingY={1}
+            component={'span'}
           >
             <Trans i18nKey={"labelGoExplore"} ns={"common"}>
               View transactions on
