@@ -4,7 +4,7 @@ import {
 } from "@loopring-web/common-resources";
 import { CollectionAdvanceProps, useOpenModals } from "@loopring-web/component-lib";
 import React from 'react';
-import { useAccount, useModalData, useSystem } from '../../stores';
+import { useAccount, useModalData, useSystem, useWalletL2Collection } from '../../stores';
 import { useBtnStatus } from '../index';
 import * as sdk from "@loopring-web/loopring-sdk";
 import { LoopringAPI } from '../../api_wrapper';
@@ -18,6 +18,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>(
   }) {
   const {allowTrade, chainId} = useSystem();
   const {setShowCollectionAdvance} = useOpenModals();
+  const {updateWalletL2Collection} = useWalletL2Collection()
   const {account} = useAccount();
   const [metaData, setMetaData] = React.useState('');
   const {t} = useTranslation('common');
@@ -61,6 +62,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>(
             type: "success",
             content: t("labelCreateCollectionSuccess"),
           });
+          updateWalletL2Collection({page: 1});
         }
       } catch (error) {
 

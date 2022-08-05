@@ -114,19 +114,22 @@ export const CreateCollectionPanel = () => {
         <Grid
           container
           flex={1}
+          spacing={2}
         >
 
-          <Grid item xs={12} md={8} position={"relative"}>
-            <Box>
+
+          <Grid item xs={12} md={6} position={"relative"}>
+            <Box marginBottom={2}>
               <Typography
                 component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
                 color={"var(--color-text-third)"}>
                 {t('avatar (500px * 500px)')}
               </Typography>
-
               <IPFSSourceUpload
                 typographyProps={{}}
                 buttonProps={{}}
+                width={120}
+                height={120}
                 maxSize={10000000}
                 title={"Tile (500px * 700px)"}
                 buttonText={''}
@@ -141,18 +144,19 @@ export const CreateCollectionPanel = () => {
               />
             </Box>
             <Box>
-
               <Typography
                 component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
                 color={"var(--color-text-third)"}>
-                {t('Tile (500px * 500px)')}
+                {t('avatar (120px * 120px)')}
               </Typography>
 
               <IPFSSourceUpload
                 typographyProps={{}}
                 buttonProps={{}}
                 maxSize={10000000}
-                title={"Tile (500px * 700px)"}
+                width={320}
+                height={320}
+                title={"Tile (320px * 320px)"}
                 buttonText={''}
                 value={keys?.tileUri ?? undefined}
                 onDelete={() => {
@@ -166,46 +170,41 @@ export const CreateCollectionPanel = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={4} position={"relative"}>
+          <Grid item display={'flex'} flexDirection={'column'} xs={12} md={6} position={"relative"}>
             <FormLabel>
-              <Tooltip
-                title={t("labelMintDescriptionTooltips").toString()}
-                placement={"top"}
-              >
-                <Typography
-                  variant={"body2"}
-                  component={"span"}
-                  lineHeight={"20px"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                >
-                  <Trans i18nKey={"labelMintDescription"}>
-                    Description
-                    <Info2Icon
-                      fontSize={"small"}
-                      color={"inherit"}
-                      sx={{marginX: 1 / 2}}
-                    />
-                  </Trans>
-                </Typography>
-              </Tooltip>
+              {/*<Tooltip*/}
+              {/*  title={t("labelMintDescriptionTooltips").toString()}*/}
+              {/*  placement={"top"}*/}
+              {/*>*/}
+              <Typography
+                component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
+                color={"var(--color-text-third)"}>
+                <Trans i18nKey={"labelCollectionDescription"}>
+                  Description
+                </Trans>
+              </Typography>
+              {/*</Tooltip>*/}
             </FormLabel>
-            <TextareaAutosizeStyled
-              aria-label="Description"
-              minRows={2}
-              maxRows={5}
-              style={{
-                overflowX: "hidden",
-                resize: "vertical",
-              }}
-              maxLength={1000}
-              onChange={(event) =>
-                handleOnDataChange('description', {
-                  description: event.target.value,
-                })
-              }
-              draggable={true}
-            />
+            <Box flex={1}>
+              <TextareaAutosizeStyled
+                aria-label="Description"
+                minRows={2}
+                style={{
+                  overflowX: "hidden",
+                  resize: "vertical",
+                  height: "100%",
+                  margin: 0
+                }}
+                maxLength={1000}
+                onChange={(event) =>
+                  handleOnDataChange('description', {
+                    description: event.target.value,
+                  })
+                }
+                draggable={true}
+              />
+            </Box>
+
 
             {/*<IPFSSourceUpload*/}
             {/*    typographyProps={{}}*/}
@@ -224,8 +223,20 @@ export const CreateCollectionPanel = () => {
             {/*  />*/}
           </Grid>
 
-
+          <Grid item xs={12}>
+            <Button
+              variant={"contained"}
+              size={"medium"}
+              color={"primary"}
+              fullWidth
+              onClick={() => {
+              }}
+            >
+              {t("labelCollectionCreateBtn")}
+            </Button>
+          </Grid>
         </Grid>
+
 
       </ImageUploadWrapper>
       {/*<StyledPaper*/}
