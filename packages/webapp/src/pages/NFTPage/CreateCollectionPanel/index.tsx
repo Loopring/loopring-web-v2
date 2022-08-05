@@ -80,36 +80,6 @@ export const CreateCollectionPanel = () => {
           </Grid>
         </Grid>
 
-        <Grid container marginBottom={2} spacing={2} alignItems={"flex-start"}>
-          <Grid item xs={6}>
-            <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-
-              <TextField
-                value={collectionValue?.name ?? ''}
-                inputProps={{maxLength: 28}}
-                fullWidth
-                label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
-                type={"text"}
-                onChange={(e: React.ChangeEvent<{ value: string }>) => handleOnDataChange('name', e.target.value)}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={6}>
-            <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-              {/*<Typography component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1} color={"var(--color-text-third)"}>*/}
-              {/*  {t('labelCollectionTitle')}*/}
-              {/*</Typography>*/}
-              <TextField
-                value={collectionValue?.collectionTitle ?? ''}
-                inputProps={{maxLength: 28}}
-                fullWidth
-                label={<Trans i18nKey={"labelCollectionName"}>Collection Title</Trans>}
-                type={"text"}
-                onChange={(e: React.ChangeEvent<{ value: string }>) => handleOnDataChange('collectionTitle', e.target.value)}
-              />
-            </Box>
-          </Grid>
-        </Grid>
 
         <Grid
           container
@@ -123,7 +93,7 @@ export const CreateCollectionPanel = () => {
               <Typography
                 component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
                 color={"var(--color-text-third)"}>
-                {t('avatar (500px * 500px)')}
+                {t('avatar (120px * 120px)')}
               </Typography>
               <IPFSSourceUpload
                 typographyProps={{}}
@@ -131,7 +101,7 @@ export const CreateCollectionPanel = () => {
                 width={120}
                 height={120}
                 maxSize={10000000}
-                title={"Tile (500px * 700px)"}
+                title={"avatar (120px * 120px)"}
                 buttonText={''}
                 value={keys?.avatar ?? undefined}
                 onDelete={() => {
@@ -147,7 +117,7 @@ export const CreateCollectionPanel = () => {
               <Typography
                 component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
                 color={"var(--color-text-third)"}>
-                {t('avatar (120px * 120px)')}
+                {t('Tile (320px * 320px)')}
               </Typography>
 
               <IPFSSourceUpload
@@ -171,6 +141,31 @@ export const CreateCollectionPanel = () => {
           </Grid>
 
           <Grid item display={'flex'} flexDirection={'column'} xs={12} md={6} position={"relative"}>
+            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} marginBottom={2}>
+
+              <TextField
+                value={collectionValue?.name ?? ''}
+                inputProps={{maxLength: 28}}
+                fullWidth
+                label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
+                type={"text"}
+                onChange={(e: React.ChangeEvent<{ value: string }>) => handleOnDataChange('name', e.target.value)}
+              />
+            </Box>
+
+            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} marginBottom={2}>
+              {/*<Typography component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1} color={"var(--color-text-third)"}>*/}
+              {/*  {t('labelCollectionTitle')}*/}
+              {/*</Typography>*/}
+              <TextField
+                value={collectionValue?.collectionTitle ?? ''}
+                inputProps={{maxLength: 28}}
+                fullWidth
+                label={<Trans i18nKey={"labelCollectionName"}>Collection Title</Trans>}
+                type={"text"}
+                onChange={(e: React.ChangeEvent<{ value: string }>) => handleOnDataChange('collectionTitle', e.target.value)}
+              />
+            </Box>
             <FormLabel>
               {/*<Tooltip*/}
               {/*  title={t("labelMintDescriptionTooltips").toString()}*/}
