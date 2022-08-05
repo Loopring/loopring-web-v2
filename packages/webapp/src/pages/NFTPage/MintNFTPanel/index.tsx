@@ -120,6 +120,7 @@ export const MintLandingPage = () => {
       display={"flex"}
       justifyContent={"stretch"}
       flexDirection={'column'}
+
     >
       <Box marginBottom={2}>
         <Typography component={"h3"} variant={"h4"} marginBottom={1}>
@@ -141,6 +142,8 @@ export const MintLandingPage = () => {
                alignItems={"center"}
                justifyContent={"center"}
                marginBottom={2}
+               minHeight={200}
+               width={"100%"}
           >
             {/*<NftImage*/}
             {/*  */}
@@ -182,8 +185,11 @@ export const MintLandingPage = () => {
                alignItems={"center"}
                justifyContent={"center"}
                marginBottom={2}
+               minHeight={200}
+               width={"100%"}
           >
             <NftImage
+
               alt={"NFT Created"}
               onError={() => undefined}
               src={`${SoursURL}images/nft_guid2.webp`}

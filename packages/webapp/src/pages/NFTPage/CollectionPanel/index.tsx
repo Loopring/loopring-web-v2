@@ -122,6 +122,7 @@ const CreateUrlPanel = ({
           display={"flex"}
           justifyContent={"center"}
           flexDirection={"column"}
+          marginTop={-3}
         >
           <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={3}>
             {t('labelMintSelect')}
@@ -143,6 +144,8 @@ const CreateUrlPanel = ({
                 justifyContent={"center"}
                 flex={1}
                 marginBottom={2}
+                minHeight={200}
+                width={"100%"}
               >
                 <NftImage
                   alt={"Collection Created"}
@@ -180,6 +183,8 @@ const CreateUrlPanel = ({
                 justifyContent={"center"}
                 flex={1}
                 marginBottom={2}
+                minHeight={200}
+                width={"100%"}
               >
                 <NftImage
                   alt={"Collection Created"}
