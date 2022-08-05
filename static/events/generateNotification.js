@@ -269,7 +269,7 @@ async function start() {
   } catch (error) {
     // console.error(`Got an error trying to delete the file: ${error.message}`);
   }
-  console.log("investJson", investJson);
+  // console.log("investJson", investJson);
   fs.writeFileSync(
     totalNotifyPath,
     JSON.stringify({

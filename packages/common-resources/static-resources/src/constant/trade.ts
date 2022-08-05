@@ -137,8 +137,6 @@ export type MintReadTradeNFT<I> = {
 export type TradeNFT<I> = MintTradeNFT<I> &
   Partial<NFTWholeINFO> & { isApproved?: boolean };
 
-
-
 export const TOAST_TIME = 3000;
 
 export const EmptyValueTag = "--";
@@ -361,7 +359,6 @@ export type InvestDetail = {
   durationType: InvestDuration;
   duration: string;
 };
-
 
 export enum CreateCollectionStep {
   // CreateTokenAddress,
