@@ -53,7 +53,7 @@ const TableStyled = styled(Box)<BoxProps & {
     ${({isMobile}) =>
             !isMobile
                     ? `--template-columns: 50% auto 20% auto  !important; `
-                    : ` --template-columns: 40% 40% 20%  !important;`}
+                    : ` --template-columns: 70% 30% !important;`}
     .rdg-cell.action {
       display: flex;
       justify-content: center;
@@ -327,7 +327,7 @@ const getColumnModeMobileAssets = (
                 paddingLeft={1}
                 component={'span'}
               >
-                {" * " + renderValue}
+                {t('labelPrice') + renderValue}
 
               </Typography>
             </Box>
