@@ -213,5 +213,7 @@ export default {
   labelFilterTradeNFTBuy: "Buy",
   labelTradeNFTSide: "Trade",
   labelFrom: "from",
-  labelTo: "to"
+  labelTo: "to",
+  labelPrice: "unit price: "
+
 };
