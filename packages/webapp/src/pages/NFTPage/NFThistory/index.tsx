@@ -1,13 +1,12 @@
 import styled from "@emotion/styled";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import React from "react";
-import { Button, TradeNFTTable, TradeTable, TsNFTTable } from "@loopring-web/component-lib";
+import { Button, TradeNFTTable, TsNFTTable } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistoryNFT } from "./hookHistory";
 import { useAccount, useTokenMap } from "@loopring-web/core";
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import { BackIcon, RowConfig } from '@loopring-web/common-resources';
-import { rest } from 'lodash';
+import { BackIcon } from '@loopring-web/common-resources';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -74,21 +73,11 @@ export const MyNFTHistory = () => {
           onClick={history.goBack}
         >
           {t("labelTransactions")}
-          {/*<Typography color={"textPrimary"}></Typography>*/}
         </Button>
       </Box>
       <StyledPaper
         className={"MuiPaper-elevation2"}
         flex={1} display={"flex"} flexDirection={"column"}>
-        {/*<Typography*/}
-        {/*  component={"h3"}*/}
-        {/*  variant={"h4"}*/}
-        {/*  paddingX={5 / 2}*/}
-        {/*  paddingTop={5 / 2}*/}
-        {/*>*/}
-        {/*  {t("labelTransactions")}*/}
-        {/*</Typography>*/}
-
         <Box marginTop={2} marginLeft={2}>
           <Tabs
             value={currentTab}

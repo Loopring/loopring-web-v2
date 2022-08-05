@@ -82,7 +82,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
               types: txType ? ([txType] as any[]) : undefined,
               // start: (page - 1) * limit,
               start:
-                duration && duration[0]
+                duration && duration[ 0 ]
                   ? (duration[0] as any)?.format("x") ?? undefined
                   : undefined,
               end:

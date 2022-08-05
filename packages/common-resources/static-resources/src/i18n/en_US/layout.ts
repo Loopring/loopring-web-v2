@@ -104,5 +104,7 @@ export default {
   labelInvestDefiDes: "Easy stake, stable returns",
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
+  labelMyCollectionDes: "Group NFT as a series",
+
   // labelDepositNFTDes:"Receive NFT"
 };

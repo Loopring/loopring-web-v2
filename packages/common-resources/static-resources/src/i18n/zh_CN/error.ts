@@ -36,4 +36,8 @@ export default {
     "Please install the Gamestop Wallet browser extension. Then create, deposit, and activate the wallet before connecting to Loopring.io.",
   errorLinKWalletApp: "<0>app market</0>",
   errorMintOverlap: "This NFT metadata is already minted in your Wallet!",
+  errorJSONStringify: "Wrong JSON format",
+  errorCollectionMetadataNoTileUri: "Tile uri is required",
+  errorCollectionNoName: "Name is required",
+  errorCollectionSameName: "You already hava an collection call {{name}} "
 };

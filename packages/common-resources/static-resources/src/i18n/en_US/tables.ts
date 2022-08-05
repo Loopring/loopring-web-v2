@@ -212,5 +212,6 @@ export default {
   labelFilterTradeNFTSell: "Sell",
   labelFilterTradeNFTBuy: "Buy",
   labelTradeNFTSide: "Trade",
-  labelFrom: "from"
+  labelFrom: "from",
+  labelTo: "to"
 };

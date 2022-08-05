@@ -59,13 +59,13 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus();
-  const {t} = useTranslation("common");
+  const { t } = useTranslation("common");
   const [lastRequest, setLastRequest] = React.useState<any>({});
-  const {checkHWAddr, updateHW} = useWalletInfo();
+  const { checkHWAddr, updateHW } = useWalletInfo();
   const {page, updateWalletLayer2NFT} = useWalletLayer2NFT();
-  const [isAvailableId, setIsAvaiableId] = React.useState(false);
+  const [isAvailableId, setIsAvailableId] = React.useState(false);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
-  const {setShowAccount, setShowNFTMintAdvance} = useOpenModals();
+  const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
   const [tokenAddress, setTokenAddress] =
     React.useState<string | undefined>(undefined);
   React.useEffect(() => {
@@ -398,10 +398,10 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
             // nftIdView: data.nftIdView,
             ...shouldUpdate,
           };
-          setIsAvaiableId(true);
+          setIsAvailableId(true);
         } catch (error: any) {
           myLog("handleOnNFTDataChange -> data.nftId", error);
-          setIsAvaiableId(false);
+          setIsAvailableId(false);
           shouldUpdate = {
             nftId: "",
             // nftIdView:'',
@@ -448,7 +448,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         }
       } else if (data.nftIdView) {
       } else if (!data.nftIdView) {
-        setIsAvaiableId(false);
+        setIsAvailableId(false);
         shouldUpdate = {
           nftId: "",
           name: undefined,

@@ -42,8 +42,9 @@ const GridStyle = styled(Grid)`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
   }
+
   .MuiInputLabel-root {
-    font-size: ${({ theme }) => theme.fontDefault.body2};
+    font-size: ${({theme}) => theme.fontDefault.body2};
   }
 ` as typeof Grid;
 const NFT_TYPE: TGItemData[] = [
@@ -56,23 +57,24 @@ const NFT_TYPE: TGItemData[] = [
 ];
 export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
   I,
-  C extends FeeInfo>({
-                       disabled,
-                       walletMap,
-                       tradeData,
-                       title,
-                       description,
-                       btnInfo,
-                       handleOnNFTDataChange,
-                       nftMintBtnStatus,
-                       isFeeNotEnough,
-                       handleFeeChange,
-                       chargeFeeTokenList,
-                       feeInfo,
-                       isAvailableId,
-                       isNFTCheckLoading,
-                       onNFTMintClick,
-                     }: NFTMintAdvanceViewProps<T, I, C>) => {
+  C extends FeeInfo>(
+  {
+    disabled,
+    walletMap,
+    tradeData,
+    title,
+    description,
+    btnInfo,
+    handleOnNFTDataChange,
+    nftMintBtnStatus,
+    isFeeNotEnough,
+    handleFeeChange,
+    chargeFeeTokenList,
+    feeInfo,
+    isAvailableId,
+    isNFTCheckLoading,
+    onNFTMintClick,
+  }: NFTMintAdvanceViewProps<T, I, C>) => {
   const {t} = useTranslation(["common"]);
   const {isMobile} = useSettings();
   const styles = isMobile
@@ -97,7 +99,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
   };
   const _handleOnNFTDataChange = (_tradeData: T) => {
     if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ ...tradeData, ..._tradeData });
+      handleOnNFTDataChange({...tradeData, ..._tradeData});
     }
   };
   myLog("mint tradeData", tradeData);
@@ -188,7 +190,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
               >
                 Follow this Guide
                 <Info2Icon
-                  style={{ cursor: "pointer", marginLeft: "4px" }}
+                  style={{cursor: "pointer", marginLeft: "4px"}}
                   fontSize={"medium"}
                   htmlColor={"var(--color-text-third)"}
                 />
@@ -219,13 +221,13 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
             isNFTCheckLoading ? (
               <LoadingIcon
                 width={24}
-                style={{ top: "32px", right: "8px", position: "absolute" }}
+                style={{top: "32px", right: "8px", position: "absolute"}}
               />
             ) : (
               <IconClearStyled
                 color={"inherit"}
                 size={"small"}
-                style={{ top: "30px" }}
+                style={{top: "30px"}}
                 aria-label="Clear"
                 onClick={() =>
                   _handleOnNFTDataChange({nftIdView: "", nftId: ""} as T)
@@ -260,7 +262,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
                     whiteSpace={"break-spaces"}
                     marginTop={1 / 4}
                     component={"span"}
-                    style={{ wordBreak: "break-all" }}
+                    style={{wordBreak: "break-all"}}
                   >
                     {tradeData?.nftId}
                   </Typography>
@@ -290,7 +292,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
                 component={"span"}
                 display={"flex"}
                 alignItems={"center"}
-                style={{ cursor: "pointer" }}
+                style={{cursor: "pointer"}}
                 onClick={() =>
                   setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
                 }
@@ -372,7 +374,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
                 marginBottom={2}
                 variant={"body1"}
               >
-                {t("labelNFTType") + " "} {NFT_TYPE[0].label}
+                {t("labelNFTType") + " "} {NFT_TYPE[ 0 ].label}
               </Typography>
             </Box>
             <Box
@@ -381,7 +383,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
               justifyContent={"flex-start"}
             >
               <NFTInput
-                {...({ t } as any)}
+                {...({t} as any)}
                 isThumb={false}
                 isBalanceLimit={true}
                 inputNFTDefaultProps={{
@@ -436,7 +438,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
                 onError={() => undefined}
               />
             ) : isNFTCheckLoading ? (
-              <LoadingIcon fontSize={"large"} />
+              <LoadingIcon fontSize={"large"}/>
             ) : (
               <EmptyDefault
                 height={"100%"}
@@ -463,11 +465,11 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
             component={"p"}
             variant={"body1"}
             marginBottom={1}
-            style={{ wordBreak: "break-all" }}
+            style={{wordBreak: "break-all"}}
           >
             <Trans i18nKey={"labelNFTMintNoMetaDetail"}>
               Your NFT metadata should identify
-              <em style={{ fontWeight: 600 }}>
+              <em style={{fontWeight: 600}}>
                 name, image & royalty_percentage(number from 0 to 10)
               </em>
               .
