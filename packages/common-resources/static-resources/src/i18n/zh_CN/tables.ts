@@ -200,7 +200,20 @@ export default {
   labelDefiRedeem: "Redeem",
   labelSelect: "Select",
   labelDuration: "Duration",
-  labelInvestFlexible: "Flexible",
-  labelInvestDuration: "Duration",
-  labelInvestAll: "Mixed",
+
+  labelInvestAll: "Both",
+  labelDefiExit: "Redeem",
+  labelDefiJoin: "Subscribe",
+  labelDefiType: "Subscribe/Redeem",
+  labelDefiFee: "Fee",
+  labelDefiTime: "Time",
+  labelDefiAmount: "Amount",
+  labelFilterTradeNFTAll: "All",
+  labelFilterTradeNFTSell: "Sell",
+  labelFilterTradeNFTBuy: "Buy",
+  labelTradeNFTSide: "Trade",
+  labelFrom: "from",
+  labelTo: "to",
+  labelPrice: "unit price: "
+
 };

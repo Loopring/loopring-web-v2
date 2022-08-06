@@ -882,5 +882,16 @@ export default {
   labelMintSelect: "Choose Creation Method",
   labelMintSelectDes: "Choose the most suitable approach for your needs.",
   labelCollectionCreateFailed: "Create Collection token Address Failed",
-  labelCollectionMetaTitle: "Import Metadata from IPFS"
+  labelCollectionMetaTitle: "Import Metadata from IPFS",
+  labelAdvanceCreateCollection: "Advance Create Collection",
+  labelCreateCollectionSuccess: "Collection create was successful",
+  labelCreateCollectionFailed: "Collection create has failed",
+  labelCollectionAdvanceJSON: "NFT Collection information follow this format: ",
+  labelCopyDemo: "Click to copy the demo",
+  labelCollectionCreatBtn: "Create Collection",
+  labelEnterMeta: "Enter Collection Metadata",
+  labelMintGuid: "Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use \"Mint\" to create your NFT.",
+  labelAdMintGuid: "Generate all the required metadata and upload to IPFS by yourself first, then use \"Advanced Mint\" to create your NFT.",
+  labelFilterTradeNFTSell: "Sell",
+  labelFilterTradeNFTBuy: "Buy",
 };

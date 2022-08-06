@@ -301,7 +301,7 @@ export type NFTMintInfoProps<C> = {
   description?: string;
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
-  // isAvaiableId?: boolean;
+  // isAvailableId?: boolean;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;
@@ -402,7 +402,7 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
   isNFTCheckLoading?: boolean;
-  isAvaiableId?: boolean;
+  isAvailableId?: boolean;
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
     isOnLoading: boolean;

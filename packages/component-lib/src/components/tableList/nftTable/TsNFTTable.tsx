@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { Box, BoxProps, Link, Typography } from "@mui/material";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import moment from "moment";
-import { Column, TablePagination, Table, NftImage } from "../../basic-lib";
+import { Column, TablePagination, Table, NftImage, BoxNFT } from "../../basic-lib";
 import {
   CompleteIcon,
   DepositIcon,
@@ -32,21 +32,11 @@ import {
 import { Filter } from "./components/Filter";
 import {
   NFT_IMAGE_SIZES,
-  SoursURL,
   TxNFTType,
 } from "@loopring-web/loopring-sdk";
 import { useSettings } from "../../../stores";
 
-const BoxNFT = styled(Box)`
-  background: no-repeat 50% 50%;
-  background-color: var(--opacity);
-  background-image: url(${SoursURL + "svg/loopring.svg"});
-  img {
-    object-fit: contain;
-    overflow: hidden;
-    border-radius: ${({ theme }) => theme.unit}px;
-  }
-` as typeof Box;
+
 const TYPE_COLOR_MAPPING = [
   { type: TsTradeStatus.processed, color: "success" },
   { type: TsTradeStatus.processing, color: "warning" },

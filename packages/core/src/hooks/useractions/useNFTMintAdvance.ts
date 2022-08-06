@@ -62,8 +62,8 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
   const { t } = useTranslation("common");
   const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
-  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const [isAvaiableId, setIsAvaiableId] = React.useState(false);
+  const {page, updateWalletLayer2NFT} = useWalletLayer2NFT();
+  const [isAvailableId, setIsAvailableId] = React.useState(false);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
   const [tokenAddress, setTokenAddress] =
@@ -107,13 +107,13 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     },
   });
   const checkAvailable = ({
-    nftMintAdvanceValue,
-    isFeeNotEnough,
-    isAvaiableId,
-  }: {
+                            nftMintAdvanceValue,
+                            isFeeNotEnough,
+                            isAvailableId,
+                          }: {
     nftMintAdvanceValue: TradeNFT<any>;
     isFeeNotEnough: any;
-    isAvaiableId: boolean;
+    isAvailableId: boolean;
   }) => {
     return (
       nftMintAdvanceValue.royaltyPercentage !== undefined &&
@@ -132,7 +132,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       nftMintAdvanceValue.fee.belong &&
       nftMintAdvanceValue.fee.feeRaw &&
       !isFeeNotEnough.isFeeNotEnough &&
-      isAvaiableId
+      isAvailableId
     );
   };
 
@@ -141,12 +141,12 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       resetBtnInfo();
       if (
         !error &&
-        checkAvailable({ nftMintAdvanceValue, isFeeNotEnough, isAvaiableId })
+        checkAvailable({nftMintAdvanceValue, isFeeNotEnough, isAvailableId})
       ) {
         enableBtn();
         return;
       }
-      if (!isAvaiableId) {
+      if (!isAvailableId) {
         setLabelAndParams("labelNFTMintWrongCIDBtn", {});
       } else if (
         (!nftMintAdvanceValue.image && !nftMintAdvanceValue.name) ||
@@ -163,7 +163,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       myLog("try to disable nftMintAdvance btn!");
     },
     [
-      isAvaiableId,
+      isAvailableId,
       isFeeNotEnough,
       resetBtnInfo,
       nftMintAdvanceValue,
@@ -180,7 +180,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     updateBtnStatus();
   }, [
     isFeeNotEnough.isFeeNotEnough,
-    isAvaiableId,
+    isAvailableId,
     nftMintAdvanceValue,
     feeInfo,
   ]);
@@ -398,10 +398,10 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
             // nftIdView: data.nftIdView,
             ...shouldUpdate,
           };
-          setIsAvaiableId(true);
+          setIsAvailableId(true);
         } catch (error: any) {
           myLog("handleOnNFTDataChange -> data.nftId", error);
-          setIsAvaiableId(false);
+          setIsAvailableId(false);
           shouldUpdate = {
             nftId: "",
             // nftIdView:'',
@@ -448,7 +448,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         }
       } else if (data.nftIdView) {
       } else if (!data.nftIdView) {
-        setIsAvaiableId(false);
+        setIsAvailableId(false);
         shouldUpdate = {
           nftId: "",
           name: undefined,
@@ -478,7 +478,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         account.readyState === AccountStatus.ACTIVATED &&
         nftMintAdvanceValue &&
         tokenAddress &&
-        checkAvailable({ nftMintAdvanceValue, isFeeNotEnough, isAvaiableId })
+        checkAvailable({nftMintAdvanceValue, isFeeNotEnough, isAvailableId})
       ) {
         setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
@@ -556,7 +556,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       chainId,
       checkAvailable,
       exchangeInfo,
-      isAvaiableId,
+      isAvailableId,
       isFeeNotEnough,
       nftMintAdvanceValue,
       processRequest,
@@ -592,12 +592,12 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     handleFeeChange,
     feeInfo,
     isNFTCheckLoading,
-    isAvaiableId,
+    isAvailableId,
     handleOnNFTDataChange,
     onNFTMintClick: onNFTMintAdvanceClick,
     walletMap: {} as any,
     coinMap: totalCoinMap as any,
-    tradeData: { ...nftMintAdvanceValue } as any,
+    tradeData: {...nftMintAdvanceValue} as any,
     nftMintBtnStatus: btnStatus,
     btnInfo,
   };
