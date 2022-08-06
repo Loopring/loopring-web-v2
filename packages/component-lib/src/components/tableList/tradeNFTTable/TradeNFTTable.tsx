@@ -96,7 +96,7 @@ const getColumnModeAssets = (
           ...metadata?.base
         }
         let tradeType, fromAddr;
-        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+        if (filterType !== FilterTradeNFTTypes.sell && bInfo.accountId === accountId) {
           tradeType = FilterTradeNFTTypes.buy;
           fromAddr = sInfo.address
         } else {
@@ -190,7 +190,7 @@ const getColumnModeAssets = (
       formatter: ({row}) => {
         let {sInfo, bInfo, feeTokenSymbol} = row;
         let feeAmount;
-        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+        if (filterType !== FilterTradeNFTTypes.sell && bInfo.accountId === accountId) {
           feeAmount = bInfo.feeAmount;
         } else {
           feeAmount = sInfo.feeAmount;
@@ -449,7 +449,7 @@ export const TradeNFTTable = withTranslation("tables")(
             limit: pagination?.pageSize ?? 10,
             offset: (currPage - 1) * (pagination?.pageSize ?? 10),
             page: currPage,
-            isSell: currFilterType === FilterTradeNFTTypes.allTypes ? undefined : currFilterType === FilterTradeNFTTypes.sell ? true : false
+            side: currFilterType === FilterTradeNFTTypes.allTypes ? undefined : currFilterType.toUpperCase()
           });
         }
       },
