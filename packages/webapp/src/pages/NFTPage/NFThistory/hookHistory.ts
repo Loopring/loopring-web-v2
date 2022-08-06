@@ -139,9 +139,10 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
     async ({
              page = 1,
              limit,
-             isSell = undefined,
              start,
              end,
+             side = undefined,
+
              // duration = [null, null],
            }: NFTTradeFilter) => {
       if (LoopringAPI.userAPI) {
@@ -153,13 +154,13 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
           await LoopringAPI.userAPI.getUserNFTTradeHistory(
             {
               accountId: account.accountId,
-              // @ts-ignore
-              metadata: true,
               offset: (page - 1) * _limit,
               limit: _limit,
               start,
               end,
-              isSell,
+              // @ts-ignore
+              metadata: true,
+              side,
             },
             account.apiKey
           );
@@ -218,8 +219,9 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
         getTradeList({
           page: 1,
           // offset:0
+
           limit: pageSize,
-          isSell: undefined,
+          side: undefined,
         })
         return state;
       })

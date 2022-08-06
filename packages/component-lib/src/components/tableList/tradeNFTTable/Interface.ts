@@ -1,5 +1,5 @@
 export type NFTTradeFilter = {
-  isSell: undefined | boolean;
+  side: undefined | "SELL" | "BUY";
   limit?: number;
   offset?: number;
   start?: number;
