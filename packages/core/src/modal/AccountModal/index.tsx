@@ -38,22 +38,11 @@ export const ModalAccountInfo = withTranslation("common")(
     const { isMobile } = useSettings();
     const {
       modals: { isShowNFTDetail, isShowAccount },
-      // modals: { isShowAccount },
-      // setShowConnect,
-      // setShowAccount,
       setShowNFTDetail,
       setShowDeposit,
-      // setShowNFTMint,
       setShowTransfer,
       setShowWithdraw,
-      // setShowResetAccount,
-      // setShowActiveAccount,
     } = useOpenModals();
-    // const {
-    //   modals: {
-    //     isShowDeposit ,
-    //   },
-    // } = useOpenModals();
     const {
       exportAccountAlertText,
       exportAccountToastOpen,
@@ -67,7 +56,7 @@ export const ModalAccountInfo = withTranslation("common")(
       nftTransferProps,
       nftWithdrawProps,
       nftDeployProps,
-      nftMintAdvanceProps,
+      // nftMintAdvanceProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
@@ -135,7 +124,7 @@ export const ModalAccountInfo = withTranslation("common")(
           nftTransferProps={nftTransferProps as any}
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
-          nftMintAdvanceProps={nftMintAdvanceProps as any}
+          // nftMintAdvanceProps={nftMintAdvanceProps as any}
           // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}

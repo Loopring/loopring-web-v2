@@ -134,10 +134,9 @@ import {
   mintService,
   goActiveAccount,
   useCheckActiveStatus,
-  useForceWithdraw, useCollectionAdvanceMeta, useToast,
+  useForceWithdraw, useCollectionAdvanceMeta, useToast, useNFTMintAdvance,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
 
 export function useAccountModalForUI({
   t,
@@ -201,7 +200,7 @@ export function useAccountModalForUI({
     setToastOpen: setCollectionToastOpen, closeToast: collectionToastClose
   } = useToast();
 
-  const {nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn} =
+  const {retryBtn: nftMintAdvanceRetryBtn} =
     useNFTMintAdvance();
   const {collectionAdvanceProps} = useCollectionAdvanceMeta({setCollectionToastOpen});
   const {withdrawProps} = useWithdraw();
@@ -2151,7 +2150,6 @@ export function useAccountModalForUI({
 
   return {
     nftDeployProps,
-    nftMintAdvanceProps,
     nftTransferProps,
     nftWithdrawProps,
     transferProps,

@@ -4,10 +4,10 @@ import { Box } from "@mui/material";
 import { useSettings } from "@loopring-web/component-lib";
 import { subMenuNFT } from "@loopring-web/common-resources";
 import React from "react";
-import { ViewAccountTemplate } from "@loopring-web/core";
+import { useNFTMintAdvance, ViewAccountTemplate } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
-import { MintLandingPage, MintNFTPanel } from "./MintNFTPanel";
+import { MintLandingPage, MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
 import { mintService } from "@loopring-web/core";
 import { NFTCollectPanel } from "./CollectionPanel";
@@ -21,22 +21,24 @@ export const NFTPage = () => {
 
   const routerNFT = React.useMemo(() => {
     switch (selected) {
-      case "transactionNFT":
-        return <MyNFTHistory />;
+      case "x":
+        return <MyNFTHistory/>;
       case "mintNFTLanding":
-        return <MintLandingPage />;
+        return <MintLandingPage/>;
       case "mintNFT":
         mintService.emptyData();
-        return <MintNFTPanel />;
+        return <MintNFTPanel/>;
+      case "mintAdvanceNFT":
+        return <MintNFTAdvancePanel/>;
       case "depositNFT":
-        return <DepositNFTPanel />;
+        return <DepositNFTPanel/>;
       case "myCollection":
-        return <NFTCollectPanel />;
+        return <NFTCollectPanel/>;
       case "addCollection":
         return <CreateCollectionPanel/>;
       case "assetsNFT":
       default:
-        return <MyNFTPanel />;
+        return <MyNFTPanel/>;
     }
   }, [selected]);
 

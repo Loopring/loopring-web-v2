@@ -114,10 +114,10 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
       paddingLeft={5 / 2}
       paddingRight={5 / 2}
       direction={"column"}
-      justifyContent={"space-between"}
+      justifyContent={"space-evenly"}
       alignItems={"center"}
       flex={1}
-      height={"100%"}
+      // height={"100%"}
     >
       <Grid item>
         <Box

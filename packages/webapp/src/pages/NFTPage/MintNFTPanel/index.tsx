@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { Box, Button, Card, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import {
-  CardNFTStyled,
-  MintNFTConfirm, NftImage,
+  CardNFTStyled, MintAdvanceNFTWrap,
+  MintNFTConfirm, NftImage, NFTMintAdvanceProps,
   PanelContent,
   useOpenModals, useSettings,
 } from "@loopring-web/component-lib";
@@ -10,8 +10,9 @@ import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
-import { useHistory } from "react-router-dom";
-import { BackIcon, SoursURL } from "@loopring-web/common-resources";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { BackIcon, FeeInfo, SoursURL, TradeNFT } from "@loopring-web/common-resources";
+import { useNFTMintAdvance } from '@loopring-web/core';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -75,17 +76,6 @@ export const MintNFTPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        {/*<Box*/}
-        {/*  display={"flex"}*/}
-        {/*  justifyContent={"space-between"}*/}
-        {/*  alignItems={"center"}*/}
-        {/*  paddingX={5 / 2}*/}
-        {/*  paddingTop={5 / 2}*/}
-        {/*>*/}
-        {/*  <Typography component={"h3"} variant={"h4"}>*/}
-        {/*    {t("labelMINTNFTTitle")}*/}
-        {/*  </Typography>*/}
-        {/*</Box>*/}
         <Box flex={1} display={"flex"}>
           {
             panelList.map((panel, index) => {
@@ -136,7 +126,8 @@ export const MintLandingPage = () => {
            flexDirection={isMobile ? "column" : "row"}
            justifyContent={"center"}>
         <CardNFTStyled onClick={() => {
-          setShowNFTMintAdvance({isShow: true});
+          history.push("/nft/mintAdvanceNFT");
+          // setShowNFTMintAdvance({isShow: true});
         }}>
           <Box flex={1} display={"flex"}
                alignItems={"center"}
@@ -179,7 +170,7 @@ export const MintLandingPage = () => {
           </Typography>
         </CardNFTStyled>
         <CardNFTStyled sx={{marginLeft: isMobile ? 0 : 4}} onClick={() => {
-          setShowNFTMintAdvance({isShow: true});
+          history.push("/nft/mintNFT");
         }}>
           <Box flex={1} display={"flex"}
                alignItems={"center"}
@@ -221,3 +212,47 @@ export const MintLandingPage = () => {
     </Box>
   );
 };
+export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
+  I>() => {
+  const history = useHistory();
+  const {resetDefault, nftMintAdvanceProps} = useNFTMintAdvance();
+  const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
+  React.useEffect(() => {
+    resetDefault();
+  }, [match?.params?.mintAdvanceNFT])
+  const {t} = useTranslation("common");
+  return <>
+    <Box marginBottom={2}>
+      <Button
+        startIcon={<BackIcon fontSize={"small"}/>}
+        variant={"text"}
+        size={"medium"}
+        sx={{color: "var(--color-text-secondary)"}}
+        color={"inherit"}
+        onClick={history.goBack}
+      >
+        {t("labelAdMintTitle")}
+        {/*<Typography color={"textPrimary"}></Typography>*/}
+      </Button>
+    </Box>
+    <StyledPaper
+      flex={1}
+      className={"MuiPaper-elevation2"}
+      marginTop={0}
+      marginBottom={2}
+      display={"flex"}
+      flexDirection={"column"}
+      alignItems={"center"}
+    >
+      <MintAdvanceNFTWrap
+
+        {...{
+          // ...rest,
+          // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
+          // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
+          ...nftMintAdvanceProps,
+        }}
+      />
+    </StyledPaper>
+  </>
+}
