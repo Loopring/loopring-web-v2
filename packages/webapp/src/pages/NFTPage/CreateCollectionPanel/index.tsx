@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Box, Button, FormLabel, Grid, TextField, Tooltip, Typography } from "@mui/material";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
-import { ImageUploadWrapper, IPFSSourceUpload, TextareaAutosizeStyled } from "@loopring-web/component-lib";
+import { ImageUploadWrapper, IPFSSourceUpload, TextareaAutosizeStyled, useSettings } from "@loopring-web/component-lib";
 import { useHistory } from 'react-router-dom';
 import { useModalData } from '@loopring-web/core';
 import { useCollectionPanel } from './hook';
@@ -20,6 +20,7 @@ export const CreateCollectionPanel = () => {
   // const [banner,setBanner] = React.useState('')
   const {ipfsProvides, handleOnDataChange, keys} = useCollectionPanel({isEdit: false});
   const history = useHistory();
+  const {isMobile} = useSettings();
   return (
     <>
       <Box
@@ -88,8 +89,10 @@ export const CreateCollectionPanel = () => {
         >
 
 
-          <Grid item xs={12} md={6} position={"relative"}>
-            <Box marginBottom={2}>
+          <Grid item xs={12} md={6} position={"relative"} display={'flex'}
+                flexDirection={isMobile ? 'column' : 'row'} justifyContent={'space-between'}
+          >
+            <Box marginBottom={isMobile ? '2' : '0'}>
               <Typography
                 component={'h4'} variant={'body1'} textAlign={'left'} marginBottom={1}
                 color={"var(--color-text-third)"}>
