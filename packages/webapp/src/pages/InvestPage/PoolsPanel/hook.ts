@@ -5,12 +5,10 @@ import {
   CustomError,
   ErrorMap,
   SagaStatus,
-  TradeFloat,
-  RowConfig,
+  TradeFloat, RowInvestConfig,
 } from "@loopring-web/common-resources";
 
 import {
-  store,
   makeTickView,
   useAmmMap,
   useTokenMap,
@@ -28,21 +26,21 @@ export function useAmmMapUI<
   R extends { [key: string]: any },
   I extends { [key: string]: any }
 >() {
-  const { search } = useLocation();
+  const {search} = useLocation();
   const searchParams = new URLSearchParams(search);
 
   const [rawData, setRawData] = React.useState<Array<Row<R>> | []>([]);
   const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>(
     []
   );
-  const { coinMap, marketArray, status: tokenMapStatus } = useTokenMap();
+  const {coinMap, marketArray, status: tokenMapStatus} = useTokenMap();
   const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
   const [filterValue, setFilterValue] = React.useState("");
   const [tableHeight, setTableHeight] = React.useState(0);
-  const { ammMap, status: ammStatus } = useAmmMap();
-  const { tokenPrices } = useTokenPrices();
-  const { tickerMap, status: tickerStatus } = useTicker();
-  const { sendSocketTopic, socketEnd } = useSocket();
+  const {ammMap, status: ammStatus} = useAmmMap();
+  const {tokenPrices} = useTokenPrices();
+  const {tickerMap, status: tickerStatus} = useTicker();
+  const {sendSocketTopic, socketEnd} = useSocket();
 
   React.useEffect(() => {
     socketSendTicker();
@@ -59,7 +57,7 @@ export function useAmmMapUI<
       if (tokenPrices) {
         setFilteredData(tableData);
         setTableHeight(
-          RowConfig.rowHeaderHeight + tableData.length * RowConfig.rowHeight
+          RowInvestConfig.rowHeaderHeight + tableData.length * RowInvestConfig.rowHeight
         );
       }
     },
