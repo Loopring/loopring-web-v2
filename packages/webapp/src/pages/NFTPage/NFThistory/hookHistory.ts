@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { LoopringAPI } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import {
@@ -24,6 +24,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
   const {isMobile} = useSettings();
   const [tabIndex, setTabIndex] = React.useState(0);
   const container = React.useRef(null);
+  // const [showLoading, setShowLoading] = useState(false);
 
   const [nftHistory, setNftHistory] = React.useState<{
     userNFTTxs: Partial<NFTTableProps<Row>>;
@@ -146,6 +147,13 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
              // duration = [null, null],
            }: NFTTradeFilter) => {
       if (LoopringAPI.userAPI) {
+        setTrades((state) => ({
+          ...state,
+          nftTrades: {
+            ...state.nftTrades,
+            showLoading: true,
+          }
+        }));
         const _limit = limit
           ? limit
           : nftHistory.userNFTTxs.pagination?.pageSize ?? LimitNFTHistory;
@@ -179,6 +187,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
                 total: totalNum,
                 page,
               },
+              showLoading: false,
               rawData: trades as TradeRow[],
             },
           };
@@ -222,7 +231,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
 
           limit: pageSize,
           side: undefined,
-        })
+        });
         return state;
       })
     }
