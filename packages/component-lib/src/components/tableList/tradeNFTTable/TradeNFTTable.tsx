@@ -94,7 +94,7 @@ const getColumnModeAssets = (
         metadata = {
           ...metadata,
           ...metadata?.base
-        }
+        };
         let tradeType, fromAddr;
         if (filterType !== FilterTradeNFTTypes.sell && bInfo.accountId === accountId) {
           tradeType = FilterTradeNFTTypes.buy;
@@ -248,7 +248,7 @@ const getColumnModeMobileAssets = (
         metadata = {
           ...metadata,
           ...metadata?.base
-        }
+        };
         let tradeType, fromAddr;
         if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
           tradeType = FilterTradeNFTTypes.buy;
@@ -433,19 +433,22 @@ export const TradeNFTTable = withTranslation("tables")(
          tableType,
          // tableType,
          // currFilterPair = filterPair,
-         currFilterData = filterDate,
+         currFilterDate = filterDate,
          currPage = pagination?.page || 1,
          currFilterType = filterType,
        }) => {
         if (tableType === TableType.filter) {
           currPage = 1;
         }
+
+        const start = currFilterDate[ 0 ] ? Number(moment(currFilterDate[ 0 ]).format("x")) : undefined;
+        const end = currFilterDate[ 1 ] ? Number(moment(currFilterDate[ 1 ]).format("x")) : undefined;
         // const market =
         //   currFilterPair === "all" ? "" : currFilterPair.replace(/\s+/g, "");
         if (getTradeList) {
           getTradeList({
-            start: currFilterData[ 0 ],
-            end: currFilterData[ 1 ],
+            start: start,
+            end: end,
             limit: pagination?.pageSize ?? 10,
             offset: (currPage - 1) * (pagination?.pageSize ?? 10),
             page: currPage,
@@ -479,13 +482,13 @@ export const TradeNFTTable = withTranslation("tables")(
 
     const handleReset = () => {
       setFilterType(FilterTradeNFTTypes.allTypes);
-      // setFilterDate([null, null]);
+      setFilterDate([null, null]);
       // setFilterPair("all");
+      // setFilterDate(date);
       updateData({
         tableType: "filter",
         currFilterType: FilterTradeTypes.allTypes,
-        // currFilterDate: [null, null],
-        // currFilterPair: "all",
+        currFilterDate: [null, null],
         currPage: 1,
       });
     };
@@ -536,7 +539,7 @@ export const TradeNFTTable = withTranslation("tables")(
             headerRowHeight,
             showloading: showLoading,
             ...rest,
-            rawData,
+            rawData: rawData ?? [],
           }}
         />
         {!!accountId && showFilter && (
