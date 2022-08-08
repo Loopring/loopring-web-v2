@@ -14,6 +14,7 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { TxNFTType } from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "@loopring-web/core";
 import { RowConfig } from "@loopring-web/common-resources";
+import { NFT_TRADE } from '@loopring-web/loopring-sdk/dist/defs/loopring_defs';
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 const LimitNFTHistory = 20;
@@ -166,9 +167,8 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
               limit: _limit,
               start,
               end,
-              // @ts-ignore
               metadata: true,
-              side,
+              side: side as NFT_TRADE,
             },
             account.apiKey
           );
