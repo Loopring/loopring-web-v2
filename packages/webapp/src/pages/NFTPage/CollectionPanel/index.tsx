@@ -1,24 +1,23 @@
 import {
-  CardNFTStyled, CardStyleItem, CollectionMedia, EmptyDefault,
-  ModalBackButton,
-  ModalCloseButton,
-  ModelPanelStyle, NftImage, NFTMedia, useOpenModals, useSettings,
+	CardNFTStyled, EmptyDefault,
+	ModalBackButton,
+	ModalCloseButton,
+	ModelPanelStyle, NftImage, NFTMedia, Toast, useOpenModals, useSettings,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Grid, Modal, Pagination, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled/";
 import { useHistory } from 'react-router-dom';
 import {
   CollectionLimit,
   CreateCollectionStep,
-  EmptyValueTag,
-  getShortAddr,
   NFTLimit, SoursURL
 } from "@loopring-web/common-resources"
 import { useMyCollection } from './hook';
 import { CollectionItem } from '../components/CollectionItem';
 import { DEPLOYMENT_STATUS } from '@loopring-web/loopring-sdk';
+import { TOAST_TIME } from '@loopring-web/core';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -282,6 +281,8 @@ const CommonPanel = () => {
 export const NFTCollectPanel = () => {
 	const {t} = useTranslation(["common"]);
 	const [showCreateOpen, setCreateOpen] = React.useState(false);
+	const [copyToastOpen, setCopyToastOpen] = useState(false);
+
 	const {
 
 		onPageChange,
@@ -379,6 +380,7 @@ export const NFTCollectPanel = () => {
 			component={"section"}
 			marginTop={1}
 		>
+
       <Box display={'flex'} alignSelf={"flex-end"}>
         <Button
           onClick={() => {
@@ -425,7 +427,7 @@ export const NFTCollectPanel = () => {
                   lg={4}
                   flex={"1 1 120%"}
                 >
-	                <CollectionItem item={item} index={index}/>
+	                <CollectionItem item={item as any} index={index} setCopyToastOpen={setCopyToastOpen}/>
                 </Grid>
               })}
             </Grid>
@@ -465,13 +467,22 @@ export const NFTCollectPanel = () => {
                 </Box>
               )}
             />
-          </Box>)
+	        </Box>)
         }
       </Box>
-      <CreateUrlPanel open={showCreateOpen} onClose={() => {
-        setCreateOpen(false);
-      }}
-      />
-    </Box>
+			<CreateUrlPanel open={showCreateOpen} onClose={() => {
+				setCreateOpen(false);
+			}}
+			/>
+			<Toast
+				alertText={t("labelCopyAddClip")}
+				open={copyToastOpen}
+				autoHideDuration={TOAST_TIME}
+				onClose={() => {
+					setCopyToastOpen(false);
+				}}
+				severity={"success"}
+			/>
+		</Box>
   );
 };

@@ -158,8 +158,8 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
               limit: _limit,
               start,
               end,
-              // @ts-ignore
               metadata: true,
+              // @ts-ignore
               side,
             },
             account.apiKey
@@ -222,7 +222,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
 
           limit: pageSize,
           side: undefined,
-        })
+        });
         return state;
       })
     }
