@@ -160,7 +160,7 @@ const getColumnModeAssets = (
     },
     {
       key: "price",
-      name: t("labelTradePrice"),
+      name: t("labelTradeNFTUnitPrice"),
       headerCellClass: "textAlignRight",
       formatter: ({row}) => {
         // const {value} = row[ "price" ];
@@ -242,7 +242,7 @@ const getColumnModeMobileAssets = (
   return [
     {
       key: "side",
-      name: t("labelTradeNFTSide"),
+      name: t("labelTradeNFTSide") + "/" + t('labelTradeNFTUnitPrice'),
       formatter: ({row}) => {
         let {nftAmount, metadata, price, feeTokenSymbol, bInfo, sInfo} = row;
         metadata = {
@@ -327,7 +327,7 @@ const getColumnModeMobileAssets = (
                 paddingLeft={1}
                 component={'span'}
               >
-                {t('labelPrice') + renderValue}
+                {t('labelUPrice') + renderValue}
 
               </Typography>
             </Box>
