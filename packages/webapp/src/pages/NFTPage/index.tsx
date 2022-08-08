@@ -21,7 +21,7 @@ export const NFTPage = () => {
 
   const routerNFT = React.useMemo(() => {
     switch (selected) {
-      case "x":
+      case "transactionNFT":
         return <MyNFTHistory/>;
       case "mintNFTLanding":
         return <MintLandingPage/>;
