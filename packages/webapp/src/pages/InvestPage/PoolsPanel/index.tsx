@@ -21,7 +21,7 @@ import {
   useAmmActivityMap,
   useTokenMap,
 } from "@loopring-web/core";
-import { BackIcon, RowConfig, RowInvestConfig } from "@loopring-web/common-resources";
+import { BackIcon, RowInvestConfig } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 
 const WrapperStyled = styled(Box)`
