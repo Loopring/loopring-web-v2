@@ -11,10 +11,8 @@ import {
 import { useSystem } from "@loopring-web/core";
 import { useAccount } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { TxNFTType } from "@loopring-web/loopring-sdk";
 import { volumeToCountAsBigNumber } from "@loopring-web/core";
 import { RowConfig } from "@loopring-web/common-resources";
-import { NFT_TRADE } from '@loopring-web/loopring-sdk/dist/defs/loopring_defs';
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
 const LimitNFTHistory = 20;
@@ -66,7 +64,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
     async ({
              page = 1,
              limit,
-             txType = sdk.UserNFTTxTypes[ TxNFTType.ALL ],
+             txType = sdk.UserNFTTxTypes[ sdk.TxNFTType.ALL ],
              duration = [null, null],
            }: NFTTableFilter) => {
       if (LoopringAPI.userAPI) {
@@ -168,7 +166,7 @@ export const useHistoryNFT = <Row extends TxnDetailProps, TradeRow extends sdk.U
               start,
               end,
               metadata: true,
-              side: side as NFT_TRADE,
+              side: side as sdk.NFT_TRADE,
             },
             account.apiKey
           );
