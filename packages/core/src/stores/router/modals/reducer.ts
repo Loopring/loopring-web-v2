@@ -393,19 +393,19 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state,
       action: PayloadAction<Partial<TradeNFT<any> & { broker: string }>>
     ) {
-      const { balance, tradeValue, broker, ...rest } = action.payload;
+      const {balance, tradeValue, broker, ...rest} = action.payload;
       state.lastStep = LAST_STEP.nftDeploy;
 
-      if (balance === undefined || balance >= 0) {
-        state.nftDeployValue.balance = balance;
-      }
+      // if (balance === undefined || balance >= 0) {
+      //   state.nftDeployValue.balance = balance;
+      // }
       if (broker) {
         state.nftDeployValue.broker = broker;
       }
 
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.nftDeployValue.tradeValue = tradeValue;
-      }
+      // if (tradeValue === undefined || tradeValue >= 0) {
+      //   state.nftDeployValue.tradeValue = tradeValue;
+      // }
 
       state.nftDeployValue = {
         ...state.nftDeployValue,
