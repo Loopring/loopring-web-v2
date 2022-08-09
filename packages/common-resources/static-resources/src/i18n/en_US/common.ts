@@ -894,4 +894,6 @@ export default {
   labelAdMintGuid: "Generate all the required metadata and upload to IPFS by yourself first, then use \"Advanced Mint\" to create your NFT.",
   labelFilterTradeNFTSell: "Sell",
   labelFilterTradeNFTBuy: "Buy",
+
+  labelInvestDualTitle: "Dual Investment"
 };

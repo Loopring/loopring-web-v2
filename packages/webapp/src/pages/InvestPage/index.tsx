@@ -20,6 +20,7 @@ export enum InvestType {
   AmmPool = 1,
   DeFi = 2,
   Overview = 3,
+  Dual = 4,
 }
 
 export const InvestRouter = ["balance", "ammpool", "defi", ""];
@@ -30,7 +31,7 @@ export const BalanceTitle = () => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-Balance-Title"}
@@ -47,7 +48,7 @@ export const OverviewTitle = () => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-Overview-Title"}
@@ -68,7 +69,7 @@ export const AmmTitle = () => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-Amm-Title"}
@@ -122,7 +123,7 @@ export const DefiTitle = () => {
     <Typography display={"inline-flex"} alignItems={"center"}>
       <Typography
         component={"span"}
-        variant={isMobile ? "h5" : "h5"}
+        variant={"h5"}
         whiteSpace={"pre"}
         marginRight={1}
         className={"invest-defi-Title"}
@@ -181,21 +182,25 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
         setTabIndex(InvestType.MyBalance);
-        setIsShowTab(true)
+        setIsShowTab(true);
         return;
       // return ;
-      case InvestRouter[InvestType.AmmPool]:
+      case InvestRouter[ InvestType.AmmPool ]:
         setTabIndex(InvestType.AmmPool);
-        setIsShowTab(false)
+        setIsShowTab(false);
         return;
-      case InvestRouter[InvestType.DeFi]:
+      case InvestRouter[ InvestType.DeFi ]:
         setTabIndex(InvestType.DeFi);
-        setIsShowTab(false)
+        setIsShowTab(false);
         return;
-      case InvestRouter[InvestType.Overview]:
+      case InvestRouter[ InvestType.Dual ]:
+        setTabIndex(InvestType.Dual);
+        setIsShowTab(false);
+        return;
+      case InvestRouter[ InvestType.Overview ]:
       default:
         setTabIndex(InvestType.Overview);
-        setIsShowTab(true)
+        setIsShowTab(true);
         return;
     }
   }, [match?.params.item]);
@@ -233,6 +238,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
        {tabIndex === InvestType.DeFi && (
          <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest}/>
        )}
+       {tabIndex === InvestType.Dual && <PoolsPanel/>}
        {tabIndex === InvestType.MyBalance && (
          <Box
            flex={1}
