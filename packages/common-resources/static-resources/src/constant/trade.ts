@@ -365,6 +365,9 @@ export enum CreateCollectionStep {
   // Loading,
   // CreateTokenAddressFailed,
   ChooseMethod,
+  ChooseMintMethod
   // AdvancePanel,
-  CommonPanel,
+  // CommonPanel,
 }
+
+export const CollectionHttps = "https://nftColletion.loopring.io/";

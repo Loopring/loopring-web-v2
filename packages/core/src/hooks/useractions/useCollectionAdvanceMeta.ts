@@ -18,7 +18,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>(
   }) {
   const {allowTrade, chainId} = useSystem();
   const {setShowCollectionAdvance} = useOpenModals();
-  const {updateWalletL2Collection} = useWalletL2Collection()
+  const {updateWalletL2Collection} = useWalletL2Collection();
   const {account} = useAccount();
   const [metaData, setMetaData] = React.useState('');
   const {t} = useTranslation('common');
@@ -42,7 +42,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>(
           name: collectionAdvanceValue.name?.trim(),
           tileUri: collectionAdvanceValue.tileUri?.trim(),
           owner: account.accAddress
-        }, chainId as any, account.apiKey, account.eddsaKey.sk);
+        } as sdk.CollectionMeta, chainId as any, account.apiKey, account.eddsaKey.sk);
         if (
           response &&
           ((response as sdk.RESULT_INFO).code ||
@@ -77,7 +77,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>(
     }
     // resetBtnInfo();
     // disableBtn();
-    setError(undefined)
+    setError(undefined);
     setMetaData('');
     updateCollectionAdvanceData({})
 
@@ -131,18 +131,18 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>(
         // eval(`_metaData =_data`)
         if (!_metaData.tileUri) {
           setError({code: UIERROR_CODE.ERROR_COLLECTION_METADATA_NO_TILEURI, message: 'empty tileUri'});
-          updateCollectionAdvanceData({})
+          updateCollectionAdvanceData({});
           return;
         }
         if (!_metaData.name) {
           setError({code: UIERROR_CODE.ERROR_COLLECTION_NO_NAME, message: 'empty name'});
-          updateCollectionAdvanceData({})
+          updateCollectionAdvanceData({});
           return;
         }
         setError(undefined);
         updateCollectionAdvanceData(_metaData)
       } catch (_error) {
-        setError({code: UIERROR_CODE.ERROR_JSON_STRINGIFY, message: (_error as any)?.message})
+        setError({code: UIERROR_CODE.ERROR_JSON_STRINGIFY, message: (_error as any)?.message});
         return;
       }
     },
@@ -152,7 +152,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>(
     btnStatus,
     btnInfo,
     metaData,
-  } as CollectionAdvanceProps<T>
+  } as CollectionAdvanceProps<T>;
 
   return {
     collectionAdvanceProps,

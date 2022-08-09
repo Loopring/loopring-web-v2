@@ -141,38 +141,38 @@ export const DeployNFTWrap = <
               >
                 {t("labelNFTDetail")}
               </Typography>
-              <Typography
-                display={"inline-flex"}
-                variant={"body1"}
-                marginTop={2}
-              >
-                <Typography color={"var(--color-text-third)"} width={160}>
-                  {t("labelNFTName")}
-                </Typography>
-                <Typography
-                  color={"var(--color-text-third)"}
-                  title={tradeData?.name}
-                >
-                  {tradeData?.name}
-                </Typography>
-              </Typography>
+              {/*<Typography*/}
+              {/*  display={"inline-flex"}*/}
+              {/*  variant={"body1"}*/}
+              {/*  marginTop={2}*/}
+              {/*>*/}
+              {/*  <Typography color={"var(--color-text-third)"} width={160}>*/}
+              {/*    {t("labelNFTName")}*/}
+              {/*  </Typography>*/}
+              {/*  <Typography*/}
+              {/*    color={"var(--color-text-third)"}*/}
+              {/*    title={tradeData?.name}*/}
+              {/*  >*/}
+              {/*    {tradeData?.name}*/}
+              {/*  </Typography>*/}
+              {/*</Typography>*/}
 
-              <Typography
-                display={"inline-flex"}
-                variant={"body1"}
-                marginTop={2}
-              >
-                <Typography color={"var(--color-text-third)"} width={160}>
-                  {t("labelNFTID")}
-                </Typography>
-                <Typography
-                  color={"var(--color-text-third)"}
-                  maxWidth={300}
-                  title={tradeData?.nftId}
-                >
-                  {tradeData?.nftIdView ?? ""}
-                </Typography>
-              </Typography>
+              {/*<Typography*/}
+              {/*  display={"inline-flex"}*/}
+              {/*  variant={"body1"}*/}
+              {/*  marginTop={2}*/}
+              {/*>*/}
+              {/*  <Typography color={"var(--color-text-third)"} width={160}>*/}
+              {/*    {t("labelNFTID")}*/}
+              {/*  </Typography>*/}
+              {/*  <Typography*/}
+              {/*    color={"var(--color-text-third)"}*/}
+              {/*    maxWidth={300}*/}
+              {/*    title={tradeData?.nftId}*/}
+              {/*  >*/}
+              {/*    {tradeData?.nftIdView ?? ""}*/}
+              {/*  </Typography>*/}
+              {/*</Typography>*/}
               <Typography
                 display={"inline-flex"}
                 variant={"body1"}

@@ -6,27 +6,37 @@ import {
   useSettings,
   useToggle
 } from '@loopring-web/component-lib';
-import { Box, Grid, Typography } from '@mui/material';
-import { CopyIcon, copyToClipBoard, EmptyValueTag, TradeNFT } from '@loopring-web/common-resources';
-import React, { useState } from 'react';
-import { DEPLOYMENT_STATUS, NFTCollection } from '@loopring-web/loopring-sdk';
+import { Box, Typography } from '@mui/material';
+import {
+  CollectionHttps,
+  CopyIcon,
+  copyToClipBoard,
+  CreateCollectionStep,
+  getShortAddr,
+  TradeNFT
+} from '@loopring-web/common-resources';
+import React from 'react';
+import { DEPLOYMENT_STATUS, CollectionMeta } from '@loopring-web/loopring-sdk';
 import { LoopringAPI, useAccount, useModalData } from '@loopring-web/core';
 import { useTranslation } from 'react-i18next';
+import * as sdk from '@loopring-web/loopring-sdk';
 
 export const CollectionItem = React.memo(React.forwardRef(({
                                                              item,
                                                              index,
                                                              setCopyToastOpen,
-
+                                                             setShowMintNFT,
                                                            }: {
-  //TODO: MOCK
-  item: NFTCollection & { deploymentStatus: DEPLOYMENT_STATUS }, index: number, setCopyToastOpen: (vale: boolean) => void;
+  item: CollectionMeta,
+  index: number,
+  setCopyToastOpen: (vale: boolean) => void;
+  setShowMintNFT: (step: CreateCollectionStep) => void;
 }, _ref: React.Ref<any>) => {
   const {account} = useAccount();
   const {isMobile} = useSettings();
   const {t} = useTranslation('common');
   const {toggle: {deployNFT}} = useToggle();
-  const {setShowAccount, setShowNFTDetail, setShowNFTDeploy} =
+  const {setShowNFTDeploy} =
     useOpenModals();
   const {updateNFTDeployData} =
     useModalData();
@@ -48,75 +58,88 @@ export const CollectionItem = React.memo(React.forwardRef(({
         onRenderError={() => undefined}
       />
       <Box
-        padding={2}
-        height={80}
+        paddingX={2}
+        paddingTop={2}
+
+        paddingBottom={3}
         display={"flex"}
         flexDirection={"column"}
-        // alignItems={"center"}
         justifyContent={"space-between"}
-        // flexWrap={"wrap"}
       >
-
         <Typography
           color={"text.secondary"}
           component={"h6"}
           whiteSpace={"pre"}
           overflow={"hidden"}
+          display={'inline-flex'}
           textOverflow={"ellipsis"}
+          justifyContent={"space-between"}
         >
-          {item?.name ?? t('labelUnknown')}
-          <Button endIcon={<CopyIcon/>} sx={{marginLeft: 1}} onClick={() => {
+          <span>
+            {item?.name ?? t('labelUnknown')}
+          </span>
+          <Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
+                  sx={{marginLeft: 1}} onClick={() => {
             const metaDemo = {
-              name: "`${COLLECTION_NAME (string, required)}`",
-              tileUri: "ipfs://`${cid (storage image type media, required)}`",
-              collectionTitle: "`${COLLECTION_TITLE (string)}`",
-              description: "`${COLLECTION_DESCRIPTION}",
-              avatar: "ipfs://`${cid  (storage image type media)}",
-              banner: "ipfs://`${cid  (storage image type media)}",
-              thumbnail: "ipfs://`${cid  (storage image type media)}",
+              "name": "`${NFT_NAME}`",
+              "description": "`${NFT_DESCRIPTION}`",
+              "image": "ipfs://`${CID}`",
+              "animation_url": "ipfs://`${CID}`",
+              "collection_metadata": `${CollectionHttps}/${item.contractAddress}`,   //TODO: makesure from backend
+              "royalty_percentage": "`[0..10] (int 0-10)`",
+              "attributes": [
+                {
+                  "trait_type": "`${PROPERTIES_KEY}`",
+                  "value": "`${VALUE}`"
+                }],
+              "properties": {
+                "`${PROPERTIES_KEY}`": "`${VALUE}`"
+              }
             };
             copyToClipBoard(JSON.stringify(metaDemo));
             setCopyToastOpen(true);
 
           }}>
-            {t('labelCopyDemo')}
+            {t('labelCopyNFTDemo')}
           </Button>
         </Typography>
-        <Box display={'flex'} flexDirection={'row'} justifyContent={'space-evenly'}>
+        <Typography
+          color={"text.secondary"}
+          component={"h6"}
+          whiteSpace={"pre"}
+          overflow={"hidden"}
+          display={'inline-flex'}
+          textOverflow={"ellipsis"}
+          justifyContent={"space-between"}
+        >
+
+          <Typography color={"var(--color-text-third)"} width={160}>
+            {t("labelNFTContractAddress")}
+          </Typography>
+          <Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
+                  sx={{marginLeft: 1}} onClick={() => {
+            copyToClipBoard(item?.contractAddress ?? "");
+            setCopyToastOpen(true);
+
+          }}>
+            {getShortAddr(item?.contractAddress ?? "")}
+          </Button>
+          {/*<Link*/}
+          {/*  fontSize={"inherit"}*/}
+          {/*  whiteSpace={"break-spaces"}*/}
+          {/*  style={{ wordBreak: "break-all" }}*/}
+          {/*>*/}
+          {/*  {getShortAddr(item.contractAddress)}*/}
+          {/*</Link>*/}
+        </Typography>
+        <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'} marginTop={2}>
           <>
-            <Box className={isMobile ? "isMobile" : ""} width={"40%"}>
-              <Button
-                variant={"contained"}
-                size={"small"}
-                fullWidth
-                onClick={() => {
-                  const _deployItem: TradeNFT<any> = {
-                    tokenAddress: item.contractAddress,
-                  };
-                  LoopringAPI.userAPI
-                    ?.getAvailableBroker({type: 0})
-                    .then(({broker}) => {
-                      updateNFTDeployData({broker});
-                    });
-                  updateNFTDeployData(_deployItem);
-                  deployNFT.enable
-                    ? setShowNFTDeploy({
-                      isShow: true,
-                      info: {...{_deployItem}},
-                    })
-                    : setShowTradeIsFrozen({isShow: true})
-                }
-                }
-              >
-                {t("labelNFTMintBtn")}
-              </Button>
-            </Box>
             {!!(
               // item.isCounterFactualNFT &&
-              item.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-              item.owner?.toLowerCase() === account.accAddress.toLowerCase()
+              item.deployStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
+              && item.owner?.toLowerCase() === account.accAddress.toLowerCase()
             ) && (
-              <Box className={isMobile ? "isMobile" : ""}>
+              <Box className={isMobile ? "isMobile" : ""} width={"48%"}>
                 <Button
                   variant={"outlined"}
                   size={"medium"}
@@ -124,6 +147,8 @@ export const CollectionItem = React.memo(React.forwardRef(({
                   onClick={() => {
                     const _deployItem: TradeNFT<any> = {
                       tokenAddress: item.contractAddress,
+                      // TODO: fix backend
+                      nftType: sdk.NFTType.ERC1155[ 0 ],
                     };
                     LoopringAPI.userAPI
                       ?.getAvailableBroker({type: 0})
@@ -145,6 +170,34 @@ export const CollectionItem = React.memo(React.forwardRef(({
                 </Button>
               </Box>
             )}
+            <Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
+              <Button
+                variant={"contained"}
+                size={"small"}
+                fullWidth
+                onClick={() => {
+                  setShowMintNFT(CreateCollectionStep.ChooseMintMethod)
+                  //   const _deployItem: TradeNFT<any> = {
+                  //     tokenAddress: item.contractAddress,
+                  //   };
+                  //   LoopringAPI.userAPI
+                  //     ?.getAvailableBroker({type: 0})
+                  //     .then(({broker}) => {
+                  //       updateNFTDeployData({broker});
+                  //     });
+                  //   updateNFTDeployData(_deployItem);
+                  //   deployNFT.enable
+                  //     ? setShowNFTDeploy({
+                  //       isShow: true,
+                  //       info: {...{_deployItem}},
+                  //     })
+                  //     : setShowTradeIsFrozen({isShow: true})
+                  // }
+                }}
+              >
+                {t("labelNFTMintBtn")}
+              </Button>
+            </Box>
           </>
 
 

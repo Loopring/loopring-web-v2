@@ -895,4 +895,6 @@ export default {
   labelFilterTradeNFTSell: "Sell",
   labelFilterTradeNFTBuy: "Buy",
   labelAdMintTitle: "Advance Create Collection",
+  labelCopyNFTDemo: "Copy NFT Demo",
+
 };

@@ -18,6 +18,7 @@ import { useMyCollection } from './hook';
 import { CollectionItem } from '../components/CollectionItem';
 import { DEPLOYMENT_STATUS } from '@loopring-web/loopring-sdk';
 import { TOAST_TIME } from '@loopring-web/core';
+import { MintLandingPage } from '../MintNFTPanel';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -64,16 +65,17 @@ const StyledPaper = styled(Box)`
 // }
 
 const CreateUrlPanel = ({
-                          open,
-                          onClose,
+	                        open,
+	                        onClose,
+	                        step,
                         }: {
-  onClose: () => void,
-  open: boolean,
+	onClose: () => void,
+	open: boolean,
+	step: CreateCollectionStep,
 }) => {
   const {t} = useTranslation();
   const {setShowCollectionAdvance} = useOpenModals();
   const history = useHistory();
-  const [step, setStep] = React.useState(CreateCollectionStep.ChooseMethod);
   const {isMobile} = useSettings();
   const panelList: Array<{
     view: JSX.Element;
@@ -82,40 +84,6 @@ const CreateUrlPanel = ({
     width?: any;
   }> = React.useMemo(() => {
     return [
-      // {
-      //   view: <CreateNamePanel setStep={setStep}/>,
-      // },
-      // {
-      //   view: <Box minHeight={"148px"} flex={1}
-      //              display={'flex'} flexDirection={'column'} alignItems={'center'} width={'var(--modal-width)'}>
-      //     <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={3}>
-      //       {t('Waiting for create Collection token Address')}
-      //     </Typography>
-      //     <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-      //       <div className="loader loader--style3" title="2">
-      //         <img
-      //           className="loading-gif"
-      //           alt={"loading"}
-      //           width="36"
-      //           src={`${SoursURL}images/loading-line.gif`}
-      //         />
-      //       </div>
-      //     </Box>
-      //   </Box>,
-      //   onBack: () => setStep(CreateCollectionStep.CreateTokenAddress)
-      // },
-      // {
-      //   view: <Box minHeight={"280px"} flex={1}
-      //              display={'flex'} flexDirection={'column'} alignItems={'center'} width={'var(--modal-width)'}>
-      //     <Typography component={'h4'} variant={'h4'} textAlign={'center'}>
-      //       {t('labelCollectionCreateFailed')}
-      //     </Typography>
-      //     <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-      //       {t('Collection Failed')}
-      //     </Box>
-      //   </Box>,
-      //   onBack: () => setStep(CreateCollectionStep.CreateTokenAddress)
-      // },
       {
         view: <Box
           flex={1}
@@ -229,8 +197,8 @@ const CreateUrlPanel = ({
           {/*<Box marginLeft={1}>*/}
           {/*  <Button*/}
           {/*    onClick={() => {*/}
-          {/*      history.push("/nft/CreateCollection");*/}
-          {/*    }}*/}
+	        {/*      history.push("/nft/CreateCollection");*/}
+	        {/*    }}*/}
 	        {/*    variant={"outlined"}*/}
 	        {/*    color={"primary"}*/}
 	        {/*  >*/}
@@ -239,7 +207,11 @@ const CreateUrlPanel = ({
 	        {/*</Box>*/}
         </Box>,
 	      // onBack: () => setStep(CreateCollectionStep.ChooseMethod)
-      }
+      },
+	    {
+		    view: <MintLandingPage/>,
+	    },
+
     ]
   }, []);
   return (
@@ -282,6 +254,7 @@ export const NFTCollectPanel = () => {
 	const {t} = useTranslation(["common"]);
 	const [showCreateOpen, setCreateOpen] = React.useState(false);
 	const [copyToastOpen, setCopyToastOpen] = useState(false);
+	const [step, setStep] = React.useState(CreateCollectionStep.ChooseMethod);
 
 	const {
 
@@ -294,7 +267,7 @@ export const NFTCollectPanel = () => {
 	const collectionList = [
 		{
 			"id": 4,
-			"owner": "0x6f88e374dc385035Cdfc17Dd21B966c1853D73D4",
+			"owner": "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
 			"name": "test1",
 			"contractAddress": "0x",
 			"isPublic": false,
@@ -313,7 +286,7 @@ export const NFTCollectPanel = () => {
 		},
 		{
 			"id": 5,
-			"owner": "0x6f88e374dc385035Cdfc17Dd21B966c1853D73D4",
+			"owner": "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
 			"name": "test12",
 			"contractAddress": "0x0280e07385F1aCD12daDd342911bf7e7B2De7fD6",
 			"isPublic": false,
@@ -332,7 +305,7 @@ export const NFTCollectPanel = () => {
 		},
 		{
 			"id": 6,
-			"owner": "0x6f88e374dc385035Cdfc17Dd21B966c1853D73D4",
+			"owner": "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
 			"name": "test123",
 			"contractAddress": "0x3488c0735e3a9d2FDB41634300187B45ACc656E8",
 			"isPublic": false,
@@ -351,7 +324,7 @@ export const NFTCollectPanel = () => {
 		},
 		{
 			"id": 7,
-			"owner": "0x6f88e374dc385035Cdfc17Dd21B966c1853D73D4",
+			"owner": "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
 			"name": "test",
 			"contractAddress": "0xcb7675d3f888419f445f5a895c60c8b8b2652d6a",
 			"isPublic": false,
@@ -384,7 +357,8 @@ export const NFTCollectPanel = () => {
       <Box display={'flex'} alignSelf={"flex-end"}>
         <Button
           onClick={() => {
-            setCreateOpen(true)
+	          setCreateOpen(true);
+	          setStep(CreateCollectionStep.ChooseMethod);
           }}
           variant={"outlined"}
           color={"primary"}
@@ -420,14 +394,17 @@ export const NFTCollectPanel = () => {
 
               {collectionList.map((item, index) => {
                 return <Grid
-                  key={(item?.name ?? "") + index.toString()}
-                  item
-                  xs={12}
-                  md={6}
-                  lg={4}
-                  flex={"1 1 120%"}
+	                key={(item?.name ?? "") + index.toString()}
+	                item
+	                xs={12}
+	                md={6}
+	                lg={4}
+	                flex={"1 1 120%"}
                 >
-	                <CollectionItem item={item as any} index={index} setCopyToastOpen={setCopyToastOpen}/>
+	                <CollectionItem
+		                setShowMintNFT={setStep}
+		                item={item as any}
+		                index={index} setCopyToastOpen={setCopyToastOpen}/>
                 </Grid>
               })}
             </Grid>
@@ -458,22 +435,24 @@ export const NFTCollectPanel = () => {
               height={"100%"}
               message={() => (
                 <Box
-                  flex={1}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
+	                flex={1}
+	                display={"flex"}
+	                alignItems={"center"}
+	                justifyContent={"center"}
                 >
-                  {t("labelNoContent")}
+	                {t("labelNoContent")}
                 </Box>
               )}
             />
 	        </Box>)
         }
       </Box>
-			<CreateUrlPanel open={showCreateOpen} onClose={() => {
+			<CreateUrlPanel open={showCreateOpen} step={step} onClose={() => {
 				setCreateOpen(false);
 			}}
 			/>
+
+
 			<Toast
 				alertText={t("labelCopyAddClip")}
 				open={copyToastOpen}

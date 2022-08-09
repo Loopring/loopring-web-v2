@@ -18,7 +18,7 @@ import * as sdk from '@loopring-web/loopring-sdk';
 BigNumber.config({EXPONENTIAL_AT: 100});
 
 export const useMyCollection = () => {
-  const [collectionList, setCollectionList] = React.useState<sdk.NFTCollection[]>([]);
+  const [collectionList, setCollectionList] = React.useState<sdk.CollectionMeta[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   // const [popItem, setPopItem] =
   //   React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
@@ -62,10 +62,6 @@ export const useMyCollection = () => {
 
 
   return {
-    // nftList,
-    // popItem,
-    // onDetail,
-
     collectionList,
     etherscanBaseUrl,
     onPageChange,

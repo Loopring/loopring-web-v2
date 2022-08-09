@@ -15,7 +15,7 @@ const getWalletL2CollectionBalance = async <_R extends { [ key: string ]: any }>
 }) => {
   const offset = (page - 1) * CollectionLimit;
   const {accountId, apiKey, accAddress} = store.getState().account;
-  myLog('getWalletL2CollectionBalance')
+  myLog('getWalletL2CollectionBalance');
   if (apiKey && accountId && LoopringAPI.userAPI) {
     const response = await LoopringAPI.userAPI
       .getUserNFTCollection(
@@ -31,7 +31,7 @@ const getWalletL2CollectionBalance = async <_R extends { [ key: string ]: any }>
       .catch((_error) => {
         throw new CustomError(ErrorMap.TIME_OUT);
       });
-    let collections: sdk.NFTCollection[] = [], totalNum = 0;
+    let collections: sdk.CollectionMeta[] = [], totalNum = 0;
     if (
       response &&
       ((response as sdk.RESULT_INFO).code ||
@@ -40,7 +40,7 @@ const getWalletL2CollectionBalance = async <_R extends { [ key: string ]: any }>
       throw new CustomError(ErrorMap.ERROR_UNKNOWN);
     }
     collections = (response as any).collections;
-    totalNum = (response as any).totalNum
+    totalNum = (response as any).totalNum;
     return {
       walletL2Collection: collections ?? [],
       total: totalNum,
