@@ -177,7 +177,7 @@ export const CollectionItem = React.memo(React.forwardRef(({
               <Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
                 <Button
                   variant={"contained"}
-                  className={(item.name && item.tileUri) ? "" : "Mui-disabled disabledViewOnly"}
+                  // className={(item.name && item.tileUri) ? "" : "Mui-disabled disabledViewOnly"}
                   size={"small"}
                   fullWidth
                   onClick={() => {
@@ -191,7 +191,7 @@ export const CollectionItem = React.memo(React.forwardRef(({
 
                   }}
                 >
-                  {t("labelNFTMintBtn")}
+                  {t((item.name && item.tileUr) ? "labelNFTMintBtn" : "Fix Collection")}
                 </Button>
               </Box> :
               <Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
