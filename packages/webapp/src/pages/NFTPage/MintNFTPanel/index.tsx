@@ -99,119 +99,6 @@ export const MintNFTPanel = () => {
     </>
   );
 };
-export const MintLandingPage = () => {
-  const history = useHistory();
-  const {setShowNFTMintAdvance} = useOpenModals();
-  const {t} = useTranslation(["common"]);
-  const {isMobile} = useSettings()
-  return (
-    <Box
-      flex={1}
-      display={"flex"}
-      justifyContent={"stretch"}
-      flexDirection={'column'}
-
-    >
-      <Box marginBottom={2}>
-        <Typography component={"h3"} variant={"h4"} marginBottom={1}>
-          {t('labelMintSelect')}
-        </Typography>
-        <Typography component={"h3"} variant={"body1"} color={"textSecondary"}>
-          {t('labelMintSelectDes')}
-        </Typography>
-      </Box>
-      <Box flex={1}
-           alignItems={"center"}
-           display={"flex"}
-           flexDirection={isMobile ? "column" : "row"}
-           justifyContent={"center"}>
-        <CardNFTStyled onClick={() => {
-          history.push("/nft/mintAdvanceNFT");
-          // setShowNFTMintAdvance({isShow: true});
-        }}>
-          <Box flex={1} display={"flex"}
-               alignItems={"center"}
-               justifyContent={"center"}
-               marginBottom={2}
-               minHeight={200}
-               width={"100%"}
-          >
-            {/*<NftImage*/}
-            {/*  */}
-            {/*  onError={() => undefined}*/}
-            {/*  src={"https://static.loopring.io/assets/images/nft-mint.png"}*/}
-            {/*/>*/}
-            <NftImage
-              alt={"NFT Created"}
-              onError={() => undefined}
-              src={`${SoursURL}images/nft_guid1.webp`}
-            />
-          </Box>
-          <Typography
-            display={'flex'}
-            flexDirection={'column'}
-            justifyContent={'space-between'}
-            paddingX={2}
-            component={'p'}
-            variant={'body1'}
-            minHeight={"160px"}
-            marginBottom={3}
-          >
-            <>{t('labelAdMintGuid')}
-
-              <Button
-                variant={"contained"}
-                color={"primary"}
-                fullWidth={true}
-              >
-                {t("labelAdvanceMint")}
-              </Button>
-            </>
-          </Typography>
-        </CardNFTStyled>
-        <CardNFTStyled sx={{marginLeft: isMobile ? 0 : 4}} onClick={() => {
-          history.push("/nft/mintNFT");
-        }}>
-          <Box flex={1} display={"flex"}
-               alignItems={"center"}
-               justifyContent={"center"}
-               marginBottom={2}
-               minHeight={200}
-               width={"100%"}
-          >
-            <NftImage
-
-              alt={"NFT Created"}
-              onError={() => undefined}
-              src={`${SoursURL}images/nft_guid2.webp`}
-            />
-          </Box>
-          <Typography
-            display={'flex'}
-            flexDirection={'column'}
-            justifyContent={'space-between'}
-            paddingX={2}
-            component={'p'}
-            variant={'body1'}
-            minHeight={"160px"}
-            marginBottom={3}
-          >
-            <>{t('labelMintGuid')}
-
-              <Button
-                variant={"contained"}
-                color={"primary"}
-                fullWidth={true}
-              >
-                {t("labelMintNFT")}
-              </Button>
-            </>
-          </Typography>
-        </CardNFTStyled>
-      </Box>
-    </Box>
-  );
-};
 export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
   I>() => {
   const history = useHistory();
@@ -219,7 +106,7 @@ export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
   const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
   React.useEffect(() => {
     resetDefault();
-  }, [match?.params?.mintAdvanceNFT])
+  }, [match?.params?.mintAdvanceNFT]);
   const {t} = useTranslation("common");
   return <>
     <Box marginBottom={2}>
@@ -255,4 +142,4 @@ export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
       />
     </StyledPaper>
   </>
-}
+};

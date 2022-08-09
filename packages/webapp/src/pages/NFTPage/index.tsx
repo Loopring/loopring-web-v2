@@ -7,11 +7,12 @@ import React from "react";
 import { useNFTMintAdvance, ViewAccountTemplate } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
-import { MintLandingPage, MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
+import { MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
 import { mintService } from "@loopring-web/core";
 import { NFTCollectPanel } from "./CollectionPanel";
 import { CreateCollectionPanel } from './CreateCollectionPanel';
+import { MintLandingPage } from './components/landingPanel';
 
 export const subMenu = subMenuNFT;
 

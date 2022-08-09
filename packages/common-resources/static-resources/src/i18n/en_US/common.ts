@@ -896,5 +896,7 @@ export default {
   labelFilterTradeNFTBuy: "Buy",
   labelAdMintTitle: "Advance Create Collection",
   labelCopyNFTDemo: "Copy NFT Demo",
-
+  labelSelectCollection: "Choose or Create a Collection to Mint Your Own NFT",
+  labelSelectCollectionDes: "A NFT Collection can help you manage and group your NFTs",
+  labelChooseCollectionBtn: "Choose a Collection to Mint",
 };
