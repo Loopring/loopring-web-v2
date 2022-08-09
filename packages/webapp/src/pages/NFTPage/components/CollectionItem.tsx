@@ -191,7 +191,7 @@ export const CollectionItem = React.memo(React.forwardRef(({
 
                   }}
                 >
-                  {t((item.name && item.tileUri) ? "labelNFTMintBtn" : "Fix Collection")}
+                  {(item.name && item.tileUri) ? t("labelNFTMintBtn") : t("Fix Collection")}
                 </Button>
               </Box> :
               <Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
