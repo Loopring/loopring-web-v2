@@ -24,6 +24,10 @@ export const CardStyleItem = styled(Card)`
   padding: 0 0 calc(100% + 80px);
   position: relative;
 
+  &.collection {
+    padding: 0 0 calc(100% + 120px);
+  }
+
   img {
     object-fit: contain;
   }

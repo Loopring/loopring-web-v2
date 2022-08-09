@@ -73,6 +73,7 @@ export const DeployNFTWrap = <
           className={assetsData ? "" : "loading"}
           paddingBottom={3}
           container
+          marginTop={-3}
           paddingLeft={5 / 2}
           paddingRight={5 / 2}
           direction={"column"}
@@ -215,14 +216,14 @@ export const DeployNFTWrap = <
                 <Link
                   fontSize={"inherit"}
                   whiteSpace={"break-spaces"}
-                  style={{ wordBreak: "break-all" }}
+                  style={{wordBreak: "break-all"}}
                 >
                   {tradeData.broker}
                 </Link>
               </Typography>
             </Box>
           </Grid>
-          <Grid item alignSelf={"stretch"} position={"relative"}>
+          <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
             {!chargeFeeTokenList?.length ? (
               <Typography>{t("labelFeeCalculating")}</Typography>
             ) : (
