@@ -135,10 +135,10 @@ export const NFTCollectPanel = () => {
 			"thumbnail": "",
 			"cid": "",
 			"tileUri": "123",
-			"deployStatus": DEPLOYMENT_STATUS.NOT_DEPLOYED,
+			"deployStatus": DEPLOYMENT_STATUS.DEPLOYED,
 			"createdAt": 1658718302048,
 			"updatedAt": 1658718302048,
-			"nftType": NFTType.ERC1155,
+			"nftType": NFTType.ERC721,
 		},
 		{
 			"id": 7,
