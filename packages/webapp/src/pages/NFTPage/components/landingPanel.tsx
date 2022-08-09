@@ -272,6 +272,9 @@ export const CreateUrlPanel = ({
 			{
 				view: <MintLandingPanel/>,
 			},
+			{
+				view: <Typography>Go toEdit Panel....</Typography>
+			}
 
 		]
 	}, []);

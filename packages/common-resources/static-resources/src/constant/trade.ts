@@ -365,7 +365,8 @@ export enum CreateCollectionStep {
   // Loading,
   // CreateTokenAddressFailed,
   ChooseMethod,
-  ChooseMintMethod
+  ChooseMintMethod,
+  ChooseCollectionEdit
   // AdvancePanel,
   // CommonPanel,
 }

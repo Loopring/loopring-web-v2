@@ -143,7 +143,7 @@ export const NFTCollectPanel = () => {
 		{
 			"id": 7,
 			"owner": "0xfF7d59D9316EBA168837E3eF924BCDFd64b237D8",
-			"name": "test",
+			"name": "",
 			"contractAddress": "0xcb7675d3f888419f445f5a895c60c8b8b2652d6a",
 			"isPublic": false,
 			"baseUri": "0x02530c90e884ed9048ed5835eda043879f8c630622e28a4330a09aae120dc821",
@@ -154,7 +154,7 @@ export const NFTCollectPanel = () => {
 			"banner": "",
 			"thumbnail": "",
 			"cid": "",
-			"tileUri": "123",
+			"tileUri": "",
 			"deployStatus": DEPLOYMENT_STATUS.DEPLOY_FAILED,
 			"createdAt": 1659600719224,
 			"updatedAt": 1659600719224,

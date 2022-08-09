@@ -173,20 +173,26 @@ export const CollectionItem = React.memo(React.forwardRef(({
                 </Button>
               </Box>
             )}
-            {!(item?.nftType && item.nftType == NFTType.ERC721) &&
+            {!(item?.nftType && item.nftType === NFTType.ERC721) &&
               <Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
-
                 <Button
                   variant={"contained"}
+                  className={(item.name && item.tileUri) ? "" : "Mui-disabled disabledViewOnly"}
                   size={"small"}
                   fullWidth
                   onClick={() => {
-                    setShowMintNFT(CreateCollectionStep.ChooseMintMethod);
-                    setCreateOpen(true);
+                    if (item.name && item.tileUri) {
+                      setShowMintNFT(CreateCollectionStep.ChooseMintMethod);
+                      setCreateOpen(true);
+                    } else {
+                      setShowMintNFT(CreateCollectionStep.ChooseCollectionEdit);
+                      setCreateOpen(true);
+                    }
+
                   }}
                 >
-                {t("labelNFTMintBtn")}
-              </Button>
+                  {t("labelNFTMintBtn")}
+                </Button>
             </Box>
             }
           </>
