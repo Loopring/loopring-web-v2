@@ -110,17 +110,19 @@ const NotificationListItemStyled = styled(ListItem)<ListItemProps & Partial<ACTI
   .MuiListItemText-root {
     margin-top: 0;
   }
+
   .description {
     text-overflow: ellipsis;
     word-break: break-all;
     white-space: nowrap;
-    max-width: 320px;
-    min-width: 260px;
+    width: 100%;
   }
+
   .MuiListItemAvatar-root {
     width: 1em;
     height: 100%;
   }
+
   ${(props) => cssBackground(props)}
 ` as (
   props: ListItemProps & Partial<ACTIVITY> & { lng: string }
@@ -172,8 +174,8 @@ export const NotificationListItem = (
       >
         <ListItemText
           className={"title"}
-          primary={<span dangerouslySetInnerHTML={{ __html: title ?? "" }} />}
-          primaryTypographyProps={{ component: "h4", color: "textPrimary" }}
+          primary={<span dangerouslySetInnerHTML={{__html: title ?? ""}}/>}
+          primaryTypographyProps={{component: "h4", color: "textPrimary", title,}}
         />
         <ListItemText
           className="description description1"
@@ -183,7 +185,10 @@ export const NotificationListItem = (
           primaryTypographyProps={{
             component: "p",
             variant: "body1",
+            textOverflow: "ellipsis",
+            title: description1,
             color: "textPrimary",
+            overflow: "hidden",
           }}
         />
         <ListItemText
@@ -194,7 +199,10 @@ export const NotificationListItem = (
           primaryTypographyProps={{
             component: "p",
             variant: "body2",
+            textOverflow: "ellipsis",
+            title: description2,
             color: "textSecondary",
+            overflow: "hidden",
           }}
         />
       </Box>
@@ -268,7 +276,10 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
             primaryTypographyProps={{
               component: "h6",
               variant: "subtitle1",
+              title: title,
               color: "textPrimary",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
           />
           <ListItemText
@@ -276,9 +287,11 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
             primary={description1}
             primaryTypographyProps={{
               component: "p",
-
+              title: description1,
               variant: "body1",
               color: "textPrimary",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
           />
           <ListItemText
@@ -286,8 +299,11 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
             primary={description2}
             primaryTypographyProps={{
               component: "p",
+              title: description2,
               variant: "body2",
               color: "textSecondary",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
           />
         </Box>
