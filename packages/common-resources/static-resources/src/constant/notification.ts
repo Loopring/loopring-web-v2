@@ -44,6 +44,7 @@ export type NOTIFICATION_ITEM = {
   endShow: number;
   color: NOTIFY_COLOR;
   banner?: string;
+  webRouter?: string;
 };
 export type ACTIVITY = NOTIFICATION_ITEM;
 export type NOTIFICATION = {

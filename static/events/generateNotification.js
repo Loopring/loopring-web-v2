@@ -164,6 +164,7 @@ async function createNotifyJSON(lng) {
               endShow,
               color: item[9],
               banner: item[10],
+              webRouter: item[11],
             };
             if (item[0] === TYPE.ACTIVITY) {
               json.activities = json.activities.concat(_item);
