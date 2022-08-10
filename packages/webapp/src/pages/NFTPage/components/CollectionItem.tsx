@@ -1,14 +1,13 @@
 import {
   Button,
   CardStyleItem,
-  CollectionMedia,
+  CollectionMedia, makeMeta,
   useOpenModals,
   useSettings,
   useToggle
 } from '@loopring-web/component-lib';
 import { Box, Typography } from '@mui/material';
 import {
-  CollectionHttps,
   CopyIcon,
   copyToClipBoard,
   CreateCollectionStep,
@@ -19,6 +18,7 @@ import React from 'react';
 import { CollectionMeta, DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk';
 import { LoopringAPI, useAccount, useModalData } from '@loopring-web/core';
 import { useTranslation } from 'react-i18next';
+
 
 export const CollectionItem = React.memo(React.forwardRef(({
                                                              item,
@@ -42,6 +42,7 @@ export const CollectionItem = React.memo(React.forwardRef(({
   const {updateNFTDeployData} =
     useModalData();
   const {setShowTradeIsFrozen} = useOpenModals();
+  const {metaDemo} = makeMeta({collection: item});
 
   return <CardStyleItem ref={_ref} className={'collection'}>
     <Box
@@ -112,22 +113,7 @@ export const CollectionItem = React.memo(React.forwardRef(({
           </Typography>
           <Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
                   sx={{marginLeft: 1}} onClick={() => {
-            const metaDemo = {
-              "name": "`${NFT_NAME}`",
-              "description": "`${NFT_DESCRIPTION}`",
-              "image": "ipfs://`${CID}`",
-              "animation_url": "ipfs://`${CID}`",
-              "collection_metadata": `${CollectionHttps}/${item.contractAddress}`,   //TODO: makesure from backend
-              "royalty_percentage": "`[0..10] (int 0-10)`",
-              "attributes": [
-                {
-                  "trait_type": "`${PROPERTIES_KEY}`",
-                  "value": "`${VALUE}`"
-                }],
-              "properties": {
-                "`${PROPERTIES_KEY}`": "`${VALUE}`"
-              }
-            };
+
             copyToClipBoard(JSON.stringify(metaDemo));
             setCopyToastOpen(true);
 

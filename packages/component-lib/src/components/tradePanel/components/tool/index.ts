@@ -6,3 +6,8 @@ export * from "./TradeMenuList";
 export * from "../SwapWrap/SwapMenuList";
 export * from "./Dialogs";
 export * from "../../Deposit/DepositTitle";
+export * from "./CollectionInput"
+
+
+
+

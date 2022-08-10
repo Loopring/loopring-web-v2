@@ -16,3 +16,4 @@ export * from "./Deposit";
 export * from "./components/tool/FeeList";
 export * from "./components/DeFiWrap";
 export * from "./components/CollectionAdvanceWrap";
+export * from "./components/tool/CollectionInput"
