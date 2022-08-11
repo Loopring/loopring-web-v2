@@ -185,7 +185,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 					display={"flex"}
 					justifyContent={"flex-start"}
 					flexDirection={"column"}
-					alignItems={"flex-start"}
+					alignItems={"center"}
 					width={'100%'}
 				>
 					<Typography component={'h4'} variant={'h5'} marginBottom={2}>
@@ -216,9 +216,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 							})}
 						</RadioGroupStyle>
 					</Box>
-					{method === AdMethod.NoData && <Box display={'flex'} paddingX={2} width={"100%"} marginTop={1}>
-            <CollectionInput  {...{...collectionInputProps}} fullWidth={true}/>
-          </Box>}
+					{method === AdMethod.NoData && <CollectionInput  {...{...collectionInputProps}} fullWidth={true}/>}
 					<Box>
 
 					</Box>

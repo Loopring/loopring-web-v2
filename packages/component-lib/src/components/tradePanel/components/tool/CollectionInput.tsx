@@ -108,12 +108,12 @@ export const CollectionInput = <Co extends CollectionMeta>(
 		page,
 		// setCopyToastOpen,
 	} = collectionListProps;
-	return <Box display={'flex'} flexDirection={'column'}>
+	return <Box display={'flex'} flexDirection={'column'} width={fullWidth ? "100%" : width}>
 		<Tooltip
 			title={t("labelMintCollectionTooltips").toString()}
 			placement={"top"}
 		>
-			<Box width={fullWidth ? "100%" : width}>
+			<Box width={"100%"}>
 				<Typography
 					variant={"body1"}
 					color={"var(--color-text-secondary)"}
@@ -133,6 +133,7 @@ export const CollectionInput = <Co extends CollectionMeta>(
 			</Box>
 		</Tooltip>
 		<BoxStyle
+			width={"100%"}
 			display={"flex"}
 			alignItems={"center"}
 			fontSize={"1.6rem"}
