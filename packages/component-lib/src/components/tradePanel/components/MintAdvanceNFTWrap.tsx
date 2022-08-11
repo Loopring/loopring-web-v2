@@ -8,10 +8,10 @@ import {
 	FeeInfo,
 	Info2Icon,
 	IPFS_LOOPRING_SITE,
-	IPFS_META_URL,
+  IPFS_HEAD_URL,
 	LoadingIcon,
 	myLog,
-	TradeNFT, UpColor,
+	TradeNFT,
 } from "@loopring-web/common-resources";
 import {
 	Button,
@@ -48,14 +48,6 @@ const BoxStyle = styled(Grid)`
       font-size: ${({theme}) => theme.fontDefault.body1};
     }
   }
-
-  // .coinInput-wrap {
-  //   border: 1px solid var(--color-border);
-  // }
-  //
-  // .MuiInputLabel-root {
-    //   font-size: ${({theme}) => theme.fontDefault.body2};
-  // }
 ` as typeof Grid;
 const NFT_TYPE: TGItemData[] = [
 	{
@@ -114,9 +106,6 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 		walletMap,
 		tradeData,
 		btnInfo,
-		// title,
-		// description,
-		// btnInfo,
 		handleOnNFTDataChange,
 		nftMintBtnStatus,
 		isFeeNotEnough,
@@ -129,10 +118,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 	}: NFTMintAdvanceViewProps<T, I, C>) => {
 	const {t} = useTranslation(["common"]);
 	const {isMobile} = useSettings();
-	// const styles = isMobile
-	// 	? {flex: 1, width: "var(--swap-box-width)"}
-	// 	: {width: "var(--modal-width)"};
-	const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
+  const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
 
 	const inputBtnRef = React.useRef();
 	const [dropdownStatus, setDropdownStatus] =
@@ -458,7 +444,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 									<NftImage
 										alt={"NFT"}
 										src={tradeData?.image?.replace(
-											IPFS_META_URL,
+                      IPFS_HEAD_URL,
 											IPFS_LOOPRING_SITE
 										)}
 										onError={() => undefined}

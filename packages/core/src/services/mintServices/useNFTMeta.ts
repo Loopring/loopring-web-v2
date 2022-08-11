@@ -2,7 +2,7 @@ import React from "react";
 import {
   ErrorType,
   IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   MINT_LIMIT,
   myLog,
   NFTMETA,
@@ -119,7 +119,7 @@ export function useNFTMeta<T extends NFTMETA>({
             isProcessing: false,
           };
           handleOnMetaChange({
-            image: `${IPFS_META_URL}${data.path}`,
+            image: `${IPFS_HEAD_URL}${data.path}`,
           } as T);
         }
         return _value;

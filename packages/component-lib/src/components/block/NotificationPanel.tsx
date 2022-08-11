@@ -70,7 +70,7 @@ export const NotificationPanel = ({
           </Box>
           {!!hasNotifications && (
             <>
-              {hasActivities && <Divider />}
+              {!!hasActivities && <Divider/>}
               <Box
                 component={"section"}
                 display={"flex"}

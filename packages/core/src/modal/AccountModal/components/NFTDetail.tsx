@@ -6,7 +6,7 @@ import {
   Explorer,
   getShortAddr,
   IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   LinkIcon,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
@@ -96,7 +96,7 @@ const BoxStyle = styled(Box)<
          position:absolute;
          filter: blur(3px);
          background:url(${
-           image ? image.replace(IPFS_META_URL, IPFS_LOOPRING_SITE) : ""
+         image ? image.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) : ""
          }) no-repeat 50% 10px;
           background-size: contain;
          opacity: 0.08;

@@ -1,6 +1,6 @@
 import {
   IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
   Media,
@@ -169,7 +169,7 @@ export const useMyNFT = () => {
       tokenInfo?.animationUrl !== ""
     ) {
       const req = await fetch(
-        tokenInfo.animationUrl.replace(IPFS_META_URL, IPFS_LOOPRING_SITE),
+        tokenInfo.animationUrl.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE),
         {
           method: "HEAD",
         }
@@ -279,13 +279,13 @@ export const useMyNFT = () => {
     onPageChange(1);
   }, []);
   React.useEffect(() => {
-    updateWalletLayer2NFT({ page });
-  }, [page]);
+    updateWalletLayer2NFT({page});
+  }, [page, updateWalletLayer2NFT]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET && page_reudex === page) {
       renderNFT();
     }
-  }, [walletLayer2NFTStatus, page, page_reudex]);
+  }, [walletLayer2NFTStatus, page, page_reudex, renderNFT]);
 
   return {
     nftList,

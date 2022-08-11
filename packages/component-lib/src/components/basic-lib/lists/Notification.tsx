@@ -19,17 +19,18 @@ import { useHistory } from "react-router-dom";
 import { useSettings } from "../../../stores";
 
 const cssBackground = ({
-  theme,
-  color,
-  banner,
-  lng,
-}: { theme: Theme; lng: string } & Partial<NOTIFICATION_ITEM>) => {
+                         theme,
+                         color,
+                         banner,
+                         lng,
+                       }: { theme: Theme; lng: string } & Partial<NOTIFICATION_ITEM>) => {
   let svg: string, _color: string;
   const fillColor = theme.colorBase.textDisable;
   const opacity = 0.2;
   if (banner) {
     return css`
       text-indent: -99999em;
+
       &,
       &:hover {
         background: url("${banner.replace("{lng}", lng)}");
@@ -93,34 +94,35 @@ const cssBackground = ({
   `;
 };
 
-const NotificationListItemStyled = styled(ListItem)<
-  ListItemProps & Partial<ACTIVITY> & { lng: string }
->`
+const NotificationListItemStyled = styled(ListItem)<ListItemProps & Partial<ACTIVITY> & { lng: string }>`
   cursor: pointer;
   height: var(--notification-activited-heigth);
   width: calc(var(--notification-activited-heigth) * 327 / 80);
   overflow: hidden;
-  padding: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit}px;
+  padding: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px;
   background-color: var(--opacity);
+
   &:not(:last-child) {
     border-bottom: 1px solid var(--color-divide);
-    // margin-bottom: ${({ theme }) => theme.unit}px;
+      // margin-bottom: ${({theme}) => theme.unit}px;
   }
 
   .MuiListItemText-root {
     margin-top: 0;
   }
+
   .description {
     text-overflow: ellipsis;
     word-break: break-all;
     white-space: nowrap;
-    max-width: 320px;
-    min-width: 260px;
+    width: 100%;
   }
+
   .MuiListItemAvatar-root {
     width: 1em;
     height: 100%;
   }
+
   ${(props) => cssBackground(props)}
 ` as (
   props: ListItemProps & Partial<ACTIVITY> & { lng: string }
@@ -131,22 +133,33 @@ export const NotificationListItem = (
 ) => {
   const history = useHistory();
   const { language } = useSettings();
-  const lng = languageMap[language];
-  const { title, description1, description2, account, banner } = props;
+  const lng = languageMap[ language ];
+  const {title, description1, description2, account, banner, webRouter, link} = props;
   return (
     <NotificationListItemStyled
       {...{ lng, banner }}
       alignItems="flex-start"
       onClick={() => {
-        if (props.link && !!account?.accAddress) {
-          props.link = /\?/.test(props.link)
-            ? `&l2account=${account?.accAddress}`
-            : `?l2account=${account?.accAddress}`;
+        if (webRouter) {
+          const [_, target, router] = webRouter.match(/\[(.*)\](.*)/i) ?? [];
+          if (router && target === 'self') {
+            history.push(router)
+          } else {
+            window.open(router ? `https://loopring.io/#/${router}` : `${link}` + `&l2account=${account?.accAddress}`, "_blank");
+            window.opener = null;
+          }
+        } else if (link) {
+          if (props.link && !!account?.accAddress) {
+            props.link = /\?/.test(props.link)
+              ? `&l2account=${account?.accAddress}`
+              : `?l2account=${account?.accAddress}`;
+          }
+          props.link?.startsWith("http")
+            ? window.open(props.link, "_blank")
+            : history.replace(`/notification/${props.link}`);
+          window.opener = null;
         }
-        props.link?.startsWith("http")
-          ? window.open(props.link, "_blank")
-          : history.replace(`/notification/${props.link}`);
-        window.opener = null;
+
       }}
       className={`notification`}
     >
@@ -161,8 +174,8 @@ export const NotificationListItem = (
       >
         <ListItemText
           className={"title"}
-          primary={<span dangerouslySetInnerHTML={{ __html: title ?? "" }} />}
-          primaryTypographyProps={{ component: "h4", color: "textPrimary" }}
+          primary={<span dangerouslySetInnerHTML={{__html: title ?? ""}}/>}
+          primaryTypographyProps={{component: "h4", color: "textPrimary", title,}}
         />
         <ListItemText
           className="description description1"
@@ -172,7 +185,10 @@ export const NotificationListItem = (
           primaryTypographyProps={{
             component: "p",
             variant: "body1",
+            textOverflow: "ellipsis",
+            title: description1,
             color: "textPrimary",
+            overflow: "hidden",
           }}
         />
         <ListItemText
@@ -183,7 +199,10 @@ export const NotificationListItem = (
           primaryTypographyProps={{
             component: "p",
             variant: "body2",
+            textOverflow: "ellipsis",
+            title: description2,
             color: "textSecondary",
+            overflow: "hidden",
           }}
         />
       </Box>
@@ -191,17 +210,15 @@ export const NotificationListItem = (
   );
 };
 
-const ListItemActivityStyle = styled(NotificationListItemStyled)<
-  ListItemProps & Partial<ACTIVITY> & { lng: string }
->`
+const ListItemActivityStyle = styled(NotificationListItemStyled)<ListItemProps & Partial<ACTIVITY> & { lng: string }>`
   &:not(:last-child) {
     border-bottom: 0;
-    margin-bottom: ${({ theme }) => theme.unit}px;
+    margin-bottom: ${({theme}) => theme.unit}px;
   }
 
-  padding: ${({ theme }) => theme.unit}px;
+  padding: ${({theme}) => theme.unit}px;
   ${(props) => cssBackground(props)}
-  border-radius: ${({ theme }) => theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
 ` as (
   props: ListItemProps & Partial<ACTIVITY> & { lng: string }
 ) => JSX.Element;
@@ -216,9 +233,11 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
     account,
     banner,
     color,
+    webRouter,
   } = props;
   const { language } = useSettings();
-  const lng = languageMap[language];
+  const lng = languageMap[ language ];
+  const history = useHistory();
   if (Date.now() > startShow) {
     return (
       <ListItemActivityStyle
@@ -228,8 +247,18 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
         //   history.replace(``)
         // }
         onClick={() => {
-          window.open(`${link}&l2account=${account?.accAddress}`, "_blank");
-          window.opener = null;
+          if (webRouter) {
+            const [_, target, router] = webRouter.match(/\[(.*)\](.*)/i) ?? [];
+            if (router && target === 'self') {
+              history.push(router)
+            } else {
+              window.open(router ? `https://loopring.io/#/${router}` : `${link}` + `&l2account=${account?.accAddress}`, "_blank");
+              window.opener = null;
+            }
+          } else if (link) {
+            window.open(`${link}&l2account=${account?.accAddress}`, "_blank");
+            window.opener = null;
+          }
         }}
         type={props.type}
       >
@@ -247,7 +276,10 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
             primaryTypographyProps={{
               component: "h6",
               variant: "subtitle1",
+              title: title,
               color: "textPrimary",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
           />
           <ListItemText
@@ -255,9 +287,11 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
             primary={description1}
             primaryTypographyProps={{
               component: "p",
-
+              title: description1,
               variant: "body1",
               color: "textPrimary",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
           />
           <ListItemText
@@ -265,8 +299,11 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
             primary={description2}
             primaryTypographyProps={{
               component: "p",
+              title: description2,
               variant: "body2",
               color: "textSecondary",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
           />
         </Box>
