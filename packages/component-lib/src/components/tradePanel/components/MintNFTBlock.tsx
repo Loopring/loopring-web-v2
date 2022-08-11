@@ -31,14 +31,18 @@ import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
 import { Properties } from "./tool/Property";
+import { CollectionInput } from './tool';
+import { CollectionMeta } from '@loopring-web/loopring-sdk';
 
 const GridStyle = styled(Grid)<GridProps>`
   .coinInput-wrap {
     border: 1px solid var(--color-border);
   }
+
   .MuiInputLabel-root {
-    font-size: ${({ theme }) => theme.fontDefault.body2};
+    font-size: ${({theme}) => theme.fontDefault.body2};
   }
+
   .main-label,
   .sub-label {
     color: var(--color-text-secondary);
@@ -46,22 +50,22 @@ const GridStyle = styled(Grid)<GridProps>`
   }
 ` as (props: GridProps) => JSX.Element;
 
-export const MintNFTBlock = <
-  T extends Partial<NFTMETA>,
+export const MintNFTBlock = <T extends Partial<NFTMETA>,
+  Co extends CollectionMeta,
   I extends Partial<MintTradeNFT<any>>,
-  C extends FeeInfo
->({
-  disabled,
-  nftMeta,
-  mintData,
-  btnInfo,
-  nftMetaBtnStatus,
-  handleOnMetaChange,
-  handleMintDataChange,
-  onMetaClick,
-}: NFTMetaBlockProps<T, I, C>) => {
-  const { t } = useTranslation(["common"]);
-  const { isMobile } = useSettings();
+  C extends FeeInfo>({
+                       disabled,
+                       nftMeta,
+                       mintData,
+                       btnInfo,
+                       nftMetaBtnStatus,
+                       handleOnMetaChange,
+                       handleMintDataChange,
+                       collectionInputProps,
+                       onMetaClick,
+                     }: NFTMetaBlockProps<T, Co, I, C>) => {
+  const {t} = useTranslation(["common"]);
+  const {isMobile} = useSettings();
   const inputBtnRef = React.useRef();
 
   const getDisabled = React.useMemo(() => {
@@ -110,43 +114,26 @@ export const MintNFTBlock = <
             }
             type={"text"}
             onChange={(event) =>
-              handleOnMetaChange({ name: event.target.value } as Partial<T>)
+              handleOnMetaChange({name: event.target.value} as Partial<T>)
             }
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <TextField
-            value={nftMeta.collection ?? ""}
-            fullWidth
-            select
-            disabled={true}
-            label={
-              <Tooltip
-                title={t("labelMintCollectionTooltips").toString()}
-                placement={"top"}
-              >
-                <Typography
-                  variant={"inherit"}
-                  display={"inline-flex"}
-                  alignItems={"center"}
-                >
-                  <Trans i18nKey={"labelMintCollection"}>
-                    Collection( "coming soon")
-                    <Info2Icon
-                      fontSize={"small"}
-                      color={"inherit"}
-                      sx={{ marginX: 1 / 2 }}
-                    />
-                  </Trans>
-                </Typography>
-              </Tooltip>
-            }
-            type={"text"}
-          >
-            {[].map((_item, index) => (
-              <Box key={index} />
-            ))}
-          </TextField>
+          <CollectionInput {...collectionInputProps} />
+          {/*<TextField*/}
+          {/*  value={nftMeta.collection ?? ""}*/}
+          {/*  fullWidth*/}
+          {/*  select*/}
+          {/*  disabled={true}*/}
+          {/*  label={*/}
+          {/*   */}
+          {/*  }*/}
+          {/*  type={"text"}*/}
+          {/*>*/}
+          {/*  {[].map((_item, index) => (*/}
+          {/*    <Box key={index} />*/}
+          {/*  ))}*/}
+          {/*</TextField>*/}
         </Grid>
         <Grid item xs={12} md={6}>
           <InputCoin

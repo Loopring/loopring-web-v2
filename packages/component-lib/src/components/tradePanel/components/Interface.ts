@@ -21,6 +21,7 @@ import {
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
+import { CollectionInputProps } from './tool';
 
 /**
  * private props
@@ -353,11 +354,12 @@ export type NFTMintViewProps<ME, MI, I, C> = {
   walletMap?: WalletMap<I, WalletCoin<I>>;
   mintService: any;
 } & NFTMintExtendProps<MI, C>;
-export type NFTMetaViewProps<T, C> = {
+export type NFTMetaViewProps<T, Co, C> = {
   nftMeta: T;
+  collectionInputProps: CollectionInputProps<Co>
   disabled?: boolean;
 } & NFTMetaExtendProps<T, C>;
-export type NFTMetaBlockProps<T, I, C> = NFTMetaViewProps<T, C> & {
+export type NFTMetaBlockProps<T, Co, I, C> = NFTMetaViewProps<T, Co, C> & {
   mintData: Partial<I>;
   handleMintDataChange: (data: Partial<I>) => void;
   amountHandleError?: (
@@ -411,17 +413,17 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   wait?: number;
 } & BtnInfoProps;
 
-export type NFTMintAdvanceExtendProps<T, I, C = FeeInfo> = {
+export type NFTMintAdvanceExtendProps<T, Co, I, C = FeeInfo> = {
   isThumb?: boolean;
+  collectionInputProps: CollectionInputProps<Co>
   handleOnNFTDataChange: (data: T) => void;
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
 } & NFTMintAdvanceInfoProps<T, I, C>;
-export type NFTMintAdvanceViewProps<T, I, C> = NFTMintAdvanceExtendProps<
-  T,
+export type NFTMintAdvanceViewProps<T, Co, I, C> = NFTMintAdvanceExtendProps<T,
+  Co,
   I,
-  C
->;
+  C>;
 
 export type CollectionAdvanceProps<_T> = {
   handleDataChange: (data: string) => void;

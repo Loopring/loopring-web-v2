@@ -1,20 +1,46 @@
-import { Box, ClickAwayListener, Divider, Grid, Pagination, Typography } from '@mui/material';
-import { bindTrigger } from 'material-ui-popup-state/es';
+import { Box, BoxProps, Divider, Modal, Pagination, Tooltip, Typography } from '@mui/material';
 import {
 	CollectionLimit,
 	CopyIcon,
 	copyToClipBoard,
-	DropDownIcon,
+	Info2Icon,
 	NFTLimit
 } from '@loopring-web/common-resources';
-import { Button, InputSearch, InputSearchWrapperStyled, PopoverPure } from '../../../index';
-import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
+import { Button, CollectionCardList, CollectionListProps, DropdownIconStyled, SwitchPanelStyled } from '../../../index';
 import React from 'react';
-import { CollectionMeta } from '@loopring-web/loopring-sdk';
-import { CollectionHttps } from '@loopring-web/common-resources';
-import * as sdk from '@loopring-web/loopring-sdk';
-import { useTranslation } from 'react-i18next';
+import { CollectionHttps, CollectionMeta } from '@loopring-web/common-resources';
+import { Trans, useTranslation } from 'react-i18next';
+import styled from '@emotion/styled';
 
+const SizeCss = {
+	small: `
+	  height: 2.4rem;
+	  lineHeight: 2.4rem;
+	`,
+	large: `
+	  height: 4.8rem;
+	  lineHeight: 4.8rem;
+	`,
+	medium: `
+	 height: 3.6rem;
+	 lineHeight: 3.6rem;
+	`
+};
+const BoxStyle = styled(Box)<BoxProps & { size: "small" | "large" | "medium" }>`
+  padding: .3rem .3rem .3rem .8rem;
+  border: ${({theme}) =>
+          theme.border.borderConfig({c_key: "var(--color-border)"})};
+
+  &:hover,
+  &:active {
+    color: var(--color-text-primary);
+    background: var(--color-box-hover);
+    border: ${({theme}) =>
+            theme.border.borderConfig({c_key: "var(--color-border-hover)"})};
+  }
+
+  ${({size}) => SizeCss[ size ]}
+` as (props: BoxProps & { size: "small" | "large" | "medium" }) => JSX.Element;
 export const makeMeta = ({collection}: { collection: CollectionMeta }) => {
 	const metaDemo = {
 		"name": "`${NFT_NAME}`",
@@ -34,55 +60,100 @@ export const makeMeta = ({collection}: { collection: CollectionMeta }) => {
 	};
 	return {metaDemo}
 };
-export const CollectionInput = (
+export type CollectionInputProps<Co> = {
+	collection?: Co,
+	collectionListProps: CollectionListProps<Co>
+}
+
+export const CollectionInput = <Co extends CollectionMeta>(
 	{
 		collection,
-		onPageChange,
-		collectionList,
-		total,
-		setCopyToastOpen,
-		page
-	}: {
-		collection?: CollectionMeta,
-		onPageChange: (props: any) => void,
-		collectionList: sdk.CollectionMeta[],
-		total: number,
-		page: number,
-		setCopyToastOpen: (isShow: boolean) => void,
+		// collection,
+		// onPageChange,
+		// collectionList,
+		// total,
+		// setCopyToastOpen,
+		collectionListProps,
+		fullWidth = false,
+		width = 'content-fit',
+		size = "medium",
+	}: CollectionInputProps<Co> & {
+		fullWidth?: boolean, width?: any,
+		size?: "small" | "large" | "medium"
 	}) => {
-	const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+	const [_modalState, setModalState] = React.useState(false);
+	// const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 	const [selectCollectionMeta, setSelectCollectionMeta] = React.useState(collection);
-	const [searchValue, setSearchValue] = React.useState('');
+	// const [searchValue, setSearchValue] = React.useState('');
 	const {t} = useTranslation('common');
-	const popState = usePopupState({
-		variant: "popover",
-		popupId: `popup-pro-toolbar-markets`,
-	});
-	const handleSearchChange = React.useCallback((value) => {
-		setSearchValue(value);
-	}, []);
+	// const popState = usePopupState({
+	// 	variant: "popover",
+	// 	popupId: `popup-pro-toolbar-markets`,
+	// });
+	const [dropdownStatus, setDropdownStatus] =
+		React.useState<"up" | "down">("down");
+	// const handleSearchChange = React.useCallback((value) => {
+	// 	setSearchValue(value);
+	// }, []);
 
-	const handleClickAway = React.useCallback(() => {
-		popState.setOpen(false);
-		setIsDropdownOpen(false);
-	}, [popState]);
+	// const handleClickAway = React.useCallback(() => {
+	// 	popState.setOpen(false);
+	// 	setIsDropdownOpen(false);
+	// }, [popState]);
+	const {
+		// collection,
+		onPageChange,
+		// collectionList,
+		total,
+		page,
+		// setCopyToastOpen,
+	} = collectionListProps;
+	return <Box display={'flex'} flexDirection={'column'}>
+		<Tooltip
+			title={t("labelMintCollectionTooltips").toString()}
+			placement={"top"}
+		>
+			<Box width={fullWidth ? "100%" : width}>
+				<Typography
+					variant={"body1"}
+					color={"var(--color-text-secondary)"}
+					className={"main-label"}
+					paddingBottom={1 / 2}
+				>
+					<Trans i18nKey={"labelMintCollection"}>
+						Choose Collection
+						<Info2Icon
+							fontSize={"small"}
+							color={"inherit"}
+							sx={{marginX: 1 / 2}}
+						/>
+					</Trans>
+				</Typography>
 
-	return <>
-		<Box
+			</Box>
+		</Tooltip>
+		<BoxStyle
 			display={"flex"}
 			alignItems={"center"}
 			fontSize={"1.6rem"}
-			{...bindTrigger(popState)}
-			onClick={(e: any) => {
-				bindTrigger(popState).onClick(e);
-				setIsDropdownOpen(true);
+			size={size}
+			justifyContent={"space-between"}
+			onClick={(_e: any) => {
+				_e.stopPropagation();
+				// bindTrigger(popState).onClick(e);
+				// setIsDropdownOpen(true);
+				setDropdownStatus((prev) =>
+					prev === "up" ? "down" : "up"
+				);
+				setModalState(true);
 				// if (tableTabValue === "favourite") {
 				// 	handleTabChange(_, "favourite");
 				// }
 			}}
+
 			style={{cursor: "pointer", whiteSpace: "nowrap"}}
 		>
-			<Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
+			<Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
 				{selectCollectionMeta ? <>
 					<Typography component={'span'} variant={'body1'} color={'textPrimary'} marginBottom={1}>
 						{selectCollectionMeta.name}
@@ -95,98 +166,108 @@ export const CollectionInput = (
 				}
 
 			</Box>
-			<DropDownIcon
-				htmlColor={"var(--color-text-third)"}
-				style={{
-					marginBottom: 2,
-					transform: isDropdownOpen ? "rotate(0.5turn)" : "rotate(0)",
-				}}
+			<DropdownIconStyled
+				status={dropdownStatus}
+				fontSize={size}
 			/>
 
-			<PopoverPure
-				className={"arrow-center no-arrow"}
-				{...bindPopper(popState)}
-				anchorOrigin={{
-					vertical: "bottom",
-					horizontal: "center",
-				}}
-				transformOrigin={{
-					vertical: "top",
-					horizontal: "center",
-				}}
-			>
-				<ClickAwayListener onClickAway={handleClickAway}>
-					<>
-						<Grid container spacing={2} paddingBottom={3}>
-							<Grid item xs={12}>
-								<InputSearchWrapperStyled>
-									<InputSearch
-										fullWidth
-										value={searchValue}
-										onChange={handleSearchChange}
-									/>
-								</InputSearchWrapperStyled>
-							</Grid>
-
-							{collectionList.map((item, index) => {
-								return <Grid
-									key={(item?.name ?? "") + index.toString()}
-									item
-									xs={12}
-									md={6}
-									lg={4}
-									flex={"1 1 120%"}
-									onClick={() => setSelectCollectionMeta(item)}
-								>
-
-									<Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
-										<Typography component={'span'} variant={'body1'} color={'textPrimary'} marginBottom={1}>
-											{item.name}
-										</Typography>
-										<Typography component={'span'} variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-											{item.contractAddress}
-										</Typography>
-									</Box>
-								</Grid>
-							})}
-						</Grid>
-						<Divider style={{marginTop: "-1px"}}/>
-						{total > CollectionLimit && (
-							<Box
-								display={"flex"}
-								alignItems={"center"}
-								justifyContent={"right"}
-								marginRight={3}
-								marginBottom={2}
-							>
-								<Pagination
-									color={"primary"}
-									count={
-										parseInt(String(total / NFTLimit)) +
-										(total % NFTLimit > 0 ? 1 : 0)
-									}
-									page={page}
-									onChange={(_event, value) => {
-										onPageChange(Number(value));
-									}}
-								/>
-							</Box>
-						)}
-					</>
-				</ClickAwayListener>
-			</PopoverPure>
-		</Box>
+		</BoxStyle>
 		{selectCollectionMeta &&
       <Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
               sx={{marginLeft: 1}} onClick={() => {
 				if (selectCollectionMeta) {
 					const {metaDemo} = makeMeta({collection: selectCollectionMeta});
 					copyToClipBoard(JSON.stringify(metaDemo));
-					setCopyToastOpen(true);
+					collectionListProps.setCopyToastOpen(true);
 				}
 			}}>
 				{t('labelCopyNFTDemo')}
       </Button>}
-
-	</>
+		{/*modalState*/}
+		<Modal open={_modalState} onClose={() => setModalState(false)}>
+			{/*<ClickAwayListener onClickAway={handleClickAway}>*/}
+			<SwitchPanelStyled display={'flex'} overflow={'scroll'} height={"80%"}>
+				{total > CollectionLimit && (
+					<Box
+						display={"flex"}
+						alignItems={"center"}
+						justifyContent={"right"}
+						marginRight={3}
+						marginBottom={2}
+					>
+						<Pagination
+							color={"primary"}
+							count={
+								parseInt(String(total / NFTLimit)) +
+								(total % NFTLimit > 0 ? 1 : 0)
+							}
+							page={page}
+							onChange={(_event, value) => {
+								onPageChange(Number(value));
+							}}
+						/>
+					</Box>
+				)}
+				<Divider style={{marginTop: "-1px"}}/>
+				<CollectionCardList
+					{...{...collectionListProps as any}}
+					isSelectOnly={true}
+					//
+					// collectionList={collectionList as any}
+					// total={total}
+					// account={account}
+					// onPageChange={onPageChange}
+					// setCopyToastOpen={setCopyToastOpen}
+					onSelectItem={(item) => {
+						setSelectCollectionMeta(item as any)
+					}}/>
+				{/*<Grid container spacing={2} paddingBottom={3}>*/}
+				{/* /!*{collectionList.map((item, index) => {*!/*/}
+				{/*	/!* return <Grid*!/*/}
+				{/*	/!*	 key={(item?.name ?? "") + index.toString()}*!/*/}
+				{/*	/!*	 item*!/*/}
+				{/*	/!*	 xs={12}*!/*/}
+				{/*	/!*	 md={6}*!/*/}
+				{/*	/!*	 lg={4}*!/*/}
+				{/*	/!*	 flex={"1 1 120%"}*!/*/}
+				{/*	/!*	 onClick={() => setSelectCollectionMeta(item)}*!/*/}
+				{/*	/!* >*!/*/}
+				{/* */}
+				{/*	/!*	 <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>*!/*/}
+				{/*	/!*		 <Typography component={'span'} variant={'body1'} color={'textPrimary'} marginBottom={1}>*!/*/}
+				{/*	/!*			 {item.name}*!/*/}
+				{/*	/!*		 </Typography>*!/*/}
+				{/*	/!*		 <Typography component={'span'} variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>*!/*/}
+				{/*	/!*			 {item.contractAddress}*!/*/}
+				{/*	/!*		 </Typography>*!/*/}
+				{/*	/!*	 </Box>*!/*/}
+				{/*	/!* </Grid>*!/*/}
+				{/* })}*/}
+				{/*</Grid>*/}
+				<Divider style={{marginTop: "-1px"}}/>
+				{total > CollectionLimit && (
+					<Box
+						display={"flex"}
+						alignItems={"center"}
+						justifyContent={"right"}
+						marginRight={3}
+						marginBottom={2}
+					>
+						<Pagination
+							color={"primary"}
+							count={
+								parseInt(String(total / NFTLimit)) +
+								(total % NFTLimit > 0 ? 1 : 0)
+							}
+							page={page}
+							onChange={(_event, value) => {
+								onPageChange(Number(value));
+							}}
+						/>
+					</Box>
+				)}
+			</SwitchPanelStyled>
+			{/*</ClickAwayListener>*/}
+		</Modal>
+	</Box>
 };

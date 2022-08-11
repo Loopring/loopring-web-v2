@@ -1,10 +1,10 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
-import { useSettings } from "@loopring-web/component-lib";
+import { Toast, useSettings } from "@loopring-web/component-lib";
 import { subMenuNFT } from "@loopring-web/common-resources";
 import React from "react";
-import { useNFTMintAdvance, ViewAccountTemplate } from "@loopring-web/core";
+import { TOAST_TIME, useMyCollection, useNFTMintAdvance, ViewAccountTemplate } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
@@ -13,13 +13,16 @@ import { mintService } from "@loopring-web/core";
 import { NFTCollectPanel } from "./CollectionPanel";
 import { CreateCollectionPanel } from './CreateCollectionPanel';
 import { MintLandingPage } from './components/landingPanel';
+import { useTranslation } from 'react-i18next';
 
 export const subMenu = subMenuNFT;
 
 export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
+  const {t} = useTranslation(["common"]);
   const selected = match?.params.item ?? "assetsNFT";
-
+  const {resetDefault: resetNFTMint, nftMintAdvanceProps} = useNFTMintAdvance();
+  const {copyToastOpen, ...collectionListProps} = useMyCollection();
   const routerNFT = React.useMemo(() => {
     switch (selected) {
       case "transactionNFT":
@@ -30,18 +33,20 @@ export const NFTPage = () => {
         mintService.emptyData();
         return <MintNFTPanel/>;
       case "mintAdvanceNFT":
-        return <MintNFTAdvancePanel/>;
+        return <MintNFTAdvancePanel
+          resetNFTMint={resetNFTMint}
+          nftMintAdvanceProps={nftMintAdvanceProps}/>;
       case "depositNFT":
         return <DepositNFTPanel/>;
       case "myCollection":
-        return <NFTCollectPanel/>;
+        return <NFTCollectPanel collectionListProps={collectionListProps}/>;
       case "addCollection":
         return <CreateCollectionPanel/>;
       case "assetsNFT":
       default:
         return <MyNFTPanel/>;
     }
-  }, [selected]);
+  }, [nftMintAdvanceProps, resetNFTMint, selected]);
 
   const { isMobile } = useSettings();
 
@@ -63,6 +68,17 @@ export const NFTPage = () => {
     [routerNFT]
   );
 
-  return <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />;
+  return <>
+    <ViewAccountTemplate activeViewTemplate={activeViewTemplate}/>
+    <Toast
+      alertText={t("labelCopyAddClip")}
+      open={copyToastOpen}
+      autoHideDuration={TOAST_TIME}
+      onClose={() => {
+        collectionListProps.setCopyToastOpen(false);
+      }}
+      severity={"success"}
+    />
+  </>;
 };
 // {!!isMobile && <TitleNFTMobile />}

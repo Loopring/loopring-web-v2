@@ -1,15 +1,14 @@
 import { BigNumber } from "bignumber.js";
 import React, { useState } from 'react';
 import {
-  SagaStatus
+  SagaStatus, CollectionMeta
 } from '@loopring-web/common-resources';
 import {
 
   useSystem,
   useWalletL2Collection,
-} from '@loopring-web/core';
-import { useOpenModals } from '@loopring-web/component-lib';
-import * as sdk from '@loopring-web/loopring-sdk';
+} from '../../index';
+import { CollectionListProps } from '@loopring-web/component-lib';
 
 // const enum MINT_VIEW_STEP {
 //   METADATA,
@@ -17,11 +16,10 @@ import * as sdk from '@loopring-web/loopring-sdk';
 // }
 BigNumber.config({EXPONENTIAL_AT: 100});
 
-export const useMyCollection = () => {
-  const [collectionList, setCollectionList] = React.useState<sdk.CollectionMeta[]>([]);
+export const useMyCollection = <C extends CollectionMeta>(): CollectionListProps<C> & { copyToastOpen: boolean } => {
+  const [collectionList, setCollectionList] = React.useState<C[]>([]);
+  const [copyToastOpen, setCopyToastOpen] = useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  // const [popItem, setPopItem] =
-  //   React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
   const {
     status: walletL2CollectionStatus,
     walletL2Collection,
@@ -29,13 +27,8 @@ export const useMyCollection = () => {
     page: page_reudex,
     updateWalletL2Collection,
   } = useWalletL2Collection();
-  // const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
-  //   useModalData();
-
-  const {setShowNFTDetail} = useOpenModals();
   const {etherscanBaseUrl} = useSystem();
   const [page, setPage] = useState(1);
-  // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
   const onPageChange = (page: number) => {
     setPage(page);
@@ -62,11 +55,13 @@ export const useMyCollection = () => {
 
 
   return {
+    setCopyToastOpen,
     collectionList,
     etherscanBaseUrl,
     onPageChange,
     total,
     page,
     isLoading,
+    copyToastOpen
   };
 };

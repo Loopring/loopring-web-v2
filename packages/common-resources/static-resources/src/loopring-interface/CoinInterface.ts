@@ -2,7 +2,7 @@ import { Account, FloatTag, TradeStatus, TradeTypes } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import { ForexMap } from "@loopring-web/common-resources";
-import { Currency } from "@loopring-web/loopring-sdk";
+import { NFTType } from '@loopring-web/loopring-sdk';
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -169,21 +169,21 @@ export type AmmDetail<T> = AmmDetailBase<T> & {
 };
 
 export type AmmCardProps<T> = AmmDetail<T> & {
-  activity: AmmActivity<T>;
-  tradeFloat: TradeFloat;
-  handleClick: () => void;
-  account: Account;
-  forexMap: ForexMap<Currency>;
-  popoverIdx: number;
-  precisionA?: number;
-  precisionB?: number;
-  coinAPriceDollar: number;
-  coinBPriceDollar: number;
-  ammRewardRecordList: {
-    amount: string;
-    time: number;
-  }[];
-  getLiquidityMining: (market: string, size?: number) => Promise<void>;
+	activity: AmmActivity<T>;
+	tradeFloat: TradeFloat;
+	handleClick: () => void;
+	account: Account;
+	forexMap: ForexMap<sdk.Currency>;
+	popoverIdx: number;
+	precisionA?: number;
+	precisionB?: number;
+	coinAPriceDollar: number;
+	coinBPriceDollar: number;
+	ammRewardRecordList: {
+		amount: string;
+		time: number;
+	}[];
+	getLiquidityMining: (market: string, size?: number) => Promise<void>;
   getMiningLinkList: (market: string) => { [key: string]: string };
   setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>;
   setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>;
@@ -307,19 +307,7 @@ export enum EXPLORE_TYPE {
  * @property cid? string option
  *
  */
-export type CollectionMeta = {
-  name: string,
-  tileUri: string,
-  owner: string,
-  nftFactory?: string,
-  baseUri?: string,
-  collectionTitle?: string,
-  description?: string,
-  avatar?: string,
-  banner?: string,
-  thumbnail?: string,
-  cid?: string,
-};
+export type CollectionMeta = sdk.CollectionMeta & { nftType?: NFTType };
 
 export enum CollectionMetaKey {
   name = 'name',

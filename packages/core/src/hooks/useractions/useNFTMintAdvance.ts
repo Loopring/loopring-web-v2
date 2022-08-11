@@ -15,7 +15,9 @@ import {
   MINT_LIMIT,
   SagaStatus,
   Explorer,
-  TOAST_TIME, IPFS_LOOPRING_SITE,
+  TOAST_TIME,
+  IPFS_LOOPRING_SITE,
+  CollectionMeta
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -30,7 +32,7 @@ import {
   useModalData,
   useWalletLayer2NFT,
 } from "../../stores";
-import { useBtnStatus } from "../common";
+import { useBtnStatus, useMyCollection } from "../common";
 import { LoopringAPI } from "../../api_wrapper";
 import { checkErrorInfo } from "./utils";
 import { isAccActivated } from "./checkAccStatus";
@@ -45,11 +47,19 @@ import { getTimestampDaysLater } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
 const CID = require("cids");
 
-export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
-  const { tokenMap, totalCoinMap } = useTokenMap();
-  const { account, status: accountStatus } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
-  const { nftMintAdvanceValue, updateNFTMintAdvanceData } = useModalData();
+export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMeta, I>() => {
+  const {tokenMap, totalCoinMap} = useTokenMap();
+  const {account, status: accountStatus} = useAccount();
+  const {exchangeInfo, chainId} = useSystem();
+  const collectionListProps = useMyCollection<Co>();
+  // const {
+  //   status: walletL2CollectionStatus,
+  //   walletL2Collection,
+  //   total,
+  //   page: page_reudex,
+  //   updateWalletL2Collection,
+  // } = useWalletL2Collection()
+  const {nftMintAdvanceValue, updateNFTMintAdvanceData} = useModalData();
   const {
     btnStatus,
     btnInfo,
@@ -58,49 +68,49 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus();
-  const { t } = useTranslation("common");
+  const {t} = useTranslation("common");
   // const [lastRequest, setLastRequest] = React.useState<any>({});
-  const { checkHWAddr, updateHW } = useWalletInfo();
+  const {checkHWAddr, updateHW} = useWalletInfo();
   const {page, updateWalletLayer2NFT} = useWalletLayer2NFT();
   const [isAvailableId, setIsAvailableId] = React.useState(false);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const {setShowAccount, setShowNFTMintAdvance} = useOpenModals();
-  const [tokenAddress, setTokenAddress] =
-    React.useState<string | undefined>(() => {
-      return undefined;
-      // if (account.accAddress && LoopringAPI.nftAPI) {
-      //   return (
-      //     LoopringAPI.nftAPI?.computeNFTAddress({
-      //       nftOwner: account.accAddress,
-      //       nftFactory: sdk.NFTFactory[chainId],
-      //       nftBaseUri: "",
-      //     }).tokenAddress || undefined
-      //   );
-      // } else {
-      //   return undefined;
-      // }
-    });
+  // const [tokenAddress, setTokenAddress] =
+  //   React.useState<string | undefined>(() => {
+  //     return undefined;
+  //     // if (account.accAddress && LoopringAPI.nftAPI) {
+  //     //   return (
+  //     //     LoopringAPI.nftAPI?.computeNFTAddress({
+  //     //       nftOwner: account.accAddress,
+  //     //       nftFactory: sdk.NFTFactory[chainId],
+  //     //       nftBaseUri: "",
+  //     //     }).tokenAddress || undefined
+  //     //   );
+  //     // } else {
+  //     //   return undefined;
+  //     // }
+  //   });
   React.useEffect(() => {
     // const account = store.getState().account;
     if (
       account.readyState === AccountStatus.ACTIVATED &&
       accountStatus === SagaStatus.UNSET
     ) {
-      setTokenAddress(() => {
-        if (account.accAddress && LoopringAPI.nftAPI) {
-          return (
-            LoopringAPI.nftAPI?.computeNFTAddress({
-              nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory[ chainId ],
-              nftBaseUri: "",
-            }).tokenAddress || undefined
-          );
-        } else {
-          return undefined;
-        }
-      });
+      // setTokenAddress(() => {
+      //   if (account.accAddress && LoopringAPI.nftAPI) {
+      //     return (
+      //       LoopringAPI.nftAPI?.computeNFTAddress({
+      //         nftOwner: account.accAddress,
+      //         nftFactory: sdk.NFTFactory[ chainId ],
+      //         nftBaseUri: "",
+      //       }).tokenAddress || undefined
+      //     );
+      //   } else {
+      //     return undefined;
+      //   }
+      // });
     }
-  }, [accountStatus, account.readyState]);
+  }, [accountStatus]);
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -108,7 +118,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     handleFeeChange,
     feeInfo,
   } = useChargeFees({
-    tokenAddress: tokenAddress?.toLowerCase(),
+    tokenAddress: nftMintAdvanceValue?.collectionMeta?.contractAddress, //tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
     updateData: ({fee}) => {
       updateNFTMintAdvanceData({
@@ -132,7 +142,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       nftMintAdvanceValue.royaltyPercentage >= 0 &&
       nftMintAdvanceValue.royaltyPercentage <= 10 &&
       nftMintAdvanceValue &&
-      tokenAddress &&
+      nftMintAdvanceValue?.collection_metadata &&
       nftMintAdvanceValue.tradeValue &&
       Number(nftMintAdvanceValue.tradeValue) > 0 &&
       Number(nftMintAdvanceValue.tradeValue) <= MINT_LIMIT &&
@@ -178,7 +188,6 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       isFeeNotEnough,
       resetBtnInfo,
       nftMintAdvanceValue,
-      tokenAddress,
       enableBtn,
       setLabelAndParams,
       disableBtn,
@@ -206,13 +215,14 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       name: "",
       nftId: undefined,
       description: "",
-      tokenAddress,
+      // collectionMeta:undefined,
+      // tokenAddress,
       fee: feeInfo,
     });
-  }, [checkFeeIsEnough, tokenAddress, updateNFTMintAdvanceData]);
+  }, [checkFeeIsEnough, updateNFTMintAdvanceData]);
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
-      const { apiKey, connectName, eddsaKey } = account;
+      const {apiKey, connectName, eddsaKey} = account;
 
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
@@ -488,7 +498,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         exchangeInfo &&
         account.readyState === AccountStatus.ACTIVATED &&
         nftMintAdvanceValue &&
-        tokenAddress &&
+        nftMintAdvanceValue.collectionMeta?.contractAddress &&
         checkAvailable({nftMintAdvanceValue, isFeeNotEnough, isAvailableId})
       ) {
         setShowNFTMintAdvance({ isShow: false });
@@ -522,7 +532,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
             toAccountId: accountId,
             toAddress: accAddress,
             nftType: 0,
-            tokenAddress,
+            tokenAddress: nftMintAdvanceValue.collectionMeta.contractAddress,
             nftId: nftMintAdvanceValue.nftId ?? "",
             amount: nftMintAdvanceValue.tradeValue?.toString() ?? "",
             validUntil: getTimestampDaysLater(DAYS),
@@ -573,7 +583,6 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       processRequest,
       setShowAccount,
       setShowNFTMintAdvance,
-      tokenAddress,
       tokenMap,
     ]
   );
@@ -599,13 +608,17 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       setShowAccount,
     ]
   );
-  const nftMintAdvanceProps: NFTMintAdvanceProps<T, I> = {
+  const nftMintAdvanceProps: NFTMintAdvanceProps<T, Co, I> = {
     chargeFeeTokenList,
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
     isNFTCheckLoading,
     isAvailableId,
+    collectionInputProps: {
+      collectionListProps,
+      collection: nftMintAdvanceValue.collectionMeta as Co,
+    },
     handleOnNFTDataChange,
     onNFTMintClick: onNFTMintAdvanceClick,
     walletMap: {} as any,

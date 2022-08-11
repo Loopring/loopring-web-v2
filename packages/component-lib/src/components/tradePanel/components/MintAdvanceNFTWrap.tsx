@@ -8,13 +8,12 @@ import {
 	FeeInfo,
 	Info2Icon,
 	IPFS_LOOPRING_SITE,
-  IPFS_HEAD_URL,
+	IPFS_HEAD_URL,
 	LoadingIcon,
 	myLog,
 	TradeNFT,
 } from "@loopring-web/common-resources";
 import {
-	Button,
 	EmptyDefault,
 	InputSize,
 	NftImage,
@@ -28,11 +27,12 @@ import {
 	IconClearStyled,
 } from "./Styled";
 import { NFTInput } from "./BasicANFTTrade";
-import { NFTType } from "@loopring-web/loopring-sdk";
+import { CollectionMeta, NFTType } from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
+import { CollectionInput } from './tool';
 
 export enum AdMethod {
 	HasData = "HasData",
@@ -48,7 +48,14 @@ const BoxStyle = styled(Grid)`
       font-size: ${({theme}) => theme.fontDefault.body1};
     }
   }
+
 ` as typeof Grid;
+const MintAdStyle = styled(Box)`
+  .MuiFormGroup-root {
+    align-items: flex-start;
+  }
+`;
+
 const NFT_TYPE: TGItemData[] = [
 	{
 		value: NFTType.ERC1155,
@@ -99,7 +106,8 @@ export function HorizontalLabelPositionBelowStepper(
 }
 
 export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
-	I,
+	Co extends CollectionMeta,
+	I extends any,
 	C extends FeeInfo>(
 	{
 		disabled,
@@ -114,11 +122,12 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 		feeInfo,
 		isAvailableId,
 		isNFTCheckLoading,
+		collectionInputProps,
 		onNFTMintClick,
-	}: NFTMintAdvanceViewProps<T, I, C>) => {
+	}: NFTMintAdvanceViewProps<T, Co, I, C>) => {
 	const {t} = useTranslation(["common"]);
 	const {isMobile} = useSettings();
-  const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
+	const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
 
 	const inputBtnRef = React.useRef();
 	const [dropdownStatus, setDropdownStatus] =
@@ -127,11 +136,11 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 		return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
 	}, [disabled, nftMintBtnStatus]);
 
-	const handleToggleChange = (value: C) => {
+	const handleToggleChange = React.useCallback((value: C) => {
 		if (handleFeeChange) {
 			handleFeeChange(value);
 		}
-	};
+	}, []);
 	const handleBack = React.useCallback((currentStep: number) => {
 		setActiveStep(currentStep - 1)
 	}, []);
@@ -140,9 +149,11 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 			handleOnNFTDataChange({...tradeData, ..._tradeData});
 		}
 	};
+
+	// const tradeData
 	myLog("mint tradeData", tradeData);
 	const methodLabel = React.useCallback(
-		({key}: any) => {
+		({key}: { key: string }) => {
 			return (
 				<>
 					<Typography
@@ -151,49 +162,11 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 						color={"textPrimary"}
 					>
 						{t(`label${key}`)}
-						{/*<Trans*/}
-						{/*	i18nKey="whichColorIsUp"*/}
-						{/*>*/}
-						{/*	<Typography*/}
-						{/*		component={"span"}*/}
-						{/*		variant={"body2"}*/}
-						{/*		color={"textPrimary"}*/}
-						{/*		style={{*/}
-						{/*			textTransform: "capitalize",*/}
-						{/*			// color: key === UpColor.green ? theme.colorBase.success : theme.colorBase.error*/}
-						{/*		}}*/}
-						{/*	>*/}
-						{/*		color up*/}
-						{/*	</Typography>*/}
-						{/*	and*/}
-						{/*	<Typography*/}
-						{/*		component={"span"}*/}
-						{/*		variant={"body2"}*/}
-						{/*		color={"textPrimary"}*/}
-						{/*		style={{*/}
-						{/*			textTransform: "capitalize",*/}
-						{/*			// color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success*/}
-						{/*		}}*/}
-						{/*	>*/}
-						{/*		color down*/}
-						{/*	</Typography>*/}
-						{/*</Trans>*/}
 					</Typography>
-					{/*<Typography*/}
-					{/*	component={"span"}*/}
-					{/*	style={{ verticalAlign: "-webkit-baseline-middle" }}*/}
-					{/*	color={*/}
-					{/*		key === UpColor.green*/}
-					{/*			? "var(--color-success)"*/}
-					{/*			: "var(--color-error)"*/}
-					{/*	}*/}
-					{/*>*/}
-					{/*	<GrowIcon fontSize={"medium"} color={"inherit"} />*/}
-					{/*</Typography>*/}
 				</>
 			);
 		},
-		[UpColor]
+		[]
 	);
 	const [method, setMethod] = React.useState(AdMethod.NoData);
 	const handleMethodChange = React.useCallback((_e: any, value: any) => {
@@ -208,20 +181,21 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 		return [
 			{
 				view: <Box
-					flex={1}
-					// alignItems={"center"}
+					marginTop={3}
 					display={"flex"}
-					justifyContent={"center"}
+					justifyContent={"flex-start"}
 					flexDirection={"column"}
+					alignItems={"flex-start"}
+					width={'100%'}
 				>
 					<Typography component={'h4'} variant={'h5'} marginBottom={2}>
 						{t('labelADMintSelect')}
 					</Typography>
-					<Box flex={1}
-					     display={"flex"}
-					     flexDirection={isMobile ? "column" : "row"}
-					     justifyContent={"flex-start"}>
-
+					<Box
+						display={"flex"}
+						alignItems={"flex-start"}
+						flexDirection={isMobile ? "column" : "row"}
+						justifyContent={"stretch"}>
 						<RadioGroupStyle
 							row={false}
 							aria-label="withdraw"
@@ -242,11 +216,18 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 							})}
 						</RadioGroupStyle>
 					</Box>
+					{method === AdMethod.NoData && <Box display={'flex'} paddingX={2} width={"100%"} marginTop={1}>
+            <CollectionInput  {...{...collectionInputProps}} fullWidth={true}/>
+          </Box>}
+					<Box>
+
+					</Box>
 				</Box>,
 				// onBack: () => setStep(CreateCollectionStep.ChooseMethod)
 			},
 			{
-				view: <Grid item marginTop={2} alignSelf={"stretch"}>
+				view: <Box
+					marginTop={2} alignSelf={"stretch"}>
 					<Box
 						display={"flex"}
 						alignItems={"center"}
@@ -353,11 +334,11 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 							</>
 						)}
 					</Box>
-				</Grid>,
+				</Box>,
 			},
 			{
 				view: <>
-					<Grid item marginTop={2} alignSelf={"stretch"}>
+					<Box marginTop={2} alignSelf={"stretch"}>
 						<Box
 							display={"flex"}
 							flexDirection={"row"}
@@ -444,7 +425,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 									<NftImage
 										alt={"NFT"}
 										src={tradeData?.image?.replace(
-                      IPFS_HEAD_URL,
+											IPFS_HEAD_URL,
 											IPFS_LOOPRING_SITE
 										)}
 										onError={() => undefined}
@@ -468,8 +449,8 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 								)}
 							</Box>
 						</Box>
-					</Grid>
-					<Grid item /* marginTop={2} */ alignSelf={"stretch"} marginTop={2}>
+					</Box>
+					<Box marginTop={2} alignSelf={"stretch"}>
 						{!chargeFeeTokenList?.length ? (
 							<Typography>{t("labelFeeCalculating")}</Typography>
 						) : (
@@ -542,120 +523,44 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 								)}
 							</>
 						)}
-					</Grid>
+					</Box>
 				</>
 
 			}
 
 		]
-	}, [_handleOnNFTDataChange, chargeFeeTokenList, dropdownStatus, feeInfo, handleToggleChange, isAvailableId, isFeeNotEnough.isFeeNotEnough, isFeeNotEnough.isOnLoading, isMobile, isNFTCheckLoading, t, tradeData, walletMap]);
+	}, [_handleOnNFTDataChange, chargeFeeTokenList, dropdownStatus, feeInfo, handleMethodChange, handleToggleChange, isAvailableId, isFeeNotEnough.isFeeNotEnough, isFeeNotEnough.isOnLoading, isMobile, isNFTCheckLoading, method, methodLabel, t, tradeData, walletMap]);
 	const handleNext = React.useCallback((currentNext) => {
 		setActiveStep(currentNext + 1)
 	}, []);
 	// @ts-ignore
 	return (
-		<Grid
+		<Box
 			className={walletMap ? "" : "loading"}
-			spacing={2}
-			container
-			// paddingLeft={5 / 2}
-			// paddingRight={5 / 2}
+			display={'flex'}
+			flex={1}
+			flexDirection={'column'}
 			padding={5 / 2}
-		>
-			<Grid item xs={12} marginY={2}>
-				<HorizontalLabelPositionBelowStepper activeStep={activeStep}/>
-			</Grid>
 
-			<Grid item xs={12}>
+		>
+			<HorizontalLabelPositionBelowStepper activeStep={activeStep}/>
+			<MintAdStyle
+				flex={1}
+				marginTop={2}
+				paddingX={isMobile ? 2 : 5}
+				display={'flex'}
+				alignItems={"stretch"}
+			>
 				{
 					panelList.map((panel, index) => {
 						return (
-							<Box
-								flex={1}
-								paddingX={3}
-								display={
-									activeStep === index ? "flex" : "none"
-								}
-								alignItems={"stretch"}
-								key={index}
-							>
-								{panel.view}
-							</Box>
+							<React.Fragment key={index}>
+								{activeStep === index ? panel.view : <></>}
+							</React.Fragment>
 						);
 					})
 				}
-			</Grid>
-
-
-			<Grid item marginTop={3} alignSelf={"stretch"}>
-				{btnInfo?.label === "labelNFTMintNoMetaBtn" && (
-					<Typography
-						color={"var(--color-warning)"}
-						component={"p"}
-						variant={"body1"}
-						marginBottom={1}
-						style={{wordBreak: "break-all"}}
-					>
-						<Trans i18nKey={"labelNFTMintNoMetaDetail"}>
-							Your NFT metadata should identify
-							<em style={{fontWeight: 600}}>
-								name, image & royalty_percentage(number from 0 to 10)
-							</em>
-							.
-						</Trans>
-					</Typography>
-				)}
-				<Box>
-					<Typography sx={{mt: 2, mb: 1}}>Step {activeStep + 1}</Typography>
-					<Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
-						<Button
-							color="inherit"
-							disabled={activeStep === 0}
-							onClick={() => handleBack(activeStep)}
-							sx={{mr: 1}}
-						>
-							{t('labelBack')}
-						</Button>
-						<Box sx={{flex: '1 1 auto'}}/>
-						<Button onClick={() => {
-							handleNext(activeStep)
-						}} sx={{mr: 1}}>
-							{t('labelNext')}
-						</Button>
-						{activeStep !== steps.length && <></>
-							// (completed[ activeStep ] ? (
-							// 	<Typography variant="caption" sx={{display: 'inline-block'}}>
-							// 		Step {activeStep + 1} already completed
-							// 	</Typography>
-							// ) : (
-							// <Button onClick={handleComplete}>
-							// 	{completedSteps() === totalSteps() - 1
-							// 		? 'Finish'
-							// 		: 'Complete Step'}
-							// </Button>
-							// ))
-						}
-					</Box>
-					<Button
-						fullWidth
-						variant={"contained"}
-						size={"medium"}
-						color={"primary"}
-						onClick={async () => {
-							await onNFTMintClick(tradeData);
-						}}
-						loading={
-							!getDisabled && nftMintBtnStatus === TradeBtnStatus.LOADING
-								? "true"
-								: "false"
-						}
-						disabled={getDisabled || nftMintBtnStatus === TradeBtnStatus.LOADING}
-					>
-						{btnInfo ? t(btnInfo.label, btnInfo.params) : t(`labelNFTMintBtn`)}
-					</Button>
-				</Box>
-
-			</Grid>
-		</Grid>
+			</MintAdStyle>
+		</Box>
 	);
 };
