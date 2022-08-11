@@ -1,11 +1,11 @@
 import {
-  CloseIcon,
-  TradeNFT,
-  LoadingIcon,
-  IPFS_META_URL,
-  myLog,
-  SoursURL,
-  IPFS_LOOPRING_SITE,
+	CloseIcon,
+	TradeNFT,
+	LoadingIcon,
+	IPFS_HEAD_URL,
+	myLog,
+	SoursURL,
+	IPFS_LOOPRING_SITE,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";
@@ -143,8 +143,8 @@ NFTDepositViewProps<T, I>) => {
                     alt={"NFT"}
                     width={"100%"}
                     src={tradeData?.image?.replace(
-                      IPFS_META_URL,
-                      IPFS_LOOPRING_SITE
+	                    IPFS_HEAD_URL,
+	                    IPFS_LOOPRING_SITE
                     )}
                   />
                 </Box>

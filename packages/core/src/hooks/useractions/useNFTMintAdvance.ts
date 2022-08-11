@@ -15,7 +15,7 @@ import {
   MINT_LIMIT,
   SagaStatus,
   Explorer,
-  TOAST_TIME,
+  TOAST_TIME, IPFS_LOOPRING_SITE,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -411,7 +411,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         if (nftId && nftId !== "") {
           try {
             const value = await fetch(
-              sdk.LOOPRING_URLs.IPFS_META_URL + `${data.nftIdView}`
+              IPFS_LOOPRING_SITE + `${data.nftIdView}`
             ).then((response) => response.json());
 
             if (value) {

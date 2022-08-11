@@ -11,7 +11,7 @@ import {
   DEAULT_NFTID_STRING,
   ErrorMap,
   ErrorType,
-  globalSetup,
+  globalSetup, IPFS_LOOPRING_SITE,
   myLog,
   TradeNFT,
   UIERROR_CODE,
@@ -120,7 +120,7 @@ export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
             nftType: data.nftType as unknown as sdk.NFTType,
             web3,
             tokenAddress: data.tokenAddress,
-          }),
+          }, IPFS_LOOPRING_SITE as any),
           LoopringAPI.nftAPI.isApprovedForAll({
             web3,
             from: account.accAddress,

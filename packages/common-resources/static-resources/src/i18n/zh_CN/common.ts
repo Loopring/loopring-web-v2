@@ -661,7 +661,7 @@ export default {
   labelMintDescription: "Description <1>\u2139</1>",
   labelMintDescriptionTooltips:
     "The description will be included on the NFT's detail page beneath it's image.",
-  labelMintProperty: "Properties (Limit 5) <1>\u2139</1>",
+  labelMintProperty: "Properties (Limit 64) <1>\u2139</1>",
   labelMintPropertyTooltips:
     "Tags can be added to the NFT for easy searchability and distinction",
   labelPropertyAdd: "Add property",
