@@ -2,7 +2,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import {
   MintAdvanceNFTWrap,
-  MintNFTConfirm,
+  MintNFTConfirm, NFTMintAdvanceViewProps,
   PanelContent, PopoverPure,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -10,8 +10,7 @@ import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { BackIcon, Info2Icon, TradeNFT } from "@loopring-web/common-resources";
-import { useNFTMintAdvance } from '@loopring-web/core';
+import { BackIcon, CollectionMeta, FeeInfo, Info2Icon, TradeNFT } from "@loopring-web/common-resources";
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 
@@ -101,13 +100,16 @@ export const MintNFTPanel = () => {
   );
 };
 export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
-  I>() => {
+  Co extends CollectionMeta,
+  I>({resetNFTMint, nftMintAdvanceProps}: {
+  resetNFTMint: () => void,
+  nftMintAdvanceProps: NFTMintAdvanceViewProps<T, Co, I, FeeInfo>,
+}) => {
   const history = useHistory();
-  const {resetDefault, nftMintAdvanceProps} = useNFTMintAdvance();
   const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
   React.useEffect(() => {
-    resetDefault();
-  }, [resetDefault]);
+    resetNFTMint();
+  }, [match.params?.mintAdvanceNFT]);
   const {t} = useTranslation("common");
   const popupState = usePopupState({
     variant: "popover",
@@ -165,16 +167,11 @@ export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
       marginBottom={2}
       display={"flex"}
       flexDirection={"column"}
-      alignItems={"center"}
+      alignItems={"stretch"}
+
     >
       <MintAdvanceNFTWrap
-
-        {...{
-          // ...rest,
-          // _width: `calc(var(--modal-width) - ${(theme.unit * 5) / 2}px)`,
-          // _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`,
-          ...nftMintAdvanceProps,
-        }}
+        {...{...nftMintAdvanceProps}}
       />
     </StyledPaper>
   </>

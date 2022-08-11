@@ -574,13 +574,13 @@ export const useSwap = <C extends { [key: string]: any }>({
       callPairDetailInfoAPIs();
       // marketTradeTableCallback();
     }
-  }, [market, ammMap]);
+  }, [market]);
   /*** table related end ***/
   const getStorageId = React.useCallback(async () => {
     if (
       tradeCalcData?.coinSell &&
       tokenMap &&
-      tokenMap[tradeCalcData?.coinSell] &&
+      tokenMap[ tradeCalcData?.coinSell ] &&
       LoopringAPI.userAPI
     ) {
       const storageId = await LoopringAPI.userAPI.getNextStorageId(
@@ -706,14 +706,15 @@ export const useSwap = <C extends { [key: string]: any }>({
   React.useEffect(() => {
     if (pageTradeLite.depth) {
       refreshAmmPoolSnapshot();
-      if (
-        account.readyState === AccountStatus.ACTIVATED &&
-        amountStatus === SagaStatus.UNSET
-      ) {
-        setIsSwapLoading(false);
-      } else {
-        setIsSwapLoading(false);
-      }
+      setIsSwapLoading(false);
+      // if (
+      //   account.readyState === AccountStatus.ACTIVATED &&
+      //   amountStatus === SagaStatus.UNSET
+      // ) {
+      //   setIsSwapLoading(false);
+      // } else {
+      //
+      // }
     }
   }, [
     pageTradeLite.depth,

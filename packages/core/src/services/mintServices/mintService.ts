@@ -90,7 +90,7 @@ export const mintService = {
       name: nftMETA.name,
       royalty_percentage: nftMETA.royaltyPercentage, // 0 - 10 for UI
       description: nftMETA.description,
-      collection: nftMETA.collection,
+      collect_metadata: nftMETA.collection_metadata,
       mint_channel: "Loopring",
     };
     // const attributes = [];

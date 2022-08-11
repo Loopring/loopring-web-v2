@@ -663,7 +663,7 @@ export default {
   labelMintNoNameBtn: "Please input name",
   labelNFTMetaBtn: "Upload metadata & mint",
   labelMintName: "Name <1>\uFE61</1>",
-  labelMintCollection: "Collection (coming soon) <1>\u2139</1>",
+  labelMintCollection: "Choose Collection<1>\u2139</1>",
   labelMintCollectionTooltips:
     "This is the collection where your NFT will appear.",
   labelMintRoyaltyPercentage: "Royalty (%) <1>\u2139</1>",
@@ -906,4 +906,5 @@ export default {
   labelADMintSelect: "Prepare NFT metadata w/ proper collection_metadata value",
   labelHasData: "Has generated metadata w/ collection_metadata field",
   labelNoData: "Hasn't generated metadata w/ collection_metadata field",
+  labelChooseCollection: "Choose a collection",
 };

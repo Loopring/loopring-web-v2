@@ -1,10 +1,10 @@
-import {
-  ChainId,
-  NFTTokenInfo,
-  TokenInfo,
-  UserNFTBalanceInfo,
-} from "@loopring-web/loopring-sdk";
-import { FeeInfo, IBData } from "../loopring-interface";
+// import {
+//   ChainId,
+//   NFTTokenInfo,
+//   TokenInfo,
+//   UserNFTBalanceInfo,
+// } from "@loopring-web/loopring-sdk";
+import { CollectionMeta, FeeInfo, IBData } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 
@@ -14,7 +14,7 @@ export type WithdrawType =
   | sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL;
 
 export type WithdrawTypes = {
-  [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast";
+  [ sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ]: "Fast";
   [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard";
 };
 
@@ -70,10 +70,10 @@ export type Layer1ActionHistory = {
 };
 
 export type ChainHashInfos = {
-  [key in ChainId extends string ? string : string]: AccountHashInfo;
+  [key in sdk.ChainId extends string ? string : string]: AccountHashInfo;
 };
 export type LAYER1_ACTION_HISTORY = {
-  [key in ChainId extends string ? string : string]: Layer1ActionHistory;
+  [key in sdk.ChainId extends string ? string : string]: Layer1ActionHistory;
 } & { __timer__: -1 | NodeJS.Timeout };
 
 export type MetaProperty = {
@@ -91,7 +91,7 @@ export type NFTMETA = {
   name: string;
   royaltyPercentage: number; // 0 - 10 for UI
   description: string;
-  collection?: string;
+  collection_metadata?: CollectionMeta;
   properties?: Array<MetaProperty>;
   animationUrl?: string;
   attributes?: AttributesProperty[];
@@ -102,16 +102,17 @@ export enum Media {
   Video = "Video",
 }
 
-export type NFTWholeINFO = NFTTokenInfo &
-  UserNFTBalanceInfo &
+export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
+  sdk.UserNFTBalanceInfo &
   NFTMETA & {
-    nftBalance?: number;
-    nftIdView?: string;
-    fee?: FeeInfo;
-    isFailedLoadMeta?: boolean;
-    etherscanBaseUrl: string;
-    __mediaType__?: Media;
-  };
+  nftBalance?: number;
+  nftIdView?: string;
+  fee?: FeeInfo;
+  isFailedLoadMeta?: boolean;
+  etherscanBaseUrl: string;
+  __mediaType__?: Media;
+  collectionMeta?: Partial<Co>
+};
 
 export type MintTradeNFT<I> = {
   balance?: number;
@@ -122,7 +123,7 @@ export type MintTradeNFT<I> = {
   nftIdView?: string;
   royaltyPercentage?: number;
 } & Partial<IBData<I>> &
-  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+  Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 export type MintReadTradeNFT<I> = {
   balance?: number;
   fee?: FeeInfo;
@@ -132,7 +133,7 @@ export type MintReadTradeNFT<I> = {
   readonly nftBalance?: number;
   readonly royaltyPercentage?: number;
 } & Partial<IBData<I>> &
-  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+  Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
 export type TradeNFT<I> = MintTradeNFT<I> &
   Partial<NFTWholeINFO> & { isApproved?: boolean };
@@ -354,7 +355,7 @@ export type InvestItem = {
   duration: string;
 };
 export type InvestDetail = {
-  token: TokenInfo;
+  token: sdk.TokenInfo;
   apr: [start: number, end: number];
   durationType: InvestDuration;
   duration: string;

@@ -1,82 +1,39 @@
 import {
-	EmptyDefault,
-	Toast,
+	Toast, useOpenModals, useToggle,
+	CollectionCardList, CollectionListProps
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { Box, Button, Grid, Pagination } from "@mui/material";
 import React, { useState } from "react";
 import styled from "@emotion/styled/";
 import {
-  CollectionLimit,
-  CreateCollectionStep,
-	NFTLimit
+	CollectionMeta,
+	CreateCollectionStep,
+	TradeNFT
 } from "@loopring-web/common-resources"
-import { useMyCollection } from './hook';
-import { CollectionItem } from '../components/CollectionItem';
-import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk';
-import { TOAST_TIME } from '@loopring-web/core';
+import { LoopringAPI, TOAST_TIME, useAccount, useModalData } from '@loopring-web/core';
 import { CreateUrlPanel } from '../components/landingPanel';
+import { useHistory } from 'react-router-dom';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 `;
 
-// const CreateNamePanel = ({setStep}: { setStep: (step: CreateCollectionStep) => void }) => {
-//   const [value, setValue] = React.useState("");
-//   const {t} = useTranslation('common');
-//
-//   const {createContract} = useCollectionContractTs({setStep});
-//   return <Box flex={1} display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"}>
-//     <Box marginBottom={3} width={'var(--modal-width)'}>
-//       <Typography component={'h4'} variant={'h4'} textAlign={'center'} marginBottom={2}>
-//         {t('labelCollectionCreateERC1155')}
-//       </Typography>
-//     </Box>
-//     <Box marginBottom={2} width={'var(--modal-width)'}>
-//       <TextField
-//         value={value}
-//         inputProps={{maxLength: 28}}
-//         fullWidth
-//         label={<Trans i18nKey={"labelCollectionName"}>Collection Name</Trans>}
-//         type={"text"}
-//         onChange={(e: React.ChangeEvent<{ value: string }>) => setValue(e.target.value)}
-//       />
-//     </Box>
-//     <Box width={'var(--modal-width)'} alignItems={'center'} display={'flex'} justifyContent={'center'}>
-//       <Button
-//         onClick={() => {
-//           createContract({name: value})
-//           setStep(CreateCollectionStep.Loading)
-//         }}
-//         variant={"contained"}
-//         disabled={value.trim() === ''}
-//         fullWidth
-//         color={"primary"}
-//       >
-//         {t("labelCreateCollection")}
-//       </Button>
-//     </Box>
-//
-//   </Box>
-// }
-
-
 const CommonPanel = () => {
-  return <></>;
+	return <></>;
 };
-export const NFTCollectPanel = () => {
+export const NFTCollectPanel = <Co extends CollectionMeta>({collectionListProps}: { collectionListProps: CollectionListProps<Co> }) => {
 	const {t} = useTranslation(["common"]);
 	const [showCreateOpen, setCreateOpen] = React.useState(false);
-	const [copyToastOpen, setCopyToastOpen] = useState(false);
 	const [step, setStep] = React.useState(CreateCollectionStep.ChooseMethod);
-
-	const {
-		onPageChange,
-		collectionList,
-		total,
-		page,
-	} = useMyCollection();
+	const history = useHistory();
+	const {account} = useAccount();
+	const {toggle: {deployNFT}} = useToggle();
+	const {setShowNFTDeploy, setShowTradeIsFrozen} =
+		useOpenModals();
+	const {updateNFTDeployData} =
+		useModalData();
 	// TODO: MOCK
 	// const collectionList = [
 	// 	{
@@ -174,113 +131,60 @@ export const NFTCollectPanel = () => {
 
       <Box display={'flex'} alignSelf={"flex-end"}>
         <Button
-          onClick={() => {
-	          setStep(CreateCollectionStep.ChooseMethod);
-	          setCreateOpen(true);
-          }}
-          variant={"outlined"}
-          color={"primary"}
+	        onClick={() => {
+		        setStep(CreateCollectionStep.ChooseMethod);
+		        setCreateOpen(true);
+	        }}
+	        variant={"outlined"}
+	        color={"primary"}
         >
-          {t("labelCreateCollection")}
+	        {t("labelCreateCollection")}
         </Button>
       </Box>
-      <Box flex={1} display={'flex'} justifyContent={'stretch'} marginTop={2} width={'100%'}>
-        {!!collectionList?.length ?
-          <>
-            {total > CollectionLimit && (
-              <Box
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"right"}
-                marginRight={3}
-                marginBottom={2}
-              >
-                <Pagination
-                  color={"primary"}
-                  count={
-                    parseInt(String(total / NFTLimit)) +
-                    (total % NFTLimit > 0 ? 1 : 0)
-                  }
-                  page={page}
-                  onChange={(_event, value) => {
-                    onPageChange(Number(value));
-                  }}
-                />
-              </Box>
-            )}
-            <Grid container spacing={2} paddingBottom={3}>
-
-              {collectionList.map((item, index) => {
-                return <Grid
-	                key={(item?.name ?? "") + index.toString()}
-	                item
-	                xs={12}
-	                md={6}
-	                lg={4}
-	                flex={"1 1 120%"}
-                >
-	                <CollectionItem
-		                setShowMintNFT={setStep}
-		                setCreateOpen={setCreateOpen}
-		                item={item as any}
-		                index={index} setCopyToastOpen={setCopyToastOpen}/>
-                </Grid>
-              })}
-            </Grid>
-            {total > CollectionLimit && (
-              <Box
-                display={"flex"}
-                alignItems={"center"}
-                justifyContent={"right"}
-                marginRight={3}
-                marginBottom={2}
-              >
-                <Pagination
-                  color={"primary"}
-                  count={
-                    parseInt(String(total / NFTLimit)) +
-                    (total % NFTLimit > 0 ? 1 : 0)
-                  }
-                  page={page}
-                  onChange={(_event, value) => {
-                    onPageChange(Number(value));
-                  }}
-                />
-              </Box>
-            )}
-          </> : (<Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-            <EmptyDefault
-              style={{flex: 1}}
-              height={"100%"}
-              message={() => (
-                <Box
-	                flex={1}
-	                display={"flex"}
-	                alignItems={"center"}
-	                justifyContent={"center"}
-                >
-	                {t("labelNoContent")}
-                </Box>
-              )}
-            />
-	        </Box>)
-        }
-      </Box>
+			<CollectionCardList
+				//   onPageChange={function (props: any): void {
+				//     throw new Error("Function not implemented.");
+				//   }} total={0} page={0} setCopyToastOpen={function (isShow: boolean): void {
+				//   throw new Error("Function not implemented.");
+				// }}
+				{...{...collectionListProps as any}}
+				account={account}
+				toggle={deployNFT}
+				setShowEdit={(item) => {
+					history.push('/nft/addCollection');
+					// setCreateOpen(true)
+				}}
+				setShowMintNFT={(step) => {
+					setCreateOpen(true);
+					//TODO: updateTokenAddress
+					setStep(CreateCollectionStep.ChooseCollectionEdit);
+				}}
+				setShowDeploy={(item) => {
+					const _deployItem: TradeNFT<any> = {
+						tokenAddress: item.contractAddress,
+						// TODO: fix backend
+						nftType: 'ERC1155',
+					};
+					LoopringAPI.userAPI
+						?.getAvailableBroker({type: 0})
+						.then(({broker}) => {
+							updateNFTDeployData({broker});
+						});
+					updateNFTDeployData(_deployItem);
+					deployNFT.enable
+						? setShowNFTDeploy({
+							isShow: true,
+							info: {...{_deployItem}},
+						})
+						: setShowTradeIsFrozen({isShow: true});
+				}}
+			/>
 			<CreateUrlPanel open={showCreateOpen} step={step} onClose={() => {
 				setCreateOpen(false);
 			}}
 			/>
 
 
-			<Toast
-				alertText={t("labelCopyAddClip")}
-				open={copyToastOpen}
-				autoHideDuration={TOAST_TIME}
-				onClose={() => {
-					setCopyToastOpen(false);
-				}}
-				severity={"success"}
-			/>
 		</Box>
   );
 };

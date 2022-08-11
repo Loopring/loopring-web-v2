@@ -106,23 +106,24 @@ export function ScrollTop(props: {
 }
 
 export const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
-  ${({ theme, size }) =>
+  ${({theme, size}) =>
     size !== "small"
       ? `
       background: var(--color-box);
       padding: ${theme.unit / 2}px;
       padding-right: ${theme.unit / 4}px;
       box-shadow: var(--shadow3);
-  `
-      : ``};
+  ` : ``};
+
   .MuiToggleButton-sizeSmall {
     background: var(--color-box);
     height: 2.4rem;
     font-size: 1.2rem;
-    margin-right: ${({ theme }) => theme.unit}px;
-    border: ${({ theme }) =>
-      theme.border.borderConfig({ c_key: "var(--color-border)" })};
+    margin-right: ${({theme}) => theme.unit}px;
+    border: ${({theme}) =>
+      theme.border.borderConfig({c_key: "var(--color-border)"})};
     color: var(--color-text-secondary);
+
     &:not(:first-of-type),
     &:not(:last-child) {
       border-color: var(--color-border);

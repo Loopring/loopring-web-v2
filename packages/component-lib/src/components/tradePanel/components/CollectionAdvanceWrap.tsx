@@ -20,169 +20,155 @@ const GridStyle = styled(Grid)`
     font-size: ${({theme}) => theme.fontDefault.body2};
   }
 ` as typeof Grid;
-export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>({
-                                                                           handleDataChange,
-                                                                           btnInfo,
-                                                                           btnStatus,
-                                                                           disabled = false,
-                                                                           allowTrade,
-                                                                           metaData,
-                                                                           onSubmitClick,
-                                                                         }: CollectionAdvanceProps<T>) => {
-  const {t} = useTranslation(["common"]);
-  const {isMobile} = useSettings();
-  const styles = isMobile
-    ? {flex: 1, width: "var(--swap-box-width)"}
-    : {width: "var(--modal-width)"};
-  const [copyToastOpen, setCopyToastOpen] = useState(false);
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: `popupId-nftMint`,
-  });
-  const getDisabled = React.useMemo(() => {
-    return disabled || allowTrade.collectionNFT === true || btnStatus === TradeBtnStatus.DISABLED;
-  }, [disabled, btnStatus]);
-  // @ts-ignore
-  return (
-    <GridStyle
-      // className={walletMap ? "" : "loading"}
-      style={styles}
-      paddingBottom={3}
-      container
-      paddingLeft={5 / 2}
-      paddingRight={5 / 2}
-      direction={"column"}
-      justifyContent={"space-between"}
-      alignItems={"center"}
-      flex={1}
-      height={"100%"}
-    >
-      <Grid item>
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          /* textAlign={'center'} */ marginBottom={2}
-        >
-          <Typography component={"h4"} variant={"h3"} marginRight={1}>
-            {t('labelCollectionMetaTitle')}
-          </Typography>
-          <Info2Icon
-            {...bindHover(popupState)}
-            fontSize={"large"}
-            htmlColor={"var(--color-text-third)"}
-          />
-        </Box>
-        <PopoverPure
-          className={"arrow-center"}
-          {...bindPopper(popupState)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-        >
-          <Typography
-            padding={2}
-            component={"p"}
-            variant={"body2"}
-            whiteSpace={"pre-line"}
-          >
-            This is a quick way to import Collection metaData information,
-            please make sure the metaData json include name & tileUri
-          </Typography>
-        </PopoverPure>
-      </Grid>
-      <Typography
-        component={"span"}
-        display={"flex"}
-        alignItems={"center"}
-        alignSelf={"flex-start"}
-        marginBottom={1}
-        color={"textSecondary"}
-        variant={"body2"}
-      >
-        <Trans i18nKey={"labelCollectionAdvanceJSON"}>
-          NFT Collection information follow this format
-        </Trans>
-        <Typography variant={"inherit"} color={'var(--color-primary)'} marginLeft={1} onClick={() => {
-          const metaDemo = {
-            name: "`${COLLECTION_NAME (string, required)}`",
-            tileUri: "ipfs://`${cid (storage image type media, required)}`",
-            collectionTitle: "`${COLLECTION_TITLE (string)}`",
-            description: "`${COLLECTION_DESCRIPTION}",
-            avatar: "ipfs://`${cid  (storage image type media)}",
-            banner: "ipfs://`${cid  (storage image type media)}",
-            thumbnail: "ipfs://`${cid  (storage image type media)}",
-          }
-          copyToClipBoard(JSON.stringify(metaDemo));
-          setCopyToastOpen(true);
+export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>(
+	{
+		handleDataChange,
+		btnInfo,
+		btnStatus,
+		disabled = false,
+		allowTrade,
+		metaData,
+		onSubmitClick,
+	}: CollectionAdvanceProps<T>) => {
+	const {t} = useTranslation(["common"]);
+	const {isMobile} = useSettings();
+	const styles = isMobile
+		? {flex: 1, width: "var(--swap-box-width)"}
+		: {width: "var(--modal-width)"};
+	const [copyToastOpen, setCopyToastOpen] = useState(false);
+	const popupState = usePopupState({
+		variant: "popover",
+		popupId: `popupId-nftMint`,
+	});
+	const getDisabled = React.useMemo(() => {
+		return disabled || allowTrade.collectionNFT === true || btnStatus === TradeBtnStatus.DISABLED;
+	}, [disabled, btnStatus]);
+	// @ts-ignore
+	return (
+		<GridStyle
+			// className={walletMap ? "" : "loading"}
+			style={styles}
+			paddingBottom={3}
+			container
+			paddingLeft={5 / 2}
+			paddingRight={5 / 2}
+			direction={"column"}
+			justifyContent={"space-between"}
+			alignItems={"center"}
+			flex={1}
+			height={"100%"}
+		>
+			<Grid item>
+				<Box
+					display={"flex"}
+					flexDirection={"row"}
+					justifyContent={"center"}
+					alignItems={"center"} marginBottom={2}
+				>
+					<Typography component={"h4"} variant={"h3"} marginRight={1}>
+						{t('labelCollectionMetaTitle')}
+					</Typography>
+					<Info2Icon
+						{...bindHover(popupState)}
+						fontSize={"large"}
+						htmlColor={"var(--color-text-third)"}
+					/>
+				</Box>
+				<PopoverPure
+					className={"arrow-center"}
+					{...bindPopper(popupState)}
+					anchorOrigin={{
+						vertical: "bottom",
+						horizontal: "center",
+					}}
+					transformOrigin={{
+						vertical: "top",
+						horizontal: "center",
+					}}
+				>
+					<Typography
+						padding={2}
+						component={"p"}
+						variant={"body2"}
+						whiteSpace={"pre-line"}
+					>
+						This is a quick way to import Collection metaData information,
+						please make sure the metaData json include name & tileUri
+					</Typography>
+				</PopoverPure>
+			</Grid>
+			<Typography
+				component={"span"}
+				display={"flex"}
+				alignItems={"center"}
+				alignSelf={"flex-start"}
+				marginBottom={1}
+				color={"textSecondary"}
+				variant={"body2"}
+			>
+				<Trans i18nKey={"labelCollectionAdvanceJSON"}>
+					NFT Collection information follow this format
+				</Trans>
+				<Typography variant={"inherit"} color={'var(--color-primary)'} marginLeft={1} onClick={() => {
+					const metaDemo = {
+						name: "`${COLLECTION_NAME (string, required)}`",
+						tileUri: "ipfs://`${cid (storage image type media, required)}`",
+						collectionTitle: "`${COLLECTION_TITLE (string)}`",
+						description: "`${COLLECTION_DESCRIPTION}",
+						avatar: "ipfs://`${cid  (storage image type media)}",
+						banner: "ipfs://`${cid  (storage image type media)}",
+						thumbnail: "ipfs://`${cid  (storage image type media)}",
+					};
+					copyToClipBoard(JSON.stringify(metaDemo));
+					setCopyToastOpen(true);
 
-        }}>
-          {t('labelCopyDemo')}
-        </Typography>
-      </Typography>
-      <TextareaAutosizeStyled
-        minRows={15}
-        maxRows={20}
-        style={{
-          overflowX: "hidden",
-          resize: "vertical",
-          width: "100%"
-        }}
-        placeholder={`Please input a validate JSON format collection metadata information, name and tileUri is required.`}
-        onChange={(_event) => {
-          const value = _event.target.value;
-          handleDataChange(value ?? '')
-        }}
-        // fullWidth={true}
-        value={metaData}
-      />
-      <Grid item marginTop={3} alignSelf={"stretch"}>
-        {/*{btnInfo?.label === "errorCollectionMetadataNoTileUri" && (*/}
-        {/*  <Typography*/}
-        {/*    color={"var(--color-warning)"}*/}
-        {/*    component={"p"}*/}
-        {/*    variant={"body1"}*/}
-        {/*    marginBottom={1}*/}
-        {/*    style={{wordBreak: "break-all"}}*/}
-        {/*  >*/}
-        {/*    <Trans i18nKey={"labelNFTMintNoMetaDetail"}>*/}
-        {/*     */}
-        {/*    </Trans>*/}
-        {/*  </Typography>*/}
-        {/*)}*/}
-        <Button
-          fullWidth
-          variant={"contained"}
-          size={"medium"}
-          color={"primary"}
-          onClick={async () => {
-            await onSubmitClick();
-          }}
-          loading={
-            !getDisabled && btnStatus === TradeBtnStatus.LOADING
-              ? "true"
-              : "false"
-          }
-          disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
-        >
-          {btnInfo ? t(btnInfo.label, {ns: ["error", 'common'], ...btnInfo.params}) : t(`labelCollectionCreatBtn`)}
-        </Button>
-      </Grid>
-      <Toast
-        alertText={t("labelCopyAddClip")}
-        open={copyToastOpen}
-        autoHideDuration={TOAST_TIME}
-        onClose={() => {
-          setCopyToastOpen(false);
-        }}
-        severity={"success"}
-      />
-    </GridStyle>
-  );
+				}}>
+					{t('labelCopyDemo')}
+				</Typography>
+			</Typography>
+			<TextareaAutosizeStyled
+				minRows={15}
+				maxRows={20}
+				style={{
+					overflowX: "hidden",
+					resize: "vertical",
+					width: "100%"
+				}}
+				placeholder={`Please input a validate JSON format collection metadata information, name and tileUri is required.`}
+				onChange={(_event) => {
+					const value = _event.target.value;
+					handleDataChange(value ?? '')
+				}}
+				value={metaData}
+			/>
+			<Grid item marginTop={3} alignSelf={"stretch"}>
+				<Button
+					fullWidth
+					variant={"contained"}
+					size={"medium"}
+					color={"primary"}
+					onClick={async () => {
+						await onSubmitClick();
+					}}
+					loading={
+						!getDisabled && btnStatus === TradeBtnStatus.LOADING
+							? "true"
+							: "false"
+					}
+					disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
+				>
+					{btnInfo ? t(btnInfo.label, {ns: ["error", 'common'], ...btnInfo.params}) : t(`labelCollectionCreatBtn`)}
+				</Button>
+			</Grid>
+			<Toast
+				alertText={t("labelCopyAddClip")}
+				open={copyToastOpen}
+				autoHideDuration={TOAST_TIME}
+				onClose={() => {
+					setCopyToastOpen(false);
+				}}
+				severity={"success"}
+			/>
+		</GridStyle>
+	);
 };
