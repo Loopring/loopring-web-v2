@@ -5,7 +5,6 @@ import {
   IBData,
   IPFS_LOOPRING_SITE,
   IPFS_META_URL,
-  myLog,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
@@ -41,7 +40,6 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       return false;
     }
   };
-  // myLog(tradeData)
   const handleCountChange: any = React.useCallback(
     (_tradeData: T, _name: string, _ref: any) => {
       //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
@@ -51,8 +49,6 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
           to: "button",
         });
       }
-
-      // onCoinValueChange(ibData);
     },
     [onChangeEvent, tradeData]
   );
@@ -76,7 +72,6 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
       return { error: false, message: "" };
     };
   }
-  myLog("isBalanceLimit", isBalanceLimit);
   const inputCoinProps = {
     subLabel: t("labelAvailable"),
     placeholderText: "0",
@@ -97,7 +92,6 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
     ...inputNFTProps,
     ...rest,
   };
-  myLog("tradeData", tradeData);
   return (
     // @ts-ignore
     <InputCoin<T, I, CoinInfo<I>>

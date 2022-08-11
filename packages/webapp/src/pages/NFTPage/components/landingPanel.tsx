@@ -14,7 +14,7 @@ import React from 'react';
 
 export const MintLandingPanel = () => {
 	const history = useHistory();
-	const {setShowNFTMintAdvance} = useOpenModals();
+	// const {setShowNFTMintAdvance} = useOpenModals();
 	const {t} = useTranslation(["common"]);
 	const {isMobile} = useSettings();
 	return (
@@ -277,7 +277,7 @@ export const CreateUrlPanel = ({
 			}
 
 		]
-	}, []);
+	}, [history, isMobile, onClose, setShowCollectionAdvance, t]);
 	return (
 		<Modal
 			open={open}
@@ -313,9 +313,9 @@ export const CreateUrlPanel = ({
 };
 
 export const MintLandingPage = () => {
-	const history = useHistory();
-	const {t} = useTranslation(["common"]);
-	const {isMobile} = useSettings();
+	// const history = useHistory();
+	// const {t} = useTranslation(["common"]);
+	// const {isMobile} = useSettings();
 	return (
 		<Box
 			flex={1}
@@ -324,103 +324,7 @@ export const MintLandingPage = () => {
 			flexDirection={'column'}
 
 		>
-			<Box marginBottom={2}>
-				<Typography component={"h3"} variant={"h4"} marginBottom={1}>
-					{t('labelSelectCollection')}
-				</Typography>
-				<Typography component={"h3"} variant={"body1"} color={"textSecondary"}>
-					{t('labelSelectCollectionDes')}
-				</Typography>
-			</Box>
-			<Box flex={1}
-			     alignItems={"center"}
-			     display={"flex"}
-			     flexDirection={isMobile ? "column" : "row"}
-			     justifyContent={"center"}>
-				<CardNFTStyled onClick={() => {
-					history.push("/nft/myCollection");
-					// setShowNFTMintAdvance({isShow: true});
-				}}>
-					<Box flex={1} display={"flex"}
-					     alignItems={"center"}
-					     justifyContent={"center"}
-					     marginBottom={2}
-					     minHeight={200}
-					     width={"100%"}
-					>
-						{/*<NftImage*/}
-						{/*  */}
-						{/*  onError={() => undefined}*/}
-						{/*  src={"https://static.loopring.io/assets/images/nft-mint.png"}*/}
-						{/*/>*/}
-						<NftImage
-							alt={"NFT Created"}
-							onError={() => undefined}
-							src={`${SoursURL}images/nft_guid1.webp`}
-						/>
-					</Box>
-					<Typography
-						display={'flex'}
-						flexDirection={'column'}
-						justifyContent={'space-between'}
-						paddingX={2}
-						component={'p'}
-						variant={'body1'}
-						minHeight={"160px"}
-						marginBottom={3}
-					>
-						<>{t('labelAdMintGuid')}
-
-							<Button
-								variant={"contained"}
-								color={"primary"}
-								fullWidth={true}
-							>
-								{t("labelChooseCollectionBtn")}
-							</Button>
-						</>
-					</Typography>
-				</CardNFTStyled>
-				<CardNFTStyled sx={{marginLeft: isMobile ? 0 : 4}} onClick={() => {
-					history.push("/nft/addCollection");
-				}}>
-					<Box flex={1} display={"flex"}
-					     alignItems={"center"}
-					     justifyContent={"center"}
-					     marginBottom={2}
-					     minHeight={200}
-					     width={"100%"}
-					>
-						<NftImage
-
-							alt={"NFT Created"}
-							onError={() => undefined}
-							src={`${SoursURL}images/nft_guid2.webp`}
-						/>
-					</Box>
-					<Typography
-						display={'flex'}
-						flexDirection={'column'}
-						justifyContent={'space-between'}
-						paddingX={2}
-						component={'p'}
-						variant={'body1'}
-						minHeight={"160px"}
-						marginBottom={3}
-					>
-						<>{t('labelMintGuid')}
-
-							<Button
-								variant={"contained"}
-								color={"primary"}
-								fullWidth={true}
-							>
-								{t("labelCollectionCreatBtn")}
-							</Button>
-						</>
-					</Typography>
-				</CardNFTStyled>
-			</Box>
+			<MintLandingPanel/>
 		</Box>
 	);
 };

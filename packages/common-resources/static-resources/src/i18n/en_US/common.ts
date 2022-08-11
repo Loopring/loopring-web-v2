@@ -900,4 +900,10 @@ export default {
   labelSelectCollectionDes: "A NFT Collection can help you manage and group your NFTs",
   labelChooseCollectionBtn: "Choose a Collection to Mint",
   labelNFTMint721Btn: "ERC721 will coming soon",
+  labelADMint1: "Prepare NFT metadata",
+  labelADMint2: "Fill in the IPFS CID",
+  labelADMint3: "Preview & Mint NFT",
+  labelADMintSelect: "Prepare NFT metadata w/ proper collection_metadata value",
+  labelHasData: "Has generated metadata w/ collection_metadata field",
+  labelNoData: "Hasn't generated metadata w/ collection_metadata field",
 };

@@ -101,7 +101,6 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       });
     }
   }, [accountStatus, account.readyState]);
-  myLog('tokenAddress', tokenAddress)
   const {
     chargeFeeTokenList,
     isFeeNotEnough,

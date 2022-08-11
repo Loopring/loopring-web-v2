@@ -389,7 +389,7 @@ export function useChargeFees({
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    myLog('tokenAddress', tokenAddress, requestType, account.readyState)
+    // myLog('tokenAddress', tokenAddress, requestType, account.readyState)
     if (
       (isActiveAccount &&
         [

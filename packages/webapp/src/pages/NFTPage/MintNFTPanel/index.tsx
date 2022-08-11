@@ -1,18 +1,19 @@
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import {
-  CardNFTStyled, MintAdvanceNFTWrap,
-  MintNFTConfirm, NftImage, NFTMintAdvanceProps,
-  PanelContent,
-  useOpenModals, useSettings,
+  MintAdvanceNFTWrap,
+  MintNFTConfirm,
+  PanelContent, PopoverPure,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { BackIcon, FeeInfo, SoursURL, TradeNFT } from "@loopring-web/common-resources";
+import { BackIcon, Info2Icon, TradeNFT } from "@loopring-web/common-resources";
 import { useNFTMintAdvance } from '@loopring-web/core';
+import { bindHover } from 'material-ui-popup-state/es';
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -106,8 +107,12 @@ export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
   const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
   React.useEffect(() => {
     resetDefault();
-  }, [match?.params?.mintAdvanceNFT]);
+  }, [resetDefault]);
   const {t} = useTranslation("common");
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId-nftMint`,
+  });
   return <>
     <Box marginBottom={2}>
       <Button
@@ -119,8 +124,39 @@ export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
         onClick={history.goBack}
       >
         {t("labelAdMintTitle")}
+        <Info2Icon
+          {...bindHover(popupState)}
+          fontSize={"large"}
+          htmlColor={"var(--color-text-third)"}
+        />
         {/*<Typography color={"textPrimary"}></Typography>*/}
       </Button>
+      <PopoverPure
+        className={"arrow-center"}
+        {...bindPopper(popupState)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <Typography
+          padding={2}
+          component={"p"}
+          variant={"body2"}
+          whiteSpace={"pre-line"}
+        >
+          <Trans i18nKey={nftMintAdvanceProps.description ? nftMintAdvanceProps.description : "nftMintDescription"}>
+            Paste in the CID that you obtained from uploading the metadata
+            Information file (point 11 above) - if successful, the data from
+            the metadata Information you created contained within the folder
+            populates the Name and also the image displays.
+          </Trans>
+        </Typography>
+      </PopoverPure>
     </Box>
     <StyledPaper
       flex={1}

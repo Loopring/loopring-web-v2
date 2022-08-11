@@ -7,11 +7,10 @@ import {
 	DropDownIcon,
 	NFTLimit
 } from '@loopring-web/common-resources';
-import { Button, InputSearch, PopoverPure } from '../../../index';
+import { Button, InputSearch, InputSearchWrapperStyled, PopoverPure } from '../../../index';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import React from 'react';
 import { CollectionMeta } from '@loopring-web/loopring-sdk';
-// import { useMyCollection } from '@loopring-web/webapp/src/pages/NFTPage/CollectionPanel/hook';
 import { CollectionHttps } from '@loopring-web/common-resources';
 import * as sdk from '@loopring-web/loopring-sdk';
 import { useTranslation } from 'react-i18next';
@@ -35,21 +34,22 @@ export const makeMeta = ({collection}: { collection: CollectionMeta }) => {
 	};
 	return {metaDemo}
 };
-export const CollectionInput = ({
-	                                collection,
-	                                onPageChange,
-	                                collectionList,
-	                                total,
-	                                setCopyToastOpen,
-	                                page
-                                }: {
-	collection?: CollectionMeta,
-	onPageChange: (props: any) => void,
-	collectionList: sdk.CollectionMeta[],
-	total: number,
-	page: number,
-	setCopyToastOpen: () => void,
-}) => {
+export const CollectionInput = (
+	{
+		collection,
+		onPageChange,
+		collectionList,
+		total,
+		setCopyToastOpen,
+		page
+	}: {
+		collection?: CollectionMeta,
+		onPageChange: (props: any) => void,
+		collectionList: sdk.CollectionMeta[],
+		total: number,
+		page: number,
+		setCopyToastOpen: (isShow: boolean) => void,
+	}) => {
 	const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 	const [selectCollectionMeta, setSelectCollectionMeta] = React.useState(collection);
 	const [searchValue, setSearchValue] = React.useState('');
