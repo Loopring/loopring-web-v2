@@ -908,4 +908,13 @@ export default {
   labelHasData: "Has generated metadata w/ collection_metadata field",
   labelNoData: "Hasn't generated metadata w/ collection_metadata field",
   labelChooseCollection: "Choose a collection",
+  labelAvatar: "Avatar (120px * 120px)",
+  labelTileUri: " Tile (320px * 320px) <1>\uFE61</1>",
+  labelCollectionDescription: "Description",
+  labelCollectionName: "Collection Name <1>\uFE61</1>",
+  labelCollectionCreateBtn: "Create Collection",
+  labelCollectionRequiredName: "Please input Name",
+  labelCollectionRequiredTileUri: "Please input TileUri",
+  labelCollectionIsUploading: "Source is laoding",
+
 };

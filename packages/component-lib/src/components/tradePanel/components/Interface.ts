@@ -2,7 +2,7 @@ import {
   InputButtonProps,
   InputCoinProps,
   BtnInfoProps,
-  SwitchPanelProps,
+  SwitchPanelProps, IpfsFile, BtnInfo,
 } from "../../basic-lib";
 import {
   AddressError,
@@ -434,3 +434,15 @@ export type CollectionAdvanceProps<_T> = {
   handleError: (error: { code: number, message: string }) => void,
   metaData: string,
 } & BtnInfoProps;
+
+
+export type CreateCollectionViewProps<Co> = {
+  keys: { [ key: string ]: undefined | IpfsFile },
+  onFilesLoad: (key: string, value: IpfsFile) => void,
+  onDelete: (key: string) => void,
+  btnStatus: TradeBtnStatus,
+  btnInfo?: BtnInfo,
+  disabled?: boolean,
+  handleOnDataChange: (key: string, value: any) => void,
+  collectionValue: Co
+}

@@ -17,3 +17,4 @@ export * from "./components/tool/FeeList";
 export * from "./components/DeFiWrap";
 export * from "./components/CollectionAdvanceWrap";
 export * from "./components/tool/CollectionInput"
+export * from "./components/CreateCollectionWrap"

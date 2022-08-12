@@ -2,14 +2,15 @@ import { Subject } from "rxjs";
 import {
   IpfsProvides,
   ipfsService,
-  LoopringAPI,
+  LoopringAPI, MintCommands, resetCollectionData, resetNFTMintData,
   store,
 } from "../../index";
 import {
-  AccountStatus,
+  AccountStatus, CustomError, ErrorMap,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import CID from 'cids';
+import { CollectionMeta } from '@loopring-web/loopring-sdk';
 
 export enum ContractCommands {
   CreateTokenAddress,
@@ -30,42 +31,72 @@ const subject = new Subject<{
 // const socket =  ipfsService.onSocket();
 
 export const collectionService = {
+  emptyData: async () => {
+    store.dispatch(resetCollectionData({}));
+    // const {
+    //   account,
+    //   // system: { chainId },
+    // } = store.getState();
+    // let tokenAddress = contractAddress, collection: undefined | CollectionMeta = undefined;
+    // if (tokenAddress && account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
+    //   const response = await LoopringAPI.userAPI?.getUserOwenCollection({
+    //     owner: account.accAddress,
+    //     address: contractAddress
+    //   }, account.apiKey);
+    //   if (
+    //     response &&
+    //     ((response as sdk.RESULT_INFO).code ||
+    //       (response as sdk.RESULT_INFO).message)
+    //   ) {
+    //     throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+    //   }
+    //   collection = (response as any).collections[ 0 ];
+    // }
+    // store.dispatch(resetNFTMintData({tokenAddress, collection}));
+    // subject.next({
+    //   status: MintCommands.MetaDataSetup,
+    //   data: {
+    //     emptyData: true,
+    //   },
+    // });
+  },
+
   updateIpfsGetTokenAddress: (ipfsProvides: IpfsProvides, uniqueId: string) => {
-    ipfsService.addJSON({
-      ipfs: ipfsProvides.ipfs,
-      json: JSON.stringify({name: name}),
-      uniqueId, //:),
-    });
+    // ipfsService.addJSON({
+    //   ipfs: ipfsProvides.ipfs,
+    //   json: JSON.stringify({name: name}),
+    //   uniqueId, //:),
+    // });
   },
   generateCollectionTokenAddress: async ({cid}: { cid: CID }) => {
-    const {
-      account,
-      system: {chainId},
-    } = store.getState();
-    if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
-      if (account.accAddress && LoopringAPI.nftAPI) {
-        // return (
-        const tokenAddress = await LoopringAPI.nftAPI?.computeNFTAddress({
-          nftOwner: account.accAddress,
-          nftFactory: sdk.NFTFactory[ chainId ],
-          nftBaseUri: `ipfs://${cid}`,
-        }).tokenAddress || undefined
-        // );
-        subject.next({
-          status: ContractCommands.CreateMetaData,
-          data: {tokenAddress},
-        });
-
-      } else {
-        subject.next({
-          status: ContractCommands.CreateTokenAddressFailed,
-          data: undefined,
-        });
-
-        return Promise.resolve();
-        // return undefined;
-      }
-    }
+    // const {
+    //   account,
+    //   system: {chainId},
+    // } = store.getState();
+    // if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
+    //   if (account.accAddress && LoopringAPI.nftAPI) {
+    //     // return (
+    //     const tokenAddress = await LoopringAPI.nftAPI?.computeNFTAddress({
+    //       nftOwner: account.accAddress,
+    //       nftFactory: sdk.NFTFactory[ chainId ],
+    //       nftBaseUri: `ipfs://${cid}`,
+    //     }).tokenAddress || undefined
+    //     // );
+    //     subject.next({
+    //       status: ContractCommands.CreateMetaData,
+    //       data: {tokenAddress},
+    //     });
+    //
+    //   } else {
+    //     subject.next({
+    //       status: ContractCommands.CreateTokenAddressFailed,
+    //       data: undefined,
+    //     });
+    //
+    //     return Promise.resolve();
+    //     // return undefined;
+    //   }
+    // }
   },
   // backMetaDataSetup: () => {
   //   subject.next({

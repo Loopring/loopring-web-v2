@@ -66,14 +66,6 @@ export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: {
       ),
     },
   ];
-  let match: any = useRouteMatch("/NFT/:item/?:contract");
-  // const selected = match?.params.item ?? "assetsNFT";
-  React.useEffect(() => {
-    if (match?.params.item === 'mintNFT') {
-      mintService.emptyData(match?.params?.contract ?? '')
-    }
-  }, [match?.params.item]);
-  // mintService.emptyData();
   return (
     <>
       <Box marginBottom={2}>

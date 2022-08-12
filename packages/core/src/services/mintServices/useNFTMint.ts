@@ -436,29 +436,29 @@ export function useNFTMint<
     data?: any;
   }) => {
     switch (status) {
-      // case MintCommands.MetaDataSetup:
-      //   if (data?.emptyData) {
-      //     resetNFTMINT();
-      //   }
-      //   break;
-      // case MintCommands.SignatureMint:
-      // // nftMintProps.onNFTMintClick(data?.isHardware);
-      // case MintCommands.MintConfirm:
-      //   handleTabChange(1);
-      //   break;
+	    case MintCommands.MetaDataSetup:
+		    if (data?.emptyData) {
+			    resetNFTMINT();
+		    }
+		    break;
+	    case MintCommands.SignatureMint:
+	    // nftMintProps.onNFTMintClick(data?.isHardware);
+	    case MintCommands.MintConfirm:
+		    handleTabChange(1);
+		    break;
     }
   };
-  // React.useEffect(() => {
-  //   const subscription = subject.subscribe((props) => {
-  //     commonSwitch(props);
-  //   });
-  //   return () => {
-  //     subscription.unsubscribe();
-  //   };
-  // }, [subject]);
+	React.useEffect(() => {
+		const subscription = subject.subscribe((props) => {
+			commonSwitch(props);
+		});
+		return () => {
+			subscription.unsubscribe();
+		};
+	}, [subject]);
 
-  return {
-    nftMintProps,
-    retryBtn,
-  };
+	return {
+		nftMintProps,
+		retryBtn,
+	};
 }
