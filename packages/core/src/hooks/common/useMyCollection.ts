@@ -38,7 +38,7 @@ export const useMyCollection = <C extends CollectionMeta>(): CollectionListProps
 
   const renderCollection = React.useCallback(async () => {
     // let mediaPromise: any[] = [];
-    setCollectionList(walletL2Collection);
+    setCollectionList(walletL2Collection as C[]);
     setIsLoading(false);
   }, [etherscanBaseUrl, page, walletL2Collection]);
   React.useEffect(() => {

@@ -99,18 +99,25 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
           <TextField
             value={nftMeta.name}
             fullWidth
+
             inputProps={{ maxLength: 32 }}
             label={
-              <Trans i18nKey={"labelMintName"}>
-                Name
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"error"}
-                >
-                  {"\uFE61"}
-                </Typography>
-              </Trans>
+              <Typography
+                component={"span"}
+                variant={"body1"}
+                color={"textSecondary"}
+              >
+                <Trans i18nKey={"labelMintName"}>
+                  Name
+                  <Typography
+                    component={"span"}
+                    variant={"inherit"}
+                    color={"error"}
+                  >
+                    {"\uFE61"}
+                  </Typography>
+                </Trans>
+              </Typography>
             }
             type={"text"}
             onChange={(event) =>
@@ -119,7 +126,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <CollectionInput {...collectionInputProps} />
+          <CollectionInput {...{...collectionInputProps}} fullWidth={true}/>
           {/*<TextField*/}
           {/*  value={nftMeta.collection ?? ""}*/}
           {/*  fullWidth*/}

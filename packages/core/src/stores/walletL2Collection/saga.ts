@@ -18,16 +18,16 @@ const getWalletL2CollectionBalance = async <_R extends { [ key: string ]: any }>
   myLog('getWalletL2CollectionBalance');
   if (apiKey && accountId && LoopringAPI.userAPI) {
     const response = await LoopringAPI.userAPI
-      .getUserNFTCollection(
-        {
-          // @ts-ignore
-          owner: accAddress,
-          limit: CollectionLimit,
-          offset,
-          // metadata: true, // close metadata
-        },
-        apiKey
-      )
+	    .getUserOwenCollection(
+		    {
+			    // @ts-ignore
+			    owner: accAddress,
+			    limit: CollectionLimit,
+			    offset,
+			    // metadata: true, // close metadata
+		    },
+		    apiKey
+	    )
       .catch((_error) => {
         throw new CustomError(ErrorMap.TIME_OUT);
       });

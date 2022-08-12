@@ -1,6 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import {
+  CollectionListProps,
   MintAdvanceNFTWrap,
   MintNFTConfirm, NFTMintAdvanceViewProps,
   PanelContent, PopoverPure,
@@ -20,7 +21,7 @@ const StyledPaper = styled(Box)`
 `;
 
 
-export const MintNFTPanel = () => {
+export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: { collectionListProps: CollectionListProps<Co> }) => {
   const history = useHistory();
 
   const {t} = useTranslation("common");
@@ -31,7 +32,19 @@ export const MintNFTPanel = () => {
       key: "METADATA",
       element: (
         <MetaNFTPanel
-          {...mintWholeProps}
+          {...{
+            ...mintWholeProps,
+            nftMetaProps: {
+              ...mintWholeProps.nftMetaProps,
+              collectionInputProps:
+                {
+                  collection: undefined,
+                  collectionListProps,
+                }
+            },
+          }}
+
+          // collectionInputProps={}
           nftMetaBtnStatus={mintWholeProps.nftMetaProps.nftMetaBtnStatus}
           btnInfo={mintWholeProps.nftMetaProps.btnInfo}
         />

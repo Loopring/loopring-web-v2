@@ -1,5 +1,5 @@
 import {
-  AccountStatus,
+  AccountStatus, CollectionMeta,
   FeeInfo,
   MintTradeNFT,
   NFTMETA,
@@ -16,12 +16,11 @@ const enum MINT_VIEW_STEP {
   MINT_CONFIRM,
 }
 BigNumber.config({ EXPONENTIAL_AT: 100 });
-export const useMintNFTPanel = <
-  Me extends NFTMETA,
+export const useMintNFTPanel = <Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
+  Co extends CollectionMeta,
   I,
-  C extends FeeInfo
->() => {
+  C extends FeeInfo>() => {
   const [currentTab, setCurrentTab] = React.useState<MINT_VIEW_STEP>(
     MINT_VIEW_STEP.METADATA
   );
@@ -44,7 +43,7 @@ export const useMintNFTPanel = <
     feeInfo,
     errorOnMeta,
     // resetMETADAT,
-  } = useNFTMeta<Me>({ handleTabChange, nftMintValue });
+  } = useNFTMeta<Me, Co>({handleTabChange, nftMintValue});
   React.useEffect(() => {
     if (
       accountStatus === SagaStatus.UNSET &&

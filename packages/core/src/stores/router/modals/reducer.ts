@@ -66,7 +66,7 @@ export const initialNFTMETA: Partial<NFTMETA> = {
   name: undefined,
   royaltyPercentage: 10,
   description: undefined,
-  collection: undefined,
+  collection_metadata: undefined,
   properties: undefined,
 };
 const initialActiveAccountState: ActiveAccountData = {
@@ -143,14 +143,14 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default;
       state.nftDepositValue = initialDepositState;
     },
-    resetNFTMintData(state, action?: PayloadAction<{ tokenAddress: string }>) {
+    resetNFTMintData(state, _action?: PayloadAction<undefined>) {
       state.lastStep = LAST_STEP.default;
       state.nftMintValue = {
         mintData: {
           ...initialMintNFT,
-          tokenAddress: action?.payload?.tokenAddress ?? undefined,
+          // tokenAddress: action?.payload?.tokenAddress ?? undefined,
         },
-        nftMETA: { ...initialNFTMETA },
+        nftMETA: {...initialNFTMETA},
       };
     },
     resetNFTMintAdvanceData(state) {

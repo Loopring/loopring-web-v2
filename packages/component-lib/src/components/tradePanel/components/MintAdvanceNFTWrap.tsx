@@ -185,7 +185,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 					display={"flex"}
 					justifyContent={"flex-start"}
 					flexDirection={"column"}
-					alignItems={"center"}
+					alignItems={"flex-start"}
 					width={'100%'}
 				>
 					<Typography component={'h4'} variant={'h5'} marginBottom={2}>
@@ -216,7 +216,9 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 							})}
 						</RadioGroupStyle>
 					</Box>
-					{method === AdMethod.NoData && <CollectionInput  {...{...collectionInputProps}} fullWidth={true}/>}
+					{method === AdMethod.NoData && <Box width={'100%'} paddingLeft={2}>
+            <CollectionInput  {...{...collectionInputProps}} fullWidth={true} size={'large'} showCopy={true}/>
+          </Box>}
 					<Box>
 
 					</Box>
@@ -539,7 +541,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 			flex={1}
 			flexDirection={'column'}
 			padding={5 / 2}
-
+			alignItems={"center"}
 		>
 			<HorizontalLabelPositionBelowStepper activeStep={activeStep}/>
 			<MintAdStyle
@@ -547,7 +549,9 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 				marginTop={2}
 				paddingX={isMobile ? 2 : 5}
 				display={'flex'}
-				alignItems={"stretch"}
+				justifyContent={'center'}
+				alignItems={"flex-start"}
+				maxWidth={"760px"}
 			>
 				{
 					panelList.map((panel, index) => {

@@ -91,7 +91,7 @@ export type NFTMETA = {
   name: string;
   royaltyPercentage: number; // 0 - 10 for UI
   description: string;
-  collection_metadata?: CollectionMeta;
+  collection_metadata?: string;
   properties?: Array<MetaProperty>;
   animationUrl?: string;
   attributes?: AttributesProperty[];

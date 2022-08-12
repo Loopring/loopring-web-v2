@@ -6,7 +6,7 @@ import {
   MINT_LIMIT,
   myLog,
   NFTMETA,
-  UIERROR_CODE,
+  UIERROR_CODE, CollectionMeta,
 } from "@loopring-web/common-resources";
 import { IpfsFile, NFTMetaProps } from "@loopring-web/component-lib";
 import {
@@ -22,15 +22,15 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { ipfsService, useIPFS } from "../ipfs";
 import { AddResult } from "ipfs-core-types/types/src/root";
 
-export function useNFTMeta<T extends NFTMETA>({
-  handleTabChange,
-  nftMintValue,
-}: {
+export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
+                                                                           handleTabChange,
+                                                                           nftMintValue,
+                                                                         }: {
   nftMintValue: NFT_MINT_VALUE<any>;
   handleTabChange: (value: 0 | 1) => void;
 }) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
-  const { updateNFTMintData } = useModalData();
+  const {updateNFTMintData} = useModalData();
   const [errorOnMeta, setErrorOnMeta] =
     React.useState<sdk.RESULT_INFO | undefined>(undefined);
   const [_cidUniqueID, setCIDUniqueId] =
@@ -40,11 +40,11 @@ export function useNFTMeta<T extends NFTMETA>({
   const [userAgree, setUserAgree] = React.useState(false);
 
   const handleOnMetaChange = React.useCallback(
-    (_newnftMeta: Partial<T>) => {
-      const { nftMETA, mintData } =
+    (_newnftMeta: Partial<T> & { collection?: CollectionMeta }) => {
+      const {nftMETA, mintData} =
         store.getState()._router_modalData.nftMintValue;
-      const buildNFTMeta = { ...nftMETA };
-      const buildMint = { ...mintData };
+      const buildNFTMeta = {...nftMETA};
+      const buildMint = {...mintData};
       Reflect.ownKeys(_newnftMeta).map((key) => {
         switch (key) {
           case "image":
@@ -69,7 +69,8 @@ export function useNFTMeta<T extends NFTMETA>({
             buildNFTMeta.description = _newnftMeta.description;
             break;
           case "collection":
-            buildNFTMeta.collection = _newnftMeta.collection;
+            buildMint.tokenAddress = _newnftMeta.collection?.contractAddress;
+            buildNFTMeta.collection_metadata = sdk.CollectionHttps + '/' + _newnftMeta.collection?.contractAddress;// _newnftMeta?.collection_metadata.c;
             break;
           case "properties":
             buildNFTMeta.properties = _newnftMeta.properties;
@@ -289,7 +290,7 @@ export function useNFTMeta<T extends NFTMETA>({
   const handleUserAgree = (value: boolean) => {
     setUserAgree(value);
   };
-  const nftMetaProps: NFTMetaProps<T> = {
+  const nftMetaProps: Omit<NFTMetaProps<T, Co>, 'collectionInputProps'> = {
     handleOnMetaChange,
     isFeeNotEnough,
     handleFeeChange,

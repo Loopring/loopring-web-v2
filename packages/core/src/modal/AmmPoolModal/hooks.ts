@@ -325,15 +325,19 @@ export const useCoinPair = <C extends { [key: string]: any }>({
                   : undefined,
             };
 
-            setCoinPairInfo({ ...coinPairInfoWithPrecision });
-            setSnapShotData(_snapShotData);
+	          setCoinPairInfo({...coinPairInfoWithPrecision});
+	          setSnapShotData(_snapShotData);
           }
         })
-        .catch((error) => {
-          myLog(error);
-          throw Error;
-        });
+	      .catch((error) => {
+		      myLog(error);
+		      throw Error;
+	      });
     }
+
+	  return () => {
+
+	  }
   }, [selectedMarket]);
 
   const walletLayer2Callback = React.useCallback(async () => {

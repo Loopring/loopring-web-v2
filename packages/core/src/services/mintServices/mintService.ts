@@ -6,7 +6,7 @@ import {
   updateNFTMintData,
 } from "../../index";
 import {
-  AccountStatus,
+  // AccountStatus,
   AttributesProperty,
   MetaDataProperty,
   myLog,
@@ -15,7 +15,8 @@ import {
 import { IpfsProvides, ipfsService } from "../ipfs";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
-import * as sdk from "@loopring-web/loopring-sdk";
+
+// import * as sdk from "@loopring-web/loopring-sdk";
 
 export enum MintCommands {
   MetaDataSetup,
@@ -33,28 +34,28 @@ const subject = new Subject<{
 
 export const mintService = {
   emptyData: () => {
-    const {
-      account,
-      system: { chainId },
-    } = store.getState();
-    let tokenAddress;
-    if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
-      tokenAddress =
-        LoopringAPI.nftAPI
-          ?.computeNFTAddress({
-            nftOwner: account.accAddress,
-            nftFactory: sdk.NFTFactory[chainId],
-            nftBaseUri: "",
-          })
-          .tokenAddress?.toLowerCase() || undefined;
-    }
-    store.dispatch(resetNFTMintData({ tokenAddress }));
-    subject.next({
-      status: MintCommands.MetaDataSetup,
-      data: {
-        emptyData: true,
-      },
-    });
+	  // const {
+	  //   account,
+	  //   system: { chainId },
+	  // } = store.getState();
+	  // let tokenAddress;
+	  // if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
+	  //   // tokenAddress =
+	  //   //   LoopringAPI.nftAPI
+	  //   //     ?.computeNFTAddress({
+	  //   //       nftOwner: account.accAddress,
+	  //   //       nftFactory: sdk.NFTFactory[chainId],
+	  //   //       nftBaseUri: "",
+	  //   //     })
+	  //   //     .tokenAddress?.toLowerCase() || undefined;
+	  // }
+	  store.dispatch(resetNFTMintData({}));
+	  subject.next({
+		  status: MintCommands.MetaDataSetup,
+		  data: {
+			  emptyData: true,
+		  },
+	  });
   },
   backMetaDataSetup: () => {
     subject.next({

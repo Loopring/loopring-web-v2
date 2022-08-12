@@ -30,8 +30,8 @@ export const NFTPage = () => {
       case "mintNFTLanding":
         return <MintLandingPage/>;
       case "mintNFT":
-        mintService.emptyData();
-        return <MintNFTPanel/>;
+        // mintService.emptyData();
+        return <MintNFTPanel collectionListProps={collectionListProps}/>;
       case "mintAdvanceNFT":
         return <MintNFTAdvancePanel
           resetNFTMint={resetNFTMint}

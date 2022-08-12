@@ -4,7 +4,7 @@ import {
 	CollectionMedia, EmptyDefault, makeMeta,
 	useSettings,
 } from '../../../index';
-import { Box, Grid, Pagination, Typography } from '@mui/material';
+import { Box, Grid, Pagination, Radio, Typography } from '@mui/material';
 import {
 	CopyIcon,
 	copyToClipBoard,
@@ -27,7 +27,8 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 		setShowDeploy,
 		setShowMintNFT,
 		account,
-		isSelectOnly = false
+		isSelectOnly = false,
+		selectCollection
 		// toggle,
 	}: {
 		item: Co,
@@ -39,6 +40,7 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 		account: Account;
 		toggle: any;
 		isSelectOnly?: boolean;
+		selectCollection?: Co
 	}, _ref: React.Ref<any>) => {
 	// const {account} = useAccount();
 	const {isMobile} = useSettings();
@@ -61,6 +63,13 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 				// onNFTReload={onNFTReload}
 				onRenderError={() => undefined}
 			/>
+			{!!isSelectOnly && <Radio
+        size={"medium"}
+        checked={selectCollection?.contractAddress === item.contractAddress}
+        value={item.contractAddress}
+        name="radio-collection"
+        inputProps={{'aria-label': 'selectCollection'}}
+      />}
 			{
 				!isSelectOnly && <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'} marginTop={2}>
           <>
@@ -209,7 +218,8 @@ export const CollectionCardList = <Co extends CollectionMeta & { nftType: NFTTyp
 		toggle,
 		account,
 		onSelectItem,
-		isSelectOnly
+		isSelectOnly,
+		selectCollection
 	}: CollectionListProps<Co> & {
 		toggle: any;
 		isSelectOnly?: boolean;
@@ -218,6 +228,8 @@ export const CollectionCardList = <Co extends CollectionMeta & { nftType: NFTTyp
 		setShowMintNFT: (item: Co) => void;
 		account: Account;
 		onSelectItem?: (item: Co) => void;
+		selectCollection?: Co
+
 	}) => {
 	const {t} = useTranslation('common');
 	return <Box flex={1} display={'flex'} justifyContent={'stretch'} marginTop={2} width={'100%'}>
@@ -262,6 +274,7 @@ export const CollectionCardList = <Co extends CollectionMeta & { nftType: NFTTyp
 							}}
 						>
 							<CollectionItem
+								selectCollection={selectCollection}
 								isSelectOnly={isSelectOnly}
 								account={account}
 								toggle={toggle}

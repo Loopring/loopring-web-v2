@@ -1,33 +1,33 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { WalletL2CollectionStates } from "./interface";
-import { SagaStatus } from "@loopring-web/common-resources";
+import { CollectionMeta, SagaStatus } from "@loopring-web/common-resources";
 
-const initialState: WalletL2CollectionStates = {
-  walletL2Collection: [],
-  total: 0,
-  status: "DONE",
-  errorMessage: null,
-  page: -1,
+const initialState: WalletL2CollectionStates<CollectionMeta> = {
+	walletL2Collection: [],
+	total: 0,
+	status: "DONE",
+	errorMessage: null,
+	page: -1,
 };
-const walletL2CollectionSlice: Slice<WalletL2CollectionStates> = createSlice({
-  name: "walletL2Collection",
-  initialState,
-  reducers: {
-    updateWalletL2Collection(state, _action: PayloadAction<{ page?: number }>) {
-      state.status = SagaStatus.PENDING;
-    },
-    reset(state) {
-      state = {
-        ...initialState,
-      };
+const walletL2CollectionSlice: Slice<WalletL2CollectionStates<CollectionMeta>> = createSlice({
+	name: "walletL2Collection",
+	initialState,
+	reducers: {
+		updateWalletL2Collection(state, _action: PayloadAction<{ page?: number }>) {
+			state.status = SagaStatus.PENDING;
+		},
+		reset(state) {
+			state = {
+				...initialState,
+			};
       state.status = SagaStatus.UNSET;
     },
     socketUpdateBalance(state) {
       state.status = SagaStatus.PENDING;
     },
     getWalletL2CollectionStatus(
-      state,
-      action: PayloadAction<WalletL2CollectionStates>
+	    state,
+	    action: PayloadAction<WalletL2CollectionStates<CollectionMeta>>
     ) {
       // @ts-ignore
       if (action.error) {

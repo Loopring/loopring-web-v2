@@ -2,7 +2,7 @@ import { Box, BoxProps, Divider, Modal, Pagination, Tooltip, Typography } from '
 import {
 	CollectionLimit,
 	CopyIcon,
-	copyToClipBoard,
+	copyToClipBoard, getShortAddr,
 	Info2Icon,
 	NFTLimit
 } from '@loopring-web/common-resources';
@@ -22,21 +22,28 @@ const SizeCss = {
 	  lineHeight: 4.8rem;
 	`,
 	medium: `
-	 height: 3.6rem;
-	 lineHeight: 3.6rem;
+	 height: 3.2rem;
+	 lineHeight: 3.2rem;
 	`
 };
 const BoxStyle = styled(Box)<BoxProps & { size: "small" | "large" | "medium" }>`
   padding: .3rem .3rem .3rem .8rem;
-  border: ${({theme}) =>
-          theme.border.borderConfig({c_key: "var(--color-border)"})};
+  ${({theme}) =>
+          theme.border.defaultFrame({c_key: "var(--color-border)", d_R: 0.5})};
 
   &:hover,
   &:active {
     color: var(--color-text-primary);
     background: var(--color-box-hover);
-    border: ${({theme}) =>
-            theme.border.borderConfig({c_key: "var(--color-border-hover)"})};
+    ${({theme}) =>
+            theme.border.defaultFrame({c_key: "var(--color-border-hover)", d_R: 0.5})};
+  }
+
+  .selected {
+    color: var(--color-text-button-select);
+    background: var(--color-box);
+    ${({theme}) =>
+            theme.border.defaultFrame({c_key: "var(--color-border-select)", d_R: 0.5})};
   }
 
   ${({size}) => SizeCss[ size ]}
@@ -77,7 +84,9 @@ export const CollectionInput = <Co extends CollectionMeta>(
 		fullWidth = false,
 		width = 'content-fit',
 		size = "medium",
+		showCopy = false
 	}: CollectionInputProps<Co> & {
+		showCopy?: boolean;
 		fullWidth?: boolean, width?: any,
 		size?: "small" | "large" | "medium"
 	}) => {
@@ -119,6 +128,10 @@ export const CollectionInput = <Co extends CollectionMeta>(
 					color={"var(--color-text-secondary)"}
 					className={"main-label"}
 					paddingBottom={1 / 2}
+					display={"inline-flex"}
+					height={24}
+					lineHeight={24}
+					alignItems={'center'}
 				>
 					<Trans i18nKey={"labelMintCollection"}>
 						Choose Collection
@@ -138,6 +151,7 @@ export const CollectionInput = <Co extends CollectionMeta>(
 			alignItems={"center"}
 			fontSize={"1.6rem"}
 			size={size}
+			className={selectCollectionMeta ? "selected" : ""}
 			justifyContent={"space-between"}
 			onClick={(_e: any) => {
 				_e.stopPropagation();
@@ -154,13 +168,14 @@ export const CollectionInput = <Co extends CollectionMeta>(
 
 			style={{cursor: "pointer", whiteSpace: "nowrap"}}
 		>
-			<Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
+			<Box flex={1} display={'flex'} flexDirection={size === "large" ? "column" : "row"} alignItems={'stretch'}>
 				{selectCollectionMeta ? <>
-					<Typography component={'span'} variant={'body1'} color={'textPrimary'} marginBottom={1}>
+					<Typography component={'span'} variant={'body1'} color={'textPrimary'}>
 						{selectCollectionMeta.name}
 					</Typography>
-					<Typography component={'span'} variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>
-						{selectCollectionMeta.contractAddress}
+					<Typography component={'span'} marginLeft={size === "large" ? 0 : 1} variant={'body2'}
+					            color={'var(--color-text-third)'}>
+						{size === 'large' ? selectCollectionMeta.contractAddress : ' ' + getShortAddr(selectCollectionMeta.contractAddress ?? '', true)}
 					</Typography>
 				</> : <></>
 
@@ -173,9 +188,13 @@ export const CollectionInput = <Co extends CollectionMeta>(
 			/>
 
 		</BoxStyle>
-		{selectCollectionMeta &&
+		{selectCollectionMeta && showCopy &&
       <Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
-              sx={{marginLeft: 1}} onClick={() => {
+              sx={{
+				        marginLeft: 0,
+				        paddingLeft: 0,
+				        justifyContent: "flex-start"
+			        }} onClick={() => {
 				if (selectCollectionMeta) {
 					const {metaDemo} = makeMeta({collection: selectCollectionMeta});
 					copyToClipBoard(JSON.stringify(metaDemo));
@@ -185,17 +204,28 @@ export const CollectionInput = <Co extends CollectionMeta>(
 				{t('labelCopyNFTDemo')}
       </Button>}
 		{/*modalState*/}
-		<Modal open={_modalState} onClose={() => setModalState(false)}>
+		<Modal open={_modalState} onClose={() => {
+			setDropdownStatus((prev) =>
+				prev === "up" ? "down" : "up"
+			);
+			setModalState(false);
+		}
+
+		}>
 			{/*<ClickAwayListener onClickAway={handleClickAway}>*/}
-			<SwitchPanelStyled display={'flex'} overflow={'scroll'} height={"80%"}>
+			<SwitchPanelStyled display={'flex'} overflow={'scroll'} height={"80%"} width={"90%"} padding={2}>
 				{total > CollectionLimit && (
 					<Box
 						display={"flex"}
 						alignItems={"center"}
-						justifyContent={"right"}
+						justifyContent={"space-between"}
 						marginRight={3}
 						marginBottom={2}
 					>
+						<Typography variant={'h5'}>
+							{t('labelChooseCollection')}
+						</Typography>
+
 						<Pagination
 							color={"primary"}
 							count={
@@ -220,7 +250,11 @@ export const CollectionInput = <Co extends CollectionMeta>(
 					// onPageChange={onPageChange}
 					// setCopyToastOpen={setCopyToastOpen}
 					onSelectItem={(item) => {
-						setSelectCollectionMeta(item as any)
+						setSelectCollectionMeta(item as any);
+						setDropdownStatus((prev) =>
+							prev === "up" ? "down" : "up"
+						);
+						setModalState(false)
 					}}/>
 				{/*<Grid container spacing={2} paddingBottom={3}>*/}
 				{/* /!*{collectionList.map((item, index) => {*!/*/}
