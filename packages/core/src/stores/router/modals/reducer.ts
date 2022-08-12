@@ -10,6 +10,7 @@ import {
   WithdrawData,
 } from "./interface";
 import {
+  CollectionMeta,
   MINT_LIMIT,
   MintTradeNFT,
   NFTMETA,
@@ -143,14 +144,15 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.lastStep = LAST_STEP.default;
       state.nftDepositValue = initialDepositState;
     },
-    resetNFTMintData(state, _action?: PayloadAction<undefined>) {
+    resetNFTMintData(state, _action?: PayloadAction<{ tokenAddress: string, collection?: CollectionMeta }>) {
       state.lastStep = LAST_STEP.default;
       state.nftMintValue = {
         mintData: {
           ...initialMintNFT,
-          // tokenAddress: action?.payload?.tokenAddress ?? undefined,
+          tokenAddress: _action?.payload.tokenAddress
         },
         nftMETA: {...initialNFTMETA},
+        collection: _action?.payload.collection,
       };
     },
     resetNFTMintAdvanceData(state) {

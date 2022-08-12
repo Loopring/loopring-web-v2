@@ -6,8 +6,9 @@ import {
   updateNFTMintData,
 } from "../../index";
 import {
+  AccountStatus,
   // AccountStatus,
-  AttributesProperty,
+  AttributesProperty, CustomError, ErrorMap,
   MetaDataProperty,
   myLog,
   UIERROR_CODE,
@@ -15,6 +16,8 @@ import {
 import { IpfsProvides, ipfsService } from "../ipfs";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
+import * as sdk from '@loopring-web/loopring-sdk';
+import { CollectionMeta } from '@loopring-web/loopring-sdk';
 
 // import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -33,29 +36,33 @@ const subject = new Subject<{
 }>();
 
 export const mintService = {
-  emptyData: () => {
-	  // const {
-	  //   account,
-	  //   system: { chainId },
-	  // } = store.getState();
-	  // let tokenAddress;
-	  // if (account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
-	  //   // tokenAddress =
-	  //   //   LoopringAPI.nftAPI
-	  //   //     ?.computeNFTAddress({
-	  //   //       nftOwner: account.accAddress,
-	  //   //       nftFactory: sdk.NFTFactory[chainId],
-	  //   //       nftBaseUri: "",
-	  //   //     })
-	  //   //     .tokenAddress?.toLowerCase() || undefined;
-	  // }
-	  store.dispatch(resetNFTMintData({}));
-	  subject.next({
-		  status: MintCommands.MetaDataSetup,
-		  data: {
-			  emptyData: true,
-		  },
-	  });
+  emptyData: async (contractAddress?: string) => {
+    const {
+      account,
+      // system: { chainId },
+    } = store.getState();
+    let tokenAddress = contractAddress, collection: undefined | CollectionMeta = undefined;
+    if (tokenAddress && account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
+      const response = await LoopringAPI.userAPI?.getUserOwenCollection({
+        owner: account.accAddress,
+        address: contractAddress
+      }, account.apiKey);
+      if (
+        response &&
+        ((response as sdk.RESULT_INFO).code ||
+          (response as sdk.RESULT_INFO).message)
+      ) {
+        throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+      }
+      collection = (response as any).collections[ 0 ];
+    }
+    store.dispatch(resetNFTMintData({tokenAddress, collection}));
+    subject.next({
+      status: MintCommands.MetaDataSetup,
+      data: {
+        emptyData: true,
+      },
+    });
   },
   backMetaDataSetup: () => {
     subject.next({

@@ -61,6 +61,7 @@ export type ActiveAccountData = {
 export type NFT_MINT_VALUE<I> = {
   mintData: Partial<MintTradeNFT<I>>;
   nftMETA: Partial<NFTMETA>;
+  collection?: Partial<CollectionMeta>;
   error?: undefined | sdk.RESULT_INFO;
 };
 

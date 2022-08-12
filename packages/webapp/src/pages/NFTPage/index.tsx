@@ -21,7 +21,6 @@ export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
   const {t} = useTranslation(["common"]);
   const selected = match?.params.item ?? "assetsNFT";
-  const {resetDefault: resetNFTMint, nftMintAdvanceProps} = useNFTMintAdvance();
   const {copyToastOpen, ...collectionListProps} = useMyCollection();
   const routerNFT = React.useMemo(() => {
     switch (selected) {
@@ -30,12 +29,9 @@ export const NFTPage = () => {
       case "mintNFTLanding":
         return <MintLandingPage/>;
       case "mintNFT":
-        // mintService.emptyData();
         return <MintNFTPanel collectionListProps={collectionListProps}/>;
       case "mintAdvanceNFT":
-        return <MintNFTAdvancePanel
-          resetNFTMint={resetNFTMint}
-          nftMintAdvanceProps={nftMintAdvanceProps}/>;
+        return <MintNFTAdvancePanel/>;
       case "depositNFT":
         return <DepositNFTPanel/>;
       case "myCollection":
@@ -46,7 +42,7 @@ export const NFTPage = () => {
       default:
         return <MyNFTPanel/>;
     }
-  }, [nftMintAdvanceProps, resetNFTMint, selected]);
+  }, [selected, collectionListProps]);
 
   const { isMobile } = useSettings();
 

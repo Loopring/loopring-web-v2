@@ -152,10 +152,12 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   );
   const onDelete = React.useCallback(() => {
     setIpfsMediaSources(undefined);
-    handleOnMetaChange({
-      image: undefined,
-    } as Partial<T>);
-  }, [handleOnMetaChange]);
+    if (nftMintValue.nftMETA.image) {
+      handleOnMetaChange({
+        image: undefined,
+      } as Partial<T>);
+    }
+  }, [handleOnMetaChange, nftMintValue]);
 
   const {
     chargeFeeTokenList,
@@ -268,16 +270,14 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     ]
   );
 
-  React.useEffect(() => {
-    updateBtnStatus();
-  }, [
-    // isFeeNotEnough,
-    nftMintValue.mintData,
-    nftMintValue.nftMETA,
-    // feeInfo,
-    userAgree,
-    updateBtnStatus,
-  ]);
+  // React.useEffect(() => {
+  //   updateBtnStatus();
+  // }, [
+  //   // nftMintValue.mintData,
+  //   // nftMintValue.nftMETA,
+  //   userAgree,
+  //   updateBtnStatus,
+  // ]);
 
   const resetMETADAT = (_nftMintValue?: NFT_MINT_VALUE<any>) => {
     onDelete();
@@ -285,7 +285,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   const onMetaClick = React.useCallback(() => {
     const uniqueId = (nftMintValue.nftMETA as T).name + Date.now();
     setCIDUniqueId(uniqueId);
-    mintService.processingIPFS({ ipfsProvides, uniqueId });
+    mintService.processingIPFS({ipfsProvides, uniqueId});
   }, [ipfsProvides, nftMintValue.nftMETA]);
   const handleUserAgree = (value: boolean) => {
     setUserAgree(value);
@@ -304,15 +304,15 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   };
   const commonSwitch = React.useCallback(
     async ({ data, status }: { status: MintCommands; data?: any }) => {
-      switch (status) {
-        case MintCommands.MetaDataSetup:
-          handleTabChange(0);
-          setErrorOnMeta(data?.error);
-          if (data?.emptyData) {
-            resetMETADAT();
-          }
-          break;
-      }
+      // switch (status) {
+      //   case MintCommands.MetaDataSetup:
+      //     handleTabChange(0);
+      //     setErrorOnMeta(data?.error);
+      //     if (data?.emptyData) {
+      //        resetMETADAT();
+      //     }
+      //     break;
+      // }
     },
     [handleTabChange]
   );
@@ -324,7 +324,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     return () => {
       subscription.unsubscribe();
     };
-  }, [commonSwitch, subject]);
+  }, [subject]);
   return {
     onFilesLoad,
     onDelete,

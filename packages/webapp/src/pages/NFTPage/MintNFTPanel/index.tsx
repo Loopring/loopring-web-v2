@@ -14,6 +14,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { BackIcon, CollectionMeta, FeeInfo, Info2Icon, TradeNFT } from "@loopring-web/common-resources";
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
+import { mintService, useNFTMintAdvance } from '@loopring-web/core';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -23,9 +24,8 @@ const StyledPaper = styled(Box)`
 
 export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: { collectionListProps: CollectionListProps<Co> }) => {
   const history = useHistory();
-
-  const {t} = useTranslation("common");
   const mintWholeProps = useMintNFTPanel();
+  const {t} = useTranslation(["common"]);
   const panelList: Pick<PanelContent<"METADATA" | "MINT_CONFIRM">,
     "key" | "element">[] = [
     {
@@ -66,6 +66,14 @@ export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: {
       ),
     },
   ];
+  let match: any = useRouteMatch("/NFT/:item/?:contract");
+  // const selected = match?.params.item ?? "assetsNFT";
+  React.useEffect(() => {
+    if (match?.params.item === 'mintNFT') {
+      mintService.emptyData(match?.params?.contract ?? '')
+    }
+  }, [match?.params.item]);
+  // mintService.emptyData();
   return (
     <>
       <Box marginBottom={2}>
@@ -114,10 +122,13 @@ export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: {
 };
 export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
   Co extends CollectionMeta,
-  I>({resetNFTMint, nftMintAdvanceProps}: {
-  resetNFTMint: () => void,
-  nftMintAdvanceProps: NFTMintAdvanceViewProps<T, Co, I, FeeInfo>,
-}) => {
+  I>(
+  // {resetNFTMint, nftMintAdvanceProps}:{
+  // resetNFTMint: () => void,
+  // nftMintAdvanceProps: NFTMintAdvanceViewProps<T, Co, I, FeeInfo>,}
+) => {
+  const {resetDefault: resetNFTMint, nftMintAdvanceProps} = useNFTMintAdvance();
+
   const history = useHistory();
   const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
   React.useEffect(() => {

@@ -144,7 +144,10 @@ export function useNFTMint<
 
   React.useEffect(() => {
     updateBtnStatus();
-  }, [isFeeNotEnough.isFeeNotEnough, nftMintValue, feeInfo]);
+  }, [
+    isFeeNotEnough.isFeeNotEnough,
+    nftMintValue,
+    feeInfo]);
   useWalletLayer2Socket({});
 
   const handleMintDataChange = React.useCallback(
@@ -433,26 +436,26 @@ export function useNFTMint<
     data?: any;
   }) => {
     switch (status) {
-      case MintCommands.MetaDataSetup:
-        if (data?.emptyData) {
-          resetNFTMINT();
-        }
-        break;
-      case MintCommands.SignatureMint:
-      // nftMintProps.onNFTMintClick(data?.isHardware);
-      case MintCommands.MintConfirm:
-        handleTabChange(1);
-        break;
+      // case MintCommands.MetaDataSetup:
+      //   if (data?.emptyData) {
+      //     resetNFTMINT();
+      //   }
+      //   break;
+      // case MintCommands.SignatureMint:
+      // // nftMintProps.onNFTMintClick(data?.isHardware);
+      // case MintCommands.MintConfirm:
+      //   handleTabChange(1);
+      //   break;
     }
   };
-  React.useEffect(() => {
-    const subscription = subject.subscribe((props) => {
-      commonSwitch(props);
-    });
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   const subscription = subject.subscribe((props) => {
+  //     commonSwitch(props);
+  //   });
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, [subject]);
 
   return {
     nftMintProps,
