@@ -2,13 +2,15 @@ import { Box, BoxProps, Divider, Modal, Pagination, Tooltip, Typography } from '
 import {
 	CollectionLimit,
 	CopyIcon,
-	copyToClipBoard, getShortAddr,
+	copyToClipBoard,
+	getShortAddr,
 	Info2Icon,
-	NFTLimit
+	NFTLimit,
+	CollectionHttps,
+	CollectionMeta
 } from '@loopring-web/common-resources';
 import { Button, CollectionCardList, CollectionListProps, DropdownIconStyled, SwitchPanelStyled } from '../../../index';
 import React from 'react';
-import { CollectionHttps, CollectionMeta } from '@loopring-web/common-resources';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 

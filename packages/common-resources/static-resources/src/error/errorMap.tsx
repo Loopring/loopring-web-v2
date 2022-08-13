@@ -246,7 +246,24 @@ export const ErrorMap = {
     id: "ERROR_COLLECTION_SAME_NAME",
     messageKey: "errorCollectionSameName",
     options: {},
+  },
+  ERROR_COLLECTION_EMPTY: {
+    id: "ERROR_COLLECTION_EMPTY",
+    messageKey: "errorCollectionEmpty",
+    options: {},
+  },
+  ERROR_COLLECTION_INFO: {
+    id: "ERROR_COLLECTION_INFO",
+    messageKey: "errorCollectionInfo",
+    options: {},
+  },
+
+  ERROR_COLLECTION_NO_SUPPORT: {
+    id: "ERROR_COLLECTION_NO_SUPPORT",
+    messageKey: "errorCollectionNoSupport",
+    options: {},
   }
+
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -264,8 +281,9 @@ export enum UIERROR_CODE {
   ERROR_JSON_STRINGIFY = 700013,
   ERROR_COLLECTION_METADATA_NO_TILEURI = 700014,
   ERROR_COLLECTION_NO_NAME = 700015,
-
-
+  ERROR_COLLECTION_INFO = 700016,
+  ERROR_COLLECTION_EMPTY = 700017,
+  ERROR_COLLECTION_NO_SUPPORT = 700018,
 }
 export type ErrorObject = {
   from?: string;
@@ -287,7 +305,11 @@ export const SDK_ERROR_MAP_TO_UI = {
   700011: ErrorMap.IPFS_CID_TO_NFTID_ERROR,
   700012: ErrorMap.TIME_OUT,
   700013: ErrorMap.ERROR_JSON_STRINGIFY,
-  700014: ErrorMap.ERROR_COLLECTION_NO_NAME,
+  700014: ErrorMap.ERROR_COLLECTION_METADATA_NO_TILEURI,
+  700015: ErrorMap.ERROR_COLLECTION_NO_NAME,
+  700016: ErrorMap.ERROR_COLLECTION_INFO,
+  700017: ErrorMap.ERROR_COLLECTION_EMPTY,
+  700018: ErrorMap.ERROR_COLLECTION_NO_SUPPORT,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

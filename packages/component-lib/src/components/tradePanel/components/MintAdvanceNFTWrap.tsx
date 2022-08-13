@@ -11,7 +11,7 @@ import {
 	IPFS_HEAD_URL,
 	LoadingIcon,
 	myLog,
-	TradeNFT,
+	TradeNFT, getShortAddr,
 } from "@loopring-web/common-resources";
 import {
 	EmptyDefault,
@@ -19,7 +19,7 @@ import {
 	NftImage,
 	TextField,
 	TGItemData,
-	RadioGroupStyle
+	RadioGroupStyle, Button, BtnInfo
 } from "../../basic-lib";
 import {
 	DropdownIconStyled,
@@ -89,8 +89,9 @@ export function HorizontalLabelPositionBelowStepper(
 		// setActiveStep: (step: number) => void
 	}) {
 	const {t} = useTranslation('common');
+	const {isMobile} = useSettings();
 	return (<>
-			<BoxStyle sx={{width: '100%'}}>
+			<BoxStyle sx={{width: '100%'}} marginTop={isMobile ? 3 : 0}>
 				<Stepper activeStep={activeStep} alternativeLabel>
 					{steps.map((label) => (
 						<Step key={label}>
@@ -110,7 +111,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 	I extends any,
 	C extends FeeInfo>(
 	{
-		disabled,
+		disabled: gDisabled,
 		walletMap,
 		tradeData,
 		btnInfo,
@@ -120,7 +121,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 		handleFeeChange,
 		chargeFeeTokenList,
 		feeInfo,
-		isAvailableId,
+		isNotAvailableCID,
 		isNFTCheckLoading,
 		collectionInputProps,
 		onNFTMintClick,
@@ -132,18 +133,18 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 	const inputBtnRef = React.useRef();
 	const [dropdownStatus, setDropdownStatus] =
 		React.useState<"up" | "down">("down");
-	const getDisabled = React.useMemo(() => {
-		return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
-	}, [disabled, nftMintBtnStatus]);
+	// const getDisabled = React.useMemo(() => {
+	// 	return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
+	// }, [disabled, nftMintBtnStatus]);
 
 	const handleToggleChange = React.useCallback((value: C) => {
 		if (handleFeeChange) {
 			handleFeeChange(value);
 		}
 	}, []);
-	const handleBack = React.useCallback((currentStep: number) => {
-		setActiveStep(currentStep - 1)
-	}, []);
+	// const handleBack = React.useCallback((currentStep: number) => {
+	// 	setActiveStep(currentStep - 1)
+	// }, []);
 	const _handleOnNFTDataChange = (_tradeData: T) => {
 		if (handleOnNFTDataChange) {
 			handleOnNFTDataChange({...tradeData, ..._tradeData});
@@ -172,6 +173,31 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 	const handleMethodChange = React.useCallback((_e: any, value: any) => {
 		setMethod(value)
 	}, []);
+
+	const btnMain = React.useCallback((
+		{
+			defaultLabel = 'labelMintNext',
+			btnInfo,
+			disabled,
+			onClick
+		}: { defaultLabel?: string, btnInfo?: BtnInfo, disabled: () => boolean, onClick: () => void }) => {
+		return <Button
+			variant={"contained"}
+			size={"medium"}
+			color={"primary"}
+			fullWidth
+			loading={
+				!disabled() && nftMintBtnStatus === TradeBtnStatus.LOADING
+					? "true"
+					: "false"
+			}
+			disabled={disabled() || nftMintBtnStatus === TradeBtnStatus.LOADING}
+			onClick={onClick}
+		>
+			{btnInfo ? t(btnInfo.label, btnInfo.params) : t(defaultLabel)}
+		</Button>
+
+	}, [nftMintBtnStatus, t]);
 	const panelList: Array<{
 		view: JSX.Element;
 		onBack?: undefined | (() => void);
@@ -216,10 +242,19 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 							})}
 						</RadioGroupStyle>
 					</Box>
-					{method === AdMethod.NoData && <Box width={'100%'} paddingLeft={2}>
+					{method === AdMethod.NoData && <Box width={'100%'} paddingX={isMobile ? 2 : 0}>
             <CollectionInput  {...{...collectionInputProps}} fullWidth={true} size={'large'} showCopy={true}/>
           </Box>}
-					<Box>
+					<Box width={'100%'} paddingX={isMobile ? 2 : 0} marginTop={2}>
+						{btnMain({
+							defaultLabel: 'labelMintNext',
+							disabled: () => {
+								return gDisabled || (method == AdMethod.NoData && collectionInputProps.collection !== undefined)
+							},
+							onClick: () => {
+								setActiveStep(MintStep.INPUTCID)
+							}
+						})}
 
 					</Box>
 				</Box>,
@@ -227,7 +262,16 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 			},
 			{
 				view: <Box
-					marginTop={2} alignSelf={"stretch"}>
+					marginTop={3}
+					display={"flex"}
+					justifyContent={"flex-start"}
+					flexDirection={"column"}
+					alignItems={"flex-start"}
+					width={'100%'}
+				>
+					<Typography variant={'h5'} marginBottom={2}>
+						{t("labelMintIPFSCIDDes")}
+					</Typography>
 					<Box
 						display={"flex"}
 						alignItems={"center"}
@@ -269,7 +313,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 								!!(
 									tradeData.nftIdView !== "" &&
 									!isNFTCheckLoading &&
-									!isAvailableId
+									isNotAvailableCID
 								)
 							}
 							placeholder={t("mintNFTAddressLabelPlaceholder")}
@@ -303,7 +347,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 						) : (
 							""
 						)}
-						{!isAvailableId &&
+						{isNotAvailableCID &&
 						tradeData?.nftIdView &&
 						tradeData?.nftIdView !== "" ? (
 							<Typography
@@ -313,7 +357,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 								position={"relative"}
 								component={"span"}
 							>
-								{t("labelInvalidCID")}
+								{t("labelInvalidCID") + ': ' + t(isNotAvailableCID.reason)}
 							</Typography>
 						) : (
 							<>
@@ -334,205 +378,288 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 							</>
 						)}
 					</Box>
+					<Box width={'100%'}
+					     paddingX={isMobile ? 2 : 0}
+					     marginTop={2}
+					     flexDirection={'row'}
+					     display={'flex'}>
+						<Box width={'50%'} paddingRight={1}>
+							<Button
+								variant={"outlined"}
+								size={"medium"}
+								color={"primary"}
+								fullWidth
+								sx={{height: "var(--btn-medium-height)"}}
+								onClick={() => {
+									setActiveStep(MintStep.SELECTWAY);
+									_handleOnNFTDataChange({
+										nftIdView: "",
+										nftId: "",
+										tradeValue: undefined,
+									} as T)
+								}}
+							>
+								{t(`labelMintBack`)}
+							</Button>
+						</Box>
+						<Box width={'50%'} paddingLeft={1}>
+							{btnMain({
+								defaultLabel: 'labelMintNext',
+								btnInfo: undefined, //btnInfo,
+								disabled: () => {
+									return gDisabled || !!isNotAvailableCID
+								},
+								onClick: () => {
+									setActiveStep(MintStep.MINT)
+								}
+							})}
+						</Box>
+					</Box>
 				</Box>,
 			},
 			{
 				view: <>
-					<Box marginTop={2} alignSelf={"stretch"}>
+					<Box marginTop={2}
+					     alignSelf={"stretch"}
+					     display={'flex'}
+					     flexDirection={isMobile ? "row" : "column"}>
 						<Box
+							display={"flex"}
+							justifyContent={"center"}
+							alignItems={"center"}
+							width={"50%"}
+							paddingLeft={isMobile ? 0 : 2}
+						>
+							<Box display={'flex'} flexDirection={isMobile ? "row" : "column"} alignItems={'stretch'}>
+								<Typography component={'span'} variant={'body1'} color={'textPrimary'}>
+									{tradeData.collectionMeta?.name ?? t('labelUnknown')}
+								</Typography>
+								<Typography component={'span'} marginLeft={isMobile ? 1 : 0} variant={'body2'}
+								            color={'var(--color-text-third)'}>
+									{isMobile ? ' ' + getShortAddr(tradeData.tokenAddress ?? '', true) : tradeData.tokenAddress}
+								</Typography>
+							</Box>
+							{tradeData?.nftId && tradeData.image ? (
+								<NftImage
+									alt={"NFT"}
+									src={tradeData?.image?.replace(
+										IPFS_HEAD_URL,
+										IPFS_LOOPRING_SITE
+									)}
+									onError={() => undefined}
+								/>
+							) : isNFTCheckLoading ? (
+								<LoadingIcon fontSize={"large"}/>
+							) : (
+								<EmptyDefault
+									height={"100%"}
+									message={() => (
+										<Box
+											flex={1}
+											display={"flex"}
+											alignItems={"center"}
+											justifyContent={"center"}
+										>
+											{t("labelNoContent")}
+										</Box>
+									)}
+								/>
+							)}
+						</Box>
+						<Box
+							flex={1}
 							display={"flex"}
 							flexDirection={"row"}
 							justifyContent={"space-between"}
 							alignContent={"center"}
 						>
 							<Box>
-								<Box>
-									<Typography
-										color={"textSecondary"}
-										marginBottom={2}
-										variant={"body1"}
-										display={"flex"}
-										flexDirection={"column"}
-										whiteSpace={"pre-line"}
-										maxWidth={240}
-									>
-										{t("labelNFTName") +
-											" " +
-											(tradeData?.nftId
-												? tradeData.name ?? t("labelUnknown").toUpperCase()
-												: EmptyValueTag)}
-									</Typography>
-									<Typography
-										color={"textSecondary"}
-										marginBottom={2}
-										variant={"body1"}
-									>
-										{t("labelNFTType") + " "} {NFT_TYPE[ 0 ].label}
-									</Typography>
-								</Box>
-								<Box
+								<Typography
+									color={"textSecondary"}
+									marginBottom={2}
+									variant={"body1"}
 									display={"flex"}
-									alignItems={"center"}
-									justifyContent={"flex-start"}
+									flexDirection={"column"}
+									whiteSpace={"pre-line"}
+									maxWidth={240}
 								>
-									<NFTInput
-										{...({t} as any)}
-										isThumb={false}
-										isBalanceLimit={true}
-										inputNFTDefaultProps={{
-											subLabel: t("tokenNFTMaxMINT"),
-											size: InputSize.small,
-											label: (
-												<Trans i18nKey={"labelNFTMintInputTitle"}>
-													Amount
-													<Typography
-														component={"span"}
-														variant={"inherit"}
-														color={"error"}
-													>
-														{"\uFE61"}
-													</Typography>
-												</Trans>
-											),
-										}}
-										// disabled={!(tradeData?.nftId && tradeData.tokenAddress)}
-										type={"NFT"}
-										inputNFTRef={inputBtnRef}
-										onChangeEvent={(_index, data) =>
-											_handleOnNFTDataChange({
-												tradeValue: data.tradeData?.tradeValue ?? "0",
-											} as T)
-										}
-										tradeData={
-											{
-												...tradeData,
-												belong: tradeData?.tokenAddress ?? "NFT",
-											} as any
-										}
-										walletMap={walletMap}
-									/>
-								</Box>
+									{t("labelNFTName") +
+										" " +
+										(tradeData?.nftId
+											? tradeData.name ?? t("labelUnknown").toUpperCase()
+											: EmptyValueTag)}
+								</Typography>
+								<Typography
+									color={"textSecondary"}
+									marginBottom={2}
+									variant={"body1"}
+								>
+									{t("labelNFTType") + " "} {NFT_TYPE[ 0 ].label}
+								</Typography>
 							</Box>
 							<Box
-								flex={1}
 								display={"flex"}
-								justifyContent={"center"}
 								alignItems={"center"}
-								width={160}
-								height={160}
+								justifyContent={"flex-start"}
 							>
-								{tradeData?.nftId && tradeData.image ? (
-									<NftImage
-										alt={"NFT"}
-										src={tradeData?.image?.replace(
-											IPFS_HEAD_URL,
-											IPFS_LOOPRING_SITE
-										)}
-										onError={() => undefined}
-									/>
-								) : isNFTCheckLoading ? (
-									<LoadingIcon fontSize={"large"}/>
+								<NFTInput
+									{...({t} as any)}
+									isThumb={false}
+									isBalanceLimit={true}
+									inputNFTDefaultProps={{
+										subLabel: t("tokenNFTMaxMINT"),
+										size: InputSize.small,
+										label: (
+											<Trans i18nKey={"labelNFTMintInputTitle"}>
+												Amount
+												<Typography
+													component={"span"}
+													variant={"inherit"}
+													color={"error"}
+												>
+													{"\uFE61"}
+												</Typography>
+											</Trans>
+										),
+									}}
+									// disabled={!(tradeData?.nftId && tradeData.tokenAddress)}
+									type={"NFT"}
+									inputNFTRef={inputBtnRef}
+									onChangeEvent={(_index, data) =>
+										_handleOnNFTDataChange({
+											tradeValue: data.tradeData?.tradeValue ?? "0",
+										} as T)
+									}
+									tradeData={
+										{
+											...tradeData,
+											belong: tradeData?.tokenAddress ?? "NFT",
+										} as any
+									}
+									walletMap={walletMap}
+								/>
+							</Box>
+							<Box marginTop={2} alignSelf={"stretch"}>
+								{!chargeFeeTokenList?.length ? (
+									<Typography>{t("labelFeeCalculating")}</Typography>
 								) : (
-									<EmptyDefault
-										height={"100%"}
-										message={() => (
+									<>
+										<Typography
+											component={"span"}
+											display={"flex"}
+											flexWrap={"wrap"}
+											alignItems={"center"}
+											variant={"body1"}
+											color={"var(--color-text-secondary)"}
+											marginBottom={1}
+										>
+											<Typography component={"span"} color={"inherit"} minWidth={28}>
+												{t("labelMintFee")}：
+											</Typography>
 											<Box
-												flex={1}
+												component={"span"}
 												display={"flex"}
 												alignItems={"center"}
-												justifyContent={"center"}
+												style={{cursor: "pointer"}}
+												onClick={() =>
+													setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
+												}
 											>
-												{t("labelNoContent")}
+												{feeInfo && feeInfo.belong && feeInfo.fee
+													? feeInfo.fee + " " + feeInfo.belong
+													: EmptyValueTag + " " + feeInfo?.belong}
+												<DropdownIconStyled
+													status={dropdownStatus}
+													fontSize={"medium"}
+												/>
+												{isFeeNotEnough.isOnLoading ? (
+													<Typography
+														color={"var(--color-warning)"}
+														marginLeft={1}
+														component={"span"}
+													>
+														{t("labelFeeCalculating")}
+													</Typography>
+												) : (
+													isFeeNotEnough.isFeeNotEnough && (
+														<Typography
+															marginLeft={1}
+															component={"span"}
+															color={"var(--color-error)"}
+														>
+															{t("labelMintFeeNotEnough")}
+														</Typography>
+													)
+												)}
 											</Box>
+										</Typography>
+										{dropdownStatus === "up" && (
+											<FeeTokenItemWrapper padding={2}>
+												<Typography
+													variant={"body2"}
+													color={"var(--color-text-third)"}
+													marginBottom={1}
+													component={"span"}
+												>
+													{t("labelMintFeeChoose")}
+												</Typography>
+												<FeeToggle
+													chargeFeeTokenList={chargeFeeTokenList}
+													handleToggleChange={handleToggleChange}
+													feeInfo={feeInfo}
+												/>
+											</FeeTokenItemWrapper>
 										)}
-									/>
+									</>
 								)}
+							</Box>
+							<Box width={'100%'}
+							     paddingX={isMobile ? 2 : 0}
+							     marginTop={2}
+							     flexDirection={'row'}
+							     display={'flex'}>
+								<Box width={'50%'} paddingRight={1}>
+									<Button
+										variant={"outlined"}
+										size={"medium"}
+										color={"primary"}
+										fullWidth
+										sx={{height: "var(--btn-medium-height)"}}
+										onClick={() => {
+											setActiveStep(MintStep.SELECTWAY);
+											_handleOnNFTDataChange({
+												tradeValue: undefined,
+											} as T)
+										}}
+									>
+										{t(`labelMintBack`)}
+									</Button>
+								</Box>
+								<Box width={'50%'} paddingLeft={1}>
+									{btnMain({
+										defaultLabel: t('labelTokenAdMintBtn'),
+										btnInfo: btnInfo,
+										disabled: () => {
+											return gDisabled || nftMintBtnStatus === TradeBtnStatus.DISABLED
+										},
+										onClick: () => {
+											// setActiveStep(MintSte)
+											onNFTMintClick(tradeData);
+										}
+									})}
+								</Box>
 							</Box>
 						</Box>
 					</Box>
-					<Box marginTop={2} alignSelf={"stretch"}>
-						{!chargeFeeTokenList?.length ? (
-							<Typography>{t("labelFeeCalculating")}</Typography>
-						) : (
-							<>
-								<Typography
-									component={"span"}
-									display={"flex"}
-									flexWrap={"wrap"}
-									alignItems={"center"}
-									variant={"body1"}
-									color={"var(--color-text-secondary)"}
-									marginBottom={1}
-								>
-									<Typography component={"span"} color={"inherit"} minWidth={28}>
-										{t("labelMintFee")}：
-									</Typography>
-									<Box
-										component={"span"}
-										display={"flex"}
-										alignItems={"center"}
-										style={{cursor: "pointer"}}
-										onClick={() =>
-											setDropdownStatus((prev) => (prev === "up" ? "down" : "up"))
-										}
-									>
-										{feeInfo && feeInfo.belong && feeInfo.fee
-											? feeInfo.fee + " " + feeInfo.belong
-											: EmptyValueTag + " " + feeInfo?.belong}
-										<DropdownIconStyled
-											status={dropdownStatus}
-											fontSize={"medium"}
-										/>
-										{isFeeNotEnough.isOnLoading ? (
-											<Typography
-												color={"var(--color-warning)"}
-												marginLeft={1}
-												component={"span"}
-											>
-												{t("labelFeeCalculating")}
-											</Typography>
-										) : (
-											isFeeNotEnough.isFeeNotEnough && (
-												<Typography
-													marginLeft={1}
-													component={"span"}
-													color={"var(--color-error)"}
-												>
-													{t("labelMintFeeNotEnough")}
-												</Typography>
-											)
-										)}
-									</Box>
-								</Typography>
-								{dropdownStatus === "up" && (
-									<FeeTokenItemWrapper padding={2}>
-										<Typography
-											variant={"body2"}
-											color={"var(--color-text-third)"}
-											marginBottom={1}
-											component={"span"}
-										>
-											{t("labelMintFeeChoose")}
-										</Typography>
-										<FeeToggle
-											chargeFeeTokenList={chargeFeeTokenList}
-											handleToggleChange={handleToggleChange}
-											feeInfo={feeInfo}
-										/>
-									</FeeTokenItemWrapper>
-								)}
-							</>
-						)}
-					</Box>
+
+
 				</>
 
 			}
 
 		]
-	}, [_handleOnNFTDataChange, chargeFeeTokenList, dropdownStatus, feeInfo, handleMethodChange, handleToggleChange, isAvailableId, isFeeNotEnough.isFeeNotEnough, isFeeNotEnough.isOnLoading, isMobile, isNFTCheckLoading, method, methodLabel, t, tradeData, walletMap]);
-	const handleNext = React.useCallback((currentNext) => {
-		setActiveStep(currentNext + 1)
-	}, []);
+	}, [_handleOnNFTDataChange, chargeFeeTokenList, dropdownStatus, feeInfo, handleMethodChange, handleToggleChange, isNotAvailableCID, isFeeNotEnough.isFeeNotEnough, isFeeNotEnough.isOnLoading, isMobile, isNFTCheckLoading, method, methodLabel, t, tradeData, walletMap]);
+
 	// @ts-ignore
 	return (
 		<Box

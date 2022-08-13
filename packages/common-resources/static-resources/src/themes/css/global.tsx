@@ -208,7 +208,7 @@ export const globalCss = ({ theme }: any) => css`
     --desktop-min-width: 1024px;
     --btn-Input-height: 48px;
     --btn-Input-small-height: 32px;
-
+    --btn-medium-height: 40px;
     //--btn-max-width: 160px;
     --btn-min-width: 100px;
     --coin-min-width: 80px;

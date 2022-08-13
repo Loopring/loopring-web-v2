@@ -915,6 +915,10 @@ export default {
   labelCollectionCreateBtn: "Create Collection",
   labelCollectionRequiredName: "Please input Name",
   labelCollectionRequiredTileUri: "Please input TileUri",
-  labelCollectionIsUploading: "Source is laoding",
+  labelCollectionIsUploading: "Source is loading",
+  labelMintNext: "Next",
+  labelMintBack: "Back",
+  labelTokenAdMintBtn: "Enter Amount",
+  labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata and collection Information",
 
 };
