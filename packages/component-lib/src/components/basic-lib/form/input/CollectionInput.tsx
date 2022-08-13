@@ -170,7 +170,8 @@ export const CollectionInput = <Co extends CollectionMeta>(
 
 			style={{cursor: "pointer", whiteSpace: "nowrap"}}
 		>
-			<Box flex={1} display={'flex'} flexDirection={size === "large" ? "column" : "row"} alignItems={'stretch'}>
+			<Box flex={1} display={'flex'} flexDirection={size === "large" ? "column" : "row"}
+			     alignItems={size === "large" ? 'stretch' : "center"}>
 				{selectCollectionMeta ? <>
 					<Typography component={'span'} variant={'body1'} color={'textPrimary'}>
 						{selectCollectionMeta.name}
