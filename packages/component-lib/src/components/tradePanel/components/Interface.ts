@@ -356,6 +356,7 @@ export type NFTMintViewProps<ME, MI, I, C> = {
 } & NFTMintExtendProps<MI, C>;
 export type NFTMetaViewProps<T, Co, C> = {
   nftMeta: T;
+  collection?: Co | undefined,
   collectionInputProps: CollectionInputProps<Co>
   disabled?: boolean;
 } & NFTMetaExtendProps<T, C>;

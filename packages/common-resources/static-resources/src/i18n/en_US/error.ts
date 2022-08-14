@@ -36,6 +36,7 @@ export default {
   errorNotInstallGME:
     "Please install the Gamestop Wallet browser extension. Then create, deposit, and activate the wallet before connecting to Loopring.io.",
   errorLinKWalletApp: "<0>app market</0>",
+  errorIpfsDidToNftidError: "IPFS Gateway Error",
   errorMintOverlap: "This NFT metadata is already minted in your Wallet!",
   errorJSONStringify: "Wrong JSON format",
   errorCollectionMetadataNoTileUri: "Tile uri is required",

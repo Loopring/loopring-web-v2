@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {
   CoinInfo,
-  CoinMap,
+  CoinMap, CollectionHttps,
   FeeInfo,
   Info2Icon,
   MintTradeNFT,
@@ -54,20 +54,21 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
   Co extends CollectionMeta,
   I extends Partial<MintTradeNFT<any>>,
   C extends FeeInfo>({
-                       disabled,
-                       nftMeta,
-                       mintData,
-                       btnInfo,
-                       nftMetaBtnStatus,
-                       handleOnMetaChange,
-                       handleMintDataChange,
-                       collectionInputProps,
-                       onMetaClick,
-                     }: NFTMetaBlockProps<T, Co, I, C>) => {
+                                                   disabled,
+                                                   nftMeta,
+                                                   mintData,
+                                                   btnInfo,
+                                                   collection,
+                                                   nftMetaBtnStatus,
+                                                   handleOnMetaChange,
+                                                   handleMintDataChange,
+                                                   collectionInputProps,
+                                                   onMetaClick,
+                                                 }: NFTMetaBlockProps<T, Co, I, C>) => {
   const {t} = useTranslation(["common"]);
   const {isMobile} = useSettings();
   const inputBtnRef = React.useRef();
-
+  const [_collection, setCollection] = React.useState<Co | undefined>(collection);
   const getDisabled = React.useMemo(() => {
     return disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMetaBtnStatus]);
@@ -126,21 +127,17 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <CollectionInput {...{...collectionInputProps}} fullWidth={true}/>
-          {/*<TextField*/}
-          {/*  value={nftMeta.collection ?? ""}*/}
-          {/*  fullWidth*/}
-          {/*  select*/}
-          {/*  disabled={true}*/}
-          {/*  label={*/}
-          {/*   */}
-          {/*  }*/}
-          {/*  type={"text"}*/}
-          {/*>*/}
-          {/*  {[].map((_item, index) => (*/}
-          {/*    <Box key={index} />*/}
-          {/*  ))}*/}
-          {/*</TextField>*/}
+          <CollectionInput<Co>
+            {...{
+              ...collectionInputProps,
+              collection: _collection,
+              onSelected: (item) => {
+                setCollection(item);
+                handleOnMetaChange({collection_metadata: CollectionHttps + '/' + item.contractAddress} as any);
+                _handleMintDataChange({tokenAddress: item.contractAddress} as any);
+              }
+            }}
+            fullWidth={true}/>
         </Grid>
         <Grid item xs={12} md={6}>
           <InputCoin

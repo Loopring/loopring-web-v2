@@ -129,7 +129,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 	const {t} = useTranslation(["common"]);
 	const {isMobile} = useSettings();
 	const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
-
+	const [collectionMeta, setCollectionMeta] = React.useState<Co | undefined>(tradeData.collectionMeta as Co);
 	const inputBtnRef = React.useRef();
 	const [dropdownStatus, setDropdownStatus] =
 		React.useState<"up" | "down">("down");
@@ -243,7 +243,16 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 						</RadioGroupStyle>
 					</Box>
 					{method === AdMethod.NoData && <Box width={'100%'} paddingX={isMobile ? 2 : 0}>
-            <CollectionInput  {...{...collectionInputProps}} fullWidth={true} size={'large'} showCopy={true}/>
+            <CollectionInput
+							{...{
+								...collectionInputProps,
+								collection: collectionMeta,
+								onSelected: (item) => {
+									// handleOnNFTDataChange({collectionMeta:item});
+									setCollectionMeta(item as Co)
+								}
+							}}
+              fullWidth={true} size={'large'} showCopy={true}/>
           </Box>}
 					<Box width={'100%'} paddingX={isMobile ? 2 : 0} marginTop={2}>
 						{btnMain({
@@ -278,6 +287,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
 						flexDirection={"column"}
 						justifyContent={"space-between"}
 						position={"relative"}
+						alignSelf={"stretch"}
 					>
 						<Typography
 							component={"span"}

@@ -10,7 +10,7 @@ import {
 	copyToClipBoard,
 	getShortAddr,
 	Account,
-	CollectionMeta
+	CollectionMeta, myLog
 } from '@loopring-web//common-resources';
 import React from 'react';
 import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk';
@@ -74,6 +74,7 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 	const {t} = useTranslation('common');
 
 	const {metaDemo} = makeMeta({collection: item});
+	myLog(selectCollection, 'selectCollection');
 
 	return <CardStyleItem ref={_ref} className={'collection'}>
 		<Box
@@ -92,7 +93,7 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 			/>
 			{!!isSelectOnly && <Radio
         size={"medium"}
-        checked={selectCollection?.contractAddress === item.contractAddress}
+        checked={selectCollection?.contractAddress?.toLowerCase() === item?.contractAddress?.toLowerCase()}
         value={item.contractAddress}
         name="radio-collection"
 				// sx={{

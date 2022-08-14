@@ -91,7 +91,7 @@ export type NFTMETA = {
   name: string;
   royaltyPercentage: number; // 0 - 10 for UI
   description: string;
-  collection_metadata?: string;
+  collection_metadata: string;
   properties?: Array<MetaProperty>;
   animationUrl?: string;
   attributes?: AttributesProperty[];
@@ -122,6 +122,7 @@ export type MintTradeNFT<I> = {
   nftBalance?: number;
   nftIdView?: string;
   royaltyPercentage?: number;
+  // tokenAddress?:string;
 } & Partial<IBData<I>> &
   Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 export type MintReadTradeNFT<I> = {
@@ -372,4 +373,4 @@ export enum CreateCollectionStep {
   // CommonPanel,
 }
 
-export const CollectionHttps = "https://nftColletion.loopring.io/";
+export const CollectionHttps = "https://nftCollection.loopring.io/"; //sdk.CollectionHttps

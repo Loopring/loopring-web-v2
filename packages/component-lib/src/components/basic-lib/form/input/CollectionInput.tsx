@@ -71,7 +71,8 @@ export const makeMeta = ({collection}: { collection: CollectionMeta }) => {
 };
 export type CollectionInputProps<Co> = {
 	collection?: Co,
-	collectionListProps: CollectionListProps<Co>
+	collectionListProps: CollectionListProps<Co>,
+	onSelected: (item: Co) => void;
 }
 
 export const CollectionInput = <Co extends CollectionMeta>(
@@ -81,22 +82,24 @@ export const CollectionInput = <Co extends CollectionMeta>(
 		fullWidth = false,
 		width = 'content-fit',
 		size = "medium",
-		showCopy = false
+		showCopy = false,
+		onSelected,
 	}: CollectionInputProps<Co> & {
 		showCopy?: boolean;
 		fullWidth?: boolean, width?: any,
 		size?: "small" | "large" | "medium"
 	}) => {
 	const [_modalState, setModalState] = React.useState(false);
-	const [selectCollectionMeta, setSelectCollectionMeta] = React.useState(collection);
+	// const [selectCollectionMeta, setSelectCollectionMeta] = React.useState(collection);
 	const {t} = useTranslation('common');
 	const [dropdownStatus, setDropdownStatus] =
 		React.useState<"up" | "down">("down");
 	const {
 		onPageChange,
-		total,
+		// total,
 		page,
 	} = collectionListProps;
+	const total = 300;
 	return <Box display={'flex'} flexDirection={'column'} width={fullWidth ? "100%" : width}>
 		<Tooltip
 			title={t("labelMintCollectionTooltips").toString()}
@@ -131,7 +134,7 @@ export const CollectionInput = <Co extends CollectionMeta>(
 			alignItems={"center"}
 			fontSize={"1.6rem"}
 			size={size}
-			className={selectCollectionMeta ? "selected" : ""}
+			className={collection ? "selected" : ""}
 			justifyContent={"space-between"}
 			onClick={(_e: any) => {
 				_e.stopPropagation();
@@ -139,22 +142,23 @@ export const CollectionInput = <Co extends CollectionMeta>(
 					prev === "up" ? "down" : "up"
 				);
 				setModalState(true);
+				onPageChange(1);
 			}}
 
 			style={{cursor: "pointer", whiteSpace: "nowrap"}}
 		>
 			<Box flex={1} display={'flex'} flexDirection={size === "large" ? "column" : "row"}
 			     alignItems={size === "large" ? 'stretch' : "center"}>
-				{selectCollectionMeta ? <>
+				{collection ? <>
 					<Typography component={'span'} variant={'body1'} color={'textPrimary'}>
-						{selectCollectionMeta.name}
+						{collection.name}
 					</Typography>
 					<Typography component={'span'} marginLeft={size === "large" ? 0 : 1} variant={'body2'}
 					            color={'var(--color-text-third)'}>
-						{size === 'large' ? selectCollectionMeta.contractAddress : ' ' + getShortAddr(selectCollectionMeta.contractAddress ?? '', true)}
+						{size === 'large' ? collection.contractAddress : ' ' + getShortAddr(collection.contractAddress ?? '', true)}
 					</Typography>
 				</> : <></>
-        }
+				}
 
 			</Box>
 			<DropdownIconStyled
@@ -162,15 +166,15 @@ export const CollectionInput = <Co extends CollectionMeta>(
 				fontSize={size}
 			/>
 		</BoxStyle>
-		{selectCollectionMeta && showCopy &&
+		{collection && showCopy &&
       <Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
               sx={{
 				        marginLeft: 0,
 				        paddingLeft: 0,
 				        justifyContent: "flex-start"
 			        }} onClick={() => {
-				if (selectCollectionMeta) {
-					const {metaDemo} = makeMeta({collection: selectCollectionMeta});
+				if (collection) {
+					const {metaDemo} = makeMeta({collection});
 					copyToClipBoard(JSON.stringify(metaDemo));
 					collectionListProps.setCopyToastOpen(true);
 				}
@@ -185,7 +189,11 @@ export const CollectionInput = <Co extends CollectionMeta>(
 		}
 
 		}>
-			<SwitchPanelStyled display={'flex'} overflow={'scroll'} height={"80%"} width={"90%"} padding={2}>
+			<SwitchPanelStyled
+				display={'flex'}
+				overflow={'scroll'}
+				alignItems={"stretch"}
+				height={"80%"} width={"90%"} padding={2}>
 				{total > CollectionLimit && (
 					<Box
 						display={"flex"}
@@ -217,7 +225,8 @@ export const CollectionInput = <Co extends CollectionMeta>(
 					isSelectOnly={true}
 					selectCollection={collection}
 					onSelectItem={(item) => {
-						setSelectCollectionMeta(item as any);
+						onSelected(item as Co);
+						// setSelectCollectionMeta(item as any);
 						setDropdownStatus((prev) =>
 							prev === "up" ? "down" : "up"
 						);
