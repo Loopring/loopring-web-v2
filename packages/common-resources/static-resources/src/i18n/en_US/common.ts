@@ -920,5 +920,8 @@ export default {
   labelMintBack: "Back",
   labelTokenAdMintBtn: "Enter Amount",
   labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata and collection Information",
+  labelNFTMintSimpleBtn: "Mint",
+  labelNFTMintEditBtn: "Edit then Mint",
+  labelCollectionEditBtn: "Edit"
 
 };

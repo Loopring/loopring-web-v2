@@ -16,7 +16,34 @@ import React from 'react';
 import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk';
 import { useTranslation } from 'react-i18next';
 import { CollectionLimit, NFTLimit } from '@loopring-web/common-resources';
+import styled from '@emotion/styled';
 
+const BoxStyle = styled(Box)`
+  .MuiRadio-root {
+    position: absolute;
+    right: ${({theme}) => theme.unit}px;
+    top: ${({theme}) => theme.unit}px;
+    transform: scale(1.5);
+  }
+
+  .collection:hover {
+    .btn-group {
+      display: flex;
+    }
+  }
+
+` as typeof Box;
+const BoxBtnGroup = styled(Box)`
+  display: none;
+  position: absolute;
+  right: ${({theme}) => 2 * theme.unit}px;
+  top: ${({theme}) => 2 * theme.unit}px;
+  width: 100%;
+  //flex-direction: row-reverse;
+  &.mobile {
+
+  }
+` as typeof Box;
 
 export const CollectionItem = React.memo(React.forwardRef(<Co extends CollectionMeta & { nftType: NFTType }>(
 	{
@@ -68,10 +95,17 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
         checked={selectCollection?.contractAddress === item.contractAddress}
         value={item.contractAddress}
         name="radio-collection"
+				// sx={{
+				//   }}
         inputProps={{'aria-label': 'selectCollection'}}
       />}
 			{
-				!isSelectOnly && <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-end'} marginTop={2}>
+				!isSelectOnly && <BoxBtnGroup
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'flex-end'}
+          className={isMobile ? "mobile btn-group" : "btn-group"}
+        >
           <>
 						{!!(
 							item.isCounterFactualNFT &&
@@ -91,11 +125,12 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 								</Button>
 							</Box>
 						)}
-						{!(item?.nftType && item.nftType === NFTType.ERC721) ?
+						{item.isCounterFactualNFT
+						&& !(item?.nftType && item.nftType === NFTType.ERC721)
+						&& item.name && item.tileUri ?
 							<Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
 								<Button
 									variant={"contained"}
-									// className={(item.name && item.tileUri) ? "" : "Mui-disabled disabledViewOnly"}
 									size={"small"}
 									fullWidth
 									onClick={() => {
@@ -103,12 +138,10 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 											setShowMintNFT(item);
 										} else {
 											setShowEdit(item)
-											// setShowMintNFT(CreateCollectionStep.ChooseCollectionEdit);
 										}
-
 									}}
 								>
-									{(item.name && item.tileUri) ? t("labelNFTMintBtn") : t("Fix Collection")}
+									{t("labelNFTMintSimpleBtn")}
 								</Button>
 							</Box> :
 							<Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
@@ -118,22 +151,15 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 									size={"small"}
 									fullWidth
 									onClick={() => {
-										if (item.name && item.tileUri) {
-											setShowMintNFT(item);
-											// setCreateOpen(true);
-										} else {
-											// setShowMintNFT(CreateCollectionStep.ChooseCollectionEdit);
-											setShowEdit(item);
-										}
-
+										setShowEdit(item);
 									}}
 								>
-									{t("labelNFTMint721Btn")}
+									{item.isCounterFactualNFT && (!item.name || !item.tileUri) ? t("labelNFTMintEditBtn") : t("labelCollectionEditBtn")}
 								</Button>
 							</Box>
 						}
           </>
-        </Box>
+        </BoxBtnGroup>
 			}
 			<Box
 				paddingX={2}
@@ -175,12 +201,6 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 					textOverflow={"ellipsis"}
 					justifyContent={"space-between"}
 				>
-					{/*<Typography>*/}
-					{/*  <Typography color={"var(--color-text-third)"} width={160}>*/}
-					{/*    {t("labelNFTContractAddress")}*/}
-					{/*  </Typography>*/}
-					{/*  */}
-					{/*</Typography>*/}
 					<Typography
 						color={"var(--color-text-third)"}
 						title={item?.nftType === NFTType.ERC721 ? "ERC721" : "ERC1155"}
@@ -232,7 +252,7 @@ export const CollectionCardList = <Co extends CollectionMeta & { nftType: NFTTyp
 
 	}) => {
 	const {t} = useTranslation('common');
-	return <Box flex={1} display={'flex'} justifyContent={'stretch'} marginTop={2} width={'100%'}>
+	return <BoxStyle flex={1} display={'flex'} justifyContent={'stretch'} marginTop={2} width={'100%'}>
 		{!!collectionList?.length ?
 			<>
 				{total > CollectionLimit && (
@@ -325,5 +345,5 @@ export const CollectionCardList = <Co extends CollectionMeta & { nftType: NFTTyp
 				/>
 			</Box>)
 		}
-	</Box>
+	</BoxStyle>
 };

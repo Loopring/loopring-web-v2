@@ -77,11 +77,6 @@ export type CollectionInputProps<Co> = {
 export const CollectionInput = <Co extends CollectionMeta>(
 	{
 		collection,
-		// collection,
-		// onPageChange,
-		// collectionList,
-		// total,
-		// setCopyToastOpen,
 		collectionListProps,
 		fullWidth = false,
 		width = 'content-fit',
@@ -93,31 +88,14 @@ export const CollectionInput = <Co extends CollectionMeta>(
 		size?: "small" | "large" | "medium"
 	}) => {
 	const [_modalState, setModalState] = React.useState(false);
-	// const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 	const [selectCollectionMeta, setSelectCollectionMeta] = React.useState(collection);
-	// const [searchValue, setSearchValue] = React.useState('');
 	const {t} = useTranslation('common');
-	// const popState = usePopupState({
-	// 	variant: "popover",
-	// 	popupId: `popup-pro-toolbar-markets`,
-	// });
 	const [dropdownStatus, setDropdownStatus] =
 		React.useState<"up" | "down">("down");
-	// const handleSearchChange = React.useCallback((value) => {
-	// 	setSearchValue(value);
-	// }, []);
-
-	// const handleClickAway = React.useCallback(() => {
-	// 	popState.setOpen(false);
-	// 	setIsDropdownOpen(false);
-	// }, [popState]);
 	const {
-		// collection,
 		onPageChange,
-		// collectionList,
 		total,
 		page,
-		// setCopyToastOpen,
 	} = collectionListProps;
 	return <Box display={'flex'} flexDirection={'column'} width={fullWidth ? "100%" : width}>
 		<Tooltip
@@ -157,15 +135,10 @@ export const CollectionInput = <Co extends CollectionMeta>(
 			justifyContent={"space-between"}
 			onClick={(_e: any) => {
 				_e.stopPropagation();
-				// bindTrigger(popState).onClick(e);
-				// setIsDropdownOpen(true);
 				setDropdownStatus((prev) =>
 					prev === "up" ? "down" : "up"
 				);
 				setModalState(true);
-				// if (tableTabValue === "favourite") {
-				// 	handleTabChange(_, "favourite");
-				// }
 			}}
 
 			style={{cursor: "pointer", whiteSpace: "nowrap"}}
@@ -181,15 +154,13 @@ export const CollectionInput = <Co extends CollectionMeta>(
 						{size === 'large' ? selectCollectionMeta.contractAddress : ' ' + getShortAddr(selectCollectionMeta.contractAddress ?? '', true)}
 					</Typography>
 				</> : <></>
-
-				}
+        }
 
 			</Box>
 			<DropdownIconStyled
 				status={dropdownStatus}
 				fontSize={size}
 			/>
-
 		</BoxStyle>
 		{selectCollectionMeta && showCopy &&
       <Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
@@ -206,7 +177,6 @@ export const CollectionInput = <Co extends CollectionMeta>(
 			}}>
 				{t('labelCopyNFTDemo')}
       </Button>}
-		{/*modalState*/}
 		<Modal open={_modalState} onClose={() => {
 			setDropdownStatus((prev) =>
 				prev === "up" ? "down" : "up"
@@ -215,7 +185,6 @@ export const CollectionInput = <Co extends CollectionMeta>(
 		}
 
 		}>
-			{/*<ClickAwayListener onClickAway={handleClickAway}>*/}
 			<SwitchPanelStyled display={'flex'} overflow={'scroll'} height={"80%"} width={"90%"} padding={2}>
 				{total > CollectionLimit && (
 					<Box
@@ -246,12 +215,7 @@ export const CollectionInput = <Co extends CollectionMeta>(
 				<CollectionCardList
 					{...{...collectionListProps as any}}
 					isSelectOnly={true}
-					//
-					// collectionList={collectionList as any}
-					// total={total}
-					// account={account}
-					// onPageChange={onPageChange}
-					// setCopyToastOpen={setCopyToastOpen}
+					selectCollection={collection}
 					onSelectItem={(item) => {
 						setSelectCollectionMeta(item as any);
 						setDropdownStatus((prev) =>
@@ -259,29 +223,6 @@ export const CollectionInput = <Co extends CollectionMeta>(
 						);
 						setModalState(false)
 					}}/>
-				{/*<Grid container spacing={2} paddingBottom={3}>*/}
-				{/* /!*{collectionList.map((item, index) => {*!/*/}
-				{/*	/!* return <Grid*!/*/}
-				{/*	/!*	 key={(item?.name ?? "") + index.toString()}*!/*/}
-				{/*	/!*	 item*!/*/}
-				{/*	/!*	 xs={12}*!/*/}
-				{/*	/!*	 md={6}*!/*/}
-				{/*	/!*	 lg={4}*!/*/}
-				{/*	/!*	 flex={"1 1 120%"}*!/*/}
-				{/*	/!*	 onClick={() => setSelectCollectionMeta(item)}*!/*/}
-				{/*	/!* >*!/*/}
-				{/* */}
-				{/*	/!*	 <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>*!/*/}
-				{/*	/!*		 <Typography component={'span'} variant={'body1'} color={'textPrimary'} marginBottom={1}>*!/*/}
-				{/*	/!*			 {item.name}*!/*/}
-				{/*	/!*		 </Typography>*!/*/}
-				{/*	/!*		 <Typography component={'span'} variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>*!/*/}
-				{/*	/!*			 {item.contractAddress}*!/*/}
-				{/*	/!*		 </Typography>*!/*/}
-				{/*	/!*	 </Box>*!/*/}
-				{/*	/!* </Grid>*!/*/}
-				{/* })}*/}
-				{/*</Grid>*/}
 				<Divider style={{marginTop: "-1px"}}/>
 				{total > CollectionLimit && (
 					<Box
@@ -305,7 +246,6 @@ export const CollectionInput = <Co extends CollectionMeta>(
 					</Box>
 				)}
 			</SwitchPanelStyled>
-			{/*</ClickAwayListener>*/}
 		</Modal>
 	</Box>
 };
