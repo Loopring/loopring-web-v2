@@ -318,8 +318,8 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
-    updateNFTDepositData(state, action: PayloadAction<Partial<TradeNFT<any>>>) {
-      const { balance, tradeValue, ...rest } = action.payload;
+    updateNFTDepositData(state, action: PayloadAction<Partial<TradeNFT<any, any>>>) {
+      const {balance, tradeValue, ...rest} = action.payload;
       state.lastStep = LAST_STEP.nftDeposit;
 
       if (balance === undefined || balance >= 0) {
@@ -337,7 +337,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     updateNFTMintAdvanceData(
       state,
-      action: PayloadAction<Partial<TradeNFT<any>>>
+      action: PayloadAction<Partial<TradeNFT<any, any>>>
     ) {
       const { balance, tradeValue, ...rest } = action.payload;
       state.lastStep = LAST_STEP.nftMint;
@@ -393,7 +393,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     updateNFTDeployData(
       state,
-      action: PayloadAction<Partial<TradeNFT<any> & { broker: string }>>
+      action: PayloadAction<Partial<TradeNFT<any, any> & { broker: string }>>
     ) {
       const {balance, tradeValue, broker, ...rest} = action.payload;
       state.lastStep = LAST_STEP.nftDeploy;

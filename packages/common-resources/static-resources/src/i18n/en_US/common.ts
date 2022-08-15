@@ -922,6 +922,8 @@ export default {
   labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata and collection Information",
   labelNFTMintSimpleBtn: "Mint",
   labelNFTMintEditBtn: "Edit then Mint",
-  labelCollectionEditBtn: "Edit"
+  labelCollectionEditBtn: "Edit",
+  labelCopyMetaClip: "Metadata Copied to Clipboard",
+  labelCollectionMetaNoNameORTileUri: "Your collection_metadata is not defined `name` or `tile_uri`, it may cause some collection display issue!",
 
 };

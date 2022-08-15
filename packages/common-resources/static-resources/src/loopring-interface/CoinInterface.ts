@@ -1,8 +1,7 @@
-import { Account, FloatTag, TradeStatus, TradeTypes } from "../constant";
+import { Account, FloatTag, NFT_TYPE_STRING, TradeStatus, TradeTypes } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import { ForexMap } from "@loopring-web/common-resources";
-import { NFTType } from '@loopring-web/loopring-sdk';
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -307,7 +306,7 @@ export enum EXPLORE_TYPE {
  * @property cid? string option
  *
  */
-export type CollectionMeta = sdk.CollectionMeta & { nftType?: NFTType };
+export type CollectionMeta = sdk.CollectionMeta & { nftType?: NFT_TYPE_STRING };
 
 export enum CollectionMetaKey {
   name = 'name',

@@ -38,17 +38,17 @@ import Web3 from "web3";
 import _ from "lodash";
 import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 
-export const useNFTDeposit = <T extends TradeNFT<I>, I>(): {
+export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   nftDepositProps: NFTDepositProps<T, I>;
 } => {
-  const { tokenMap, totalCoinMap } = useTokenMap();
-  const { account } = useAccount();
-  const { exchangeInfo, chainId, gasPrice } = useSystem();
+  const {tokenMap, totalCoinMap} = useTokenMap();
+  const {account} = useAccount();
+  const {exchangeInfo, chainId, gasPrice} = useSystem();
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
-  const { nftDepositValue, updateNFTDepositData, resetNFTDepositData } =
+  const {nftDepositValue, updateNFTDepositData, resetNFTDepositData} =
     useModalData();
-  const { walletLayer1 } = useWalletLayer1();
-  const { updateDepositHash } = useOnChainInfo();
+  const {walletLayer1} = useWalletLayer1();
+  const {updateDepositHash} = useOnChainInfo();
   const {
     btnStatus,
     btnInfo,

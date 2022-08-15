@@ -11,7 +11,7 @@ import {
 	CreateCollectionStep,
 	TradeNFT
 } from "@loopring-web/common-resources"
-import { LoopringAPI, TOAST_TIME, useAccount, useModalData } from '@loopring-web/core';
+import { LoopringAPI, TOAST_TIME, useAccount, useModalData, useMyCollection } from '@loopring-web/core';
 import { CreateUrlPanel } from '../components/landingPanel';
 import { useHistory } from 'react-router-dom';
 
@@ -23,8 +23,9 @@ const StyledPaper = styled(Box)`
 const CommonPanel = () => {
 	return <></>;
 };
-export const NFTCollectPanel = <Co extends CollectionMeta>({collectionListProps}: { collectionListProps: CollectionListProps<Co> }) => {
+export const NFTCollectPanel = <Co extends CollectionMeta>() => {
 	const {t} = useTranslation(["common"]);
+	const {copyToastOpen, ...collectionListProps} = useMyCollection();
 	const [showCreateOpen, setCreateOpen] = React.useState(false);
 	const [step, setStep] = React.useState(CreateCollectionStep.ChooseMethod);
 	const history = useHistory();
@@ -142,11 +143,6 @@ export const NFTCollectPanel = <Co extends CollectionMeta>({collectionListProps}
         </Button>
       </Box>
 			<CollectionCardList
-				//   onPageChange={function (props: any): void {
-				//     throw new Error("Function not implemented.");
-				//   }} total={0} page={0} setCopyToastOpen={function (isShow: boolean): void {
-				//   throw new Error("Function not implemented.");
-				// }}
 				{...{...collectionListProps as any}}
 				account={account}
 				toggle={deployNFT}
@@ -160,7 +156,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>({collectionListProps}
 					setStep(CreateCollectionStep.ChooseCollectionEdit);
 				}}
 				setShowDeploy={(item) => {
-					const _deployItem: TradeNFT<any> = {
+					const _deployItem: TradeNFT<any, any> = {
 						tokenAddress: item.contractAddress,
 						// TODO: fix backend
 						nftType: 'ERC1155',
@@ -183,7 +179,15 @@ export const NFTCollectPanel = <Co extends CollectionMeta>({collectionListProps}
 				setCreateOpen(false);
 			}}
 			/>
-
+			<Toast
+				alertText={copyToastOpen?.type === "json" ? t("labelCopyMetaClip") : t("labelCopyAddClip")}
+				open={copyToastOpen?.isShow}
+				autoHideDuration={TOAST_TIME}
+				onClose={() => {
+					collectionListProps.setCopyToastOpen({isShow: false, type: ''});
+				}}
+				severity={"success"}
+			/>
 
 		</Box>
   );

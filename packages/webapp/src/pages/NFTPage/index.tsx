@@ -21,7 +21,7 @@ export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
   const {t} = useTranslation(["common"]);
   const selected = match?.params.item ?? "assetsNFT";
-  const {copyToastOpen, ...collectionListProps} = useMyCollection();
+
   const routerNFT = React.useMemo(() => {
     switch (selected) {
       case "transactionNFT":
@@ -29,20 +29,20 @@ export const NFTPage = () => {
       case "mintNFTLanding":
         return <MintLandingPage/>;
       case "mintNFT":
-        return <MintNFTPanel collectionListProps={collectionListProps}/>;
+        return <MintNFTPanel/>;
       case "mintAdvanceNFT":
         return <MintNFTAdvancePanel/>;
       case "depositNFT":
         return <DepositNFTPanel/>;
       case "myCollection":
-        return <NFTCollectPanel collectionListProps={collectionListProps}/>;
+        return <NFTCollectPanel/>;
       case "addCollection":
         return <CreateCollectionPanel/>;
       case "assetsNFT":
       default:
         return <MyNFTPanel/>;
     }
-  }, [selected, collectionListProps]);
+  }, [selected]);
 
   const { isMobile } = useSettings();
 
@@ -66,15 +66,7 @@ export const NFTPage = () => {
 
   return <>
     <ViewAccountTemplate activeViewTemplate={activeViewTemplate}/>
-    <Toast
-      alertText={t("labelCopyAddClip")}
-      open={copyToastOpen}
-      autoHideDuration={TOAST_TIME}
-      onClose={() => {
-        collectionListProps.setCopyToastOpen(false);
-      }}
-      severity={"success"}
-    />
+
   </>;
 };
 // {!!isMobile && <TitleNFTMobile />}

@@ -9,10 +9,18 @@ import {
 	CollectionHttps,
 	CollectionMeta
 } from '@loopring-web/common-resources';
-import { Button, CollectionCardList, CollectionListProps, DropdownIconStyled, SwitchPanelStyled } from '../../../index';
+import {
+	Button,
+	CollectionCardList,
+	CollectionListProps,
+	DropdownIconStyled,
+	SwitchPanelStyled,
+	Toast
+} from '../../../index';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
+import { TOAST_TIME } from '@loopring-web/core';
 
 const SizeCss = {
 	small: `
@@ -141,7 +149,7 @@ export const CollectionInput = <Co extends CollectionMeta>(
 					prev === "up" ? "down" : "up"
 				);
 				setModalState(true);
-				onPageChange(1);
+				onPageChange(1, {isMintable: true});
 			}}
 
 			style={{cursor: "pointer", whiteSpace: "nowrap"}}
@@ -171,11 +179,12 @@ export const CollectionInput = <Co extends CollectionMeta>(
 				        marginLeft: 0,
 				        paddingLeft: 0,
 				        justifyContent: "flex-start"
-			        }} onClick={() => {
+			        }} onClick={(e) => {
+				e.stopPropagation();
 				if (collection) {
 					const {metaDemo} = makeMeta({collection});
 					copyToClipBoard(JSON.stringify(metaDemo));
-					collectionListProps.setCopyToastOpen(true);
+					collectionListProps.setCopyToastOpen({isShow: true, type: 'json'});
 				}
 			}}>
 				{t('labelCopyNFTDemo')}
@@ -253,6 +262,15 @@ export const CollectionInput = <Co extends CollectionMeta>(
 						/>
 					</Box>
 				)}
+				<Toast
+					alertText={collectionListProps.copyToastOpen?.type === "json" ? t("labelCopyMetaClip") : t("labelCopyAddClip")}
+					open={collectionListProps.copyToastOpen?.isShow}
+					autoHideDuration={TOAST_TIME}
+					onClose={() => {
+						collectionListProps.setCopyToastOpen({isShow: false, type: ''});
+					}}
+					severity={"success"}
+				/>
 			</SwitchPanelStyled>
 		</Modal>
 	</Box>

@@ -67,22 +67,22 @@ export type NFT_MINT_VALUE<I> = {
 
 export type ModalDataStatus = {
   lastStep: LAST_STEP;
-  withdrawValue: WithdrawData;
-  transferValue: TransferData;
-  depositValue: DepositData;
-  activeAccountValue: ActiveAccountData;
-  forceWithdrawValue: ForceWithdrawData;
+	withdrawValue: WithdrawData;
+	transferValue: TransferData;
+	depositValue: DepositData;
+	activeAccountValue: ActiveAccountData;
+	forceWithdrawValue: ForceWithdrawData;
 
-  nftWithdrawValue: WithdrawData &
-    Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
-  nftTransferValue: TransferData &
-    Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
-  nftDepositValue: TradeNFT<any>;
-  nftMintAdvanceValue: TradeNFT<any>;
-  collectionAdvanceValue: Partial<CollectionMeta>;
-  collectionValue: Partial<CollectionMeta>;
-  nftMintValue: NFT_MINT_VALUE<any>;
-  nftDeployValue: TradeNFT<any> & { broker: string };
+	nftWithdrawValue: WithdrawData &
+		Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
+	nftTransferValue: TransferData &
+		Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
+	nftDepositValue: TradeNFT<any, any>;
+	nftMintAdvanceValue: TradeNFT<any, any>;
+	collectionAdvanceValue: Partial<CollectionMeta>;
+	collectionValue: Partial<CollectionMeta>;
+	nftMintValue: NFT_MINT_VALUE<any>;
+	nftDeployValue: TradeNFT<any, any> & { broker: string };
 };
 
 export enum LAST_STEP {

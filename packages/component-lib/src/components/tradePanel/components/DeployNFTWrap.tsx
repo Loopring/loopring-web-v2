@@ -15,11 +15,9 @@ import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { TradeBtnStatus } from "../Interface";
 import { FeeToggle } from "./tool/FeeList";
 
-export const DeployNFTWrap = <
-  T extends TradeNFT<I> & { broker: string },
+export const DeployNFTWrap = <T extends TradeNFT<I, any> & { broker: string },
   I,
-  C extends FeeInfo
->({
+  C extends FeeInfo>({
   tradeData,
   title,
   description,

@@ -43,5 +43,6 @@ export default {
   errorCollectionNoName: "Name is required",
   errorCollectionSameName: "You already hava an collection call {{name}} ",
   errorCollectionInfo: "Wrong Collection",
-  errorCollectionNoSupport: "Only L2 collection is allow to mint"
+  errorCollectionNoSupport: "Only L2 collection is allow to mint",
+  errorCollectionNotReadable: "Read Collection Info Failed"
 };

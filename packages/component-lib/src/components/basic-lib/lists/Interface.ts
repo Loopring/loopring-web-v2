@@ -13,6 +13,7 @@ import {
 } from "@loopring-web/common-resources";
 import { ListProps } from "react-virtualized";
 import { List } from "immutable";
+import { L2CollectionFilter } from '@loopring-web/core';
 
 export type MuiMenuItemProps = muMenuItemProps & {
   withnocheckicon?: "true" | "false" | undefined;
@@ -94,11 +95,12 @@ export type CoinMenuProps<R, I> = {
 
 
 export type  CollectionListProps<Co> = {
-	onPageChange: (props: any) => void,
+	onPageChange: (page: number, filter?: L2CollectionFilter | undefined) => void,
 	collectionList: Co[],
 	total: number,
 	page: number,
-	setCopyToastOpen: (isShow: boolean) => void,
+	copyToastOpen: { isShow: boolean, type: string },
+	setCopyToastOpen: (props: { isShow: boolean, type: string }) => void,
 	isLoading: boolean,
 	etherscanBaseUrl: string
 }

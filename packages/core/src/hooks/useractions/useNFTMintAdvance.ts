@@ -11,7 +11,7 @@ import {
   Explorer,
   IPFS_LOOPRING_SITE,
   MINT_LIMIT,
-  myLog,
+  myLog, NFT_TYPE_STRING,
   SagaStatus,
   TOAST_TIME,
   TradeNFT,
@@ -19,7 +19,6 @@ import {
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
-import { NFTType } from "@loopring-web/loopring-sdk";
 import { ConnectProvidersSignMap, connectProvides, } from "@loopring-web/web3-provider";
 import { useAccount, useModalData, useSystem, useTokenMap, useWalletLayer2NFT, } from "../../stores";
 import { useBtnStatus, useMyCollection } from "../common";
@@ -34,18 +33,11 @@ import { ActionResult, ActionResultCode, DAYS } from "../../defs";
 
 const CID = require("cids");
 
-export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMeta, I>() => {
+export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends CollectionMeta, I>() => {
   const {tokenMap, totalCoinMap} = useTokenMap();
   const {account, status: accountStatus} = useAccount();
   const {exchangeInfo, chainId} = useSystem();
   const collectionListProps = useMyCollection<Co>();
-  // const {
-  //   status: walletL2CollectionStatus,
-  //   walletL2Collection,
-  //   total,
-  //   page: page_reudex,
-  //   updateWalletL2Collection,
-  // } = useWalletL2Collection()
   const {nftMintAdvanceValue, updateNFTMintAdvanceData} = useModalData();
   const {
     btnStatus,
@@ -119,13 +111,13 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
                             isFeeNotEnough,
                             isNotAvailableCID,
                           }: {
-    nftMintAdvanceValue: TradeNFT<any>;
+    nftMintAdvanceValue: Partial<T>;
     isFeeNotEnough: any;
     isNotAvailableCID: undefined | { reason: string };
   }) => {
     return (
       nftMintAdvanceValue.royaltyPercentage !== undefined &&
-      Number.isInteger(nftMintAdvanceValue.royaltyPercentage / 1) &&
+      Number.isInteger(nftMintAdvanceValue.royaltyPercentage) &&
       nftMintAdvanceValue.royaltyPercentage >= 0 &&
       nftMintAdvanceValue.royaltyPercentage <= 10 &&
       nftMintAdvanceValue &&
@@ -149,7 +141,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
       resetBtnInfo();
       if (
         !error &&
-        checkAvailable({nftMintAdvanceValue, isFeeNotEnough, isNotAvailableCID})
+        checkAvailable({nftMintAdvanceValue: nftMintAdvanceValue as any, isFeeNotEnough, isNotAvailableCID})
       ) {
         enableBtn();
         return;
@@ -383,7 +375,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
   );
 
   const handleOnNFTDataChange = React.useCallback(
-    async (data: T) => {
+    async (data: Partial<T>) => {
       let shouldUpdate = {};
       if (
         data.nftIdView &&
@@ -422,9 +414,16 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
             ).then((response) => response.json());
             let collectionMeta: CollectionMeta | undefined;
             if (value && value.collection_metadata) {
-              const collectionMetadata: CollectionMeta = await fetch(
-                value.collection_metadata
-              ).then((response) => response.json()) ?? {};
+              // TODO:  MOCK  and solve the cross domain
+              const collectionMetadata: CollectionMeta = {
+                name: "",
+                tileUri: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
+                avatar: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
+                banner: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
+                baseUri: "0x523c347322cec97c31adef1bb3f4f23646db5668b20b6ec8df05c558cb8ddbb0",
+                contractAddress: "0x3295619421890680a8c88decabb1f9d4fb6c3b80",
+                owner: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
+              };
 
               if (collectionMetadata.contractAddress) {
                 const response = await LoopringAPI.userAPI?.getUserOwenCollection(
@@ -444,9 +443,15 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
                 }
 
                 collectionMeta = (response as any).collections[ 0 ] as CollectionMeta;
-                if (!collectionMeta.isCounterFactualNFT || collectionMeta.nftType === NFTType.ERC721) {
+                //TODO:  MOCK  and solve the cross domain
+                collectionMeta.isCounterFactualNFT = true;
+                collectionMeta.nftType = NFT_TYPE_STRING.ERC1155;
+                // collectionMeta.name = '';
+                // @ts-ignore
+                if (!collectionMeta.isCounterFactualNFT || collectionMeta.nftType === NFT_TYPE_STRING.ERC721) {
                   throw new CustomError(ErrorMap.ERROR_COLLECTION_NO_SUPPORT);
                 }
+
               } else {
                 throw new CustomError(ErrorMap.ERROR_COLLECTION_INFO);
               }
@@ -462,7 +467,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
                 royaltyPercentage: value.royalty_percentage,
                 ...shouldUpdate,
                 tokenAddress: collectionMeta?.contractAddress,
-                collectionMeta: collectionMeta,
+                collectionMeta: collectionMetadata,
               };
               setIsNotAvailableCID(undefined)
             } else {
@@ -523,7 +528,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
         account.readyState === AccountStatus.ACTIVATED &&
         nftMintAdvanceValue &&
         nftMintAdvanceValue.collectionMeta?.contractAddress &&
-        checkAvailable({nftMintAdvanceValue, isFeeNotEnough, isNotAvailableCID})
+        checkAvailable({nftMintAdvanceValue: nftMintAdvanceValue as any, isFeeNotEnough, isNotAvailableCID})
       ) {
         setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
@@ -643,6 +648,9 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, Co extends CollectionMe
     collectionInputProps: {
       collectionListProps,
       collection: nftMintAdvanceValue.collectionMeta as Co,
+      onSelected: (item) => {
+        handleOnNFTDataChange({collectionMeta: item} as unknown as T);
+      }
     },
     handleOnNFTDataChange,
     onNFTMintClick: onNFTMintAdvanceClick,

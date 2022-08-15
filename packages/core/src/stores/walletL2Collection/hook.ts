@@ -1,17 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
-  reset,
-  socketUpdateBalance,
-  statusUnset,
-  updateWalletL2Collection,
+	reset,
+	socketUpdateBalance,
+	statusUnset,
+	updateWalletL2Collection,
 } from "./reducer";
-import { WalletL2CollectionStates } from "./interface";
+import { L2CollectionFilter, WalletL2CollectionStates } from "./interface";
 import React from "react";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 import { CollectionMeta } from '@loopring-web/common-resources';
 
 export function useWalletL2Collection<C extends CollectionMeta>(): WalletL2CollectionStates<C> & {
-	updateWalletL2Collection: (props: { page?: number }) => void;
+	updateWalletL2Collection: (props: { page?: number, filter?: L2CollectionFilter | undefined }) => void;
 	socketUpdateBalance: (balance: {
 		[ key: string ]: loopring_defs.UserBalanceInfo;
 	}) => void;
@@ -33,9 +33,9 @@ export function useWalletL2Collection<C extends CollectionMeta>(): WalletL2Colle
       [dispatch]
     ),
     updateWalletL2Collection: React.useCallback(
-      ({page}: { page?: number }) =>
-        dispatch(updateWalletL2Collection({page})),
-      [dispatch]
+	    ({page, filter}: { page?: number, filter?: L2CollectionFilter | undefined }) =>
+		    dispatch(updateWalletL2Collection({page, filter})),
+	    [dispatch]
     ),
     socketUpdateBalance: React.useCallback(
       (balance: { [ key: string ]: loopring_defs.UserBalanceInfo }) =>

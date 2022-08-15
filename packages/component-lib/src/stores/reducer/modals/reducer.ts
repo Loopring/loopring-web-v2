@@ -130,8 +130,8 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
 
     setShowNFTDeposit(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
+	    state,
+	    action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>
     ) {
       const { isShow, nftData, nftType, ...rest } = action.payload;
       state.isShowNFTDeposit = {
@@ -151,8 +151,8 @@ export const modalsSlice: Slice<ModalState> = createSlice({
       };
     },
     setShowNFTMintAdvance(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
+	    state,
+	    action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>
     ) {
       const { isShow, nftData, nftType, ...rest } = action.payload;
       state.isShowNFTMintAdvance = {

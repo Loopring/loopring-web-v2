@@ -252,12 +252,16 @@ export const ErrorMap = {
     messageKey: "errorCollectionEmpty",
     options: {},
   },
+  ERROR_COLLECTION_NOT_READABLE: {
+    id: "ERROR_COLLECTION_NOT_READABLE",
+    messageKey: "errorCollectionNotReadable",
+    options: {},
+  },
   ERROR_COLLECTION_INFO: {
     id: "ERROR_COLLECTION_INFO",
     messageKey: "errorCollectionInfo",
     options: {},
   },
-
   ERROR_COLLECTION_NO_SUPPORT: {
     id: "ERROR_COLLECTION_NO_SUPPORT",
     messageKey: "errorCollectionNoSupport",
@@ -284,6 +288,7 @@ export enum UIERROR_CODE {
   ERROR_COLLECTION_INFO = 700016,
   ERROR_COLLECTION_EMPTY = 700017,
   ERROR_COLLECTION_NO_SUPPORT = 700018,
+  ERROR_COLLECTION_NOT_READABLE = 700019,
 }
 export type ErrorObject = {
   from?: string;
@@ -310,6 +315,7 @@ export const SDK_ERROR_MAP_TO_UI = {
   700016: ErrorMap.ERROR_COLLECTION_INFO,
   700017: ErrorMap.ERROR_COLLECTION_EMPTY,
   700018: ErrorMap.ERROR_COLLECTION_NO_SUPPORT,
+  700019: ErrorMap.ERROR_COLLECTION_NOT_READABLE,
   100000: ErrorMap.ERROR_UNKNOWN, //Unknown error =>
   100001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Invalid argument
   101001: ErrorMap.ERROR_WRONG_ACCOUNT, //The address was not found

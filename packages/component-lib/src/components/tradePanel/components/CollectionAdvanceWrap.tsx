@@ -35,7 +35,7 @@ export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>(
 	const styles = isMobile
 		? {flex: 1, width: "var(--swap-box-width)"}
 		: {width: "var(--modal-width)"};
-	const [copyToastOpen, setCopyToastOpen] = useState(false);
+	const [copyToastOpen, setCopyToastOpen] = useState({isShow: false, type: 'json'});
 	const popupState = usePopupState({
 		variant: "popover",
 		popupId: `popupId-nftMint`,
@@ -120,7 +120,7 @@ export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>(
 						// thumbnail: "ipfs://`${cid  (storage image type media)}",
 					};
 					copyToClipBoard(JSON.stringify(metaDemo));
-					setCopyToastOpen(true);
+					setCopyToastOpen({isShow: true, type: 'json'});
 
 				}}>
 					{t('labelCopyDemo')}
@@ -161,11 +161,11 @@ export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>(
 				</Button>
 			</Grid>
 			<Toast
-				alertText={t("labelCopyAddClip")}
-				open={copyToastOpen}
+				alertText={copyToastOpen.type === "json" ? t("labelCopyMetaClip") : t("labelCopyAddClip")}
+				open={copyToastOpen.isShow}
 				autoHideDuration={TOAST_TIME}
 				onClose={() => {
-					setCopyToastOpen(false);
+					setCopyToastOpen({isShow: false, type: ''});
 				}}
 				severity={"success"}
 			/>

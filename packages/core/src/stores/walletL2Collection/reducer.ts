@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { WalletL2CollectionStates } from "./interface";
+import { L2CollectionFilter, WalletL2CollectionStates } from "./interface";
 import { CollectionMeta, SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: WalletL2CollectionStates<CollectionMeta> = {
@@ -13,7 +13,7 @@ const walletL2CollectionSlice: Slice<WalletL2CollectionStates<CollectionMeta>> =
 	name: "walletL2Collection",
 	initialState,
 	reducers: {
-		updateWalletL2Collection(state, _action: PayloadAction<{ page?: number }>) {
+		updateWalletL2Collection(state, _action: PayloadAction<{ page?: number, filter?: L2CollectionFilter }>) {
 			state.status = SagaStatus.PENDING;
 		},
 		reset(state) {

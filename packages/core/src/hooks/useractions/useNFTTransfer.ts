@@ -47,14 +47,14 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
+export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   const [memo, setMemo] = React.useState("");
   const {
     setShowAccount,
     setShowNFTTransfer,
     setShowNFTDetail,
     modals: {
-      isShowNFTTransfer: { isShow, info },
+      isShowNFTTransfer: {isShow, info},
     },
   } = useOpenModals();
 

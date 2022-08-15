@@ -10,7 +10,7 @@ import {
 	copyToClipBoard,
 	getShortAddr,
 	Account,
-	CollectionMeta, myLog
+	CollectionMeta, myLog, NFT_TYPE_STRING
 } from '@loopring-web//common-resources';
 import React from 'react';
 import { DEPLOYMENT_STATUS, NFTType } from '@loopring-web/loopring-sdk';
@@ -45,7 +45,7 @@ const BoxBtnGroup = styled(Box)`
   }
 ` as typeof Box;
 
-export const CollectionItem = React.memo(React.forwardRef(<Co extends CollectionMeta & { nftType: NFTType }>(
+export const CollectionItem = React.memo(React.forwardRef(<Co extends CollectionMeta>(
 	{
 		item,
 		index,
@@ -60,7 +60,7 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 	}: {
 		item: Co,
 		index: number,
-		setCopyToastOpen: (value: boolean) => void;
+		setCopyToastOpen: (prosp: { isShow: boolean, type: string }) => void;
 		setShowDeploy: (item: Co) => void;
 		setShowEdit: (item: Co) => void;
 		setShowMintNFT: (item: Co) => void;
@@ -127,7 +127,7 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 							</Box>
 						)}
 						{item.isCounterFactualNFT
-						&& !(item?.nftType && item.nftType === NFTType.ERC721)
+						&& !(item?.nftType === NFT_TYPE_STRING.ERC721)
 						&& item.name && item.tileUri ?
 							<Box className={isMobile ? "isMobile" : ""} width={"48%"} marginLeft={'4%'}>
 								<Button
@@ -185,9 +185,10 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
             {item?.name ?? t('labelUnknown')}
           </span>
 					<Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
-					        sx={{marginLeft: 1}} onClick={() => {
+					        sx={{marginLeft: 1}} onClick={(e) => {
+						e.stopPropagation();
 						copyToClipBoard(item?.contractAddress ?? "");
-						setCopyToastOpen(true);
+						setCopyToastOpen({isShow: true, type: 'address'});
 
 					}}>
 						{getShortAddr(item?.contractAddress ?? "")}
@@ -204,15 +205,15 @@ export const CollectionItem = React.memo(React.forwardRef(<Co extends Collection
 				>
 					<Typography
 						color={"var(--color-text-third)"}
-						title={item?.nftType === NFTType.ERC721 ? "ERC721" : "ERC1155"}
+						title={item?.nftType}
 					>
-						{item?.nftType === NFTType.ERC721 ? "ERC721" : "ERC1155"}
+						{item?.nftType}
 					</Typography>
 					<Button variant={'text'} color={'primary'} size={'small'} endIcon={<CopyIcon color={'secondary'}/>}
-					        sx={{marginLeft: 1}} onClick={() => {
-
+					        sx={{marginLeft: 1}} onClick={(e) => {
+						e.stopPropagation();
 						copyToClipBoard(JSON.stringify(metaDemo));
-						setCopyToastOpen(true);
+						setCopyToastOpen({isShow: true, type: 'json'});
 
 					}}>
 						{t('labelCopyNFTDemo')}
@@ -254,97 +255,97 @@ export const CollectionCardList = <Co extends CollectionMeta & { nftType: NFTTyp
 	}) => {
 	const {t} = useTranslation('common');
 	return <BoxStyle flex={1} display={'flex'} justifyContent={'stretch'} marginTop={2} width={'100%'}>
-		{!!collectionList?.length ?
-			<>
-				{total > CollectionLimit && (
+		{!collectionList?.length ? (<Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+			<EmptyDefault
+				style={{flex: 1}}
+				height={"100%"}
+				message={() => (
 					<Box
+						flex={1}
 						display={"flex"}
 						alignItems={"center"}
-						justifyContent={"right"}
-						marginRight={3}
-						marginBottom={2}
+						justifyContent={"center"}
 					>
-						<Pagination
-							color={"primary"}
-							count={
-								parseInt(String(total / NFTLimit)) +
-								(total % NFTLimit > 0 ? 1 : 0)
-							}
-							page={page}
-							onChange={(_event, value) => {
-								onPageChange(Number(value));
-							}}
-						/>
+						{t("labelNoContent")}
 					</Box>
 				)}
-				<Grid container spacing={2} paddingBottom={3}>
+			/>
+		</Box>) : <>
+			{total > CollectionLimit && (
+				<Box
+					display={"flex"}
+					alignItems={"center"}
+					justifyContent={"right"}
+					marginRight={3}
+					marginBottom={2}
+				>
+					<Pagination
+						color={"primary"}
+						count={
+							parseInt(String(total / NFTLimit)) +
+							(total % NFTLimit > 0 ? 1 : 0)
+						}
+						page={page}
+						onChange={(_event, value) => {
+							onPageChange(Number(value));
+						}}
+					/>
+				</Box>
+			)}
+			<Grid container spacing={2} paddingBottom={3}>
 
-					{collectionList.map((item, index) => {
-						return <Grid
-							key={(item?.name ?? "") + index.toString()}
-							item
-							xs={12}
-							md={6}
-							lg={4}
-							flex={"1 1 120%"}
-							onClick={(e) => {
-								e.stopPropagation();
-								if (onSelectItem) {
-									onSelectItem(item)
-								}
-							}}
-						>
-							<CollectionItem
-								selectCollection={selectCollection}
-								isSelectOnly={isSelectOnly}
-								account={account}
-								toggle={toggle}
-								setShowDeploy={setShowDeploy as any}
-								setShowEdit={setShowEdit as any}
-								setShowMintNFT={setShowMintNFT as any}
-								setCopyToastOpen={setCopyToastOpen as any}
-								item={item as any}
-								index={index}/>
-						</Grid>
-					})}
-				</Grid>
-				{total > CollectionLimit && (
-					<Box
-						display={"flex"}
-						alignItems={"center"}
-						justifyContent={"right"}
-						marginRight={3}
-						marginBottom={2}
-					>
-						<Pagination
-							color={"primary"}
-							count={
-								parseInt(String(total / NFTLimit)) +
-								(total % NFTLimit > 0 ? 1 : 0)
+				{collectionList.map((item, index) => {
+					return <Grid
+						// @ts-ignore
+						key={index.toString() + (item?.name ?? "")}
+						item
+						xs={12}
+						md={6}
+						lg={4}
+						flex={"1 1 120%"}
+						onClick={(e) => {
+							e.stopPropagation();
+							if (onSelectItem) {
+								onSelectItem(item)
 							}
-							page={page}
-							onChange={(_event, value) => {
-								onPageChange(Number(value));
-							}}
-						/>
-					</Box>
-				)}
-			</> : (<Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-				<EmptyDefault
-					style={{flex: 1}}
-					height={"100%"}
-					message={() => (
-						<Box
-							flex={1}
-							display={"flex"}
-							alignItems={"center"}
-							justifyContent={"center"}
-						>
-							{t("labelNoContent")}
-						</Box>
-					)}
-				/>
-			</Box>)
+						}}
+					>
+						<CollectionItem
+							selectCollection={selectCollection}
+							isSelectOnly={isSelectOnly}
+							account={account}
+							toggle={toggle}
+							setShowDeploy={setShowDeploy as any}
+							setShowEdit={setShowEdit as any}
+							setShowMintNFT={setShowMintNFT as any}
+							setCopyToastOpen={setCopyToastOpen as any}
+							item={item as any}
+							index={index}/>
+					</Grid>
+				})}
+			</Grid>
+			{total > CollectionLimit && (
+				<Box
+					display={"flex"}
+					alignItems={"center"}
+					justifyContent={"right"}
+					marginRight={3}
+					marginBottom={2}
+				>
+					<Pagination
+						color={"primary"}
+						count={
+							parseInt(String(total / NFTLimit)) +
+							(total % NFTLimit > 0 ? 1 : 0)
+						}
+						page={page}
+						onChange={(_event, value) => {
+							onPageChange(Number(value));
+						}}
+					/>
+				</Box>
+			)}
+		</>
 		}
 	</BoxStyle>
 };

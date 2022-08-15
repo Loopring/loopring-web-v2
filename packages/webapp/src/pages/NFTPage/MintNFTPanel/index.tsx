@@ -14,7 +14,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { BackIcon, CollectionMeta, FeeInfo, Info2Icon, TradeNFT } from "@loopring-web/common-resources";
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { mintService, useNFTMintAdvance } from '@loopring-web/core';
+import { mintService, useMyCollection, useNFTMintAdvance } from '@loopring-web/core';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -22,10 +22,11 @@ const StyledPaper = styled(Box)`
 `;
 
 
-export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: { collectionListProps: CollectionListProps<Co> }) => {
+export const MintNFTPanel = <Co extends CollectionMeta>() => {
   const history = useHistory();
   const mintWholeProps = useMintNFTPanel();
   const {t} = useTranslation(["common"]);
+  const collectionListProps = useMyCollection();
   const panelList: Pick<PanelContent<"METADATA" | "MINT_CONFIRM">,
     "key" | "element">[] = [
     {
@@ -40,7 +41,10 @@ export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: {
                 {
                   collection: undefined,
                   collectionListProps,
-                }
+                  // onSelected:(item)=>{
+                  //   mintWholeProps.nftMetaProps.handleOnMetaChange
+                  // }
+                } as any
             },
           }}
 
@@ -112,7 +116,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>({collectionListProps}: {
     </>
   );
 };
-export const MintNFTAdvancePanel = <T extends TradeNFT<I>,
+export const MintNFTAdvancePanel = <T extends TradeNFT<I, Co>,
   Co extends CollectionMeta,
   I>(
   // {resetNFTMint, nftMintAdvanceProps}:{

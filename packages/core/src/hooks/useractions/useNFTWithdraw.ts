@@ -44,17 +44,17 @@ import {
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
+export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
     modals: {
-      isShowNFTWithdraw: { isShow, info },
+      isShowNFTWithdraw: {isShow, info},
     },
     setShowNFTWithdraw,
     setShowNFTDetail,
     setShowAccount,
   } = useOpenModals();
 
-  const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
+  const {tokenMap, totalCoinMap, disableWithdrawList} = useTokenMap();
   const { account } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();

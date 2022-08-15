@@ -51,17 +51,17 @@ const NFT_TYPE: TGItemData[] = [
   },
 ];
 
-export const DepositNFTWrap = <T extends TradeNFT<I>, I>({
-  disabled,
-  walletMap,
-  tradeData,
-  btnInfo,
-  handleOnNFTDataChange,
-  nftDepositBtnStatus,
-  isNFTCheckLoading,
-  onNFTDepositClick,
-}: // wait = globalSetup.wait,
-NFTDepositViewProps<T, I>) => {
+export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
+	                                                              disabled,
+	                                                              walletMap,
+	                                                              tradeData,
+	                                                              btnInfo,
+	                                                              handleOnNFTDataChange,
+	                                                              nftDepositBtnStatus,
+	                                                              isNFTCheckLoading,
+	                                                              onNFTDepositClick,
+                                                              }: // wait = globalSetup.wait,
+	                                                              NFTDepositViewProps<T, I>) => {
   const { t } = useTranslation(["common"]);
 
   const inputBtnRef = React.useRef();

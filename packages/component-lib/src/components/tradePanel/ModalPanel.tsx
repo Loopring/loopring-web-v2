@@ -120,10 +120,10 @@ const Modal = withTranslation("common")(
 );
 
 export const ModalPanel = <T extends IBData<I>,
-  N extends IBData<I> & TradeNFT<I>,
-  C extends CollectionMeta,
-  I,
-  F = FeeInfo>({
+	N extends IBData<I> & TradeNFT<I, any>,
+	C extends CollectionMeta,
+	I,
+	F = FeeInfo>({
                  transferProps,
                  withdrawProps,
                  depositProps,
