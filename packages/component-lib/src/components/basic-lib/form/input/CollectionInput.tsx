@@ -96,10 +96,9 @@ export const CollectionInput = <Co extends CollectionMeta>(
 		React.useState<"up" | "down">("down");
 	const {
 		onPageChange,
-		// total,
+		total,
 		page,
 	} = collectionListProps;
-	const total = 300;
 	return <Box display={'flex'} flexDirection={'column'} width={fullWidth ? "100%" : width}>
 		<Tooltip
 			title={t("labelMintCollectionTooltips").toString()}
