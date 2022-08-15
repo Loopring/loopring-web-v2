@@ -244,6 +244,7 @@ type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 export type BasicACoinTradeViewProps<T, I> = Required<
   DefaultWithMethodProps<T, I>
 > & {
+  baseURL?: string;
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
@@ -258,6 +259,7 @@ export type BasicANFTTradeProps<T, I> = Omit<
   "coinMap"
 > & {
   type?: "NFT";
+  baseURL: string;
   isThumb?: boolean;
   isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;
@@ -290,6 +292,7 @@ export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
 export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;
 export type NFTDepositExtendProps<T, I> = {
   isThumb?: boolean;
+  baseURL?: string;
   isNFTCheckLoading?: boolean;
   handleOnNFTDataChange: (data: T) => void;
   onNFTDepositClick: (data: T) => void;
@@ -349,6 +352,7 @@ export type NFTMetaExtendProps<T, C = FeeInfo> = {
 export type NFTMintViewProps<ME, MI, I, C> = {
   tradeData: MI;
   metaData: ME;
+  baseURL: string;
   disabled?: boolean;
   coinMap?: CoinMap<I, CoinInfo<I>>;
   walletMap?: WalletMap<I, WalletCoin<I>>;
@@ -356,6 +360,7 @@ export type NFTMintViewProps<ME, MI, I, C> = {
 } & NFTMintExtendProps<MI, C>;
 export type NFTMetaViewProps<T, Co, C> = {
   nftMeta: T;
+  baseURL: string;
   collection?: Co | undefined,
   collectionInputProps: CollectionInputProps<Co>
   disabled?: boolean;
@@ -416,6 +421,7 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
 
 export type NFTMintAdvanceExtendProps<T, Co, I, C = FeeInfo> = {
   isThumb?: boolean;
+  baseURL: string;
   collectionInputProps: CollectionInputProps<Co>
   handleOnNFTDataChange: (data: T) => void;
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;

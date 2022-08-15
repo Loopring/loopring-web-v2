@@ -3,9 +3,7 @@ import {
   CoinMap,
   getFormattedHash,
   IBData,
-  IPFS_LOOPRING_SITE,
-  IPFS_HEAD_URL,
-  NFTWholeINFO,
+  NFTWholeINFO, IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import React from "react";
@@ -22,17 +20,18 @@ const BoxInput = styled(Box)`
   }
 ` as typeof Box;
 export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
-  t,
-  tradeData,
-  onChangeEvent,
-  disabled,
-  isBalanceLimit = true,
-  handleError,
-  inputNFTRef,
-  inputNFTProps,
-  inputNFTDefaultProps,
-  ...rest
-}: BasicANFTTradeProps<T, I> & Omit<WithTranslation, "tReady" | "i18n">) => {
+                                                                                 t,
+                                                                                 tradeData,
+                                                                                 onChangeEvent,
+                                                                                 disabled,
+                                                                                 isBalanceLimit = true,
+                                                                                 handleError,
+                                                                                 inputNFTRef,
+                                                                                 baseURL,
+                                                                                 inputNFTProps,
+                                                                                 inputNFTDefaultProps,
+                                                                                 ...rest
+                                                                               }: BasicANFTTradeProps<T, I> & Omit<WithTranslation, "tReady" | "i18n">) => {
   const getDisabled = () => {
     if (disabled || tradeData === undefined) {
       return true;
@@ -108,17 +107,18 @@ export const BasicANFTTrade = <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
 
 export const NFTInput = React.memo(
   <T extends IBData<I> & Partial<NFTWholeINFO>, I>({
-    isThumb,
-    tradeData,
-    t,
-    isBalanceLimit,
-    onCopy,
-    inputNFTDefaultProps,
-    inputNFTRef,
-    type,
-    disabled,
-    ...rest
-  }: BasicANFTTradeProps<T, I> &
+                                                     isThumb,
+                                                     tradeData,
+                                                     t,
+                                                     isBalanceLimit,
+                                                     onCopy,
+                                                     inputNFTDefaultProps,
+                                                     inputNFTRef,
+                                                     type,
+                                                     disabled,
+                                                     baseURL,
+                                                     ...rest
+                                                   }: BasicANFTTradeProps<T, I> &
     Omit<WithTranslation, "tReady" | "i18n"> & {
       onCopy?: (content: string) => Promise<void>;
       type?: "TOKEN" | "NFT";
@@ -167,10 +167,13 @@ export const NFTInput = React.memo(
                     alt={"NFT"}
                     width={"100%"}
                     height={"100%"}
-                    src={tradeData?.image?.replace(
-                      IPFS_HEAD_URL,
-                      IPFS_LOOPRING_SITE
-                    )}
+                    src={
+                      baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
+                      // tradeData?.image?.replace(
+                      //   IPFS_HEAD_URL,
+                      //   IPFS_LOOPRING_SITE
+                      // )
+                    }
                   />
                 </Box>
                 <Box marginLeft={1}>
@@ -223,8 +226,9 @@ export const NFTInput = React.memo(
                   walletMap: {},
                   tradeData,
                   isBalanceLimit,
+                  baseURL,
                   // coinMap,
-                  inputNFTDefaultProps: { label: "" },
+                  inputNFTDefaultProps: {label: ""},
                   // inputButtonDefaultProps,
                   inputNFTRef,
                 }}
@@ -242,9 +246,10 @@ export const NFTInput = React.memo(
                 walletMap: {},
                 tradeData,
                 inputNFTDefaultProps: {
-                  ...{ size: InputSize.small, label: t("labelTokenAmount") },
+                  ...{size: InputSize.small, label: t("labelTokenAmount")},
                   ...inputNFTDefaultProps,
                 },
+                baseURL,
                 isBalanceLimit,
                 inputNFTRef,
               }}

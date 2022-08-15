@@ -10,7 +10,7 @@ import {
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/core";
+import { TOAST_TIME, useSystem } from "@loopring-web/core";
 import { useAccountModalForUI } from "./hook";
 import { Account, AssetsRawDataItem } from "@loopring-web/common-resources";
 import { Box, Modal as MuiModal } from "@mui/material";
@@ -35,9 +35,10 @@ export const ModalAccountInfo = withTranslation("common")(
     etherscanBaseUrl: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
-    const { isMobile } = useSettings();
+    const {isMobile} = useSettings();
+    const {baseURL} = useSystem();
     const {
-      modals: { isShowNFTDetail, isShowAccount },
+      modals: {isShowNFTDetail, isShowAccount},
       setShowNFTDetail,
       setShowDeposit,
       setShowTransfer,
@@ -192,6 +193,7 @@ export const ModalAccountInfo = withTranslation("common")(
               justifyContent={"stretch"}
             >
               <NFTDetail
+                baseURL={baseURL}
                 etherscanBaseUrl={etherscanBaseUrl}
                 popItem={isShowNFTDetail}
                 assetsRawData={assetsRawData}

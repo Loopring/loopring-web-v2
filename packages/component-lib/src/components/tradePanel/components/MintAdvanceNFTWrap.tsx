@@ -7,11 +7,9 @@ import {
 	EmptyValueTag,
 	FeeInfo,
 	Info2Icon,
-	IPFS_LOOPRING_SITE,
-	IPFS_HEAD_URL,
 	LoadingIcon,
 	myLog,
-	TradeNFT, SoursURL, RefreshIcon,
+	TradeNFT, SoursURL, RefreshIcon, IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import {
 	EmptyDefault,
@@ -123,6 +121,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I, Co>,
 		walletMap,
 		tradeData,
 		btnInfo,
+		baseURL,
 		handleOnNFTDataChange,
 		nftMintBtnStatus,
 		isFeeNotEnough,
@@ -255,7 +254,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I, Co>,
 					{method === AdMethod.NoData && <Box width={'100%'} paddingX={isMobile ? 2 : 0}>
             <CollectionInput
 							{...{
-								...collectionInputProps,
+								...collectionInputProps as any,
 								collection: tradeData.collectionMeta as any,
 								onSelected: (item: Co) => {
 									collectionInputProps.onSelected(item)
@@ -448,7 +447,8 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I, Co>,
 								onClick: () => {
 									setActiveStep(MintStep.MINT);
 									setSrc(
-										tradeData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) ?? ''
+										baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}` ?? ''
+										// tradeData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
 									);
 								}
 							})}
@@ -514,7 +514,8 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I, Co>,
 													event.stopPropagation();
 													setError(false);
 													setSrc(
-														tradeData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) ?? ''
+														// tradeData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) ?? ''
+														baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}` ?? ''
 													);
 												}}
 											>
@@ -618,6 +619,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I, Co>,
 								<NFTInput
 									{...({t} as any)}
 									isThumb={false}
+									baseURL={baseURL}
 									isBalanceLimit={true}
 									inputNFTDefaultProps={{
 										subLabel: t("tokenNFTMaxMINT"),

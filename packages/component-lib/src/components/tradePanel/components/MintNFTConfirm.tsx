@@ -7,7 +7,6 @@ import {
   FeeInfo,
   getShortAddr,
   IPFS_LOOPRING_SITE,
-  IPFS_HEAD_URL,
   LinkIcon,
   MetaProperty,
   MintTradeNFT,
@@ -15,7 +14,7 @@ import {
   NFTMETA,
   RefreshIcon,
   RowConfig,
-  SoursURL,
+  SoursURL, IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -59,18 +58,18 @@ export const MintNFTConfirm = <
   I,
   C extends FeeInfo
 >({
-  disabled,
-  tradeData: nftMintData,
-  metaData,
-  btnInfo,
-  nftMintBtnStatus,
-  isFeeNotEnough,
-  handleFeeChange,
-  chargeFeeTokenList,
-  feeInfo,
-  onNFTMintClick,
-  mintService,
-}: NFTMintViewProps<ME, MI, I, C>) => {
+                                  disabled,
+                                  tradeData: nftMintData,
+                                  metaData,
+                                  btnInfo,
+                                  nftMintBtnStatus,
+                                  isFeeNotEnough,
+                                  handleFeeChange,
+                                  chargeFeeTokenList,
+                                  feeInfo, baseURL,
+                                  onNFTMintClick,
+                                  mintService,
+                                }: NFTMintViewProps<ME, MI, I, C>) => {
   const { t, ...rest } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
@@ -80,10 +79,14 @@ export const MintNFTConfirm = <
   }, [disabled, nftMintBtnStatus]);
   const [error, setError] = React.useState(false);
   const [src, setSrc] = React.useState(
-    metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
+    // metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
+    baseURL + `/api/v3/delegator/ipfs?path=${metaData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
   );
   React.useEffect(() => {
-    setSrc(metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE));
+    setSrc(
+      baseURL + `/api/v3/delegator/ipfs?path=${metaData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
+      // metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
+    );
   }, [metaData?.image]);
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
@@ -165,10 +168,11 @@ export const MintNFTConfirm = <
                               event.stopPropagation();
                               setError(false);
                               setSrc(
-                                metaData?.image?.replace(
-                                  IPFS_HEAD_URL,
-                                  IPFS_LOOPRING_SITE
-                                )
+                                // metaData?.image?.replace(
+                                //   IPFS_HEAD_URL,
+                                //   IPFS_LOOPRING_SITE
+                                // )
+                                baseURL + `/api/v3/delegator/ipfs?path=${metaData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
                               );
                             }}
                           >

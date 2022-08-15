@@ -73,9 +73,9 @@ export function useNFTMint<
 }) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
   const history = useHistory();
-  const { tokenMap, totalCoinMap } = useTokenMap();
-  const { exchangeInfo, chainId } = useSystem();
-  const { account } = useAccount();
+  const {tokenMap, totalCoinMap} = useTokenMap();
+  const {exchangeInfo, chainId, baseURL} = useSystem();
+  const {account} = useAccount();
   const { updateNFTMintData } = useModalData();
   const {
     btnStatus,
@@ -417,7 +417,7 @@ export function useNFTMint<
     isFeeNotEnough,
     handleFeeChange,
     feeInfo,
-    // metaData: nftMintValue.nftMETA as Me,
+    baseURL,
     handleMintDataChange,
     onNFTMintClick,
     walletMap: {} as any,

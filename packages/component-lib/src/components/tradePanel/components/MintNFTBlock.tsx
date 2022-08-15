@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {
   CoinInfo,
-  CoinMap, CollectionHttps,
+  CoinMap,
   FeeInfo,
   Info2Icon,
   MintTradeNFT,
@@ -33,6 +33,7 @@ import { NFTInput } from "./BasicANFTTrade";
 import { Properties } from "./tool/Property";
 import { CollectionInput } from './tool';
 import { CollectionMeta } from '@loopring-web/loopring-sdk';
+import { LoopringAPI } from '@loopring-web/core';
 
 const GridStyle = styled(Grid)<GridProps>`
   .coinInput-wrap {
@@ -62,6 +63,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
                                                    nftMetaBtnStatus,
                                                    handleOnMetaChange,
                                                    handleMintDataChange,
+                                                   baseURL,
                                                    collectionInputProps,
                                                    onMetaClick,
                                                  }: NFTMetaBlockProps<T, Co, I, C>) => {
@@ -127,13 +129,13 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <CollectionInput<Co>
+          <CollectionInput
             {...{
-              ...collectionInputProps,
+              ...collectionInputProps as any,
               collection: _collection,
-              onSelected: (item) => {
+              onSelected: (item: Co) => {
                 setCollection(item);
-                handleOnMetaChange({collection_metadata: CollectionHttps + '/' + item.contractAddress} as any);
+                handleOnMetaChange({collection_metadata: LoopringAPI.delegate?.getCollectionDomain() + '/' + item.contractAddress} as any);
                 _handleMintDataChange({tokenAddress: item.contractAddress} as any);
               }
             }}
@@ -206,6 +208,7 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
           <NFTInput
             {...({ t } as any)}
             isThumb={false}
+            baseURL={baseURL}
             isBalanceLimit={true}
             inputNFTDefaultProps={{
               subLabel: t("tokenNFTMaxMINT"),

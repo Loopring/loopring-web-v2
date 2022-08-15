@@ -1,9 +1,8 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Box, Button, Typography } from "@mui/material";
 import {
-  CollectionListProps,
   MintAdvanceNFTWrap,
-  MintNFTConfirm, NFTMintAdvanceViewProps,
+  MintNFTConfirm,
   PanelContent, PopoverPure,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -14,7 +13,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { BackIcon, CollectionMeta, FeeInfo, Info2Icon, TradeNFT } from "@loopring-web/common-resources";
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { mintService, useMyCollection, useNFTMintAdvance } from '@loopring-web/core';
+import { useMyCollection, useNFTMintAdvance, useSystem } from '@loopring-web/core';
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -25,8 +24,9 @@ const StyledPaper = styled(Box)`
 export const MintNFTPanel = <Co extends CollectionMeta>() => {
   const history = useHistory();
   const mintWholeProps = useMintNFTPanel();
-  const {t} = useTranslation(["common"]);
   const collectionListProps = useMyCollection();
+  const {t} = useTranslation(["common"]);
+  const {baseURL} = useSystem();
   const panelList: Pick<PanelContent<"METADATA" | "MINT_CONFIRM">,
     "key" | "element">[] = [
     {
@@ -59,6 +59,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
       element: (
         <MintNFTConfirm
           disabled={false}
+          // baseURL={mintWholeProps.nftMetaProps.baseURL}
           walletMap={{}}
           {...mintWholeProps.nftMintProps}
           metaData={mintWholeProps.nftMintValue.nftMETA}
@@ -135,6 +136,7 @@ export const MintNFTAdvancePanel = <T extends TradeNFT<I, Co>,
     variant: "popover",
     popupId: `popupId-nftMint`,
   });
+
   return <>
     <Box marginBottom={2}>
       <Button

@@ -257,17 +257,21 @@ export const ErrorMap = {
     messageKey: "errorCollectionNotReadable",
     options: {},
   },
-  ERROR_COLLECTION_INFO: {
-    id: "ERROR_COLLECTION_INFO",
-    messageKey: "errorCollectionInfo",
-    options: {},
-  },
-  ERROR_COLLECTION_NO_SUPPORT: {
-    id: "ERROR_COLLECTION_NO_SUPPORT",
-    messageKey: "errorCollectionNoSupport",
-    options: {},
-  }
-
+	ERROR_COLLECTION_INFO: {
+		id: "ERROR_COLLECTION_INFO",
+		messageKey: "errorCollectionInfo",
+		options: {},
+	},
+	ERROR_COLLECTION_NO_SUPPORT: {
+		id: "ERROR_COLLECTION_NO_SUPPORT",
+		messageKey: "errorCollectionNoSupport",
+		options: {},
+	},
+	ERROR_ON_REFRESH: {
+		id: "ERROR_ON_REFRESH",
+		messageKey: "errorOnRefresh",
+		options: {},
+	}
 };
 export enum UIERROR_CODE {
   UNKNOWN = 700001,
@@ -354,16 +358,17 @@ export const SDK_ERROR_MAP_TO_UI = {
   104004: ErrorMap.ERROR_ON_FROM_SUBMIT, //No signature information provided
   104005: ErrorMap.ERROR_ON_FROM_SUBMIT, //Wrong signature information
   104208: ErrorMap.ERROR_UNKNOWN, //Unknown error in Ethereum node
-  104209: ErrorMap.ERROR_UNKNOWN, //Partial batch operation failed
-  105001: ErrorMap.ERROR_ON_GAS, //Failed to get recommended gas
-  107001: ErrorMap.ERROR_WRONG_ACCOUNT, //User ID cannot be empty
-  107002: ErrorMap.ERROR_INVALID_HASH, //Order Hash cannot be empty
-  107003: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order does not exist
-  108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
-  102127: ErrorMap.ERROR_COLLECTION_SAME_NAME,
-  108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
-  114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
-  114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
+	104209: ErrorMap.ERROR_UNKNOWN, //Partial batch operation failed
+	105001: ErrorMap.ERROR_ON_GAS, //Failed to get recommended gas
+	107001: ErrorMap.ERROR_WRONG_ACCOUNT, //User ID cannot be empty
+	107002: ErrorMap.ERROR_INVALID_HASH, //Order Hash cannot be empty
+	107003: ErrorMap.ERROR_ON_FROM_SUBMIT, //Order does not exist
+	108000: ErrorMap.ERROR_NO_MARKET, //Unsupported market
+	102127: ErrorMap.ERROR_COLLECTION_SAME_NAME,
+	108001: ErrorMap.ERROR_ON_FROM_SUBMIT, //Unsupported depth level
+	114001: ErrorMap.ERROR_ON_FEE, //Fee token not support
+	114002: ErrorMap.ERROR_ON_FEE, //Fee amount invalid, need refresh the fee. App need refresh fee less than every 15 mins
+	122001: ErrorMap.ERROR_ON_REFRESH,
 };
 export const TransErrorHelp = ({
   error,

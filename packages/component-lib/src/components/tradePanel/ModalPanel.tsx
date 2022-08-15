@@ -33,6 +33,7 @@ import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { CollectionAdvanceWrap } from './components/CollectionAdvanceWrap';
 import { CollectionMeta } from "@loopring-web/loopring-sdk";
+import { useSystem } from '@loopring-web/core';
 
 const BoxStyle = styled(Box)<{ _height?: number | string; _width?: number | string } & BoxProps>`
   display: flex;
@@ -158,8 +159,8 @@ export const ModalPanel = <T extends IBData<I>,
   account: Account;
   setExportAccountToastOpen: any;
 }) => {
-  const { isMobile } = useSettings();
-  // const { t } = useTranslation();
+  const {isMobile} = useSettings();
+  const {baseURL} = useSystem();
   const {
     modals,
     // setShowAmm,
@@ -250,6 +251,7 @@ export const ModalPanel = <T extends IBData<I>,
               _height: isMobile ? "auto" : 540,
               isThumb: false,
               type: "NFT",
+              baseURL,
               assetsData,
             }}
             onBack={() => {
@@ -277,6 +279,7 @@ export const ModalPanel = <T extends IBData<I>,
               isThumb: false,
               ...nftWithdrawProps,
               type: "NFT",
+              baseURL,
               assetsData,
             }}
             onBack={() => {

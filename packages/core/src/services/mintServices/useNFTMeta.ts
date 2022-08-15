@@ -16,7 +16,7 @@ import {
 	NFT_MINT_VALUE,
 	useModalData,
 	MintCommands,
-	mintService,
+	mintService, LoopringAPI, useSystem,
 } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ipfsService, useIPFS } from "../ipfs";
@@ -39,6 +39,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>(
 	const [ipfsMediaSources, setIpfsMediaSources] =
 		React.useState<IpfsFile | undefined>(undefined);
 	const [userAgree, setUserAgree] = React.useState(false);
+	const {baseURL} = useSystem();
 
 	const handleOnMetaChange = React.useCallback(
 		(_newnftMeta: Partial<T> & { collection?: CollectionMeta }) => {
@@ -71,7 +72,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>(
 						break;
 					case "collection":
 						buildMint.tokenAddress = _newnftMeta.collection?.contractAddress;
-						buildNFTMeta.collection_metadata = sdk.CollectionHttps + '/' + _newnftMeta.collection?.contractAddress;// _newnftMeta?.collection_metadata.c;
+						buildNFTMeta.collection_metadata = LoopringAPI.delegate?.getCollectionDomain() + '/' + _newnftMeta.collection?.contractAddress;// _newnftMeta?.collection_metadata.c;
 						break;
 					case "properties":
 						buildNFTMeta.properties = _newnftMeta.properties;
@@ -294,6 +295,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>(
 	const nftMetaProps: Omit<NFTMetaProps<T, Co>, 'collectionInputProps'> = {
 		handleOnMetaChange,
 		isFeeNotEnough,
+		baseURL,
 		handleFeeChange,
 		userAgree,
 		handleUserAgree,

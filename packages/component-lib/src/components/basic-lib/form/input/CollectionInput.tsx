@@ -6,7 +6,6 @@ import {
 	getShortAddr,
 	Info2Icon,
 	NFTLimit,
-	CollectionHttps,
 	CollectionMeta
 } from '@loopring-web/common-resources';
 import {
@@ -20,7 +19,7 @@ import {
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { TOAST_TIME } from '@loopring-web/core';
+import { LoopringAPI, TOAST_TIME } from '@loopring-web/core';
 
 const SizeCss = {
 	small: `
@@ -64,7 +63,7 @@ export const makeMeta = ({collection}: { collection: CollectionMeta }) => {
 		"description": "`${NFT_DESCRIPTION}`",
 		"image": "ipfs://`${CID}`",
 		"animation_url": "ipfs://`${CID}`",
-		"collection_metadata": `${CollectionHttps}/${collection.contractAddress}`,   //TODO: makesure from backend
+		"collection_metadata": `${LoopringAPI.delegate?.getCollectionDomain()}/${collection.contractAddress}`,   //TODO: makesure from backend
 		"royalty_percentage": "`[0..10] (int 0-10)`",
 		"attributes": [
 			{

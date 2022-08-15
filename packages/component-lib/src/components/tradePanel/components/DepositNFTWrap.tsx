@@ -1,11 +1,10 @@
 import {
-	CloseIcon,
-	TradeNFT,
-	LoadingIcon,
-	IPFS_HEAD_URL,
-	myLog,
-	SoursURL,
-	IPFS_LOOPRING_SITE,
+  CloseIcon,
+  TradeNFT,
+  LoadingIcon,
+  myLog,
+  SoursURL,
+  IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";
@@ -52,14 +51,15 @@ const NFT_TYPE: TGItemData[] = [
 ];
 
 export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
-	                                                              disabled,
-	                                                              walletMap,
-	                                                              tradeData,
-	                                                              btnInfo,
-	                                                              handleOnNFTDataChange,
-	                                                              nftDepositBtnStatus,
-	                                                              isNFTCheckLoading,
-	                                                              onNFTDepositClick,
+                                                                disabled,
+                                                                walletMap,
+                                                                tradeData,
+                                                                btnInfo,
+                                                                baseURL,
+                                                                handleOnNFTDataChange,
+                                                                nftDepositBtnStatus,
+                                                                isNFTCheckLoading,
+                                                                onNFTDepositClick,
                                                               }: // wait = globalSetup.wait,
 	                                                              NFTDepositViewProps<T, I>) => {
   const { t } = useTranslation(["common"]);
@@ -142,10 +142,13 @@ export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
                   <img
                     alt={"NFT"}
                     width={"100%"}
-                    src={tradeData?.image?.replace(
-	                    IPFS_HEAD_URL,
-	                    IPFS_LOOPRING_SITE
-                    )}
+                    src={
+                      baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
+                      //   tradeData?.image?.replace(
+                      //   IPFS_HEAD_URL,
+                      //   IPFS_LOOPRING_SITE
+                      // )
+                    }
                   />
                 </Box>
               ) : isNFTCheckLoading ? (
@@ -353,6 +356,7 @@ export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
                               tradeData.balance !== undefined
                             )
                           }
+                          baseURL={baseURL}
                           type={"NFT"}
                           inputNFTRef={inputBtnRef}
                           onChangeEvent={(_index, data) =>

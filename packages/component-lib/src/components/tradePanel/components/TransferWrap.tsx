@@ -58,18 +58,19 @@ export const TransferWrap = <
   transferBtnStatus,
   addressDefault,
   handleOnAddressChange,
-  sureItsLayer2,
-  wait = globalSetup.wait,
-  assetsData = [],
-  realAddr,
-  isLoopringAddress,
-  addrStatus,
-  handleConfirm,
-  handleOnMemoChange,
-  isAddressCheckLoading,
-  isSameAddress,
-  ...rest
-}: TransferViewProps<T, I, C> &
+	                              sureItsLayer2,
+	                              wait = globalSetup.wait,
+	                              assetsData = [],
+	                              realAddr,
+	                              isLoopringAddress,
+	                              addrStatus,
+	                              handleConfirm,
+	                              handleOnMemoChange,
+	                              isAddressCheckLoading,
+	                              isSameAddress,
+	                              baseURL,
+	                              ...rest
+                              }: TransferViewProps<T, I, C> &
   WithTranslation & {
     assetsData: any[];
     handleConfirm: (index: number) => void;
@@ -178,17 +179,18 @@ export const TransferWrap = <
         {type === "NFT" ? (
           <NFTInput
             {...{
-              ...rest,
-              isThumb,
-              type,
-              onCopy,
-              t,
-              disabled,
-              walletMap,
-              tradeData,
-              coinMap,
-              inputNFTDefaultProps: { label: "" },
-              inputNFTRef: inputBtnRef,
+	            ...rest,
+	            isThumb,
+	            type,
+	            onCopy,
+	            t,
+	            baseURL: baseURL ?? '',
+	            disabled,
+	            walletMap,
+	            tradeData,
+	            coinMap,
+	            inputNFTDefaultProps: {label: ""},
+	            inputNFTRef: inputBtnRef,
             }}
           />
         ) : (

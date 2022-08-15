@@ -43,7 +43,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
 } => {
   const {tokenMap, totalCoinMap} = useTokenMap();
   const {account} = useAccount();
-  const {exchangeInfo, chainId, gasPrice} = useSystem();
+  const {exchangeInfo, chainId, gasPrice, baseURL} = useSystem();
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const {nftDepositValue, updateNFTDepositData, resetNFTDepositData} =
     useModalData();
@@ -413,6 +413,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
     tradeData: nftDepositValue as T,
     nftDepositBtnStatus: btnStatus,
     isNFTCheckLoading,
+    baseURL,
     btnInfo,
   };
 

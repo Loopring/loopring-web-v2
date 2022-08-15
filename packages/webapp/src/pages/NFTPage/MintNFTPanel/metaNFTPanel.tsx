@@ -27,7 +27,7 @@ import {
 	NFTMETA,
 	TransErrorHelp,
 } from "@loopring-web/common-resources";
-import { NFT_MINT_VALUE } from "@loopring-web/core";
+import { NFT_MINT_VALUE, useSystem } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 const MaxSize = 10000000;
@@ -58,6 +58,7 @@ export const MetaNFTPanel = <Me extends NFTMETA,
 		ipfsMediaSources: IpfsFile | undefined;
 	}) => {
 	const {t} = useTranslation("common");
+	const {baseURL} = useSystem();
 	const [dropdownErrorStatus, setDropdownErrorStatus] =
 		React.useState<"up" | "down">("down");
 
@@ -119,10 +120,9 @@ export const MetaNFTPanel = <Me extends NFTMETA,
 				<Grid item xs={12} md={7} flex={1} display={"flex"}>
 					<MintNFTBlock
 						{...nftMetaProps}
+						baseURL={baseURL}
 						handleMintDataChange={nftMintProps.handleMintDataChange}
-						// collectionInputProps={nftMetaProps.collectionInputProps as CollectionInputProps<Co>}
-						// handleOnMetaChange={nftMetaProps.handleOnMetaChange}
-						// onMetaClick={nftMetaProps.onMetaClick}
+
 						nftMeta={nftMintValue.nftMETA as Me}
 						mintData={nftMintValue.mintData as Mi}
 						feeInfo={nftMintProps.feeInfo}

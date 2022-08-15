@@ -9,7 +9,7 @@ import {
   PlayIcon,
   RefreshIcon,
   SoursURL,
-  VideoIcon,
+  VideoIcon, IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
@@ -24,6 +24,7 @@ import {
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
+import { LoopringAPI, useSystem } from '@loopring-web/core';
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -56,28 +57,32 @@ export const NFTMedia = React.memo(
       const vidRef = React.useRef<HTMLVideoElement>(null);
       const aidRef = React.useRef<HTMLAudioElement>(null);
       const theme = useTheme();
+      const {baseURL} = useSystem();
+
       const {
         modals: {
-          isShowNFTDetail: { isShow },
+          isShowNFTDetail: {isShow},
         },
       } = useOpenModals();
-      const { t } = useTranslation();
+      const {t} = useTranslation();
       const [play, setPlay] = React.useState(false);
       const [previewSrc, setPreviewSrc] = React.useState(
         (isOrigin
-          ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
-          : item?.metadata?.imageSize[NFT_IMAGE_SIZES.small]) ??
-        item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
+          ? item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ]
+          : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.small ]) ??
+        baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`
+        // item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
       );
       const {hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError} =
         useImage(previewSrc ?? "");
       const fullSrc =
         (isOrigin
-          ? item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
+          ? baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`
+          // item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
           : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ]) ??
-        item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE);
+        baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`;
+      // item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE);
       const {hasLoaded: fullSrcHasLoaded} = useImage(fullSrc ?? "");
-      // if()
       // myLog("item.__mediaType__", item.__mediaType__, item.animationUrl);
       const typeSvg = React.useMemo(() => {
         myLog("item.__mediaType__", item.__mediaType__);
@@ -111,10 +116,13 @@ export const NFTMedia = React.memo(
                     zIndex={100}
                   >
                     <audio
-                      src={item.animationUrl?.replace(
-                        IPFS_HEAD_URL,
-                        IPFS_LOOPRING_SITE
-                      )}
+                      src={
+                        baseURL + `/api/v3/delegator/ipfs?path=${item?.animationUrl?.replace(IPFS_HEAD_URL_REG, '')}`
+                        // item.animationUrl?.replace(
+                        //   IPFS_HEAD_URL,
+                        //   IPFS_LOOPRING_SITE
+                        // )
+                      }
                       ref={aidRef}
                       controls
                       loop
@@ -227,12 +235,14 @@ export const NFTMedia = React.memo(
                   onClick={async (event) => {
                     event.stopPropagation();
                     setPreviewSrc(
-                      item?.metadata?.imageSize["160-160"] ??
-                        item?.image?.replace(
-                          IPFS_HEAD_URL,
-                          IPFS_LOOPRING_SITE
-                        ) ??
-                        ""
+                      item?.metadata?.imageSize[ "160-160" ] ??
+                      baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`
+                      // item?.image?.replace(
+                      //   IPFS_HEAD_URL,
+                      //   IPFS_LOOPRING_SITE
+                      // )
+                      ??
+                      ""
                     );
                   }}
                 >
@@ -262,16 +272,19 @@ export const NFTMedia = React.memo(
                       >
                         <video
                           ref={vidRef}
-                          src={item.animationUrl?.replace(
-                            IPFS_HEAD_URL,
-                            IPFS_LOOPRING_SITE
-                          )}
+                          src={
+                            baseURL + `/api/v3/delegator/ipfs?path=${item?.animationUrl?.replace(IPFS_HEAD_URL_REG, '')}`
+                            // item.animationUrl?.replace(
+                            //   IPFS_HEAD_URL,
+                            //   IPFS_LOOPRING_SITE
+                            // )
+                          }
                           autoPlay
                           muted
                           controls
                           loop
                           controlsList="nodownload"
-                          style={{ width: "100%" }}
+                          style={{width: "100%"}}
                         />
                       </Box>
                     ) : !!fullSrc && fullSrcHasLoaded ? (

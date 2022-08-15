@@ -6,7 +6,7 @@ import {
   Media,
   myLog,
   NFTWholeINFO,
-  SagaStatus,
+  SagaStatus, IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import React, { useState } from "react";
 import { LoopringAPI, store } from "@loopring-web/core";
@@ -39,8 +39,8 @@ export const useMyNFT = () => {
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
-  const { setShowNFTDetail } = useOpenModals();
-  const { etherscanBaseUrl } = useSystem();
+  const {setShowNFTDetail} = useOpenModals();
+  const {etherscanBaseUrl, baseURL} = useSystem();
   const [page, setPage] = useState(1);
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
@@ -169,7 +169,9 @@ export const useMyNFT = () => {
       tokenInfo?.animationUrl !== ""
     ) {
       const req = await fetch(
-        tokenInfo.animationUrl.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE),
+        baseURL + `/api/v3/delegator/ipfs?path=${tokenInfo?.animationUrl?.replace(IPFS_HEAD_URL_REG, '')}`,
+
+        // tokenInfo.animationUrl.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE),
         {
           method: "HEAD",
         }

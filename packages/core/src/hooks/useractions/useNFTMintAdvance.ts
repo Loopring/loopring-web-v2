@@ -54,21 +54,8 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
   const [isNotAvailableCID, setIsNotAvailableCID] = React.useState<undefined | { reason: string }>(undefined);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const {setShowAccount, setShowNFTMintAdvance} = useOpenModals();
-  // const [tokenAddress, setTokenAddress] =
-  //   React.useState<string | undefined>(() => {
-  //     return undefined;
-  //     // if (account.accAddress && LoopringAPI.nftAPI) {
-  //     //   return (
-  //     //     LoopringAPI.nftAPI?.computeNFTAddress({
-  //     //       nftOwner: account.accAddress,
-  //     //       nftFactory: sdk.NFTFactory[chainId],
-  //     //       nftBaseUri: "",
-  //     //     }).tokenAddress || undefined
-  //     //   );
-  //     // } else {
-  //     //   return undefined;
-  //     // }
-  //   });
+  const {baseURL} = useSystem();
+
   React.useEffect(() => {
     // const account = store.getState().account;
     if (
@@ -652,6 +639,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
         handleOnNFTDataChange({collectionMeta: item} as unknown as T);
       }
     },
+    baseURL,
     handleOnNFTDataChange,
     onNFTMintClick: onNFTMintAdvanceClick,
     walletMap: {} as any,

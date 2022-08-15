@@ -378,5 +378,3 @@ export enum CreateCollectionStep {
   // AdvancePanel,
   // CommonPanel,
 }
-
-export const CollectionHttps = "https://nftCollection.loopring.io/"; //sdk.CollectionHttps

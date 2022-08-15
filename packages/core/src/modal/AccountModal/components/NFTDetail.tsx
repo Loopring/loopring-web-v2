@@ -5,10 +5,8 @@ import {
   EmptyValueTag,
   Explorer,
   getShortAddr,
-  IPFS_LOOPRING_SITE,
-  IPFS_HEAD_URL,
   LinkIcon,
-  NFTWholeINFO,
+  NFTWholeINFO, IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -33,16 +31,16 @@ const BoxNFT = styled(Box)`
   }
 ` as typeof Box;
 
-const BoxStyle = styled(Box)<
-  { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
->`
+const BoxStyle = styled(Box)<{ isMobile: boolean, baseURL: string } & BoxProps & Partial<NFTWholeINFO>>`
   &.nft-detail {
     margin-top: -26px;
+
     .detail-info {
       max-height: 520px;
       overflow-y: scroll;
       scrollbar-width: none; /* Firefox */
       -ms-overflow-style: none; /* Internet Explorer 10+ */
+
       &::-webkit-scrollbar {
         /* WebKit */
         width: 0;
@@ -67,17 +65,17 @@ const BoxStyle = styled(Box)<
         width: 320px;
       }
     }
+
     .MuiToolbar-root {
       .back-btn {
-        margin-left: ${({ theme }) => -4 * theme.unit}px;
+        margin-left: ${({theme}) => -4 * theme.unit}px;
       }
     }
   }
+
   &.nft-detail {
-    ${({ isMobile, image }) => `
-     ${
-       isMobile &&
-       `
+    ${({isMobile, image, baseURL}) => `
+      ${isMobile && `
        .detail-info{
           max-height:  initial;
         }
@@ -96,9 +94,13 @@ const BoxStyle = styled(Box)<
          position:absolute;
          filter: blur(3px);
          background:url(${
-         image ? image.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) : ""
-         }) no-repeat 50% 10px;
-          background-size: contain;
+      image ?
+        baseURL + `/api/v3/delegator/ipfs?path=${image?.replace(IPFS_HEAD_URL_REG, '')}`
+        // image.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) 
+        : ""
+    });
+         no-repeat 50% 10px;
+         background-size: contain;
          opacity: 0.08;
          content:'';
          height: 100vh;
@@ -114,22 +116,22 @@ const BoxStyle = styled(Box)<
         }
        } 
        
-     `
-     }
-  `}
+     `}
+    `}
   }
 ` as (
-  props: { isMobile: boolean } & BoxProps & Partial<NFTWholeINFO>
+  props: { isMobile: boolean, baseURL: string } & BoxProps & Partial<NFTWholeINFO>
 ) => JSX.Element;
 
 export const NFTDetail = withTranslation("common")(
   ({
-    popItem,
-    etherscanBaseUrl,
-    t,
-  }: {
+     popItem,
+     etherscanBaseUrl, baseURL,
+     t,
+   }: {
     popItem: Partial<NFTWholeINFO>;
     etherscanBaseUrl: string;
+    baseURL: string;
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
     const { isMobile } = useSettings();
@@ -536,6 +538,7 @@ export const NFTDetail = withTranslation("common")(
           </BoxNFT>
         )}
         <BoxStyle
+          baseURL={baseURL}
           isMobile={isMobile}
           image={popItem.image}
           marginLeft={2}
