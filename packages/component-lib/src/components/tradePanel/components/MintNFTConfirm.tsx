@@ -14,7 +14,7 @@ import {
   NFTMETA,
   RefreshIcon,
   RowConfig,
-  SoursURL, IPFS_HEAD_URL_REG,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -29,6 +29,7 @@ import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
+import { getIPFSString } from '@loopring-web/core';
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -52,7 +53,6 @@ const TableStyle = styled(Table)`
 ` as typeof Table;
 
 export const MintNFTConfirm = <
-  // T extends NFT_MINT_VALUE<I>,
   ME extends Partial<NFTMETA>,
   MI extends Partial<MintTradeNFT<any>>,
   I,
@@ -78,15 +78,9 @@ export const MintNFTConfirm = <
     return disabled || nftMintBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMintBtnStatus]);
   const [error, setError] = React.useState(false);
-  const [src, setSrc] = React.useState(
-    // metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
-    baseURL + `/api/v3/delegator/ipfs?path=${metaData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
-  );
+  const [src, setSrc] = React.useState(getIPFSString(metaData?.image, baseURL));
   React.useEffect(() => {
-    setSrc(
-      baseURL + `/api/v3/delegator/ipfs?path=${metaData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
-      // metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
-    );
+    setSrc(getIPFSString(metaData?.image, baseURL));
   }, [metaData?.image]);
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
@@ -167,13 +161,7 @@ export const MintNFTConfirm = <
                             onClick={async (event) => {
                               event.stopPropagation();
                               setError(false);
-                              setSrc(
-                                // metaData?.image?.replace(
-                                //   IPFS_HEAD_URL,
-                                //   IPFS_LOOPRING_SITE
-                                // )
-                                baseURL + `/api/v3/delegator/ipfs?path=${metaData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
-                              );
+                              setSrc(getIPFSString(metaData?.image, baseURL));
                             }}
                           >
                             <RefreshIcon style={{ height: 36, width: 36 }} />

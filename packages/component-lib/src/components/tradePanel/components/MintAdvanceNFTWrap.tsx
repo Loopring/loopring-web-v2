@@ -9,7 +9,7 @@ import {
 	Info2Icon,
 	LoadingIcon,
 	myLog,
-	TradeNFT, SoursURL, RefreshIcon, IPFS_HEAD_URL_REG,
+	TradeNFT, SoursURL, RefreshIcon,
 } from "@loopring-web/common-resources";
 import {
 	EmptyDefault,
@@ -31,6 +31,7 @@ import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
 import { CollectionInput } from './tool';
+import { getIPFSString } from '@loopring-web/core';
 
 export enum AdMethod {
 	HasData = "HasData",
@@ -446,10 +447,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I, Co>,
 								},
 								onClick: () => {
 									setActiveStep(MintStep.MINT);
-									setSrc(
-										baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}` ?? ''
-										// tradeData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
-									);
+									setSrc(getIPFSString(tradeData?.image, baseURL));
 								}
 							})}
 						</Box>
@@ -513,10 +511,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I, Co>,
 												onClick={async (event) => {
 													event.stopPropagation();
 													setError(false);
-													setSrc(
-														// tradeData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) ?? ''
-														baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}` ?? ''
-													);
+													setSrc(getIPFSString(tradeData?.image, baseURL));
 												}}
 											>
 												<RefreshIcon style={{height: 36, width: 36}}/>

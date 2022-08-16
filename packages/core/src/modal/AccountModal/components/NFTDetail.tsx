@@ -6,7 +6,7 @@ import {
   Explorer,
   getShortAddr,
   LinkIcon,
-  NFTWholeINFO, IPFS_HEAD_URL_REG,
+  NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -23,6 +23,7 @@ import { useAccount } from "../../../stores";
 import React from "react";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
 import { useTheme } from "@emotion/react";
+import { getIPFSString } from '../../../utils';
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -93,12 +94,7 @@ const BoxStyle = styled(Box)<{ isMobile: boolean, baseURL: string } & BoxProps &
          z-index:1;
          position:absolute;
          filter: blur(3px);
-         background:url(${
-      image ?
-        baseURL + `/api/v3/delegator/ipfs?path=${image?.replace(IPFS_HEAD_URL_REG, '')}`
-        // image.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE) 
-        : ""
-    });
+         background:url(${getIPFSString(image, baseURL)});
          no-repeat 50% 10px;
          background-size: contain;
          opacity: 0.08;

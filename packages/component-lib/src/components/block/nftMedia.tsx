@@ -1,15 +1,13 @@
 import {
   AudioIcon,
   hexToRGB,
-  IPFS_LOOPRING_SITE,
-  IPFS_HEAD_URL,
   Media,
   myLog,
   NFTWholeINFO,
   PlayIcon,
   RefreshIcon,
   SoursURL,
-  VideoIcon, IPFS_HEAD_URL_REG,
+  VideoIcon,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
@@ -24,7 +22,7 @@ import {
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
-import { LoopringAPI, useSystem } from '@loopring-web/core';
+import { getIPFSString, useSystem } from '@loopring-web/core';
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -70,20 +68,17 @@ export const NFTMedia = React.memo(
         (isOrigin
           ? item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ]
           : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.small ]) ??
-        baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`
+        getIPFSString(item?.image, baseURL)
+        // item?.image?.startsWith(IPFS_HEAD_URL) ?
+        // baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`: item?.image
         // item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
       );
       const {hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError} =
         useImage(previewSrc ?? "");
       const fullSrc =
-        (isOrigin
-          ? baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`
-          // item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
-          : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ]) ??
-        baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`;
-      // item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE);
+        (isOrigin ? getIPFSString(item?.image, baseURL)
+          : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ] ?? getIPFSString(item?.image, baseURL));
       const {hasLoaded: fullSrcHasLoaded} = useImage(fullSrc ?? "");
-      // myLog("item.__mediaType__", item.__mediaType__, item.animationUrl);
       const typeSvg = React.useMemo(() => {
         myLog("item.__mediaType__", item.__mediaType__);
         switch (item.__mediaType__) {
@@ -117,11 +112,7 @@ export const NFTMedia = React.memo(
                   >
                     <audio
                       src={
-                        baseURL + `/api/v3/delegator/ipfs?path=${item?.animationUrl?.replace(IPFS_HEAD_URL_REG, '')}`
-                        // item.animationUrl?.replace(
-                        //   IPFS_HEAD_URL,
-                        //   IPFS_LOOPRING_SITE
-                        // )
+                        getIPFSString(item?.animationUrl, baseURL)
                       }
                       ref={aidRef}
                       controls
@@ -236,13 +227,7 @@ export const NFTMedia = React.memo(
                     event.stopPropagation();
                     setPreviewSrc(
                       item?.metadata?.imageSize[ "160-160" ] ??
-                      baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`
-                      // item?.image?.replace(
-                      //   IPFS_HEAD_URL,
-                      //   IPFS_LOOPRING_SITE
-                      // )
-                      ??
-                      ""
+                      getIPFSString(item?.image, baseURL)
                     );
                   }}
                 >
@@ -272,13 +257,7 @@ export const NFTMedia = React.memo(
                       >
                         <video
                           ref={vidRef}
-                          src={
-                            baseURL + `/api/v3/delegator/ipfs?path=${item?.animationUrl?.replace(IPFS_HEAD_URL_REG, '')}`
-                            // item.animationUrl?.replace(
-                            //   IPFS_HEAD_URL,
-                            //   IPFS_LOOPRING_SITE
-                            // )
-                          }
+                          src={getIPFSString(item?.animationUrl, baseURL)}
                           autoPlay
                           muted
                           controls

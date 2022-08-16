@@ -9,7 +9,7 @@ import {
   SagaStatus, IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import React, { useState } from "react";
-import { LoopringAPI, store } from "@loopring-web/core";
+import { getIPFSString, LoopringAPI, store } from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "@loopring-web/core";
 import {
@@ -169,9 +169,7 @@ export const useMyNFT = () => {
       tokenInfo?.animationUrl !== ""
     ) {
       const req = await fetch(
-        baseURL + `/api/v3/delegator/ipfs?path=${tokenInfo?.animationUrl?.replace(IPFS_HEAD_URL_REG, '')}`,
-
-        // tokenInfo.animationUrl.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE),
+        getIPFSString(tokenInfo?.animationUrl, baseURL),
         {
           method: "HEAD",
         }

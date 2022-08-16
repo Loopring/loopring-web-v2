@@ -4,7 +4,6 @@ import {
   LoadingIcon,
   myLog,
   SoursURL,
-  IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import { useTranslation } from "react-i18next";
@@ -23,6 +22,7 @@ import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { NFTType } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
+import { getIPFSString } from '@loopring-web/core';
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
     .input-wrap {
@@ -55,7 +55,7 @@ export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
                                                                 walletMap,
                                                                 tradeData,
                                                                 btnInfo,
-                                                                baseURL,
+                                                                baseURL = `https://${process.env.REACT_APP_API_URL}`,
                                                                 handleOnNFTDataChange,
                                                                 nftDepositBtnStatus,
                                                                 isNFTCheckLoading,
@@ -142,13 +142,7 @@ export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
                   <img
                     alt={"NFT"}
                     width={"100%"}
-                    src={
-                      baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
-                      //   tradeData?.image?.replace(
-                      //   IPFS_HEAD_URL,
-                      //   IPFS_LOOPRING_SITE
-                      // )
-                    }
+                    src={getIPFSString(tradeData?.image, baseURL)}
                   />
                 </Box>
               ) : isNFTCheckLoading ? (

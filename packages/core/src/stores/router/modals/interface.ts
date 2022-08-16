@@ -1,11 +1,12 @@
 import * as sdk from "@loopring-web/loopring-sdk";
-import { CollectionMeta, NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
+import { NFTTokenInfo, UserNFTBalanceInfo } from "@loopring-web/loopring-sdk";
 import {
-  FeeInfo,
-  MintTradeNFT,
-  NFTMETA,
-  NFTWholeINFO,
-  TradeNFT,
+	CollectionMeta,
+	FeeInfo,
+	MintTradeNFT,
+	NFTMETA,
+	NFTWholeINFO,
+	TradeNFT,
 } from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
 

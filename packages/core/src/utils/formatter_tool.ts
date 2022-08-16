@@ -2,7 +2,7 @@ import { store } from "../index";
 
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
-  getValuePrecisionThousand,
+  getValuePrecisionThousand, IPFS_HEAD_URL, IPFS_HEAD_URL_REG, myLog,
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { volumeToCountAsBigNumber } from "../hooks/help";
@@ -177,3 +177,19 @@ export function isPosIntNum(val: any) {
   var regPos = /^\d+$/;
   return regPos.test(val);
 }
+
+
+export const getIPFSString = (url: string | undefined, baseURL: string) => {
+  if (url === undefined) {
+    return ""
+  } else if (url.startsWith('http')) {
+    return url
+  } else if (url.startsWith(IPFS_HEAD_URL)) {
+
+    const _url = url.replace(IPFS_HEAD_URL_REG, '');
+    myLog(_url, url);
+    return baseURL + '/api/v3/delegator/ipfs' + `?path=` + _url
+  } else {
+    return baseURL;
+  }
+};

@@ -3,7 +3,7 @@ import {
   CoinMap,
   getFormattedHash,
   IBData,
-  NFTWholeINFO, IPFS_HEAD_URL_REG,
+  NFTWholeINFO,
 } from "@loopring-web/common-resources";
 import { WithTranslation } from "react-i18next";
 import React from "react";
@@ -12,6 +12,7 @@ import { InputCoin, InputSize } from "../../basic-lib";
 import { Box, Link, Typography } from "@mui/material";
 import * as sdk from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
+import { getIPFSString } from '@loopring-web/core';
 
 const BoxInput = styled(Box)`
   & .main-label {
@@ -167,13 +168,7 @@ export const NFTInput = React.memo(
                     alt={"NFT"}
                     width={"100%"}
                     height={"100%"}
-                    src={
-                      baseURL + `/api/v3/delegator/ipfs?path=${tradeData?.image?.replace(IPFS_HEAD_URL_REG, '')}`
-                      // tradeData?.image?.replace(
-                      //   IPFS_HEAD_URL,
-                      //   IPFS_LOOPRING_SITE
-                      // )
-                    }
+                    src={getIPFSString(tradeData?.image, baseURL)}
                   />
                 </Box>
                 <Box marginLeft={1}>
