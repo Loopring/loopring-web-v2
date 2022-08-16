@@ -21,14 +21,13 @@ The applications provided by Loopring are decentralized wallets and non-custodia
 
 - (c) Device information: We will collect the relevant information of your device using our services, including device
   ID, version information of the mobile device operating system, mobile device platform type (iOS or Android), phone
-  language, channel information (e.g., GooglePlay, Apple App Store), IP address in order to provide statistical analysis
-  services, and calibrate the accuracy of report data through geographic location to provide basic anti-fraud function.
+  language, channel information (e.g., GooglePlay, Xiaomi App Store, Baidu App Store, Apple App Store); our product
+  integrator Umeng + SDK needs to collect your device Mac address, unique device identification code (IMEI/android
+  ID/IDFA/OPENUDID/GUID, SIM card IMSI information) in order to provide statistical analysis services, and calibrate the
+  accuracy of report data through geographic location to provide basic anti-fraud function.
 
 - (d) KYC (Know Your Customer) information: Loopring may provide some centralized services in the future. At that time,
-  your identity, address and other information will be collected. Also loopring integrates services from 3rd party
-  vendors (e.g., Ramp, BanXa) for fiat on-ramp and off-ramp solution, which will redirect user to 3rd party website. And
-  user will need to fill in the KYC information in those web sites to receive services. This information is only used
-  for compliance purposes.
+  your identity, address and other information will be collected. This information is only used for compliance purposes.
 
 2.2. Loopring uses a second layer account based on the Ethereum blockchain.  When you use the Loopring account, the wallet address, ENS name, and all first-level transaction records related to the address (ENS name) (including but not limited to transfer, transaction, deposit, and withdrawal, etc.) will be stored on the Ethereum blockchain. You and we have no control over the disclosure, modification and deletion of your transaction records on the Ethereum blockchain.
 
