@@ -22,8 +22,8 @@ export type WithdrawType =
   | sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL;
 
 export type WithdrawTypes = {
-  [ sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ]: "Fast";
-  [ sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL ]: "Standard";
+  [sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL]: "Fast";
+  [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard";
 };
 
 export type PriceTagType = "$" | "￥";

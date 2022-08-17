@@ -11,7 +11,8 @@ import {
   DEAULT_NFTID_STRING,
   ErrorMap,
   ErrorType,
-  globalSetup, IPFS_LOOPRING_SITE,
+  globalSetup,
+  IPFS_LOOPRING_SITE,
   myLog,
   TradeNFT,
   UIERROR_CODE,
@@ -42,14 +43,14 @@ import { useOnChainInfo } from "../../stores/localStore/onchainHashInfo";
 export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
   nftDepositProps: NFTDepositProps<T, I>;
 } => {
-  const {tokenMap, totalCoinMap} = useTokenMap();
-  const {account} = useAccount();
-  const {exchangeInfo, chainId, gasPrice, baseURL} = useSystem();
+  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { account } = useAccount();
+  const { exchangeInfo, chainId, gasPrice, baseURL } = useSystem();
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
-  const {nftDepositValue, updateNFTDepositData, resetNFTDepositData} =
+  const { nftDepositValue, updateNFTDepositData, resetNFTDepositData } =
     useModalData();
-  const {walletLayer1} = useWalletLayer1();
-  const {updateDepositHash} = useOnChainInfo();
+  const { walletLayer1 } = useWalletLayer1();
+  const { updateDepositHash } = useOnChainInfo();
   const {
     btnStatus,
     btnInfo,
@@ -115,13 +116,16 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             web3,
             tokenAddress: data.tokenAddress,
           }),
-          LoopringAPI.nftAPI.getContractNFTMeta({
-            _id: data.nftId,
-            nftId: data.nftId,
-            nftType: data.nftType as unknown as sdk.NFTType,
-            web3,
-            tokenAddress: data.tokenAddress,
-          }, IPFS_LOOPRING_SITE as any),
+          LoopringAPI.nftAPI.getContractNFTMeta(
+            {
+              _id: data.nftId,
+              nftId: data.nftId,
+              nftType: data.nftType as unknown as sdk.NFTType,
+              web3,
+              tokenAddress: data.tokenAddress,
+            },
+            IPFS_LOOPRING_SITE as any
+          ),
           LoopringAPI.nftAPI.isApprovedForAll({
             web3,
             from: account.accAddress,
@@ -174,7 +178,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
         try {
           if (data.nftIdView === "") {
             _nftId = "";
-            shouldUpdate.balance = '';
+            shouldUpdate.balance = "";
             shouldUpdate.tradeValue = undefined;
           } else {
             _nftId = web3.utils
@@ -186,7 +190,6 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
             );
             _nftId = prev + _nftId.toString();
           }
-
         } catch (error: any) {
           const errorView: ErrorType = ErrorMap.NTF_ID_ENCODE_ERROR;
           updateBtnStatus({ errorView, ...(error as any) });

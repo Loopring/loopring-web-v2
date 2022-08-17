@@ -244,7 +244,9 @@ export type DefaultProps<T, I> = {
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
-export type BasicACoinTradeViewProps<T, I> = Required<DefaultWithMethodProps<T, I>> & {
+export type BasicACoinTradeViewProps<T, I> = Required<
+  DefaultWithMethodProps<T, I>
+> & {
   baseURL?: string;
   getIPFSString?: (url: string | undefined, basicUrl: string) => string;
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;

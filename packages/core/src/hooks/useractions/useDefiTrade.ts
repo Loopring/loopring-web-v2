@@ -286,20 +286,20 @@ export const useDefiTrade = <
           label: "labelEnterAmount",
         };
       } else if (
-	      sdk
-		      .toBig(tradeDefi?.sellVol)
-		      .minus(tradeDefi?.miniSellVol ?? 0)
-		      .lt(0)
+        sdk
+          .toBig(tradeDefi?.sellVol)
+          .minus(tradeDefi?.miniSellVol ?? 0)
+          .lt(0)
       ) {
-	      return {
-		      tradeBtnStatus: TradeBtnStatus.DISABLED,
-		      label: `labelDefiMin| ${getValuePrecisionThousand(
-			      sdk
-				      .toBig(tradeDefi?.miniSellVol ?? 0)
-				      .div("1e" + tokenMap[ coinSellSymbol ]?.decimals),
-			      tokenMap[ coinSellSymbol ].precision,
-			      tokenMap[ coinSellSymbol ].precision,
-			      tokenMap[ coinSellSymbol ].precision,
+        return {
+          tradeBtnStatus: TradeBtnStatus.DISABLED,
+          label: `labelDefiMin| ${getValuePrecisionThousand(
+            sdk
+              .toBig(tradeDefi?.miniSellVol ?? 0)
+              .div("1e" + tokenMap[coinSellSymbol]?.decimals),
+            tokenMap[coinSellSymbol].precision,
+            tokenMap[coinSellSymbol].precision,
+            tokenMap[coinSellSymbol].precision,
             false,
             { floor: false, isAbbreviate: true }
           )} ${coinSellSymbol}`,
@@ -630,9 +630,9 @@ export const useDefiTrade = <
       }
     } catch (reason) {
       setToastOpen({
-	      open: true,
-	      type: "error",
-	      content: t("labelInvestFailed"), //+ ` error: ${(reason as any)?.message}`,
+        open: true,
+        type: "error",
+        content: t("labelInvestFailed"), //+ ` error: ${(reason as any)?.message}`,
       });
     } finally {
       setConfirmShowLimitBalance(false);

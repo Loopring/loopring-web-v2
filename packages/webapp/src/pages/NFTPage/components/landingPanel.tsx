@@ -339,17 +339,17 @@ export const CreateUrlPanel = ({
 };
 
 export const MintLandingPage = () => {
-	// const history = useHistory();
-	// const {t} = useTranslation(["common"]);
-	// const {isMobile} = useSettings();
-	return (
-		<Box
-			flex={1}
-			display={"flex"}
-			justifyContent={"stretch"}
-			flexDirection={"column"}
-		>
-			<MintLandingPanel/>
-		</Box>
-	);
+  // const history = useHistory();
+  // const {t} = useTranslation(["common"]);
+  // const {isMobile} = useSettings();
+  return (
+    <Box
+      flex={1}
+      display={"flex"}
+      justifyContent={"stretch"}
+      flexDirection={"column"}
+    >
+      <MintLandingPanel />
+    </Box>
+  );
 };

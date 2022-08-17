@@ -404,4 +404,4 @@ NFTDepositViewProps<T, I>) => {
       </GridStyle>
     </Box>
   );
-};;
+};
