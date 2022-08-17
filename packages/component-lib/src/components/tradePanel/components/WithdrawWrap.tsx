@@ -79,22 +79,22 @@ export const WithdrawWrap = <
   withdrawBtnStatus,
   handleFeeChange,
   handleWithdrawTypeChange,
-                                handleOnAddressChange,
-                                isAddressCheckLoading,
-                                isCFAddress,
-                                isContractAddress,
-                                addrStatus,
-                                disableWithdrawList = [],
-                                wait = globalSetup.wait,
-                                assetsData = [],
-                                realAddr,
-                                isThumb,
-                                baseURL,
-                                isToMyself = false,
-                                sureIsAllowAddress,
-                                handleSureIsAllowAddress,
-                                ...rest
-                              }: WithdrawViewProps<T, I, C> &
+  handleOnAddressChange,
+  isAddressCheckLoading,
+  isCFAddress,
+  isContractAddress,
+  addrStatus,
+  disableWithdrawList = [],
+  wait = globalSetup.wait,
+  assetsData = [],
+  realAddr,
+  isThumb,
+  baseURL,
+  isToMyself = false,
+  sureIsAllowAddress,
+  handleSureIsAllowAddress,
+  ...rest
+}: WithdrawViewProps<T, I, C> &
   WithTranslation & {
     assetsData: AssetsRawDataItem[];
     handleConfirm: (index: number) => void;
@@ -222,12 +222,13 @@ export const WithdrawWrap = <
               type,
               onCopy,
               t,
-              baseURL: baseURL ?? '',
+              baseURL: baseURL ?? "",
+              getIPFSString: rest.getIPFSString ?? (() => "" as any),
               disabled,
               walletMap,
               tradeData,
               coinMap,
-              inputNFTDefaultProps: {label: ""},
+              inputNFTDefaultProps: { label: "" },
               inputNFTRef: inputBtnRef,
             }}
           />

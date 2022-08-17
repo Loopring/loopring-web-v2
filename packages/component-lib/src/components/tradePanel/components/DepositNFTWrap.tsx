@@ -22,7 +22,7 @@ import { NFTDepositViewProps } from "./Interface";
 import { NFTInput } from "./BasicANFTTrade";
 import { NFTType } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
-import { getIPFSString } from '@loopring-web/core';
+
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
     .input-wrap {
@@ -31,6 +31,7 @@ const GridStyle = styled(Grid)`
       border: 1px solid var(--color-border);
     }
   }
+
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
   }
@@ -51,17 +52,18 @@ const NFT_TYPE: TGItemData[] = [
 ];
 
 export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
-                                                                disabled,
-                                                                walletMap,
-                                                                tradeData,
-                                                                btnInfo,
-                                                                baseURL = `https://${process.env.REACT_APP_API_URL}`,
-                                                                handleOnNFTDataChange,
-                                                                nftDepositBtnStatus,
-                                                                isNFTCheckLoading,
-                                                                onNFTDepositClick,
-                                                              }: // wait = globalSetup.wait,
-	                                                              NFTDepositViewProps<T, I>) => {
+  disabled,
+  walletMap,
+  tradeData,
+  getIPFSString,
+  btnInfo,
+  baseURL = `https://${process.env.REACT_APP_API_URL}`,
+  handleOnNFTDataChange,
+  nftDepositBtnStatus,
+  isNFTCheckLoading,
+  onNFTDepositClick,
+}: // wait = globalSetup.wait,
+NFTDepositViewProps<T, I>) => {
   const { t } = useTranslation(["common"]);
 
   const inputBtnRef = React.useRef();
@@ -402,4 +404,4 @@ export const DepositNFTWrap = <T extends TradeNFT<I, any>, I>({
       </GridStyle>
     </Box>
   );
-};
+};;

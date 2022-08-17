@@ -1,4 +1,10 @@
-import { Account, FloatTag, NFT_TYPE_STRING, TradeStatus, TradeTypes } from "../constant";
+import {
+  Account,
+  FloatTag,
+  NFT_TYPE_STRING,
+  TradeStatus,
+  TradeTypes,
+} from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import { ForexMap } from "@loopring-web/common-resources";
@@ -168,21 +174,21 @@ export type AmmDetail<T> = AmmDetailBase<T> & {
 };
 
 export type AmmCardProps<T> = AmmDetail<T> & {
-	activity: AmmActivity<T>;
-	tradeFloat: TradeFloat;
-	handleClick: () => void;
-	account: Account;
-	forexMap: ForexMap<sdk.Currency>;
-	popoverIdx: number;
-	precisionA?: number;
-	precisionB?: number;
-	coinAPriceDollar: number;
-	coinBPriceDollar: number;
-	ammRewardRecordList: {
-		amount: string;
-		time: number;
-	}[];
-	getLiquidityMining: (market: string, size?: number) => Promise<void>;
+  activity: AmmActivity<T>;
+  tradeFloat: TradeFloat;
+  handleClick: () => void;
+  account: Account;
+  forexMap: ForexMap<sdk.Currency>;
+  popoverIdx: number;
+  precisionA?: number;
+  precisionB?: number;
+  coinAPriceDollar: number;
+  coinBPriceDollar: number;
+  ammRewardRecordList: {
+    amount: string;
+    time: number;
+  }[];
+  getLiquidityMining: (market: string, size?: number) => Promise<void>;
   getMiningLinkList: (market: string) => { [key: string]: string };
   setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>;
   setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>;
@@ -289,7 +295,6 @@ export enum EXPLORE_TYPE {
   NFTTRANSFER = "nftTransfer",
 }
 
-
 /**
  * CollectionMeta
  * @property name string useToCreate Collection
@@ -309,17 +314,27 @@ export enum EXPLORE_TYPE {
 export type CollectionMeta = sdk.CollectionMeta & { nftType?: NFT_TYPE_STRING };
 
 export enum CollectionMetaKey {
-  name = 'name',
-  tileUri = 'tileUri',
-  owner = 'owner',
-  nftFactory = 'nftFactory',
-  baseUri = 'baseUri',
-  collectionTitle = 'collectionTitle',
-  description = 'description',
-  avatar = 'avatar',
-  banner = 'banner',
-  thumbnail = 'thumbnail',
-  cid = 'cid',
+  name = "name",
+  tileUri = "tileUri",
+  owner = "owner",
+  nftFactory = "nftFactory",
+  baseUri = "baseUri",
+  collectionTitle = "collectionTitle",
+  description = "description",
+  avatar = "avatar",
+  banner = "banner",
+  thumbnail = "thumbnail",
+  cid = "cid",
 }
 
+export type MakeMeta<Co = CollectionMeta> = (props: {
+  collection: Co;
+  domain: string;
+}) => {
+  metaDemo: any;
+};
 
+export type GET_IPFS_STRING = (
+  url: string | undefined,
+  basicURl: string
+) => string;

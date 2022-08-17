@@ -6,7 +6,8 @@ import {
   Media,
   myLog,
   NFTWholeINFO,
-  SagaStatus, IPFS_HEAD_URL_REG,
+  SagaStatus,
+  IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import React, { useState } from "react";
 import { getIPFSString, LoopringAPI, store } from "@loopring-web/core";
@@ -39,8 +40,8 @@ export const useMyNFT = () => {
   const { updateNFTTransferData, updateNFTWithdrawData, updateNFTDeployData } =
     useModalData();
 
-  const {setShowNFTDetail} = useOpenModals();
-  const {etherscanBaseUrl, baseURL} = useSystem();
+  const { setShowNFTDetail } = useOpenModals();
+  const { etherscanBaseUrl, baseURL } = useSystem();
   const [page, setPage] = useState(1);
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
@@ -168,12 +169,9 @@ export const useMyNFT = () => {
       tokenInfo.animationUrl &&
       tokenInfo?.animationUrl !== ""
     ) {
-      const req = await fetch(
-        getIPFSString(tokenInfo?.animationUrl, baseURL),
-        {
-          method: "HEAD",
-        }
-      );
+      const req = await fetch(getIPFSString(tokenInfo?.animationUrl, baseURL), {
+        method: "HEAD",
+      });
       // myLog("animationUrl", "content-type", req.headers.get("content-type"));
 
       if (/audio/gi.test(req?.headers?.get("content-type") ?? "")) {
@@ -279,7 +277,7 @@ export const useMyNFT = () => {
     onPageChange(1);
   }, []);
   React.useEffect(() => {
-    updateWalletLayer2NFT({page});
+    updateWalletLayer2NFT({ page });
   }, [page, updateWalletLayer2NFT]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET && page_reudex === page) {

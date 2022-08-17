@@ -3,7 +3,6 @@ import {
   hexToRGB,
   Media,
   myLog,
-  NFTWholeINFO,
   PlayIcon,
   RefreshIcon,
   SoursURL,
@@ -16,13 +15,13 @@ import {
   cssBackground,
   EmptyDefault,
   NftImage,
+  NFTMedaProps,
   useImage,
   useOpenModals,
 } from "../../index";
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
-import { getIPFSString, useSystem } from '@loopring-web/core';
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -34,6 +33,7 @@ const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
 const PlayIconStyle = styled(PlayIcon)`
   color: ${({ theme }) => hexToRGB(theme.colorBase.box, ".8")};
 `;
+
 export const NFTMedia = React.memo(
   React.forwardRef(
     (
@@ -43,42 +43,38 @@ export const NFTMedia = React.memo(
         onNFTError,
         index,
         isOrigin = false,
-      }: {
-        item: Partial<NFTWholeINFO>;
-        index?: number;
-        onNFTError: (popItem: Partial<NFTWholeINFO>, index?: number) => void;
-        isOrigin?: boolean;
-        shouldPlay?: boolean;
-      },
+        getIPFSString,
+        baseURL,
+      }: NFTMedaProps,
       ref: React.ForwardedRef<any>
     ) => {
       const vidRef = React.useRef<HTMLVideoElement>(null);
       const aidRef = React.useRef<HTMLAudioElement>(null);
       const theme = useTheme();
-      const {baseURL} = useSystem();
 
       const {
         modals: {
-          isShowNFTDetail: {isShow},
+          isShowNFTDetail: { isShow },
         },
       } = useOpenModals();
-      const {t} = useTranslation();
+      const { t } = useTranslation();
       const [play, setPlay] = React.useState(false);
       const [previewSrc, setPreviewSrc] = React.useState(
         (isOrigin
-          ? item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ]
-          : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.small ]) ??
-        getIPFSString(item?.image, baseURL)
+          ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
+          : item?.metadata?.imageSize[NFT_IMAGE_SIZES.small]) ??
+          getIPFSString(item?.image, baseURL)
         // item?.image?.startsWith(IPFS_HEAD_URL) ?
         // baseURL + `/api/v3/delegator/ipfs?path=${item?.image?.replace(IPFS_HEAD_URL_REG, '')}`: item?.image
         // item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
       );
-      const {hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError} =
+      const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
         useImage(previewSrc ?? "");
-      const fullSrc =
-        (isOrigin ? getIPFSString(item?.image, baseURL)
-          : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ] ?? getIPFSString(item?.image, baseURL));
-      const {hasLoaded: fullSrcHasLoaded} = useImage(fullSrc ?? "");
+      const fullSrc = isOrigin
+        ? getIPFSString(item?.image, baseURL)
+        : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original] ??
+          getIPFSString(item?.image, baseURL);
+      const { hasLoaded: fullSrcHasLoaded } = useImage(fullSrc ?? "");
       const typeSvg = React.useMemo(() => {
         myLog("item.__mediaType__", item.__mediaType__);
         switch (item.__mediaType__) {
@@ -87,8 +83,8 @@ export const NFTMedia = React.memo(
               <>
                 <Box
                   position={"absolute"}
-                  left={theme.unit}
-                  top={theme.unit}
+                  right={theme.unit}
+                  bottom={theme.unit}
                   borderRadius={"50%"}
                   sx={{ background: "var(--color-box)" }}
                   padding={3 / 2}
@@ -111,9 +107,7 @@ export const NFTMedia = React.memo(
                     zIndex={100}
                   >
                     <audio
-                      src={
-                        getIPFSString(item?.animationUrl, baseURL)
-                      }
+                      src={getIPFSString(item?.animationUrl, baseURL)}
                       ref={aidRef}
                       controls
                       loop
@@ -129,8 +123,8 @@ export const NFTMedia = React.memo(
               <>
                 <Box
                   position={"absolute"}
-                  left={theme.unit}
-                  top={theme.unit}
+                  right={theme.unit}
+                  bottom={theme.unit}
                   borderRadius={"50%"}
                   sx={{ background: "var(--color-box)" }}
                   padding={3 / 2}
@@ -226,8 +220,8 @@ export const NFTMedia = React.memo(
                   onClick={async (event) => {
                     event.stopPropagation();
                     setPreviewSrc(
-                      item?.metadata?.imageSize[ "160-160" ] ??
-                      getIPFSString(item?.image, baseURL)
+                      item?.metadata?.imageSize["160-160"] ??
+                        getIPFSString(item?.image, baseURL)
                     );
                   }}
                 >
@@ -263,7 +257,7 @@ export const NFTMedia = React.memo(
                           controls
                           loop
                           controlsList="nodownload"
-                          style={{width: "100%"}}
+                          style={{ width: "100%" }}
                         />
                       </Box>
                     ) : !!fullSrc && fullSrcHasLoaded ? (

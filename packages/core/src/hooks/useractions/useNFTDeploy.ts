@@ -8,7 +8,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useSystem,
   isAccActivated,
   checkErrorInfo,
@@ -28,6 +27,7 @@ import {
   myLog,
   TradeNFT,
   UIERROR_CODE,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 
@@ -40,17 +40,20 @@ import * as sdk from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
-export function useNFTDeploy<T extends TradeNFT<I, any> & { broker: string }, I>() {
-  const {btnStatus, enableBtn, disableBtn} = useBtnStatus();
-  const {tokenMap} = useTokenMap();
-  const {account} = useAccount();
-  const {exchangeInfo, chainId} = useSystem();
-  const {nftDeployValue, updateNFTDeployData, resetNFTDeployData} =
+export function useNFTDeploy<
+  T extends TradeNFT<I, any> & { broker: string },
+  I
+>() {
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+  const { tokenMap } = useTokenMap();
+  const { account } = useAccount();
+  const { exchangeInfo, chainId } = useSystem();
+  const { nftDeployValue, updateNFTDeployData, resetNFTDeployData } =
     useModalData();
-  const {page, updateWalletLayer2NFT} = useWalletLayer2NFT();
-  const {setShowAccount, setShowNFTDetail, setShowNFTDeploy} =
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const { setShowAccount, setShowNFTDetail, setShowNFTDeploy } =
     useOpenModals();
-  const {setOneItem} = useLayer1Store();
+  const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
   const {
     chargeFeeTokenList,

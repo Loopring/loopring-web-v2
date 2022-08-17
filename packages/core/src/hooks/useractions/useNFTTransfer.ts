@@ -23,6 +23,7 @@ import {
   UIERROR_CODE,
   AddressError,
   WALLET_TYPE,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 import {
@@ -33,7 +34,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   checkErrorInfo,
@@ -44,6 +44,7 @@ import {
   useWalletLayer2Socket,
   walletLayer2Service,
   useSystem,
+  getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
@@ -54,13 +55,13 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     setShowNFTTransfer,
     setShowNFTDetail,
     modals: {
-      isShowNFTTransfer: {isShow, info},
+      isShowNFTTransfer: { isShow, info },
     },
   } = useOpenModals();
 
   const { tokenMap, totalCoinMap } = useTokenMap();
   const { account, status: accountStatus } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
+  const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const { nftTransferValue, updateNFTTransferData, resetNFTTransferData } =
     useModalData();
@@ -76,8 +77,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: ({fee}) => {
-      const {nftTransferValue} = store.getState()._router_modalData;
+    updateData: ({ fee }) => {
+      const { nftTransferValue } = store.getState()._router_modalData;
       updateNFTTransferData({
         ...nftTransferValue,
         balance: sdk
@@ -529,6 +530,8 @@ export const useNFTTransfer = <R extends TradeNFT<T, any>, T>() => {
     isFeeNotEnough,
     handlePanelEvent,
     isLoopringAddress,
+    baseURL,
+    getIPFSString,
     isSameAddress,
     isAddressCheckLoading,
   };

@@ -31,9 +31,8 @@ import styled from "@emotion/styled";
 import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
 import { Properties } from "./tool/Property";
-import { CollectionInput } from './tool';
-import { CollectionMeta } from '@loopring-web/loopring-sdk';
-import { LoopringAPI } from '@loopring-web/core';
+import { CollectionInput } from "./tool";
+import { CollectionMeta } from "@loopring-web/loopring-sdk";
 
 const GridStyle = styled(Grid)<GridProps>`
   .coinInput-wrap {
@@ -41,7 +40,7 @@ const GridStyle = styled(Grid)<GridProps>`
   }
 
   .MuiInputLabel-root {
-    font-size: ${({theme}) => theme.fontDefault.body2};
+    font-size: ${({ theme }) => theme.fontDefault.body2};
   }
 
   .main-label,
@@ -51,26 +50,30 @@ const GridStyle = styled(Grid)<GridProps>`
   }
 ` as (props: GridProps) => JSX.Element;
 
-export const MintNFTBlock = <T extends Partial<NFTMETA>,
+export const MintNFTBlock = <
+  T extends Partial<NFTMETA>,
   Co extends CollectionMeta,
   I extends Partial<MintTradeNFT<any>>,
-  C extends FeeInfo>({
-                                                   disabled,
-                                                   nftMeta,
-                                                   mintData,
-                                                   btnInfo,
-                                                   collection,
-                                                   nftMetaBtnStatus,
-                                                   handleOnMetaChange,
-                                                   handleMintDataChange,
-                                                   baseURL,
-                                                   collectionInputProps,
-                                                   onMetaClick,
-                                                 }: NFTMetaBlockProps<T, Co, I, C>) => {
-  const {t} = useTranslation(["common"]);
-  const {isMobile} = useSettings();
+  C extends FeeInfo
+>({
+  disabled,
+  nftMeta,
+  mintData,
+  btnInfo,
+  collection,
+  nftMetaBtnStatus,
+  handleOnMetaChange,
+  handleMintDataChange,
+  baseURL,
+  domain,
+  collectionInputProps,
+  onMetaClick,
+}: NFTMetaBlockProps<T, Co, I, C>) => {
+  const { t } = useTranslation(["common"]);
+  const { isMobile } = useSettings();
   const inputBtnRef = React.useRef();
-  const [_collection, setCollection] = React.useState<Co | undefined>(collection);
+  const [_collection, setCollection] =
+    React.useState<Co | undefined>(collection);
   const getDisabled = React.useMemo(() => {
     return disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMetaBtnStatus]);
@@ -102,7 +105,6 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
           <TextField
             value={nftMeta.name}
             fullWidth
-
             inputProps={{ maxLength: 32 }}
             label={
               <Typography
@@ -124,22 +126,27 @@ export const MintNFTBlock = <T extends Partial<NFTMETA>,
             }
             type={"text"}
             onChange={(event) =>
-              handleOnMetaChange({name: event.target.value} as Partial<T>)
+              handleOnMetaChange({ name: event.target.value } as Partial<T>)
             }
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <CollectionInput
             {...{
-              ...collectionInputProps as any,
+              ...(collectionInputProps as any),
               collection: _collection,
               onSelected: (item: Co) => {
                 setCollection(item);
-                handleOnMetaChange({collection_metadata: LoopringAPI.delegate?.getCollectionDomain() + '/' + item.contractAddress} as any);
-                _handleMintDataChange({tokenAddress: item.contractAddress} as any);
-              }
+                handleOnMetaChange({
+                  collection_metadata: domain + "/" + item.contractAddress,
+                } as any);
+                _handleMintDataChange({
+                  tokenAddress: item.contractAddress,
+                } as any);
+              },
             }}
-            fullWidth={true}/>
+            fullWidth={true}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <InputCoin

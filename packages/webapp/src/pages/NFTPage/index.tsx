@@ -2,45 +2,49 @@ import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
 import { Toast, useSettings } from "@loopring-web/component-lib";
-import { subMenuNFT } from "@loopring-web/common-resources";
+import { subMenuNFT, TOAST_TIME } from "@loopring-web/common-resources";
 import React from "react";
-import { TOAST_TIME, useMyCollection, useNFTMintAdvance, ViewAccountTemplate } from "@loopring-web/core";
+import {
+  useMyCollection,
+  useNFTMintAdvance,
+  ViewAccountTemplate,
+} from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
 import { mintService } from "@loopring-web/core";
 import { NFTCollectPanel } from "./CollectionPanel";
-import { CreateCollectionPanel } from './CreateCollectionPanel';
-import { MintLandingPage } from './components/landingPanel';
-import { useTranslation } from 'react-i18next';
+import { CreateCollectionPanel } from "./CreateCollectionPanel";
+import { MintLandingPage } from "./components/landingPanel";
+import { useTranslation } from "react-i18next";
 
 export const subMenu = subMenuNFT;
 
 export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
-  const {t} = useTranslation(["common"]);
+  const { t } = useTranslation(["common"]);
   const selected = match?.params.item ?? "assetsNFT";
 
   const routerNFT = React.useMemo(() => {
     switch (selected) {
       case "transactionNFT":
-        return <MyNFTHistory/>;
+        return <MyNFTHistory />;
       case "mintNFTLanding":
-        return <MintLandingPage/>;
+        return <MintLandingPage />;
       case "mintNFT":
-        return <MintNFTPanel/>;
+        return <MintNFTPanel />;
       case "mintAdvanceNFT":
-        return <MintNFTAdvancePanel/>;
+        return <MintNFTAdvancePanel />;
       case "depositNFT":
-        return <DepositNFTPanel/>;
+        return <DepositNFTPanel />;
       case "myCollection":
-        return <NFTCollectPanel/>;
+        return <NFTCollectPanel />;
       case "addCollection":
-        return <CreateCollectionPanel/>;
+        return <CreateCollectionPanel />;
       case "assetsNFT":
       default:
-        return <MyNFTPanel/>;
+        return <MyNFTPanel />;
     }
   }, [selected]);
 
@@ -64,9 +68,10 @@ export const NFTPage = () => {
     [routerNFT]
   );
 
-  return <>
-    <ViewAccountTemplate activeViewTemplate={activeViewTemplate}/>
-
-  </>;
+  return (
+    <>
+      <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />
+    </>
+  );
 };
 // {!!isMobile && <TitleNFTMobile />}

@@ -5,12 +5,12 @@ import { Button, TradeNFTTable, TsNFTTable } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistoryNFT } from "./hookHistory";
 import { useAccount, useTokenMap } from "@loopring-web/core";
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import { BackIcon } from '@loopring-web/common-resources';
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { BackIcon } from "@loopring-web/common-resources";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 `;
 
 enum TabIndex {
@@ -18,23 +18,18 @@ enum TabIndex {
   trades = "trades",
 }
 export const MyNFTHistory = () => {
-  const {t} = useTranslation("common");
+  const { t } = useTranslation("common");
   const match: any = useRouteMatch("/NFT/transactionNFT/:tab");
-  const {search} = useLocation();
+  const { search } = useLocation();
 
   const [currentTab, setCurrentTab] = React.useState(() => {
     return match?.params.tab ?? TabIndex.transactions;
   });
-  const {idIndex, tokenMap} = useTokenMap();
+  const { idIndex, tokenMap } = useTokenMap();
+  const { nftHistory, container, getTxnList, getTradeList, nftTrades } =
+    useHistoryNFT();
   const {
-    nftHistory,
-    container,
-    getTxnList,
-    getTradeList,
-    nftTrades,
-  } = useHistoryNFT();
-  const {
-    account: {accountId, accAddress},
+    account: { accountId, accAddress },
   } = useAccount();
   const history = useHistory();
   const handleTabChange = React.useCallback(
@@ -65,10 +60,10 @@ export const MyNFTHistory = () => {
     >
       <Box marginBottom={2}>
         <Button
-          startIcon={<BackIcon fontSize={"small"}/>}
+          startIcon={<BackIcon fontSize={"small"} />}
           variant={"text"}
           size={"medium"}
-          sx={{color: "var(--color-text-secondary)"}}
+          sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
           onClick={history.goBack}
         >
@@ -77,7 +72,10 @@ export const MyNFTHistory = () => {
       </Box>
       <StyledPaper
         className={"MuiPaper-elevation2"}
-        flex={1} display={"flex"} flexDirection={"column"}>
+        flex={1}
+        display={"flex"}
+        flexDirection={"column"}
+      >
         <Box marginTop={2} marginLeft={2}>
           <Tabs
             value={currentTab}
@@ -104,11 +102,14 @@ export const MyNFTHistory = () => {
                 accAddress,
                 accountId,
               }}
-            />) : currentTab === TabIndex.trades ? (
-            <TradeNFTTable
-              {...{...nftTrades, getTradeList, idIndex, tokenMap}}
             />
-          ) : <></>}
+          ) : currentTab === TabIndex.trades ? (
+            <TradeNFTTable
+              {...{ ...nftTrades, getTradeList, idIndex, tokenMap }}
+            />
+          ) : (
+            <></>
+          )}
         </Box>
       </StyledPaper>
     </Box>

@@ -6,4 +6,9 @@ export * from "./Default";
 export * from "./InputCoin";
 export * from "./InputSearch";
 export * from "./InputCode";
-export { TextareaAutosizeStyled, InputSearchWrapperStyled, RadioGroupStyle } from "./style";
+export * from "./CollectionInput";
+export {
+  TextareaAutosizeStyled,
+  InputSearchWrapperStyled,
+  RadioGroupStyle,
+} from "./style";

@@ -12,36 +12,40 @@ import {
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
+import { confirmation, useDefiMap } from "@loopring-web/core";
 import { LoadingBlock } from "../../LoadingPage";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { BackIcon, MarketType } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  MarketType,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
   position: relative;
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 
   .loading-block {
     background: initial;
   }
 
   .hasLinerBg {
-    ${({theme}) => boxLiner({theme})}
+    ${({ theme }) => boxLiner({ theme })}
   }
 
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid;
 
 export const DeFiPanel: any = withTranslation("common")(
-  <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({
-                                                                             t,
-                                                                             setConfirmDefiInvest,
-                                                                           }: WithTranslation & {
+  <R extends { [key: string]: any }, I extends { [key: string]: any }>({
+    t,
+    setConfirmDefiInvest,
+  }: WithTranslation & {
     setConfirmDefiInvest: (state: any) => void;
   }) => {
-    const {marketArray} = useDefiMap();
+    const { marketArray } = useDefiMap();
     const {
-      confirmation: {confirmedDefiInvest},
+      confirmation: { confirmedDefiInvest },
     } = confirmation.useConfirmation();
     setConfirmDefiInvest(!confirmedDefiInvest);
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
@@ -69,17 +73,17 @@ export const DeFiPanel: any = withTranslation("common")(
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
     });
-    const {isMobile} = useSettings();
-    const styles = isMobile ? {flex: 1} : {width: "var(--swap-box-width)"};
+    const { isMobile } = useSettings();
+    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 
     return (
-      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+      <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
         <Box marginBottom={2}>
           <Button
-            startIcon={<BackIcon fontSize={"small"}/>}
+            startIcon={<BackIcon fontSize={"small"} />}
             variant={"text"}
             size={"medium"}
-            sx={{color: "var(--color-text-secondary)"}}
+            sx={{ color: "var(--color-text-secondary)" }}
             color={"inherit"}
             onClick={history.goBack}
           >
@@ -109,7 +113,7 @@ export const DeFiPanel: any = withTranslation("common")(
               />
             </Box>
           ) : (
-            <LoadingBlock/>
+            <LoadingBlock />
           )}
           <Toast
             alertText={toastOpen?.content ?? ""}
@@ -119,7 +123,10 @@ export const DeFiPanel: any = withTranslation("common")(
             onClose={closeToast}
           />
 
-          <ConfirmInvestDefiServiceUpdate open={serverUpdate} handleClose={() => setServerUpdate(false)}/>
+          <ConfirmInvestDefiServiceUpdate
+            open={serverUpdate}
+            handleClose={() => setServerUpdate(false)}
+          />
           <ConfirmDefiNOBalance
             isJoin={isJoin}
             handleClose={(_e) => {
@@ -130,7 +137,8 @@ export const DeFiPanel: any = withTranslation("common")(
             }}
             open={confirmShowNoBalance}
           />
-        </StyleWrapper></Box>
+        </StyleWrapper>
+      </Box>
     );
   }
 );

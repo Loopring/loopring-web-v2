@@ -30,6 +30,7 @@ import {
   LoopringAPI,
   store,
   useBtnStatus,
+  getIPFSString,
 } from "../../index";
 
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -407,6 +408,7 @@ export const useNFTDeposit = <T extends TradeNFT<I, any>, I>(): {
 
   const nftDepositProps: NFTDepositProps<T, I> = {
     handleOnNFTDataChange,
+    getIPFSString,
     onNFTDepositClick,
     walletMap: walletLayer1 as WalletMap<any>,
     coinMap: totalCoinMap as CoinMap<any>,

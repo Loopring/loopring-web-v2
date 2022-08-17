@@ -1,6 +1,10 @@
 import React from "react";
 
-import { AccountStep, NFTMintAdvanceProps, useOpenModals, } from "@loopring-web/component-lib";
+import {
+  AccountStep,
+  NFTMintAdvanceProps,
+  useOpenModals,
+} from "@loopring-web/component-lib";
 import {
   AccountStatus,
   CollectionMeta,
@@ -11,34 +15,52 @@ import {
   Explorer,
   IPFS_LOOPRING_SITE,
   MINT_LIMIT,
-  myLog, NFT_TYPE_STRING,
+  myLog,
+  NFT_TYPE_STRING,
   SagaStatus,
   TOAST_TIME,
   TradeNFT,
-  UIERROR_CODE
+  UIERROR_CODE,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
-import { ConnectProvidersSignMap, connectProvides, } from "@loopring-web/web3-provider";
-import { useAccount, useModalData, useSystem, useTokenMap, useWalletLayer2NFT, } from "../../stores";
+import {
+  ConnectProvidersSignMap,
+  connectProvides,
+} from "@loopring-web/web3-provider";
+import {
+  useAccount,
+  useModalData,
+  useSystem,
+  useTokenMap,
+  useWalletLayer2NFT,
+} from "../../stores";
 import { useBtnStatus, useMyCollection } from "../common";
 import { LoopringAPI } from "../../api_wrapper";
 import { checkErrorInfo } from "./utils";
 import { isAccActivated } from "./checkAccStatus";
-import { useChargeFees, useWalletLayer2Socket, walletLayer2Service, } from "../../services";
+import {
+  useChargeFees,
+  useWalletLayer2Socket,
+  walletLayer2Service,
+} from "../../services";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useTranslation } from "react-i18next";
-import { getTimestampDaysLater } from "../../utils";
+import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
 
 const CID = require("cids");
 
-export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends CollectionMeta, I>() => {
-  const {tokenMap, totalCoinMap} = useTokenMap();
-  const {account, status: accountStatus} = useAccount();
-  const {exchangeInfo, chainId} = useSystem();
+export const useNFTMintAdvance = <
+  T extends TradeNFT<I, Co>,
+  Co extends CollectionMeta,
+  I
+>() => {
+  const { tokenMap, totalCoinMap } = useTokenMap();
+  const { account, status: accountStatus } = useAccount();
+  const { exchangeInfo, chainId } = useSystem();
   const collectionListProps = useMyCollection<Co>();
-  const {nftMintAdvanceValue, updateNFTMintAdvanceData} = useModalData();
+  const { nftMintAdvanceValue, updateNFTMintAdvanceData } = useModalData();
   const {
     btnStatus,
     btnInfo,
@@ -47,14 +69,15 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
     setLabelAndParams,
     resetBtnInfo,
   } = useBtnStatus();
-  const {t} = useTranslation("common");
+  const { t } = useTranslation("common");
   // const [lastRequest, setLastRequest] = React.useState<any>({});
-  const {checkHWAddr, updateHW} = useWalletInfo();
-  const {page, updateWalletLayer2NFT} = useWalletLayer2NFT();
-  const [isNotAvailableCID, setIsNotAvailableCID] = React.useState<undefined | { reason: string }>(undefined);
+  const { checkHWAddr, updateHW } = useWalletInfo();
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
+  const [isNotAvailableCID, setIsNotAvailableCID] =
+    React.useState<undefined | { reason: string }>(undefined);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
-  const {setShowAccount, setShowNFTMintAdvance} = useOpenModals();
-  const {baseURL} = useSystem();
+  const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
+  const { baseURL } = useSystem();
 
   React.useEffect(() => {
     // const account = store.getState().account;
@@ -86,7 +109,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
   } = useChargeFees({
     tokenAddress: nftMintAdvanceValue?.collectionMeta?.contractAddress, //tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
-    updateData: ({fee}) => {
+    updateData: ({ fee }) => {
       updateNFTMintAdvanceData({
         ...nftMintAdvanceValue,
         fee,
@@ -94,10 +117,10 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
     },
   });
   const checkAvailable = ({
-                            nftMintAdvanceValue,
-                            isFeeNotEnough,
-                            isNotAvailableCID,
-                          }: {
+    nftMintAdvanceValue,
+    isFeeNotEnough,
+    isNotAvailableCID,
+  }: {
     nftMintAdvanceValue: Partial<T>;
     isFeeNotEnough: any;
     isNotAvailableCID: undefined | { reason: string };
@@ -128,7 +151,11 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
       resetBtnInfo();
       if (
         !error &&
-        checkAvailable({nftMintAdvanceValue: nftMintAdvanceValue as any, isFeeNotEnough, isNotAvailableCID})
+        checkAvailable({
+          nftMintAdvanceValue: nftMintAdvanceValue as any,
+          isFeeNotEnough,
+          isNotAvailableCID,
+        })
       ) {
         enableBtn();
         return;
@@ -188,7 +215,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
   }, [checkFeeIsEnough, updateNFTMintAdvanceData]);
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
-      const {apiKey, connectName, eddsaKey} = account;
+      const { apiKey, connectName, eddsaKey } = account;
 
       try {
         if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
@@ -387,7 +414,9 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
         } catch (error: any) {
           myLog("handleOnNFTDataChange -> data.nftId", error);
           // setIsAvailableId(false);
-          setIsNotAvailableCID({reason: ErrorMap.IPFS_CID_TO_NFTID_ERROR.messageKey});
+          setIsNotAvailableCID({
+            reason: ErrorMap.IPFS_CID_TO_NFTID_ERROR.messageKey,
+          });
           shouldUpdate = {
             nftId: "",
             // nftIdView:'',
@@ -404,45 +433,53 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
               // TODO:  MOCK  and solve the cross domain
               const collectionMetadata: CollectionMeta = {
                 name: "",
-                tileUri: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
+                tileUri:
+                  "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
                 avatar: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
                 banner: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
-                baseUri: "0x523c347322cec97c31adef1bb3f4f23646db5668b20b6ec8df05c558cb8ddbb0",
+                baseUri:
+                  "0x523c347322cec97c31adef1bb3f4f23646db5668b20b6ec8df05c558cb8ddbb0",
                 contractAddress: "0x3295619421890680a8c88decabb1f9d4fb6c3b80",
                 owner: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
               };
 
               if (collectionMetadata.contractAddress) {
-                const response = await LoopringAPI.userAPI?.getUserOwenCollection(
-                  {
-                    owner: account.accAddress,
-                    address: collectionMetadata.contractAddress,
-                  }, account.apiKey).catch((_error) => {
-                  throw new CustomError(ErrorMap.TIME_OUT);
-                });
+                const response = await LoopringAPI.userAPI
+                  ?.getUserOwenCollection(
+                    {
+                      owner: account.accAddress,
+                      address: collectionMetadata.contractAddress,
+                    },
+                    account.apiKey
+                  )
+                  .catch((_error) => {
+                    throw new CustomError(ErrorMap.TIME_OUT);
+                  });
                 if (
-                  response &&
-                  ((response as sdk.RESULT_INFO).code ||
-                    (response as sdk.RESULT_INFO).message)
-                  || !response.collections.length
+                  (response &&
+                    ((response as sdk.RESULT_INFO).code ||
+                      (response as sdk.RESULT_INFO).message)) ||
+                  !response.collections.length
                 ) {
                   throw new CustomError(ErrorMap.ERROR_COLLECTION_INFO);
                 }
 
-                collectionMeta = (response as any).collections[ 0 ] as CollectionMeta;
+                collectionMeta = (response as any)
+                  .collections[0] as CollectionMeta;
                 //TODO:  MOCK  and solve the cross domain
                 collectionMeta.isCounterFactualNFT = true;
                 collectionMeta.nftType = NFT_TYPE_STRING.ERC1155;
                 // collectionMeta.name = '';
-                // @ts-ignore
-                if (!collectionMeta.isCounterFactualNFT || collectionMeta.nftType === NFT_TYPE_STRING.ERC721) {
+                if (
+                  !collectionMeta.isCounterFactualNFT ||
+                  // @ts-ignore
+                  collectionMeta.nftType === NFT_TYPE_STRING.ERC721
+                ) {
                   throw new CustomError(ErrorMap.ERROR_COLLECTION_NO_SUPPORT);
                 }
-
               } else {
                 throw new CustomError(ErrorMap.ERROR_COLLECTION_INFO);
               }
-
 
               shouldUpdate = {
                 nftId: nftId,
@@ -456,7 +493,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
                 tokenAddress: collectionMeta?.contractAddress,
                 collectionMeta: collectionMetadata,
               };
-              setIsNotAvailableCID(undefined)
+              setIsNotAvailableCID(undefined);
             } else {
               shouldUpdate = {
                 nftId: nftId,
@@ -466,8 +503,9 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
                 balance: undefined,
                 ...shouldUpdate,
               };
-              setIsNotAvailableCID({reason: ErrorMap.ERROR_COLLECTION_EMPTY.messageKey})
-
+              setIsNotAvailableCID({
+                reason: ErrorMap.ERROR_COLLECTION_EMPTY.messageKey,
+              });
             }
           } catch (error: any) {
             shouldUpdate = {
@@ -478,7 +516,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
               balance: undefined,
               ...shouldUpdate,
             };
-            setIsNotAvailableCID({reason: error.messageKey});
+            setIsNotAvailableCID({ reason: error.messageKey });
 
             // setIsAvailableId(false);
             // myLog(error);
@@ -515,7 +553,11 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
         account.readyState === AccountStatus.ACTIVATED &&
         nftMintAdvanceValue &&
         nftMintAdvanceValue.collectionMeta?.contractAddress &&
-        checkAvailable({nftMintAdvanceValue: nftMintAdvanceValue as any, isFeeNotEnough, isNotAvailableCID})
+        checkAvailable({
+          nftMintAdvanceValue: nftMintAdvanceValue as any,
+          isFeeNotEnough,
+          isNotAvailableCID,
+        })
       ) {
         setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
@@ -560,8 +602,8 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
             },
             counterFactualNftInfo: {
               nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory[ chainId ],
-              nftBaseUri: nftMintAdvanceValue.collectionMeta?.baseUri ?? '',
+              nftFactory: sdk.NFTFactory[chainId],
+              nftBaseUri: nftMintAdvanceValue.collectionMeta?.baseUri ?? "",
             },
             royaltyPercentage: Math.floor(
               nftMintAdvanceValue?.royaltyPercentage ?? 0
@@ -605,7 +647,6 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
   );
   const retryBtn = React.useCallback(
     (isHardwareRetry: boolean = false) => {
-
       setShowAccount({
         isShow: true,
         step: AccountStep.NFTMint_WaitForAuth,
@@ -614,7 +655,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
           value: nftMintAdvanceValue.tradeValue,
         },
       });
-      onNFTMintAdvanceClick({}, isHardwareRetry)
+      onNFTMintAdvanceClick({}, isHardwareRetry);
       // processRequest(lastRequest, !isHardwareRetry);
     },
     [
@@ -636,15 +677,18 @@ export const useNFTMintAdvance = <T extends TradeNFT<I, Co>, Co extends Collecti
       collectionListProps,
       collection: nftMintAdvanceValue.collectionMeta as Co,
       onSelected: (item) => {
-        handleOnNFTDataChange({collectionMeta: item} as unknown as T);
-      }
+        handleOnNFTDataChange({ collectionMeta: item } as unknown as T);
+      },
+      domain: LoopringAPI.delegate?.getCollectionDomain() ?? "",
+      makeMeta,
     },
     baseURL,
+    getIPFSString,
     handleOnNFTDataChange,
     onNFTMintClick: onNFTMintAdvanceClick,
     walletMap: {} as any,
     coinMap: totalCoinMap as any,
-    tradeData: {...nftMintAdvanceValue} as any,
+    tradeData: { ...nftMintAdvanceValue } as any,
     nftMintBtnStatus: btnStatus,
     btnInfo,
   };

@@ -844,10 +844,13 @@ export default {
   labelDefiNoBalance:
     "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
     "<1>You can choose one of the following approaches for the remaining amount:</1>",
-  labelDefiNoBalanceList: "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
+  labelDefiNoBalanceList:
+    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
     "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
-  labelDefiMaxBalanceJoin: "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
-  labelDefiNoBalanceJoin: "Loopring will set up the pool soon. Please come back later to subscribe.",
+  labelDefiMaxBalanceJoin:
+    "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
+  labelDefiNoBalanceJoin:
+    "Loopring will set up the pool soon. Please come back later to subscribe.",
   labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
@@ -874,7 +877,8 @@ export default {
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
   labelDefiAgree: "I have read risk warning",
   labelDefiInvest: "Defi Earn",
-  labelDefiClose: "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
+  labelDefiClose:
+    "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
   labelCreateCollection: "New My Collection",
   labelCollectionCreateName: "Contract address for your collection",
   labelCollectionCreateERC1155: "Collection ERC-1155",
@@ -890,15 +894,18 @@ export default {
   labelCopyDemo: "Click to copy the demo",
   labelCollectionCreatBtn: "Create Collection",
   labelEnterMeta: "Enter Collection Metadata",
-  labelMintGuid: "Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use \"Mint\" to create your NFT.",
-  labelAdMintGuid: "Generate all the required metadata and upload to IPFS by yourself first, then use \"Advanced Mint\" to create your NFT.",
+  labelMintGuid:
+    'Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use "Mint" to create your NFT.',
+  labelAdMintGuid:
+    'Generate all the required metadata and upload to IPFS by yourself first, then use "Advanced Mint" to create your NFT.',
   labelFilterTradeNFTSell: "Sell",
   labelFilterTradeNFTSelf: "Self Trade",
   labelFilterTradeNFTBuy: "Buy",
   labelAdMintTitle: "Advance Create Collection",
   labelCopyNFTDemo: "Copy NFT Demo",
   labelSelectCollection: "Choose or Create a Collection to Mint Your Own NFT",
-  labelSelectCollectionDes: "A NFT Collection can help you manage and group your NFTs",
+  labelSelectCollectionDes:
+    "A NFT Collection can help you manage and group your NFTs",
   labelChooseCollectionBtn: "Choose a Collection to Mint",
   labelNFTMint721Btn: "ERC721 will coming soon",
   labelADMint1: "Prepare NFT metadata",
@@ -919,11 +926,15 @@ export default {
   labelMintNext: "Next",
   labelMintBack: "Back",
   labelTokenAdMintBtn: "Enter Amount",
-  labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata and collection Information",
+  labelMintIPFSCIDDes:
+    "Fill in the IPFS CID for NFT metadata and collection Information",
   labelNFTMintSimpleBtn: "Mint",
   labelNFTMintEditBtn: "Edit then Mint",
   labelCollectionEditBtn: "Edit",
   labelCopyMetaClip: "Metadata Copied to Clipboard",
-  labelCollectionMetaNoNameORTileUri: "Your collection_metadata is not defined `name` or `tile_uri`, it may cause some collection display issue!",
-
+  labelCollectionMetaNoNameORTileUri:
+    "Your collection_metadata is not defined `name` or `tile_uri`, it may cause some collection display issue!",
+  labelNFTServerRefresh:
+    "Click to refresh loopring cache resource, this is an lag command usually take 30 minutes.",
+  labelNFTServerRefreshSubmit: "Refresh command submitted",
 };

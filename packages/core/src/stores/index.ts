@@ -46,6 +46,7 @@ import {
   firebaseIOConfig,
   LAYER1_ACTION_HISTORY,
   myLog,
+  NFTHashInfos,
 } from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from "./localStore/favoriteMarket";
 import { Confirmation } from "./localStore/confirmation";
@@ -64,8 +65,9 @@ import {
 import firebase from "firebase/compat/app";
 import { tradeDefiSlice } from "./router/tradeDefi";
 import { investReducer } from "./invest";
-import { walletL2CollectionSlice } from './walletL2Collection/reducer';
-import { walletL2NFTCollectionSlice } from './walletL2NFTCollection/reducer';
+import { walletL2CollectionSlice } from "./walletL2Collection/reducer";
+import { walletL2NFTCollectionSlice } from "./walletL2NFTCollection/reducer";
+
 const sagaMiddleware = createSagaMiddleware();
 
 const DEFAULT_TIMEOUT = 1000 * 60 * 15;
@@ -108,6 +110,7 @@ const persistedLocalStoreReducer = persistReducer<
     walletInfo: WalletInfo;
     tradeProSettings: TradeProSettings;
     layer1ActionHistory: LAYER1_ACTION_HISTORY;
+    nftHashInfos: NFTHashInfos;
   }>
 >(persistLocalStoreConfig, localStoreReducer);
 
@@ -129,27 +132,27 @@ const reducer = combineReducers({
   socket: socketSlice.reducer,
   settings: persistedSettingReducer,
   system: systemSlice.reducer,
-	modals: modalsSlice.reducer,
-	userRewardsMap: userRewardsMapSlice.reducer,
-	amm: ammReducer,
-	invest: investReducer,
-	tokenMap: tokenMapSlice.reducer,
-	tokenPrices: tokenPricesSlice.reducer,
-	toggle: toggleSlice.reducer,
-	walletLayer2: walletLayer2Slice.reducer,
-	walletLayer2NFT: walletLayer2NFTSlice.reducer,
-	walletL2Collection: walletL2CollectionSlice.reducer,
-	walletL2NFTCollection: walletL2NFTCollectionSlice.reducer,
-	walletLayer1: walletLayer1Slice.reducer,
-	tickerMap: tickerMapSlice.reducer,
-	localStore: persistedLocalStoreReducer,
-	amountMap: amountMapSlice.reducer,
-	notifyMap: notifyMapSlice.reducer,
-	firebase: firebaseReducer,
-	// feeMap:feeMapSlice.reducer,
-	// layer1ActionHistory: layer1ActionHistorySlice.reducer,
-	// router redux
-	_router_tradeDefi: tradeDefiSlice.reducer,
+  modals: modalsSlice.reducer,
+  userRewardsMap: userRewardsMapSlice.reducer,
+  amm: ammReducer,
+  invest: investReducer,
+  tokenMap: tokenMapSlice.reducer,
+  tokenPrices: tokenPricesSlice.reducer,
+  toggle: toggleSlice.reducer,
+  walletLayer2: walletLayer2Slice.reducer,
+  walletLayer2NFT: walletLayer2NFTSlice.reducer,
+  walletL2Collection: walletL2CollectionSlice.reducer,
+  walletL2NFTCollection: walletL2NFTCollectionSlice.reducer,
+  walletLayer1: walletLayer1Slice.reducer,
+  tickerMap: tickerMapSlice.reducer,
+  localStore: persistedLocalStoreReducer,
+  amountMap: amountMapSlice.reducer,
+  notifyMap: notifyMapSlice.reducer,
+  firebase: firebaseReducer,
+  // feeMap:feeMapSlice.reducer,
+  // layer1ActionHistory: layer1ActionHistorySlice.reducer,
+  // router redux
+  _router_tradeDefi: tradeDefiSlice.reducer,
   _router_pageTradeLite: pageTradeLiteSlice.reducer,
   _router_pageTradePro: pageTradeProSlice.reducer,
   _router_pageAmmPool: pageAmmPoolSlice.reducer,
@@ -250,8 +253,7 @@ export * from "./userRewards";
 export * from "./walletLayer1";
 export * from "./walletLayer2";
 export * from "./walletLayer2NFT";
-export * from "./walletL2Collection"
-export * from "./walletL2NFTCollection"
+export * from "./walletL2Collection";
+export * from "./walletL2NFTCollection";
 
 export * from "./invest";
-

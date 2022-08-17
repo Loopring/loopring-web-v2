@@ -29,7 +29,6 @@ import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
-import { getIPFSString } from '@loopring-web/core';
 
 const GridStyle = styled(Grid)`
   .coinInput-wrap {
@@ -58,18 +57,20 @@ export const MintNFTConfirm = <
   I,
   C extends FeeInfo
 >({
-                                  disabled,
-                                  tradeData: nftMintData,
-                                  metaData,
-                                  btnInfo,
-                                  nftMintBtnStatus,
-                                  isFeeNotEnough,
-                                  handleFeeChange,
-                                  chargeFeeTokenList,
-                                  feeInfo, baseURL,
-                                  onNFTMintClick,
-                                  mintService,
-                                }: NFTMintViewProps<ME, MI, I, C>) => {
+  disabled,
+  tradeData: nftMintData,
+  metaData,
+  btnInfo,
+  nftMintBtnStatus,
+  isFeeNotEnough,
+  handleFeeChange,
+  chargeFeeTokenList,
+  feeInfo,
+  baseURL,
+  onNFTMintClick,
+  mintService,
+  getIPFSString,
+}: NFTMintViewProps<ME, MI, I, C>) => {
   const { t, ...rest } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const [dropdownStatus, setDropdownStatus] =
@@ -80,7 +81,7 @@ export const MintNFTConfirm = <
   const [error, setError] = React.useState(false);
   const [src, setSrc] = React.useState(getIPFSString(metaData?.image, baseURL));
   React.useEffect(() => {
-    setSrc(getIPFSString(metaData?.image, baseURL));
+    setSrc(getIPFSString(metaData?.image ?? "", baseURL));
   }, [metaData?.image]);
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
@@ -338,7 +339,9 @@ export const MintNFTConfirm = <
                     }}
                     display={"inline-flex"}
                     title={nftMintData.nftId}
-                    href={`${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
+                    href={`
+                     ()
+                    ${IPFS_LOOPRING_SITE}${nftMintData.cid}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

@@ -1,27 +1,20 @@
 import styled from "@emotion/styled";
-import { Box } from "@mui/material";
+import { Button, CreateCollectionWrap } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
+import { Box } from "@mui/material";
 import React from "react";
-import {
-  Button,
-  CreateCollectionWrap
-} from "@loopring-web/component-lib";
-import { useHistory } from 'react-router-dom';
-import { useCollectionPanel } from './hook';
-import { BackIcon } from '@loopring-web/common-resources';
+import { useHistory } from "react-router-dom";
+import { useCollectionPanel } from "./hook";
+import { BackIcon } from "@loopring-web/common-resources";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 `;
 
 export const CreateCollectionPanel = () => {
-  const {t} = useTranslation("common");
-  // const [banner,setBanner] = React.useState('');
-  // const [banner,setBanner] = React.useState('')
-  const createCollectionViewProps = useCollectionPanel({isEdit: false});
-
-
+  const { t } = useTranslation("common");
+  const createCollectionViewProps = useCollectionPanel({ isEdit: false });
   const history = useHistory();
 
   return (
@@ -33,21 +26,19 @@ export const CreateCollectionPanel = () => {
         marginBottom={2}
       >
         <Button
-          startIcon={<BackIcon fontSize={"small"}/>}
+          startIcon={<BackIcon fontSize={"small"} />}
           variant={"text"}
           size={"medium"}
-          sx={{color: "var(--color-text-secondary)"}}
+          sx={{ color: "var(--color-text-secondary)" }}
           color={"inherit"}
           onClick={history.goBack}
         >
           {t("labelCollectionCreateERC1155")}
-          {/*<Typography color={"textPrimary"}></Typography>*/}
         </Button>
       </Box>
-      <StyledPaper flex={1} display={'flex'}>
-        <CreateCollectionWrap {...{...createCollectionViewProps}}/>
+      <StyledPaper flex={1} display={"flex"}>
+        <CreateCollectionWrap {...{ ...createCollectionViewProps }} />
       </StyledPaper>
-
     </>
   );
 };

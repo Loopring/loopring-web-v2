@@ -18,6 +18,7 @@ import {
   UIERROR_CODE,
   AddressError,
   EXCHANGE_TYPE,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -30,7 +31,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,
@@ -41,22 +41,23 @@ import {
   useChargeFees,
   useWalletLayer2NFT,
   useSystem,
+  getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
 export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
   const {
     modals: {
-      isShowNFTWithdraw: {isShow, info},
+      isShowNFTWithdraw: { isShow, info },
     },
     setShowNFTWithdraw,
     setShowNFTDetail,
     setShowAccount,
   } = useOpenModals();
 
-  const {tokenMap, totalCoinMap, disableWithdrawList} = useTokenMap();
+  const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account } = useAccount();
-  const { exchangeInfo, chainId } = useSystem();
+  const { exchangeInfo, chainId, baseURL } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
@@ -73,18 +74,17 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     deployInWithdraw:
       nftWithdrawValue.isCounterFactualNFT &&
       nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
-    updateData:
-      ({fee}) => {
-        const {nftWithdrawValue} = store.getState()._router_modalData;
-        updateNFTWithdrawData({
-          ...nftWithdrawValue,
-          balance: sdk
-            .toBig(nftWithdrawValue.total ?? 0)
-            .minus(nftWithdrawValue.locked ?? 0)
-            .toNumber(),
-          fee
-        });
-      },
+    updateData: ({ fee }) => {
+      const { nftWithdrawValue } = store.getState()._router_modalData;
+      updateNFTWithdrawData({
+        ...nftWithdrawValue,
+        balance: sdk
+          .toBig(nftWithdrawValue.total ?? 0)
+          .minus(nftWithdrawValue.locked ?? 0)
+          .toNumber(),
+        fee,
+      });
+    },
   });
 
   const { checkHWAddr, updateHW } = useWalletInfo();
@@ -495,6 +495,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     isCFAddress,
+    getIPFSString,
+    baseURL,
     isContractAddress: isContract1XAddress,
     isAddressCheckLoading,
     addrStatus,

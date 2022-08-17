@@ -6,7 +6,6 @@ import {
   CardStyleItem,
   EmptyDefault,
   NFTMedia,
-  useOpenModals,
 } from "@loopring-web/component-lib";
 import { useMyNFT } from "./hook";
 import {
@@ -14,22 +13,22 @@ import {
   getShortAddr,
   SoursURL,
   NFTLimit,
-  L2HistoryIcon,
+  RefreshIPFSIcon,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
+import { getIPFSString, useSystem } from "@loopring-web/core";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-
-
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
     const { onDetail, nftList, isLoading, page, total, onPageChange } =
       useMyNFT();
     const history = useHistory();
+    const { baseURL } = useSystem();
 
     return (
       <>
@@ -159,6 +158,8 @@ export const MyNFTPanel = withTranslation("common")(
                             // onNFTReload={onNFTReload}
                             onNFTError={() => undefined}
                             isOrigin={false}
+                            getIPFSString={getIPFSString}
+                            baseURL={baseURL}
                           />
                           <Box
                             padding={2}

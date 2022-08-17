@@ -20,14 +20,17 @@ import {
 } from "./hooks";
 
 import {
-  TOAST_TIME,
   useSystem,
   useAccount,
   useToast,
   useTokenMap,
   useAmmMap,
 } from "@loopring-web/core";
-import { BackIcon, RowConfig } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  RowConfig,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 enum TabIndex {
@@ -263,7 +266,6 @@ const HistoryPanel = withTranslation("common")(
                 idIndex={idIndex}
               />
             ) : (
-              
               <Box
                 flex={1}
                 display={"flex"}

@@ -8,12 +8,13 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
+  L2CollectionFilter,
+  MakeMeta,
   WalletCoin,
   WalletMap,
 } from "@loopring-web/common-resources";
 import { ListProps } from "react-virtualized";
 import { List } from "immutable";
-import { L2CollectionFilter } from '@loopring-web/core';
 
 export type MuiMenuItemProps = muMenuItemProps & {
   withnocheckicon?: "true" | "false" | undefined;
@@ -83,24 +84,25 @@ export type CoinMenuProps<R, I> = {
   nonZero: boolean;
   sorted: boolean;
   filterString: string;
-	height?: string;
-	allowScroll?: boolean; //boolean
-	filterBy: (coinInfo: CoinInfo<R>, filterString: string) => boolean;
-	coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>;
-	walletMap:
-		| WalletMap<R, I extends CoinInfo<R> ? WalletCoin<R> : WalletCoin<R>>
-		| {};
-	handleSelect?: (event: React.MouseEvent, selected: CoinKey<R>) => void;
+  height?: string;
+  allowScroll?: boolean; //boolean
+  filterBy: (coinInfo: CoinInfo<R>, filterString: string) => boolean;
+  coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>;
+  walletMap:
+    | WalletMap<R, I extends CoinInfo<R> ? WalletCoin<R> : WalletCoin<R>>
+    | {};
+  handleSelect?: (event: React.MouseEvent, selected: CoinKey<R>) => void;
 };
 
-
-export type  CollectionListProps<Co> = {
-	onPageChange: (page: number, filter?: L2CollectionFilter | undefined) => void,
-	collectionList: Co[],
-	total: number,
-	page: number,
-	copyToastOpen: { isShow: boolean, type: string },
-	setCopyToastOpen: (props: { isShow: boolean, type: string }) => void,
-	isLoading: boolean,
-	etherscanBaseUrl: string
-}
+export type CollectionListProps<Co> = {
+  onPageChange: (page: number, filter?: L2CollectionFilter | undefined) => void;
+  collectionList: Co[];
+  total: number;
+  domain: string;
+  makeMeta: MakeMeta;
+  page: number;
+  copyToastOpen: { isShow: boolean; type: string };
+  setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
+  isLoading: boolean;
+  etherscanBaseUrl: string;
+};

@@ -2,7 +2,7 @@ import {
   InputButtonProps,
   InputCoinProps,
   BtnInfoProps,
-  SwitchPanelProps, IpfsFile, BtnInfo,
+  SwitchPanelProps,
 } from "../../basic-lib";
 import {
   AddressError,
@@ -17,11 +17,12 @@ import {
   WithdrawTypes,
   WALLET_TYPE,
   EXCHANGE_TYPE,
+  GET_IPFS_STRING,
 } from "@loopring-web/common-resources";
 import { TradeBtnStatus } from "../Interface";
 import React, { ChangeEvent } from "react";
 import { XOR } from "../../../types/lib";
-import { CollectionInputProps } from './tool';
+import { CollectionInputProps } from "./tool";
 
 /**
  * private props
@@ -76,7 +77,7 @@ export type TransferExtendProps<T, I, C> = {
 } & TransferInfoProps<C>;
 
 export type TransferViewProps<T, I, C = CoinKey<I> | string> =
-  BasicACoinTradeViewProps<T, I> & TransferExtendProps<T, I, C>;
+  TransferExtendProps<T, I, C> & BasicACoinTradeViewProps<T, I>;
 
 /**
  * private props
@@ -236,15 +237,16 @@ export type DefaultProps<T, I> = {
       type: "NFT";
       coinMap?: CoinMap<I, CoinInfo<I>>;
       walletMap?: WalletMap<I, WalletCoin<I>>;
+      baseURL?: string;
+      getIPFSString?: GET_IPFS_STRING;
     }
 );
 
 type DefaultWithMethodProps<T, I> = DefaultProps<T, I>;
 
-export type BasicACoinTradeViewProps<T, I> = Required<
-  DefaultWithMethodProps<T, I>
-> & {
+export type BasicACoinTradeViewProps<T, I> = Required<DefaultWithMethodProps<T, I>> & {
   baseURL?: string;
+  getIPFSString?: (url: string | undefined, basicUrl: string) => string;
   onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void;
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, "handleError">;
 
@@ -260,6 +262,7 @@ export type BasicANFTTradeProps<T, I> = Omit<
 > & {
   type?: "NFT";
   baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
   isThumb?: boolean;
   isBalanceLimit?: boolean;
   inputNFTRef: React.Ref<any>;
@@ -292,7 +295,8 @@ export type NFTDepositInfoProps<T, I> = DefaultWithMethodProps<T, I> & {
 export type NFTDepositViewProps<T, I> = NFTDepositExtendProps<T, I>;
 export type NFTDepositExtendProps<T, I> = {
   isThumb?: boolean;
-  baseURL?: string;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
   isNFTCheckLoading?: boolean;
   handleOnNFTDataChange: (data: T) => void;
   onNFTDepositClick: (data: T) => void;
@@ -352,17 +356,19 @@ export type NFTMetaExtendProps<T, C = FeeInfo> = {
 export type NFTMintViewProps<ME, MI, I, C> = {
   tradeData: MI;
   metaData: ME;
-  baseURL: string;
   disabled?: boolean;
   coinMap?: CoinMap<I, CoinInfo<I>>;
   walletMap?: WalletMap<I, WalletCoin<I>>;
   mintService: any;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
 } & NFTMintExtendProps<MI, C>;
 export type NFTMetaViewProps<T, Co, C> = {
   nftMeta: T;
+  domain: string;
   baseURL: string;
-  collection?: Co | undefined,
-  collectionInputProps: CollectionInputProps<Co>
+  collection?: Co | undefined;
+  collectionInputProps: CollectionInputProps<Co>;
   disabled?: boolean;
 } & NFTMetaExtendProps<T, C>;
 export type NFTMetaBlockProps<T, Co, I, C> = NFTMetaViewProps<T, Co, C> & {
@@ -422,15 +428,18 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
 export type NFTMintAdvanceExtendProps<T, Co, I, C = FeeInfo> = {
   isThumb?: boolean;
   baseURL: string;
-  collectionInputProps: CollectionInputProps<Co>
+  getIPFSString: GET_IPFS_STRING;
+  collectionInputProps: CollectionInputProps<Co>;
   handleOnNFTDataChange: (data: T) => void;
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
 } & NFTMintAdvanceInfoProps<T, I, C>;
-export type NFTMintAdvanceViewProps<T, Co, I, C> = NFTMintAdvanceExtendProps<T,
+export type NFTMintAdvanceViewProps<T, Co, I, C> = NFTMintAdvanceExtendProps<
+  T,
   Co,
   I,
-  C>;
+  C
+>;
 
 export type CollectionAdvanceProps<_T> = {
   handleDataChange: (data: string) => void;
@@ -438,18 +447,6 @@ export type CollectionAdvanceProps<_T> = {
   allowTrade?: any;
   disabled?: boolean;
   btnStatus: TradeBtnStatus;
-  handleError: (error: { code: number, message: string }) => void,
-  metaData: string,
+  handleError: (error: { code: number; message: string }) => void;
+  metaData: string;
 } & BtnInfoProps;
-
-
-export type CreateCollectionViewProps<Co> = {
-  keys: { [ key: string ]: undefined | IpfsFile },
-  onFilesLoad: (key: string, value: IpfsFile) => void,
-  onDelete: (key: string) => void,
-  btnStatus: TradeBtnStatus,
-  btnInfo?: BtnInfo,
-  disabled?: boolean,
-  handleOnDataChange: (key: string, value: any) => void,
-  collectionValue: Co
-}

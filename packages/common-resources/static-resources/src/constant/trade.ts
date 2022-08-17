@@ -4,9 +4,17 @@
 //   TokenInfo,
 //   UserNFTBalanceInfo,
 // } from "@loopring-web/loopring-sdk";
-import { CollectionMeta, FeeInfo, IBData } from "../loopring-interface";
+import {
+  CollectionMeta,
+  DeFiCalcData,
+  FeeInfo,
+  IBData,
+} from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
+import { MarketType } from "./market";
+import { TokenInfo } from "@loopring-web/loopring-sdk";
+import { DeFiChgType } from "@loopring-web/component-lib";
 
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
@@ -15,7 +23,7 @@ export type WithdrawType =
 
 export type WithdrawTypes = {
   [ sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ]: "Fast";
-  [sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL]: "Standard";
+  [ sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL ]: "Standard";
 };
 
 export type PriceTagType = "$" | "￥";
@@ -53,14 +61,21 @@ export type TxInfo = {
   status?: "pending" | "success" | "failed" | undefined;
   [key: string]: any;
 };
+
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] };
 }
+
+export interface NFTHashInfo {
+  nftDataHashes: { [key: string]: Required<TxInfo> };
+}
+
 // export type GuardianLock
 export enum Layer1Action {
   GuardianLock = "GuardianLock",
   NFTDeploy = "NFTDeploy",
 }
+
 // GuardianLock
 export type Layer1ActionHistory = {
   [key: string]: {
@@ -71,6 +86,10 @@ export type Layer1ActionHistory = {
 
 export type ChainHashInfos = {
   [key in sdk.ChainId extends string ? string : string]: AccountHashInfo;
+};
+
+export type NFTHashInfos = {
+  [key in sdk.ChainId extends string ? string : string]: NFTHashInfo;
 };
 export type LAYER1_ACTION_HISTORY = {
   [key in sdk.ChainId extends string ? string : string]: Layer1ActionHistory;
@@ -105,14 +124,14 @@ export enum Media {
 export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
   sdk.UserNFTBalanceInfo &
   NFTMETA & {
-  nftBalance?: number;
-  nftIdView?: string;
-  fee?: FeeInfo;
-  isFailedLoadMeta?: boolean;
-  etherscanBaseUrl: string;
-  __mediaType__?: Media;
-  collectionMeta?: Partial<Co>
-};
+    nftBalance?: number;
+    nftIdView?: string;
+    fee?: FeeInfo;
+    isFailedLoadMeta?: boolean;
+    etherscanBaseUrl: string;
+    __mediaType__?: Media;
+    collectionMeta?: Partial<Co>;
+  };
 
 export type MintTradeNFT<I> = {
   balance?: number;
@@ -166,8 +185,8 @@ export type LOOPRING_NFT_METADATA = {
   [key in keyof typeof LOOPRING_TAKE_NFT_META_KET]?: string | undefined;
 };
 
-export const NFTLimit = 12, CollectionLimit = 12;
-
+export const NFTLimit = 12,
+  CollectionLimit = 12;
 
 export const AddAssetList = {
   FromMyL1: {
@@ -374,7 +393,35 @@ export enum CreateCollectionStep {
   // CreateTokenAddressFailed,
   ChooseMethod,
   ChooseMintMethod,
-  ChooseCollectionEdit
+  ChooseCollectionEdit,
   // AdvancePanel,
   // CommonPanel,
 }
+
+export type TradeDefi<C> = {
+  type: string;
+  market?: MarketType; // eg: ETH-LRC, Pair from loopring market
+  isStoB: boolean;
+  sellVol: string;
+  buyVol: string;
+  sellToken: TokenInfo;
+  buyToken: TokenInfo;
+  deFiCalcData?: DeFiCalcData<C>;
+  fee: string;
+  feeRaw: string;
+  depositPrice?: string;
+  withdrawPrice?: string;
+  maxSellVol?: string;
+  maxBuyVol?: string;
+  maxFeeBips?: number;
+  miniSellVol?: string;
+  request?: sdk.DefiOrderRequest;
+  defiBalances?: { [key: string]: string };
+  lastInput?: DeFiChgType;
+};
+
+export type L2CollectionFilter = {
+  isMintable?: boolean;
+  tokenAddress?: string;
+  owner?: string;
+};
