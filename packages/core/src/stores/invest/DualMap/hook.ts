@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
-import { DualMap, RootState } from "../../index";
+import { RootState } from "../../index";
 import { getDualMap, statusUnset } from "./reducer";
-import { DualMapStates } from "./interface";
+import { DualMap, DualMapStates } from "./interface";
 
 export const useDualMap = (): DualMapStates & {
   getDualMap: () => void;
@@ -24,7 +24,7 @@ export const useDualMap = (): DualMapStates & {
       [dispatch]
     ),
     updateDualSyncMap: React.useCallback(
-      ({dualMap}: { dualMap: DualMap }) => dispatch(getDualMap(dualMap)),
+      ({ dualMap }: { dualMap: DualMap }) => dispatch(getDualMap(dualMap)),
       [dispatch]
     ),
   };

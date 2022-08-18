@@ -8,7 +8,7 @@ import { TradeTypes } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 
 export const FiatPage = withTranslation("common")(
-  ({ ...rest }: WithTranslation) => {
+  ({ t, ...rest }: WithTranslation) => {
     const history = useHistory();
     const vendorPropsBuy = useVendorBuy();
     const vendorPropsSell = useVendorSell();
@@ -63,17 +63,17 @@ export const FiatPage = withTranslation("common")(
           {tabIndex === TradeTypes.Buy && <VendorMenu {...vendorPropsBuy} />}
           {tabIndex === TradeTypes.Sell && <VendorMenu {...vendorPropsSell} />}
         </Box>
-        <ConfirmInvestDefiRisk
-          open={confirmDefiInvest}
-          handleClose={(_e, isAgree) => {
-            setConfirmDefiInvest(false);
-            if (!isAgree) {
-              history.goBack();
-            } else {
-              confirmDefiInvestFun();
-            }
-          }}
-        />
+        {/*<ConfirmInvestDefiRisk*/}
+        {/*  open={confirmDefiInvest}*/}
+        {/*  handleClose={(_e, isAgree) => {*/}
+        {/*    setConfirmDefiInvest(false);*/}
+        {/*    if (!isAgree) {*/}
+        {/*      history.goBack();*/}
+        {/*    } else {*/}
+        {/*      confirmDefiInvestFun();*/}
+        {/*    }*/}
+        {/*  }}*/}
+        {/*/>*/}
       </Box>
     );
   }

@@ -9,13 +9,13 @@ const getDualMapApi = async () => {
     return undefined;
   }
   // Todo:
-  const {
-    markets: marketMap,
-    tokenArr: marketCoins,
-    marketArr: marketArray,
-  } = await LoopringAPI.defiAPI?.getDualMarkets();
+  // const {
+  //   markets: marketMap,
+  //   tokenArr: marketCoins,
+  //   marketArr: marketArray,
+  // } = await LoopringAPI.defiAPI?.getDualMarkets();
 
-  let {__timer__} = store.getState().invest.dualMap;
+  let { __timer__ } = store.getState().invest.dualMap;
   __timer__ = (() => {
     if (__timer__ && __timer__ !== -1) {
       clearInterval(__timer__);
@@ -33,9 +33,9 @@ const getDualMapApi = async () => {
 
   return {
     dualMap: {
-      marketArray,
-      marketCoins,
-      marketMap,
+      marketArray: [],
+      marketCoins: [],
+      marketMap: {},
     },
     __timer__,
   };
@@ -43,19 +43,19 @@ const getDualMapApi = async () => {
 
 export function* getPostsSaga() {
   try {
-    const {dualMap, __timer__} = yield call(getDualMapApi);
-    yield put(getDualMapStatus({...dualMap, __timer__}));
+    const { dualMap, __timer__ } = yield call(getDualMapApi);
+    yield put(getDualMapStatus({ ...dualMap, __timer__ }));
   } catch (err) {
     yield put(getDualMapStatus(err));
   }
 }
 
 export function* getDualSyncSaga({
-                                   payload,
-                                 }: PayloadAction<{ dualMap: DualMap }>) {
+  payload,
+}: PayloadAction<{ dualMap: DualMap }>) {
   try {
     if (payload.dualMap) {
-      yield put(getDualMapStatus({dualMap: payload.dualMap}));
+      yield put(getDualMapStatus({ dualMap: payload.dualMap }));
     }
   } catch (err) {
     yield put(getDualMapStatus(err));

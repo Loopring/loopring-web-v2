@@ -903,6 +903,8 @@ export default {
   labelFilterTradeNFTSell: "Sell",
   labelFilterTradeNFTSelf: "Self Trade",
   labelFilterTradeNFTBuy: "Buy",
-  labelInvestDualTitle: "Dual Investment"
+  labelInvestDualTitle: "Dual Investment",
   labelAdMintTitle: "Advance Create Collection",
+  labelBuy: "Buy",
+  labelSell: "Sell",
 };
