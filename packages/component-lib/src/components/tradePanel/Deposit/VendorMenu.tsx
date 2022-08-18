@@ -62,7 +62,7 @@ export const VendorMenu = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={isMobile ? 7 : 10}
+        paddingX={3}
       >
         <Typography color={"textSecondary"} variant={"body1"} marginBottom={1}>
           {t("labelWhatProvider")}
