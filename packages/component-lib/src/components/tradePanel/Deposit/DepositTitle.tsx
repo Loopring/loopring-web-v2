@@ -8,7 +8,11 @@ import { PopoverPure } from "../../basic-lib";
 import { DepositPanelType } from "./Interface";
 import { useSettings } from "../../../stores";
 
-export const DepositTitle = ({ title, description }: any) => {
+export const DepositTitle = ({
+  title,
+  description,
+  isHideDes = false,
+}: any) => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
   const popupState = usePopupState({
@@ -20,41 +24,45 @@ export const DepositTitle = ({ title, description }: any) => {
       <Typography
         component={"span"}
         variant={isMobile ? "h4" : "h3"}
-        whiteSpace={"pre"}
+        whiteSpace={"pre-line"}
         marginRight={1}
         className={"depositTitle"}
       >
         {title ? title : t("depositTitle")}
       </Typography>
-      <Info2Icon
-        {...bindHover(popupState)}
-        fontSize={isMobile ? "medium" : "large"}
-        htmlColor={"var(--color-text-third)"}
-      />
-      <PopoverPure
-        className={"arrow-center"}
-        {...bindPopper(popupState)}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        <Typography
-          padding={2}
-          component={"p"}
-          variant={"body2"}
-          whiteSpace={"pre-line"}
-        >
-          <Trans i18nKey={description ? description : "depositDescription"}>
-            Once your deposit is confirmed on Ethereum, it will be added to your
-            balance within 2 minutes.
-          </Trans>
-        </Typography>
-      </PopoverPure>
+      {!isHideDes && (
+        <>
+          <Info2Icon
+            {...bindHover(popupState)}
+            fontSize={isMobile ? "medium" : "large"}
+            htmlColor={"var(--color-text-third)"}
+          />
+          <PopoverPure
+            className={"arrow-center"}
+            {...bindPopper(popupState)}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <Typography
+              padding={2}
+              component={"p"}
+              variant={"body2"}
+              whiteSpace={"pre-line"}
+            >
+              <Trans i18nKey={description ? description : "depositDescription"}>
+                Once your deposit is confirmed on Ethereum, it will be added to
+                your balance within 2 minutes.
+              </Trans>
+            </Typography>
+          </PopoverPure>
+        </>
+      )}
     </Typography>
   );
 };

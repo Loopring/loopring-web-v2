@@ -139,14 +139,26 @@ export const DepositToPage = withTranslation(["common"])(
               paddingY={isMobile ? 2 : undefined}
               paddingTop={5 / 2}
             >
-              <DepositPanel
-                {...restProps}
-                title={t("labelL1toL2TitleBridge")}
-                btnInfo={_depositBtnI18nKey}
-                depositBtnStatus={_depositBtnStatus}
-                onDepositClick={_onDepositClick}
-                isNewAccount={false}
-              />
+              <Box
+                marginTop={-4}
+                display={"flex"}
+                flex={1}
+                flexDirection={"column"}
+              >
+                <DepositPanel
+                  {...restProps}
+                  isHideDes={account.readyState === AccountStatus.UN_CONNECT}
+                  title={t(
+                    account.readyState === AccountStatus.UN_CONNECT
+                      ? "labelL1toL2TitleBridgeNoConnect"
+                      : "labelL1toL2TitleBridge"
+                  )}
+                  btnInfo={_depositBtnI18nKey}
+                  depositBtnStatus={_depositBtnStatus}
+                  onDepositClick={_onDepositClick}
+                  isNewAccount={false}
+                />
+              </Box>
             </BoxStyle>
           </Box>
         }

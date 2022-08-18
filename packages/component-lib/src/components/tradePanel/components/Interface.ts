@@ -133,6 +133,7 @@ export type DepositInfoProps = {
 export type DepositExtendProps<T> = {
   isThumb?: boolean;
   title?: string;
+  isHideDes?: boolean;
   allowTrade?: any;
   toAddressStatus: AddressError;
   referStatus: AddressError;

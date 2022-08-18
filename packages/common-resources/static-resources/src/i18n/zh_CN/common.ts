@@ -564,7 +564,7 @@ export default {
     "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n Loopring L2 payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
-  labelL2toL2AddressInput: "Please input address / ens / account id",
+  labelL2toL2AddressInput: "Please input address / ENS / Account ID",
   labelL2toL2Memo: "Memo (Optional)",
   labelL2toL2MemoPlaceholder: "Please input the memo",
   labelL2toL2FeeChoose: "Select payment token",
@@ -637,7 +637,7 @@ export default {
   labelNFTMintInputTitle: "Amount <1>\uFE61</1>",
   labelL1toL2Vendor:
     "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
-  depositLabelTo: "To address, account id or ENS.",
+  depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
@@ -676,6 +676,8 @@ export default {
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
+  labelL1toL2TitleBridgeNoConnect:
+    "Connect your Ethereum L1 Wallet to \ntransfer assets to any Loopring L2 account",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
@@ -728,7 +730,7 @@ export default {
   labelBalanceActiveAccountFee:
     "{{symbol}}: <2>Fee {{fee}};</2><3>My Loopring L2 balance: {{count}}</3>",
   labelToAddressShouldLoopring: "To address is no Loopring L2",
-  labelBridgeSendTo: "Send to (address, account id or ENS)",
+  labelBridgeSendTo: "Send to (address, Account ID or ENS)",
   labelInvalidAddressClick:
     "Invalid Wallet Address, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
   labelENSShouldConnect:
@@ -781,7 +783,7 @@ export default {
   labelLayerSwapUnderstandDes:
     "LayerSwap is a 3rd party App service provider to help move tokens from exchange to Loopring L2 directly. If you have any concerns regarding their service, please check out their <1>TOS</1>.",
   labelInvestAmmTitle: "AMM Pools",
-  labelInvestBalanceTitle: "My Investment",
+  labelInvestBalanceTitle: "My Investments",
   labelTransactionsLink: "Transactions",
   labelAMMTransactionsLink: "View Pool Transactions",
   labelNFTMintWrongCIDBtn: "Wrong MetaData format",
@@ -822,20 +824,23 @@ export default {
   labelDefiMin: "Minimum of {{arg}}",
   labelDefiNoEnough: "Not enough {{arg}}",
   labelDefiMaxBalance:
-    "Loopring rebalance pool can't satisfy your complete request. " +
-    "You can only redeem {{maxValue}} now. For the remaining investment, you can choose one of the approaches",
+    "It is not possible for the Loopring pool to fulfil your complete request at the moment. You can only redeem {{maxValue}} now.\n" +
+    "You can choose one of the following approaches for the remaining amount:",
   labelDefiMaxBalance1:
     "<0>" +
-    "<1>Withdraw WSTETH to L1 and trade through CRV or LIDO directly</1>" +
+    "<1>Withdraw WSTETH to L1 and trade trade through Uniswap, 1Inch or Lido.</1>" +
     "<2>The Loopring pool will rebalance soon. Please come back later to redeem.</2>" +
     "</0>",
   labelDefiNoBalance:
-    "<0>Loopring rebalance pool can't satisfy your complete request now.</0>" +
-    "<1>For the remaining investment, you can choose one of the approaches</1>",
-  labelDefiNoBalanceList: "<0>Withdraw wstETH to L1 and trade through CRV or LIDO directly</0>" +
+    "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
+    "<1>You can choose one of the following approaches for the remaining amount:</1>",
+  labelDefiNoBalanceList:
+    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
     "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
-  labelDefiMaxBalanceJoin: "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{ maxValue }} now. Loopring will setup the pool soon, please revisit for subscription later.",
-  labelDefiNoBalanceJoin: "Loopring will set up the pool soon. Please come back later to subscribe.",
+  labelDefiMaxBalanceJoin:
+    "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
+  labelDefiNoBalanceJoin:
+    "Loopring will set up the pool soon. Please come back later to subscribe.",
   labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
@@ -862,7 +867,8 @@ export default {
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
   labelDefiAgree: "I have read risk warning",
   labelDefiInvest: "Defi Earn",
-  labelDefiClose: "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
+  labelDefiClose:
+    "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
   labelCreateCollection: "New My Collection",
   labelCollectionCreateName: "Contract address for your collection",
   labelCollectionCreateERC1155: "Collection ERC-1155",
@@ -885,5 +891,5 @@ export default {
 	labelFilterTradeNFTBuy: "Buy",
 	labelCopyNFTDemo: "Copy NFT Demo",
 	labelCopyMetaClip: "Metadata Copied to Clipboard",
-
+  labelAdMintTitle: "Advance Create Collection",
 };

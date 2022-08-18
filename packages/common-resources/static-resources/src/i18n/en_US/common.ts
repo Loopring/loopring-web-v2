@@ -689,6 +689,8 @@ export default {
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
+  labelL1toL2TitleBridgeNoConnect:
+    "Connect your Ethereum L1 Wallet to transfer assets to any Loopring L2 account",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
