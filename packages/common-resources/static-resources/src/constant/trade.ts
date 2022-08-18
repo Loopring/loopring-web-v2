@@ -142,9 +142,9 @@ export const TOAST_TIME = 3000;
 export const EmptyValueTag = "--";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
-export const IPFS_META_URL = "ipfs://";
+export const IPFS_HEAD_URL = "ipfs://";
 export const MINT_LIMIT = 100000;
-export const PROPERTY_LIMIT = 5;
+export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
 export const PROPERTY_Value_LIMIT = 40;
 export const LOOPRING_TAKE_NFT_META_KET = {

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, Tab, Tabs } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Button, TradeNFTTable, TsNFTTable } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
 import { useHistoryNFT } from "./hookHistory";
@@ -25,7 +25,7 @@ export const MyNFTHistory = () => {
   const [currentTab, setCurrentTab] = React.useState(() => {
     return match?.params.tab ?? TabIndex.transactions;
   });
-  const {idIndex, tokenMap} = useTokenMap()
+  const {idIndex, tokenMap} = useTokenMap();
   const {
     nftHistory,
     container,

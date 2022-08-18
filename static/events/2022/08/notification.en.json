@@ -1,0 +1,23 @@
+{
+  "notifications": [
+    {
+      "type": "ACTIVITY",
+      "version": "-1",
+      "name": "lido",
+      "title": "ETH staking via Loopring L2 is live!",
+      "description1": "Participate into ETH staking to own rewards.",
+      "description2": "",
+      "link": "",
+      "startShow": 1660039200000,
+      "endShow": 1662631200000,
+      "color": "default",
+      "banner": "",
+      "webRouter": "[self]/invest/defi"
+    }
+  ],
+  "activities": [],
+  "invest": [],
+  "prev": {
+    "endDate": 1662631200000
+  }
+}

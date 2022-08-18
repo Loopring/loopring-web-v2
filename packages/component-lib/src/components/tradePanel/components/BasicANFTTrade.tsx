@@ -4,7 +4,7 @@ import {
   getFormattedHash,
   IBData,
   IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   myLog,
   NFTWholeINFO,
 } from "@loopring-web/common-resources";
@@ -174,7 +174,7 @@ export const NFTInput = React.memo(
                     width={"100%"}
                     height={"100%"}
                     src={tradeData?.image?.replace(
-                      IPFS_META_URL,
+                      IPFS_HEAD_URL,
                       IPFS_LOOPRING_SITE
                     )}
                   />

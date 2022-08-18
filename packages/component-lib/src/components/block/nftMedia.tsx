@@ -2,7 +2,7 @@ import {
   AudioIcon,
   hexToRGB,
   IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   Media,
   myLog,
   NFTWholeINFO,
@@ -67,16 +67,16 @@ export const NFTMedia = React.memo(
         (isOrigin
           ? item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]
           : item?.metadata?.imageSize[NFT_IMAGE_SIZES.small]) ??
-          item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
+        item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
       );
-      const { hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError } =
+      const {hasLoaded: previewSrcHasLoaded, hasError: previewSrcHasError} =
         useImage(previewSrc ?? "");
       const fullSrc =
         (isOrigin
-          ? item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
-          : item?.metadata?.imageSize[NFT_IMAGE_SIZES.original]) ??
-        item?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE);
-      const { hasLoaded: fullSrcHasLoaded } = useImage(fullSrc ?? "");
+          ? item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
+          : item?.metadata?.imageSize[ NFT_IMAGE_SIZES.original ]) ??
+        item?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE);
+      const {hasLoaded: fullSrcHasLoaded} = useImage(fullSrc ?? "");
       // if()
       // myLog("item.__mediaType__", item.__mediaType__, item.animationUrl);
       const typeSvg = React.useMemo(() => {
@@ -112,7 +112,7 @@ export const NFTMedia = React.memo(
                   >
                     <audio
                       src={item.animationUrl?.replace(
-                        IPFS_META_URL,
+                        IPFS_HEAD_URL,
                         IPFS_LOOPRING_SITE
                       )}
                       ref={aidRef}
@@ -229,7 +229,7 @@ export const NFTMedia = React.memo(
                     setPreviewSrc(
                       item?.metadata?.imageSize["160-160"] ??
                         item?.image?.replace(
-                          IPFS_META_URL,
+                          IPFS_HEAD_URL,
                           IPFS_LOOPRING_SITE
                         ) ??
                         ""
@@ -263,7 +263,7 @@ export const NFTMedia = React.memo(
                         <video
                           ref={vidRef}
                           src={item.animationUrl?.replace(
-                            IPFS_META_URL,
+                            IPFS_HEAD_URL,
                             IPFS_LOOPRING_SITE
                           )}
                           autoPlay

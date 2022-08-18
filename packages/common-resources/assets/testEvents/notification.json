@@ -3,19 +3,6 @@
     "activities": [
       {
         "type": "ACTIVITY",
-        "version": "2",
-        "title": "deposit_2",
-        "name": "Loophead NFT Drop",
-        "description1": "Deposit to L2, Win a Loophead NFT",
-        "description2": "Duration: April 15 0:00 - May 15 0:00 (UTC)",
-        "link": "#/race-event/2022-06?type=deposit_2",
-        "startShow": 1654041600000,
-        "endShow": 1658275200000,
-        "color": "primary",
-        "banner": "https://alpha.looprnig.io/static/testEvents/2022/06/activities/deposit_2_banner.en.app.png"
-      },
-      {
-        "type": "ACTIVITY",
         "version": "0",
         "title": "ramp_event",
         "name": "🅾️ Zero Fees Promo!",
@@ -26,6 +13,20 @@
         "endShow": 1657497600000,
         "color": "default",
         "banner": ""
+      },
+      {
+        "type": "ACTIVITY",
+        "version": "-1",
+        "name": "lido",
+        "title": "ETH staking via Loopring L2 is live!",
+        "description1": "Participate into ETH staking to own rewards without lock-in",
+        "description2": "",
+        "link": "",
+        "startShow": 1660039200000,
+        "endShow": 1662631200000,
+        "color": "default",
+        "banner": "",
+        "webRouter": "[self]/invest/defi"
       }
     ],
     "notifications": [
@@ -41,11 +42,49 @@
         "endShow": 1657497600000,
         "color": "default",
         "banner": ""
+      },
+      {
+        "type": "NOTIFICATION",
+        "version": "-1",
+        "name": "lido",
+        "title": "ETH staking via Loopring L2 is live!",
+        "description1": "Participate into ETH staking to own rewards without lock-in",
+        "description2": "",
+        "link": "",
+        "startShow": 1660039200000,
+        "endShow": 1662631200000,
+        "color": "default",
+        "banner": "",
+        "webRouter": "[self]/invest/defi"
       }
     ],
     "invest": []
   },
   "prev": {
-    "endDate": 1658275200000
+    "endDate": 1662631200000
+  },
+  "invest": {
+    "banner": {
+      "mobile": "",
+      "laptop": ""
+    },
+    "investAdvice": [
+      {
+        "type": "AMM",
+        "router": "/invest/ammpool",
+        "banner": "https://static.loopring.io/assets/images/icon-amm.png",
+        "titleI18n": "labelInvestAmm",
+        "desI18n": "labelInvestAmmDes",
+        "enable": true
+      },
+      {
+        "type": "STAKE",
+        "router": "/invest/defi",
+        "banner": "https://static.loopring.io/assets/images/icon-lido.png",
+        "titleI18n": "labelInvestDefi",
+        "desI18n": "labelInvestDefiDes",
+        "enable": true
+      }
+    ]
   }
 }

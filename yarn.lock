@@ -3792,10 +3792,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@2.0.22":
-  version "2.0.22"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.22.tgz#551ee15dba156fd8b20ab792d39645492371ccd2"
-  integrity sha512-edb5iZ6d53Y497S7kaj1EWkaG8+0GgHCg88Zft0ID7TKwH/sqrLemjzCk+DvS7YNupOojUlA/PeAV8sbB0Rgmw==
+"@loopring-web/loopring-sdk@2.0.23":
+  version "2.0.23"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.23.tgz#b1e16bc1154e53b499fbf6edd0b853e98b99c0e0"
+  integrity sha512-DavsqEyBnK0joISl+6tXZyGaLDfI8HX0QihQGKDvnK3qd9UvEXoOVGd4CFtXPULFpkjEMpZpC4fuibMdxwrNFA==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"

@@ -21,6 +21,13 @@ import {
   RowConfig,
   TableType,
 } from "@loopring-web/common-resources";
+import { useSettings } from "../../../stores";
+import { Currency, NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
+import _ from "lodash";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { FilterTradeNFTTypes, NFTTradeProps } from "./Interface";
+import { DateRange } from '@mui/lab';
+
 
 const StyledSideCell: any = styled(Typography)`
   color: ${(props: any) => {
@@ -32,12 +39,6 @@ const StyledSideCell: any = styled(Typography)`
   }};
 `;
 
-import { useSettings } from "../../../stores";
-import { Currency, NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
-import _ from "lodash";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { FilterTradeNFTTypes, NFTTradeProps } from "./Interface";
-import { DateRange } from '@mui/lab';
 
 const TableStyled = styled(Box)<BoxProps & {
   isMobile?: boolean;
@@ -94,9 +95,18 @@ const getColumnModeAssets = (
         metadata = {
           ...metadata,
           ...metadata?.base
-        }
+        };
         let tradeType, fromAddr;
-        if (filterType !== FilterTradeNFTTypes.sell && bInfo.accountId === accountId) {
+        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.buy;
+          fromAddr = sInfo.address
+        } else if (filterType === FilterTradeNFTTypes.sell && sInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.sell;
+          fromAddr = bInfo.address
+        } else if (sInfo.accountId === accountId && bInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.self;
+          fromAddr = '';
+        } else if (bInfo.accountId === accountId) {
           tradeType = FilterTradeNFTTypes.buy;
           fromAddr = sInfo.address
         } else {
@@ -149,9 +159,11 @@ const getColumnModeAssets = (
               component={'span'}
             >
               <StyledSideCell value={tradeType}
-                              marginRight={1}>{tradeType === FilterTradeNFTTypes.buy ? t("labelFilterTradeNFTBuy") : t("labelFilterTradeNFTSell")}</StyledSideCell>
+                              marginRight={1}>{tradeType === FilterTradeNFTTypes.buy ? t("labelFilterTradeNFTBuy") :
+                tradeType === FilterTradeNFTTypes.self ? t("labelFilterTradeNFTSelf")
+                  : t("labelFilterTradeNFTSell")}</StyledSideCell>
               <span>
-                 {`${Number(nftAmount)} * ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown', {ns: "common"})} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : t('labelTo')} ${getShortAddr(fromAddr)}`}
+                 {`${Number(nftAmount)} * ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown', {ns: "common"})} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : tradeType === FilterTradeNFTTypes.sell ? t('labelTo') : ""} ${fromAddr && getShortAddr(fromAddr)}`}
                </span>
             </Typography>
           </Box>
@@ -178,8 +190,7 @@ const getColumnModeAssets = (
         ) + " " + erc20Info.symbol
           : EmptyValueTag;
         return (
-          <Box
-            className="rdg-cell-value textAlignRight">{renderValue}</Box>
+          <Box className="rdg-cell-value textAlignRight">{renderValue}</Box>
         );
       },
     },
@@ -190,7 +201,15 @@ const getColumnModeAssets = (
       formatter: ({row}) => {
         let {sInfo, bInfo, feeTokenSymbol} = row;
         let feeAmount;
-        if (filterType !== FilterTradeNFTTypes.sell && bInfo.accountId === accountId) {
+
+        if (filterType == FilterTradeNFTTypes.sell && sInfo.accountId === accountId) {
+          feeAmount = sInfo.feeAmount;
+        } else if (filterType == FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          feeAmount = bInfo.feeAmount;
+        } else if (bInfo.accountId === accountId && sInfo.accountId === accountId) {
+          feeAmount = sdk
+            .toBig(bInfo.feeAmount).plus(sInfo.feeAmount);
+        } else if (bInfo.accountId === accountId) {
           feeAmount = bInfo.feeAmount;
         } else {
           feeAmount = sInfo.feeAmount;
@@ -248,9 +267,18 @@ const getColumnModeMobileAssets = (
         metadata = {
           ...metadata,
           ...metadata?.base
-        }
+        };
         let tradeType, fromAddr;
         if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.buy;
+          fromAddr = sInfo.address
+        } else if (filterType === FilterTradeNFTTypes.sell && sInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.sell;
+          fromAddr = bInfo.address
+        } else if (sInfo.accountId === accountId && bInfo.accountId === accountId) {
+          tradeType = FilterTradeNFTTypes.self;
+          fromAddr = '';
+        } else if (bInfo.accountId === accountId) {
           tradeType = FilterTradeNFTTypes.buy;
           fromAddr = sInfo.address
         } else {
@@ -316,7 +344,7 @@ const getColumnModeMobileAssets = (
                 <StyledSideCell value={tradeType}
                                 marginRight={1}>{tradeType === FilterTradeNFTTypes.buy ? t("labelFilterTradeNFTBuy") : t("labelFilterTradeNFTSell")}</StyledSideCell>
                 <span>
-                 {`${Number(nftAmount)}  ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown', {ns: "common"})} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : t('labelTo')} ${getShortAddr(fromAddr)}`}
+                 {`${Number(nftAmount)}  ${metadata?.base?.name ? metadata?.base?.name : t('labelUnknown', {ns: "common"})} ${tradeType === FilterTradeNFTTypes.buy ? t('labelFrom') : tradeType === FilterTradeNFTTypes.sell ? t('labelTo') : ""} ${fromAddr && getShortAddr(fromAddr)}`}
                </span>
               </Typography>
               <Typography
@@ -345,11 +373,19 @@ const getColumnModeMobileAssets = (
         let {sInfo, bInfo, feeTokenSymbol} = row;
         const time = moment(new Date(row.createdAt), "YYYYMMDDHHMM").fromNow();
         let feeAmount;
-        if (filterType === FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+        if (filterType == FilterTradeNFTTypes.sell && sInfo.accountId === accountId) {
+          feeAmount = sInfo.feeAmount;
+        } else if (filterType == FilterTradeNFTTypes.buy && bInfo.accountId === accountId) {
+          feeAmount = bInfo.feeAmount;
+        } else if (bInfo.accountId === accountId && sInfo.accountId === accountId) {
+          feeAmount = sdk
+            .toBig(bInfo.feeAmount).plus(sInfo.feeAmount);
+        } else if (bInfo.accountId === accountId) {
           feeAmount = bInfo.feeAmount;
         } else {
           feeAmount = sInfo.feeAmount;
         }
+
         let feeTokenInfo = tokenMap[ feeTokenSymbol ];
         const fee = sdk
           .toBig(feeAmount)
@@ -433,19 +469,22 @@ export const TradeNFTTable = withTranslation("tables")(
          tableType,
          // tableType,
          // currFilterPair = filterPair,
-         currFilterData = filterDate,
+         currFilterDate = filterDate,
          currPage = pagination?.page || 1,
          currFilterType = filterType,
        }) => {
         if (tableType === TableType.filter) {
           currPage = 1;
         }
+
+        const start = currFilterDate[ 0 ] ? Number(moment(currFilterDate[ 0 ]).format("x")) : undefined;
+        const end = currFilterDate[ 1 ] ? Number(moment(currFilterDate[ 1 ]).format("x")) : undefined;
         // const market =
         //   currFilterPair === "all" ? "" : currFilterPair.replace(/\s+/g, "");
         if (getTradeList) {
           getTradeList({
-            start: currFilterData[ 0 ],
-            end: currFilterData[ 1 ],
+            start: start,
+            end: end,
             limit: pagination?.pageSize ?? 10,
             offset: (currPage - 1) * (pagination?.pageSize ?? 10),
             page: currPage,
@@ -479,13 +518,13 @@ export const TradeNFTTable = withTranslation("tables")(
 
     const handleReset = () => {
       setFilterType(FilterTradeNFTTypes.allTypes);
-      // setFilterDate([null, null]);
+      setFilterDate([null, null]);
       // setFilterPair("all");
+      // setFilterDate(date);
       updateData({
         tableType: "filter",
         currFilterType: FilterTradeTypes.allTypes,
-        // currFilterDate: [null, null],
-        // currFilterPair: "all",
+        currFilterDate: [null, null],
         currPage: 1,
       });
     };
@@ -536,7 +575,7 @@ export const TradeNFTTable = withTranslation("tables")(
             headerRowHeight,
             showloading: showLoading,
             ...rest,
-            rawData,
+            rawData: rawData ?? [],
           }}
         />
         {!!accountId && showFilter && (

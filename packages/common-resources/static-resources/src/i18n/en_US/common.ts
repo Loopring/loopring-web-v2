@@ -47,8 +47,8 @@ export default {
     "Once your deposit is confirmed on Ethereum, \n it will be added to your balance within 2 minutes.",
   depositAndActiveDescription:
     "Make a deposit to activate your Loopring L2 account. Once your deposit is <1>confirmed on Ethereum</1>, it will be added to your balance within <3>2 minutes</3>.",
-  depositLabelRefer: "Referral address, account id or ENS. (Optional)",
-  depositLabelPlaceholder: "address, account id or ENS",
+  depositLabelRefer: "Referral address, Account ID or ENS. (Optional)",
+  depositLabelPlaceholder: "address, Account ID or ENS",
   withdrawDescription:
     "Your withdrawal will be processed in the next batch,\n which usually takes 30 minutes to 2 hours.\n (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）",
   withdrawTypeLabelFast: "Fast (15 seconds at the earliest)",
@@ -95,8 +95,8 @@ export default {
   currencySetting: "Currency",
   labelColors: "Colors",
   labelTheme: "Dark Theme",
-  labelthemeLight: "light theme",
-  labelthemeDark: "dark theme",
+  labelthemeLight: "Light theme",
+  labelthemeDark: "Dark theme",
   labelgreen: "green",
   labelred: "red",
   langZH: "Chinese",
@@ -151,7 +151,7 @@ export default {
   labelMiningRewards: "Mining Rewards",
   labelLiquidityValue: "Liquidity Value",
   labelCopyAddClip: "Address Copied to Clipboard!",
-  labelPleaseInputWalletAddress: "Please input address / ens / account id",
+  labelPleaseInputWalletAddress: "Please input address / ENS / Account ID",
   labelEmptyDefault: "No data to display",
   labelUnlockAccount: "Unlock Account",
   labelLockWallet: "Lock Wallet",
@@ -576,7 +576,7 @@ export default {
     "Send assets to any valid Ethereum address instantly.\n Please make sure the recipient address accepts \n Loopring L2 payments before you proceed.",
   labelL2toL2Btn: "Send",
   labelL2toL2Address: "Recipient",
-  labelL2toL2AddressInput: "Please input address / ens / account id",
+  labelL2toL2AddressInput: "Please input address / ENS / Account ID",
   labelL2toL2Memo: "Memo (Optional)",
   labelL2toL2MemoPlaceholder: "Please input the memo",
   labelL2toL2FeeChoose: "Select payment token",
@@ -649,7 +649,7 @@ export default {
   labelNFTMintInputTitle: "Amount <1>\uFE61</1>",
   labelL1toL2Vendor:
     "Use a Loopring partner to deposit funds.\nOnce your order is confirmed by Loopring,\n it will be added to your balance within 2 minutes.",
-  depositLabelTo: "To address, account id or ENS.",
+  depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
@@ -673,7 +673,7 @@ export default {
   labelMintDescription: "Description <1>\u2139</1>",
   labelMintDescriptionTooltips:
     "The description will be included on the NFT's detail page beneath it's image.",
-  labelMintProperty: "Properties (Limit 5) <1>\u2139</1>",
+  labelMintProperty: "Properties (Limit 64) <1>\u2139</1>",
   labelMintPropertyTooltips:
     "Tags can be added to the NFT for easy searchability and distinction",
   labelPropertyAdd: "Add property",
@@ -740,7 +740,7 @@ export default {
   labelBalanceActiveAccountFee:
     "{{symbol}}: <2>Fee {{fee}};</2><3>My Loopring L2 balance: {{count}}</3>",
   labelToAddressShouldLoopring: "To address is no Loopring L2",
-  labelBridgeSendTo: "Send to (address, account id or ENS)",
+  labelBridgeSendTo: "Send to (address, Account ID or ENS)",
   labelInvalidAddressClick:
     "Invalid Wallet Address, {{way}} of {{token}} is disabled! <1>Click to input another receive address </1>",
   labelENSShouldConnect:
@@ -893,7 +893,7 @@ export default {
   labelMintGuid: "Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use \"Mint\" to create your NFT.",
   labelAdMintGuid: "Generate all the required metadata and upload to IPFS by yourself first, then use \"Advanced Mint\" to create your NFT.",
   labelFilterTradeNFTSell: "Sell",
+  labelFilterTradeNFTSelf: "Self Trade",
   labelFilterTradeNFTBuy: "Buy",
-
-  labelInvestDualTitle: "Dual Investment"
+  labelAdMintTitle: "Advance Create Collection",
 };

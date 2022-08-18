@@ -9,7 +9,7 @@ import {
   VipIcon,
   WaitApproveIcon,
 } from "../svg";
-import * as sdk from "@loopring-web/loopring-sdk";
+// import * as sdk from "@loopring-web/loopring-sdk";
 import {
   HeaderMenuItemInterface,
   HeaderMenuTabStatus,
@@ -23,13 +23,13 @@ export const SoursURL = "https://static.loopring.io/assets/";
 export const LoopringIPFSSite = "d1vjs0p75nt8te.cloudfront.net";
 export const LoopringIPFSSiteProtocol = "https";
 export const IPFS_LOOPRING_URL = `${LoopringIPFSSiteProtocol}://${LoopringIPFSSite}`;
-export const IPFS_LOOPRING_SITE = sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
+export const IPFS_LOOPRING_SITE = "https://ipfs.io/ipfs/";// sdk.LOOPRING_URLs.IPFS_META_URL; //`${IPFS_LOOPRING_URL}/ipfs/`;
 
 export const profile = {
   security: [
     {
       icon: SecurityIcon,
-      router: { path: "/layer2/security" },
+      router: {path: "/layer2/security"},
       label: {
         id: "security",
         i18nKey: "labelSecurity",

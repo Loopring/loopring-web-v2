@@ -14,7 +14,8 @@ export enum FilterTradeNFTTypes {
   // taker = "Taker",
   allTypes = "all",
   sell = "sell",
-  buy = "buy"
+  buy = "buy",
+  self = "self"
 }
 
 export type NFTTradeProps<Row> = NFTTradeFilter & {

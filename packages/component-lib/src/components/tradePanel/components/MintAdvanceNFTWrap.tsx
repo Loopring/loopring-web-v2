@@ -9,7 +9,7 @@ import {
   FeeInfo,
   Info2Icon,
   IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   LoadingIcon,
   myLog,
   // MINT_LIMIT,
@@ -432,7 +432,7 @@ export const MintAdvanceNFTWrap = <T extends TradeNFT<I>,
               <NftImage
                 alt={"NFT"}
                 src={tradeData?.image?.replace(
-                  IPFS_META_URL,
+                  IPFS_HEAD_URL,
                   IPFS_LOOPRING_SITE
                 )}
                 onError={() => undefined}

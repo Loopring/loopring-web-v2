@@ -7,7 +7,7 @@ import {
   FeeInfo,
   getShortAddr,
   IPFS_LOOPRING_SITE,
-  IPFS_META_URL,
+  IPFS_HEAD_URL,
   LinkIcon,
   MetaProperty,
   MintTradeNFT,
@@ -80,10 +80,10 @@ export const MintNFTConfirm = <
   }, [disabled, nftMintBtnStatus]);
   const [error, setError] = React.useState(false);
   const [src, setSrc] = React.useState(
-    metaData?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE)
+    metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE)
   );
   React.useEffect(() => {
-    setSrc(metaData?.image?.replace(IPFS_META_URL, IPFS_LOOPRING_SITE));
+    setSrc(metaData?.image?.replace(IPFS_HEAD_URL, IPFS_LOOPRING_SITE));
   }, [metaData?.image]);
   const handleToggleChange = (value: C) => {
     if (handleFeeChange) {
@@ -166,7 +166,7 @@ export const MintNFTConfirm = <
                               setError(false);
                               setSrc(
                                 metaData?.image?.replace(
-                                  IPFS_META_URL,
+                                  IPFS_HEAD_URL,
                                   IPFS_LOOPRING_SITE
                                 )
                               );
