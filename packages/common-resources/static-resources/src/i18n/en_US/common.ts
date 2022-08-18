@@ -688,6 +688,8 @@ export default {
   labelUseIpfsMintAgree:
     "I confirm that the NFT minted does not infringe on copyright laws or contain illegal, explicit, sensitive, adult themed, or any other content considered NSFW. We reserve the right to hide inappropriate content if an NFT is discovered to be harmful.",
   labelL1toL2TitleBridge: "Add Loopring L2 Assets",
+  labelL1toL2TitleBridgeNoConnect:
+    "Connect your Ethereum L1 Wallet to transfer assets to any Loopring L2 account",
   labelPayer: "My Wallet:",
   labelL1toL2TokenAmount: "Token Amount",
   labelL1toL2From: "From",
@@ -844,10 +846,13 @@ export default {
   labelDefiNoBalance:
     "<0>It is not possible for the Loopring pool to fulfil your complete request at the moment.</0>" +
     "<1>You can choose one of the following approaches for the remaining amount:</1>",
-  labelDefiNoBalanceList: "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
+  labelDefiNoBalanceList:
+    "<0>Withdraw wstETH to L1 and trade trade through Uniswap, 1Inch or Lido.</0>" +
     "<1>The Loopring pool will rebalance soon. Please come back later to redeem.</1>",
-  labelDefiMaxBalanceJoin: "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
-  labelDefiNoBalanceJoin: "Loopring will set up the pool soon. Please come back later to subscribe.",
+  labelDefiMaxBalanceJoin:
+    "The quota is almost sold out and can't fulfil your complete order. You can only subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later. ",
+  labelDefiNoBalanceJoin:
+    "Loopring will set up the pool soon. Please come back later to subscribe.",
   labelInvestBtn: "Subscribe",
   labelRedeemBtn: "Redeem",
   labelVipTitle: "VIP",
@@ -874,7 +879,8 @@ export default {
     "<1>Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.</1>",
   labelDefiAgree: "I have read risk warning",
   labelDefiInvest: "Defi Earn",
-  labelDefiClose: "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
+  labelDefiClose:
+    "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
   labelCreateCollection: "New My Collection",
   labelCollectionCreateName: "Contract address for your collection",
   labelCollectionCreateERC1155: "Collection ERC-1155",
@@ -890,8 +896,10 @@ export default {
   labelCopyDemo: "Click to copy the demo",
   labelCollectionCreatBtn: "Create Collection",
   labelEnterMeta: "Enter Collection Metadata",
-  labelMintGuid: "Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use \"Mint\" to create your NFT.",
-  labelAdMintGuid: "Generate all the required metadata and upload to IPFS by yourself first, then use \"Advanced Mint\" to create your NFT.",
+  labelMintGuid:
+    'Fill up content in GUI and let Loopring to generate necessary metadata and upload to IPFS for you, then use "Mint" to create your NFT.',
+  labelAdMintGuid:
+    'Generate all the required metadata and upload to IPFS by yourself first, then use "Advanced Mint" to create your NFT.',
   labelFilterTradeNFTSell: "Sell",
   labelFilterTradeNFTSelf: "Self Trade",
   labelFilterTradeNFTBuy: "Buy",
