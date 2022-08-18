@@ -1,5 +1,5 @@
 {
-  "notifications": [
+  "activities": [
     {
       "type": "ACTIVITY",
       "version": "-1",
@@ -11,11 +11,11 @@
       "startShow": 1660039200000,
       "endShow": 1662631200000,
       "color": "default",
-      "banner": "",
+      "banner": "https://staitc.loopring.io/events/2022/08/activities/ETHstacking.en.webp",
       "webRouter": "[self]/invest/defi"
     }
   ],
-  "activities": [],
+  "notifications": [],
   "invest": [],
   "prev": {
     "endDate": 1662631200000

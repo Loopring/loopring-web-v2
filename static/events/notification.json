@@ -1,10 +1,8 @@
 {
   "en": {
     "activities": [
-    ],
-    "notifications": [
       {
-        "type": "NOTIFICATION",
+        "type": "ACTIVITY",
         "version": "-1",
         "name": "lido",
         "title": "ETH staking via Loopring L2 is live!",
@@ -14,10 +12,11 @@
         "startShow": 1660039200000,
         "endShow": 1662631200000,
         "color": "default",
-        "banner": "",
+        "banner": "https://staitc.loopring.io/events/2022/08/activities/ETHstacking.en.webp",
         "webRouter": "[self]/invest/defi"
       }
     ],
+    "notifications": [],
     "invest": []
   },
   "prev": {
