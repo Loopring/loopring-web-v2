@@ -28,7 +28,7 @@ export enum AccountStep {
   AddAssetGateway,
   SendAssetGateway,
   SendNFTGateway,
-  PayWithCard,
+  // PayWithCard,
   NoAccount,
   QRCode,
   HadAccount,

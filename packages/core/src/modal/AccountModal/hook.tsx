@@ -84,7 +84,7 @@ import {
   NFTMint_First_Method_Denied,
   NFTMint_In_Progress,
   Deposit_Sign_WaitForRefer,
-  VendorMenu,
+  // VendorMenu,
   AddAsset,
   SendAsset,
   CheckActiveStatus,
@@ -127,7 +127,6 @@ import {
   onchainHashInfo,
   useActiveAccount,
   useWalletLayer2,
-  useVendor,
   useModalData,
   useNFTDeploy,
   store,
@@ -195,7 +194,7 @@ export function useAccountModalForUI({
     exportAccountToastOpen,
     setExportAccountToastOpen,
   } = useExportAccount();
-  const vendorProps = useVendor();
+  // const vendorProps = useVendorBuy();
   const { nftMintAdvanceProps, retryBtn: nftMintAdvanceRetryBtn } =
     useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
@@ -494,12 +493,12 @@ export function useAccountModalForUI({
 
   const addAssetList: AddAssetItem[] = React.useMemo(
     () => [
-      {
-        ...AddAssetList.BuyWithCard,
-        handleSelect: (_e) => {
-          setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
-        },
-      },
+      // {
+      //   ...AddAssetList.BuyWithCard,
+      //   handleSelect: (_e) => {
+      //     setShowAccount({ isShow: true, step: AccountStep.PayWithCard });
+      //   },
+      // },
       {
         ...AddAssetList.FromMyL1,
         handleSelect: () => {
@@ -684,10 +683,10 @@ export function useAccountModalForUI({
           />
         ),
       },
-      [AccountStep.PayWithCard]: {
-        view: <VendorMenu {...{ ...vendorProps }} />,
-        onBack: onBackReceive,
-      },
+      // [AccountStep.PayWithCard]: {
+      //   view: <VendorMenu {...{ ...vendorProps }} />,
+      //   onBack: onBackReceive,
+      // },
       [AccountStep.NoAccount]: {
         view: (
           <NoAccount
@@ -2094,7 +2093,7 @@ export function useAccountModalForUI({
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
-    vendorProps,
+    // vendorProps,
     onBackReceive,
     chainInfos,
     isLayer1Only,
