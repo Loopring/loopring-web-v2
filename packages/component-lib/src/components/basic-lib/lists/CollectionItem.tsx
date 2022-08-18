@@ -13,9 +13,9 @@ import {
   getShortAddr,
   Account,
   CollectionMeta,
-  myLog,
   NFT_TYPE_STRING,
   MakeMeta,
+  GET_IPFS_STRING,
 } from "@loopring-web//common-resources";
 import React from "react";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
@@ -64,6 +64,8 @@ export const CollectionItem = React.memo(
         selectCollection,
         makeMeta,
         domain,
+        getIPFSString,
+        baseURL,
       }: // toggle,
       {
         item: Co;
@@ -78,6 +80,8 @@ export const CollectionItem = React.memo(
         selectCollection?: Co;
         domain: string;
         makeMeta: MakeMeta;
+        baseURL: string;
+        getIPFSString: GET_IPFS_STRING;
       },
       _ref: React.Ref<any>
     ) => {
@@ -86,8 +90,6 @@ export const CollectionItem = React.memo(
       const { t } = useTranslation("common");
 
       const { metaDemo } = makeMeta({ collection: item, domain });
-      myLog(selectCollection, "selectCollection");
-
       return (
         <CardStyleItem ref={_ref} className={"collection"}>
           <Box
@@ -101,6 +103,8 @@ export const CollectionItem = React.memo(
             <CollectionMedia
               item={item}
               index={index}
+              getIPFSString={getIPFSString}
+              baseURL={baseURL}
               // onNFTReload={onNFTReload}
               onRenderError={() => undefined}
             />

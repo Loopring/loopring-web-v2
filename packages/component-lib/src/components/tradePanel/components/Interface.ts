@@ -435,6 +435,7 @@ export type NFTMintAdvanceExtendProps<T, Co, I, C = FeeInfo> = {
   handleOnNFTDataChange: (data: T) => void;
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
+  etherscanBaseUrl: string;
 } & NFTMintAdvanceInfoProps<T, I, C>;
 export type NFTMintAdvanceViewProps<T, Co, I, C> = NFTMintAdvanceExtendProps<
   T,
@@ -445,10 +446,10 @@ export type NFTMintAdvanceViewProps<T, Co, I, C> = NFTMintAdvanceExtendProps<
 
 export type CollectionAdvanceProps<_T> = {
   handleDataChange: (data: string) => void;
-  onSubmitClick: () => void;
+  onSubmitClick: () => Promise<void>;
   allowTrade?: any;
   disabled?: boolean;
   btnStatus: TradeBtnStatus;
-  handleError: (error: { code: number; message: string }) => void;
+  // handleError: (error: { code: number; message: string }) => void;
   metaData: string;
 } & BtnInfoProps;

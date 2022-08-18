@@ -1,7 +1,6 @@
 import React from "react";
 import {
   ErrorType,
-  IPFS_LOOPRING_SITE,
   IPFS_HEAD_URL,
   MINT_LIMIT,
   myLog,
@@ -20,6 +19,7 @@ import {
   mintService,
   LoopringAPI,
   useSystem,
+  getIPFSString,
 } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { ipfsService, useIPFS } from "../ipfs";
@@ -124,7 +124,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
           _value = {
             ..._value,
             cid: cid,
-            fullSrc: `${IPFS_LOOPRING_SITE}${data.path}`,
+            fullSrc: getIPFSString(`${IPFS_HEAD_URL}${data.path}`, baseURL),
             isProcessing: false,
           };
           handleOnMetaChange({

@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  DeFiChgType,
   DeFiWrapProps,
   TradeBtnStatus,
   useOpenModals,
@@ -15,6 +14,7 @@ import {
   IBData,
   MarketType,
   myLog,
+  DeFiChgType,
   SDK_ERROR_MAP_TO_UI,
   TradeDefi,
 } from "@loopring-web/common-resources";

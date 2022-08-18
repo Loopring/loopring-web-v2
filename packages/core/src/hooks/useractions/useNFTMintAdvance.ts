@@ -13,11 +13,10 @@ import {
   ErrorMap,
   ErrorType,
   Explorer,
-  IPFS_LOOPRING_SITE,
+  IPFS_HEAD_URL,
   MINT_LIMIT,
   myLog,
   NFT_TYPE_STRING,
-  SagaStatus,
   TOAST_TIME,
   TradeNFT,
   UIERROR_CODE,
@@ -48,6 +47,7 @@ import { useWalletInfo } from "../../stores/localStore/walletInfo";
 import { useTranslation } from "react-i18next";
 import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
+import { useHistory } from "react-router-dom";
 
 const CID = require("cids");
 
@@ -57,7 +57,7 @@ export const useNFTMintAdvance = <
   I
 >() => {
   const { tokenMap, totalCoinMap } = useTokenMap();
-  const { account, status: accountStatus } = useAccount();
+  const { account } = useAccount();
   const { exchangeInfo, chainId } = useSystem();
   const collectionListProps = useMyCollection<Co>();
   const { nftMintAdvanceValue, updateNFTMintAdvanceData } = useModalData();
@@ -77,29 +77,8 @@ export const useNFTMintAdvance = <
     React.useState<undefined | { reason: string }>(undefined);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
-  const { baseURL } = useSystem();
-
-  React.useEffect(() => {
-    // const account = store.getState().account;
-    if (
-      account.readyState === AccountStatus.ACTIVATED &&
-      accountStatus === SagaStatus.UNSET
-    ) {
-      // setTokenAddress(() => {
-      //   if (account.accAddress && LoopringAPI.nftAPI) {
-      //     return (
-      //       LoopringAPI.nftAPI?.computeNFTAddress({
-      //         nftOwner: account.accAddress,
-      //         nftFactory: sdk.NFTFactory[ chainId ],
-      //         nftBaseUri: "",
-      //       }).tokenAddress || undefined
-      //     );
-      //   } else {
-      //     return undefined;
-      //   }
-      // });
-    }
-  }, [accountStatus]);
+  const { baseURL, etherscanBaseUrl } = useSystem();
+  const history = useHistory();
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -307,7 +286,6 @@ export const useNFTMintAdvance = <
                   value: nftMintAdvanceValue.tradeValue,
                 },
               });
-              await sdk.sleep(TOAST_TIME);
               setShowAccount({
                 isShow: true,
                 step: AccountStep.NFTMint_Success,
@@ -319,6 +297,8 @@ export const useNFTMintAdvance = <
                     `tx/${(response as sdk.TX_HASH_API)?.hash}-nftMintAdvance`,
                 },
               });
+              await sdk.sleep(TOAST_TIME);
+              history.push("/nft/");
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);
                 updateHW({ wallet: account.accAddress, isHWAddr });
@@ -426,22 +406,13 @@ export const useNFTMintAdvance = <
         if (nftId && nftId !== "") {
           try {
             const value = await fetch(
-              IPFS_LOOPRING_SITE + `${data.nftIdView}`
+              getIPFSString(`${IPFS_HEAD_URL}${data.nftIdView}`, baseURL)
             ).then((response) => response.json());
             let collectionMeta: CollectionMeta | undefined;
             if (value && value.collection_metadata) {
-              // TODO:  MOCK  and solve the cross domain
-              const collectionMetadata: CollectionMeta = {
-                name: "",
-                tileUri:
-                  "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
-                avatar: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
-                banner: "ipfs://QmRxe58RsFJJybMd5Ye7dpHDVxDVQVeNw1MDAwuzvbkY4J",
-                baseUri:
-                  "0x523c347322cec97c31adef1bb3f4f23646db5668b20b6ec8df05c558cb8ddbb0",
-                contractAddress: "0x3295619421890680a8c88decabb1f9d4fb6c3b80",
-                owner: "0xff7d59d9316eba168837e3ef924bcdfd64b237d8",
-              };
+              const collectionMetadata: CollectionMeta = await fetch(
+                getIPFSString(value.collection_metadata, baseURL)
+              ).then((response) => response.json());
 
               if (collectionMetadata.contractAddress) {
                 const response = await LoopringAPI.userAPI
@@ -682,6 +653,7 @@ export const useNFTMintAdvance = <
       domain: LoopringAPI.delegate?.getCollectionDomain() ?? "",
       makeMeta,
     },
+    etherscanBaseUrl,
     baseURL,
     getIPFSString,
     handleOnNFTDataChange,

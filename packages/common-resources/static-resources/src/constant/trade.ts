@@ -13,9 +13,12 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { MarketType } from "./market";
-import { TokenInfo } from "@loopring-web/loopring-sdk";
-import { DeFiChgType } from "@loopring-web/component-lib";
 
+export enum DeFiChgType {
+  coinSell = "coinSell",
+  coinBuy = "coinBuy",
+  exchange = "exchange",
+}
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
   | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -404,8 +407,8 @@ export type TradeDefi<C> = {
   isStoB: boolean;
   sellVol: string;
   buyVol: string;
-  sellToken: TokenInfo;
-  buyToken: TokenInfo;
+  sellToken: sdk.TokenInfo;
+  buyToken: sdk.TokenInfo;
   deFiCalcData?: DeFiCalcData<C>;
   fee: string;
   feeRaw: string;

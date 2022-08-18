@@ -1,18 +1,11 @@
-import {
-  SoursURL,
-} from "@loopring-web/common-resources";
+import { GET_IPFS_STRING, SoursURL } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
 import { Box, BoxProps } from "@mui/material";
-import {
-  cssBackground,
-  EmptyDefault,
-  NftImage,
-  useImage,
-} from "../../index";
+import { cssBackground, EmptyDefault, NftImage, useImage } from "../../index";
 import { CollectionMeta } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -29,24 +22,33 @@ export const CollectionMedia = React.memo(
         item,
         onRenderError,
         index,
+        baseURL,
+        getIPFSString,
       }: {
         item: Partial<CollectionMeta>;
         index?: number;
-        onRenderError: (popItem: Partial<CollectionMeta>, index?: number) => void;
+        onRenderError: (
+          popItem: Partial<CollectionMeta>,
+          index?: number
+        ) => void;
+        baseURL: string;
+        getIPFSString: GET_IPFS_STRING;
         // isOrigin?: boolean;
         // shouldPlay?: boolean;
       },
       ref: React.ForwardedRef<any>
     ) => {
       const theme = useTheme();
-      const {t} = useTranslation('')
-      const {hasLoaded, hasError} = useImage(item.tileUri ?? "");
+      const { t } = useTranslation("");
+      const { hasLoaded, hasError } = useImage(
+        getIPFSString(item.tileUri, baseURL) ?? ""
+      );
 
       React.useEffect(() => {
         if (hasError) {
-          onRenderError(item, index)
+          onRenderError(item, index);
         }
-      }, [hasError, item, index])
+      }, [hasError, item, index]);
 
       return (
         <BoxStyle
@@ -79,21 +81,19 @@ export const CollectionMedia = React.memo(
               display={"flex"}
               style={{
                 background:
-                  !!item.tileUri && !hasError
-                    ? "var(--field-opacity)"
-                    : "",
+                  !!item.tileUri && !hasError ? "var(--field-opacity)" : "",
               }}
             >
               {!!item.tileUri && !hasError ? (
                 <NftImage
-                  alt={'tile'}
+                  alt={"tile"}
                   {...item}
                   onError={() => onRenderError(item, index)}
-                  src={item.tileUri}
+                  src={getIPFSString(item.tileUri, baseURL)}
                 />
               ) : (
                 <EmptyDefault
-                  style={{flex: 1}}
+                  style={{ flex: 1 }}
                   height={"100%"}
                   message={() => (
                     <Box
@@ -108,7 +108,6 @@ export const CollectionMedia = React.memo(
                 />
               )}
             </Box>
-
           )}
         </BoxStyle>
       );

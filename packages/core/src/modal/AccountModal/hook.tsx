@@ -134,7 +134,10 @@ import {
   mintService,
   goActiveAccount,
   useCheckActiveStatus,
-  useForceWithdraw, useCollectionAdvanceMeta, useToast, useNFTMintAdvance,
+  useForceWithdraw,
+  useCollectionAdvanceMeta,
+  useToast,
+  useNFTMintAdvance,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -185,9 +188,9 @@ export function useAccountModalForUI({
     forceWithdrawValue,
   } = useModalData();
 
-  const {chainId, allowTrade} = useSystem();
+  const { chainId, allowTrade } = useSystem();
 
-  const {account, addressShort, shouldShow, setShouldShow} = useAccount();
+  const { account, addressShort, shouldShow, setShouldShow } = useAccount();
 
   const {
     exportAccountAlertText,
@@ -197,18 +200,20 @@ export function useAccountModalForUI({
   const vendorProps = useVendor();
   const {
     toastOpen: collectionToastOpen,
-    setToastOpen: setCollectionToastOpen, closeToast: collectionToastClose
+    setToastOpen: setCollectionToastOpen,
+    closeToast: collectionToastClose,
   } = useToast();
 
-  const {retryBtn: nftMintAdvanceRetryBtn} =
-    useNFTMintAdvance();
-  const {collectionAdvanceProps} = useCollectionAdvanceMeta({setCollectionToastOpen});
-  const {withdrawProps} = useWithdraw();
-  const {transferProps} = useTransfer();
-  const {nftWithdrawProps} = useNFTWithdraw();
-  const {nftTransferProps} = useNFTTransfer();
-  const {nftDeployProps} = useNFTDeploy();
-  const {retryBtn: forceWithdrawRetry} = useForceWithdraw();
+  const { retryBtn: nftMintAdvanceRetryBtn } = useNFTMintAdvance();
+  const { collectionAdvanceProps } = useCollectionAdvanceMeta({
+    setCollectionToastOpen,
+  });
+  const { withdrawProps } = useWithdraw();
+  const { transferProps } = useTransfer();
+  const { nftWithdrawProps } = useNFTWithdraw();
+  const { nftTransferProps } = useNFTTransfer();
+  const { nftDeployProps } = useNFTDeploy();
+  const { retryBtn: forceWithdrawRetry } = useForceWithdraw();
   const { resetProps } = useReset();
   const { activeAccountProps, activeAccountCheckFeeIsEnough } =
     useActiveAccount();
@@ -2164,6 +2169,7 @@ export function useAccountModalForUI({
     setExportAccountToastOpen,
     copyToastOpen,
     setCopyToastOpen,
+    setCollectionToastOpen,
     openQRCode,
     setOpenQRCode,
     isShowAccount,

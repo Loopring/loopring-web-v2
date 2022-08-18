@@ -23,7 +23,7 @@ import { useTranslation } from "react-i18next";
 import {
   AmmPanel,
   AmmPanelType,
-  AmmProps, CollectionAdvanceProps,
+  AmmProps,
   DepositProps,
   ModalPanel,
   ResetProps,
@@ -451,7 +451,7 @@ const ModalPanelWrap = () => {
       exportAccountProps={{} as any}
       setExportAccountToastOpen={{} as any}
       activeAccountProps={{} as any}
-      nftMintAdvanceProps={{} as any}
+      // nftMintAdvanceProps={{} as any}
       nftDeployProps={{} as any}
       account={{} as any}
     />

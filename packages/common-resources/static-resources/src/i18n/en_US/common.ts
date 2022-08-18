@@ -653,7 +653,8 @@ export default {
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
   labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
-  labelLoadDes: "Drag or click to upload files ({{types}}, max size: 10MB)",
+  labelLoadDes:
+    "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
   labelMintNoImageBtn: "Please upload image",
   labelMintUserAgree: "Please agree to the terms of service",
@@ -915,8 +916,14 @@ export default {
   labelHasData: "Has generated metadata w/ collection_metadata field",
   labelNoData: "Hasn't generated metadata w/ collection_metadata field",
   labelChooseCollection: "Choose a collection",
+  labelBanner: "Banner (1500px * 500px)",
+  labelBannerDes:
+    "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelAvatar: "Avatar (120px * 120px)",
+  labelAvatarDes: "Max size: {{size}}MB)",
   labelTileUri: " Tile (320px * 320px) <1>\uFE61</1>",
+  labelTileUriDes:
+    "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelCollectionDescription: "Description",
   labelCollectionName: "Collection Name <1>\uFE61</1>",
   labelCollectionCreateBtn: "Create Collection",
@@ -937,4 +944,6 @@ export default {
   labelNFTServerRefresh:
     "Click to refresh loopring cache resource, this is an lag command usually take 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
+  labelNFTCollection: "Collection",
+  labelCounterFactualNFT: "Counter Factual NFT: ",
 };

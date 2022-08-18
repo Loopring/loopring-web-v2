@@ -128,9 +128,9 @@ export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>({
             const metaDemo = {
               name: "`${COLLECTION_NAME (string, required)}`",
               tileUri: "ipfs://`${cid (storage image type media, required)}`",
-              description: "`${COLLECTION_DESCRIPTION}",
-              avatar: "ipfs://`${cid  (storage image type media)}",
-              banner: "ipfs://`${cid  (storage image type media)}",
+              description: "`${COLLECTION_DESCRIPTION}`",
+              avatar: "ipfs://`${cid  (storage image type media)}`",
+              banner: "ipfs://`${cid  (storage image type media)}`",
               // collectionTitle: "`${COLLECTION_TITLE (string)}`",
               // thumbnail: "ipfs://`${cid  (storage image type media)}",
             };

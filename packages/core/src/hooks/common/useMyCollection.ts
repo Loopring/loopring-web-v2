@@ -6,6 +6,7 @@ import {
   L2CollectionFilter,
 } from "@loopring-web/common-resources";
 import {
+  getIPFSString,
   LoopringAPI,
   makeMeta,
   useSystem,
@@ -36,7 +37,7 @@ export const useMyCollection = <C extends CollectionMeta>(
     page: page_reudex,
     updateWalletL2Collection,
   } = useWalletL2Collection();
-  const { etherscanBaseUrl } = useSystem();
+  const { etherscanBaseUrl, baseURL } = useSystem();
   const [page, setPage] = useState(1);
 
   const onPageChange = (page: number, filter?: L2CollectionFilter) => {
@@ -73,5 +74,7 @@ export const useMyCollection = <C extends CollectionMeta>(
     page,
     isLoading,
     copyToastOpen,
+    baseURL,
+    getIPFSString,
   };
 };

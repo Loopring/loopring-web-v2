@@ -3,26 +3,32 @@ import {
   CollectionMeta,
   ErrorType,
   IPFS_HEAD_URL,
-  IPFS_LOOPRING_SITE,
-  MINT_LIMIT,
   myLog,
   SagaStatus,
+  SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
 } from "@loopring-web/common-resources";
 import {
   collectionService,
+  getIPFSString,
   ipfsService,
+  LoopringAPI,
+  store,
   useBtnStatus,
   useIPFS,
   useModalData,
+  useSystem,
+  useToast,
+  useWalletL2Collection,
 } from "@loopring-web/core";
 import { BigNumber } from "bignumber.js";
 import React from "react";
 import { useAccount } from "@loopring-web/core";
 import { IpfsFile, useToggle } from "@loopring-web/component-lib";
-import { useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { AddResult } from "ipfs-core-types/src/root";
+import { useTranslation } from "react-i18next";
 
 const enum MINT_VIEW_STEP {
   METADATA,
@@ -39,9 +45,17 @@ export const useCollectionPanel = <T extends CollectionMeta>({
   const {
     toggle: { collectionNFT },
   } = useToggle();
+  const {
+    toastOpen: collectionToastOpen,
+    setToastOpen: setCollectionToastOpen,
+    closeToast: collectionToastClose,
+  } = useToast();
+  const { t } = useTranslation("common");
   const [disabled, _setDisabled] = React.useState(!collectionNFT.enable);
   const { collectionValue, updateCollectionData } = useModalData();
-  // const [isLoading, setIsLoading] = React.useState(true);
+  const { baseURL, chainId } = useSystem();
+  const { updateWalletL2Collection } = useWalletL2Collection();
+  const history = useHistory();
   const [keys, setKeys] = React.useState<{
     [key: string]: undefined | IpfsFile;
   }>(() => {
@@ -113,13 +127,75 @@ export const useCollectionPanel = <T extends CollectionMeta>({
   React.useEffect(() => {
     updateBtnStatus();
   }, [collectionValue, updateBtnStatus, keys]);
+  const onSubmitClick = React.useCallback(async () => {
+    if (
+      collectionValue.name?.trim() &&
+      collectionValue.tileUri?.trim() &&
+      LoopringAPI.userAPI
+    ) {
+      setLoadingBtn();
+      // debugger;
+      try {
+        const response = await LoopringAPI.userAPI.submitNFTCollection(
+          {
+            ...collectionValue,
+            name: collectionValue.name?.trim(),
+            tileUri: collectionValue.tileUri?.trim(),
+            owner: account.accAddress,
+          } as sdk.CollectionMeta,
+          chainId as any,
+          account.apiKey,
+          account.eddsaKey.sk
+        );
+        if (
+          response &&
+          ((response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message)
+        ) {
+          if ((response as sdk.RESULT_INFO).code === 102127) {
+            // @ts-ignore
+            throw new Error(
+              t(
+                SDK_ERROR_MAP_TO_UI[
+                  (response as sdk.RESULT_INFO).code ?? UIERROR_CODE.UNKNOWN
+                ]?.message ?? "",
+                { ns: "error" }
+              )
+            );
+          } else {
+            throw new Error((response as sdk.RESULT_INFO).message);
+          }
+        } else {
+          setCollectionToastOpen({
+            open: true,
+            type: "success",
+            content: t("labelCreateCollectionSuccess"),
+          });
+          updateWalletL2Collection({ page: 1 });
+          history.push("/nft/myCollection");
+        }
+      } catch (error) {
+        setCollectionToastOpen({
+          open: true,
+          type: "error",
+          content:
+            t("labelCreateCollectionFailed") +
+            `: ${
+              (error as any)?.message
+                ? (error as any).message
+                : t("errorUnknown")
+            }`,
+        });
+      }
+    }
+    updateCollectionData({});
+  }, [collectionValue, disableBtn, resetBtnInfo]);
 
-  const handleOnDataChange = React.useCallback(
-    (key: string, value: any) => {
-      updateCollectionData({ ...collectionValue, [key]: value });
-    },
-    [collectionValue]
-  );
+  const handleOnDataChange = React.useCallback((key: string, value: any) => {
+    const collectionValue = store.getState()._router_modalData.collectionValue;
+    myLog("collectionValue", collectionValue);
+    updateCollectionData({ ...collectionValue, [key]: value });
+  }, []);
 
   const onDelete = React.useCallback(
     (key: string) => {
@@ -179,7 +255,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
               ...state[key as any],
               ...{
                 cid: cid,
-                fullSrc: `${IPFS_LOOPRING_SITE}${data.path}`,
+                fullSrc: getIPFSString(`${IPFS_HEAD_URL}${data.path}`, baseURL),
                 isProcessing: false,
               },
             },
@@ -235,6 +311,8 @@ export const useCollectionPanel = <T extends CollectionMeta>({
 
   return {
     keys,
+    collectionToastOpen,
+    collectionToastClose,
     onFilesLoad,
     onDelete,
     btnStatus,
@@ -242,5 +320,6 @@ export const useCollectionPanel = <T extends CollectionMeta>({
     disabled,
     handleOnDataChange,
     collectionValue,
+    onSubmitClick,
   };
 };

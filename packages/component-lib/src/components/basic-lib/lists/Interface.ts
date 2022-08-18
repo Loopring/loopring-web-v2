@@ -8,6 +8,7 @@ import {
   CoinInfo,
   CoinKey,
   CoinMap,
+  GET_IPFS_STRING,
   L2CollectionFilter,
   MakeMeta,
   WalletCoin,
@@ -105,4 +106,6 @@ export type CollectionListProps<Co> = {
   setCopyToastOpen: (props: { isShow: boolean; type: string }) => void;
   isLoading: boolean;
   etherscanBaseUrl: string;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
 };

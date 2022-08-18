@@ -31,7 +31,7 @@ import {
 import { LoopringAPI, NFT_MINT_VALUE, useSystem } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-const MaxSize = 10000000;
+const MaxSize = 10485760;
 
 const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const MetaNFTPanel = <

@@ -22,6 +22,7 @@ import {
   TradeNFT,
   SoursURL,
   RefreshIcon,
+  getShortAddr,
 } from "@loopring-web/common-resources";
 import {
   EmptyDefault,
@@ -40,7 +41,11 @@ import {
   IconClearStyled,
 } from "./Styled";
 import { NFTInput } from "./BasicANFTTrade";
-import { CollectionMeta, NFTType } from "@loopring-web/loopring-sdk";
+import {
+  CollectionMeta,
+  DEPLOYMENT_STATUS,
+  NFTType,
+} from "@loopring-web/loopring-sdk";
 import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
@@ -144,6 +149,7 @@ export const MintAdvanceNFTWrap = <
   collectionInputProps,
   onNFTMintClick,
   getIPFSString,
+  etherscanBaseUrl,
 }: NFTMintAdvanceViewProps<T, Co, I, C>) => {
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
@@ -425,6 +431,7 @@ export const MintAdvanceNFTWrap = <
                         whiteSpace={"break-spaces"}
                         marginTop={1 / 4}
                         component={"span"}
+                        width={"100%"}
                         style={{ wordBreak: "break-all" }}
                       >
                         {tradeData?.nftId}
@@ -653,9 +660,83 @@ export const MintAdvanceNFTWrap = <
                       color={"var(--color-text-third)"}
                       whiteSpace={"break-spaces"}
                       style={{ wordBreak: "break-all" }}
-                      title={tradeData.name}
+                      title={NFT_TYPE[0].label}
                     >
                       {NFT_TYPE[0].label}
+                    </Typography>
+                  </Typography>
+
+                  <Typography
+                    component={"span"}
+                    display={"inline-flex"}
+                    justifyContent={"space-between"}
+                    variant={"body1"}
+                    marginBottom={2}
+                  >
+                    <Typography
+                      color={"textSecondary"}
+                      component={"span"}
+                      marginRight={1}
+                    >
+                      {t("labelNFTContractAddress")}
+                    </Typography>
+                    {tradeData.collectionMeta &&
+                    tradeData.collectionMeta.deployStatus ==
+                      DEPLOYMENT_STATUS.DEPLOYED ? (
+                      <Link
+                        fontSize={"inherit"}
+                        whiteSpace={"break-spaces"}
+                        style={{ wordBreak: "break-all" }}
+                        target="_blank"
+                        color={"var(--color-text-third)"}
+                        title={tradeData.collectionMeta.contractAddress}
+                        rel="noopener noreferrer"
+                        href={`${etherscanBaseUrl}token/${tradeData.collectionMeta.contractAddress}`}
+                      >
+                        {tradeData.collectionMeta.contractAddress}
+                      </Link>
+                    ) : (
+                      <Typography
+                        component={"span"}
+                        color={"var(--color-text-third)"}
+                        title={
+                          "Counter Factual NFT" +
+                          tradeData?.collectionMeta?.contractAddress
+                        }
+                      >
+                        {t("labelCounterFactualNFT") +
+                          getShortAddr(
+                            tradeData?.collectionMeta?.contractAddress ?? ""
+                          )}
+                      </Typography>
+                    )}
+                  </Typography>
+
+                  <Typography
+                    component={"span"}
+                    display={"inline-flex"}
+                    justifyContent={"space-between"}
+                    variant={"body1"}
+                    marginBottom={2}
+                  >
+                    <Typography
+                      color={"textSecondary"}
+                      component={"span"}
+                      marginRight={1}
+                    >
+                      {t("labelNFTCollection")}
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      color={"var(--color-text-third)"}
+                      whiteSpace={"break-spaces"}
+                      display={"inline-flex"}
+                      alignItems={"center"}
+                      style={{ wordBreak: "break-all" }}
+                      title={tradeData.collectionMeta?.contractAddress}
+                    >
+                      {tradeData.collectionMeta?.name}
+                      {/*{tradeData.collectionMeta?.name  + ' ' ?? EmptyValueTag}*/}
                     </Typography>
                   </Typography>
 

@@ -12,7 +12,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { CollectionMeta } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { TradeBtnStatus } from "../Interface";
-
 export type CreateCollectionViewProps<Co> = {
   keys: { [key: string]: undefined | IpfsFile };
   onFilesLoad: (key: string, value: IpfsFile) => void;
@@ -20,9 +19,11 @@ export type CreateCollectionViewProps<Co> = {
   btnStatus: TradeBtnStatus;
   btnInfo?: BtnInfo;
   disabled?: boolean;
+  onSubmitClick: () => Promise<void>;
   handleOnDataChange: (key: string, value: any) => void;
   collectionValue: Co;
 };
+
 export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
   keys,
   onFilesLoad,
@@ -32,11 +33,13 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
   disabled,
   handleOnDataChange,
   collectionValue,
+  onSubmitClick,
 }: CreateCollectionViewProps<T>) => {
   const { t } = useTranslation("common");
   const getDisabled = React.useMemo(() => {
     return disabled || btnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, btnStatus]);
+
   const { isMobile } = useSettings();
   return (
     <ImageUploadWrapper
@@ -55,7 +58,7 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
         marginBottom={1}
         color={"var(--color-text-third)"}
       >
-        {t("Banner (1500px * 500px)")}
+        {t("labelBanner")}
       </Typography>
 
       <Grid container flex={1} marginBottom={2}>
@@ -64,8 +67,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
             height={"30vw"}
             typographyProps={{}}
             buttonProps={{}}
-            maxSize={10000000}
-            title={"Banner  (1500 x 500) size "}
+            // maxSize={MaxSize}
+            // title={"Banner  (1500 x 500) size "}
             buttonText={""}
             value={keys?.banner ?? undefined}
             onDelete={() => {
@@ -103,18 +106,15 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
               buttonProps={{}}
               width={120}
               height={120}
-              maxSize={10000000}
-              title={"avatar (120px * 120px)"}
+              // maxSize={MaxSize}
+              title={"labelAvatarDes"}
               buttonText={""}
               value={keys?.avatar ?? undefined}
               onDelete={() => {
                 onDelete("avatar");
-                // handleOnDataChange('banner', {banner: ''})
               }}
               onChange={(value) => {
                 onFilesLoad("avatar", value);
-                // handleOnDataChange('banner',{banner:_e.})
-                // handleOnDataChange('banner', {banner: value})
               }}
             />
           </Box>
@@ -150,9 +150,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
             <IPFSSourceUpload
               typographyProps={{}}
               buttonProps={{}}
-              maxSize={10000000}
               width={"100%"}
-              title={t("labelTileUri")}
+              // title={t("labelTileUri")}
               buttonText={""}
               value={keys?.tileUri ?? undefined}
               onDelete={() => {
@@ -238,22 +237,6 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
               draggable={true}
             />
           </Box>
-
-          {/*<IPFSSourceUpload*/}
-          {/*    typographyProps={{}}*/}
-          {/*    buttonProps={{}}*/}
-          {/*    maxSize={10000000}*/}
-          {/*    title={"Tile (500px * 700px)"}*/}
-          {/*    buttonText={''}*/}
-          {/*    value={keys?.avatar ?? undefined}*/}
-          {/*    onDelete={() => {*/}
-          {/*      handleOnDataChange('avatar', {avatar: ''})*/}
-          {/*    }}*/}
-          {/*    onChange={(value) => {*/}
-          {/*      // handleOnDataChange('banner',{banner:_e.})*/}
-          {/*      handleOnDataChange('avatar', {avatar: value})*/}
-          {/*    }}*/}
-          {/*  />*/}
         </Grid>
 
         <Grid item xs={12}>
@@ -269,7 +252,9 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
             }
             disabled={getDisabled || btnStatus === TradeBtnStatus.LOADING}
             // disabled={isLoading ||}
-            onClick={() => {}}
+            onClick={() => {
+              onSubmitClick();
+            }}
           >
             {btnInfo
               ? t(btnInfo.label, btnInfo.params)

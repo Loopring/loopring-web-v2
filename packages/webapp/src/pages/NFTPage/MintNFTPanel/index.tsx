@@ -38,7 +38,6 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
   const mintWholeProps = useMintNFTPanel();
   const collectionListProps = useMyCollection();
   const { t } = useTranslation(["common"]);
-  const { baseURL } = useSystem();
   const panelList: Pick<
     PanelContent<"METADATA" | "MINT_CONFIRM">,
     "key" | "element"

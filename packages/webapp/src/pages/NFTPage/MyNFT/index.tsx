@@ -13,7 +13,6 @@ import {
   getShortAddr,
   SoursURL,
   NFTLimit,
-  RefreshIPFSIcon,
 } from "@loopring-web/common-resources";
 import { useHistory } from "react-router-dom";
 import { getIPFSString, useSystem } from "@loopring-web/core";
