@@ -2,6 +2,7 @@ import { BtnInfo, InputButtonProps } from "../../../basic-lib";
 import {
   AccountStatus,
   CoinInfo,
+  DeFiChgType,
   MarketType,
 } from "@loopring-web/common-resources";
 import { TokenInfo } from "@loopring-web/loopring-sdk";
