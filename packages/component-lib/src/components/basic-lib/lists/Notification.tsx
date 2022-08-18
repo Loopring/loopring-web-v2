@@ -19,11 +19,11 @@ import { useHistory } from "react-router-dom";
 import { useSettings } from "../../../stores";
 
 const cssBackground = ({
-                         theme,
-                         color,
-                         banner,
-                         lng,
-                       }: { theme: Theme; lng: string } & Partial<NOTIFICATION_ITEM>) => {
+  theme,
+  color,
+  banner,
+  lng,
+}: { theme: Theme; lng: string } & Partial<NOTIFICATION_ITEM>) => {
   let svg: string, _color: string;
   const fillColor = theme.colorBase.textDisable;
   const opacity = 0.2;
@@ -36,8 +36,10 @@ const cssBackground = ({
         background: url("${banner.replace("{lng}", lng)}");
         background-size: cover;
       }
+
       &:hover {
-        filter: blur(1.5px);
+        filter: blur(0.6px);
+        box-shadow: var(--shadow-hover);
       }
     `;
   }
@@ -94,17 +96,19 @@ const cssBackground = ({
   `;
 };
 
-const NotificationListItemStyled = styled(ListItem)<ListItemProps & Partial<ACTIVITY> & { lng: string }>`
+const NotificationListItemStyled = styled(ListItem)<
+  ListItemProps & Partial<ACTIVITY> & { lng: string }
+>`
   cursor: pointer;
   height: var(--notification-activited-heigth);
   width: calc(var(--notification-activited-heigth) * 327 / 80);
   overflow: hidden;
-  padding: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px;
+  padding: ${({ theme }) => theme.unit}px ${({ theme }) => theme.unit}px;
   background-color: var(--opacity);
 
   &:not(:last-child) {
     border-bottom: 1px solid var(--color-divide);
-      // margin-bottom: ${({theme}) => theme.unit}px;
+    // margin-bottom: ${({ theme }) => theme.unit}px;
   }
 
   .MuiListItemText-root {
@@ -133,8 +137,16 @@ export const NotificationListItem = (
 ) => {
   const history = useHistory();
   const { language } = useSettings();
-  const lng = languageMap[ language ];
-  const {title, description1, description2, account, banner, webRouter, link} = props;
+  const lng = languageMap[language];
+  const {
+    title,
+    description1,
+    description2,
+    account,
+    banner,
+    webRouter,
+    link,
+  } = props;
   return (
     <NotificationListItemStyled
       {...{ lng, banner }}
@@ -142,10 +154,15 @@ export const NotificationListItem = (
       onClick={() => {
         if (webRouter) {
           const [_, target, router] = webRouter.match(/\[(.*)\](.*)/i) ?? [];
-          if (router && target === 'self') {
-            history.push(router)
+          if (router && target === "self") {
+            history.push(router);
           } else {
-            window.open(router ? `https://loopring.io/#/${router}` : `${link}` + `&l2account=${account?.accAddress}`, "_blank");
+            window.open(
+              router
+                ? `https://loopring.io/#/${router}`
+                : `${link}` + `&l2account=${account?.accAddress}`,
+              "_blank"
+            );
             window.opener = null;
           }
         } else if (link) {
@@ -159,7 +176,6 @@ export const NotificationListItem = (
             : history.replace(`/notification/${props.link}`);
           window.opener = null;
         }
-
       }}
       className={`notification`}
     >
@@ -174,8 +190,12 @@ export const NotificationListItem = (
       >
         <ListItemText
           className={"title"}
-          primary={<span dangerouslySetInnerHTML={{__html: title ?? ""}}/>}
-          primaryTypographyProps={{component: "h4", color: "textPrimary", title,}}
+          primary={<span dangerouslySetInnerHTML={{ __html: title ?? "" }} />}
+          primaryTypographyProps={{
+            component: "h4",
+            color: "textPrimary",
+            title,
+          }}
         />
         <ListItemText
           className="description description1"
@@ -210,15 +230,17 @@ export const NotificationListItem = (
   );
 };
 
-const ListItemActivityStyle = styled(NotificationListItemStyled)<ListItemProps & Partial<ACTIVITY> & { lng: string }>`
+const ListItemActivityStyle = styled(NotificationListItemStyled)<
+  ListItemProps & Partial<ACTIVITY> & { lng: string }
+>`
   &:not(:last-child) {
     border-bottom: 0;
-    margin-bottom: ${({theme}) => theme.unit}px;
+    margin-bottom: ${({ theme }) => theme.unit}px;
   }
 
-  padding: ${({theme}) => theme.unit}px;
+  padding: ${({ theme }) => theme.unit}px;
   ${(props) => cssBackground(props)}
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 ` as (
   props: ListItemProps & Partial<ACTIVITY> & { lng: string }
 ) => JSX.Element;
@@ -236,7 +258,7 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
     webRouter,
   } = props;
   const { language } = useSettings();
-  const lng = languageMap[ language ];
+  const lng = languageMap[language];
   const history = useHistory();
   if (Date.now() > startShow) {
     return (
@@ -249,10 +271,15 @@ export const ListItemActivity = (props: ACTIVITY & { account?: Account }) => {
         onClick={() => {
           if (webRouter) {
             const [_, target, router] = webRouter.match(/\[(.*)\](.*)/i) ?? [];
-            if (router && target === 'self') {
-              history.push(router)
+            if (router && target === "self") {
+              history.push(router);
             } else {
-              window.open(router ? `https://loopring.io/#/${router}` : `${link}` + `&l2account=${account?.accAddress}`, "_blank");
+              window.open(
+                router
+                  ? `https://loopring.io/#/${router}`
+                  : `${link}` + `&l2account=${account?.accAddress}`,
+                "_blank"
+              );
               window.opener = null;
             }
           } else if (link) {
