@@ -39,7 +39,6 @@ import { useTheme } from "@emotion/react";
 import { getIPFSString } from "../../../utils";
 import { LoopringAPI } from "../../../api_wrapper";
 import { useToast } from "../../../hooks";
-import { BigNumber } from "bignumber.js";
 
 const BoxNFT = styled(Box)`
   background: var(--color-global-bg);
@@ -187,10 +186,9 @@ export const NFTDetail = withTranslation("common")(
       if (popItem && popItem.nftData) {
         updateNFTRefreshHash(popItem.nftData);
         await LoopringAPI.nftAPI?.callRefreshNFT({
-          // @ts-ignore
           network: "ETHEREUM",
           tokenAddress: popItem.tokenAddress ?? "",
-          nftId: new BigNumber(popItem?.nftId ?? "0", 16).toString(),
+          nftId: popItem?.nftId?.toString() ?? "", //new BigNumber(?? "0", 16).toString(),
           nftType: (popItem?.nftType?.toString() ?? "") as NFT_TYPE_STRING,
         });
         setToastOpen({
