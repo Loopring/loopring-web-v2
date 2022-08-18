@@ -259,7 +259,7 @@ export const DepositWrap = <
               }}
               fullWidth={true}
             />
-            {tradeData.toAddress !== "" ? (
+            {!!tradeData.toAddress ? (
               toIsAddressCheckLoading ? (
                 <LoadingIcon
                   width={24}
