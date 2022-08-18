@@ -1,9 +1,6 @@
 # ETH staking via Lido now is live on Loopring L2.
-
     To participate, simply visit “Earn” tab and click “ETH Staking”. 
     It’s fairly cheap and fast to subscribe and redeem via L2. Have a try and enjoy!
-
----
 
 ### What is ETH staking via Lido?
 
