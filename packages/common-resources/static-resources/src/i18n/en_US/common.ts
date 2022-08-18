@@ -942,7 +942,7 @@ export default {
   labelCollectionMetaNoNameORTileUri:
     "Your collection_metadata is not defined `name` or `tile_uri`, it may cause some collection display issue!",
   labelNFTServerRefresh:
-    "Click to refresh loopring cache resource, this is an lag command usually take 30 minutes.",
+    "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelCounterFactualNFT: "Counter Factual NFT: ",
