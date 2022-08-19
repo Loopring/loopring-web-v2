@@ -60,7 +60,8 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.7.4"
+    "web3": "^1.7.4",
+    "@ramp-network/ramp-instant-sdk": "^3.2.1-rc1"
   },
   "build": {
     "files": [
