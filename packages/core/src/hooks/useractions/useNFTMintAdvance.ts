@@ -48,6 +48,7 @@ import { useTranslation } from "react-i18next";
 import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
+import fetchJsonp from "fetch-jsonp";
 
 const CID = require("cids");
 
@@ -410,9 +411,16 @@ export const useNFTMintAdvance = <
             ).then((response) => response.json());
             let collectionMeta: CollectionMeta | undefined;
             if (value && value.collection_metadata) {
-              const collectionMetadata: CollectionMeta = await fetch(
+              const collectionMetadata: CollectionMeta = await fetchJsonp(
                 getIPFSString(value.collection_metadata, baseURL)
-              ).then((response) => response.json());
+              )
+                .then((response) => {
+                  debugger;
+                  return response.json();
+                })
+                .catch((error: any) => {
+                  console.log("Mint NFT read resource error:", error);
+                });
 
               if (collectionMetadata.contractAddress) {
                 const response = await LoopringAPI.userAPI
@@ -479,6 +487,7 @@ export const useNFTMintAdvance = <
               });
             }
           } catch (error: any) {
+            console.log("Mint NFT read resource error:", error);
             shouldUpdate = {
               nftId: nftId,
               name: undefined,

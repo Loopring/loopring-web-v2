@@ -493,7 +493,7 @@ export const MintAdvanceNFTWrap = <
                   defaultLabel: "labelMintNext",
                   btnInfo: undefined, //btnInfo,
                   disabled: () => {
-                    return gDisabled || !!isNotAvailableCID;
+                    return gDisabled || !!isNotAvailableCID || !tradeData.nftId;
                   },
                   onClick: () => {
                     setActiveStep(MintStep.MINT);

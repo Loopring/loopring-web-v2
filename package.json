@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "2.0.23-5",
+    "@loopring-web/loopring-sdk": "2.0.23-6",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.1.0",
     "@mui/lab": "^5.0.0-alpha.45",
@@ -28,6 +28,7 @@
     "echarts-for-react": "^3.0.2",
     "ffjavascript": "^0.1.0",
     "firebase": "^9.8.3",
+    "fetch-jsonp": "1.2.1",
     "github-markdown-css": "^5.0.0",
     "i18next": "^20.1.0",
     "ipfs-http-client": "^56.0.2",
