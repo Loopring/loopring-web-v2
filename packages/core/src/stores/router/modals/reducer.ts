@@ -153,28 +153,28 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         nftMETA: { ...initialNFTMETA },
       };
     },
-	  resetNFTMintAdvanceData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.nftMintAdvanceValue = initialTradeNFT;
-	  },
-	  resetNFTDeployData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.nftDeployValue = {...initialTradeNFT, broker: ""};
-	  },
-	  resetOffRampData(state) {
-		  state.lastStep = LAST_STEP.default;
-		  state.offRampValue = {};
-	  },
-	  updateActiveAccountData(
-		  state,
-		  action: PayloadAction<Partial<ActiveAccountData>>
-	  ) {
-		  const {chargeFeeList, walletLayer2, isFeeNotEnough, ...rest} =
-			  action.payload;
-		  state.lastStep = LAST_STEP.default;
-		  if (chargeFeeList) {
-			  state.activeAccountValue.chargeFeeList = chargeFeeList;
-			  state.activeAccountValue.walletLayer2 = walletLayer2;
+    resetNFTMintAdvanceData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.nftMintAdvanceValue = initialTradeNFT;
+    },
+    resetNFTDeployData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.nftDeployValue = { ...initialTradeNFT, broker: "" };
+    },
+    resetOffRampData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.offRampValue = {};
+    },
+    updateActiveAccountData(
+      state,
+      action: PayloadAction<Partial<ActiveAccountData>>
+    ) {
+      const { chargeFeeList, walletLayer2, isFeeNotEnough, ...rest } =
+        action.payload;
+      state.lastStep = LAST_STEP.default;
+      if (chargeFeeList) {
+        state.activeAccountValue.chargeFeeList = chargeFeeList;
+        state.activeAccountValue.walletLayer2 = walletLayer2;
         state.activeAccountValue.isFeeNotEnough = isFeeNotEnough;
       }
       state.activeAccountValue = {
@@ -387,19 +387,19 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         state.nftDeployValue.broker = broker;
       }
 
-	    if (tradeValue === undefined || tradeValue >= 0) {
-		    state.nftDeployValue.tradeValue = tradeValue;
-	    }
+      if (tradeValue === undefined || tradeValue >= 0) {
+        state.nftDeployValue.tradeValue = tradeValue;
+      }
 
-	    state.nftDeployValue = {
-		    ...state.nftDeployValue,
-		    ...rest,
-	    };
+      state.nftDeployValue = {
+        ...state.nftDeployValue,
+        ...rest,
+      };
     },
-	  updateOffRampData(state, action: PayloadAction<IOfframpPurchase>) {
-		  state.lastStep = LAST_STEP.offRamp;
-		  state.offRampValue = action.payload;
-	  },
+    updateOffRampData(state, action: PayloadAction<IOfframpPurchase>) {
+      state.lastStep = LAST_STEP.offRamp;
+      state.offRampValue = action.payload;
+    },
   },
 });
 
