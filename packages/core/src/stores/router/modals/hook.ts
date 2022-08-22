@@ -22,6 +22,8 @@ import {
   updateTransferData,
   updateWithdrawData,
   updateForceWithdrawData,
+  updateOffRampData,
+  resetOffRampData,
 } from "./reducer";
 import {
   ActiveAccountData,
@@ -42,6 +44,7 @@ import {
 } from "@loopring-web/common-resources";
 import { RootState } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 
 export function useModalData(): {
   lastStep: LAST_STEP;
@@ -92,6 +95,9 @@ export function useModalData(): {
     forceWithdrawData: Partial<ForceWithdrawData>
   ) => void;
   resetForceWithdrawData: () => void;
+  offRampValue: IOfframpPurchase | {};
+  updateOffRampData: (offrampPurchase: IOfframpPurchase) => void;
+  resetOffRampData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData
@@ -186,6 +192,12 @@ export function useModalData(): {
       },
       [dispatch]
     ),
+    updateOffRampData: React.useCallback(
+      (offRampValue: IOfframpPurchase) => {
+        dispatch(updateOffRampData(offRampValue));
+      },
+      [dispatch]
+    ),
     resetForceWithdrawData: React.useCallback(() => {
       dispatch(resetForceWithdrawData(undefined));
     }, [dispatch]),
@@ -221,6 +233,9 @@ export function useModalData(): {
     ),
     resetNFTDeployData: React.useCallback(() => {
       dispatch(resetNFTDeployData(undefined));
+    }, [dispatch]),
+    resetOffRampData: React.useCallback(() => {
+      dispatch(resetOffRampData(undefined));
     }, [dispatch]),
   };
 }

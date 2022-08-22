@@ -17,6 +17,7 @@ import {
   TradeNFT,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
+import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined,
@@ -76,6 +77,7 @@ const initialActiveAccountState: ActiveAccountData = {
 
 const initialState: ModalDataStatus = {
   lastStep: LAST_STEP.default,
+  offRampValue: {},
   withdrawValue: initialWithdrawState,
   transferValue: initialTransferState,
   depositValue: initialDepositState,
@@ -151,24 +153,28 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         nftMETA: { ...initialNFTMETA },
       };
     },
-    resetNFTMintAdvanceData(state) {
-      state.lastStep = LAST_STEP.default;
-      state.nftMintAdvanceValue = initialTradeNFT;
-    },
-    resetNFTDeployData(state) {
-      state.lastStep = LAST_STEP.default;
-      state.nftDeployValue = { ...initialTradeNFT, broker: "" };
-    },
-    updateActiveAccountData(
-      state,
-      action: PayloadAction<Partial<ActiveAccountData>>
-    ) {
-      const { chargeFeeList, walletLayer2, isFeeNotEnough, ...rest } =
-        action.payload;
-      state.lastStep = LAST_STEP.default;
-      if (chargeFeeList) {
-        state.activeAccountValue.chargeFeeList = chargeFeeList;
-        state.activeAccountValue.walletLayer2 = walletLayer2;
+	  resetNFTMintAdvanceData(state) {
+		  state.lastStep = LAST_STEP.default;
+		  state.nftMintAdvanceValue = initialTradeNFT;
+	  },
+	  resetNFTDeployData(state) {
+		  state.lastStep = LAST_STEP.default;
+		  state.nftDeployValue = {...initialTradeNFT, broker: ""};
+	  },
+	  resetOffRampData(state) {
+		  state.lastStep = LAST_STEP.default;
+		  state.offRampValue = {};
+	  },
+	  updateActiveAccountData(
+		  state,
+		  action: PayloadAction<Partial<ActiveAccountData>>
+	  ) {
+		  const {chargeFeeList, walletLayer2, isFeeNotEnough, ...rest} =
+			  action.payload;
+		  state.lastStep = LAST_STEP.default;
+		  if (chargeFeeList) {
+			  state.activeAccountValue.chargeFeeList = chargeFeeList;
+			  state.activeAccountValue.walletLayer2 = walletLayer2;
         state.activeAccountValue.isFeeNotEnough = isFeeNotEnough;
       }
       state.activeAccountValue = {
@@ -176,7 +182,6 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
-
     updateWithdrawData(state, action: PayloadAction<Partial<WithdrawData>>) {
       const { belong, balance, tradeValue, address, ...rest } = action.payload;
       state.lastStep = LAST_STEP.withdraw;
@@ -189,7 +194,6 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
-
     updateForceWithdrawData(
       state,
       action: PayloadAction<Partial<ForceWithdrawData>>
@@ -383,15 +387,19 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         state.nftDeployValue.broker = broker;
       }
 
-      if (tradeValue === undefined || tradeValue >= 0) {
-        state.nftDeployValue.tradeValue = tradeValue;
-      }
+	    if (tradeValue === undefined || tradeValue >= 0) {
+		    state.nftDeployValue.tradeValue = tradeValue;
+	    }
 
-      state.nftDeployValue = {
-        ...state.nftDeployValue,
-        ...rest,
-      };
+	    state.nftDeployValue = {
+		    ...state.nftDeployValue,
+		    ...rest,
+	    };
     },
+	  updateOffRampData(state, action: PayloadAction<IOfframpPurchase>) {
+		  state.lastStep = LAST_STEP.offRamp;
+		  state.offRampValue = action.payload;
+	  },
   },
 });
 
@@ -409,6 +417,7 @@ export const {
   updateNFTMintData,
   updateNFTDeployData,
   updateNFTMintAdvanceData,
+  updateOffRampData,
   resetForceWithdrawData,
   resetNFTWithdrawData,
   resetNFTTransferData,
@@ -420,5 +429,6 @@ export const {
   resetActiveAccountData,
   resetNFTDeployData,
   resetNFTMintAdvanceData,
+  resetOffRampData,
   resetAll,
 } = modalDataSlice.actions;

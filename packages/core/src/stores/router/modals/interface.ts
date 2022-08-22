@@ -8,6 +8,7 @@ import {
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
+import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 
 export type WithdrawData = {
   belong: string | undefined;
@@ -27,7 +28,7 @@ export type ForceWithdrawData = {
 
 export type TransferData = {
   belong: string | undefined;
-  tradeValue: number | undefined;
+  tradeValue: number | undefined | string;
   balance: number | undefined;
   address: string | undefined;
   memo: string | undefined;
@@ -71,7 +72,6 @@ export type ModalDataStatus = {
   depositValue: DepositData;
   activeAccountValue: ActiveAccountData;
   forceWithdrawValue: ForceWithdrawData;
-
   nftWithdrawValue: WithdrawData &
     Partial<NFTTokenInfo & UserNFTBalanceInfo & NFTWholeINFO>;
   nftTransferValue: TransferData &
@@ -80,6 +80,7 @@ export type ModalDataStatus = {
   nftMintAdvanceValue: TradeNFT<any>;
   nftMintValue: NFT_MINT_VALUE<any>;
   nftDeployValue: TradeNFT<any> & { broker: string };
+  offRampValue: IOfframpPurchase | {};
 };
 
 export enum LAST_STEP {
@@ -91,5 +92,6 @@ export enum LAST_STEP {
   nftDeposit = "nftDeposit",
   nftDeploy = "nftDeploy",
   nftMint = "nftMint",
+  offRamp = "offRamp",
   default = "default",
 }
