@@ -319,7 +319,7 @@ export type CollectionMetaJSON = {
   tile_uri: string;
   name: string;
   description: string;
-  [ key: string ]: any;
+  [key: string]: any;
 };
 
 export enum CollectionMetaKey {
