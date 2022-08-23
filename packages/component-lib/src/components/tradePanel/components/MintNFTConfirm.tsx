@@ -97,7 +97,7 @@ export const MintNFTConfirm = <
       }
     }, [] as Array<MetaProperty>) ?? [];
 
-  myLog("mint nftMintData", nftMintData);
+  // myLog("mint nftMintData", nftMintData);
 
   // @ts-ignore
   return (

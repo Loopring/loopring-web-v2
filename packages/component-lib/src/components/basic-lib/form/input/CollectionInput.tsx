@@ -17,6 +17,7 @@ import {
   CollectionMeta,
   MakeMeta,
   TOAST_TIME,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   Button,
@@ -91,6 +92,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
   onSelected,
   domain,
   makeMeta,
+  isRequired = false,
 }: CollectionInputProps<Co> & {
   showCopy?: boolean;
   fullWidth?: boolean;
@@ -98,6 +100,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
   size?: "small" | "large" | "medium";
   domain: string;
   makeMeta: MakeMeta;
+  isRequired?: boolean;
 }) => {
   const [_modalState, setModalState] = React.useState(false);
   // const [selectCollectionMeta, setSelectCollectionMeta] = React.useState(collection);
@@ -105,6 +108,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
   const { onPageChange, total, page } = collectionListProps;
+  myLog("collectionList", collectionListProps.collectionList);
   return (
     <Box
       display={"flex"}
@@ -118,7 +122,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
         <Box width={"100%"}>
           <Typography
             variant={"body1"}
-            color={"var(--color-text-secondary)"}
+            color={"textSecondary"}
             className={"main-label"}
             paddingBottom={1 / 2}
             display={"inline-flex"}
@@ -126,8 +130,18 @@ export const CollectionInput = <Co extends CollectionMeta>({
             lineHeight={24}
             alignItems={"center"}
           >
-            <Trans i18nKey={"labelMintCollection"}>
+            <Trans
+              i18nKey={"labelMintCollection"}
+              tOptions={{ required: isRequired ? "\uFE61" : "" }}
+            >
               Choose Collection
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"error"}
+              >
+                {"\uFE61"}
+              </Typography>
               <Info2Icon
                 fontSize={"small"}
                 color={"inherit"}

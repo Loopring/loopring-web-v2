@@ -51,7 +51,7 @@ export const MintNFTPanel = <Co extends CollectionMeta>() => {
             nftMetaProps: {
               ...mintWholeProps.nftMetaProps,
               collectionInputProps: {
-                collection: undefined,
+                collection: mintWholeProps.nftMintValue.collection,
                 collectionListProps,
                 domain: LoopringAPI.delegate?.getCollectionDomain(),
                 makeMeta,

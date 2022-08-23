@@ -29,7 +29,7 @@ export const useMintNFTPanel = <
     MINT_VIEW_STEP.METADATA
   );
   const { account, status: accountStatus } = useAccount();
-  let match: any = useRouteMatch("/NFT/:item/?:contract");
+  let match: any = useRouteMatch("/nft/:item/:contract?");
   const handleTabChange = React.useCallback((value: MINT_VIEW_STEP) => {
     setCurrentTab(value);
   }, []);
@@ -48,15 +48,6 @@ export const useMintNFTPanel = <
     errorOnMeta,
   } = useNFTMeta<Me, Co>({ handleTabChange, nftMintValue });
 
-  React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED &&
-      match?.params.item === "mintNFT"
-    ) {
-      mintService.emptyData(match?.params?.contract ?? "");
-    }
-  }, [accountStatus, account.readyState, match?.params.item]);
   const { nftMintProps } = useNFTMint<Me, Mi, I, C>({
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -66,6 +57,16 @@ export const useMintNFTPanel = <
     handleTabChange,
     nftMintValue,
   });
+
+  React.useEffect(() => {
+    if (
+      accountStatus === SagaStatus.UNSET &&
+      account.readyState === AccountStatus.ACTIVATED &&
+      match?.params?.item === "mintNFT"
+    ) {
+      mintService.emptyData(match?.params?.contract ?? "");
+    }
+  }, [accountStatus, account.readyState, match?.params?.item]);
 
   return {
     errorOnMeta,

@@ -664,7 +664,7 @@ export default {
   labelMintNoNameBtn: "Please input name",
   labelNFTMetaBtn: "Upload metadata & mint",
   labelMintName: "Name <1>\uFE61</1>",
-  labelMintCollection: "Choose Collection<1>\u2139</1>",
+  labelMintCollection: "Choose Collection <1>{{required}}</1><2></2>",
   labelMintCollectionTooltips:
     "This is the collection where your NFT will appear.",
   labelMintRoyaltyPercentage: "Royalty (%) <1>\u2139</1>",

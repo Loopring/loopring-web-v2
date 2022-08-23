@@ -8,7 +8,9 @@ import {
 import {
   AccountStatus,
   // AccountStatus,
-  AttributesProperty, CustomError, ErrorMap,
+  AttributesProperty,
+  CustomError,
+  ErrorMap,
   MetaDataProperty,
   myLog,
   UIERROR_CODE,
@@ -16,8 +18,8 @@ import {
 import { IpfsProvides, ipfsService } from "../ipfs";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
-import * as sdk from '@loopring-web/loopring-sdk';
-import { CollectionMeta } from '@loopring-web/loopring-sdk';
+import * as sdk from "@loopring-web/loopring-sdk";
+import { CollectionMeta } from "@loopring-web/loopring-sdk";
 
 // import * as sdk from "@loopring-web/loopring-sdk";
 
@@ -41,12 +43,20 @@ export const mintService = {
       account,
       // system: { chainId },
     } = store.getState();
-    let tokenAddress = contractAddress, collection: undefined | CollectionMeta = undefined;
-    if (tokenAddress && account.readyState === AccountStatus.ACTIVATED && account.accAddress) {
-      const response = await LoopringAPI.userAPI?.getUserOwenCollection({
-        owner: account.accAddress,
-        address: contractAddress
-      }, account.apiKey);
+    let tokenAddress = contractAddress,
+      collection: undefined | CollectionMeta = undefined;
+    if (
+      tokenAddress &&
+      account.readyState === AccountStatus.ACTIVATED &&
+      account.accAddress
+    ) {
+      const response = await LoopringAPI.userAPI?.getUserOwenCollection(
+        {
+          owner: account.accAddress,
+          address: contractAddress,
+        },
+        account.apiKey
+      );
       if (
         response &&
         ((response as sdk.RESULT_INFO).code ||
@@ -54,33 +64,16 @@ export const mintService = {
       ) {
         throw new CustomError(ErrorMap.ERROR_UNKNOWN);
       }
-      collection = (response as any).collections[ 0 ];
+      collection = (response as any).collections[0];
     }
-    store.dispatch(resetNFTMintData({tokenAddress, collection}));
+    store.dispatch(resetNFTMintData({ tokenAddress, collection }));
     subject.next({
       status: MintCommands.MetaDataSetup,
       data: {
         emptyData: true,
+        collection,
       },
     });
-  },
-  backMetaDataSetup: () => {
-    subject.next({
-      status: MintCommands.MetaDataSetup,
-    });
-    const {
-      nftMintValue: { nftMETA, mintData },
-    } = store.getState()._router_modalData;
-    store.dispatch(
-      updateNFTMintData({
-        nftMETA: nftMETA,
-        mintData: {
-          ...mintData,
-          nftIdView: undefined,
-          nftId: undefined,
-        },
-      })
-    );
   },
   processingIPFS: ({
     ipfsProvides,
@@ -133,7 +126,7 @@ export const mintService = {
   },
   completedIPFSCallMint: ({ ipfsResult }: { ipfsResult: AddResult }) => {
     const {
-      nftMintValue: { nftMETA, mintData },
+      nftMintValue: { nftMETA, mintData, collection },
     } = store.getState()._router_modalData;
     try {
       const cid = ipfsResult.cid.toString();
@@ -148,6 +141,7 @@ export const mintService = {
             nftIdView,
             nftId,
           },
+          collection,
         })
       );
       subject.next({

@@ -46,10 +46,11 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
 
   const handleOnMetaChange = React.useCallback(
     (_newnftMeta: Partial<T> & { collection?: CollectionMeta }) => {
-      const { nftMETA, mintData } =
+      const { nftMETA, mintData, collection } =
         store.getState()._router_modalData.nftMintValue;
       const buildNFTMeta = { ...nftMETA };
       const buildMint = { ...mintData };
+      let buildCollection = { ...collection };
       Reflect.ownKeys(_newnftMeta).map((key) => {
         switch (key) {
           case "image":
@@ -75,17 +76,21 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
             break;
           case "collection":
             buildMint.tokenAddress = _newnftMeta.collection?.contractAddress;
-            buildNFTMeta.collection_metadata =
-              LoopringAPI.delegate?.getCollectionDomain() +
-              "/" +
-              _newnftMeta.collection?.contractAddress; // _newnftMeta?.collection_metadata.c;
+            buildNFTMeta.collection_metadata = `${domain}/${_newnftMeta.collection?.contractAddress}`;
+            buildCollection = _newnftMeta.collection
+              ? _newnftMeta.collection
+              : buildCollection;
             break;
           case "properties":
             buildNFTMeta.properties = _newnftMeta.properties;
             break;
         }
       });
-      updateNFTMintData({ mintData: buildMint, nftMETA: buildNFTMeta });
+      updateNFTMintData({
+        mintData: buildMint,
+        nftMETA: buildNFTMeta,
+        collection: buildCollection,
+      });
       myLog("updateNFTMintData buildNFTMeta", buildNFTMeta);
     },
     [updateNFTMintData]
@@ -160,12 +165,10 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   );
   const onDelete = React.useCallback(() => {
     setIpfsMediaSources(undefined);
-    if (nftMintValue.nftMETA.image) {
-      handleOnMetaChange({
-        image: undefined,
-      } as Partial<T>);
-    }
-  }, [handleOnMetaChange, nftMintValue]);
+    handleOnMetaChange({
+      image: undefined,
+    } as Partial<T>);
+  }, [handleOnMetaChange]);
 
   const {
     chargeFeeTokenList,
@@ -177,12 +180,15 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     tokenAddress: nftMintValue.mintData.tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
     updateData: ({ fee }) => {
-      const { nftMETA, mintData } =
+      const { nftMETA, mintData, collection } =
         store.getState()._router_modalData.nftMintValue;
-      updateNFTMintData({
-        nftMETA: nftMETA,
-        mintData: { ...mintData, fee },
-      });
+      if (collection && collection?.contractAddress) {
+        updateNFTMintData({
+          nftMETA: nftMETA,
+          mintData: { ...mintData, fee },
+          collection,
+        });
+      }
     },
   });
   const {

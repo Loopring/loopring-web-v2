@@ -56,7 +56,6 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
         LoopringAPI.userAPI
       ) {
         setLoadingBtn();
-        // debugger;
         try {
           const response = await LoopringAPI.userAPI.submitNFTCollection(
             {
@@ -169,9 +168,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
           avatar: _metaDataJSON?.avatar_uri?.trim() ?? undefined,
           banner: _metaDataJSON?.banner_uri?.trim() ?? undefined,
         };
-        // let _metaData:any;
-        // debugger;
-        // eval(`_metaData =_data`)
+
         if (!_metaData.tileUri) {
           setError({
             code: UIERROR_CODE.ERROR_COLLECTION_METADATA_NO_TILEURI,

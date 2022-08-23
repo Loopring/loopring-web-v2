@@ -159,10 +159,9 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
           history.push("/nft/addCollection");
           // setCreateOpen(true)
         }}
-        setShowMintNFT={(step) => {
+        setShowMintNFT={(item) => {
           setCreateOpen(true);
-          //TODO: updateTokenAddress
-          setStep(CreateCollectionStep.ChooseCollectionEdit);
+          history.push(`/nft/mintNFT/${item.contractAddress}`);
         }}
         setShowDeploy={(item: Co) => {
           const _deployItem: TradeNFT<any, any> = {

@@ -46,7 +46,7 @@ const GridStyle = styled(Grid)<GridProps>`
   .main-label,
   .sub-label {
     color: var(--color-text-secondary);
-    font-size: ${({ theme }) => theme.fontDefault.body2};
+    font-size: ${({ theme }) => theme.fontDefault.body1};
   }
 ` as (props: GridProps) => JSX.Element;
 
@@ -60,7 +60,7 @@ export const MintNFTBlock = <
   nftMeta,
   mintData,
   btnInfo,
-  collection,
+  // collection,
   nftMetaBtnStatus,
   handleOnMetaChange,
   handleMintDataChange,
@@ -72,12 +72,16 @@ export const MintNFTBlock = <
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const inputBtnRef = React.useRef();
-  const [_collection, setCollection] =
-    React.useState<Co | undefined>(collection);
+  const [_collection, setCollection] = React.useState<Co | undefined>(
+    collectionInputProps.collection
+  );
+  React.useEffect(() => {
+    setCollection(collectionInputProps.collection);
+  }, [collectionInputProps?.collection?.contractAddress]);
   const getDisabled = React.useMemo(() => {
     return disabled || nftMetaBtnStatus === TradeBtnStatus.DISABLED;
   }, [disabled, nftMetaBtnStatus]);
-  myLog("mint nftMeta", nftMeta);
+  myLog("mint nftMeta", nftMeta, mintData);
 
   const _handleMintDataChange = React.useCallback(
     (_mintData: Partial<I>) => {
@@ -133,15 +137,14 @@ export const MintNFTBlock = <
         <Grid item xs={12} md={6}>
           <CollectionInput
             {...{
-              ...(collectionInputProps as any),
+              ...collectionInputProps,
               collection: _collection,
+              domain,
+              isRequired: true,
               onSelected: (item: Co) => {
                 setCollection(item);
                 handleOnMetaChange({
-                  collection_metadata: domain + "/" + item.contractAddress,
-                } as any);
-                _handleMintDataChange({
-                  tokenAddress: item.contractAddress,
+                  collection: item,
                 } as any);
               },
             }}
@@ -280,6 +283,7 @@ export const MintNFTBlock = <
                 lineHeight={"20px"}
                 display={"inline-flex"}
                 alignItems={"center"}
+                className={"main-label"}
               >
                 <Trans i18nKey={"labelMintDescription"}>
                   Description
@@ -321,6 +325,7 @@ export const MintNFTBlock = <
                 lineHeight={"20px"}
                 display={"inline-flex"}
                 alignItems={"center"}
+                className={"main-label"}
               >
                 <Trans i18nKey={"labelMintProperty"}>
                   Properties
