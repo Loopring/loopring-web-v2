@@ -896,4 +896,5 @@ export default {
   labelAdMintTitle: "Advance Create Collection",
   labelCopyUrlClip: "URL Copied to Clipboard!",
   labelCollectionMetaData: "Collection MetaData",
+  labelCollectionSelect: "Please select collection",
 };

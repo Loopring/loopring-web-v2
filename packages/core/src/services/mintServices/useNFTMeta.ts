@@ -177,12 +177,13 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     handleFeeChange,
     feeInfo,
   } = useChargeFees({
-    tokenAddress: nftMintValue.mintData.tokenAddress?.toLowerCase(),
+    tokenAddress: nftMintValue?.mintData?.tokenAddress?.toLowerCase(),
     requestType: sdk.OffchainNFTFeeReqType.NFT_MINT,
     updateData: ({ fee }) => {
       const { nftMETA, mintData, collection } =
         store.getState()._router_modalData.nftMintValue;
-      if (collection && collection?.contractAddress) {
+      if (mintData?.tokenAddress) {
+        // myLog("fee", fee);
         updateNFTMintData({
           nftMETA: nftMETA,
           mintData: { ...mintData, fee },
@@ -202,12 +203,12 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   const updateBtnStatus = React.useCallback(
     (error?: ErrorType & any) => {
       resetBtnInfo();
-      // myLog(
-      //   "nftMetaBtnStatus nftMintValue",
-      //   nftMintValue.mintData,
-      //   nftMintValue.nftMETA,
-      //   nftMintValue.mintData.fee
-      // );
+      myLog(
+        "nftMetaBtnStatus nftMintValue",
+        nftMintValue.mintData,
+        nftMintValue.nftMETA,
+        nftMintValue.mintData.fee
+      );
       if (
         !error &&
         nftMintValue &&
@@ -226,7 +227,8 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
         !!nftMintValue.nftMETA.image &&
         nftMintValue.mintData.fee &&
         nftMintValue.mintData.fee.belong &&
-        nftMintValue.mintData.fee.__raw__
+        nftMintValue.mintData.fee.__raw__ &&
+        nftMintValue.collection
         // && !isFeeNotEnough.isFeeNotEnough
       ) {
         enableBtn();
@@ -241,6 +243,9 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
         nftMintValue.nftMETA.image.trim() == ""
       ) {
         setLabelAndParams("labelMintNoImageBtn", {});
+      }
+      if (!nftMintValue.collection) {
+        setLabelAndParams("labelCollectionSelect", {});
       }
       if (
         !nftMintValue.nftMETA.name ||

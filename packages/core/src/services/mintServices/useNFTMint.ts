@@ -150,7 +150,10 @@ export function useNFTMint<
 
   const handleMintDataChange = React.useCallback(
     async (data: Partial<MintReadTradeNFT<I>>) => {
-      const { nftMETA, mintData } = nftMintValue;
+      const { nftMETA, mintData, collection } = nftMintValue;
+      // const {
+      //   nftMintValue: { nftMETA, mintData, collection },
+      // } = store.getState()._router_modalData;
       const buildNFTMeta = { ...nftMETA };
       const buildMint = { ...mintData };
       Reflect.ownKeys(data).map((key) => {
@@ -161,23 +164,23 @@ export function useNFTMint<
           case "fee":
             buildMint.fee = data.fee;
             break;
-          // case "tokenAddress":
-          //   buildMint.tokenAddress = data.tokenAddress;
-          //   break;
         }
       });
       updateNFTMintData({
         mintData: buildMint,
         nftMETA: buildNFTMeta,
+        collection,
       });
     },
     [nftMintValue]
   );
   const resetNFTMINT = () => {
-    checkFeeIsEnough();
-    handleMintDataChange({
-      fee: feeInfo,
-    });
+    if (nftMintValue.mintData.tokenAddress) {
+      checkFeeIsEnough();
+      handleMintDataChange({
+        fee: feeInfo,
+      });
+    }
   };
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
