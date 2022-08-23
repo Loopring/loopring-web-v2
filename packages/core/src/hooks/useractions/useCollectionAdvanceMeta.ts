@@ -1,5 +1,6 @@
 import {
   CollectionMeta,
+  CollectionMetaJSON,
   myLog,
   SDK_ERROR_MAP_TO_UI,
   UIERROR_CODE,
@@ -157,7 +158,17 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
     handleDataChange: (_data) => {
       setMetaData(_data);
       try {
-        let _metaData: T = JSON.parse(_data.replaceAll(/\n|\s/gi, ""));
+        let _metaDataJSON: CollectionMetaJSON = JSON.parse(
+          _data.replaceAll(/\n|\s/gi, "")
+        );
+        const _metaData: CollectionMeta = {
+          owner: account.accAddress,
+          tileUri: _metaDataJSON?.tile_uri.trim() ?? undefined,
+          name: _metaDataJSON?.name?.trim() ?? undefined,
+          description: _metaDataJSON?.description?.trim() ?? undefined,
+          avatar: _metaDataJSON?.avatar_uri?.trim() ?? undefined,
+          banner: _metaDataJSON?.banner_uri?.trim() ?? undefined,
+        };
         // let _metaData:any;
         // debugger;
         // eval(`_metaData =_data`)

@@ -230,9 +230,7 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
               }}
               maxLength={1000}
               onChange={(event) =>
-                handleOnDataChange("description", {
-                  description: event.target.value,
-                })
+                handleOnDataChange("description", event.target.value)
               }
               draggable={true}
             />

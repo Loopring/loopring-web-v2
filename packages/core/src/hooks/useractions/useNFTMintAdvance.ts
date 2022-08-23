@@ -8,6 +8,7 @@ import {
 import {
   AccountStatus,
   CollectionMeta,
+  CollectionMetaJSON,
   CustomError,
   EmptyValueTag,
   ErrorMap,
@@ -16,7 +17,6 @@ import {
   IPFS_HEAD_URL,
   MINT_LIMIT,
   myLog,
-  NFT_TYPE_STRING,
   TOAST_TIME,
   TradeNFT,
   UIERROR_CODE,
@@ -411,23 +411,20 @@ export const useNFTMintAdvance = <
             ).then((response) => response.json());
             let collectionMeta: CollectionMeta | undefined;
             if (value && value.collection_metadata) {
-              const collectionMetadata: CollectionMeta = await fetch(
+              const collectionMetadata: CollectionMetaJSON = await fetch(
                 getIPFSString(value.collection_metadata, baseURL)
               )
-                .then((response) => {
-                  debugger;
-                  return response.json();
-                })
+                .then((response) => response.json())
                 .catch((error: any) => {
                   console.log("Mint NFT read resource error:", error);
                 });
 
-              if (collectionMetadata.contractAddress) {
+              if (collectionMetadata.contract) {
                 const response = await LoopringAPI.userAPI
                   ?.getUserOwenCollection(
                     {
                       owner: account.accAddress,
-                      address: collectionMetadata.contractAddress,
+                      address: collectionMetadata.contract,
                     },
                     account.apiKey
                   )
@@ -445,14 +442,10 @@ export const useNFTMintAdvance = <
 
                 collectionMeta = (response as any)
                   .collections[0] as CollectionMeta;
-                //TODO:  MOCK  and solve the cross domain
-                collectionMeta.isCounterFactualNFT = true;
-                collectionMeta.nftType = NFT_TYPE_STRING.ERC1155;
-                // collectionMeta.name = '';
                 if (
                   !collectionMeta.isCounterFactualNFT ||
                   // @ts-ignore
-                  collectionMeta.nftType === NFT_TYPE_STRING.ERC721
+                  collectionMeta.nftType === sdk.NFTType.ERC721
                 ) {
                   throw new CustomError(ErrorMap.ERROR_COLLECTION_NO_SUPPORT);
                 }
@@ -470,7 +463,7 @@ export const useNFTMintAdvance = <
                 royaltyPercentage: value.royalty_percentage,
                 ...shouldUpdate,
                 tokenAddress: collectionMeta?.contractAddress,
-                collectionMeta: collectionMetadata,
+                collectionMeta: collectionMeta,
               };
               setIsNotAvailableCID(undefined);
             } else {

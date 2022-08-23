@@ -311,6 +311,16 @@ export enum EXPLORE_TYPE {
  *
  */
 export type CollectionMeta = sdk.CollectionMeta;
+export type CollectionMetaJSON = {
+  contract: string;
+  thumbnail_uri: string;
+  banner_uri: string;
+  avatar_uri: string;
+  tile_uri: string;
+  name: string;
+  description: string;
+  [ key: string ]: any;
+};
 
 export enum CollectionMetaKey {
   name = "name",

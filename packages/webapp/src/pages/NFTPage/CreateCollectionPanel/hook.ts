@@ -134,7 +134,6 @@ export const useCollectionPanel = <T extends CollectionMeta>({
       LoopringAPI.userAPI
     ) {
       setLoadingBtn();
-      // debugger;
       try {
         const response = await LoopringAPI.userAPI.submitNFTCollection(
           {
@@ -174,6 +173,14 @@ export const useCollectionPanel = <T extends CollectionMeta>({
           updateWalletL2Collection({ page: 1 });
           history.push("/nft/myCollection");
         }
+        updateCollectionData({});
+        setKeys({
+          banner: undefined,
+          name: undefined,
+          tileUri: undefined,
+          avatar: undefined,
+          thumbnail: undefined,
+        });
       } catch (error) {
         setCollectionToastOpen({
           open: true,
@@ -188,7 +195,6 @@ export const useCollectionPanel = <T extends CollectionMeta>({
         });
       }
     }
-    updateCollectionData({});
   }, [collectionValue, disableBtn, resetBtnInfo]);
 
   const handleOnDataChange = React.useCallback((key: string, value: any) => {
@@ -254,7 +260,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
             [key as any]: {
               ...state[key as any],
               ...{
-                cid: cid,
+                cid,
                 fullSrc: getIPFSString(`${IPFS_HEAD_URL}${data.path}`, baseURL),
                 isProcessing: false,
               },
@@ -286,11 +292,9 @@ export const useCollectionPanel = <T extends CollectionMeta>({
         return {
           ...state,
           [key]: {
+            ...value,
             file: value.file,
-            isProcessing: true,
-            error: undefined,
             uniqueId: uniqueId,
-            isUpdateIPFS: true,
             cid: "",
           },
         };

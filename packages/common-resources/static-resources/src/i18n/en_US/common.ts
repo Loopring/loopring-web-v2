@@ -948,4 +948,6 @@ export default {
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
   labelCounterFactualNFT: "Counter Factual NFT: ",
+  labelCopyUrlClip: "URL Copied to Clipboard!",
+  labelCollectionMetaData: "Collection MetaData",
 };

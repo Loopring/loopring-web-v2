@@ -13,7 +13,6 @@ import {
   getShortAddr,
   Account,
   CollectionMeta,
-  NFT_TYPE_STRING,
   MakeMeta,
   GET_IPFS_STRING,
 } from "@loopring-web//common-resources";
@@ -150,7 +149,8 @@ export const CollectionItem = React.memo(
                     </Box>
                   )}
                   {item.isCounterFactualNFT &&
-                  !(item?.nftType === NFT_TYPE_STRING.ERC721) &&
+                  // @ts-ignore
+                  !(item?.nftType === NFTType.ERC721) &&
                   item.name &&
                   item.tileUri ? (
                     <Box
@@ -225,11 +225,13 @@ export const CollectionItem = React.memo(
                   sx={{ marginLeft: 1 }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    copyToClipBoard(item?.contractAddress ?? "");
-                    setCopyToastOpen({ isShow: true, type: "address" });
+                    copyToClipBoard(domain + "/" + item?.contractAddress ?? "");
+                    setCopyToastOpen({ isShow: true, type: "url" });
                   }}
                 >
-                  {getShortAddr(item?.contractAddress ?? "")}
+                  {getShortAddr(item?.contractAddress ?? "") +
+                    " " +
+                    t("labelCollectionMetaData")}
                 </Button>
               </Typography>
               <Typography
@@ -245,7 +247,7 @@ export const CollectionItem = React.memo(
                   color={"var(--color-text-third)"}
                   title={item?.nftType}
                 >
-                  {item?.nftType}
+                  {NFTType[item?.nftType ?? 0]}
                 </Typography>
                 <Button
                   variant={"text"}
@@ -270,9 +272,7 @@ export const CollectionItem = React.memo(
   )
 );
 
-export const CollectionCardList = <
-  Co extends CollectionMeta & { nftType: NFTType }
->({
+export const CollectionCardList = <Co extends CollectionMeta>({
   collectionList,
   page,
   total,

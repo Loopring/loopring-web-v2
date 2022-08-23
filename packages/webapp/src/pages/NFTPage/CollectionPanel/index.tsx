@@ -23,6 +23,7 @@ import {
 } from "@loopring-web/core";
 import { CreateUrlPanel } from "../components/landingPanel";
 import { useHistory } from "react-router-dom";
+import { NFTType } from "@loopring-web/loopring-sdk";
 
 const StyledPaper = styled(Box)`
   background: var(--color-box);
@@ -166,8 +167,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         setShowDeploy={(item: Co) => {
           const _deployItem: TradeNFT<any, any> = {
             tokenAddress: item?.contractAddress,
-            // TODO: fix backend
-            nftType: "ERC1155",
+            nftType: NFTType[item.nftType ?? 0],
           };
           LoopringAPI.userAPI
             ?.getAvailableBroker({ type: 0 })
@@ -194,6 +194,8 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         alertText={
           copyToastOpen?.type === "json"
             ? t("labelCopyMetaClip")
+            : copyToastOpen.type === "url"
+            ? t("labelCopyUrlClip")
             : t("labelCopyAddClip")
         }
         open={copyToastOpen?.isShow}

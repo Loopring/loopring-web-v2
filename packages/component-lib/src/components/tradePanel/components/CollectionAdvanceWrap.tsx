@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import {
   CollectionMeta,
+  CollectionMetaJSON,
   copyToClipBoard,
   Info2Icon,
   TOAST_TIME,
@@ -125,14 +126,12 @@ export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>({
           color={"var(--color-primary)"}
           marginLeft={1}
           onClick={() => {
-            const metaDemo = {
+            const metaDemo: Partial<CollectionMetaJSON> = {
+              banner_uri: "ipfs://`${cid  (storage image type media)}`",
+              avatar_uri: "ipfs://`${cid  (storage image type media)}`",
+              tile_uri: "ipfs://`${cid  (storage image type media)}`",
               name: "`${COLLECTION_NAME (string, required)}`",
-              tileUri: "ipfs://`${cid (storage image type media, required)}`",
               description: "`${COLLECTION_DESCRIPTION}`",
-              avatar: "ipfs://`${cid  (storage image type media)}`",
-              banner: "ipfs://`${cid  (storage image type media)}`",
-              // collectionTitle: "`${COLLECTION_TITLE (string)}`",
-              // thumbnail: "ipfs://`${cid  (storage image type media)}",
             };
             copyToClipBoard(JSON.stringify(metaDemo));
             setCopyToastOpen({ isShow: true, type: "json" });
@@ -181,6 +180,8 @@ export const CollectionAdvanceWrap = <T extends Partial<CollectionMeta>>({
         alertText={
           copyToastOpen.type === "json"
             ? t("labelCopyMetaClip")
+            : copyToastOpen.type === "url"
+            ? t("labelCopyUrlClip")
             : t("labelCopyAddClip")
         }
         open={copyToastOpen.isShow}
