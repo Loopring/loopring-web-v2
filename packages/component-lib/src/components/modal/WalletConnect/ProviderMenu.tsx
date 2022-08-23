@@ -22,8 +22,8 @@ import UAuth from "@uauth/js";
 import dotenv from "dotenv";
 dotenv.config();
 const uauth = new UAuth({
-  clientID: process.env.REACT_APP_UAUTH_CLIENT_ID!,
-  redirectUri: process.env.REACT_APP_UAUTH_REDIR_URI!,
+  clientID: "60c0ff40-6103-4fa7-9dee-11b6bd14e217",
+  redirectUri: "https://astounding-sunshine-628f26.netlify.app",
   scope: "openid wallet",
 });
 
