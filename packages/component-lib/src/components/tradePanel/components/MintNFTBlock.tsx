@@ -73,7 +73,7 @@ export const MintNFTBlock = <
   const { isMobile } = useSettings();
   const inputBtnRef = React.useRef();
   const [_collection, setCollection] = React.useState<Co | undefined>(
-    collectionInputProps.collection
+    collectionInputProps?.collection ?? undefined
   );
   React.useEffect(() => {
     setCollection(collectionInputProps.collection);
