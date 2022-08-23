@@ -19,8 +19,6 @@ import { ConnectProviders } from "@loopring-web/web3-provider";
 import { useSettings } from "../../../stores";
 
 import UAuth from "@uauth/js";
-import dotenv from "dotenv";
-dotenv.config();
 const uauth = new UAuth({
   clientID: "60c0ff40-6103-4fa7-9dee-11b6bd14e217",
   redirectUri: "https://astounding-sunshine-628f26.netlify.app",
