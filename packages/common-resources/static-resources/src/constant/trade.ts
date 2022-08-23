@@ -171,8 +171,6 @@ export enum NFT_TYPE_STRING {
 export const EmptyValueTag = "--";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
-export const IPFS_HEAD_URL = "ipfs://";
-export const IPFS_HEAD_URL_REG = /^ipfs:\/\/(ipfs\/)?/i;
 export const MINT_LIMIT = 100000;
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;

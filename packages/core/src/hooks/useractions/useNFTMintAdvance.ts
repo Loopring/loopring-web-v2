@@ -48,7 +48,7 @@ import { useTranslation } from "react-i18next";
 import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
-import fetchJsonp from "fetch-jsonp";
+// import fetchJsonp from "fetch-jsonp";
 
 const CID = require("cids");
 
@@ -411,7 +411,7 @@ export const useNFTMintAdvance = <
             ).then((response) => response.json());
             let collectionMeta: CollectionMeta | undefined;
             if (value && value.collection_metadata) {
-              const collectionMetadata: CollectionMeta = await fetchJsonp(
+              const collectionMetadata: CollectionMeta = await fetch(
                 getIPFSString(value.collection_metadata, baseURL)
               )
                 .then((response) => {

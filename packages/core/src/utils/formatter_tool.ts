@@ -6,7 +6,7 @@ import {
   getValuePrecisionThousand,
   IPFS_HEAD_URL,
   IPFS_HEAD_URL_REG,
-  myLog,
+  IPFS_LOOPRING_SITE,
   TradeTypes,
 } from "@loopring-web/common-resources";
 import { volumeToCountAsBigNumber } from "../hooks/help";
@@ -184,17 +184,18 @@ export function isPosIntNum(val: any) {
 
 export const getIPFSString: GET_IPFS_STRING = (
   url: string | undefined,
-  baseURL: string
+  _baseURL: string
 ) => {
   if (url === undefined) {
     return "";
   } else if (url.startsWith("http")) {
     return url;
   } else if (url.startsWith(IPFS_HEAD_URL)) {
-    const _url = url.replace(IPFS_HEAD_URL_REG, "");
-    myLog(_url, url);
-    return baseURL + "/api/v3/delegator/ipfs" + `?path=` + _url;
+    const _url = url.replace(IPFS_HEAD_URL_REG, IPFS_LOOPRING_SITE);
+    return _url;
+    // myLog(_url, url);
+    // return baseURL + "/api/v3/delegator/ipfs" + `?path=` + _url;
   } else {
-    return baseURL;
+    return url;
   }
 };
