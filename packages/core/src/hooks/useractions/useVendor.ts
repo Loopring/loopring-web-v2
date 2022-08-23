@@ -4,10 +4,8 @@ import {
   CoinMap,
   Explorer,
   FeeInfo,
-  getValuePrecisionThousand,
   IBData,
   myLog,
-  TradeStatus,
   UIERROR_CODE,
   VendorItem,
   VendorList,
@@ -21,6 +19,7 @@ import {
   isAccActivated,
   LoopringAPI,
   makeWalletLayer2,
+  store,
   TOAST_TIME,
   useAccount,
   useBtnStatus,
@@ -28,6 +27,7 @@ import {
   useModalData,
   useSystem,
   useTokenMap,
+  useWalletLayer2Socket,
   walletLayer2Service,
 } from "../../index";
 import {
@@ -37,7 +37,6 @@ import {
 } from "@ramp-network/ramp-instant-sdk";
 import {
   AccountStep,
-  RampViewProps,
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -48,6 +47,7 @@ import {
   ConnectProvidersSignMap,
   connectProvides,
 } from "@loopring-web/web3-provider";
+import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
 export enum RAMP_SELL_PANEL {
   LIST,
@@ -64,9 +64,13 @@ export const useVendor = () => {
   const { setShowAccount } = useOpenModals();
   const { isMobile } = useSettings();
   const { updateOffRampData } = useModalData();
+
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
-    RAMP_SELL_PANEL.LIST
+    // TODO: MOCK
+    // RAMP_SELL_PANEL.LIST
+    RAMP_SELL_PANEL.CONFIRM
   );
+
   const vendorListBuy: VendorItem[] = legalShow
     ? [
         {
@@ -97,7 +101,7 @@ export const useVendor = () => {
                 config = {
                   ...config,
                   swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
-                  hostApiKey: "3qncr4yvxfpro6endeaeu6npkh8qc23e9uadtazq",
+                  hostApiKey: "vy8uc7pm9wdeqvcge4jwxtcyurj6h9nbx6qsuu48",
 
                   // hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
                 };
@@ -153,7 +157,7 @@ export const useVendor = () => {
                 config = {
                   ...config,
                   swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
-                  hostApiKey: "3qncr4yvxfpro6endeaeu6npkh8qc23e9uadtazq",
+                  hostApiKey: "vy8uc7pm9wdeqvcge4jwxtcyurj6h9nbx6qsuu48",
                   // hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
                 };
               }
@@ -214,35 +218,13 @@ export const useVendor = () => {
   };
 };
 
-export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
-  sellPanel,
-  setSellPanel,
-}: {
-  sellPanel: RAMP_SELL_PANEL;
-  setSellPanel: (value: RAMP_SELL_PANEL) => void;
-}) => {
-  const { offRampValue } = useModalData();
-  const { tokenMap, totalCoinMap } = useTokenMap();
-  const walletMap = makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>);
-  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-  const { transferValue, updateTransferData, resetTransferData } =
-    useModalData();
-  const {
-    chargeFeeTokenList,
-    isFeeNotEnough,
-    handleFeeChange,
-    feeInfo,
-    checkFeeIsEnough,
-  } = useChargeFees({
-    requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateTransferData({ ...transferValue, fee });
-      },
-      [transferValue]
-    ),
-  });
-  const processRequest = React.useCallback(
+export const useRampTransPost = () => {
+  const { account } = useAccount();
+  const { chainId } = useSystem();
+  const { checkHWAddr, updateHW } = useWalletInfo();
+  const { setShowAccount } = useOpenModals();
+  const { updateTransferRampData, resetTransferRampData } = useModalData();
+  const processRequestRampTransfer = React.useCallback(
     async (
       request: sdk.OriginTransferRequestV3,
       isNotHardwareWallet: boolean
@@ -255,7 +237,7 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
           }
-          setLastRequest({ request });
+          updateTransferRampData({ __request__: request });
           const response = await LoopringAPI.userAPI.submitInternalTransfer(
             {
               request,
@@ -286,26 +268,31 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
             if (code === sdk.ConnectorError.USER_DENIED) {
               setShowAccount({
                 isShow: true,
-                step: AccountStep.Transfer_User_Denied,
+                step: AccountStep.Transfer_RAMP_User_Denied,
               });
               // setIsConfirmTransfer(false);
             } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
               setShowAccount({
                 isShow: true,
-                step: AccountStep.Transfer_First_Method_Denied,
+                step: AccountStep.Transfer_RAMP_First_Method_Denied,
               });
             } else {
+              let info = {};
               if (
                 [102024, 102025, 114001, 114002].includes(
                   (response as sdk.RESULT_INFO)?.code || 0
                 )
               ) {
-                checkFeeIsEnough(true);
+                info = {
+                  transferRamp: AccountStep.Transfer_RAMP_Failed,
+                  trigger: "checkFeeIsEnough",
+                };
               }
               setShowAccount({
                 isShow: true,
-                step: AccountStep.Transfer_Failed,
+                step: AccountStep.Transfer_RAMP_Failed,
                 error: response as sdk.RESULT_INFO,
+                ...info,
               });
               // setIsConfirmTransfer(false);
             }
@@ -313,12 +300,12 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
             // setIsConfirmTransfer(false);
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_In_Progress,
+              step: AccountStep.Transfer_RAMP_In_Progress,
             });
             await sdk.sleep(TOAST_TIME);
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_Success,
+              step: AccountStep.Transfer_RAMP_Success,
               info: {
                 hash:
                   Explorer +
@@ -330,9 +317,9 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
               updateHW({ wallet: account.accAddress, isHWAddr });
             }
             walletLayer2Service.sendUserUpdate();
-            resetTransferData();
+            resetTransferRampData();
           } else {
-            resetTransferData();
+            resetTransferRampData();
           }
         }
       } catch (reason: any) {
@@ -342,17 +329,17 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
           if (code === sdk.ConnectorError.USER_DENIED) {
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_User_Denied,
+              step: AccountStep.Transfer_RAMP_User_Denied,
             });
           } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_First_Method_Denied,
+              step: AccountStep.Transfer_RAMP_First_Method_Denied,
             });
           } else {
             setShowAccount({
               isShow: true,
-              step: AccountStep.Transfer_Failed,
+              step: AccountStep.Transfer_RAMP_Failed,
               error: {
                 code: UIERROR_CODE.UNKNOWN,
                 msg: reason?.message,
@@ -362,19 +349,140 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
         }
       }
     },
-    [
-      account,
-      checkHWAddr,
-      chainId,
-      setShowAccount,
-      resetTransferData,
-      updateHW,
-      checkFeeIsEnough,
-    ]
+    []
   );
+  return { processRequestRampTransfer };
+};
+export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
+  sellPanel,
+  setSellPanel,
+}: {
+  sellPanel: RAMP_SELL_PANEL;
+  setSellPanel: (value: RAMP_SELL_PANEL) => void;
+}) => {
+  const { exchangeInfo } = useSystem();
+
+  const {
+    allowTrade: { raw_data },
+  } = useSystem();
+  const legalEnable = (raw_data as any)?.legal?.enable;
+  const { tokenMap, totalCoinMap } = useTokenMap();
+  const {
+    setShowAccount,
+    modals: {
+      isShowAccount: { info },
+    },
+  } = useOpenModals();
+  const { account } = useAccount();
+  const [balanceNotEnough, setBalanceNotEnough] = React.useState(false);
+  const { offRampValue } = useModalData();
+  const { processRequestRampTransfer: processRequest } = useRampTransPost();
+  const [walletMap, setWalletMap] = React.useState(
+    makeWalletLayer2(true).walletMap ?? ({} as WalletMap<T>)
+  );
+  const walletLayer2Callback = React.useCallback(() => {
+    const walletMap = makeWalletLayer2(true).walletMap ?? {};
+    setWalletMap(walletMap);
+  }, []);
+
+  useWalletLayer2Socket({ walletLayer2Callback });
+
+  const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
+  const { transferRampValue, updateTransferRampData, resetTransferRampData } =
+    useModalData();
+  const {
+    chargeFeeTokenList,
+    isFeeNotEnough,
+    handleFeeChange,
+    feeInfo,
+    checkFeeIsEnough,
+    setIsFeeNotEnough,
+  } = useChargeFees({
+    requestType: sdk.OffchainFeeReqType.TRANSFER,
+    updateData: ({ fee }) => {
+      const { transferRampValue } = store.getState()._router_modalData;
+      updateTransferRampData({ ...transferRampValue, fee });
+    },
+  });
+  React.useEffect(() => {
+    if (
+      info?.transferRamp === AccountStep.Transfer_RAMP_Failed &&
+      info?.trigger == "checkFeeIsEnough"
+    ) {
+      checkFeeIsEnough();
+    }
+  }, [info?.transferRamp]);
+
+  const checkBtnStatus = React.useCallback(() => {
+    if (
+      tokenMap &&
+      chargeFeeTokenList.length &&
+      !isFeeNotEnough.isFeeNotEnough &&
+      transferRampValue.belong &&
+      tokenMap[transferRampValue.belong] &&
+      transferRampValue.fee &&
+      transferRampValue.fee.belong &&
+      transferRampValue.address
+    ) {
+      const sellToken = tokenMap[transferRampValue.belong];
+      const feeToken = tokenMap[transferRampValue.fee.belong];
+      const feeRaw =
+        transferRampValue.fee.feeRaw ??
+        transferRampValue.fee.__raw__?.feeRaw ??
+        0;
+      const fee = sdk.toBig(feeRaw);
+      const balance = sdk
+        .toBig(transferRampValue.balance ?? 0)
+        .times("1e" + sellToken.decimals);
+      const tradeValue = sdk
+        .toBig(transferRampValue.tradeValue ?? 0)
+        .times("1e" + sellToken.decimals);
+      const isExceedBalance = tradeValue
+        .plus(feeToken.tokenId === sellToken.tokenId ? fee : "0")
+        .gt(balance);
+      myLog(
+        "isExceedBalance",
+        isExceedBalance,
+        fee.toString(),
+        tradeValue.toString()
+      );
+      if (tradeValue && !isExceedBalance) {
+        enableBtn();
+        return;
+      } else {
+        disableBtn();
+        if (isExceedBalance && feeToken.tokenId === sellToken.tokenId) {
+          setIsFeeNotEnough({
+            isFeeNotEnough: true,
+            isOnLoading: false,
+          });
+        } else if (isExceedBalance) {
+          setBalanceNotEnough(true);
+        }
+        // else {
+        //
+        // }
+      }
+    }
+    disableBtn();
+  }, [
+    chargeFeeTokenList.length,
+    disableBtn,
+    enableBtn,
+    isFeeNotEnough.isFeeNotEnough,
+    tokenMap,
+    transferRampValue.balance,
+    transferRampValue.belong,
+    transferRampValue.fee,
+    transferRampValue.tradeValue,
+  ]);
+
+  React.useEffect(() => {
+    checkBtnStatus();
+  }, [chargeFeeTokenList, isFeeNotEnough.isFeeNotEnough, transferRampValue]);
 
   const onTransferClick = useCallback(
-    async (transferValue, isFirstTime: boolean = true) => {
+    async (transferRampValue, isFirstTime: boolean = true) => {
       const { accountId, accAddress, readyState, apiKey, eddsaKey } = account;
 
       if (
@@ -383,34 +491,35 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
         LoopringAPI.userAPI &&
         exchangeInfo &&
         connectProvides.usedWeb3 &&
-        transferValue.address !== "*" &&
-        transferValue?.fee &&
-        transferValue?.fee.belong &&
-        transferValue.fee?.__raw__ &&
+        transferRampValue.address !== "*" &&
+        transferRampValue?.fee &&
+        transferRampValue?.fee.belong &&
+        transferRampValue.fee?.__raw__ &&
         eddsaKey?.sk
       ) {
         try {
-          setShowTransfer({ isShow: false });
           setShowAccount({
             isShow: true,
-            step: AccountStep.Transfer_WaitForAuth,
+            step: AccountStep.Transfer_RAMP_WaitForAuth,
           });
 
-          const sellToken = tokenMap[transferValue.belong as string];
-          const feeToken = tokenMap[transferValue.fee.belong];
+          const sellToken = tokenMap[transferRampValue.belong as string];
+          const feeToken = tokenMap[transferRampValue.fee.belong];
           const feeRaw =
-            transferValue.fee.feeRaw ?? transferValue.fee.__raw__?.feeRaw ?? 0;
+            transferRampValue.fee.feeRaw ??
+            transferRampValue.fee.__raw__?.feeRaw ??
+            0;
           const fee = sdk.toBig(feeRaw);
-          const balance = sdk
-            .toBig(transferValue.balance ?? 0)
-            .times("1e" + sellToken.decimals);
+          // const balance = sdk
+          //   .toBig(transferRampValue.balance ?? 0)
+          //   .times("1e" + sellToken.decimals);
           const tradeValue = sdk
-            .toBig(transferValue.tradeValue ?? 0)
+            .toBig(transferRampValue.tradeValue ?? 0)
             .times("1e" + sellToken.decimals);
-          const isExceedBalance =
-            feeToken.tokenId === sellToken.tokenId &&
-            tradeValue.plus(fee).gt(balance);
-          const finalVol = isExceedBalance ? balance.minus(fee) : tradeValue;
+          // const isExceedBalance =
+          //   feeToken.tokenId === sellToken.tokenId &&
+          //   tradeValue.plus(fee).gt(balance);
+          const finalVol = tradeValue;
           const transferVol = finalVol.toFixed(0, 0);
 
           const storageId = await LoopringAPI.userAPI?.getNextStorageId(
@@ -424,7 +533,7 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
             exchange: exchangeInfo.exchangeAddress,
             payerAddr: accAddress,
             payerId: accountId,
-            payeeAddr: realAddr ? realAddr : address,
+            payeeAddr: transferRampValue.address,
             payeeId: 0,
             storageId: storageId?.offchainId,
             token: {
@@ -436,7 +545,7 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
               volume: fee.toString(), // TEST: fee.toString(),
             },
             validUntil: getTimestampDaysLater(DAYS),
-            memo: transferValue.memo,
+            memo: transferRampValue.memo,
           };
 
           myLog("transfer req:", req);
@@ -446,7 +555,7 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
           // transfer failed
           setShowAccount({
             isShow: true,
-            step: AccountStep.Transfer_Failed,
+            step: AccountStep.Transfer_RAMP_Failed,
             error: {
               code: UIERROR_CODE.UNKNOWN,
               message: e.message,
@@ -457,24 +566,38 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
         return;
       }
     },
-    [
-      account,
-      tokenMap,
-      exchangeInfo,
-      setShowTransfer,
-      setShowAccount,
-      realAddr,
-      address,
-      processRequest,
-    ]
+    [account, tokenMap, exchangeInfo, setShowAccount, processRequest]
   );
 
-  const [rampViewProps, setRampViewProps] = React.useState<
-    RampViewProps<T, I, C> | undefined
-  >(() => {
-    if (offRampValue !== {}) {
+  // const [rampViewProps, setRampViewProps] =
+  //   React.useState<RampViewProps<T, I, C> | undefined>(undefined);
+
+  const initRampViewProps = React.useCallback(() => {
+    //TODO: MOCK
+    const offRampValue: IOfframpPurchase = {
+      id: "MOCK",
+      createdAt: Date.now().toString(),
+      crypto: {
+        amount: "100",
+        assetInfo: {
+          address: "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
+          symbol: "LRC",
+          chain: "Ethereum",
+          type: "ERC20",
+          name: "Loopring",
+          decimals: 18,
+        },
+      },
+      fiat: {
+        amount: 100,
+        currencySymbol: "USD",
+      },
+    };
+    if (offRampValue) {
       if (
-        "Ethereum" === (offRampValue as IOfframpPurchase).crypto.assetInfo.chain
+        /Ethereum/gi.test(
+          (offRampValue as IOfframpPurchase).crypto.assetInfo.chain ?? ""
+        )
       ) {
         const {
           crypto: {
@@ -482,62 +605,82 @@ export const useRampConfirm = <T extends IBData<I>, I, C extends FeeInfo>({
             assetInfo: { address, symbol },
           },
         } = offRampValue as IOfframpPurchase;
-        const tradeData = {
-          belong: symbol,
-          tradeValue: amount,
-          balance: walletMap[symbol]?.count,
-        };
+
         const memo = "OFF-RAMP Transfer";
-        updateTransferData({
-          ...tradeData,
+        updateTransferRampData({
+          belong: symbol,
+          tradeValue: Number(amount),
+          balance: walletMap[symbol]?.count,
           fee: feeInfo,
           memo,
           address: address as string,
         });
-        return {
-          addressDefault: address,
-          realAddr: address,
-          tradeData,
-          coinMap: totalCoinMap as CoinMap<T>,
-          transferBtnStatus: btnStatus,
-          isLoopringAddress: true,
-          isSameAddress: false,
-          isAddressCheckLoading: WALLET_TYPE.Loopring,
-          feeInfo,
-          handleFeeChange,
-          chargeFeeTokenList,
-          isFeeNotEnough,
-          handleSureItsLayer2: () => undefined,
-          sureItsLayer2: true,
-          onTransferClick,
-          handlePanelEvent: () => undefined,
-          addrStatus: AddressError.NoError,
-          memo,
-          handleOnMemoChange: () => undefined,
-          handleOnAddressChange: () => undefined,
-          // sureItsLayer2:true,
-          // handleConfirm: (),
-          // tradeData,
-          // onTransferClick,
-          // realAddr,
-          // isFeeNotEnough,
-          // handleFeeChange,
-          // chargeFeeTokenList,
-          // feeInfo,
-          // memo,
-
-          // }
-        };
       } else {
-        return undefined;
         setSellPanel(RAMP_SELL_PANEL.LIST);
       }
     } else {
-      return undefined;
       setSellPanel(RAMP_SELL_PANEL.LIST);
     }
-  });
-  React.useEffect(() => {}, [sellPanel]);
+  }, [
+    btnStatus,
+    chargeFeeTokenList,
+    feeInfo,
+    handleFeeChange,
+    isFeeNotEnough,
+    legalEnable,
+    onTransferClick,
+    setSellPanel,
+    totalCoinMap,
+    updateTransferRampData,
+  ]);
+  React.useEffect(() => {
+    if (RAMP_SELL_PANEL.CONFIRM) {
+      initRampViewProps();
+    } else {
+      //TODO MOCK
+      // resetTransferRampData();
+    }
+  }, [sellPanel, walletMap]);
 
-  return { vendorList, vendorForce: undefined };
+  const rampViewProps = React.useMemo(() => {
+    const { address, memo, fee, __request__, ...tradeData } = transferRampValue;
+    return {
+      type: "TOKEN",
+      disabled: !legalEnable,
+      addressDefault: address,
+      realAddr: address,
+      tradeData,
+      coinMap: totalCoinMap as CoinMap<T>,
+      transferBtnStatus: btnStatus,
+      isLoopringAddress: true,
+      isSameAddress: false,
+      isAddressCheckLoading: WALLET_TYPE.Loopring,
+      feeInfo,
+      handleFeeChange,
+      balanceNotEnough,
+      chargeFeeTokenList,
+      isFeeNotEnough,
+      handleSureItsLayer2: () => undefined,
+      sureItsLayer2: true,
+      onTransferClick,
+      handlePanelEvent: () => undefined,
+      addrStatus: AddressError.NoError,
+      memo,
+      walletMap,
+      handleOnMemoChange: () => undefined,
+      handleOnAddressChange: () => undefined,
+    } as any;
+  }, [
+    btnStatus,
+    chargeFeeTokenList,
+    feeInfo,
+    handleFeeChange,
+    isFeeNotEnough,
+    legalEnable,
+    onTransferClick,
+    totalCoinMap,
+    transferRampValue,
+  ]);
+
+  return { rampViewProps };
 };

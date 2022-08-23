@@ -134,6 +134,7 @@ import {
   goActiveAccount,
   useCheckActiveStatus,
   useForceWithdraw,
+  useRampTransPost,
 } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useNFTMintAdvance } from "../../hooks/useractions/useNFTMintAdvance";
@@ -156,6 +157,8 @@ export function useAccountModalForUI({
   const { chainInfos, updateDepositHash, clearDepositHash } =
     onchainHashInfo.useOnChainInfo();
   const { updateWalletLayer2 } = useWalletLayer2();
+  const { processRequestRampTransfer } = useRampTransPost();
+
   const {
     modals: {
       isShowAccount,
@@ -199,7 +202,7 @@ export function useAccountModalForUI({
     useNFTMintAdvance();
   // const { nftMintProps } = useNFTMint();
   const { withdrawProps } = useWithdraw();
-  const { transferProps } = useTransfer();
+  const { transferProps, retryBtn: transferRetry } = useTransfer();
   const { nftWithdrawProps } = useNFTWithdraw();
   const { nftTransferProps } = useNFTTransfer();
   const { nftDeployProps } = useNFTDeploy();
@@ -338,14 +341,7 @@ export function useAccountModalForUI({
     return {
       btnTxt: "labelRetry",
       callback: () => {
-        setShowAccount({ isShow: false });
-        setShowTransfer({
-          isShow: true,
-          info: {
-            ...isShowTransfer.info,
-            isRetry: true,
-          },
-        });
+        transferRetry(false);
       },
     };
   }, [isShowTransfer.info, setShowAccount, setShowTransfer]);
@@ -1338,7 +1334,7 @@ export function useAccountModalForUI({
             btnInfo={{
               btnTxt: "labelTryAnother",
               callback: () => {
-                transferProps.onTransferClick(transferValue as any, false);
+                transferRetry(true);
               },
             }}
             {...{
@@ -1391,6 +1387,114 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.Transfer_Failed]: {
+        view: (
+          <Transfer_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
+      // transferRamp
+      [AccountStep.Transfer_RAMP_WaitForAuth]: {
+        view: (
+          <Transfer_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_First_Method_Denied]: {
+        view: (
+          <Transfer_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferRampValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, false);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_User_Denied]: {
+        view: (
+          <Transfer_User_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferRampValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, true);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_In_Progress]: {
+        view: (
+          <Transfer_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_Success]: {
+        view: (
+          <Transfer_Success
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_Failed]: {
         view: (
           <Transfer_Failed
             btnInfo={closeBtnInfo}

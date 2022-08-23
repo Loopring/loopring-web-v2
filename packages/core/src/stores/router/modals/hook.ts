@@ -1,29 +1,31 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
-  resetActiveAccountData,
-  resetDepositData,
-  resetNFTDeployData,
-  resetNFTDepositData,
-  resetNFTMintAdvanceData,
-  resetNFTMintData,
-  resetNFTTransferData,
-  resetNFTWithdrawData,
-  resetTransferData,
-  resetWithdrawData,
-  resetForceWithdrawData,
-  updateActiveAccountData,
-  updateDepositData,
-  updateNFTDeployData,
-  updateNFTDepositData,
-  updateNFTMintAdvanceData,
-  updateNFTMintData,
-  updateNFTTransferData,
-  updateNFTWithdrawData,
-  updateTransferData,
-  updateWithdrawData,
   updateForceWithdrawData,
+  updateActiveAccountData,
+  updateWithdrawData,
+  updateTransferData,
+  updateDepositData,
+  updateNFTWithdrawData,
+  updateNFTTransferData,
+  updateNFTDepositData,
+  updateNFTMintData,
+  updateNFTDeployData,
+  updateNFTMintAdvanceData,
   updateOffRampData,
+  resetForceWithdrawData,
+  resetNFTWithdrawData,
+  resetNFTTransferData,
+  resetNFTDepositData,
+  resetNFTMintData,
+  resetWithdrawData,
+  resetTransferData,
+  resetTransferRampData,
+  resetDepositData,
+  resetActiveAccountData,
+  resetNFTDeployData,
+  resetNFTMintAdvanceData,
   resetOffRampData,
+  updateTransferRampData,
 } from "./reducer";
 import {
   ActiveAccountData,
@@ -55,23 +57,28 @@ export function useModalData(): {
   ) => void;
   resetActiveAccountData: () => void;
   nftDepositValue: TradeNFT<any>;
-  updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
-  updateNFTTransferData: (
-    nftTransferData: RequireOne<TransferData & TradeNFT<any>, never>
-  ) => void;
   resetTransferData: () => void;
-  nftWithdrawValue: WithdrawData & Partial<TradeNFT<any>>;
   transferValue: TransferData;
+  updateTransferData: (transferData: RequireOne<TransferData, never>) => void;
+  transferRampValue: TransferData;
+  resetTransferRampData: () => void;
+  updateTransferRampData: (
+    transferData: RequireOne<TransferData, never>
+  ) => void;
   updateNFTDepositData: (
     nftDepositData: RequireOne<TradeNFT<any>, never>
+  ) => void;
+  updateNFTTransferData: (
+    nftTransferData: RequireOne<TransferData & TradeNFT<any>, never>
   ) => void;
   nftTransferValue: TransferData & Partial<TradeNFT<any>>;
   depositValue: DepositData;
   updateDepositData: (depositData: RequireOne<DepositData, never>) => void;
   resetNFTTransferData: () => void;
-  updateTransferData: (transferData: RequireOne<TransferData, never>) => void;
+  nftWithdrawValue: WithdrawData & Partial<TradeNFT<any>>;
   resetWithdrawData: () => void;
   withdrawValue: WithdrawData;
+  updateWithdrawData: (withdrawData: RequireOne<WithdrawData, never>) => void;
   resetNFTDepositData: () => void;
   resetDepositData: () => void;
   updateNFTWithdrawData: (
@@ -95,7 +102,7 @@ export function useModalData(): {
     forceWithdrawData: Partial<ForceWithdrawData>
   ) => void;
   resetForceWithdrawData: () => void;
-  offRampValue: IOfframpPurchase | {};
+  offRampValue: IOfframpPurchase | undefined;
   updateOffRampData: (offrampPurchase: IOfframpPurchase) => void;
   resetOffRampData: () => void;
 } {
@@ -121,6 +128,12 @@ export function useModalData(): {
     updateTransferData: React.useCallback(
       (transferData: RequireOne<TransferData, never>) => {
         dispatch(updateTransferData(transferData));
+      },
+      [dispatch]
+    ),
+    updateTransferRampData: React.useCallback(
+      (transferData: RequireOne<TransferData, never>) => {
+        dispatch(updateTransferRampData(transferData));
       },
       [dispatch]
     ),
@@ -206,6 +219,9 @@ export function useModalData(): {
     }, [dispatch]),
     resetTransferData: React.useCallback(() => {
       dispatch(resetTransferData(undefined));
+    }, [dispatch]),
+    resetTransferRampData: React.useCallback(() => {
+      dispatch(resetTransferRampData(undefined));
     }, [dispatch]),
     resetDepositData: React.useCallback(() => {
       dispatch(resetDepositData(undefined));

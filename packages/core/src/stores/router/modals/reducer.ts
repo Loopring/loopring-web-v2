@@ -42,6 +42,7 @@ const initialTransferState: TransferData = {
   address: undefined,
   memo: undefined,
   fee: undefined,
+  __request__: undefined,
 };
 
 const initialDepositState: DepositData = {
@@ -77,9 +78,10 @@ const initialActiveAccountState: ActiveAccountData = {
 
 const initialState: ModalDataStatus = {
   lastStep: LAST_STEP.default,
-  offRampValue: {},
+  offRampValue: undefined,
   withdrawValue: initialWithdrawState,
   transferValue: initialTransferState,
+  transferRampValue: initialTransferState,
   depositValue: initialDepositState,
   nftWithdrawValue: initialWithdrawState,
   nftTransferValue: initialTransferState,
@@ -101,6 +103,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetAll(state) {
       this.resetWithdrawData(state);
       this.resetTransferData(state);
+      this.resetTransferRampData(state);
       this.resetDepositData(state);
       this.resetNFTWithdrawData(state);
       this.resetNFTTransferData(state);
@@ -126,6 +129,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetTransferData(state) {
       state.lastStep = LAST_STEP.default;
       state.transferValue = initialTransferState;
+    },
+    resetTransferRampData(state) {
+      state.lastStep = LAST_STEP.default;
+      state.transferRampValue = initialTransferState;
     },
     resetDepositData(state) {
       state.lastStep = LAST_STEP.default;
@@ -163,7 +170,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     },
     resetOffRampData(state) {
       state.lastStep = LAST_STEP.default;
-      state.offRampValue = {};
+      state.offRampValue = undefined;
     },
     updateActiveAccountData(
       state,
@@ -226,6 +233,29 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
 
       state.transferValue = {
         ...state.transferValue,
+        balance:
+          balance === undefined || balance >= 0
+            ? balance
+            : state.transferValue.balance,
+        belong,
+        tradeValue,
+        address: address !== "*" ? address : undefined,
+        ...rest,
+      };
+    },
+    updateTransferRampData(
+      state,
+      action: PayloadAction<Partial<TransferData>>
+    ) {
+      const { belong, balance, tradeValue, address, __request__, ...rest } =
+        action.payload;
+      state.lastStep = LAST_STEP.offRampTrans;
+      if (__request__) {
+        state.transferRampValue.__request__ = __request__;
+        return state;
+      }
+      state.transferRampValue = {
+        ...state.transferRampValue,
         balance:
           balance === undefined || balance >= 0
             ? balance
@@ -410,6 +440,7 @@ export const {
   updateActiveAccountData,
   updateWithdrawData,
   updateTransferData,
+  updateTransferRampData,
   updateDepositData,
   updateNFTWithdrawData,
   updateNFTTransferData,
@@ -425,6 +456,7 @@ export const {
   resetNFTMintData,
   resetWithdrawData,
   resetTransferData,
+  resetTransferRampData,
   resetDepositData,
   resetActiveAccountData,
   resetNFTDeployData,

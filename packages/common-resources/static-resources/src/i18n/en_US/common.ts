@@ -907,4 +907,5 @@ export default {
   labelAdMintTitle: "Advance Create Collection",
   labelBuy: "Buy",
   labelSell: "Sell",
+  labelRampNoBalance: "Insufficient {{belong}} balance",
 };

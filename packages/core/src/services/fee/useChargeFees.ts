@@ -57,6 +57,10 @@ export function useChargeFees({
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
+  setIsFeeNotEnough: (props: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  }) => void;
 } {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: "ETH",
@@ -448,6 +452,7 @@ export function useChargeFees({
     isFeeNotEnough,
     checkFeeIsEnough,
     handleFeeChange,
+    setIsFeeNotEnough,
     feeInfo,
   };
 }

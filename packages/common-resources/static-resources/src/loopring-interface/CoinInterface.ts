@@ -290,7 +290,6 @@ export enum EXPLORE_TYPE {
   NFTTRANSFER = "nftTransfer",
 }
 
-
 /**
  * CollectionMeta
  * @property name string useToCreate Collection
@@ -308,30 +307,29 @@ export enum EXPLORE_TYPE {
  *
  */
 export type CollectionMeta = {
-  name: string,
-  tileUri: string,
-  owner: string,
-  nftFactory?: string,
-  baseUri?: string,
-  collectionTitle?: string,
-  description?: string,
-  avatar?: string,
-  banner?: string,
-  thumbnail?: string,
-  cid?: string,
+  name: string;
+  tileUri: string;
+  owner: string;
+  nftFactory?: string;
+  baseUri?: string;
+  collectionTitle?: string;
+  description?: string;
+  avatar?: string;
+  banner?: string;
+  thumbnail?: string;
+  cid?: string;
 };
 
 export enum CollectionMetaKey {
-  name = 'name',
-  tileUri = 'tileUri',
-  owner = 'owner',
-  nftFactory = 'nftFactory',
-  baseUri = 'baseUri',
-  collectionTitle = 'collectionTitle',
-  description = 'description',
-  avatar = 'avatar',
-  banner = 'banner',
-  thumbnail = 'thumbnail',
-  cid = 'cid',
+  name = "name",
+  tileUri = "tileUri",
+  owner = "owner",
+  nftFactory = "nftFactory",
+  baseUri = "baseUri",
+  collectionTitle = "collectionTitle",
+  description = "description",
+  avatar = "avatar",
+  banner = "banner",
+  thumbnail = "thumbnail",
+  cid = "cid",
 }
-

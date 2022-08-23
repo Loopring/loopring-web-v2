@@ -19,29 +19,29 @@ import { BackIcon, MarketType } from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
   position: relative;
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 
   .loading-block {
     background: initial;
   }
 
   .hasLinerBg {
-    ${({theme}) => boxLiner({theme})}
+    ${({ theme }) => boxLiner({ theme })}
   }
 
-  border-radius: ${({theme}) => theme.unit}px;
+  border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Grid;
 
 export const DualPanel: any = withTranslation("common")(
-  <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({
-                                                                             t,
-                                                                             setConfirmDefiInvest,
-                                                                           }: WithTranslation & {
+  <R extends { [key: string]: any }, I extends { [key: string]: any }>({
+    t,
+    setConfirmDefiInvest,
+  }: WithTranslation & {
     setConfirmDefiInvest: (state: any) => void;
   }) => {
-    const {marketArray} = useDefiMap();
+    const { marketArray } = useDefiMap();
     const {
-      confirmation: {confirmedDefiInvest},
+      confirmation: { confirmedDefiInvest },
     } = confirmation.useConfirmation();
     setConfirmDefiInvest(!confirmedDefiInvest);
     const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
@@ -58,28 +58,28 @@ export const DualPanel: any = withTranslation("common")(
     const isJoin =
       match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
     const {
-      dualWrapProps,
+      // dualWrapProps,
       closeToast,
       toastOpen,
-      confirmShowNoBalance,
-      setConfirmShowNoBalance,
-      serverUpdate,
-      setServerUpdate,
+      // confirmShowNoBalance,
+      // setConfirmShowNoBalance,
+      // serverUpdate,
+      // setServerUpdate,
     } = useDualHook({
       market: _market ?? ("WSTETH-ETH" as MarketType),
       isJoin,
     });
-    const {isMobile} = useSettings();
-    const styles = isMobile ? {flex: 1} : {width: "var(--swap-box-width)"};
+    const { isMobile } = useSettings();
+    const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 
     return (
-      <Box display={'flex'} flexDirection={'column'} flex={1} marginBottom={2}>
+      <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
         <Box marginBottom={2}>
           <Button
-            startIcon={<BackIcon fontSize={"small"}/>}
+            startIcon={<BackIcon fontSize={"small"} />}
             variant={"text"}
             size={"medium"}
-            sx={{color: "var(--color-text-secondary)"}}
+            sx={{ color: "var(--color-text-secondary)" }}
             color={"inherit"}
             onClick={history.goBack}
           >
@@ -94,23 +94,23 @@ export const DualPanel: any = withTranslation("common")(
           alignItems={"center"}
           flex={1}
         >
-          {dualWrapProps.dualCalcData ? (
-            <Box
-              className={"hasLinerBg"}
-              display={"flex"}
-              style={styles}
-              justifyContent={"center"}
-              padding={5 / 2}
-            >
-              <DualWrap
-                market={_market}
-                isJoin={isJoin}
-                {...(dualWrapProps as any)}
-              />
-            </Box>
-          ) : (
-            <LoadingBlock/>
-          )}
+          {/*{dualWrapProps.dualCalcData ? (*/}
+          {/*  <Box*/}
+          {/*    className={"hasLinerBg"}*/}
+          {/*    display={"flex"}*/}
+          {/*    style={styles}*/}
+          {/*    justifyContent={"center"}*/}
+          {/*    padding={5 / 2}*/}
+          {/*  >*/}
+          {/*    <DualWrap*/}
+          {/*      market={_market}*/}
+          {/*      isJoin={isJoin}*/}
+          {/*      {...(dualWrapProps as any)}*/}
+          {/*    />*/}
+          {/*  </Box>*/}
+          {/*) : (*/}
+          {/*  <LoadingBlock/>*/}
+          {/*)}*/}
           <Toast
             alertText={toastOpen?.content ?? ""}
             severity={toastOpen?.type ?? "success"}
@@ -119,18 +119,19 @@ export const DualPanel: any = withTranslation("common")(
             onClose={closeToast}
           />
 
-          <ConfirmInvestDefiServiceUpdate open={serverUpdate} handleClose={() => setServerUpdate(false)}/>
-          <ConfirmDefiNOBalance
-            isJoin={isJoin}
-            handleClose={(_e) => {
-              setConfirmShowNoBalance(false);
-              if (dualWrapProps?.onRefreshData) {
-                dualWrapProps?.onRefreshData(true, true);
-              }
-            }}
-            open={confirmShowNoBalance}
-          />
-        </StyleWrapper></Box>
+          {/*<ConfirmInvestDefiServiceUpdate open={serverUpdate} handleClose={() => setServerUpdate(false)}/>*/}
+          {/*<ConfirmDefiNOBalance*/}
+          {/*  isJoin={isJoin}*/}
+          {/*  handleClose={(_e) => {*/}
+          {/*    setConfirmShowNoBalance(false);*/}
+          {/*    if (dualWrapProps?.onRefreshData) {*/}
+          {/*      dualWrapProps?.onRefreshData(true, true);*/}
+          {/*    }*/}
+          {/*  }}*/}
+          {/*  open={confirmShowNoBalance}*/}
+          {/*/>*/}
+        </StyleWrapper>
+      </Box>
     );
   }
 );

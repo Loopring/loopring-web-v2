@@ -1,14 +1,20 @@
 import { WithTranslation, withTranslation } from "react-i18next";
-import { RampConfirm, VendorMenu } from "@loopring-web/component-lib";
+import {
+  Button,
+  RampConfirm,
+  useSettings,
+  VendorMenu,
+} from "@loopring-web/component-lib";
 import React from "react";
 import {
   RAMP_SELL_PANEL,
+  useRampConfirm,
   useVendor,
   ViewAccountTemplate,
 } from "@loopring-web/core";
 import { Box, Grid, Tab, Tabs, Typography } from "@mui/material";
 
-import { TradeTypes } from "@loopring-web/common-resources";
+import { BackIcon, SoursURL, TradeTypes } from "@loopring-web/common-resources";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "@emotion/styled";
 import { InvestRouter, InvestType } from "../InvestPage";
@@ -22,6 +28,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
 
+  const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab");
   // debugger;
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
@@ -39,7 +46,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
         return;
     }
   }, [match?.params.item]);
-  const rampConfirm = useRampConfirm();
+  const { rampViewProps } = useRampConfirm({ sellPanel, setSellPanel });
   const fiatView = React.useMemo(() => {
     return (
       <Box flex={1} flexDirection={"column"} display={"flex"}>
@@ -95,7 +102,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
           display={"flex"}
         >
           <StyledPaper
-            width={"var(--swap-box-width)"}
+            width={isMobile ? "100%" : "var(--modal-width)"}
             paddingY={5 / 2}
             flex={"initial "}
           >
@@ -111,7 +118,39 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                   />
                 )}
                 {sellPanel === RAMP_SELL_PANEL.CONFIRM && (
-                  <RampConfirm tradeData={} />
+                  <Box flex={1} display={"flex"} flexDirection={"column"}>
+                    <Box marginBottom={2}>
+                      <Button
+                        startIcon={<BackIcon fontSize={"small"} />}
+                        variant={"text"}
+                        size={"medium"}
+                        sx={{ color: "var(--color-text-secondary)" }}
+                        color={"inherit"}
+                        onClick={() => setSellPanel(RAMP_SELL_PANEL.LIST)}
+                      >
+                        {t("labelBack")}
+                      </Button>
+                    </Box>
+                    {rampViewProps ? (
+                      <RampConfirm {...{ ...rampViewProps }} />
+                    ) : (
+                      <Box
+                        flex={1}
+                        display={"flex"}
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                        height={"90%"}
+                      >
+                        <img
+                          className="loading-gif"
+                          alt={"loading"}
+                          width="36"
+                          src={`${SoursURL}images/loading-line.gif`}
+                        />
+                        {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
+                      </Box>
+                    )}
+                  </Box>
                 )}
               </>
             )}

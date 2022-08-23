@@ -1,4 +1,4 @@
-import { WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Box, Grid, Typography } from "@mui/material";
 import {
   IBData,
@@ -15,6 +15,7 @@ import {
   FeeTokenItemWrapper,
   RampViewProps,
   Toast,
+  TradeBtnStatus,
 } from "../../index";
 import { useSettings } from "../../../stores";
 import React from "react";
@@ -24,21 +25,22 @@ export const RampConfirm = <
   I,
   C extends FeeInfo
 >({
-  t,
   sureItsLayer2,
-  handleConfirm,
   tradeData,
   onTransferClick,
   realAddr,
+  disabled,
   isFeeNotEnough,
   handleFeeChange,
   chargeFeeTokenList,
+  transferBtnStatus,
+  transferI18nKey,
   feeInfo,
   memo,
-}: RampViewProps<T, I, C> & {
-  handleConfirm: (index: number) => void;
-} & WithTranslation) => {
+  balanceNotEnough,
+}: RampViewProps<T, I, C> & { balanceNotEnough: boolean }) => {
   const { isMobile } = useSettings();
+  const { t } = useTranslation();
   const { walletList } = useAddressTypeLists();
   const [open, setOpen] = React.useState(false);
   const [dropdownStatus, setDropdownStatus] =
@@ -48,6 +50,9 @@ export const RampConfirm = <
       handleFeeChange(value);
     }
   };
+  const getDisabled = React.useMemo(() => {
+    return disabled || transferBtnStatus === TradeBtnStatus.DISABLED;
+  }, [disabled, transferBtnStatus]);
   return (
     <Grid
       className={"confirm"}
@@ -87,6 +92,17 @@ export const RampConfirm = <
           {tradeData?.tradeValue + " "}
           {tradeData?.belong}
         </Typography>
+        {balanceNotEnough && (
+          <Typography
+            color={"var(--color-error)"}
+            variant={"body2"}
+            marginTop={1 / 4}
+            alignSelf={"stretch"}
+            position={"relative"}
+          >
+            {t("labelRampNoBalance", { belong: tradeData?.belong })}
+          </Typography>
+        )}
       </Grid>
       <Grid item xs={12}>
         <Typography color={"var(--color-text-third)"} variant={"body1"}>
@@ -199,10 +215,15 @@ export const RampConfirm = <
             } else {
               setOpen(true);
             }
-            handleConfirm(1);
           }}
+          loading={
+            !getDisabled && transferBtnStatus === TradeBtnStatus.LOADING
+              ? "true"
+              : "false"
+          }
+          disabled={getDisabled || transferBtnStatus === TradeBtnStatus.LOADING}
         >
-          {t("labelConfirm")}
+          {t(transferI18nKey ?? `labelConfirm`)}
         </Button>
       </Grid>
       <Toast
