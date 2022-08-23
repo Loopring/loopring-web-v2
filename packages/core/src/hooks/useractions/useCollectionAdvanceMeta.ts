@@ -73,19 +73,15 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
             ((response as sdk.RESULT_INFO).code ||
               (response as sdk.RESULT_INFO).message)
           ) {
-            if ((response as sdk.RESULT_INFO).code === 102127) {
-              // @ts-ignore
-              throw new Error(
-                t(
-                  SDK_ERROR_MAP_TO_UI[
-                    (response as sdk.RESULT_INFO).code ?? UIERROR_CODE.UNKNOWN
-                  ]?.message ?? "",
-                  { ns: "error" }
-                )
-              );
-            } else {
-              throw new Error((response as sdk.RESULT_INFO).message);
-            }
+            const _response: sdk.RESULT_INFO = response as sdk.RESULT_INFO;
+            throw new Error(
+              t(
+                _response.code && SDK_ERROR_MAP_TO_UI[_response.code]
+                  ? SDK_ERROR_MAP_TO_UI[_response.code].messageKey
+                  : SDK_ERROR_MAP_TO_UI[UIERROR_CODE.UNKNOWN].messageKey,
+                { ns: "error", name: collectionAdvanceValue.name?.trim() }
+              )
+            );
           } else {
             setCollectionToastOpen({
               open: true,
@@ -95,6 +91,7 @@ export function useCollectionAdvanceMeta<T extends CollectionMeta>({
             updateWalletL2Collection({ page: 1 });
           }
         } catch (error) {
+          myLog("error", error);
           setCollectionToastOpen({
             open: true,
             type: "error",

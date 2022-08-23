@@ -41,8 +41,8 @@ export default {
   errorJSONStringify: "Wrong JSON format",
   errorCollectionMetadataNoTileUri: "Tile uri is required",
   errorCollectionNoName: "Name is required",
-  errorCollectionSameName: "You already hava an collection call {{name}} ",
+  errorCollectionSameName: "Collection called {{name}} is existe",
   errorCollectionInfo: "Wrong Collection",
   errorCollectionNoSupport: "Only L2 collection is allow to mint",
-  errorCollectionNotReadable: "Read Collection Info Failed"
+  errorCollectionNotReadable: "Read Collection Info Failed",
 };
