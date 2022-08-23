@@ -18,6 +18,27 @@ import { MenuBtnStyled, shake } from "../../styled";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import { useSettings } from "../../../stores";
 
+import UAuth from "@uauth/js";
+import dotenv from "dotenv";
+dotenv.config();
+const uauth = new UAuth({
+  clientID: process.env.REACT_APP_UAUTH_CLIENT_ID!,
+  redirectUri: process.env.REACT_APP_UAUTH_REDIR_URI!,
+  scope: "openid wallet",
+});
+
+let udBtn = "Login with Unstoppable Domains";
+let udStatus: boolean = false;
+uauth
+  .user()
+  .then((user) => {
+    udBtn = user.sub;
+    udStatus = true;
+  })
+  .catch(() => {
+    console.log("Not logged in with Unstoppable Domains");
+  });
+
 const CheckboxStyled = styled(Checkbox)`
   &.shake {
     animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
@@ -168,6 +189,34 @@ export const ProviderMenu = ({
         paddingBottom={4}
       >
         <>
+          <Box marginTop={1.5}>
+            <MenuBtnStyled
+              id="unstoppable-btn"
+              variant={"outlined"}
+              size={"large"}
+              fullWidth
+              onClick={async () => {
+                if (udStatus === true) {
+                  try {
+                    await uauth.logout();
+                    console.log("[UD] logged out");
+                  } catch (error) {
+                    console.error(error);
+                  }
+                } else {
+                  console.log("[UD] Logging in...");
+                  try {
+                    const authorization = await uauth.loginWithPopup();
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }
+                window.location.reload();
+              }}
+            >
+              {udBtn}
+            </MenuBtnStyled>
+          </Box>
           {gatewayList.map((item: GatewayItem) => (
             <Box key={item.key} marginTop={1.5}>
               <MenuBtnStyled

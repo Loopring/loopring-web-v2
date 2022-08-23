@@ -5,6 +5,7 @@
   "description": "dexwebapp new version",
   "private": true,
   "dependencies": {
+    "@uauth/js": "2.3.0",
     "@loopring-web/common-resources": "1.0.0",
     "@loopring-web/component-lib": "1.0.0",
     "@loopring-web/core": "1.0.0",
