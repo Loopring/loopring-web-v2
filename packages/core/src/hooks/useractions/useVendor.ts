@@ -62,7 +62,7 @@ export const useVendor = () => {
   const legalEnable = (raw_data as any)?.legal?.enable;
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
-  const { isMobile } = useSettings();
+  // const { isMobile } = useSettings();
   const { updateOffRampData, resetOffRampData } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
