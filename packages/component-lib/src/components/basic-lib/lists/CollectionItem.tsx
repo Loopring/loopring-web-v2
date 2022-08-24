@@ -14,13 +14,16 @@ import {
   copyToClipBoard,
   GET_IPFS_STRING,
   getShortAddr,
+  LinkIcon,
   MakeMeta,
+  NFT_TYPE_STRING,
 } from "@loopring-web//common-resources";
 import React from "react";
-import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
+import { DEPLOYMENT_STATUS } from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
+import { useTheme } from "@emotion/react";
 
 const BoxStyle = styled(Box)`
   .MuiRadio-root {
@@ -61,13 +64,12 @@ export const CollectionItem = React.memo(
         account,
         isSelectOnly = false,
         selectCollection,
-        makeMeta,
-        domain,
+        // makeMeta,
+        // domain,
         getIPFSString,
         baseURL,
         etherscanBaseUrl,
-      }: // toggle,
-      {
+      }: {
         item: Co;
         index: number;
         setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
@@ -86,11 +88,11 @@ export const CollectionItem = React.memo(
       },
       _ref: React.Ref<any>
     ) => {
-      // const {account} = useAccount();
       const { isMobile } = useSettings();
+      const theme = useTheme();
       const { t } = useTranslation("common");
 
-      const { metaDemo } = makeMeta({ collection: item, domain });
+      // const { metaDemo } = makeMeta({ collection: item, domain });
       return (
         <CardStyleItem ref={_ref} className={"collection"}>
           <Box
@@ -131,12 +133,12 @@ export const CollectionItem = React.memo(
                 className={isMobile ? "mobile btn-group" : "btn-group"}
               >
                 <>
-                  {!!(
+                  {!(
                     item.isCounterFactualNFT &&
                     item.deployStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
                     item.owner?.toLowerCase() ===
                       account.accAddress.toLowerCase()
-                  ) && (
+                  ) ? (
                     <Box className={isMobile ? "isMobile" : ""} width={"48%"}>
                       <Button
                         variant={"outlined"}
@@ -149,31 +151,57 @@ export const CollectionItem = React.memo(
                         {t("labelNFTDeployContract")}
                       </Button>
                     </Box>
-                  )}
-                  {item.isCounterFactualNFT &&
-                    // @ts-ignore
-                    !(item?.nftType === NFTType.ERC721)(
-                      <Box
-                        className={isMobile ? "isMobile" : ""}
-                        width={"48%"}
-                        marginLeft={"4%"}
+                  ) : (
+                    <Box className={isMobile ? "isMobile" : ""}>
+                      <Button
+                        variant={"outlined"}
+                        size={"medium"}
+                        fullWidth
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(
+                            `${etherscanBaseUrl}tx/${item?.contractAddress}`
+                          );
+                          window.opener = null;
+                        }}
                       >
-                        <Button
-                          variant={"contained"}
-                          size={"small"}
-                          fullWidth
-                          onClick={() => {
-                            if (item.name && item.tileUri) {
-                              setShowMintNFT(item);
-                            } else {
-                              setShowEdit(item);
-                            }
+                        {t("labelViewEtherscan")}
+                        <LinkIcon
+                          color={"inherit"}
+                          fontSize={"small"}
+                          style={{
+                            verticalAlign: "middle",
+                            marginLeft: theme.unit,
                           }}
-                        >
-                          {t("labelNFTMintSimpleBtn")}
-                        </Button>
-                      </Box>
-                    )}
+                        />
+                      </Button>
+                    </Box>
+                  )}
+                  {!!(
+                    item.isCounterFactualNFT &&
+                    item?.nftType !== NFT_TYPE_STRING.ERC721
+                  ) && (
+                    <Box
+                      className={isMobile ? "isMobile" : ""}
+                      width={"48%"}
+                      marginLeft={"4%"}
+                    >
+                      <Button
+                        variant={"contained"}
+                        size={"small"}
+                        fullWidth
+                        onClick={() => {
+                          if (item.name && item.tileUri) {
+                            setShowMintNFT(item);
+                          } else {
+                            setShowEdit(item);
+                          }
+                        }}
+                      >
+                        {t("labelNFTMintSimpleBtn")}
+                      </Button>
+                    </Box>
+                  )}
                 </>
               </BoxBtnGroup>
             )}
@@ -205,35 +233,21 @@ export const CollectionItem = React.memo(
                 >
                   {item?.name ?? t("labelUnknown")}
                 </Typography>
-                {item.isCounterFactualNFT &&
-                item.deployStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
-                  <Typography
-                    color={"textSecondary"}
-                    variant={"body1"}
-                    component={"span"}
-                  >
-                    {t("labelCounterFactualNFT") +
-                      " " +
-                      getShortAddr(item?.contractAddress ?? "", true)}
-                  </Typography>
-                ) : (
-                  <Button
-                    variant={"text"}
-                    color={"primary"}
-                    size={"small"}
-                    endIcon={<CopyIcon color={"secondary"} />}
-                    sx={{ marginLeft: 1 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(
-                        `${etherscanBaseUrl}tx/${item?.contractAddress}`
-                      );
-                      window.opener = null;
-                    }}
-                  >
-                    {getShortAddr(item?.contractAddress ?? "")}
-                  </Button>
-                )}
+
+                <Button
+                  variant={"text"}
+                  color={"primary"}
+                  size={"small"}
+                  endIcon={<CopyIcon color={"secondary"} />}
+                  sx={{ marginLeft: 1 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyToClipBoard(item?.contractAddress ?? "");
+                    setCopyToastOpen({ isShow: true, type: "address" });
+                  }}
+                >
+                  {getShortAddr(item?.contractAddress ?? "")}
+                </Button>
               </Typography>
               <Typography
                 color={"text.secondary"}
@@ -248,22 +262,22 @@ export const CollectionItem = React.memo(
                   color={"var(--color-text-third)"}
                   title={item?.nftType}
                 >
-                  {NFTType[item?.nftType ?? 0]}
+                  {item?.nftType}
                 </Typography>
-                <Button
-                  variant={"text"}
-                  color={"primary"}
-                  size={"small"}
-                  endIcon={<CopyIcon color={"secondary"} />}
-                  sx={{ marginLeft: 1 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyToClipBoard(JSON.stringify(metaDemo));
-                    setCopyToastOpen({ isShow: true, type: "json" });
-                  }}
-                >
-                  {t("labelCopyNFTDemo")}
-                </Button>
+                {/*<Button*/}
+                {/*  variant={"text"}*/}
+                {/*  color={"primary"}*/}
+                {/*  size={"small"}*/}
+                {/*  endIcon={<CopyIcon color={"secondary"} />}*/}
+                {/*  sx={{ marginLeft: 1 }}*/}
+                {/*  onClick={(e) => {*/}
+                {/*    e.stopPropagation();*/}
+                {/*    copyToClipBoard(JSON.stringify(metaDemo));*/}
+                {/*    setCopyToastOpen({ isShow: true, type: "json" });*/}
+                {/*  }}*/}
+                {/*>*/}
+                {/*  {t("labelCopyNFTDemo")}*/}
+                {/*</Button>*/}
               </Typography>
             </Box>
           </Box>

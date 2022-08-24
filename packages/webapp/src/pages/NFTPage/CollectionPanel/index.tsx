@@ -6,7 +6,7 @@ import {
   CollectionListProps,
 } from "@loopring-web/component-lib";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Grid, Pagination } from "@mui/material";
+import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
 import React, { useState } from "react";
 import styled from "@emotion/styled/";
 import {
@@ -14,6 +14,7 @@ import {
   CreateCollectionStep,
   TradeNFT,
   TOAST_TIME,
+  BackIcon,
 } from "@loopring-web/common-resources";
 import {
   LoopringAPI,
@@ -139,7 +140,22 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
       component={"section"}
       marginTop={1}
     >
-      <Box display={"flex"} alignSelf={"flex-end"}>
+      <Box
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        width={"100%"}
+        marginBottom={2}
+      >
+        <Typography
+          component={"h3"}
+          variant={"h4"}
+          paddingX={5 / 2}
+          paddingTop={5 / 2}
+          paddingBottom={2}
+        >
+          {t("labelMyCollection")}
+        </Typography>
         <Button
           onClick={() => {
             setStep(CreateCollectionStep.ChooseMethod);

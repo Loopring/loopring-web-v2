@@ -904,7 +904,7 @@ export default {
   labelFilterTradeNFTSell: "Sell",
   labelFilterTradeNFTSelf: "Self Trade",
   labelFilterTradeNFTBuy: "Buy",
-  labelAdMintTitle: "Advance Create Collection",
+  labelAdMintTitle: "Advance Mint NFT",
   labelCopyNFTDemo: "Copy NFT Demo",
   labelSelectCollection: "Choose or Create a Collection to Mint Your Own NFT",
   labelSelectCollectionDes:
@@ -947,7 +947,9 @@ export default {
     "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
+  labelMyCollection: "My Collection",
   labelCounterFactualNFT: "L2 NFT:",
   labelCopyUrlClip: "URL Copied to Clipboard!",
   labelCollectionMetaData: "Collection MetaData",
+  labelViewEtherscan: "Etherscan",
 };

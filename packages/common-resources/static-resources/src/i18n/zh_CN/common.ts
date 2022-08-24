@@ -893,7 +893,7 @@ export default {
   labelFilterTradeNFTBuy: "Buy",
   labelCopyNFTDemo: "Copy NFT Demo",
   labelCopyMetaClip: "Metadata Copied to Clipboard",
-  labelAdMintTitle: "Advance Create Collection",
+  labelAdMintTitle: "Advance Mint NFT",
   labelCopyUrlClip: "URL Copied to Clipboard!",
   labelCollectionMetaData: "Collection MetaData",
   labelCollectionSelect: "Please select collection",

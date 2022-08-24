@@ -179,6 +179,18 @@ export const CollectionInput = <Co extends CollectionMeta>({
                 component={"span"}
                 variant={"body1"}
                 color={"textPrimary"}
+                textOverflow={"ellipsis"}
+                overflow={"hidden"}
+                display={"inline-flex"}
+                whiteSpace={"pre"}
+                sx={
+                  size !== "large"
+                    ? {
+                        maxWidth: "160px",
+                        wordBreak: "break-all",
+                      }
+                    : {}
+                }
               >
                 {collection.name}
               </Typography>
