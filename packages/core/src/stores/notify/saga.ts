@@ -34,10 +34,10 @@ const getNotifyApi = async <_R extends { [key: string]: any }>(): Promise<{
   return {
     notifyMap: {
       ...notifyMap,
-      ...notify[ "en" ],
-      ...notify[ Lang[ lng ] ],
+      ...notify["en"],
+      ...notify[Lang[lng]],
       invest: notify.invest,
-      prev: {...notify?.prev},
+      prev: { ...notify?.prev },
     },
   };
 };
