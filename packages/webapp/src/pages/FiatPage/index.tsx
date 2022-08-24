@@ -31,10 +31,12 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const { resetTransferRampData } = useModalData();
 
   const { isMobile } = useSettings();
-  const match: any = useRouteMatch("/trade/fiat/:tab");
+  const match: any = useRouteMatch("/trade/fiat/:tab?");
   // debugger;
   const [tabIndex, setTabIndex] = React.useState<TradeTypes>(
-    match?.params?.tab ?? TradeTypes.Buy
+    match?.params?.tab?.toLowerCase() === "Sell".toLowerCase()
+      ? TradeTypes.Sell
+      : TradeTypes.Buy
   );
   React.useEffect(() => {
     switch (match?.params.tab) {
