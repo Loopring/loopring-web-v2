@@ -2,6 +2,7 @@ import { Badge, Box, IconButton } from "@mui/material";
 import {
   Account,
   AccountStatus,
+  CircleIcon,
   DownloadIcon,
   NotificationIcon,
   Notify,
@@ -53,12 +54,26 @@ export const BtnNotification = ({
   });
   const [content] = React.useState(0);
   return (
-    <Box>
+    <Box position={"relative"}>
       <IconButton aria-label={"notification"} {...bindHover(popupState)}>
         <Badge badgeContent={content}>
           <NotificationIcon/>
         </Badge>
       </IconButton>
+      {(notification?.activities?.length ??
+        0 + notification?.notifications?.length ??
+        0) > 0 && (
+        <CircleIcon
+          sx={{
+            position: "absolute",
+            top: -6,
+            right: -6,
+          }}
+          className={"noteit"}
+          fontSize={"large"}
+          htmlColor={"var(--color-error)"}
+        />
+      )}
       <PopoverPure
         {...bindPopper(popupState)}
         anchorOrigin={{
