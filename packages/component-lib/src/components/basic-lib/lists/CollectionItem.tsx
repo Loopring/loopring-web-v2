@@ -8,13 +8,13 @@ import {
 } from "../../../index";
 import { Box, Grid, Pagination, Radio, Typography } from "@mui/material";
 import {
-  CopyIcon,
-  copyToClipBoard,
-  getShortAddr,
   Account,
   CollectionMeta,
-  MakeMeta,
+  CopyIcon,
+  copyToClipBoard,
   GET_IPFS_STRING,
+  getShortAddr,
+  MakeMeta,
 } from "@loopring-web//common-resources";
 import React from "react";
 import { DEPLOYMENT_STATUS, NFTType } from "@loopring-web/loopring-sdk";
@@ -65,6 +65,7 @@ export const CollectionItem = React.memo(
         domain,
         getIPFSString,
         baseURL,
+        etherscanBaseUrl,
       }: // toggle,
       {
         item: Co;
@@ -81,6 +82,7 @@ export const CollectionItem = React.memo(
         makeMeta: MakeMeta;
         baseURL: string;
         getIPFSString: GET_IPFS_STRING;
+        etherscanBaseUrl: string;
       },
       _ref: React.Ref<any>
     ) => {
@@ -149,52 +151,29 @@ export const CollectionItem = React.memo(
                     </Box>
                   )}
                   {item.isCounterFactualNFT &&
-                  // @ts-ignore
-                  !(item?.nftType === NFTType.ERC721) &&
-                  item.name &&
-                  item.tileUri ? (
-                    <Box
-                      className={isMobile ? "isMobile" : ""}
-                      width={"48%"}
-                      marginLeft={"4%"}
-                    >
-                      <Button
-                        variant={"contained"}
-                        size={"small"}
-                        fullWidth
-                        onClick={() => {
-                          if (item.name && item.tileUri) {
-                            setShowMintNFT(item);
-                          } else {
-                            setShowEdit(item);
-                          }
-                        }}
+                    // @ts-ignore
+                    !(item?.nftType === NFTType.ERC721)(
+                      <Box
+                        className={isMobile ? "isMobile" : ""}
+                        width={"48%"}
+                        marginLeft={"4%"}
                       >
-                        {t("labelNFTMintSimpleBtn")}
-                      </Button>
-                    </Box>
-                  ) : (
-                    <Box
-                      className={isMobile ? "isMobile" : ""}
-                      width={"48%"}
-                      marginLeft={"4%"}
-                    >
-                      <Button
-                        variant={"contained"}
-                        disabled={true}
-                        size={"small"}
-                        fullWidth
-                        onClick={() => {
-                          setShowEdit(item);
-                        }}
-                      >
-                        {item.isCounterFactualNFT &&
-                        (!item.name || !item.tileUri)
-                          ? t("labelNFTMintEditBtn")
-                          : t("labelCollectionEditBtn")}
-                      </Button>
-                    </Box>
-                  )}
+                        <Button
+                          variant={"contained"}
+                          size={"small"}
+                          fullWidth
+                          onClick={() => {
+                            if (item.name && item.tileUri) {
+                              setShowMintNFT(item);
+                            } else {
+                              setShowEdit(item);
+                            }
+                          }}
+                        >
+                          {t("labelNFTMintSimpleBtn")}
+                        </Button>
+                      </Box>
+                    )}
                 </>
               </BoxBtnGroup>
             )}
@@ -216,23 +195,45 @@ export const CollectionItem = React.memo(
                 variant={"h5"}
                 justifyContent={"space-between"}
               >
-                <span>{item?.name ?? t("labelUnknown")}</span>
-                <Button
-                  variant={"text"}
-                  color={"primary"}
-                  size={"small"}
-                  endIcon={<CopyIcon color={"secondary"} />}
-                  sx={{ marginLeft: 1 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyToClipBoard(domain + "/" + item?.contractAddress ?? "");
-                    setCopyToastOpen({ isShow: true, type: "url" });
-                  }}
+                <Typography
+                  color={"textPrimary"}
+                  width={"60%"}
+                  overflow={"hidden"}
+                  textOverflow={"ellipsis"}
+                  variant={"body1"}
+                  component={"span"}
                 >
-                  {getShortAddr(item?.contractAddress ?? "") +
-                    " " +
-                    t("labelCollectionMetaData")}
-                </Button>
+                  {item?.name ?? t("labelUnknown")}
+                </Typography>
+                {item.isCounterFactualNFT &&
+                item.deployStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED ? (
+                  <Typography
+                    color={"textSecondary"}
+                    variant={"body1"}
+                    component={"span"}
+                  >
+                    {t("labelCounterFactualNFT") +
+                      " " +
+                      getShortAddr(item?.contractAddress ?? "", true)}
+                  </Typography>
+                ) : (
+                  <Button
+                    variant={"text"}
+                    color={"primary"}
+                    size={"small"}
+                    endIcon={<CopyIcon color={"secondary"} />}
+                    sx={{ marginLeft: 1 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(
+                        `${etherscanBaseUrl}tx/${item?.contractAddress}`
+                      );
+                      window.opener = null;
+                    }}
+                  >
+                    {getShortAddr(item?.contractAddress ?? "")}
+                  </Button>
+                )}
               </Typography>
               <Typography
                 color={"text.secondary"}
@@ -286,6 +287,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   onSelectItem,
   isSelectOnly,
   selectCollection,
+  etherscanBaseUrl,
   ...rest
 }: CollectionListProps<Co> & {
   toggle: any;
@@ -373,6 +375,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                 >
                   <CollectionItem
                     {...{ ...rest }}
+                    etherscanBaseUrl={etherscanBaseUrl}
                     selectCollection={selectCollection}
                     isSelectOnly={isSelectOnly}
                     account={account}
