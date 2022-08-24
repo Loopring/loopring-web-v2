@@ -4,6 +4,7 @@ import { MenuBtnStyled } from "../../styled";
 import { AddAssetProps } from "./Interface";
 import { useTranslation } from "react-i18next";
 import {
+  AddAssetList,
   BackIcon,
   CardIcon,
   ExchangeAIcon,
@@ -40,6 +41,11 @@ export const AddAsset = ({
 }: AddAssetProps) => {
   const { t } = useTranslation("common");
   const { isMobile } = useSettings();
+  const isLp: boolean = symbol?.startsWith("LP-") ?? false;
+  const lpDisaList = [
+    AddAssetList.BuyWithCard.key,
+    AddAssetList.FromExchange.key,
+  ];
   return (
     <BoxStyled
       flex={1}
@@ -90,7 +96,8 @@ export const AddAsset = ({
                   !!(
                     item.enableKey &&
                     allowTrade[item.enableKey]?.enable === false
-                  )
+                  ) ||
+                  (isLp && lpDisaList.includes(item.key))
                 }
                 endIcon={<BackIcon sx={{ transform: "rotate(180deg)" }} />}
                 onClick={(e) => {
