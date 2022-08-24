@@ -82,7 +82,16 @@ export type ModalDataStatus = {
   nftMintAdvanceValue: TradeNFT<any>;
   nftMintValue: NFT_MINT_VALUE<any>;
   nftDeployValue: TradeNFT<any> & { broker: string };
-  offRampValue: IOfframpPurchase | undefined;
+  offRampValue:
+    | Partial<{
+        offRampPurchase?: IOfframpPurchase;
+        send?: {
+          assetSymbol: string;
+          amount: string;
+          destinationAddress: string;
+        };
+      }>
+    | undefined;
 };
 
 export enum LAST_STEP {

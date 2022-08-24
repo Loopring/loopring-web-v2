@@ -8,6 +8,7 @@ import {
 import React from "react";
 import {
   RAMP_SELL_PANEL,
+  useModalData,
   useRampConfirm,
   useVendor,
   ViewAccountTemplate,
@@ -27,6 +28,7 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
   const history = useHistory();
   const { vendorListBuy, vendorListSell, sellPanel, setSellPanel } =
     useVendor();
+  const { resetTransferRampData } = useModalData();
 
   const { isMobile } = useSettings();
   const match: any = useRouteMatch("/trade/fiat/:tab");
@@ -126,7 +128,14 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
                         size={"medium"}
                         sx={{ color: "var(--color-text-secondary)" }}
                         color={"inherit"}
-                        onClick={() => setSellPanel(RAMP_SELL_PANEL.LIST)}
+                        onClick={() => {
+                          if (window.rampInstance) {
+                            window.rampInstance.close();
+                          } else {
+                            setSellPanel(RAMP_SELL_PANEL.LIST);
+                            resetTransferRampData();
+                          }
+                        }}
                       >
                         {t("labelBack")}
                       </Button>

@@ -40,5 +40,6 @@ export default {
   errorJSONStringify: "Wrong JSON format",
   errorCollectionMetadataNoTileUri: "Tile uri is required",
   errorCollectionNoName: "Name is required",
-  errorCollectionSameName: "You already hava an collection call {{name}} "
+  errorCollectionSameName: "You already hava an collection call {{name}}",
+  errorRampNoInstance: "Ramp Widget had out-off service, please re-order it.",
 };

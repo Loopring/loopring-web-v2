@@ -426,9 +426,38 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
         ...rest,
       };
     },
-    updateOffRampData(state, action: PayloadAction<IOfframpPurchase>) {
+    updateOffRampData(
+      state,
+      action: PayloadAction<
+        Partial<{
+          offRampPurchase?: IOfframpPurchase;
+          send?: {
+            assetSymbol: string;
+            amount: string;
+            destinationAddress: string;
+          };
+        }>
+      >
+    ) {
       state.lastStep = LAST_STEP.offRamp;
-      state.offRampValue = action.payload;
+      const { offRampPurchase, send } = action.payload;
+      if (offRampPurchase) {
+        state.offRampValue = {
+          ...state.offRampValue,
+          offRampPurchase,
+        };
+      }
+      if (send) {
+        state.offRampValue = {
+          ...state.offRampValue,
+          send,
+        };
+      }
+      // if()
+      // state.offRampValue = {
+      //   ...state.offRampValue,
+      //   ...action.payload,
+      // };
     },
   },
 });

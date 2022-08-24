@@ -5,7 +5,6 @@ import {
   NFTWholeINFO,
   EmptyValueTag,
   FeeInfo,
-  useAddressTypeLists,
   TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
@@ -25,7 +24,6 @@ export const RampConfirm = <
   I,
   C extends FeeInfo
 >({
-  sureItsLayer2,
   tradeData,
   onTransferClick,
   realAddr,
@@ -41,7 +39,6 @@ export const RampConfirm = <
 }: RampViewProps<T, I, C> & { balanceNotEnough: boolean }) => {
   const { isMobile } = useSettings();
   const { t } = useTranslation();
-  const { walletList } = useAddressTypeLists();
   const [open, setOpen] = React.useState(false);
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
@@ -80,7 +77,7 @@ export const RampConfirm = <
             variant={isMobile ? "h4" : "h3"}
             whiteSpace={"pre"}
           >
-            {t("labelL2toL2Title")}
+            {t("labelL2toRampTitle")}
           </Typography>
         </Box>
       </Grid>
@@ -117,9 +114,18 @@ export const RampConfirm = <
           {t("labelL2toL2AddressType")}
         </Typography>
         <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {walletList.find((item) => item.value === sureItsLayer2)?.label}
+          {t("labelWalletTypeOptions", { type: "Ramp" })}
         </Typography>
       </Grid>
+      <Grid item xs={12}>
+        <Typography color={"var(--color-text-third)"} variant={"body1"}>
+          {t("labelMemo")}
+        </Typography>
+        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
+          {memo ?? EmptyValueTag}
+        </Typography>
+      </Grid>
+
       <Grid item xs={12} alignSelf={"stretch"} position={"relative"}>
         {!chargeFeeTokenList?.length ? (
           <Typography>{t("labelFeeCalculating")}</Typography>
@@ -192,15 +198,6 @@ export const RampConfirm = <
             )}
           </>
         )}
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography color={"var(--color-text-third)"} variant={"body1"}>
-          {t("labelMemo")}
-        </Typography>
-        <Typography color={"textPrimary"} marginTop={1} variant={"body1"}>
-          {memo ?? EmptyValueTag}
-        </Typography>
       </Grid>
 
       <Grid item marginTop={2} alignSelf={"stretch"} paddingBottom={0}>

@@ -102,8 +102,26 @@ export function useModalData(): {
     forceWithdrawData: Partial<ForceWithdrawData>
   ) => void;
   resetForceWithdrawData: () => void;
-  offRampValue: IOfframpPurchase | undefined;
-  updateOffRampData: (offrampPurchase: IOfframpPurchase) => void;
+  offRampValue:
+    | Partial<{
+        offRampPurchase?: IOfframpPurchase;
+        send?: {
+          assetSymbol: string;
+          amount: string;
+          destinationAddress: string;
+        };
+      }>
+    | undefined;
+  updateOffRampData: (
+    offRamp: Partial<{
+      offRampPurchase?: IOfframpPurchase;
+      send?: {
+        assetSymbol: string;
+        amount: string;
+        destinationAddress: string;
+      };
+    }>
+  ) => void;
   resetOffRampData: () => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
@@ -206,8 +224,17 @@ export function useModalData(): {
       [dispatch]
     ),
     updateOffRampData: React.useCallback(
-      (offRampValue: IOfframpPurchase) => {
-        dispatch(updateOffRampData(offRampValue));
+      (
+        offRamp: Partial<{
+          offRampPurchase?: IOfframpPurchase;
+          send?: {
+            assetSymbol: string;
+            amount: string;
+            destinationAddress: string;
+          };
+        }>
+      ) => {
+        dispatch(updateOffRampData(offRamp));
       },
       [dispatch]
     ),

@@ -63,12 +63,10 @@ export const useVendor = () => {
   const legalShow = (raw_data as any)?.legal?.show;
   const { setShowAccount } = useOpenModals();
   const { isMobile } = useSettings();
-  const { updateOffRampData } = useModalData();
+  const { updateOffRampData, resetOffRampData } = useModalData();
 
   const [sellPanel, setSellPanel] = React.useState<RAMP_SELL_PANEL>(
-    // TODO: MOCK
-    // RAMP_SELL_PANEL.LIST
-    RAMP_SELL_PANEL.CONFIRM
+    RAMP_SELL_PANEL.LIST
   );
 
   const vendorListBuy: VendorItem[] = legalShow
@@ -83,7 +81,6 @@ export const useVendor = () => {
               let config: any = {
                 hostAppName: "Loopring",
                 hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
-                variant: isMobile ? "mobile" : "desktop",
                 userAddress: account.accAddress,
                 defaultFlow: "ONRAMP",
                 enabledFlows: ["OFFRAMP", "ONRAMP"],
@@ -93,22 +90,28 @@ export const useVendor = () => {
                 config = {
                   ...config,
                   swapAsset: "LOOPRING_*",
-                  hostApiKey: "3qncr4yvxfpro6endeaeu6npkh8qc23e9uadtazq",
-
+                  hostApiKey: "r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7",
                   // hostApiKey: "r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7",
                 };
               } else {
                 config = {
                   ...config,
                   swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
-                  hostApiKey: "vy8uc7pm9wdeqvcge4jwxtcyurj6h9nbx6qsuu48",
-
+                  hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
                   // hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
                 };
               }
-              return new RampInstantSDK({
+              window.rampInstance = new RampInstantSDK({
                 ...config,
               }).show();
+              window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
+                resetOffRampData();
+                setSellPanel(RAMP_SELL_PANEL.LIST);
+                if (window.rampInstance) {
+                  window.rampInstance.unsubscribe("*", () => undefined);
+                  window.rampInstance = undefined;
+                }
+              });
             }
           },
         },
@@ -140,56 +143,51 @@ export const useVendor = () => {
               let config: any = {
                 hostAppName: "Loopring",
                 hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
-                variant: isMobile ? "mobile" : "desktop",
                 userAddress: account.accAddress,
                 defaultFlow: "OFFRAMP",
                 enabledFlows: ["OFFRAMP", "ONRAMP"],
-                url: "https://ri-widget-dev-5.web.app",
+                url: "https://ri-widget-dev-5.firebaseapp.com",
               };
-              if (account && account.accountId && account.accountId !== -1) {
-                config = {
-                  ...config,
-                  swapAsset: "LOOPRING_*",
-                  hostApiKey: "3qncr4yvxfpro6endeaeu6npkh8qc23e9uadtazq",
-
-                  // hostApiKey: "r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7",
-                };
-                config = {
-                  ...config,
-                  swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
-                  hostApiKey: "vy8uc7pm9wdeqvcge4jwxtcyurj6h9nbx6qsuu48",
-                  // hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
-                };
-              }
-              return new RampInstantSDK({
+              config = {
                 ...config,
-              })
-                .show()
-                .on(
-                  RampInstantEventTypes.OFFRAMP_PURCHASE_CREATED,
-                  (event: RampInstantEvent) => {
-                    // id: string;
-                    // createdAt: string;
-                    // crypto: {
-                    //   amount: string;
-                    //   assetInfo: {
-                    //     address: string | null;
-                    //     symbol: string;
-                    //     chain: string;
-                    //     type: string;
-                    //     name: string;
-                    //     decimals: number;
-                    //   };
-                    // };
-                    // fiat: {
-                    //   amount: number;
-                    //   currencySymbol: string;
-                    // };
-                    const offrampPurchase = event.payload as IOfframpPurchase;
-                    setSellPanel(RAMP_SELL_PANEL.CONFIRM);
-                    updateOffRampData(offrampPurchase);
+                hostApiKey: "vy8uc7pm9wdeqvcge4jwxtcyurj6h9nbx6qsuu48",
+              };
+              window.rampInstance = new RampInstantSDK({
+                ...config,
+              });
+
+              window.rampInstance.on(
+                RampInstantEventTypes.OFFRAMP_PURCHASE_CREATED,
+                (event: RampInstantEvent) => {
+                  const offRampPurchase = event.payload as IOfframpPurchase;
+                  updateOffRampData({ offRampPurchase });
+                  setSellPanel(RAMP_SELL_PANEL.CONFIRM);
+
+                  if (window.rampInstance) {
+                    try {
+                      //@ts-ignore
+                      window.rampInstance.domNodes.overlay.style.display =
+                        "none";
+                    } catch (e) {
+                      console.log("weight hidden failed");
+                    }
+                  } else {
+                    resetOffRampData();
+                    setSellPanel(RAMP_SELL_PANEL.LIST);
                   }
-                );
+                }
+              );
+              window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
+                myLog("Ramp WIDGET CLOSE");
+                resetOffRampData();
+                setSellPanel(RAMP_SELL_PANEL.LIST);
+                if (window.rampInstance) {
+                  window.rampInstance.unsubscribe("*", () => undefined);
+                  window.rampInstance = undefined;
+                }
+              });
+              window.rampInstance.show();
+              // return rampInstant;
             }
           },
         },
@@ -232,7 +230,11 @@ export const useRampTransPost = () => {
       const { apiKey, connectName, eddsaKey } = account;
 
       try {
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+        if (
+          connectProvides.usedWeb3 &&
+          LoopringAPI.userAPI &&
+          window.rampInstance
+        ) {
           let isHWAddr = checkHWAddr(account.accAddress);
           if (!isHWAddr && !isNotHardwareWallet) {
             isHWAddr = true;
@@ -303,6 +305,7 @@ export const useRampTransPost = () => {
               step: AccountStep.Transfer_RAMP_In_Progress,
             });
             await sdk.sleep(TOAST_TIME);
+
             setShowAccount({
               isShow: true,
               step: AccountStep.Transfer_RAMP_Success,
@@ -312,6 +315,14 @@ export const useRampTransPost = () => {
                   `tx/${(response as sdk.TX_HASH_API)?.hash}-transfer`,
               },
             });
+            if (window.rampInstance) {
+              try {
+                // @ts-ignore
+                window.rampInstance.domNodes.overlay.style.display = "";
+              } catch (e) {
+                console.log("weight hidden failed");
+              }
+            }
             if (isHWAddr) {
               myLog("......try to set isHWAddr", isHWAddr);
               updateHW({ wallet: account.accAddress, isHWAddr });
@@ -321,6 +332,14 @@ export const useRampTransPost = () => {
           } else {
             resetTransferRampData();
           }
+        } else {
+          setShowAccount({
+            isShow: true,
+            step: AccountStep.Transfer_RAMP_Failed,
+            error: {
+              code: UIERROR_CODE.ERROR_RAMP_NO_INSTANCE,
+            },
+          });
         }
       } catch (reason: any) {
         const code = checkErrorInfo(reason, isNotHardwareWallet);
@@ -388,7 +407,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
-  const { transferRampValue, updateTransferRampData, resetTransferRampData } =
+  const { transferRampValue, updateTransferRampData, resetOffRampData } =
     useModalData();
   const {
     chargeFeeTokenList,
@@ -574,26 +593,26 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
 
   const initRampViewProps = React.useCallback(() => {
     //TODO: MOCK
-    const offRampValue: IOfframpPurchase = {
-      id: "MOCK",
-      createdAt: Date.now().toString(),
-      crypto: {
-        amount: "100",
-        assetInfo: {
-          address: "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
-          symbol: "LRC",
-          chain: "Ethereum",
-          type: "ERC20",
-          name: "Loopring",
-          decimals: 18,
-        },
-      },
-      fiat: {
-        amount: 100,
-        currencySymbol: "USD",
-      },
-    };
-    if (offRampValue) {
+    // const offRampValue: IOfframpPurchase = {
+    //   id: "MOCK",
+    //   createdAt: Date.now().toString(),
+    //   crypto: {
+    //     amount: "100",
+    //     assetInfo: {
+    //       address: "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
+    //       symbol: "LRC",
+    //       chain: "Ethereum",
+    //       type: "ERC20",
+    //       name: "Loopring",
+    //       decimals: 18,
+    //     },
+    //   },
+    //   fiat: {
+    //     amount: 100,
+    //     currencySymbol: "USD",
+    //   },
+    // };
+    if (offRampValue && window.rampInstance) {
       if (
         /Ethereum/gi.test(
           (offRampValue as IOfframpPurchase).crypto.assetInfo.chain ?? ""
@@ -615,11 +634,14 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
           memo,
           address: address as string,
         });
-      } else {
-        setSellPanel(RAMP_SELL_PANEL.LIST);
+        return;
       }
+    }
+    if (window.rampInstance) {
+      window.rampInstance.close();
     } else {
       setSellPanel(RAMP_SELL_PANEL.LIST);
+      resetOffRampData();
     }
   }, [
     btnStatus,
@@ -671,6 +693,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
       handleOnAddressChange: () => undefined,
     } as any;
   }, [
+    balanceNotEnough,
     btnStatus,
     chargeFeeTokenList,
     feeInfo,
@@ -680,6 +703,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     onTransferClick,
     totalCoinMap,
     transferRampValue,
+    walletMap,
   ]);
 
   return { rampViewProps };

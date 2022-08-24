@@ -908,4 +908,5 @@ export default {
   labelBuy: "Buy",
   labelSell: "Sell",
   labelRampNoBalance: "Insufficient {{belong}} balance",
+  labelL2toRampTitle: "Send to Ramp",
 };
