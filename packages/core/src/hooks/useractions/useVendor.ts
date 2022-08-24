@@ -79,22 +79,20 @@ export const useVendor = () => {
                 hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
                 userAddress: account.accAddress,
                 defaultFlow: "ONRAMP",
-                enabledFlows: ["OFFRAMP", "ONRAMP"],
-                url: "https://ri-widget-dev-5.web.app",
+                enabledFlows: ["ONRAMP"],
               };
               if (account && account.accountId && account.accountId !== -1) {
                 config = {
                   ...config,
                   swapAsset: "LOOPRING_*",
+                  // enabledFlows: ["ONRAMP"],
                   hostApiKey: "r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7",
-                  // hostApiKey: "r6e232on45rt3ukdb7zbcvh3avdwbqpore5rbht7",
                 };
               } else {
                 config = {
                   ...config,
                   swapAsset: "LOOPRING_ETH,LOOPRING_USDC,LOOPRING_LRC",
                   hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
-                  // hostApiKey: "xqh8ej6ye2rpoj528xd6rkghsgmyrk4hxb7kxarz",
                 };
               }
               window.rampInstance = new RampInstantSDK({
@@ -141,7 +139,7 @@ export const useVendor = () => {
                 hostLogoUrl: "https://ramp.network/assets/images/Logo.svg",
                 userAddress: account.accAddress,
                 defaultFlow: "OFFRAMP",
-                enabledFlows: ["OFFRAMP", "ONRAMP"],
+                enabledFlows: ["OFFRAMP"],
                 url: "https://ri-widget-dev-5.firebaseapp.com",
               };
               config = {

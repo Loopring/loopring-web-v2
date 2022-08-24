@@ -111,12 +111,17 @@ export const FiatPage = withTranslation("common")(({ t }: WithTranslation) => {
             flex={"initial "}
           >
             {tabIndex === TradeTypes.Buy && (
-              <VendorMenu vendorList={vendorListBuy} vendorForce={undefined} />
+              <VendorMenu
+                type={TradeTypes.Buy}
+                vendorList={vendorListBuy}
+                vendorForce={undefined}
+              />
             )}
             {tabIndex === TradeTypes.Sell && (
               <>
                 {sellPanel === RAMP_SELL_PANEL.LIST && (
                   <VendorMenu
+                    type={TradeTypes.Sell}
                     vendorList={vendorListSell}
                     vendorForce={undefined}
                   />

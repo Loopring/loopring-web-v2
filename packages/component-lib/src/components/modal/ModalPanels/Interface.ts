@@ -3,6 +3,7 @@ import {
   Account,
   FeeInfo,
   NFTWholeINFO,
+  TradeTypes,
   VendorItem,
   VendorProviders,
   WalletMap,
@@ -28,6 +29,7 @@ export enum AccountStep {
   AddAssetGateway,
   SendAssetGateway,
   SendNFTGateway,
+  PayWithCard,
   NoAccount,
   QRCode,
   HadAccount,
@@ -144,6 +146,7 @@ export enum AccountStep {
  */
 export interface VendorMenuProps {
   // termUrl: string;
+  type?: TradeTypes;
   vendorList: VendorItem[];
   handleSelect?: (event: React.MouseEvent, key: string) => void;
   vendorForce: VendorProviders | undefined;

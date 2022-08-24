@@ -630,7 +630,7 @@ export default {
   labelL2toL2OriginBtnWallet: "Wallet",
   labelL2toL2Confirm: "Confirm",
   labelL2toL2TokenAmount: "Token Amount",
-  labelL1toL2ThirdPart: "Buy Crypto with",
+  labelL1toL2ThirdPart: "{{type}} Crypto with",
   labelActiveAccountFeeNotEnough: "Insufficient balance <1>Add assets</1>",
   labelNFTTransferTX: "L2 \u2192 L2",
   labelNFTWithdrawTX: "L2 \u2192 L1",
