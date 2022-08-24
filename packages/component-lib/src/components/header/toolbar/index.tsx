@@ -64,6 +64,7 @@ export const BtnNotification = ({
             position: "absolute",
             top: -6,
             right: -6,
+            pointerEvents: "none" as any,
           }}
           className={"noteit"}
           fontSize={"large"}
