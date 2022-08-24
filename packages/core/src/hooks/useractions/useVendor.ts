@@ -35,11 +35,7 @@ import {
   RampInstantSDK,
   RampInstantEvent,
 } from "@ramp-network/ramp-instant-sdk";
-import {
-  AccountStep,
-  useOpenModals,
-  useSettings,
-} from "@loopring-web/component-lib";
+import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
 import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 import React, { useCallback } from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -162,7 +158,7 @@ export const useVendor = () => {
                   const offRampPurchase = event.payload as IOfframpPurchase;
                   updateOffRampData({ offRampPurchase });
                   setSellPanel(RAMP_SELL_PANEL.CONFIRM);
-
+                  console.log("offRampPurchase", offRampPurchase);
                   if (window.rampInstance) {
                     try {
                       //@ts-ignore
@@ -178,7 +174,7 @@ export const useVendor = () => {
                 }
               );
               window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
-                myLog("Ramp WIDGET CLOSE");
+                console.log("Ramp WIDGET CLOSE");
                 resetOffRampData();
                 setSellPanel(RAMP_SELL_PANEL.LIST);
                 if (window.rampInstance) {
@@ -612,10 +608,10 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
     //     currencySymbol: "USD",
     //   },
     // };
-    if (offRampValue && window.rampInstance) {
+    if (offRampValue?.offRampPurchase && window.rampInstance) {
       if (
         /Ethereum/gi.test(
-          (offRampValue as IOfframpPurchase).crypto.assetInfo.chain ?? ""
+          offRampValue.offRampPurchase.crypto.assetInfo.chain ?? ""
         )
       ) {
         const {
@@ -623,7 +619,7 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
             amount,
             assetInfo: { address, symbol },
           },
-        } = offRampValue as IOfframpPurchase;
+        } = offRampValue.offRampPurchase;
 
         const memo = "OFF-RAMP Transfer";
         updateTransferRampData({
