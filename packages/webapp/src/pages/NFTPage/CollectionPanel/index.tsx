@@ -131,21 +131,19 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   // ];
   // const total = 4;
   return (
-    <Box
+    <StyledPaper
       flex={1}
-      alignItems={"center"}
+      className={"MuiPaper-elevation2"}
+      marginTop={0}
+      marginBottom={2}
       display={"flex"}
       flexDirection={"column"}
-      justifyContent={"center"}
-      component={"section"}
-      marginTop={1}
     >
       <Box
         display={"flex"}
-        justifyContent={"space-between"}
+        flexDirection={"row"}
         alignItems={"center"}
-        width={"100%"}
-        marginBottom={2}
+        justifyContent={"space-between"}
       >
         <Typography
           component={"h3"}
@@ -156,48 +154,52 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         >
           {t("labelMyCollection")}
         </Typography>
-        <Button
-          onClick={() => {
-            setStep(CreateCollectionStep.ChooseMethod);
-            setCreateOpen(true);
-          }}
-          variant={"outlined"}
-          color={"primary"}
-        >
-          {t("labelCreateCollection")}
-        </Button>
+        <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
+          <Button
+            onClick={() => {
+              setStep(CreateCollectionStep.ChooseMethod);
+              setCreateOpen(true);
+            }}
+            variant={"outlined"}
+            color={"primary"}
+          >
+            {t("labelCreateCollection")}
+          </Button>
+        </Box>
       </Box>
-      <CollectionCardList
-        {...{ ...(collectionListProps as any) }}
-        account={account}
-        toggle={deployNFT}
-        setShowEdit={(item) => {
-          history.push("/nft/addCollection");
-          // setCreateOpen(true)
-        }}
-        setShowMintNFT={(item) => {
-          setCreateOpen(true);
-          history.push(`/nft/mintNFT/${item.contractAddress}`);
-        }}
-        setShowDeploy={(item: Co) => {
-          const _deployItem: TradeNFT<any, any> = {
-            tokenAddress: item?.contractAddress,
-            nftType: NFTType[item.nftType ?? 0],
-          };
-          LoopringAPI.userAPI
-            ?.getAvailableBroker({ type: 0 })
-            .then(({ broker }) => {
-              updateNFTDeployData({ broker });
-            });
-          updateNFTDeployData(_deployItem);
-          deployNFT.enable
-            ? setShowNFTDeploy({
-                isShow: true,
-                info: { ...{ _deployItem } },
-              })
-            : setShowTradeIsFrozen({ isShow: true });
-        }}
-      />
+      <Box flex={1} paddingX={3} paddingBottom={2} display={"flex"}>
+        <CollectionCardList
+          {...{ ...(collectionListProps as any) }}
+          account={account}
+          toggle={deployNFT}
+          setShowEdit={(item) => {
+            history.push("/nft/addCollection");
+            // setCreateOpen(true)
+          }}
+          setShowMintNFT={(item) => {
+            setCreateOpen(true);
+            history.push(`/nft/mintNFT/${item.contractAddress}`);
+          }}
+          setShowDeploy={(item: Co) => {
+            const _deployItem: TradeNFT<any, any> = {
+              tokenAddress: item?.contractAddress,
+              nftType: NFTType[item.nftType ?? 0],
+            };
+            LoopringAPI.userAPI
+              ?.getAvailableBroker({ type: 0 })
+              .then(({ broker }) => {
+                updateNFTDeployData({ broker });
+              });
+            updateNFTDeployData(_deployItem);
+            deployNFT.enable
+              ? setShowNFTDeploy({
+                  isShow: true,
+                  info: { ...{ _deployItem } },
+                })
+              : setShowTradeIsFrozen({ isShow: true });
+          }}
+        />
+      </Box>
       <CreateUrlPanel
         open={showCreateOpen}
         step={step}
@@ -220,6 +222,6 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         }}
         severity={"success"}
       />
-    </Box>
+    </StyledPaper>
   );
 };

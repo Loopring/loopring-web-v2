@@ -4,9 +4,18 @@ import {
   CollectionListProps,
   CollectionMedia,
   EmptyDefault,
-  useSettings,
+  Popover,
+  PopoverType,
+  PopoverWrapProps,
 } from "../../../index";
-import { Box, Grid, Pagination, Radio, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  MenuItem,
+  Pagination,
+  Radio,
+  Typography,
+} from "@mui/material";
 import {
   Account,
   CollectionMeta,
@@ -16,6 +25,7 @@ import {
   getShortAddr,
   LinkIcon,
   MakeMeta,
+  MoreIcon,
   NFT_TYPE_STRING,
 } from "@loopring-web//common-resources";
 import React from "react";
@@ -41,7 +51,6 @@ const BoxStyle = styled(Box)`
   }
 ` as typeof Box;
 const BoxBtnGroup = styled(Box)`
-  display: none;
   position: absolute;
   right: ${({ theme }) => 2 * theme.unit}px;
   top: ${({ theme }) => 2 * theme.unit}px;
@@ -51,45 +60,130 @@ const BoxBtnGroup = styled(Box)`
   }
 ` as typeof Box;
 
+export type CollectionItemProps<Co> = {
+  item: Co;
+  index: number;
+  setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
+  setShowDeploy: (item: Co) => void;
+  setShowEdit: (item: Co) => void;
+  setShowMintNFT: (item: Co) => void;
+  account: Account;
+  toggle: any;
+  isSelectOnly?: boolean;
+  selectCollection?: Co;
+  domain: string;
+  makeMeta: MakeMeta;
+  baseURL: string;
+  getIPFSString: GET_IPFS_STRING;
+  etherscanBaseUrl: string;
+};
+const ActionMemo = React.memo(
+  <Co extends CollectionMeta>({
+    item,
+    account,
+    setShowDeploy,
+    etherscanBaseUrl,
+    setShowMintNFT,
+    setShowEdit,
+  }: CollectionItemProps<Co>) => {
+    const { t } = useTranslation("common");
+    const theme = useTheme();
+    const popoverProps: PopoverWrapProps = {
+      type: PopoverType.click,
+      popupId: "testPopup",
+      className: "arrow-none",
+      children: <MoreIcon cursor={"pointer"} />,
+      popoverContent: (
+        <Box borderRadius={"inherit"} minWidth={110}>
+          {/*{allowTrade?.joinAmm?.enable && (*/}
+          {/*  <MenuItem onClick={() => handleDeposit(row)}>*/}
+          {/*    <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>*/}
+          {/*  </MenuItem>*/}
+          {/*)}*/}
+          {!!(
+            item.isCounterFactualNFT &&
+            item.deployStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+            item.owner?.toLowerCase() === account.accAddress.toLowerCase()
+          ) ? (
+            // <MenuItem
+            //   onClick={() => {
+            //     setShowDeploy(item);
+            //   }}
+            // >
+            //   {t("labelNFTDeployContract")}
+            // </MenuItem>
+            <></>
+          ) : (
+            <MenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(`${etherscanBaseUrl}tx/${item?.contractAddress}`);
+                window.opener = null;
+              }}
+            >
+              {t("labelViewEtherscan")}
+              <LinkIcon
+                color={"inherit"}
+                fontSize={"small"}
+                style={{
+                  verticalAlign: "middle",
+                  marginLeft: theme.unit,
+                }}
+              />
+            </MenuItem>
+          )}
+          {!!(
+            item.isCounterFactualNFT && item?.nftType !== NFT_TYPE_STRING.ERC721
+          ) && (
+            <MenuItem
+              onClick={() => {
+                if (item.name && item.tileUri) {
+                  setShowMintNFT(item);
+                } else {
+                  setShowEdit(item);
+                }
+              }}
+            >
+              {t("labelNFTMintSimpleBtn")}
+            </MenuItem>
+          )}
+        </Box>
+      ),
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "right",
+      },
+      transformOrigin: {
+        vertical: "top",
+        horizontal: "right",
+      },
+    } as PopoverWrapProps;
+
+    return (
+      <Grid item marginTop={1}>
+        <Popover {...{ ...popoverProps }} />
+      </Grid>
+    );
+  }
+);
+
 export const CollectionItem = React.memo(
   React.forwardRef(
     <Co extends CollectionMeta>(
-      {
+      props: CollectionItemProps<Co>,
+      _ref: React.Ref<any>
+    ) => {
+      const {
         item,
         index,
         setCopyToastOpen,
-        setShowEdit,
-        setShowDeploy,
-        setShowMintNFT,
-        account,
+
         isSelectOnly = false,
         selectCollection,
-        // makeMeta,
-        // domain,
+
         getIPFSString,
         baseURL,
-        etherscanBaseUrl,
-      }: {
-        item: Co;
-        index: number;
-        setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
-        setShowDeploy: (item: Co) => void;
-        setShowEdit: (item: Co) => void;
-        setShowMintNFT: (item: Co) => void;
-        account: Account;
-        toggle: any;
-        isSelectOnly?: boolean;
-        selectCollection?: Co;
-        domain: string;
-        makeMeta: MakeMeta;
-        baseURL: string;
-        getIPFSString: GET_IPFS_STRING;
-        etherscanBaseUrl: string;
-      },
-      _ref: React.Ref<any>
-    ) => {
-      const { isMobile } = useSettings();
-      const theme = useTheme();
+      } = props;
       const { t } = useTranslation("common");
 
       // const { metaDemo } = makeMeta({ collection: item, domain });
@@ -120,89 +214,12 @@ export const CollectionItem = React.memo(
                 }
                 value={item.contractAddress}
                 name="radio-collection"
-                // sx={{
-                //   }}
                 inputProps={{ "aria-label": "selectCollection" }}
               />
             )}
             {!isSelectOnly && (
-              <BoxBtnGroup
-                display={"flex"}
-                flexDirection={"row"}
-                justifyContent={"flex-end"}
-                className={isMobile ? "mobile btn-group" : "btn-group"}
-              >
-                <>
-                  {!(
-                    item.isCounterFactualNFT &&
-                    item.deployStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-                    item.owner?.toLowerCase() ===
-                      account.accAddress.toLowerCase()
-                  ) ? (
-                    <Box className={isMobile ? "isMobile" : ""} width={"48%"}>
-                      <Button
-                        variant={"outlined"}
-                        size={"medium"}
-                        fullWidth
-                        onClick={() => {
-                          setShowDeploy(item);
-                        }}
-                      >
-                        {t("labelNFTDeployContract")}
-                      </Button>
-                    </Box>
-                  ) : (
-                    <Box className={isMobile ? "isMobile" : ""}>
-                      <Button
-                        variant={"outlined"}
-                        size={"medium"}
-                        fullWidth
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(
-                            `${etherscanBaseUrl}tx/${item?.contractAddress}`
-                          );
-                          window.opener = null;
-                        }}
-                      >
-                        {t("labelViewEtherscan")}
-                        <LinkIcon
-                          color={"inherit"}
-                          fontSize={"small"}
-                          style={{
-                            verticalAlign: "middle",
-                            marginLeft: theme.unit,
-                          }}
-                        />
-                      </Button>
-                    </Box>
-                  )}
-                  {!!(
-                    item.isCounterFactualNFT &&
-                    item?.nftType !== NFT_TYPE_STRING.ERC721
-                  ) && (
-                    <Box
-                      className={isMobile ? "isMobile" : ""}
-                      width={"48%"}
-                      marginLeft={"4%"}
-                    >
-                      <Button
-                        variant={"contained"}
-                        size={"small"}
-                        fullWidth
-                        onClick={() => {
-                          if (item.name && item.tileUri) {
-                            setShowMintNFT(item);
-                          } else {
-                            setShowEdit(item);
-                          }
-                        }}
-                      >
-                        {t("labelNFTMintSimpleBtn")}
-                      </Button>
-                    </Box>
-                  )}
-                </>
+              <BoxBtnGroup className={"btn-group"}>
+                <ActionMemo {...{ ...(props as any) }} />
               </BoxBtnGroup>
             )}
             <Box
@@ -221,6 +238,7 @@ export const CollectionItem = React.memo(
                 display={"inline-flex"}
                 textOverflow={"ellipsis"}
                 variant={"h5"}
+                alignItems={"center"}
                 justifyContent={"space-between"}
               >
                 <Typography
@@ -264,20 +282,6 @@ export const CollectionItem = React.memo(
                 >
                   {item?.nftType}
                 </Typography>
-                {/*<Button*/}
-                {/*  variant={"text"}*/}
-                {/*  color={"primary"}*/}
-                {/*  size={"small"}*/}
-                {/*  endIcon={<CopyIcon color={"secondary"} />}*/}
-                {/*  sx={{ marginLeft: 1 }}*/}
-                {/*  onClick={(e) => {*/}
-                {/*    e.stopPropagation();*/}
-                {/*    copyToClipBoard(JSON.stringify(metaDemo));*/}
-                {/*    setCopyToastOpen({ isShow: true, type: "json" });*/}
-                {/*  }}*/}
-                {/*>*/}
-                {/*  {t("labelCopyNFTDemo")}*/}
-                {/*</Button>*/}
               </Typography>
             </Box>
           </Box>

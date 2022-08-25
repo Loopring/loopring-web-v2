@@ -930,11 +930,14 @@ export default {
   labelCollectionName: "Collection Name <1>\uFE61</1>",
   labelCollectionCreateBtn: "Create Collection",
   labelCollectionRequiredName: "Please input Name",
-  labelCollectionRequiredTileUri: "Please input TileUri",
+  labelCollectionRequiredTileUri: "Please input tile",
   labelCollectionIsUploading: "Source is loading",
   labelMintNext: "Next",
+  labelMintCollectionInput: "Please input contract address",
+  labelMintCid: "Please input IPFS CID",
   labelMintBack: "Back",
   labelTokenAdMintBtn: "Enter Amount",
+  labelMintSubmitBtn: "Create Your NFT",
   labelMintIPFSCIDDes:
     "Fill in the IPFS CID for NFT metadata and collection Information",
   labelNFTMintSimpleBtn: "Mint",
@@ -942,7 +945,11 @@ export default {
   labelCollectionEditBtn: "Edit",
   labelCopyMetaClip: "Metadata Copied to Clipboard",
   labelCollectionMetaNoNameORTileUri:
-    "Your collection_metadata is not defined `name` or `tile_uri`, it may cause some collection display issue!",
+    "Your Collection metadata is not setup {{type}}, please go to collection panel edit!",
+  labelCollectionMetaMiss: "Your NFT metadata is no not setup {{type}}.",
+  labelCollectionMetaError:
+    "Your NFT metadata is no not setup {{type}}, please check and fix it from your IPFS site",
+  labelCollectionMetaErrorType: "correct `royalty_percentage` from 0 to 10",
   labelNFTServerRefresh:
     "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",

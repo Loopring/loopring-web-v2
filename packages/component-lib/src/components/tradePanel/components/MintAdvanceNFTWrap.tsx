@@ -11,6 +11,8 @@ import {
   Step,
   FormControlLabel,
   Radio,
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
 } from "@mui/material";
 import {
   CloseIcon,
@@ -23,6 +25,8 @@ import {
   SoursURL,
   RefreshIcon,
   getShortAddr,
+  CheckedIcon,
+  CheckBoxIcon,
 } from "@loopring-web/common-resources";
 import {
   EmptyDefault,
@@ -145,6 +149,7 @@ export const MintAdvanceNFTWrap = <
   chargeFeeTokenList,
   feeInfo,
   isNotAvailableCID,
+  isNotAvailableTokenAddress,
   isNFTCheckLoading,
   collectionInputProps,
   onNFTMintClick,
@@ -154,9 +159,83 @@ export const MintAdvanceNFTWrap = <
   const { t } = useTranslation(["common"]);
   const { isMobile } = useSettings();
   const [activeStep, setActiveStep] = React.useState(MintStep.SELECTWAY);
+  const [address, setAddress] = React.useState(tradeData?.tokenAddress);
+  const [cid, setCid] = React.useState(tradeData?.nftIdView);
+  const [metaDataMissDataInfo, setMetaDataMissDataInfo] = React.useState<
+    string[]
+  >([]);
+  const [metaDataErrorDataInfo, setMetaDataErrorDataInfo] = React.useState<
+    string[]
+  >([]);
+  const [checked, setChecked] = React.useState(true);
+
   const inputBtnRef = React.useRef();
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
+  React.useEffect(() => {
+    if (address !== tradeData?.tokenAddress && tradeData?.tokenAddress !== "") {
+      setAddress(tradeData?.tokenAddress);
+      if (!tradeData?.tokenAddress) {
+        setActiveStep(MintStep.SELECTWAY);
+      }
+    }
+  }, [tradeData?.tokenAddress]);
+  React.useEffect(() => {
+    if (cid !== tradeData?.nftIdView && tradeData?.nftIdView !== "") {
+      setCid(tradeData?.nftIdView);
+      if (!tradeData.tokenAddress) {
+        setActiveStep(MintStep.SELECTWAY);
+      } else if (!tradeData?.nftIdView) {
+        setActiveStep(MintStep.INPUTCID);
+      }
+    }
+  }, [tradeData?.nftIdView]);
+  const checkMeta = React.useCallback(() => {
+    const checkResult = ["collection_metadata"].reduce((prev, item) => {
+      if (!tradeData[item]) {
+        prev.push(item);
+      }
+      return prev;
+    }, [] as string[]);
+
+    const checkErrorResult = ["name", "image", "royaltyPercentage"].reduce(
+      (prev, item) => {
+        if (!tradeData[item]) {
+          prev.push(item === "royaltyPercentage" ? "royalty_percentage" : item);
+        }
+        return prev;
+      },
+      [] as string[]
+    );
+
+    if (
+      tradeData.nftId &&
+      (checkErrorResult.length ||
+        !(
+          tradeData.royaltyPercentage &&
+          Number.isInteger(tradeData.royaltyPercentage) &&
+          tradeData.royaltyPercentage >= 0 &&
+          tradeData.royaltyPercentage <= 10
+        ))
+    ) {
+      setMetaDataErrorDataInfo(checkErrorResult);
+      setChecked(false);
+    } else {
+      setMetaDataErrorDataInfo([]);
+    }
+    if (tradeData.nftId && checkResult.length) {
+      setMetaDataMissDataInfo(checkResult);
+      setChecked(false);
+    } else {
+      setMetaDataMissDataInfo([]);
+      setChecked(true);
+    }
+  }, [tradeData]);
+  React.useEffect(() => {
+    if (tradeData?.nftId) {
+      checkMeta();
+    }
+  }, [tradeData?.nftId]);
 
   const handleToggleChange = React.useCallback(
     (value: C) => {
@@ -166,14 +245,12 @@ export const MintAdvanceNFTWrap = <
     },
     [handleFeeChange]
   );
-  // const handleBack = React.useCallback((currentStep: number) => {
-  // 	setActiveStep(currentStep - 1)
-  // }, []);
-  const _handleOnNFTDataChange = (_tradeData: T) => {
-    if (handleOnNFTDataChange) {
-      handleOnNFTDataChange({ ...tradeData, ..._tradeData });
-    }
-  };
+
+  // const _handleOnNFTDataChange = (_tradeData: Partial<T>) => {
+  //   if (handleOnNFTDataChange) {
+  //     handleOnNFTDataChange({ ...tradeData, ..._tradeData });
+  //   }
+  // };
 
   // const tradeData
   myLog("mint tradeData", tradeData);
@@ -280,14 +357,87 @@ export const MintAdvanceNFTWrap = <
                 })}
               </RadioGroupStyle>
             </Box>
+            {method === AdMethod.HasData && (
+              <Box
+                width={"100%"}
+                paddingTop={2}
+                paddingX={isMobile ? 2 : 0}
+                position={"relative"}
+              >
+                <TextField
+                  value={address}
+                  label={t("labelNFTContractAddress")}
+                  error={!!isNotAvailableTokenAddress}
+                  disabled={isNFTCheckLoading}
+                  placeholder={t("depositNFTAddressLabelPlaceholder")}
+                  onChange={
+                    (event) => {
+                      const tokenAddress = event.target.value;
+                      setAddress(tokenAddress);
+                      if (/^0x[a-fA-F0-9]{40}$/g.test(tokenAddress)) {
+                        handleOnNFTDataChange({
+                          tokenAddress,
+                        } as T);
+                      } else {
+                        handleOnNFTDataChange({
+                          tokenAddress: "",
+                        } as T);
+                      }
+                    }
+
+                    // handleOnNFTDataChange({
+                    //   tokenAddress: event.target?.value,
+                    // } as T)
+                  }
+                  fullWidth={true}
+                />
+                {address &&
+                  (isNFTCheckLoading ? (
+                    <LoadingIcon
+                      width={24}
+                      style={{ top: 48, right: "8px", position: "absolute" }}
+                    />
+                  ) : (
+                    <IconClearStyled
+                      color={"inherit"}
+                      size={"small"}
+                      style={{ top: 46 }}
+                      aria-label="Clear"
+                      onClick={() => {
+                        setAddress("");
+                        handleOnNFTDataChange({
+                          tokenAddress: "",
+                        } as T);
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconClearStyled>
+                  ))}
+
+                {isNotAvailableTokenAddress && (
+                  <Typography
+                    color={"var(--color-error)"}
+                    variant={"body2"}
+                    marginTop={1 / 4}
+                    alignSelf={"stretch"}
+                    position={"relative"}
+                  >
+                    {t(isNotAvailableTokenAddress.reason)}
+                  </Typography>
+                )}
+              </Box>
+            )}
             {method === AdMethod.NoData && (
-              <Box width={"100%"} paddingX={isMobile ? 2 : 0}>
+              <Box width={"100%"} paddingTop={2} paddingX={isMobile ? 2 : 0}>
                 <CollectionInput
                   {...{
                     ...(collectionInputProps as any),
                     collection: tradeData.collectionMeta as any,
                     onSelected: (item: Co) => {
                       collectionInputProps.onSelected(item);
+                      handleOnNFTDataChange({
+                        tokenAddress: item.contractAddress ?? "",
+                      } as T);
                     },
                   }}
                   fullWidth={true}
@@ -298,12 +448,14 @@ export const MintAdvanceNFTWrap = <
             )}
             <Box width={"100%"} paddingX={isMobile ? 2 : 0} marginTop={2}>
               {btnMain({
-                defaultLabel: "labelMintNext",
+                defaultLabel: tradeData.tokenAddress
+                  ? "labelMintNext"
+                  : "labelMintCollectionInput",
                 disabled: () => {
                   return (
                     gDisabled ||
-                    (method == AdMethod.NoData &&
-                      tradeData.collectionMeta === undefined)
+                    !tradeData.tokenAddress ||
+                    !tradeData.collectionMeta
                   );
                 },
                 onClick: () => {
@@ -364,7 +516,7 @@ export const MintAdvanceNFTWrap = <
                 </Trans>
               </Typography>
               <TextField
-                value={tradeData?.nftIdView}
+                value={cid}
                 label={""}
                 title={t("labelNFTCid")}
                 error={
@@ -374,37 +526,61 @@ export const MintAdvanceNFTWrap = <
                     isNotAvailableCID
                   )
                 }
+                disabled={isNFTCheckLoading}
                 placeholder={t("mintNFTAddressLabelPlaceholder")}
-                onChange={(event) =>
-                  _handleOnNFTDataChange({
-                    nftIdView: event.target?.value,
-                    nftId: "",
-                  } as T)
-                }
+                onChange={(event) => {
+                  const cid = event.target?.value;
+                  setCid(cid);
+                  if (
+                    /^(Qm[1-9A-HJ-NP-Za-km-z]{44,}|b[A-Za-z2-7]{58,}|B[A-Z2-7]{58,}|z[1-9A-HJ-NP-Za-km-z]{48,}|F[0-9A-F]{50,})$/.test(
+                      cid
+                    )
+                  ) {
+                    handleOnNFTDataChange({
+                      nftIdView: cid,
+                      nftId: "",
+                    } as T);
+                  } else {
+                    handleOnNFTDataChange({
+                      nftIdView: "",
+                      nftId: "",
+                    } as T);
+                  }
+                }}
                 fullWidth={true}
-              />
-              {tradeData?.nftIdView && tradeData.nftIdView !== "" ? (
-                isNFTCheckLoading ? (
-                  <LoadingIcon
-                    width={24}
-                    style={{ top: "32px", right: "8px", position: "absolute" }}
-                  />
+              />;
+              {
+                cid && cid !== "" ? (
+                  isNFTCheckLoading ? (
+                    <LoadingIcon
+                      width={24}
+                      style={{
+                        top: "32px",
+                        right: "8px",
+                        position: "absolute",
+                      }}
+                    />
+                  ) : (
+                    <IconClearStyled
+                      color={"inherit"}
+                      size={"small"}
+                      style={{ top: "30px" }}
+                      aria-label="Clear"
+                      onClick={() => {
+                        setCid("");
+                        handleOnNFTDataChange({
+                          nftIdView: "",
+                          nftId: "",
+                        } as T);
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconClearStyled>
+                  )
                 ) : (
-                  <IconClearStyled
-                    color={"inherit"}
-                    size={"small"}
-                    style={{ top: "30px" }}
-                    aria-label="Clear"
-                    onClick={() =>
-                      _handleOnNFTDataChange({ nftIdView: "", nftId: "" } as T)
-                    }
-                  >
-                    <CloseIcon />
-                  </IconClearStyled>
-                )
-              ) : (
-                ""
-              )}
+                  ""
+                );
+              }
               {isNotAvailableCID &&
               tradeData?.nftIdView &&
               tradeData?.nftIdView !== "" ? (
@@ -445,20 +621,76 @@ export const MintAdvanceNFTWrap = <
                 tradeData.collectionMeta &&
                 tradeData.collectionMeta.contractAddress
               ) &&
-                (!tradeData.collectionMeta.name ||
-                !tradeData.collectionMeta.tileUri ? (
-                  <Typography
-                    color={"var(--color-warning)"}
-                    variant={"body1"}
-                    alignSelf={"stretch"}
-                    position={"relative"}
-                    component={"span"}
-                    marginTop={2}
-                    whiteSpace={"pre-line"}
-                  >
-                    {t("labelCollectionMetaNoNameORTileUri")}
-                  </Typography>
+                (metaDataErrorDataInfo.length ? (
+                  <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+                    <Typography
+                      color={"error"}
+                      variant={"body1"}
+                      alignSelf={"stretch"}
+                      position={"relative"}
+                      component={"span"}
+                      marginTop={2}
+                      whiteSpace={"pre-line"}
+                    >
+                      {t("labelCollectionMetaError", {
+                        type: metaDataErrorDataInfo.length
+                          ? "`" + metaDataErrorDataInfo.join("`, `") + "`"
+                          : t("labelCollectionMetaErrorType"),
+                      })}
+                    </Typography>
+                  </Box>
+                ) : metaDataMissDataInfo.length ? (
+                  <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+                    <Typography
+                      color={"var(--color-warning)"}
+                      variant={"body1"}
+                      alignSelf={"stretch"}
+                      position={"relative"}
+                      component={"span"}
+                      marginTop={2}
+                      whiteSpace={"pre-line"}
+                    >
+                      {t("labelCollectionMetaMiss", {
+                        type: "`" + metaDataMissDataInfo.join("`, `") + "`",
+                      })}
+                    </Typography>
+                    <MuiFormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checked}
+                          onChange={(_event: any, state: boolean) => {
+                            setChecked(state);
+                          }}
+                          checkedIcon={<CheckedIcon />}
+                          icon={<CheckBoxIcon />}
+                          color="default"
+                        />
+                      }
+                      label={t("labelCEXUnderstand")}
+                    />
+                  </Box>
                 ) : (
+                  //   : !tradeData.collectionMeta.name ||
+                  //   !tradeData.collectionMeta.tileUri ? (
+                  //   <Typography
+                  //     color={"var(--color-warning)"}
+                  //     variant={"body1"}
+                  //     alignSelf={"stretch"}
+                  //     position={"relative"}
+                  //     component={"span"}
+                  //     marginTop={2}
+                  //     whiteSpace={"pre-line"}
+                  //   >
+                  //     {t("labelCollectionMetaNoNameORTileUri", {
+                  //       type: [
+                  //         ...(!tradeData.collectionMeta.name ? ["name"] : []),
+                  //         ...(!tradeData.collectionMeta.tileUri
+                  //           ? ["tile_uri"]
+                  //           : []),
+                  //       ],
+                  //     })}
+                  //   </Typography>
+                  // )
                   <></>
                 ))}
             </Box>
@@ -478,7 +710,7 @@ export const MintAdvanceNFTWrap = <
                   sx={{ height: "var(--btn-medium-height)" }}
                   onClick={() => {
                     setActiveStep(MintStep.SELECTWAY);
-                    _handleOnNFTDataChange({
+                    handleOnNFTDataChange({
                       nftIdView: "",
                       nftId: "",
                       tradeValue: undefined,
@@ -490,10 +722,18 @@ export const MintAdvanceNFTWrap = <
               </Box>
               <Box width={"50%"} paddingLeft={1}>
                 {btnMain({
-                  defaultLabel: "labelMintNext",
+                  defaultLabel: tradeData.nftId
+                    ? "labelMintNext"
+                    : "labelMintCid",
                   btnInfo: undefined, //btnInfo,
                   disabled: () => {
-                    return gDisabled || !!isNotAvailableCID || !tradeData.nftId;
+                    return (
+                      gDisabled ||
+                      !!isNotAvailableCID ||
+                      !tradeData.nftId ||
+                      !!metaDataErrorDataInfo.length ||
+                      !checked
+                    );
                   },
                   onClick: () => {
                     setActiveStep(MintStep.MINT);
@@ -765,7 +1005,7 @@ export const MintAdvanceNFTWrap = <
                     type={"NFT"}
                     inputNFTRef={inputBtnRef}
                     onChangeEvent={(_index, data) =>
-                      _handleOnNFTDataChange({
+                      handleOnNFTDataChange({
                         tradeValue: data.tradeData?.tradeValue ?? "0",
                       } as T)
                     }
@@ -876,7 +1116,7 @@ export const MintAdvanceNFTWrap = <
                       onClick={() => {
                         setActiveStep(MintStep.INPUTCID);
 
-                        _handleOnNFTDataChange({
+                        handleOnNFTDataChange({
                           tradeValue: undefined,
                           collectionMeta: undefined,
                           // tokenAddress:undefined,
@@ -888,7 +1128,10 @@ export const MintAdvanceNFTWrap = <
                   </Box>
                   <Box width={"50%"} paddingLeft={1}>
                     {btnMain({
-                      defaultLabel: t("labelTokenAdMintBtn"),
+                      defaultLabel:
+                        nftMintBtnStatus === TradeBtnStatus.DISABLED
+                          ? t("labelTokenAdMintBtn")
+                          : t("labelMintSubmitBtn"),
                       btnInfo: btnInfo,
                       disabled: () => {
                         return (
@@ -910,22 +1153,39 @@ export const MintAdvanceNFTWrap = <
       },
     ];
   }, [
-    _handleOnNFTDataChange,
-    chargeFeeTokenList,
-    dropdownStatus,
-    feeInfo,
-    handleMethodChange,
-    handleToggleChange,
-    isNotAvailableCID,
-    isFeeNotEnough.isFeeNotEnough,
-    isFeeNotEnough.isOnLoading,
-    isMobile,
-    isNFTCheckLoading,
-    method,
-    methodLabel,
     t,
+    isMobile,
+    method,
+    handleMethodChange,
+    address,
+    isNotAvailableTokenAddress,
+    isNFTCheckLoading,
+    collectionInputProps,
     tradeData,
+    btnMain,
+    cid,
+    isNotAvailableCID,
+    metaDataErrorDataInfo,
+    metaDataMissDataInfo,
+    checked,
+    error,
+    src,
+    etherscanBaseUrl,
+    baseURL,
     walletMap,
+    chargeFeeTokenList,
+    feeInfo,
+    dropdownStatus,
+    isFeeNotEnough.isOnLoading,
+    isFeeNotEnough.isFeeNotEnough,
+    handleToggleChange,
+    btnInfo,
+    methodLabel,
+    handleOnNFTDataChange,
+    gDisabled,
+    getIPFSString,
+    nftMintBtnStatus,
+    onNFTMintClick,
   ]);
 
   // @ts-ignore

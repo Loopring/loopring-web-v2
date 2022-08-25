@@ -359,7 +359,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       const { balance, tradeValue, ...rest } = action.payload;
       state.lastStep = LAST_STEP.nftMint;
 
-      if (balance === undefined || balance >= 0) {
+      if (balance && balance >= 0) {
         state.nftMintAdvanceValue.balance = balance;
       }
 

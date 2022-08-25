@@ -419,6 +419,7 @@ export type NFTMintAdvanceInfoProps<T, I, C> = DefaultWithMethodProps<T, I> & {
   chargeFeeTokenList?: Array<C>;
   feeInfo: C;
   isNFTCheckLoading?: boolean;
+  isNotAvailableTokenAddress?: undefined | { reason: string };
   isNotAvailableCID?: undefined | { reason: string };
   isFeeNotEnough: {
     isFeeNotEnough: boolean;
@@ -433,7 +434,7 @@ export type NFTMintAdvanceExtendProps<T, Co, I, C = FeeInfo> = {
   baseURL: string;
   getIPFSString: GET_IPFS_STRING;
   collectionInputProps: CollectionInputProps<Co>;
-  handleOnNFTDataChange: (data: T) => void;
+  handleOnNFTDataChange: (data: Partial<T>) => void;
   onNFTMintClick: (data: T, isFirstMint?: boolean) => void;
   allowTrade?: any;
   etherscanBaseUrl: string;
