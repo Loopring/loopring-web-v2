@@ -39,13 +39,7 @@ export const useMyNFTCollection = <C extends CollectionMeta>() => {
 
   const renderCollection = React.useCallback(async () => {
     // let mediaPromise: any[] = [];
-    const list = walletL2NFTCollection.map((item: any) => {
-      return {
-        ...item.collection,
-        count: item.count,
-      };
-    });
-    setCollectionList(list as C[]);
+    setCollectionList(walletL2NFTCollection as C[]);
     setIsLoading(false);
   }, [etherscanBaseUrl, page, walletL2NFTCollection]);
 

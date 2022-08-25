@@ -50,43 +50,6 @@ export const MyNFTList = withTranslation("common")(
         display={"flex"}
         flexDirection={"column"}
       >
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography
-            component={"h3"}
-            variant={"h4"}
-            paddingX={5 / 2}
-            paddingTop={5 / 2}
-            paddingBottom={2}
-          >
-            {t("labelCollectionSelect")}
-          </Typography>
-          <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
-            <Box marginLeft={1}>
-              <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
-                onClick={() => history.push("/nft/depositNFT")}
-              >
-                {t("labelL1toL2NFT")}
-              </Button>
-            </Box>
-            <Box marginLeft={1}>
-              <Button
-                variant={"outlined"}
-                color={"primary"}
-                onClick={() => history.push("/nft/transactionNFT")}
-              >
-                {t("labelTransactionNFT")}
-              </Button>
-            </Box>
-          </Box>
-        </Box>
         <Box flex={1} display={"flex"} flexDirection={"column"}>
           {isLoading ? (
             <Box

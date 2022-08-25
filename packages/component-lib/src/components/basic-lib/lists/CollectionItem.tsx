@@ -27,6 +27,7 @@ import {
   MakeMeta,
   MoreIcon,
   NFT_TYPE_STRING,
+  SoursURL,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
@@ -335,6 +336,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   isSelectOnly = false,
   selectCollection,
   etherscanBaseUrl,
+  isLoading,
   noEdit = false,
   ...rest
 }: CollectionListProps<Co> &
@@ -348,7 +350,22 @@ export const CollectionCardList = <Co extends CollectionMeta>({
       marginTop={2}
       width={"100%"}
     >
-      {!collectionList?.length ? (
+      {isLoading ? (
+        <Box
+          flex={1}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          height={"90%"}
+        >
+          <img
+            className="loading-gif"
+            alt={"loading"}
+            width="36"
+            src={`${SoursURL}images/loading-line.gif`}
+          />
+        </Box>
+      ) : !collectionList?.length ? (
         <Box
           flex={1}
           display={"flex"}

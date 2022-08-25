@@ -93,7 +93,7 @@ export const MyNFTCollectionList = withTranslation("common")(
             account={account}
             onItemClick={(item) => {
               history.push({
-                pathname: "/NFT/assetsNFT",
+                pathname: `/NFT/assetsNFT/${item.contractAddress}|${item.id}`,
                 search: `?collectionPage=${collectionListProps.page}`,
               });
             }}

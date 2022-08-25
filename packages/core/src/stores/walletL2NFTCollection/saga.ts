@@ -44,7 +44,12 @@ const getWalletL2NFTCollectionBalance = async <
     ) {
       throw new CustomError(ErrorMap.ERROR_UNKNOWN);
     }
-    collections = (response as any).collections;
+    collections = (response as any).collections?.map((item: any) => {
+      return {
+        ...item.collection,
+        count: item.count,
+      };
+    });
     totalNum = (response as any).totalNum;
     return {
       walletL2NFTCollection: collections ?? [],

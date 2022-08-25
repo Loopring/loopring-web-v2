@@ -39,14 +39,14 @@ export const MyNFTPanel = withTranslation("common")(
     const [collectionMeta, setCollectionMeta] =
       React.useState<undefined | sdk.CollectionMeta>(undefined);
     const checkCollectin = async () => {
-      if (match?.params?.contract && LoopringAPI.userAPI) {
-        const [contract, id] = match.params.contract.split("-")[0];
+      const [contract, id] = match?.params?.contract?.split("|");
+
+      if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
         const collectionMeta = walletL2NFTCollection.find((item) => {
-          if (id) {
-            return item.id === id;
-          } else {
-            return item.contractAddress === contract;
-          }
+          return (
+            Number(item.id) === Number(id) &&
+            item.contractAddress?.toLowerCase() === contract.toLowerCase()
+          );
         });
         if (collectionMeta) {
           setCollectionMeta(collectionMeta);
@@ -74,18 +74,18 @@ export const MyNFTPanel = withTranslation("common")(
           }
           const collections = response.collections;
           if (collections.length) {
-            let collectionMeta;
-            if (id) {
-              collectionMeta = walletL2NFTCollection.find((item) => {
-                if (id) {
-                  return (item.id = id);
-                }
-              });
-            }
-            if (!collectionMeta) {
-              collectionMeta = collections[0];
-            }
-            setCollectionMeta(collectionMeta);
+            const collectionMeta = collections.find((item: any) => {
+              return (
+                Number(item.id) === Number(id) &&
+                item.collection.contractAddress?.toLowerCase() ===
+                  contract.toLowerCase()
+              );
+            });
+
+            setCollectionMeta({
+              ...collectionMeta.collection,
+              count: collectionMeta.count,
+            });
             return;
           } else {
             history.push({ pathname: "/NFT/assetsNFT", search });
@@ -134,7 +134,7 @@ export const MyNFTPanel = withTranslation("common")(
                 }
               >
                 {t("labelNFTMyNFT", {
-                  type: collectionMeta
+                  collection: collectionMeta
                     ? collectionMeta.name +
                       " " +
                       getShortAddr(collectionMeta.contractAddress ?? "")
