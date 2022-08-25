@@ -9,6 +9,7 @@ import {
   AccountStatus,
   // AccountStatus,
   AttributesProperty,
+  CollectionMeta,
   CustomError,
   ErrorMap,
   MetaDataProperty,
@@ -19,7 +20,6 @@ import { IpfsProvides, ipfsService } from "../ipfs";
 import { BigNumber } from "bignumber.js";
 import { AddResult } from "ipfs-core-types/types/src/root";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { CollectionMeta } from "@loopring-web/loopring-sdk";
 
 // import * as sdk from "@loopring-web/loopring-sdk";
 

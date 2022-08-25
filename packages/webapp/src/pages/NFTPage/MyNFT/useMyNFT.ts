@@ -1,31 +1,28 @@
 import {
+  CollectionMeta,
   IPFS_LOOPRING_SITE,
-  IPFS_HEAD_URL,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
   Media,
   myLog,
   NFTWholeINFO,
   SagaStatus,
-  IPFS_HEAD_URL_REG,
 } from "@loopring-web/common-resources";
 import React, { useState } from "react";
 import { getIPFSString, LoopringAPI, store } from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "@loopring-web/core";
-import {
-  NftData,
-  NFTTokenInfo,
-  DEPLOYMENT_STATUS,
-} from "@loopring-web/loopring-sdk";
 import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
 import { useOpenModals } from "@loopring-web/component-lib";
 import { BigNumber } from "bignumber.js";
-import * as loopring_defs from "@loopring-web/loopring-sdk";
 import * as sdk from "@loopring-web/loopring-sdk";
 
 BigNumber.config({ EXPONENTIAL_AT: 100 });
-export const useMyNFT = () => {
+export const useMyNFT = ({
+  collectionMeta,
+}: {
+  collectionMeta: CollectionMeta;
+}) => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [popItem, setPopItem] =
@@ -56,7 +53,7 @@ export const useMyNFT = () => {
     isCounterFactualNFT,
     deploymentStatus,
     metadata,
-  }: loopring_defs.UserNFTBalanceInfo): Promise<LOOPRING_NFT_METADATA | {}> => {
+  }: sdk.UserNFTBalanceInfo): Promise<LOOPRING_NFT_METADATA | {}> => {
     if (!!metadata?.imageSize?.original) {
       return Promise.resolve({});
     } else if (
@@ -68,7 +65,7 @@ export const useMyNFT = () => {
       nftId &&
       (!isCounterFactualNFT ||
         (isCounterFactualNFT &&
-          deploymentStatus !== DEPLOYMENT_STATUS.NOT_DEPLOYED))
+          deploymentStatus !== sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED))
     ) {
       const _id = new BigNumber(nftId ?? "", 16);
       myLog("nftId", _id, _id.toString());
@@ -112,14 +109,16 @@ export const useMyNFT = () => {
   };
 
   const infoDetail = React.useCallback(async (item: Partial<NFTWholeINFO>) => {
-    const nftData: NftData = item.nftData as NftData;
+    const nftData: sdk.NftData = item.nftData as sdk.NftData;
     let [nftMap] = await Promise.all([
       LoopringAPI.nftAPI?.getInfoForNFTTokens({
         nftDatas: [nftData],
       }),
     ]);
-    const nftToken: Partial<NFTTokenInfo> =
-      nftMap && nftMap[nftData as NftData] ? nftMap[nftData as NftData] : {};
+    const nftToken: Partial<sdk.NFTTokenInfo> =
+      nftMap && nftMap[nftData as sdk.NftData]
+        ? nftMap[nftData as sdk.NftData]
+        : {};
     let tokenInfo: NFTWholeINFO = {
       ...item,
       ...item.metadata?.base,
@@ -192,7 +191,7 @@ export const useMyNFT = () => {
     async (item: Partial<NFTWholeINFO>) => {
       if (
         item.isCounterFactualNFT &&
-        item.deploymentStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED
+        item.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
       ) {
         await LoopringAPI.userAPI
           ?.getAvailableBroker({ type: 0 })
@@ -203,10 +202,11 @@ export const useMyNFT = () => {
       }
       updateNFTWithdrawData(item);
       updateNFTTransferData(item);
-      setPopItem(item);
-      setShowNFTDetail({ isShow: true, ...item });
+      setPopItem({ ...item, collectionMeta });
+      setShowNFTDetail({ isShow: true, ...item, collectionMeta });
     },
     [
+      collectionMeta,
       setShowNFTDetail,
       updateNFTDeployData,
       updateNFTTransferData,
@@ -277,13 +277,13 @@ export const useMyNFT = () => {
     onPageChange(1);
   }, []);
   React.useEffect(() => {
-    updateWalletLayer2NFT({ page });
-  }, [page, updateWalletLayer2NFT]);
+    updateWalletLayer2NFT({ page, collection: collectionMeta.contractAddress });
+  }, [page, collectionMeta.contractAddress]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET && page_reudex === page) {
       renderNFT();
     }
-  }, [walletLayer2NFTStatus, page, page_reudex, renderNFT]);
+  }, [walletLayer2NFTStatus, page, page_reudex]);
 
   return {
     nftList,

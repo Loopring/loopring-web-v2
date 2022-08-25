@@ -27,9 +27,9 @@ import {
   MakeMeta,
   MoreIcon,
   NFT_TYPE_STRING,
-} from "@loopring-web//common-resources";
+} from "@loopring-web/common-resources";
+import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
-import { DEPLOYMENT_STATUS } from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
 import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
@@ -64,12 +64,14 @@ export type CollectionItemProps<Co> = {
   item: Co;
   index: number;
   setCopyToastOpen: (prosp: { isShow: boolean; type: string }) => void;
-  setShowDeploy: (item: Co) => void;
-  setShowEdit: (item: Co) => void;
-  setShowMintNFT: (item: Co) => void;
-  account: Account;
+  setShowDeploy?: (item: Co) => void;
+  setShowEdit?: (item: Co) => void;
+  setShowMintNFT?: (item: Co) => void;
+  onItemClick?: (item: Co) => void;
+  account?: Account;
   toggle: any;
   isSelectOnly?: boolean;
+  noEdit?: boolean;
   selectCollection?: Co;
   domain: string;
   makeMeta: MakeMeta;
@@ -79,12 +81,12 @@ export type CollectionItemProps<Co> = {
 };
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
+    // setShowDeploy,
+    // setShowEdit,
     item,
     account,
-    setShowDeploy,
     etherscanBaseUrl,
     setShowMintNFT,
-    setShowEdit,
   }: CollectionItemProps<Co>) => {
     const { t } = useTranslation("common");
     const theme = useTheme();
@@ -102,8 +104,8 @@ const ActionMemo = React.memo(
           {/*)}*/}
           {!!(
             item.isCounterFactualNFT &&
-            item.deployStatus === DEPLOYMENT_STATUS.NOT_DEPLOYED &&
-            item.owner?.toLowerCase() === account.accAddress.toLowerCase()
+            item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
+            item.owner?.toLowerCase() === account?.accAddress?.toLowerCase()
           ) ? (
             // <MenuItem
             //   onClick={() => {
@@ -137,10 +139,8 @@ const ActionMemo = React.memo(
           ) && (
             <MenuItem
               onClick={() => {
-                if (item.name && item.tileUri) {
+                if (setShowMintNFT) {
                   setShowMintNFT(item);
-                } else {
-                  setShowEdit(item);
                 }
               }}
             >
@@ -177,10 +177,10 @@ export const CollectionItem = React.memo(
         item,
         index,
         setCopyToastOpen,
-
+        noEdit,
         isSelectOnly = false,
         selectCollection,
-
+        onItemClick,
         getIPFSString,
         baseURL,
       } = props;
@@ -188,7 +188,15 @@ export const CollectionItem = React.memo(
 
       // const { metaDemo } = makeMeta({ collection: item, domain });
       return (
-        <CardStyleItem ref={_ref} className={"collection"}>
+        <CardStyleItem
+          ref={_ref}
+          className={"collection"}
+          onClick={() => {
+            if (onItemClick) {
+              onItemClick(item);
+            }
+          }}
+        >
           <Box
             position={"absolute"}
             width={"100%"}
@@ -217,7 +225,7 @@ export const CollectionItem = React.memo(
                 inputProps={{ "aria-label": "selectCollection" }}
               />
             )}
-            {!isSelectOnly && (
+            {!isSelectOnly && !noEdit && (
               <BoxBtnGroup className={"btn-group"}>
                 <ActionMemo {...{ ...(props as any) }} />
               </BoxBtnGroup>
@@ -271,8 +279,10 @@ export const CollectionItem = React.memo(
                 color={"text.secondary"}
                 component={"h6"}
                 whiteSpace={"pre"}
+                marginTop={1}
                 overflow={"hidden"}
                 display={"inline-flex"}
+                alignItems={"center"}
                 textOverflow={"ellipsis"}
                 justifyContent={"space-between"}
               >
@@ -282,6 +292,24 @@ export const CollectionItem = React.memo(
                 >
                   {item?.nftType}
                 </Typography>
+                {item.count && (
+                  <Typography
+                    variant={"h4"}
+                    component={"div"}
+                    height={40}
+                    paddingX={3}
+                    whiteSpace={"pre"}
+                    display={"inline-flex"}
+                    alignItems={"center"}
+                    color={"textPrimary"}
+                    style={{
+                      background: "var(--field-opacity)",
+                      borderRadius: "20px",
+                    }}
+                  >
+                    × {item.count}
+                  </Typography>
+                )}
               </Typography>
             </Box>
           </Box>
@@ -303,22 +331,14 @@ export const CollectionCardList = <Co extends CollectionMeta>({
   toggle,
   account,
   onSelectItem,
-  isSelectOnly,
+  onItemClick,
+  isSelectOnly = false,
   selectCollection,
   etherscanBaseUrl,
+  noEdit = false,
   ...rest
-}: CollectionListProps<Co> & {
-  toggle: any;
-  isSelectOnly?: boolean;
-  setShowDeploy: (item: Co) => void;
-  setShowEdit: (item: Co) => void;
-  setShowMintNFT: (item: Co) => void;
-  account: Account;
-  onSelectItem?: (item: Co) => void;
-  selectCollection?: Co;
-  domain: string;
-  makeMeta: MakeMeta;
-}) => {
+}: CollectionListProps<Co> &
+  Partial<CollectionItemProps<Co>> & { onSelectItem?: (item: Co) => void }) => {
   const { t } = useTranslation("common");
   return (
     <BoxStyle
@@ -393,9 +413,11 @@ export const CollectionCardList = <Co extends CollectionMeta>({
                 >
                   <CollectionItem
                     {...{ ...rest }}
+                    onItemClick={onItemClick as any}
                     etherscanBaseUrl={etherscanBaseUrl}
                     selectCollection={selectCollection}
                     isSelectOnly={isSelectOnly}
+                    noEdit={noEdit}
                     account={account}
                     toggle={toggle}
                     setShowDeploy={setShowDeploy as any}

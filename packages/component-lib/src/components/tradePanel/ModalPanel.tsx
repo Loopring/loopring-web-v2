@@ -24,6 +24,7 @@ import {
 } from "../..";
 import {
   Account,
+  CollectionMeta,
   FeeInfo,
   IBData,
   TradeNFT,
@@ -32,7 +33,6 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { CollectionAdvanceWrap } from "./components/CollectionAdvanceWrap";
-import { CollectionMeta } from "@loopring-web/loopring-sdk";
 
 const BoxStyle = styled(Box)<
   { _height?: number | string; _width?: number | string } & BoxProps

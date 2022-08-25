@@ -10,7 +10,10 @@ import React from "react";
 import * as loopring_defs from "@loopring-web/loopring-sdk";
 
 export function useWalletLayer2NFT(): WalletLayer2NFTStates & {
-  updateWalletLayer2NFT: (props: { page?: number }) => void;
+  updateWalletLayer2NFT: (props: {
+    page?: number;
+    collection?: string;
+  }) => void;
   socketUpdateBalance: (balance: {
     [key: string]: loopring_defs.UserBalanceInfo;
   }) => void;
@@ -32,8 +35,8 @@ export function useWalletLayer2NFT(): WalletLayer2NFTStates & {
       [dispatch]
     ),
     updateWalletLayer2NFT: React.useCallback(
-      ({ page }: { page?: number }) =>
-        dispatch(updateWalletLayer2NFT({ page })),
+      ({ page, collection }: { page?: number; collection?: string }) =>
+        dispatch(updateWalletLayer2NFT({ page, collection })),
       [dispatch]
     ),
     socketUpdateBalance: React.useCallback(

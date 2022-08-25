@@ -9,9 +9,15 @@ import {
 
 const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   page,
+  collection,
 }: {
   page: number;
+  collection: string;
 }) => {
+  let _collection: string = collection;
+  if (!collection) {
+    _collection = store.getState().walletLayer2NFT.collection;
+  }
   const offset = (page - 1) * NFTLimit;
   const { accountId, apiKey } = store.getState().account;
   if (apiKey && accountId && LoopringAPI.userAPI) {
@@ -19,6 +25,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
       .getUserNFTBalances(
         {
           accountId,
+          tokenAddrs: _collection,
           limit: NFTLimit,
           offset,
           metadata: true, // close metadata
@@ -31,17 +38,19 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
     return {
       walletLayer2NFT: userNFTBalances ?? [],
       total: totalNum,
+      collection: _collection,
       page,
     };
   }
   return {};
 };
 
-export function* getPostsSaga({ payload: { page = 1 } }: any) {
+export function* getPostsSaga({ payload: { page = 1, collection } }: any) {
   try {
     // @ts-ignore
     const walletLayer2NFT: any = yield call(getWalletLayer2NFTBalance, {
       page,
+      collection,
     });
     yield put(getWalletLayer2NFTStatus({ ...walletLayer2NFT }));
   } catch (err) {

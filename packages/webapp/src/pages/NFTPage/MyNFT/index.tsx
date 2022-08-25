@@ -1,93 +1,150 @@
-import styled from "@emotion/styled";
-import { Box, Button, Card, Grid, Pagination, Typography } from "@mui/material";
 import React from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
+
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { MyNFTList } from "./NFTList";
 import {
-  CardStyleItem,
-  EmptyDefault,
-  NFTMedia,
-} from "@loopring-web/component-lib";
-import { useMyNFT } from "./hook";
+  LoopringAPI,
+  useAccount,
+  useWalletL2NFTCollection,
+} from "@loopring-web/core";
 import {
+  BackIcon,
+  CollectionLimit,
+  CustomError,
   EmptyValueTag,
+  ErrorMap,
   getShortAddr,
   SoursURL,
-  NFTLimit,
 } from "@loopring-web/common-resources";
-import { useHistory } from "react-router-dom";
-import { getIPFSString, useSystem } from "@loopring-web/core";
+import * as sdk from "@loopring-web/loopring-sdk";
+import { MyNFTCollectionList } from "./MyNFTCollectionList";
+import { Box, Typography } from "@mui/material";
+import { Button } from "@loopring-web/component-lib";
 
-const StyledPaper = styled(Box)`
-  background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-`;
+enum MY_NFTVIEW {
+  LIST_COLLECTION = "LIST_COLLECTION",
+  LIST_NFT = "LIST_NFT",
+}
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    const { onDetail, nftList, isLoading, page, total, onPageChange } =
-      useMyNFT();
+    let match: any = useRouteMatch("/NFT/assetsNFT/:contract?");
+    const { walletL2NFTCollection } = useWalletL2NFTCollection();
     const history = useHistory();
-    const { baseURL } = useSystem();
+    const { search } = useLocation();
+    const {
+      account: { accountId, apiKey },
+    } = useAccount();
+    const [collectionMeta, setCollectionMeta] =
+      React.useState<undefined | sdk.CollectionMeta>(undefined);
+    const checkCollectin = async () => {
+      if (match?.params?.contract && LoopringAPI.userAPI) {
+        const [contract, id] = match.params.contract.split("-")[0];
+        const collectionMeta = walletL2NFTCollection.find((item) => {
+          if (id) {
+            return item.id === id;
+          } else {
+            return item.contractAddress === contract;
+          }
+        });
+        if (collectionMeta) {
+          setCollectionMeta(collectionMeta);
+          return;
+        } else {
+          const response = await LoopringAPI.userAPI
+            .getUserNFTCollection(
+              {
+                // @ts-ignore
+                tokenAddress: contract,
+                accountId: accountId.toString(),
+                limit: CollectionLimit,
+              },
+              apiKey
+            )
+            .catch((_error) => {
+              throw new CustomError(ErrorMap.TIME_OUT);
+            });
+          if (
+            response &&
+            ((response as sdk.RESULT_INFO).code ||
+              (response as sdk.RESULT_INFO).message)
+          ) {
+            throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+          }
+          const collections = response.collections;
+          if (collections.length) {
+            let collectionMeta;
+            if (id) {
+              collectionMeta = walletL2NFTCollection.find((item) => {
+                if (id) {
+                  return (item.id = id);
+                }
+              });
+            }
+            if (!collectionMeta) {
+              collectionMeta = collections[0];
+            }
+            setCollectionMeta(collectionMeta);
+            return;
+          } else {
+            history.push({ pathname: "/NFT/assetsNFT", search });
+          }
+        }
+      }
+    };
+    React.useEffect(() => {
+      checkCollectin();
+    }, [match.params?.contract]);
+    // const [contract, setContract] = React.useState(match.params.contract);
+
+    // const [view, setView] = React.useState<MY_NFTVIEW>(
+    //   match.params.contract ? MY_NFTVIEW.LIST_NFT : MY_NFTVIEW.LIST_COLLECTION
+    // );
+
+    // React.useEffect(() => {
+    //   if (match?.params?.contract && contract !== match.params.contract) {
+    //     setContract(match.params.contract);
+    //     setView(MY_NFTVIEW.LIST_NFT);
+    //     //TODO:
+    //   } else {
+    //     setView(MY_NFTVIEW.LIST_COLLECTION);
+    //   }
+    // }, [match.params.contract]);
 
     return (
-      <>
-        <StyledPaper
-          flex={1}
-          className={"MuiPaper-elevation2"}
-          marginTop={0}
-          marginBottom={2}
-          display={"flex"}
-          flexDirection={"column"}
-        >
-          <Box
-            display={"flex"}
-            flexDirection={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Typography
-              component={"h3"}
-              variant={"h4"}
-              paddingX={5 / 2}
-              paddingTop={5 / 2}
-              paddingBottom={2}
+      <Box flex={1} display={"flex"} flexDirection={"column"}>
+        {match.params?.contract ? (
+          <>
+            <Box
+              display={"flex"}
+              flexDirection={"row"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              marginBottom={2}
             >
-              {t("labelNFTMyNFT")}
-            </Typography>
-
-            {/*{*/}
-            {/*  icon: L2HistoryIcon,*/}
-            {/*  router: { path: "/nft/transactionNFT" },*/}
-            {/*  label: {*/}
-            {/*  id: "transactionNFT",*/}
-            {/*  i18nKey: "labelTransactionNFT",*/}
-            {/*  description: "labelTransactionNFTDes",*/}
-            {/*},*/}
-            {/*},*/}
-            <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
-              <Box marginLeft={1}>
-                <Button
-                  variant={"contained"}
-                  size={"small"}
-                  color={"primary"}
-                  onClick={() => history.push("/nft/depositNFT")}
-                >
-                  {t("labelL1toL2NFT")}
-                </Button>
-              </Box>
-              <Box marginLeft={1}>
-                <Button
-                  variant={"outlined"}
-                  color={"primary"}
-                  onClick={() => history.push("/nft/transactionNFT")}
-                >
-                  {t("labelTransactionNFT")}
-                </Button>
-              </Box>
+              <Button
+                startIcon={<BackIcon fontSize={"small"} />}
+                variant={"text"}
+                size={"medium"}
+                sx={{ color: "var(--color-text-secondary)" }}
+                color={"inherit"}
+                onClick={() =>
+                  history.push({ pathname: "/NFT/assetsNFT", search })
+                }
+              >
+                {t("labelNFTMyNFT", {
+                  type: collectionMeta
+                    ? collectionMeta.name +
+                      " " +
+                      getShortAddr(collectionMeta.contractAddress ?? "")
+                    : EmptyValueTag,
+                })}
+              </Button>
             </Box>
-          </Box>
-          <Box flex={1} display={"flex"} flexDirection={"column"}>
-            {isLoading ? (
+            {collectionMeta ? (
+              <MyNFTList collectionMeta={collectionMeta} />
+            ) : (
               <Box
                 flex={1}
                 display={"flex"}
@@ -101,167 +158,13 @@ export const MyNFTPanel = withTranslation("common")(
                   width="36"
                   src={`${SoursURL}images/loading-line.gif`}
                 />
-                {/*<LoadingIcon style={{ width: 32, height: 32 }} />*/}
-              </Box>
-            ) : nftList && nftList.length ? (
-              <>
-                {total > NFTLimit && (
-                  <Box
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"right"}
-                    marginRight={3}
-                    marginBottom={2}
-                  >
-                    <Pagination
-                      color={"primary"}
-                      count={
-                        parseInt(String(total / NFTLimit)) +
-                        (total % NFTLimit > 0 ? 1 : 0)
-                      }
-                      page={page}
-                      onChange={(_event, value) => {
-                        onPageChange(Number(value));
-                      }}
-                    />
-                  </Box>
-                )}
-                <Grid container spacing={2} paddingX={3} paddingBottom={3}>
-                  {nftList.map((item, index) => (
-                    <Grid
-                      key={(item?.nftId ?? "") + index.toString()}
-                      item
-                      xs={12}
-                      md={6}
-                      lg={4}
-                      flex={"1 1 120%"}
-                    >
-                      <CardStyleItem
-                        // sx={{ maxWidth: 345 }}
-                        onClick={() => {
-                          onDetail(item);
-                        }}
-                      >
-                        <Box
-                          position={"absolute"}
-                          width={"100%"}
-                          height={"100%"}
-                          display={"flex"}
-                          flexDirection={"column"}
-                          justifyContent={"space-between"}
-                        >
-                          <NFTMedia
-                            item={item}
-                            index={index}
-                            shouldPlay={false}
-                            // onNFTReload={onNFTReload}
-                            onNFTError={() => undefined}
-                            isOrigin={false}
-                            getIPFSString={getIPFSString}
-                            baseURL={baseURL}
-                          />
-                          <Box
-                            padding={2}
-                            height={80}
-                            display={"flex"}
-                            flexDirection={"row"}
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
-                            // flexWrap={"wrap"}
-                          >
-                            <Box
-                              display={"flex"}
-                              flexDirection={"column"}
-                              width={"60%"}
-                            >
-                              <Typography
-                                color={"text.secondary"}
-                                component={"h6"}
-                                whiteSpace={"pre"}
-                                overflow={"hidden"}
-                                textOverflow={"ellipsis"}
-                              >
-                                {item?.name ?? EmptyValueTag}
-                              </Typography>
-                              <Typography
-                                color={"--color-text-primary"}
-                                component={"p"}
-                                paddingTop={1}
-                                minWidth={164}
-                                textOverflow={"ellipsis"}
-                                title={item?.nftId?.toString()}
-                              >
-                                {t("labelNFTTokenID")} #
-                                {" " + getShortAddr(item?.nftId ?? "")}
-                              </Typography>
-                            </Box>
-
-                            <Box display={"inline-flex"} alignItems={"center"}>
-                              <Typography
-                                variant={"h4"}
-                                component={"div"}
-                                height={40}
-                                paddingX={3}
-                                whiteSpace={"pre"}
-                                display={"inline-flex"}
-                                alignItems={"center"}
-                                color={"textPrimary"}
-                                style={{
-                                  background: "var(--field-opacity)",
-                                  borderRadius: "20px",
-                                }}
-                              >
-                                × {item.total}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Box>
-                      </CardStyleItem>
-                    </Grid>
-                  ))}
-                </Grid>
-                {total > NFTLimit && (
-                  <Box
-                    display={"flex"}
-                    alignItems={"center"}
-                    justifyContent={"right"}
-                    marginRight={3}
-                    marginTop={1}
-                    marginBottom={2}
-                  >
-                    <Pagination
-                      color={"primary"}
-                      count={
-                        parseInt(String(total / NFTLimit)) +
-                        (total % NFTLimit > 0 ? 1 : 0)
-                      }
-                      page={page}
-                      onChange={(_event, value) => {
-                        onPageChange(Number(value));
-                      }}
-                    />
-                  </Box>
-                )}
-              </>
-            ) : (
-              <Box flex={1} alignItems={"center"}>
-                <EmptyDefault
-                  message={() => (
-                    <Box
-                      flex={1}
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                    >
-                      No NFT
-                    </Box>
-                  )}
-                />
               </Box>
             )}
-          </Box>
-        </StyledPaper>
-      </>
+          </>
+        ) : (
+          <MyNFTCollectionList />
+        )}
+      </Box>
     );
   }
 );

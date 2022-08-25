@@ -393,7 +393,7 @@ export default {
   labelNFTSend: "Send:",
   labelNFTDeploy: "Deploy:",
   labelNFTDeploying: "Deploying",
-  labelNFTMyNFT: "My NFTs",
+  labelNFTMyNFT: "My NFTs - Collection: {{collection}}",
   labelNFTTokenID: "ID:",
   labelNFTTYPE: "Token Standard:",
   labelNFTID: "ID:",

@@ -173,7 +173,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
           account={account}
           toggle={deployNFT}
           setShowEdit={(item) => {
-            history.push("/nft/addCollection");
+            // history.push("/nft/addCollection");
             // setCreateOpen(true)
           }}
           setShowMintNFT={(item) => {

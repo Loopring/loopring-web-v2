@@ -548,39 +548,38 @@ export const MintAdvanceNFTWrap = <
                   }
                 }}
                 fullWidth={true}
-              />;
-              {
-                cid && cid !== "" ? (
-                  isNFTCheckLoading ? (
-                    <LoadingIcon
-                      width={24}
-                      style={{
-                        top: "32px",
-                        right: "8px",
-                        position: "absolute",
-                      }}
-                    />
-                  ) : (
-                    <IconClearStyled
-                      color={"inherit"}
-                      size={"small"}
-                      style={{ top: "30px" }}
-                      aria-label="Clear"
-                      onClick={() => {
-                        setCid("");
-                        handleOnNFTDataChange({
-                          nftIdView: "",
-                          nftId: "",
-                        } as T);
-                      }}
-                    >
-                      <CloseIcon />
-                    </IconClearStyled>
-                  )
+              />
+              ;
+              {cid && cid !== "" ? (
+                isNFTCheckLoading ? (
+                  <LoadingIcon
+                    width={24}
+                    style={{
+                      top: "32px",
+                      right: "8px",
+                      position: "absolute",
+                    }}
+                  />
                 ) : (
-                  ""
-                );
-              }
+                  <IconClearStyled
+                    color={"inherit"}
+                    size={"small"}
+                    style={{ top: "30px" }}
+                    aria-label="Clear"
+                    onClick={() => {
+                      setCid("");
+                      handleOnNFTDataChange({
+                        nftIdView: "",
+                        nftId: "",
+                      } as T);
+                    }}
+                  >
+                    <CloseIcon />
+                  </IconClearStyled>
+                )
+              ) : (
+                ""
+              )}
               {isNotAvailableCID &&
               tradeData?.nftIdView &&
               tradeData?.nftIdView !== "" ? (

@@ -1,9 +1,12 @@
-import { GET_IPFS_STRING, SoursURL } from "@loopring-web/common-resources";
+import {
+  CollectionMeta,
+  GET_IPFS_STRING,
+  SoursURL,
+} from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
 import React from "react";
 import { Box, BoxProps } from "@mui/material";
 import { cssBackground, EmptyDefault, NftImage, useImage } from "../../index";
-import { CollectionMeta } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
 import { useTranslation } from "react-i18next";
 

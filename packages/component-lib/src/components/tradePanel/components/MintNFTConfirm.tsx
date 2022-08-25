@@ -10,7 +10,6 @@ import {
   LinkIcon,
   MetaProperty,
   MintTradeNFT,
-  myLog,
   NFTMETA,
   RefreshIcon,
   RowConfig,
