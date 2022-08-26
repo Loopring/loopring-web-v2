@@ -17,7 +17,6 @@ import {
   TradeNFT,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 
 const initialWithdrawState: WithdrawData = {
   belong: undefined,
@@ -430,7 +429,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state,
       action: PayloadAction<
         Partial<{
-          offRampPurchase?: IOfframpPurchase;
+          offRampPurchase?: undefined;
           send?: {
             assetSymbol: string;
             amount: string;
@@ -440,13 +439,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       >
     ) {
       state.lastStep = LAST_STEP.offRamp;
-      const { offRampPurchase, send } = action.payload;
-      if (offRampPurchase) {
-        state.offRampValue = {
-          ...state.offRampValue,
-          offRampPurchase,
-        };
-      }
+      const { send } = action.payload;
       if (send) {
         state.offRampValue = {
           ...state.offRampValue,

@@ -46,7 +46,6 @@ import {
 } from "@loopring-web/common-resources";
 import { RootState } from "../../index";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 
 export function useModalData(): {
   lastStep: LAST_STEP;
@@ -104,7 +103,7 @@ export function useModalData(): {
   resetForceWithdrawData: () => void;
   offRampValue:
     | Partial<{
-        offRampPurchase?: IOfframpPurchase;
+        offRampPurchase?: undefined;
         send?: {
           assetSymbol: string;
           amount: string;
@@ -114,7 +113,7 @@ export function useModalData(): {
     | undefined;
   updateOffRampData: (
     offRamp: Partial<{
-      offRampPurchase?: IOfframpPurchase;
+      offRampPurchase?: undefined;
       send?: {
         assetSymbol: string;
         amount: string;
@@ -226,7 +225,7 @@ export function useModalData(): {
     updateOffRampData: React.useCallback(
       (
         offRamp: Partial<{
-          offRampPurchase?: IOfframpPurchase;
+          offRampPurchase?: undefined;
           send?: {
             assetSymbol: string;
             amount: string;

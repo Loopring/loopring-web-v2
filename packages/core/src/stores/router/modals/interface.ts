@@ -8,7 +8,6 @@ import {
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { WalletLayer2Map } from "../../walletLayer2";
-import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 
 export type WithdrawData = {
   belong: string | undefined;
@@ -84,7 +83,7 @@ export type ModalDataStatus = {
   nftDeployValue: TradeNFT<any> & { broker: string };
   offRampValue:
     | Partial<{
-        offRampPurchase?: IOfframpPurchase;
+        offRampPurchase?: undefined;
         send?: {
           assetSymbol: string;
           amount: string;

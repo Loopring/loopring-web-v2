@@ -198,7 +198,7 @@ export const useVendor = () => {
               //   }
               // );
               window.rampInstance.onSendCrypto(
-                async (
+                (
                   assetSymbol: string,
                   amount: string,
                   destinationAddress: string
@@ -219,7 +219,7 @@ export const useVendor = () => {
                     setSellPanel(RAMP_SELL_PANEL.LIST);
                   }
 
-                  return window.transferPromise;
+                  return new Promise(() => {});
                   // console.log('onSendCrypto')
                   // // hide or overlay the widget
                   // instance.domNodes.overlay.style['display'] = 'none';
@@ -229,7 +229,7 @@ export const useVendor = () => {
                   //
                   // // unhide the widget
                   // instance.domNodes.overlay.style['display'] = '';
-                }
+                };
               );
               window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
                 console.log("Ramp WIDGET CLOSE");
