@@ -53,7 +53,7 @@ export function useModalData(): {
   updateNFTTransferData: (
     nftTransferData: RequireOne<
       TransferData &
-        sdk.NFTTokenInfo & { image: string; name: string; description: string },
+        Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>,
       never
     >
   ) => void;
@@ -82,7 +82,7 @@ export function useModalData(): {
   updateNFTWithdrawData: (
     nftWithdrawData: RequireOne<
       WithdrawData &
-        sdk.NFTTokenInfo & { image: string; name: string; description: string },
+        Partial<sdk.NFTTokenInfo & sdk.UserNFTBalanceInfo & NFTWholeINFO>,
       never
     >
   ) => void;

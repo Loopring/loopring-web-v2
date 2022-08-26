@@ -6,7 +6,9 @@ import {
   useAccount,
   useUserRewards,
   useConnect,
-  useWalletLayer2NFT, useWalletL2NFTCollection, useWalletL2Collection,
+  useWalletLayer2NFT,
+  useWalletL2NFTCollection,
+  useWalletL2Collection,
 } from "@loopring-web/core";
 
 export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
@@ -42,7 +44,7 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
     status: walletL2NFTCollectionStatus,
     statusUnset: walletL2NFTCollectionstatusUnset,
   } = useWalletL2NFTCollection();
-  const {account, status: accountStatus} = useAccount();
+  const { account, status: accountStatus } = useAccount();
 
   React.useEffect(() => {
     if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
@@ -69,9 +71,9 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
           }
           if (walletLayer2Status !== SagaStatus.PENDING) {
             updateWalletLayer2();
-            updateWalletLayer2NFT({page: 1});
-            updateWalletL2NFTCollection({page: 1});
-            updateWalletL2Collection({page: 1});
+            updateWalletLayer2NFT({ page: 1, collection: undefined });
+            updateWalletL2NFTCollection({ page: 1 });
+            updateWalletL2Collection({ page: 1 });
           }
           break;
       }
@@ -150,6 +152,4 @@ export function useAccountInit({ state }: { state: keyof typeof SagaStatus }) {
         break;
     }
   }, [userRewardsStatus]);
-
-
 }

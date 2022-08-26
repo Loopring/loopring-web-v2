@@ -198,8 +198,6 @@ export const useMyNFT = ({
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
-      updateNFTWithdrawData(item);
-      updateNFTTransferData(item);
       if (collectionMeta === undefined && LoopringAPI.userAPI) {
         let _collectionMeta;
 
@@ -234,16 +232,17 @@ export const useMyNFT = ({
             item?.tokenAddress?.toLowerCase()
           );
         });
-        setShowNFTDetail({
-          isShow: true,
-          ...item,
-          collectionMeta: {
-            ...collection?.collection,
-            count: collection?.count,
-          },
-        });
+        const collectionMeta = {
+          ...collection?.collection,
+          count: collection?.count,
+        };
+        setShowNFTDetail({ isShow: true, ...item, collectionMeta });
+        updateNFTWithdrawData({ ...item, collectionMeta });
+        updateNFTTransferData({ ...item, collectionMeta });
       } else {
         setShowNFTDetail({ isShow: true, ...item, collectionMeta });
+        updateNFTWithdrawData({ ...item, collectionMeta });
+        updateNFTTransferData({ ...item, collectionMeta });
       }
       // setPopItem({ ...item, collectionMeta });
       if (
@@ -255,7 +254,7 @@ export const useMyNFT = ({
           .then(({ broker }) => {
             updateNFTDeployData({ broker });
           });
-        updateNFTDeployData(item);
+        updateNFTDeployData({ ...item, collectionMeta });
       }
     },
     [

@@ -303,13 +303,14 @@ export const useNFTMintAdvance = <
                 },
               });
               await sdk.sleep(TOAST_TIME);
-              history.push("/nft/");
               if (isHWAddr) {
                 myLog("......try to set isHWAddr", isHWAddr);
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              updateWalletLayer2NFT({ page });
+              history.push({
+                pathname: `/NFT/assetsNFT/byCollection/${nftMintAdvanceValue?.collectionMeta?.contractAddress}|${nftMintAdvanceValue?.collectionMeta?.id}`,
+              });
               resetDefault();
               // checkFeeIsEnough();
             }

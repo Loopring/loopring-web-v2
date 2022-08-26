@@ -13,7 +13,7 @@ export const useMyNFTCollection = <C extends CollectionMeta>() => {
   const { etherscanBaseUrl, baseURL } = useSystem();
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
-  const defaultPage = Number(searchParams.has("collectionPage")) ?? 1;
+  const defaultPage = Number(searchParams.get("collectionPage")) ?? 1;
   const [page, setPage] = React.useState(defaultPage ? defaultPage : -1);
   const [collectionList, setCollectionList] = React.useState<C[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);

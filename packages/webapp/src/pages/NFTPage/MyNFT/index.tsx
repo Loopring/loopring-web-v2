@@ -47,11 +47,10 @@ export const MyNFTPanel = withTranslation("common")(
       const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("|")
         : [null, null];
-
       if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
         const collectionMeta = walletL2NFTCollection.find((item) => {
           return (
-            Number(item.id) === Number(id) &&
+            (id !== undefined ? Number(item.id) === Number(id) : true) &&
             item.contractAddress?.toLowerCase() === contract.toLowerCase()
           );
         });
@@ -83,7 +82,7 @@ export const MyNFTPanel = withTranslation("common")(
           if (collections.length) {
             const collectionMeta = collections.find((item: any) => {
               return (
-                Number(item.id) === Number(id) &&
+                (id !== undefined ? Number(item.id) === Number(id) : true) &&
                 item.collection.contractAddress?.toLowerCase() ===
                   contract.toLowerCase()
               );

@@ -246,7 +246,9 @@ export function useNFTMint<
               updateHW({ wallet: account.accAddress, isHWAddr });
             }
             walletLayer2Service.sendUserUpdate();
-            updateWalletLayer2NFT({ page });
+            history.push({
+              pathname: `/NFT/assetsNFT/byCollection/${nftMintValue.collection?.contractAddress}|${nftMintValue.collection?.id}`,
+            });
             mintService.emptyData();
             history.push("/nft/");
             // checkFeeIsEnough();
