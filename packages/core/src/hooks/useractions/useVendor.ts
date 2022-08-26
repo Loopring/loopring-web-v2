@@ -167,9 +167,9 @@ export const useVendor = () => {
                       //@ts-ignore
                       window.rampInstance.domNodes.overlay.style.display =
                         "none";
-                      console.log("ramp weight hidden on send Crypto");
+                      console.log("RAMP WEIGHT hidden on send Crypto");
                     } catch (e) {
-                      console.log("ramp weight hidden failed");
+                      console.log("RAMP WEIGHT hidden failed");
                     }
                   } else {
                     resetOffRampData();
@@ -179,7 +179,7 @@ export const useVendor = () => {
                 }
               );
               window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
-                console.log("ramp weight close");
+                console.log("RAMP WEIGHT close");
                 resetOffRampData();
                 setSellPanel(RAMP_SELL_PANEL.LIST);
                 if (window.rampInstance) {
@@ -187,7 +187,7 @@ export const useVendor = () => {
                   window.rampInstance = undefined;
                 }
               });
-              console.log("ramp weight display on send user selected");
+              console.log("RAMP WEIGHT display on send user selected");
               window.rampInstance.show();
             }
           },
@@ -304,11 +304,11 @@ export const useRampTransPost = () => {
             });
             if (window.rampInstance) {
               try {
-                console.log("ramp weight display on transfer done");
+                console.log("RAMP WEIGHT display on transfer done");
                 // @ts-ignore
                 window.rampInstance.domNodes.overlay.style.display = "";
               } catch (e) {
-                console.log("ramp weight hidden failed");
+                console.log("RAMP WEIGHT hidden failed");
               }
             }
             if (isHWAddr) {
