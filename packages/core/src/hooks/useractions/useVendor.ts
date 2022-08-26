@@ -208,6 +208,12 @@ export const useVendor = () => {
                       updateOffRampData({
                         send: { assetSymbol, amount, destinationAddress },
                       });
+                      setSellPanel(RAMP_SELL_PANEL.CONFIRM);
+                      console.log(
+                        "onSendCrypto",
+                        assetSymbol,
+                        destinationAddress
+                      );
                       //@ts-ignore
                       window.rampInstance.domNodes.overlay.style.display =
                         "none";
