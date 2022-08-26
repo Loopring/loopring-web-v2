@@ -312,11 +312,13 @@ export const NFTDetail = withTranslation("common")(
                 size={"small"}
                 fullWidth
                 onClick={() =>
-                  setShowAccount({
-                    isShow: true,
-                    step: AccountStep.SendNFTGateway,
-                    info: { ...popItem },
-                  })
+                  isKnowNFTNoMeta
+                    ? setShowAccount({
+                        isShow: true,
+                        step: AccountStep.SendNFTGateway,
+                        info: { ...popItem },
+                      })
+                    : setShowDialog("Send")
                 }
               >
                 {t("labelNFTSendBtn")}
