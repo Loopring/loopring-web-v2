@@ -39,7 +39,7 @@ export const useMyNFT = ({
 
   const { setShowNFTDetail } = useOpenModals();
   const { etherscanBaseUrl, baseURL } = useSystem();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(-1);
   // const onDetailClose = React.useCallback(() => setIsShow(false), []);
 
   const onPageChange = (page: number) => {

@@ -38,7 +38,7 @@ export const MyNFTPanel = withTranslation("common")(
     } = useAccount();
     const [collectionMeta, setCollectionMeta] =
       React.useState<undefined | sdk.CollectionMeta>(undefined);
-    const checkCollectin = async () => {
+    const checkCollection = async () => {
       const [contract, id] = match?.params?.contract?.split("|");
 
       if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
@@ -94,23 +94,8 @@ export const MyNFTPanel = withTranslation("common")(
       }
     };
     React.useEffect(() => {
-      checkCollectin();
+      checkCollection();
     }, [match.params?.contract]);
-    // const [contract, setContract] = React.useState(match.params.contract);
-
-    // const [view, setView] = React.useState<MY_NFTVIEW>(
-    //   match.params.contract ? MY_NFTVIEW.LIST_NFT : MY_NFTVIEW.LIST_COLLECTION
-    // );
-
-    // React.useEffect(() => {
-    //   if (match?.params?.contract && contract !== match.params.contract) {
-    //     setContract(match.params.contract);
-    //     setView(MY_NFTVIEW.LIST_NFT);
-    //     //TODO:
-    //   } else {
-    //     setView(MY_NFTVIEW.LIST_COLLECTION);
-    //   }
-    // }, [match.params.contract]);
 
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
