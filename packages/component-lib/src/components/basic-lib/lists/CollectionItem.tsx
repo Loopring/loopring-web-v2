@@ -258,7 +258,11 @@ export const CollectionItem = React.memo(
                   variant={"body1"}
                   component={"span"}
                 >
-                  {item?.name ?? t("labelUnknown")}
+                  {item?.name
+                    ? item?.name
+                    : t("labelUnknown") +
+                      "-" +
+                      getShortAddr(item?.contractAddress ?? "", true)}
                 </Typography>
 
                 <Button

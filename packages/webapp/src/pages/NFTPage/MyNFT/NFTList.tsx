@@ -45,8 +45,7 @@ export const MyNFTList = withTranslation("common")(
       <StyledPaper
         flex={1}
         className={"MuiPaper-elevation2"}
-        marginTop={0}
-        marginBottom={2}
+        padding={3}
         display={"flex"}
         flexDirection={"column"}
       >
@@ -89,7 +88,7 @@ export const MyNFTList = withTranslation("common")(
                   />
                 </Box>
               )}
-              <Grid container spacing={2} paddingX={3} paddingBottom={3}>
+              <Grid container spacing={2}>
                 {nftList.map((item, index) => (
                   <Grid
                     key={(item?.nftId ?? "") + index.toString()}
