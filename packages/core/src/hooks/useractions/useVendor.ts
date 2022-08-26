@@ -48,34 +48,6 @@ export enum RAMP_SELL_PANEL {
   CONFIRM,
 }
 
-// window.rampTransPromise = async () => {
-//   const { __request__: request } =
-//     store.getState()._router_modalData.transferRampValue;
-//   const { chainId } = store.getState().system;
-//   const account = store.getState().account;
-//   // let isHWAddr = checkHWAddr(account.accAddress);
-//   // if (!isHWAddr && !isNotHardwareWallet) {
-//   //   isHWAddr = true;
-//   // }
-//   if (LoopringAPI.userAPI) {
-//     return await LoopringAPI.userAPI.submitInternalTransfer(
-//       {
-//         request: request as any,
-//         web3: connectProvides.usedWeb3 as any,
-//         chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
-//         walletType: (ConnectProvidersSignMap[account.connectName] ??
-//           account.connectName) as unknown as sdk.ConnectorNames,
-//         eddsaKey: account.eddsaKey.sk,
-//         apiKey: account.apiKey,
-//         isHWAddr: true,
-//       },
-//       {
-//         accountId: account.accountId,
-//         counterFactualInfo: account.eddsaKey.counterFactualInfo,
-//       }
-//     );
-//   }
-// };
 export const useVendor = () => {
   const { account } = useAccount();
   const {
@@ -175,28 +147,6 @@ export const useVendor = () => {
               window.rampInstance = new RampInstantSDK({
                 ...config,
               });
-
-              // window.rampInstance.on(
-              //   RampInstantEventTypes.OFFRAMP_PURCHASE_CREATED,
-              //   (event: RampInstantEvent) => {
-              //     const offRampPurchase = event.payload as IOfframpPurchase;
-              //     updateOffRampData({ offRampPurchase });
-              //     setSellPanel(RAMP_SELL_PANEL.CONFIRM);
-              //     console.log("offRampPurchase", offRampPurchase);
-              //     if (window.rampInstance) {
-              //       try {
-              //         //@ts-ignore
-              //         window.rampInstance.domNodes.overlay.style.display =
-              //           "none";
-              //       } catch (e) {
-              //         console.log("weight hidden failed");
-              //       }
-              //     } else {
-              //       resetOffRampData();
-              //       setSellPanel(RAMP_SELL_PANEL.LIST);
-              //     }
-              //   }
-              // );
               window.rampInstance.onSendCrypto(
                 (
                   assetSymbol: string,
@@ -217,28 +167,19 @@ export const useVendor = () => {
                       //@ts-ignore
                       window.rampInstance.domNodes.overlay.style.display =
                         "none";
+                      console.log("ramp weight hidden on send Crypto");
                     } catch (e) {
-                      console.log("weight hidden failed");
+                      console.log("ramp weight hidden failed");
                     }
                   } else {
                     resetOffRampData();
                     setSellPanel(RAMP_SELL_PANEL.LIST);
                   }
-
                   return new Promise(() => {});
-                  // console.log('onSendCrypto')
-                  // // hide or overlay the widget
-                  // instance.domNodes.overlay.style['display'] = 'none';
-                  //
-                  // // display transfer modal screen
-                  // alert(`SEND ${amount/10**18} ${assetSymbol} to ${destinationAddress}`);
-                  //
-                  // // unhide the widget
-                  // instance.domNodes.overlay.style['display'] = '';
                 }
               );
               window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
-                console.log("Ramp WIDGET CLOSE");
+                console.log("ramp weight close");
                 resetOffRampData();
                 setSellPanel(RAMP_SELL_PANEL.LIST);
                 if (window.rampInstance) {
@@ -246,25 +187,11 @@ export const useVendor = () => {
                   window.rampInstance = undefined;
                 }
               });
+              console.log("ramp weight display on send user selected");
               window.rampInstance.show();
-              // return rampInstant;
             }
           },
         },
-        // {
-        //   ...VendorList.Banxa,
-        //   handleSelect: () => {
-        //     setShowAccount({ isShow: false });
-        //     if (legalEnable) {
-        //       window.open(
-        //         "https://loopring.banxa.com/iframe?code=1fe263e17175561954c6&buyMode&walletAddress=" +
-        //         account.accAddress,
-        //         "_blank"
-        //       );
-        //       window.opener = null;
-        //     }
-        //   },
-        // },
       ]
     : [];
   return {
@@ -377,10 +304,11 @@ export const useRampTransPost = () => {
             });
             if (window.rampInstance) {
               try {
+                console.log("ramp weight display on transfer done");
                 // @ts-ignore
                 window.rampInstance.domNodes.overlay.style.display = "";
               } catch (e) {
-                console.log("weight hidden failed");
+                console.log("ramp weight hidden failed");
               }
             }
             if (isHWAddr) {
