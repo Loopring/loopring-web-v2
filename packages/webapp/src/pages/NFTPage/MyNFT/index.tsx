@@ -19,18 +19,23 @@ import {
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { MyNFTCollectionList } from "./MyNFTCollectionList";
-import { Box, Typography } from "@mui/material";
+import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { Button } from "@loopring-web/component-lib";
 
-enum MY_NFTVIEW {
-  LIST_COLLECTION = "LIST_COLLECTION",
-  LIST_NFT = "LIST_NFT",
+enum MY_NFT_VIEW {
+  LIST_COLLECTION = "byCollection",
+  LIST_NFT = "byList",
 }
 
 export const MyNFTPanel = withTranslation("common")(
   ({ t }: WithTranslation) => {
-    let match: any = useRouteMatch("/NFT/assetsNFT/:contract?");
+    let match: any = useRouteMatch("/NFT/assetsNFT/:tab?/:contract?");
     const { walletL2NFTCollection } = useWalletL2NFTCollection();
+    const [currentTab, setCurrentTab] = React.useState(() => {
+      return match?.params.tab === MY_NFT_VIEW.LIST_COLLECTION
+        ? MY_NFT_VIEW.LIST_COLLECTION
+        : MY_NFT_VIEW.LIST_NFT;
+    });
     const history = useHistory();
     const { search } = useLocation();
     const {
@@ -39,7 +44,9 @@ export const MyNFTPanel = withTranslation("common")(
     const [collectionMeta, setCollectionMeta] =
       React.useState<undefined | sdk.CollectionMeta>(undefined);
     const checkCollection = async () => {
-      const [contract, id] = match?.params?.contract?.split("|");
+      const [contract, id] = !!match?.params?.contract
+        ? match?.params?.contract.split("|")
+        : [null, null];
 
       if (contract !== undefined && id !== undefined && LoopringAPI.userAPI) {
         const collectionMeta = walletL2NFTCollection.find((item) => {
@@ -88,7 +95,7 @@ export const MyNFTPanel = withTranslation("common")(
             });
             return;
           } else {
-            history.push({ pathname: "/NFT/assetsNFT", search });
+            history.push({ pathname: "/NFT/assetsNFT/byCollection", search });
           }
         }
       }
@@ -115,14 +122,19 @@ export const MyNFTPanel = withTranslation("common")(
                 sx={{ color: "var(--color-text-secondary)" }}
                 color={"inherit"}
                 onClick={() =>
-                  history.push({ pathname: "/NFT/assetsNFT", search })
+                  history.push({
+                    pathname: "/NFT/assetsNFT/byCollection",
+                    search,
+                  })
                 }
               >
                 {t("labelNFTMyNFT", {
                   collection: collectionMeta
-                    ? collectionMeta.name +
-                      " " +
-                      getShortAddr(collectionMeta.contractAddress ?? "")
+                    ? collectionMeta.name
+                      ? collectionMeta?.name
+                      : t("labelUnknown") +
+                        " - " +
+                        getShortAddr(collectionMeta.contractAddress ?? "")
                     : EmptyValueTag,
                 })}
               </Button>
@@ -147,7 +159,65 @@ export const MyNFTPanel = withTranslation("common")(
             )}
           </>
         ) : (
-          <MyNFTCollectionList />
+          <>
+            <Box
+              display={"flex"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              marginBottom={1}
+            >
+              <Tabs
+                value={currentTab}
+                onChange={(_event, value) => {
+                  history.replace({
+                    pathname: `/NFT/assetsNFT/${value}`,
+                    search: "",
+                  });
+                  setCurrentTab(value);
+                }}
+                aria-label="my-nft-tabs"
+                variant="scrollable"
+              >
+                <Tab
+                  label={t("labelNFTMyNFTList")}
+                  value={MY_NFT_VIEW.LIST_NFT}
+                />
+                <Tab
+                  label={t("labelNFTMyNFTCollection")}
+                  value={MY_NFT_VIEW.LIST_COLLECTION}
+                />
+              </Tabs>
+              <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
+                <Box marginLeft={1}>
+                  <Button
+                    variant={"contained"}
+                    size={"small"}
+                    color={"primary"}
+                    onClick={() => history.push("/nft/depositNFT")}
+                  >
+                    {t("labelL1toL2NFT")}
+                  </Button>
+                </Box>
+                <Box marginLeft={1}>
+                  <Button
+                    variant={"outlined"}
+                    color={"primary"}
+                    onClick={() => history.push("/nft/transactionNFT")}
+                  >
+                    {t("labelTransactionNFT")}
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+            <Box display={"flex"} flex={1}>
+              {currentTab === MY_NFT_VIEW.LIST_NFT && (
+                <MyNFTList collectionMeta={undefined} />
+              )}
+              {currentTab === MY_NFT_VIEW.LIST_COLLECTION && (
+                <MyNFTCollectionList />
+              )}
+            </Box>
+          </>
         )}
       </Box>
     );

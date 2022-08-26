@@ -45,55 +45,18 @@ export const MyNFTCollectionList = withTranslation("common")(
         flexDirection={"column"}
       >
         <Box
-          display={"flex"}
-          flexDirection={"row"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
-          <Typography
-            component={"h3"}
-            variant={"h4"}
-            paddingX={5 / 2}
-            paddingTop={5 / 2}
-            paddingBottom={2}
-          >
-            {t("labelNFTMyNFTCollection")}
-          </Typography>
-          <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
-            <Box marginLeft={1}>
-              <Button
-                variant={"contained"}
-                size={"small"}
-                color={"primary"}
-                onClick={() => history.push("/nft/depositNFT")}
-              >
-                {t("labelL1toL2NFT")}
-              </Button>
-            </Box>
-            <Box marginLeft={1}>
-              <Button
-                variant={"outlined"}
-                color={"primary"}
-                onClick={() => history.push("/nft/transactionNFT")}
-              >
-                {t("labelTransactionNFT")}
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-        <Box
           flex={1}
           display={"flex"}
           flexDirection={"column"}
           paddingX={3}
-          paddingBottom={2}
+          paddingY={2}
         >
           <CollectionCardList
             noEdit={true}
             account={account}
             onItemClick={(item) => {
               history.push({
-                pathname: `/NFT/assetsNFT/${item.contractAddress}|${item.id}`,
+                pathname: `/NFT/assetsNFT/byCollection/${item.contractAddress}|${item.id}`,
                 search: `?collectionPage=${collectionListProps.page}`,
               });
             }}

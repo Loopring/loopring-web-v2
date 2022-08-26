@@ -958,5 +958,6 @@ export default {
   labelCopyUrlClip: "URL Copied to Clipboard!",
   labelCollectionMetaData: "Collection MetaData",
   labelViewEtherscan: "Etherscan",
-  labelNFTMyNFTCollection: "My NFTs - Collection List",
+  labelNFTMyNFTCollection: "Collection List",
+  labelNFTMyNFTList: "My NFTs",
 };

@@ -12,12 +12,12 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
   collection,
 }: {
   page: number;
-  collection: string;
+  collection: string | undefined;
 }) => {
-  let _collection: string = collection;
-  if (!collection) {
-    _collection = store.getState().walletLayer2NFT.collection;
-  }
+  // let _collection: string = collection;
+  // if (!collection) {
+  //   _collection = store.getState().walletLayer2NFT.collection;
+  // }
   const offset = (page - 1) * NFTLimit;
   const { accountId, apiKey } = store.getState().account;
   if (apiKey && accountId && LoopringAPI.userAPI) {
@@ -25,7 +25,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
       .getUserNFTBalances(
         {
           accountId,
-          tokenAddrs: _collection,
+          tokenAddrs: collection,
           limit: NFTLimit,
           offset,
           metadata: true, // close metadata
@@ -38,7 +38,7 @@ const getWalletLayer2NFTBalance = async <_R extends { [key: string]: any }>({
     return {
       walletLayer2NFT: userNFTBalances ?? [],
       total: totalNum,
-      collection: _collection,
+      collection: collection,
       page,
     };
   }

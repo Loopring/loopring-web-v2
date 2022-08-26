@@ -1,5 +1,8 @@
 import {
+  CollectionLimit,
   CollectionMeta,
+  CustomError,
+  ErrorMap,
   IPFS_LOOPRING_SITE,
   LOOPRING_NFT_METADATA,
   LOOPRING_TAKE_NFT_META_KET,
@@ -9,7 +12,12 @@ import {
   SagaStatus,
 } from "@loopring-web/common-resources";
 import React, { useState } from "react";
-import { getIPFSString, LoopringAPI, store } from "@loopring-web/core";
+import {
+  getIPFSString,
+  LoopringAPI,
+  store,
+  useAccount,
+} from "@loopring-web/core";
 import { connectProvides } from "@loopring-web/web3-provider";
 import { useSystem } from "@loopring-web/core";
 import { useModalData, useWalletLayer2NFT } from "@loopring-web/core";
@@ -21,12 +29,13 @@ BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMyNFT = ({
   collectionMeta,
 }: {
-  collectionMeta: CollectionMeta;
+  collectionMeta: CollectionMeta | undefined;
 }) => {
   const [nftList, setNFTList] = React.useState<Partial<NFTWholeINFO>[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [popItem, setPopItem] =
-    React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
+  const { account } = useAccount();
+  // const [popItem, setPopItem] =
+  //   React.useState<Partial<NFTWholeINFO> | undefined>(undefined);
   const {
     status: walletLayer2NFTStatus,
     walletLayer2NFT,
@@ -189,6 +198,54 @@ export const useMyNFT = ({
 
   const onDetail = React.useCallback(
     async (item: Partial<NFTWholeINFO>) => {
+      updateNFTWithdrawData(item);
+      updateNFTTransferData(item);
+      if (collectionMeta === undefined && LoopringAPI.userAPI) {
+        let _collectionMeta;
+
+        const response = await LoopringAPI.userAPI
+          .getUserNFTCollection(
+            {
+              accountId: account.accountId.toString(),
+              //@ts-ignore
+              tokenAddress: item.tokenAddress,
+            },
+            account.apiKey
+          )
+          .catch((_error) => {
+            throw new CustomError(ErrorMap.TIME_OUT);
+          });
+        if (
+          response &&
+          ((response as sdk.RESULT_INFO).code ||
+            (response as sdk.RESULT_INFO).message)
+        ) {
+          throw new CustomError(ErrorMap.ERROR_UNKNOWN);
+        }
+        // collections = (response as any).collections?.map((item: any) => {
+        //   return {
+        //     ...item.collection,
+        //     count: item.count,
+        //   };
+        // });
+        const collection = response.collections?.find((_item: any) => {
+          return (
+            _item.collection?.contractAddress?.toLowerCase() ===
+            item?.tokenAddress?.toLowerCase()
+          );
+        });
+        setShowNFTDetail({
+          isShow: true,
+          ...item,
+          collectionMeta: {
+            ...collection?.collection,
+            count: collection?.count,
+          },
+        });
+      } else {
+        setShowNFTDetail({ isShow: true, ...item, collectionMeta });
+      }
+      // setPopItem({ ...item, collectionMeta });
       if (
         item.isCounterFactualNFT &&
         item.deploymentStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED
@@ -200,10 +257,6 @@ export const useMyNFT = ({
           });
         updateNFTDeployData(item);
       }
-      updateNFTWithdrawData(item);
-      updateNFTTransferData(item);
-      setPopItem({ ...item, collectionMeta });
-      setShowNFTDetail({ isShow: true, ...item, collectionMeta });
     },
     [
       collectionMeta,
@@ -277,8 +330,11 @@ export const useMyNFT = ({
     onPageChange(1);
   }, []);
   React.useEffect(() => {
-    updateWalletLayer2NFT({ page, collection: collectionMeta.contractAddress });
-  }, [page, collectionMeta.contractAddress]);
+    updateWalletLayer2NFT({
+      page,
+      collection: collectionMeta?.contractAddress,
+    });
+  }, [page, collectionMeta?.contractAddress]);
   React.useEffect(() => {
     if (walletLayer2NFTStatus === SagaStatus.UNSET && page_reudex === page) {
       renderNFT();
@@ -287,7 +343,7 @@ export const useMyNFT = ({
 
   return {
     nftList,
-    popItem,
+    // popItem,
     onDetail,
     etherscanBaseUrl,
     onNFTReload,

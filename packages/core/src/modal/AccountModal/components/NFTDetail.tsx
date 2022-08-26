@@ -1,12 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  BoxProps,
-  IconButton,
-  Link,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, BoxProps, Link, Tooltip, Typography } from "@mui/material";
 import {
   AssetsRawDataItem,
   EmptyValueTag,
@@ -138,6 +131,10 @@ const BoxStyle = styled(Box)<
       }
     `}
   }
+
+  .MuiSnackbar-root {
+    top: ${({ theme }) => 4 * theme.unit}px !important;
+  }
 ` as (
   props: { isMobile: boolean; baseURL: string } & BoxProps &
     Partial<NFTWholeINFO>
@@ -251,23 +248,55 @@ export const NFTDetail = withTranslation("common")(
           className={"detail-info"}
           maxWidth={isMobile ? "var(--mobile-full-panel-width)" : 550}
         >
-          <InformationForNoMetaNFT
-            open={!!showDialog}
-            method={showDialog}
-            handleClose={(_e, isAgress) => {
-              setShowDialog(undefined);
-              if (isAgress && showDialog) {
-                setShowAccount({
-                  isShow: true,
-                  step: AccountStep.SendNFTGateway,
-                });
-              }
-            }}
-          />
-          <Box marginBottom={3} display={"flex"} alignItems={"center"}>
-            <Typography color={"text.primary"} variant={"h2"} marginBottom={1}>
+          <Box marginBottom={2} display={"flex"} alignItems={"center"}>
+            <Typography
+              component={"h4"}
+              color={"text.primar"}
+              variant={"body1"}
+              marginBottom={1}
+            >
+              {popItem?.collectionMeta
+                ? popItem?.collectionMeta?.name
+                  ? popItem?.collectionMeta?.name
+                  : t("labelUnknown") +
+                    " - " +
+                    getShortAddr(popItem?.collectionMeta?.contractAddress ?? "")
+                : EmptyValueTag}
+            </Typography>
+          </Box>
+          <Box marginBottom={2} display={"flex"} alignItems={"center"}>
+            <Typography color={"text.primary"} variant={"h2"}>
               {popItem?.name ?? EmptyValueTag}
             </Typography>
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"flex-end"}
+            alignItems={"center"}
+            marginBottom={2}
+            paddingRight={3}
+          >
+            <Tooltip
+              title={t("labelNFTServerRefresh").toString()}
+              placement={"top"}
+            >
+              {showFresh === "click" ? (
+                <Button
+                  size={"small"}
+                  aria-label={t("labelRefresh")}
+                  // sx={{ backgroundColor: "var(--field-opacity)" }}
+                  variant={"outlined"}
+                  onClick={(_event) => {
+                    handleRefresh();
+                  }}
+                  sx={{ minWidth: "initial", padding: "4px" }}
+                >
+                  <RefreshIPFSIcon color={"inherit"} fontSize={"medium"} />
+                </Button>
+              ) : (
+                <LoadingIcon fontSize={"large"} />
+              )}
+            </Tooltip>
           </Box>
 
           <Box
@@ -572,19 +601,42 @@ export const NFTDetail = withTranslation("common")(
                 minRows={2}
                 maxRows={5}
                 disabled={true}
+                style={{ padding: 0 }}
                 value={`${popItem.description}` ?? EmptyValueTag}
               />
             </Box>
           </Box>
 
-          {/*<Box marginBottom={3} display={"flex"} alignItems={"center"}>*/}
-          {/*  <Typography color={"text.primary"} variant={"h2"} marginBottom={1}>*/}
-          {/*    # {" " + getShortAddr(popItem?.nftId ?? "")}*/}
-          {/*  </Typography>*/}
-          {/*</Box>*/}
+          <InformationForNoMetaNFT
+            open={!!showDialog}
+            method={showDialog}
+            handleClose={(_e, isAgree) => {
+              setShowDialog(undefined);
+              if (isAgree && showDialog) {
+                setShowAccount({
+                  isShow: true,
+                  step: AccountStep.SendNFTGateway,
+                });
+              }
+            }}
+          />
         </Box>
       );
-    }, [showDialog, popItem, t, isKnowNFTNoMeta, etherscanBaseUrl]);
+    }, [
+      isMobile,
+      popItem,
+      t,
+      showFresh,
+      account.accAddress,
+      etherscanBaseUrl,
+      properties,
+      showDialog,
+      handleRefresh,
+      setShowAccount,
+      deployNFT.enable,
+      setShowNFTDeploy,
+      setShowTradeIsFrozen,
+    ]);
     const theme = useTheme();
     const style = isMobile
       ? {
@@ -621,34 +673,6 @@ export const NFTDetail = withTranslation("common")(
               getIPFSString={getIPFSString}
               baseURL={baseURL}
             />
-            <Box
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              position={"absolute"}
-              left={"8px"}
-              top={"8px"}
-            >
-              <Tooltip
-                title={t("labelNFTServerRefresh").toString()}
-                placement={"top"}
-              >
-                {showFresh === "click" ? (
-                  <IconButton
-                    size={"large"}
-                    aria-label={t("labelRefresh")}
-                    color={"inherit"}
-                    onClick={(_event) => {
-                      handleRefresh();
-                    }}
-                  >
-                    <RefreshIPFSIcon color={"inherit"} />
-                  </IconButton>
-                ) : (
-                  <LoadingIcon fontSize={"large"} />
-                )}
-              </Tooltip>
-            </Box>
           </BoxNFT>
         )}
         <BoxStyle
@@ -666,14 +690,18 @@ export const NFTDetail = withTranslation("common")(
         >
           {/*{viewPage === 0 && detailView}*/}
           {detailView}
+          <Toast
+            // snackbarOrigin={{
+            //   vertical: "top",
+            //   horizontal: "left",
+            // }}
+            alertText={toastOpen?.content ?? ""}
+            severity={toastOpen?.type ?? "success"}
+            open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME}
+            onClose={closeToast}
+          />
         </BoxStyle>
-        <Toast
-          alertText={toastOpen?.content ?? ""}
-          severity={toastOpen?.type ?? "success"}
-          open={toastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={closeToast}
-        />
       </>
     );
   }

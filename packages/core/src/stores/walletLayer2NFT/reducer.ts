@@ -16,7 +16,7 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
   reducers: {
     updateWalletLayer2NFT(
       state,
-      _action: PayloadAction<{ page?: number; collection?: string }>
+      _action: PayloadAction<{ page?: number; collection: string | undefined }>
     ) {
       state.status = SagaStatus.PENDING;
     },

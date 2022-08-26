@@ -19,34 +19,34 @@ export type Transaction = {
 };
 
 export interface ModalState {
-	isShowSupport: ModalStatePlayLoad;
-	isShowOtherExchange: ModalStatePlayLoad & {
-		agree?: boolean;
-	};
-	isWrongNetworkGuide: ModalStatePlayLoad;
-	isShowTransfer: ModalStatePlayLoad & Transaction;
-	isShowWithdraw: ModalStatePlayLoad & Transaction;
-	isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
-	isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-	isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-	isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-	isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-	isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
-	isShowCollectionAdvance: ModalStatePlayLoad;
-	isShowResetAccount: ModalStatePlayLoad;
-	isShowActiveAccount: ModalStatePlayLoad;
-	isShowExportAccount: ModalStatePlayLoad;
-	isShowLayerSwapNotice: ModalStatePlayLoad;
-	isShowSwap: ModalStatePlayLoad;
-	isShowAmm: ModalStatePlayLoad & Transaction & { type?: AmmPanelType };
-	isShowTradeIsFrozen: ModalStatePlayLoad & { type?: string };
-	isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO };
-	isShowAccount: ModalStatePlayLoad & {
+  isShowSupport: ModalStatePlayLoad;
+  isShowOtherExchange: ModalStatePlayLoad & {
+    agree?: boolean;
+  };
+  isWrongNetworkGuide: ModalStatePlayLoad;
+  isShowTransfer: ModalStatePlayLoad & Transaction;
+  isShowWithdraw: ModalStatePlayLoad & Transaction;
+  isShowDeposit: ModalStatePlayLoad & Transaction & { partner?: boolean };
+  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
+  isShowNFTTransfer: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTWithdraw: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTDeploy: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTDeposit: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowNFTMintAdvance: ModalStatePlayLoad & Partial<TradeNFT<any, any>>;
+  isShowCollectionAdvance: ModalStatePlayLoad;
+  isShowResetAccount: ModalStatePlayLoad;
+  isShowActiveAccount: ModalStatePlayLoad;
+  isShowExportAccount: ModalStatePlayLoad;
+  isShowLayerSwapNotice: ModalStatePlayLoad;
+  isShowSwap: ModalStatePlayLoad;
+  isShowAmm: ModalStatePlayLoad & Transaction & { type?: AmmPanelType };
+  isShowTradeIsFrozen: ModalStatePlayLoad & { type?: string };
+  isShowConnect: ModalStatePlayLoad & { step: number; error?: RESULT_INFO };
+  isShowAccount: ModalStatePlayLoad & {
     step: number;
     error?: RESULT_INFO;
     // info?: { [key: string]: any };
   };
-  isShowNFTDetail: ModalStatePlayLoad & Partial<NFTWholeINFO>;
   isShowFeeSetting: ModalStatePlayLoad;
   isShowIFrame: ModalStatePlayLoad & { url: string };
 }

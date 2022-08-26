@@ -1,9 +1,10 @@
-import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
+import { Box, Grid, Pagination, Typography } from "@mui/material";
 import {
   EmptyValueTag,
   getShortAddr,
   NFTLimit,
   SoursURL,
+  CollectionMeta,
 } from "@loopring-web/common-resources";
 import {
   CardStyleItem,
@@ -12,9 +13,7 @@ import {
 } from "@loopring-web/component-lib";
 import { getIPFSString, useSystem } from "@loopring-web/core";
 import React from "react";
-import { useHistory } from "react-router-dom";
 import { useMyNFT } from "./useMyNFT";
-import * as sdk from "@loopring-web/loopring-sdk";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
@@ -27,10 +26,8 @@ export const MyNFTList = withTranslation("common")(
     collectionMeta,
     t,
   }: {
-    collectionMeta: sdk.CollectionMeta;
+    collectionMeta: CollectionMeta | undefined;
   } & WithTranslation) => {
-    const history = useHistory();
-
     const {
       onDetail,
       nftList,
@@ -45,11 +42,18 @@ export const MyNFTList = withTranslation("common")(
       <StyledPaper
         flex={1}
         className={"MuiPaper-elevation2"}
-        padding={3}
+        marginTop={0}
+        marginBottom={2}
         display={"flex"}
         flexDirection={"column"}
       >
-        <Box flex={1} display={"flex"} flexDirection={"column"}>
+        <Box
+          flex={1}
+          display={"flex"}
+          flexDirection={"column"}
+          paddingX={3}
+          paddingY={2}
+        >
           {isLoading ? (
             <Box
               flex={1}
