@@ -229,7 +229,7 @@ export const useVendor = () => {
                   //
                   // // unhide the widget
                   // instance.domNodes.overlay.style['display'] = '';
-                };
+                }
               );
               window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
                 console.log("Ramp WIDGET CLOSE");
