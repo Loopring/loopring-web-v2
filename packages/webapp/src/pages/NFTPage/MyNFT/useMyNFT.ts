@@ -226,16 +226,16 @@ export const useMyNFT = ({
         //     count: item.count,
         //   };
         // });
-        const collection = response.raw_data.collections?.find((_item: any) => {
+        const collectionMeta = response.collections?.find((_item: any) => {
           return (
-            _item.collection?.contractAddress?.toLowerCase() ===
+            _item?.contractAddress?.toLowerCase() ===
             item?.tokenAddress?.toLowerCase()
           );
         });
-        const collectionMeta = {
-          ...collection?.collection,
-          count: collection?.count,
-        };
+        // const collectionMeta = {
+        //   ...collection?.collection,
+        //   count: collection?.count,
+        // };
         setShowNFTDetail({ isShow: true, ...item, collectionMeta });
         updateNFTWithdrawData({ ...item, collectionMeta });
         updateNFTTransferData({ ...item, collectionMeta });

@@ -297,7 +297,7 @@ export const CollectionItem = React.memo(
                 >
                   {item?.nftType}
                 </Typography>
-                {item.count && (
+                {item?.extends.count && (
                   <Typography
                     variant={"h4"}
                     component={"div"}
@@ -312,7 +312,7 @@ export const CollectionItem = React.memo(
                       borderRadius: "20px",
                     }}
                   >
-                    × {item.count}
+                    × {item?.extends.count}
                   </Typography>
                 )}
               </Typography>

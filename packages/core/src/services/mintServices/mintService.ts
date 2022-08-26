@@ -53,7 +53,7 @@ export const mintService = {
       const response = await LoopringAPI.userAPI?.getUserOwenCollection(
         {
           owner: account.accAddress,
-          address: contractAddress,
+          tokenAddress: contractAddress,
         },
         account.apiKey
       );

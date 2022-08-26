@@ -310,7 +310,9 @@ export enum EXPLORE_TYPE {
  * @property cid? string option
  *
  */
-export type CollectionMeta = sdk.CollectionMeta & { count?: number };
+export type CollectionMeta = sdk.CollectionMeta & {
+  extends: { [key: string]: any };
+};
 export type CollectionMetaJSON = {
   contract: string;
   thumbnail_uri: string;

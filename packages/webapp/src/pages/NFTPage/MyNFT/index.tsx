@@ -16,10 +16,11 @@ import {
   ErrorMap,
   getShortAddr,
   SoursURL,
+  CollectionMeta,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { MyNFTCollectionList } from "./MyNFTCollectionList";
-import { Box, Tab, Tabs, Typography } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import { Button } from "@loopring-web/component-lib";
 
 enum MY_NFT_VIEW {
@@ -42,7 +43,7 @@ export const MyNFTPanel = withTranslation("common")(
       account: { accountId, apiKey },
     } = useAccount();
     const [collectionMeta, setCollectionMeta] =
-      React.useState<undefined | sdk.CollectionMeta>(undefined);
+      React.useState<undefined | CollectionMeta>(undefined);
     const checkCollection = async () => {
       const [contract, id] = !!match?.params?.contract
         ? match?.params?.contract.split("|")
@@ -78,7 +79,7 @@ export const MyNFTPanel = withTranslation("common")(
           ) {
             throw new CustomError(ErrorMap.ERROR_UNKNOWN);
           }
-          const collections = response.raw_data.collections;
+          const collections = response.collections;
           if (collections.length) {
             const collectionMeta = collections.find((item: any) => {
               return (
@@ -88,10 +89,7 @@ export const MyNFTPanel = withTranslation("common")(
               );
             });
 
-            setCollectionMeta({
-              ...collectionMeta.collection,
-              count: collectionMeta.count,
-            });
+            setCollectionMeta(collectionMeta);
             return;
           } else {
             history.push({ pathname: "/NFT/assetsNFT/byCollection", search });

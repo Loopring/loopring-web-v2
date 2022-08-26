@@ -395,7 +395,7 @@ export const useNFTMintAdvance = <
               ?.getUserOwenCollection(
                 {
                   owner: account.accAddress,
-                  address: data.tokenAddress,
+                  tokenAddress: data.tokenAddress,
                   // @ts-ignore
                   isMintable: true,
                 },
