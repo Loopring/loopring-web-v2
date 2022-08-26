@@ -12,6 +12,7 @@ import {
 import {
   CoinInfo,
   CoinMap,
+  CollectionMeta,
   FeeInfo,
   Info2Icon,
   MintTradeNFT,
@@ -32,7 +33,6 @@ import { useSettings } from "../../../stores";
 import { NFTInput } from "./BasicANFTTrade";
 import { Properties } from "./tool/Property";
 import { CollectionInput } from "./tool";
-import { CollectionMeta } from "@loopring-web/loopring-sdk";
 
 const GridStyle = styled(Grid)<GridProps>`
   .coinInput-wrap {
