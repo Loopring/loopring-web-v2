@@ -63,7 +63,7 @@ export const MintLandingPanel = () => {
             <NftImage
               alt={"NFT Created"}
               onError={() => undefined}
-              src={`${SoursURL}images/nft_guid1.webp`}
+              src={`${SoursURL}images/nft_guid2.webp`}
             />
           </Box>
           <Typography
@@ -78,7 +78,6 @@ export const MintLandingPanel = () => {
           >
             <>
               {t("labelAdMintGuid")}
-
               <Button variant={"contained"} color={"primary"} fullWidth={true}>
                 {t("labelAdvanceMint")}
               </Button>
@@ -103,7 +102,7 @@ export const MintLandingPanel = () => {
             <NftImage
               alt={"NFT Created"}
               onError={() => undefined}
-              src={`${SoursURL}images/nft_guid2.webp`}
+              src={`${SoursURL}images/nft_guid1.webp`}
             />
           </Box>
           <Typography

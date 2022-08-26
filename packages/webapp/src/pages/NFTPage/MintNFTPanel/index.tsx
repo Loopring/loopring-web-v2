@@ -25,7 +25,6 @@ import {
   makeMeta,
   useMyCollection,
   useNFTMintAdvance,
-  useSystem,
 } from "@loopring-web/core";
 
 const StyledPaper = styled(Box)`
@@ -131,88 +130,84 @@ export const MintNFTAdvancePanel = <
   T extends TradeNFT<I, Co>,
   Co extends CollectionMeta,
   I
->() =>
-  // {resetNFTMint, nftMintAdvanceProps}:{
-  // resetNFTMint: () => void,
-  // nftMintAdvanceProps: NFTMintAdvanceViewProps<T, Co, I, FeeInfo>,}
-  {
-    const { resetDefault: resetNFTMint, nftMintAdvanceProps } =
-      useNFTMintAdvance();
+>() => {
+  const { resetDefault: resetNFTMint, nftMintAdvanceProps } =
+    useNFTMintAdvance();
 
-    const history = useHistory();
-    const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
-    React.useEffect(() => {
-      resetNFTMint();
-    }, [match.params?.mintAdvanceNFT]);
-    const { t } = useTranslation("common");
-    const popupState = usePopupState({
-      variant: "popover",
-      popupId: `popupId-nftMint`,
-    });
+  const history = useHistory();
+  const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
+  React.useEffect(() => {
+    resetNFTMint();
+  }, [match.params?.mintAdvanceNFT]);
+  const { t } = useTranslation("common");
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId-nftMint`,
+  });
 
-    return (
-      <>
-        <Box marginBottom={2}>
-          <Button
-            startIcon={<BackIcon fontSize={"small"} />}
-            variant={"text"}
-            size={"medium"}
-            sx={{ color: "var(--color-text-secondary)" }}
-            color={"inherit"}
-            onClick={history.goBack}
-          >
-            {t("labelAdMintTitle")}
-            <Info2Icon
-              {...bindHover(popupState)}
-              fontSize={"large"}
-              htmlColor={"var(--color-text-third)"}
-            />
-            {/*<Typography color={"textPrimary"}></Typography>*/}
-          </Button>
-          <PopoverPure
-            className={"arrow-center"}
-            {...bindPopper(popupState)}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-          >
-            <Typography
-              padding={2}
-              component={"p"}
-              variant={"body2"}
-              whiteSpace={"pre-line"}
-            >
-              <Trans
-                i18nKey={
-                  nftMintAdvanceProps.description
-                    ? nftMintAdvanceProps.description
-                    : "nftMintDescription"
-                }
-              >
-                Paste in the CID that you obtained from uploading the metadata
-                Information file (point 11 above) - if successful, the data from
-                the metadata Information you created contained within the folder
-                populates the Name and also the image displays.
-              </Trans>
-            </Typography>
-          </PopoverPure>
-        </Box>
-        <StyledPaper
-          flex={1}
-          className={"MuiPaper-elevation2"}
-          marginTop={0}
-          marginBottom={2}
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"stretch"}
+  return (
+    <>
+      <Box marginBottom={2}>
+        <Button
+          startIcon={<BackIcon fontSize={"small"} />}
+          variant={"text"}
+          size={"medium"}
+          sx={{ color: "var(--color-text-secondary)" }}
+          color={"inherit"}
+          onClick={history.goBack}
         >
-          <MintAdvanceNFTWrap {...{ ...nftMintAdvanceProps }} />
-        </StyledPaper>
-      </>
-    );
-  };
+          {t("labelAdMintTitle")}
+          <Info2Icon
+            {...bindHover(popupState)}
+            fontSize={"large"}
+            htmlColor={"var(--color-text-third)"}
+          />
+          {/*<Typography color={"textPrimary"}></Typography>*/}
+        </Button>
+        <PopoverPure
+          className={"arrow-center"}
+          {...bindPopper(popupState)}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+        >
+          <Typography
+            padding={2}
+            component={"p"}
+            variant={"body2"}
+            whiteSpace={"pre-line"}
+          >
+            <Trans
+              i18nKey={
+                nftMintAdvanceProps.description
+                  ? nftMintAdvanceProps.description
+                  : "nftMintDescription"
+              }
+            >
+              Paste in the CID that you obtained from uploading the metadata
+              Information file (point 11 above) - if successful, the data from
+              the metadata Information you created contained within the folder
+              populates the Name and also the image displays.
+            </Trans>
+          </Typography>
+        </PopoverPure>
+      </Box>
+      <StyledPaper
+        flex={1}
+        className={"MuiPaper-elevation2"}
+        marginTop={0}
+        marginBottom={2}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"stretch"}
+      >
+        <MintAdvanceNFTWrap {...{ ...nftMintAdvanceProps }} />
+      </StyledPaper>
+    </>
+  );
+};
