@@ -63,7 +63,7 @@ export const MyNFTPanel = withTranslation("common")(
             .getUserNFTCollection(
               {
                 // @ts-ignore
-                tokenAddress: contract,
+                address: contract,
                 accountId: accountId.toString(),
                 limit: CollectionLimit,
               },

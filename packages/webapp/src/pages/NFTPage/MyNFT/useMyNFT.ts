@@ -208,7 +208,7 @@ export const useMyNFT = ({
             {
               accountId: account.accountId.toString(),
               //@ts-ignore
-              tokenAddress: item.tokenAddress,
+              address: item.tokenAddress,
             },
             account.apiKey
           )
