@@ -6,5 +6,6 @@ declare global {
     loopringSocket: InstanceType<LoopringSocket>;
     __renderReportCall__: () => void;
     rampInstance: RampInstantSDK | undefined;
+    rampTransPromise: Promise<{ txHash: string }> | undefined;
   }
 }

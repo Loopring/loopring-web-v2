@@ -33,10 +33,8 @@ import {
 import {
   RampInstantEventTypes,
   RampInstantSDK,
-  RampInstantEvent,
 } from "@ramp-network/ramp-instant-sdk";
 import { AccountStep, useOpenModals } from "@loopring-web/component-lib";
-import { IOfframpPurchase } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 import React, { useCallback } from "react";
 import * as sdk from "@loopring-web/loopring-sdk";
 import {
@@ -50,6 +48,34 @@ export enum RAMP_SELL_PANEL {
   CONFIRM,
 }
 
+// window.rampTransPromise = async () => {
+//   const { __request__: request } =
+//     store.getState()._router_modalData.transferRampValue;
+//   const { chainId } = store.getState().system;
+//   const account = store.getState().account;
+//   // let isHWAddr = checkHWAddr(account.accAddress);
+//   // if (!isHWAddr && !isNotHardwareWallet) {
+//   //   isHWAddr = true;
+//   // }
+//   if (LoopringAPI.userAPI) {
+//     return await LoopringAPI.userAPI.submitInternalTransfer(
+//       {
+//         request: request as any,
+//         web3: connectProvides.usedWeb3 as any,
+//         chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
+//         walletType: (ConnectProvidersSignMap[account.connectName] ??
+//           account.connectName) as unknown as sdk.ConnectorNames,
+//         eddsaKey: account.eddsaKey.sk,
+//         apiKey: account.apiKey,
+//         isHWAddr: true,
+//       },
+//       {
+//         accountId: account.accountId,
+//         counterFactualInfo: account.eddsaKey.counterFactualInfo,
+//       }
+//     );
+//   }
+// };
 export const useVendor = () => {
   const { account } = useAccount();
   const {
@@ -150,15 +176,38 @@ export const useVendor = () => {
                 ...config,
               });
 
-              window.rampInstance.on(
-                RampInstantEventTypes.OFFRAMP_PURCHASE_CREATED,
-                (event: RampInstantEvent) => {
-                  const offRampPurchase = event.payload as IOfframpPurchase;
-                  updateOffRampData({ offRampPurchase });
-                  setSellPanel(RAMP_SELL_PANEL.CONFIRM);
-                  console.log("offRampPurchase", offRampPurchase);
+              // window.rampInstance.on(
+              //   RampInstantEventTypes.OFFRAMP_PURCHASE_CREATED,
+              //   (event: RampInstantEvent) => {
+              //     const offRampPurchase = event.payload as IOfframpPurchase;
+              //     updateOffRampData({ offRampPurchase });
+              //     setSellPanel(RAMP_SELL_PANEL.CONFIRM);
+              //     console.log("offRampPurchase", offRampPurchase);
+              //     if (window.rampInstance) {
+              //       try {
+              //         //@ts-ignore
+              //         window.rampInstance.domNodes.overlay.style.display =
+              //           "none";
+              //       } catch (e) {
+              //         console.log("weight hidden failed");
+              //       }
+              //     } else {
+              //       resetOffRampData();
+              //       setSellPanel(RAMP_SELL_PANEL.LIST);
+              //     }
+              //   }
+              // );
+              window.rampInstance.onSendCrypto(
+                async (
+                  assetSymbol: string,
+                  amount: string,
+                  destinationAddress: string
+                ) => {
                   if (window.rampInstance) {
                     try {
+                      updateOffRampData({
+                        send: { assetSymbol, amount, destinationAddress },
+                      });
                       //@ts-ignore
                       window.rampInstance.domNodes.overlay.style.display =
                         "none";
@@ -169,6 +218,17 @@ export const useVendor = () => {
                     resetOffRampData();
                     setSellPanel(RAMP_SELL_PANEL.LIST);
                   }
+
+                  return window.transferPromise;
+                  // console.log('onSendCrypto')
+                  // // hide or overlay the widget
+                  // instance.domNodes.overlay.style['display'] = 'none';
+                  //
+                  // // display transfer modal screen
+                  // alert(`SEND ${amount/10**18} ${assetSymbol} to ${destinationAddress}`);
+                  //
+                  // // unhide the widget
+                  // instance.domNodes.overlay.style['display'] = '';
                 }
               );
               window.rampInstance.on(RampInstantEventTypes.WIDGET_CLOSE, () => {
@@ -586,50 +646,19 @@ export const useRampConfirm = <T extends IBData<I>, I, _C extends FeeInfo>({
   //   React.useState<RampViewProps<T, I, C> | undefined>(undefined);
 
   const initRampViewProps = React.useCallback(() => {
-    //TODO: MOCK
-    // const offRampValue: IOfframpPurchase = {
-    //   id: "MOCK",
-    //   createdAt: Date.now().toString(),
-    //   crypto: {
-    //     amount: "100",
-    //     assetInfo: {
-    //       address: "0x727E0Fa09389156Fc803EaF9C7017338EfD76E7F",
-    //       symbol: "LRC",
-    //       chain: "Ethereum",
-    //       type: "ERC20",
-    //       name: "Loopring",
-    //       decimals: 18,
-    //     },
-    //   },
-    //   fiat: {
-    //     amount: 100,
-    //     currencySymbol: "USD",
-    //   },
-    // };
-    if (offRampValue?.offRampPurchase && window.rampInstance) {
-      if (
-        /Ethereum/gi.test(
-          offRampValue.offRampPurchase.crypto.assetInfo.chain ?? ""
-        )
-      ) {
-        const {
-          crypto: {
-            amount,
-            assetInfo: { address, symbol },
-          },
-        } = offRampValue.offRampPurchase;
+    if (offRampValue?.send && window.rampInstance) {
+      const { amount, assetSymbol, destinationAddress } = offRampValue?.send;
 
-        const memo = "OFF-RAMP Transfer";
-        updateTransferRampData({
-          belong: symbol,
-          tradeValue: Number(amount),
-          balance: walletMap[symbol]?.count,
-          fee: feeInfo,
-          memo,
-          address: address as string,
-        });
-        return;
-      }
+      const memo = "OFF-RAMP Transfer";
+      updateTransferRampData({
+        belong: assetSymbol,
+        tradeValue: Number(amount),
+        balance: walletMap[assetSymbol]?.count,
+        fee: feeInfo,
+        memo,
+        address: destinationAddress as string,
+      });
+      return;
     }
     if (window.rampInstance) {
       window.rampInstance.close();
