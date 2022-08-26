@@ -228,7 +228,7 @@ export const useMyNFT = ({
         //     count: item.count,
         //   };
         // });
-        const collection = response.collections?.find((_item: any) => {
+        const collection = response.raw_data.collections?.find((_item: any) => {
           return (
             _item.collection?.contractAddress?.toLowerCase() ===
             item?.tokenAddress?.toLowerCase()

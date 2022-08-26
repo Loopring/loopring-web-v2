@@ -14,7 +14,7 @@ export const useMyNFTCollection = <C extends CollectionMeta>() => {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const defaultPage = Number(searchParams.has("collectionPage")) ?? 1;
-  const [page, setPage] = React.useState(defaultPage ? defaultPage : 1);
+  const [page, setPage] = React.useState(defaultPage ? defaultPage : -1);
   const [collectionList, setCollectionList] = React.useState<C[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [copyToastOpen, setCopyToastOpen] = React.useState({
@@ -44,7 +44,7 @@ export const useMyNFTCollection = <C extends CollectionMeta>() => {
   }, [etherscanBaseUrl, page, walletL2NFTCollection]);
 
   React.useEffect(() => {
-    onPageChange(defaultPage ? defaultPage : 1);
+    onPageChange(defaultPage && defaultPage !== -1 ? defaultPage : 1);
   }, []);
 
   React.useEffect(() => {

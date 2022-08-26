@@ -79,7 +79,7 @@ export const MyNFTPanel = withTranslation("common")(
           ) {
             throw new CustomError(ErrorMap.ERROR_UNKNOWN);
           }
-          const collections = response.collections;
+          const collections = response.raw_data.collections;
           if (collections.length) {
             const collectionMeta = collections.find((item: any) => {
               return (
