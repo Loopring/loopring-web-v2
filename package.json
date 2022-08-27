@@ -28,7 +28,6 @@
     "echarts-for-react": "^3.0.2",
     "ffjavascript": "^0.1.0",
     "firebase": "^9.8.3",
-    "fetch-jsonp": "1.2.1",
     "github-markdown-css": "^5.0.0",
     "i18next": "^20.1.0",
     "ipfs-http-client": "^56.0.2",
