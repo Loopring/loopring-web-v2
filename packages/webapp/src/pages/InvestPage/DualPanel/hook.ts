@@ -1,14 +1,13 @@
 import { useRouteMatch } from "react-router-dom";
-import { WithTranslation } from "react-i18next";
-import { confirmation, useDefiMap, useDualMap } from "@loopring-web/core";
-import { MarketType } from "@loopring-web/common-resources";
+import { useTranslation, WithTranslation } from "react-i18next";
+import { confirmation, useDualMap } from "@loopring-web/core";
 
 export const useDualHook = ({
-  t,
   setConfirmDualInvest,
 }: WithTranslation & {
   setConfirmDualInvest: (state: any) => void;
 }) => {
+  const { t } = useTranslation("common");
   const match: any = useRouteMatch("/invest/dual/:market?");
   const { marketArray, tradeMap } = useDualMap();
   const [, , coinA, coinB] =

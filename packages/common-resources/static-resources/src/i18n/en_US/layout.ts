@@ -104,6 +104,8 @@ export default {
   labelInvestAmmDes: "Add liquidity and earn rewards",
   labelInvestDefi: "ETH Staking",
   labelInvestDefiDes: "Earn ETH staking rewards",
+  labelInvestDual: "Dual Earn",
+  labelInvestDualDes: "Earn Dual rewards",
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
   labelMyCollectionDes: "Group NFT as a series",

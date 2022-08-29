@@ -5,6 +5,7 @@ import { Button, CoinIcon, Column, Table } from "../../basic-lib";
 import {
   EmptyValueTag,
   getValuePrecisionThousand,
+  InvestDuration,
   InvestMapType,
   RowConfig,
 } from "@loopring-web/common-resources";
@@ -208,7 +209,9 @@ export const InvestOverviewTable = <R extends RowInvest>({
             alignItems={"center"}
           >
             <Typography component={"span"}>
-              {t("labelInvest" + row.durationType, { ns: "common" })}
+              {row.durationType === InvestDuration.Duration
+                ? `${row.duration} ${t("labelDay", { ns: "common" })}`
+                : t("labelInvest" + row.durationType, { ns: "common" })}
             </Typography>
           </Box>
         );

@@ -70,7 +70,7 @@ const getInvestMapApi = async () => {
           detail: {
             token: tokenMap[coinA],
             apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
-            durationType: InvestDuration.Flexible,
+            durationType: InvestDuration.All,
             duration: "",
           },
           [InvestMapType.AMM]: {
@@ -103,7 +103,7 @@ const getInvestMapApi = async () => {
           detail: {
             token: tokenMap[coinB],
             apr: [ammInfo.APR ?? 0, ammInfo.APR ?? 0],
-            durationType: InvestDuration.Flexible,
+            durationType: InvestDuration.All,
             duration: "",
           },
           [InvestMapType.AMM]: {
@@ -148,6 +148,7 @@ const getInvestMapApi = async () => {
       const dualInfo = dualMarketMap[key];
       if (prev[coinA] && prev[coinA]) {
         let investItem = prev[coinA][InvestMapType.DUAL];
+        prev[coinA].detail.durationType = InvestDuration.All;
         if (investItem) {
           investItem.apr = calcDefiApr(dualInfo, investItem);
         } else {
@@ -156,8 +157,8 @@ const getInvestMapApi = async () => {
             type: InvestMapType.DUAL,
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
-            duration: "",
+            durationType: InvestDuration.Duration,
+            duration: "0 - 5",
           };
         }
       } else {
@@ -165,7 +166,7 @@ const getInvestMapApi = async () => {
           detail: {
             token: tokenMap[coinA],
             apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
+            durationType: InvestDuration.All,
             duration: "",
           },
           [InvestMapType.DUAL]: {
@@ -173,14 +174,15 @@ const getInvestMapApi = async () => {
             // token: tokenMap[coinA],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
-            duration: "",
+            durationType: InvestDuration.Duration,
+            duration: "0 - 5",
           },
         };
       }
 
       if (prev[coinB] && prev[coinB]) {
         let investItem = prev[coinB][InvestMapType.DUAL];
+        // prev[coinB].detail.durationType = InvestDuration.All;
         if (investItem) {
           investItem.apr = calcDefiApr(dualInfo, investItem);
         } else {
@@ -189,8 +191,8 @@ const getInvestMapApi = async () => {
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
-            duration: "",
+            durationType: InvestDuration.Duration,
+            duration: "0 - 5",
           };
         }
       } else {
@@ -198,7 +200,7 @@ const getInvestMapApi = async () => {
           detail: {
             token: tokenMap[coinB],
             apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
+            durationType: InvestDuration.All,
             duration: "",
           },
           [InvestMapType.DUAL]: {
@@ -206,8 +208,8 @@ const getInvestMapApi = async () => {
             // token: tokenMap[coinB],
             i18nKey: `labelInvestType_${InvestMapType.DUAL}`,
             apr: [dualInfo.apy ?? 0, dualInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
-            duration: "",
+            durationType: InvestDuration.Duration,
+            duration: "0 - 5",
           },
         };
       }
@@ -234,6 +236,7 @@ const getInvestMapApi = async () => {
       return prev;
     }, investTokenTypeMap);
   }
+
   if (marketMap) {
     investTokenTypeMap = Object.keys(marketMap).reduce((prev, key) => {
       // @ts-ignore
@@ -258,7 +261,7 @@ const getInvestMapApi = async () => {
           detail: {
             token: tokenMap[coinB],
             apr: [defiInfo.apy ?? 0, defiInfo.apy ?? 0],
-            durationType: InvestDuration.Flexible,
+            durationType: InvestDuration.All,
             duration: "",
           },
           [InvestMapType.STAKE]: {

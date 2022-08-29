@@ -863,6 +863,7 @@ export default {
   labelInvestType_AMM: "AMM Pool",
   labelInvestType_STAKE: "ETH Staking",
   labelInvestType_DUAL: "DUAL",
+  labelInvestAll: "Mixed",
   labelInvestFlexible: "Flexible",
   labelInvestDuration: "Duration",
   labelDefiOrderTable: "ETH Staking",

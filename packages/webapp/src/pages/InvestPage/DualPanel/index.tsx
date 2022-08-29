@@ -59,16 +59,16 @@ export const DualPanel: any = withTranslation("common")(
     // }
     const {
       // dualWrapProps,
-      closeToast,
-      toastOpen,
+      // closeToast,
+      // toastOpen,
       // confirmShowNoBalance,
       // setConfirmShowNoBalance,
       // serverUpdate,
       // setServerUpdate,
-    } = useDualHook();
+    } = useDualHook({ setConfirmDualInvest });
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
-
+    const history = useHistory();
     return (
       <Box display={"flex"} flexDirection={"column"} flex={1} marginBottom={2}>
         <Box marginBottom={2}>

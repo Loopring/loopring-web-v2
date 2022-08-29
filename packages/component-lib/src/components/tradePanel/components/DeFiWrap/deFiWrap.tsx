@@ -71,25 +71,26 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
             // eslint-disable-next-line eqeqeq
             deFiCalcData?.AtoB && deFiCalcData?.AtoB !== "NaN"
               ? getValuePrecisionThousand(
-                deFiCalcData?.AtoB,
-                tokenBuy.precision,
-                tokenBuy.precision,
-                tokenBuy.precision,
-                false,
-                { floor: true }
-              ): EmptyValueTag
+                  deFiCalcData?.AtoB,
+                  tokenBuy.precision,
+                  tokenBuy.precision,
+                  tokenBuy.precision,
+                  false,
+                  { floor: true }
+                )
+              : EmptyValueTag
           } ${deFiCalcData.coinBuy.belong}`
         : `1${deFiCalcData.coinBuy.belong}  \u2248 ${
             // @ts-ignore
             deFiCalcData.BtoA && deFiCalcData?.BtoA !== "NaN"
               ? getValuePrecisionThousand(
-                deFiCalcData?.AtoB,
-                tokenSell.precision,
-                tokenSell.precision,
-                tokenSell.precision,
-                false,
-                { floor: true }
-              )
+                  deFiCalcData?.AtoB,
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  tokenSell.precision,
+                  false,
+                  { floor: true }
+                )
               : EmptyValueTag
           } ${deFiCalcData.coinSell.belong}`
       : t("labelCalculating");
@@ -110,7 +111,9 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
   //   );
   // };
   const getDisabled = React.useMemo(() => {
-    return disabled || deFiCalcData === undefined || deFiCalcData.AtoB === undefined ;
+    return (
+      disabled || deFiCalcData === undefined || deFiCalcData.AtoB === undefined
+    );
   }, [btnStatus, deFiCalcData, disabled]);
   // myLog("DeFi DefiTrade btnStatus", btnStatus, btnInfo);
 
@@ -346,23 +349,29 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
               {label}
             </ButtonStyle>
           </Grid>
-          {confirmShowLimitBalance &&
-          <Grid item>
-            {
-              isJoin ? <Typography
+          {confirmShowLimitBalance && (
+            <Grid item>
+              {isJoin ? (
+                <Typography
                   variant={"body1"}
                   component={"p"}
                   display={"flex"}
                   marginTop={1}
                   flexDirection={"column"}
                   color={"var(--color-warning)"}
-                ><Trans
-                  i18nKey={"labelDefiMaxBalanceJoin"}
-                  tOptions={{maxValue}}> The quota is almost sold out and can't fulfil your complete order. You can only
-                  subscribe {{maxValue}} now. Loopring will setup the pool soon, please revisit for subscription later.
-
-                </Trans>
-                </Typography> :
+                >
+                  <Trans
+                    i18nKey={"labelDefiMaxBalanceJoin"}
+                    tOptions={{ maxValue }}
+                  >
+                    {" "}
+                    The quota is almost sold out and can't fulfil your complete
+                    order. You can only subscribe {{ maxValue }} now. Loopring
+                    will setup the pool soon, please revisit for subscription
+                    later.
+                  </Trans>
+                </Typography>
+              ) : (
                 <Typography
                   variant={"body1"}
                   component={"p"}
@@ -378,10 +387,11 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   >
                     <Trans
                       i18nKey={"labelDefiMaxBalance"}
-                      tOptions={{maxValue}}
+                      tOptions={{ maxValue }}
                     >
-                      Loopring rebalance pool can't satisfy your complete request. You can only redeem {{maxValue}} now.
-                      For the remaining investment, you can choose one of the approaches
+                      Loopring rebalance pool can't satisfy your complete
+                      request. You can only redeem {{ maxValue }} now. For the
+                      remaining investment, you can choose one of the approaches
                     </Trans>
                   </Typography>
                   <Typography
@@ -392,16 +402,18 @@ export const DeFiWrap = <T extends IBData<I>, I, ACD extends DeFiCalcData<T>>({
                   >
                     <Trans i18nKey={"labelDefiMaxBalance1"}>
                       <ul>
-                        <li>Withdraw wstETH to L1 and trade through CRV or LIDO directly</li>
+                        <li>
+                          Withdraw wstETH to L1 and trade through CRV or LIDO
+                          directly
+                        </li>
                         <li>Wait some time for Loopring to seto for redeem</li>
                       </ul>
                     </Trans>
                   </Typography>
                 </Typography>
-            }
-
-          </Grid>
-          }
+              )}
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Grid>

@@ -217,6 +217,15 @@ export const subMenuInvest = [
       description: "labelInvestDefiDes",
     },
   },
+  {
+    icon: L2MyLiquidityIcon,
+    router: { path: "/invest/dual" },
+    label: {
+      id: "dual",
+      i18nKey: "labelInvestDual",
+      description: "labelInvestDualDes",
+    },
+  },
 ];
 
 export const subMenuNFT = {
