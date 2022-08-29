@@ -76,7 +76,6 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
             break;
           case "collection":
             buildMint.tokenAddress = _newnftMeta.collection?.contractAddress;
-            // buildMint.nftBaseUri = _newnftMeta.collection?.baseUri;
             buildNFTMeta.collection_metadata = `${domain}/${_newnftMeta.collection?.contractAddress}`;
             buildCollection = _newnftMeta.collection
               ? _newnftMeta.collection
