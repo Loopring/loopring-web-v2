@@ -422,7 +422,9 @@ export const MintAdvanceNFTWrap = <
                     alignSelf={"stretch"}
                     position={"relative"}
                   >
-                    {t(isNotAvailableTokenAddress.reason)}
+                    {t(isNotAvailableTokenAddress.reason, {
+                      ns: ["error", "common"],
+                    })}
                   </Typography>
                 )}
               </Box>
