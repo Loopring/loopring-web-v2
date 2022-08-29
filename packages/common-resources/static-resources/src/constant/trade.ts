@@ -158,8 +158,8 @@ export type LOOPRING_NFT_METADATA = {
   [key in keyof typeof LOOPRING_TAKE_NFT_META_KET]?: string | undefined;
 };
 
-export const NFTLimit = 12, CollectionLimit = 12;
-
+export const NFTLimit = 12,
+  CollectionLimit = 12;
 
 export const AddAssetList = {
   FromMyL1: {
@@ -336,9 +336,14 @@ export const enum InvestMapType {
   Token = "Token",
   AMM = "AMM",
   STAKE = "STAKE",
+  DUAL = "DUAL",
 }
 
-export const InvestOpenType = [InvestMapType.AMM, InvestMapType.STAKE];
+export const InvestOpenType = [
+  InvestMapType.AMM,
+  InvestMapType.STAKE,
+  InvestMapType.DUAL,
+];
 
 export const enum InvestDuration {
   Flexible = "Flexible",

@@ -869,7 +869,7 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
         defiData.buyToken?.precision,
         defiData.buyToken?.precision,
         false,
-        {floor: true}
+        { floor: true }
       )} ${defiData.buyToken?.symbol}`;
 
     return (
@@ -896,8 +896,12 @@ export const ConfirmDefiBalanceIsLimit = withTranslation("common")(
               <Trans i18nKey={"labelDefiMaxBalance1"}>
                 or you can
                 <List sx={{ marginTop: 2 }}>
-                  <ListItem>Withdraw to L1 and redeem through crv or lido</ListItem>
-                  <ListItem>Wait some time and wait for pool liquidity</ListItem>
+                  <ListItem>
+                    Withdraw to L1 and redeem through crv or lido
+                  </ListItem>
+                  <ListItem>
+                    Wait some time and wait for pool liquidity
+                  </ListItem>
                 </List>
               </Trans>
             </Typography>
@@ -935,7 +939,7 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
     handleClose,
   }: WithTranslation & {
     open: boolean;
-    isJoin:boolean;
+    isJoin: boolean;
     handleClose: (event: any) => void;
   }) => {
     return (
@@ -948,31 +952,43 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
         <DialogTitle> {t("labelInformation")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-
-            {isJoin ?
+            {isJoin ? (
               <Typography component={"span"}>
                 <Trans i18nKey={"labelDefiNoBalanceJoin"}>
                   No quota available. Loopring will setup the pool soon, please
                   revisit for subscription later.
                 </Trans>
-              </Typography> :
-              <Typography component={"span"} display={"flex"} flexDirection={"column"}>
+              </Typography>
+            ) : (
+              <Typography
+                component={"span"}
+                display={"flex"}
+                flexDirection={"column"}
+              >
                 <Trans i18nKey={"labelDefiNoBalance"}>
-                  <Typography component={"span"} marginBottom={3}>Loopring rebalance pool can't satisfy your
-                    complete request now.</Typography>
-                  <Typography component={"span"}>For the remaining investment, you can choose one of the
-                    approaches.</Typography>
+                  <Typography component={"span"} marginBottom={3}>
+                    Loopring rebalance pool can't satisfy your complete request
+                    now.
+                  </Typography>
+                  <Typography component={"span"}>
+                    For the remaining investment, you can choose one of the
+                    approaches.
+                  </Typography>
                 </Trans>
-                <List sx={{marginTop: 1}}>
+                <List sx={{ marginTop: 1 }}>
                   <Trans i18nKey={"labelDefiNoBalanceList"}>
-                    <ListItem style={{marginBottom: 0}}>Withdraw wSTETH to L1 and trade through CRV or LIDO
-                      directly</ListItem>
-                    <ListItem style={{marginBottom: 0}}>Wait some time for Loopring to setup the rebalance pool
-                      again, then revist the page for redeem</ListItem>
+                    <ListItem style={{ marginBottom: 0 }}>
+                      Withdraw wSTETH to L1 and trade through CRV or LIDO
+                      directly
+                    </ListItem>
+                    <ListItem style={{ marginBottom: 0 }}>
+                      Wait some time for Loopring to setup the rebalance pool
+                      again, then revist the page for redeem
+                    </ListItem>
                   </Trans>
                 </List>
-              </Typography>}
-
+              </Typography>
+            )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -994,10 +1010,10 @@ export const ConfirmDefiNOBalance = withTranslation("common")(
 
 export const ConfirmInvestDefiServiceUpdate = withTranslation("common")(
   ({
-     t,
-     open,
-     handleClose,
-   }: WithTranslation & {
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
     open: boolean;
     handleClose: (event: any) => void;
   }) => {
@@ -1019,17 +1035,16 @@ export const ConfirmInvestDefiServiceUpdate = withTranslation("common")(
               display={"block"}
               color={"textSecondary"}
             >
-              {t('labelDefiClose')}
+              {t("labelDefiClose")}
             </Typography>
           </DialogContentText>
-
         </DialogContent>
         <DialogActions>
           <Button
             variant={"contained"}
             size={"small"}
             onClick={(e) => {
-              history.goBack()
+              history.goBack();
               handleClose(e);
             }}
             color={"primary"}
@@ -1043,10 +1058,10 @@ export const ConfirmInvestDefiServiceUpdate = withTranslation("common")(
 );
 export const ConfirmInvestDefiRisk = withTranslation("common")(
   ({
-     t,
-     open,
-     handleClose,
-   }: WithTranslation & {
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
     open: boolean;
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
@@ -1119,24 +1134,157 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
         <DialogContent>
           <DialogContentText id="alert-dialog-defiRisk2">
             <Trans i18nKey={"labelDefiRisk2"}>
-            <Typography
+              <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body2"}
                 marginTop={2}
                 display={"block"}
                 color={"textThird"}
-              >It is important to note that users can't redeem wstETH for ETH until phase 2 of Ethereum 2.0. However, users are able to trade wstETH for ETH on various exchanges at market prices. </Typography>
-             <Typography
+              >
+                It is important to note that users can't redeem wstETH for ETH
+                until phase 2 of Ethereum 2.0. However, users are able to trade
+                wstETH for ETH on various exchanges at market prices.{" "}
+              </Typography>
+              <Typography
                 whiteSpace={"pre-line"}
                 component={"span"}
                 variant={"body2"}
                 marginTop={2}
                 display={"block"}
                 color={"textThird"}
-              >Loopring will provide a pool to allow users to trade wstETH for ETH directly on Layer 2. The pool will rebalance periodically when it reaches a specific threshold. If there is not enough inventory on Layer 2, user can always withdraw their wstETH tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch. </Typography>
-             </Trans>
-            
+              >
+                Loopring will provide a pool to allow users to trade wstETH for
+                ETH directly on Layer 2. The pool will rebalance periodically
+                when it reaches a specific threshold. If there is not enough
+                inventory on Layer 2, user can always withdraw their wstETH
+                tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.{" "}
+              </Typography>
+            </Trans>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant={"contained"}
+            size={"small"}
+            disabled={!agree}
+            onClick={(e) => {
+              handleClose(e as any, true);
+            }}
+            color={"primary"}
+          >
+            {t("labelIKnow")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+);
+export const ConfirmInvestDualRisk = withTranslation("common")(
+  ({
+    t,
+    open,
+    handleClose,
+  }: WithTranslation & {
+    open: boolean;
+    handleClose: (event: any, isAgree?: boolean) => void;
+  }) => {
+    const [agree, setAgree] = React.useState(false);
+    return (
+      <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle> {t("labelDualRiskTitle")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Trans i18nKey={"labelDualRisk"}>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                Lido is a liquid staking solution for ETH 2.0 backed by
+                industry-leading staking providers. Lido lets users stake their
+                ETH - without locking assets or maintaining infrastructure.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                When using Lido to stake your ETH on the Ethereum beacon chain,
+                users will receive a token (stETH), which represents their ETH
+                on the Ethereum beacon chain on a 1:1 basis. It effectively acts
+                as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body1"}
+                marginTop={2}
+                display={"block"}
+                color={"textSecondary"}
+              >
+                wstETH is the wrapped version of stETH. The total amount of
+                wstETH doesn’t change after users receive the token. Instead,
+                the token’s value increase over time to reflect ETH staking
+                rewards earned.
+              </Typography>
+            </Trans>
+          </DialogContentText>
+          <MuiFormControlLabel
+            control={
+              <Checkbox
+                checked={agree}
+                onChange={(_event: any, state: boolean) => {
+                  setAgree(state);
+                }}
+                checkedIcon={<CheckedIcon />}
+                icon={<CheckBoxIcon />}
+                color="default"
+              />
+            }
+            label={t("labelDualAgree")}
+          />
+        </DialogContent>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-DualRisk2">
+            <Trans i18nKey={"labelDualRisk2"}>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body2"}
+                marginTop={2}
+                display={"block"}
+                color={"textThird"}
+              >
+                It is important to note that users can't redeem wstETH for ETH
+                until phase 2 of Ethereum 2.0. However, users are able to trade
+                wstETH for ETH on various exchanges at market prices.{" "}
+              </Typography>
+              <Typography
+                whiteSpace={"pre-line"}
+                component={"span"}
+                variant={"body2"}
+                marginTop={2}
+                display={"block"}
+                color={"textThird"}
+              >
+                Loopring will provide a pool to allow users to trade wstETH for
+                ETH directly on Layer 2. The pool will rebalance periodically
+                when it reaches a specific threshold. If there is not enough
+                inventory on Layer 2, user can always withdraw their wstETH
+                tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.{" "}
+              </Typography>
+            </Trans>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

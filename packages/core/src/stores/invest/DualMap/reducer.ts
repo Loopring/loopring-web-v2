@@ -5,6 +5,7 @@ import { SagaStatus } from "@loopring-web/common-resources";
 const initialState: Required<DualMapStates> = {
   marketArray: [],
   marketCoins: [],
+  tradeMap: {},
   marketMap: {},
   __timer__: -1,
   status: SagaStatus.PENDING,
@@ -24,11 +25,13 @@ const dualMapSlice: Slice = createSlice({
         // @ts-ignore
         state.errorMessage = action.error;
       }
-      const {__timer__, ...dualMap} = action.payload;
+      const { __timer__, ...dualMap } = action.payload;
+
       if (dualMap) {
         state.marketArray = dualMap.marketArray;
         state.marketCoins = dualMap.marketCoins;
         state.marketMap = dualMap.marketMap;
+        state.tradeMap = dualMap.tradeMap;
         // , marketCoins, marketMap
         // state.marketArray = { ...state, ...dualMap };
       }
@@ -45,7 +48,7 @@ const dualMapSlice: Slice = createSlice({
     },
   },
 });
-const {getDualMap, updateDualSyncMap, getDualMapStatus, statusUnset} =
+const { getDualMap, updateDualSyncMap, getDualMapStatus, statusUnset } =
   dualMapSlice.actions;
 export {
   dualMapSlice,

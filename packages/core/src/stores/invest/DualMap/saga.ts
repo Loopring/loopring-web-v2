@@ -8,12 +8,12 @@ const getDualMapApi = async () => {
   if (!LoopringAPI.defiAPI) {
     return undefined;
   }
-  // Todo:
-  // const {
-  //   markets: marketMap,
-  //   tokenArr: marketCoins,
-  //   marketArr: marketArray,
-  // } = await LoopringAPI.defiAPI?.getDualMarkets();
+  const {
+    markets: marketMap,
+    tokenArr: marketCoins,
+    marketArr: marketArray,
+    pairs: tradeMap,
+  } = await LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "DUAL" });
 
   let { __timer__ } = store.getState().invest.dualMap;
   __timer__ = (() => {
@@ -24,18 +24,16 @@ const getDualMapApi = async () => {
       if (!LoopringAPI.defiAPI) {
         return undefined;
       }
-
-      // let { markets, pairs, tokenArr, tokenArrStr, marketArr, marketArrStr } =
-      //   await LoopringAPI.defiAPI.getDualMarkets();
       store.dispatch(getDualMap(undefined));
     }, 900000); //15*60*1000 //900000
   })();
 
   return {
     dualMap: {
-      marketArray: [],
-      marketCoins: [],
-      marketMap: {},
+      marketArray,
+      marketCoins,
+      marketMap,
+      tradeMap,
     },
     __timer__,
   };
@@ -55,7 +53,7 @@ export function* getDualSyncSaga({
 }: PayloadAction<{ dualMap: DualMap }>) {
   try {
     if (payload.dualMap) {
-      yield put(getDualMapStatus({ dualMap: payload.dualMap }));
+      yield put(getDualMapStatus({ ...payload.dualMap }));
     }
   } catch (err) {
     yield put(getDualMapStatus(err));
@@ -67,7 +65,7 @@ export function* dualMapInitSaga() {
 }
 
 export function* dualMapSyncSaga() {
-  yield all([takeLatest(updateDualSyncMap, getPostsSaga)]);
+  yield all([takeLatest(updateDualSyncMap, getDualSyncSaga)]);
 }
 
-export const dualMapFork = [fork(dualMapInitSaga), fork];
+export const dualMapFork = [fork(dualMapInitSaga), fork(dualMapSyncSaga)];

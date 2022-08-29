@@ -6,14 +6,10 @@ import { useDualHook } from "./hook";
 import {
   boxLiner,
   Button,
-  ConfirmDefiNOBalance,
-  ConfirmInvestDefiServiceUpdate,
-  DeFiWrap,
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
 import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
-import { LoadingBlock } from "../../LoadingPage";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { BackIcon, MarketType } from "@loopring-web/common-resources";
 
@@ -39,24 +35,28 @@ export const DualPanel: any = withTranslation("common")(
   }: WithTranslation & {
     setConfirmDefiInvest: (state: any) => void;
   }) => {
-    const { marketArray } = useDefiMap();
-    const {
-      confirmation: { confirmedDefiInvest },
-    } = confirmation.useConfirmation();
-    setConfirmDefiInvest(!confirmedDefiInvest);
-    const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
-    const history = useHistory();
-    const _market: MarketType = [...(marketArray ? marketArray : [])].find(
-      (_item) => {
-        const value = match?.params?.market
-          ?.replace(/null|-/gi, "")
-          ?.toUpperCase();
-        return new RegExp(value, "ig").test(_item);
-      }
-    ) as MarketType;
+    // const { marketArray } = useDefiMap();
+    // const {
+    //   confirmation: { confirmedDefiInvest },
+    // } = confirmation.useConfirmation();
+    // setConfirmDefiInvest(!confirmedDefiInvest);
+    // const match: any = useRouteMatch("/invest/defi/:market?/:isJoin?");
+    // const history = useHistory();
+    // const _market: MarketType = [...(marketArray ? marketArray : [])].find(
+    //   (_item) => {
+    //     const value = match?.params?.market
+    //       ?.replace(/null|-/gi, "")
+    //       ?.toUpperCase();
+    //     return new RegExp(value, "ig").test(_item);
+    //   }
+    // ) as MarketType;
 
-    const isJoin =
-      match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
+    // const isJoin =
+    //   match?.params?.isJoin?.toUpperCase() !== "Redeem".toUpperCase();
+    // {
+    //   market: _market ?? ("WSTETH-ETH" as MarketType),
+    //     isJoin,
+    // }
     const {
       // dualWrapProps,
       closeToast,
@@ -65,10 +65,7 @@ export const DualPanel: any = withTranslation("common")(
       // setConfirmShowNoBalance,
       // serverUpdate,
       // setServerUpdate,
-    } = useDualHook({
-      market: _market ?? ("WSTETH-ETH" as MarketType),
-      isJoin,
-    });
+    } = useDualHook();
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
 

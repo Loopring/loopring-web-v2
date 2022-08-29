@@ -5,6 +5,7 @@ import { Confirmation } from "./interface";
 const initialState: Confirmation = {
   confirmed: false,
   confirmedDefiInvest: false,
+  confirmedDualInvest: false,
 };
 
 const confirmationSlice: Slice<Confirmation> = createSlice<
@@ -21,8 +22,12 @@ const confirmationSlice: Slice<Confirmation> = createSlice<
     confirmDefiInvest(state: Confirmation, _action: PayloadAction<string>) {
       state.confirmedDefiInvest = true;
     },
+    confirmDualInvest(state: Confirmation, _action: PayloadAction<string>) {
+      state.confirmedDualInvest = true;
+    },
   },
 });
 
 export { confirmationSlice };
-export const { confirm, confirmDefiInvest } = confirmationSlice.actions;
+export const { confirm, confirmDefiInvest, confirmDualInvest } =
+  confirmationSlice.actions;

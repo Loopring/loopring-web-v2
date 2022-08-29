@@ -1,25 +1,45 @@
-import {
-  useDefiMap,
-  useDefiTrade,
-  useDualMap,
-  useToast,
-} from "@loopring-web/core";
-import {
-  getValuePrecisionThousand,
-  MarketType,
-  myLog,
-} from "@loopring-web/common-resources";
+import { useRouteMatch } from "react-router-dom";
+import { WithTranslation } from "react-i18next";
+import { confirmation, useDefiMap, useDualMap } from "@loopring-web/core";
+import { MarketType } from "@loopring-web/common-resources";
 
 export const useDualHook = ({
-  isJoin,
-  market,
-}: {
-  market: MarketType;
-  isJoin: boolean;
+  t,
+  setConfirmDualInvest,
+}: WithTranslation & {
+  setConfirmDualInvest: (state: any) => void;
 }) => {
-  const { toastOpen, setToastOpen, closeToast } = useToast();
-  const { marketArray } = useDualMap();
-  myLog("isJoin", isJoin, "market", market);
+  const match: any = useRouteMatch("/invest/dual/:market?");
+  const { marketArray, tradeMap } = useDualMap();
+  const [, , coinA, coinB] =
+    match.params?.market?.match(/(dual-)?(\w+)-(\w+)/i);
+  const pairASymbol = tradeMap[coinA] ? coinA : "LRC";
+  const pairBSymbol =
+    coinB && tradeMap[pairASymbol]?.tokenList
+      ? tradeMap[pairASymbol].tokenList.includes(coinB)
+        ? coinB
+        : tradeMap[pairASymbol].tokenList[0]
+      : "USDT";
+
+  const market = marketArray.find((item) => {
+    const regExp = new RegExp(
+      `^(\\w+-)?(${pairASymbol}-${pairBSymbol}|${pairBSymbol}-${pairASymbol})$`,
+      "i"
+    );
+    return regExp.test(item);
+  });
+  //   [...(marketArray ? marketArray : [])].find(
+  //   (_item) => {
+  //     const value = match?.params?.market
+  //       ?.replace(/null|-/gi, "")
+  //       ?.toUpperCase();
+  const {
+    confirmation: { confirmedDualInvest },
+  } = confirmation.useConfirmation();
+  setConfirmDualInvest(!confirmedDualInvest);
+  // const { toastOpen, setToastOpen, closeToast } = useToast();
+  // const { marketArray } = useDualMap();
+  // myLog("isJoin", isJoin, "market", market);
 
   // const {
   //   dualWrapProps,
@@ -35,8 +55,9 @@ export const useDualHook = ({
 
   return {
     dualWrapProps: undefined,
-    toastOpen,
-    closeToast,
+    pairASymbol,
+    pairBSymbol,
+    market,
     // confirmShowNoBalance,
     // setConfirmShowNoBalance,
     // serverUpdate,

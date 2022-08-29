@@ -5,6 +5,7 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 import { useTranslation, withTranslation } from "react-i18next";
 import {
   ConfirmInvestDefiRisk,
+  ConfirmInvestDualRisk,
   useSettings,
 } from "@loopring-web/component-lib";
 import React from "react";
@@ -14,6 +15,7 @@ import MyLiquidityPanel from "./MyLiquidityPanel";
 import { PoolsPanel } from "./PoolsPanel";
 import { DeFiPanel } from "./DeFiPanel";
 import { OverviewPanel } from "./OverviewPanel";
+import { DualPanel } from "./DualPanel";
 
 export enum InvestType {
   MyBalance = 0,
@@ -23,7 +25,7 @@ export enum InvestType {
   Dual = 4,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi", ""];
+export const InvestRouter = ["balance", "ammpool", "defi", "", "dual"];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   return (
@@ -165,13 +167,19 @@ export const DefiTitle = () => {
 };
 
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
-  let match: any = useRouteMatch(["/invest/:item", ":subItem"]);
+  let match: any = useRouteMatch("/invest/:item?");
   const history = useHistory();
-  const { confirmDefiInvest: confirmDefiInvestFun } =
-    confirmation.useConfirmation();
+  const {
+    confirmDefiInvest: confirmDefiInvestFun,
+    confirmDualInvest: confirmDualInvestFun,
+  } = confirmation.useConfirmation();
   const [confirmDefiInvest, setConfirmDefiInvest] = React.useState(false);
+  const [confirmDualInvest, setConfirmDualInvest] = React.useState(false);
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
-    InvestType.Overview
+    (InvestRouter.includes(match?.params?.item)
+      ? InvestType[match?.params?.item]
+      : InvestType.Overview) as any
+    // InvestType.Overview
   );
   const [isShowTab, setIsShowTab] = React.useState<Boolean>(false);
   React.useEffect(() => {
@@ -234,7 +242,9 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         {tabIndex === InvestType.DeFi && (
           <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest} />
         )}
-        {tabIndex === InvestType.Dual && <PoolsPanel />}
+        {tabIndex === InvestType.Dual && (
+          <DualPanel setConfirmDualInvest={setConfirmDualInvest} />
+        )}
         {tabIndex === InvestType.MyBalance && (
           <Box
             flex={1}
@@ -249,11 +259,22 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       <ConfirmInvestDefiRisk
         open={confirmDefiInvest}
         handleClose={(_e, isAgree) => {
-          setConfirmDefiInvest(false);
+          // confirmDefiInvestFun(false);
           if (!isAgree) {
             history.goBack();
           } else {
             confirmDefiInvestFun();
+          }
+        }}
+      />
+      <ConfirmInvestDualRisk
+        open={confirmDualInvest}
+        handleClose={(_e, isAgree) => {
+          setConfirmDualInvest(false);
+          if (!isAgree) {
+            history.goBack();
+          } else {
+            confirmDualInvestFun();
           }
         }}
       />

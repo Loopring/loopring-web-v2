@@ -50,17 +50,19 @@ export const OverviewPanel = withTranslation("common")(
       filteredData,
       filterValue,
       getFilteredData,
-      // myFilteredData,
       rawData,
       myMapLoading,
       myRawData,
     } = useOverview();
     const { coinJson } = useSettings();
-    const {account} = useAccount();
-    const {notifyMap} = useNotify();
+    const { account } = useAccount();
+    const { notifyMap } = useNotify();
     const showLoading = filteredData && !filteredData.length;
     const history = useHistory();
-    const investAdviceList = [{...ammAdvice, ...notifyMap?.invest?.investAdvice[ 0 ]}, {...defiAdvice, ...notifyMap?.invest?.investAdvice[ 1 ]}];
+    const investAdviceList = [
+      { ...ammAdvice, ...notifyMap?.invest?.investAdvice[0] },
+      { ...defiAdvice, ...notifyMap?.invest?.investAdvice[1] },
+    ];
     return (
       <>
         <WrapperStyled marginBottom={3}>
@@ -120,7 +122,7 @@ export const OverviewPanel = withTranslation("common")(
             <>
               <Box display={"flex"} flexDirection={"column"}>
                 <Typography variant={"h5"} marginBottom={1} marginX={5}>
-                  {t("labelTitleMyInvestAvailable", {ns: "common"})}
+                  {t("labelTitleMyInvestAvailable", { ns: "common" })}
                 </Typography>
                 <InvestOverviewTable
                   showLoading={myMapLoading}
