@@ -452,7 +452,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets(),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: undefined }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin
