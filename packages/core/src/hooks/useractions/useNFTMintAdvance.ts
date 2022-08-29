@@ -590,7 +590,7 @@ export const useNFTMintAdvance = <
             },
             counterFactualNftInfo: {
               nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory[chainId],
+              nftFactory: sdk.NFTFactory_Collection[chainId],
               nftBaseUri: nftMintAdvanceValue.collectionMeta?.baseUri ?? "",
             },
             royaltyPercentage: Math.floor(

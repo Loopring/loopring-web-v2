@@ -325,6 +325,7 @@ export function useNFTMint<
         LoopringAPI.userAPI &&
         LoopringAPI.nftAPI &&
         exchangeInfo &&
+        nftMintValue.collection &&
         nftMintValue.mintData &&
         nftMintValue.mintData.fee &&
         checkAvailable({ nftMintValue, isFeeNotEnough })
@@ -369,8 +370,8 @@ export function useNFTMint<
             },
             counterFactualNftInfo: {
               nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory[chainId],
-              nftBaseUri: nftMintValue.collection?.baseUri ?? "",
+              nftFactory: sdk.NFTFactory_Collection[chainId],
+              nftBaseUri: nftMintValue.collection.baseUri ?? "",
             },
             royaltyPercentage: nftMintValue.nftMETA.royaltyPercentage ?? 0,
             forceToMint: false,
