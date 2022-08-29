@@ -79,7 +79,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
       nftWithdrawValue.isCounterFactualNFT &&
       nftWithdrawValue.deploymentStatus === "NOT_DEPLOYED",
     updateData: ({ fee }) => {
-      const { nftWithdrawValue } = store.getState()._router_modalData;
+      const nftWithdrawValue =
+        store.getState()._router_modalData.nftWithdrawValue;
       updateNFTWithdrawData({
         ...nftWithdrawValue,
         balance: sdk
@@ -170,11 +171,11 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
 
   useWalletLayer2Socket({});
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
     if (info?.isRetry) {
+      checkFeeIsEnough();
       return;
     }
-
+    checkFeeIsEnough(true);
     if (nftWithdrawValue.nftData) {
       updateNFTWithdrawData({
         // ...nftWithdrawValue,

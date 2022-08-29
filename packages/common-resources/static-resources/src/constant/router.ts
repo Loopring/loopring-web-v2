@@ -107,7 +107,7 @@ export const toolBarMobileAvailableItem = [
 export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   {
     label: {
-      id: "Classic",
+      id: "lite",
       i18nKey: "labelClassic",
       description: "labelClassicDescription",
     },
@@ -115,27 +115,13 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
   {
     label: {
-      id: "Advanced",
+      id: "pro",
       i18nKey: "labelAdvanced",
       description: "labelAdvancedDescription",
     },
     router: { path: "/trade/pro/${pair}" },
   },
 ];
-
-export enum HeadMenuTabKey {
-  markets,
-  trade,
-  liquidity,
-  Layer2,
-}
-
-export enum NavListIndex {
-  markets,
-  trade,
-  liquidity,
-  layer2,
-}
 
 export const orderDisableList = ["Liquidity", "Markets", "Trading", "Mining"];
 export const ammDisableList = ["Liquidity"];
@@ -200,7 +186,7 @@ export const subMenuLayer2 = {
 export const subMenuInvest = [
   {
     icon: L2MyLiquidityIcon,
-    router: { path: "/invest" },
+    router: { path: "/invest/overview" },
     label: {
       id: "overview",
       i18nKey: "labelInvestOverview",

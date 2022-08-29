@@ -45,6 +45,7 @@ import {
   checkErrorInfo,
   useModalData,
   isAccActivated,
+  store,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
@@ -81,12 +82,10 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   } = useChargeFees({
     requestType: withdrawType,
     tokenSymbol: withdrawValue.belong,
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateWithdrawData({ ...withdrawValue, fee });
-      },
-      [updateWithdrawData, withdrawValue]
-    ),
+    updateData: ({ fee }) => {
+      const withdrawValue = store.getState()._router_modalData.withdrawValue;
+      updateWithdrawData({ ...withdrawValue, fee });
+    },
   });
 
   const [withdrawTypes, setWithdrawTypes] = React.useState<
@@ -246,10 +245,11 @@ export const useWithdraw = <R extends IBData<T>, T>() => {
   };
 
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
     if (info?.isRetry) {
+      checkFeeIsEnough();
       return;
     }
+    checkFeeIsEnough(true);
     if (symbol) {
       if (walletMap2) {
         updateWithdrawData({

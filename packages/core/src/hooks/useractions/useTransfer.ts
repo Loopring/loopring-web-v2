@@ -44,6 +44,7 @@ import {
   checkErrorInfo,
   useModalData,
   isAccActivated,
+  store,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
 
@@ -78,12 +79,10 @@ export const useTransfer = <R extends IBData<T>, T>() => {
     checkFeeIsEnough,
   } = useChargeFees({
     requestType: sdk.OffchainFeeReqType.TRANSFER,
-    updateData: React.useCallback(
-      ({ fee }) => {
-        updateTransferData({ ...transferValue, fee });
-      },
-      [transferValue]
-    ),
+    updateData: ({ fee }) => {
+      const transferValue = store.getState()._router_modalData.transferValue;
+      updateTransferData({ ...transferValue, fee });
+    },
   });
   const handleOnMemoChange = React.useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -163,11 +162,11 @@ export const useTransfer = <R extends IBData<T>, T>() => {
   useWalletLayer2Socket({ walletLayer2Callback });
 
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
     if (info?.isRetry) {
+      checkFeeIsEnough();
       return;
     }
-
+    checkFeeIsEnough(true);
     if (symbol && walletMap) {
       myLog("resetDefault symbol:", symbol);
       updateTransferData({
