@@ -291,16 +291,7 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
             <NFTPage />
           </ContentWrap>
         </Route>
-        <Route
-          exact
-          path={[
-            "/invest",
-            "/invest/balance",
-            "/invest/ammpool",
-            "/invest/defi/",
-            "/invest/defi/*",
-          ]}
-        >
+        <Route exact path={["/invest", "/invest/*"]}>
           <ContentWrap state={state}>
             <InvestPage />
           </ContentWrap>

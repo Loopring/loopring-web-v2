@@ -37,7 +37,7 @@ export const useReset = <T extends FeeInfo>(): {
 
   React.useEffect(() => {
     if (isShow) {
-      checkFeeIsEnough();
+      checkFeeIsEnough(true);
     }
   }, [isShow]);
 

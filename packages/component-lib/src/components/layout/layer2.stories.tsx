@@ -23,7 +23,6 @@ import {
   headerToolBarData,
   HideIcon,
   // IBData,
-  NavListIndex,
   PriceTag,
   subMenuLayer2,
   // VendorProviders,
@@ -122,15 +121,13 @@ const Layer2Wrap = withTranslation("common")(({ t, ...rest }: any) => {
   const [showAccountInfo, setShowAccountInfo] = React.useState(hasAccount);
   const handleClick = (_event: React.MouseEvent) => {
     if (showAccountInfo) {
-      // headerMenuData[ NavListIndex.layer2 ].iconBtn.view = false;
       setShowAccountInfo(false);
     } else {
-      // headerMenuData[ NavListIndex.layer2 ].iconBtn.view = true;
       setShowAccountInfo(true);
     }
     _event.stopPropagation();
   };
-  headerMenuData[NavListIndex.layer2].extender = hasAccount ? (
+  headerMenuData["layer2"].extender = hasAccount ? (
     <IconButton
       disabled={!hasAccount}
       onClick={handleClick}

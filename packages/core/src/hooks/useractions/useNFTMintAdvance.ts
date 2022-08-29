@@ -15,7 +15,8 @@ import {
   MINT_LIMIT,
   SagaStatus,
   Explorer,
-  TOAST_TIME, IPFS_LOOPRING_SITE,
+  TOAST_TIME,
+  IPFS_LOOPRING_SITE,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -62,7 +63,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
   const { t } = useTranslation("common");
   const [lastRequest, setLastRequest] = React.useState<any>({});
   const { checkHWAddr, updateHW } = useWalletInfo();
-  const {page, updateWalletLayer2NFT} = useWalletLayer2NFT();
+  const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
   const [isAvailableId, setIsAvailableId] = React.useState(false);
   const [isNFTCheckLoading, setIsNFTCheckLoading] = React.useState(false);
   const { setShowAccount, setShowNFTMintAdvance } = useOpenModals();
@@ -107,10 +108,10 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     },
   });
   const checkAvailable = ({
-                            nftMintAdvanceValue,
-                            isFeeNotEnough,
-                            isAvailableId,
-                          }: {
+    nftMintAdvanceValue,
+    isFeeNotEnough,
+    isAvailableId,
+  }: {
     nftMintAdvanceValue: TradeNFT<any>;
     isFeeNotEnough: any;
     isAvailableId: boolean;
@@ -141,7 +142,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
       resetBtnInfo();
       if (
         !error &&
-        checkAvailable({nftMintAdvanceValue, isFeeNotEnough, isAvailableId})
+        checkAvailable({ nftMintAdvanceValue, isFeeNotEnough, isAvailableId })
       ) {
         enableBtn();
         return;
@@ -186,7 +187,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
   ]);
 
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
+    checkFeeIsEnough(true);
     updateNFTMintAdvanceData({
       ...nftMintAdvanceValue,
       tradeValue: 0,
@@ -478,7 +479,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
         account.readyState === AccountStatus.ACTIVATED &&
         nftMintAdvanceValue &&
         tokenAddress &&
-        checkAvailable({nftMintAdvanceValue, isFeeNotEnough, isAvailableId})
+        checkAvailable({ nftMintAdvanceValue, isFeeNotEnough, isAvailableId })
       ) {
         setShowNFTMintAdvance({ isShow: false });
         setShowAccount({
@@ -597,7 +598,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
     onNFTMintClick: onNFTMintAdvanceClick,
     walletMap: {} as any,
     coinMap: totalCoinMap as any,
-    tradeData: {...nftMintAdvanceValue} as any,
+    tradeData: { ...nftMintAdvanceValue } as any,
     nftMintBtnStatus: btnStatus,
     btnInfo,
   };

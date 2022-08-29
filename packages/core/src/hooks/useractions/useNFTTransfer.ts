@@ -76,8 +76,9 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   } = useChargeFees({
     tokenAddress: nftTransferValue.tokenAddress,
     requestType: sdk.OffchainNFTFeeReqType.NFT_TRANSFER,
-    updateData: ({fee}) => {
-      const {nftTransferValue} = store.getState()._router_modalData;
+    updateData: ({ fee }) => {
+      const nftTransferValue =
+        store.getState()._router_modalData.nftTransferValue;
       updateNFTTransferData({
         ...nftTransferValue,
         balance: sdk
@@ -160,10 +161,11 @@ export const useNFTTransfer = <R extends TradeNFT<T>, T>() => {
   useWalletLayer2Socket({});
 
   const resetDefault = React.useCallback(() => {
-    checkFeeIsEnough();
     if (info?.isRetry) {
+      checkFeeIsEnough();
       return;
     }
+    checkFeeIsEnough(true);
     if (nftTransferValue.nftData) {
       updateNFTTransferData({
         balance: sdk

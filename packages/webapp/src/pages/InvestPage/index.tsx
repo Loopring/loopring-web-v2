@@ -25,7 +25,7 @@ export enum InvestType {
   Dual = 4,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi", "", "dual"];
+export const InvestRouter = ["balance", "ammpool", "defi", "overview","dual"];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   return (
@@ -202,6 +202,7 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         setIsShowTab(false);
         return;
       case InvestRouter[InvestType.Overview]:
+      case "":
       default:
         setTabIndex(InvestType.Overview);
         setIsShowTab(true);
@@ -279,5 +280,6 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         }}
       />
     </Box>
+  
   );
 });
