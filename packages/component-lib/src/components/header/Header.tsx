@@ -331,12 +331,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                       if (status === HeaderMenuTabStatus.hidden) {
                         return prev;
                       } else {
-                        if (
-                          child
-                          // &&
-                          // (account?.readyState === AccountStatus.ACTIVATED ||
-                          //   label.id !== "Layer2")
-                        ) {
+                        if (child) {
                           return [
                             ...prev,
                             memoized({
@@ -348,10 +343,12 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                             }),
                           ];
                         }
-                        const selectFlag = new RegExp(
-                          label.id?.toLowerCase(),
-                          "ig"
-                        ).test(match?.params[LAYERMAP[layer + 1]]);
+
+                        const selectFlag =
+                          match?.params[LAYERMAP[layer + 1]] &&
+                          new RegExp(label.id?.toLowerCase(), "ig").test(
+                            match?.params[LAYERMAP[layer + 1]]
+                          );
                         // myLog(
                         //   "match?.params[LAYERMAP[layer + 1]]",
                         //   match?.params[LAYERMAP[layer + 1]],
@@ -424,9 +421,11 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
                     horizontal: "right",
                   }
                 : { vertical: "bottom", horizontal: "left" },
-              selected: new RegExp(label.id?.toLowerCase(), "ig").test(
-                match?.params[LAYERMAP[layer + 1]]
-              ),
+              selected:
+                match?.params[LAYERMAP[layer + 1]] &&
+                new RegExp(`^${label.id?.toLowerCase()}`, "ig").test(
+                  match?.params[LAYERMAP[layer + 1]]
+                ),
               //match?.params.item,
               //   new RegExp(label.id, "ig").test(
               //   selected.split("/")[1] ? selected.split("/")[1] : selected
@@ -533,7 +532,7 @@ export const Header = withTranslation(["layout", "common"], { withRef: true })(
         const _headerMenuData: HeaderMenuItemInterface[] =
           headerMenuData.reduce((prev, _item) => {
             const item = _.cloneDeep(_item);
-            if (item.label.id === "Layer2") {
+            if (item.label.id === "L2Assets") {
               item.child = { ...subMenuLayer2 };
             }
             return [...prev, item];

@@ -121,20 +121,6 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [
   },
 ];
 
-// export enum HeadMenuTabKey {
-//   markets,
-//   trade,
-//   liquidity,
-//   Layer2,
-// }
-
-export enum NavListIndex {
-  markets,
-  trade,
-  liquidity,
-  layer2,
-}
-
 export const orderDisableList = ["Liquidity", "Markets", "Trading", "Mining"];
 export const ammDisableList = ["Liquidity"];
 
