@@ -370,7 +370,9 @@ export function useNFTMint<
             },
             counterFactualNftInfo: {
               nftOwner: account.accAddress,
-              nftFactory: sdk.NFTFactory_Collection[chainId],
+              nftFactory:
+                nftMintValue.collection.nftFactory ??
+                sdk.NFTFactory_Collection[chainId],
               nftBaseUri: nftMintValue.collection.baseUri ?? "",
             },
             royaltyPercentage: nftMintValue.nftMETA.royaltyPercentage ?? 0,

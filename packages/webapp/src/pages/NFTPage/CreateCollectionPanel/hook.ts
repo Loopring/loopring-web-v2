@@ -141,6 +141,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
             name: collectionValue.name?.trim(),
             tileUri: collectionValue.tileUri?.trim(),
             owner: account.accAddress,
+            nftFactory: sdk.NFTFactory_Collection[chainId],
           } as sdk.CollectionMeta,
           chainId as any,
           account.apiKey,
