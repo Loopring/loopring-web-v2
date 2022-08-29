@@ -1,6 +1,13 @@
 import { useHistory, useRouteMatch } from "react-router-dom";
 
-import { Box, fabClasses, formControlLabelClasses, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  fabClasses,
+  formControlLabelClasses,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 
 import { useTranslation, withTranslation } from "react-i18next";
 import {
@@ -22,7 +29,7 @@ export enum InvestType {
   Overview = 3,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi", ""];
+export const InvestRouter = ["balance", "ammpool", "defi", "overview"];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   const { isMobile } = useSettings();
@@ -166,7 +173,7 @@ export const DefiTitle = () => {
 };
 
 export const InvestPage = withTranslation("common", { withRef: true })(() => {
-  let match: any = useRouteMatch(["/invest/:item", ":subItem"]);
+  let match: any = useRouteMatch(["/invest/:item?", ":subItem"]);
   const history = useHistory();
   const { confirmDefiInvest: confirmDefiInvestFun } =
     confirmation.useConfirmation();
@@ -174,79 +181,78 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
   const [tabIndex, setTabIndex] = React.useState<InvestType>(
     InvestType.Overview
   );
-  const [isShowTab, setIsShowTab] = React.useState<Boolean>(
-    false
-  );
+  const [isShowTab, setIsShowTab] = React.useState<Boolean>(false);
   React.useEffect(() => {
     switch (match?.params.item) {
       case InvestRouter[InvestType.MyBalance]:
         setTabIndex(InvestType.MyBalance);
-        setIsShowTab(true)
+        setIsShowTab(true);
         return;
       // return ;
       case InvestRouter[InvestType.AmmPool]:
         setTabIndex(InvestType.AmmPool);
-        setIsShowTab(false)
+        setIsShowTab(false);
         return;
       case InvestRouter[InvestType.DeFi]:
         setTabIndex(InvestType.DeFi);
-        setIsShowTab(false)
+        setIsShowTab(false);
         return;
       case InvestRouter[InvestType.Overview]:
+      case "":
       default:
         setTabIndex(InvestType.Overview);
-        setIsShowTab(true)
+        setIsShowTab(true);
         return;
     }
   }, [match?.params.item]);
 
   return (
-   <Box flex={1} flexDirection={"column"} display={"flex"}>
-     {isShowTab && <Box display={'flex'}>
-       <Tabs
-         variant={"scrollable"}
-         value={tabIndex}
-         onChange={(_e, value) => {
-           history.push(`/invest/${InvestRouter[ value ]}`);
-           setTabIndex(value);
-         }}
-
-       >
-         <Tab value={InvestType.Overview} label={<OverviewTitle/>}/>
-         <Tab value={InvestType.MyBalance} label={<BalanceTitle/>}/>
-         <Tab
-           sx={{visibility: "hidden", width: 0}}
-           value={InvestType.AmmPool}
-           label={<AmmTitle/>}
-         />
-         <Tab
-           sx={{visibility: "hidden", width: 0}}
-           value={InvestType.DeFi}
-           label={<DefiTitle/>}
-         />
-       </Tabs>
-     </Box>
-     }
-     <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
-       {tabIndex === InvestType.Overview && <OverviewPanel/>}
-       {tabIndex === InvestType.AmmPool && <PoolsPanel/>}
-       {tabIndex === InvestType.DeFi && (
-         <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest}/>
-       )}
-       {tabIndex === InvestType.MyBalance && (
-         <Box
-           flex={1}
-           alignItems={"stretch"}
-           display={"flex"}
-           flexDirection={"column"}
-         >
-           <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel/>}/>
-         </Box>
-       )}
-     </Box>
-     <ConfirmInvestDefiRisk
-       open={confirmDefiInvest}
-       handleClose={(_e, isAgree) => {
+    <Box flex={1} flexDirection={"column"} display={"flex"}>
+      {isShowTab && (
+        <Box display={"flex"}>
+          <Tabs
+            variant={"scrollable"}
+            value={tabIndex}
+            onChange={(_e, value) => {
+              history.push(`/invest/${InvestRouter[value]}`);
+              setTabIndex(value);
+            }}
+          >
+            <Tab value={InvestType.Overview} label={<OverviewTitle />} />
+            <Tab value={InvestType.MyBalance} label={<BalanceTitle />} />
+            <Tab
+              sx={{ visibility: "hidden", width: 0 }}
+              value={InvestType.AmmPool}
+              label={<AmmTitle />}
+            />
+            <Tab
+              sx={{ visibility: "hidden", width: 0 }}
+              value={InvestType.DeFi}
+              label={<DefiTitle />}
+            />
+          </Tabs>
+        </Box>
+      )}
+      <Box flex={1} component={"section"} marginTop={1} display={"flex"}>
+        {tabIndex === InvestType.Overview && <OverviewPanel />}
+        {tabIndex === InvestType.AmmPool && <PoolsPanel />}
+        {tabIndex === InvestType.DeFi && (
+          <DeFiPanel setConfirmDefiInvest={setConfirmDefiInvest} />
+        )}
+        {tabIndex === InvestType.MyBalance && (
+          <Box
+            flex={1}
+            alignItems={"stretch"}
+            display={"flex"}
+            flexDirection={"column"}
+          >
+            <ViewAccountTemplate activeViewTemplate={<MyLiquidityPanel />} />
+          </Box>
+        )}
+      </Box>
+      <ConfirmInvestDefiRisk
+        open={confirmDefiInvest}
+        handleClose={(_e, isAgree) => {
           setConfirmDefiInvest(false);
           if (!isAgree) {
             history.goBack();
@@ -256,6 +262,5 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         }}
       />
     </Box>
-  
   );
 });

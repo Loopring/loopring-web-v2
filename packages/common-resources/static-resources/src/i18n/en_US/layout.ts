@@ -9,7 +9,7 @@ export default {
   labelSmartWallet: "Smart Wallet",
   loopringDomain: "Loopring L2 - APP ",
   labelClassic: "Swap",
-  labelClassicDescription: "Intuitive trading interface.",
+  labelClassicDescription: "Intuitive trading interface",
   labelAdvanced: "Order Book",
   labelAdvancedDescription: "Full access to all trading tools",
   labelDownloadApp: "Download Loopring Wallet Mobile Application",
