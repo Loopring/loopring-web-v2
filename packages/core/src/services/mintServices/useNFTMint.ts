@@ -370,7 +370,7 @@ export function useNFTMint<
             counterFactualNftInfo: {
               nftOwner: account.accAddress,
               nftFactory: sdk.NFTFactory[chainId],
-              nftBaseUri: "",
+              nftBaseUri: nftMintValue.collection?.baseUri ?? "",
             },
             royaltyPercentage: nftMintValue.nftMETA.royaltyPercentage ?? 0,
             forceToMint: false,
