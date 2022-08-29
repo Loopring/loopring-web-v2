@@ -333,3 +333,5 @@ export enum CollectionMetaKey {
   thumbnail = "thumbnail",
   cid = "cid",
 }
+
+export type DualCalcData<_T> = {};

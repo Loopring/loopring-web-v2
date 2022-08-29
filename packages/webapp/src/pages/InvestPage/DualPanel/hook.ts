@@ -1,39 +1,68 @@
 import { useRouteMatch } from "react-router-dom";
 import { useTranslation, WithTranslation } from "react-i18next";
-import { confirmation, useDualMap } from "@loopring-web/core";
+import { confirmation, findDualMarket, useDualMap } from "@loopring-web/core";
+import React from "react";
 
 export const useDualHook = ({
-  setConfirmDualInvest,
-}: WithTranslation & {
+                              setConfirmDualInvest,
+                            }: WithTranslation & {
   setConfirmDualInvest: (state: any) => void;
 }) => {
-  const { t } = useTranslation("common");
+  const {t} = useTranslation("common");
   const match: any = useRouteMatch("/invest/dual/:market?");
-  const { marketArray, tradeMap } = useDualMap();
+  const {marketArray, tradeMap} = useDualMap();
   const [, , coinA, coinB] =
     match.params?.market?.match(/(dual-)?(\w+)-(\w+)/i);
-  const pairASymbol = tradeMap[coinA] ? coinA : "LRC";
-  const pairBSymbol =
-    coinB && tradeMap[pairASymbol]?.tokenList
-      ? tradeMap[pairASymbol].tokenList.includes(coinB)
-        ? coinB
-        : tradeMap[pairASymbol].tokenList[0]
-      : "USDT";
 
-  const market = marketArray.find((item) => {
-    const regExp = new RegExp(
-      `^(\\w+-)?(${pairASymbol}-${pairBSymbol}|${pairBSymbol}-${pairASymbol})$`,
-      "i"
-    );
-    return regExp.test(item);
-  });
+  const [pairASymbol, setPairASymbol] = React.useState(() =>
+    tradeMap[ coinA ] ? coinA : "LRC"
+  );
+  const [pairBSymbol, setPairBSymbol] = React.useState(
+    coinB && tradeMap[ pairASymbol ]?.tokenList
+      ? tradeMap[ pairASymbol ].tokenList.includes(coinB)
+        ? coinB
+        : tradeMap[ pairASymbol ].tokenList[ 0 ]
+      : "USDT"
+  );
+  const [market, setMarket] = React.useState(() =>
+    findDualMarket(marketArray, pairASymbol, pairBSymbol)
+  );
+  const handleOnPairChange = React.useCallback(
+    (
+      prosp:
+        | {
+        pairA: string;
+      }
+        | { pairB: string }
+    ) => {
+      if (prosp.hasOwnProperty("pairA")) {
+        const pairASymbol = (prosp as any).pairA;
+        const pairBSymbol = tradeMap[ pairASymbol ]?.tokenList[ 0 ];
+        setPairASymbol(pairASymbol);
+        setPairBSymbol(pairBSymbol);
+        setMarket(() => findDualMarket(marketArray, pairASymbol, pairBSymbol));
+      } else if (prosp.hasOwnProperty("pairB")) {
+        const pairBSymbol = (prosp as any).pairB;
+        setMarket(() => findDualMarket(marketArray, pairASymbol, pairBSymbol));
+      }
+    },
+    [marketArray, pairASymbol, tradeMap]
+  );
+
+  const [dualProduct, setDualProduct] = React.useState([]);
+  const getProduct = async () => {
+    await
+  };
+  React.useEffect(() => {
+    getProduct();
+  }, [market]);
   //   [...(marketArray ? marketArray : [])].find(
   //   (_item) => {
   //     const value = match?.params?.market
   //       ?.replace(/null|-/gi, "")
   //       ?.toUpperCase();
   const {
-    confirmation: { confirmedDualInvest },
+    confirmation: {confirmedDualInvest},
   } = confirmation.useConfirmation();
   setConfirmDualInvest(!confirmedDualInvest);
   // const { toastOpen, setToastOpen, closeToast } = useToast();
