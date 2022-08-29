@@ -54,7 +54,7 @@ export function* getDefiSyncSaga({
 }: PayloadAction<{ defiMap: DefiMap }>) {
   try {
     if (payload.defiMap) {
-	    yield put(getDefiMapStatus({ ...payload.defiMap }));
+      yield put(getDefiMapStatus({ ...payload.defiMap }));
     }
   } catch (err) {
     yield put(getDefiMapStatus(err));

@@ -296,10 +296,10 @@ export const useDefiTrade = <
           label: `labelDefiMin| ${getValuePrecisionThousand(
             sdk
               .toBig(tradeDefi?.miniSellVol ?? 0)
-              .div("1e" + tokenMap[ coinSellSymbol ]?.decimals),
-            tokenMap[ coinSellSymbol ].precision,
-            tokenMap[ coinSellSymbol ].precision,
-            tokenMap[ coinSellSymbol ].precision,
+              .div("1e" + tokenMap[coinSellSymbol]?.decimals),
+            tokenMap[coinSellSymbol].precision,
+            tokenMap[coinSellSymbol].precision,
+            tokenMap[coinSellSymbol].precision,
             false,
             { floor: false, isAbbreviate: true }
           )} ${coinSellSymbol}`,
