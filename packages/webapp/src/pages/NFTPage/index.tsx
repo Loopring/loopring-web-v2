@@ -24,7 +24,7 @@ export const subMenu = subMenuNFT;
 export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
   const { t } = useTranslation(["common"]);
-  const selected = match?.params.item ?? "assetsNFT";
+  const selected = match?.params?.item ?? "assetsNFT";
 
   const routerNFT = React.useMemo(() => {
     switch (selected) {
@@ -34,7 +34,7 @@ export const NFTPage = () => {
         return <MintLandingPage />;
       case "mintNFT":
         return <MintNFTPanel />;
-      case "mintAdvanceNFT":
+      case "mintNFTAdvance":
         return <MintNFTAdvancePanel />;
       case "depositNFT":
         return <DepositNFTPanel />;

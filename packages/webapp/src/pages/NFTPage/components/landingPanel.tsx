@@ -42,7 +42,7 @@ export const MintLandingPanel = () => {
       >
         <CardNFTStyled
           onClick={() => {
-            history.push("/nft/mintAdvanceNFT");
+            history.push("/nft/mintNFTAdvance");
             // setShowNFTMintAdvance({isShow: true});
           }}
         >

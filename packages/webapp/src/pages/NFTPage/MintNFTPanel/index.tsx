@@ -135,10 +135,12 @@ export const MintNFTAdvancePanel = <
     useNFTMintAdvance();
 
   const history = useHistory();
-  const match: any = useRouteMatch("/nft/:mintAdvanceNFT");
+  const match: any = useRouteMatch("/nft/:type");
   React.useEffect(() => {
-    resetNFTMint();
-  }, [match.params?.mintAdvanceNFT]);
+    if (match.params?.type === "mintNFTAdvance") {
+      resetNFTMint();
+    }
+  }, [match.params?.type]);
   const { t } = useTranslation("common");
   const popupState = usePopupState({
     variant: "popover",

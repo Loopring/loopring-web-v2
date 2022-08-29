@@ -398,7 +398,7 @@ export const headerMenuData: Array<HeaderMenuItemInterface> = [
       id: "Invest",
       i18nKey: "labelInvest",
     },
-    router: { path: "/invest" },
+    router: { path: "/invest/overview" },
     status: HeaderMenuTabStatus.default,
     child: subMenuInvest,
   },

@@ -98,12 +98,14 @@ export const MyNFTPanel = withTranslation("common")(
       }
     };
     React.useEffect(() => {
-      checkCollection();
-    }, [match.params?.contract]);
+      if (match?.params?.contract?.startsWith("0x")) {
+        checkCollection();
+      }
+    }, [match?.params?.contract]);
 
     return (
       <Box flex={1} display={"flex"} flexDirection={"column"}>
-        {match.params?.contract ? (
+        {match?.params?.contract ? (
           <>
             <Box
               display={"flex"}
