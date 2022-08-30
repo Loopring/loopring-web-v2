@@ -53,13 +53,13 @@ Assume that the current time is August 18th, the LRC price is 0.42, and the user
 After the order expires, the user will get 0.6% of the income. The only uncertainty is the currency of the return, which depends on the LRC/USDT settlement price at the time of expiration.
 
 #### Definitions
-| | |
-| ------------ | ------------ |
+| Noun | Description |
+| :------------ | :------------ |
 | Investment Currency  | The currency in which you have purchased the dual investment.  |
 | Settlement Currency  | The currency you will receive when the order expires. It will be either the target currency or USDT. Each product is settled depending on whether reaching the target price.  |
 | Settlement Date  | The date when the order is settled. Return from the order will be automatically credited into your account on this day after 16:00 (UTC+8) |
 | ROI  | The income return on investment. It is expressed in percentages and is used to calculate the settlement amount.  |
-| APR  | Annualized Yield is calculated as the equivalent annual return. If continue purchasing with the given yield for a whole year. Annualized Yield = Yield &#47; (Expiry Date – Today) &#42;365. The holding period is actuarial to milliseconds. |
+| APR  | Annualized Yield is calculated as the equivalent annual return. If continue purchasing with the given yield for a whole year. Annualized Yield = Yield &#47; (Expiry Date – Today) &#42;365 <br/>*The holding period is actuarial to milliseconds.</br> |
 | Target Price  | Target Price is a benchmark price. On Expiry Day, the Settlement Price will be compared against this benchmark price.  |
 | Settlement Price  | The average of the Settlement Index in the last 30 minutes before 16:00 (UTC+8) on the Expiry date.  |
 | Settlement Index  | Settlement Index is derived from some leading exchanges, including Bittrex, Bitstamp, Coinbase Pro, Gemini, Kraken, Itbit, and LMAX Digital.  |
