@@ -1,4 +1,5 @@
 import {
+  Box,
   Checkbox,
   Dialog,
   DialogActions,
@@ -18,7 +19,7 @@ import { Button } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
-import { useOpenModals } from "../../../../stores";
+import { useOpenModals, useSettings } from "../../../../stores";
 
 import {
   Account,
@@ -27,15 +28,22 @@ import {
   CheckedIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
+  Lang,
+  MarkdownStyle,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
 import { TradeDefi } from "@loopring-web/core";
 import BigNumber from "bignumber.js";
+import ReactMarkdown from "react-markdown";
+import gfm from "remark-gfm";
+import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";
+import { useTheme } from "@emotion/react";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
   }
+
   .MuiList-root {
     list-style: inside;
 
@@ -1190,6 +1198,34 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
     handleClose: (event: any, isAgree?: boolean) => void;
   }) => {
     const [agree, setAgree] = React.useState(false);
+    const { language } = useSettings();
+    const theme = useTheme();
+    const [input, setInput] = React.useState<string>("");
+    React.useEffect(() => {
+      // if (path) {
+      try {
+        const lng = Lang[language] ?? "en";
+        Promise.all([
+          fetch(
+            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_en.md`
+          ),
+          fetch(
+            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_${lng}.md`
+          ),
+        ])
+          .then(([response1, response2]) => {
+            if (response2) {
+              return response2.text();
+            } else {
+              return response1.text();
+            }
+          })
+          .then((input) => {
+            setInput(input);
+          })
+          .catch(() => {});
+      } catch (e: any) {}
+    }, []);
     return (
       <Dialog
         open={open}
@@ -1198,51 +1234,75 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle> {t("labelDualRiskTitle")}</DialogTitle>
+
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <Trans i18nKey={"labelDualRisk"}>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                display={"block"}
-                color={"textSecondary"}
-              >
-                Lido is a liquid staking solution for ETH 2.0 backed by
-                industry-leading staking providers. Lido lets users stake their
-                ETH - without locking assets or maintaining infrastructure.
-              </Typography>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                marginTop={2}
-                display={"block"}
-                color={"textSecondary"}
-              >
-                When using Lido to stake your ETH on the Ethereum beacon chain,
-                users will receive a token (stETH), which represents their ETH
-                on the Ethereum beacon chain on a 1:1 basis. It effectively acts
-                as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.
-              </Typography>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body1"}
-                marginTop={2}
-                display={"block"}
-                color={"textSecondary"}
-              >
-                wstETH is the wrapped version of stETH. The total amount of
-                wstETH doesn’t change after users receive the token. Instead,
-                the token’s value increase over time to reflect ETH staking
-                rewards earned.
-              </Typography>
-            </Trans>
-          </DialogContentText>
+          {input ? (
+            <MarkdownStyle maxHeight={"50vh"}>
+              <DialogContentText id="alert-dialog-slide-description">
+                <Box
+                  flex={1}
+                  padding={3}
+                  boxSizing={"border-box"}
+                  className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
+                >
+                  <ReactMarkdown
+                    remarkPlugins={[gfm]}
+                    children={input}
+                    // escapeHtml={false}
+                  />
+                </Box>
+
+                {/*<Trans i18nKey={"labelDualRisk"}>*/}
+                {/*  <Typography*/}
+                {/*    whiteSpace={"pre-line"}*/}
+                {/*    component={"span"}*/}
+                {/*    variant={"body1"}*/}
+                {/*    display={"block"}*/}
+                {/*    color={"textSecondary"}*/}
+                {/*  >*/}
+                {/*    Lido is a liquid staking solution for ETH 2.0 backed by*/}
+                {/*    industry-leading staking providers. Lido lets users stake their*/}
+                {/*    ETH - without locking assets or maintaining infrastructure.*/}
+                {/*  </Typography>*/}
+                {/*  <Typography*/}
+                {/*    whiteSpace={"pre-line"}*/}
+                {/*    component={"span"}*/}
+                {/*    variant={"body1"}*/}
+                {/*    marginTop={2}*/}
+                {/*    display={"block"}*/}
+                {/*    color={"textSecondary"}*/}
+                {/*  >*/}
+                {/*    When using Lido to stake your ETH on the Ethereum beacon chain,*/}
+                {/*    users will receive a token (stETH), which represents their ETH*/}
+                {/*    on the Ethereum beacon chain on a 1:1 basis. It effectively acts*/}
+                {/*    as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.*/}
+                {/*  </Typography>*/}
+                {/*  <Typography*/}
+                {/*    whiteSpace={"pre-line"}*/}
+                {/*    component={"span"}*/}
+                {/*    variant={"body1"}*/}
+                {/*    marginTop={2}*/}
+                {/*    display={"block"}*/}
+                {/*    color={"textSecondary"}*/}
+                {/*  >*/}
+                {/*    wstETH is the wrapped version of stETH. The total amount of*/}
+                {/*    wstETH doesn’t change after users receive the token. Instead,*/}
+                {/*    the token’s value increase over time to reflect ETH staking*/}
+                {/*    rewards earned.*/}
+                {/*  </Typography>*/}
+                {/*</Trans>*/}
+              </DialogContentText>
+            </MarkdownStyle>
+          ) : (
+            <LoadingBlock />
+          )}
+        </DialogContent>
+
+        <DialogContent>
           <MuiFormControlLabel
             control={
               <Checkbox
+                disabled={!input}
                 checked={agree}
                 onChange={(_event: any, state: boolean) => {
                   setAgree(state);
@@ -1254,38 +1314,6 @@ export const ConfirmInvestDualRisk = withTranslation("common")(
             }
             label={t("labelDualAgree")}
           />
-        </DialogContent>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-DualRisk2">
-            <Trans i18nKey={"labelDualRisk2"}>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body2"}
-                marginTop={2}
-                display={"block"}
-                color={"textThird"}
-              >
-                It is important to note that users can't redeem wstETH for ETH
-                until phase 2 of Ethereum 2.0. However, users are able to trade
-                wstETH for ETH on various exchanges at market prices.{" "}
-              </Typography>
-              <Typography
-                whiteSpace={"pre-line"}
-                component={"span"}
-                variant={"body2"}
-                marginTop={2}
-                display={"block"}
-                color={"textThird"}
-              >
-                Loopring will provide a pool to allow users to trade wstETH for
-                ETH directly on Layer 2. The pool will rebalance periodically
-                when it reaches a specific threshold. If there is not enough
-                inventory on Layer 2, user can always withdraw their wstETH
-                tokens to Layer 1 and swap for ETH in Lido, Curve, or 1inch.{" "}
-              </Typography>
-            </Trans>
-          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button

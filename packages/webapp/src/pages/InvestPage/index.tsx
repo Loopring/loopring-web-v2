@@ -25,7 +25,7 @@ export enum InvestType {
   Dual = 4,
 }
 
-export const InvestRouter = ["balance", "ammpool", "defi", "overview","dual"];
+export const InvestRouter = ["balance", "ammpool", "defi", "overview", "dual"];
 export const BalanceTitle = () => {
   const { t } = useTranslation();
   return (
@@ -271,7 +271,6 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
       <ConfirmInvestDualRisk
         open={confirmDualInvest}
         handleClose={(_e, isAgree) => {
-          setConfirmDualInvest(false);
           if (!isAgree) {
             history.goBack();
           } else {
@@ -280,6 +279,5 @@ export const InvestPage = withTranslation("common", { withRef: true })(() => {
         }}
       />
     </Box>
-  
   );
 });

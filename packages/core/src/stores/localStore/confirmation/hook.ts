@@ -21,10 +21,10 @@ export const useConfirmation = (): {
       dispatch(confirm(undefined));
     }, [dispatch]),
     confirmDualInvest: React.useCallback(() => {
-      dispatch(confirmDefiInvest(undefined));
+      dispatch(confirmDualInvest(undefined));
     }, [dispatch]),
     confirmDefiInvest: React.useCallback(() => {
-      dispatch(confirmDualInvest(undefined));
+      dispatch(confirmDefiInvest(undefined));
     }, [dispatch]),
   };
 };

@@ -24,6 +24,10 @@ export const LandPageHeightConfig = {
   maxHeight: 836,
   minHeight: 800,
 };
+export const Lang = {
+  en_US: "en",
+  zh_CN: "zh",
+};
 export const FeeChargeOrderUATDefault = ["USDT", "ETH", "LRC", "DAI"];
 export const Explorer = "https://explorer.loopring.io/";
 export const Bridge = "https://bridge.loopring.io/#/";

@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-
 export default {
   labelErrorTitle: "Error Detail: ",
   labelNoContent: "No Content",
@@ -911,4 +910,12 @@ export default {
   labelSell: "Sell",
   labelRampNoBalance: "Insufficient {{belong}} balance",
   labelL2toRampTitle: "Send to Ramp",
+  labelDualInvest: "Invest {{symbol}}",
+  labelDualBase: "Base on {{symbol}}",
+  labelDualAgree: "I have read risk warning",
+  labelDualRiskTitle: "Dual Investment",
+  labelDualInvestTitle: "Invest {{symbolA}} (Based on {{symbolB}})",
+  labelDualInvestDes:
+    "Invest {{symbolA}} to earn more {{symbolA}} or {{symbolB}}",
+  labelDualCurrentPrice: "{{symbol}} Current price: <1>{{price}}</1>",
 };

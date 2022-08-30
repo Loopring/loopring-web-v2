@@ -1,40 +1,114 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Grid } from "@mui/material";
-import { WithTranslation, withTranslation } from "react-i18next";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
+import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useDualHook } from "./hook";
 import {
   boxLiner,
   Button,
+  CoinIcon,
+  CoinIcons,
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
+import {
+  confirmation,
+  TOAST_TIME,
+  useDefiMap,
+  useDualMap,
+  useSystem,
+  useTicker,
+  useTokenPrices,
+} from "@loopring-web/core";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { BackIcon, MarketType } from "@loopring-web/common-resources";
 
-const StyleWrapper = styled(Box)`
+const StyleDual = styled(Box)`
   position: relative;
+
+  .dualInvestCard {
+    .MuiCardContent-root {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: ${({ theme }) => (3 / 2) * theme.unit}px 0;
+    border-radius: ${({ theme }) => theme.unit}px;
+
+    &.selected {
+      background: var(--color-success);
+    }
+  }
+` as typeof Box;
+const WrapperStyled = styled(Box)`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 
-  .loading-block {
-    background: initial;
+  .logo-icon.dual:last-child {
+    transform: scale(0.6) translate(6px, 6px);
   }
-
-  .hasLinerBg {
-    ${({ theme }) => boxLiner({ theme })}
-  }
-
-  border-radius: ${({ theme }) => theme.unit}px;
-` as typeof Grid;
+`;
 
 export const DualPanel: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
-    setConfirmDefiInvest,
+    setConfirmDualInvest,
   }: WithTranslation & {
-    setConfirmDefiInvest: (state: any) => void;
+    setConfirmDualInvest: (state: any) => void;
   }) => {
+    const { coinJson } = useSettings();
+    const { currency } = useSettings();
+    const { forexMap } = useSystem();
+
+    const {
+      pairASymbol,
+      pairBSymbol,
+      market,
+      isLoading,
+      dualProducts,
+      marketBase,
+      marketQuote,
+      priceObj,
+      handleOnPairChange,
+    } = useDualHook({ setConfirmDualInvest });
+    const {};
+
+    // if (token.type === "lp" && middle && tail) {
+    //   tokenIcon =
+    //     [middle] && coinJson[tail]
+    //       ? [coinJson[middle], coinJson[tail]]
+    //       : [undefined, undefined];
+    // }
+    // if (token.type !== "lp" && head && head !== "lp") {
+    //   tokenIcon = coinJson[head]
+    //     ? [coinJson[head], undefined]
+    //     : [undefined, undefined];
+    // }
+
+    // const [mainTab, setMainTab] = React.useState(pairASymbol);
+    // const [secondTab, setSecondTab] = React.useState(pairBSymbol);
+    const { tradeMap } = useDualMap();
+
     // const { marketArray } = useDefiMap();
     // const {
     //   confirmation: { confirmedDefiInvest },
@@ -57,15 +131,7 @@ export const DualPanel: any = withTranslation("common")(
     //   market: _market ?? ("WSTETH-ETH" as MarketType),
     //     isJoin,
     // }
-    const {
-      // dualWrapProps,
-      // closeToast,
-      // toastOpen,
-      // confirmShowNoBalance,
-      // setConfirmShowNoBalance,
-      // serverUpdate,
-      // setServerUpdate,
-    } = useDualHook({ setConfirmDualInvest });
+
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const history = useHistory();
@@ -84,50 +150,142 @@ export const DualPanel: any = withTranslation("common")(
             {/*<Typography color={"textPrimary"}></Typography>*/}
           </Button>
         </Box>
-        <StyleWrapper
-          display={"flex"}
-          flexDirection={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          flex={1}
-        >
-          {/*{dualWrapProps.dualCalcData ? (*/}
-          {/*  <Box*/}
-          {/*    className={"hasLinerBg"}*/}
-          {/*    display={"flex"}*/}
-          {/*    style={styles}*/}
-          {/*    justifyContent={"center"}*/}
-          {/*    padding={5 / 2}*/}
-          {/*  >*/}
-          {/*    <DualWrap*/}
-          {/*      market={_market}*/}
-          {/*      isJoin={isJoin}*/}
-          {/*      {...(dualWrapProps as any)}*/}
-          {/*    />*/}
-          {/*  </Box>*/}
-          {/*) : (*/}
-          {/*  <LoadingBlock/>*/}
-          {/*)}*/}
-          <Toast
-            alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? "success"}
-            open={toastOpen?.open ?? false}
-            autoHideDuration={TOAST_TIME}
-            onClose={closeToast}
-          />
+        <StyleDual flexDirection={"column"} display={"flex"} flex={1}>
+          <Grid container spacing={2}>
+            {Reflect.ownKeys(tradeMap).map((item, index) => {
+              return (
+                <Grid
+                  item
+                  xs={6}
+                  md={3}
+                  lg={2}
+                  key={item.toString() + index.toString()}
+                >
+                  <Card
+                    className={
+                      item.toString().toLowerCase() ===
+                      pairASymbol.toLowerCase()
+                        ? "dualInvestCard selected"
+                        : "dualInvestCard "
+                    }
+                    onClick={() =>
+                      handleOnPairChange({ pairA: item.toString() })
+                    }
+                  >
+                    <CardContent>
+                      <CoinIcon symbol={item.toString()} size={24} />
+                      <Typography variant={"h5"} paddingLeft={1}>
+                        {t("labelDualInvest", { symbol: item.toString() })}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
 
-          {/*<ConfirmInvestDefiServiceUpdate open={serverUpdate} handleClose={() => setServerUpdate(false)}/>*/}
-          {/*<ConfirmDefiNOBalance*/}
-          {/*  isJoin={isJoin}*/}
-          {/*  handleClose={(_e) => {*/}
-          {/*    setConfirmShowNoBalance(false);*/}
-          {/*    if (dualWrapProps?.onRefreshData) {*/}
-          {/*      dualWrapProps?.onRefreshData(true, true);*/}
-          {/*    }*/}
-          {/*  }}*/}
-          {/*  open={confirmShowNoBalance}*/}
-          {/*/>*/}
-        </StyleWrapper>
+          <Box marginTop={1}>
+            <Tabs
+              value={pairBSymbol}
+              onChange={(_e, value) => handleOnPairChange({ pairB: value })}
+              aria-label="disabled tabs example"
+              variant={"scrollable"}
+            >
+              {pairASymbol &&
+                tradeMap[pairASymbol]?.tokenList?.map((item, index) => {
+                  return (
+                    <Tab
+                      label={t("labelDualBase", { symbol: item.toString() })}
+                      value={item.toString()}
+                      key={item.toString() + index.toString()}
+                    />
+                  );
+                })}
+            </Tabs>
+          </Box>
+
+          <WrapperStyled marginTop={1} flex={1} flexDirection={"column"}>
+            {pairASymbol && pairBSymbol && (
+              <Box
+                display={"flex"}
+                flexDirection={"row"}
+                paddingTop={3}
+                paddingX={3}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+              >
+                <Box
+                  component={"h3"}
+                  display={"flex"}
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                >
+                  <Typography component={"span"} display={"inline-flex"}>
+                    {/* eslint-disable-next-line react/jsx-no-undef */}
+                    <CoinIcons
+                      type={"dual"}
+                      size={32}
+                      tokenIcon={[coinJson[pairASymbol], coinJson[pairBSymbol]]}
+                    />
+                  </Typography>
+                  <Typography
+                    component={"span"}
+                    flexDirection={"column"}
+                    display={"flex"}
+                  >
+                    <Typography
+                      component={"span"}
+                      display={"inline-flex"}
+                      color={"textPrimary"}
+                    >
+                      {t("labelDualInvestTitle", {
+                        symbolA: pairASymbol,
+                        symbolB: pairBSymbol,
+                      })}
+                    </Typography>
+                    <Typography
+                      component={"span"}
+                      display={"inline-flex"}
+                      color={"textSecondary"}
+                      variant={"body2"}
+                    >
+                      {t("labelDualInvestDes", {
+                        symbolA: pairASymbol,
+                        symbolB: pairBSymbol,
+                      })}
+                    </Typography>
+                  </Typography>
+                </Box>
+                <Typography
+                  component={"span"}
+                  display={"inline-flex"}
+                  color={"textSecondary"}
+                  variant={"body2"}
+                >
+                  <Trans
+                    i18nKey={"labelDualCurrentPrice"}
+                    tOptions={{
+                      price: priceObj.price,
+                      symbol: priceObj.symbol,
+                    }}
+                  >
+                    LRC Current price:
+                    <Typography
+                      component={"span"}
+                      display={"inline-flex"}
+                      color={"textPrimary"}
+                    >
+                      {t("labelDualInvestTitle", {
+                        symbolA: pairASymbol,
+                        symbolB: pairBSymbol,
+                      })}
+                    </Typography>
+                  </Trans>
+                </Typography>
+              </Box>
+            )}
+          </WrapperStyled>
+        </StyleDual>
       </Box>
     );
   }
