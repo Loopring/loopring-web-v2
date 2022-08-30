@@ -1,4 +1,4 @@
-### What is Dual investment?
+# What is Dual investment?
 
 Dual Investment is a non-principal protected structured product. Upon purchasing, you can select the underlying asset, investment currency, investment amount, and delivery date. Your return will be denominated in the investment currency or alternate currency, depending on the below conditions. The Settlement Price is below/above the Target Price at the delivery date.
 
@@ -10,13 +10,13 @@ Each purchased product has a settlement date. We will take an average of the mar
 
 `*Please make sure that you fully understand the product and the risks before investing.`
 
-#### How to calculate my return?
+## How to calculate my return?
 
 When the target price is reached, your investment and interest income will be converted into USDT with a target price as the conversion rate.
 
 When the target price is reached, your investment and interest income will be converted into USDT with a target price as the conversion rate.
 
-##### Example 1:
+### Example 1:
 > ###### Invest LRC for LRC-USDT Dual Investment
 > Target Price: 0.48   
 > Settlement Date: 21-AUG-2022   
@@ -26,16 +26,16 @@ When the target price is reached, your investment and interest income will be co
 
 Assume that the current time is August 18th, the LRC price is 0.42, and the user chooses to invest 1,000 LRC in Dual Investment due in the week.
 
-> ###### At 21-AUG-2022
-> ###### Scenario 1  
+> ### At 21-AUG-2022
+> ### Scenario 1  
 > If the Settlement Price of LRC on that day is lower than the Target Price of 0.48 USDT, the user will get 0.6% of LRC, that is, 1000 * (1 + 0.6%) LRC = 1006 LRC.  
-> ###### Scenario 2
+> ### Scenario 2
 > If the Settlement Price of LRC is higher than the Target Price of 0.48 USDT, the end user will get 0.6% of USDT, that is, 1000 * 0.48 * (1 + 0.6%) USDT = 482.88 USDT.  
 
 After the order expires, the user will get 0.6% of the income. The only uncertainty is the currency of the return, which depends on the LRC/USDT settlement price at the time of expiration.
 
-##### Example 2:
-> ###### Invest USDT for USDT-LRC Dual Investment
+### Example 2:
+> ### Invest USDT for USDT-LRC Dual Investment
 > Target Price: 0.38  
 > Settlement Date: 21-AUG-2022  
 > ROI: 0.6%  
@@ -44,15 +44,15 @@ After the order expires, the user will get 0.6% of the income. The only uncertai
 
 Assume that the current time is August 18th, the LRC price is 0.42, and the user chooses to invest 1,000 USDT in Dual Investment due in one week.
 
-> ###### At 21-AUG-2022
-> ###### Scenario 1
+> ### At 21-AUG-2022
+> ### Scenario 1
 > If the Settlement Price of LRC on that day is lower than the Target Price of 0.38 USDT, the user will get 0.6% of LRC, that is, (1000/0.38) * (1 + 0.6%) LRC = 2647.368 LRC.  
-> ###### Scenario 2
+> ### Scenario 2
 > If the settlement price of LRC is higher than the Target Price of 0.38 USDT, the end user will receive 0.6% of USDT, that is, 1000 * (1 + 0.6%) USDT = 1006 USDT.  
 
 After the order expires, the user will get 0.6% of the income. The only uncertainty is the currency of the return, which depends on the LRC/USDT settlement price at the time of expiration.
 
-#### Definitions
+### Definitions
 | Noun | Description |
 | :------------ | :------------ |
 | Investment Currency  | The currency in which you have purchased the dual investment.  |
@@ -64,7 +64,7 @@ After the order expires, the user will get 0.6% of the income. The only uncertai
 | Settlement Price  | The average of the Settlement Index in the last 30 minutes before 16:00 (UTC+8) on the Expiry date.  |
 | Settlement Index  | Settlement Index is derived from some leading exchanges, including Bittrex, Bitstamp, Coinbase Pro, Gemini, Kraken, Itbit, and LMAX Digital.  |
 
-#### FAQ
+### FAQ
 Q： What is the purchase deadline for the dual investment？  
 A： Please complete the purchase before 15:00 (UTC+8) on the settlement day.  
 
