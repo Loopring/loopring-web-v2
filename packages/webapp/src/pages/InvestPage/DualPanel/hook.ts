@@ -56,19 +56,24 @@ export const useDualHook = ({
   );
 
   const [dualProduct, setDualProduct] = React.useState([]);
-  const getProduct = _.debounce(async () => {
-    await LoopringAPI.defiAPI?.getDualInfos({
-      // baseSymbol: string;
-      // quoteSymbol: string;
-      // currency: string;
-      // dualType: string;
-      // minStrike? : string;
-      // maxStrike? : string;
-      // startTime? : number;
-      // timeSpan? : number;
-      // limit: number;
-    });
-  });
+  const getProduct = _.throttle(async () => {
+    const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
+      /(dual-)?(\w+)-(\w+)/i
+    );
+    if (marketSymbolA && marketSymbolB && pairASymbol && pairBSymbol) {
+      await LoopringAPI.defiAPI?.getDualInfos({
+        // baseSymbol: string;
+        // quoteSymbol: string;
+        // currency: string;
+        // dualType: string;
+        // minStrike? : string;
+        // maxStrike? : string;
+        // startTime? : number;
+        // timeSpan? : number;
+        // limit: number;
+      });
+    }
+  }, 100);
   React.useEffect(() => {
     getProduct();
     return () => getProduct.cancel();
