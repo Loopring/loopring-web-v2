@@ -47,7 +47,6 @@ import { useTranslation } from "react-i18next";
 import { getIPFSString, getTimestampDaysLater, makeMeta } from "../../utils";
 import { ActionResult, ActionResultCode, DAYS } from "../../defs";
 import { useHistory } from "react-router-dom";
-// import fetchJsonp from "fetch-jsonp";
 
 const CID = require("cids");
 
@@ -184,18 +183,6 @@ export const useNFTMintAdvance = <
   const resetDefault = React.useCallback(() => {
     checkFeeIsEnough();
     resetNFTMintAdvanceData();
-    // updateNFTMintAdvanceData({
-    //   ...nftMintAdvanceValue,
-    //   tradeValue: 0,
-    //   nftIdView: "",
-    //   image: undefined,
-    //   name: "",
-    //   nftId: undefined,
-    //   description: "",
-    //   // collectionMeta:undefined,
-    //   // tokenAddress,
-    //   fee: feeInfo,
-    // });
   }, [checkFeeIsEnough, updateNFTMintAdvanceData]);
   const processRequest = React.useCallback(
     async (request: sdk.NFTMintRequestV3, isNotHardwareWallet: boolean) => {
@@ -474,7 +461,14 @@ export const useNFTMintAdvance = <
             try {
               const value = await fetch(
                 getIPFSString(`${IPFS_HEAD_URL}${data.nftIdView}`, baseURL)
-              ).then((response) => response.json());
+              )
+                .then((response) => response.json())
+                .catch((_error) => {
+                  setIsNotAvailableCID({
+                    reason: ErrorMap.IPFS_TIME_OUT.messageKey,
+                  });
+                  throw ErrorMap.IPFS_TIME_OUT;
+                });
               if (value) {
                 shouldUpdate = {
                   nftId: nftId,
@@ -489,17 +483,10 @@ export const useNFTMintAdvance = <
                 };
                 setIsNotAvailableCID(undefined);
               } else {
-                shouldUpdate = {
-                  nftId: nftId,
-                  name: undefined,
-                  image: undefined,
-                  description: undefined,
-                  balance: undefined,
-                  ...shouldUpdate,
-                };
                 setIsNotAvailableCID({
                   reason: ErrorMap.ERROR_COLLECTION_EMPTY.messageKey,
                 });
+                throw ErrorMap.ERROR_COLLECTION_EMPTY;
               }
             } catch (error: any) {
               console.log("Mint NFT read resource error:", error);

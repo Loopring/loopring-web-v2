@@ -45,4 +45,5 @@ export default {
   errorCollectionInfo: "Wrong Collection",
   errorCollectionNoSupport: "Only L2 collection is allow to mint",
   errorCollectionNotReadable: "Read Collection Info Failed",
+  errorIpfsTimeout: "IPFS Gateway timeout, please try again",
 };
