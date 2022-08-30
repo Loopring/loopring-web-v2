@@ -960,4 +960,6 @@ export default {
   labelViewEtherscan: "Etherscan",
   labelNFTMyNFTCollection: "Collection List",
   labelNFTMyNFTList: "My NFTs",
+  labelNoCollectionCover: "No Cover Media",
+  labelNoNFTCover: "No Media Resource",
 };

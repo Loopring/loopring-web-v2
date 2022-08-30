@@ -105,7 +105,7 @@ export const CollectionMedia = React.memo(
                       alignItems={"center"}
                       justifyContent={"center"}
                     >
-                      {t("labelNoContent")}
+                      {t("labelNoCollectionCover")}
                     </Box>
                   )}
                 />

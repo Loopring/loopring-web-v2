@@ -285,7 +285,7 @@ export const NFTMedia = React.memo(
                             alignItems={"center"}
                             justifyContent={"center"}
                           >
-                            {t("labelNoContent")}
+                            {t("labelNoNFTCover")}
                           </Box>
                         )}
                       />

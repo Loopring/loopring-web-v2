@@ -350,6 +350,7 @@ export const CollectionCardList = <Co extends CollectionMeta>({
     <BoxStyle
       flex={1}
       display={"flex"}
+      flexDirection={"column"}
       justifyContent={"stretch"}
       marginTop={2}
       width={"100%"}

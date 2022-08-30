@@ -33,7 +33,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
   handleTabChange: (value: 0 | 1) => void;
 }) {
   const subject = React.useMemo(() => mintService.onSocket(), []);
-  const { updateNFTMintData } = useModalData();
+  const { updateNFTMintData, resetNFTMintData } = useModalData();
   const [errorOnMeta, setErrorOnMeta] =
     React.useState<sdk.RESULT_INFO | undefined>(undefined);
   const [_cidUniqueID, setCIDUniqueId] =
@@ -182,7 +182,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
     updateData: ({ fee }) => {
       const { nftMETA, mintData, collection } =
         store.getState()._router_modalData.nftMintValue;
-      if (mintData?.tokenAddress) {
+      if (mintData?.tokenAddress === collection?.contractAddress) {
         // myLog("fee", fee);
         updateNFTMintData({
           nftMETA: nftMETA,
@@ -338,6 +338,7 @@ export function useNFTMeta<T extends NFTMETA, Co extends CollectionMeta>({
       commonSwitch(props);
     });
     return () => {
+      resetNFTMintData();
       subscription.unsubscribe();
     };
   }, [subject]);

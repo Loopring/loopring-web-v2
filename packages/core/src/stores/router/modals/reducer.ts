@@ -166,7 +166,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
               }`
             : undefined,
         },
-        collection: _action?.payload.collection,
+        collection: _action?.payload?.collection,
       };
     },
     resetNFTMintAdvanceData(state) {
