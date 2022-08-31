@@ -280,22 +280,19 @@ export const NFTDetail = withTranslation("common")(
               title={t("labelNFTServerRefresh").toString()}
               placement={"top"}
             >
-              {showFresh === "click" ? (
-                <Button
-                  size={"small"}
-                  aria-label={t("labelRefresh")}
-                  // sx={{ backgroundColor: "var(--field-opacity)" }}
-                  variant={"outlined"}
-                  onClick={(_event) => {
-                    handleRefresh();
-                  }}
-                  sx={{ minWidth: "initial", padding: "4px" }}
-                >
-                  <RefreshIPFSIcon color={"inherit"} fontSize={"medium"} />
-                </Button>
-              ) : (
-                <LoadingIcon fontSize={"large"} />
-              )}
+              <Button
+                size={"small"}
+                aria-label={t("labelRefresh")}
+                disabled={showFresh !== "click"}
+                // sx={{ backgroundColor: "var(--field-opacity)" }}
+                variant={"outlined"}
+                onClick={(_event) => {
+                  handleRefresh();
+                }}
+                sx={{ minWidth: "initial", padding: "4px" }}
+              >
+                <RefreshIPFSIcon color={"inherit"} fontSize={"medium"} />
+              </Button>
             </Tooltip>
           </Box>
 
