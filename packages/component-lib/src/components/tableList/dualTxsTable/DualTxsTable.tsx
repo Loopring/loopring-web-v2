@@ -166,7 +166,7 @@ export const DualTxsTable = withTranslation(["tables", "common"])(
         },
         {
           key: "fee",
-          name: t("labelDualFee"),
+          name: t("labelDualTerm"),
           headerCellClass: "textAlignRight",
           formatter: ({ row: _row }) => {
             // const { fee } = row;

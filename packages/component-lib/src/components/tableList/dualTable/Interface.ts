@@ -1,3 +1,9 @@
-import * as sdk from "@loopring-web/loopring-sdk";
+// import * as sdk from "@loopring-web/loopring-sdk";
 
-export type RawDataDualsItem = Partial<sdk.DualProductAndPrice>;
+export type RawDataDualsItem = {
+  apy: string;
+  settlementDate: string;
+  term: string;
+  targetPrice: string;
+  ratio: string;
+};

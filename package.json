@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@loopring-web/loopring-sdk": "2.0.24-3",
+    "@loopring-web/loopring-sdk": "2.0.25",
     "@loopring-web/recharts": "^2.0.10",
     "@loopring-web/web3-provider": "^1.1.0",
     "@mui/lab": "^5.0.0-alpha.45",
@@ -60,8 +60,7 @@
     "remark-gfm": "^3.0.0",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.7.4",
-    "@ramp-network/ramp-instant-sdk": "^3.2.1-rc1"
+    "web3": "^1.7.4"
   },
   "build": {
     "files": [

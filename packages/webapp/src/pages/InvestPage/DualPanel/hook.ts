@@ -11,6 +11,7 @@ import {
 import React from "react";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
+import * as loopring_defs from "@loopring-web/loopring-sdk/dist/defs/loopring_defs";
 
 export const useDualHook = ({
   setConfirmDualInvest,
@@ -85,29 +86,31 @@ export const useDualHook = ({
       setMarketPair([coinA, coinB]);
       setPriceObj({
         symbol: coinA,
-        price: tokenPrices[coinA],
+        price: tokenPrices[ coinA ],
       });
     },
     [marketArray, pairASymbol, tradeMap]
   );
 
   const [dualProducts, setDualProducts] = React.useState([]);
+  // const [productRawData,setProductRawData] = React.useState([])
+
   const getProduct = _.debounce(async () => {
     setIsLoading(true);
     // @ts-ignore
     const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
       /(dual-)?(\w+)-(\w+)/i
     );
-    debugger;
     if (marketSymbolA && marketSymbolB && pairASymbol && pairBSymbol) {
+      const dualType =
+        marketSymbolA === pairASymbol
+          ? sdk.DUAL_TYPE.DUAL_BASE
+          : sdk.DUAL_TYPE.DUAL_CURRENCY;
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol: marketSymbolA,
         quoteSymbol: marketSymbolB,
         currency: marketSymbolB,
-        dualType:
-          marketSymbolA === pairASymbol
-            ? sdk.DUAL_TYPE.DUAL_BASE
-            : sdk.DUAL_TYPE.DUAL_CURRENCY,
+        dualType,
         startTime: Date.now() + 1000 * 60 * 60,
         timeSpan: Date.now() + 1000 * 60 * 60 * 24 * 5,
         limit: 100,
@@ -121,8 +124,36 @@ export const useDualHook = ({
       } else {
         const {
           // totalNum,
-          dualInfo: { infos },
+          dualInfo: {infos, index, balance},
+          raw_data: {rule},
         } = response as any;
+        // : {
+        //   dualInfo: {
+        //     infos: sdk.DualProductAndPrice[];
+        //     index: sdk.DualIndex;
+        //     balance: sdk.DualBalance[];
+        //   };
+        //   raw_data: { rule: sdk.DualRulesCoinsInfo[] };
+        // }
+        const rawData = infos.reduce((item: sdk.DualProductAndPrice, prev: any[]) => {
+          if (
+            (dualType === sdk.DUAL_TYPE.DUAL_BASE &&
+              sdk
+                .toBig(item.dualPrice.dualBid[ 0 ].baseQty).lt(rule.baseMin) ||
+              (dualType == sdk.DUAL_TYPE.DUAL_CURRENCY &&
+                sdk
+                  .toBig(item.dualPrice.dualBid[ 0 ].baseQty)
+                  .times(item.strike)
+                  .lt(rule.currencyMax))
+            ) {
+            let obj = {}
+            return prev.push(obj)
+          }
+          return prev
+          //price.dualBid空数组，过滤；
+          // 如果dualType == dual_base,price.dualBid.baseQty < rule.baseMin,过滤；
+          // 如果dualType == dual_currency,price.dualBid.baseQty*strike < rule.currencyMax,过滤；
+        }, [] as any[]);
         // totalNum:number,
         //   dualInfo:{
         //   infos : loopring_defs.DualProductAndPrice[],

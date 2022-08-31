@@ -35,9 +35,7 @@ import {
   BackIcon,
   CurrencyToTag,
   getValuePrecisionThousand,
-  MarketType,
   PriceTag,
-  SoursURL,
 } from "@loopring-web/common-resources";
 
 const StyleDual = styled(Box)`

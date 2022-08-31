@@ -212,7 +212,7 @@ export function useNFTMint<
             {
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
-            }
+            } as any
           );
 
           myLog("submitNFTMint:", response);

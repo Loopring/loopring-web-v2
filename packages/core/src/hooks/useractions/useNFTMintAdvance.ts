@@ -229,7 +229,7 @@ export const useNFTMintAdvance = <T extends TradeNFT<I>, I>() => {
             {
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
-            }
+            } as any
           );
 
           myLog("submitNFTMintAdvance:", response);
