@@ -11,7 +11,6 @@ import {
 import React from "react";
 import _ from "lodash";
 import * as sdk from "@loopring-web/loopring-sdk";
-import { useSettings } from "@loopring-web/component-lib";
 
 export const useDualHook = ({
   setConfirmDualInvest,
@@ -74,7 +73,7 @@ export const useDualHook = ({
         const pairBSymbol = tradeMap[pairASymbol]?.tokenList[0];
         setPairASymbol(pairASymbol);
         setPairBSymbol(pairBSymbol);
-        setMarket(market);
+        market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
       } else if (prosp.hasOwnProperty("pairB")) {
         const pairBSymbol = (prosp as any).pairB;
         market = findDualMarket(marketArray, pairASymbol, pairBSymbol);
@@ -93,12 +92,13 @@ export const useDualHook = ({
   );
 
   const [dualProducts, setDualProducts] = React.useState([]);
-  const getProduct = _.throttle(async () => {
+  const getProduct = _.debounce(async () => {
     setIsLoading(true);
     // @ts-ignore
     const [, , marketSymbolA, marketSymbolB] = (market ?? "").match(
       /(dual-)?(\w+)-(\w+)/i
     );
+    debugger;
     if (marketSymbolA && marketSymbolB && pairASymbol && pairBSymbol) {
       const response = await LoopringAPI.defiAPI?.getDualInfos({
         baseSymbol: marketSymbolA,
@@ -135,9 +135,12 @@ export const useDualHook = ({
     setIsLoading(false);
   }, 100);
   React.useEffect(() => {
-    getProduct();
+    if (market) {
+      getProduct.cancel();
+      getProduct();
+    }
     return () => getProduct.cancel();
-  }, [pairASymbol, pairBSymbol]);
+  }, [market]);
   //   [...(marketArray ? marketArray : [])].find(
   //   (_item) => {
   //     const value = match?.params?.market
