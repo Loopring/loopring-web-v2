@@ -1,4 +1,11 @@
-import { Box, FormLabel, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  FormLabel,
+  Grid,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import {
   BtnInfo,
@@ -9,7 +16,7 @@ import {
   TextareaAutosizeStyled,
 } from "../../basic-lib";
 import { Trans, useTranslation } from "react-i18next";
-import { CollectionMeta } from "@loopring-web/common-resources";
+import { CollectionMeta, Info2Icon } from "@loopring-web/common-resources";
 import { useSettings } from "../../../stores";
 import { TradeBtnStatus } from "../Interface";
 export type CreateCollectionViewProps<Co> = {
@@ -46,129 +53,16 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
       flex={1}
       alignItems={"stretch"}
       display={"flex"}
-      justifyContent={"flex-start"}
+      justifyContent={"center"}
       flexDirection={"column"}
       marginBottom={2}
       padding={5 / 2}
+      maxWidth={680}
     >
-      <Typography
-        component={"h4"}
-        variant={"body1"}
-        textAlign={"left"}
-        marginBottom={1}
-        color={"var(--color-text-third)"}
-      >
-        {t("labelBanner")}
-      </Typography>
-
-      <Grid container flex={1} marginBottom={2}>
-        <Grid item xs={12} position={"relative"}>
-          <IPFSSourceUpload
-            height={"30vw"}
-            typographyProps={{}}
-            buttonProps={{}}
-            // maxSize={MaxSize}
-            // title={"Banner  (1500 x 500) size "}
-            buttonText={""}
-            value={keys?.banner ?? undefined}
-            onDelete={() => {
-              onDelete("banner");
-            }}
-            onChange={(value) => {
-              onFilesLoad("banner", value);
-            }}
-          />
-        </Grid>
-      </Grid>
       <Grid container flex={1} spacing={2}>
         <Grid
           item
           xs={12}
-          md={2}
-          lg={2}
-          position={"relative"}
-          display={"flex"}
-          flexDirection={isMobile ? "column" : "row"}
-          justifyContent={"space-between"}
-        >
-          <Box marginBottom={isMobile ? "2" : "0"}>
-            <Typography
-              component={"h4"}
-              variant={"body1"}
-              textAlign={"left"}
-              marginBottom={1}
-              color={"var(--color-text-third)"}
-            >
-              {t("labelAvatar")}
-            </Typography>
-            <IPFSSourceUpload
-              typographyProps={{}}
-              buttonProps={{}}
-              width={120}
-              height={120}
-              // maxSize={MaxSize}
-              title={"labelAvatarDes"}
-              buttonText={""}
-              value={keys?.avatar ?? undefined}
-              onDelete={() => {
-                onDelete("avatar");
-              }}
-              onChange={(value) => {
-                onFilesLoad("avatar", value);
-              }}
-            />
-          </Box>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          md={4}
-          lg={3}
-          position={"relative"}
-          display={"flex"}
-          flexDirection={isMobile ? "column" : "row"}
-          justifyContent={"space-between"}
-        >
-          <Box width={"100%"}>
-            <Typography
-              component={"span"}
-              variant={"body1"}
-              color={"var(--color-text-third)"}
-              marginBottom={1}
-            >
-              <Trans i18nKey={"labelTileUri"}>
-                Tile (320px * 320px)
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"error"}
-                >
-                  {"\uFE61"}
-                </Typography>
-              </Trans>
-            </Typography>
-            <IPFSSourceUpload
-              typographyProps={{}}
-              buttonProps={{}}
-              width={"100%"}
-              // title={t("labelTileUri")}
-              buttonText={""}
-              value={keys?.tileUri ?? undefined}
-              onDelete={() => {
-                onDelete("tileUri");
-              }}
-              onChange={(value) => {
-                onFilesLoad("tileUri", value);
-              }}
-            />
-          </Box>
-        </Grid>
-
-        <Grid
-          item
-          xs={12}
-          md={6}
-          lg={7}
           display={"flex"}
           flexDirection={"column"}
           position={"relative"}
@@ -187,7 +81,8 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
                 <Typography
                   component={"span"}
                   variant={"body1"}
-                  color={"var(--color-text-third)"}
+                  color={"var(--color-text-secondary)"}
+                  marginBottom={1}
                 >
                   <Trans i18nKey={"labelCollectionName"}>
                     Collection Name
@@ -207,21 +102,155 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
               }
             />
           </Box>
-          <FormLabel>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          position={"relative"}
+          display={"flex"}
+          flexDirection={isMobile ? "column" : "row"}
+          justifyContent={"space-between"}
+        >
+          <Box>
+            <Typography
+              component={"span"}
+              variant={"body1"}
+              display={"inline-flex"}
+              color={"var(--color-text-secondary)"}
+              marginBottom={1}
+            >
+              <Trans i18nKey={"labelTileUri"}>
+                Tile (Dimensions: 5:7; 500*700 ️recommended)
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"error"}
+                >
+                  {"\uFE61"}
+                </Typography>
+              </Trans>
+            </Typography>
+            <Box width={isMobile ? "100%" : 180}>
+              <IPFSSourceUpload
+                typographyProps={{}}
+                buttonProps={{}}
+                height={"calc( 100% * 7 / 5)"}
+                // title={t("labelTileUri")}
+                buttonText={""}
+                value={keys?.tileUri ?? undefined}
+                onDelete={() => {
+                  onDelete("tileUri");
+                }}
+                onChange={(value) => {
+                  onFilesLoad("tileUri", value);
+                }}
+              />
+            </Box>
+          </Box>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          position={"relative"}
+          display={"flex"}
+          flexDirection={isMobile ? "column" : "row"}
+          justifyContent={"space-between"}
+        >
+          <Box marginBottom={isMobile ? "2" : "0"}>
             <Typography
               component={"h4"}
               variant={"body1"}
               textAlign={"left"}
               marginBottom={1}
-              color={"var(--color-text-third)"}
+              color={"var(--color-text-secondary)"}
             >
-              <Trans i18nKey={"labelCollectionDescription"}>Description</Trans>
+              {t("labelAvatar")}
             </Typography>
+            <Box width={isMobile ? "100%" : 100}>
+              <IPFSSourceUpload
+                typographyProps={{}}
+                buttonProps={{}}
+                height={"100%"}
+                // maxSize={MaxSize}
+                title={"labelAvatarDes"}
+                buttonText={""}
+                value={keys?.avatar ?? undefined}
+                onDelete={() => {
+                  onDelete("avatar");
+                }}
+                onChange={(value) => {
+                  onFilesLoad("avatar", value);
+                }}
+              />
+            </Box>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} position={"relative"}>
+          <Typography
+            component={"h4"}
+            variant={"body1"}
+            textAlign={"left"}
+            marginBottom={1}
+            color={"var(--color-text-secondary)"}
+          >
+            {t("labelBanner")}
+          </Typography>
+          <Box maxWidth={400}>
+            <IPFSSourceUpload
+              height={"calc( 100%/ 3)"}
+              typographyProps={{}}
+              buttonProps={{}}
+              // maxSize={MaxSize}
+              // title={"Banner  (1500 x 500) size "}
+              buttonText={""}
+              value={keys?.banner ?? undefined}
+              onDelete={() => {
+                onDelete("banner");
+              }}
+              onChange={(value) => {
+                onFilesLoad("banner", value);
+              }}
+            />
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          display={"flex"}
+          flexDirection={"column"}
+          position={"relative"}
+        >
+          <FormLabel>
+            <Tooltip
+              placement={"left-start"}
+              title={t("labelCollectionDescriptionTooltips").toString()}
+            >
+              <Typography
+                component={"h4"}
+                variant={"body1"}
+                textAlign={"left"}
+                marginBottom={1}
+                alignItems={"center"}
+                display={"inline-flex"}
+                color={"var(--color-text-secondary)"}
+              >
+                <Trans i18nKey={"labelCollectionDescription"}>
+                  Description
+                  <Info2Icon
+                    fontSize={"small"}
+                    color={"inherit"}
+                    sx={{ marginX: 1 / 2 }}
+                  />
+                </Trans>
+              </Typography>
+            </Tooltip>
           </FormLabel>
           <Box flex={1}>
             <TextareaAutosizeStyled
               aria-label="Description"
-              minRows={2}
+              minRows={5}
               style={{
                 overflowX: "hidden",
                 resize: "vertical",

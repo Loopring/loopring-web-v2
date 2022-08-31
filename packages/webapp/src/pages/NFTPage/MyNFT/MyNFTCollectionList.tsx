@@ -26,7 +26,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
-const StyledPaper = styled(Box)`
+const _StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;
@@ -36,33 +36,29 @@ export const MyNFTCollectionList = withTranslation("common")(
     const { account } = useAccount();
     const { copyToastOpen, ...collectionListProps } = useMyNFTCollection();
     return (
-      <StyledPaper
+      <Box
         flex={1}
         className={"MuiPaper-elevation2"}
         marginTop={0}
+        paddingX={2}
         marginBottom={2}
         display={"flex"}
         flexDirection={"column"}
       >
-        <Box
-          flex={1}
-          display={"flex"}
-          flexDirection={"column"}
-          paddingX={3}
-          paddingY={2}
-        >
-          <CollectionCardList
-            noEdit={true}
-            account={account}
-            onItemClick={(item) => {
-              history.push({
-                pathname: `/NFT/assetsNFT/byCollection/${item.contractAddress}|${item.id}`,
-                search: `?collectionPage=${collectionListProps.page}`,
-              });
-            }}
-            {...{ ...(collectionListProps as any) }}
-          />
-        </Box>
+        <Typography variant={"body1"} marginY={2} color={"textSecondary"}>
+          {t("labelMyCollectionsDes")}
+        </Typography>
+        <CollectionCardList
+          noEdit={true}
+          account={account}
+          onItemClick={(item) => {
+            history.push({
+              pathname: `/NFT/assetsNFT/byCollection/${item.contractAddress}|${item.id}`,
+              search: `?collectionPage=${collectionListProps.page}`,
+            });
+          }}
+          {...{ ...(collectionListProps as any) }}
+        />
         <Toast
           alertText={
             copyToastOpen?.type === "json"
@@ -78,7 +74,7 @@ export const MyNFTCollectionList = withTranslation("common")(
           }}
           severity={"success"}
         />
-      </StyledPaper>
+      </Box>
     );
   }
 );

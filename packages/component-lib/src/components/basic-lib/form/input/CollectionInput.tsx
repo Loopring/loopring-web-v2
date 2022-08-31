@@ -2,6 +2,7 @@ import {
   Box,
   BoxProps,
   Divider,
+  Link,
   Modal,
   Pagination,
   Tooltip,
@@ -20,7 +21,6 @@ import {
   myLog,
 } from "@loopring-web/common-resources";
 import {
-  Button,
   CollectionCardList,
   CollectionListProps,
   DropdownIconStyled,
@@ -91,7 +91,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
   showCopy = false,
   onSelected,
   domain,
-  makeMeta,
+  // makeMeta,
   isRequired = false,
 }: CollectionInputProps<Co> & {
   showCopy?: boolean;
@@ -212,30 +212,33 @@ export const CollectionInput = <Co extends CollectionMeta>({
         <DropdownIconStyled status={dropdownStatus} fontSize={size} />
       </BoxStyle>
       {collection && showCopy && (
-        <Button
-          variant={"text"}
-          color={"primary"}
-          size={"small"}
-          endIcon={<CopyIcon color={"secondary"} />}
-          sx={{
-            marginLeft: 0,
-            paddingLeft: 0,
-            justifyContent: "flex-start",
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (collection) {
-              const { metaDemo } = makeMeta({ collection, domain });
-              copyToClipBoard(JSON.stringify(metaDemo));
-              collectionListProps.setCopyToastOpen({
-                isShow: true,
-                type: "json",
-              });
-            }
-          }}
-        >
-          {t("labelCopyNFTDemo")}
-        </Button>
+        <Typography display={"inline-flex"} alignItems={"center"} marginY={1}>
+          collection_metadata:
+          <Link
+            color={"primary"}
+            display={"inline-flex"}
+            alignItems={"center"}
+            sx={{
+              marginLeft: 0,
+              paddingLeft: 0,
+              justifyContent: "flex-start",
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (collection) {
+                copyToClipBoard(`${domain}/${collection.contractAddress}`);
+                // const { metaDemo } = makeMeta({ collection, domain });
+                // // copyToClipBoard(JSON.stringify(metaDemo));
+                collectionListProps.setCopyToastOpen({
+                  isShow: true,
+                  type: "url",
+                });
+              }
+            }}
+          >
+            "https://xxxxxxxx" <CopyIcon color={"inherit"} />
+          </Link>
+        </Typography>
       )}
       <Modal
         open={_modalState}
@@ -250,7 +253,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
           alignItems={"stretch"}
           height={"80%"}
           width={"90%"}
-          padding={2}
+          paddingX={4}
         >
           {total > CollectionLimit && (
             <Box

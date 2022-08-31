@@ -1,6 +1,7 @@
 import {
   AudioIcon,
   hexToRGB,
+  ImageIcon,
   Media,
   myLog,
   PlayIcon,
@@ -278,15 +279,22 @@ export const NFTMedia = React.memo(
                       <EmptyDefault
                         style={{ flex: 1 }}
                         height={"100%"}
+                        defaultPic={
+                          <ImageIcon
+                            htmlColor={"var(--color-text-third)"}
+                            style={{ width: 80, height: 80 }}
+                          />
+                        }
                         message={() => (
-                          <Box
-                            flex={1}
-                            display={"flex"}
-                            alignItems={"center"}
-                            justifyContent={"center"}
-                          >
-                            {t("labelNoNFTCover")}
-                          </Box>
+                          <></>
+                          // <Box
+                          //   flex={1}
+                          //   display={"flex"}
+                          //   alignItems={"center"}
+                          //   justifyContent={"center"}
+                          // >
+                          //   {t("labelNoCollectionCover")}
+                          // </Box>
                         )}
                       />
                     )}

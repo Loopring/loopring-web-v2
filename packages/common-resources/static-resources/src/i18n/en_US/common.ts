@@ -462,8 +462,7 @@ export default {
   labelNFTTitle: "Amount",
   labelNFTDepositInputTitle: "Amount:",
   labelNFTTId: "NFT Token ID:",
-  labelNFTCid:
-    "IPFS CIDv0 or dag-pb CIDv1:(Store Metadata Information) <1>Follow this Guide </1>",
+  labelNFTCid: "IPFS CIDv0 or dag-pb CIDv1:(Store Metadata Information)",
   labelNFTType: "Token Standard:",
   labelNFTAccess: "Allow Loopring to spend {{symbol}}",
   labelDeployDenied: "Signature request was rejected",
@@ -918,15 +917,18 @@ export default {
   labelHasData: "Has generated metadata w/ collection_metadata field",
   labelNoData: "Hasn't generated metadata w/ collection_metadata field",
   labelChooseCollection: "Choose a collection",
-  labelBanner: "Banner (1500px * 500px)",
+  labelBanner: "Banner (Dimensions: 3:1; 1500\u2A09500px \u2A09 500px)",
   labelBannerDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
-  labelAvatar: "Avatar (120px * 120px)",
+  labelAvatar: "Avatar (Dimensions: 1:1; 320\u2A09320px recommended)",
   labelAvatarDes: "Max size: {{size}}MB)",
-  labelTileUri: " Tile (320px * 320px) <1>\uFE61</1>",
+  labelTileUri:
+    "Tile (Dimensions: 5:7; 500\u2A09700px recommended) <1>\uFE61</1>",
   labelTileUriDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
-  labelCollectionDescription: "Description",
+  labelCollectionDescription: "Description <1>\u2139</1>",
+  labelCollectionDescriptionTooltips:
+    "You can describe your collection here. 0 of 1000 characters used",
   labelCollectionName: "Collection Name <1>\uFE61</1>",
   labelCollectionCreateBtn: "Create Collection",
   labelCollectionRequiredName: "Please input Name",
@@ -964,4 +966,8 @@ export default {
   labelNoNFTCover: "No Media Resource",
   labelNFTAmountValue: "Amount: {{value}}",
   labelCollectionItemValue: "Item: {{value}}",
+  labelMyCollectionsDes:
+    "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information Until it happens, the previous NFTs will be categorized to collection named by their associated contract address. ",
+  labelNFTGuid:
+    "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
 };

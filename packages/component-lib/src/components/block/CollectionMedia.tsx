@@ -1,6 +1,7 @@
 import {
   CollectionMeta,
   GET_IPFS_STRING,
+  ImageIcon,
   SoursURL,
 } from "@loopring-web/common-resources";
 import { Theme, useTheme } from "@emotion/react";
@@ -8,7 +9,6 @@ import React from "react";
 import { Box, BoxProps } from "@mui/material";
 import { cssBackground, EmptyDefault, NftImage, useImage } from "../../index";
 import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -42,7 +42,7 @@ export const CollectionMedia = React.memo(
       ref: React.ForwardedRef<any>
     ) => {
       const theme = useTheme();
-      const { t } = useTranslation("");
+      // const { t } = useTranslation("");
       const { hasLoaded, hasError } = useImage(
         getIPFSString(item.tileUri, baseURL) ?? ""
       );
@@ -98,15 +98,22 @@ export const CollectionMedia = React.memo(
                 <EmptyDefault
                   style={{ flex: 1 }}
                   height={"100%"}
+                  defaultPic={
+                    <ImageIcon
+                      htmlColor={"var(--color-text-third)"}
+                      style={{ width: 80, height: 80 }}
+                    />
+                  }
                   message={() => (
-                    <Box
-                      flex={1}
-                      display={"flex"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                    >
-                      {t("labelNoCollectionCover")}
-                    </Box>
+                    <></>
+                    // <Box
+                    //   flex={1}
+                    //   display={"flex"}
+                    //   alignItems={"center"}
+                    //   justifyContent={"center"}
+                    // >
+                    //   {t("labelNoCollectionCover")}
+                    // </Box>
                   )}
                 />
               )}

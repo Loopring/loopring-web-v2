@@ -1182,6 +1182,7 @@ export const ImageIcon = (props: SvgIconProps) => {
     </SvgIcon>
   );
 };
+
 export const Info2Icon = (props: SvgIconProps) => {
   return (
     <SvgIcon width="24" height="24" {...props} viewBox="0 0 24 24" fill="none">

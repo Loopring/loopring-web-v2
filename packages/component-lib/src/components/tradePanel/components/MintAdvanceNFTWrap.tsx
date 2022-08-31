@@ -28,6 +28,7 @@ import {
   CheckedIcon,
   CheckBoxIcon,
   BackIcon,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import {
   EmptyDefault,
@@ -55,6 +56,7 @@ import { TradeBtnStatus } from "../Interface";
 import styled from "@emotion/styled";
 import { FeeToggle } from "./tool/FeeList";
 import { useSettings } from "../../../stores";
+import { Toast } from "../../toast";
 
 export enum AdMethod {
   HasData = "HasData",
@@ -174,7 +176,9 @@ export const MintAdvanceNFTWrap = <
     string[]
   >([]);
   const [checked, setChecked] = React.useState(true);
-
+  const {
+    collectionListProps: { copyToastOpen },
+  } = collectionInputProps;
   const inputBtnRef = React.useRef();
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
@@ -460,6 +464,26 @@ export const MintAdvanceNFTWrap = <
                 />
               </Box>
             )}
+            <Typography display={"inline-block"} marginTop={4}>
+              <Trans i18nKey={"labelNFTGuid"}>
+                Please fill in the appropriate collection metadata field value
+                in your NFT metadata with this string first, then upload it to
+                IPFS to retrieve the CID to continue.
+                <Link
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={"./#/document/mint_nft.md"}
+                  paddingLeft={1}
+                >
+                  Follow this Guide
+                  <Info2Icon
+                    style={{cursor: "pointer", marginLeft: "4px"}}
+                    fontSize={"medium"}
+                    htmlColor={"var(--color-text-third)"}
+                  />
+                </Link>
+              </Trans>
+            </Typography>
             <Box width={"100%"} paddingX={isMobile ? 2 : 0} marginTop={2}>
               {btnMain({
                 defaultLabel: "labelMintNext",
@@ -513,19 +537,6 @@ export const MintAdvanceNFTWrap = <
               >
                 <Trans i18nKey={"labelNFTCid"}>
                   IPFS CID :(Store Metadata Information),
-                  <Link
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={"./#/document/mint_nft.md"}
-                    paddingLeft={1}
-                  >
-                    Follow this Guide
-                    <Info2Icon
-                      style={{ cursor: "pointer", marginLeft: "4px" }}
-                      fontSize={"medium"}
-                      htmlColor={"var(--color-text-third)"}
-                    />
-                  </Link>
                 </Trans>
               </Typography>
               <TextField
@@ -1226,6 +1237,26 @@ export const MintAdvanceNFTWrap = <
           );
         })}
       </MintAdStyle>
+      {copyToastOpen && (
+        <Toast
+          alertText={
+            copyToastOpen?.type === "json"
+              ? t("labelCopyMetaClip")
+              : copyToastOpen.type === "url"
+              ? t("labelCopyUrlClip")
+              : t("labelCopyAddClip")
+          }
+          open={copyToastOpen?.isShow}
+          autoHideDuration={TOAST_TIME}
+          onClose={() => {
+            collectionInputProps?.collectionListProps?.setCopyToastOpen({
+              isShow: false,
+              type: "",
+            });
+          }}
+          severity={"success"}
+        />
+      )}
     </Box>
   );
 };

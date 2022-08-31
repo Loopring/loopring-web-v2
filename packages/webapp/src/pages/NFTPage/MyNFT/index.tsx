@@ -84,8 +84,7 @@ export const MyNFTPanel = withTranslation("common")(
             const collectionMeta = collections.find((item: any) => {
               return (
                 (id !== undefined ? Number(item.id) === Number(id) : true) &&
-                item.collection.contractAddress?.toLowerCase() ===
-                  contract.toLowerCase()
+                item.contractAddress?.toLowerCase() === contract.toLowerCase()
               );
             });
 

@@ -213,7 +213,7 @@ export const useNFTMintAdvance = <
             {
               accountId: account.accountId,
               counterFactualInfo: eddsaKey.counterFactualInfo,
-            }
+            } as any
           );
 
           myLog("submitNFTMintAdvance:", response);

@@ -405,27 +405,27 @@ export const CollectionCardList = <Co extends CollectionMeta>({
         </Box>
       ) : (
         <>
-          {total > CollectionLimit && (
-            <Box
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"right"}
-              marginRight={3}
-              marginBottom={2}
-            >
-              <Pagination
-                color={"primary"}
-                count={
-                  parseInt(String(total / NFTLimit)) +
-                  (total % NFTLimit > 0 ? 1 : 0)
-                }
-                page={page}
-                onChange={(_event, value) => {
-                  onPageChange(Number(value));
-                }}
-              />
-            </Box>
-          )}
+          {/*{total > CollectionLimit && (*/}
+          {/*  <Box*/}
+          {/*    display={"flex"}*/}
+          {/*    alignItems={"center"}*/}
+          {/*    justifyContent={"right"}*/}
+          {/*    marginRight={3}*/}
+          {/*    marginBottom={2}*/}
+          {/*  >*/}
+          {/*    <Pagination*/}
+          {/*      color={"primary"}*/}
+          {/*      count={*/}
+          {/*        parseInt(String(total / NFTLimit)) +*/}
+          {/*        (total % NFTLimit > 0 ? 1 : 0)*/}
+          {/*      }*/}
+          {/*      page={page}*/}
+          {/*      onChange={(_event, value) => {*/}
+          {/*        onPageChange(Number(value));*/}
+          {/*      }}*/}
+          {/*    />*/}
+          {/*  </Box>*/}
+          {/*)}*/}
           <Grid container spacing={2} paddingBottom={3}>
             {collectionList.map((item, index) => {
               return (
