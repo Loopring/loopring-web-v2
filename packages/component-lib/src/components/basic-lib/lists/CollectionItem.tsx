@@ -1,5 +1,4 @@
 import {
-  Button,
   CardStyleItem,
   CollectionListProps,
   CollectionMedia,
@@ -25,6 +24,7 @@ import {
   copyToClipBoard,
   GET_IPFS_STRING,
   getShortAddr,
+  ImageIcon,
   LinkIcon,
   MakeMeta,
   MoreIcon,
@@ -37,7 +37,6 @@ import { useTranslation } from "react-i18next";
 import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
-import { Image } from "echarts/types/src/util/graphic";
 
 const BoxStyle = styled(Box)`
   .MuiRadio-root {
@@ -240,7 +239,9 @@ export const CollectionItem = React.memo(
               right={0}
             >
               <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-                <Avatar variant={"circular"} src={item.avatar} />
+                <Avatar variant={"circular"} src={item?.avatar}>
+                  <ImageIcon />
+                </Avatar>
                 <Typography
                   marginLeft={1}
                   color={"var(--color-text-button)"}
