@@ -141,7 +141,7 @@ export const MyNFTList = withTranslation("common")(
                             width={"60%"}
                           >
                             <Typography
-                              color={"text.secondary"}
+                              color={"text.primary"}
                               component={"h6"}
                               whiteSpace={"pre"}
                               overflow={"hidden"}
@@ -150,7 +150,7 @@ export const MyNFTList = withTranslation("common")(
                               {item?.name ?? EmptyValueTag}
                             </Typography>
                             <Typography
-                              color={"--color-text-primary"}
+                              color={"textSecondary"}
                               component={"p"}
                               paddingTop={1}
                               minWidth={164}
@@ -162,23 +162,48 @@ export const MyNFTList = withTranslation("common")(
                             </Typography>
                           </Box>
 
-                          <Box display={"inline-flex"} alignItems={"center"}>
+                          <Box
+                            display={"flex"}
+                            flexDirection={"column"}
+                            alignItems={"flex-end"}
+                          >
                             <Typography
-                              variant={"h4"}
-                              component={"div"}
-                              height={40}
-                              paddingX={3}
+                              color={"textSecondary"}
+                              component={"span"}
                               whiteSpace={"pre"}
-                              display={"inline-flex"}
-                              alignItems={"center"}
-                              color={"textPrimary"}
-                              style={{
-                                background: "var(--field-opacity)",
-                                borderRadius: "20px",
-                              }}
+                              overflow={"hidden"}
+                              textOverflow={"ellipsis"}
                             >
-                              × {item.total}
+                              {t("labelNFTAmountValue", { value: item.total })}
+                              {/*{item?.name ?? EmptyValueTag}*/}
                             </Typography>
+                            <Typography
+                              color={"--color-text-primary"}
+                              component={"p"}
+                              paddingTop={1}
+                              whiteSpace={"pre-line"}
+                              minWidth={164}
+                              textOverflow={"ellipsis"}
+                              title={item?.nftId?.toString()}
+                            >
+                              {"\n"}
+                            </Typography>
+                            {/*<Typography*/}
+                            {/*  variant={""}*/}
+                            {/*  component={"div"}*/}
+                            {/*  height={40}*/}
+                            {/*  paddingX={3}*/}
+                            {/*  whiteSpace={"pre"}*/}
+                            {/*  display={"inline-flex"}*/}
+                            {/*  alignItems={"center"}*/}
+                            {/*  color={"textPrimary"}*/}
+                            {/*  style={{*/}
+                            {/*    // background: "var(--field-opacity)",*/}
+                            {/*    // borderRadius: "20px",*/}
+                            {/*  }}*/}
+                            {/*>*/}
+                            {/*  × {item.total}*/}
+                            {/*</Typography>*/}
                           </Box>
                         </Box>
                       </Box>

@@ -923,7 +923,7 @@ export default {
   labelMintNext: "Next",
   labelMintCollectionInput: "Please input contract address",
   labelMintCid: "Please input IPFS CID",
-  labelMintBack: "Back",
+  labelMintBack: "Preview",
   labelTokenAdMintBtn: "Enter Amount",
   labelMintSubmitBtn: "Create Your NFT",
   labelMintIPFSCIDDes:

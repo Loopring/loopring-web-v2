@@ -236,6 +236,7 @@ export const CollectionItem = React.memo(
               paddingTop={2}
               paddingBottom={3}
               display={"flex"}
+              height={110}
               flexDirection={"column"}
               justifyContent={"space-between"}
             >
@@ -299,21 +300,31 @@ export const CollectionItem = React.memo(
                 </Typography>
                 {item?.extends.count && (
                   <Typography
-                    variant={"h4"}
-                    component={"div"}
-                    height={40}
-                    paddingX={3}
+                    color={"textSecondary"}
+                    component={"span"}
                     whiteSpace={"pre"}
-                    display={"inline-flex"}
-                    alignItems={"center"}
-                    color={"textPrimary"}
-                    style={{
-                      background: "var(--field-opacity)",
-                      borderRadius: "20px",
-                    }}
+                    overflow={"hidden"}
+                    textOverflow={"ellipsis"}
                   >
-                    × {item?.extends.count}
+                    {t("labelNFTAmountValue", { value: item?.extends.count })}
+                    {/*{item?.name ?? EmptyValueTag}*/}
                   </Typography>
+                  // <Typography
+                  //   variant={"h4"}
+                  //   component={"div"}
+                  //   height={40}
+                  //   paddingX={3}
+                  //   whiteSpace={"pre"}
+                  //   display={"inline-flex"}
+                  //   alignItems={"center"}
+                  //   color={"textPrimary"}
+                  //   style={{
+                  //     background: "var(--field-opacity)",
+                  //     borderRadius: "20px",
+                  //   }}
+                  // >
+                  //   × {item?.extends.count}
+                  // </Typography>
                 )}
               </Typography>
             </Box>

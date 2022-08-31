@@ -935,7 +935,7 @@ export default {
   labelMintNext: "Next",
   labelMintCollectionInput: "Please input contract address",
   labelMintCid: "Please input IPFS CID",
-  labelMintBack: "Back",
+  labelMintBack: "Preview",
   labelTokenAdMintBtn: "Enter Amount",
   labelMintSubmitBtn: "Create Your NFT",
   labelMintIPFSCIDDes:
@@ -958,8 +958,10 @@ export default {
   labelCopyUrlClip: "URL Copied to Clipboard!",
   labelCollectionMetaData: "Collection MetaData",
   labelViewEtherscan: "Etherscan",
-  labelNFTMyNFTCollection: "Collection List",
-  labelNFTMyNFTList: "My NFTs",
+  labelNFTMyNFTCollection: "View by Collection",
+  labelNFTMyNFTList: "View by item",
   labelNoCollectionCover: "No Cover Media",
   labelNoNFTCover: "No Media Resource",
+  labelNFTAmountValue: "Amount: {{value}}",
+  labelCollectionItemValue: "Item: {{value}}",
 };

@@ -27,6 +27,7 @@ import {
   getShortAddr,
   CheckedIcon,
   CheckBoxIcon,
+  BackIcon,
 } from "@loopring-web/common-resources";
 import {
   EmptyDefault,
@@ -81,6 +82,11 @@ const MintAdStyle = styled(Box)`
 
   .MuiInputLabel-root {
     font-size: ${({ theme }) => theme.fontDefault.body2};
+  }
+
+  .MuiButtonBase-root.step {
+    padding-left: ${({ theme }) => theme.unit * 4}px;
+    padding-right: ${({ theme }) => theme.unit * 4}px;
   }
 `;
 
@@ -282,18 +288,24 @@ export const MintAdvanceNFTWrap = <
       btnInfo,
       disabled,
       onClick,
+      fullWidth,
     }: {
       defaultLabel?: string;
       btnInfo?: BtnInfo;
       disabled: () => boolean;
       onClick: () => void;
+      fullWidth?: boolean;
     }) => {
       return (
         <Button
           variant={"contained"}
           size={"medium"}
           color={"primary"}
-          fullWidth
+          fullWidth={fullWidth}
+          className={"step"}
+          endIcon={
+            <BackIcon fontSize={"small"} sx={{ transform: "rotate(180deg)" }} />
+          }
           loading={
             !disabled() && nftMintBtnStatus === TradeBtnStatus.LOADING
               ? "true"
@@ -450,9 +462,8 @@ export const MintAdvanceNFTWrap = <
             )}
             <Box width={"100%"} paddingX={isMobile ? 2 : 0} marginTop={2}>
               {btnMain({
-                defaultLabel: tradeData.tokenAddress
-                  ? "labelMintNext"
-                  : "labelMintCollectionInput",
+                defaultLabel: "labelMintNext",
+                fullWidth: true,
                 disabled: () => {
                   return (
                     gDisabled ||
@@ -701,48 +712,45 @@ export const MintAdvanceNFTWrap = <
               marginTop={2}
               flexDirection={"row"}
               display={"flex"}
+              justifyContent={"space-between"}
             >
-              <Box width={"50%"} paddingRight={1}>
-                <Button
-                  variant={"outlined"}
-                  size={"medium"}
-                  color={"primary"}
-                  fullWidth
-                  sx={{ height: "var(--btn-medium-height)" }}
-                  onClick={() => {
-                    setActiveStep(MintStep.SELECTWAY);
-                    setCid("");
-                    handleOnNFTDataChange({
-                      nftIdView: "",
-                      nftId: "",
-                      tradeValue: undefined,
-                    } as T);
-                  }}
-                >
-                  {t(`labelMintBack`)}
-                </Button>
-              </Box>
-              <Box width={"50%"} paddingLeft={1}>
-                {btnMain({
-                  defaultLabel: tradeData.nftId
-                    ? "labelMintNext"
-                    : "labelMintCid",
-                  btnInfo: undefined, //btnInfo,
-                  disabled: () => {
-                    return (
-                      gDisabled ||
-                      !!isNotAvailableCID ||
-                      !tradeData.nftId ||
-                      !!metaDataErrorDataInfo.length ||
-                      !checked
-                    );
-                  },
-                  onClick: () => {
-                    setActiveStep(MintStep.MINT);
-                    setSrc(getIPFSString(tradeData?.image, baseURL));
-                  },
-                })}
-              </Box>
+              <Button
+                variant={"outlined"}
+                size={"medium"}
+                color={"primary"}
+                className={"step"}
+                sx={{ height: "var(--btn-medium-height)" }}
+                startIcon={<BackIcon fontSize={"small"} />}
+                onClick={() => {
+                  setActiveStep(MintStep.SELECTWAY);
+                  setCid("");
+                  handleOnNFTDataChange({
+                    nftIdView: "",
+                    nftId: "",
+                    tradeValue: undefined,
+                  } as T);
+                }}
+              >
+                {t(`labelMintBack`)}
+              </Button>
+
+              {btnMain({
+                defaultLabel: "labelMintNext",
+                btnInfo: undefined, //btnInfo,
+                disabled: () => {
+                  return (
+                    gDisabled ||
+                    !!isNotAvailableCID ||
+                    !tradeData.nftId ||
+                    !!metaDataErrorDataInfo.length ||
+                    !checked
+                  );
+                },
+                onClick: () => {
+                  setActiveStep(MintStep.MINT);
+                  setSrc(getIPFSString(tradeData?.image, baseURL));
+                },
+              })}
             </Box>
           </Box>
         ),
@@ -1109,46 +1117,44 @@ export const MintAdvanceNFTWrap = <
                   marginTop={2}
                   flexDirection={"row"}
                   display={"flex"}
+                  justifyContent={"space-between"}
                 >
-                  <Box width={"50%"} paddingRight={1}>
-                    <Button
-                      variant={"outlined"}
-                      size={"medium"}
-                      color={"primary"}
-                      fullWidth
-                      sx={{ height: "var(--btn-medium-height)" }}
-                      onClick={() => {
-                        setActiveStep(MintStep.INPUTCID);
+                  <Button
+                    variant={"outlined"}
+                    size={"medium"}
+                    className={"step"}
+                    startIcon={<BackIcon fontSize={"small"} />}
+                    color={"primary"}
+                    sx={{ height: "var(--btn-medium-height)" }}
+                    onClick={() => {
+                      setActiveStep(MintStep.INPUTCID);
 
-                        handleOnNFTDataChange({
-                          tradeValue: undefined,
-                          collectionMeta: undefined,
-                          // tokenAddress:undefined,
-                        } as T);
-                      }}
-                    >
-                      {t(`labelMintBack`)}
-                    </Button>
-                  </Box>
-                  <Box width={"50%"} paddingLeft={1}>
-                    {btnMain({
-                      defaultLabel:
+                      handleOnNFTDataChange({
+                        tradeValue: undefined,
+                        collectionMeta: undefined,
+                        // tokenAddress:undefined,
+                      } as T);
+                    }}
+                  >
+                    {t(`labelMintBack`)}
+                  </Button>
+                  {btnMain({
+                    defaultLabel: t("labelMintSubmitBtn"),
+                    // nftMintBtnStatus === TradeBtnStatus.DISABLED
+                    //   ? t("labelTokenAdMintBtn")
+                    //   : ,
+                    btnInfo: btnInfo,
+                    disabled: () => {
+                      return (
+                        gDisabled ||
                         nftMintBtnStatus === TradeBtnStatus.DISABLED
-                          ? t("labelTokenAdMintBtn")
-                          : t("labelMintSubmitBtn"),
-                      btnInfo: btnInfo,
-                      disabled: () => {
-                        return (
-                          gDisabled ||
-                          nftMintBtnStatus === TradeBtnStatus.DISABLED
-                        );
-                      },
-                      onClick: () => {
-                        // setActiveStep(MintSte)
-                        onNFTMintClick(tradeData);
-                      },
-                    })}
-                  </Box>
+                      );
+                    },
+                    onClick: () => {
+                      // setActiveStep(MintSte)
+                      onNFTMintClick(tradeData);
+                    },
+                  })}
                 </Box>
               </Box>
             </Box>
