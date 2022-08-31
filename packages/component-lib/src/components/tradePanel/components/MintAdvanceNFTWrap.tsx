@@ -477,7 +477,7 @@ export const MintAdvanceNFTWrap = <
                 >
                   Follow this Guide
                   <Info2Icon
-                    style={{cursor: "pointer", marginLeft: "4px"}}
+                    style={{ cursor: "pointer", marginLeft: "4px" }}
                     fontSize={"medium"}
                     htmlColor={"var(--color-text-third)"}
                   />
