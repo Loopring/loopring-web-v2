@@ -1142,7 +1142,7 @@ export const MintAdvanceNFTWrap = <
 
                       handleOnNFTDataChange({
                         tradeValue: undefined,
-                        collectionMeta: undefined,
+                        // collectionMeta: undefined,
                         // tokenAddress:undefined,
                       } as T);
                     }}

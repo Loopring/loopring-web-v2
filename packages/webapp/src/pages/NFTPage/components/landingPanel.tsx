@@ -42,6 +42,46 @@ export const MintLandingPanel = () => {
       >
         <CardNFTStyled
           onClick={() => {
+            history.push("/nft/mintNFT");
+          }}
+        >
+          <Box
+            flex={1}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            marginBottom={2}
+            minHeight={200}
+            width={"100%"}
+          >
+            <NftImage
+              alt={"NFT Created"}
+              onError={() => undefined}
+              src={`${SoursURL}images/nft_guid1.webp`}
+            />
+          </Box>
+          <Typography
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"space-between"}
+            paddingX={2}
+            component={"p"}
+            variant={"body1"}
+            minHeight={"160px"}
+            marginBottom={3}
+          >
+            <>
+              {t("labelMintGuid")}
+
+              <Button variant={"contained"} color={"primary"} fullWidth={true}>
+                {t("labelMintNFT")}
+              </Button>
+            </>
+          </Typography>
+        </CardNFTStyled>
+        <CardNFTStyled
+          sx={{ marginLeft: isMobile ? 0 : 4 }}
+          onClick={() => {
             history.push("/nft/mintNFTAdvance");
             // setShowNFTMintAdvance({isShow: true});
           }}
@@ -80,46 +120,6 @@ export const MintLandingPanel = () => {
               {t("labelAdMintGuid")}
               <Button variant={"contained"} color={"primary"} fullWidth={true}>
                 {t("labelAdvanceMint")}
-              </Button>
-            </>
-          </Typography>
-        </CardNFTStyled>
-        <CardNFTStyled
-          sx={{ marginLeft: isMobile ? 0 : 4 }}
-          onClick={() => {
-            history.push("/nft/mintNFT");
-          }}
-        >
-          <Box
-            flex={1}
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            marginBottom={2}
-            minHeight={200}
-            width={"100%"}
-          >
-            <NftImage
-              alt={"NFT Created"}
-              onError={() => undefined}
-              src={`${SoursURL}images/nft_guid1.webp`}
-            />
-          </Box>
-          <Typography
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
-            paddingX={2}
-            component={"p"}
-            variant={"body1"}
-            minHeight={"160px"}
-            marginBottom={3}
-          >
-            <>
-              {t("labelMintGuid")}
-
-              <Button variant={"contained"} color={"primary"} fullWidth={true}>
-                {t("labelMintNFT")}
               </Button>
             </>
           </Typography>

@@ -219,6 +219,10 @@ export const SwitchPanelStyled: any = styled(Box)<
     `}
   }
 
+  &.collectionSelect {
+    background: var(--color-global-bg);
+  }
+
   .MuiModal-root & {
     .coin-menu {
       flex: 1;

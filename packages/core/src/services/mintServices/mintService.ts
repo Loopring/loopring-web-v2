@@ -166,6 +166,14 @@ export const mintService = {
       status: MintCommands.MintConfirm,
     });
   },
+  backMetaDataSetup: () => {
+    subject.next({
+      status: MintCommands.MetaDataSetup,
+      data: {
+        emptyData: false,
+      },
+    });
+  },
   signatureMint: (isHardware?: boolean) => {
     subject.next({
       status: MintCommands.SignatureMint,
@@ -174,16 +182,5 @@ export const mintService = {
       },
     });
   },
-  // signatureHardware: () => {
-  //   subject.next({
-  //     status: MintCommands.SignatureHardware,
-  //     data: {
-  //       isHardware: true,
-  //     },
-  //   });
-  //   // subject.next({
-  //   //   status: MintCommands.HardwareSignature,
-  //   // });
-  // },
   onSocket: () => subject.asObservable(),
 };

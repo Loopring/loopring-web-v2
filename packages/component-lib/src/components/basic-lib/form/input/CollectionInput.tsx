@@ -254,6 +254,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
           height={"80%"}
           width={"90%"}
           paddingX={4}
+          className={"collectionSelect"}
         >
           {total > CollectionLimit && (
             <Box
