@@ -711,6 +711,7 @@ export const MintAdvanceNFTWrap = <
                   sx={{ height: "var(--btn-medium-height)" }}
                   onClick={() => {
                     setActiveStep(MintStep.SELECTWAY);
+                    setCid("");
                     handleOnNFTDataChange({
                       nftIdView: "",
                       nftId: "",
@@ -927,9 +928,11 @@ export const MintAdvanceNFTWrap = <
                       <Link
                         fontSize={"inherit"}
                         whiteSpace={"break-spaces"}
-                        style={{ wordBreak: "break-all" }}
+                        style={{
+                          wordBreak: "break-all",
+                          color: "var(--color-text-third)",
+                        }}
                         target="_blank"
-                        color={"var(--color-text-third)"}
                         title={tradeData.collectionMeta.contractAddress}
                         rel="noopener noreferrer"
                         href={`${etherscanBaseUrl}token/${tradeData.collectionMeta.contractAddress}`}
