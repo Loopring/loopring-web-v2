@@ -22,7 +22,6 @@ import {
 } from "../../index";
 import { NFT_IMAGE_SIZES } from "@loopring-web/loopring-sdk";
 import styled from "@emotion/styled";
-import { useTranslation } from "react-i18next";
 
 const BoxStyle = styled(Box)<BoxProps & { theme: Theme }>`
   ${(props) => cssBackground(props)};
@@ -58,7 +57,6 @@ export const NFTMedia = React.memo(
           isShowNFTDetail: { isShow },
         },
       } = useOpenModals();
-      const { t } = useTranslation();
       const [play, setPlay] = React.useState(false);
       const [previewSrc, setPreviewSrc] = React.useState(
         (isOrigin
@@ -236,12 +234,12 @@ export const NFTMedia = React.memo(
                     position={"relative"}
                     flex={1}
                     display={"flex"}
-                    style={{
-                      background:
-                        (!!fullSrc && fullSrcHasLoaded) || !!previewSrc
-                          ? "var(--field-opacity)"
-                          : "",
-                    }}
+                    // style={{
+                    //   background:
+                    //     (!!fullSrc && fullSrcHasLoaded) || !!previewSrc
+                    //       ? "var(--field-opacity)"
+                    //       : "",
+                    // }}
                   >
                     {play && shouldPlay ? (
                       <Box

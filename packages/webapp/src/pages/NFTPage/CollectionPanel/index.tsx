@@ -45,9 +45,8 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
   const { setShowNFTDeploy, setShowTradeIsFrozen } = useOpenModals();
   const { updateNFTDeployData } = useModalData();
   return (
-    <StyledPaper
+    <Box
       flex={1}
-      className={"MuiPaper-elevation2"}
       marginTop={0}
       marginBottom={2}
       display={"flex"}
@@ -59,16 +58,10 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         alignItems={"center"}
         justifyContent={"space-between"}
       >
-        <Typography
-          component={"h3"}
-          variant={"h4"}
-          paddingX={5 / 2}
-          paddingTop={5 / 2}
-          paddingBottom={2}
-        >
+        <Typography component={"h3"} variant={"h4"} paddingBottom={2}>
           {t("labelMyCollection")}
         </Typography>
-        <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
+        <Box display={"flex"} flexDirection={"row"}>
           <Button
             onClick={() => {
               history.push("/nft/addCollection");
@@ -82,7 +75,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
           </Button>
         </Box>
       </Box>
-      <Box flex={1} paddingX={3} paddingBottom={2} display={"flex"}>
+      <Box flex={1} paddingBottom={2} display={"flex"}>
         <CollectionCardList
           {...{ ...(collectionListProps as any) }}
           account={account}
@@ -137,6 +130,6 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
         }}
         severity={"success"}
       />
-    </StyledPaper>
+    </Box>
   );
 };

@@ -926,8 +926,7 @@ export default {
   labelMintBack: "Preview",
   labelTokenAdMintBtn: "Enter Amount",
   labelMintSubmitBtn: "Create Your NFT",
-  labelMintIPFSCIDDes:
-    "Fill in the IPFS CID for NFT metadata and collection Information",
+  labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata",
   labelNFTMintSimpleBtn: "Create NFT",
   labelCollectionEditBtn: "Edit",
   labelCopyMetaClip: "Metadata Copied to Clipboard",

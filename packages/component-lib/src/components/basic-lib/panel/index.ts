@@ -24,7 +24,7 @@ export const CardStyleItem = styled(Card)`
   position: relative;
 
   &.collection {
-    padding: 0 0 calc(140% + 110px);
+    padding: 0 0 calc(140%);
   }
 
   img {

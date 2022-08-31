@@ -142,10 +142,6 @@ export const MintNFTAdvancePanel = <
     }
   }, [match.params?.type]);
   const { t } = useTranslation("common");
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: `popupId-nftMint`,
-  });
 
   return (
     <>
@@ -159,45 +155,7 @@ export const MintNFTAdvancePanel = <
           onClick={history.goBack}
         >
           {t("labelAdMintTitle")}
-          <Info2Icon
-            {...bindHover(popupState)}
-            fontSize={"large"}
-            htmlColor={"var(--color-text-third)"}
-          />
-          {/*<Typography color={"textPrimary"}></Typography>*/}
         </Button>
-        <PopoverPure
-          className={"arrow-center"}
-          {...bindPopper(popupState)}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-        >
-          <Typography
-            padding={2}
-            component={"p"}
-            variant={"body2"}
-            whiteSpace={"pre-line"}
-          >
-            <Trans
-              i18nKey={
-                nftMintAdvanceProps.description
-                  ? nftMintAdvanceProps.description
-                  : "nftMintDescription"
-              }
-            >
-              Paste in the CID that you obtained from uploading the metadata
-              Information file (point 11 above) - if successful, the data from
-              the metadata Information you created contained within the folder
-              populates the Name and also the image displays.
-            </Trans>
-          </Typography>
-        </PopoverPure>
       </Box>
       <StyledPaper
         flex={1}

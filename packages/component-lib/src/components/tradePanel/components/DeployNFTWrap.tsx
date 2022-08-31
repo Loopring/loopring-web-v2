@@ -1,26 +1,24 @@
 import {
   EmptyValueTag,
   FeeInfo,
-  Info2Icon,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { NFTDeployViewProps } from "./Interface";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import React from "react";
-import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { Box, Grid, Link, Toolbar, Typography } from "@mui/material";
-import { bindHover } from "material-ui-popup-state/es";
-import { Button, ModalBackButton, PopoverPure } from "../../basic-lib";
+import { Button, ModalBackButton } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { TradeBtnStatus } from "../Interface";
 import { FeeToggle } from "./tool/FeeList";
 
-export const DeployNFTWrap = <T extends TradeNFT<I, any> & { broker: string },
+export const DeployNFTWrap = <
+  T extends TradeNFT<I, any> & { broker: string },
   I,
-  C extends FeeInfo>({
+  C extends FeeInfo
+>({
   tradeData,
   title,
-  description,
   btnInfo,
   nftDeployBtnStatus,
   onNFTDeployClick,
@@ -35,10 +33,6 @@ export const DeployNFTWrap = <T extends TradeNFT<I, any> & { broker: string },
   const { t } = useTranslation(["common"]);
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-  const popupState = usePopupState({
-    variant: "popover",
-    popupId: `popupId-nftDeposit`,
-  });
 
   const getDisabled = React.useMemo(() => {
     if (disabled || nftDeployBtnStatus === TradeBtnStatus.DISABLED) {
@@ -91,38 +85,7 @@ export const DeployNFTWrap = <T extends TradeNFT<I, any> & { broker: string },
               <Typography component={"h4"} variant={"h3"} marginRight={1}>
                 {title ? title : t("nftDeployTitle")}
               </Typography>
-              <Info2Icon
-                {...bindHover(popupState)}
-                fontSize={"large"}
-                htmlColor={"var(--color-text-third)"}
-              />
             </Box>
-            <PopoverPure
-              className={"arrow-center"}
-              {...bindPopper(popupState)}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "center",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "center",
-              }}
-            >
-              <Typography
-                padding={2}
-                component={"p"}
-                variant={"body2"}
-                whiteSpace={"pre-line"}
-              >
-                <Trans
-                  i18nKey={description ? description : "nftDeployDescription"}
-                >
-                  Once your nftDeploy is confirmed on Ethereum, it will be added
-                  to your balance within 2 minutes.
-                </Trans>
-              </Typography>
-            </PopoverPure>
           </Grid>
 
           <Grid item marginTop={2} alignSelf={"stretch"}>
@@ -214,7 +177,7 @@ export const DeployNFTWrap = <T extends TradeNFT<I, any> & { broker: string },
                 <Link
                   fontSize={"inherit"}
                   whiteSpace={"break-spaces"}
-                  style={{wordBreak: "break-all"}}
+                  style={{ wordBreak: "break-all" }}
                 >
                   {tradeData.broker}
                 </Link>

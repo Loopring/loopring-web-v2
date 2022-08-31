@@ -787,7 +787,7 @@ export default {
     "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
     "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
   labelCEXUnderstand: "I understand and acknowledge the risk",
-  labelMintFee: "Mint Fee",
+  labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
   labelLayerSwapUnderstand: "Acknowledge and understand the risk",
@@ -940,8 +940,7 @@ export default {
   labelMintBack: "Preview",
   labelTokenAdMintBtn: "Enter Amount",
   labelMintSubmitBtn: "Create Your NFT",
-  labelMintIPFSCIDDes:
-    "Fill in the IPFS CID for NFT metadata and collection Information",
+  labelMintIPFSCIDDes: "Fill in the IPFS CID for NFT metadata",
   labelNFTMintSimpleBtn: "Create NFT",
   labelCollectionEditBtn: "Edit",
   labelCopyMetaClip: "Metadata Copied to Clipboard",

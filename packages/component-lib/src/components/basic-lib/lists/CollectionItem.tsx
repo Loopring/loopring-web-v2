@@ -9,8 +9,10 @@ import {
   PopoverWrapProps,
 } from "../../../index";
 import {
+  Avatar,
   Box,
   Grid,
+  Link,
   MenuItem,
   Pagination,
   Radio,
@@ -35,6 +37,7 @@ import { useTranslation } from "react-i18next";
 import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
 import { useTheme } from "@emotion/react";
+import { Image } from "echarts/types/src/util/graphic";
 
 const BoxStyle = styled(Box)`
   .MuiRadio-root {
@@ -50,6 +53,11 @@ const BoxStyle = styled(Box)`
       width: initial;
     }
   }
+` as typeof Box;
+const BoxLable = styled(Box)`
+  background: var(--color-box-nft-label);
+  color: var(--color-text-button);
+  border-radius: ${({ theme }) => theme.unit}px;
 ` as typeof Box;
 const BoxBtnGroup = styled(Box)`
   position: absolute;
@@ -98,23 +106,11 @@ const ActionMemo = React.memo(
       children: <MoreIcon cursor={"pointer"} />,
       popoverContent: (
         <Box borderRadius={"inherit"} minWidth={110}>
-          {/*{allowTrade?.joinAmm?.enable && (*/}
-          {/*  <MenuItem onClick={() => handleDeposit(row)}>*/}
-          {/*    <ListItemText>{t("labelPoolTableAddLiqudity")}</ListItemText>*/}
-          {/*  </MenuItem>*/}
-          {/*)}*/}
           {!!(
             item.isCounterFactualNFT &&
             item.deployStatus === sdk.DEPLOYMENT_STATUS.NOT_DEPLOYED &&
             item.owner?.toLowerCase() === account?.accAddress?.toLowerCase()
           ) ? (
-            // <MenuItem
-            //   onClick={() => {
-            //     setShowDeploy(item);
-            //   }}
-            // >
-            //   {t("labelNFTDeployContract")}
-            // </MenuItem>
             <></>
           ) : (
             <MenuItem
@@ -231,103 +227,93 @@ export const CollectionItem = React.memo(
                 <ActionMemo {...{ ...(props as any) }} />
               </BoxBtnGroup>
             )}
-            <Box
-              paddingX={2}
-              paddingTop={2}
-              paddingBottom={3}
+            <BoxLable
+              padding={2}
+              margin={2}
               display={"flex"}
-              height={110}
-              flexDirection={"column"}
+              height={80}
+              flexDirection={"row"}
               justifyContent={"space-between"}
+              position={"absolute"}
+              bottom={0}
+              left={0}
+              right={0}
             >
-              <Typography
-                color={"textPrimary"}
-                component={"h6"}
-                whiteSpace={"pre"}
-                overflow={"hidden"}
-                display={"inline-flex"}
-                textOverflow={"ellipsis"}
-                variant={"h5"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
+              <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
+                <Avatar variant={"circular"} src={item.avatar} />
                 <Typography
-                  color={"textPrimary"}
-                  width={"60%"}
+                  marginLeft={1}
+                  color={"var(--color-text-button)"}
+                  whiteSpace={"pre"}
                   overflow={"hidden"}
+                  display={"flex"}
+                  flexDirection={"column"}
                   textOverflow={"ellipsis"}
-                  variant={"body1"}
-                  component={"span"}
+                  variant={"h5"}
+                  alignItems={"flex-start"}
+                  justifyContent={"space-evenly"}
+                  alignSelf={"stretch"}
                 >
-                  {item?.name
-                    ? item?.name
-                    : t("labelUnknown") +
-                      "-" +
-                      getShortAddr(item?.contractAddress ?? "", true)}
+                  <Typography
+                    color={"textPrimary"}
+                    width={"60%"}
+                    overflow={"hidden"}
+                    textOverflow={"ellipsis"}
+                    variant={"body1"}
+                    component={"span"}
+                  >
+                    {item?.name
+                      ? item?.name
+                      : t("labelUnknown") +
+                        "-" +
+                        getShortAddr(item?.contractAddress ?? "", true)}
+                  </Typography>
+                  <Link
+                    variant={"body2"}
+                    display={"inline-flex"}
+                    style={{ color: "var(--color-text-third)" }}
+                    alignItems={"center"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyToClipBoard(item?.contractAddress ?? "");
+                      setCopyToastOpen({ isShow: true, type: "address" });
+                    }}
+                  >
+                    {getShortAddr(item?.contractAddress ?? "")}
+                    <CopyIcon color={"inherit"} />
+                  </Link>
                 </Typography>
-
-                <Button
-                  variant={"text"}
-                  color={"primary"}
-                  size={"small"}
-                  endIcon={<CopyIcon color={"secondary"} />}
-                  sx={{ marginLeft: 1 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyToClipBoard(item?.contractAddress ?? "");
-                    setCopyToastOpen({ isShow: true, type: "address" });
-                  }}
-                >
-                  {getShortAddr(item?.contractAddress ?? "")}
-                </Button>
-              </Typography>
+              </Box>
               <Typography
-                color={"text.secondary"}
-                component={"h6"}
                 whiteSpace={"pre"}
-                marginTop={1}
                 overflow={"hidden"}
-                display={"inline-flex"}
+                display={"flex"}
+                flexDirection={"column"}
                 alignItems={"center"}
                 textOverflow={"ellipsis"}
-                justifyContent={"space-between"}
+                justifyContent={"space-evenly"}
               >
+                {item?.extends.count && (
+                  <Typography
+                    color={"textPrimary"}
+                    component={"span"}
+                    whiteSpace={"pre"}
+                    overflow={"hidden"}
+                    textOverflow={"ellipsis"}
+                  >
+                    {t("labelCollectionItemValue", {
+                      value: item?.extends.count,
+                    })}
+                  </Typography>
+                )}
                 <Typography
                   color={"var(--color-text-third)"}
                   title={item?.nftType}
                 >
                   {item?.nftType}
                 </Typography>
-                {item?.extends.count && (
-                  <Typography
-                    color={"textSecondary"}
-                    component={"span"}
-                    whiteSpace={"pre"}
-                    overflow={"hidden"}
-                    textOverflow={"ellipsis"}
-                  >
-                    {t("labelNFTAmountValue", { value: item?.extends.count })}
-                    {/*{item?.name ?? EmptyValueTag}*/}
-                  </Typography>
-                  // <Typography
-                  //   variant={"h4"}
-                  //   component={"div"}
-                  //   height={40}
-                  //   paddingX={3}
-                  //   whiteSpace={"pre"}
-                  //   display={"inline-flex"}
-                  //   alignItems={"center"}
-                  //   color={"textPrimary"}
-                  //   style={{
-                  //     background: "var(--field-opacity)",
-                  //     borderRadius: "20px",
-                  //   }}
-                  // >
-                  //   × {item?.extends.count}
-                  // </Typography>
-                )}
               </Typography>
-            </Box>
+            </BoxLable>
           </Box>
         </CardStyleItem>
       );
@@ -405,27 +391,6 @@ export const CollectionCardList = <Co extends CollectionMeta>({
         </Box>
       ) : (
         <>
-          {/*{total > CollectionLimit && (*/}
-          {/*  <Box*/}
-          {/*    display={"flex"}*/}
-          {/*    alignItems={"center"}*/}
-          {/*    justifyContent={"right"}*/}
-          {/*    marginRight={3}*/}
-          {/*    marginBottom={2}*/}
-          {/*  >*/}
-          {/*    <Pagination*/}
-          {/*      color={"primary"}*/}
-          {/*      count={*/}
-          {/*        parseInt(String(total / NFTLimit)) +*/}
-          {/*        (total % NFTLimit > 0 ? 1 : 0)*/}
-          {/*      }*/}
-          {/*      page={page}*/}
-          {/*      onChange={(_event, value) => {*/}
-          {/*        onPageChange(Number(value));*/}
-          {/*      }}*/}
-          {/*    />*/}
-          {/*  </Box>*/}
-          {/*)}*/}
           <Grid container spacing={2} paddingBottom={3}>
             {collectionList.map((item, index) => {
               return (

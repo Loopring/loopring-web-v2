@@ -82,10 +82,10 @@ export const CollectionMedia = React.memo(
               position={"relative"}
               flex={1}
               display={"flex"}
-              style={{
-                background:
-                  !!item.tileUri && !hasError ? "var(--field-opacity)" : "",
-              }}
+              // style={{
+              //   background:
+              //     !!item.tileUri && !hasError ? "var(--field-opacity)" : "",
+              // }}
             >
               {!!item.tileUri && !hasError ? (
                 <NftImage

@@ -127,6 +127,7 @@ export const MyNFTList = withTranslation("common")(
                         flexDirection={"row"}
                         alignItems={"center"}
                         justifyContent={"space-between"}
+                        sx={{ background: "var(--color-box-nft-label)" }}
                         // flexWrap={"wrap"}
                       >
                         <Box
@@ -176,7 +177,7 @@ export const MyNFTList = withTranslation("common")(
                             component={"p"}
                             paddingTop={1}
                             whiteSpace={"pre-line"}
-                            minWidth={164}
+                            minWidth={1}
                             textOverflow={"ellipsis"}
                             title={item?.nftId?.toString()}
                           >
