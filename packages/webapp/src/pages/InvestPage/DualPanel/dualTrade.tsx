@@ -9,9 +9,9 @@ import {
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
-import { confirmation, TOAST_TIME, useDefiMap } from "@loopring-web/core";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import { BackIcon, MarketType } from "@loopring-web/common-resources";
+import { TOAST_TIME } from "@loopring-web/core";
+import { useHistory } from "react-router-dom";
+import { BackIcon } from "@loopring-web/common-resources";
 
 const StyleWrapper = styled(Box)`
   position: relative;
@@ -31,7 +31,6 @@ const StyleWrapper = styled(Box)`
 export const DualPanel: any = withTranslation("common")(
   <R extends { [key: string]: any }, I extends { [key: string]: any }>({
     t,
-    setConfirmDefiInvest,
   }: WithTranslation & {
     setConfirmDefiInvest: (state: any) => void;
   }) => {
@@ -57,15 +56,15 @@ export const DualPanel: any = withTranslation("common")(
     //   market: _market ?? ("WSTETH-ETH" as MarketType),
     //     isJoin,
     // }
-    const {
-      // dualWrapProps,
-      // closeToast,
-      // toastOpen,
-      // confirmShowNoBalance,
-      // setConfirmShowNoBalance,
-      // serverUpdate,
-      // setServerUpdate,
-    } = useDualHook({ setConfirmDualInvest });
+    // const {
+    // dualWrapProps,
+    // closeToast,
+    // toastOpen,
+    // confirmShowNoBalance,
+    // setConfirmShowNoBalance,
+    // serverUpdate,
+    // setServerUpdate,
+    // } = useDualHook({ setConfirmDualInvest });
     const { isMobile } = useSettings();
     const styles = isMobile ? { flex: 1 } : { width: "var(--swap-box-width)" };
     const history = useHistory();
@@ -81,7 +80,6 @@ export const DualPanel: any = withTranslation("common")(
             onClick={history.goBack}
           >
             {t("labelInvestDualTitle")}
-            {/*<Typography color={"textPrimary"}></Typography>*/}
           </Button>
         </Box>
         <StyleWrapper
@@ -90,44 +88,7 @@ export const DualPanel: any = withTranslation("common")(
           justifyContent={"center"}
           alignItems={"center"}
           flex={1}
-        >
-          {/*{dualWrapProps.dualCalcData ? (*/}
-          {/*  <Box*/}
-          {/*    className={"hasLinerBg"}*/}
-          {/*    display={"flex"}*/}
-          {/*    style={styles}*/}
-          {/*    justifyContent={"center"}*/}
-          {/*    padding={5 / 2}*/}
-          {/*  >*/}
-          {/*    <DualWrap*/}
-          {/*      market={_market}*/}
-          {/*      isJoin={isJoin}*/}
-          {/*      {...(dualWrapProps as any)}*/}
-          {/*    />*/}
-          {/*  </Box>*/}
-          {/*) : (*/}
-          {/*  <LoadingBlock/>*/}
-          {/*)}*/}
-          <Toast
-            alertText={toastOpen?.content ?? ""}
-            severity={toastOpen?.type ?? "success"}
-            open={toastOpen?.open ?? false}
-            autoHideDuration={TOAST_TIME}
-            onClose={closeToast}
-          />
-
-          {/*<ConfirmInvestDefiServiceUpdate open={serverUpdate} handleClose={() => setServerUpdate(false)}/>*/}
-          {/*<ConfirmDefiNOBalance*/}
-          {/*  isJoin={isJoin}*/}
-          {/*  handleClose={(_e) => {*/}
-          {/*    setConfirmShowNoBalance(false);*/}
-          {/*    if (dualWrapProps?.onRefreshData) {*/}
-          {/*      dualWrapProps?.onRefreshData(true, true);*/}
-          {/*    }*/}
-          {/*  }}*/}
-          {/*  open={confirmShowNoBalance}*/}
-          {/*/>*/}
-        </StyleWrapper>
+        ></StyleWrapper>
       </Box>
     );
   }

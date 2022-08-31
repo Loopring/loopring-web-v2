@@ -17,6 +17,7 @@ import {
   Button,
   CoinIcon,
   CoinIcons,
+  DualTable,
   Toast,
   useSettings,
 } from "@loopring-web/component-lib";
@@ -30,7 +31,14 @@ import {
   useTokenPrices,
 } from "@loopring-web/core";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import { BackIcon, MarketType } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  CurrencyToTag,
+  getValuePrecisionThousand,
+  MarketType,
+  PriceTag,
+  SoursURL,
+} from "@loopring-web/common-resources";
 
 const StyleDual = styled(Box)`
   position: relative;
@@ -91,7 +99,6 @@ export const DualPanel: any = withTranslation("common")(
       priceObj,
       handleOnPairChange,
     } = useDualHook({ setConfirmDualInvest });
-    const {};
 
     // if (token.type === "lp" && middle && tail) {
     //   tokenIcon =
@@ -261,11 +268,21 @@ export const DualPanel: any = withTranslation("common")(
                   display={"inline-flex"}
                   color={"textSecondary"}
                   variant={"body2"}
+                  alignItems={"center"}
                 >
                   <Trans
                     i18nKey={"labelDualCurrentPrice"}
                     tOptions={{
-                      price: priceObj.price,
+                      price:
+                        PriceTag[CurrencyToTag[currency]] +
+                        getValuePrecisionThousand(
+                          (priceObj.price || 0) * (forexMap[currency] ?? 0),
+                          undefined,
+                          undefined,
+                          2,
+                          true,
+                          { isFait: true }
+                        ),
                       symbol: priceObj.symbol,
                     }}
                   >
@@ -274,16 +291,34 @@ export const DualPanel: any = withTranslation("common")(
                       component={"span"}
                       display={"inline-flex"}
                       color={"textPrimary"}
+                      paddingLeft={1}
                     >
-                      {t("labelDualInvestTitle", {
-                        symbolA: pairASymbol,
-                        symbolB: pairBSymbol,
-                      })}
+                      price
                     </Typography>
                   </Trans>
                 </Typography>
               </Box>
             )}
+            <Box flex={1}>
+              <DualTable rawData={dualProducts} showloading={isLoading} />
+            </Box>
+            {/*{isLoading ? (*/}
+            {/*  <Box*/}
+            {/*    flex={1}*/}
+            {/*    height={"100%"}*/}
+            {/*    display={"flex"}*/}
+            {/*    alignItems={"center"}*/}
+            {/*    justifyContent={"center"}*/}
+            {/*  >*/}
+            {/*    <img*/}
+            {/*      className="loading-gif"*/}
+            {/*      width="36"*/}
+            {/*      src={`${SoursURL}images/loading-line.gif`}*/}
+            {/*    />*/}
+            {/*  </Box>*/}
+            {/*) : (*/}
+            {/*  */}
+            {/*)}*/}
           </WrapperStyled>
         </StyleDual>
       </Box>
