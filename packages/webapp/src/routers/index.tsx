@@ -29,9 +29,10 @@ import { NFTPage } from "../pages/NFTPage";
 import { useGetAssets } from "../pages/AssetPage/AssetPanel/hook";
 import { Footer } from "../layouts/footer";
 import { InvestPage } from "../pages/InvestPage";
+import { ExtendedFirebaseInstance, useFirebase } from "react-redux-firebase";
 import { getAnalytics, logEvent } from "firebase/analytics";
+import { FirebaseApp } from "@firebase/app";
 import { AssetPage } from "../pages/AssetPage";
-import { FiatPage } from "../pages/FiatPage";
 
 const ContentWrap = ({
   children,
@@ -258,11 +259,6 @@ const RouterView = ({ state }: { state: keyof typeof SagaStatus }) => {
         <Route path="/trade/lite">
           <ContentWrap state={state}>
             <SwapPage />
-          </ContentWrap>
-        </Route>
-        <Route exact path={["/trade/fiat", "/trade/fiat/*"]}>
-          <ContentWrap state={state}>
-            <FiatPage />
           </ContentWrap>
         </Route>
         <Route exact path="/markets">

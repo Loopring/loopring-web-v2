@@ -14,11 +14,7 @@ import {
 import styled from "@emotion/styled";
 import { ScrollTop } from "@loopring-web/component-lib";
 import { EVENT_STATUS, useTradeRace } from "./hook";
-import {
-  EmptyValueTag,
-  GoTopIcon,
-  MarkdownStyle,
-} from "@loopring-web/common-resources";
+import { EmptyValueTag, GoTopIcon } from "@loopring-web/common-resources";
 import { LoadingBlock } from "../LoadingPage";
 
 import { RankRaw } from "./rank";
@@ -26,6 +22,7 @@ import moment from "moment";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import { MarkdownStyle } from "pages/MarkdownPage/style";
 import { useTheme } from "@emotion/react";
 import { EventData } from "./interface";
 import { useHistory } from "react-router-dom";

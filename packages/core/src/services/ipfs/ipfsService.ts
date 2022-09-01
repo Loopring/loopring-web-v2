@@ -193,14 +193,3 @@ export const ipfsService = {
   // clearMessages: () => subject.next(),
   onSocket: () => subject.asObservable(),
 };
-// port: 5001,
-// protocol: "https",
-// headers: {
-//   authorization:
-//     "Basic " +
-//     btoa(
-//       process.env.REACT_APP_INFURA_PROJECT_ID +
-//         ":" +
-//         process.env.REACT_APP_INFURA_PROJECT_SECRET
-//     ),
-// },

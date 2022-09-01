@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  DeFiChgType,
   DeFiWrapProps,
   TradeBtnStatus,
   useOpenModals,
@@ -15,14 +14,15 @@ import {
   IBData,
   MarketType,
   myLog,
+  DeFiChgType,
   SDK_ERROR_MAP_TO_UI,
+  TradeDefi,
 } from "@loopring-web/common-resources";
 
 import {
   useSubmitBtn,
   makeWalletLayer2,
   useWalletLayer2Socket,
-  TradeDefi,
 } from "@loopring-web/core";
 import _ from "lodash";
 
@@ -452,7 +452,7 @@ export const useDefiTrade = <
         setIsLoading(true);
       }
       Promise.all([
-        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: "" }),
+        LoopringAPI.defiAPI?.getDefiMarkets({ defiType: undefined }),
         account.readyState === AccountStatus.ACTIVATED
           ? getFee(
               isJoin

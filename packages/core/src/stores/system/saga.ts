@@ -1,13 +1,4 @@
-import {
-  all,
-  call,
-  fork,
-  put,
-  take,
-  takeLatest,
-  race,
-  delay,
-} from "redux-saga/effects";
+import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
 import { getSystemStatus, updateRealTimeObj, updateSystem } from "./reducer";
 import { ENV, NETWORKEXTEND } from "./interface";
 import { store, LoopringSocket, LoopringAPI } from "../../index";
@@ -17,6 +8,7 @@ import {
   ForexMap,
   myLog,
 } from "@loopring-web/common-resources";
+import { delay } from "rxjs/operators";
 import { statusUnset as accountStatusUnset } from "../account/reducer";
 import { ChainId, Currency } from "@loopring-web/loopring-sdk";
 import {
@@ -32,7 +24,6 @@ import { getNotify } from "../notify/reducer";
 import { getTokenPrices } from "../tokenPrices/reducer";
 import { getDefiMap } from "../invest/DefiMap/reducer";
 import { getInvestTokenTypeMap } from "../invest/InvestTokenTypeMap/reducer";
-import { getDualMap } from "../invest/DualMap/reducer";
 
 const initConfig = function* <_R extends { [key: string]: any }>(
   _chainId: ChainId | "unknown"
@@ -87,11 +78,7 @@ const initConfig = function* <_R extends { [key: string]: any }>(
     throw "tokenMap Error";
   }
   store.dispatch(getDefiMap(undefined));
-  store.dispatch(getDualMap(undefined));
-  yield all([
-    take("defiMap/getDefiMapStatus"),
-    take("dualMap/getDualMapStatus"),
-  ]);
+  yield take("defiMap/getDefiMapStatus");
   store.dispatch(getInvestTokenTypeMap(undefined));
   yield delay(5);
   const { account, walletLayer1 } = store.getState();
@@ -171,7 +158,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
     throw new CustomError(ErrorMap.NO_NETWORK_ERROR);
   } else {
     LoopringAPI.InitApi(chainId as ChainId);
-
     if (LoopringAPI.exchangeAPI) {
       const baseURL =
         ChainId.MAINNET === chainId
@@ -185,15 +171,6 @@ const getSystemsApi = async <_R extends { [key: string]: any }>(
         ChainId.MAINNET === chainId
           ? `https://etherscan.io/`
           : `https://goerli.etherscan.io/`;
-      LoopringAPI.userAPI?.setBaseUrl(baseURL);
-      LoopringAPI.exchangeAPI?.setBaseUrl(baseURL);
-      LoopringAPI.globalAPI?.setBaseUrl(baseURL);
-      LoopringAPI.ammpoolAPI?.setBaseUrl(baseURL);
-      LoopringAPI.walletAPI?.setBaseUrl(baseURL);
-      LoopringAPI.wsAPI?.setBaseUrl(baseURL);
-      LoopringAPI.nftAPI?.setBaseUrl(baseURL);
-      LoopringAPI.delegate?.setBaseUrl(baseURL);
-      LoopringAPI.defiAPI?.setBaseUrl(baseURL);
       let allowTrade, exchangeInfo, gasPrice, forexMap;
       try {
         [{ exchangeInfo }, { forexMap, gasPrice }, allowTrade] =

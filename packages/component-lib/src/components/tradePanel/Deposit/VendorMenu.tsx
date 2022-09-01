@@ -2,11 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { MenuBtnStyled } from "../../styled";
 import { VendorMenuProps } from "../../modal/ModalPanels/Interface";
 import { useTranslation } from "react-i18next";
-import {
-  BanxaIcon,
-  RampIcon,
-  TradeTypes,
-} from "@loopring-web/common-resources";
+import { BanxaIcon, RampIcon } from "@loopring-web/common-resources";
 import { useTheme } from "@emotion/react";
 import { useSettings } from "../../../stores";
 
@@ -39,7 +35,6 @@ const IconItem = ({ svgIcon }: { svgIcon: string }) => {
 export const VendorMenu = ({
   vendorList,
   // handleSelect,
-  type = TradeTypes.Buy,
   vendorForce,
 }: VendorMenuProps) => {
   const { t } = useTranslation();
@@ -57,7 +52,7 @@ export const VendorMenu = ({
         whiteSpace={"pre"}
         component={"h4"}
       >
-        {t("labelL1toL2ThirdPart", { type: t(`label${type}`) })}
+        {t("labelL1toL2ThirdPart")}
       </Typography>
       <Box
         display={"flex"}
@@ -67,8 +62,7 @@ export const VendorMenu = ({
         alignItems={"stretch"}
         alignSelf={"stretch"}
         className="modalContent"
-        paddingX={3}
-        paddingTop={1}
+        paddingX={isMobile ? 7 : 10}
       >
         <Typography color={"textSecondary"} variant={"body1"} marginBottom={1}>
           {t("labelWhatProvider")}

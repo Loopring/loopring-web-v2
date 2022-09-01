@@ -10,11 +10,11 @@ import {
   Toast,
   TradeProType,
 } from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/core";
 import {
   getValuePrecisionThousand,
   Info2Icon,
   MarketType,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { usePageTradePro, useTokenMap } from "@loopring-web/core";
 import { useMarket } from "./hookMarket";

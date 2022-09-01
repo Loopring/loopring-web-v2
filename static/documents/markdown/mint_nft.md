@@ -7,13 +7,17 @@
 
 2. Within the folder, insert the NFT file eg precious.jpg
 
-3. Create an account on [Pinata](https://app.pinata.cloud/) **or** download [IPFS Desktop](https://docs.ipfs.io/install/ipfs-desktop/)
+3. Create an account on [Pinata](https://app.pinata.cloud/) **or**
+   download [IPFS Desktop](https://docs.ipfs.io/install/ipfs-desktop/)
 
 4. Upload the NFT folder you created in point 1 that contains your NFT (eg Diamond NFT) to IPFS
 
-Before you begin your IPFS upload, please be aware there are 2 types of CID: CIDv0 (begins with **Qm**) and CIDv1 (begins with **b**).
+Before you begin your IPFS upload, please be aware there are 2 types of CID: CIDv0 (begins with **Qm**) and CIDv1 (
+begins with **b**).
 
-Currently Loopring supports **CIDv0** which begins with **Qm** as you will see in the examples and certain CIDv1 that can be converted to CIDv0 format. Only CIDv1 that have the following properties can be converted to CIDv0, thus can be supported in Loopring NFT mint. 
+Currently Loopring supports **CIDv0** which begins with **Qm** as you will see in the examples and certain CIDv1 that
+can be converted to CIDv0 format. Only CIDv1 that have the following properties can be converted to CIDv0, thus can be
+supported in Loopring NFT mint.
 
 ```
 multibase = base58btc
@@ -22,11 +26,13 @@ multihash-algorithm = sha2-256
 multihash-length = 32 (32 bytes, equivalent to 256 bits)
 ```
 
-If you want to upload content to IPFS and generate CID for usage in "Advanced Mint", please ensure the CID can be supported by Loopring as described above. 
+If you want to upload content to IPFS and generate CID for usage in "Advanced Mint", please ensure the CID can be
+supported by Loopring as described above.
 
 You can always check your CID properties here https://cid.ipfs.io
 
-In case you do not know how to generate a CID that is supported by Loopring, please use https://app.pinata.cloud/pinmanager which uses CIDv0 by default.
+In case you do not know how to generate a CID that is supported by Loopring, please
+use https://app.pinata.cloud/pinmanager which uses CIDv0 by default.
 
 **Using Pinata**
 

@@ -41,7 +41,7 @@ function _InputButton<T extends Partial<IBData<C>>, C, I extends CoinInfo<C>>(
   const { balance, belong, tradeValue } = (
     inputData ? inputData : {}
   ) as IBData<C>;
-  const [sValue, setsValue] = React.useState<number | undefined | string>(
+  const [sValue, setsValue] = React.useState<number | undefined>(
     tradeValue ? tradeValue : undefined
   );
   const [error, setError] = React.useState<{

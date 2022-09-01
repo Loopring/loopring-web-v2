@@ -1,13 +1,17 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getNotify, getNotifyStatus } from "./reducer";
 
-import { Lang, Notify } from "@loopring-web/common-resources";
+import { Notify } from "@loopring-web/common-resources";
 import { store } from "../index";
 import {
   url_path,
   url_test_path,
 } from "@loopring-web/webapp/src/pages/TradeRacePage/interface";
 
+const Lang = {
+  en_US: "en",
+  zh_CN: "zh",
+};
 const getNotifyApi = async <_R extends { [key: string]: any }>(): Promise<{
   notifyMap: Notify;
 }> => {

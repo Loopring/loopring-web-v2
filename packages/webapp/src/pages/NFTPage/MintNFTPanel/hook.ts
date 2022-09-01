@@ -1,5 +1,6 @@
 import {
   AccountStatus,
+  CollectionMeta,
   FeeInfo,
   MintTradeNFT,
   NFTMETA,
@@ -11,6 +12,7 @@ import { useNFTMeta } from "@loopring-web/core";
 import { mintService, useNFTMint } from "@loopring-web/core";
 import React from "react";
 import { useAccount } from "@loopring-web/core";
+import { useRouteMatch } from "react-router-dom";
 const enum MINT_VIEW_STEP {
   METADATA,
   MINT_CONFIRM,
@@ -19,6 +21,7 @@ BigNumber.config({ EXPONENTIAL_AT: 100 });
 export const useMintNFTPanel = <
   Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
+  Co extends CollectionMeta,
   I,
   C extends FeeInfo
 >() => {
@@ -26,7 +29,7 @@ export const useMintNFTPanel = <
     MINT_VIEW_STEP.METADATA
   );
   const { account, status: accountStatus } = useAccount();
-
+  let match: any = useRouteMatch("/nft/:item/:contract?");
   const handleTabChange = React.useCallback((value: MINT_VIEW_STEP) => {
     setCurrentTab(value);
   }, []);
@@ -43,16 +46,8 @@ export const useMintNFTPanel = <
     handleFeeChange,
     feeInfo,
     errorOnMeta,
-    // resetMETADAT,
-  } = useNFTMeta<Me>({ handleTabChange, nftMintValue });
-  React.useEffect(() => {
-    if (
-      accountStatus === SagaStatus.UNSET &&
-      account.readyState === AccountStatus.ACTIVATED
-    ) {
-      mintService.emptyData();
-    }
-  }, [accountStatus, account.readyState]);
+  } = useNFTMeta<Me, Co>({ handleTabChange, nftMintValue });
+
   const { nftMintProps } = useNFTMint<Me, Mi, I, C>({
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -62,6 +57,16 @@ export const useMintNFTPanel = <
     handleTabChange,
     nftMintValue,
   });
+
+  React.useEffect(() => {
+    if (
+      accountStatus === SagaStatus.UNSET &&
+      account.readyState === AccountStatus.ACTIVATED &&
+      match?.params?.item === "mintNFT"
+    ) {
+      mintService.emptyData(match?.params?.contract ?? "");
+    }
+  }, [accountStatus, account.readyState, match?.params?.item]);
 
   return {
     errorOnMeta,

@@ -1,5 +1,9 @@
 import { useDefiMap, useDefiTrade, useToast } from "@loopring-web/core";
-import { MarketType, myLog } from "@loopring-web/common-resources";
+import {
+  getValuePrecisionThousand,
+  MarketType,
+  myLog,
+} from "@loopring-web/common-resources";
 export const useDeFiHook = ({
   isJoin,
   market,

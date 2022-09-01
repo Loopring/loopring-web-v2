@@ -8,8 +8,8 @@ import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 
 import { LoadingBlock } from "../LoadingPage";
+import { MarkdownStyle } from "./style";
 import { useTranslation } from "react-i18next";
-import { MarkdownStyle } from "@loopring-web/common-resources";
 
 const url_path = "https://static.loopring.io/documents";
 

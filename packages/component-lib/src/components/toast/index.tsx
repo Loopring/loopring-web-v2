@@ -1,4 +1,10 @@
-import { Snackbar, Alert, AlertTitle, Typography } from "@mui/material";
+import {
+  Snackbar,
+  Alert,
+  AlertTitle,
+  Typography,
+  SnackbarOrigin,
+} from "@mui/material";
 import {
   GoodIcon,
   AlertIcon,
@@ -14,6 +20,7 @@ export interface ToastProps {
   alertText: string;
   autoHideDuration?: number;
   onClose: () => void;
+  snackbarOrigin?: SnackbarOrigin;
 }
 
 const AlertStyled = styled(Alert)`
@@ -32,6 +39,7 @@ export const Toast = withTranslation("common")(
     alertText,
     autoHideDuration = 2000,
     onClose,
+    snackbarOrigin,
   }: ToastProps & WithTranslation) => {
     const renderTitle =
       severity === "success"
@@ -58,6 +66,7 @@ export const Toast = withTranslation("common")(
         open={open}
         autoHideDuration={autoHideDuration}
         onClose={onClose}
+        anchorOrigin={snackbarOrigin}
       >
         <AlertStyled icon={renderIcon} severity={severity}>
           <AlertTitle>{renderTitle}</AlertTitle>

@@ -3792,10 +3792,10 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/loopring-sdk@2.0.24-3":
-  version "2.0.24-3"
-  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.24-3.tgz#67287a010e4162b4ea274e157c88bcf2fb8c0db6"
-  integrity sha512-FRlQa51tkO4VdKt3EzmT1KO1expL5byiFTnXIV+UEOidQCnH+sinKUeHRPy8WRSbCdOPMc1o1V7tpsd164JH3A==
+"@loopring-web/loopring-sdk@2.0.27":
+  version "2.0.27"
+  resolved "https://registry.yarnpkg.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.0.27.tgz#77fd013d15bbfcc411a50bd7461a70d7acdf263a"
+  integrity sha512-BvaMoQBICKnKPwwTRxXJBg1X85Gf9OJq/84NkZtfYBHlva/dDyE6+D2Utmfd/nyGWQHyl9vACuENRL/Dv7k+WQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -4376,10 +4376,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@ramp-network/ramp-instant-sdk@^3.2.1-rc1":
-  version "3.2.1-rc1"
-  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-3.2.1-rc1.tgz#2e7ccf2380be0f4a1ec785496685a125db9c9f33"
-  integrity sha512-4s35N/Kjqrx3jr6vLI2/jdlnZu0D1j/maf0HCrIZyJbrZ6lDAKNqyX5z32ujNO5SgkMdgkd2aICIT/pZ1qrniQ==
+"@ramp-network/ramp-instant-sdk@^3.0.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@ramp-network/ramp-instant-sdk/-/ramp-instant-sdk-3.2.0.tgz#7d146319bde7ed9ca52bbf7efba377a755628f15"
+  integrity sha512-WXpUCic3oduFbAivRxhjSyAZOz2vK5yiuHYqFTooLCXBZIKRS4ff7X5M2MZQDkruTKwWcbyIvGLEYm991XgDpA==
   dependencies:
     body-scroll-lock "^3.1.5"
 

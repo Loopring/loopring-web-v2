@@ -7,7 +7,8 @@ import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 
 import { LoadingBlock } from "../LoadingPage";
-import { languageMap, MarkdownStyle } from "@loopring-web/common-resources";
+import { MarkdownStyle } from "./style";
+import { languageMap } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 const url_path = "https://static.loopring.io/documents/notification";

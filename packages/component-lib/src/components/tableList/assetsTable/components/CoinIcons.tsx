@@ -3,20 +3,12 @@ import { Avatar, Box } from "@mui/material";
 import { AvatarCoinStyled, SoursURL } from "@loopring-web/common-resources";
 
 export const CoinIcons = React.memo(
-  ({
-    tokenIcon,
-    size = 24,
-    type = "token",
-  }: {
-    tokenIcon: [any, any?];
-    size?: number;
-    type?: string;
-  }) => {
+  ({ tokenIcon, size = 24 }: { tokenIcon: [any, any?]; size?: number }) => {
     const [coinAInfo, coinBInfo] = tokenIcon;
     return (
       <>
         <Box
-          className={`logo-icon ${type}`}
+          className={"logo-icon"}
           display={"flex"}
           height={"var(--list-menu-coin-size)"}
           position={"relative"}
@@ -55,7 +47,7 @@ export const CoinIcons = React.memo(
         </Box>
         {coinBInfo ? (
           <Box
-            className={`logo-icon ${type}`}
+            className={"logo-icon"}
             display={"flex"}
             height={"var(--list-menu-coin-size)"}
             position={"relative"}

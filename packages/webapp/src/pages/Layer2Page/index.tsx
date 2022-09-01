@@ -1,6 +1,7 @@
 import { useRouteMatch } from "react-router-dom";
 
 import { Box } from "@mui/material";
+import { useSettings } from "@loopring-web/component-lib";
 import { subMenuLayer2 } from "@loopring-web/common-resources";
 
 import React from "react";
@@ -9,6 +10,8 @@ import { SecurityPanel } from "./SecurityPanel";
 import { VipPanel } from "./VipPanel";
 import { RewardPanel } from "./RewardPanel";
 import { ForcewithdrawPanel } from "./ForcewithdrawPanel";
+
+export const subMenu = subMenuLayer2;
 
 export const Layer2Page = () => {
   let match: any = useRouteMatch("/layer2/:item");

@@ -11,25 +11,31 @@
       "middle":"to"
     },
     "api":{
-      "url":"https://api.loopring.network/api/v3/datacenter/gaveawayNft3/getAccountByTokenAddress",
+      "url": "https://api.loopring.io/api/v3/datacenter/gaveawayNft3/getAccountByTokenAddress",
       "params": {
         "key": "tokenAddress",
-        "values": [{
-          "label": "LRC-ETH",
-          "value": "state.tokenMap.tokenMap[`LP-LRC-ETH`].address"
-        }, {
+        "values": [
+          {
+            "label": "LRC-ETH",
+            "value": "state.tokenMap.tokenMap[`LP-LRC-ETH`].address"
+          },
+          {
             "label": "LRC-USDC",
             "value": "state.tokenMap.tokenMap[`LP-LRC-USDC`].address"
-        },{
+          },
+          {
             "label": "ETH-USDC",
             "value": "state.tokenMap.tokenMap[`LP-ETH-USDC`].address"
-        },{
-          "label": "MANA-USDC",
-          "value": "state.tokenMap.tokenMap[`LP-MANA-USDC`].address"
-        },{
-          "label": "SAND-USDC",
-          "value": "state.tokenMap.tokenMap[`LP-SAND-USDC`].address"
-        }]
+          },
+          {
+            "label": "MANA-USDC",
+            "value": "state.tokenMap.tokenMap[`LP-MANA-USDC`].address"
+          },
+          {
+            "label": "SAND-USDC",
+            "value": "state.tokenMap.tokenMap[`LP-SAND-USDC`].address"
+          }
+        ]
       },
       "column":[
         {

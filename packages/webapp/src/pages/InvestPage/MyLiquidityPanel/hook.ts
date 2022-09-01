@@ -161,10 +161,10 @@ export const useOverview = <
 
   React.useEffect(() => {
     if (userRewardsStatus === SagaStatus.UNSET) {
-      let summaryReward: any = makeSummaryMyAmm({ userRewardsMap }) ?? {};
+      let summaryReward: any = makeSummaryMyAmm({ userRewardsMap });
       makeDefiInvestReward().then((summaryDefiReward) => {
         summaryReward.rewardDollar = sdk
-          .toBig(summaryReward?.rewardDollar ?? 0)
+          .toBig(summaryReward.rewardDollar)
           .plus(summaryDefiReward ?? 0)
           .toString();
         setSummaryMyInvest((state) => {

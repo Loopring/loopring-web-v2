@@ -40,16 +40,14 @@ export function useOverview<R extends RowInvest>() {
 
   React.useEffect(() => {
     if (investTokenTypeMapStatus === SagaStatus.UNSET) {
-      const _rawData = investTokenTypeMap
-        ? Object.keys(investTokenTypeMap)
-            .reduce((prev, key) => {
-              prev.push(makeInvestRow(investTokenTypeMap, key) as R);
-              return prev;
-            }, [] as R[])
-            .sort((a, b) => {
-              return b.apr[1] - a.apr[1];
-            })
-        : [];
+      const _rawData = Object.keys(investTokenTypeMap)
+        .reduce((prev, key) => {
+          prev.push(makeInvestRow(investTokenTypeMap, key) as R);
+          return prev;
+        }, [] as R[])
+        .sort((a, b) => {
+          return b.apr[1] - a.apr[1];
+        });
       setRawData(_rawData);
       setFilteredData(
         _rawData.filter((a) => {
@@ -57,12 +55,12 @@ export function useOverview<R extends RowInvest>() {
         })
       );
     }
-  }, [investTokenTypeMapStatus, investTokenTypeMap]);
+  }, [investTokenTypeMapStatus]);
   const getMyInvestTokenMap = React.useCallback(() => {
     if (walletLayer2 && walletLayer2 !== {}) {
       const _rawData = Object.keys(walletLayer2)
         .reduce((prev, key) => {
-          if (investTokenTypeMap && investTokenTypeMap[key]) {
+          if (investTokenTypeMap[key]) {
             prev.push(makeInvestRow(investTokenTypeMap, key) as R);
           }
           return prev;
@@ -93,7 +91,7 @@ export function useOverview<R extends RowInvest>() {
     filterValue,
     getFilteredData,
     myRawData,
-    // myFilteredData,
+    myFilteredData,
     myMapLoading,
     rawData,
   };

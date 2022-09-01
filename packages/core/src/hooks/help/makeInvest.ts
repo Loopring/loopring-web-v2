@@ -38,16 +38,3 @@ export const makeDefiInvestReward = async () => {
   }
   return "0";
 };
-
-export const findDualMarket = (
-  marketArray: string[],
-  pairASymbol: string,
-  pairBSymbol: string
-) =>
-  marketArray.find((item) => {
-    const regExp = new RegExp(
-      `^(\\w+-)?(${pairASymbol}-${pairBSymbol}|${pairBSymbol}-${pairASymbol})$`,
-      "i"
-    );
-    return regExp.test(item);
-  });

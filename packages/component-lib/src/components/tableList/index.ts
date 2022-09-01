@@ -16,5 +16,3 @@ export * from "./nftTable";
 export * from "./investOverviewTable";
 export * from "./defiTxsTable";
 export * from "./tradeNFTTable";
-export * from "./dualTxsTable";
-export * from "./dualTable";

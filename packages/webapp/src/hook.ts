@@ -13,7 +13,6 @@ import {
   layer1Store,
   useDefiMap,
   useInvestTokenTypeMap,
-  useDualMap,
 } from "@loopring-web/core";
 import { ChainId } from "@loopring-web/loopring-sdk";
 import { SagaStatus, ThemeType } from "@loopring-web/common-resources";
@@ -66,8 +65,6 @@ export function useInit() {
     useTokenPrices();
   const { status: defiMapStatus, statusUnset: defiMapStatusUnset } =
     useDefiMap();
-  const { status: dualMapStatus, statusUnset: dualMapStatusUnset } =
-    useDualMap();
   const {
     status: investTokenTypeMapStatus,
     statusUnset: investTokenTypeMapStatusUnset,
@@ -307,20 +304,6 @@ export function useInit() {
         break;
     }
   }, [defiMapStatus]);
-
-  React.useEffect(() => {
-    switch (dualMapStatus) {
-      case SagaStatus.ERROR:
-        dualMapStatusUnset();
-        // setState("ERROR");
-        break;
-      case SagaStatus.DONE:
-        dualMapStatusUnset();
-        break;
-      default:
-        break;
-    }
-  }, [dualMapStatus]);
 
   React.useEffect(() => {
     switch (investTokenTypeMapStatus) {

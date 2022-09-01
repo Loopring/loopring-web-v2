@@ -8,7 +8,6 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
-  TOAST_TIME,
   useSystem,
   isAccActivated,
   checkErrorInfo,
@@ -28,6 +27,7 @@ import {
   myLog,
   TradeNFT,
   UIERROR_CODE,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { useBtnStatus } from "../common/useBtnStatus";
 
@@ -39,8 +39,12 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useLayer1Store } from "../../stores/localStore/layer1Store";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
+import { useHistory, useLocation } from "react-router-dom";
 
-export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
+export function useNFTDeploy<
+  T extends TradeNFT<I, any> & { broker: string },
+  I
+>() {
   const { btnStatus, enableBtn, disableBtn } = useBtnStatus();
   const { tokenMap } = useTokenMap();
   const { account } = useAccount();
@@ -52,6 +56,10 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
     useOpenModals();
   const { setOneItem } = useLayer1Store();
   const { checkHWAddr, updateHW } = useWalletInfo();
+  const history = useHistory();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+
   const {
     chargeFeeTokenList,
     isFeeNotEnough,
@@ -158,7 +166,26 @@ export function useNFTDeploy<T extends TradeNFT<I> & { broker: string }, I>() {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              updateWalletLayer2NFT({ page });
+
+              if (nftDeployValue.collectionMeta) {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byCollection/${nftDeployValue.collectionMeta?.contractAddress}|${nftDeployValue.collectionMeta?.id}`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page: Number(searchParams.get("collectionPage")) ?? 1,
+                  collection: nftDeployValue.collectionMeta?.contractAddress,
+                });
+              } else {
+                history.push({
+                  pathname: `/NFT/assetsNFT/byList`,
+                  search,
+                });
+                updateWalletLayer2NFT({
+                  page,
+                  collection: undefined,
+                });
+              }
               setShowNFTDeploy({ isShow: false });
               setShowNFTDetail({ isShow: false });
               resetNFTDeployData();

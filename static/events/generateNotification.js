@@ -54,14 +54,6 @@ async function getNotification() {
           ...(notification.activities ?? []),
           ...(myNotification.activities ?? []),
         ];
-        notification.activitiesHome = [
-          ...(notification.activitiesHome ?? []),
-          ...(myNotification.activitiesHome ?? []),
-        ];
-        notification.activitiesInvest = [
-          ...(notification.activitiesInvest ?? []),
-          ...(myNotification.activitiesInvest ?? []),
-        ];
         notification.notifications = [
           ...(notification.notifications ?? []),
           ...(myNotification.notifications ?? []),
@@ -108,25 +100,6 @@ async function getNotification() {
       }
       return prev;
     }, []);
-
-    notification.activitiesHome = notification.activitiesHome.reduce(
-      (prev, item) => {
-        if (item.endShow > date.getTime()) {
-          prev.push(item);
-        }
-        return prev;
-      },
-      []
-    );
-    notification.activitiesInvest = notification.activitiesInvest.reduce(
-      (prev, item) => {
-        if (item.endShow > date.getTime()) {
-          prev.push(item);
-        }
-        return prev;
-      },
-      []
-    );
     notification.invest = notification.invest.reduce((prev, item) => {
       if (item.endShow > date.getTime()) {
         prev.push(item);
@@ -143,8 +116,6 @@ async function getNotification() {
 }
 let json = {
   activities: [],
-  activitiesHome: [],
-  activitiesInvest: [],
   notifications: [],
   invest: [],
   prev: {
@@ -158,28 +129,7 @@ let TYPE = {
 /*
 var notifyPath = args[0];
 */
-const TYPE_ITEM = {
-  type: 0,
-  place: 1,
-  version: 2,
-  name: 3,
-  title: 4,
-  description1: 5,
-  description2: 6,
-  link: 7,
-  startShow: 8,
-  endShow: 9,
-  color: 10,
-  banner: 11,
-  bannerWeb: 12,
-  webRouter: 13,
-};
-const PLACE = {
-  HOME: "HOME",
-  INVEST: "INVEST",
-};
 const _router = path.resolve(__dirname);
-
 async function createNotifyJSON(lng) {
   const notificationPath = `${_router}/${notifyPath}/notification.${lng}.csv`;
   const investPath = `${_router}/${notifyPath}/invest.${lng}.csv`;
@@ -197,36 +147,29 @@ async function createNotifyJSON(lng) {
         .on("end", () => {
           list.map((item) => {
             const startShow = moment
-              .utc(item[TYPE_ITEM.startShow], "MM/DD/YYYY HH:mm:ss")
+              .utc(item[7], "MM/DD/YYYY HH:mm:ss")
               .valueOf();
             const endShow = moment
-              .utc(item[TYPE_ITEM.endShow], "MM/DD/YYYY HH:mm:ss")
+              .utc(item[8], "MM/DD/YYYY HH:mm:ss")
               .valueOf();
             const _item = {
-              type: item[TYPE_ITEM.type],
-              place: item[TYPE_ITEM.place],
-              version: item[TYPE_ITEM.version], //localStore for visited should be unique
-              name: item[TYPE_ITEM.name],
-              title: item[TYPE_ITEM.title],
-              description1: item[TYPE_ITEM.description1],
-              description2: item[TYPE_ITEM.description2],
-              link: item[TYPE_ITEM.link],
+              type: item[0],
+              version: item[1], //localStore for visited should be unique
+              name: item[2],
+              title: item[3],
+              description1: item[4],
+              description2: item[5],
+              link: item[6],
               startShow,
               endShow,
-              color: item[TYPE_ITEM.color],
-              banner: item[TYPE_ITEM.banner],
-              bannerWeb: item[TYPE_ITEM.bannerWeb],
-              webRouter: item[TYPE_ITEM.webRouter],
+              color: item[9],
+              banner: item[10],
+              webRouter: item[11],
             };
-
-            if (_item.type === TYPE.ACTIVITY) {
-              if (_item.place === PLACE.INVEST) {
-                json.activitiesInvest = json.activitiesInvest.concat(_item);
-              } else {
-                json.activities = json.activities.concat(_item);
-                json.activitiesHome = json.activitiesHome.concat(_item);
-              }
-            } else if (_item.type === TYPE.NOTIFICATION) {
+            if (item[0] === TYPE.ACTIVITY) {
+              json.activities = json.activities.concat(_item);
+            }
+            if (item[0] === TYPE.NOTIFICATION) {
               json.notifications = json.notifications.concat(_item);
             }
             if (json.prev.endDate <= endShow) {

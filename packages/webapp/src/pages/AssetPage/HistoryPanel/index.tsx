@@ -20,14 +20,17 @@ import {
 } from "./hooks";
 
 import {
-  TOAST_TIME,
   useSystem,
   useAccount,
   useToast,
   useTokenMap,
   useAmmMap,
 } from "@loopring-web/core";
-import { BackIcon, RowConfig } from "@loopring-web/common-resources";
+import {
+  BackIcon,
+  RowConfig,
+  TOAST_TIME,
+} from "@loopring-web/common-resources";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 
 enum TabIndex {
@@ -49,17 +52,17 @@ const HistoryPanel = withTranslation("common")(
   (rest: WithTranslation<"common">) => {
     const history = useHistory();
     const { search } = useLocation();
-    const match: any = useRouteMatch("/l2assets/:history/:tab");
-    const orderTabMatch: any = useRouteMatch(
-      "/l2assets/:history/:tab/:orderTab"
-    );
+    const match: any = useRouteMatch("/l2assets/:history/:tab/:orderTab?");
+    // const orderTabMatch: any = useRouteMatch(
+    //   "/l2assets/:history/:tab/:orderTab"
+    // );
 
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState(() => {
       return match?.params.tab ?? TabIndex.transactions;
     });
     const [currentOrderTab, setCurrentOrderTab] = React.useState(() => {
-      return orderTabMatch?.params.orderTab ?? TabOrderIndex.orderOpenTable;
+      return match?.params?.orderTab ?? TabOrderIndex.orderOpenTable;
     });
 
     const { toastOpen, setToastOpen, closeToast } = useToast();
@@ -263,7 +266,6 @@ const HistoryPanel = withTranslation("common")(
                 idIndex={idIndex}
               />
             ) : (
-              
               <Box
                 flex={1}
                 display={"flex"}

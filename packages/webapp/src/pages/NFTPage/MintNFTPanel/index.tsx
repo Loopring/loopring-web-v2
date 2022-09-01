@@ -1,23 +1,42 @@
-import { useTranslation } from "react-i18next";
-import { Box, Button, Typography, useTheme } from "@mui/material";
+import { Trans, useTranslation } from "react-i18next";
+import { Box, Button, Typography } from "@mui/material";
 import {
+  MintAdvanceNFTWrap,
   MintNFTConfirm,
   PanelContent,
-  useOpenModals,
+  PopoverPure,
 } from "@loopring-web/component-lib";
 import React from "react";
 import { MetaNFTPanel } from "./metaNFTPanel";
 import styled from "@emotion/styled";
 import { useMintNFTPanel } from "./hook";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import {
+  BackIcon,
+  CollectionMeta,
+  FeeInfo,
+  Info2Icon,
+  TradeNFT,
+} from "@loopring-web/common-resources";
+import { bindHover } from "material-ui-popup-state/es";
+import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
+import {
+  LoopringAPI,
+  makeMeta,
+  useMyCollection,
+  useNFTMintAdvance,
+} from "@loopring-web/core";
+
 const StyledPaper = styled(Box)`
   background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `;
 
-export const MintNFTPanel = () => {
-  const { t } = useTranslation("common");
-
+export const MintNFTPanel = <Co extends CollectionMeta>() => {
+  const history = useHistory();
   const mintWholeProps = useMintNFTPanel();
+  const collectionListProps = useMyCollection();
+  const { t } = useTranslation(["common"]);
   const panelList: Pick<
     PanelContent<"METADATA" | "MINT_CONFIRM">,
     "key" | "element"
@@ -26,7 +45,19 @@ export const MintNFTPanel = () => {
       key: "METADATA",
       element: (
         <MetaNFTPanel
-          {...mintWholeProps}
+          {...{
+            ...mintWholeProps,
+            nftMetaProps: {
+              ...mintWholeProps.nftMetaProps,
+              collectionInputProps: {
+                collection: mintWholeProps.nftMintValue.collection,
+                collectionListProps,
+                domain: LoopringAPI.delegate?.getCollectionDomain(),
+                makeMeta,
+              } as any,
+            },
+          }}
+          // collectionInputProps={}
           nftMetaBtnStatus={mintWholeProps.nftMetaProps.nftMetaBtnStatus}
           btnInfo={mintWholeProps.nftMetaProps.btnInfo}
         />
@@ -37,6 +68,7 @@ export const MintNFTPanel = () => {
       element: (
         <MintNFTConfirm
           disabled={false}
+          // baseURL={mintWholeProps.nftMetaProps.baseURL}
           walletMap={{}}
           {...mintWholeProps.nftMintProps}
           metaData={mintWholeProps.nftMintValue.nftMETA}
@@ -50,6 +82,19 @@ export const MintNFTPanel = () => {
   ];
   return (
     <>
+      <Box marginBottom={2}>
+        <Button
+          startIcon={<BackIcon fontSize={"small"} />}
+          variant={"text"}
+          size={"medium"}
+          sx={{ color: "var(--color-text-secondary)" }}
+          color={"inherit"}
+          onClick={history.goBack}
+        >
+          {t("labelMINTNFTTitle")}
+          {/*<Typography color={"textPrimary"}></Typography>*/}
+        </Button>
+      </Box>
       <StyledPaper
         flex={1}
         className={"MuiPaper-elevation2"}
@@ -58,17 +103,6 @@ export const MintNFTPanel = () => {
         display={"flex"}
         flexDirection={"column"}
       >
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          paddingX={5 / 2}
-          paddingTop={5 / 2}
-        >
-          <Typography component={"h3"} variant={"h4"}>
-            {t("labelMINTNFTTitle")}
-          </Typography>
-        </Box>
         <Box flex={1} display={"flex"}>
           {
             panelList.map((panel, index) => {
@@ -88,6 +122,51 @@ export const MintNFTPanel = () => {
             // panelList[currentTab].element
           }
         </Box>
+      </StyledPaper>
+    </>
+  );
+};
+export const MintNFTAdvancePanel = <
+  T extends TradeNFT<I, Co>,
+  Co extends CollectionMeta,
+  I
+>() => {
+  const { resetDefault: resetNFTMint, nftMintAdvanceProps } =
+    useNFTMintAdvance();
+
+  const history = useHistory();
+  const match: any = useRouteMatch("/nft/:type");
+  React.useEffect(() => {
+    if (match.params?.type === "mintNFTAdvance") {
+      resetNFTMint();
+    }
+  }, [match.params?.type]);
+  const { t } = useTranslation("common");
+
+  return (
+    <>
+      <Box marginBottom={2}>
+        <Button
+          startIcon={<BackIcon fontSize={"small"} />}
+          variant={"text"}
+          size={"medium"}
+          sx={{ color: "var(--color-text-secondary)" }}
+          color={"inherit"}
+          onClick={history.goBack}
+        >
+          {t("labelAdMintTitle")}
+        </Button>
+      </Box>
+      <StyledPaper
+        flex={1}
+        className={"MuiPaper-elevation2"}
+        marginTop={0}
+        marginBottom={2}
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"stretch"}
+      >
+        <MintAdvanceNFTWrap {...{ ...nftMintAdvanceProps }} />
       </StyledPaper>
     </>
   );

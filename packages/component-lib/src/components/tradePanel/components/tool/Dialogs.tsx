@@ -1,5 +1,4 @@
 import {
-  Box,
   Checkbox,
   Dialog,
   DialogActions,
@@ -19,7 +18,7 @@ import { Button } from "../../../basic-lib";
 import React from "react";
 import { ConnectProviders } from "@loopring-web/web3-provider";
 import styled from "@emotion/styled";
-import { useOpenModals, useSettings } from "../../../../stores";
+import { useOpenModals } from "../../../../stores";
 
 import {
   Account,
@@ -28,22 +27,15 @@ import {
   CheckedIcon,
   copyToClipBoard,
   getValuePrecisionThousand,
-  Lang,
-  MarkdownStyle,
+  TradeDefi,
 } from "@loopring-web/common-resources";
 import { useHistory, useLocation } from "react-router-dom";
-import { TradeDefi } from "@loopring-web/core";
 import BigNumber from "bignumber.js";
-import ReactMarkdown from "react-markdown";
-import gfm from "remark-gfm";
-import { LoadingBlock } from "@loopring-web/webapp/src/pages/LoadingPage";
-import { useTheme } from "@emotion/react";
 
 const DialogStyle = styled(Dialog)`
   &.MuiDialog-root {
     z-index: 1900;
   }
-
   .MuiList-root {
     list-style: inside;
 
@@ -1170,150 +1162,6 @@ export const ConfirmInvestDefiRisk = withTranslation("common")(
               </Typography>
             </Trans>
           </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant={"contained"}
-            size={"small"}
-            disabled={!agree}
-            onClick={(e) => {
-              handleClose(e as any, true);
-            }}
-            color={"primary"}
-          >
-            {t("labelIKnow")}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-);
-export const ConfirmInvestDualRisk = withTranslation("common")(
-  ({
-    t,
-    open,
-    handleClose,
-  }: WithTranslation & {
-    open: boolean;
-    handleClose: (event: any, isAgree?: boolean) => void;
-  }) => {
-    const [agree, setAgree] = React.useState(false);
-    const { language } = useSettings();
-    const theme = useTheme();
-    const [input, setInput] = React.useState<string>("");
-    React.useEffect(() => {
-      // if (path) {
-      try {
-        const lng = Lang[language] ?? "en";
-        Promise.all([
-          fetch(
-            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_en.md`
-          ),
-          fetch(
-            `https://static.loopring.io/documents/markdown/dual_investment_tutorial_${lng}.md`
-          ),
-        ])
-          .then(([response1, response2]) => {
-            if (response2) {
-              return response2.text();
-            } else {
-              return response1.text();
-            }
-          })
-          .then((input) => {
-            setInput(input);
-          })
-          .catch(() => {});
-      } catch (e: any) {}
-    }, []);
-    return (
-      <Dialog
-        open={open}
-        keepMounted
-        onClose={(e: MouseEvent) => handleClose(e)}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle> {t("labelDualRiskTitle")}</DialogTitle>
-
-        <DialogContent>
-          {input ? (
-            <MarkdownStyle maxHeight={"50vh"}>
-              <DialogContentText id="alert-dialog-slide-description">
-                <Box
-                  flex={1}
-                  padding={3}
-                  boxSizing={"border-box"}
-                  className={`${theme.mode}  ${theme.mode}-scheme markdown-body`}
-                >
-                  <ReactMarkdown
-                    remarkPlugins={[gfm]}
-                    children={input}
-                    // escapeHtml={false}
-                  />
-                </Box>
-
-                {/*<Trans i18nKey={"labelDualRisk"}>*/}
-                {/*  <Typography*/}
-                {/*    whiteSpace={"pre-line"}*/}
-                {/*    component={"span"}*/}
-                {/*    variant={"body1"}*/}
-                {/*    display={"block"}*/}
-                {/*    color={"textSecondary"}*/}
-                {/*  >*/}
-                {/*    Lido is a liquid staking solution for ETH 2.0 backed by*/}
-                {/*    industry-leading staking providers. Lido lets users stake their*/}
-                {/*    ETH - without locking assets or maintaining infrastructure.*/}
-                {/*  </Typography>*/}
-                {/*  <Typography*/}
-                {/*    whiteSpace={"pre-line"}*/}
-                {/*    component={"span"}*/}
-                {/*    variant={"body1"}*/}
-                {/*    marginTop={2}*/}
-                {/*    display={"block"}*/}
-                {/*    color={"textSecondary"}*/}
-                {/*  >*/}
-                {/*    When using Lido to stake your ETH on the Ethereum beacon chain,*/}
-                {/*    users will receive a token (stETH), which represents their ETH*/}
-                {/*    on the Ethereum beacon chain on a 1:1 basis. It effectively acts*/}
-                {/*    as a bridge bringing ETH 2.0’s staking rewards to ETH 1.0.*/}
-                {/*  </Typography>*/}
-                {/*  <Typography*/}
-                {/*    whiteSpace={"pre-line"}*/}
-                {/*    component={"span"}*/}
-                {/*    variant={"body1"}*/}
-                {/*    marginTop={2}*/}
-                {/*    display={"block"}*/}
-                {/*    color={"textSecondary"}*/}
-                {/*  >*/}
-                {/*    wstETH is the wrapped version of stETH. The total amount of*/}
-                {/*    wstETH doesn’t change after users receive the token. Instead,*/}
-                {/*    the token’s value increase over time to reflect ETH staking*/}
-                {/*    rewards earned.*/}
-                {/*  </Typography>*/}
-                {/*</Trans>*/}
-              </DialogContentText>
-            </MarkdownStyle>
-          ) : (
-            <LoadingBlock />
-          )}
-        </DialogContent>
-
-        <DialogContent>
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                disabled={!input}
-                checked={agree}
-                onChange={(_event: any, state: boolean) => {
-                  setAgree(state);
-                }}
-                checkedIcon={<CheckedIcon />}
-                icon={<CheckBoxIcon />}
-                color="default"
-              />
-            }
-            label={t("labelDualAgree")}
-          />
         </DialogContent>
         <DialogActions>
           <Button

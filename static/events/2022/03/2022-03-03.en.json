@@ -12,7 +12,7 @@
     },
    
     "api": {
-      "url": "https://api.loopring.network/api/v3/user/gaveawayNft2/getAccount",
+      "url": "https://api.loopring.io/api/v3/user/gaveawayNft2/getAccount",
       "params": null,
       "column": [
         {
@@ -22,7 +22,8 @@
         {
           "key": "address",
           "label": "Address"
-        },{
+        },
+        {
           "key": "absolute",
           "label": "Net Deposits(USD)"
         }
