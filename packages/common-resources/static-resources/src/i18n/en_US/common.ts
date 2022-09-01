@@ -971,4 +971,5 @@ export default {
     "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
   labelChooseCollectionTooltips:
     "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under https://… ",
+  labelMintPreview: "Preview",
 };

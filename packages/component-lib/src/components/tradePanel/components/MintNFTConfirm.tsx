@@ -513,7 +513,7 @@ export const MintNFTConfirm = <
                     mintService.backMetaDataSetup();
                   }}
                 >
-                  {t("labelCancel")}
+                  {t("labelMintPreview")}
                 </Button>
               </Grid>
               <Grid item xs={8} alignSelf={"stretch"}>
