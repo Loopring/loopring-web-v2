@@ -168,6 +168,7 @@ export const DeployNFTWrap = <
                 <Typography
                   color={"var(--color-text-third)"}
                   maxWidth={300}
+                  overflow={"hidden"}
                   title={tradeData?.nftId}
                 >
                   {tradeData?.nftIdView ?? ""}
