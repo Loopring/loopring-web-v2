@@ -77,7 +77,7 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
               marginBottom={1}
             >
               <Trans i18nKey={"labelTileUri"}>
-                Tile (Dimensions: 5:7; 500*700 ️recommended)
+                Tile (Dimensions: 5:7)
                 <Typography
                   component={"span"}
                   variant={"inherit"}

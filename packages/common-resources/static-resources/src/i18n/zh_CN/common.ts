@@ -640,7 +640,7 @@ export default {
   depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
-  labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
+  labelIPFSUploadTitle: "Upload Image (Dimensions: 1:1) <1>\uFE61</1> ",
   labelLoadDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
@@ -776,7 +776,7 @@ export default {
     "<1>L2 to L1 withdrawing is performed via a smart contract. The CEX depositing address may not be able to automatically acknowledge the deposit.</1>" +
     "<2>If the deposit does not appear at the CEX address within 24 hours, please contact your CEX support and ask they manually acknowledge the transaction.</2>",
   labelCEXUnderstand: "I understand and acknowledge the risk",
-  labelMintFee: "Mint Fee",
+  labelMintFee: "Create Fee",
   labelMintFeeNotEnough: "Insufficient balance",
   labelMintFeeChoose: "Select payment token",
   labelLayerSwapUnderstand: "Acknowledge and understand the risk",
@@ -870,7 +870,7 @@ export default {
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
-  labelCreateCollection: "New My Collection",
+  labelCreateCollection: "Create Collection",
   labelCollectionCreateName: "Contract address for your collection",
   labelCollectionCreateERC1155: "Collection ERC-1155",
   labelCollectionCreateWaiting: "Waiting for create Collection token Address",
@@ -902,19 +902,22 @@ export default {
   labelADMint1: "Prepare NFT metadata",
   labelADMint2: "Fill in the IPFS CID",
   labelADMint3: "Preview & Create NFT",
-  labelADMintSelect: "Prepare NFT metadata w/ proper collection_metadata value",
-  labelHasData: "Has generated metadata w/ collection_metadata field",
-  labelNoData: "Hasn't generated metadata w/ collection_metadata field",
+  labelADMintSelect:
+    "Prepare NFT metadata with proper collection_metadata value",
+  labelHasData: "Has generated metadata with collection_metadata field",
+  labelNoData: "Hasn’t generated metadata with collection_metadata field",
   labelChooseCollection: "Choose a collection",
-  labelBanner: "Banner (1500px * 500px)",
+  labelBanner: "Banner (Dimensions: 3:1)",
   labelBannerDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
-  labelAvatar: "Avatar (120px * 120px)",
+  labelAvatar: "Avatar (Dimensions: 1:1)",
   labelAvatarDes: "Max size: {{size}}MB)",
-  labelTileUri: " Tile (320px * 320px) <1>\uFE61</1>",
+  labelTileUri: "Tile (Dimensions: 5:7) <1>\uFE61</1>",
   labelTileUriDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
-  labelCollectionDescription: "Description",
+  labelCollectionDescription: "Description <1>\u2139</1>",
+  labelCollectionDescriptionTooltips:
+    "You can describe your collection here. 0 of 1000 characters used",
   labelCollectionName: "Collection Name <1>\uFE61</1>",
   labelCollectionCreateBtn: "Create Collection",
   labelCollectionRequiredName: "Please input Name",
@@ -939,11 +942,23 @@ export default {
   labelNFTServerRefresh:
     "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
-  labelNFTCollection: "Collection Name:",
+  labelNFTCollection: "Collection",
   labelMyCollection: "My Collections",
   labelCounterFactualNFT: "L2 NFT:",
   labelCopyUrlClip: "URL Copied to Clipboard!",
   labelCollectionMetaData: "Collection MetaData",
   labelViewEtherscan: "Etherscan",
-  labelNFTMyNFTCollection: "My NFTs - Collection List",
+  labelNFTMyNFTCollection: "View by Collection",
+  labelNFTMyNFTList: "View by item",
+  labelNoCollectionCover: "No Cover Media",
+  labelNoNFTCover: "No Media Resource",
+  labelNFTAmountValue: "Amount: {{value}}",
+  labelCollectionItemValue: "Item: {{value}}",
+  labelMyCollectionsDes:
+    "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information Until it happens, the previous NFTs will be categorized to collection named by their associated contract address. ",
+  labelNFTGuid:
+    "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
+  labelChooseCollectionTooltips:
+    "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under https://… ",
+  labelMintPreview: "Preview",
 };
