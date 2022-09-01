@@ -5,6 +5,7 @@ import {
   NFTLimit,
   SoursURL,
   CollectionMeta,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   CardStyleItem,
@@ -99,6 +100,7 @@ export const MyNFTList = withTranslation("common")(
                   <CardStyleItem
                     // sx={{ maxWidth: 345 }}
                     onClick={() => {
+                      myLog("item", item);
                       onDetail(item);
                     }}
                   >

@@ -310,12 +310,14 @@ export const useMyNFT = ({
     Promise.all(mediaPromise).then((meta: any[]) => {
       const { walletLayer2NFT, page: page_reudex } =
         store.getState().walletLayer2NFT;
-      myLog("walletLayer2NFT  async media render", page, page_reudex);
+      myLog("walletLayer2NFT  async media render", page, page_reudex, meta);
       if (page === page_reudex) {
         setNFTList((state) => {
           return walletLayer2NFT.map((item, index) => {
             return {
               ...state[index],
+              ...item.metadata?.base,
+              ...item.metadata?.extra,
               ...meta[index],
               tokenAddress: item.tokenAddress?.toLowerCase(),
               etherscanBaseUrl,
