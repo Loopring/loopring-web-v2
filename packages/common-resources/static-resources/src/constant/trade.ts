@@ -285,7 +285,8 @@ export type AddressItemType<T> = {
   maxWidth?: string | number;
 };
 
-export const useAddressTypeLists = <T extends WALLET_TYPE | EXCHANGE_TYPE
+export const useAddressTypeLists = <
+  T extends WALLET_TYPE | EXCHANGE_TYPE
 >() => {
   const { t } = useTranslation("common");
   const walletList: AddressItemType<T>[] = [
