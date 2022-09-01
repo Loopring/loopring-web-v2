@@ -21,7 +21,7 @@ import {
 import * as sdk from "@loopring-web/loopring-sdk";
 import { MyNFTCollectionList } from "./MyNFTCollectionList";
 import { Box, Tab, Tabs } from "@mui/material";
-import { Button } from "@loopring-web/component-lib";
+import { Button, useSettings } from "@loopring-web/component-lib";
 
 enum MY_NFT_VIEW {
   LIST_COLLECTION = "byCollection",
@@ -37,6 +37,8 @@ export const MyNFTPanel = withTranslation("common")(
         ? MY_NFT_VIEW.LIST_COLLECTION
         : MY_NFT_VIEW.LIST_NFT;
     });
+    const { isMobile } = useSettings();
+
     const history = useHistory();
     const { search } = useLocation();
     const {
@@ -161,8 +163,9 @@ export const MyNFTPanel = withTranslation("common")(
             <Box
               display={"flex"}
               justifyContent={"space-between"}
-              alignItems={"center"}
+              alignItems={isMobile ? "stretch" : "center"}
               marginBottom={1}
+              flexDirection={isMobile ? "column" : "row"}
             >
               <Tabs
                 value={currentTab}
@@ -175,6 +178,7 @@ export const MyNFTPanel = withTranslation("common")(
                 }}
                 aria-label="my-nft-tabs"
                 variant="scrollable"
+                sx={{ order: isMobile ? 1 : 0 }}
               >
                 <Tab
                   label={t("labelNFTMyNFTList")}
@@ -185,7 +189,13 @@ export const MyNFTPanel = withTranslation("common")(
                   value={MY_NFT_VIEW.LIST_COLLECTION}
                 />
               </Tabs>
-              <Box display={"flex"} flexDirection={"row"} paddingX={5 / 2}>
+              <Box
+                sx={{ order: isMobile ? 0 : 0 }}
+                display={"flex"}
+                flexDirection={"row"}
+                paddingX={isMobile ? 0 : 5 / 2}
+                paddingY={isMobile ? 2 : 0}
+              >
                 <Box marginLeft={1}>
                   <Button
                     variant={"contained"}
