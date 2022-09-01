@@ -87,7 +87,7 @@ export default {
   labelWalletHistory: "History",
   labelNFT: "L2 NFT",
   labelMyAssetsNFT: "My NFTs",
-  labelMyAssetsNFTDes: "Receive, send NFTs ",
+  labelMyAssetsNFTDes: "Receive/Send NFTs",
   labelInvest: "Earn",
   labelMintNFT: "Create NFT",
   labelMintNFTDes: "Create your own NFTs",
@@ -104,8 +104,7 @@ export default {
   labelInvestDefiDes: "Earn ETH staking rewards",
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
-  labelMyCollectionDes:
-    "Receive/Send NFTs \n Create, curate, and manage my NFT collections",
+  labelMyCollectionDes: "Create, curate, and manage my NFT collections",
 
   // labelDepositNFTDes:"Receive NFT"
 };

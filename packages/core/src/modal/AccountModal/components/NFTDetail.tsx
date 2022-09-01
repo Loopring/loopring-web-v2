@@ -254,13 +254,13 @@ export const NFTDetail = withTranslation("common")(
               variant={"body1"}
               marginBottom={1}
             >
-              {popItem?.collectionMeta
-                ? popItem?.collectionMeta?.name
-                  ? popItem?.collectionMeta?.name
-                  : t("labelUnknown") +
-                    " - " +
-                    getShortAddr(popItem?.collectionMeta?.contractAddress ?? "")
-                : EmptyValueTag}
+              {/*{popItem?.collectionMeta*/}
+              {/*  ? popItem?.collectionMeta?.name*/}
+              {/*    ? popItem?.collectionMeta?.name*/}
+              {/*    : t("labelUnknown") +*/}
+              {/*      " - " +*/}
+              {/*      getShortAddr(popItem?.collectionMeta?.contractAddress ?? "")*/}
+              {/*  : EmptyValueTag}*/}
             </Typography>
           </Box>
           <Box marginBottom={2} display={"flex"} alignItems={"center"}>
