@@ -1,7 +1,3 @@
-import { DeFiCalcData, MarketType } from "@loopring-web/common-resources";
-import * as sdk from "@loopring-web/loopring-sdk";
-import { TokenInfo } from "@loopring-web/loopring-sdk";
-import { DeFiChgType } from "@loopring-web/component-lib";
 import { TradeDefi } from "@loopring-web/common-resources";
 
 export type TradeDefiStatus<C> = {

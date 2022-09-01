@@ -200,7 +200,6 @@ export function useAccountModalForUI({
     exportAccountToastOpen,
     setExportAccountToastOpen,
   } = useExportAccount();
-  const vendorProps = useVendor();
   const {
     toastOpen: collectionToastOpen,
     setToastOpen: setCollectionToastOpen,
@@ -692,7 +691,13 @@ export function useAccountModalForUI({
         ),
       },
       [AccountStep.PayWithCard]: {
-        view: <VendorMenu {...{ ...vendorProps }} />,
+        view: (
+          <VendorMenu
+            vendorList={vendorListBuy}
+            type={TradeTypes.Buy}
+            vendorForce={undefined}
+          />
+        ),
         onBack: onBackReceive,
       },
       [AccountStep.NoAccount]: {
@@ -1412,6 +1417,114 @@ export function useAccountModalForUI({
         ),
       },
 
+      // transferRamp
+      [AccountStep.Transfer_RAMP_WaitForAuth]: {
+        view: (
+          <Transfer_WaitForAuth
+            providerName={account.connectName as ConnectProviders}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_First_Method_Denied]: {
+        view: (
+          <Transfer_First_Method_Denied
+            btnInfo={{
+              btnTxt: "labelTryAnother",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferRampValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, false);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_User_Denied]: {
+        view: (
+          <Transfer_User_Denied
+            btnInfo={{
+              btnTxt: "labelRetry",
+              callback: () => {
+                const { __request__ } =
+                  store.getState()._router_modalData.transferRampValue;
+                if (__request__) {
+                  processRequestRampTransfer(__request__, true);
+                } else {
+                  setShowAccount({
+                    isShow: true,
+                    step: AccountStep.Transfer_RAMP_Failed,
+                  });
+                }
+              },
+            }}
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_In_Progress]: {
+        view: (
+          <Transfer_In_Progress
+            {...{
+              ...rest,
+              account,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_Success]: {
+        view: (
+          <Transfer_Success
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              link: isShowAccount?.info?.hash
+                ? {
+                    name: "Txn Hash",
+                    url: isShowAccount?.info?.hash,
+                  }
+                : undefined,
+              t,
+            }}
+          />
+        ),
+      },
+      [AccountStep.Transfer_RAMP_Failed]: {
+        view: (
+          <Transfer_Failed
+            btnInfo={closeBtnInfo}
+            {...{
+              ...rest,
+              account,
+              error: isShowAccount.error,
+              t,
+            }}
+          />
+        ),
+      },
+
       // withdraw
       [AccountStep.Withdraw_WaitForAuth]: {
         view: (
@@ -2101,7 +2214,7 @@ export function useAccountModalForUI({
     depositProps.tradeData.belong,
     depositProps.tradeData.tradeValue,
     sendAssetList,
-    vendorProps,
+    vendorListBuy,
     onBackReceive,
     chainInfos,
     isLayer1Only,

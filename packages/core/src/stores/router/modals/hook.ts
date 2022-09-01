@@ -29,6 +29,7 @@ import {
   updateWithdrawData,
   updateForceWithdrawData,
   updateTransferRampData,
+  resetTransferRampData,
 } from "./reducer";
 import {
   ActiveAccountData,
@@ -134,7 +135,11 @@ export function useModalData(): {
     }>
   ) => void;
   resetOffRampData: () => void;
-  updateTransferRampData;
+  transferRampValue: TransferData;
+  resetTransferRampData: () => void;
+  updateTransferRampData: (
+    transferData: RequireOne<TransferData, never>
+  ) => void;
 } {
   const modalDataStatus: ModalDataStatus = useSelector(
     (state: RootState) => state._router_modalData

@@ -2,14 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { Box, Grid } from "@mui/material";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { useDualHook } from "./hook";
-import {
-  boxLiner,
-  Button,
-  Toast,
-  useSettings,
-} from "@loopring-web/component-lib";
-import { TOAST_TIME } from "@loopring-web/core";
+import { boxLiner, Button, useSettings } from "@loopring-web/component-lib";
 import { useHistory } from "react-router-dom";
 import { BackIcon } from "@loopring-web/common-resources";
 
