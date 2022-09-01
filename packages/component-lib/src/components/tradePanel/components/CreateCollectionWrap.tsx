@@ -63,49 +63,6 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
         <Grid
           item
           xs={12}
-          display={"flex"}
-          flexDirection={"column"}
-          position={"relative"}
-        >
-          <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-            marginBottom={2}
-          >
-            <TextField
-              value={collectionValue?.name ?? ""}
-              inputProps={{ maxLength: 28 }}
-              fullWidth
-              label={
-                <Typography
-                  component={"span"}
-                  variant={"body1"}
-                  color={"var(--color-text-secondary)"}
-                  marginBottom={1}
-                >
-                  <Trans i18nKey={"labelCollectionName"}>
-                    Collection Name
-                    <Typography
-                      component={"span"}
-                      variant={"inherit"}
-                      color={"error"}
-                    >
-                      {"\uFE61"}
-                    </Typography>
-                  </Trans>
-                </Typography>
-              }
-              type={"text"}
-              onChange={(e: React.ChangeEvent<{ value: string }>) =>
-                handleOnDataChange("name", e.target.value)
-              }
-            />
-          </Box>
-        </Grid>
-        <Grid
-          item
-          xs={12}
           position={"relative"}
           display={"flex"}
           flexDirection={isMobile ? "column" : "row"}
@@ -222,6 +179,49 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
           flexDirection={"column"}
           position={"relative"}
         >
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+            marginBottom={2}
+          >
+            <TextField
+              value={collectionValue?.name ?? ""}
+              inputProps={{ maxLength: 28 }}
+              fullWidth
+              label={
+                <Typography
+                  component={"span"}
+                  variant={"body1"}
+                  color={"var(--color-text-secondary)"}
+                  marginBottom={1}
+                >
+                  <Trans i18nKey={"labelCollectionName"}>
+                    Collection Name
+                    <Typography
+                      component={"span"}
+                      variant={"inherit"}
+                      color={"error"}
+                    >
+                      {"\uFE61"}
+                    </Typography>
+                  </Trans>
+                </Typography>
+              }
+              type={"text"}
+              onChange={(e: React.ChangeEvent<{ value: string }>) =>
+                handleOnDataChange("name", e.target.value)
+              }
+            />
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          display={"flex"}
+          flexDirection={"column"}
+          position={"relative"}
+        >
           <FormLabel>
             <Tooltip
               placement={"left-start"}
@@ -247,6 +247,7 @@ export const CreateCollectionWrap = <T extends Partial<CollectionMeta>>({
               </Typography>
             </Tooltip>
           </FormLabel>
+
           <Box flex={1}>
             <TextareaAutosizeStyled
               aria-label="Description"

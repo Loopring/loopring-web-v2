@@ -651,7 +651,7 @@ export default {
   depositLabelTo: "To address, Account ID or ENS.",
   labelAddressNotLoopring: "Account doesn't have an active Loopring L2",
   labelMINTNFTTitle: "Create NFT (ERC1155)",
-  labelIPFSUploadTitle: "Upload Image <1>\uFE61</1> ",
+  labelIPFSUploadTitle: "Upload Image (Dimensions: 1:1) <1>\uFE61</1> ",
   labelLoadDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelUpload: "upload",
@@ -917,13 +917,12 @@ export default {
   labelHasData: "Has generated metadata w/ collection_metadata field",
   labelNoData: "Hasn't generated metadata w/ collection_metadata field",
   labelChooseCollection: "Choose a collection",
-  labelBanner: "Banner (Dimensions: 3:1; 1500\u2A09500px \u2A09 500px)",
+  labelBanner: "Banner (Dimensions: 3:1)",
   labelBannerDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
-  labelAvatar: "Avatar (Dimensions: 1:1; 320\u2A09320px recommended)",
+  labelAvatar: "Avatar (Dimensions: 1:1)",
   labelAvatarDes: "Max size: {{size}}MB)",
-  labelTileUri:
-    "Tile (Dimensions: 5:7; 500\u2A09700px recommended) <1>\uFE61</1>",
+  labelTileUri: "Tile (Dimensions: 5:7) <1>\uFE61</1>",
   labelTileUriDes:
     "Drag or click to upload files ({{types}}, max size:  {{size}}MB)",
   labelCollectionDescription: "Description <1>\u2139</1>",

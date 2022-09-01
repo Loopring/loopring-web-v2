@@ -1,28 +1,9 @@
-import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
-import {
-  EmptyValueTag,
-  getShortAddr,
-  NFTLimit,
-  SoursURL,
-  TOAST_TIME,
-  TradeNFT,
-} from "@loopring-web/common-resources";
-import {
-  CardStyleItem,
-  CollectionCardList,
-  EmptyDefault,
-  NFTMedia,
-  Toast,
-} from "@loopring-web/component-lib";
-import {
-  getIPFSString,
-  LoopringAPI,
-  useAccount,
-  useMyNFTCollection,
-  useSystem,
-} from "@loopring-web/core";
+import { Box, Typography } from "@mui/material";
+import { TOAST_TIME } from "@loopring-web/common-resources";
+import { CollectionCardList, Toast } from "@loopring-web/component-lib";
+import { useAccount, useMyNFTCollection } from "@loopring-web/core";
 import React from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
@@ -38,7 +19,6 @@ export const MyNFTCollectionList = withTranslation("common")(
     return (
       <Box
         flex={1}
-        className={"MuiPaper-elevation2"}
         marginTop={0}
         paddingX={2}
         marginBottom={2}

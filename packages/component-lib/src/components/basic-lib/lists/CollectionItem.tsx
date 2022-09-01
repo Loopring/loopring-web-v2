@@ -239,7 +239,11 @@ export const CollectionItem = React.memo(
               right={0}
             >
               <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-                <Avatar variant={"circular"} src={item?.avatar}>
+                <Avatar
+                  sx={{ bgcolor: "var(--color-border-disable2)" }}
+                  variant={"circular"}
+                  src={item?.avatar}
+                >
                   <ImageIcon />
                 </Avatar>
                 <Typography

@@ -148,7 +148,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
     resetNFTMintData(
       state,
       _action?: PayloadAction<{
-        tokenAddress: string;
+        tokenAddress?: string;
         collection?: CollectionMeta;
       }>
     ) {
@@ -156,7 +156,9 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
       state.nftMintValue = {
         mintData: {
           ...initialMintNFT,
-          tokenAddress: _action?.payload?.tokenAddress,
+          tokenAddress: _action?.payload?.tokenAddress
+            ? _action?.payload?.tokenAddress
+            : undefined,
         },
         nftMETA: {
           ...initialNFTMETA,
@@ -166,7 +168,9 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
               }`
             : undefined,
         },
-        collection: _action?.payload?.collection,
+        collection: _action?.payload?.collection
+          ? _action?.payload?.collection
+          : undefined,
       };
     },
     resetNFTMintAdvanceData(state) {
