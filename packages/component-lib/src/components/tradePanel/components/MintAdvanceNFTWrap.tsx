@@ -472,7 +472,9 @@ export const MintAdvanceNFTWrap = <
                 <Link
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={"./#/document/mint_nft.md"}
+                  href={
+                    "https://desk.zoho.com/portal/loopring/en/kb/articles/collection-implementation-in-loopring-l2"
+                  }
                   paddingLeft={1}
                 >
                   Follow this Guide
@@ -573,7 +575,6 @@ export const MintAdvanceNFTWrap = <
                 }}
                 fullWidth={true}
               />
-              ;
               {cid && cid !== "" ? (
                 isNFTCheckLoading ? (
                   <LoadingIcon

@@ -13,7 +13,6 @@ import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
 import { MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
-import { mintService } from "@loopring-web/core";
 import { NFTCollectPanel } from "./CollectionPanel";
 import { CreateCollectionPanel } from "./CreateCollectionPanel";
 import { MintLandingPage } from "./components/landingPanel";

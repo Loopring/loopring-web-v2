@@ -881,7 +881,7 @@ export default {
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
-  labelCreateCollection: "Create My Collection",
+  labelCreateCollection: "Create Collection",
   labelCollectionCreateName: "Contract address for your collection",
   labelCollectionCreateERC1155: "Collection ERC-1155",
   labelCollectionCreateWaiting: "Waiting for create Collection token Address",

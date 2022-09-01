@@ -13,6 +13,7 @@ import {
   CreateCollectionStep,
   TradeNFT,
   TOAST_TIME,
+  AddIcon,
 } from "@loopring-web/common-resources";
 import {
   LoopringAPI,
@@ -68,6 +69,7 @@ export const NFTCollectPanel = <Co extends CollectionMeta>() => {
               // setStep(CreateCollectionStep.ChooseMethod);
               // setCreateOpen(true);
             }}
+            startIcon={<AddIcon />}
             variant={"outlined"}
             color={"primary"}
           >
