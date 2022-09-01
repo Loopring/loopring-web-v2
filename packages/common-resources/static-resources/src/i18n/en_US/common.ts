@@ -474,7 +474,7 @@ export default {
   labelNFTTokenMintWaitForAuth: "Allow Loopring to Create {{symbol}}?",
   labelMintFailed: "Create of {{symbol}} has failed!",
   labelMintSuccess: "Create of {{symbol}} has been submitted!",
-  labelNFTMintBtn: "Create My NFT",
+  labelNFTMintBtn: "Create NFT",
   labelNFTMintNoMetaBtn: "Wrong Metadata",
   labelNFTMintNoMetaDetail:
     "Your NFT metadata should identify <1>name, image, and royalty_percentage (integer from 0 to 10)</1>.",
@@ -913,9 +913,10 @@ export default {
   labelADMint1: "Prepare NFT metadata",
   labelADMint2: "Fill in the IPFS CID",
   labelADMint3: "Preview & Create NFT",
-  labelADMintSelect: "Prepare NFT metadata w/ proper collection_metadata value",
-  labelHasData: "Has generated metadata w/ collection_metadata field",
-  labelNoData: "Hasn't generated metadata w/ collection_metadata field",
+  labelADMintSelect:
+    "Prepare NFT metadata with proper collection_metadata value",
+  labelHasData: "Has generated metadata with collection_metadata field",
+  labelNoData: "Hasn’t generated metadata with collection_metadata field",
   labelChooseCollection: "Choose a collection",
   labelBanner: "Banner (Dimensions: 3:1)",
   labelBannerDes:

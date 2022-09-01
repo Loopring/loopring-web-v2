@@ -5,17 +5,14 @@ import {
   Divider,
   Link,
   Modal,
-  Pagination,
   Tooltip,
   Typography,
 } from "@mui/material";
 import {
-  CollectionLimit,
   CopyIcon,
   copyToClipBoard,
   getShortAddr,
   Info2Icon,
-  NFTLimit,
   CollectionMeta,
   MakeMeta,
   TOAST_TIME,
@@ -109,7 +106,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
   const { t } = useTranslation("common");
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
-  const { onPageChange, total, page } = collectionListProps;
+  const { onPageChange } = collectionListProps;
   myLog("collectionList", collectionListProps.collectionList);
   return (
     <Box
@@ -117,47 +114,42 @@ export const CollectionInput = <Co extends CollectionMeta>({
       flexDirection={"column"}
       width={fullWidth ? "100%" : width}
     >
-      <Tooltip
-        title={t("labelMintCollectionTooltips").toString()}
-        placement={"top"}
-      >
-        <Box width={"100%"}>
-          <Tooltip
-            title={t("labelChooseCollectionTooltips").toString()}
-            placement={"left-end"}
+      <Box width={"100%"}>
+        <Tooltip
+          title={t("labelChooseCollectionTooltips").toString()}
+          placement={"left-end"}
+        >
+          <Typography
+            variant={"body1"}
+            color={"textSecondary"}
+            className={"main-label"}
+            paddingBottom={1 / 2}
+            display={"inline-flex"}
+            height={24}
+            lineHeight={24}
+            alignItems={"center"}
           >
-            <Typography
-              variant={"body1"}
-              color={"textSecondary"}
-              className={"main-label"}
-              paddingBottom={1 / 2}
-              display={"inline-flex"}
-              height={24}
-              lineHeight={24}
-              alignItems={"center"}
+            <Trans
+              i18nKey={"labelMintCollection"}
+              tOptions={{ required: isRequired ? "\uFE61" : "" }}
             >
-              <Trans
-                i18nKey={"labelMintCollection"}
-                tOptions={{ required: isRequired ? "\uFE61" : "" }}
+              Choose Collection
+              <Typography
+                component={"span"}
+                variant={"inherit"}
+                color={"error"}
               >
-                Choose Collection
-                <Typography
-                  component={"span"}
-                  variant={"inherit"}
-                  color={"error"}
-                >
-                  {"\uFE61"}
-                </Typography>
-                <Info2Icon
-                  fontSize={"small"}
-                  color={"inherit"}
-                  sx={{ marginX: 1 / 2 }}
-                />
-              </Trans>
-            </Typography>
-          </Tooltip>
-        </Box>
-      </Tooltip>
+                {"\uFE61"}
+              </Typography>
+              <Info2Icon
+                fontSize={"small"}
+                color={"inherit"}
+                sx={{ marginX: 1 / 2 }}
+              />
+            </Trans>
+          </Typography>
+        </Tooltip>
+      </Box>
       <BoxStyle
         width={"100%"}
         display={"flex"}
@@ -177,8 +169,7 @@ export const CollectionInput = <Co extends CollectionMeta>({
         <Box flex={1} display={"flex"} flexDirection={"row"}>
           {collection ? (
             <>
-              {size === "large" &&
-              collectionListProps
+              {collectionListProps
                 .getIPFSString(
                   collection?.tileUri ?? "",
                   collectionListProps.baseURL
@@ -188,6 +179,14 @@ export const CollectionInput = <Co extends CollectionMeta>({
                   sx={{
                     bgcolor: "var(--color-border-disable2)",
                     marginRight: 1,
+                    width:
+                      size === "large"
+                        ? "var(--svg-size-huge2)"
+                        : "var(--svg-size-large)",
+                    height:
+                      size === "large"
+                        ? "var(--svg-size-huge2)"
+                        : "var(--svg-size-large)",
                   }}
                   variant={"rounded"}
                   src={collectionListProps.getIPFSString(
@@ -200,6 +199,14 @@ export const CollectionInput = <Co extends CollectionMeta>({
                   sx={{
                     bgcolor: "var(--color-border-disable2)",
                     marginRight: 1,
+                    width:
+                      size === "large"
+                        ? "var(--svg-size-huge2)"
+                        : "var(--svg-size-medium)",
+                    height:
+                      size === "large"
+                        ? "var(--svg-size-huge2)"
+                        : "var(--svg-size-medium)",
                   }}
                   variant={"rounded"}
                 >

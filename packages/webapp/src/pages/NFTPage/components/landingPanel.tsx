@@ -268,7 +268,7 @@ export const CreateUrlPanel = ({
                     color={"primary"}
                     fullWidth={true}
                   >
-                    {t("labelCreateCollection")}
+                    {t("labelCollectionCreateBtn")}
                   </Button>
                 </Typography>
               </CardNFTStyled>

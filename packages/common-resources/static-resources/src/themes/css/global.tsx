@@ -232,6 +232,7 @@ export const globalCss = ({ theme }: any) => css`
     --svg-size-medium: 16px;
     --svg-size-cover: 32px;
     --svg-size-large: 24px;
+    --svg-size-huge2: 40px;
     --svg-size-huge: 48px;
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;

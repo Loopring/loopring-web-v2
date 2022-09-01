@@ -11,6 +11,7 @@ import {
   Avatar,
   Box,
   Grid,
+  IconButton,
   Link,
   MenuItem,
   Pagination,
@@ -25,18 +26,17 @@ import {
   GET_IPFS_STRING,
   getShortAddr,
   ImageIcon,
-  LinkIcon,
+  // LinkIcon,
   MakeMeta,
-  MoreIcon,
   NFT_TYPE_STRING,
   SoursURL,
+  ViewMoreIcon,
 } from "@loopring-web/common-resources";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { CollectionLimit, NFTLimit } from "@loopring-web/common-resources";
 import styled from "@emotion/styled";
-import { useTheme } from "@emotion/react";
 
 const BoxStyle = styled(Box)`
   .MuiRadio-root {
@@ -44,6 +44,10 @@ const BoxStyle = styled(Box)`
     right: ${({ theme }) => theme.unit}px;
     top: ${({ theme }) => theme.unit}px;
     transform: scale(1.5);
+  }
+
+  .btn-group {
+    width: auto;
   }
 
   .collection:hover {
@@ -67,6 +71,12 @@ const BoxBtnGroup = styled(Box)`
   &.mobile {
   }
 ` as typeof Box;
+const IconButtonStyle = styled(IconButton)`
+  background-color: var(--field-opacity);
+  margin: 0 ${({ theme }) => theme.unit / 2}px;
+  ${({ theme }) => theme.border.defaultFrame({ c_key: "transparent" })};
+
+}`;
 
 export type CollectionItemProps<Co> = {
   item: Co;
@@ -87,22 +97,27 @@ export type CollectionItemProps<Co> = {
   getIPFSString: GET_IPFS_STRING;
   etherscanBaseUrl: string;
 };
+
 const ActionMemo = React.memo(
   <Co extends CollectionMeta>({
     // setShowDeploy,
     // setShowEdit,
     item,
     account,
-    etherscanBaseUrl,
+    // etherscanBaseUrl,
     setShowMintNFT,
   }: CollectionItemProps<Co>) => {
     const { t } = useTranslation("common");
-    const theme = useTheme();
+    // const theme = useTheme();
     const popoverProps: PopoverWrapProps = {
       type: PopoverType.click,
       popupId: "testPopup",
       className: "arrow-none",
-      children: <MoreIcon cursor={"pointer"} />,
+      children: (
+        <IconButtonStyle size={"large"} edge={"end"}>
+          <ViewMoreIcon />
+        </IconButtonStyle>
+      ),
       popoverContent: (
         <Box borderRadius={"inherit"} minWidth={110}>
           {!!(
@@ -112,23 +127,24 @@ const ActionMemo = React.memo(
           ) ? (
             <></>
           ) : (
-            <MenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open(`${etherscanBaseUrl}tx/${item?.contractAddress}`);
-                window.opener = null;
-              }}
-            >
-              {t("labelViewEtherscan")}
-              <LinkIcon
-                color={"inherit"}
-                fontSize={"small"}
-                style={{
-                  verticalAlign: "middle",
-                  marginLeft: theme.unit,
-                }}
-              />
-            </MenuItem>
+            <></>
+            // <MenuItem
+            //   onClick={(e) => {
+            //     e.stopPropagation();
+            //     window.open(`${etherscanBaseUrl}address/${item?.contractAddress}`);
+            //     window.opener = null;
+            //   }}
+            // >
+            //   {t("labelViewEtherscan")}
+            //   <LinkIcon
+            //     color={"inherit"}
+            //     fontSize={"small"}
+            //     style={{
+            //       verticalAlign: "middle",
+            //       marginLeft: theme.unit,
+            //     }}
+            //   />
+            // </MenuItem>
           )}
           {!!(
             item.isCounterFactualNFT && item?.nftType !== NFT_TYPE_STRING.ERC721

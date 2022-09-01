@@ -190,6 +190,7 @@ export const useCollectionPanel = <T extends CollectionMeta>({
                 : t("errorUnknown")
             }`,
         });
+        resetBtnInfo();
       }
     }
   }, [collectionValue, disableBtn, resetBtnInfo]);
