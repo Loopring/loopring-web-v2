@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   BoxProps,
   Divider,
@@ -19,6 +20,7 @@ import {
   MakeMeta,
   TOAST_TIME,
   myLog,
+  ImageIcon,
 } from "@loopring-web/common-resources";
 import {
   CollectionCardList,
@@ -120,35 +122,40 @@ export const CollectionInput = <Co extends CollectionMeta>({
         placement={"top"}
       >
         <Box width={"100%"}>
-          <Typography
-            variant={"body1"}
-            color={"textSecondary"}
-            className={"main-label"}
-            paddingBottom={1 / 2}
-            display={"inline-flex"}
-            height={24}
-            lineHeight={24}
-            alignItems={"center"}
+          <Tooltip
+            title={t("labelChooseCollectionTooltips").toString()}
+            placement={"left-end"}
           >
-            <Trans
-              i18nKey={"labelMintCollection"}
-              tOptions={{ required: isRequired ? "\uFE61" : "" }}
+            <Typography
+              variant={"body1"}
+              color={"textSecondary"}
+              className={"main-label"}
+              paddingBottom={1 / 2}
+              display={"inline-flex"}
+              height={24}
+              lineHeight={24}
+              alignItems={"center"}
             >
-              Choose Collection
-              <Typography
-                component={"span"}
-                variant={"inherit"}
-                color={"error"}
+              <Trans
+                i18nKey={"labelMintCollection"}
+                tOptions={{ required: isRequired ? "\uFE61" : "" }}
               >
-                {"\uFE61"}
-              </Typography>
-              <Info2Icon
-                fontSize={"small"}
-                color={"inherit"}
-                sx={{ marginX: 1 / 2 }}
-              />
-            </Trans>
-          </Typography>
+                Choose Collection
+                <Typography
+                  component={"span"}
+                  variant={"inherit"}
+                  color={"error"}
+                >
+                  {"\uFE61"}
+                </Typography>
+                <Info2Icon
+                  fontSize={"small"}
+                  color={"inherit"}
+                  sx={{ marginX: 1 / 2 }}
+                />
+              </Trans>
+            </Typography>
+          </Tooltip>
         </Box>
       </Tooltip>
       <BoxStyle
@@ -167,43 +174,76 @@ export const CollectionInput = <Co extends CollectionMeta>({
         }}
         style={{ cursor: "pointer", whiteSpace: "nowrap" }}
       >
-        <Box
-          flex={1}
-          display={"flex"}
-          flexDirection={size === "large" ? "column" : "row"}
-          alignItems={size === "large" ? "stretch" : "center"}
-        >
+        <Box flex={1} display={"flex"} flexDirection={"row"}>
           {collection ? (
             <>
-              <Typography
-                component={"span"}
-                variant={"body1"}
-                color={"textPrimary"}
-                textOverflow={"ellipsis"}
-                overflow={"hidden"}
-                display={"inline-flex"}
-                whiteSpace={"pre"}
-                sx={
-                  size !== "large"
-                    ? {
-                        maxWidth: "160px",
-                        wordBreak: "break-all",
-                      }
-                    : {}
-                }
+              {size === "large" &&
+              collectionListProps
+                .getIPFSString(
+                  collection?.tileUri ?? "",
+                  collectionListProps.baseURL
+                )
+                .startsWith("http") ? (
+                <Avatar
+                  sx={{
+                    bgcolor: "var(--color-border-disable2)",
+                    marginRight: 1,
+                  }}
+                  variant={"rounded"}
+                  src={collectionListProps.getIPFSString(
+                    collection?.tileUri ?? "",
+                    collectionListProps.baseURL
+                  )}
+                />
+              ) : (
+                <Avatar
+                  sx={{
+                    bgcolor: "var(--color-border-disable2)",
+                    marginRight: 1,
+                  }}
+                  variant={"rounded"}
+                >
+                  <ImageIcon />
+                </Avatar>
+              )}
+
+              <Box
+                flex={1}
+                display={"flex"}
+                flexDirection={size === "large" ? "column" : "row"}
+                alignItems={size === "large" ? "stretch" : "center"}
               >
-                {collection.name}
-              </Typography>
-              <Typography
-                component={"span"}
-                marginLeft={size === "large" ? 0 : 1}
-                variant={"body2"}
-                color={"var(--color-text-third)"}
-              >
-                {size === "large"
-                  ? collection.contractAddress
-                  : " " + getShortAddr(collection.contractAddress ?? "", true)}
-              </Typography>
+                <Typography
+                  component={"span"}
+                  variant={"body1"}
+                  color={"textPrimary"}
+                  textOverflow={"ellipsis"}
+                  overflow={"hidden"}
+                  display={"inline-flex"}
+                  whiteSpace={"pre"}
+                  sx={
+                    size !== "large"
+                      ? {
+                          maxWidth: "160px",
+                          wordBreak: "break-all",
+                        }
+                      : {}
+                  }
+                >
+                  {collection.name}
+                </Typography>
+                <Typography
+                  component={"span"}
+                  marginLeft={size === "large" ? 0 : 1}
+                  variant={"body2"}
+                  color={"var(--color-text-third)"}
+                >
+                  {size === "large"
+                    ? collection.contractAddress
+                    : " " +
+                      getShortAddr(collection.contractAddress ?? "", true)}
+                </Typography>
+              </Box>
             </>
           ) : (
             <></>
@@ -256,31 +296,15 @@ export const CollectionInput = <Co extends CollectionMeta>({
           paddingX={4}
           className={"collectionSelect"}
         >
-          {total > CollectionLimit && (
-            <Box
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"space-between"}
-              marginRight={3}
-              marginBottom={2}
-            >
-              <Typography variant={"h5"}>
-                {t("labelChooseCollection")}
-              </Typography>
-
-              <Pagination
-                color={"primary"}
-                count={
-                  parseInt(String(total / NFTLimit)) +
-                  (total % NFTLimit > 0 ? 1 : 0)
-                }
-                page={page}
-                onChange={(_event, value) => {
-                  onPageChange(Number(value));
-                }}
-              />
-            </Box>
-          )}
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"flex-start"}
+            marginRight={3}
+            marginBottom={2}
+          >
+            <Typography variant={"h5"}>{t("labelChooseCollection")}</Typography>
+          </Box>
           <Divider style={{ marginTop: "-1px" }} />
           <CollectionCardList
             {...{ ...(collectionListProps as any) }}
@@ -293,28 +317,6 @@ export const CollectionInput = <Co extends CollectionMeta>({
               setModalState(false);
             }}
           />
-          <Divider style={{ marginTop: "-1px" }} />
-          {total > CollectionLimit && (
-            <Box
-              display={"flex"}
-              alignItems={"center"}
-              justifyContent={"right"}
-              marginRight={3}
-              marginBottom={2}
-            >
-              <Pagination
-                color={"primary"}
-                count={
-                  parseInt(String(total / NFTLimit)) +
-                  (total % NFTLimit > 0 ? 1 : 0)
-                }
-                page={page}
-                onChange={(_event, value) => {
-                  onPageChange(Number(value));
-                }}
-              />
-            </Box>
-          )}
           <Toast
             alertText={
               collectionListProps.copyToastOpen?.type === "json"

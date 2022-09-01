@@ -6,7 +6,6 @@ import {
   Explorer,
   getShortAddr,
   LinkIcon,
-  LoadingIcon,
   myLog,
   NFT_TYPE_STRING,
   NFTWholeINFO,

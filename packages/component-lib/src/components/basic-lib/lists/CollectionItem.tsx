@@ -239,13 +239,24 @@ export const CollectionItem = React.memo(
               right={0}
             >
               <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-                <Avatar
-                  sx={{ bgcolor: "var(--color-border-disable2)" }}
-                  variant={"circular"}
-                  src={item?.avatar}
-                >
-                  <ImageIcon />
-                </Avatar>
+                {getIPFSString(item?.avatar ?? "", baseURL).startsWith(
+                  "http"
+                ) ? (
+                  <Avatar
+                    sx={{ bgcolor: "var(--color-border-disable2)" }}
+                    variant={"circular"}
+                    src={getIPFSString(item?.avatar ?? "", baseURL)}
+                  />
+                ) : (
+                  <Avatar
+                    sx={{ bgcolor: "var(--color-border-disable2)" }}
+                    variant={"circular"}
+                    src={item?.avatar}
+                  >
+                    <ImageIcon />
+                  </Avatar>
+                )}
+
                 <Typography
                   marginLeft={1}
                   color={"var(--color-text-button)"}

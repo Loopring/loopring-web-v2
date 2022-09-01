@@ -221,6 +221,7 @@ export const SwitchPanelStyled: any = styled(Box)<
 
   &.collectionSelect {
     background: var(--color-global-bg);
+    align-items: stretch;
   }
 
   .MuiModal-root & {

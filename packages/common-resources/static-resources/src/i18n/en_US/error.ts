@@ -37,12 +37,14 @@ export default {
     "Please install the Gamestop Wallet browser extension. Then create, deposit, and activate the wallet before connecting to Loopring.io.",
   errorLinKWalletApp: "<0>app market</0>",
   errorIpfsDidToNftidError: "IPFS Gateway Error",
-  errorMintOverlap: "You duplicate minted same NFT, please check your Wallet!",
+  errorMintOverlap:
+    "You have already minted this NFT. Please check your Wallet",
   errorJSONStringify: "Wrong JSON format",
   errorCollectionMetadataNoTileUri: "Tile uri is required",
   errorCollectionNoName: "Name is required",
   errorCollectionSameName: "Collection called {{name}} is existe",
-  errorCollectionInfo: "Wrong Collection",
+  errorCollectionInfo:
+    "We've detected this collection is not yours or the Contract Address don't match",
   errorCollectionNoSupport: "Only L2 collection is allow to mint",
   errorCollectionNotReadable: "Read Collection Info Failed",
   errorIpfsTimeout: "IPFS Gateway timeout, please try again",

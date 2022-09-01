@@ -881,7 +881,7 @@ export default {
   labelDefiInvest: "Defi Earn",
   labelDefiClose:
     "ETH staking service is not available currently. Please stay tuned until the pool is setup. Usually it will be ready within hour.",
-  labelCreateCollection: "New My Collection",
+  labelCreateCollection: "Create My Collection",
   labelCollectionCreateName: "Contract address for your collection",
   labelCollectionCreateERC1155: "Collection ERC-1155",
   labelCollectionCreateWaiting: "Waiting for create Collection token Address",
@@ -968,4 +968,6 @@ export default {
     "Legacy NFTs created in Loopring don’t contain collection information yet and we will add the feature to allow creators to import the collection information Until it happens, the previous NFTs will be categorized to collection named by their associated contract address. ",
   labelNFTGuid:
     "Please fill in the appropriate collection metadata field value in your NFT metadata with this string first, then upload it to IPFS to retrieve the CID to continue. <1>view more </1>",
+  labelChooseCollectionTooltips:
+    "This is the collection where your NFT will appear.NFT minted under collection will be bound with different contract address than previous created one. If you have incomplete work to finish and would like them created under previous contract address, you can still use the legacy created method under https://… ",
 };
