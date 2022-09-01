@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import { Box, Grid, Typography, Link } from "@mui/material";
 import {
-  AddIcon,
   EmptyValueTag,
   FeeInfo,
   getShortAddr,
@@ -520,7 +519,6 @@ export const MintNFTConfirm = <
                 <Button
                   fullWidth
                   variant={"contained"}
-                  startIcon={<AddIcon />}
                   size={"medium"}
                   color={"primary"}
                   onClick={() => {

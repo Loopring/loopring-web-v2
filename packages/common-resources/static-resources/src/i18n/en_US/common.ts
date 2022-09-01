@@ -954,6 +954,7 @@ export default {
     "Click to refresh loopring cache resource, this is an delay command usually take 30 minutes.",
   labelNFTServerRefreshSubmit: "Refresh command submitted",
   labelNFTCollection: "Collection",
+  labelNFTCollectionName: "Collection Name:",
   labelMyCollection: "My Collections",
   labelCounterFactualNFT: "L2 NFT:",
   labelCopyUrlClip: "URL Copied to Clipboard!",
