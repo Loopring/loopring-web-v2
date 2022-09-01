@@ -1,24 +1,13 @@
-// import {
-//   ChainId,
-//   NFTTokenInfo,
-//   TokenInfo,
-//   UserNFTBalanceInfo,
-// } from "@loopring-web/loopring-sdk";
 import {
-  CollectionMeta,
-  DeFiCalcData,
-  FeeInfo,
-  IBData,
-} from "../loopring-interface";
+  ChainId,
+  NFTTokenInfo,
+  TokenInfo,
+  UserNFTBalanceInfo,
+} from "@loopring-web/loopring-sdk";
+import { FeeInfo, IBData } from "../loopring-interface";
 import * as sdk from "@loopring-web/loopring-sdk";
 import { useTranslation } from "react-i18next";
-import { MarketType } from "./market";
 
-export enum DeFiChgType {
-  coinSell = "coinSell",
-  coinBuy = "coinBuy",
-  exchange = "exchange",
-}
 export type WithdrawType =
   | sdk.OffchainNFTFeeReqType.NFT_WITHDRAWAL
   | sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -64,21 +53,14 @@ export type TxInfo = {
   status?: "pending" | "success" | "failed" | undefined;
   [key: string]: any;
 };
-
 export interface AccountHashInfo {
   depositHashes: { [key: string]: TxInfo[] };
 }
-
-export interface NFTHashInfo {
-  nftDataHashes: { [key: string]: Required<TxInfo> };
-}
-
 // export type GuardianLock
 export enum Layer1Action {
   GuardianLock = "GuardianLock",
   NFTDeploy = "NFTDeploy",
 }
-
 // GuardianLock
 export type Layer1ActionHistory = {
   [key: string]: {
@@ -88,14 +70,10 @@ export type Layer1ActionHistory = {
 };
 
 export type ChainHashInfos = {
-  [key in sdk.ChainId extends string ? string : string]: AccountHashInfo;
-};
-
-export type NFTHashInfos = {
-  [key in sdk.ChainId extends string ? string : string]: NFTHashInfo;
+  [key in ChainId extends string ? string : string]: AccountHashInfo;
 };
 export type LAYER1_ACTION_HISTORY = {
-  [key in sdk.ChainId extends string ? string : string]: Layer1ActionHistory;
+  [key in ChainId extends string ? string : string]: Layer1ActionHistory;
 } & { __timer__: -1 | NodeJS.Timeout };
 
 export type MetaProperty = {
@@ -113,7 +91,7 @@ export type NFTMETA = {
   name: string;
   royaltyPercentage: number; // 0 - 10 for UI
   description: string;
-  collection_metadata: string;
+  collection?: string;
   properties?: Array<MetaProperty>;
   animationUrl?: string;
   attributes?: AttributesProperty[];
@@ -124,8 +102,8 @@ export enum Media {
   Video = "Video",
 }
 
-export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
-  sdk.UserNFTBalanceInfo &
+export type NFTWholeINFO = NFTTokenInfo &
+  UserNFTBalanceInfo &
   NFTMETA & {
     nftBalance?: number;
     nftIdView?: string;
@@ -133,7 +111,6 @@ export type NFTWholeINFO<Co = CollectionMeta> = sdk.NFTTokenInfo &
     isFailedLoadMeta?: boolean;
     etherscanBaseUrl: string;
     __mediaType__?: Media;
-    collectionMeta?: Partial<Co>;
   };
 
 export type MintTradeNFT<I> = {
@@ -144,9 +121,8 @@ export type MintTradeNFT<I> = {
   nftBalance?: number;
   nftIdView?: string;
   royaltyPercentage?: number;
-  // tokenAddress?:string;
 } & Partial<IBData<I>> &
-  Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 export type MintReadTradeNFT<I> = {
   balance?: number;
   fee?: FeeInfo;
@@ -156,21 +132,17 @@ export type MintReadTradeNFT<I> = {
   readonly nftBalance?: number;
   readonly royaltyPercentage?: number;
 } & Partial<IBData<I>> &
-  Partial<Omit<sdk.NFTTokenInfo, "creatorFeeBips" | "nftData">>;
+  Partial<Omit<NFTTokenInfo, "creatorFeeBips" | "nftData">>;
 
-export type TradeNFT<I, Co> = MintTradeNFT<I> &
-  Partial<NFTWholeINFO<Co>> & { isApproved?: boolean };
+export type TradeNFT<I> = MintTradeNFT<I> &
+  Partial<NFTWholeINFO> & { isApproved?: boolean };
 
 export const TOAST_TIME = 3000;
-
-export enum NFT_TYPE_STRING {
-  ERC721 = "ERC721",
-  ERC1155 = "ERC1155",
-}
 
 export const EmptyValueTag = "--";
 export const DEAULT_NFTID_STRING =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
+export const IPFS_HEAD_URL = "ipfs://";
 export const MINT_LIMIT = 100000;
 export const PROPERTY_LIMIT = 64;
 export const PROPERTY_KET_LIMIT = 20;
@@ -364,9 +336,14 @@ export const enum InvestMapType {
   Token = "Token",
   AMM = "AMM",
   STAKE = "STAKE",
+  DUAL = "DUAL",
 }
 
-export const InvestOpenType = [InvestMapType.AMM, InvestMapType.STAKE];
+export const InvestOpenType = [
+  InvestMapType.AMM,
+  InvestMapType.STAKE,
+  InvestMapType.DUAL,
+];
 
 export const enum InvestDuration {
   Flexible = "Flexible",
@@ -382,7 +359,7 @@ export type InvestItem = {
   duration: string;
 };
 export type InvestDetail = {
-  token: sdk.TokenInfo;
+  token: TokenInfo;
   apr: [start: number, end: number];
   durationType: InvestDuration;
   duration: string;
@@ -393,36 +370,6 @@ export enum CreateCollectionStep {
   // Loading,
   // CreateTokenAddressFailed,
   ChooseMethod,
-  ChooseMintMethod,
-  ChooseCollectionEdit,
   // AdvancePanel,
-  // CommonPanel,
+  CommonPanel,
 }
-
-export type TradeDefi<C> = {
-  type: string;
-  market?: MarketType; // eg: ETH-LRC, Pair from loopring market
-  isStoB: boolean;
-  sellVol: string;
-  buyVol: string;
-  sellToken: sdk.TokenInfo;
-  buyToken: sdk.TokenInfo;
-  deFiCalcData?: DeFiCalcData<C>;
-  fee: string;
-  feeRaw: string;
-  depositPrice?: string;
-  withdrawPrice?: string;
-  maxSellVol?: string;
-  maxBuyVol?: string;
-  maxFeeBips?: number;
-  miniSellVol?: string;
-  request?: sdk.DefiOrderRequest;
-  defiBalances?: { [key: string]: string };
-  lastInput?: DeFiChgType;
-};
-
-export type L2CollectionFilter = {
-  isMintable?: boolean;
-  tokenAddress?: string;
-  owner?: string;
-};

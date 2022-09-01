@@ -7,7 +7,7 @@ import {
   PopoverPure,
 } from "@loopring-web/component-lib";
 
-import { useNFTDeposit, useSystem } from "@loopring-web/core";
+import { useNFTDeposit } from "@loopring-web/core";
 import { BackIcon, Info2Icon } from "@loopring-web/common-resources";
 import { bindHover } from "material-ui-popup-state/es";
 import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
@@ -23,6 +23,7 @@ export const DepositNFTPanel = () => {
   const { nftDepositProps } = useNFTDeposit();
   const { t } = useTranslation(["common"]);
   const history = useHistory();
+
   const popupState = usePopupState({
     variant: "popover",
     popupId: `popupId-nftDeposit`,

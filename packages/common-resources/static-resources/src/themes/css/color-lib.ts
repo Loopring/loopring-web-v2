@@ -67,7 +67,6 @@ export const ColorDarkDefault = Object.freeze({
   providerBtn: `${hexToRGB("#ffffff", "0.1")}`,
   providerBtnHover: `${hexToRGB("#ffffff", "0.03")}`,
   providerApprove: `${hexToRGB("#ffffff", "0.03")}`,
-  boxNFTLabel: `${hexToRGB("#000000", "0.3")}`,
 });
 
 export const ColorLightDefault = Object.freeze({
@@ -127,7 +126,6 @@ export const ColorLightDefault = Object.freeze({
   providerBtn: `${hexToRGB("#3B5AF4", "0.1")}`,
   providerBtnHover: `${hexToRGB("#3B5AF4", "0.15")}`,
   providerApprove: `#F6F7FB`,
-  boxNFTLabel: `${hexToRGB("#6787FF", "0.08")}`,
 });
 
 export type ColorBaseInterface = typeof ColorDarkDefault;

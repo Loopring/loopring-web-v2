@@ -1,24 +1,28 @@
 import {
   EmptyValueTag,
   FeeInfo,
+  Info2Icon,
   TradeNFT,
 } from "@loopring-web/common-resources";
 import { NFTDeployViewProps } from "./Interface";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import React from "react";
+import { bindPopper, usePopupState } from "material-ui-popup-state/hooks";
 import { Box, Grid, Link, Toolbar, Typography } from "@mui/material";
-import { Button, ModalBackButton } from "../../basic-lib";
+import { bindHover } from "material-ui-popup-state/es";
+import { Button, ModalBackButton, PopoverPure } from "../../basic-lib";
 import { DropdownIconStyled, FeeTokenItemWrapper } from "./Styled";
 import { TradeBtnStatus } from "../Interface";
 import { FeeToggle } from "./tool/FeeList";
 
 export const DeployNFTWrap = <
-  T extends TradeNFT<I, any> & { broker: string },
+  T extends TradeNFT<I> & { broker: string },
   I,
   C extends FeeInfo
 >({
   tradeData,
   title,
+  description,
   btnInfo,
   nftDeployBtnStatus,
   onNFTDeployClick,
@@ -33,6 +37,10 @@ export const DeployNFTWrap = <
   const { t } = useTranslation(["common"]);
   const [dropdownStatus, setDropdownStatus] =
     React.useState<"up" | "down">("down");
+  const popupState = usePopupState({
+    variant: "popover",
+    popupId: `popupId-nftDeposit`,
+  });
 
   const getDisabled = React.useMemo(() => {
     if (disabled || nftDeployBtnStatus === TradeBtnStatus.DISABLED) {
@@ -65,7 +73,6 @@ export const DeployNFTWrap = <
           className={assetsData ? "" : "loading"}
           paddingBottom={3}
           container
-          marginTop={-3}
           paddingLeft={5 / 2}
           paddingRight={5 / 2}
           direction={"column"}
@@ -85,7 +92,38 @@ export const DeployNFTWrap = <
               <Typography component={"h4"} variant={"h3"} marginRight={1}>
                 {title ? title : t("nftDeployTitle")}
               </Typography>
+              <Info2Icon
+                {...bindHover(popupState)}
+                fontSize={"large"}
+                htmlColor={"var(--color-text-third)"}
+              />
             </Box>
+            <PopoverPure
+              className={"arrow-center"}
+              {...bindPopper(popupState)}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+            >
+              <Typography
+                padding={2}
+                component={"p"}
+                variant={"body2"}
+                whiteSpace={"pre-line"}
+              >
+                <Trans
+                  i18nKey={description ? description : "nftDeployDescription"}
+                >
+                  Once your nftDeploy is confirmed on Ethereum, it will be added
+                  to your balance within 2 minutes.
+                </Trans>
+              </Typography>
+            </PopoverPure>
           </Grid>
 
           <Grid item marginTop={2} alignSelf={"stretch"}>
@@ -103,38 +141,38 @@ export const DeployNFTWrap = <
               >
                 {t("labelNFTDetail")}
               </Typography>
-              {/*<Typography*/}
-              {/*  display={"inline-flex"}*/}
-              {/*  variant={"body1"}*/}
-              {/*  marginTop={2}*/}
-              {/*>*/}
-              {/*  <Typography color={"var(--color-text-third)"} width={160}>*/}
-              {/*    {t("labelNFTName")}*/}
-              {/*  </Typography>*/}
-              {/*  <Typography*/}
-              {/*    color={"var(--color-text-third)"}*/}
-              {/*    title={tradeData?.name}*/}
-              {/*  >*/}
-              {/*    {tradeData?.name}*/}
-              {/*  </Typography>*/}
-              {/*</Typography>*/}
+              <Typography
+                display={"inline-flex"}
+                variant={"body1"}
+                marginTop={2}
+              >
+                <Typography color={"var(--color-text-third)"} width={160}>
+                  {t("labelNFTName")}
+                </Typography>
+                <Typography
+                  color={"var(--color-text-third)"}
+                  title={tradeData?.name}
+                >
+                  {tradeData?.name}
+                </Typography>
+              </Typography>
 
-              {/*<Typography*/}
-              {/*  display={"inline-flex"}*/}
-              {/*  variant={"body1"}*/}
-              {/*  marginTop={2}*/}
-              {/*>*/}
-              {/*  <Typography color={"var(--color-text-third)"} width={160}>*/}
-              {/*    {t("labelNFTID")}*/}
-              {/*  </Typography>*/}
-              {/*  <Typography*/}
-              {/*    color={"var(--color-text-third)"}*/}
-              {/*    maxWidth={300}*/}
-              {/*    title={tradeData?.nftId}*/}
-              {/*  >*/}
-              {/*    {tradeData?.nftIdView ?? ""}*/}
-              {/*  </Typography>*/}
-              {/*</Typography>*/}
+              <Typography
+                display={"inline-flex"}
+                variant={"body1"}
+                marginTop={2}
+              >
+                <Typography color={"var(--color-text-third)"} width={160}>
+                  {t("labelNFTID")}
+                </Typography>
+                <Typography
+                  color={"var(--color-text-third)"}
+                  maxWidth={300}
+                  title={tradeData?.nftId}
+                >
+                  {tradeData?.nftIdView ?? ""}
+                </Typography>
+              </Typography>
               <Typography
                 display={"inline-flex"}
                 variant={"body1"}
@@ -184,7 +222,7 @@ export const DeployNFTWrap = <
               </Typography>
             </Box>
           </Grid>
-          <Grid item alignSelf={"stretch"} position={"relative"} marginTop={2}>
+          <Grid item alignSelf={"stretch"} position={"relative"}>
             {!chargeFeeTokenList?.length ? (
               <Typography>{t("labelFeeCalculating")}</Typography>
             ) : (

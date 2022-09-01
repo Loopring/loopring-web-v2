@@ -1,4 +1,4 @@
-import { Badge, Box, IconButton } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import {
   Account,
   AccountStatus,
@@ -15,7 +15,6 @@ import { bindPopper } from "material-ui-popup-state/es";
 import { PopoverPure, SubMenu, SubMenuList } from "../../basic-lib";
 import { SettingPanel } from "../../block/SettingPanel";
 import { NotificationPanel } from "../../block/NotificationPanel";
-import React from "react";
 
 export const BtnDownload = ({
   t,
@@ -52,13 +51,10 @@ export const BtnNotification = ({
     variant: "popover",
     popupId: "notificationPop",
   });
-  const [content] = React.useState(0);
   return (
     <Box position={"relative"}>
       <IconButton aria-label={"notification"} {...bindHover(popupState)}>
-        <Badge badgeContent={content}>
-          <NotificationIcon/>
-        </Badge>
+        <NotificationIcon />
       </IconButton>
       {(notification?.activities?.length ??
         0 + notification?.notifications?.length ??

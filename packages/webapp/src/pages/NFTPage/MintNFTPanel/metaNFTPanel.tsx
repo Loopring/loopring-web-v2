@@ -1,9 +1,11 @@
+import styled from "@emotion/styled";
 import {
   Box,
   Checkbox,
   FormControlLabel as MuiFormControlLabel,
   FormLabel,
   Grid,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -15,29 +17,37 @@ import {
   NFTMetaProps,
   NFTMetaBlockProps,
   TextareaAutosizeStyled,
-  ImageUploadWrapper,
 } from "@loopring-web/component-lib";
 import { Trans, useTranslation } from "react-i18next";
 import React from "react";
 import {
   CheckBoxIcon,
   CheckedIcon,
-  CollectionMeta,
   FeeInfo,
   MintTradeNFT,
   NFTMETA,
   TransErrorHelp,
 } from "@loopring-web/common-resources";
-import { LoopringAPI, NFT_MINT_VALUE, useSystem } from "@loopring-web/core";
+import { NFT_MINT_VALUE } from "@loopring-web/core";
 import * as sdk from "@loopring-web/loopring-sdk";
 
-const MaxSize = 10485760;
-
+const MaxSize = 8000000;
+const StyleWrapper = styled(Box)`
+  position: relative;
+  width: 100%;
+  background: var(--color-box);
+  border-radius: ${({ theme }) => theme.unit}px;
+  .MuiFormControlLabel-root {
+    align-items: flex-start;
+    .MuiFormControlLabel-label {
+      color: var(--color-text-secondary);
+    }
+  }
+` as typeof Box;
 const TYPES = ["jpeg", "jpg", "gif", "png"];
 export const MetaNFTPanel = <
   Me extends NFTMETA,
   Mi extends MintTradeNFT<I>,
-  Co extends CollectionMeta,
   I,
   C extends FeeInfo
 >({
@@ -48,25 +58,22 @@ export const MetaNFTPanel = <
   onDelete,
   nftMintValue,
   errorOnMeta,
-}: // collectionInputProps,
-Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
+}: Partial<NFTMetaBlockProps<Me, Mi, C>> & {
   feeInfo: C;
   errorOnMeta: undefined | sdk.RESULT_INFO;
   nftMintValue: NFT_MINT_VALUE<I>;
   nftMintProps: NFTMintProps<Me, Mi, C>;
-  nftMetaProps: NFTMetaProps<Me, Co, C>;
+  nftMetaProps: NFTMetaProps<Me, C>;
   onFilesLoad: (value: IpfsFile) => void;
   onDelete: () => void;
   ipfsMediaSources: IpfsFile | undefined;
 }) => {
   const { t } = useTranslation("common");
-  const { baseURL } = useSystem();
-  const domain: string = LoopringAPI.delegate?.getCollectionDomain() ?? "";
   const [dropdownErrorStatus, setDropdownErrorStatus] =
     React.useState<"up" | "down">("down");
 
   return (
-    <ImageUploadWrapper
+    <StyleWrapper
       flex={1}
       display={"flex"}
       flexDirection={"column"}
@@ -123,9 +130,9 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
         <Grid item xs={12} md={7} flex={1} display={"flex"}>
           <MintNFTBlock
             {...nftMetaProps}
-            baseURL={baseURL}
-            domain={domain}
             handleMintDataChange={nftMintProps.handleMintDataChange}
+            // handleOnMetaChange={nftMetaProps.handleOnMetaChange}
+            // onMetaClick={nftMetaProps.onMetaClick}
             nftMeta={nftMintValue.nftMETA as Me}
             mintData={nftMintValue.mintData as Mi}
             feeInfo={nftMintProps.feeInfo}
@@ -177,6 +184,6 @@ Partial<NFTMetaBlockProps<Me, Co, Mi, C>> & {
           </Grid>
         )}
       </Grid>
-    </ImageUploadWrapper>
+    </StyleWrapper>
   );
 };

@@ -10,13 +10,9 @@ import {
   useOpenModals,
   useSettings,
 } from "@loopring-web/component-lib";
-import { useSystem } from "@loopring-web/core";
+import { TOAST_TIME } from "@loopring-web/core";
 import { useAccountModalForUI } from "./hook";
-import {
-  Account,
-  AssetsRawDataItem,
-  TOAST_TIME,
-} from "@loopring-web/common-resources";
+import { Account, AssetsRawDataItem } from "@loopring-web/common-resources";
 import { Box, Modal as MuiModal } from "@mui/material";
 import { NFTDetail } from "./components/NFTDetail";
 
@@ -40,14 +36,24 @@ export const ModalAccountInfo = withTranslation("common")(
     assetsRawData: AssetsRawDataItem[];
   } & WithTranslation) => {
     const { isMobile } = useSettings();
-    const { baseURL } = useSystem();
     const {
       modals: { isShowNFTDetail, isShowAccount },
+      // modals: { isShowAccount },
+      // setShowConnect,
+      // setShowAccount,
       setShowNFTDetail,
       setShowDeposit,
+      // setShowNFTMint,
       setShowTransfer,
       setShowWithdraw,
+      // setShowResetAccount,
+      // setShowActiveAccount,
     } = useOpenModals();
+    // const {
+    //   modals: {
+    //     isShowDeposit ,
+    //   },
+    // } = useOpenModals();
     const {
       exportAccountAlertText,
       exportAccountToastOpen,
@@ -55,13 +61,12 @@ export const ModalAccountInfo = withTranslation("common")(
       setCopyToastOpen,
       setOpenQRCode,
       account,
-      collectionAdvanceProps,
       transferProps,
       withdrawProps,
       nftTransferProps,
       nftWithdrawProps,
       nftDeployProps,
-      // nftMintAdvanceProps,
+      nftMintAdvanceProps,
       resetProps,
       activeAccountProps,
       exportAccountProps,
@@ -72,8 +77,6 @@ export const ModalAccountInfo = withTranslation("common")(
       currentModal,
       onBackReceive,
       onBackSend,
-      collectionToastOpen,
-      collectionToastClose,
     } = useAccountModalForUI({
       t,
       depositProps,
@@ -94,16 +97,8 @@ export const ModalAccountInfo = withTranslation("common")(
           }}
           severity={"success"}
         />
-        <Toast
-          alertText={collectionToastOpen?.content ?? ""}
-          severity={collectionToastOpen?.type ?? "success"}
-          open={collectionToastOpen?.open ?? false}
-          autoHideDuration={TOAST_TIME}
-          onClose={collectionToastClose}
-        />
 
         <ModalPanel
-          baseURL={baseURL}
           transferProps={{
             ...transferProps,
             onBack: () => {
@@ -125,11 +120,10 @@ export const ModalAccountInfo = withTranslation("common")(
               onBackReceive();
             },
           }}
-          collectionAdvanceProps={collectionAdvanceProps as any}
           nftTransferProps={nftTransferProps as any}
           nftWithdrawProps={nftWithdrawProps as any}
           nftDeployProps={nftDeployProps as any}
-          // nftMintAdvanceProps={nftMintAdvanceProps as any}
+          nftMintAdvanceProps={nftMintAdvanceProps as any}
           // nftWithdrawProps={nftWithdrawProps}
           resetProps={resetProps as any}
           activeAccountProps={activeAccountProps}
@@ -197,7 +191,6 @@ export const ModalAccountInfo = withTranslation("common")(
               justifyContent={"stretch"}
             >
               <NFTDetail
-                baseURL={baseURL}
                 etherscanBaseUrl={etherscanBaseUrl}
                 popItem={isShowNFTDetail}
                 assetsRawData={assetsRawData}

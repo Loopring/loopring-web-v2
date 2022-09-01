@@ -20,7 +20,6 @@ import {
   setShowTradeIsFrozen,
   setShowWrongNetworkGuide,
   setShowNFTMintAdvance,
-  setShowCollectionAdvance,
   setShowOtherExchange,
   setShowNFTDetail,
   setShowLayerSwapNotice,
@@ -109,35 +108,23 @@ export const useOpenModals = () => {
       [dispatch]
     ),
     setShowNFTDeposit: React.useCallback(
-      (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
-	      if (toggle.depositNFT.enable) {
-		      dispatch(setShowNFTDeposit(state));
-	      } else {
-		      dispatch(setShowTradeIsFrozen({isShow: true, type: "Deposit"}));
-	      }
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
+        if (toggle.depositNFT.enable) {
+          dispatch(setShowNFTDeposit(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Deposit" }));
+        }
       },
       [dispatch]
     ),
-    setShowCollectionAdvance: React.useCallback(
-	    (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
-		    if (toggle.collectionNFT.enable) {
-			    dispatch(setShowCollectionAdvance(state));
-		    } else {
-			    dispatch(
-				    setShowCollectionAdvance({isShow: true, type: "Collection"})
-			    );
-		    }
-	    },
-      [dispatch]
-    ),
     setShowNFTMintAdvance: React.useCallback(
-	    (state: ModalStatePlayLoad & Partial<TradeNFT<any, any>>) => {
-		    if (toggle.mintNFT.enable) {
-			    dispatch(setShowNFTMintAdvance(state));
-		    } else {
-			    dispatch(setShowTradeIsFrozen({isShow: true, type: "Mint"}));
-		    }
-	    },
+      (state: ModalStatePlayLoad & Partial<TradeNFT<any>>) => {
+        if (toggle.mintNFT.enable) {
+          dispatch(setShowNFTMintAdvance(state));
+        } else {
+          dispatch(setShowTradeIsFrozen({ isShow: true, type: "Mint" }));
+        }
+      },
       [dispatch]
     ),
     setShowNFTWithdraw: React.useCallback(

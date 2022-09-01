@@ -18,7 +18,6 @@ import {
   UIERROR_CODE,
   AddressError,
   EXCHANGE_TYPE,
-  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -31,6 +30,7 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
+  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useWalletLayer2Socket,
@@ -41,12 +41,10 @@ import {
   useChargeFees,
   useWalletLayer2NFT,
   useSystem,
-  getIPFSString,
 } from "../../index";
 import { useWalletInfo } from "../../stores/localStore/walletInfo";
-import { useHistory, useLocation } from "react-router-dom";
 
-export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
+export const useNFTWithdraw = <R extends TradeNFT<any>, T>() => {
   const {
     modals: {
       isShowNFTWithdraw: { isShow, info },
@@ -58,11 +56,8 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
 
   const { tokenMap, totalCoinMap, disableWithdrawList } = useTokenMap();
   const { account } = useAccount();
-  const { exchangeInfo, chainId, baseURL } = useSystem();
+  const { exchangeInfo, chainId } = useSystem();
   const { page, updateWalletLayer2NFT } = useWalletLayer2NFT();
-  const history = useHistory();
-  const { search } = useLocation();
-  const searchParams = new URLSearchParams(search);
 
   const { nftWithdrawValue, updateNFTWithdrawData, resetNFTWithdrawData } =
     useModalData();
@@ -314,25 +309,7 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
                 updateHW({ wallet: account.accAddress, isHWAddr });
               }
               walletLayer2Service.sendUserUpdate();
-              if (nftWithdrawValue.collectionMeta) {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byCollection/${nftWithdrawValue.collectionMeta?.contractAddress}|${nftWithdrawValue.collectionMeta?.id}`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page: Number(searchParams.get("collectionPage")) ?? 1,
-                  collection: nftWithdrawValue.collectionMeta?.contractAddress,
-                });
-              } else {
-                history.push({
-                  pathname: `/NFT/assetsNFT/byList`,
-                  search,
-                });
-                updateWalletLayer2NFT({
-                  page,
-                  collection: undefined,
-                });
-              }
+              updateWalletLayer2NFT({ page });
               setShowNFTDetail({ isShow: false });
               resetNFTWithdrawData();
             }
@@ -518,8 +495,6 @@ export const useNFTWithdraw = <R extends TradeNFT<any, any>, T>() => {
     coinMap: totalCoinMap as CoinMap<T>,
     walletMap: {},
     isCFAddress,
-    getIPFSString,
-    baseURL,
     isContractAddress: isContract1XAddress,
     isAddressCheckLoading,
     addrStatus,

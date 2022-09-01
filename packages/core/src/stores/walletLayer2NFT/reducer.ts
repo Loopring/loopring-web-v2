@@ -4,7 +4,6 @@ import { SagaStatus } from "@loopring-web/common-resources";
 
 const initialState: WalletLayer2NFTStates = {
   walletLayer2NFT: [],
-  collection: "",
   total: 0,
   status: "DONE",
   errorMessage: null,
@@ -14,10 +13,7 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
   name: "walletLayer2NFT",
   initialState,
   reducers: {
-    updateWalletLayer2NFT(
-      state,
-      _action: PayloadAction<{ page?: number; collection: string | undefined }>
-    ) {
+    updateWalletLayer2NFT(state, _action: PayloadAction<{ page?: number }>) {
       state.status = SagaStatus.PENDING;
     },
     reset(state) {
@@ -40,7 +36,6 @@ const walletLayer2NFTSlice: Slice<WalletLayer2NFTStates> = createSlice({
         state.errorMessage = action.error;
       }
       state.walletLayer2NFT = [...(action.payload?.walletLayer2NFT ?? [])];
-      state.collection = action.payload.collection;
       state.total = action.payload.total ?? 0;
       state.status = SagaStatus.DONE;
       state.page = action.payload.page ?? 1;

@@ -26,8 +26,6 @@ const initialState: ModalState = {
   isShowNFTWithdraw: { isShow: false },
   isShowNFTDeposit: { isShow: false },
   isShowNFTMintAdvance: { isShow: false },
-  isShowCollectionAdvance: { isShow: false },
-
   isShowNFTDeploy: { isShow: false },
   isShowNFTDetail: { isShow: false },
 };
@@ -130,8 +128,8 @@ export const modalsSlice: Slice<ModalState> = createSlice({
     },
 
     setShowNFTDeposit(
-	    state,
-	    action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>
+      state,
+      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
     ) {
       const { isShow, nftData, nftType, ...rest } = action.payload;
       state.isShowNFTDeposit = {
@@ -140,19 +138,9 @@ export const modalsSlice: Slice<ModalState> = createSlice({
         ...rest,
       };
     },
-    setShowCollectionAdvance(
-      state,
-      action: PayloadAction<ModalStatePlayLoad & any>
-    ) {
-      const { isShow, info } = action.payload;
-      state.isShowCollectionAdvance = {
-        isShow,
-        info,
-      };
-    },
     setShowNFTMintAdvance(
-	    state,
-	    action: PayloadAction<ModalStatePlayLoad & TradeNFT<any, any>>
+      state,
+      action: PayloadAction<ModalStatePlayLoad & TradeNFT<any>>
     ) {
       const { isShow, nftData, nftType, ...rest } = action.payload;
       state.isShowNFTMintAdvance = {
@@ -287,7 +275,6 @@ export const {
   setShowNFTDeposit,
   setShowNFTWithdraw,
   setShowNFTMintAdvance,
-  setShowCollectionAdvance,
   setShowTransfer,
   setShowWithdraw,
   setShowDeposit,

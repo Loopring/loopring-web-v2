@@ -1,46 +1,38 @@
 import { useRouteMatch } from "react-router-dom";
 
-import { Box } from "@mui/material";
-import { Toast, useSettings } from "@loopring-web/component-lib";
-import { subMenuNFT, TOAST_TIME } from "@loopring-web/common-resources";
-import React from "react";
+import { Box, Button, Divider } from "@mui/material";
 import {
-  useMyCollection,
-  useNFTMintAdvance,
-  ViewAccountTemplate,
-} from "@loopring-web/core";
+  SubMenu,
+  SubMenuList,
+  useOpenModals,
+  useSettings,
+} from "@loopring-web/component-lib";
+import { useTranslation } from "react-i18next";
+import { subMenuNFT } from "@loopring-web/common-resources";
+import React from "react";
+import { ViewAccountTemplate } from "@loopring-web/core";
 import { MyNFTPanel } from "./MyNFT";
 import { MyNFTHistory } from "./NFThistory";
-import { MintNFTAdvancePanel, MintNFTPanel } from "./MintNFTPanel";
+import { MintNFTPanel } from "./MintNFTPanel";
 import { DepositNFTPanel } from "./NFTDeposit";
-import { NFTCollectPanel } from "./CollectionPanel";
-import { CreateCollectionPanel } from "./CreateCollectionPanel";
-import { MintLandingPage } from "./components/landingPanel";
-import { useTranslation } from "react-i18next";
+import { mintService } from "@loopring-web/core";
+import { TitleNFTMobile } from "./components/titleNFTMobile";
 
 export const subMenu = subMenuNFT;
 
 export const NFTPage = () => {
   let match: any = useRouteMatch("/NFT/:item");
-  const { t } = useTranslation(["common"]);
-  const selected = match?.params?.item ?? "assetsNFT";
-
+  const selected = match?.params.item ?? "assetsNFT";
+  const { t } = useTranslation(["common", "layout"]);
   const routerNFT = React.useMemo(() => {
     switch (selected) {
       case "transactionNFT":
         return <MyNFTHistory />;
-      case "mintNFTLanding":
-        return <MintLandingPage />;
       case "mintNFT":
+        mintService.emptyData();
         return <MintNFTPanel />;
-      case "mintNFTAdvance":
-        return <MintNFTAdvancePanel />;
       case "depositNFT":
         return <DepositNFTPanel />;
-      case "myCollection":
-        return <NFTCollectPanel />;
-      case "addCollection":
-        return <CreateCollectionPanel />;
       case "assetsNFT":
       default:
         return <MyNFTPanel />;
@@ -52,6 +44,65 @@ export const NFTPage = () => {
   const activeViewTemplate = React.useMemo(
     () => (
       <>
+        {/*{!isMobile && (*/}
+        {/*  <Box*/}
+        {/*    width={"200px"}*/}
+        {/*    display={"flex"}*/}
+        {/*    justifyContent={"stretch"}*/}
+        {/*    marginRight={3}*/}
+        {/*    marginBottom={2}*/}
+        {/*    className={"MuiPaper-elevation2"}*/}
+        {/*  >*/}
+        {/*    <SubMenu>*/}
+        {/*      <SubMenuList selected={selected} subMenu={subMenu as any} />*/}
+        {/*      <Box marginX={3}>*/}
+        {/*        <Divider />*/}
+        {/*      </Box>*/}
+        {/*      <Box*/}
+        {/*        marginTop={1}*/}
+        {/*        display={"flex"}*/}
+        {/*        flexDirection={"column"}*/}
+        {/*        alignItems={"center"}*/}
+        {/*        marginX={3}*/}
+        {/*      >*/}
+        {/*        <Box marginY={1} width={"100%"}>*/}
+        {/*          <Button*/}
+        {/*            variant={"contained"}*/}
+        {/*            color={"primary"}*/}
+        {/*            fullWidth*/}
+        {/*            size={"small"}*/}
+        {/*            href={"/#/nft/mintNFT"}*/}
+        {/*          >*/}
+        {/*            {t("labelMintNFT")}*/}
+        {/*          </Button>*/}
+        {/*        </Box>*/}
+        {/*        <Box marginY={1} width={"100%"}>*/}
+        {/*          <Button*/}
+        {/*            onClick={() => {*/}
+        {/*              setShowNFTMintAdvance({ isShow: true });*/}
+        {/*            }}*/}
+        {/*            variant={"outlined"}*/}
+        {/*            color={"primary"}*/}
+        {/*            fullWidth*/}
+        {/*          >*/}
+        {/*            {t("labelAdvanceMint")}*/}
+        {/*          </Button>*/}
+        {/*        </Box>*/}
+        {/*        <Box marginY={1} width={"100%"}>*/}
+        {/*          <Button*/}
+        {/*            variant={"outlined"}*/}
+        {/*            color={"primary"}*/}
+        {/*            fullWidth*/}
+        {/*            href={"/#/nft/depositNFT"}*/}
+        {/*          >*/}
+        {/*            {t("labelL1toL2NFT")}*/}
+        {/*          </Button>*/}
+        {/*        </Box>*/}
+        {/*      </Box>*/}
+        {/*    </SubMenu>*/}
+        {/*  </Box>*/}
+        {/*)}*/}
+
         <Box
           // minHeight={420}
           display={"flex"}
@@ -64,13 +115,9 @@ export const NFTPage = () => {
         </Box>
       </>
     ),
-    [routerNFT]
+    [isMobile, routerNFT]
   );
 
-  return (
-    <>
-      <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />
-    </>
-  );
+  return <ViewAccountTemplate activeViewTemplate={activeViewTemplate} />;
 };
 // {!!isMobile && <TitleNFTMobile />}

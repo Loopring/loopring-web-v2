@@ -1,12 +1,8 @@
-import {
-  Account,
-  FloatTag,
-  ForexMap,
-  TradeStatus,
-  TradeTypes,
-} from "../constant";
+import { Account, FloatTag, TradeStatus, TradeTypes } from "../constant";
 import * as sdk from "@loopring-web/loopring-sdk";
 import React from "react";
+import { ForexMap } from "@loopring-web/common-resources";
+import { Currency } from "@loopring-web/loopring-sdk";
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -177,7 +173,7 @@ export type AmmCardProps<T> = AmmDetail<T> & {
   tradeFloat: TradeFloat;
   handleClick: () => void;
   account: Account;
-  forexMap: ForexMap<sdk.Currency>;
+  forexMap: ForexMap<Currency>;
   popoverIdx: number;
   precisionA?: number;
   precisionB?: number;
@@ -310,18 +306,18 @@ export enum EXPLORE_TYPE {
  * @property cid? string option
  *
  */
-export type CollectionMeta = sdk.CollectionMeta & {
-  extends: { [key: string]: any };
-};
-export type CollectionMetaJSON = {
-  contract: string;
-  thumbnail_uri: string;
-  banner_uri: string;
-  avatar_uri: string;
-  tile_uri: string;
+export type CollectionMeta = {
   name: string;
-  description: string;
-  [key: string]: any;
+  tileUri: string;
+  owner: string;
+  nftFactory?: string;
+  baseUri?: string;
+  collectionTitle?: string;
+  description?: string;
+  avatar?: string;
+  banner?: string;
+  thumbnail?: string;
+  cid?: string;
 };
 
 export enum CollectionMetaKey {
@@ -338,14 +334,4 @@ export enum CollectionMetaKey {
   cid = "cid",
 }
 
-export type MakeMeta<Co = CollectionMeta> = (props: {
-  collection: Co;
-  domain: string;
-}) => {
-  metaDemo: any;
-};
-
-export type GET_IPFS_STRING = (
-  url: string | undefined,
-  basicURl: string
-) => string;
+export type DualCalcData<_T> = {};

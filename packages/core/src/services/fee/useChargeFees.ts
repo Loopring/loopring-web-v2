@@ -57,6 +57,10 @@ export function useChargeFees({
   checkFeeIsEnough: (isRequiredAPI?: boolean) => void;
   handleFeeChange: (value: FeeInfo) => void;
   feeInfo: FeeInfo;
+  setIsFeeNotEnough: (props: {
+    isFeeNotEnough: boolean;
+    isOnLoading: boolean;
+  }) => void;
 } {
   const [feeInfo, setFeeInfo] = React.useState<FeeInfo>({
     belong: "ETH",
@@ -169,8 +173,10 @@ export function useChargeFees({
           if (isActiveAccount) {
             const response = await LoopringAPI.globalAPI.getActiveFeeInfo({
               accountId:
-                account._accountIdNotActive &&
-                account._accountIdNotActive !== -1
+                account.accountId && account.accountId !== -1
+                  ? account.accountId
+                  : account._accountIdNotActive &&
+                    account._accountIdNotActive !== -1
                   ? account._accountIdNotActive
                   : undefined,
             });
@@ -389,7 +395,6 @@ export function useChargeFees({
     if (nodeTimer.current !== -1) {
       clearTimeout(nodeTimer.current as NodeJS.Timeout);
     }
-    // myLog('tokenAddress', tokenAddress, requestType, account.readyState)
     if (
       (isActiveAccount &&
         [
@@ -449,6 +454,7 @@ export function useChargeFees({
     isFeeNotEnough,
     checkFeeIsEnough,
     handleFeeChange,
+    setIsFeeNotEnough,
     feeInfo,
   };
 }

@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   Grid,
   Radio,
+  RadioGroup,
   SelectChangeEvent,
   Switch,
   Typography,
@@ -18,7 +19,7 @@ import {
   ThemeType,
   UpColor,
 } from "@loopring-web/common-resources";
-import { OutlineSelect, OutlineSelectItem, RadioGroupStyle } from "../basic-lib";
+import { OutlineSelect, OutlineSelectItem } from "../basic-lib";
 import { Trans, WithTranslation, withTranslation } from "react-i18next";
 import { useSettings } from "../../stores";
 import { Currency } from "@loopring-web/loopring-sdk";
@@ -69,6 +70,20 @@ export const BtnCurrency = ({ t, currency, label, handleChange }: any) => {
 
 const StyledDivider = styled(Divider)`
   margin: 0;
+`;
+const RadioGroupStyle = styled(RadioGroup)`
+  margin: 0;
+
+  .MuiFormControlLabel-root {
+    margin-right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row;
+  }
+  .MuiFormControlLabel-label {
+    line-height: var(--svg-size-cover);
+  }
 `;
 
 export const BtnLanguage = ({ t, label, handleChange }: any) => {

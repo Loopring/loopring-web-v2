@@ -183,13 +183,24 @@ export const ipfsService = {
           uniqueId,
           error: {
             code: UIERROR_CODE.NO_IPFS_INSTANCE,
-            message: "IPFSHTTPClient is undefined",
+	          message: "IPFSHTTPClient is undefined",
           },
         },
       });
     }
   },
 
-  // clearMessages: () => subject.next(),
-  onSocket: () => subject.asObservable(),
+	// clearMessages: () => subject.next(),
+	onSocket: () => subject.asObservable(),
 };
+// port: 5001,
+// protocol: "https",
+// headers: {
+//   authorization:
+//     "Basic " +
+//     btoa(
+//       process.env.REACT_APP_INFURA_PROJECT_ID +
+//         ":" +
+//         process.env.REACT_APP_INFURA_PROJECT_SECRET
+//     ),
+// },

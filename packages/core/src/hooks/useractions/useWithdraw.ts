@@ -23,7 +23,6 @@ import {
   WithdrawTypes,
   AddressError,
   EXCHANGE_TYPE,
-  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 import * as sdk from "@loopring-web/loopring-sdk";
@@ -34,6 +33,7 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   makeWalletLayer2,
+  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   useTokenMap,

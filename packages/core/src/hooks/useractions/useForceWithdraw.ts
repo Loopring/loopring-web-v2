@@ -16,7 +16,6 @@ import {
   myLog,
   UIERROR_CODE,
   WalletMap,
-  TOAST_TIME,
 } from "@loopring-web/common-resources";
 import { updateForceWithdrawData as updateForceWithdrawDataStore } from "@loopring-web/core";
 
@@ -30,6 +29,7 @@ import {
   getTimestampDaysLater,
   LoopringAPI,
   store,
+  TOAST_TIME,
   useAddressCheck,
   useBtnStatus,
   walletLayer2Service,

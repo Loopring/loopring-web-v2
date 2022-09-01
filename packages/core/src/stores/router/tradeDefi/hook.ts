@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { updateTradeDefi, resetTradeDefi } from "./reducer";
-import { TradeDefiStatus } from "./interface";
+import { TradeDefi, TradeDefiStatus } from "./interface";
 import React from "react";
-import { TradeDefi } from "@loopring-web/common-resources";
 
 export function useTradeDefi<
   C extends { [key: string]: any }

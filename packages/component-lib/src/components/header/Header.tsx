@@ -38,6 +38,7 @@ import {
   headerMenuLandingData,
   toolBarAvailableItem,
   toolBarMobileAvailableItem,
+  myLog,
 } from "@loopring-web/common-resources";
 import {
   BtnDownload,

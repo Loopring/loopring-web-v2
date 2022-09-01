@@ -1,5 +1,6 @@
 import {
   Box,
+  Dialog,
   Grid,
   ListItem,
   ListItemProps,
@@ -23,7 +24,7 @@ import {
   SwitchPanelStyled,
   Toast,
 } from "@loopring-web/component-lib";
-import { LoopringAPI } from "@loopring-web/core";
+import { LoopringAPI, TOAST_TIME } from "@loopring-web/core";
 import Web3 from "web3";
 
 import { connectProvides } from "@loopring-web/web3-provider";
@@ -33,8 +34,8 @@ import {
   RefreshIcon,
   SDK_ERROR_MAP_TO_UI,
   SecurityIcon,
-  TOAST_TIME,
 } from "@loopring-web/common-resources";
+import { HEBAO_META_TYPE } from "@loopring-web/loopring-sdk/dist/defs/loopring_constants";
 
 const HebaoGuardianStyled = styled(ListItem)<ListItemProps>`
   height: var(--Hebao-activited-heigth);

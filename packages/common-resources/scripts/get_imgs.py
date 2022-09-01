@@ -22,7 +22,7 @@ output_folder2_zapper = 'output_resize_zapper'
 SIZE = (36, 36)
 
 def gen_imgs(tokenMap):
-    tokens = requests.get('https://api.loopring.io/api/v3/exchange/tokens')
+    tokens = requests.get('https://api.loopring.network/api/v3/exchange/tokens')
     print(tokens.status_code)
 
     tokenObjs = json.loads(tokens.text)
