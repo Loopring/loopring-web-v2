@@ -104,7 +104,7 @@ export default {
   labelInvestDefiDes: "Earn ETH staking rewards",
   labelDepositNFT: "Receive NFT",
   labelMyCollection: "My Collections",
-  labelMyCollectionDes: "Create, curate, and manage my NFT collections",
+  labelMyCollectionDes: "Create, curate, and \n manage my NFT collections",
 
   // labelDepositNFTDes:"Receive NFT"
 };
