@@ -23,7 +23,6 @@ import {
 } from "@loopring-web/component-lib";
 import {
   confirmation,
-  TOAST_TIME,
   useDefiMap,
   useDualMap,
   useSystem,
@@ -36,6 +35,7 @@ import {
   CurrencyToTag,
   getValuePrecisionThousand,
   PriceTag,
+  TOAST_TIME,
 } from "@loopring-web/common-resources";
 
 const StyleDual = styled(Box)`
@@ -298,7 +298,7 @@ export const DualPanel: any = withTranslation("common")(
               </Box>
             )}
             <Box flex={1}>
-              <DualTable rawData={dualProducts ?? []} showloading={isLoading} />
+              {/*<DualTable rawData={dualProducts ?? []} showloading={isLoading} />*/}
             </Box>
             {/*{isLoading ? (*/}
             {/*  <Box*/}
